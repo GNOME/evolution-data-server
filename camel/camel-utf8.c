@@ -29,9 +29,8 @@
 #include <string.h>
 
 #include <glib.h>
-#include "camel-utf8.h"
 
-#include <netinet/in.h>
+#include "camel-utf8.h"
 
 /**
  * camel_utf8_putc:
@@ -362,7 +361,7 @@ camel_utf8_ucs2(const char *ptr)
 	/* what if c is > 0xffff ? */
 
 	while ( (c = camel_utf8_getc((const unsigned char **)&ptr)) ) {
-		guint16 s = htons(c);
+		guint16 s = g_htons(c);
 
 		g_byte_array_append(work, (char *)&s, 2);
 	}
@@ -392,7 +391,7 @@ char *camel_ucs2_utf8(const char *ptr)
 	char *out;
 
 	while ( (c = *ucs++) )
-		g_string_append_u(work, ntohs(c));
+		g_string_append_u(work, g_ntohs(c));
 
 	out = g_strdup(work->str);
 	g_string_free(work, TRUE);

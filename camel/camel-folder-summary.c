@@ -33,33 +33,28 @@
 #include <errno.h>
 #include <ctype.h>
 
-#include <libedataserver/e-iconv.h>
+#include "libedataserver/e-iconv.h"
 
-#include "camel-folder-summary.h"
-
-/* for change events, perhaps we should just do them ourselves */
 #include "camel-folder.h"
-
-#include <camel/camel-file-utils.h>
-#include <camel/camel-mime-filter.h>
-#include <camel/camel-mime-filter-index.h>
-#include <camel/camel-mime-filter-charset.h>
-#include <camel/camel-mime-filter-basic.h>
-#include <camel/camel-mime-filter-html.h>
-#include <camel/camel-mime-message.h>
-#include <camel/camel-multipart.h>
-#include <camel/camel-stream-mem.h>
-
-#include <camel/camel-stream-null.h>
-#include <camel/camel-stream-filter.h>
-
-#include <camel/camel-string-utils.h>
+#include "camel-folder-summary.h"
+#include "camel-file-utils.h"
+#include "camel-mime-filter.h"
+#include "camel-mime-filter-index.h"
+#include "camel-mime-filter-charset.h"
+#include "camel-mime-filter-basic.h"
+#include "camel-mime-filter-html.h"
+#include "camel-mime-message.h"
+#include "camel-multipart.h"
+#include "camel-private.h"
+#include "camel-stream-mem.h"
+#include "camel-stream-null.h"
+#include "camel-stream-filter.h"
+#include "camel-string-utils.h"
 
 #include "libedataserver/md5-utils.h"
 #include "libedataserver/e-memory.h"
 
-#include "camel-private.h"
-
+#include <glib/gstdio.h>
 
 static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -552,7 +547,7 @@ camel_folder_summary_load(CamelFolderSummary *s)
 	if (s->summary_path == NULL)
 		return 0;
 
-	in = fopen(s->summary_path, "r");
+	in = g_fopen(s->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 
@@ -648,13 +643,13 @@ camel_folder_summary_save(CamelFolderSummary *s)
 
 	path = alloca(strlen(s->summary_path)+4);
 	sprintf(path, "%s~", s->summary_path);
-	fd = open(path, O_RDWR|O_CREAT|O_TRUNC, 0600);
+	fd = g_open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fd == -1)
 		return -1;
-	out = fdopen(fd, "w");
+	out = fdopen(fd, "wb");
 	if (out == NULL) {
 		i = errno;
-		unlink(path);
+		g_unlink(path);
 		close(fd);
 		errno = i;
 		return -1;
@@ -688,9 +683,12 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
 	
-	if (rename(path, s->summary_path) == -1) {
+#ifdef G_OS_WIN32
+	g_unlink(s->summary_path);
+#endif
+	if (g_rename(path, s->summary_path) == -1) {
 		i = errno;
-		unlink(path);
+		g_unlink(path);
 		errno = i;
 		return -1;
 	}
@@ -706,7 +704,7 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
 	
-	unlink (path);
+	g_unlink (path);
 	errno = i;
 	
 	return -1;
@@ -732,7 +730,7 @@ camel_folder_summary_header_load(CamelFolderSummary *s)
 	if (s->summary_path == NULL)
 		return 0;
 
-	in = fopen(s->summary_path, "r");
+	in = g_fopen(s->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 

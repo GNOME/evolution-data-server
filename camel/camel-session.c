@@ -34,16 +34,17 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "camel-session.h"
-#include "camel-store.h"
-#include "camel-transport.h"
+#include <glib/gstdio.h>
+
 #include "camel-exception.h"
 #include "camel-file-utils.h"
-#include "camel-string-utils.h"
-#include "camel-url.h"
 #include "camel-i18n.h"
-
 #include "camel-private.h"
+#include "camel-session.h"
+#include "camel-store.h"
+#include "camel-string-utils.h"
+#include "camel-transport.h"
+#include "camel-url.h"
 
 #define d(x)
 
@@ -277,7 +278,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 	path = g_strdup_printf ("%s/%s", session->storage_path, p);
 	g_free (p);
 
-	if (access (path, F_OK) == 0)
+	if (g_access (path, F_OK) == 0)
 		return path;
 
 	if (camel_mkdir (path, S_IRWXU) == -1) {
@@ -554,7 +555,7 @@ static void session_thread_wait(CamelSession *session, int id)
 		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
 		CAMEL_SESSION_UNLOCK(session, thread_lock);
 		if (wait) {
-			usleep(20000);
+			g_usleep(20000);
 		}
 	} while (wait);
 }

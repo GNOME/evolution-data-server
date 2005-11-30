@@ -22,14 +22,15 @@
 #include <config.h>
 #endif
 
-#include "camel-exception.h"
-#include "camel-vee-store.h"
-#include "camel-vee-folder.h"
-
-#include "camel-private.h"
-#include "camel-i18n.h"
-
 #include <string.h>
+
+#include <glib/gstdio.h>
+
+#include "camel-exception.h"
+#include "camel-i18n.h"
+#include "camel-private.h"
+#include "camel-vee-folder.h"
+#include "camel-vee-store.h"
 
 #define d(x)
 
@@ -374,7 +375,7 @@ vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex
 
 		camel_object_get(folder, NULL, CAMEL_OBJECT_STATE_FILE, &statefile, NULL);
 		if (statefile) {
-			unlink(statefile);
+			g_unlink(statefile);
 			camel_object_free(folder, CAMEL_OBJECT_STATE_FILE, statefile);
 			camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
 		}

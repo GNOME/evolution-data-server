@@ -34,14 +34,15 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <camel/camel-i18n.h>
-#include <camel/camel-folder.h>
-#include <camel/camel-file-utils.h>
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-data-cache.h>
+#include <glib/gstdio.h>
 
+#include "camel-data-cache.h"
+#include "camel-file-utils.h"
+#include "camel-folder-summary.h"
+#include "camel-folder.h"
+#include "camel-i18n.h"
 #include "camel-offline-journal.h"
-
+#include "camel-private.h"
 
 #define d(x) x
 
@@ -115,7 +116,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 	journal->filename = g_strdup (filename);
 	journal->folder = folder;
 	
-	if ((fp = fopen (filename, "r"))) {
+	if ((fp = g_fopen (filename, "rb"))) {
 		while ((entry = CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_load (journal, fp)))
 			e_dlist_addtail (&journal->queue, entry);
 		
@@ -157,7 +158,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 	FILE *fp;
 	int fd;
 	
-	if ((fd = open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY, 0666)) == -1) {
+	if ((fd = g_open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot write offline journal for folder `%s': %s"),
 				      journal->folder->full_name, g_strerror (errno));

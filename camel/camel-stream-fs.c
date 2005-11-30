@@ -29,12 +29,14 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 
+#include <glib/gstdio.h>
+
 #include "camel-file-utils.h"
 #include "camel-operation.h"
+#include "camel-private.h"
 #include "camel-stream-fs.h"
 
 static CamelSeekableStreamClass *parent_class = NULL;
@@ -172,7 +174,7 @@ camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
 {
 	int fd;
 
-	fd = open (name, flags, mode);
+	fd = g_open (name, flags|O_BINARY, mode);
 	if (fd == -1) {
 		return NULL;
 	}

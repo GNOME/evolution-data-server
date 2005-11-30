@@ -33,16 +33,17 @@
 #include <fcntl.h>
 #include <ctype.h>
 
+#include <glib.h>
+#include <glib/gstdio.h>
+
 #include "libedataserver/e-msgport.h"
 #include "libedataserver/e-memory.h"
 
-#include "camel/camel-object.h"
-
-#include "camel-text-index.h"
 #include "camel-block-file.h"
+#include "camel-object.h"
 #include "camel-partition-table.h"
-
-#include <glib/gunicode.h>
+#include "camel-private.h"
+#include "camel-text-index.h"
 
 
 #define w(x)
@@ -513,9 +514,9 @@ fail:
 
 	/* clean up temp files always */
 	sprintf(savepath, "%s~.index", oldpath);
-	unlink(savepath);
+	g_unlink(savepath);
 	sprintf(newpath, "%s.data", savepath);
-	unlink(newpath);
+	g_unlink(newpath);
 
 	return ret;
 }
@@ -932,17 +933,17 @@ camel_text_index_rename(const char *old, const char *new)
 	sprintf(oldname, "%s.index", old);
 	sprintf(newname, "%s.index", new);
 
-	if (rename(oldname, newname) == -1 && errno != ENOENT)
+	if (g_rename(oldname, newname) == -1 && errno != ENOENT)
 		return -1;
 
 	sprintf(oldname, "%s.index.data", old);
 	sprintf(newname, "%s.index.data", new);
 
-	if (rename(oldname, newname) == -1 && errno != ENOENT) {
+	if (g_rename(oldname, newname) == -1 && errno != ENOENT) {
 		err = errno;
 		sprintf(oldname, "%s.index", old);
 		sprintf(newname, "%s.index", new);
-		rename(newname, oldname);
+		g_rename(newname, oldname);
 		errno = err;
 		return -1;
 	}
@@ -963,9 +964,9 @@ camel_text_index_remove(const char *old)
 	sprintf(block, "%s.index", old);
 	sprintf(key, "%s.index.data", old);
 
-	if (unlink(block) == -1 && errno != ENOENT)
+	if (g_unlink(block) == -1 && errno != ENOENT)
 		ret = -1;
-	if (unlink(key) == -1 && errno != ENOENT)
+	if (g_unlink(key) == -1 && errno != ENOENT)
 		ret = -1;
 
 	return ret;
@@ -1090,7 +1091,7 @@ dump_raw(GHashTable *map, char *path)
 	int fd;
 	camel_block_t id, total;
 
-	fd = open(path, O_RDONLY);
+	fd = g_open(path, O_RDONLY|O_BINARY, 0);
 	if (fd == -1)
 		return;
 

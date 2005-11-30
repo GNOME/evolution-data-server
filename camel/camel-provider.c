@@ -30,19 +30,22 @@
 #endif
 
 #include <sys/types.h>
-#include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "camel-provider.h"
+#include "libedataserver/e-msgport.h"
+
 #include "camel-exception.h"
+#include "camel-i18n.h"
+#include "camel-provider.h"
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
-#include "libedataserver/e-msgport.h"
-#include "camel-i18n.h"
+#include "camel-private.h"
 
 /* table of CamelProviderModule's */
 static GHashTable *module_table;
@@ -100,8 +103,8 @@ provider_setup(void)
 void
 camel_provider_init (void)
 {
-	DIR *dir;
-	struct dirent *d;
+	GDir *dir;
+	const char *entry;
 	char *p, *name, buf[80];
 	CamelProviderModule *m;
 	static int loaded = 0;
@@ -113,22 +116,22 @@ camel_provider_init (void)
 
 	loaded = 1;
 
-	dir = opendir (CAMEL_PROVIDERDIR);
+	dir = g_dir_open (CAMEL_PROVIDERDIR, 0, NULL);
 	if (!dir) {
 		g_warning("Could not open camel provider directory (%s): %s",
 			  CAMEL_PROVIDERDIR, g_strerror (errno));
 		return;
 	}
 	
-	while ((d = readdir (dir))) {
+	while ((entry = g_dir_read_name (dir))) {
 		FILE *fp;
 		
-		p = strrchr (d->d_name, '.');
+		p = strrchr (entry, '.');
 		if (!p || strcmp (p, ".urls") != 0)
 			continue;
 		
-		name = g_strdup_printf ("%s/%s", CAMEL_PROVIDERDIR, d->d_name);
-		fp = fopen (name, "r");
+		name = g_strdup_printf ("%s/%s", CAMEL_PROVIDERDIR, entry);
+		fp = g_fopen (name, "r");
 		if (!fp) {
 			g_warning ("Could not read provider info file %s: %s",
 				   name, g_strerror (errno));
@@ -137,7 +140,7 @@ camel_provider_init (void)
 		}
 		
 		p = strrchr (name, '.');
-		strcpy (p, ".so");
+		strcpy (p, "." G_MODULE_SUFFIX);
 
 		m = g_malloc0(sizeof(*m));
 		m->path = name;
@@ -159,7 +162,7 @@ camel_provider_init (void)
 		fclose (fp);
 	}
 
-	closedir (dir);
+	g_dir_close (dir);
 }
 
 /**

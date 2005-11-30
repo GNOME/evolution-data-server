@@ -35,13 +35,13 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <glib/gstdio.h>
+
 #include "camel-certdb.h"
+#include "camel-file-utils.h"
 #include "camel-private.h"
 
-#include <camel/camel-file-utils.h>
-
-#include <libedataserver/e-memory.h>
-
+#include "libedataserver/e-memory.h"
 
 #define CAMEL_CERTDB_GET_CLASS(db)  ((CamelCertDBClass *) CAMEL_OBJECT_GET_CLASS (db))
 
@@ -261,7 +261,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), -1);
 	g_return_val_if_fail (certdb->filename, -1);
 
-	in = fopen (certdb->filename, "r");
+	in = g_fopen (certdb->filename, "rb");
 	if (in == NULL)
 		return -1;
 	
@@ -340,15 +340,15 @@ camel_certdb_save (CamelCertDB *certdb)
 	filename = alloca (strlen (certdb->filename) + 4);
 	sprintf (filename, "%s~", certdb->filename);
 	
-	fd = open (filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	fd = g_open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1)
 		return -1;
 	
-	out = fdopen (fd, "w");
+	out = fdopen (fd, "wb");
 	if (out == NULL) {
 		i = errno;
 		close (fd);
-		unlink (filename);
+		g_unlink (filename);
 		errno = i;
 		return -1;
 	}
@@ -371,21 +371,21 @@ camel_certdb_save (CamelCertDB *certdb)
 	if (fflush (out) != 0 || fsync (fileno (out)) == -1) {
 		i = errno;
 		fclose (out);
-		unlink (filename);
+		g_unlink (filename);
 		errno = i;
 		return -1;
 	}
 	
 	if (fclose (out) != 0) {
 		i = errno;
-		unlink (filename);
+		g_unlink (filename);
 		errno = i;
 		return -1;
 	}
 	
-	if (rename (filename, certdb->filename) == -1) {
+	if (g_rename (filename, certdb->filename) == -1) {
 		i = errno;
-		unlink (filename);
+		g_unlink (filename);
 		errno = i;
 		return -1;
 	}
@@ -402,7 +402,7 @@ camel_certdb_save (CamelCertDB *certdb)
 	
 	i = errno;
 	fclose (out);
-	unlink (filename);
+	g_unlink (filename);
 	errno = i;
 	
 	return -1;

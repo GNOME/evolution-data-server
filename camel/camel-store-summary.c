@@ -32,14 +32,14 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "camel-store-summary.h"
-
-#include "camel-file-utils.h"
+#include <glib/gstdio.h>
 
 #include "libedataserver/md5-utils.h"
 #include "libedataserver/e-memory.h"
 
+#include "camel-file-utils.h"
 #include "camel-private.h"
+#include "camel-store-summary.h"
 #include "camel-url.h"
 
 #define d(x)
@@ -366,7 +366,7 @@ camel_store_summary_load(CamelStoreSummary *s)
 
 	g_assert(s->summary_path);
 
-	in = fopen(s->summary_path, "r");
+	in = g_fopen(s->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 
@@ -432,12 +432,12 @@ camel_store_summary_save(CamelStoreSummary *s)
 		return 0;
 	}
 
-	fd = open(s->summary_path, O_RDWR|O_CREAT|O_TRUNC, 0600);
+	fd = g_open(s->summary_path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fd == -1) {
 		io(printf("**  open error: %s\n", strerror (errno)));
 		return -1;
 	}
-	out = fdopen(fd, "w");
+	out = fdopen(fd, "wb");
 	if ( out == NULL ) {
 		i = errno;
 		printf("**  fdopen error: %s\n", strerror (errno));
@@ -503,7 +503,7 @@ camel_store_summary_header_load(CamelStoreSummary *s)
 
 	g_assert(s->summary_path);
 
-	in = fopen(s->summary_path, "r");
+	in = g_fopen(s->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 

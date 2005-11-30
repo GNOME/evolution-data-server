@@ -32,10 +32,13 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <glib/gstdio.h>
+
 #include "libedataserver/e-msgport.h"
 
 #include "camel-block-file.h"
 #include "camel-file-utils.h"
+#include "camel-private.h"
 
 #define d(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
 
@@ -282,7 +285,7 @@ block_file_use(CamelBlockFile *bs)
 	} else
 		d(printf("Turning block file online: %s\n", bs->path));
 
-	if ((bs->fd = open(bs->path, bs->flags, 0600)) == -1) {
+	if ((bs->fd = g_open(bs->path, bs->flags|O_BINARY, 0600)) == -1) {
 		err = errno;
 		CAMEL_BLOCK_FILE_UNLOCK(bs, io_lock);
 		errno = err;
@@ -410,12 +413,12 @@ camel_block_file_rename(CamelBlockFile *bs, const char *path)
 
 	CAMEL_BLOCK_FILE_LOCK(bs, io_lock);
 
-	ret = rename(bs->path, path);
+	ret = g_rename(bs->path, path);
 	if (ret == -1) {
 		/* Maybe the rename actually worked */
 		err = errno;
-		if (stat(path, &st) == 0
-		    && stat(bs->path, &st) == -1
+		if (g_stat(path, &st) == 0
+		    && g_stat(bs->path, &st) == -1
 		    && errno == ENOENT)
 			ret = 0;
 		errno = err;
@@ -448,7 +451,7 @@ camel_block_file_delete(CamelBlockFile *bs)
 	}
 
 	p->deleted = TRUE;
-	ret = unlink(bs->path);
+	ret = g_unlink(bs->path);
 
 	CAMEL_BLOCK_FILE_UNLOCK(bs, io_lock);
 
@@ -905,11 +908,11 @@ key_file_use(CamelKeyFile *bs)
 		d(printf("Turning key file online: '%s'\n", bs->path));
 
 	if ((bs->flags & O_ACCMODE) == O_RDONLY)
-		flag = "r";
+		flag = "rb";
 	else
-		flag = "a+";
+		flag = "a+b";
 
-	if ((fd = open(bs->path, bs->flags, 0600)) == -1
+	if ((fd = g_open(bs->path, bs->flags|O_BINARY, 0600)) == -1
 	    || (bs->fp = fdopen(fd, flag)) == NULL) {
 		err = errno;
 		close(fd);
@@ -1023,12 +1026,12 @@ camel_key_file_rename(CamelKeyFile *kf, const char *path)
 
 	CAMEL_KEY_FILE_LOCK(kf, lock);
 
-	ret = rename(kf->path, path);
+	ret = g_rename(kf->path, path);
 	if (ret == -1) {
 		/* Maybe the rename actually worked */
 		err = errno;
-		if (stat(path, &st) == 0
-		    && stat(kf->path, &st) == -1
+		if (g_stat(path, &st) == 0
+		    && g_stat(kf->path, &st) == -1
 		    && errno == ENOENT)
 			ret = 0;
 		errno = err;
@@ -1061,7 +1064,7 @@ camel_key_file_delete(CamelKeyFile *kf)
 	}
 
 	p->deleted = TRUE;
-	ret = unlink(kf->path);
+	ret = g_unlink(kf->path);
 
 	CAMEL_KEY_FILE_UNLOCK(kf, lock);
 

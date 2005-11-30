@@ -26,13 +26,14 @@
 
 #include <sys/types.h>
 #include <ctype.h>
-#include <dirent.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
+
+#include <glib/gstdio.h>
 
 #include "camel-i18n.h"
 #include "camel-data-cache.h"
@@ -190,29 +191,29 @@ camel_data_cache_set_expire_access(CamelDataCache *cdc, time_t when)
 static void
 data_cache_expire(CamelDataCache *cdc, const char *path, const char *keep, time_t now)
 {
-	DIR *dir;
-	struct dirent *d;
+	GDir *dir;
+	const char *dname;
 	GString *s;
 	struct stat st;
 	CamelStream *stream;
 
-	dir = opendir(path);
+	dir = g_dir_open(path, 0, NULL);
 	if (dir == NULL)
 		return;
 
 	s = g_string_new("");
-	while ( (d = readdir(dir)) ) {
-		if (strcmp(d->d_name, keep) == 0)
+	while ( (dname = g_dir_read_name(dir)) ) {
+		if (strcmp(dname, keep) == 0)
 			continue;
 		
-		g_string_printf (s, "%s/%s", path, d->d_name);
+		g_string_printf (s, "%s/%s", path, dname);
 		dd(printf("Checking '%s' for expiry\n", s->str));
-		if (stat(s->str, &st) == 0
+		if (g_stat(s->str, &st) == 0
 		    && S_ISREG(st.st_mode)
 		    && ((cdc->expire_age != -1 && st.st_mtime + cdc->expire_age < now)
 			|| (cdc->expire_access != -1 && st.st_atime + cdc->expire_access < now))) {
 			dd(printf("Has expired!  Removing!\n"));
-			unlink(s->str);
+			g_unlink(s->str);
 			stream = camel_object_bag_get(cdc->priv->busy_bag, s->str);
 			if (stream) {
 				camel_object_bag_remove(cdc->priv->busy_bag, stream);
@@ -221,7 +222,7 @@ data_cache_expire(CamelDataCache *cdc, const char *path, const char *keep, time_
 		}
 	}
 	g_string_free(s, TRUE);
-	closedir(dir);
+	g_dir_close(dir);
 }
 
 /* Since we have to stat the directory anyway, we use this opportunity to
@@ -238,7 +239,7 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
 	dir = alloca(strlen(cdc->path) + strlen(path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->path, path, hash);
-	if (access(dir, F_OK) == -1) {
+	if (g_access(dir, F_OK) == -1) {
 		if (create)
 			camel_mkdir (dir, 0700);
 	} else if (cdc->priv->expire_inc == hash
@@ -294,7 +295,7 @@ camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, Cam
 	do {
 		stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
 		if (stream) {
-			unlink(real);
+			g_unlink(real);
 			camel_object_bag_remove(cdc->priv->busy_bag, stream);
 			camel_object_unref(stream);
 		}
@@ -371,7 +372,7 @@ camel_data_cache_remove(CamelDataCache *cdc, const char *path, const char *key, 
 	}
 
 	/* maybe we were a mem stream */
-	if (unlink (real) == -1 && errno != ENOENT) {
+	if (g_unlink (real) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not remove cache entry: %s: %s"),
 				      real, g_strerror (errno));

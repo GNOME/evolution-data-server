@@ -32,8 +32,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "camel-uid-cache.h"
+#include <glib/gstdio.h>
+
 #include "camel-file-utils.h"
+#include "camel-private.h"
+#include "camel-uid-cache.h"
 
 struct _uid_state {
 	int level;
@@ -67,7 +70,7 @@ camel_uid_cache_new (const char *filename)
 	
 	g_free (dirname);
 	
-	if ((fd = open (filename, O_RDONLY | O_CREAT, 0666)) == -1)
+	if ((fd = g_open (filename, O_RDONLY | O_CREAT | O_BINARY, 0666)) == -1)
 		return NULL;
 	
 	if (fstat (fd, &st) == -1) {
@@ -153,7 +156,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	int fd;
 	
 	filename = g_strdup_printf ("%s~", cache->filename);
-	if ((fd = open (filename, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1) {
+	if ((fd = g_open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666)) == -1) {
 		g_free (filename);
 		return FALSE;
 	}
@@ -172,7 +175,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	close (fd);
 	fd = -1;
 	
-	if (rename (filename, cache->filename) == -1)
+	if (g_rename (filename, cache->filename) == -1)
 		goto exception;
 	
 	g_free (filename);
@@ -200,7 +203,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 		 * the new cache as well.
 		 **/
 		
-		if (stat (cache->filename, &st) == 0 &&
+		if (g_stat (cache->filename, &st) == 0 &&
 		    (cache->size > st.st_size || cache->size + cache->expired > st.st_size)) {
 			if (ftruncate (fd, (off_t) cache->size) != -1) {
 				cache->size = 0;
@@ -213,7 +216,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	}
 #endif
 	
-	unlink (filename);
+	g_unlink (filename);
 	g_free (filename);
 	
 	errno = errnosav;

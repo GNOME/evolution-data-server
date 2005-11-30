@@ -28,7 +28,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 #include <string.h>
@@ -36,17 +35,16 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <regex.h>
-#include <ctype.h>
-
 #include <glib.h>
-#include "camel-mime-parser.h"
-#include "camel-mime-utils.h"
-#include "camel-mime-filter.h"
-#include "camel-stream.h"
-#include "camel-seekable-stream.h"
 
 #include "libedataserver/e-memory.h"
+
+#include "camel-mime-filter.h"
+#include "camel-mime-parser.h"
+#include "camel-mime-utils.h"
+#include "camel-private.h"
+#include "camel-seekable-stream.h"
+#include "camel-stream.h"
 
 #define r(x) 
 #define h(x) 
@@ -1628,9 +1626,9 @@ tail_recurse:
 /*					camel_header_raw_replace(&h->headers, "Content-Type", "text/plain", offset);*/
 					/*g_warning("Multipart with no boundary, treating as text/plain");*/
 				}
-			} else if (!strcasecmp(ct->type, "message")) {
-				if (!strcasecmp(ct->subtype, "rfc822")
-				    || !strcasecmp(ct->subtype, "news")
+			} else if (!g_ascii_strcasecmp(ct->type, "message")) {
+				if (!g_ascii_strcasecmp(ct->subtype, "rfc822")
+				    || !g_ascii_strcasecmp(ct->subtype, "news")
 				    /*|| !g_ascii_strcasecmp(ct->subtype, "partial")*/) {
 					type = CAMEL_MIME_PARSER_STATE_MESSAGE;
 				}
@@ -1833,7 +1831,7 @@ int main(int argc, char **argv)
 		name = argv[i];
 		printf("opening: %s", name);
 		
-		fd = open(name, O_RDONLY);
+		fd = g_open(name, O_RDONLY|O_BINARY, 0);
 		if (fd==-1) {
 			perror("Cannot open mailbox");
 			exit(1);
@@ -1866,7 +1864,7 @@ int main(int argc, char **argv)
 
 				encoding = camel_header_raw_find(&s->parts->headers, "Content-transfer-encoding", 0);
 				printf("encoding = '%s'\n", encoding);
-				if (encoding && !strncasecmp(encoding, " base64", 7)) {
+				if (encoding && !g_ascii_strncasecmp(encoding, " base64", 7)) {
 					printf("adding base64 filter\n");
 					attachname = g_strdup_printf("attach.%d.%d", i, attach++);
 #if 0
@@ -1877,7 +1875,7 @@ int main(int argc, char **argv)
 					folder_push_filter_mime(s, 0);
 #endif
 				}
-				if (encoding && !strncasecmp(encoding, " quoted-printable", 17)) {
+				if (encoding && !g_ascii_strncasecmp(encoding, " quoted-printable", 17)) {
 					printf("adding quoted-printable filter\n");
 					attachname = g_strdup_printf("attach.%d.%d", i, attach++);
 #if 0
@@ -1895,14 +1893,14 @@ int main(int argc, char **argv)
 				break;
 			case CAMEL_MIME_PARSER_STATE_BODY_END:
 				printf("end body %d '%.*s'\n",  len, len, data);
-				if (encoding && !strncasecmp(encoding, " base64", 7)) {
+				if (encoding && !g_ascii_strncasecmp(encoding, " base64", 7)) {
 					printf("removing filters\n");
 #if 0
 					folder_filter_pull(s);
 					folder_filter_pull(s);
 #endif
 				}
-				if (encoding && !strncasecmp(encoding, " quoted-printable", 17)) {
+				if (encoding && !g_ascii_strncasecmp(encoding, " quoted-printable", 17)) {
 					printf("removing filters\n");
 #if 0
 					folder_filter_pull(s);

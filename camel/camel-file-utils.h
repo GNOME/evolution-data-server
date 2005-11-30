@@ -36,6 +36,11 @@ extern "C" {
 #include <stdio.h>
 #include <sys/types.h>
 #include <time.h>
+#include <fcntl.h>
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 int camel_file_util_encode_fixed_int32 (FILE *out, gint32);
 int camel_file_util_decode_fixed_int32 (FILE *in, gint32 *);
@@ -53,8 +58,18 @@ int camel_file_util_decode_string (FILE *in, char **);
 int camel_mkdir (const char *path, mode_t mode);
 char *camel_file_util_safe_filename (const char *name);
 
+/* Code that intends to be portable to Win32 should use camel_read()
+ * and camel_write() only on file descriptors returned from open(),
+ * creat(), pipe() or fileno(). On Win32 camel_read() and
+ * camel_write() calls will not be cancellable. For sockets, use
+ * camel_read_socket() and camel_write_socket(). These are cancellable
+ * also on Win32.
+ */
 ssize_t camel_read (int fd, char *buf, size_t n);
 ssize_t camel_write (int fd, const char *buf, size_t n);
+
+ssize_t camel_read_socket (int fd, char *buf, size_t n);
+ssize_t camel_write_socket (int fd, const char *buf, size_t n);
 
 char *camel_file_util_savename(const char *filename);
 

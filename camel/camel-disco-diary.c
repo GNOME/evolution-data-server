@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include <glib/gstdio.h>
+
 #include "camel-i18n.h"
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
@@ -429,7 +431,7 @@ camel_disco_diary_new (CamelDiscoStore *store, const char *filename, CamelExcept
 	   So we must seek ourselves.
 	*/
 
-	diary->file = fopen (filename, "a+");
+	diary->file = g_fopen (filename, "a+b");
 	if (!diary->file) {
 		camel_object_unref (diary);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,

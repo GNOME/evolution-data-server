@@ -1,3 +1,58 @@
+2005-11-30  Tor Lillqvist  <tml@novell.com>
+
+	* camel-file-utils.h: Define O_BINARY as 0 on Unix. Add
+	declarations for camel_read_socket() and camel_write_socket(). (In
+	a not yet committed addition to camel-file-utils.c.)
+
+	* camel-block-file.c
+	* camel-certdb.c
+	* camel-data-cache.c
+	* camel-disco-diary.c
+	* camel-folder-summary.c
+	* camel-mime-parser.c
+	* camel-offline-journal.c
+	* camel-provider.c
+	* camel-session.c
+	* camel-store-summary.c
+	* camel-stream-fs.c
+	* camel-text-index.c
+	* camel-uid-cache.c
+	* camel-vee-store.c: Use gstdio wrappers for full non-ASCII
+	filename support on Windows.
+
+	* camel-block-file.c (key_file_use)
+	* camel-certdb.c (camel_certdb_save)
+	* camel-disco-diary.c (camel_disco_diary_new)
+	* camel-folder-summary.c (camel_folder_summary_load)
+	* camel-offline-journal.c (camel_offline_journal_construct)
+	* camel-store-summary.c (camel_store_summary_load,
+	camel_store_summary_save, camel_store_summary_header_load)
+	* camel-stream-fs.c (camel_stream_fs_new_with_name)
+	* camel-text-index.c (dump_raw)
+	* camel-uid-cache.c (camel_uid_cache_new, camel_uid_cache_save):
+	Open file in binary mode.
+
+	* camel-data-cache.c (data_cache_expire)
+	* camel-provider.c (camel_provider_init): Use GDir instead of
+	dirent API for portability and full non-ASCII filename support on
+	Windows.
+	
+	* camel-folder-summary.c (camel_folder_summary_load): On Win32
+	unlink destination before attempting a rename.
+
+	* camel-mime-parser.c: Drop unused includes. Use
+	g_ascii_strcasecmp() instead of strcasecmp() for well-definedness,
+	and the other string being compared is an ASCII literal anyway.
+
+	* camel-provider.c (camel_provider_init) Use G_MODULE_SUFFIX
+	instead of hardcoding .so.
+
+	* camel-session.c (session_thread_wait): Use g_usleep() instead of
+	usleep() for portability.
+
+	* camel-utf8.c: Use g_htons() and g_ntohs() instead of htons() and
+	ntohs() for portability.
+	
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
 	* camel-private.h: Add declaration for our Win32-only fsync() and
