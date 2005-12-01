@@ -162,11 +162,6 @@ struct _CamelCertDBPrivate {
 
 #ifdef G_OS_WIN32
 int fsync (int fd);
-char *realpath(const char *path, char *resolved_path);
-#undef S_ISLNK
-#define S_ISLNK(m) 0
-#undef lstat
-#define lstat(path, statp) stat(path, statp)
 
 const char *_camel_get_localedir (void) G_GNUC_CONST;
 const char *_camel_get_libexecdir (void) G_GNUC_CONST;

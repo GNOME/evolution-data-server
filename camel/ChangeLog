@@ -1,3 +1,14 @@
+2005-12-01  Tor Lillqvist  <tml@novell.com>
+
+	* camel-win32.c: Drop the realpath() implementation. realpath() is
+	only used in one place in providers/local/camel-local-folder.c,
+	and it's better to just enclose that code snippet (which isn't
+	needed on Win32 anyway) in an ifdef.
+
+	* camel-private.h: Drop the realpath() declaration from
+	here. Remove the S_ISLNK() and lstat() dummy definitions. They are
+	also used only in the place mentioned above.
+
 2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	reviewed by Srinivasa Ragavan  <sragavan@novell.com> 
