@@ -239,7 +239,12 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
 	dir = alloca(strlen(cdc->path) + strlen(path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->path, path, hash);
+	
+#ifdef G_OS_WIN32 
 	if (g_access(dir, F_OK) == -1) {
+#else
+	if (access (dir, F_OK) == -1) {
+#endif
 		if (create)
 			camel_mkdir (dir, 0700);
 	} else if (cdc->priv->expire_inc == hash

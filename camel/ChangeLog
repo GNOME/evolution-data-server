@@ -1,3 +1,10 @@
+2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-data-cache.c:
+	* camel-session.c: (get_storage_path):Use the functions
+	defined in glib -2.8 only for win32 as it fails to build
+	for OS which has glib 2.4.
+
 2005-12-01  Tor Lillqvist  <tml@novell.com>
 
 	* camel-win32.c: Drop the realpath() implementation. realpath() is
