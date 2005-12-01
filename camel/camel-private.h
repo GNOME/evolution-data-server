@@ -167,7 +167,6 @@ char *realpath(const char *path, char *resolved_path);
 #define S_ISLNK(m) 0
 #undef lstat
 #define lstat(path, statp) stat(path, statp)
-#endif
 
 const char *_camel_get_localedir (void) G_GNUC_CONST;
 const char *_camel_get_libexecdir (void) G_GNUC_CONST;
@@ -182,8 +181,9 @@ const char *_camel_get_providerdir (void) G_GNUC_CONST;
 #undef CAMEL_PROVIDERDIR
 #define CAMEL_PROVIDERDIR _camel_get_providerdir ()
 
+#endif /* G_OS_WIN32 */
+
 #ifdef __cplusplus
-}
 #endif /* __cplusplus */
 
 #endif /* CAMEL_PRIVATE_H */

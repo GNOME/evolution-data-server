@@ -1,3 +1,11 @@
+2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	reviewed by Srinivasa Ragavan  <sragavan@novell.com> 
+
+	* camel-private.h: Declare the functions _camel_get_*
+	only for win32 as camel-win32.c is inlcuded only for
+	win32. Fixes a build break.
+
 2005-11-30  Tor Lillqvist  <tml@novell.com>
 
 	* camel-file-utils.h: Define O_BINARY as 0 on Unix. Add
