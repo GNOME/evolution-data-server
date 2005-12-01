@@ -32,20 +32,28 @@
 #include <string.h>
 #include <errno.h>
 
-#include <libedataserver/e-iconv.h>
-#include <libedataserver/e-time-utils.h>
+#include "libedataserver/e-iconv.h"
+#include "libedataserver/e-time-utils.h"
 
+#include "camel-mime-filter-bestenc.h"
+#include "camel-mime-filter-charset.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
+#include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
+#include "camel-stream-null.h"
 #include "camel-string-utils.h"
 #include "camel-url.h"
 
-#include "camel-stream-filter.h"
-#include "camel-stream-null.h"
-#include "camel-mime-filter-charset.h"
-#include "camel-mime-filter-bestenc.h"
+#ifdef G_OS_WIN32
+/* Undef the similar macro from pthread.h, it doesn't check if
+ * gmtime() returns NULL.
+ */
+#undef gmtime_r
 
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
 #define d(x)
 
 extern int camel_verbose_debug;

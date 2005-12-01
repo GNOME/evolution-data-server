@@ -7,6 +7,9 @@
 
 2005-12-01  Tor Lillqvist  <tml@novell.com>
 
+	* camel-mime-message.c: Add gmtime_r() implementation (a simple
+	macro) for Win32.
+
 	* camel-win32.c: Drop the realpath() implementation. realpath() is
 	only used in one place in providers/local/camel-local-folder.c,
 	and it's better to just enclose that code snippet (which isn't
