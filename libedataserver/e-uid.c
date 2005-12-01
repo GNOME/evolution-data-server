@@ -40,10 +40,26 @@ char *
 e_uid_new (void)
 {
 	static int serial;
+	static char *hostname;
+
+	if (!hostname) {
+#ifdef G_OS_WIN32 
+		hostname = (char *) g_get_host_name ();
+#else
+		static char buffer [512];
+
+		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
+		    (buffer [0] != 0))
+			hostname = buffer;
+		else
+			hostname = "localhost";
+
+#endif
+	}
 
 	return g_strdup_printf ("%lu.%lu.%d@%s",
 				(unsigned long) time (NULL),
 				(unsigned long) getpid (),
 				serial++,
-				g_get_host_name ());
+				hostname);
 }

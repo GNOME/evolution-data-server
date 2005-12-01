@@ -1,3 +1,11 @@
+2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	reviewed by Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* libedataserver/e-uid.c: (e_uid_new): Use the functions
+	defined in glib -2.8 only for win32 as it fails to build
+	for OS which has glib 2.4.
+
 2005-12-01  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-util.c (e_util_pthread_id): Fix silly bug in
