@@ -160,6 +160,13 @@ struct _CamelCertDBPrivate {
 #define CAMEL_CERTDB_LOCK(db, l) (g_mutex_lock (((CamelCertDB *) db)->priv->l))
 #define CAMEL_CERTDB_UNLOCK(db, l) (g_mutex_unlock (((CamelCertDB *) db)->priv->l))
 
+#if !GLIB_CHECK_VERSION(2,8,0)
+#define g_access access
+#define g_chmod chmod
+#define g_creat creat
+#deifne g_chdir chdir
+#endif
+
 #ifdef G_OS_WIN32
 int fsync (int fd);
 

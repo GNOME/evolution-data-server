@@ -1,3 +1,10 @@
+2005-12-01  Tor Lillqvist  <tml@novell.com>
+
+	* camel-private.h: If building against a GLib older than 2.8, map
+	those gstdio wrappers that were introduced only in 2.8 to their
+	normal counterparts here. (When building for Win32, we require
+	GLib and GTK+ 2.8, so this is for Unix only.)
+
 2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-data-cache.c:
