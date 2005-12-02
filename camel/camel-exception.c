@@ -31,6 +31,7 @@
 
 #include "camel-exception.h"
 #include "libedataserver/e-memory.h"
+#include "camel-i18n.h"
 
 #include "camel-debug.h"
 
@@ -303,6 +304,6 @@ camel_exception_get_description (CamelException *ex)
 		ret = ex->desc;
 	else
 		w(g_warning ("camel_exception_get_description called with NULL parameter."));
-		
-	return ret;
+
+	return ret ? ret : (_("No description available"));
 }
