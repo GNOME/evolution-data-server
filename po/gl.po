@@ -1,30 +1,32 @@
+# translation of gl.po to Galego
 # translation of evolution-data-server.gnome-2-12.po to Galego
 # Galician translation of Evolution.
 # Copyright (C) 2000 Jesús Bravo Álvarez.
 # Copyright (C) 2001 Manuel A. Fernández Montecelo.
-# 
+#
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
 # colaborar connosco, podes atopar máis información en http://www.trasno.net
-# 
+#
 # First Version: 2000-04-07 22:14+0200
 # Jesús Bravo Álvarez <jba@pobox.com>, 2000.
 # Manuel A. Fernández Montecelo <manuel@sindominio.net>, 2001.
 # Daniel Couso <haich@agnix.org>, 2005.
-# 
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.gnome-2-12\n"
+"Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-29 00:20+0200\n"
-"PO-Revision-Date: 2005-09-28 17:12+0100\n"
-"Last-Translator: Daniel Couso <haich@agnix.org>\n"
-"Language-Team: Galego <trasno@ceu.fi.udc.es>\n"
+"POT-Creation-Date: 2005-12-02 18:34+0100\n"
+"PO-Revision-Date: 2005-12-02 18:35+0100\n"
+"Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
+"Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: galego\n"
 "X-Poedit-Country: Galiza\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.10.2\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:533
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2210
@@ -36,13 +38,13 @@ msgstr "Cargando..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3587
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Procurando..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3559
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3735
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)..."
@@ -54,35 +56,35 @@ msgstr "Descargando contactos (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando a caché de contactos (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:659
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:684
 msgid "Using Distinguished Name (DN)"
 msgstr "Utilizando Nome Distinto (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:662
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:687
 msgid "Using Email Address"
 msgstr "Usando Enderezo de Correo Electrónico"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:832
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:873
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando ao servidor..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1382
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1441
 msgid "Adding contact to LDAP server..."
 msgstr "Engadindo contacto ao servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1507
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1575
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1764
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1857
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3315
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3463
 msgid "Receiving LDAP search results..."
 msgstr "Recibindo os resultados da procura no LDAP"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3445
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3609
 msgid "Error performing search"
 msgstr "Erro ao realizar a procura"
 
@@ -610,10 +612,11 @@ msgstr "Nota"
 msgid "Birth Date"
 msgstr "Data de Nacemento"
 
+#. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:237
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -641,7 +644,7 @@ msgid "Unnamed List"
 msgstr "Lista Sen Nome"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:238
 msgid "Birthday"
 msgstr "Data de Nacemento"
 
@@ -659,12 +662,12 @@ msgstr "Aniversario: %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Non se puido gardar os datos da axenda: URI malformada"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:873
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:889
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1425
 msgid "Reply Requested: by "
 msgstr "Resposta Requerida: ata"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:878
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:894
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1430
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Requerida: Cando sexa posible"
@@ -686,14 +689,14 @@ msgstr "URI do servidor inválida"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:780
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:789
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: ../calendar/libecal/e-cal.c:5073
+#: ../calendar/libecal/e-cal.c:5095
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:890
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:910
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:938
 #: ../camel/providers/groupwise/camel-groupwise-store.c:518
 #: ../camel/providers/groupwise/camel-groupwise-store.c:533
 #: ../camel/providers/groupwise/camel-groupwise-store.c:575
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1084
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1077
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "A autenticación fallou"
@@ -704,7 +707,7 @@ msgstr "Non foi posible crear thread para obter deltas"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:855
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/backends/http/e-cal-backend-http.c:495
+#: ../calendar/backends/http/e-cal-backend-http.c:496
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Non foi posible crear o ficheiro de caché"
@@ -713,15 +716,15 @@ msgstr "Non foi posible crear o ficheiro de caché"
 msgid "Could not create thread for populating cache"
 msgstr "Non foi posible crear thread para popular a caché"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:240
+#: ../calendar/backends/http/e-cal-backend-http.c:241
 msgid "Redirected to Invalid URI"
 msgstr "Redireccionado para URI Inválido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:264
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Bad file format."
 msgstr "Formato de ficheiro inválido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:270
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Not a calendar."
 msgstr "Non é unha axenda."
 
@@ -918,7 +921,7 @@ msgstr "%.1f-%.1fcm neve\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin neve\n"
 
-#: ../calendar/libecal/e-cal-component.c:1323
+#: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
 msgstr "Cita sen título"
 
@@ -1067,81 +1070,80 @@ msgstr "Indefinida"
 #: ../calendar/libecal/e-cal.c:1662
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr ""
-"Introduza o seu contrasinal para %s para activar o proxy para o usuario %s"
+msgstr "Introduza o seu contrasinal para %s para activar o proxy para o usuario %s"
 
 #: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza o seu contrasinal para %s (usuario %s)"
 
-#: ../calendar/libecal/e-cal.c:5045
+#: ../calendar/libecal/e-cal.c:5067
 msgid "Invalid argument"
 msgstr "Argumento non válido"
 
-#: ../calendar/libecal/e-cal.c:5047
+#: ../calendar/libecal/e-cal.c:5069
 msgid "Backend is busy"
 msgstr "Motor de procesamento ocupado"
 
-#: ../calendar/libecal/e-cal.c:5049
+#: ../calendar/libecal/e-cal.c:5071
 msgid "Repository is offline"
 msgstr "O Repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:5051
+#: ../calendar/libecal/e-cal.c:5073
 msgid "No such calendar"
 msgstr "Axenda inexistente"
 
-#: ../calendar/libecal/e-cal.c:5053 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5075 ../servers/groupwise/e-gw-connection.c:167
 msgid "Object not found"
 msgstr "Obxecto non foi encontrado"
 
-#: ../calendar/libecal/e-cal.c:5055 ../servers/groupwise/e-gw-connection.c:161
+#: ../calendar/libecal/e-cal.c:5077 ../servers/groupwise/e-gw-connection.c:161
 msgid "Invalid object"
 msgstr "Obxecto inválido"
 
-#: ../calendar/libecal/e-cal.c:5057
+#: ../calendar/libecal/e-cal.c:5079
 msgid "URI not loaded"
 msgstr "A URI non foi cargada"
 
-#: ../calendar/libecal/e-cal.c:5059
+#: ../calendar/libecal/e-cal.c:5081
 msgid "URI already loaded"
 msgstr "A URI xa foi cargada"
 
-#: ../calendar/libecal/e-cal.c:5061
+#: ../calendar/libecal/e-cal.c:5083
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../calendar/libecal/e-cal.c:5063 ../servers/groupwise/e-gw-connection.c:169
+#: ../calendar/libecal/e-cal.c:5085 ../servers/groupwise/e-gw-connection.c:169
 msgid "Unknown User"
 msgstr "Usuario descoñecido"
 
-#: ../calendar/libecal/e-cal.c:5065
+#: ../calendar/libecal/e-cal.c:5087
 msgid "Object ID already exists"
 msgstr "O ID do Obxecto xa existe"
 
-#: ../calendar/libecal/e-cal.c:5067
+#: ../calendar/libecal/e-cal.c:5089
 msgid "Protocol not supported"
 msgstr "Protocolo non soportado"
 
-#: ../calendar/libecal/e-cal.c:5069
+#: ../calendar/libecal/e-cal.c:5091
 msgid "Operation has been cancelled"
 msgstr "A operación foi cancelada"
 
-#: ../calendar/libecal/e-cal.c:5071
+#: ../calendar/libecal/e-cal.c:5093
 msgid "Could not cancel operation"
 msgstr "Non se puido cancelar a operación"
 
-#: ../calendar/libecal/e-cal.c:5075
+#: ../calendar/libecal/e-cal.c:5097
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Autenticación requirida"
 
-#: ../calendar/libecal/e-cal.c:5077
+#: ../calendar/libecal/e-cal.c:5099
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu unha excepción CORBA"
 
-#: ../calendar/libecal/e-cal.c:5079
+#: ../calendar/libecal/e-cal.c:5101
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:212
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
@@ -1154,7 +1156,7 @@ msgstr "Ocorreu unha excepción CORBA"
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
-#: ../calendar/libecal/e-cal.c:5081
+#: ../calendar/libecal/e-cal.c:5103
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Sen erros"
@@ -1187,8 +1189,7 @@ msgstr "\"%s\" espera que o argumento 1 sexa unha cadea"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"\"%s\" o argumento 1 de make-time debe ser unha cadea data/hora ISO 8601"
+msgstr "\"%s\" o argumento 1 de make-time debe ser unha cadea data/hora ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
@@ -1335,11 +1336,15 @@ msgstr "Descargando as novas mensaxes para modo offline"
 msgid "Preparing folder '%s' for offline"
 msgstr "Preparando o cartafol %s para modo offline"
 
-#: ../camel/camel-disco-store.c:391
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1282
+#: ../camel/camel-disco-store.c:395
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1275
 #: ../camel/providers/imap/camel-imap-store.c:2944
 msgid "You must be working online to complete this operation"
 msgstr "Debe estar traballando conectado para completar esta operación"
+
+#: ../camel/camel-exception.c:308
+msgid "No description available"
+msgstr "Sen descrición dispoñible"
 
 #: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
 #, c-format
@@ -1546,8 +1551,7 @@ msgstr "Cancelado."
 
 #: ../camel/camel-gpg-context.c:821
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
-"Fallou·ao·destrancar·a·chave·secreta:·indicadas·3·frases de paso·incorrectas."
+msgstr "Fallou·ao·destrancar·a·chave·secreta:·indicadas·3·frases de paso·incorrectas."
 
 #: ../camel/camel-gpg-context.c:827
 #, c-format
@@ -1794,8 +1798,7 @@ msgstr "Para ler correo coma unha petición de outro conxunto de cartafoles"
 #: ../camel/camel-provider.c:185
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
-"Non foi posible cargar %s: Non se soporta a carga de módulos neste sistema."
+msgstr "Non foi posible cargar %s: Non se soporta a carga de módulos neste sistema."
 
 #: ../camel/camel-provider.c:194
 #, c-format
@@ -2325,8 +2328,7 @@ msgstr "Non se puido decodificar a sinatura do certificado"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
-"Non se puido descodificar a sinatura da Lista de Revocación de Certificados"
+msgstr "Non se puido descodificar a sinatura da Lista de Revocación de Certificados"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2649,8 +2651,7 @@ msgstr "Non é posible obter o cartafol: %s"
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr ""
-"Non é posible engadir a mensaxe en modo offline: non dispoñible en caché"
+msgstr "Non é posible engadir a mensaxe en modo offline: non dispoñible en caché"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:363
 #: ../camel/providers/imap4/camel-imap4-journal.c:336
@@ -2718,8 +2719,7 @@ msgid "Password"
 msgstr "Contrasinal"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "Esta opción conectarase ó servidor GroupWise usando un contrasinal sen "
 "cifrar."
@@ -2753,29 +2753,29 @@ msgstr "Algunhas·funcionalidades·poderán·non·funcionar·correctamente·coa�
 msgid "No such folder %s"
 msgstr "Non existe o cartafol %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1061
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1054
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Non se pode crear cartafoles GroupWise en modo offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1075
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1068
 #: ../camel/providers/imap/camel-imap-store.c:1932
 #: ../camel/providers/imap/camel-imap-store.c:2301
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Non se lle permite ao cartafol pai conter subcartafoles"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1152
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1173
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1145
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Non é posible renomear cartafol GroupWise %s a %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1205
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1198
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1207
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1200
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Servicio GroupWise para %s en %s"
@@ -2883,10 +2883,8 @@ msgstr "Resposta do servidor incompleta: non se forneceu UID para a mensaxe %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2568
 #, c-format
-msgid ""
-"Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
-"Resposta do servidor inesperada: UIDs identicos para as mensaxes %d e %d"
+msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgstr "Resposta do servidor inesperada: UIDs identicos para as mensaxes %d e %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2749
 msgid "Could not find message body in FETCH response."
@@ -2986,8 +2984,7 @@ msgstr "Para ler e almacenar correo en servidores IMAP."
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Esta opción conectarase ó servidor IMAP usando un contrasinal sen cifrar."
+msgstr "Esta opción conectarase ó servidor IMAP usando un contrasinal sen cifrar."
 
 #: ../camel/providers/imap/camel-imap-store.c:420
 #: ../camel/providers/imap4/camel-imap4-store.c:215
@@ -3116,8 +3113,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2239
 #: ../camel/providers/imap4/camel-imap4-store.c:857
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "O nome do cartafol \"%s\" é inválido porque contén o carácter \"%c\""
 
 #: ../camel/providers/imap/camel-imap-store.c:1986
@@ -3152,8 +3148,7 @@ msgstr "Acordo inesperado do servidor IMAP %s."
 #: ../camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
-msgstr ""
-"Non se puido seleccionar o cartafol '%s': Nome inválido de caixa de correo"
+msgstr "Non se puido seleccionar o cartafol '%s': Nome inválido de caixa de correo"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:438
 #, c-format
@@ -3169,8 +3164,7 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "O servidor IMAP4 %s desconectou inesperadamente: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:85
-msgid ""
-"Enable Mailing-List detection required for some filter and vFolder rules"
+msgid "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr "Activar·a·detección·de·Lista·de·Mensaxes·necesaria·para·algunhas·regras·de·filtros·e·vCartafoles"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:398
@@ -3186,8 +3180,7 @@ msgstr "Non se puido sincronizar os parámetros do cartafol '%s': Descoñecido"
 #: ../camel/providers/imap4/camel-imap4-folder.c:463
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr ""
-"Non é posible sincronizar os parámetros do cartafol '%s': Comando inválido"
+msgstr "Non é posible sincronizar os parámetros do cartafol '%s': Comando inválido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:603
 #, c-format
@@ -3202,8 +3195,7 @@ msgstr "Non é posible purgar o cartafol '%s': Comando inválido"
 #: ../camel/providers/imap4/camel-imap4-folder.c:864
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
-msgstr ""
-"Non é posible obter a mensaxe: %s do cartafol '%s': Non hai tal mensaxe"
+msgstr "Non é posible obter a mensaxe: %s do cartafol '%s': Non hai tal mensaxe"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:869
 #, c-format
@@ -3213,8 +3205,7 @@ msgstr "Non é posible obter a mensaxe: %s do cartafol '%s': Comando inválido"
 #: ../camel/providers/imap4/camel-imap4-folder.c:913
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr ""
-"Non é posible engadir a mensaxe ó cartafol '%s': O cartafol é de só lectura"
+msgstr "Non é posible engadir a mensaxe ó cartafol '%s': O cartafol é de só lectura"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1006
 #, c-format
@@ -3263,16 +3254,14 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "Para ler e almacenar correo en servidores IMAPv4rev1."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:90
-msgid ""
-"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 "Esta opción conectarase ó servidor IMAPv4rev1 usando un contrasinal sen "
 "cifrar."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:478
 #, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
 "Non se puido·autenticar·no·servidor·IMAP·%"
 "s·utilizando·o·mecanismo·de·autenticación·%s"
@@ -3300,8 +3289,7 @@ msgstr "Non é posible obter o cartafol '%s' no servidor IMAP %s: Descoñecido"
 #: ../camel/providers/imap4/camel-imap4-store.c:915
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
-msgstr ""
-"Non foi posible crear o cartafol '%s': Nome de caixa de correo inválida"
+msgstr "Non foi posible crear o cartafol '%s': Nome de caixa de correo inválida"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:921
 #, c-format
@@ -3320,8 +3308,7 @@ msgstr "Non foi posible borrar os cartafoles IMAP en modo offline."
 #: ../camel/providers/imap4/camel-imap4-store.c:1018
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
-msgstr ""
-"Non foi posible borrar o cartafol '%s': Nome de caixa de correo inválido"
+msgstr "Non foi posible borrar o cartafol '%s': Nome de caixa de correo inválido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1023
 #, c-format
@@ -3780,8 +3767,7 @@ msgstr "Non é posible abrir o cartafol %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:470
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr ""
-"Erro grave do analizador de correo preto da posición %ld no cartafol %s"
+msgstr "Erro grave do analizador de correo preto da posición %ld no cartafol %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:526
 #, c-format
@@ -3975,16 +3961,14 @@ msgstr "Fallou o envío: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:394
 msgid "You cannot post NNTP messages while working offline!"
-msgstr ""
-"Non pode enviar mensaxes NNTP mentres estea a traballar en modo offline!"
+msgstr "Non pode enviar mensaxes NNTP mentres estea a traballar en modo offline!"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:405
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Non pode copiar mensaxes dun cartafol NNTP!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
-msgid ""
-"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 "Amosar·os·cartafoles·cunha·notación·abreviada·(por·ex.·c.o."
 "linux·en·vez·de·comp.os.linux)"
@@ -4005,8 +3989,7 @@ msgstr "Este é un provedor para ler e enviar aos grupos de novas de USENET."
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr ""
-"Esta opción autenticarase co servidor NNTP usando un contrasinal sen cifrar."
+msgstr "Esta opción autenticarase co servidor NNTP usando un contrasinal sen cifrar."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:220
 #, c-format
@@ -4064,8 +4047,7 @@ msgstr "Non foi posible renomear o cartafol no armacenamento de Noticias"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:966
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
-"Non pode borrar un cartafol do armacenamento de Noticias: borre a subscrición"
+msgstr "Non pode borrar un cartafol do armacenamento de Noticias: borre a subscrición"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1147
 msgid "Authentication requested but no username provided"
@@ -4272,8 +4254,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
-"Para entregar o correo pasándollo ó programa \"sendmail\" no sistema local."
+msgstr "Para entregar o correo pasándollo ó programa \"sendmail\" no sistema local."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
@@ -4320,8 +4301,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
-"Para entregar correo por conexión a un servidor de correo remoto usando SMTP."
+msgstr "Para entregar correo por conexión a un servidor de correo remoto usando SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -4387,18 +4367,15 @@ msgstr "Usuario non local; ténteo con <ruta-de-envío>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action not taken: insufficient system storage"
-msgstr ""
-"A acción pedida non foi levada a cabo: insuficiente armacenamento no sistema"
+msgstr "A acción pedida non foi levada a cabo: insuficiente armacenamento no sistema"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
-"Abortouse a acción solicitada: excedeuse da asignación de armacenamento"
+msgstr "Abortouse a acción solicitada: excedeuse da asignación de armacenamento"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr ""
-"A acción pedida non foi levada a cabo: nome de caixa de correo non admitido"
+msgstr "A acción pedida non foi levada a cabo: nome de caixa de correo non admitido"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4582,83 +4559,83 @@ msgstr "O comando QUIT fallou: %s"
 msgid "QUIT command failed"
 msgstr "O comando QUIT fallou"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:239
 msgid "Business"
 msgstr "Negocios"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:240
 msgid "Competition"
 msgstr "Competición"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:241
 msgid "Favorites"
 msgstr "Preferidos"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:242
 msgid "Gifts"
 msgstr "Agasallos"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:243
 msgid "Goals/Objectives"
 msgstr "Metas/Obxectivos"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday"
 msgstr "Vacacións"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:245
 msgid "Holiday Cards"
 msgstr "Postais de Vacacións"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:246
 msgid "Hot Contacts"
 msgstr "Contactos Vitais"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:247
 msgid "Ideas"
 msgstr "Ideas"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:248
 msgid "International"
 msgstr "Internacional"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:249
 msgid "Key Customer"
 msgstr "Cliente Chave"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:250
 msgid "Miscellaneous"
 msgstr "Miscelánea"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:251
 msgid "Personal"
 msgstr "Persoal"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:252
 msgid "Phone Calls"
 msgstr "Chamadas Telefónicas"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:253
 msgid "Status"
 msgstr "Estado"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:254
 msgid "Strategies"
 msgstr "Estratexias"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:255
 msgid "Suppliers"
 msgstr "Fornecedores"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:256
 msgid "Time & Expenses"
 msgstr "Hora e Gastos"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:257
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:258
 msgid "Waiting"
 msgstr "Agardando"
 
@@ -4840,15 +4817,15 @@ msgstr "_Editar"
 msgid "categories"
 msgstr "categorías"
 
-#: ../libedataserverui/e-name-selector-dialog.c:211
+#: ../libedataserverui/e-name-selector-dialog.c:215
 msgid "Select Contacts from Address Book"
 msgstr "Seleccionar Contactos do Libro de Enderezos"
 
-#: ../libedataserverui/e-name-selector-dialog.c:502
+#: ../libedataserverui/e-name-selector-dialog.c:507
 msgid "_Add"
 msgstr "_Engadir"
 
-#: ../libedataserverui/e-name-selector-dialog.c:527
+#: ../libedataserverui/e-name-selector-dialog.c:532
 msgid "_Remove"
 msgstr "Elimina_r"
 
@@ -4890,7 +4867,7 @@ msgid "_Search:"
 msgstr "_Procurar:"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1821
+#: ../libedataserverui/e-name-selector-entry.c:1830
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
@@ -4913,11 +4890,13 @@ msgid "_Destination"
 msgstr "_Destino"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Introduza o contrasinal para %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1575
+#: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Introduza o contrasinal"
 
@@ -5029,26 +5008,26 @@ msgstr "Esta·operación·non·pode·ser·realizada·en·modo·offline"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:626
+#: ../servers/exchange/storage/exchange-account.c:642
 #, c-format
 msgid "%s's Folders"
 msgstr "Cartafoles do %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1271
+#: ../servers/exchange/storage/exchange-account.c:1301
 msgid "Personal Folders"
 msgstr "Cartafoles Persoais"
 
-#: ../servers/exchange/storage/exchange-account.c:1286
+#: ../servers/exchange/storage/exchange-account.c:1315
 msgid "Favorite Public Folders"
 msgstr "Cartafoles Públicos Preferidos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1303
+#: ../servers/exchange/storage/exchange-account.c:1332
 msgid "All Public Folders"
 msgstr "Todos os Cartafoles Públicos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1317
+#: ../servers/exchange/storage/exchange-account.c:1346
 msgid "Global Address List"
 msgstr "Lista Global de Enderezos"
 
@@ -5119,3 +5098,4 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Ocorreron·múltiples·erros·de·segmentación;·non se puido "
 "amosar·o·diálogo·de·erro\n"
+
