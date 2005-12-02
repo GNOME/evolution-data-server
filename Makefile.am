@@ -26,6 +26,7 @@ EXTRA_DIST = 						\
 	intltool-merge.in				\
 	intltool-update.in				\
 	intltool-extract.in				\
+	evolution-data-server-zip.in			\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) 	\
 	$(LIBDB_FILES)
 

@@ -1,3 +1,13 @@
+2005-12-02  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: New file, a script used to build a
+	Win32 zipfile distribution of E-D-S. (End users will not be
+	expected to install from zipfiles, they would be for power users
+	and developers only.)
+
+	* Makefile.am
+	* configure.in: Distribute and expand it.
+
 2005-12-01  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	reviewed by Srinivasa Ragavan  <sragavan@novell.com>
