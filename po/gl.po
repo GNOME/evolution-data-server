@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-22 09:45+0100\n"
-"PO-Revision-Date: 2005-11-22 09:52+0100\n"
+"POT-Creation-Date: 2005-12-02 15:19+0100\n"
+"PO-Revision-Date: 2005-12-02 15:19+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
@@ -38,13 +38,13 @@ msgstr "Cargando..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3592
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3739
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Procurando..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3740
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3903
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)..."
@@ -56,35 +56,35 @@ msgstr "Descargando contactos (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando a caché de contactos (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:685
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:702
 msgid "Using Distinguished Name (DN)"
 msgstr "Utilizando Nome Distinto (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:688
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:705
 msgid "Using Email Address"
 msgstr "Usando Enderezo de Correo Electrónico"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:874
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:924
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando ao servidor..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1442
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1503
 msgid "Adding contact to LDAP server..."
 msgstr "Engadindo contacto ao servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1576
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1637
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1858
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1919
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3468
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3601
 msgid "Receiving LDAP search results..."
 msgstr "Recibindo os resultados da procura no LDAP"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3614
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3761
 msgid "Error performing search"
 msgstr "Erro ao realizar a procura"
 
@@ -181,11 +181,11 @@ msgstr "%s: non existía uid de contacto propio almacenado no gconf"
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: non existía orixe para uid `%s' almacenado no gconf."
 
-#: ../addressbook/libebook/e-contact.c:102
+#: ../addressbook/libebook/e-contact.c:108
 msgid "Unique ID"
 msgstr "ID Único"
 
-#: ../addressbook/libebook/e-contact.c:103
+#: ../addressbook/libebook/e-contact.c:109
 msgid "File Under"
 msgstr "Ficheiro Baixo"
 
@@ -193,458 +193,458 @@ msgstr "Ficheiro Baixo"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:109
+#: ../addressbook/libebook/e-contact.c:115
 msgid "Full Name"
 msgstr "Nome Completo"
 
-#: ../addressbook/libebook/e-contact.c:110
+#: ../addressbook/libebook/e-contact.c:116
 msgid "Name"
 msgstr "Nome"
 
-#: ../addressbook/libebook/e-contact.c:111
+#: ../addressbook/libebook/e-contact.c:117
 msgid "Given Name"
 msgstr "Nome Propio"
 
-#: ../addressbook/libebook/e-contact.c:112
+#: ../addressbook/libebook/e-contact.c:118
 msgid "Family Name"
 msgstr "Alias"
 
-#: ../addressbook/libebook/e-contact.c:113
+#: ../addressbook/libebook/e-contact.c:119
 msgid "Nickname"
 msgstr "Alcume"
 
-#: ../addressbook/libebook/e-contact.c:114
+#: ../addressbook/libebook/e-contact.c:120
 msgid "Name or Org"
 msgstr "Nome ou Org"
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Address List"
 msgstr "Lista de Enderezos"
 
-#: ../addressbook/libebook/e-contact.c:118
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Home Address"
 msgstr "Enderezo de Casa"
 
-#: ../addressbook/libebook/e-contact.c:119
+#: ../addressbook/libebook/e-contact.c:125
 msgid "Work Address"
 msgstr "Enderezo de Traballo"
 
-#: ../addressbook/libebook/e-contact.c:120
+#: ../addressbook/libebook/e-contact.c:126
 msgid "Other Address"
 msgstr "Outro Enderezo"
 
-#: ../addressbook/libebook/e-contact.c:122
+#: ../addressbook/libebook/e-contact.c:128
 msgid "Home Address Label"
 msgstr "Etiqueta de Enderezo de Casa"
 
-#: ../addressbook/libebook/e-contact.c:123
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Work Address Label"
 msgstr "Etiqueta de Enderezo do Traballo"
 
-#: ../addressbook/libebook/e-contact.c:124
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Other Address Label"
 msgstr "Etiqueta de Outro Enderezo"
 
-#: ../addressbook/libebook/e-contact.c:126
+#: ../addressbook/libebook/e-contact.c:132
 msgid "Assistant Phone"
 msgstr "Teléfono do Asistente"
 
-#: ../addressbook/libebook/e-contact.c:127
+#: ../addressbook/libebook/e-contact.c:133
 msgid "Business Phone"
 msgstr "Teléfono do Traballo"
 
-#: ../addressbook/libebook/e-contact.c:128
+#: ../addressbook/libebook/e-contact.c:134
 msgid "Business Phone 2"
 msgstr "Teléfono do Traballo 2"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:135
 msgid "Business Fax"
 msgstr "Fax do Traballo"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Callback Phone"
 msgstr "Teléfono de Resposta"
 
-#: ../addressbook/libebook/e-contact.c:131
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Car Phone"
 msgstr "Teléfono do Automóbil"
 
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:138
 msgid "Company Phone"
 msgstr "Teléfono da Compañía"
 
-#: ../addressbook/libebook/e-contact.c:133
+#: ../addressbook/libebook/e-contact.c:139
 msgid "Home Phone"
 msgstr "Teléfono Particular"
 
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:140
 msgid "Home Phone 2"
 msgstr "Particular 2"
 
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Home Fax"
 msgstr "Fax Particular"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:142
 msgid "ISDN"
 msgstr "RDSI"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Mobile Phone"
 msgstr "Teléfono Móbil"
 
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Other Phone"
 msgstr "Outro Teléfono"
 
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Other Fax"
 msgstr "Outro Fax"
 
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Pager"
 msgstr "Buscapersoas"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Primary Phone"
 msgstr "Teléfono Principal"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Radio"
 msgstr "Radio"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Telex"
 msgstr "Telex"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:150
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Email List"
 msgstr "Lista de Correo Electrónico"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Email 1"
 msgstr "Correo Electrónico 1"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Email 2"
 msgstr "Correo Electrónico 2"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Email 3"
 msgstr "Correo Electrónico 3"
 
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Email 4"
 msgstr "Correo Electrónico 4"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Mailer"
 msgstr "Cliente de Correo"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Wants HTML Mail"
 msgstr "Desexa Correo en HTML"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:162
 msgid "AIM Screen Name List"
 msgstr "Lista de Alcumes AIM"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:163
 msgid "GroupWise Id List"
 msgstr "Lista de Identificadores GroupWise"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Jabber Id List"
 msgstr "Lista de Identificadores Jabber"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Yahoo! Screen Name List"
 msgstr "Lista de Alcumes Yahoo!"
 
-#: ../addressbook/libebook/e-contact.c:160
+#: ../addressbook/libebook/e-contact.c:166
 msgid "MSN Screen Name List"
 msgstr "Lista de Alcumes MSN"
 
-#: ../addressbook/libebook/e-contact.c:161
+#: ../addressbook/libebook/e-contact.c:167
 msgid "ICQ Id List"
 msgstr "Lista de identificadores ICQ"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:169
 msgid "AIM Home Screen Name 1"
 msgstr "Alcume Persoal AIM 1"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:170
 msgid "AIM Home Screen Name 2"
 msgstr "Alcume Persoal AIM 2"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:171
 msgid "AIM Home Screen Name 3"
 msgstr "Alcume Persoal AIM 3"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:172
 msgid "AIM Work Screen Name 1"
 msgstr "Alcume Profesional AIM 1"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:173
 msgid "AIM Work Screen Name 2"
 msgstr "Alcume Profesional AIM 2"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:174
 msgid "AIM Work Screen Name 3"
 msgstr "Alcume Profesional AIM 3"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook/e-contact.c:175
 msgid "GroupWise Home Screen Name 1"
 msgstr "Alcume Persoal GroupWise 1"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:176
 msgid "GroupWise Home Screen Name 2"
 msgstr "Alcume Persoal GroupWise 2"
 
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:177
 msgid "GroupWise Home Screen Name 3"
 msgstr "Alcume Persoal GroupWise 3"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:178
 msgid "GroupWise Work Screen Name 1"
 msgstr "Alcume Profesional GroupWise 1"
 
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:179
 msgid "GroupWise Work Screen Name 2"
 msgstr "Alcume Profesional GroupWise 2"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:180
 msgid "GroupWise Work Screen Name 3"
 msgstr "Alcume Profesional GroupWise 3"
 
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:181
 msgid "Jabber Home Id 1"
 msgstr "Alcume Persoal Jabber 1"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook/e-contact.c:182
 msgid "Jabber Home Id 2"
 msgstr "Alcume Persoal Jabber 2"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Jabber Home Id 3"
 msgstr "Alcume Persoal Jabber 3"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Jabber Work Id 1"
 msgstr "Alcume Profesional Jabber 1"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Jabber Work Id 2"
 msgstr "Alcume Profesional Jabber 2"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Jabber Work Id 3"
 msgstr "Alcume Profesional Jabber 3"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Alcume Persoal Yahoo! 1"
 
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:188
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Alcume Persoal Yahoo! 2"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:189
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Alcume Persoal Yahoo! 3"
 
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:190
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Alcume Profesional Yahoo! 1"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:191
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Alcume Profesional Yahoo! 2"
 
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:192
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Alcume Profesional Yahoo! 3"
 
-#: ../addressbook/libebook/e-contact.c:187
+#: ../addressbook/libebook/e-contact.c:193
 msgid "MSN Home Screen Name 1"
 msgstr "Alcume Persoal MSN 1"
 
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:194
 msgid "MSN Home Screen Name 2"
 msgstr "Alcume Persoal MSN 2"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:195
 msgid "MSN Home Screen Name 3"
 msgstr "Alcume Persoal MSN 3"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:196
 msgid "MSN Work Screen Name 1"
 msgstr "Alcume Profesional MSN 1"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:197
 msgid "MSN Work Screen Name 2"
 msgstr "Alcume Profesional MSN 2"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:198
 msgid "MSN Work Screen Name 3"
 msgstr "Alcume Profesional MSN 3"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:199
 msgid "ICQ Home Id 1"
 msgstr "Alcume Persoal ICQ 1"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:200
 msgid "ICQ Home Id 2"
 msgstr "Alcume Persoal ICQ 2"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:201
 msgid "ICQ Home Id 3"
 msgstr "Alcume Persoal ICQ 3"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:202
 msgid "ICQ Work Id 1"
 msgstr "Alcume Profesional ICQ 1"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:203
 msgid "ICQ Work Id 2"
 msgstr "Alcume Persoal ICQ 2"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:204
 msgid "ICQ Work Id 3"
 msgstr "Alcume Persoal ICQ 3"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:207
 msgid "Organization"
 msgstr "Organización"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Organizational Unit"
 msgstr "Unidade Organizacional"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Office"
 msgstr "Oficina"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:211
 msgid "Title"
 msgstr "Título"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Role"
 msgstr "Papel"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Manager"
 msgstr "Xestor"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:214
 msgid "Assistant"
 msgstr "Asistente"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:217
 msgid "Homepage URL"
 msgstr "URL da Páxina Persoal"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:218
 msgid "Weblog URL"
 msgstr "URL do Weblog"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:219
 msgid "Video Conferencing URL"
 msgstr "URL de Vídeoconferencia"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:222
 msgid "Photo"
 msgstr "Foto"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:223
 msgid "Logo"
 msgstr "Logo"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:226
 msgid "X.509 Certificate"
 msgstr "Certificado X.509:"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:229
 msgid "Category List"
 msgstr "Lista de categorías"
 
-#: ../addressbook/libebook/e-contact.c:224
+#: ../addressbook/libebook/e-contact.c:230
 #: ../libedataserverui/e-categories-dialog.c:397
 msgid "Categories"
 msgstr "Categorías"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook/e-contact.c:233
 msgid "Calendar URI"
 msgstr "URI da Axenda"
 
-#: ../addressbook/libebook/e-contact.c:228
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Free/Busy URL"
 msgstr "URL libre/ocupado"
 
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:235
 msgid "ICS Calendar"
 msgstr "Axenda ICS"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:238
 msgid "Spouse's Name"
 msgstr "Nome do Cónxuxe"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:239
 msgid "Note"
 msgstr "Nota"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:241
 msgid "Birth Date"
 msgstr "Data de Nacemento"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:242
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:240
 msgid "Anniversary"
 msgstr "Aniversario"
 
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:244
 msgid "List"
 msgstr "Lista"
 
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:245
 msgid "List Show Addresses"
 msgstr "Lista de Presentación de Enderezos"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:248
 msgid "Last Revision"
 msgstr "Última Revisión"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:250
 msgid "Book URI"
 msgstr "URI do Libro"
 
-#: ../addressbook/libebook/e-contact.c:1232
+#: ../addressbook/libebook/e-contact.c:1238
 #: ../addressbook/libebook/e-destination.c:751
 msgid "Unnamed List"
 msgstr "Lista Sen Nome"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:241
 msgid "Birthday"
 msgstr "Data de Nacemento"
 
@@ -1288,16 +1288,16 @@ msgstr "Non podes importar chaves con esta cifra"
 msgid "You may not export keys with this cipher"
 msgstr "Non podes exportar chaves con esta cifra"
 
-#: ../camel/camel-data-cache.c:134
+#: ../camel/camel-data-cache.c:135
 msgid "Unable to create cache path"
 msgstr "Non foi posible crear o path de caché"
 
-#: ../camel/camel-data-cache.c:376
+#: ../camel/camel-data-cache.c:382
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Non foi posible borrar a entrada caché: %s: %s"
 
-#: ../camel/camel-disco-diary.c:195
+#: ../camel/camel-disco-diary.c:197
 #, c-format
 msgid ""
 "Could not write log entry: %s\n"
@@ -1308,7 +1308,7 @@ msgstr ""
 "As posteriores operacións deste servidor non se han repetir cando\n"
 "se volte conectar á rede."
 
-#: ../camel/camel-disco-diary.c:258
+#: ../camel/camel-disco-diary.c:260
 #, c-format
 msgid ""
 "Could not open `%s':\n"
@@ -1319,7 +1319,7 @@ msgstr ""
 "%s\n"
 "Os cambios que se fixeron a este cartafol non se han resincronizar."
 
-#: ../camel/camel-disco-diary.c:294
+#: ../camel/camel-disco-diary.c:296
 msgid "Resynchronizing with server"
 msgstr "Volvendo a sincronizar co servidor"
 
@@ -1341,6 +1341,10 @@ msgstr "Preparando o cartafol %s para modo offline"
 #: ../camel/providers/imap/camel-imap-store.c:2959
 msgid "You must be working online to complete this operation"
 msgstr "Debe estar traballando conectado para completar esta operación"
+
+#: ../camel/camel-exception.c:308
+msgid "No description available"
+msgstr "Sen descrición dispoñible"
 
 #: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
 #, c-format
@@ -1541,7 +1545,7 @@ msgstr ""
 "para·o·usuario:·\"%s\""
 
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
-#: ../camel/providers/nntp/camel-nntp-store.c:1273
+#: ../camel/providers/nntp/camel-nntp-store.c:1272
 msgid "Cancelled."
 msgstr "Cancelado."
 
@@ -1779,35 +1783,35 @@ msgstr "A procura do nome fallou: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Sincronizando as mensaxes no cartafol '%s' para o disco"
 
-#: ../camel/camel-offline-journal.c:162 ../camel/camel-offline-journal.c:185
+#: ../camel/camel-offline-journal.c:163 ../camel/camel-offline-journal.c:186
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "Non se puido·escribir·o·diario·offline·para·o cartafol·`%s':·%s"
 
-#: ../camel/camel-provider.c:59
+#: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
 msgstr "Fornecedor de correo do cartafol virtual"
 
-#: ../camel/camel-provider.c:61
+#: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
 msgstr "Para ler correo coma unha petición de outro conxunto de cartafoles"
 
-#: ../camel/camel-provider.c:185
+#: ../camel/camel-provider.c:188
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Non foi posible cargar %s: Non se soporta a carga de módulos neste sistema."
 
-#: ../camel/camel-provider.c:194
+#: ../camel/camel-provider.c:197
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Non foi posible cargar %s: %s"
 
-#: ../camel/camel-provider.c:202
+#: ../camel/camel-provider.c:205
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Non foi posible cargar %s: Non hai código de inicialización no módulo."
 
-#: ../camel/camel-provider.c:374 ../camel/camel-session.c:163
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:164
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "Non hai ningún fornecedor dispoñible para o protocolo `%s'"
@@ -2055,7 +2059,7 @@ msgstr "O URL '%s' necesita unha parte co nome de máquina"
 msgid "URL '%s' needs a path component"
 msgstr "O URL '%s' necesita unha parte coa ruta"
 
-#: ../camel/camel-session.c:285
+#: ../camel/camel-session.c:290
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2289,13 +2293,13 @@ msgstr "Non se pode crear cartafol: Operacion inválida neste armacenamento"
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Non é posible crear o cartafol: %s: o ficheiro existe"
 
-#: ../camel/camel-store.c:403 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:403 ../camel/camel-vee-store.c:368
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Non foi posible borrar o cartafol: %s: Operación inválida"
 
-#: ../camel/camel-store.c:453 ../camel/camel-vee-store.c:404
+#: ../camel/camel-store.c:453 ../camel/camel-vee-store.c:405
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -2538,16 +2542,16 @@ msgstr "Non existe a mensaxe %s en %s"
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Non se puido copiar ou mover as mensaxes a un Cartafol Virtual"
 
-#: ../camel/camel-vee-store.c:100 ../camel/camel-vee-store.c:343
+#: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
 msgstr "Non concorda"
 
-#: ../camel/camel-vee-store.c:390
+#: ../camel/camel-vee-store.c:391
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Non foi posible borrar o cartafol: %s: Non existe tal cartafol"
 
-#: ../camel/camel-vee-store.c:412
+#: ../camel/camel-vee-store.c:413
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Non foi posible renomear o cartafol: %s:Non existe tal cartafol"
@@ -2580,9 +2584,9 @@ msgstr "Non existe a mensaxe"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:128
 #: ../camel/providers/imap4/camel-imap4-folder.c:787
-#: ../camel/providers/nntp/camel-nntp-folder.c:157
-#: ../camel/providers/nntp/camel-nntp-folder.c:233
-#: ../camel/providers/nntp/camel-nntp-folder.c:372
+#: ../camel/providers/nntp/camel-nntp-folder.c:154
+#: ../camel/providers/nntp/camel-nntp-folder.c:230
+#: ../camel/providers/nntp/camel-nntp-folder.c:369
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
 #: ../camel/providers/pop3/camel-pop3-folder.c:431
 #: ../camel/providers/pop3/camel-pop3-folder.c:492
@@ -2592,10 +2596,10 @@ msgstr "Usuario cancelado"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
-#: ../camel/providers/nntp/camel-nntp-folder.c:148
-#: ../camel/providers/nntp/camel-nntp-folder.c:150
-#: ../camel/providers/nntp/camel-nntp-folder.c:159
-#: ../camel/providers/nntp/camel-nntp-folder.c:235
+#: ../camel/providers/nntp/camel-nntp-folder.c:145
+#: ../camel/providers/nntp/camel-nntp-folder.c:147
+#: ../camel/providers/nntp/camel-nntp-folder.c:156
+#: ../camel/providers/nntp/camel-nntp-folder.c:232
 #: ../camel/providers/pop3/camel-pop3-folder.c:434
 #: ../camel/providers/pop3/camel-pop3-folder.c:495
 #: ../camel/providers/pop3/camel-pop3-folder.c:502
@@ -2788,7 +2792,10 @@ msgstr "Enviando a mensaxe"
 msgid ""
 "You have exceed this account's storage limit. Your messages are queued in "
 "Outbox. Try sending after deleting/archiving some mails.\n"
-msgstr "Excedeu o límite de almacenamiento de esta conta. Súas mensaxes encólanse na bandexa de saída. Intente envialos despois de borrar/arquivar algúns correos.\n"
+msgstr ""
+"Excedeu o límite de almacenamiento de esta conta. Súas mensaxes encólanse na "
+"bandexa de saída. Intente envialos despois de borrar/arquivar algúns "
+"correos.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -2866,7 +2873,7 @@ msgstr "Non se puido obter a mensaxe: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2104
 #: ../camel/providers/imap/camel-imap-folder.c:2719
-#: ../camel/providers/nntp/camel-nntp-folder.c:221
+#: ../camel/providers/nntp/camel-nntp-folder.c:218
 msgid "This message is not currently available"
 msgstr "Esta mensaxe non está dispoñible actualmente."
 
@@ -3009,8 +3016,8 @@ msgstr "Servizo IMAP para %s en %s"
 #: ../camel/providers/imap/camel-imap-store.c:575
 #: ../camel/providers/imap4/camel-imap4-store.c:322
 #: ../camel/providers/imap4/camel-imap4-store.c:337
-#: ../camel/providers/nntp/camel-nntp-store.c:186
-#: ../camel/providers/nntp/camel-nntp-store.c:201
+#: ../camel/providers/nntp/camel-nntp-store.c:185
+#: ../camel/providers/nntp/camel-nntp-store.c:200
 #: ../camel/providers/pop3/camel-pop3-store.c:167
 #: ../camel/providers/pop3/camel-pop3-store.c:182
 #: ../camel/providers/smtp/camel-smtp-transport.c:254
@@ -3021,7 +3028,7 @@ msgstr "Non foi posible conectarse a %s: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:561
 #: ../camel/providers/imap4/camel-imap4-store.c:323
-#: ../camel/providers/nntp/camel-nntp-store.c:187
+#: ../camel/providers/nntp/camel-nntp-store.c:186
 #: ../camel/providers/pop3/camel-pop3-store.c:168
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
 msgid "SSL unavailable"
@@ -3032,8 +3039,8 @@ msgstr "SSL non dispoñible"
 #: ../camel/providers/imap4/camel-imap4-store.c:270
 #: ../camel/providers/imap4/camel-imap4-store.c:334
 #: ../camel/providers/imapp/camel-imapp-store.c:248
-#: ../camel/providers/nntp/camel-nntp-store.c:198
-#: ../camel/providers/nntp/camel-nntp-store.c:217
+#: ../camel/providers/nntp/camel-nntp-store.c:197
+#: ../camel/providers/nntp/camel-nntp-store.c:216
 #: ../camel/providers/pop3/camel-pop3-store.c:179
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection cancelled"
@@ -3962,25 +3969,25 @@ msgstr ""
 "Non foi posible sincronizar o cartafol spool %s: %s\n"
 "O cartafol pode estar corrupto, copia gardada en `%s'"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:177
-#: ../camel/providers/nntp/camel-nntp-folder.c:209
+#: ../camel/providers/nntp/camel-nntp-folder.c:174
+#: ../camel/providers/nntp/camel-nntp-folder.c:206
 #, c-format
 msgid "Internal error: uid in invalid format: %s"
 msgstr "Erro·interno:·uid·nun·formato·inválido:·%s"
 
+#: ../camel/providers/nntp/camel-nntp-folder.c:326
 #: ../camel/providers/nntp/camel-nntp-folder.c:329
-#: ../camel/providers/nntp/camel-nntp-folder.c:332
-#: ../camel/providers/nntp/camel-nntp-folder.c:374
-#: ../camel/providers/nntp/camel-nntp-folder.c:376
+#: ../camel/providers/nntp/camel-nntp-folder.c:371
+#: ../camel/providers/nntp/camel-nntp-folder.c:373
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Fallou o envío: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:394
+#: ../camel/providers/nntp/camel-nntp-folder.c:391
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "Non pode enviar mensaxes NNTP mentres estea a traballar en modo offline!"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:405
+#: ../camel/providers/nntp/camel-nntp-folder.c:402
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Non pode copiar mensaxes dun cartafol NNTP!"
 
@@ -4008,22 +4015,22 @@ msgid ""
 "password."
 msgstr "Esta opción autenticarase co servidor NNTP usando un contrasinal sen cifrar."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:220
+#: ../camel/providers/nntp/camel-nntp-store.c:219
 #, c-format
 msgid "Could not read greeting from %s: %s"
 msgstr "Non foi posible ler o saúdo de %s: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:232
+#: ../camel/providers/nntp/camel-nntp-store.c:231
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Servidor·NNTP·%s·devolveu·o·código·de·erro·%d:·%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:409
+#: ../camel/providers/nntp/camel-nntp-store.c:408
 #, c-format
 msgid "USENET News via %s"
 msgstr "Novas USENET via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:799
+#: ../camel/providers/nntp/camel-nntp-store.c:798
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4034,7 +4041,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:893
+#: ../camel/providers/nntp/camel-nntp-store.c:892
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4044,7 +4051,7 @@ msgstr ""
 "\n"
 "Grupo·inexistente.·O·ítem·seleccionado·é·probablemente·un cartafol·pai."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:925
+#: ../camel/providers/nntp/camel-nntp-store.c:924
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4054,42 +4061,42 @@ msgstr ""
 "\n"
 "O·grupo·de·noticias·non·existe!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:950
+#: ../camel/providers/nntp/camel-nntp-store.c:949
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Non·pode·crear·un·cartafol·nun·armacenamento·de·Noticias:·subscribaa."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:958
+#: ../camel/providers/nntp/camel-nntp-store.c:957
 msgid "You cannot rename a folder in a News store."
 msgstr "Non foi posible renomear o cartafol no armacenamento de Noticias"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:966
+#: ../camel/providers/nntp/camel-nntp-store.c:965
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Non pode borrar un cartafol do armacenamento de Noticias: borre a subscrición"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1147
+#: ../camel/providers/nntp/camel-nntp-store.c:1146
 msgid "Authentication requested but no username provided"
 msgstr "Autenticación requirida pero se deu nome de usuario ningún"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1155
+#: ../camel/providers/nntp/camel-nntp-store.c:1154
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Introduza o contrasinal NNTP para %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1159
+#: ../camel/providers/nntp/camel-nntp-store.c:1158
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Non foi posible autenticarse co servidor: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1275
+#: ../camel/providers/nntp/camel-nntp-store.c:1274
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "O comando NNTP fallou: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1331
+#: ../camel/providers/nntp/camel-nntp-store.c:1330
 msgid "Not connected."
 msgstr "Non conectado"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1384
+#: ../camel/providers/nntp/camel-nntp-store.c:1383
 #, c-format
 msgid "No such folder: %s"
 msgstr "Non existe o cartafol: %s"
@@ -4576,84 +4583,84 @@ msgstr "O comando QUIT fallou: %s"
 msgid "QUIT command failed"
 msgstr "O comando QUIT fallou"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:242
 msgid "Business"
 msgstr "Negocios"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:243
 msgid "Competition"
 msgstr "Competición"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:244
 msgid "Favorites"
 msgstr "Preferidos"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:245
 msgid "Gifts"
 msgstr "Agasallos"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:246
 msgid "Goals/Objectives"
 msgstr "Metas/Obxectivos"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:247
 msgid "Holiday"
 msgstr "Vacacións"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:248
 msgid "Holiday Cards"
 msgstr "Postais de Vacacións"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:250
 msgid "Hot Contacts"
 msgstr "Contactos Vitais"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:251
 msgid "Ideas"
 msgstr "Ideas"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:252
 msgid "International"
 msgstr "Internacional"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:253
 msgid "Key Customer"
 msgstr "Cliente Chave"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:254
 msgid "Miscellaneous"
 msgstr "Miscelánea"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:255
 msgid "Personal"
 msgstr "Persoal"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:256
 msgid "Phone Calls"
 msgstr "Chamadas Telefónicas"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:257
 msgid "Status"
 msgstr "Estado"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:258
 msgid "Strategies"
 msgstr "Estratexias"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:259
 msgid "Suppliers"
 msgstr "Fornecedores"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:260
 msgid "Time & Expenses"
 msgstr "Hora e Gastos"
 
-#: ../libedataserver/e-categories.c:258
+#: ../libedataserver/e-categories.c:261
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:259
+#: ../libedataserver/e-categories.c:262
 msgid "Waiting"
 msgstr "Agardando"
 
@@ -4661,7 +4668,7 @@ msgstr "Agardando"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:179 ../libedataserver/e-time-utils.c:422
+#: ../libedataserver/e-time-utils.c:1319 ../libedataserver/e-time-utils.c:1562
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4669,7 +4676,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:184 ../libedataserver/e-time-utils.c:413
+#: ../libedataserver/e-time-utils.c:1324 ../libedataserver/e-time-utils.c:1553
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4677,7 +4684,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:189 ../libedataserver/e-time-utils.c:418
+#: ../libedataserver/e-time-utils.c:1329 ../libedataserver/e-time-utils.c:1558
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4685,78 +4692,78 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:194 ../libedataserver/e-time-utils.c:409
+#: ../libedataserver/e-time-utils.c:1334 ../libedataserver/e-time-utils.c:1549
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:199
+#: ../libedataserver/e-time-utils.c:1339
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:204
+#: ../libedataserver/e-time-utils.c:1344
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:207 ../libedataserver/e-time-utils.c:300
-#: ../libedataserver/e-time-utils.c:404
+#: ../libedataserver/e-time-utils.c:1347 ../libedataserver/e-time-utils.c:1440
+#: ../libedataserver/e-time-utils.c:1544
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:215
+#: ../libedataserver/e-time-utils.c:1355
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:219
+#: ../libedataserver/e-time-utils.c:1359
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:224
+#: ../libedataserver/e-time-utils.c:1364
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:229
+#: ../libedataserver/e-time-utils.c:1369
 msgid "%m/%d/%Y %H:%M"
 msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:234
+#: ../libedataserver/e-time-utils.c:1374
 msgid "%m/%d/%Y %I %p"
 msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:239
+#: ../libedataserver/e-time-utils.c:1379
 msgid "%m/%d/%Y %H"
 msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:242 ../libedataserver/e-time-utils.c:303
+#: ../libedataserver/e-time-utils.c:1382 ../libedataserver/e-time-utils.c:1443
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:348 ../libedataserver/e-time-utils.c:467
+#: ../libedataserver/e-time-utils.c:1488 ../libedataserver/e-time-utils.c:1607
 msgid "%I:%M:%S %p"
 msgstr "%H:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:352 ../libedataserver/e-time-utils.c:459
+#: ../libedataserver/e-time-utils.c:1492 ../libedataserver/e-time-utils.c:1599
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4764,19 +4771,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:357 ../libedataserver/e-time-utils.c:464
+#: ../libedataserver/e-time-utils.c:1497 ../libedataserver/e-time-utils.c:1604
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:361 ../libedataserver/e-time-utils.c:456
+#: ../libedataserver/e-time-utils.c:1501 ../libedataserver/e-time-utils.c:1596
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:365
+#: ../libedataserver/e-time-utils.c:1505
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -4912,11 +4919,13 @@ msgid "_Destination"
 msgstr "_Destino"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Introduza o contrasinal para %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1575
+#: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Introduza o contrasinal"
 
@@ -5033,21 +5042,21 @@ msgstr "Esta·operación·non·pode·ser·realizada·en·modo·offline"
 msgid "%s's Folders"
 msgstr "Cartafoles do %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1301
 msgid "Personal Folders"
 msgstr "Cartafoles Persoais"
 
-#: ../servers/exchange/storage/exchange-account.c:1305
+#: ../servers/exchange/storage/exchange-account.c:1315
 msgid "Favorite Public Folders"
 msgstr "Cartafoles Públicos Preferidos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1322
+#: ../servers/exchange/storage/exchange-account.c:1332
 msgid "All Public Folders"
 msgstr "Todos os Cartafoles Públicos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1336
+#: ../servers/exchange/storage/exchange-account.c:1346
 msgid "Global Address List"
 msgstr "Lista Global de Enderezos"
 
@@ -5112,7 +5121,7 @@ msgid "Evolution Data Server logging service"
 msgstr "Servizo·de·inicio·de·sesión·do·Evolution·Data·Server"
 
 #. dialog display isn't working out
-#: ../src/server.c:101
+#: ../src/server.c:106
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
