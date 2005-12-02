@@ -1,5 +1,8 @@
 2005-12-02  Tor Lillqvist  <tml@novell.com>
 
+	* src/GNOME_Evolution_DataServer.server.in.in: Add missing dash in
+	the executable file's name in the InterfaceCheck location.
+
 	* evolution-data-server-zip.in: New file, a script used to build a
 	Win32 zipfile distribution of E-D-S. (End users will not be
 	expected to install from zipfiles, they would be for power users
