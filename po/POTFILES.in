@@ -137,6 +137,7 @@ camel/providers/groupwise/camel-groupwise-store.c
 camel/providers/groupwise/camel-groupwise-summary.c
 camel/providers/groupwise/camel-groupwise-transport.c
 camel/providers/groupwise/camel-groupwise-utils.c
+camel/providers/hula/camel-hula-provider.c
 camel/providers/imap/camel-imap-command.c
 camel/providers/imap/camel-imap-folder.c
 camel/providers/imap/camel-imap-message-cache.c
