@@ -1,3 +1,11 @@
+2005-12-05  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-imap-store.c: (construct):
+	Setup disco journal during store construct. Previously,
+	it was dont in connect_offline and connect_online methods.
+	This makes sure that the diary is initialised even when evo
+	starts in offline mode.
+
 2005-12-01 Jeff Cai <jeff.cai@sun.com>
 
 	* camel-imap-command.c:(imap_command_strdup_vprintf):

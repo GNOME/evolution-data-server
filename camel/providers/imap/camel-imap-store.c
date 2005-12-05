@@ -247,7 +247,8 @@ construct (CamelService *service, CamelSession *session,
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (service);
 	CamelStore *store = CAMEL_STORE (service);
-	char *tmp;
+	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (service);
+	char *tmp, *path;
 	CamelURL *summary_url;
 
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
@@ -281,6 +282,11 @@ construct (CamelService *service, CamelSession *session,
 		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK;
 	if (camel_url_get_param (url, "filter_junk_inbox"))
 		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK_INBOX;
+
+	/* setup journal*/
+	path = g_strdup_printf ("%s/journal", imap_store->storage_path);
+	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
+	g_free (path);
 
 	/* setup/load the store summary */
 	tmp = alloca(strlen(imap_store->storage_path)+32);
@@ -1393,10 +1399,9 @@ static gboolean
 imap_connect_online (CamelService *service, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
-	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (service);
 	CamelImapResponse *response;
 	/*struct _namespaces *namespaces;*/
-	char *result, *name, *path;
+	char *result, *name;
 	size_t len;
 	CamelImapStoreNamespace *ns;
 
@@ -1519,9 +1524,6 @@ imap_connect_online (CamelService *service, CamelException *ex)
 		store->refresh_stamp = time(0);
 	}
 	
-	path = g_strdup_printf ("%s/journal", store->storage_path);
-	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
-	g_free (path);
 	
  done:
 	/* save any changes we had */
@@ -1540,11 +1542,7 @@ imap_connect_offline (CamelService *service, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (service);
-	char *path;
 
-	path = g_strdup_printf ("%s/journal", store->storage_path);
-	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
-	g_free (path);
 	if (!disco_store->diary)
 		return FALSE;
 	
@@ -2008,6 +2006,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 	folder_dir = imap_path_to_physical (storage_path, folder_name);
 	g_free(storage_path);
 	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
+		g_print ("ONLINE:%s\n", folder_name);
 	g_free (folder_dir);
 	if (new_folder) {
 		CamelException local_ex;
@@ -2051,6 +2050,7 @@ get_folder_offline (CamelStore *store, const char *folder_name,
 		folder_dir = imap_path_to_physical (storage_path, folder_name);
 		g_free(storage_path);
 		new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
+		g_print ("OFFLINE:%s\n", folder_name);
 		g_free(folder_dir);
 
 		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
