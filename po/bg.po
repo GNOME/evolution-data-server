@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-21 14:03+0300\n"
-"PO-Revision-Date: 2005-10-21 12:31+0300\n"
+"POT-Creation-Date: 2005-12-05 08:59+0200\n"
+"PO-Revision-Date: 2005-12-05 08:58+0200\n"
 "Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Използва се известно име (DN)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:687
 msgid "Using Email Address"
-msgstr "Използвайки ел. поща"
+msgstr "Използвайки е-поща"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:873
 msgid "Reconnecting to LDAP server..."
@@ -318,23 +318,23 @@ msgstr "TTY"
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:147
 msgid "Email List"
-msgstr "Списък с ел. пощи"
+msgstr "Списък с е-пощи"
 
 #: ../addressbook/libebook/e-contact.c:148
 msgid "Email 1"
-msgstr "Ел. Поща 1"
+msgstr "Е-поща 1"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Email 2"
-msgstr "Ел. Поща 2"
+msgstr "Е-поща 2"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Email 3"
-msgstr "Ел. Поща 3"
+msgstr "Е-поща 3"
 
 #: ../addressbook/libebook/e-contact.c:151
 msgid "Email 4"
-msgstr "Ел. Поща 4"
+msgstr "Е-поща 4"
 
 #: ../addressbook/libebook/e-contact.c:152
 msgid "Mailer"
@@ -605,10 +605,11 @@ msgstr "Бележка"
 msgid "Birth Date"
 msgstr "Дата на раждане"
 
+#. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:237
 msgid "Anniversary"
 msgstr "Годишнина"
 
@@ -636,7 +637,7 @@ msgid "Unnamed List"
 msgstr "Списък без име"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:238
 msgid "Birthday"
 msgstr "Дата на раждане"
 
@@ -699,7 +700,7 @@ msgstr "Неуспех при създаване на нишка за получ
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:855
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/backends/http/e-cal-backend-http.c:495
+#: ../calendar/backends/http/e-cal-backend-http.c:496
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Кеш файлът не може да бъде създаден"
@@ -708,15 +709,15 @@ msgstr "Кеш файлът не може да бъде създаден"
 msgid "Could not create thread for populating cache"
 msgstr "Неуспех при създаване на нишка за първоначално запълване на кеша"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:240
+#: ../calendar/backends/http/e-cal-backend-http.c:241
 msgid "Redirected to Invalid URI"
 msgstr "Пренасочено към невалиден адрес"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:264
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Bad file format."
 msgstr "Лош файлов формат."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:270
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Not a calendar."
 msgstr "Не е календар."
 
@@ -913,7 +914,7 @@ msgstr "%.1f-%.1fcm сняг\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin сняг\n"
 
-#: ../calendar/libecal/e-cal-component.c:1323
+#: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
 msgstr "Неназовани срещи"
 
@@ -1330,11 +1331,15 @@ msgstr "Изтегляне на нови съобщения за режим „�
 msgid "Preparing folder '%s' for offline"
 msgstr "Подготвяне на папката „%s“ за режим „Изключен“"
 
-#: ../camel/camel-disco-store.c:391
+#: ../camel/camel-disco-store.c:395
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1275
 #: ../camel/providers/imap/camel-imap-store.c:2944
 msgid "You must be working online to complete this operation"
 msgstr "Трябва да сте в режим „online“, за да завършите тази операция"
+
+#: ../camel/camel-exception.c:308
+msgid "No description available"
+msgstr "Липсва описание"
 
 #: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
 #, c-format
@@ -1780,7 +1785,7 @@ msgstr "Не може да се запише журнала за работа о
 
 #: ../camel/camel-provider.c:59
 msgid "Virtual folder email provider"
-msgstr "Доставчик на виртуални папки за ел. поща"
+msgstr "Доставчик на виртуални папки за е-поща"
 
 #: ../camel/camel-provider.c:61
 msgid "For reading mail as a query of another set of folders"
@@ -4576,83 +4581,83 @@ msgstr "Командата QUIT е неуспешна: %s"
 msgid "QUIT command failed"
 msgstr "Командата QUIT е неуспешна"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:239
 msgid "Business"
 msgstr "Бизнес"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:240
 msgid "Competition"
 msgstr "Конкуренция"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:241
 msgid "Favorites"
 msgstr "Любими"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:242
 msgid "Gifts"
 msgstr "Подаръци"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:243
 msgid "Goals/Objectives"
 msgstr "Цели/Задачи"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday"
 msgstr "Празник"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:245
 msgid "Holiday Cards"
 msgstr "Поздравителни картички"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:246
 msgid "Hot Contacts"
 msgstr "Горещи контакти"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:247
 msgid "Ideas"
 msgstr "Идеи"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:248
 msgid "International"
 msgstr "Международен"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:249
 msgid "Key Customer"
 msgstr "Важен клиент"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:250
 msgid "Miscellaneous"
 msgstr "Други"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:251
 msgid "Personal"
 msgstr "Личен"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:252
 msgid "Phone Calls"
 msgstr "Телефонни обаждания"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:253
 msgid "Status"
 msgstr "Състояние"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:254
 msgid "Strategies"
 msgstr "Стратегии"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:255
 msgid "Suppliers"
 msgstr "Доставчици"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:256
 msgid "Time & Expenses"
 msgstr "Време и разходи"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:257
 msgid "VIP"
 msgstr "ВИП"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:258
 msgid "Waiting"
 msgstr "Изчакване"
 
@@ -4834,15 +4839,15 @@ msgstr "_Редактиране"
 msgid "categories"
 msgstr "категории"
 
-#: ../libedataserverui/e-name-selector-dialog.c:211
+#: ../libedataserverui/e-name-selector-dialog.c:215
 msgid "Select Contacts from Address Book"
 msgstr "Избор на контакти от адресника"
 
-#: ../libedataserverui/e-name-selector-dialog.c:502
+#: ../libedataserverui/e-name-selector-dialog.c:507
 msgid "_Add"
 msgstr "_Добавяне"
 
-#: ../libedataserverui/e-name-selector-dialog.c:527
+#: ../libedataserverui/e-name-selector-dialog.c:532
 msgid "_Remove"
 msgstr "_Премахване"
 
@@ -4907,11 +4912,13 @@ msgid "_Destination"
 msgstr "_Цел"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Въведете парола за %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1575
+#: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Въведете парола"
 
@@ -5028,21 +5035,21 @@ msgstr "Тази операция не може да бъде извършена
 msgid "%s's Folders"
 msgstr "Папките на %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1301
 msgid "Personal Folders"
 msgstr "Лични папки"
 
-#: ../servers/exchange/storage/exchange-account.c:1305
+#: ../servers/exchange/storage/exchange-account.c:1315
 msgid "Favorite Public Folders"
 msgstr "Любими публични папки"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1322
+#: ../servers/exchange/storage/exchange-account.c:1332
 msgid "All Public Folders"
 msgstr "Всички публични папки"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1336
+#: ../servers/exchange/storage/exchange-account.c:1346
 msgid "Global Address List"
 msgstr "Глобален списък с адреси"
 
@@ -5113,15 +5120,3 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Получиха се много „segmentation faults“; диалоговия прозорец за грешките не "
 "може да бъде показан\n"
-
-#~ msgid "Cannot get folder info in offline mode."
-#~ msgstr ""
-#~ "Информация за папката не може да бъде получена когато сте в режим "
-#~ "„Изключен“."
-
-#~ msgid "Cannot delete GroupWise folders in offline mode."
-#~ msgstr "Не може да изтривате GroupWise папки в режим „Изключен“."
-
-#~ msgid "Cannot rename GroupWise folders in offline mode."
-#~ msgstr ""
-#~ "Не можете да преименувате GroupWise папки докато сте в режим „Изключен“"
