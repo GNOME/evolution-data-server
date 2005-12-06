@@ -25,12 +25,11 @@
 #include <config.h>
 #endif
 
-#include <camel/camel-i18n.h>
-#include <camel/camel-folder.h>
-#include <camel/camel-session.h>
-
-#include "camel-offline-store.h"
+#include "camel-folder.h"
+#include "camel-i18n.h"
 #include "camel-offline-folder.h"
+#include "camel-offline-store.h"
+#include "camel-session.h"
 
 
 static void camel_offline_store_class_init (CamelOfflineStoreClass *klass);

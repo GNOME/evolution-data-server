@@ -26,11 +26,13 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "camel-sasl-cram-md5.h"
-#include "camel-mime-utils.h"
-#include "camel-service.h"
-#include <libedataserver/md5-utils.h>
+
+#include "libedataserver/md5-utils.h"
+
 #include "camel-i18n.h"
+#include "camel-mime-utils.h"
+#include "camel-sasl-cram-md5.h"
+#include "camel-service.h"
 
 CamelServiceAuthType camel_sasl_cram_md5_authtype = {
 	N_("CRAM-MD5"),

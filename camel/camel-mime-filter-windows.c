@@ -29,9 +29,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "camel-mime-filter-windows.h"
-
 #include "camel-charset-map.h"
+#include "camel-mime-filter-windows.h"
 
 #define d(x)
 #define w(x)

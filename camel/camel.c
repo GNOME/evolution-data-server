@@ -37,10 +37,10 @@
 
 #include "camel.h"
 #include "camel-certdb.h"
-#include "camel-i18n.h"
-#include "camel-mime-utils.h"
-#include "camel-provider.h"
 #include "camel-debug.h"
+#include "camel-i18n.h"
+#include "camel-provider.h"
+#include "camel-private.h"
 
 static int initialised = FALSE;
 
@@ -52,7 +52,10 @@ camel_shutdown (void)
 	if (!initialised)
 		return;
 	
-#ifdef HAVE_NSS
+#if defined (HAVE_NSS) && !defined (G_OS_WIN32)
+	/* For some reason we get into trouble on Win32 if we call these.
+	 * But they shouldn't be necessary as the process is exiting anywy?
+	 */
 	NSS_Shutdown ();
 	
 	PR_Cleanup ();

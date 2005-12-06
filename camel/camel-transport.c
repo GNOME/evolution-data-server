@@ -27,10 +27,10 @@
 #include <config.h>
 #endif
 
-#include "camel-transport.h"
 #include "camel-address.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
+#include "camel-transport.h"
 
 static CamelServiceClass *parent_class = NULL;
 

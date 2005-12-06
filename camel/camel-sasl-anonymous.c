@@ -26,10 +26,10 @@
 #endif
 
 #include <string.h>
-#include "camel-sasl-anonymous.h"
-#include "camel-internet-address.h"
-#include <string.h>
+
 #include "camel-i18n.h"
+#include "camel-internet-address.h"
+#include "camel-sasl-anonymous.h"
 
 CamelServiceAuthType camel_sasl_anonymous_authtype = {
 	N_("Anonymous"),

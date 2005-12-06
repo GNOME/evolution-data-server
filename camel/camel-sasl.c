@@ -26,18 +26,18 @@
 #endif
 
 #include <string.h>
-#include "camel-sasl.h"
-#include "camel-mime-utils.h"
-#include "camel-service.h"
 
+#include "camel-mime-utils.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-sasl-digest-md5.h"
 #include "camel-sasl-gssapi.h"
 #include "camel-sasl-kerberos4.h"
 #include "camel-sasl-login.h"
+#include "camel-sasl-ntlm.h"
 #include "camel-sasl-plain.h"
 #include "camel-sasl-popb4smtp.h"
-#include "camel-sasl-ntlm.h"
+#include "camel-sasl.h"
+#include "camel-service.h"
 
 
 #define w(x)

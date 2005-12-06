@@ -19,7 +19,6 @@
  */
 
 #include "camel-mime-filter-index.h"
-
 #include "camel-text-index.h"
 
 static void camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass);

@@ -19,6 +19,7 @@
  */
 
 #include <string.h>
+
 #include "camel-mime-filter.h"
 
 /*#define MALLOC_CHECK */ /* for some malloc checking, requires mcheck enabled */

@@ -28,14 +28,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "camel-multipart-encrypted.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
-#include "camel-stream-fs.h"
-#include "camel-mime-utils.h"
-#include "camel-mime-part.h"
 #include "camel-i18n.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-part.h"
+#include "camel-mime-utils.h"
+#include "camel-multipart-encrypted.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 
 static void camel_multipart_encrypted_class_init (CamelMultipartEncryptedClass *klass);
 static void camel_multipart_encrypted_init (gpointer object, gpointer klass);

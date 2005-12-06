@@ -29,8 +29,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "camel-vee-summary.h"
 #include "camel-folder.h"
+#include "camel-vee-summary.h"
 
 #define d(x)
 

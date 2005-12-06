@@ -29,15 +29,14 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#include <libedataserver/md5-utils.h>
-
-#include <libedataserver/e-iconv.h>
+#include "libedataserver/e-iconv.h"
+#include "libedataserver/md5-utils.h"
 
 #include "camel-charset-map.h"
-#include "camel-mime-utils.h"
-#include "camel-sasl-digest-md5.h"
 #include "camel-i18n.h"
+#include "camel-mime-utils.h"
 #include "camel-net-utils.h"
+#include "camel-sasl-digest-md5.h"
 
 #define d(x)
 

@@ -25,12 +25,11 @@
 #include <config.h>
 #endif
 
-#include <camel/camel-i18n.h>
-#include <camel/camel-service.h>
-#include <camel/camel-session.h>
-#include <camel/camel-operation.h>
-
+#include "camel-i18n.h"
 #include "camel-offline-folder.h"
+#include "camel-operation.h"
+#include "camel-service.h"
+#include "camel-session.h"
 
 #define CAMEL_OFFLINE_FOLDER_GET_CLASS(f) (CAMEL_OFFLINE_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (f)))
 

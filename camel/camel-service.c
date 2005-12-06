@@ -36,12 +36,12 @@
 
 #include "libedataserver/e-msgport.h"
 
-#include "camel-service.h"
-#include "camel-session.h"
 #include "camel-exception.h"
+#include "camel-i18n.h"
 #include "camel-operation.h"
 #include "camel-private.h"
-#include "camel-i18n.h"
+#include "camel-service.h"
+#include "camel-session.h"
 
 #define d(x)
 #define w(x)

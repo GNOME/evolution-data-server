@@ -31,11 +31,12 @@
 #include <time.h>   /* for time */
 #include <errno.h>
 
+#include "libedataserver/md5-utils.h"
+
 #include "camel-stream-mem.h"
 #include "camel-multipart.h"
-#include "camel-mime-part.h"
 #include "camel-exception.h"
-#include "libedataserver/md5-utils.h"
+#include "camel-mime-part.h"
 
 #define d(x)
 

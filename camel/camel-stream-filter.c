@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "camel-stream-filter.h"
 
 #define d(x) 

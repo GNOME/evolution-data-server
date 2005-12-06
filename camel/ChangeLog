@@ -7,6 +7,44 @@
 
 2005-12-01  Tor Lillqvist  <tml@novell.com>
 
+	* camel-index.c
+	* camel-mime-filter-basic.c
+	* camel-mime-filter-charset.c
+	* camel-mime-filter-from.c
+	* camel-mime-filter-index.c
+	* camel-mime-filter-windows.c
+	* camel-mime-filter.c
+	* camel-mime-part-utils.c
+	* camel-multipart-encrypted.c
+	* camel-multipart-signed.c
+	* camel-multipart.c
+	* camel-offline-folder.c
+	* camel-offline-store.c
+	* camel-operation.c
+	* camel-sasl-anonymous.c
+	* camel-sasl-cram-md5.c
+	* camel-sasl-digest-md5.c
+	* camel-sasl-kerberos4.c
+	* camel-sasl-login.c
+	* camel-sasl-ntlm.c
+	* camel-sasl-plain.c
+	* camel-sasl.c
+	* camel-search-private.c
+	* camel-service.c
+	* camel-smime-context.c
+	* camel-store.c
+	* camel-stream-buffer.c
+	* camel-stream-filter.c
+	* camel-stream-process.c
+	* camel-stream.c
+	* camel-transport.c
+	* camel-url-scanner.c
+	* camel-vee-folder.c
+	* camel-vee-summary.c
+	* camel-vtrash-folder.c
+	* camel.c: Unify header inclusion order and style purely for
+	cosmetic reasons.
+
 	* camel-private.h: If building against a GLib older than 2.8, map
 	those gstdio wrappers that were introduced only in 2.8 to their
 	normal counterparts here. (When building for Win32, we require

@@ -28,6 +28,7 @@
 #endif
 
 #include <string.h>
+
 #include "camel-stream.h"
 
 static CamelObjectClass *parent_class = NULL;

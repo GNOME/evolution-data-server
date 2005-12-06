@@ -39,8 +39,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "camel-stream-process.h"
 #include "camel-file-utils.h"
+#include "camel-stream-process.h"
 
 extern int camel_verbose_debug;
 

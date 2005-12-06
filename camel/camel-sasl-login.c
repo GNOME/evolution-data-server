@@ -25,9 +25,10 @@
 #endif
 
 #include <string.h>
+
+#include "camel-i18n.h"
 #include "camel-sasl-login.h"
 #include "camel-service.h"
-#include "camel-i18n.h"
 
 CamelServiceAuthType camel_sasl_login_authtype = {
 	N_("Login"),

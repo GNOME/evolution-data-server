@@ -32,14 +32,13 @@
 #include <sys/stat.h>
 
 #include "camel-debug.h"
-
+#include "camel-exception.h"
+#include "camel-folder.h"
+#include "camel-i18n.h"
+#include "camel-private.h"
 #include "camel-session.h"
 #include "camel-store.h"
-#include "camel-folder.h"
 #include "camel-vtrash-folder.h"
-#include "camel-exception.h"
-#include "camel-private.h"
-#include "camel-i18n.h"
 
 #define d(x)
 #define w(x)

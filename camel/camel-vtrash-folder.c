@@ -23,15 +23,16 @@
 
 #include <config.h>
 
+#include <string.h>
+
 #include "camel-exception.h"
-#include "camel-vtrash-folder.h"
+#include "camel-i18n.h"
+#include "camel-mime-message.h"
+#include "camel-private.h"
 #include "camel-store.h"
 #include "camel-vee-store.h"
-#include "camel-mime-message.h"
-#include "camel-i18n.h"
-#include "camel-private.h"
+#include "camel-vtrash-folder.h"
 
-#include <string.h>
 
 /* Returns the class for a CamelFolder */
 #define CF_CLASS(so) ((CamelFolderClass *)((CamelObject *)(so))->klass)

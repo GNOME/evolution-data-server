@@ -43,20 +43,18 @@
 
 #include <errno.h>
 
-#include <camel/camel-exception.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-data-wrapper.h>
-
-#include <camel/camel-mime-part.h>
-#include <camel/camel-multipart-signed.h>
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-mime-filter-basic.h>
-#include <camel/camel-mime-filter-canon.h>
-
-#include "camel-smime-context.h"
-#include "camel-operation.h"
+#include "camel-data-wrapper.h"
+#include "camel-exception.h"
 #include "camel-i18n.h"
+#include "camel-mime-filter-basic.h"
+#include "camel-mime-filter-canon.h"
+#include "camel-mime-part.h"
+#include "camel-multipart-signed.h"
+#include "camel-operation.h"
+#include "camel-smime-context.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 
 #define d(x)
 

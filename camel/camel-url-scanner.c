@@ -30,8 +30,9 @@
 #include <ctype.h>
 
 #include "libedataserver/e-trie.h"
-#include "camel-utf8.h"
+
 #include "camel-url-scanner.h"
+#include "camel-utf8.h"
 
 
 struct _CamelUrlScanner {

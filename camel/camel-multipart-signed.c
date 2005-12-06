@@ -29,27 +29,25 @@
 #endif
 
 #include <stdio.h>
-
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-
 #include <errno.h>
 
-#include "camel-mime-part.h"
-#include "camel-mime-message.h"
-#include "camel-mime-parser.h"
-#include "camel-stream-mem.h"
-#include "camel-multipart-signed.h"
-#include "camel-mime-part.h"
-#include "camel-exception.h"
 #include "libedataserver/md5-utils.h"
 
-#include "camel-stream-filter.h"
-#include "camel-seekable-substream.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-canon.h"
+#include "camel-exception.h"
 #include "camel-i18n.h"
+#include "camel-mime-filter-canon.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-message.h"
+#include "camel-mime-parser.h"
+#include "camel-mime-part.h"
+#include "camel-mime-part.h"
+#include "camel-multipart-signed.h"
+#include "camel-seekable-substream.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-mem.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))
 	       #include <stdio.h>;*/

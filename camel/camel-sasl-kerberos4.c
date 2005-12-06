@@ -34,11 +34,12 @@
 
 #include <string.h>
 #include <netdb.h>
+
 #include "camel-i18n.h"
 #include "camel-net-utils.h"
-#include "camel-string-utils.h"
 #include "camel-sasl-kerberos4.h"
 #include "camel-service.h"
+#include "camel-string-utils.h"
 
 CamelServiceAuthType camel_sasl_kerberos4_authtype = {
 	N_("Kerberos 4"),

@@ -32,23 +32,23 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <libedataserver/e-iconv.h>
+#include "libedataserver/e-iconv.h"
 
 #include "camel-charset-map.h"
-#include "camel-mime-part-utils.h"
-#include "camel-mime-message.h"
-#include "camel-multipart.h"
-#include "camel-multipart-signed.h"
-#include "camel-multipart-encrypted.h"
-#include "camel-seekable-substream.h"
-#include "camel-stream-fs.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
+#include "camel-html-parser.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-filter-save.h"
-#include "camel-html-parser.h"
+#include "camel-mime-message.h"
+#include "camel-mime-part-utils.h"
+#include "camel-multipart-encrypted.h"
+#include "camel-multipart-signed.h"
+#include "camel-multipart.h"
+#include "camel-seekable-substream.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))
 	       #include <stdio.h>*/

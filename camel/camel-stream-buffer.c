@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+
 #include "camel-stream-buffer.h"
 
 static CamelStreamClass *parent_class = NULL;

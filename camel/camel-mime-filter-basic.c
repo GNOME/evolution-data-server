@@ -19,10 +19,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "camel-mime-filter-basic.h"
-
-#include "camel-mime-utils.h"
 #include <string.h>
+
+#include "camel-mime-filter-basic.h"
+#include "camel-mime-utils.h"
 
 static void reset(CamelMimeFilter *mf);
 static void complete(CamelMimeFilter *mf, char *in, size_t len, 

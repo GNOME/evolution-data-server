@@ -26,24 +26,24 @@
 
 #include <string.h>
 
-#include "camel-exception.h"
-#include "camel-vee-folder.h"
-#include "camel-store.h"
-#include "camel-mime-message.h"
-#include "camel-folder-search.h"
-#include "camel-vee-summary.h"
-
-#include "camel-session.h"
-#include "camel-vee-store.h"	/* for open flags */
-#include "camel-private.h"
-#include "camel-debug.h"
-#include "camel-i18n.h"
-
 #include "libedataserver/md5-utils.h"
 
 #if defined (DOEPOOLV) || defined (DOESTRV)
 #include "libedataserver/e-memory.h"
 #endif
+
+#include "camel-debug.h"
+#include "camel-exception.h"
+#include "camel-folder-search.h"
+#include "camel-i18n.h"
+#include "camel-mime-message.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-store.h"
+#include "camel-vee-folder.h"
+#include "camel-vee-store.h"	/* for open flags */
+#include "camel-vee-summary.h"
+
 
 #define d(x) 
 #define dd(x) (camel_debug("vfolder")?(x):0)

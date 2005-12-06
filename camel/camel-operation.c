@@ -34,8 +34,9 @@
 #include <nspr.h>
 #endif
 
-#include "camel-operation.h"
 #include "libedataserver/e-msgport.h"
+
+#include "camel-operation.h"
 
 #define d(x)
 

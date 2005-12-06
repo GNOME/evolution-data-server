@@ -29,22 +29,23 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
 #include <sys/types.h>
 #include <regex.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
 
+#include <glib.h>
+
+#include "libedataserver/e-sexp.h"
+
 #include "camel-exception.h"
+#include "camel-i18n.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
-#include "camel-stream-mem.h"
-#include "libedataserver/e-sexp.h"
 #include "camel-search-private.h"
-#include "camel-i18n.h"
+#include "camel-stream-mem.h"
 
-#include <glib/gunicode.h>
 
 #define d(x)
 

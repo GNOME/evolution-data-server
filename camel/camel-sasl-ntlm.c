@@ -25,8 +25,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "camel-sasl-ntlm.h"
 #include "camel-i18n.h"
+#include "camel-sasl-ntlm.h"
 
 CamelServiceAuthType camel_sasl_ntlm_authtype = {
 	N_("NTLM / SPA"),

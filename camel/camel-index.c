@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 #include "camel-index.h"
-#include "camel/camel-object.h"
+#include "camel-object.h"
 
 #define w(x)
 #define io(x)
