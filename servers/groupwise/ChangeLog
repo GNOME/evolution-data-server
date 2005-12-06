@@ -1,3 +1,8 @@
+2005-12-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-item.[ch]: Add a new item contentid in the EGwAttachment
+	structure to faciliate content id for images/attachments.
+
 2005-11-25  Tor Lillqvist  <tml@novell.com>
 
 	* e-gw-sendoptions.c: Use g_ascii_strcasecmp() instead of

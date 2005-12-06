@@ -125,6 +125,7 @@ typedef struct {
 	char *id ;
 	char *name ;
 	char *item_reference;
+	char *contentid;
 	char *contentType ;
 	int size ;
 	char *date ;

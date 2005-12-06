@@ -188,6 +188,8 @@ free_attach (gpointer s, gpointer data)
 			g_free (attach->id), attach->id = NULL ;
 		if (attach->name)
 			g_free (attach->name), attach->name = NULL ;
+		if (attach->contentid)
+			g_free (attach->contentid), attach->contentid= NULL ;
 		if (attach->contentType)
 			g_free (attach->contentType), attach->contentType = NULL ;
 		if (attach->date)
@@ -1895,6 +1897,10 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 					attach->item_reference =  soup_soap_parameter_get_property (temp, "itemReference");
 				}
 				
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "contentId") ;
+				if (temp)
+					attach->contentid = soup_soap_parameter_get_string_value (temp) ;
+				
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "name") ;
 				if (temp)
 					attach->name = soup_soap_parameter_get_string_value (temp) ;
@@ -2869,6 +2875,8 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 		e_gw_message_write_string_parameter (msg, "id", NULL, "");
 	/*name*/
 	e_gw_message_write_string_parameter (msg, "name", NULL, attachment->name) ;
+	/*content id*/
+	e_gw_message_write_string_parameter (msg, "contentId", NULL, attachment->contentid);
 	/*content type*/
 	e_gw_message_write_string_parameter (msg, "contentType", NULL, attachment->contentType) ;
 	/*size*/
