@@ -150,18 +150,21 @@ case "$host" in
     SOCKET_LIBS='-lws2_32 -ldnsapi'
     DL_LIB=''
     SOFTOKN3_LIB=''
+    LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
     ;;
 *)  os_win32=no
     NO_UNDEFINED=''
     SOCKET_LIBS=''
     DL_LIB='-ldl'
     SOFTOKN3_LIB='-lsoftokn3'
+    LIBEXECDIR_IN_SERVER_FILE="$libexecdir"
     ;;
 esac
 AC_MSG_RESULT([$os_win32])
 AM_CONDITIONAL(OS_WIN32, [test $os_win32 = yes])
 AC_SUBST(NO_UNDEFINED)
 AC_SUBST(SOCKET_LIBS)
+AC_SUBST(LIBEXECDIR_IN_SERVER_FILE)
 
 AC_CHECK_HEADERS(pthread.h semaphore.h sys/wait.h)
 AC_CHECK_FUNCS(fsync strptime strtok_r)
@@ -1242,7 +1245,7 @@ INTERFACE_VERSION="$BASE_VERSION"
 AC_SUBST(INTERFACE_VERSION)
 AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "$INTERFACE_VERSION", [IDL interface version (Major.Minor)])
 
-EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@EXEEXT\@|$(EXEEXT)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@API_VERSION\@|$(API_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR_IN_SERVER_FILE\@|$(LIBEXECDIR_IN_SERVER_FILE)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@EXEEXT\@|$(EXEEXT)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@API_VERSION\@|$(API_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
 EVO_NAME_SERVER_RULE='%_$(API_VERSION).server: %.server ; mv $< $@'
 AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)

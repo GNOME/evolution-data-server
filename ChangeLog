@@ -1,3 +1,16 @@
+2005-12-06  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Set LIBEXECDIR_IN_SERVER_FILE to libexecdir on
+	Unix. On Win32, set it to a path relative from lib/bonobo/servers.
+	
+	* src/GNOME_Evolution_DataServer.server.in.in: Use
+	LIBEXECDIR_IN_SERVER_FILE here. We don't want absolute
+	compile-time paths in the .server file on Win32. libbonobo on
+	Win32 interprets relative location paths to exes or shlibs as
+	being relative to the directory where the .server file was found.
+	This makes the .server file point to the correct executable
+	regardless of where e-d-s is installed on the end-user machine.
+
 2005-12-02  Tor Lillqvist  <tml@novell.com>
 
 	* src/GNOME_Evolution_DataServer.server.in.in: Add missing dash in
