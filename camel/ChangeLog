@@ -1,11 +1,4 @@
-2005-12-02  Shi Pu <shi.pu@sun.com>
-
-	** See bug #321139
-
-	* camel-exception.c: (camel_exception_get_description):
-	Don't return NULL.
-
-2005-12-01  Tor Lillqvist  <tml@novell.com>
+2005-12-06  Tor Lillqvist  <tml@novell.com>
 
 	* camel-index.c
 	* camel-mime-filter-basic.c
@@ -44,6 +37,15 @@
 	* camel-vtrash-folder.c
 	* camel.c: Unify header inclusion order and style purely for
 	cosmetic reasons.
+	
+2005-12-02  Shi Pu <shi.pu@sun.com>
+
+	** See bug #321139
+
+	* camel-exception.c: (camel_exception_get_description):
+	Don't return NULL.
+
+2005-12-01  Tor Lillqvist  <tml@novell.com>
 
 	* camel-private.h: If building against a GLib older than 2.8, map
 	those gstdio wrappers that were introduced only in 2.8 to their
