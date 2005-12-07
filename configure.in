@@ -239,7 +239,7 @@ int main (int argc, char **argv)
 		exit (1);
 #endif
 
-	cd = iconv_open ("UTF-8", "ISO_8859-1");
+	cd = iconv_open ("UTF-8", "ISO-8859-1");
 	if (cd == (iconv_t) -1)
 		exit (1);
 	if (iconv (cd, &from, &from_len, &trans, &utf8_len) == -1 || from_len != 0)

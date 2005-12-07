@@ -1,3 +1,11 @@
+2005-12-07  Irene Huang <Irene.Huang@sun.com>
+
+	Fix for #323349.
+
+	* configure.in: Change iconv_open ("UTF-8", "ISO_8859-1") 
+	to iconv_open ("UTF-8", "ISO-8859-1") to avoid build error
+	on solaris.
+	
 2005-12-07  Tor Lillqvist  <tml@novell.com>
 
 	* libdb/dbinc/db_int.in: As we are using this file (and not the
