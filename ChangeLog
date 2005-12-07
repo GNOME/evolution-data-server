@@ -1,3 +1,19 @@
+2005-12-07  Tor Lillqvist  <tml@novell.com>
+
+	* libdb/dbinc/db_int.in: As we are using this file (and not the
+	prebuilt one in libdb/build_win32/db_int.h) when building using
+	autofoo on Win32, need to have the correct PATH_SEPARATOR for
+	Win32, too. Add ifdef.
+
+	* libdb/os_win32/os_open.c (__os_open): When using a
+	user-registered open function to open the file (and not
+	CreateFile()), we still need to set the DB_FH::handle, too, as all
+	the other stuff in libdb/os_win32 assumes it is correctly set
+	up. On Win32, addressbook/backends/file needs to register an own
+	open function (that uses g_open()) as the pathnames e-d-s handles
+	on Win32 are in the GLib encoding (i.e., UTF-8) and not the system
+	codepage that CreateFile() wants.
+
 2005-12-06  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Set LIBEXECDIR_IN_SERVER_FILE to libexecdir on

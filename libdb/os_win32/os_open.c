@@ -79,7 +79,11 @@ __os_open(dbenv, name, flags, mode, fhp)
 		if (LF_ISSET(DB_OSO_TRUNC))
 			oflags |= O_TRUNC;
 
-		return (__os_openhandle(dbenv, name, oflags, mode, fhp));
+		ret = __os_openhandle(dbenv, name, oflags, mode, fhp);
+		if (ret == 0)
+			fhp->handle = _get_osfhandle (fhp->fd);
+
+		return ret;
 	}
 
 	ret = 0;
