@@ -1,3 +1,12 @@
+2005-12-07  Tor Lillqvist  <tml@novell.com>
+
+	* storage/Makefile.am: Link with libedatasererui's bootstrap
+	import library on Win32. Link also with libedataserver. Move
+	libexchange.la and libxntlm.la from LDFLAGS to LIBADD. Install
+	e-shell-marshal.h (for the benefit of evolution-exchange, which
+	used to generate its own copy, but having several copies of the
+	same file in different places is confusing).
+
 2005-11-26  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c (exchange_account_remove_folder)
@@ -9,8 +18,7 @@
 
 	* lib/e2k-uri.c (e2k_uri_new)
 	* storage/exchange-oof.c (find_str_case): Use
-	g_ascii_strncasecmp() instead of strncasecmp() for
-	portability.
+	g_ascii_strncasecmp() instead of strncasecmp() for portability.
 
 2005-10-21  Sarfraaz Ahmed <asarfraaz@novell.com>
 

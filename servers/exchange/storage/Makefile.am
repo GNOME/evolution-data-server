@@ -1,5 +1,10 @@
 # Fix the code to not use E_DATA_SERVER_UI_CFLAGS
 
+if OS_WIN32
+WIN32_BOOTSTRAP_LIBS =					\
+	$(top_builddir)/win32/libedataserverui-1.2.la
+endif
+
 INCLUDES =							\
 	-DG_LOG_DOMAIN=\"evolution-exchange-storage\"		\
 	-DPREFIX=\"$(prefix)\"					\
@@ -15,7 +20,7 @@ INCLUDES =							\
 	$(E_DATA_SERVER_UI_CFLAGS)				\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/servers/exchange/lib			\
-	-I$(top_srcdir)/servers/exchange/xntlm					
+	-I$(top_srcdir)/servers/exchange/xntlm
 
 lib_LTLIBRARIES =						\
 	libexchange-storage-1.2.la
@@ -71,15 +76,19 @@ CLEANFILES = $(MARSHAL_GENERATED)
 NODIST_FILES = $(MARSHAL_GENERATED)
 
 libexchange_storage_1_2_la_LIBADD =				\
+	$(WIN32_BOOTSTRAP_LIBS)					\
+	$(top_builddir)/servers/exchange/lib/libexchange.la	\
+	$(top_builddir)/servers/exchange/xntlm/libxntlm.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_LIBS)					\
 	$(E_DATA_SERVER_UI_LIBS)				\
 	$(LDAP_LIBS)						\
-	$(SOUP_LIBS)
+	$(SOUP_LIBS)						\
+	$(SOCKET_LIBS)
 
 libexchange_storage_1_2_la_LDFLAGS =				\
 	$(KRB5_LDFLAGS)						\
-	$(top_builddir)/servers/exchange/lib/libexchange.la	\
-	$(top_builddir)/servers/exchange/xntlm/libxntlm.la	\
+	$(NO_UNDEFINED)						\
 	-version-info $(LIBEXCHANGE_STORAGE_CURRENT):$(LIBEXCHANGE_STORAGE_REVISION):$(LIBEXCHANGE_STORAGE_AGE)
 
 libexchange_storageincludedir = $(privincludedir)/exchange
@@ -87,6 +96,7 @@ libexchange_storageincludedir = $(privincludedir)/exchange
 libexchange_storageinclude_HEADERS = 				\
 	e-folder.h						\
 	e-folder-exchange.h					\
+	e-shell-marshal.h					\
 	e-storage.h						\
 	exchange-account.h					\
 	exchange-constants.h					\
