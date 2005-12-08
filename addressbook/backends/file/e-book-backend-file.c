@@ -23,9 +23,7 @@
  *          Hans Petter Jansson <hpj@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h> 
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,16 +36,21 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-dbhash.h>
-#include <libedataserver/e-db3-utils.h>
-#include <libedataserver/e-util.h>
-#include <libebook/e-contact.h>
 
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-book-backend-summary.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
+#include "libedataserver/e-dbhash.h"
+#include "libedataserver/e-db3-utils.h"
+#include "libedataserver/e-util.h"
+
+#include "libebook/e-contact.h"
+
+#include "libedata-book/e-book-backend-sexp.h"
+#include "libedata-book/e-book-backend-summary.h"
+#include "libedata-book/e-data-book.h"
+#include "libedata-book/e-data-book-view.h"
+
 #include "e-book-backend-file.h"
 
 #define d(x) x
@@ -1184,7 +1187,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	bf->priv->dirname = dirname;
 	bf->priv->filename = filename;
 
-	if (stat (bf->priv->filename, &sb) == -1) {
+	if (g_stat (bf->priv->filename, &sb) == -1) {
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
 		g_warning ("stat(%s) failed", bf->priv->filename);
@@ -1232,7 +1235,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GDir *dir;
 
-	if (-1 == unlink (bf->priv->filename)) {
+	if (-1 == g_unlink (bf->priv->filename)) {
 		if (errno == EACCES || errno == EPERM)
 			return GNOME_Evolution_Addressbook_PermissionDenied;
 		else
@@ -1242,7 +1245,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	/* unref the summary before we remove the file so it's not written out again */
 	g_object_unref (bf->priv->summary);
 	bf->priv->summary = NULL;
-	if (-1 == unlink (bf->priv->summary_filename))
+	if (-1 == g_unlink (bf->priv->summary_filename))
 		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, strerror (errno));
 
 	dir = g_dir_open (bf->priv->dirname, 0, NULL);
@@ -1252,7 +1255,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 		while ((name = g_dir_read_name (dir))) {
 			if (select_changes (name)) {
 				char *full_path = g_build_filename (bf->priv->dirname, name, NULL);
-				if (-1 == unlink (full_path)) {
+				if (-1 == g_unlink (full_path)) {
 					g_warning ("failed to remove change db `%s': %s", full_path, strerror (errno));
 				}
 				g_free (full_path);
@@ -1262,7 +1265,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 		g_dir_close (dir);
 	}
 
-	if (-1 == rmdir (bf->priv->dirname))
+	if (-1 == g_rmdir (bf->priv->dirname))
 		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, strerror (errno));
 
 	/* we may not have actually succeeded in removing the
@@ -1355,6 +1358,27 @@ e_book_backend_file_dispose (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->dispose (object);	
 }
 
+#ifdef G_OS_WIN32
+/* Avoid compiler warning by providing a function with exactly the
+ * prototype that db_env_set_func_open() wants for the open method.
+ */
+
+static int
+my_open (const char *name, int oflag, ...)
+{
+	int mode = 0;
+
+	if (oflag & O_CREAT) {
+		va_list arg;
+		va_start (arg, oflag);
+		mode = va_arg (arg, int);
+		va_end (arg);
+	}
+
+	return g_open (name, oflag, mode);
+}
+#endif
+
 static void
 e_book_backend_file_class_init (EBookBackendFileClass *klass)
 {
@@ -1387,6 +1411,12 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	
 
 	object_class->dispose = e_book_backend_file_dispose;
+
+#ifdef G_OS_WIN32
+	/* Use the gstdio wrapper for open() to open files in libdb */
+	db_env_set_func_open (my_open);
+	db_env_set_func_close (close);
+#endif
 }
 
 static void
