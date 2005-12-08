@@ -39,14 +39,14 @@ char *e_name_western_pfx_table[] = {
 	/*
 	 * German
 	 */
-	"herr", "frau", "fraulein", "herr doktor", "doktor frau", "doktor frau doktor",
+	"herr", "frau", "fräulein", "doktor", "herr doktor", "doktor frau", "doktor frau doktor",
 	"frau doktor",
  
 
 	/*
 	 * Spanish.
 	 */
-	"senor", "senora", "sra.", "senorita", "srita.", 
+	"señor", "señora", "sra.", "señorita", "srita.", 
 
 	NULL};
 
@@ -55,10 +55,11 @@ char *e_name_western_sfx_table[]  = {
 	/*
 	 * English.
 	 */
-         "junior", "senior", "jr", "sr", "I", "II", "III", "IV", "V",
+         "junior", "senior", "jr", "jr.", "sr", "sr.",
+	 "I", "II", "III", "IV", "V",
 	 "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV",
 	 "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII",
-	 "phd", "ms", "md", "esq", "esq.", "esquire",
+	 "phd", "ms", "md", "m.d.", "esq", "esq.", "esquire",
 
 	NULL};
 
@@ -71,7 +72,7 @@ char *e_name_western_twopart_sfx_table[] = {
 
 	NULL};
 
-char *e_name_western_complex_last_table[] = {"van", "von", "de", "di", NULL};
+char *e_name_western_complex_last_table[] = {"van", "von", "de", "di", "af", NULL};
 
 G_END_DECLS
 

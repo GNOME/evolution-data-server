@@ -1,5 +1,8 @@
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
+	* libebook/e-name-western-tables.h: Spell "fräulein" and "señor*"
+	correctly. Add "doktor". Add "af".
+
 	* backends/file/e-book-backend-file.c: Use gstdio wrappers. On
 	Win32, register own open and close methods for libdb so that the
 	UTF-8 file names that we use will work. (A small patch to libdb
