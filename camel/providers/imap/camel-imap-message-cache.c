@@ -22,12 +22,9 @@
  * USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <sys/types.h>
-#include <dirent.h>
 #include <errno.h>
 #include <string.h>
 #include <ctype.h>
@@ -37,6 +34,12 @@
 #include "camel-exception.h"
 #include "camel-stream-fs.h"
 #include "camel-i18n.h"
+
+#include <glib/gstdio.h>
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 static void finalize (CamelImapMessageCache *cache);
 static void stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data);
@@ -144,17 +147,19 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 			      CamelException *ex)
 {
 	CamelImapMessageCache *cache;
-	DIR *dir;
-	struct dirent *d;
+	GDir *dir;
+	const char *dname;
 	char *uid, *p;
 	GPtrArray *deletes;
 	CamelMessageInfo *info;
+	GError *error;
 
-	dir = opendir (path);
+	dir = g_dir_open (path, 0, &error);
 	if (!dir) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open cache directory: %s"),
-				      g_strerror (errno));
+				      error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
@@ -164,28 +169,27 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 	cache->parts = g_hash_table_new (g_str_hash, g_str_equal);
 	cache->cached = g_hash_table_new (NULL, NULL);
 	deletes = g_ptr_array_new ();
-	while ((d = readdir (dir))) {
-		if (!isdigit (d->d_name[0]))
+	while ((dname = g_dir_read_name (dir))) {
+		if (!isdigit (dname[0]))
 			continue;
-
-		p = strchr (d->d_name, '.');
+		p = strchr (dname, '.');
 		if (p)
-			uid = g_strndup (d->d_name, p - d->d_name);
+			uid = g_strndup (dname, p - dname);
 		else
-			uid = g_strdup (d->d_name);
+			uid = g_strdup (dname);
 
 		info = camel_folder_summary_uid (summary, uid);
 		if (info) {
 			camel_message_info_free(info);
-			cache_put (cache, uid, d->d_name, NULL);
+			cache_put (cache, uid, dname, NULL);
 		} else
-			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, d->d_name));
+			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, dname));
 		g_free (uid);
 	}
-	closedir (dir);
+	g_dir_close (dir);
 
 	while (deletes->len) {
-		unlink (deletes->pdata[0]);
+		g_unlink (deletes->pdata[0]);
 		g_free (deletes->pdata[0]);
 		g_ptr_array_remove_index_fast (deletes, 0);
 	}
@@ -241,13 +245,22 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 	CamelStream *stream;
 	int fd;
 	
+#ifdef G_OS_WIN32
+	/* Trailing periods in file names are silently dropped on
+	 * Win32, argh. The code in this file requires the period to
+	 * be there. So in case part_spec is empty, use a tilde (just
+	 * a random choice) instead.
+	 */
+	if (!*part_spec)
+		part_spec = "~";
+#endif
 	*path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
 	*key = strrchr (*path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, *key);
 	if (stream)
 		camel_object_unref (CAMEL_OBJECT (stream));
 	
-	fd = open (*path, O_RDWR | O_CREAT | O_TRUNC, 0600);
+	fd = g_open (*path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to cache message %s: %s"),
@@ -262,7 +275,7 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 static CamelStream *
 insert_abort (char *path, CamelStream *stream)
 {
-	unlink (path);
+	g_unlink (path);
 	g_free (path);
 	camel_object_unref (CAMEL_OBJECT (stream));
 	return NULL;
@@ -400,6 +413,11 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
 	if (uid[0] == 0)
 		return NULL;
 	
+#ifdef G_OS_WIN32
+	/* See comment in insert_setup() */
+	if (!*part_spec)
+		part_spec = "~";
+#endif
 	path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
 	key = strrchr (path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, key);
@@ -445,7 +463,7 @@ camel_imap_message_cache_remove (CamelImapMessageCache *cache, const char *uid)
 	for (i = 0; i < subparts->len; i++) {
 		key = subparts->pdata[i];
 		path = g_strdup_printf ("%s/%s", cache->path, key);
-		unlink (path);
+		g_unlink (path);
 		g_free (path);
 		stream = g_hash_table_lookup (cache->parts, key);
 		if (stream) {
@@ -519,7 +537,7 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 		part = strchr (subparts->pdata[i], '.');
 		if (!part++)
 			continue;
-		
+
 		if ((stream = camel_imap_message_cache_get (source, source_uid, part, ex))) {
 			camel_imap_message_cache_insert_stream (dest, dest_uid, part, stream, ex);
 			camel_object_unref (CAMEL_OBJECT (stream));

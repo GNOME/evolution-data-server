@@ -24,9 +24,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,33 +32,41 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "camel-imap-store.h"
-#include "camel-imap-store-summary.h"
-#include "camel-imap-folder.h"
-#include "camel-imap-utils.h"
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel/camel-debug.h"
+#include "camel/camel-disco-diary.h"
+#include "camel/camel-exception.h"
+#include "camel/camel-file-utils.h"
+#include "camel/camel-folder.h"
+#include "camel/camel-i18n.h"
+#include "camel/camel-net-utils.h"
+#include "camel/camel-private.h"
+#include "camel/camel-sasl.h"
+#include "camel/camel-session.h"
+#include "camel/camel-stream-buffer.h"
+#include "camel/camel-stream-fs.h"
+#include "camel/camel-stream-process.h"
+#include "camel/camel-stream.h"
+#include "camel/camel-string-utils.h"
+#include "camel/camel-tcp-stream-raw.h"
+#include "camel/camel-tcp-stream-ssl.h"
+#include "camel/camel-url.h"
+#include "camel/camel-utf8.h"
+
 #include "camel-imap-command.h"
-#include "camel-imap-summary.h"
+#include "camel-imap-folder.h"
 #include "camel-imap-message-cache.h"
-#include "camel-disco-diary.h"
-#include "camel-file-utils.h"
-#include "camel-folder.h"
-#include "camel-exception.h"
-#include "camel-session.h"
-#include "camel-stream.h"
-#include "camel-stream-buffer.h"
-#include "camel-stream-fs.h"
-#include "camel-stream-process.h"
-#include "camel-tcp-stream-raw.h"
-#include "camel-tcp-stream-ssl.h"
-#include "camel-url.h"
-#include "camel-sasl.h"
-#include "camel-utf8.h"
-#include "camel-string-utils.h"
 #include "camel-imap-private.h"
-#include "camel-private.h"
-#include "camel-debug.h"
-#include "camel-i18n.h"
-#include "camel-net-utils.h"
+#include "camel-imap-store-summary.h"
+#include "camel-imap-store.h"
+#include "camel-imap-summary.h"
+#include "camel-imap-utils.h"
+
+#if !GLIB_CHECK_VERSION (2, 8, 0)
+#define g_access access
+#endif
 
 #define d(x) 
 
@@ -1098,7 +1104,7 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 	storage_path = g_strdup_printf ("%s/folders", imap_store->storage_path);
 	folder_dir = imap_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
-	if (access (folder_dir, F_OK) != 0) {
+	if (g_access (folder_dir, F_OK) != 0) {
 		g_free (folder_dir);
 		goto event;
 	}
@@ -1118,22 +1124,22 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 	camel_object_unref (cache);
 	camel_object_unref (summary);
 	
-	unlink (summary_file);
+	g_unlink (summary_file);
 	g_free (summary_file);
 	
 	journal_file = g_strdup_printf ("%s/journal", folder_dir);
-	unlink (journal_file);
+	g_unlink (journal_file);
 	g_free (journal_file);
 
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
-	unlink (state_file);
+	g_unlink (state_file);
 	g_free (state_file);
 
 	state_file = g_strdup_printf("%s/subfolders", folder_dir);
-	rmdir(state_file);
+	g_rmdir(state_file);
 	g_free(state_file);
 	
-	rmdir (folder_dir);
+	g_rmdir (folder_dir);
 	g_free (folder_dir);
 	
  event:
@@ -2211,7 +2217,7 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name_in,
 	g_free(storage_path);
 
 	/* So do we care if this didn't work?  Its just a cache? */
-	if (rename (oldpath, newpath) == -1) {
+	if (g_rename (oldpath, newpath) == -1) {
 		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
 			   oldpath, newpath, strerror (errno));
 	}

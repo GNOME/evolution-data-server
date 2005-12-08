@@ -22,9 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <string.h>
 #include "camel-imap-store.h"
@@ -45,6 +43,7 @@ CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
 	  N_("C_heck for new messages in all folders"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
+#ifndef G_OS_WIN32
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
 	  N_("Connection to Server") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
@@ -52,6 +51,7 @@ CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_ENTRY, "command", "use_command",
 	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/imapd" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
+#endif
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_lsub", NULL,
