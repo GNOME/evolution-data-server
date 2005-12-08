@@ -3,6 +3,11 @@
 	* libedataserver/e-db3-utils.c
 	* libedataserver/e-file-cache.c: Use gstdio wrappers.
 
+	* libedataserver/e-source.c (e_source_build_absolute_uri): Don't
+	use G_DIR_SEPARATOR or g_build_filename() to manipulate URIs. URIs
+	always use slashes, not platform-dependent separators.
+	(e_source_set_name): Compare the strings, not the pointers.
+
 	* libedataserver/e-source-group.c (e_source_group_set_name):
 	Compare the strings, not the pointers.
 

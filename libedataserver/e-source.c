@@ -427,14 +427,17 @@ e_source_build_absolute_uri (ESource *source)
 	
 	base_uri_str = e_source_group_peek_base_uri (source->priv->group);
 
-	/* If last character in base URI is a dir separator, just concat the strings.
-	 * We don't want to compress e.g. the trailing :// in a protocol specification */
-	if (*base_uri_str && *(base_uri_str + strlen (base_uri_str) - 1) == G_DIR_SEPARATOR)
+	/* If last character in base URI is a slash, just concat the
+	 * strings.  We don't want to compress e.g. the trailing ://
+	 * in a protocol specification Note: Do not use
+	 * G_DIR_SEPARATOR or g_build_filename() when manipulating
+	 * URIs. URIs use normal ("forward") slashes also on Windows.
+	 */
+	if (*base_uri_str && *(base_uri_str + strlen (base_uri_str) - 1) == '/')
 		uri_str = g_strconcat (base_uri_str, source->priv->relative_uri, NULL);
 	else
-		uri_str = g_build_filename (e_source_group_peek_base_uri (source->priv->group),
-					    source->priv->relative_uri,
-					    NULL);
+		uri_str = g_strconcat (base_uri_str, "/", source->priv->relative_uri,
+				       NULL);
 
 	return uri_str;
 }
@@ -468,11 +471,13 @@ e_source_set_name (ESource *source,
 		   const char *name)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (name != NULL);
 
 	if (source->priv->readonly)
 		return;
 	
-	if (source->priv->name == name)
+	if (source->priv->name != NULL &&
+	    strcmp (source->priv->name, name) == 0)
 		return;
 
 	g_free (source->priv->name);
