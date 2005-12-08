@@ -5,8 +5,9 @@
 	UTF-8 file names that we use will work. (A small patch to libdb
 	was also required, see ../ChangeLog.)
 
-	* backends/groupwise/e-book-backend-groupwise.c: Use gstdio
-	wrappers.
+	* backends/groupwise/e-book-backend-groupwise.c
+	* backends/vcf/e-book-backend-vcf.c: Use gstdio wrappers. Open
+	files in binary mode.
 
 2005-11-30  Harish Krishnaswamy  <kharish@novell.com>
 

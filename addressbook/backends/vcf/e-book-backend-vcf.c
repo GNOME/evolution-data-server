@@ -21,9 +21,7 @@
  * Authors: Chris Toshok <toshok@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -34,14 +32,22 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include <glib/gi18n-lib.h>
-#include <libebook/e-contact.h>
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
-#include <libedataserver/e-util.h>
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
+
+#include "libedataserver/e-util.h"
+
+#include "libebook/e-contact.h"
  
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
-#include <libedata-book/e-book-backend-sexp.h>
+#include "libedata-book/e-data-book.h"
+#include "libedata-book/e-data-book-view.h"
+#include "libedata-book/e-book-backend-sexp.h"
+
 #include "e-book-backend-vcf.h"
 
 #define PAS_ID_PREFIX "pas-id-"
@@ -102,7 +108,7 @@ load_file (EBookBackendVCF *vcf, int fd)
 	GString *str;
 	char buf[1024];
 
-	fp = fdopen (fd, "r");
+	fp = fdopen (fd, "rb");
 	if (!fp) {
 		g_warning ("failed to open `%s' for reading", vcf->priv->filename);
 		return;
@@ -144,7 +150,7 @@ save_file (EBookBackendVCF *vcf)
 
 	new_path = g_strdup_printf ("%s.new", vcf->priv->filename);
 
-	fd = open (new_path, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+	fd = g_open (new_path, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666);
 
 	for (l = vcf->priv->contact_list; l; l = l->next) {
 		char *vcard_str = l->data;
@@ -156,7 +162,7 @@ save_file (EBookBackendVCF *vcf)
 			/* XXX */
 			g_warning ("write failed.  we need to handle short writes\n");
 			close (fd);
-			unlink (new_path);
+			g_unlink (new_path);
 			return FALSE;
 		}
 
@@ -165,14 +171,14 @@ save_file (EBookBackendVCF *vcf)
 			/* XXX */
 			g_warning ("write failed.  we need to handle short writes\n");
 			close (fd);
-			unlink (new_path);
+			g_unlink (new_path);
 			return FALSE;
 		}
 	}
 
-	if (0 > rename (new_path, vcf->priv->filename)) {
+	if (0 > g_rename (new_path, vcf->priv->filename)) {
 		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, strerror(errno));
-		unlink (new_path);
+		g_unlink (new_path);
 		return FALSE;
 	}
 
@@ -613,14 +619,14 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 	dirname = e_book_backend_vcf_extract_path_from_uri (uri);
 	bvcf->priv->filename = g_build_filename (dirname, "addressbook.vcf", NULL);
 
-	fd = open (bvcf->priv->filename, O_RDWR);
+	fd = g_open (bvcf->priv->filename, O_RDWR | O_BINARY, 0);
 
 	bvcf->priv->contacts = g_hash_table_new (g_str_hash, g_str_equal);
 
 	if (fd != -1) {
 		writable = TRUE;
 	} else {
-		fd = open (bvcf->priv->filename, O_RDONLY);
+		fd = g_open (bvcf->priv->filename, O_RDONLY | O_BINARY, 0);
 
 		if (fd == -1 && !only_if_exists) {
 			int rv;
@@ -636,7 +642,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 					return GNOME_Evolution_Addressbook_OtherError;
 			}
 
-			fd = open (bvcf->priv->filename, O_CREAT, 0666);
+			fd = g_open (bvcf->priv->filename, O_CREAT | O_BINARY, 0666);
 
 			if (fd != -1) {
 #ifdef CREATE_DEFAULT_VCARD
