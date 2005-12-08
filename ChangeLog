@@ -11,6 +11,11 @@
 	e-xml-utils.c. Presumably should move all the rest of the
 	functions from there, too.
 
+	* libedataserver/e-xml-hash-utils.c: Use e_xml_parse_file() and
+	e_xml_save_file(). As e_xml_save_file() does the very careful
+	saving using a temporary filename and then rename, don't need to
+	that here.
+
 2005-12-07  Irene Huang <Irene.Huang@sun.com>
 
 	Fix for #323349.

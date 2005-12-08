@@ -17,18 +17,21 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
-
-#include "e-xml-hash-utils.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include <libxml/xmlmemory.h>
 #include <libxml/entities.h>
+#include <libxml/tree.h>
+#include <libxml/xmlmemory.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "e-xml-hash-utils.h"
+#include "e-xml-utils.h"
 
 /**
  * e_xml_to_hash:
@@ -193,7 +196,7 @@ e_xmlhash_new (const char *filename)
 	hash->filename = g_strdup (filename);
 
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		doc = xmlParseFile (filename);
+		doc = e_xml_parse_file (filename);
 		if (!doc) {
 			e_xmlhash_destroy (hash);
 			
@@ -338,25 +341,14 @@ e_xmlhash_foreach_key_remove (EXmlHash *hash, EXmlHashRemoveFunc func, gpointer 
 void
 e_xmlhash_write (EXmlHash *hash)
 {
-	const char *slash;
-	char *filesave;
 	xmlDoc *doc;
 
 	g_return_if_fail (hash != NULL);
 
 	doc = e_xml_from_hash (hash->objects, E_XML_HASH_TYPE_OBJECT_UID, "xmlhash");
-	
-	filesave = g_alloca (strlen (hash->filename) + 5);
-	if ((slash = strrchr (hash->filename, '/')))
-		sprintf (filesave, "%.*s.#%s", (int)(slash - hash->filename + 1), hash->filename, slash + 1);
-	else
-		sprintf (filesave, ".#%s", hash->filename);
-	
-	if (xmlSaveFile (filesave, doc) != -1)
-		rename (filesave, hash->filename);
-	else
-		unlink (filesave);
-	
+
+	e_xml_save_file (hash->filename, doc);
+
 	xmlFreeDoc (doc);
 }
 
