@@ -1,10 +1,12 @@
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
-	* backends/file/e-cal-backend-file.c: Use gstdio wrappers for full
-	non-ASCII filename support on Windows. Use g_path_get_basename()
-	instead of looking for '/'. Use g_filename_to_uri() instead of
-	prefixing "file://". Use g_file_get_contents() or GMappedFile (if
-	built against GLib >= 2.8) to read the attachment files.
+	* backends/file/e-cal-backend-file.c
+	* backends/groupwise/e-cal-backend-groupwise.c: Use gstdio
+	wrappers for full non-ASCII filename support on Windows. Use
+	g_path_get_basename() instead of looking for '/'. Use
+	g_filename_to_uri() instead of prefixing "file://". Use
+	g_file_get_contents() or GMappedFile (if built against GLib >=
+	2.8) to read the attachment files.
 
 2005-11-28  Chenthill Palanisamy  <pchenthill@novell.com>
 

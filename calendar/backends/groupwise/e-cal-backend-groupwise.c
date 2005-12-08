@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -42,6 +43,10 @@
 #include "e-cal-backend-groupwise.h"
 #include "e-cal-backend-groupwise-utils.h"
 #include "e-gw-connection.h"
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
@@ -1073,6 +1078,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	ECalBackendSyncStatus status;
+	char *filename;
 	char *mangled_uri;
 	int i;
 	
@@ -1127,10 +1133,14 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		}
 	}
 
-	priv->local_attachments_store = 
-		g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
-			     "/", mangled_uri, NULL);
+	filename = g_build_filename (g_get_home_dir (),
+				     ".evolution/cache/calendar",
+				     mangled_uri,
+				     NULL);
 	g_free (mangled_uri);
+	priv->local_attachments_store = 
+		g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
 
 	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	status = connect_to_server (cbgw);
@@ -2049,75 +2059,80 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	
 }
 
+/* This function is largely duplicated in
+ * ../file/e-cal-backend-file.c
+ */
 static void
 fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
-	char  *attach_store, *filename, *file_contents;
+	char  *attach_store;
 	char *dest_url, *dest_file;
-	int fd, len;
-	int len_read = 0;
-	char buf[1024];
-	struct stat sb;
+	int fd;
 	const char *uid;
-
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
 	/*FIXME  get the uri rather than computing the path */
-	attach_store = g_strconcat
-			(e_cal_backend_groupwise_get_local_attachments_store (cbgw), NULL);
+	attach_store = g_strdup (e_cal_backend_groupwise_get_local_attachments_store (cbgw));
 	
 	for (l = attach_list; l ; l = l->next) {
 		char *sfname = (char *)l->data;
+		char *filename, *new_filename;
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		GMappedFile *mapped_file;
+#else
+		char *file_contents;
+		int len;
+#endif
+		GError *error = NULL;
 
-		filename = g_strrstr (sfname, "/") + 1;	
-
-		// open the file using the data
-		fd = open (sfname, O_RDONLY); 
-		if (fd == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not open the file descriptor\n");
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
+		if (!mapped_file) {
+			g_message ("DEBUG: could not map %s: %s\n",
+				   sfname, error->message);
+			g_error_free (error);
 			continue;
 		}
-		if (fstat (fd, &sb) == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not fstat the attachment file\n");
+#else
+		if (!g_file_get_contents (sfname, &file_contents, &len, &error)) {
+			g_message ("DEBUG: could not read %s: %s\n",
+				   sfname, error->message);
+			g_error_free (error);
 			continue;
 		}
-		len = sb.st_size;
-
-		file_contents = g_malloc (len + 1);
-	
-		while (len_read < len) {
-			int c = read (fd, buf, sizeof (buf));
-
-			if (c == -1)
-				break;
-
-			memcpy (&file_contents[len_read], buf, c);
-			len_read += c;
-		}
-		file_contents [len_read] = 0;
-
-		/* write*/
-		dest_file = g_strconcat (attach_store, "/", uid, "-",
-				filename, NULL);
-		fd = open (dest_file, O_RDWR|O_CREAT|O_TRUNC, 0600);
+#endif
+		filename = g_path_get_basename (sfname);
+		new_filename = g_strconcat (uid, "-", filename, NULL);
+		g_free (filename);
+		dest_file = g_build_filename (attach_store, new_filename, NULL);
+		g_free (new_filename);
+		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 		if (fd == -1) {
 			/* TODO handle error conditions */
-			g_message ("DEBUG: could not serialize attachments\n");
-		}
-
-		if (write (fd, file_contents, len_read) == -1) {
+			g_message ("DEBUG: could not open %s for writing\n",
+				   dest_file);
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
+				  g_mapped_file_get_length (mapped_file)) == -1) {
+#else
+		} else if (write (fd, file_contents, len) == -1) {
+#endif
 			/* TODO handle error condition */
 			g_message ("DEBUG: attachment write failed.\n");
 		}
 
-		dest_url = g_strconcat ("file:///", dest_file, NULL);
-		new_attach_list = g_slist_append (new_attach_list, dest_url);
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		g_mapped_file_free (mapped_file);
+#else
+		g_free (file_contents);
+#endif
+		close (fd);
+		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
 	}
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
