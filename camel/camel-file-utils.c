@@ -30,18 +30,22 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <netinet/in.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 
+#include <glib.h>
+
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#define EWOULDBLOCK EAGAIN
+#endif
+
+#include "libedataserver/e-util.h"
+
 #include "camel-file-utils.h"
 #include "camel-operation.h"
 #include "camel-url.h"
-
-#ifndef MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#endif
 
 #define IO_TIMEOUT (60*4)
 
@@ -116,7 +120,7 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
 {
 	guint32 save;
 
-	save = htonl (value);
+	save = g_htonl (value);
 	if (fwrite (&save, sizeof (save), 1, out) != 1)
 		return -1;
 	return 0;
@@ -138,7 +142,7 @@ camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
 	guint32 save;
 
 	if (fread (&save, sizeof (save), 1, in) == 1) {
-		*dest = ntohl (save);
+		*dest = g_ntohl (save);
 		return 0;
 	} else {
 		return -1;
@@ -327,6 +331,10 @@ camel_file_util_decode_string (FILE *in, char **str)
 int
 camel_mkdir (const char *path, mode_t mode)
 {
+#if GLIB_CHECK_VERSION(2,8,0)
+	g_assert(path && g_path_is_absolute (path));
+	return g_mkdir_with_parents (path, mode);
+#else
 	char *copy, *p;
 	
 	g_assert(path && path[0] == '/');
@@ -346,8 +354,8 @@ camel_mkdir (const char *path, mode_t mode)
 	} while (p);
 	
 	return 0;
+#endif
 }
-
 
 /**
  * camel_file_util_safe_filename:
@@ -361,10 +369,16 @@ camel_mkdir (const char *path, mode_t mode)
 char *
 camel_file_util_safe_filename (const char *name)
 {
+#ifdef G_OS_WIN32
+	const char *unsafe_chars = "/?()'*<>:\"\\|";
+#else
+	const char *unsafe_chars = "/?()'*";
+#endif
+
 	if (name == NULL)
 		return NULL;
 	
-	return camel_url_encode(name, "/?()'*");
+	return camel_url_encode(name, unsafe_chars);
 }
 
 
@@ -391,13 +405,17 @@ camel_read (int fd, char *buf, size_t n)
 		errno = EINTR;
 		return -1;
 	}
-	
+#ifndef G_OS_WIN32
 	cancel_fd = camel_operation_cancel_fd (NULL);
+#else
+	cancel_fd = -1;
+#endif
 	if (cancel_fd == -1) {
 		do {
 			nread = read (fd, buf, n);
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	} else {
+#ifndef G_OS_WIN32
 		int errnosav, flags, fdmax;
 		fd_set rdset;
 		
@@ -434,6 +452,7 @@ camel_read (int fd, char *buf, size_t n)
 		errnosav = errno;
 		fcntl (fd, F_SETFL, flags);
 		errno = errnosav;
+#endif
 	}
 	
 	return nread;
@@ -461,18 +480,21 @@ camel_write (int fd, const char *buf, size_t n)
 		errno = EINTR;
 		return -1;
 	}
-	
+#ifndef G_OS_WIN32
 	cancel_fd = camel_operation_cancel_fd (NULL);
+#else
+	cancel_fd = -1;
+#endif
 	if (cancel_fd == -1) {
 		do {
 			do {
 				w = write (fd, buf + written, n - written);
 			} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
-			
 			if (w > 0)
 				written += w;
 		} while (w != -1 && written < n);
 	} else {
+#ifndef G_OS_WIN32
 		int errnosav, flags, fdmax;
 		fd_set rdset, wrset;
 		
@@ -516,6 +538,7 @@ camel_write (int fd, const char *buf, size_t n)
 		errnosav = errno;
 		fcntl (fd, F_SETFL, flags);
 		errno = errnosav;
+#endif
 	}
 	
 	if (w == -1)
@@ -525,31 +548,188 @@ camel_write (int fd, const char *buf, size_t n)
 }
 
 /**
+ * camel_read_socket:
+ * @fd: a socket
+ * @buf: buffer to fill
+ * @n: number of bytes to read into @buf
+ *
+ * Cancellable read() replacement for sockets. Code that intends to be
+ * portable to Win32 should call camel_read_socket() only on sockets
+ * returned from socket(), or accept().
+ *
+ * Returns number of bytes read or -1 on fail. On failure, errno will
+ * be set appropriately. If the socket is nonblocking
+ * camel_read_socket() will retry the read until it gets something.
+ **/
+ssize_t
+camel_read_socket (int fd, char *buf, size_t n)
+{
+#ifndef G_OS_WIN32
+	return camel_read (fd, buf, n);
+#else
+	ssize_t nread;
+	int cancel_fd;
+	
+	if (camel_operation_cancel_check (NULL)) {
+		errno = EINTR;
+		return -1;
+	}
+	cancel_fd = camel_operation_cancel_fd (NULL);
+
+	if (cancel_fd == -1) {
+		do {
+			nread = recv (fd, buf, n, 0);
+		} while (nread == SOCKET_ERROR && WSAGetLastError () == WSAEWOULDBLOCK);
+	} else {
+		int fdmax;
+		fd_set rdset;
+		u_long yes = 1;
+
+		ioctlsocket (fd, FIONBIO, &yes);
+		fdmax = MAX (fd, cancel_fd) + 1;
+		do {
+			struct timeval tv;
+			int res;
+
+			FD_ZERO (&rdset);
+			FD_SET (fd, &rdset);
+			FD_SET (cancel_fd, &rdset);
+			tv.tv_sec = IO_TIMEOUT;
+			tv.tv_usec = 0;
+			nread = -1;
+
+			res = select(fdmax, &rdset, 0, 0, &tv);
+			if (res == -1)
+				;
+			else if (res == 0)
+				errno = ETIMEDOUT;
+			else if (FD_ISSET (cancel_fd, &rdset)) {
+				errno = EINTR;
+				goto failed;
+			} else {				
+				nread = recv (fd, buf, n, 0);
+			}
+		} while (nread == -1 && WSAGetLastError () == WSAEWOULDBLOCK);
+	failed:
+		;
+	}
+	
+	return nread;
+#endif
+}
+
+/**
+ * camel_write_socket:
+ * @fd: file descriptor
+ * @buf: buffer to write
+ * @n: number of bytes of @buf to write
+ *
+ * Cancellable write() replacement for sockets. Code that intends to
+ * be portable to Win32 should call camel_write() only on sockets
+ * returned from socket() or accept().
+ *
+ * Returns number of bytes written or -1 on fail. On failure, errno will
+ * be set appropriately.
+ **/
+ssize_t
+camel_write_socket (int fd, const char *buf, size_t n)
+{
+#ifndef G_OS_WIN32
+	return camel_write (fd, buf, n);
+#else
+	ssize_t w, written = 0;
+	int cancel_fd;
+	
+	if (camel_operation_cancel_check (NULL)) {
+		errno = EINTR;
+		return -1;
+	}
+
+	cancel_fd = camel_operation_cancel_fd (NULL);
+	if (cancel_fd == -1) {
+		do {
+			do {
+				w = send (fd, buf + written, n - written, 0);
+			} while (w == SOCKET_ERROR && WSAGetLastError () == WSAEWOULDBLOCK);
+			if (w > 0)
+				written += w;
+		} while (w != -1 && written < n);
+	} else {
+		int fdmax;
+		fd_set rdset, wrset;
+		u_long arg = 1;
+
+		ioctlsocket (fd, FIONBIO, &arg);
+		fdmax = MAX (fd, cancel_fd) + 1;
+		do {
+			struct timeval tv;
+			int res;
+
+			FD_ZERO (&rdset);
+			FD_ZERO (&wrset);
+			FD_SET (fd, &wrset);
+			FD_SET (cancel_fd, &rdset);
+			tv.tv_sec = IO_TIMEOUT;
+			tv.tv_usec = 0;			
+			w = -1;
+
+			res = select (fdmax, &rdset, &wrset, 0, &tv);
+			if (res == SOCKET_ERROR) {
+				/* w still being -1 will catch this */
+			} else if (res == 0)
+				errno = ETIMEDOUT;
+			else if (FD_ISSET (cancel_fd, &rdset))
+				errno = EINTR;
+			else {
+				w = send (fd, buf + written, n - written, 0);
+				if (w == SOCKET_ERROR) {
+					if (WSAGetLastError () == WSAEWOULDBLOCK)
+						w = 0;
+				} else
+					written += w;
+			}
+		} while (w != -1 && written < n);
+		arg = 0;
+		ioctlsocket (fd, FIONBIO, &arg);
+	}
+	
+	if (w == -1)
+		return -1;
+	
+	return written;
+#endif
+}
+
+
+/**
  * camel_file_util_savename:
- * @filename: 
+ * @filename: a pathname
  * 
- * Builds a filename of the form ".#" + @filename, used to create
- * a two-stage commit file write.
+ * Builds a pathname where the basename is of the form ".#" + the
+ * basename of @filename, for instance used in a two-stage commit file
+ * write.
  * 
- * Return value: ".#" + filename.  It must be free'd with g_free().
+ * Return value: The new pathname.  It must be free'd with g_free().
  **/
 char *
 camel_file_util_savename(const char *filename)
 {
-	char *name, *slash;
-	int off;
+	char *dirname, *retval;
 
-	name = g_malloc(strlen(filename)+3);
-	slash = strrchr(filename, '/');
-	if (slash) {
-		off = slash-filename;
+	dirname = g_path_get_dirname(filename);
 
-		memcpy(name, filename, off+1);
-		memcpy(name + off+1, ".#", 2);
-		strcpy(name + off+3, filename+off+1);
+	if (strcmp (dirname, ".") == 0) {
+		retval = g_strconcat (".#", filename, NULL);
 	} else {
-		sprintf(name, ".#%s", filename);
-	}
+		char *basename = g_path_get_basename(filename);
+		char *newbasename = g_strconcat (".#", basename, NULL);
 
-	return name;
+		retval = g_build_filename (dirname, newbasename, NULL);
+
+		g_free (newbasename);
+		g_free (basename);
+	}
+	g_free (dirname);
+
+	return retval;
 }

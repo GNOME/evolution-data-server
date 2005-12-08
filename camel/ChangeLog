@@ -1,3 +1,24 @@
+2005-12-08  Tor Lillqvist  <tml@novell.com>
+
+	* camel-file-utils.c: Win32 port: Include <winsock2.h>. Use
+	g_htonl() and g_ntohl().
+	(camel_mkdir): Implement using g_mkdir_with_parents() when
+	compiling against GLib 2.8 or later.
+	(camel_file_util_safe_filename): Need to encode more unsafe chars
+	on Win32.
+	(camel_read, camel_write): Not cancellable on Win32. But then
+	these functions should be used only with regular files, not
+	sockets.
+	(camel_read_socket, camel_write_socket): New functions, to be used
+	for sockets. On Unix just call camel_read() and camel_write(). On
+	Win32 use recv() and write(). read() and write() can not be used
+	on sockets in Windows. read() and write() are in the C library,
+	which knows nothing about sockets.
+	(camel_file_util_savename): Clarify doc comment. Use
+	g_path_get_dirname() instead of looking for '/'. Use
+	g_path_get_basename(), and g_build_filename() to construct the
+	savename.
+
 2005-12-06  Tor Lillqvist  <tml@novell.com>
 
 	* camel-index.c
