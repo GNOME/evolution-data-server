@@ -1,6 +1,7 @@
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
-	* libedataserver/e-db3-utils.c: Use gstdio wrappers.
+	* libedataserver/e-db3-utils.c
+	* libedataserver/e-file-cache.c: Use gstdio wrappers.
 
 	* libedataserver/e-xml-utils.c
 	* libedataserver/e-xml-utils.h: New files.
