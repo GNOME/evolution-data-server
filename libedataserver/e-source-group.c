@@ -435,7 +435,8 @@ e_source_group_set_name (ESourceGroup *group,
 	if (group->priv->readonly)
 		return;
 	
-	if (group->priv->name == name)
+	if (group->priv->name != NULL &&
+	    strcmp (group->priv->name, name) == 0)
 		return;
 
 	g_free (group->priv->name);

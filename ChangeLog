@@ -3,6 +3,9 @@
 	* libedataserver/e-db3-utils.c
 	* libedataserver/e-file-cache.c: Use gstdio wrappers.
 
+	* libedataserver/e-source-group.c (e_source_group_set_name):
+	Compare the strings, not the pointers.
+
 	* libedataserver/e-xml-utils.c
 	* libedataserver/e-xml-utils.h: New files.
 	(e_xml_parse_file): Replacement for xmlParseFile(). Needed because
