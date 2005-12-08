@@ -2,14 +2,21 @@
 
 #include "config.h"
 
-#include "e-db3-utils.h"
-
-#include "db.h"
-
 #include <errno.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "db.h"
+
+#include "e-db3-utils.h"
 
 static char *
 get_check_filename (const char *filename)
@@ -32,10 +39,10 @@ cp_file (const char *src, const char *dest)
 	int length;
 	int place;
 
-	i = open (src, O_RDONLY);
+	i = g_open (src, O_RDONLY | O_BINARY, 0);
 	if (i == -1)
 		return -1;
-	o = creat (dest, S_IREAD | S_IWRITE);
+	o = g_open (dest, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, S_IREAD | S_IWRITE);
 	if (o == -1) {
 		close (i);
 		return -1;
@@ -52,7 +59,7 @@ cp_file (const char *src, const char *dest)
 			else {
 				close (i);
 				close (o);
-				unlink (dest);
+				g_unlink (dest);
 				return -1;
 			}
 		}
@@ -67,7 +74,7 @@ cp_file (const char *src, const char *dest)
 				else {
 					close (i);
 					close (o);
-					unlink (dest);
+					g_unlink (dest);
 					return -1;
 				}
 			}
@@ -87,7 +94,7 @@ static int
 touch_file (const char *file)
 {
 	int o;
-	o = creat (file, S_IREAD | S_IWRITE);
+	o = g_open (file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, S_IREAD | S_IWRITE);
 	if (o == -1)
 		return -1;
 
@@ -112,9 +119,9 @@ resume_upgrade (const char *filename, const char *copy_filename, const char *che
 		ret_val = db->upgrade (db, filename, 0);
 
 	if (ret_val == 0)
-		ret_val = unlink (check_filename);
+		ret_val = g_unlink (check_filename);
 	if (ret_val == 0)
-		ret_val = unlink (copy_filename);
+		ret_val = g_unlink (copy_filename);
 
 	db->close (db, 0);
 
@@ -134,7 +141,7 @@ e_db3_utils_maybe_recover (const char *filename)
 	if (g_file_test(check_filename, G_FILE_TEST_EXISTS)) {
 		ret_val = resume_upgrade(filename, copy_filename, check_filename);
 	} else if (g_file_test (copy_filename, G_FILE_TEST_EXISTS)) {
-		unlink (copy_filename);
+		g_unlink (copy_filename);
 	}
 
 	g_free (copy_filename);
@@ -164,10 +171,10 @@ e_db3_utils_upgrade_format (const char *filename)
 	if (ret_val == 0)
 		ret_val = db->upgrade (db, filename, 0);
 	if (ret_val == 0)
-		ret_val = unlink (check_filename);
+		ret_val = g_unlink (check_filename);
 
 	if (ret_val == 0)
-		ret_val = unlink (copy_filename);
+		ret_val = g_unlink (copy_filename);
 
 	db->close (db, 0);
 

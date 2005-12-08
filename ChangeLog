@@ -1,5 +1,7 @@
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
+	* libedataserver/e-db3-utils.c: Use gstdio wrappers.
+
 	* libedataserver/e-xml-utils.c
 	* libedataserver/e-xml-utils.h: New files.
 	(e_xml_parse_file): Replacement for xmlParseFile(). Needed because
