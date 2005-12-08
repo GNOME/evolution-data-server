@@ -121,16 +121,21 @@ static gboolean
 e_name_western_word_is_suffix (char *word)
 {
 	int i;
+	gchar *folded_word = g_utf8_casefold (word, -1);
 
+	/* The suffix table is already in lowercase, and we know that
+	 * g_utf8_casefold turns the string into lowercase, so we
+	 * don't need to casefold the suffixes.
+	 */
 	for (i = 0; e_name_western_sfx_table [i] != NULL; i ++) {
-		int length = strlen (e_name_western_sfx_table [i]);
-		if (!g_strcasecmp (word, e_name_western_sfx_table [i]) || 
-		    ( !g_strncasecmp (word, e_name_western_sfx_table [i], length) &&
-		      strlen(word) == length + 1 &&
-		      word[length] == '.' ))
-			return TRUE;
-	}
+		gboolean match = !g_utf8_collate (folded_word, e_name_western_sfx_table [i]);
 
+		if (match) {
+			g_free (folded_word);
+			return TRUE;
+		}
+	}
+	g_free (folded_word);
 	return FALSE;
 }
 
@@ -146,13 +151,17 @@ e_name_western_get_one_prefix_at_str (char *str)
 	for (i = 0; e_name_western_pfx_table [i] != NULL; i ++) {
 		int pfx_words;
 		char *words;
+		char *folded_words;
 
 		pfx_words = e_name_western_str_count_words (e_name_western_pfx_table [i]);
 		words = e_name_western_get_words_at_idx (str, 0, pfx_words);
+		folded_words = g_utf8_casefold (words, -1);
 
-		if (! g_strcasecmp (words, e_name_western_pfx_table [i]))
+		if (! g_utf8_collate (folded_words, e_name_western_pfx_table [i])) {
+			g_free (folded_words);
 			return words;
-
+		}
+		g_free (folded_words);
 		g_free (words);
 	}
 
@@ -228,14 +237,17 @@ static gboolean
 e_name_western_is_complex_last_beginning (char *word)
 {
 	int i;
+	char *folded_word = g_utf8_casefold (word, -1);
 
 	for (i = 0; e_name_western_complex_last_table [i] != NULL; i ++) {
 
-		if (! g_strcasecmp (
-			word, e_name_western_complex_last_table [i]))
+		if (! g_utf8_collate (folded_word,
+				      e_name_western_complex_last_table [i])) {
+			g_free (folded_word);
 			return TRUE;
+		}
 	}
-
+	g_free (folded_word);
 	return FALSE;
 }
 
@@ -772,7 +784,7 @@ e_name_western_zap_nil (char **str, int *idx)
 	}
 
 #define CHECK_MIDDLE_NAME_FOR_CONJUNCTION_CASE(conj) \
-	if (idxs->middle_idx != -1 && !strcasecmp (name->middle, conj)) {	\
+	if (idxs->middle_idx != -1 && !g_ascii_strcasecmp (name->middle, conj)) {	\
 		FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION	\
 	}
 
