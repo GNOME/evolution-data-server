@@ -1,3 +1,10 @@
+2005-12-07  Jeff Cai <jeff.cai@sun.com>
+
+	* camel-vee-folder.c: (vee_search_by_expression),
+	(vee_search_by_uids):
+	if search expression of a vfolder is null, make it an empty string.
+	Fix #323433
+	
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* camel-file-utils.c: Win32 port: Include <winsock2.h>. Use

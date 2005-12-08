@@ -535,7 +535,7 @@ vee_search_by_expression(CamelFolder *folder, const char *expression, CamelExcep
 	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
 	
 	if (vf != folder_unmatched)
-		expr = g_strdup_printf ("(and %s %s)", vf->expression, expression);
+		expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
 	else
 		expr = g_strdup (expression);
 	
@@ -587,7 +587,7 @@ vee_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids,
 
 	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
 
-	expr = g_strdup_printf("(and %s %s)", vf->expression, expression);
+	expr = g_strdup_printf("(and %s %s)", vf->expression ? vf->expression : "", expression);
 	node = p->folders;
 	while (node) {
 		CamelFolder *f = node->data;
