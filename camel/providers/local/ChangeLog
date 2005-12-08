@@ -1,3 +1,18 @@
+2005-12-08  Tor Lillqvist  <tml@novell.com>
+
+	* *.c: Use gstdio wrappers. Use GLib portable path manipulation
+	API. No symlinks on Win32. Use GDir instead of dirent.
+
+	* camel-local-provider.c: Compile in only the mbox provider on Win32.
+
+	* camel-mbox-folder.c: Bypass locking so far on Win32. Should
+	implement, though, several threads in Evo might be accessing the
+	same mbox folder.
+
+	* camel-mbox-store.c: No inode numbers on Win32, but no symlinks
+	either, so bypass the code to avoid visiting the same folder
+	twice.
+
 2005-09-15  Tor Lillqvist  <tml@novell.com>
 
 	* camel-local-summary.c: Use g_ascii_strcasecmp() instead of

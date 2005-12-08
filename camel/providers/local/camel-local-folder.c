@@ -27,17 +27,20 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <sys/types.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include <fcntl.h>
 
-#ifndef _POSIX_PATH_MAX
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#if !defined (G_OS_WIN32) && !defined (_POSIX_PATH_MAX)
 #include <posix1_lim.h>
 #endif
 
+#include "camel-private.h"
 #include "camel-local-folder.h"
 #include "camel-local-store.h"
 #include "camel-stream-fs.h"
@@ -204,21 +207,16 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 {
 	CamelFolderInfo *fi;
 	CamelFolder *folder;
-	const char *root_dir_path, *name;
+	const char *root_dir_path;
+	char *name;
 	char *tmp, *statepath;
-	char folder_path[PATH_MAX];
-	struct stat st;
 	int forceindex, len;
 	CamelURL *url;
 	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
 	
 	folder = (CamelFolder *)lf;
 
-	name = strrchr(full_name, '/');
-	if (name)
-		name++;
-	else
-		name = full_name;
+	name = g_path_get_basename(full_name);
 
 	camel_folder_construct(folder, parent_store, full_name, name);
 
@@ -227,7 +225,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	len = strlen (root_dir_path);
 	tmp = g_alloca (len + 1);
 	strcpy (tmp, root_dir_path);
-	if (len>1 && tmp[len-1] == '/')
+	if (len>1 && G_IS_DIR_SEPARATOR(tmp[len-1]))
 		tmp[len-1] = 0;
 
 	lf->base_path = g_strdup(root_dir_path);
@@ -247,19 +245,19 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		camel_object_set(lf, NULL, CAMEL_LOCAL_FOLDER_INDEX_BODY, TRUE, 0);
 		camel_object_state_write(lf);
 	}
-
+#ifndef G_OS_WIN32
 	/* follow any symlinks to the mailbox */
 	if (lstat (lf->folder_path, &st) != -1 && S_ISLNK (st.st_mode) &&
 	    realpath (lf->folder_path, folder_path) != NULL) {
 		g_free (lf->folder_path);
 		lf->folder_path = g_strdup (folder_path);
 	}
-	
+#endif
 	lf->changes = camel_folder_change_info_new();
 
 	/* TODO: Remove the following line, it is a temporary workaround to remove
 	   the old-format 'ibex' files that might be lying around */
-	unlink(lf->index_path);
+	g_unlink(lf->index_path);
 
 	/* FIXME: Need to run indexing off of the setv method */
 
@@ -297,6 +295,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	/* we sync here so that any hard work setting up the folder isn't lost */
 	/*if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
 		camel_object_unref (CAMEL_OBJECT (folder));
+		g_free(name);
 		return NULL;
 		}*/
 #endif
@@ -318,7 +317,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		camel_object_trigger_event(CAMEL_OBJECT (parent_store), "folder_created", fi);
 		camel_folder_info_free(fi);
 	}
-	
+	g_free(name);
 	return lf;
 }
 

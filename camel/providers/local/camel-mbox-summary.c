@@ -23,25 +23,24 @@
 #include <config.h>
 #endif
 
-#include "camel-mbox-summary.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-operation.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/uio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "camel-mbox-summary.h"
-#include "camel/camel-file-utils.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-operation.h"
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel-file-utils.h"
 #include "camel-i18n.h"
+#include "camel-mime-message.h"
+#include "camel-operation.h"
+#include "camel-private.h"
+
+#include "camel-mbox-summary.h"
 
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
@@ -415,7 +414,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = open(cls->folder_path, O_RDONLY);
+	fd = g_open(cls->folder_path, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		d(printf("%s failed to open: %s\n", cls->folder_path, strerror (errno)));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -588,7 +587,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = open(cls->folder_path, O_RDONLY);
+	fd = g_open(cls->folder_path, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open file: %s: %s"),
@@ -600,7 +599,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	tmpname = g_alloca (strlen (cls->folder_path) + 5);
 	sprintf (tmpname, "%s.tmp", cls->folder_path);
 	d(printf("Writing tmp file to %s\n", tmpname));
-	fdout = open(tmpname, O_WRONLY|O_CREAT|O_TRUNC, 0600);
+	fdout = g_open(tmpname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fdout == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot open temporary mailbox: %s"),
@@ -633,7 +632,11 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 
 	/* this should probably either use unlink/link/unlink, or recopy over
 	   the original mailbox, for various locking reasons/etc */
-	if (rename(tmpname, cls->folder_path) == -1) {
+#ifdef G_OS_WIN32
+	if (g_file_test(cls->folder_path,G_FILE_TEST_IS_REGULAR) && g_remove(cls->folder_path) == -1)
+		g_warning ("Cannot remove %s: %s", cls->folder_path, g_strerror (errno));
+#endif
+	if (g_rename(tmpname, cls->folder_path) == -1) {
 		g_warning("Cannot rename folder: %s", strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not rename folder: %s"),
@@ -653,7 +656,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 		close(fdout);
 	
 	if (tmpname)
-		unlink(tmpname);
+		g_unlink(tmpname);
 
 	camel_operation_end(NULL);
 
@@ -679,7 +682,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = open(cls->folder_path, O_RDWR);
+	fd = g_open(cls->folder_path, O_RDWR|O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open file: %s: %s"),

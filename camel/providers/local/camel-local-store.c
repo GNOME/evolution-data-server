@@ -30,20 +30,20 @@
 #include <stdio.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 
-#include "camel-private.h"
-
-#include "camel-local-store.h"
-#include "camel-exception.h"
-#include "camel-url.h"
-#include "camel-i18n.h"
+#include "camel/camel-exception.h"
+#include "camel/camel-file-utils.h"
+#include "camel/camel-i18n.h"
+#include "camel/camel-private.h"
+#include "camel/camel-text-index.h"
+#include "camel/camel-url.h"
+#include "camel/camel-vtrash-folder.h"
 
 #include "camel-local-folder.h"
-#include <camel/camel-text-index.h>
-#include <camel/camel-file-utils.h>
-#include <camel/camel-vtrash-folder.h>
+#include "camel-local-store.h"
 
-#define d(x) 
+#define d(x)
 
 /* Returns the class for a CamelLocalStore */
 #define CLOCALS_CLASS(so) CAMEL_LOCAL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
@@ -127,7 +127,7 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 		return;
 
 	len = strlen (service->url->path);
-	if (service->url->path[len - 1] != '/')
+	if (!G_IS_DIR_SEPARATOR (service->url->path[len - 1]))
 		local_store->toplevel_dir = g_strdup_printf ("%s/", service->url->path);
 	else
 		local_store->toplevel_dir = g_strdup (service->url->path);
@@ -142,16 +142,21 @@ camel_local_store_get_toplevel_dir (CamelLocalStore *store)
 static CamelFolder *
 get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
 {
-	char *path = ((CamelLocalStore *)store)->toplevel_dir;
+	int len = strlen(((CamelLocalStore *)store)->toplevel_dir);
+	char *path = g_alloca(len + 1);
 	struct stat st;
+
+	strcpy(path, ((CamelLocalStore *)store)->toplevel_dir);
+	if (G_IS_DIR_SEPARATOR(path[len-1]))
+		path[len-1] = '\0';
 	
-	if (path[0] != '/') {
+	if (!g_path_is_absolute(path)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Store root %s is not an absolute path"), path);
 		return NULL;
 	}
 
-	if (stat(path, &st) == 0) {
+	if (g_stat(path, &st) == 0) {
 		if (!S_ISDIR(st.st_mode)) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 					     _("Store root %s is not a regular directory"), path);
@@ -256,7 +261,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
-	if (path[0] != '/') {
+	if (g_path_is_absolute(path)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Store root %s is not an absolute path"), path);
 		return NULL;
@@ -267,7 +272,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 	else
 		name = g_strdup_printf("%s/%s", path, folder_name);
 
-	if (stat(name, &st) == 0 || errno != ENOENT) {
+	if (g_stat(name, &st) == 0 || errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				      _("Cannot get folder: %s: %s"),
 				      name, g_strerror (errno));
@@ -307,13 +312,14 @@ static int xrename(const char *oldp, const char *newp, const char *prefix, const
 
 	d(printf("renaming %s%s to %s%s\n", oldp, suffix, newp, suffix));
 
-	if (stat(old, &st) == -1) {
+	if (g_stat(old, &st) == -1) {
 		if (missingok && errno == ENOENT) {
 			ret = 0;
 		} else {
 			err = errno;
 			ret = -1;
 		}
+#ifndef G_OS_WIN32
 	} else if (S_ISDIR(st.st_mode)) { /* use rename for dirs */
 		if (rename(old, new) == 0
 		    || stat(new, &st) == 0) {
@@ -334,6 +340,14 @@ static int xrename(const char *oldp, const char *newp, const char *prefix, const
 	} else {
 		err = errno;
 		ret = -1;
+#else
+	} else if ((!g_file_test (new, G_FILE_TEST_EXISTS) || g_remove (new) == 0) &&
+		   g_rename(old, new) == 0) {
+		ret = 0;
+	} else {
+		err = errno;
+		ret = -1;
+#endif
 	}
 
 	if (ret == -1) {
@@ -426,7 +440,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ev-summary", name);
-	if (unlink(str) == -1 && errno != ENOENT) {
+	if (g_unlink(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not delete folder summary file `%s': %s"),
 				      str, g_strerror (errno));
@@ -459,7 +473,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	if (str == NULL)
 		str = g_strdup_printf ("%s.cmeta", name);
 	
-	if (unlink (str) == -1 && errno != ENOENT) {
+	if (g_unlink (str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not delete folder meta file `%s': %s"),
 				      str, g_strerror (errno));

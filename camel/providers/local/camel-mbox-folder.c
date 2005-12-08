@@ -26,23 +26,26 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <fcntl.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel/camel-data-wrapper.h"
+#include "camel/camel-exception.h"
+#include "camel/camel-i18n.h"
+#include "camel/camel-mime-filter-from.h"
+#include "camel/camel-mime-message.h"
+#include "camel/camel-private.h"
+#include "camel/camel-stream-filter.h"
+#include "camel/camel-stream-fs.h"
 
 #include "camel-mbox-folder.h"
 #include "camel-mbox-store.h"
-#include "camel-stream-fs.h"
 #include "camel-mbox-summary.h"
-#include "camel-data-wrapper.h"
-#include "camel-mime-message.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-filter-from.h"
-#include "camel-exception.h"
-#include "camel-i18n.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
@@ -136,6 +139,7 @@ static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *
 
 static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
+#ifndef G_OS_WIN32
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 
 	/* make sure we have matching unlocks for locks, camel-local-folder class should enforce this */
@@ -154,18 +158,20 @@ static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *e
 		mf->lockfd = -1;
 		return -1;
 	}
-
+#endif
 	return 0;
 }
 
 static void mbox_unlock(CamelLocalFolder *lf)
 {
+#ifndef G_OS_WIN32
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 
 	g_assert(mf->lockfd != -1);
 	camel_unlock_folder(lf->folder_path, mf->lockfd);
 	close(mf->lockfd);
 	mf->lockfd = -1;
+#endif
 }
 
 static void
@@ -242,7 +248,7 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 
 	/* now we 'fudge' the summary  to tell it its uptodate, because its idea of uptodate has just changed */
 	/* the stat really shouldn't fail, we just wrote to it */
-	if (stat(lf->folder_path, &st) == 0) {
+	if (g_stat(lf->folder_path, &st) == 0) {
 		mbs->folder_size = st.st_size;
 		((CamelFolderSummary *)mbs)->time = st.st_mtime;
 	}
@@ -281,7 +287,7 @@ fail_write:
 	g_free(fromline);
 
 	/* reset the file to original size */
-	fd = open(lf->folder_path, O_WRONLY, 0600);
+	fd = g_open(lf->folder_path, O_WRONLY | O_BINARY, 0600);
 	if (fd != -1) {
 		ftruncate(fd, mbs->folder_size);
 		close(fd);
@@ -291,7 +297,7 @@ fail_write:
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (mbs), camel_message_info_uid (mi));
 	
 	/* and tell the summary its uptodate */
-	if (stat(lf->folder_path, &st) == 0) {
+	if (g_stat(lf->folder_path, &st) == 0) {
 		mbs->folder_size = st.st_size;
 		((CamelFolderSummary *)mbs)->time = st.st_mtime;
 	}
@@ -352,7 +358,7 @@ retry:
 	   with no stream).  This means we dont have to lock the mbox for the life of the message, but only
 	   while it is being created. */
 
-	fd = open(lf->folder_path, O_RDONLY);
+	fd = g_open(lf->folder_path, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"),

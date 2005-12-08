@@ -29,14 +29,16 @@
 #include "camel-provider.h"
 #include "camel-session.h"
 #include "camel-url.h"
+#include "camel-i18n.h"
 
 #include "camel-mh-store.h"
 #include "camel-mbox-store.h"
 #include "camel-maildir-store.h"
 #include "camel-spool-store.h"
-#include "camel-i18n.h"
 
 #define d(x)
+
+#ifndef G_OS_WIN32
 
 static CamelProviderConfEntry mh_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
@@ -58,6 +60,8 @@ static CamelProvider mh_provider = {
 	/* ... */
 };
 
+#endif
+
 static CamelProviderConfEntry mbox_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_END }
@@ -73,6 +77,8 @@ static CamelProvider mbox_provider = {
 	mbox_conf_entries,
 	/* ... */
 };
+
+#ifndef G_OS_WIN32
 
 static CamelProviderConfEntry maildir_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
@@ -113,6 +119,8 @@ static CamelProvider spool_provider = {
 	spool_conf_entries,
 	/* ... */
 };
+
+#endif
 
 /* build a canonical 'path' */
 static char *
@@ -193,29 +201,38 @@ local_url_equal(const void *v, const void *v2)
 
 void camel_provider_module_init(void)
 {
+#ifndef G_OS_WIN32
 	char *path;
+#endif
 	static int init = 0;
 
 	if (init)
 		abort();
 	init = 1;
 
+#ifndef G_OS_WIN32
 	mh_conf_entries[0].value = "";  /* default path */
 	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type ();
 	mh_provider.url_hash = local_url_hash;
 	mh_provider.url_equal = local_url_equal;
 	mh_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&mh_provider);
-	
+#endif
+
+#ifndef G_OS_WIN32
 	if (!(path = getenv ("MAIL")))
 		path = g_strdup_printf (SYSTEM_MAIL_DIR "/%s", g_get_user_name ());
 	mbox_conf_entries[0].value = path;  /* default path */
+#else
+	mbox_conf_entries[0].value = "";  /* default path */
+#endif
 	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mbox_store_get_type ();
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
 	mbox_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&mbox_provider);
-	
+
+#ifndef G_OS_WIN32
 	spool_conf_entries[0].value = path;  /* default path - same as mbox */
 	spool_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_provider.url_hash = local_url_hash;
@@ -230,4 +247,5 @@ void camel_provider_module_init(void)
 	maildir_provider.url_equal = local_url_equal;
 	maildir_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register(&maildir_provider);
+#endif
 }
