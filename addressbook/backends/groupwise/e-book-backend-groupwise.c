@@ -21,30 +21,33 @@
  * Authors: Sivaiah Nallagatla <snallagatla@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#include <libebook/e-contact.h>
-#include <glib/gi18n-lib.h>
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-util.h>
-#include <libedataserver/e-url.h> 
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
-#include <libedata-book/e-book-backend-cache.h>
-#include <libedata-book/e-book-backend-summary.h>
-#include "e-book-backend-groupwise.h"
-#include <e-gw-connection.h>
-#include <e-gw-item.h>
-#include <e-gw-filter.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
+
+#include "libedataserver/e-sexp.h"
+#include "libedataserver/e-util.h"
+#include "libedataserver/e-url.h" 
+#include "libebook/e-contact.h"
+#include "libedata-book/e-book-backend-sexp.h"
+#include "libedata-book/e-data-book.h"
+#include "libedata-book/e-data-book-view.h"
+#include "libedata-book/e-book-backend-cache.h"
+#include "libedata-book/e-book-backend-summary.h"
+#include "e-book-backend-groupwise.h"
+
+#include "e-gw-connection.h"
+#include "e-gw-item.h"
+#include "e-gw-filter.h"
 
 static EBookBackendClass *e_book_backend_groupwise_parent_class;
                                                                                                                              
@@ -2603,7 +2606,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	}
 
 	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
-	stat (cache_file_name, &buf);
+	g_stat (cache_file_name, &buf);
 	mod_time = buf.st_mtime;
 	tm = gmtime (&mod_time);
 	strftime (cache_time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
@@ -2767,7 +2770,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 
 	/* load summary file */
 	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
-	stat (cache_file_name, &buf);
+	g_stat (cache_file_name, &buf);
 	mod_time = buf.st_mtime;
 	if (e_book_backend_summary_load (ebgw->priv->summary) == FALSE || 
 	    e_book_backend_summary_is_up_to_date (ebgw->priv->summary, mod_time) == FALSE) {
@@ -3236,7 +3239,7 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 		e_data_book_respond_remove (book,  opid, GNOME_Evolution_Addressbook_Success);
 	else
 		e_data_book_respond_remove (book,  opid, GNOME_Evolution_Addressbook_OtherError);
-	unlink (e_file_cache_get_filename (E_FILE_CACHE (ebgw->priv->cache)));
+	g_unlink (e_file_cache_get_filename (E_FILE_CACHE (ebgw->priv->cache)));
 }
 
 static char *

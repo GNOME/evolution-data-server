@@ -5,6 +5,9 @@
 	UTF-8 file names that we use will work. (A small patch to libdb
 	was also required, see ../ChangeLog.)
 
+	* backends/groupwise/e-book-backend-groupwise.c: Use gstdio
+	wrappers.
+
 2005-11-30  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c: (poll_ldap):
