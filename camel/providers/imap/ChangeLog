@@ -2,12 +2,13 @@
 
 	* camel-imap-folder.c: Drop unused <dirent.h>.
 
-	* camel-imap-message-cache.c: Use gstdio wrappers.
+	* camel-imap-message-cache.c: Use gstdio wrappers. Open files in
+	binary mode.
 	(camel_imap_message_cache_new): Use GDir instead of dirent API.
-	(insert_setup): Trailing periods in file names are silently
-	dropped on Win32, so on Win32, if the we would want to create a
-	file with a name ending with a perioud, append a tilde (just a
-	random choice). Open file in binary mode.
+	(insert_setup, camel_imap_message_cache_get): Trailing periods in
+	file names are silently dropped on Win32, so on Win32, if the we
+	would want to create a file with a name ending with a perioud,
+	append a tilde (just a random choice).
 
 	* camel-imap-provider.c: No external command possibility on Win32,
 	drop that part of the UI.
