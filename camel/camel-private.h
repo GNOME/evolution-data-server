@@ -164,7 +164,7 @@ struct _CamelCertDBPrivate {
 #define g_access access
 #define g_chmod chmod
 #define g_creat creat
-#deifne g_chdir chdir
+#define g_chdir chdir
 #endif
 
 #ifdef G_OS_WIN32
