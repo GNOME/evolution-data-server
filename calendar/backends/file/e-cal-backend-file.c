@@ -30,6 +30,7 @@
 #include <fcntl.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libedataserver/e-util.h>
@@ -40,6 +41,14 @@
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include "e-cal-backend-file-events.h"
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+#if !GLIB_CHECK_VERSION (2, 8, 0)
+#define g_access access
+#endif
 
 
 
@@ -616,7 +625,7 @@ get_uri_string_for_gnome_vfs (ECalBackend *backend)
 		return NULL;
 	}
 	
-	full_uri = g_strdup_printf ("%s%s%s", master_uri, G_DIR_SEPARATOR_S, priv->file_name);
+	full_uri = g_strdup_printf ("%s/%s", master_uri, priv->file_name);
 	uri = gnome_vfs_uri_new (full_uri);
 	g_free (full_uri);
 	
@@ -885,9 +894,9 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	if (!str_uri)
 		return GNOME_Evolution_Calendar_OtherError;
 	
-	if (access (str_uri, R_OK) == 0) {
+	if (g_access (str_uri, R_OK) == 0) {
 		status = open_cal (cbfile, str_uri);
-		if (access (str_uri, W_OK) != 0)
+		if (g_access (str_uri, W_OK) != 0)
 			priv->read_only = TRUE;
 	} else {
 		if (only_if_exists)
@@ -922,7 +931,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 	if (!str_uri)
 		return GNOME_Evolution_Calendar_OtherError;
 
-	if (access (str_uri, W_OK) != 0) {
+	if (g_access (str_uri, W_OK) != 0) {
 		g_free (str_uri);
 
 		return GNOME_Evolution_Calendar_PermissionDenied;
@@ -942,7 +951,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 		char *full_path;
 
 		full_path = g_build_filename (dirname, fname, NULL);
-		if (unlink (full_path) != 0) {
+		if (g_unlink (full_path) != 0) {
 			g_free (full_path);
 			g_free (str_uri);
 			g_free (dirname);
@@ -955,7 +964,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 	}
 
 	/* remove the directory itself */
-	success = rmdir (dirname) == 0;
+	success = g_rmdir (dirname) == 0;
 		
 	g_dir_close (dir);
 	g_free (str_uri);
@@ -2158,75 +2167,82 @@ check_tzids (icalparameter *param, void *data)
 		tzdata->found = FALSE;
 }
 
+
+/* This function is largely duplicated in
+ * ../groupwise/e-cal-backend-groupwise.c
+ */
 static void
 fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
-	char  *attach_store, *filename, *file_contents;
+	char  *attach_store;
 	char *dest_url, *dest_file;
-	int fd, len;
-	int len_read = 0;
-	char buf[1024];
-	struct stat sb;
+	int fd;
 	const char *uid;
-
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
 	/*FIXME  get the uri rather than computing the path */
-	attach_store = g_strconcat (g_get_home_dir (), "/",
+	attach_store = g_build_filename (g_get_home_dir (),
 			".evolution/calendar/local/system", NULL);
 	
 	for (l = attach_list; l ; l = l->next) {
 		char *sfname = (char *)l->data;
+		char *filename, *new_filename;
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		GMappedFile *mapped_file;
+#else
+		char *file_contents;
+		int len;
+#endif
+		GError *error = NULL;
 
-		filename = g_strrstr (sfname, "/") + 1;	
-
-		// open the file using the data
-		fd = open (sfname, O_RDONLY); 
-		if (fd == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not open the file descriptor\n");
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
+		if (!mapped_file) {
+			g_message ("DEBUG: could not map %s: %s\n",
+				   sfname, error->message);
+			g_error_free (error);
 			continue;
 		}
-		if (fstat (fd, &sb) == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not fstat the attachment file\n");
+#else
+		if (!g_file_get_contents (sfname, &file_contents, &len, &error)) {
+			g_message ("DEBUG: could not read %s: %s\n",
+				   sfname, error->message);
+			g_error_free (error);
 			continue;
 		}
-		len = sb.st_size;
-
-		file_contents = g_malloc (len + 1);
-	
-		while (len_read < len) {
-			int c = read (fd, buf, sizeof (buf));
-
-			if (c == -1)
-				break;
-
-			memcpy (&file_contents[len_read], buf, c);
-			len_read += c;
-		}
-		file_contents [len_read] = 0;
-
-		/* write*/
-		dest_file = g_strconcat (attach_store, "/", uid, "-",
-				filename, NULL);
-		fd = open (dest_file, O_RDWR|O_CREAT|O_TRUNC, 0600);
+#endif
+		filename = g_path_get_basename (sfname);
+		new_filename = g_strconcat (uid, "-", filename, NULL);
+		g_free (filename);
+		dest_file = g_build_filename (attach_store, new_filename, NULL);
+		g_free (new_filename);
+		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 		if (fd == -1) {
 			/* TODO handle error conditions */
-			g_message ("DEBUG: could not serialize attachments\n");
-		}
-
-		if (write (fd, file_contents, len_read) == -1) {
+			g_message ("DEBUG: could not open %s for writing\n",
+				   dest_file);
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
+				  g_mapped_file_get_length (mapped_file)) == -1) {
+#else
+		} else if (write (fd, file_contents, len) == -1) {
+#endif
 			/* TODO handle error condition */
 			g_message ("DEBUG: attachment write failed.\n");
 		}
 
-		dest_url = g_strconcat ("file:///", dest_file, NULL);
-		new_attach_list = g_slist_append (new_attach_list, dest_url);
+#if GLIB_CHECK_VERSION (2, 8, 0)
+		g_mapped_file_free (mapped_file);
+#else
+		g_free (file_contents);
+#endif
+		close (fd);
+		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
 	}
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
@@ -2602,9 +2618,9 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile)
 	if (!str_uri)
 		return GNOME_Evolution_Calendar_OtherError;
 
-	if (access (str_uri, R_OK) == 0) {
+	if (g_access (str_uri, R_OK) == 0) {
 		status = reload_cal (cbfile, str_uri);
-		if (access (str_uri, W_OK) != 0)
+		if (g_access (str_uri, W_OK) != 0)
 			priv->read_only = TRUE;
 	} else {
 		status = GNOME_Evolution_Calendar_NoSuchCal;
