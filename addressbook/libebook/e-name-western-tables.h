@@ -39,14 +39,14 @@ char *e_name_western_pfx_table[] = {
 	/*
 	 * German
 	 */
-	"herr", "frau", "fräulein", "doktor", "herr doktor", "doktor frau", "doktor frau doktor",
+	"herr", "frau", "fraulein", "fräulein", "doktor", "herr doktor", "doktor frau", "doktor frau doktor",
 	"frau doktor",
  
 
 	/*
 	 * Spanish.
 	 */
-	"señor", "señora", "sra.", "señorita", "srita.", 
+	"senor", "señor", "senora", "señora", "sra.", "senorita", "señorita", "srita.", 
 
 	NULL};
 
