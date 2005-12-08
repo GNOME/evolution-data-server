@@ -11,6 +11,9 @@
 	e-xml-utils.c. Presumably should move all the rest of the
 	functions from there, too.
 
+	* libedataserver/Makefile.am: Add the new files. Install
+	e-xml-utils.h.
+
 	* libedataserver/e-xml-hash-utils.c: Use e_xml_parse_file() and
 	e_xml_save_file(). As e_xml_save_file() does the very careful
 	saving using a temporary filename and then rename, don't need to
