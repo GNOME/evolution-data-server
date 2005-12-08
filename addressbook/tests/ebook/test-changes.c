@@ -11,8 +11,6 @@ EMAIL;INTERNET:toshok@ximian.com\n\
 ORG:Ximian, Inc.;\n\
 END:VCARD"
 
-static char file_template[]="file:///tmp/change-test-XXXXXX";
-
 int
 main (int argc, char **argv)
 {
@@ -21,22 +19,37 @@ main (int argc, char **argv)
 	GList *changes;
 	GError *error = NULL;
 	EBookChange *change;
+	gchar *file_template;
+	gchar *uri;
 
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");
 
+	file_template = g_build_filename (g_get_tmp_dir (),
+					  "change-test-XXXXXX",
+					  NULL);
 	mktemp (file_template);
+
+	uri = g_filename_to_uri (file_template, NULL, &error);
+	if (!uri) {
+		printf ("failed to convert %s to an URI: %s\n",
+			file_template, error->message);
+		exit (0);
+	}
+	g_free (file_template);
 
 	/* create a temp addressbook in /tmp */
 	printf ("loading addressbook\n");
-	book = e_book_new_from_uri (file_template, &error);
+	book = e_book_new_from_uri (uri, &error);
 	if (!book) {
-		printf ("failed to create addressbook: `%s': %s\n", file_template, error->message);
+		printf ("failed to create addressbook: `%s': %s\n",
+			uri, error->message);
 		exit(0);
 	}
 
 	if (!e_book_open (book, FALSE, &error)) {
-		printf ("failed to open addressbook: `%s': %s\n", file_template, error->message);
+		printf ("failed to open addressbook: `%s': %s\n",
+			uri, error->message);
 		exit(0);
 	}
 

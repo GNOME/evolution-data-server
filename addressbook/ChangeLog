@@ -16,6 +16,10 @@
 	* backends/vcf/e-book-backend-vcf.c: Use gstdio wrappers. Open
 	files in binary mode.
 
+	* tests/ebook/test-changes.c: Use g_get_tmp_dir() instead of
+	hardcoding /tmp. Use g_filename_to_uri() instead of just prefixing
+	file://.
+
 2005-11-30  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c: (poll_ldap):
