@@ -219,6 +219,8 @@ imap4_get_name (CamelService *service, gboolean brief)
 }
 
 
+#ifndef G_OS_WIN32
+
 static gboolean
 connect_to_server_process (CamelIMAP4Engine *engine, const char *format, CamelException *ex)
 {
@@ -290,6 +292,8 @@ connect_to_server_process (CamelIMAP4Engine *engine, const char *format, CamelEx
 	
 	return TRUE;
 }
+
+#endif
 
 enum {
 	MODE_CLEAR,
@@ -414,15 +418,16 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 	CamelService *service = engine->service;
 	struct addrinfo *ai, hints;
 	const char *ssl_mode;
-	const char *command;
 	int mode, ret, i;
 	const char *port;
 	char *serv;
-	
+#ifndef G_OS_WIN32
+	const char *command;
+
 	if (camel_url_get_param(service->url, "use_command")
 	    &&(command = camel_url_get_param (service->url, "command")))
 		return connect_to_server_process (engine, command, ex);
-	
+#endif
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
 			if (!strcmp (ssl_options[i].value, ssl_mode))

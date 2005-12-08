@@ -638,7 +638,7 @@ decode_internaldate (const char *in)
 		return (time_t) -1;
 	
 	for (n = 0; n < 12; n++) {
-		if (!strncasecmp (inptr, tm_months[n], 3))
+		if (!g_ascii_strncasecmp (inptr, tm_months[n], 3))
 			break;
 	}
 	
