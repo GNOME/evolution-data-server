@@ -21,16 +21,22 @@
  * USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <string.h>
 #include <sys/types.h>
-#include <glib/gi18n.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <e-gw-connection.h>
 #include <e-gw-message.h>
@@ -266,47 +272,16 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		
 		EGwItemAttachment *attach_item;
 		char *file_contents, *encoded_data;
-		int fd, len;
-		int len_read = 0;
-		char buf[1024];
-		struct stat sb;
+		int file_len;
 		char *attach_filename_full, *filename;
 		const char *uid;
-		
 
-		attach_filename_full = (char *)l->data + 7;
-		attach_item = g_new0 (EGwItemAttachment, 1);
-		/* FIXME the member does not follow the naming convention.
-		 * Should be fixed in e-gw-item*/
-		attach_item->contentType = g_strdup (gnome_vfs_get_mime_type (attach_filename_full));
-
-		/*
-		 * Would gnome_vfs_async be better suited for this ?
-		 */
-		fd = open (attach_filename_full, O_RDONLY); 
-		if (fd == -1) {
-			g_free (attach_item);
-			g_message ("DEBUG: could not open the file descriptor\n");
-		}
-		if (fstat (fd, &sb) == -1) {
-			g_free (attach_item);
-			g_message ("DEBUG: could not fstat the attachment file\n");
+		attach_filename_full = g_filename_from_uri ((char *)l->data, NULL, NULL);
+		if (!g_file_get_contents (attach_filename_full, &file_contents, &file_len, NULL)) {
+			g_message ("DEBUG: could not read %s\n", attach_filename_full);
+			g_free (attach_filename_full);
 			continue;
 		}
-		len = sb.st_size;
-
-		file_contents = g_malloc (len + 1);
-	
-		while (len_read < len) {
-			int c = read (fd, buf, sizeof (buf));
-
-			if (c == -1)
-				break;
-
-			memcpy (&file_contents[len_read], buf, c);
-			len_read += c;
-		}
-		file_contents [len_read] = 0;
 
 		/* Extract the simple file name from the
 		 * attach_filename_full which is of the form
@@ -314,23 +289,27 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		 */
 		e_cal_component_get_uid (comp, &uid);
 		filename = g_strrstr (attach_filename_full, uid); 		
-
 		if (filename == NULL) {
-			g_free (attach_item);
-			g_message ("DEBUG:\n This is an invalid attachment file\n");
+			g_message ("DEBUG: This is an invalid attachment file\n");
+			g_free (attach_filename_full);
+			g_free (file_contents);
 			continue;
-		}	
+		}
 
+		attach_item = g_new0 (EGwItemAttachment, 1);
+		/* FIXME the member does not follow the naming convention.
+		 * Should be fixed in e-gw-item*/
+		attach_item->contentType = g_strdup (gnome_vfs_get_mime_type (attach_filename_full));
+		g_free (attach_filename_full);
 
 		attach_item->name = g_strdup (filename + strlen(uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap
 		 * message */
-		encoded_data = soup_base64_encode (file_contents, len_read);
+		encoded_data = soup_base64_encode (file_contents, file_len);
 		attach_item->data = encoded_data;
 		attach_item->size = strlen (encoded_data); 
 
 		g_free (file_contents);
-		close (fd);
 		attach_list = g_slist_append (attach_list, attach_item);
 	}
 
@@ -792,27 +771,30 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		EGwItemAttachment *attach_item;
 		char *attach_data = NULL;
 		struct stat st;
+		char *filename;
 
 		attach_item = (EGwItemAttachment *) l->data;
 		attach_file_url = g_strconcat (e_cal_backend_groupwise_get_local_attachments_store (cbgw), 
 			 "/", uid, "-", attach_item->name, NULL);
 
-		if (stat (attach_file_url + 7, &st) == -1) {
-			if (!get_attach_data_from_server (attach_item, cbgw))
-				return; /* Could not get the attachment from the server */	
-			fd = open (attach_file_url+7, O_RDWR|O_CREAT|O_TRUNC, 0600);
+		filename = g_filename_from_uri (attach_file_url, NULL, NULL);
+		if (g_stat (filename, &st) == -1) {
+			if (!get_attach_data_from_server (attach_item, cbgw)) {
+				g_free (filename);
+				return; /* Could not get the attachment from the server */
+			}
+			fd = g_open (filename, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 			if (fd == -1) { 
 				/* skip gracefully */
 				g_warning ("DEBUG: could not serialize attachments\n");
-			}
-
-			if (write (fd, attach_item->data, attach_item->size) == -1) {
+			} else if (write (fd, attach_item->data, attach_item->size) == -1) {
 				/* skip gracefully */
 				g_warning ("DEBUG: attachment write failed.\n");
 			}
 			g_free (attach_data);
 			close (fd);
 		}
+		g_free (filename);
 
 		comp_attachment_list = g_slist_append (comp_attachment_list, attach_file_url);
 	}

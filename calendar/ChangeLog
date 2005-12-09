@@ -1,3 +1,8 @@
+2005-12-09  Tor Lillqvist  <tml@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c: Use gstdio
+	wrappers. Use g_filename_from_uri() and g_file_get_contents().
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* backends/file/e-cal-backend-file.c
