@@ -25,12 +25,36 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <glib/gi18n-lib.h>
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+
+#include <glib/gi18n-lib.h>
+
+#include "libedataserver/e-xml-utils.h"
+
 #include "e-weather-source-ccf.h"
 
 #define DATA_SIZE 5000
+
+#ifdef G_OS_WIN32
+
+#include <libedataserver/e-util.h>
+
+/* The localtime_r() in <pthread.h> doesn't guard against localtime()
+ * returning NULL
+ */
+#undef localtime_r
+
+/* The localtime() in Microsoft's C library is MT-safe */
+#define localtime_r(tp,tmp) (localtime(tp)?(*(tmp)=*localtime(tp),(tmp)):0)
+
+/* strtok() is also MT-safe (but not stateless, still uses only one
+ * buffer pointer per thread, but for the use of strtok_r() here
+ * that's enough).
+ */
+#define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
+#endif
 
 static gchar *
 parse_for_url (char *code, char *name, xmlNode *parent)
@@ -72,10 +96,19 @@ find_station_url (gchar *station, EWeatherSourceCCF *source)
 	xmlNode *root;
 	gchar **sstation;
 	gchar *url;
+	gchar *filename;
 
 	sstation = g_strsplit (station, "/", 2);
 
-	doc = xmlParseFile (WEATHER_DATADIR "/Locations.xml");
+#ifndef G_OS_WIN32
+	filename = g_strdup (WEATHER_DATADIR "/Locations.xml");
+#else
+	filename = e_util_replace_prefix (e_util_get_prefix (),
+					  WEATHER_DATADIR "/Locations.xml");
+#endif
+
+	doc = e_xml_parse_file (filename);
+
 	g_assert (doc != NULL);
 
 	root = xmlDocGetRootElement (doc);
@@ -106,15 +139,13 @@ static GSList*
 tokenize (char *buffer)
 {
 	char *token;
-	char *tokbuf = g_strdup (buffer);
-	char *buffer2 = tokbuf;
+	char *tokbuf;
 	GSList *ret;
 
 	token = strtok_r (buffer, " \n", &tokbuf);
 	ret = g_slist_append (NULL, g_strdup (token));
 	while ((token = strtok_r (NULL, " \n/", &tokbuf)))
 		ret = g_slist_append (ret, g_strdup (token));
-	g_free (buffer2);
 	return ret;
 }
 
