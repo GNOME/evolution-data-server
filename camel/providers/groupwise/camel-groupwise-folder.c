@@ -1023,7 +1023,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		is_junk = TRUE;
 	}
 
-	camel_operation_start (NULL, _("Fetching summary information for new messages"));
+	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
 		EGwItem *temp_item = (EGwItem *)item_list->data;
@@ -1037,6 +1037,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		CamelStream *cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
 
+		exists = FALSE;
 		id = e_gw_item_get_id (temp_item);
 
 		camel_operation_progress (NULL, (100*i)/total_items);
@@ -1169,11 +1170,12 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
 		}
 
-		/********************* Summary Stuff ends *************************/
-		exists = FALSE;
-		if (!strcmp (folder->full_name, "Junk Mail")|| !strcmp (folder->full_name, "Sent Items"))
+		/********************* Summary ends *************************/
+		if (!strcmp (folder->full_name, "Junk Mail"))
 			continue;
 
+		if (!strcmp (folder->full_name, "Sent Items"))
+			exists = FALSE;
 		/******************** Begine Caching ************************/
 		mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
 		if (mail_msg)
@@ -1511,14 +1513,16 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 							camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", "application/pgp-encrypted");
 						} else {
 							camel_mime_part_set_filename(part, g_strdup(attach->name));
-							camel_mime_part_set_content_id (part, attach->id);
-							if (!has_boundary) {
+							camel_mime_part_set_content_id (part, attach->contentid);
+							if (is_text_html) 
+								camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/alternative");
+							else if (!has_boundary) {
 								camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
 							}
 						}
 					} else {
 						camel_mime_part_set_filename(part, g_strdup(attach->name));
-						camel_mime_part_set_content_id (part, attach->id);
+						camel_mime_part_set_content_id (part, attach->contentid);
 						if (!has_boundary)
 							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
 					}
@@ -1532,12 +1536,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 					camel_object_unref (part);
 					g_free (attachment);
-				}
+				} /* if attachment */
 			}
-		}
+		} /* end of for*/
 
-
-	}
+	}/* if attach_list */
 	/********************/
 
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
@@ -1588,9 +1591,9 @@ gw_update_all_items ( CamelFolder *folder, GSList *item_list, CamelException *ex
 	/*item_list : List of ids from the server*/
 	for (; item_ids != NULL ; item_ids = g_slist_next (item_ids)) {
 		GSList *temp = NULL;
+
 		temp = g_slist_find_custom (item_list, (const char *)item_ids->data, (GCompareFunc) string_cmp);
 		if (!temp) {
-			//g_print ("Deleting:%s\n", (const char *)item_ids->data);
 			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 			camel_folder_summary_remove_uid (folder->summary, (const char *)item_ids->data);
 			camel_data_cache_remove(gw_folder->cache, "cache", (const char *)item_ids->data, ex);

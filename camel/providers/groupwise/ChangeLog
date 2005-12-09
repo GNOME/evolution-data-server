@@ -1,3 +1,10 @@
+2005-12-09  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 321830
+	
+	* camel-groupwise-folder.c: (gw_update_cache): Do not skip 
+	caching sent items, they dont get displayed otherwise.
+	
 2005-11-09  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:

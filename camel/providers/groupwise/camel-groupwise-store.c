@@ -560,7 +560,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 			return NULL;
 		}
 
-		camel_operation_start (NULL, _("Fetching summary information for new messages"));
+		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 		camel_folder_summary_clear (folder->summary);
 
 		while (!done) {
