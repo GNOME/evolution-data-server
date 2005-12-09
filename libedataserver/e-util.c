@@ -19,20 +19,16 @@
  * Authors: Rodrigo Moya <rodrigo@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-#include <glib.h>
-#include "e-util.h"
 
-#ifdef G_OS_WIN32
-#define mkdir(path,mode) _mkdir(path)
-#endif
+#include <glib.h>
+
+#include "e-util.h"
 
 /**
  * e_util_mkdir_hier:
@@ -40,7 +36,7 @@
  * @mode: The permissions to use for the directories.
  *
  * Creates a directory hierarchy based on the string @path. If @path
- * is prefixed by a '/', the directories will be created relative to
+ * is an absolute path, the directories will be created relative to
  * the root of the file system; otherwise, the directories will be
  * created relative to the current directory.
  *
@@ -49,6 +45,9 @@
 int
 e_util_mkdir_hier (const char *path, mode_t mode)
 {
+#if GLIB_CHECK_VERSION(2,8,0)
+	return g_mkdir_with_parents (path, mode);
+#else
         char *copy, *p;
                                                                                 
         if (path[0] == '/') {
@@ -75,6 +74,7 @@ e_util_mkdir_hier (const char *path, mode_t mode)
                                                                                 
         g_free (copy);
         return 0;
+#endif
 }
 
 /**
@@ -288,6 +288,28 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
+int
+e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
+{
+	gchar *folded_s1, *folded_s2;
+	int retval;
+
+	g_return_val_if_fail (s1 != NULL && s2 != NULL, -1);
+	
+	if (strcmp (s1, s2) == 0)
+		return 0;
+
+	folded_s1 = g_utf8_casefold (s1, -1);
+	folded_s2 = g_utf8_casefold (s2, -1);
+
+	retval = g_utf8_collate (folded_s1, folded_s2);
+
+	g_free (folded_s2);
+	g_free (folded_s1);
+
+	return retval;
+}
+
 /** 
  * e_strftime:
  * @s: The string array to store the result in.
@@ -432,10 +454,139 @@ e_util_pthread_id (pthread_t t)
 #endif
 }
 
+/* This only makes a filename safe for usage as a filename.  It still may have shell meta-characters in it. */
+
+/* This code is rather misguided and mostly pointless, but can't be
+ * changed because of backward compatibility, I guess.
+ *
+ * It replaces some perfectly safe characters like '%' with an
+ * underscore. (Recall that on Unix, the only bytes not allowed in a
+ * file name component are '\0' and '/'.) On the other hand, the UTF-8
+ * for a printable non-ASCII Unicode character (that thus consists of
+ * several very nonprintable non-ASCII bytes) is let through as
+ * such. But those bytes are of course also allowed in filenames, so
+ * it doesn't matter as such...
+ */
+void
+e_filename_make_safe (gchar *string)
+{
+	gchar *p, *ts;
+	gunichar c;
+#ifdef G_OS_WIN32
+	const char *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?";
+#else
+	const char *unsafe_chars = " /'\"`&();|<>$%{}!";
+#endif	
+	
+	g_return_if_fail (string != NULL);
+	p = string;
+
+	while(p && *p) {
+		c = g_utf8_get_char (p);
+		ts = p;
+		p = g_utf8_next_char (p);
+		/* I wonder what this code is supposed to actually
+		 * achieve, and whether it does that as currently
+		 * written?
+		 */
+		if (!g_unichar_isprint(c) || ( c < 0xff && strchr (unsafe_chars, c&0xff ))) {
+			while (ts<p) 	
+				*ts++ = '_';
+		}
+	}
+}
+
 #ifdef G_OS_WIN32
 
 #include <windows.h>
 #include <mbstring.h>
+
+/* Temporary replacement g_rename() that forcibly renames. This change
+ * will go into GLib in the next release.
+ */
+int g_rename (char *oldfilename, char *newfilename);
+
+int
+g_rename (char *oldfilename, char *newfilename)
+{
+	wchar_t *woldfilename = g_utf8_to_utf16 (oldfilename, -1, NULL, NULL, NULL);
+	wchar_t *wnewfilename;
+	int retval;
+	int save_errno;
+	
+	if (woldfilename == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	wnewfilename = g_utf8_to_utf16 (newfilename, -1, NULL, NULL, NULL);
+	
+	if (wnewfilename == NULL) {
+		g_free (woldfilename);
+		errno = EINVAL;
+		return -1;
+	}
+	
+	if (MoveFileExW (woldfilename, wnewfilename, MOVEFILE_REPLACE_EXISTING))
+		retval = 0;
+	else {
+		retval = -1;
+		switch (GetLastError ()) {
+#define CASE(a,b) case ERROR_##a: save_errno = b; break
+		CASE (FILE_NOT_FOUND, ENOENT);
+		CASE (ACCESS_DENIED, EACCES);
+		CASE (NOT_SAME_DEVICE, EXDEV);
+		CASE (SHARING_VIOLATION, EACCES);
+		CASE (FILE_EXISTS, EEXIST);
+#undef CASE
+		default: save_errno = EIO;
+		}
+	}
+			
+	save_errno = errno;
+	
+	g_free (woldfilename);
+	g_free (wnewfilename);
+	
+	errno = save_errno;
+	return retval;
+}
+
+/* Temporary replacement g_stat() that strips trailing slash from
+ * non-root directories. This change will go into GLib in the next release.
+ */
+
+int g_stat (const gchar *filename,
+	    struct stat *buf);
+
+int
+g_stat (const gchar *filename,
+	struct stat *buf)
+{
+	wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
+	int retval;
+	int save_errno;
+	int len;
+	
+	if (wfilename == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	len = wcslen (wfilename);
+	while (len > 0 && G_IS_DIR_SEPARATOR (wfilename[len-1]))
+		len--;
+	if (len > g_path_skip_root (filename) - filename)
+		wfilename[len] = '\0';
+
+	retval = _wstat (wfilename, (struct _stat *) buf);
+	save_errno = errno;
+	
+	g_free (wfilename);
+	
+	errno = save_errno;
+	return retval;
+}
 
 /* The following function is lifted from libgnome. We don't want
  * libedataserver to depend on libgnome, especially as libgnome is

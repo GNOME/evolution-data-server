@@ -24,6 +24,21 @@
 	PR_CreatePipe() on Win32, as we want sockets, not a pipe (file
 	descriptors).
 
+	* libedataserver/e-util.c (e_util_mkdir_hier): When building
+	against GLib 2.8, use g_mkdir_with_parents().
+	(e_util_utf8_strcasecmp): New function. Casefolds two UTF-8
+	strings, then does a linguistically correct comparison using
+	g_utf8_collate().
+	(e_filename_make_safe): New function, move here from
+	evolution/e-util/e-util.c.
+	(g_rename, g_stat): Win32-only fixed versions of these GLib
+	functions, just until the next GLib version including the same
+	fixes is out. This version of g_rename() overwrites existing
+	files, and this version of g_stat() strips trailing insignificant
+	slashes.
+
+	* libedataserver/e-util.h: Declare the new functions.
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-db3-utils.c

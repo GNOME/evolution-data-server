@@ -38,8 +38,9 @@ gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
 const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
-
+int	     e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2);
 guint64      e_util_pthread_id (pthread_t t);
+void         e_filename_make_safe (gchar *string);
 
 size_t e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);
 size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);
