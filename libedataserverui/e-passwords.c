@@ -140,7 +140,7 @@ ep_msg_new(void (*dispatch)(EPassMsg *))
 	msg->dispatch = dispatch;
 	msg->msg.reply_port = e_msgport_new();
 #ifdef ENABLE_THREADS
-	msg->ismain = pthread_self() == main_thread;
+	msg->ismain = pthread_equal(pthread_self(), main_thread);
 #else
 	msg->ismain = TRUE;
 #endif
