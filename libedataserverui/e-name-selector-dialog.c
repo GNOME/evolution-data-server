@@ -38,6 +38,7 @@
 #include <libedataserverui/e-book-auth-util.h>
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-categories.h>
+#include <libedataserver/libedataserver-private.h>
 #include "e-name-selector-dialog.h"
 
 typedef struct {
@@ -142,10 +143,14 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget	  *label;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
+	char              *gladefile;
 
 	/* Get Glade GUI */
-
-	name_selector_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-name-selector-dialog.glade", NULL, GETTEXT_PACKAGE);
+	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
+				      "e-name-selector-dialog.glade",
+				      NULL);
+	name_selector_dialog->gui = glade_xml_new (gladefile, NULL, GETTEXT_PACKAGE);
+	g_free (gladefile);
 
 	widget = glade_xml_get_widget (name_selector_dialog->gui, "name-selector-box");
 	if (!widget) {

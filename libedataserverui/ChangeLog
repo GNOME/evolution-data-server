@@ -6,7 +6,9 @@
 	* e-source-option-menu.c: Use guint instead of uint.
 
 	* e-categories-dialog.c (load_properties_dialog,
-	e_categories_dialog_init): Construct glade file names at run-time.
+	e_categories_dialog_init)
+	* e-name-selector-dialog.c (e_name_selector_dialog_init):
+	Construct glade file names at run-time.
 
 2005-11-09  Sushma Rai  <rsushma@novell.com>
 
