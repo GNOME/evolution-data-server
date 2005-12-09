@@ -47,6 +47,10 @@
 #include "camel-mbox-store.h"
 #include "camel-mbox-summary.h"
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
 static CamelLocalFolderClass *parent_class = NULL;
@@ -185,7 +189,6 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	char *fromline = NULL;
 	int fd, retval;
 	struct stat st;
-	int mode;
 #if 0
 	char *xev;
 #endif
@@ -288,12 +291,7 @@ fail_write:
 	g_free(fromline);
 
 	/* reset the file to original size */
-#ifdef G_OS_WIN32
-	mode = O_WRONLY | O_BINARY;
-#else
-	mode = O_WRONLY;
-#endif
-	fd = g_open(lf->folder_path, mode, 0600);
+	fd = g_open(lf->folder_path, O_WRONLY | O_BINARY, 0600);
 	if (fd != -1) {
 		ftruncate(fd, mbs->folder_size);
 		close(fd);
@@ -329,7 +327,6 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex)
 	int fd, retval;
 	int retried = FALSE;
 	off_t frompos;
-	int mode;
 
 	d(printf("Getting message %s\n", uid));
 
@@ -365,13 +362,7 @@ retry:
 	   with no stream).  This means we dont have to lock the mbox for the life of the message, but only
 	   while it is being created. */
 
-#ifdef G_OS_WIN32
-	mode = O_RDONLY | O_BINARY;
-#else
-	mode = O_RDONLY;
-#endif
-
-	fd = g_open(lf->folder_path, mode, 0);
+	fd = g_open(lf->folder_path, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"),

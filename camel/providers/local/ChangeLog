@@ -1,3 +1,9 @@
+2005-12-09  Tor Lillqvist  <tml@novell.com>
+
+	* camel-mbox-folder.c: Just #define O_BINARY as 0 on Unix, less
+	ifdefs that way. Should really do this in some suitable header, of
+	course, and not duplicate here and there.
+
 2005-12-09  David Malcolm  <dmalcolm@redhat.com>
 
 	* camel-local-folder.c: restore missing declarations for non-Win32 
