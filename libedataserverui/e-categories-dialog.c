@@ -38,6 +38,7 @@
 #include <gtk/gtktreeview.h>
 #include <glade/glade-xml.h>
 #include <libedataserver/e-categories.h>
+#include <libedataserver/libedataserver-private.h>
 #include "e-categories-dialog.h"
 
 struct _ECategoriesDialogPrivate {
@@ -68,10 +69,16 @@ static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
+	char *gladefile;
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
-	prop_dialog->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "properties-dialog", GETTEXT_PACKAGE);
+	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
+				      "e-categories-dialog.glade",
+				      NULL);
+	prop_dialog->gui = glade_xml_new (gladefile, "properties-dialog", GETTEXT_PACKAGE);
+	g_free (gladefile);
+
 	if (!prop_dialog->gui) {
 		g_free (prop_dialog);
 		return NULL;
@@ -365,13 +372,19 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkTreeViewColumn *column;
 	GtkListStore *model;
 	GtkWidget *main_widget;
+	char *gladefile;
 
 	priv = g_new0 (ECategoriesDialogPrivate, 1);
 	priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	dialog->priv = priv;
 
 	/* load the UI from our Glade file */
-	priv->gui = glade_xml_new (E_DATA_SERVER_UI_GLADEDIR "/e-categories-dialog.glade", "table-categories", GETTEXT_PACKAGE);
+	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
+				      "e-categories-dialog.glade",
+				      NULL);
+	priv->gui = glade_xml_new (gladefile, "table-categories", GETTEXT_PACKAGE);
+	g_free (gladefile);
+
 	if (!priv->gui) {
 		g_warning (G_STRLOC ": can't load e-categories-dialog.glade file");
 		return;
