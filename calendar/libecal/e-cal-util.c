@@ -23,8 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <glib/gstrfuncs.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
+#include "libedataserver/e-util.h"
 #include "e-cal-util.h"
 
 
@@ -231,7 +232,7 @@ e_cal_util_parse_ics_file (const char *filename)
 	icalcomponent *icalcomp;
 	FILE *file;
 
-	file = fopen (filename, "r");
+	file = g_fopen (filename, "rb");
 	if (!file)
 		return NULL;
 
@@ -703,13 +704,13 @@ e_cal_util_priority_from_string (const char *string)
 	int priority;
 
 	/* An empty string is the same as 'None'. */
-	if (!string || !string[0] || !g_strcasecmp (string, _("Undefined")))
+	if (!string || !string[0] || !e_util_utf8_strcasecmp (string, _("Undefined")))
 		priority = 0;
-	else if (!g_strcasecmp (string, _("High")))
+	else if (!e_util_utf8_strcasecmp (string, _("High")))
 		priority = 3;
-	else if (!g_strcasecmp (string, _("Normal")))
+	else if (!e_util_utf8_strcasecmp (string, _("Normal")))
 		priority = 5;
-	else if (!g_strcasecmp (string, _("Low")))
+	else if (!e_util_utf8_strcasecmp (string, _("Low")))
 		priority = 7;
 	else
 		priority = -1;

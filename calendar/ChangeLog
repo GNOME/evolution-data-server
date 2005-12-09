@@ -9,6 +9,10 @@
 	Win32. Use e_xml_parse_file.
 	(tokenize): Remove unnecessary buffer allocation.
 
+	* libecal/e-cal-util.c: Open file in binary mode. Compare
+	localized strings using e_util_utf8_strcasecmp() instead of
+	g_strcasecmp().
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* backends/file/e-cal-backend-file.c
