@@ -210,6 +210,10 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	const char *root_dir_path;
 	char *name;
 	char *tmp, *statepath;
+#ifndef G_OS_WIN32
+	char folder_path[PATH_MAX];
+	struct stat st;
+#endif
 	int forceindex, len;
 	CamelURL *url;
 	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
