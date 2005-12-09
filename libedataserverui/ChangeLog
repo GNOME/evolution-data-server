@@ -3,6 +3,8 @@
 	* e-passwords.c (ep_msg_new): Use pthread_equal() to compare
 	pthread_t values.
 
+	* e-source-option-menu.c: Use guint instead of uint.
+
 2005-11-09  Sushma Rai  <rsushma@novell.com>
 
 	* e-name-selector-dialog.c (e_name_selector_dialog_init)(add_section): 

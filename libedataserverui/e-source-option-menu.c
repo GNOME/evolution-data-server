@@ -52,7 +52,7 @@ enum {
 	NUM_SIGNALS
 };
 
-static uint signals[NUM_SIGNALS] = { 0 };
+static guint signals[NUM_SIGNALS] = { 0 };
 
 G_DEFINE_TYPE (ESourceOptionMenu, e_source_option_menu, GTK_TYPE_OPTION_MENU)
 
