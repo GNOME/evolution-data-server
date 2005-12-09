@@ -1,3 +1,11 @@
+2005-12-09  Tor Lillqvist  <tml@novell.com>
+
+	* libedata-book/e-book-backend-summary.c: Use gstdio wrappers.
+	(is_helper): Use e_util_utf8_strcasecmp() instead of strcasecmp().
+
+	* libedata-book/e-book-backend-sexp.c (is_helper): Use
+	e_util_utf8_strcasecmp() instead of strcasecmp().
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* libebook/e-name-western.c (e_name_western_fixup): Use UTF-8 case

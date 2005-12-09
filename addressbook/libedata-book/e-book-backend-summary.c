@@ -21,9 +21,7 @@
  * 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <string.h>
 #include <sys/types.h>
@@ -32,11 +30,15 @@
 #include <utime.h>
 #include <errno.h>
 
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-util.h>
-#include <libebook/e-contact.h>
-#include "e-book-backend-summary.h"
+#include <glib.h>
+#include <glib/gstdio.h>
 
+#include "libedataserver/e-sexp.h"
+#include "libedataserver/e-util.h"
+
+#include "libebook/e-contact.h"
+
+#include "e-book-backend-summary.h"
 
 static GObjectClass *parent_class;
 
@@ -468,22 +470,22 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 	if (summary->priv->fp)
 		return TRUE;
 
-	if (stat (summary->priv->summary_path, &sb) == -1) {
+	if (g_stat (summary->priv->summary_path, &sb) == -1) {
 		/* if there's no summary present, look for the .new
 		   file and rename it if it's there, and attempt to
 		   load that */
 		char *new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
-		if (stat (new_filename, &sb) == -1) {
+		if (g_stat (new_filename, &sb) == -1) {
 			g_free (new_filename);
 			return FALSE;
 		}
 		else {
-			rename (new_filename, summary->priv->summary_path);
+			g_rename (new_filename, summary->priv->summary_path);
 			g_free (new_filename);
 		}
 	}
 
-	fp = fopen (summary->priv->summary_path, "r");
+	fp = g_fopen (summary->priv->summary_path, "rb");
 	if (!fp) {
 		g_warning ("failed to open summary file");
 		return FALSE;
@@ -681,7 +683,7 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 
 	new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
 
-	fp = fopen (new_filename, "w");
+	fp = g_fopen (new_filename, "wb");
 	if (!fp) {
 		g_warning ("could not create new summary file");
 		goto lose;
@@ -714,13 +716,13 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 	}
 
 	/* unlink the old summary and rename the new one */
-	unlink (summary->priv->summary_path);
-	rename (new_filename, summary->priv->summary_path);
+	g_unlink (summary->priv->summary_path);
+	g_rename (new_filename, summary->priv->summary_path);
 
 	g_free (new_filename);
 
 	/* lastly, update the in memory mtime to that of the file */
-	if (stat (summary->priv->summary_path, &sb) == -1) {
+	if (g_stat (summary->priv->summary_path, &sb) == -1) {
 		g_warning ("error stat'ing saved summary");
 	}
 	else {
@@ -734,7 +736,7 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 	if (fp)
 		fclose (fp);
 	if (new_filename)
-		unlink (new_filename);
+		g_unlink (new_filename);
 	g_free (new_filename);
 	return FALSE;
 }
@@ -1057,7 +1059,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 static char *
 is_helper (const char *s1, const char *s2)
 {
-	if (!strcasecmp(s1, s2))
+	if (!e_util_utf8_strcasecmp(s1, s2))
 		return (char*)s1;
 	else
 		return NULL;
