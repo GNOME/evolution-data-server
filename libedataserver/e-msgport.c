@@ -39,11 +39,153 @@
 #include <nspr.h>
 #endif
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#endif
+
 #include "e-msgport.h"
+#include "e-util.h"
 
 #define m(x)			/* msgport debug */
-#define t(x) 			/* thread debug */
+#define t(x)			/* thread debug */
 #define c(x)			/* cache debug */
+
+#ifdef G_OS_WIN32
+#define E_CLOSE(socket) closesocket (socket)
+#define E_READ(socket,buf,nbytes) recv(socket,buf,nbytes,0)
+#define E_WRITE(socket,buf,nbytes) send(socket,buf,nbytes,0)
+#define E_IS_SOCKET_ERROR(status) ((status) == SOCKET_ERROR)
+#define E_IS_INVALID_SOCKET(socket) ((socket) == INVALID_SOCKET)
+#define E_IS_SELECT_STATUS_INTR() 0 /* No WSAEINTR errors in WinSock2  */
+#else
+#define E_CLOSE(socket) close (socket)
+#define E_READ(socket,buf,nbytes) read(socket,buf,nbytes)
+#define E_WRITE(socket,buf,nbytes) write(socket,buf,nbytes)
+#define E_IS_SOCKET_ERROR(status) ((status) == -1)
+#define E_IS_INVALID_SOCKET(socket) ((socket) < 0)
+#define E_IS_SELECT_STATUS_INTR() (errno == EINTR)
+#endif
+
+static int
+e_pipe (int *fds)
+{
+#ifndef G_OS_WIN32
+	return pipe (fds);
+#else
+	SOCKET temp, socket1 = -1, socket2 = -1;
+	struct sockaddr_in saddr;
+	int len;
+	u_long arg;
+	fd_set read_set, write_set;
+	struct timeval tv;
+
+	temp = socket (AF_INET, SOCK_STREAM, 0);
+	
+	if (temp == INVALID_SOCKET) {
+		goto out0;
+	}
+  	
+	arg = 1;
+	if (ioctlsocket (temp, FIONBIO, &arg) == SOCKET_ERROR) {
+		goto out0;
+	}
+
+	memset (&saddr, 0, sizeof (saddr));
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = 0;
+	saddr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+
+	if (bind (temp, (struct sockaddr *)&saddr, sizeof (saddr))) {
+		goto out0;
+	}
+
+	if (listen (temp, 1) == SOCKET_ERROR) {
+		goto out0;
+	}
+
+	len = sizeof (saddr);
+	if (getsockname (temp, (struct sockaddr *)&saddr, &len)) {
+		goto out0;
+	}
+
+	socket1 = socket (AF_INET, SOCK_STREAM, 0);
+	
+	if (socket1 == INVALID_SOCKET) {
+		goto out0;
+	}
+
+	arg = 1;
+	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) { 
+		goto out1;
+	}
+
+	if (connect (socket1, (struct sockaddr  *)&saddr, len) != SOCKET_ERROR ||
+	    WSAGetLastError () != WSAEWOULDBLOCK) {
+		goto out1;
+	}
+
+	FD_ZERO (&read_set);
+	FD_SET (temp, &read_set);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	if (select (0, &read_set, NULL, NULL, NULL) == SOCKET_ERROR) {
+		goto out1;
+	}
+
+	if (!FD_ISSET (temp, &read_set)) {
+		goto out1;
+	}
+
+	socket2 = accept (temp, (struct sockaddr *) &saddr, &len);
+	if (socket2 == INVALID_SOCKET) {
+		goto out1;
+	}
+
+	FD_ZERO (&write_set);
+	FD_SET (socket1, &write_set);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	if (select (0, NULL, &write_set, NULL, NULL) == SOCKET_ERROR) {
+		goto out2;
+	}
+
+	if (!FD_ISSET (socket1, &write_set)) {
+		goto out2;
+	}
+
+	arg = 0;
+	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) {
+		goto out2;
+	}
+
+	arg = 0;
+	if (ioctlsocket (socket2, FIONBIO, &arg) == SOCKET_ERROR) {
+		goto out2;
+	}
+
+	fds[0] = socket1;
+	fds[1] = socket2;
+
+	closesocket (temp);
+
+	return 0;
+
+out2:
+	closesocket (socket2);
+out1:
+	closesocket (socket1);
+out0:
+	closesocket (temp);
+	errno = EIO;		/* XXX */
+
+	return -1;
+
+#endif
+}
 
 void e_dlist_init(EDList *v)
 {
@@ -338,7 +480,7 @@ struct _EMsgPort {
 	EDList queue;
 	int condwait;		/* how many waiting in condwait */
 	union {
-		int pipe[2];
+		int pipe[2];	/* On Win32 actually a pair of SOCKETs */
 		struct {
 			int read;
 			int write;
@@ -379,8 +521,8 @@ void e_msgport_destroy(EMsgPort *mp)
 	g_mutex_free(mp->lock);
 	g_cond_free(mp->cond);
 	if (mp->pipe.fd.read != -1) {
-		close(mp->pipe.fd.read);
-		close(mp->pipe.fd.write);
+		E_CLOSE(mp->pipe.fd.read);
+		E_CLOSE(mp->pipe.fd.write);
 	}
 #ifdef HAVE_NSS
 	if (mp->prpipe.read) {
@@ -399,7 +541,7 @@ int e_msgport_fd(EMsgPort *mp)
 	g_mutex_lock(mp->lock);
 	fd = mp->pipe.fd.read;
 	if (fd == -1) {
-		pipe(mp->pipe.pipe);
+		e_pipe(mp->pipe.pipe);
 		fd = mp->pipe.fd.read;
 	}
 	g_mutex_unlock(mp->lock);
@@ -415,7 +557,14 @@ PRFileDesc *e_msgport_prfd(EMsgPort *mp)
 	g_mutex_lock(mp->lock);
 	fd = mp->prpipe.read;
 	if (fd == NULL) {
+#ifdef G_OS_WIN32
+		PRFileDesc *fds[2];
+		PR_NewTCPSocketPair (fds);
+		mp->prpipe.read = fds[0];
+		mp->prpipe.write = fds[1];
+#else
 		PR_CreatePipe(&mp->prpipe.read, &mp->prpipe.write);
+#endif
 		fd = mp->prpipe.read;
 	}
 	g_mutex_unlock(mp->lock);
@@ -446,7 +595,7 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 
 	if (fd != -1) {
 		m(printf("put: have pipe, writing notification to it\n"));
-		write(fd, "", 1);
+		E_WRITE(fd, "", 1);
 	}
 
 #ifdef HAVE_NSS
@@ -482,7 +631,7 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			do {
 				FD_ZERO(&rfds);
 				FD_SET(mp->pipe.fd.read, &rfds);
-				retry = select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL) == -1 && errno == EINTR;
+				retry = E_IS_SOCKET_ERROR(select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL)) && E_IS_SELECT_STATUS_INTR();
 				pthread_testcancel();
 			} while (retry);
 			g_mutex_lock(mp->lock);
@@ -530,7 +679,7 @@ EMsg *e_msgport_get(EMsgPort *mp)
 	msg = (EMsg *)e_dlist_remhead(&mp->queue);
 	if (msg) {
 		if (mp->pipe.fd.read != -1)
-			read(mp->pipe.fd.read, dummy, 1);
+			E_READ(mp->pipe.fd.read, dummy, 1);
 #ifdef HAVE_NSS
 		if (mp->prpipe.read != NULL) {
 			int c;
@@ -569,7 +718,8 @@ struct _EThread {
 	int queue_limit;
 
 	int waiting;		/* if we are waiting for a new message, count of waiting processes */
-	pthread_t id;		/* id of our running child thread */
+	pthread_t id;		/* our running child thread */
+	int have_thread;
 	GList *id_list;		/* if THREAD_NEW, then a list of our child threads in thread_info structs */
 
 	EThreadFunc destroy;
@@ -586,7 +736,6 @@ struct _EThread {
 static EDList ethread_list = E_DLIST_INITIALISER(ethread_list);
 static pthread_mutex_t ethread_lock = PTHREAD_MUTEX_INITIALIZER;
 
-#define E_THREAD_NONE ((pthread_t)~0)
 #define E_THREAD_QUIT_REPLYPORT ((struct _EMsgPort *)~0)
 
 static void thread_destroy_msg(EThread *e, EMsg *m);
@@ -599,7 +748,7 @@ static struct _thread_info *thread_find(EThread *e, pthread_t id)
 	node = e->id_list;
 	while (node) {
 		info = node->data;
-		if (info->id == id)
+		if (pthread_equal (info->id, id))
 			return info;
 		node = node->next;
 	}
@@ -615,7 +764,7 @@ static void thread_remove(EThread *e, pthread_t id)
 	node = e->id_list;
 	while (node) {
 		info = node->data;
-		if (info->id == id) {
+		if (pthread_equal (info->id, id)) {
 			e->id_list = g_list_remove(e->id_list, info);
 			g_free(info);
 		}
@@ -632,7 +781,7 @@ EThread *e_thread_new(e_thread_t type)
 	pthread_mutex_init(&e->mutex, 0);
 	e->type = type;
 	e->server_port = e_msgport_new();
-	e->id = E_THREAD_NONE;
+	e->have_thread = FALSE;
 	e->queue_limit = INT_MAX;
 
 	pthread_mutex_lock(&ethread_lock);
@@ -661,31 +810,30 @@ void e_thread_destroy(EThread *e)
 	case E_THREAD_QUEUE:
 	case E_THREAD_DROP:
 		/* if we have a thread, 'kill' it */
-		if (e->id != E_THREAD_NONE) {
+		if (e->have_thread) {
 			pthread_t id = e->id;
+			t(printf("Sending thread '%" G_GUINT64_FORMAT "' quit message\n", e_util_pthread_id(id)));
 
-			t(printf("Sending thread '%d' quit message\n", id));
-
-			e->id = E_THREAD_NONE;
+			e->have_thread = FALSE;
 
 			msg = g_malloc0(sizeof(*msg));
 			msg->reply_port = E_THREAD_QUIT_REPLYPORT;
 			e_msgport_put(e->server_port, msg);
 
 			pthread_mutex_unlock(&e->mutex);
-			t(printf("Joining thread '%d'\n", id));
+			t(printf("Joining thread '%" G_GUINT64_FORMAT "'\n", e_util_pthread_id(id)));
 			pthread_join(id, 0);
-			t(printf("Joined thread '%d'!\n", id));
+			t(printf("Joined thread '%" G_GUINT64_FORMAT "'!\n", e_util_pthread_id(id)));
 			pthread_mutex_lock(&e->mutex);
 		}
-		busy = e->id != E_THREAD_NONE;
+		busy = e->have_thread;
 		break;
 	case E_THREAD_NEW:
 		/* first, send everyone a quit message */
 		l = e->id_list;
 		while (l) {
 			info = l->data;
-			t(printf("Sending thread '%d' quit message\n", info->id));
+			t(printf("Sending thread '%" G_GUINT64_FORMAT "' quit message\n", e_util_pthread_id(info->id)));
 			msg = g_malloc0(sizeof(*msg));
 			msg->reply_port = E_THREAD_QUIT_REPLYPORT;
 			e_msgport_put(e->server_port, msg);
@@ -697,9 +845,9 @@ void e_thread_destroy(EThread *e)
 			info = e->id_list->data;
 			e->id_list = g_list_remove(e->id_list, info);
 			pthread_mutex_unlock(&e->mutex);
-			t(printf("Joining thread '%d'\n", info->id));
+			t(printf("Joining thread '%" G_GUINT64_FORMAT "'\n", e_util_pthread_id(info->id)));
 			pthread_join(info->id, 0);
-			t(printf("Joined thread '%d'!\n", info->id));
+			t(printf("Joined thread '%" G_GUINT64_FORMAT "'!\n", e_util_pthread_id(info->id)));
 			pthread_mutex_lock(&e->mutex);
 			g_free(info);
 		}
@@ -782,7 +930,7 @@ int e_thread_busy(EThread *e)
 		switch (e->type) {
 		case E_THREAD_QUEUE:
 		case E_THREAD_DROP:
-			busy = e->waiting != 1 && e->id != E_THREAD_NONE;
+			busy = e->waiting != 1 && e->have_thread;
 			break;
 		case E_THREAD_NEW:
 			busy = e->waiting != g_list_length(e->id_list);
@@ -853,7 +1001,7 @@ thread_dispatch(void *din)
 	struct _thread_info *info;
 	pthread_t self = pthread_self();
 
-	t(printf("dispatch thread started: %ld\n", pthread_self()));
+	t(printf("dispatch thread started: %" G_GUINT64_FORMAT "\n", e_util_pthread_id(self)));
 
 	while (1) {
 		pthread_mutex_lock(&e->mutex);
@@ -886,7 +1034,7 @@ thread_dispatch(void *din)
 
 			continue;
 		} else if (m->reply_port == E_THREAD_QUIT_REPLYPORT) {
-			t(printf("Thread %d got quit message\n", self));
+			t(printf("Thread %" G_GUINT64_FORMAT " got quit message\n", e_util_pthread_id(self)));
 			/* Handle a quit message, say we're quitting, free the message, and break out of the loop */
 			info = thread_find(e, self);
 			if (info)
@@ -964,7 +1112,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 		    && g_list_length(e->id_list) < e->queue_limit
 		    && pthread_create(&id, NULL, thread_dispatch, e) == 0) {
 			struct _thread_info *info = g_malloc0(sizeof(*info));
-			t(printf("created NEW thread %ld\n", id));
+			t(printf("created NEW thread %" G_GUINT64_FORMAT "\n", e_util_pthread_id(id)));
 			info->id = id;
 			info->busy = TRUE;
 			e->id_list = g_list_append(e->id_list, info);
@@ -974,12 +1122,13 @@ void e_thread_put(EThread *e, EMsg *msg)
 	}
 
 	/* create the thread, if there is none to receive it yet */
-	if (e->id == E_THREAD_NONE) {
+	if (!e->have_thread) {
 		int err;
 
 		if ((err = pthread_create(&e->id, NULL, thread_dispatch, e)) != 0) {
 			g_warning("Could not create dispatcher thread, message queued?: %s", strerror(err));
-			e->id = E_THREAD_NONE;
+		} else {
+			e->have_thread = TRUE;
 		}
 	}
 
@@ -995,6 +1144,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 struct _EMutex {
 	int type;
 	pthread_t owner;
+	int have_owner;
 	short waiters;
 	short depth;
 	pthread_mutex_t mutex;
@@ -1013,7 +1163,7 @@ EMutex *e_mutex_new(e_mutex_t type)
 	m->type = type;
 	m->waiters = 0;
 	m->depth = 0;
-	m->owner = E_THREAD_NONE;
+	m->have_owner = FALSE;
 
 	switch (type) {
 	case E_MUTEX_SIMPLE:
@@ -1066,11 +1216,12 @@ int e_mutex_lock(EMutex *m)
 		if ((err = pthread_mutex_lock(&m->mutex)) != 0)
 			return err;
 		while (1) {
-			if (m->owner == E_THREAD_NONE) {
+			if (!m->have_owner) {
 				m->owner = id;
+				m->have_owner = TRUE;
 				m->depth = 1;
 				break;
-			} else if (id == m->owner) {
+			} else if (pthread_equal (id, m->owner)) {
 				m->depth++;
 				break;
 			} else {
@@ -1096,11 +1247,11 @@ int e_mutex_unlock(EMutex *m)
 	case E_MUTEX_REC:
 		if ((err = pthread_mutex_lock(&m->mutex)) != 0)
 			return err;
-		g_assert(m->owner == pthread_self());
+		g_assert(m->have_owner && pthread_equal(m->owner, pthread_self()));
 
 		m->depth--;
 		if (m->depth == 0) {
-			m->owner = E_THREAD_NONE;
+			m->have_owner = FALSE;
 			if (m->waiters > 0)
 				pthread_cond_signal(&m->cond);
 		}
@@ -1115,7 +1266,7 @@ void e_mutex_assert_locked(EMutex *m)
 {
 	g_return_if_fail (m->type == E_MUTEX_REC);
 	pthread_mutex_lock(&m->mutex);
-	g_assert(m->owner == pthread_self());
+	g_assert(m->have_owner && pthread_equal(m->owner, pthread_self()));
 	pthread_mutex_unlock(&m->mutex);
 }
 
@@ -1130,9 +1281,9 @@ int e_mutex_cond_wait(void *vcond, EMutex *m)
 	case E_MUTEX_REC:
 		if ((ret = pthread_mutex_lock(&m->mutex)) != 0)
 			return ret;
-		g_assert(m->owner == pthread_self());
+		g_assert(m->have_owner && pthread_equal(m->owner, pthread_self()));
 		ret = pthread_cond_wait(cond, &m->mutex);
-		g_assert(m->owner == pthread_self());
+		g_assert(m->have_owner && pthread_equal(m->owner, pthread_self()));
 		pthread_mutex_unlock(&m->mutex);
 		return ret;
 	default:
@@ -1141,8 +1292,8 @@ int e_mutex_cond_wait(void *vcond, EMutex *m)
 }
 
 #ifdef STANDALONE
-EMsgPort *server_port;
 
+static EMsgPort *server_port;
 
 void *fdserver(void *data)
 {
@@ -1163,7 +1314,7 @@ void *fdserver(void *data)
 		printf("server %d: Got async notification, checking for messages\n", id);
 		while ((msg = e_msgport_get(server_port))) {
 			printf("server %d: got message\n", id);
-			sleep(1);
+			g_usleep(1000000);
 			printf("server %d: replying\n", id);
 			e_msgport_reply(msg);
 			count++;
@@ -1183,13 +1334,14 @@ void *server(void *data)
 		msg = e_msgport_get(server_port);
 		if (msg) {
 			printf("server %d: got message\n", id);
-			sleep(1);
+			g_usleep(1000000);
 			printf("server %d: replying\n", id);
 			e_msgport_reply(msg);
 		} else {
 			printf("server %d: didn't get message\n", id);
 		}
 	}
+	return NULL;
 }
 
 void *client(void *data)
@@ -1212,7 +1364,7 @@ void *client(void *data)
 	}
 
 	printf("client: sleeping ...\n");
-	sleep(2);
+	g_usleep(2000000);
 	printf("client: sending multiple\n");
 
 	for (i=0;i<10;i++) {
@@ -1229,6 +1381,7 @@ void *client(void *data)
 	}
 
 	printf("client: done\n");
+	return NULL;
 }
 
 int main(int argc, char **argv)
@@ -1237,13 +1390,21 @@ int main(int argc, char **argv)
 
 	g_thread_init(NULL);
 
+#ifdef G_OS_WIN32
+	{
+		WSADATA wsadata;
+		if (WSAStartup (MAKEWORD (2, 0), &wsadata) != 0)
+			g_error ("Windows Sockets could not be initialized");
+	}
+#endif
+
 	server_port = e_msgport_new();
 
 	/*pthread_create(&serverid, NULL, server, (void *)1);*/
 	pthread_create(&serverid, NULL, fdserver, (void *)1);
 	pthread_create(&clientid, NULL, client, NULL);
 
-	sleep(60);
+	g_usleep(60000000);
 
 	return 0;
 }

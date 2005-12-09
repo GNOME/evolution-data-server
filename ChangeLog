@@ -1,3 +1,29 @@
+2005-12-09  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-msgport.c: Add some socket API wrappers to hide
+	Unix/Winsock differences.
+
+	Use separate flag fields to indicate whether we have a thread or
+	not in the EThread and EMutex structs. There is no portable way to
+	check a pthread_t for uninitializedness. Remove the E_THREAD_NONE
+	magic constant.
+
+	The portable way to check two pthread_t values for equality is
+	pthread_equal().
+
+	Use e_util_pthread_id() to get an "id" for the thread in debugging
+	output.
+	
+	(e_pipe): New function, Win32 only. Creates a connected TCP socket
+	pair. Should have this in GLib, I guess. This code snippet is
+	essentially duplicated in
+	ORBit2/linc/src/linc-compat.c:link_pipe() and at least one other
+	place I don't recall now.
+
+	(e_msgport_prfd): Use PR_NewTCPSocketPair() instead of
+	PR_CreatePipe() on Win32, as we want sockets, not a pipe (file
+	descriptors).
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-db3-utils.c
