@@ -1,3 +1,10 @@
+2005-12-10  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (exchange_account_connect): set
+	account->priv->connecting flag to FALSE on NULL password.
+	Also removed unnecessary looping with try_password_again and also the
+	commented out code.
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* storage/e-shell-marshal.list: Add NONE:INT.

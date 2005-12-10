@@ -1467,20 +1467,12 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 				      account->priv->ad_limit);
 
 	if (!pword) {
+		account->priv->connecting = FALSE;
 		g_mutex_unlock (account->priv->connect_lock);
 		return NULL;
 	}
- try_password_again:
-	if (!pword) {
-/*
-		if (!get_password (account, ac, *info_result)) {
-			account->priv->connecting = FALSE;
-			return NULL;
-		}
-*/
-	} else {
-		e2k_autoconfig_set_password (ac, g_strdup (pword));
-	}
+
+	e2k_autoconfig_set_password (ac, g_strdup (pword));
 
  try_connect_again:
 	account->priv->ctx = e2k_autoconfig_get_context (ac, NULL, &result);
@@ -1497,38 +1489,11 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			account->priv->connecting = FALSE;
 			g_mutex_unlock (account->priv->connect_lock);
 			return NULL;
-/*
-			char *old_password, *new_password;
-			old_password = exchange_account_get_password (account);
-			//new_password = exchange_get_new_password (old_password, 0);
-
-			if (new_password) {
-				ExchangeAccountResult res;
-				res = exchange_account_set_password (account, old_password, new_password);
-				if (res == EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS) {
-					e2k_autoconfig_set_password (ac, new_password);
-					goto try_connect_again;
-				}
-				else
-					*info_result = res;
-				
-				g_free (old_password);
-				g_free (new_password);
-			}
-			else {
-				*info_result = EXCHANGE_ACCOUNT_PASSWORD_EXPIRED;
-				g_free (old_password);
-			}
-
-			result = E2K_AUTOCONFIG_CANCELLED;
-*/
 		}
 #endif
 		switch (result) {
 		case E2K_AUTOCONFIG_AUTH_ERROR:
 			*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
-			if (!pword)
-				goto try_password_again;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
 			g_mutex_unlock (account->priv->connect_lock);
@@ -1536,8 +1501,6 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_DOMAIN:
 			*info_result = EXCHANGE_ACCOUNT_DOMAIN_ERROR;
-			if (!pword)
-				goto try_password_again;
 			e2k_autoconfig_free (ac);
 			account->priv->connecting = FALSE;
 			g_mutex_unlock (account->priv->connect_lock);
@@ -1567,9 +1530,6 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 		e2k_autoconfig_free (ac);
 		account->priv->connecting = FALSE;
-
-		// SURF : if (!exchange_component_is_interactive (global_exchange_component))
-			// SURF : return NULL;
 
 		switch (result) {
 		case E2K_AUTOCONFIG_REDIRECT:
