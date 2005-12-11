@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server 1.4.0\n"
+"Project-Id-Version: evolution-data-server 1.4.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-07 23:48+0200\n"
-"PO-Revision-Date: 2005-09-07 23:14+0200\n"
+"POT-Creation-Date: 2005-12-12 01:56+0100\n"
+"PO-Revision-Date: 2005-12-12 01:51+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,13 +32,13 @@ msgstr "Chargement..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2169
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2189
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2208
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3425
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3587
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Recherche..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2493
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3559
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3735
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Téléchargement des contacts (%d)..."
@@ -50,35 +50,35 @@ msgstr "Téléchargement des contacts (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Mise à jour du cache des contacts (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:659
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:684
 msgid "Using Distinguished Name (DN)"
 msgstr "En utilisant le Nom Distinctif (DN en anglais)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:662
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:687
 msgid "Using Email Address"
 msgstr "En utilisant l'adresse électronique"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:832
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:873
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconnexion au serveur LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1382
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1441
 msgid "Adding contact to LDAP server..."
 msgstr "Ajout du contact sur le serveur LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1507
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1575
 msgid "Removing contact from LDAP server..."
 msgstr "Suppression du contact du serveur LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1764
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1857
 msgid "Modifying contact from LDAP server..."
 msgstr "Modification du contact du serveur LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3315
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3463
 msgid "Receiving LDAP search results..."
 msgstr "Réception des résultats de recherche LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3445
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3609
 msgid "Error performing search"
 msgstr "Erreur lors de la recherche"
 
@@ -606,10 +606,11 @@ msgstr "Note"
 msgid "Birth Date"
 msgstr "Date de naissance"
 
+#. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:236
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:453
-#: ../libedataserver/e-categories.c:236
+#: ../libedataserver/e-categories.c:237
 msgid "Anniversary"
 msgstr "Anniversaire"
 
@@ -637,7 +638,7 @@ msgid "Unnamed List"
 msgstr "Liste de contacts sans nom"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:455
-#: ../libedataserver/e-categories.c:237
+#: ../libedataserver/e-categories.c:238
 msgid "Birthday"
 msgstr "Date de naissance"
 
@@ -655,13 +656,13 @@ msgstr "Anniversaire : %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Impossible d'enregistrer les données du calendrier : URI erroné."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:873
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1379
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:889
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1425
 msgid "Reply Requested: by "
 msgstr "Réponse requise : par"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:878
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1384
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:894
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1430
 msgid "Reply Requested: When convenient"
 msgstr "Réponse requise : si nécessaire"
 
@@ -682,16 +683,15 @@ msgstr "URI de serveur non valide"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:780
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:789
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: ../calendar/libecal/e-cal.c:5101
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:851
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:899
-#: ../camel/providers/groupwise/camel-groupwise-store.c:475
-#: ../camel/providers/groupwise/camel-groupwise-store.c:490
-#: ../camel/providers/groupwise/camel-groupwise-store.c:524
-#: ../camel/providers/groupwise/camel-groupwise-store.c:644
-#: ../camel/providers/groupwise/camel-groupwise-store.c:888
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:177
+#: ../calendar/libecal/e-cal.c:5095
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:890
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:910
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:938
+#: ../camel/providers/groupwise/camel-groupwise-store.c:518
+#: ../camel/providers/groupwise/camel-groupwise-store.c:533
+#: ../camel/providers/groupwise/camel-groupwise-store.c:575
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1077
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "L'authentification a échoué"
 
@@ -701,7 +701,7 @@ msgstr "Impossible de créer le thread pour obtenir les différences"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:855
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/backends/http/e-cal-backend-http.c:495
+#: ../calendar/backends/http/e-cal-backend-http.c:496
 #: ../calendar/backends/weather/e-cal-backend-weather.c:444
 msgid "Could not create cache file"
 msgstr "Impossible de créer le fichier cache"
@@ -710,15 +710,15 @@ msgstr "Impossible de créer le fichier cache"
 msgid "Could not create thread for populating cache"
 msgstr "Impossible de créer la liste pour remplir le fichier cache"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:240
+#: ../calendar/backends/http/e-cal-backend-http.c:241
 msgid "Redirected to Invalid URI"
 msgstr "Redirigé vers un URI non valide"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:264
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Bad file format."
 msgstr "Mauvais format de fichier."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:270
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Not a calendar."
 msgstr "Ce n'est pas un calendrier."
 
@@ -915,7 +915,7 @@ msgstr "%.1f-%.1fcm neige\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin neige\n"
 
-#: ../calendar/libecal/e-cal-component.c:1323
+#: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
 msgstr "Rendez-vous sans titre"
 
@@ -1062,85 +1062,85 @@ msgid "Undefined"
 msgstr "Indéfinie"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1695
+#: ../calendar/libecal/e-cal.c:1662
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Saisissez le mot de passe de %s afin d'activer le proxy pour l'utilisateur %s"
 
-#: ../calendar/libecal/e-cal.c:1698 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:192
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Saisissez le mot de passe pour %s (utilisateur %s)"
 
-#: ../calendar/libecal/e-cal.c:5073
+#: ../calendar/libecal/e-cal.c:5067
 msgid "Invalid argument"
 msgstr "Argument non valide"
 
-#: ../calendar/libecal/e-cal.c:5075
+#: ../calendar/libecal/e-cal.c:5069
 msgid "Backend is busy"
 msgstr "Le moteur est occupé"
 
-#: ../calendar/libecal/e-cal.c:5077
+#: ../calendar/libecal/e-cal.c:5071
 msgid "Repository is offline"
 msgstr "Le dépôt est hors ligne"
 
-#: ../calendar/libecal/e-cal.c:5079
+#: ../calendar/libecal/e-cal.c:5073
 msgid "No such calendar"
 msgstr "Calendrier inexistant"
 
-#: ../calendar/libecal/e-cal.c:5081 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5075 ../servers/groupwise/e-gw-connection.c:167
 msgid "Object not found"
 msgstr "Objet non trouvé"
 
-#: ../calendar/libecal/e-cal.c:5083 ../servers/groupwise/e-gw-connection.c:161
+#: ../calendar/libecal/e-cal.c:5077 ../servers/groupwise/e-gw-connection.c:161
 msgid "Invalid object"
 msgstr "Objet non valide"
 
-#: ../calendar/libecal/e-cal.c:5085
+#: ../calendar/libecal/e-cal.c:5079
 msgid "URI not loaded"
 msgstr "URI non chargée"
 
-#: ../calendar/libecal/e-cal.c:5087
+#: ../calendar/libecal/e-cal.c:5081
 msgid "URI already loaded"
 msgstr "URI déjà chargée"
 
-#: ../calendar/libecal/e-cal.c:5089
+#: ../calendar/libecal/e-cal.c:5083
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permission refusée"
 
-#: ../calendar/libecal/e-cal.c:5091 ../servers/groupwise/e-gw-connection.c:169
+#: ../calendar/libecal/e-cal.c:5085 ../servers/groupwise/e-gw-connection.c:169
 msgid "Unknown User"
 msgstr "Utilisateur inconnu"
 
-#: ../calendar/libecal/e-cal.c:5093
+#: ../calendar/libecal/e-cal.c:5087
 msgid "Object ID already exists"
 msgstr "L'ID de l'objet existe déjà"
 
-#: ../calendar/libecal/e-cal.c:5095
+#: ../calendar/libecal/e-cal.c:5089
 msgid "Protocol not supported"
 msgstr "Protocole non supporté"
 
-#: ../calendar/libecal/e-cal.c:5097
+#: ../calendar/libecal/e-cal.c:5091
 msgid "Operation has been cancelled"
 msgstr "L'opération a été annulée"
 
-#: ../calendar/libecal/e-cal.c:5099
+#: ../calendar/libecal/e-cal.c:5093
 msgid "Could not cancel operation"
 msgstr "Impossible d'annuler l'opération"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5097
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Authentification requise"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5099
 msgid "A CORBA exception has occurred"
 msgstr "Une exception CORBA s'est produite"
 
-#: ../calendar/libecal/e-cal.c:5107
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:211
+#: ../calendar/libecal/e-cal.c:5101
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:212
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:376
@@ -1152,7 +1152,7 @@ msgstr "Une exception CORBA s'est produite"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5103
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Aucune erreur"
@@ -1332,10 +1332,15 @@ msgstr "Télécharger les nouveaux messages pour le mode hors-ligne"
 msgid "Preparing folder '%s' for offline"
 msgstr "Préparation du dossier « %s » pour le hors-ligne"
 
-#: ../camel/camel-disco-store.c:391
+#: ../camel/camel-disco-store.c:395
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1275
 #: ../camel/providers/imap/camel-imap-store.c:2944
 msgid "You must be working online to complete this operation"
 msgstr "Vous devez travailler en ligne pour terminer cette opération"
+
+#: ../camel/camel-exception.c:308
+msgid "No description available"
+msgstr "Aucune description disponible"
 
 #: ../camel/camel-filter-driver.c:701 ../camel/camel-filter-search.c:523
 #, c-format
@@ -2293,7 +2298,7 @@ msgid "export keys: unimplemented"
 msgstr "exporter les clés : non implémenté"
 
 #: ../camel/camel-store.c:215
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Impossible d'obtenir le dossier : opération non valide sur ce stockage"
 
@@ -2585,7 +2590,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "Impossible de copier des messages dans le dossier de Spam "
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2054
+#: ../camel/providers/imap/camel-imap-folder.c:2057
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2595,7 +2600,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2054
+#: ../camel/providers/imap/camel-imap-folder.c:2057
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:340
 #: ../camel/providers/local/camel-mh-folder.c:203
@@ -2614,7 +2619,7 @@ msgstr "Aucun message correspondant"
 msgid "User cancelled"
 msgstr "Opération annulée"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:134
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:792
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:150
@@ -2628,39 +2633,41 @@ msgstr "Opération annulée"
 msgid "Cannot get message %s: %s"
 msgstr "Impossible d'obtenir le message : %s : %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
 #: ../camel/providers/imap4/camel-imap4-folder.c:810
 msgid "This message is not available in offline mode."
 msgstr "Ce message n'est pas disponible en mode hors-ligne."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:166
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1343
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1389
 msgid "Could not get message"
 msgstr "Impossible d'obtenir le message."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:675
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:702
 #: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Impossible de charger le résumé pour %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:985
-#: ../camel/providers/groupwise/camel-groupwise-store.c:512
-#: ../camel/providers/imap/camel-imap-folder.c:2366
-#: ../camel/providers/imap/camel-imap-folder.c:2436
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1025
+#: ../camel/providers/groupwise/camel-groupwise-store.c:563
+#: ../camel/providers/imap/camel-imap-folder.c:2369
+#: ../camel/providers/imap/camel-imap-folder.c:2439
 msgid "Fetching summary information for new messages"
 msgstr "Récupération des informations de résumé des nouveaux messages."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1594
-#, c-format
-msgid "Cannot create message: %s"
-msgstr "Impossible de créer le message: %s"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1606
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1618
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1664
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossible de joindre le message au dossier `%s': %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1652
+#, c-format
+msgid "Cannot create message: %s"
+msgstr "Impossible de créer le message: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
@@ -2747,66 +2754,60 @@ msgstr ""
 "Cette option va se connecter au serveur GroupWise en utilisant un mot de "
 "passe en clair."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:100
+#: ../camel/providers/groupwise/camel-groupwise-store.c:104
 msgid "Host or user not available in url"
 msgstr "L'hôte ou l'utilisateur n'est pas disponible en url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:195
+#: ../camel/providers/groupwise/camel-groupwise-store.c:203
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sSaisissez le mot de passe GroupWise pour %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:209
+#: ../camel/providers/groupwise/camel-groupwise-store.c:217
 #: ../camel/providers/imap/camel-imap-store.c:1328
 msgid "You didn't enter a password."
 msgstr "Vous n'avez pas saisi de mot de passe."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:223
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Impossible de s'authentifier sur le serveur GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:266
+#: ../camel/providers/groupwise/camel-groupwise-store.c:297
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Certaines fonctionnalités peuvent ne pas fonctionner correctement avec la "
 "version actuelle de votre serveur"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:427
+#: ../camel/providers/groupwise/camel-groupwise-store.c:470
 #: ../camel/providers/imap/camel-imap-store.c:1857
 #: ../camel/providers/imap/camel-imap-store.c:2048
 #, c-format
 msgid "No such folder %s"
 msgstr "Aucun dossier de type « %s »."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:603
-msgid "Cannot get folder info in offline mode."
-msgstr "Impossible d'obtenir le dossier en mode hors-ligne."
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:869
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1054
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Impossible de créer des dossiers GroupWise en mode hors-ligne."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:919
-msgid "Cannot delete GroupWise folders in offline mode."
-msgstr "Impossible de supprimer les dossier GroupWise en mode hors-ligne."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1068
+#: ../camel/providers/imap/camel-imap-store.c:1932
+#: ../camel/providers/imap/camel-imap-store.c:2301
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr "Le dossier parent n'est pas autorisé à contenir des sous-dossiers."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:956
-#: ../camel/providers/groupwise/camel-groupwise-store.c:976
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1145
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1166
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Impossible de renommer le le dossier GroupWise `%s' en `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:962
-msgid "Cannot rename GroupWise folders in offline mode."
-msgstr "Impossible de renommer des dossiers GroupWise en mode hors-ligne."
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1008
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1198
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Serveur GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1010
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1200
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Service GroupWise pour %s sur %s"
@@ -2819,6 +2820,12 @@ msgstr "Distribution du courrier GroupWise via %s"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
 msgstr "Envoi du message"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:212
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:206
+#, c-format
+msgid "Could not send message: %s"
+msgstr "Impossible d'envoyer le message : %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
@@ -2883,36 +2890,36 @@ msgstr "Le dossier a été détruit et recréé sur le serveur."
 msgid "Scanning for changed messages"
 msgstr "Examen des messages modifiés"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2014
+#: ../camel/providers/imap/camel-imap-folder.c:2017
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Impossible de récupérer le message : %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2093
-#: ../camel/providers/imap/camel-imap-folder.c:2708
+#: ../camel/providers/imap/camel-imap-folder.c:2096
+#: ../camel/providers/imap/camel-imap-folder.c:2711
 #: ../camel/providers/nntp/camel-nntp-folder.c:221
 msgid "This message is not currently available"
 msgstr "Ce message n'est pas disponible."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2544
+#: ../camel/providers/imap/camel-imap-folder.c:2547
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Réponse du serveur incomplète : pas d'information fournit pour le message %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2552
+#: ../camel/providers/imap/camel-imap-folder.c:2555
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Réponse du serveur incomplète : aucun UID fournit pour le message %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2565
+#: ../camel/providers/imap/camel-imap-folder.c:2568
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
 "Réponse du serveur inattendue : UID identiques pour les messages %d et %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2746
+#: ../camel/providers/imap/camel-imap-folder.c:2749
 msgid "Could not find message body in FETCH response."
 msgstr "Impossible de trouver le corps du message dans la réponse FETCH."
 
@@ -3150,11 +3157,6 @@ msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "Le nom de dossier « %s » n'est pas valide car il contient le caractère « %c »"
-
-#: ../camel/providers/imap/camel-imap-store.c:1932
-#: ../camel/providers/imap/camel-imap-store.c:2301
-msgid "The parent folder is not allowed to contain subfolders"
-msgstr "Le dossier parent n'est pas autorisé à contenir des sous-dossiers."
 
 #: ../camel/providers/imap/camel-imap-store.c:1986
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -4350,11 +4352,6 @@ msgstr "Impossible de créer un tube vers sendmail : %s : courriel non envoyé
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "Impossible de cloner sendmail : %s : courriel non envoyé"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:206
-#, c-format
-msgid "Could not send message: %s"
-msgstr "Impossible d'envoyer le message : %s"
-
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
@@ -4646,83 +4643,83 @@ msgstr "La commande QUIT a échoué : %s"
 msgid "QUIT command failed"
 msgstr "La commande QUIT a échoué"
 
-#: ../libedataserver/e-categories.c:238
+#: ../libedataserver/e-categories.c:239
 msgid "Business"
 msgstr "Bureau"
 
-#: ../libedataserver/e-categories.c:239
+#: ../libedataserver/e-categories.c:240
 msgid "Competition"
 msgstr "Compétition"
 
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:241
 msgid "Favorites"
 msgstr "Favoris"
 
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:242
 msgid "Gifts"
 msgstr "Cadeaux"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:243
 msgid "Goals/Objectives"
 msgstr "Buts/Objectifs"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:244
 msgid "Holiday"
 msgstr "Vacance"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:245
 msgid "Holiday Cards"
 msgstr "Cartes postales"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:246
 msgid "Hot Contacts"
 msgstr "Contacts fréquents"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:247
 msgid "Ideas"
 msgstr "Idées"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:248
 msgid "International"
 msgstr "International"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:249
 msgid "Key Customer"
 msgstr "Client clé"
 
-#: ../libedataserver/e-categories.c:249
+#: ../libedataserver/e-categories.c:250
 msgid "Miscellaneous"
 msgstr "Divers"
 
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:251
 msgid "Personal"
 msgstr "Personnel"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:252
 msgid "Phone Calls"
 msgstr "Appels téléphoniques"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:253
 msgid "Status"
 msgstr "État"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:254
 msgid "Strategies"
 msgstr "Stratégies"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:255
 msgid "Suppliers"
 msgstr "Fournisseurs"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:256
 msgid "Time & Expenses"
 msgstr "Temps & Dépenses"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:257
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:258
 msgid "Waiting"
 msgstr "En attente"
 
@@ -4906,15 +4903,15 @@ msgstr "_Éditer"
 msgid "categories"
 msgstr "catégories"
 
-#: ../libedataserverui/e-name-selector-dialog.c:211
+#: ../libedataserverui/e-name-selector-dialog.c:215
 msgid "Select Contacts from Address Book"
 msgstr "Sélectionnez les contacts dans le carnet d'adresses"
 
-#: ../libedataserverui/e-name-selector-dialog.c:502
+#: ../libedataserverui/e-name-selector-dialog.c:507
 msgid "_Add"
 msgstr "_Ajouter"
 
-#: ../libedataserverui/e-name-selector-dialog.c:527
+#: ../libedataserverui/e-name-selector-dialog.c:532
 msgid "_Remove"
 msgstr "_Supprimer"
 
@@ -4956,7 +4953,7 @@ msgid "_Search:"
 msgstr "_Rechercher :"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1821
+#: ../libedataserverui/e-name-selector-entry.c:1830
 #, c-format
 msgid "_Edit %s"
 msgstr "_Éditer %s"
@@ -4978,12 +4975,14 @@ msgstr "Sélectionnez la destination"
 msgid "_Destination"
 msgstr "_Destination"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1573
+#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Saisissez le mot de passe pour %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1574
+#: ../servers/exchange/lib/e2k-autoconfig.c:1575
+#: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Saisissez le mot de passe"
 
@@ -5096,26 +5095,26 @@ msgstr "Cette opération ne peut pas être effectuée en mode hors-ligne"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:623
+#: ../servers/exchange/storage/exchange-account.c:642
 #, c-format
 msgid "%s's Folders"
 msgstr "Dossiers de %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1268
+#: ../servers/exchange/storage/exchange-account.c:1301
 msgid "Personal Folders"
 msgstr "Dossiers personnels"
 
-#: ../servers/exchange/storage/exchange-account.c:1283
+#: ../servers/exchange/storage/exchange-account.c:1315
 msgid "Favorite Public Folders"
 msgstr "Dossiers public favoris"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1300
+#: ../servers/exchange/storage/exchange-account.c:1332
 msgid "All Public Folders"
 msgstr "Tous les dossiers publics"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1314
+#: ../servers/exchange/storage/exchange-account.c:1346
 msgid "Global Address List"
 msgstr "Liste globale d'adresses"
 
