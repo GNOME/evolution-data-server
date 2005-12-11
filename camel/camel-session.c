@@ -278,11 +278,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 	path = g_strdup_printf ("%s/%s", session->storage_path, p);
 	g_free (p);
 
-#ifdef G_OS_WIN32 
 	if (g_access (path, F_OK) == 0)
-#else
-	if (access (path, F_OK) == 0)
-#endif
 		return path;
 
 	if (camel_mkdir (path, S_IRWXU) == -1) {

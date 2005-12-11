@@ -1,3 +1,9 @@
+2005-12-11  Tor Lillqvist  <tml@novell.com>
+
+	* camel-session.c (get_storage_path): No need to have ifdefs for
+	g_access() here, camel-private #defines g_access as access when
+	builing against an older GLib.
+
 2005-12-07  Jeff Cai <jeff.cai@sun.com>
 
 	* camel-vee-folder.c: (vee_search_by_expression),
