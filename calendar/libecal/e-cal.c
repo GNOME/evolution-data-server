@@ -1419,15 +1419,30 @@ set_local_attachment_store (ECal *ecal)
 		priv->local_attachment_store = g_strdup (priv->uri);
 	} else if (g_str_has_prefix (priv->uri, "groupwise://")) {
 		/* points to the location of the cache*/
+		gchar *filename = g_build_filename (g_get_home_dir (),
+						    ".evolution/cache/calendar",
+						    mangled_uri,
+						    NULL);
 		priv->local_attachment_store = 
-			g_strconcat ("file://", g_get_home_dir (), "/", ".evolution/cache/calendar",
-				     "/", mangled_uri, NULL);
+			g_filename_to_uri (filename, NULL, NULL);
+		g_free (filename);
 	} else if (g_str_has_prefix (priv->uri, "exchange://")) {
-		priv->local_attachment_store = g_strdup_printf ("file://%s/.evolution/exchange/%s", 
-					g_get_home_dir (), mangled_uri);
+		gchar *filename = g_build_filename (g_get_home_dir (),
+						    ".evolution/exchange",
+						    mangled_uri,
+						    NULL);
+		priv->local_attachment_store =
+			g_filename_to_uri (filename, NULL, NULL);
+		g_free (filename);
 	} else if (g_str_has_prefix (priv->uri, "scalix://")) {
-                priv->local_attachment_store = g_strdup_printf ("file://%s/.evolution/cache/scalix/%s/attach",
-                                        g_get_home_dir (), mangled_uri);
+		gchar *filename = g_build_filename (g_get_home_dir (),
+						    ".evolution/cache/scalix",
+						    mangled_uri,
+						    "attach",
+						    NULL);
+                priv->local_attachment_store =
+			g_filename_to_uri (filename, NULL, NULL);
+		g_free (filename);
         }
 
 	g_free (mangled_uri);
@@ -1514,9 +1529,14 @@ ECal *
 e_cal_new_system_calendar (void)
 {
 	ECal *ecal;
+	char *filename;
 	char *uri;
 
-	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "calendar", "local", "system", NULL);
+	filename = g_build_filename (g_get_home_dir (),
+				     ".evolution/calendar/local/system",
+				     NULL);
+	uri = g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
 	g_free (uri);
 	
@@ -1537,9 +1557,14 @@ ECal *
 e_cal_new_system_tasks (void)
 {
 	ECal *ecal;
+	char *filename;
 	char *uri;
 
-	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "tasks", "local", "system", NULL);
+	filename = g_build_filename (g_get_home_dir (),
+				     ".evolution/tasks/local/system",
+				     NULL);
+	uri = g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_TODO);
 	g_free (uri);
 	
@@ -1551,8 +1576,13 @@ e_cal_new_system_memos (void)
 {
 	ECal *ecal;
 	char *uri;
+	char *filename;
 
-	uri = g_build_filename ("file://", g_get_home_dir (), ".evolution", "memos", "local", "system", NULL);
+	filename = g_build_filename (g_get_home_dir (),
+				     ".evolution/memos/local/system",
+				     NULL);
+	uri = g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_JOURNAL);
 	g_free (uri);
 	

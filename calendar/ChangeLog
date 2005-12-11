@@ -1,3 +1,10 @@
+2005-12-11  Tor Lillqvist  <tml@novell.com>
+
+	* libecal/e-cal.c (set_local_attachment_store,
+	e_cal_new_system_calendar, e_cal_new_system_tasks,
+	e_cal_new_system_memos): Use g_build_filename() and
+	g_filename_to_uri().
+
 2005-12-09  Tor Lillqvist  <tml@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c: Use gstdio
