@@ -25,21 +25,48 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
+
+#ifndef G_OS_WIN32
 #include <sys/poll.h>
+#endif
 #include <pthread.h>
 #include <stdio.h>
 #include <errno.h>
 
-#include <glib.h>
-
-#include "camel-i18n.h"
-#include "camel-operation.h"
-#include "camel-exception.h"
-#include "camel-net-utils.h"
-
 #include "libedataserver/e-msgport.h"
 
+#include "camel-exception.h"
+#include "camel-i18n.h"
+#include "camel-net-utils.h"
+#include "camel-operation.h"
+
 #define d(x)
+
+#ifdef G_OS_WIN32
+
+#undef gai_strerror
+#define gai_strerror my_gai_strerror
+
+/* gai_strerror() is implemented as an inline function in Microsoft's
+ * SDK, but mingw lacks that. So implement here. The EAI_* errors can
+ * be handled with the normal FormatMessage() API,
+ * i.e. g_win32_error_message().
+ */
+
+static const char *
+gai_strerror (int error_code)
+{
+	gchar *msg = g_win32_error_message (error_code);
+	GQuark quark = g_quark_from_string (msg);
+	const gchar *retval = g_quark_to_string (quark);
+
+	g_free (msg);
+
+	return retval;
+}
+
+#endif
 
 /* gethostbyname emulation code for emulating getaddrinfo code ...
 
@@ -407,7 +434,7 @@ cs_freeinfo(struct _addrinfo_msg *msg)
 	g_free(msg);
 }
 
-/* returns -1 if cancelled */
+/* returns -1 if we didn't wait for reply from thread */
 static int
 cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error, CamelException *ex)
 {
@@ -424,8 +451,9 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 	reply_port = msg->msg.reply_port = e_msgport_new();
 	fd = e_msgport_fd(msg->msg.reply_port);
 	if ((err = pthread_create(&id, NULL, worker, msg)) == 0) {
-		struct pollfd polls[2];
 		int status;
+#ifndef G_OS_WIN32
+		struct pollfd polls[2];
 
 		polls[0].fd = fd;
 		polls[0].events = POLLIN;
@@ -438,10 +466,31 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 			polls[1].revents = 0;
 			status = poll(polls, 2, -1);
 		} while (status == -1 && errno == EINTR);
+#else
+		fd_set read_set;
 
-		if (status == -1 || (polls[1].revents & POLLIN)) {
+		FD_ZERO(&read_set);
+		FD_SET(fd, &read_set);
+		FD_SET(cancel_fd, &read_set);
+
+		status = select(MAX(fd, cancel_fd) + 1, &read_set, NULL, NULL, NULL);
+#endif
+
+		if (status == -1 ||
+#ifndef G_OS_WIN32
+		    (polls[1].revents & POLLIN)
+#else
+		    FD_ISSET (cancel_fd, &read_set)
+#endif
+						   ) {
 			if (status == -1)
-				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, "%s: %s", error, g_strerror(errno));
+				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, "%s: %s", error,
+#ifndef G_OS_WIN32
+						     g_strerror(errno)
+#else
+						     g_win32_error_message (WSAGetLastError ())
+#endif
+						     );
 			else
 				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
 			

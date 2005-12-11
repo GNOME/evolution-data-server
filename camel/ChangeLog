@@ -6,6 +6,12 @@
 	do this on Windows.
 	(swrite): Use g_get_tmp_dir(), g_build_filename(), g_mkstemp().
 
+	* camel-net-utils.c (gai_strerror): Implement gai_strerror() for
+	Win32.
+	(cs_waitinfo): Use select() instead of poll() on Win32. Use
+	g_win32_error_message(WSAGetLastError()) for socket API error
+	messages on Win32.
+
 	* camel-session.c (get_storage_path): No need to have ifdefs for
 	g_access() here, camel-private #defines g_access as access when
 	builing against an older GLib.
