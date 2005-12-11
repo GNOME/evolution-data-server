@@ -35,17 +35,23 @@
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <sys/time.h>
-#include <sys/poll.h>
-#include <termios.h>
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <ctype.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#ifndef G_OS_WIN32
+#include <sys/ioctl.h>
+#include <sys/wait.h>
+#include <sys/poll.h>
+#include <termios.h>
+#endif
 
 #include "libedataserver/e-iconv.h"
 
@@ -293,7 +299,7 @@ gpg_ctx_new (CamelSession *session)
 	gpg->diagbuf = CAMEL_STREAM_MEM (stream)->buffer;
 	gpg->diagflushed = FALSE;
 	
-	if ((charset = e_iconv_locale_charset ()) && strcasecmp (charset, "UTF-8") != 0) {
+	if ((charset = e_iconv_locale_charset ()) && g_ascii_strcasecmp (charset, "UTF-8") != 0) {
 		CamelMimeFilterCharset *filter;
 		CamelStreamFilter *fstream;
 		
@@ -464,6 +470,8 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	g_free (gpg);
 }
 
+#ifndef G_OS_WIN32
+
 static const char *
 gpg_hash_str (CamelCipherHash hash)
 {
@@ -581,9 +589,12 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, int status_fd, char **sfd, int passwd_fd,
 	return argv;
 }
 
+#endif
+
 static int
 gpg_ctx_op_start (struct _GpgCtx *gpg)
 {
+#ifndef G_OS_WIN32
 	char *status_fd = NULL, *passwd_fd = NULL;
 	int i, maxfd, errnosave, fds[10];
 	GPtrArray *argv;
@@ -676,9 +687,17 @@ gpg_ctx_op_start (struct _GpgCtx *gpg)
 	}
 	
 	errno = errnosave;
+#else
+	/* FIXME: Port me */
+	g_warning ("%s: Not implemented", __FUNCTION__);
+
+	errno = EINVAL;
+#endif
 	
 	return -1;
 }
+
+#ifndef G_OS_WIN32
 
 static const char *
 next_token (const char *in, char **token)
@@ -913,6 +932,8 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	return 0;
 }
 
+#endif
+
 #define status_backup(gpg, start, len) G_STMT_START {                     \
 	if (gpg->statusleft <= len) {                                     \
 		unsigned int slen, soff;                                  \
@@ -932,6 +953,8 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	gpg->statusptr += len;                                            \
 	gpg->statusleft -= len;                                           \
 } G_STMT_END
+
+#ifndef G_OS_WIN32
 
 static void
 gpg_ctx_op_cancel (struct _GpgCtx *gpg)
@@ -953,9 +976,12 @@ gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 	}
 }
 
+#endif
+
 static int
 gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 {
+#ifndef G_OS_WIN32
 	struct pollfd polls[6];
 	int status, i, cancel_fd;
 
@@ -1137,7 +1163,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	/* always called on an i/o error */
 	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to execute gpg: %s"), g_strerror(errno));
 	gpg_ctx_op_cancel(gpg);
-
+#endif
 	return -1;
 }
 
@@ -1171,6 +1197,7 @@ gpg_ctx_op_exited (struct _GpgCtx *gpg)
 static int
 gpg_ctx_op_wait (struct _GpgCtx *gpg)
 {
+#ifndef G_OS_WIN32
 	sigset_t mask, omask;
 	pid_t retval;
 	int status;
@@ -1205,6 +1232,9 @@ gpg_ctx_op_wait (struct _GpgCtx *gpg)
 		return WEXITSTATUS (status);
 	else
 		return -1;
+#else
+	return -1;
+#endif
 }
 
 
@@ -1326,8 +1356,10 @@ swrite (CamelMimePart *sigpart)
 	char *template;
 	int fd, ret;
 	
-	template = g_strdup ("/tmp/evolution-pgp.XXXXXX");
-	fd = mkstemp (template);
+	template = g_build_filename (g_get_tmp_dir (),
+				     "evolution-pgp.XXXXXX",
+				     NULL);
+	fd = g_mkstemp (template);
 	if (fd == -1) {
 		g_free (template);
 		return NULL;
@@ -1346,7 +1378,7 @@ swrite (CamelMimePart *sigpart)
 	camel_object_unref(ostream);
 
 	if (ret == -1) {
-		unlink (template);
+		g_unlink (template);
 		g_free (template);
 		return NULL;
 	}
@@ -1488,7 +1520,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	gpg_ctx_free (gpg);
 	
 	if (sigfile) {
-		unlink (sigfile);
+		g_unlink (sigfile);
 		g_free (sigfile);
 	}
 	camel_object_unref(istream);
@@ -1504,7 +1536,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		camel_object_unref(istream);
 
 	if (sigfile) {
-		unlink (sigfile);
+		g_unlink (sigfile);
 		g_free (sigfile);
 	}
 	
