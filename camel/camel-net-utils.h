@@ -29,8 +29,14 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <sys/types.h>
+
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netdb.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
 
 struct _CamelException;
 
