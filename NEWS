@@ -1,3 +1,44 @@
+Evolution-Data-Server 1.5.3, 2005-12-12
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#323433 - Evolution crashes when folding vfolder subfolders while in one,
+		  wont restart (Jeff Cai)
+	#321139 - evolution will crash on solaris when print error message (Shi Pu)
+	#321515 - Lazy-bind loaded modules in camel (Ross Burton)
+	#322408 - creating new folder causes evolution to hang on the uw-imapd
+		  server (Jeff Cai) 
+	#317322 - crash when delete a imported recurrent event (Chenthill)
+	#318777 - recurrence editing ... (Chenthill)
+	#323349 - Evolution data server, Configuration failed on Solaris (Irene Huang)
+	#319592 - Use GLib for determining host endian (Ross Burton)
+	#319591 - Use G_DEFINE_TYPE in libedataserver (Ross Burton)
+	#321830 - GW - Not All Email In Sent Items Appearing In Evolution (Parthasarathi)
+
+Other Fixes :
+	- Numerous fixes in Camel/Libebook/libedataserver for Win32 support (Tor Lillqvist) 
+	- Hula provider fixes (Harish)
+	- Exchange : Use remembered password for authentication (Irene Huang)
+	- Exchange : fix compiler warnings (Sushma)
+	- Build fixes (Dave Malcolm)
+
+Updated Translations:
+
+	- be (Vital Khilko)
+	- bg (Alexander Shopov)
+	- cs (Miloslav Trmac)
+	- en_CA (Adam Weinberger)
+	- es (Francisco Javier F. Serrador)
+	- fa (Meelad Zakaria)
+	- fr (Christophe Merlet)
+	- gl (Ignacio Casal Quinteiro)
+	- gu (Ankit Patel)
+	- ja (Takeshi AIHANA)
+	- nb, no (Kjartan Maraas)
+	- zh_CN (Funda Wang)
+
+
 Evolution-Data-Server 1.5.2, 2005-11-14
 ---------------------------------------
 
