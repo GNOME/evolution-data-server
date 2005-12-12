@@ -1576,32 +1576,34 @@ e2k_validate_user (const char *owa_url, char *user,
 					"Exchange", key, prompt,
 					E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
 					&remember, NULL);
-		if (password) {
-			valid = validate (owa_url, user, password, exchange_params, result);
-			if (valid) {
-				/* generate the proper key once the host name 
-				 * is read and remember password temporarily, 
-				 * so that at the end of * account creation, 
-				 * user will not be prompted, for password will
-				 * not be asked again. 
-				 */
-
-				*remember_password = remember;
-				g_free (key);
-				if (exchange_params->is_ntlm)
-					key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/", 
-								       user, exchange_params->host);
-				else
-					key = g_strdup_printf ("exchange://%s@%s/", user, exchange_params->host);
-				e_passwords_add_password (key, password);
-				e_passwords_remember_password ("Exchange", key);
-			}
-		}
 		g_free (prompt);
 	}
-	if (password && !valid) {
-		e_passwords_forget_password ("Exchange", key);
+	else {
+		valid = validate (owa_url, user, password, exchange_params, result);
+		if (valid) {
+			/* generate the proper key once the host name 
+			 * is read and remember password temporarily, 
+			 * so that at the end of * account creation, 
+			 * user will not be prompted, for password will
+			 * not be asked again. 
+			 */
+
+			*remember_password = remember;
+			g_free (key);
+			if (exchange_params->is_ntlm)
+				key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/", 
+							       user, exchange_params->host);
+			else
+				key = g_strdup_printf ("exchange://%s@%s/", user, exchange_params->host);
+			e_passwords_add_password (key, password);
+			e_passwords_remember_password ("Exchange", key);
+		}
+		else {
+			/* if validation failed*/
+			e_passwords_forget_password ("Exchange", key);
+		}
 	}
+
 	g_free (key);
 
 	return valid;

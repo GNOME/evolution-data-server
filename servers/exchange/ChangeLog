@@ -1,3 +1,9 @@
+2005-12-12  Irene Huang <Irene.Huang@sun.com>
+
+	* lib/e2k-autoconfig.c: (e2k_validate_user): If password
+	exists, used the remembered password to do the
+	authentification. If validation failed, forget password.
+
 2005-12-10  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c (exchange_account_connect): set
