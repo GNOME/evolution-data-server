@@ -25,7 +25,11 @@
 #include <errno.h>
 #include <string.h>
 
-#include "camel-exception.h"
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel/camel-exception.h"
+
 #include "camel-nntp-grouplist.h"
 #include "camel-nntp-resp-codes.h"
 
@@ -89,7 +93,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 	unsigned long time;
 
 	g_free (root_dir);
-	fp = fopen (grouplist_file, "r");
+	fp = g_fopen (grouplist_file, "r");
 	g_free (grouplist_file);
 
 	if (fp == NULL) {
@@ -149,7 +153,7 @@ camel_nntp_grouplist_save (CamelNNTPGroupList *group_list, CamelException *ex)
 	gchar *grouplist_file = g_strdup_printf ("%s/grouplist", root_dir);
 
 	g_free (root_dir);
-	fp = fopen (grouplist_file, "w");
+	fp = g_fopen (grouplist_file, "w");
 	g_free (grouplist_file);
 
 	if (fp == NULL) {

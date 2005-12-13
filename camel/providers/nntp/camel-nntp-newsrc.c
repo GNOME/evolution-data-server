@@ -20,12 +20,7 @@
  *
  */
 
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
-#include <glib.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -35,8 +30,12 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel/camel-folder-summary.h"
+
 #include "camel-nntp-newsrc.h"
-#include <camel/camel-folder-summary.h>
 
 #define NEWSRC_LOCK(f, l) (g_mutex_lock(((CamelNNTPNewsrc *)f)->l))
 #define NEWSRC_UNLOCK(f, l) (g_mutex_unlock(((CamelNNTPNewsrc *)f)->l))
@@ -485,7 +484,7 @@ camel_nntp_newsrc_write(CamelNNTPNewsrc *newsrc)
 		return;
 	}
 
-	if ((fp = fopen(newsrc->filename, "w")) == NULL) {
+	if ((fp = g_fopen(newsrc->filename, "w")) == NULL) {
 		g_warning ("Couldn't open newsrc file '%s'.\n", newsrc->filename);
 		NEWSRC_UNLOCK(newsrc, lock);
 		return;
@@ -614,7 +613,7 @@ camel_nntp_newsrc_read_for_server (const char *server)
 	newsrc->groups = g_hash_table_new (g_str_hash, g_str_equal);
 	newsrc->lock = g_mutex_new();
 	
-	if ((fd = open(filename, O_RDONLY)) == -1) {
+	if ((fd = g_open(filename, O_RDONLY, 0)) == -1) {
 		g_warning ("~/.newsrc-%s not present.\n", server);
 		return newsrc;
 	}

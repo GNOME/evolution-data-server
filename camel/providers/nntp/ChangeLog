@@ -1,3 +1,8 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel-nntp-grouplist.c
+	* camel-nntp-newsrc.c: Use gstdio wrappers.
+
 2005-11-30  Tor Lillqvist  <tml@novell.com>
 
 	* camel-nntp-folder.c
