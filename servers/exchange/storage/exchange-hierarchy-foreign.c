@@ -25,22 +25,26 @@
 #include <config.h>
 #endif
 
-#include "exchange-hierarchy-foreign.h"
-#include "exchange-account.h"
-#include "e-folder-exchange.h"
-#include "e2k-propnames.h"
-#include "e2k-uri.h"
-#include "e2k-utils.h"
-#include "exchange-esource.h"
-#include "exchange-types.h"
-#include "e2k-types.h"
-
-#include <libedataserver/e-xml-hash-utils.h>
-#include <libedataserver/e-source-list.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "libedataserver/e-source-list.h"
+#include "libedataserver/e-xml-hash-utils.h"
+#include "libedataserver/e-xml-utils.h"
+
+#include "e-folder-exchange.h"
+#include "e2k-propnames.h"
+#include "e2k-types.h"
+#include "e2k-uri.h"
+#include "e2k-utils.h"
+#include "exchange-account.h"
+#include "exchange-esource.h"
+#include "exchange-hierarchy-foreign.h"
+#include "exchange-types.h"
 
 struct _ExchangeHierarchyForeignPrivate {
 	GMutex *hide_private_lock;
@@ -194,7 +198,7 @@ hierarchy_foreign_cleanup (ExchangeHierarchy *hier)
 							NULL);
 
 	mf_path = e_folder_exchange_get_storage_file (hier->toplevel, "hierarchy.xml");
-	unlink (mf_path);
+	g_unlink (mf_path);
 	g_free (mf_path);
 
 	exchange_hierarchy_removed_folder (hier, hier->toplevel);
@@ -218,7 +222,6 @@ find_folder (ExchangeHierarchy *hier, const char *uri, EFolder **folder_out)
 	int nresults;
 	EFolder *folder;
 	const char *access;
-	int offline;
 
 	status = e2k_context_propfind (ctx, NULL, uri,
 				       folder_props, n_folder_props,
@@ -271,7 +274,6 @@ create_internal (ExchangeHierarchy *hier, EFolder *parent,
 	char *literal_uri = NULL, *standard_uri = NULL;
 	const char *home_uri;
 	int i;
-	int offline;
 
 	/* For now, no nesting */
 	if (parent != hier->toplevel || strchr (name + 1, '/'))
@@ -538,7 +540,7 @@ exchange_hierarchy_foreign_new (ExchangeAccount *account,
 	mf_path = e_folder_exchange_get_storage_file (hier->toplevel, "hierarchy.xml");
 	doc = e_xml_from_hash (props, E_XML_HASH_TYPE_PROPERTY,
 			       "foreign-hierarchy");
-	xmlSaveFile (mf_path, doc);
+	e_xml_save_file (mf_path, doc);
 	g_hash_table_destroy (props);
 	g_free (mf_path);
 	xmlFreeDoc (doc);
@@ -568,8 +570,10 @@ exchange_hierarchy_foreign_new_from_dir (ExchangeAccount *account,
 	g_return_val_if_fail (folder_path != NULL, NULL);
 
 	mf_path = g_build_filename (folder_path, "hierarchy.xml", NULL);
-	doc = xmlParseFile (mf_path);
+
+	doc = e_xml_parse_file (mf_path);
 	g_free (mf_path);
+
 	if (!doc)
 		return NULL;
 

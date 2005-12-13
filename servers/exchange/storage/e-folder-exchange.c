@@ -21,25 +21,31 @@
 #include <config.h>
 #endif
 
-#include "e-folder-exchange.h"
-#include "exchange-account.h"
-#include "exchange-esource.h"
-#include "exchange-hierarchy.h"
-#include "e2k-uri.h"
-#include "e2k-path.h"
-
-#include <libedataserver/e-util.h>
-#include <libedataserver/e-xml-hash-utils.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libedataserver/e-source-list.h>
-
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xmlmemory.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "libedataserver/e-source-list.h"
+#include "libedataserver/e-util.h"
+#include "libedataserver/e-xml-utils.h"
+
+#include "e-folder-exchange.h"
+#include "e2k-path.h"
+#include "e2k-uri.h"
+#include "exchange-account.h"
+#include "exchange-esource.h"
+#include "exchange-hierarchy.h"
+
 
 struct _EFolderExchangePrivate {
 	ExchangeHierarchy *hier;
@@ -106,48 +112,6 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (e_folder_exchange, EFolderExchange, class_init, init, PARENT_TYPE)
 
-/**
- * Added from gal/util/e-util.c
- * e_mkdir_hier:
- * @path: a directory path
- * @mode: a mode, as for mkdir(2)
- *
- * This creates the named directory with the given @mode, creating
- * any necessary intermediate directories (with the same @mode).
- *
- * Return value: 0 on success, -1 on error, in which case errno will
- * be set as for mkdir(2).
- **/
-static int
-e_mkdir_hier(const char *path, mode_t mode)
-{
-	char *copy, *p;
-
-	if (path[0] == '/') {
-		p = copy = g_strdup (path);
-	} else {
-		gchar *current_dir = g_get_current_dir();
-		p = copy = g_build_filename (current_dir, path, NULL);
-	}
-
-	do {
-		p = strchr (p + 1, '/');
-		if (p)
-			*p = '\0';
-		if (access (copy, F_OK) == -1) {
-			if (mkdir (copy, mode) == -1) {
-				g_free (copy);
-				return -1;
-			}
-		}
-		if (p)
-			*p = '/';
-	} while (p);
-
-	g_free (copy);
-	return 0;
-}
-
 static char *
 sanitize_path (const char *path)
 {
@@ -155,7 +119,7 @@ sanitize_path (const char *path)
 	char *new_path = NULL;
 
 	if (!path)
-		return;
+		return g_strdup("");	/* ??? or NULL? */
 
 	comps = g_strsplit (path, ";", 2);
 	if (comps[1])
@@ -444,7 +408,7 @@ e_folder_exchange_get_storage_file (EFolder *folder, const char *filename)
 		efe->priv->storage_dir = e_path_to_physical (
 			efe->priv->hier->account->storage_dir,
 			efe->priv->path);
-		e_mkdir_hier (efe->priv->storage_dir, 0755);
+		e_util_mkdir_hier (efe->priv->storage_dir, 0755);
 	}
 
 	path = g_build_filename (efe->priv->storage_dir, filename, NULL);
@@ -500,29 +464,14 @@ e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
 	if (permanent_uri)
 		xmlNewChild (root, NULL, "permanent_uri", permanent_uri);
 
-	status = xmlSaveFile (filename, doc);
-	xmlFreeDoc (doc);
+	status = e_xml_save_file (filename, doc);
+
 	if (status < 0)
-		unlink (filename);
+		g_unlink (filename);
+
+	xmlFreeDoc (doc);
 
 	return status == 0;
-}
-
-/* Taken this from the old GAL code */
-static xmlNode *
-e_xml_get_child_by_name (const xmlNode *parent, const xmlChar *child_name)
-{
-	xmlNode *child;
-
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (child_name != NULL, NULL);
-
-	for (child = parent->xmlChildrenNode; child != NULL; child = child->next) {
-		if (xmlStrcmp (child->name, child_name) == 0) {
-			return child;
-		}	
-	}
-	return NULL;
 }
 
 /**
@@ -546,7 +495,8 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const char *filename)
 	char *permanent_uri = NULL;
 	char *folder_size = NULL;
 
-	doc = xmlParseFile (filename);
+	doc = e_xml_parse_file (filename);
+
 	if (!doc)
 		return NULL;
 

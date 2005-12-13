@@ -26,24 +26,27 @@
 #include <config.h>
 #endif
 
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "libedataserverui/e-passwords.h"
+#include "libedataserver/e-source-list.h"
+
 #include "exchange-hierarchy-webdav.h"
 #include "exchange-account.h"
 #include "e-folder-exchange.h"
 #include "e2k-context.h"
+#include "e2k-path.h"
 #include "e2k-propnames.h"
 #include "e2k-restriction.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
 #include "exchange-folder-size.h"
 #include "exchange-esource.h"
-
-#include <libedataserverui/e-passwords.h>
-#include "e2k-path.h"
-#include <libedataserver/e-source-list.h>
-
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 struct _ExchangeHierarchyWebDAVPrivate {
 	GHashTable *folders_by_internal_path;
@@ -206,7 +209,7 @@ hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 			     (char *)e2k_uri_path (internal_uri));
 
 	mf_path = e_folder_exchange_get_storage_file (folder, "connector-metadata.xml");
-	unlink (mf_path);
+	g_unlink (mf_path);
 	g_free (mf_path);
 
 	e_path_rmdir (hier->account->storage_dir,
@@ -777,7 +780,7 @@ scan_offline_cb (const char *physical_path, const char *path, gpointer data)
 	mf_name = g_build_filename (physical_path, "connector-metadata.xml", NULL);
 	folder = e_folder_exchange_new_from_file (sod->hier, mf_name);
 	if (!folder) {
-		unlink (mf_name);
+		g_unlink (mf_name);
 		g_free (mf_name);
 		if (!sod->badpaths)
 			sod->badpaths = g_ptr_array_new ();

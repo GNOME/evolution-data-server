@@ -28,9 +28,17 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <glib.h>
+
+#ifndef G_OS_WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windns.h>
+#endif
 
 #include "e2k-context.h"
 #include "e2k-encoding-utils.h"
@@ -50,6 +58,25 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
+
+#ifdef G_OS_WIN32
+/* The strtok() in Microsoft's C library is MT-safe (not stateless,
+ * but that is not needed here).
+ */
+#define strtok_r(s,sep,lasts ) (*(lasts) = strtok((s),(sep)))
+#endif
+
+#ifdef G_OS_WIN32
+#define CLOSE_SOCKET(socket) closesocket (socket)
+#define STATUS_IS_SOCKET_ERROR(status) ((status) == SOCKET_ERROR)
+#define SOCKET_IS_INVALID(socket) ((socket) == INVALID_SOCKET)
+#define BIND_STATUS_IS_ADDRINUSE() (WSAGetLastError () == WSAEADDRINUSE)
+#else
+#define CLOSE_SOCKET(socket) close (socket)
+#define STATUS_IS_SOCKET_ERROR(status) ((status) == -1)
+#define SOCKET_IS_INVALID(socket) ((socket) < 0)
+#define BIND_STATUS_IS_ADDRINUSE() (errno == EADDRINUSE)
+#endif
 
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class;
@@ -222,7 +249,7 @@ got_connection (SoupSocket *sock, guint status, gpointer user_data)
 	local_ipaddr = soup_address_get_physical (addr);
 
 	s = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (s == -1)
+	if (SOCKET_IS_INVALID (s))
 		goto done;
 
 	memset (&sin, 0, sizeof (sin));
@@ -235,14 +262,18 @@ got_connection (SoupSocket *sock, guint status, gpointer user_data)
 			port += 1024;
 		sin.sin_port = htons (port);
 		ret = bind (s, (struct sockaddr *)&sin, sizeof (sin));
-	} while (ret == -1 && errno == EADDRINUSE);
+	} while (STATUS_IS_SOCKET_ERROR (ret) && BIND_STATUS_IS_ADDRINUSE ());
 
 	if (ret == -1) {
-		close (s);
+		CLOSE_SOCKET (s);
 		goto done;
 	}
 
+#ifndef G_OS_WIN32
 	ctx->priv->listener_channel = g_io_channel_unix_new (s);
+#else
+	ctx->priv->listener_channel = g_io_channel_win32_new_socket (s);
+#endif
 	g_io_channel_set_encoding (ctx->priv->listener_channel, NULL, NULL);
 	g_io_channel_set_buffered (ctx->priv->listener_channel, FALSE);
 

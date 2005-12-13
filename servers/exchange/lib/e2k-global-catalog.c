@@ -30,8 +30,6 @@
 #include <string.h>
 #include <sys/time.h>
 
-#include <ldap.h>
-
 #ifdef HAVE_LDAP_NTLM_BIND
 #include "xntlm.h"
 #endif
@@ -147,12 +145,9 @@ finalize (GObject *object)
 		g_hash_table_foreach (gc->priv->server_cache, free_server, NULL);
 		g_hash_table_destroy (gc->priv->server_cache);
 
-		if (gc->priv->server)
-			g_free (gc->priv->server);
-		if (gc->priv->user)
-			g_free (gc->priv->user);
-		if (gc->priv->nt_domain)
-			g_free (gc->priv->nt_domain);
+		g_free (gc->priv->server);
+		g_free (gc->priv->user);
+		g_free (gc->priv->nt_domain);
 		if (gc->priv->password) {
 			memset (gc->priv->password, 0, strlen (gc->priv->password));
 			g_free (gc->priv->password);
@@ -164,10 +159,8 @@ finalize (GObject *object)
 		gc->priv = NULL;
 	}
 
-	if (gc->domain) {
-		g_free (gc->domain);
-		gc->domain = NULL;
-	}
+	g_free (gc->domain);
+	gc->domain = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -311,11 +304,14 @@ ntlm_bind (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 #endif
 
 static int
-ldap_connect (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
+connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 {
 	int ldap_error;
 #ifndef HAVE_LDAP_NTLM_BIND
 	char *nt_name;
+#ifdef G_OS_WIN32
+	SEC_WINNT_AUTH_IDENTITY_W auth;
+#endif
 #endif
 
 	/* authenticate */
@@ -325,7 +321,23 @@ ldap_connect (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	nt_name = gc->priv->nt_domain ?
 		g_strdup_printf ("%s\\%s", gc->priv->nt_domain, gc->priv->user) :
 		g_strdup (gc->priv->user);
+#ifndef G_OS_WIN32
 	ldap_error = ldap_simple_bind_s (ldap, nt_name, gc->priv->password);
+#else
+	auth.User = g_utf8_to_utf16 (gc->priv->user, -1, NULL, NULL, NULL);
+	auth.UserLength = wcslen (auth.User);
+	auth.Domain = gc->priv->nt_domain ?
+		g_utf8_to_utf16 (gc->priv->nt_domain, -1, NULL, NULL, NULL) :
+		g_utf8_to_utf16 ("", -1, NULL, NULL, NULL);
+	auth.DomainLength = wcslen (auth.Domain);
+	auth.Password = g_utf8_to_utf16 (gc->priv->password, -1, NULL, NULL, NULL);
+	auth.PasswordLength = wcslen (auth.Password);
+	auth.Flags = SEC_WINNT_AUTH_IDENTITY_UNICODE;
+	ldap_error = ldap_bind_s (ldap, nt_name, &auth, LDAP_AUTH_NTLM);
+	g_free (auth.Password);
+	g_free (auth.Domain);
+	g_free (auth.User);
+#endif
 	g_free (nt_name);
 #endif
 	if (ldap_error != LDAP_SUCCESS)
@@ -361,7 +373,7 @@ get_ldap_connection (E2kGlobalCatalog *gc, E2kOperation *op,
 	ldap_opt = LDAP_VERSION3;
 	ldap_set_option (*ldap, LDAP_OPT_PROTOCOL_VERSION, &ldap_opt);
 
-	ldap_error = ldap_connect (gc, op, *ldap);
+	ldap_error = connect_ldap (gc, op, *ldap);
 	if (ldap_error != LDAP_SUCCESS) {
 		ldap_unbind (*ldap);
 		*ldap = NULL;
@@ -379,7 +391,7 @@ get_gc_connection (E2kGlobalCatalog *gc, E2kOperation *op)
 		if (err != LDAP_SERVER_DOWN)
 			return LDAP_SUCCESS;
 
-		return ldap_connect (gc, op, gc->priv->ldap);
+		return connect_ldap (gc, op, gc->priv->ldap);
 	} else {
 		return get_ldap_connection (gc, op,
 					    gc->priv->server, 3268,

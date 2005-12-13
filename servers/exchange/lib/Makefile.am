@@ -2,7 +2,6 @@
 
 INCLUDES =                                                      \
 	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
-	-DCONNECTOR_LOCALEDIR=\""$(localedir)"\"		\
 	$(LDAP_CFLAGS)						\
 	$(KRB5_CFLAGS)						\
 	$(SOUP_CFLAGS)						\

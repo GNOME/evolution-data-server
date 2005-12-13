@@ -51,7 +51,6 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtklabel.h>
 
-#include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -1134,10 +1133,10 @@ exchange_account_forget_password (ExchangeAccount *account)
 	e_passwords_forget_password ("Exchange", account->priv->password_key);
 }
 
-#ifdef HAVE_KRB5
 ExchangeAccountResult
 exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *new_pass)
 {
+#ifdef HAVE_KRB5
 	E2kKerberosResult result;
 	char *domain;
 
@@ -1183,8 +1182,11 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 	}
 	
 	return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS;
-}
+#else
+	g_warning ("exchange_account_set_password: Not implemented (no KRB5)");
+	return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED;
 #endif
+}
 
 /**
  * exchange_account_set_offline:
@@ -1251,37 +1253,14 @@ exchange_account_is_offline (ExchangeAccount *account, int *state)
 	*state = account->priv->account_online ? ONLINE_MODE : OFFLINE_MODE;
 }
 
-// SURF : Picked this from gal/util/e-util.c
-/* This only makes a filename safe for usage as a filename.  It still may have shell meta-characters in it. */
-static void
-e_filename_make_safe (gchar *string)
-{
-	gchar *p, *ts;
-	gunichar c;
-	
-	g_return_if_fail (string != NULL);
-	p = string;
-
-	while(p && *p) {
-		c = g_utf8_get_char (p);
-		ts = p;
-		p = g_utf8_next_char (p);
-		if (!g_unichar_isprint(c) || ( c < 0xff && strchr (" /'\"`&();|<>$%{}!", c&0xff ))) {
-			while (ts<p) 	
-				*ts++ = '_';
-		}
-	}
-}
-
-
 static gboolean
 setup_account_hierarchies (ExchangeAccount *account)
 {
 	ExchangeHierarchy *hier, *personal_hier;
 	ExchangeAccountFolderResult fresult;
 	char *phys_uri_prefix, *dir;
-	DIR *d;
-	struct dirent *dent;
+	GDir *d;
+	const char *dent;
 	int offline;
 
 	exchange_account_is_offline (account, &offline);
@@ -1349,13 +1328,12 @@ setup_account_hierarchies (ExchangeAccount *account)
 	g_free (phys_uri_prefix);
 
 	/* Other users' folders */
-	d = opendir (account->storage_dir);
+	d = g_dir_open (account->storage_dir, 0, NULL);
 	if (d) {
-		while ((dent = readdir (d))) {
-			if (!strchr (dent->d_name, '@'))
+		while ((dent = g_dir_read_name (d))) {
+			if (!strchr (dent, '@'))
 				continue;
-			dir = g_strdup_printf ("%s/%s", account->storage_dir,
-					       dent->d_name);
+			dir = g_strdup_printf ("%s/%s", account->storage_dir, dent);
 			hier = exchange_hierarchy_foreign_new_from_dir (account, dir);
 			g_free (dir);
 			if (!hier)
@@ -1363,7 +1341,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 
 			setup_hierarchy_foreign (account, hier);
 		}
-		closedir (d);
+		g_dir_close (d);
 	}
 
 hierarchies_created:

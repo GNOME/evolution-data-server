@@ -1,3 +1,71 @@
+2005-12-11  Tor Lillqvist  <tml@novell.com>
+
+	* lib/Makefile.am: Drop unused CONNECTOR_LOCALEDIR.
+
+	* lib/e2k-autoconfig.c
+	* lib/e2k-context.c: Include appropriate headers on Win32. 
+
+	* lib/e2k-autoconfig.c: Drop inclusion of
+	libedataserver/e-account.h and libedataserver/e-account-list.h,
+	that API is not used here.
+	(find_global_catalog): Add Win32 implementation.
+	(find_olson_timezone): Use g_win32_getlocale() on Win32 instead of
+	the usually nonexistent LANG environment variable.
+	(read_config): Form path to connector.conf at run-time for the
+	benefit of Win32 freely chosen end-user install location. 
+
+	* lib/e2k-autoconfig.c
+	* lib/e2k-path.c
+	* storage/e-folder-exchange.c
+	* storage/exchange-hierarchy-foreign.c
+	* storage/exchange-hierarchy-webdav.c: Use gstdio wrappers.
+	
+	* lib/e2k-context.c: Define strtok_r() using strtok() on Windows,
+	where strtok() is MT-safe. Wrap socket API calls with simple
+	macros for Unix/Winsock portability. Use
+	g_io_channel_win32_new_socket() on Windows.
+
+	* lib/e2k-global-catalog-ldap.h: Include winldap.h on Windows. Add
+	some OpenLDAP macros that aren't present in winldap.h.
+
+	* lib/e2k-global-catalog.c: Remove duplicate inclusion of ldap.h,
+	it's already included by e2k-global-catalog-ldap.h
+	(finalize): g_free() works fine on NULL pointers.
+	(connect_ldap, get_ldap_connection): Rename ldap_connect() to
+	connect_ldap() to avoid clash with the ldap_connect() function in
+	the LDAP API.
+	(connect_ldap): Use WINNT authentication on Windows.
+
+	* lib/e2k-path.c (find_folders_recursive): 
+	* storage/exchange-account.c (setup_account_hierarchies): Use
+	g_dir* instead of dirent API for portability.
+
+	* storage/Makefile.am: Use NO_UNDEFINED (meaning -no-undefined on
+	Windows). Link with all needed libraries for the benefit of
+	-no-undefined.
+
+	* storage/e-folder-exchange.c (e_mkdir_hier) Remove duplicate
+	implementation, already have it as e_util_mkdir_hier() in
+	libedataserver/e-util.c.
+	(sanitize_path): Must return something in all cases, this function
+	is not void. Why did gcc let this through with just a warning?
+
+	* storage/e-folder-exchange.c
+	* storage/exchange-hierarchy-foreign.c: Use e_xml_parse_file()
+	instead of xmlParseFile(), as that doesn't take UTF-8 filenames on
+	Windows. Use e_xml_save_file() for the same reason.
+
+	* storage/e-folder-exchange.c (e_xml_get_child_by_name): Remove,
+	now in libedataserver/e-xml-utils.c.
+
+	* storage/exchange-account.c (exchange_account_set_password):
+	Do compile even if not HAVE_KRB5, but always return failure. Means
+	less ifdefs elsewhere.
+	(e_filename_make_safe): Remove this function which isn't used,
+	especially as there is an exact duplicate in evolution's
+	e-util/e-util.c. If it eventually is needed also somewhere in
+	e-d-s, move it to libedataserver instead.
+
 2005-12-12  Irene Huang <Irene.Huang@sun.com>
 
 	* lib/e2k-autoconfig.c: (e2k_validate_user): If password

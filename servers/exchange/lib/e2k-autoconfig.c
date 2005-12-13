@@ -37,10 +37,21 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 
+#ifndef G_OS_WIN32
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windns.h>
+#ifndef DNS_TYPE_SRV
+#define DNS_TYPE_SRV 33
+#endif
+#endif
 
 #include "e2k-autoconfig.h"
 #include "e2k-encoding-utils.h"
@@ -52,17 +63,18 @@
 #include "e2k-xml-utils.h"
 #include "xntlm.h"
 
-//#include <e-util/e-account.h>
-//#include <e-util/e-account-list.h>
-#include <libedataserver/e-account.h>
-#include <libedataserver/e-account-list.h>
+#include <libedataserver/e-util.h>
 #include <libedataserverui/e-passwords.h>
-//#include <e-util/e-dialog-utils.h>
 #include <gconf/gconf-client.h>
 #include <libxml/tree.h>
 #include <libxml/HTMLparser.h>
 
 #include <gtk/gtk.h>
+
+#ifdef G_OS_WIN32
+#undef CONNECTOR_PREFIX
+#define CONNECTOR_PREFIX e_util_get_prefix ()
+#endif
 
 static char *find_olson_timezone (const char *windows_timezone);
 static void set_account_uri_string (E2kAutoconfig *ac);
@@ -768,6 +780,7 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 static void
 find_global_catalog (E2kAutoconfig *ac)
 {
+#ifndef G_OS_WIN32
 	int count, len;
 	unsigned char answer[1024], namebuf[1024], *end, *p;
 	guint16 type, qclass, rdlength, priority, weight, port;
@@ -820,6 +833,35 @@ find_global_catalog (E2kAutoconfig *ac)
 	}
 
 	return;
+#else
+	gchar *name, *casefolded_name;
+	PDNS_RECORD dnsrecp, rover;
+
+	name = g_strconcat ("_gc._tcp.", ac->w2k_domain, NULL);
+	casefolded_name = g_utf8_strdown (name, -1);
+	g_free (name);
+
+	if (DnsQuery_UTF8 (casefolded_name, DNS_TYPE_SRV, DNS_QUERY_STANDARD,
+			   NULL, &dnsrecp, NULL) != ERROR_SUCCESS) {
+		g_free (casefolded_name);
+		return;
+	}
+
+	for (rover = dnsrecp; rover != NULL; rover = rover->pNext) {
+		if (rover->wType != DNS_TYPE_SRV ||
+		    strcmp (rover->pName, casefolded_name) != 0)
+			continue;
+		ac->gc_server = g_strdup (rover->Data.SRV.pNameTarget);
+		ac->gc_server_autodetected = TRUE;
+		g_free (casefolded_name);
+		DnsRecordListFree (dnsrecp, DnsFreeRecordList);
+		return;
+	}
+
+	g_free (casefolded_name);
+	DnsRecordListFree (dnsrecp, DnsFreeRecordList);
+	return;
+#endif
 }
 
 /**
@@ -1282,13 +1324,20 @@ find_olson_timezone (const char *windows_timezone)
 		return g_strdup (zonemap[i].olson_name);
 
 	/* Find our language/country (hopefully). */
+#ifndef G_OS_WIN32
 	locale = getenv ("LANG");
+#else
+	locale = g_win32_getlocale ();
+#endif
 	if (locale) {
 		strncpy (lang, locale, 2);
 		locale = strchr (locale, '_');
 		if (locale++)
 			strncpy (country, locale, 2);
 	}
+#ifdef G_OS_WIN32
+	g_free ((char *) locale);
+#endif
 
 	/* Look for an entry where either the country or the
 	 * language matches.
@@ -1319,14 +1368,22 @@ read_config (void)
 	struct stat st;
 	char *p, *name, *value;
 	char *config_data;
-	int fd;
+	int fd = -1;
 
 	config_options = g_hash_table_new (e2k_ascii_strcase_hash,
 					    e2k_ascii_strcase_equal);
 
-	fd = open ("/etc/ximian/connector.conf", O_RDONLY);
-	if (fd == -1)
-		fd = open (CONNECTOR_PREFIX "/etc/connector.conf", O_RDONLY);
+#ifndef G_OS_WIN32
+	fd = g_open ("/etc/ximian/connector.conf", O_RDONLY, 0);
+#endif
+	if (fd == -1) {
+		gchar *filename = g_build_filename (CONNECTOR_PREFIX,
+						    "etc/connector.conf",
+						    NULL);
+		
+		fd = g_open (filename, O_RDONLY, 0);
+		g_free (filename);
+	}
 	if (fd == -1)
 		return;
 	if (fstat (fd, &st) == -1) {
