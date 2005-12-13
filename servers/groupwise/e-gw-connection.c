@@ -228,7 +228,7 @@ e_gw_connection_dispose (GObject *object)
 		hash_key = g_strdup_printf ("%s:%s@%s",
 					    priv->username ? priv->username : "",
 					    priv->password ? priv->password : "",
-					    priv->uri);
+					    priv->uri ? priv->uri : "");
 		if (g_hash_table_lookup_extended (loaded_connections_permissions, hash_key, &orig_key, &orig_value)) {
 			g_hash_table_remove (loaded_connections_permissions, hash_key);
 			if (g_hash_table_size (loaded_connections_permissions) == 0) {

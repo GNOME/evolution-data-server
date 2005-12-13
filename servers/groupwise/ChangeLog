@@ -1,3 +1,8 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_dispose): Guard agsinst
+	priv->uri being NULL, too.
+
 2005-12-06  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-item.[ch]: Add a new item contentid in the EGwAttachment
