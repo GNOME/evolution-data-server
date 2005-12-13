@@ -1,3 +1,9 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel-groupwise-store.c
+	* camel-groupwise-utils.c: Use gstdio wrappers. Use GDir instead
+	of dirent API.
+
 2005-12-09  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 321830

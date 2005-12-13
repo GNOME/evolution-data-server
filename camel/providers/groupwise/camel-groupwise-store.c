@@ -24,33 +24,32 @@
  *
  */
 
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <glib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include "camel/camel-session.h"
+#include "camel/camel-debug.h"
+#include "camel/camel-i18n.h"
+#include "camel/camel-types.h"
+#include "camel/camel-folder.h" 
+#include "camel/camel-private.h"
+#include "camel/camel-net-utils.h"
 
 #include "camel-groupwise-store.h"
 #include "camel-groupwise-summary.h"
 #include "camel-groupwise-store-summary.h"
 #include "camel-groupwise-folder.h"
 #include "camel-groupwise-utils.h"
-
-#include "camel-session.h"
-#include "camel-debug.h"
-#include "camel-i18n.h"
-#include "camel-types.h"
-#include "camel-folder.h" 
-#include "camel-private.h"
-#include "camel-net-utils.h"
 
 #define d(x) 
 #define CURSOR_ITEM_LIMIT 100
@@ -420,7 +419,7 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
 	folder_dir = g_strdup(e_path_to_physical (storage_path,folder_name));
 
-	if (access(folder_dir, F_OK) != 0) {
+	if (g_access(folder_dir, F_OK) != 0) {
 		g_free(folder_dir);
 		return;
 	}
@@ -434,15 +433,15 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 	}
 
 	camel_object_unref (summary);
-	unlink (summary_file);
+	g_unlink (summary_file);
 	g_free (summary_file);
 
 
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
-	unlink (state_file);
+	g_unlink (state_file);
 	g_free (state_file);
 
-	rmdir (folder_dir);
+	g_rmdir (folder_dir);
 	g_free (folder_dir);
 
 	camel_store_summary_remove_path ( (CamelStoreSummary *)gw_store->summary, folder_name);
@@ -464,7 +463,7 @@ groupwise_get_folder_from_disk (CamelStore *store, const char *folder_name, guin
 	storage_path = g_strdup_printf("%s/folders", priv->storage_path);
 	folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free(storage_path);
-	if (!folder_dir || access (folder_dir, F_OK) != 0) {
+	if (!folder_dir || g_access (folder_dir, F_OK) != 0) {
 		g_free (folder_dir);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				_("No such folder %s"), folder_name);
@@ -1166,7 +1165,7 @@ groupwise_rename_folder(CamelStore *store,
 	g_free (storepath);
 
 	/*XXX: make sure the summary is also renamed*/
-	if (rename (oldpath, newpath) == -1) {
+	if (g_rename (oldpath, newpath) == -1) {
 		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
 				oldpath, newpath, strerror (errno));
 	}

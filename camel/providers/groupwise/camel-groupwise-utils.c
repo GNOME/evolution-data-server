@@ -21,19 +21,22 @@
 #include <config.h>
 
 #include <sys/types.h>
-#include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <glib.h>
-#include <libsoup/soup-misc.h>
-#include "camel-groupwise-utils.h"
 
-#include <camel/camel-service.h>
-#include <camel/camel-multipart.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-address.h>
-#include <camel/camel-mime-message.h>
+#include <glib.h>
+#include <glib/gstdio.h>
+
+#include <libsoup/soup-misc.h>
+
+#include "camel/camel-address.h"
+#include "camel/camel-mime-message.h"
+#include "camel/camel-multipart.h"
+#include "camel/camel-service.h"
+#include "camel/camel-stream-mem.h"
+
+#include "camel-groupwise-utils.h"
 
 #define SUBFOLDER_DIR_NAME     "subfolders"
 #define SUBFOLDER_DIR_NAME_LEN 10
@@ -134,7 +137,7 @@ static gboolean
 find_folders_recursive (const char *physical_path, const char *path,
 			EPathFindFoldersCallback callback, gpointer data)
 {
-	DIR *dir;
+	GDir *dir;
 	char *subfolder_directory_path;
 	gboolean ok;
 
@@ -152,7 +155,7 @@ find_folders_recursive (const char *physical_path, const char *path,
 	}
 
 	/* Now scan the subfolders and load them. */
-	dir = opendir (subfolder_directory_path);
+	dir = g_dir_open (subfolder_directory_path, 0, NULL);
 	if (dir == NULL) {
 		g_free (subfolder_directory_path);
 		return TRUE;
@@ -161,27 +164,23 @@ find_folders_recursive (const char *physical_path, const char *path,
 	ok = TRUE;
 	while (ok) {
 		struct stat file_stat;
-		struct dirent *dirent;
+		const char *dirent;
 		char *file_path;
 		char *new_path;
 
-		dirent = readdir (dir);
+		dirent = g_dir_read_name (dir);
 		if (dirent == NULL)
 			break;
 
-		if (strcmp (dirent->d_name, ".") == 0 || strcmp (dirent->d_name, "..") == 0)
-			continue;
+		file_path = g_strdup_printf ("%s/%s", subfolder_directory_path, dirent);
 
-		file_path = g_strdup_printf ("%s/%s", subfolder_directory_path,
-					     dirent->d_name);
-
-		if (stat (file_path, &file_stat) < 0 ||
+		if (g_stat (file_path, &file_stat) < 0 ||
 		    ! S_ISDIR (file_stat.st_mode)) {
 			g_free (file_path);
 			continue;
 		}
 
-		new_path = g_strdup_printf ("%s/%s", path, dirent->d_name);
+		new_path = g_strdup_printf ("%s/%s", path, dirent);
 
 		ok = find_folders_recursive (file_path, new_path, callback, data);
 
@@ -189,7 +188,7 @@ find_folders_recursive (const char *physical_path, const char *path,
 		g_free (new_path);
 	}
 
-	closedir (dir);
+	g_dir_close (dir);
 	g_free (subfolder_directory_path);
 
 	return ok;
@@ -235,7 +234,7 @@ e_path_rmdir (const char *prefix, const char *vpath)
 
 	/* Remove the directory itself */
 	physical_path = e_path_to_physical (prefix, vpath);
-	if (rmdir (physical_path) == -1) {
+	if (g_rmdir (physical_path) == -1) {
 		g_free (physical_path);
 		return -1;
 	}
@@ -256,7 +255,7 @@ e_path_rmdir (const char *prefix, const char *vpath)
 		return 0;
 	}
 
-	rmdir (physical_path);
+	g_rmdir (physical_path);
 	g_free (physical_path);
 	return 0;
 }
