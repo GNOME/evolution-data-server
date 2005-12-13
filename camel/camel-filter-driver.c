@@ -20,36 +20,36 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <fcntl.h>
-#include <errno.h>
 
 #include <string.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 
-#include "camel-filter-driver.h"
-#include "camel-filter-search.h"
-
-#include "camel-service.h"
-#include "camel-stream-fs.h"
-#include "camel-stream-mem.h"
-#include "camel-mime-message.h"
-#include "camel-debug.h"
-#include "camel-i18n.h"
+#ifndef G_OS_WIN32
+#include <sys/wait.h>
+#endif
 
 #include "libedataserver/e-sexp.h"
 #include "libedataserver/e-memory.h"
-#include "libedataserver/e-msgport.h"	/* for edlist */
+#include "libedataserver/e-msgport.h"
+
+#include "camel-debug.h"
+#include "camel-file-utils.h"
+#include "camel-filter-driver.h"
+#include "camel-filter-search.h"
+#include "camel-i18n.h"
+#include "camel-mime-message.h"
+#include "camel-private.h"
+#include "camel-service.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 
 #define d(x)
 
@@ -673,15 +673,48 @@ unset_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterD
 	return NULL;
 }
 
+#ifndef G_OS_WIN32
+static void
+child_setup_func (gpointer user_data)
+{
+	setsid ();
+}
+#else
+#define child_setup_func NULL
+#endif
+
+typedef struct {
+	gint child_status;
+	GMainLoop *loop;
+} child_watch_data_t;
+
+static void
+child_watch (GPid     pid,
+	     gint     status,
+	     gpointer data)
+{
+	child_watch_data_t *child_watch_data = data;
+
+	g_spawn_close_pid (pid);
+
+	child_watch_data->child_status = status;
+
+	g_main_loop_quit (child_watch_data->loop);
+}
+
 static int
 pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
-	int result, status, fds[4], i;
+	int i, pipe_to_child, pipe_from_child;
 	CamelMimeMessage *message = NULL;
 	CamelMimeParser *parser;
 	CamelStream *stream, *mem;
-	pid_t pid;
+	GPid child_pid;
+	GError *error = NULL;
+	GPtrArray *args;
+	child_watch_data_t child_watch_data;
+	GSource *source;
 	
 	if (argc < 1 || argv[0]->value.string[0] == '\0')
 		return 0;
@@ -692,81 +725,51 @@ pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFil
 			return -1;
 	}
 	
-	for (i = 0; i < 4; i++)
-		fds[i] = -1;
-	
-	for (i = 0; i < 4; i += 2) {
-		if (pipe (fds + i) == -1) {
-			camel_exception_setv (p->ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Failed to create pipe to '%s': %s"),
-					      argv[0]->value.string, g_strerror (errno));
-			
-			for (i = 0; i < 4; i++) {
-				if (fds[i] == -1)
-					break;
-				close (fds[i]);
-			}
-			
-			return -1;
-		}
-	}
-	
-	if (!(pid = fork ())) {
-		/* child process */
-		GPtrArray *args;
-		int maxfd, fd;
-		
-		fd = open ("/dev/null", O_WRONLY);
-		
-		if (dup2 (fds[0], STDIN_FILENO) < 0 ||
-		    dup2 (fds[3], STDOUT_FILENO) < 0 ||
-		    dup2 (fd, STDERR_FILENO) < 0)
-			_exit (255);
-		
-		setsid ();
-		
-		maxfd = sysconf (_SC_OPEN_MAX);
-		for (fd = 3; fd < maxfd; fd++)
-			fcntl (fd, F_SETFD, FD_CLOEXEC);
-		
-		args = g_ptr_array_new ();
-		for (i = 0; i < argc; i++)
-			g_ptr_array_add (args, argv[i]->value.string);
-		g_ptr_array_add (args, NULL);
-		
-		execvp (argv[0]->value.string, (char **) args->pdata);
-		
+	args = g_ptr_array_new ();
+	for (i = 0; i < argc; i++)
+		g_ptr_array_add (args, argv[i]->value.string);
+	g_ptr_array_add (args, NULL);
+
+	if (!g_spawn_async_with_pipes (NULL,
+				       (gchar **) args->pdata,
+				       NULL,
+				       G_SPAWN_DO_NOT_REAP_CHILD |
+				       G_SPAWN_SEARCH_PATH |
+				       G_SPAWN_STDERR_TO_DEV_NULL,
+				       child_setup_func,
+				       NULL,
+				       &child_pid,
+				       &pipe_to_child,
+				       &pipe_from_child,
+				       NULL,
+				       &error)) {
 		g_ptr_array_free (args, TRUE);
-		
-		d(printf ("Could not execute %s: %s\n", argv[0]->value.string, g_strerror (errno)));
-		_exit (255);
-	} else if (pid < 0) {
+
 		camel_exception_setv (p->ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to create child process '%s': %s"),
-				      argv[0]->value.string, g_strerror (errno));
+				      argv[0]->value.string, error->message);
+		g_error_free (error);
 		return -1;
 	}
 	
-	/* parent process */
-	close (fds[0]);
-	close (fds[3]);
+	g_ptr_array_free (args, TRUE);
 	
-	stream = camel_stream_fs_new_with_fd (fds[1]);
+	stream = camel_stream_fs_new_with_fd (pipe_to_child);
 	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream) == -1) {
 		camel_object_unref (stream);
-		close (fds[2]);
+		close (pipe_from_child);
 		goto wait;
 	}
 	
 	if (camel_stream_flush (stream) == -1) {
 		camel_object_unref (stream);
-		close (fds[2]);
+		close (pipe_from_child);
 		goto wait;
 	}
 	
 	camel_object_unref (stream);
 	
-	stream = camel_stream_fs_new_with_fd (fds[2]);
+	stream = camel_stream_fs_new_with_fd (pipe_from_child);
 	mem = camel_stream_mem_new ();
 	if (camel_stream_write_to_stream (stream, mem) == -1) {
 		camel_object_unref (stream);
@@ -799,26 +802,24 @@ pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFil
 	camel_object_unref (parser);
 	
  wait:
-	
-	result = waitpid (pid, &status, 0);
-	
-	if (result == -1 && errno == EINTR) {
-		/* child process is hanging... */
-		kill (pid, SIGTERM);
-		sleep (1);
-		result = waitpid (pid, &status, WNOHANG);
-		if (result == 0) {
-			/* ...still hanging, set phasers to KILL */
-			kill (pid, SIGKILL);
-			sleep (1);
-			result = waitpid (pid, &status, WNOHANG);
-		}
-	}
-	
-	if (message && result != -1 && WIFEXITED (status))
-		return WEXITSTATUS (status);
+	child_watch_data.loop = g_main_loop_new (g_main_context_new (), FALSE);
+
+	source = g_child_watch_source_new (child_pid);
+	g_source_set_callback (source, (GSourceFunc) child_watch, &child_watch_data, NULL);
+	g_source_attach (source, g_main_loop_get_context (child_watch_data.loop));
+	g_source_unref (source);
+
+	g_main_loop_run (child_watch_data.loop);
+	g_main_loop_unref (child_watch_data.loop);
+
+#ifndef G_OS_WIN32
+	if (message && WIFEXITED (child_watch_data.child_status))
+		return WEXITSTATUS (child_watch_data.child_status);
 	else
 		return -1;
+#else
+	return child_watch_data.child_status;
+#endif
 }
 
 static ESExpResult *
@@ -1146,7 +1147,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 	off_t last = 0;
 	int ret = -1;
 	
-	fd = open (mbox, O_RDONLY);
+	fd = g_open (mbox, O_RDONLY|O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Unable to open spool folder"));
 		goto fail;
@@ -1162,7 +1163,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 	}
 	fd = -1;
 	
-	source_url = g_strdup_printf ("file://%s", mbox);
+	source_url = g_filename_to_uri (mbox, NULL, NULL);
 	
 	while (camel_mime_parser_step (mp, 0, 0) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;

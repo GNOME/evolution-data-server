@@ -22,9 +22,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 /* (from glibc headers:
    POSIX says that <sys/types.h> must be included (by the caller) before <regex.h>.  */
@@ -39,23 +37,26 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include <signal.h>
-#include <sys/wait.h>
+#include <glib.h>
 
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-iconv.h>
+#ifndef G_OS_WIN32
+#include <sys/wait.h>
+#endif
+
+#include "libedataserver/e-sexp.h"
+#include "libedataserver/e-iconv.h"
 
 #include "camel-debug.h"
-#include "camel-mime-message.h"
-#include "camel-provider.h"
-#include "camel-session.h"
-#include "camel-filter-search.h"
 #include "camel-exception.h"
-#include "camel-multipart.h"
-#include "camel-stream-mem.h"
-#include "camel-stream-fs.h"
-#include "camel-search-private.h"
+#include "camel-filter-search.h"
 #include "camel-i18n.h"
+#include "camel-mime-message.h"
+#include "camel-multipart.h"
+#include "camel-provider.h"
+#include "camel-search-private.h"
+#include "camel-session.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 #include "camel-url.h"
 
 #define d(x)
@@ -506,90 +507,106 @@ get_size (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageS
 	return r;
 }
 
+#ifndef G_OS_WIN32
+static void
+child_setup_func (gpointer user_data)
+{
+	setsid ();
+}
+#else
+#define child_setup_func NULL
+#endif
+
+typedef struct {
+	gint child_status;
+	GMainLoop *loop;
+} child_watch_data_t;
+
+static void
+child_watch (GPid     pid,
+	     gint     status,
+	     gpointer data)
+{
+	child_watch_data_t *child_watch_data = data;
+
+	g_spawn_close_pid (pid);
+
+	child_watch_data->child_status = status;
+
+	g_main_loop_quit (child_watch_data->loop);
+}
+
 static int
 run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
 {
 	CamelMimeMessage *message;
 	CamelStream *stream;
-	int result, status;
-	int in_fds[2];
-	pid_t pid;
+	int i;
+	int pipe_to_child;
+	GPid child_pid;
+	GError *error = NULL;
+	GPtrArray *args;
+	child_watch_data_t child_watch_data;
+	GSource *source;
 	
 	if (argc < 1 || argv[0]->value.string[0] == '\0')
 		return 0;
 	
-	if (pipe (in_fds) == -1) {
-		camel_exception_setv (fms->ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to create pipe to '%s': %s"),
-				      argv[0]->value.string, g_strerror (errno));
-		return -1;
-	}
+	args = g_ptr_array_new ();
+	for (i = 0; i < argc; i++)
+		g_ptr_array_add (args, argv[i]->value.string);
+	g_ptr_array_add (args, NULL);
 	
-	if (!(pid = fork ())) {
-		/* child process */
-		GPtrArray *args;
-		int maxfd, fd, i;
-		
-		fd = open ("/dev/null", O_WRONLY);
-		
-		if (dup2 (in_fds[0], STDIN_FILENO) < 0 ||
-		    dup2 (fd, STDOUT_FILENO) < 0 ||
-		    dup2 (fd, STDERR_FILENO) < 0)
-			_exit (255);
-		
-		setsid ();
-		
-		maxfd = sysconf (_SC_OPEN_MAX);
-		for (fd = 3; fd < maxfd; fd++)
-			fcntl (fd, F_SETFD, FD_CLOEXEC);
-		
-		args = g_ptr_array_new ();
-		for (i = 0; i < argc; i++)
-			g_ptr_array_add (args, argv[i]->value.string);
-		g_ptr_array_add (args, NULL);
-		
-		execvp (argv[0]->value.string, (char **) args->pdata);
-		
+	if (!g_spawn_async_with_pipes (NULL,
+				       (gchar **) args->pdata,
+				       NULL,
+				       G_SPAWN_DO_NOT_REAP_CHILD |
+				       G_SPAWN_SEARCH_PATH |
+				       G_SPAWN_STDOUT_TO_DEV_NULL |
+				       G_SPAWN_STDERR_TO_DEV_NULL,
+				       child_setup_func,
+				       NULL,
+				       &child_pid,
+				       &pipe_to_child,
+				       NULL,
+				       NULL,
+				       &error)) {
 		g_ptr_array_free (args, TRUE);
-		
-		d(printf ("Could not execute %s: %s\n", argv[0]->value.string, g_strerror (errno)));
-		_exit (255);
-	} else if (pid < 0) {
+
 		camel_exception_setv (fms->ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to create create child process '%s': %s"),
-				      argv[0]->value.string, g_strerror (errno));
+				      argv[0]->value.string, error->message);
+		g_error_free (error);
 		return -1;
 	}
 	
-	/* parent process */
-	close (in_fds[0]);
+	g_ptr_array_free (args, TRUE);
 	
 	message = camel_filter_search_get_message (fms, f);
 	
-	stream = camel_stream_fs_new_with_fd (in_fds[1]);
+	stream = camel_stream_fs_new_with_fd (pipe_to_child);
 	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), stream);
 	camel_stream_flush (stream);
 	camel_object_unref (stream);
 	
-	result = waitpid (pid, &status, 0);
-	
-	if (result == -1 && errno == EINTR) {
-		/* child process is hanging... */
-		kill (pid, SIGTERM);
-		sleep (1);
-		result = waitpid (pid, &status, WNOHANG);
-		if (result == 0) {
-			/* ...still hanging, set phasers to KILL */
-			kill (pid, SIGKILL);
-			sleep (1);
-			result = waitpid (pid, &status, WNOHANG);
-		}
-	}
-	
-	if (result != -1 && WIFEXITED (status))
-		return WEXITSTATUS (status);
+	child_watch_data.loop = g_main_loop_new (g_main_context_new (), FALSE);
+
+	source = g_child_watch_source_new (child_pid);
+	g_source_set_callback (source, (GSourceFunc) child_watch, &child_watch_data, NULL);
+	g_source_attach (source, g_main_loop_get_context (child_watch_data.loop));
+	g_source_unref (source);
+
+	g_main_loop_run (child_watch_data.loop);
+	g_main_loop_unref (child_watch_data.loop);
+
+#ifndef G_OS_WIN32
+	if (WIFEXITED (child_watch_data.child_status))
+		return WEXITSTATUS (child_watch_data.child_status);
 	else
 		return -1;
+#else
+	return child_watch_data.child_status;
+#endif
 }
 
 static ESExpResult *

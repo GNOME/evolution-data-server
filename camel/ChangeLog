@@ -1,3 +1,12 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel-filter-driver.c: Use gstdio wrappers. Use
+	g_filename_to_uri().
+
+	* camel-filter-driver.c (pipe_to_system)
+	* camel-filter-search.c (run_command): Use
+	g_spawn_async_with_pipes() instead of manual fork/dup/exec dance.
+
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* camel-gpg-context.c: Use gstdio wrappers. Ifdef out
