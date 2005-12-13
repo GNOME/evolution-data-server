@@ -22,9 +22,10 @@
 
 #include <stdio.h>
 #include <glib.h>
-#include <camel/camel-debug.h>
-#include <camel/camel-junk-plugin.h>
-#include <camel/camel-mime-message.h>
+
+#include "camel-debug.h"
+#include "camel-junk-plugin.h"
+#include "camel-mime-message.h"
 
 #define d(x) (camel_debug("junk")?(x):0)
 

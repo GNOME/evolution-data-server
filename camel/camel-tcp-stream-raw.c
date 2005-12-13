@@ -20,22 +20,31 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 
-#include "camel-tcp-stream-raw.h"
 #include "camel-file-utils.h"
 #include "camel-operation.h"
+#include "camel-tcp-stream-raw.h"
+
+#ifndef G_OS_WIN32
+#define SOCKET_ERROR_CODE() errno
+#define SOCKET_CLOSE(fd) close (fd)
+#define SOCKET_ERROR_IS_EINPROGRESS() (errno == EINPROGRESS)
+#define SOCKET_ERROR_IS_EINTR() (errno == EINTR)
+#else
+#define SOCKET_ERROR_CODE() WSAGetLastError ()
+#define SOCKET_CLOSE(fd) closesocket (fd)
+#define SOCKET_ERROR_IS_EINPROGRESS() (WSAGetLastError () == WSAEWOULDBLOCK)
+#define SOCKET_ERROR_IS_EINTR() 0 /* No WSAEINTR in WinSock2 */
+#endif
 
 static CamelTcpStreamClass *parent_class = NULL;
 
@@ -90,7 +99,7 @@ camel_tcp_stream_raw_finalize (CamelObject *object)
 	CamelTcpStreamRaw *stream = CAMEL_TCP_STREAM_RAW (object);
 	
 	if (stream->sockfd != -1)
-		close (stream->sockfd);
+		SOCKET_CLOSE (stream->sockfd);
 }
 
 
@@ -238,7 +247,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 	
-	return camel_read (raw->sockfd, buffer, n);
+	return camel_read_socket (raw->sockfd, buffer, n);
 }
 
 static ssize_t
@@ -246,7 +255,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 	
-	return camel_write (raw->sockfd, buffer, n);
+	return camel_write_socket (raw->sockfd, buffer, n);
 }
 
 static int
@@ -258,7 +267,7 @@ stream_flush (CamelStream *stream)
 static int
 stream_close (CamelStream *stream)
 {
-	if (close (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
+	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
 		return -1;
 	
 	((CamelTcpStreamRaw *)stream)->sockfd = -1;
@@ -293,32 +302,52 @@ socket_connect(struct addrinfo *h)
 	cancel_fd = camel_operation_cancel_fd (NULL);
 	if (cancel_fd == -1) {
 		if (connect (fd, h->ai_addr, h->ai_addrlen) == -1) {
+			/* Yeah, errno is meaningless on Win32 after a
+			 * Winsock call fails, but I doubt the callers
+			 * check errno anyway.
+			 */
 			errnosav = errno;
-			close (fd);
+			SOCKET_CLOSE (fd);
 			errno = errnosav;
 			return -1;
 		}
 		
 		return fd;
 	} else {
-		int flags, fdmax, status;
+#ifndef G_OS_WIN32
+		int flags;
+#endif
+		int fdmax, status;
 		fd_set rdset, wrset;
 		
+#ifndef G_OS_WIN32
 		flags = fcntl (fd, F_GETFL);
 		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
-		
+#else
+		{
+			u_long yes = 1;
+			ioctlsocket (fd, FIONBIO, &yes);
+		}
+#endif
 		if (connect (fd, h->ai_addr, h->ai_addrlen) == 0) {
+#ifndef G_OS_WIN32
 			fcntl (fd, F_SETFL, flags);
+#else
+			{
+				u_long no = 0;
+				ioctlsocket (fd, FIONBIO, &no);
+			}
+#endif
 			return fd;
 		}
 		
-		if (errno != EINPROGRESS) {
+		if (!SOCKET_ERROR_IS_EINPROGRESS ()) {
 			errnosav = errno;
-			close (fd);
+			SOCKET_CLOSE (fd);
 			errno = errnosav;
 			return -1;
 		}
-		
+			
 		do {
 			FD_ZERO (&rdset);
 			FD_ZERO (&wrset);
@@ -329,36 +358,42 @@ socket_connect(struct addrinfo *h)
 			tv.tv_usec = 0;
 			
 			status = select (fdmax, &rdset, &wrset, 0, &tv);
-		} while (status == -1 && errno == EINTR);
+		} while (status == -1 && SOCKET_ERROR_IS_EINTR ());
 		
 		if (status <= 0) {
-			close (fd);
+			SOCKET_CLOSE (fd);
 			errno = ETIMEDOUT;
 			return -1;
 		}
 		
 		if (cancel_fd != -1 && FD_ISSET (cancel_fd, &rdset)) {
-			close (fd);
+			SOCKET_CLOSE (fd);
 			errno = EINTR;
 			return -1;
 		} else {
 			len = sizeof (int);
 			
-			if (getsockopt (fd, SOL_SOCKET, SO_ERROR, &ret, &len) == -1) {
+			if (getsockopt (fd, SOL_SOCKET, SO_ERROR, (char *) &ret, &len) == -1) {
 				errnosav = errno;
-				close (fd);
+				SOCKET_CLOSE (fd);
 				errno = errnosav;
 				return -1;
 			}
 			
 			if (ret != 0) {
-				close (fd);
+				SOCKET_CLOSE (fd);
 				errno = ret;
 				return -1;
 			}
 		}
-		
+#ifndef G_OS_WIN32
 		fcntl (fd, F_SETFL, flags);
+#else
+		{
+			u_long no = 0;
+			ioctlsocket (fd, FIONBIO, &no);
+		}
+#endif
 	}
 	
 	return fd;
@@ -398,8 +433,10 @@ static int
 get_sockopt_optname (const CamelSockOptData *data)
 {
 	switch (data->option) {
+#ifdef TCP_MAXSEG
 	case CAMEL_SOCKOPT_MAXSEGMENT:
 		return TCP_MAXSEG;
+#endif
 	case CAMEL_SOCKOPT_NODELAY:
 		return TCP_NODELAY;
 	case CAMEL_SOCKOPT_BROADCAST:
@@ -430,6 +467,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 		return -1;
 	
 	if (data->option == CAMEL_SOCKOPT_NONBLOCKING) {
+#ifndef G_OS_WIN32
 		int flags;
 		
 		flags = fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_GETFL);
@@ -437,7 +475,9 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 			return -1;
 		
 		data->value.non_blocking = flags & O_NONBLOCK ? TRUE : FALSE;
-		
+#else
+		data->value.non_blocking = ((CamelTcpStreamRaw *)stream)->is_nonblocking;
+#endif
 		return 0;
 	}
 	
@@ -457,6 +497,7 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 		return -1;
 	
 	if (data->option == CAMEL_SOCKOPT_NONBLOCKING) {
+#ifndef G_OS_WIN32
 		int flags, set;
 		
 		flags = fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_GETFL);
@@ -468,7 +509,12 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 		
 		if (fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_SETFL, flags) == -1)
 			return -1;
-		
+#else
+		u_long fionbio = data->value.non_blocking ? 1 : 0;
+		if (ioctlsocket (((CamelTcpStreamRaw *)stream)->sockfd, FIONBIO, &fionbio) == SOCKET_ERROR)
+			return -1;
+		((CamelTcpStreamRaw *)stream)->is_nonblocking = data->value.non_blocking ? 1 : 0;
+#endif
 		return 0;
 	}
 	

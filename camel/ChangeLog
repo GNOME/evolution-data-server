@@ -7,6 +7,9 @@
 	* camel-filter-search.c (run_command): Use
 	g_spawn_async_with_pipes() instead of manual fork/dup/exec dance.
 
+	* camel-folder.c
+	* camel-junk-plugin.c: Just cosmetics.
+
 	* camel-lock.c: Use g_usleep() instead of sleep() which isn't
 	available (as such) on Win32. No locking implementation for Win32
 	yet (none of USE_DOT, USE_FCNTL or USE_FLOCK get defined on
@@ -25,6 +28,15 @@
 	uninitializedness. Remove the E_THREAD_NONE magic constant. Use
 	pthread_equal() to compare pthread_t values.
 
+	* camel-tcp-stream-raw.h (struct _CamelTcpStreamRaw): There is no
+	way to find out a socket's blockingness state on Win32, so keep
+	the state in a separate flag field on Win32.
+
+	* camel-tcp-stream-raw.c: Use socket API wrapper macros to hide
+	Unix/Winsock differences. Use camel_read_socket() and
+	camel_write_socket() to read and write from sockets. Use
+	ioctlsocket(FIONBIO) to set and clean nonblocking mode on Win32.
+	
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* camel-gpg-context.c: Use gstdio wrappers. Ifdef out
