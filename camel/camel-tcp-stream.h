@@ -30,11 +30,18 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus }*/
 
+#include <glibconfig.h>
+
+#ifndef G_OS_WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
 #include <unistd.h>
 
 #include <camel/camel-stream.h>

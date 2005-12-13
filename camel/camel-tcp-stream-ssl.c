@@ -27,10 +27,7 @@
  * will be used instead.
  */
 
-
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #ifdef HAVE_NSS
 #include <unistd.h>
@@ -52,16 +49,21 @@
 #include <certdb.h>
 #include <pk11func.h>
 
+#include <glib/gstdio.h>
+
 /* this is commented because otherwise we get an error about the
    redefinition of MD5Context...yay */
 /*#include <libedataserver/md5-utils.h>*/
 
-#include "camel-tcp-stream-ssl.h"
-#include "camel-stream-fs.h"
-#include "camel-session.h"
 #include "camel-certdb.h"
-#include "camel-operation.h"
+#include "camel-file-utils.h"
 #include "camel-i18n.h"
+#include "camel-operation.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-stream-fs.h"
+#include "camel-tcp-stream-ssl.h"
+
 
 /* from md5-utils.h */
 void md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
@@ -246,31 +248,47 @@ set_errno (int code)
 	case PR_IO_PENDING_ERROR:
 		errno = EAGAIN;
 		break;
+#ifdef EWOULDBLOCK
 	case PR_WOULD_BLOCK_ERROR:
 		errno = EWOULDBLOCK;
 		break;
+#endif
+#ifdef EINPROGRESS
 	case PR_IN_PROGRESS_ERROR:
 		errno = EINPROGRESS;
 		break;
+#endif
+#ifdef EALREADY
 	case PR_ALREADY_INITIATED_ERROR:
 		errno = EALREADY;
 		break;
+#endif
+#ifdef EHOSTUNREACH
 	case PR_NETWORK_UNREACHABLE_ERROR:
 		errno = EHOSTUNREACH;
 		break;
+#endif
+#ifdef ECONNREFUSED
 	case PR_CONNECT_REFUSED_ERROR:
 		errno = ECONNREFUSED;
 		break;
+#endif
+#ifdef ETIMEDOUT
 	case PR_CONNECT_TIMEOUT_ERROR:
 	case PR_IO_TIMEOUT_ERROR:
 		errno = ETIMEDOUT;
 		break;
+#endif
+#ifdef ENOTCONN
 	case PR_NOT_CONNECTED_ERROR:
 		errno = ENOTCONN;
 		break;
+#endif
+#ifdef ECONNRESET
 	case PR_CONNECT_RESET_ERROR:
 		errno = ECONNRESET;
 		break;
+#endif
 	case PR_IO_ERROR:
 	default:
 		errno = EIO;
@@ -337,7 +355,9 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
 			if (nread == -1)
 				set_errno (PR_GetError ());
-		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+		} while (nread == -1 && (PR_GetError () == PR_PENDING_INTERRUPT_ERROR ||
+					 PR_GetError () == PR_IO_PENDING_ERROR ||
+					 PR_GetError () == PR_WOULD_BLOCK_ERROR));
 	} else {
 		PRSocketOptionData sockopts;
 		PRPollDesc pollfds[2];
@@ -367,9 +387,13 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			res = PR_Poll(pollfds, 2, IO_TIMEOUT);
 			if (res == -1)
 				set_errno(PR_GetError());
-			else if (res == 0)
+			else if (res == 0) {
+#ifdef ETIMEDOUT
 				errno = ETIMEDOUT;
-			else if (pollfds[1].out_flags == PR_POLL_READ) {
+#else
+				errno = EIO;
+#endif
+			} else if (pollfds[1].out_flags == PR_POLL_READ) {
 				errno = EINTR;
 				goto failed;
 			} else {
@@ -377,9 +401,11 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 					nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
 					if (nread == -1)
 						set_errno (PR_GetError ());
-				} while (nread == -1 && errno == EINTR);
+				} while (nread == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
 			}
-		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+		} while (nread == -1 && (PR_GetError () == PR_PENDING_INTERRUPT_ERROR ||
+					 PR_GetError () == PR_IO_PENDING_ERROR ||
+					 PR_GetError () == PR_WOULD_BLOCK_ERROR));
 		
 		/* restore O_NONBLOCK options */
 	failed:
@@ -412,7 +438,9 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 				w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
 				if (w == -1)
 					set_errno (PR_GetError ());
-			} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+			} while (w == -1 && (PR_GetError () == PR_PENDING_INTERRUPT_ERROR ||
+					     PR_GetError () == PR_IO_PENDING_ERROR ||
+					     PR_GetError () == PR_WOULD_BLOCK_ERROR));
 			
 			if (w > 0)
 				written += w;
@@ -446,21 +474,26 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 			res = PR_Poll (pollfds, 2, IO_TIMEOUT);
 			if (res == -1) {
 				set_errno(PR_GetError());
-				if (errno == EINTR)
+				if (PR_GetError () == PR_PENDING_INTERRUPT_ERROR)
 					w = 0;
-			} else if (res == 0)
+			} else if (res == 0) {
+#ifdef ETIMEDOUT
 				errno = ETIMEDOUT;
-			else if (pollfds[1].out_flags == PR_POLL_READ) {
+#else
+				errno = EIO;
+#endif
+			} else if (pollfds[1].out_flags == PR_POLL_READ) {
 				errno = EINTR;
 			} else {
 				do {
 					w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
 					if (w == -1)
 						set_errno (PR_GetError ());
-				} while (w == -1 && errno == EINTR);
+				} while (w == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
 				
 				if (w == -1) {
-					if (errno == EAGAIN || errno == EWOULDBLOCK)
+					if (PR_GetError () == PR_IO_PENDING_ERROR ||
+					    PR_GetError () == PR_WOULD_BLOCK_ERROR)
 						w = 0;
 				} else
 					written += w;
@@ -633,7 +666,14 @@ cert_fingerprint(CERTCertificate *cert)
 
 		*f++ = tohex[(c >> 4) & 0xf];
 		*f++ = tohex[c & 0xf];
+#ifndef G_OS_WIN32
 		*f++ = ':';
+#else
+		/* The fingerprint is used as a file name, can't have
+		 * colons in file names. Use underscore instead.
+		 */
+		*f++ = '_';
+#endif
 	}
 
 	fingerprint[47] = 0;
@@ -660,9 +700,13 @@ camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 	}
 	
 	if (ccert->rawcert == NULL) {
+#ifndef G_OS_WIN32
 		path = g_strdup_printf ("%s/.camel_certs/%s", getenv ("HOME"), fingerprint);
-		if (stat (path, &st) == -1
-		    || (fd = open (path, O_RDONLY)) == -1) {
+#else
+		path = g_build_filename (g_get_home_dir (), ".camel_certs", fingerprint, NULL);
+#endif
+		if (g_stat (path, &st) == -1
+		    || (fd = g_open (path, O_RDONLY | O_BINARY, 0)) == -1) {
 			g_warning ("could not load cert %s: %s", path, strerror (errno));
 			g_free (fingerprint);
 			g_free (path);
@@ -752,8 +796,12 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	g_byte_array_set_size (ccert->rawcert, cert->derCert.len);
 	memcpy (ccert->rawcert->data, cert->derCert.data, cert->derCert.len);
 	
+#ifndef G_OS_WIN32
 	dir = g_strdup_printf ("%s/.camel_certs", getenv ("HOME"));
-	if (stat (dir, &st) == -1 && mkdir (dir, 0700) == -1) {
+#else
+	dir = g_build_filename (g_get_home_dir (), ".camel_certs", NULL);
+#endif
+	if (g_stat (dir, &st) == -1 && g_mkdir (dir, 0700) == -1) {
 		g_warning ("Could not create cert directory '%s': %s", dir, strerror (errno));
 		g_free (dir);
 		return;
@@ -766,7 +814,7 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	if (stream != NULL) {
 		if (camel_stream_write (stream, ccert->rawcert->data, ccert->rawcert->len) == -1) {
 			g_warning ("Could not save cert: %s: %s", path, strerror (errno));
-			unlink (path);
+			g_unlink (path);
 		}
 		camel_stream_close (stream);
 		camel_object_unref (stream);
@@ -1117,7 +1165,9 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 		int errnosave;
 		
 		set_errno (PR_GetError ());
-		if (errno == EINPROGRESS || (cancel_fd && errno == ETIMEDOUT)) {
+		if (PR_GetError () == PR_IN_PROGRESS_ERROR ||
+		    (cancel_fd && (PR_GetError () == PR_CONNECT_TIMEOUT_ERROR ||
+				   PR_GetError () == PR_IO_TIMEOUT_ERROR))) {
 			gboolean connected = FALSE;
 			PRPollDesc poll[2];
 
@@ -1142,7 +1192,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 
 				if (PR_ConnectContinue(fd, poll[0].out_flags) == PR_FAILURE) {
 					set_errno (PR_GetError ());
-					if (errno != EINPROGRESS)
+					if (PR_GetError () != PR_IN_PROGRESS_ERROR)
 						goto exception;
 				} else {
 					connected = TRUE;
