@@ -20,20 +20,20 @@
  * USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
 
-#include "camel-object.h"
-#include "camel-file-utils.h"
+#include <glib/gstdio.h>
 
-#include <libedataserver/e-memory.h>
-#include <libedataserver/e-msgport.h>
+#include "libedataserver/e-memory.h"
+#include "libedataserver/e-msgport.h"
+
+#include "camel-file-utils.h"
+#include "camel-object.h"
 
 #define d(x)
 #define b(x) 			/* object bag */
@@ -90,6 +90,7 @@ struct _CamelObjectBagKey {
 	void *key;		/* the key reserved */
 	int waiters;		/* count of threads waiting for key */
 	pthread_t owner;	/* the thread that has reserved the bag for a new entry */
+	int have_owner;
 	GCond *cond;
 };
 
@@ -1807,7 +1808,7 @@ int camel_object_state_read(void *vo)
 	if (file == NULL)
 		return 0;
 
-	fp = fopen(file, "r");
+	fp = g_fopen(file, "rb");
 	if (fp != NULL) {
 		if (fread(magic, 4, 1, fp) == 1
 		    && memcmp(magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) == 0)
@@ -1834,7 +1835,7 @@ int camel_object_state_write(void *vo)
 {
 	CamelObject *obj = vo;
 	int res = -1;
-	char *file, *savename, *tmp;
+	char *file, *savename, *dirname;
 	FILE *fp;
 
 	camel_object_get(vo, NULL, CAMEL_OBJECT_STATE_FILE, &file, NULL);
@@ -1842,19 +1843,16 @@ int camel_object_state_write(void *vo)
 		return 0;
 
 	savename = camel_file_util_savename(file);
-	tmp = strrchr(savename, '/');
-	if (tmp) {
-		*tmp = 0;
-		camel_mkdir(savename, 0777);
-		*tmp = '/';
-	}
-	fp = fopen(savename, "w");
+	dirname = g_path_get_dirname(savename);
+	camel_mkdir(dirname, 0777);
+	g_free(dirname);
+	fp = g_fopen(savename, "wb");
 	if (fp != NULL) {
 		if (fwrite(CAMEL_OBJECT_STATE_FILE_MAGIC, 4, 1, fp) == 1
 		    && obj->klass->state_write(obj, fp) == 0) {
 			if (fclose(fp) == 0) {
 				res = 0;
-				rename(savename, file);
+				g_rename(savename, file);
 			}
 		} else {
 			fclose(fp);
@@ -2017,11 +2015,11 @@ co_bag_unreserve(CamelObjectBag *bag, const void *key)
 	}
 
 	g_assert(res != NULL);
-	g_assert(res->owner == pthread_self());
+	g_assert(res->have_owner && pthread_equal(res->owner, pthread_self()));
 
 	if (res->waiters > 0) {
 		b(printf("unreserve bag '%s', waking waiters\n", (char *)key));
-		res->owner = 0;
+		res->have_owner = FALSE;
 		g_cond_signal(res->cond);
 	} else {
 		b(printf("unreserve bag '%s', no waiters, freeing reservation\n", (char *)key));
@@ -2121,7 +2119,7 @@ camel_object_bag_get(CamelObjectBag *bag, const void *key)
 			b(printf("object bag get '%s', reserved, waiting\n", (char *)key));
 
 			res->waiters++;
-			g_assert(res->owner != pthread_self());
+			g_assert(!res->have_owner || !pthread_equal(res->owner, pthread_self()));
 			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
 
@@ -2134,6 +2132,7 @@ camel_object_bag_get(CamelObjectBag *bag, const void *key)
 
 			/* we don't actually reserve it */
 			res->owner = pthread_self();
+			res->have_owner = TRUE;
 			co_bag_unreserve(bag, key);
 		}
 	}
@@ -2215,7 +2214,7 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 
 		if (res) {
 			b(printf("bag reserve %s, already reserved, waiting\n", (char *)key));
-			g_assert(res->owner != pthread_self());
+			g_assert(!res->have_owner || !pthread_equal(res->owner, pthread_self()));
 			res->waiters++;
 			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
@@ -2226,10 +2225,12 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 				o->ref_count++;
 				/* in which case we dont need to reserve the bag either */
 				res->owner = pthread_self();
+				res->have_owner = TRUE;
 				co_bag_unreserve(bag, key);
 			} else {
 				b(printf("finished wait, now owner of '%s'\n", (char *)key));
 				res->owner = pthread_self();
+				res->have_owner = TRUE;
 			}
 		} else {
 			b(printf("bag reserve %s, no key, reserving\n", (char *)key));
@@ -2238,6 +2239,7 @@ camel_object_bag_reserve(CamelObjectBag *bag, const void *key)
 			res->key = bag->copy_key(key);
 			res->cond = g_cond_new();
 			res->owner = pthread_self();
+			res->have_owner = TRUE;
 			res->next = bag->reserved;
 			bag->reserved = res;
 		}

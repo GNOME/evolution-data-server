@@ -16,6 +16,15 @@
 	simultaneously, not just against other apps accessing them while
 	Evolution is?
 
+	* camel-object.c: Use gstdio wrappers. Use binary mode when
+	opening files. Use g_path_get_dirname().
+
+	Use a separate have_owner boolean flag field to indicate whether
+	the pthread_t owner field is valid in the _CamelObjectBagKey
+	struct. There is no portable way to check a pthread_t for
+	uninitializedness. Remove the E_THREAD_NONE magic constant. Use
+	pthread_equal() to compare pthread_t values.
+
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* camel-gpg-context.c: Use gstdio wrappers. Ifdef out
