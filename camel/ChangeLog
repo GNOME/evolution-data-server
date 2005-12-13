@@ -7,6 +7,15 @@
 	* camel-filter-search.c (run_command): Use
 	g_spawn_async_with_pipes() instead of manual fork/dup/exec dance.
 
+	* camel-lock.c: Use g_usleep() instead of sleep() which isn't
+	available (as such) on Win32. No locking implementation for Win32
+	yet (none of USE_DOT, USE_FCNTL or USE_FLOCK get defined on
+	Win32), I wonder whether it is necessary t ohave one? Is locking
+	used to guard against several threads in Evolution (or Evolution
+	and the E-D-S or E-E processes) accessing the same files
+	simultaneously, not just against other apps accessing them while
+	Evolution is?
+
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* camel-gpg-context.c: Use gstdio wrappers. Ifdef out

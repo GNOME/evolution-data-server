@@ -19,9 +19,7 @@
  * USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,6 +49,11 @@
 #endif
 
 #include <glib.h>
+#include <glib/gstdio.h>
+
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 
 #include "camel-lock.h"
 #include "camel-i18n.h"
@@ -312,7 +315,7 @@ camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *
 
 	while (retry < CAMEL_LOCK_RETRY) {
 		if (retry > 0)
-			sleep(CAMEL_LOCK_DELAY);
+			g_usleep(CAMEL_LOCK_DELAY*1000000);
 
 		if (camel_lock_fcntl(fd, type, ex) == 0) {
 			if (camel_lock_flock(fd, type, ex) == 0) {
@@ -371,7 +374,7 @@ int main(int argc, char **argv)
 
 	if (camel_lock_fcntl(fd1, CAMEL_LOCK_WRITE, ex) == 0) {
 		printf("got fcntl write lock once\n");
-		sleep(5);
+		g_usleep(5000000);
 		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, ex) == 0) {
 			printf("got fcntl write lock twice!\n");
 		} else {
@@ -395,7 +398,7 @@ int main(int argc, char **argv)
 
 	if (camel_lock_fcntl(fd1, CAMEL_LOCK_READ, ex) == 0) {
 		printf("got fcntl read lock once\n");
-		sleep(5);
+		g_usleep(5000000);
 		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, ex) == 0) {
 			printf("got fcntl write lock too?!\n");
 		} else {
