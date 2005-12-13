@@ -1,3 +1,7 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* libecal/Makefile.am (INCLUDES): Drop unused EVOLUTION_LOCALEDIR.
+
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* libecal/e-cal.c (set_local_attachment_store,

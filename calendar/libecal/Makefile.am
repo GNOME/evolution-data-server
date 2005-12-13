@@ -1,5 +1,4 @@
 INCLUDES =						\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DG_LOG_DOMAIN=\"libecal\"			\
 	-I$(top_srcdir)/calendar			\
 	-I$(srcdir) -I$(top_srcdir) 			\
