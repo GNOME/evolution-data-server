@@ -1,3 +1,8 @@
+2005-12-13  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-uid.c (e_uid_new): Use g_get_host_name() when
+	building against GLib >= 2.8, not just on Win32.
+
 2005-12-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Release updates, bump version

@@ -43,7 +43,7 @@ e_uid_new (void)
 	static char *hostname;
 
 	if (!hostname) {
-#ifdef G_OS_WIN32 
+#if GLIB_CHECK_VERSION (2, 8, 0)
 		hostname = (char *) g_get_host_name ();
 #else
 		static char buffer [512];
