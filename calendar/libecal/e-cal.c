@@ -2979,9 +2979,10 @@ process_detached_instances (GList *instances, GList *detached_instances)
 			ci = il->data;
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
-			if (strcmp (uid, instance_uid) == 0) {
-				if (strcmp (e_cal_component_get_recurid_as_string (ci->comp),
-					    e_cal_component_get_recurid_as_string (cid->comp)) == 0) {
+			if (instance_uid && strcmp (uid, instance_uid) == 0) {
+				char *ci_recurid = e_cal_component_get_recurid_as_string (ci->comp);
+				char *cid_recurid = e_cal_component_get_recurid_as_string (cid->comp);
+				if (ci_recurid && cid_recurid && (strcmp (ci_recurid, cid_recurid) == 0)) {
 					g_object_unref (ci->comp);
 					ci->comp = g_object_ref (cid->comp);
 					ci->start = cid->start;
@@ -2989,6 +2990,9 @@ process_detached_instances (GList *instances, GList *detached_instances)
 
 					processed = TRUE;
 				} else {
+					struct icaltimetype *recur_val = instance_recur_id.datetime.value;
+					if (!recur_val || icaltime_is_null_time (*recur_val))
+						continue;
 					cmp = icaltime_compare (*instance_recur_id.datetime.value,
 								*recur_id.datetime.value);
 					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||
