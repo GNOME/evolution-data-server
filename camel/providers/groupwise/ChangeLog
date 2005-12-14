@@ -1,3 +1,11 @@
+2005-12-14  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 317794
+	* camel-groupwise-store-summary.c:
+	(camel_groupwise_store_summary_full_to_path):
+	(camel_groupwise_store_summary_path_to_full):
+	Do not convert folder names here, there are already converted
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel-groupwise-store.c
