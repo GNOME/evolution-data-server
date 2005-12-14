@@ -1,3 +1,20 @@
+2005-12-14  Tor Lillqvist  <tml@novell.com>
+
+	Fix #323106:
+	
+	* camel-imap-store.c (camel_imap_store_summary_full_to_path,
+	camel_imap_store_summary_path_to_full): Remove extraneous
+	conversions from IMAP-UTF-7 to UTF-8 and back.
+
+	* camel-imap-command.c (imap_command_strdup_vprintf): Do the
+	conversion from UTF-8 to IMAP-UTF-7 only just before sending a
+	request. Do it also for %S formats, as that is what the CREATE
+	command uses. But %S is used also for other commands (like LOGIN
+	and LIST), so maybe we really would need a new format that would
+	be used *only* for mailbox (folder) names, assuming it's only
+	mailbox names that use the IMAP-UTF-7 encoding. Or is that what %F
+	is intended for? But why then does CREATE use %S?
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* camel-imap-folder.c: Drop unused <dirent.h>.
@@ -6,7 +23,7 @@
 	binary mode.
 	(camel_imap_message_cache_new): Use GDir instead of dirent API.
 	(insert_setup, camel_imap_message_cache_get): Trailing periods in
-	file names are silently dropped on Win32, so on Win32, if the we
+	file names are silently dropped on Win32, so on Win32, so if we
 	would want to create a file with a name ending with a perioud,
 	append a tilde (just a random choice).
 
