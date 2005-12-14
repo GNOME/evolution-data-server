@@ -170,7 +170,7 @@ camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const 
 	} else
 		path = (char *)full_name;
 
-	return camel_utf7_utf8(path);
+	return g_strdup (path);
 }
 static guint32 hexnib(guint32 c)
 {
@@ -295,7 +295,7 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 	camel_utf8_putc(&f, c);
 
 	/* merge old path part if required */
-	f = camel_utf8_utf7(full);
+	f = g_strdup (full);
 	if (si) {
 		full = g_strdup_printf("%s%s", camel_groupwise_store_info_full_name(s, si), f);
 		g_free(f);
