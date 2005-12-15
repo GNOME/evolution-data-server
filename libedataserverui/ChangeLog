@@ -1,3 +1,9 @@
+2005-12-15  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-destination-store.c: (find_destination_by_email),
+	(e_destination_store_append_destination): Check if the 
+	destination is already added by comparing the email id.
+
 2005-12-09  Tor Lillqvist  <tml@novell.com>
 
 	* e-passwords.c (ep_msg_new): Use pthread_equal() to compare

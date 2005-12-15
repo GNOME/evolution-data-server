@@ -247,6 +247,23 @@ find_destination_by_pointer (EDestinationStore *destination_store, EDestination 
 	return -1;
 }
 
+static gint
+find_destination_by_email (EDestinationStore *destination_store, EDestination *destination)
+{
+	gint i;
+	char *e_mail = e_destination_get_email (destination);
+
+	for (i = 0; i < destination_store->destinations->len; i++) {
+		EDestination *destination_here = g_ptr_array_index (destination_store->destinations, i);
+		char *mail = e_destination_get_email (destination_here);
+
+		if (g_str_equal (e_mail, mail))
+			return i;
+	}
+
+	return -1;
+}
+
 static void
 start_destination (EDestinationStore *destination_store, EDestination *destination)
 {
@@ -384,7 +401,7 @@ e_destination_store_append_destination (EDestinationStore *destination_store, ED
 {
 	g_return_if_fail (E_IS_DESTINATION_STORE (destination_store));
 
-	if (find_destination_by_pointer (destination_store, destination) >= 0) {
+	if (find_destination_by_email (destination_store, destination) >= 0 && !e_destination_is_evolution_list (destination)) {
 		g_warning ("Same destination added more than once to EDestinationStore!");
 		return;
 	}
