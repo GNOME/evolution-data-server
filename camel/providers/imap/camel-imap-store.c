@@ -2056,7 +2056,6 @@ get_folder_offline (CamelStore *store, const char *folder_name,
 		folder_dir = imap_path_to_physical (storage_path, folder_name);
 		g_free(storage_path);
 		new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
-		g_print ("OFFLINE:%s\n", folder_name);
 		g_free(folder_dir);
 
 		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
