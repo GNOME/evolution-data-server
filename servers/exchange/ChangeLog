@@ -1,3 +1,9 @@
+2005-12-15  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-autoconfig.c (e2k_validate_user): Fixes the problem
+	of validating and authenticating user only on pressing "Authenticate" 
+	button twice, even if the user gives the proper password.
+
 2005-12-11  Tor Lillqvist  <tml@novell.com>
 
 	* lib/Makefile.am: Drop unused CONNECTOR_LOCALEDIR.
