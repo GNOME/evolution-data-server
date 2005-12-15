@@ -1,3 +1,10 @@
+2005-12-15  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #324009
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_get_object): Use g_object_unref
+	to free the component instead of g_free.
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* libecal/Makefile.am (INCLUDES): Drop unused EVOLUTION_LOCALEDIR.

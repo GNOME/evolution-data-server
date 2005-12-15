@@ -639,7 +639,7 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
-	ECalComponent *comp;
+	ECalComponent *comp = NULL;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -654,7 +654,7 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 
 	*object = e_cal_component_get_as_string (comp);
-	g_free (comp);
+	g_object_unref (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
