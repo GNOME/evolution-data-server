@@ -659,7 +659,24 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 
 	while (g_unichar_isspace (g_utf8_get_char (p)) && *p != '\0')
 		p = g_utf8_next_char (p);
+	
+	/* 
+	   Consider this case, "Br.Gate,Br. Gate,W". I know this is a damn
+	   random name, but, I got this from the bug report of 317411.
+	   
+	   comma = ",Br.Gate,W"
+	   prefix = "Br.Gate,Br."
+	   p = " Gate,W"
+	   comma - p < 0 and hence the crash.
 
+	   Actually, we don't have to put lot of intelligence in reordering such
+	   screwedup names, just return.
+	*/
+	if (comma - p + 1 < 1) {
+		g_free (prefix);
+		return;
+	}
+	
 	last = g_malloc0 (comma - p + 1);
 	strncpy (last, p, comma - p);
 
@@ -941,7 +958,7 @@ e_name_western_parse (const char *full_name)
 	idxs->nick_idx   = -1;
 	idxs->last_idx   = -1;
 	idxs->suffix_idx = -1;
-	
+
 	/*
 	 * An extremely simple algorithm.
 	 *

@@ -1,3 +1,10 @@
+2005-12-16  Veerapuram Varadhan <vvaradhan@novell.com>
+
+	* libebook/e-name-western.c: (e_name_western_reorder_asshole):
+	Check for invalid combination of prefix and comma separation
+	before reordering the name.
+	** Fixes #317411
+	
 2005-12-09  Tor Lillqvist  <tml@novell.com>
 
 	* libedata-book/e-book-backend-summary.c: Use gstdio wrappers.
