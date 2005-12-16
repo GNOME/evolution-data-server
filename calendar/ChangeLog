@@ -1,3 +1,10 @@
+2005-12-16  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #267330
+	* libecal/e-cal-component.c: (e_cal_component_get_dtend),
+	(e_cal_component_get_dtstart), (e_cal_component_get_due): Initialize
+	internal elements of the datetime to avoid crashing.
+
 2005-12-15  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #324009

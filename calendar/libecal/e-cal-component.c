@@ -2447,9 +2447,13 @@ e_cal_component_get_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
+	g_return_if_fail (dt != NULL);
+
+	dt->tzid = NULL;
+	dt->value = NULL;
+	
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_if_fail (dt != NULL);
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
@@ -2563,9 +2567,13 @@ e_cal_component_get_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
+	g_return_if_fail (dt != NULL);
+
+	dt->tzid = NULL;
+	dt->value = NULL;
+	
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_if_fail (dt != NULL);
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
@@ -2612,9 +2620,13 @@ e_cal_component_get_due (ECalComponent *comp, ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
+	g_return_if_fail (dt != NULL);
+
+	dt->tzid = NULL;
+	dt->value = NULL;
+	
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
-	g_return_if_fail (dt != NULL);
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
