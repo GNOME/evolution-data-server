@@ -1624,7 +1624,7 @@ e2k_validate_user (const char *owa_url, char *user,
 	gboolean valid = FALSE, remember=FALSE;
 	char *key, *password, *prompt;
 
-	key = g_strdup_printf ("%s//%s@%s", "exchange:", user, owa_url); /* FIXME */
+	key = g_strdup_printf ("%s//%s@%s/", "exchange:", user, owa_url); /* FIXME */
 		
 	password = e_passwords_get_password ("Exchange", key);
 	if (!password) {

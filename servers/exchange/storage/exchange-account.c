@@ -2001,7 +2001,7 @@ ExchangeAccount *
 exchange_account_new (EAccountList *account_list, EAccount *adata)
 {
 	ExchangeAccount *account;
-	char *enc_user, *mailbox, *old_uri_authority;
+	char *enc_user, *mailbox;
 	const char *param, *proto="http", *owa_path, *pf_server, *owa_url; 
 	const char *passwd_exp_warn_period, *offline_sync;
 	E2kUri *uri;
@@ -2033,8 +2033,7 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 
 	/* URI, etc, info */
 	enc_user = e2k_uri_encode (uri->user, FALSE, "@/;:");
-	old_uri_authority = g_strdup_printf ("%s@%s", enc_user,
-							uri->host);
+
 	if (uri->authmech)
 		account->priv->uri_authority = g_strdup_printf ("%s;auth=%s@%s", enc_user,
 								uri->authmech, uri->host);
@@ -2049,9 +2048,12 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 
 	/* Backword compatibility; FIXME, we should just migrate the
 	 * password from this to source_uri.
+	 * old_uri_authority needs to be used in the key for migrating 
+	 * passwords remembered.
+	 * 
 	 */
-	account->priv->password_key = g_strdup_printf ("exchange://%s", old_uri_authority);
-	g_free (old_uri_authority);
+	account->priv->password_key = g_strdup_printf ("exchange://%s/",
+							account->priv->uri_authority);
 
 	account->priv->username = g_strdup (uri->user);
 	if (uri->domain)
