@@ -66,7 +66,7 @@ static gboolean is_empty (ExchangeHierarchy *hier);
 static void rescan (ExchangeHierarchy *hier);
 static ExchangeAccountFolderResult scan_subtree  (ExchangeHierarchy *hier,
 						  EFolder *folder,
-						  gboolean offline);
+						  int mode);
 static ExchangeAccountFolderResult create_folder (ExchangeHierarchy *hier,
 						  EFolder *parent,
 						  const char *name,
@@ -386,10 +386,10 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 	char *permanent_url = NULL, *physical_uri, *source_parent;
 	const char *folder_type = NULL, *source_folder_name;
 	ExchangeAccountFolderResult ret_code;
-	int offline;
+	int mode;
 
-	exchange_account_is_offline (hier->account, &offline);
-        if (offline != ONLINE_MODE)
+	exchange_account_is_offline (hier->account, &mode);
+        if (mode != ONLINE_MODE)
                 return EXCHANGE_ACCOUNT_FOLDER_OFFLINE;
 
 	if (source == hier->toplevel)
@@ -412,7 +412,7 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 		if (remove_source)
 			exchange_hierarchy_removed_folder (hier, source);
 		exchange_hierarchy_new_folder (hier, dest);
-		scan_subtree (hier, dest, (offline == OFFLINE_MODE));
+		scan_subtree (hier, dest, mode);
 		physical_uri = (char *) e_folder_get_physical_uri (source);
 		g_object_unref (dest);
 		ret_code = EXCHANGE_ACCOUNT_FOLDER_OK;
@@ -506,12 +506,12 @@ rescan (ExchangeHierarchy *hier)
 	E2kResultIter *iter;
 	E2kResult *result;
 	EFolder *folder;
-	int unread, offline;
+	int unread, mode;
 	gboolean personal = ( hier->type == EXCHANGE_HIERARCHY_PERSONAL );
 	gdouble fsize_d;
 
-	exchange_account_is_offline (hier->account, &offline);
-	if ( (offline != ONLINE_MODE) ||
+	exchange_account_is_offline (hier->account, &mode);
+	if ( (mode != ONLINE_MODE) ||
 		hier->type == EXCHANGE_HIERARCHY_PUBLIC)
 		return;
 
@@ -680,7 +680,7 @@ static const char *folder_props[] = {
 static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
+scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 {
 	static E2kRestriction *folders_rn;
 	ExchangeHierarchyWebDAV *hwd = EXCHANGE_HIERARCHY_WEBDAV (hier);
@@ -695,7 +695,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 	const char *name, *folder_size, *deleted_items_uri, *int_uri;
 	gboolean personal = ( EXCHANGE_HIERARCHY (hwd)->type == EXCHANGE_HIERARCHY_PERSONAL );
 
-	if (offline) {
+	if (mode == OFFLINE_MODE) {
 		folders = g_ptr_array_new ();
 		exchange_hierarchy_webdav_offline_scan_subtree (EXCHANGE_HIERARCHY (hier), add_folders, folders);
 		for (i = 0; i <folders->len; i++) {
@@ -756,7 +756,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gboolean offline)
 		int_uri = e_folder_exchange_get_internal_uri (folder);
 		if (int_uri && !strcmp (int_uri, deleted_items_uri))
 			continue;
-		scan_subtree (hier, folder, offline);
+		scan_subtree (hier, folder, mode);
 	}
 
 	return exchange_hierarchy_webdav_status_to_folder_result (status);

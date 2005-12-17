@@ -1,5 +1,27 @@
 2005-12-17  Sushma Rai  <rsushma@novell.com>
 
+	* storage/exchange-account.c: Using the integer varable 
+	"account_online" to store the mode, instead of boolean. This fixes the
+	problem of comparing account_online value (TRUE/FALSE) with 
+	OFFLINE_MODE/ONLINE_MODE (1/2).
+	(exchange_account_rescan_tree)(exchange_account_open_folder)
+	(exchange_account_set_offline)(exchange_account_is_offline)
+	(setup_account_hierarchies)(exchange_account_connect): Similar. 
+
+	* storage/exchange-hierarchy.[ch] (scan_subtree)
+	(exchange_hierarchy_scan_subtree): Similar.
+	
+	* storage/exchange-hierarchy-webdav.c (xfer_folder)(rescan)
+	(scan_subtree): Similar.
+
+	* storage/exchange-hierarchy-foreign.c (scan_subtree): Similar.
+
+	* storage/exchange-hierarchy-somedav.c (scan_subtree): Similar.
+	This fixes the problem of not loading the folders after creating an
+	account, even if the user is authenticated.
+
+2005-12-17  Sushma Rai  <rsushma@novell.com>
+
 	* lib/e2k-autoconfig.c (e2k_validate_user): Corrected the key by
 	adding the trailing slash.
 

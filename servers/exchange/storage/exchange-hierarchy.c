@@ -50,7 +50,7 @@ static gboolean is_empty        (ExchangeHierarchy *hier);
 static void add_to_storage      (ExchangeHierarchy *hier);
 static ExchangeAccountFolderResult scan_subtree  (ExchangeHierarchy *hier,
 						  EFolder *folder,
-						  gboolean offline);
+						  int mode);
 static void                        rescan        (ExchangeHierarchy *hier);
 static ExchangeAccountFolderResult create_folder (ExchangeHierarchy *hier,
 						  EFolder *parent,
@@ -294,7 +294,7 @@ exchange_hierarchy_rescan (ExchangeHierarchy *hier)
 
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
+scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 {
 	return EXCHANGE_ACCOUNT_FOLDER_OK;
 }
@@ -311,12 +311,12 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
  * Return value: the result code
  **/
 ExchangeAccountFolderResult
-exchange_hierarchy_scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
+exchange_hierarchy_scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 {
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 	g_return_val_if_fail (E_IS_FOLDER (folder), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
-	return HIER_CLASS (hier)->scan_subtree (hier, folder, offline);
+	return HIER_CLASS (hier)->scan_subtree (hier, folder, mode);
 }
 
 

@@ -69,7 +69,8 @@ struct _ExchangeAccountPrivate {
 	ExchangeFolderSize *fsize;
 
 	GMutex *connect_lock;
-	gboolean connecting, connected, account_online;
+	gboolean connecting, connected; 
+	int account_online;
 
 	GPtrArray *hierarchies;
 	GHashTable *hierarchies_by_folder, *foreign_hierarchies;
@@ -159,7 +160,7 @@ init (GObject *object)
 	account->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->fresh_folders = NULL;
 	account->priv->discover_data_lock = g_mutex_new ();
-	account->priv->account_online = FALSE;
+	account->priv->account_online = UNSUPPORTED_MODE;
 	account->priv->nt_domain = NULL;
 	account->priv->fsize = exchange_folder_size_new ();
 }
@@ -340,7 +341,7 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 				     toplevel);
 
 		exchange_hierarchy_scan_subtree (account->priv->hierarchies->pdata[i],
-						toplevel, !account->priv->account_online);
+						toplevel, account->priv->account_online);
 		exchange_hierarchy_rescan (account->priv->hierarchies->pdata[i]);
 	}
 }
@@ -781,7 +782,7 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 {
 	ExchangeHierarchy *hier;
 	EFolder *folder;
-	int offline;
+	int mode;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -789,8 +790,8 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 
-	exchange_account_is_offline (account, &offline);
-	if (offline == ONLINE_MODE && !account->priv->connected &&
+	exchange_account_is_offline (account, &mode);
+	if (mode == ONLINE_MODE && !account->priv->connected &&
 	    hier == (ExchangeHierarchy *)account->priv->hierarchies->pdata[0] &&
 	    folder == hier->toplevel) {
 		/* The shell is asking us to open the personal folders
@@ -800,7 +801,7 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 	}		
 	
-	return exchange_hierarchy_scan_subtree (hier, folder, (offline == OFFLINE_MODE));
+	return exchange_hierarchy_scan_subtree (hier, folder, mode);
 }
 
 ExchangeAccountFolderResult
@@ -1211,7 +1212,7 @@ exchange_account_set_offline (ExchangeAccount *account)
 		account->priv->ctx = NULL;
 	}
 
-	account->priv->account_online = FALSE;
+	account->priv->account_online = OFFLINE_MODE;
 	g_mutex_unlock (account->priv->connect_lock);
 	return TRUE;
 }
@@ -1233,7 +1234,7 @@ exchange_account_set_online (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), FALSE);
 
 	g_mutex_lock (account->priv->connect_lock);
-	account->priv->account_online = TRUE;
+	account->priv->account_online = ONLINE_MODE;
 	g_mutex_unlock (account->priv->connect_lock);
 	
 	return TRUE;
@@ -1250,7 +1251,7 @@ exchange_account_is_offline (ExchangeAccount *account, int *state)
 {
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
 	
-	*state = account->priv->account_online ? ONLINE_MODE : OFFLINE_MODE;
+	*state = account->priv->account_online;
 }
 
 static gboolean
@@ -1261,11 +1262,11 @@ setup_account_hierarchies (ExchangeAccount *account)
 	char *phys_uri_prefix, *dir;
 	GDir *d;
 	const char *dent;
-	int offline;
+	int mode;
 
-	exchange_account_is_offline (account, &offline);
+	exchange_account_is_offline (account, &mode);
 
-	if (offline == UNSUPPORTED_MODE)
+	if (mode == UNSUPPORTED_MODE)
 		return FALSE;
 
 	/* Check if folder hierarchies are already setup. */
@@ -1356,7 +1357,7 @@ hierarchies_created:
 	
 	fresult = exchange_hierarchy_scan_subtree (personal_hier,
 						   personal_hier->toplevel,
-						   (offline == OFFLINE_MODE));
+						   mode);
 	if (fresult != EXCHANGE_ACCOUNT_FOLDER_OK) {
 		account->priv->connecting = FALSE;
 		return FALSE;
@@ -1368,13 +1369,12 @@ hierarchies_created:
 	fresult = exchange_hierarchy_scan_subtree (
 		account->priv->favorites_hierarchy,
 		account->priv->favorites_hierarchy->toplevel,
-		(offline == OFFLINE_MODE));
+		mode);
 	if (fresult != EXCHANGE_ACCOUNT_FOLDER_OK && 
 	    fresult != EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST) {
 		account->priv->connecting = FALSE;
 		return FALSE;
 	}
-	
 	return TRUE;
 }
 
@@ -1398,29 +1398,30 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	E2kHTTPStatus status;
 	gboolean redirected = FALSE;
 	E2kResult *results;
-	int nresults;
+	int nresults, mode;
 	GByteArray *entryid;
 	const char *timezone;
 	E2kGlobalCatalogStatus gcstatus;
 	E2kGlobalCatalogEntry *entry;
 	E2kOperation gcop;
 	char *user_name = NULL;
-	int offline;
 
 	*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR; 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	*info_result = EXCHANGE_ACCOUNT_CONNECT_SUCCESS;
+	exchange_account_is_offline (account, &mode);
 
-	exchange_account_is_offline (account, &offline);
 	g_mutex_lock (account->priv->connect_lock);
 
-	if ((account->priv->connecting) || (offline == OFFLINE_MODE)){
+	if (account->priv->connecting || mode == OFFLINE_MODE) {
 		g_mutex_unlock (account->priv->connect_lock);
-		if (offline == OFFLINE_MODE) {
+		if (mode == OFFLINE_MODE) {
 			setup_account_hierarchies (account);
-
 			*info_result = EXCHANGE_ACCOUNT_OFFLINE;
+		}
+		else {
+			*info_result = EXCHANGE_ACCOUNT_CONNECT_ERROR;
 		}
 		return NULL;
 	} else if (account->priv->ctx) {
@@ -1447,6 +1448,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	if (!pword) {
 		account->priv->connecting = FALSE;
 		g_mutex_unlock (account->priv->connect_lock);
+		*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
 		return NULL;
 	}
 
@@ -1470,6 +1472,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		}
 #endif
 		switch (result) {
+
 		case E2K_AUTOCONFIG_AUTH_ERROR:
 			*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
 			e2k_autoconfig_free (ac);
@@ -1508,6 +1511,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 		e2k_autoconfig_free (ac);
 		account->priv->connecting = FALSE;
+		account->priv->account_online = OFFLINE_MODE; /* correct? */
 
 		switch (result) {
 		case E2K_AUTOCONFIG_REDIRECT:
@@ -1573,6 +1577,10 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			account->default_timezone = g_strdup (timezone);
 	}
 
+	account->priv->connected = TRUE;
+	account->priv->account_online = ONLINE_MODE;
+	account->priv->connecting = FALSE;
+
 	if (!setup_account_hierarchies (account)) {
 		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 		g_mutex_unlock (account->priv->connect_lock);
@@ -1612,10 +1620,6 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		}
 	}
 	
-	account->priv->connected = TRUE;
-	account->priv->account_online = TRUE;
-	account->priv->connecting = FALSE;
-
 	g_signal_connect (account->priv->ctx, "redirect",
 			  G_CALLBACK (context_redirect), account);
 
@@ -2048,11 +2052,12 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 
 	/* Backword compatibility; FIXME, we should just migrate the
 	 * password from this to source_uri.
+	 * old_uri_authority = g_strdup_printf ("%s@%s", enc_user,
+	 *					uri->host);
 	 * old_uri_authority needs to be used in the key for migrating 
 	 * passwords remembered.
-	 * 
 	 */
-	account->priv->password_key = g_strdup_printf ("exchange://%s/",
+	account->priv->password_key = g_strdup_printf ("exchange://%s/", 
 							account->priv->uri_authority);
 
 	account->priv->username = g_strdup (uri->user);

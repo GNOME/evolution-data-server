@@ -55,7 +55,7 @@ static ExchangeHierarchyWebDAVClass *parent_class = NULL;
 
 static ExchangeAccountFolderResult scan_subtree (ExchangeHierarchy *hier,
 						 EFolder *folder,
-						 gboolean offline);
+						 int mode);
 static void finalize (GObject *object);
 
 static void
@@ -122,7 +122,7 @@ static const char *folder_props[] = {
 static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
+scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 {
 	ExchangeHierarchySomeDAV *hsd = EXCHANGE_HIERARCHY_SOMEDAV (hier);
 	GPtrArray *hrefs;
@@ -141,7 +141,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gboolean offline)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	hsd->priv->scanned = TRUE;
 
-	if (offline)
+	if (mode == OFFLINE_MODE)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 
 	hrefs = exchange_hierarchy_somedav_get_hrefs (hsd);
