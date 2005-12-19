@@ -110,6 +110,11 @@ ExchangeAccountResult exchange_account_set_password 	     (ExchangeAccount  *acc
 
 void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
 
+void		       exchange_account_set_save_password    (ExchangeAccount *account, 
+							      gboolean save_password);
+
+gboolean	       exchange_account_is_save_password     (ExchangeAccount *account);
+
 gboolean	       exchange_account_set_offline          (ExchangeAccount  *account);
 
 gboolean	       exchange_account_set_online           (ExchangeAccount  *account);

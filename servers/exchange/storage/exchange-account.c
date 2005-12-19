@@ -1189,6 +1189,19 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 #endif
 }
 
+void 
+exchange_account_set_save_password (ExchangeAccount *account, gboolean save_password)
+{
+	account->priv->account->source->save_passwd = save_password;
+}
+
+gboolean 
+exchange_account_is_save_password (ExchangeAccount *account)
+{
+	return account->priv->account->source->save_passwd;
+}
+
+
 /**
  * exchange_account_set_offline:
  * @account: an #ExchangeAccount

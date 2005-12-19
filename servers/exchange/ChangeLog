@@ -1,5 +1,12 @@
 2005-12-19  Sushma Rai  <rsushma@novell.com>
 
+	* storage/exchange-account.[ch] (exchange_account_set_save_password):
+	Sets the flag in EAccount to TRUE if user has selected save password.
+	(exchange_account_is_save_password): Returns the save_passwd flag
+	value. Setting this value was missed in evolution 2.4
+
+2005-12-19  Sushma Rai  <rsushma@novell.com>
+
 	* lib/e2k-autoconfig.c (validate): Free E2kAutoconfig structure.
 	Fixes #324483.
 
