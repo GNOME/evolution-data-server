@@ -1,3 +1,8 @@
+2005-12-19  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-autoconfig.c (validate): Free E2kAutoconfig structure.
+	Fixes #324483.
+
 2005-12-17  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c: Using the integer varable 

@@ -300,7 +300,6 @@ e2k_autoconfig_set_password (E2kAutoconfig *ac, const char *password)
 	ac->password = g_strdup (password);
 }
 
-
 static void
 get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 {
@@ -1505,9 +1504,9 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		exchange_params->mailbox  = g_strdup (mailbox);
 		exchange_params->owa_path = g_strdup_printf ("%s%s", "/", path);
 		g_free (path);
-		exchange_params->host = ac->pf_server;
+		exchange_params->host = g_strdup (ac->pf_server);
 		if (ac->gc_server) 
-			exchange_params->ad_server = ac->gc_server;
+			exchange_params->ad_server = g_strdup (ac->gc_server);
 		exchange_params->is_ntlm = ac->saw_ntlm;
 
 		valid = TRUE;
@@ -1612,7 +1611,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		}
 	}
 
-
+	e2k_autoconfig_free (ac);
 	return valid;
 }
 
