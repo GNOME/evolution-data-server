@@ -68,6 +68,9 @@ reauthenticate (EGwConnection *cnc)
 	char *session = NULL;
 	
 	priv = cnc->priv;
+	if (!priv)
+		return E_GW_CONNECTION_STATUS_INVALID_CONNECTION;
+
 	g_mutex_lock (priv->reauth_mutex);
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getCategoryListRequest");
 	e_gw_message_write_footer (msg);

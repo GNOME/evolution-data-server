@@ -1,3 +1,7 @@
+2005-12-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* e-gw-connection.c: (reauthenticate): return if priv is NULL
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* e-gw-connection.c (e_gw_connection_dispose): Guard agsinst
