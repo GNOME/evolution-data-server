@@ -1662,6 +1662,8 @@ prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButt
 
 	index = gtk_entry_layout_index_to_text_index (GTK_ENTRY (name_selector_entry), index);
 	destination = find_destination_at_position (name_selector_entry, index);
+	/* FIXME: Add this to a private variable, in ENameSelectorEntry Class*/
+	g_object_set_data ((GObject *)name_selector_entry, "index", GINT_TO_POINTER(index));
 
 	if (!destination || !e_destination_get_contact (destination))
 		return FALSE;
@@ -1696,6 +1698,33 @@ static void
 editor_closed_cb (GtkObject *editor, gpointer data)
 {
 	g_object_unref (editor);
+}
+
+static void
+popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+{
+	const char *email_list, *text;
+	EDestination *destination = name_selector_entry->popup_destination;
+	int position, start, end;
+
+ 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
+	
+	email_list = e_destination_get_address(destination);
+ 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));	
+ 	get_range_at_position (text, position, &start, &end);
+
+	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), start, end);
+
+	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
+	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), email_list, -1, &start);
+
+	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+	clear_completion_model (name_selector_entry);
+	generate_attribute_list (name_selector_entry);
+
 }
 
 static void
@@ -1781,6 +1810,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	GList        *l;
 	gint          i;
 	char 	     *edit_label;
+	gboolean      is_list;
 
 	destination = name_selector_entry->popup_destination;
 	if (!destination)
@@ -1820,6 +1850,26 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	/* Separator */
 
 	if (email_list) {
+		menu_item = gtk_separator_menu_item_new ();
+		gtk_widget_show (menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+	}
+
+	/* Expand a list inline */
+
+	is_list = e_contact_get (contact, E_CONTACT_IS_LIST) ? TRUE : FALSE;
+
+	if (is_list) {
+		/* To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List*/
+		edit_label = g_strdup_printf (_("E_xpand %s Inline"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS)); 
+		menu_item = gtk_menu_item_new_with_mnemonic (edit_label);
+		g_free (edit_label);
+		gtk_widget_show (menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_inline_expand),
+					  name_selector_entry);
+
+		/* Separator */
 		menu_item = gtk_separator_menu_item_new ();
 		gtk_widget_show (menu_item);
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);

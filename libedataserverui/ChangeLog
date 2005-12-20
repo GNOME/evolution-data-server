@@ -1,3 +1,11 @@
+2005-12-20  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fixes bug #238979
+
+	* e-name-selector-entry.c: (prepare_popup_destination),
+	(popup_activate_inline_expand), (populate_popup): Added code to 
+	expand for Contact Lists inline for composer.
+
 2005-12-15  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-destination-store.c: (find_destination_by_email),
