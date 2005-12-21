@@ -145,6 +145,7 @@ add_folder_esource (ExchangeAccount *account,
 				if (mode == OFFLINE_MODE) 
 					e_source_set_property (source, "offline_sync", "1");
 			}
+			e_source_list_sync (source_list, NULL);
 		}
 	}
 

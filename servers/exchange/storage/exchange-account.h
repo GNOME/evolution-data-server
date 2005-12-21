@@ -90,6 +90,8 @@ char                  *exchange_account_get_foreign_uri      (ExchangeAccount  *
 							      E2kGlobalCatalogEntry *entry,
 							      const char       *std_uri_prop);
 
+char 		      *exchange_account_get_authtype 	     (ExchangeAccount *account);
+
 E2kContext            *exchange_account_connect              (ExchangeAccount  *acct,
 							      const char *pword,
 							      ExchangeAccountResult *result);

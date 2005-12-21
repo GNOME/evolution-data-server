@@ -1,3 +1,12 @@
+2005-12-21  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-esource.c (add_folder_esource): Calling
+	e_source_list_sync() after updating the offline status of the existing 
+	source.
+	
+	* storage/exchange-account.h: Exposing exchange_account_get_authtype(),
+	which is now used from exchange-operations plugin.
+
 2005-12-19  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.[ch] (exchange_account_set_save_password):
