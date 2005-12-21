@@ -2332,8 +2332,18 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		}
 		
 		if (!icalcomponent_get_uid (subcomp)) {
-			status = GNOME_Evolution_Calendar_InvalidObject;
-			goto error;
+			if (toplevel_method == ICAL_METHOD_PUBLISH) {
+
+				char *new_uid = NULL;
+
+				new_uid = e_cal_component_gen_uid ();
+				icalcomponent_set_uid (subcomp, new_uid);
+				g_free (new_uid);
+			} else {
+				status = GNOME_Evolution_Calendar_InvalidObject;
+				goto error;
+			}
+			
 		}
 		
 		comps = g_list_prepend (comps, subcomp);
