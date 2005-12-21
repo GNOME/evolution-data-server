@@ -1,3 +1,13 @@
+2005-12-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Committing for Damien Carbery <damien.carbery@sun.com>
+	
+	Fixes #310504
+	* backends/file/e-cal-backend-file-events.c:
+	* backends/file/e-cal-backend-file-todos.c: Added a 
+	char element since zero sized structs broke the build
+	in solaris.
+
 2005-12-14  Chenthill Palanisamy <pchenthill@novell.com>
 	
 	* libecal/e-cal.c (process_detached_instances): Check
