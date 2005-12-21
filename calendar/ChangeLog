@@ -1,6 +1,14 @@
 2005-12-21  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Committing for Damien Carbery <damien.carbery@sun.com>
+
+	Fixes #310734
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component): Corrected the illegal cast.
+
+2005-12-21  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Committing for Damien Carbery <damien.carbery@sun.com>
 	
 	Fixes #310504
 	* backends/file/e-cal-backend-file-events.c:
