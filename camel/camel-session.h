@@ -68,6 +68,7 @@ struct _CamelSession
 
 	gboolean online:1;
 	gboolean check_junk:1;
+	gboolean network_state:1;
 };
 
 typedef struct _CamelSessionThreadOps CamelSessionThreadOps;
@@ -193,7 +194,8 @@ void *camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps 
 void camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg);
 int camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags);
 void camel_session_thread_wait(CamelSession *session, int id);
-
+gboolean camel_session_get_network_state (CamelSession *session);
+void camel_session_set_network_state (CamelSession *session, gboolean network_state);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

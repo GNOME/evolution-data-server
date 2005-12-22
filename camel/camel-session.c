@@ -68,6 +68,7 @@ static void
 camel_session_init (CamelSession *session)
 {
 	session->online = TRUE;
+	session->network_state = TRUE;
 	session->priv = g_malloc0(sizeof(*session->priv));
 	
 	session->priv->lock = g_mutex_new();
@@ -678,4 +679,20 @@ camel_session_set_check_junk (CamelSession *session, gboolean check_junk)
 	g_assert(CAMEL_IS_SESSION(session));
 
 	session->check_junk = check_junk;
+}
+
+gboolean
+camel_session_get_network_state (CamelSession *session)
+{
+	g_return_if_fail (CAMEL_IS_SESSION(session));
+	
+	return session->network_state;
+}
+
+void
+camel_session_set_network_state (CamelSession *session, gboolean network_state)
+{
+	g_return_if_fail (CAMEL_IS_SESSION(session));
+	
+	session->network_state = network_state;
 }

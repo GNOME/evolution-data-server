@@ -1,3 +1,20 @@
+2005-12-22  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* Network Manager Support
+	
+	* camel-session.[h,c]: Add a gboolean network_state
+	which the shell uses to set the current network state.
+	Add new api's camel_session_get_network_state and
+	camel_session_set_network_state.
+	
+	* camel-offline-folder.c: If network down then dont 
+	sync folders while going offline and send clean as FALSE
+	to camel_service_disconnect.
+	
+	* camel-disco-folder.c: If network down then dont 
+	sync folders while going offline and send clean as FALSE
+	to camel_service_disconnect.
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel-filter-driver.c: Use gstdio wrappers. Use
