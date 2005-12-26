@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-21 06:04+0100\n"
-"PO-Revision-Date: 2005-12-21 10:49+0530\n"
+"POT-Creation-Date: 2005-12-26 05:46+0100\n"
+"PO-Revision-Date: 2005-12-26 17:05+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1325,7 +1326,7 @@ msgstr "ઓફલાઈન સ્થિતિ માટે નવા સંદ�
 msgid "Preparing folder '%s' for offline"
 msgstr "ફોલ્ડર '%s' ને ઓફલાઈન માટે તૈયાર કરી રહ્યા છીએ"
 
-#: ../camel/camel-disco-store.c:395
+#: ../camel/camel-disco-store.c:401
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1252
 #: ../camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
@@ -1789,7 +1790,7 @@ msgstr "%s લાવી શક્યા નહિં: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s લાવી શક્યા નહિં: મોડ્યુલમાં કોઈ પ્રારંભિક કોડ નથી."
 
-#: ../camel/camel-provider.c:377 ../camel/camel-session.c:164
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:165
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "પ્રોટોકોલ `%s' માટે કોઈ પૂરો પાડનાર ઉપલબ્ધ નથી"
@@ -2035,7 +2036,7 @@ msgstr "URL '%s' ને યજમાન ભાગ જરુરી છે"
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' ને પથ ભાગ જરુરી છે"
 
-#: ../camel/camel-session.c:290
+#: ../camel/camel-session.c:291
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -3463,11 +3464,9 @@ msgstr "સ્થાનિય રીતે મળી ગયું"
 
 #: ../camel/providers/local/camel-local-provider.c:73
 msgid ""
-"For retrieving (moving) local mail from standard mbox formated spools into "
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
-msgstr ""
-"પ્રમાણભૂત mbox બંધારણવાળી સ્પુલને ઈવોલ્યુશન દ્વારા વ્યવસ્થા કરાયેલ ફોલ્ડરોમાંથી સ્થાનિક મેઈલ "
-"મેળવવા માટે."
+msgstr "પ્રમાણભૂત mbox-બંધારણીય હરોળોમાંથી સ્થાનિક મેઈલ ઈવોલ્યુશન દ્વારા વ્યવસ્થાપિત ફોલ્ડરમાં પુનઃપ્રાપ્ત કરવા (ખસેડવા) માટે."
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
