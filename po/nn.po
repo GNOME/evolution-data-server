@@ -3,20 +3,21 @@
 # Norwegian (Nynorsk) translation of Evolution
 # Copyright (C) 2001-2002 Roy-Magne Mo, 2003 Åsmund Skjæveland
 # Roy-Magne Mo <rmo@sunnmore.net>, 2001-2002.
-# Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003, 2004, 2005.
+# Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003, 2004, 2005, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.nn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-12-30 22:18+0100\n"
-"PO-Revision-Date: 2005-12-31 13:00+0100\n"
-"Last-Translator: \n"
-"Language-Team: Norwegian Nynorsk <en@li.org>\n"
+"PO-Revision-Date: 2006-01-01 17:03+0100\n"
+"Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.10.2\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
@@ -177,7 +178,7 @@ msgstr "Unikt ID"
 
 #: ../addressbook/libebook/e-contact.c:109
 msgid "File Under"
-msgstr "Fil under"
+msgstr "Arkiver under"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -2700,7 +2701,7 @@ msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
 msgid "For accessing Novell GroupWise servers"
-msgstr "For å kopla til Novell Groupwise-tenarar"
+msgstr "For å kopla til Novell GroupWise-tenarar"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
@@ -3926,7 +3927,7 @@ msgstr "Spool-mapper kan ikkje få nytt namn"
 
 #: ../camel/providers/local/camel-spool-store.c:234
 msgid "Spool folders cannot be deleted"
-msgstr "Spool-mapper kan ikkje slettat"
+msgstr "Spool-mapper kan ikkje slettast"
 
 #: ../camel/providers/local/camel-spool-summary.c:177
 #: ../camel/providers/local/camel-spool-summary.c:187
@@ -4755,7 +4756,7 @@ msgstr "%H.%M.%S"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1497 ../libedataserver/e-time-utils.c:1604
 msgid "%I:%M %p"
-msgstr "%I.%M"
+msgstr "%H.%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
