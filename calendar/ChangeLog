@@ -1,3 +1,12 @@
+2006-01-02  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Reviewed by Harish Krishnaswamy  <kharish@novell.com>
+
+	Fixes #325498
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_finalize): Remove the source
+	from the timeout loop. 
+
 2005-11-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Reviewed by Harish Krishnaswamy  <kharish@novell.com>
