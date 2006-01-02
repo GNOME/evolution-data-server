@@ -129,6 +129,11 @@ e_cal_backend_http_finalize (GObject *object)
 		priv->soup_session = NULL;
 	}
 
+	if (priv->reload_timeout_id) {
+		g_source_remove (priv->reload_timeout_id);
+		priv->reload_timeout_id = 0;
+	}
+
 	g_free (priv);
 	cbhttp->priv = NULL;
 
