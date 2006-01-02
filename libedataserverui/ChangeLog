@@ -1,3 +1,10 @@
+2006-01-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-name-selector-entry.c (popup_activate_list),
+	(destination_set_list), (destination_set_email), (populate_popup):
+	Added code to show contact/list email addresses in radio/check button
+	respectively for selecting/deselecting preferred email addresses.
+
 2005-12-20  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fixes bug #238979

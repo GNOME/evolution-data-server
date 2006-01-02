@@ -1,3 +1,12 @@
+2006-01-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* libebook/e-destination.c (e_destination_init),
+	(e_destination_copy), (e_destination_set_contact),
+	(e_destination_is_ignored), (e_destination_set_ignored),
+	(e_destination_get_address): Added functions to set/unset a email in a
+	list as ignored.
+	* libebook/e-destination.h:
+
 2005-12-16  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	* libebook/e-name-western.c: (e_name_western_reorder_asshole):

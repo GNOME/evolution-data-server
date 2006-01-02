@@ -63,6 +63,7 @@ struct _EDestinationPrivate {
 	char *email;
 	char *addr;
 	char *textrep;
+	gboolean ignored;
 
 	GList *list_dests;
 
@@ -154,6 +155,7 @@ e_destination_init (EDestination *dest)
 	dest->priv = g_new0 (struct _EDestinationPrivate, 1);
 
 	dest->priv->auto_recipient = FALSE;
+	dest->priv->ignored = FALSE;
 }
 
 GType
@@ -217,6 +219,7 @@ e_destination_copy (const EDestination *dest)
         new_dest->priv->email              = g_strdup (dest->priv->email);
         new_dest->priv->addr               = g_strdup (dest->priv->addr);
         new_dest->priv->email_num          = dest->priv->email_num;
+        new_dest->priv->ignored            = dest->priv->ignored;
 
 	if (dest->priv->contact)
 		new_dest->priv->contact = g_object_ref (dest->priv->contact);
@@ -377,7 +380,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 
-	if (dest->priv->contact != contact || dest->priv->email_num != email_num) {
+	if (dest->priv->contact != contact ) {
 		g_object_ref (contact);
 
 		e_destination_clear (dest);
@@ -387,6 +390,8 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 
 		dest->priv->email_num = email_num;
+
+		dest->priv->ignored = FALSE;
 
 		/* handle the mailing list case */
 		if (e_contact_get (dest->priv->contact, E_CONTACT_IS_LIST)) {
@@ -439,6 +444,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 					if (name) e_destination_set_name (list_dest, name);
 					if (email_addr) e_destination_set_email (list_dest, email_addr);
 					e_destination_set_html_mail_pref (list_dest, html_pref);
+					list_dest->priv->ignored = FALSE;
 
 					dest->priv->list_dests = g_list_append (dest->priv->list_dests, list_dest);
 				}
@@ -453,7 +459,21 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 		}
 
 		g_signal_emit (dest, signals [CHANGED], 0);
+	} else if (dest->priv->email_num != email_num){
+		/* Splitting here would help the contact lists not rebuiding, so that it remembers ignored values */
+		g_object_ref (contact);
+
+		e_destination_clear (dest);
+
+		dest->priv->contact = contact;
+
+		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
+
+		dest->priv->email_num = email_num;
+	
+		g_signal_emit (dest, signals [CHANGED], 0);		
 	}
+	
 }
 
 /**
@@ -770,6 +790,18 @@ e_destination_get_name (const EDestination *dest)
 	return priv->name;
 }
 
+gboolean
+e_destination_is_ignored (const EDestination *dest)
+{
+	return dest->priv->ignored;
+}
+
+void
+e_destination_set_ignored (EDestination *dest, gboolean ignored)
+{
+	dest->priv->ignored = ignored;
+}
+
 /**
  * e_destination_get_email:
  * @dest: an #EDestination
@@ -850,7 +882,7 @@ e_destination_get_address (const EDestination *dest)
 			while (iter) {
 				EDestination *list_dest = E_DESTINATION (iter->data);
 				
-				if (!e_destination_empty (list_dest)) {
+				if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
 					const char *name, *email;
 					name = e_destination_get_name (list_dest);
 					email = e_destination_get_email (list_dest);

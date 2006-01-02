@@ -28,6 +28,7 @@
 #include <gtk/gtkcelllayout.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkradiomenuitem.h>
 #include <gtk/gtkseparatormenuitem.h>
 #include <glib/gi18n-lib.h>
 
@@ -1801,16 +1802,56 @@ popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_i
 }
 
 static void
+popup_activate_list (EDestination *destination, GtkWidget *item)
+{
+	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
+	
+	e_destination_set_ignored (destination, !status);	
+}
+
+static void
+destination_set_list (GtkWidget *item, EDestination *destination)
+{
+	EContact *contact;
+	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
+
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+	
+	e_destination_set_ignored (destination, !status);
+}
+
+static void
+destination_set_email (GtkWidget *item, EDestination *destination)
+{
+	int email_num;
+	EContact *contact;
+
+ 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
+		return;
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+
+	email_num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (item), "order"));
+	e_destination_set_contact (destination, contact, email_num);
+}
+
+static void
 populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 {
 	EDestination *destination;
 	EContact     *contact;
 	GtkWidget    *menu_item;
-	GList        *email_list;
+	GList        *email_list=NULL;
 	GList        *l;
 	gint          i;
 	char 	     *edit_label;
+	int 	      email_num, len;
+	GSList 	     *group = NULL;
 	gboolean      is_list;
+	gboolean      show_menu = FALSE;
 
 	destination = name_selector_entry->popup_destination;
 	if (!destination)
@@ -1827,38 +1868,80 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	menu_item = gtk_separator_menu_item_new ();
 	gtk_widget_show (menu_item);
 	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+	email_num = e_destination_get_email_num (destination);
 
 	/* Addresses */
+	is_list = e_contact_get (contact, E_CONTACT_IS_LIST) ? TRUE : FALSE;
+	if (is_list) {
+		const GList *dests = e_destination_list_get_dests (destination);
+		GList *iter;
+		int len = g_list_length ((GList *)dests);
 
-	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		for (iter = (GList *)dests; iter; iter = iter->next) {
+			EDestination *dest = (EDestination *) iter->data;
+			const char *email = e_destination_get_email (dest);
+			
+			if (!email || *email == '\0')
+				continue;	
 
-	for (l = email_list, i = 0; l; l = g_list_next (l), i++) {
-		gchar *email = l->data;
+			if (len > 1) {
+				menu_item = gtk_check_menu_item_new_with_label (email);
+				g_signal_connect (menu_item, "toggled", G_CALLBACK (destination_set_list), dest);				
+			} else {
+				menu_item = gtk_menu_item_new_with_label (email);
+			}
+			
+			gtk_widget_show (menu_item);
+			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+			show_menu = TRUE;
 
-		if (!email || *email == '\0')
-			continue;
+			if ( len > 1 ) {
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored(dest));
+				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_list),
+							  dest);	
+			}
+		}
+		
+	} else {
+		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		len = g_list_length (email_list);
 
-		menu_item = gtk_menu_item_new_with_label (email);
-		gtk_widget_show (menu_item);
-		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+		for (l = email_list, i = 0; l; l = g_list_next (l), i++) {
+			gchar *email = l->data;
 
-		g_object_set_data (G_OBJECT (menu_item), "order", GINT_TO_POINTER (i));
-		g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_email),
-					  name_selector_entry);
+			if (!email || *email == '\0')
+				continue;
+		
+			if (len > 1) {
+				menu_item = gtk_radio_menu_item_new_with_label (group, email);
+				group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (menu_item));
+				g_signal_connect (menu_item, "toggled", G_CALLBACK (destination_set_email), destination);
+			} else {
+				menu_item = gtk_menu_item_new_with_label (email);			
+			}
+			
+			gtk_widget_show (menu_item);
+			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+			show_menu = TRUE;
+			g_object_set_data (G_OBJECT (menu_item), "order", GINT_TO_POINTER (i));			
+
+			if ( i == email_num && len > 1 ) {
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
+				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_email),
+							  name_selector_entry);
+			}
+		}
 	}
 
 	/* Separator */
 
-	if (email_list) {
+	if (show_menu) {
 		menu_item = gtk_separator_menu_item_new ();
 		gtk_widget_show (menu_item);
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 	}
 
 	/* Expand a list inline */
-
-	is_list = e_contact_get (contact, E_CONTACT_IS_LIST) ? TRUE : FALSE;
-
 	if (is_list) {
 		/* To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List*/
 		edit_label = g_strdup_printf (_("E_xpand %s Inline"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS)); 
