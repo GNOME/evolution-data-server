@@ -1,3 +1,39 @@
+Evolution-Data-Server 1.5.4, 2006-01-02
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#323106 - IMAP drawers with non-ASCII UTF-8 names do not work (Tor Lillqvist)
+	#317794 - Groupwise mail folder not visible (Parthasarathi)
+	#324483 - Memory leak in Exchange connector (Sushma)
+	#305006 - Fixed vCalendar file import without UID (Chenthill)
+	#267330 - Fixed a crash/hang while accepting exchange meeting invititation (Chenthill)
+	#324009 - Hang in Evolution Calendar (Chenthill)
+	#317411 - Fixed Evolution crash while synchronizing with palm device. (Varadhan)
+	#238979 - Added Support to expand contact lists inline in name selector entry
+	
+Other Fixes :
+
+	- Added option to select emails in contacts/lists in name selector
+	  entry (Srinivasa Ragavan)
+	- Modifications to use gstdio wrappers (Tor Lillqvist)
+	- Exchange fixes (Sushma)
+	- Network Manager Support (Shreyas)
+	- Win32 fixes (Tor Lillqvist)
+	
+Updated Translations:
+
+	- en_CA (Adam Weinberger)
+	- es (Francisco Javier F. Serrador)
+	- fi (Ilkka Tuohela)
+	- gl (Ignacio Casal Quinteiro)
+	- gu (Ankit Patel)
+	- ja (Takeshi AIHANA)
+	- nb, no (Kjartan Maraas)
+	- nn (Åsmund Skjæveland)
+	- vi (Clytie Siddall)
+
+
 Evolution-Data-Server 1.5.3, 2005-12-12
 ----------------------------------------
 

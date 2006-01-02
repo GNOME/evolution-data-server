@@ -1,3 +1,9 @@
+2006-01-02  Harish Krishnaswamy  <kharish@novell.com>
+
+	* NEWS, configure.in: Release updates, bump version
+	libtool numbers.
+	***** Release 1.5.4 *****
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-uid.c (e_uid_new): Use g_get_host_name() when
