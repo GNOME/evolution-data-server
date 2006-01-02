@@ -106,6 +106,7 @@
 
 	* backends/ldap/e-book-backend-ldap.c: Added a mutext for ldap
 	connection handler, so that it is not accessed during ldap_reconnect.
+	Fixes #314846.
 
 2005-09-27  Tor Lillqvist  <tml@novell.com>
 
