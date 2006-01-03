@@ -1,16 +1,16 @@
 # evolution-data-server ja.po.
-# Copyright (C) 2000-2005 Free Software Foundation, Inc.
+# Copyright (C) 2000-2006 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
 # Takuo KITAME <kitame@debian.org>, 2001.
-# Takeshi AIHANA <aihana@gnome.gr.jp>, 2001-2005.
-# 
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2001-2006.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-18 17:11+0900\n"
-"PO-Revision-Date: 2005-12-18 17:09+0900\n"
+"POT-Creation-Date: 2006-01-03 14:44+0900\n"
+"PO-Revision-Date: 2006-01-03 14:39+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -628,7 +628,7 @@ msgid "Book URI"
 msgstr "アドレス帳の URI"
 
 #: ../addressbook/libebook/e-contact.c:1238
-#: ../addressbook/libebook/e-destination.c:751
+#: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
@@ -696,7 +696,7 @@ msgstr "差分を取得するためのスレッドを生成できませんでし
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1109
-#: ../calendar/backends/http/e-cal-backend-http.c:504
+#: ../calendar/backends/http/e-cal-backend-http.c:509
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
@@ -705,15 +705,15 @@ msgstr "キャッシュ・ファイルを生成できませんでした"
 msgid "Could not create thread for populating cache"
 msgstr "キャッシュを生成するためのスレッドを生成できませんでした"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:248
+#: ../calendar/backends/http/e-cal-backend-http.c:253
 msgid "Redirected to Invalid URI"
 msgstr "不正な URI へのリダイレクトです"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:272
+#: ../calendar/backends/http/e-cal-backend-http.c:277
 msgid "Bad file format."
 msgstr "ファイルのフォ−マットが間違っています。"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:278
+#: ../calendar/backends/http/e-cal-backend-http.c:283
 msgid "Not a calendar."
 msgstr "カレンダではありません。"
 
@@ -1082,11 +1082,11 @@ msgstr "リポジトリはオフラインです"
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: ../calendar/libecal/e-cal.c:5111 ../servers/groupwise/e-gw-connection.c:169
+#: ../calendar/libecal/e-cal.c:5111 ../servers/groupwise/e-gw-connection.c:172
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: ../calendar/libecal/e-cal.c:5113 ../servers/groupwise/e-gw-connection.c:163
+#: ../calendar/libecal/e-cal.c:5113 ../servers/groupwise/e-gw-connection.c:166
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
@@ -1103,7 +1103,7 @@ msgstr "URL は既に読み込み済みです"
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: ../calendar/libecal/e-cal.c:5121 ../servers/groupwise/e-gw-connection.c:171
+#: ../calendar/libecal/e-cal.c:5121 ../servers/groupwise/e-gw-connection.c:174
 msgid "Unknown User"
 msgstr "ユーザを特定できません"
 
@@ -1141,7 +1141,7 @@ msgstr "CORBA 例外が発生しました"
 #: ../camel/providers/pop3/camel-pop3-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:177
+#: ../servers/groupwise/e-gw-connection.c:180
 msgid "Unknown error"
 msgstr "エラーを特定できません"
 
@@ -1325,7 +1325,7 @@ msgstr "オフライン・モードでの新しいメッセージのダウンロ
 msgid "Preparing folder '%s' for offline"
 msgstr "オフライン用の準備フォルダ '%s'"
 
-#: ../camel/camel-disco-store.c:395
+#: ../camel/camel-disco-store.c:401
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1252
 #: ../camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
@@ -1796,7 +1796,7 @@ msgstr "%s を読み込めませんでした: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s を読み込めませんでした: モジュールのコードが初期化されていません。"
 
-#: ../camel/camel-provider.c:377 ../camel/camel-session.c:164
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:165
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "プロトコル '%s' を利用できるプロバイダはありません"
@@ -2052,7 +2052,7 @@ msgstr "URL '%s' はホスト・コンポーネントが必要です"
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' はパス・コンポーネントが必要です"
 
-#: ../camel/camel-session.c:290
+#: ../camel/camel-session.c:291
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -3513,11 +3513,11 @@ msgstr "ローカルの配信"
 
 #: ../camel/providers/local/camel-local-provider.c:73
 msgid ""
-"For retrieving (moving) local mail from standard mbox formated spools into "
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"ローカル・メールを標準 mbox 型式スプールから Evolution が管理するフォルダに配"
-"信 (移動) します"
+"ローカル・メールを収集して標準 mbox 形式のスプールから Evolution が管理する"
+"フォルダに移動します"
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -4915,8 +4915,14 @@ msgstr "検索"
 msgid "_Search:"
 msgstr "検索(_S):"
 
+#. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
+#: ../libedataserverui/e-name-selector-entry.c:1947
+#, c-format
+msgid "E_xpand %s Inline"
+msgstr "%s をインラインで展開する(_X)"
+
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1830
+#: ../libedataserverui/e-name-selector-entry.c:1963
 #, c-format
 msgid "_Edit %s"
 msgstr "%s の編集(_E)"
@@ -4938,13 +4944,13 @@ msgstr "転送先の選択"
 msgid "_Destination"
 msgstr "転送先(_D)"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1631
+#: ../servers/exchange/lib/e2k-autoconfig.c:1630
 #: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s のパスワードを入力して下さい"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1632
+#: ../servers/exchange/lib/e2k-autoconfig.c:1631
 #: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "パスワードの入力"
@@ -5062,21 +5068,21 @@ msgstr "この操作はオフライン・モードでは利用できません。
 msgid "%s's Folders"
 msgstr "%s のフォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1281
+#: ../servers/exchange/storage/exchange-account.c:1294
 msgid "Personal Folders"
 msgstr "個人フォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1295
+#: ../servers/exchange/storage/exchange-account.c:1308
 msgid "Favorite Public Folders"
 msgstr "お気に入りのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1312
+#: ../servers/exchange/storage/exchange-account.c:1325
 msgid "All Public Folders"
 msgstr "全てのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1326
+#: ../servers/exchange/storage/exchange-account.c:1339
 msgid "Global Address List"
 msgstr "グローバルな住所の一覧"
 
@@ -5108,19 +5114,19 @@ msgstr "アイテムを送信しました"
 msgid "Tasks"
 msgstr "タスク"
 
-#: ../servers/groupwise/e-gw-connection.c:161
+#: ../servers/groupwise/e-gw-connection.c:164
 msgid "Invalid connection"
 msgstr "接続が不正です"
 
-#: ../servers/groupwise/e-gw-connection.c:165
+#: ../servers/groupwise/e-gw-connection.c:168
 msgid "Invalid response from server"
 msgstr "サーバから不正な応答です"
 
-#: ../servers/groupwise/e-gw-connection.c:167
+#: ../servers/groupwise/e-gw-connection.c:170
 msgid "No response from the server"
 msgstr "サーバから応答がありません"
 
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../servers/groupwise/e-gw-connection.c:176
 msgid "Bad parameter"
 msgstr "パラメータが無効です"
 
