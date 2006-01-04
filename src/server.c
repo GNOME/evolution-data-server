@@ -299,7 +299,8 @@ dump_backends (int signal)
 static const char *
 sysconfdir (void)
 {
-	return e_util_replace_prefix (e_util_get_prefix (),
+	return e_util_replace_prefix (PREFIX,
+				      e_util_get_prefix (),
 				      SYSCONFDIR);
 }
 #undef SYSCONFDIR
@@ -308,7 +309,8 @@ sysconfdir (void)
 static const char *
 datadir (void)
 {
-	return e_util_replace_prefix (e_util_get_prefix (),
+	return e_util_replace_prefix (PREFIX,
+				      e_util_get_prefix (),
 				      DATADIR);
 }
 #undef DATADIR
@@ -317,7 +319,8 @@ datadir (void)
 static const char *
 libdir (void)
 {
-	return e_util_replace_prefix (e_util_get_prefix (),
+	return e_util_replace_prefix (PREFIX,
+				      e_util_get_prefix (),
 				      LIBDIR);
 }
 #undef LIBDIR

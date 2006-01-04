@@ -55,10 +55,10 @@ setup (void)
                 return;
         }
 
-        localedir = e_util_replace_prefix (e_util_get_cp_prefix (), EVOLUTION_LOCALEDIR);
+        localedir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_cp_prefix (), EVOLUTION_LOCALEDIR);
 
-	libexecdir = e_util_replace_prefix (e_util_get_prefix (), CAMEL_LIBEXECDIR);
-	providerdir = e_util_replace_prefix (e_util_get_prefix (), CAMEL_PROVIDERDIR);
+	libexecdir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_prefix (), CAMEL_LIBEXECDIR);
+	providerdir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_prefix (), CAMEL_PROVIDERDIR);
 
 	G_UNLOCK (mutex);
 }

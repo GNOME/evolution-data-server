@@ -49,7 +49,7 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm);
 const char  *e_util_get_prefix (void) G_GNUC_CONST;
 const char  *e_util_get_cp_prefix (void) G_GNUC_CONST;
 const char  *e_util_get_localedir (void) G_GNUC_CONST;
-char        *e_util_replace_prefix (const char *runtime_prefix, const char *configure_time_path);
+char        *e_util_replace_prefix (const char *configure_time_prefix, const char *runtime_prefix, const char *configure_time_path);
 #endif
 
 G_END_DECLS

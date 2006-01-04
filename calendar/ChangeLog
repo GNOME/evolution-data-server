@@ -1,3 +1,12 @@
+2006-01-04  Tor Lillqvist  <tml@novell.com>
+
+	* backends/weather/e-weather-source-ccf.c (find_station_url):
+	Modify call to e_util_replace_prefix() according to its changed
+	interface.
+
+	* backends/weather/Makefile.am: Need to pass E_DATA_SERVER_PREFIX
+	because of the above.
+
 2006-01-02  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #325498

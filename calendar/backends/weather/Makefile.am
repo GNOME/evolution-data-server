@@ -10,6 +10,7 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar/libical/src/libical	\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"		\
 	-DWEATHER_DATADIR=\""$(weatherdatadir)"\"	\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)

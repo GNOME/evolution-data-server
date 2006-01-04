@@ -1,3 +1,11 @@
+2006-01-04  Tor Lillqvist  <tml@novell.com>
+
+	* camel-win32.c (setup): Modify calls to e_util_replace_prefix()
+	according to its changed interface.
+
+	* Makefile.am (INCLUDES): Need to pass also E_DATA_SERVER_PREFIX
+	to the compilation because of the above.
+
 2005-12-22  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* Network Manager Support

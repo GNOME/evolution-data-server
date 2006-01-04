@@ -711,17 +711,34 @@ DllMain (HINSTANCE hinstDLL,
 }
 
 char *
-e_util_replace_prefix (const char *runtime_prefix,
+e_util_replace_prefix (const char *configure_time_prefix,
+		       const char *runtime_prefix,
 		       const char *configure_time_path)
 {
+	char *c_t_prefix_slash = g_strconcat (configure_time_prefix, "/",
+					      NULL);
+	char *retval;
+
         if (runtime_prefix &&
-            strncmp (configure_time_path, E_DATA_SERVER_PREFIX "/",
-                     strlen (E_DATA_SERVER_PREFIX) + 1) == 0) {
-                return g_strconcat (runtime_prefix,
-                                    configure_time_path + strlen (E_DATA_SERVER_PREFIX),
-                                    NULL);
+            g_str_has_prefix (configure_time_path, c_t_prefix_slash)) {
+                retval = g_strconcat (runtime_prefix,
+				      configure_time_path + strlen (configure_time_prefix),
+				      NULL);
         } else
-                return g_strdup (configure_time_path);
+                retval = g_strdup (configure_time_path);
+
+	g_free (c_t_prefix_slash);
+
+	return retval;
+}
+
+static char *
+replace_prefix (const char *runtime_prefix,
+		const char *configure_time_path)
+{
+	return e_util_replace_prefix (E_DATA_SERVER_PREFIX,
+				      runtime_prefix,
+				      configure_time_path);
 }
 
 static void
@@ -745,10 +762,10 @@ setup (void)
 	g_free (full_pfx);
 	g_free (cp_pfx);
 
-	localedir = e_util_replace_prefix (cp_prefix, EVOLUTION_LOCALEDIR);
-	extensiondir = e_util_replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
-	imagesdir = e_util_replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
-	ui_gladedir = e_util_replace_prefix (prefix, E_DATA_SERVER_UI_GLADEDIR);
+	localedir = replace_prefix (cp_prefix, EVOLUTION_LOCALEDIR);
+	extensiondir = replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
+	imagesdir = replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
+	ui_gladedir = replace_prefix (prefix, E_DATA_SERVER_UI_GLADEDIR);
 
 	G_UNLOCK (mutex);
 }

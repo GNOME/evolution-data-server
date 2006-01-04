@@ -103,7 +103,8 @@ find_station_url (gchar *station, EWeatherSourceCCF *source)
 #ifndef G_OS_WIN32
 	filename = g_strdup (WEATHER_DATADIR "/Locations.xml");
 #else
-	filename = e_util_replace_prefix (e_util_get_prefix (),
+	filename = e_util_replace_prefix (E_DATA_SERVER_PREFIX,
+					  e_util_get_prefix (),
 					  WEATHER_DATADIR "/Locations.xml");
 #endif
 

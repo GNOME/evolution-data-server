@@ -1,3 +1,16 @@
+2006-01-04  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-util.c (e_util_replace_prefix): As this
+	(Win32-only) function is called from evo, too, it needs a third
+	argument, the configure time prefix that it should replace,
+	instead of harcoding e-d-s's one. (Assuming e-d-s and evo are
+	configured with different temporary dirs as prefix, which is the
+	recommended way.)
+
+	* libedataserver/e-util.h: Update declaration correspondingly.
+
+	* src/server.c (libdir): Modify calls correspondingly.
+
 2006-01-02  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Release updates, bump version
