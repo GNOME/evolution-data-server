@@ -1502,8 +1502,17 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						has_boundary = TRUE;
 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "type", "multipart/alternative");
 						if (attach->contentid) {
-							strip_lt_gt ((char **)&attach->contentid, 1, 2);
-							camel_mime_part_set_content_id (part, attach->contentid);
+							gchar **t;
+							//strip_lt_gt ((char **)&attach->contentid, 1, 2);
+							t= g_strsplit_set (attach->contentid, "<>", -1);
+							if (!t[1]) {
+								camel_mime_part_set_content_id (part, attach->contentid);
+								g_print ("|%s\n", attach->contentid);
+							} else {
+								camel_mime_part_set_content_id (part, t[1]);
+								g_print ("|%s\n", t[1]);
+							}
+							g_strfreev (t);
 						}
 					} else if (attach->contentType && 
 						!strcmp (attach->contentType, "application/pgp-signature")) {

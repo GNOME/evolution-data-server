@@ -298,8 +298,15 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype);
 
 	if (cid) {
-		strip_lt_gt ((char **)&cid, 2, 3);
-		attachment->contentid = g_strdup (cid);
+		gchar **t;
+		//strip_lt_gt ((char **)&cid, 2, 3);
+		t = g_strsplit_set (cid,"<>",-1);
+		if (!t[1])
+			attachment->contentid = g_strdup (cid);
+		else 
+			attachment->contentid = g_strdup (t[1]);
+		g_print ("||| %s\n", attachment->contentid);
+		g_strfreev (t);
 	}
 
 	if (filename) {
@@ -423,6 +430,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			const char *disposition, *filename;
 			char *buffer = NULL;
 			char *mime_type = NULL;
+			const char *content_id = NULL;
 			gboolean is_alternative = FALSE;
 			/*
 			 * XXX:
@@ -448,6 +456,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 					disposition = camel_mime_part_get_disposition (temp_part);
 					mime_type = camel_data_wrapper_get_mime_type (temp_dw);
 					cid = camel_mime_part_get_content_id (temp_part);
+					g_print ("%s:%s:%s\n",filename, mime_type, cid);
 					send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, cid, &attach_list);
 					g_free (buffer);
 					g_free (mime_type);
@@ -464,12 +473,15 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);
 			mime_type = camel_data_wrapper_get_mime_type (dw);
+			content_id = camel_mime_part_get_content_id (part);
 
 			if (i == 0 && !strcmp (mime_type, "text/plain") ) {
 				e_gw_item_set_content_type (item, mime_type);
 				e_gw_item_set_message (item, buffer);
-			} else 
-				send_as_attachment (cnc, item, content, buffer, type, dw, filename, NULL, &attach_list);
+			} else {
+				g_print ("%s:%s:%s\n",filename, mime_type, content_id );
+				send_as_attachment (cnc, item, content, buffer, type, dw, filename, content_id, &attach_list);
+			}
 
 			g_free (buffer);
 			g_free (mime_type);
@@ -495,8 +507,10 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		if (!strcmp(content_type, "text/plain")) {
 			e_gw_item_set_content_type (item, content_type);				
 			e_gw_item_set_message (item, buffer);
-		} else
+		} else {
+			g_print ("Only message!!\n");
 			send_as_attachment (cnc, item, content, buffer, type, dw, NULL, NULL, &attach_list);	
+		}
 
 		g_free (buffer);
 		g_free (content_type);
