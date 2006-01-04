@@ -86,7 +86,7 @@ static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem
 static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body);
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
 static void gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex);
-static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item,	CamelException *ex );
+static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
 
 
 #define d(x) x
@@ -566,6 +566,13 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 
 /********************* back to folder functions*************************/
 
+static void 
+groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
+{
+	camel_folder_summary_save (folder->summary);
+	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
+}
+
 static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
@@ -581,8 +588,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	EGwConnection *cnc = cnc_lookup (priv);
 	int count, i;
 
-	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) 
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		groupwise_sync_summary (folder, ex);
 		return;
+	}
 	
 	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
 
@@ -623,7 +632,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				if (diff.changed & CAMEL_MESSAGE_SEEN)
 					read_items = g_list_append (read_items, (char *)uid);
 				if (diff.changed & CAMEL_MESSAGE_DELETED) {
-					/*deleted_items = g_list_append (deleted_items, (char *)uid);*/
 					CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 					status = e_gw_connection_remove_item (cnc, container_id, uid);
 					if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -647,29 +655,19 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		e_gw_connection_mark_read (cnc, read_items);
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 	}
-	if (deleted_items) {
-	/*	status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-		if (status == E_GW_CONNECTION_STATUS_OK) {
-			GList *temp_list = deleted_items;
-			int len = g_list_length (deleted_items);
-			int i;
-			for (i=0 ; i<len ; i++) {
-				camel_folder_summary_remove_uid(folder->summary, (const char *)temp_list->data);
-				camel_data_cache_remove (gw_folder->cache, "cache", (const char *)temp_list->data, ex);
-				temp_list = g_list_next (deleted_items);
-			}
-		}*/
-	}
 
 	if (expunge) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 		status = e_gw_connection_purge_deleted_items (cnc);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
+			g_message ("Purged deleted items in %s", folder->name);
 		}
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 	}
-	
-	camel_folder_summary_save (folder->summary);
+
+	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+	groupwise_sync_summary (folder, ex);
+	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 }
 
 
@@ -1046,7 +1044,6 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 			camel_object_unref (cache_stream);
 			cache_stream = NULL;
 			i++;
-			//g_print ("*** Exists in cache, continuing....%s\n", id);
 			continue;
 		} 
 
@@ -1084,8 +1081,6 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
 			status_flags |= CAMEL_MESSAGE_SEEN;
-		/*if (item_status & E_GW_ITEM_STAT_DELETED)
-		  status_flags |= CAMEL_MESSAGE_DELETED;*/
 		if (item_status & E_GW_ITEM_STAT_REPLIED)
 			status_flags |= CAMEL_MESSAGE_ANSWERED;
 		mi->info.flags |= status_flags;
@@ -1111,10 +1106,12 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
-			g_string_append_printf (str, "%s <%s>",org->display_name, org->email);
 			if (exists)
 				camel_pstring_free(mi->info.from);
-			mi->info.from = camel_pstring_strdup (str->str);
+			if (org->display_name && org->display_name[0])
+				mi->info.from = camel_pstring_strdup (org->display_name);
+			else if (org->email && org->email[0])
+				mi->info.from = camel_pstring_strdup (org->email);
 		}
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
@@ -1162,9 +1159,10 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		if (!exists)
 			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 		
-		if (exists) 
+		if (exists) {
 			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item));
-		else {
+			camel_message_info_free (&mi->info);
+		} else {
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
@@ -1243,10 +1241,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		id = e_gw_item_get_id (item);
 		
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
-		if (mi) {
+		if (mi) 
 			exists = TRUE;
-			camel_message_info_free (&mi->info);
-		}
 
 		if (!exists) {
 			type = e_gw_item_get_item_type (item);
@@ -1269,8 +1265,6 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
 			status_flags |= CAMEL_MESSAGE_SEEN;
-		/*if (item_status & E_GW_ITEM_STAT_DELETED)
-		  status_flags |= CAMEL_MESSAGE_DELETED;*/
 		if (item_status & E_GW_ITEM_STAT_REPLIED)
 			status_flags |= CAMEL_MESSAGE_ANSWERED;
 		mi->info.flags |= status_flags;
@@ -1296,8 +1290,10 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
-			g_string_append_printf (str, "%s <%s>",org->display_name, org->email);
-			mi->info.from = camel_pstring_strdup (str->str);
+			if (org->display_name && org->display_name[0])
+				mi->info.from = camel_pstring_strdup (org->display_name);
+			else if (org->email && org->email[0])
+				mi->info.from = camel_pstring_strdup (org->email);
 		}
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
@@ -1340,9 +1336,10 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 			mi->info.size = e_gw_item_get_mail_size (item);	
 		mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 		
-		if (exists) 
+		if (exists) {
 			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item));
-		else {
+			camel_message_info_free (&mi->info);
+		} else {
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
@@ -1375,6 +1372,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	char *body = NULL;
 	const char *uid = NULL;
 	gboolean is_text_html = FALSE;
+	gboolean is_text_html_embed = FALSE;
 	
 
 	uid = e_gw_item_get_id(item);
@@ -1462,6 +1460,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			CamelMimePart *part;
 			EGwItem *temp_item;
 
+			if (attach->contentid && (is_text_html_embed != TRUE))
+				is_text_html_embed = TRUE;
 			if ( !g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
 			     !g_ascii_strcasecmp (attach->name, "Mime.822"))
 				continue;
@@ -1495,42 +1495,36 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				}
 				if (attachment && (len !=0) ) {
 					part = camel_mime_part_new ();
-					if (attach->contentType) {	
-						if (!strcmp (attach->contentType, "application/pgp-signature")) {
-							camel_mime_part_set_filename(part, g_strdup(attach->name));
-							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
-							has_boundary = TRUE;
-							camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
-						} else if (!strcmp (attach->contentType, "application/pgp-encrypted")) {
-							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
-							has_boundary = TRUE;
-							camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
-						} else if ( !strcmp (attach->name, "encrypted.asc") &&
-								!strcmp (attach->contentType, "application/octet-stream")) {
-							camel_mime_part_set_filename(part, g_strdup(attach->name));
-							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
-							has_boundary = TRUE;
-							camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", "application/pgp-encrypted");
-						} else {
-							camel_mime_part_set_filename(part, g_strdup(attach->name));
-							camel_mime_part_set_content_id (part, attach->contentid);
-							if (is_text_html) 
-								camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/alternative");
-							else if (!has_boundary) {
-								camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
-							}
-						}
-					} else {
+					/*multiparts*/
+					if (is_text_html_embed) {
 						camel_mime_part_set_filename(part, g_strdup(attach->name));
-						camel_mime_part_set_content_id (part, attach->contentid);
-						if (!has_boundary)
-							camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/digest");
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/related");
+						has_boundary = TRUE;
+						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "type", "multipart/alternative");
+						if (attach->contentid) {
+							strip_lt_gt ((char **)&attach->contentid, 1, 2);
+							camel_mime_part_set_content_id (part, attach->contentid);
+						}
+					} else if (attach->contentType && 
+						!strcmp (attach->contentType, "application/pgp-signature")) {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
+						has_boundary = TRUE;
+						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
+					} else if (attach->contentType &&
+						!strcmp (attach->contentType, "application/pgp-encrypted")) {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
+						has_boundary = TRUE;
+						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
 					}
-
 					camel_multipart_set_boundary(multipart, NULL);
 
 					//camel_mime_part_set_filename(part, g_strdup(attach->name));
-					camel_mime_part_set_content(part, attachment, len, attach->contentType);
+					if (attach->contentType)
+						camel_mime_part_set_content(part, attachment, len, attach->contentType);
+					if (!has_boundary)
+						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart),"multipart/digest");
 
 					camel_multipart_add_part (multipart, part);
 
@@ -1561,9 +1555,6 @@ string_cmp(gconstpointer a, gconstpointer b)
 	
 	tmp1 = g_strsplit ((const char *)a, "@", -1);
 	tmp2 = g_strsplit ((const char *)b, "@", -1);
-/*	g_print ("************\n");
-	g_print ("%s\n%s\n",tmp1[0], tmp2[0]);
-	g_print ("************\n");*/
 	ret = strcmp (tmp1[0], tmp2[0]);
 	g_strfreev (tmp1);
 	g_strfreev (tmp2);
@@ -1762,8 +1753,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				break;
 			
 			if (delete_originals)
-				camel_folder_set_message_flags (source, camel_message_info_uid (info),
-								CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+				camel_folder_delete_message(source, camel_message_info_uid (info));
 		}
 
 		CAMEL_SERVICE_UNLOCK (source->parent_store, connect_lock);
@@ -1772,6 +1762,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	
 	index = 0;
 	while (index < uids->len) {
+		int count;
+		count = camel_folder_summary_count (destination->summary);
+
 		if (delete_originals) 
 			status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index], 
 					dest_container_id, source_container_id);
@@ -1779,30 +1772,12 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index], 
 					dest_container_id, NULL);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			const char *old_uid = (const char*)uids->pdata[index];
-			char **tmp;
-			guint32 temp_flags = 0;
-			CamelGroupwiseMessageInfo *src_info = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (source->summary, (const char*)uids->pdata[index]);
-			
-			/* we don't want to blindly copy the info: reset some flags not suitable for destination*/
-			if (!strcmp(source->full_name, JUNK_FOLDER))
-				camel_folder_set_message_flags (source, old_uid, CAMEL_GW_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN, 0);
-			else if (!strcmp(destination->full_name, JUNK_FOLDER))
-				camel_folder_set_message_flags (source, old_uid, CAMEL_MESSAGE_JUNK|CAMEL_GW_MESSAGE_JUNK, CAMEL_GW_MESSAGE_JUNK);
-
-			CamelGroupwiseMessageInfo *dest_info = (CamelGroupwiseMessageInfo *)camel_message_info_clone((CamelMessageInfo *)src_info);
-			tmp = g_strsplit (old_uid, ":", -1);
-			dest_info->info.uid = g_strdup_printf ("%s:%s",tmp[0], dest_container_id);
-			temp_flags = camel_folder_get_message_flags (source, (const char *)uids->pdata[index]);
-			camel_folder_set_message_flags (destination, (const char *)dest_info->info.uid, temp_flags, temp_flags);
-			camel_folder_summary_add (destination->summary, (CamelMessageInfo *)dest_info);
-			//camel_message_info_free(dest_info);
-			g_strfreev (tmp);
-			if (delete_originals) {
-				camel_folder_set_message_flags (source, (const char *)uids->pdata[index],
-						CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
-
-			}
+			if (delete_originals) 
+				camel_folder_delete_message(source, uids->pdata[index]);
+			/* Refresh the destination folder, if its not refreshed already */
+			if (gw_store->current_folder != destination || 
+				camel_folder_summary_count (destination) == count)
+				camel_folder_refresh_info (destination, ex);
 		} else {
 			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
 		}
@@ -1917,7 +1892,7 @@ camel_groupwise_folder_init (gpointer object, gpointer klass)
 
 	folder->folder_flags = CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY | CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 	
-	gw_folder->priv = g_malloc0(sizeof(*gw_folder->priv));
+	gw_folder->priv = g_malloc0 (sizeof(*gw_folder->priv));
 
 #ifdef ENABLE_THREADS
 	gw_folder->priv->search_lock = e_mutex_new(E_MUTEX_SIMPLE);

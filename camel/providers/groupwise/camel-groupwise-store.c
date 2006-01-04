@@ -123,9 +123,6 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	priv->server_name = g_strdup (url->host);
 	priv->user = g_strdup (url->user);
 
-	/*remove the sync option*/
-/*	if (camel_url_get_param ((service->url, "sync_offline") != NULL)
-			camel_url_set_param (service->url, "sync_offline", NULL);*/
 	/*base url*/
 	priv->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
 						       CAMEL_URL_HIDE_PARAMS   |
@@ -262,6 +259,7 @@ check_for_connection (CamelService *service, CamelException *ex)
 	return TRUE;
 
 }
+
 static gboolean
 groupwise_connect (CamelService *service, CamelException *ex)
 {

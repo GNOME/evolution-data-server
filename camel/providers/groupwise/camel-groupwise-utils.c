@@ -284,7 +284,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_t
 }
 
 static void 
-send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, char *buffer, CamelContentType *type, CamelDataWrapper *dw, const char *filename, GSList **attach_list)
+send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, char *buffer, CamelContentType *type, CamelDataWrapper *dw, const char *filename, const char *cid, GSList **attach_list)
 {
 	EGwItemLinkInfo *info = NULL;
 	EGwConnectionStatus status;
@@ -296,6 +296,11 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 	attachment = g_new0 (EGwItemAttachment, 1);
 	attachment->contentType = g_strdup_printf ("%s/%s", type->type, type->subtype);
+
+	if (cid) {
+		strip_lt_gt ((char **)&cid, 2, 3);
+		attachment->contentid = g_strdup (cid);
+	}
 
 	if (filename) {
 		if (!strcmp (attachment->contentType, "application/pgp-signature")) {
@@ -429,6 +434,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 			if (type->subtype && !strcmp (type->subtype, "alternative")) {
 				CamelMimePart *temp_part;
+				const char *cid = NULL;
 				CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
 				temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 				CamelDataWrapper *temp_dw = camel_data_wrapper_new ();
@@ -441,7 +447,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 					filename = camel_mime_part_get_filename (temp_part);
 					disposition = camel_mime_part_get_disposition (temp_part);
 					mime_type = camel_data_wrapper_get_mime_type (temp_dw);
-					send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, &attach_list);
+					cid = camel_mime_part_get_content_id (temp_part);
+					send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, cid, &attach_list);
 					g_free (buffer);
 					g_free (mime_type);
 				}
@@ -462,7 +469,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				e_gw_item_set_content_type (item, mime_type);
 				e_gw_item_set_message (item, buffer);
 			} else 
-				send_as_attachment (cnc, item, content, buffer, type, dw, filename, &attach_list);
+				send_as_attachment (cnc, item, content, buffer, type, dw, filename, NULL, &attach_list);
 
 			g_free (buffer);
 			g_free (mime_type);
@@ -489,7 +496,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			e_gw_item_set_content_type (item, content_type);				
 			e_gw_item_set_message (item, buffer);
 		} else
-			send_as_attachment (cnc, item, content, buffer, type, dw, NULL, &attach_list);	
+			send_as_attachment (cnc, item, content, buffer, type, dw, NULL, NULL, &attach_list);	
 
 		g_free (buffer);
 		g_free (content_type);
@@ -601,3 +608,16 @@ gw_concat ( const char *prefix, const char *suffix)
 		return g_strdup_printf ("%s%c%s", prefix, '/', suffix);
 }
 
+void
+strip_lt_gt (char **string, int s_offset, int e_offset)
+{
+	char *temp = NULL;
+	int len;
+	
+	temp = g_strdup (*string);
+	len = strlen (*string);
+
+	*string = (char *)g_malloc0 (len-1);
+	*string = memcpy(*string, temp+s_offset, len-e_offset);
+	g_free (temp);
+}

@@ -75,4 +75,5 @@ EGwItem *camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMe
 void do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new);
 GSList *add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_type);
 char *gw_concat ( const char *prefix, const char *suffix);
+void strip_lt_gt (char **string, int s_offset, int e_offset);
 #endif

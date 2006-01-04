@@ -1,3 +1,16 @@
+2006-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_sync_summary): saves the summary to the disk
+	(groupwise_sync): remove a lot of junk code
+	(groupwise_folder_item_to_msg): fixes the html with embedded
+	images issue. See bug 320898
+	* camel-groupwise-store.c: remove printfs everywhere
+	* camel-groupwise-utils.c: 
+	(strip_lt_gt): strips the < and > characters based on the
+	given offsets
+
+
 2005-12-14  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 317794
