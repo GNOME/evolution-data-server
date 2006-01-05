@@ -30,3 +30,7 @@ xltmain.sh
 intltool-*
 *.pc
 INSTALL
+iconv-detect.h
+depcomp
+evolution-data-server-zip
+gtk-doc.make
