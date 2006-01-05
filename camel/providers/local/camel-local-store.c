@@ -305,8 +305,8 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 static int xrename(const char *oldp, const char *newp, const char *prefix, const char *suffix, int missingok, CamelException *ex)
 {
 	struct stat st;
-	char *old = g_strconcat(prefix, oldp, suffix, 0);
-	char *new = g_strconcat(prefix, newp, suffix, 0);
+	char *old = g_strconcat(prefix, oldp, suffix, NULL);
+	char *new = g_strconcat(prefix, newp, suffix, NULL);
 	int ret = -1;
 	int err = 0;
 

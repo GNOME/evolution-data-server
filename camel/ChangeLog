@@ -1,3 +1,12 @@
+2006-01-05  Kjartan Maraas,,23491770  <kmaraas@gnome.org>
+
+	* camel-session.c: (camel_session_get_network_state): Return
+	stuff from this non-void function.
+	* providers/imap4/camel-imap4-store.c: (connect_to_server):
+	Move some vars inside #ifdef HAVE_SSL
+	* providers/local/camel-local-store.c: (xrename): Use NULL
+	not 0 as the last parameter to g_strconcat().
+
 2006-01-04  Tor Lillqvist  <tml@novell.com>
 
 	* camel-win32.c (setup): Modify calls to e_util_replace_prefix()

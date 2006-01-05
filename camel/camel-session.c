@@ -684,7 +684,7 @@ camel_session_set_check_junk (CamelSession *session, gboolean check_junk)
 gboolean
 camel_session_get_network_state (CamelSession *session)
 {
-	g_return_if_fail (CAMEL_IS_SESSION(session));
+	g_return_val_if_fail (CAMEL_IS_SESSION(session), FALSE);
 	
 	return session->network_state;
 }

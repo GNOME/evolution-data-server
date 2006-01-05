@@ -311,8 +311,11 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 {
 	CamelService *service = engine->service;
 	CamelStream *tcp_stream;
+#ifdef HAVE_SSL
 	CamelIMAP4Command *ic;
-	int id, ret;
+	int id;
+#endif
+	int ret;
 	
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
