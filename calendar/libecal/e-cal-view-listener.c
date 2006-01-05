@@ -97,7 +97,7 @@ build_object_list (const GNOME_Evolution_Calendar_stringlist *seq)
 }
 
 static GList *
-build_id_list (const GNOME_Evolution_Calendar_CalObjUIDSeq *seq)
+build_id_list (const GNOME_Evolution_Calendar_CalObjIDSeq *seq)
 {
 	GList *list;
 	int i;

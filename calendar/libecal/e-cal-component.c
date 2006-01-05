@@ -1429,11 +1429,11 @@ e_cal_component_get_id (ECalComponent *comp)
 	ECalComponentPrivate *priv;
 	ECalComponentId *id = NULL;
 
-	g_return_if_fail (comp != NULL);
-	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+	g_return_val_if_fail (comp != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	priv = comp->priv;
-	g_return_if_fail (priv->icalcomp != NULL);
+	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
 	
 	id = g_new0 (ECalComponentId, 1);
 	id->uid = g_strdup (icalproperty_get_uid (priv->uid));

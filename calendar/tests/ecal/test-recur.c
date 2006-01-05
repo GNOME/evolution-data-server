@@ -8,7 +8,6 @@ int
 main (int argc, char **argv)
 {
 	ECal *ecal;
-	GList *l, *objects;
 
 	if (bonobo_init (&argc, argv) == FALSE)
 		g_error ("Could not initialize Bonobo");

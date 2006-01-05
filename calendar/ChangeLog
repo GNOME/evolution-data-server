@@ -1,3 +1,16 @@
+2006-01-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* backends/http/e-cal-backend-http.c:
+	(notify_and_remove_from_cache): Use g_return_val_if_fail()
+	in a non-void function not g_return_if_fail()
+	* libecal/e-cal-component.c: (e_cal_component_get_id):
+	Same as above.
+	* libecal/e-cal-view-listener.c: (build_id_list): Fix
+	type in function parameter.
+	* tests/ecal/test-ecal.c: (all_tests): #if 0 out some
+	unused stuff.
+	* tests/ecal/test-recur.c: (main): Remove unused vars.
+
 2006-01-04  Tor Lillqvist  <tml@novell.com>
 
 	* backends/weather/e-weather-source-ccf.c (find_station_url):

@@ -259,6 +259,7 @@ test_object_modification (ECal *client, char *uid)
 	return NULL;
 }
 
+#if 0
 static char *
 test_object_removal (ECal *client)
 {
@@ -297,6 +298,7 @@ test_object_removal (ECal *client)
 	mu_assert ("Test object removal - Failed\n", compare);	
 	return NULL;
 }
+#endif
 
 static char *
 test_get_alarms_in_range (ECal *client)
@@ -385,6 +387,7 @@ test_query (ECal *client, const char *query, int expected)
 	return NULL;
 }
 
+#if 0
 static char *
 test_e_cal_new (ECal **cal, const char *uri)
 {
@@ -439,6 +442,7 @@ test_e_cal_remove (ECal *ecal, const char *uri)
 	
 	return NULL;
 } 
+#endif
 
 static char *
 test_new_system_calendar()
@@ -620,8 +624,7 @@ test_timezones (ECal *client)
 static char *
 all_tests(ECal *client, const gchar *uri) 
 {
-	ECal *ecal;
-	char *tmp, *uid;
+	char *uid;
 		
 	mu_run_test (test_new_system_calendar ());
 	mu_run_test (test_new_system_tasks ());

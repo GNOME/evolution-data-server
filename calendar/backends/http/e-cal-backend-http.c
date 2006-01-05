@@ -205,7 +205,6 @@ webcal_to_http_method (const gchar *webcal_str)
 static gboolean
 notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 {
-	const char *uid = key;
 	const char *calobj = value;
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
 	ECalComponent *comp = e_cal_component_new_from_string (calobj);
