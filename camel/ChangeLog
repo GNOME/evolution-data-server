@@ -1,4 +1,4 @@
-2006-01-05  Kjartan Maraas,,23491770  <kmaraas@gnome.org>
+2006-01-05  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-session.c: (camel_session_get_network_state): Return
 	stuff from this non-void function.
