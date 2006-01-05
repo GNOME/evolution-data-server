@@ -2,3 +2,5 @@ Makefile
 Makefile.in
 test-ecal
 test-search
+test-recur
+

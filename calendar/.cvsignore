@@ -1,2 +1,10 @@
 Makefile
 Makefile.in
+configure
+config.guess
+config.sub
+depcomp
+ylwrap
+install-sh
+ltmain.sh
+missing
