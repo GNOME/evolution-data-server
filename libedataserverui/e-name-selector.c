@@ -180,21 +180,6 @@ add_section (ENameSelector *name_selector, const gchar *name)
 	return name_selector->sections->len - 1;
 }
 
-static void
-free_section (ENameSelector *name_selector, gint n)
-{
-	Section *section;
-
-	g_assert (n >= 0);
-	g_assert (n < name_selector->sections->len);
-
-	section = &g_array_index (name_selector->sections, Section, n);
-
-	g_free (section->name);
-	if (section->entry)
-		g_object_unref (section->entry);
-}
-
 static gint
 find_section_by_name (ENameSelector *name_selector, const gchar *name)
 {
