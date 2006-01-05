@@ -214,7 +214,7 @@ e_gw_filter_finalize (GObject *object)
 	filter = E_GW_FILTER (object);
 	priv = filter->priv;
 	filter_components = priv->component_list;
-	for (; filter_components != NULL; filter_components = filter_components = g_slist_next (filter_components)) {
+	for (; filter_components != NULL; filter_components = g_slist_next (filter_components)) {
 		component = filter_components->data;
 		g_free (component->field_name);
 		g_free (component->field_value);

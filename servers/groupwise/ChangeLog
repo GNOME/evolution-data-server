@@ -1,3 +1,10 @@
+2006-01-05  Kjartan Maraas,,23491770  <kmaraas@gnome.org>
+
+	* e-gw-connection.c: (e_gw_connection_add_members),
+	(e_gw_connection_remove_members): Remove some extra unneeded
+	assignments that caused warnings.
+	* e-gw-filter.c: (e_gw_filter_finalize): One instance here too.
+
 2005-12-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.c: (reauthenticate): return if priv is NULL
