@@ -509,9 +509,11 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 			return GNOME_Evolution_Calendar_OtherError;	
 		}
 		
-		e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
-		e_cal_backend_http_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
-	
+		if (priv->default_zone) {
+			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+			e_cal_backend_http_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+		}
+
 		if (priv->mode == CAL_MODE_LOCAL) 
 			return GNOME_Evolution_Calendar_Success;
 		
