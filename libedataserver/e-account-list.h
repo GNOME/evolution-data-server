@@ -40,9 +40,10 @@ typedef enum _e_account_find_t {
 	E_ACCOUNT_FIND_UID,
 	E_ACCOUNT_FIND_ID_NAME,
 	E_ACCOUNT_FIND_ID_ADDRESS,
+	E_ACCOUNT_FIND_PARENT_UID,
 } e_account_find_t;
 
-typedef struct {
+typedef struct _EAccountList {
 	EList parent_object;
 
 	EAccountListPrivate *priv;
@@ -73,6 +74,10 @@ void            e_account_list_remove    (EAccountList *, EAccount *);
 const EAccount *e_account_list_get_default(EAccountList *);
 void            e_account_list_set_default(EAccountList *, EAccount *);
 const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const char *key);
+
+void e_account_list_prune_proxies (EAccountList *);
+void e_account_list_remove_account_proxies (EAccountList *, EAccount *);
+int e_account_list_account_has_proxies (EAccountList *, EAccount *);
 
 G_END_DECLS
 
