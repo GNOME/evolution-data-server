@@ -1,3 +1,10 @@
+2005-12-16  Johnny Jacob  <johnnyjacob@gmail.com>
+
+	** Fix for bug #242966
+	
+	* e-name-selector-dialog c (e_name_selector_dialog_init):
+	Search entry has the default focus.
+	
 2006-01-05  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* e-name-selector.c: Remove unused static function free_section().

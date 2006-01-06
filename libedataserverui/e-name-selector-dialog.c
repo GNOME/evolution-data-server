@@ -258,6 +258,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_dialog_set_has_separator    (GTK_DIALOG (name_selector_dialog), FALSE);
 	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
 	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
+	gtk_widget_grab_focus (widget);
 }
 	
 /* Partial, repeatable destruction. Release references. */
