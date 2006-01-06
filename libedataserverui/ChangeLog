@@ -1,3 +1,8 @@
+2005-01-06  Sushma Rai  <rsushma@novell.com>
+
+	* e-book-auth-util.c (remove_parameters_from_uri): Properly parsing the
+	uri, taking care of all auth mechanisms. Fixes #325959.
+
 2005-12-16  Johnny Jacob  <johnnyjacob@gmail.com>
 
 	** Fix for bug #242966
