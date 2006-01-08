@@ -151,6 +151,7 @@ case "$host" in
     DL_LIB=''
     SOFTOKN3_LIB=''
     LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
+    AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
     ;;
 *)  os_win32=no
     NO_UNDEFINED=''
