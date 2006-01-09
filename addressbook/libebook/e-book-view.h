@@ -63,6 +63,7 @@ EBookView         *e_book_view_new                    (GNOME_Evolution_Addressbo
 GType              e_book_view_get_type               (void);
 
 void               e_book_view_set_book               (EBookView *book_view, struct _EBook *book);
+struct _EBook     *e_book_view_get_book               (EBookView *book_view);
 
 void               e_book_view_start                  (EBookView *book_view);
 void               e_book_view_stop                   (EBookView *book_view);

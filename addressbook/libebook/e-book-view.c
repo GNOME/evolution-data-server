@@ -188,6 +188,21 @@ e_book_view_set_book (EBookView *book_view, EBook *book)
 }
 
 /**
+ * e_book_view_get_book:
+ * @book_view: an #EBookView
+ *
+ * Returns the #EBook that this book view is monitoring.
+ *
+ * Return value: an #EBook.
+ **/
+EBook*
+e_book_view_get_book (EBookView *book_view)
+{
+	g_return_val_if_fail (book_view && E_IS_BOOK_VIEW (book_view), NULL);
+
+	return book_view->priv->book;
+}
+/**
  * e_book_view_start:
  * @book_view: an #EBookView
  *

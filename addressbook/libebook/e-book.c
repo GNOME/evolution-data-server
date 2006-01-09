@@ -2032,7 +2032,8 @@ e_book_response_get_book_view (EBook       *book,
 
 	op->status = status;
 	op->view = e_book_view_new (corba_book_view, op->listener);
-
+	e_book_view_set_book (op->view, book);
+	
 	bonobo_object_unref(BONOBO_OBJECT(op->listener));
 
 	if (op->synchronous) {

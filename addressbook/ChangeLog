@@ -1,3 +1,10 @@
+2006-01-09  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-book.c:
+	* libebook/e-book-view.c:
+	* libebook/e-book-view.h:
+	Add e_book_view_get_book().
+
 2006-01-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* libebook/e-destination.c (e_destination_init),
