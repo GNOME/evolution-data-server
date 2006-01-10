@@ -311,8 +311,7 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			if (!list_head)
 				break;
 			qs[i] = list_head->data;
-			*list = g_list_remove_link(*list, list_head);
-			g_list_free_1(list_head);
+			*list = g_list_delete_link(*list, list_head);
 		}
 
 		*list = g_list_prepend(*list, 
@@ -344,8 +343,7 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			if (!list_head)
 				break;
 			qs[i] = list_head->data;
-			*list = g_list_remove_link(*list, list_head);
-			g_list_free_1(list_head);
+			*list = g_list_delete_link(*list, list_head);
 		}
 
 		*list = g_list_prepend(*list, 

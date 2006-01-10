@@ -1035,7 +1035,7 @@ e_vcard_remove_attributes (EVCard *evc, const char *attr_group, const char *attr
 		    ((!attr_name && !a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
 
 			/* matches, remove/delete the attribute */
-			evc->priv->attributes = g_list_remove_link (evc->priv->attributes, attr);
+			evc->priv->attributes = g_list_delete_link (evc->priv->attributes, attr);
 
 			e_vcard_attribute_free (a);
 		}

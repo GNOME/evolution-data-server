@@ -1,3 +1,9 @@
+2006-01-10  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-book-query.c
+	* libebook/e-vcard.c:
+	Fix GList leaks (#320065).
+
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
 
 	* backends/file/e-book-backend-file.c:
