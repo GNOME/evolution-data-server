@@ -48,7 +48,7 @@
 
 	* storage/exchange-hierarchy-somedav.c (scan_subtree): Similar.
 	This fixes the problem of not loading the folders after creating an
-	account, even if the user is authenticated.
+	account, even if the user is authenticated. Fixes #322657.
 
 2005-12-17  Sushma Rai  <rsushma@novell.com>
 
@@ -57,7 +57,7 @@
 
 	* storage/exchange-account.c (exchange_account_new): Using the proper
 	password key so that during account creation password will not be asked
-	for the second time at the end.
+	for the second time at the end.  Fixes #322657.
 
 2005-12-15  Sushma Rai  <rsushma@novell.com>
 
