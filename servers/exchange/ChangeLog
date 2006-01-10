@@ -1,3 +1,12 @@
+2006-01-10  Simon Zheng  <simon.zheng@sun.com>
+
+	* lib/e2k-autoconfig.c:
+	* storage/e-folder-exchange.c:
+	* storage/e-folder.c:
+	* storage/e-storage.c:
+	As file e-util.h is renamed, replace "libedataserver/e-util.h"
+        as "libedataserver/e-data-server-util.h".
+
 2005-12-21  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-esource.c (add_folder_esource): Calling

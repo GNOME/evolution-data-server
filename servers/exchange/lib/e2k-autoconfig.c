@@ -63,7 +63,7 @@
 #include "e2k-xml-utils.h"
 #include "xntlm.h"
 
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include <libedataserverui/e-passwords.h>
 #include <gconf/gconf-client.h>
 #include <libxml/tree.h>

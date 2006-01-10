@@ -30,7 +30,7 @@
 #include "e-shell-marshal.h"
 
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 
 #include <string.h>
 
