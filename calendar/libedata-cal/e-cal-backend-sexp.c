@@ -24,7 +24,7 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include <libecal/e-cal-time-util.h>
 
 #include "e-cal-backend-sexp.h"

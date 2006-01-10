@@ -1,3 +1,12 @@
+2006-01-10  Simon Zheng  <simon.zheng@sun.com>
+
+	* backends/file/e-cal-backend-file.c:
+	* backends/weather/e-weather-source-ccf.c:
+	* libecal/e-cal-util.c:
+	* libedata-cal/e-cal-backend-sexp.c:
+	As file e-util.h is renamed, replace "libedataserver/e-util.h"
+	as "libedataserver/e-data-server-util.h".
+
 2006-01-10  Chenthill Palanisamy  <pchenthill@novell.com>
 
 

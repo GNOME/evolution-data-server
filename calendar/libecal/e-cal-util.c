@@ -25,7 +25,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 #include "e-cal-util.h"
 
 

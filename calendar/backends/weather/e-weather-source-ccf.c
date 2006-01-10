@@ -39,7 +39,7 @@
 
 #ifdef G_OS_WIN32
 
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 
 /* The localtime_r() in <pthread.h> doesn't guard against localtime()
  * returning NULL

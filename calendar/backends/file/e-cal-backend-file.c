@@ -33,7 +33,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-time-util.h>
