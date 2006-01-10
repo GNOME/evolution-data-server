@@ -1,3 +1,8 @@
+2006-01-10  Shreyas Srinivasan  <sshreyas@novell.com>
+
+	* camel-imap-store.c (camel_store_finalize): Fix #321812
+	unref diary only when the store finalize is called.
+	
 2005-12-14  Tor Lillqvist  <tml@novell.com>
 
 	Fix #323106:

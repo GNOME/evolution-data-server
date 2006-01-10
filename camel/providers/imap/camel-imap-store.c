@@ -192,6 +192,7 @@ static void
 camel_imap_store_finalize (CamelObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
+	CamelDiscoStore *disco = CAMEL_DISCO_STORE (object);
 
 	/* This frees current_folder, folders, authtypes, streams, and namespace. */
 	camel_service_disconnect((CamelService *)imap_store, TRUE, NULL);
@@ -205,6 +206,12 @@ camel_imap_store_finalize (CamelObject *object)
 		g_free (imap_store->base_url);
 	if (imap_store->storage_path)
 		g_free (imap_store->storage_path);
+
+	if (disco->diary) {
+		camel_object_unref (disco->diary);
+		disco->diary = NULL;
+	}
+
 }
 
 static void
@@ -1560,7 +1567,6 @@ static gboolean
 imap_disconnect_offline (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
-	CamelDiscoStore *disco = CAMEL_DISCO_STORE (service);
 
 	if (store->istream) {
 		camel_stream_close(store->istream);
@@ -1591,12 +1597,7 @@ imap_disconnect_offline (CamelService *service, gboolean clean, CamelException *
 		g_free (store->namespace);
 		store->namespace = NULL;
 	}
-	
-	if (disco->diary) {
-		camel_object_unref (disco->diary);
-		disco->diary = NULL;
-	}
-	
+		
 	return TRUE;
 }
 
