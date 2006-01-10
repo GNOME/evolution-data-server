@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <time.h>
 
+#include <libedataserver/e-data-server-util.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-private.h>
 #include <camel/camel-file-utils.h>
@@ -345,7 +346,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	
 	folder->summary = camel_imap4_summary_new (folder);
 	imap4_folder->cachedir = imap4_store_build_filename (store, folder->full_name);
-	camel_mkdir (imap4_folder->cachedir, 0777);
+	e_util_mkdir_hier (imap4_folder->cachedir, 0777);
 	
 	imap4_folder->cache = camel_data_cache_new (imap4_folder->cachedir, 0, NULL);
 	

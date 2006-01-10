@@ -35,6 +35,7 @@
 
 #include <glib/gstdio.h>
 
+#include <libedataserver/e-data-server-util.h>
 #include "camel-i18n.h"
 #include "camel-data-cache.h"
 #include "camel-exception.h"
@@ -130,7 +131,7 @@ camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
 {
 	CamelDataCache *cdc;
 
-	if (camel_mkdir (path, 0700) == -1) {
+	if (e_util_mkdir_hier (path, 0700) == -1) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Unable to create cache path"));
 		return NULL;
@@ -246,7 +247,7 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	if (access (dir, F_OK) == -1) {
 #endif
 		if (create)
-			camel_mkdir (dir, 0700);
+			e_util_mkdir_hier (dir, 0700);
 	} else if (cdc->priv->expire_inc == hash
 		   && (cdc->expire_age != -1 || cdc->expire_access != -1)) {
 		time_t now;

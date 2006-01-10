@@ -31,6 +31,7 @@
 
 #include "libedataserver/e-memory.h"
 #include "libedataserver/e-msgport.h"
+#include "libedataserver/e-data-server-util.h"
 
 #include "camel-file-utils.h"
 #include "camel-object.h"
@@ -1844,7 +1845,7 @@ int camel_object_state_write(void *vo)
 
 	savename = camel_file_util_savename(file);
 	dirname = g_path_get_dirname(savename);
-	camel_mkdir(dirname, 0777);
+	e_util_mkdir_hier(dirname, 0777);
 	g_free(dirname);
 	fp = g_fopen(savename, "wb");
 	if (fp != NULL) {

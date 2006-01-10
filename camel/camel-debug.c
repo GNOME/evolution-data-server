@@ -25,7 +25,7 @@
 
 #include <pthread.h>
 
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 #include "camel-debug.h"
 
 int camel_verbose_debug;

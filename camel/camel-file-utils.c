@@ -41,7 +41,7 @@
 #define EWOULDBLOCK EAGAIN
 #endif
 
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 
 #include "camel-file-utils.h"
 #include "camel-operation.h"
@@ -316,46 +316,6 @@ camel_file_util_decode_string (FILE *in, char **str)
 	return 0;
 }
 
-
-/**
- * camel_mkdir:
- * @path: directory path to create
- * @mode: permissions
- *
- * Creates the directory path described in @path, creating any parent
- * directories as necessary.
- *
- * Returns 0 on success or -1 on fail. In the case of failure, errno
- * will be set appropriately.
- **/
-int
-camel_mkdir (const char *path, mode_t mode)
-{
-#if GLIB_CHECK_VERSION(2,8,0)
-	g_assert(path && g_path_is_absolute (path));
-	return g_mkdir_with_parents (path, mode);
-#else
-	char *copy, *p;
-	
-	g_assert(path && path[0] == '/');
-	
-	p = copy = g_alloca (strlen (path) + 1);
-	strcpy(copy, path);
-	do {
-		p = strchr(p + 1, '/');
-		if (p)
-			*p = '\0';
-		if (access(copy, F_OK) == -1) {
-			if (mkdir(copy, mode) == -1)
-				return -1;
-		}
-		if (p)
-			*p = '/';
-	} while (p);
-	
-	return 0;
-#endif
-}
 
 /**
  * camel_file_util_safe_filename:

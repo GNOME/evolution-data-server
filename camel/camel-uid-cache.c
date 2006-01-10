@@ -34,6 +34,7 @@
 
 #include <glib/gstdio.h>
 
+#include "libedataserver/e-data-server-util.h"
 #include "camel-file-utils.h"
 #include "camel-private.h"
 #include "camel-uid-cache.h"
@@ -63,7 +64,7 @@ camel_uid_cache_new (const char *filename)
 	int fd, i;
 	
 	dirname = g_path_get_dirname (filename);
-	if (camel_mkdir (dirname, 0777) == -1) {
+	if (e_util_mkdir_hier (dirname, 0777) == -1) {
 		g_free (dirname);
 		return NULL;
 	}

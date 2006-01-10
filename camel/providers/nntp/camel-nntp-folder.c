@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <libedataserver/e-data-server-util.h>
 #include "camel/camel-file-utils.h"
 #include "camel/camel-stream-mem.h"
 #include "camel/camel-data-wrapper.h"
@@ -491,7 +492,7 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 		return NULL;
 	
 	/* If this doesn't work, stuff wont save, but let it continue anyway */
-	camel_mkdir (root, 0777);
+	e_util_mkdir_hier (root, 0777);
 	
 	folder = (CamelFolder *) camel_object_new (CAMEL_NNTP_FOLDER_TYPE);
 	nntp_folder = (CamelNNTPFolder *)folder;

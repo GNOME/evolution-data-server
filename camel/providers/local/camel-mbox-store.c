@@ -32,6 +32,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#include <libedataserver/e-data-server-util.h>
 #include "camel/camel-exception.h"
 #include "camel/camel-file-utils.h"
 #include "camel/camel-i18n.h"
@@ -168,7 +169,7 @@ get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelExcep
 		g_free (basename);
 		
 		dirname = g_path_get_dirname(name);
-		if (camel_mkdir(dirname, 0777) == -1 && errno != EEXIST) {
+		if (e_util_mkdir_hier(dirname, 0777) == -1 && errno != EEXIST) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Cannot create folder `%s': %s"),
 					     folder_name, g_strerror (errno));
@@ -359,7 +360,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 	path = camel_local_store_get_full_path(store, name);
 	
 	dir = g_path_get_dirname(path);
-	if (camel_mkdir(dir, 0777) == -1 && errno != EEXIST) {
+	if (e_util_mkdir_hier(dir, 0777) == -1 && errno != EEXIST) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create directory `%s': %s."),
 				     dir, g_strerror(errno));
 		
@@ -477,7 +478,7 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
 	
 	newdir = g_path_get_dirname(newibex);
-	if (camel_mkdir(newdir, 0777) == -1) {
+	if (e_util_mkdir_hier(newdir, 0777) == -1) {
 		if (errno != EEXIST) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Could not rename `%s': `%s': %s"),

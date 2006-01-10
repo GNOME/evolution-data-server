@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <dirent.h>
 
+#include <libedataserver/e-data-server-util.h>
 #include "camel-spool-store.h"
 #include "camel-spool-folder.h"
 #include "camel-exception.h"
@@ -492,7 +493,7 @@ spool_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
 	if (root == NULL)
 		return NULL;
 
-	camel_mkdir(root, 0777);
+	e_util_mkdir_hier(root, 0777);
 	key = camel_file_util_safe_filename(full_name);
 	path = g_strdup_printf("%s/%s%s", root, key, ext);
 	g_free(key);

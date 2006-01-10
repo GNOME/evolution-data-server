@@ -55,7 +55,6 @@ int camel_file_util_decode_size_t (FILE *in, size_t *);
 int camel_file_util_encode_string (FILE *out, const char *);
 int camel_file_util_decode_string (FILE *in, char **);
 
-int camel_mkdir (const char *path, mode_t mode);
 char *camel_file_util_safe_filename (const char *name);
 
 /* Code that intends to be portable to Win32 should use camel_read()

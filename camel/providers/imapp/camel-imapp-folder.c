@@ -42,6 +42,7 @@
 #include "camel-imapp-exception.h"
 
 #include <libedataserver/md5-utils.h>
+#include <libedataserver/e-data-server-util.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -134,7 +135,7 @@ camel_imapp_folder_new(CamelStore *store, const char *path)
 		char *base = g_build_filename(root, path, NULL);
 		char *file = g_build_filename(base, ".ev-summary", NULL);
 
-		camel_mkdir(base, 0777);
+		e_util_mkdir_hier(base, 0777);
 		g_free(base);
 
 		camel_folder_summary_set_filename(folder->summary, file);
