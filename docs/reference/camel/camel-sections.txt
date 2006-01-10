@@ -2913,7 +2913,6 @@ camel_file_util_encode_size_t
 camel_file_util_decode_size_t
 camel_file_util_encode_string
 camel_file_util_decode_string
-camel_mkdir
 camel_file_util_safe_filename
 camel_read
 camel_write

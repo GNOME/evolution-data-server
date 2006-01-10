@@ -27,7 +27,7 @@
 #include <glib/gstdio.h>
 
 #include "e-file-cache.h"
-#include "e-util.h"
+#include "e-data-server-util.h"
 #include "e-xml-hash-utils.h"
 
 struct _EFileCachePrivate {

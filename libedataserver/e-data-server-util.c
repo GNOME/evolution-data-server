@@ -28,7 +28,7 @@
 
 #include <glib.h>
 
-#include "e-util.h"
+#include "e-data-server-util.h"
 
 /**
  * e_util_mkdir_hier:
@@ -50,7 +50,7 @@ e_util_mkdir_hier (const char *path, mode_t mode)
 #else
         char *copy, *p;
                                                                                 
-        if (path[0] == '/') {
+        if (g_path_is_absolute (path)) {
                 p = copy = g_strdup (path);
         } else {
                 gchar *current_dir = g_get_current_dir();
@@ -58,18 +58,29 @@ e_util_mkdir_hier (const char *path, mode_t mode)
 		g_free (current_dir);
         }
                                                                                 
+	p = (char *)g_path_skip_root (p);                                                                       
         do {
-                p = strchr (p + 1, '/');
-                if (p)
-                        *p = '\0';
-                if (access (copy, F_OK) == -1) {
-                        if (mkdir (copy, mode) == -1) {
-                                g_free (copy);
-                                return -1;
-                        }
-               }
-                if (p)
-                        *p = '/';
+                char *p1 = strchr (p, '/');
+#ifdef G_OS_WIN32
+		{
+			char *p2 = strchr (p, '\\');
+			if (p1 == NULL ||
+			    (p2 != NULL && p2 < p1))
+				p1 = p2;
+		}
+#endif
+		p = p1;
+		if (p)
+			*p = '\0';
+		if (!g_file_test (copy, G_FILE_TEST_IS_DIR)) {
+			if (g_mkdir (copy, mode) == -1) {
+				g_free (copy);
+				return -1;
+			}
+		}
+		if (p) {
+			*p++ = '/';
+		}
         } while (p);
                                                                                 
         g_free (copy);
@@ -337,7 +348,7 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 		ff = c;
 	}
 
-	ff = fmt;
+	ff = ffmt;
 	while ((c = strstr(ff, "%k")) != NULL) {
 		c[1] = 'H';
 		ff = c;

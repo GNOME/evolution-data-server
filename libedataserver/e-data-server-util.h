@@ -19,8 +19,8 @@
  * Authors: Rodrigo Moya <rodrigo@ximian.com>
  */
 
-#ifndef __E_UTIL_H__
-#define __E_UTIL_H__
+#ifndef __E_DATA_SERVER_UTIL_H__
+#define __E_DATA_SERVER_UTIL_H__
 
 #include <pthread.h>
 #include <sys/types.h>

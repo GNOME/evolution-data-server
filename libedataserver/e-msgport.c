@@ -44,7 +44,7 @@
 #endif
 
 #include "e-msgport.h"
-#include "e-util.h"
+#include "e-data-server-util.h"
 
 #define m(x)			/* msgport debug */
 #define t(x)			/* thread debug */

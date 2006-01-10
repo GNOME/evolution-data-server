@@ -48,7 +48,7 @@
 #include <libedata-cal/e-data-cal-factory.h>
 
 #ifdef G_OS_WIN32
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 #endif
 
 #include "server-interface-check.h"

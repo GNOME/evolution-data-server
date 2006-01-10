@@ -1,3 +1,29 @@
+2006-01-10  Simon Zheng  <simon.zheng@sun.com>
+
+	* docs/reference/camel/camel-sections.txt:
+	* docs/reference/camel/tmpl/camel-file-utils.sgml:
+	Detele the function camel_mkdir description.
+	
+	* libedataserver/e-data-server-util.h: Rename e-util.h as this 
+	file.
+
+	* libedataserver/e-data-server-util.c: Rename e-util.c as this
+	file.
+
+	(e_util_mkdir_hier):Merge the change
+	of evolution/e-util/e-util.c (e_mkdir_hier) into this copy.
+
+	(e_strftime):Merge the change of evolution/e-util/e-util.c into
+	this copy.
+
+	* libedataserver/Makefile.am:
+	* libedataserver/e-file-cache.c:
+	* libedataserver/e-msgport.c:
+	* libedataserver/e-time-utils.c:
+	* src/server.c: 
+	Replace e-util.h as e-data-server-util.h, and replace e-util.c as
+	e-data-server-util.c.
+
 2006-01-08  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Define _WIN32_WINNT as 0x501 in the config.h on
