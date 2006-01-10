@@ -210,6 +210,7 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 	ECalComponent *comp = e_cal_component_new_from_string (calobj);
 	ECalComponentId *id = e_cal_component_get_id (comp);
 
+	e_cal_backend_cache_remove_component (cbhttp->priv->cache, id->uid, id->rid);
 	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), id, calobj, NULL);
 
 	e_cal_component_free_id (id);

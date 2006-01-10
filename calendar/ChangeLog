@@ -1,3 +1,10 @@
+2006-01-10  Chenthill Palanisamy  <pchenthill@novell.com>
+
+
+	Fixes #324518
+	* backends/http/e-cal-backend-http.c:
+	(notify_and_remove_from_cache): Remove the items from the cache.
+
 2006-01-06  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #324741
