@@ -1,3 +1,15 @@
+2006-01-10  Simon Zheng  <simon.zheng@sun.com>
+
+	* backends/file/e-book-backend-file.c:
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* backends/vcf/e-book-backend-vcf.c:
+	* libebook/e-address-western.c:
+	* libebook/e-contact.c:
+	* libedata-book/e-book-backend-sexp.c:
+	* libedata-book/e-book-backend-summary.c:
+	As file e-util.h is renamed, replace "libedataserver/e-util.h"
+        as "libedataserver/e-data-server-util.h".
+	
 2006-01-09  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book.c:

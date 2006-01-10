@@ -14,7 +14,7 @@
 #include <glib.h>
 
 #include "e-address-western.h"
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 
 /* These are the keywords that will distinguish the start of an extended
    address. */

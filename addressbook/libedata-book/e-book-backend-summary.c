@@ -34,7 +34,7 @@
 #include <glib/gstdio.h>
 
 #include "libedataserver/e-sexp.h"
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 
 #include "libebook/e-contact.h"
 

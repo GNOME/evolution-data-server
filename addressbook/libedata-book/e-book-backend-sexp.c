@@ -20,7 +20,7 @@
 
 #include <string.h>
 #include <libedataserver/e-sexp.h>
-#include <libedataserver/e-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include "e-book-backend-sexp.h"
 
 static GObjectClass *parent_class;

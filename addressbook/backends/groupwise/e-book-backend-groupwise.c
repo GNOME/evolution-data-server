@@ -35,7 +35,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "libedataserver/e-sexp.h"
-#include "libedataserver/e-util.h"
+#include "libedataserver/e-data-server-util.h"
 #include "libedataserver/e-url.h" 
 #include "libebook/e-contact.h"
 #include "libedata-book/e-book-backend-sexp.h"
