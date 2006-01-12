@@ -1,3 +1,10 @@
+2006-01-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libebook/e-book.c: (activate_factories_for_uri):
+	The Book Factory oafid should reflect
+	the API version rather than the BASE version.
+	Fixes #323115.
+
 2005-10-26  Ross Burton  <ross@burtonini.com>
 
 	* libebook/e-destination.c:

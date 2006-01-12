@@ -3192,7 +3192,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	char *query;
 	GList *factories = NULL;
 
-	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" BASE_VERSION "')";
+	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" API_VERSION "')";
 
 	CORBA_exception_init (&ev);
 	

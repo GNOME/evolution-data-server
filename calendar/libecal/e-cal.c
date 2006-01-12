@@ -1070,7 +1070,7 @@ get_factories (const char *str_uri, GList **factories)
 		return FALSE;
 	}
 
-	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" BASE_VERSION "')";
+	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" API_VERSION "')";
 
 	
 	servers = bonobo_activation_query (query, NULL, NULL);
