@@ -42,6 +42,7 @@
 #define SUBFOLDER_DIR_NAME_LEN 10
 #define RFC_822	"message/rfc822"
 
+static void do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **attach_list);
 /**
  * e_path_to_physical:
  * @prefix: a prefix to prepend to the path, or %NULL
@@ -330,13 +331,16 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	} else {
 		char *temp_str;
 		int temp_len;
-		temp_str = soup_base64_encode (buffer, len);
-		temp_len = strlen (temp_str);
-		attachment->data = g_strdup (temp_str);
-		attachment->size = temp_len;
-		g_free (temp_str);
-		temp_str = NULL;
-		temp_len = 0;
+		if (!strcmp (attachment->contentType, "multipart/digest")) {
+		} else {
+			temp_str = soup_base64_encode (buffer, len);
+			temp_len = strlen (temp_str);
+			attachment->data = g_strdup (temp_str);
+			attachment->size = temp_len;
+			g_free (temp_str);
+			temp_str = NULL;
+			temp_len = 0;
+		}
 	}
 	
 	if (!strcmp (attachment->contentType, "text/html") || !(strcmp (attachment->contentType, "multipart/alternative"))) {
@@ -356,7 +360,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		id = (char *)g_malloc0 (len-1);
 		id = memcpy(id, temp_id+2, len-3);
 
-		status = e_gw_connection_forward_item (cnc, id, "message", TRUE, &temp_item);
+		status = e_gw_connection_forward_item (cnc, id, NULL, TRUE, &temp_item);
 		if (status != E_GW_CONNECTION_STATUS_OK) 
 			g_warning ("Could not send a forwardRequest...continuing without!!\n");
 		else {
@@ -374,10 +378,12 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			info = e_gw_item_get_link_info (temp_item);
 			e_gw_item_set_link_info (item, info);
 		}
+		//attachment->id = g_strdup (id);
 		g_free (id);
 	}
 
 	*attach_list = g_slist_append (*attach_list, attachment);
+	g_print ("||| Sending as..... %s\n", attachment->contentType);
 }
 
 EGwItem *
@@ -390,7 +396,6 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	char *send_options = NULL;
 	CamelMultipart *mp;
 	GSList *recipient_list = NULL, *attach_list = NULL; 
-	int i;
 
 	/*Egroupwise item*/
 	item = e_gw_item_new_empty ();
@@ -419,76 +424,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	if (CAMEL_IS_MULTIPART (mp)) {
 		/*contains multiple parts*/
-		guint part_count;
-		
-		part_count = camel_multipart_get_number (mp);
-		for ( i=0 ; i<part_count ; i++) {
-			CamelContentType *type;
-			CamelMimePart *part;
-			CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
-			CamelDataWrapper *dw = camel_data_wrapper_new ();
-			const char *disposition, *filename;
-			char *buffer = NULL;
-			char *mime_type = NULL;
-			const char *content_id = NULL;
-			gboolean is_alternative = FALSE;
-			/*
-			 * XXX:
-			 * Assuming the first part always is the actual message
-			 * and an attachment otherwise.....
-			 */
-			part = camel_multipart_get_part (mp, i);
-			type = camel_mime_part_get_content_type(part);
-			dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
-			if (type->subtype && !strcmp (type->subtype, "alternative")) {
-				CamelMimePart *temp_part;
-				const char *cid = NULL;
-				CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
-				temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
-				CamelDataWrapper *temp_dw = camel_data_wrapper_new ();
-				if (temp_part) {
-					is_alternative = TRUE;
-					temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));
-					camel_data_wrapper_write_to_stream(temp_dw, (CamelStream *)temp_content);
-					buffer = g_malloc0 (temp_content->buffer->len+1);
-					buffer = memcpy (buffer, temp_content->buffer->data, temp_content->buffer->len);
-					filename = camel_mime_part_get_filename (temp_part);
-					disposition = camel_mime_part_get_disposition (temp_part);
-					mime_type = camel_data_wrapper_get_mime_type (temp_dw);
-					cid = camel_mime_part_get_content_id (temp_part);
-					g_print ("%s:%s:%s\n",filename, mime_type, cid);
-					send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, cid, &attach_list);
-					g_free (buffer);
-					g_free (mime_type);
-				}
-				camel_object_unref (temp_content);
-				camel_object_unref (temp_dw);
-				camel_object_unref (dw);
-				continue;
-			} 
-			
-			camel_data_wrapper_write_to_stream(dw, (CamelStream *)content);
-			buffer = g_malloc0 (content->buffer->len+1);
-			buffer = memcpy (buffer, content->buffer->data, content->buffer->len);
-			filename = camel_mime_part_get_filename (part);
-			disposition = camel_mime_part_get_disposition (part);
-			mime_type = camel_data_wrapper_get_mime_type (dw);
-			content_id = camel_mime_part_get_content_id (part);
-
-			if (i == 0 && !strcmp (mime_type, "text/plain") ) {
-				e_gw_item_set_content_type (item, mime_type);
-				e_gw_item_set_message (item, buffer);
-			} else {
-				g_print ("%s:%s:%s\n",filename, mime_type, content_id );
-				send_as_attachment (cnc, item, content, buffer, type, dw, filename, content_id, &attach_list);
-			}
-
-			g_free (buffer);
-			g_free (mime_type);
-			camel_object_unref (content);
-			camel_object_unref (dw);
-		} /*end of for*/
-		
+		do_multipart (cnc, item, mp, &attach_list);
 	} else {
 		/*only message*/
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
@@ -634,4 +570,89 @@ strip_lt_gt (char **string, int s_offset, int e_offset)
 	*string = (char *)g_malloc0 (len-1);
 	*string = memcpy(*string, temp+s_offset, len-e_offset);
 	g_free (temp);
+}
+
+static void
+do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **attach_list)
+{
+	/*contains multiple parts*/
+	guint part_count;
+	int i;
+
+	part_count = camel_multipart_get_number (mp);
+	g_print ("||||| part_count:%d ||||||\n", part_count);
+	for ( i=0 ; i<part_count ; i++) {
+		CamelContentType *type;
+		CamelMimePart *part;
+		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
+		CamelDataWrapper *dw = camel_data_wrapper_new ();
+		const char *disposition, *filename;
+		char *buffer = NULL;
+		char *mime_type = NULL;
+		const char *content_id = NULL;
+		gboolean is_alternative = FALSE;
+		/*
+		 * XXX:
+		 * Assuming the first part always is the actual message
+		 * and an attachment otherwise.....
+		 */
+		part = camel_multipart_get_part (mp, i);
+		type = camel_mime_part_get_content_type(part);
+		if (CAMEL_IS_MULTIPART ((CamelMultipart *)camel_medium_get_content_object (part))) {
+			g_print ("||* This part has more parts : %d *||\n",camel_multipart_get_number (mp));
+			g_print ("||%d:%s/%s||\n", i, type->type, type->subtype);
+			do_multipart (cnc, item, (CamelMultipart *)camel_medium_get_content_object (part), attach_list);
+			continue;
+		} else 
+			g_print ("||%d:%s/%s||\n", i, type->type, type->subtype);
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		if (type->subtype && !strcmp (type->subtype, "alternative")) {
+			CamelMimePart *temp_part;
+			const char *cid = NULL;
+			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
+			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
+			CamelDataWrapper *temp_dw = camel_data_wrapper_new ();
+			if (temp_part) {
+				is_alternative = TRUE;
+				temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));
+				camel_data_wrapper_write_to_stream(temp_dw, (CamelStream *)temp_content);
+				buffer = g_malloc0 (temp_content->buffer->len+1);
+				buffer = memcpy (buffer, temp_content->buffer->data, temp_content->buffer->len);
+				filename = camel_mime_part_get_filename (temp_part);
+				disposition = camel_mime_part_get_disposition (temp_part);
+				mime_type = camel_data_wrapper_get_mime_type (temp_dw);
+				cid = camel_mime_part_get_content_id (temp_part);
+				g_print ("Data:%s:%s:%s\n",filename, mime_type, cid);
+				send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, cid, attach_list);
+				g_free (buffer);
+				g_free (mime_type);
+			}
+			camel_object_unref (temp_content);
+			camel_object_unref (temp_dw);
+			camel_object_unref (dw);
+			continue;
+		} 
+		
+
+		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content);
+		buffer = g_malloc0 (content->buffer->len+1);
+		buffer = memcpy (buffer, content->buffer->data, content->buffer->len);
+		filename = camel_mime_part_get_filename (part);
+		disposition = camel_mime_part_get_disposition (part);
+		mime_type = camel_data_wrapper_get_mime_type (dw);
+		content_id = camel_mime_part_get_content_id (part);
+
+		if (i == 0 && !strcmp (mime_type, "text/plain") ) {
+			e_gw_item_set_content_type (item, mime_type);
+			e_gw_item_set_message (item, buffer);
+		} else {
+			g_print ("Data:%s:%s:%s\n",filename, mime_type, content_id );
+			send_as_attachment (cnc, item, content, buffer, type, dw, filename, content_id, attach_list);
+		}
+
+		g_free (buffer);
+		g_free (mime_type);
+		camel_object_unref (content);
+		camel_object_unref (dw);
+	} /*end of for*/
 }

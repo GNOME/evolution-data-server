@@ -1055,7 +1055,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 			continue;
 		} 
 
-		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
+		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status size", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			i++;
 			continue;
