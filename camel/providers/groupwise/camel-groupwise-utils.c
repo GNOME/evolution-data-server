@@ -306,7 +306,6 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->contentid = g_strdup (cid);
 		else 
 			attachment->contentid = g_strdup (t[1]);
-		g_print ("||| %s\n", attachment->contentid);
 		g_strfreev (t);
 	}
 
@@ -383,7 +382,6 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	}
 
 	*attach_list = g_slist_append (*attach_list, attachment);
-	g_print ("||| Sending as..... %s\n", attachment->contentType);
 }
 
 EGwItem *
@@ -444,7 +442,6 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			e_gw_item_set_content_type (item, content_type);				
 			e_gw_item_set_message (item, buffer);
 		} else {
-			g_print ("Only message!!\n");
 			send_as_attachment (cnc, item, content, buffer, type, dw, NULL, NULL, &attach_list);	
 		}
 
@@ -580,7 +577,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 	int i;
 
 	part_count = camel_multipart_get_number (mp);
-	g_print ("||||| part_count:%d ||||||\n", part_count);
 	for ( i=0 ; i<part_count ; i++) {
 		CamelContentType *type;
 		CamelMimePart *part;
@@ -599,12 +595,9 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		part = camel_multipart_get_part (mp, i);
 		type = camel_mime_part_get_content_type(part);
 		if (CAMEL_IS_MULTIPART ((CamelMultipart *)camel_medium_get_content_object (part))) {
-			g_print ("||* This part has more parts : %d *||\n",camel_multipart_get_number (mp));
-			g_print ("||%d:%s/%s||\n", i, type->type, type->subtype);
 			do_multipart (cnc, item, (CamelMultipart *)camel_medium_get_content_object (part), attach_list);
 			continue;
 		} else 
-			g_print ("||%d:%s/%s||\n", i, type->type, type->subtype);
 		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 		if (type->subtype && !strcmp (type->subtype, "alternative")) {
 			CamelMimePart *temp_part;
@@ -622,7 +615,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				disposition = camel_mime_part_get_disposition (temp_part);
 				mime_type = camel_data_wrapper_get_mime_type (temp_dw);
 				cid = camel_mime_part_get_content_id (temp_part);
-				g_print ("Data:%s:%s:%s\n",filename, mime_type, cid);
 				send_as_attachment (cnc, item, temp_content, buffer, type, temp_dw, filename, cid, attach_list);
 				g_free (buffer);
 				g_free (mime_type);
@@ -646,7 +638,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			e_gw_item_set_content_type (item, mime_type);
 			e_gw_item_set_message (item, buffer);
 		} else {
-			g_print ("Data:%s:%s:%s\n",filename, mime_type, content_id );
 			send_as_attachment (cnc, item, content, buffer, type, dw, filename, content_id, attach_list);
 		}
 

@@ -1,3 +1,20 @@
+2006-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_populate_details_from_item):
+	(gw_update_cache):
+	(gw_update_summary):
+	put the created date, in case of missing delivered date
+
+	* camel-groupwise-storec.:(groupwise_get_folder):
+	request for created date too
+
+	** See bug 323570
+	
+	* camel-groupwise-utils.c: 
+	(do_multipart): a part can further be a multipart so have a
+	recurssive function
+
 2006-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:

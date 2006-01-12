@@ -548,7 +548,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek id recipient attachments distribution subject status options priority startDate created delivered",
+				"peek id recipient attachments distribution subject status options priority startDate created delivered size",
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {

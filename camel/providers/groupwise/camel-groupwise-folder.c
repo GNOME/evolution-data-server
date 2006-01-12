@@ -1548,11 +1548,16 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
 						has_boundary = TRUE;
 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
+					} else {
+						camel_mime_part_set_filename(part, g_strdup(attach->name));
+						camel_mime_part_set_content_id (part, attach->contentid);
 					}
 
 					//camel_mime_part_set_filename(part, g_strdup(attach->name));
 					if (attach->contentType)
 						camel_mime_part_set_content(part, attachment, len, attach->contentType);
+					else 
+						camel_mime_part_set_content(part, attachment, len, "");
 					if (!has_boundary)
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart),"multipart/digest");
 
