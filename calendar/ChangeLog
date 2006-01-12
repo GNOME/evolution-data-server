@@ -1,3 +1,10 @@
+2006-01-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libecal/e-cal.c: (get_factories):
+	The Cal Factory oafid should reflect
+	the API version rather than the BASE version.
+	Fixes #323115.
+
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
 
 	* backends/file/e-cal-backend-file.c:

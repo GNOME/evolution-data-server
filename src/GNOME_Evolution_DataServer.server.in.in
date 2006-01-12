@@ -1,11 +1,11 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory:@VERSION@"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_BookFactory:@API_VERSION@"
             type="exe"
             location="@LIBEXECDIR_IN_SERVER_FILE@/evolution-data-server-@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/DataServer/BookFactory:@VERSION@"/>
+		<item value="IDL:GNOME/Evolution/DataServer/BookFactory:@API_VERSION@"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 
@@ -13,12 +13,12 @@
                        _value="Evolution Addressbook file backend"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory:@VERSION@"
+<oaf_server iid="OAFIID:GNOME_Evolution_DataServer_CalFactory:@API_VERSION@"
             type="exe"
             location="@LIBEXECDIR_IN_SERVER_FILE@/evolution-data-server-@VERSION@@EXEEXT@">
 
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/Evolution/DataServer/CalFactory:@VERSION@"/>
+		<item value="IDL:GNOME/Evolution/DataServer/CalFactory:@API_VERSION@"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 

@@ -1,3 +1,11 @@
+2006-01-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* src/GNOME_Evolution_DataServer.server.in.in:
+	* src/server.c:
+	The Cal and Book Factory oafids should reflect
+	the API version rather than the BASE version.
+	Fixes #323115.
+
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
 
 	* docs/reference/camel/camel-sections.txt:
