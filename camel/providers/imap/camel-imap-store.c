@@ -2013,7 +2013,6 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 	folder_dir = imap_path_to_physical (storage_path, folder_name);
 	g_free(storage_path);
 	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
-		g_print ("ONLINE:%s\n", folder_name);
 	g_free (folder_dir);
 	if (new_folder) {
 		CamelException local_ex;

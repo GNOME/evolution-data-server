@@ -1,3 +1,11 @@
+2006-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-imap-command.c: 
+	(imap_command_start):
+	(imap_command_continuation):
+	User g_return_val_if_fail instead of g_assert. Do not crash. 
+	Return gracefully.
+
 2006-01-10  Shreyas Srinivasan  <sshreyas@novell.com>
 
 	* camel-imap-store.c (camel_store_finalize): Fix #321812
