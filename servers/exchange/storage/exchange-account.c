@@ -58,9 +58,6 @@
 #define ADS_UF_DONT_EXPIRE_PASSWORD 0x10000
 #define ONE_HUNDRED_NANOSECOND 0.000000100
 #define SECONDS_IN_DAY 86400
-#define PASSWD_EXPIRY_NOTIFICATION_PERIOD 7
-#define FILENAME CONNECTOR_GLADEDIR "/exchange-passwd-expiry.glade"
-#define ROOTNODE "passwd_exp_dialog"
 
 struct _ExchangeAccountPrivate {
 	E2kContext *ctx;
@@ -362,7 +359,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	/* This makes the cleanup easier. We just unref it each time
 	 * we find it in account->priv->folders.
 	 */
-	d(printf ("adding folder : %s\n", e_folder_get_name (folder)));
+	//d(printf ("adding folder : %s\n", e_folder_get_name (folder)));
 	key = (char *) e_folder_exchange_get_path (folder);
 	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
@@ -371,7 +368,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		d(printf ("added path : %s\n", key));
+		//d(printf ("added path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -390,7 +387,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		d(printf ("added phy path : %s\n", key));
+		//d(printf ("added phy path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -403,7 +400,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		d(printf ("added int path : %s\n", key));
+		//d(printf ("added int path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -536,7 +533,7 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
-	
+
 	int_uri = e_folder_exchange_get_internal_uri (folder);
 
 	if (g_hash_table_find (account->priv->standard_uris, 
@@ -1020,58 +1017,8 @@ is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 	return (result == E2K_KERBEROS_PASSWORD_EXPIRED);
 }
 #endif
-#if 0
-static void
-change_passwd_cb (GtkWidget *button, ExchangeAccount *account)
-{
-	char *current_passwd, *new_passwd;
 
-	gtk_widget_hide (gtk_widget_get_toplevel(button));
-	current_passwd = exchange_account_get_password (account);
-	new_passwd = exchange_get_new_password (current_passwd, TRUE);
-	exchange_account_set_password (account, current_passwd, new_passwd);
-	g_free (current_passwd);
-	g_free (new_passwd);
-}
-#endif
-
-static void
-display_passwd_expiry_message (int max_passwd_age, ExchangeAccount *account)
-{
-	GladeXML *xml;
-	GtkWidget *top_widget, *change_passwd_button;
-	GtkResponseType response;
-	GtkLabel *warning_msg_label;
-	char *passwd_expiry_msg = 
-		g_strdup_printf ("Your password will expire in next %d days\n",
-				  max_passwd_age);
-
-	xml = glade_xml_new (FILENAME, ROOTNODE, NULL);
-	g_return_if_fail (xml != NULL);
-	top_widget = glade_xml_get_widget (xml, ROOTNODE);
-	g_return_if_fail (top_widget != NULL);
-
-	warning_msg_label = GTK_LABEL (glade_xml_get_widget (xml, 
-						"passwd_exp_label"));
-	gtk_label_set_text (warning_msg_label, passwd_expiry_msg);
-
-	change_passwd_button = glade_xml_get_widget (xml, 
-						"change_passwd_button");
-	gtk_widget_set_sensitive (change_passwd_button, TRUE);
-/*
-	g_signal_connect (change_passwd_button, 
-			  "clicked", 
-			  G_CALLBACK (change_passwd_cb), 
-			  account);
-*/
-	response = gtk_dialog_run (GTK_DIALOG (top_widget));
-
-	gtk_widget_destroy (top_widget);
-	g_object_unref (xml);
-	g_free (passwd_expiry_msg);
-}
-
-static void
+static int
 find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 {
 	double max_pwd_age = 0;
@@ -1081,7 +1028,7 @@ find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 
 	/* If user has not selected password expiry warning option, return */
 	if (account->priv->passwd_exp_warn_period == -1)
-		return;
+		return -1;
 
 	/* Check for password expiry period */ 
 	/* This needs to be invoked after is_password_expired(), i.e., 
@@ -1098,10 +1045,11 @@ find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 					      &entry); 
 	e2k_operation_free (&gcop);
 	if (gcstatus != E2K_GLOBAL_CATALOG_OK) 
-		return;
+		return -1;
        
-	if (entry->user_account_control & ADS_UF_DONT_EXPIRE_PASSWORD) 
-		return;         /* Password is not set to expire */
+	if (entry->user_account_control & ADS_UF_DONT_EXPIRE_PASSWORD) {
+		return -1;         /* Password is not set to expire */
+	}
 
 	/* Here we don't check not setting the password and expired password */ 
 	/* Check for the maximum password age set */
@@ -1116,10 +1064,10 @@ find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 		( max_pwd_age * ONE_HUNDRED_NANOSECOND ) / SECONDS_IN_DAY;
 
 		if (max_pwd_age_days <= account->priv->passwd_exp_warn_period) {
-			display_passwd_expiry_message (max_pwd_age_days, 
-						       account);
+			return max_pwd_age_days;
 		}
 	} 
+	return -1;
 }
 
 char *
@@ -1462,6 +1410,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		account->priv->connecting = FALSE;
 		g_mutex_unlock (account->priv->connect_lock);
 		*info_result = EXCHANGE_ACCOUNT_PASSWORD_INCORRECT;
+		e2k_autoconfig_free (ac);
 		return NULL;
 	}
 
@@ -1481,6 +1430,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			*info_result = EXCHANGE_ACCOUNT_PASSWORD_EXPIRED;
 			account->priv->connecting = FALSE;
 			g_mutex_unlock (account->priv->connect_lock);
+			e2k_autoconfig_free (ac);
 			return NULL;
 		}
 #endif
@@ -1590,20 +1540,17 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 			account->default_timezone = g_strdup (timezone);
 	}
 
-	account->priv->connected = TRUE;
-	account->priv->account_online = ONLINE_MODE;
-	account->priv->connecting = FALSE;
-
 	if (!setup_account_hierarchies (account)) {
 		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 		g_mutex_unlock (account->priv->connect_lock);
 		return NULL; /* FIXME: what error has happened? */
 	}
 
-	/* Find the password expiery peripod and display warning */
-	find_passwd_exp_period(account, entry);
-	
-	/* Check for quota warnings */
+	account->priv->account_online = ONLINE_MODE;
+	account->priv->connecting = FALSE;
+	account->priv->connected = TRUE;
+
+	/* Check for quota usage */
 	e2k_operation_init (&gcop);
 	gcstatus = e2k_global_catalog_lookup (account->priv->gc, &gcop,
                                             E2K_GLOBAL_CATALOG_LOOKUP_BY_EMAIL,
@@ -1612,9 +1559,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
                                             &entry);	
 	e2k_operation_free (&gcop);
 
-	/* FIXME: quota warnings are not yet marked for translation!! */
-	/* FIXME: warning message should have quota limit value and optionally current
-	 * usage 
+	/* FIXME: warning message should have quota limit value 
 	 */
 	if (gcstatus == E2K_GLOBAL_CATALOG_OK) {
 
@@ -1632,7 +1577,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 					account->priv->quota_limit = entry->quota_warn;
 		}
 	}
-	
+
 	g_signal_connect (account->priv->ctx, "redirect",
 			  G_CALLBACK (context_redirect), account);
 
@@ -1712,6 +1657,7 @@ exchange_account_get_standard_uri (ExchangeAccount *account, const char *item)
 
 	if (!account->priv->standard_uris)
 		return NULL;
+
 	return g_hash_table_lookup (account->priv->standard_uris, item);
 }
 
@@ -1818,7 +1764,6 @@ exchange_account_get_folder (ExchangeAccount *account,
 
 	if (!path_or_uri)
 		return NULL;
-
 	return g_hash_table_lookup (account->priv->folders, path_or_uri);
 }
 
@@ -1895,8 +1840,13 @@ exchange_account_get_quota_limit (ExchangeAccount *account)
 int
 exchange_account_check_password_expiry (ExchangeAccount *account)
 {
+	E2kGlobalCatalogEntry *entry;
+	int max_pwd_age_days = -1;
+
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 0);
-	return -1;
+
+	max_pwd_age_days = find_passwd_exp_period (account, entry);
+	return max_pwd_age_days;
 }
 
 char *

@@ -1,3 +1,15 @@
+2006-01-12  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-autoconfig.c (e2k_validate_user): Freeing password string.
+
+	* storage/exchange-account.c (display_passwd_expiry_message)
+	(change_passwd_cb): Removed these unused functions.
+	(find_passwd_exp_period): Retruning max_pwd_age_days or error instead of
+	invoking display_passwd_expiry_message().
+	(exchange_account_connect): Freeing E2KAutoconfig structure.
+	(exchange_account_check_password_expiry): Implemeted. Returns password validity
+	period. Fixes #326060.
+
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
 
 	* lib/e2k-autoconfig.c:
