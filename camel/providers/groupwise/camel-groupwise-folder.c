@@ -220,6 +220,14 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 		time_t time = e_gw_connection_get_date_from_string (dtstring);
 		time_t actual_time = camel_header_decode_date (ctime(&time), &offset);
 		camel_mime_message_set_date (msg, actual_time, offset);
+	} else {
+		time_t time;
+		time_t actual_time;
+		int offset = 0;
+		dtstring = e_gw_item_get_creation_date (item);
+		time = e_gw_connection_get_date_from_string (dtstring);
+		actual_time = camel_header_decode_date (ctime(&time), NULL);
+		camel_mime_message_set_date (msg, actual_time, offset);
 	}
 }
 
@@ -1148,6 +1156,13 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 				time_t time = e_gw_connection_get_date_from_string (temp_date);
 				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
 				mi->info.date_sent = mi->info.date_received = actual_time;
+			} else {
+				time_t time;
+				time_t actual_time;
+				temp_date = e_gw_item_get_creation_date (item);
+				time = e_gw_connection_get_date_from_string (temp_date);
+				actual_time = camel_header_decode_date (ctime(&time), NULL);
+				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		}
 
@@ -1327,6 +1342,13 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 			if (temp_date) {
 				time_t time = e_gw_connection_get_date_from_string (temp_date);
 				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
+				mi->info.date_sent = mi->info.date_received = actual_time;
+			} else {
+				time_t time;
+				time_t actual_time;
+				temp_date = e_gw_item_get_creation_date (item);
+				time = e_gw_connection_get_date_from_string (temp_date);
+				actual_time = camel_header_decode_date (ctime(&time), NULL);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		}
@@ -1527,7 +1549,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						has_boundary = TRUE;
 						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
 					}
-					camel_multipart_set_boundary(multipart, NULL);
 
 					//camel_mime_part_set_filename(part, g_strdup(attach->name));
 					if (attach->contentType)
@@ -1535,6 +1556,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					if (!has_boundary)
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart),"multipart/digest");
 
+					camel_multipart_set_boundary(multipart, NULL);
 					camel_multipart_add_part (multipart, part);
 
 					camel_object_unref (part);
