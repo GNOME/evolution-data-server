@@ -888,7 +888,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		goto end1;
 
 	if (!strcmp (folder->full_name, "Trash") || is_proxy) {
-		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution delivered attachments subject status size", NULL, &list);
+		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created delivered attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
 				g_warning ("Trash full....Empty Trash!!!!\n");
@@ -1282,8 +1282,13 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 			status_flags |= CAMEL_MESSAGE_SEEN;
 		if (item_status & E_GW_ITEM_STAT_REPLIED)
 			status_flags |= CAMEL_MESSAGE_ANSWERED;
+		
+		if (!strcmp (folder->full_name, "Trash"))
+			status_flags |= CAMEL_MESSAGE_SEEN;
+	
 		mi->info.flags |= status_flags;
 
+			
 		priority = e_gw_item_get_priority (item);
 		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
