@@ -6,6 +6,10 @@
 	(gw_update_summary):
 	put the created date, in case of missing delivered date
 
+	** See bug 314841
+	(gw_update_summary): dont bold trash folder with number of
+	messsages
+
 	* camel-groupwise-storec.:(groupwise_get_folder):
 	request for created date too
 

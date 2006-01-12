@@ -1532,13 +1532,10 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 							gchar **t;
 							//strip_lt_gt ((char **)&attach->contentid, 1, 2);
 							t= g_strsplit_set (attach->contentid, "<>", -1);
-							if (!t[1]) {
+							if (!t[1]) 
 								camel_mime_part_set_content_id (part, attach->contentid);
-								g_print ("|%s\n", attach->contentid);
-							} else {
+							else 
 								camel_mime_part_set_content_id (part, t[1]);
-								g_print ("|%s\n", t[1]);
-							}
 							g_strfreev (t);
 						}
 					} else if (attach->contentType && 
