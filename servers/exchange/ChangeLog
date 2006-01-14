@@ -1,5 +1,10 @@
 2006-01-14  Sushma Rai  <rsushma@novell.com>
 
+	* storage/exchange-esource.c (add_folder_esource): Marking the GAL 
+	folder for autocompletion, while creating it. Fixes #303998.
+
+2006-01-14  Sushma Rai  <rsushma@novell.com>
+
 	* storage/exchange-constants.h: using API_VERSION for Exchange
 	Connector book and calendar factories. See #323115.
 

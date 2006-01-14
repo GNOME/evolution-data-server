@@ -88,11 +88,14 @@ add_folder_esource (ExchangeAccount *account,
         		g_free (relative_uri);
 			return;
 		}
-		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://"))
+		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 			source = e_source_new_with_absolute_uri (folder_name,
 								 physical_uri);
-		else
+			e_source_set_property (source, "completion", "true");
+		}
+		else {
 			source = e_source_new (folder_name, relative_uri);
+		}
 
 		if (mode == OFFLINE_MODE) {
 			/* If account is marked for offline sync during account
@@ -117,11 +120,14 @@ add_folder_esource (ExchangeAccount *account,
 		if((source = e_source_group_peek_source_by_name (source_group, 
 							folder_name)) == NULL) {
 			printf("old group, new source\n");
-			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://"))
+			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 				source = e_source_new_with_absolute_uri (
 						folder_name, physical_uri);
-			else
+				e_source_set_property (source, "completion", "true");
+			}
+			else {
         			source = e_source_new (folder_name, relative_uri);
+			}
 
 			if (mode == OFFLINE_MODE)
 				e_source_set_property (source, "offline_sync", "1");
