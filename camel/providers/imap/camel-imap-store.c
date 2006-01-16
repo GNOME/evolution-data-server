@@ -1470,7 +1470,7 @@ imap_connect_online (CamelService *service, CamelException *ex)
 			 * for the given path, even if that path doesn't exist.
 			 */
 			response = camel_imap_command (store, NULL, ex,
-						       "LIST %S \"\"",
+						       "LIST %G \"\"",
 						       store->namespace);
 		} else {
 			/* Plain IMAP4 doesn't have that idiom, so we fall back
@@ -1478,7 +1478,7 @@ imap_connect_online (CamelService *service, CamelException *ex)
 			 * the folder doesn't exist (eg, if namespace is "").
 			 */
 			response = camel_imap_command (store, NULL, ex,
-						       "LIST \"\" %S",
+						       "LIST \"\" %G",
 						       store->namespace);
 		}
 		if (!response)
@@ -1900,7 +1900,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 			guint32 flags;
 			int i;
 			
-			if (!(response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %S", parent_real))) {
+			if (!(response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %G", parent_real))) {
 				CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
 				g_free (parent_name);
 				g_free (parent_real);
@@ -1965,7 +1965,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 				
 				/* add the dirsep to the end of parent_name */
 				name = g_strdup_printf ("%s%c", parent_real, imap_store->dir_sep);
-				response = camel_imap_command (imap_store, NULL, ex, "CREATE %S",
+				response = camel_imap_command (imap_store, NULL, ex, "CREATE %G",
 							       name);
 				g_free (name);
 				
@@ -1984,7 +1984,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 		g_free (parent_name);
 
 		folder_real = camel_imap_store_summary_path_to_full(imap_store->summary, folder_name, imap_store->dir_sep);
-		response = camel_imap_command (imap_store, NULL, ex, "CREATE %S", folder_real);
+		response = camel_imap_command (imap_store, NULL, ex, "CREATE %G", folder_real);
 		if (response) {
 			camel_imap_store_summary_add_from_full(imap_store->summary, folder_real, imap_store->dir_sep);
 
@@ -2150,7 +2150,7 @@ rename_folder_info (CamelImapStore *imap_store, const char *old_name, const char
 			if (imap_store->dir_sep == '.') {
 				CamelImapResponse *response;
 
-				response = camel_imap_command (imap_store, NULL, NULL, "RENAME %F %S", path, nfull);
+				response = camel_imap_command (imap_store, NULL, NULL, "RENAME %F %G", path, nfull);
 				if (response)
 					camel_imap_response_free (imap_store, response);
 			}
@@ -2268,7 +2268,7 @@ create_folder (CamelStore *store, const char *parent_name,
 	}
 
 	need_convert = FALSE;
-	response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %S",
+	response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %G",
 				       parent_real);
 	if (!response) /* whoa, this is bad */ {
 		g_free(parent_real);
@@ -2328,7 +2328,7 @@ create_folder (CamelStore *store, const char *parent_name,
 		
 		/* add the dirsep to the end of parent_name */
 		name = g_strdup_printf ("%s%c", parent_real, imap_store->dir_sep);
-		response = camel_imap_command (imap_store, NULL, ex, "CREATE %S",
+		response = camel_imap_command (imap_store, NULL, ex, "CREATE %G",
 					       name);
 		g_free (name);
 		
@@ -2345,7 +2345,7 @@ create_folder (CamelStore *store, const char *parent_name,
 	real_name = camel_imap_store_summary_path_to_full(imap_store->summary, folder_name, imap_store->dir_sep);
 	full_name = imap_concat (imap_store, parent_real, real_name);
 	g_free(real_name);
-	response = camel_imap_command (imap_store, NULL, ex, "CREATE %S", full_name);
+	response = camel_imap_command (imap_store, NULL, ex, "CREATE %G", full_name);
 	
 	if (response) {
 		CamelImapStoreInfo *si;
@@ -2508,7 +2508,7 @@ get_folders_sync(CamelImapStore *imap_store, const char *pattern, CamelException
 	present = g_hash_table_new(folder_hash, folder_eq);
 	for (j=0;j<2;j++) {
 		response = camel_imap_command (imap_store, NULL, ex,
-					       "%s \"\" %S", j==1 ? "LSUB" : "LIST",
+					       "%s \"\" %G", j==1 ? "LSUB" : "LIST",
 					       pattern);
 		if (!response)
 			goto fail;

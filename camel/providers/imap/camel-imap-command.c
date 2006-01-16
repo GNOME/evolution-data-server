@@ -133,13 +133,14 @@ camel_imap_command (CamelImapStore *store, CamelFolder *folder,
  *	%s, %d, %%: as with printf
  *	%S: an IMAP "string" (quoted string or literal)
  *	%F: an IMAP folder name
+ *	%G: an IMAP folder name, with namespace already prepended
  *
  * %S strings will be passed as literals if the server supports LITERAL+
  * and quoted strings otherwise. (%S does not support strings that
  * contain newlines.)
  *
- * %F will have the imap store's namespace prepended and then be processed
- * like %S.
+ * %F will have the imap store's namespace prepended; %F and %G will then
+ * be converted to UTF-7 and processed like %S.
  *
  * On success, the store's connect_lock will be locked. It will be
  * freed when %CAMEL_IMAP_RESPONSE_TAGGED or %CAMEL_IMAP_RESPONSE_ERROR
@@ -765,8 +766,9 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 			break;
 		case 'S':
 		case 'F':
+		case 'G':
 			string = va_arg (ap, char *);
-			/* NB: string is freed during output */
+			/* NB: string is freed during output for %F and %G */
 			if (*p == 'F') {
 				char *s = camel_imap_store_summary_full_from_path(store->summary, string);
 				if (s) {
@@ -775,7 +777,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 				} else {
 					string = camel_utf8_utf7(string);
 				}
-			} else {
+			} else if (*p == 'G') {
 				string = camel_utf8_utf7(string);
 			}
 				
@@ -828,6 +830,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 			break;
 		case 'S':
 		case 'F':
+		case 'G':
 			string = args->pdata[i++];
 			if (imap_is_atom (string)) {
 				outptr += sprintf (outptr, "%s", string);
@@ -843,7 +846,8 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 				}
 			}
 			
-			g_free (string);
+			if (*p == 'F' || *p == 'G')
+				g_free (string);
 			break;
 		default:
 			*outptr++ = '%';
