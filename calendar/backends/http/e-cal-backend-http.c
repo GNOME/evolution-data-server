@@ -194,12 +194,18 @@ e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *
 }
 
 static gchar *
-webcal_to_http_method (const gchar *webcal_str)
+webcal_to_http_method (const gchar *webcal_str, gboolean secure)
 {
+	if (secure && (strncmp ("http://", webcal_str, sizeof ("http://") - 1) == 0))
+		return g_strconcat ("https://", webcal_str + sizeof ("http://") - 1, NULL);
+
 	if (strncmp ("webcal://", webcal_str, sizeof ("webcal://") - 1))
 		return g_strdup (webcal_str);
 
-	return g_strconcat ("http://", webcal_str + sizeof ("webcal://") - 1, NULL);
+	if (secure)
+		return g_strconcat ("https://", webcal_str + sizeof ("webcal://") - 1, NULL);
+	else
+		return g_strconcat ("http://", webcal_str + sizeof ("webcal://") - 1, NULL);
 }
 
 static gboolean
@@ -245,7 +251,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 		if (newuri) {
 			g_free (priv->uri);
 
-			priv->uri = webcal_to_http_method (newuri);
+			priv->uri = webcal_to_http_method (newuri, FALSE);
 			begin_retrieval_cb (cbhttp);
 		} else {
 			if (!priv->opened) {
@@ -430,8 +436,13 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 		g_object_unref (conf_client);
 	}
 
-	if (priv->uri == NULL)
-		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)));
+	if (priv->uri == NULL) {
+		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+		const char *secure_prop = e_source_get_property (source, "secure");
+		
+		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
+		                                   (secure_prop && g_str_equal(e_source_get_property (source, "secure"), "1")));
+	}
 
 	/* create message to be sent to server */
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
