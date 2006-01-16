@@ -14,6 +14,8 @@
 	(imap_command_strdup_vprintf):
 	use %G instead of %F
 
+	Committed on behalf of Ed Catmur - partha
+
 2006-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-imap-command.c: 
