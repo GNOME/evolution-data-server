@@ -1,4 +1,4 @@
-2006-01-05  Tony Tsui <tsui.tony@gmail.com>
+2006-01-16  Tony Tsui <tsui.tony@gmail.com>
 
 	Fixes #267402
 	* backends/http/e-cal-backend-http.c: (webcal_to_http_method,
