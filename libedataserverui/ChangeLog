@@ -1,5 +1,12 @@
 2005-01-16  Devashish Sharma <sdevashish@novell.com>
 
+	* e-name-selector-dialog.c : Show the status message (searching, loading etc).
+	* e-source-selector.[ch] : Added a function to return book view from contact 
+	source.
+	Fixes #305678
+
+2005-01-16  Devashish Sharma <sdevashish@novell.com>
+
 	* e-name-selector-list.[ch] : New files added.
 	Adds a drop down popup to name-selector-entry widget which allows easy 
 	navigation of contacts added to the entry.

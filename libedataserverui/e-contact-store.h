@@ -72,6 +72,8 @@ void           e_contact_store_remove_book  (EContactStore *contact_store, EBook
 void           e_contact_store_set_query    (EContactStore *contact_store, EBookQuery *book_query);
 EBookQuery    *e_contact_store_peek_query   (EContactStore *contact_store);
 
+EBookView     *find_contact_source_by_book_return_view(EContactStore *contact_store, EBook *book);
+
 G_END_DECLS
 
 #endif  /* E_CONTACT_STORE_H */

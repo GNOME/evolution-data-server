@@ -252,6 +252,21 @@ find_contact_source_by_book (EContactStore *contact_store, EBook *book)
 	return -1;
 }
 
+EBookView *
+find_contact_source_by_book_return_view(EContactStore *contact_store, EBook *book)
+{
+	gint i;
+
+	ContactSource *source = NULL;
+
+	for(i = 0; i < contact_store->contact_sources->len; i++) {
+		source = &g_array_index (contact_store->contact_sources, ContactSource, i);
+		if (source->book == book)
+			break;
+	}
+	return source->book_view;;
+}
+
 static gint
 find_contact_source_by_view (EContactStore *contact_store, EBookView *book_view)
 {

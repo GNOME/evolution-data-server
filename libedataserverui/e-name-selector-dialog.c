@@ -668,10 +668,26 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
  * -------------------- */
 
 static void
+status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog) 
+{
+	if(message == NULL)
+		gtk_label_set_text(dialog->status_label, "");
+	else
+		gtk_label_set_text(dialog->status_label, message);
+}
+
+static void
+sequence_complete(EBookView *view, EBookViewStatus status, ENameSelectorDialog *dialog)
+{
+	status_message(view, NULL, dialog);
+}
+
+static void
 book_opened (EBook *book, EBookStatus status, gpointer data)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (data);
 	EContactStore       *contact_store;
+	EBookView           *view; 
 
 	if (status != E_BOOK_ERROR_OK) {
 		/* TODO: Handle errors gracefully */
@@ -681,6 +697,10 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 	e_contact_store_add_book (contact_store, book);
+	view = find_contact_source_by_book_return_view(contact_store, book);
+	g_signal_connect(view, "status_message", G_CALLBACK(status_message), name_selector_dialog);
+	g_signal_connect(view, "sequence_complete", G_CALLBACK(sequence_complete), name_selector_dialog);
+
 	g_object_unref (book);
 	name_selector_dialog->pending_book = NULL;
 }
