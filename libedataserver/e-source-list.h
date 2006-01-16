@@ -87,6 +87,8 @@ gboolean  e_source_list_remove_source_by_uid  (ESourceList  *list,
 gboolean  e_source_list_sync  (ESourceList  *list,
 			       GError      **error);
 
+gboolean e_source_list_is_gconf_updated (ESourceList *list);
+
 G_END_DECLS
 
 #endif /* _E_SOURCE_LIST_H_ */

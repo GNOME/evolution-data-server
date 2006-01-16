@@ -172,7 +172,7 @@ load_from_gconf (ESourceList *list)
 
 	/* FIXME if the order changes, the function doesn't notice.  */
 
-	if (changed)
+	if (changed) 
 		g_signal_emit (list, signals[CHANGED], 0);
 }
 
@@ -574,14 +574,105 @@ e_source_list_sync (ESourceList *list,
 		conf_list = g_slist_prepend (conf_list, e_source_group_to_xml (E_SOURCE_GROUP (p->data)));
 	conf_list = g_slist_reverse (conf_list);
 
-	retval = gconf_client_set_list (list->priv->gconf_client,
-					list->priv->gconf_path,
-					GCONF_VALUE_STRING,
-					conf_list,
-					error);
+	if (!e_source_list_is_gconf_updated (list))
+		retval = gconf_client_set_list (list->priv->gconf_client,
+						list->priv->gconf_path,
+						GCONF_VALUE_STRING,
+						conf_list,
+						error);
+	else
+		retval = TRUE;
 
 	g_slist_foreach (conf_list, (GFunc) g_free, NULL);
 	g_slist_free (conf_list);
 
 	return retval;
+}
+
+gboolean
+e_source_list_is_gconf_updated (ESourceList *list)
+{
+	char *source_group_xml = NULL;
+	char *gconf_xml = NULL;
+	char *group_uid = NULL;
+	GSList *conf_list = NULL, *temp = NULL, *p = NULL;
+	xmlDocPtr xmldoc;
+	ESourceGroup *group = NULL;
+	GSList *groups = NULL;	
+	gboolean conf_to_list = TRUE, list_to_conf = TRUE;
+	
+	g_return_val_if_fail (list != NULL, FALSE);
+
+	conf_list = gconf_client_get_list (list->priv->gconf_client,
+					   list->priv->gconf_path,
+					   GCONF_VALUE_STRING, NULL);
+
+	/* From conf to list */
+
+	for (temp = conf_list; temp != NULL; temp = temp->next) {
+		gconf_xml = (char *)temp->data;
+		xmldoc = xmlParseDoc ((const xmlChar *)gconf_xml);
+
+		group_uid = e_source_group_uid_from_xmldoc (xmldoc);
+		group = e_source_list_peek_group_by_uid (list, group_uid);
+
+		if (group) {
+			source_group_xml = e_source_group_to_xml (group);
+			if (!strcmp (gconf_xml, source_group_xml)) 
+				continue;
+			else {
+				conf_to_list  = FALSE;
+				break;
+			}
+		} else {
+			conf_to_list = FALSE;	
+			break;
+		}
+	}
+
+
+	/* If there is mismatch, free the conf_list and return FALSE */
+	if (!conf_to_list) {
+		for (p = conf_list; p != NULL ; p = p->next) {
+			gconf_xml = (char *) p->data;
+			g_free (gconf_xml);
+		}
+		g_slist_free (conf_list);
+		return FALSE;
+	}
+	
+	groups = e_source_list_peek_groups (list);
+	
+	/* From list to conf */	
+
+	for (p = groups ; p != NULL; p = p->next) {
+		group = E_SOURCE_GROUP (p->data);
+		source_group_xml = e_source_group_to_xml (group);
+
+		for (temp = conf_list; temp != NULL; temp = temp->next) {
+			gconf_xml = (char *)temp->data;
+			if (strcmp (gconf_xml, source_group_xml))
+				continue;
+			else 
+				break; 
+		}
+
+		if (!temp) {
+			list_to_conf = FALSE;
+			break;
+		}
+
+	}
+
+	for (p = conf_list; p != NULL ; p = p->next) {
+		gconf_xml = (char *) p->data;
+		g_free (gconf_xml);
+	}
+	g_slist_free (conf_list);
+
+	/* If there is mismatch return FALSE */
+	if (!list_to_conf)
+		return FALSE;
+	
+	return TRUE;
 }

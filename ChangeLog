@@ -1,3 +1,12 @@
+2006-01-16  P S Chakravarthi <pchakravarthi@novell.com>
+
+	* libedataserver/e-source-list.[ch] : added a function called
+	e_source_list_is_gconf_updated () which returns a boolean indicating
+	whether or not a given ESourceList instance is in sync with its
+	corresponding gconf xml or not.
+	e_source_list_sync () : added an if clause that uses the above
+	function before updating the gconf.
+
 2006-01-16  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in : Add target for CALDAV calendar
