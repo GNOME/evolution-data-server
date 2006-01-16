@@ -1,3 +1,10 @@
+2006-01-16  Harish Krishnaswamy <kharish@novell.com>
+
+	* backends/caldav/* : 'Import' the CalDAV back-end 
+	implementation into evolution-data-server. Please
+	refer evolution-caldav module in cvs.gnome.org for
+	prior Change history.
+	
 2006-01-16  Tony Tsui <tsui.tony@gmail.com>
 
 	Fixes #267402
