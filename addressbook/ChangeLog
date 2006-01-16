@@ -1,3 +1,20 @@
+2006-01-16  Sushma Rai  <rsushma@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c prop_info: Added GROUP_PROP.
+	(check_schema_support): Considering "groupOfNames".
+	(add_objectclass_mod): Similar.
+	(build_mods_from_contacts): Handling the list object.
+	(e_book_backend_ldap_create_contact): similar.
+	(modify_contact_search_handler): similar. Also added debug messages.
+	(member_populate): Added new, populates the contact list members.
+	(member_ber): Added new, returns member information.
+	(member_compare): Added new, compares two contact lists.
+	(build_contact_from_entry): Handling "groupOfNames" object. For the
+	groupOfNames object, for each member DN, reading the cn and e-mail ids,
+	and calling member_populate.
+	(e_book_backend_ldap_get_static_capabilities): Added contact-lists.
+	Fixes #214977.
+
 2006-01-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libebook/e-book.c: (activate_factories_for_uri):

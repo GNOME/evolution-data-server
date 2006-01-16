@@ -38,6 +38,7 @@
 #ifdef DEBUG
 #define LDAP_DEBUG
 #define LDAP_DEBUG_ADD
+#define LDAP_DEBUG_MODIFY
 #endif
 #include <ldap.h>
 #ifdef DEBUG
@@ -104,6 +105,7 @@ typedef enum {
 #define INETORGPERSON        "inetOrgPerson"
 #define CALENTRY             "calEntry"
 #define EVOLUTIONPERSON      "evolutionPerson"
+#define GROUPOFNAMES         "groupOfNames"
 
 gboolean enable_debug = FALSE;
 
@@ -190,11 +192,15 @@ static void     ldap_op_finished (LDAPOp *op);
 
 static gboolean poll_ldap (EBookBackendLDAP *bl);
 
-static EContact *build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectclasses);
+static EContact *build_contact_from_entry (EBookBackendLDAP *bl, LDAPMessage *e, GList **existing_objectclasses);
 
 static void email_populate (EContact *contact, char **values);
 static struct berval** email_ber (EContact *contact);
 static gboolean email_compare (EContact *contact1, EContact *contact2);
+
+static void member_populate (EContact *contact, char **values);
+static struct berval** member_ber (EContact *contact);
+static gboolean member_compare (EContact *contact1, EContact *contact2);
 
 static void homephone_populate (EContact *contact, char **values);
 static struct berval** homephone_ber (EContact *contact);
@@ -237,12 +243,13 @@ static void cert_populate (EContact *contact, struct berval **ber_values);
 struct prop_info {
 	EContactField field_id;
 	char *ldap_attr;
-#define PROP_TYPE_STRING   0x01
-#define PROP_TYPE_COMPLEX  0x02
-#define PROP_TYPE_BINARY   0x04
-#define PROP_DN            0x08
-#define PROP_EVOLVE        0x10
-#define PROP_WRITE_ONLY    0x20
+#define PROP_TYPE_STRING    0x01
+#define PROP_TYPE_COMPLEX   0x02
+#define PROP_TYPE_BINARY    0x04
+#define PROP_DN             0x08
+#define PROP_EVOLVE         0x10
+#define PROP_WRITE_ONLY     0x20
+#define PROP_TYPE_GROUP     0x40
 	int prop_type;
 
 	/* the remaining items are only used for the TYPE_COMPLEX props */
@@ -264,6 +271,7 @@ struct prop_info {
 #define STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING}
 #define WRITE_ONLY_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_WRITE_ONLY}
 #define E_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_EVOLVE}
+#define GROUP_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_GROUP, ctor, ber, cmp}
 
 
 	/* name fields */
@@ -272,6 +280,7 @@ struct prop_info {
 
 	/* email addresses */
 	COMPLEX_PROP   (E_CONTACT_EMAIL, "mail", email_populate, email_ber, email_compare),
+	GROUP_PROP   (E_CONTACT_EMAIL, "member", member_populate, member_ber, member_compare),
 
 	/* phone numbers */
 	E_STRING_PROP (E_CONTACT_PHONE_PRIMARY,      "primaryPhone"),
@@ -340,6 +349,7 @@ struct prop_info {
 #undef STRING_PROP
 #undef E_COMPLEX_PROP
 #undef COMPLEX_PROP
+#undef GROUP_PROP
 };
 
 static int num_prop_infos = sizeof(prop_info) / sizeof(prop_info[0]);
@@ -552,7 +562,8 @@ check_schema_support (EBookBackendLDAP *bl)
 					}
 					else if (!g_ascii_strcasecmp (oc->oc_names[j], INETORGPERSON)
 						 || !g_ascii_strcasecmp (oc->oc_names[j], ORGANIZATIONALPERSON)
-						 || !g_ascii_strcasecmp (oc->oc_names[j], PERSON)) {
+						 || !g_ascii_strcasecmp (oc->oc_names[j], PERSON)
+						 || !g_ascii_strcasecmp (oc->oc_names[j], GROUPOFNAMES)) {
 						add_oc_attributes_to_supported_fields (bl, oc);
 					}
 
@@ -962,7 +973,7 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, i
 static void
 ldap_op_add (LDAPOp *op, EBookBackend *backend,
 	     EDataBook *book, EDataBookView *view,
-	     int opid,
+	     int opid, 
 	     int msgid,
 	     LDAPOpHandler handler, LDAPOpDtor dtor)
 {
@@ -1130,12 +1141,14 @@ free_mods (GPtrArray *mods)
 static GPtrArray*
 build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new, gboolean *new_dn_needed)
 {
-	gboolean adding = (current == NULL);
+	gboolean adding = (current == NULL), is_list = FALSE;
 	GPtrArray *result = g_ptr_array_new();
 	int i;
 
 	if (new_dn_needed)
 		*new_dn_needed = FALSE;
+	if (e_contact_get (new, E_CONTACT_IS_LIST))
+		is_list = TRUE;
 
 	/* we walk down the list of properties we can deal with (that
 	 big table at the top of the file) */
@@ -1150,8 +1163,16 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 
 		/* XXX if it's an evolutionPerson prop and the ldap
                    server doesn't support that objectclass, skip it. */
-		if (prop_info[i].prop_type & PROP_EVOLVE && !bl->priv->evolutionPersonSupported)
+		if (prop_info[i].prop_type & PROP_EVOLVE ) {
+			if (!bl->priv->evolutionPersonSupported)
+				continue;
+			if (is_list)
+				continue;
+		}
+		if (((prop_info[i].prop_type & PROP_TYPE_COMPLEX) ||
+		     (prop_info[i].prop_type & PROP_TYPE_BINARY))  && is_list) {
 			continue;
+		}
 
 		/* get the value for the new contact, and compare it to
                    the value in the current contact to see if we should
@@ -1238,24 +1259,22 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 				mod->mod_values[0] = new_prop;
 				mod->mod_values[1] = NULL;
 			}
-			else { /* PROP_TYPE_COMPLEX */
+			else { /* PROP_TYPE_COMPLEX/PROP_TYPE_GROUP */
 				mod->mod_op |= LDAP_MOD_BVALUES;
 				mod->mod_bvalues = new_prop_bers;
 			}
 
 			g_ptr_array_add (result, mod);
 		}
-		
 	}
 
 	/* NULL terminate the list of modifications */
 	g_ptr_array_add (result, NULL);
-
 	return result;
 }
 
 static void
-add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing_objectclasses)
+add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing_objectclasses, gboolean is_list)
 {
 #define FIND_INSERT(oc) \
 	if (!g_list_find_custom (existing_objectclasses, (oc), (GCompareFunc)g_ascii_strcasecmp)) \
@@ -1275,13 +1294,18 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
                    objectclasses, but really, how many objectclasses
                    are there going to be in any sane ldap entry? */
 		FIND_INSERT (TOP);
-		FIND_INSERT (PERSON);
-		FIND_INSERT (ORGANIZATIONALPERSON);
-		FIND_INSERT (INETORGPERSON);
-		if (bl->priv->calEntrySupported)
-			FIND_INSERT (CALENTRY);
-		if (bl->priv->evolutionPersonSupported)
-			FIND_INSERT (EVOLUTIONPERSON);
+		if (is_list) {
+			FIND_INSERT (GROUPOFNAMES);
+		}
+		else {
+			FIND_INSERT (PERSON);
+			FIND_INSERT (ORGANIZATIONALPERSON);
+			FIND_INSERT (INETORGPERSON);
+			if (bl->priv->calEntrySupported)
+				FIND_INSERT (CALENTRY);
+			if (bl->priv->evolutionPersonSupported)
+				FIND_INSERT (EVOLUTIONPERSON);
+		}
 
 		if (objectclasses->len) {
 			g_ptr_array_add (objectclasses, NULL);
@@ -1294,7 +1318,6 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 			g_free (objectclass_mod->mod_type);
 			g_free (objectclass_mod);
 		}
-
 	}
 	else {
 		objectclass_mod = g_new (LDAPMod, 1);
@@ -1302,13 +1325,18 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 		objectclass_mod->mod_type = g_strdup ("objectClass");
 
 		INSERT(TOP);
-		INSERT(PERSON);
-		INSERT(ORGANIZATIONALPERSON);
-		INSERT(INETORGPERSON);
-		if (bl->priv->calEntrySupported)
-			INSERT(CALENTRY);
-		if (bl->priv->evolutionPersonSupported)
-			INSERT(EVOLUTIONPERSON);
+		if (is_list) {
+			INSERT(GROUPOFNAMES);
+		}
+		else {
+			INSERT(PERSON);
+			INSERT(ORGANIZATIONALPERSON);
+			INSERT(INETORGPERSON);
+			if (bl->priv->calEntrySupported)
+				INSERT(CALENTRY);
+			if (bl->priv->evolutionPersonSupported)
+				INSERT(EVOLUTIONPERSON);
+		}
 		g_ptr_array_add (objectclasses, NULL);
 		objectclass_mod->mod_values = (char**)objectclasses->pdata;
 		g_ptr_array_add (mod_array, objectclass_mod);
@@ -1424,7 +1452,7 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 
 		book_view = find_book_view (bl);
 
-		printf ("vcard = %s\n", vcard);
+		printf ("Create Contact: vcard = %s\n", vcard);
 		
 		create_op->new_contact = e_contact_new_from_vcard (vcard);
 	
@@ -1453,7 +1481,10 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 		g_ptr_array_remove (mod_array, NULL);
 		
 		/* add our objectclass(es) */
-		add_objectclass_mod (bl, mod_array, NULL);
+		if (e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST))
+			add_objectclass_mod (bl, mod_array, NULL, TRUE);
+		else
+			add_objectclass_mod (bl, mod_array, NULL, FALSE);
 		
 		/* then put the NULL back */
 		g_ptr_array_add (mod_array, NULL);
@@ -1775,7 +1806,7 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 		}
 
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		modify_op->current_contact = build_contact_from_entry (ldap, e,
+		modify_op->current_contact = build_contact_from_entry (bl, e,
 								       &modify_op->existing_objectclasses);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
@@ -1821,13 +1852,49 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 
 			/* add our objectclass(es), making sure
 			   evolutionPerson is there if it's supported */
-			add_objectclass_mod (bl, mod_array, modify_op->existing_objectclasses);
+			if (e_contact_get (modify_op->current_contact, E_CONTACT_IS_LIST))
+				add_objectclass_mod (bl, mod_array, modify_op->existing_objectclasses, TRUE);
+			else
+				add_objectclass_mod (bl, mod_array, modify_op->existing_objectclasses, FALSE);
 
 			/* then put the NULL back */
 			g_ptr_array_add (mod_array, NULL);
 
 			ldap_mods = (LDAPMod**)mod_array->pdata;
 
+#ifdef LDAP_DEBUG_MODIFY
+			{
+				int i;
+				printf ("Sending the following to the server as MOD\n");
+			
+				for (i = 0; g_ptr_array_index(mod_array, i); i ++) {
+					LDAPMod *mod = g_ptr_array_index(mod_array, i);
+					if (mod->mod_op & LDAP_MOD_DELETE)
+						printf ("del ");
+					else if (mod->mod_op & LDAP_MOD_REPLACE)
+						printf ("rep ");
+					else
+						printf ("add ");
+					if (mod->mod_op & LDAP_MOD_BVALUES)
+						printf ("ber ");
+					else
+						printf ("    ");
+			
+					printf (" %s:\n", mod->mod_type);
+			
+					if (mod->mod_op & LDAP_MOD_BVALUES) {
+						int j;
+						for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
+							printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
+					}
+					else {
+						int j;
+						for (j = 0; mod->mod_values[j]; j++)
+							printf ("\t\t'%s'\n", mod->mod_values[j]);
+					}
+				}
+			}
+#endif
 			/* actually perform the ldap modify */
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_modify_ext (ldap, modify_op->id, ldap_mods,
@@ -1846,10 +1913,11 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 							    ldap_error_to_response (ldap_error),
 							    NULL);
 				ldap_op_finished (op);
+				free_mods (mod_array);
 				return;
 			}
 		}
-
+		
 		/* and clean up */
 		free_mods (mod_array);
 	}
@@ -1908,6 +1976,7 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 
 		book_view = find_book_view (bl);
 
+		printf ("Modify Contact: vcard = %s\n", vcard);
 		modify_op->contact = e_contact_new_from_vcard (vcard);
 		modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
 
@@ -1997,7 +2066,7 @@ get_contact_handler (LDAPOp *op, LDAPMessage *res)
 		}
 
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		contact = build_contact_from_entry (bl->priv->ldap, e, NULL);
+		contact = build_contact_from_entry (bl, e, NULL);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -2196,7 +2265,7 @@ contact_list_handler (LDAPOp *op, LDAPMessage *res)
 			char *vcard;
 
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			contact = build_contact_from_entry (ldap, e, NULL);
+			contact = build_contact_from_entry (bl, e, NULL);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -2403,6 +2472,9 @@ email_ber(EContact *contact)
 	const char *emails[4];
 	int i, j, num = 0;
 
+	if (e_contact_get (contact, E_CONTACT_IS_LIST))
+		return NULL;
+
 	for (i = 0; i < 4; i ++) {
 		emails[i] = e_contact_get (contact, email_ids[i]);
 		if (emails[i])
@@ -2435,6 +2507,10 @@ email_compare (EContact *contact1, EContact *contact2)
 {
 	const char *email1, *email2;
 	int i;
+	/*
+	if (e_contact_get (contact1, E_CONTACT_IS_LIST))
+		return TRUE;
+	*/
 
 	for (i = 0; i < 4; i ++) {
 		gboolean equal;
@@ -2450,6 +2526,147 @@ email_compare (EContact *contact1, EContact *contact2)
 			return equal;
 	}
 
+	return TRUE;
+}
+
+
+static void
+member_populate (EContact *contact, char **values)
+{
+	int i;
+	gchar **member_info;
+
+	for (i = 0; values[i]; i ++) {
+		EVCardAttribute *attr;
+
+		member_info = g_strsplit (values [i], ";", -1);
+
+		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
+		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_EMAIL), member_info [0]);
+		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID), member_info [1]);
+		if (member_info [2])
+			e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_NAME), member_info [2]);
+		e_vcard_attribute_add_value (attr, member_info [0]);
+		e_vcard_add_attribute (E_VCARD (contact), attr);
+	}
+}
+
+static struct berval**
+member_ber (EContact *contact)
+{
+	struct berval** result;
+	GList *members, *l, *p;
+	int i=0, num = 0;
+	char *dn;
+
+	if (!(e_contact_get (contact, E_CONTACT_IS_LIST)))
+		return NULL;
+
+	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
+	num = g_list_length (members);
+	if (num == 0)
+		return NULL;
+
+	result = g_new (struct berval*, num + 1);
+
+	for (l = members; l != NULL; l = g_list_next (l)) {
+		EVCardAttribute *attr = l->data;
+		dn = NULL;
+	
+		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
+			EVCardAttributeParam *param = p->data;
+			const char *param_name = e_vcard_attribute_param_get_name (param);
+			
+			if (!g_ascii_strcasecmp (param_name, EVC_X_DEST_CONTACT_UID)) {
+				GList *v = e_vcard_attribute_param_get_values (param);
+				dn = v ? v->data : NULL;
+				if (dn) {
+					result[i] = g_new (struct berval, 1);
+					result[i]->bv_val = g_strdup (dn);
+					result[i]->bv_len = strlen (dn);
+					i++;
+				}
+			}
+		}
+	}
+	result[i] = NULL;
+	return result;
+}
+
+static gboolean
+member_compare (EContact *contact_new, EContact *contact_current)
+{
+	GList *members_new, *members_cur, *l1, *l2, *p_new, *p_cur;
+	int len1 = 0, len2 = 0;
+	char *list_name1, *list_name2;
+	gboolean equal;
+
+	if (!(e_contact_get (contact_new, E_CONTACT_IS_LIST)))
+		return TRUE;
+	if (!(e_contact_get (contact_current, E_CONTACT_IS_LIST)))
+		return TRUE;
+
+	list_name1 = e_contact_get (contact_new, E_CONTACT_FULL_NAME);
+	list_name2 = e_contact_get (contact_current, E_CONTACT_FULL_NAME);
+	if (list_name1 && list_name2)
+		equal = !strcmp (list_name1, list_name2);
+	else
+		equal = (!!list_name1 == !!list_name2);
+
+	if (!equal)
+		return equal;
+
+	members_new = e_contact_get_attributes (contact_new, E_CONTACT_EMAIL);
+	len1 = g_list_length (members_new);
+	members_cur = e_contact_get_attributes (contact_current, E_CONTACT_EMAIL);
+	len2 = g_list_length (members_cur);
+	if (len1 != len2)
+		return FALSE;
+
+	for (l1 = members_new; l1 != NULL; l1 = g_list_next (l1)) {
+		EVCardAttribute *attr_new = l1->data;
+		char *dn_new = NULL;
+	
+		for (p_new = e_vcard_attribute_get_params (attr_new); p_new; p_new = p_new->next) {
+			EVCardAttributeParam *param = p_new->data;
+			const char *param_name1 = e_vcard_attribute_param_get_name (param);
+			
+			if (!g_ascii_strcasecmp (param_name1, EVC_X_DEST_CONTACT_UID)) {
+				gboolean found = FALSE;
+				GList *v = e_vcard_attribute_param_get_values (param);
+				dn_new = v ? v->data : NULL;
+				if (dn_new) {
+					for (l2 = members_cur; l2 != NULL; l2 = g_list_next (l2)) {
+						EVCardAttribute *attr_cur = l2->data;
+						char *dn_cur = NULL;
+
+						for (p_cur = e_vcard_attribute_get_params (attr_cur); p_cur; p_cur = p_cur->next) {
+							EVCardAttributeParam *param = p_cur->data;
+							const char *param_name2 = e_vcard_attribute_param_get_name (param);
+
+							if (!g_ascii_strcasecmp (param_name2, EVC_X_DEST_CONTACT_UID)) {
+								GList *v = e_vcard_attribute_param_get_values (param);
+								dn_cur = v ? v->data : NULL;
+							
+								if (dn_cur) {
+									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
+										found = TRUE;
+										g_list_remove (members_cur, attr_cur);
+										goto next_member;
+									}
+								}
+							}
+						}
+					}
+					if (!found) {
+						return FALSE;
+					}
+				}
+			}
+		}
+		next_member: 
+		continue;
+	}
 	return TRUE;
 }
 
@@ -3406,7 +3623,6 @@ query_prop_to_ldap(gchar *query_prop)
 	return NULL;
 }
 
-
 typedef struct {
 	LDAPOp op;
 	EDataBookView *view;
@@ -3418,14 +3634,18 @@ typedef struct {
 } LDAPSearchOp;
 
 static EContact *
-build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectclasses)
+build_contact_from_entry (EBookBackendLDAP *bl,
+			  LDAPMessage *e, 
+			  GList **existing_objectclasses)
 {
 	EContact *contact = e_contact_new ();
 	char *dn;
 	char *attr;
 	BerElement *ber = NULL;
+	LDAP *ldap;
 
-	dn = ldap_get_dn(ldap, e);
+	ldap = bl->priv->ldap;
+	dn = ldap_get_dn (ldap, e);
 	e_contact_set (contact, E_CONTACT_UID, dn);
 	ldap_memfree (dn);
 
@@ -3435,11 +3655,18 @@ build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectcla
 		struct prop_info *info = NULL;
 		char **values;
 
-		if (existing_objectclasses && !g_ascii_strcasecmp (attr, "objectclass")) {
+		printf ("attr = %s \n", attr);
+		if (!g_ascii_strcasecmp (attr, "objectclass")) {
 			values = ldap_get_values (ldap, e, attr);
-			for (i = 0; values[i]; i ++)
-				*existing_objectclasses = g_list_append (*existing_objectclasses, g_strdup (values[i]));
-
+			for (i = 0; values[i]; i ++) {
+				printf ("value = %s\n", values[i]);
+				if (!g_ascii_strcasecmp (values[i], "groupOfNames")) {
+					e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (TRUE));
+					e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (TRUE));
+				}
+				if (existing_objectclasses) 
+					*existing_objectclasses = g_list_append (*existing_objectclasses, g_strdup (values[i]));
+			}
 			ldap_value_free (values);
 		}
 		else {
@@ -3449,7 +3676,6 @@ build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectcla
 					break;
 				}
 
-			printf ("attr = %s, ", attr);
 			printf ("info = %p\n", info);
 
 			if (info) {
@@ -3480,6 +3706,79 @@ build_contact_from_entry (LDAP *ldap, LDAPMessage *e, GList **existing_objectcla
 							   which calls g_object_set to set the property */
 							info->populate_contact_func(contact,
 										    values);
+						}
+						else if (info->prop_type & PROP_TYPE_GROUP) {
+							char *grpattrs[3];
+							int i, view_limit = -1, ldap_error, count;
+							EDataBookView *book_view;
+							LDAPMessage *result;
+							char **email_values, **cn_values, **member_info;
+
+							grpattrs[0] = "cn";
+							grpattrs[1] = "mail";
+							grpattrs[2] = NULL;
+							/* search for member attributes */
+							/* get the e-mail id for each member and add them to the list */
+		
+							book_view = find_book_view (bl);	
+							if (book_view)
+								view_limit = e_data_book_view_get_max_results (book_view);
+							if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
+								view_limit = bl->priv->ldap_limit;
+
+							count = ldap_count_values (values);
+							member_info = g_new0 (gchar *, count+1);
+
+							for (i = 0; values[i] ; i ++) {
+								/* get the email id for the given dn */
+								/* set base to DN and scope to base */
+								printf ("value (dn) = %s \n", values [i]);
+								do {
+									if ((ldap_error = ldap_search_ext_s (bl->priv->ldap,
+						    						        values[i],
+						    						        LDAP_SCOPE_BASE,
+						    						        NULL,
+						    						        grpattrs, 0, 
+												        NULL,
+												        NULL,
+												        NULL,
+												        view_limit,
+											    	        &result)) == LDAP_SUCCESS) {
+										/* find the e-mail ids of members */
+										cn_values = ldap_get_values (ldap, result, "cn");
+										email_values = ldap_get_values (ldap, result, "mail");
+
+										if (email_values) {
+											printf ("email = %s \n", email_values[0]);
+											*(member_info + i) = 
+												g_strdup_printf ("%s;%s;", 
+														 email_values[0], values[i]);
+											ldap_value_free (email_values);
+										}
+										if (cn_values) {
+											printf ("cn = %s \n", cn_values[0]);
+											*(member_info + i) = 
+												g_strconcat (*(member_info + i), 
+													     cn_values [0], NULL);
+											ldap_value_free (cn_values);
+										}
+									}
+								}
+								while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+			
+								if (ldap_error != LDAP_SUCCESS) {
+									book_view_notify_status (book_view, 
+												 ldap_err2string(ldap_error));
+									continue;
+								}
+							}
+							/* call populate function */	
+							info->populate_contact_func (contact, member_info); 
+						
+							for (i = 0; i < count; i++) {
+                						g_free (*(member_info + i));
+        						}
+        						g_free (member_info);	
 						}
 
 						ldap_value_free (values);
@@ -3609,7 +3908,7 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 
 		while (NULL != e) {
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			EContact *contact = build_contact_from_entry (ldap, e, NULL);
+			EContact *contact = build_contact_from_entry (bl, e, NULL);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			e_data_book_view_notify_update (view, contact);
@@ -3770,7 +4069,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 
 				bonobo_object_ref (view);
 
-				ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND(bl), book, view,
+				ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND(bl), book, view, 
 					     0, search_msgid,
 					     ldap_search_handler, ldap_search_dtor);
 
@@ -3878,7 +4177,7 @@ generate_cache_handler (LDAPOp *op, LDAPMessage *res)
 
 		while (e != NULL) {
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			EContact *contact = build_contact_from_entry (ldap, e, NULL);
+			EContact *contact = build_contact_from_entry (bl, e, NULL);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			contact_list_op->contacts = g_list_prepend (contact_list_op->contacts, contact);
@@ -4371,7 +4670,7 @@ e_book_backend_ldap_remove (EBookBackend *backend, EDataBook *book, guint32 opid
 static char*
 e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 {
-	return g_strdup("net,anon-access,do-initial-query");
+	return g_strdup("net,anon-access,do-initial-query,contact-lists");
 }
 
 static void
