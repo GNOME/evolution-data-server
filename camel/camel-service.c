@@ -443,6 +443,7 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 	
 	CAMEL_SERVICE_UNLOCK (service, connect_lock);
 	
+		service->status = CAMEL_SERVICE_DISCONNECTED;
 	return res;
 }
 
