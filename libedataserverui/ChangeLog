@@ -1,3 +1,11 @@
+2005-01-16  Devashish Sharma <sdevashish@novell.com>
+
+	* e-name-selector-list.[ch] : New files added.
+	Adds a drop down popup to name-selector-entry widget which allows easy 
+	navigation of contacts added to the entry.
+	* e-name-selector.c : Added a new function which returns name-selector-list.
+	* e-destination-store.c : Added a couple of utility functions.
+
 2005-01-06  Sushma Rai  <rsushma@novell.com>
 
 	* e-book-auth-util.c (remove_parameters_from_uri): Properly parsing the
