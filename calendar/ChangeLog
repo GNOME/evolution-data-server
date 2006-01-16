@@ -1,5 +1,9 @@
 2006-01-16  Harish Krishnaswamy <kharish@novell.com>
 
+	* backends/Makefile.am : Add caldav subdir.
+
+2006-01-16  Harish Krishnaswamy <kharish@novell.com>
+
 	* backends/caldav/* : 'Import' the CalDAV back-end 
 	implementation into evolution-data-server. Please
 	refer evolution-caldav module in cvs.gnome.org for
