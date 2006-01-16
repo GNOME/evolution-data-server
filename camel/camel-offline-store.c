@@ -157,10 +157,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 		/* network unavailable -> network available */
 		if (!camel_service_connect (CAMEL_SERVICE (store), ex))
 			return;
-		fprintf (stderr, "i hit this boo wtf\n");
 	}
 	
-	if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) 
-		fprintf (stderr,"I do my job well\n");
 	store->state = state;
 }
