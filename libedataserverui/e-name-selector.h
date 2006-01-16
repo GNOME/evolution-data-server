@@ -29,6 +29,7 @@
 #include <libedataserverui/e-name-selector-model.h>
 #include <libedataserverui/e-name-selector-dialog.h>
 #include <libedataserverui/e-name-selector-entry.h>
+#include <libedataserverui/e-name-selector-list.h>
 
 G_BEGIN_DECLS
 
@@ -62,6 +63,7 @@ ENameSelector       *e_name_selector_new                (void);
 ENameSelectorModel  *e_name_selector_peek_model         (ENameSelector *name_selector);
 ENameSelectorDialog *e_name_selector_peek_dialog        (ENameSelector *name_selector);
 ENameSelectorEntry  *e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *name);
+ENameSelectorList   *e_name_selector_peek_section_list  (ENameSelector *name_selector, const gchar *name);
 
 G_END_DECLS
 

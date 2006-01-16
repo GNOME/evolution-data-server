@@ -302,3 +302,68 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
 
 	return section->entry;
 }
+
+/**
+ * e_name_selector_peek_section_list:
+ * @name_selector: an #ENameSelector
+ * @name: the name of the section to peek
+ *
+ * Gets the #ENameSelectorList for the section specified by @name.
+ *
+ * Return value: The #ENameSelectorList for the named section, or %NULL if it
+ * doesn't exist in the #ENameSelectorModel.
+ **/
+
+ENameSelectorList *
+e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *name)
+{
+	EDestinationStore *destination_store;
+	Section *section;
+	gint     n;
+
+	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	if (!e_name_selector_model_peek_section (name_selector->model, name,
+						 NULL, &destination_store))
+		return NULL;
+
+	n = find_section_by_name (name_selector, name);
+	if (n < 0)
+		n = add_section (name_selector, name);
+
+	section = &g_array_index (name_selector->sections, Section, n);
+
+	if (!section->entry) {
+		GArray        *source_books;
+		EContactStore *contact_store;
+		gchar         *text;
+		gint           i;
+
+		section->entry = (ENameSelectorEntry *) e_name_selector_list_new ();
+		if (pango_parse_markup (name, -1, '_', NULL,
+					&text, NULL, NULL))  {
+			atk_object_set_name (gtk_widget_get_accessible (GTK_WIDGET (section->entry)), text);
+			g_free (text);
+	}
+		e_name_selector_entry_set_destination_store (section->entry, destination_store);
+
+		/* Create a contact store for the entry and assign our already-open books to it */
+
+		contact_store = e_contact_store_new ();
+		source_books = g_object_get_data (G_OBJECT (name_selector), PRIVATE_SOURCE_BOOKS_KEY);
+
+		for (i = 0; i < source_books->len; i++) {
+			SourceBook *source_book = &g_array_index (source_books, SourceBook, i);
+
+			if (source_book->is_completion_book)
+				e_contact_store_add_book (contact_store, source_book->book);
+		}
+
+		e_name_selector_entry_set_contact_store (section->entry, contact_store);
+		g_object_unref (contact_store);
+	}
+
+	return (ENameSelectorList *)section->entry;
+}
+

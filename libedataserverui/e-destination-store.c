@@ -50,7 +50,7 @@ static GType        e_destination_store_get_column_type (GtkTreeModel       *tre
 static gboolean     e_destination_store_get_iter        (GtkTreeModel       *tree_model,
 							 GtkTreeIter        *iter,
 							 GtkTreePath        *path);
-static GtkTreePath *e_destination_store_get_path        (GtkTreeModel       *tree_model,
+GtkTreePath *e_destination_store_get_path        (GtkTreeModel       *tree_model,
 							 GtkTreeIter        *iter);
 static void         e_destination_store_get_value       (GtkTreeModel       *tree_model,
 							 GtkTreeIter        *iter,
@@ -441,6 +441,27 @@ e_destination_store_remove_destination (EDestinationStore *destination_store, ED
 	row_deleted (destination_store, n);
 }
 
+void
+e_destination_store_remove_destination_nth (EDestinationStore *destination_store, int n)
+{
+	EDestination *destination;
+	
+	g_return_if_fail ( n >= 0);
+
+	destination = g_ptr_array_index(destination_store->destinations, n);
+	stop_destination (destination_store, destination);
+	g_object_unref (destination);
+
+	g_ptr_array_remove_index (destination_store->destinations, n);
+	row_deleted (destination_store, n);
+}
+
+guint
+e_destination_store_get_destination_count (EDestinationStore *destination_store)
+{
+	return destination_store->destinations->len;
+}
+
 /* ---------------- *
  * GtkTreeModel API *
  * ---------------- */
@@ -488,7 +509,7 @@ e_destination_store_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTr
 	return TRUE;
 }
 
-static GtkTreePath *
+GtkTreePath *
 e_destination_store_get_path (GtkTreeModel *tree_model,
 			      GtkTreeIter  *iter)
 {
@@ -612,7 +633,9 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 	EDestination      *destination;
 	const gchar       *string;
+	GString 	  *string_new;
 	gint               row;
+	EContact	  *contact;
 
 	g_return_if_fail (E_IS_DESTINATION_STORE (tree_model));
 	g_return_if_fail (column < E_DESTINATION_STORE_NUM_COLUMNS);
@@ -639,8 +662,25 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 			break;
 
 		case E_DESTINATION_STORE_COLUMN_ADDRESS:
-			string = e_destination_get_address (destination);
-			g_value_set_string (value, string);
+			contact = e_destination_get_contact(destination);
+			if (contact && E_IS_CONTACT (contact)) {
+				if(e_contact_get (contact, E_CONTACT_IS_LIST)) {
+					string = e_destination_get_name (destination);
+					string_new = g_string_new(string);
+					string_new = g_string_append(string_new, " mailing list");
+					g_value_set_string (value, string_new->str);
+					g_string_free(string_new, TRUE);
+				}
+				else {
+					string = e_destination_get_address (destination);
+					g_value_set_string (value, string);
+				}
+			}
+			else {
+				string = e_destination_get_address (destination);
+				g_value_set_string (value, string);
+
+			}
 			break;
 
 		default:

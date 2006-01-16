@@ -27,6 +27,7 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-name-selector-dialog.c	\
 	e-name-selector-entry.c		\
 	e-name-selector-model.c		\
+	e-name-selector-list.c		\
 	e-passwords.c			\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
@@ -52,6 +53,7 @@ libedataserveruiinclude_HEADERS =	\
 	e-name-selector-dialog.h	\
 	e-name-selector-entry.h		\
 	e-name-selector-model.h		\
+	e-name-selector-list.h		\
 	e-passwords.h			\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\

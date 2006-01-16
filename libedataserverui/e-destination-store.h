@@ -76,6 +76,10 @@ void               e_destination_store_append_destination (EDestinationStore *de
 							   EDestination *destination);
 void               e_destination_store_remove_destination (EDestinationStore *destination_store,
 							   EDestination *destination);
+void		   e_destination_store_remove_destination_nth (EDestinationStore *destination_store, 
+							       int n);
+guint		   e_destination_store_get_destination_count (EDestinationStore *destination_store);
+GtkTreePath       *e_destination_store_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter);
 
 G_END_DECLS
 
