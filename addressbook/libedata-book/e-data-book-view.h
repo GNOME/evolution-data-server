@@ -61,6 +61,10 @@ GMutex*           e_data_book_view_get_mutex         (EDataBookView             
 
 void         e_data_book_view_notify_update          (EDataBookView                *book_view,
 						      EContact                     *contact);
+
+void         e_data_book_view_notify_update_vcard    (EDataBookView                *book_view,
+						      char                         *vcard);
+
 void         e_data_book_view_notify_remove          (EDataBookView                *book_view,
 						      const char                   *id);
 void         e_data_book_view_notify_complete        (EDataBookView                *book_view,

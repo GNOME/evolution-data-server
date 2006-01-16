@@ -272,6 +272,53 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 }
 
 /**
+ * e_data_book_view_notify_update_vcard:
+ * @book_view: an #EDataBookView
+ * @vcard: a plain vCard
+ *
+ * Notify listeners that @vcard has changed. This can
+ * trigger an add, change or removal event depending on
+ * whether the change causes the contact to start matching,
+ * no longer match, or stay matching the query specified
+ * by @book_view.  This method should be preferred over
+ * #e_data_book_view_notify_update when the native
+ * representation of a contact is a vCard.
+ **/
+void
+e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
+{
+	gboolean currently_in_view, want_in_view;
+	const char *id;
+	EContact *contact;
+	
+	g_mutex_lock (book_view->priv->pending_mutex);
+	
+	contact = e_contact_new_from_vcard (vcard);
+	id = e_contact_get_const (contact, E_CONTACT_UID);
+	
+	currently_in_view =
+		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
+	want_in_view =
+		e_book_backend_sexp_match_contact (book_view->priv->card_sexp, contact);
+	
+	if (want_in_view) {
+		if (currently_in_view)
+			notify_change (book_view, vcard);
+		else
+			notify_add (book_view, id, vcard);
+	} else {
+		if (currently_in_view)
+			notify_remove (book_view, id);
+		else
+			/* else nothing; we're removing a card that wasn't there */
+			free (vcard);
+	}
+	
+	g_object_unref (contact);
+	g_mutex_unlock (book_view->priv->pending_mutex);
+}
+
+/**
  * e_data_book_view_notify_remove:
  * @book_view: an #EDataBookView
  * @id: a unique contact ID

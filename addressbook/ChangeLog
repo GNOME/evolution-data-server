@@ -1,3 +1,13 @@
+2006-01-16  Ross Burton  <ross@openedhand.com>
+
+	* libedata-book/e-data-book-view.h:
+	* libedata-book/e-data-book-view.c:
+	Add e_data_book_view_notify_update_vcard().
+
+	* backends/file/e-book-backend-file.c:
+	Use e_data_book_view_notify_update_vcard to avoid useless
+	vCard->EContact->vCard round-trip.
+
 2006-01-16  Sushma Rai  <rsushma@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c prop_info: Added GROUP_PROP.

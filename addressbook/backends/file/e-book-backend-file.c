@@ -563,13 +563,8 @@ book_view_thread (gpointer data)
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 			if (db_error == 0) {
-				EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 				/* notify_update will check if it matches for us */
-				e_data_book_view_notify_update (book_view, contact);
-				
-				g_object_unref (contact);
-
-				free (vcard_dbt.data);
+				e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
 			}
 			else {
 				g_warning ("db->get returned %d", db_error);
@@ -584,6 +579,7 @@ book_view_thread (gpointer data)
 
 		memset (&id_dbt, 0, sizeof (id_dbt));
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+		vcard_dbt.flags = DB_DBT_MALLOC;
 
 		db_error = db->cursor (db, NULL, &dbc, 0);
 		if (db_error == 0) {
@@ -600,10 +596,8 @@ book_view_thread (gpointer data)
 
 				/* don't include the version in the list of cards */
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-					EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 					/* notify_update will check if it matches for us */
-					e_data_book_view_notify_update (book_view, contact);
-					g_object_unref (contact);
+					e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
 				}
 
 				db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
