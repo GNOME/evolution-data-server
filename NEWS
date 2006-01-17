@@ -1,3 +1,41 @@
+Evolution-Data-Server 1.5.5, 2006-01-16
+----------------------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.gnome.org/show_bug.cgi):
+
+	#321812 – crash during Draft saving in offline mode (Shreyas)
+	#314841 – gw: Don't Mark Trash As New Messages (Parthasarathi)
+	#323570 – gw: Forward Of Multiple Messages At Once Loses Formatting (Parthasarathi)
+	#320898 – gw: Inserted Images Appears As Broken Link Image (Parthasarathi)
+	#303998 – In 'Exchange Connector' GAL should be selected for 'Autocompletion by default (Sushma)
+	#323115 – --force-shutdown does not shutdown e-d-s (Harish)
+	#326060 – Exchange password expiry handling is broken (Sushma)
+	#267402 – can not specify https URL for a remote calendar location (Tony Tsui)
+	#324518 – Webcal Entries Duplicated In Calendar (Chenthill)
+	#324741 – Critical Warning on Command Line (Chenthill)
+	#214977 – Contact lists on LDAP server are broken (Sushma)
+	#320065 – Fix GList leaks (Ross Burton)
+	#325959 – Subscribe to other user's folder not working (Sushma)
+	#242966 – Focus Problem, Screen Entry on "Select Contacts From Address Book" screen (Johnny Jacob)
+	
+
+Other Fixes :
+	
+	- Merge Calendar backend bits from evolution-caldav module into EDS (Harish)
+	- Code cleanup (Simon Zheng, Kjartan Maraas, Parthasarathi)
+	- Win32 fixes (Tor Lillqvist)
+	
+	
+Updated Translations:
+
+	- bg (Alexander Shopov)
+	- ca (Josep Puigdemont i Casamajó)
+	- gl (Ignacio Casal Quinteiro)
+	- ja (Takeshi AIHANA)
+	- lt (Žygimantas Beručka)
+	- nl (Vincent van Adrighem)
+
+
 Evolution-Data-Server 1.5.4, 2006-01-02
 ----------------------------------------
 
