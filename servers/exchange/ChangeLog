@@ -1,3 +1,8 @@
+2006-01-18  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-autoconfig.c (e2k_validate_user): Whenever the authenticate
+	button is pressed, always prompt for password. Fixes #327292. 
+
 2006-01-14  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-esource.c (add_folder_esource): Marking the GAL 
