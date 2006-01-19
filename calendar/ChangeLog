@@ -1,3 +1,10 @@
+2006-01-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #322951
+	* libedata-cal/e-cal-backend-cache.c:
+	(e_cal_backend_cache_get_type): Put a mutex lock
+	so that the Type value does not get reset.
+
 2006-01-17  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/caldav/Makefile.am: make distcheck

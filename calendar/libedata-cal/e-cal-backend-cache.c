@@ -221,7 +221,9 @@ GType
 e_cal_backend_cache_get_type (void)
 {
 	static GType type = 0;
+	static GStaticMutex registering = G_STATIC_MUTEX_INIT;	
 
+	g_static_mutex_lock (&registering);
 	if (!type) {
 		static GTypeInfo info = {
                         sizeof (ECalBackendCacheClass),
@@ -235,6 +237,7 @@ e_cal_backend_cache_get_type (void)
                 };
 		type = g_type_register_static (E_TYPE_FILE_CACHE, "ECalBackendCache", &info, 0);
 	}
+	g_static_mutex_unlock (&registering);
 
 	return type;
 }
