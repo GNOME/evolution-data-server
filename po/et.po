@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-14 14:21+0100\n"
-"PO-Revision-Date: 2006-01-18 12:37+0200\n"
+"PO-Revision-Date: 2006-01-18 21:02+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1117,7 +1117,7 @@ msgstr "Objekti ID on juba olemas"
 
 #: ../calendar/libecal/e-cal.c:5125
 msgid "Protocol not supported"
-msgstr "Mitte toetatud protokoll"
+msgstr "Toetamata protokoll"
 
 #: ../calendar/libecal/e-cal.c:5127
 msgid "Operation has been cancelled"
@@ -5010,7 +5010,7 @@ msgstr "Funktsioon pole selle salvesti puhul teostatud"
 
 #: ../servers/exchange/storage/e-storage.c:574
 msgid "Operation not supported"
-msgstr "Mittetoetatud toiming"
+msgstr "Toetamata toiming"
 
 #: ../servers/exchange/storage/e-storage.c:576
 msgid "The specified type is not supported in this storage"
