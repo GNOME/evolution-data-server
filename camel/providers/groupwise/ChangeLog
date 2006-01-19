@@ -1,3 +1,8 @@
+2006-01-19  Andre Klapper <a9016009@gmx.de>
+
+	* camel-groupwise-transport.c: fixed a typo and improved an
+	error message. Fixes bug 325657.
+
 2006-01-12  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:
