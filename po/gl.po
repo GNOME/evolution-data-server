@@ -1,5 +1,4 @@
 # translation of gl.po to Galego
-# translation of evolution-data-server.gnome-2-12.po to Galego
 # Galician translation of Evolution.
 # Copyright (C) 2000 Jesús Bravo Álvarez.
 # Copyright (C) 2001 Manuel A. Fernández Montecelo.
@@ -8,17 +7,17 @@
 # colaborar connosco, podes atopar máis información en http://www.trasno.net
 #
 # First Version: 2000-04-07 22:14+0200
+#
 # Jesús Bravo Álvarez <jba@pobox.com>, 2000.
 # Manuel A. Fernández Montecelo <manuel@sindominio.net>, 2001.
 # Daniel Couso <haich@agnix.org>, 2005.
 # Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005, 2006.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-10 21:18+0100\n"
-"PO-Revision-Date: 2006-01-10 21:19+0100\n"
+"POT-Creation-Date: 2006-01-20 12:47+0100\n"
+"PO-Revision-Date: 2006-01-20 12:48+0100\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +25,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: galego\n"
 "X-Poedit-Country: Galiza\n"
-"X-Generator: KBabel 1.10.2\n"
+"X-Generator: KBabel 1.11.1\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
@@ -38,13 +37,13 @@ msgstr "Cargando..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3739
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Procurando..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3903
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)..."
@@ -56,35 +55,35 @@ msgstr "Descargando contactos (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando a caché de contactos (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:702
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
 msgid "Using Distinguished Name (DN)"
 msgstr "Utilizando Nome Distinto (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:705
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:716
 msgid "Using Email Address"
 msgstr "Usando Enderezo de Correo Electrónico"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:924
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando ao servidor..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1503
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
 msgid "Adding contact to LDAP server..."
 msgstr "Engadindo contacto ao servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1637
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1919
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3601
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
 msgid "Receiving LDAP search results..."
 msgstr "Recibindo os resultados da procura no LDAP"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3761
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
 msgid "Error performing search"
 msgstr "Erro ao realizar a procura"
 
@@ -663,12 +662,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Non se puido gardar os datos da axenda: URI malformada"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1435
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1462
 msgid "Reply Requested: by "
 msgstr "Resposta Requerida: ata"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1440
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1467
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Requerida: Cando sexa posible"
 
@@ -690,9 +689,9 @@ msgstr "URI do servidor inválida"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:796
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:881
 #: ../calendar/libecal/e-cal.c:5131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:889
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:909
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:937
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:897
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:917
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:945
 #: ../camel/providers/groupwise/camel-groupwise-store.c:515
 #: ../camel/providers/groupwise/camel-groupwise-store.c:530
 #: ../camel/providers/groupwise/camel-groupwise-store.c:572
@@ -707,7 +706,7 @@ msgstr "Non foi posible crear thread para obter deltas"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1109
-#: ../calendar/backends/http/e-cal-backend-http.c:509
+#: ../calendar/backends/http/e-cal-backend-http.c:520
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Non foi posible crear o ficheiro de caché"
@@ -716,15 +715,15 @@ msgstr "Non foi posible crear o ficheiro de caché"
 msgid "Could not create thread for populating cache"
 msgstr "Non foi posible crear thread para popular a caché"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:253
+#: ../calendar/backends/http/e-cal-backend-http.c:259
 msgid "Redirected to Invalid URI"
 msgstr "Redireccionado para URI Inválido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:277
+#: ../calendar/backends/http/e-cal-backend-http.c:283
 msgid "Bad file format."
 msgstr "Formato de ficheiro inválido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:283
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Not a calendar."
 msgstr "Non é unha axenda."
 
@@ -1145,8 +1144,8 @@ msgstr "Ocorreu unha excepción CORBA"
 
 #: ../calendar/libecal/e-cal.c:5137
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:217
-#: ../camel/providers/imap/camel-imap-command.c:310
-#: ../camel/providers/imap/camel-imap-command.c:410
+#: ../camel/providers/imap/camel-imap-command.c:311
+#: ../camel/providers/imap/camel-imap-command.c:411
 #: ../camel/providers/imap4/camel-imap4-store.c:383
 #: ../camel/providers/pop3/camel-pop3-store.c:533
 #: ../camel/providers/pop3/camel-pop3-store.c:540
@@ -1338,7 +1337,7 @@ msgstr "Preparando o cartafol %s para modo offline"
 
 #: ../camel/camel-disco-store.c:401
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1250
-#: ../camel/providers/imap/camel-imap-store.c:2965
+#: ../camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
 msgstr "Debe estar traballando conectado para completar esta operación"
 
@@ -2611,17 +2610,17 @@ msgstr "Esta mensaxe non está dispoñible no modo offline."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:171
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1398
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1425
 msgid "Could not get message"
 msgstr "Non se puido obter a mensaxe"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:708
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Non foi posible carga-lo resumo de %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1024
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1032
 #: ../camel/providers/groupwise/camel-groupwise-store.c:560
 #: ../camel/providers/imap/camel-imap-folder.c:2375
 #: ../camel/providers/imap/camel-imap-folder.c:2445
@@ -2629,13 +2628,13 @@ msgstr "Non foi posible carga-lo resumo de %s"
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recollendo información de resumo para as mensaxes novas en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1632
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1678
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1707
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Non é posible engadir a mensaxe ao cartafol: '%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1666
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1695
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Non é posible crear a mensaxe: %s"
@@ -2746,7 +2745,7 @@ msgstr "Algunhas·funcionalidades·poderán·non·funcionar·correctamente·coa�
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:467
 #: ../camel/providers/imap/camel-imap-store.c:1873
-#: ../camel/providers/imap/camel-imap-store.c:2065
+#: ../camel/providers/imap/camel-imap-store.c:2064
 #, c-format
 msgid "No such folder %s"
 msgstr "Non existe o cartafol %s"
@@ -2757,7 +2756,7 @@ msgstr "Non se pode crear cartafoles GroupWise en modo offline."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1050
 #: ../camel/providers/imap/camel-imap-store.c:1948
-#: ../camel/providers/imap/camel-imap-store.c:2318
+#: ../camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Non se lle permite ao cartafol pai conter subcartafoles"
 
@@ -2789,11 +2788,12 @@ msgstr "Enviando a mensaxe"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:215
 msgid ""
-"You have exceed this account's storage limit. Your messages are queued in "
-"Outbox. Try sending after deleting/archiving some mails.\n"
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
 msgstr ""
-"Excedeu o límite de almacenamiento de esta conta. Súas mensaxes encólanse na "
-"bandexa de saída. Intente envialos despois de borrar/arquivar algúns "
+"Excedeu o límite de almacenamiento desta conta. A súas mensaxes encólanse na "
+"bandexa de saída. Tente envialos premendo en Enviar/Recibir despois de borrar/arquivar algúns dos seus"
 "correos.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:217
@@ -2868,22 +2868,22 @@ msgstr "Para·acceder·a·servidores·Hula"
 msgid "This option will connect to the Hula server using a plaintext password."
 msgstr "Esta opción conectarase ó servidor Hula usando un contrasinal sen cifrar."
 
-#: ../camel/providers/imap/camel-imap-command.c:222
-#: ../camel/providers/imap/camel-imap-command.c:264
-#: ../camel/providers/imap/camel-imap-command.c:471
-#: ../camel/providers/imap/camel-imap-store.c:3005
+#: ../camel/providers/imap/camel-imap-command.c:223
+#: ../camel/providers/imap/camel-imap-command.c:265
+#: ../camel/providers/imap/camel-imap-command.c:472
+#: ../camel/providers/imap/camel-imap-store.c:3004
 msgid "Operation cancelled"
 msgstr "Operación cancelada"
 
-#: ../camel/providers/imap/camel-imap-command.c:309
-#: ../camel/providers/imap/camel-imap-store.c:3008
+#: ../camel/providers/imap/camel-imap-command.c:310
+#: ../camel/providers/imap/camel-imap-store.c:3007
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "O servidor desconectou inesperadamente: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:330
+#: ../camel/providers/imap/camel-imap-command.c:331
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -2892,26 +2892,26 @@ msgstr ""
 "Aviso do servidor IMAP: %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:399
+#: ../camel/providers/imap/camel-imap-command.c:400
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Resposta inesperada do servidor IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:409
+#: ../camel/providers/imap/camel-imap-command.c:410
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "O comando IMAP fallou: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:485
+#: ../camel/providers/imap/camel-imap-command.c:486
 msgid "Server response ended too soon."
 msgstr "A resposta do servidor rematou cedo de máis."
 
-#: ../camel/providers/imap/camel-imap-command.c:692
+#: ../camel/providers/imap/camel-imap-command.c:693
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "A resposta do servidor IMAP non contiña información sobre %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:728
+#: ../camel/providers/imap/camel-imap-command.c:729
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Resposta positiva inesperada do servidor IMAP: %s"
@@ -3096,7 +3096,7 @@ msgstr "Non foi posible conectarse co comando: \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1057
-#: ../camel/providers/imap/camel-imap-store.c:2414
+#: ../camel/providers/imap/camel-imap-store.c:2413
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1392
 #: ../camel/providers/local/camel-maildir-folder.c:75
@@ -3138,7 +3138,7 @@ msgstr ""
 "\n"
 
 #: ../camel/providers/imap/camel-imap-store.c:1885
-#: ../camel/providers/imap/camel-imap-store.c:2256
+#: ../camel/providers/imap/camel-imap-store.c:2255
 #: ../camel/providers/imap4/camel-imap4-store.c:1022
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -3152,7 +3152,7 @@ msgstr "O nome do cartafol \"%s\" é inválido porque contén o carácter \"%c\"
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Non é posible crear o cartafol '%s': o cartafol existe."
 
-#: ../camel/providers/imap/camel-imap-store.c:2267
+#: ../camel/providers/imap/camel-imap-store.c:2266
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Cartafol pai descoñecido: %s"
@@ -3511,7 +3511,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Para·obter·(mover)·correo·local·de·spools·estándar·en·formato·mbox·para·cartafoles "
+"Para·obter·(mover)"
+"·correo·local·de·spools·estándar·en·formato·mbox·para·cartafoles "
 "·xestionados·polo·Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:87
@@ -4921,6 +4922,11 @@ msgstr "E_xpandir %s en liña"
 msgid "_Edit %s"
 msgstr "_Editar %s"
 
+#: ../libedataserverui/e-name-selector-list.c:480
+#, c-format
+msgid "_Delete %s"
+msgstr "_Borrar %s"
+
 #: ../libedataserverui/e-passwords.c:471
 msgid "_Remember this password"
 msgstr "_Recordar este contrasinal"
@@ -4938,14 +4944,14 @@ msgstr "Escolla un destino"
 msgid "_Destination"
 msgstr "_Destino"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1630
-#: ../servers/exchange/storage/exchange-account.c:939
+#: ../servers/exchange/lib/e2k-autoconfig.c:1636
+#: ../servers/exchange/storage/exchange-account.c:936
 #, c-format
 msgid "Enter password for %s"
 msgstr "Introduza o contrasinal para %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1631
-#: ../servers/exchange/storage/exchange-account.c:944
+#: ../servers/exchange/lib/e2k-autoconfig.c:1637
+#: ../servers/exchange/storage/exchange-account.c:941
 msgid "Enter password"
 msgstr "Introduza o contrasinal"
 
@@ -5057,26 +5063,26 @@ msgstr "Esta·operación·non·pode·ser·realizada·en·modo·offline"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:642
+#: ../servers/exchange/storage/exchange-account.c:639
 #, c-format
 msgid "%s's Folders"
 msgstr "Cartafoles do %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1294
+#: ../servers/exchange/storage/exchange-account.c:1242
 msgid "Personal Folders"
 msgstr "Cartafoles Persoais"
 
-#: ../servers/exchange/storage/exchange-account.c:1308
+#: ../servers/exchange/storage/exchange-account.c:1256
 msgid "Favorite Public Folders"
 msgstr "Cartafoles Públicos Preferidos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1325
+#: ../servers/exchange/storage/exchange-account.c:1273
 msgid "All Public Folders"
 msgstr "Todos os Cartafoles Públicos"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1339
+#: ../servers/exchange/storage/exchange-account.c:1287
 msgid "Global Address List"
 msgstr "Lista Global de Enderezos"
 
