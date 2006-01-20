@@ -201,6 +201,7 @@ libedataserverui/e-categories-dialog.glade
 libedataserverui/e-name-selector-dialog.c
 libedataserverui/e-name-selector-dialog.glade
 libedataserverui/e-name-selector-entry.c
+libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
 libedataserverui/e-source-selector-dialog.c
 servers/exchange/lib/e2k-autoconfig.c
