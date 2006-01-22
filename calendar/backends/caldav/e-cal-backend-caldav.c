@@ -44,6 +44,8 @@
 /* LibSoup includes */
 #include <libsoup/soup.h>
 #include <libsoup/soup-headers.h>
+#include <libsoup/soup-uri.h>
+#include <libsoup/soup-soap-message.h>
 
 #include "e-cal-backend-caldav.h"
 
@@ -110,6 +112,51 @@ struct _ECalBackendCalDAVPrivate {
 	/* object cleanup */
 	gboolean disposed;
 };
+
+#if 0
+static void
+print_header (gpointer name, gpointer value, gpointer data)
+{
+	g_print ("%s: %s\n", (char *) name, (char *) value);
+}
+
+static void
+debug_handler (SoupMessage *msg, gpointer user_data)
+{
+	g_print ("%d %s\nMessage-Debug: %p @ %lu\n",
+                msg->status_code, msg->reason_phrase,
+                msg, time (0));
+
+	/* print headers */
+	soup_message_foreach_header (msg->response_headers, print_header, NULL);
+
+	/* print response */
+	if (msg->response.length) {
+		fputc ('\n', stdout);
+		fwrite (msg->response.body, 1, msg->response.length, stdout);
+		fputc ('\n', stdout);
+	}
+}
+
+static void
+setup_debug (SoupMessage *msg)
+{
+	const SoupUri *suri;
+
+	suri = soup_message_get_uri (msg);
+	g_print ("%s %s%s%s HTTP/1.1\nSOAP-Debug: %p @ %lu\n",
+		 SOUP_MESSAGE (msg)->method, suri->path,
+		 suri->query ? "?" : "",
+		 suri->query ? suri->query : "",
+		 msg, (unsigned long) time (0));
+
+	/* print message headers */
+	print_header ("Host", suri->host, NULL);
+	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
+
+	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
+}
+#endif
 
 #define d(x)
 
@@ -725,9 +772,11 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
+	d(setup_debug (message);)
 	soup_session_send_message (priv->session, message);
 	
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		d(setup_debug (message);)
 		g_object_unref (message);
 
 		return status_code_to_result (message->status_code);
@@ -836,6 +885,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 				  (char *) buf->buffer->content,
 				  buf->buffer->use);
 
+	d(setup_debug (message);)
 	/* Send the request now */
 	soup_session_send_message (priv->session, message);
 	
@@ -851,7 +901,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	
 	/* Parse the response body */
 	result = parse_report_response (message, objs, len);
-	
+	d(setup_debug (message);)
+
 	g_object_unref (message);
 	return result;
 }
