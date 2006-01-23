@@ -1,3 +1,9 @@
+2006-01-23  Veerapuram Varadhan <vvaradhan@novell.com>
+ 
+ 	** Fixes #327427
+ 	* libedata-cal/e-data-cal-factory.c: (impl_CalFactory_getCal): Do
+ 	not ref a NULL object.
+ 	
 2006-01-23  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #305656

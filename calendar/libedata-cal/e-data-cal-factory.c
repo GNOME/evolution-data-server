@@ -138,6 +138,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 			const GNOME_Evolution_Calendar_CalListener listener,
 			CORBA_Environment *ev)
 {
+	GNOME_Evolution_Calendar_Cal ret_cal = NULL;
 	EDataCalFactory *factory;
 	EDataCalFactoryPrivate *priv;
 	EDataCal *cal = CORBA_OBJECT_NIL;
@@ -233,12 +234,13 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	e_cal_backend_add_client (backend, cal);
 	e_cal_backend_set_mode (backend, priv->mode);
 	
+	ret_cal = CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
  cleanup:
 	e_uri_free (uri);
 	g_free (uri_type_string);
 	g_object_unref (source);
 
-	return CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
+	return ret_cal;
 }
 
 
