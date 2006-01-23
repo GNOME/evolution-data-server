@@ -1,3 +1,18 @@
+2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(update_junk_list): do not contact the server each time we 
+	add junk, just once, while marking not junk.
+	(groupwise_transfer_messages_to): fix a crash, have to use
+	destination->summary instead of destination. 
+	
+	** See bug 327376
+	* camel-groupwise-transport.c: (groupwise_send_to):
+	set the link info to NULL. Fixes a crash.
+	* camel-groupwise-utils.c: (send_as_attachment):
+	Based on encoding, check if we are sending non base64 data
+	to the server, if we are, do a base64 encode first.
+
 2006-01-19  Andre Klapper <a9016009@gmx.de>
 
 	* camel-groupwise-transport.c: fixed a typo and improved an

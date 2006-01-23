@@ -489,8 +489,6 @@ free_node (EGwJunkEntry *entry)
 static void
 update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 {
-	GList *list = NULL;
-	EGwJunkEntry *entry;
 	gchar **email = NULL, *from = NULL;	
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
@@ -503,22 +501,21 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 	if (!email[1])
 		goto error;
 
-	if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
-		while (list) {
-			entry = list->data;
-			if (!g_ascii_strcasecmp (entry->match, email[1])) { 
-				if (flag == ADD_JUNK_ENTRY) /*if already there then don't add*/
-					break;
-				else if (flag == REMOVE_JUNK_ENTRY){
+	if (flag == ADD_JUNK_ENTRY)
+		e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk");
+	else if (flag == REMOVE_JUNK_ENTRY) {
+		GList *list = NULL;
+		EGwJunkEntry *entry;
+		if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
+			while (list) {
+				entry = list->data;
+				if (!g_ascii_strcasecmp (entry->match, email[1])) { 
 					e_gw_connection_remove_junk_entry (cnc, entry->id);
-					break;
 				}
+				list = list->next;
 			}
-			list = list->next;
+			g_list_foreach (list, (GFunc) free_node, NULL);
 		}
-		if (!list && flag == ADD_JUNK_ENTRY) /*no entry found just create a new entry if asked to*/
-			if (e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk") == E_GW_CONNECTION_STATUS_OK);
-		g_list_foreach (list, (GFunc) free_node, NULL);
 	}
 
 error:
@@ -825,6 +822,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	CamelGroupwiseSummary *summary;
 	CamelStoreInfo *si;
 	summary = (CamelGroupwiseSummary *) folder->summary;
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	/*
 	 * Checking for the summary->time_string here since the first the a
 	 * user views a folder, the read cursor is in progress, and the getQM
@@ -845,6 +843,11 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		}
 		camel_folder_summary_save (folder->summary);
 		camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
+	} else {
+		/* We probably could not get the messages the first time. (get_folder) failed???!
+		 * so do a get_folder again. And hope that it works
+		 */
+		camel_store_get_folder ((CamelStore *)gw_store, folder->name, 0, ex);
 	}
 }
 
@@ -1537,6 +1540,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 							else 
 								camel_mime_part_set_content_id (part, t[1]);
 							g_strfreev (t);
+							camel_mime_part_set_content_location (part, attach->name);
 						}
 					} else if (attach->contentType && 
 						!strcmp (attach->contentType, "application/pgp-signature")) {
@@ -1556,9 +1560,10 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					}
 
 					//camel_mime_part_set_filename(part, g_strdup(attach->name));
-					if (attach->contentType)
+					if (attach->contentType) {
 						camel_mime_part_set_content(part, attachment, len, attach->contentType);
-					else 
+						camel_content_type_set_param (((CamelDataWrapper *) part)->mime_type, "name", attach->name);
+					} else 
 						camel_mime_part_set_content(part, attachment, len, "");
 					if (!has_boundary)
 						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart),"multipart/digest");
@@ -1814,7 +1819,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				camel_folder_delete_message(source, uids->pdata[index]);
 			/* Refresh the destination folder, if its not refreshed already */
 			if (gw_store->current_folder != destination || 
-				camel_folder_summary_count (destination) == count)
+				camel_folder_summary_count (destination->summary) == count)
 				camel_folder_refresh_info (destination, ex);
 		} else {
 			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);

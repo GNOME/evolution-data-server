@@ -147,7 +147,7 @@ groupwise_send_to (CamelTransport *transport,
 	CamelGroupwiseStorePrivate *priv = NULL;
 	EGwItem *item ,*temp_item=NULL;
 	EGwConnection *cnc = NULL;
-	EGwConnectionStatus status;
+	EGwConnectionStatus status = 0;
 	GSList *sent_item_list = NULL;
 	char *url = NULL;
 	const char *reply_request = NULL;
@@ -206,6 +206,7 @@ groupwise_send_to (CamelTransport *transport,
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning (" Error Sending mail");
 		camel_operation_end (NULL);
+		e_gw_item_set_link_info (item, NULL);
 		g_object_unref (item);
 		if (temp_item)
 			g_object_unref (temp_item);
@@ -215,7 +216,7 @@ groupwise_send_to (CamelTransport *transport,
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,_("Could not send message: %s"),_("Unknown error"));
-
+		status = 0;
 		return FALSE;
 	}
 	e_gw_item_set_link_info (item, NULL);

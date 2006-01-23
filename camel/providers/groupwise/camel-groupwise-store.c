@@ -103,7 +103,6 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 				     _("Host or user not available in url"));
 	}
 
-	//store->flags = 0; 
 	groupwise_store->list_loaded = FALSE;
 	
 	/*storage path*/
@@ -538,14 +537,13 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	if (si) {
 		camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, NULL);
 		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
-		g_print ("TOTAL:%d\n\n", total);
 	}
 
 	summary = (CamelGroupwiseSummary *) folder->summary;
 
 	summary_count = camel_folder_summary_count (folder->summary);
 	if(!summary_count || !summary->time_string) {
-		g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);
+		d(g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);)
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
 				"peek id recipient attachments distribution subject status options priority startDate created delivered size",
@@ -571,6 +569,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				camel_folder_summary_save (folder->summary);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 				camel_operation_end (NULL);
+				camel_object_unref (folder);
 				g_free (container_id);
 				return NULL;
 			}
