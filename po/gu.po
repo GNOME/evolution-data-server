@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-19 22:31+0100\n"
-"PO-Revision-Date: 2006-01-20 10:20+0530\n"
+"POT-Creation-Date: 2006-01-23 06:26+0100\n"
+"PO-Revision-Date: 2006-01-23 14:42+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -2773,7 +2774,10 @@ msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
-msgstr "તમે આ ખાતાની સંગ્રહ મર્યાદાને ઓળંગી ગયા છે. તમારા સંદેશાઓ આઉટબોક્સમાં કતાર થયેલ છે. અમુક મેઈલો કાઢી નાંખ્યા પછી/સંકુચિત કર્યા પછી મોકલો/મેળવો બટન દબાવીને ફરી મોકલવાનો પ્રયત્ન કરો.\n"
+msgstr ""
+"તમે આ ખાતાની સંગ્રહ મર્યાદાને ઓળંગી ગયા છે. તમારા સંદેશાઓ આઉટબોક્સમાં કતાર થયેલ છે. અમુક "
+"મેઈલો કાઢી નાંખ્યા પછી/સંકુચિત કર્યા પછી મોકલો/મેળવો બટન દબાવીને ફરી મોકલવાનો પ્રયત્ન "
+"કરો.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -4865,6 +4869,11 @@ msgstr "%s લીટીમાં વિસ્તૃત કરો (_x)"
 #, c-format
 msgid "_Edit %s"
 msgstr "%s માં ફેરફાર કરો (_E)"
+
+#: ../libedataserverui/e-name-selector-list.c:480
+#, c-format
+msgid "_Delete %s"
+msgstr "%s કાઢી નાંખો (_D)"
 
 #: ../libedataserverui/e-passwords.c:471
 msgid "_Remember this password"
