@@ -1,3 +1,8 @@
+2006-01-23  Sushma Rai  <rsushma@novell.com>
+
+	* libedataserverui/e-book-auth-util.c (addressbook_authenticate):
+	Checking for the property user and username. Fixes #327819.
+
 2005-01-16  Devashish Sharma <sdevashish@novell.com>
 
 	* e-name-selector-dialog.c : Show the status message (searching, loading etc).
