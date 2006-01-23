@@ -1,3 +1,9 @@
+2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-mime-utils.c: (camel_content_type_unref):
+	Id the content-type refcount is <1 then free it and
+	assign it to NULL
+
 2006-01-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-service.c: (camel_service_disconnect):

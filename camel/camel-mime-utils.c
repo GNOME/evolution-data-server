@@ -2247,6 +2247,7 @@ camel_content_type_unref(CamelContentType *ct)
 			g_free(ct->type);
 			g_free(ct->subtype);
 			g_free(ct);
+			ct= NULL;
 		} else {
 			ct->refcount--;
 		}
