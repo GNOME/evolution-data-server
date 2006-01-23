@@ -1,3 +1,11 @@
+2006-01-23  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/caldav/e-cal-backend-caldav.c:
+	(caldav_server_open_calendar), (caldav_server_list_objects),
+	(caldav_server_get_object), (caldav_server_put_object),
+	(caldav_server_delete_object): Add debug hooks to each of
+	the messages and remove some bad ones.
+	
 2006-01-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/caldav/e-cal-backend-caldav.c (print_header),

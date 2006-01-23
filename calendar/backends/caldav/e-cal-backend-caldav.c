@@ -776,7 +776,6 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	soup_session_send_message (priv->session, message);
 	
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		d(setup_debug (message);)
 		g_object_unref (message);
 
 		return status_code_to_result (message->status_code);
@@ -901,7 +900,6 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	
 	/* Parse the response body */
 	result = parse_report_response (message, objs, len);
-	d(setup_debug (message);)
 
 	g_object_unref (message);
 	return result;
@@ -926,6 +924,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
+	d(setup_debug (message);)
 	soup_session_send_message (priv->session, message);
 	
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
@@ -999,6 +998,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 				  strlen (object->cdata));
 
 	
+	d(setup_debug (message);)
 	soup_session_send_message (priv->session, message);
 
 	/* FIXME: sepcial case precondition errors ?*/
@@ -1043,6 +1043,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 					"If-None-Match", object->etag);
 	}
 	
+	d(setup_debug (message);)
 	soup_session_send_message (priv->session, message);
 	
 	result = status_code_to_result (message->status_code);	
