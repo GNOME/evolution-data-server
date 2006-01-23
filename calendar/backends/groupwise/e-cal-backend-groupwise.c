@@ -389,13 +389,11 @@ get_deltas (gpointer handle)
 		item_list = NULL;
 	}
 	
-	/* TODO currently the read cursors response does not give us the recurrencKey, uncomment
-	   this once the  response gives the recurrenceKey */
 	/* handle deleted items here by going over the entire cache and
 	 * checking for deleted items.*/
 	position = E_GW_CURSOR_POSITION_END;
 	cursor = 0;
-	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey", NULL, &cursor);
+	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey startDate", NULL, &cursor);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
@@ -423,18 +421,6 @@ get_deltas (gpointer handle)
 			return TRUE;
 		}
 		
-		/* FIXME handle deleted items here by going over the entire cache and
-		 * checking for deleted items.*/
-#if 0
-		for (l1 = item_list; l1; l1 = g_list_next (l1)) {
-			char *icalid;
-			icalid = (char *)(l1->data);
-			cache_keys = g_slist_delete_link (cache_keys, 
-					g_slist_find_custom (cache_keys, icalid, (GCompareFunc) strcmp));
-			if (l1->data)
-				g_free (l1->data);
-		}	
-#endif
 		if (!item_list  || g_list_length (item_list) == 0)
 			done = TRUE;
 		else {
@@ -452,7 +438,41 @@ get_deltas (gpointer handle)
 	e_gw_connection_destroy_cursor (cnc, cbgw->priv->container_id, cursor);
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 
-#if 0
+	for (l = total_list; l != NULL; l = l->next) {
+		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
+		GCompareFunc func = NULL;
+		GSList *remove = NULL;
+		char *real_key = NULL;
+
+		if (calid->recur_key && calid->ical_id) {
+			const char *rid = NULL;
+			icaltimetype tt = icaltime_from_string (calid->ical_id);
+			if (!tt.is_date) {
+				tt = icaltime_convert_to_zone (tt, priv->default_zone); 
+				icaltime_set_timezone (&tt, priv->default_zone);
+				rid = icaltime_as_ical_string (tt);
+			} else
+				rid = calid->ical_id;
+			real_key = g_strconcat (calid->recur_key, "@", rid, NULL);
+		}
+		
+		if (!calid->recur_key || real_key) 
+			func = (GCompareFunc) strcmp;
+		else
+			func = (GCompareFunc) compare_prefix;
+
+		if (!(remove = g_slist_find_custom (cache_keys, calid->recur_key ? real_key :
+						calid->ical_id,  func))) {
+			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
+			needs_to_get = TRUE;
+		} else  {
+			cache_keys = g_slist_delete_link (cache_keys, remove);
+			g_message ("******** found \n");
+		}
+	
+		g_free (real_key);
+	}
+
 	for (l = cache_keys; l ; l = g_slist_next (l)) {
 		/* assumes rid is null - which works for now */
 		ECalComponent *comp = NULL;
@@ -467,35 +487,18 @@ get_deltas (gpointer handle)
 		vtype = e_cal_component_get_vtype (comp);
 		if ((vtype == E_CAL_COMPONENT_EVENT) ||
 				(vtype == E_CAL_COMPONENT_TODO)) {
+			char *comp_str = NULL;
+			ECalComponentId *id = e_cal_component_get_id (comp);
+			
 			comp_str = e_cal_component_get_as_string (comp);
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), 
-					(char *) l->data, comp_str, NULL);
-			e_cal_backend_cache_remove_component (cache, (const char *) l->data, NULL);
+					id, comp_str, NULL);
+			e_cal_backend_cache_remove_component (cache, (const char *) id->uid, id->rid);
+
+			e_cal_component_free_id (id);
 			g_free (comp_str);
 		}
 		g_object_unref (comp);
-	}
-#endif
-
-	for (l = total_list; l != NULL; l = l->next) {
-		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
-		GCompareFunc func = NULL;
-		GSList *remove = NULL;
-
-		if (calid->ical_id) 
-			func = (GCompareFunc) strcmp;
-		else
-			func = (GCompareFunc) compare_prefix;
-
-		if (!(remove = g_slist_find_custom (cache_keys, calid->ical_id ? calid->ical_id :
-						calid->recur_key,  func))) {
-			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
-			needs_to_get = TRUE;
-		} else  {
-			cache_keys = g_slist_delete_link (cache_keys, remove);
-			continue;
-		}
-
 	}
 
 	if (needs_to_get) {
@@ -527,7 +530,7 @@ get_deltas (gpointer handle)
 
 			g_object_unref (item);
 		}
-	}
+	} 
 
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 

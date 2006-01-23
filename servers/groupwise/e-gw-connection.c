@@ -3429,39 +3429,33 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cur
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		SoupSoapParameter *param_id;
 		EGwItemCalId *calid = g_new0 (EGwItemCalId, 1);
+		EGwItemType type;
 		char *id = NULL, *item_type = NULL;
 		
 		item_type = soup_soap_parameter_get_property (subparam, "type");
 		
-		if (!(g_str_equal (item_type, "Appointment") || g_str_equal (item_type, "Task"))) {
+		if (g_str_equal (item_type, "Appointment"))
+				type  = E_GW_ITEM_TYPE_APPOINTMENT;
+		else if  (g_str_equal (item_type, "Task"))
+			type = E_GW_ITEM_TYPE_TASK;
+		else {
 			g_free (item_type);
 			continue;	
 		}
-			 
 		g_free (item_type);
-
-		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
-		if (!param_id) {
-			if (*list) {
-				g_list_foreach (*list, (GFunc) e_gw_item_free_cal_id, NULL);
-				g_list_free (*list);
-				*list = NULL;
-			}
-			e_gw_item_free_cal_id (calid);
-			g_object_unref (response);
-			g_object_unref (msg);
-			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-		}
 		
-		id = soup_soap_parameter_get_string_value (param_id);
-		if (id)
-			calid->item_id = id;
-		else {
-			if (*list) {
-				g_list_foreach (*list, (GFunc) e_gw_item_free_cal_id, NULL);
-				g_list_free (*list);
-				*list = NULL;
+		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
+		if (param_id) {
+			id = soup_soap_parameter_get_string_value (param_id);
+			if (!id) {
+				e_gw_item_free_cal_id (calid);
+				g_object_unref (response);
+				g_object_unref (msg);
+				return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 			}
+
+			calid->item_id = id;
+		} else {
 			e_gw_item_free_cal_id (calid);
 			g_object_unref (response);
 			g_object_unref (msg);
@@ -3469,15 +3463,40 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cur
 		}
 		
 		id = NULL;
-	
+		
 		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "recurrenceKey");
 		if (param_id) {
 			id = soup_soap_parameter_get_string_value (param_id);
 		}
 		
-		if (id && !g_str_equal (id, "0"))
+		if (id && !g_str_equal (id, "0")) {
+			guint allday = 0;
+
 			calid->recur_key = id;
-		else {
+		
+			if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
+				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "allDayEvent");
+				if (param_id) {
+					allday = soup_soap_parameter_get_int_value (param_id);
+				}
+
+			}
+
+			if (allday) 
+				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "startDay");
+			else
+				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "startDate");
+
+			if (param_id) {
+				char *formatted_date;
+				id = soup_soap_parameter_get_string_value (param_id);
+				formatted_date = e_gw_connection_format_date_string (id);
+				 /* store the date in calid for recurring events */
+				calid->ical_id = formatted_date; 
+				g_free (id);
+			}
+
+		} else {
 			g_free (id);
 			id = NULL;
 

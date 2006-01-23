@@ -1,3 +1,9 @@
+2006-01-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #305656
+	* e-gw-connection.c: (e_gw_connection_read_cal_ids):
+	Get the start date of the appointment if its recurring.
+
 2006-01-05  Kjartan Maraas,,23491770  <kmaraas@gnome.org>
 
 	* e-gw-connection.c: (e_gw_connection_add_members),

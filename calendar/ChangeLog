@@ -1,3 +1,9 @@
+2006-01-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #305656
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Remove the deleted items from the server.
+
 2006-01-23  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/caldav/e-cal-backend-caldav.c:
