@@ -214,8 +214,6 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 		
-		
-				
 		priv->cnc = e_gw_connection_new (uri, priv->user, service->url->passwd);
 		if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
 			char *http_uri = g_strconcat ("http://", uri + 8, NULL);
@@ -269,10 +267,16 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL && 
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 	     (service->status == CAMEL_SERVICE_DISCONNECTED)) 
-		return TRUE;
-	
+		return FALSE;
+
+	if (!priv) {
+		store->priv = g_new0 (CamelGroupwiseStorePrivate, 1);
+		priv = store->priv;
+		camel_service_construct (service, service->session, service->provider, service->url, ex);
+	}
+
 	CAMEL_SERVICE_LOCK (service, connect_lock);
 	
 	if (priv->cnc) {
@@ -322,19 +326,75 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	return FALSE;
 
 }
+static void
+groupwise_disconnect_cleanup (CamelService *service, gboolean clean, CamelException *ex)
+{
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
+	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
+	
+	g_print ("camel_groupwise_store_finalize\n");
+	if (groupwise_store->summary) {
+		camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
+		camel_object_unref (groupwise_store->summary);
+	}
+	
+	if (priv) {
+		if (priv->user) {
+			g_free (priv->user);
+			priv->user = NULL;
+		}
+		if (priv->server_name) {
+			g_free (priv->server_name);
+			priv->server_name = NULL;
+		}
+		if (priv->port) {
+			g_free (priv->port);
+			priv->port = NULL;
+		}
+		if (priv->use_ssl) {
+			g_free (priv->use_ssl);
+			priv->use_ssl = NULL;
+		}
+		if (priv->base_url) {
+			g_free (priv->base_url);
+			priv->base_url = NULL;
+		}
+		
+		if (priv->storage_path)
+			g_free(priv->storage_path);
+
+		if(groupwise_store->root_container)
+			g_free (groupwise_store->root_container);
+		
+		if (priv->id_hash)
+			g_hash_table_destroy (priv->id_hash);
+
+		if (priv->name_hash)
+			g_hash_table_destroy (priv->name_hash);
+
+		if (priv->parent_hash)
+			g_hash_table_destroy (priv->parent_hash);
+
+		g_free (groupwise_store->priv);
+		groupwise_store->priv = NULL;
+	}
+}
 
 static gboolean
 groupwise_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	
-	CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
-	if (groupwise_store->priv && groupwise_store->priv->cnc) {
-		g_object_unref (groupwise_store->priv->cnc);
-		groupwise_store->priv->cnc = NULL;
+	if (clean) {
+		CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
+		if (groupwise_store->priv && groupwise_store->priv->cnc) {
+			g_object_unref (groupwise_store->priv->cnc);
+			groupwise_store->priv->cnc = NULL;
+		}
+		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 	}
-	CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 	
+	groupwise_disconnect_cleanup (service, clean, ex);
 	return TRUE;
 }
 
@@ -967,15 +1027,17 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	}
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-	if ((groupwise_store->list_loaded == FALSE) && camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-		groupwise_store->list_loaded = TRUE;
-		groupwise_folders_sync (groupwise_store, ex);
-		if (camel_exception_is_set (ex)) {
-			CAMEL_SERVICE_UNLOCK (store, connect_lock);
-			return NULL;
+	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {
+		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
+			groupwise_store->list_loaded = TRUE;
+			groupwise_folders_sync (groupwise_store, ex);
+			if (camel_exception_is_set (ex)) {
+				CAMEL_SERVICE_UNLOCK (store, connect_lock);
+				return NULL;
+			}
+			camel_store_summary_touch ((CamelStoreSummary *)groupwise_store->summary);
+			camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
 		}
-		camel_store_summary_touch ((CamelStoreSummary *)groupwise_store->summary);
-		camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
 	}
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 

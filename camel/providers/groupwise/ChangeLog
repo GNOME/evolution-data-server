@@ -1,3 +1,18 @@
+2006-01-24  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: 
+	(groupwise_sync):
+	(groupwise_transfer_messages_to):
+	(groupwise_append_message):
+	lookup for CNC only if we are connected.
+	
+	* camel-groupwise-store.c:
+	(groupwise_auth_loop):
+	(groupwise_connect):
+	lookup for CNC only if we are connected
+	(groupwise_disconnect_cleanup): cleanup the priv
+	structure whenever we disconnect
+
 2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:

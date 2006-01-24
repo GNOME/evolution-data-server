@@ -590,13 +590,15 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	flags_diff_t diff;
 	const char *container_id;
 	EGwConnectionStatus status;
-	EGwConnection *cnc = cnc_lookup (priv);
+	EGwConnection *cnc;
 	int count, i;
 
-	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
+	    ((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
 		groupwise_sync_summary (folder, ex);
 		return;
 	}
+	cnc = cnc_lookup (priv);
 	
 	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
 
@@ -1652,7 +1654,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelAddress *recipients;
 	EGwConnectionStatus status;
-	EGwConnection *cnc = cnc_lookup (priv);
+	EGwConnection *cnc;
 	EGwItem *item;
 	char *id;
 	gboolean is_ok = FALSE;
@@ -1672,6 +1674,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, ex);
 		return;
 	}
+	cnc = cnc_lookup (priv);
+
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 	/*Get the container id*/
 	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
@@ -1753,7 +1757,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	CamelOfflineStore *offline = (CamelOfflineStore *) destination->parent_store;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnectionStatus status;
-	EGwConnection *cnc = cnc_lookup (priv);
+	EGwConnection *cnc;
 
  	count = camel_folder_summary_count (destination->summary);
  	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
@@ -1803,6 +1807,8 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		return;
 	}
 	
+	cnc = cnc_lookup (priv);
+
 	index = 0;
 	while (index < uids->len) {
 		int count;
