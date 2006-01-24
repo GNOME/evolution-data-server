@@ -173,7 +173,7 @@ groupwise_send_to (CamelTransport *transport,
 
 	cnc = cnc_lookup (priv);
 	if (!cnc) {
-		g_error ("||| Eh!!! Failure |||\n");
+		g_warning ("||| Eh!!! Failure |||\n");
 		camel_operation_end (NULL);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 		return FALSE;

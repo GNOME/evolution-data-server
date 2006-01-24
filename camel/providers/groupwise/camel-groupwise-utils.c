@@ -401,7 +401,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
 	if(!mp) {
-		g_error ("ERROR: Could not get content object");
+		g_warning ("ERROR: Could not get content object");
 		camel_operation_end (NULL);
 		return FALSE;
 	}
