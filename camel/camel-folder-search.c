@@ -772,6 +772,8 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 		type = 2;
 	else if (!strcmp(r->value.string, "replies_parents"))
 		type = 3;
+	else if (!strcmp(r->value.string, "single"))
+		type = 4;
 	e_sexp_result_free(f, r);
 
 	/* behave as (begin does */
@@ -801,31 +803,34 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 
 	results = g_hash_table_new(g_str_hash, g_str_equal);
 	for (i=0;i<r->value.ptrarray->len;i++) {
-		d(printf("adding match: %s\n", (char *)g_ptr_array_index(r->value.ptrarray, i)));
-		g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER (1));
-	}
-
-	for (i=0;i<r->value.ptrarray->len;i++) {
 		struct _CamelFolderThreadNode *node, *scan;
+
+		if (type != 4)
+			g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER(1));
 
 		node = g_hash_table_lookup(p->threads_hash, (char *)g_ptr_array_index(r->value.ptrarray, i));
 		if (node == NULL) /* this shouldn't happen but why cry over spilt milk */
 			continue;
 
 		/* select messages in thread according to search criteria */
-		if (type == 3) {
-			scan = node;
-			while (scan && scan->parent) {
-				scan = scan->parent;
-				g_hash_table_insert(results, (char *)camel_message_info_uid(scan->message), GINT_TO_POINTER(1));
+		if (type == 4) {
+			if (node->child == NULL && node->parent == NULL)
+				g_hash_table_insert(results, (char *)camel_message_info_uid(node->message), GINT_TO_POINTER(1));
+		} else {
+			if (type == 3) {
+				scan = node;
+				while (scan && scan->parent) {
+					scan = scan->parent;
+					g_hash_table_insert(results, (char *)camel_message_info_uid(scan->message), GINT_TO_POINTER(1));
+				}
+			} else if (type == 1) {
+				while (node && node->parent)
+					node = node->parent;
 			}
-		} else if (type == 1) {
-			while (node && node->parent)
-				node = node->parent;
+			g_hash_table_insert(results, (char *)camel_message_info_uid(node->message), GINT_TO_POINTER(1));
+			if (node->child)
+				add_thread_results(node->child, results);
 		}
-		g_hash_table_insert(results, (char *)camel_message_info_uid(node->message), GINT_TO_POINTER(1));
-		if (node->child)
-			add_thread_results(node->child, results);
 	}
 	e_sexp_result_free(f, r);
 

@@ -1,3 +1,10 @@
+2006-01-25  Not Zed  <NotZed@Ximian.com>
+ 
+ 	* camel-folder-search.c (search_match_threads): add new
+ 	match-thread type "unreplied", matches messages that are unreplied
+ 	to. 
+	Committed to head on behaf of Notzed
+ 
 2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-mime-utils.c: (camel_content_type_unref):
