@@ -1,3 +1,8 @@
+2006-01-27  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-constants.h: using API_VERSION for Exchange
+	Connector book and calendar factories. See #323115.
+
 2006-01-05  Sushma Rai  <rsushma@novell.com>
 
 	* lib/e2k-autoconfig.c (validate): Free E2kAutoconfig structure.
