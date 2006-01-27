@@ -1,3 +1,9 @@
+2006-01-27  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-uri.c (e2k_uri_new): Checking if the user name entered is 
+	e-mail id and extracting the user name and domain from it. 
+	Fixes #323637.
+
 2006-01-18  Sushma Rai  <rsushma@novell.com>
 
 	* lib/e2k-autoconfig.c (e2k_validate_user): Whenever the authenticate

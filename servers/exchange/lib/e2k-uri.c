@@ -74,7 +74,7 @@ e2k_uri_new (const char *uri_string)
 		slash = uri_string + strcspn (uri_string, "/#");
 		at = strchr (uri_string, '@');
 		if (at && at < slash) {
-			char *backslash;
+			char *backslash, *user_at;
 
 			colon = strchr (uri_string, ':');
 			if (colon && colon < at) {
@@ -108,6 +108,14 @@ e2k_uri_new (const char *uri_string)
 				uri->domain = uri->user;
 				*backslash = '\0';
 				uri->user = g_strdup (backslash + 1);
+			}
+			else {
+				/* if backslash is not there check for @ */
+				user_at = strchr (uri->user, '@');
+				if (user_at) {
+					*user_at = '\0';
+					uri->domain = g_strdup (user_at + 1);
+				}
 			}
 		} else
 			uri->user = uri->passwd = uri->domain = NULL;
