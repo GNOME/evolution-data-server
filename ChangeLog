@@ -1,5 +1,10 @@
 2006-01-30  Harish Krishnaswamy  <kharish@novell.com>
 
+	* configure.in, NEWS: Release updates, bump version
+	***** Release 1.5.90 *****
+
+2006-01-30  Harish Krishnaswamy  <kharish@novell.com>
+
 	* libedataserver/e-data-server-module.c:
 	(e_data_server_module_add_type):
 	* libedataserver/e-data-server-module.h:
