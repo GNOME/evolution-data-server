@@ -262,13 +262,3 @@ e_data_server_module_add_type (GType type)
 
 	module_objects = g_list_prepend (module_objects, object);
 }
-
-/**
- * Unref all loaded modules, so that unused modules are unloaded from the
- * system.
- */
-void
-e_data_server_module_remove_unused (void)
-{
-	g_list_foreach (module_objects, (GFunc)g_object_unref, NULL);
-}

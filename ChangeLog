@@ -1,3 +1,11 @@
+2006-01-30  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libedataserver/e-data-server-module.c:
+	(e_data_server_module_add_type):
+	* libedataserver/e-data-server-module.h:
+	Reverting the previous commit as it breaks the API freeze.
+	Shall get this in HEAD as soon as we branch out.
+
 2006-01-30  Ross Burton  <ross@openedhand.com>
 
 	* libedataserver/e-data-server-module.c:

@@ -30,7 +30,6 @@ G_BEGIN_DECLS
 void   e_data_server_module_init             (void);
 GList *e_data_server_get_extensions_for_type (GType type);
 void   e_data_server_extension_list_free     (GList *list);
-void   e_data_server_module_remove_unused    (void);
 
 /* Add a type to the module interface - allows EDS to add its own modules
  * without putting them in separate shared libraries */
