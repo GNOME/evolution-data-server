@@ -359,7 +359,6 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	/* This makes the cleanup easier. We just unref it each time
 	 * we find it in account->priv->folders.
 	 */
-	//d(printf ("adding folder : %s\n", e_folder_get_name (folder)));
 	key = (char *) e_folder_exchange_get_path (folder);
 	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
@@ -368,7 +367,6 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		//d(printf ("added path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -387,7 +385,6 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		//d(printf ("added phy path : %s\n", key));
 		table_updated = 1;
 	}
 
@@ -400,7 +397,6 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->folders,
 				     key,
 				     folder);
-		//d(printf ("added int path : %s\n", key));
 		table_updated = 1;
 	}
 

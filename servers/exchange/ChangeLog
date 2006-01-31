@@ -1,3 +1,8 @@
+2006-01-31  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (hierarchy_new_folder): Removed the debug
+	messages. Fixes #327428
+
 2006-01-27  Sushma Rai  <rsushma@novell.com>
 
 	* lib/e2k-uri.c (e2k_uri_new): Checking if the user name entered is 
