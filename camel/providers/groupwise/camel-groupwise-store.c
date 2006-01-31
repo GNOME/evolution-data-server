@@ -394,7 +394,7 @@ groupwise_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
 	}
 	
-	groupwise_disconnect_cleanup (service, clean, ex);
+	//groupwise_disconnect_cleanup (service, clean, ex);
 	return TRUE;
 }
 
