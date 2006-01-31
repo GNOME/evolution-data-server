@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-14 14:21+0100\n"
-"PO-Revision-Date: 2006-01-18 21:02+0200\n"
+"POT-Creation-Date: 2006-01-26 07:13+0100\n"
+"PO-Revision-Date: 2006-01-26 15:02+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -31,13 +31,13 @@ msgstr "Laadimine..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3739
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Otsing..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3903
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontaktide allalaadimine (%d)... "
@@ -49,35 +49,35 @@ msgstr "Kontaktide allalaadimine (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Kontaktide puhvri uuendamine (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:702
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
 msgid "Using Distinguished Name (DN)"
 msgstr "Eraldusnime (DN) kasutamine"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:705
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:716
 msgid "Using Email Address"
 msgstr "E-posti aadressi kasutamine"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:924
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
 msgid "Reconnecting to LDAP server..."
 msgstr "Taasühendumine LDAP serveriga..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1503
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
 msgid "Adding contact to LDAP server..."
 msgstr "Kontakti lisamine LDAP serverisse..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1637
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
 msgid "Removing contact from LDAP server..."
 msgstr "Kontakti eemaldamine LDAP serverist..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1919
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
 msgid "Modifying contact from LDAP server..."
 msgstr "Kontakti muutmine LDAP serveris..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3601
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
 msgid "Receiving LDAP search results..."
 msgstr "LDAP otsingutulemuste vastuvõtmine..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3761
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
 
@@ -656,12 +656,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Kalendri andmeid pole võimalik salvestada: Vigane URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1462
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1467
 msgid "Reply Requested: by "
 msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1467
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1472
 msgid "Reply Requested: When convenient"
 msgstr ""
 
@@ -670,54 +670,54 @@ msgstr ""
 msgid "Loading %s items"
 msgstr "%s kirjete laadimine"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:715
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:718
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:774
 msgid "Invalid server URI"
 msgstr "Vigane serveri URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:787
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:796
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:881
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:790
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:799
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:884
 #: ../calendar/libecal/e-cal.c:5131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:897
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:917
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:945
-#: ../camel/providers/groupwise/camel-groupwise-store.c:515
-#: ../camel/providers/groupwise/camel-groupwise-store.c:530
-#: ../camel/providers/groupwise/camel-groupwise-store.c:572
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1059
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:902
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:922
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:950
+#: ../camel/providers/groupwise/camel-groupwise-store.c:574
+#: ../camel/providers/groupwise/camel-groupwise-store.c:589
+#: ../camel/providers/groupwise/camel-groupwise-store.c:630
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Tõrge autentimisel"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:837
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:840
 msgid "Could not create thread for getting deltas"
 msgstr "Deltade hankimise lõime pole võimalik luua"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1109
-#: ../calendar/backends/http/e-cal-backend-http.c:509
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:865
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1112
+#: ../calendar/backends/http/e-cal-backend-http.c:520
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Puhverfaili pole võimalik luua"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:878
 msgid "Could not create thread for populating cache"
 msgstr ""
 
-#: ../calendar/backends/http/e-cal-backend-http.c:253
+#: ../calendar/backends/http/e-cal-backend-http.c:259
 msgid "Redirected to Invalid URI"
 msgstr "Ümber suunatud vigase URI peale"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:277
+#: ../calendar/backends/http/e-cal-backend-http.c:283
 msgid "Bad file format."
 msgstr "Vale failivorming."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:283
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Not a calendar."
 msgstr "Ei ole kalender."
 
@@ -1065,7 +1065,7 @@ msgstr "Määramata"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Sisesta %s parool, et lubada proksi kasutajale %s"
 
-#: ../calendar/libecal/e-cal.c:1708 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1708 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Sisesta %s parool (kasutaja %s)"
@@ -1137,9 +1137,9 @@ msgid "A CORBA exception has occurred"
 msgstr "Tekkis CORBA viga"
 
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
-#: ../camel/providers/imap/camel-imap-command.c:310
-#: ../camel/providers/imap/camel-imap-command.c:410
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/imap/camel-imap-command.c:311
+#: ../camel/providers/imap/camel-imap-command.c:411
 #: ../camel/providers/imap4/camel-imap4-store.c:383
 #: ../camel/providers/pop3/camel-pop3-store.c:533
 #: ../camel/providers/pop3/camel-pop3-store.c:540
@@ -1332,7 +1332,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Kausta '%s' ettevalmistamine autonoomse režiimi jaoks"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1250
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1311
 #: ../camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
 msgstr "Selle operatsiooni täitmiseks pead olema onlainis"
@@ -1458,15 +1458,15 @@ msgstr "(match-threads) pole match-all sees lubatud"
 msgid "(match-threads) requires a match type string"
 msgstr ""
 
-#: ../camel/camel-folder-search.c:786
+#: ../camel/camel-folder-search.c:788
 msgid "(match-threads) expects an array result"
 msgstr "(match-threads) eeldab tulemust massiivi kujul"
 
-#: ../camel/camel-folder-search.c:792
+#: ../camel/camel-folder-search.c:794
 msgid "(match-threads) requires the folder set"
 msgstr "(match-threads) nõuab, et kataloog oleks seatud"
 
-#: ../camel/camel-folder-search.c:881
+#: ../camel/camel-folder-search.c:886
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Täidetakse päring tundmatul päisel: %s"
@@ -2218,11 +2218,11 @@ msgstr "CMS sõnumit pole võimalik luua"
 
 #: ../camel/camel-smime-context.c:806
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "CMS-ümbrikus andmeid pole võimalik luua"
 
 #: ../camel/camel-smime-context.c:812
 msgid "Cannot attach CMS Enveloped data"
-msgstr ""
+msgstr "CMS-ümbrikus andmeid pole võimalik manusesse lisada"
 
 #: ../camel/camel-smime-context.c:818
 msgid "Cannot attach CMS data object"
@@ -2300,11 +2300,11 @@ msgstr "Rämps"
 
 #: ../camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
-msgstr ""
+msgstr "Väljaandja sertifikaati pole võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
-msgstr ""
+msgstr "Sertifikaatide tühistusnimekirja pole võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
@@ -2312,7 +2312,7 @@ msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
+msgstr "Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2352,7 +2352,7 @@ msgstr "Mälu puudujääk"
 
 #: ../camel/camel-tcp-stream-openssl.c:597
 msgid "Zero-depth self-signed certificate"
-msgstr ""
+msgstr "Isesigneeritud nulltaseme sertifikaat"
 
 #: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Self-signed certificate in chain"
@@ -2599,31 +2599,31 @@ msgstr "See sõnum pole autonoomses režiimis kättesaadav."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:171
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1425
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1430
 msgid "Could not get message"
 msgstr "Sõnumit pole võimalik hankida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:708
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:707
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s kokkuvõtet pole võimalik laadida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1032
-#: ../camel/providers/groupwise/camel-groupwise-store.c:560
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1037
+#: ../camel/providers/groupwise/camel-groupwise-store.c:618
 #: ../camel/providers/imap/camel-imap-folder.c:2375
 #: ../camel/providers/imap/camel-imap-folder.c:2445
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Uutele sõnumitele kokkuvõtete võtmine (%s)"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1707
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1668
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1716
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Sõnumit pole võimalik kausta `%s' lisada: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1695
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1704
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Sõnumit pole võimalik luua: %s"
@@ -2717,55 +2717,55 @@ msgstr ""
 msgid "Host or user not available in url"
 msgstr "Urlis pole kasutajat või hostinime"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:199
+#: ../camel/providers/groupwise/camel-groupwise-store.c:198
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sPalun sisesta GroupWise parool %s@%s jaoks"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:213
+#: ../camel/providers/groupwise/camel-groupwise-store.c:212
 #: ../camel/providers/imap/camel-imap-store.c:1364
 msgid "You didn't enter a password."
 msgstr "Sa ei sisestanud parooli."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:227
+#: ../camel/providers/groupwise/camel-groupwise-store.c:224
 msgid "Unable to authenticate to GroupWise server."
 msgstr "GroupWise serverisse pole võimalik autentida."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:295
+#: ../camel/providers/groupwise/camel-groupwise-store.c:298
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Käesoleva serveriversiooniga võivad mõned võimalused käituda ebakorrektselt"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:467
+#: ../camel/providers/groupwise/camel-groupwise-store.c:526
 #: ../camel/providers/imap/camel-imap-store.c:1873
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #, c-format
 msgid "No such folder %s"
 msgstr "Kausta %s ei leitud"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1036
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1097
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise kaustu pole autonoomses režiimis võimalik luua."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1050
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1111
 #: ../camel/providers/imap/camel-imap-store.c:1948
 #: ../camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1127
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1148
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1188
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1209
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "GroupWise kausta `%s' pole võimalik `%s'-ks ümber nimetada"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1180
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise server %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1182
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1243
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr ""
@@ -2779,13 +2779,14 @@ msgstr "GroupWise posti saatmine %s kaudu"
 msgid "Sending Message"
 msgstr "Sõnumi saatmine"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:216
 msgid ""
-"You have exceed this account's storage limit. Your messages are queued in "
-"Outbox. Try sending after deleting/archiving some mails.\n"
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
 msgstr ""
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -2858,14 +2859,14 @@ msgid "This option will connect to the Hula server using a plaintext password."
 msgstr ""
 "See valik loob ühenduse Hula serveriga kasutades avatekstilist parooli."
 
-#: ../camel/providers/imap/camel-imap-command.c:222
-#: ../camel/providers/imap/camel-imap-command.c:264
-#: ../camel/providers/imap/camel-imap-command.c:471
+#: ../camel/providers/imap/camel-imap-command.c:223
+#: ../camel/providers/imap/camel-imap-command.c:265
+#: ../camel/providers/imap/camel-imap-command.c:472
 #: ../camel/providers/imap/camel-imap-store.c:3004
 msgid "Operation cancelled"
 msgstr "Operatsioon katekstatud"
 
-#: ../camel/providers/imap/camel-imap-command.c:309
+#: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-store.c:3007
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
@@ -2873,7 +2874,7 @@ msgstr "Server katkestas ootamatult: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:330
+#: ../camel/providers/imap/camel-imap-command.c:331
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -2882,26 +2883,26 @@ msgstr ""
 "Häire IMAP serverilt %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:399
+#: ../camel/providers/imap/camel-imap-command.c:400
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Ootamatu vastus IMAP serverilt: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:409
+#: ../camel/providers/imap/camel-imap-command.c:410
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAPi käsk nurjus: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:485
+#: ../camel/providers/imap/camel-imap-command.c:486
 msgid "Server response ended too soon."
 msgstr "Serveri vastus lõppes liiga vara."
 
-#: ../camel/providers/imap/camel-imap-command.c:692
+#: ../camel/providers/imap/camel-imap-command.c:693
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP serveri vastus ei sisalda %s andmeid"
 
-#: ../camel/providers/imap/camel-imap-command.c:728
+#: ../camel/providers/imap/camel-imap-command.c:729
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Ootamatu OK vastus IMAP serverilt: %s"
@@ -3283,7 +3284,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:535
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr ""
+msgstr "%sPalun sisesta %s jaoks IMAP parool hostile %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:602
 #, c-format
@@ -4316,7 +4317,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
+msgstr "Posti edastamiseks võigus asuvale mailhub'ile SMTP protokolli abil."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -4781,7 +4782,7 @@ msgstr "%l %p"
 msgid "Accessing LDAP Server anonymously"
 msgstr "Anonüümne ligipääs LDAP serverile"
 
-#: ../libedataserverui/e-book-auth-util.c:185
+#: ../libedataserverui/e-book-auth-util.c:191
 msgid "Failed to authenticate.\n"
 msgstr "Tõrge autentimisel.\n"
 
@@ -4898,6 +4899,11 @@ msgstr ""
 msgid "_Edit %s"
 msgstr "_Redigeeri %s"
 
+#: ../libedataserverui/e-name-selector-list.c:480
+#, c-format
+msgid "_Delete %s"
+msgstr "_Kustuta %s"
+
 #: ../libedataserverui/e-passwords.c:471
 msgid "_Remember this password"
 msgstr "_Parool jäetakse meelde"
@@ -4915,13 +4921,13 @@ msgstr "Vali sihtkoht"
 msgid "_Destination"
 msgstr "_Sihtkoht"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1630
+#: ../servers/exchange/lib/e2k-autoconfig.c:1636
 #: ../servers/exchange/storage/exchange-account.c:936
 #, c-format
 msgid "Enter password for %s"
 msgstr "Sisesta parool %s jaoks"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1631
+#: ../servers/exchange/lib/e2k-autoconfig.c:1637
 #: ../servers/exchange/storage/exchange-account.c:941
 msgid "Enter password"
 msgstr "Sisesta parool"
@@ -4938,7 +4944,7 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr "Redaktor"
+msgstr "Toimetaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
