@@ -348,7 +348,8 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	}
 	
 	if (!strcmp (attachment->contentType, "text/html") || !(strcmp (attachment->contentType, "multipart/alternative"))) {
-		filename = "text.htm";
+		if (!filename)
+			filename = "text.htm";
 		if (!(strcmp (attachment->contentType, "multipart/alternative"))) {
 			g_free (attachment->contentType);
 			attachment->contentType = g_strdup ("text/html");
