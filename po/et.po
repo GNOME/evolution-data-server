@@ -1,11 +1,11 @@
 # Evolution'i andmeserveri eesti keele tõlge.
 # Estonian translation of Evolution-data-server.
 #
-# Copyright (C) 2001-2005 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2002, 2005, 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution package.
 #
 # Ilmar Kerm <ikerm@hot.ee>, 2001.
-# Ivar Smolin <okul@linux.ee>, 2002, 2005.
+# Ivar Smolin <okul@linux.ee>, 2002, 2005, 2006.
 # Kaarel Jogi <kaarel@gg.ee>, 2002.
 #
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2005-09-06 10:31+0300\n"
+"PO-Revision-Date: 2006-01-26 15:02+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1317,7 +1317,8 @@ msgstr "Taassünkroniseeritakse serveriga"
 
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
-msgstr "Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
+msgstr ""
+"Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:110
 msgid "Downloading new messages for offline mode"
@@ -1817,7 +1818,7 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"Vigane e-posti aadressi jälitusteave:\n"
+"Vigased e-posti aadressi jälitusandmed:\n"
 "%s"
 
 #: ../camel/camel-sasl-anonymous.c:143
@@ -1833,7 +1834,7 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
-"Vigane jälitusteave:\n"
+"Vigased jälitusandmed:\n"
 "%s"
 
 #: ../camel/camel-sasl-cram-md5.c:36
@@ -1967,7 +1968,7 @@ msgid ""
 "Could not get Kerberos ticket:\n"
 "%s"
 msgstr ""
-"Kerberose piletit ei saadud:\n"
+"Kerberose piletit pole võimalik hankida:\n"
 "%s"
 
 #: ../camel/camel-sasl-login.c:33
@@ -2214,11 +2215,11 @@ msgstr "CMS sõnumit pole võimalik luua"
 
 #: ../camel/camel-smime-context.c:808
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "CMS-ümbrikus andmeid pole võimalik luua"
 
 #: ../camel/camel-smime-context.c:814
 msgid "Cannot attach CMS Enveloped data"
-msgstr ""
+msgstr "CMS-ümbrikus andmeid pole võimalik manusesse lisada"
 
 #: ../camel/camel-smime-context.c:820
 msgid "Cannot attach CMS data object"
@@ -2226,11 +2227,11 @@ msgstr "CMS andmeobjekti pole võimalik manustada"
 
 #: ../camel/camel-smime-context.c:829
 msgid "Cannot create CMS Recipient information"
-msgstr "CMS vastuvõtja teavet pole võimalik luua"
+msgstr "CMS vastuvõtja andmeid pole võimalik luua"
 
 #: ../camel/camel-smime-context.c:834
 msgid "Cannot add CMS Recipient information"
-msgstr "CMS vastuvõtja teavet pole võimalik lisada"
+msgstr "CMS vastuvõtja andmeid pole võimalik lisada"
 
 #: ../camel/camel-smime-context.c:859
 msgid "Failed to add data to encoder"
@@ -2295,11 +2296,11 @@ msgstr "Rämps"
 
 #: ../camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
-msgstr ""
+msgstr "Väljaandja sertifikaati pole võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
-msgstr ""
+msgstr "Sertifikaatide tühistusnimekirja pole võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
@@ -2307,7 +2308,7 @@ msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
+msgstr "Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2347,7 +2348,7 @@ msgstr "Mälu puudujääk"
 
 #: ../camel/camel-tcp-stream-openssl.c:597
 msgid "Zero-depth self-signed certificate"
-msgstr ""
+msgstr "Isesigneeritud nulltaseme sertifikaat"
 
 #: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Self-signed certificate in chain"
@@ -2549,7 +2550,7 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
-"Sõnumit %s ei saadud: \n"
+"Sõnumit %s pole võimalik hankida: \n"
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:115
@@ -2633,7 +2634,7 @@ msgstr "Sõnumit pole võimalik autonoomses režiimis lisada: %s"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:51
 #: ../camel/providers/imap4/camel-imap4-provider.c:36
 msgid "Checking for new mail"
-msgstr "Kontrollin uusi sõnumeid"
+msgstr "Uute sõnumite kontrollimine"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 msgid "Check for new messages in all folders"
@@ -2815,7 +2816,7 @@ msgstr "Serveri vastus lõppes liiga vara."
 #: ../camel/providers/imap/camel-imap-command.c:692
 #, c-format
 msgid "IMAP server response did not contain %s information"
-msgstr "IMAP serveri vastus ei sisalda %s teavet"
+msgstr "IMAP serveri vastus ei sisalda %s andmeid"
 
 #: ../camel/providers/imap/camel-imap-command.c:728
 #, c-format
@@ -2835,7 +2836,7 @@ msgstr "Kaust hävitati ja taasloodi serveris."
 #: ../camel/providers/imap/camel-imap-folder.c:596
 #: ../camel/providers/imap4/camel-imap4-summary.c:1472
 msgid "Scanning for changed messages"
-msgstr "Kontrollin muudetud sõnumite olemasolu"
+msgstr "Muudetud sõnumite olemasolu kontrollimine"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1964
 #, c-format
@@ -3249,7 +3250,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr ""
+msgstr "%sPalun sisesta %s jaoks IMAP parool hostile %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:592
 #, c-format
@@ -3264,7 +3265,7 @@ msgstr "Autonoomses režiimis poke võimalik IMAP kaustu luua."
 #: ../camel/providers/imap4/camel-imap4-store.c:793
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr "Kausta `%s' ei saadud IMAP serverist %s: Tundmatu"
+msgstr "Kausta `%s' pole IMAP serverist %s võimalik hankida: Tundmatu"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:914
 #, c-format
@@ -3320,6 +3321,7 @@ msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Puudulik käsk"
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr ""
+"`%s' andmeid mustri `%s' jaoks pole IMAP serverist %s võimalik hankida: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1434
 msgid "Bad command"
@@ -3497,7 +3499,7 @@ msgstr "Hoidla juurikas '%s' ei ole tavaline kataloog"
 #: ../camel/providers/local/camel-local-store.c:272
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr "Kausta ei saadud: %s: %s"
+msgstr "Kausta pole võimalik hankida: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:186
 msgid "Local stores do not have an inbox"
@@ -3589,19 +3591,19 @@ msgstr "Kausta `%s' pole võimalik luua: %s"
 #: ../camel/providers/local/camel-mh-store.c:205
 #, c-format
 msgid "Cannot get folder `%s': %s"
-msgstr "Kausta `%s' ei saadud: %s"
+msgstr "Kausta `%s' pole võimalik hankida: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:163
 #: ../camel/providers/local/camel-mbox-store.c:149
 #: ../camel/providers/local/camel-mh-store.c:212
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
-msgstr "Kausta `%s' ei saadud: seda ei ole olemas."
+msgstr "Kausta `%s' pole võimalik hankida: seda ei ole olemas."
 
 #: ../camel/providers/local/camel-maildir-store.c:187
 #, c-format
 msgid "Cannot get folder `%s': not a maildir directory."
-msgstr "Kausta `%s' ei saadud: see ei ole maildir kataloog."
+msgstr "Kausta `%s' pole võimalik hankida: see ei ole maildir kataloog."
 
 #: ../camel/providers/local/camel-maildir-store.c:232
 #: ../camel/providers/local/camel-maildir-store.c:270
@@ -3680,7 +3682,7 @@ msgstr "Sellise nimega kausta pole võimalik luua."
 #: ../camel/providers/local/camel-mbox-store.c:193
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
-msgstr "Kausta `%s' ei saadud: see ei ole tavaline fail."
+msgstr "Kausta `%s' pole võimalik hankida: see ei ole tavaline fail."
 
 #: ../camel/providers/local/camel-mbox-store.c:223
 #: ../camel/providers/local/camel-mbox-store.c:234
@@ -4124,7 +4126,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "E-posti allalaadimiseks POP serveritest"
+msgstr "E-posti laaditakse alla POP serverist"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
@@ -4276,7 +4278,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
+msgstr "Posti edastamiseks võigus asuvale mailhub'ile SMTP protokolli abil."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
 msgid "Syntax error, command unrecognized"
@@ -4887,7 +4889,7 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr "Redaktor"
+msgstr "Toimetaja"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
