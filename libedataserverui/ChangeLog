@@ -1,3 +1,10 @@
+2006-01-01  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-dialog.c : (contact_activated), (destination_activated)
+	Fixed a crash. The bug had come due to a wrong change done for enabling multiple
+	select mode for name-selector-dialog.
+	Fixes Bug #326652.
+
 2006-01-23  Sushma Rai  <rsushma@novell.com>
 
 	* libedataserverui/e-book-auth-util.c (addressbook_authenticate):

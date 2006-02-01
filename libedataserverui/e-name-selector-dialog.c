@@ -777,7 +777,7 @@ contact_selection_changed (ENameSelectorDialog *name_selector_dialog)
 	GtkTreeSelection *contact_selection;
 	gboolean          have_selection = FALSE;
 	gint              i;
-
+	
 	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
 	if (gtk_tree_selection_count_selected_rows (contact_selection))
 		have_selection = TRUE;
@@ -794,10 +794,9 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	EContactStore     *contact_store;
 	EDestinationStore *destination_store;
 	EContact          *contact;
+	GtkTreeIter       iter;
 	Section           *section;
 	gint               email_n;
-	GList		  *rows, *l;
-	GtkTreeSelection  *contact_selection;
 
 	/* When a contact is activated, we transfer it to the first destination on our list */
 
@@ -807,6 +806,21 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	if (name_selector_dialog->sections->len == 0) 
 		return;
 
+	/* Get the contact to be transferred */
+
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
+				      &iter, path))
+		g_assert_not_reached ();
+
+	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
+
+	contact = e_contact_store_get_contact (contact_store, &iter);
+	if (!contact) {
+		g_warning ("ENameSelectorDialog could not get selected contact!");
+		return;
+	}
+
+
 	section = &g_array_index (name_selector_dialog->sections, Section, 0);
 	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
 						 section->name, NULL, &destination_store)) {
@@ -814,31 +828,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		return;
 	}
 
-	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
-	rows = gtk_tree_selection_get_selected_rows (contact_selection, NULL);
-	rows = g_list_reverse (rows);
-
-	/* Get the contacts to be transferred */
-
-	for (l=rows; l; l=g_list_next(l)) {
-		GtkTreeIter iter;
-
-		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
-				      &iter, path))
-			g_assert_not_reached ();
-
-		gtk_tree_path_free (path);
-		sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
-		
-		contact = e_contact_store_get_contact (contact_store, &iter);
-		if (!contact) {
-			g_warning ("ENameSelectorDialog could not get selected contact!");
-			g_list_free (rows);
-			return;
-		}
-		add_destination (destination_store, contact, email_n);
-	}
-	g_list_free (rows);
+	add_destination (destination_store, contact, email_n);
 }
 
 static void
@@ -849,8 +839,7 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 	EDestinationStore *destination_store;
 	EDestination      *destination;
 	Section           *section;
-	GList		  *rows, *l;
-	GtkTreeSelection  *selection;
+	GtkTreeIter        iter;
 
 	/* When a destination is activated, we remove it from the section */
 
@@ -867,25 +856,13 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 		return;
 	}
 
-	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
-	rows = g_list_reverse (rows);
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store), &iter, path))
+		g_assert_not_reached ();
 
-	for (l = rows; l; l = g_list_next(l)) {
-		GtkTreeIter iter;
-		GtkTreePath *path = l->data;
+	destination = e_destination_store_get_destination (destination_store, &iter);
+	g_assert (destination);
 
-		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store),
-				      	      &iter, path))
-			g_assert_not_reached ();
-
-		gtk_tree_path_free (path);
-
-		destination = e_destination_store_get_destination (destination_store, &iter);
-		g_assert (destination);
-
-		e_destination_store_remove_destination (destination_store, destination);
-	}
-	g_list_free (rows);
+	e_destination_store_remove_destination (destination_store, destination);
 }
 
 static gboolean 
