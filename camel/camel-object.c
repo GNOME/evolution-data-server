@@ -241,7 +241,8 @@ cobject_finalise(CamelObject *o)
 {
 	/*printf("%p: finalise %s\n", o, o->klass->name);*/
 
-	g_assert(o->ref_count == 0);
+	if (o->ref_count == 0)
+		return;
 
 	camel_object_free_hooks(o);
 

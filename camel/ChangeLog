@@ -1,3 +1,10 @@
+2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-object.c:
+	(object_finalise):
+	(camel_message_info_free):
+	decrement Ref count properly
+
 2006-02-02  Tor Lillqvist  <tml@novell.com>
 
 	* camel-net-utils.h
