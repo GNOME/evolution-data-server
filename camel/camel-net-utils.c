@@ -45,6 +45,8 @@
 
 #ifdef G_OS_WIN32
 
+typedef short in_port_t;
+
 #undef gai_strerror
 #define gai_strerror my_gai_strerror
 

@@ -40,6 +40,7 @@ extern "C" {
 
 struct _CamelException;
 
+#ifndef _WIN32
 #ifdef NEED_ADDRINFO
 /* Some of this is copied from GNU's netdb.h
 
@@ -87,6 +88,7 @@ struct addrinfo {
 #define NI_NOFQDN	4	/* Only return nodename portion.  */
 #define NI_NAMEREQD	8	/* Don't return numeric addresses.  */
 #define NI_DGRAM	16	/* Look up UDP service rather than TCP.  */
+#endif
 #endif
 
 struct addrinfo *camel_getaddrinfo(const char *name, const char *service,

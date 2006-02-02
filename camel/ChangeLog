@@ -1,3 +1,9 @@
+2006-02-02  Tor Lillqvist  <tml@novell.com>
+
+	* camel-net-utils.h
+	* camel-net-utils.c: Make it compile on Win32 also without
+	getaddrinfo() (with NEED_ADDRINFO).
+
 2006-01-25  Not Zed  <NotZed@Ximian.com>
  
  	* camel-folder-search.c (search_match_threads): add new

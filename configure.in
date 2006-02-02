@@ -145,13 +145,14 @@ AC_MSG_CHECKING([for Win32])
 case "$host" in
 *-mingw*)
     os_win32=yes
-    AC_CACHE_VAL(have_addrinfo, [have_addrinfo=yes])
     NO_UNDEFINED='-no-undefined'
     SOCKET_LIBS='-lws2_32 -ldnsapi'
     DL_LIB=''
     SOFTOKN3_LIB=''
     LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
-    AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
+    # No, don't use Windows XP -only API
+    # AC_CACHE_VAL(have_addrinfo, [have_addrinfo=yes])
+    # AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
     ;;
 *)  os_win32=no
     NO_UNDEFINED=''

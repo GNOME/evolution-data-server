@@ -1,3 +1,8 @@
+2006-02-02  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Don't use getadrinfo() etc on Windows, as they are
+	present on XP only. Windows 2000 is still widespread.
+
 2006-01-30  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in, NEWS: Release updates, bump version
