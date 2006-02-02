@@ -1,5 +1,11 @@
 2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	** See bug 328481
+	* camel-gpg-context.c: (gpg_ctx_parse_status): do not
+	search if the gpg->need_id is NULL
+
+2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* camel-object.c:
 	(object_finalise):
 	(camel_message_info_free):

@@ -797,13 +797,19 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	} else if (!strncmp (status, "GET_HIDDEN passphrase.enter", 27)) {
 		char *prompt, *passwd;
 		const char *name;
-		
-		name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id);
-		if (!name)
-			name = gpg->need_id;
-		
-		prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
-					    "user: \"%s\""), name);
+
+		if (gpg->need_id) {
+			name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id);
+			if (!name)
+				name = gpg->need_id;
+
+			prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
+						"user: \"%s\""), name);
+		} else {
+			name = "";
+			prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
+						"user: \"%s\""), name);
+		}
 		
 		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt,  gpg->need_id, CAMEL_SESSION_PASSWORD_SECRET, ex)) && !gpg->utf8) {
 			char *opasswd = passwd;
