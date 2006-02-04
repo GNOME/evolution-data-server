@@ -1,3 +1,7 @@
+2006-02-04  Theppitak Karoonboonyanan  <thep@linux.thai.net>
+
+	* configure.in: Added 'th' (Thai) to ALL_LINGUAS.
+
 2006-02-02  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Don't use getadrinfo() etc on Windows, as they are
