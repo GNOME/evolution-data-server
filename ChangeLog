@@ -1,3 +1,9 @@
+2006-02-06  Harish Krishnaswamy  <kharish@novell.com>
+
+	* evolution-data-server.pc.in: Add variable execversion
+	that denotes the version of the evolution-data-server
+	executable.
+
 2006-02-04  Theppitak Karoonboonyanan  <thep@linux.thai.net>
 
 	* configure.in: Added 'th' (Thai) to ALL_LINGUAS.
