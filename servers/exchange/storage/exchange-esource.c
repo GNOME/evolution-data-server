@@ -45,7 +45,7 @@ add_folder_esource (ExchangeAccount *account,
 	GConfClient *client;
 	gboolean is_contacts_folder = TRUE, group_new = FALSE, source_new = FALSE;
 	const char *offline = NULL;
-	char *username, *authtype;
+	char *username, *authtype = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
 	gboolean offline_flag;
@@ -187,6 +187,7 @@ add_folder_esource (ExchangeAccount *account,
 	}
 
 	g_free (relative_uri);
+	g_free (authtype);
 
 	if (source_new) 
 		g_object_unref (source);

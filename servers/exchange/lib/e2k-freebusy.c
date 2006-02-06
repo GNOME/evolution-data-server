@@ -177,7 +177,7 @@ e2k_freebusy_new (E2kContext *ctx, const char *public_uri, const char *dn)
 	GPtrArray *monthyears, *fbdatas;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults, i;
+	int nresults = 0, i;
 
 	uri = fb_uri_for_dn (public_uri, dn);
 	g_return_val_if_fail (uri, NULL);

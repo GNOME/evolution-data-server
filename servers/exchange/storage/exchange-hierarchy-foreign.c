@@ -125,7 +125,7 @@ check_hide_private (ExchangeHierarchy *hier)
 	E2kContext *ctx;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults, i;
+	int nresults = 0, i;
 	GPtrArray *entryids, *privflags;
 	GByteArray *entryid;
 	const char *my_dn, *delegate_dn;
@@ -219,21 +219,24 @@ find_folder (ExchangeHierarchy *hier, const char *uri, EFolder **folder_out)
 	E2kContext *ctx = exchange_account_get_context (hier->account);
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults;
+	int nresults = 0;
 	EFolder *folder;
 	const char *access;
 
 	status = e2k_context_propfind (ctx, NULL, uri,
 				       folder_props, n_folder_props,
 				       &results, &nresults);
-	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) 
+	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status))
 		return exchange_hierarchy_webdav_status_to_folder_result (status);
+
 	if (nresults == 0)
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 
 	access = e2k_properties_get_prop (results[0].props, PR_ACCESS);
-	if (!access || !atoi (access))
+	if (!access || !atoi (access)) {
+		e2k_results_free (results, nresults);
 		return EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED;
+	}
 
 	folder = exchange_hierarchy_webdav_parse_folder (hwd, hier->toplevel,
 							 &results[0]);

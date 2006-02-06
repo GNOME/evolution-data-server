@@ -1355,7 +1355,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	E2kHTTPStatus status;
 	gboolean redirected = FALSE;
 	E2kResult *results;
-	int nresults, mode;
+	int nresults = 0, mode;
 	GByteArray *entryid;
 	const char *timezone;
 	E2kGlobalCatalogStatus gcstatus;
@@ -1539,6 +1539,8 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	if (!setup_account_hierarchies (account)) {
 		*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 		g_mutex_unlock (account->priv->connect_lock);
+		if (nresults)
+			e2k_results_free (results, nresults);
 		return NULL; /* FIXME: what error has happened? */
 	}
 
@@ -1579,6 +1581,8 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 	g_signal_emit (account, signals[CONNECTED], 0, account->priv->ctx);
 	g_mutex_unlock (account->priv->connect_lock);
+	if (nresults)
+		e2k_results_free (results, nresults);
 	return account->priv->ctx;
 }
 

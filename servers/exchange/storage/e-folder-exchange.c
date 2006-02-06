@@ -442,13 +442,14 @@ e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
 	physical_uri = e_folder_get_physical_uri (folder);
 	internal_uri = e_folder_exchange_get_internal_uri (folder);
 	permanent_uri = e_folder_exchange_get_permanent_uri (folder);
+
+	g_return_val_if_fail (name && type && physical_uri && internal_uri,
+			      FALSE);
+
 	if ((fsize = e_folder_exchange_get_folder_size (folder)) >= 0)
 		folder_size = g_strdup_printf ("%llu", fsize);
 	else
 		return FALSE;
-
-	g_return_val_if_fail (name && type && physical_uri && internal_uri,
-			      FALSE);
 
 	doc = xmlNewDoc ("1.0");
 	root = xmlNewDocNode (doc, NULL, "connector-folder", NULL);
@@ -470,6 +471,8 @@ e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
 		g_unlink (filename);
 
 	xmlFreeDoc (doc);
+
+	g_free (folder_size);
 
 	return status == 0;
 }

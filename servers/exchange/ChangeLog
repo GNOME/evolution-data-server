@@ -1,3 +1,30 @@
+2006-02-06  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (exchange_account_connect): Freeing 
+	E2kResult.
+
+	* storage/e-folder-exchange.c (e_folder_exchange_save_to_file): 
+	Returning on NULL uris or folder name, before finding the folder size. 
+	Also freeing folder size string.
+
+	* storage/exchange-hierarchy-favorites.c (get_hrefs): Initializing 
+	nresults to zero.
+
+	* storage/exchange-oof.c (exchange_oof_get):  Similar.	
+	
+	* lib/e2k-freebusy.c (e2k_freebusy_new): Similar.
+
+	* storage/exchange-hierarchy-foreign.c (check_hide_private)
+	(find_folder): Initializing nresults to zero and Freeing E2kResult.
+
+	* storage/exchange-hierarchy-somedav.c 
+	(exchange_hierarchy_somedav_add_folder): Similar.
+
+	* storage/exchange-hierarchy-webdav.c (scan_subtree): Unrefing folder.
+
+	* storage/exchange-esource.c (add_folder_esource): Freeing authtype.
+	Fixes #329251.
+
 2006-01-31  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c (hierarchy_new_folder): Removed the debug

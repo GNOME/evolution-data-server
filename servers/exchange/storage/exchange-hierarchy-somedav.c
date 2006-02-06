@@ -223,7 +223,7 @@ exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
 	E2kContext *ctx;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults;
+	int nresults = 0;
 	EFolder *folder;
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY_SOMEDAV (hsd),
@@ -238,13 +238,16 @@ exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
 	status = e2k_context_propfind (ctx, NULL, uri,
 				       folder_props, n_folder_props,
 				       &results, &nresults);
-	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) 
+	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status))
 		return exchange_hierarchy_webdav_status_to_folder_result (status);
+
 	if (nresults == 0)
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 
-	if (folder_is_unreadable (results[0].props))
+	if (folder_is_unreadable (results[0].props)) {
+		e2k_results_free (results, nresults);
 		return EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED;
+	}
 
 	folder = exchange_hierarchy_webdav_parse_folder (hwd, hier->toplevel,
 							 &results[0]);

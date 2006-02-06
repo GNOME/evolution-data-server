@@ -121,7 +121,7 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 	GByteArray *source_key;
 	const char *prop = E2K_PR_DAV_HREF, *shortcut_uri;
 	char *perm_url, *folder_uri;
-	int i, nresults, mode;
+	int i, nresults = 0, mode;
 
 	hrefs = g_ptr_array_new ();
 

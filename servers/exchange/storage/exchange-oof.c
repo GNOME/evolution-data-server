@@ -85,7 +85,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 		/* Do this the easy way */
 		const char *prop = E2K_PR_EXCHANGE_OOF_STATE;
 		E2kResult *results;
-		int nresults;
+		int nresults = 0;
 
 		url = e2k_uri_concat (account->home_uri, "NON_IPM_SUBTREE/");
 		status = e2k_context_propfind (ctx, NULL, url, &prop, 1,
