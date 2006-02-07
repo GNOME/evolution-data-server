@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-26 07:13+0100\n"
-"PO-Revision-Date: 2006-01-26 15:02+0200\n"
+"PO-Revision-Date: 2006-02-05 10:01+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1339,7 +1339,7 @@ msgstr "Selle operatsiooni täitmiseks pead olema onlainis"
 
 #: ../camel/camel-exception.c:308
 msgid "No description available"
-msgstr ""
+msgstr "Kirjeldust pole saadaval"
 
 #: ../camel/camel-filter-driver.c:749
 #, c-format
@@ -2151,7 +2151,7 @@ msgstr "Toetamata signatuuri algoritm"
 
 #: ../camel/camel-smime-context.c:498
 msgid "Malformed signature"
-msgstr ""
+msgstr "Vigane signatuur"
 
 #: ../camel/camel-smime-context.c:500
 msgid "Processing error"
@@ -2751,7 +2751,7 @@ msgstr "GroupWise kaustu pole autonoomses režiimis võimalik luua."
 #: ../camel/providers/imap/camel-imap-store.c:1948
 #: ../camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr ""
+msgstr "Emakausta alla pole lubatud alamkaustu luua"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1188
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1209
@@ -2848,7 +2848,7 @@ msgstr "Nimeruum"
 
 #: ../camel/providers/hula/camel-hula-provider.c:75
 msgid "Hula"
-msgstr ""
+msgstr "Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:77
 msgid "For accessing Hula servers"
@@ -2936,18 +2936,18 @@ msgstr "See sõnum ei ole hetkel kättesaadav"
 #: ../camel/providers/imap/camel-imap-folder.c:2553
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "Mittetäielik serveri vastus: sõnumi %d kohta ei tagastatud andmeid"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2561
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "Mittetäielik serveri vastus: sõnumile %d on UID määramata"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2574
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "Ootamatu vastus serverilt: sõnumitele %d ja %d on määratud identne UID"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2755
 msgid "Could not find message body in FETCH response."
@@ -4003,6 +4003,7 @@ msgstr "USENETi uudised"
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
+"USENET'i uudistegruppide lugemise ja neisse postitamise talitluse tagamine."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4641,7 +4642,7 @@ msgstr "Strateegiad"
 
 #: ../libedataserver/e-categories.c:259
 msgid "Suppliers"
-msgstr ""
+msgstr "Tarnijad"
 
 #: ../libedataserver/e-categories.c:260
 msgid "Time & Expenses"
@@ -5127,7 +5128,7 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 #: ../src/server.c:106
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Toimus mitu segmenteerimise viga: veadialoogi pole võimalik kuvada\n"
 
 #~ msgid "Failed to create pipe to '%s': %s"
 #~ msgstr "Tõrge '%s' toru loomisel: %s"
