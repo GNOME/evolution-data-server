@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2006-01-26 15:02+0200\n"
+"PO-Revision-Date: 2006-02-05 10:01+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2148,7 +2148,7 @@ msgstr "Toetamata signatuuri algoritm"
 
 #: ../camel/camel-smime-context.c:500
 msgid "Malformed signature"
-msgstr ""
+msgstr "Vigane signatuur"
 
 #: ../camel/camel-smime-context.c:502
 msgid "Processing error"
@@ -2852,18 +2852,18 @@ msgstr "See sõnum ei ole hetkel kättesaadav"
 #: ../camel/providers/imap/camel-imap-folder.c:2486
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "Mittetäielik serveri vastus: sõnumi %d kohta ei tagastatud andmeid"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2494
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "Mittetäielik serveri vastus: sõnumile %d on UID määramata"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2507
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "Ootamatu vastus serverilt: sõnumitele %d ja %d on määratud identne UID"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2686
 msgid "Could not find message body in FETCH response."
@@ -3100,7 +3100,7 @@ msgstr "Kaustanimi \"%s\" on vigane kuna see sisaldab märki \"%c\""
 #: ../camel/providers/imap/camel-imap-store.c:1967
 #: ../camel/providers/imap/camel-imap-store.c:2345
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr ""
+msgstr "Emakausta alla pole lubatud alamkaustu luua"
 
 #: ../camel/providers/imap/camel-imap-store.c:2022
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -3959,6 +3959,7 @@ msgstr "USENETi uudised"
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
+"USENET'i uudistegruppide lugemise ja neisse postitamise talitluse tagamine."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4601,7 +4602,7 @@ msgstr "Strateegiad"
 
 #: ../libedataserver/e-categories.c:254
 msgid "Suppliers"
-msgstr ""
+msgstr "Tarnijad"
 
 #: ../libedataserver/e-categories.c:255
 msgid "Time & Expenses"
@@ -5072,4 +5073,4 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 #: ../src/server.c:101
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr ""
+msgstr "Toimus mitu segmenteerimise viga: veadialoogi pole võimalik kuvada\n"
