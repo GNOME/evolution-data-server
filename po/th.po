@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-04 22:16+0700\n"
-"PO-Revision-Date: 2006-02-05 14:53+0700\n"
+"PO-Revision-Date: 2006-02-07 18:09+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -122,7 +122,7 @@ msgstr "สมุดใช้งานอยู่"
 #: addressbook/libebook/e-book.c:2880 addressbook/libebook/e-book.c:3402
 #, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr ""
+msgstr "เกิดสิ่งผิดปรกติของ CORBA ขณะเรียก \"%s\""
 
 #: addressbook/libebook/e-book.c:2564
 #, c-format
@@ -162,12 +162,12 @@ msgstr "%s: ไม่สามารถสร้าง EBookListener"
 #: addressbook/libebook/e-book.c:3542
 #, c-format
 msgid "%s: there was no self contact uid stored in gconf"
-msgstr ""
+msgstr "%s: ไม่มีที่อยู่ติดต่อของตัวผู้ใช้เองใน gconf"
 
 #: addressbook/libebook/e-book.c:3672
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
+msgstr "%s: ไม่มีแหล่งสำหรับ uid `%s' ใน gconf"
 
 #: addressbook/libebook/e-contact.c:108
 msgid "Unique ID"
@@ -1441,28 +1441,28 @@ msgstr ""
 
 #: camel/camel-folder-search.c:674 camel/camel-folder-search.c:707
 msgid "(match-all) requires a single bool result"
-msgstr ""
+msgstr "(match-all) ต้องการผลลัพธ์ชนิดบูลีนค่าเดียว"
 
 #: camel/camel-folder-search.c:757
 msgid "(match-threads) not allowed inside match-all"
-msgstr ""
+msgstr "(match-threads) อยู่ใน match-all ไม่ได้"
 
 #: camel/camel-folder-search.c:760 camel/camel-folder-search.c:764
 msgid "(match-threads) requires a match type string"
-msgstr ""
+msgstr "(match-threads) ต้องการรายการค้นพบชนิดสตริง"
 
 #: camel/camel-folder-search.c:788
 msgid "(match-threads) expects an array result"
-msgstr ""
+msgstr "(match-threads) ต้องการผลลัพธ์เป็นแอร์เรย์"
 
 #: camel/camel-folder-search.c:794
 msgid "(match-threads) requires the folder set"
-msgstr ""
+msgstr "(match-threads) ต้องการชุดโฟลเดอร์"
 
 #: camel/camel-folder-search.c:886
 #, c-format
 msgid "Performing query on unknown header: %s"
-msgstr ""
+msgstr "จะดำเนินการสืบค้นกับข้อมูลส่วนหัวที่ไม่รู้จัก: %s"
 
 #: camel/camel-folder.c:615
 #, c-format
@@ -1506,14 +1506,17 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"พบข้อความสถานะ GnuPG ที่ไม่คาดหมาย:\n"
+"\n"
+"%s"
 
 #: camel/camel-gpg-context.c:767
 msgid "Failed to parse gpg userid hint."
-msgstr ""
+msgstr "ไม่สามารถแจงข้อมูล userid เบื้องต้นของ gpg"
 
 #: camel/camel-gpg-context.c:791
 msgid "Failed to parse gpg passphrase request."
-msgstr ""
+msgstr "ไม่สามารถแจงคำร้องขอรหัสผ่าน gpg"
 
 #: camel/camel-gpg-context.c:806 camel/camel-gpg-context.c:810
 #, c-format
@@ -1521,6 +1524,8 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
+"ต้องใช้รหัสผ่านเพื่อปลดล็อคกุญแจสำหรับ\n"
+"ผู้ใช้: \"%s\""
 
 #: camel/camel-gpg-context.c:828 camel/camel-gpg-context.c:1032
 #: camel/providers/nntp/camel-nntp-store.c:1272
@@ -1529,7 +1534,7 @@ msgstr "ยกเลิก"
 
 #: camel/camel-gpg-context.c:846
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
+msgstr "ไม่สามารถปลดล็อคกุญแจลับ: รหัสผ่านผิด 3 ครั้ง"
 
 #: camel/camel-gpg-context.c:852
 #, c-format
@@ -1550,7 +1555,7 @@ msgstr "ไม่สามารถเรียกใช้ gpg: %s"
 #: camel/camel-gpg-context.c:1266 camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
-msgstr ""
+msgstr "ไม่สามารถสร้างข้อมูลการเซ็นกำกับ: %s"
 
 #: camel/camel-gpg-context.c:1313 camel/camel-gpg-context.c:1502
 #: camel/camel-gpg-context.c:1585 camel/camel-gpg-context.c:1600
@@ -1586,7 +1591,7 @@ msgstr "นี่คือส่วนข้อความที่เข้า
 
 #: camel/camel-gpg-context.c:1675
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr ""
+msgstr "ไม่สามารถถอดรหัสลับในส่วนย่อย MIME: โพรโทคอลมีปัญหา"
 
 #: camel/camel-gpg-context.c:1686
 msgid "Cannot decrypt message: Incorrect message format"
@@ -1617,17 +1622,17 @@ msgstr "ไม่ทราบ"
 #: camel/camel-lock-client.c:100
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr ""
+msgstr "ไม่สามารถสร้างไปป์ช่วยล็อค: %s"
 
 #: camel/camel-lock-client.c:113
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr ""
+msgstr "ไม่สามารถสร้างโพรเซสช่วยล็อค: %s"
 
 #: camel/camel-lock-client.c:191 camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr ""
+msgstr "ไม่สามารถล็อค '%s': โพรโทคอลมีปัญหากับโปรแกรมช่วยล็อค"
 
 #: camel/camel-lock-client.c:204
 #, c-format
@@ -1647,12 +1652,12 @@ msgstr "หมดเวลาเสียก่อนขณะกำลังด
 #: camel/camel-lock.c:212
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr ""
+msgstr "ไม่สามารถล็อคแฟ้มด้วย fcntl(2): %s"
 
 #: camel/camel-lock.c:275
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr ""
+msgstr "ไม่สามารถล็อคแฟ้มด้วย flock(2): %s"
 
 #: camel/camel-movemail.c:104
 #, c-format
@@ -1682,12 +1687,12 @@ msgstr "ไม่สามารถสร้างไปป์: %s"
 #: camel/camel-movemail.c:196
 #, c-format
 msgid "Could not fork: %s"
-msgstr ""
+msgstr "ไม่สามารถสร้างโพรเซส: %s"
 
 #: camel/camel-movemail.c:234
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr ""
+msgstr "โปรแกรม Movemail ล้มเหลว: %s"
 
 #: camel/camel-movemail.c:235
 msgid "(Unknown error)"
@@ -1710,7 +1715,7 @@ msgstr "เกิดข้อผิดพลาดขณะคัดลอกแ
 
 #: camel/camel-multipart-signed.c:596
 msgid "parse error"
-msgstr ""
+msgstr "เกิดข้อผิดพลาดขณะแจง"
 
 #: camel/camel-net-utils.c:497 camel/camel-net-utils.c:659
 #: camel/camel-net-utils.c:790
@@ -1726,34 +1731,34 @@ msgstr "ไม่สามารถสร้างเธรด"
 #: camel/camel-net-utils.c:663
 #, c-format
 msgid "Resolving: %s"
-msgstr ""
+msgstr "กำลังแปลง: %s"
 
 #: camel/camel-net-utils.c:685
 msgid "Host lookup failed"
-msgstr ""
+msgstr "เปิดหาที่อยู่โฮสต์ไม่สำเร็จ"
 
 #: camel/camel-net-utils.c:687
 #, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr ""
+msgstr "เปิดหาที่อยู่โฮสต์ไม่สำเร็จ: %s: %s"
 
 #: camel/camel-net-utils.c:794
 msgid "Resolving address"
-msgstr ""
+msgstr "กำลังแปลงที่อยู่"
 
 #: camel/camel-net-utils.c:814
 msgid "Name lookup failed"
-msgstr ""
+msgstr "เปิดหาที่อยู่ไม่สำเร็จ"
 
 #: camel/camel-net-utils.c:817
 #, c-format
 msgid "Name lookup failed: %s"
-msgstr ""
+msgstr "เปิดหาที่อยู่ไม่สำเร็จ: %s"
 
 #: camel/camel-offline-folder.c:252
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr ""
+msgstr "กำลังปรับข้อมูลข้อความในโฟลเดอร์ '%s' ลงดิสก์"
 
 #: camel/camel-offline-journal.c:163 camel/camel-offline-journal.c:186
 #, c-format
@@ -1781,7 +1786,7 @@ msgstr "ไม่สามารถโหลด %s: %s"
 #: camel/camel-provider.c:205
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr ""
+msgstr "ไม่สามารถโหลด %s: ไม่มีโค้ดตั้งค่าเริ่มต้นในมอดูล"
 
 #: camel/camel-provider.c:377 camel/camel-session.c:166
 #, c-format
@@ -1806,6 +1811,8 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
+"ข้อมูลสำหรับติดตามที่อยู่อีเมลใช้การไม่ได้:\n"
+"%s"
 
 #: camel/camel-sasl-anonymous.c:143
 #, c-format
@@ -1820,6 +1827,8 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
+"ข้อมูลสำหรับติดตามใช้การไม่ได้:\n"
+"%s"
 
 #: camel/camel-sasl-cram-md5.c:38
 msgid "CRAM-MD5"
@@ -1847,15 +1856,15 @@ msgstr ""
 
 #: camel/camel-sasl-digest-md5.c:818
 msgid "Server challenge too long (>2048 octets)"
-msgstr ""
+msgstr "คำท้าทายจากเซิร์ฟเวอร์ยาวเกินไป (>2048 ไบต์)"
 
 #: camel/camel-sasl-digest-md5.c:827
 msgid "Server challenge invalid\n"
-msgstr ""
+msgstr "คำท้าทายจากเซิร์ฟเวอร์ผิดรูปแบบ\n"
 
 #: camel/camel-sasl-digest-md5.c:833
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
+msgstr "คำท้าทายจากเซิร์ฟเวอร์มีโทเคน \"Quality of Protection\" ผิดรูปแบบ"
 
 #: camel/camel-sasl-digest-md5.c:863
 msgid "Server response did not contain authorization data"
@@ -1932,7 +1941,7 @@ msgstr ""
 #: camel/camel-sasl-kerberos4.c:229
 #: camel/providers/imap/camel-imap-store.c:1285
 msgid "Bad authentication response from server."
-msgstr ""
+msgstr "คำตอบการยืนยันตัวบุคคลจากเซิร์ฟเวอร์ผิดพลาด"
 
 #: camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
@@ -1974,6 +1983,8 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
+"ตัวเลือกนี้จะเชื่อมต่อไปยังเซิร์ฟเวอร์วินโดวส์ โดยการใช้การยืนยันตัวบุคคลแบบ NTLM / Secure "
+"Password Authentication"
 
 #: camel/camel-sasl-plain.c:34
 msgid "PLAIN"
@@ -1985,11 +1996,11 @@ msgstr "POP ก่อน SMTP"
 
 #: camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
+msgstr "ตัวเลือกนี้จะพยายามยืนยันสิทธิ์การเชื่อมต่อ POP ก่อนการติดต่อ SMTP"
 
 #: camel/camel-sasl-popb4smtp.c:104
 msgid "POP Source URI"
-msgstr ""
+msgstr "URI ของแหล่ง POP"
 
 #: camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
@@ -2096,63 +2107,63 @@ msgstr ""
 
 #: camel/camel-smime-context.c:482
 msgid "Unverified"
-msgstr ""
+msgstr "ไม่ได้ตรวจสอบ"
 
 #: camel/camel-smime-context.c:484
 msgid "Good signature"
-msgstr "ลายเซ็นที่ถูกต้อง"
+msgstr "ลายเซ็นถูกต้อง"
 
 #: camel/camel-smime-context.c:486
 msgid "Bad signature"
-msgstr "ลายเซ็นที่ไม่ถูกต้อง"
+msgstr "ลายเซ็นไม่ถูกต้อง"
 
 #: camel/camel-smime-context.c:488
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "เนื้อหาถูกดัดแปลงแก้ไขระหว่างทาง"
 
 #: camel/camel-smime-context.c:490
 msgid "Signing certificate not found"
-msgstr ""
+msgstr "ไม่พบใบรับรองลายเซ็น"
 
 #: camel/camel-smime-context.c:492
 msgid "Signing certificate not trusted"
-msgstr ""
+msgstr "ใบรับรองลายเซ็นไม่น่าเชื่อถือ"
 
 #: camel/camel-smime-context.c:494
 msgid "Signature algorithm unknown"
-msgstr ""
+msgstr "ไม่รู้จักกรรมวิธีของลายเซ็น"
 
 #: camel/camel-smime-context.c:496
 msgid "Signature algorithm unsupported"
-msgstr ""
+msgstr "ไม่สนับสนุนกรรมวิธีของลายเซ็น"
 
 #: camel/camel-smime-context.c:498
 msgid "Malformed signature"
-msgstr ""
+msgstr "ลายเซ็นผิดรูปแบบ"
 
 #: camel/camel-smime-context.c:500
 msgid "Processing error"
-msgstr ""
+msgstr "เกิดข้อผิดพลาดระหว่างดำเนินการ"
 
 #: camel/camel-smime-context.c:537
 msgid "No signed data in signature"
-msgstr ""
+msgstr "ไม่มีตัวข้อมูลที่เซ็นกำกับ"
 
 #: camel/camel-smime-context.c:544
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "ไม่มีข้อมูลสรุปในข้อมูลในห่อ"
 
 #: camel/camel-smime-context.c:557 camel/camel-smime-context.c:567
 msgid "Cannot calculate digests"
-msgstr ""
+msgstr "ไม่สามารถคำนวณข้อมูลสรุป"
 
 #: camel/camel-smime-context.c:572
 msgid "Cannot set message digests"
-msgstr ""
+msgstr "ไม่สามารถกำหนดข้อมูลสรุป"
 
 #: camel/camel-smime-context.c:582 camel/camel-smime-context.c:587
 msgid "Certificate import failed"
-msgstr ""
+msgstr "ไม่สามารถนำเข้าใบรับรอง"
 
 #: camel/camel-smime-context.c:597
 msgid "Certificate is the only message, cannot verify certificates"
@@ -2164,21 +2175,21 @@ msgstr ""
 
 #: camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
-msgstr ""
+msgstr "ไม่พบข้อมูลสรุปของลายเซ็น"
 
 #: camel/camel-smime-context.c:620
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
-msgstr ""
+msgstr "ผู้เซ็น: %s <%s>: %s\n"
 
 #: camel/camel-smime-context.c:721
 msgid "Decoder failed"
-msgstr ""
+msgstr "การถอดรหัสผิดพลาด"
 
 #: camel/camel-smime-context.c:773
 #, c-format
 msgid "Cannot find certificate for `%s'"
-msgstr ""
+msgstr "ไม่พบใบรับรองสำหรับ `%s'"
 
 #: camel/camel-smime-context.c:780
 msgid "Cannot find common bulk encryption algorithm"
@@ -2195,11 +2206,11 @@ msgstr "ไม่สามารถสร้างข้อความ CMS"
 
 #: camel/camel-smime-context.c:806
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "ไม่สามารถสร้างข้อมูลห่อหุ้ม CMS"
 
 #: camel/camel-smime-context.c:812
 msgid "Cannot attach CMS Enveloped data"
-msgstr ""
+msgstr "ไม่สามารถแนบข้อมูลห่อหุ้ม CMS"
 
 #: camel/camel-smime-context.c:818
 msgid "Cannot attach CMS data object"
@@ -2215,29 +2226,29 @@ msgstr "ไม่สามารถเพิ่มข้อมูลผู้ร
 
 #: camel/camel-smime-context.c:857
 msgid "Failed to add data to encoder"
-msgstr ""
+msgstr "ไม่สามารถเพิ่มข้อมูลในตัวลงรหัส"
 
 #: camel/camel-smime-context.c:944
 #, c-format
 msgid "Decoder failed, error %d"
-msgstr ""
+msgstr "การถอดรหัสผิดพลาด ข้อผิดพลาดหมายเลข %d"
 
 #: camel/camel-smime-context.c:951
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr ""
+msgstr "การถอดรหัสลับ S/MIME: ไม่พบเนื้อหาที่เข้ารหัสลับไว้"
 
 #: camel/camel-smime-context.c:978
 msgid "import keys: unimplemented"
-msgstr ""
+msgstr "การนำเข้ากุญแจ: ยังไม่สนับสนุน"
 
 #: camel/camel-smime-context.c:986
 msgid "export keys: unimplemented"
-msgstr ""
+msgstr "การส่งออกกุญแจ: ยังไม่สนับสนุน"
 
 #: camel/camel-store.c:214
 #: camel/providers/groupwise/camel-groupwise-transport.c:168
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr ""
+msgstr "ไม่สามารถอ่านโฟลเดอร์: ปฏิบัติการใช้ไม่ได้กับแหล่งเก็บนี้"
 
 #: camel/camel-store.c:246
 #, c-format
@@ -2246,24 +2257,24 @@ msgstr "ไม่สามารถสร้างโฟลเดอร์ `%s':
 
 #: camel/camel-store.c:310
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr ""
+msgstr "ไม่สามารถสร้างโฟลเดอร์: ปฏิบัติการใช้ไม่ได้กับแหล่งเก็บนี้"
 
 #: camel/camel-store.c:338
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "ไม่สามารถสร้างโฟลเดอร์: %s: โฟลเดอร์มีอยู่"
+msgstr "ไม่สามารถสร้างโฟลเดอร์: %s: โฟลเดอร์มีอยู่แล้ว"
 
 #: camel/camel-store.c:402 camel/camel-vee-store.c:368
 #: camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "ไม่ามารถลบโฟลเดอร์: %s: การปฏิบัติการที่ไม่ถูกต้อง"
+msgstr "ไม่ามารถลบโฟลเดอร์: %s: ปฏิบัติการใช้ไม่ได้"
 
 #: camel/camel-store.c:452 camel/camel-vee-store.c:405
 #: camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์:%s: การปฏิบัตการที่ไม่ถูกต้อง"
+msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์:%s: ปฏิบัตการใช้ไม่ได้"
 
 #. the name of the Trash folder, used for deleted messages
 #: camel/camel-store.c:793 camel/camel-vtrash-folder.c:48
@@ -2313,7 +2324,7 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:586
 msgid "CRL not yet valid"
-msgstr ""
+msgstr "CRL ยังไม่เริ่มใช้"
 
 #: camel/camel-tcp-stream-openssl.c:588
 msgid "CRL has expired"
@@ -2476,7 +2487,7 @@ msgstr "ไม่มีข้อความ %s ดังกล่าว ใน 
 
 #: camel/camel-vee-folder.c:642 camel/camel-vee-folder.c:648
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
+msgstr "ไม่สามารถคัดลอกหรือย้ายข้อความเข้าไปในโฟลเดอร์เสมือน"
 
 #: camel/camel-vee-store.c:101 camel/camel-vee-store.c:344
 msgid "Unmatched"
@@ -2568,7 +2579,7 @@ msgstr "ไม่สามารถโหลดข้อมูลสรุปส
 #: camel/providers/imap/camel-imap-folder.c:2445
 #, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr ""
+msgstr "กำลังดึงข้อมูลสรุปสำหรับข้อความใหม่ใน %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:1668
 #: camel/providers/groupwise/camel-groupwise-folder.c:1716
@@ -2699,7 +2710,7 @@ msgstr "ไม่สามารถสร้างโฟลเดอร์ Group
 #: camel/providers/imap/camel-imap-store.c:1948
 #: camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr ""
+msgstr "โฟลเดอร์ระดับบนไม่อนุญาตให้สร้างโฟลเดอร์ย่อย"
 
 #: camel/providers/groupwise/camel-groupwise-store.c:1188
 #: camel/providers/groupwise/camel-groupwise-store.c:1209
@@ -2721,7 +2732,7 @@ msgstr "บริการ GroupWise สำหรับ %s บน %s"
 #: camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise mail delivery via %s"
-msgstr ""
+msgstr "การส่งเมล GroupWise ผ่าน %s"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
@@ -2733,6 +2744,8 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
+"คุณได้ใช้เนื้อที่ของบัญชีนี้เกินขีดจำกัดที่กำหนดแล้ว ข้อความของคุณจะเข้าคิวรอไว้ที่กล่องจดหมายออก "
+"ซึ่งคุณสามารถส่งใหม่ภายหลังได้ โดยกด \"รับ/ส่ง\" หลังจากลบหรือสำรองเมลบางส่วนของคุณแล้ว\n"
 
 #: camel/providers/groupwise/camel-groupwise-transport.c:218
 #: camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -2894,11 +2907,11 @@ msgstr "การตอบสนองที่ไม่สมบูรณ์ข
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "ได้รับคำตอบที่ไม่คาดหมายจากเซิร์ฟเวอร์: UID ซ้ำกันสำหรับข้อความ %d และ %d"
 
 #: camel/providers/imap/camel-imap-folder.c:2755
 msgid "Could not find message body in FETCH response."
-msgstr ""
+msgstr "ไม่พบตัวเนื้อหาข้อความในคำตอบ FETCH"
 
 #: camel/providers/imap/camel-imap-message-cache.c:160
 #, c-format
@@ -3016,14 +3029,14 @@ msgstr "STARTTLS ไม่สนับสนุน"
 #: camel/providers/imap4/camel-imap4-store.c:370
 #: camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
-msgstr ""
+msgstr "การเจรจาเชื่อมต่อ SSL ไม่สำเร็จ"
 
 #: camel/providers/imap/camel-imap-store.c:728
 #: camel/providers/imap4/camel-imap4-store.c:399
 #: camel/providers/pop3/camel-pop3-store.c:250
 #: camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
-msgstr ""
+msgstr "ไม่สนับสนุน SSL ในการคอมไพล์ชุดนี้"
 
 #: camel/providers/imap/camel-imap-store.c:868
 #: camel/providers/imap4/camel-imap4-store.c:275
@@ -3093,7 +3106,7 @@ msgstr "ไม่สามารถสร้างโฟลเดอร์ `%s':
 #: camel/providers/imap/camel-imap-store.c:2266
 #, c-format
 msgid "Unknown parent folder: %s"
-msgstr ""
+msgstr "ไม่รู้จักโฟลเดอร์ระดับบน: %s"
 
 #: camel/providers/imap4/camel-imap4-command.c:550
 #: camel/providers/imap4/camel-imap4-command.c:557
@@ -3109,7 +3122,7 @@ msgstr "การตอบสนองที่ไม่คาดหมายจ
 #: camel/providers/imap4/camel-imap4-engine.c:222
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr ""
+msgstr "ได้รับการทักทายที่ไม่คาดหมายจากเซิร์ฟเวอร์ IMAP %s"
 
 #: camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
@@ -3142,22 +3155,22 @@ msgstr "ไม่สามารถเข้าถึงโฟลเดอร์
 #: camel/providers/imap4/camel-imap4-folder.c:458
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr ""
+msgstr "ไม่สามารถปรับแฟล็กต่างๆ ให้ตรงกับในโฟลเดอร์ `%s': ไม่ทราบสาเหตุ"
 
 #: camel/providers/imap4/camel-imap4-folder.c:464
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr ""
+msgstr "ไม่สามารถปรับแฟล็กต่างๆ ให้ตรงกับในโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
 #: camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
-msgstr ""
+msgstr "ไม่สามารถเก็บกวาดโฟลเดอร์ `%s': ไม่ทราบสาเหตุ"
 
 #: camel/providers/imap4/camel-imap4-folder.c:609
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
-msgstr ""
+msgstr "ไม่สามารถเก็บกวาดโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
 #: camel/providers/imap4/camel-imap4-folder.c:865
 #, c-format
@@ -3319,7 +3332,7 @@ msgstr "ไม่สามารถบอกรับข้อมูลโฟล
 #: camel/providers/imap4/camel-imap4-store.c:1647
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr ""
+msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
 #: camel/providers/imap4/camel-imap4-store.c:1669
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
@@ -3333,7 +3346,7 @@ msgstr "ไม่สามารถเลิกบอกรับข้อมู
 #: camel/providers/imap4/camel-imap4-store.c:1719
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
-msgstr ""
+msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
 #: camel/providers/imap4/camel-imap4-summary.c:1472
 msgid "Scanning for changed messages"
@@ -3341,12 +3354,12 @@ msgstr "กำลังตรวจหาข้อความที่เปล
 
 #: camel/providers/imap4/camel-imap4-summary.c:1497
 msgid "Fetching envelopes for new messages"
-msgstr ""
+msgstr "กำลังดึงซองจดหมายของข้อความใหม่"
 
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr ""
+msgstr "ได้รับโทเคนที่ไม่คาดหมายในคำตอบจากเซิร์ฟเวอร์ IMAP %s: "
 
 #: camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -3360,7 +3373,7 @@ msgstr "เซิร์ฟเวอร์ IMAP %s ตัดการเชื่
 #: camel/providers/imapp/camel-imapp-provider.c:40
 #: camel/providers/pop3/camel-pop3-provider.c:39
 msgid "Message storage"
-msgstr ""
+msgstr "แหล่งเก็บข้อความ"
 
 #: camel/providers/imapp/camel-imapp-provider.c:48
 msgid "IMAP+"
@@ -3409,7 +3422,7 @@ msgstr "%s (%s)"
 
 #: camel/providers/local/camel-local-provider.c:47
 msgid "Use the `.folders' folder summary file (exmh)"
-msgstr ""
+msgstr "ใช้แฟ้มสรุปโฟลเดอร์ `.folders' (exmh)"
 
 #: camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
@@ -3501,7 +3514,7 @@ msgstr "ไม่สามารถเปลี่ยนชื่อ '%s': %s"
 #: camel/providers/local/camel-mbox-store.c:274
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
-msgstr ""
+msgstr "ไม่สามารถลบแฟ้มสรุปโฟลเดอร์ `%s': %s"
 
 #: camel/providers/local/camel-local-store.c:456
 #: camel/providers/local/camel-mbox-store.c:286
@@ -3518,11 +3531,11 @@ msgstr ""
 #: camel/providers/local/camel-local-summary.c:409
 #, c-format
 msgid "Could not save summary: %s: %s"
-msgstr ""
+msgstr "ไม่สามารถบันทึกสรุป: %s: %s"
 
 #: camel/providers/local/camel-local-summary.c:467
 msgid "Unable to add message to summary: unknown reason"
-msgstr ""
+msgstr "ไม่สามารถเพิ่มข้อความในสรุป: ไม่ทราบสาเหตุ"
 
 #: camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message cancelled"
@@ -3765,7 +3778,7 @@ msgstr "ไม่สามารถเก็บโฟลเดอร์: %s"
 #: camel/providers/local/camel-mbox-summary.c:936
 #: camel/providers/local/camel-mbox-summary.c:944
 msgid "Summary and folder mismatch, even after a sync"
-msgstr ""
+msgstr "ข้อมูลสรุปกับโฟลเดอร์ไม่ตรงกัน แม้จะปรับข้อมูลให้ตรงกันแล้ว"
 
 #: camel/providers/local/camel-mbox-summary.c:870
 #: camel/providers/local/camel-spool-summary.c:336
@@ -3944,7 +3957,7 @@ msgstr "ตัวเลือกนี้จะยืนยันตัวบุ
 #: camel/providers/nntp/camel-nntp-store.c:219
 #, c-format
 msgid "Could not read greeting from %s: %s"
-msgstr ""
+msgstr "ไม่สามารถอ่านคำทักทายจาก %s: %s"
 
 #: camel/providers/nntp/camel-nntp-store.c:231
 #, c-format
@@ -4054,12 +4067,12 @@ msgstr "การปฏิบัติการล้มเหลว: %s"
 
 #: camel/providers/pop3/camel-pop3-folder.c:247
 msgid "Retrieving POP summary"
-msgstr ""
+msgstr "กำลังดึงข้อมูลสรุปของ POP"
 
 #: camel/providers/pop3/camel-pop3-folder.c:266
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr ""
+msgstr "ไม่สามารถอ่านข้อมูลสรุปของ POP: %s"
 
 #: camel/providers/pop3/camel-pop3-folder.c:309
 msgid "Expunging deleted messages"
@@ -4068,7 +4081,7 @@ msgstr "กำลังเก็บกวาดข้อความที่ส
 #: camel/providers/pop3/camel-pop3-folder.c:405
 #, c-format
 msgid "No message with uid %s"
-msgstr ""
+msgstr "ไม่มีข้อความที่มี uid %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
@@ -4122,7 +4135,7 @@ msgstr ""
 #: camel/providers/pop3/camel-pop3-store.c:202
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr ""
+msgstr "ไม่สามารถอ่านคำทักทายที่ใช้ได้จากเซิร์ฟเวอร์ POP %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:216
 #: camel/providers/pop3/camel-pop3-store.c:233
@@ -4217,7 +4230,7 @@ msgstr "ไม่สามารถสร้างไปป์เพื่อส
 #: camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "ไม่สามารถ fork sendmail: %s: เมลจึงไม่ได้ส่ง"
+msgstr "ไม่สามารถสร้างโพรเซส sendmail: %s: เมลจึงไม่ได้ส่ง"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
