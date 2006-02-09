@@ -159,8 +159,10 @@ cleanup_at_exit (void)
 	if (conf_is_dirty)
 		idle_saver_cb (NULL);
 
-	g_source_remove (idle_id);
-	idle_id = 0;
+	if (idle_id > 0) {
+		g_source_remove (idle_id);
+		idle_id = 0;
+	}
 
 	if (categories_table) {
 		g_hash_table_destroy (categories_table);

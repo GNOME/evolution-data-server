@@ -1,3 +1,8 @@
+2006-02-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libedataserver/e-categories.c: (cleanup_at_exit): Don't
+	call g_source_remove() when source is 0. Closes bug #327413.
+
 2006-02-09  Sushma Rai  <rsushma@novell.com>
 
 	* libedataserver/e-source-list.c (e_source_list_is_gconf_updated):
