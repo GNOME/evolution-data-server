@@ -225,6 +225,10 @@ initialize_categories_config (void)
 				}
 
 				e_categories_add (name, color, icon, b ? TRUE : FALSE);
+				xmlFree (name);
+				xmlFree (color);
+				xmlFree (icon);
+				xmlFree (searchable);
 			}
 
 			xmlFreeDoc (doc);
