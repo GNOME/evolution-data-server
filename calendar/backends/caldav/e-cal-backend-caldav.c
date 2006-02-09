@@ -1228,9 +1228,11 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		if (e_cal_backend_cache_remove_component (bcache, uid, NULL) && 
 		    priv->report_changes) {
 			char *str = e_cal_component_get_as_string (comp);
+			ECalComponentId *id = e_cal_component_get_id (comp);
 		       	
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbdav), 
-							     uid, str, NULL);
+							     id, str, NULL);
+			e_cal_component_free_id (id);
 			g_free (str);
 		}
 

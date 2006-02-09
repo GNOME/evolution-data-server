@@ -1,3 +1,9 @@
+2006-02-09  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/caldav/e-cal-backend-caldav.c: (synchronize_cache):
+	return ECalComponentId instead of id during a remove notify
+	as per the changed semantics in ecal.
+
 2006-01-23  Veerapuram Varadhan <vvaradhan@novell.com>
  
  	** Fixes #327427
