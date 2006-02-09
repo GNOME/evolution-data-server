@@ -615,13 +615,18 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 		group_uid = e_source_group_uid_from_xmldoc (xmldoc);
 		group = e_source_list_peek_group_by_uid (list, group_uid);
+		g_free (group_uid);
+		xmlFreeDoc (xmldoc);
 
 		if (group) {
 			source_group_xml = e_source_group_to_xml (group);
-			if (!strcmp (gconf_xml, source_group_xml)) 
+			if (!strcmp (gconf_xml, source_group_xml)) {
+				g_free (source_group_xml);
 				continue;
+			}
 			else {
 				conf_to_list  = FALSE;
+				g_free (source_group_xml);
 				break;
 			}
 		} else {
@@ -653,9 +658,10 @@ e_source_list_is_gconf_updated (ESourceList *list)
 			gconf_xml = (char *)temp->data;
 			if (strcmp (gconf_xml, source_group_xml))
 				continue;
-			else 
+			else
 				break; 
 		}
+		g_free (source_group_xml);
 
 		if (!temp) {
 			list_to_conf = FALSE;

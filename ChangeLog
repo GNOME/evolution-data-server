@@ -1,5 +1,10 @@
 2006-02-09  Sushma Rai  <rsushma@novell.com>
 
+	* libedataserver/e-source-list.c (e_source_list_is_gconf_updated):
+	Fixed some memory leaks. See #329251.
+
+2006-02-09  Sushma Rai  <rsushma@novell.com>
+
 	* libedataserver/e-categories.c (initialize_categories_config): Freeing
 	xml properties. See #309316.
 
