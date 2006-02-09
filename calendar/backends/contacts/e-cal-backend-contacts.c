@@ -188,7 +188,7 @@ contact_record_free (ContactRecord *cr)
 	/* Remove the anniversary event */
 	if (cr->comp_anniversary) {
 		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
-		id = e_cal_component_get_id (cr->comp_birthday);
+		id = e_cal_component_get_id (cr->comp_anniversary);
 
 		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cr->cbc), id, comp_str, NULL);
 		

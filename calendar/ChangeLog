@@ -1,3 +1,8 @@
+2006-02-09  Rajeev ramanathan <rajeevramanathan_2004@yahoo.co.in>
+
+	* backends/contacts/e-cal-backend-contacts.c: (contact_record_free)
+	Corrected id. Fixes #326428
+
 2006-02-09  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/caldav/e-cal-backend-caldav.c: (synchronize_cache):
