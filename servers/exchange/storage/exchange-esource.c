@@ -148,10 +148,11 @@ add_folder_esource (ExchangeAccount *account,
 			offline = e_source_get_property (source, "offline_sync");
 			if (!offline) {
 				/* Folder doesn't have any offline property set */
-				if (mode == OFFLINE_MODE) 
+				if (mode == OFFLINE_MODE) {
 					e_source_set_property (source, "offline_sync", "1");
+					e_source_list_sync (source_list, NULL);
+				}
 			}
-			e_source_list_sync (source_list, NULL);
 		}
 	}
 
