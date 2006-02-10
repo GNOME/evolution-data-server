@@ -1959,6 +1959,29 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	case CALOBJ_MOD_ALL :
 		/* in this case, we blow away all recurrences, and start over
 		   with a clean component */
+
+		if (e_cal_util_component_has_recurrences (icalcomp) && rid && *rid) {
+			icaltimetype start, recur = icaltime_from_string (rid);
+
+			start = icalcomponent_get_dtstart (icalcomp);
+
+			/* This means its a instance generated from master object. So replace 
+			    the dates stored dates from the master object */
+			   
+			if (icaltime_compare (start, recur)) {
+				ECalComponentDateTime m_sdate, m_endate;
+
+				e_cal_component_get_dtstart (obj_data->full_object, &m_sdate);
+				e_cal_component_get_dtend (obj_data->full_object, &m_endate);
+
+				e_cal_component_set_dtstart (comp, &m_sdate);
+				e_cal_component_set_dtend (comp, &m_endate);
+				e_cal_component_set_recurid (comp, NULL);
+				e_cal_component_commit_sequence (comp);
+			}
+			*new_object = e_cal_component_get_as_string (comp);
+		}
+		
 		/* Remove the old version */
 		if (old_object)
 			*old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -1991,8 +2014,6 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
 		g_hash_table_remove (obj_data->recurrences, rid);
-
-		return;
 	}
 
 	/* remove the component from our data, temporarily */

@@ -1,3 +1,12 @@
+2006-02-12  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #329566, #329568
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_modify_object): Reset the instance dates of the 
+	master object if its a recurring event.
+       	(remove_instance): Removed the return statement so that the exception is
+	set in the master object.
+
 2006-02-09  Rajeev ramanathan <rajeevramanathan_2004@yahoo.co.in>
 
 	* backends/contacts/e-cal-backend-contacts.c: (contact_record_free)
