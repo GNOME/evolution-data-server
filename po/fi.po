@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-20 08:26+0200\n"
-"PO-Revision-Date: 2006-01-20 08:30+0200\n"
+"PO-Revision-Date: 2006-02-10 09:50+0200\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -199,7 +199,7 @@ msgstr "Sukunimi"
 
 #: ../addressbook/libebook/e-contact.c:119
 msgid "Nickname"
-msgstr "Kutsumanimi"
+msgstr "Lempinimi"
 
 #: ../addressbook/libebook/e-contact.c:120
 msgid "Name or Org"
@@ -224,15 +224,15 @@ msgstr "Muu osoite"
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Home Address Label"
-msgstr "Kotiosoitteen nimike"
+msgstr "Kotiosoite "
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Work Address Label"
-msgstr "työosoitteen nimike"
+msgstr "Työosoite"
 
 #: ../addressbook/libebook/e-contact.c:130
 msgid "Other Address Label"
-msgstr "Muun osoitteen nimike"
+msgstr "Muu osoite"
 
 #: ../addressbook/libebook/e-contact.c:132
 msgid "Assistant Phone"
@@ -317,19 +317,19 @@ msgstr "Sähköpostilista"
 
 #: ../addressbook/libebook/e-contact.c:154
 msgid "Email 1"
-msgstr "Sähköposti 1"
+msgstr "1. sähköposti"
 
 #: ../addressbook/libebook/e-contact.c:155
 msgid "Email 2"
-msgstr "Sähköposti 2"
+msgstr "2. sähköposti"
 
 #: ../addressbook/libebook/e-contact.c:156
 msgid "Email 3"
-msgstr "Sähköposti 3"
+msgstr "3. sähköposti"
 
 #: ../addressbook/libebook/e-contact.c:157
 msgid "Email 4"
-msgstr "Sähköposti 4"
+msgstr "4. sähköposti"
 
 #: ../addressbook/libebook/e-contact.c:158
 msgid "Mailer"
