@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-07 19:02+0000\n"
+"POT-Creation-Date: 2006-02-11 12:36+0000\n"
 "PO-Revision-Date: 2006-02-07 18:45-0000\n"
 "Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -612,7 +612,7 @@ msgstr "Dyddiad Geni"
 #. Make sure we have all categories
 #: ../addressbook/libebook/e-contact.c:242
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "Cylchwyl"
 
@@ -640,7 +640,7 @@ msgid "Unnamed List"
 msgstr "Rhestr Ddienw"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:247
 msgid "Birthday"
 msgstr "Pen-blwydd"
 
@@ -4612,84 +4612,84 @@ msgstr "Methodd y gorchymyn QUIT: %s"
 msgid "QUIT command failed"
 msgstr "Methodd y gorchymyn QUIT"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:248
 msgid "Business"
 msgstr "Busnes"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:249
 msgid "Competition"
 msgstr "Cystadleuaeth"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:250
 msgid "Favorites"
 msgstr "Hoffterau"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:251
 msgid "Gifts"
 msgstr "Anrhegion"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:252
 msgid "Goals/Objectives"
 msgstr "Nodau/Amcanion"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:253
 msgid "Holiday"
 msgstr "Gwyliau"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
 msgstr "Cardiau Gwyliau"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:256
 msgid "Hot Contacts"
 msgstr "Cysylltau Brwd"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:257
 msgid "Ideas"
 msgstr "Syniadau"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:258
 msgid "International"
 msgstr "Rhyngwladol"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
 msgstr "Cwsmer Allweddol"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
 msgstr "Amrywiol"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:261
 msgid "Personal"
 msgstr "Personol"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:262
 msgid "Phone Calls"
 msgstr "Galwadau Ffôn"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:263
 msgid "Status"
 msgstr "Statws"
 
-#: ../libedataserver/e-categories.c:258
+#: ../libedataserver/e-categories.c:264
 msgid "Strategies"
 msgstr "Strategaethau"
 
-#: ../libedataserver/e-categories.c:259
+#: ../libedataserver/e-categories.c:265
 msgid "Suppliers"
 msgstr "Cyflenwyr"
 
-#: ../libedataserver/e-categories.c:260
+#: ../libedataserver/e-categories.c:266
 msgid "Time & Expenses"
 msgstr "Amser a Threuliau"
 
-#: ../libedataserver/e-categories.c:261
+#: ../libedataserver/e-categories.c:267
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:262
+#: ../libedataserver/e-categories.c:268
 msgid "Waiting"
 msgstr "Aros"
 
