@@ -691,6 +691,7 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 
 	if (status != E_BOOK_ERROR_OK) {
 		/* TODO: Handle errors gracefully */
+		gtk_label_set_text(name_selector_dialog->status_label, "Error loading addressbook");
 		g_warning ("ENameSelectorDialog failed to open book!");
 		return;
 	}
