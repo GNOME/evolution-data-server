@@ -112,7 +112,7 @@ init (GObject *object)
 	ExchangeHierarchyWebDAV *hwd = EXCHANGE_HIERARCHY_WEBDAV (object);
 
 	hwd->priv = g_new0 (ExchangeHierarchyWebDAVPrivate, 1);
-	hwd->priv->folders_by_internal_path = g_hash_table_new (g_str_hash, g_str_equal);
+	hwd->priv->folders_by_internal_path = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) g_object_unref);
 	hwd->priv->total_folder_size = 0;
 
 	g_signal_connect (object, "new_folder",
@@ -191,7 +191,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		return;
 
 	g_hash_table_insert (EXCHANGE_HIERARCHY_WEBDAV (hier)->priv->folders_by_internal_path,
-			     (char *)e2k_uri_path (internal_uri), folder);
+			     (char *)e2k_uri_path (internal_uri), g_object_ref (folder));
 
 	mf_path = e_folder_exchange_get_storage_file (folder, "connector-metadata.xml");
 	e_folder_exchange_save_to_file (folder, mf_path);
