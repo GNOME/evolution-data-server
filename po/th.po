@@ -3,13 +3,14 @@
 # Copyright (C) 2005, 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
 # Supranee Thirawatthanasuk <supranee@opentle.org>, 2005, 2006.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-04 22:16+0700\n"
-"PO-Revision-Date: 2006-02-07 18:09+0700\n"
+"POT-Creation-Date: 2006-02-13 19:12+0700\n"
+"PO-Revision-Date: 2006-02-13 20:35+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -604,7 +605,7 @@ msgstr "วันเกิด"
 #. Make sure we have all categories
 #: addressbook/libebook/e-contact.c:242
 #: calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: libedataserver/e-categories.c:240
+#: libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "วันครบรอบปี"
 
@@ -632,7 +633,7 @@ msgid "Unnamed List"
 msgstr "รายการที่ยังไม่มีชื่อ"
 
 #: calendar/backends/contacts/e-cal-backend-contacts.c:462
-#: libedataserver/e-categories.c:241
+#: libedataserver/e-categories.c:247
 msgid "Birthday"
 msgstr "วันเกิด"
 
@@ -666,7 +667,7 @@ msgid "Loading %s items"
 msgstr "กำลังโหลดรายการ %s"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:718
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:257
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "ปฏิทิน"
 
@@ -677,7 +678,7 @@ msgstr "URI ของเซิร์ฟเวอร์ไม่ถูกต้�
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:790
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:799
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:884
-#: calendar/libecal/e-cal.c:5131
+#: calendar/libecal/e-cal.c:5135
 #: camel/providers/groupwise/camel-groupwise-folder.c:902
 #: camel/providers/groupwise/camel-groupwise-folder.c:922
 #: camel/providers/groupwise/camel-groupwise-folder.c:950
@@ -1065,73 +1066,73 @@ msgstr "ป้อนรหัสผ่านสำหรับ %s เพื่�
 msgid "Enter password for %s (user %s)"
 msgstr "ป้อนรหัสผ่านสำหรับ %s (ผู้ใช้ %s)"
 
-#: calendar/libecal/e-cal.c:5103
+#: calendar/libecal/e-cal.c:5107
 msgid "Invalid argument"
 msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5105
+#: calendar/libecal/e-cal.c:5109
 msgid "Backend is busy"
 msgstr "แบ็กเอนด์ใช้งานอยู่"
 
-#: calendar/libecal/e-cal.c:5107
+#: calendar/libecal/e-cal.c:5111
 msgid "Repository is offline"
 msgstr "แหล่งเก็บข้อมูลไม่ได้เชื่อมต่ออยู่"
 
-#: calendar/libecal/e-cal.c:5109
+#: calendar/libecal/e-cal.c:5113
 msgid "No such calendar"
 msgstr "ไม่มีปฏิทินดังกล่าว"
 
-#: calendar/libecal/e-cal.c:5111 servers/groupwise/e-gw-connection.c:172
+#: calendar/libecal/e-cal.c:5115 servers/groupwise/e-gw-connection.c:172
 msgid "Object not found"
 msgstr "ไม่พบวัตถุ"
 
-#: calendar/libecal/e-cal.c:5113 servers/groupwise/e-gw-connection.c:166
+#: calendar/libecal/e-cal.c:5117 servers/groupwise/e-gw-connection.c:166
 msgid "Invalid object"
 msgstr "วัตถุไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5115
+#: calendar/libecal/e-cal.c:5119
 msgid "URI not loaded"
 msgstr "ไม่ได้โหลด URI"
 
-#: calendar/libecal/e-cal.c:5117
+#: calendar/libecal/e-cal.c:5121
 msgid "URI already loaded"
 msgstr "โหลด URI เรียบร้อย"
 
-#: calendar/libecal/e-cal.c:5119
+#: calendar/libecal/e-cal.c:5123
 #: servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "ไม่ได้รับอนุญาต"
 
-#: calendar/libecal/e-cal.c:5121 servers/groupwise/e-gw-connection.c:174
+#: calendar/libecal/e-cal.c:5125 servers/groupwise/e-gw-connection.c:174
 msgid "Unknown User"
 msgstr "ผู้ใช้ที่ไม่รู้จัก"
 
-#: calendar/libecal/e-cal.c:5123
+#: calendar/libecal/e-cal.c:5127
 msgid "Object ID already exists"
 msgstr "ID ของวัตถุมีอยู่แล้ว"
 
-#: calendar/libecal/e-cal.c:5125
+#: calendar/libecal/e-cal.c:5129
 msgid "Protocol not supported"
 msgstr "โพรโทคอลไม่สนับสนุน"
 
-#: calendar/libecal/e-cal.c:5127
+#: calendar/libecal/e-cal.c:5131
 msgid "Operation has been cancelled"
 msgstr "การปฏิบัติการได้ยกเลิกไปแล้ว"
 
-#: calendar/libecal/e-cal.c:5129
+#: calendar/libecal/e-cal.c:5133
 msgid "Could not cancel operation"
 msgstr "ไม่สามารถยกเลิกการปฏิบัติการ"
 
-#: calendar/libecal/e-cal.c:5133
+#: calendar/libecal/e-cal.c:5137
 #: camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "ต้องการการยืนยันตัวบุคคล"
 
-#: calendar/libecal/e-cal.c:5135
+#: calendar/libecal/e-cal.c:5139
 msgid "A CORBA exception has occurred"
 msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 
-#: calendar/libecal/e-cal.c:5137
+#: calendar/libecal/e-cal.c:5141
 #: camel/providers/groupwise/camel-groupwise-transport.c:218
 #: camel/providers/imap/camel-imap-command.c:311
 #: camel/providers/imap/camel-imap-command.c:411
@@ -1144,7 +1145,7 @@ msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: calendar/libecal/e-cal.c:5139
+#: calendar/libecal/e-cal.c:5143
 #: servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "ไม่มีข้อผิดพลาด"
@@ -2004,11 +2005,11 @@ msgstr "URI ของแหล่ง POP"
 
 #: camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
-msgstr ""
+msgstr "พยายามยืนยันสิทธิ์ POP ก่อน SMTP โดยใช้วิธีเชื่อมต่อที่ไม่รู้จัก"
 
 #: camel/camel-sasl-popb4smtp.c:112
 msgid "POP Before SMTP auth using a non-pop source"
-msgstr ""
+msgstr "พยายามยืนยันสิทธิ์ POP ก่อน SMTP โดยใช้แหล่งที่ไม่ใช่ POP"
 
 #: camel/camel-search-private.c:152
 #, c-format
@@ -2050,11 +2051,11 @@ msgstr "ไม่สามารถสร้างข้อความ CMS"
 
 #: camel/camel-smime-context.c:240
 msgid "Cannot create CMS signed data"
-msgstr ""
+msgstr "ไม่สามารถสร้างข้อมูล CMS ที่มีการเซ็นกำกับ"
 
 #: camel/camel-smime-context.c:246
 msgid "Cannot attach CMS signed data"
-msgstr ""
+msgstr "ไม่สามารถแนบข้อมูล CMS ที่มีการเซ็นกำกับ"
 
 #: camel/camel-smime-context.c:253
 msgid "Cannot attach CMS data"
@@ -2095,15 +2096,15 @@ msgstr ""
 
 #: camel/camel-smime-context.c:398 camel/camel-smime-context.c:846
 msgid "Cannot create encoder context"
-msgstr ""
+msgstr "ไม่สามารถสร้างคอนเท็กซ์ตัวลงรหัส"
 
 #: camel/camel-smime-context.c:404
 msgid "Failed to add data to CMS encoder"
-msgstr ""
+msgstr "เพิ่มข้อมูลในตัวลงรหัส CMS ไม่สำเร็จ"
 
 #: camel/camel-smime-context.c:409 camel/camel-smime-context.c:863
 msgid "Failed to encode data"
-msgstr ""
+msgstr "ลงรหัสข้อมูลไม่สำเร็จ"
 
 #: camel/camel-smime-context.c:482
 msgid "Unverified"
@@ -2167,11 +2168,11 @@ msgstr "ไม่สามารถนำเข้าใบรับรอง"
 
 #: camel/camel-smime-context.c:597
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
+msgstr "ในข้อความมีแต่ใบรับรองเท่านั้น และไม่สามารถตรวจสอบใบรับรองได้"
 
 #: camel/camel-smime-context.c:600
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
+msgstr "ในข้อความมีแต่ใบรับรองเท่านั้น และได้ตรวจสอบและนำเข้าใบรับรองแล้ว"
 
 #: camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2304,23 +2305,23 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
-msgstr ""
+msgstr "ไม่สามารถถอดรหัสกุญแจสาธารณะของผู้ออกใบรับรอง"
 
 #: camel/camel-tcp-stream-openssl.c:578
 msgid "Certificate signature failure"
-msgstr ""
+msgstr "ลายเซ็นกำกับใบรับรองล้มเหลว"
 
 #: camel/camel-tcp-stream-openssl.c:580
 msgid "Certificate Revocation List signature failure"
-msgstr ""
+msgstr "ลายเซ็นกำกับรายการการเพิกถอนใบรับรองล้มเหลว"
 
 #: camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
-msgstr ""
+msgstr "ใบรับรองยังไม่เริ่มใช้"
 
 #: camel/camel-tcp-stream-openssl.c:584
 msgid "Certificate has expired"
-msgstr ""
+msgstr "ใบรับรองหมดอายุแล้ว"
 
 #: camel/camel-tcp-stream-openssl.c:586
 msgid "CRL not yet valid"
@@ -2328,7 +2329,7 @@ msgstr "CRL ยังไม่เริ่มใช้"
 
 #: camel/camel-tcp-stream-openssl.c:588
 msgid "CRL has expired"
-msgstr "CRL หมดอายุ"
+msgstr "CRL หมดอายุแล้ว"
 
 #: camel/camel-tcp-stream-openssl.c:593
 msgid "Error in CRL"
@@ -2360,7 +2361,7 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:607
 msgid "Certificate Revoked"
-msgstr ""
+msgstr "ใบรับรองถูกเพิกถอน"
 
 #: camel/camel-tcp-stream-openssl.c:609
 msgid "Invalid Certificate Authority (CA)"
@@ -2376,7 +2377,7 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:615
 msgid "Certificate untrusted"
-msgstr ""
+msgstr "ใบรับรองไม่น่าเชื่อถือ"
 
 #: camel/camel-tcp-stream-openssl.c:617
 msgid "Certificate rejected"
@@ -2410,14 +2411,18 @@ msgid ""
 "Fingerprint:       %s\n"
 "Signature:         %s"
 msgstr ""
+"ผู้ออกให้:            %s\n"
+"หัวข้อ:              %s\n"
+"ลายพิมพ์นิ้วมือ:        %s\n"
+"ลายเซ็น:            %s"
 
 #: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:892
 msgid "GOOD"
-msgstr ""
+msgstr "ใช้ได้"
 
 #: camel/camel-tcp-stream-openssl.c:702 camel/camel-tcp-stream-ssl.c:892
 msgid "BAD"
-msgstr ""
+msgstr "ใช้ไม่ได้"
 
 #: camel/camel-tcp-stream-openssl.c:704
 #, c-format
@@ -2430,6 +2435,13 @@ msgid ""
 "\n"
 "Do you wish to accept anyway?"
 msgstr ""
+"ใบรับรองใช้การไม่ได้จาก %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"คุณยังต้องการยอมรับอยู่หรือไม่?"
 
 #. construct our user prompt
 #: camel/camel-tcp-stream-ssl.c:896
@@ -2441,6 +2453,11 @@ msgid ""
 "\n"
 "Do you wish to accept?"
 msgstr ""
+"การตรวจสอบใบรับรอง SSL สำหรับ %s:\n"
+"\n"
+"%s\n"
+"\n"
+"คุณต้องการยอมรับหรือไม่?"
 
 #: camel/camel-tcp-stream-ssl.c:940
 #, c-format
@@ -2448,6 +2465,8 @@ msgid ""
 "Certificate problem: %s\n"
 "Issuer: %s"
 msgstr ""
+"ปัญหาของใบรับรอง: %s\n"
+"ผู้ออกให้: %s"
 
 #: camel/camel-tcp-stream-ssl.c:992
 #, c-format
@@ -2462,6 +2481,8 @@ msgid ""
 "Certificate expired: %s\n"
 "Issuer: %s"
 msgstr ""
+"ใบรับรองหมดอายุแล้ว: %s\n"
+"ผู้ออกให้: %s"
 
 #: camel/camel-tcp-stream-ssl.c:1027
 #, c-format
@@ -2469,6 +2490,8 @@ msgid ""
 "Certificate revocation list expired: %s\n"
 "Issuer: %s"
 msgstr ""
+"รายการการเพิกถอนใบรับรองหมดอายุแล้ว: %s\n"
+"ผู้ออกให้: %s"
 
 #: camel/camel-url.c:293
 #, c-format
@@ -3055,7 +3078,7 @@ msgstr "ไม่สามารถเชื่อมต่อด้วยคำ
 #: camel/providers/local/camel-maildir-store.c:511
 #: camel/providers/local/camel-maildir-store.c:524
 #: camel/providers/local/camel-spool-store.c:461
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:261
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
 msgstr "จดหมายเข้า"
 
@@ -3083,7 +3106,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"ไม่สามารถยืนยันตัวบุคคลไปยังเซิร์ฟเวอร์ IMAP\n"
+"ไม่สามารถยืนยันตัวบุคคลกับเซิร์ฟเวอร์ IMAP\n"
 "%s\n"
 "\n"
 
@@ -3146,6 +3169,7 @@ msgstr "เซิร์ฟเวอร์ IMAP4 %s ตัดการเชื�
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
+"เปิดใช้การตรวจจับ Mailing-List ซึ่งจำเป็นต้องใช้ในกฎของตัวกรองและโฟลเดอร์เสมือนบางชนิด"
 
 #: camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
@@ -3234,8 +3258,7 @@ msgstr "ต้วเลือกนี้จะเชื่อมต่อไป
 #, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr ""
-"ไม่สามารถยืนยันตัวบุคคลกับเซิร์ฟเวอร์ IMAP %s ด้วยกลไกการยืนยันตัวบุคคล %s"
+msgstr "ไม่สามารถยืนยันตัวบุคคลกับเซิร์ฟเวอร์ IMAP %s ด้วยกลไกการยืนยันตัวบุคคล %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:535
 #, c-format
@@ -3386,6 +3409,10 @@ msgid ""
 "\n"
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
+"ไคลเอนต์ IMAP 4(.1) ฉบับทดสอบ\n"
+"โค้ดนี้ไม่ได้ผ่านการทดสอบและไม่มีการสนับสนุน คุณอาจต้องการใช้ imap ธรรมดาแทน\n"
+"\n"
+" !!! อย่าใช้กับอีเมลสำคัญ !!!\n"
 
 #: camel/providers/imapp/camel-imapp-store.c:251
 #, c-format
@@ -3399,7 +3426,7 @@ msgstr "ไม่สามารถเชื่อมต่อไปยังเ
 
 #: camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
-msgstr ""
+msgstr "ทำดัชนีข้อมูลตัวเนื้อหาข้อความ"
 
 #. $HOME relative path + protocol string
 #: camel/providers/local/camel-local-folder.c:384
@@ -3426,21 +3453,23 @@ msgstr "ใช้แฟ้มสรุปโฟลเดอร์ `.folders' (ex
 
 #: camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
-msgstr "ไดเรกทอรีของเมล MH-format "
+msgstr "ไดเรกทอรีเมลในรูปแบบ MH"
 
 #: camel/providers/local/camel-local-provider.c:55
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "ใช้สำหรับเก็บเมลในเครื่องในไดเรกทอรีเมลแบบ MH"
 
 #: camel/providers/local/camel-local-provider.c:72
 msgid "Local delivery"
-msgstr ""
+msgstr "การขนส่งจดหมายในเครื่อง"
 
 #: camel/providers/local/camel-local-provider.c:73
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
+"สำหรับดึง (หรือย้าย) เมลในเครื่อง จากที่เก็บพักแบบ mbox มาตรฐาน มายังโฟลเดอร์ที่จัดการโดย "
+"Evolution"
 
 #: camel/providers/local/camel-local-provider.c:87
 #: camel/providers/local/camel-local-provider.c:106
@@ -3938,7 +3967,7 @@ msgstr "แสดงชื่อโฟลเดอร์แบบย่อ (เ�
 
 #: camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
-msgstr ""
+msgstr "ในกล่องโต้ตอบบอกรับข้อมูล ให้แสดงชื่อโฟลเดอร์แบบสัมพัทธ์"
 
 #: camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -3946,7 +3975,7 @@ msgstr "ข่าว USENET"
 
 #: camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
+msgstr "ใช้สำหรับอ่านและแปะประกาศข่าวในกลุ่มข่าว USENET"
 
 #: camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4049,16 +4078,16 @@ msgstr "%s: กำลังตรวจหาข้อความใหม่"
 #: camel/providers/nntp/camel-nntp-summary.c:227
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr ""
+msgstr "ได้รับคำตอบที่ไม่คาดหมายสำหรับ xover: %s"
 
 #: camel/providers/nntp/camel-nntp-summary.c:330
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "ได้รับคำตอบที่ไม่คาดหมายสำหรับ head: %s"
 
 #: camel/providers/nntp/camel-nntp-summary.c:370
 msgid "Use cancel"
-msgstr ""
+msgstr "ผู้ใช้ยกเลิก"
 
 #: camel/providers/nntp/camel-nntp-summary.c:372
 #, c-format
@@ -4160,8 +4189,7 @@ msgstr "ไม่สามารถเชื่อมต่อไปยังเ
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
-msgstr ""
-"ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ POP %s: ไม่สนับสนุนกลไกการยืนยันตัวบุคคลที่ขอไป"
+msgstr "ไม่สามารถเชื่อมต่อไปยังเซิร์ฟเวอร์ POP %s: ไม่สนับสนุนกลไกการยืนยันตัวบุคคลที่ขอไป"
 
 #: camel/providers/pop3/camel-pop3-store.c:418
 #, c-format
@@ -4215,8 +4243,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
-"ใช้สำหรับส่งเมลโดยใช้โปรแกรม \"sendmail\" ในเครื่อง"
+msgstr "ใช้สำหรับส่งเมลโดยใช้โปรแกรม \"sendmail\" ในเครื่อง"
 
 #: camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
@@ -4463,7 +4490,7 @@ msgstr "คำสั่ง AUTH ล้มเหลว"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1105
 msgid "Bad authentication response from server.\n"
-msgstr ""
+msgstr "ได้รับคำตอบที่ใช้ไม่ได้สำหรับการยืนยันตัวบุคคลจากเซิร์ฟเวอร์\n"
 
 #: camel/providers/smtp/camel-smtp-transport.c:1130
 #, c-format
@@ -4517,84 +4544,84 @@ msgstr "คำสั่ง QUIT ล้มเหลว: %s"
 msgid "QUIT command failed"
 msgstr "คำสั่ง QUIT ล้มเหลว"
 
-#: libedataserver/e-categories.c:242
+#: libedataserver/e-categories.c:248
 msgid "Business"
 msgstr "ธุรกิจ"
 
-#: libedataserver/e-categories.c:243
+#: libedataserver/e-categories.c:249
 msgid "Competition"
 msgstr "การแข่งขัน"
 
-#: libedataserver/e-categories.c:244
+#: libedataserver/e-categories.c:250
 msgid "Favorites"
 msgstr "รายการโปรด"
 
-#: libedataserver/e-categories.c:245
+#: libedataserver/e-categories.c:251
 msgid "Gifts"
 msgstr "ของขวัญ"
 
-#: libedataserver/e-categories.c:246
+#: libedataserver/e-categories.c:252
 msgid "Goals/Objectives"
 msgstr "เป้าหมาย/วัตถุประสงค์"
 
-#: libedataserver/e-categories.c:247
+#: libedataserver/e-categories.c:253
 msgid "Holiday"
 msgstr "วันหยุด"
 
-#: libedataserver/e-categories.c:248
+#: libedataserver/e-categories.c:254
 msgid "Holiday Cards"
 msgstr "บัตรอวยพรวันหยุด"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: libedataserver/e-categories.c:250
+#: libedataserver/e-categories.c:256
 msgid "Hot Contacts"
 msgstr "ที่อยู่ติดต่อสำคัญ"
 
-#: libedataserver/e-categories.c:251
+#: libedataserver/e-categories.c:257
 msgid "Ideas"
 msgstr "แนวคิด"
 
-#: libedataserver/e-categories.c:252
+#: libedataserver/e-categories.c:258
 msgid "International"
 msgstr "นานาชาติ"
 
-#: libedataserver/e-categories.c:253
+#: libedataserver/e-categories.c:259
 msgid "Key Customer"
 msgstr "ลูกค้าสำคัญ"
 
-#: libedataserver/e-categories.c:254
+#: libedataserver/e-categories.c:260
 msgid "Miscellaneous"
 msgstr "เบ็ดเตล็ด"
 
-#: libedataserver/e-categories.c:255
+#: libedataserver/e-categories.c:261
 msgid "Personal"
 msgstr "ส่วนบุคคล"
 
-#: libedataserver/e-categories.c:256
+#: libedataserver/e-categories.c:262
 msgid "Phone Calls"
 msgstr "หมายเลขโทรศัพท์"
 
-#: libedataserver/e-categories.c:257
+#: libedataserver/e-categories.c:263
 msgid "Status"
 msgstr "สถานะ"
 
-#: libedataserver/e-categories.c:258
+#: libedataserver/e-categories.c:264
 msgid "Strategies"
 msgstr "กลยุทธ์"
 
-#: libedataserver/e-categories.c:259
+#: libedataserver/e-categories.c:265
 msgid "Suppliers"
 msgstr "ผู้จำหน่าย"
 
-#: libedataserver/e-categories.c:260
+#: libedataserver/e-categories.c:266
 msgid "Time & Expenses"
 msgstr "เวลา & ค่าใช้จ่าย"
 
-#: libedataserver/e-categories.c:261
+#: libedataserver/e-categories.c:267
 msgid "VIP"
 msgstr "VIP"
 
-#: libedataserver/e-categories.c:262
+#: libedataserver/e-categories.c:268
 msgid "Waiting"
 msgstr "กำลังรอ"
 
@@ -4817,7 +4844,7 @@ msgid "C_ategory:"
 msgstr "_หมวดหมู่:"
 
 #: libedataserverui/e-name-selector-dialog.glade.h:8
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:258
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
 msgstr "ที่อยู่ติดต่อ"
 
@@ -5005,41 +5032,41 @@ msgstr "โฟลเดอร์สาธารณะทั้งหมด"
 msgid "Global Address List"
 msgstr ""
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:259
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Deleted Items"
 msgstr "รายการที่ลบ"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:260
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "จดหมายร่าง"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:262
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
 msgstr "บันทึก"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:263
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
 msgstr "บันทึกข้อความ"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:264
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
 msgstr "จดหมายออก"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:265
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:268
 msgid "Sent Items"
 msgstr "ส่งแล้ว"
 
-#: servers/exchange/storage/exchange-hierarchy-foreign.c:266
+#: servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
 msgstr "งาน"
 
 #: servers/groupwise/e-gw-connection.c:164
 msgid "Invalid connection"
-msgstr ""
+msgstr "การเชื่อมต่อใช้ไม่ได้"
 
 #: servers/groupwise/e-gw-connection.c:168
 msgid "Invalid response from server"
-msgstr ""
+msgstr "ได้รับคำตอบที่ใช้ไม่ได้จากเซิร์ฟเวอร์"
 
 #: servers/groupwise/e-gw-connection.c:170
 msgid "No response from the server"
@@ -5047,7 +5074,7 @@ msgstr "ไม่มีการตอบรับจากเซิร์ฟเ
 
 #: servers/groupwise/e-gw-connection.c:176
 msgid "Bad parameter"
-msgstr ""
+msgstr "พารามิเตอร์ไม่ถูกต้อง"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
@@ -5055,7 +5082,7 @@ msgstr "แบ็กเอนด์ของแฟ้มสมุดที่อ
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr ""
+msgstr "แบ็กเอนด์แฟ้มปฏิทินและ webcal ของ Evolution"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
@@ -5070,3 +5097,4 @@ msgstr ""
 #, c-format
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
+"เกิดข้อผิดพลาดในการอ้างหน่วยความจำหลายรายการ; ไม่สามารถแสดงกล่องโต้ตอบแสดงข้อผิดพลาด\n"
