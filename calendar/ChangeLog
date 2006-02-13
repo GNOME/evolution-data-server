@@ -1,3 +1,9 @@
+2006-02-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #329866
+	* libecal/e-cal.c: (process_detached_instances): Check if we have
+	valid recurrence id before comparing.
+
 2006-02-12  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #329566, #329568

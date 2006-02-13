@@ -3514,8 +3514,12 @@ process_detached_instances (GList *instances, GList *detached_instances)
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 			if (strcmp (uid, instance_uid) == 0) {
-				if (strcmp (e_cal_component_get_recurid_as_string (ci->comp),
-					    e_cal_component_get_recurid_as_string (cid->comp)) == 0) {
+				const char *i_rid = NULL, *d_rid = NULL;
+
+				i_rid = e_cal_component_get_recurid_as_string (ci->comp);
+				d_rid = e_cal_component_get_recurid_as_string (cid->comp);
+
+				if (i_rid && d_rid && strcmp (i_rid, d_rid) == 0) {
 					g_object_unref (ci->comp);
 					ci->comp = g_object_ref (cid->comp);
 					ci->start = cid->start;
