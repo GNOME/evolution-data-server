@@ -510,7 +510,7 @@ e_cal_backend_weather_get_object (ECalBackendSync *backend, EDataCal *cal, const
 	g_return_val_if_fail (comp != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	*object = e_cal_component_get_as_string (comp);
-	g_free (comp);
+	g_object_unref (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

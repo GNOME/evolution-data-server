@@ -1,3 +1,10 @@
+2006-02-14  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #324009
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_get_object): Use g_object_unref
+	instead of g_free while disposing a ECalComponent.
+
 2006-02-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #329866
