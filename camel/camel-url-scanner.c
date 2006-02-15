@@ -212,7 +212,7 @@ camel_url_addrspec_start (const char *in, const char *pos, const char *inend, ur
 			inptr--;
 	}
 	
-	if (!is_atom (*inptr) || is_open_brace (*inptr))
+	while (!is_atom (*inptr) || is_open_brace (*inptr))
 		inptr++;
 	
 	if (inptr == pos)

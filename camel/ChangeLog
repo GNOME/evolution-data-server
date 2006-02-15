@@ -1,3 +1,11 @@
+2006-02-13  Rohini S  <srohini@novell.com>
+
+	**See bug 328384
+
+	* camel-url-scanner.c (camel_url_addrspec_start): 
+	modified to remove all invalid characters in the beginning 
+	of a email address
+
 2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 328481
