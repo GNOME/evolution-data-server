@@ -1,3 +1,8 @@
+2006-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-disco-diary.c: (camel_disco_diary_log):
+	proceed only if diary is a valid pointer
+
 2006-02-13  Rohini S  <srohini@novell.com>
 
 	**See bug 328384

@@ -126,7 +126,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 	d(printf("diary log: %s\n", diary->file?"ok":"no file!"));
 
 	/* You may already be a loser. */
-	if (!diary->file)
+	if (!diary && !diary->file)
 		return;
 
 	status = camel_file_util_encode_uint32 (diary->file, action);
