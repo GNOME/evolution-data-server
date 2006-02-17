@@ -3,6 +3,11 @@ AC_PREREQ(2.52)
 
 AC_INIT(evolution-data-server, 1.5.91)
 AC_CONFIG_SRCDIR(README)
+
+# Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
+# The extra brackets are to foil regex-based scans.
+m4_ifdef([_A][M_PROG_TAR],[_A][M_SET_OPTION([tar-ustar])])
+
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AM_CONFIG_HEADER(config.h)
