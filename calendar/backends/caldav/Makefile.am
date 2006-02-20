@@ -19,7 +19,8 @@ libecalbackendcaldav_la_SOURCES =	\
 	e-cal-backend-caldav.h		
 
 libecalbackendcaldav_la_LIBADD =						\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)      \
+	$(SOUP_LIBS)
 
 libecalbackendcaldav_la_LDFLAGS =		\
 	-module -avoid-version

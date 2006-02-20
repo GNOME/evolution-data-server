@@ -1,3 +1,7 @@
+2006-02-20  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/caldav/Makefile.am: Add soup_flags to la.
+
 2006-02-14  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #331127
