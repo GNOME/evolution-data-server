@@ -356,8 +356,8 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 			while (inptr < inend && is_atom (*inptr))
 				inptr++;
 			
-			if ((inptr + 1) < inend && *inptr == '.' && is_atom (inptr[1]))
-				inptr++;
+			if ((inptr + 1) < inend && *inptr == '.' && (is_atom (inptr[1]) || inptr[1] == '/')) 
+					inptr++;
 		}
 		
 		if (*inptr != '@')
@@ -377,8 +377,8 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 			while (inptr < inend && is_domain (*inptr))
 				inptr++;
 			
-			if ((inptr + 1) < inend && *inptr == '.' && is_domain (inptr[1]))
-				inptr++;
+			if ((inptr + 1) < inend && *inptr == '.' && (is_domain (inptr[1]) || inptr[1] == '/')) 
+					inptr++;
 		}
 	} else {
 		return FALSE;

@@ -1,3 +1,9 @@
+2006-02-21  Rohini S  <srohini@novell.com>
+ 
+ 	* camel-url-scanner.c (camel_url_web_end): Modified to accept urls 
+ 	with ./
+ 	Fixes bug#256142
+ 
 2006-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-disco-diary.c: (camel_disco_diary_log):
