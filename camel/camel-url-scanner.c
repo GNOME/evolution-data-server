@@ -197,7 +197,8 @@ camel_url_addrspec_start (const char *in, const char *pos, const char *inend, ur
 	
 	g_assert (*inptr == '@');
 	
-	inptr--;
+	if (inptr > in)
+		inptr--;
 	
 	while (inptr > in) {
 		if (is_atom (*inptr))
@@ -215,7 +216,7 @@ camel_url_addrspec_start (const char *in, const char *pos, const char *inend, ur
 	while (!is_atom (*inptr) || is_open_brace (*inptr))
 		inptr++;
 	
-	if (inptr == pos)
+	if (inptr >= pos)
 		return FALSE;
 	
 	match->um_so = (inptr - in);

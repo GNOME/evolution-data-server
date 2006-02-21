@@ -1,4 +1,10 @@
-2006-01-27  Rohini S  <srohini@novell.com>
+2006-02-21  Rohini S  <srohini@novell.com>
+
+	** See bug 318697
+	* camel-url-scanner.c (camel_url_addrspec_start): conditions modified
+	to parse only valid mailto links
+
+2006-02-21  Rohini S  <srohini@novell.com>
  
  	** Fixes bug #328322
  
