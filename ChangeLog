@@ -1,3 +1,10 @@
+2006-02-24  Chenthill Palanisamy  <pchenthill@novell.com>
+
+
+	Fixes #332318 #329356
+	* libedataserver/e-time-utils.c: (e_time_parse_date): Added the format
+	%x for representing the date for current locale.
+
 2006-02-13  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in, NEWS: Release updates. Bump version.
