@@ -1436,14 +1436,15 @@ e_time_parse_date (const char *value, struct tm *result)
 	g_return_val_if_fail (value != NULL, E_TIME_PARSE_INVALID);
 	g_return_val_if_fail (result != NULL, E_TIME_PARSE_INVALID);
 
+	/* according to the current locale */
+	format [0] = ("%x");
+	
 	/* strptime format of a weekday and a date. */
-	format[0] = _("%a %m/%d/%Y");
+	format[1] = _("%a %m/%d/%Y");
 
 	/* This is the preferred date format for the locale. */
-	format[1] = _("%m/%d/%Y");
+	format[2] = _("%m/%d/%Y");
 
-	/* according to the current locale */
-	format [2] = ("%x");
 
 	status = parse_with_strptime (value, result, format, sizeof (format)/sizeof (format [0]));
 	if (status == E_TIME_PARSE_OK) {
