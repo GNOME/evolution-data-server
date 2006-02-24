@@ -1,5 +1,7 @@
 2006-02-25  Veerapuram Varadhan <vvaradhan@novell.com>
 
+	** Fixes #301116
+	
 	* e-passwords.c: include <glib/gi18n-lib.h> instead of
 	<libgnome/gnome-i18n.h>, to specify the translation domain
 	explicitly. Harish's earlier commit of Changwoo's patch 
