@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-13 19:12+0700\n"
-"PO-Revision-Date: 2006-02-13 20:35+0700\n"
+"PO-Revision-Date: 2006-02-24 08:14+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -1895,13 +1895,13 @@ msgstr ""
 
 #: camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
-msgstr ""
+msgstr "พารามิเตอร์ target_name ผิดรูปแบบ"
 
 #: camel/camel-sasl-gssapi.c:165
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
-msgstr ""
+msgstr "พารามิเตอร์ target_name ระบุชนิดของชื่อที่ไม่สนับสนุน"
 
 #: camel/camel-sasl-gssapi.c:169
 msgid ""
@@ -1913,7 +1913,7 @@ msgstr ""
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
-msgstr ""
+msgstr "input_token มีลายเซ็นที่ไม่ถูกต้อง หรือเป็นลายเซ็นที่ตรวจสอบไม่ได้"
 
 #: camel/camel-sasl-gssapi.c:178
 msgid ""
@@ -2076,7 +2076,7 @@ msgstr ""
 #: camel/camel-smime-context.c:293 camel/camel-smime-context.c:305
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr ""
+msgstr "ไม่มีใบรับรองการเข้ารหัสลับสำหรับ '%s'"
 
 #: camel/camel-smime-context.c:312
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -2088,7 +2088,7 @@ msgstr "ไม่สามารถเพิ่มคุณลักษณะ MS
 
 #: camel/camel-smime-context.c:322
 msgid "Cannot add encryption certificate"
-msgstr ""
+msgstr "ไม่สามารถเพิ่มใบรับรองการเข้ารหัสลับ"
 
 #: camel/camel-smime-context.c:328
 msgid "Cannot add CMS Signer information"
@@ -2293,15 +2293,15 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:570
 msgid "Unable to get Certificate Revocation List"
-msgstr ""
+msgstr "ไม่สามารถอ่านรายการการเพิกถอนใบรับรอง"
 
 #: camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to decrypt certificate signature"
-msgstr ""
+msgstr "ไม่สามารถถอดรหัสลับลายเซ็นกำกับใบรับรอง"
 
 #: camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
+msgstr "ไม่สามารถถอดรหัสลับลายเซ็นกำกับรายการการเพิกถอนใบรับรอง"
 
 #: camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2381,7 +2381,7 @@ msgstr "ใบรับรองไม่น่าเชื่อถือ"
 
 #: camel/camel-tcp-stream-openssl.c:617
 msgid "Certificate rejected"
-msgstr ""
+msgstr "ใบรับรองถูกปฏิเสธ"
 
 #: camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
@@ -2389,7 +2389,7 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
-msgstr ""
+msgstr "AKID/SKID ไม่ตรงกัน"
 
 #: camel/camel-tcp-stream-openssl.c:624
 msgid "AKID/Issuer serial mismatch"
@@ -2397,7 +2397,7 @@ msgstr ""
 
 #: camel/camel-tcp-stream-openssl.c:626
 msgid "Key usage does not support certificate signing"
-msgstr ""
+msgstr "การใช้งานกุญแจไม่รองรับการเซ็นกำกับใบรับรอง"
 
 #: camel/camel-tcp-stream-openssl.c:629
 msgid "Error in application verification"
@@ -2501,7 +2501,7 @@ msgstr "ไม่สามารถแจง URL `%s'"
 #: camel/camel-vee-folder.c:475
 #, c-format
 msgid "Error storing `%s': %s"
-msgstr ""
+msgstr "เกิดข้อผิดพลาดระหว่างบันทึก `%s': %s"
 
 #: camel/camel-vee-folder.c:517
 #, c-format
@@ -3824,7 +3824,7 @@ msgstr "เกิดข้อผิดพลาดขณะกำลังเข
 #: camel/providers/local/camel-mbox-summary.c:1016
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
-msgstr ""
+msgstr "การเขียนลงกล่องจดหมายชั่วคราวล้มเหลว: %s: %s"
 
 #: camel/providers/local/camel-mh-folder.c:175
 msgid "MH append message cancelled"
@@ -4388,7 +4388,7 @@ msgstr "การยืนยัยคตัวบุคคลล้มเหล
 
 #: camel/providers/smtp/camel-smtp-transport.c:291
 msgid "Welcome response error"
-msgstr ""
+msgstr "เกิดข้อผิดพลาดในการตอบรับการเชื่อมต่อ"
 
 #: camel/providers/smtp/camel-smtp-transport.c:322
 #: camel/providers/smtp/camel-smtp-transport.c:355
@@ -5082,7 +5082,7 @@ msgstr "แบ็กเอนด์ของแฟ้มสมุดที่อ
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "แบ็กเอนด์แฟ้มปฏิทินและ webcal ของ Evolution"
+msgstr "แบ็กเอนด์แฟ้มและ webcal ของปฏิทิน Evolution"
 
 #: src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
