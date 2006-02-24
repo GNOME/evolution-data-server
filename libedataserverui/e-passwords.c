@@ -43,7 +43,7 @@
 
 #include <string.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtkversion.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkvbox.h>
