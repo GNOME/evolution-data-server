@@ -1,3 +1,8 @@
+2006-02-25  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-hierarchy-webdav.c (scan_subtree): Do not unref the
+	folder which is being used later in subtrees.
+
 2006-02-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* storage/exchange-hierarchy-webdav.c: (init),

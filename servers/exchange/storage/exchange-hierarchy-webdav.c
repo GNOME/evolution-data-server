@@ -729,7 +729,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 			subtrees = g_slist_prepend (subtrees, folder);
 		}
 		exchange_hierarchy_new_folder (hier, folder);
-		g_object_unref (folder);
+		//g_object_unref (folder);
 
 		/* Check the folder size here */
 		name = e2k_properties_get_prop (result->props,
