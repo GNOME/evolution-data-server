@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-26 13:52+0000\n"
-"PO-Revision-Date: 2006-02-05 10:01+0200\n"
+"PO-Revision-Date: 2006-02-24 09:52+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1535,7 +1535,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:803 ../camel/camel-gpg-context.c:1000
 #: ../camel/providers/nntp/camel-nntp-store.c:1276
 msgid "Cancelled."
-msgstr "Loobutud."
+msgstr "Tühistatud."
 
 #: ../camel/camel-gpg-context.c:821
 msgid "Failed to unlock secret key: 3 bad passphrases given."
@@ -4017,6 +4017,8 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
+"Sul pole uudistehoidlasse võimalik kausta luua, selle asemel telli omale "
+"kaust."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:972
 msgid "You cannot rename a folder in a News store."
@@ -4025,6 +4027,8 @@ msgstr "Sul pole võimalik uudistegruppe ümber nimetada."
 #: ../camel/providers/nntp/camel-nntp-store.c:980
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
+"Sul pole uudistehoidlast võimalik kausta kustutada, selle asemel loobu "
+"kausta tellimusest."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1150
 msgid "Authentication requested but no username provided"
