@@ -1,3 +1,9 @@
+2006-02-27  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-data-server-util.c: The fixed Win32 versions of
+	g_rename() and g_stat() have been in GLib since GLib 2.8.5, so
+	let's drop them from here.
+
 2006-02-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #332318 #329356
