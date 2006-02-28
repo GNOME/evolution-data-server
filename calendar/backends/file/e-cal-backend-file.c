@@ -1808,7 +1808,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
-	const char *comp_uid, *rid;
+	const char *comp_uid, *rid = NULL;
 	char *real_rid;
 	ECalComponent *comp, *recurrence;
 	ECalBackendFileObject *obj_data;
@@ -1850,11 +1850,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	/* sanitize the component*/
 	sanitize_component (cbfile, comp);
+	rid = e_cal_component_get_recurid_as_string (comp);
 
 	/* handle mod_type */
 	switch (mod) {
 	case CALOBJ_MOD_THIS :
-		rid = e_cal_component_get_recurid_as_string (comp);
 		if (!rid || !*rid) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -1967,18 +1967,33 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			/* This means its a instance generated from master object. So replace 
 			    the dates stored dates from the master object */
-			   
-			if (icaltime_compare (start, recur)) {
+			if (!recur.zone)   
+				recur.zone = start.zone;
+			
+			if (icaltime_compare_date_only (start, recur) == 0) {
 				ECalComponentDateTime m_sdate, m_endate;
 
 				e_cal_component_get_dtstart (obj_data->full_object, &m_sdate);
 				e_cal_component_get_dtend (obj_data->full_object, &m_endate);
 
+				if (icaltime_compare (start, recur) != 0) {
+					icaltimetype end = icalcomponent_get_dtend (icalcomp);
+					
+					m_sdate.value->hour = start.hour;
+					m_sdate.value->minute = start.minute;
+					m_sdate.value->second = 
+						
+					m_endate.value->hour = end.hour;
+					m_endate.value->minute = end.minute;
+					m_endate.value->second = end.second;
+				}
+
 				e_cal_component_set_dtstart (comp, &m_sdate);
 				e_cal_component_set_dtend (comp, &m_endate);
 				e_cal_component_set_recurid (comp, NULL);
 				e_cal_component_commit_sequence (comp);
-			}
+			} 
+			e_cal_component_set_recurid (comp, NULL);
 			*new_object = e_cal_component_get_as_string (comp);
 		}
 		

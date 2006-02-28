@@ -1,3 +1,11 @@
+2006-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #332726
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_modify_object): Initialize and assign
+	the recurrence id properly. Set the date and times of the 
+	master object depending on what has changed.
+
 2006-02-20  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/caldav/Makefile.am: Add soup_flags to la.
