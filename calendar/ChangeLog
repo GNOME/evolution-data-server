@@ -1,3 +1,10 @@
+2006-03-02  Jeff Cai  <Jeff.Cai@Sun.Com>
+
+	Fixes #332276
+	* backends/weather/e-weather-source-ccf.c:
+	(e_weather_source_ccf_parse):
+	Support getting weather data through global http proxy.
+
 2006-02-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #332726

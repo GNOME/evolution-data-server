@@ -31,6 +31,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <gconf/gconf-client.h>
+
 #include "libedataserver/e-xml-utils.h"
 
 #include "e-weather-source-ccf.h"
@@ -432,8 +434,49 @@ e_weather_source_ccf_parse (EWeatherSource *source, EWeatherSourceFinished done,
 
 	ccfsource->done = done;
 
-	if (!ccfsource->soup_session)
+	if (!ccfsource->soup_session) {
+		GConfClient *conf_client;
 		ccfsource->soup_session = soup_session_async_new ();
+
+		/* set the HTTP proxy, if configuration is set to do so */
+		conf_client = gconf_client_get_default ();
+		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
+			char *server, *proxy_uri;
+			int port;
+
+			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
+			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
+
+			if (server && server[0]) {
+				SoupUri *suri;
+				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
+					char *user, *password;
+
+					user = gconf_client_get_string (conf_client,
+									"/system/http_proxy/authentication_user",
+									NULL);
+					password = gconf_client_get_string (conf_client,
+									    "/system/http_proxy/authentication_password",
+									    NULL);
+
+					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
+
+					g_free (user);
+					g_free (password);
+				} else
+					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
+
+				suri = soup_uri_new (proxy_uri);
+				g_object_set (G_OBJECT (ccfsource->soup_session), SOUP_SESSION_PROXY_URI, suri, NULL);
+
+				soup_uri_free (suri);
+				g_free (server);
+				g_free (proxy_uri);
+			}
+		}
+		g_object_unref (conf_client);
+	}
+
 	soup_message = soup_message_new (SOUP_METHOD_GET, ccfsource->url);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
 	soup_session_queue_message (ccfsource->soup_session, soup_message, (SoupMessageCallbackFn) retrieval_done, source);
