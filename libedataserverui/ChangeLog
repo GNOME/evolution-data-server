@@ -1,3 +1,7 @@
+2006-03-01  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-dialog.c (transfer_button_clicked) : Fixed a crasher.
+
 2006-02-25  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	** Fixes #301116
