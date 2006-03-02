@@ -1,3 +1,10 @@
+2006-03-02  Devashish Sharma <sdevashish@novell.com>
+
+	Fixes #303046
+	* libedataserverui/e-name-selector-dialog.c:
+	(e_name_selector_dialog_init): Select contacts from address book 
+	screen doesn't use current contact source
+
 2006-02-27  Srinivasa Ragavan <sragavan@novell.com>
 
 	* configure.in, NEWS: Release updates. Bump version.

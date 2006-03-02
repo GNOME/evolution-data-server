@@ -222,6 +222,29 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	/* Create source menu */
 
 	widget = e_source_option_menu_new (name_selector_dialog->source_list);
+        
+	GConfClient *gconf_client;	
+	char *uid;
+	
+	gconf_client = gconf_client_get_default();
+	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
+			NULL);
+	g_object_unref (gconf_client);
+	if (uid) {
+		ESource *source = e_source_list_peek_source_by_uid(name_selector_dialog->source_list, uid);
+		if (source) {
+			e_source_option_menu_select ((ESourceOptionMenu *)widget, source);
+			source_selected (name_selector_dialog, source);
+		}
+		else {
+			source_selected (name_selector_dialog, find_first_source (name_selector_dialog->source_list));
+		}
+		g_free (uid);
+	}
+	else {
+		source_selected (name_selector_dialog, find_first_source (name_selector_dialog->source_list));
+	}
+
 	g_signal_connect_swapped (widget, "source_selected", G_CALLBACK (source_selected), name_selector_dialog);
 
 	label = glade_xml_get_widget (name_selector_dialog->gui, "AddressBookLabel");
@@ -243,7 +266,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* TODO: Remember last used source */
 
-	source_selected (name_selector_dialog, find_first_source (name_selector_dialog->source_list));
 
 	/* Set up dialog defaults */
 
