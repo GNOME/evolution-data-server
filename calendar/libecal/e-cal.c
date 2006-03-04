@@ -1626,16 +1626,18 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 }
 
 static char *
-build_pass_key (ESource *source)
+build_pass_key (ECal *ecal)
 {
-	char *uri, *euri_str;
+	char *euri_str;
+	const char *uri;
 	EUri *euri;
 
-	uri = e_source_get_uri (source);
+	uri = e_cal_get_uri (ecal);
 
 	euri = e_uri_new (uri);
 	euri_str = e_uri_to_string (euri, FALSE);
-	g_free (uri);
+
+	e_uri_free (euri);
 	return euri_str;
 }
 
@@ -1710,7 +1712,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		}
 		auth_type = e_source_get_property (priv->source, "auth-type");
 		if (auth_type)
-			key = build_pass_key (priv->source);
+			key = build_pass_key (ecal);
 		else
 			key = e_source_get_uri (priv->source);
 
