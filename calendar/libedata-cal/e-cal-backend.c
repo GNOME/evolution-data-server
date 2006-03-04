@@ -1319,8 +1319,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 		if (object == NULL) {
 			/* if object == NULL, it means the object has been completely
 			   removed from the backend */
-			if (e_data_cal_view_object_matches (query, old_object))
-				e_data_cal_view_notify_objects_removed_1 (query, id);
+			e_data_cal_view_notify_objects_removed_1 (query, id);
 		} else
 			match_query_and_notify (query, old_object, object);
 

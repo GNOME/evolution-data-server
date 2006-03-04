@@ -1,3 +1,12 @@
+2006-03-01  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedata-cal/e-cal-backend-sync.c:
+	(_e_cal_backend_remove_object): Do not get the object
+	backend again. Use the provided new and old object.
+	* libedata-cal/e-cal-backend.c:
+	(e_cal_backend_notify_object_removed): Need not check
+	if the query matches for removing an item.
+
 2006-03-02  Jeff Cai  <Jeff.Cai@Sun.Com>
 
 	Fixes #332276
