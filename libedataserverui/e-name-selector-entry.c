@@ -1715,6 +1715,39 @@ find_book_by_contact (GList *books, const gchar *contact_uid)
 static void
 editor_closed_cb (GtkObject *editor, gpointer data)
 {
+	EContact *contact;
+	gchar *contact_uid;
+	EDestination *destination;
+	GList *books;
+	EBook *book;
+	gboolean result;
+	gint email_num;
+	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (data);
+	
+	destination = name_selector_entry->popup_destination;
+	contact = e_destination_get_contact (destination);
+	if (!contact)
+		return;
+	contact_uid = e_contact_get (contact, E_CONTACT_UID);
+	if (!contact_uid)
+		return;
+
+	if (name_selector_entry->contact_store) {
+		books = e_contact_store_get_books (name_selector_entry->contact_store);
+		book = find_book_by_contact (books, contact_uid);
+		g_list_free (books);
+	} else {
+		book = NULL;
+	}
+	if (!book)
+		return;
+
+	result = e_book_get_contact(book, contact_uid, &contact, NULL);
+	email_num = e_destination_get_email_num(destination);
+	e_destination_set_contact (destination, contact, email_num);
+
+	g_free (contact_uid);
+	g_object_unref (contact);
 	g_object_unref (editor);
 }
 
@@ -1786,7 +1819,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 
 		contact_list_editor = (*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
 		g_signal_connect (contact_list_editor, "editor_closed",
-				  G_CALLBACK (editor_closed_cb), NULL);
+				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	} else {
 		GtkWidget *contact_editor;
 
@@ -1795,7 +1828,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 
 		contact_editor = (*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
 		g_signal_connect (contact_editor, "editor_closed",
-				  G_CALLBACK (editor_closed_cb), NULL);
+				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	}
 }
 

@@ -1,5 +1,10 @@
 2006-03-05  Devashish Sharma  <sdevashish@novell.com>
 
+	* e-name-selector-entry.c (editor_closed_cb) : Fif for Bug 216073: Editing contacts
+	from To menu doesnt make inline changes.
+
+2006-03-05  Devashish Sharma  <sdevashish@novell.com>
+
 	* e-name-selector-entry.c (user_delete_text) : Fix for Bug 322432- To field
 	can crash evolution.
 
