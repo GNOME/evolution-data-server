@@ -1193,6 +1193,23 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry),
 				  start_pos, end_pos);
 	
+	/*If the user is deleting a '"' new destinations have to be created for ',' between the quoted text
+	 Like "fd,ty,uy" is a one entity, but if you remove the quotes it has to be broken doan into 3 seperate
+	 addresses.
+	*/
+
+	if (str_b_context [1] == '"') {
+		const gchar *p;
+		gint i;
+		p = text + end_pos;
+		for (p = text + (end_pos-1), i = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), i++) {
+			gunichar c = g_utf8_get_char (p);
+			if(c == ',') {
+				insert_destination_at_position (name_selector_entry, i+1);
+			}
+		}
+		
+	}
 
 	/* Let model know about changes */
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
