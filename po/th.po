@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-13 19:12+0700\n"
-"PO-Revision-Date: 2006-02-24 08:14+0700\n"
+"POT-Creation-Date: 2006-03-05 11:27+0700\n"
+"PO-Revision-Date: 2006-03-05 11:53+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -678,7 +678,7 @@ msgstr "URI ของเซิร์ฟเวอร์ไม่ถูกต้�
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:790
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:799
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:884
-#: calendar/libecal/e-cal.c:5135
+#: calendar/libecal/e-cal.c:5137
 #: camel/providers/groupwise/camel-groupwise-folder.c:902
 #: camel/providers/groupwise/camel-groupwise-folder.c:922
 #: camel/providers/groupwise/camel-groupwise-folder.c:950
@@ -1056,83 +1056,83 @@ msgid "Undefined"
 msgstr "ไม่ได้กำหนด"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: calendar/libecal/e-cal.c:1705
+#: calendar/libecal/e-cal.c:1707
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "ป้อนรหัสผ่านสำหรับ %s เพื่อเปิดใช้งานสำหรับผู้ใช้ %s"
 
-#: calendar/libecal/e-cal.c:1708 libedataserverui/e-book-auth-util.c:198
+#: calendar/libecal/e-cal.c:1710 libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "ป้อนรหัสผ่านสำหรับ %s (ผู้ใช้ %s)"
 
-#: calendar/libecal/e-cal.c:5107
+#: calendar/libecal/e-cal.c:5109
 msgid "Invalid argument"
 msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5109
+#: calendar/libecal/e-cal.c:5111
 msgid "Backend is busy"
 msgstr "แบ็กเอนด์ใช้งานอยู่"
 
-#: calendar/libecal/e-cal.c:5111
+#: calendar/libecal/e-cal.c:5113
 msgid "Repository is offline"
 msgstr "แหล่งเก็บข้อมูลไม่ได้เชื่อมต่ออยู่"
 
-#: calendar/libecal/e-cal.c:5113
+#: calendar/libecal/e-cal.c:5115
 msgid "No such calendar"
 msgstr "ไม่มีปฏิทินดังกล่าว"
 
-#: calendar/libecal/e-cal.c:5115 servers/groupwise/e-gw-connection.c:172
+#: calendar/libecal/e-cal.c:5117 servers/groupwise/e-gw-connection.c:172
 msgid "Object not found"
 msgstr "ไม่พบวัตถุ"
 
-#: calendar/libecal/e-cal.c:5117 servers/groupwise/e-gw-connection.c:166
+#: calendar/libecal/e-cal.c:5119 servers/groupwise/e-gw-connection.c:166
 msgid "Invalid object"
 msgstr "วัตถุไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5119
+#: calendar/libecal/e-cal.c:5121
 msgid "URI not loaded"
 msgstr "ไม่ได้โหลด URI"
 
-#: calendar/libecal/e-cal.c:5121
+#: calendar/libecal/e-cal.c:5123
 msgid "URI already loaded"
 msgstr "โหลด URI เรียบร้อย"
 
-#: calendar/libecal/e-cal.c:5123
+#: calendar/libecal/e-cal.c:5125
 #: servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "ไม่ได้รับอนุญาต"
 
-#: calendar/libecal/e-cal.c:5125 servers/groupwise/e-gw-connection.c:174
+#: calendar/libecal/e-cal.c:5127 servers/groupwise/e-gw-connection.c:174
 msgid "Unknown User"
 msgstr "ผู้ใช้ที่ไม่รู้จัก"
 
-#: calendar/libecal/e-cal.c:5127
+#: calendar/libecal/e-cal.c:5129
 msgid "Object ID already exists"
 msgstr "ID ของวัตถุมีอยู่แล้ว"
 
-#: calendar/libecal/e-cal.c:5129
+#: calendar/libecal/e-cal.c:5131
 msgid "Protocol not supported"
 msgstr "โพรโทคอลไม่สนับสนุน"
 
-#: calendar/libecal/e-cal.c:5131
+#: calendar/libecal/e-cal.c:5133
 msgid "Operation has been cancelled"
 msgstr "การปฏิบัติการได้ยกเลิกไปแล้ว"
 
-#: calendar/libecal/e-cal.c:5133
+#: calendar/libecal/e-cal.c:5135
 msgid "Could not cancel operation"
 msgstr "ไม่สามารถยกเลิกการปฏิบัติการ"
 
-#: calendar/libecal/e-cal.c:5137
+#: calendar/libecal/e-cal.c:5139
 #: camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "ต้องการการยืนยันตัวบุคคล"
 
-#: calendar/libecal/e-cal.c:5139
+#: calendar/libecal/e-cal.c:5141
 msgid "A CORBA exception has occurred"
 msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 
-#: calendar/libecal/e-cal.c:5141
+#: calendar/libecal/e-cal.c:5143
 #: camel/providers/groupwise/camel-groupwise-transport.c:218
 #: camel/providers/imap/camel-imap-command.c:311
 #: camel/providers/imap/camel-imap-command.c:411
@@ -1145,7 +1145,7 @@ msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: calendar/libecal/e-cal.c:5143
+#: calendar/libecal/e-cal.c:5145
 #: servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "ไม่มีข้อผิดพลาด"
@@ -1768,11 +1768,11 @@ msgstr "ไม่สามารถเขียนบันทึกแบบอ
 
 #: camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "องค์ประกอบสนับสนุนอีเมลแบบโฟลเดอร์เสมือน"
 
 #: camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
-msgstr ""
+msgstr "ใช้สำหรับอ่านเมลด้วยการสืบค้นจากชุดโฟลเดอร์"
 
 #: camel/camel-provider.c:188
 #, c-format
@@ -1792,7 +1792,7 @@ msgstr "ไม่สามารถโหลด %s: ไม่มีโค้ด�
 #: camel/camel-provider.c:377 camel/camel-session.c:166
 #, c-format
 msgid "No provider available for protocol `%s'"
-msgstr ""
+msgstr "ไม่มีองค์ประกอบสนับสนุนสำหรับโพรโทคอล `%s'"
 
 #: camel/camel-sasl-anonymous.c:35
 msgid "Anonymous"
@@ -1892,6 +1892,7 @@ msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr ""
+"กลไกที่ระบุ ไม่สามารถใช้กับข้อมูลลับที่ได้มา หรือตัวโปรแกรมยังไม่รู้จัก"
 
 #: camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
@@ -1908,6 +1909,7 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
+"input_token มีการเชื่อมช่องข้อมูลต่างไปจากที่ระบุผ่านพารามิเตอร์ input_chan_bindings"
 
 #: camel/camel-sasl-gssapi.c:174
 msgid ""
@@ -1927,15 +1929,15 @@ msgstr ""
 
 #: camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
-msgstr ""
+msgstr "การตรวจสอบความสอดคล้องของข้อมูลใน input_token ล้มเหลว"
 
 #: camel/camel-sasl-gssapi.c:189
 msgid "The consistency checks performed on the credential failed."
-msgstr ""
+msgstr "การตรวจสอบความสอดคล้องของข้อมูลในข้อมูลลับล้มเหลว"
 
 #: camel/camel-sasl-gssapi.c:192
 msgid "The referenced credentials have expired."
-msgstr ""
+msgstr "ข้อมูลลับที่อ้างอิงหมดอายุแล้ว"
 
 #: camel/camel-sasl-gssapi.c:198 camel/camel-sasl-gssapi.c:246
 #: camel/camel-sasl-gssapi.c:282 camel/camel-sasl-gssapi.c:297
@@ -1989,7 +1991,7 @@ msgstr ""
 
 #: camel/camel-sasl-plain.c:34
 msgid "PLAIN"
-msgstr "PLAIN"
+msgstr "ข้อความเปล่า"
 
 #: camel/camel-sasl-popb4smtp.c:37
 msgid "POP before SMTP"
@@ -2385,7 +2387,7 @@ msgstr "ใบรับรองถูกปฏิเสธ"
 
 #: camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
-msgstr ""
+msgstr "หัวข้อ/ผู้ออกให้ ไม่ตรงกัน"
 
 #: camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
@@ -2822,13 +2824,13 @@ msgstr "แ_สดงเฉพาะโฟลเดอร์ที่บอก�
 #: camel/providers/imap/camel-imap-provider.c:60
 #: camel/providers/imap4/camel-imap4-provider.c:52
 msgid "O_verride server-supplied folder namespace"
-msgstr ""
+msgstr "_กำหนด namespace ของโฟลเดอร์แทนค่าที่เซิร์ฟเวอร์ให้มา"
 
 #: camel/providers/hula/camel-hula-provider.c:64
 #: camel/providers/imap/camel-imap-provider.c:62
 #: camel/providers/imap4/camel-imap4-provider.c:54
 msgid "Namespace"
-msgstr ""
+msgstr "Namespace"
 
 #: camel/providers/hula/camel-hula-provider.c:75
 msgid "Hula"
@@ -2972,7 +2974,7 @@ msgstr "ตรวจสอบข้อความขยะในโฟลเด
 #: camel/providers/imap/camel-imap-provider.c:72
 #: camel/providers/imap4/camel-imap4-provider.c:64
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr ""
+msgstr "พยายาม_ปรับข้อมูลเมลให้ตรงกับเซิร์ฟเวอร์โดยอัตโนมัติขณะออฟไลน์"
 
 #: camel/providers/imap/camel-imap-provider.c:79
 msgid "IMAP"
@@ -4629,7 +4631,7 @@ msgstr "กำลังรอ"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: libedataserver/e-time-utils.c:1319 libedataserver/e-time-utils.c:1562
+#: libedataserver/e-time-utils.c:1319 libedataserver/e-time-utils.c:1566
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Ey %I:%M:%S %p"
 
@@ -4637,7 +4639,7 @@ msgstr "%a %d/%m/%Ey %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: libedataserver/e-time-utils.c:1324 libedataserver/e-time-utils.c:1553
+#: libedataserver/e-time-utils.c:1324 libedataserver/e-time-utils.c:1557
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Ey %H:%M:%S"
 
@@ -4645,7 +4647,7 @@ msgstr "%a %d/%m/%Ey %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: libedataserver/e-time-utils.c:1329 libedataserver/e-time-utils.c:1558
+#: libedataserver/e-time-utils.c:1329 libedataserver/e-time-utils.c:1562
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Ey %I:%M %p"
 
@@ -4653,7 +4655,7 @@ msgstr "%a %d/%m/%Ey %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: libedataserver/e-time-utils.c:1334 libedataserver/e-time-utils.c:1549
+#: libedataserver/e-time-utils.c:1334 libedataserver/e-time-utils.c:1553
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Ey %H:%M"
 
@@ -4671,8 +4673,8 @@ msgstr "%a %d/%m/%Ey %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: libedataserver/e-time-utils.c:1347 libedataserver/e-time-utils.c:1440
-#: libedataserver/e-time-utils.c:1544
+#: libedataserver/e-time-utils.c:1347 libedataserver/e-time-utils.c:1443
+#: libedataserver/e-time-utils.c:1548
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Ey"
 
@@ -4712,19 +4714,19 @@ msgstr "%d/%m/%Ey %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: libedataserver/e-time-utils.c:1382 libedataserver/e-time-utils.c:1443
+#: libedataserver/e-time-utils.c:1382 libedataserver/e-time-utils.c:1446
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Ey"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: libedataserver/e-time-utils.c:1488 libedataserver/e-time-utils.c:1607
+#: libedataserver/e-time-utils.c:1492 libedataserver/e-time-utils.c:1611
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: libedataserver/e-time-utils.c:1492 libedataserver/e-time-utils.c:1599
+#: libedataserver/e-time-utils.c:1496 libedataserver/e-time-utils.c:1603
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4732,19 +4734,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:1497 libedataserver/e-time-utils.c:1604
+#: libedataserver/e-time-utils.c:1501 libedataserver/e-time-utils.c:1608
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: libedataserver/e-time-utils.c:1501 libedataserver/e-time-utils.c:1596
+#: libedataserver/e-time-utils.c:1505 libedataserver/e-time-utils.c:1600
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: libedataserver/e-time-utils.c:1505
+#: libedataserver/e-time-utils.c:1509
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -4803,15 +4805,15 @@ msgstr "แ_ก้ไข"
 msgid "categories"
 msgstr "หมวด"
 
-#: libedataserverui/e-name-selector-dialog.c:260
+#: libedataserverui/e-name-selector-dialog.c:282
 msgid "Select Contacts from Address Book"
 msgstr "เลือกที่อยู่ติดต่อจากสมุดที่อยู่"
 
-#: libedataserverui/e-name-selector-dialog.c:554
+#: libedataserverui/e-name-selector-dialog.c:576
 msgid "_Add"
 msgstr "เ_พิ่ม"
 
-#: libedataserverui/e-name-selector-dialog.c:579
+#: libedataserverui/e-name-selector-dialog.c:601
 msgid "_Remove"
 msgstr "_ลบ"
 
