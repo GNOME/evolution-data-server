@@ -1,3 +1,8 @@
+2006-03-05  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-entry.c (user_delete_text) : Fix for Bug 322432- To field
+	can crash evolution.
+
 2006-03-01  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-dialog.c (transfer_button_clicked) : Fixed a crasher.
