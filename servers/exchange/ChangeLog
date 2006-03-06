@@ -1,4 +1,9 @@
-2006-03-03  Sushma Rai  <rsushma@novell.com>
+2006-03-06  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-esource.c (is_offline): Freeing GconfValue,
+	See #329251.
+ 
+2006-03-06  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c (exchange_account_connect): Skip the quota
 	limit warning display if the GC server is missing. If the quota limits 

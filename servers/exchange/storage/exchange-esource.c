@@ -329,5 +329,6 @@ is_offline (void)
 		offline = gconf_value_get_bool (value);
 
 	g_object_unref (client);
+	gconf_value_free (value);
 	return offline;
 }
