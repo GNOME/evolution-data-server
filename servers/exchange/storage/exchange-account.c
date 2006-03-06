@@ -1548,6 +1548,8 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	account->priv->connecting = FALSE;
 	account->priv->connected = TRUE;
 
+	if (!account->priv->gc)
+		goto skip_quota;
 	/* Check for quota usage */
 	e2k_operation_init (&gcop);
 	gcstatus = e2k_global_catalog_lookup (account->priv->gc, &gcop,
@@ -1576,6 +1578,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		}
 	}
 
+skip_quota:
 	g_signal_connect (account->priv->ctx, "redirect",
 			  G_CALLBACK (context_redirect), account);
 
