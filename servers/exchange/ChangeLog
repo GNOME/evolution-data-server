@@ -1,3 +1,10 @@
+2006-03-06  Irene Huang <Irene.Huang@sun.com>
+
+	Fixes bug #331633
+
+	* lib/e2k-global-catalog.c: (find_domain_dn): Check and see if 
+	dn_value->str[0] is nil before duplicating.
+
 2006-03-06  Sushma Rai  <rsushma@novell.com>
 
 	* storage/e-folder-exchange.c (e_folder_exchange_new_from_file): 

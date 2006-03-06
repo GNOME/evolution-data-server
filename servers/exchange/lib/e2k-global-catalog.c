@@ -1023,7 +1023,10 @@ find_domain_dn (char *domain)
 		g_string_append (dn_value, ",");
 		sub_domain = strtok (NULL, ".");
 	}
-	dn = g_strndup (dn_value->str, strlen(dn_value->str) - 1);
+	if (dn_value->str[0])
+		dn = g_strndup (dn_value->str, strlen(dn_value->str) - 1);
+	else 
+		dn = NULL;
 	g_string_free (dn_value, TRUE);
 	return dn;
 }
