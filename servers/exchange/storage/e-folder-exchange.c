@@ -504,12 +504,17 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const char *filename)
 		return NULL;
 
 	root = xmlDocGetRootElement (doc);
-	if (root == NULL || strcmp (root->name, "connector-folder") != 0)
+	if (root == NULL || strcmp (root->name, "connector-folder") != 0) {
+		xmlFreeDoc (doc);
 		return NULL;
+	}
 	version = xmlGetProp (root, "version");
-	if (!version)
+	if (!version) {
+		xmlFreeDoc (doc);
 		return NULL;
+	}
 	if (strcmp (version, "1") != 0) {
+		xmlFreeDoc (doc);
 		xmlFree (version);
 		return NULL;
 	}
@@ -566,6 +571,8 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const char *filename)
 	xmlFree (physical_uri);
 	xmlFree (internal_uri);
 	xmlFree (permanent_uri);
+	xmlFree (folder_size);
+	xmlFreeDoc (doc);
 
 	return folder;
 }

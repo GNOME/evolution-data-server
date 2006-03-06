@@ -1,8 +1,13 @@
 2006-03-06  Sushma Rai  <rsushma@novell.com>
 
+	* storage/e-folder-exchange.c (e_folder_exchange_new_from_file): 
+	Freeing xml doc and xml property. See #329251.
+
+2006-03-06  Sushma Rai  <rsushma@novell.com>
+
 	* storage/exchange-oof.c (exchange_oof_get): Initialize variables.
 	
-	* lib/e2k-context.c (e2k_context_fba): Similar. See #329251.
+	* lib/e2k-context.c (e2k_context_fba): Similar. See #329251. 
 
 2006-03-06  Sushma Rai  <rsushma@novell.com>
 

@@ -582,6 +582,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 		/* We won */
 		*result = E2K_AUTOCONFIG_OK;
 		href = xmlGetProp (node, "href");
+		g_free (ac->home_uri);
 		ac->home_uri = g_strdup (href);
 		xmlFree (href);
 	} else
@@ -715,11 +716,13 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 			prop = xmlGetProp (node, "src");
 			if (prop && strstr (prop, "public") && node->parent) {
 				node = node->parent;
+				xmlFree (prop);
 				prop = xmlGetProp (node, "href");
 				if (prop) {
 					euri = e2k_uri_new (prop);
 					ac->pf_server = g_strdup (euri->host);
 					e2k_uri_free (euri);
+					xmlFree (prop);
 				}
 				break;
 			}

@@ -1410,7 +1410,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		return NULL;
 	}
 
-	e2k_autoconfig_set_password (ac, g_strdup (pword));
+	e2k_autoconfig_set_password (ac, pword);
 
  try_connect_again:
 	account->priv->ctx = e2k_autoconfig_get_context (ac, NULL, &result);
