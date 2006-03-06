@@ -1,5 +1,11 @@
 2006-03-06  Sushma Rai  <rsushma@novell.com>
 
+	* storage/exchange-oof.c (exchange_oof_get): Initialize variables.
+	
+	* lib/e2k-context.c (e2k_context_fba): Similar. See #329251.
+
+2006-03-06  Sushma Rai  <rsushma@novell.com>
+
 	* lib/e2k-autoconfig.c (e2k_autoconfig_get_context): Freeing old value
 	of home_uri beofre storing the new value. 
 	(e2k_autoconfig_check_exchange): Freeing xml property. See #329251.

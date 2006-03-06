@@ -532,7 +532,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 {
 	static gboolean in_fba_auth = FALSE;
 	int status, len;
-	char *body;
+	char *body = NULL;
 	char *action, *method, *name, *value;
 	xmlDoc *doc = NULL;
 	xmlNode *node;

@@ -74,7 +74,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 {
 	E2kContext *ctx;
 	E2kHTTPStatus status;
-	char *url, *body, *p, *checked, *ta_start, *ta_end;
+	char *url, *body = NULL, *p = NULL, *checked, *ta_start, *ta_end;
 	int len;
 
 	ctx = exchange_account_get_context (account);
