@@ -1,5 +1,14 @@
 2006-03-06  Sushma Rai  <rsushma@novell.com>
 
+	* lib/e2k-autoconfig.c (e2k_autoconfig_get_context): Freeing old value
+	of home_uri beofre storing the new value. 
+	(e2k_autoconfig_check_exchange): Freeing xml property. See #329251.
+
+	* storage/exchange-account.c (exchange_account_connect): Not 
+	duplicating password string. See #329251.
+
+2006-03-06  Sushma Rai  <rsushma@novell.com>
+
 	* storage/exchange-esource.c (is_offline): Freeing GconfValue,
 	See #329251.
  
