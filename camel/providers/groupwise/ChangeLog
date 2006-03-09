@@ -1,3 +1,14 @@
+2006-03-09  parthasarathi susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-store.c: 
+	(camel_groupwise_store_connected):
+	(check_for_connection):
+	check if the status is online before trying to connect
+	to server. 
+
+	* camel-groupwise-folder.c: (gw_update_cache):
+	assert lock, before continuing further.
+
 2006-01-31  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 329214

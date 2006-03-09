@@ -1305,11 +1305,7 @@ camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex)
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL
 	    && camel_service_connect ((CamelService *)store, ex))
 		return TRUE;
-
-	if (!camel_exception_is_set (ex))
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				_("You must be working online to complete this operation"));
-
+	/*Not online, so return FALSE*/
 	return FALSE;
 }
 
