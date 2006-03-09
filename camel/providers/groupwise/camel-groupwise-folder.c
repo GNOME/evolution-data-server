@@ -1022,11 +1022,13 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 	int total_items = g_list_length (item_list), i=0;
 	
 	/*Assert lock*/
+	CAMEL_SERVICE_ASSERT_LOCKED (gw_store, connect_lock);
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
 		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
-		camel_folder_change_info_free (changes);
+		if (changes)
+			camel_folder_change_info_free (changes);
 		return;
 	}
 	
