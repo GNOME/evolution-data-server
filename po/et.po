@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-26 07:13+0100\n"
-"PO-Revision-Date: 2006-02-24 09:52+0200\n"
+"PO-Revision-Date: 2006-03-10 20:54+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1774,6 +1774,7 @@ msgstr "Sõnumite sünkroniseerimine kaustast '%s' kettale"
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr ""
+"Autonoomse režiimi päevikusse pole kausta `%s' kohta võimalik kirjutada: %s"
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
@@ -2179,11 +2180,12 @@ msgstr "Tõrge sertifikaadi importimisel"
 
 #: ../camel/camel-smime-context.c:597
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
+msgstr "Sertifikaat on ainus sõnum, sertifikaate pole võimalik verifitseerida"
 
 #: ../camel/camel-smime-context.c:600
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
+"Sertifikaat on ainus sõnum, sertifikaadid on imporditud ja verifitseeritud"
 
 #: ../camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2795,13 +2797,13 @@ msgstr "Sõnumit pole võimalik saata: %s"
 #: ../camel/providers/hula/camel-hula-provider.c:46
 #: ../camel/providers/imap/camel-imap-provider.c:42
 msgid "Checking for New Mail"
-msgstr "Uute kirjade kontroll"
+msgstr "Uute sõnumite kontroll"
 
 #: ../camel/providers/hula/camel-hula-provider.c:48
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "_Kontrolli uusi sõnumeid kõikides kaustades"
+msgstr "Uut_e sõnumite _kontrollimine kõikides kaustades"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
@@ -2813,7 +2815,7 @@ msgstr "Ühendus serveriga"
 #: ../camel/providers/imap/camel-imap-provider.c:50
 #: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Use custom command to connect to server"
-msgstr "_Kohandatud käsu kasutamine serveriga ühendumiseks"
+msgstr "Ko_handatud käsu kasutamine serveriga ühendumiseks"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
@@ -2832,13 +2834,13 @@ msgstr "Kaustad"
 #: ../camel/providers/imap/camel-imap-provider.c:58
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
 msgid "_Show only subscribed folders"
-msgstr "_Näita ainult tellitud kaustu"
+msgstr "Näidatakse ainult _tellitud kaustu"
 
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:52
 msgid "O_verride server-supplied folder namespace"
-msgstr "Serveri pakutava kaustade nimeruumi asemel enda _oma kasutamine"
+msgstr "Ser_veri pakutava kaustade nimeruumi asemel kasutatakse enda oma"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
 #: ../camel/providers/imap/camel-imap-provider.c:62
@@ -2974,17 +2976,17 @@ msgstr "Tõrge %s puhverdamisel: %s"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "_Rakenda filtreid Sisendkasti uutele sõnumitele"
+msgstr "_Filtrite rakendamine Sisendkasti uutele sõnumitele"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Check new messages for _Junk contents"
-msgstr "Kontrolli, kas uued sõnumid on _Rämpspost"
+msgstr "_Rämpspostikontroll uutele sõnumitele"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:62
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Rämpssõnumeid kontrollitakse ainult _Sisendkaustas"
+msgstr "Räm_pssõnumeid kontrollitakse ainult Sisendkasti kaustas"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
@@ -4106,7 +4108,7 @@ msgstr "Kausta ei leitud: %s"
 #: ../camel/providers/nntp/camel-nntp-summary.c:316
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr "%s: uute kirjade skannimine"
+msgstr "%s: Uute sõnumite skannimine"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:227
 #, c-format
@@ -4129,7 +4131,7 @@ msgstr "Tõrge toimingu läbiviimisel: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:247
 msgid "Retrieving POP summary"
-msgstr "Võtan vastu POP kokkuvõtet"
+msgstr "POP kokkuvõtte vastuvõtmine"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:266
 #, c-format
@@ -4138,19 +4140,19 @@ msgstr "POP kokkuvõtet pole võimalik hankida: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:309
 msgid "Expunging deleted messages"
-msgstr "Hävitan kustutatud sõnumid"
+msgstr "Kustutatud sõnumite hävitamine"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:405
 #, c-format
 msgid "No message with uid %s"
-msgstr "Sõnumit uid'iga %s ei ole"
+msgstr "Sõnumit uid-iga %s ei ole"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
 #: ../camel/providers/pop3/camel-pop3-folder.c:412
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "POP sõnumi %d vastuvõtt"
+msgstr "POP sõnumi %d vastuvõtmine"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:502
 msgid "Unknown reason"
@@ -4163,7 +4165,7 @@ msgstr "Jäta sõnumid serverisse"
 #: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "Delete after %s day(s)"
-msgstr "Kustuta %s päeva möödumisel"
+msgstr "Kustutada %s päeva möödumisel"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Disable support for all POP3 extensions"
@@ -4191,6 +4193,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
+"See valik loob ühenduse POP serveriga kasutades krüptitud parooli üle APOP "
+"protokolli. See ei pruugi paljude kasutajate puhul töötada isegi "
+"serveritega, mis väidavad ennast seda protokolli toetavat."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:202
 #, c-format
@@ -4322,7 +4327,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "Posti edastamiseks võigus asuvale mailhub'ile SMTP protokolli abil."
+msgstr "Posti edastamiseks võrgus asuvale mailhub'ile SMTP protokolli abil."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -4399,7 +4404,7 @@ msgstr "Nõutud toimingut ei rakendatud: kirjakastil on lubamatu nimi"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr ""
+msgstr "Alusta sõnumi sisestamist; lõpetamiseks kasuta <CRLF>.<CRLF>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Transaction failed"
@@ -4407,7 +4412,7 @@ msgstr "Tõrge transaktsioonil"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:204
 msgid "A password transition is needed"
-msgstr ""
+msgstr "Parooli on tarvis siirdada"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "Authentication mechanism is too weak"
@@ -5029,7 +5034,7 @@ msgstr "Määratud tüüp pole selle salvesti poolt toetatud"
 
 #: ../servers/exchange/storage/e-storage.c:578
 msgid "The specified folder cannot be modified or removed"
-msgstr ""
+msgstr "Määratud kausta pole võimalik muuta ega eemaldada"
 
 #: ../servers/exchange/storage/e-storage.c:580
 msgid "Cannot make a folder a child of one of its descendants"
@@ -5078,7 +5083,7 @@ msgstr "Mustandid"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Journal"
-msgstr ""
+msgstr "Päevik"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Notes"
