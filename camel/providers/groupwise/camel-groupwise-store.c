@@ -267,8 +267,11 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
+/*	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 	     (service->status == CAMEL_SERVICE_DISCONNECTED)) 
+		return FALSE; */
+	
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return FALSE;
 
 	if (!priv) {
@@ -592,10 +595,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		return NULL;
 	}
 	g_free (folder_dir);
-
+	
 	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder_name);
 	if (si) {
-		camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, NULL);
+		total = si->total;
 		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
 	}
 
@@ -668,6 +671,11 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 
 	return folder;
+}
+
+void 
+gw_store_reload_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+{
 }
 
 CamelFolderInfo *
@@ -754,10 +762,11 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	if (e_gw_container_get_is_shared_by_me (container))
 		fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
-	if (type == E_GW_CONTAINER_TYPE_INBOX) {
+	/*if (type == E_GW_CONTAINER_TYPE_INBOX) {
 		fi->total = -1;
 		fi->unread = -1;
-	} else	if (type == E_GW_CONTAINER_TYPE_TRASH) {
+	} else	if (type == E_GW_CONTAINER_TYPE_TRASH) {*/
+	if (type == E_GW_CONTAINER_TYPE_TRASH) {
 		fi->total = e_gw_container_get_total_count (container);
 		fi->unread = 0;
 	}else {

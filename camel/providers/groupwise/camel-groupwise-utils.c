@@ -443,7 +443,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		camel_data_wrapper_write_to_stream(dw, (CamelStream *)content);
 		buffer = g_malloc0 (content->buffer->len+1);
 		buffer = memcpy (buffer, content->buffer->data, content->buffer->len);
-		
+
 		if (!strcmp(content_type, "text/plain")) {
 			e_gw_item_set_content_type (item, content_type);				
 			e_gw_item_set_message (item, buffer);

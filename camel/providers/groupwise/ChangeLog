@@ -1,3 +1,15 @@
+2006-03-11  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_refresh_info):
+	reload folder if there is no content in it.
+
+	* camel-groupwise-store.c: 
+	(groupwise_connect): Dont check for disconnected state while 
+	connecting.
+	(groupwise_get_folder): set the correct total count so that 
+	we get the actual progress on each folder when downloading 
+	mail headers the first time.	
+
 2006-03-09  parthasarathi susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-store.c: 
