@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-11 22:23+0100\n"
-"PO-Revision-Date: 2006-03-12 00:53-0300\n"
+"PO-Revision-Date: 2006-03-12 01:03-0300\n"
 "Last-Translator: Afonso Celso Medina <afmedina@uol.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -2633,7 +2633,6 @@ msgstr "Não foi possível carregar resumo para %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
 #: ../camel/providers/imap/camel-imap-folder.c:2375
 #: ../camel/providers/imap/camel-imap-folder.c:2445
-#, fuzzy, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obtendo informação de resumo para novas mensagens em %s"
 
@@ -2873,12 +2872,10 @@ msgid "Hula"
 msgstr "Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:77
-#, fuzzy
 msgid "For accessing Hula servers"
-msgstr "Para acesssar servidores Hula"
+msgstr "Para acessar servidores Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
-#, fuzzy
 msgid "This option will connect to the Hula server using a plaintext password."
 msgstr ""
 "Esta opção estabelelece conexão com o servidor Hula usando uma senha em "
@@ -2943,7 +2940,6 @@ msgstr "A pasta foi destruída e recriada no servidor."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:634
-#, fuzzy, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Procurando por mensagens alteradas em %s"
 
@@ -3340,7 +3336,6 @@ msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "Impossível obter pasta `%s' no servidor IMAP %s: Desconhecido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:884
-#, fuzzy, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr ""
 "Impossível obter informação de LIST para o padrão `%s' no servidor IMAP %s: %s"
@@ -3530,7 +3525,6 @@ msgid "Local delivery"
 msgstr "Entrega local"
 
 #: ../camel/providers/local/camel-local-provider.c:73
-#, fuzzy
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -4925,7 +4919,6 @@ msgid "Address _Book:"
 msgstr "Catálogo de _Endereços:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-#, fuzzy
 msgid "C_ategory:"
 msgstr "C_ategoria"
 
@@ -4955,7 +4948,6 @@ msgid "_Edit %s"
 msgstr "_Editar %s"
 
 #: ../libedataserverui/e-name-selector-list.c:480
-#, fuzzy, c-format
 msgid "_Delete %s"
 msgstr "_Remover %s"
 
