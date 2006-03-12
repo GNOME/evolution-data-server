@@ -1,16 +1,16 @@
 # Brazilian Portuguese translation of Evolution Data Server.
-# Copyright (C) 2003,2004,2005 Free Software Foundation, Inc.
+# Copyright (C) 2003-2006 Free Software Foundation, Inc.
 # Gustavo Maciel Dias Vieira <gustavo@sagui.org>, 2003,2004.
 # Afonso Celso Medina <afmedina@uol.com.br>, 2005.
-# 
+# Alexandre Folle de Menezes <afmenez@terra.com.br>, 2006
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-11 22:23+0100\n"
-"PO-Revision-Date: 2006-03-12 01:03-0300\n"
-"Last-Translator: Afonso Celso Medina <afmedina@uol.com.br>\n"
+"POT-Creation-Date: 2006-03-11 14:12+0100\n"
+"PO-Revision-Date: 2006-03-11 15:40-0300\n"
+"Last-Translator: Alexandre Folle de Menezes <afmenez@terra.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2633,6 +2633,7 @@ msgstr "Não foi possível carregar resumo para %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
 #: ../camel/providers/imap/camel-imap-folder.c:2375
 #: ../camel/providers/imap/camel-imap-folder.c:2445
+#, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obtendo informação de resumo para novas mensagens em %s"
 
@@ -2727,8 +2728,7 @@ msgstr "Senha"
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
-"Esta opção estabelelecerá uma conexão com o servidor GroupWise utilizando "
-"uma senha em formato texto."
+"Esta opção conectará com o servidor GroupWise utilizando uma senha em texto aberto."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 msgid "Host or user not available in url"
@@ -2803,9 +2803,9 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
-"Você excedeu o limite de armazenamento da sua conta. Suas mensagens estão "
-"aguardando em sua Caixa de saída. Envie novamente pressionando Enviar/Receber"
-"depois de remover/arquivar algumas de suas mensagens.\n"
+"Você estendeu o limite de armazenamento desta conta. Suas mensagens serão "
+"enfileiradas na sua caixa de saída.  Re-envie apertando Enviar/Receber depois "
+"de remover/arquivar algumas das suas mensagens.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:218
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -2873,13 +2873,11 @@ msgstr "Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:77
 msgid "For accessing Hula servers"
-msgstr "Para acessar servidores Hula"
+msgstr "Para acesssar servidores Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr ""
-"Esta opção estabelelece conexão com o servidor Hula usando uma senha em "
-"texto simples."
+msgstr "Esta opção conectará com o servidor Hula usando uma senha em texto aberto."
 
 #: ../camel/providers/imap/camel-imap-command.c:223
 #: ../camel/providers/imap/camel-imap-command.c:265
@@ -2940,6 +2938,7 @@ msgstr "A pasta foi destruída e recriada no servidor."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:634
+#, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Procurando por mensagens alteradas em %s"
 
@@ -3028,9 +3027,7 @@ msgstr "Para ler e armazenar correio em servidores IMAP."
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Esta opção estabelelece conexão com o servidor IMAP usando uma senha em "
-"texto claro."
+msgstr "Esta opção conectará com o servidor IMAP usando uma senha em texto aberto."
 
 #: ../camel/providers/imap/camel-imap-store.c:447
 #: ../camel/providers/imap4/camel-imap4-store.c:215
@@ -3303,9 +3300,7 @@ msgstr "Para ler e armazenar correio em servidores IMAPv4rev1."
 #: ../camel/providers/imap4/camel-imap4-provider.c:90
 msgid ""
 "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr ""
-"Esta opção estabelelece uma conexão com o servidor IMAPv4rev1 usando uma "
-"senha em texto claro."
+msgstr "Esta opção conectará com o servidor IMAPv4rev1 usando uma senha em texto aberto."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:486
 #, c-format
@@ -3336,9 +3331,9 @@ msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "Impossível obter pasta `%s' no servidor IMAP %s: Desconhecido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:884
+#, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
-msgstr ""
-"Impossível obter informação de LIST para o padrão `%s' no servidor IMAP %s: %s"
+msgstr "Impossível obter informação de LIST para o padrão `%s' no servidor IMAP %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:886
 #: ../camel/providers/imap4/camel-imap4-store.c:1559
@@ -3529,7 +3524,7 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Para buscar (mover) correio local de filas no formato padrão mbox para "
+"Para buscar (mover) correio local de repositórios no formato padrão mbox para "
 "pastas gerenciadas pelo Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:87
@@ -4044,10 +4039,8 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
-"This option will authenticate with the NNTP server using a plaintext "
-"password."
-msgstr ""
-"Esta opção autenticará com o servidor NNTP usando uma senha em texto puro."
+"This option will authenticate with the NNTP server using a plaintext password."
+msgstr "Esta opção autenticará com o servidor NNTP usando uma senha em texto aberto."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:219
 #, c-format
@@ -4219,8 +4212,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"Esta opção estabelelece uma conexão com o servidor POP usando uma senha em "
-"texto puro. Esta é a única opção suportada por vários servidores POP."
+"Esta opção conectará com o servidor POP usando uma senha em texto aberto. Esta "
+"é a única opção suportada por muitos servidores POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid ""
@@ -4920,7 +4913,7 @@ msgstr "Catálogo de _Endereços:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
 msgid "C_ategory:"
-msgstr "C_ategoria"
+msgstr "C_ategoria:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
@@ -4939,7 +4932,7 @@ msgstr "_Pesquisar:"
 #: ../libedataserverui/e-name-selector-entry.c:1997
 #, c-format
 msgid "E_xpand %s Inline"
-msgstr "E_xpandir %s Inline"
+msgstr "E_xpandir %s Em Linha"
 
 #. Edit Contact item
 #: ../libedataserverui/e-name-selector-entry.c:2013
@@ -4948,6 +4941,7 @@ msgid "_Edit %s"
 msgstr "_Editar %s"
 
 #: ../libedataserverui/e-name-selector-list.c:480
+#, c-format
 msgid "_Delete %s"
 msgstr "_Remover %s"
 
