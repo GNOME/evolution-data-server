@@ -414,11 +414,13 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @ecal: 
-@uid: 
+@id: 
 @start: 
 @end: 
 @alarms: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@uid: 
 
 
 <!-- ##### FUNCTION e_cal_create_object ##### -->

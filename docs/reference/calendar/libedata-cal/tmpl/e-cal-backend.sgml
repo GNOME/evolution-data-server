@@ -395,9 +395,11 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@uid: 
+@id: 
 @old_object: 
 @object: 
+<!-- # Unused Parameters # -->
+@uid: 
 
 
 <!-- ##### FUNCTION e_cal_backend_notify_mode ##### -->

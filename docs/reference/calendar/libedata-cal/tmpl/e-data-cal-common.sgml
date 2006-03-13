@@ -89,6 +89,7 @@ e-data-cal-common
 @get_default_object: 
 @get_object: 
 @get_object_list: 
+@get_attachment_list: 
 @get_timezone: 
 @add_timezone: 
 @set_default_timezone: 

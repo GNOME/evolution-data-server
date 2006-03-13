@@ -232,3 +232,17 @@ e-book-marshal
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION e_book_view_start ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+<!-- ##### FUNCTION e_book_view_stop ##### -->
+<para>
+
+</para>
+
+@book_view: 
+

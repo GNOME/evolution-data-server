@@ -17,6 +17,12 @@ Miscellaneous utility functions for evolution-data-server.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### STRUCT tm ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION e_util_mkdir_hier ##### -->
 <para>
 
@@ -70,7 +76,7 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_strftime ##### -->
+<!-- ##### FUNCTION e_utf8_strftime ##### -->
 <para>
 
 </para>
@@ -82,7 +88,7 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_utf8_strftime ##### -->
+<!-- ##### FUNCTION e_strftime ##### -->
 <para>
 
 </para>

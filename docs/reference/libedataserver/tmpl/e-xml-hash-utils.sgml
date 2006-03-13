@@ -14,10 +14,7 @@ Functions for manipulating xml as a hash table.
 
 </para>
 
-<!-- ##### TYPEDEF EXmlHash ##### -->
-<para>
-
-</para>
+<!-- ##### SECTION Stability_Level ##### -->
 
 
 <!-- ##### ENUM EXmlHashType ##### -->
@@ -27,25 +24,6 @@ Functions for manipulating xml as a hash table.
 
 @E_XML_HASH_TYPE_OBJECT_UID: 
 @E_XML_HASH_TYPE_PROPERTY: 
-
-<!-- ##### ENUM EXmlHashStatus ##### -->
-<para>
-
-</para>
-
-@E_XMLHASH_STATUS_SAME: 
-@E_XMLHASH_STATUS_DIFFERENT: 
-@E_XMLHASH_STATUS_NOT_FOUND: 
-
-<!-- ##### USER_FUNCTION EXmlHashFunc ##### -->
-<para>
-
-</para>
-
-@key: 
-@value: 
-@user_data: 
-
 
 <!-- ##### FUNCTION e_xml_to_hash ##### -->
 <para>
@@ -74,6 +52,31 @@ Functions for manipulating xml as a hash table.
 </para>
 
 @hash: 
+
+
+<!-- ##### ENUM EXmlHashStatus ##### -->
+<para>
+
+</para>
+
+@E_XMLHASH_STATUS_SAME: 
+@E_XMLHASH_STATUS_DIFFERENT: 
+@E_XMLHASH_STATUS_NOT_FOUND: 
+
+<!-- ##### USER_FUNCTION EXmlHashFunc ##### -->
+<para>
+
+</para>
+
+@key: 
+@value: 
+@user_data: 
+
+
+<!-- ##### TYPEDEF EXmlHash ##### -->
+<para>
+
+</para>
 
 
 <!-- ##### FUNCTION e_xmlhash_new ##### -->

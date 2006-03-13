@@ -196,6 +196,8 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @query: 
+@ids: 
+<!-- # Unused Parameters # -->
 @uids: 
 
 
@@ -205,6 +207,8 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @query: 
+@id: 
+<!-- # Unused Parameters # -->
 @uid: 
 
 

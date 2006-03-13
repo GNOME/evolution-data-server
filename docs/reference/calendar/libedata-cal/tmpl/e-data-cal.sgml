@@ -159,9 +159,11 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @status: 
-@uid: 
+@id: 
 @old_object: 
 @object: 
+<!-- # Unused Parameters # -->
+@uid: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_alarm_discarded ##### -->

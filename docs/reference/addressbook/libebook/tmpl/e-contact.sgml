@@ -88,6 +88,11 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:book-uri ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:business-fax ##### -->
 <para>
 
@@ -570,6 +575,7 @@ A convenient way of accessing the contact information in EVCard objects.
 
 @E_CONTACT_UID: 
 @E_CONTACT_FILE_AS: 
+@E_CONTACT_BOOK_URI: 
 @E_CONTACT_FULL_NAME: 
 @E_CONTACT_GIVEN_NAME: 
 @E_CONTACT_FAMILY_NAME: 
