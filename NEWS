@@ -1,3 +1,17 @@
+Evolution-Data-Server 1.6.0, 2006-03-13
+----------------------------------------
+
+What is new since 1.4.0 :
+
+	- Memos backend
+	- CALDAV backend
+	- Improved Recurrence support for Calendar
+	- Lots of bug fixes and code clean-ups 
+
+Bug fixes since 1.4.0 :
+http://go-evolution.org/Evo2.6.0#Evolution-Data-Server
+
+
 Evolution-Data-Server 1.5.92, 2006-02-27
 ----------------------------------------
 Bug fixes since last release :

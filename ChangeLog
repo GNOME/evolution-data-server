@@ -1,3 +1,12 @@
+2006-03-13  Harish Krishnaswamy  <kharish@novell.com>
+
+	-------------
+	Release 1.6.0
+	-------------
+
+	* NEWS, configure.in: Release updates, bump
+	version, libtool numbers.
+	
 2006-03-02  Devashish Sharma <sdevashish@novell.com>
 
 	Fixes #303046
