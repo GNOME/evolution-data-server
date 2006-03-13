@@ -1,3 +1,14 @@
+2006-03-13  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* Fixes bug 152355
+
+	* camel-groupwise-folder.c: 
+	(groupwise_refresh_info): If the summary is corrupt, or is not
+	present, rebuild the summary again.
+	* camel-groupwise-store.[ch]:
+	(gw_store_reload_folder): This method rebuilds the folder summary
+	it the summary is somehow corrupted.
+
 2006-03-11  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c:

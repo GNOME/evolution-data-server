@@ -881,7 +881,8 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		/* We probably could not get the messages the first time. (get_folder) failed???!
 		 * so do a get_folder again. And hope that it works
 		 */
-		gw_store_reload_folder ((CamelStore *)gw_store, folder->name, 0, ex);
+		g_print("Reloading folder...something wrong with the summary....\n");
+		gw_store_reload_folder (gw_store, folder, 0, ex);
 	}
 }
 

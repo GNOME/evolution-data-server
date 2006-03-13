@@ -674,8 +674,112 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 }
 
 void 
-gw_store_reload_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guint32 flags, CamelException *ex)
 {
+	CamelGroupwiseStorePrivate *priv = gw_store->priv;
+	CamelGroupwiseSummary *summary;
+	char *container_id;
+	EGwConnectionStatus status;
+	GList *list = NULL;
+	gboolean done = FALSE;
+	const char *position = E_GW_CURSOR_POSITION_END; 
+	int count = 0, cursor, summary_count = 0;
+	CamelStoreInfo *si = NULL;
+	guint total;
+	
+	camel_exception_clear (ex);
+
+	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+
+	if (!camel_groupwise_store_connected (gw_store, ex)) {
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		return;
+	}
+	
+	if (!E_IS_GW_CONNECTION( priv->cnc)) {
+		if (!groupwise_connect (CAMEL_SERVICE((CamelStore*)gw_store), ex)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			return;
+		}
+	}
+	
+	container_id = 	g_strdup (g_hash_table_lookup (priv->name_hash, folder->full_name));
+
+	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder->name);
+	if (si) {
+		total = si->total;
+		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
+	}
+
+	summary = (CamelGroupwiseSummary *) folder->summary;
+	camel_folder_summary_clear (folder->summary);
+	camel_folder_summary_save (folder->summary);
+
+	summary_count = camel_folder_summary_count (folder->summary);
+	if(!summary_count || !summary->time_string) {
+		d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
+
+		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
+				"peek id recipient attachments distribution subject status options priority startDate created delivered size",
+				NULL,
+				&cursor);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			g_free (container_id);
+			return;
+		}
+
+		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
+
+		while (!done) {
+			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
+							      cursor, FALSE, 
+							      CURSOR_ITEM_LIMIT, position, &list);
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+				camel_folder_summary_clear (folder->summary);
+				camel_folder_summary_save (folder->summary);
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+				camel_operation_end (NULL);
+				camel_object_unref (folder);
+				g_free (container_id);
+				return;
+			}
+			
+			count += g_list_length (list);
+		
+			if (total > 0)
+				camel_operation_progress (NULL, (100*count)/total);
+			gw_update_summary (folder, list,  ex);
+			
+			if (!list)
+				done = TRUE;
+			g_list_foreach (list, (GFunc)g_object_unref, NULL);
+			g_list_free (list);
+			list = NULL;
+			position = E_GW_CURSOR_POSITION_CURRENT;
+      		}
+
+		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+
+		camel_operation_end (NULL);
+	} 
+
+	if (done) {
+		if (summary->time_string)
+			g_free (summary->time_string);
+		summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
+	}
+
+	camel_folder_summary_save (folder->summary);
+
+	gw_store->current_folder = folder;
+	
+	g_free (container_id);
+	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+	return;
 }
 
 CamelFolderInfo *
