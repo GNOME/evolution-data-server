@@ -1,5 +1,15 @@
 2006-03-13  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* Fixes bug 137357 & 156823
+	
+	* camel-groupwise-store.c:
+	(groupwise_auth_loop): 
+	(groupwise_connect): 
+	Ignore Offline status when service status is
+	Disconnected.
+
+2006-03-13  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	* Fixes bug 152355
 
 	* camel-groupwise-folder.c: 

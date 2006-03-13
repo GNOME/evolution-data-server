@@ -169,9 +169,9 @@ groupwise_compare_folder_name (gconstpointer a, gconstpointer b)
 static gboolean
 groupwise_auth_loop (CamelService *service, CamelException *ex)
 {
-	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	CamelSession *session = camel_service_get_session (service);
 	CamelStore *store = CAMEL_STORE (service);
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
@@ -183,6 +183,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	else 
 		uri = g_strconcat ("http://", priv->server_name, ":", priv->port, "/soap", NULL);
 	service->url->passwd = NULL;
+	
 
 	while (!authenticated) {
 		if (errbuf) {
@@ -192,6 +193,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 			service->url->passwd = NULL;
 		}
 		
+	
 		if (!service->url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
 			char *prompt;
 			
@@ -268,10 +270,9 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	d("in groupwise store connect\n");
 	
 /*	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
-	     (service->status == CAMEL_SERVICE_DISCONNECTED)) 
+	     (service->status == CAMEL_SERVICE_DISCONNECTED))
 		return FALSE; */
-	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+	if (service->status == CAMEL_SERVICE_DISCONNECTED)
 		return FALSE;
 
 	if (!priv) {
@@ -293,7 +294,9 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		return FALSE;
 	}
 	
+	
 	service->status = CAMEL_SERVICE_CONNECTED;
+	((CamelOfflineStore *) store)->state = CAMEL_OFFLINE_STORE_NETWORK_AVAIL;
 
 	if (!e_gw_connection_get_version (priv->cnc)) {
 		camel_session_alert_user(session, 
@@ -1110,6 +1113,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	if (top && groupwise_is_system_folder (top)) 
 		return groupwise_build_folder_info (groupwise_store, NULL, top );
 
+			
 	/*
 	 * Thanks to Michael, for his cached folders implementation in IMAP
 	 * is used as is here.
@@ -1141,6 +1145,12 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {
+		if (!priv->cnc) {
+			if (groupwise_connect ((CamelService *)store, ex)) {
+				g_warning ("Could connect!!!\n");
+			} else 
+				g_warning ("Could not connect..failure connecting\n");
+		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
 			groupwise_store->list_loaded = TRUE;
 			groupwise_folders_sync (groupwise_store, ex);
@@ -1416,8 +1426,9 @@ gboolean
 camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex)
 {
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL
-	    && camel_service_connect ((CamelService *)store, ex))
+	    && camel_service_connect ((CamelService *)store, ex)) {
 		return TRUE;
+	}
 	/*Not online, so return FALSE*/
 	return FALSE;
 }
