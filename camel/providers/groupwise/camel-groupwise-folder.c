@@ -85,7 +85,7 @@ static void gw_update_all_items ( CamelFolder *folder, GList *item_list, CamelEx
 static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item);
 static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body);
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
-static void gw_update_cache ( CamelFolder *folder, GList *item_list,CamelException *ex);
+static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelException *ex, gboolean uid_flag);
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
 
 
@@ -796,7 +796,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 			last_element = g_list_last (item_list);
 			if (items_full_list) {
 				last_element->next = items_full_list;
-				items_full_list->prev = item_list;
+				items_full_list->prev = last_element;
 			}
 			items_full_list = item_list;
 		}
@@ -807,7 +807,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	/* Take out only the first part in the list until the @ since it is guaranteed
 	   to be unique only until that symbol */
 
-	if (items_full_list) {
+	/*if (items_full_list) {
 		int i;
 		item_list = items_full_list;
 		
@@ -821,14 +821,10 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 		i = 0;	
 		while (((const char *)item_list->data)[i++]!='@');
 		((char *)item_list->data)[i-1] = '\0';
-	}
+	}*/
 	
+	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
 	gw_update_all_items (m->folder, items_full_list, ex);
-
-	if (items_full_list) {
-		g_list_foreach (items_full_list, (GFunc)g_free, NULL);	
-		g_list_free (items_full_list);
-	}
 }
 
 static void
@@ -947,6 +943,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 	t_str = g_strdup (time_string); 
+
+#if 0
 	/*Get the New Items*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 			"peek id",
@@ -973,17 +971,29 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	slist = NULL;
 
 	t_str = g_strdup (time_string);
-
+#endif
+	
 	/*Get those items which have been modifed*/
+
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 			"peek id",
 			&t_str, "Modified", NULL, NULL, -1, &slist);
-	g_free (t_str), t_str = NULL;
+	
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		goto end3;
 	}
 	
+	/* The storing of time-stamp to summary code below should be commented if the 
+	   above commented code is uncommented */
+
+	if (summary->time_string)
+		g_free (summary->time_string);
+
+	summary->time_string = g_strdup (t_str);
+
+	g_free (t_str), t_str = NULL;
+
 	for ( sl = slist ; sl != NULL; sl = sl->next) 
 		list = g_list_append (list, sl->data);
 
@@ -995,7 +1005,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	}
 
 	if (list) {
-		gw_update_cache (folder, list, ex);
+		gw_update_cache (folder, list, ex, FALSE);
 	}
 	
  
@@ -1035,7 +1045,7 @@ end1:
 }
 
 void
-gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex) 
+gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean uid_flag) 
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
@@ -1072,7 +1082,7 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
 	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
-		EGwItem *temp_item = (EGwItem *)item_list->data;
+		EGwItem *temp_item ;
 		EGwItem *item;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
@@ -1084,7 +1094,12 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex)
 		CamelMimeMessage *mail_msg = NULL;
 
 		exists = FALSE;
-		id = e_gw_item_get_id (temp_item);
+		
+		if (uid_flag == FALSE) {
+			temp_item = (EGwItem *)item_list->data;
+			id = e_gw_item_get_id (temp_item);
+		} else 
+			id = (char *) item_list->data;
 
 		camel_operation_progress (NULL, (100*i)/total_items);
 		cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
@@ -1632,39 +1647,48 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
 	GPtrArray *summary = camel_folder_get_summary (folder);
-	int index = 0, i;
+	int index = 0;
 	GList *temp;
-	char *uid;
 	CamelFolderChangeInfo *changes = NULL;
 	CamelMessageInfo *info; 
 	changes = camel_folder_change_info_new ();
 
+	item_list = g_list_reverse (item_list);
+	
 	/*item_ids : List of ids from the summary*/
 	while (index < summary->len) {
 		info = g_ptr_array_index (summary, index);
 		temp = NULL; 
-		i = 0;
-		uid = g_strdup (info->uid);
 		
-		while (((const char *)uid)[i++]!='@');
-		((char *)uid)[i-1] = '\0';
+		if (item_list) {
+			temp = g_list_find_custom (item_list, (const char *)info->uid, (GCompareFunc) strcmp);
+		}
 
-		temp = g_list_find_custom (item_list, (const char*)uid, (GCompareFunc) strcmp);
-		g_free (uid);
-		
 		if (!temp) {
 			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 			camel_folder_summary_remove_uid (folder->summary, info->uid);
 			camel_data_cache_remove (gw_folder->cache, "cache", info->uid, ex);
 			camel_folder_change_info_remove_uid (changes, info->uid);
 			CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
-		} else 
-			item_list = g_list_remove(item_list, temp);
-		
+		} else { 
+			item_list = g_list_delete_link (item_list, temp);
+		}
 		index ++;
 	}
-
+	
 	camel_object_trigger_event (folder, "folder_changed", changes);
+
+	if (item_list) {
+		CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
+
+		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+		gw_update_cache (folder, item_list, ex, TRUE);	
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		
+		g_list_foreach (item_list, (GFunc)g_free, NULL);	
+		g_list_free (item_list);
+	}
+	
 	camel_folder_free_summary (folder, summary);
 }
 

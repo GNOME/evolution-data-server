@@ -1,3 +1,14 @@
+2006-03-15  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c:
+	(gw_update_cache) (update_update)
+	(groupwise_refresh_folder) (gw_update_all_items):
+	- Use read_cursor ALL for identifying new messages and 
+	avoids getQM for getting new items. 
+	- Altered the code which keeps Evolution stay in sync,
+	with the rest of the clients by deleting 
+	externally deleted items 
+	
 2006-03-13  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* Fixes bug 137357 & 156823
