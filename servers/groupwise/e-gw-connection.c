@@ -2390,7 +2390,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
-	if (start_date && *start_date && !strcmp (message_list, "New")) {
+	if (start_date && *start_date && (((!strcmp (message_list, "New")) || (!strcmp (message_list, "Modified"))))) {
 		subparam = soup_soap_response_get_first_parameter_by_name (response, "startDate");
 		if (subparam) {
 			char *date;
