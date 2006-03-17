@@ -148,6 +148,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	case 53530: return E_GW_CONNECTION_STATUS_OTHER;
 	/* FIXME: 58652 should be changed with an enum.*/
 	case 58652: return 58652;
+	case 59922: return 59922; /*Very big attachment, get in chunks*/
 		/* FIXME: map all error codes */
 	}
 
@@ -2571,6 +2572,75 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
         return E_GW_CONNECTION_STATUS_OK;
 }
 
+/*
+ * 
+ */
+EGwConnectionStatus
+e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const char *id, int offset, int length, const char **attachment, int *attach_length, int *offset_r)
+{
+
+	SoupSoapMessage *msg;
+        SoupSoapResponse *response;
+        EGwConnectionStatus status;
+	SoupSoapParameter *param ;
+	char *buffer = NULL, *buf_length = NULL, *o_return = NULL;
+
+        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+
+	/* build the SOAP message */
+        msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAttachmentRequest");
+        if (!msg) {
+                g_warning (G_STRLOC ": Could not build SOAP message");
+                return E_GW_CONNECTION_STATUS_UNKNOWN;
+        }
+      
+
+	e_gw_message_write_string_parameter (msg, "id", NULL, id);
+	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
+	e_gw_message_write_int_parameter (msg, "length", NULL, length);
+
+	e_gw_message_write_footer (msg);
+
+        /* send message to server */
+        response = e_gw_connection_send_message (cnc, msg);
+        if (!response) {
+                g_object_unref (msg);
+                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+        }
+
+        status = e_gw_connection_parse_response_status (response);
+        if (status != E_GW_CONNECTION_STATUS_OK) {
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			reauthenticate (cnc);
+		g_object_unref (response);
+                g_object_unref (msg);
+		return status;
+	}
+
+	
+	param = soup_soap_response_get_first_parameter_by_name (response, "part") ;
+	if (param) {
+		buf_length =  soup_soap_parameter_get_property (param, "length") ;
+		o_return =  soup_soap_parameter_get_property (param, "offset") ;
+		buffer = soup_soap_parameter_get_string_value (param) ;
+	}
+        
+	if (buffer && buf_length) {
+		int len = atoi (buf_length) ;
+		*attachment = g_strdup (buffer);
+		*attach_length = len;
+		*offset_r = atoi (o_return);
+	}
+
+	/* free memory */
+	g_free (buffer) ;
+	g_free (buf_length) ;
+	g_free (o_return);
+        g_object_unref (response);
+	g_object_unref (msg);
+
+        return E_GW_CONNECTION_STATUS_OK;
+}
 
 EGwConnectionStatus
 e_gw_connection_add_item (EGwConnection *cnc, const char *container, const char *id)
