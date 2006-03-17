@@ -49,6 +49,8 @@
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 
+#include <libsoup/soup-misc.h>
+
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -58,6 +60,7 @@
 #define REMOVE_JUNK_ENTRY -1
 #define JUNK_FOLDER "Junk Mail"
 #define READ_CURSOR_MAX_IDS 500
+#define MAX_ATTACHMENT_SIZE 1*1024*1024   /*In bytes*/
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
@@ -1455,7 +1458,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	const char *uid = NULL;
 	gboolean is_text_html = FALSE;
 	gboolean is_text_html_embed = FALSE;
-	
+	gboolean is_base64_encoded = FALSE;
 
 	uid = e_gw_item_get_id(item);
 	cnc = cnc_lookup (priv);
@@ -1541,6 +1544,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			int len = 0;
 			CamelMimePart *part;
 			EGwItem *temp_item;
+			is_base64_encoded = FALSE;
 
 			if (attach->contentid && (is_text_html_embed != TRUE))
 				is_text_html_embed = TRUE;
@@ -1568,9 +1572,35 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				}
 				g_object_unref (temp_item);
 			} else {
-				status = e_gw_connection_get_attachment (cnc, 
-						attach->id, 0, -1, 
-						(const char **)&attachment, &len);
+				if (attach->size > MAX_ATTACHMENT_SIZE) {
+					long count = 0;
+					int i, t_len=0, offset=0, t_offset=0;
+					char *t_attach = NULL;
+					GString *gstr = g_string_new (NULL);
+					
+					count = (attach->size)/(1024*1024);
+					count++;
+					len = 0;
+					for (i = 0; i<count; i++) {
+						status = e_gw_connection_get_attachment_base64 (cnc, 
+								attach->id, t_offset, MAX_ATTACHMENT_SIZE, 
+								(const char **)&t_attach, &t_len, &offset);
+						if (status == E_GW_CONNECTION_STATUS_OK) {
+							gstr = g_string_append (gstr, t_attach);
+							t_offset = offset;
+							g_free (t_attach);
+							t_attach = NULL;
+							t_len = 0;
+						}
+					}
+					attachment = soup_base64_decode (gstr->str, &len);
+					g_string_free (gstr, TRUE);
+					is_base64_encoded = FALSE;
+				} else {
+					status = e_gw_connection_get_attachment (cnc, 
+							attach->id, 0, -1, 
+							(const char **)&attachment, &len);
+				}
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_warning ("Could not get attachment\n");
 					continue;
@@ -1613,6 +1643,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 					//camel_mime_part_set_filename(part, g_strdup(attach->name));
 					if (attach->contentType) {
+						if (is_base64_encoded)
+							camel_mime_part_set_encoding (part, CAMEL_TRANSFER_ENCODING_BASE64);
 						camel_mime_part_set_content(part, attachment, len, attach->contentType);
 						camel_content_type_set_param (((CamelDataWrapper *) part)->mime_type, "name", attach->name);
 					} else 
@@ -1872,15 +1904,16 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			if (delete_originals) 
 				camel_folder_delete_message(source, uids->pdata[index]);
-			/* Refresh the destination folder, if its not refreshed already */
-			if (gw_store->current_folder != destination || 
-				camel_folder_summary_count (destination->summary) == count)
-				camel_folder_refresh_info (destination, ex);
 		} else {
 			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
 		}
 		index ++;
 	}
+	/* Refresh the destination folder, if its not refreshed already */
+	if (gw_store->current_folder != destination || 
+			camel_folder_summary_count (destination->summary) == count)
+		camel_folder_refresh_info (destination, ex);
+
 	camel_folder_summary_touch (source->summary);
 	camel_folder_summary_touch (destination->summary);
 

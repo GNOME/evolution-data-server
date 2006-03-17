@@ -1,3 +1,9 @@
+2006-03-17  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:
+	(groupwise_folder_item_to_msg): If the message-body/attachment 
+	is larger than 1MB, have to get it in chunks(streaming).
+
 2006-03-15  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c:
