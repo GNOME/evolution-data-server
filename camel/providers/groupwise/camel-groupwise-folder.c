@@ -1006,7 +1006,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (gw_store->current_folder != folder) {
 		gw_store->current_folder = folder;
 	}
-
+	
 	if (list) {
 		gw_update_cache (folder, list, ex, FALSE);
 	}
@@ -1051,6 +1051,7 @@ void
 gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean uid_flag) 
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
+	CamelMessageInfo *pmi = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
@@ -1073,8 +1074,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
 		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
-		if (changes)
-			camel_folder_change_info_free (changes);
+		camel_folder_change_info_free (changes);
 		return;
 	}
 	
@@ -1105,13 +1105,6 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			id = (char *) item_list->data;
 
 		camel_operation_progress (NULL, (100*i)/total_items);
-		cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
-		if (cache_stream) {
-			camel_object_unref (cache_stream);
-			cache_stream = NULL;
-			i++;
-			continue;
-		} 
 
 		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status size", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -1121,9 +1114,16 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		/************************ First populate summary *************************/
 		mi = NULL;
-		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);
-		if (mi) {
+		pmi = NULL;
+		pmi = camel_folder_summary_uid (folder->summary, id);
+		if (pmi) {
 			exists = TRUE;
+			camel_message_info_ref (pmi);
+			mi = (CamelGroupwiseMessageInfo *)camel_message_info_clone(pmi);
+			/*
+			pmi->summary = folder->summary;
+			mi->info.summary = folder->summary;
+			*/
 		}
 
 		if (!exists) {
@@ -1223,18 +1223,26 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		}
+#if 0
 
 		if (exists)
 			g_free(mi->info.uid);
 		mi->info.uid = g_strdup(e_gw_item_get_id(item));
-		if (!exists)
+#endif
+		if (!exists) {
+			mi->info.uid = g_strdup (e_gw_item_get_id(item));
 			mi->info.size = e_gw_item_get_mail_size (item);	
-		if (!exists)
 			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
+		}
 		
 		if (exists) {
-			camel_folder_change_info_change_uid (changes, e_gw_item_get_id (item));
-			camel_message_info_free (&mi->info);
+			/*
+			camel_folder_change_info_change_uid (changes, mi->info.uid);
+			camel_message_info_free (&mi->info);*/
+			camel_folder_summary_remove(folder->summary, pmi);
+			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
+			camel_folder_change_info_add_uid (changes, mi->info.uid);
+			camel_message_info_free (pmi);
 		} else {
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
@@ -1248,11 +1256,11 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (!strcmp (folder->full_name, "Sent Items"))
 			exists = FALSE;
 		/******************** Begine Caching ************************/
-		mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
-		if (mail_msg)
-			camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
 		/* add to cache if its a new message*/
 		if (!exists) {
+			mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
+			if (mail_msg)
+				camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
 			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 			if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
 				if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
@@ -1678,7 +1686,7 @@ static void
 gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex) 
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
-	GPtrArray *summary = camel_folder_get_summary (folder);
+	GPtrArray *summary = NULL;
 	int index = 0;
 	GList *temp;
 	CamelFolderChangeInfo *changes = NULL;
@@ -1687,6 +1695,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 
 	item_list = g_list_reverse (item_list);
 	
+	summary = camel_folder_get_summary (folder);
 	/*item_ids : List of ids from the summary*/
 	while (index < summary->len) {
 		info = g_ptr_array_index (summary, index);

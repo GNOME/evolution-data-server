@@ -1,3 +1,9 @@
+2006-03-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c:(gw_udpate_cache):
+	Sync up changes made in the server with the local data, mainly
+	the read and unread data.
+
 2006-03-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:
