@@ -1,3 +1,11 @@
+2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* e-passwords.c: (ep_clear_passwords), (ep_forget_passwords),
+	(ep_remember_password), (ep_forget_password), (ep_get_password),
+	(ep_ask_password), (e_passwords_shutdown): Added support
+	gnome-key-ring and pass phrase.
+	* e-passwords.h: Added support for keyring.
+
 2006-03-05  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-entry.c (editor_closed_cb) : Fif for Bug 216073: Editing contacts

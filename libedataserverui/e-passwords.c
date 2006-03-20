@@ -52,6 +52,11 @@
 
 #include "e-passwords.h"
 #include "libedataserver/e-msgport.h"
+#include "libedataserver/e-url.h"
+
+#if WITH_GNOME_KEYRING
+#include <gnome-keyring.h>
+#endif
 
 #ifndef ENABLE_THREADS
 #define ENABLE_THREADS (1)
@@ -68,6 +73,8 @@ static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #define LOCK()
 #define UNLOCK()
 #endif
+
+#define d(x) x
 
 struct _EPassMsg {
 	EMsg msg;
@@ -185,6 +192,48 @@ ep_msg_send(EPassMsg *msg)
 }
 
 /* the functions that actually do the work */
+#if WITH_GNOME_KEYRING
+static void
+ep_clear_passwords(EPassMsg *msg)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+	GnomeKeyringResult result;
+	GList *matches = NULL, *tmp;	
+	char *path;
+	char *default_keyring = NULL;
+
+	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	d(g_print("Get Default %d\n", result));
+	
+	/* Not called at all */
+	path = g_strdup ("Evolution");
+	attributes = gnome_keyring_attribute_list_new ();
+
+	attribute.name = g_strdup ("application");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = path;
+	g_array_append_val (attributes, attribute);
+
+	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
+	d(g_print ("Find Items %d\n", result));
+		
+	gnome_keyring_attribute_list_free (attributes);
+
+	if (result) {
+		g_print ("Couldn't clear password");
+	} else {
+		for (tmp = matches; tmp; tmp = tmp->next) {
+			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
+			d(g_printf("Delete Items %d\n", result));
+		}
+	}
+	
+	g_free (default_keyring);
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}
+#else
 static void
 ep_clear_passwords(EPassMsg *msg)
 {
@@ -200,6 +249,7 @@ ep_clear_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
+#endif
 
 static gboolean
 free_entry (gpointer key, gpointer value, gpointer user_data)
@@ -210,6 +260,51 @@ free_entry (gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
+#if WITH_GNOME_KEYRING
+ep_forget_passwords(EPassMsg *msg)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+	GnomeKeyringResult result;
+	GList *matches = NULL, *tmp;	
+	char *path;
+	char *default_keyring = NULL;
+
+	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	d(g_print("Get Default %d\n", result));
+	
+	path = g_strdup ("Evolution");
+	attributes = gnome_keyring_attribute_list_new ();
+
+	attribute.name = g_strdup ("application");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = path;
+	g_array_append_val (attributes, attribute);
+
+
+	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
+	d(g_print ("Find Items %d\n", result));
+		
+	gnome_keyring_attribute_list_free (attributes);
+
+	if (result) {
+		g_print ("Couldn't clear password");
+	} else {
+		for (tmp = matches; tmp; tmp = tmp->next) {
+			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
+			d(g_printf("Delete Items %d\n", result));
+		}
+	}
+	
+	g_free (default_keyring);
+
+	/* free up the session passwords */
+	g_hash_table_foreach_remove (passwords, free_entry, NULL);
+
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}
+#else
 static void
 ep_forget_passwords(EPassMsg *msg)
 {
@@ -235,6 +330,7 @@ ep_forget_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
+#endif
 
 static char *
 password_path (const char *component_name, const char *key)
@@ -254,6 +350,60 @@ password_path (const char *component_name, const char *key)
 	return path;
 }
 
+#if WITH_GNOME_KEYRING
+static void
+ep_remember_password(EPassMsg *msg)
+{
+	gpointer okey, value;
+	int len, state, save;
+
+	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
+		/* add it to the on-disk cache of passwords */
+		GnomeKeyringAttributeList *attributes;
+		GnomeKeyringAttribute attribute;
+		GnomeKeyringResult result;
+		GList *pass = NULL, *tmp;	
+		EUri *uri = e_uri_new (okey);
+		int item_id;
+		
+		attributes = gnome_keyring_attribute_list_new ();
+
+		attribute.name = g_strdup ("user");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup (uri->user);
+		g_array_append_val (attributes, attribute);
+	
+		attribute.name = g_strdup ("server");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup (uri->host);
+		g_array_append_val (attributes, attribute);
+	 
+		attribute.name = g_strdup ("application");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup ("Evolution");
+		g_array_append_val (attributes, attribute);		
+		
+		result = gnome_keyring_item_create_sync (NULL, /* Use default keyring */
+						         GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
+				   			 msg->key, /* name */
+				   			 attributes, /* attribute list */
+				   			 value, /* password */
+				   			 TRUE, /* Update if already exists */
+				   			 &item_id);
+	
+		d(g_print("Remember %s: %d/%d\n", msg->key, result, item_id));
+		/* now remove it from our session hash */
+		g_hash_table_remove (passwords, msg->key);
+		g_free (okey);
+		g_free (value);
+		
+		e_uri_free (uri);
+	}
+
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}
+#else
 static void
 ep_remember_password(EPassMsg *msg)
 {
@@ -285,7 +435,72 @@ ep_remember_password(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
+#endif
 
+#if WITH_GNOME_KEYRING
+static void
+ep_forget_password (EPassMsg *msg)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+	GnomeKeyringResult result;
+	GList *matches = NULL, *tmp;	
+	char *path;
+	char *default_keyring = NULL;	
+	gpointer okey, value;
+	EUri *uri = e_uri_new (msg->key);
+
+	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
+		g_hash_table_remove (passwords, msg->key);
+		memset (value, 0, strlen (value));
+		g_free (okey);
+		g_free (value);
+	}
+
+	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	d(g_print("Get Default %d\n", result));
+	
+	attributes = gnome_keyring_attribute_list_new ();
+	attribute.name = g_strdup ("user");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup(uri->user);;
+	g_array_append_val (attributes, attribute);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attribute.name = g_strdup ("server");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup(uri->host);;
+	g_array_append_val (attributes, attribute);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	attribute.name = g_strdup ("application");
+	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+	attribute.value.string = g_strdup("Evolution");;
+	g_array_append_val (attributes, attribute);	
+
+	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
+	d(g_print ("Find Items %d\n", result));
+		
+	gnome_keyring_attribute_list_free (attributes);
+
+	if (result) {
+		g_print ("Couldn't clear password");
+	} else {
+		for (tmp = matches; tmp; tmp = tmp->next) {
+			g_print (("keyring = %s\n", ((GnomeKeyringFound *) tmp->data)->keyring));
+			if (!strcmp(msg->key, ((GnomeKeyringFound *) tmp->data)->keyring)) {
+				result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
+				d(g_printf("Delete Items %d\n", result));
+			}
+		}	
+	}
+	
+	g_free (default_keyring);
+
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}
+#else
 static void
 ep_forget_password (EPassMsg *msg)
 {
@@ -308,7 +523,63 @@ ep_forget_password (EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
+#endif
 
+#if WITH_GNOME_KEYRING
+ep_get_password (EPassMsg *msg)
+{
+	char *path, *passwd;
+	char *encoded = NULL;
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringAttribute attribute;
+	GnomeKeyringResult result;
+	GList *matches = NULL, *tmp;	
+
+	passwd = g_hash_table_lookup (passwords, msg->key);
+	if (passwd) {
+		msg->password = g_strdup(passwd);
+	} else {
+		EUri *uri = e_uri_new (msg->key);
+
+		attributes = gnome_keyring_attribute_list_new ();
+		attribute.name = g_strdup ("user");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup(uri->user);;
+		g_array_append_val (attributes, attribute);
+		printf("get %s %s\n", attribute.value.string, msg->key);
+
+		attributes = gnome_keyring_attribute_list_new ();
+		attribute.name = g_strdup ("server");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup(uri->host);;
+		g_array_append_val (attributes, attribute);
+		
+		attributes = gnome_keyring_attribute_list_new ();
+		attribute.name = g_strdup ("application");
+		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+		attribute.value.string = g_strdup("Evolution");
+		g_array_append_val (attributes, attribute);	
+
+		result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
+		d(g_print ("Find Items %d\n", result));
+			
+		gnome_keyring_attribute_list_free (attributes);
+
+		if (result) {
+			g_print ("Couldn't Get password %d\n", result);
+		} else {
+			/* FIXME: What to do if this returns more than one? */
+			for (tmp = matches; tmp; tmp = tmp->next) {
+					msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
+			}	
+		}
+		
+	}
+
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}
+#else
 static void
 ep_get_password (EPassMsg *msg)
 {
@@ -332,6 +603,7 @@ ep_get_password (EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
+#endif
 
 static void
 ep_add_password (EPassMsg *msg)
@@ -467,9 +739,16 @@ ep_ask_password(EPassMsg *msg)
 	/* static password, shouldn't be remembered between sessions,
 	   but will be remembered within the session beyond our control */
 	if (type != E_PASSWORDS_REMEMBER_NEVER) {
-		msg->check = gtk_check_button_new_with_mnemonic(type == E_PASSWORDS_REMEMBER_FOREVER
-								? _("_Remember this password")
-								: _("_Remember this password for the remainder of this session"));
+		if (msg->flags & E_PASSWORDS_PASSPHRASE) {
+			msg->check = gtk_check_button_new_with_mnemonic(type == E_PASSWORDS_REMEMBER_FOREVER
+									? _("_Remember this passphrase")
+									: _("_Remember this passphrase for the remainder of this session"));
+		} else {
+			msg->check = gtk_check_button_new_with_mnemonic(type == E_PASSWORDS_REMEMBER_FOREVER
+									? _("_Remember this password")
+									: _("_Remember this password for the remainder of this session"));
+			
+		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (msg->check), *msg->remember);
 		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 3);
 		if ((msg->flags & E_PASSWORDS_DISABLE_REMEMBER))
@@ -535,8 +814,9 @@ void
 e_passwords_shutdown (void)
 {
 	/* shouldn't need this really - everything is synchronous */
+#if !WITH_GNOME_KEYRING	
 	gnome_config_private_sync_file ("/Evolution");
-
+#endif
 	e_passwords_cancel();
 
 	if (passwords) {

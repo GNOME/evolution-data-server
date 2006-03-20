@@ -58,6 +58,7 @@ typedef enum {
 	E_PASSWORDS_REPROMPT = 1<<9,
 	E_PASSWORDS_ONLINE = 1<<10, /* only ask if we're online */
 	E_PASSWORDS_DISABLE_REMEMBER = 1<<11, /* disable the 'remember password' checkbox */
+	E_PASSWORDS_PASSPHRASE = 1<<12, /* We are asking a passphrase */
 } EPasswordsRememberType;
 
 char *      e_passwords_ask_password      (const char *title, 

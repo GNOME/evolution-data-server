@@ -811,7 +811,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 						"user: \"%s\""), name);
 		}
 		
-		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt,  gpg->need_id, CAMEL_SESSION_PASSWORD_SECRET, ex)) && !gpg->utf8) {
+		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt,  gpg->need_id, CAMEL_SESSION_PASSWORD_SECRET|CAMEL_SESSION_PASSPHRASE, ex)) && !gpg->utf8) {
 			char *opasswd = passwd;
 			
 			if ((passwd = g_locale_to_utf8 (passwd, -1, &nread, &nwritten, NULL))) {

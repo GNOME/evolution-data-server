@@ -1,5 +1,11 @@
 2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-gpg-context.c: (gpg_ctx_parse_status): Added flag to ask for
+	pass phrase.
+	* camel-session.h: Added the flag for passphrase.
+
+2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* providers/groupwise/camel-groupwise-store.c:
 	(groupwise_build_folder_info): Added flags for the system folders.
 

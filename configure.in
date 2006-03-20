@@ -331,6 +331,9 @@ AC_ARG_ENABLE(nss, [  --enable-nss=[yes,no,static]        Attempt to use Mozilla
 AC_ARG_ENABLE(smime, [ --enable-smime=[yes,no]            Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)],
 	enable_smime="$enableval", enable_smime="yes")
 
+AC_ARG_ENABLE(gnome-keyring, [ --enable-gnome-keyring=[yes,no]            Attempt to use Gnome Keyring for storing passwords (this requires --enable-gnome-keyring)],
+	enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
+
 AC_ARG_WITH(nspr-includes, [  --with-nspr-includes=PREFIX	Location of Mozilla nspr4 includes.],
 	with_nspr_includes="$withval")
 
@@ -342,6 +345,16 @@ AC_ARG_WITH(nss-includes, [  --with-nss-includes=PREFIX 	Location of Mozilla nss
 
 AC_ARG_WITH(nss-libs, [  --with-nss-libs=PREFIX         	Location of Mozilla nss3 libs.],
 	with_nss_libs="$withval")
+
+if test "x${enable_gnome_keyring}" = "xyes"; then
+	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1, with_gnome_keyring="yes", with_gnome_keyring="no");
+	if test "x$with_gnome_keyring" = "xyes"; then
+		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])	
+		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
+	else
+		GNOME_KEYRING_REQUIREMENT=""
+	fi
+fi
 
 if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}" || test "x${enable_nss}" = "xstatic"; then
@@ -1142,7 +1155,7 @@ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUA
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1376,6 +1389,7 @@ echo "\
 fi
 echo "\
 	Kerberos 4/5:     $msg_krb4/$msg_krb5
+	Gnome Keyring:    $enable_gnome_keyring/$with_gnome_keyring
 	SSL support:      $msg_ssl
 	SMIME support:    $msg_smime
 	IPv6 support:     $msg_ipv6
