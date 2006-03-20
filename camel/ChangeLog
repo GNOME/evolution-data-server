@@ -1,3 +1,11 @@
+2006-03-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 272307
+
+	* camel-mime-utils.c: (header_decode_mailbox):
+	Do not decode_lwsp if there is a space in mail id, just append it.
+	Also do not truncate address if addr is not NULL.
+
 2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-gpg-context.c: (gpg_ctx_parse_status): Added flag to ask for

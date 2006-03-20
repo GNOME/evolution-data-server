@@ -2247,7 +2247,7 @@ camel_content_type_unref(CamelContentType *ct)
 			g_free(ct->type);
 			g_free(ct->subtype);
 			g_free(ct);
-			ct= NULL;
+			ct = NULL;
 		} else {
 			ct->refcount--;
 		}
@@ -2449,7 +2449,7 @@ header_decode_mailbox(const char **in, const char *charset)
 				}
 			}
 			pre = header_decode_word (&inptr);
-			header_decode_lwsp(&inptr);
+			/*header_decode_lwsp(&inptr);*/
 		} else {
 			w(g_warning("broken address? %s", *in));
 		}
@@ -2508,10 +2508,10 @@ header_decode_mailbox(const char **in, const char *charset)
 					g_string_truncate(name, 0);
 					g_string_append(name, text);
 				}
-			} else {
+			}/* else {
 				g_string_append(name, text?text:addr->str);
 				g_string_truncate(addr, 0);
-			}
+			}*/
 			g_free(text);
 
 			/* or maybe that we've added up a bunch of broken bits to make an encoded word */
