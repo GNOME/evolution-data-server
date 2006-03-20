@@ -461,7 +461,15 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const char *parent_na
 		name = fi->full_name;
 	else
 		name++;
-	
+	if (!strcmp (folder_name, "Sent Items"))
+		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
+	else if (!strcmp (folder_name, "Mailbox"))
+		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
+	else if (!strcmp (folder_name, "Trash"))
+		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
+	else if (!strcmp (folder_name, "Junk Mail"))
+		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+		
 	fi->name = g_strdup(name);
 	return fi;
 }
