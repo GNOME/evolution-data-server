@@ -169,9 +169,9 @@ groupwise_compare_folder_name (gconstpointer a, gconstpointer b)
 static gboolean
 groupwise_auth_loop (CamelService *service, CamelException *ex)
 {
-	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	CamelSession *session = camel_service_get_session (service);
 	CamelStore *store = CAMEL_STORE (service);
+	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
@@ -267,8 +267,10 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	d("in groupwise store connect\n");
 	
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
-	     (service->status == CAMEL_SERVICE_DISCONNECTED)) 
+/*	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
+	     (service->status == CAMEL_SERVICE_DISCONNECTED))
+		return FALSE; */
+	if (service->status == CAMEL_SERVICE_DISCONNECTED)
 		return FALSE;
 
 	if (!priv) {
@@ -291,6 +293,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	}
 	
 	service->status = CAMEL_SERVICE_CONNECTED;
+	((CamelOfflineStore *) store)->state = CAMEL_OFFLINE_STORE_NETWORK_AVAIL;
 
 	if (!e_gw_connection_get_version (priv->cnc)) {
 		camel_session_alert_user(session, 
@@ -455,7 +458,16 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const char *parent_na
 		name = fi->full_name;
 	else
 		name++;
-	
+
+	if (!strcmp (folder_name, "Sent Items"))
+		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
+	else if (!strcmp (folder_name, "Mailbox"))
+		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
+	else if (!strcmp (folder_name, "Trash"))
+		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
+	else if (!strcmp (folder_name, "Junk Mail"))
+		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+		
 	fi->name = g_strdup(name);
 	return fi;
 }
@@ -595,7 +607,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder_name);
 	if (si) {
-		camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, NULL);
+		total = si->total;
 		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
 	}
 
@@ -754,10 +766,11 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	if (e_gw_container_get_is_shared_by_me (container))
 		fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
-	if (type == E_GW_CONTAINER_TYPE_INBOX) {
+/*	if (type == E_GW_CONTAINER_TYPE_INBOX) {
 		fi->total = -1;
 		fi->unread = -1;
-	} else	if (type == E_GW_CONTAINER_TYPE_TRASH) {
+	} else	if (type == E_GW_CONTAINER_TYPE_TRASH) {*/
+	if (type == E_GW_CONTAINER_TYPE_TRASH) {
 		fi->total = e_gw_container_get_total_count (container);
 		fi->unread = 0;
 	}else {
@@ -1028,6 +1041,12 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
 	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {
+		if (!priv->cnc) {
+			if (groupwise_connect ((CamelService *)store, ex)) {
+				g_warning ("Could connect!!!\n");
+			} else 
+				g_warning ("Could not connect..failure connecting\n");
+		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
 			groupwise_store->list_loaded = TRUE;
 			groupwise_folders_sync (groupwise_store, ex);
@@ -1305,10 +1324,6 @@ camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex)
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL
 	    && camel_service_connect ((CamelService *)store, ex))
 		return TRUE;
-
-	if (!camel_exception_is_set (ex))
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				_("You must be working online to complete this operation"));
 
 	return FALSE;
 }
