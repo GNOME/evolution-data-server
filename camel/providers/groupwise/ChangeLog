@@ -1,4 +1,9 @@
 2006-03-21  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_folder_get_message):
+	mark a message as read when seen for the first time.
+
+2006-03-21  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* camel-groupwise-utils.c: (do_multipart):
 		Remove unrefs which are actually not needed for a Datawrapper
