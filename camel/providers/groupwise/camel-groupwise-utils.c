@@ -432,7 +432,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	} else {
 		/*only message*/
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
-		CamelDataWrapper *dw = camel_data_wrapper_new ();
+		CamelDataWrapper *dw = NULL;
 		CamelContentType *type;
 		char *buffer = NULL;
 		char *content_type = NULL;
@@ -587,7 +587,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		CamelContentType *type;
 		CamelMimePart *part;
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
-		CamelDataWrapper *dw = camel_data_wrapper_new ();
+		CamelDataWrapper *dw = NULL;
 		const char *disposition, *filename;
 		char *buffer = NULL;
 		char *mime_type = NULL;
@@ -611,7 +611,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			const char *cid = NULL;
 			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
 			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
-			CamelDataWrapper *temp_dw = camel_data_wrapper_new ();
+			CamelDataWrapper *temp_dw = NULL;
 			if (temp_part) {
 				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));
@@ -628,8 +628,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				g_free (mime_type);
 			}
 			camel_object_unref (temp_content);
-			camel_object_unref (temp_dw);
-			camel_object_unref (dw);
 			continue;
 		} 
 		
@@ -653,6 +651,5 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		g_free (buffer);
 		g_free (mime_type);
 		camel_object_unref (content);
-		camel_object_unref (dw);
 	} /*end of for*/
 }

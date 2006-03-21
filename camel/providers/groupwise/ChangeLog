@@ -1,3 +1,9 @@
+2006-03-21  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-utils.c: (do_multipart):
+	Remove unrefs which are actually not needed for a Datawrapper got
+	from camel_medium_get_content_object()
+
 2006-03-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c:(gw_udpate_cache):
