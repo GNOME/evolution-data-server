@@ -662,9 +662,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			diff.changed &= folder->permanent_flags;
 
 			/* weed out flag changes that we can't sync to the server */
-			if (!diff.changed)
+			if (!diff.changed) {
 				camel_message_info_free(info);
-			else {
+				continue;
+			} else {
 				const char *uid = camel_message_info_uid (info);
 				if (diff.changed & CAMEL_MESSAGE_SEEN)
 					read_items = g_list_append (read_items, (char *)uid);
@@ -683,7 +684,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			}
 		}
 		camel_message_info_free (info);
-		info = NULL;
 	}
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 
