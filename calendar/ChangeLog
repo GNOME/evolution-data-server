@@ -1,3 +1,10 @@
+2006-03-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #334000
+	* libedata-cal/e-cal-backend.c:
+	(e_cal_backend_notify_object_removed): Check if
+	the query matches.
+
 2006-03-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #330974
