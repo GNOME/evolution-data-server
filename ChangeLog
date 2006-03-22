@@ -1,3 +1,7 @@
+2006-03-22  Tommi Vainikainen  <thv@iki.fi>
+
+	* configure.in (ALL_LINGUAS): Added Dzongkha (dz).
+
 2006-01-19  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Add substitution of @API_VERSION@ 
