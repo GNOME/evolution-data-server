@@ -1,4 +1,4 @@
-2006-03-20  Chenthill Palanisamy  <pchenthill@novell.com>
+2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #331146
 	* backends/file/e-cal-backend-file.c:
