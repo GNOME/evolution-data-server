@@ -2824,7 +2824,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 							   E_GW_ITEM (add_list->data), 
 							   ebgw->priv->categories_by_id);
 				if (enable_debug)
-					printf("contact email:%s, contact name:%s\n", e_contact_get(contact, E_CONTACT_EMAIL_1), e_contact_get(contact, E_CONTACT_GIVEN_NAME));
+					printf("contact email:%s, contact name:%s\n", (char *)e_contact_get(contact, E_CONTACT_EMAIL_1),(char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact, 
 					       E_CONTACT_BOOK_URI, 
 					       priv->original_uri);
@@ -2864,7 +2864,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 							   E_GW_ITEM (delete_list->data), 
 							   ebgw->priv->categories_by_id);
 				if (enable_debug)
-					printf("contact email:%s, contact name:%s\n", e_contact_get(contact, E_CONTACT_EMAIL_1), e_contact_get(contact, E_CONTACT_GIVEN_NAME));
+					printf("contact email:%s, contact name:%s\n", (char *) e_contact_get(contact, E_CONTACT_EMAIL_1), (char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact, 
 					       E_CONTACT_BOOK_URI, 
 					       priv->original_uri);
