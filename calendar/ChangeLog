@@ -1,5 +1,13 @@
 2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #331146
+	* backends/file/e-cal-backend-file.c:
+	(check_dup_uid), (add_component): Check if the 
+	component has a uid before try to search it in the 
+	cache.
+
+2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #323275
 	* libedata-cal/e-cal-backend-cache.c:
 	(e_cal_backend_cache_constructor): Register only

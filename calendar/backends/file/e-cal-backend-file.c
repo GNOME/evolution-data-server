@@ -399,12 +399,17 @@ check_dup_uid (ECalBackendFile *cbfile, ECalComponent *comp)
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
-	const char *uid;
+	const char *uid = NULL;
 	char *new_uid;
 
 	priv = cbfile->priv;
 
 	e_cal_component_get_uid (comp, &uid);
+
+	if (!uid) {
+		g_warning ("Checking for duplicate uid, the component does not have a valid UID skipping it\n");
+		return;
+	}
 
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data)
@@ -447,11 +452,17 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
-	const char *uid;
+	const char *uid = NULL;
 
 	priv = cbfile->priv;
 
 	e_cal_component_get_uid (comp, &uid);
+
+	if (!uid) {
+		g_warning ("The component does not have a valid UID skipping it\n");
+		return;
+	}
+		
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (e_cal_component_is_instance (comp)) {
 		const char *rid;
