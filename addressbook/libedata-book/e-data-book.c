@@ -912,7 +912,7 @@ e_data_book_construct (EDataBook                *book,
 
 	g_object_ref (source);
 
-	priv->backend   = backend;
+	priv->backend   = g_object_ref(backend);
 	priv->source    = source;
 }
 
@@ -965,6 +965,7 @@ e_data_book_dispose (GObject *object)
 		CORBA_exception_free (&ev);
 
 		g_object_unref (book->priv->source);
+		g_object_unref (book->priv->backend);
 		g_free (book->priv);
 		book->priv = NULL;
 	}
