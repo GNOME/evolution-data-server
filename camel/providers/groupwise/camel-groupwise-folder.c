@@ -118,7 +118,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 				_("Cannot get message: %s\n  %s"), uid, _("No such message"));
 		return NULL;
 	}
-	
+/*	
 	flags = camel_message_info_flags ((CamelMessageInfo*)mi);
 	if ((flags & CAMEL_MESSAGE_SEEN)!= 0) {
 		d(g_print ("Message read Earlier\n");)
@@ -127,7 +127,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 		message_read_now = TRUE;
 		d(g_print ("Message Read Now\n");)
 	}
-
+*/
 	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, ex);
 	stream = camel_stream_mem_new ();
 	if (cache_stream) {
@@ -155,7 +155,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 	camel_object_unref (stream);
 
 	if (msg != NULL) {
-		if (((CamelOfflineStore *) gw_store)->state != CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+/*		if (((CamelOfflineStore *) gw_store)->state != CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 			cnc = cnc_lookup (priv);
 			if (message_read_now) {
 				GList *read_items = NULL;
@@ -164,7 +164,7 @@ groupwise_folder_get_message( CamelFolder *folder,
 				g_list_free (read_items);
 				camel_message_info_set_flags ((CamelMessageInfo*)mi, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
 			}
-		}
+		}*/
 		camel_message_info_free (&mi->info);
 		return msg;
 	}
@@ -222,13 +222,13 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	
 end:
-	if (message_read_now) {
+/*	if (message_read_now) {
 		GList *read_items = NULL;
 		read_items = g_list_append (read_items, (char *)uid);
 		e_gw_connection_mark_read(cnc, read_items);
 		camel_message_info_set_flags ((CamelMessageInfo*)mi, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
 		g_list_free (read_items);
-	}
+	}*/
 
 	camel_message_info_free (&mi->info);
 	g_free (container_id);

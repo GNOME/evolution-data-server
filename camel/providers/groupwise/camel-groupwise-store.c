@@ -868,6 +868,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 				camel_folder_info_free (info);
 				info = NULL;
 			}
+
 			if (store->current_folder && strcmp (store->current_folder->full_name, info->full_name) == 0) {
 				g_print ("Syncing up %s\n", info->full_name);
 				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (store->current_folder))->sync(store->current_folder, FALSE, ex);
