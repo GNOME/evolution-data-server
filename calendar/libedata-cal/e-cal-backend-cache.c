@@ -235,7 +235,9 @@ e_cal_backend_cache_get_type (void)
                         0,
                         (GInstanceInitFunc) e_cal_backend_cache_init,
                 };
-		type = g_type_register_static (E_TYPE_FILE_CACHE, "ECalBackendCache", &info, 0);
+		/* Check if the type is already registered */
+		if (!(type = g_type_from_name ("ECalBackendCache")))
+			type = g_type_register_static (E_TYPE_FILE_CACHE, "ECalBackendCache", &info, 0);
 	}
 	g_static_mutex_unlock (&registering);
 
