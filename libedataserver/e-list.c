@@ -74,10 +74,11 @@ e_list_duplicate (EList *old)
 EIterator *
 e_list_get_iterator (EList *list)
 {
-	EIterator *iterator;
+	EIterator *iterator = NULL;
 	g_return_val_if_fail (list != NULL, NULL);
 	iterator = e_list_iterator_new(list);
-	list->iterators = g_list_append(list->iterators, iterator);
+	if (iterator)
+		list->iterators = g_list_append(list->iterators, iterator);
 	return iterator;
 }
 

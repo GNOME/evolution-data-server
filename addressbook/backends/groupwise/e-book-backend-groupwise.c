@@ -2330,6 +2330,8 @@ static EDataBookView *
 find_book_view (EBookBackendGroupwise *ebgw)
 {
 	EList *views = e_book_backend_get_book_views (E_BOOK_BACKEND (ebgw));
+	if (!views)
+		return NULL;
 	EIterator *iter = e_list_get_iterator (views);
 	EDataBookView *rv = NULL;
 
@@ -2348,28 +2350,28 @@ find_book_view (EBookBackendGroupwise *ebgw)
 
 static void
 add_sequence_to_cache (EBookBackendCache *cache, 
-		       guint first_sequence,
-		       guint last_sequence,
-		       guint last_po_rebuild_time)
+		       gdouble first_sequence,
+		       gdouble last_sequence,
+		       gdouble last_po_rebuild_time)
 {
 		gchar *tmp;
 
 		/* This is the system address book. Let try add the sequence to maintain deltas */
-		tmp = g_strdup_printf("%d", first_sequence);
+		tmp = g_strdup_printf("%lf", first_sequence);
 		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "firstSequence"))	
 			e_file_cache_add_object (E_FILE_CACHE(cache), "firstSequence", tmp);
 		else
 			e_file_cache_replace_object (E_FILE_CACHE(cache), "firstSequence", tmp);	
 		g_free (tmp);
 
-		tmp = g_strdup_printf("%d", last_sequence);
+		tmp = g_strdup_printf("%lf", last_sequence);
 		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastSequence"))
 			e_file_cache_add_object (E_FILE_CACHE(cache), "lastSequence", tmp);
 		else
 			e_file_cache_replace_object (E_FILE_CACHE(cache), "lastSequence", tmp);
 		g_free (tmp);
 		
-		tmp = g_strdup_printf("%d", last_po_rebuild_time);
+		tmp = g_strdup_printf("%lf", last_po_rebuild_time);
 		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastTimePORebuild"))
 			e_file_cache_add_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
 		else
@@ -2439,6 +2441,9 @@ build_cache (EBookBackendGroupwise *ebgw)
 	GTimeVal tstart, tend;
 	unsigned long diff;
 
+	if(!ebgw)
+		return FALSE;
+
 	if (enable_debug) {
 		g_get_current_time(&start);
 		printf("Building the cache for %s \n", ebgw->priv->book_name);
@@ -2456,10 +2461,11 @@ build_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-
-		g_mutex_lock (closure->mutex);
-		g_cond_signal (closure->cond);
-		g_mutex_unlock (closure->mutex);
+		if (closure) {
+			g_mutex_lock (closure->mutex);
+			g_cond_signal (closure->cond);
+			g_mutex_unlock (closure->mutex);
+		}
 	}
 
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
@@ -2590,6 +2596,9 @@ update_cache (EBookBackendGroupwise *ebgw)
 	GTimeVal start, end;
 	unsigned long diff;
 
+	if (!ebgw)
+		return FALSE;
+
 	if (enable_debug) {
 		g_get_current_time(&start);
 		printf("updating cache for %s\n", ebgw->priv->book_name);
@@ -2599,10 +2608,11 @@ update_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-		
-		g_mutex_lock (closure->mutex);
-		g_cond_signal (closure->cond);
-		g_mutex_unlock (closure->mutex);
+		if (closure) {
+			g_mutex_lock (closure->mutex);
+			g_cond_signal (closure->cond);
+			g_mutex_unlock (closure->mutex);
+		}
 	}
 
 	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
@@ -2680,7 +2690,6 @@ update_cache (EBookBackendGroupwise *ebgw)
 		printf("updating the cache for %s complated in %ld.%03ld seconds for %d contacts\n", 
 			ebgw->priv->book_name, diff / 1000, diff % 1000, contact_num);
 	}
-
 	return FALSE;
 }
 
@@ -2688,14 +2697,17 @@ static gboolean
 update_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
 	int status, contact_num = 0;
-	guint server_first_sequence = -1, server_last_sequence = -1, server_last_po_rebuild_time = -1;
-	guint cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
+	gdouble server_first_sequence = -1, server_last_sequence = -1, server_last_po_rebuild_time = -1;
+	gdouble cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
 	const char *cache_obj;
 	char *tmp, *count, *sequence, *status_msg;
 	GList *add_list = NULL, *delete_list = NULL;
 	EContact *contact;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
+
+	if (!ebgw)
+		return FALSE;
 
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
 	EBookBackendCache *cache = priv->cache;
@@ -2727,11 +2739,11 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	/* Read the last sequence and last poa rebuild time from cache */	
 	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastSequence");
 	if (cache_obj)
-		cache_last_sequence = atoi (cache_obj);
+		cache_last_sequence = strtod (cache_obj, NULL);
 	
 	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastTimePORebuild");
 	if (cache_obj)
-		cache_last_po_rebuild_time = atoi (cache_obj);
+		cache_last_po_rebuild_time = strtod (cache_obj, NULL);
 
 	/* check whether the all the sequences are available and also whether the PO is rebuilt */
 	if (server_first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
@@ -2758,14 +2770,15 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-		
-		g_mutex_lock (closure->mutex);
-		g_cond_signal (closure->cond);
-		g_mutex_unlock (closure->mutex);
+		if (closure){
+			g_mutex_lock (closure->mutex);
+			g_cond_signal (closure->cond);
+			g_mutex_unlock (closure->mutex);
+		}
 	}
 
 	/* update the cache */
-	sequence = g_strdup_printf ("%d", cache_last_sequence +1);
+	sequence = g_strdup_printf ("%lf", cache_last_sequence +1);
 	count = g_strdup_printf ("%d", CURSOR_ITEM_LIMIT);
 
 	/* load summary file */
@@ -2782,6 +2795,10 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 
 		while (cache_last_sequence < server_last_sequence) {
+			if (enable_debug) {
+				printf("cache_last_sequence:%lf, server_last_sequence:%lf\n", cache_last_sequence, server_last_sequence);
+				printf("Calling get_items_delta\n");
+			}
 			e_gw_connection_get_items_delta (priv->cnc, 
 							 ebgw->priv->container_id, 
 							 "name email sync", count, 
@@ -2793,6 +2810,10 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 					printf("sequence differs but no changes found !!!\n");
 				break;
 			}
+			if (enable_debug) {
+				printf("add_list size:%d\n", g_list_length(add_list));
+				printf("delete_list size:%d\n", g_list_length(delete_list));
+			}
 
 			for (; add_list != NULL; add_list = g_list_next(add_list)) { 
 				const char *id;
@@ -2802,6 +2823,8 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				fill_contact_from_gw_item (contact, 
 							   E_GW_ITEM (add_list->data), 
 							   ebgw->priv->categories_by_id);
+				if (enable_debug)
+					printf("contact email:%s, contact name:%s\n", e_contact_get(contact, E_CONTACT_EMAIL_1), e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact, 
 					       E_CONTACT_BOOK_URI, 
 					       priv->original_uri);
@@ -2815,11 +2838,15 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 					g_free (status_msg);
 				}
 				if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+					if (enable_debug)
+						printf("contact already there\n");
 					e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
 					e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 					e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
 					e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 				} else {
+					if (enable_debug)
+						printf("contact not there\n");
 		    			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
 					e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 				}
@@ -2836,6 +2863,8 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				fill_contact_from_gw_item (contact, 
 							   E_GW_ITEM (delete_list->data), 
 							   ebgw->priv->categories_by_id);
+				if (enable_debug)
+					printf("contact email:%s, contact name:%s\n", e_contact_get(contact, E_CONTACT_EMAIL_1), e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact, 
 					       E_CONTACT_BOOK_URI, 
 					       priv->original_uri);
@@ -2861,15 +2890,15 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 
 		/* cache is updated, now adding the sequence information to the cache */
 
-		tmp = g_strdup_printf("%d", server_first_sequence);
+		tmp = g_strdup_printf("%lf", server_first_sequence);
 		e_file_cache_replace_object (E_FILE_CACHE(cache), "firstSequence", tmp);		
 		g_free (tmp);
 	
-		tmp = g_strdup_printf("%d", server_last_sequence);
+		tmp = g_strdup_printf("%lf", server_last_sequence);
 		e_file_cache_replace_object (E_FILE_CACHE(cache), "lastSequence", tmp);
 		g_free (tmp);
 	
-		tmp = g_strdup_printf("%d", server_last_po_rebuild_time);
+		tmp = g_strdup_printf("%lf", server_last_po_rebuild_time);
 		e_file_cache_replace_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
 		g_free (tmp);
 
@@ -2940,8 +2969,9 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	gboolean is_writable;
 	const char *cache_refresh_interval_set;
 	int cache_refresh_interval = CACHE_REFRESH_INTERVAL;
-	
-	printf ("authenticate user ............\n");
+
+	if (enable_debug)
+		printf ("authenticate user ............\n");
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
 
@@ -2962,6 +2992,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE:
 		
 		if (priv->cnc) { /*we have already authenticated to server */
+			printf("already authenticated\n");
 			e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success); 
 			return;
 		}
@@ -2979,6 +3010,9 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		
 		id = NULL;
 		is_writable = FALSE;
+		if (enable_debug)
+ 			if(priv->book_name)
+				printf("book_name:%s\n", priv->book_name);
 		status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
@@ -3015,17 +3049,28 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 							    SUMMARY_FLUSH_TIMEOUT);
 		
 		if (e_book_backend_cache_is_populated (priv->cache)) {
-			if (priv->is_writable) 
+			if (enable_debug)
+				printf("cache is populated\n");
+			if (priv->is_writable){
+				if (enable_debug) {
+					printf("is writable\n");
+					printf("creating update_cache thread\n");
+				}
 				g_thread_create ((GThreadFunc) update_cache, ebgw, FALSE, NULL);
+			}
 			else if (priv->marked_for_offline) {
+				if (enable_debug)
+					printf("marked for offline\n");
 				GThread *t;
+				if (enable_debug)
+					printf("creating update_address_book_deltas thread\n");
 
 				t = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, TRUE, NULL);
 
 				/* spawn a thread to update the system address book cache 
 	 			 * at given intervals
 	 			 */
-				cache_refresh_interval_set = g_getenv ("BOOK_CACHE_REFESH_INTERVAL");
+				cache_refresh_interval_set = g_getenv ("BOOK_CACHE_REFRESH_INTERVAL");
 				if (cache_refresh_interval_set) {
 					cache_refresh_interval = g_ascii_strtod (cache_refresh_interval_set, 
 										NULL); /* use this */
@@ -3043,12 +3088,20 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		}
 		else if (priv->is_writable) {  /* for personal books we always cache */
 			/* Personal address book and frequent contacts */
+			if (enable_debug) {
+				printf("else if is _writable");
+				printf("build_cahe thread");
+			}
 			g_thread_create ((GThreadFunc) build_cache, ebgw, FALSE, NULL);
 		}
 		else if(priv->marked_for_offline) { 
+			if (enable_debug)
+				printf("else if marked_for_offline\n");
 			GThread *t;
 			/* System address book */
 			/* cache is not populated and book is not writable and marked for offline usage */
+			if (enable_debug)
+				printf("creating update_address_book_deltas thread\n");
 			t = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, TRUE, NULL);
 			g_thread_join (t);
 			/* set the cache refresh time */
@@ -3429,6 +3482,7 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->marked_for_offline = FALSE;
 	priv->use_ssl = NULL;
 	priv->cache=NULL;
+	priv->cnc = NULL;
 	priv->original_uri = NULL;
 	priv->cache_timeout = 0;
 	priv->reserved1 = NULL;

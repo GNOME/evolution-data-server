@@ -1,3 +1,12 @@
+2006-03-21  Devashish Sharma <sdevashish@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c : Use double values for 
+	server_last_sequence, server_first_sequence and cache_last and first_sequence, as
+	sometimes these values can be outside the range of int.
+	Added some NULL checks to prevent some random crashes.
+
+	* libedata-book/e-data-book.c : Ref the backend before for future use.
+
 2006-01-16  Ross Burton  <ross@openedhand.com>
 
 	* libedata-book/e-data-book-view.h:

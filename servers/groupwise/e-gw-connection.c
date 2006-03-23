@@ -676,8 +676,8 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 }
 
 EGwConnectionStatus 
-e_gw_connection_get_items_delta_info (EGwConnection *cnc, const char *container, guint *first_sequence, 
-					guint *last_sequence, guint *last_po_rebuild_time )
+e_gw_connection_get_items_delta_info (EGwConnection *cnc, const char *container, gdouble *first_sequence, 
+					gdouble *last_sequence, gdouble *last_po_rebuild_time )
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
@@ -725,21 +725,21 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const char *container,
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "firstSequence");
 
 	if (subparam)
-		*first_sequence = soup_soap_parameter_get_int_value(subparam);
+		*first_sequence = strtod (soup_soap_parameter_get_string_value(subparam), NULL);
 	else
 		*first_sequence = -1;
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "lastSequence");
 
 	if (subparam)
-		*last_sequence = soup_soap_parameter_get_int_value(subparam);
+		*last_sequence = strtod (soup_soap_parameter_get_string_value(subparam), NULL);
 	else
 		*last_sequence = -1;
 		
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "lastTimePORebuild");
 
 	if (subparam)
-		*last_po_rebuild_time = soup_soap_parameter_get_int_value(subparam);
+		*last_po_rebuild_time = strtod (soup_soap_parameter_get_string_value(subparam), NULL);
 	else
 		*last_po_rebuild_time = -1;
 
