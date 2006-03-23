@@ -902,6 +902,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	char *container_id = NULL;
 	char *time_string = NULL, *t_str = NULL;
 	struct _folder_update_msg *msg;
+	gboolean check_all = FALSE;
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
@@ -947,7 +948,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 	t_str = g_strdup (time_string); 
 
-#if 0
+
 	/*Get the New Items*/
 	status = e_gw_connection_get_quick_messages (cnc, container_id,
 			"peek id",
@@ -963,18 +964,23 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	 */
 	if (summary->time_string)
 		g_free (summary->time_string);
+
+	
 	summary->time_string = g_strdup (t_str);
 	g_free (t_str);	
 	t_str = NULL;
 
+	/*
 	for ( sl = slist ; sl != NULL; sl = sl->next) 
-		list = g_list_append (list, sl->data);
+		list = g_list_append (list, sl->data);*/
 
+	if (slist && g_slist_length(slist) != 0)
+		check_all = TRUE;
+	
 	g_slist_free (slist);
 	slist = NULL;
 
 	t_str = g_strdup (time_string);
-#endif
 	
 	/*Get those items which have been modifed*/
 
@@ -989,15 +995,16 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	
 	/* The storing of time-stamp to summary code below should be commented if the 
 	   above commented code is uncommented */
-	if (summary->time_string)
+
+/*	if (summary->time_string)
 		g_free (summary->time_string);
 
 	summary->time_string = g_strdup (t_str);
 
-	g_free (t_str), t_str = NULL;
+	g_free (t_str), t_str = NULL;*/
 
 	for ( sl = slist ; sl != NULL; sl = sl->next) 
-		list = g_list_append (list, sl->data);
+		list = g_list_prepend (list, sl->data);
 
 	g_slist_free (slist);
 	slist = NULL;
@@ -1021,6 +1028,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	 * this folder, and update the summary.
 	 */
 	/*create a new session thread for the update all operation*/
+	if (check_all) {
 	msg = camel_session_thread_msg_new (session, &update_ops, sizeof(*msg));
 	msg->cnc = cnc;
 	msg->t_str = g_strdup (time_string);
@@ -1030,7 +1038,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	camel_folder_freeze (folder);
 	camel_session_thread_queue (session, &msg->msg, 0);
 	/*thread creation and queueing done*/
-
+	}
 
 end3: 
 	g_list_foreach (list, (GFunc) g_object_unref, NULL);
