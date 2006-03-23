@@ -1,3 +1,9 @@
+2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	Fixes #334807
+	* libedataserver/e-source-group.c: Check if the 
+	object is created before accessing it.
+	
 2006-03-22  Tommi Vainikainen  <thv@iki.fi>
 
 	* configure.in (ALL_LINGUAS): Added Dzongkha (dz).
