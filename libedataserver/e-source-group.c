@@ -216,6 +216,10 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 		goto done;
 
 	new = g_object_new (e_source_group_get_type (), NULL);
+
+	if (!new)
+		goto done;
+
 	new->priv->uid = g_strdup (uid);
 
 	e_source_group_set_name (new, name);
