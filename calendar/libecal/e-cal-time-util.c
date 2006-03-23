@@ -570,9 +570,11 @@ char *
 isodate_from_time_t (time_t t)
 {
 	gchar *ret;
+	struct tm stm;
 
+	gmtime_r (&t, &stm);
 	ret = g_malloc (17); /* 4+2+2+1+2+2+2+1 + 1 */
-	strftime (ret, 17, "%Y%m%dT%H%M%SZ", gmtime (&t));
+	strftime (ret, 17, "%Y%m%dT%H%M%SZ", &stm);
 
 	return ret;
 }
