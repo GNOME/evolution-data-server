@@ -1,3 +1,10 @@
+2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #334065
+	* libecal/e-cal-time-util.c: (isodate_from_time_t):
+	* libical/src/libical/icaltime.c: (icaltime_from_timet_with_zone),
+	(icaltime_as_timet_with_zone): Make mktime and gmtime thread safe.
+
 2006-03-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #334000
