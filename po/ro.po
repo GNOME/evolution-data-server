@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: evolution 0.15\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-12 22:37+0100\n"
-"PO-Revision-Date: 2006-03-13 01:58+0200\n"
+"PO-Revision-Date: 2006-03-23 14:34+0200\n"
 "Last-Translator: Dan Damian <dand@gnome.ro>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -4586,7 +4586,7 @@ msgstr "Eşec la comanda AUTH"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1105
 msgid "Bad authentication response from server.\n"
-msgstr "Răspuns negativ din patrea serverelui: autentificare eşuată.\n"
+msgstr "Răspuns negativ din partea serverului: autentificare eşuată.\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1130
 #, c-format
