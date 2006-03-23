@@ -1,3 +1,8 @@
+2006-03-23  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c:
+	Syncs-up externally deleted items only when there are new items
+
 2006-03-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-folder.c: 
