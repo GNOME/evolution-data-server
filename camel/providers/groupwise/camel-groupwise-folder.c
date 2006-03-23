@@ -110,8 +110,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	EGwItem *item;
 	CamelStream *stream, *cache_stream;
 	int errno;
-	gboolean message_read_now = FALSE;
-	guint32 flags;
 	
 	/* see if it is there in cache */
 
@@ -121,16 +119,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 				_("Cannot get message: %s\n  %s"), uid, _("No such message"));
 		return NULL;
 	}
-/*	
-	flags = camel_message_info_flags ((CamelMessageInfo*)mi);
-	if ((flags & CAMEL_MESSAGE_SEEN)!= 0) {
-		d(g_print ("Message read Earlier\n");)
-	}
-	else {
-		message_read_now = TRUE;
-		d(g_print ("Message Read Now\n");)
-	}
-*/
 	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, ex);
 	stream = camel_stream_mem_new ();
 	if (cache_stream) {
@@ -158,16 +146,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	camel_object_unref (stream);
 
 	if (msg != NULL) {
-/*		if (((CamelOfflineStore *) gw_store)->state != CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-			cnc = cnc_lookup (priv);
-			if (message_read_now) {
-				GList *read_items = NULL;
-				read_items = g_list_append (read_items, (char *)uid);
-				e_gw_connection_mark_read(cnc, read_items);
-				g_list_free (read_items);
-				camel_message_info_set_flags ((CamelMessageInfo*)mi, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
-			}
-		}*/
 		camel_message_info_free (&mi->info);
 		return msg;
 	}
@@ -225,14 +203,6 @@ groupwise_folder_get_message( CamelFolder *folder,
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	
 end:
-/*	if (message_read_now) {
-		GList *read_items = NULL;
-		read_items = g_list_append (read_items, (char *)uid);
-		e_gw_connection_mark_read(cnc, read_items);
-		camel_message_info_set_flags ((CamelMessageInfo*)mi, CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
-		g_list_free (read_items);
-	}
-*/
 	camel_message_info_free (&mi->info);
 	g_free (container_id);
 	return msg;
@@ -676,7 +646,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 					CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 					status = e_gw_connection_remove_item (cnc, container_id, uid);
 					if (status == E_GW_CONNECTION_STATUS_OK) {
-						g_print ("deleting..\n");
 						CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 						camel_folder_summary_remove (folder->summary, info);
 						camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
@@ -694,7 +663,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (read_items && g_list_length (read_items)) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 		e_gw_connection_mark_read (cnc, read_items);
-		g_print ("marking read\n");
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 	}
 
@@ -1021,7 +989,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	
 	/* The storing of time-stamp to summary code below should be commented if the 
 	   above commented code is uncommented */
-
 	if (summary->time_string)
 		g_free (summary->time_string);
 
@@ -1125,8 +1092,9 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		const char *id;
 		GSList *recp_list = NULL;
 		status_flags = 0;
-		CamelStream *cache_stream;
+		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
+		gboolean is_sent_folder = FALSE;
 
 		exists = FALSE;
 		
@@ -1151,11 +1119,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (pmi) {
 			exists = TRUE;
 			camel_message_info_ref (pmi);
-			mi = (CamelGroupwiseMessageInfo *)camel_message_info_clone(pmi);
-			/*
-			pmi->summary = folder->summary;
-			mi->info.summary = folder->summary;
-			*/
+			mi = (CamelGroupwiseMessageInfo *)pmi;
 		}
 
 		if (!exists) {
@@ -1179,9 +1143,15 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
 			status_flags |= CAMEL_MESSAGE_SEEN;
+		else 
+			mi->info.flags &= ~CAMEL_MESSAGE_SEEN;
+
 		if (item_status & E_GW_ITEM_STAT_REPLIED)
 			status_flags |= CAMEL_MESSAGE_ANSWERED;
-		mi->info.flags |= status_flags;
+		if (exists) 
+			mi->info.flags |= status_flags;
+		else 
+			mi->info.flags = status_flags;
 
 		priority = e_gw_item_get_priority (item);
 		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
@@ -1255,12 +1225,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		}
-#if 0
-
-		if (exists)
-			g_free(mi->info.uid);
-		mi->info.uid = g_strdup(e_gw_item_get_id(item));
-#endif
+		
 		if (!exists) {
 			mi->info.uid = g_strdup (e_gw_item_get_id(item));
 			mi->info.size = e_gw_item_get_mail_size (item);	
@@ -1268,12 +1233,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		}
 		
 		if (exists) {
-			/*
 			camel_folder_change_info_change_uid (changes, mi->info.uid);
-			camel_message_info_free (&mi->info);*/
-			camel_folder_summary_remove(folder->summary, pmi);
-			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
-			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_message_info_free (pmi);
 		} else {
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
@@ -1286,13 +1246,17 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			continue;
 
 		if (!strcmp (folder->full_name, "Sent Items"))
-			exists = FALSE;
+			is_sent_folder = TRUE;
 		/******************** Begine Caching ************************/
 		/* add to cache if its a new message*/
-		if (!exists) {
+		t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
+		if (t_cache_stream && !is_sent_folder) {
+			camel_object_unref (t_cache_stream);
+			
 			mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
 			if (mail_msg)
 				camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
+
 			CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 			if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
 				if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)

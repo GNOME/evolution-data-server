@@ -1,7 +1,9 @@
 2006-03-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-groupwise-folder.c: (groupwise_sync):
-	removed a double free and a crash
+	* camel-groupwise-folder.c: 
+	(groupwise_sync): removed a double free and a crash
+	(gw_update_cache): Do not clone messageinfo. jus work on
+	the original message info
 	* camel-groupwise-store.c: (groupwise_folders_sync):
 	sync up the current folder whenever the folder list is 
 	being refreshed.
