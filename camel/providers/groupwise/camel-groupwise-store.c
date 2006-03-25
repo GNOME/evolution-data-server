@@ -1154,8 +1154,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	}
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-/*	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {*/
-	if (check_for_connection((CamelService *)store, ex)) {
+	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {
 		if (!priv->cnc) {
 			if (groupwise_connect ((CamelService *)store, ex)) {
 				g_warning ("Could connect!!!\n");
@@ -1163,7 +1162,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				g_warning ("Could not connect..failure connecting\n");
 		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-			/*groupwise_store->list_loaded = TRUE;*/
+			groupwise_store->list_loaded = TRUE;
 			groupwise_folders_sync (groupwise_store, ex);
 			if (camel_exception_is_set (ex)) {
 				CAMEL_SERVICE_UNLOCK (store, connect_lock);

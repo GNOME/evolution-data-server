@@ -1,3 +1,8 @@
+2006-03-24  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-folder.c: (groupwise_item_folder_to_msg):
+	Set content type, so that it does not crash
+	
 2006-03-23  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c:
