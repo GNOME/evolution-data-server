@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-26 07:13+0100\n"
-"PO-Revision-Date: 2006-03-10 20:54+0200\n"
+"PO-Revision-Date: 2006-03-27 12:12+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1076,7 +1076,7 @@ msgstr "Vigane parameeter"
 
 #: ../calendar/libecal/e-cal.c:5105
 msgid "Backend is busy"
-msgstr ""
+msgstr "Taustaprogramm on hõivatud"
 
 #: ../calendar/libecal/e-cal.c:5107
 msgid "Repository is offline"
@@ -2164,7 +2164,7 @@ msgstr "Signatuuris pole signeeritud andmeid"
 
 #: ../camel/camel-smime-context.c:544
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "Ümbrikus olevatel andmetel puudub sõnumilühend"
 
 #: ../camel/camel-smime-context.c:557 ../camel/camel-smime-context.c:567
 msgid "Cannot calculate digests"
@@ -3787,7 +3787,7 @@ msgstr "Kausta %s pole võimalik avada: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:469
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr ""
+msgstr "Sõnumiparsija saatuslik viga asukoha %ld ligidal kaustas %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:525
 #, c-format
@@ -4347,7 +4347,7 @@ msgstr "Käsu parameeter ei ole veel teostatud"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:170
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "Süsteemi olek või süsteemi abiteabe vastus"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:172
 msgid "Help message"
@@ -5119,11 +5119,11 @@ msgstr "Vigane parameeter"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr ""
+msgstr "Evolutioni aadressiraamatu faili taustaprogramm"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr ""
+msgstr "Evolutioni kalendrifaili taustaprogramm"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
