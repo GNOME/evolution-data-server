@@ -595,30 +595,32 @@ imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex)
 	if (!connect_to_server_wrapper (engine, ex))
 		return FALSE;
 	
+	if (engine->state != CAMEL_IMAP4_ENGINE_AUTHENTICATED) {
 #define CANT_USE_AUTHMECH (!(mech = g_hash_table_lookup (engine->authtypes, service->url->authmech)))
-	if (service->url->authmech && CANT_USE_AUTHMECH) {
-		/* Oops. We can't AUTH using the requested mechanism */
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				      _("Cannot authenticate to IMAP server %s using %s"),
-				      service->url->host, service->url->authmech);
+		if (service->url->authmech && CANT_USE_AUTHMECH) {
+			/* Oops. We can't AUTH using the requested mechanism */
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+					      _("Cannot authenticate to IMAP server %s using %s"),
+					      service->url->host, service->url->authmech);
+			
+			return FALSE;
+		}
 		
-		return FALSE;
-	}
-	
-	camel_exception_init (&lex);
-	while (imap4_try_authenticate (engine, reprompt, errmsg, &lex)) {
+		camel_exception_init (&lex);
+		while (imap4_try_authenticate (engine, reprompt, errmsg, &lex)) {
+			g_free (errmsg);
+			errmsg = g_strdup (lex.desc);
+			camel_exception_clear (&lex);
+			g_free (service->url->passwd);
+			service->url->passwd = NULL;
+			reprompt = TRUE;
+		}
 		g_free (errmsg);
-		errmsg = g_strdup (lex.desc);
-		camel_exception_clear (&lex);
-		g_free (service->url->passwd);
-		service->url->passwd = NULL;
-		reprompt = TRUE;
-	}
-	g_free (errmsg);
-	
-	if (camel_exception_is_set (&lex)) {
-		camel_exception_xfer (ex, &lex);
-		return FALSE;
+		
+		if (camel_exception_is_set (&lex)) {
+			camel_exception_xfer (ex, &lex);
+			return FALSE;
+		}
 	}
 	
 	if (camel_imap4_engine_namespace (engine, ex) == -1)

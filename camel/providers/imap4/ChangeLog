@@ -1,3 +1,8 @@
+2006-03-28  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-store.c (imap4_reconnect): Only try to authenticate
+	if the engine is not already in the authenticated state.
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* camel-imap4-store.c: Bypass the external command stuff on Win32.
