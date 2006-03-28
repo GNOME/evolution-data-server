@@ -1,3 +1,10 @@
+2006-03-28  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 160889 on bugzilla.novell.com
+
+	* camel-mbox-store.c: ignore *.ev-summary-meta extensions 
+	when displaying folder lists
+
 2005-12-09  Tor Lillqvist  <tml@novell.com>
 
 	* camel-mbox-folder.c: Just #define O_BINARY as 0 on Unix, less
