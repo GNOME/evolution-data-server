@@ -20,46 +20,45 @@
 2006-02-21  Rohini S  <srohini@novell.com>
 
 	** See bug 318697
-	* camel-url-scanner.c (camel_url_addrspec_start): conditions modified
-	to parse only valid mailto links
+
+	* camel-url-scanner.c (camel_url_addrspec_start): conditions
+	modified to parse only valid mailto links
 
 2006-02-21  Rohini S  <srohini@novell.com>
  
  	** Fixes bug #328322
  
- 	* camel-mime-filter-tohtml.c : add new pattern for sftp urls.
+	* camel-mime-filter-tohtml.c: add new pattern for sftp urls.
  
 2006-02-21  Rohini S  <srohini@novell.com>
  
- 	* camel-url-scanner.c (camel_url_web_end): Modified to accept urls 
+	* camel-url-scanner.c (camel_url_web_end): Modified to accept urls 
  	with ./
  	Fixes bug#256142
  
 2006-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>
-	
-	* camel-disco-diary.c: (camel_disco_diary_log):
-	proceed only if diary is a valid pointer
+
+	* camel-disco-diary.c (camel_disco_diary_log): proceed only if
+	diary is a valid pointer
 
 2006-02-13  Rohini S  <srohini@novell.com>
 
 	**See bug 328384
 
-	* camel-url-scanner.c (camel_url_addrspec_start): 
-	modified to remove all invalid characters in the beginning 
-	of a email address
+	* camel-url-scanner.c (camel_url_addrspec_start): modified to
+	remove all invalid characters in the beginning of a email address
 
 2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 328481
-	* camel-gpg-context.c: (gpg_ctx_parse_status): do not
-	search if the gpg->need_id is NULL
+
+	* camel-gpg-context.c (gpg_ctx_parse_status): do not search if the
+	gpg->need_id is NULL
 
 2006-02-02  Parthasarathi Susarla <sparthasarathi@novell.com>
-	
-	* camel-object.c:
-	(object_finalise):
-	(camel_message_info_free):
-	decrement Ref count properly
+
+	* camel-object.c (object_finalise):
+	(camel_message_info_free): decrement Ref count properly
 
 2006-02-02  Tor Lillqvist  <tml@novell.com>
 
@@ -69,58 +68,59 @@
 
 2006-01-25  Not Zed  <NotZed@Ximian.com>
  
- 	* camel-folder-search.c (search_match_threads): add new
+	* camel-folder-search.c (search_match_threads): add new
  	match-thread type "unreplied", matches messages that are unreplied
  	to. 
 	Committed to head on behaf of Notzed
  
 2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-mime-utils.c: (camel_content_type_unref):
+	* camel-mime-utils.c (camel_content_type_unref):
 	Id the content-type refcount is <1 then free it and
 	assign it to NULL
 
 2006-01-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-service.c: (camel_service_disconnect):
+	* camel-service.c (camel_service_disconnect):
 	set the service-status to CAMEL_SERVICE_DISCONNECTED
 
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
 
 	* camel-file-utils.h: 
-	* camel-file-utils.c:
-	Delete function camel_mkdir().
-	
-	* camel-data-cache.c: (camel_data_cache_new):
-	* camel-object.c: (camel_object_state_write):
-	* camel-session.c: (get_storage_path):
-	* camel-uid-cache.c: (camel_uid_cache_new):
-	* providers/imap/camel-imap-folder.c: (camel_imap_folder_new):
-	* providers/imap4/camel-imap4-folder.c: (camel_imap4_folder_new):
-	* providers/imapp/camel-imapp-folder.c: (camel_imapp_folder_new):
-	* providers/local/camel-local-store.c: (get_folder):
-	* providers/local/camel-mbox-store.c: (get_folder):
+	* camel-file-utils.c: Delete function camel_mkdir().
+
+	* camel-data-cache.c (camel_data_cache_new):
+	* camel-object.c (camel_object_state_write):
+	* camel-session.c (get_storage_path):
+	* camel-uid-cache.c (camel_uid_cache_new):
+	* providers/imap/camel-imap-folder.c (camel_imap_folder_new):
+	* providers/imap4/camel-imap4-folder.c (camel_imap4_folder_new):
+	* providers/imapp/camel-imapp-folder.c (camel_imapp_folder_new):
+	* providers/local/camel-local-store.c (get_folder):
+	* providers/local/camel-mbox-store.c (get_folder):
 	(create_folder):
 	(rename_folder):
-	* providers/local/camel-spool-store.c: (spool_get_meta_path):
-	* providers/nntp/camel-nntp-folder.c: (camel_nntp_folder_new):
+	* providers/local/camel-spool-store.c (spool_get_meta_path):
+	* providers/nntp/camel-nntp-folder.c (camel_nntp_folder_new):
 	Because of deletion of camel_mkdir(), all the callers use
 	e_util_mkdir_hier() instead and add the related header file 
 	<libedataserver/e-data-server-util.h>.
 
-	* camel-debug.c:
-	* camel-win32.c:
-	As file e-util.h is renamed, replace "libedataserver/e-util.h"
-        as "libedataserver/e-data-server-util.h".
+	* camel-debug.c: 
+	* camel-win32.c: As file e-util.h is renamed,
+	replace "libedataserver/e-util.h" as
+	"libedataserver/e-data-server-util.h".
 
 2006-01-05  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* camel-session.c: (camel_session_get_network_state): Return
-	stuff from this non-void function.
-	* providers/imap4/camel-imap4-store.c: (connect_to_server):
-	Move some vars inside #ifdef HAVE_SSL
-	* providers/local/camel-local-store.c: (xrename): Use NULL
-	not 0 as the last parameter to g_strconcat().
+	* camel-session.c (camel_session_get_network_state): Return stuff
+	from this non-void function.
+
+	* providers/imap4/camel-imap4-store.c (connect_to_server): Move
+	some vars inside #ifdef HAVE_SSL
+
+	* providers/local/camel-local-store.c (xrename): Use NULL not 0 as
+	the last parameter to g_strconcat().
 
 2006-01-04  Tor Lillqvist  <tml@novell.com>
 
@@ -134,18 +134,18 @@
 
 	* Network Manager Support
 	
-	* camel-session.[h,c]: Add a gboolean network_state
-	which the shell uses to set the current network state.
-	Add new api's camel_session_get_network_state and
+	* camel-session.[h,c]: Add a gboolean network_state which the
+	shell uses to set the current network state.  Add new api's
+	camel_session_get_network_state and
 	camel_session_set_network_state.
 	
-	* camel-offline-folder.c: If network down then dont 
-	sync folders while going offline and send clean as FALSE
-	to camel_service_disconnect.
+	* camel-offline-folder.c: If network down then dont sync folders
+	while going offline and send clean as FALSE to
+	camel_service_disconnect.
 	
-	* camel-disco-folder.c: If network down then dont 
-	sync folders while going offline and send clean as FALSE
-	to camel_service_disconnect.
+	* camel-disco-folder.c: If network down then dont sync folders
+	while going offline and send clean as FALSE to
+	camel_service_disconnect.
 
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
@@ -221,10 +221,9 @@
 
 2005-12-07  Jeff Cai <jeff.cai@sun.com>
 
-	* camel-vee-folder.c: (vee_search_by_expression),
-	(vee_search_by_uids):
-	if search expression of a vfolder is null, make it an empty string.
-	Fix #323433
+	* camel-vee-folder.c (vee_search_by_expression),
+	(vee_search_by_uids): if search expression of a vfolder is null,
+	make it an empty string.  Fix #323433
 	
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
@@ -1483,29 +1482,30 @@
 	once connector plugin is made external.
 
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
-	
+
 	* providers/groupwise/camel-groupwise-folder.c
-	  (groupwise_folder_get_message),
-	  (groupwise_refresh_info): included default and notification
-	  in the view list for e_gw_connection_get_item.
+	(groupwise_folder_get_message),
+	(groupwise_refresh_info): included default and notification in
+	the view list for e_gw_connection_get_item.
 	
 	* providers/groupwise/camel-groupwise-store.c
-	  (groupwise_get_folder_online):included default and notification
-	  in the view list for e_gw_connection_get_items.
+	(groupwise_get_folder_online):included default and notification
+	in the view list for e_gw_connection_get_items.
 	
 	* providers/groupwis/camel-groupwise-transport.[ch]
-	  (groupwise_send_to): sets send options in EGwItem by parsing the
-	  camelmimemessage for send-option headers
+	(groupwise_send_to): sets send options in EGwItem by parsing the
+	camelmimemessage for send-option headers
 
 2005-01-10  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store-summary.[ch]:
-	  implements the CamelStoreSummary Class providing support
-	  for store summary for the soap provider.
+	implements the CamelStoreSummary Class providing support
+	for store summary for the soap provider.
+
 	* providers/groupwise/camel-groupwise-store.c
-	  (groupwise_get_folder_info_online): saves the store summary
-	  after building folder info.
-	  
+	(groupwise_get_folder_info_online): saves the store summary
+	after building folder info.
+  
 2005-01-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* providers/imap4/camel-imap4-store.c (imap4_connect): Same as
@@ -1529,10 +1529,10 @@
 	(imap4_transfer_messages_to): Same.
 
 2005-01-07  Parthasarathi Susarla <sparthasarathi@novell.com>
-	
+
 	* providers/groupwise/camel-groupwise-transport.c
-	  (groupwise_send_to): fixed the problem of the mail
-	   message (body) being treated as an attachment
+	(groupwise_send_to): fixed the problem of the mail message (body)
+	being treated as an attachment
 
 2005-01-07  JP Rosevear  <jpr@novell.com>
 
@@ -1571,42 +1571,43 @@
 2005-01-06 Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.[ch]
-	  (groupwise_get_folder_info_online): update the total and
-	   unread mail count from soap response
-	  (groupwise_rename_folder): fixed problems in renaming 
-	   groupwise folders
-	  (storage_path_lookup): returns the storage path for the
-	   groupwise account
+	(groupwise_get_folder_info_online): update the total and unread
+	mail count from soap response
+	(groupwise_rename_folder): fixed problems in renaming groupwise
+	folders
+	(storage_path_lookup): returns the storage path for the groupwise
+	account
+
 	* providers/groupwise/camel-groupwise-folder.c
-	  (groupwise_folder_get_message): support for shared folder
-	   notification type. displaying the itip control for 
-	   appoinments.
-	  (groupwise_folder_rename): support function for renaming
-	   cache and summary when a groupwise folder is renamed
-	  (groupwise_transfer_online): function for copying/moving
-	   messages between folders
-	  (convert_to_calendar): function to populate data for
-	   displaying appointments by itip control
+	(groupwise_folder_get_message): support for shared folder
+	notification type. displaying the itip control for appoinments.
+	(groupwise_folder_rename): support function for renaming cache and
+	summary when a groupwise folder is renamed
+	(groupwise_transfer_online): function for copying/moving messages
+	between folders
+	(convert_to_calendar): function to populate data for displaying
+	appointments by itip control
+
 	* providers/groupwise/camel-groupwise-transport.c
-	   (groupwise_send_to): support for sending attachments
-	   
+	(groupwise_send_to): support for sending attachments
+
 2005-01-04  Sivaiah Nallagatla     <snallagatla@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c
-	(groupwise_create_folder) (groupwise_delete_folder) 
-	(groupwise_rename_folder) : prevent these operations in 
-	offline mode 
+	(groupwise_create_folder, groupwise_delete_folder),
+	(groupwise_rename_folder): prevent these operations in offline
+	mode
 
 2005-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 
 	* providers/groupwise/camel-groupwise-store.c
-	  (groupwise_store_construct): initialise the store summary.
+	(groupwise_store_construct): initialise the store summary.
 
 2005-01-04  Parthasarathi Susarla <sparthasarathi@novell.com>
 
-	 * providers/groupwise/camel-groupwise-transport.c
-	  (groupwise_send_to): freeing the recipient list and assigning
-	   to NULL, which was causing a crash while sending mails.
+	* providers/groupwise/camel-groupwise-transport.c
+	(groupwise_send_to): freeing the recipient list and assigning to
+	NULL, which was causing a crash while sending mails.
 
 2004-12-31  JP Rosevear  <jpr@novell.com>
 
@@ -1636,6 +1637,7 @@
 	  Added the file which was missed out in the previous commit.
 
 2004-12-23  Parthasarathi Susarla <sparthasarathi@novell.com>
+
 	* providers/groupwise/camel-groupwise-store.[ch]
 	* providers/groupwise/camel-groupwise-transport.[ch]
 	* providers/groupwise/camel-groupwise-utils.[ch]
@@ -1659,23 +1661,23 @@
 
 2004-12-20  David Mosberger-Tang  <David.Mosberger@acm.org>
 
-        * camel-mime-parser.c: Include "libedataserver/e-memory.h".
-        (STRUCT_ALIGN): Remove.
-        (MemPoolNode): Likewise.
-        (MemPoolThresholdNode): Likewise.
-        (MemPool): Likewise.
-        (mempool_new): Likewise.
-        (mempool_alloc): Likewise.
-        (mempool_flush): Likewise.
-        (mempool_free): Likewise.
-        (struct _header_scan_stack): Change type of "pool" from MemPool to
-        EMemPool.
-        (folder_pull_part): Call e_mempool_destroy() instead of
-        mempool_free().
-        (header_append_mempool): Call e_mempool_alloc() instead of
-        mempool_alloc().
-        (folder_scan_header): Call e_mempool_new() instead of
-        mempool_new().
+	* camel-mime-parser.c: Include "libedataserver/e-memory.h".
+	(STRUCT_ALIGN): Remove.
+	(MemPoolNode): Likewise.
+	(MemPoolThresholdNode): Likewise.
+	(MemPool): Likewise.
+	(mempool_new): Likewise.
+	(mempool_alloc): Likewise.
+	(mempool_flush): Likewise.
+	(mempool_free): Likewise.
+	(struct _header_scan_stack): Change type of "pool" from MemPool to
+	EMemPool.
+	(folder_pull_part): Call e_mempool_destroy() instead of
+	mempool_free().
+	(header_append_mempool): Call e_mempool_alloc() instead of
+	mempool_alloc().
+	(folder_scan_header): Call e_mempool_new() instead of
+	mempool_new().
 
 2004-12-20  Not Zed  <NotZed@Ximian.com>
 
