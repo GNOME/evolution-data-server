@@ -371,51 +371,51 @@ msgstr "ICQ Id loend"
 
 #: ../addressbook/libebook/e-contact.c:169
 msgid "AIM Home Screen Name 1"
-msgstr "AIM kodunimi 1"
+msgstr "AIM ekraaninimi kodus 1"
 
 #: ../addressbook/libebook/e-contact.c:170
 msgid "AIM Home Screen Name 2"
-msgstr "AIM kodunimi 2"
+msgstr "AIM ekraaninimi kodus 2"
 
 #: ../addressbook/libebook/e-contact.c:171
 msgid "AIM Home Screen Name 3"
-msgstr "AIM kodunimi 3"
+msgstr "AIM ekraaninimi kodus 3"
 
 #: ../addressbook/libebook/e-contact.c:172
 msgid "AIM Work Screen Name 1"
-msgstr "AIM töönimi 1"
+msgstr "AIM ekraaninimi tööl 1"
 
 #: ../addressbook/libebook/e-contact.c:173
 msgid "AIM Work Screen Name 2"
-msgstr "AIM töönimi 2"
+msgstr "AIM ekraaninimi tööl 2"
 
 #: ../addressbook/libebook/e-contact.c:174
 msgid "AIM Work Screen Name 3"
-msgstr "AIM töönimi 3"
+msgstr "AIM ekraaninimi tööl 3"
 
 #: ../addressbook/libebook/e-contact.c:175
 msgid "GroupWise Home Screen Name 1"
-msgstr "Groupwise kodunimi 1"
+msgstr "Groupwise ekraaninimi kodus 1"
 
 #: ../addressbook/libebook/e-contact.c:176
 msgid "GroupWise Home Screen Name 2"
-msgstr "Groupwise kodunimi 2"
+msgstr "Groupwise ekraaninimi kodus 2"
 
 #: ../addressbook/libebook/e-contact.c:177
 msgid "GroupWise Home Screen Name 3"
-msgstr "Groupwise kodunimi 3"
+msgstr "Groupwise ekraaninimi kodus 3"
 
 #: ../addressbook/libebook/e-contact.c:178
 msgid "GroupWise Work Screen Name 1"
-msgstr "Groupwise töönimi 1"
+msgstr "Groupwise ekraaninimi tööl 1"
 
 #: ../addressbook/libebook/e-contact.c:179
 msgid "GroupWise Work Screen Name 2"
-msgstr "Groupwise töönimi 2"
+msgstr "Groupwise ekraaninimi tööl 2"
 
 #: ../addressbook/libebook/e-contact.c:180
 msgid "GroupWise Work Screen Name 3"
-msgstr "Groupwise töönimi 3"
+msgstr "Groupwise ekraaninimi tööl 3"
 
 #: ../addressbook/libebook/e-contact.c:181
 msgid "Jabber Home Id 1"
@@ -443,51 +443,51 @@ msgstr "Jabber tööl Id 3"
 
 #: ../addressbook/libebook/e-contact.c:187
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! kodunimi 1"
+msgstr "Yahoo! ekraaninimi kodus 1"
 
 #: ../addressbook/libebook/e-contact.c:188
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! kodunimi 2"
+msgstr "Yahoo! ekraaninimi kodus 2"
 
 #: ../addressbook/libebook/e-contact.c:189
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! kodunimi 3"
+msgstr "Yahoo! ekraaninimi kodus 3"
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! töönimi 1"
+msgstr "Yahoo! ekraaninimi tööl 1"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! töönimi 2"
+msgstr "Yahoo! ekraaninimi tööl 2"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! töönimi 3"
+msgstr "Yahoo! ekraaninimi tööl 3"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "MSN Home Screen Name 1"
-msgstr "MSN kodunimi 1"
+msgstr "MSN ekraaninimi kodus 1"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "MSN Home Screen Name 2"
-msgstr "MSN kodunimi 2"
+msgstr "MSN ekraaninimi kodus 2"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "MSN Home Screen Name 3"
-msgstr "MSN kodunimi 3"
+msgstr "MSN ekraaninimi kodus 3"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "MSN Work Screen Name 1"
-msgstr "MSN töönimi 1"
+msgstr "MSN ekraaninimi tööl 1"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "MSN Work Screen Name 2"
-msgstr "MSN töönimi 2"
+msgstr "MSN ekraaninimi tööl 2"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "MSN Work Screen Name 3"
-msgstr "MSN töönimi 3"
+msgstr "MSN ekraaninimi tööl 3"
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "ICQ Home Id 1"
