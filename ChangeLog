@@ -1,3 +1,9 @@
+2006-03-29  Jeffrey Stedfast  <fejj@novell.com>
+
+	* configure.in (LARGEFILE_CFLAGS): new configure checks to #define
+	O_LARGEFILE if not present and to set other required CFLAGS for
+	large file support.
+
 2006-03-23  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	Fixes #334807
