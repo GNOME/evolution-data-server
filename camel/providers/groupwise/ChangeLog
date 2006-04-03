@@ -1,4 +1,11 @@
 2006-04-03  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (update_junk_list)
+	(gw_update_summary)(gw_update_cache):
+	Stores the name as well as the email address so
+	that the (un)junk operations will work faster.
+	
+2006-04-03  Sankar P  <psankar@novell.com>
 	
 	* camel-groupwise-folder.c: (groupwise_refresh_folder):
 	Added code for getting deltas for Proxy accounts, 

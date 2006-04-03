@@ -491,7 +491,8 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 		goto error;
 
 	email = g_strsplit_set (from, "<>", -1);
-	if (!email[1])
+
+	if (!email || !email[1])
 		goto error;
 
 	if (flag == ADD_JUNK_ENTRY)
@@ -617,6 +618,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) /*marked a message junk*/
 			move_to_junk (folder, info, ex);
+
 		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) /*message was marked as junk, now unjunk*/ 
 			move_to_mailbox (folder, info, ex);
 
@@ -1171,12 +1173,17 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
-			if (exists)
-				camel_pstring_free(mi->info.from);
-			if (org->display_name && org->display_name[0])
-				mi->info.from = camel_pstring_strdup (org->display_name);
-			else if (org->email && org->email[0])
-				mi->info.from = camel_pstring_strdup (org->email);
+			GString *str;
+			str = g_string_new ("");
+			if (org->display_name && org->display_name[0]) 
+				str = g_string_append (str, org->display_name);
+			if (org->email && org->email[0]) { 
+				g_string_append (str, "<");
+				str = g_string_append (str, org->email);
+				g_string_append (str, ">");
+			}
+			mi->info.from = camel_pstring_strdup (str->str);
+			g_string_free (str, TRUE);
 		}
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
@@ -1369,10 +1376,17 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
-			if (org->display_name && org->display_name[0])
-				mi->info.from = camel_pstring_strdup (org->display_name);
-			else if (org->email && org->email[0])
-				mi->info.from = camel_pstring_strdup (org->email);
+			GString *str;
+			str = g_string_new ("");
+			if (org->display_name && org->display_name[0]) 
+				str = g_string_append (str, org->display_name);
+			if (org->email && org->email[0]) { 
+				g_string_append (str, "<");
+				str = g_string_append (str, org->email);
+				g_string_append (str, ">");
+			}
+			mi->info.from = camel_pstring_strdup (str->str);
+			g_string_free (str, TRUE);
 		}
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
