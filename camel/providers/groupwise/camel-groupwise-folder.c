@@ -912,7 +912,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (!camel_groupwise_store_connected (gw_store, ex)) 
 		goto end1;
 
-	if (!strcmp (folder->full_name, "Trash") || is_proxy) {
+	if (!strcmp (folder->full_name, "Trash")) {
 		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created delivered attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
@@ -937,71 +937,73 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 
 	/*Get the New Items*/
-	status = e_gw_connection_get_quick_messages (cnc, container_id,
-			"peek id",
-			&t_str, "New", NULL, NULL, -1, &slist);
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		goto end2;
-	}
+	if (!is_proxy) {
+		status = e_gw_connection_get_quick_messages (cnc, container_id,
+				"peek id",
+				&t_str, "New", NULL, NULL, -1, &slist);
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			goto end2;
+		}
 
-	/*
-	 * The value in t_str is the one that has to be used for the next set of calls. 
-	 * so store this value in the summary.
-	 */
-	if (summary->time_string)
-		g_free (summary->time_string);
+		/*
+		 * The value in t_str is the one that has to be used for the next set of calls. 
+		 * so store this value in the summary.
+		 */
+		if (summary->time_string)
+			g_free (summary->time_string);
 
-
-	summary->time_string = g_strdup (t_str);
-	g_free (t_str);	
-	t_str = NULL;
-
-	/*
-	   for ( sl = slist ; sl != NULL; sl = sl->next) 
-	   list = g_list_append (list, sl->data);*/
-
-	if (slist && g_slist_length(slist) != 0)
-		check_all = TRUE;
-
-	g_slist_free (slist);
-	slist = NULL;
-
-	t_str = g_strdup (time_string);
-
-	/*Get those items which have been modifed*/
-
-	status = e_gw_connection_get_quick_messages (cnc, container_id,
-			"peek id",
-			&t_str, "Modified", NULL, NULL, -1, &slist);
-
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-		goto end3;
-	}
-
-	/* The storing of time-stamp to summary code below should be commented if the 
-	   above commented code is uncommented */
-
-	/*	if (summary->time_string)
-		g_free (summary->time_string);
 
 		summary->time_string = g_strdup (t_str);
+		g_free (t_str);	
+		t_str = NULL;
 
-		g_free (t_str), t_str = NULL;*/
+		/*
+		   for ( sl = slist ; sl != NULL; sl = sl->next) 
+		   list = g_list_append (list, sl->data);*/
 
-	for ( sl = slist ; sl != NULL; sl = sl->next) 
-		list = g_list_prepend (list, sl->data);
+		if (slist && g_slist_length(slist) != 0)
+			check_all = TRUE;
 
-	g_slist_free (slist);
-	slist = NULL;
+		g_slist_free (slist);
+		slist = NULL;
 
-	if (gw_store->current_folder != folder) {
-		gw_store->current_folder = folder;
-	}
+		t_str = g_strdup (time_string);
 
-	if (list) {
-		gw_update_cache (folder, list, ex, FALSE);
+		/*Get those items which have been modifed*/
+
+		status = e_gw_connection_get_quick_messages (cnc, container_id,
+				"peek id",
+				&t_str, "Modified", NULL, NULL, -1, &slist);
+
+		if (status != E_GW_CONNECTION_STATUS_OK) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			goto end3;
+		}
+
+		/* The storing of time-stamp to summary code below should be commented if the 
+		   above commented code is uncommented */
+
+		/*	if (summary->time_string)
+			g_free (summary->time_string);
+
+			summary->time_string = g_strdup (t_str);
+
+			g_free (t_str), t_str = NULL;*/
+
+		for ( sl = slist ; sl != NULL; sl = sl->next) 
+			list = g_list_prepend (list, sl->data);
+
+		g_slist_free (slist);
+		slist = NULL;
+
+		if (gw_store->current_folder != folder) {
+			gw_store->current_folder = folder;
+		}
+
+		if (list) {
+			gw_update_cache (folder, list, ex, FALSE);
+		}
 	}
 
 
@@ -1015,7 +1017,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	 * this folder, and update the summary.
 	 */
 	/*create a new session thread for the update all operation*/
-	if (check_all) {
+	if (check_all || is_proxy) {
 		msg = camel_session_thread_msg_new (session, &update_ops, sizeof(*msg));
 		msg->cnc = cnc;
 		msg->t_str = g_strdup (time_string);
