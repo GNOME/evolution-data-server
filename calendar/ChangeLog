@@ -1,3 +1,12 @@
+2006-04-03  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #158107
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_internal_get_timezone),
+	(get_retract_data), (e_cal_backend_groupwise_modify_object),
+	(send_object), (e_cal_backend_groupwise_send_objects): Added the 
+	retract support.
+
 2006-03-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #336086
