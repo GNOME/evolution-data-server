@@ -429,19 +429,32 @@ envelope_decode_nstring (CamelIMAP4Engine *engine, char **nstring, gboolean rfc2
 }
 
 static CamelSummaryReferences *
-decode_references (const char *string, int inreplyto)
+decode_references (const char *refstr, const char *irtstr)
 {
-	struct _camel_header_references *refs, *r;
+	struct _camel_header_references *refs, *irt, *r;
 	CamelSummaryReferences *references;
 	unsigned char md5sum[16];
 	guint32 i, n;
 	
-	if (inreplyto) {
-		if (!(refs = camel_header_references_inreplyto_decode (string)))
-			return NULL;
-	} else {
-		if (!(refs = camel_header_references_decode (string)))
-			return NULL;
+	refs = camel_header_references_decode (refstr);
+	irt = camel_header_references_inreplyto_decode (irtstr);
+	
+	if (!refs && !irt)
+		return NULL;
+	
+	if (irt) {
+		/* The References field is populated from the `References' and/or `In-Reply-To'
+		   headers. If both headers exist, take the first thing in the In-Reply-To header
+		   that looks like a Message-ID, and append it to the References header. */
+		
+		if (refs) {
+			r = irt;
+			while (r->next != NULL)
+				r = r->next;
+			r->next = refs;
+		}
+		
+		refs = irt;
 	}
 	
 	n = camel_header_references_list_size (&refs);
@@ -450,7 +463,7 @@ decode_references (const char *string, int inreplyto)
 	
 	for (i = 0, r = refs; r != NULL; i++, r = r->next) {
 		md5_get_digest (r->id, strlen (r->id), md5sum);
-		memcpy (references->references[i].id.hash, md5sum, sizeof (references->references[i].id.hash));
+		memcpy (references->references[i].id.hash, md5sum, sizeof (CamelSummaryMessageID));
 	}
 	
 	camel_header_references_list_clear (&refs);
@@ -462,9 +475,8 @@ static int
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
-	CamelSummaryReferences *refs;
 	unsigned char md5sum[16];
-	char *nstring;
+	char *nstring, *msgid;
 	
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 		return -1;
@@ -521,12 +533,8 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 		goto exception;
 	
 	if (nstring != NULL) {
-		refs = decode_references (nstring, TRUE);
-		
 		if (!iinfo->info.references)
-			iinfo->info.references = refs;
-		else
-			g_free (refs);
+			iinfo->info.references = decode_references (NULL, nstring);
 		
 		g_free (nstring);
 	}
@@ -536,8 +544,11 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 		goto exception;
 	
 	if (nstring != NULL) {
-		md5_get_digest (nstring, strlen (nstring), md5sum);
-		memcpy (iinfo->info.message_id.id.hash, md5sum, sizeof (iinfo->info.message_id.id.hash));
+		if ((msgid = camel_header_msgid_decode (nstring))) {
+			md5_get_digest (msgid, strlen (msgid), md5sum);
+			memcpy (iinfo->info.message_id.id.hash, md5sum, sizeof (CamelSummaryMessageID));
+			g_free (msgid);
+		}
 		g_free (nstring);
 	}
 	
@@ -991,7 +1002,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			struct _camel_header_raw *h;
 			CamelMimeParser *parser;
 			unsigned char *literal;
-			const char *str;
+			const char *refs, *str;
 			char *mlist;
 			size_t n;
 			
@@ -1065,10 +1076,10 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				}
 				
 				/* check for References: */
-				if ((str = camel_header_raw_find (&h, "References", NULL))) {
-					g_free (iinfo->info.references);
-					iinfo->info.references = decode_references (str, FALSE);
-				}
+				g_free (iinfo->info.references);
+				refs = camel_header_raw_find (&h, "References", NULL);
+				str = camel_header_raw_find (&h, "In-Reply-To", NULL);
+				iinfo->info.references = decode_references (refs, str);
 			default:
 				break;
 			}
@@ -1105,7 +1116,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 #define IMAP4_ALL "FLAGS INTERNALDATE RFC822.SIZE ENVELOPE"
 #define MAILING_LIST_HEADERS "List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe"
 
-#define BASE_HEADER_FIELDS "Content-Type References"
+#define BASE_HEADER_FIELDS "Content-Type References In-Reply-To"
 #define MORE_HEADER_FIELDS BASE_HEADER_FIELDS " " MAILING_LIST_HEADERS
 
 static CamelIMAP4Command *
