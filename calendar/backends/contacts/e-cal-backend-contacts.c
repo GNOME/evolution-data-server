@@ -962,6 +962,18 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
 }
 
+static ECalBackendSyncStatus
+e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
+{
+        ECalBackendContacts *cbcontacts;
+        ECalBackendContactsPrivate *priv;
+
+        cbcontacts = E_CAL_BACKEND_CONTACTS (backend);
+        priv = cbcontacts->priv;
+
+        return GNOME_Evolution_Calendar_PermissionDenied;
+}
+
 /* Class initialization function for the contacts backend */
 static void
 e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
@@ -985,6 +997,7 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
  	sync_class->get_static_capabilities_sync = e_cal_backend_contacts_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_contacts_open;
 	sync_class->remove_sync = e_cal_backend_contacts_remove;
+	sync_class->create_object_sync = e_cal_backend_contacts_create_object;
 	sync_class->discard_alarm_sync = e_cal_backend_contacts_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_contacts_receive_objects;
 	sync_class->send_objects_sync = e_cal_backend_contacts_send_objects;
