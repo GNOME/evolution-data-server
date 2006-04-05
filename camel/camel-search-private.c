@@ -368,6 +368,7 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 {
 	const unsigned char *p;
 	int vlen, mlen;
+	gunichar c;
 	
 	if (how == CAMEL_SEARCH_MATCH_SOUNDEX)
 		return header_soundex (value, match);
@@ -380,8 +381,8 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 	/* from dan the man, if we have mixed case, perform a case-sensitive match,
 	   otherwise not */
 	p = (const unsigned char *)match;
-	while (*p) {
-		if (isupper(*p)) {
+	while (c = camel_utf8_getc(&p)) {
+		if (g_unichar_isupper(c)) {
 			switch (how) {
 			case CAMEL_SEARCH_MATCH_EXACT:
 				return strcmp(value, match) == 0;
@@ -396,7 +397,6 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 			}
 			return FALSE;
 		}
-		p++;
 	}
 	
 	switch (how) {
@@ -420,13 +420,15 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 gboolean
 camel_search_header_match (const char *value, const char *match, camel_search_match_t how, camel_search_t type, const char *default_charset)
 {
-	const char *name, *addr;
+	const char *name, *addr, *ptr;
 	int truth = FALSE, i;
 	CamelInternetAddress *cia;
 	char *v, *vdom, *mdom;
+	gunichar c;
 
-	while (*value && isspace (*value))
-		value++;
+	ptr = value;
+	while ((c = camel_utf8_getc((const unsigned char **)&ptr)) && g_unichar_isspace(c))
+		value = ptr;
 	
 	switch(type) {
 	case CAMEL_SEARCH_TYPE_ENCODED:
