@@ -1,3 +1,12 @@
+2006-04-05  Irene Huang <Irene.Huang@sun.com>
+
+	Fixes bug 335225
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	(e_cal_backend_contacts_create_object),
+	(e_cal_backend_contacts_class_init): 
+	Add implementation of e_cal_backend_contacts_create_object.
+
 2006-04-03  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #158107
