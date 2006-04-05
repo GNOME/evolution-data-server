@@ -1,3 +1,12 @@
+2006-04-05  Simon Zheng  <simon.zheng@sun.com>
+
+	** Fixes bug #333698
+
+	* camel-search-private.c (header_match):
+	(camel_search_header_match):
+	To traverse strings by utf8 char order rather than one by one byte,
+	use camel_utf8_getc() and other utf8-specific routines instead.
+
 2006-03-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 272307
