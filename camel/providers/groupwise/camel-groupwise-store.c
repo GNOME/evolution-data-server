@@ -869,10 +869,6 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 				info = NULL;
 			}
 
-			if (store->current_folder && strcmp (store->current_folder->full_name, info->full_name) == 0) {
-				g_print ("Syncing up %s\n", info->full_name);
-				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (store->current_folder))->sync(store->current_folder, FALSE, ex);
-			}
 		}
 	}
 	
@@ -1041,6 +1037,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			}
 			CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		}*/
+		if (groupwise_store->current_folder)
+			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 		groupwise_folders_sync (groupwise_store, ex);
 	}
 
@@ -1055,6 +1053,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
 		/*	groupwise_store->list_loaded = TRUE;*/
+			if (groupwise_store->current_folder)
+				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 			groupwise_folders_sync (groupwise_store, ex);
 			if (camel_exception_is_set (ex)) {
 				CAMEL_SERVICE_UNLOCK (store, connect_lock);
