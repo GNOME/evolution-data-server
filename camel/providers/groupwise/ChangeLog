@@ -1,3 +1,9 @@
+2006-04-06 Parthasarathi Susarla  <sparthasarathi@novell.com>
+
+	* camel-groupwise-folder.c : (gw_update_cache)
+	Store the flags to the summary so that the markRead doesnot 
+	get called every time
+	
 2006-04-06  Parthasarathi  Susarla <sparthasarathi@novell.com>
 
 	* camel-groupwise-store.c :

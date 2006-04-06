@@ -1157,6 +1157,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
 		}
 
+		mi->server_flags = mi->info.flags;
+
 		attach_list = e_gw_item_get_attach_id_list (item);
 		if (attach_list)  {
 			GSList *al = attach_list;
