@@ -557,7 +557,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	char *container_id, *folder_dir, *storage_path;
 	EGwConnectionStatus status;
 	GList *list = NULL;
-	gboolean done = FALSE;
+	gboolean done = FALSE, all_ok = TRUE;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0;
 	CamelStoreInfo *si = NULL;
@@ -637,15 +637,18 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 							      cursor, FALSE, 
 							      CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
+				all_ok = FALSE;
+				break;
+				/*
 				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
-				camel_folder_summary_clear (folder->summary);
+				//camel_folder_summary_clear (folder->summary);
 				camel_folder_summary_save (folder->summary);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 				camel_operation_end (NULL);
 				camel_object_unref (folder);
 				g_free (container_id);
-				return NULL;
+				return NULL;*/
 			}
 			
 			count += g_list_length (list);
@@ -667,7 +670,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		camel_operation_end (NULL);
 	} 
 
-	if (done) {
+	if (done && all_ok) {
 		if (summary->time_string)
 			g_free (summary->time_string);
 		summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
@@ -917,6 +920,13 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 	CamelStoreInfo *si = NULL;
 	int count, i;
 
+	if (!priv->cnc && ((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
+		if (((CamelService *)store)->status == CAMEL_SERVICE_DISCONNECTED){
+			((CamelService *)store)->status = CAMEL_SERVICE_CONNECTING;
+			groupwise_connect ((CamelService *)store, ex);
+		}
+	}
+
 	status = e_gw_connection_get_container_list (priv->cnc, "folders", &folder_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("Could not get folder list..\n");
@@ -977,10 +987,6 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 				camel_folder_info_free (info);
 				info = NULL;
 			}
-		}
-		if (store->current_folder && strcmp (store->current_folder->full_name, info->full_name) == 0) {
-			g_print ("Syncing up %s\n", info->full_name);
-			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (store->current_folder))->sync(store->current_folder, FALSE, ex);
 		}
 	}
 	
@@ -1150,6 +1156,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 			}
 			CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		}*/
+		if (groupwise_store->current_folder)
+			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 		groupwise_folders_sync (groupwise_store, ex);
 	}
 
@@ -1163,6 +1171,8 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
 			groupwise_store->list_loaded = TRUE;
+			if (groupwise_store->current_folder)
+				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 			groupwise_folders_sync (groupwise_store, ex);
 			if (camel_exception_is_set (ex)) {
 				CAMEL_SERVICE_UNLOCK (store, connect_lock);
