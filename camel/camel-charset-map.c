@@ -141,7 +141,7 @@ int main (void)
 			}
 			if (j < 256) {
 				/* yes, dump it */
-				printf("static unsigned char m%02x%x[256] = {\n\t", i, k);
+				printf("static const unsigned char m%02x%x[256] = {\n\t", i, k);
 				for (j=0;j<256;j++) {
 					printf("0x%02x, ", (encoding_map[i*256+j] >> (k*8)) & 0xff );
 					if (((j+1)&7) == 0 && j<255)
@@ -152,9 +152,9 @@ int main (void)
 		}
 	}
 
-	printf("struct {\n");
+	printf("static const struct {\n");
 	for (k=0;k<bytes;k++) {
-		printf("\tunsigned char *bits%d;\n", k);
+		printf("\tconst unsigned char *bits%d;\n", k);
 	}
 	printf("} camel_charmap[256] = {\n\t");
 	for (i=0;i<256;i++) {
@@ -177,7 +177,7 @@ int main (void)
 	}
 	printf("\n};\n\n");
 
-	printf("struct {\n\tconst char *name;\n\tunsigned int bit;\n} camel_charinfo[] = {\n");
+	printf("static const struct {\n\tconst char *name;\n\tunsigned int bit;\n} camel_charinfo[] = {\n");
 	for (j=0;tables[j].name;j++) {
 		printf("\t{ \"%s\", 0x%04x },\n", tables[j].name, tables[j].bit);
 	}
