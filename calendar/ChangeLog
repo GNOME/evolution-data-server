@@ -1,3 +1,12 @@
+2006-04-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #162005
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_modify_object): pass the 
+	rid while getting the component.
+	(e_cal_backend_groupwise_remove_object): Compare only
+	if the rid is present.
+		
 2006-04-05  Irene Huang <Irene.Huang@sun.com>
 
 	Fixes bug 335225

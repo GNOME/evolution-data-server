@@ -1839,7 +1839,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalComponent *comp, *cache_comp = NULL;
 	EGwConnectionStatus status;
 	EGwItem *item, *cache_item;
-	const char *uid = NULL;
+	const char *uid = NULL, *rid = NULL;
 
 	*old_object = NULL;
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
@@ -1861,13 +1861,14 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
 	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
 
 	/* check if the object exists */
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
 		/* when online, send the item to the server */
-		cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
+		cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 		if (!cache_comp) {
 			g_message ("CRITICAL : Could not find the object in cache");
 			return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -2070,7 +2071,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 					e_cal_backend_cache_remove_component (priv->cache, id->uid, 
 							id->rid);
-					if (!g_str_equal (id->rid, rid))
+					if (!id->rid || !g_str_equal (id->rid, rid))
 						e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), id, e_cal_component_get_as_string (comp), NULL);
 					e_cal_component_free_id (id);
 					
