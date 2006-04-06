@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-05 11:27+0700\n"
-"PO-Revision-Date: 2006-03-05 11:53+0700\n"
+"POT-Creation-Date: 2006-04-06 10:14+0700\n"
+"PO-Revision-Date: 2006-04-06 10:15+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,15 +32,15 @@ msgstr "กำลังโหลด..."
 msgid "Searching..."
 msgstr "กำลังค้นหา..."
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2502
 #: addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "กำลังดาวน์โหลดที่อยู่ติดต่อ (%d)... "
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2655
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2835
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2877
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "กำลังอัพเดตแคชที่อยู่ติดต่อ (%d)..."
@@ -652,12 +652,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "ไมสามารถบันทึกข้อมูลปฏิทิน: รูปแบบ URI ที่ไม่ถูกต้อง"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: camel/providers/groupwise/camel-groupwise-folder.c:1467
+#: camel/providers/groupwise/camel-groupwise-folder.c:1544
 msgid "Reply Requested: by "
 msgstr "ต้องการการตอบกลับ: ภายใน "
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: camel/providers/groupwise/camel-groupwise-folder.c:1472
+#: camel/providers/groupwise/camel-groupwise-folder.c:1549
 msgid "Reply Requested: When convenient"
 msgstr "ต้องการการตอบกลับ: เมื่อสะดวก"
 
@@ -679,13 +679,13 @@ msgstr "URI ของเซิร์ฟเวอร์ไม่ถูกต้�
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:799
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:884
 #: calendar/libecal/e-cal.c:5137
-#: camel/providers/groupwise/camel-groupwise-folder.c:902
-#: camel/providers/groupwise/camel-groupwise-folder.c:922
-#: camel/providers/groupwise/camel-groupwise-folder.c:950
-#: camel/providers/groupwise/camel-groupwise-store.c:574
-#: camel/providers/groupwise/camel-groupwise-store.c:589
-#: camel/providers/groupwise/camel-groupwise-store.c:630
-#: camel/providers/groupwise/camel-groupwise-store.c:1120
+#: camel/providers/groupwise/camel-groupwise-folder.c:933
+#: camel/providers/groupwise/camel-groupwise-folder.c:956
+#: camel/providers/groupwise/camel-groupwise-folder.c:991
+#: camel/providers/groupwise/camel-groupwise-store.c:586
+#: camel/providers/groupwise/camel-groupwise-store.c:601
+#: camel/providers/groupwise/camel-groupwise-store.c:642
+#: camel/providers/groupwise/camel-groupwise-store.c:1145
 #: camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "การยืนยันตัวบุคคลล้มเหลว"
@@ -1326,7 +1326,6 @@ msgid "Preparing folder '%s' for offline"
 msgstr "กำลังเตรียมโฟลเดอร์ '%s' สำหรับออฟไลน์"
 
 #: camel/camel-disco-store.c:401
-#: camel/providers/groupwise/camel-groupwise-store.c:1311
 #: camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
 msgstr "คุณจะต้องทำงานแบบออนไลน์เพื่อให้ปฏิบัติการนี้สมบูรณ์"
@@ -1891,8 +1890,7 @@ msgstr "ตัวเลือกนี้จะเชื่อมต่อไป
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr ""
-"กลไกที่ระบุ ไม่สามารถใช้กับข้อมูลลับที่ได้มา หรือตัวโปรแกรมยังไม่รู้จัก"
+msgstr "กลไกที่ระบุ ไม่สามารถใช้กับข้อมูลลับที่ได้มา หรือตัวโปรแกรมยังไม่รู้จัก"
 
 #: camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
@@ -2554,7 +2552,7 @@ msgstr ""
 msgid "No such message"
 msgstr "ไม่มีข้อความดังกล่าว"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:128
+#: camel/providers/groupwise/camel-groupwise-folder.c:129
 #: camel/providers/imap4/camel-imap4-folder.c:788
 #: camel/providers/nntp/camel-nntp-folder.c:155
 #: camel/providers/nntp/camel-nntp-folder.c:231
@@ -2566,7 +2564,7 @@ msgstr "ไม่มีข้อความดังกล่าว"
 msgid "User cancelled"
 msgstr "ผูใช้ยกเลิก"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:135
+#: camel/providers/groupwise/camel-groupwise-folder.c:136
 #: camel/providers/imap4/camel-imap4-folder.c:793
 #: camel/providers/nntp/camel-nntp-folder.c:146
 #: camel/providers/nntp/camel-nntp-folder.c:148
@@ -2580,39 +2578,39 @@ msgstr "ผูใช้ยกเลิก"
 msgid "Cannot get message %s: %s"
 msgstr "ไม่สามารถดูข้อความ %s: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:152
-#: camel/providers/groupwise/camel-groupwise-folder.c:160
+#: camel/providers/groupwise/camel-groupwise-folder.c:153
+#: camel/providers/groupwise/camel-groupwise-folder.c:161
 #: camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "ข้อความนี้ ไม่สามารถอ่านได้ขณะออฟไลน์"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:171
-#: camel/providers/groupwise/camel-groupwise-folder.c:178
-#: camel/providers/groupwise/camel-groupwise-folder.c:1430
+#: camel/providers/groupwise/camel-groupwise-folder.c:172
+#: camel/providers/groupwise/camel-groupwise-folder.c:179
+#: camel/providers/groupwise/camel-groupwise-folder.c:1507
 msgid "Could not get message"
 msgstr "ไม่สามารถดูข้อความ"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:707
+#: camel/providers/groupwise/camel-groupwise-folder.c:710
 #: camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "ไม่สามารถโหลดข้อมูลสรุปสำหรับ %s ได้"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1037
-#: camel/providers/groupwise/camel-groupwise-store.c:618
+#: camel/providers/groupwise/camel-groupwise-folder.c:1092
+#: camel/providers/groupwise/camel-groupwise-store.c:630
 #: camel/providers/imap/camel-imap-folder.c:2375
 #: camel/providers/imap/camel-imap-folder.c:2445
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "กำลังดึงข้อมูลสรุปสำหรับข้อความใหม่ใน %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1668
-#: camel/providers/groupwise/camel-groupwise-folder.c:1716
+#: camel/providers/groupwise/camel-groupwise-folder.c:1745
+#: camel/providers/groupwise/camel-groupwise-folder.c:1793
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ไม่สามารถแนบข้อความไปยังโฟลเดอร์ `%s': %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1704
+#: camel/providers/groupwise/camel-groupwise-folder.c:1781
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "ไม่สามารถสร้างข้อความ: %s"
@@ -2716,40 +2714,40 @@ msgstr "คุณไม่ได้ป้อนรหัสผ่าน"
 msgid "Unable to authenticate to GroupWise server."
 msgstr "ไม่สามารถยืนยันตัวบุคคลไปยังเซิร์ฟเวอร์ GroupWise"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:298
+#: camel/providers/groupwise/camel-groupwise-store.c:301
 msgid "Some features may not work correctly with your current server version"
 msgstr "รุ่นของเซิร์ฟเวอร์ปัจจุบันอาจจะทำให้คุณลักษณะบางอย่างทำงานอย่างไม่ถูกต้อง"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:526
+#: camel/providers/groupwise/camel-groupwise-store.c:538
 #: camel/providers/imap/camel-imap-store.c:1873
 #: camel/providers/imap/camel-imap-store.c:2064
 #, c-format
 msgid "No such folder %s"
 msgstr "ไม่มีโฟลเดอร์ %s ที่อ้าง"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1097
+#: camel/providers/groupwise/camel-groupwise-store.c:1122
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ไม่สามารถสร้างโฟลเดอร์ GroupWise ขณะออฟไลน์"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1111
+#: camel/providers/groupwise/camel-groupwise-store.c:1136
 #: camel/providers/imap/camel-imap-store.c:1948
 #: camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "โฟลเดอร์ระดับบนไม่อนุญาตให้สร้างโฟลเดอร์ย่อย"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1188
-#: camel/providers/groupwise/camel-groupwise-store.c:1209
+#: camel/providers/groupwise/camel-groupwise-store.c:1213
+#: camel/providers/groupwise/camel-groupwise-store.c:1234
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ Groupwise จาก`%s' ไปเป็น `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1241
+#: camel/providers/groupwise/camel-groupwise-store.c:1266
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "เซิร์ฟเวอร์ GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1243
+#: camel/providers/groupwise/camel-groupwise-store.c:1268
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "บริการ GroupWise สำหรับ %s บน %s"
@@ -3265,7 +3263,7 @@ msgstr "ไม่สามารถยืนยันตัวบุคคลก
 #: camel/providers/imap4/camel-imap4-store.c:535
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr "%sกรุณาป้อนรหัสผ่าน IMAP สำหรับ %s บนโฮสต์ %s"
+msgstr "%sกรุณาป้อนรหัสผ่าน IMAP สำหรับ %s ที่โฮสต์ %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:602
 #, c-format
@@ -4211,7 +4209,7 @@ msgstr "ไม่สามารถยืนยันตัวบุคคลบ
 #: camel/providers/pop3/camel-pop3-store.c:475
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
-msgstr "%sกรุณาป้อนรหัสผ่าน  POP สำหรับ %s บนโฮสต์ %s"
+msgstr "%sกรุณาป้อนรหัสผ่าน POP สำหรับ %s ที่โฮสต์ %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:530
 #: camel/providers/pop3/camel-pop3-store.c:543
@@ -4416,7 +4414,7 @@ msgstr "เซิร์ฟเวอร์ SMTP %s ไม่สนับสนุ
 #: camel/providers/smtp/camel-smtp-transport.c:526
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
-msgstr "%s กรุณาป้อนรหัสผ่าน SMTP สำหรับ %s บนโฮสต์ %s"
+msgstr "%s กรุณาป้อนรหัสผ่าน SMTP สำหรับ %s ที่โฮสต์ %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
@@ -4859,13 +4857,13 @@ msgid "_Search:"
 msgstr "_ค้นหา:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: libedataserverui/e-name-selector-entry.c:1947
+#: libedataserverui/e-name-selector-entry.c:1997
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "กระ_จาย %s ในบรรทัด"
 
 #. Edit Contact item
-#: libedataserverui/e-name-selector-entry.c:1963
+#: libedataserverui/e-name-selector-entry.c:2013
 #, c-format
 msgid "_Edit %s"
 msgstr "แ_ก้ไข %s"
@@ -4892,13 +4890,13 @@ msgstr "เลือกปลายทาง"
 msgid "_Destination"
 msgstr "_ปลายทาง"
 
-#: servers/exchange/lib/e2k-autoconfig.c:1636
+#: servers/exchange/lib/e2k-autoconfig.c:1639
 #: servers/exchange/storage/exchange-account.c:932
 #, c-format
 msgid "Enter password for %s"
 msgstr "ป้อนรหัสผ่านสำหรับ %s"
 
-#: servers/exchange/lib/e2k-autoconfig.c:1637
+#: servers/exchange/lib/e2k-autoconfig.c:1640
 #: servers/exchange/storage/exchange-account.c:937
 msgid "Enter password"
 msgstr "ป้อนรหัสผ่าน"
