@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-05 11:27+0700\n"
-"PO-Revision-Date: 2006-03-05 11:53+0700\n"
+"POT-Creation-Date: 2006-04-06 10:48+0700\n"
+"PO-Revision-Date: 2006-04-06 10:51+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,15 +32,15 @@ msgstr "กำลังโหลด..."
 msgid "Searching..."
 msgstr "กำลังค้นหา..."
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2502
 #: addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "กำลังดาวน์โหลดที่อยู่ติดต่อ (%d)... "
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2655
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2835
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2877
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "กำลังอัพเดตแคชที่อยู่ติดต่อ (%d)..."
@@ -652,56 +652,58 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "ไมสามารถบันทึกข้อมูลปฏิทิน: รูปแบบ URI ที่ไม่ถูกต้อง"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: camel/providers/groupwise/camel-groupwise-folder.c:1467
+#: camel/providers/groupwise/camel-groupwise-folder.c:1536
 msgid "Reply Requested: by "
 msgstr "ต้องการการตอบกลับ: ภายใน "
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: camel/providers/groupwise/camel-groupwise-folder.c:1472
+#: camel/providers/groupwise/camel-groupwise-folder.c:1541
 msgid "Reply Requested: When convenient"
 msgstr "ต้องการการตอบกลับ: เมื่อสะดวก"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:191
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:193
 #, c-format
 msgid "Loading %s items"
 msgstr "กำลังโหลดรายการ %s"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:718
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:719
 #: servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "ปฏิทิน"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:774
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:775
 msgid "Invalid server URI"
 msgstr "URI ของเซิร์ฟเวอร์ไม่ถูกต้อง"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:790
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:799
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:884
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:791
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:800
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:885
 #: calendar/libecal/e-cal.c:5137
-#: camel/providers/groupwise/camel-groupwise-folder.c:902
-#: camel/providers/groupwise/camel-groupwise-folder.c:922
-#: camel/providers/groupwise/camel-groupwise-folder.c:950
-#: camel/providers/groupwise/camel-groupwise-store.c:574
-#: camel/providers/groupwise/camel-groupwise-store.c:589
-#: camel/providers/groupwise/camel-groupwise-store.c:630
-#: camel/providers/groupwise/camel-groupwise-store.c:1120
+#: camel/providers/groupwise/camel-groupwise-folder.c:924
+#: camel/providers/groupwise/camel-groupwise-folder.c:947
+#: camel/providers/groupwise/camel-groupwise-folder.c:982
+#: camel/providers/groupwise/camel-groupwise-store.c:588
+#: camel/providers/groupwise/camel-groupwise-store.c:603
+#: camel/providers/groupwise/camel-groupwise-store.c:644
+#: camel/providers/groupwise/camel-groupwise-store.c:712
+#: camel/providers/groupwise/camel-groupwise-store.c:754
+#: camel/providers/groupwise/camel-groupwise-store.c:1253
 #: camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "การยืนยันตัวบุคคลล้มเหลว"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:840
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:841
 msgid "Could not create thread for getting deltas"
 msgstr "ไม่สามารถสร้างเธรดเพื่ออ่านส่วนที่เปลี่ยนแปลง"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:865
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1112
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:866
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
 #: calendar/backends/http/e-cal-backend-http.c:520
 #: calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "ไม่สามารถสร้างแฟ้มแคช"
 
-#: calendar/backends/groupwise/e-cal-backend-groupwise.c:878
+#: calendar/backends/groupwise/e-cal-backend-groupwise.c:879
 msgid "Could not create thread for populating cache"
 msgstr "ไม่สามารถสร้างเธรดเพื่อเติมข้อมูลในแคช"
 
@@ -1082,11 +1084,11 @@ msgstr "แหล่งเก็บข้อมูลไม่ได้เชื
 msgid "No such calendar"
 msgstr "ไม่มีปฏิทินดังกล่าว"
 
-#: calendar/libecal/e-cal.c:5117 servers/groupwise/e-gw-connection.c:172
+#: calendar/libecal/e-cal.c:5117 servers/groupwise/e-gw-connection.c:173
 msgid "Object not found"
 msgstr "ไม่พบวัตถุ"
 
-#: calendar/libecal/e-cal.c:5119 servers/groupwise/e-gw-connection.c:166
+#: calendar/libecal/e-cal.c:5119 servers/groupwise/e-gw-connection.c:167
 msgid "Invalid object"
 msgstr "วัตถุไม่ถูกต้อง"
 
@@ -1103,7 +1105,7 @@ msgstr "โหลด URI เรียบร้อย"
 msgid "Permission denied"
 msgstr "ไม่ได้รับอนุญาต"
 
-#: calendar/libecal/e-cal.c:5127 servers/groupwise/e-gw-connection.c:174
+#: calendar/libecal/e-cal.c:5127 servers/groupwise/e-gw-connection.c:175
 msgid "Unknown User"
 msgstr "ผู้ใช้ที่ไม่รู้จัก"
 
@@ -1141,7 +1143,7 @@ msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 #: camel/providers/pop3/camel-pop3-store.c:540
 #: camel/providers/pop3/camel-pop3-store.c:546
 #: servers/exchange/storage/e-storage.c:586
-#: servers/groupwise/e-gw-connection.c:180
+#: servers/groupwise/e-gw-connection.c:181
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
@@ -1326,7 +1328,6 @@ msgid "Preparing folder '%s' for offline"
 msgstr "กำลังเตรียมโฟลเดอร์ '%s' สำหรับออฟไลน์"
 
 #: camel/camel-disco-store.c:401
-#: camel/providers/groupwise/camel-groupwise-store.c:1311
 #: camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
 msgstr "คุณจะต้องทำงานแบบออนไลน์เพื่อให้ปฏิบัติการนี้สมบูรณ์"
@@ -1612,8 +1613,8 @@ msgstr "ไม่สามารถแจงเนื้อหาข้อคว
 #: camel/providers/imap4/camel-imap4-engine.c:1589
 #: camel/providers/imap4/camel-imap4-engine.c:1634
 #: camel/providers/imap4/camel-imap4-engine.c:1690
-#: camel/providers/imap4/camel-imap4-store.c:886
-#: camel/providers/imap4/camel-imap4-store.c:1559
+#: camel/providers/imap4/camel-imap4-store.c:888
+#: camel/providers/imap4/camel-imap4-store.c:1561
 #: camel/providers/imap4/camel-imap4-utils.c:575
 #: camel/providers/smtp/camel-smtp-transport.c:160
 #: camel/providers/smtp/camel-smtp-transport.c:215
@@ -1891,8 +1892,7 @@ msgstr "ตัวเลือกนี้จะเชื่อมต่อไป
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr ""
-"กลไกที่ระบุ ไม่สามารถใช้กับข้อมูลลับที่ได้มา หรือตัวโปรแกรมยังไม่รู้จัก"
+msgstr "กลไกที่ระบุ ไม่สามารถใช้กับข้อมูลลับที่ได้มา หรือตัวโปรแกรมยังไม่รู้จัก"
 
 #: camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
@@ -2536,7 +2536,7 @@ msgstr "ไมสามารถคัดลอกข้อความไปย
 msgid "Cannot copy messages to the Junk folder"
 msgstr "ไม่สามารถคัดลอกข้อความไปยังโฟลเดอร์เมลขยะ "
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:116
+#: camel/providers/groupwise/camel-groupwise-folder.c:111
 #: camel/providers/imap/camel-imap-folder.c:2063
 #, c-format
 msgid ""
@@ -2546,15 +2546,15 @@ msgstr ""
 "ไม่สามารถดูข้อความ: %s\n"
 "  %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:116
+#: camel/providers/groupwise/camel-groupwise-folder.c:111
 #: camel/providers/imap/camel-imap-folder.c:2063
 #: camel/providers/local/camel-maildir-folder.c:245
-#: camel/providers/local/camel-mbox-folder.c:350
+#: camel/providers/local/camel-mbox-folder.c:351
 #: camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
 msgstr "ไม่มีข้อความดังกล่าว"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:128
+#: camel/providers/groupwise/camel-groupwise-folder.c:123
 #: camel/providers/imap4/camel-imap4-folder.c:788
 #: camel/providers/nntp/camel-nntp-folder.c:155
 #: camel/providers/nntp/camel-nntp-folder.c:231
@@ -2566,7 +2566,7 @@ msgstr "ไม่มีข้อความดังกล่าว"
 msgid "User cancelled"
 msgstr "ผูใช้ยกเลิก"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:135
+#: camel/providers/groupwise/camel-groupwise-folder.c:130
 #: camel/providers/imap4/camel-imap4-folder.c:793
 #: camel/providers/nntp/camel-nntp-folder.c:146
 #: camel/providers/nntp/camel-nntp-folder.c:148
@@ -2580,39 +2580,40 @@ msgstr "ผูใช้ยกเลิก"
 msgid "Cannot get message %s: %s"
 msgstr "ไม่สามารถดูข้อความ %s: %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:152
-#: camel/providers/groupwise/camel-groupwise-folder.c:160
+#: camel/providers/groupwise/camel-groupwise-folder.c:147
+#: camel/providers/groupwise/camel-groupwise-folder.c:155
 #: camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "ข้อความนี้ ไม่สามารถอ่านได้ขณะออฟไลน์"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:171
-#: camel/providers/groupwise/camel-groupwise-folder.c:178
-#: camel/providers/groupwise/camel-groupwise-folder.c:1430
+#: camel/providers/groupwise/camel-groupwise-folder.c:166
+#: camel/providers/groupwise/camel-groupwise-folder.c:173
+#: camel/providers/groupwise/camel-groupwise-folder.c:1499
 msgid "Could not get message"
 msgstr "ไม่สามารถดูข้อความ"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:707
+#: camel/providers/groupwise/camel-groupwise-folder.c:700
 #: camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "ไม่สามารถโหลดข้อมูลสรุปสำหรับ %s ได้"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1037
-#: camel/providers/groupwise/camel-groupwise-store.c:618
+#: camel/providers/groupwise/camel-groupwise-folder.c:1083
+#: camel/providers/groupwise/camel-groupwise-store.c:632
+#: camel/providers/groupwise/camel-groupwise-store.c:744
 #: camel/providers/imap/camel-imap-folder.c:2375
 #: camel/providers/imap/camel-imap-folder.c:2445
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "กำลังดึงข้อมูลสรุปสำหรับข้อความใหม่ใน %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1668
-#: camel/providers/groupwise/camel-groupwise-folder.c:1716
+#: camel/providers/groupwise/camel-groupwise-folder.c:1767
+#: camel/providers/groupwise/camel-groupwise-folder.c:1815
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ไม่สามารถแนบข้อความไปยังโฟลเดอร์ `%s': %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1704
+#: camel/providers/groupwise/camel-groupwise-folder.c:1803
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "ไม่สามารถสร้างข้อความ: %s"
@@ -2702,54 +2703,54 @@ msgstr "ต้วเลือกนี้จะเชื่อมต่อไป
 msgid "Host or user not available in url"
 msgstr "โฮสต์หรือผู้ใช้ไม่สามารถใช้งานได้ใน url"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:198
+#: camel/providers/groupwise/camel-groupwise-store.c:200
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sกรุณาป้อนรหัสผ่าน GroupWise สำหรับ %s@%s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:212
+#: camel/providers/groupwise/camel-groupwise-store.c:214
 #: camel/providers/imap/camel-imap-store.c:1364
 msgid "You didn't enter a password."
 msgstr "คุณไม่ได้ป้อนรหัสผ่าน"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:224
+#: camel/providers/groupwise/camel-groupwise-store.c:226
 msgid "Unable to authenticate to GroupWise server."
 msgstr "ไม่สามารถยืนยันตัวบุคคลไปยังเซิร์ฟเวอร์ GroupWise"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:298
+#: camel/providers/groupwise/camel-groupwise-store.c:304
 msgid "Some features may not work correctly with your current server version"
 msgstr "รุ่นของเซิร์ฟเวอร์ปัจจุบันอาจจะทำให้คุณลักษณะบางอย่างทำงานอย่างไม่ถูกต้อง"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:526
+#: camel/providers/groupwise/camel-groupwise-store.c:540
 #: camel/providers/imap/camel-imap-store.c:1873
 #: camel/providers/imap/camel-imap-store.c:2064
 #, c-format
 msgid "No such folder %s"
 msgstr "ไม่มีโฟลเดอร์ %s ที่อ้าง"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1097
+#: camel/providers/groupwise/camel-groupwise-store.c:1230
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ไม่สามารถสร้างโฟลเดอร์ GroupWise ขณะออฟไลน์"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1111
+#: camel/providers/groupwise/camel-groupwise-store.c:1244
 #: camel/providers/imap/camel-imap-store.c:1948
 #: camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "โฟลเดอร์ระดับบนไม่อนุญาตให้สร้างโฟลเดอร์ย่อย"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1188
-#: camel/providers/groupwise/camel-groupwise-store.c:1209
+#: camel/providers/groupwise/camel-groupwise-store.c:1321
+#: camel/providers/groupwise/camel-groupwise-store.c:1342
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ Groupwise จาก`%s' ไปเป็น `%s'"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1241
+#: camel/providers/groupwise/camel-groupwise-store.c:1374
 #: camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "เซิร์ฟเวอร์ GroupWise %s"
 
-#: camel/providers/groupwise/camel-groupwise-store.c:1243
+#: camel/providers/groupwise/camel-groupwise-store.c:1376
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "บริการ GroupWise สำหรับ %s บน %s"
@@ -3073,7 +3074,7 @@ msgstr "ไม่สามารถเชื่อมต่อด้วยคำ
 #: camel/providers/imap/camel-imap-store.c:1057
 #: camel/providers/imap/camel-imap-store.c:2413
 #: camel/providers/imap4/camel-imap4-store-summary.c:368
-#: camel/providers/imap4/camel-imap4-store.c:1392
+#: camel/providers/imap4/camel-imap4-store.c:1394
 #: camel/providers/local/camel-maildir-folder.c:75
 #: camel/providers/local/camel-maildir-store.c:217
 #: camel/providers/local/camel-maildir-store.c:289
@@ -3114,7 +3115,7 @@ msgstr ""
 
 #: camel/providers/imap/camel-imap-store.c:1885
 #: camel/providers/imap/camel-imap-store.c:2255
-#: camel/providers/imap4/camel-imap4-store.c:1022
+#: camel/providers/imap4/camel-imap4-store.c:1024
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -3122,7 +3123,7 @@ msgstr "ชื่อโฟลเดอร์ \"%s\" ไม่ถูกต้อ�
 
 #: camel/providers/imap/camel-imap-store.c:2002
 #: camel/providers/local/camel-maildir-store.c:190
-#: camel/providers/local/camel-mbox-store.c:202
+#: camel/providers/local/camel-mbox-store.c:203
 #: camel/providers/local/camel-mh-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
@@ -3265,119 +3266,119 @@ msgstr "ไม่สามารถยืนยันตัวบุคคลก
 #: camel/providers/imap4/camel-imap4-store.c:535
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr "%sกรุณาป้อนรหัสผ่าน IMAP สำหรับ %s บนโฮสต์ %s"
+msgstr "%sกรุณาป้อนรหัสผ่าน IMAP สำหรับ %s ที่โฮสต์ %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:602
+#: camel/providers/imap4/camel-imap4-store.c:603
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "ไม่สามารถยืนยันตัวบุคคลกับเซิร์ฟเวอร์ IMAP %s ด้วย %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:764
-#: camel/providers/imap4/camel-imap4-store.c:1032
+#: camel/providers/imap4/camel-imap4-store.c:766
+#: camel/providers/imap4/camel-imap4-store.c:1034
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "ไม่สามารถสร้างโฟลเดอร์ IMAP ขณะออฟไลน์"
 
-#: camel/providers/imap4/camel-imap4-store.c:803
+#: camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "ไม่สามารถดูโฟลเดอร์ `%s' บนเซิร์ฟเวอร์ IMAP %s: ไม่รู้จัก"
 
-#: camel/providers/imap4/camel-imap4-store.c:884
+#: camel/providers/imap4/camel-imap4-store.c:886
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr "ไม่สามารถดูข้อมูล LIST สำหรับ `%s' บนเซิร์ฟเวอร์ IMAP %s: %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:886
-#: camel/providers/imap4/camel-imap4-store.c:1559
+#: camel/providers/imap4/camel-imap4-store.c:888
+#: camel/providers/imap4/camel-imap4-store.c:1561
 msgid "Bad command"
 msgstr "คำสั่งที่ใช้ไม่ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:965
+#: camel/providers/imap4/camel-imap4-store.c:967
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "ไม่สามารถสร้างโฟลเดอร์ `%s': ชื่อกล่องจดหมายไม่ถูกต้อง"
 
-#: camel/providers/imap4/camel-imap4-store.c:970
+#: camel/providers/imap4/camel-imap4-store.c:972
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "ไม่สามารถสร้างโฟลเดอร์ `%s': คำสั่งใช้ไม่ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:1076
+#: camel/providers/imap4/camel-imap4-store.c:1078
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "ไม่สามารถลบโฟลเดอร์ `%s': โฟลเดอร์พิเศษ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1083
+#: camel/providers/imap4/camel-imap4-store.c:1085
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "ไม่สามารถลบโฟลเดอร์ IMAP ขณะออฟไลน์ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:1142
+#: camel/providers/imap4/camel-imap4-store.c:1144
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "ไม่สามารถลบโฟลเดอร์ `%s': ชื่อกล่องจดหมายไม่ถูกต้อง"
 
-#: camel/providers/imap4/camel-imap4-store.c:1147
+#: camel/providers/imap4/camel-imap4-store.c:1149
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "ไม่สามารถลบโฟลเดอร์`%s': คำสั่งใช้ไม่ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:1167
+#: camel/providers/imap4/camel-imap4-store.c:1169
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์`%s' ไปเป็น `%s': โฟลเดอร์พิเศษ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1174
+#: camel/providers/imap4/camel-imap4-store.c:1176
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ IMAP ขณะออฟไลน์ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:1205
+#: camel/providers/imap4/camel-imap4-store.c:1207
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ `%s' ไปเป็น `%s': ชื่อกล่องจดหมายไม่ถูกต้อง"
 
-#: camel/providers/imap4/camel-imap4-store.c:1210
+#: camel/providers/imap4/camel-imap4-store.c:1212
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ `%s' ไปเป็น `%s': คำสั่งใช้ไม่ได้"
 
-#: camel/providers/imap4/camel-imap4-store.c:1557
+#: camel/providers/imap4/camel-imap4-store.c:1559
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "ไม่สามารถดูข้อมูล %s สำหรับแพทเทิร์น `%s' บนเซิร์ฟเวอร์ IMAP %s: %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:1597
+#: camel/providers/imap4/camel-imap4-store.c:1599
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ IMAP ในโหมดออฟไลน์"
 
-#: camel/providers/imap4/camel-imap4-store.c:1642
+#: camel/providers/imap4/camel-imap4-store.c:1644
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ `%s': ชื่อกล่องจดหมายผิดรูปแบบ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1647
+#: camel/providers/imap4/camel-imap4-store.c:1649
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
-#: camel/providers/imap4/camel-imap4-store.c:1669
+#: camel/providers/imap4/camel-imap4-store.c:1671
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ IMAP ในโหมดออฟไลน์"
 
-#: camel/providers/imap4/camel-imap4-store.c:1714
+#: camel/providers/imap4/camel-imap4-store.c:1716
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ `%s': ชื่อกล่องจดหมายผิดรูปแบบ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1719
+#: camel/providers/imap4/camel-imap4-store.c:1721
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ `%s': คำสั่งผิดพลาด"
 
-#: camel/providers/imap4/camel-imap4-summary.c:1472
+#: camel/providers/imap4/camel-imap4-summary.c:1483
 msgid "Scanning for changed messages"
 msgstr "กำลังตรวจหาข้อความที่เปลี่ยนแปลง"
 
-#: camel/providers/imap4/camel-imap4-summary.c:1497
+#: camel/providers/imap4/camel-imap4-summary.c:1508
 msgid "Fetching envelopes for new messages"
 msgstr "กำลังดึงซองจดหมายของข้อความใหม่"
 
@@ -3504,7 +3505,7 @@ msgstr ""
 
 #: camel/providers/local/camel-local-store.c:156
 #: camel/providers/local/camel-local-store.c:267
-#: camel/providers/local/camel-mbox-store.c:345
+#: camel/providers/local/camel-mbox-store.c:346
 #: camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -3542,19 +3543,19 @@ msgid "Could not rename '%s': %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อ '%s': %s"
 
 #: camel/providers/local/camel-local-store.c:446
-#: camel/providers/local/camel-mbox-store.c:274
+#: camel/providers/local/camel-mbox-store.c:275
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "ไม่สามารถลบแฟ้มสรุปโฟลเดอร์ `%s': %s"
 
 #: camel/providers/local/camel-local-store.c:456
-#: camel/providers/local/camel-mbox-store.c:286
+#: camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
 msgstr "ไม่สามารถลบแฟ้มดัชนีโฟลเดอร์ `%s': %s"
 
 #: camel/providers/local/camel-local-store.c:479
-#: camel/providers/local/camel-mbox-store.c:310
+#: camel/providers/local/camel-mbox-store.c:311
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr ""
@@ -3580,10 +3581,10 @@ msgstr "ไม่สามารถเพิ่มข้อมูลต่อท
 #: camel/providers/local/camel-maildir-folder.c:244
 #: camel/providers/local/camel-maildir-folder.c:258
 #: camel/providers/local/camel-maildir-folder.c:267
-#: camel/providers/local/camel-mbox-folder.c:349
-#: camel/providers/local/camel-mbox-folder.c:368
-#: camel/providers/local/camel-mbox-folder.c:399
-#: camel/providers/local/camel-mbox-folder.c:407
+#: camel/providers/local/camel-mbox-folder.c:350
+#: camel/providers/local/camel-mbox-folder.c:369
+#: camel/providers/local/camel-mbox-folder.c:400
+#: camel/providers/local/camel-mbox-folder.c:408
 #: camel/providers/local/camel-mh-folder.c:202
 #: camel/providers/local/camel-mh-folder.c:213
 #: camel/providers/local/camel-mh-folder.c:222
@@ -3601,21 +3602,21 @@ msgstr "เนื้อหาข้อความไม่ถูกต้อง
 
 #: camel/providers/local/camel-maildir-store.c:146
 #: camel/providers/local/camel-maildir-store.c:171
-#: camel/providers/local/camel-mbox-store.c:174
-#: camel/providers/local/camel-mbox-store.c:186
+#: camel/providers/local/camel-mbox-store.c:175
+#: camel/providers/local/camel-mbox-store.c:187
 #, c-format
 msgid "Cannot create folder `%s': %s"
 msgstr "ไม่สามารถสร้างโฟลเดอร์ `%s': %s"
 
 #: camel/providers/local/camel-maildir-store.c:159
-#: camel/providers/local/camel-mbox-store.c:145
+#: camel/providers/local/camel-mbox-store.c:146
 #: camel/providers/local/camel-mh-store.c:217
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "ไม่สามารถดูโฟลเดอร์ `%s': %s"
 
 #: camel/providers/local/camel-maildir-store.c:163
-#: camel/providers/local/camel-mbox-store.c:153
+#: camel/providers/local/camel-mbox-store.c:154
 #: camel/providers/local/camel-mh-store.c:224
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
@@ -3659,55 +3660,55 @@ msgid "Checking for new messages"
 msgstr "กำลังตรวจสอบข้อความใหม่"
 
 #: camel/providers/local/camel-maildir-summary.c:741
-#: camel/providers/local/camel-mbox-summary.c:415
-#: camel/providers/local/camel-mbox-summary.c:588
-#: camel/providers/local/camel-mbox-summary.c:683
+#: camel/providers/local/camel-mbox-summary.c:416
+#: camel/providers/local/camel-mbox-summary.c:589
+#: camel/providers/local/camel-mbox-summary.c:684
 #: camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr ""
 
-#: camel/providers/local/camel-mbox-folder.c:155
+#: camel/providers/local/camel-mbox-folder.c:156
 #: camel/providers/local/camel-spool-folder.c:148
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "ไม่สามารถสร้างแฟ้มสำหรับล็อคโฟลเดอร์ที่ %s: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:216
+#: camel/providers/local/camel-mbox-folder.c:217
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "ไม่สามารถเปิดกล่องจดหมาย: %s: %s\n"
 
-#: camel/providers/local/camel-mbox-folder.c:276
+#: camel/providers/local/camel-mbox-folder.c:277
 msgid "Mail append cancelled"
 msgstr "การเพิ่มเมลต่อท้ายถูกยกเลิก"
 
-#: camel/providers/local/camel-mbox-folder.c:279
+#: camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "ไม่สามารถเพิ่มข้อความต่อท้ายแฟ้ม mbox: %s: %s"
 
-#: camel/providers/local/camel-mbox-folder.c:400
+#: camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "โฟลเดอร์เสียหายจนกู้คืนไม่ได้"
 
-#: camel/providers/local/camel-mbox-folder.c:408
+#: camel/providers/local/camel-mbox-folder.c:409
 #: camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
 msgstr "สร้างข้อความไม่สำเร็จ"
 
-#: camel/providers/local/camel-mbox-store.c:164
-#: camel/providers/local/camel-mbox-store.c:351
+#: camel/providers/local/camel-mbox-store.c:165
+#: camel/providers/local/camel-mbox-store.c:352
 msgid "Cannot create a folder by this name."
 msgstr "ไม่สามารถสร้างโฟลเดอร์ด้วยชื่อนี้ได้"
 
-#: camel/providers/local/camel-mbox-store.c:196
+#: camel/providers/local/camel-mbox-store.c:197
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
 msgstr "ไม่สามารถอ่านข้อมูลจากโฟลเดอร์ `%s': ไม่ใช่แฟ้มปกติ"
 
-#: camel/providers/local/camel-mbox-store.c:226
-#: camel/providers/local/camel-mbox-store.c:237
-#: camel/providers/local/camel-mbox-store.c:260
+#: camel/providers/local/camel-mbox-store.c:227
+#: camel/providers/local/camel-mbox-store.c:238
+#: camel/providers/local/camel-mbox-store.c:261
 #, c-format
 msgid ""
 "Could not delete folder `%s':\n"
@@ -3716,114 +3717,114 @@ msgstr ""
 "ไม่สามารถลบโฟลเดอร์ `%s':\n"
 "%s"
 
-#: camel/providers/local/camel-mbox-store.c:245
+#: camel/providers/local/camel-mbox-store.c:246
 #, c-format
 msgid "`%s' is not a regular file."
 msgstr "`%s' ไม่ใช่แฟ้มปกติ"
 
-#: camel/providers/local/camel-mbox-store.c:252
+#: camel/providers/local/camel-mbox-store.c:253
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "โฟลเดอร์ `%s' ยังมีข้อมูลอยู่ จึงไม่ลบโฟลเดอร์"
 
-#: camel/providers/local/camel-mbox-store.c:364
+#: camel/providers/local/camel-mbox-store.c:365
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "ไม่สามารถสร้างไดเรกทอรี `%s': %s"
 
-#: camel/providers/local/camel-mbox-store.c:378
+#: camel/providers/local/camel-mbox-store.c:379
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "ไม่สามารถสร้างโฟลเดอร์: %s: %s"
 
-#: camel/providers/local/camel-mbox-store.c:380
+#: camel/providers/local/camel-mbox-store.c:381
 msgid "Folder already exists"
 msgstr "มีโฟลเดอร์อยู่แล้ว"
 
-#: camel/providers/local/camel-mbox-store.c:471
+#: camel/providers/local/camel-mbox-store.c:472
 msgid "The new folder name is illegal."
 msgstr "ชื่อโฟลเดอร์ใหม่ผิดรูปแบบ"
 
-#: camel/providers/local/camel-mbox-store.c:484
+#: camel/providers/local/camel-mbox-store.c:485
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อ `%s': `%s': %s"
 
-#: camel/providers/local/camel-mbox-store.c:559
+#: camel/providers/local/camel-mbox-store.c:560
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อ '%s' ไปเป็น %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:421
+#: camel/providers/local/camel-mbox-summary.c:422
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "ไม่สามารถเปิดโฟลเดอร์: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:469
+#: camel/providers/local/camel-mbox-summary.c:470
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "เกิดข้อผิดพลาดร้ายแรงขณะแจงเมล ณ บริเวณตำแหน่ง %ld ในโฟลเดอร์ %s"
 
-#: camel/providers/local/camel-mbox-summary.c:525
+#: camel/providers/local/camel-mbox-summary.c:526
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "ไม่สามารถตรวจสอบโฟลเดอร์: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:593
-#: camel/providers/local/camel-mbox-summary.c:688
+#: camel/providers/local/camel-mbox-summary.c:594
+#: camel/providers/local/camel-mbox-summary.c:689
 #: camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "ไม่สามารถเปิดแฟ้ม: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:605
+#: camel/providers/local/camel-mbox-summary.c:606
 #: camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "ไม่สามารถเปิดกล่องจดหมายชั่วคราว: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:618
-#: camel/providers/local/camel-mbox-summary.c:794
+#: camel/providers/local/camel-mbox-summary.c:619
+#: camel/providers/local/camel-mbox-summary.c:795
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "ไม่สามารถปิดโฟลเดอร์แหล่งเมล %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:627
+#: camel/providers/local/camel-mbox-summary.c:628
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "ไม่สามารถปิดโฟลเดอร์ชั่วคราว: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:642
+#: camel/providers/local/camel-mbox-summary.c:643
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:699
-#: camel/providers/local/camel-mbox-summary.c:905
+#: camel/providers/local/camel-mbox-summary.c:700
+#: camel/providers/local/camel-mbox-summary.c:906
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ไม่สามารถเก็บโฟลเดอร์: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:736
-#: camel/providers/local/camel-mbox-summary.c:744
-#: camel/providers/local/camel-mbox-summary.c:936
-#: camel/providers/local/camel-mbox-summary.c:944
+#: camel/providers/local/camel-mbox-summary.c:737
+#: camel/providers/local/camel-mbox-summary.c:745
+#: camel/providers/local/camel-mbox-summary.c:937
+#: camel/providers/local/camel-mbox-summary.c:945
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "ข้อมูลสรุปกับโฟลเดอร์ไม่ตรงกัน แม้จะปรับข้อมูลให้ตรงกันแล้ว"
 
-#: camel/providers/local/camel-mbox-summary.c:870
+#: camel/providers/local/camel-mbox-summary.c:871
 #: camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:999
-#: camel/providers/local/camel-mbox-summary.c:1025
+#: camel/providers/local/camel-mbox-summary.c:1000
+#: camel/providers/local/camel-mbox-summary.c:1026
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "เกิดข้อผิดพลาดขณะกำลังเขียนกล่องจดหมายชั่วคราว: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1016
+#: camel/providers/local/camel-mbox-summary.c:1017
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "การเขียนลงกล่องจดหมายชั่วคราวล้มเหลว: %s: %s"
@@ -4211,7 +4212,7 @@ msgstr "ไม่สามารถยืนยันตัวบุคคลบ
 #: camel/providers/pop3/camel-pop3-store.c:475
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
-msgstr "%sกรุณาป้อนรหัสผ่าน  POP สำหรับ %s บนโฮสต์ %s"
+msgstr "%sกรุณาป้อนรหัสผ่าน POP สำหรับ %s ที่โฮสต์ %s"
 
 #: camel/providers/pop3/camel-pop3-store.c:530
 #: camel/providers/pop3/camel-pop3-store.c:543
@@ -4416,7 +4417,7 @@ msgstr "เซิร์ฟเวอร์ SMTP %s ไม่สนับสนุ
 #: camel/providers/smtp/camel-smtp-transport.c:526
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
-msgstr "%s กรุณาป้อนรหัสผ่าน SMTP สำหรับ %s บนโฮสต์ %s"
+msgstr "%s กรุณาป้อนรหัสผ่าน SMTP สำหรับ %s ที่โฮสต์ %s"
 
 #: camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
@@ -4859,13 +4860,13 @@ msgid "_Search:"
 msgstr "_ค้นหา:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: libedataserverui/e-name-selector-entry.c:1947
+#: libedataserverui/e-name-selector-entry.c:1997
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "กระ_จาย %s ในบรรทัด"
 
 #. Edit Contact item
-#: libedataserverui/e-name-selector-entry.c:1963
+#: libedataserverui/e-name-selector-entry.c:2013
 #, c-format
 msgid "_Edit %s"
 msgstr "แ_ก้ไข %s"
@@ -4875,11 +4876,19 @@ msgstr "แ_ก้ไข %s"
 msgid "_Delete %s"
 msgstr "_ลบ %s"
 
-#: libedataserverui/e-passwords.c:471
+#: libedataserverui/e-passwords.c:744
+msgid "_Remember this passphrase"
+msgstr "_จำวลีรหัสผ่านนี้"
+
+#: libedataserverui/e-passwords.c:745
+msgid "_Remember this passphrase for the remainder of this session"
+msgstr "_จำวลีรหัสผ่านนี้ไปตลอดวาระที่เหลือนี้"
+
+#: libedataserverui/e-passwords.c:748
 msgid "_Remember this password"
 msgstr "_จำรหัสผ่านนี้"
 
-#: libedataserverui/e-passwords.c:472
+#: libedataserverui/e-passwords.c:749
 msgid "_Remember this password for the remainder of this session"
 msgstr "_จำรหัสผ่านนี้ไปตลอดวาระที่เหลือนี้"
 
@@ -4892,13 +4901,13 @@ msgstr "เลือกปลายทาง"
 msgid "_Destination"
 msgstr "_ปลายทาง"
 
-#: servers/exchange/lib/e2k-autoconfig.c:1636
+#: servers/exchange/lib/e2k-autoconfig.c:1639
 #: servers/exchange/storage/exchange-account.c:932
 #, c-format
 msgid "Enter password for %s"
 msgstr "ป้อนรหัสผ่านสำหรับ %s"
 
-#: servers/exchange/lib/e2k-autoconfig.c:1637
+#: servers/exchange/lib/e2k-autoconfig.c:1640
 #: servers/exchange/storage/exchange-account.c:937
 msgid "Enter password"
 msgstr "ป้อนรหัสผ่าน"
@@ -5062,19 +5071,19 @@ msgstr "ส่งแล้ว"
 msgid "Tasks"
 msgstr "งาน"
 
-#: servers/groupwise/e-gw-connection.c:164
+#: servers/groupwise/e-gw-connection.c:165
 msgid "Invalid connection"
 msgstr "การเชื่อมต่อใช้ไม่ได้"
 
-#: servers/groupwise/e-gw-connection.c:168
+#: servers/groupwise/e-gw-connection.c:169
 msgid "Invalid response from server"
 msgstr "ได้รับคำตอบที่ใช้ไม่ได้จากเซิร์ฟเวอร์"
 
-#: servers/groupwise/e-gw-connection.c:170
+#: servers/groupwise/e-gw-connection.c:171
 msgid "No response from the server"
 msgstr "ไม่มีการตอบรับจากเซิร์ฟเวอร์"
 
-#: servers/groupwise/e-gw-connection.c:176
+#: servers/groupwise/e-gw-connection.c:177
 msgid "Bad parameter"
 msgstr "พารามิเตอร์ไม่ถูกต้อง"
 
