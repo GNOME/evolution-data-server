@@ -522,6 +522,8 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	section.remove_button  = GTK_BUTTON (gtk_button_new());
 	section.destination_view = GTK_TREE_VIEW (gtk_tree_view_new ());
 
+	gtk_label_set_mnemonic_widget (GTK_LABEL (section.label), section.destination_view);
+
 	if (pango_parse_markup (pretty_name, -1, '_', NULL,
 				&text, NULL, NULL))  {
 		atk_object_set_name (gtk_widget_get_accessible (

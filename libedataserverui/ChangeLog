@@ -1,3 +1,10 @@
+2006-03-29  Boby Wang <boby.wang@sun.com>
+
+	** Fix #336460 accelerate key can not function
+
+	* e-name-selector-dialog.c: (add_section):
+	add a mnemonic relationship to fix it
+
 2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	* e-passwords.c: (ep_clear_passwords), (ep_forget_passwords),
