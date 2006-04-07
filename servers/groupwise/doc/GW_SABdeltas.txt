@@ -1,0 +1,44 @@
+   <xs:element name="getDeltasRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:annotation>
+               <xs:documentation>
+               container:  The only valid container at this time is the GroupWise System Address book uid.
+               view:       This is the view for the items that are returned.
+               </xs:documentation>
+            </xs:annotation>
+            <xs:element name="container" type="types:uid" />
+            <xs:element name="view" type="types:View" nillable="1" />
+            <xs:element name="deltaInfo" type="types:DeltaInfo" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getDeltasResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="items" type="types:Items" minOccurs="0" />
+            <xs:element name="deltaInfo" type="types:DeltaInfo" />
+            <xs:element name="status" type="types:Status" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getDeltaInfoRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:annotation>
+               <xs:documentation>
+               The only valid container at this time is the GroupWise System Address book uid.
+               </xs:documentation>
+            </xs:annotation>
+            <xs:element name="container" type="types:uid" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getDeltaInfoResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="deltaInfo" type="types:DeltaInfo" />
+            <xs:element name="status" type="types:Status" />
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>

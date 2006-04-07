@@ -1,3 +1,7 @@
+2006-04-07  Sushma Rai  <rsushma@novell.com>
+
+	* doc/GW_SABdeltas.txt: Added addressbook deltas schema file.
+ 
 2006-03-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* e-gw-connection.[ch]:
