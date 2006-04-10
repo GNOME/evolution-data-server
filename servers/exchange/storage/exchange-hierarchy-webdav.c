@@ -421,7 +421,7 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 		 * update folder size in case of rename.
 		 */
 
-		source_folder_name = strrchr (physical_uri + 1, '/');
+		source_folder_name = strrchr (physical_uri, '/') + 1;
 		source_parent = g_strndup (physical_uri, 
 					   source_folder_name - physical_uri); 
 		if (!strcmp (e_folder_get_physical_uri (dest_parent), source_parent)) {
