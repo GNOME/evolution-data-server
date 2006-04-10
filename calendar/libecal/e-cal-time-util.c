@@ -13,6 +13,14 @@
 #include "e-cal-time-util.h"
 
 
+#ifdef G_OS_WIN32
+/* The gmtime_r() definition in pthreads-win32's pthread.h doesn't
+ * guard against gmtime() returning NULL.
+ */
+#undef gmtime_r
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
 
 #define REFORMATION_DAY 639787	/* First day of the reformation, counted from 1 Jan 1 */
 #define MISSING_DAYS 11		/* They corrected out 11 days */
