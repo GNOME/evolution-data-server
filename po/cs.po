@@ -1,21 +1,23 @@
 # Czech translation of evolution-data-server.
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
 # Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>
 # Radka Doulíková <doulikova@centrum.cz>, 2002.
-# Michal Bukovjan <bukm@centrum.cz>, 2003
+# Michal Bukovjan <bukm@centrum.cz>, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
-#
+# Lukas Novotny <lukasnov@cvs.gnome.org>, 2006.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-09 23:25+0100\n"
-"PO-Revision-Date: 2006-02-13 04:40+0100\n"
-"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
+"POT-Creation-Date: 2006-04-10 21:00+0200\n"
+"PO-Revision-Date: 2006-04-10 22:17+0200\n"
+"Last-Translator: Lukas Novotny <lukasnov@cvs.gnome.org>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
@@ -32,15 +34,15 @@ msgstr "Načítám..."
 msgid "Searching..."
 msgstr "Vyhledávám..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2502
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Stahuji kontakty (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2655
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2844
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2873
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Aktualizuji keš kontaktů (%d)... "
@@ -652,12 +654,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "Nelze uložit data kalendáře: Chybné URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1467
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1546
 msgid "Reply Requested: by "
 msgstr "Požadována odpověď: do "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1472
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1551
 msgid "Reply Requested: When convenient"
 msgstr "Požadována odpověď: Podle možností"
 
@@ -678,14 +680,14 @@ msgstr "Neplatné URI serveru"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:790
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:799
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:884
-#: ../calendar/libecal/e-cal.c:5131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:902
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:922
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:950
-#: ../camel/providers/groupwise/camel-groupwise-store.c:574
-#: ../camel/providers/groupwise/camel-groupwise-store.c:589
-#: ../camel/providers/groupwise/camel-groupwise-store.c:630
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
+#: ../calendar/libecal/e-cal.c:5137
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:933
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:956
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-store.c:586
+#: ../camel/providers/groupwise/camel-groupwise-store.c:601
+#: ../camel/providers/groupwise/camel-groupwise-store.c:642
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1145
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
@@ -1056,83 +1058,83 @@ msgid "Undefined"
 msgstr "Nedefinováno"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1705
+#: ../calendar/libecal/e-cal.c:1707
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Zadejte heslo pro %s pro povolit zástup za uživatele %s"
 
-#: ../calendar/libecal/e-cal.c:1708 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1710 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Zadejte heslo pro %s (uživatel %s)"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5109
 msgid "Invalid argument"
 msgstr "Neplatný argument"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5111
 msgid "Backend is busy"
 msgstr "Backend pracuje"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:5113
 msgid "Repository is offline"
 msgstr "Sklad je odpojen"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5115
 msgid "No such calendar"
 msgstr "Takový kalendář neexistuje"
 
-#: ../calendar/libecal/e-cal.c:5111 ../servers/groupwise/e-gw-connection.c:172
+#: ../calendar/libecal/e-cal.c:5117 ../servers/groupwise/e-gw-connection.c:172
 msgid "Object not found"
 msgstr "Objekt nenalezen"
 
-#: ../calendar/libecal/e-cal.c:5113 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5119 ../servers/groupwise/e-gw-connection.c:166
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5121
 msgid "URI not loaded"
 msgstr "URI nebylo načteno"
 
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/libecal/e-cal.c:5123
 msgid "URI already loaded"
 msgstr "URI již bylo načteno"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:5125
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Přístup odepřen"
 
-#: ../calendar/libecal/e-cal.c:5121 ../servers/groupwise/e-gw-connection.c:174
+#: ../calendar/libecal/e-cal.c:5127 ../servers/groupwise/e-gw-connection.c:174
 msgid "Unknown User"
 msgstr "Neznámý uživatel"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5129
 msgid "Object ID already exists"
 msgstr "ID objektu již existuje"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5131
 msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
-#: ../calendar/libecal/e-cal.c:5127
+#: ../calendar/libecal/e-cal.c:5133
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
-#: ../calendar/libecal/e-cal.c:5129
+#: ../calendar/libecal/e-cal.c:5135
 msgid "Could not cancel operation"
 msgstr "Nemohu zrušit operaci"
 
-#: ../calendar/libecal/e-cal.c:5133
+#: ../calendar/libecal/e-cal.c:5139
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Je vyžadována autentizace"
 
-#: ../calendar/libecal/e-cal.c:5135
+#: ../calendar/libecal/e-cal.c:5141
 msgid "A CORBA exception has occurred"
 msgstr "Došlo k výjimce CORBA"
 
-#: ../calendar/libecal/e-cal.c:5137
+#: ../calendar/libecal/e-cal.c:5143
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:218
 #: ../camel/providers/imap/camel-imap-command.c:311
 #: ../camel/providers/imap/camel-imap-command.c:411
@@ -1145,7 +1147,7 @@ msgstr "Došlo k výjimce CORBA"
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../calendar/libecal/e-cal.c:5139
+#: ../calendar/libecal/e-cal.c:5145
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Žádná chyba"
@@ -1326,7 +1328,6 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Připravuji složku '%s' pro práci při odpojení"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1311
 #: ../camel/providers/imap/camel-imap-store.c:2964
 msgid "You must be working online to complete this operation"
 msgstr "Pro dokončení této operace musíte pracovat on-line"
@@ -2565,7 +2566,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Taková zpráva neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
@@ -2577,7 +2578,7 @@ msgstr "Taková zpráva neexistuje"
 msgid "User cancelled"
 msgstr "Uživatel zrušen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
@@ -2591,39 +2592,39 @@ msgstr "Uživatel zrušen"
 msgid "Cannot get message %s: %s"
 msgstr "Nemohu získat zprávu %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:153
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:161
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "Tato zpráva není dostupná v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1430
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1509
 msgid "Could not get message"
 msgstr "Nemohu získat zprávu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:707
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:710
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nemohu načíst souhrn pro %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1037
-#: ../camel/providers/groupwise/camel-groupwise-store.c:618
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1092
+#: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/imap/camel-imap-folder.c:2375
 #: ../camel/providers/imap/camel-imap-folder.c:2445
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Stahuji souhrnné informace o nových zprávách v %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1668
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1716
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1795
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nemohu přidat zprávu do složky `%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1704
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1783
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nemohu vytvořit zprávu: %s"
@@ -2729,40 +2730,40 @@ msgstr "Neuvedli jste heslo."
 msgid "Unable to authenticate to GroupWise server."
 msgstr "Nemohu se autentizovat u serveru GroupWise."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:298
+#: ../camel/providers/groupwise/camel-groupwise-store.c:301
 msgid "Some features may not work correctly with your current server version"
 msgstr "Některé funkce možná s vaší verzí serveru nebudou fungovat správně"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:526
+#: ../camel/providers/groupwise/camel-groupwise-store.c:538
 #: ../camel/providers/imap/camel-imap-store.c:1873
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1097
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1122
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nemohu vytvářet složky GroupWise v režimu offline."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1111
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1136
 #: ../camel/providers/imap/camel-imap-store.c:1948
 #: ../camel/providers/imap/camel-imap-store.c:2317
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Rodičovská složka nemůže obsahovat podsložky"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1188
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1209
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1213
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1234
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Nemohu přejmenovat složku GroupWise `%s' na `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1266
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Server GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1243
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1268
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Služba GroupWise pro %s na %s"
@@ -2781,7 +2782,10 @@ msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
-msgstr "Překročili jste limit úložného prostoru tohoto účtu. Vaše zprávy jsou zařazeny ve složce K odeslání. Odešleteje znovu stisknutím Odeslat/přijmout po odstranění/archivaci některých zpráv.\n"
+msgstr ""
+"Překročili jste limit úložného prostoru tohoto účtu. Vaše zprávy jsou "
+"zařazeny ve složce K odeslání. Odešleteje znovu stisknutím Odeslat/přijmout "
+"po odstranění/archivaci některých zpráv.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:218
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -3490,7 +3494,9 @@ msgstr "Místní doručení"
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
-msgstr "Pro získávání (přesun) místní pošty ze standardních schránek ve formátu mbox do složek spravovaných Evolution."
+msgstr ""
+"Pro získávání (přesun) místní pošty ze standardních schránek ve formátu mbox "
+"do složek spravovaných Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -4659,7 +4665,7 @@ msgstr "Čeká"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1319 ../libedataserver/e-time-utils.c:1562
+#: ../libedataserver/e-time-utils.c:1319 ../libedataserver/e-time-utils.c:1566
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%A %d.%m.%Y %H:%M:%S"
 
@@ -4667,7 +4673,7 @@ msgstr "%A %d.%m.%Y %H:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1324 ../libedataserver/e-time-utils.c:1553
+#: ../libedataserver/e-time-utils.c:1324 ../libedataserver/e-time-utils.c:1557
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%A %d.%m.%Y %H:%M:%S"
 
@@ -4675,7 +4681,7 @@ msgstr "%A %d.%m.%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1329 ../libedataserver/e-time-utils.c:1558
+#: ../libedataserver/e-time-utils.c:1329 ../libedataserver/e-time-utils.c:1562
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%A %d.%m.%Y %H:%M"
 
@@ -4683,7 +4689,7 @@ msgstr "%A %d.%m.%Y %H:%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1334 ../libedataserver/e-time-utils.c:1549
+#: ../libedataserver/e-time-utils.c:1334 ../libedataserver/e-time-utils.c:1553
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%A %d.%m.%Y %H:%M"
 
@@ -4701,8 +4707,8 @@ msgstr "%A %d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1347 ../libedataserver/e-time-utils.c:1440
-#: ../libedataserver/e-time-utils.c:1544
+#: ../libedataserver/e-time-utils.c:1347 ../libedataserver/e-time-utils.c:1443
+#: ../libedataserver/e-time-utils.c:1548
 msgid "%a %m/%d/%Y"
 msgstr "%A %d.%m.%Y"
 
@@ -4742,19 +4748,19 @@ msgstr "%d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1382 ../libedataserver/e-time-utils.c:1443
+#: ../libedataserver/e-time-utils.c:1382 ../libedataserver/e-time-utils.c:1446
 msgid "%m/%d/%Y"
 msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1488 ../libedataserver/e-time-utils.c:1607
+#: ../libedataserver/e-time-utils.c:1492 ../libedataserver/e-time-utils.c:1611
 msgid "%I:%M:%S %p"
 msgstr "%H:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1492 ../libedataserver/e-time-utils.c:1599
+#: ../libedataserver/e-time-utils.c:1496 ../libedataserver/e-time-utils.c:1603
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4762,19 +4768,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1497 ../libedataserver/e-time-utils.c:1604
+#: ../libedataserver/e-time-utils.c:1501 ../libedataserver/e-time-utils.c:1608
 msgid "%I:%M %p"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1501 ../libedataserver/e-time-utils.c:1596
+#: ../libedataserver/e-time-utils.c:1505 ../libedataserver/e-time-utils.c:1600
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1505
+#: ../libedataserver/e-time-utils.c:1509
 msgid "%I %p"
 msgstr "%H"
 
@@ -4833,15 +4839,15 @@ msgstr "_Upravit"
 msgid "categories"
 msgstr "kategorie"
 
-#: ../libedataserverui/e-name-selector-dialog.c:260
+#: ../libedataserverui/e-name-selector-dialog.c:282
 msgid "Select Contacts from Address Book"
 msgstr "Vyberte kontakty z adresáře"
 
-#: ../libedataserverui/e-name-selector-dialog.c:554
+#: ../libedataserverui/e-name-selector-dialog.c:578
 msgid "_Add"
 msgstr "_Přidat"
 
-#: ../libedataserverui/e-name-selector-dialog.c:579
+#: ../libedataserverui/e-name-selector-dialog.c:603
 msgid "_Remove"
 msgstr "_Odstranit"
 
@@ -4887,13 +4893,13 @@ msgid "_Search:"
 msgstr "_Hledat:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1947
+#: ../libedataserverui/e-name-selector-entry.c:1997
 #, c-format
 msgid "E_xpand %s Inline"
-msgstr ""
+msgstr "_Rozbalit %s Inline"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1963
+#: ../libedataserverui/e-name-selector-entry.c:2013
 #, c-format
 msgid "_Edit %s"
 msgstr "_Upravit %s"
@@ -4920,13 +4926,13 @@ msgstr "Zvolte cíl"
 msgid "_Destination"
 msgstr "_Cíl:"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1636
+#: ../servers/exchange/lib/e2k-autoconfig.c:1639
 #: ../servers/exchange/storage/exchange-account.c:932
 #, c-format
 msgid "Enter password for %s"
 msgstr "Zadejte heslo pro %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1637
+#: ../servers/exchange/lib/e2k-autoconfig.c:1640
 #: ../servers/exchange/storage/exchange-account.c:937
 msgid "Enter password"
 msgstr "Zadejte heslo"
@@ -4935,23 +4941,25 @@ msgstr "Zadejte heslo"
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
 msgid "Owner"
-msgstr ""
+msgstr "Vlastník"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
+#, fuzzy
 msgid "Publishing Editor"
-msgstr ""
+msgstr "Editor zveřejnění"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
+#, fuzzy
 msgid "Publishing Author"
-msgstr ""
+msgstr "Autor zveřejnění"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
@@ -4959,11 +4967,11 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr ""
+msgstr "Kontrolor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
-msgstr ""
+msgstr "Spolupracovník"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:891
 msgid "None"
