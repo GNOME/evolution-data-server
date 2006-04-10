@@ -1,3 +1,10 @@
+2006-04-10  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-time-utils.c (get_locale_string)
+	(translate_picture): New Win32-only helper functions.
+	(__strptime_internal): Add Win32 love to fix a Win32-specific bug
+	in calendar reported by Thierry Dubois.
+
 2006-03-29  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in (LARGEFILE_CFLAGS): new configure checks to #define

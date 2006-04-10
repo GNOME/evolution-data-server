@@ -36,6 +36,132 @@
 #undef localtime_r
 /* The localtime() in Microsoft's C library is MT-safe */
 #define localtime_r(tp,tmp) (localtime(tp)?(*(tmp)=*localtime(tp),(tmp)):0)
+
+#include <windows.h>
+
+static const gchar *
+get_locale_string (int lctype)
+{
+	int nbytes = GetLocaleInfo (GetThreadLocale (), lctype, NULL, 0);
+	char *tem;
+	GQuark quark; 
+
+	if (nbytes == 0)
+		return "???";
+
+	tem = g_malloc (nbytes);
+
+	if (GetLocaleInfo (GetThreadLocale (), lctype, tem, nbytes) == 0) {
+		g_free (tem);
+		return "???";
+	}
+
+	quark = g_quark_from_string (tem);
+	g_free (tem);
+
+	return g_quark_to_string (quark);
+}
+
+static const char *
+translate_picture (const char *picture)
+{
+	GString *s = g_string_new ("");
+	GQuark quark;
+
+	while (*picture) {
+		const char *q = picture + 1;
+		int count;
+
+		while (*picture == *q)
+			q++;
+		count = q - picture;
+
+		switch (*picture) {
+		case '\'':
+			picture++;
+			while (*picture && *picture != '\'') {
+				g_string_append_c (s, *picture);
+				picture++;
+			}
+			break;
+		case 'd':
+			switch (count) {
+			case 1:
+			case 2:
+				g_string_append (s, "%d");
+				break;
+			case 3:
+			case 4:
+				g_string_append (s, "%a");
+				break;
+			}
+			picture += count - 1;
+			break;
+		case 'M':
+			switch (count) {
+			case 1:
+			case 2:
+				g_string_append (s, "%m");
+				break;
+			case 3:
+			case 4:
+				g_string_append (s, "%b");
+				break;
+			}
+			picture += count - 1;
+			break;
+		case 'y':
+			switch (count) {
+			case 1:	/* Last digit of year. Ugh... */
+			case 2:
+				g_string_append (s, "%y");
+				break;
+			case 4:
+				g_string_append (s, "%Y");
+				break;
+			}
+			picture += count - 1;
+			break;
+		case 'g':
+			/* Era. Huh. Just ignore, as the era stuff
+			 * implementation below depends on glibc.
+			 */
+			picture += count - 1;
+			break;
+		case 'h':
+			g_string_append (s, "%I");
+			picture += count - 1;
+			break;
+		case 'H':
+			g_string_append (s, "%H");
+			picture += count - 1;
+			break;
+		case 'm':
+			g_string_append (s, "%M");
+			picture += count - 1;
+			break;
+		case 's':
+			g_string_append (s, "%S");
+			picture += count - 1;
+			break;
+		case 't':
+			g_string_append (s, "%p");
+			picture += count - 1;
+			break;
+		default:
+			g_string_append_c (s, *picture);
+			break;
+		}
+		if (*picture)
+			picture++;
+	}
+
+	quark = g_quark_from_string (s->str);
+	g_string_free (s, TRUE);
+
+	return g_quark_to_string (quark);
+}
+
 #endif
 
 #ifndef HAVE_STRPTIME
@@ -393,6 +519,26 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		      break;
 		    }
 		}
+#elif defined (G_OS_WIN32)
+	      if (*decided !=raw)
+		{
+		  if (match_string (get_locale_string (LOCALE_SDAYNAME1 + cnt), rp))
+		    {
+		      if (*decided == not
+			  && strcmp (get_locale_string (LOCALE_SDAYNAME1 + cnt),
+				     weekday_name[cnt]))
+			*decided = loc;
+		      break;
+		    }
+		  if (match_string (get_locale_string (LOCALE_SABBREVDAYNAME1 + cnt), rp))
+		    {
+		      if (*decided == not
+			  && strcmp (get_locale_string (LOCALE_SABBREVDAYNAME1 + cnt),
+				     ab_weekday_name[cnt]))
+			*decided = loc;
+		      break;
+		    }
+		}
 #endif
 	      if (*decided != loc
 		  && (match_string (weekday_name[cnt], rp)
@@ -434,6 +580,26 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		      break;
 		    }
 		}
+#elif defined (G_OS_WIN32)
+	      if (*decided !=raw)
+		{
+		  if (match_string (get_locale_string (LOCALE_SMONTHNAME1 + cnt), rp))
+		    {
+		      if (*decided == not
+			  && strcmp (get_locale_string (LOCALE_SMONTHNAME1 + cnt),
+				     month_name[cnt]))
+			*decided = loc;
+		      break;
+		    }
+		  if (match_string (get_locale_string (LOCALE_SABBREVMONTHNAME1 + cnt), rp))
+		    {
+		      if (*decided == not
+			  && strcmp (get_locale_string (LOCALE_SABBREVMONTHNAME1 + cnt),
+				     ab_month_name[cnt]))
+			*decided = loc;
+		      break;
+		    }
+		}
 #endif
 	      if (match_string (month_name[cnt], rp)
 		  || match_string (ab_month_name[cnt], rp))
@@ -464,6 +630,35 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		{
 		  if (*decided == not &&
 		      strcmp (_NL_CURRENT (LC_TIME, D_T_FMT), HERE_D_T_FMT))
+		    *decided = loc;
+		  want_xday = 1;
+		  break;
+		}
+	      *decided = raw;
+	    }
+#elif defined (G_OS_WIN32)
+	  if (*decided != raw)
+	    {
+	      char *d_t_fmt =
+		      g_strconcat (get_locale_string (LOCALE_SSHORTDATE),
+				   " ",
+				   get_locale_string (LOCALE_STIMEFORMAT),
+				   NULL);
+	      const char *posix_d_t_fmt = translate_picture (d_t_fmt);
+	      
+	      g_free (d_t_fmt);
+		      
+	      if (!recursive (posix_d_t_fmt))
+		{
+		  if (*decided == loc)
+		    return NULL;
+		  else
+		    rp = rp_backup;
+		}
+	      else
+		{
+		  if (*decided == not &&
+		      strcmp (posix_d_t_fmt, HERE_D_T_FMT))
 		    *decided = loc;
 		  want_xday = 1;
 		  break;
@@ -512,6 +707,27 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		{
 		  if (*decided == not
 		      && strcmp (_NL_CURRENT (LC_TIME, D_FMT), HERE_D_FMT))
+		    *decided = loc;
+		  want_xday = 1;
+		  break;
+		}
+	      *decided = raw;
+	    }
+#elif defined (G_OS_WIN32)
+	  if (*decided != raw)
+	    {
+		const char *posix_d_fmt = translate_picture (get_locale_string (LOCALE_SSHORTDATE));
+		if (!recursive (posix_d_fmt))
+		{
+		  if (*decided == loc)
+		    return NULL;
+		  else
+		    rp = rp_backup;
+		}
+	      else
+		{
+		  if (*decided == not
+		      && strcmp (posix_d_fmt, HERE_D_FMT))
 		    *decided = loc;
 		  want_xday = 1;
 		  break;
@@ -585,6 +801,24 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		}
 	      *decided = raw;
 	    }
+#elif defined (G_OS_WIN32)
+	  if (*decided != raw)
+	    {
+		if (match_string (get_locale_string (LOCALE_S1159), rp))
+		{
+		    if (strcmp (get_locale_string (LOCALE_S1159), HERE_AM_STR))
+		    *decided = loc;
+		  break;
+		}
+		if (match_string (get_locale_string (LOCALE_S2359), rp))
+		{
+		  if (strcmp (get_locale_string (LOCALE_S2359), HERE_PM_STR))
+		    *decided = loc;
+		  is_pm = 1;
+		  break;
+		}
+	      *decided = raw;
+	    }
 #endif
 	  if (!match_string (HERE_AM_STR, rp))
 	    {
@@ -609,6 +843,34 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		{
 		  if (*decided == not &&
 		      strcmp (_NL_CURRENT (LC_TIME, T_FMT_AMPM),
+			      HERE_T_FMT_AMPM))
+		    *decided = loc;
+		  break;
+		}
+	      *decided = raw;
+	    }
+#elif defined (G_OS_WIN32)
+	  if (*decided != raw)
+	    {
+	      char *t_p_fmt =
+		      g_strconcat (get_locale_string (LOCALE_STIMEFORMAT),
+				   " tt",
+				   NULL);
+	      const char *posix_t_p_fmt = translate_picture (t_p_fmt);
+
+	      g_free (t_p_fmt);
+
+	      if (!recursive (posix_t_p_fmt))
+		{
+		  if (*decided == loc)
+		    return NULL;
+		  else
+		    rp = rp_backup;
+		}
+	      else
+		{
+		  if (*decided == not &&
+		      strcmp (posix_t_p_fmt,
 			      HERE_T_FMT_AMPM))
 		    *decided = loc;
 		  break;
@@ -664,6 +926,24 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	      else
 		{
 		  if (strcmp (_NL_CURRENT (LC_TIME, T_FMT), HERE_T_FMT))
+		    *decided = loc;
+		  break;
+		}
+	      *decided = raw;
+	    }
+#elif defined (G_OS_WIN32)
+	  if (*decided != raw)
+	    {
+	      if (!recursive (get_locale_string (LOCALE_STIMEFORMAT)))
+		{
+		  if (*decided == loc)
+		    return NULL;
+		  else
+		    rp = rp_backup;
+		}
+	      else
+		{
+		  if (strcmp (get_locale_string (LOCALE_STIMEFORMAT), HERE_T_FMT))
 		    *decided = loc;
 		  break;
 		}
@@ -1158,6 +1438,8 @@ strptime (buf, format, tm LOCALE_PARAM)
   enum ptime_locale_status decided;
 
 #ifdef _NL_CURRENT
+  decided = not;
+#elif defined (G_OS_WIN32)
   decided = not;
 #else
   decided = raw;
