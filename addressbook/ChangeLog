@@ -1,3 +1,9 @@
+2006-04-06  Devashish Sharma <sdevashish@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c : Made the function
+	update_address_book_deltas thread safe.
+	Fixes the Bug#336687.
+
 2006-03-21  Devashish Sharma <sdevashish@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c : Use double values for 

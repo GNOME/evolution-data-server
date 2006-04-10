@@ -70,11 +70,11 @@ struct _EBookBackendGroupwisePrivate {
 	int cache_timeout;
 	EBookBackendCache *cache;
 	EBookBackendSummary *summary;
+	GMutex *update_mutex;
 	/* for future use */
 	void *reserved1;
 	void *reserved2;
 	void *reserved3;
-	void *reserved4;
 };
 
 #define ELEMENT_TYPE_SIMPLE 0x01
@@ -2712,6 +2712,8 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
 	EBookBackendCache *cache = priv->cache;
 
+	g_mutex_lock (priv->update_mutex);
+
 	if (enable_debug)
 		printf("\nupdating GroupWise system address book cache \n");
 		
@@ -2724,6 +2726,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (enable_debug)
 			printf("No connection with the server \n");
+		g_mutex_unlock (priv->update_mutex);
 		return FALSE;
 	}
 
@@ -2733,6 +2736,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		if (enable_debug)
 			printf ("sequence is reset, rebuilding cache...\n");
 		build_cache (ebgw);
+		g_mutex_unlock(priv->update_mutex);
 		return TRUE;
 	}
 
@@ -2754,6 +2758,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		build_cache (ebgw);
 		add_sequence_to_cache (cache, server_first_sequence, 
 				       server_last_sequence, server_last_po_rebuild_time);
+		g_mutex_unlock(priv->update_mutex);
 		return TRUE;
 	}
 
@@ -2926,6 +2931,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		printf("updating GroupWise system address book cache took %ld.%03ld seconds for %d changes\n", 
 			diff / 1000, diff % 1000, contact_num);
 	}
+	g_mutex_unlock(priv->update_mutex);
 
 	return TRUE;
 }
@@ -3427,6 +3433,8 @@ e_book_backend_groupwise_dispose (GObject *object)
 			g_source_remove (bgw->priv->cache_timeout);
 			bgw->priv->cache_timeout = 0;
 		}
+		if (bgw->priv->update_mutex)
+			g_mutex_free(bgw->priv->update_mutex);
 		
 		g_free (bgw->priv);
 		bgw->priv = NULL;
@@ -3485,10 +3493,10 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->cnc = NULL;
 	priv->original_uri = NULL;
 	priv->cache_timeout = 0;
+	priv->update_mutex = g_mutex_new();
 	priv->reserved1 = NULL;
 	priv->reserved2 = NULL;
 	priv->reserved3 = NULL;
-	priv->reserved4 = NULL;
        	backend->priv = priv;
 
 	if (g_getenv ("GROUPWISE_DEBUG")) { 
