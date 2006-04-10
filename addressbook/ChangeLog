@@ -1,3 +1,9 @@
+2006-04-10  Devashish Sharma <sdevashish@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c : Process the delete list before
+	the add list, because in case of contact-list modification the server response 
+	is delete and add.
+
 2006-04-06  Devashish Sharma <sdevashish@novell.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c : Made the function
