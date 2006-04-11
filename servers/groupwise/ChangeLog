@@ -1,3 +1,8 @@
+2006-04-10  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-gw-connection.c : (e_gw_connection_get_items_delta):
+	Fix for an infinite looping issue.
+	
 2006-04-07  Sushma Rai  <rsushma@novell.com>
 
 	* doc/GW_SABdeltas.txt: Added addressbook deltas schema file.

@@ -755,7 +755,7 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const char *container, cons
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
         EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+        SoupSoapParameter *param, *subparam, *subsubparam;
 	
         g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 	
@@ -810,11 +810,11 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const char *container, cons
 	
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		
-		subparam =  soup_soap_parameter_get_first_child_by_name(subparam, "sync");
-		if (subparam) {
+		subsubparam =  soup_soap_parameter_get_first_child_by_name(subparam, "sync");
+		if (subsubparam) {
 			char *value;
 
-			value = soup_soap_parameter_get_string_value (subparam);
+			value = soup_soap_parameter_get_string_value (subsubparam);
 			if (!strcmp (value, "add") || !strcmp (value, "update")) {
 				*add_list = g_list_append (*add_list, item);
 			} else if (!strcmp (value, "delete")) {
