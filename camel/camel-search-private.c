@@ -281,7 +281,7 @@ camel_ustrstrcase (const char *haystack, const char *needle)
 			}
 			
 			if (nuni + npos == puni)
-				return p;
+				return (const char *) p;
 		}
 	}
 	

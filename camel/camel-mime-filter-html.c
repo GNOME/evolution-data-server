@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2001 Ximian Inc.
  *
@@ -111,19 +112,19 @@ camel_mime_filter_html_init       (CamelObject *o)
 }
 
 static void
-run(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlenptr, size_t *outprespace, int last)
+run(CamelMimeFilter *mf, char *in, size_t inlen, size_t prespace, char **out, size_t *outlenptr, size_t *outprespace, int last)
 {
+	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *) mf;
 	camel_html_parser_t state;
 	char *outp;
-	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *)mf;
-
-	d(printf("converting html:\n%.*s\n", (int)len, in));
+	
+	d(printf("converting html:\n%.*s\n", (int)inlen, in));
 	
 	/* We should generally shrink the data, but this'll do */
-	camel_mime_filter_set_size(mf, len*2+256, FALSE);
+	camel_mime_filter_set_size (mf, inlen * 2 + 256, FALSE);
 	outp = mf->outbuf;
-
-	camel_html_parser_set_data(f->priv->ctxt, in, len, last);
+	
+	camel_html_parser_set_data (f->priv->ctxt, in, inlen, last);
 	do {
 		const char *data;
 		int len;

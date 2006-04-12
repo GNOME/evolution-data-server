@@ -38,7 +38,7 @@
 void camel_dlist_init(CamelDList *v)
 {
         v->head = (CamelDListNode *)&v->tail;
-        v->tail = 0;
+        v->tail = NULL;
         v->tailpred = (CamelDListNode *)&v->head;
 }
 

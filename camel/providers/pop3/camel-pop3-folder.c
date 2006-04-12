@@ -396,7 +396,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelPOP3Command *pcr;
 	CamelPOP3FolderInfo *fi;
 	char buffer[1];
-	int ok, i, last;
+	int i, last;
 	CamelStream *stream = NULL;
 
 	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
@@ -422,7 +422,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 			fi->err = errno;
 
 		/* getting error code? */
-		ok = fi->cmd->state == CAMEL_POP3_COMMAND_DATA;
+		/*g_assert (fi->cmd->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
 		fi->cmd = NULL;
 
@@ -482,7 +482,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 			fi->err = errno;
 
 		/* getting error code? */
-		ok = pcr->state == CAMEL_POP3_COMMAND_DATA;
+		/*g_assert (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free(pop3_store->engine, pcr);
 		camel_stream_reset(stream);
 

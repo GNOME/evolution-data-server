@@ -219,7 +219,7 @@ typedef struct _CamelProviderModule CamelProviderModule;
 struct _CamelProviderModule {
 	char *path;
 	GSList *types;
-	int loaded:1;
+	guint loaded:1;
 };
 
 void camel_provider_init(void);

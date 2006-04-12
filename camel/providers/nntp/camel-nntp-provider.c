@@ -37,7 +37,7 @@ static guint nntp_url_hash (gconstpointer key);
 static gint check_equal (char *s1, char *s2);
 static gint nntp_url_equal (gconstpointer a, gconstpointer b);
 
-CamelProviderConfEntry nntp_conf_entries[] = {
+static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "show_short_notation", NULL,
@@ -68,7 +68,7 @@ static CamelProvider news_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_nntp_password_authtype = {
+static CamelServiceAuthType camel_nntp_password_authtype = {
 	N_("Password"),
 
 	N_("This option will authenticate with the NNTP server using a "

@@ -170,7 +170,7 @@ camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 
 /* TODO: read implementation too?
    etc? */
-struct {
+static struct {
 	char *cap;
 	guint32 flag;
 } capa[] = {

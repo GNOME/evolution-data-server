@@ -188,7 +188,7 @@ static int lock_path(const char *path, guint32 *lockid)
 	info->id = lock_id;
 	info->depth = 1;
 	info->next = lock_info_list;
-	info->stamp = time(0);
+	info->stamp = time (NULL);
 	lock_info_list = info;
 
 	if (lockid)
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 
 		/* check the minimum timeout we need to refresh the next oldest lock */
 		if (lock_info_list) {
-			time_t now = time(0);
+			time_t now = time (NULL);
 			time_t left;
 			time_t delay = CAMEL_DOT_LOCK_REFRESH;
 
@@ -332,7 +332,7 @@ int main(int argc, char **argv)
 
 		/* did we get a timeout?  scan for any locks that need updating */
 		if (!FD_ISSET(STDIN_FILENO, &rset)) {
-			time_t now = time(0);
+			time_t now = time (NULL);
 			time_t left;
 
 			d(fprintf(stderr, "Got a timeout, checking locks\n"));

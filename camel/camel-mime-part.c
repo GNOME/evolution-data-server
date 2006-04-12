@@ -961,7 +961,7 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
 		camel_mime_part_construct_content_from_parser (mime_part, mp);
 		break;
 	default:
-		g_warning("Invalid state encountered???: %d", camel_mime_parser_state(mp));
+		g_warning("Invalid state encountered???: %u", camel_mime_parser_state(mp));
 	}
 
 	d(printf("mime_part::construct_from_parser() leaving\n"));

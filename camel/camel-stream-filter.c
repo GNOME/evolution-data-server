@@ -51,8 +51,8 @@ struct _CamelStreamFilterPrivate {
 	char *filtered;		/* the filtered data */
 	size_t filteredlen;
 
-	int last_was_read:1;	/* was the last op read or write? */
-	int flushed:1;          /* were the filters flushed? */
+	guint last_was_read:1;	/* was the last op read or write? */
+	guint flushed:1;        /* were the filters flushed? */
 };
 
 #define READ_PAD (128)		/* bytes padded before buffer */

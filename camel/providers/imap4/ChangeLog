@@ -1,3 +1,9 @@
+2006-04-12  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-folder.c (imap4_append_message): strcpy the
+	folder->full_name into the freshly alloca'd parent_name buffer
+	before using strrchr on it.
+
 2005-12-08  Tor Lillqvist  <tml@novell.com>
 
 	* camel-imap4-store.c: Bypass the external command stuff on Win32.

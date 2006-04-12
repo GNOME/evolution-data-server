@@ -764,7 +764,7 @@ digest_response (struct _DigestResponse *resp)
 	
 	if (resp->maxbuf > 0) {
 		g_byte_array_append (buffer, ",maxbuf=", 8);
-		buf = g_strdup_printf ("%d", resp->maxbuf);
+		buf = g_strdup_printf ("%u", resp->maxbuf);
 		g_byte_array_append (buffer, buf, strlen (buf));
 		g_free (buf);
 	}

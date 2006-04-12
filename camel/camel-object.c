@@ -1353,7 +1353,7 @@ camel_object_remove_event(void *vo, unsigned int id)
 	g_return_if_fail (id != 0);
 
 	if (obj->hooks == NULL) {
-		g_warning("camel_object_unhook_event: trying to unhook `%d` from an instance of `%s' with no hooks",
+		g_warning("camel_object_unhook_event: trying to unhook `%u` from an instance of `%s' with no hooks",
 			  id, obj->klass->name);
 		return;
 	}
@@ -1383,7 +1383,7 @@ camel_object_remove_event(void *vo, unsigned int id)
 	}
 	camel_object_unget_hooks(obj);
 
-	g_warning("camel_object_unhook_event: cannot find hook id %d in instance of `%s'",
+	g_warning("camel_object_unhook_event: cannot find hook id %u in instance of `%s'",
 		  id, obj->klass->name);
 }
 
@@ -1458,8 +1458,7 @@ camel_object_trigger_event(void *vo, const char * name, void *event_data)
 	pair = co_find_pair_ptr(obj->klass, interface_name);
 	if (pair) {
 		GPtrArray *interfaces = pair->data;
-		int i;
-
+		
 		for (i=0;i<interfaces->len;i++) {
 			hook = co_find_pair(interfaces->pdata[i], name);
 			if (hook)

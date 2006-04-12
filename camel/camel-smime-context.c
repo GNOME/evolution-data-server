@@ -665,7 +665,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 	NSSCMSDecoderContext *dec;
 	NSSCMSMessage *cmsg;
 	CamelStreamMem *mem;
-	CamelStream *constream;
+	CamelStream *constream = NULL;
 	CamelCipherValidity *valid = NULL;
 	CamelContentType *ct;
 	const char *tmp;

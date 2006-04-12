@@ -211,7 +211,7 @@ static guint32 hexnib(guint32 c)
 char *
 camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const char *path, char dir_sep)
 {
-	unsigned char *full, *f;
+	char *full, *f;
 	guint32 c, v = 0;
 	const char *p;
 	int state=0;
@@ -248,7 +248,7 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const char *path
 	else
 		p = path;
 
-	while ( (c = camel_utf8_getc((const unsigned char **)&p)) ) {
+	while ((c = camel_utf8_getc((const unsigned char **)&p))) {
 		switch(state) {
 		case 0:
 			if (c == '%')

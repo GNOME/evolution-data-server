@@ -40,7 +40,7 @@ static gint check_equal (char *s1, char *s2);
 static gint hula_url_equal (gconstpointer a, gconstpointer b);
 
 
-CamelProviderConfEntry hula_conf_entries[] = {
+static CamelProviderConfEntry hula_conf_entries[] = {
 	/* override the labels/defaults of the standard settings */
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
@@ -88,7 +88,7 @@ static CamelProvider hula_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_hula_password_authtype = {
+static CamelServiceAuthType camel_hula_password_authtype = {
 	N_("Password"),
 	
 	N_("This option will connect to the Hula server using a "

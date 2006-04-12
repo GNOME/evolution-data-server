@@ -524,13 +524,12 @@ static guint32 Spbox[8][64] = {
 	l ^= Spbox[3][(work >> 16) & 0x3f];\
 	l ^= Spbox[1][(work >> 24) & 0x3f];\
 }
+
 /* Encrypt or decrypt a block of data in ECB mode */
 static void
-des(ks,block)
-guint32 ks[16][2];	/* Key schedule */
-unsigned char block[8];		/* Data block */
+des (guint32 ks[16][2], unsigned char block[8])
 {
-	guint32 left,right,work;
+	guint32 left, right, work;
 	
 	/* Read input block and place in left/right in big-endian order */
 	left = ((guint32)block[0] << 24)
@@ -663,10 +662,7 @@ static int bytebit[] = {
  * depending on the value of "decrypt"
  */
 static void
-deskey(k,key,decrypt)
-DES_KS k;			/* Key schedule array */
-unsigned char *key;		/* 64 bits (will use only 56) */
-int decrypt;			/* 0 = encrypt, 1 = decrypt */
+deskey (DES_KS k, unsigned char *key, int decrypt)
 {
 	unsigned char pc1m[56];		/* place to modify pc1 into */
 	unsigned char pcr[56];		/* place to rotate pc1 into */

@@ -303,9 +303,9 @@ static int
 add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, unsigned int low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
-	int i, ret = -1;
+	int ret = -1;
 	char *line, *msgid;
-	unsigned int n, count, total;
+	unsigned int i, n, count, total;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
 
@@ -333,7 +333,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, 
 		line += 3;
 		n = strtoul(line, &line, 10);
 		if (n != i)
-			g_warning("retrieved message '%d' when i expected '%d'?\n", n, i);
+			g_warning("retrieved message '%u' when i expected '%u'?\n", n, i);
 		
 		/* FIXME: use camel-mime-utils.c function for parsing msgid? */
 		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))){

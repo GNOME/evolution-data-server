@@ -168,7 +168,6 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	gboolean retval = FALSE;
 	unsigned char *buf;
 	unsigned int len;
-	int ret;
 	char *path;
 	
 	CAMEL_SERVICE_LOCK(store, connect_lock);
@@ -191,7 +190,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
 	
-	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
+	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     _("Connection cancelled"));
@@ -561,7 +560,7 @@ nntp_store_info_update(CamelNNTPStore *store, char *line)
 		}
 	}
 
-	printf("store info update '%s' first '%d' last '%d'\n", line, first, last);
+	printf("store info update '%s' first '%u' last '%u'\n", line, first, last);
 
 	if (si->last) {
 		if (last > si->last)

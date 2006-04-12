@@ -981,12 +981,12 @@ camel_text_index_info(CamelTextIndex *idx)
 	int frag;
 
 	printf("Path: '%s'\n", idx->parent.path);
-	printf("Version: %d\n", idx->parent.version);
+	printf("Version: %u\n", idx->parent.version);
 	printf("Flags: %08x\n", idx->parent.flags);
-	printf("Total words: %d\n", rb->words);
-	printf("Total names: %d\n", rb->names);
-	printf("Total deleted: %d\n", rb->deleted);
-	printf("Total key blocks: %d\n", rb->keys);
+	printf("Total words: %u\n", rb->words);
+	printf("Total names: %u\n", rb->names);
+	printf("Total deleted: %u\n", rb->deleted);
+	printf("Total key blocks: %u\n", rb->keys);
 
 	if (rb->words > 0) {
 		frag = ((rb->keys - rb->words) * 100)/ rb->words;
@@ -1335,7 +1335,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 		while (data) {
 			printf(" data %x ", data);
 			if (camel_key_file_read(p->links, &data, &count, &records) == -1) {
-				printf("Warning, read failed for word '%s', at data '%d'\n", word, data);
+				printf("Warning, read failed for word '%s', at data '%u'\n", word, data);
 				data = 0;
 			} else {
 				printf("(%d)\n", (int)count);

@@ -50,8 +50,8 @@ extern int camel_verbose_debug;
 
 static gboolean imap_command_start (CamelImapStore *store, CamelFolder *folder,
 				    const char *cmd, CamelException *ex);
-CamelImapResponse *imap_read_response (CamelImapStore *store,
-				       CamelException *ex);
+static CamelImapResponse *imap_read_response (CamelImapStore *store,
+					      CamelException *ex);
 static char *imap_read_untagged (CamelImapStore *store, char *line,
 				 CamelException *ex);
 static char *imap_command_strdup_vprintf (CamelImapStore *store,
@@ -211,10 +211,10 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 		else
 			mask = cmd;
 		
-		fprintf (stderr, "sending : %c%.5d %s\r\n", store->tag_prefix, store->command, mask);
+		fprintf (stderr, "sending : %c%.5u %s\r\n", store->tag_prefix, store->command, mask);
 	}
 	
-	nwritten = camel_stream_printf (store->ostream, "%c%.5d %s\r\n",
+	nwritten = camel_stream_printf (store->ostream, "%c%.5u %s\r\n",
 					store->tag_prefix, store->command++, cmd);
 	
 	if (nwritten == -1) {
@@ -530,7 +530,7 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		 * don't want it to be shorter either, because then the
 		 * GString's length would be off...
 		 */
-		sprintf (p, "{%0*d}", ldigits, length);
+		sprintf (p, "{%0*u}", ldigits, length);
 		
 		fulllen += str->len;
 		g_ptr_array_add (data, str);

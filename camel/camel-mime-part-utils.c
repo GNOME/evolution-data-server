@@ -120,7 +120,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 		d(printf("Created multi-part\n"));
 		break;
 	default:
-		g_warning("Invalid state encountered???: %d", camel_mime_parser_state (mp));
+		g_warning("Invalid state encountered???: %u", camel_mime_parser_state (mp));
 	}
 	
 	if (content) {

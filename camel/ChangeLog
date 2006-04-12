@@ -1,3 +1,8 @@
+2006-04-12  Jeffrey Stedfast  <fejj@novell.com>
+
+	* Fixes to many C/H files to suppress compiler warnings thanks to
+	Kjartan Maraas.
+
 2006-04-05  Simon Zheng  <simon.zheng@sun.com>
 
 	** Fixes bug #333698
@@ -22,17 +27,16 @@
 	to parse only valid mailto links
 
 2006-02-21  Rohini S  <srohini@novell.com>
- 
- 	** Fixes bug #328322
- 
- 	* camel-mime-filter-tohtml.c : add new pattern for sftp urls.
- 
+
+	** Fixes bug #328322
+
+	* camel-mime-filter-tohtml.c : add new pattern for sftp urls.
+
 2006-02-21  Rohini S  <srohini@novell.com>
- 
- 	* camel-url-scanner.c (camel_url_web_end): Modified to accept urls 
- 	with ./
- 	Fixes bug#256142
- 
+
+	* camel-url-scanner.c (camel_url_web_end): Modified to accept urls
+	with ./ Fixes bug#256142
+
 2006-02-16  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-disco-diary.c: (camel_disco_diary_log):

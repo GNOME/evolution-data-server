@@ -1858,7 +1858,7 @@ content_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	
 	charset = e_iconv_locale_charset ();
 	ci->id = camel_header_msgid_decode (camel_header_raw_find (&h, "content-id", NULL));
-	ci->description = camel_header_decode_string (camel_header_raw_find (&h, "content-description", NULL), NULL);
+	ci->description = camel_header_decode_string (camel_header_raw_find (&h, "content-description", NULL), charset);
 	ci->encoding = camel_content_transfer_encoding_decode (camel_header_raw_find (&h, "content-transfer-encoding", NULL));
 	ci->type = camel_content_type_decode(camel_header_raw_find(&h, "content-type", NULL));
 
@@ -1976,7 +1976,6 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 	char *buffer;
 	CamelMessageContentInfo *info = NULL;
 	CamelContentType *ct;
-	int body;
 	int enc_id = -1, chr_id = -1, html_id = -1, idx_id = -1;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	CamelMimeFilterCharset *mfc;
@@ -1986,8 +1985,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 
 	/* start of this part */
 	state = camel_mime_parser_step(mp, &buffer, &len);
-	body = camel_mime_parser_tell(mp);
-
+	
 	if (s->build_content)
 		info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->content_info_new_from_parser(s, mp);
 
@@ -2516,7 +2514,7 @@ camel_tag_list_free(CamelTag **list)
 	*list = NULL;
 }
 
-struct flag_names_t {
+static struct flag_names_t {
 	char *name;
 	guint32 value;
 } flag_names[] = {
