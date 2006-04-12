@@ -67,9 +67,9 @@ struct _CamelSession
 	char *storage_path;
 	CamelJunkPlugin *junk_plugin;
 
-	gboolean online:1;
-	gboolean check_junk:1;
-	gboolean network_state:1;
+	guint online:1;
+	guint check_junk:1;
+	guint network_state:1;
 };
 
 typedef struct _CamelSessionThreadOps CamelSessionThreadOps;

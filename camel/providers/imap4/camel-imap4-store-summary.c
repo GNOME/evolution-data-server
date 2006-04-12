@@ -113,7 +113,7 @@ camel_imap4_store_summary_finalize (CamelObject *obj)
 static CamelIMAP4NamespaceList *
 load_namespaces (FILE *in)
 {
-	CamelIMAP4Namespace *ns, *tail;
+	CamelIMAP4Namespace *ns, *tail = NULL;
 	CamelIMAP4NamespaceList *nsl;
 	guint32 i, j, n;
 	
@@ -200,7 +200,7 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 static int
 save_namespaces (FILE *out, CamelIMAP4NamespaceList *nsl)
 {
-	CamelIMAP4Namespace *cur, *ns;
+	CamelIMAP4Namespace *ns, *cur = NULL;
 	guint32 i, n;
 	
 	for (i = 0; i < 3; i++) {

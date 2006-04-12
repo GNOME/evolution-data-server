@@ -209,7 +209,7 @@ hexnib (guint32 c)
 char *
 camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *path, char dir_sep)
 {
-	unsigned char *full, *f;
+	char *full, *f;
 	guint32 c, v = 0;
 	const char *p;
 	int state=0;

@@ -1103,32 +1103,32 @@ static struct {
 static void
 encode_status(guint32 flags, char status[8])
 {
+	size_t i;
 	char *p;
-	int i;
-
+	
 	p = status;
-	for (i=0;i<sizeof(status_flags)/sizeof(status_flags[0]);i++)
+	for (i = 0; i < G_N_ELEMENTS (status_flags); i++)
 		if (status_flags[i].flag & flags)
 			*p++ = status_flags[i].tag;
 	*p++ = 'O';
-	*p=0;
+	*p = '\0';
 }
 
 static guint32
 decode_status(const char *status)
 {
 	const char *p;
-	char c;
 	guint32 flags = 0;
-	int i;
-
+	size_t i;
+	char c;
+	
 	p = status;
 	while ((c = *p++)) {
-		for (i=0;i<sizeof(status_flags)/sizeof(status_flags[0]);i++)
-			if (status_flags[i].tag == *p)
+		for (i = 0; i < G_N_ELEMENTS (status_flags); i++)
+			if (status_flags[i].tag == c)
 				flags |= status_flags[i].flag;
 	}
-
+	
 	return flags;
 }
 

@@ -207,7 +207,7 @@ skip_content(CamelMimeParser *cmp)
 		case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
 			break;
 		default:
-			g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %d", camel_mime_parser_state (cmp));
+			g_error ("Bad parser state: Expecting MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (cmp));
 			camel_mime_parser_unstep(cmp);
 			return -1;
 		}
@@ -218,7 +218,7 @@ skip_content(CamelMimeParser *cmp)
 			skip_content(cmp);
 		break;
 	default:
-		g_warning("Invalid state encountered???: %d", camel_mime_parser_state(cmp));
+		g_warning("Invalid state encountered???: %u", camel_mime_parser_state (cmp));
 	}
 
 	return 0;
@@ -233,7 +233,6 @@ parse_content(CamelMultipartSigned *mps)
 	const char *boundary;
 	char *buf;
 	size_t len;
-	off_t head = -1, tail = -1;
 	int state;
 
 	boundary = camel_multipart_get_boundary(mp);
@@ -264,7 +263,6 @@ parse_content(CamelMultipartSigned *mps)
 
 	while ((state = camel_mime_parser_step(cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		if (mps->start1 == -1) {
-			head = camel_mime_parser_tell_start_boundary(cmp);
 			mps->start1 = camel_mime_parser_tell_start_headers(cmp);
 		} else if (mps->start2 == -1) {
 			mps->start2 = camel_mime_parser_tell_start_headers(cmp);
@@ -284,8 +282,7 @@ parse_content(CamelMultipartSigned *mps)
 
 	if (state == CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		mps->end2 = camel_mime_parser_tell_start_boundary(cmp);
-		tail = camel_mime_parser_tell(cmp);
-
+		
 		camel_multipart_set_preface(mp, camel_mime_parser_preface(cmp));
 		camel_multipart_set_postface(mp, camel_mime_parser_postface(cmp));
 	}

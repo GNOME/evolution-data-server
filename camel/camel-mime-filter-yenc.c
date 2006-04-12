@@ -416,7 +416,7 @@ size_t
 camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 		    int *state, guint32 *pcrc, guint32 *crc)
 {
-	const register unsigned char *inptr;
+	register const unsigned char *inptr;
 	register unsigned char *outptr;
 	const unsigned char *inend;
 	unsigned char ch;
@@ -496,7 +496,7 @@ size_t
 camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 		    int *state, guint32 *pcrc, guint32 *crc)
 {
-	const register unsigned char *inptr;
+	register const unsigned char *inptr;
 	register unsigned char *outptr;
 	const unsigned char *inend;
 	register int already;

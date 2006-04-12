@@ -459,7 +459,7 @@ append:
 char *
 camel_internet_address_encode_address(int *inlen, const char *real, const char *addr)
 {
-	char *name = camel_header_encode_phrase(real);
+	char *name = camel_header_encode_phrase ((const unsigned char *) real);
 	char *ret = NULL;
 	int len = 0;
 	GString *out = g_string_new("");

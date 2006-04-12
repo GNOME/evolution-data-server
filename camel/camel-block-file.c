@@ -83,14 +83,14 @@ static int sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl);
 static int
 block_file_validate_root(CamelBlockFile *bs)
 {
-	struct stat st;
 	CamelBlockRoot *br;
-	int s;
-
+	struct stat st;
+	int retval;
+	
 	br = bs->root;
-
-	s = fstat(bs->fd, &st);
-
+	
+	retval = fstat (bs->fd, &st);
+	
 	d(printf("Validate root: '%s'\n", bs->path));
 	d(printf("version: %.8s (%.8s)\n", bs->root->version, bs->version));
 	d(printf("block size: %d (%d)%s\n", br->block_size, bs->block_size,
@@ -106,12 +106,12 @@ block_file_validate_root(CamelBlockFile *bs)
 	    || br->block_size != bs->block_size
 	    || (br->free % bs->block_size) != 0
 	    || (br->last % bs->block_size) != 0
-	    || fstat(bs->fd, &st) == -1
+	    || retval == -1
 	    || st.st_size != br->last
 	    || br->free > st.st_size
 	    || (br->flags & CAMEL_BLOCK_FILE_SYNC) == 0) {
 #if 0
-		if (s != -1 && st.st_size > 0) {
+		if (retval != -1 && st.st_size > 0) {
 			g_warning("Invalid root: '%s'", bs->path);
 			g_warning("version: %.8s (%.8s)", bs->root->version, bs->version);
 			g_warning("block size: %d (%d)%s", br->block_size, bs->block_size,
@@ -218,7 +218,7 @@ camel_block_file_finalise(CamelBlockFile *bs)
 	bn = bl->next;
 	while (bn) {
 		if (bl->refcount != 0)
-			g_warning("Block '%d' still referenced", bl->id);
+			g_warning("Block '%u' still referenced", bl->id);
 		g_free(bl);
 		bl = bn;
 		bn = bn->next;

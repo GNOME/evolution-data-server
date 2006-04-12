@@ -507,7 +507,6 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 	CamelIMAP4Literal *literal;
 	camel_imap4_token_t token;
 	unsigned char *linebuf;
-	ssize_t nwritten;
 	size_t len;
 	
 	g_assert (ic->part != NULL);
@@ -545,7 +544,7 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 	linebuf = ic->part->buffer;
 	len = ic->part->buflen;
 	
-	if ((nwritten = camel_stream_write (engine->ostream, linebuf, len)) == -1) {
+	if (camel_stream_write (engine->ostream, linebuf, len) == -1) {
 		camel_exception_setv (&ic->ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed sending command to IMAP server %s: %s"),
 				      engine->url->host, g_strerror (errno));

@@ -404,7 +404,7 @@ gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 		g_byte_array_append (gpg->diagbuf, "", 1);
 	}
 	
-	return gpg->diagbuf->data;
+	return (const char *) gpg->diagbuf->data;
 }
 
 static void

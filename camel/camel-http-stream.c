@@ -326,7 +326,7 @@ http_get_headers (CamelHttpStream *http)
 		
 		break;
 	default:
-		g_warning ("Invalid state encountered???: %d", camel_mime_parser_state (http->parser));
+		g_warning ("Invalid state encountered???: %u", camel_mime_parser_state (http->parser));
 	}
 	
 	err = camel_mime_parser_errno (http->parser);
@@ -532,7 +532,7 @@ stream_reset (CamelStream *stream)
 		http_disconnect(http);
 
 	return 0;
-};
+}
 
 CamelContentType *
 camel_http_stream_get_content_type (CamelHttpStream *http_stream)

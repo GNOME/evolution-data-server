@@ -315,7 +315,6 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 	CamelIMAP4Command *ic;
 	int id;
 #endif
-	int ret;
 	
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
@@ -335,7 +334,7 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
 	
-	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
+	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     _("Connection cancelled"));
@@ -587,7 +586,6 @@ static gboolean
 imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex)
 {
 	CamelService *service = engine->service;
-	CamelServiceAuthType *mech;
 	gboolean reprompt = FALSE;
 	char *errmsg = NULL;
 	CamelException lex;
@@ -596,7 +594,7 @@ imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex)
 		return FALSE;
 	
 	if (engine->state != CAMEL_IMAP4_ENGINE_AUTHENTICATED) {
-#define CANT_USE_AUTHMECH (!(mech = g_hash_table_lookup (engine->authtypes, service->url->authmech)))
+#define CANT_USE_AUTHMECH (!g_hash_table_lookup (engine->authtypes, service->url->authmech))
 		if (service->url->authmech && CANT_USE_AUTHMECH) {
 			/* Oops. We can't AUTH using the requested mechanism */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
@@ -1477,7 +1475,9 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	}
 #endif
 	
+#ifdef USE_FOLDER_INFO_CACHE_LOGIC_FOR_SPEED
  check_online:
+#endif
 	
 	if (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)
 		cmd = "LSUB";

@@ -205,12 +205,12 @@ gzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			fprintf (stderr, "gzip: %d: %s\n", retval, priv->stream->msg);
 		
 		if (flush == Z_FULL_FLUSH) {
-			size_t outlen;
+			size_t n;
 			
-			outlen = filter->outsize - priv->stream->avail_out;
-			camel_mime_filter_set_size (filter, outlen + (priv->stream->avail_in * 2) + 12, TRUE);
-			priv->stream->avail_out = filter->outsize - outlen;
-			priv->stream->next_out = filter->outbuf + outlen;
+			n = filter->outsize - priv->stream->avail_out;
+			camel_mime_filter_set_size (filter, n + (priv->stream->avail_in * 2) + 12, TRUE);
+			priv->stream->avail_out = filter->outsize - n;
+			priv->stream->next_out = filter->outbuf + n;
 			
 			if (priv->stream->avail_in == 0) {
 				guint32 val;
@@ -358,17 +358,17 @@ gunzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			fprintf (stderr, "gunzip: %d: %s\n", retval, priv->stream->msg);
 		
 		if (flush == Z_FULL_FLUSH) {
-			size_t outlen;
+			size_t n;
 			
 			if (priv->stream->avail_in == 0) {
 				/* FIXME: extract & compare calculated crc32 and isize values? */
 				break;
 			}
 			
-			outlen = filter->outsize - priv->stream->avail_out;
-			camel_mime_filter_set_size (filter, outlen + (priv->stream->avail_in * 2) + 12, TRUE);
-			priv->stream->avail_out = filter->outsize - outlen;
-			priv->stream->next_out = filter->outbuf + outlen;
+			n = filter->outsize - priv->stream->avail_out;
+			camel_mime_filter_set_size (filter, n + (priv->stream->avail_in * 2) + 12, TRUE);
+			priv->stream->avail_out = filter->outsize - n;
+			priv->stream->next_out = filter->outbuf + n;
 		} else {
 			priv->stream->avail_in += 8;
 			

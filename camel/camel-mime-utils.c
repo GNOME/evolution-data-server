@@ -2258,19 +2258,18 @@ camel_content_type_unref(CamelContentType *ct)
 static char *
 header_decode_domain(const char **in)
 {
-	const char *inptr = *in, *start;
+	const char *inptr = *in;
 	int go = TRUE;
 	char *ret;
 	GString *domain = g_string_new("");
 
-				/* domain ref | domain literal */
+	/* domain ref | domain literal */
 	header_decode_lwsp(&inptr);
 	while (go) {
 		if (*inptr == '[') { /* domain literal */
 			domain = g_string_append_c(domain, '[');
 			inptr++;
 			header_decode_lwsp(&inptr);
-			start = inptr;
 			while (camel_mime_is_dtext(*inptr)) {
 				domain = g_string_append_c(domain, *inptr);
 				inptr++;
@@ -3208,7 +3207,8 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	const char *charset;
 	GString *out;
 	guint32 c;
-
+	char *str;
+	
 	*encoded = FALSE;
 	
 	g_return_val_if_fail (in != NULL, NULL);
@@ -3238,11 +3238,11 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	}
 	g_free (outbuf);
 	
-	outbuf = out->str;
+	str = out->str;
 	g_string_free (out, FALSE);
 	*encoded = TRUE;
 	
-	return outbuf;
+	return str;
 }
 
 void
@@ -4070,23 +4070,23 @@ camel_header_raw_check_mailing_list(struct _camel_header_raw **list)
 			match[j].rm_eo = -1;
 		}
 		if (v != NULL && regexec (&mail_list_magic[i].regex, v, 3, match, 0) == 0 && match[1].rm_so != -1) {
-			char *list;
 			int len1, len2;
-
+			char *mlist;
+			
 			len1 = match[1].rm_eo - match[1].rm_so;
 			len2 = match[2].rm_eo - match[2].rm_so;
-
-			list = g_malloc(len1+len2+2);
-			memcpy(list, v + match[1].rm_so, len1);
+			
+			mlist = g_malloc (len1 + len2 + 2);
+			memcpy (mlist, v + match[1].rm_so, len1);
 			if (len2) {
 				list[len1] = '@';
-				memcpy(list+len1+1, v+match[2].rm_so, len2);
-				list[len1+len2+1]=0;
+				memcpy (mlist + len1 + 1, v + match[2].rm_so, len2);
+				mlist[len1 + len2 + 1] = '\0';
 			} else {
-				list[len1] = 0;
+				mlist[len1] = '\0';
 			}
-
-			return list;
+			
+			return mlist;
 		}
 	}
 

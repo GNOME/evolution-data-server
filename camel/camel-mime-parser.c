@@ -370,7 +370,7 @@ byte_array_to_string(GByteArray *array)
 	if (array->len == 0 || array->data[array->len-1] != '\0')
 		g_byte_array_append(array, "", 1);
 
-	return array->data;
+	return (const char *) array->data;
 }
 
 /**
@@ -1151,11 +1151,11 @@ header_append_mempool(struct _header_scan_state *s, struct _header_scan_stack *h
 	if (headerlen > 0) {									\
 		if (headerlen >= (s->outend - s->outptr)) {					\
 			register char *outnew;							\
-			register int len = ((s->outend - s->outbuf)+headerlen)*2+1;		\
-			outnew = g_realloc(s->outbuf, len);					\
+			register int olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1;	\
+			outnew = g_realloc(s->outbuf, olen);					\
 			s->outptr = s->outptr - s->outbuf + outnew;				\
 			s->outbuf = outnew;							\
-			s->outend = outnew + len;						\
+			s->outend = outnew + olen;						\
 		}										\
 		if (start[headerlen-1] == '\r')							\
 			headerlen--;								\
@@ -1762,7 +1762,7 @@ tail_recurse:
 		return;
 
 	default:
-		g_warning("Invalid state in camel-mime-parser: %d", s->state);
+		g_warning ("Invalid state in camel-mime-parser: %u", s->state);
 		break;
 	}
 

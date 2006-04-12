@@ -182,7 +182,7 @@ camel_folder_search_get_type (void)
 #define CAMEL_STRUCT_OFFSET(type, field)        ((gint) ((gchar*) &((type *) 0)->field))
 #endif
 
-struct {
+static struct {
 	char *name;
 	int offset;
 	int flags;		/* 0x02 = immediate, 0x01 = always enter */

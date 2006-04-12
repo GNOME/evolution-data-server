@@ -249,13 +249,10 @@ int
 camel_partition_table_sync(CamelPartitionTable *cpi)
 {
 	CamelBlock *bl, *bn;
-	struct _CamelPartitionTablePrivate *p;
 	int ret = 0;
-
+	
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
-
-	p = cpi->priv;
-
+	
 	if (cpi->blocks) {
 		bl = (CamelBlock *)cpi->partition.head;
 		bn = bl->next;
@@ -323,7 +320,6 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 	CamelPartitionMapBlock *ptb;
 	CamelBlock *block, *ptblock;
 	camel_hash_t hashid;
-	camel_key_t keyid = 0;
 	int index, i;
 
 	hashid = hash_key(key);
@@ -348,8 +344,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 		if (pkb->keys[i].hashid == hashid) {
 			/* !! need to: lookup and compare string value */
 			/* get_key() if key == key ... */
-			keyid = pkb->keys[i].keyid;
-
+			
 			/* remove this key */
 			pkb->used--;
 			for (;i<pkb->used;i++) {

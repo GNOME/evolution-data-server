@@ -51,9 +51,7 @@
 
 #include <glib/gstdio.h>
 
-/* this is commented because otherwise we get an error about the
-   redefinition of MD5Context...yay */
-/*#include <libedataserver/md5-utils.h>*/
+#include <libedataserver/md5-utils.h>
 
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
@@ -63,10 +61,6 @@
 #include "camel-session.h"
 #include "camel-stream-fs.h"
 #include "camel-tcp-stream-ssl.h"
-
-
-/* from md5-utils.h */
-void md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
 
 #define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
 #define CONNECT_TIMEOUT (PR_TicksPerSecond () * 4 * 60)
@@ -733,7 +727,7 @@ camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 		close (fd);
 		
 		if (nread != st.st_size) {
-			g_warning ("cert size read truncated %s: %d != %ld", path, nread, st.st_size);
+			g_warning ("cert size read truncated %s: %u != %ld", path, nread, st.st_size);
 			g_byte_array_free(ccert->rawcert, TRUE);
 			ccert->rawcert = NULL;
 			g_free(fingerprint);

@@ -34,7 +34,8 @@
 #include "camel-sasl.h"
 #include "camel-i18n.h"
 
-CamelProviderConfEntry pop3_conf_entries[] = {
+
+static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
 	  N_("Message storage") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep_on_server", NULL,
@@ -68,7 +69,7 @@ static CamelProvider pop3_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_pop3_password_authtype = {
+static CamelServiceAuthType camel_pop3_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the POP server using a plaintext "

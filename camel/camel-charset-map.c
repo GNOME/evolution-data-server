@@ -168,7 +168,7 @@ int main (void)
 			if (j < 256) {
 				printf("m%02x%x, ", i, k);
 			} else {
-				printf("0, ");
+				printf("NULL, ");
 			}
 		}
 		printf("}, ");
@@ -222,9 +222,10 @@ camel_charset_init (CamelCharset *c)
 void
 camel_charset_step (CamelCharset *cc, const char *in, int len)
 {
+	const unsigned char *inptr = (const unsigned char *) in;
+	const unsigned char *inend = inptr + len;
 	register unsigned int mask;
 	register int level;
-	const unsigned char *inptr = in, *inend = in+len;
 	register guint32 c;
 
 	mask = cc->mask;

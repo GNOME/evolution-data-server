@@ -138,7 +138,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 		}
 		break;
 	default:
-		g_warning("unknown type %d in CamelMimeFilterBasic", f->type);
+		g_warning ("unknown type %u in CamelMimeFilterBasic", f->type);
 		goto donothing;
 	}
 
@@ -236,7 +236,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		}
 		break;
 	default:
-		g_warning("unknown type %d in CamelMimeFilterBasic", f->type);
+		g_warning ("unknown type %u in CamelMimeFilterBasic", f->type);
 		goto donothing;
 	}
 
@@ -291,7 +291,7 @@ camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)
 		new->type = type;
 		break;
 	default:
-		g_warning("Invalid type of CamelMimeFilterBasic requested: %d", type);
+		g_warning ("Invalid type of CamelMimeFilterBasic requested: %u", type);
 		new = NULL;
 		break;
 	}

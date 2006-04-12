@@ -1634,9 +1634,9 @@ struct _folder_filter_msg {
 };
 
 static void
-filter_filter(CamelSession *session, CamelSessionThreadMsg *msg)
+filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 {
-	struct _folder_filter_msg *m = (struct _folder_filter_msg *)msg;
+	struct _folder_filter_msg *m = (struct _folder_filter_msg *) tmsg;
 	CamelMessageInfo *info;
 	int i, status = 0;
 	CamelURL *uri;

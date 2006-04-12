@@ -600,7 +600,7 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 	case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
 		break;
 	default:
-		g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %d", camel_mime_parser_state (mp));
+		g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (mp));
 		camel_mime_parser_unstep (mp);
 		return -1;
 	}
@@ -762,9 +762,9 @@ message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartF
 	if (CAMEL_IS_MULTIPART (containee)) {
 		parts = camel_multipart_get_number (CAMEL_MULTIPART (containee));
 		for (i = 0; go && i < parts; i++) {
-			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
+			CamelMimePart *mpart = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 			
-			go = message_foreach_part_rec (msg, part, callback, data);
+			go = message_foreach_part_rec (msg, mpart, callback, data);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		go = message_foreach_part_rec (msg, (CamelMimePart *)containee, callback, data);
@@ -1176,9 +1176,9 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, int body, int depth)
 	if (CAMEL_IS_MULTIPART(containee)) {
 		parts = camel_multipart_get_number((CamelMultipart *)containee);
 		for (i = 0; go && i < parts; i++) {
-			CamelMimePart *part = camel_multipart_get_part((CamelMultipart *)containee, i);
-
-			cmm_dump_rec(msg, part, body, depth+2);
+			CamelMimePart *mpart = camel_multipart_get_part((CamelMultipart *)containee, i);
+			
+			cmm_dump_rec(msg, mpart, body, depth+2);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE(containee)) {
 		cmm_dump_rec(msg, (CamelMimePart *)containee, body, depth+2);

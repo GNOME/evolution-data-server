@@ -1,3 +1,9 @@
+2006-04-12  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-folder.c (imap4_append_message): strcpy the
+	folder->full_name into the freshly alloca'd parent_name buffer
+	before using strrchr on it.
+
 2006-03-31  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fix for bug #272058

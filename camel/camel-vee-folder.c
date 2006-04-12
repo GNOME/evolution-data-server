@@ -1271,7 +1271,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, summary_lock);
 
 	dd(printf("Vfolder '%s' subfolder changed '%s'\n", folder->full_name, sub->full_name));
-	dd(printf(" changed %d added %d removed %d\n", changes->uid_changed->len, changes->uid_added->len, changes->uid_removed->len));
+	dd(printf(" changed %u added %u removed %u\n", changes->uid_changed->len, changes->uid_added->len, changes->uid_removed->len));
 
 	/* Always remove removed uid's, in any case */
 	for (i=0;i<changes->uid_removed->len;i++) {

@@ -485,7 +485,7 @@ camel_imap4_parse_flags_list (CamelIMAP4Engine *engine, guint32 *flags, CamelExc
 }
 
 
-struct {
+static struct {
 	const char *name;
 	guint32 flag;
 } list_flags[] = {

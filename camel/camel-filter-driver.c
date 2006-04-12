@@ -1218,7 +1218,7 @@ fail:
 	if (mp)
 		camel_object_unref (mp);
 	
-	return -1;
+	return ret;
 }
 
 

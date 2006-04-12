@@ -775,6 +775,7 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch)
 		
 		if ((info = camel_folder_summary_uid (fetch->summary, camel_message_info_uid (envelope->info)))) {
 			camel_message_info_free (envelope->info);
+			camel_message_info_free (info);
 			g_free (envelope);
 			continue;
 		}

@@ -31,7 +31,7 @@
 #include "camel-imap4-store.h"
 
 
-CamelProviderConfEntry imap4_conf_entries[] = {
+static CamelProviderConfEntry imap4_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for new mail") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
@@ -84,7 +84,7 @@ static CamelProvider imap4_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_imap4_password_authtype = {
+static CamelServiceAuthType camel_imap4_password_authtype = {
 	N_("Password"),
 	
 	N_("This option will connect to the IMAPv4rev1 server using a "

@@ -1013,6 +1013,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 				char *parent_name, *p;
 				
 				parent_name = g_alloca (strlen (folder->full_name) + 1);
+				strcpy (parent_name, folder->full_name);
 				if (!(p = strrchr (parent_name, '/')))
 					*parent_name = '\0';
 				else

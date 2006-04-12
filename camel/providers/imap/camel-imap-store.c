@@ -564,7 +564,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	CamelStream *tcp_stream;
 	CamelSockOptData sockopt;
 	gboolean force_imap4 = FALSE;
-	int clean_quit = TRUE, ret;
+	gboolean clean_quit = TRUE;
 	char *buf;
 	
 	if (ssl_mode != MODE_CLEAR) {
@@ -585,7 +585,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
 	
-	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
+	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     _("Connection cancelled"));
@@ -1181,6 +1181,7 @@ imap_check_folder_still_extant (CamelImapStore *imap_store, const char *full_nam
 	return TRUE;
 }
 
+#if 0
 /* This is a little 'hack' to avoid the deadlock conditions that would otherwise
    ensue when calling camel_folder_refresh_info from inside a lock */
 /* NB: on second thougts this is probably not entirely safe, but it'll do for now */
@@ -1227,7 +1228,8 @@ imap_store_refresh_folders (CamelImapStore *store, CamelException *ex)
 	}
 	
 	g_ptr_array_free (folders, TRUE);
-}	
+}
+#endif
 
 static gboolean
 try_auth (CamelImapStore *store, const char *mech, CamelException *ex)

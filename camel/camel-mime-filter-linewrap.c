@@ -71,7 +71,7 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	char **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterLinewrap *linewrap = (CamelMimeFilterLinewrap *)f;
-	char *inend, *last, *p, *q;
+	char *inend, *p, *q;
 	int nchars = linewrap->nchars;
 	
 	/* we'll be adding chars here so we need a bigger buffer */
@@ -83,12 +83,9 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	
 	while (p < inend) {
 		if (*p == '\n') {
-			last = q;
 			*q++ = *p++;
 			nchars = 0;
 		} else if (isspace (*p)) {
-			last = q;
-			
 			if (nchars >= linewrap->wrap_len) {
 				*q++ = '\n';
 				p++;
