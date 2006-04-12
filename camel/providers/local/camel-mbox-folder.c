@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 
@@ -291,7 +292,7 @@ fail_write:
 	g_free(fromline);
 
 	/* reset the file to original size */
-	fd = g_open(lf->folder_path, O_WRONLY | O_BINARY, 0600);
+	fd = g_open(lf->folder_path, O_LARGEFILE | O_WRONLY | O_BINARY, 0600);
 	if (fd != -1) {
 		ftruncate(fd, mbs->folder_size);
 		close(fd);
@@ -362,7 +363,7 @@ retry:
 	   with no stream).  This means we dont have to lock the mbox for the life of the message, but only
 	   while it is being created. */
 
-	fd = g_open(lf->folder_path, O_RDONLY | O_BINARY, 0);
+	fd = g_open(lf->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"),

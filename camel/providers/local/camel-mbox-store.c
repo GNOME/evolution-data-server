@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 
 #include <glib.h>
@@ -180,7 +181,7 @@ get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelExcep
 		
 		g_free(dirname);
 		
-		fd = g_open(name, O_WRONLY | O_CREAT | O_APPEND | O_BINARY, 0666);
+		fd = g_open(name, O_LARGEFILE | O_WRONLY | O_CREAT | O_APPEND | O_BINARY, 0666);
 		if (fd == -1) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Cannot create folder `%s': %s"),

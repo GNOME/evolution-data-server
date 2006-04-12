@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
@@ -414,7 +415,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = g_open(cls->folder_path, O_RDONLY | O_BINARY, 0);
+	fd = g_open(cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		d(printf("%s failed to open: %s\n", cls->folder_path, strerror (errno)));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -587,7 +588,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = g_open(cls->folder_path, O_RDONLY | O_BINARY, 0);
+	fd = g_open(cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open file: %s: %s"),
@@ -599,7 +600,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	tmpname = g_alloca (strlen (cls->folder_path) + 5);
 	sprintf (tmpname, "%s.tmp", cls->folder_path);
 	d(printf("Writing tmp file to %s\n", tmpname));
-	fdout = g_open(tmpname, O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600);
+	fdout = g_open(tmpname, O_LARGEFILE|O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fdout == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot open temporary mailbox: %s"),
@@ -682,7 +683,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = g_open(cls->folder_path, O_RDWR|O_BINARY, 0);
+	fd = g_open(cls->folder_path, O_LARGEFILE|O_RDWR|O_BINARY, 0);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open file: %s: %s"),
