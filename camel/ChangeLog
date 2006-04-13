@@ -3,6 +3,13 @@
 	* Fixes to many C/H files to suppress compiler warnings thanks to
 	Kjartan Maraas.
 
+2006-04-04  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-charset-map.c (main): Set appropriate structs/struct
+	elements to static/const.
+
+	* camel-charset-map-private.h: Regenerated.
+
 2006-04-05  Simon Zheng  <simon.zheng@sun.com>
 
 	** Fixes bug #333698

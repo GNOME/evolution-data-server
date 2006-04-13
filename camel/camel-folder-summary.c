@@ -985,7 +985,7 @@ camel_folder_summary_info_new_from_message(CamelFolderSummary *s, CamelMimeMessa
 	CamelMessageInfo *info;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	CamelIndexName *name = NULL;
-
+	
 	info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_new_from_message(s, msg);
 
 	/* assign a unique uid, this is slightly 'wrong' as we do not really

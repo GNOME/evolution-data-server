@@ -3230,7 +3230,7 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	out = g_string_new (charset);
 	g_string_append(out, "''");
 
-	while ( (c = *inptr++) ) {
+	while ((c = *inptr++)) {
 		if (camel_mime_is_attrchar(c))
 			g_string_append_c (out, c);
 		else
@@ -4079,7 +4079,7 @@ camel_header_raw_check_mailing_list(struct _camel_header_raw **list)
 			mlist = g_malloc (len1 + len2 + 2);
 			memcpy (mlist, v + match[1].rm_so, len1);
 			if (len2) {
-				list[len1] = '@';
+				mlist[len1] = '@';
 				memcpy (mlist + len1 + 1, v + match[2].rm_so, len2);
 				mlist[len1 + len2 + 1] = '\0';
 			} else {
