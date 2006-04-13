@@ -84,7 +84,7 @@ static CamelProvider imap4_provider = {
 	/* ... */
 };
 
-static CamelServiceAuthType camel_imap4_password_authtype = {
+CamelServiceAuthType camel_imap4_password_authtype = {
 	N_("Password"),
 	
 	N_("This option will connect to the IMAPv4rev1 server using a "
