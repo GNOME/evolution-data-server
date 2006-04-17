@@ -1,3 +1,8 @@
+2006-04-17  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_refresh_folder)
+	Sync up the flags before updating the changes.
+
 2006-04-06 Parthasarathi Susarla  <sparthasarathi@novell.com>
 
 	* camel-groupwise-folder.c : (gw_update_cache)

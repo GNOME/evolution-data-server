@@ -902,6 +902,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	struct _folder_update_msg *msg;
 	gboolean check_all = FALSE;
 
+	/* Sync-up the (un)read changes before getting updates,
+	so that the getFolderList will reflect the most recent changes too */
+	groupwise_sync (folder, FALSE, ex);
+	
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
 		return;
