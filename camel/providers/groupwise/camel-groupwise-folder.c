@@ -587,6 +587,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	EGwConnection *cnc;
 	int count, i;
 
+	/* Sync-up the (un)read changes before getting updates,
+	so that the getFolderList will reflect the most recent changes too */
+	groupwise_sync (folder, FALSE, ex);
+	
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
 		groupwise_sync_summary (folder, ex);
