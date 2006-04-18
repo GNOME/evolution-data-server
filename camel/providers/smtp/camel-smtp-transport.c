@@ -873,11 +873,50 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 }
 
 static gboolean
+hostname_is_valid (const char *name)
+{
+	enum { ALNUM, DASH, DOT } state = DOT;
+	gboolean dotseen = FALSE;
+	
+	if (!name)
+		return FALSE;
+	
+	while (*name) {
+		switch (state) {
+		case ALNUM:
+			if (*name == '-') {
+				state = DASH;
+				break;
+			} else if (*name == '.') {
+				dotseen = TRUE;
+				state = DOT;
+				break;
+			} /* else ... */
+		case DOT:
+		case DASH:
+			if (!isalnum (*name))
+				return FALSE;
+			state = ALNUM;
+			break;
+		}
+		name++;
+	}
+	
+	/* If it didn't end with an alphanumeric character, or there were no
+	   dots, it's invalid */
+	if (state != ALNUM || !dotseen)
+		return FALSE;
+	else
+		return TRUE;
+}
+
+static gboolean
 smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 {
-	/* say hello to the server */
 	char *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
 	const char *token, *numeric = NULL;
+	struct sockaddr *addr;
+	socklet_t addrlen;
 	
 	/* these are flags that we set, so unset them in case we
 	   are being called a second time (ie, after a STARTTLS) */
@@ -892,20 +931,23 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 	}
 	
 	camel_operation_start_transient (NULL, _("SMTP Greeting"));
-
+	
+	addr = transport->localaddr;
+	addrlen = transport->localaddrlen;
+	
 	/* force name resolution first, fallback to numerical, we need to know when it falls back */
-	if (camel_getnameinfo(transport->localaddr, transport->localaddrlen, &name, NULL, NI_NAMEREQD, NULL) != 0) {
-		if (camel_getnameinfo(transport->localaddr, transport->localaddrlen, &name, NULL, NI_NUMERICHOST, NULL) != 0)
-			name = g_strdup("localhost.localdomain");
-		else {
-			if (transport->localaddr->sa_family == AF_INET6)
+	if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NAMEREQD, NULL) != 0 || !hostname_is_valid (name)) {
+		g_free (name);
+		if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NUMERICHOST, NULL) != 0) {
+			name = g_strdup ("localhost.localdomain");
+		} else {
+			if (addr->sa_family == AF_INET6)
 				numeric = "IPv6:";
 			else
 				numeric = "";
 		}
 	}
 	
-	/* hiya server! how are you today? */
 	token = (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) ? "EHLO" : "HELO";
 	if (numeric)
 		cmdbuf = g_strdup_printf("%s [%s%s]\r\n", token, numeric, name);
