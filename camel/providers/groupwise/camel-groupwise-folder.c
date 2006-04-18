@@ -586,11 +586,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	int count, i;
-
-	/* Sync-up the (un)read changes before getting updates,
-	so that the getFolderList will reflect the most recent changes too */
-	groupwise_sync (folder, FALSE, ex);
-	
+		
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
 		groupwise_sync_summary (folder, ex);
@@ -896,6 +892,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	char *time_string = NULL, *t_str = NULL;
 	struct _folder_update_msg *msg;
 	gboolean check_all = FALSE;
+
+	/* Sync-up the (un)read changes before getting updates,
+	so that the getFolderList will reflect the most recent changes too */
+	groupwise_sync (folder, FALSE, ex);
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
