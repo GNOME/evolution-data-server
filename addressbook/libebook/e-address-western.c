@@ -362,7 +362,10 @@ e_address_western_parse (const gchar *in_address)
 	/* Convert the newlines at the end of each line (except the last,
 	 because it is already NULL terminated) to NULLs. */
 	for (cntr = 0; cntr < (linecntr - 1); cntr++) {
-		*(strchr (lines[cntr], '\n')) = '\0';
+		char *p;
+		p = strchr (lines[cntr], '\n');
+		if (p)
+			*p = '\0';
 	}
 
 	e_address_western_remove_blank_lines (lines, &linecntr);
