@@ -916,7 +916,7 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 	char *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
 	const char *token, *numeric = NULL;
 	struct sockaddr *addr;
-	socklet_t addrlen;
+	socklen_t addrlen;
 	
 	/* these are flags that we set, so unset them in case we
 	   are being called a second time (ie, after a STARTTLS) */
