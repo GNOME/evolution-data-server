@@ -3,6 +3,7 @@
  * Copyright (C) 2005 Matt Brown.
  *
  * Authors: Matt Brown <matt@mattb.net.nz>
+ *          Jeffrey Stedfast <fejj@novell.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -39,9 +40,10 @@ static void complete (CamelMimeFilter *f, char *in, size_t len,
 static void reset (CamelMimeFilter *f);
 
 enum {
-	PGPF_HEADER,
-	PGPF_MESSAGE,
-	PGPF_FOOTER,
+	PGP_PREFACE,
+	PGP_HEADER,
+	PGP_MESSAGE,
+	PGP_FOOTER,
 };
 
 static void
@@ -60,7 +62,8 @@ camel_mime_filter_pgp_get_type (void)
 	static CamelType type = CAMEL_INVALID_TYPE;
 	
 	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterPgp",
+		type = camel_type_register (camel_mime_filter_get_type (),
+					    "CamelMimeFilterPgp",
 					    sizeof (CamelMimeFilterPgp),
 					    sizeof (CamelMimeFilterPgpClass),
 					    (CamelObjectClassInitFunc) camel_mime_filter_pgp_class_init,
@@ -72,94 +75,103 @@ camel_mime_filter_pgp_get_type (void)
 	return type;
 }
 
+#define BEGIN_PGP_SIGNED_MESSAGE "-----BEGIN PGP SIGNED MESSAGE-----"
+#define BEGIN_PGP_SIGNATURE      "-----BEGIN PGP SIGNATURE-----"
+#define END_PGP_SIGNATURE        "-----END PGP SIGNATURE-----"
+
 static void
 filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace, int last)
 {
-	CamelMimeFilterPgp *pgpfilter = (CamelMimeFilterPgp *)f;
-	char *inptr, *inend;
+	CamelMimeFilterPgp *pgp = (CamelMimeFilterPgp *) f;
+	const char *start, *inend = in + len;
+	register const char *inptr = in;
 	register char *o;
-	char *start = in;
-	int tmplen;
 	
 	/* only need as much space as the input, we're stripping chars */
-	camel_mime_filter_set_size(f, len, FALSE);
-
+	camel_mime_filter_set_size (f, len, FALSE);
+	
 	o = f->outbuf;
-	inptr = in;
-	inend = in+len;
+	
 	while (inptr < inend) {
 		start = inptr;
-
+		
 		while (inptr < inend && *inptr != '\n')
 			inptr++;
-			
+		
 		if (inptr == inend) {
 			if (!last) {
-				camel_mime_filter_backup(f, start, inend-start);
+				camel_mime_filter_backup (f, start, inend - start);
 				inend = start;
 			}
 			break;
 		}
-
-		*inptr++ = 0;
 		
-		switch (pgpfilter->state) {
-		case PGPF_HEADER:
-			/* Wait for a blank line */
-			if (strlen(start)==0)
-				pgpfilter->state = PGPF_MESSAGE;
-			break;
-		case PGPF_MESSAGE:
-			/* In the message body, check for end of body */
-			if (strncmp(start, "-----", 5)==0) {
-				pgpfilter->state = PGPF_FOOTER;
+		inptr++;
+		
+		switch (pgp->state) {
+		case PGP_PREFACE:
+			/* check for the beginning of the pgp block */
+			if (!strncmp (start, BEGIN_PGP_SIGNED_MESSAGE, sizeof (BEGIN_PGP_SIGNED_MESSAGE) - 1)) {
+				pgp->state++;
 				break;
-			}			
-			/* do dash decoding */
-			if (strncmp(start, "- ", 2)==0) {
-				/* Dash encoded line found, skip encoding */
-				start+=2;
 			}
-			tmplen=strlen(start)+1;
-			inptr[-1] = '\n';
-			strncpy(o, start, tmplen);
-			o+=tmplen;	
+			
+			memcpy (o, start, inptr - start);
+			o += (inptr - start);
 			break;
-		case PGPF_FOOTER:
-			/* After end of message, (ie signature or something) skip it */
+		case PGP_HEADER:
+			/* pgp headers (Hash: SHA1, etc) end with a blank line */
+			if ((inptr - start) == 1)
+				pgp->state++;
+			break;
+		case PGP_MESSAGE:
+			/* check for beginning of the pgp signature block */
+			if (!strncmp (start, BEGIN_PGP_SIGNATURE, sizeof (BEGIN_PGP_SIGNATURE) - 1)) {
+				pgp->state++;
+				break;
+			}
+			
+			/* do dash decoding */
+			if (!strncmp (start, "- ", 2)) {
+				/* Dash encoded line found, skip encoding */
+				start += 2;
+			}
+			
+			memcpy (o, start, inptr - start);
+			o += (inptr - start);
+			break;
+		case PGP_FOOTER:
+			if (!strncmp (start, END_PGP_SIGNATURE, sizeof (END_PGP_SIGNATURE) - 1))
+				pgp->state = PGP_PREFACE;
 			break;
 		}
-		inptr[-1] = '\n';
 	}
 	
 	*out = f->outbuf;
 	*outlen = o - f->outbuf;
 	*outprespace = f->outpre;
-	
 }
 
 static void
-filter(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
 {
-	filter_run(f, in, len, prespace, out, outlen, outprespace, FALSE);
+	filter_run (f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void 
-complete(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
 {
-	filter_run(f, in, len, prespace, out, outlen, outprespace, TRUE);
+	filter_run (f, in, len, prespace, out, outlen, outprespace, TRUE);
 }
 
 static void
 reset (CamelMimeFilter *f)
 {
-	/* no-op */
+	((CamelMimeFilterPgp *) f)->state = PGP_PREFACE;
 }
 
 CamelMimeFilter *
 camel_mime_filter_pgp_new(void)
 {
-	CamelMimeFilterPgp *pgpfilter = (CamelMimeFilterPgp *)camel_object_new (camel_mime_filter_pgp_get_type());
-
-	return (CamelMimeFilter *) pgpfilter;
+	return (CamelMimeFilter *) camel_object_new (camel_mime_filter_pgp_get_type ());
 }

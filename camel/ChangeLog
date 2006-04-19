@@ -1,3 +1,11 @@
+2006-04-19  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-filter-pgp.c (filter_run): You cannot CANNOT modify
+	the input strings. EVER. Fixed to not do that and to also work if
+	there is preface before the pgp block (previous code failed in
+	that case).
+	(reset): Reset the filter state.
+
 2006-04-13  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-utils.c (camel_header_raw_check_mailing_list): Fixed
