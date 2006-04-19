@@ -2335,6 +2335,11 @@ find_book_view (EBookBackendGroupwise *ebgw)
 	EIterator *iter = e_list_get_iterator (views);
 	EDataBookView *rv = NULL;
 
+	if (!iterator) {
+		g_object_unref (views);
+		return NULL;
+	}
+
 	if (e_iterator_is_valid (iter)) {
 		/* just always use the first book view */
 		EDataBookView *v = (EDataBookView*)e_iterator_get(iter);
@@ -2820,6 +2825,37 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				printf("delete_list size:%d\n", g_list_length(delete_list));
 			}
 
+			for (; delete_list != NULL; delete_list = g_list_next(delete_list)) { 
+				const char *id;
+
+				/* deleted from the server */
+				contact = e_contact_new ();
+				fill_contact_from_gw_item (contact, 
+							   E_GW_ITEM (delete_list->data), 
+							   ebgw->priv->categories_by_id);
+				if (enable_debug)
+					printf("contact email:%s, contact name:%s\n", (char *) e_contact_get(contact, E_CONTACT_EMAIL_1), (char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
+				e_contact_set (contact, 
+					       E_CONTACT_BOOK_URI, 
+					       priv->original_uri);
+				id =  e_contact_get_const (contact, E_CONTACT_UID);
+
+				if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+					contact_num++;
+
+					if (book_view) {
+						status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
+										 contact_num);
+						book_view_notify_status (book_view, status_msg);
+						g_free (status_msg);
+					}
+					e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+					e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
+				}
+				g_object_unref(contact);
+				g_object_unref (delete_list->data);
+			}
+
 			for (; add_list != NULL; add_list = g_list_next(add_list)) { 
 				const char *id;
 
@@ -2858,37 +2894,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 
 				g_object_unref(contact);
 				g_object_unref (add_list->data);
-			}
-
-			for (; delete_list != NULL; delete_list = g_list_next(delete_list)) { 
-				const char *id;
-
-				/* deleted from the server */
-				contact = e_contact_new ();
-				fill_contact_from_gw_item (contact, 
-							   E_GW_ITEM (delete_list->data), 
-							   ebgw->priv->categories_by_id);
-				if (enable_debug)
-					printf("contact email:%s, contact name:%s\n", (char *) e_contact_get(contact, E_CONTACT_EMAIL_1), (char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
-				e_contact_set (contact, 
-					       E_CONTACT_BOOK_URI, 
-					       priv->original_uri);
-				id =  e_contact_get_const (contact, E_CONTACT_UID);
-
-				if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
-					contact_num++;
-
-					if (book_view) {
-						status_msg = g_strdup_printf (_("Updating contacts cache (%d)... "),
-										 contact_num);
-						book_view_notify_status (book_view, status_msg);
-						g_free (status_msg);
-					}
-					e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
-					e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
-				}
-				g_object_unref(contact);
-				g_object_unref (delete_list->data);
 			}
 			cache_last_sequence += contact_num;
 		}
