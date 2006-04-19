@@ -2335,11 +2335,6 @@ find_book_view (EBookBackendGroupwise *ebgw)
 	EIterator *iter = e_list_get_iterator (views);
 	EDataBookView *rv = NULL;
 
-	if (!iterator) {
-		g_object_unref (views);
-		return NULL;
-	}
-
 	if (e_iterator_is_valid (iter)) {
 		/* just always use the first book view */
 		EDataBookView *v = (EDataBookView*)e_iterator_get(iter);
