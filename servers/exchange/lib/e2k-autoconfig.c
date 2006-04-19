@@ -1619,14 +1619,20 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 }
 
 gboolean
-e2k_validate_user (const char *owa_url, char *user,
+e2k_validate_user (const char *owa_url, char **user,
 		   ExchangeParams *exchange_params, gboolean *remember_password,
 		   E2kAutoconfigResult *result)
 {
 	gboolean valid = FALSE, remember=FALSE;
 	char *key, *password, *prompt;
+	char *username;
+	gchar **usernames;
+	int try = 0;
 
-	key = g_strdup_printf ("%s//%s@%s/", "exchange:", user, owa_url); /* FIXME */
+try_auth_again:
+	username = g_strdup (*user);
+
+	key = g_strdup_printf ("%s//%s@%s/", "exchange:", username, owa_url); /* FIXME */
 	password = e_passwords_get_password ("Exchange", key);
 	if (password) {
 		/* This can be the case, where user presses authenticate button and
@@ -1636,7 +1642,7 @@ e2k_validate_user (const char *owa_url, char *user,
 		e_passwords_forget_password ("Exchange", key);
 	}
 	
-	prompt = g_strdup_printf (_("Enter password for %s"), user);
+	prompt = g_strdup_printf (_("Enter password for %s"), username);
 	password = e_passwords_ask_password (_("Enter password"),
 				"Exchange", key, prompt,
 				E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
@@ -1644,10 +1650,11 @@ e2k_validate_user (const char *owa_url, char *user,
 	g_free (prompt);
 	if (!password) {
 		g_free (key);
+		g_free (username);
 		return valid;
 	}
 
-	valid = validate (owa_url, user, password, exchange_params, result);
+	valid = validate (owa_url, username, password, exchange_params, result);
 	if (valid) {
 		/* generate the proper key once the host name 
 		 * is read and remember password temporarily, 
@@ -1659,18 +1666,35 @@ e2k_validate_user (const char *owa_url, char *user,
 		g_free (key);
 		if (exchange_params->is_ntlm)
 			key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/", 
-						       user, exchange_params->host);
+						       username, exchange_params->host);
 		else
-			key = g_strdup_printf ("exchange://%s@%s/", user, exchange_params->host);
+			key = g_strdup_printf ("exchange://%s@%s/", username, exchange_params->host);
 		e_passwords_add_password (key, password);
 		e_passwords_remember_password ("Exchange", key);
 	}
 	else {
+		if (try == 0) {
+			/* Check for name as e-mail id and try once again 
+			 * extracing username from e-mail id. 
+			 */
+			usernames = g_strsplit (*user, "@", 2);
+			if (usernames && usernames[0] && usernames[1]) {
+				username = g_strdup (usernames[0]);
+				g_strfreev (usernames);
+				try ++;
+				memset(*user, 0, strlen(*user));
+				g_free (*user);
+				*user = g_strdup (username);
+				g_free (username);
+				goto try_auth_again;
+			}
+		}
 		/* if validation failed*/
 		e_passwords_forget_password ("Exchange", key);
 	}
 
 	g_free (key);
 	g_free (password);
+	g_free (username);
 	return valid;
 }

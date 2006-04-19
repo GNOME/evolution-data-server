@@ -109,14 +109,6 @@ e2k_uri_new (const char *uri_string)
 				*backslash = '\0';
 				uri->user = g_strdup (backslash + 1);
 			}
-			else {
-				/* if backslash is not there check for @ */
-				user_at = strchr (uri->user, '@');
-				if (user_at) {
-					*user_at = '\0';
-					uri->domain = g_strdup (user_at + 1);
-				}
-			}
 		} else
 			uri->user = uri->passwd = uri->domain = NULL;
 

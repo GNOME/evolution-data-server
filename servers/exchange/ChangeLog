@@ -1,3 +1,16 @@
+2006-04-18  Sushma Rai  <rsushma@novell.com>
+
+	* lib/e2k-uri.c (e2k_uri_new): Reverting the changes made for extracting
+	the user name and domain names from user name provided, which is in the
+	form of email id. Now we are doung it during account creation itself.
+	
+	* lib/e2k-validate.h: Changed the signature of e2k_validate_user().
+
+	* lib/e2k-autoconfig.c (e2k_validate_user): Authenticating with the 
+	username provided, and if it fails and username is of the form 
+	user@domain, extracting the username from it and trying once more.
+	Fixes #329371.
+
 2006-04-06  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-hierarchy-webdav.c (xfer_folder): Removing the 
