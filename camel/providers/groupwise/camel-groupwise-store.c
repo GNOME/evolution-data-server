@@ -224,7 +224,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 		}
 		if (!E_IS_GW_CONNECTION(priv->cnc)) {
 			errbuf = g_strdup_printf (_("Unable to authenticate "
-					    "to GroupWise server."));
+					    "to GroupWise server. "));
 						  
 			camel_exception_clear (ex);
 		} else 

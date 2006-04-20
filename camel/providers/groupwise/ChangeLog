@@ -1,3 +1,8 @@
+2006-04-20  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	** See bug 167640 on bnc
+	* camel-groupwise-store.c: Add space at the end of a string.
+
 2006-04-20  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-summary.c : (groupwise_summary_clear):
