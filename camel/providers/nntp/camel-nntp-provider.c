@@ -68,7 +68,7 @@ static CamelProvider news_provider = {
 	/* ... */
 };
 
-static CamelServiceAuthType camel_nntp_password_authtype = {
+CamelServiceAuthType camel_nntp_password_authtype = {
 	N_("Password"),
 
 	N_("This option will authenticate with the NNTP server using a "
