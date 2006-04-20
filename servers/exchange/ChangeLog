@@ -1,3 +1,12 @@
+2006-04-19  Harish Krishnaswamy  <kharish@novell.com>
+
+	Patch suggested by Carlos Lozano <clozano at andago dot com>
+
+	* storage/exchange-account.c (is_password_expired),
+	(exchange_account_set_password): Ensure checks for expiry or
+	weakness take effect while trying for nt domain. The conditionals
+	should be AND'ed not OR'ed. 
+
 2006-04-18  Sushma Rai  <rsushma@novell.com>
 
 	* lib/e2k-uri.c (e2k_uri_new): Reverting the changes made for extracting
