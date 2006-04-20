@@ -330,15 +330,17 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
 	int i, count;
+	const char *uid;
 
 	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (summary);
 	for (i = 0; i < count; i++) {
 		if (!(info = camel_folder_summary_index (summary, i)))
 			continue;
-
-		camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
-		camel_folder_summary_remove(summary, info);
+  		
+		uid = camel_message_info_uid (info);
+		camel_folder_change_info_remove_uid (changes, uid);
+		camel_folder_summary_remove_uid (summary, uid);
 		camel_message_info_free(info);
 	}
 
