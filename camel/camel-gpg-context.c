@@ -1362,17 +1362,14 @@ swrite (CamelMimePart *sigpart)
 	char *template;
 	int fd, ret;
 	
-	template = g_build_filename (g_get_tmp_dir (),
-				     "evolution-pgp.XXXXXX",
-				     NULL);
-	fd = g_mkstemp (template);
-	if (fd == -1) {
+	template = g_build_filename (g_get_tmp_dir (), "evolution-pgp.XXXXXX", NULL);
+	if ((fd = g_mkstemp (template)) == -1) {
 		g_free (template);
 		return NULL;
 	}
-
+	
 	/* TODO: This should probably just write the decoded message content out, not the part + headers */
-
+	
 	ostream = camel_stream_fs_new_with_fd (fd);
 	ret = camel_data_wrapper_write_to_stream((CamelDataWrapper *)sigpart, ostream);
 	if (ret != -1) {
@@ -1380,9 +1377,9 @@ swrite (CamelMimePart *sigpart)
 		if (ret != -1)
 			ret = camel_stream_close (ostream);
 	}
-
+	
 	camel_object_unref(ostream);
-
+	
 	if (ret == -1) {
 		g_unlink (template);
 		g_free (template);
@@ -1442,15 +1439,13 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		camel_data_wrapper_decode_to_stream (content, istream);
 		camel_stream_reset(istream);
 		sigpart = NULL;
-			
 	} else {
 		/* Invalid Mimetype */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			      _("Cannot verify message signature: Incorrect message format"));
 		return NULL;
 	}
-    
-
+	
 	/* Now start the real work of verifying the message */
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
