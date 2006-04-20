@@ -2673,7 +2673,7 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 		time_t now;
 		int ref;
 
-		now = time(0);
+		now = time(NULL);
 		ref = now > imap_store->refresh_stamp+60*60*1;
 		if (ref) {
 			CAMEL_SERVICE_LOCK(store, connect_lock);
