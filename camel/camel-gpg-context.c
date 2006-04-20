@@ -1362,11 +1362,8 @@ swrite (CamelMimePart *sigpart)
 	char *template;
 	int fd, ret;
 	
-	template = g_build_filename (g_get_tmp_dir (),
-				     "evolution-pgp.XXXXXX",
-				     NULL);
-	fd = g_mkstemp (template);
-	if (fd == -1) {
+	template = g_build_filename (g_get_tmp_dir (), "evolution-pgp.XXXXXX", NULL);
+	if ((fd = g_mkstemp (template)) == -1) {
 		g_free (template);
 		return NULL;
 	}
@@ -1442,15 +1439,13 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		camel_data_wrapper_decode_to_stream (content, istream);
 		camel_stream_reset(istream);
 		sigpart = NULL;
-			
 	} else {
 		/* Invalid Mimetype */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			      _("Cannot verify message signature: Incorrect message format"));
 		return NULL;
 	}
-    
-
+	
 	/* Now start the real work of verifying the message */
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
