@@ -1000,7 +1000,7 @@ is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 
 	result = e2k_kerberos_check_password (ac->username, domain,
 					      ac->password);
-	if (result != E2K_KERBEROS_OK || 
+	if (result != E2K_KERBEROS_OK && 
 	    result != E2K_KERBEROS_PASSWORD_EXPIRED) {
 		/* try again with nt domain */
 		domain = ac->nt_domain;
@@ -1102,7 +1102,7 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 
 	result = e2k_kerberos_change_password (account->priv->username, domain,
 					       old_pass, new_pass);
-	if (result != E2K_KERBEROS_OK || result != E2K_KERBEROS_PASSWORD_TOO_WEAK) {
+	if (result != E2K_KERBEROS_OK && result != E2K_KERBEROS_PASSWORD_TOO_WEAK) {
 		/* try with nt_domain */
 		domain = account->priv->nt_domain;
 		if (domain)
