@@ -1,3 +1,10 @@
+2006-04-19  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.c : (imap_update_summary):
+	Instead of downloading HEADERS try to download 
+	the specific HEADER FIELDS so that the initial
+	loading time is considerably reduced.
+		
 2006-01-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See Bug #323106, #326385
