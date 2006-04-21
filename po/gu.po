@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-18 06:06+0200\n"
-"PO-Revision-Date: 2006-04-18 10:03+0530\n"
+"POT-Creation-Date: 2006-04-21 06:06+0200\n"
+"PO-Revision-Date: 2006-04-21 10:31+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -36,15 +37,15 @@ msgstr "લાવી રહ્યા છીએ..."
 msgid "Searching..."
 msgstr "શોધી રહ્યા છીએ..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2502
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2507
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "સંપર્કો ડાઉનલોડ કરી રહ્યા છીએ (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2655
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2840
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2882
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2660
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2876
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "સંપર્કો કેશ સુધારી રહ્યા છીએ (%d)... "
@@ -1407,21 +1408,21 @@ msgstr "%d માંનો %d સંદેશો નિષ્ફળ ગયો"
 msgid "Failed to retrieve message"
 msgstr "સંદેશો મેળવવામાં નિષ્ફળ"
 
-#: ../camel/camel-filter-search.c:397
+#: ../camel/camel-filter-search.c:398
 msgid "Invalid arguments to (system-flag)"
 msgstr "ની દલીલો અયોગ્ય છે (સિસ્ટમ-ફ્લેગ)"
 
-#: ../camel/camel-filter-search.c:412
+#: ../camel/camel-filter-search.c:413
 msgid "Invalid arguments to (user-tag)"
 msgstr "ની દલીલો અયોગ્ય છે (વપરાશકર્તા-ટેગ)"
 
-#: ../camel/camel-filter-search.c:577
+#: ../camel/camel-filter-search.c:578
 #, c-format
 msgid "Failed to create create child process '%s': %s"
 msgstr "બાળ પ્રક્રિયા '%s' બનાવવામાં નિષ્ફળ: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:699 ../camel/camel-filter-search.c:707
+#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "ગાળક શોધ ચલાવવામાં ભૂલ: %s: %s"
@@ -1552,7 +1553,7 @@ msgstr "એનક્રિપ્ટ કરવામાં નિષ્ફળ: �
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1170 ../camel/camel-gpg-context.c:1298
-#: ../camel/camel-gpg-context.c:1782 ../camel/camel-gpg-context.c:1827
+#: ../camel/camel-gpg-context.c:1777 ../camel/camel-gpg-context.c:1822
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg ચલાવવામાં નિષ્ફળ: %s"
@@ -1562,10 +1563,10 @@ msgstr "gpg ચલાવવામાં નિષ્ફળ: %s"
 msgid "Could not generate signing data: %s"
 msgstr "સહી કરવાની માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1313 ../camel/camel-gpg-context.c:1502
-#: ../camel/camel-gpg-context.c:1585 ../camel/camel-gpg-context.c:1600
-#: ../camel/camel-gpg-context.c:1704 ../camel/camel-gpg-context.c:1719
-#: ../camel/camel-gpg-context.c:1798 ../camel/camel-gpg-context.c:1843
+#: ../camel/camel-gpg-context.c:1313 ../camel/camel-gpg-context.c:1497
+#: ../camel/camel-gpg-context.c:1580 ../camel/camel-gpg-context.c:1595
+#: ../camel/camel-gpg-context.c:1699 ../camel/camel-gpg-context.c:1714
+#: ../camel/camel-gpg-context.c:1793 ../camel/camel-gpg-context.c:1838
 msgid "Failed to execute gpg."
 msgstr "gpg ચલાવવામાં નિષ્ફળ."
 
@@ -1573,44 +1574,44 @@ msgstr "gpg ચલાવવામાં નિષ્ફળ."
 msgid "This is a digitally signed message part"
 msgstr "આ ડિજીટલ રીતે સહી કરલે સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1420 ../camel/camel-gpg-context.c:1426
-#: ../camel/camel-gpg-context.c:1432 ../camel/camel-gpg-context.c:1449
+#: ../camel/camel-gpg-context.c:1417 ../camel/camel-gpg-context.c:1423
+#: ../camel/camel-gpg-context.c:1429 ../camel/camel-gpg-context.c:1445
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1487
+#: ../camel/camel-gpg-context.c:1482
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: કામચલાઉ ફાઈલ બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1568
+#: ../camel/camel-gpg-context.c:1563
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "એનક્રિપ્શન માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1618
+#: ../camel/camel-gpg-context.c:1613
 msgid "This is a digitally encrypted message part"
 msgstr "આ ડિજીટલ રીતે એનક્રિપ્ટ કરેલ સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1675
+#: ../camel/camel-gpg-context.c:1670
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ભાગ ડિક્રિપ્ટ કરવામાં ભૂલ: પ્રોટોકોલ ભૂલ"
 
-#: ../camel/camel-gpg-context.c:1686
+#: ../camel/camel-gpg-context.c:1681
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "સંદેશો ડિક્રિપ્ટ કરી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1740 ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "એનક્રિપ્ટ કરેલ સમાવિષ્ટ"
 
-#: ../camel/camel-gpg-context.c:1759
+#: ../camel/camel-gpg-context.c:1754
 msgid "Unable to parse message content"
 msgstr "સંદેશાના સમાવિષ્ટોનું પદચ્છેદ કરવામાં અસમર્થ"
 
-#: ../camel/camel-gpg-context.c:1783 ../camel/camel-gpg-context.c:1828
+#: ../camel/camel-gpg-context.c:1778 ../camel/camel-gpg-context.c:1823
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
@@ -2600,7 +2601,7 @@ msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં �
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:704
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:700
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
@@ -2721,8 +2722,8 @@ msgid "You didn't enter a password."
 msgstr "તમે પાસવર્ડ દાખલ કર્યો નથી."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:226
-msgid "Unable to authenticate to GroupWise server."
-msgstr "જૂથપ્રમાણે સર્વરનું સત્તાધિકરણ કરવામાં અસમર્થ."
+msgid "Unable to authenticate to GroupWise server. "
+msgstr "જૂથપ્રમાણે સર્વરમાં સત્તાધિકરણ કરવા માટે અસમર્થ. "
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:304
 msgid "Some features may not work correctly with your current server version"
@@ -4461,63 +4462,63 @@ msgstr "સંદેશો મોકલી શકતા નથી: કોઈ મ
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "સંદેશો મોકલી શકતા નથી: એક અથવા વધુ મેળવનારાઓ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:894
+#: ../camel/providers/smtp/camel-smtp-transport.c:933
 msgid "SMTP Greeting"
 msgstr "SMTP શુભેચ્છા"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:920
+#: ../camel/providers/smtp/camel-smtp-transport.c:962
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:937
+#: ../camel/providers/smtp/camel-smtp-transport.c:979
 msgid "HELO command failed"
 msgstr "HELO આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1003
+#: ../camel/providers/smtp/camel-smtp-transport.c:1045
 msgid "SMTP Authentication"
 msgstr "SMTP સત્તાધિકરણ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1009
+#: ../camel/providers/smtp/camel-smtp-transport.c:1051
 msgid "Error creating SASL authentication object."
 msgstr "SASL સત્તાધિકરણ ઓબ્જેક્ટ બનાવતી વખતે ભૂલ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1026
-#: ../camel/providers/smtp/camel-smtp-transport.c:1037
+#: ../camel/providers/smtp/camel-smtp-transport.c:1068
+#: ../camel/providers/smtp/camel-smtp-transport.c:1079
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1043
+#: ../camel/providers/smtp/camel-smtp-transport.c:1085
 msgid "AUTH command failed"
 msgstr "AUTH આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1105
+#: ../camel/providers/smtp/camel-smtp-transport.c:1147
 msgid "Bad authentication response from server.\n"
 msgstr "સર્વર તરફથી સત્તાધિકરણ જવાબ ખરાબ.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1130
+#: ../camel/providers/smtp/camel-smtp-transport.c:1172
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../camel/providers/smtp/camel-smtp-transport.c:1189
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1171
+#: ../camel/providers/smtp/camel-smtp-transport.c:1213
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1190
+#: ../camel/providers/smtp/camel-smtp-transport.c:1232
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1229
-#: ../camel/providers/smtp/camel-smtp-transport.c:1287
-#: ../camel/providers/smtp/camel-smtp-transport.c:1306
+#: ../camel/providers/smtp/camel-smtp-transport.c:1271
+#: ../camel/providers/smtp/camel-smtp-transport.c:1329
+#: ../camel/providers/smtp/camel-smtp-transport.c:1348
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
@@ -4525,26 +4526,26 @@ msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલા�
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1246
-#: ../camel/providers/smtp/camel-smtp-transport.c:1322
+#: ../camel/providers/smtp/camel-smtp-transport.c:1288
+#: ../camel/providers/smtp/camel-smtp-transport.c:1364
 msgid "DATA command failed"
 msgstr "DATA આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1345
+#: ../camel/providers/smtp/camel-smtp-transport.c:1387
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1361
+#: ../camel/providers/smtp/camel-smtp-transport.c:1403
 msgid "RSET command failed"
 msgstr "RSET આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1384
+#: ../camel/providers/smtp/camel-smtp-transport.c:1426
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1398
+#: ../camel/providers/smtp/camel-smtp-transport.c:1440
 msgid "QUIT command failed"
 msgstr "QUIT આદેશ નિષ્ફળ"
 
@@ -4902,13 +4903,13 @@ msgstr "અંતિમ મુકામ પસંદ કરો"
 msgid "_Destination"
 msgstr "અંતિમ મુકામ (_D)"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1639
+#: ../servers/exchange/lib/e2k-autoconfig.c:1645
 #: ../servers/exchange/storage/exchange-account.c:932
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s માટે પાસવર્ડ દાખલ કરો"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1640
+#: ../servers/exchange/lib/e2k-autoconfig.c:1646
 #: ../servers/exchange/storage/exchange-account.c:937
 msgid "Enter password"
 msgstr "પાસવર્ડ દાખલ કરો"
