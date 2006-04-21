@@ -1,3 +1,8 @@
+2006-04-21  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-store.c (connect_to_server): Set some socket options
+	like keepalive and nodelay.
+
 2006-04-12  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-folder.c (imap4_append_message): strcpy the
