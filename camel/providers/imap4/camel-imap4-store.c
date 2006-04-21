@@ -232,6 +232,7 @@ static gboolean
 connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, CamelException *ex)
 {
 	CamelService *service = engine->service;
+	CamelSockOptData sockopt;
 	CamelStream *tcp_stream;
 #ifdef HAVE_SSL
 	CamelIMAP4Command *ic;
@@ -270,6 +271,15 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 		
 		return FALSE;
 	}
+	
+	/* set some socket options to better tailor the connection to our needs */
+	sockopt.option = CAMEL_SOCKOPT_NODELAY;
+	sockopt.value.no_delay = TRUE;
+	camel_tcp_stream_setsockopt ((CamelTcpStream *) tcp_stream, &sockopt);
+	
+	sockopt.option = CAMEL_SOCKOPT_KEEPALIVE;
+	sockopt.value.keep_alive = TRUE;
+	camel_tcp_stream_setsockopt ((CamelTcpStream *) tcp_stream, &sockopt);
 	
 	if (camel_imap4_engine_take_stream (engine, tcp_stream, ex) == -1)
 		return FALSE;
