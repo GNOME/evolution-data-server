@@ -1,3 +1,13 @@
+2006-04-21  Devashish Sharma  <sdevashish@novell.com>
+
+	Fixes https://bugzilla.novell.com/show_bug.cgi?id=163664:
+
+	* libebook/e-vcard.c (parse): Turn the incoming vcard string into
+	valid UTF-8.
+	(make_valid_utf8): New helper function, stolen from Glib.  This
+	replaces invalid UTF-8 with U+FFFD REPLACEMENT CHARACTER.
+	Patch given by Federico Mena Quintero  <federico@novell.com>
+	
 2006-04-18  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-address-western.c:

@@ -541,6 +541,44 @@ read_attribute (char **p)
 	return NULL;
 }
 
+/* Stolen from glib/glib/gconvert.c */
+static gchar *
+make_valid_utf8 (const gchar *name)
+{
+	GString *string;
+	const gchar *remainder, *invalid;
+	gint remaining_bytes, valid_bytes;
+  
+	string = NULL;
+  	remainder = name;
+	remaining_bytes = strlen (name);
+  
+ 	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid)) 
+			break;
+	      valid_bytes = invalid - remainder;
+    
+		if (string == NULL) 
+			string = g_string_sized_new (remaining_bytes);
+
+		g_string_append_len (string, remainder, valid_bytes);
+	        /* append U+FFFD REPLACEMENT CHARACTER */
+	        g_string_append (string, "\357\277\275");
+      
+	        remaining_bytes -= valid_bytes + 1;
+	        remainder = invalid + 1;
+	}
+  
+  	if (string == NULL)
+    		return g_strdup (name);
+  
+	g_string_append (string, remainder);
+
+        g_assert (g_utf8_validate (string->str, -1, NULL));
+  
+        return g_string_free (string, FALSE);
+}
+
 /* we try to be as forgiving as we possibly can here - this isn't a
  * validator.  Almost nothing is considered a fatal error.  We always
  * try to return *something*.
@@ -548,17 +586,12 @@ read_attribute (char **p)
 static void
 parse (EVCard *evc, const char *str)
 {
-	char *buf = g_strdup (str);
-	char *p, *end;
+	char *buf ;
+	char *p;
 	EVCardAttribute *attr;
-
-	/* first validate the string is valid utf8 */
-	if (!g_utf8_validate (buf, -1, (const char **)&end)) {
-		/* if the string isn't valid, we parse as much as we can from it */
-		g_warning ("invalid utf8 passed to EVCard.  Limping along.");
-		*end = '\0';
-	}
 	
+	buf = make_valid_utf8 (str);
+
 	buf = fold_lines (buf);
 
 	d(printf ("BEFORE FOLDING:\n"));
