@@ -2348,7 +2348,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	
 	CAMEL_SERVICE_ASSERT_LOCKED (store, connect_lock);
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1)
-		header_spec = "HEADER";
+		header_spec = "HEADER.FIELDS (" CAMEL_MESSAGE_INFO_HEADERS MAILING_LIST_HEADERS ")";
 	else
 		header_spec = "0";
 	
