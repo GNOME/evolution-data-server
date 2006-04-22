@@ -1,3 +1,10 @@
+2006-04-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_modify_object): Send item_id
+	with recurence key while delegating multiple instances.
+	Fixes #165714 (bugzilla.novell.com)
+
 2006-04-10  Tor Lillqvist  <tml@novell.com>
 
 	* libecal/e-cal-time-util.c: #define gmtime_r on Win32.

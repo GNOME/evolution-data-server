@@ -1852,12 +1852,11 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		in_offline (cbgw);
 		return GNOME_Evolution_Calendar_RepositoryOffline;
 	}
-
+	
 	/* check the component for validity */
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
-
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
 	e_cal_component_get_uid (comp, &uid);
@@ -1882,9 +1881,8 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 			if (mod == CALOBJ_MOD_ALL && e_cal_component_is_instance (comp)) {
 				recur_key = uid;
-			} else {
-				id = e_gw_item_get_id (item);
-			}
+			} 
+			id = e_gw_item_get_id (item);
 
 			status = e_gw_connection_delegate_request (priv->cnc, item, id, NULL, NULL, recur_key); 
 
