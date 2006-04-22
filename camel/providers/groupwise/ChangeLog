@@ -1,3 +1,9 @@
+2006-04-22  Sankar P  <psankar@novell.com>
+ 
+ 	* camel-groupwise-store.c: (convert_to_folder_info):
+ 	No need to get the unread count for Sent Items folder. 
+ 	All will be read by default.
+ 	
 2006-04-20  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** See bug 167640 on bnc
