@@ -1,7 +1,7 @@
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
-	-I$(top_srcdir)/libdb/dist					\
+	$(DB_CFLAGS)							\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
@@ -49,7 +49,7 @@ libedataserver_1_2_la_SOURCES =		\
 libedataserver_1_2_la_LIBADD = 				\
 	$(E_DATA_SERVER_LIBS)				\
 	$(ICONV_LIBS)					\
-	$(top_builddir)/libdb/dist/libdb-4.1.la		\
+	$(DB_LIBS)					\
 	$(SOCKET_LIBS)
 
 libedataserver_1_2_la_LDFLAGS = \

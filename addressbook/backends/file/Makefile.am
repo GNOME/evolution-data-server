@@ -4,7 +4,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-	-I$(top_srcdir)/libdb/dist			\
+	$(DB_CFLAGS)					\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 extension_LTLIBRARIES = libebookbackendfile.la
@@ -18,7 +18,7 @@ libebookbackendfile_la_LIBADD =						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(top_builddir)/libdb/dist/libdb-4.1.la				\
+	$(DB_LIBS)				\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libebookbackendfile_la_LDFLAGS =	\

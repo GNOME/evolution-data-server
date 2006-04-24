@@ -188,6 +188,38 @@ AC_CHECK_FUNCS(regexec,,[AC_CHECK_LIB(regex,regexec,
 				      [AC_MSG_ERROR([No regex library found])])])
 AC_SUBST(REGEX_LIBS)
 
+dnl **************************************************
+dnl * libdb checking
+dnl **************************************************
+
+AC_ARG_WITH(libdb, AC_HELP_STRING([--with-libdb],[Prefix where libdb is installed]), dynamic_libdb=yes, dynamic_libdb=no)
+if test "x${dynamic_libdb}" = "xyes"; then
+        DB_CFLAGS="-I$withval/include"
+        DB_LIBS="-L$withval/lib -ldb"
+
+        AC_MSG_CHECKING([Berkeley DB])
+        save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
+        save_libs=$LIBS; LIBS="$DB_LIBS"
+        AC_LINK_IFELSE(
+                [AC_LANG_PROGRAM([[#include <db.h>]],
+                                 [db_create(NULL, NULL, 0)])],
+                AC_MSG_RESULT(yes),
+                AC_MSG_ERROR(cannot find libdb))
+        CFLAGS=$save_cflags
+        LIBS=$save_libs
+
+        msg_libdb="dynamically linked"
+else
+        DB_CFLAGS="-I\$(top_srcdir)/libdb/dist"
+        DB_LIBS="\$(top_builddir)/libdb/dist/libdb-4.1.la"
+        AC_MSG_NOTICE(Using local libdb)
+        msg_libdb="statically linked to local copy"
+fi
+AM_CONDITIONAL(WITH_LIBDB, test "x$dynamic_libdb" != "xno")
+AC_SUBST(DB_CFLAGS)
+AC_SUBST(DB_LIBS)
+
+
 dnl ******************************
 dnl iconv checking
 dnl ******************************
@@ -1309,8 +1341,9 @@ export privlibdir
 export privincludedir
 export privdatadir
 AC_CONFIG_SUBDIRS(calendar/libical)
-AC_CONFIG_SUBDIRS(libdb/dist)
-
+if test $dynamic_libdb = no; then
+        AC_CONFIG_SUBDIRS(libdb/dist)
+fi
 AC_OUTPUT([
 Makefile
 evolution-data-server-zip
@@ -1414,6 +1447,7 @@ echo "\
 	SSL support:      $msg_ssl
 	SMIME support:    $msg_smime
 	IPv6 support:     $msg_ipv6
+	Berkeley DB:      $msg_libdb
 	Exchange support: $msg_exchange
 	Dot Locking:	  $msg_dot
 	File Locking:	  $msg_file

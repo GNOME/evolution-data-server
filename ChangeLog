@@ -1,3 +1,11 @@
+2006-04-24  Devashish Sharma  <sdevashish@novell.com>
+
+	* configure.in : Added a configure time switch to support dynamic
+	linking with libdb. The default is static linking and by using the
+	switch --with-libdb=prefix dynamic linking with libdb can be
+	enabled.
+	Patch by Ross Burton  <ross@burtonini.com>
+	
 2006-04-18  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Added the Mail Directory configure info.
@@ -49,7 +57,7 @@
 
 	* libedataserver/e-data-server-util.c: The fixed Win32 versions of
 	g_rename() and g_stat() have been in GLib since GLib 2.8.5, so
-	let's drop them from here.
+let's drop them from here.
 
 2006-02-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
