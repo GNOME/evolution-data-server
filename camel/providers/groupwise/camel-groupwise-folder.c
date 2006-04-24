@@ -49,6 +49,7 @@
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 
+#include <libsoup/soup-misc.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -59,6 +60,7 @@
 #define JUNK_FOLDER "Junk Mail"
 #define READ_CURSOR_MAX_IDS 500
 
+#define GROUPWISE_BULK_DELETE_LIMIT 100
 static CamelOfflineFolderClass *parent_class = NULL;
 
 struct _CamelGroupwiseFolderPrivate {
@@ -595,6 +597,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	EGwConnection *cnc;
 	int count, i;
 
+	GList *deleted_items, *deleted_head = NULL;
+
+	deleted_items = NULL;
+
+
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 	    ((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
 		groupwise_sync_summary (folder, ex);
@@ -643,22 +650,57 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				if (diff.changed & CAMEL_MESSAGE_SEEN)
 					read_items = g_list_append (read_items, (char *)uid);
 				if (diff.changed & CAMEL_MESSAGE_DELETED) {
-					CAMEL_SERVICE_LOCK (gw_store, connect_lock);
-					status = e_gw_connection_remove_item (cnc, container_id, uid);
-					if (status == E_GW_CONNECTION_STATUS_OK) {
-						CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
-						camel_folder_summary_remove (folder->summary, info);
-						camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
-						CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
-						i--; count--;
+					if (deleted_items)
+						deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+					else {
+						g_list_free (deleted_head);
+						deleted_head = NULL;
+						deleted_head = deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
 					}
-					CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+
+					if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
+						CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+						status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+						CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+						if (status == E_GW_CONNECTION_STATUS_OK) {
+							char *uid;
+							while (deleted_items) {
+								uid = (char *)deleted_items->data;
+								CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
+								camel_folder_summary_remove_uid (folder->summary, uid);
+								camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
+								CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+								deleted_items = g_list_next (deleted_items);
+								count -= GROUPWISE_BULK_DELETE_LIMIT;
+								i -= GROUPWISE_BULK_DELETE_LIMIT;
+							}
+						}
+					}
 				}
 			}
 		}
 		camel_message_info_free (info);
 	}
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+	if (deleted_items) {
+		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+		status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		if (status == E_GW_CONNECTION_STATUS_OK) {
+			char *uid;
+			while (deleted_items) {
+				uid = (char *)deleted_items->data;
+				CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
+				camel_folder_summary_remove_uid (folder->summary, uid);
+				camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
+				CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+				deleted_items = g_list_next (deleted_items);
+				count -= GROUPWISE_BULK_DELETE_LIMIT;
+				i -= GROUPWISE_BULK_DELETE_LIMIT;
+			}
+		}
+		g_list_free (deleted_head);
+	}
 
 	if (read_items && g_list_length (read_items)) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
@@ -1938,8 +1980,10 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	CamelFolderChangeInfo *changes;
 	int i, max;
 	gboolean delete = FALSE;
+	GList *deleted_items, *deleted_head = NULL;
 	
-	
+
+	deleted_items = NULL;
 	cnc = cnc_lookup (priv);
 	if (!cnc)
 		return;
@@ -1966,21 +2010,58 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		info = camel_folder_summary_index (folder->summary, i);
 		ginfo = (CamelGroupwiseMessageInfo *) info;
 		if (ginfo && (ginfo->info.flags & CAMEL_MESSAGE_DELETED)) {
-			const char *uid = camel_message_info_uid (info);
-			CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
-			status = e_gw_connection_remove_item (cnc, container_id, uid);
-			if (status == E_GW_CONNECTION_STATUS_OK) {
-				CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
-				camel_folder_change_info_remove_uid (changes, (char *) uid);
-				camel_folder_summary_remove (folder->summary, info);
-				camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
-				CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
-				delete = TRUE;
-				i--;  max--;
+
+			if (deleted_items)
+				deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+			else {
+				g_list_free (deleted_head);
+				deleted_head = NULL;
+				deleted_head = deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
 			}
-			CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+			if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
+				/* Read the FIXME below */
+				CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
+				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+				CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+				if (status == E_GW_CONNECTION_STATUS_OK) {
+					char *uid;
+					while (deleted_items) {
+						uid = (char *)deleted_items->data;
+						CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
+						camel_folder_change_info_remove_uid (changes, uid);
+						camel_folder_summary_remove_uid (folder->summary, uid);
+						camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
+						CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+						deleted_items = g_list_next (deleted_items);
+						max -= GROUPWISE_BULK_DELETE_LIMIT;
+						i -= GROUPWISE_BULK_DELETE_LIMIT;
+					}
+				}
+				delete = TRUE;
+			}
 		}
 		camel_message_info_free (info);
+	}
+
+	if (deleted_items) {
+		/* FIXME: Put these in a function and reuse it inside the above loop, here and in groupwise_sync*/
+		CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
+		status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+		if (status == E_GW_CONNECTION_STATUS_OK) {
+			char *uid;
+			while (deleted_items) {
+				uid = (char *)deleted_items->data;
+				CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
+				camel_folder_change_info_remove_uid (changes, uid);
+				camel_folder_summary_remove_uid (folder->summary, uid);
+				camel_data_cache_remove(gw_folder->cache, "cache", uid, ex);
+				CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+				deleted_items = g_list_next (deleted_items);
+			}
+		}
+		delete = TRUE;
+		g_list_free (deleted_head);
 	}
 
 	if (delete)
