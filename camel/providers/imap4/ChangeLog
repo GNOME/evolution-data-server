@@ -2,6 +2,8 @@
 
 	* camel-imap4-store.c (connect_to_server): Set some socket options
 	like keepalive and nodelay.
+	(connect_to_server_wrapper): Don't do fallback with SSL/TLS. Fixes
+	bug #321797.
 
 2006-04-12  Jeffrey Stedfast  <fejj@novell.com>
 
