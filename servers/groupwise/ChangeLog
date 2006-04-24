@@ -1,3 +1,10 @@
+2006-04-24  Julio M. Merino Vidal  <jmmv@NetBSD.org>
+
+	Reviewed by Harish Krishnaswamy <kharish@novell.com>
+
+	* servers/groupwise/e-gw-item.c: Remove C99ism so that this builds
+	with gcc 2.95, shipped with e.g. NetBSD 1.6.  Fixes bug #337197.
+
 2006-04-10  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-gw-connection.c : (e_gw_connection_get_items_delta):
