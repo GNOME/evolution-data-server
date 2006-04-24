@@ -1,3 +1,14 @@
+Evolution-Data-Server 1.7.1, 2006-04-24
+----------------------------------------
+
+First release of 1.7 development series.
+
+What is new ?
+-------------
+
+* Capability to link dynamically to libdb.
+* Integration with gnome-keyring.
+
 Evolution-Data-Server 1.5.92, 2006-02-27
 ----------------------------------------
 Bug fixes since last release :
