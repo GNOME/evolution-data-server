@@ -1,3 +1,9 @@
+2006-04-24  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: 
+	Removes multiple items by a single call instead
+	of deleting one-by-one.
+
 2006-04-22  Sankar P  <psankar@novell.com>
  
  	* camel-groupwise-store.c: (convert_to_folder_info):
