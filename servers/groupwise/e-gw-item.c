@@ -3063,8 +3063,8 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 
 	/*attachments*/
 	if (priv->attach_list) {
-		soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
 		GSList *al ;
+		soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
 		for (al = priv->attach_list ; al != NULL ;  al = al->next) {
 			EGwItemAttachment *attachment = (EGwItemAttachment *)al->data ;
 			add_attachment_to_soap_message (attachment, msg) ;
