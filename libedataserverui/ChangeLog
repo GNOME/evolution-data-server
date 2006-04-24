@@ -1,3 +1,8 @@
+2006-04-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-name-selector-list.c: (enl_entry_key_press_event): Changed the key
+	to launch the e-name-selector-list.
+
 2006-03-29  Boby Wang <boby.wang@sun.com>
 
 	** Fix #336460 accelerate key can not function

@@ -216,7 +216,7 @@ enl_entry_key_press_event (ENameSelectorList *list,
 			   GdkEventKey *event,
 			   gpointer dummy)
 {
-	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_Right)) {
+	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_Down)) {
 		enl_popup_position (list);
 		gtk_widget_show_all (GTK_WIDGET (list->popup));
 		enl_popup_grab (list);
