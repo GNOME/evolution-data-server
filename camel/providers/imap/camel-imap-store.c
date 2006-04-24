@@ -978,16 +978,11 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 		camel_exception_clear (ex);
 		ai = camel_getaddrinfo(service->url->host, port, &hints, ex);
 	}
+	
 	if (ai == NULL)
 		return FALSE;
 	
-	if (!(ret = connect_to_server (service, ai, mode, ex)) && mode == MODE_SSL) {
-		camel_exception_clear (ex);
-		ret = connect_to_server (service, ai, MODE_TLS, ex);
-	} else if (!ret && mode == MODE_TLS) {
-		camel_exception_clear (ex);
-		ret = connect_to_server (service, ai, MODE_CLEAR, ex);
-	}
+	ret = connect_to_server (service, ai, mode, ex);
 	
 	camel_freeaddrinfo (ai);
 	
