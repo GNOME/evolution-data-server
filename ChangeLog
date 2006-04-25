@@ -1,3 +1,11 @@
+2006-04-25  Brian Pepple  <bdpepple@gmail.com>
+
+	* po/LINGUAS: New file listing all supported languages.
+
+	* configure.in: Use po/LINGUAS instead of including all languages
+	directly in this file. See the wiki for more information:
+	http://live.gnome.org/GnomeGoals/PoLinguas
+
 2006-04-25  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Figure out auto-magically what the mozilla-nss
