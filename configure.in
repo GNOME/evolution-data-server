@@ -97,6 +97,7 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
+
 AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
@@ -141,6 +142,8 @@ dnl Initialize libtool
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+
+PKG_PROG_PKG_CONFIG
 
 dnl ******************************
 dnl Check for Win32
@@ -390,22 +393,40 @@ fi
 
 if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}" || test "x${enable_nss}" = "xstatic"; then
-dnl If the user specifies --with-foo or --enable-nss=static, then we have to do this manually
 		check_manually="yes"
 	else
 		check_manually="no"
 	fi
 	
 	if test "x${check_manually}" = "xno"; then
-		PKG_CHECK_MODULES(NSS, mozilla-nss, have_nss="yes", have_nss="no")
-		if test "x${have_nss}" = "xyes"; then
+		AC_MSG_CHECKING(Mozilla NSPR pkg-config module name)
+		mozilla_nspr_pcs="nspr mozilla-nspr firefox-nspr"
+		for pc in $mozilla_nspr_pcs; do
+			if $PKG_CONFIG --exists $pc; then
+				AC_MSG_RESULT($pc)
+				mozilla_nspr=$pc
+				break;
+			fi
+		done
+		
+		AC_MSG_CHECKING(Mozilla NSS pkg-config module name)
+		mozilla_nss_pcs="nss mozilla-nss firefox-nss"
+		for pc in $mozilla_nss_pcs; do
+			if $PKG_CONFIG --exists $pc; then
+				AC_MSG_RESULT($pc)
+				mozilla_nss=$pc
+				break;
+			fi
+		done
+		
+		if test -n "$mozilla_nspr" -a -n "$mozilla_nss"; then
 			msg_ssl="yes (Mozilla NSS)"
 			if test "x$enable_smime" = "xyes"; then
 				AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
 				msg_smime="yes (Mozilla NSS)"
 			fi
-			mozilla_nspr="mozilla-nspr"
-			mozilla_nss="mozilla-nss"
+			mozilla_nspr="nspr"
+			mozilla_nss="nss"
 			AC_DEFINE(HAVE_NSS,1,[Define if you have NSS])
 			AC_DEFINE(HAVE_SSL,1,[Define if you have a supported SSL library])
 			MANUAL_NSPR_CFLAGS=""
@@ -414,11 +435,12 @@ dnl If the user specifies --with-foo or --enable-nss=static, then we have to do 
 			MANUAL_NSS_LIBS=""
 		else
 			check_manually="yes"
+			mozilla_nspr=""
+			mozilla_nss=""
 		fi
 	fi
 	
 	if test "x${check_manually}" = "xyes"; then
-		mozilla_nss=""
 		have_nspr_includes="no"
 		if test "x${with_nspr_includes}" != "xno"; then
 			CPPFLAGS_save="$CPPFLAGS"
