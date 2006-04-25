@@ -86,20 +86,20 @@
 
 2006-01-25  Not Zed  <NotZed@Ximian.com>
  
- 	* camel-folder-search.c (search_match_threads): add new
- 	match-thread type "unreplied", matches messages that are unreplied
- 	to. 
+	* camel-folder-search.c (search_match_threads): add new
+	match-thread type "unreplied", matches messages that are unreplied
+	to. 
 	Committed to head on behaf of Notzed
  
 2006-01-23  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-mime-utils.c: (camel_content_type_unref):
+	* camel-mime-utils.c (camel_content_type_unref):
 	Id the content-type refcount is <1 then free it and
 	assign it to NULL
 
 2006-01-17  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	* camel-service.c: (camel_service_disconnect):
+	* camel-service.c (camel_service_disconnect):
 	set the service-status to CAMEL_SERVICE_DISCONNECTED
 
 2006-01-10  Simon Zheng  <simon.zheng@sun.com>
@@ -659,14 +659,15 @@
 
 2005-07-28  Shreyas Srinivasan  <sshreyas@novell.com>
 
-	* camel-offline-folder.c: (camel_offline_folder_init): Revert old
-	patch. Copy folder contents locally by default makes evolution crawl.
+	* camel-offline-folder.c (camel_offline_folder_init): Revert old
+	patch. Copy folder contents locally by default makes evolution
+	crawl.
 	
 2005-07-27  Mengjie Yu  <meng-jie.yu@sun.com>
 
-	* camel-store.c: (camel_isubscribe_subscribe),
-	(camel_isubscribe_unsubscribe):
-	Void function should not return value.
+	* camel-store.c (camel_isubscribe_subscribe),
+	(camel_isubscribe_unsubscribe): Void function should not return
+	value.
 
 	Fixes #310198
 
@@ -713,26 +714,32 @@
 
 	** Patch submitted by Greg Hudson <ghudson@mit.edu>
 	** See bug #308209
-	* camel-sasl-login.c: (login_challenge): Wait for the
-	server to initiate the challenge.
+
+	* camel-sasl-login.c (login_challenge): Wait for the server to
+	initiate the challenge.
 
 2005-07-06 Vivek Jain <jvivek@novell.com>
 
-	* camel-folder.c: (folder_changed) check if junk_plugin is
+	* camel-folder.c (folder_changed) check if junk_plugin is
 	supplied before starting any junk specific operation
+
 	* camel-junk-plugin.[ch]: pass CamelJunkPlugin object in all the
 	 callbacks
-	* camel-junk-plugin.c: (camel_junk_plugin_init) use csp->init(csp)
-	style in place of (* csp->init)(csp) similar change in all other callbacks
-	
-2005-06-24	Matt Brown <matt@mattb.net.nz>
 
-	* camel-gpg-context.c:	Extend verify and decrypt functions to support
-	inline pgp signed messages via x-inlinepgp-signed/x-inlinepgp-encrypted
-	mime types.
+	* camel-junk-plugin.c (camel_junk_plugin_init) use csp->init(csp)
+	style in place of (* csp->init)(csp) similar change in all other
+	callbacks
+	
+2005-06-24  Matt Brown <matt@mattb.net.nz>
+
+	* camel-gpg-context.c: Extend verify and decrypt functions to
+	support inline pgp signed messages via
+	x-inlinepgp-signed/x-inlinepgp-encrypted mime types.
+
 	* camel-mime-filter-pgp.h:
-	* camel-mime-filter-pgp.c:
-	New filter to strip dash encoding from inline pgp signed messages.
+
+	* camel-mime-filter-pgp.c: New filter to strip dash encoding from
+	inline pgp signed messages.
 
 2005-06-09  Sarfraaz Ahmed <asarfraaz@novell.com>
 
