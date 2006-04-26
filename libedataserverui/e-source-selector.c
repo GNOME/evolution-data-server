@@ -765,6 +765,7 @@ e_source_selector_init (ESourceSelector *selector)
 
 	cell_renderer = gtk_cell_renderer_text_new ();
 	g_object_set (G_OBJECT (cell_renderer), "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
+	g_object_set (G_OBJECT (cell_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) text_cell_data_func, selector, NULL);
 

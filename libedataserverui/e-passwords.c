@@ -204,6 +204,15 @@ ep_clear_passwords(EPassMsg *msg)
 	char *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	if (!default_keyring) {
+	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK) {
+				if (!msg->noreply)
+					e_msgport_reply(&msg->msg);
+				return;
+		}
+	        default_keyring = g_strdup ("default");			
+	}
+
 	d(g_print("Get Default %d\n", result));
 	
 	/* Not called at all */
@@ -271,6 +280,14 @@ ep_forget_passwords(EPassMsg *msg)
 	char *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	if (!default_keyring) {
+	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK) {
+				if (!msg->noreply)
+					e_msgport_reply(&msg->msg);
+				return;
+		}
+	        default_keyring = g_strdup ("default");			
+	}	
 	d(g_print("Get Default %d\n", result));
 	
 	path = g_strdup ("Evolution");
@@ -458,6 +475,15 @@ ep_forget_password (EPassMsg *msg)
 	}
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
+	if (!default_keyring) {
+	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK) {
+				if (!msg->noreply)
+					e_msgport_reply(&msg->msg);
+				return;
+		}
+	        default_keyring = g_strdup ("default");			
+	}
+
 	d(g_print("Get Default %d\n", result));
 	
 	attributes = gnome_keyring_attribute_list_new ();
@@ -487,12 +513,31 @@ ep_forget_password (EPassMsg *msg)
 		g_print ("Couldn't clear password");
 	} else {
 		for (tmp = matches; tmp; tmp = tmp->next) {
-			g_print (("keyring = %s\n", ((GnomeKeyringFound *) tmp->data)->keyring));
-			if (!strcmp(msg->key, ((GnomeKeyringFound *) tmp->data)->keyring)) {
-				result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-				d(g_printf("Delete Items %d\n", result));
+			GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
+			int i;
+			GnomeKeyringAttribute *attr;
+			gboolean accept = TRUE;
+			guint present = 0;
+
+			for (i =0; (i < pattr->len) && accept; i++)
+			{
+				attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
+				if (!strcmp(attr->name, "user")) {
+					present++;
+					if (strcmp (attr->value.string, uri->user))
+						accept = FALSE;
+				} else if (!strcmp(attr->name, "server")) {
+					present++;
+					if (strcmp (attr->value.string, uri->host))
+						accept = FALSE;						
+				}
 			}
+				if (present == 2 && accept) {
+					result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
+					d(g_printf("Delete Items %s %s %d\n", uri->host, uri->user, result));			
+				}
 		}	
+
 	}
 	
 	g_free (default_keyring);
@@ -570,7 +615,28 @@ ep_get_password (EPassMsg *msg)
 		} else {
 			/* FIXME: What to do if this returns more than one? */
 			for (tmp = matches; tmp; tmp = tmp->next) {
-					msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
+				GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
+				int i;
+				GnomeKeyringAttribute *attr;
+				gboolean accept = TRUE;
+				guint present = 0;
+
+				for (i =0; (i < pattr->len) && accept; i++)
+				{
+					attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
+
+					if (!strcmp(attr->name, "user")) {
+						present++;
+						if (strcmp (attr->value.string, uri->user))
+							accept = FALSE;
+					} else if (!strcmp(attr->name, "server")) {
+						present++;
+						if (strcmp (attr->value.string, uri->host))
+							accept = FALSE;						
+					}
+				}
+					if (present == 2 && accept)
+						msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
 			}	
 		}
 		

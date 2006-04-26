@@ -1,3 +1,11 @@
+2006-04-26  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-passwords.c: (ep_clear_passwords), (ep_forget_passwords),
+	(ep_forget_password), (ep_get_password): Updated keyring code to
+	handle the negative cases.
+	* e-source-selector.c: (e_source_selector_init): Submitting Vincent's
+	patch for bug #323402.
+
 2006-04-24  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-name-selector-list.c: (enl_entry_key_press_event): Changed the key
