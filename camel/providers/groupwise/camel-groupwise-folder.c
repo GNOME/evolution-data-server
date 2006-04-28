@@ -590,7 +590,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	GList *deleted_items, *deleted_head;
 
-	deleted_items = NULL;
+	deleted_items = deleted_head = NULL;
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
 			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
@@ -2003,7 +2003,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	GList *deleted_items, *deleted_head;
 	
 
-	deleted_items = NULL;
+	deleted_items = deleted_head = NULL;
 	cnc = cnc_lookup (priv);
 	if (!cnc)
 		return;
