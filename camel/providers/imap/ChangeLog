@@ -1,3 +1,14 @@
+2006-05-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fix for bug #315976.
+
+	* camel-imap-store.c (construct): Only override the namespace if
+	the URL param override_namespace is also set.
+	(get_folder_info_offline): Always include INBOX if we are being
+	asked for the toplevel folder-info tree.
+	(refresh_refresh): Make sure to always query the server for INBOX.
+	(get_folder_info_online): Same.
+
 2006-04-21  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-store.c (connect_to_server_wrapper): Don't do
