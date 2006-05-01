@@ -794,46 +794,71 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
-	} else if (!strncmp (status, "GET_HIDDEN passphrase.enter", 27)) {
+	} else if (!strncmp (status, "NEED_PASSPHRASE_PIN ", 20)) {
+		char *userid;
+		
+		status += 20;
+		
+		status = next_token (status, &userid);
+		if (!userid) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+					     _("Failed to parse gpg passphrase request."));
+			return -1;
+		}
+		
+		g_free (gpg->need_id);
+		gpg->need_id = userid;
+	} else if (!strncmp (status, "GET_HIDDEN ", 11)) {
 		char *prompt, *passwd;
 		const char *name;
-
-		if (gpg->need_id) {
-			name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id);
-			if (!name)
-				name = gpg->need_id;
-
-			prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
-						"user: \"%s\""), name);
-		} else {
+		guint32 flags;
+		
+		status += 11;
+		
+		if (gpg->need_id && !(name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id)))
+			name = gpg->need_id;
+		else
 			name = "";
+		
+		if (!strncmp (status, "passphrase.pin.ask", 18)) {
+			prompt = g_strdup_printf (_("You need a PIN to unlock the key for your\n"
+						    "SmartCard: \"%s\""), name);
+		} else if (!strncmp (status, "passphrase.enter", 16)) {
 			prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
-						"user: \"%s\""), name);
+						    "user: \"%s\""), name);
+		} else {
+			next_token (status, &prompt);
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+					      _("Unexpected request from GnuPG for `%s'"), prompt);
+			g_free (prompt);
+			return -1;
 		}
 		
-		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt,  gpg->need_id, CAMEL_SESSION_PASSWORD_SECRET|CAMEL_SESSION_PASSPHRASE, ex)) && !gpg->utf8) {
-			char *opasswd = passwd;
-			
-			if ((passwd = g_locale_to_utf8 (passwd, -1, &nread, &nwritten, NULL))) {
-				memset (opasswd, 0, strlen (opasswd));
-				g_free (opasswd);
-			} else {
-				passwd = opasswd;
+		flags = CAMEL_SESSION_PASSWORD_SECRET | CAMEL_SESSION_PASSPHRASE;
+		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt, gpg->need_id, flags, ex))) {
+			if (!gpg->utf8) {
+				char *opasswd = passwd;
+				
+				if ((passwd = g_locale_to_utf8 (passwd, -1, &nread, &nwritten, NULL))) {
+					memset (opasswd, 0, strlen (opasswd));
+					g_free (opasswd);
+				} else {
+					passwd = opasswd;
+				}
 			}
-		}
-		g_free (prompt);
-		
-		if (passwd == NULL) {
+			
+			gpg->passwd = g_strdup_printf ("%s\n", passwd);
+			memset (passwd, 0, strlen (passwd));
+			g_free (passwd);
+			
+			gpg->send_passwd = TRUE;
+		} else {
 			if (!camel_exception_is_set (ex))
 				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled."));
 			return -1;
 		}
 		
-		gpg->passwd = g_strdup_printf ("%s\n", passwd);
-		memset (passwd, 0, strlen (passwd));
-		g_free (passwd);
-		
-		gpg->send_passwd = TRUE;
+		g_free (prompt);
 	} else if (!strncmp (status, "GOOD_PASSPHRASE", 15)) {
 		gpg->bad_passwds = 0;
 	} else if (!strncmp (status, "BAD_PASSPHRASE", 14)) {

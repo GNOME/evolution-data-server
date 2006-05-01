@@ -1,3 +1,9 @@
+2006-05-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-gpg-context.c (gpg_ctx_parse_status): Handle prompts from
+	GnuPG asking for the user's PIN for their SmartCard. Fixes bug
+	#335386.
+
 2006-04-19  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-filter-pgp.c (filter_run): You cannot CANNOT modify
@@ -36,14 +42,15 @@
 	
 	** See bug 272307
 
-	* camel-mime-utils.c: (header_decode_mailbox):
-	Do not decode_lwsp if there is a space in mail id, just append it.
-	Also do not truncate address if addr is not NULL.
+	* camel-mime-utils.c (header_decode_mailbox): Do not decode_lwsp
+	if there is a space in mail id, just append it.  Also do not
+	truncate address if addr is not NULL.
 
 2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
 
-	* camel-gpg-context.c: (gpg_ctx_parse_status): Added flag to ask for
-	pass phrase.
+	* camel-gpg-context.c (gpg_ctx_parse_status): Added flag to ask
+	for pass phrase.
+
 	* camel-session.h: Added the flag for passphrase.
 
 2006-03-20  Srinivasa Ragavan  <sragavan@novell.com>
