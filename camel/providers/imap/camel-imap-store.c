@@ -280,7 +280,7 @@ construct (CamelService *service, CamelSession *session,
 	imap_store->parameters = 0;
 	if (camel_url_get_param (url, "use_lsub"))
 		imap_store->parameters |= IMAP_PARAM_SUBSCRIPTIONS;
-	if (camel_url_get_param (url, "namespace")) {
+	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
 		imap_store->parameters |= IMAP_PARAM_OVERRIDE_NAMESPACE;
 		g_free(imap_store->namespace);
 		imap_store->namespace = g_strdup (camel_url_get_param (url, "namespace"));
@@ -2618,7 +2618,10 @@ refresh_refresh(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	if (store->namespace && store->namespace[0]) {
 		char *pattern;
-
+		
+		get_folders_sync(store, "INBOX", &m->ex);
+		if (camel_exception_is_set(&m->ex))
+			goto done;
 		get_folders_sync(store, store->namespace, &m->ex);
 		if (camel_exception_is_set(&m->ex))
 			goto done;
@@ -2697,6 +2700,10 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 
 		if (top[0] == 0) {
 			if (imap_store->namespace && imap_store->namespace[0]) {
+				get_folders_sync(imap_store, "INBOX", ex);
+				if (camel_exception_is_set(ex))
+					goto fail;
+				
 				i = strlen(imap_store->namespace)-1;
 				pattern = g_alloca(i+5);
 				strcpy(pattern, imap_store->namespace);
@@ -2711,7 +2718,7 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 			}
 		} else {
 			char *name;
-
+			
 			name = camel_imap_store_summary_full_from_path(imap_store->summary, top);
 			if (name == NULL)
 				name = camel_imap_store_summary_path_to_full(imap_store->summary, top, imap_store->dir_sep);
@@ -2748,6 +2755,7 @@ get_folder_info_offline (CamelStore *store, const char *top,
 			 guint32 flags, CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
+	gboolean include_inbox = FALSE;
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	char *pattern, *name;
@@ -2760,12 +2768,14 @@ get_folder_info_offline (CamelStore *store, const char *top,
 
 	folders = g_ptr_array_new ();
 
-	if (top == NULL)
+	if (top == NULL || top[0] == '\0') {
+		include_inbox = TRUE;
 		top = "";
+	}
 
 	/* get starting point */
 	if (top[0] == 0) {
-		if (imap_store->namespace) {
+		if (imap_store->namespace && imap_store->namespace[0]) {
 			name = g_strdup(imap_store->summary->namespace->full_name);
 			top = imap_store->summary->namespace->path;
 		} else
@@ -2789,9 +2799,10 @@ get_folder_info_offline (CamelStore *store, const char *top,
 
 		if (si == NULL)
 			continue;
-
+		
 		if ((!strcmp(name, camel_imap_store_info_full_name(imap_store->summary, si))
-		     || imap_match_pattern(imap_store->dir_sep, pattern, camel_imap_store_info_full_name(imap_store->summary, si)))
+		     || imap_match_pattern(imap_store->dir_sep, pattern, camel_imap_store_info_full_name(imap_store->summary, si))
+		     || (include_inbox && !g_ascii_strcasecmp (camel_imap_store_info_full_name(imap_store->summary, si), "INBOX")))
 		    && ((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))) {
@@ -2804,11 +2815,11 @@ get_folder_info_offline (CamelStore *store, const char *top,
 			   it.  See create folder */
 			if (fi->flags & CAMEL_FOLDER_NOINFERIORS)
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
-
+			
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
 			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
-
+			
 			if (si->flags & CAMEL_FOLDER_NOSELECT) {
 				CamelURL *url = camel_url_new(fi->uri, NULL);
 				
