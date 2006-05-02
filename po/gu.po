@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-21 06:06+0200\n"
-"PO-Revision-Date: 2006-04-21 10:31+0530\n"
+"POT-Creation-Date: 2006-05-01 22:18+0200\n"
+"PO-Revision-Date: 2006-05-02 07:59+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -657,12 +658,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "કેલેન્ડરની માહીતી સંગ્રહી શકાતી નથી: મેલફોર્મવાળી URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1542
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1582
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1547
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1587
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
@@ -684,14 +685,14 @@ msgstr "અયોગ્ય સર્વર URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:928
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:951
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:986
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:968
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1026
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
 #: ../camel/providers/groupwise/camel-groupwise-store.c:715
 #: ../camel/providers/groupwise/camel-groupwise-store.c:757
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1263
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1265
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "સત્તાધિકાર નિષ્ફળ"
@@ -1142,10 +1143,10 @@ msgstr "CORBA નો અપવાદ ઊભો થયો છે"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:218
 #: ../camel/providers/imap/camel-imap-command.c:311
 #: ../camel/providers/imap/camel-imap-command.c:411
-#: ../camel/providers/imap4/camel-imap4-store.c:382
-#: ../camel/providers/pop3/camel-pop3-store.c:533
-#: ../camel/providers/pop3/camel-pop3-store.c:540
-#: ../camel/providers/pop3/camel-pop3-store.c:546
+#: ../camel/providers/imap4/camel-imap4-store.c:314
+#: ../camel/providers/pop3/camel-pop3-store.c:528
+#: ../camel/providers/pop3/camel-pop3-store.c:535
+#: ../camel/providers/pop3/camel-pop3-store.c:541
 #: ../servers/exchange/storage/e-storage.c:586
 #: ../servers/groupwise/e-gw-connection.c:181
 msgid "Unknown error"
@@ -1332,7 +1333,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "ફોલ્ડર '%s' ને ઓફલાઈન માટે તૈયાર કરી રહ્યા છીએ"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/imap/camel-imap-store.c:2966
+#: ../camel/providers/imap/camel-imap-store.c:2961
 msgid "You must be working online to complete this operation"
 msgstr "આ પ્રક્રિયા પૂર્ણ કરવા માટે તમારે ઓનલાઈન કામ કરવું જ પડશેે"
 
@@ -1520,11 +1521,20 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid મદદ પદચ્છેદ કરવામાં નિષ્ફળ."
 
-#: ../camel/camel-gpg-context.c:791
+#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg પાસફ્રેઝ માંગણી પદચ્છેદ કરવામાં નિષ્ફળ."
 
-#: ../camel/camel-gpg-context.c:806 ../camel/camel-gpg-context.c:810
+#: ../camel/camel-gpg-context.c:824
+#, c-format
+msgid ""
+"You need a PIN to unlock the key for your\n"
+"SmartCard: \"%s\""
+msgstr ""
+"તમારે તમારા સ્માર્ટકાર્ડની કીનું તાળું ખોલવા માટે\n"
+"PIN ની જરૂર છે: \"%s\""
+
+#: ../camel/camel-gpg-context.c:827
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1533,92 +1543,97 @@ msgstr ""
 "તમારે વપરાશકર્તાની કીનું તાળુ ખોલવા માટે પાસફ્રેઝ\n"
 "જરુરી છે: \"%s\""
 
-#: ../camel/camel-gpg-context.c:828 ../camel/camel-gpg-context.c:1032
+#: ../camel/camel-gpg-context.c:832
+#, c-format
+msgid "Unexpected request from GnuPG for `%s'"
+msgstr "GnuPG માંથી `%s' માટે અનિચ્છનીય માંગણી"
+
+#: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
 msgid "Cancelled."
 msgstr "રદ થઈ ગયેલ."
 
-#: ../camel/camel-gpg-context.c:846
+#: ../camel/camel-gpg-context.c:871
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "ખાનગી કીનું તાળુ ખોલવામાં નિષ્ફળ: ૩ ખોટા પાસફ્રેઝ આપેલ છે."
 
-#: ../camel/camel-gpg-context.c:852
+#: ../camel/camel-gpg-context.c:877
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG તરફથી અનિચ્છનિય જવાબ મળ્યો: %s"
 
-#: ../camel/camel-gpg-context.c:904
+#: ../camel/camel-gpg-context.c:929
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "એનક્રિપ્ટ કરવામાં નિષ્ફળ: કોઈ માન્ય મેળવનારો સ્પષ્ટ કરેલ નથી."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1170 ../camel/camel-gpg-context.c:1298
-#: ../camel/camel-gpg-context.c:1777 ../camel/camel-gpg-context.c:1822
+#: ../camel/camel-gpg-context.c:1195 ../camel/camel-gpg-context.c:1323
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1847
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg ચલાવવામાં નિષ્ફળ: %s"
 
-#: ../camel/camel-gpg-context.c:1266 ../camel/camel-smime-context.c:387
+#: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "સહી કરવાની માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1313 ../camel/camel-gpg-context.c:1497
-#: ../camel/camel-gpg-context.c:1580 ../camel/camel-gpg-context.c:1595
-#: ../camel/camel-gpg-context.c:1699 ../camel/camel-gpg-context.c:1714
-#: ../camel/camel-gpg-context.c:1793 ../camel/camel-gpg-context.c:1838
+#: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
+#: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
 msgid "Failed to execute gpg."
 msgstr "gpg ચલાવવામાં નિષ્ફળ."
 
-#: ../camel/camel-gpg-context.c:1332
+#: ../camel/camel-gpg-context.c:1357
 msgid "This is a digitally signed message part"
 msgstr "આ ડિજીટલ રીતે સહી કરલે સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1417 ../camel/camel-gpg-context.c:1423
-#: ../camel/camel-gpg-context.c:1429 ../camel/camel-gpg-context.c:1445
+#: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
+#: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1482
+#: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: કામચલાઉ ફાઈલ બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1563
+#: ../camel/camel-gpg-context.c:1588
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "એનક્રિપ્શન માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1613
+#: ../camel/camel-gpg-context.c:1638
 msgid "This is a digitally encrypted message part"
 msgstr "આ ડિજીટલ રીતે એનક્રિપ્ટ કરેલ સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1670
+#: ../camel/camel-gpg-context.c:1695
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ભાગ ડિક્રિપ્ટ કરવામાં ભૂલ: પ્રોટોકોલ ભૂલ"
 
-#: ../camel/camel-gpg-context.c:1681
+#: ../camel/camel-gpg-context.c:1706
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "સંદેશો ડિક્રિપ્ટ કરી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1735 ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "એનક્રિપ્ટ કરેલ સમાવિષ્ટ"
 
-#: ../camel/camel-gpg-context.c:1754
+#: ../camel/camel-gpg-context.c:1779
 msgid "Unable to parse message content"
 msgstr "સંદેશાના સમાવિષ્ટોનું પદચ્છેદ કરવામાં અસમર્થ"
 
-#: ../camel/camel-gpg-context.c:1778 ../camel/camel-gpg-context.c:1823
+#: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
 #: ../camel/providers/imap4/camel-imap4-engine.c:1634
 #: ../camel/providers/imap4/camel-imap4-engine.c:1690
-#: ../camel/providers/imap4/camel-imap4-store.c:886
-#: ../camel/providers/imap4/camel-imap4-store.c:1561
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 #: ../camel/providers/imap4/camel-imap4-utils.c:575
 #: ../camel/providers/smtp/camel-smtp-transport.c:160
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -1725,8 +1740,8 @@ msgstr "પદચ્છેદ ભૂલ"
 
 #: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
 #: ../camel/camel-net-utils.c:790
-#: ../camel/providers/pop3/camel-pop3-store.c:446
-#: ../camel/providers/pop3/camel-pop3-store.c:527
+#: ../camel/providers/pop3/camel-pop3-store.c:441
+#: ../camel/providers/pop3/camel-pop3-store.c:522
 msgid "Cancelled"
 msgstr "નકારાઈ ગયું"
 
@@ -1949,7 +1964,7 @@ msgstr "સંદર્ભ થયેલ પ્રમાણપત્રોની 
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
-#: ../camel/providers/imap/camel-imap-store.c:1287
+#: ../camel/providers/imap/camel-imap-store.c:1282
 msgid "Bad authentication response from server."
 msgstr "સર્વર તરફથી ખરાબ સત્તાધિકરણ વળતો જવાબ."
 
@@ -2545,7 +2560,7 @@ msgstr "કચરાપેટી ફોલ્ડરમાં સંદેશા�
 msgid "Cannot copy messages to the Junk folder"
 msgstr "નકામા ફોલ્ડરમાં સંદેશાઓની નકલ કરી શકાતી નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
 #: ../camel/providers/imap/camel-imap-folder.c:2063
 #, c-format
 msgid ""
@@ -2555,7 +2570,7 @@ msgstr ""
 "સંદેશો મેળવી શકતા નથી: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:111
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
 #: ../camel/providers/imap/camel-imap-folder.c:2063
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
@@ -2563,7 +2578,7 @@ msgstr ""
 msgid "No such message"
 msgstr "આવો કોઈ સંદેશો નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:123
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
@@ -2575,7 +2590,7 @@ msgstr "આવો કોઈ સંદેશો નથી"
 msgid "User cancelled"
 msgstr "વપરાશકર્તા નકારાયેલ છે"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:130
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
@@ -2589,25 +2604,25 @@ msgstr "વપરાશકર્તા નકારાયેલ છે"
 msgid "Cannot get message %s: %s"
 msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:147
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:155
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં ઉપલબ્ધ નથી."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:166
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1505
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:167
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1545
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:740
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s માટે સાર લાવી શક્યા નહિં"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1087
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1127
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
 #: ../camel/providers/groupwise/camel-groupwise-store.c:747
 #: ../camel/providers/imap/camel-imap-folder.c:2375
@@ -2616,13 +2631,13 @@ msgstr "%s માટે સાર લાવી શક્યા નહિં"
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1773
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1821
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1813
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1861
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1809
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1849
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2654,7 +2669,7 @@ msgstr "બધા ફોલ્ડરોમાં નવા સંદેશાઓ
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imap4/camel-imap4-provider.c:56
+#: ../camel/providers/imap4/camel-imap4-provider.c:49
 #: ../camel/providers/local/camel-local-provider.c:45
 #: ../camel/providers/local/camel-local-provider.c:85
 #: ../camel/providers/local/camel-local-provider.c:105
@@ -2696,7 +2711,7 @@ msgstr "Novell GroupWise સર્વરો વાપરવા માટે"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
 #: ../camel/providers/imap/camel-imap-provider.c:96
-#: ../camel/providers/imap4/camel-imap4-provider.c:88
+#: ../camel/providers/imap4/camel-imap4-provider.c:81
 #: ../camel/providers/imapp/camel-imapp-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
 #: ../camel/providers/pop3/camel-pop3-provider.c:73
@@ -2717,7 +2732,7 @@ msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sમહેરબાની કરીને %s@%s માટે જૂથપ્રમાણે પાસવર્ડ દાખલ કરો"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:214
-#: ../camel/providers/imap/camel-imap-store.c:1366
+#: ../camel/providers/imap/camel-imap-store.c:1361
 msgid "You didn't enter a password."
 msgstr "તમે પાસવર્ડ દાખલ કર્યો નથી."
 
@@ -2730,35 +2745,35 @@ msgid "Some features may not work correctly with your current server version"
 msgstr "તમારી વર્તમાન સર્વર આવૃત્તિ સાથે અમુક લક્ષણો યોગ્ય રીતે કામ કરશે નહિં"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
-#: ../camel/providers/imap/camel-imap-store.c:1875
-#: ../camel/providers/imap/camel-imap-store.c:2066
+#: ../camel/providers/imap/camel-imap-store.c:1870
+#: ../camel/providers/imap/camel-imap-store.c:2061
 #, c-format
 msgid "No such folder %s"
 msgstr "આવું કોઈ ફોલ્ડર %s નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1240
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1242
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં જૂથપ્રમાણે ફોલ્ડર બનાવી શકતા નથી."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1254
-#: ../camel/providers/imap/camel-imap-store.c:1950
-#: ../camel/providers/imap/camel-imap-store.c:2319
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
+#: ../camel/providers/imap/camel-imap-store.c:1945
+#: ../camel/providers/imap/camel-imap-store.c:2314
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "પિતૃ ફોલ્ડરને ઉપફોલ્ડરો સમાવવાની પરવાનગી નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1331
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1352
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1333
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1354
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "જૂથપ્રમાણે ફોલ્ડર `%s' ને `%s' માં નામ બદલી શકતા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1384
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1386
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "જૂથપ્રમાણે સર્વર %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1386
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1388
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s માટે %s પર જૂથપ્રમાણે સેવા"
@@ -2801,44 +2816,41 @@ msgstr "બધા ફોલ્ડરોમાં નવા સંદેશાઓ
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "Connection to Server"
 msgstr "સર્વર સાથેનું જોડાણ"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Use custom command to connect to server"
 msgstr "સર્વર સાથે જોડાવા માટે વૈવિધ્યપૂર્ણ આદેશ વાપરો (_U)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
-#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "Command:"
 msgstr "આદેશ:"
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imap4/camel-imap4-provider.c:48
+#: ../camel/providers/imap4/camel-imap4-provider.c:41
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "ફોલ્ડરો"
 
 #: ../camel/providers/hula/camel-hula-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imap4/camel-imap4-provider.c:50
+#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Show only subscribed folders"
 msgstr "માત્ર ઉમેદવારી થયેલ ફોલ્ડરો બતાવો (_S)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imap4/camel-imap4-provider.c:52
+#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "O_verride server-supplied folder namespace"
 msgstr "સર્વર-પૂરા પડાયેલ ફોલ્ડર નામજગ્યા પર ફરીથી લખો (_v)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
 #: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:54
+#: ../camel/providers/imap4/camel-imap4-provider.c:47
 msgid "Namespace"
 msgstr "નામની જગ્યાઓ"
 
@@ -2857,12 +2869,12 @@ msgstr "આ વિકલ્પ સાદાલખાણના પાસવર્
 #: ../camel/providers/imap/camel-imap-command.c:223
 #: ../camel/providers/imap/camel-imap-command.c:265
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3006
+#: ../camel/providers/imap/camel-imap-store.c:3001
 msgid "Operation cancelled"
 msgstr "પ્રક્રિયા નકારી દેવામાં આવી"
 
 #: ../camel/providers/imap/camel-imap-command.c:310
-#: ../camel/providers/imap/camel-imap-store.c:3009
+#: ../camel/providers/imap/camel-imap-store.c:3004
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું: %s"
@@ -2966,22 +2978,22 @@ msgid "Failed to cache %s: %s"
 msgstr "%s ને કેશ કરવામાં નિષ્ફળ: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imap4/camel-imap4-provider.c:58
+#: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "આ સર્વર પર ઈનબોક્સમાં નવા સંદેશાઓ ગાળકો અમલમાં મૂકો (_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imap4/camel-imap4-provider.c:60
+#: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "Check new messages for _Junk contents"
 msgstr "બગડેલા સમાવિષ્ટો માટે નવા સંદેશાઓ ચકાસો (_J)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imap4/camel-imap4-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Only check for Junk messa_ges in the INBOX folder"
 msgstr "ઈનબોક્સ ફોલ્ડરમાં માત્ર બગડેલા સંદેશાઓ માટે જ ચકાસો (_g)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imap4/camel-imap4-provider.c:64
+#: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "દૂરસ્થ મેઈલને સ્થાનિકપણે આપોઆપ સુમેળ કરો (_z)"
 
@@ -2999,21 +3011,21 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "આ વિકલ્પ સરળ પાસવર્ડની મદદથી IMAP સર્વર સાથે જોડાશે."
 
 #: ../camel/providers/imap/camel-imap-store.c:447
-#: ../camel/providers/imap4/camel-imap4-store.c:215
+#: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP સર્વર %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:449
-#: ../camel/providers/imap4/camel-imap4-store.c:217
+#: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s માટે %s પર IMAP સેવા"
 
 #: ../camel/providers/imap/camel-imap-store.c:579
 #: ../camel/providers/imap/camel-imap-store.c:594
-#: ../camel/providers/imap4/camel-imap4-store.c:328
-#: ../camel/providers/imap4/camel-imap4-store.c:343
+#: ../camel/providers/imap4/camel-imap4-store.c:251
+#: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:184
 #: ../camel/providers/nntp/camel-nntp-store.c:199
 #: ../camel/providers/pop3/camel-pop3-store.c:167
@@ -3025,7 +3037,7 @@ msgid "Could not connect to %s: %s"
 msgstr "%s સાથે જોડાઈ શક્યા નથી: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:580
-#: ../camel/providers/imap4/camel-imap4-store.c:329
+#: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:185
 #: ../camel/providers/pop3/camel-pop3-store.c:168
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
@@ -3034,8 +3046,7 @@ msgstr "SSL બિન-ઉપલબ્ધ"
 
 #: ../camel/providers/imap/camel-imap-store.c:591
 #: ../camel/providers/imap/camel-imap-store.c:865
-#: ../camel/providers/imap4/camel-imap4-store.c:272
-#: ../camel/providers/imap4/camel-imap4-store.c:340
+#: ../camel/providers/imap4/camel-imap4-store.c:263
 #: ../camel/providers/imapp/camel-imapp-store.c:248
 #: ../camel/providers/nntp/camel-nntp-store.c:196
 #: ../camel/providers/nntp/camel-nntp-store.c:215
@@ -3047,9 +3058,9 @@ msgstr "જોડાણ નકારાઈ ગયું"
 #: ../camel/providers/imap/camel-imap-store.c:699
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap/camel-imap-store.c:727
-#: ../camel/providers/imap4/camel-imap4-store.c:368
-#: ../camel/providers/imap4/camel-imap4-store.c:381
-#: ../camel/providers/imap4/camel-imap4-store.c:397
+#: ../camel/providers/imap4/camel-imap4-store.c:300
+#: ../camel/providers/imap4/camel-imap4-store.c:313
+#: ../camel/providers/imap4/camel-imap4-store.c:329
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP સર્વર %s ને સુરક્ષિત સ્થિતિમાં જોડવામાં નિષ્ફળ: %s"
@@ -3060,29 +3071,28 @@ msgid "STARTTLS not supported"
 msgstr "STARTTLS આધારભૂત નથી"
 
 #: ../camel/providers/imap/camel-imap-store.c:722
-#: ../camel/providers/imap4/camel-imap4-store.c:369
+#: ../camel/providers/imap4/camel-imap4-store.c:301
 #: ../camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
 msgstr "SSL નું ભાવતાલ નિષ્ફળ"
 
 #: ../camel/providers/imap/camel-imap-store.c:728
-#: ../camel/providers/imap4/camel-imap4-store.c:398
+#: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/pop3/camel-pop3-store.c:250
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "SSL આ પ્રકાશનમાં ઉપલબ્ધ નથી"
 
 #: ../camel/providers/imap/camel-imap-store.c:868
-#: ../camel/providers/imap4/camel-imap4-store.c:275
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "આદેશ \"%s\" સાથે જોડાઈ શક્યા નહિં: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1057
-#: ../camel/providers/imap/camel-imap-store.c:2415
+#: ../camel/providers/imap/camel-imap-store.c:1052
+#: ../camel/providers/imap/camel-imap-store.c:2410
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
-#: ../camel/providers/imap4/camel-imap4-store.c:1392
+#: ../camel/providers/imap4/camel-imap4-store.c:1313
 #: ../camel/providers/local/camel-maildir-folder.c:75
 #: ../camel/providers/local/camel-maildir-store.c:217
 #: ../camel/providers/local/camel-maildir-store.c:289
@@ -3093,24 +3103,24 @@ msgstr "આદેશ \"%s\" સાથે જોડાઈ શક્યા નહ�
 msgid "Inbox"
 msgstr "ઈનબોક્સ"
 
-#: ../camel/providers/imap/camel-imap-store.c:1319
+#: ../camel/providers/imap/camel-imap-store.c:1314
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP સર્વર %s માંગણી થયેલ સત્તાધિકરણના પ્રકાર %s ને આધાર આપતું નથી"
 
-#: ../camel/providers/imap/camel-imap-store.c:1329
-#: ../camel/providers/smtp/camel-smtp-transport.c:498
+#: ../camel/providers/imap/camel-imap-store.c:1324
+#: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "સત્તાધિકરણ પ્રકાર %s માટે કોઈ આધાર નથી"
 
-#: ../camel/providers/imap/camel-imap-store.c:1352
+#: ../camel/providers/imap/camel-imap-store.c:1347
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%s મહેરબાની કરીને %s@%s માટે IMAP પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/imap/camel-imap-store.c:1395
+#: ../camel/providers/imap/camel-imap-store.c:1390
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3121,14 +3131,14 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1887
-#: ../camel/providers/imap/camel-imap-store.c:2257
-#: ../camel/providers/imap4/camel-imap4-store.c:1022
+#: ../camel/providers/imap/camel-imap-store.c:1882
+#: ../camel/providers/imap/camel-imap-store.c:2252
+#: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "ફોલ્ડર નામ \"%s\" એ અમાન્ય છે કારણ કે તે \"%c\" અક્ષર ધરાવે છે"
 
-#: ../camel/providers/imap/camel-imap-store.c:2004
+#: ../camel/providers/imap/camel-imap-store.c:1999
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:203
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3136,7 +3146,7 @@ msgstr "ફોલ્ડર નામ \"%s\" એ અમાન્ય છે કા
 msgid "Cannot create folder `%s': folder exists."
 msgstr "ફોલ્ડર `%s' બનાવી શકતા નથી: ફોલ્ડર પહેલાથી જ હાજર છે."
 
-#: ../camel/providers/imap/camel-imap-store.c:2268
+#: ../camel/providers/imap/camel-imap-store.c:2263
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "અજ્ઞાત પિતૃ ફોલ્ડર: %s"
@@ -3249,130 +3259,130 @@ msgstr "ફોલ્ડર `%s' માંથી ફોલ્ડર `%s' મા�
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "ફોલ્ડર `%s' માંથી ફોલ્ડર `%s' માં સંદેશાઓ નકલ કરી શકતા નથી: ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:71
+#: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
 msgstr "IMAP4rev1"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:73
+#: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "IMAPv4rev1 સર્વરો પર મેઈલ વાંચવા અને સંગ્રહવા માટે."
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:90
+#: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "આ વિકલ્પ IMAPv4rev1 સર્વર સાથે સરળ લખાણવાળા પાસવર્ડ વાપરીને જોડાશે."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:485
+#: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "IMAP સર્વર %s ને %s સત્તાધિકરણની મદદથી સત્તાધિકરમ કરી શકતા નથી"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:534
+#: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%s મહેરબાની કરીને %s માટે %s યજમાન પર IMAP પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:601
+#: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "IMAP સર્વર %s ને %s મદદથી સત્તાધિકરણ કરી શકતા નથી"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:764
-#: ../camel/providers/imap4/camel-imap4-store.c:1032
+#: ../camel/providers/imap4/camel-imap4-store.c:685
+#: ../camel/providers/imap4/camel-imap4-store.c:953
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં IMAP ફોલ્ડરો બનાવી શકતા નથી."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:803
+#: ../camel/providers/imap4/camel-imap4-store.c:724
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "ફોલ્ડર `%s' ને IMAP સર્વર %s પર મેળવી શકતા નથી: અજ્ઞાત"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:884
+#: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr "IMAP સર્વર %s પર `%s' માટેની LIST જાણકારી મેળવી શકતા નથી: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:886
-#: ../camel/providers/imap4/camel-imap4-store.c:1561
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 msgid "Bad command"
 msgstr "ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:965
+#: ../camel/providers/imap4/camel-imap4-store.c:886
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "ફોલ્ડર `%s' બનાવી શકતા નથી: અમાન્ય મેઈલબોક્સ નામ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:970
+#: ../camel/providers/imap4/camel-imap4-store.c:891
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "ફોલ્ડર `%s' બનાવી શકતા નથી: ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1076
+#: ../camel/providers/imap4/camel-imap4-store.c:997
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "ફોલ્ડર `%s' કાઢી શકતા નથી: વિશિષ્ટ ફોલ્ડર"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1083
+#: ../camel/providers/imap4/camel-imap4-store.c:1004
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં IMAP ફોલ્ડરો કાઢી શકતા નથી."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1142
+#: ../camel/providers/imap4/camel-imap4-store.c:1063
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "ફોલ્ડર `%s' કાઢી શકતા નથી: મેઈલબોક્સનું નામ અમાન્ય છે"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1147
+#: ../camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "ફોલ્ડર `%s' કાઢી શકતા નથી: ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1167
+#: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "ફોલ્ડર `%s' ને `%s' નામમાં ફેરવી શકતા નથી: વિશિષ્ટ ફોલ્ડર"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1174
+#: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં IMAP ફોલ્ડરોનું નામ બદલી શકાતું નથી."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1205
+#: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "ફોલ્ડર `%s' ને `%s' નામમાં ફેરવી શકતા નથી: મેઈલબોક્સનું નામ અમાન્ય છે"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1210
+#: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "ફોલ્ડર `%s' ને `%s' નામમાં ફેરવી શકતા નથી: ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1559
+#: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "ભાત %s માટે જાણકારી `%s' ને IMAP સર્વર %s પર મેળવી શકતા નથી: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1599
+#: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં IMAP ફોલ્ડરોની ઉમેદવારી નોંધી શકાતી નથી."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1644
+#: ../camel/providers/imap4/camel-imap4-store.c:1565
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "ફોલ્ડર `%s' ને ઉમેદવારી કરી શકતા નથી: મેઈલબોક્સનુ નામ અમાન્ય છે"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1649
+#: ../camel/providers/imap4/camel-imap4-store.c:1570
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "ફોલ્ડર `%s' ને ઉમેદવારી કરી શકતા નથી: ખરાબ આદેશ"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1671
+#: ../camel/providers/imap4/camel-imap4-store.c:1592
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં IMAP ફોલ્ડરોમાંથી ઉમેદવારી દૂર કરી શકતા નથી."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1716
+#: ../camel/providers/imap4/camel-imap4-store.c:1637
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "ફોલ્ડર `%s' ની ઉમેદવારી દૂર કરી શકતા નથી: મેઈલબોક્સનું નામ અમાન્ય છે"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1721
+#: ../camel/providers/imap4/camel-imap4-store.c:1642
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "ફોલ્ડર `%s' ની ઉમેદવારી દૂર કરી શકતા નથી: ખરાબ આદેશ"
@@ -4183,41 +4193,41 @@ msgstr "POP સર્વર %s સાથે સુરક્ષિત સ્થ�
 msgid "STLS not supported"
 msgstr "STLS આધારભૂત નથી"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "POP સર્વર %s સાથે જોડાણ કરી શક્યા નહિં"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:402
-#: ../camel/providers/pop3/camel-pop3-store.c:516
+#: ../camel/providers/pop3/camel-pop3-store.c:397
+#: ../camel/providers/pop3/camel-pop3-store.c:511
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr "POP સર્વર %s સાથે સંપર્ક કરવા સમર્થ નથી: મંજૂરી કરાયેલ સત્તાધિકરણ માટે કોઈ આધાર નથી."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:418
+#: ../camel/providers/pop3/camel-pop3-store.c:413
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "POP સર્વર %s માટે SASL `%s' પ્રવેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:430
+#: ../camel/providers/pop3/camel-pop3-store.c:425
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP સર્વર %s માં પ્રવેશી શકતા નથી: SASL પ્રોટોકોલ ભૂલ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:449
+#: ../camel/providers/pop3/camel-pop3-store.c:444
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "POP સર્વર %s પર સત્તાધિકરણ કરવામાં નિષ્ફળ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:475
+#: ../camel/providers/pop3/camel-pop3-store.c:470
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%s મહેરબાની કરીને %s માટે યજમાન %s પર POP પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:530
-#: ../camel/providers/pop3/camel-pop3-store.c:543
+#: ../camel/providers/pop3/camel-pop3-store.c:525
+#: ../camel/providers/pop3/camel-pop3-store.c:538
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4226,7 +4236,7 @@ msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
 "પાસવર્ડ મોકલતી વખતે ભૂલ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:537
+#: ../camel/providers/pop3/camel-pop3-store.c:532
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4235,7 +4245,7 @@ msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
 "વપરાશકર્તા નામ મોકલવામાં ભૂલ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:643
+#: ../camel/providers/pop3/camel-pop3-store.c:638
 #, c-format
 msgid "No such folder `%s'."
 msgstr "આવું કોઈ ફોલ્ડર `%s' નથી."
@@ -4411,17 +4421,17 @@ msgstr "STARTTLS આદેશ નિષ્ફળ: %s"
 msgid "STARTTLS command failed"
 msgstr "STARTTLS આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:488
+#: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "SMTP સર્વર %s માંગણી કરાયેલ સત્તાધિકરણના પ્રકારને આધાર આપતું નથી %s."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:526
+#: ../camel/providers/smtp/camel-smtp-transport.c:521
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
 msgstr "%sમહેરબાની કરીને %s માટે યજમાન %s પર SMTP પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:545
+#: ../camel/providers/smtp/camel-smtp-transport.c:540
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4432,93 +4442,93 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:669
+#: ../camel/providers/smtp/camel-smtp-transport.c:664
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP સર્વર %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:671
+#: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP મેઈલ %s દ્વારા મેળવો"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:689
+#: ../camel/providers/smtp/camel-smtp-transport.c:684
 msgid "Cannot send message: service not connected."
 msgstr "સંદેશો મોકલી શકતા નથી: સેવા જોડાયેલ નથી."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:695
+#: ../camel/providers/smtp/camel-smtp-transport.c:690
 msgid "Cannot send message: sender address not valid."
 msgstr "સંદેશો મોકલી શકતા નથી: મોકલનાર સરનામું માન્ય નથી."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:699
+#: ../camel/providers/smtp/camel-smtp-transport.c:694
 msgid "Sending message"
 msgstr "સંદેશો મોકલી રહ્યા છીએ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:714
+#: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: no recipients defined."
 msgstr "સંદેશો મોકલી શકતા નથી: કોઈ મેળવનારાઓ વ્યાખ્યાયિત નથી."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:720
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "સંદેશો મોકલી શકતા નથી: એક અથવા વધુ મેળવનારાઓ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:933
+#: ../camel/providers/smtp/camel-smtp-transport.c:928
 msgid "SMTP Greeting"
 msgstr "SMTP શુભેચ્છા"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:962
+#: ../camel/providers/smtp/camel-smtp-transport.c:957
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:979
+#: ../camel/providers/smtp/camel-smtp-transport.c:974
 msgid "HELO command failed"
 msgstr "HELO આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1045
+#: ../camel/providers/smtp/camel-smtp-transport.c:1040
 msgid "SMTP Authentication"
 msgstr "SMTP સત્તાધિકરણ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1051
+#: ../camel/providers/smtp/camel-smtp-transport.c:1046
 msgid "Error creating SASL authentication object."
 msgstr "SASL સત્તાધિકરણ ઓબ્જેક્ટ બનાવતી વખતે ભૂલ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1068
-#: ../camel/providers/smtp/camel-smtp-transport.c:1079
+#: ../camel/providers/smtp/camel-smtp-transport.c:1063
+#: ../camel/providers/smtp/camel-smtp-transport.c:1074
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1085
+#: ../camel/providers/smtp/camel-smtp-transport.c:1080
 msgid "AUTH command failed"
 msgstr "AUTH આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../camel/providers/smtp/camel-smtp-transport.c:1142
 msgid "Bad authentication response from server.\n"
 msgstr "સર્વર તરફથી સત્તાધિકરણ જવાબ ખરાબ.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1172
+#: ../camel/providers/smtp/camel-smtp-transport.c:1167
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1189
+#: ../camel/providers/smtp/camel-smtp-transport.c:1184
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1213
+#: ../camel/providers/smtp/camel-smtp-transport.c:1208
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1232
+#: ../camel/providers/smtp/camel-smtp-transport.c:1227
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1271
-#: ../camel/providers/smtp/camel-smtp-transport.c:1329
-#: ../camel/providers/smtp/camel-smtp-transport.c:1348
+#: ../camel/providers/smtp/camel-smtp-transport.c:1266
+#: ../camel/providers/smtp/camel-smtp-transport.c:1324
+#: ../camel/providers/smtp/camel-smtp-transport.c:1343
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
@@ -4526,26 +4536,26 @@ msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલા�
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1288
-#: ../camel/providers/smtp/camel-smtp-transport.c:1364
+#: ../camel/providers/smtp/camel-smtp-transport.c:1283
+#: ../camel/providers/smtp/camel-smtp-transport.c:1359
 msgid "DATA command failed"
 msgstr "DATA આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1387
+#: ../camel/providers/smtp/camel-smtp-transport.c:1382
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1403
+#: ../camel/providers/smtp/camel-smtp-transport.c:1398
 msgid "RSET command failed"
 msgstr "RSET આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1426
+#: ../camel/providers/smtp/camel-smtp-transport.c:1421
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1440
+#: ../camel/providers/smtp/camel-smtp-transport.c:1435
 msgid "QUIT command failed"
 msgstr "QUIT આદેશ નિષ્ફળ"
 
@@ -4878,19 +4888,19 @@ msgstr "%s માં ફેરફાર કરો (_E)"
 msgid "_Delete %s"
 msgstr "%s કાઢી નાંખો (_D)"
 
-#: ../libedataserverui/e-passwords.c:744
+#: ../libedataserverui/e-passwords.c:810
 msgid "_Remember this passphrase"
 msgstr "આ મહાવરો યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:745
+#: ../libedataserverui/e-passwords.c:811
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "આ સત્રને યાદ અપાવવા માટે આ મહાવરો યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:748
+#: ../libedataserverui/e-passwords.c:814
 msgid "_Remember this password"
 msgstr "આ પાસવર્ડ યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:749
+#: ../libedataserverui/e-passwords.c:815
 msgid "_Remember this password for the remainder of this session"
 msgstr "આ સત્રના બાકીના ભાગ માટે આ પાસવર્ડ યાદ રાખો (_R)"
 
