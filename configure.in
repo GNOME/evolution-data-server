@@ -1089,6 +1089,7 @@ esac
 
 SAVE_CFLAGS="$CFLAGS"
 SAVE_LIBS="$LIBS"
+LDAP_CFLAGS="-DLDAP_DEPRECATED"
 CFLAGS="$CFLAGS $LDAP_CFLAGS"
 LIBS="$LIBS $LDAP_LIBS"
 AC_CHECK_FUNCS(ldap_ntlm_bind)
@@ -1107,7 +1108,7 @@ dnl support. Make him aware of this with a warning message at the end.
 	fi
 fi
 else # Win32
-LDAP_CFLAGS=""
+LDAP_CFLAGS="-DLDAP_DEPRECATED"
 LDAP_LIBS="-lwldap32"
 AC_SUBST(LDAP_CFLAGS)
 AC_SUBST(LDAP_LIBS)
