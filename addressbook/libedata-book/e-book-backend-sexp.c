@@ -49,11 +49,14 @@ compare_im (EContact *contact, const char *str,
 	for (l = aims; l != NULL; l = l->next) {
 		char *im = (char *) l->data;
 
-		if (im && compare (im, str))
+		if (im && compare (im, str)) {
 			found_it = TRUE;
-
-		g_free (im);
+			break;
+		}
 	}
+	
+	g_list_foreach (aims, (GFunc)g_free, NULL);
+	g_list_free (aims);
 
 	return found_it;
 }
