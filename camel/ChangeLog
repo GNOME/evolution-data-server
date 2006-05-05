@@ -1,3 +1,8 @@
+2006-05-05  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-charset-map.c (camel_charset_best_mask): Fixed a
+	mis-ordering of an if-statement clause that caused bug #340717.
+
 2006-05-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-gpg-context.c (gpg_ctx_parse_status): Handle prompts from

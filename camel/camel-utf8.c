@@ -146,7 +146,7 @@ loop:
 			do {
 				if (p >= end)
 					return 0xffff;
-
+				
 				c = *p++;
 				if ((c & 0xc0) != 0x80) {
 					r = c;
@@ -156,7 +156,7 @@ loop:
 				r<<=1;
 				m<<=5;
 			} while (r & 0x40);
-		
+			
 			*ptr = p;
 			
 			v &= ~m;
