@@ -1,3 +1,8 @@
+2006-05-05  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-charset-map.c (camel_charset_best_mask): Fixed a
+	mis-ordering of an if-statement clause that caused bug #340717.
+
 2006-04-19  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-filter-pgp.c (filter_run): You cannot CANNOT modify

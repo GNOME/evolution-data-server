@@ -227,15 +227,15 @@ camel_charset_step (CamelCharset *cc, const char *in, int len)
 	register unsigned int mask;
 	register int level;
 	register guint32 c;
-
+	
 	mask = cc->mask;
 	level = cc->level;
-
+	
 	/* check what charset a given string will fit in */
-	while ( (c = camel_utf8_getc_limit(&inptr, inend)) != 0xffff) {
+	while ((c = camel_utf8_getc_limit(&inptr, inend)) != 0xffff) {
 		if (c < 0xffff) {
 			mask &= charset_mask(c);
-		
+			
 			if (c>=128 && c<256)
 				level = MAX(level, 1);
 			else if (c>=256)
@@ -246,7 +246,7 @@ camel_charset_step (CamelCharset *cc, const char *in, int len)
 			break;
 		}
 	}
-
+	
 	cc->mask = mask;
 	cc->level = level;
 }
@@ -263,7 +263,7 @@ camel_charset_best_mask(unsigned int mask)
 		if (camel_charinfo[i].bit & mask) {
 			lang = e_iconv_charset_language (camel_charinfo[i].name);
 			
-			if (!lang || (locale_lang && !strncmp (locale_lang, lang, 2)))
+			if (!locale_lang || (lang && !strncmp (locale_lang, lang, 2)))
 				return camel_charinfo[i].name;
 		}
 	}
