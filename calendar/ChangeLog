@@ -1,3 +1,9 @@
+2006-05-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* backends/caldav/e-cal-backend-caldav.c: (process_object):
+	Fix typos. We were copying the wrong variable in a couple of
+	places. In plain english: Use the right etag on invitation updates. 
+
 2006-04-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:

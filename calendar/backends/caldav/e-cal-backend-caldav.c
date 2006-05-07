@@ -1863,7 +1863,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 				etag = e_cal_component_get_etag (ccomp);
 				
 				object.href  = g_strdup (href);
-				object.etag  = g_strdup (href);
+				object.etag  = g_strdup (etag);
 
 			} else {
 				object.href = e_cal_component_gen_href (ecomp, priv->uri);
@@ -1925,7 +1925,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 				etag = e_cal_component_get_etag (ccomp);
 				
 				object.href  = g_strdup (href);
-				object.etag  = g_strdup (href);
+				object.etag  = g_strdup (etag);
 				object.cdata = NULL;
 
 				status = caldav_server_delete_object (cbdav,
