@@ -868,44 +868,6 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 }
 
 static gboolean
-hostname_is_valid (const char *name)
-{
-	enum { ALNUM, DASH, DOT } state = DOT;
-	gboolean dotseen = FALSE;
-	
-	if (!name)
-		return FALSE;
-	
-	while (*name) {
-		switch (state) {
-		case ALNUM:
-			if (*name == '-') {
-				state = DASH;
-				break;
-			} else if (*name == '.') {
-				dotseen = TRUE;
-				state = DOT;
-				break;
-			} /* else ... */
-		case DOT:
-		case DASH:
-			if (!isalnum (*name))
-				return FALSE;
-			state = ALNUM;
-			break;
-		}
-		name++;
-	}
-	
-	/* If it didn't end with an alphanumeric character, or there were no
-	   dots, it's invalid */
-	if (state != ALNUM || !dotseen)
-		return FALSE;
-	else
-		return TRUE;
-}
-
-static gboolean
 smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 {
 	char *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
@@ -931,7 +893,7 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 	addrlen = transport->localaddrlen;
 	
 	/* force name resolution first, fallback to numerical, we need to know when it falls back */
-	if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NAMEREQD, NULL) != 0 || !hostname_is_valid (name)) {
+	if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NAMEREQD, NULL) != 0) {
 		g_free (name);
 		if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NUMERICHOST, NULL) != 0) {
 			name = g_strdup ("localhost.localdomain");
