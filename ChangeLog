@@ -1,3 +1,9 @@
+2006-05-09  Ross Burton  <ross@openedhand.com>
+
+	* libedataserver/e-data-server-module.h:
+	* libedataserver/e-data-server-module.c:
+	Allow EDataServerModule to remove unused modules (#319396).
+
 2006-05-02  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Patch from Sushuma Rai to fix build with
