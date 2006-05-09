@@ -1,3 +1,8 @@
+2006-05-09  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-smtp-transport.c (smtp_helo): Reverted. David Woodhouse
+	can fix his own damn server since he configured it to be broken.
+
 2006-04-21  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-smtp-transport.c (connect_to_server_wrapper): Don't do
