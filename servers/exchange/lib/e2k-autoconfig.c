@@ -1644,6 +1644,7 @@ e2k_validate_user (const char *owa_url, char *user,
 	g_free (prompt);
 	if (!password) {
 		g_free (key);
+		*result = E2K_AUTOCONFIG_CANCELLED;
 		return valid;
 	}
 
