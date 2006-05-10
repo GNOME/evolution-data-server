@@ -1272,7 +1272,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      account->priv->identity_name,
 					      account->priv->identity_email,
 					      account->priv->source_uri,
-					      FALSE);
+					      TRUE);
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
 
