@@ -1,3 +1,11 @@
+2006-05-10  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-imap-folder.c:
+	Add space at the end of CAMEL_MESSAGE_INFO_HEADERS. The content-type
+	header wont be fetched otherwise(it mergers with the
+	MESSAGE_LIST_HEADER). 
+	This fix shows the attachment icon in the message list
+
 2006-05-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fix for bug #315976.
