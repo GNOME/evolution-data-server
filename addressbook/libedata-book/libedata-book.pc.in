@@ -2,9 +2,10 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+datadir=@datadir@
 
 idldir=@idldir@
-IDL_INCLUDES=-I ${idldir} @IDL_INCLUDES@
+IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
 
 privincludedir=@privincludedir@
 

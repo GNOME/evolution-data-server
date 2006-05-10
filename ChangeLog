@@ -1,3 +1,15 @@
+2006-05-10  Harish Krishnaswamy  <kharish@novell.com>
+
+	* addressbook/libebook/libebook.pc.in, 
+	addressbook/libedata-book/libedata-book.pc.in,
+	calendar/libecal/libecal.pc.in,
+	calendar/libedata-cal/libedata-cal.pc.in,
+	configure.in, evolution-data-server.pc.in,
+	libedataserver/libedataserver.pc.in, 
+	servers/groupwise/libegroupwise.pc.in: Remove extra space following -I which
+	is not kind to Tru64 Unix C compilers. Patch suggested by the Written Word.
+	Fixes #271839.
+
 2006-05-09  Ross Burton  <ross@openedhand.com>
 
 	* libedataserver/e-data-server-module.h:
