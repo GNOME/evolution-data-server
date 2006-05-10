@@ -892,17 +892,13 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 	addr = transport->localaddr;
 	addrlen = transport->localaddrlen;
 	
-	/* force name resolution first, fallback to numerical, we need to know when it falls back */
-	if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NAMEREQD, NULL) != 0) {
-		g_free (name);
-		if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NUMERICHOST, NULL) != 0) {
-			name = g_strdup ("localhost.localdomain");
-		} else {
-			if (addr->sa_family == AF_INET6)
-				numeric = "IPv6:";
-			else
-				numeric = "";
-		}
+	if (camel_getnameinfo (addr, addrlen, &name, NULL, NI_NUMERICHOST, NULL) != 0) {
+		name = g_strdup ("localhost.localdomain");
+	} else {
+		if (addr->sa_family == AF_INET6)
+			numeric = "IPv6:";
+		else
+			numeric = "";
 	}
 	
 	token = (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) ? "EHLO" : "HELO";

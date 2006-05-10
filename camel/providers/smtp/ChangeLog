@@ -1,3 +1,7 @@
+2006-05-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-smtp-transport.c (smtp_helo): Implement the correct fix.
+
 2006-05-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-smtp-transport.c (smtp_helo): Reverted. David Woodhouse
