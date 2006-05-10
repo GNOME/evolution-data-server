@@ -1651,6 +1651,7 @@ try_auth_again:
 	if (!password) {
 		g_free (key);
 		g_free (username);
+		*result = E2K_AUTOCONFIG_CANCELLED;
 		return valid;
 	}
 

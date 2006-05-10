@@ -1,3 +1,8 @@
+2006-05-10  Sushma Rai  <rsushma@novell.com>
+
+	*  exchange/lib/e2k-autoconfig.c (e2k_validate_user): Set result to
+	E2K_AUTOCONFIG_CANCELLED on cancel. Fixes #332131.
+
 2006-04-19  Harish Krishnaswamy  <kharish@novell.com>
 
 	Patch suggested by Carlos Lozano <clozano at andago dot com>
