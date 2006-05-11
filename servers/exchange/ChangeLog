@@ -1,3 +1,10 @@
+2006-05-11  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #334626
+	* storage/exchange-esource.c: 
+	(add_folder_esource): set the list of calendar selections
+	in gconf for the newly created source.
+
 2006-05-10  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.c (setup_account_hierarchies): Setting

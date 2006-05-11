@@ -48,7 +48,7 @@ add_folder_esource (ExchangeAccount *account,
 	char *username, *authtype = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
-	gboolean offline_flag;
+	gboolean offline_flag, update_selection = TRUE;
 
 	client = gconf_client_get_default ();
 
@@ -144,6 +144,7 @@ add_folder_esource (ExchangeAccount *account,
 			source_new = TRUE;
 			e_source_list_sync (source_list, NULL);
 		} else {
+			update_selection = FALSE;
 			/* source group and source both already exist */
 			offline = e_source_get_property (source, "offline_sync");
 			if (!offline) {
@@ -157,7 +158,7 @@ add_folder_esource (ExchangeAccount *account,
 	}
 
 	offline_flag = is_offline ();
-	if (source && !is_contacts_folder) {
+	if (source && !is_contacts_folder && update_selection) {
 
 		/* Select the folder created */
 		if (folder_type == EXCHANGE_CALENDAR_FOLDER && !offline_flag) {
