@@ -1493,11 +1493,11 @@ msgstr "Копирование сообщений"
 
 #: ../camel/camel-folder.c:1648
 msgid "Learning junk"
-msgstr "Изучается не-хлам"
+msgstr "Изучается спам"
 
 #: ../camel/camel-folder.c:1665
 msgid "Learning non-junk"
-msgstr "Изучается хлам"
+msgstr "Изучается сообщение, не являющееся спамом"
 
 #: ../camel/camel-folder.c:1684
 msgid "Filtering new message(s)"
