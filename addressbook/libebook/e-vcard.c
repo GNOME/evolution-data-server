@@ -20,6 +20,10 @@
  * Author: Chris Toshok (toshok@ximian.com)
  */
 
+/* This file implements the decoding of the v-card format
+ * http://www.imc.org/pdi/vcard-21.txt
+ */
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,6 +34,9 @@
 
 #define CRLF "\r\n"
 
+/** Encoding used in v-card 
+ *  Note: v-card spec defines additional 7BIT 8BIT and X- encoding
+ */
 typedef enum {
 	EVC_ENCODING_RAW,    /* no encoding */
 	EVC_ENCODING_BASE64, /* base64 */
@@ -127,48 +134,56 @@ e_vcard_get_type (void)
 
 
 
+/** Skip newline characters and return the next character.
+ *  This function takes care of folding lines, skipping 
+ *  newline characters if found, taking care of equal characters
+ *  and other strange things.
+ */
 static char*
-fold_lines (char *buf)
+skip_newline (char *str, gboolean quoted_printable)
 {
-	GString *str = g_string_new ("");
-	char *p = buf;
-	char *next, *next2;
+	char *p; 
+	char *next;
+	char *next2;
+	p = str;
 
-	/* we're pretty liberal with line folding here.  We handle
-	   lines folded with \r\n<WS>... and \n\r<WS>... and
-	   \n<WS>... We also turn single \r's and \n's not followed by
-	   WS into \r\n's. */
-	while (*p) {
-		if (*p == '\r' || *p == '\n') {
-			next = g_utf8_next_char (p);
-			if (*next == '\n' || *next == '\r') {
-				next2 = g_utf8_next_char (next);
-				if (*next2 == ' ' || *next2 == '\t') {
-					p = g_utf8_next_char (next2);
-				}
-				else {
-					g_string_append (str, CRLF);
-					p = g_utf8_next_char (next);
+	/* -- swallow equal signs at end of line for quoted printable */
+	/* note: a quoted_printable linefolding is an equal sign followed by
+	   one or more newline characters and optional a whitespace */
+	if (quoted_printable && *p == '=' ) {
+		next = g_utf8_next_char (p);
+		if (*next == '\r' || *next == '\n') {
+			p = g_utf8_next_char (next); /* swallow equal and newline */
+
+			if ((*p == '\r' || *p == '\n') && *p != *next ) {
+				p = g_utf8_next_char (p); /* swallow second newline */
+
+				if (*p == ' ' || *p == '\t') {
+					p = g_utf8_next_char (p); /* swallow whitespace */
 				}
 			}
-			else if (*next == ' ' || *next == '\t') {
-				p = g_utf8_next_char (next);
-			}
-			else {
-				g_string_append (str, CRLF);
-				p = g_utf8_next_char (p);
-			}
+
 		}
-		else {
-			g_string_append_unichar (str, g_utf8_get_char (p));
-			p = g_utf8_next_char (p);
+
+	/* -- swallow newline and (if present) following whitespaces */
+	} else if (*p == '\r' || *p == '\n') {
+
+		next = g_utf8_next_char (p);
+		if ((*next == '\n' || *next == '\r') && *p != *next) {
+
+			next2 = g_utf8_next_char (next);
+			if (*next2 == ' ' || *next2 == '\t') {
+				p = g_utf8_next_char (next2); /* we found a line folding */
+			}
+
+		} else if (*next == ' ' || *next == '\t') {
+			p = g_utf8_next_char (next);  /* we found a line folding */
 		}
 	}
 
-	g_free (buf);
-
-	return g_string_free (str, FALSE);
+	return p;
 }
+
 
 /* skip forward until we hit the CRLF, or \0 */
 static void
@@ -177,12 +192,12 @@ skip_to_next_line (char **p)
 	char *lp;
 	lp = *p;
 
-	while (*lp != '\r' && *lp != '\0')
+	while (*lp != '\n' && *lp != '\r' && *lp != '\0')
 		lp = g_utf8_next_char (lp);
 
-	if (*lp == '\r') {
-		lp = g_utf8_next_char (lp); /* \n */
-		lp = g_utf8_next_char (lp); /* start of the next line */
+	/* -- skip over the endline */
+	while( *lp == '\r' || *lp == '\n' ) {
+		lp = g_utf8_next_char (lp);
 	}
 
 	*p = lp;
@@ -223,20 +238,16 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 
 	/* read in the value */
 	str = g_string_new ("");
-	while (*lp != '\r' && *lp != '\0') {
+	for( lp =  skip_newline( *p, quoted_printable );
+	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     lp = skip_newline( lp, quoted_printable ) ) {
+
 		if (*lp == '=' && quoted_printable) {
 			char a, b;
 			if ((a = *(++lp)) == '\0') break;
 			if ((b = *(++lp)) == '\0') break;
-			if (a == '\r' && b == '\n') {
-				/* it was a = at the end of the line,
-				 * just ignore this and continue
-				 * parsing on the next line.  yay for
-				 * 2 kinds of line folding
-				 */
-			}
-			else if (isxdigit(a) && isxdigit (b)) {
-				gunichar c;
+			if (isxdigit(a) && isxdigit (b)) {
+				char c;
 
 				a = tolower (a);
 				b = tolower (b);
@@ -244,7 +255,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 				c = (((a>='a'?a-'a'+10:a-'0')&0x0f) << 4)
 					| ((b>='a'?b-'a'+10:b-'0')&0x0f);
 				
-				g_string_append_unichar (str, c);
+				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
 			}
 			else 
 				{
@@ -253,8 +264,8 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 				}
 			
 			lp++;
-		}
-		else if (*lp == '\\') {
+
+		} else if (*lp == '\\') {
 			/* convert back to the non-escaped version of
 			   the characters */
 			lp = g_utf8_next_char(lp);
@@ -264,7 +275,9 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 			}
 			switch (*lp) {
 			case 'n': g_string_append_c (str, '\n'); break;
+			case 'N': g_string_append_c (str, '\n'); break;
 			case 'r': g_string_append_c (str, '\r'); break;
+			case 'R': g_string_append_c (str, '\r'); break;
 			case ';': g_string_append_c (str, ';'); break;
 			case ',': g_string_append_c (str, ','); break;
 			case '\\': g_string_append_c (str, '\\'); break;
@@ -292,10 +305,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 		g_string_free (str, TRUE);
 	}
 
-	if (*lp == '\r') {
-		lp = g_utf8_next_char (lp); /* \n */
-		lp = g_utf8_next_char (lp); /* start of the next line */
-	}
+	skip_to_next_line( &lp );
 
 	*p = lp;
 }
@@ -303,12 +313,16 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 static void
 read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printable)
 {
-	char *lp = *p;
+	char *lp;
 	GString *str;
 	EVCardAttributeParam *param = NULL;
 	gboolean in_quote = FALSE;
+
 	str = g_string_new ("");
-	while (*lp != '\0') {
+	for( lp =  skip_newline( *p, *quoted_printable );
+	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     lp = skip_newline( lp, *quoted_printable ) ) {
+
 		if (*lp == '"') {
 			in_quote = !in_quote;
 			lp = g_utf8_next_char (lp);
@@ -331,13 +345,16 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 			}
 			else {
 				skip_until (&lp, ":;");
-				if (*lp == '\r') {
-					lp = g_utf8_next_char (lp); /* \n */
-					lp = g_utf8_next_char (lp); /* start of the next line */
+				if (*lp == ';') {
+					lp = g_utf8_next_char (lp);
+
+				} else if (*lp == ':') {
+					/* do nothing */
+
+				} else {				
+					skip_to_next_line( &lp );
 					break;
 				}
-				else if (*lp == ';')
-					lp = g_utf8_next_char (lp);
 			}
 		}
 		else if (*lp == ';' || *lp == ':' || *lp == ',') {
@@ -430,13 +447,9 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 		else {
 			g_warning ("invalid character found in parameter spec");
 			g_string_assign (str, "");
-			skip_until (&lp, ":;");
+			/*			skip_until (&lp, ":;"); */
 			
-			if (*lp == '\r') {
-				lp = g_utf8_next_char (lp); /* \n */
-				lp = g_utf8_next_char (lp); /* start of the next line */
-				break;
-			}
+			skip_to_next_line( &lp );
 		}
 	}
 
@@ -455,12 +468,15 @@ read_attribute (char **p)
 	char *attr_name = NULL;
 	EVCardAttribute *attr = NULL;
 	GString *str;
-	char *lp = *p;
+	char *lp;
 	gboolean is_qp = FALSE;
 
 	/* first read in the group/name */
 	str = g_string_new ("");
-	while (*lp != '\r' && *lp != '\0') {
+	for( lp =  skip_newline( *p, is_qp );
+	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     lp = skip_newline( lp, is_qp ) ) {
+
 		if (*lp == ':' || *lp == ';') {
 			if (str->len != 0) {
 				/* we've got a name, break out to the value/attribute parsing */
@@ -592,7 +608,7 @@ parse (EVCard *evc, const char *str)
 	
 	buf = make_valid_utf8 (str);
 
-	buf = fold_lines (buf);
+	//buf = fold_lines (buf);
 
 	d(printf ("BEFORE FOLDING:\n"));
 	d(printf (str));
@@ -638,7 +654,7 @@ parse (EVCard *evc, const char *str)
  *
  * Return value: A newly allocated, escaped string.
  **/
-char*
+static char*
 e_vcard_escape_string (const char *s)
 {
 	GString *str;
@@ -683,7 +699,7 @@ e_vcard_escape_string (const char *s)
  *
  * Return value: A newly allocated, unescaped string.
  **/
-char*
+static char*
 e_vcard_unescape_string (const char *s)
 {
 	GString *str;
@@ -1646,6 +1662,8 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
  *
  * Gets the value of a single-valued #EVCardAttribute, @attr, decoding
  * it if necessary.
+ *
+ * Note: this function seems currently to be unused. Could be removed.
  *
  * Return value: A newly allocated #GString representing the value.
  **/

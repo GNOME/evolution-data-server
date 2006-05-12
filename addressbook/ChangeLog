@@ -1,3 +1,12 @@
+2006-05-12  Devashish Sharma  <sdevashish@novell.com>
+
+	* libebook/e-vcard.c : Chages to vcard parsing so that it handles
+	quoted printable characters correctly.
+	* tests/vcard/12.vcf :
+	* tests/vcard/13.vcf :Added new test vcards.
+	Fixes Bug #334179.
+	Patch given by <ralf-engels@gmx.de> 
+
 2006-05-04  Ross Burton  <ross@openedhand.com>
 
 	* libedata-book/e-book-backend-sexp.c:

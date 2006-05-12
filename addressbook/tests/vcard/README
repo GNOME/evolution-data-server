@@ -41,4 +41,9 @@ Test   : Description
 
 11.vcf : A vCard with invalid attribute parameter specs.
 
+12.vcf : A vCard with quoted parameter values that get corrupted if the
+         line folding mechanism does not correctly remove the equal sign
+
+13.vcf : A vCard with various escaped characters
+
 ----------------------

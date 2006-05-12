@@ -186,10 +186,6 @@ GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param
 /* special TYPE= parameter predicate (checks for TYPE=@typestr */
 gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, const char *typestr);
 
-/* Utility functions. */
-char*            e_vcard_escape_string (const char *str);
-char*            e_vcard_unescape_string (const char *str);
-
 G_END_DECLS
 
 #endif /* _EVCARD_H */
