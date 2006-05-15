@@ -654,7 +654,7 @@ parse (EVCard *evc, const char *str)
  *
  * Return value: A newly allocated, escaped string.
  **/
-static char*
+char*
 e_vcard_escape_string (const char *s)
 {
 	GString *str;
@@ -699,7 +699,7 @@ e_vcard_escape_string (const char *s)
  *
  * Return value: A newly allocated, unescaped string.
  **/
-static char*
+char*
 e_vcard_unescape_string (const char *s)
 {
 	GString *str;

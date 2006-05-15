@@ -1,3 +1,9 @@
+2006-05-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libebook/e-vcard.[ch]: Restore the two functions removed from the
+	header in the last commit. DO NOT TINKER WITH API FUNCTIONS. Preserve
+	compatibility.
+
 2006-05-12  Devashish Sharma  <sdevashish@novell.com>
 
 	* libebook/e-vcard.c : Chages to vcard parsing so that it handles
