@@ -1,3 +1,9 @@
+2006-05-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: Append -DLDAP_DEPRECATED to LDAP_CFLAGS and
+	do not overwrite the value. Fixes a bug introduced by the previous
+	commit.
+	
 2006-05-10  Harish Krishnaswamy  <kharish@novell.com>
 
 	* addressbook/libebook/libebook.pc.in, 
