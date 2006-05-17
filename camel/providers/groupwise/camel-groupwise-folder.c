@@ -963,6 +963,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
 				g_warning ("Trash full....Empty Trash!!!!\n");
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Trash Folder Full. Please Empty."));
+				goto end1;
 				/*groupwise_expunge (folder, ex);*/
 			} else
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
