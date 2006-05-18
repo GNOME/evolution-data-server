@@ -37,8 +37,10 @@ e_dbhash_new (const char *filename)
 	if (rv != 0) {
 		rv = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
-		if (rv != 0)
+		if (rv != 0) {
+			db->close (db, 0);
 			return NULL;
+		}
 	}
 
 	edbh = g_new (EDbHash, 1);

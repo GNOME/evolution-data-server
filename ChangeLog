@@ -1,3 +1,10 @@
+2006-05-18  Devashish Shamra  <sdevashish@novell.com>
+
+	* libedataserver/e-dbhash.c (e_dbhash_new) :If there is an error in opening the
+	database delete the DB structure.
+	Patch by Ross Burton  <ross@openedhand.com>
+	Fixes Bug #340039.
+
 2006-05-15  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Append -DLDAP_DEPRECATED to LDAP_CFLAGS and
