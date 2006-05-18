@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-01 22:18+0200\n"
-"PO-Revision-Date: 2006-05-02 07:59+0530\n"
+"POT-Creation-Date: 2006-05-18 06:26+0200\n"
+"PO-Revision-Date: 2006-05-18 10:44+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -658,12 +659,12 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "કેલેન્ડરની માહીતી સંગ્રહી શકાતી નથી: મેલફોર્મવાળી URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1582
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1584
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1587
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1589
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
@@ -685,9 +686,9 @@ msgstr "અયોગ્ય સર્વર URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:968
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1026
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:970
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:993
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1028
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
 #: ../camel/providers/groupwise/camel-groupwise-store.c:715
@@ -1333,7 +1334,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "ફોલ્ડર '%s' ને ઓફલાઈન માટે તૈયાર કરી રહ્યા છીએ"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/imap/camel-imap-store.c:2961
+#: ../camel/providers/imap/camel-imap-store.c:2972
 msgid "You must be working online to complete this operation"
 msgstr "આ પ્રક્રિયા પૂર્ણ કરવા માટે તમારે ઓનલાઈન કામ કરવું જ પડશેે"
 
@@ -2612,7 +2613,7 @@ msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં �
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1545
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1547
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
@@ -2622,7 +2623,11 @@ msgstr "સંદેશો મેળવી શક્યા નથી"
 msgid "Could not load summary for %s"
 msgstr "%s માટે સાર લાવી શક્યા નહિં"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1127
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:966
+msgid "Trash Folder Full. Please Empty."
+msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. મહેરબાની કરીને ખાલી કરો."
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1129
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
 #: ../camel/providers/groupwise/camel-groupwise-store.c:747
 #: ../camel/providers/imap/camel-imap-folder.c:2375
@@ -2631,13 +2636,13 @@ msgstr "%s માટે સાર લાવી શક્યા નહિં"
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1813
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1861
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1815
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1863
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1849
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1851
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2869,12 +2874,12 @@ msgstr "આ વિકલ્પ સાદાલખાણના પાસવર્
 #: ../camel/providers/imap/camel-imap-command.c:223
 #: ../camel/providers/imap/camel-imap-command.c:265
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3001
+#: ../camel/providers/imap/camel-imap-store.c:3012
 msgid "Operation cancelled"
 msgstr "પ્રક્રિયા નકારી દેવામાં આવી"
 
 #: ../camel/providers/imap/camel-imap-command.c:310
-#: ../camel/providers/imap/camel-imap-store.c:3004
+#: ../camel/providers/imap/camel-imap-store.c:3015
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું: %s"
@@ -4472,63 +4477,63 @@ msgstr "સંદેશો મોકલી શકતા નથી: કોઈ મ
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "સંદેશો મોકલી શકતા નથી: એક અથવા વધુ મેળવનારાઓ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:928
+#: ../camel/providers/smtp/camel-smtp-transport.c:890
 msgid "SMTP Greeting"
 msgstr "SMTP શુભેચ્છા"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:957
+#: ../camel/providers/smtp/camel-smtp-transport.c:915
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:974
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "HELO command failed"
 msgstr "HELO આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1040
+#: ../camel/providers/smtp/camel-smtp-transport.c:998
 msgid "SMTP Authentication"
 msgstr "SMTP સત્તાધિકરણ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1046
+#: ../camel/providers/smtp/camel-smtp-transport.c:1004
 msgid "Error creating SASL authentication object."
 msgstr "SASL સત્તાધિકરણ ઓબ્જેક્ટ બનાવતી વખતે ભૂલ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1063
-#: ../camel/providers/smtp/camel-smtp-transport.c:1074
+#: ../camel/providers/smtp/camel-smtp-transport.c:1021
+#: ../camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1080
+#: ../camel/providers/smtp/camel-smtp-transport.c:1038
 msgid "AUTH command failed"
 msgstr "AUTH આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1142
+#: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Bad authentication response from server.\n"
 msgstr "સર્વર તરફથી સત્તાધિકરણ જવાબ ખરાબ.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1167
+#: ../camel/providers/smtp/camel-smtp-transport.c:1125
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1184
+#: ../camel/providers/smtp/camel-smtp-transport.c:1142
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1208
+#: ../camel/providers/smtp/camel-smtp-transport.c:1166
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1227
+#: ../camel/providers/smtp/camel-smtp-transport.c:1185
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1266
-#: ../camel/providers/smtp/camel-smtp-transport.c:1324
-#: ../camel/providers/smtp/camel-smtp-transport.c:1343
+#: ../camel/providers/smtp/camel-smtp-transport.c:1224
+#: ../camel/providers/smtp/camel-smtp-transport.c:1282
+#: ../camel/providers/smtp/camel-smtp-transport.c:1301
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલાયો નથી"
@@ -4536,26 +4541,26 @@ msgstr "DATA આદેશ નિષ્ફળ: %s: મેઈલ મોકલા�
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1283
-#: ../camel/providers/smtp/camel-smtp-transport.c:1359
+#: ../camel/providers/smtp/camel-smtp-transport.c:1241
+#: ../camel/providers/smtp/camel-smtp-transport.c:1317
 msgid "DATA command failed"
 msgstr "DATA આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1382
+#: ../camel/providers/smtp/camel-smtp-transport.c:1340
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1398
+#: ../camel/providers/smtp/camel-smtp-transport.c:1356
 msgid "RSET command failed"
 msgstr "RSET આદેશ નિષ્ફળ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1421
+#: ../camel/providers/smtp/camel-smtp-transport.c:1379
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT આદેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1435
+#: ../camel/providers/smtp/camel-smtp-transport.c:1393
 msgid "QUIT command failed"
 msgstr "QUIT આદેશ નિષ્ફળ"
 
