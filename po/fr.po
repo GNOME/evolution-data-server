@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-17 00:03+0200\n"
+"POT-Creation-Date: 2006-05-18 21:16+0200\n"
 "PO-Revision-Date: 2006-05-03 17:11+0100\n"
 "Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -657,7 +657,7 @@ msgstr "Anniversaire : %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Can't save calendar data: Malformed URI."
-msgstr "Impossible d'enregistrer les données du calendrier : URI erronée."
+msgstr "Impossible d'enregistrer les données du calendrier : URI erroné."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1592
@@ -1102,11 +1102,11 @@ msgstr "Objet non valide"
 
 #: ../calendar/libecal/e-cal.c:5121
 msgid "URI not loaded"
-msgstr "URI non chargée"
+msgstr "URI non chargé"
 
 #: ../calendar/libecal/e-cal.c:5123
 msgid "URI already loaded"
-msgstr "URI déjà chargée"
+msgstr "URI déjà chargé"
 
 #: ../calendar/libecal/e-cal.c:5125
 #: ../servers/exchange/storage/e-storage.c:572
@@ -2072,7 +2072,7 @@ msgstr "L'URL « %s » nécessite un composant « nom d'utilisateur »"
 #: ../camel/camel-service.c:274
 #, c-format
 msgid "URL '%s' needs a host component"
-msgstr "L'URL « %s » nécessite un composant « host »"
+msgstr "L'URL « %s » nécessite un composant « hôte »"
 
 #: ../camel/camel-service.c:278
 #, c-format
@@ -2572,9 +2572,8 @@ msgstr ""
 "Impossible de copier ou déplacer des messages vers des dossiers virtuels"
 
 #: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
-#, fuzzy
 msgid "Unmatched"
-msgstr "Différent"
+msgstr "Autres courriels"
 
 #: ../camel/camel-vee-store.c:391
 #, c-format
@@ -4718,7 +4717,7 @@ msgstr "Buts/Objectifs"
 
 #: ../libedataserver/e-categories.c:253
 msgid "Holiday"
-msgstr "Vacance"
+msgstr "Vacances"
 
 #: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
@@ -4951,7 +4950,7 @@ msgstr "Catégories _disponibles :"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
-msgstr "_Édition"
+msgstr "É_dition"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
