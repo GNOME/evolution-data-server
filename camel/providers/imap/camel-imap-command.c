@@ -38,7 +38,6 @@
 #include "camel-imap-folder.h"
 #include "camel-imap-store.h"
 #include "camel-imap-store-summary.h"
-#include "camel-imap-private.h"
 #include <camel/camel-exception.h>
 #include <camel/camel-private.h>
 #include <camel/camel-utf8.h>

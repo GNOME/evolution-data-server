@@ -58,7 +58,6 @@
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"
 #include "camel-imap-message-cache.h"
-#include "camel-imap-private.h"
 #include "camel-imap-store-summary.h"
 #include "camel-imap-store.h"
 #include "camel-imap-summary.h"

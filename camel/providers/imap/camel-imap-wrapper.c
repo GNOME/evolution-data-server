@@ -30,13 +30,23 @@
 
 #include "camel-imap-folder.h"
 #include "camel-imap-wrapper.h"
-#include "camel-imap-private.h"
 #include "camel-exception.h"
 #include "camel-stream-filter.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-part.h"
+
+#include "libedataserver/e-msgport.h"
+
+
+struct _CamelImapWrapperPrivate {
+	GMutex *lock;
+};
+
+#define CAMEL_IMAP_WRAPPER_LOCK(f, l) (g_mutex_lock(((CamelImapWrapper *)f)->priv->l))
+#define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) (g_mutex_unlock(((CamelImapWrapper *)f)->priv->l))
+
 
 static CamelDataWrapperClass *parent_class = NULL;
 
@@ -68,10 +78,9 @@ camel_imap_wrapper_finalize (CamelObject *object)
 		g_free (imap_wrapper->uid);
 	if (imap_wrapper->part)
 		g_free (imap_wrapper->part_spec);
-
-#ifdef ENABLE_THREADS
+	
 	g_mutex_free (imap_wrapper->priv->lock);
-#endif
+	
 	g_free (imap_wrapper->priv);
 }
 
@@ -81,9 +90,7 @@ camel_imap_wrapper_init (gpointer object, gpointer klass)
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (object);
 
 	imap_wrapper->priv = g_new0 (struct _CamelImapWrapperPrivate, 1);
-#ifdef ENABLE_THREADS
 	imap_wrapper->priv->lock = g_mutex_new ();
-#endif
 }
 
 CamelType
