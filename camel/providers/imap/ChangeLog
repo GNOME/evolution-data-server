@@ -1,10 +1,24 @@
+2006-05-19  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-folder.c (imap_search_by_expression)
+	(imap_search_by_uids, imap_search_free): Get rid of the
+	search_lock and simply reuse the connect_lock.
+
+2006-05-18  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-folder.c (camel_imap_folder_selected, imap_rename)
+	(imap_append_offline, imap_append_online, imap_append_resyncing)
+	(imap_transfer_offline, imap_transfer_online)
+	(imap_transfer_resyncing, camel_imap_folder_changed): Get rid of
+	the cache_lock and use the service connect_lock instead. Fixes
+	some possible deadlock conditions.
+
 2006-05-10  Parthasarathi Susarla <sparthasarathi@novell.com>
-	
-	* camel-imap-folder.c:
-	Add space at the end of CAMEL_MESSAGE_INFO_HEADERS. The content-type
-	header wont be fetched otherwise(it mergers with the
-	MESSAGE_LIST_HEADER). 
-	This fix shows the attachment icon in the message list
+
+	* camel-imap-folder.c: Add space at the end of
+	CAMEL_MESSAGE_INFO_HEADERS. The content-type header wont be
+	fetched otherwise(it mergers with the MESSAGE_LIST_HEADER).  This
+	fix shows the attachment icon in the message list
 
 2006-05-01  Jeffrey Stedfast  <fejj@novell.com>
 
