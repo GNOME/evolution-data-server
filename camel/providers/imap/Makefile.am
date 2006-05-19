@@ -37,8 +37,7 @@ noinst_HEADERS =			\
 	camel-imap-summary.h			\
 	camel-imap-types.h			\
 	camel-imap-utils.h			\
-	camel-imap-wrapper.h			\
-	camel-imap-private.h
+	camel-imap-wrapper.h
 
 libcamelimap_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 
