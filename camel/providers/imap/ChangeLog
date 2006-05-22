@@ -1,3 +1,9 @@
+2006-05-22  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap-command.c (imap_read_untagged): Make sure the literal
+	length is non-negative (yes, some servers are sending negative
+	values here). Fixes Novell bug #177394.
+
 2006-05-19  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-folder.c (imap_search_by_expression)

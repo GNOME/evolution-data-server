@@ -438,10 +438,9 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		fulllen += str->len;
 		g_ptr_array_add (data, str);
 		
-		p = strrchr (str->str, '{');
-		if (!p)
+		if (!(p = strrchr (str->str, '{')) || p[1] == '-')
 			break;
-
+		
 		/* HACK ALERT: We scan the non-literal part of the string, looking for possible s expression braces.
 		   This assumes we're getting s-expressions, which we should be.
 		   This is so if we get a blank line after a literal, in an s-expression, we can keep going, since
