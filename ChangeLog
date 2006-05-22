@@ -1,3 +1,7 @@
+2006-05-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in: Update intltool requirements.
+	
 2006-05-18  Devashish Shamra  <sdevashish@novell.com>
 
 	* libedataserver/e-dbhash.c (e_dbhash_new) :If there is an error in opening the
