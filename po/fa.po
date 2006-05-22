@@ -2714,7 +2714,7 @@ msgstr "پوشه‌ی پدر اجازه‌ی داشتن زیرپوشه را ند
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1170
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr 
+msgstr ""
 "نمی‌توان نام پوشه‌ی GroupWise ‏«%s» را به «%s» تغییر داد"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1202
@@ -4113,7 +4113,7 @@ msgstr "STLS پشتیبانی نمی‌شود"
 #: ../camel/providers/pop3/camel-pop3-store.c:361
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr 
+msgstr ""
 "اتصال به کارگزار POP ‏%s ممکن نبود"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:402

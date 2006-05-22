@@ -1,3 +1,8 @@
+2006-05-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* fa.po: Fix for #342399. Patch submitted by
+	Emil Hessman <ceh@otaku.se>
+
 2006-05-18  Benoît Dejean  <benoit@placenet.org>
 
 	* fr.po: Updated French translation.
