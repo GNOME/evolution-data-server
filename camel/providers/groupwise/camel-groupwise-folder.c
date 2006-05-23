@@ -959,6 +959,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		goto end1;
 
 	if (!strcmp (folder->full_name, "Trash")) {
+#if 0
 		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created delivered attachments subject status size", NULL, &list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
@@ -978,6 +979,8 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			list = NULL;
 		}
 		goto end1;
+#endif
+		is_proxy = TRUE;
 	}
 
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
