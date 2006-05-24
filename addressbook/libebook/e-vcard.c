@@ -134,7 +134,7 @@ e_vcard_get_type (void)
 
 
 
-/** Skip newline characters and return the next character.
+/*  Skip newline characters and return the next character.
  *  This function takes care of folding lines, skipping 
  *  newline characters if found, taking care of equal characters
  *  and other strange things.

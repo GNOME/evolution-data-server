@@ -1,3 +1,10 @@
+2006-05-24  Ross Burton  <ross@burtonini.com>
+
+	* docs/reference/addressbook/libebook/tmpl/e-book-view-listener.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-book-view.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-book.sgml:
+	Update for doc changes.
+
 2006-05-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in: Update intltool requirements.

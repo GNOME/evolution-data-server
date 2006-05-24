@@ -1782,12 +1782,12 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 /**
  * e_book_async_remove_contacts:
  * @book: an #EBook
- * @ids: an #GList of const char *id's
+ * @ids: a #GList of const char *id's
  * @cb: a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
- * always more efficient than calling e_book_remove_contact_by_id if you
+ * always more efficient than calling e_book_remove_contact_by_id() if you
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
@@ -2363,6 +2363,18 @@ do_get_changes (gboolean sync,
 	}
 }
 
+/**
+ * e_book_get_changes:
+ * @book: an #EBook
+ * @changeid:  the change ID
+ * @changes: return location for a #GList of #EBookChange items
+ * @error: a #GError to set on failure.
+ *
+ * Get the set of changes since the previous call to #e_book_get_changes for a
+ * given change ID.
+ *
+ * Return value: TRUE on success, FALSE otherwise
+ */
 gboolean
 e_book_get_changes (EBook       *book,
 		    char        *changeid,
@@ -2455,6 +2467,12 @@ e_book_response_get_changes (EBook       *book,
 	g_mutex_unlock (book->priv->mutex);
 }
 
+/**
+ * e_book_free_change_list:
+ * @change_list: a #GList of #EBookChange items
+ *
+ * Free the contents of #change_list, and the list itself.
+ */
 void
 e_book_free_change_list (GList *change_list)
 {
@@ -3754,7 +3772,6 @@ e_book_activate()
 
 /**
  * e_book_new:
- *
  * @source: An #ESource pointer
  * @error: A #GError pointer
  *
@@ -3787,7 +3804,6 @@ e_book_new (ESource *source, GError **error)
 
 /**
  * e_book_new_from_uri:
- *
  * @uri: the URI to load
  * @error: A #GError pointer
  *
@@ -3819,8 +3835,6 @@ e_book_new_from_uri (const char *uri, GError **error)
 
 /**
  * e_book_new_system_addressbook:
- *
- * @uri: the URI to load
  * @error: A #GError pointer
  *
  * Creates a new #EBook corresponding to the user's system
@@ -3891,8 +3905,6 @@ e_book_new_system_addressbook    (GError **error)
 
 /**
  * e_book_new_default_addressbook:
- *
- * @uri: the URI to load
  * @error: A #GError pointer
  *
  * Creates a new #EBook corresponding to the user's default

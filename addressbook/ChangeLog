@@ -1,3 +1,10 @@
+2006-05-24  Ross Burton  <ross@burtonini.com>
+
+	* libebook/e-book-view.c:
+	* libebook/e-book.c:
+	* libebook/e-vcard.c:
+	Add more API documentation (#342678)
+
 2006-05-15  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libebook/e-vcard.[ch]: Restore the two functions removed from the

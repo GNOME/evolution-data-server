@@ -7,12 +7,12 @@ The primary Evolution addressbook client object.
 <!-- ##### SECTION Long_Description ##### -->
 <para>
 Represents a complete addressbook. Event notifications and callbacks go to the
-#e-book-listener. Contrast with #e-book-view, which represents a search of the addressbook.
+#EBookListener. Contrast with #EBookView, which represents a search of the addressbook.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-#e-book-listener, #e-book-view
+#EBookView
 </para>
 
 <!-- ##### SECTION Stability_Level ##### -->
@@ -26,7 +26,8 @@ Represents a complete addressbook. Event notifications and callbacks go to the
 
 <!-- ##### SIGNAL EBook::auth-required ##### -->
 <para>
-
+Authentication is required to access this source.  You should call
+#e_book_authenticate_user or #e_book_async_authenticate_user.
 </para>
 
 @ebook: the object which received the signal.
@@ -40,19 +41,19 @@ The backend for this address book has died.
 
 <!-- ##### SIGNAL EBook::connection-status ##### -->
 <para>
-
+The connection status for this book is being reported.
 </para>
 
 @ebook: the object which received the signal.
-@arg1: 
+@arg1: #TRUE if the connection is online, #FALSE otherwise.
 
 <!-- ##### SIGNAL EBook::writable-status ##### -->
 <para>
-
+The writable status for this book is being reported.
 </para>
 
 @ebook: the object which received the signal.
-@arg1: 
+@arg1: #TRUE if the book is writable, #FALSE otherwise.
 
 <!-- ##### FUNCTION e_book_new ##### -->
 <para>

@@ -149,7 +149,9 @@ e_book_view_construct (EBookView *book_view, GNOME_Evolution_Addressbook_BookVie
  * @corba_book_view: a CORBA BookView object
  * @listener: an #EBookViewListener
  *
- * Creates a new #EBookView based on @corba_book_view and listening to @listener.
+ * Creates a new #EBookView based on @corba_book_view and listening to
+ * @listener.  This is a private function, applications should call
+ * #e_book_get_book_view or #e_book_async_get_book_view.
  *
  * Return value: A new #EBookView.
  **/
@@ -202,12 +204,13 @@ e_book_view_get_book (EBookView *book_view)
 
 	return book_view->priv->book;
 }
+
 /**
  * e_book_view_start:
  * @book_view: an #EBookView
  *
  * Tells @book_view to start processing events.
- **/
+ */
 void
 e_book_view_start (EBookView *book_view)
 {
