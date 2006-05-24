@@ -1282,7 +1282,7 @@ AC_CACHE_CHECK([if large files (>2 GB) are supported], largefile_support,
 	])
 ])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, gthread-2.0 gmodule-2.0 gobject-2.0 $mozilla_nss, 
+EVO_SET_COMPILE_FLAGS(CAMEL, gthread-2.0 gmodule-2.0 gobject-2.0 $mozilla_nss gnome-vfs-2.0, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
 	              -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)

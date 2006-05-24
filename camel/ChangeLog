@@ -1,3 +1,9 @@
+2006-05-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* Makefile.am: Added new files for camel vfs stream
+	* camel-stream-vfs.[ch]: Added a new gnome-vfs backend for 
+	camel stream.
+
 2006-05-05  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-charset-map.c (camel_charset_best_mask): Fixed a

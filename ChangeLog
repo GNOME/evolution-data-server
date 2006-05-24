@@ -1,3 +1,7 @@
+2006-05-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Added gnome-vfs-2.0 to camel library
+
 2006-05-24  Ross Burton  <ross@burtonini.com>
 
 	* docs/reference/addressbook/libebook/tmpl/e-book-view-listener.sgml:
