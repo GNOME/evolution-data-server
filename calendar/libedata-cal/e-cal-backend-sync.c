@@ -706,6 +706,9 @@ _e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *c
 		e_data_cal_notify_object_modified (cal, status, old_object, new_object);
 	else
 		e_data_cal_notify_object_modified (cal, status, old_object, calobj);
+
+	g_free (old_object);
+	g_free (new_object);
 }
 
 static void
@@ -734,6 +737,7 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *u
 	} else
 		e_data_cal_notify_object_removed (cal, status, NULL, old_object, object);
 
+	g_free (old_object);
 	g_free (object);
 }
 
