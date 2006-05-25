@@ -1,3 +1,11 @@
+2006-05-25  Wang Xin  <jedy.wang@sun.com>
+
+	Fixes #342102
+
+	* libedata-cal/e-cal-backend-sync.c:
+	(_e_cal_backend_modify_object): Free old_object and new_object.
+	(_e_cal_backend_remove_object): Free old_object.
+
 2006-05-07  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* backends/caldav/e-cal-backend-caldav.c: (process_object):
