@@ -238,7 +238,7 @@ get_deltas (gpointer handle)
 	GSList *cache_keys = NULL;
 	GPtrArray *uid_array = g_ptr_array_new ();
 	char *time_string = NULL;
-	char t_str [100]; 
+	char t_str [26]; 
 	const char *serv_time;
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 	const char *time_interval_string;
@@ -252,7 +252,7 @@ get_deltas (gpointer handle)
 	icaltimetype temp;
 	gboolean done = FALSE;
 	int cursor = 0;
-	struct tm *tm;
+	struct tm tm;
 	time_t current_time;
 	gboolean needs_to_get = FALSE;
 
@@ -280,16 +280,16 @@ get_deltas (gpointer handle)
 			g_warning ("\n\a Could not get the correct time stamp. \n\a");
 			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 			current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-			tm = gmtime (&current_time);
-			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+			gmtime_r (&current_time, &tm);
+			strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 		}
 	} else {
 		/* FIXME: When time-stamp is crashed, getting changes from current time */
 		g_warning ("\n\a Could not get the correct time stamp. \n\a");
 		temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 		current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-		tm = gmtime (&current_time);
-		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+		gmtime_r (&current_time, &tm);
+		strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 	}
 	time_string = g_strdup (t_str);
 
@@ -363,7 +363,7 @@ get_deltas (gpointer handle)
 
 	temp = icaltime_from_string (time_string);
 	current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-	tm = gmtime (&current_time);
+	gmtime_r (&current_time, &tm);
 
 	time_interval = (CACHE_REFRESH_INTERVAL / 60000);
 	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
@@ -371,12 +371,12 @@ get_deltas (gpointer handle)
 		time_interval = g_ascii_strtod (time_interval_string, NULL);
 	} 
 	if (attempts) {
-		tm->tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
+		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
 		e_cal_backend_cache_put_key_value (cache, key, NULL);
 	} else {
-		tm->tm_min += time_interval;
+		tm.tm_min += time_interval;
 	}
-	strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", &tm);
 	time_string = g_strdup (t_str);
 
 	e_cal_backend_cache_put_server_utc_time (cache, time_string);

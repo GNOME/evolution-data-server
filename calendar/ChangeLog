@@ -1,3 +1,10 @@
+2006-05-29  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Use gmtime_r instead of gmtime as the latter returns a pointer to
+	transient data and hence not reliable. Reduce t_str allocation to
+	26 bytes (see: man ctime).
+
 2006-05-25  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes #342102
