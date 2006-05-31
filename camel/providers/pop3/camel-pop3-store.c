@@ -214,7 +214,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, _("STLS not supported"));
+				      service->url->host, _("STLS not supported by server"));
 		goto stls_exception;
 	}
 	
@@ -241,13 +241,13 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (ret == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, _("SSL negotiations failed"));
+				      service->url->host, _("TLS negotiations failed"));
 		goto stls_exception;
 	}
 #else
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			      _("Failed to connect to POP server %s in secure mode: %s"),
-			      service->url->host, _("SSL is not available in this build"));
+			      service->url->host, _("TLS is not available in this build"));
 	goto stls_exception;
 #endif /* HAVE_SSL */
 	
