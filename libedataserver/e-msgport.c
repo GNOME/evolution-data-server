@@ -70,7 +70,13 @@ static int
 e_pipe (int *fds)
 {
 #ifndef G_OS_WIN32
-	return pipe (fds);
+	if (pipe (fds) != -1)
+		return 0;
+	
+	fds[0] = -1;
+	fds[1] = -1;
+	
+	return -1;
 #else
 	SOCKET temp, socket1 = -1, socket2 = -1;
 	struct sockaddr_in saddr;
@@ -180,8 +186,11 @@ out1:
 	closesocket (socket1);
 out0:
 	closesocket (temp);
-	errno = EIO;		/* XXX */
-
+	errno = EMFILE;		/* FIXME: use the real syscall errno? */
+	
+	fds[0] = -1;
+	fds[1] = -1;
+	
 	return -1;
 
 #endif
@@ -487,15 +496,38 @@ struct _EMsgPort {
 		} fd;
 	} pipe;
 #ifdef HAVE_NSS
-	struct {
-		PRFileDesc *read;
-		PRFileDesc *write;
+	union {
+		PRFileDesc *pipe[2];
+		struct {
+			PRFileDesc *read;
+			PRFileDesc *write;
+		} fd;
 	} prpipe;
 #endif
 	/* @#@$#$ glib stuff */
 	GCond *cond;
 	GMutex *lock;
 };
+
+
+#ifdef HAVE_NSS
+static int
+e_prpipe (PRFileDesc **fds)
+{
+#ifdef G_OS_WIN32
+	if (PR_NewTCPSocketPair (fds) != PR_FAILURE)
+		return 0;
+#else
+	if (PR_CreatePipe (&fds[0], &fds[1]) != PR_FAILURE)
+		return 0;
+#endif
+	
+	fds[0] = NULL;
+	fds[1] = NULL;
+	
+	return -1;
+}
+#endif
 
 EMsgPort *e_msgport_new(void)
 {
@@ -505,11 +537,9 @@ EMsgPort *e_msgport_new(void)
 	e_dlist_init(&mp->queue);
 	mp->lock = g_mutex_new();
 	mp->cond = g_cond_new();
-	mp->pipe.fd.read = -1;
-	mp->pipe.fd.write = -1;
+	e_pipe (mp->pipe.pipe);
 #ifdef HAVE_NSS
-	mp->prpipe.read = NULL;
-	mp->prpipe.write = NULL;
+	e_prpipe (mp->prpipe.pipe);
 #endif
 	mp->condwait = 0;
 
@@ -525,9 +555,9 @@ void e_msgport_destroy(EMsgPort *mp)
 		E_CLOSE(mp->pipe.fd.write);
 	}
 #ifdef HAVE_NSS
-	if (mp->prpipe.read) {
-		PR_Close(mp->prpipe.read);
-		PR_Close(mp->prpipe.write);
+	if (mp->prpipe.fd.read) {
+		PR_Close(mp->prpipe.fd.read);
+		PR_Close(mp->prpipe.fd.write);
 	}
 #endif
 	g_free(mp);
@@ -536,40 +566,13 @@ void e_msgport_destroy(EMsgPort *mp)
 /* get a fd that can be used to wait on the port asynchronously */
 int e_msgport_fd(EMsgPort *mp)
 {
-	int fd;
-
-	g_mutex_lock(mp->lock);
-	fd = mp->pipe.fd.read;
-	if (fd == -1) {
-		e_pipe(mp->pipe.pipe);
-		fd = mp->pipe.fd.read;
-	}
-	g_mutex_unlock(mp->lock);
-
-	return fd;
+	return mp->pipe.fd.read;
 }
 
 #ifdef HAVE_NSS
 PRFileDesc *e_msgport_prfd(EMsgPort *mp)
 {
-	PRFileDesc *fd;
-
-	g_mutex_lock(mp->lock);
-	fd = mp->prpipe.read;
-	if (fd == NULL) {
-#ifdef G_OS_WIN32
-		PRFileDesc *fds[2];
-		PR_NewTCPSocketPair (fds);
-		mp->prpipe.read = fds[0];
-		mp->prpipe.write = fds[1];
-#else
-		PR_CreatePipe(&mp->prpipe.read, &mp->prpipe.write);
-#endif
-		fd = mp->prpipe.read;
-	}
-	g_mutex_unlock(mp->lock);
-
-	return fd;
+	return mp->prpipe.fd.read;
 }
 #endif
 
@@ -579,7 +582,7 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 #ifdef HAVE_NSS
 	PRFileDesc *prfd;
 #endif
-
+	
 	m(printf("put:\n"));
 	g_mutex_lock(mp->lock);
 	e_dlist_addtail(&mp->queue, &msg->ln);
@@ -587,9 +590,10 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 		m(printf("put: condwait > 0, waking up\n"));
 		g_cond_signal(mp->cond);
 	}
+	
 	fd = mp->pipe.fd.write;
 #ifdef HAVE_NSS
-	prfd = mp->prpipe.write;
+	prfd = mp->prpipe.fd.write;
 #endif
 	g_mutex_unlock(mp->lock);
 
@@ -626,7 +630,7 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			fd_set rfds;
 			int retry;
 
-			m(printf("wait: waitng on pipe\n"));
+			m(printf("wait: waiting on pipe\n"));
 			g_mutex_unlock(mp->lock);
 			do {
 				FD_ZERO(&rfds);
@@ -637,14 +641,14 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			g_mutex_lock(mp->lock);
 			m(printf("wait: got pipe\n"));
 #ifdef HAVE_NSS
-		} else if (mp->prpipe.read != NULL) {
+		} else if (mp->prpipe.fd.read != NULL) {
 			PRPollDesc polltable[1];
 			int retry;
 
 			m(printf("wait: waitng on pr pipe\n"));
 			g_mutex_unlock(mp->lock);
 			do {
-				polltable[0].fd = mp->prpipe.read;
+				polltable[0].fd = mp->prpipe.fd.read;
 				polltable[0].in_flags = PR_POLL_READ|PR_POLL_ERR;
 				retry = PR_Poll(polltable, 1, PR_INTERVAL_NO_TIMEOUT) == -1 && PR_GetError() == PR_PENDING_INTERRUPT_ERROR;
 				pthread_testcancel();
@@ -681,9 +685,9 @@ EMsg *e_msgport_get(EMsgPort *mp)
 		if (mp->pipe.fd.read != -1)
 			E_READ(mp->pipe.fd.read, dummy, 1);
 #ifdef HAVE_NSS
-		if (mp->prpipe.read != NULL) {
+		if (mp->prpipe.fd.read != NULL) {
 			int c;
-			c = PR_Read(mp->prpipe.read, dummy, 1);
+			c = PR_Read(mp->prpipe.fd.read, dummy, 1);
 			g_assert(c == 1);
 		}
 #endif
