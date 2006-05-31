@@ -1,3 +1,18 @@
+2006-05-31  Jeffrey Stedfast  <fejj@novell.com>
+
+	Hopeful fix for Novell bug #176277
+
+	* libedataserver/e-msgport.c: Changed the structure of EMsgPort
+	slightly to make ::prpipe a union more like ::pipe.
+	(e_pipe): For convenience, on error set the fds each to -1.
+	(e_prpipe): New convenience function much like e_pipe but for
+	PRFileDescs.
+	(e_msgport_new): Always create the pipes here now instead of
+	creating them on demand.
+	(e_msgport_fd): Simply return the pipe fd (no longer creates the
+	pipe on demand).
+	(e_msgport_prfd): Same.
+
 2006-05-24  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* configure.in: Added gnome-vfs-2.0 to camel library
