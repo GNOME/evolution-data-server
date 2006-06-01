@@ -1,3 +1,11 @@
+2006-06-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	* libedataserver/e-msgport.c (e_msgport_get): Loop the reads
+	checking errno for EINTR.
+	(e_msgport_put): Loop the writes checking for EINTR. Also, instead
+	of writing a nul-char, write 'E' as suggested by Michael Meeks for
+	easier strace debugging purposes.
+
 2006-05-31  Jeffrey Stedfast  <fejj@novell.com>
 
 	Hopeful fix for Novell bug #176277
