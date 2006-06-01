@@ -578,10 +578,11 @@ PRFileDesc *e_msgport_prfd(EMsgPort *mp)
 
 void e_msgport_put(EMsgPort *mp, EMsg *msg)
 {
-	int fd;
 #ifdef HAVE_NSS
 	PRFileDesc *prfd;
 #endif
+	ssize_t w;
+	int fd;
 	
 	m(printf("put:\n"));
 	g_mutex_lock(mp->lock);
@@ -599,13 +600,17 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 
 	if (fd != -1) {
 		m(printf("put: have pipe, writing notification to it\n"));
-		E_WRITE(fd, "", 1);
+		do {
+			w = E_WRITE (fd, "E", 1);
+		} while (w == -1 && errno == EINTR);
 	}
 
 #ifdef HAVE_NSS
 	if (prfd != NULL) {
 		m(printf("put: have pr pipe, writing notification to it\n"));
-		PR_Write(prfd, "", 1);
+		do {
+			w = PR_Write (prfd, "E", 1);
+		} while (w == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
 	}
 #endif
 	m(printf("put: done\n"));
@@ -642,15 +647,15 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			m(printf("wait: got pipe\n"));
 #ifdef HAVE_NSS
 		} else if (mp->prpipe.fd.read != NULL) {
-			PRPollDesc polltable[1];
+			PRPollDesc rfds[1];
 			int retry;
 
 			m(printf("wait: waitng on pr pipe\n"));
 			g_mutex_unlock(mp->lock);
 			do {
-				polltable[0].fd = mp->prpipe.fd.read;
-				polltable[0].in_flags = PR_POLL_READ|PR_POLL_ERR;
-				retry = PR_Poll(polltable, 1, PR_INTERVAL_NO_TIMEOUT) == -1 && PR_GetError() == PR_PENDING_INTERRUPT_ERROR;
+				rfds[0].fd = mp->prpipe.fd.read;
+				rfds[0].in_flags = PR_POLL_READ|PR_POLL_ERR;
+				retry = PR_Poll(rfds, 1, PR_INTERVAL_NO_TIMEOUT) == -1 && PR_GetError() == PR_PENDING_INTERRUPT_ERROR;
 				pthread_testcancel();
 			} while (retry);
 			g_mutex_lock(mp->lock);
@@ -678,17 +683,21 @@ EMsg *e_msgport_get(EMsgPort *mp)
 {
 	EMsg *msg;
 	char dummy[1];
-
+	ssize_t n;
+	
 	g_mutex_lock(mp->lock);
 	msg = (EMsg *)e_dlist_remhead(&mp->queue);
 	if (msg) {
-		if (mp->pipe.fd.read != -1)
-			E_READ(mp->pipe.fd.read, dummy, 1);
+		if (mp->pipe.fd.read != -1) {
+			do {
+				n = E_READ (mp->pipe.fd.read, dummy, 1);
+			} while (n == -1 && errno == EINTR);
+		}
 #ifdef HAVE_NSS
 		if (mp->prpipe.fd.read != NULL) {
-			int c;
-			c = PR_Read(mp->prpipe.fd.read, dummy, 1);
-			g_assert(c == 1);
+			do {
+				n = PR_Read (mp->prpipe.fd.read, dummy, 1);
+			} while (n == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
 		}
 #endif
 	}
