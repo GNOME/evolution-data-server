@@ -1,3 +1,9 @@
+2006-06-01  Tor Lillqvist  <tml@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: #define gmtime_r
+	on Win32. Really should have this code snippet in just one place
+	in some header.
+
 2006-05-29  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
