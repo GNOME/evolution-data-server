@@ -591,7 +591,7 @@ camel_read_socket (int fd, char *buf, size_t n)
  * @n: number of bytes of @buf to write
  *
  * Cancellable write() replacement for sockets. Code that intends to
- * be portable to Win32 should call this funcion only on sockets
+ * be portable to Win32 should call this function only on sockets
  * returned from socket() or accept().
  *
  * Returns number of bytes written or -1 on fail. On failure, errno will
