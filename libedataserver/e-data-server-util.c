@@ -354,6 +354,15 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 		ff = c;
 	}
 
+#ifdef G_OS_WIN32
+	/* The Microsoft strftime() doesn't have %e either */
+	ff = ffmt;
+	while ((c = strstr(ff, "%e")) != NULL) {
+		c[1] = 'd';
+		ff = c;
+	}
+#endif
+
 	ret = strftime(s, max, ffmt, tm);
 	g_free(ffmt);
 	return ret;

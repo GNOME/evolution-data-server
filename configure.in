@@ -335,9 +335,10 @@ int main(int argc, char **argv)
 
 	time(&rawtime);
 	timeinfo=localtime(&rawtime);
+	buf[0] = '\0';
 	strftime(buf, 10, "%l %k", timeinfo);
 
-	if (strstr(buf, "l") || strstr(buf, "k"))
+	if (buf[0] == '\0' || buf[0] == ' ' || strstr(buf, "l") || strstr(buf, "k"))
 		exit(1);
 	else
 		exit(0);
