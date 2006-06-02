@@ -1,3 +1,15 @@
+2006-06-02  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Catch more failure modes of strftime() when
+	presented with conversion specifications %l and %k: On Windows,
+	these just do nothing, you don't get a 'l' or 'k' in the result,
+	which was all we used to test for here. Catch also if strftime()
+	does nothing at all when presented with a format containing
+	unsupported conversion specifications.
+
+	* libedataserver/e-data-server-util.c (e_strftime): The Microsoft
+	strftime() doesn't have %e either.
+
 2006-06-01  Jeffrey Stedfast  <fejj@novell.com>
 
 	* libedataserver/e-msgport.c (e_msgport_get): Loop the reads
