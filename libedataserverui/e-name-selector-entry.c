@@ -46,6 +46,14 @@
 
 G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY);
 
+typedef struct _ENameSelectorEntryPrivate	ENameSelectorEntryPrivate;
+struct _ENameSelectorEntryPrivate
+{
+	gboolean is_completing;
+};
+
+#define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate))
+
 static void e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_class);
 static void e_name_selector_entry_init       (ENameSelectorEntry *name_selector_entry);
 static void e_name_selector_entry_dispose    (GObject *object);
@@ -117,6 +125,7 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_c
 
 	/* Install signals */
 
+	g_type_class_add_private (object_class, sizeof(ENameSelectorEntryPrivate));
 }
 
 /* Remove unquoted commas from string */
@@ -729,6 +738,9 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 	const gchar   *text;
 	gchar         *cue_str;
 	gchar         *temp_str;
+	ENameSelectorEntryPrivate *priv;
+
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
 	if (cursor_pos < 0)
@@ -767,6 +779,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), textrep, -1, &pos);
 		gtk_editable_select_region (GTK_EDITABLE (name_selector_entry), range_end,
 					    range_start + textrep_len);
+		priv->is_completing = TRUE;
 	}
 
 	if (contact && destination) {
@@ -790,10 +803,15 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 static void
 clear_completion_model (ENameSelectorEntry *name_selector_entry)
 {
+	ENameSelectorEntryPrivate *priv;
+
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
+
 	if (!name_selector_entry->contact_store)
 		return;
 
 	e_contact_store_set_query (name_selector_entry->contact_store, NULL);
+	priv->is_completing = FALSE;
 }
 
 static void
@@ -1277,6 +1295,9 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	gint         cursor_pos;
 	gint         range_start, range_end;
 	const gchar *text;
+	ENameSelectorEntryPrivate *priv;
+
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	/* Show us what's really there */
 
@@ -1288,13 +1309,30 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
+	
+	priv->is_completing = FALSE;
+}
+
+static gboolean
+user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
+{
+	/*
+	 * To preserve selected text, do not propagate the event any more. 
+	 */
+
+	return TRUE;
 }
 
 static gboolean
 user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
 {
-	if (!event_focus->in)
+	ENameSelectorEntryPrivate *priv;
+
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
+
+	if (!event_focus->in && priv->is_completing) {
 		entry_activate (name_selector_entry);
+	}
 
 	clear_completion_model (name_selector_entry);
 
@@ -2026,6 +2064,9 @@ static void
 e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
   GtkCellRenderer *renderer;
+  ENameSelectorEntryPrivate *priv;
+
+  priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
   /* Source list */
 
@@ -2039,6 +2080,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
   g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
   g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
+  g_signal_connect_after (name_selector_entry, "focus-in-event", G_CALLBACK (user_focus_in), name_selector_entry);
 
   /* Exposition */
 
@@ -2079,6 +2121,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   name_selector_entry->destination_store = e_destination_store_new ();
   setup_destination_store (name_selector_entry);
+  priv->is_completing = FALSE;
 }
 
 /**

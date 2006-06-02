@@ -1,3 +1,20 @@
+2006-06-02  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	** Fixes bug 322239
+	* e-name-selector-entry.c: ENameSelectorEntryPrivate: New structure
+	for private values. There is still only one value, is_completing.
+	(user_focus_in): New function.
+	Stop the event propagation.
+	(type_ahead_complete): Set is_completing to TRUE if address completion
+	has done.
+	(clear_completion_model): Set is_completing to FALSE.
+	(entry_activate): Set is_completing to FALSE.
+	(user_focus_init): Call entry_activate if only focus_in and
+	is_compliting.
+	(e_name_selector_entry_init): Connect to focus-in-event with
+	g_signal_connect_after.
+	Set is_completing to TRUE. It's initial state.
+
 2006-04-26  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-passwords.c: (ep_clear_passwords), (ep_forget_passwords),
