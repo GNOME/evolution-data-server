@@ -352,6 +352,9 @@ camel_file_util_safe_filename (const char *name)
  *
  * Cancellable libc read() replacement.
  *
+ * Code that intends to be portable to Win32 should call this function
+ * only on file descriptors returned from open(), not on sockets.
+ *
  * Returns number of bytes read or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
@@ -426,6 +429,9 @@ camel_read (int fd, char *buf, size_t n)
  * @n: number of bytes of @buf to write
  *
  * Cancellable libc write() replacement.
+ *
+ * Code that intends to be portable to Win32 should call this function
+ * only on file descriptors returned from open(), not on sockets.
  *
  * Returns number of bytes written or -1 on fail. On failure, errno will
  * be set appropriately.
@@ -514,7 +520,7 @@ camel_write (int fd, const char *buf, size_t n)
  * @n: number of bytes to read into @buf
  *
  * Cancellable read() replacement for sockets. Code that intends to be
- * portable to Win32 should call camel_read_socket() only on sockets
+ * portable to Win32 should call this function only on sockets
  * returned from socket(), or accept().
  *
  * Returns number of bytes read or -1 on fail. On failure, errno will
@@ -585,7 +591,7 @@ camel_read_socket (int fd, char *buf, size_t n)
  * @n: number of bytes of @buf to write
  *
  * Cancellable write() replacement for sockets. Code that intends to
- * be portable to Win32 should call camel_write() only on sockets
+ * be portable to Win32 should call this function only on sockets
  * returned from socket() or accept().
  *
  * Returns number of bytes written or -1 on fail. On failure, errno will
