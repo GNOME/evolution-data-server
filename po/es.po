@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-2.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-31 16:03+0200\n"
-"PO-Revision-Date: 2006-05-31 16:03+0200\n"
+"POT-Creation-Date: 2006-06-03 20:53+0200\n"
+"PO-Revision-Date: 2006-06-03 20:55+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -3122,13 +3122,11 @@ msgstr "No se soporta STARTTLS"
 
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
-#: ../camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
 msgstr "Falló la negociación SSL"
 
 #: ../camel/providers/imap/camel-imap-store.c:727
 #: ../camel/providers/imap4/camel-imap4-store.c:330
-#: ../camel/providers/pop3/camel-pop3-store.c:250
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "No se soporta SSL en esta compilación"
@@ -4278,8 +4276,16 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Se produjo un fallo al conectar al servidor POP %s en modo seguro: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:217
-msgid "STLS not supported"
-msgstr "No se soporta STLS"
+msgid "STLS not supported by server"
+msgstr "El servidor no soporta STLS"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:244
+msgid "TLS negotiations failed"
+msgstr "Falló la negociación TLS"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:250
+msgid "TLS is not available in this build"
+msgstr "No se soporta TLS en esta compilación"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
@@ -4967,13 +4973,13 @@ msgid "_Search:"
 msgstr "_Buscar:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1997
+#: ../libedataserverui/e-name-selector-entry.c:2035
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s en línea"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2013
+#: ../libedataserverui/e-name-selector-entry.c:2051
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
