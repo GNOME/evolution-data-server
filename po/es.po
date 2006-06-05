@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server-2.16\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-06-03 20:53+0200\n"
-"PO-Revision-Date: 2006-06-03 20:55+0200\n"
+"PO-Revision-Date: 2006-06-05 15:58+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2661,7 +2661,7 @@ msgstr "La papelera está llena. Por favor vacíela."
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr "Obteniendo información de los nuevos mensajes en %s"
+msgstr "Obteniendo información de los mensajes nuevos en %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1818
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1866
@@ -3466,7 +3466,7 @@ msgstr "Buscando mensajes modificados"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr "Obteniendo sobres de mensajes nuevos"
+msgstr "Obteniendo sobres para los mensajes nuevos"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
