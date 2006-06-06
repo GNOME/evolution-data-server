@@ -178,9 +178,8 @@ groupwise_send_to (CamelTransport *transport,
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 		return FALSE;
 	}
-
-
-	item = camel_groupwise_util_item_from_message (cnc, message, from, recipients);
+	
+	item = camel_groupwise_util_item_from_message (cnc, message, from);
 	
 	reply_request = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
 	if (reply_request) {
