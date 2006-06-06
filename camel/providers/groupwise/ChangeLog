@@ -1,3 +1,25 @@
+2006-06-06  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fixes for Novell bug #173454
+
+	* camel-groupwise-utils.c (add_recipients): Changed to be an
+	internal function.
+	(send_as_attachment): No longer takes 'buffer' nor 'encoding'
+	arguments. Changed the code to use the camel content-id/message-id
+	parsers rather than home-brew blocks of code to do it. Instead of
+	strcmp'ing mime types, use the camel_content_type_is() function
+	which simplifies things a bit.
+	(camel_groupwise_util_item_from_message): No longer takes a
+	recipients list argument as this function extracted that info from
+	the CamelMimeMessage object anyway. Do charset conversion for
+	text/plain parts.
+
+	* camel-groupwise-folder.c (groupwise_append_message): Don't pass
+	to/cc/bcc recpients to camel_groupwise_util_item_from_message() as
+	it no longer takes those arguments.
+
+	* camel-groupwise-transport.c (groupwise_send_to): Same.
+
 2006-05-23  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_refresh_folder)

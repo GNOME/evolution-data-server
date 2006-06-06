@@ -1802,7 +1802,6 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
-	CamelAddress *recipients;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	EGwItem *item;
@@ -1829,14 +1828,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
 	/*Get the container id*/
 	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
-
-	/* FIXME Separate To/CC/BCC? */
-	recipients = CAMEL_ADDRESS (camel_internet_address_new ());
-	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO)));
-	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC)));
-	camel_address_cat (recipients, CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC)));
-
-	item = camel_groupwise_util_item_from_message (cnc, message, CAMEL_ADDRESS (message->from), recipients);
+	
+	item = camel_groupwise_util_item_from_message (cnc, message, CAMEL_ADDRESS (message->from));
 	/*Set the source*/
 	if (!strcmp (folder->name, RECEIVED))
 		e_gw_item_set_source (item, "received");
