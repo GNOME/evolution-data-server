@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.4.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-27 13:16+0200\n"
-"PO-Revision-Date: 2006-05-27 13:17+0200\n"
+"POT-Creation-Date: 2006-06-07 11:20+0200\n"
+"PO-Revision-Date: 2006-06-07 11:21+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1132,7 +1132,7 @@ msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
 #: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
@@ -2649,13 +2649,13 @@ msgstr "Papirkurven er full. Vennligst tøm den."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1817
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1821
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1863
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan ikke legge til melding i mappe «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1851
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke opprette melding: %s"
@@ -2808,7 +2808,7 @@ msgstr "GroupWise e-postlevering via %s"
 msgid "Sending Message"
 msgstr "Sender melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:216
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2818,7 +2818,7 @@ msgstr ""
 "i utboksen. Send på nytt ved å trykke send/motta etter å ha slettet eller "
 "arkivert noen meldinger.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -3098,13 +3098,11 @@ msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
-#: ../camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
 #: ../camel/providers/imap/camel-imap-store.c:727
 #: ../camel/providers/imap4/camel-imap4-store.c:330
-#: ../camel/providers/pop3/camel-pop3-store.c:250
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "SSL er ikke støttet i denne versjonen"
@@ -4239,8 +4237,16 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til POP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:217
-msgid "STLS not supported"
-msgstr "STLS er ikke støttet"
+msgid "STLS not supported by server"
+msgstr "STLS er ikke støttet av tjeneren"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:244
+msgid "TLS negotiations failed"
+msgstr "TLS-forhandling feilet"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:250
+msgid "TLS is not available in this build"
+msgstr "TLS er ikke støttet i denne versjonen"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
@@ -4927,13 +4933,13 @@ msgid "_Search:"
 msgstr "_Søk:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1975
+#: ../libedataserverui/e-name-selector-entry.c:2013
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Ut_vid %s i oppføringen"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1991
+#: ../libedataserverui/e-name-selector-entry.c:2029
 #, c-format
 msgid "_Edit %s"
 msgstr "_Rediger %s"
@@ -4944,12 +4950,10 @@ msgid "_Delete %s"
 msgstr "_Slett %s"
 
 #: ../libedataserverui/e-passwords.c:810
-#, fuzzy
 msgid "_Remember this passphrase"
 msgstr "Husk dette passo_rdet"
 
 #: ../libedataserverui/e-passwords.c:811
-#, fuzzy
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "Husk dette passo_rdet for resten av denne sesjonen"
 
