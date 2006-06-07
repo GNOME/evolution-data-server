@@ -1,3 +1,8 @@
+2006-06-07  Frederic Peters  <fpeters@0d.be>
+
+	* configure.in: Assume strftime() is ok and supports %l and %k when
+	running in cross-compilation mode.
+
 2006-06-02  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Catch more failure modes of strftime() when

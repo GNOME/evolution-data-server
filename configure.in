@@ -345,7 +345,10 @@ int main(int argc, char **argv)
 }],[
 AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k])
 ac_cv_lkstrftime=yes
-],ac_cv_lkstrftime=no,ac_cv_lkstrftime=no])
+],ac_cv_lkstrftime=no,ac_cv_lkstrftime=no,[
+AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k])
+ac_cv_lkstrftime=yes
+])
 AC_MSG_RESULT($ac_cv_lkstrftime)
 
 dnl ********************************************************************************
