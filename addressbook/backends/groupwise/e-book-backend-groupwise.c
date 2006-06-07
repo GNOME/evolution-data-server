@@ -22,13 +22,16 @@
  */
 
 #include <config.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
+#include "db.h"
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -36,12 +39,13 @@
 
 #include "libedataserver/e-sexp.h"
 #include "libedataserver/e-data-server-util.h"
+#include "libedataserver/e-db3-utils.h"
 #include "libedataserver/e-url.h" 
 #include "libebook/e-contact.h"
 #include "libedata-book/e-book-backend-sexp.h"
 #include "libedata-book/e-data-book.h"
 #include "libedata-book/e-data-book-view.h"
-#include "libedata-book/e-book-backend-cache.h"
+#include "libedata-book/e-book-backend-db-cache.h"
 #include "libedata-book/e-book-backend-summary.h"
 #include "e-book-backend-groupwise.h"
 
@@ -68,14 +72,20 @@ struct _EBookBackendGroupwisePrivate {
 	char *use_ssl;
 	int mode;
 	int cache_timeout;
-	EBookBackendCache *cache;
 	EBookBackendSummary *summary;
+	GMutex *update_cache_mutex;
 	GMutex *update_mutex;
+	DB     *file_db;
+	DB_ENV *env;
 	/* for future use */
 	void *reserved1;
-	void *reserved2;
-	void *reserved3;
 };
+
+static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
+static struct {
+	int ref_count;
+	DB_ENV *env;
+} global_env;
 
 #define ELEMENT_TYPE_SIMPLE 0x01
 #define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
@@ -919,7 +929,7 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 			e_contact_set (contact, E_CONTACT_FULL_NAME, organization_name);
 			/* book uri is always set outside fill_contact_from_gw_item() */
 			e_contact_set (contact, E_CONTACT_BOOK_URI, egwb->priv->original_uri);
-			e_book_backend_cache_add_contact (egwb->priv->cache, contact);
+			e_book_backend_db_cache_add_contact (egwb->priv->file_db, contact);
 			e_book_backend_summary_add_contact (egwb->priv->summary, contact);
 			g_object_unref (contact);
 		}
@@ -1159,7 +1169,8 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		if (status == E_GW_CONNECTION_STATUS_OK && id) {
 			e_contact_set (contact, E_CONTACT_UID, id);
 			g_free (id);
-			e_book_backend_cache_add_contact (egwb->priv->cache, contact);
+			e_book_backend_db_cache_add_contact (egwb->priv->file_db, contact);
+			egwb->priv->file_db->sync(egwb->priv->file_db, 0);
 			e_book_backend_summary_add_contact (egwb->priv->summary, contact);
 			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_Success, contact);
 			
@@ -1210,9 +1221,10 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 			id = (char*) id_list->data;
 			e_gw_connection_remove_item (ebgw->priv->cnc, ebgw->priv->container_id, id);
 			deleted_ids =  g_list_append (deleted_ids, id);
-			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+			e_book_backend_db_cache_remove_contact (ebgw->priv->file_db, id);
 			e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 		}
+		ebgw->priv->file_db->sync(ebgw->priv->file_db, 0);
 		e_data_book_respond_remove_contacts (book, opid,
 						     GNOME_Evolution_Addressbook_Success,  deleted_ids);
 		return;
@@ -1345,9 +1357,10 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		status = e_gw_connection_modify_item (egwb->priv->cnc, id, new_item);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_Success, contact);
-			e_book_backend_cache_remove_contact (egwb->priv->cache, id);
+			e_book_backend_db_cache_remove_contact (egwb->priv->file_db, id);
 			e_book_backend_summary_remove_contact (egwb->priv->summary, id);
-			e_book_backend_cache_add_contact (egwb->priv->cache, contact);
+			e_book_backend_db_cache_add_contact (egwb->priv->file_db, contact);
+			egwb->priv->file_db->sync(egwb->priv->file_db, 0);
 			e_book_backend_summary_add_contact (egwb->priv->summary, contact);
 		}
 		else 
@@ -1381,7 +1394,7 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 	switch (gwb->priv->mode) {
 
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
-		contact = e_book_backend_cache_get_contact (gwb->priv->cache, id);
+		contact = e_book_backend_db_cache_get_contact (gwb->priv->file_db, id);
 		vcard =  e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 		if (contact) {
 			e_data_book_respond_get_contact(book, opid, GNOME_Evolution_Addressbook_Success, vcard);
@@ -1836,14 +1849,14 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				char *uid = g_ptr_array_index (ids, i);
 
 				EContact *contact = 
-					e_book_backend_cache_get_contact (egwb->priv->cache, uid);
+					e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 				contacts = g_list_append (contacts, contact);	
 				g_object_unref (contact);
 			}
 			g_ptr_array_free (ids, TRUE);
 		}
 		else
-			contacts = e_book_backend_cache_get_contacts (egwb->priv->cache, query);
+			contacts = e_book_backend_db_cache_get_contacts (egwb->priv->file_db, query);
 
 		temp = contacts;
 		for (; contacts != NULL; contacts = g_list_next(contacts)) { 
@@ -1882,7 +1895,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 					int i;
 					for (i = 0; i < ids->len; i ++) {
 						char *uid = g_ptr_array_index (ids, i);
-						contact = e_book_backend_cache_get_contact (egwb->priv->cache, uid);
+						contact = e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 						vcard_list = g_list_append (vcard_list,
                                                             e_vcard_to_string (E_VCARD (contact),
                                                             EVC_FORMAT_VCARD_30));
@@ -1893,7 +1906,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				}
 			}
 			else {
-				ids = e_book_backend_cache_search (egwb->priv->cache, query);
+				ids = e_book_backend_db_cache_search (egwb->priv->file_db, query);
 			}
 
 			if (ids->len > 0) {
@@ -2001,7 +2014,7 @@ get_closure (EDataBookView *book_view)
 }
 
 static void
-get_contacts_from_cache (EBookBackendGroupwisePrivate *priv, 
+get_contacts_from_cache (EBookBackendGroupwise *ebgw, 
 			 const char *query,
 			 GPtrArray *ids,
 			 EDataBookView *book_view, 
@@ -2023,9 +2036,11 @@ get_contacts_from_cache (EBookBackendGroupwisePrivate *priv,
 			break;	
 
 		EContact *contact = 
-			e_book_backend_cache_get_contact (priv->cache, uid);
-		e_data_book_view_notify_update (book_view, contact);
-		g_object_unref (contact);
+			e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
+		if (contact) {
+			e_data_book_view_notify_update (book_view, contact);
+			g_object_unref (contact);
+		}
 	}
 	if (!stopped)
 		e_data_book_view_notify_complete (book_view, 
@@ -2067,7 +2082,7 @@ book_view_thread (gpointer data)
 	switch (gwb->priv->mode) {
 
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
-		if (!gwb->priv->cache) {
+		if (!gwb->priv->file_db) {
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 			return NULL;
 		}
@@ -2078,7 +2093,7 @@ book_view_thread (gpointer data)
 				printf ("reading the uids from summary \n");
 			ids = e_book_backend_summary_search (gwb->priv->summary, query);
 			if (ids && ids->len > 0) {
-				get_contacts_from_cache (gwb->priv, query, ids, book_view, closure);
+				get_contacts_from_cache (gwb, query, ids, book_view, closure);
 				g_ptr_array_free (ids, TRUE);
 			}
 			bonobo_object_unref (book_view);
@@ -2088,7 +2103,7 @@ book_view_thread (gpointer data)
 		/* fall back to cache */
 		if (enable_debug)
 			printf ("summary not found, reading the uids from cache\n");
-		contacts = e_book_backend_cache_get_contacts (gwb->priv->cache, query);
+		contacts = e_book_backend_db_cache_get_contacts (gwb->priv->file_db, query);
 		temp_list = contacts;
 		for (; contacts != NULL; contacts = g_list_next(contacts)) {
 			g_mutex_lock (closure->mutex);
@@ -2170,7 +2185,7 @@ book_view_thread (gpointer data)
 				if (!is_auto_completion)
 					e_data_book_view_notify_status_message (book_view, 
 										_("Searching..."));
-				get_contacts_from_cache (gwb->priv, query, ids, book_view, closure);
+				get_contacts_from_cache (gwb, query, ids, book_view, closure);
 				g_ptr_array_free (ids, TRUE);
 				bonobo_object_unref (book_view);
 				if (enable_debug) {
@@ -2353,35 +2368,110 @@ find_book_view (EBookBackendGroupwise *ebgw)
 	return rv;
 }
 
+static void 
+get_sequence_from_cache (DB *db,
+		gdouble *cache_first_sequence,
+		gdouble *cache_last_sequence,
+		gdouble *cache_last_po_rebuild_time)
+{
+	DBT uid_dbt, vcard_dbt;
+	int db_error;
+
+	string_to_dbt ("firstSequence", &uid_dbt);
+	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->get failed with %d", db_error);
+	}
+	else {
+		*cache_first_sequence = strtod (g_strdup (vcard_dbt.data), NULL);
+		g_free (vcard_dbt.data);
+	}
+	
+	string_to_dbt ("lastSequence", &uid_dbt);
+	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->get failed with %d", db_error);
+	}
+	else {
+		*cache_last_sequence = strtod (g_strdup (vcard_dbt.data), NULL);
+		g_free (vcard_dbt.data);
+	}
+
+	string_to_dbt ("lastTimePORebuild", &uid_dbt);
+	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->get failed with %d", db_error);
+	}
+	else {
+		*cache_last_po_rebuild_time = strtod (g_strdup (vcard_dbt.data), NULL);
+		g_free (vcard_dbt.data);
+	}
+
+	if (enable_debug) {
+		printf("Read sequences from cache\n");
+		printf("firstSequence:%lf, lastSequence:%lf, lastPoRebuildTime:%lf\n", *cache_first_sequence, *cache_last_sequence, *cache_last_po_rebuild_time);
+	}
+		
+}
 static void
-add_sequence_to_cache (EBookBackendCache *cache, 
+add_sequence_to_cache (DB *db, 
 		       gdouble first_sequence,
 		       gdouble last_sequence,
 		       gdouble last_po_rebuild_time)
 {
 		gchar *tmp;
+		DBT   uid_dbt, vcard_dbt;
+		int db_error;
 
-		/* This is the system address book. Let try add the sequence to maintain deltas */
+		if (enable_debug) {
+			printf("Adding sequences to cache\n");
+			printf("firstSequence:%lf, lastSequence:%lf, lastPoRebuildTime:%lf\n", first_sequence, last_sequence, last_po_rebuild_time);
+		}
+
+		string_to_dbt ("firstSequence",&uid_dbt );
 		tmp = g_strdup_printf("%lf", first_sequence);
-		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "firstSequence"))	
-			e_file_cache_add_object (E_FILE_CACHE(cache), "firstSequence", tmp);
-		else
-			e_file_cache_replace_object (E_FILE_CACHE(cache), "firstSequence", tmp);	
+		string_to_dbt (tmp, &vcard_dbt);
+
+		db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
+
 		g_free (tmp);
 
+		if (db_error != 0) {
+			g_warning ("db->put failed with %d", db_error);
+		}
+
+		string_to_dbt ("lastSequence",&uid_dbt );
 		tmp = g_strdup_printf("%lf", last_sequence);
-		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastSequence"))
-			e_file_cache_add_object (E_FILE_CACHE(cache), "lastSequence", tmp);
-		else
-			e_file_cache_replace_object (E_FILE_CACHE(cache), "lastSequence", tmp);
+		string_to_dbt (tmp, &vcard_dbt);
+
+		db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
+
 		g_free (tmp);
+
+		if (db_error != 0) {
+			g_warning ("db->put failed with %d", db_error);
+		}
 		
+		string_to_dbt ("lastTimePORebuild",&uid_dbt );
 		tmp = g_strdup_printf("%lf", last_po_rebuild_time);
-		if (!e_file_cache_get_object (E_FILE_CACHE(cache), "lastTimePORebuild"))
-			e_file_cache_add_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
-		else
-			e_file_cache_replace_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
+		string_to_dbt (tmp, &vcard_dbt);
+
+		db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
+
 		g_free (tmp);
+
+		if (db_error != 0) {
+			g_warning ("db->put failed with %d", db_error);
+		}
 }
 
 #define CURSOR_ITEM_LIMIT 100
@@ -2473,7 +2563,6 @@ build_cache (EBookBackendGroupwise *ebgw)
 		}
 	}
 
-	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	while (!done) {
 
 		if (enable_debug) 
@@ -2495,7 +2584,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 			fill_contact_from_gw_item (contact, E_GW_ITEM (l->data), 
 						   ebgw->priv->categories_by_id);
 			e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
-			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 			e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 
 			/* Since we get contacts incrementally, 100 at a time, we can not
@@ -2515,7 +2604,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 			
 		}
 		if (!gw_items) {
-			e_book_backend_cache_set_populated (priv->cache);
+			e_book_backend_db_cache_set_populated (ebgw->priv->file_db);
 			done = TRUE;
 			priv->is_cache_ready=TRUE;
 			priv->is_summary_ready = TRUE;
@@ -2525,7 +2614,8 @@ build_cache (EBookBackendGroupwise *ebgw)
 		gw_items = NULL;
 		position = E_GW_CURSOR_POSITION_CURRENT;
 	}
-	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+
+	ebgw->priv->file_db->sync(ebgw->priv->file_db, 0);
 
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
@@ -2546,7 +2636,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 }
 
 static void
-build_summary (EBookBackendGroupwisePrivate *priv)
+build_summary (EBookBackendGroupwise *ebgw)
 {
 	gchar *query_string;
 	GList *contacts, *temp_list = NULL;
@@ -2556,7 +2646,7 @@ build_summary (EBookBackendGroupwisePrivate *priv)
 	if (enable_debug) {
 		g_get_current_time(&start);
 		printf ("summary file not found or not up-to-date, building summary for %s\n", 
-			priv->book_name);
+			ebgw->priv->book_name);
 	}
 
 	/* build summary from cache */
@@ -2564,23 +2654,23 @@ build_summary (EBookBackendGroupwisePrivate *priv)
 					"    (beginswith \"full_name\" \"\") "
 					"    (beginswith \"email\" \"\") "
 					"    (beginswith \"nickname\" \"\"))");
-	contacts = e_book_backend_cache_get_contacts (priv->cache, query_string);
+	contacts = e_book_backend_db_cache_get_contacts (ebgw->priv->file_db, query_string);
 	g_free (query_string);
 	temp_list = contacts;
 	for (; contacts != NULL; contacts = g_list_next(contacts)) {
-		e_book_backend_summary_add_contact (priv->summary, contacts->data);
+		e_book_backend_summary_add_contact (ebgw->priv->summary, contacts->data);
 		g_object_unref (contacts->data);
 	}
 	if (temp_list)
 		g_list_free (temp_list);
-	priv->is_summary_ready = TRUE;
+	ebgw->priv->is_summary_ready = TRUE;
 	
 	if (enable_debug) {
 		g_get_current_time(&end);
 		diff = end.tv_sec * 1000 + end.tv_usec/1000;
 		diff -= start.tv_sec * 1000 + start.tv_usec/1000;
 		printf("building summary for %s took %ld.%03ld seconds \n", 
-			priv->book_name, diff / 1000, diff % 1000);
+			ebgw->priv->book_name, diff / 1000, diff % 1000);
 	}
 }
 
@@ -2603,6 +2693,8 @@ update_cache (EBookBackendGroupwise *ebgw)
 
 	if (!ebgw)
 		return FALSE;
+	
+	g_mutex_lock (ebgw->priv->update_cache_mutex);
 
 	if (enable_debug) {
 		g_get_current_time(&start);
@@ -2620,7 +2712,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 		}
 	}
 
-	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
+	cache_file_name = e_book_backend_db_cache_get_filename(ebgw->priv->file_db);
 	g_stat (cache_file_name, &buf);
 	mod_time = buf.st_mtime;
 	tm = gmtime (&mod_time);
@@ -2629,7 +2721,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	if (e_book_backend_summary_load (ebgw->priv->summary) == FALSE || 
 	    e_book_backend_summary_is_up_to_date (ebgw->priv->summary, mod_time) == FALSE) {
 		/* build summary */
-		 build_summary (ebgw->priv);
+		 build_summary (ebgw);
 	}
 	
 	filter = e_gw_filter_new ();
@@ -2642,16 +2734,17 @@ update_cache (EBookBackendGroupwise *ebgw)
 			bonobo_object_unref (book_view);
 		if (enable_debug)
 			printf("No connection with the server \n");
+		g_mutex_unlock (ebgw->priv->update_cache_mutex);
 		return FALSE;
 	}
 	
-	e_file_cache_freeze_changes (E_FILE_CACHE (ebgw->priv->cache));
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 		const char *id;
 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data), 
 					   ebgw->priv->categories_by_id);
+		
 		e_contact_set (contact, E_CONTACT_BOOK_URI, ebgw->priv->original_uri);
 		id =  e_contact_get_const (contact, E_CONTACT_UID);
 
@@ -2663,13 +2756,12 @@ update_cache (EBookBackendGroupwise *ebgw)
 			g_free (status_msg);
 		}
 
-		if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
-			e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
-			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+		if (e_book_backend_db_cache_check_contact (ebgw->priv->file_db, id)) {
+			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 			e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 			e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 		} else {
-			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 			e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 		}
 		
@@ -2679,7 +2771,9 @@ update_cache (EBookBackendGroupwise *ebgw)
 	
 	ebgw->priv->is_cache_ready = TRUE;
 	ebgw->priv->is_summary_ready = TRUE;
-	e_file_cache_thaw_changes (E_FILE_CACHE (ebgw->priv->cache));
+	
+	ebgw->priv->file_db->sync(ebgw->priv->file_db, 0);
+
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
@@ -2695,6 +2789,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 		printf("updating the cache for %s complated in %ld.%03ld seconds for %d contacts\n", 
 			ebgw->priv->book_name, diff / 1000, diff % 1000, contact_num);
 	}
+	g_mutex_unlock (ebgw->priv->update_cache_mutex);
 	return FALSE;
 }
 
@@ -2703,22 +2798,22 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
 	int status, contact_num = 0;
 	gdouble server_first_sequence = -1, server_last_sequence = -1, server_last_po_rebuild_time = -1;
-	gdouble cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
-	const char *cache_obj;
-	char *tmp, *count, *sequence, *status_msg;
+	gdouble cache_first_sequence = -1, cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
+	char *count, *sequence, *status_msg;
+	gboolean sync_required = FALSE;
 	GList *add_list = NULL, *delete_list = NULL;
 	EContact *contact;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
+	EGwItem *item;
 
 	if (!ebgw)
 		return FALSE;
 
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
-	EBookBackendCache *cache = priv->cache;
 
 	g_mutex_lock (priv->update_mutex);
-
+	
 	if (enable_debug)
 		printf("\nupdating GroupWise system address book cache \n");
 		
@@ -2741,18 +2836,15 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		if (enable_debug)
 			printf ("sequence is reset, rebuilding cache...\n");
 		build_cache (ebgw);
-		g_mutex_unlock(priv->update_mutex);
+		add_sequence_to_cache (priv->file_db, server_first_sequence, 
+				       server_last_sequence, server_last_po_rebuild_time);
+		ebgw->priv->file_db->sync (ebgw->priv->file_db, 0);
+		g_mutex_unlock (priv->update_mutex);
 		return TRUE;
 	}
 
-	/* Read the last sequence and last poa rebuild time from cache */	
-	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastSequence");
-	if (cache_obj)
-		cache_last_sequence = strtod (cache_obj, NULL);
-	
-	cache_obj = e_file_cache_get_object (E_FILE_CACHE (cache), "lastTimePORebuild");
-	if (cache_obj)
-		cache_last_po_rebuild_time = strtod (cache_obj, NULL);
+	/* Read the last sequence and last poa rebuild time from cache */
+	get_sequence_from_cache(priv->file_db, &cache_first_sequence, &cache_last_sequence, &cache_last_po_rebuild_time);
 
 	/* check whether the all the sequences are available and also whether the PO is rebuilt */
 	if (server_first_sequence > cache_last_sequence || cache_last_sequence == -1 || 
@@ -2761,9 +2853,10 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		if (enable_debug)
 			printf ("either the sequences missing or PO is rebuilt...rebuilding the cache\n");
 		build_cache (ebgw);
-		add_sequence_to_cache (cache, server_first_sequence, 
+		add_sequence_to_cache (priv->file_db, server_first_sequence, 
 				       server_last_sequence, server_last_po_rebuild_time);
-		g_mutex_unlock(priv->update_mutex);
+		ebgw->priv->file_db->sync (ebgw->priv->file_db, 0);
+		g_mutex_unlock (priv->update_mutex);
 		return TRUE;
 	}
 
@@ -2792,19 +2885,17 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	count = g_strdup_printf ("%d", CURSOR_ITEM_LIMIT);
 
 	/* load summary file */
-	cache_file_name = e_file_cache_get_filename (E_FILE_CACHE(ebgw->priv->cache));
+	cache_file_name = e_book_backend_db_cache_get_filename(ebgw->priv->file_db);
 	g_stat (cache_file_name, &buf);
 	mod_time = buf.st_mtime;
 	if (e_book_backend_summary_load (ebgw->priv->summary) == FALSE || 
 	    e_book_backend_summary_is_up_to_date (ebgw->priv->summary, mod_time) == FALSE) {
 		/* build summary */
-		 build_summary (ebgw->priv);
+		 build_summary (ebgw);
 	}
 
 	if (cache_last_sequence != server_last_sequence) {
-		e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 
-		while (cache_last_sequence < server_last_sequence) {
 			if (enable_debug) {
 				printf("cache_last_sequence:%lf, server_last_sequence:%lf\n", cache_last_sequence, server_last_sequence);
 				printf("Calling get_items_delta\n");
@@ -2818,8 +2909,12 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 			if (add_list == NULL && delete_list == NULL) {
 				if (enable_debug)
 					printf("sequence differs but no changes found !!!\n");
-				break;
+				add_sequence_to_cache (priv->file_db, server_first_sequence, 
+				       server_last_sequence, server_last_po_rebuild_time);
+				g_mutex_unlock (priv->update_mutex);
+				return TRUE;
 			}
+			sync_required = TRUE;
 			if (enable_debug) {
 				printf("add_list size:%d\n", g_list_length(add_list));
 				printf("delete_list size:%d\n", g_list_length(delete_list));
@@ -2840,7 +2935,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 					       priv->original_uri);
 				id =  e_contact_get_const (contact, E_CONTACT_UID);
 
-				if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+				if (e_book_backend_db_cache_check_contact (ebgw->priv->file_db, id)) {
 					contact_num++;
 
 					if (book_view) {
@@ -2849,7 +2944,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 						book_view_notify_status (book_view, status_msg);
 						g_free (status_msg);
 					}
-					e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
+					e_book_backend_db_cache_remove_contact (ebgw->priv->file_db, id);
 					e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
 				}
 				g_object_unref(contact);
@@ -2864,6 +2959,21 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				fill_contact_from_gw_item (contact, 
 							   E_GW_ITEM (add_list->data), 
 							   ebgw->priv->categories_by_id);
+
+				/* When a distribution list is modified the server sends me a delete and add response.
+				But it doesnt send me the members, so i have to explicitly request the server for the members 				     of the distribution list */
+
+				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+					if(enable_debug)
+						printf ("Contact List modified fetching the members of the contact list\n");
+							
+					status = e_gw_connection_get_item (ebgw->priv->cnc, ebgw->priv->container_id, e_contact_get (contact, E_CONTACT_UID), "name email default members", &item);
+					g_object_unref (contact);
+					contact = e_contact_new ();
+					fill_contact_from_gw_item (contact, item, ebgw->priv->categories_by_id);
+					g_object_unref (item);
+				}
+
 				if (enable_debug)
 					printf("contact email:%s, contact name:%s\n", (char *)e_contact_get(contact, E_CONTACT_EMAIL_1),(char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact, 
@@ -2878,17 +2988,16 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 					book_view_notify_status (book_view, status_msg);
 					g_free (status_msg);
 				}
-				if (e_book_backend_cache_check_contact (ebgw->priv->cache, id)) {
+				if (e_book_backend_db_cache_check_contact (ebgw->priv->file_db, id)) {
 					if (enable_debug)
 						printf("contact already there\n");
-					e_book_backend_cache_remove_contact (ebgw->priv->cache, id);
 					e_book_backend_summary_remove_contact (ebgw->priv->summary, id);
-					e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+					e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 					e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 				} else {
 					if (enable_debug)
 						printf("contact not there\n");
-		    			e_book_backend_cache_add_contact (ebgw->priv->cache, contact);
+		    			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 					e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 				}
 
@@ -2896,32 +3005,24 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				g_object_unref (add_list->data);
 			}
 			cache_last_sequence += contact_num;
-		}
 
 		/* cache is updated, now adding the sequence information to the cache */
 
-		tmp = g_strdup_printf("%lf", server_first_sequence);
-		e_file_cache_replace_object (E_FILE_CACHE(cache), "firstSequence", tmp);		
-		g_free (tmp);
-	
-		tmp = g_strdup_printf("%lf", server_last_sequence);
-		e_file_cache_replace_object (E_FILE_CACHE(cache), "lastSequence", tmp);
-		g_free (tmp);
-	
-		tmp = g_strdup_printf("%lf", server_last_po_rebuild_time);
-		e_file_cache_replace_object (E_FILE_CACHE(cache), "lastTimePORebuild", tmp);
-		g_free (tmp);
+		add_sequence_to_cache (priv->file_db, server_first_sequence, 
+				       server_last_sequence, server_last_po_rebuild_time);
 
 		g_list_free (add_list);
 		g_list_free (delete_list);
-
-		e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 	}
 	
 	g_free (sequence);
 	g_free (count);
 	ebgw->priv->is_cache_ready = TRUE;
 	ebgw->priv->is_summary_ready = TRUE;
+
+	if (sync_required)
+		ebgw->priv->file_db->sync(ebgw->priv->file_db, 0);
+
 
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
@@ -2981,10 +3082,14 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	const char *cache_refresh_interval_set;
 	int cache_refresh_interval = CACHE_REFRESH_INTERVAL;
 
-	if (enable_debug)
-		printf ("authenticate user ............\n");
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
+
+	if (enable_debug) {
+		printf ("authenticate user ............\n");
+ 		if(priv->book_name)
+			printf("book_name:%s\n", priv->book_name);
+	}
 
 	
 	switch (ebgw->priv->mode) {
@@ -3021,9 +3126,6 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		
 		id = NULL;
 		is_writable = FALSE;
-		if (enable_debug)
- 			if(priv->book_name)
-				printf("book_name:%s\n", priv->book_name);
 		status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_get_address_book_id (priv->cnc,  priv->book_name, &id, &is_writable); 
@@ -3059,7 +3161,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
 							    SUMMARY_FLUSH_TIMEOUT);
 		
-		if (e_book_backend_cache_is_populated (priv->cache)) {
+		if (e_book_backend_db_cache_is_populated (ebgw->priv->file_db)) {
 			if (enable_debug)
 				printf("cache is populated\n");
 			if (priv->is_writable){
@@ -3181,6 +3283,12 @@ e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *boo
 	return GNOME_Evolution_Addressbook_CouldNotCancel;
 }
 
+static void
+file_errcall (const char *buf1, char *buf2)
+{
+	g_warning ("libdb error: %s", buf2);
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_groupwise_load_source (EBookBackend           *backend,
 				      ESource                *source,
@@ -3188,10 +3296,14 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
+	char *dirname, *filename;
         char *book_name;
         char *uri;
 	char **tokens;
    	const char *port;
+	int db_error;
+	DB *db;
+	DB_ENV *env;
 	EUri *parsed_uri;
 	int i;
 	const char *use_ssl;
@@ -3257,7 +3369,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	}
 
 	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) 
-		if (!e_book_backend_cache_exists (priv->original_uri)) {
+		if (!e_book_backend_db_cache_exists (priv->original_uri)) {
 			g_free (uri);
 			e_uri_free (parsed_uri);
 			return GNOME_Evolution_Addressbook_OfflineUnavailable;
@@ -3266,15 +3378,117 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
         g_free (priv->summary_file_name);
 	priv->summary_file_name = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
         priv->summary_file_name = g_strconcat (ebgw->priv->summary_file_name, ".summary", NULL);
+
+	dirname = g_build_filename (g_get_home_dir(), ".evolution/cache/addressbook", uri, priv->book_name, NULL);
+	filename = g_build_filename (dirname, "cache.db", NULL);
+
+	db_error = e_db3_utils_maybe_recover (filename);
+	if (db_error !=0) {
+		g_warning ("db recovery failed with %d", db_error);
+		g_free (dirname);
+		g_free (filename);
+		return GNOME_Evolution_Addressbook_OtherError;
+	}
 	
+	g_static_mutex_lock(&global_env_lock);
+	if (global_env.ref_count > 0) {
+		env = global_env.env;
+		global_env.ref_count++;
+	} 
+	else {
+		db_error = db_env_create (&env, 0);
+		if (db_error != 0) {
+			g_warning ("db_env_create failed with %d", db_error);
+			g_static_mutex_unlock (&global_env_lock);
+			g_free (dirname);
+			g_free (filename);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
+
+		db_error = env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+		if (db_error != 0) {
+			env->close(env, 0);
+			g_warning ("db_env_open failed with %d", db_error);
+			g_static_mutex_unlock(&global_env_lock);
+			g_free(dirname);
+			g_free(filename);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
+
+		env->set_errcall (env, file_errcall);
+
+		global_env.env = env;
+		global_env.ref_count = 1;
+	}
+	g_static_mutex_unlock(&global_env_lock);
+
+	ebgw->priv->env = env;
+
+	db_error = db_create (&db, env, 0);
+	if (db_error != 0) {
+		g_warning ("db_create failed with %d", db_error);
+		g_free(dirname);
+		g_free(filename);
+		return GNOME_Evolution_Addressbook_OtherError;
+	}
+
+	db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+
+	if (db_error == DB_OLD_VERSION) {
+		db_error = e_db3_utils_upgrade_format (filename);
+
+		if (db_error != 0) {
+			g_warning ("db format upgrade failed with %d", db_error);
+			g_free(filename);
+			g_free(dirname);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
+		
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+	}
+
+	ebgw->priv->file_db = db;
+
+	if (db_error != 0) {
+		int rv;
+
+		/* the databade didn't exist, so we create the 
+		   directory then the .db */
+		rv = e_util_mkdir_hier (dirname, 0777);
+		if (rv == -1 && errno != EEXIST) {
+			g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
+			g_free (dirname);
+			g_free (filename);
+			if (errno == EACCES || errno == EPERM)
+				return GNOME_Evolution_Addressbook_PermissionDenied;
+			else
+				return GNOME_Evolution_Addressbook_OtherError;
+		}
+
+		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
+		if (db_error != 0) {
+			g_warning ("db->open (...DB_CREATE...) failed with %d", db_error);
+		}
+
+	}
+
+	if (db_error != 0) {
+		ebgw->priv->file_db = NULL;
+		g_free(filename);
+		g_free(dirname);
+		return GNOME_Evolution_Addressbook_OtherError;
+	}
+	
+	e_book_backend_db_cache_set_filename (ebgw->priv->file_db, filename);
+	g_free(filename);
+	g_free(dirname);
 	g_free (uri);
 	e_uri_free (parsed_uri);
 
-	priv->cache = e_book_backend_cache_new (priv->original_uri);
-	if (enable_debug) {
+	/*if (enable_debug) {
 		printf ("summary file name = %s\ncache file name = %s \n", 
 			 priv->summary_file_name, e_file_cache_get_filename (E_FILE_CACHE(priv->cache)));
-	}
+	}*/
 
 	return GNOME_Evolution_Addressbook_Success;
 }
@@ -3303,7 +3517,7 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 		e_data_book_respond_remove (book,  opid, GNOME_Evolution_Addressbook_Success);
 	else
 		e_data_book_respond_remove (book,  opid, GNOME_Evolution_Addressbook_OtherError);
-	g_unlink (e_file_cache_get_filename (E_FILE_CACHE (ebgw->priv->cache)));
+	g_unlink (e_book_backend_db_cache_get_filename(ebgw->priv->file_db));
 }
 
 static char *
@@ -3397,6 +3611,16 @@ e_book_backend_groupwise_dispose (GObject *object)
 	bgw = E_BOOK_BACKEND_GROUPWISE (object);
                                                                                                                              
 	if (bgw->priv) {
+		if (bgw->priv->file_db)
+			bgw->priv->file_db->close (bgw->priv->file_db, 0);
+
+		g_static_mutex_lock(&global_env_lock);
+		global_env.ref_count--;
+		if (global_env.ref_count == 0) {
+			global_env.env->close (global_env.env, 0);
+			global_env.env = NULL;
+		}
+		g_static_mutex_unlock(&global_env_lock);
 		if (bgw->priv->uri) {
 			g_free (bgw->priv->uri);
 			bgw->priv->uri = NULL;
@@ -3423,9 +3647,6 @@ e_book_backend_groupwise_dispose (GObject *object)
 			g_free (bgw->priv->summary_file_name);
 			bgw->priv->summary_file_name = NULL;
 		}
-		if (bgw->priv->cache) {
-			g_object_unref (bgw->priv->cache);
-		}
 		if (bgw->priv->summary) {
 			e_book_backend_summary_save(bgw->priv->summary);
 			g_object_unref (bgw->priv->summary);
@@ -3439,7 +3660,9 @@ e_book_backend_groupwise_dispose (GObject *object)
 			bgw->priv->cache_timeout = 0;
 		}
 		if (bgw->priv->update_mutex)
-			g_mutex_free(bgw->priv->update_mutex);
+			g_mutex_free (bgw->priv->update_mutex);
+		if (bgw->priv->update_cache_mutex)
+			g_mutex_free (bgw->priv->update_cache_mutex);
 		
 		g_free (bgw->priv);
 		bgw->priv = NULL;
@@ -3494,14 +3717,12 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->is_summary_ready = FALSE;
 	priv->marked_for_offline = FALSE;
 	priv->use_ssl = NULL;
-	priv->cache=NULL;
 	priv->cnc = NULL;
 	priv->original_uri = NULL;
 	priv->cache_timeout = 0;
 	priv->update_mutex = g_mutex_new();
+	priv->update_cache_mutex = g_mutex_new();
 	priv->reserved1 = NULL;
-	priv->reserved2 = NULL;
-	priv->reserved3 = NULL;
        	backend->priv = priv;
 
 	if (g_getenv ("GROUPWISE_DEBUG")) { 

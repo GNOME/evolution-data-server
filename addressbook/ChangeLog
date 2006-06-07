@@ -1,3 +1,10 @@
+2006-06-07  Devashish Sharma  <sdevashish@novell.com>
+
+	* addressbook/backends/groupwise/e-book-backend-groupwise.c :
+	Changed the xml hash based cache mechanism for groupwise addressbook 
+	to a db based cache.
+	* addressbook/libedata-book/e-book-backend-db-cache.[ch]:
+	Addeed APIs for handling db based cache.
 2006-06-07  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book-query.c:
