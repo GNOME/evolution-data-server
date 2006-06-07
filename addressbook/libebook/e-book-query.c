@@ -639,8 +639,8 @@ e_book_query_to_string    (EBookQuery *q)
 					encoded->str);
 		break;
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:
-		e_sexp_encode_string (encoded, q->query.any_field_contains.value);
-		g_string_append_printf (str, "contains \"x-evolution-any-field\" %s", encoded->str);
+		g_string_append_printf (str, "contains \"x-evolution-any-field\"");
+		e_sexp_encode_string (str, q->query.any_field_contains.value);
 		break;
 	}
 	 
