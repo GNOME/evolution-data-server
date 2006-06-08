@@ -5,6 +5,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	-I$(top_srcdir)/servers/groupwise               \
+	-I$(top_srcdir)/libdb/dist			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)                 \
 	$(SOUP_CFLAGS)	
 extension_LTLIBRARIES = libebookbackendgroupwise.la
@@ -19,6 +20,7 @@ libebookbackendgroupwise_la_LIBADD =					\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(top_builddir)/libdb/dist/libdb-4.1.la				\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
 	$(SOUP_LIBS)
 

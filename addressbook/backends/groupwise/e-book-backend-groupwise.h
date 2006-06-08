@@ -25,6 +25,7 @@
 #define __E_BOOK_BACKEND_GROUPWISE_H__
                                                                                                                              
 #include <libedata-book/e-book-backend-sync.h>
+#include "db.h"
                                                                                                                              
 #define E_TYPE_BOOK_BACKEND_GROUPWISE        (e_book_backend_groupwise_get_type ())
 #define E_BOOK_BACKEND_GROUPWISE(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_GROUPWISE, EBookBackendGroupwise))
@@ -42,7 +43,7 @@ typedef struct {
 typedef struct {
 	EBookBackendClass parent_class;
 } EBookBackendGroupwiseClass;
-                                                                                                                             
+
 EBookBackend *e_book_backend_groupwise_new      (void);
 GType       e_book_backend_groupwise_get_type (void);
                                                                                                                              
