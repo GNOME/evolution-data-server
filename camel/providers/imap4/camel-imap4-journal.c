@@ -351,6 +351,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	e_dlist_addtail (&journal->queue, (EDListNode *) entry);
 	
 	info = camel_folder_summary_info_new_from_message (folder->summary, message);
+	g_free(info->uid);
 	info->uid = g_strdup (uid);
 	
 	imap4_message_info_dup_to ((CamelMessageInfoBase *) info, (CamelMessageInfoBase *) mi);

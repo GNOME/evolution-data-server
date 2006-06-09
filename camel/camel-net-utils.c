@@ -816,11 +816,12 @@ camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, char **host, char 
 	if ((result = msg->result) != 0)
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Name lookup failed: %s"),
 				      gai_strerror (result));
-
-	if (host)
-		*host = g_strdup(msg->host);
-	if (serv)
-		*serv = g_strdup(msg->serv);
+	else {
+		if (host)
+			*host = g_strdup(msg->host);
+		if (serv)
+			*serv = g_strdup(msg->serv);
+	}
 
 	g_free(msg->host);
 	g_free(msg->serv);

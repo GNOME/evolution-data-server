@@ -1,3 +1,9 @@
+2006-06-09  Chris Heath  <chris@heathens.co.nz>
+
+	* camel-local-summary.c (message_info_new_from_header): Fix memory leak
+	* camel-mbox-summary.c (message_info_new_from_header): Ditto.
+	Fixes bug #335423.
+
 2006-03-28  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mbox-summary.c (summary_update, mbox_summary_sync_full),

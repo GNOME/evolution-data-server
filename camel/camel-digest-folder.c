@@ -196,6 +196,7 @@ digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const char
 		}
 		
 		info = camel_folder_summary_info_new_from_message (folder->summary, CAMEL_MIME_MESSAGE (wrapper));
+		g_free(info->uid);
 		info->uid = g_strdup_printf ("%s%d", preuid, i);
 		camel_folder_summary_add (folder->summary, info);
 	}

@@ -74,6 +74,10 @@ camel_pop3_engine_finalise(CamelPOP3Engine *pe)
 
 	if (pe->stream)
 		camel_object_unref(pe->stream);
+	
+	g_list_free(pe->auth);
+	if (pe->apop)
+		g_free(pe->apop);
 }
 
 CamelType

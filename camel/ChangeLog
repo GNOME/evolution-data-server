@@ -1,3 +1,10 @@
+2006-06-09  Chris Heath  <chris@heathens.co.nz>
+
+	* camel-net-utils.c (camel_getnameinfo): Fix memory leak
+	* camel-folder-search.c (camel_folder_search_search): Ditto
+	* camel-digest-folder.c (digest_add_multipart): Ditto.
+	Fixes bug #335423.
+
 2006-06-02  Tor Lillqvist  <tml@novell.com>
 
 	* camel-file-utils.c (camel_read, camel_write, camel_read_socket)
