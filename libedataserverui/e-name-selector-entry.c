@@ -96,6 +96,18 @@ e_name_selector_entry_realize (GtkWidget *widget)
 static void
 e_name_selector_entry_dispose (GObject *object)
 {
+	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (object);
+
+	if (name_selector_entry->entry_completion) {
+		g_object_unref (name_selector_entry->entry_completion);
+		name_selector_entry->entry_completion = NULL;
+	}
+
+	if (name_selector_entry->destination_store) {
+		g_object_unref (name_selector_entry->destination_store);
+		name_selector_entry->destination_store = NULL;
+	}
+
 	if (G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose)
 		G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
 }
