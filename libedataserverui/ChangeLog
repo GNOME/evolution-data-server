@@ -1,5 +1,10 @@
 2006-06-09  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
+	** Fixes bug #342479
+	* e-name-selector-dialog.c: Plugged memory leak.
+
+2006-06-09  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
 	** Fixes bug #342382
 	* e-name-selector-entry.c: Plugged memory leaks.
 
