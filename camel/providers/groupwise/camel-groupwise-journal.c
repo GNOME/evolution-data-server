@@ -372,6 +372,7 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	camel_object_unref (cache);
 	
 	info = camel_folder_summary_info_new_from_message (folder->summary, message);
+	g_free(info->uid);
 	info->uid = g_strdup (uid);
 	
 	gw_message_info_dup_to ((CamelMessageInfoBase *) info, (CamelMessageInfoBase *) mi);

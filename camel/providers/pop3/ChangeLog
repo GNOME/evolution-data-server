@@ -1,3 +1,8 @@
+2006-06-09  Chris Heath  <chris@heathens.co.nz>
+
+	* camel-pop3-engine.c (camel_pop3_engine_finalise): Fix memory leak.
+	Fixes bug #335423.
+
 2006-05-31  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-pop3-store.c (connect_to_server): Fix a few of the TLS

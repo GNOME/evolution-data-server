@@ -1,3 +1,8 @@
+2006-06-09  Chris Heath  <chris@heathens.co.nz>
+
+	* camel-nntp-summary.c (message_info_new_from_header): Fix memory leak.
+	Fixes bug #335423.
+
 2005-12-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel-nntp-grouplist.c

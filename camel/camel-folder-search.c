@@ -463,6 +463,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		for (i=0;i<search->summary->len;i++)
 			if (g_hash_table_lookup(uids_hash, camel_message_info_uid(search->summary->pdata[i])))
 				g_ptr_array_add(search->summary_set, search->summary->pdata[i]);
+		g_hash_table_destroy(uids_hash);
 	} else {
 		summary_set = search->summary;
 	}

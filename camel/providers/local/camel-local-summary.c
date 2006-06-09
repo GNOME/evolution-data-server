@@ -633,6 +633,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 		if (xev==NULL || camel_local_summary_decode_x_evolution(cls, xev, mi) == -1) {
 			/* to indicate it has no xev header */
 			mi->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;
+			g_free (mi->info.uid);
 			mi->info.uid = camel_folder_summary_next_uid_string(s);
 
 			/* shortcut, no need to look it up in the index library */

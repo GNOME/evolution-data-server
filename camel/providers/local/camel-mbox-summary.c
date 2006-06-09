@@ -319,6 +319,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 		if (add&1) {
 			mi->info.info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;
+			g_free (mi->info.info.uid);
 			mi->info.info.uid = camel_folder_summary_next_uid_string(s);
 		} else {
 			camel_folder_summary_set_uid(s, strtoul(camel_message_info_uid(mi), NULL, 10));

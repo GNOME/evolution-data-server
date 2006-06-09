@@ -150,7 +150,8 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 	mi = (CamelMessageInfoBase *)((CamelFolderSummaryClass *)camel_nntp_summary_parent)->message_info_new_from_header(s, h);
 	if (mi) {
-		mi->uid = g_strdup(cns->priv->uid);
+		g_free(mi->uid);
+		mi->uid = cns->priv->uid;
 		cns->priv->uid = NULL;
 	}
 	

@@ -761,10 +761,9 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	category_option_menu = glade_xml_get_widget(name_selector_dialog->gui, "optionmenu-category");
 	category_id = gtk_option_menu_get_history (GTK_OPTION_MENU(category_option_menu));
 	category = g_list_nth_data (category_list, category_id);
-	category_escaped = escape_sexp_string (category);
-
 	if (!category)
 		return;
+	category_escaped = escape_sexp_string (category);
 
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
 	text_escaped = escape_sexp_string (text);
