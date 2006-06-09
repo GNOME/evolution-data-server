@@ -294,7 +294,12 @@ e_name_selector_dialog_dispose (GObject *object)
 					      name_selector_dialog);
 
 	remove_books (name_selector_dialog);
-	
+
+	if (name_selector_dialog->name_selector_model) {
+		g_object_unref (name_selector_dialog->name_selector_model);
+		name_selector_dialog->name_selector_model = NULL;
+	}
+ 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose)
 		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
 }
