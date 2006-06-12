@@ -2887,6 +2887,39 @@ e_gw_connection_purge_deleted_items (EGwConnection *cnc)
 
 }
 
+EGwConnectionStatus 
+e_gw_connection_purge_selected_items (EGwConnection *cnc, GList *item_ids)
+{
+
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_UNKNOWN;
+	
+	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "purgeRequest");
+	/* Now write the elements that need to be deleted */
+	soup_soap_message_start_element (msg, "items", NULL, NULL);
+	for (; item_ids != NULL; item_ids = g_list_next (item_ids))
+		e_gw_message_write_string_parameter (msg, "item", NULL, item_ids->data);
+	soup_soap_message_end_element (msg);
+	/*End message*/
+	e_gw_message_write_footer (msg);
+	/* Send to server */
+	response =  e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		reauthenticate (cnc);
+	/* free memory */
+	g_object_unref (response);
+	g_object_unref (msg);
+
+	return status;
+
+}
+
 EGwConnectionStatus
 e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids)
 {

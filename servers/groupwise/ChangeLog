@@ -1,3 +1,10 @@
+2006-06-12  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	Fixes bug #166265 on bnc
+	* e-gw-connection.[ch]: Add a new method
+	e_gw_connection_purge_selected_items to selectively delete messages
+	from trash.
+
 2006-04-24  Julio M. Merino Vidal  <jmmv@NetBSD.org>
 
 	Reviewed by Harish Krishnaswamy <kharish@novell.com>

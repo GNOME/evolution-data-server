@@ -156,6 +156,7 @@ EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const cha
 EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag); 
 EGwConnectionStatus e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *folder_name, gchar *container_id, gchar *item_id, gchar *desc);
 EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
+EGwConnectionStatus e_gw_connection_purge_selected_items (EGwConnection *cnc, GList *item_ids);
 
 EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids) ;
