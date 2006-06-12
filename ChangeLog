@@ -1,9 +1,14 @@
+2006-06-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in, NEWS: EDS 1.7.3 release updates
+	and version, libtool numbers bumped.
+	
 2006-06-12  simon.zheng  <simon.zheng@sun.com>
 
-        Fix for #336453
+	Fix for #336453
 	* acinclude.m4:
 	* configure.in:
-        Add SunLDAP library support - a variant of Netscape LDAP.
+	Add SunLDAP library support - a variant of Netscape LDAP.
 
 2006-06-07  Frederic Peters  <fpeters@0d.be>
 

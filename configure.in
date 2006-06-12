@@ -1,7 +1,7 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 1.7.2)
+AC_INIT(evolution-data-server, 1.7.3)
 AC_CONFIG_SRCDIR(README)
 
 # Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
@@ -51,9 +51,9 @@ LIBEBOOK_CURRENT=7
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=2
 
-LIBEGROUPWISE_CURRENT=9
+LIBEGROUPWISE_CURRENT=10
 LIBEGROUPWISE_REVISION=2
-LIBEGROUPWISE_AGE=0
+LIBEGROUPWISE_AGE=1
 
 LIBCAMEL_CURRENT=8
 LIBCAMEL_REVISION=1
