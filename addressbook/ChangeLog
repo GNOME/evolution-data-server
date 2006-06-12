@@ -1,3 +1,7 @@
+2006-06-12  Devashish Sharma  <sdevashish@novell.com>
+
+	* addressbook/libebook/e-book.c : Fix for bug #342162.
+
 2006-06-07  Devashish Sharma  <sdevashish@novell.com>
 
 	* addressbook/backends/groupwise/e-book-backend-groupwise.c :

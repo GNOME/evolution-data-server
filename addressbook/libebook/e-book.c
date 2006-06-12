@@ -3282,7 +3282,7 @@ fetch_corba_book (EBook       *book,
 	factories = activate_factories_for_uri (book, uri);
 	if (!factories) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
-			     _("%s: no factories available for uri `%s'"), "e_book_load_uri", uri);
+			     _("%s: no factories available for URI `%s'"), "e_book_load_uri", uri);
 		return FALSE;
 	}
 
@@ -3346,7 +3346,7 @@ fetch_corba_book (EBook       *book,
 	}
 	else {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
-			     _("%s: no factories available for uri `%s'"), "e_book_new", uri);
+			     _("%s: no factories available for URI `%s'"), "e_book_new", uri);
 	}
 		
 	return rv;
