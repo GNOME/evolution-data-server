@@ -1,3 +1,11 @@
+2006-06-12  simon.zheng  <simon.zheng@sun.com>
+
+	Fix for #336453
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_connect), (e_book_backend_ldap_class_init):
+	* backends/ldap/openldap-extract.h:
+	Add SunLDAP library support - a variant of Netscape LDAP.
+
 2006-06-12  Devashish Sharma  <sdevashish@novell.com>
 
 	* addressbook/libebook/e-book.c : Fix for bug #342162.

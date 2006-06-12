@@ -30,6 +30,19 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef SUNLDAP
+#include <ldap.h>
+#include <lber.h>
+
+/*   copy from openldap Ldap-init.h   */
+#define LBER_CALLOC(n,s)        calloc((n),(s))
+#define LBER_REALLOC(p,s)       realloc((p),(s))
+/*   vfree is defined in openldap-extract.h */
+#define LBER_VFREE(v)           vfree((void**)(v))
+#define LBER_FREE(p)            free((p))
+#define LDAP_OPT_SSL 10
+#endif
+
 /* from various header files */
 
 #define LDAP_CONST const
@@ -54,8 +67,10 @@
 #define LDAP_RANGE(n,x,y)	(((x) <= (n)) && ((n) <= (y)))
 #define LDAP_NAME_ERROR(n)	LDAP_RANGE((n),0x20,0x24) /* 32-34,36 */
 
+#ifdef G_OS_WIN32
 #define ldap_msgtype(lm) (lm)->lm_msgtype
 #define ldap_msgid(lm) (lm)->lm_msgid
+#endif
 
 #define LDAP_SCHERR_OUTOFMEM		1
 #define LDAP_SCHERR_UNEXPTOKEN		2
@@ -735,6 +750,7 @@ ldap_str2objectclass( LDAP_CONST char * s,
 	}
 }
 
+#ifdef G_OS_WIN32
 /* from utf-8.c */
 
 #define LDAP_UTF8_NEXT(p) g_utf8_next_char((p))
@@ -1424,4 +1440,4 @@ ldap_url_parse( LDAP_CONST char *url_in, LDAPURLDesc **ludpp )
 
 	return rc;
 }
-
+#endif

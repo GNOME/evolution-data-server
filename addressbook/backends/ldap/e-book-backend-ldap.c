@@ -63,8 +63,15 @@
 #endif
 
 #ifdef OPENLDAP2
+#ifndef SUNLDAP
 #include <ldap_schema.h>
 #endif
+#endif
+
+#ifdef SUNLDAP
+#include "openldap-extract.h"
+#endif
+
 
 #endif
 
@@ -596,6 +603,8 @@ check_schema_support (EBookBackendLDAP *bl)
 	}
 }
 
+
+#ifndef SUNLDAP
 static void
 get_ldap_library_info ()
 {
@@ -634,6 +643,7 @@ get_ldap_library_info ()
 
 	ldap_unbind (ldap);
 }
+#endif
 
 static int
 query_ldap_root_dse (EBookBackendLDAP *bl)
@@ -755,6 +765,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	int protocol_version = LDAP_VERSION3;
 	GTimeVal start, end;
 	unsigned long diff;
+	int ldap_flag = 0;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_connect ... \n");
@@ -766,6 +777,16 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	if (blpriv->ldap) {
 		ldap_unbind (blpriv->ldap);
 	}
+	
+#ifdef SUNLDAP
+	if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
+		char *evolution_dir_path = 
+			g_build_path ("/", g_get_home_dir (), ".evolution", NULL);
+		ldap_flag = ldapssl_client_init (evolution_dir_path, NULL);
+		g_free (evolution_dir_path);
+	}
+#endif
+			
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
 
 #if defined (DEBUG) && defined (LDAP_OPT_DEBUG_LEVEL)
@@ -778,7 +799,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		int ldap_error;
 
 		ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
-		if (LDAP_OPT_SUCCESS != ldap_error) {
+		if (LDAP_SUCCESS != ldap_error) {
 			g_warning ("failed to set protocol version to LDAPv3");
 			bl->priv->ldap_v3 = FALSE;
 		}
@@ -797,6 +818,17 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			}
 
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
+#ifdef SUNLDAP
+				if (ldap_flag >= 0) {
+					ldap_error = ldapssl_install_routines (blpriv->ldap);
+				} else
+					ldap_error = LDAP_NOT_SUPPORTED;
+			
+				if (LDAP_SUCCESS == ldap_error) {
+					ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON );
+					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+				}
+#else
 #if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
 				tls_level = LDAP_OPT_X_TLS_HARD;
 				ldap_set_option (blpriv->ldap, LDAP_OPT_X_TLS, &tls_level);
@@ -806,9 +838,22 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 #else
 				g_message ("TLS option not available");
 #endif
+#endif
 			}
 			else if (bl->priv->use_tls) {
+#ifdef SUNLDAP
+				if (ldap_flag >= 0) {
+					ldap_error = ldapssl_install_routines (blpriv->ldap);
+				} else
+					ldap_error = LDAP_NOT_SUPPORTED;
+				
+				if (LDAP_SUCCESS == ldap_error) {
+					ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON );
+					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+				}
+#else
 				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
+#endif
 				if (LDAP_SUCCESS != ldap_error) {
 					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
@@ -4876,9 +4921,10 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
 	EBookBackendClass *parent_class;
 
+#ifndef SUNLDAP
 	/* get client side information (extensions present in the library) */
 	get_ldap_library_info ();
-
+#endif
 	e_book_backend_ldap_parent_class = g_type_class_peek_parent (klass);
 
 	parent_class = E_BOOK_BACKEND_CLASS (klass);
