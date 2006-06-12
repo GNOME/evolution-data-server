@@ -1,3 +1,10 @@
+2006-06-12  simon.zheng  <simon.zheng@sun.com>
+
+        Fix for #336453
+	* acinclude.m4:
+	* configure.in:
+        Add SunLDAP library support - a variant of Netscape LDAP.
+
 2006-06-07  Frederic Peters  <fpeters@0d.be>
 
 	* configure.in: Assume strftime() is ok and supports %l and %k when
