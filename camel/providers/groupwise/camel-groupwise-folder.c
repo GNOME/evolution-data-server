@@ -682,7 +682,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
 	if (deleted_items) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
-		status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+		if (!strcmp (folder->full_name, "Trash")) {
+			status = e_gw_connection_purge_selected_items (cnc, deleted_items);
+		} else {
+			status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+		}
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			char *uid;
