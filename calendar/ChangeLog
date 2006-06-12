@@ -1,3 +1,11 @@
+2006-06-12  Ross Burton  <ross@openedhand.com>
+
+	* backends/contacts/Makefile.am:
+	* backends/file/Makefile.am:
+	* backends/weather/Makefile.am:
+	Don't statically link a 200K library into each backend, when it's
+	already in libecal.
+
 2006-05-25  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes #342102
