@@ -1,3 +1,10 @@
+2006-06-12  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(get_deltas): Fetch calendar data with a bias towards present, 
+	near past and near future. Fixes bug#.
+	Also, prefer gmtime_r to gmtime.
+
 2006-06-12  Ross Burton  <ross@openedhand.com>
 
 	* backends/contacts/Makefile.am:

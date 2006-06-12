@@ -3,6 +3,7 @@
  * Authors : 
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
+ *  Harish Krishnaswamy <kharish@novell.com>
  *
  * Copyright 2003, Novell, Inc.
  *
@@ -135,10 +136,16 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	gboolean done = FALSE;
 	int cursor = 0;
 	guint32	total, num = 0;
-	int percent = 0;
+	int percent = 0, i;
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	icalcomponent_kind kind;
 	const char *type;
+	EGwFilter* filter[3];
+	char l_str[26]; 
+	char h_str[26];
+	icaltimetype temp;
+	struct tm tm;
+	time_t h_time, l_time;
 
 	priv = cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
@@ -155,66 +162,92 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	else
 		type = "Task";
 	
-	status = e_gw_connection_create_cursor (priv->cnc,
-			priv->container_id, 
-			"recipients message recipientStatus attachments default peek", NULL, &cursor);
-	if (status != E_GW_CONNECTION_STATUS_OK) {
-		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		g_mutex_unlock (mutex);
-                return status;
-        }
-	
-	while (!done) {
-		
-		status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
+	/* Fetch the data with a bias to present, near past/future */
+	temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	i = g_ascii_strtod (g_getenv ("PRELOAD_WINDOW_DAYS")? g_getenv ("PRELOAD_WINDOW_DAYS"):"15", NULL);
+	temp.day -= i;
+	icaltime_normalize (temp);
+	l_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+	gmtime_r (&l_time, &tm);
+	strftime (l_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
+	temp.day += (2*i);
+	icaltime_normalize (temp);
+	h_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
+	gmtime_r (&h_time, &tm);
+	strftime (h_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
+
+	filter[0] = e_gw_filter_new ();
+	e_gw_filter_add_filter_component (filter[0], E_GW_FILTER_OP_GREATERTHAN_OR_EQUAL, "startDate", l_str);
+	e_gw_filter_add_filter_component (filter[0], E_GW_FILTER_OP_LESSTHAN_OR_EQUAL, "startDate", h_str);
+	e_gw_filter_group_conditions (filter[0], E_GW_FILTER_OP_AND, 2);
+	filter[1] = e_gw_filter_new ();
+	e_gw_filter_add_filter_component (filter[1], E_GW_FILTER_OP_GREATERTHAN, "startDate", h_str);
+	filter[2] = e_gw_filter_new ();
+	e_gw_filter_add_filter_component (filter[2], E_GW_FILTER_OP_LESSTHAN, "startDate", l_str);
+
+	for (i = 0; i < 3; i++) {
+		status = e_gw_connection_create_cursor (priv->cnc,
+				priv->container_id, 
+				"recipients message recipientStatus attachments default peek", filter[i], &cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
 			g_mutex_unlock (mutex);
 			return status;
 		}
-		for (l = list; l != NULL; l = g_list_next(l)) {
-			EGwItem *item;
-			char *progress_string = NULL;
-			
-			item = E_GW_ITEM (l->data);
-			comp = e_gw_item_to_cal_component (item, cbgw);
-			g_object_unref (item);
-			
-			/* Show the progress information */
-			num++;
-			percent = ((float) num/total) * 100;
 		
-			/* FIXME The total obtained from the server is wrong. Sometimes the num can 
-			be greater than the total. The following makes sure that the percentage is not >= 100 */
- 
-			if (percent > 100)
-				percent = 99; 
-
-			progress_string = g_strdup_printf (_("Loading %s items"), type);
-			e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
+		while (!done) {
 			
-			if (E_IS_CAL_COMPONENT (comp)) {
-				char *comp_str;
-				
-				e_cal_component_commit_sequence (comp);
-				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
-					comp_str = e_cal_component_get_as_string (comp);	
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const char *) comp_str);
-					g_free (comp_str);
-				}
-				e_cal_backend_cache_put_component (priv->cache, comp);
-				g_object_unref (comp);
+			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
+			if (status != E_GW_CONNECTION_STATUS_OK) {
+				e_cal_backend_groupwise_notify_error_code (cbgw, status);
+				g_mutex_unlock (mutex);
+				return status;
 			}
-			g_free (progress_string);
+			for (l = list; l != NULL; l = g_list_next(l)) {
+				EGwItem *item;
+				char *progress_string = NULL;
+				
+				item = E_GW_ITEM (l->data);
+				comp = e_gw_item_to_cal_component (item, cbgw);
+				g_object_unref (item);
+				
+				/* Show the progress information */
+				num++;
+				percent = ((float) num/total) * 100;
+			
+				/* FIXME The total obtained from the server is wrong. Sometimes the num can 
+				be greater than the total. The following makes sure that the percentage is not >= 100 */
+	 
+				if (percent > 100)
+					percent = 99; 
+
+				progress_string = g_strdup_printf (_("Loading %s items"), type);
+				e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
+				
+				if (E_IS_CAL_COMPONENT (comp)) {
+					char *comp_str;
+					
+					e_cal_component_commit_sequence (comp);
+					if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
+						comp_str = e_cal_component_get_as_string (comp);	
+						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const char *) comp_str);
+						g_free (comp_str);
+					}
+					e_cal_backend_cache_put_component (priv->cache, comp);
+					g_object_unref (comp);
+				}
+				g_free (progress_string);
+			}
+			
+			if (!list  || g_list_length (list) == 0)
+				done = TRUE;
+			g_list_free (list);
+			list = NULL;
+			position = E_GW_CURSOR_POSITION_CURRENT;
 		}
-		
-		if (!list  || g_list_length (list) == 0)
-			done = TRUE;
-		g_list_free (list);
-		list = NULL;
-		position = E_GW_CURSOR_POSITION_CURRENT;
-        }
-	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
+		e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
+		g_object_unref (filter[i]);
+	}
 	e_cal_backend_notify_view_done (E_CAL_BACKEND (cbgw), GNOME_Evolution_Calendar_Success);
 
 	g_mutex_unlock (mutex);
@@ -241,7 +274,7 @@ get_deltas (gpointer handle)
 	GSList *cache_keys = NULL;
 	GPtrArray *uid_array = g_ptr_array_new ();
 	char *time_string = NULL;
-	char t_str [100]; 
+	char t_str [26]; 
 	const char *serv_time;
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 	const char *time_interval_string;
@@ -255,7 +288,7 @@ get_deltas (gpointer handle)
 	icaltimetype temp;
 	gboolean done = FALSE;
 	int cursor = 0;
-	struct tm *tm;
+	struct tm tm;
 	time_t current_time;
 	gboolean needs_to_get = FALSE;
 
@@ -277,22 +310,22 @@ get_deltas (gpointer handle)
 
 	serv_time = e_cal_backend_cache_get_server_utc_time (cache);
 	if (serv_time) {
-		g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 100);
+		g_strlcpy (t_str, e_cal_backend_cache_get_server_utc_time (cache), 26);
 		if (!*t_str || !strcmp (t_str, "")) {
 			/* FIXME: When time-stamp is crashed, getting changes from current time */
 			g_warning ("\n\a Could not get the correct time stamp. \n\a");
 			temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 			current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-			tm = gmtime (&current_time);
-			strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+			gmtime_r (&current_time, &tm);
+			strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 		}
 	} else {
 		/* FIXME: When time-stamp is crashed, getting changes from current time */
 		g_warning ("\n\a Could not get the correct time stamp. \n\a");
 		temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 		current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-		tm = gmtime (&current_time);
-		strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+		gmtime_r (&current_time, &tm);
+		strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 	}
 	time_string = g_strdup (t_str);
 
@@ -366,7 +399,7 @@ get_deltas (gpointer handle)
 
 	temp = icaltime_from_string (time_string);
 	current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-	tm = gmtime (&current_time);
+	gmtime_r (&current_time, &tm);
 
 	time_interval = (CACHE_REFRESH_INTERVAL / 60000);
 	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
@@ -374,12 +407,12 @@ get_deltas (gpointer handle)
 		time_interval = g_ascii_strtod (time_interval_string, NULL);
 	} 
 	if (attempts) {
-		tm->tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
+		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
 		e_cal_backend_cache_put_key_value (cache, key, NULL);
 	} else {
-		tm->tm_min += time_interval;
+		tm.tm_min += time_interval;
 	}
-	strftime (t_str, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 	time_string = g_strdup (t_str);
 
 	e_cal_backend_cache_put_server_utc_time (cache, time_string);
