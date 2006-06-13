@@ -1,3 +1,9 @@
+2006-06-13  Andre Klapper <a9016009@gmx.de>
+
+	* libebook/e-book.c:
+	changing "couldn't", "can't" and "didn't" to proper
+	English. Fixes bug #342160.
+
 2006-06-13  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-vcard.[ch]:

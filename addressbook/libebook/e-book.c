@@ -2614,7 +2614,7 @@ e_book_cancel (EBook   *book,
 	}
 	else {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
-			     _("%s: couldn't cancel"), "e_book_cancel");
+			     _("%s: could not cancel"), "e_book_cancel");
 		rv = FALSE;
 	}
 

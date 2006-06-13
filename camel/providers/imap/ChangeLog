@@ -1,3 +1,9 @@
+2006-06-13  Andre Klapper <a9016009@gmx.de>
+
+	* camel-imap-store.c:
+	changing "couldn't", "can't" and "didn't" to proper
+	English. Fixes bug #342160.
+
 2006-05-22  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap-command.c (imap_read_untagged): Make sure the literal

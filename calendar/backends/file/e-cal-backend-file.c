@@ -200,7 +200,7 @@ save_file_when_idle (gpointer user_data)
  error_malformed_uri:
 	g_mutex_unlock (priv->idle_save_mutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
-				  _("Can't save calendar data: Malformed URI."));
+				  _("Cannot save calendar data: Malformed URI."));
 	return TRUE;
 
  error:

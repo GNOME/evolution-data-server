@@ -1,3 +1,9 @@
+2006-06-13  Andre Klapper <a9016009@gmx.de>
+
+	* src/server.c:
+	changing "couldn't", "can't" and "didn't" to proper
+	English. Fixes bug #342160.
+
 2006-06-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in, NEWS: EDS 1.7.3 release updates

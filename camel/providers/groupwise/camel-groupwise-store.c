@@ -211,7 +211,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 			
 			if (!service->url->passwd) {
 				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-						     _("You didn't enter a password."));
+						     _("You did not enter a password."));
 				return FALSE;
 			}
 		}
