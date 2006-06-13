@@ -1491,6 +1491,12 @@ caldav_remove (ECalBackendSync *backend,
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	g_mutex_lock (priv->lock);
+	
+	if (priv->loaded != TRUE) {
+		g_mutex_unlock (priv->lock);
+		return GNOME_Evolution_Calendar_Success;
+	}
+	
 	status = check_state (cbdav, &online);
 
 	if (status != GNOME_Evolution_Calendar_Success) {

@@ -1,3 +1,10 @@
+2006-06-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #335069
+	* backends/caldav/e-cal-backend-caldav.c: 
+	(caldav_remove): Return success if the cache
+	is not loaded.
+
 2006-06-12  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
