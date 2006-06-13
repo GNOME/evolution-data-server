@@ -298,6 +298,7 @@ void e_gw_item_set_source (EGwItem *item, char *source) ;
 int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 
+gboolean e_gw_item_has_attachment (EGwItem *item);
 
 typedef struct {
 	char *email;

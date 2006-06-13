@@ -1,5 +1,12 @@
 2006-06-13  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	Fixes bug #167517 on bnc
+
+	* e-gw-item.[ch]: Use the hasAttachment soap element
+	to check if a mail contains an attachment or not.
+
+2006-06-13  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	Fixes bug #179075 on bnc
 	* e-gw-item.c (e_gw_item_new_from_soap_parameter):
 	set the is_group_item to FALSE only if its a CALENDAR

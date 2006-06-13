@@ -72,6 +72,7 @@ struct _EGwItemPrivate {
 	char *msg_body_id;
 	int item_status;
 	/*Attachments*/
+	gboolean has_attachment;
 	GSList *attach_list ; 
 	/*linkInfo for replies*/
 	EGwItemLinkInfo *link_info; 
@@ -525,6 +526,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->self_status = 0;
 	priv->link_info = NULL;
 	priv->msg_body_id = NULL;
+	priv->has_attachment = FALSE;
 	item->priv = priv;
 	
 	
@@ -1795,6 +1797,9 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		} else if (!g_ascii_strcasecmp (name, "size")) {
 			item->priv->size = soup_soap_parameter_get_int_value (child);
 
+		} else if (!g_ascii_strcasecmp (name, "hasAttachment")) {
+			item->priv->has_attachment = soup_soap_parameter_get_int_value (child);
+			
 		} else if (!g_ascii_strcasecmp (name, "options")) {
 			SoupSoapParameter *subparam;
 			char *value = NULL;
@@ -2063,6 +2068,14 @@ e_gw_item_get_mail_size (EGwItem *item)
 	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
 
 	return item->priv->size;
+}
+
+gboolean
+e_gw_item_has_attachment (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
+
+	return item->priv->has_attachment;
 }
 
 char *
@@ -3116,7 +3129,8 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			char *str ;
 			char *str_len ;
 
-			str = soup_base64_encode (priv->message, strlen (priv->message));
+			//str = soup_base64_encode (priv->message, strlen (priv->message));
+			str = g_strdup (priv->message);
 			str_len = g_strdup_printf ("%d", (int)strlen (str));
 			soup_soap_message_start_element (msg, "part", NULL, NULL);
 			soup_soap_message_add_attribute (msg, "length", str_len, NULL, NULL);
