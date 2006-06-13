@@ -345,10 +345,20 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	if (camel_content_type_is (type, "message", "rfc822")) {
 		const char *message_id;
 		char *msgid;
+		int len;
 		
 		message_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "Message-Id");
-		msgid = camel_header_msgid_decode (message_id);
+		/*
+		 * XXX: The following code piece is a screwed up way of doing stuff.
+		 * But we dont have much choice. Do not use 'camel_header_msgid_decode'
+		 * since it removes the container id portion from the id and which the
+		 * groupwise server needs.
+		 */
 		
+		len = strlen (message_id);
+		msgid = (char *)g_malloc0 (len-1);
+		msgid = memcpy(msgid, message_id+2, len-3);
+
 		status = e_gw_connection_forward_item (cnc, msgid, NULL, TRUE, &temp_item);
 		g_free (msgid);
 		

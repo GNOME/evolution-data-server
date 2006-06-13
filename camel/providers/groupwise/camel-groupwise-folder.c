@@ -1166,7 +1166,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		camel_operation_progress (NULL, (100*i)/total_items);
 
-		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status size", &item);
+		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			i++;
 			continue;
@@ -1219,20 +1219,9 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		}
 
 		mi->server_flags = mi->info.flags;
-
-		attach_list = e_gw_item_get_attach_id_list (item);
-		if (attach_list)  {
-			GSList *al = attach_list;
-			gboolean has_attachments = TRUE;
-			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-
-			if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
-					!g_ascii_strcasecmp (attach->name, "TEXT.htm")) 
-				has_attachments = FALSE;
-
-			if (has_attachments)
-				mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-		}
+		
+		if (e_gw_item_has_attachment (item))
+			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
@@ -1430,20 +1419,9 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
 		}
-
-		attach_list = e_gw_item_get_attach_id_list (item);
-		if (attach_list)  {
-			GSList *al = attach_list;
-			gboolean has_attachments = TRUE;
-			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-
-			if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
-					!g_ascii_strcasecmp (attach->name, "TEXT.htm")) 
-				has_attachments = FALSE;
-
-			if (has_attachments)
-				mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-		}
+		
+		if (e_gw_item_has_attachment (item))
+			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {

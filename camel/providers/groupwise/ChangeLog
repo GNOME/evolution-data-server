@@ -1,3 +1,20 @@
+2006-06-13  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	Fixes bug #167517 on bnc
+
+	* camel-groupwise-utils.c: (send_as_attachment):
+	revert a part of fejjs patch. We need the message id
+	with the container in it. We cant use the camel_header_msgid_decode
+	method since it would normalise anything after ':'. 
+	Henceforth the forwardrequest would get the complete id of the message
+	and the link info is sent correctly.
+
+	* camel-groupwise-store.c:
+	* camel-groupwise-folder.c: 
+	(gw_update_cache):
+	(gw_update_summary): use the hasAttachments element to
+	check if a mail has attachments or not.
+	
 2006-06-12  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	Fixes bug #166265 on bnc
