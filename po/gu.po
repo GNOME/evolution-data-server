@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-31 22:54+0200\n"
-"PO-Revision-Date: 2006-06-01 10:02+0530\n"
+"POT-Creation-Date: 2006-06-13 06:22+0200\n"
+"PO-Revision-Date: 2006-06-13 10:55+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -24,64 +24,65 @@ msgstr ""
 "\n"
 "\n"
 "\n"
+"\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "લાવી રહ્યા છીએ..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4083
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "શોધી રહ્યા છીએ..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2507
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "સંપર્કો ડાઉનલોડ કરી રહ્યા છીએ (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2660
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2876
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "સંપર્કો કેશ સુધારી રહ્યા છીએ (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Distinguished Name (DN)"
 msgstr "વિસ્તૃત નામ (DN) વાપરી રહ્યા છીએ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:716
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
 msgid "Using Email Address"
 msgstr "ઈમેઈલ સરનામું વાપરી રહ્યા છીએ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP સર્વર સાથે ફરીથી જોડાઈ રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP સર્વરમાં સંપર્ક ઉમેરી રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP સર્વરમાંથી સંપર્ક દૂર કરી રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP સર્વરમાં સંપર્ક સુધારી રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3945
 msgid "Receiving LDAP search results..."
 msgstr "LDAP શોધનાં પરિણામો મેળવી રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4105
 msgid "Error performing search"
 msgstr "શોધ કરવામાં ભૂલ"
 
@@ -160,8 +161,8 @@ msgstr "%s: અયોગ્ય સ્રોત."
 
 #: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3349
 #, c-format
-msgid "%s: no factories available for uri `%s'"
-msgstr "%s: uri `%s' માટે કોઈ કારખાનાંઓ ઉપલબ્ધ નથી"
+msgid "%s: no factories available for URI `%s'"
+msgstr "%s: URI `%s' માટે કોઈ ફેક્ટરીઓ ઉપલબ્ધ નથી"
 
 #: ../addressbook/libebook/e-book.c:3297
 #, c-format
@@ -660,36 +661,36 @@ msgid "Can't save calendar data: Malformed URI."
 msgstr "કેલેન્ડરની માહીતી સંગ્રહી શકાતી નથી: મેલફોર્મવાળી URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1587
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1615
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1592
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1620
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:193
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:224
 #, c-format
 msgid "Loading %s items"
 msgstr "%s વસ્તુઓ લાવી રહ્યા છીએ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:719
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:752
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "કેલેન્ડર"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:808
 msgid "Invalid server URI"
 msgstr "અયોગ્ય સર્વર URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:791
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:824
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:833
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:971
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:996
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1031
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1008
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
 #: ../camel/providers/groupwise/camel-groupwise-store.c:715
@@ -699,18 +700,18 @@ msgstr "અયોગ્ય સર્વર URI"
 msgid "Authentication failed"
 msgstr "સત્તાધિકાર નિષ્ફળ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:841
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:874
 msgid "Could not create thread for getting deltas"
 msgstr "deltas મેળવવા માટે થ્રેડ બનાવી શક્યા નહિં"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:899
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1146
 #: ../calendar/backends/http/e-cal-backend-http.c:520
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:879
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:912
 msgid "Could not create thread for populating cache"
 msgstr "કેશ બનાવવા માટે થ્રેડ બનાવી શક્યા નથી"
 
@@ -1142,7 +1143,7 @@ msgid "A CORBA exception has occurred"
 msgstr "CORBA નો અપવાદ ઊભો થયો છે"
 
 #: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
@@ -1430,7 +1431,7 @@ msgstr "બાળ પ્રક્રિયા '%s' બનાવવામાં �
 msgid "Error executing filter search: %s: %s"
 msgstr "ગાળક શોધ ચલાવવામાં ભૂલ: %s: %s"
 
-#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:478
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1439,7 +1440,7 @@ msgstr ""
 "શોધ સમીકરણો પદચ્છેદ કરી શકતા નથી: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:488
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1448,27 +1449,27 @@ msgstr ""
 "શોધ સમીકરણ ચલાવવામાં ભૂલ: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
+#: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
 msgid "(match-all) requires a single bool result"
 msgstr "(બધું-સરખાવો) એક બુટનું પરિણામ જરુરી છે"
 
-#: ../camel/camel-folder-search.c:757
+#: ../camel/camel-folder-search.c:758
 msgid "(match-threads) not allowed inside match-all"
 msgstr "(થ્રેડો-સરખાવો) બધું-સરખાવો ની અંદર માન્ય નથી"
 
-#: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
+#: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
 msgstr "(થ્રેડો-સરખાવો) શબ્દમાળાનો પ્રકાર બંધબેસે તે જરુરી છે"
 
-#: ../camel/camel-folder-search.c:788
+#: ../camel/camel-folder-search.c:789
 msgid "(match-threads) expects an array result"
 msgstr "(થ્રેડો-સરખાવો) અૅરે પરિણામની ઈચ્છા ધરાવે છે"
 
-#: ../camel/camel-folder-search.c:794
+#: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
 msgstr "(થ્રેડો-સરખાવો) ફોલ્ડરોનો સમૂહ જરુરી છે"
 
-#: ../camel/camel-folder-search.c:886
+#: ../camel/camel-folder-search.c:887
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "અજ્ઞાત હેડર પર પ્રશ્ન વાપરી રહ્યા છીએ: %s"
@@ -2614,21 +2615,21 @@ msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં �
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1550
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1578
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:740
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:752
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s માટે સાર લાવી શક્યા નહિં"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:967
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:979
 msgid "Trash Folder Full. Please Empty."
 msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. મહેરબાની કરીને ખાલી કરો."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1132
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
 #: ../camel/providers/groupwise/camel-groupwise-store.c:747
 #: ../camel/providers/imap/camel-imap-folder.c:2361
@@ -2637,13 +2638,13 @@ msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. �
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1818
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1866
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1845
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1887
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1854
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1875
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2793,7 +2794,7 @@ msgstr "%s મારફતે જૂથપ્રમાણે મેઈલ મે
 msgid "Sending Message"
 msgstr "સંદેશો મોકલી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:216
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2803,7 +2804,7 @@ msgstr ""
 "મેઈલો કાઢી નાંખ્યા પછી/સંકુચિત કર્યા પછી મોકલો/મેળવો બટન દબાવીને ફરી મોકલવાનો પ્રયત્ન "
 "કરો.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -3677,9 +3678,9 @@ msgid "Checking for new messages"
 msgstr "નવા સંદેશાઓ માટે ચકાસી રહ્યા છીએ"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:416
-#: ../camel/providers/local/camel-mbox-summary.c:589
-#: ../camel/providers/local/camel-mbox-summary.c:684
+#: ../camel/providers/local/camel-mbox-summary.c:417
+#: ../camel/providers/local/camel-mbox-summary.c:590
+#: ../camel/providers/local/camel-mbox-summary.c:685
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "ફોલ્ડરો સંગ્રહી રહ્યા છીએ"
@@ -3772,76 +3773,76 @@ msgstr "`%s' નું નામ બદલી શકાયું નથી: `%s'
 msgid "Could not rename '%s' to %s: %s"
 msgstr "'%s' નું નામ %s માં ફેરવી શકાયું નથી: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:422
+#: ../camel/providers/local/camel-mbox-summary.c:423
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "ફોલ્ડર ખોલી શક્યા નથી: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:470
+#: ../camel/providers/local/camel-mbox-summary.c:471
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "%ld જગ્યાએ ફોલ્ડર %s માં ખરાબ મેઈલ પદચ્છેદ ભૂલ આવી"
 
-#: ../camel/providers/local/camel-mbox-summary.c:526
+#: ../camel/providers/local/camel-mbox-summary.c:527
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "ફોલ્ડર ચકાસી શકતા નથી: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:594
-#: ../camel/providers/local/camel-mbox-summary.c:689
+#: ../camel/providers/local/camel-mbox-summary.c:595
+#: ../camel/providers/local/camel-mbox-summary.c:690
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "ફાઈલ ખોલી શક્યા નહિં: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:607
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "કામચલાઉ મેઈલબોક્સ ખોલી શકતા નથી: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:795
+#: ../camel/providers/local/camel-mbox-summary.c:620
+#: ../camel/providers/local/camel-mbox-summary.c:796
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "સ્રોત ફોલ્ડર %s ને બંધ કરી શક્યા નહિં: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:628
+#: ../camel/providers/local/camel-mbox-summary.c:629
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "કામચલાઉ ફોલ્ડર બંધ કરી શક્યા નહિં: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:643
+#: ../camel/providers/local/camel-mbox-summary.c:644
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ફોલ્ડરનું નામ બદલી શક્યા નહિં: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:700
-#: ../camel/providers/local/camel-mbox-summary.c:906
+#: ../camel/providers/local/camel-mbox-summary.c:701
+#: ../camel/providers/local/camel-mbox-summary.c:907
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ફોલ્ડર સંગ્રહી શક્યા નહિં: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:737
-#: ../camel/providers/local/camel-mbox-summary.c:745
-#: ../camel/providers/local/camel-mbox-summary.c:937
-#: ../camel/providers/local/camel-mbox-summary.c:945
+#: ../camel/providers/local/camel-mbox-summary.c:738
+#: ../camel/providers/local/camel-mbox-summary.c:746
+#: ../camel/providers/local/camel-mbox-summary.c:938
+#: ../camel/providers/local/camel-mbox-summary.c:946
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "સાર અને ફોલ્ડરનું બંધબેસવું નહિં, સુમેળ કર્યા પછી પણ"
 
-#: ../camel/providers/local/camel-mbox-summary.c:871
+#: ../camel/providers/local/camel-mbox-summary.c:872
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "અજ્ઞાત ભૂલ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1000
-#: ../camel/providers/local/camel-mbox-summary.c:1026
+#: ../camel/providers/local/camel-mbox-summary.c:1001
+#: ../camel/providers/local/camel-mbox-summary.c:1027
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "કામચલાઉ મેઈલબોક્સ લખવામાં ભૂલ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1018
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં ભૂલ: %s: %s"
@@ -4088,27 +4089,27 @@ msgstr "જોડાયેલ નથી."
 msgid "No such folder: %s"
 msgstr "આવું કોઈ ફોલ્ડર નથી: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:220
-#: ../camel/providers/nntp/camel-nntp-summary.c:316
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
+#: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: નવા સંદેશાઓ ચકાસી રહ્યા છીએ"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:227
+#: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "xover માંથી સર્વરનો અનિચ્છનિય જવાબ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:330
+#: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "head માંથી સર્વરનો અનિચ્છનિય જવાબ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:370
+#: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
 msgstr "રદ કરો વાપરો"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:372
+#: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
 msgid "Operation failed: %s"
 msgstr "પ્રક્રિયા નિષ્ફળ: %s"
@@ -4834,11 +4835,11 @@ msgstr "વર્ગો"
 msgid "Select Contacts from Address Book"
 msgstr "સરનામા પોથીમાંથી સંપર્કો પસંદ કરો"
 
-#: ../libedataserverui/e-name-selector-dialog.c:578
+#: ../libedataserverui/e-name-selector-dialog.c:583
 msgid "_Add"
 msgstr "ઉમેરો (_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:603
+#: ../libedataserverui/e-name-selector-dialog.c:608
 msgid "_Remove"
 msgstr "દૂર કરો (_R)"
 
@@ -4884,13 +4885,13 @@ msgid "_Search:"
 msgstr "શોધો (_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1997
+#: ../libedataserverui/e-name-selector-entry.c:2047
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s લીટીમાં વિસ્તૃત કરો (_x)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2013
+#: ../libedataserverui/e-name-selector-entry.c:2063
 #, c-format
 msgid "_Edit %s"
 msgstr "%s માં ફેરફાર કરો (_E)"
