@@ -1945,8 +1945,11 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		else if (!g_ascii_strcasecmp (name, "source")) {
 			char *value;
 			value = soup_soap_parameter_get_string_value (child);
-			if (!strcmp (value, "personal"))
-				is_group_item = FALSE;
+			if (!strcmp (value, "personal")) {
+				if (item->priv->item_type == E_GW_ITEM_TYPE_TASK || 
+				    item->priv->item_type == E_GW_ITEM_TYPE_APPOINTMENT)
+					is_group_item = FALSE;
+			}
 			g_free (value);
 		} else if (!g_ascii_strcasecmp (name, "link")){
 			SoupSoapParameter *subparam;
