@@ -1525,6 +1525,27 @@ e_vcard_get_attributes (EVCard *evcard)
 	return evcard->priv->attributes;
 }
 
+EVCardAttribute *
+e_vcard_get_attribute (EVCard     *vcard,
+		       const char *name)
+{
+        GList *attrs, *l;
+
+        g_return_val_if_fail (E_IS_VCARD (vcard), NULL);
+        g_return_val_if_fail (name != NULL, NULL);
+
+        attrs = e_vcard_get_attributes (vcard);
+        for (l = attrs; l; l = l->next) {
+                EVCardAttribute *attr;
+                const char *n;
+		
+                attr = (EVCardAttribute *) l->data;
+                if (strcmp (attr->name, name) == 0)
+                        return attr;
+        }
+
+        return NULL;
+}
 /**
  * e_vcard_attribute_get_group:
  * @attr: an #EVCardAttribute

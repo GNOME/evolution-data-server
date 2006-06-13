@@ -168,6 +168,7 @@ void                  e_vcard_attribute_param_remove_values   (EVCardAttributePa
 
 /* EVCard* accessors.  nothing returned from these functions should be
    freed by the caller. */
+EVCardAttribute *e_vcard_get_attribute        (EVCard *vcard, const char *name);
 GList*           e_vcard_get_attributes       (EVCard *evcard);
 const char*      e_vcard_attribute_get_group  (EVCardAttribute *attr);
 const char*      e_vcard_attribute_get_name   (EVCardAttribute *attr);

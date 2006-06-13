@@ -1,3 +1,8 @@
+2006-06-13  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-vcard.[ch]:
+	Add e_vcard_get_attribute() (#334411)
+
 2006-06-12  simon.zheng  <simon.zheng@sun.com>
 
 	Fix for #336453
@@ -17,6 +22,7 @@
 	to a db based cache.
 	* addressbook/libedata-book/e-book-backend-db-cache.[ch]:
 	Addeed APIs for handling db based cache.
+
 2006-06-07  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book-query.c:
