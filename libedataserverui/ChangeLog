@@ -1,3 +1,9 @@
+2006-06-13  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	** Fixes 342384
+	* e-name-selector-entry.c: (popup_activate_inline_expand):
+	Sanitizing mail list text and memory leak fix.
+
 2006-05-21  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fixes bug #342479

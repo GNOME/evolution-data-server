@@ -1805,6 +1805,7 @@ static void
 popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
 	const char *email_list, *text;
+	gchar *sanitized_text;
 	EDestination *destination = name_selector_entry->popup_destination;
 	int position, start, end;
 
@@ -1818,8 +1819,9 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), start, end);
 
-	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
-	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), email_list, -1, &start);
+	sanitized_text = sanitize_string (email_list);
+	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), sanitized_text, -1, &start);
+	g_free (sanitized_text);
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
