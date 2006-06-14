@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-2.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-12 19:17+0200\n"
-"PO-Revision-Date: 2006-06-12 19:17+0200\n"
+"POT-Creation-Date: 2006-06-14 15:35+0200\n"
+"PO-Revision-Date: 2006-06-14 15:37+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -138,7 +138,7 @@ msgstr "%s: no hay operación actual"
 
 #: ../addressbook/libebook/e-book.c:2617
 #, c-format
-msgid "%s: couldn't cancel"
+msgid "%s: could not cancel"
 msgstr "%s: no se pudo cancelar"
 
 #: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
@@ -584,7 +584,7 @@ msgstr "Categorías"
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Calendar URI"
-msgstr "URI de agenda"
+msgstr "URI de calendario"
 
 #: ../addressbook/libebook/e-contact.c:234
 msgid "Free/Busy URL"
@@ -654,16 +654,16 @@ msgid "Anniversary: %s"
 msgstr "Aniversario %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-msgid "Can't save calendar data: Malformed URI."
-msgstr "No se pudo guardar los datos de la agenda. URL malformada."
+msgid "Cannot save calendar data: Malformed URI."
+msgstr "No se pueden guardar los datos del calendario: URL malformada."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1615
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1620
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
@@ -675,7 +675,7 @@ msgstr "Cargando %s elementos"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:752
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
-msgstr "Agenda"
+msgstr "Calendario"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:808
 msgid "Invalid server URI"
@@ -690,9 +690,9 @@ msgstr "URI del servidor inválida"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:715
-#: ../camel/providers/groupwise/camel-groupwise-store.c:757
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1265
+#: ../camel/providers/groupwise/camel-groupwise-store.c:714
+#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "Falló la autenticación"
@@ -2640,7 +2640,7 @@ msgstr "Este mensaje no está disponible en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1578
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
 msgid "Could not get message"
 msgstr "No se pudo obtener el mensaje"
 
@@ -2656,20 +2656,20 @@ msgstr "La papelera está llena. Por favor vacíela."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:747
+#: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/imap/camel-imap-folder.c:2361
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo información de los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1845
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1887
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No se pudo agregar el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1875
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
@@ -2770,7 +2770,7 @@ msgstr "%s Escriba la contraseña GroupWise para %s@%s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:214
 #: ../camel/providers/imap/camel-imap-store.c:1360
-msgid "You didn't enter a password."
+msgid "You did not enter a password."
 msgstr "No introdujo una contraseña."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:226
@@ -2790,29 +2790,29 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1242
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "No se pueden crear las carpetas GroupWise en modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "No está permitido que la carpeta raíz contenga subcarpetas"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1333
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1354
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "No se pudo renombrar la carpeta Groupwise «%s» a «%s»"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1386
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1388
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Servicio GroupWise para %s en %s"
@@ -4973,13 +4973,13 @@ msgid "_Search:"
 msgstr "_Buscar:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2047
+#: ../libedataserverui/e-name-selector-entry.c:2049
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s en línea"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2063
+#: ../libedataserverui/e-name-selector-entry.c:2065
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
@@ -5206,7 +5206,7 @@ msgstr "Soporte de libretas de direcciones en archivo local de Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Soporte de agenda y webcal de Evolution"
+msgstr "Soporte de calendario y webcal de Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
@@ -5219,7 +5219,7 @@ msgstr "Servicio de registro de Evolution Data Server"
 #. dialog display isn't working out
 #: ../src/server.c:106
 #, c-format
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
 "Han ocurrido fallos de segmentación múltiples; no se puede mostrar el "
 "diálogo de error\n"
