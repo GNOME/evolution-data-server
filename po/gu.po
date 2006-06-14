@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-13 06:22+0200\n"
-"PO-Revision-Date: 2006-06-13 10:55+0530\n"
+"POT-Creation-Date: 2006-06-14 06:25+0200\n"
+"PO-Revision-Date: 2006-06-14 12:24+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -141,8 +142,8 @@ msgstr "%s: ત્યાં કોઈ વર્તમાન ક્રિયા �
 
 #: ../addressbook/libebook/e-book.c:2617
 #, c-format
-msgid "%s: couldn't cancel"
-msgstr "%s: રદ કરી શક્યા નથી"
+msgid "%s: could not cancel"
+msgstr "%s: રદ કરી શક્યા નહિં"
 
 #: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
@@ -657,16 +658,16 @@ msgid "Anniversary: %s"
 msgstr "સાલગીરી: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-msgid "Can't save calendar data: Malformed URI."
-msgstr "કેલેન્ડરની માહીતી સંગ્રહી શકાતી નથી: મેલફોર્મવાળી URI."
+msgid "Cannot save calendar data: Malformed URI."
+msgstr "કેલેન્ડર માહિતી સંગ્રહી શકતા નથી: મલીન URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1615
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1620
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
@@ -693,9 +694,9 @@ msgstr "અયોગ્ય સર્વર URI"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:715
-#: ../camel/providers/groupwise/camel-groupwise-store.c:757
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1265
+#: ../camel/providers/groupwise/camel-groupwise-store.c:714
+#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "સત્તાધિકાર નિષ્ફળ"
@@ -2615,7 +2616,7 @@ msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં �
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1578
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
@@ -2631,20 +2632,20 @@ msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. �
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:747
+#: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/imap/camel-imap-folder.c:2361
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1845
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1887
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1875
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2740,8 +2741,8 @@ msgstr "%sમહેરબાની કરીને %s@%s માટે જૂથ�
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:214
 #: ../camel/providers/imap/camel-imap-store.c:1360
-msgid "You didn't enter a password."
-msgstr "તમે પાસવર્ડ દાખલ કર્યો નથી."
+msgid "You did not enter a password."
+msgstr "તમે પાસવર્ડ દાખલ કરેલ નથી."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:226
 msgid "Unable to authenticate to GroupWise server. "
@@ -2758,29 +2759,29 @@ msgstr "તમારી વર્તમાન સર્વર આવૃત્ત
 msgid "No such folder %s"
 msgstr "આવું કોઈ ફોલ્ડર %s નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1242
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં જૂથપ્રમાણે ફોલ્ડર બનાવી શકતા નથી."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "પિતૃ ફોલ્ડરને ઉપફોલ્ડરો સમાવવાની પરવાનગી નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1333
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1354
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "જૂથપ્રમાણે ફોલ્ડર `%s' ને `%s' માં નામ બદલી શકતા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1386
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "જૂથપ્રમાણે સર્વર %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1388
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s માટે %s પર જૂથપ્રમાણે સેવા"
@@ -4885,13 +4886,13 @@ msgid "_Search:"
 msgstr "શોધો (_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2047
+#: ../libedataserverui/e-name-selector-entry.c:2049
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s લીટીમાં વિસ્તૃત કરો (_x)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2063
+#: ../libedataserverui/e-name-selector-entry.c:2065
 #, c-format
 msgid "_Edit %s"
 msgstr "%s માં ફેરફાર કરો (_E)"
@@ -5131,6 +5132,6 @@ msgstr "ઈવોલ્યુશન માહિતી સર્વર પ્ર
 #. dialog display isn't working out
 #: ../src/server.c:106
 #, c-format
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "ઘણા બધા સેગમેન્ટેશન બગાડો ઉદ્ભવ્યા. ભૂલનો સંવાદ દર્શાવી શકતા નથી\n"
+msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
+msgstr "ઘણી સેગ્મેન્ટેશન ભૂલો થઈ; ભૂલ સંવાદ દર્શાવી શકતા નથી\n"
 
