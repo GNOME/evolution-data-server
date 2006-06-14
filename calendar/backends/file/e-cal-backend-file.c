@@ -1519,6 +1519,7 @@ e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer value,
 		e_cal_component_set_uid (comp, key);
 		be_data->deletes = g_list_prepend (be_data->deletes, e_cal_component_get_as_string (comp));
 
+		g_object_unref (comp);
 		return TRUE;
  	}
 	return FALSE;
