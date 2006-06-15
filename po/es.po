@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-2.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-14 15:35+0200\n"
-"PO-Revision-Date: 2006-06-14 15:37+0200\n"
+"POT-Creation-Date: 2006-06-15 04:31+0200\n"
+"PO-Revision-Date: 2006-06-15 04:31+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -651,7 +651,7 @@ msgstr "Cumpleaños: %s"
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
-msgstr "Aniversario %s"
+msgstr "Aniversario: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Cannot save calendar data: Malformed URI."
