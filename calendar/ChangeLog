@@ -1,3 +1,10 @@
+2006-06-15  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libecal/e-cal-component.c: (get_attachment_list),
+	(set_attachment_list): Handle attachment URLs with
+	special characters that are not permitted in
+	ICAL. Fixes #178706 in bugzilla.novell.com.
+	
 2006-06-15  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes #344253

@@ -1506,6 +1506,8 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 	for (l = attachment_list; l; l = l->next) {
 		struct attachment *attachment;
 		const char *data;
+		size_t buf_size;
+		char *buf;
 
 		attachment = l->data;
 		g_assert (attachment->attach != NULL);
@@ -1516,10 +1518,15 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 			 */   
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
+			g_message ("Before decoding %s\n", data);
+			buf_size = strlen (data);
+			buf = g_malloc0 (buf_size);
+			icalvalue_decode_ical_string (data, buf, buf_size);	
 		}
 		else
 			data = NULL;
-		*al = g_slist_prepend (*al, (char *)data);
+		g_message ("After decoding: %s\n", buf);
+		*al = g_slist_prepend (*al, (char *)buf);
 	}
 
 	*al = g_slist_reverse (*al);
@@ -1555,12 +1562,17 @@ set_attachment_list (icalcomponent *icalcomp,
 
 	for (l = al; l; l = l->next) {
 		struct attachment *attachment;
+		size_t buf_size;
+		char *buf;
 
 		attachment = g_new0 (struct attachment, 1);
-		attachment->attach = icalattach_new_from_url ((char *) l->data); 	
+		buf_size = 2 * strlen ((char *)l->data);
+		buf = g_malloc0 (buf_size);
+		icalvalue_encode_ical_string (l->data, buf, buf_size);
+		attachment->attach = icalattach_new_from_url ((char *) buf); 	
 		attachment->prop = icalproperty_new_attach (attachment->attach);
 		icalcomponent_add_property (icalcomp, attachment->prop);
-
+		g_free (buf);
 		*attachment_list = g_slist_prepend (*attachment_list, attachment);
 	}
 
