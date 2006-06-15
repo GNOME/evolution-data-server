@@ -494,12 +494,12 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 #endif
 						     );
 			else
-				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
+				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 			
 			/* We cancel so if the thread impl is decent it causes immediate exit.
 			   We detach so we dont need to wait for it to exit if it isn't.
 			   We check the reply port incase we had a reply in the mean time, which we free later */
-			d(printf("Cancelling lookup thread and leaving it\n"));
+			d(printf("Canceling lookup thread and leaving it\n"));
 			msg->cancelled = 1;
 			pthread_detach(id);
 			pthread_cancel(id);
@@ -656,7 +656,7 @@ camel_getaddrinfo(const char *name, const char *service, const struct addrinfo *
 	g_return_val_if_fail(name != NULL, NULL);
 	
 	if (camel_operation_cancel_check(NULL)) {
-		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
+		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 		return NULL;
 	}
 
@@ -787,7 +787,7 @@ camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, char **host, char 
 	int result;
 
 	if (camel_operation_cancel_check(NULL)) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 		return -1;
 	}
 

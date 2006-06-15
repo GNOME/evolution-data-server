@@ -245,7 +245,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 		camel_freeaddrinfo(ai);
 		if (ret == -1) {
 			if (errno == EINTR)
-				camel_exception_throw(CAMEL_EXCEPTION_USER_CANCEL, _("Connection cancelled"));
+				camel_exception_throw(CAMEL_EXCEPTION_USER_CANCEL, _("Connection canceled"));
 			else
 				camel_exception_throw(CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 						      _("Could not connect to %s (port %s): %s"),

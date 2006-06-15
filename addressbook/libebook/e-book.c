@@ -2713,7 +2713,7 @@ do_open (gboolean sync,
 			/* Cancelled */
 			book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
 			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED,
-				     _("%s: cancelled"), "e_book_open");
+				     _("%s: canceled"), "e_book_open");
 			return FALSE;
 		}
 		else if (status == E_BOOK_ERROR_OK) {

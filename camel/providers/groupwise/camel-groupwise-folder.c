@@ -121,7 +121,7 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 		camel_stream_reset (stream);
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, stream) == -1) {
 			if (errno == EINTR) {
-				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 				camel_object_unref (msg);
 				camel_object_unref (cache_stream);
 				camel_object_unref (stream);

@@ -193,7 +193,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection cancelled"));
+					     _("Connection canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Could not connect to %s: %s"),
@@ -212,7 +212,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (camel_nntp_stream_line (store->stream, &buf, &len) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection cancelled"));
+					     _("Connection canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Could not read greeting from %s: %s"),
@@ -1268,7 +1268,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, char **line,
 
 ioerror:
 	if (errno == EINTR)
-		camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled."));
+		camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
 	else
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("NNTP Command failed: %s"), g_strerror(errno));
 	return -1;

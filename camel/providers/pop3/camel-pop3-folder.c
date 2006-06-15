@@ -260,7 +260,7 @@ pop3_refresh_info (CamelFolder *folder, CamelException *ex)
 
 	if (i == -1) {
 		if (errno == EINTR)
-			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Cannot get POP summary: %s"),
@@ -428,7 +428,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 
 		if (fi->err != 0) {
 			if (fi->err == EINTR)
-				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 			else
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 						      _("Cannot get message %s: %s"),
@@ -489,7 +489,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		/* Check to see we have safely written flag set */
 		if (fi->err != 0) {
 			if (fi->err == EINTR)
-				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 			else
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 						      _("Cannot get message %s: %s"),
@@ -507,7 +507,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	message = camel_mime_message_new ();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, stream) == -1) {
 		if (errno == EINTR)
-			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Cannot get message %s: %s"),

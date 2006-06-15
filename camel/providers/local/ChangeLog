@@ -1,3 +1,11 @@
+2006-06-15  Andre Klapper  <a9016009@gmx.de>
+
+	* camel-maildir-folder.c: 
+	* camel-mbox-folder.c: 
+	* camel-mh-folder.c:
+	changing "cancelled" to "canceled" in user-visible strings.
+	Fixes bug #342163.
+
 2006-06-15  Tor Lillqvist  <tml@novell.com>
 
 	* camel-mbox-summary.c (summary_update, mbox_summary_check)

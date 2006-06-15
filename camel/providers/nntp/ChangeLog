@@ -1,3 +1,10 @@
+2006-06-15  Andre Klapper  <a9016009@gmx.de>
+
+	* camel-nntp-store.c: 
+	* camel-nntp-folder.c: 
+	changing "cancelled" to "canceled" in user-visible strings.
+	Fixes bug #342163.
+
 2006-06-15  Andre Klapper <a9016009@gmx.de>
 
 	* addressbook/libebook/e-book.c:

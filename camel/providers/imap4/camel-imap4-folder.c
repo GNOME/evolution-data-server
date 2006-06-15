@@ -785,7 +785,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
 			if (errno == EINTR) {
 				CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
-				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 				camel_object_unref (message);
 				camel_object_unref (stream);
 				return NULL;

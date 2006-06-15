@@ -854,7 +854,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 			gpg->send_passwd = TRUE;
 		} else {
 			if (!camel_exception_is_set (ex))
-				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled."));
+				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
 			return -1;
 		}
 		
@@ -1054,7 +1054,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		goto exception;
 
 	if ((polls[5].revents & POLLIN) && camel_operation_cancel_check(NULL)) {
-		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Cancelled."));
+		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
 		gpg_ctx_op_cancel(gpg);
 		return -1;
 	}

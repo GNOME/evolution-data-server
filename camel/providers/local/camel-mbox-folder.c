@@ -274,7 +274,7 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 fail_write:
 	if (errno == EINTR)
 		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-				     _("Mail append cancelled"));
+				     _("Mail append canceled"));
 	else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to mbox file: %s: %s"),

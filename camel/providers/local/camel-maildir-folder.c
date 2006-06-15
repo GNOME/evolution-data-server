@@ -212,7 +212,7 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	
 	if (errno == EINTR)
 		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-				     _("Maildir append message cancelled"));
+				     _("Maildir append message canceled"));
 	else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to maildir folder: %s: %s"),

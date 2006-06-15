@@ -172,7 +172,7 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	
 	if (errno == EINTR)
 		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-				     _("MH append message cancelled"));
+				     _("MH append message canceled"));
 	else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to mh folder: %s: %s"),

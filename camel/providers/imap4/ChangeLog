@@ -1,3 +1,10 @@
+2006-06-15  Andre Klapper  <a9016009@gmx.de>
+
+	* camel-imap4-folder.c: 
+	* camel-imap4-store.c: 
+	changing "cancelled" to "canceled" in user-visible strings.
+	Fixes bug #342163.
+
 2006-06-09  Chris Heath  <chris@heathens.co.nz>
 
 	* camel-imap4-journal.c (camel_imap4_journal_append): Fix memory leak.

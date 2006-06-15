@@ -263,7 +263,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection cancelled"));
+					     _("Connection canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Could not connect to %s: %s"),
