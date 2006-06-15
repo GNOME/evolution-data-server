@@ -1561,6 +1561,7 @@ e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, const char
 		be_data->deletes = g_list_prepend (be_data->deletes, e_cal_component_get_as_string (comp));
 
 		e_xmlhash_remove (be_data->ehash, key);
+		g_object_unref (comp);
  	}
 }
 
