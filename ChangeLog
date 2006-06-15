@@ -1,3 +1,13 @@
+2006-06-16  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-msgport.c: Rename the E_IS_SELECT_STATUS_INTR()
+	portability macro to E_IS_STATUS_INTR() as it isn't spefic to
+	select().
+	(e_msgport_put, e_msgport_wait, e_msgport_get): Use
+	E_IS_STATUS_INTR() instead of looking at errno directly. On Win32
+	the socket functions don't touch errno. (And there is no EINTR
+	style error possible in WinSock 2 anyway, according to MSDN.)
+	
 2006-06-15  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Add AM_CONDITIONAL for SUNLDAP (as always false)
