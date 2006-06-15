@@ -1,3 +1,10 @@
+2006-06-15  Tor Lillqvist  <tml@novell.com>
+
+	* camel-mbox-summary.c (summary_update, mbox_summary_check)
+	(mbox_summary_sync): Use g_stat() instead of plain stat() for full
+	Unicode pathname support on Win32. These instances had gone
+	unnoticed earlier.
+
 2006-06-09  Chris Heath  <chris@heathens.co.nz>
 
 	* camel-local-summary.c (message_info_new_from_header): Fix memory leak

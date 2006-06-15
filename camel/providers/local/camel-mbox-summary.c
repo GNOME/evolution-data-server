@@ -497,7 +497,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	
 	/* update the file size/mtime in the summary */
 	if (ok != -1) {
-		if (stat(cls->folder_path, &st) == 0) {
+		if (g_stat(cls->folder_path, &st) == 0) {
 			camel_folder_summary_touch(s);
 			mbs->folder_size = st.st_size;
 			s->time = st.st_mtime;
@@ -521,7 +521,7 @@ mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Camel
 	d(printf("Checking summary\n"));
 
 	/* check if the summary is up-to-date */
-	if (stat(cls->folder_path, &st) == -1) {
+	if (g_stat(cls->folder_path, &st) == -1) {
 		camel_folder_summary_clear(s);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot check folder: %s: %s"),
@@ -867,7 +867,7 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	if (ret == -1)
 		return -1;
 
-	if (stat(cls->folder_path, &st) == -1) {
+	if (g_stat(cls->folder_path, &st) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Unknown error: %s"), g_strerror (errno));
 		return -1;
