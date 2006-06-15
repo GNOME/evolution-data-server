@@ -56,14 +56,14 @@
 #define E_WRITE(socket,buf,nbytes) send(socket,buf,nbytes,0)
 #define E_IS_SOCKET_ERROR(status) ((status) == SOCKET_ERROR)
 #define E_IS_INVALID_SOCKET(socket) ((socket) == INVALID_SOCKET)
-#define E_IS_SELECT_STATUS_INTR() 0 /* No WSAEINTR errors in WinSock2  */
+#define E_IS_STATUS_INTR() 0 /* No WSAEINTR errors in WinSock2  */
 #else
 #define E_CLOSE(socket) close (socket)
 #define E_READ(socket,buf,nbytes) read(socket,buf,nbytes)
 #define E_WRITE(socket,buf,nbytes) write(socket,buf,nbytes)
 #define E_IS_SOCKET_ERROR(status) ((status) == -1)
 #define E_IS_INVALID_SOCKET(socket) ((socket) < 0)
-#define E_IS_SELECT_STATUS_INTR() (errno == EINTR)
+#define E_IS_STATUS_INTR() (errno == EINTR)
 #endif
 
 static int
@@ -602,7 +602,7 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 		m(printf("put: have pipe, writing notification to it\n"));
 		do {
 			w = E_WRITE (fd, "E", 1);
-		} while (w == -1 && errno == EINTR);
+		} while (w == -1 && E_IS_STATUS_INTR ());
 	}
 
 #ifdef HAVE_NSS
@@ -640,7 +640,7 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			do {
 				FD_ZERO(&rfds);
 				FD_SET(mp->pipe.fd.read, &rfds);
-				retry = E_IS_SOCKET_ERROR(select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL)) && E_IS_SELECT_STATUS_INTR();
+				retry = E_IS_SOCKET_ERROR(select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL)) && E_IS_STATUS_INTR();
 				pthread_testcancel();
 			} while (retry);
 			g_mutex_lock(mp->lock);
@@ -691,7 +691,7 @@ EMsg *e_msgport_get(EMsgPort *mp)
 		if (mp->pipe.fd.read != -1) {
 			do {
 				n = E_READ (mp->pipe.fd.read, dummy, 1);
-			} while (n == -1 && errno == EINTR);
+			} while (n == -1 && E_IS_STATUS_INTR ());
 		}
 #ifdef HAVE_NSS
 		if (mp->prpipe.fd.read != NULL) {
