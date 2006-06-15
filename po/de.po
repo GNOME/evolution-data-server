@@ -2,7 +2,7 @@
 # Copyright (C) 2003, 2004 Free Software Foundation, Inc.
 # Christian Neumair <chris@gnome-de.org>, 2003, 2004.
 # Frank Arnold <frank@scirocco-5v-turbo.de>, 2005.
-# Hendrik Richter <hendi@gnome-de.org>, 2005.
+# Hendrik Richter <hendrikr@gnome.org>, 2005.
 # Based on German Evolution translation.
 # Copyright on Evolution translation is held by its translators.
 # 
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-03-06 09:14+0100\n"
-"PO-Revision-Date: 2006-03-06 06:18+0100\n"
-"Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
+"PO-Revision-Date: 2006-06-15 16:10+0200\n"
+"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
-msgstr "Ladevorgang..."
+msgstr "Ladevorgang …"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:538
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
@@ -32,20 +32,20 @@ msgstr "Ladevorgang..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
-msgstr "Suchvorgang..."
+msgstr "Suchvorgang …"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
-msgstr "Kontakte werden heruntergeladen (%d)..."
+msgstr "Kontakte werden heruntergeladen (%d) …"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
 #, c-format
 msgid "Updating contacts cache (%d)... "
-msgstr "Zwischenspeicher für Kontakte wird aktualisiert (%d)..."
+msgstr "Zwischenspeicher für Kontakte wird aktualisiert (%d) …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
 msgid "Using Distinguished Name (DN)"
@@ -57,23 +57,23 @@ msgstr "E-Mail-Adresse wird verwendet"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
 msgid "Reconnecting to LDAP server..."
-msgstr "Verbindung mit LDAP-Server wird erneut hergestellt..."
+msgstr "Verbindung mit LDAP-Server wird erneut hergestellt …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
 msgid "Adding contact to LDAP server..."
-msgstr "Kontakt wird zu LDAP-Server hinzugefügt..."
+msgstr "Kontakt wird zu LDAP-Server hinzugefügt …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
 msgid "Removing contact from LDAP server..."
-msgstr "Kontakt wird von LDAP-Server entfernt..."
+msgstr "Kontakt wird von LDAP-Server entfernt …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
 msgid "Modifying contact from LDAP server..."
-msgstr "Kontakt auf LDAP-Server wird verändert..."
+msgstr "Kontakt auf LDAP-Server wird verändert …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
 msgid "Receiving LDAP search results..."
-msgstr "LDAP-Suchergebnisse werden empfangen..."
+msgstr "LDAP-Suchergebnisse werden empfangen …"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
 msgid "Error performing search"
@@ -5104,7 +5104,7 @@ msgstr "Benutzer auswählen"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:182
 msgid "Addressbook..."
-msgstr "Adressbuch..."
+msgstr "Adressbuch …"
 
 #: ../servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
@@ -5266,3 +5266,6 @@ msgstr ""
 
 #~ msgid "Cannot rename GroupWise folders in offline mode."
 #~ msgstr "GroupWise-Ordner können im Offline-Modus nicht umbenannt werden."
+
+
+
