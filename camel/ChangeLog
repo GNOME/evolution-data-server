@@ -1,3 +1,12 @@
+2006-06-15  Andre Klapper <a9016009@gmx.de>
+
+	* addressbook/libebook/e-book.c:
+	* camel/camel-folder.c:
+	* camel/providers/nntp/camel-nntp-folder.c:
+	* camel/providers/pop3/camel-pop3-folder.c:
+	changing "uri" to "URI" in user-visible strings.
+	Fixes bug #342161.
+
 2006-06-09  Chris Heath  <chris@heathens.co.nz>
 
 	* camel-net-utils.c (camel_getnameinfo): Fix memory leak

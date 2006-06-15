@@ -3557,7 +3557,7 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 		g_object_unref (*book);
 		*book = NULL;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SELF_CONTACT,
-			     _("%s: there was no self contact uid stored in gconf"), "e_book_get_self");
+			     _("%s: there was no self contact UID stored in gconf"), "e_book_get_self");
 		return FALSE;
 	}
 

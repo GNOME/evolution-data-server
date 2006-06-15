@@ -402,7 +402,7 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
 	if (fi == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				      _("No message with uid %s"), uid);
+				      _("No message with UID %s"), uid);
 		return NULL;
 	}
 

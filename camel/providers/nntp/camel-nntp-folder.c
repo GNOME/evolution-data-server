@@ -172,7 +172,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const char *uid, Came
 	msgid = strchr(article, ',');
 	if (!msgid) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Internal error: uid in invalid format: %s"), uid);
+				      _("Internal error: UID in invalid format: %s"), uid);
 		return;
 	}
 	*msgid++ = 0;
@@ -204,7 +204,7 @@ nntp_folder_get_message (CamelFolder *folder, const char *uid, CamelException *e
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Internal error: uid in invalid format: %s"), uid);
+				      _("Internal error: UID in invalid format: %s"), uid);
 		return NULL;
 	}
 	*msgid++ = 0;

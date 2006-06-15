@@ -1275,7 +1275,7 @@ static GPtrArray *
 search_by_uids(CamelFolder *folder, const char *exp, GPtrArray *uids, CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-			      _("Unsupported operation: search by uids: for %s"),
+			      _("Unsupported operation: search by UIDs: for %s"),
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
 	
 	w(g_warning ("CamelFolder::search_by_expression not implemented for "
