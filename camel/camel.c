@@ -89,16 +89,24 @@ camel_init (const char *configdir, gboolean nss_init)
 
 #ifdef HAVE_NSS
 	if (nss_init) {
+		char *nss_configdir;
+
 		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
 		
-		if (NSS_InitReadWrite (configdir) == SECFailure) {
+#ifndef G_OS_WIN32
+		nss_configdir = g_strdup (configdir);
+#else
+		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
+#endif
+
+		if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
 			/* fall back on using volatile dbs? */
-			if (NSS_NoDB_Init (configdir) == SECFailure) {
+			if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
 				g_warning ("Failed to initialize NSS");
 				return -1;
 			}
 		}
-		
+
 		NSS_SetDomesticPolicy ();
 		
 		SSL_OptionSetDefault (SSL_ENABLE_SSL2, PR_TRUE);
@@ -121,22 +129,7 @@ camel_init (const char *configdir, gboolean nss_init)
 	
 	camel_object_unref (certdb);
 	
-#ifndef G_OS_WIN32
 	g_atexit (camel_shutdown);
-#else
-	/* In GLib (<= 2.8.0 at least, might get fixed later),
-	 * g_atexit() is a function in the GLib DLL that calls the
-	 * atexit() in the C runtime DLL. atexit() is implemented so
-	 * that registered function will be called when the DLL
-	 * containing the calling function is being detached from a
-	 * process (not when exit() is called).
-	 *
-	 * We want to run camel_shutdown when the the process exits,
-	 * or at least when the camel DLL is being detached, not when
-	 * the GLib DLL is being detached.
-	 */
-	atexit (camel_shutdown);
-#endif
 	
 	initialised = TRUE;
 	
