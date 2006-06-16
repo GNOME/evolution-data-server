@@ -1,3 +1,9 @@
+2006-06-16  Devashish Sharma  <sdevashish@novell.com>
+
+	* libebook/e-contact.c : Added translator comment for
+	TTY.
+	Fixes Bug #342167
+
 2006-06-16  Tor Lillqvist  <tml@novell.com>
 
 	Make addressbook work on Win32 also with non-ASCII chars in home
