@@ -49,6 +49,16 @@
 #define O_BINARY 0
 #endif
 
+#ifdef G_OS_WIN32
+/* Undef the similar macro from pthread.h, it doesn't check if
+ * gmtime() returns NULL.
+ */
+#undef gmtime_r
+
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
+
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
 	/* A mutex to control access to the private structure */

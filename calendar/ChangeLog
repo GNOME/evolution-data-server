@@ -1,3 +1,8 @@
+2006-06-16  Tor Lillqvist  <tml@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: Add gmtime_r()
+	macro implementation for Win32.
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* libecal/e-cal.c: 
