@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-14 06:25+0200\n"
-"PO-Revision-Date: 2006-06-14 12:24+0530\n"
+"POT-Creation-Date: 2006-06-16 06:24+0200\n"
+"PO-Revision-Date: 2006-06-16 10:41+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -152,7 +153,7 @@ msgstr "\"%s\" પછી ચોપડીમાં \"%s\" છે"
 
 #: ../addressbook/libebook/e-book.c:2716
 #, c-format
-msgid "%s: cancelled"
+msgid "%s: canceled"
 msgstr "%s: રદ કરેલ છે"
 
 #: ../addressbook/libebook/e-book.c:3277
@@ -172,8 +173,8 @@ msgstr "%s: EBookListener બનાવી શક્યા નથી"
 
 #: ../addressbook/libebook/e-book.c:3560
 #, c-format
-msgid "%s: there was no self contact uid stored in gconf"
-msgstr "%s: જીકોન્ફમાં સંગ્રહિત માટે કોઈ પોતાનું સંપર્ક uid નથી"
+msgid "%s: there was no self contact UID stored in gconf"
+msgstr "%s: gconf માં કોઈ સ્વયં સંપર્ક UID સંગ્રહાયેલ નથી"
 
 #: ../addressbook/libebook/e-book.c:3690
 #, c-format
@@ -1127,8 +1128,8 @@ msgid "Protocol not supported"
 msgstr "પ્રોટોકોલને આધાર નથી"
 
 #: ../calendar/libecal/e-cal.c:5133
-msgid "Operation has been cancelled"
-msgstr "પ્રક્રિયા નકારી દેવામાં આવી છે"
+msgid "Operation has been canceled"
+msgstr "પ્રક્રિયા રદ થઈ ગઈ"
 
 #: ../calendar/libecal/e-cal.c:5135
 msgid "Could not cancel operation"
@@ -1487,8 +1488,8 @@ msgstr "પ્રક્રિયાને આધાર નથી: સમીક�
 
 #: ../camel/camel-folder.c:1278
 #, c-format
-msgid "Unsupported operation: search by uids: for %s"
-msgstr "પ્રક્રિયાને આધાર નથી: uid દ્વારા શોધો: %s માટે"
+msgid "Unsupported operation: search by UIDs: for %s"
+msgstr "બિનઆધારભૂત પ્રક્રિયા: UIDs પ્રમાણે શોધો: %s માટે"
 
 #: ../camel/camel-folder.c:1394
 msgid "Moving messages"
@@ -1554,7 +1555,7 @@ msgstr "GnuPG માંથી `%s' માટે અનિચ્છનીય મ�
 
 #: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
-msgid "Cancelled."
+msgid "Canceled."
 msgstr "રદ થઈ ગયેલ."
 
 #: ../camel/camel-gpg-context.c:871
@@ -1746,8 +1747,8 @@ msgstr "પદચ્છેદ ભૂલ"
 #: ../camel/camel-net-utils.c:790
 #: ../camel/providers/pop3/camel-pop3-store.c:441
 #: ../camel/providers/pop3/camel-pop3-store.c:522
-msgid "Cancelled"
-msgstr "નકારાઈ ગયું"
+msgid "Canceled"
+msgstr "રદ થઈ ગયેલ"
 
 #: ../camel/camel-net-utils.c:516
 msgid "cannot create thread"
@@ -2591,8 +2592,8 @@ msgstr "આવો કોઈ સંદેશો નથી"
 #: ../camel/providers/pop3/camel-pop3-folder.c:431
 #: ../camel/providers/pop3/camel-pop3-folder.c:492
 #: ../camel/providers/pop3/camel-pop3-folder.c:510
-msgid "User cancelled"
-msgstr "વપરાશકર્તા નકારાયેલ છે"
+msgid "User canceled"
+msgstr "વપરાશકર્તા રદ થઈ ગયેલ"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:131
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
@@ -3054,12 +3055,6 @@ msgstr "SSL બિન-ઉપલબ્ધ"
 
 #: ../camel/providers/imap/camel-imap-store.c:590
 #: ../camel/providers/imap/camel-imap-store.c:864
-#: ../camel/providers/imap4/camel-imap4-store.c:263
-#: ../camel/providers/imapp/camel-imapp-store.c:248
-#: ../camel/providers/nntp/camel-nntp-store.c:196
-#: ../camel/providers/nntp/camel-nntp-store.c:215
-#: ../camel/providers/pop3/camel-pop3-store.c:179
-#: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection cancelled"
 msgstr "જોડાણ નકારાઈ ગયું"
 
@@ -3276,6 +3271,15 @@ msgstr "IMAPv4rev1 સર્વરો પર મેઈલ વાંચવા અ
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "આ વિકલ્પ IMAPv4rev1 સર્વર સાથે સરળ લખાણવાળા પાસવર્ડ વાપરીને જોડાશે."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:263
+#: ../camel/providers/imapp/camel-imapp-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:196
+#: ../camel/providers/nntp/camel-nntp-store.c:215
+#: ../camel/providers/pop3/camel-pop3-store.c:179
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
+msgid "Connection canceled"
+msgstr "જોડાણ રદ થઈ ગયેલ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
@@ -3589,8 +3593,8 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "સારમાં સંદેશો ઉમેરવા માટે અસમર્થ: અજ્ઞાત કારણ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
-msgid "Maildir append message cancelled"
-msgstr "Maildir ઉમેરો સંદેશો રદ થઈ ગયો"
+msgid "Maildir append message canceled"
+msgstr "Maildir ઉમેરો સંદેશો રદ થઈ ગયેલ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
@@ -3698,8 +3702,8 @@ msgid "Cannot open mailbox: %s: %s\n"
 msgstr "મેઈલબોક્સ ખોલી શકતા નથી: %s: %s\n"
 
 #: ../camel/providers/local/camel-mbox-folder.c:277
-msgid "Mail append cancelled"
-msgstr "મેઈલ ઉમેરવાનું રદ થઈ ગયું"
+msgid "Mail append canceled"
+msgstr "મેઈલ ઉમેરો રદ થઈ ગયેલ"
 
 #: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
@@ -3849,8 +3853,8 @@ msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં ભૂલ: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
-msgid "MH append message cancelled"
-msgstr "MH ઉમેરા સંદેશો રદ થઈ ગયો"
+msgid "MH append message canceled"
+msgstr "MH ઉમેરો સંદેશો રદ થઈ ગયેલ"
 
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
@@ -3963,8 +3967,8 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:207
 #, c-format
-msgid "Internal error: uid in invalid format: %s"
-msgstr "આંતરિક ભૂલ: uid અયોગ્ય બંધારણમાં છે: %s"
+msgid "Internal error: UID in invalid format: %s"
+msgstr "આંતરિક ભૂલ: UID એ અયોગ્ય બંધારણમાં છે: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:327
 #: ../camel/providers/nntp/camel-nntp-folder.c:330
@@ -4130,8 +4134,8 @@ msgstr "કાઢી નંખાયેલ સંદેશાઓ સંપૂર
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:405
 #, c-format
-msgid "No message with uid %s"
-msgstr "uid %s સાથે કોઈ સંદેશો નથી"
+msgid "No message with UID %s"
+msgstr "UID %s સાથે કોઈ સંદેશો નથી"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
