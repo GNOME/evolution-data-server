@@ -1,3 +1,12 @@
+2006-06-16  Tor Lillqvist  <tml@novell.com>
+
+	Make addressbook work on Win32 also with non-ASCII chars in home
+	directory name.
+	
+	* backends/file/e-book-backend-file.c (my_exists, my_rename)
+	(my_unlink): Need to wrap more file name using functions in libdb.
+	(e_book_backend_file_class_init): Register the above with libdb.
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* libebook/e-book.c: 
