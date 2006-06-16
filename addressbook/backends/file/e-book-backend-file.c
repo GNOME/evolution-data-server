@@ -1371,6 +1371,29 @@ my_open (const char *name, int oflag, ...)
 
 	return g_open (name, oflag, mode);
 }
+
+int
+my_rename (const char *oldname, const char *newname)
+{
+	return g_rename (oldname, newname);
+}
+
+int
+my_exists (const char *name, int *isdirp)
+{
+	if (!g_file_test (name, G_FILE_TEST_EXISTS))
+		return ENOENT;
+	if (isdirp != NULL)
+		*isdirp = g_file_test (name, G_FILE_TEST_IS_DIR);
+	return 0;
+}
+
+int
+my_unlink (const char *name)
+{
+	return g_unlink (name);
+}
+
 #endif
 
 static void
@@ -1407,9 +1430,14 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	object_class->dispose = e_book_backend_file_dispose;
 
 #ifdef G_OS_WIN32
-	/* Use the gstdio wrapper for open() to open files in libdb */
+	/* Use the gstdio wrappers to open, check, rename and unlink
+	 * files from libdb.
+	 */
 	db_env_set_func_open (my_open);
 	db_env_set_func_close (close);
+	db_env_set_func_exists (my_exists);
+	db_env_set_func_rename (my_rename);
+	db_env_set_func_unlink (my_unlink);
 #endif
 }
 
