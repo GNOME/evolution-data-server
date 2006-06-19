@@ -204,7 +204,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			g_mutex_unlock (mutex);
 			return status;
 		}
-		
+		done = FALSE;
 		while (!done) {
 			
 			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
