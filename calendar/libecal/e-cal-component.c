@@ -1518,14 +1518,12 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 			 */   
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
-			g_message ("Before decoding %s\n", data);
 			buf_size = strlen (data);
 			buf = g_malloc0 (buf_size);
 			icalvalue_decode_ical_string (data, buf, buf_size);	
 		}
 		else
 			data = NULL;
-		g_message ("After decoding: %s\n", buf);
 		*al = g_slist_prepend (*al, (char *)buf);
 	}
 
