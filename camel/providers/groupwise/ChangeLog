@@ -10,6 +10,28 @@
 
 2006-06-06  Jeffrey Stedfast  <fejj@novell.com>
 
+	Fix for Novell bug #179350
+
+	* camel-groupwise-folder.c (groupwise_folder_get_message): Don't
+	use a cache_lock, simply use the service::connect_lock. Also, no
+	need to write the cached disk stream to a memory stream before
+	parsing it into a CamelMimeMessage object, this is just a waste of
+	resources.
+	(groupwise_folder_rename): Same.
+	(groupwise_folder_search_by_expression): Same.
+	(groupwise_folder_search_by_uids): Here too.
+	(groupwise_folder_search_free): And here.
+	(groupwise_sync): Simplified and corrected by only using the
+	connect_lock around the entire block of code.
+	(gw_update_cache): No longer need to grab a cache_lock, we already
+	have the connect_lock.
+	(gw_update_all_items): Only use connect_lock.
+	(groupwise_expunge): Simplified by only using the connect_lock.
+	(camel_groupwise_folder_init): No need to malloc priv.
+	(camel_groupwise_folder_finalize): No need to free priv.
+
+2006-06-06  Jeffrey Stedfast  <fejj@novell.com>
+
 	Fixes for Novell bug #173454
 
 	* camel-groupwise-utils.c (add_recipients): Changed to be an

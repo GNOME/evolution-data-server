@@ -54,8 +54,6 @@ typedef struct  _CamelGroupwiseFolderClass CamelGroupwiseFolderClass;
 struct _CamelGroupwiseFolder {
 	CamelOfflineFolder parent_object;
 
-	struct _CamelGroupwiseFolderPrivate *priv;
-
 	CamelFolderSearch *search;
 
 	CamelOfflineJournal *journal;
