@@ -382,11 +382,19 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 	}
 
 	if (org) {
-		if (org->display_name && org->email) {
-			ha=camel_header_address_new_name(org->display_name,org->email);
-		} else {
-			ha=camel_header_address_new_group(org->display_name);
+		if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
+			int i;
+			for (i = 0; org->display_name[i] != '<' && 
+					org->display_name[i] != '\0';
+					i++);
+
+			org->display_name[i] = '\0';
 		}
+		if (org->display_name && org->email) 
+			ha=camel_header_address_new_name(org->display_name, org->email);
+		else if (org->display_name)
+			ha=camel_header_address_new_group(org->display_name);
+
 		subs_email=camel_header_address_list_encode(ha);	
 		camel_medium_set_header( CAMEL_MEDIUM(msg), "From", subs_email);
 		camel_header_address_unref(ha);
@@ -1232,9 +1240,17 @@ gw_update_cache ( CamelFolder *folder, GList *list, CamelException *ex, gboolean
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
 			GString *str;
+			int i;
 			str = g_string_new ("");
-			if (org->display_name && org->display_name[0]) 
+			if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
+				for (i = 0; org->display_name[i] != '<' && 
+						org->display_name[i] != '\0';
+						i++);
+
+				org->display_name[i] = '\0';
 				str = g_string_append (str, org->display_name);
+				str = g_string_append (str, " ");
+			}
 			if (org->email && org->email[0]) { 
 				g_string_append (str, "<");
 				str = g_string_append (str, org->email);
@@ -1434,9 +1450,17 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
 			GString *str;
+			int i;
 			str = g_string_new ("");
-			if (org->display_name && org->display_name[0]) 
+			if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
+				for (i = 0; org->display_name[i] != '<' && 
+						org->display_name[i] != '\0'; 
+						i++);
+
+				org->display_name[i] = '\0';
 				str = g_string_append (str, org->display_name);
+				str = g_string_append (str, " ");
+			}
 			if (org->email && org->email[0]) { 
 				g_string_append (str, "<");
 				str = g_string_append (str, org->email);
