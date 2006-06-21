@@ -143,7 +143,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	EGwConnectionStatus status;
         ECalComponent *comp;
         GList *list = NULL, *l;
-	gboolean done = FALSE;
+	gboolean done = FALSE,  forward = FALSE;
 	int cursor = 0;
 	guint32	total, num = 0;
 	int percent = 0, i;
@@ -205,9 +205,18 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			return status;
 		}
 		done = FALSE;
+		if (i == 1) {
+			position = E_GW_CURSOR_POSITION_START;
+			forward = TRUE;
+
+		} else {
+			position = E_GW_CURSOR_POSITION_END;
+			forward = FALSE;
+		}
+			
 		while (!done) {
 			
-			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, FALSE, CURSOR_ITEM_LIMIT, position, &list);
+			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, forward, CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				e_cal_backend_groupwise_notify_error_code (cbgw, status);
 				g_mutex_unlock (mutex);

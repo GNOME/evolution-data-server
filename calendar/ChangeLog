@@ -1,3 +1,9 @@
+2006-06-21  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache):
+	Set appropriate cursor/seek direction for each of the
+	pre-population calls.
+
 2006-06-19  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache):
