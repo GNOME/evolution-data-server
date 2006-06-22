@@ -1,3 +1,8 @@
+2006-06-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* Makefile.am: Remove CVS/*, .cvsignore files from
+	the dist output.
+
 2005-09-16  Tor Lillqvist  <tml@novell.com>
 
 	* lib/camel-test-provider.c (camel_test_provider_init): Use
