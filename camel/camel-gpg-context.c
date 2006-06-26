@@ -809,15 +809,15 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
 	} else if (!strncmp (status, "GET_HIDDEN ", 11)) {
+		const char *name = NULL;
 		char *prompt, *passwd;
-		const char *name;
 		guint32 flags;
 		
 		status += 11;
 		
 		if (gpg->need_id && !(name = g_hash_table_lookup (gpg->userid_hint, gpg->need_id)))
 			name = gpg->need_id;
-		else
+		else if (!name)
 			name = "";
 		
 		if (!strncmp (status, "passphrase.pin.ask", 18)) {
