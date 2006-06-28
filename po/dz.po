@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.pot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-28 22:24+0200\n"
-"PO-Revision-Date: 2006-05-30 10:09+0530\n"
+"POT-Creation-Date: 2006-06-28 18:47+0530\n"
+"PO-Revision-Date: 2006-06-12 15:21+0530\n"
 "Last-Translator: Mindu Dorji\n"
 "Language-Team: DZONGKHA <pgeyleg@dit.gov.bt>\n"
 "MIME-Version: 1.0\n"
@@ -19,62 +19,62 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "མངོན་གསལ་འབད་དོ...།"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4083
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "འཚོལ་ཞིབ་འབད་དོ།"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2507
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "འབྲེལ་ས་(%d)ཕབ་ལེན་འབད་དོ།"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2660
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2876
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "འབྲེལ་སའི་འདྲ་མཛོད་(%d)དུས་མཐུན་བཟོ་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Distinguished Name (DN)"
 msgstr "ཁྱད་འཕགས་ཀྱི་མིང་ལག་ལེན་འཐབ་དོ།(ཌི་ཨེན"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:716
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
 msgid "Using Email Address"
 msgstr "གློག་འཕྲིན་ཁ་བྱང་ལག་ལེན་འཐབ་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
 msgid "Reconnecting to LDAP server..."
 msgstr "ཨེལ་ཌི་ཨེ་པི་ སར་བར་ལུ་ སླར་མཐུད་འབད་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
 msgid "Adding contact to LDAP server..."
 msgstr "ཨེལ་ཌི་ཨེ་པི་ སར་བར་ལུ་ འབྲེལ་ས་ཁ་སྐོང་རྐྱབ་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
 msgid "Removing contact from LDAP server..."
 msgstr "ཨེལ་ཌི་ཨེ་པི་ སར་བར་ལས་ འབྲེལ་ས་རྩ་བསྐྲད་བཏང་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
 msgid "Modifying contact from LDAP server..."
 msgstr "ཨེལ་ཌི་ཨེ་པི་ སར་བར་ལས་ འབྲེལ་ས་ལེགས་བཅོས་འབད་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3945
 msgid "Receiving LDAP search results..."
 msgstr "ཨེལ་ཌི་ཨེ་པི་ འཚོལ་ཞིབ་ཀྱི་གྲུབ་འབྲས་ཐོབ་དོ།"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4105
 msgid "Error performing search"
 msgstr "ཞིབ་འཚོལ་འབད་ནི་ལུ་འཛོལ་བ།"
 
@@ -82,77 +82,46 @@ msgstr "ཞིབ་འཚོལ་འབད་ནི་ལུ་འཛོལ་
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:257
-#: ../addressbook/libebook/e-book.c:261
-#: ../addressbook/libebook/e-book.c:473
-#: ../addressbook/libebook/e-book.c:477
-#: ../addressbook/libebook/e-book.c:618
-#: ../addressbook/libebook/e-book.c:622
-#: ../addressbook/libebook/e-book.c:711
-#: ../addressbook/libebook/e-book.c:715
-#: ../addressbook/libebook/e-book.c:1029
-#: ../addressbook/libebook/e-book.c:1034
-#: ../addressbook/libebook/e-book.c:1221
-#: ../addressbook/libebook/e-book.c:1225
-#: ../addressbook/libebook/e-book.c:1382
-#: ../addressbook/libebook/e-book.c:1386
-#: ../addressbook/libebook/e-book.c:1595
-#: ../addressbook/libebook/e-book.c:1599
-#: ../addressbook/libebook/e-book.c:1836
-#: ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2077
-#: ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2293
-#: ../addressbook/libebook/e-book.c:2297
+#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
+#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
+#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
+#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
+#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
+#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
+#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
+#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
+#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
+#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
+#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
 #: ../addressbook/libebook/e-book.c:3411
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\"གི་ཧེ་མར་ ཀི་དེབ་ལུ་\"%s\"།"
 
-#: ../addressbook/libebook/e-book.c:270
-#: ../addressbook/libebook/e-book.c:486
-#: ../addressbook/libebook/e-book.c:631
-#: ../addressbook/libebook/e-book.c:724
-#: ../addressbook/libebook/e-book.c:1044
-#: ../addressbook/libebook/e-book.c:1235
-#: ../addressbook/libebook/e-book.c:1396
-#: ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849
-#: ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306
-#: ../addressbook/libebook/e-book.c:2660
+#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
+#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
+#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
+#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
+#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
+#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2660
 #: ../addressbook/libebook/e-book.c:2866
 msgid "book busy"
 msgstr "ཀི་དེབ་ཁོམ་མེད་ཨིན་པས།"
 
-#: ../addressbook/libebook/e-book.c:303
-#: ../addressbook/libebook/e-book.c:307
-#: ../addressbook/libebook/e-book.c:519
-#: ../addressbook/libebook/e-book.c:523
-#: ../addressbook/libebook/e-book.c:660
-#: ../addressbook/libebook/e-book.c:664
-#: ../addressbook/libebook/e-book.c:753
-#: ../addressbook/libebook/e-book.c:757
-#: ../addressbook/libebook/e-book.c:1073
-#: ../addressbook/libebook/e-book.c:1076
-#: ../addressbook/libebook/e-book.c:1267
-#: ../addressbook/libebook/e-book.c:1270
-#: ../addressbook/libebook/e-book.c:1425
-#: ../addressbook/libebook/e-book.c:1429
-#: ../addressbook/libebook/e-book.c:1644
-#: ../addressbook/libebook/e-book.c:1648
-#: ../addressbook/libebook/e-book.c:1896
-#: ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2123
-#: ../addressbook/libebook/e-book.c:2127
-#: ../addressbook/libebook/e-book.c:2334
-#: ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2601
-#: ../addressbook/libebook/e-book.c:2688
-#: ../addressbook/libebook/e-book.c:2692
-#: ../addressbook/libebook/e-book.c:2894
-#: ../addressbook/libebook/e-book.c:2898
-#: ../addressbook/libebook/e-book.c:3420
+#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
+#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
+#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
+#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
+#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
+#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
+#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
+#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
+#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
+#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
+#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
+#: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
+#: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3420
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "ཀོར་བཱ་གྲངས་སུ་མེདཔ་གིས་ \"%s\" གི་ཞུ་འབོད་འབད་དོ།"
@@ -163,19 +132,18 @@ msgid "%s: there is no current operation"
 msgstr "%s: ད་ལྟོའི་བཀོལ་སྤྱོད་མིན་འདུག"
 
 #: ../addressbook/libebook/e-book.c:2617
-#, c-format
-msgid "%s: couldn't cancel"
+#, fuzzy, c-format
+msgid "%s: could not cancel"
 msgstr "%s: ཆ་མེད་བཏང་མ་ཚུགས།"
 
-#: ../addressbook/libebook/e-book.c:2646
-#: ../addressbook/libebook/e-book.c:2650
+#: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\"གི་ཤུལ་མར་ ཀི་དེབ་ལུ་\"%s\""
 
 #: ../addressbook/libebook/e-book.c:2716
-#, c-format
-msgid "%s: cancelled"
+#, fuzzy, c-format
+msgid "%s: canceled"
 msgstr "%s: ཆ་མེད་བཏང་ཡོད།"
 
 #: ../addressbook/libebook/e-book.c:3277
@@ -183,10 +151,9 @@ msgstr "%s: ཆ་མེད་བཏང་ཡོད།"
 msgid "%s: Invalid source."
 msgstr "%s: ནུས་མེད་འབྱུང་ཁུངས།"
 
-#: ../addressbook/libebook/e-book.c:3285
-#: ../addressbook/libebook/e-book.c:3349
-#, c-format
-msgid "%s: no factories available for uri `%s'"
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3349
+#, fuzzy, c-format
+msgid "%s: no factories available for URI `%s'"
 msgstr "%s:  ཡུ་ཨར་ཨའི་\"%s གི་དོན་ལུ་ འཕྲུལ་ཁང་ཚུ་མི་འཐོབ་པས།"
 
 #: ../addressbook/libebook/e-book.c:3297
@@ -195,8 +162,8 @@ msgid "%s: Could not create EBookListener"
 msgstr "%s: ཨི་བུཀ་ལིསི་ས་ནར་ གསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
 #: ../addressbook/libebook/e-book.c:3560
-#, c-format
-msgid "%s: there was no self contact uid stored in gconf"
+#, fuzzy, c-format
+msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: ཇི་ཀཱོནཕི་ནང་ རང་གི་འབྲེལ་ས་ ཡུ་ཨའི་ཌི་ གསོག་འཇོག་མ་འབད་བས།"
 
 #: ../addressbook/libebook/e-book.c:3690
@@ -341,327 +308,328 @@ msgstr "རེ་ཌིའོ། "
 msgid "Telex"
 msgstr "ལྕགས་འཕྲིན།"
 
-#: ../addressbook/libebook/e-contact.c:150
+#. To translators: TTY is Teletypewriter
+#: ../addressbook/libebook/e-contact.c:151
 msgid "TTY"
 msgstr "ཊི་ཊི་ཝའི།"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Email List"
 msgstr "གློག་འཕྲིན་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Email 1"
 msgstr "གློག་འཕྲིན་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Email 2"
 msgstr "གློག་འཕྲིན་༢ པ"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Email 3"
 msgstr "གློག་འཕྲིན་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Email 4"
 msgstr "གློག་འཕྲིན་༤ པ།"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Mailer"
 msgstr "སྦྲག་སྣོད།"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:160
 msgid "Wants HTML Mail"
 msgstr "ཨེཆ་ཊི་ཨེམ་ཨེལ་ ཡིག་འཕྲིན་དགོ་པས།"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:163
 msgid "AIM Screen Name List"
 msgstr "ཨེ་ཨའི་ཨེམ་ གསལ་གཞི་མིང་གི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:164
 msgid "GroupWise Id List"
 msgstr "སྡེ་རིམ་གྱི་ ཨའི་ཌི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Jabber Id List"
 msgstr "ཇེབ་བར་ཨའི་ཌི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Yahoo! Screen Name List"
 msgstr "ཡ་ཧུ་! གསལ་གཞི་མིང་གི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:167
 msgid "MSN Screen Name List"
 msgstr "ཨེམ་ཨེསི་ཨེན་ གསལ་གཞི་མིང་གི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:168
 msgid "ICQ Id List"
 msgstr "ཨའི་སི་ཀིའུ་ ཨའི་ཌི་གི་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook/e-contact.c:170
 msgid "AIM Home Screen Name 1"
 msgstr "ཨེ་ཨའི་ཨེམ་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:171
 msgid "AIM Home Screen Name 2"
 msgstr "ཨེ་ཨའི་ཨེམ་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:172
 msgid "AIM Home Screen Name 3"
 msgstr "ཨེ་ཨའི་ཨེམ་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:173
 msgid "AIM Work Screen Name 1"
 msgstr "ཨེ་ཨའི་ཨེམ་ ལཱ་གཡོག་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:174
 msgid "AIM Work Screen Name 2"
 msgstr "ཨེ་ཨའི་ཨེམ་ ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:175
 msgid "AIM Work Screen Name 3"
 msgstr "ཨེ་ཨའི་ཨེམ་ ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:176
 msgid "GroupWise Home Screen Name 1"
 msgstr "སྡེ་རིམ་ཁྱིམ་གྱི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook/e-contact.c:177
 msgid "GroupWise Home Screen Name 2"
 msgstr "སྡེ་རིམ་ཁྱིམ་གྱི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:178
 msgid "GroupWise Home Screen Name 3"
 msgstr "སྡེ་རིམ་ཁྱིམ་གྱི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:179
 msgid "GroupWise Work Screen Name 1"
 msgstr "སྡེ་རིམ་ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:180
 msgid "GroupWise Work Screen Name 2"
 msgstr "སྡེ་རིམ་ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:181
 msgid "GroupWise Work Screen Name 3"
 msgstr "སྡེ་རིམ་ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:182
 msgid "Jabber Home Id 1"
 msgstr "ཇེབ་བར་ཁྱིམ་གྱི་ཨའི་ཌི་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Jabber Home Id 2"
 msgstr "ཇེབ་བར་ཁྱིམ་གྱི་ཨའི་ཌི་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Jabber Home Id 3"
 msgstr "ཇེབ་བར་ཁྱིམ་གྱི་ཨའི་ཌི་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Jabber Work Id 1"
 msgstr "ཇེབ་བར་ལཱ་གཡོག་གི་ཨའི་ཌི་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Jabber Work Id 2"
 msgstr "ཇེབ་བར་ལཱ་གཡོག་གི་ཨའི་ཌི་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Jabber Work Id 3"
 msgstr "ཇེབ་བར་ལཱ་གཡོག་གི་ཨའི་ཌི་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:187
+#: ../addressbook/libebook/e-contact.c:188
 msgid "Yahoo! Home Screen Name 1"
 msgstr "ཡ་ཧུ! ཁྱིམ་གྱི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:189
 msgid "Yahoo! Home Screen Name 2"
 msgstr "ཡ་ཧུ! ཁྱིམ་གྱི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:190
 msgid "Yahoo! Home Screen Name 3"
 msgstr "ཡ་ཧུ! ཁྱིམ་གྱི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:191
 msgid "Yahoo! Work Screen Name 1"
 msgstr "ཡ་ཧུ! ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:192
 msgid "Yahoo! Work Screen Name 2"
 msgstr "ཡ་ཧུ! ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:193
 msgid "Yahoo! Work Screen Name 3"
 msgstr "ཡ་ཧུ! ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:194
 msgid "MSN Home Screen Name 1"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:195
 msgid "MSN Home Screen Name 2"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:196
 msgid "MSN Home Screen Name 3"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ཁྱིམ་གྱི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:197
 msgid "MSN Work Screen Name 1"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:198
 msgid "MSN Work Screen Name 2"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:199
 msgid "MSN Work Screen Name 3"
 msgstr "ཨེམ་ཨེསི་ཨེན་ ལཱ་གཡོག་གི་གསལ་གཞི་མིང་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:200
 msgid "ICQ Home Id 1"
 msgstr "ཨའི་སི་ཀིའུ་ ཁྱིམ་གྱི་ཨའི་ཌི་༡ པ །"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:201
 msgid "ICQ Home Id 2"
 msgstr "ཨའི་སི་ཀིའུ་ ཁྱིམ་གྱི་ཨའི་ཌི་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:202
 msgid "ICQ Home Id 3"
 msgstr "ཨའི་སི་ཀིའུ་ ཁྱིམ་གྱི་ཨའི་ཌི་༣ པ།"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:203
 msgid "ICQ Work Id 1"
 msgstr "ཨའི་སི་ཀིའུ་ ལཱ་གཡོག་གི་ཨའི་ཌི་༡ པ།"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:204
 msgid "ICQ Work Id 2"
 msgstr "ཨའི་སི་ཀིའུ་ ལཱ་གཡོག་གི་ཨའི་ཌི་༢ པ།"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:205
 msgid "ICQ Work Id 3"
 msgstr "ཨའི་སི་ཀིའུ་ ལཱ་གཡོག་གི་ཨའི་ཌི་༣ པ།"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Organization"
 msgstr "ལས་སྡེ།"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Organizational Unit"
 msgstr "ལས་སྡེའི་ཆ་ཕྲན།"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Office"
 msgstr "ཡིག་ཚང་།"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Title"
 msgstr "མགོ་མིང་"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Role"
 msgstr "ལཱ་འགན།"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:214
 msgid "Manager"
 msgstr "འཛིན་སྐྱོང་པ།"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:215
 msgid "Assistant"
 msgstr "ལས་རོགས།"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:218
 msgid "Homepage URL"
 msgstr "ཁྱིམ་གྱི་ཤོག་ལེབ་ཀྱི་ ཡུ་ཨར་ཨེལ།"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:219
 msgid "Weblog URL"
 msgstr "ཝེབ་ལུ་ནང་བསྐྱོད་འབད་ནིའི་ ཡུ་ཨར་ཨེལ།"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:220
 msgid "Video Conferencing URL"
 msgstr "གློག་ཐོག་ཞལ་འཛོམས་ཀྱི་ ཡུ་ཨར་ཨེལ།"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:223
 msgid "Photo"
 msgstr "པར།"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:224
 msgid "Logo"
 msgstr "ལས་རྟགས།"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:227
 msgid "X.509 Certificate"
 msgstr "ཨེགསི.༥༠༩ ལག་ཁྱེར།"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:230
 msgid "Category List"
 msgstr "དབྱེ་རིམ་ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:231
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "དབྱེ་རིམ་ཚུ།"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Calendar URI"
 msgstr "ཟླ་ཐོའི་ཡུ་ཨར་ཨའི་།"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Free/Busy URL"
 msgstr " དལཝ/ཁོམ་མེད་ཀྱི་ཡུ་ཨར་ཨེལ་།"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:236
 msgid "ICS Calendar"
 msgstr "ཨའི་སི་ཨེསི་ ཟླ་ཐོ།"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:239
 msgid "Spouse's Name"
 msgstr "བཟའ་ཟླའི་མིང་།"
 
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:240
 msgid "Note"
 msgstr "དྲན་འཛིན།"
 
-#: ../addressbook/libebook/e-contact.c:241
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Birth Date"
 msgstr "སྐྱེས་ཚེས།"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:243
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "ལོ་བསྟར་དུས་དྲན།"
 
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:245
 msgid "List"
 msgstr "ཐོ་ཡིག"
 
-#: ../addressbook/libebook/e-contact.c:245
+#: ../addressbook/libebook/e-contact.c:246
 msgid "List Show Addresses"
 msgstr "ཁ་བྱང་ཚུ་སྟོན་མི་ཐོ་ཡིག"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:249
 msgid "Last Revision"
 msgstr "མཐའ་མཇུག་བསྐྱར་ཞིབ།"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Book URI"
 msgstr "ཀེ་དེབ་ཀྱི་ཡུ་ཨར་ཨའི།"
 
-#: ../addressbook/libebook/e-contact.c:1238
+#: ../addressbook/libebook/e-contact.c:1239
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "མིང་མ་བཏགས་པའི་ཐོ་ཡིག"
@@ -682,61 +650,62 @@ msgid "Anniversary: %s"
 msgstr "ལོ་བསྟར་དུས་དྲན:%s།"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-msgid "Can't save calendar data: Malformed URI."
+#, fuzzy
+msgid "Cannot save calendar data: Malformed URI."
 msgstr "ཟླ་ཐོའི་གནད་སྡུད་ བསྲུང་མ་ཚུགས: བཟོ་བསྒྱུར་ཅན་གྱི་ ཡུ་ཨར་ཨའི།"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1587
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
 msgid "Reply Requested: by "
 msgstr "ལན་གསལ་ཞུ་བ་འབད་མི:"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1592
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
 msgid "Reply Requested: When convenient"
 msgstr "ལན་གསལ་ཞུ་བ་འབད་ཡི: སྟབས་བདེའི་སྐབས།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:193
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
 #, c-format
 msgid "Loading %s items"
 msgstr "%sརྣམ་གྲངས་ཚུ་མངོན་གསལ་འབད་དོ།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:719
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "ཟླ་ཐོ།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 msgid "Invalid server URI"
 msgstr "ནུས་མེད་སར་བར་ ཡུ་ཨར་ཨའི།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:791
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:800
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:937
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:971
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:996
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1031
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1008
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:715
-#: ../camel/providers/groupwise/camel-groupwise-store.c:757
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1265
+#: ../camel/providers/groupwise/camel-groupwise-store.c:714
+#: ../camel/providers/groupwise/camel-groupwise-store.c:756
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:178
 msgid "Authentication failed"
 msgstr "བདེན་བཤད་འབད་མ་ཚུགས།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:841
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
 msgid "Could not create thread for getting deltas"
 msgstr "ཌེལ་ཊཱསི་ལེན་ནིའི་དོན་ལུ་ ཐེ་རེཌི་གསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1113
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1165
 #: ../calendar/backends/http/e-cal-backend-http.c:520
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "གནས་སྡུད་འདྲ་མཛོད་ཡིག་སྣོད་ གསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:879
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:931
 msgid "Could not create thread for populating cache"
 msgstr "གནས་སྡུད་འདྲ་མཛོད་ཀྱི་དོན་ལུ་ ཐེ་རེཌི་གསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
@@ -1073,18 +1042,15 @@ msgstr "༣༠པ"
 msgid "31st"
 msgstr "༣༡པ"
 
-#: ../calendar/libecal/e-cal-util.c:681
-#: ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:709
 msgid "High"
 msgstr "མཐོ་བ།"
 
-#: ../calendar/libecal/e-cal-util.c:683
-#: ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
 msgid "Normal"
 msgstr "སྤྱིར་བཏང་།"
 
-#: ../calendar/libecal/e-cal-util.c:685
-#: ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
 msgid "Low"
 msgstr "དམའ་བ།"
 
@@ -1099,8 +1065,7 @@ msgstr "ངེས་འཛིན་མ་འབདཝ།"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s གི་དོན་ལུ་ ཆོག་ཡིག་བཙུགས། ལག་ལེན་པ་%s གི་ པོ་རོག་སི་ ལྕོགས་ཅན་བཟོ་ནིའི་དོན་ལུ།"
 
-#: ../calendar/libecal/e-cal.c:1710
-#: ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1710 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s གི་དོན་ལུ་ ཆོག་ཡིག་བཙུགས། (ལག་ལེན་པ་%s)"
@@ -1121,13 +1086,11 @@ msgstr "མཛོད་གནས་ ཨོཕ་ལ་ཡིན་ཨིན་�
 msgid "No such calendar"
 msgstr "དེ་བཟུམ་མའི་ཟླ་ཐོ་མིན་འདུག"
 
-#: ../calendar/libecal/e-cal.c:5117
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../calendar/libecal/e-cal.c:5117 ../servers/groupwise/e-gw-connection.c:173
 msgid "Object not found"
 msgstr "དངོས་པོ་མ་ཐོབ།"
 
-#: ../calendar/libecal/e-cal.c:5119
-#: ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5119 ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid object"
 msgstr "ནུས་མེད་དངོས་པོ།"
 
@@ -1144,8 +1107,7 @@ msgstr "ཡུ་ཨར་ཨའི་ ཧེ་མ་ལས་ མངོན་�
 msgid "Permission denied"
 msgstr "གནང་བ་བྱིན་མ་བཏུབ།"
 
-#: ../calendar/libecal/e-cal.c:5127
-#: ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5127 ../servers/groupwise/e-gw-connection.c:175
 msgid "Unknown User"
 msgstr "མ་ཤེས་པའི་ ལག་ལེན་པ།"
 
@@ -1158,7 +1120,8 @@ msgid "Protocol not supported"
 msgstr "གནད་སྤེལ་ལམ་ལུགས་ལུ་ རྒྱབ་སྐྱོར་མིན་འདུག"
 
 #: ../calendar/libecal/e-cal.c:5133
-msgid "Operation has been cancelled"
+#, fuzzy
+msgid "Operation has been canceled"
 msgstr "བཀོལ་སྤྱོད་ཆ་མེད་བཏང་ནུག"
 
 #: ../calendar/libecal/e-cal.c:5135
@@ -1175,7 +1138,7 @@ msgid "A CORBA exception has occurred"
 msgstr "ཀོར་བཱ་གི་ གྲངས་སུ་མེདཔ་ཅིག་བྱུང་ནུག"
 
 #: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
@@ -1220,7 +1183,9 @@ msgstr "\"%s\" གིས་ སྒྲུབ་རྟགས་དང་པ་ད�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" གིས་ སྒྲུབ་རྟགས་དང་པ་དེ་ ཨའི་ཨེསི་ཨོ་ ༨༦༠༡ ཚེས་གྲངས/ཆུ་ཚོད་ཀྱི་ ཡིག་རྒྱུན་ཨིན་དགོ་པའི་ རེ་བ་བསྐྱེདཔ་ཨིན་མས།"
+msgstr ""
+"\"%s\" གིས་ སྒྲུབ་རྟགས་དང་པ་དེ་ ཨའི་ཨེསི་ཨོ་ ༨༦༠༡ ཚེས་གྲངས/ཆུ་ཚོད་ཀྱི་ ཡིག་རྒྱུན་ཨིན་དགོ་པའི་ རེ་བ་"
+"བསྐྱེདཔ་ཨིན་མས།"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
@@ -1258,8 +1223,12 @@ msgstr "\"%s\"གིས་ སྒྲུབ་རྟགས་གཉིས་པ�
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
 #, c-format
-msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\""
-msgstr "\"%s\"གིས་ སྒྲུབ་རྟགས་དང་པ་དེ་ \"any\", \"summary\", ཡང་ན་ \"description\", ཡང་ན་ \"location\" ཨིན་དགོ་པའི་ རེ་བ་བསྐྱེདཔ་ཨིན་མས།"
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\""
+msgstr ""
+"\"%s\"གིས་ སྒྲུབ་རྟགས་དང་པ་དེ་ \"any\", \"summary\", ཡང་ན་ \"description\", ཡང་ན་ "
+"\"location\" ཨིན་དགོ་པའི་ རེ་བ་བསྐྱེདཔ་ཨིན་མས།"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
 #, c-format
@@ -1268,8 +1237,12 @@ msgstr "\"%s\" གིས་ ཉུང་མཐའ་ལུ་ སྒྲུབ་
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
 #, c-format
-msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
-msgstr "\"%s\"གིས་ སྒྲུབ་རྟགས་ཆ་མཉམ་རང་ ཡིག་རྒྱུན་ཨིནམ་ད་ གཅིག་འབད་མི་ཅིག་ བུ་ལིན་རྫུན་མ་(#f)ཨིན་དགོ་པའི་ རེ་བ་བསྐྱེདཔ་ཨིན་མས།"
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\"གིས་ སྒྲུབ་རྟགས་ཆ་མཉམ་རང་ ཡིག་རྒྱུན་ཨིནམ་ད་ གཅིག་འབད་མི་ཅིག་ བུ་ལིན་རྫུན་མ་(#f)ཨིན་དགོ་"
+"པའི་ རེ་བ་བསྐྱེདཔ་ཨིན་མས།"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1346,13 +1319,11 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "སར་བར་དང་གཅིག་ཁར་ སླར་མཉམ་འབྱུང་འབད་དོ།"
 
-#: ../camel/camel-disco-folder.c:42
-#: ../camel/camel-offline-folder.c:50
+#: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:50
 msgid "Copy folder content locally for offline operation"
 msgstr "སྣོད་འཛིན་གྱི་ནང་དོན་ཚུ་ ཉེ་གནས་ལུ་ ཨོཕ་ལ་ཡིན་བཀོལ་སྤྱོད་ཀྱི་དོན་ལས་ འདྲ་བཤུས་རྐྱབས།"
 
-#: ../camel/camel-disco-folder.c:104
-#: ../camel/camel-offline-folder.c:109
+#: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:109
 msgid "Downloading new messages for offline mode"
 msgstr "ཨོཕ་ལ་ཡིན་ ཐབས་ལམ་གྱི་དོན་ལས་ འཕྲིན་དོན་གསརཔ ཕབ་ལེན་འབད་དོ"
 
@@ -1380,19 +1351,16 @@ msgstr "ཆ་ལག་ལས་སྦྱོར་'%s': %s\"གསར་བས�
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s: %s ནང་ལས་ ནུས་མེད་འཕྲིན་དོན་གྱི་ རྒྱུན་རིམ་ཐོབ་ཅི།"
 
-#: ../camel/camel-filter-driver.c:978
-#: ../camel/camel-filter-driver.c:987
+#: ../camel/camel-filter-driver.c:978 ../camel/camel-filter-driver.c:987
 msgid "Syncing folders"
 msgstr "མཉམ་འབྱུང་གི་སྣོད་འཛིན་ཚུ།"
 
-#: ../camel/camel-filter-driver.c:1076
-#: ../camel/camel-filter-driver.c:1454
+#: ../camel/camel-filter-driver.c:1076 ../camel/camel-filter-driver.c:1454
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "འཛོལ་བ་མིང་དཔྱད་ཀྱི་ཚགས་མ།: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1085
-#: ../camel/camel-filter-driver.c:1463
+#: ../camel/camel-filter-driver.c:1085 ../camel/camel-filter-driver.c:1463
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "འཛོལ་བ་ལག་ལེན་གྱི་ཚགས་མ།%s: %s"
@@ -1414,19 +1382,16 @@ msgstr "འཕྲིན་དོན་%d (%d%%)ལེན་དོ"
 msgid "Cannot open message"
 msgstr "འཕྲིན་དོན་ཁ་ཕྱེ་མ་ཚུགས།"
 
-#: ../camel/camel-filter-driver.c:1181
-#: ../camel/camel-filter-driver.c:1193
+#: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1193
 #, c-format
 msgid "Failed on message %d"
 msgstr "འཕྲིན་དོན་%dལུ་མ་བཏུབ།"
 
-#: ../camel/camel-filter-driver.c:1207
-#: ../camel/camel-filter-driver.c:1298
+#: ../camel/camel-filter-driver.c:1207 ../camel/camel-filter-driver.c:1298
 msgid "Syncing folder"
 msgstr "སྣོད་འཛིན་མཉམ་འབྱུང་འབད་དོ།"
 
-#: ../camel/camel-filter-driver.c:1211
-#: ../camel/camel-filter-driver.c:1303
+#: ../camel/camel-filter-driver.c:1211 ../camel/camel-filter-driver.c:1303
 msgid "Complete"
 msgstr "ཆ་ཚང་།"
 
@@ -1458,14 +1423,12 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "ཆ་ལག་ལས་སྦྱོར་'%s': %sགསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:700
-#: ../camel/camel-filter-search.c:708
+#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "ཚགས་མའི་འཚོལ་ཞིབ་%s: %sལག་ལེན་འཐབ་ནི་ལུ་འཛོལ་བ།"
 
-#: ../camel/camel-folder-search.c:357
-#: ../camel/camel-folder-search.c:478
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1474,8 +1437,7 @@ msgstr ""
 "འཚོལ་ཞིབ་ཀྱི་གསལ་བརྗོད་:%s མིང་དཔྱད་འབད་མ་ཚུགས།\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:367
-#: ../camel/camel-folder-search.c:488
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1484,29 +1446,27 @@ msgstr ""
 "འཚོལ་ཞིབ་ཀྱི་གསལ་བརྗོད་: %sལག་ལེན་འཐབ་ནི་ལུ་འཛོལ་བ།\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:674
-#: ../camel/camel-folder-search.c:707
+#: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
 msgid "(match-all) requires a single bool result"
 msgstr "(ཆ་མཉམ་-མཐུན་སྒྲིག)གི་དོན་ལུ་ བཱུལ་གྱི་གྲུབ་འབྲས་གཅིག་དགོ"
 
-#: ../camel/camel-folder-search.c:757
+#: ../camel/camel-folder-search.c:758
 msgid "(match-threads) not allowed inside match-all"
 msgstr "ཆ་མཉམ་-མཐུན་སྒྲིག་གི་ནང་འཁོད་ལུ་ (མཐུན་སྒྲིག་-ཐེ་རེཌི་མི་ཆོག)།"
 
-#: ../camel/camel-folder-search.c:760
-#: ../camel/camel-folder-search.c:764
+#: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
 msgstr "(མཐུན་སྒྲིག་-ཐེ་རེཌི་)ལུ་ མཐུན་སྒྲིག་དབྱེ་བའི་ ཡིག་རྒྱུན་ཅིག་དགོ"
 
-#: ../camel/camel-folder-search.c:788
+#: ../camel/camel-folder-search.c:789
 msgid "(match-threads) expects an array result"
 msgstr "(མཐུན་སྒྲིག་-ཐེ་རེཌི་)གིས་ ཨེ་རེ་གི་གྲུབ་འབྲས་ཅིག་གི་ རེ་བ་བསྐྱེདཔ་མས།"
 
-#: ../camel/camel-folder-search.c:794
+#: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
 msgstr "(མཐུན་སྒྲིག་-ཐེ་རེཌི་)ལུ་ སྣོད་འཛིན་ཆ་ཚན་དེ་དགོ་པས།"
 
-#: ../camel/camel-folder-search.c:886
+#: ../camel/camel-folder-search.c:887
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "མ་ཤེས་པའི་མགོ་ཡིག་%sལུ་ འདྲི་དཔྱད་འབད་དོ། "
@@ -1522,8 +1482,8 @@ msgid "Unsupported operation: search by expression: for %s"
 msgstr "རྒྱབ་སྐྱོར་མེད་པའི་བཀོལ་སྤྱོད: %sགི་དོན་ལས་ གསལ་བརྗོད་ཀྱིས་ འཚོལ་ཞིབ་འབད་དོ།"
 
 #: ../camel/camel-folder.c:1278
-#, c-format
-msgid "Unsupported operation: search by uids: for %s"
+#, fuzzy, c-format
+msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "རྒྱབ་སྐྱོར་མེད་པའི་བཀོལ་སྤྱོད: %sགི་དོན་ལས་ ཡུ་ཨའི་ཌི་ཨེསི་གིས་ འཚོལ་ཞིབ་འབད་དོ།"
 
 #: ../camel/camel-folder.c:1394
@@ -1561,8 +1521,7 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "ཇི་པི་ཇི་ ལག་ལེན་པའི་ཨའི་ཌི་བརྡ་མཚོན་ལུ་ མིང་དཔྱད་འབད་མ་ཚུགས།"
 
-#: ../camel/camel-gpg-context.c:791
-#: ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
 msgid "Failed to parse gpg passphrase request."
 msgstr "ཇི་པི་ཇི་ ཆོག་ཚིག་གི་ཞུ་བ་ལུ་ མིང་དཔྱད་འབད་མ་ཚུགས།"
 
@@ -1589,10 +1548,10 @@ msgstr ""
 msgid "Unexpected request from GnuPG for `%s'"
 msgstr " `%s'གི་དོན་ལུ་ ཇི་ཨེན་ཡུ་པི་ཇི་ནང་ལས་ རེ་བ་མ་བསྐྱེད་པའི་ཞུ་བ།"
 
-#: ../camel/camel-gpg-context.c:857
-#: ../camel/camel-gpg-context.c:1057
+#: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
-msgid "Cancelled."
+#, fuzzy
+msgid "Canceled."
 msgstr "ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/camel-gpg-context.c:871
@@ -1609,28 +1568,21 @@ msgid "Failed to encrypt: No valid recipients specified."
 msgstr "གསང་བ་བཟོ་མ་ཚུགས། ནུས་ཅན་ལེན་མཁན་ གསལ་བཀོད་འབད་འབདཝ་མིན་འདུག"
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1195
-#: ../camel/camel-gpg-context.c:1323
-#: ../camel/camel-gpg-context.c:1802
-#: ../camel/camel-gpg-context.c:1847
+#: ../camel/camel-gpg-context.c:1195 ../camel/camel-gpg-context.c:1323
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1847
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "ཇི་པི་ཇི་: %s ལག་ལེན་འཐབ་མ་ཚུགས།"
 
-#: ../camel/camel-gpg-context.c:1291
-#: ../camel/camel-smime-context.c:387
+#: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "གནད་སྡུད་%sགི་ མིང་རྟགས་བཟོ་བསྐྲུན་འབད་མ་ཚུགས།"
 
-#: ../camel/camel-gpg-context.c:1338
-#: ../camel/camel-gpg-context.c:1522
-#: ../camel/camel-gpg-context.c:1605
-#: ../camel/camel-gpg-context.c:1620
-#: ../camel/camel-gpg-context.c:1724
-#: ../camel/camel-gpg-context.c:1739
-#: ../camel/camel-gpg-context.c:1818
-#: ../camel/camel-gpg-context.c:1863
+#: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
+#: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
 msgid "Failed to execute gpg."
 msgstr "ཇི་པི་ཇི་ ལག་་ལེན་་འཐབ་མ་ཚུགས།"
 
@@ -1638,12 +1590,9 @@ msgstr "ཇི་པི་ཇི་ ལག་་ལེན་་འཐབ་མ�
 msgid "This is a digitally signed message part"
 msgstr "འདི་ཌི་ཇི་ཊཱལ་ཐོག་ལས་ མིང་རྟགས་བཀོད་པའི་ འཕྲིན་དོན་ཡན་ལག་ཅིག་ཨིན།"
 
-#: ../camel/camel-gpg-context.c:1442
-#: ../camel/camel-gpg-context.c:1448
-#: ../camel/camel-gpg-context.c:1454
-#: ../camel/camel-gpg-context.c:1470
-#: ../camel/camel-smime-context.c:690
-#: ../camel/camel-smime-context.c:701
+#: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
+#: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
+#: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "འཕྲིན་དོན་གྱི་མིང་རྟགས་ བདེན་སྦྱོར་འབད་མི་ཚུགས། འཕྲིན་དོན་གྱི་རྩ་སྒྲིག་ནོར་བ་ཨིན་མས།"
@@ -1651,7 +1600,8 @@ msgstr "འཕྲིན་དོན་གྱི་མིང་རྟགས་ �
 #: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "འཕྲིན་དོན་གྱི་མིང་རྟགས་ བདེན་སྦྱོར་འབད་མི་ཚུགས། གནས་སྐབས་ཡིག་སྣོད་: %s གསར་བསྐྲུན་འབད་མ་ཚུགས།"
+msgstr ""
+"འཕྲིན་དོན་གྱི་མིང་རྟགས་ བདེན་སྦྱོར་འབད་མི་ཚུགས། གནས་སྐབས་ཡིག་སྣོད་: %s གསར་བསྐྲུན་འབད་མ་ཚུགས།"
 
 #: ../camel/camel-gpg-context.c:1588
 #, c-format
@@ -1670,8 +1620,7 @@ msgstr "མ་ཡིམ་ཡན་ལག་ གསང་བཤོལ་འབ�
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "འཕྲིན་དོན་གསང་བཤོལ་འབད་མི་ཚུགས། འཕྲིན་དོན་གྱི་རྩ་སྒྲིག་ཕྱི་འགྱུར།"
 
-#: ../camel/camel-gpg-context.c:1760
-#: ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "གསང་བཟོས་ཅན་གྱི་ནང་དོན།"
 
@@ -1679,8 +1628,7 @@ msgstr "གསང་བཟོས་ཅན་གྱི་ནང་དོན།"
 msgid "Unable to parse message content"
 msgstr "འཕྲིན་དོན་གྱི་ནང་དོན་ མིང་དཔྱད་འབད་མ་ཚུགས།"
 
-#: ../camel/camel-gpg-context.c:1803
-#: ../camel/camel-gpg-context.c:1848
+#: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
@@ -1704,8 +1652,7 @@ msgstr "ལྡེ་མིག་བརྐྱབ་ནིའི་ གྲོག�
 msgid "Cannot fork locking helper: %s"
 msgstr "ལྡེ་མིག་གྲོགས་རམ་: %s ཁ་སྤེལ་མ་ཚུགས།"
 
-#: ../camel/camel-lock-client.c:191
-#: ../camel/camel-lock-client.c:214
+#: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "'%s': ལྡེ་མིག་བརྐྱབ་མ་ཚུགས། ལྡེ་མིག་-གྲོགས་རམ་དང་གཅིག་ཁར་ གནད་སྤེལ་ལམ་ལུགས་ཀྱི་འཛོལ་བ།"
@@ -1715,8 +1662,7 @@ msgstr "'%s': ལྡེ་མིག་བརྐྱབ་མ་ཚུགས། �
 msgid "Could not lock '%s'"
 msgstr "'%s'ལྡེ་མིག་བརྐྱབ་མ་ཚུགས།"
 
-#: ../camel/camel-lock.c:95
-#: ../camel/camel-lock.c:116
+#: ../camel/camel-lock.c:95 ../camel/camel-lock.c:116
 #, c-format
 msgid "Could not create lock file for %s: %s"
 msgstr "%s: %sགི་དོན་ལུ་ ལྡེ་མིག་ཡིག་སྣོད་ གསར་བསྐྲུན་འབད་མ་ཚུགས།"
@@ -1785,8 +1731,7 @@ msgstr "ཡིག་འཕྲིན་ཡིག་སྣོད་: %sལྷག�
 msgid "Error writing mail temp file: %s"
 msgstr "ཡིག་འཕྲིན་གྱི་ གནས་སྐབས་ཡིག་སྣོད་: %sའབྲི་ནི་ལུ་འཛོལ་བ།"
 
-#: ../camel/camel-movemail.c:462
-#: ../camel/camel-movemail.c:529
+#: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "ཡིག་འཕྲིན་གྱི་ གནས་སྐབས་ཡིག་སྣོད་: %sའདྲ་བཤུས་བརྐྱབ་ནི་ལུ་འཛོལ་བ།"
@@ -1795,12 +1740,12 @@ msgstr "ཡིག་འཕྲིན་གྱི་ གནས་སྐབས་�
 msgid "parse error"
 msgstr "མིང་དཔྱད་ལུ་འཛོལ་བ།"
 
-#: ../camel/camel-net-utils.c:497
-#: ../camel/camel-net-utils.c:659
+#: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
 #: ../camel/camel-net-utils.c:790
 #: ../camel/providers/pop3/camel-pop3-store.c:441
 #: ../camel/providers/pop3/camel-pop3-store.c:522
-msgid "Cancelled"
+#, fuzzy
+msgid "Canceled"
 msgstr "ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/camel-net-utils.c:516
@@ -1839,8 +1784,7 @@ msgstr "མིང་: %sལུ་བལྟ་མ་ཚུགས།"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "སྣོད་འཛིན་'%s' ནང་ལས་ ཌིཀསི་ནང་ལུ་ འཕྲིན་དོན་མཉམ་འབྱུང་འབད་དོ།"
 
-#: ../camel/camel-offline-journal.c:163
-#: ../camel/camel-offline-journal.c:186
+#: ../camel/camel-offline-journal.c:163 ../camel/camel-offline-journal.c:186
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "སྣོད་འཛིན་`%s': %sགི་དོན་ལས་ ཨོཕ་ལ་ཡིན་གསར་དེབ་ འབྲི་མི་ཚུགས་པས།"
@@ -1868,8 +1812,7 @@ msgstr "%s: %sམངོན་གསལ་འབད་མ་ཚུགས།"
 msgid "Could not load %s: No initialization code in module."
 msgstr "%sམངོན་གསལ་འབད་མ་ཚུགས། ཚད་གཞི་ནང་ འགོ་འབྱེད་ཀྱི་ཨང་མིན་འདུག"
 
-#: ../camel/camel-provider.c:377
-#: ../camel/camel-session.c:166
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:166
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "གནད་སྤེལ་ལམ་ལུགས་`%s'གི་དོན་ལས་ བྱིན་མི་འཐོབ་མ་ཚུགས།"
@@ -1882,8 +1825,7 @@ msgstr "མིང་མེདཔ།"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "གདམ་ཁ་འདི་གིས་ མིང་མེད་པའི་ནང་བསྐྱོད་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ སར་བར་ལུ་ མཐུད་ནི་ཨིན།"
 
-#: ../camel/camel-sasl-anonymous.c:122
-#: ../camel/camel-sasl-plain.c:89
+#: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:89
 msgid "Authentication failed."
 msgstr "བདེན་བཤད་འབད་མ་ཚུགས།"
 
@@ -1919,16 +1861,24 @@ msgid "CRAM-MD5"
 msgstr "སི་ཨར་ཨེ་ཨེམ་-ཨེམ་ཌི་༥།"
 
 #: ../camel/camel-sasl-cram-md5.c:40
-msgid "This option will connect to the server using a secure CRAM-MD5 password, if the server supports it."
-msgstr "སར་བར་གྱིས་ རྒྱབ་སྐྱོར་འབད་བ་ཅིན་ གདམ་ཁ་འདི་གིས་ ཉེན་སྲུང་ཡོད་པའི་ཆོག་ཡིག་ སི་ཨར་ཨེ་ཨེམ་-ཨེམ་ཌི་༥་ ལག་ལེན་འཐབ་སྟེ་ སར་བར་ལུ་མཐུད་འོང་།"
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"སར་བར་གྱིས་ རྒྱབ་སྐྱོར་འབད་བ་ཅིན་ གདམ་ཁ་འདི་གིས་ ཉེན་སྲུང་ཡོད་པའི་ཆོག་ཡིག་ སི་ཨར་ཨེ་ཨེམ་-ཨེམ་ཌི་༥་ "
+"ལག་ལེན་འཐབ་སྟེ་ སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
 msgstr "ཌའི་ཇེསིཊི་-ཨེམ་ཌི་༥།"
 
 #: ../camel/camel-sasl-digest-md5.c:50
-msgid "This option will connect to the server using a secure DIGEST-MD5 password, if the server supports it."
-msgstr "སར་བར་གྱིས་ རྒྱབ་སྐྱོར་འབད་བ་ཅིན་ གདམ་ཁ་འདི་གིས་ ཉེན་སྲུང་ཡོད་པའི་ཆོག་ཡིག་ ཌའི་ཇེསིཊི་-ཨེམ་ཌི་༥ལག་ལེན་འཐབ་སྟེ་ སར་བར་ལུ་མཐུད་འོང་།"
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"སར་བར་གྱིས་ རྒྱབ་སྐྱོར་འབད་བ་ཅིན་ གདམ་ཁ་འདི་གིས་ ཉེན་སྲུང་ཡོད་པའི་ཆོག་ཡིག་ ཌའི་ཇེསིཊི་-ཨེམ་ཌི་༥ལག་"
+"ལེན་འཐབ་སྟེ་ སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/camel-sasl-digest-md5.c:818
 msgid "Server challenge too long (>2048 octets)"
@@ -1963,32 +1913,51 @@ msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "གདམ་ཁ་འདི་གིས་ ཀར་བི་རོསི་༥ གི་བདེན་བཤད་ ལག་ལེན་འཐབ་སྟེ་ སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/camel-sasl-gssapi.c:157
-msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
-msgstr "གསལ་བཀོད་འབད་མི་ཐབས་ཤེས་ལམ་དེ་ལུ་ བྱིན་ཏེ་ཡོད་མི་ངོ་སྤྲོད་ཀྱིས་ རྒྱབ་སྐྱོར་མ་འབད་བས་ ཡང་ཅིན་ ལག་ལེན་གྱིས་ ངོས་འཛིན་མ་འབད་བས།"
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+"གསལ་བཀོད་འབད་མི་ཐབས་ཤེས་ལམ་དེ་ལུ་ བྱིན་ཏེ་ཡོད་མི་ངོ་སྤྲོད་ཀྱིས་ རྒྱབ་སྐྱོར་མ་འབད་བས་ ཡང་ཅིན་ ལག་ལེན་"
+"གྱིས་ ངོས་འཛིན་མ་འབད་བས།"
 
 #: ../camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
 msgstr "བྱིན་ཏེ་ཡོད་མི་ target_name གི་ཚད་བཟུང་དེ་ བཟོ་ཉེས་ཨིན་པས།"
 
 #: ../camel/camel-sasl-gssapi.c:165
-msgid "The provided target_name parameter contained an invalid or unsupported type of name."
-msgstr "བྱིན་ཏེ་ཡོད་མི་ target_name གི་ ཚད་བཟུང་ནང་ལུ་ ནུས་མེད་དམ་ རྒྱབ་སྐྱོར་མེད་པའི་ མིང་གི་དབྱེ་བ་ཅིག་འདུག"
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
+msgstr ""
+"བྱིན་ཏེ་ཡོད་མི་ target_name གི་ ཚད་བཟུང་ནང་ལུ་ ནུས་མེད་དམ་ རྒྱབ་སྐྱོར་མེད་པའི་ མིང་གི་དབྱེ་བ་ཅིག་"
+"འདུག"
 
 #: ../camel/camel-sasl-gssapi.c:169
-msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
-msgstr "input_token ནང་ལུ་ input_chan_bindings གི་ ཚད་བཟུང་བརྒྱུད་དེ་ གསལ་བཀོད་འབད་མི་དང་མ་འདྲ་བའི་ རྒྱུ་ལམ་སྡམ་ཐག་འདུག"
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
+msgstr ""
+"input_token ནང་ལུ་ input_chan_bindings གི་ ཚད་བཟུང་བརྒྱུད་དེ་ གསལ་བཀོད་འབད་མི་དང་མ་འདྲ་"
+"བའི་ རྒྱུ་ལམ་སྡམ་ཐག་འདུག"
 
 #: ../camel/camel-sasl-gssapi.c:174
-msgid "The input_token contains an invalid signature, or a signature that could not be verified."
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
 msgstr "input_tokenནང་ལུ་ ནུས་མེད་ཀྱི་མིང་རྟགས་སམ་ བདེན་སྦྱོར་འབད་མ་ཚུགས་པའི་ མིང་རྟགས་ཅིག་འདུག"
 
 #: ../camel/camel-sasl-gssapi.c:178
-msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
-msgstr "བཀྲམ་སྤེལ་འབད་མི་ངོ་སྤྲོད་ཚུ་ སྐབས་འབབ་འགོ་འབྱེད་ཀྱི་དོན་ལུ་ ནུས་མེད་ཨིནམ་ད་ ཡང་ཅིན་ ངོ་སྤྲོད་བཤེད་བཟུང་དེ་གིས་ ངོ་སྤྲོད་ག་ནི་ཡང་ གཞི་བསྟུན་མ་འབད་བས།"
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+"བཀྲམ་སྤེལ་འབད་མི་ངོ་སྤྲོད་ཚུ་ སྐབས་འབབ་འགོ་འབྱེད་ཀྱི་དོན་ལུ་ ནུས་མེད་ཨིནམ་ད་ ཡང་ཅིན་ ངོ་སྤྲོད་བཤེད་བཟུང་"
+"དེ་གིས་ ངོ་སྤྲོད་ག་ནི་ཡང་ གཞི་བསྟུན་མ་འབད་བས།"
 
 #: ../camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
-msgstr "བཀྲམ་སྤེལ་འབད་མི་ སྐབས་འབབ་བཤེད་བཟུང་དེ་ ནུས་ཅན་གྱི་སྐབས་འབབ་ཅིག་ལུ་ གཞི་བསྟུན་མ་འབད་བས།"
+msgstr ""
+"བཀྲམ་སྤེལ་འབད་མི་ སྐབས་འབབ་བཤེད་བཟུང་དེ་ ནུས་ཅན་གྱི་སྐབས་འབབ་ཅིག་ལུ་ གཞི་བསྟུན་མ་འབད་བས།"
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
@@ -2002,10 +1971,8 @@ msgstr "ངོ་སྤྲོད་ལུ་ རིམ་མཐུན་ཞི�
 msgid "The referenced credentials have expired."
 msgstr "གཞི་བསྟུན་འབད་མི་ ངོ་སྤྲོད་དེ་ དུས་ཡོལ་ཐལ་སོ་ནུག"
 
-#: ../camel/camel-sasl-gssapi.c:198
-#: ../camel/camel-sasl-gssapi.c:246
-#: ../camel/camel-sasl-gssapi.c:282
-#: ../camel/camel-sasl-gssapi.c:297
+#: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
+#: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
 #: ../camel/providers/imap/camel-imap-store.c:1281
 msgid "Bad authentication response from server."
@@ -2036,8 +2003,7 @@ msgstr ""
 msgid "Login"
 msgstr "ནང་བསྐྱོད།"
 
-#: ../camel/camel-sasl-login.c:36
-#: ../camel/camel-sasl-plain.c:36
+#: ../camel/camel-sasl-login.c:36 ../camel/camel-sasl-plain.c:36
 msgid "This option will connect to the server using a simple password."
 msgstr "གདམ་ཁ་འདི་གིས་ ཆོག་ཡིག་འཇམ་སམ་ཅིག་ ལག་ལེན་འཐབ་ཐོག་ལས་ སར་བར་ལུ་མཐུད་འོང་།"
 
@@ -2050,8 +2016,12 @@ msgid "NTLM / SPA"
 msgstr "ཨེན་ཊི་ཨེལ་ཨེམ་/ཨེསི་པི་ཨེ།"
 
 #: ../camel/camel-sasl-ntlm.c:34
-msgid "This option will connect to a Windows-based server using NTLM / Secure Password Authentication."
-msgstr "གདམ་ཁ་འདི་གིས་ ཨེན་ཊི་ཨེལ་ཨེམ་/སྲུང་སྐྱོབ་ཡོད་པའི་ ཆོག་ཡིག་བདེན་བཤད་ ལག་ལེན་འཐབ་ཐོག་ལས་ ཝིན་ཌོསི་ལུ་བརྟེན་པའི་ སར་བར་ཅིག་ལུ་མཐུད་འོང་།"
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཨེན་ཊི་ཨེལ་ཨེམ་/སྲུང་སྐྱོབ་ཡོད་པའི་ ཆོག་ཡིག་བདེན་བཤད་ ལག་ལེན་འཐབ་ཐོག་ལས་ ཝིན་ཌོསི་"
+"ལུ་བརྟེན་པའི་ སར་བར་ཅིག་ལུ་མཐུད་འོང་།"
 
 #: ../camel/camel-sasl-plain.c:34
 msgid "PLAIN"
@@ -2063,7 +2033,8 @@ msgstr "ཨེསི་ཨེམ་ཊི་པི་གི་ཧེ་མར་
 
 #: ../camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "གདམ་ཁ་འདི་གིས་ ཨེསི་ཨེམ་ཊི་པི་ལུ་ དཔའ་མ་བཅམ་པའི་ཧེ་མར་ པོཔ་མཐུད་ལམ་ཅིག་གི་ གནང་བ་བྱིན་འོང་།"
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཨེསི་ཨེམ་ཊི་པི་ལུ་ དཔའ་མ་བཅམ་པའི་ཧེ་མར་ པོཔ་མཐུད་ལམ་ཅིག་གི་ གནང་བ་བྱིན་འོང་།"
 
 #: ../camel/camel-sasl-popb4smtp.c:104
 msgid "POP Source URI"
@@ -2139,8 +2110,7 @@ msgstr "ལག་ཁྱེར་གྱི་རྒྱུན་ཐག་འཚོ
 msgid "Cannot add CMS Signing time"
 msgstr "སི་ཨེམ་ཨེསི་ མིང་རྟགས་བཀོད་པའི་དུས་ཚོད་ ཁ་སྐོང་བརྐྱབ་མི་ཚུགས།"
 
-#: ../camel/camel-smime-context.c:293
-#: ../camel/camel-smime-context.c:305
+#: ../camel/camel-smime-context.c:293 ../camel/camel-smime-context.c:305
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "'%s' གི་དོན་ལུ་ གསང་བཟོ་བའི་ ལག་ཁྱེར་མིན་འདུག"
@@ -2161,8 +2131,7 @@ msgstr "གསང་བཟོའི་ལག་ཁྱེར་ ཁ་སྐོ�
 msgid "Cannot add CMS Signer information"
 msgstr "སི་ཨེམ་ཨེསི་ མིང་རྟགས་བཀོད་མིའི་བརྡ་དོན་ ཁ་སྐོང་བརྐྱབ་མི་ཚུགས།"
 
-#: ../camel/camel-smime-context.c:398
-#: ../camel/camel-smime-context.c:846
+#: ../camel/camel-smime-context.c:398 ../camel/camel-smime-context.c:846
 msgid "Cannot create encoder context"
 msgstr "ཨིན་ཀོ་ཌར་སྐབས་འབབ་ གསར་བསྐྲུན་འབད་མི་ཚུགས།"
 
@@ -2170,8 +2139,7 @@ msgstr "ཨིན་ཀོ་ཌར་སྐབས་འབབ་ གསར་�
 msgid "Failed to add data to CMS encoder"
 msgstr "སི་ཨེམ་ཨེསི་ ཨིན་ཀོ་ཌར་ལུ་ གནད་སྡུད་ཁ་སྐོང་བརྐྱབ་མ་ཚུགས།"
 
-#: ../camel/camel-smime-context.c:409
-#: ../camel/camel-smime-context.c:863
+#: ../camel/camel-smime-context.c:409 ../camel/camel-smime-context.c:863
 msgid "Failed to encode data"
 msgstr "གནད་སྡུད་ཨིན་ཀོཌི་ འབད་མ་ཚུགས།"
 
@@ -2223,8 +2191,7 @@ msgstr "མིང་རྟགས་ནང་ མིང་རྟགས་བཀ�
 msgid "Digests missing from enveloped data"
 msgstr "ཡིག་ཤུབས་ནང་བཙུགས་ཡོད་པའི་ གནད་སྡུད་ནང་ལས་ ཌའི་ཇེསཊི་ བརླག་སྟོར་ཞུགས་ནུག"
 
-#: ../camel/camel-smime-context.c:557
-#: ../camel/camel-smime-context.c:567
+#: ../camel/camel-smime-context.c:557 ../camel/camel-smime-context.c:567
 msgid "Cannot calculate digests"
 msgstr "ཌའི་ཇེསིཊི་གི་ རྩིས་སྟོན་མི་ཚུགས།"
 
@@ -2232,8 +2199,7 @@ msgstr "ཌའི་ཇེསིཊི་གི་ རྩིས་སྟོན�
 msgid "Cannot set message digests"
 msgstr "འཕྲིན་དོན་གྱི་ ཌའི་ཇེསིཊི་ གཞི་སྒྲིག་འབད་མ་ཚུགས།"
 
-#: ../camel/camel-smime-context.c:582
-#: ../camel/camel-smime-context.c:587
+#: ../camel/camel-smime-context.c:582 ../camel/camel-smime-context.c:587
 msgid "Certificate import failed"
 msgstr "ལག་ཁྱེར་ ནང་འདྲེན་མ་བཏུབ།"
 
@@ -2243,7 +2209,8 @@ msgstr "འཕྲིན་དོན་དེ་ ལག་ཁྱེར་རྐ�
 
 #: ../camel/camel-smime-context.c:600
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "འཕྲིན་དོན་ཡོད་རུང་མེད་རུང་ ལག་ཁྱེར་རྐྱངམ་གཅིག་ཨིནམ་ལས་ ལག་ཁྱེར་ཚུ་ནང་འདྲེན་འབད་དེ་ བདེན་སྦྱོར་འབད་ཡི།"
+msgstr ""
+"འཕྲིན་དོན་ཡོད་རུང་མེད་རུང་ ལག་ཁྱེར་རྐྱངམ་གཅིག་ཨིནམ་ལས་ ལག་ཁྱེར་ཚུ་ནང་འདྲེན་འབད་དེ་ བདེན་སྦྱོར་འབད་ཡི།"
 
 #: ../camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2336,29 +2303,25 @@ msgstr "སྣོད་འཛིན་གསར་བསྐྲུན་འབད
 msgid "Cannot create folder: %s: folder exists"
 msgstr "སྣོད་འཛིན་:%s: གསར་བསྐྲུན་འབད་མི་ཚུགས། སྣོད་འཛིན་འདུག"
 
-#: ../camel/camel-store.c:402
-#: ../camel/camel-vee-store.c:368
+#: ../camel/camel-store.c:402 ../camel/camel-vee-store.c:368
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "སྣོད་འཛིན་:%s: བཏོན་བཏང་མི་ཚུགས། ནུས་མེད་བཀོལ་སྤྱོད་ཨིན་པས།"
 
-#: ../camel/camel-store.c:452
-#: ../camel/camel-vee-store.c:405
+#: ../camel/camel-store.c:452 ../camel/camel-vee-store.c:405
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "སྣོད་འཛིན་:%s: ལུ་ བསྐྱར་མིང་བཏགས་མི་ཚུགས། ནུས་མེད་བཀོལ་སྤྱོད་ཨིན་པས།"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:793
-#: ../camel/camel-vtrash-folder.c:48
+#: ../camel/camel-store.c:793 ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "ཕྱགས་ཧོད།"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:796
-#: ../camel/camel-vtrash-folder.c:50
+#: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "མཁོ་མེད།"
 
@@ -2478,8 +2441,7 @@ msgstr "ལྡེ་མིག་ལག་ལེན་གྱིས་ ལག་�
 msgid "Error in application verification"
 msgstr "གློག་རིམ་བདེན་སྦྱོར་འབད་ནི་ལུ་འཛོལ་བ།"
 
-#: ../camel/camel-tcp-stream-openssl.c:696
-#: ../camel/camel-tcp-stream-ssl.c:880
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2492,13 +2454,11 @@ msgstr ""
 "མཛུབ་རྗེས:            %s\n"
 "མིང་རྟགས:            %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702
-#: ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "ལེགས་ཤོམ།"
 
-#: ../camel/camel-tcp-stream-openssl.c:702
-#: ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "བྱང་ཉེས།"
 
@@ -2588,13 +2548,11 @@ msgstr "`%s': %s གསོག་འཇོག་འབད་ནི་ལུ་འ
 msgid "No such message %s in %s"
 msgstr "%sནང་ལུ་%sབཟུམ་གྱི་ འཕྲིན་དོན་མིན་འདུག"
 
-#: ../camel/camel-vee-folder.c:642
-#: ../camel/camel-vee-folder.c:648
+#: ../camel/camel-vee-folder.c:642 ../camel/camel-vee-folder.c:648
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "བར་ཅུ་ཡལ་སྣོད་འཛིན་ནང་ འཕྲིན་དོན་ཚུ་ འདྲ་བཤུས་བརྐྱབ་ནིའམ་ སྤོ་ནི་མི་བཏུབ།"
 
-#: ../camel/camel-vee-store.c:101
-#: ../camel/camel-vee-store.c:344
+#: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
 msgstr "མཐུན་སྒྲིག་མེདཔ།"
 
@@ -2643,7 +2601,8 @@ msgstr "དེ་བཟུམ་མའི་འཕྲིན་དོན་མི
 #: ../camel/providers/pop3/camel-pop3-folder.c:431
 #: ../camel/providers/pop3/camel-pop3-folder.c:492
 #: ../camel/providers/pop3/camel-pop3-folder.c:510
-msgid "User cancelled"
+#, fuzzy
+msgid "User canceled"
 msgstr "ལག་ལེན་པ་ ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:131
@@ -2668,36 +2627,36 @@ msgstr "འཕྲིན་དོན་འདི་ ཨོཕ་ལ་ཡིན�
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1550
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
 msgid "Could not get message"
 msgstr "འཕྲིན་དོན་ཐོབ་མ་ཚུགས།"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:740
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:752
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%sགི་དོན་ལུ་ བཅུད་དོན་མངོན་གསལ་འབད་མ་ཚུགས།"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:967
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:979
 msgid "Trash Folder Full. Please Empty."
 msgstr "ཕྱགས་ཧོད་སྣོད་འཛིན་གང་སོ་ནུག སྟོངམ་བཏོན་གནང་།"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1132
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:747
+#: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/imap/camel-imap-folder.c:2361
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%sནང་ལུ་ འཕྲིན་དོན་གསར་པའི་དོན་ལུ་ བརྡ་དོན་བཅུད་དོན་ལེན་དོ།"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1818
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1866
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "སྣོད་འཛིན་`%s': %sལུ་ འཕྲིན་དོན་མཇུག་བསྣོན་འབད་མ་ཚུགས།"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1854
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "འཕྲིན་དོན་%sགསར་བསྐྲུན་འབད་མ་ཚུགས།"
@@ -2779,7 +2738,8 @@ msgid "Password"
 msgstr "ཆོག་ཡིག"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
-msgid "This option will connect to the GroupWise server using a plaintext password."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
 msgstr "གདམ་ཁ་་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ སྡེ་རིམ་སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
@@ -2793,7 +2753,8 @@ msgstr "%s། %s@%sགི་དོན་ལས་ སྡེ་རིམ་ཆོ
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:214
 #: ../camel/providers/imap/camel-imap-store.c:1360
-msgid "You didn't enter a password."
+#, fuzzy
+msgid "You did not enter a password."
 msgstr "ཁྱོད་ཀྱིས་ ཆོག་ཡིག་ཅིག་ མ་བཙུགས་པས།"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:226
@@ -2811,29 +2772,29 @@ msgstr "ད་ལྟོ་ཁྱོད་ཀྱི་ སར་བར་གྱ�
 msgid "No such folder %s"
 msgstr "སྣོད་འཛིན་%sའབད་མི་མིན་འདུག"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1242
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ཨོཕ་ལ་ཡིན་ ཐབས་ལམ་ནང་ སྡེ་རིམ་སྣོད་འཛིན་ གསར་བསྐྲུན་འབད་མི་ཚུགས།"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "་རྩ་་ལག་སྣོད་འཛིན་དེ་ནང་ ཡན་ལག་སྣོད་འཛིན་ བཞག་མི་ཆོག"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1333
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1354
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "སྡེ་རིམ་སྣོད་འཛིན་`%s' ལས་`%sལུ་ བསྐྱར་མིང་བཏགས་མི་ཚུགས།"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1386
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "སྡེ་རིམ་སར་བར་%s།"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1388
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%sལུ་%sགི་དོན་ལས་ སྡེ་རིམ་ཞབས་ཏོག"
@@ -2847,11 +2808,17 @@ msgstr "%s བརྒྱུད་དེ་ སྡེ་རིམ་ཡིག་�
 msgid "Sending Message"
 msgstr "འཕྲིན་དོན་བཏང་དོ།"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:216
-msgid "You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"
-msgstr "ཁྱོད་ཀྱིས་རྩིས་ཐོ་འདི་གི་ བསག་མཛོད་ཀྱི་ཚད་ལས་ལྷག་སོང་ནུག ཁྱོད་ཀྱི་འཕྲིན་དོན་ཚུ་ ཁྱོད་རའི་ཕྱི་སྒྲོམ་ནང་ གྱལ་རིམ་བསྒྲིགས་ཏེ་ཡོད།  ཁྱོད་རའི་ཡིག་འཕྲིན་ལ་ལོ་ཅིག་ བཏོན་གཏང་/ཡིག་མཛོད་ནང་བཙུགས་པའི་ཤུལ་ལུ་ གཏང་/འབྱོར་ ལུ་ཨེབ་པའི་ཐོག་ལས་སླར་གཏང་།\n"
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+msgid ""
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
+msgstr ""
+"ཁྱོད་ཀྱིས་རྩིས་ཐོ་འདི་གི་ བསག་མཛོད་ཀྱི་ཚད་ལས་ལྷག་སོང་ནུག ཁྱོད་ཀྱི་འཕྲིན་དོན་ཚུ་ ཁྱོད་རའི་ཕྱི་སྒྲོམ་ནང་ གྱལ་"
+"རིམ་བསྒྲིགས་ཏེ་ཡོད།  ཁྱོད་རའི་ཡིག་འཕྲིན་ལ་ལོ་ཅིག་ བཏོན་གཏང་/ཡིག་མཛོད་ནང་བཙུགས་པའི་ཤུལ་ལུ་ གཏང་/"
+"འབྱོར་ ལུ་ཨེབ་པའི་ཐོག་ལས་སླར་གཏང་།\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -2918,7 +2885,8 @@ msgstr "ཧུ་ལ་སར་བར་ཚུ་ལུ་ འཛུལ་ས�
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr "གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཧུ་ལ་སར་བར་ལུ་མཐུད་འོང་།"
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཧུ་ལ་སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
@@ -3006,8 +2974,10 @@ msgstr "སར་བར་གྱི་ངོས་ལན་ ཆ་ཚང་མ�
 
 #: ../camel/providers/imap/camel-imap-folder.c:2560
 #, c-format
-msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr "རེ་བ་མེད་པའི་ སར་བར་གྱི་ངོས་ལན། འཕྲིན་དོན་%dདང་%dགི་དོན་ལས་ དབྱེར་མེད་པའི་ ཡུ་ཨའི་ཌི་ཚུ་བྱིན་ནུག"
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgstr ""
+"རེ་བ་མེད་པའི་ སར་བར་གྱི་ངོས་ལན། འཕྲིན་དོན་%dདང་%dགི་དོན་ལས་ དབྱེར་མེད་པའི་ ཡུ་ཨའི་ཌི་ཚུ་བྱིན་ནུག"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2725
 msgid "Could not find message body in FETCH response."
@@ -3062,7 +3032,8 @@ msgstr "ཨའི་མེཔ་སར་བར་གུ་་ ཡིག་འ�
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཨའི་མེཔ་སར་བར་ལུ་མཐུད་འོང་།"
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཨའི་མེཔ་སར་བར་ལུ་མཐུད་འོང་།"
 
 #: ../camel/providers/imap/camel-imap-store.c:446
 #: ../camel/providers/imap4/camel-imap4-store.c:214
@@ -3100,12 +3071,6 @@ msgstr "ཨེསི་ཨེསི་ཨེལ་ འཐོབ་མི་ཚ�
 
 #: ../camel/providers/imap/camel-imap-store.c:590
 #: ../camel/providers/imap/camel-imap-store.c:864
-#: ../camel/providers/imap4/camel-imap4-store.c:263
-#: ../camel/providers/imapp/camel-imapp-store.c:248
-#: ../camel/providers/nntp/camel-nntp-store.c:196
-#: ../camel/providers/nntp/camel-nntp-store.c:215
-#: ../camel/providers/pop3/camel-pop3-store.c:179
-#: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection cancelled"
 msgstr "མཐུད་ལམ་ཆ་མེད་བཏང་ཡོད།"
 
@@ -3126,13 +3091,11 @@ msgstr "STARTTLS ལུ་ རྒྱབ་སྐྱོར་མིན་འད�
 
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
-#: ../camel/providers/pop3/camel-pop3-store.c:244
 msgid "SSL negotiations failed"
 msgstr "ཨེསི་ཨེསི་ཨེལ་ གྲོས་སྒྲིག་འབད་མ་ཚུགས།"
 
 #: ../camel/providers/imap/camel-imap-store.c:727
 #: ../camel/providers/imap4/camel-imap4-store.c:330
-#: ../camel/providers/pop3/camel-pop3-store.c:250
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "གཟུགས་འདི་ནང་ ཨེསི་ཨེསི་ཨེལ་ མི་ཐོབ་པས།"
@@ -3189,7 +3152,8 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2251
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "སྣོད་འཛིན་མིང་\"%s\" འབད་མི་དེ་ནང་ ཡིག་འབྲུ་\"%c\"ཡོདཔ་ལས་ ནུས་མེད་ཨིན་མས།"
 
 #: ../camel/providers/imap/camel-imap-store.c:1998
@@ -3240,8 +3204,11 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "སར་བར་ ཨའི་མེཔ་༤%sགིས་ རེ་བ་མེད་པར་ %s གི་མཐུད་ལམ་བཏོག་བཏང་ནུག"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
-msgid "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "ཚགས་མ་དང་ ཝི་སྣོད་འཛིན་ལམ་ལུགས་ ལ་ལོ་ཅིག་གི་དོན་ལུ་ འཕྲིན་བཏང་-ཐོ་ཡིག་གི་བརྡ་སྟོན་ ལྕོགས་ཅན་བཟོ་དགོཔ་འདུག"
+msgid ""
+"Enable Mailing-List detection required for some filter and vFolder rules"
+msgstr ""
+"ཚགས་མ་དང་ ཝི་སྣོད་འཛིན་ལམ་ལུགས་ ལ་ལོ་ཅིག་གི་དོན་ལུ་ འཕྲིན་བཏང་-ཐོ་ཡིག་གི་བརྡ་སྟོན་ ལྕོགས་ཅན་བཟོ་"
+"དགོཔ་འདུག"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
@@ -3311,7 +3278,8 @@ msgstr "སྣོད་འཛིན་`%s' ལས་ སྣོད་འཛིན
 #: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "སྣོད་འཛིན་`%s' ལས་ སྣོད་འཛིན་`%s': ལུ་ འཕྲིན་དོན་འདྲ་བཤུས་བརྐྱབ་མི་ཚུགས་པས། བརྡ་བཀོད་བྱང་ཉེས།"
+msgstr ""
+"སྣོད་འཛིན་`%s' ལས་ སྣོད་འཛིན་`%s': ལུ་ འཕྲིན་དོན་འདྲ་བཤུས་བརྐྱབ་མི་ཚུགས་པས། བརྡ་བཀོད་བྱང་ཉེས།"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
@@ -3322,13 +3290,28 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "སར་བར་ IMAP4rev1ཚུ་ལུ་ ཡིག་འཕྲིན་ལྷག་ནི་དང་ གསོག་འཇོག་གི་དོན་ལུ།"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr "གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་ཐོག་ལས་ སར་བར་ IMAP4rev1ལུ་ མཐུད་འོང་།"
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་ཐོག་ལས་ སར་བར་ IMAP4rev1ལུ་ མཐུད་འོང་།"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:263
+#: ../camel/providers/imapp/camel-imapp-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:196
+#: ../camel/providers/nntp/camel-nntp-store.c:215
+#: ../camel/providers/pop3/camel-pop3-store.c:179
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
+#, fuzzy
+msgid "Connection canceled"
+msgstr "མཐུད་ལམ་ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr "%sབདེན་བཤད་ཐབས་ལམ་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཨའི་མེཔ་ སར་བར་%s ལུ་ བདེན་བཤད་འབད་མི་ཚུགས་པས།"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+"%sབདེན་བཤད་ཐབས་ལམ་ ལག་ལེན་འཐབ་པའི་ཐོག་ལས་ ཨའི་མེཔ་ སར་བར་%s ལུ་ བདེན་བཤད་འབད་མི་ཚུགས་"
+"པས།"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
@@ -3480,7 +3463,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "མོ་བཏབ་ཀྱི་ ཨའི་མེཔ་༤(.༡) ཡོངས་འབྲེལ་ཡན་ལག\n"
-"འདི་བརྟག་དཔྱད་མེདཔ་དང་ རྒྱབ་སྐྱོར་མེད་པའི་ཨང་རྟགས་ཨིན། དེ་གི་ཚབ་ལུ་ ཨའི་མེཔ་རྐྱང་པོ་ ལག་ལེན་འཐབ་ནི་ཨིན་ན།\n"
+"འདི་བརྟག་དཔྱད་མེདཔ་དང་ རྒྱབ་སྐྱོར་མེད་པའི་ཨང་རྟགས་ཨིན། དེ་གི་ཚབ་ལུ་ ཨའི་མེཔ་རྐྱང་པོ་ ལག་ལེན་འཐབ་ནི་"
+"ཨིན་ན།\n"
 "\n"
 "!!! འདི་གློག་འཕྲིན་བཟོ་བསྐྲུན་གྱི་དོན་ལུ་ ལག་ལེན་མ་འཐབ།!!! \n"
 
@@ -3527,15 +3511,20 @@ msgstr "ཨེམ་ཨེཆ་-རྩ་སྒྲིག་གི་ ཡིག�
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "For storing local mail in MH-like mail directories."
-msgstr "ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་ཚུ་ ཨེམ་ཨེཆི་-བཟུམ་མའི་ ཡིག་འཕྲིན་གྱི་ སྣོད་ཐོ་ཚུ་ནང་ གསོག་འཇོག་འབད་ནིའི་དོན་ལུ།"
+msgstr ""
+"ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་ཚུ་ ཨེམ་ཨེཆི་-བཟུམ་མའི་ ཡིག་འཕྲིན་གྱི་ སྣོད་ཐོ་ཚུ་ནང་ གསོག་འཇོག་འབད་ནིའི་དོན་ལུ།"
 
 #: ../camel/providers/local/camel-local-provider.c:72
 msgid "Local delivery"
 msgstr "ཉེ་གནས་ཀྱི་ འགྲེམ་སྤེལ།"
 
 #: ../camel/providers/local/camel-local-provider.c:73
-msgid "For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."
-msgstr "(གཡོ་འགུལ་འབད་མི་) ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་དེ་ ཚད་ལྡན་ཨེམ་བོགསི་གིས་ རྩ་སྒྲིག་བཟོས་པའི་ འཕྲལ་གསོག་ནང་ལས་ ཨི་བོ་ལུ་ཤཱན་གྱིས་ འཛིན་སྐྱོང་འཐབ་མི་ ཡིག་སྣོད་ནང་ལུ་ སླར་འདྲེན་འབད་ནིའི་དོན་ལུ།"
+msgid ""
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
+"folders managed by Evolution."
+msgstr ""
+"(གཡོ་འགུལ་འབད་མི་) ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་དེ་ ཚད་ལྡན་ཨེམ་བོགསི་གིས་ རྩ་སྒྲིག་བཟོས་པའི་ འཕྲལ་གསོག་ནང་"
+"ལས་ ཨི་བོ་ལུ་ཤཱན་གྱིས་ འཛིན་སྐྱོང་འཐབ་མི་ ཡིག་སྣོད་ནང་ལུ་ སླར་འདྲེན་འབད་ནིའི་དོན་ལུ།"
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -3563,8 +3552,10 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་ ཕྱི་ཁའི་ཚད་ལྡན་གྱི་ ཨེམ་བོགསི་ འཕྲལ་གསོག་ཡིག་སྣོད་ནང་ ལྷག་ནི་དང་ གསོག་འཇོག་འབད་ནིའི་དོན་ལུ།\n"
-"དེ་མ་ཚད་ Elm, Pine, ཡང་ན་ Mutt བཟོ་རྣམ་ཡིག་སྣོད་ཀྱི་ རྩ་འབྲེལ་ཅིག་ ལྷག་ནི་ལུ་ཡང་ ལག་ལེན་འཐབ་བཏུབ།"
+"ཉེ་གནས་ཀྱི་ཡིག་འཕྲིན་ ཕྱི་ཁའི་ཚད་ལྡན་གྱི་ ཨེམ་བོགསི་ འཕྲལ་གསོག་ཡིག་སྣོད་ནང་ ལྷག་ནི་དང་ གསོག་འཇོག་འབད་"
+"ནིའི་དོན་ལུ།\n"
+"དེ་མ་ཚད་ Elm, Pine, ཡང་ན་ Mutt བཟོ་རྣམ་ཡིག་སྣོད་ཀྱི་ རྩ་འབྲེལ་ཅིག་ ལྷག་ནི་ལུ་ཡང་ ལག་ལེན་འཐབ་"
+"བཏུབ།"
 
 #: ../camel/providers/local/camel-local-store.c:156
 #: ../camel/providers/local/camel-local-store.c:267
@@ -3633,7 +3624,8 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "བཅུད་དོན་ལུ་ འཕྲིན་དོན་ཁ་སྐོང་བརྐྱབ་མ་ཚུགས་: རྒྱུ་མཚན་ཧ་མ་གོ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
-msgid "Maildir append message cancelled"
+#, fuzzy
+msgid "Maildir append message canceled"
 msgstr "Maildir ལུ་ མཇུག་བསྣོན་འབད་ནི་ ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
@@ -3723,9 +3715,9 @@ msgid "Checking for new messages"
 msgstr "འཕྲིན་དོན་གསར་པའི་དོན་ལུ་ ཞིབ་དཔྱད་འབད་དོ།"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:416
-#: ../camel/providers/local/camel-mbox-summary.c:589
-#: ../camel/providers/local/camel-mbox-summary.c:684
+#: ../camel/providers/local/camel-mbox-summary.c:417
+#: ../camel/providers/local/camel-mbox-summary.c:590
+#: ../camel/providers/local/camel-mbox-summary.c:685
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "སྣོད་འཛིན་གསོག་འཇོག་འབད་དོ།"
@@ -3742,7 +3734,8 @@ msgid "Cannot open mailbox: %s: %s\n"
 msgstr "ཡིག་སྒྲོམ་: %s: %sཁ་ཕྱེ་མི་ཚུགས་པས།\n"
 
 #: ../camel/providers/local/camel-mbox-folder.c:277
-msgid "Mail append cancelled"
+#, fuzzy
+msgid "Mail append canceled"
 msgstr "ཡིག་འཕྲིན་མཇུག་བསྣོན་འབད་ནི་ ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/providers/local/camel-mbox-folder.c:280
@@ -3818,82 +3811,84 @@ msgstr "`%s': `%s': %s ལུ་ བསྐྱར་མིང་བཏགས་�
 msgid "Could not rename '%s' to %s: %s"
 msgstr "%s' ལས་%s: %sལུ་ བསྐྱར་མིང་བཏགས་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:422
+#: ../camel/providers/local/camel-mbox-summary.c:423
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "སྣོད་འཛིན་: %s: %sཁ་ཕྱེ་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:470
+#: ../camel/providers/local/camel-mbox-summary.c:471
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr "གནས་ས་ %ld གི་ཉེ་འདབས་ལུ་ སྣོད་འཛིན་ %s ནང་ ཡིག་འཕྲིན་མིང་དཔྱད་ལུ་ ཚབས་ཆེན་འཛོལ་བ་འདུག"
+msgstr ""
+"གནས་ས་ %ld གི་ཉེ་འདབས་ལུ་ སྣོད་འཛིན་ %s ནང་ ཡིག་འཕྲིན་མིང་དཔྱད་ལུ་ ཚབས་ཆེན་འཛོལ་བ་འདུག"
 
-#: ../camel/providers/local/camel-mbox-summary.c:526
+#: ../camel/providers/local/camel-mbox-summary.c:527
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "སྣོད་འཛིན་: %s: %sཞིབ་དཔྱད་འབད་མི་ཚུགས་པས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:594
-#: ../camel/providers/local/camel-mbox-summary.c:689
+#: ../camel/providers/local/camel-mbox-summary.c:595
+#: ../camel/providers/local/camel-mbox-summary.c:690
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "སྣོད་འཛིན་: %s: %sཁ་ཕྱེ་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:607
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "གནས་སྐབས་ཀྱི་ ཡིག་སྒྲོམ་: %sཁ་ཕྱེ་མི་ཚུགས་པས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:619
-#: ../camel/providers/local/camel-mbox-summary.c:795
+#: ../camel/providers/local/camel-mbox-summary.c:620
+#: ../camel/providers/local/camel-mbox-summary.c:796
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "འབྱུང་ཁུངས་ཀྱི་སྣོད་འཛིན་%s: %sཁ་བསྡམས་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:628
+#: ../camel/providers/local/camel-mbox-summary.c:629
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "གནས་སྐབས་ཀྱི་སྣོད་འཛིན་: %sཁ་བསྡམས་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:643
+#: ../camel/providers/local/camel-mbox-summary.c:644
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "སྣོད་འཛིན་: %sལུ་ བསྐྱར་མིང་བཏགས་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:700
-#: ../camel/providers/local/camel-mbox-summary.c:906
+#: ../camel/providers/local/camel-mbox-summary.c:701
+#: ../camel/providers/local/camel-mbox-summary.c:907
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "སྣོད་འཛིན་: %sགསོག་འཇོག་འབད་མ་ཚུགས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:737
-#: ../camel/providers/local/camel-mbox-summary.c:745
-#: ../camel/providers/local/camel-mbox-summary.c:937
-#: ../camel/providers/local/camel-mbox-summary.c:945
+#: ../camel/providers/local/camel-mbox-summary.c:738
+#: ../camel/providers/local/camel-mbox-summary.c:746
+#: ../camel/providers/local/camel-mbox-summary.c:938
+#: ../camel/providers/local/camel-mbox-summary.c:946
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "བཅུད་དོན་དང་ སྣོད་འཛིན་མི་མཐུན་པས། མཉམ་འབྱུང་འབད་བའི་ཤུལ་ལུ་ཡང་མི་མཐུན་པས།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:871
+#: ../camel/providers/local/camel-mbox-summary.c:872
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "མ་ཤེས་པའི་འཛོལ་བ་: %s།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1000
-#: ../camel/providers/local/camel-mbox-summary.c:1026
+#: ../camel/providers/local/camel-mbox-summary.c:1001
+#: ../camel/providers/local/camel-mbox-summary.c:1027
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "གནས་སྐབས་ཀྱི་ ཡིག་སྒྲོམ་: %sལུ་ འབྲི་ནིའི་འཛོལ་བ།"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1018
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "གནས་སྐབས་ཀྱི་ ཡིག་སྒྲོམ་: %s: %sལུ་ འབྲི་མ་ཚུགས།"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
-msgid "MH append message cancelled"
+#, fuzzy
+msgid "MH append message canceled"
 msgstr "ཨེམ་ཨེཆ་མཇུག་བསྣོན་གྱི་འཕྲིན་དོན་ ཆ་མེད་བཏང་ཡོད།"
 
 #: ../camel/providers/local/camel-mh-folder.c:178
@@ -4006,8 +4001,8 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:207
-#, c-format
-msgid "Internal error: uid in invalid format: %s"
+#, fuzzy, c-format
+msgid "Internal error: UID in invalid format: %s"
 msgstr "ནང་འཁོད་ཀྱི་འཛོལ་བ་: ཡུ་ཨའི་ཌི་ ནུས་མེད་རྩ་སྒྲིག: %sནང་ཨིན་མས།"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:327
@@ -4027,7 +4022,8 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "ཨེན་ཨེན་ཊི་པི་ སྣོད་འཛིན་ནང་ལས་ འཕྲིན་དོན་ཚུ་ འདྲ་བཤུས་བརྐྱབ་མི་ཚུགས།"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
-msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr "སྣོད་འཛིན་ཚུ་ སྡུད་རྟགས་ནང་སྟོན། (དཔེར་ན་ comp.os.linux )གི་ཚབ་ལུ་ c.o.linuxབཟུམ།"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
@@ -4043,8 +4039,12 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "འདི་ལྷག་ཞིནམ་ལས་ ཡུསི་ནེཊི་ གནས་ཚུལ་སྡེ་ཚན་ལུ་ གནས་བསྐྱོད་འབད་མི་ཅིག་ཨིན།"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
-msgid "This option will authenticate with the NNTP server using a plaintext password."
-msgstr "གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ ཨེན་ཨེན་ཊི་པི་དང་གཅིག་ཁར་ བདེན་བཤད་འབད་འོང་།"
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ ཨེན་ཨེན་ཊི་པི་དང་གཅིག་ཁར་ བདེན་བཤད་འབད་"
+"འོང་།"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
@@ -4080,7 +4080,8 @@ msgid ""
 msgstr ""
 "ཁྱོད་ཀྱིས་ གནས་ཚུལ་སྡེ་ཚན་འདི་ལུ་ མཁོ་མངགས་འབད་མི་ཚུགས།:\n"
 "\n"
-"དེ་བཟུམ་མའི་གནས་ཚུལ་སྡེ་ཚན་མིན་འདུག སེལ་འཐུ་འབད་མི་ རྣམ་གྲངས་འདི་ རྩ་ལག་སྣོད་འཛིན་ཅིག་ འོང་ནི་ཨིན་མས།"
+"དེ་བཟུམ་མའི་གནས་ཚུལ་སྡེ་ཚན་མིན་འདུག སེལ་འཐུ་འབད་མི་ རྣམ་གྲངས་འདི་ རྩ་ལག་སྣོད་འཛིན་ཅིག་ འོང་ནི་ཨིན་"
+"མས།"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
@@ -4094,7 +4095,8 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "ཁྱོད་ཀྱིས་ གནས་ཚུལ་མཛོད་ཁང་ནང་ ཡིག་སྣོད་གསར་བསྐྲུན་འབད་མི་ཚུགས། དེ་གི་ཚབ་ལུ་ མཁོ་མངགས་འབད།"
+msgstr ""
+"ཁྱོད་ཀྱིས་ གནས་ཚུལ་མཛོད་ཁང་ནང་ ཡིག་སྣོད་གསར་བསྐྲུན་འབད་མི་ཚུགས། དེ་གི་ཚབ་ལུ་ མཁོ་མངགས་འབད།"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
@@ -4132,27 +4134,27 @@ msgstr "མ་མཐུད་པས།"
 msgid "No such folder: %s"
 msgstr "སྣོད་འཛིན་: %s བཟུམ་མིན་འདུག"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:220
-#: ../camel/providers/nntp/camel-nntp-summary.c:316
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
+#: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s:གིས་འཕྲིན་དོན་གསརཔ་ཚུ་ ཞིབ་ལྟ་འབད་དོ།"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:227
+#: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "ཨེགསི་ཨོ་བར་: %sལས་ རེ་བ་མེད་པའི་ སར་བར་གྱི་ངོས་ལན།"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:330
+#: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "མགུ་ཏོག་: %sལས་ རེ་བ་མེད་པའི་ སར་བར་གྱི་ངོས་ལན།"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:370
+#: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
 msgstr "ཆ་མེད་ལག་ལེན་འཐབ།"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:372
+#: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
 msgid "Operation failed: %s"
 msgstr "བཀོལ་སྤྱོད་མ་བཏུབ།: %s"
@@ -4171,8 +4173,8 @@ msgid "Expunging deleted messages"
 msgstr "བཏོན་བཏང་བའི་ འཕྲིན་དོན་ཚུ་ རྩ་མེད་བཏང་དོ།"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:405
-#, c-format
-msgid "No message with uid %s"
+#, fuzzy, c-format
+msgid "No message with UID %s"
 msgstr "ཡུ་ཨའི་ཌི་%sནང་ལུ་ འཕྲིན་དོན་མིན་འདུག"
 
 #. Sigh, most of the crap in this function is so that the cancel button
@@ -4208,12 +4210,22 @@ msgid "For connecting to and downloading mail from POP servers."
 msgstr "པོཔ་ སར་བར་ལུ་ མཐུད་ནི་དང་ ཡིག་འཕྲིན་ཕབ་ལེན་འབད་ནིའི་དོན་ལུ།"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:75
-msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
-msgstr "གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ པོཔ་སར་བར་ལུ་མཐུད་འོང་། པོཔ་སར་བར་ ལེ་ཤ་གིས་ རྒྱབ་སྐྱོར་འབད་མི་ གདམ་ཁ་འདི་རྐྱངམ་གཅིག་ར་ཨིན།"
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཡིག་རྐྱང་གི་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ པོཔ་སར་བར་ལུ་མཐུད་འོང་། པོཔ་སར་བར་ ལེ་"
+"ཤ་གིས་ རྒྱབ་སྐྱོར་འབད་མི་ གདམ་ཁ་འདི་རྐྱངམ་གཅིག་ར་ཨིན།"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:85
-msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
-msgstr "གདམ་ཁ་འདི་གིས་ ཨེ་པོཔ་ གནད་སྤེལ་ལམ་ལུགས་བརྒྱུད་དེ་ གསང་བཟོས་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ པོཔ་སར་བར་ལུ་མཐུད་འོང་། འདི་གིས་སར་བར་ལུ་ རྒྱབ་སྐྱོར་ཡོདཔ་སྦེ་སྟོནམ་ཨིན་རུང་ ལག་ལེན་པ་ ཆ་མཉམ་གྱི་དོན་ལུ་ ལཱ་འབད་མི་བཏུབ་འོང་།"
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"གདམ་ཁ་འདི་གིས་ ཨེ་པོཔ་ གནད་སྤེལ་ལམ་ལུགས་བརྒྱུད་དེ་ གསང་བཟོས་ཆོག་ཡིག་ཅིག་ ལག་ལེན་འཐབ་སྟེ་ པོཔ་སར་"
+"བར་ལུ་མཐུད་འོང་། འདི་གིས་སར་བར་ལུ་ རྒྱབ་སྐྱོར་ཡོདཔ་སྦེ་སྟོནམ་ཨིན་རུང་ ལག་ལེན་པ་ ཆ་མཉམ་གྱི་དོན་ལུ་ ལཱ་"
+"འབད་མི་བཏུབ་འོང་།"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:202
 #, c-format
@@ -4229,8 +4241,16 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "སྲུང་སྐྱོབ་ཅན་གྱི་ཐབས་ལམ་: %sནང་ལུ་ པོཔ་སར་བར་ལུ་ མཐུད་མ་ཚུགས།%s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:217
-msgid "STLS not supported"
-msgstr "ཨེསི་ཊི་ཨེལ་ཨེསི་ལུ་ རྒྱབ་སྐྱོར་མིན་འདུག"
+msgid "STLS not supported by server"
+msgstr "ཨེསི་ཊི་ཨེལ་ཨེསི་ལུ་ སར་བར་གྱི་རྒྱབ་སྐྱོར་མིན་འདུག"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:244
+msgid "TLS negotiations failed"
+msgstr "ཨེསི་ཨེསི་ཨེལ་ གྲོས་སྒྲིག་འབད་མ་ཚུགས།"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:250
+msgid "TLS is not available in this build"
+msgstr "ཨེསི་ཨེསི་ཨེལ་ གཟུགས་འདི་ནང་མིན་འདུག"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:356
 #, c-format
@@ -4240,8 +4260,11 @@ msgstr "པོཔ་ སར་བར་%sལུ་ མཐུད་མ་ཚུ�
 #: ../camel/providers/pop3/camel-pop3-store.c:397
 #: ../camel/providers/pop3/camel-pop3-store.c:511
 #, c-format
-msgid "Unable to connect to POP server %s: No support for requested authentication mechanism."
-msgstr "པོཔ་ སར་བར་%sལུ་ མཐུད་མ་ཚུགས། ཞུ་བ་འབད་མི་ བདེན་བཤད་ཐབས་ལམ་གྱི་དོན་ལས་ རྒྱབ་སྐྱོར་མིན་འདུག"
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"པོཔ་ སར་བར་%sལུ་ མཐུད་མ་ཚུགས། ཞུ་བ་འབད་མི་ བདེན་བཤད་ཐབས་ལམ་གྱི་དོན་ལས་ རྒྱབ་སྐྱོར་མིན་འདུག"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:413
 #, c-format
@@ -4292,8 +4315,12 @@ msgid "Sendmail"
 msgstr "འཕྲིན་གཏང་།"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:39
-msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
-msgstr "ཉེ་གནས་རིམ་ལུགས་ཀྱི་\"sendmail\"ལས་རིམ་ལུ་ ལག་བརྒྱུད་འཐབ་པའི་ཐོག་ལས་ འཕྲིན་དོན་འགྲེམ་སྤེལ་འབད་ནིའི་དོན་ལུ།"
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
+msgstr ""
+"ཉེ་གནས་རིམ་ལུགས་ཀྱི་\"sendmail\"ལས་རིམ་ལུ་ ལག་བརྒྱུད་འཐབ་པའི་ཐོག་ལས་ འཕྲིན་དོན་འགྲེམ་སྤེལ་འབད་"
+"ནིའི་དོན་ལུ།"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
@@ -4338,7 +4365,9 @@ msgstr "ཨེསི་ཨེམ་ཊི་པི།"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "ཨེསི་ཨེམ་ཊི་པི་ ལག་ལེན་འཐབ་སྟེ་ མཐའ་ཟུར་གྱི་ ཡིག་འཕྲིན་ལྟེ་བ་ཅིག་ལུ་ མཐུད་པའི་ཐོག་ལས་ ཡིག་འཕྲིན་འགྲེམ་སྤེལ་གྱི་དོན་ལུ།"
+msgstr ""
+"ཨེསི་ཨེམ་ཊི་པི་ ལག་ལེན་འཐབ་སྟེ་ མཐའ་ཟུར་གྱི་ ཡིག་འཕྲིན་ལྟེ་བ་ཅིག་ལུ་ མཐུད་པའི་ཐོག་ལས་ ཡིག་འཕྲིན་འགྲེམ་"
+"སྤེལ་གྱི་དོན་ལུ།"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -4679,8 +4708,7 @@ msgstr "བསྒུག་དོ།"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1601
-#: ../libedataserver/e-time-utils.c:1848
+#: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
@@ -4688,8 +4716,7 @@ msgstr "%a %m/%d/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1606
-#: ../libedataserver/e-time-utils.c:1839
+#: ../libedataserver/e-time-utils.c:1606 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %m/%d/%Y %H:%M:%S"
 
@@ -4697,8 +4724,7 @@ msgstr "%a %m/%d/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1611
-#: ../libedataserver/e-time-utils.c:1844
+#: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %m/%d/%Y %I:%M %p"
 
@@ -4706,8 +4732,7 @@ msgstr "%a %m/%d/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1616
-#: ../libedataserver/e-time-utils.c:1835
+#: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %m/%d/%Y %H:%M"
 
@@ -4725,8 +4750,7 @@ msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1629
-#: ../libedataserver/e-time-utils.c:1725
+#: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
 #: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
 msgstr "%a %m/%d/%Y"
@@ -4767,22 +4791,19 @@ msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1664
-#: ../libedataserver/e-time-utils.c:1728
+#: ../libedataserver/e-time-utils.c:1664 ../libedataserver/e-time-utils.c:1728
 msgid "%m/%d/%Y"
 msgstr "%m/%d/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1774
-#: ../libedataserver/e-time-utils.c:1893
+#: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1778
-#: ../libedataserver/e-time-utils.c:1885
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1885
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4790,16 +4811,14 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1783
-#: ../libedataserver/e-time-utils.c:1890
+#: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1787
-#: ../libedataserver/e-time-utils.c:1882
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1882
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -4818,7 +4837,9 @@ msgstr "བདེན་བཤད་འབད་མ་ཚུགས།\n"
 
 #: ../libedataserverui/e-categories-dialog.c:265
 #, c-format
-msgid "There is already a category '%s' in the configuration. Please use another name"
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
 msgstr "རིམ་སྒྲིག་ནང་ལུ་ དབྱེ་རིམ་'%s' ཅིག་ ཧེ་མ་ལས་རང་འདུག མིང་གཞན་ཅིག་ལག་ལེན་འཐབ།"
 
 #: ../libedataserverui/e-categories-dialog.c:435
@@ -4865,11 +4886,11 @@ msgstr "དབྱེ་རིམ་ཚུ།"
 msgid "Select Contacts from Address Book"
 msgstr "ཁ་བྱང་ཀི་དེབ་ནང་ལས་ འབྲེལ་ས་སེལ་འཐུ་འབད།"
 
-#: ../libedataserverui/e-name-selector-dialog.c:578
+#: ../libedataserverui/e-name-selector-dialog.c:583
 msgid "_Add"
 msgstr "ཁ་སྐོང་རྐྱབས།(_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:603
+#: ../libedataserverui/e-name-selector-dialog.c:608
 msgid "_Remove"
 msgstr "རྩ་བསྐྲད་གཏང་།(_R)"
 
@@ -4915,13 +4936,13 @@ msgid "_Search:"
 msgstr "འཚོལ་ཞིབ།(_S)"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1997
+#: ../libedataserverui/e-name-selector-entry.c:2049
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%sཨིན་ལ་ཡིན་རྒྱ་འཕར།(_x)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2013
+#: ../libedataserverui/e-name-selector-entry.c:2065
 #, c-format
 msgid "_Edit %s"
 msgstr "%s ཞུན་དག་རྐྱབས།(_E)"
@@ -5160,18 +5181,21 @@ msgstr "ཨི་བོ་ལུ་ཤཱན་གནད་སྡུད་སར
 
 #. dialog display isn't working out
 #: ../src/server.c:106
-#, c-format
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+#, fuzzy, c-format
+msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "ཆ་བགོས་ཀྱི་སྐྱོན་ སྣ་མང་བྱུངམ་ལས་ འཛོལ་བའི་ཌའི་ལོག་ བཀྲམ་སྟོན་འབད་མི་ཚུགས་པས།\n"
 
 #~ msgid "Failed to create pipe to '%s': %s"
 #~ msgstr "%s': %s\"ལུ་ རྒྱུད་དུང་གསར་བསྐྲུན་འབད་མ་ཚུགས།"
+
 #~ msgid "Cannot get folder info in offline mode."
 #~ msgstr "ཨོཕ་ལ་ཡིན་ཐབས་ལམ་ནང་ སྣོད་འཛིན་བརྡ་དོན་འཐོབ་མི་ཚུགས།"
+
 #~ msgid "Cannot delete GroupWise folders in offline mode."
 #~ msgstr "ཨོཕ་ལ་ཡིན་ ཐབས་ལམ་ནང་ སྡེ་རིམ་སྣོད་འཛིན་ བཏོན་བཏང་མི་ཚུགས།"
+
 #~ msgid "Cannot rename GroupWise folders in offline mode."
 #~ msgstr "ཨོཕ་ལ་ཡིན་ ཐབས་ལམ་ནང་ སྡེ་རིམ་སྣོད་འཛིན་ལུ་ བསྐྱར་མིང་བཏགས་མི་ཚུགས།"
+
 #~ msgid "Groupwise server %s"
 #~ msgstr "སྡེ་རིམ་སར་བར་ %s།"
-
