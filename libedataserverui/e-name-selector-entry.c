@@ -1111,7 +1111,7 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 		chars_inserted++;
 	}
 
-	if (chars_inserted == 1) {
+	if (chars_inserted >= 1) {
 		/* If the user inserted one character, kick off completion */
 		if (!name_selector_entry->update_completions_cb_id) {
 			name_selector_entry->update_completions_cb_id =
@@ -1124,10 +1124,6 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 				g_idle_add ((GSourceFunc) type_ahead_complete_on_idle_cb,
 					    name_selector_entry);
 		}
-	} else if (chars_inserted > 1 && name_selector_entry->type_ahead_complete_cb_id) {
-		/* If the user inserted more than one character, prevent completion */
-		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
-		name_selector_entry->type_ahead_complete_cb_id = 0;
 	}
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);

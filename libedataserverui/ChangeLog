@@ -1,3 +1,10 @@
+2006-06-29  simon.zheng  <simon.zheng@sun.com>
+
+	** Fixes 345373 
+
+	* e-name-selector-entry.c: (user_insert_text): Allow to
+	insert more than 1 characters every time.
+
 2006-06-13  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fixes 342384
