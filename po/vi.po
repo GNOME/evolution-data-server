@@ -4454,7 +4454,7 @@ msgstr "Không thực hiện hành động yêu cầu: không cho phép tên h�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "Bắt đầu gõ thư; kết thức bằng <Xuống dòng>.<Xuống dòng>"
+msgstr "Bắt đầu gõ thư; kết thúc bằng <Xuống dòng>.<Xuống dòng>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Transaction failed"
