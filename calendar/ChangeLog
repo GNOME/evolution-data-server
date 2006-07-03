@@ -1,3 +1,11 @@
+2006-07-03  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libical/src/libical/icalvalue.c
+	(icalvalue_decode_ical_string): If the string decoded has
+	no special characters, the length of computed string is equal
+	to the buffer length allocated. Hence, do not flag error on
+	equality .
+
 2006-06-21  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache):
