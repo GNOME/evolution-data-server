@@ -103,7 +103,12 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 				     _("Host or user not available in url"));
 	}
 
-	groupwise_store->list_loaded = FALSE;
+	/*XXX: The number 3 assigned to the list_loaded variable denotes
+	 * the number of times the get_folder_info is called during startup.
+	 * We are just trying to minimize the call.
+	 * This is a dirty hack. But it *WORKS*
+	 */
+	groupwise_store->list_loaded = 3;
 	
 	/*storage path*/
 	priv->storage_path = camel_session_get_storage_path (session, service, ex);
@@ -310,14 +315,6 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	camel_groupwise_store_summary_namespace_set (store->summary, ns);
 
 	if (camel_store_summary_count ((CamelStoreSummary *)store->summary) == 0) {
-		/*XXX: Have to sync up folders here*/
-		groupwise_folders_sync (store, ex);
-		if (camel_exception_is_set (ex)) {
-			camel_store_summary_save ((CamelStoreSummary *) store->summary);
-			CAMEL_SERVICE_UNLOCK (service, connect_lock);
-			camel_service_disconnect (service, TRUE, NULL);
-			return FALSE;
-		}
 		/*Settting the refresh stamp to the current time*/
 		store->refresh_stamp = time (0);
 	}
@@ -1130,40 +1127,34 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	if (top && groupwise_is_system_folder (top)) 
 		return groupwise_build_folder_info (groupwise_store, NULL, top );
 
-			
 	/*
 	 * Thanks to Michael, for his cached folders implementation in IMAP
 	 * is used as is here.
 	 */
-	if ((groupwise_store->list_loaded == TRUE) && camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary) > 0) {
-		/*Load from cache*/
-		/*
-		time_t now;
-		int ref;
-
-		now = time (0);
-		ref = now > groupwise_store->refresh_stamp+60*60*1;
-		if (ref) {
-			CAMEL_SERVICE_LOCK (store, connect_lock);
-			ref = now > groupwise_store->refresh_stamp+60*60*1;
-			if (ref) {
-				struct _store_refresh_msg *m;
-				groupwise_store->refresh_stamp = now;
-				m = camel_session_thread_msg_new (((CamelService *)store)->session, &store_refresh_ops, sizeof(*m));
-				m->store = store;
-				camel_object_ref (store);
-				camel_exception_init (&m->ex);
-				camel_session_thread_queue (((CamelService *)store)->session, &m->msg, 0);
-			}
+	if (camel_store_summary_count ((CamelStoreSummary *)groupwise_store->summary) == 0) {
+		CAMEL_SERVICE_LOCK (store, connect_lock);
+		if (groupwise_store->list_loaded == 3) {
+			groupwise_folders_sync (groupwise_store, ex);
+			groupwise_store->list_loaded -= 1;
+		}
+		if (camel_exception_is_set (ex)) {
+			camel_store_summary_save ((CamelStoreSummary *) groupwise_store->summary);
 			CAMEL_SERVICE_UNLOCK (store, connect_lock);
-		}*/
-		if (groupwise_store->current_folder)
-			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
-		groupwise_folders_sync (groupwise_store, ex);
+			return NULL;
+		}
+		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
+		goto end_r;
+	}
+
+	if ((camel_store_summary_count((CamelStoreSummary *)groupwise_store->summary) > 0) && (groupwise_store->list_loaded > 1)) {
+		/*Load from cache*/
+		groupwise_store->list_loaded -= 1;
+		goto end_r;
 	}
 
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-	if ((groupwise_store->list_loaded == FALSE) && check_for_connection((CamelService *)store, ex)) {
+	if ((groupwise_store->list_loaded == 1) && check_for_connection((CamelService *)store, ex)) {
 		if (!priv->cnc) {
 			if (groupwise_connect ((CamelService *)store, ex)) {
 				g_warning ("Could connect!!!\n");
@@ -1171,7 +1162,6 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				g_warning ("Could not connect..failure connecting\n");
 		}
 		if (camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-			groupwise_store->list_loaded = TRUE;
 			if (groupwise_store->current_folder)
 				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 			groupwise_folders_sync (groupwise_store, ex);
@@ -1186,6 +1176,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 
 	/*camel_exception_clear (ex);*/
+end_r:
 	info = groupwise_get_folder_info_offline (store, top, flags, ex);
 	return info;
 }
