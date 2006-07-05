@@ -1,6 +1,11 @@
 2006-07-05  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
+	Allow builds against system libdb 4.3 or greater to work (#346655).
+
+2006-07-05  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
 	Whenever libdb can give a warning, print it in a uniform way. Also
 	remove a debugging printf. (#346661).
 
