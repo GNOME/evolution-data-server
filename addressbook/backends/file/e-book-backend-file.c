@@ -115,7 +115,7 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 	db_error = db->cursor (db, NULL, &dbc, 0);
 
 	if (db_error != 0) {
-		g_warning ("build_summary: error building list\n");
+		g_warning (G_STRLOC ": db->cursor failed with %d", db_error);
 		return;
 	}
 
@@ -201,7 +201,7 @@ do_create(EBookBackendFile  *bf,
 			g_warning ("db->sync failed with %d", db_error);
 	}
 	else {
-		g_warning ("db->put failed with %d", db_error);
+		g_warning (G_STRLOC ": db->put failed with %d", db_error);
 		g_object_unref (contact);
 		contact = NULL;
 	}
@@ -254,6 +254,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 		db_error = db->del (db, NULL, &id_dbt, 0);
 		if (0 != db_error) {
+			g_warning (G_STRLOC ": db->del failed with %d", db_error);
 			rv = GNOME_Evolution_Addressbook_ContactNotFound;
 			continue;
 		}
@@ -265,7 +266,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	if (removed_cards) {
 		db_error = db->sync (db, 0);
 		if (db_error != 0)
-			g_warning ("db->sync failed.\n");
+			g_warning (G_STRLOC ": db->sync failed with %d", db_error);
 	}
 
 	*ids = removed_cards;
@@ -315,9 +316,10 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 	/* get the old ecard - the one that's presently in the db */
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-	if (0 != db_error)
+	if (0 != db_error) {
+		g_warning (G_STRLOC ": db->get failed with %d", db_error);
 		return GNOME_Evolution_Addressbook_ContactNotFound;
-
+	}
 	free (vcard_dbt.data);
 
 	/* update the revisio (modified time of contact) */
@@ -331,7 +333,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	if (0 == db_error) {
 		db_error = db->sync (db, 0);
 		if (db_error != 0)
-			g_warning ("db->sync failed.\n");
+			g_warning (G_STRLOC ": db->sync failed with %d", db_error);
 
 		e_book_backend_summary_remove_contact (bf->priv->summary, id);
 		e_book_backend_summary_add_contact (bf->priv->summary, *contact);
@@ -368,10 +370,10 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 	if (db_error == 0) {
 		*vcard = g_strdup (vcard_dbt.data);
-		printf ("backend %s\n", *vcard);
 		free (vcard_dbt.data);
 		return GNOME_Evolution_Addressbook_Success;
 	} else {
+		g_warning (G_STRLOC ": db->get failed with %d", db_error);
 		*vcard = g_strdup ("");
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	}
@@ -410,15 +412,15 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			vcard_dbt.flags = DB_DBT_MALLOC;
 
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-			if (db_error == 0)
+			if (db_error == 0) {
 				contact_list = g_list_append (contact_list, g_strdup (vcard_dbt.data));
-			else { 
+			} else {
+				g_warning (G_STRLOC ": db->get failed with %d", db_error);
 				status = GNOME_Evolution_Addressbook_OtherError ;
 				break;
 			}
 		}
 		g_ptr_array_free (ids, TRUE);
-		
 	} else {
 		search_needed = TRUE;
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
@@ -433,6 +435,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		db_error = db->cursor (db, NULL, &dbc, 0);
 
 		if (db_error != 0) {
+			g_warning (G_STRLOC ": db->cursor failed with %d", db_error);
 			/* XXX this needs to be some CouldNotOpen error */
 			return GNOME_Evolution_Addressbook_ContactNotFound;
 		}
@@ -457,13 +460,16 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		}
 		g_object_unref (card_sexp);
 		
-		status = db_error != DB_NOTFOUND
-			? GNOME_Evolution_Addressbook_OtherError
-			: GNOME_Evolution_Addressbook_Success;
+		if (db_error == DB_NOTFOUND) {
+			status = GNOME_Evolution_Addressbook_Success;
+		} else {
+			g_warning (G_STRLOC ": dbc->c_get failed with %d", db_error);
+			status = GNOME_Evolution_Addressbook_OtherError;
+		}
 
 		db_error = dbc->c_close(dbc);
 		if (db_error != 0) {
-			g_warning("Could not close cursor: %d", db_error);
+			g_warning (G_STRLOC ": dbc->c_close failed with %d", db_error);
 		}
 	}
 
@@ -567,7 +573,7 @@ book_view_thread (gpointer data)
 				e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
 			}
 			else {
-				g_warning ("db->get returned %d", db_error);
+				g_warning (G_STRLOC ": db->get failed with %d", db_error);
 			}
 		}
 
@@ -744,7 +750,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	db_error = db->cursor (db, NULL, &dbc, 0);
 
 	if (db_error != 0) {
-		g_warning ("e_book_backend_file_changes: error building list\n");
+		g_warning (G_STRLOC ": db->cursor failed with %d", db_error);
 	} else {
 		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
@@ -930,7 +936,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
 
 		db_error = db->cursor (db, NULL, &dbc, 0);
 		if (db_error != 0) {
-			g_warning ("unable to get cursor");
+			g_warning (G_STRLOC ": db->cursor failed with %d", db_error);
 			return FALSE;
 		}
 
