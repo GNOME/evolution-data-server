@@ -644,6 +644,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				camel_message_info_free(info);
 				continue;
 			} else {
+				gw_info->server_flags = gw_info->info.flags;
 				const char *uid = camel_message_info_uid (info);
 				if (diff.changed & CAMEL_MESSAGE_SEEN)
 					read_items = g_list_append (read_items, (char *)uid);
@@ -961,6 +962,9 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		return;
 	}
 
+	if (!cnc) 
+		return;
+
 	if (camel_folder_is_frozen (folder) ) {
 		gw_folder->need_refresh = TRUE;
 	}
@@ -998,7 +1002,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 	t_str = g_strdup (time_string); 
 
-
 	/*Get the New Items*/
 	if (!is_proxy) {
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
@@ -1017,7 +1020,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			g_free (summary->time_string);
 
 
-		summary->time_string = g_strdup (t_str);
+		//summary->time_string = g_strdup (t_str);
+		((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (t_str);
+		camel_folder_summary_touch (folder->summary);
+		groupwise_sync_summary (folder, ex);
 		g_free (t_str);	
 		t_str = NULL;
 
@@ -1463,9 +1469,9 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 			g_string_truncate (str, 0);
 		}
 
-		if (type == E_GW_ITEM_TYPE_APPOINTMENT
-				|| type ==  E_GW_ITEM_TYPE_NOTE 
-				|| type ==  E_GW_ITEM_TYPE_TASK ) {
+		if (type == E_GW_ITEM_TYPE_APPOINTMENT ||
+		    type ==  E_GW_ITEM_TYPE_NOTE ||
+		    type ==  E_GW_ITEM_TYPE_TASK ) {
 			temp_date = e_gw_item_get_start_date (item);
 			if (temp_date) {
 				time_t time = e_gw_connection_get_date_from_string (temp_date);
@@ -1527,10 +1533,13 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	CamelMultipart *multipart;
 	int errno;
 	char *body = NULL;
+	int body_len = 0;
 	const char *uid = NULL;
 	gboolean is_text_html = FALSE;
+	gboolean has_mime_822 = FALSE;
 	gboolean is_text_html_embed = FALSE;
 	gboolean is_base64_encoded = FALSE;
+	CamelStream *temp_stream;
 
 	uid = e_gw_item_get_id(item);
 	cnc = cnc_lookup (priv);
@@ -1544,8 +1553,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		char *attachment = NULL;
 		int len = 0;
 
-		if (!g_ascii_strcasecmp (attach->name, "Mime.822") ||
-		    !g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
+		if (!g_ascii_strcasecmp (attach->name, "Text.htm") ||
 		    !g_ascii_strcasecmp (attach->name, "Header")) {
 
 			status = e_gw_connection_get_attachment (cnc,
@@ -1564,11 +1572,66 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				} 
 			}//if attachment and len
 		} // if Mime.822 or TEXT.htm
+
+		for (al = attach_list ; al != NULL ; al = al->next) {
+			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
+			if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
+				if (attach->size > MAX_ATTACHMENT_SIZE) {
+					long count = 0;
+					int i, t_len=0, offset=0, t_offset=0;
+					char *t_attach = NULL;
+					GString *gstr = g_string_new (NULL);
+
+					count = (attach->size)/(1024*1024);
+					count++;
+					len = 0;
+					for (i = 0; i<count; i++) {
+						status = e_gw_connection_get_attachment_base64 (cnc, 
+								attach->id, t_offset, MAX_ATTACHMENT_SIZE, 
+								(const char **)&t_attach, &t_len, &offset);
+						if (status == E_GW_CONNECTION_STATUS_OK) {
+							gstr = g_string_append (gstr, t_attach);
+							t_offset = offset;
+							g_free (t_attach);
+							t_attach = NULL;
+							t_len = 0;
+						}
+					}
+					body = soup_base64_decode (gstr->str, &len);
+					body_len = len;
+					g_string_free (gstr, TRUE);
+				} else {
+					status = e_gw_connection_get_attachment (cnc, 
+							attach->id, 0, -1, 
+							(const char **)&attachment, &len);
+					if (status != E_GW_CONNECTION_STATUS_OK) {
+						g_warning ("Could not get attachment\n");
+						camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
+						return NULL;
+					}
+					body = g_strdup (attachment);
+					body_len = len;
+					g_free (attachment);
+				}
+				has_mime_822 = TRUE;
+			} 
+		}
+
 	}//if attach_list
 
 
 	msg = camel_mime_message_new ();
-	multipart = camel_multipart_new ();
+	if (has_mime_822) {
+		temp_stream = camel_stream_mem_new_with_buffer (body, body_len);
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, temp_stream) == -1) {
+			camel_object_unref (msg);
+			camel_object_unref (temp_stream);
+			msg = NULL;
+			goto end;
+		}
+	} else {
+		multipart = camel_multipart_new ();
+	}
 
 	camel_mime_message_set_message_id (msg, uid);
 	type = e_gw_item_get_item_type (item);
@@ -1600,9 +1663,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			g_free (value);
 		}
 	}
-
-	groupwise_populate_msg_body_from_item (cnc, multipart, item, body);
-
+	
+	if (has_mime_822)
+		goto end;
+	else
+		groupwise_populate_msg_body_from_item (cnc, multipart, item, body);
 	/*Set recipient details*/
 	groupwise_msg_set_recipient_list (msg, item);
 	groupwise_populate_details_from_item (msg, item);
@@ -1640,6 +1705,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					camel_data_wrapper_set_mime_type_field(CAMEL_DATA_WRAPPER (temp_msg), ct);
 					camel_content_type_unref(ct);
 					camel_medium_set_content_object ( CAMEL_MEDIUM (part),CAMEL_DATA_WRAPPER(temp_msg));
+					
 					camel_multipart_add_part (multipart,part);
 					camel_object_unref (temp_msg);
 					camel_object_unref (part);
@@ -1697,18 +1763,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 							g_strfreev (t);
 							camel_mime_part_set_content_location (part, attach->name);
 						}
-					} else if (attach->contentType && 
-							!strcmp (attach->contentType, "application/pgp-signature")) {
-						camel_mime_part_set_filename(part, g_strdup(attach->name));
-						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/signed");
-						has_boundary = TRUE;
-						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
-					} else if (attach->contentType &&
-							!strcmp (attach->contentType, "application/pgp-encrypted")) {
-						camel_mime_part_set_filename(part, g_strdup(attach->name));
-						camel_data_wrapper_set_mime_type(CAMEL_DATA_WRAPPER (multipart), "multipart/encrypted");
-						has_boundary = TRUE;
-						camel_content_type_set_param(CAMEL_DATA_WRAPPER (multipart)->mime_type, "protocol", attach->contentType);
 					} else {
 						camel_mime_part_set_filename(part, g_strdup(attach->name));
 						camel_mime_part_set_content_id (part, attach->contentid);
@@ -1739,9 +1793,9 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	/********************/
 
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
-
 	camel_object_unref (multipart);
 
+end:
 	if (body)
 		g_free (body);
 

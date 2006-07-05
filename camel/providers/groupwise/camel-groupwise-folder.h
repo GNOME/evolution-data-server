@@ -40,6 +40,8 @@ extern "C" {
 #include <camel/camel-internet-address.h>
 #include <camel/camel-data-cache.h>
 #include <camel/camel-multipart.h>
+#include <camel/camel-multipart-signed.h>
+#include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-offline-journal.h>
 
 #include "camel-groupwise-summary.h"
