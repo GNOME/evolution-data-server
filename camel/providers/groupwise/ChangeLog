@@ -1,3 +1,10 @@
+2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	Fixes bug #165922 on novell bugzilla.
+	* camel-groupwise-folder.[ch]: 
+	(groupwise_folder_item_to_msg): use Mime.822 whenever it is available
+
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-groupwise-folder.c: 
