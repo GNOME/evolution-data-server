@@ -456,7 +456,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			camel_object_unref (filtered_stream);
 			
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, content->buffer->data);
+			e_gw_item_set_message (item, (const char *)content->buffer->data);
 		} else {
 			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);	
@@ -662,7 +662,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			camel_object_unref (filtered_stream);
 			
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, content->buffer->data);
+			e_gw_item_set_message (item, (const char *)content->buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);

@@ -1,5 +1,10 @@
 2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
+	* camel-groupwise-utils.c: (camel_groupwise_util_item_from_message):
+	fix compiler warnings
+
+2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
 	Fixes bug #165728 on novell bugzilla
 	* camel-groupwise-store.[ch]:
 	(groupwise_store_construct): initialize list loaded to 3
