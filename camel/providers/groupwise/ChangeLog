@@ -11,7 +11,7 @@
 
 2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	Fixes bug #165728 on novell bugzilla
+	** Fixes bug #165728 on novell bugzilla
 	* camel-groupwise-store.[ch]:
 	(groupwise_store_construct): initialize list loaded to 3
 	(groupwise_get_folder_info): update only once from the server
@@ -19,7 +19,7 @@
 
 2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
-	Fixes bug #165922 on novell bugzilla.
+	** Fixes bug #165922 on novell bugzilla.
 	* camel-groupwise-folder.[ch]: 
 	(groupwise_folder_item_to_msg): use Mime.822 whenever it is available
 
