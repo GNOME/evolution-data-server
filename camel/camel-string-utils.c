@@ -146,6 +146,52 @@ static pthread_mutex_t pstring_lock = PTHREAD_MUTEX_INITIALIZER;
 static GHashTable *pstring_table = NULL;
 
 /**
+ * camel_pstring_add:
+ * @str: string to add to the string pool
+ * @own: whether the string pool will own the memory pointed to by @s if @str is not yet in the pool
+ *
+ * Add the string to the pool.
+ *
+ * The NULL and empty strings are special cased to constant values.
+ *
+ * Return value: A pointer to an equivalent string of @s.  Use
+ * camel_pstring_free() when it is no longer needed.
+ **/
+const char *
+camel_pstring_add (char *str, gboolean own)
+{
+	void *pcount;
+	char *pstr;
+	int count;
+	
+	if (s == NULL)
+		return NULL;
+	
+	if (s[0] == '\0') {
+		if (own)
+			g_free (str);
+		return "";
+	}
+	
+	pthread_mutex_lock (&pstring_lock);
+	if (pstring_table == NULL)
+		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
+	
+	if (g_hash_table_lookup_extended (pstring_table, str, (void **) &pstr, &pcount)) {
+		count = GPOINTER_TO_INT (pcount) + 1;
+		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (count));
+	} else {
+		pstr = own ? str : g_strdup (str);
+		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
+	}
+	
+	pthread_mutex_unlock (&pstring_lock);
+	
+	return pstr;
+}
+
+
+/**
  * camel_pstring_strdup:
  * @s: String to copy.
  * 
@@ -159,32 +205,12 @@ static GHashTable *pstring_table = NULL;
  * Return value: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
-const char *camel_pstring_strdup(const char *s)
+const char *
+camel_pstring_strdup (const char *s)
 {
-	char *p;
-	void *pcount;
-	int count;
-
-	if (s == NULL)
-		return NULL;
-	if (s[0] == 0)
-		return "";
-
-	pthread_mutex_lock(&pstring_lock);
-	if (pstring_table == NULL)
-		pstring_table = g_hash_table_new(g_str_hash, g_str_equal);
-
-	if (g_hash_table_lookup_extended(pstring_table, s, (void **)&p, &pcount)) {
-		count = GPOINTER_TO_INT(pcount)+1;
-		g_hash_table_insert(pstring_table, p, GINT_TO_POINTER(count));
-	} else {
-		p = g_strdup(s);
-		g_hash_table_insert(pstring_table, p, GINT_TO_POINTER(1));
-	}
-	pthread_mutex_unlock(&pstring_lock);
-
-	return p;
+	return camel_pstring_add ((char *) s, FALSE);
 }
+
 
 /**
  * camel_pstring_free:
@@ -194,7 +220,8 @@ const char *camel_pstring_strdup(const char *s)
  *
  * NULL and the empty string are special cased.
  **/
-void camel_pstring_free(const char *s)
+void
+camel_pstring_free(const char *s)
 {
 	char *p;
 	void *pcount;

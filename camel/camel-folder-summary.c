@@ -1624,19 +1624,13 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 	if (ct)
 		camel_content_type_unref(ct);
-
-	mi->subject = camel_pstring_strdup(subject);
-	mi->from = camel_pstring_strdup(from);
-	mi->to = camel_pstring_strdup(to);
-	mi->cc = camel_pstring_strdup(cc);
-	mi->mlist = camel_pstring_strdup(mlist);
-
-	g_free(subject);
-	g_free(from);
-	g_free(to);
-	g_free(cc);
-	g_free(mlist);
-
+	
+	mi->subject = camel_pstring_add (subject, TRUE);
+	mi->from = camel_pstring_add (from, TRUE);
+	mi->to = camel_pstring_add (to, TRUE);
+	mi->cc = camel_pstring_add (cc, TRUE);
+	mi->mlist = camel_pstring_add (mlist, TRUE);
+	
 	mi->user_flags = NULL;
 	mi->user_tags = NULL;
 	mi->date_sent = camel_header_decode_date(camel_header_raw_find(&h, "date", NULL), NULL);
@@ -1709,20 +1703,14 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 	camel_file_util_decode_string(in, &to);
 	camel_file_util_decode_string(in, &cc);
 	camel_file_util_decode_string(in, &mlist);
-
+	
 	mi->uid = uid;
-	mi->subject = camel_pstring_strdup(subject);
-	mi->from = camel_pstring_strdup(from);
-	mi->to = camel_pstring_strdup(to);
-	mi->cc = camel_pstring_strdup(cc);
-	mi->mlist = camel_pstring_strdup(mlist);
-
-	g_free(subject);
-	g_free(from);
-	g_free(to);
-	g_free(cc);
-	g_free(mlist);
-
+	mi->subject = camel_pstring_add (subject, TRUE);
+	mi->from = camel_pstring_add (from, TRUE);
+	mi->to = camel_pstring_add (to, TRUE);
+	mi->cc = camel_pstring_add (cc, TRUE);
+	mi->mlist = camel_pstring_add (mlist, TRUE);
+	
 	mi->content = NULL;
 
 	camel_file_util_decode_fixed_int32(in, &mi->message_id.id.part.hi);

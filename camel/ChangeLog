@@ -1,3 +1,18 @@
+2006-07-06  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-string-utils.c (camel_pstring_add): New function that now
+	holds the main logic of the old camel_pstring_strdup function. If
+	'own' is TRUE, re-use the memory if the string doesn't already
+	exist and free it otherwise. If FALSE, strdup the value if it
+	doesn't already exist.
+	(camel_pstring_strdup): Calls camel_pstring_add() with 'own' as
+	FALSE.
+
+	* camel-folder-summary.c (message_info_new_from_header): Use
+	camel_pstring_add instead of camel_pstring_strdup here to prevent
+	unnecessary strdup/freeing.
+	(message_info_load): Same.
+
 2006-06-26  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-gpg-context.c (gpg_ctx_parse_status): Only set name to ""
