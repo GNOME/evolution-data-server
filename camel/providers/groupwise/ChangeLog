@@ -1,3 +1,9 @@
+2006-07-06  Parthasarathi Susarla <sparthasarathi@novell.com>
+	
+	* camel-groupwise-transport.c: (groupwise_send_to):
+	check if you have a valid transport. For those wierd times
+	when you have everything screwed up
+
 2006-07-05  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	* camel-groupwise-utils.c: (camel_groupwise_util_item_from_message):

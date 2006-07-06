@@ -141,7 +141,7 @@ groupwise_send_to (CamelTransport *transport,
 		   CamelAddress *recipients,
 		   CamelException *ex)
 {
-	CamelService *service = CAMEL_SERVICE(transport);
+	CamelService *service;
 	CamelStore *store =  NULL;
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
@@ -153,6 +153,12 @@ groupwise_send_to (CamelTransport *transport,
 	const char *reply_request = NULL;
 	EGwItemLinkInfo *info = NULL;
 
+	if (!transport) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
+		return FALSE;
+	}
+
+	service = CAMEL_SERVICE(transport);
 	url = camel_url_to_string (service->url,
 			           (CAMEL_URL_HIDE_PASSWORD |
 				    CAMEL_URL_HIDE_PARAMS   |
