@@ -1,3 +1,9 @@
+2006-07-06  Boby Wang <boby.wang@sun.com>
+
+	** Fixes bug #345397
+	* e-name-selector-dialog.glade:
+	Change the target of label Category, and make ALT + A work.
+
 2006-06-29  simon.zheng  <simon.zheng@sun.com>
 
 	** Fixes 345373 
