@@ -1,3 +1,15 @@
+2006-07-07  Ross Burton  <ross@openedhand.com>
+
+	* libedatabook/e-data-book-view.[ch]:
+	Add e_data_book_view_notify_update_prefiltered_vcard() to
+	fast-path contacts.
+
+	* backends/file/e-book-backend-file.c:
+	Use the new function, and ask libdb to use the GLib allocators so
+	we don't have to copy every contact.
+
+	(closes #346670)
+
 2006-07-05  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:

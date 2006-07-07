@@ -320,7 +320,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 		g_warning (G_STRLOC ": db->get failed with %d", db_error);
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	}
-	free (vcard_dbt.data);
+	g_free (vcard_dbt.data);
 
 	/* update the revisio (modified time of contact) */
 	set_revision (*contact);
@@ -369,8 +369,7 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 	if (db_error == 0) {
-		*vcard = g_strdup (vcard_dbt.data);
-		free (vcard_dbt.data);
+		*vcard = vcard_dbt.data;
 		return GNOME_Evolution_Addressbook_Success;
 	} else {
 		g_warning (G_STRLOC ": db->get failed with %d", db_error);
@@ -413,7 +412,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 			if (db_error == 0) {
-				contact_list = g_list_append (contact_list, g_strdup (vcard_dbt.data));
+				contact_list = g_list_append (contact_list, vcard_dbt.data);
 			} else {
 				g_warning (G_STRLOC ": db->get failed with %d", db_error);
 				status = GNOME_Evolution_Addressbook_OtherError ;
@@ -441,6 +440,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		}
 
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+		vcard_dbt.flags = DB_DBT_MALLOC;
 		memset (&id_dbt, 0, sizeof (id_dbt));
 		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
@@ -451,7 +451,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
-					contact_list = g_list_append (contact_list, g_strdup (vcard_dbt.data));
+					contact_list = g_list_append (contact_list, vcard_dbt.data);
 				}
 			}
 
@@ -527,7 +527,7 @@ book_view_thread (gpointer data)
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
 	int db_error;
-	gboolean stopped = FALSE;
+	gboolean stopped = FALSE, allcontacts;
 
 	d(printf ("starting initial population of book view\n"));
 
@@ -538,10 +538,13 @@ book_view_thread (gpointer data)
 	db = bf->priv->file_db;
 	query = e_data_book_view_get_card_query (book_view);
 
-	if ( ! strcmp (query, "(contains \"x-evolution-any-field\" \"\")"))
+	if ( ! strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
 		e_data_book_view_notify_status_message (book_view, _("Loading..."));
-	else
+		allcontacts = TRUE;
+	} else {
 		e_data_book_view_notify_status_message (book_view, _("Searching..."));
+		allcontacts = FALSE;
+	}
 
 	d(printf ("signalling parent thread\n"));
 	g_mutex_lock (closure->mutex);
@@ -569,8 +572,7 @@ book_view_thread (gpointer data)
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 			if (db_error == 0) {
-				/* notify_update will check if it matches for us */
-				e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
+				e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard_dbt.data);
 			}
 			else {
 				g_warning (G_STRLOC ": db->get failed with %d", db_error);
@@ -602,8 +604,12 @@ book_view_thread (gpointer data)
 
 				/* don't include the version in the list of cards */
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-					/* notify_update will check if it matches for us */
-					e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
+					if (allcontacts)
+						e_data_book_view_notify_update_prefiltered_vcard (book_view, id_dbt.data, vcard_dbt.data);
+					else
+						e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
+				} else {
+					g_free (vcard_dbt.data);
 				}
 
 				db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
@@ -712,7 +718,7 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 
 		g_object_unref (contact);
 		
-		free (vcard_dbt.data);
+		g_free (vcard_dbt.data);
 	}
 }
 
@@ -1013,8 +1019,7 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 	db_error = db->get (db, NULL, &version_name_dbt, &version_dbt, 0);
 	if (db_error == 0) {
 		/* success */
-		version = g_strdup (version_dbt.data);
-		free (version_dbt.data);
+		version = version_dbt.data;
 	}
 	else {
 		/* key was not in file */
@@ -1086,6 +1091,11 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			g_free (filename);
 			return GNOME_Evolution_Addressbook_OtherError;
 		}
+
+		/* Set the allocation routines to the non-aborting GLib functions */
+		env->set_alloc (env, (void *(*)(size_t))g_try_malloc, 
+				(void *(*)(void *, size_t))g_try_realloc,
+				g_free);
 
 		db_error = env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 		if (db_error != 0) {

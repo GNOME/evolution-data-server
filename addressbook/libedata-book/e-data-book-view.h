@@ -64,6 +64,9 @@ void         e_data_book_view_notify_update          (EDataBookView             
 
 void         e_data_book_view_notify_update_vcard    (EDataBookView                *book_view,
 						      char                         *vcard);
+void         e_data_book_view_notify_update_prefiltered_vcard (EDataBookView       *book_view,
+                                                               const char          *id,
+                                                               char                *vcard);
 
 void         e_data_book_view_notify_remove          (EDataBookView                *book_view,
 						      const char                   *id);
