@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-29 20:55+0200\n"
-"PO-Revision-Date: 2006-07-03 13:19+0300\n"
+"POT-Creation-Date: 2006-07-07 08:30+0300\n"
+"PO-Revision-Date: 2006-07-07 08:31+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:536
+#: ../addressbook/backends/file/e-book-backend-file.c:542
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "Ladataan..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:538
+#: ../addressbook/backends/file/e-book-backend-file.c:544
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
@@ -652,12 +652,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kalenteritietoja ei voi tallentaa: virheellinen URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1656
 msgid "Reply Requested: by "
 msgstr "Vastausta pyydetään: mennessä "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
 msgid "Reply Requested: When convenient"
 msgstr "Vastausta pyydetään: kun sopii"
 
@@ -679,15 +679,16 @@ msgstr "Virheellinen palvelimen URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:937
 #: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
-#: ../camel/providers/groupwise/camel-groupwise-store.c:588
-#: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:714
-#: ../camel/providers/groupwise/camel-groupwise-store.c:756
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1011
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "Todennus epäonnistui"
 
@@ -1135,7 +1136,7 @@ msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
 #: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
@@ -1528,8 +1529,7 @@ msgstr "gpg salalausepyynnön tulkinta epäonnistui."
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: \"%s\""
-msgstr ""
-"Tarvitset PIN-koodin avataksesi älykorttisi: \"%s\""
+msgstr "Tarvitset PIN-koodin avataksesi älykorttisi: \"%s\""
 
 #: ../camel/camel-gpg-context.c:827
 #, c-format
@@ -2291,7 +2291,7 @@ msgid "export keys: unimplemented"
 msgstr "vie avaimet ei ole toteutettu"
 
 #: ../camel/camel-store.c:214
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr ""
 "Kansion hakeminen ei onnistu: virheellinen toiminto tässä tallennuspaikassa"
@@ -2634,36 +2634,37 @@ msgstr "Tämä viesti ei ole saatavilla yhteydettömässä tilassa."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1564
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1609
 msgid "Could not get message"
 msgstr "Viestiä ei voitu hakea"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:752
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:753
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Yhteenvetoa %s:lle ei voitu ladata"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:979
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
 msgid "Trash Folder Full. Please Empty."
 msgstr "Roskakori on täynnä, poista sieltä viestejä."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
-#: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:746
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2361
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1877
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Viestiä ei voida lisätä kansioon  '%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1907
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Viestiä ei voida luoda: %s"
@@ -2756,55 +2757,55 @@ msgstr "Ota yhteys Groupwise-palvelimeen selväkielistä salasanaa käyttäen."
 msgid "Host or user not available in url"
 msgstr "Isäntänimi tai käyttäjä ei ole määritelty URLissa"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:200
+#: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sSyötä GroupWise-salasana käyttäjälle %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:214
+#: ../camel/providers/groupwise/camel-groupwise-store.c:219
 #: ../camel/providers/imap/camel-imap-store.c:1360
 msgid "You did not enter a password."
 msgstr "Et antanut salasanaa."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:226
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "Groupwise-palvelimelle kirjautuminen epäonnistui."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:304
+#: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Jotkut ominaisuudet eivät toimi oikein nykyisellä palvelimesi versiolla"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:540
+#: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1869
 #: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "Kansioita %s ei ole olemassa"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Groupwise-kansioita ei voida luoda yhteydettömässä tilassa."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Ylempi kansio ei voi sisältää alikansioita"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Groupwise-kansitoa %s ei voida uudelleennimetä nimelle %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Groupwise-palvelin %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Groupwise-palvelu käyttäjälle %s palvelimella %s"
@@ -2814,11 +2815,11 @@ msgstr "Groupwise-palvelu käyttäjälle %s palvelimella %s"
 msgid "GroupWise mail delivery via %s"
 msgstr "GroupWise-postinvälitys %s:n kautta"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
 msgstr "Lähetetään viestiä"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2828,7 +2829,7 @@ msgstr ""
 "viestien kansioon. Yritä lähettää niitä uudestaan, kun olet ensin poistanut "
 "joitakin sähköpostiviestejä.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -4744,7 +4745,7 @@ msgstr "%a %d.%m.%Y %I.%M %p"
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
-msgid "%a %m/%d/%Y %H.%M"
+msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d.%m.%Y %H.%M"
 
 #. strptime format of a weekday, a date and a time,
@@ -4785,7 +4786,7 @@ msgstr "%d.%m.%Y %I.%M %p"
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1651
-msgid "%m/%d/%Y %H.%M"
+msgid "%m/%d/%Y %H:%M"
 msgstr "%d.%m.%Y %H.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
