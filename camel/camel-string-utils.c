@@ -180,6 +180,8 @@ camel_pstring_add (char *str, gboolean own)
 	if (g_hash_table_lookup_extended (pstring_table, str, (void **) &pstr, &pcount)) {
 		count = GPOINTER_TO_INT (pcount) + 1;
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (count));
+		if (own)
+			g_free (str);
 	} else {
 		pstr = own ? str : g_strdup (str);
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
