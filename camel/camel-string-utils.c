@@ -148,7 +148,7 @@ static GHashTable *pstring_table = NULL;
 /**
  * camel_pstring_add:
  * @str: string to add to the string pool
- * @own: whether the string pool will own the memory pointed to by @s if @str is not yet in the pool
+ * @own: whether the string pool will own the memory pointed to by @str, if @str is not yet in the pool
  *
  * Add the string to the pool.
  *
@@ -164,10 +164,10 @@ camel_pstring_add (char *str, gboolean own)
 	char *pstr;
 	int count;
 	
-	if (s == NULL)
+	if (str == NULL)
 		return NULL;
 	
-	if (s[0] == '\0') {
+	if (str[0] == '\0') {
 		if (own)
 			g_free (str);
 		return "";
