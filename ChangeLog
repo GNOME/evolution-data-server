@@ -1,3 +1,9 @@
+2006-07-08  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	Fixes #335692
+	* libedataserver/e-iterator.c (e_iterator_is_valid):
+	Added a NULL check.
+
 2006-06-16  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-msgport.c: Rename the E_IS_SELECT_STATUS_INTR()

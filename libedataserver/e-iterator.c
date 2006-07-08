@@ -129,6 +129,9 @@ e_iterator_set      (EIterator *iterator,
 gboolean
 e_iterator_is_valid (EIterator *iterator)
 {
+	if (!iterator)
+		return FALSE;
+
 	if (E_ITERATOR_GET_CLASS(iterator)->is_valid)
 		return E_ITERATOR_GET_CLASS(iterator)->is_valid(iterator);
 	else
