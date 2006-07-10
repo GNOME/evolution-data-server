@@ -441,7 +441,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT) {
 					comp = e_cal_component_new ();
 					if (e_cal_component_set_icalcomponent (comp, icalcomp))
-						list = g_list_append (list, comp);
+						list = g_list_prepend (list, comp);
 					else {
 						icalcomponent_free (icalcomp);
 						g_object_unref (comp);
@@ -491,7 +491,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *
 					comp = e_cal_component_new ();
 					if ((e_cal_component_set_icalcomponent (comp, icalcomp)) &&
 						!strcmp (icalcomponent_get_uid (icalcomp), uid)) 
-							list = g_slist_append (list, comp);
+							list = g_slist_prepend (list, comp);
 					else {
 						g_object_unref (comp);
 					}
