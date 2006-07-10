@@ -62,6 +62,7 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
 	ECalBackendSyncStatus (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 	ECalBackendSyncStatus (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid);
+	ECalBackendSyncStatus (*set_default_zone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tz);
 
 	ECalBackendSyncStatus (*get_changes_sync) (ECalBackendSync *backend, EDataCal *cal, const char *change_id, GList **adds, GList **modifies, GList **deletes);
 	ECalBackendSyncStatus (*get_freebusy_sync) (ECalBackendSync *backend, EDataCal *cal, GList *users, time_t start, time_t end, GList **freebusy);
@@ -152,6 +153,7 @@ ECalBackendSyncStatus e_cal_backend_sync_get_object_list         (ECalBackendSyn
 ECalBackendSyncStatus e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
 ECalBackendSyncStatus e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 ECalBackendSyncStatus e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid);
+ECalBackendSyncStatus e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id, GList **adds, GList **modifies, GList **deletes);
 ECalBackendSyncStatus e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users, time_t start, time_t end, GList **freebusy);

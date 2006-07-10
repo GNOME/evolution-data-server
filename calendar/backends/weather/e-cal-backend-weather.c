@@ -446,11 +446,18 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (uri);
 
-		e_cal_backend_weather_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
-
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not create cache file"));
 			return GNOME_Evolution_Calendar_OtherError;
+		}
+
+		if (priv->default_zone) {
+			icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
+			icaltimezone *zone = icaltimezone_new ();
+
+			icaltimezone_set_component (zone, icalcomponent_new_clone (icalcomp));
+
+			g_hash_table_insert (priv->zones, g_strdup (icaltimezone_get_tzid (zone)), zone);
 		}
 
 		if (priv->mode == CAL_MODE_LOCAL)
@@ -602,20 +609,32 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_weather_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_weather_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
+	icalcomponent *tz_comp;
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
+	icaltimezone *zone;
 
-	cbw = E_CAL_BACKEND_WEATHER (backend);
+	cbw = (ECalBackendWeather *) backend;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
 	priv = cbw->priv;
 
-	priv->default_zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
-	if (!priv->default_zone) {
-		priv->default_zone = icaltimezone_get_utc_timezone ();
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
 
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-	}
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+
+	if (priv->default_zone)
+		icaltimezone_free (priv->default_zone, 1);
+
+	/* Set the default timezone to it. */
+	priv->default_zone = zone;
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -807,6 +826,11 @@ e_cal_backend_weather_finalize (GObject *object)
 		priv->city = NULL;
 	}
 
+	if (priv->default_zone) {
+		icaltimezone_free (priv->default_zone, 1);
+		priv->default_zone = NULL;
+	}
+
 	g_free (priv);
 	cbw->priv = NULL;
 
@@ -866,7 +890,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_object_list_sync = e_cal_backend_weather_get_object_list;
 	sync_class->get_timezone_sync = e_cal_backend_weather_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_weather_add_timezone;
-	sync_class->set_default_timezone_sync = e_cal_backend_weather_set_default_timezone;
+	sync_class->set_default_zone_sync = e_cal_backend_weather_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_weather_get_free_busy;
 	sync_class->get_changes_sync = e_cal_backend_weather_get_changes;
 	backend_class->is_loaded = e_cal_backend_weather_is_loaded;

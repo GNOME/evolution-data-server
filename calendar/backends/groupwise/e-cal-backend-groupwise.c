@@ -920,8 +920,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			}
 
 			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
-			e_cal_backend_groupwise_add_timezone (E_CAL_BACKEND_SYNC (cbgw), NULL, (const char *) icaltimezone_get_tzid (priv->default_zone));
-
+	
 			/* spawn a new thread for opening the calendar */
 			thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
 			if (!thread) {
@@ -1016,6 +1015,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
 		priv->timeout_id = 0;
+	}
+
+	if (priv->default_zone) {
+		icaltimezone_free (priv->default_zone, 1);
+		priv->default_zone = NULL;
 	}
 
 	g_free (priv);
@@ -1169,7 +1173,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		}
 		
 		e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
-		e_cal_backend_groupwise_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
 
 		g_mutex_unlock (priv->mutex);	
 		return GNOME_Evolution_Calendar_Success;
@@ -1424,16 +1427,32 @@ e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, c
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_groupwise_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_groupwise_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
+	icalcomponent *tz_comp;
 	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwisePrivate *priv;
+	icaltimezone *zone;
 
-	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
-        priv = cbgw->priv;
-	
+	cbgw = (ECalBackendGroupwise *) backend;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
+	priv = cbgw->priv;
+
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+
+	if (priv->default_zone)
+		icaltimezone_free (priv->default_zone, 1);
+
 	/* Set the default timezone to it. */
-	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	priv->default_zone = zone;
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -2661,7 +2680,7 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	sync_class->get_attachment_list_sync = e_cal_backend_groupwise_get_attachment_list;
 	sync_class->get_timezone_sync = e_cal_backend_groupwise_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_groupwise_add_timezone;
-	sync_class->set_default_timezone_sync = e_cal_backend_groupwise_set_default_timezone;
+	sync_class->set_default_zone_sync = e_cal_backend_groupwise_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_groupwise_get_free_busy;
 	sync_class->get_changes_sync = e_cal_backend_groupwise_get_changes;
 

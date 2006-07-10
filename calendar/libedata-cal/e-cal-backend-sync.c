@@ -517,6 +517,50 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 }
 
 /**
+ * e_cal_backend_sync_set_default_zone:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ * @tz: Timezone object as string.
+ *
+ * Calls the set_default_timezone method on the given backend.
+ *
+ * Return value: Status code.
+ */
+ECalBackendSyncStatus
+e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tz)
+{
+ 	ECalBackendSyncStatus status;
+ 
+  	g_return_val_if_fail (E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+	
+	/* Old backends might be using the set_default_timezone */
+	if (!E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_zone_sync) {
+		icalcomponent *icalcomp = icalparser_parse_string (tz);
+		char *tzid = NULL;
+		icaltimezone *zone = icaltimezone_new ();
+
+		if (icalcomp) {
+			icaltimezone_set_component (zone, icalcomp);
+			tzid = icaltimezone_get_tzid (zone);
+		}
+
+		icaltimezone_free (zone, 1);
+
+ 		LOCK_WRAPPER (set_default_timezone_sync, (backend, cal, tzid));
+
+		return status;
+	}
+
+ 	LOCK_WRAPPER (set_default_zone_sync, (backend, cal, tz));
+  
+ 	return status;
+}
+
+/**
+ * @deprecated This virual function should not be used in the backends, use
+ * e_cal_backend_sync_set_zone instead. This function restricts the default timezone
+ * to be libical builtin timezone.
+ *
  * e_cal_backend_sync_set_default_timezone:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -855,6 +899,16 @@ _e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 }
 
 static void
+_e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char *tz)
+{
+	ECalBackendSyncStatus status;
+
+	status = e_cal_backend_sync_set_default_zone (E_CAL_BACKEND_SYNC (backend), cal, tz);
+
+	e_data_cal_notify_default_timezone_set (cal, status);
+}
+
+static void
 _e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
 {
 	ECalBackendSyncStatus status;
@@ -961,6 +1015,7 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->get_timezone = _e_cal_backend_get_timezone;
 	backend_class->add_timezone = _e_cal_backend_add_timezone;
 	backend_class->set_default_timezone = _e_cal_backend_set_default_timezone;
+	backend_class->set_default_zone = _e_cal_backend_set_default_zone;
  	backend_class->get_changes = _e_cal_backend_get_changes;
  	backend_class->get_free_busy = _e_cal_backend_get_free_busy;
 

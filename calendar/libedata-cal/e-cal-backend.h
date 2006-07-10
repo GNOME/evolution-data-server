@@ -95,6 +95,7 @@ struct _ECalBackendClass {
 	/* Timezone related virtual methods */
 	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, const char *tzid);
 	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, const char *object);
+	void (* set_default_zone) (ECalBackend *backend, EDataCal *cal, const char *tzobj);
 	void (* set_default_timezone) (ECalBackend *backend, EDataCal *cal, const char *tzid);
 
 	void (* start_query) (ECalBackend *backend, EDataCalView *query);
@@ -157,6 +158,7 @@ void e_cal_backend_set_mode (ECalBackend *backend, CalMode mode);
 void e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid);
 void e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *object);
 void e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid);
+void e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char *tzobj);
 
 void e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *change_id);
 void e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, time_t start, time_t end);

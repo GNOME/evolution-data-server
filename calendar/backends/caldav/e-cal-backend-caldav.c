@@ -2171,9 +2171,9 @@ caldav_add_timezone (ECalBackendSync *backend,
 }
 
 static ECalBackendSyncStatus
-caldav_set_default_timezone (ECalBackendSync *backend, 
+caldav_set_default_zone (ECalBackendSync *backend, 
 			     EDataCal        *cal,
-			     const char      *tzid)
+			     const char      *tzobj)
 {
 	/* FIXME: implement me! */
 	g_warning ("function not implemented %s", G_STRFUNC);
@@ -2536,7 +2536,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->get_object_list_sync      = caldav_get_object_list;
 	sync_class->get_timezone_sync         = caldav_get_timezone;
 	sync_class->add_timezone_sync         = caldav_add_timezone;
-	sync_class->set_default_timezone_sync = caldav_set_default_timezone;
+	sync_class->set_default_zone_sync = caldav_set_default_zone;
 	sync_class->get_freebusy_sync         = caldav_get_free_busy;
 	sync_class->get_changes_sync          = caldav_get_changes;
 

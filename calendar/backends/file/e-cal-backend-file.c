@@ -300,6 +300,11 @@ e_cal_backend_file_finalize (GObject *object)
 		priv->uri = NULL;
 	}
 
+	if (priv->default_zone) {
+		icaltimezone_free (priv->default_zone, 1);
+		priv->default_zone = NULL;
+	}
+
 	g_free (priv);
 	cbfile->priv = NULL;
 
@@ -916,8 +921,14 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 			status = create_cal (cbfile, str_uri);
 	}
 
-	if (status == GNOME_Evolution_Calendar_Success)
-		e_cal_backend_file_add_timezone (backend, cal, (const char *) icaltimezone_get_tzid (priv->default_zone));
+	if (status == GNOME_Evolution_Calendar_Success) {
+		if (priv->default_zone) {
+			icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
+
+			icalcomponent_add_component (priv->icalcomp, icalcomponent_new_clone (icalcomp));
+			save (cbfile);
+		}
+	}
 
 	g_free (str_uri);
 
@@ -1193,18 +1204,33 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static ECalBackendSyncStatus
-e_cal_backend_file_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
 {
+	icalcomponent *tz_comp;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	icaltimezone *zone;
 
-	cbfile = E_CAL_BACKEND_FILE (backend);
+	cbfile = (ECalBackendFile *) backend;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
 	priv = cbfile->priv;
 
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+
+	if (priv->default_zone != icaltimezone_get_utc_timezone ())
+		icaltimezone_free (priv->default_zone, 1);
+
 	/* Set the default timezone to it. */
-	priv->default_zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	priv->default_zone = zone;
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -2587,7 +2613,7 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->get_attachment_list_sync = e_cal_backend_file_get_attachment_list;
 	sync_class->get_timezone_sync = e_cal_backend_file_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_file_add_timezone;
-	sync_class->set_default_timezone_sync = e_cal_backend_file_set_default_timezone;
+	sync_class->set_default_zone_sync = e_cal_backend_file_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_file_get_free_busy;
 	sync_class->get_changes_sync = e_cal_backend_file_get_changes;
 

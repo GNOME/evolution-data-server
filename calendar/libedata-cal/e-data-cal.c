@@ -467,7 +467,7 @@ impl_Cal_addTimezone (PortableServer_Servant servant,
 /* Cal::setDefaultTimezone method */
 static void
 impl_Cal_setDefaultTimezone (PortableServer_Servant servant,
-			     const CORBA_char *tzid,
+			     const CORBA_char *tz,
 			     CORBA_Environment *ev)
 {
 	EDataCal *cal;
@@ -476,7 +476,7 @@ impl_Cal_setDefaultTimezone (PortableServer_Servant servant,
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
-	e_cal_backend_set_default_timezone (priv->backend, cal, tzid);
+	e_cal_backend_set_default_zone (priv->backend, cal, tz);
 }
 
 /**

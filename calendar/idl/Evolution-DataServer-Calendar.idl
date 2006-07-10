@@ -199,7 +199,7 @@ module Calendar {
 		oneway void getTimezone (in CalTimezoneObjUID tzid);
 		oneway void addTimezone (in CalTimezoneObj tz);
 		/* The timezone used to resolve DATE and floating DATE-TIME values. */
-		oneway void setDefaultTimezone (in CalTimezoneObjUID tzid);
+		oneway void setDefaultTimezone (in CalTimezoneObj tz);
 
 		/* Gets a list of components that changed */
 		oneway void getChanges (in string change_id);

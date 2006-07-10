@@ -631,7 +631,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	}
 	
 	/* all day event */
-	if (!dt.tzid && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
+	if (dt.value->is_date && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
 		e_gw_item_set_is_allday_event (item, TRUE);
 	
 	/* creation date */

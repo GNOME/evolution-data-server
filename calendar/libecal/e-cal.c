@@ -5028,7 +5028,8 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	const char *tzid;
+	icalcomponent *icalcomp = NULL;
+	char *tzobj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);	
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);	
@@ -5053,12 +5054,22 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	g_mutex_unlock (priv->mutex);
 
 	/* FIXME Adding it to the server to change the tzid */
-	tzid = icaltimezone_get_tzid (zone);
+	icalcomp = icaltimezone_get_component (zone);
+	if (!icalcomp) {
+		e_calendar_remove_op (ecal, our_op);
+		g_mutex_unlock (our_op->mutex);
+		e_calendar_free_op (our_op);
+
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
+	}
+
+	/* convert icaltimezone into a string */	
+	tzobj = icalcomponent_as_ical_string (icalcomp);
 
 	/* call the backend */
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_setDefaultTimezone (priv->cal, tzid, &ev);
+	GNOME_Evolution_Calendar_Cal_setDefaultTimezone (priv->cal, tzobj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);
