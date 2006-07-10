@@ -3,6 +3,10 @@
 	* configure.in, NEWS: EDS 1.7.4 release updates
 	and version, libtool numbers bumped.
 
+2006-07-10  Frederic Peters <fpeters@entrouvert.com>
+
+	* *.pc.in: defined @datarootdir@. Fixes #344596.
+
 2006-07-08  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	Fixes #335692
