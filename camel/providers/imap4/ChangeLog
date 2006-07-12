@@ -1,3 +1,8 @@
+2006-07-12  Andre Klapper  <a9016009@gmx.de>
+
+	* camel-imap4-provider.c:
+	adding trailing colon to string. Fixes bug #331858.
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-imap4-folder.c: 

@@ -59,7 +59,7 @@ CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "override_namespace", NULL,
 	  N_("O_verride server-supplied folder namespace"), "0" },
 	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
-	  N_("Namespace") },
+	  N_("Namespace:") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
