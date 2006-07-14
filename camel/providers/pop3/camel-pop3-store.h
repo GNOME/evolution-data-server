@@ -49,6 +49,8 @@ typedef struct {
 	CamelPOP3Engine *engine; /* pop processing engine */
 
 	struct _CamelDataCache *cache;
+	
+	guint delete_after;
 } CamelPOP3Store;
 
 

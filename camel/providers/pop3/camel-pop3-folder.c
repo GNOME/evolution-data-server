@@ -300,12 +300,19 @@ pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	int i;
 	CamelPOP3FolderInfo *fi;
 
-	if (!expunge)
-		return;
-
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (folder->parent_store);
 
+	if(pop3_store->delete_after && !expunge)
+	{	
+		camel_operation_start(NULL, _("Expunging old messages"));
+		camel_pop3_delete_old(folder, pop3_store->delete_after,ex);	
+	}	
+
+	if (!expunge) {
+		return;
+	}	
+	
 	camel_operation_start(NULL, _("Expunging deleted messages"));
 	
 	for (i = 0; i < pop3_folder->uids->len; i++) {
@@ -342,6 +349,65 @@ pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	camel_operation_end(NULL);
 
 	camel_pop3_store_expunge (pop3_store, ex);
+}
+
+int
+camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *ex)
+{
+	CamelPOP3Folder *pop3_folder;
+	CamelPOP3FolderInfo *fi;
+	int i;
+	CamelPOP3Store *pop3_store;
+	time_t temp;
+
+	pop3_folder = CAMEL_POP3_FOLDER (folder);
+	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);	
+	temp = time(&temp);
+
+	for (i = 0; i < pop3_folder->uids->len; i++) {
+	fi = pop3_folder->uids->pdata[i];
+
+	CamelMimeMessage *message = pop3_get_message (folder, fi->uid, ex);	
+	time_t message_time = message->date + message->date_offset;
+	if(message) {
+		double time_diff = difftime(temp,message_time);
+		int day_lag = time_diff/(60*60*24);
+		if( day_lag > days_to_delete)
+		{
+			if (fi->cmd) {
+			while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0)
+				;
+			camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
+			fi->cmd = NULL;
+		}
+
+		fi->cmd = camel_pop3_engine_command_new(pop3_store->engine, 0, NULL, NULL, "DELE %u\r\n", fi->id);
+			/* also remove from cache */
+		if (pop3_store->cache && fi->uid)
+			camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
+		}
+	     }
+
+	}
+
+	for (i = 0; i < pop3_folder->uids->len; i++) {
+		fi = pop3_folder->uids->pdata[i];
+		/* wait for delete commands to finish */
+		if (fi->cmd) {
+			while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0)
+				;
+			camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
+			fi->cmd = NULL;
+		}
+		camel_operation_progress(NULL, (i+1) * 100 / pop3_folder->uids->len);
+	}
+
+	camel_operation_end(NULL);
+
+	camel_pop3_store_expunge (pop3_store, ex);
+
+	return 0;
+	
 }
 
 static void

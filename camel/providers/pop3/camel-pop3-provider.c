@@ -40,10 +40,8 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	  N_("Message storage") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep_on_server", NULL,
 	  N_("Leave messages on server"), "0" },
-#ifdef NOT_FOR_1_0
-	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete_after", "UNIMPLEMENTED",
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete_after", NULL,
 	  N_("Delete after %s day(s)"), "0:1:7:365" },
-#endif
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable_extensions", NULL,
 	  N_("Disable support for all POP3 extensions"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },

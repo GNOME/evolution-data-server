@@ -70,6 +70,8 @@ CamelFolder *camel_pop3_folder_new (CamelStore *parent, CamelException *ex);
 /* Standard Camel function */
 CamelType camel_pop3_folder_get_type (void);
 
+int camel_pop3_delete_old(CamelFolder *folder, int days_to_delete, CamelException *ex);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

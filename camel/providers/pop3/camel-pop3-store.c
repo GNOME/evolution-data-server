@@ -154,6 +154,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	guint32 flags = 0;
 	int clean_quit = TRUE;
 	int ret;
+	gchar *delete_days;
 	
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
@@ -196,6 +197,9 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	
 	if (camel_url_get_param (service->url, "disable_extensions"))
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
+	
+	if ((delete_days = camel_url_get_param(service->url,"delete_after"))) 
+		store->delete_after =  atoi(delete_days);
 	
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
