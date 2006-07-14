@@ -3160,7 +3160,11 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		e_util_mkdir_hier (g_path_get_dirname (priv->summary_file_name), 0700);
 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
 							    SUMMARY_FLUSH_TIMEOUT);
-		
+
+		if (!ebgw->priv->file_db) {
+				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_OtherError);
+				return ;
+		}
 		if (e_book_backend_db_cache_is_populated (ebgw->priv->file_db)) {
 			if (enable_debug)
 				printf("cache is populated\n");
@@ -3472,7 +3476,9 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 
 	}
 
-	if (db_error != 0) {
+	ebgw->priv->file_db = db;
+
+	if (db_error != 0 || ebgw->priv->file_db == NULL) {
 		ebgw->priv->file_db = NULL;
 		g_free(filename);
 		g_free(dirname);
