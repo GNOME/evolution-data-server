@@ -135,8 +135,10 @@ clear_items (EBookBackendSummary *summary)
 	int num = summary->priv->items->len;
 	for (i = 0; i < num; i++) {
 		EBookBackendSummaryItem *item = g_ptr_array_remove_index_fast (summary->priv->items, 0);
-		g_hash_table_remove (summary->priv->id_to_item, item->id);
-		free_summary_item (item);
+		if (item) {
+			g_hash_table_remove (summary->priv->id_to_item, item->id);
+			free_summary_item (item);
+		}
 	}
 }
 

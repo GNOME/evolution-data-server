@@ -1,5 +1,10 @@
 2006-07-14  Devashish Sharma  <sdevashish@novell.com>
 
+	* libedata-book/e-book-backend-summary.c : Fixed a crasher in 
+	e_book_backend_summary_load.
+
+2006-07-14  Devashish Sharma  <sdevashish@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c : Fixed a crasher in
 	groupwise backend.
 
