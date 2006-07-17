@@ -181,6 +181,7 @@ char*                 e_vcard_attribute_get_value             (EVCardAttribute *
 GString*              e_vcard_attribute_get_value_decoded     (EVCardAttribute *attr);
 
 GList*           e_vcard_attribute_get_params       (EVCardAttribute *attr);
+GList*           e_vcard_attribute_get_param        (EVCardAttribute *attr, const char *name);
 const char*      e_vcard_attribute_param_get_name   (EVCardAttributeParam *param);
 GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
 

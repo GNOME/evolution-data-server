@@ -1,3 +1,8 @@
+2006-07-17  Ross Burton  <ross@openedhand.com.com>
+
+	* libebook/e-vcard.[ch]:
+	Add e_vcard_get_param() (#347752)
+
 2006-07-14  Devashish Sharma  <sdevashish@novell.com>
 
 	* libedata-book/e-book-backend-summary.c : Fixed a crasher in 

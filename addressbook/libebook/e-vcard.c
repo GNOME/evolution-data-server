@@ -1762,6 +1762,36 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
 }
 
 /**
+ * e_vcard_attribute_get_param:
+ * @attr: an #EVCardAttribute
+ * @name: a parameter name
+ * 
+ * Gets the list of values for the paramater @name from @attr. The list and its
+ * contents are owned by @attr, and must not be freed.
+ *
+ * Return value: A list of string elements representing the parameter's values.
+ **/
+GList *
+e_vcard_attribute_get_param (EVCardAttribute *attr, const char *name)
+{
+	GList *params, *p;
+	
+	g_return_val_if_fail (attr != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+	
+	params = e_vcard_attribute_get_params (attr);
+
+	for (p = params; p; p = p->next) {
+		EVCardAttributeParam *param = p->data;
+		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param), name) == 0) {
+			return e_vcard_attribute_param_get_values (param);
+		}
+	}
+
+	return NULL;
+}
+
+/**
  * e_vcard_attribute_param_get_name:
  * @param: an #EVCardAttributeParam
  *
