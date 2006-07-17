@@ -37,8 +37,10 @@ main (int argc, char **argv)
 	contact = e_contact_new ();
 
 	photo = g_new (EContactPhoto, 1);
-	photo->data = g_strdup (photo_data);
-	photo->length = _evc_base64_decode_simple (photo->data, strlen (photo_data));
+	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
+	photo->data.inlined.mime_type = NULL;
+	photo->data.inlined.data = (guchar*)g_strdup (photo_data);
+	photo->data.inlined.length = _evc_base64_decode_simple (photo->data.inlined.data, strlen (photo_data));
 
 	/* set the photo */
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
@@ -47,10 +49,10 @@ main (int argc, char **argv)
 	new_photo = e_contact_get (contact, E_CONTACT_PHOTO);
 	
 	/* and compare */
-	if (new_photo->length != photo->length)
+	if (new_photo->data.inlined.length != photo->data.inlined.length)
 	  g_error ("photo lengths differ");
 	 
-	if (memcmp (new_photo->data, photo->data, photo->length))
+	if (memcmp (new_photo->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length))
 	  g_error ("photo data differs");
 
 	printf ("photo test passed\n");
