@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-16 06:24+0200\n"
-"PO-Revision-Date: 2006-06-16 10:41+0530\n"
+"POT-Creation-Date: 2006-07-16 23:04+0200\n"
+"PO-Revision-Date: 2006-07-17 09:32+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <indianoss-gujarati@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -27,14 +27,15 @@ msgstr ""
 "\n"
 "\n"
 "\n"
+"\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:536
+#: ../addressbook/backends/file/e-book-backend-file.c:542
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "લાવી રહ્યા છીએ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:538
+#: ../addressbook/backends/file/e-book-backend-file.c:545
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
@@ -318,327 +319,328 @@ msgstr "રેડિયો"
 msgid "Telex"
 msgstr "ટેલેક્સ"
 
-#: ../addressbook/libebook/e-contact.c:150
+#. To translators: TTY is Teletypewriter
+#: ../addressbook/libebook/e-contact.c:151
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Email List"
 msgstr "ઈમેઈલની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Email 1"
 msgstr "ઈ-મેઈલ ૧"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Email 2"
 msgstr "ઈ-મેઈલ ૨"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Email 3"
 msgstr "ઈ-મેઈલ ૩"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Email 4"
 msgstr "ઈ-મેઈલ ૪"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Mailer"
 msgstr "મેઈલ કરનાર"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:160
 msgid "Wants HTML Mail"
 msgstr "ને HTML મેઈલની જરુર છે"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:163
 msgid "AIM Screen Name List"
 msgstr "AIM સ્ક્રીનના નામની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:164
 msgid "GroupWise Id List"
 msgstr "જૂથ પ્રમાણે Id ની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Jabber Id List"
 msgstr "જેબર Id ની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Yahoo! Screen Name List"
 msgstr "યાહુ સ્ક્રીન નામની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:167
 msgid "MSN Screen Name List"
 msgstr "MSN સ્ક્રીનના નામની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:168
 msgid "ICQ Id List"
 msgstr "ICQ Id યાદી"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook/e-contact.c:170
 msgid "AIM Home Screen Name 1"
 msgstr "AIM ઘરની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:171
 msgid "AIM Home Screen Name 2"
 msgstr "AIM ઘરની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:172
 msgid "AIM Home Screen Name 3"
 msgstr "AIM ઘરની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:173
 msgid "AIM Work Screen Name 1"
 msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:174
 msgid "AIM Work Screen Name 2"
 msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:175
 msgid "AIM Work Screen Name 3"
 msgstr "AIM કામ કરવાની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:176
 msgid "GroupWise Home Screen Name 1"
 msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook/e-contact.c:177
 msgid "GroupWise Home Screen Name 2"
 msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:178
 msgid "GroupWise Home Screen Name 3"
 msgstr "જૂથ પ્રમાણે ઘરની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:179
 msgid "GroupWise Work Screen Name 1"
 msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:180
 msgid "GroupWise Work Screen Name 2"
 msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:181
 msgid "GroupWise Work Screen Name 3"
 msgstr "જૂથ પ્રમાણે કામ કરવાની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:182
 msgid "Jabber Home Id 1"
 msgstr "જેબર ઘર Id ૧"
 
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Jabber Home Id 2"
 msgstr "જેબર ઘર Id ૨"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Jabber Home Id 3"
 msgstr "જેબર ઘર Id ૩"
 
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Jabber Work Id 1"
 msgstr "જેબર કામ કરવાનું Id ૧"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Jabber Work Id 2"
 msgstr "જેબર કામ કરવાનું Id ૨"
 
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Jabber Work Id 3"
 msgstr "જેબર કામ કરવાનું Id ૩"
 
-#: ../addressbook/libebook/e-contact.c:187
+#: ../addressbook/libebook/e-contact.c:188
 msgid "Yahoo! Home Screen Name 1"
 msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:189
 msgid "Yahoo! Home Screen Name 2"
 msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:190
 msgid "Yahoo! Home Screen Name 3"
 msgstr "યાહુ! ઘર સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:191
 msgid "Yahoo! Work Screen Name 1"
 msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:192
 msgid "Yahoo! Work Screen Name 2"
 msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:193
 msgid "Yahoo! Work Screen Name 3"
 msgstr "યાહુ! કામ કરવાની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:194
 msgid "MSN Home Screen Name 1"
 msgstr "MSN ઘર સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:195
 msgid "MSN Home Screen Name 2"
 msgstr "MSN ઘર સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:196
 msgid "MSN Home Screen Name 3"
 msgstr "MSN ઘર સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:197
 msgid "MSN Work Screen Name 1"
 msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૧"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:198
 msgid "MSN Work Screen Name 2"
 msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૨"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:199
 msgid "MSN Work Screen Name 3"
 msgstr "MSN કામ કરવાની સ્ક્રીનનું નામ ૩"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:200
 msgid "ICQ Home Id 1"
 msgstr "ICQ ઘર Id ૧"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:201
 msgid "ICQ Home Id 2"
 msgstr "ICQ ઘર Id ૨"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:202
 msgid "ICQ Home Id 3"
 msgstr "ICQ ઘર Id ૩"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:203
 msgid "ICQ Work Id 1"
 msgstr "ICQ કામ કરવાનું Id ૧"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:204
 msgid "ICQ Work Id 2"
 msgstr "ICQ કામ કરવાનું Id ૨"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:205
 msgid "ICQ Work Id 3"
 msgstr "ICQ કામ કરવાનું Id ૩"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Organization"
 msgstr "સંસ્થા"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Organizational Unit"
 msgstr "સંસ્થાનો અેકમ"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Office"
 msgstr "ઓફિસ"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Title"
 msgstr "શીર્ષક"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Role"
 msgstr "ભૂમિકા"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:214
 msgid "Manager"
 msgstr "વ્યવસ્થાપક"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:215
 msgid "Assistant"
 msgstr "સહાયક"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:218
 msgid "Homepage URL"
 msgstr "ઘરપાનું URL"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:219
 msgid "Weblog URL"
 msgstr "વેબલોગ URL"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:220
 msgid "Video Conferencing URL"
 msgstr "વિડીયો મંત્રણા URL"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:223
 msgid "Photo"
 msgstr "ફોટો"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:224
 msgid "Logo"
 msgstr "લોગો"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:227
 msgid "X.509 Certificate"
 msgstr "X.509 પ્રમાણપત્ર"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:230
 msgid "Category List"
 msgstr "વર્ગની યાદી"
 
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:231
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "વર્ગો"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Calendar URI"
 msgstr "કેલેન્ડર URI"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Free/Busy URL"
 msgstr "મુક્ત/વ્યસ્ત URL"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:236
 msgid "ICS Calendar"
 msgstr "ICS કેલેન્ડર"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:239
 msgid "Spouse's Name"
 msgstr "પત્નીનું નામ"
 
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:240
 msgid "Note"
 msgstr "નોંધ"
 
-#: ../addressbook/libebook/e-contact.c:241
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Birth Date"
 msgstr "જન્મ તારીખ"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:243
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "સાલગીરી"
 
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:245
 msgid "List"
 msgstr "યાદી"
 
-#: ../addressbook/libebook/e-contact.c:245
+#: ../addressbook/libebook/e-contact.c:246
 msgid "List Show Addresses"
 msgstr "યાદી સરનામાઓ બતાવે છે"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:249
 msgid "Last Revision"
 msgstr "છેલ્લું પુનરાવર્તન"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Book URI"
 msgstr "પુસ્તક URI"
 
-#: ../addressbook/libebook/e-contact.c:1238
+#: ../addressbook/libebook/e-contact.c:1239
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "નામ વગરની યાદી"
@@ -663,69 +665,70 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "કેલેન્ડર માહિતી સંગ્રહી શકતા નથી: મલીન URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1656
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:224
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
 #, c-format
 msgid "Loading %s items"
 msgstr "%s વસ્તુઓ લાવી રહ્યા છીએ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:752
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "કેલેન્ડર"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:808
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
 msgid "Invalid server URI"
 msgstr "અયોગ્ય સર્વર URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:824
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:833
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
-#: ../camel/providers/groupwise/camel-groupwise-store.c:588
-#: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:714
-#: ../camel/providers/groupwise/camel-groupwise-store.c:756
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:936
+#: ../calendar/libecal/e-cal.c:5148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1011
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "સત્તાધિકાર નિષ્ફળ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:874
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
 msgid "Could not create thread for getting deltas"
 msgstr "deltas મેળવવા માટે થ્રેડ બનાવી શક્યા નહિં"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:899
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1146
-#: ../calendar/backends/http/e-cal-backend-http.c:520
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1169
+#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:912
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:930
 msgid "Could not create thread for populating cache"
 msgstr "કેશ બનાવવા માટે થ્રેડ બનાવી શક્યા નથી"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:259
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Redirected to Invalid URI"
 msgstr "અયોગ્ય URI ફરીથી દિશામાન કરાયું"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:283
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "ફાઈલનું બંધારણ ખરાબ છે."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "કેલેન્ડર નથી."
 
@@ -1078,86 +1081,86 @@ msgstr "વપરાશકર્તા %s માટે પ્રોક્સી 
 msgid "Enter password for %s (user %s)"
 msgstr "%s (વપરાશકર્તા %s) માટે પાસવર્ડ દાખલ કરો"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5120
 msgid "Invalid argument"
 msgstr "અયોગ્ય દલીલ"
 
-#: ../calendar/libecal/e-cal.c:5111
+#: ../calendar/libecal/e-cal.c:5122
 msgid "Backend is busy"
 msgstr "પાશ્વ ભાગ વ્યસ્ત છે"
 
-#: ../calendar/libecal/e-cal.c:5113
+#: ../calendar/libecal/e-cal.c:5124
 msgid "Repository is offline"
 msgstr "રીપોઝીટરી ઓફલાઈન છે"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5126
 msgid "No such calendar"
 msgstr "આવુ કોઈ કેલેન્ડર જ નથી"
 
-#: ../calendar/libecal/e-cal.c:5117 ../servers/groupwise/e-gw-connection.c:173
+#: ../calendar/libecal/e-cal.c:5128 ../servers/groupwise/e-gw-connection.c:173
 msgid "Object not found"
 msgstr "ઓબ્જેક્ટ મળ્યો નથી"
 
-#: ../calendar/libecal/e-cal.c:5119 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5130 ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid object"
 msgstr "અયોગ્ય ઓબ્જેક્ટ"
 
-#: ../calendar/libecal/e-cal.c:5121
+#: ../calendar/libecal/e-cal.c:5132
 msgid "URI not loaded"
 msgstr "URI લવાઈ નથી"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5134
 msgid "URI already loaded"
 msgstr "URI પહેલેથી જ લવાઈ ગઈ છે"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5136
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "પરવાનગી નથી"
 
-#: ../calendar/libecal/e-cal.c:5127 ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5138 ../servers/groupwise/e-gw-connection.c:175
 msgid "Unknown User"
 msgstr "અજ્ઞાત વપરાશકર્તા"
 
-#: ../calendar/libecal/e-cal.c:5129
+#: ../calendar/libecal/e-cal.c:5140
 msgid "Object ID already exists"
 msgstr "ઓબ્જેક્ટ ID પહેલાથી જ હાજર છે"
 
-#: ../calendar/libecal/e-cal.c:5131
+#: ../calendar/libecal/e-cal.c:5142
 msgid "Protocol not supported"
 msgstr "પ્રોટોકોલને આધાર નથી"
 
-#: ../calendar/libecal/e-cal.c:5133
+#: ../calendar/libecal/e-cal.c:5144
 msgid "Operation has been canceled"
 msgstr "પ્રક્રિયા રદ થઈ ગઈ"
 
-#: ../calendar/libecal/e-cal.c:5135
+#: ../calendar/libecal/e-cal.c:5146
 msgid "Could not cancel operation"
 msgstr "પ્રક્રિયા નકારી શકાતી નથી"
 
-#: ../calendar/libecal/e-cal.c:5139
+#: ../calendar/libecal/e-cal.c:5150
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "સત્તાધિકારની જરુરિયાત છે"
 
-#: ../calendar/libecal/e-cal.c:5141
+#: ../calendar/libecal/e-cal.c:5152
 msgid "A CORBA exception has occurred"
 msgstr "CORBA નો અપવાદ ઊભો થયો છે"
 
-#: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../calendar/libecal/e-cal.c:5154
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
-#: ../camel/providers/pop3/camel-pop3-store.c:528
-#: ../camel/providers/pop3/camel-pop3-store.c:535
-#: ../camel/providers/pop3/camel-pop3-store.c:541
+#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:539
+#: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
 #: ../servers/groupwise/e-gw-connection.c:181
 msgid "Unknown error"
 msgstr "અજાણી ભૂલ"
 
-#: ../calendar/libecal/e-cal.c:5145
+#: ../calendar/libecal/e-cal.c:5156
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "કોઈ ભૂલ નથી"
@@ -1745,8 +1748,8 @@ msgstr "પદચ્છેદ ભૂલ"
 
 #: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
 #: ../camel/camel-net-utils.c:790
-#: ../camel/providers/pop3/camel-pop3-store.c:441
-#: ../camel/providers/pop3/camel-pop3-store.c:522
+#: ../camel/providers/pop3/camel-pop3-store.c:445
+#: ../camel/providers/pop3/camel-pop3-store.c:526
 msgid "Canceled"
 msgstr "રદ થઈ ગયેલ"
 
@@ -2276,7 +2279,7 @@ msgid "export keys: unimplemented"
 msgstr "કી નિકાસ કરો: અમલમાં મૂકાયેલ નથી"
 
 #: ../camel/camel-store.c:214
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "ફોલ્ડર મેળવી શક્યા નથી: આ સંગ્રહ પર અમાન્ય પ્રક્રિયા"
 
@@ -2589,9 +2592,9 @@ msgstr "આવો કોઈ સંદેશો નથી"
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
 #: ../camel/providers/nntp/camel-nntp-folder.c:370
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
-#: ../camel/providers/pop3/camel-pop3-folder.c:510
+#: ../camel/providers/pop3/camel-pop3-folder.c:497
+#: ../camel/providers/pop3/camel-pop3-folder.c:558
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
 msgid "User canceled"
 msgstr "વપરાશકર્તા રદ થઈ ગયેલ"
 
@@ -2601,10 +2604,10 @@ msgstr "વપરાશકર્તા રદ થઈ ગયેલ"
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
-#: ../camel/providers/pop3/camel-pop3-folder.c:434
-#: ../camel/providers/pop3/camel-pop3-folder.c:495
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
-#: ../camel/providers/pop3/camel-pop3-folder.c:513
+#: ../camel/providers/pop3/camel-pop3-folder.c:500
+#: ../camel/providers/pop3/camel-pop3-folder.c:561
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
+#: ../camel/providers/pop3/camel-pop3-folder.c:579
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
@@ -2617,36 +2620,37 @@ msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં �
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:167
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1564
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1609
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:752
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:753
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s માટે સાર લાવી શક્યા નહિં"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:979
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
 msgid "Trash Folder Full. Please Empty."
 msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. મહેરબાની કરીને ખાલી કરો."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
-#: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:746
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2361
 #: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1877
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1907
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2723,7 +2727,7 @@ msgstr "Novell GroupWise સર્વરો વાપરવા માટે"
 #: ../camel/providers/imap4/camel-imap4-provider.c:81
 #: ../camel/providers/imapp/camel-imapp-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:73
+#: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
 msgstr "પાસવર્ડ"
 
@@ -2735,54 +2739,54 @@ msgstr "આ વિકલ્પ સાદા લખાણના પાસવર�
 msgid "Host or user not available in url"
 msgstr "યજમાન અથવા વપરાશકર્તા url માં ઉપલબ્ધ નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:200
+#: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sમહેરબાની કરીને %s@%s માટે જૂથપ્રમાણે પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:214
+#: ../camel/providers/groupwise/camel-groupwise-store.c:219
 #: ../camel/providers/imap/camel-imap-store.c:1360
 msgid "You did not enter a password."
 msgstr "તમે પાસવર્ડ દાખલ કરેલ નથી."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:226
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "જૂથપ્રમાણે સર્વરમાં સત્તાધિકરણ કરવા માટે અસમર્થ. "
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:304
+#: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
 msgstr "તમારી વર્તમાન સર્વર આવૃત્તિ સાથે અમુક લક્ષણો યોગ્ય રીતે કામ કરશે નહિં"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:540
+#: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1869
 #: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "આવું કોઈ ફોલ્ડર %s નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ઓફલાઈન સ્થિતિમાં જૂથપ્રમાણે ફોલ્ડર બનાવી શકતા નથી."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "પિતૃ ફોલ્ડરને ઉપફોલ્ડરો સમાવવાની પરવાનગી નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "જૂથપ્રમાણે ફોલ્ડર `%s' ને `%s' માં નામ બદલી શકતા નથી"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "જૂથપ્રમાણે સર્વર %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s માટે %s પર જૂથપ્રમાણે સેવા"
@@ -2792,11 +2796,11 @@ msgstr "%s માટે %s પર જૂથપ્રમાણે સેવા"
 msgid "GroupWise mail delivery via %s"
 msgstr "%s મારફતે જૂથપ્રમાણે મેઈલ મેળવવાનું"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
 msgstr "સંદેશો મોકલી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2806,7 +2810,7 @@ msgstr ""
 "મેઈલો કાઢી નાંખ્યા પછી/સંકુચિત કર્યા પછી મોકલો/મેળવો બટન દબાવીને ફરી મોકલવાનો પ્રયત્ન "
 "કરો.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -2858,8 +2862,6 @@ msgid "O_verride server-supplied folder namespace"
 msgstr "સર્વર-પૂરા પડાયેલ ફોલ્ડર નામજગ્યા પર ફરીથી લખો (_v)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
-#: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:47
 msgid "Namespace"
 msgstr "નામની જગ્યાઓ"
 
@@ -2986,6 +2988,11 @@ msgstr "સંદેશા %s ને કેશ કરવામાં નિષ�
 msgid "Failed to cache %s: %s"
 msgstr "%s ને કેશ કરવામાં નિષ્ફળ: %s"
 
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace:"
+msgstr "નામજગ્યા:"
+
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
@@ -3037,8 +3044,8 @@ msgstr "%s માટે %s પર IMAP સેવા"
 #: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:184
 #: ../camel/providers/nntp/camel-nntp-store.c:199
-#: ../camel/providers/pop3/camel-pop3-store.c:167
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:183
 #: ../camel/providers/smtp/camel-smtp-transport.c:254
 #: ../camel/providers/smtp/camel-smtp-transport.c:269
 #, c-format
@@ -3048,7 +3055,7 @@ msgstr "%s સાથે જોડાઈ શક્યા નથી: %s"
 #: ../camel/providers/imap/camel-imap-store.c:579
 #: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:185
-#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:169
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
 msgid "SSL unavailable"
 msgstr "SSL બિન-ઉપલબ્ધ"
@@ -3276,7 +3283,7 @@ msgstr "આ વિકલ્પ IMAPv4rev1 સર્વર સાથે સરળ
 #: ../camel/providers/imapp/camel-imapp-store.c:248
 #: ../camel/providers/nntp/camel-nntp-store.c:196
 #: ../camel/providers/nntp/camel-nntp-store.c:215
-#: ../camel/providers/pop3/camel-pop3-store.c:179
+#: ../camel/providers/pop3/camel-pop3-store.c:180
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection canceled"
 msgstr "જોડાણ રદ થઈ ગયેલ"
@@ -4128,23 +4135,27 @@ msgstr "POP સાર મેળવી રહ્યા છીએ"
 msgid "Cannot get POP summary: %s"
 msgstr "POP સાર મેળવી શકતા નથી: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:309
+#: ../camel/providers/pop3/camel-pop3-folder.c:308
+msgid "Expunging old messages"
+msgstr "જૂના સંદેશાઓ કાઢી નાંખો"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
 msgstr "કાઢી નંખાયેલ સંદેશાઓ સંપૂર્ણપણે દૂર કરી રહ્યા છીએ"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:405
+#: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
 msgid "No message with UID %s"
 msgstr "UID %s સાથે કોઈ સંદેશો નથી"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:412
+#: ../camel/providers/pop3/camel-pop3-folder.c:478
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "POP સંદેશો %d મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
 msgstr "અજ્ઞાત કારણ"
 
@@ -4152,24 +4163,24 @@ msgstr "અજ્ઞાત કારણ"
 msgid "Leave messages on server"
 msgstr "સર્વર પર સંદેશાઓ છોડી દો"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:45
+#: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "Delete after %s day(s)"
 msgstr "%s દિવસ(ો) પછી કાઢી નાંખો"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:48
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
 msgstr "બધા POP3 એક્સટેન્સનો માટે આધાર નિષ્ક્રિય કરો"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:56
+#: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:58
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "POP સર્વરોમાંથી જોડાવા માટે અને મેઈલ ડાઉનલોડ કરવા માટે."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:75
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4177,7 +4188,7 @@ msgstr ""
 "આ વિકલ્પ POP સર્વર સાથે સાદા લખાણવાળા પાસવર્ડથી જોડાશે. આ માત્ર અેક જ વિકલ્પ છે જે ઘણા "
 "POP સર્વરો માટે આધારભૂત છે."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:85
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4186,66 +4197,66 @@ msgstr ""
 "આ વિકલ્પ POP સર્વર સાથે એનક્રિપ્ટેડ પાસવર્ડની મદદથીAPOP પ્રોટોકોલ દ્વારા જોડાશે. આ "
 "કદાચ બધા વપરાશકર્તાઓ માટે નહિં ચાલે કે જેઓ તેને આધાર આપતા સર્વરને વાપરે છે."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:202
+#: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "POP સર્વર %s માંથી માન્ય શુભેચ્છા વાંચવામાં નિષ્ફળ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:233
-#: ../camel/providers/pop3/camel-pop3-store.c:243
-#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:220
+#: ../camel/providers/pop3/camel-pop3-store.c:237
+#: ../camel/providers/pop3/camel-pop3-store.c:247
+#: ../camel/providers/pop3/camel-pop3-store.c:253
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "POP સર્વર %s સાથે સુરક્ષિત સ્થિતિમાં જોડાવામાં નિષ્ફળ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:217
+#: ../camel/providers/pop3/camel-pop3-store.c:221
 msgid "STLS not supported by server"
 msgstr "STLS સર્વર દ્વારા આધારભૂત નથી"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:244
+#: ../camel/providers/pop3/camel-pop3-store.c:248
 msgid "TLS negotiations failed"
 msgstr "TLS નું ભાવતાલ નિષ્ફળ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/pop3/camel-pop3-store.c:254
 msgid "TLS is not available in this build"
 msgstr "TLS આ બીલ્ડમાં ઉપલબ્ધ નથી"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:356
+#: ../camel/providers/pop3/camel-pop3-store.c:360
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "POP સર્વર %s સાથે જોડાણ કરી શક્યા નહિં"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:397
-#: ../camel/providers/pop3/camel-pop3-store.c:511
+#: ../camel/providers/pop3/camel-pop3-store.c:401
+#: ../camel/providers/pop3/camel-pop3-store.c:515
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr "POP સર્વર %s સાથે સંપર્ક કરવા સમર્થ નથી: મંજૂરી કરાયેલ સત્તાધિકરણ માટે કોઈ આધાર નથી."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:413
+#: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "POP સર્વર %s માટે SASL `%s' પ્રવેશ નિષ્ફળ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:425
+#: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP સર્વર %s માં પ્રવેશી શકતા નથી: SASL પ્રોટોકોલ ભૂલ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:444
+#: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "POP સર્વર %s પર સત્તાધિકરણ કરવામાં નિષ્ફળ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:470
+#: ../camel/providers/pop3/camel-pop3-store.c:474
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%s મહેરબાની કરીને %s માટે યજમાન %s પર POP પાસવર્ડ દાખલ કરો"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:525
-#: ../camel/providers/pop3/camel-pop3-store.c:538
+#: ../camel/providers/pop3/camel-pop3-store.c:529
+#: ../camel/providers/pop3/camel-pop3-store.c:542
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4254,7 +4265,7 @@ msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
 "પાસવર્ડ મોકલતી વખતે ભૂલ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4263,7 +4274,7 @@ msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
 "વપરાશકર્તા નામ મોકલવામાં ભૂલ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:638
+#: ../camel/providers/pop3/camel-pop3-store.c:642
 #, c-format
 msgid "No such folder `%s'."
 msgstr "આવું કોઈ ફોલ્ડર `%s' નથી."
@@ -4890,13 +4901,13 @@ msgid "_Search:"
 msgstr "શોધો (_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2049
+#: ../libedataserverui/e-name-selector-entry.c:2045
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s લીટીમાં વિસ્તૃત કરો (_x)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2065
+#: ../libedataserverui/e-name-selector-entry.c:2061
 #, c-format
 msgid "_Edit %s"
 msgstr "%s માં ફેરફાર કરો (_E)"
