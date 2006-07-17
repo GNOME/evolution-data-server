@@ -54,6 +54,15 @@ typedef enum {
 } EGwSendOptionsPriority;
 
 typedef enum {
+	E_GW_SECURITY_NORMAL,
+	E_GW_SECURITY_PROPRIETARY,
+	E_GW_SECURITY_CONFIDENTIAL,
+	E_GW_SECURITY_SECRET,
+	E_GW_SECURITY_TOP_SECRET,
+	E_GW_SECURITY_FOR_YOUR_EYES_ONLY
+} EGwSendOptionsSecurity;
+
+typedef enum {
 	E_GW_RETURN_NOTIFY_NONE,
 	E_GW_RETURN_NOTIFY_MAIL
 } EGwSendOptionsReturnNotify;

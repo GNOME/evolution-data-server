@@ -358,6 +358,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		len = strlen (message_id);
 		msgid = (char *)g_malloc0 (len-1);
 		msgid = memcpy(msgid, message_id+2, len-3);
+		g_print ("||| msgid:%s\n", msgid);
 
 		status = e_gw_connection_forward_item (cnc, msgid, NULL, TRUE, &temp_item);
 		g_free (msgid);
@@ -547,7 +548,24 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 						     break;
 		}
 	}
-	
+
+	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_SECURITY);
+	if (send_options) {
+		switch (atoi(send_options)) {
+			case E_GW_SECURITY_NORMAL : e_gw_item_set_security(item, "Normal");
+						    break;
+			case E_GW_SECURITY_PROPRIETARY : e_gw_item_set_security(item, "Proprietary");
+							 break;
+			case E_GW_SECURITY_CONFIDENTIAL : e_gw_item_set_security(item, "Confidential");
+							  break;
+			case E_GW_SECURITY_SECRET : e_gw_item_set_security(item, "Secret");
+						    break;
+			case E_GW_SECURITY_TOP_SECRET : e_gw_item_set_security(item, "TopSecret");
+							break;
+			case E_GW_SECURITY_FOR_YOUR_EYES_ONLY : e_gw_item_set_security(item, "ForYourEyesOnly");
+								break;
+		}
+	} 
 	return item;
 }
 
