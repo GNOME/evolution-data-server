@@ -376,25 +376,42 @@ e_contact_get_first_attr (EContact *contact, const char *attr_name)
 static void*
 photo_getter (EContact *contact, EVCardAttribute *attr)
 {
-	if (attr) {
-		GList *values = e_vcard_attribute_get_values_decoded (attr);
+	GList *values;
 
+	if (!attr)
+		return NULL;
+	
+	values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
+	if (values && g_ascii_strcasecmp (values->data, "b") == 0) {
+		values = e_vcard_attribute_get_values_decoded (attr);	
 		if (values && values->data) {
 			GString *s = values->data;
 			EContactPhoto *photo;
-
+			
 			if (!s->len)
 				return NULL;
+			
+			photo = g_new0 (EContactPhoto, 1);
+			photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
+			photo->data.inlined.length = s->len;
+			photo->data.inlined.data = g_malloc (photo->data.inlined.length);
+			memcpy (photo->data.inlined.data, s->str, photo->data.inlined.length);
 
-			photo = g_new (EContactPhoto, 1);
-			photo->length = s->len;
-			photo->data = g_malloc (photo->length);
-			memcpy (photo->data, s->str, photo->length);
-
+			values = e_vcard_attribute_get_param (attr, EVC_TYPE);
+			if (values && values->data)
+				photo->data.inlined.mime_type = g_strdup_printf("image/%s", (char*)values->data);
 			return photo;
 		}
 	}
 
+	values = e_vcard_attribute_get_param (attr, EVC_VALUE);
+	if (values && g_ascii_strcasecmp (values->data, "uri") == 0) {
+		EContactPhoto *photo;
+		photo = g_new0 (EContactPhoto, 1);
+		photo->type = E_CONTACT_PHOTO_TYPE_URI;
+		photo->data.uri = e_vcard_attribute_get_value (attr);
+		return photo;
+	}
 	return NULL;
 }
 
@@ -402,35 +419,36 @@ static void
 photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactPhoto *photo = data;
-	const char *mime_type;
-	char *image_type = "X-EVOLUTION-UNKNOWN";
+	char *image_type, *p;
 
-	g_return_if_fail (photo->length > 0);
-
-	e_vcard_attribute_add_param_with_value (attr,
-						e_vcard_attribute_param_new (EVC_ENCODING),
-						"b");
-
-	mime_type = gnome_vfs_get_mime_type_for_data (photo->data, photo->length);
-	if (!strcmp (mime_type, "image/gif"))
-		image_type = "GIF";
-	else if (!strcmp (mime_type, "image/jpeg"))
-		image_type = "JPEG";
-	else if (!strcmp (mime_type, "image/png"))
-		image_type = "PNG";
-	else if (!strcmp (mime_type, "image/tiff"))
-		image_type = "TIFF";
-	/* i have no idea what these last 2 are.. :) */
-	else if (!strcmp (mime_type, "image/ief"))
-		image_type = "IEF";
-	else if (!strcmp (mime_type, "image/cgm"))
-		image_type = "CGM";
-
-	e_vcard_attribute_add_param_with_value (attr,
-						e_vcard_attribute_param_new (EVC_TYPE),
-						image_type);
-
-	e_vcard_attribute_add_value_decoded (attr, photo->data, photo->length);
+	switch (photo->type) {
+	case E_CONTACT_PHOTO_TYPE_INLINED:
+		g_return_if_fail (photo->data.inlined.length > 0);
+		
+		e_vcard_attribute_add_param_with_value (attr,
+							e_vcard_attribute_param_new (EVC_ENCODING),
+							"b");
+		if (photo->data.inlined.mime_type && (p = strchr (photo->data.inlined.mime_type, '/'))) {
+			image_type = p+1;
+		} else {
+			image_type = "X-EVOLUTION-UNKNOWN";
+		}
+		e_vcard_attribute_add_param_with_value (attr,
+							e_vcard_attribute_param_new (EVC_TYPE),
+							image_type);
+		
+		e_vcard_attribute_add_value_decoded (attr, (char*)photo->data.inlined.data, photo->data.inlined.length);
+		break;
+	case E_CONTACT_PHOTO_TYPE_URI:
+		e_vcard_attribute_add_param_with_value (attr,
+							e_vcard_attribute_param_new (EVC_VALUE),
+							"uri");
+		e_vcard_attribute_add_value (attr, photo->data.uri);
+		break;
+	default:
+		g_warning ("Unknown EContactPhotoType %d", photo->type);
+		break;
+	}
 }
 
 
@@ -1947,8 +1965,20 @@ e_contact_photo_free (EContactPhoto *photo)
 {
 	if (!photo)
 		return;
+	
+	switch (photo->type) {
+	case E_CONTACT_PHOTO_TYPE_INLINED:
+		g_free (photo->data.inlined.mime_type);
+		g_free (photo->data.inlined.data);
+		break;
+	case E_CONTACT_PHOTO_TYPE_URI:
+		g_free (photo->data.uri);
+		break;
+	default:
+		g_warning ("Unknown EContactPhotoType %d", photo->type);
+		break;
+	}
 
-	g_free (photo->data);
 	g_free (photo);
 }
 
@@ -1963,11 +1993,23 @@ e_contact_photo_free (EContactPhoto *photo)
 static EContactPhoto *
 e_contact_photo_copy (EContactPhoto *photo)
 {
-	EContactPhoto *photo2 = g_new (EContactPhoto, 1);
-	photo2->length = photo->length;
-	photo2->data = g_malloc (photo2->length);
-	memcpy (photo2->data, photo->data, photo->length);
-
+	EContactPhoto *photo2 = g_new0 (EContactPhoto, 1);
+	switch (photo->type) {
+	case E_CONTACT_PHOTO_TYPE_INLINED:
+		photo2->type = E_CONTACT_PHOTO_TYPE_INLINED;
+		photo2->data.inlined.mime_type = g_strdup (photo->data.inlined.mime_type);
+		photo2->data.inlined.length = photo->data.inlined.length;
+		photo2->data.inlined.data = g_malloc (photo2->data.inlined.length);
+		memcpy (photo2->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length);
+		break;
+	case E_CONTACT_PHOTO_TYPE_URI:
+		photo2->type = E_CONTACT_PHOTO_TYPE_URI;
+		photo2->data.uri = g_strdup (photo->data.uri);
+		break;
+	default:
+		g_warning ("Unknown EContactPhotoType %d", photo->type);
+		break;
+	}
 	return photo2;
 }
 

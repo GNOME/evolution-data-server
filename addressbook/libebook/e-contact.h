@@ -211,9 +211,21 @@ typedef struct {
 	char *suffixes;
 } EContactName;
 
+typedef enum {
+	E_CONTACT_PHOTO_TYPE_INLINED,
+	E_CONTACT_PHOTO_TYPE_URI
+} EContactPhotoType;
+
 typedef struct {
-	int length;
-	char *data;
+	EContactPhotoType type;
+	union {
+		struct {
+			char *mime_type;
+			int length;
+			guchar *data;
+		} inlined;
+		char *uri;
+	} data;
 } EContactPhoto;
 
 typedef struct {
