@@ -1,5 +1,12 @@
 2006-07-18  Ross Burton  <ross@openedhand.com>
 
+	* backends/groupwise/Makefile.am:
+	* libedata-book/Makefile.am:
+	Fix build when using the system DB by using the defined symbols
+	for the libdb include/link arguments (#347891).
+	
+2006-07-18  Ross Burton  <ross@openedhand.com>
+
 	* backends/ldap/e-book-backend-ldap.c:
 	Finish up fixing for new API (#313533).
 

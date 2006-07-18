@@ -4,7 +4,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-	-I$(top_srcdir)/libdb/dist			\
+	$(DB_CFLAGS)					\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 # The corba stubs and skels
@@ -51,7 +51,7 @@ libedata_book_1_2_la_LIBADD =					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(top_builddir)/libdb/dist/libdb-4.1.la
+	$(DB_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE) $(NO_UNDEFINED)
