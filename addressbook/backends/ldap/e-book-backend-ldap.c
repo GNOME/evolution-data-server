@@ -3139,6 +3139,8 @@ photo_populate (EContact *contact, struct berval **ber_values)
 {
         if (ber_values && ber_values[0]) {
                 EContactPhoto photo;
+                photo.type = E_CONTACT_PHOTO_TYPE_INLINED;
+                photo.data.inlined.mime_type = NULL;
                 photo.data.inlined.data = ber_values[0]->bv_val;
                 photo.data.inlined.length = ber_values[0]->bv_len;
 
@@ -3153,7 +3155,7 @@ photo_ber (EContact *contact)
 	EContactPhoto *photo;
 
 	photo = e_contact_get(contact, E_CONTACT_PHOTO);
-	if (photo) {
+	if (photo && photo->type == E_CONTACT_PHOTO_TYPE_INLINED) {
 
 		result = g_new(struct berval *, 2);
 		result[0] = g_new(struct berval, 1);
@@ -3179,8 +3181,16 @@ photo_compare(EContact * ecard1, EContact * ecard2)
 
 
 	if (photo1 && photo2) {
-		equal = ((photo1->data.inlined.length == photo2->data.inlined.length)
-			 && !memcmp (photo1->data.inlined.data, photo2->data.inlined.data, photo1->data.inlined.length));
+		if (photo1->type == photo2->type && photo1->type == E_CONTACT_PHOTO_TYPE_INLINED) {
+			equal = ((photo1->data.inlined.length == photo2->data.inlined.length)
+				 && !memcmp (photo1->data.inlined.data, photo2->data.inlined.data, photo1->data.inlined.length));
+		} else if (photo1->type == photo2->type && photo1->type == E_CONTACT_PHOTO_TYPE_URI) {
+
+			equal = !strcmp (photo1->data.uri, photo2->data.uri);
+		} else {
+			equal = FALSE;
+		}
+			
 	}
 	else {
 		equal = (!!photo1 == !!photo2);

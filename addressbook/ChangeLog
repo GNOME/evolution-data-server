@@ -1,4 +1,9 @@
-2006-07-17  Sushma Rai  <rsushma@openedhand.com>
+2006-07-18  Ross Burton  <ross@openedhand.com>
+
+	* backends/ldap/e-book-backend-ldap.c:
+	Finish up fixing for new API (#313533).
+
+2006-07-17  Sushma Rai  <rsushma@novell.com>
 
 	backends/ldap/e-book-backend-ldap.c: Incorporating the EContactPhoto
 	Changes, so that e-d-s build doesn't break. See #313533.
