@@ -1153,11 +1153,12 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	if (gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), 
 					       &selection_start, 
 					       &selection_end)) 
-		if (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end - 1)) == ',') 
+		if ((g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == 0) ||
+		    (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == ","))
 			already_selected = TRUE;
 	
 	get_utf8_string_context (text, start_pos, str_context, 2);
-	get_utf8_string_context (text, end_pos-1, str_b_context, 2);
+	get_utf8_string_context (text, end_pos, str_b_context, 2);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
@@ -1178,8 +1179,13 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	/* If the user is trying to delete a ','-character, we assume the user 
 	 * wants to remove the entire destination.
 	 */
-
-	if (((str_b_context [0] == ',' && str_b_context [1] == ' ') || str_b_context [1] == ',') && !already_selected) {
+#if 0	
+	printf("%d %d %d\n", already_selected, selection_start, selection_end);
+	printf("pos %d %d\n", start_pos, end_pos);
+	printf("it is -%c- -%c- -%c- -%c-\n", str_context[0], str_context[1], str_b_context[0], str_b_context[1]);
+	printf("it is -%d- -%d- -%d- -%d-\n", str_context[0], str_context[1], str_b_context[0], str_b_context[1]);
+#endif	
+	if ((str_b_context [0] != ',') && 0 && !already_selected && (str_b_context[1] == ' ' || str_b_context[1] == 0)) {
 
 		EDestination *dest = find_destination_at_position (name_selector_entry, end_pos-1);
 	  	const char *email = e_destination_get_email (dest);
@@ -1189,7 +1195,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		 	 * Deleting this selection afterwards will leave the destination
 		 	 * empty. */
 	 
-			gint t = (str_b_context [1]==',')?end_pos:end_pos-1, b=t;
+			gint t = end_pos, b=t;
 			do {
 				t--;
 			} while (t >= 1 && text[t-1] != ',');
