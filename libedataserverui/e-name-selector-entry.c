@@ -38,8 +38,14 @@
 #include <libedataserverui/e-book-auth-util.h>
 #include <libedataserver/e-sexp.h>
 
+#include <libedataserverui/e-data-server-ui-marshal.h>
 #include "e-name-selector-entry.h"
 
+enum {
+	UPDATED,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL] = { 0 };
 #define ENS_DEBUG(x)
 
 #define COMPLETION_CUE_MIN_LEN 3
@@ -121,6 +127,12 @@ e_name_selector_entry_finalize (GObject *object)
 }
 
 static void
+e_name_selector_entry_updated (ENameSelectorEntry *entry, char *email)
+{
+	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (entry));
+}
+
+static void
 e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_class)
 {
 	GObjectClass   *object_class = G_OBJECT_CLASS (name_selector_entry_class);
@@ -130,12 +142,22 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_c
 	object_class->set_property = e_name_selector_entry_set_property;
 	object_class->dispose      = e_name_selector_entry_dispose;
 	object_class->finalize     = e_name_selector_entry_finalize;
+	name_selector_entry_class->updated	   = e_name_selector_entry_updated;
 
 	widget_class->realize      = e_name_selector_entry_realize;
 
 	/* Install properties */
 
 	/* Install signals */
+	
+	signals[UPDATED] = g_signal_new ("updated",
+					 E_TYPE_NAME_SELECTOR_ENTRY,
+					 G_SIGNAL_RUN_FIRST,
+					 G_STRUCT_OFFSET (ENameSelectorEntryClass, updated),
+					 NULL,
+					 NULL,
+					 e_data_server_ui_marshal_VOID__POINTER,
+					 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	g_type_class_add_private (object_class, sizeof(ENameSelectorEntryPrivate));
 }
@@ -1300,6 +1322,7 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	/* Place cursor at end of address */
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), cursor_pos);
+	g_signal_emit (name_selector_entry, signals[UPDATED], 0, destination, NULL);
 	return TRUE;
 }
 
@@ -1308,21 +1331,42 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 {
 	gint         cursor_pos;
 	gint         range_start, range_end;
-	const gchar *text;
 	ENameSelectorEntryPrivate *priv;
+	EContact      *contact;
+	EContactField  matched_field;
+	EDestination  *destination;
+	gchar         *textrep;
+	gint           range_len;
+	const gchar   *text;
+	gchar         *cue_str;
+	
+	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
+	if (cursor_pos < 0)
+		return;
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
-	/* Show us what's really there */
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	get_range_at_position (text, cursor_pos, &range_start, &range_end);
+	range_len = range_end - range_start;
+	if (range_len < COMPLETION_CUE_MIN_LEN)
+		return;
 
-	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
+	destination = find_destination_at_position (name_selector_entry, cursor_pos);
+
+	cue_str = get_entry_substring (name_selector_entry, range_start, range_end);
+	if (!find_existing_completion (name_selector_entry, cue_str, &contact,
+				       &textrep, &matched_field)) {
+		g_free (cue_str);
+		return;
+	}
+	g_free (cue_str);	
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	/* Place cursor at end of address */
 
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
+	g_signal_emit (name_selector_entry, signals[UPDATED], 0, destination, NULL);
 	
 	priv->is_completing = FALSE;
 }

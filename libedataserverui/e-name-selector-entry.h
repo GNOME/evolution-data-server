@@ -44,6 +44,9 @@ typedef struct ENameSelectorEntryClass ENameSelectorEntryClass;
 
 struct ENameSelectorEntryClass {
 	GtkEntryClass parent_class;
+	void (*updated) (ENameSelectorEntry *entry, char *email);
+	void *reserved1;
+	void *reserved2;
 };
 
 struct ENameSelectorEntry {
