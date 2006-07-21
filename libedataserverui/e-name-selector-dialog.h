@@ -78,6 +78,9 @@ ENameSelectorDialog *e_name_selector_dialog_new        (void);
 ENameSelectorModel  *e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog);
 void                 e_name_selector_dialog_set_model  (ENameSelectorDialog *name_selector_dialog,
 							ENameSelectorModel  *model);
+void                 e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,
+								   guint                index);
+
 
 G_END_DECLS
 

@@ -58,6 +58,12 @@ typedef struct {
 	ENameSelectorDialog *dlg_ptr;
 } SelData;
 
+typedef struct _ENameSelectorDialogPrivate	ENameSelectorDialogPrivate;
+struct _ENameSelectorDialogPrivate
+{
+	guint destination_index;
+};
+
 static ESource *find_first_source             (ESourceList *source_list);
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
 static void     source_selected               (ENameSelectorDialog *name_selector_dialog, ESource *source);
@@ -82,6 +88,10 @@ static void     destination_column_formatter  (GtkTreeViewColumn *column, GtkCel
  * ------------------ */
 
 G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG);
+
+#define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
+
 
 static void
 e_name_selector_dialog_get_property (GObject *object, guint prop_id,
@@ -145,6 +155,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	ESourceList       *source_list;
 	char              *gladefile;
 
+	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+	priv->destination_index = 0;
+	
 	/* Get Glade GUI */
 	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
 				      "e-name-selector-dialog.glade",
@@ -328,6 +341,8 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *name_selector_dialo
 	/* Install properties */
 
 	/* Install signals */
+
+	g_type_class_add_private (object_class, sizeof(ENameSelectorDialogPrivate));
 
 }
 
@@ -827,6 +842,8 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	Section           *section;
 	gint               email_n;
 
+	ENameSelectorDialogPrivate *priv;
+
 	/* When a contact is activated, we transfer it to the first destination on our list */
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
@@ -850,7 +867,9 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	}
 
 
-	section = &g_array_index (name_selector_dialog->sections, Section, 0);
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+
+	section = &g_array_index (name_selector_dialog->sections, Section, priv->destination_index);
 	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
 						 section->name, NULL, &destination_store)) {
 		g_warning ("ENameSelectorDialog has a section unknown to the model!");
@@ -1230,6 +1249,27 @@ e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialog,
 	name_selector_dialog->name_selector_model = g_object_ref (model);
 
 	setup_name_selector_model (name_selector_dialog);
+}
+
+/**
+ * e_name_selector_dialog_set_destination_index:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ * @index: index of the destination section, starting from 0.
+ *
+ * Sets the index number of the destination section. 
+ **/
+void
+e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,
+					      guint                index)
+{
+	ENameSelectorDialogPrivate *priv;
+
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+
+	if (index >= name_selector_dialog->sections->len)
+		return;
+
+	priv->destination_index = index;
 }
 
 /* ----------------------------------- *

@@ -1,3 +1,14 @@
+2006-07-20  Devashish Sharma  <sdevashish@novell.com>
+
+	** Fixes bug 273921
+	* e-name-selector-dialog.h:
+	e_name_selector_dialog_set_destination_index: New function.
+	* e-name-selector-dialog.c: Add private structure.
+	(contact_activated): Get section using destination_index instead of 0.
+	(e_name_selector_dialog_set_destination_index): New function to set
+	the index number of destination sections.
+	Patch by Hiroyuki Ikezoe.
+	
 2006-07-19  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-entry.c : Removing the comma doesnt select
