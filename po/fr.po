@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.7.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-21 13:01+0200\n"
+"POT-Creation-Date: 2006-07-22 15:02+0200\n"
 "PO-Revision-Date: 2006-07-21 12:53+0200\n"
 "Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -661,37 +661,37 @@ msgstr "Anniversaire : %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Impossible d'enregistrer les données du calendrier : URI erroné."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1656
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:976
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
 msgid "Reply Requested: by "
 msgstr "Réponse requise : par"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 msgid "Reply Requested: When convenient"
 msgstr "Réponse requise : si nécessaire"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:245
 #, c-format
 msgid "Loading %s items"
 msgstr "Chargement de %s éléments"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:777
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:833
 msgid "Invalid server URI"
 msgstr "URI de serveur non valide"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:936
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:849
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:858
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:944
 #: ../calendar/libecal/e-cal.c:5148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1011
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1015
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1053
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 #: ../camel/providers/groupwise/camel-groupwise-store.c:711
@@ -702,18 +702,18 @@ msgstr "URI de serveur non valide"
 msgid "Authentication failed"
 msgstr "L'authentification a échoué"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:901
 msgid "Could not create thread for getting deltas"
 msgstr "Impossible de créer le thread pour obtenir les différences"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1169
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1177
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Impossible de créer le fichier cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:930
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:938
 msgid "Could not create thread for populating cache"
 msgstr "Impossible de créer la liste pour remplir le fichier cache"
 
@@ -926,127 +926,127 @@ msgstr "%.1f-%.1fin neige\n"
 msgid "Untitled appointment"
 msgstr "Rendez-vous sans titre"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1er"
 
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2e"
 
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3e"
 
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4e"
 
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5e"
 
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6e"
 
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7e"
 
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8e"
 
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9e"
 
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10e"
 
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11e"
 
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12e"
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13e"
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14e"
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15e"
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16e"
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17e"
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18e"
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19e"
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20e"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21e"
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22e"
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23e"
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24e"
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25e"
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26e"
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27e"
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28e"
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29e"
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30e"
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31e"
 
@@ -1166,9 +1166,9 @@ msgid "No error"
 msgstr "Aucune erreur"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "« %s » ne requiert pas d'argument"
@@ -1177,7 +1177,7 @@ msgstr "« %s » ne requiert pas d'argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "« %s » requiert un argument"
@@ -1185,7 +1185,7 @@ msgstr "« %s » requiert un argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "« %s » requiert une chaîne comme premier argument"
@@ -1199,8 +1199,8 @@ msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "« %s » requiert deux arguments"
@@ -1209,8 +1209,8 @@ msgstr "« %s » requiert deux arguments"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "« %s » requiert un time_t comme premier argument"
@@ -1221,17 +1221,17 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "« %s » requiert un nombre entier comme second argument"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "« %s » requiert un time_t comme second argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "« %s » requiert une chaîne comme second argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1240,12 +1240,12 @@ msgstr ""
 "« %s » requiert que le premier argument soit « any », « summary », "
 "« description » ou « location »"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "« %s » requiert au moins un argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -2612,7 +2612,7 @@ msgstr "Impossible de copier des messages vers le dossier Corbeille"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Impossible de copier des messages dans le dossier de pourriel"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #, c-format
 msgid ""
@@ -2622,7 +2622,7 @@ msgstr ""
 "Impossible d'obtenir le message : %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
@@ -2630,7 +2630,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Aucun message correspondant"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
@@ -2643,7 +2643,7 @@ msgstr "Aucun message correspondant"
 msgid "User canceled"
 msgstr "Opération annulée"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
@@ -2657,30 +2657,30 @@ msgstr "Opération annulée"
 msgid "Cannot get message %s: %s"
 msgstr "Impossible d'obtenir le message : %s : %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "Ce message n'est pas disponible en mode hors-ligne."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:167
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1564
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1609
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1568
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1613
 msgid "Could not get message"
 msgstr "Impossible d'obtenir le message"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:753
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:757
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Impossible de charger le résumé pour %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
 msgid "Trash Folder Full. Please Empty."
 msgstr ""
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2361
@@ -2689,13 +2689,13 @@ msgstr ""
 msgid "Fetching summary information for new messages in %s"
 msgstr "Récupération des informations de résumé des nouveaux messages dans %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1877
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1881
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossible d'ajouter le message au dossier « %s » : %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1907
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1911
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Impossible de créer le message : %s"
@@ -3558,7 +3558,7 @@ msgid ""
 msgstr ""
 "Client IMAP 4(.1) expérimental\n"
 "Il s'agit de code non testé et non pris en charge, vous devriez utiliser "
-"l'IMAP « standard » à la place.\n"
+"l'IMAP « standard » à la place.\n"
 "\n"
 " !!!  NE PAS UTILISER EN PRODUCTION  !!!\n"
 
