@@ -79,6 +79,7 @@ static void groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids
 static int gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 void convert_to_calendar (EGwItem *item, char **str, int *len);
 static void convert_to_task (EGwItem *item, char **str, int *len);
+static void convert_to_note (EGwItem *item, char **str, int *len);
 static void gw_update_all_items ( CamelFolder *folder, GList *item_list, CamelException *ex);
 static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item);
 static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body);
@@ -256,20 +257,23 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 
 		case E_GW_ITEM_TYPE_APPOINTMENT:
 		case E_GW_ITEM_TYPE_TASK:
+		case E_GW_ITEM_TYPE_NOTE:
 			{
 				char *cal_buffer = NULL;
 				int len = 0;
 				if (type==E_GW_ITEM_TYPE_APPOINTMENT)
 					convert_to_calendar (item, &cal_buffer, &len);
-				else
+				else if (type == E_GW_ITEM_TYPE_TASK)
 					convert_to_task (item, &cal_buffer, &len);
+				else 
+					convert_to_note (item, &cal_buffer, &len);
+
 				camel_mime_part_set_content(part, cal_buffer, len, "text/calendar");
 				g_free (cal_buffer);
 				break;
 			}
 		case E_GW_ITEM_TYPE_NOTIFICATION:
 		case E_GW_ITEM_TYPE_MAIL:
-		case E_GW_ITEM_TYPE_NOTE:
 			if (body) 
 				camel_mime_part_set_content(part, body, strlen(body), "text/html");
 			else if (temp_body)
@@ -2361,7 +2365,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	g_strfreev (tmp);
 }
 
-void 
+static void 
 convert_to_task (EGwItem *item, char **str, int *len)
 {
 	EGwItemOrganizer *org = NULL;
@@ -2419,6 +2423,41 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "END:VTODO\n");
 	gstr = g_string_append (gstr, "END:VCALENDAR\n");
 
+
+	*str = g_strdup (gstr->str);
+	*len = gstr->len;
+
+	g_string_free (gstr, TRUE);
+	g_strfreev (tmp);
+}
+
+static void 
+convert_to_note (EGwItem *item, char **str, int *len)
+{
+	EGwItemOrganizer *org = NULL;
+	GString *gstr = g_string_new (NULL);
+	char **tmp = NULL;
+
+	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
+
+	gstr = g_string_append (gstr, "BEGIN:VCALENDAR\n");
+	gstr = g_string_append (gstr, "METHOD:PUBLISH\n");
+	gstr = g_string_append (gstr, "BEGIN:VJOURNAL\n");
+	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
+	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
+	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
+	g_string_append_printf (gstr, "DESCRIPTION:%s\n", e_gw_item_get_message (item));
+	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
+	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
+	g_string_append_printf (gstr, "X-GWRECORDID:%s\n", tmp[0]);
+
+	org = e_gw_item_get_organizer (item);
+	if (org)
+		g_string_append_printf (gstr, "ORGANIZER;CN= %s;ROLE= CHAIR;\n MAILTO:%s\n", 
+				org->display_name, org->email);
+	
+	gstr = g_string_append (gstr, "END:VJOURNAL\n");
+	gstr = g_string_append (gstr, "END:VCALENDAR\n");
 
 	*str = g_strdup (gstr->str);
 	*len = gstr->len;
