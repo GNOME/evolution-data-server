@@ -1,3 +1,12 @@
+2006-07-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_default_alarms), (e_gw_item_to_cal_component):
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Apply default alarm client preference to GW events if
+	the event does not already have one. Fixes Bug 
+	#167330 on bugzilla.novell.com.
+
 2006-06-14  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes #344253
