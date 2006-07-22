@@ -3522,7 +3522,7 @@ msgid ""
 msgstr ""
 "Client IMAP 4(.1) expérimental\n"
 "Il s'agit de code non testé et non pris en charge, vous devriez utiliser "
-"l'IMAP « standard » à la place.\n"
+"l'IMAP « standard » à la place.\n"
 "\n"
 " !!!  NE PAS UTILISER EN PRODUCTION  !!!\n"
 
