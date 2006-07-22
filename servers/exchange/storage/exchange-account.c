@@ -1861,6 +1861,22 @@ exchange_account_get_username (ExchangeAccount *account)
 }
 
 /**
+  * exchange_account_get_email_id :
+  * @account : #ExchangeAccount
+  *
+  * Retunrs user's e-mail id. 
+  *
+  * Return value : e-mail id string.
+  **/
+char *
+exchange_account_get_email_id (ExchangeAccount *account)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
+
+	return account->priv->identity_email;
+} 
+
+/**
   * exchange_account_folder_size_add :
   * @account : #ExchangeAccount
   * @folder_name : 

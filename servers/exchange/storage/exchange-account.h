@@ -136,6 +136,8 @@ typedef enum {
 	EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED,
 	EXCHANGE_ACCOUNT_FOLDER_OFFLINE,
 	EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION,
+	EXCHANGE_ACCOUNT_FOLDER_GC_NOTREACHABLE,
+	EXCHANGE_ACCOUNT_FOLDER_NO_SUCH_USER,
 	EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR
 } ExchangeAccountFolderResult;
 
@@ -170,6 +172,8 @@ gboolean exchange_account_is_favorite_folder              (ExchangeAccount *acco
 						           EFolder         *folder);
 
 char * exchange_account_get_username 			  (ExchangeAccount *account);
+
+char * exchange_account_get_email_id 			  (ExchangeAccount *account);
 
 int exchange_account_get_quota_limit			  (ExchangeAccount *account);
 
