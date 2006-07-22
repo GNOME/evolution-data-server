@@ -1,3 +1,9 @@
+2006-07-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_default_alarms): Refactor code to cut down 
+	comparisons. 
+
 2006-07-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #347987

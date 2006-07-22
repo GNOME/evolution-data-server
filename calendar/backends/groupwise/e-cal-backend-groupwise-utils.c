@@ -867,13 +867,17 @@ set_default_alarms (ECalComponent *comp)
 			units = gconf_client_get_string (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, NULL);
 			g_object_unref (gconf);
 
-			if (units && !strcmp (units, "days"))
-				duration = DAYS;
-			else if (units && !strcmp (units, "hours"))
-				duration = HOURS;
-			else
+			if (units == NULL) 
 				duration = MINUTES;
-			g_free (units);
+			else {
+				if (!strcmp (units, "days"))
+					duration = DAYS;
+				else if (!strcmp (units, "hours"))
+					duration = HOURS;
+				else
+					duration = MINUTES;
+				g_free (units);
+			}
 			acomp = e_cal_component_alarm_new ();
 
 			e_cal_component_alarm_set_action (acomp, E_CAL_COMPONENT_ALARM_DISPLAY);
