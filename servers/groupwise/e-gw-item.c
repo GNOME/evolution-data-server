@@ -3234,6 +3234,11 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			e_gw_message_write_string_parameter (msg, "completed", NULL, "0");
 
 		break;
+	case E_GW_ITEM_TYPE_NOTE:
+		soup_soap_message_add_attribute (msg, "type", "Note", "xsi", NULL);
+		
+		e_gw_item_set_calendar_item_elements (item, msg);
+		break;
 	case E_GW_ITEM_TYPE_CONTACT :
 		soup_soap_message_add_attribute (msg, "type", "Contact", "xsi", NULL);
 		append_contact_fields_to_soap_message (item, msg);
@@ -3454,6 +3459,7 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		return TRUE;
 	case E_GW_ITEM_TYPE_APPOINTMENT:
 	case E_GW_ITEM_TYPE_TASK :
+	case E_GW_ITEM_TYPE_NOTE:
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_ADD);
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_UPDATE);
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_DELETE);

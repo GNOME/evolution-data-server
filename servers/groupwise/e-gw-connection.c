@@ -3542,8 +3542,7 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const char *container, int cur
 		else if  (g_str_equal (item_type, "Task"))
 			type = E_GW_ITEM_TYPE_TASK;
 		else {
-			g_free (item_type);
-			continue;	
+			type = E_GW_ITEM_TYPE_NOTE;
 		}
 		g_free (item_type);
 		
