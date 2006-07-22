@@ -169,8 +169,10 @@ populate_cache (ECalBackendGroupwise *cbgw)
 
 	if (kind == ICAL_VEVENT_COMPONENT)
 		type = "Calendar";
-	else
+	else if (kind == ICAL_VTODO_COMPONENT)
 		type = "Task";
+	else
+		type = "Notes";
 	
 	/* Fetch the data with a bias to present, near past/future */
 	temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
@@ -712,9 +714,9 @@ cache_init (ECalBackendGroupwise *cbgw)
 			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
 			/*  Set up deltas only if it is a Calendar backend */
-			if (kind == ICAL_VEVENT_COMPONENT)
-				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
+			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
+
 			return GNOME_Evolution_Calendar_Success;
 		}
 
@@ -739,8 +741,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 		
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
-			if (kind == ICAL_VEVENT_COMPONENT)
-				priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
+			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
 			priv->mode = CAL_MODE_REMOTE;
 			return GNOME_Evolution_Calendar_Success;
 		} else {
@@ -768,6 +769,7 @@ set_container_id_with_count (ECalBackendGroupwise *cbgw)
 	switch (kind) {
 	case ICAL_VEVENT_COMPONENT:
 	case ICAL_VTODO_COMPONENT:
+	case ICAL_VJOURNAL_COMPONENT:
 		e_source_set_name (e_cal_backend_get_source (E_CAL_BACKEND (cbgw)), _("Calendar"));
 		break;
 	default:
@@ -861,6 +863,8 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 				cbgw->priv->read_only = FALSE;
 			else if (kind == ICAL_VTODO_COMPONENT && (permissions & E_GW_PROXY_TASK_WRITE))
 				cbgw->priv->read_only = FALSE;
+			else if (kind == ICAL_VJOURNAL_COMPONENT && (permissions & E_GW_PROXY_NOTES_WRITE))
+				cbgw->priv->read_only = FALSE;
 
 		} else {
 
@@ -881,7 +885,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		if (priv->cnc && priv->cache && priv->container_id) {
 			char *utc_str;
 			priv->mode = CAL_MODE_REMOTE;
-			if (priv->mode_changed && !priv->timeout_id && (e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)) == ICAL_VEVENT_COMPONENT)) {
+			if (priv->mode_changed && !priv->timeout_id ) {
 				GThread *thread1;
 				priv->mode_changed = FALSE;
 
@@ -1694,9 +1698,10 @@ e_cal_backend_groupwise_discard_alarm (ECalBackendSync *backend, EDataCal *cal, 
 
 static icaltimezone *
 e_cal_backend_groupwise_internal_get_default_timezone (ECalBackend *backend)
-{
-	/* Groupwise server maintains data in UTC  */
-	return icaltimezone_get_utc_timezone ();
+{	
+	ECalBackendGroupwise *cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	
+	return cbgw->priv->default_zone;
 }
 
 static icaltimezone *
@@ -1797,8 +1802,11 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 		}
 	
 		/* If delay deliver has been set, server will not send the uid */
-		if (!uid_list)
+		if (!uid_list || ((e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) && e_cal_component_has_organizer (comp))) {
+			*calobj = NULL;
+			g_object_unref (comp);
 			return GNOME_Evolution_Calendar_Success;
+		}
 		
 		if (g_slist_length (uid_list) == 1) {
 			server_uid = (char *) uid_list->data;

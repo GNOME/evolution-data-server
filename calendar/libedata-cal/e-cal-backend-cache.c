@@ -438,7 +438,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 				icalcomponent_kind kind;
 
 				kind = icalcomponent_isa (icalcomp);
-				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT) {
+				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT || kind == ICAL_VJOURNAL_COMPONENT) {
 					comp = e_cal_component_new ();
 					if (e_cal_component_set_icalcomponent (comp, icalcomp))
 						list = g_list_prepend (list, comp);

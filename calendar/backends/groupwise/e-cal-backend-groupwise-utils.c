@@ -340,7 +340,47 @@ get_attendee_prop (icalcomponent *icalcomp, const char *attendee)
 static void
 set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default_zone, gboolean delegate, const char *user_email)
 {
-	if (e_cal_component_has_attendees (comp)) {
+	if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
+		if  (e_cal_component_has_organizer (comp)) {
+			icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
+			icalproperty *icalprop;
+			GSList *recipient_list = NULL;
+			const char *attendees = NULL;
+			char **emails, **iter;
+
+			for (icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY); icalprop; 
+					icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY)) {
+				if (g_str_equal (icalproperty_get_x_name (icalprop), "X-EVOLUTION-RECIPIENTS")) {
+					break;
+				}
+			}
+
+			if (icalprop)	 {
+				attendees = icalproperty_get_x (icalprop);
+				emails = g_strsplit (attendees, ";", -1);
+
+				iter = emails;
+				while (*iter) {
+					EGwItemRecipient *recipient;
+
+					recipient = g_new0 (EGwItemRecipient, 1);
+
+					recipient->email = g_strdup (*iter);
+					recipient->type = E_GW_ITEM_RECIPIENT_TO;
+
+					recipient_list = g_slist_prepend (recipient_list, recipient);
+					g_message (" email is %s \n", *iter);
+					iter++;
+				}
+
+				e_gw_item_set_recipient_list (item, recipient_list);
+
+				g_strfreev (emails);
+				icalcomponent_remove_property (icalcomp, icalprop);
+				icalproperty_free (icalprop);
+			}
+		}
+	} else if (e_cal_component_has_attendees (comp)) {
 		GSList *attendee_list, *recipient_list = NULL, *al;
 
 		e_cal_component_get_attendee_list (comp, &attendee_list);	
@@ -384,12 +424,13 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 	
 		/* recipient_list shouldn't be freed. Look into the function below. */
 		e_gw_item_set_recipient_list (item, recipient_list);
-
+	}
+	
+	if (e_cal_component_has_organizer (comp)) {
 		/* Send Options */
 		add_send_options_data_to_item (item, comp, default_zone);
-
 	}
-
+		
 	if (!delegate && e_cal_component_has_organizer (comp)) {
 		ECalComponentOrganizer cal_organizer;
 		EGwItemOrganizer *organizer = NULL;
@@ -579,7 +620,9 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			e_gw_item_set_completed (item, FALSE);
 
 		break;
-
+	case E_CAL_COMPONENT_JOURNAL:
+		e_gw_item_set_item_type (item, E_GW_ITEM_TYPE_NOTE);
+		break;
 	default :
 		g_object_unref (item);
 		return NULL;
@@ -631,7 +674,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	}
 	
 	/* all day event */
-	if (dt.value->is_date && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
+	if (dt.value && dt.value->is_date && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
 		e_gw_item_set_is_allday_event (item, TRUE);
 	
 	/* creation date */
@@ -690,7 +733,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	if (e_cal_component_has_attachments (comp)) {
 		e_cal_backend_groupwise_set_attachments_from_comp (comp, item); 
 	}
-
+	
 	return item;
 }
 
@@ -703,7 +746,6 @@ e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *c
 
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
-	
 	return set_properties_from_cal_component (item, comp, cbgw);
 }
 
@@ -838,6 +880,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 	else if (item_type == E_GW_ITEM_TYPE_TASK)
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+	else if (item_type == E_GW_ITEM_TYPE_NOTE)
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
 	else {
 		g_object_unref (comp);
 		return NULL;
@@ -940,7 +984,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	if (t) {
 		itt_utc = icaltime_from_string (t);
 		
-		if (!is_allday) {
+		if (!is_allday && (item_type != E_GW_ITEM_TYPE_NOTE)) {
 			if (!icaltime_get_timezone (itt_utc))
 				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 			if (default_zone) {
@@ -959,8 +1003,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		}	
 
 		e_cal_component_set_dtstart (comp, &dt);
-	}
-	else 
+	} else 
 		return NULL;
 	
 	/* UID */
@@ -1004,42 +1047,44 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	} else
 		e_cal_component_set_classification (comp, E_CAL_COMPONENT_CLASS_NONE);
 
-	recipient_list = e_gw_item_get_recipient_list (item);
-	if (recipient_list != NULL) {
-		for (rl = recipient_list; rl != NULL; rl = rl->next) {
-			EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
-			ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
+	if (item_type != E_GW_ITEM_TYPE_NOTE) {
+		recipient_list = e_gw_item_get_recipient_list (item);
+		if (recipient_list != NULL) {
+			for (rl = recipient_list; rl != NULL; rl = rl->next) {
+				EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
+				ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
 
-			attendee->cn = g_strdup (recipient->display_name);
-			attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
-			if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
-				attendee->role = ICAL_ROLE_REQPARTICIPANT;
-			else if (recipient->type == E_GW_ITEM_RECIPIENT_CC || recipient->type == E_GW_ITEM_RECIPIENT_BC)
-				attendee->role = ICAL_ROLE_OPTPARTICIPANT;
-			else 
-				attendee->role = ICAL_ROLE_NONE;
-			/* FIXME  needs a server fix on the interface 
-			 * for getting cutype and the status */
-			attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
-			 
-			if (recipient->status == E_GW_ITEM_STAT_ACCEPTED) {
-				const char *accept_level = e_gw_item_get_accept_level (item);
+				attendee->cn = g_strdup (recipient->display_name);
+				attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
+				if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
+					attendee->role = ICAL_ROLE_REQPARTICIPANT;
+				else if (recipient->type == E_GW_ITEM_RECIPIENT_CC || recipient->type == E_GW_ITEM_RECIPIENT_BC)
+					attendee->role = ICAL_ROLE_OPTPARTICIPANT;
+				else 
+					attendee->role = ICAL_ROLE_NONE;
+				/* FIXME  needs a server fix on the interface 
+				 * for getting cutype and the status */
+				attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
 
-				if(accept_level && !strcmp (e_gw_item_get_accept_level (item),"Tentative"))
-					attendee->status = ICAL_PARTSTAT_TENTATIVE;
+				if (recipient->status == E_GW_ITEM_STAT_ACCEPTED) {
+					const char *accept_level = e_gw_item_get_accept_level (item);
+
+					if(accept_level && !strcmp (e_gw_item_get_accept_level (item),"Tentative"))
+						attendee->status = ICAL_PARTSTAT_TENTATIVE;
+					else
+						attendee->status = ICAL_PARTSTAT_ACCEPTED;
+				}
+				else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
+					attendee->status = ICAL_PARTSTAT_DECLINED;
 				else
-					attendee->status = ICAL_PARTSTAT_ACCEPTED;
-			}
-			else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
-				attendee->status = ICAL_PARTSTAT_DECLINED;
-			else
-				attendee->status = ICAL_PARTSTAT_NEEDSACTION;	
-				
-			
-			attendee_list = g_slist_append (attendee_list, attendee);				
-		}
+					attendee->status = ICAL_PARTSTAT_NEEDSACTION;	
 
-		e_cal_component_set_attendee_list (comp, attendee_list);
+
+				attendee_list = g_slist_append (attendee_list, attendee);				
+			}
+
+			e_cal_component_set_attendee_list (comp, attendee_list);
+		}
 	}
 
 	/* set organizer if it exists */
@@ -1175,6 +1220,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_percent (comp, &percent);
 
 		break;
+	case E_GW_ITEM_TYPE_NOTE:
+		break;
 	default :
 		return NULL;
 	}
@@ -1193,34 +1240,29 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	char *item_id = NULL;
 	const char *gw_id;
 	const char *recurrence_key = NULL;
-	gboolean need_to_get = FALSE;
+	gboolean need_to_get = FALSE, decline = FALSE;
+	ECalComponentVType type;
 
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	e_cal_component_commit_sequence (comp);
+	type = e_cal_component_get_vtype (comp);
 
 	gw_id = e_cal_component_get_gw_id (comp);
 
-	switch  (e_cal_component_get_vtype (comp)) {
+	switch  (type) {
 
 		case E_CAL_COMPONENT_EVENT: 
+		case E_CAL_COMPONENT_TODO:
+		case E_CAL_COMPONENT_JOURNAL:
 			if (!g_str_has_suffix (gw_id, container)) {
 				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
 				need_to_get = TRUE;
 				
 			}
 			else 
-				item_id = g_strdup (gw_id);
-			break;
-		case E_CAL_COMPONENT_TODO:
-			if (!g_str_has_suffix (gw_id, container)) {
-				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_TODO_TYPE_ID, container, NULL);
-				need_to_get = TRUE;
-				
-			}
-			else
 				item_id = g_strdup (gw_id);
 			break;
 		default:
@@ -1240,6 +1282,24 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			*created_comp = e_gw_item_to_cal_component (item, cbgw);
 
 		g_object_unref (item);
+	}
+
+	if (type == E_CAL_COMPONENT_JOURNAL) {
+		icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
+		icalproperty *icalprop;
+
+		icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+		while (icalprop) {
+			const char *x_name;
+
+			x_name = icalproperty_get_x_name (icalprop);
+			if (!strcmp (x_name, "X-GW-DECLINED")) {
+				decline = TRUE;
+				*pstatus = ICAL_PARTSTAT_DECLINED;
+				break;
+			}
+			icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
+		}
 	}
 
 	switch (method) {
@@ -1323,6 +1383,12 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 	case ICAL_METHOD_CANCEL:
 		status = e_gw_connection_retract_request (cnc, item_id, NULL, FALSE, FALSE);
+		break;
+	case ICAL_METHOD_PUBLISH:
+		if (decline)
+			status = e_gw_connection_decline_request (cnc, item_id, NULL, NULL);
+		else
+			status = e_gw_connection_accept_request (cnc, item_id, "Free",  NULL, NULL);
 		break;
 	default:
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
@@ -1802,15 +1868,19 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)); 
 
+	/* TODO implement send options for Notes */
+	if (kind == ICAL_VJOURNAL_COMPONENT)
+		return;
+
 	gopts = e_gw_sendoptions_get_general_options (opts);
 	if (kind == ICAL_VEVENT_COMPONENT) {
-		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "calendar");
 		source_list = e_source_list_new_for_gconf (gconf, "/apps/evolution/calendar/sources");
+		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "calendar");
 	} else {
 		source_list = e_source_list_new_for_gconf (gconf, "/apps/evolution/tasks/sources");
 		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "task");
-	}
-
+	} 
+	
 	uid = e_source_peek_uid (source);
 	source = e_source_list_peek_source_by_uid (source_list, uid);
 	if (gopts) {

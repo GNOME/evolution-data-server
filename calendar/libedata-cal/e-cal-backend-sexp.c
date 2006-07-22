@@ -454,6 +454,9 @@ matches_summary (ECalComponent *comp, const char *str)
 
 	e_cal_component_get_summary (comp, &text);
 
+	if (str && !*str)
+		return TRUE;
+
 	if (!text.value)
 		return FALSE;
 

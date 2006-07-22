@@ -907,7 +907,9 @@ e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 	priv = cal->priv;
 	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
 
-	if (status == GNOME_Evolution_Calendar_Success)
+	/* If the object is NULL, it means the object has been created on the server sucessfully,
+	   but it is not shown in the UI if delay delivery is set */
+	if (status == GNOME_Evolution_Calendar_Success && object)
 		e_cal_backend_notify_object_created (priv->backend, object);
 
 	CORBA_exception_init (&ev);

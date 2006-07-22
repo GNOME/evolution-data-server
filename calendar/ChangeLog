@@ -1,3 +1,29 @@
+2006-07-22  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	* libedata-cal/e-cal-backend-sexp.c: (matches_summary): If the query
+	has a empty string, return TRUE.
+	* libedata-cal/e-data-cal.c: (e_data_cal_notify_object_created):
+	If the appointment is sucessfully created and if the *icalboj
+	do not send the objects created signal to the backend as there might
+	be a delay delivery set.
+	* backends/groupwise/e-cal-backend-groupwise-factory.c:
+	(_journal_new_backend), (_journal_get_kind),
+	(journal_backend_factory_class_init),
+	(journal_backend_factory_get_type), (eds_module_initialize),
+	(eds_module_list_types):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attendees_to_item), (set_properties_from_cal_component),
+	(e_gw_item_new_from_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_send_appointment),
+	(e_cal_backend_groupwise_store_settings):
+	* backends/groupwise/e-cal-backend-groupwise.c: (populate_cache),
+	(cache_init), (set_container_id_with_count), (connect_to_server),
+	(e_cal_backend_groupwise_internal_get_default_timezone),
+	(e_cal_backend_groupwise_create_object):
+	* libecal/e-cal-recur.c: (e_cal_recur_generate_instances_of_rule):
+	* libedata-cal/e-cal-backend-cache.c:
+	(e_cal_backend_cache_get_components): Added support for Gw notes
+
 2006-07-10  Chenthill Palanisamy  <pchenthill@novell.com>
  
 	Fixes #332911

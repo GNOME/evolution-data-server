@@ -781,7 +781,13 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	   intersects the given interval. */
 	if (!(e_cal_component_has_recurrences (comp)
 	      || e_cal_component_has_exceptions (comp))) {
-		if ((end == -1 || dtstart_time < end) && dtend_time > start) {
+		if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
+			icaltimetype start_t = icaltime_from_timet_with_zone (start, FALSE, default_timezone);
+			icaltimetype end_t = icaltime_from_timet_with_zone (end, FALSE, default_timezone);
+		
+			if ((icaltime_compare_date_only (*dtstart.value, start_t) >= 0) && ((icaltime_compare_date_only (*dtstart.value, end_t) < 0)))
+				(* cb) (comp, dtstart_time, dtend_time, cb_data);
+		} else if  ((end == -1 || dtstart_time < end) && dtend_time > start) {
 			(* cb) (comp, dtstart_time, dtend_time, cb_data);
 		}
 
