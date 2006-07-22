@@ -33,6 +33,13 @@ G_BEGIN_DECLS
 #define GW_EVENT_TYPE_ID "@4:"
 #define GW_TODO_TYPE_ID "@3:"
 
+
+/* Default reminder */
+#define CALENDAR_CONFIG_PREFIX "/apps/evolution/calendar"
+#define CALENDAR_CONFIG_DEFAULT_REMINDER CALENDAR_CONFIG_PREFIX "/other/use_default_reminder"
+#define CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL CALENDAR_CONFIG_PREFIX "/other/default_reminder_interval"
+#define CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS CALENDAR_CONFIG_PREFIX "/other/default_reminder_units"
+
 /*
  * Items management
  */

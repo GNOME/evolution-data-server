@@ -1,3 +1,12 @@
+2006-07-22  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_default_alarms), (e_gw_item_to_cal_component):
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Apply default alarm client preference to GW events if
+	the event does not already have one. Fixes Bug 
+	#167330 on bugzilla.novell.com.
+
 2006-07-22  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	* libedata-cal/e-cal-backend-sexp.c: (matches_summary): If the query
@@ -25,48 +34,48 @@
 	(e_cal_backend_cache_get_components): Added support for Gw notes
 
 2006-07-10  Chenthill Palanisamy  <pchenthill@novell.com>
- 
+
 	Fixes #332911
- 	* backends/caldav/e-cal-backend-caldav.c:
- 	(caldav_set_default_zone), (e_cal_backend_caldav_class_init):
- 	* backends/contacts/e-cal-backend-contacts.c:
- 	(e_cal_backend_contacts_open),
- 	(e_cal_backend_contacts_set_default_zone),
- 	(e_cal_backend_contacts_finalize),
- 	(e_cal_backend_contacts_class_init):
- 	* backends/file/e-cal-backend-file.c:
- 	(e_cal_backend_file_finalize), (e_cal_backend_file_open),
- 	(e_cal_backend_file_set_default_zone),
- 	(e_cal_backend_file_class_init):
- 	* backends/groupwise/e-cal-backend-groupwise.c:
- 	(connect_to_server), (e_cal_backend_groupwise_finalize),
- 	(e_cal_backend_groupwise_open),
- 	(e_cal_backend_groupwise_set_default_zone),
- 	(e_cal_backend_groupwise_class_init):
- 	* backends/http/e-cal-backend-http.c:
- 	(e_cal_backend_http_finalize), (e_cal_backend_http_open),
- 	(e_cal_backend_http_set_default_zone),
- 	(e_cal_backend_http_class_init):
- 	* backends/weather/e-cal-backend-weather.c:
- 	(e_cal_backend_weather_open),
- 	(e_cal_backend_weather_set_default_zone),
- 	(e_cal_backend_weather_finalize),
- 	(e_cal_backend_weather_class_init):
- 	* idl/Evolution-DataServer-Calendar.idl:
- 	* libedata-cal/e-cal-backend-sync.c:
- 	(e_cal_backend_sync_set_default_zone),
- 	(_e_cal_backend_set_default_zone), (e_cal_backend_sync_class_init):
- 	* libedata-cal/e-cal-backend-sync.h:
- 	* libedata-cal/e-cal-backend.c: (e_cal_backend_set_default_zone):
- 	* libedata-cal/e-cal-backend.h:
- 	* libedata-cal/e-data-cal.c: (impl_Cal_setDefaultTimezone): Added
- 	e_cal_backend_set_zone as a replacement for e_cal_backend_set_timezone.
- 	Replaced the same for all backends.	
+	* backends/caldav/e-cal-backend-caldav.c:
+	(caldav_set_default_zone), (e_cal_backend_caldav_class_init):
+	* backends/contacts/e-cal-backend-contacts.c:
+	(e_cal_backend_contacts_open),
+	(e_cal_backend_contacts_set_default_zone),
+	(e_cal_backend_contacts_finalize),
+	(e_cal_backend_contacts_class_init):
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_finalize), (e_cal_backend_file_open),
+	(e_cal_backend_file_set_default_zone),
+	(e_cal_backend_file_class_init):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server), (e_cal_backend_groupwise_finalize),
+	(e_cal_backend_groupwise_open),
+	(e_cal_backend_groupwise_set_default_zone),
+	(e_cal_backend_groupwise_class_init):
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_finalize), (e_cal_backend_http_open),
+	(e_cal_backend_http_set_default_zone),
+	(e_cal_backend_http_class_init):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_open),
+	(e_cal_backend_weather_set_default_zone),
+	(e_cal_backend_weather_finalize),
+	(e_cal_backend_weather_class_init):
+	* idl/Evolution-DataServer-Calendar.idl:
+	* libedata-cal/e-cal-backend-sync.c:
+	(e_cal_backend_sync_set_default_zone),
+	(_e_cal_backend_set_default_zone), (e_cal_backend_sync_class_init):
+	* libedata-cal/e-cal-backend-sync.h:
+	* libedata-cal/e-cal-backend.c: (e_cal_backend_set_default_zone):
+	* libedata-cal/e-cal-backend.h:
+	* libedata-cal/e-data-cal.c: (impl_Cal_setDefaultTimezone): Added
+	e_cal_backend_set_zone as a replacement for e_cal_backend_set_timezone.
+	Replaced the same for all backends.	
 	* backends/e-cal-backend-groupwise-utils.c (set_properties_from_cal_component):
 	check if the dtstart is date using the is_date parameter.
- 	* libecal/e-cal.c: (e_cal_set_default_timezone): Pass the timezone object
- 	as a string instead of the tzid.
- 
+	* libecal/e-cal.c: (e_cal_set_default_timezone): Pass the timezone object
+	as a string instead of the tzid.
+
 2006-07-10  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libedata-cal/e-cal-backend-cache.c:

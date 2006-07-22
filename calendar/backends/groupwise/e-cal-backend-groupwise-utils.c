@@ -845,6 +845,67 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 
 }
 
+static void
+set_default_alarms (ECalComponent *comp)
+{
+
+	GConfClient *gconf = gconf_client_get_default ();
+
+	if (gconf_client_get_bool (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER, NULL)) {
+
+			ECalComponentAlarm *acomp;
+			int interval;
+			char * units;
+			enum {
+				DAYS,
+				HOURS,
+				MINUTES
+			} duration;	
+			ECalComponentAlarmTrigger trigger;
+
+			interval = gconf_client_get_int (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL, NULL);
+			units = gconf_client_get_string (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, NULL);
+			g_object_unref (gconf);
+
+			if (units && !strcmp (units, "days"))
+				duration = DAYS;
+			else if (units && !strcmp (units, "hours"))
+				duration = HOURS;
+			else
+				duration = MINUTES;
+			g_free (units);
+			acomp = e_cal_component_alarm_new ();
+
+			e_cal_component_alarm_set_action (acomp, E_CAL_COMPONENT_ALARM_DISPLAY);
+
+			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
+			memset (&trigger.u.rel_duration, 0, sizeof (trigger.u.rel_duration));
+
+			trigger.u.rel_duration.is_neg = TRUE;
+
+			switch (duration) {
+			case MINUTES:
+				trigger.u.rel_duration.minutes = interval;
+				break;
+			case HOURS:	
+				trigger.u.rel_duration.hours = interval;
+				break;
+			case DAYS:	
+				trigger.u.rel_duration.days = interval;
+				break;
+			default:
+				e_cal_component_alarm_free (acomp);
+				return;
+			}
+
+			e_cal_component_alarm_set_trigger (acomp, trigger);
+			e_cal_component_add_alarm (comp, acomp);
+
+			e_cal_component_alarm_free (acomp);
+			}
+}
+
+
 ECalComponent *
 e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 {
@@ -1156,9 +1217,9 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			trigger.u.rel_duration = icaldurationtype_from_int (alarm_duration);
 			e_cal_component_alarm_set_trigger (alarm, trigger);
 			e_cal_component_add_alarm (comp, alarm);
-		}
 
-		
+		} else 
+			set_default_alarms (comp);
 
 		break;
 	case E_GW_ITEM_TYPE_TASK :
