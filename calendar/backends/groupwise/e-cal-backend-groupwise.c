@@ -500,6 +500,7 @@ get_deltas (gpointer handle)
 		GCompareFunc func = NULL;
 		GSList *remove = NULL;
 		char *real_key = NULL;
+		const char *recur_key;
 
 		if (calid->recur_key && calid->ical_id) {
 			const char *rid = NULL;
@@ -513,12 +514,15 @@ get_deltas (gpointer handle)
 			real_key = g_strconcat (calid->recur_key, "@", rid, NULL);
 		}
 		
-		if (!calid->recur_key || real_key) 
+		if (!calid->recur_key || real_key) {
+			recur_key = real_key;
 			func = (GCompareFunc) strcmp;
-		else
+		} else {
+			recur_key = calid->recur_key;
 			func = (GCompareFunc) compare_prefix;
+		}
 
-		if (!(remove = g_slist_find_custom (cache_keys, calid->recur_key ? real_key :
+		if (!(remove = g_slist_find_custom (cache_keys, calid->recur_key ? recur_key :
 						calid->ical_id,  func))) {
 			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
 			needs_to_get = TRUE;
@@ -1781,7 +1785,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-	
+
 	/* check if the object exists */
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
