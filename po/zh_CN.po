@@ -4661,7 +4661,7 @@ msgstr "等候"
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr "%Y-%m-%d %A %H:%M:%S"
+msgstr "%Y-%m-%d %A%p%I:%M:%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4677,7 +4677,7 @@ msgstr "%Y-%m-%d %A %H:%M:%S"
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr "%Y-%m-%d %A %H:%M"
+msgstr "%Y-%m-%d %A%p%I:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4691,7 +4691,7 @@ msgstr "%Y-%m-%d %A %H:%M"
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1621
 msgid "%a %m/%d/%Y %I %p"
-msgstr "%Y-%m-%d %A %H"
+msgstr "%Y-%m-%d %A%p%I"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
@@ -4709,7 +4709,7 @@ msgstr "%Y-%m-%d %A"
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1637
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr "%Y-%m-%d %H:%M:%S"
+msgstr "%Y-%m-%d%p%I:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1641
@@ -4720,7 +4720,7 @@ msgstr "%Y-%m-%d %H:%M:%S"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1646
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%Y-%m-%d %H:%M"
+msgstr "%Y-%m-%d%p%I:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
@@ -4732,7 +4732,7 @@ msgstr "%Y-%m-%d %H:%M"
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1656
 msgid "%m/%d/%Y %I %p"
-msgstr "%Y-%m-%d %H"
+msgstr "%Y-%m-%d%p%I"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
@@ -4750,7 +4750,7 @@ msgstr "%Y-%m-%d"
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
-msgstr "%H:%M:%S"
+msgstr "%p%I:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
@@ -4764,7 +4764,7 @@ msgstr "%H:%M:%S"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
-msgstr "%H:%M"
+msgstr "%p%I:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
@@ -4776,7 +4776,7 @@ msgstr "%H:%M"
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1791
 msgid "%I %p"
-msgstr "%H"
+msgstr "%p%I"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
