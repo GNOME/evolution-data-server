@@ -1,3 +1,8 @@
+2006-07-21  Luca Ferretti  <elle.uca@libero.it>
+
+	* configure.in: add support for xulrunner and seamonkey (NSS and NSPR).
+	(committed by Karsten Bräckelmann)
+
 2006-07-10  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in, NEWS: EDS 1.7.4 release updates
