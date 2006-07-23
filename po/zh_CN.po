@@ -10,71 +10,71 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-26 07:13+0100\n"
-"PO-Revision-Date: 2006-01-26 16:19+0800\n"
+"POT-Creation-Date: 2006-07-23 07:46+0200\n"
+"PO-Revision-Date: 2006-07-23 15:26+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
+#: ../addressbook/backends/file/e-book-backend-file.c:542
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "正在装入..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
+#: ../addressbook/backends/file/e-book-backend-file.c:545
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4093
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "正在搜索..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4257
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "正在下载联系人(%d 位)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "正在更新联系人缓存(%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:713
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Distinguished Name (DN)"
 msgstr "使用已识别的姓名 (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:716
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
 msgid "Using Email Address"
 msgstr "使用电子邮件地址"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:935
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1534
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
 msgid "Adding contact to LDAP server..."
 msgstr "正在将联系人添加到 LDAP 服务器..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1668
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
 msgid "Removing contact from LDAP server..."
 msgstr "正在从 LDAP 服务器删除联系人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1988
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3955
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4115
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
@@ -93,7 +93,7 @@ msgstr "执行搜索错误"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3393
+#: ../addressbook/libebook/e-book.c:3411
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "“%2$s”前的“%1$s”"
@@ -103,8 +103,8 @@ msgstr "“%2$s”前的“%1$s”"
 #: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
 #: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
 #: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2642
-#: ../addressbook/libebook/e-book.c:2848
+#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2660
+#: ../addressbook/libebook/e-book.c:2866
 msgid "book busy"
 msgstr "通讯簿忙"
 
@@ -119,54 +119,54 @@ msgstr "通讯簿忙"
 #: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
 #: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2583 ../addressbook/libebook/e-book.c:2670
-#: ../addressbook/libebook/e-book.c:2674 ../addressbook/libebook/e-book.c:2876
-#: ../addressbook/libebook/e-book.c:2880 ../addressbook/libebook/e-book.c:3402
+#: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
+#: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3420
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA 需要执行“%s”调用"
 
-#: ../addressbook/libebook/e-book.c:2564
+#: ../addressbook/libebook/e-book.c:2582
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s：没有当前操作"
 
-#: ../addressbook/libebook/e-book.c:2599
+#: ../addressbook/libebook/e-book.c:2617
 #, c-format
-msgid "%s: couldn't cancel"
+msgid "%s: could not cancel"
 msgstr "%s：无法取消"
 
-#: ../addressbook/libebook/e-book.c:2628 ../addressbook/libebook/e-book.c:2632
+#: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "“%2$s”后的“%1$s”"
 
-#: ../addressbook/libebook/e-book.c:2698
+#: ../addressbook/libebook/e-book.c:2716
 #, c-format
-msgid "%s: cancelled"
+msgid "%s: canceled"
 msgstr "%s：已取消"
 
-#: ../addressbook/libebook/e-book.c:3259
+#: ../addressbook/libebook/e-book.c:3277
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s：无效来源。"
 
-#: ../addressbook/libebook/e-book.c:3267 ../addressbook/libebook/e-book.c:3331
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3349
 #, c-format
-msgid "%s: no factories available for uri `%s'"
+msgid "%s: no factories available for URI `%s'"
 msgstr "%s：对于 URI“%s”没有可用的工厂"
 
-#: ../addressbook/libebook/e-book.c:3279
+#: ../addressbook/libebook/e-book.c:3297
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s：不能创建 EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3542
+#: ../addressbook/libebook/e-book.c:3560
 #, c-format
-msgid "%s: there was no self contact uid stored in gconf"
-msgstr "%s：gconf 中没有存储自身联系人的 uid"
+msgid "%s: there was no self contact UID stored in gconf"
+msgstr "%s：gconf 中没有存储自身联系人的 UID"
 
-#: ../addressbook/libebook/e-book.c:3672
+#: ../addressbook/libebook/e-book.c:3690
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s：gconf 中没有存储 uid“%s”的源。"
@@ -308,333 +308,334 @@ msgstr "收音机"
 msgid "Telex"
 msgstr "电传"
 
-#: ../addressbook/libebook/e-contact.c:150
+#. To translators: TTY is Teletypewriter
+#: ../addressbook/libebook/e-contact.c:151
 msgid "TTY"
 msgstr "TTY"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Email List"
 msgstr "邮件列表"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Email 1"
 msgstr "电子邮件 1"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Email 2"
 msgstr "电子邮件 2"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Email 3"
 msgstr "电子邮件 3"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Email 4"
 msgstr "电子邮件 4"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Mailer"
 msgstr "邮件程序"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:160
 msgid "Wants HTML Mail"
 msgstr "想要 HTML 邮件"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:163
 msgid "AIM Screen Name List"
 msgstr "AIM 屏幕名列表"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:164
 msgid "GroupWise Id List"
 msgstr "GroupWise Id 列表"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Jabber Id List"
 msgstr "Jabber Id 列表"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! 屏幕名列表"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:167
 msgid "MSN Screen Name List"
 msgstr "MSN 屏幕名列表"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:168
 msgid "ICQ Id List"
 msgstr "ICQ Id 列表"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook/e-contact.c:170
 msgid "AIM Home Screen Name 1"
 msgstr "AIM 家庭屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:171
 msgid "AIM Home Screen Name 2"
 msgstr "AIM 家庭屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:172
 msgid "AIM Home Screen Name 3"
 msgstr "AIM 家庭屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:173
 msgid "AIM Work Screen Name 1"
 msgstr "AIM 工作屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:174
 msgid "AIM Work Screen Name 2"
 msgstr "AIM 工作屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:175
 msgid "AIM Work Screen Name 3"
 msgstr "AIM 工作屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:176
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise 家庭屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook/e-contact.c:177
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise 家庭屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:178
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise 家庭屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:179
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise 工作屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:180
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise 工作屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:181
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise 工作屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:182
 msgid "Jabber Home Id 1"
 msgstr "Jabber 家庭 Id 1"
 
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Jabber Home Id 2"
 msgstr "Jabber 家庭 Id 2"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Jabber Home Id 3"
 msgstr "Jabber 家庭 Id 3"
 
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Jabber Work Id 1"
 msgstr "Jabber 工作 Id 1"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Jabber Work Id 2"
 msgstr "Jabber 工作 Id 2"
 
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Jabber Work Id 3"
 msgstr "Jabber 工作 Id 3"
 
-#: ../addressbook/libebook/e-contact.c:187
+#: ../addressbook/libebook/e-contact.c:188
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! 家庭屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:189
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! 家庭屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:190
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! 家庭屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:191
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! 工作屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:192
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! 工作屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:193
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! 工作屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:194
 msgid "MSN Home Screen Name 1"
 msgstr "MSN 家庭屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:195
 msgid "MSN Home Screen Name 2"
 msgstr "MSN 家庭屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:196
 msgid "MSN Home Screen Name 3"
 msgstr "MSN 家庭屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:197
 msgid "MSN Work Screen Name 1"
 msgstr "MSN 工作屏幕名 1"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:198
 msgid "MSN Work Screen Name 2"
 msgstr "MSN 工作屏幕名 2"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:199
 msgid "MSN Work Screen Name 3"
 msgstr "MSN 工作屏幕名 3"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:200
 msgid "ICQ Home Id 1"
 msgstr "ICQ 家庭 Id 1"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:201
 msgid "ICQ Home Id 2"
 msgstr "ICQ 家庭 Id 2"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:202
 msgid "ICQ Home Id 3"
 msgstr "ICQ 家庭 Id 3"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:203
 msgid "ICQ Work Id 1"
 msgstr "ICQ 工作 Id 1"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:204
 msgid "ICQ Work Id 2"
 msgstr "ICQ 工作 Id 2"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:205
 msgid "ICQ Work Id 3"
 msgstr "ICQ 工作 Id 3"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Organization"
 msgstr "组织"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Organizational Unit"
 msgstr "组织单元"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Office"
 msgstr "办公室"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Title"
 msgstr "头衔"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Role"
 msgstr "角色"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:214
 msgid "Manager"
 msgstr "经理"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:215
 msgid "Assistant"
 msgstr "助手"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:218
 msgid "Homepage URL"
 msgstr "个人主页 URL"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:219
 msgid "Weblog URL"
 msgstr "网络日记 URL"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:220
 msgid "Video Conferencing URL"
 msgstr "视频会议 URL"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:223
 msgid "Photo"
 msgstr "照片"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:224
 msgid "Logo"
 msgstr "标志"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:227
 msgid "X.509 Certificate"
 msgstr "X.509 证书"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:230
 msgid "Category List"
 msgstr "类别列表"
 
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:231
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "类别"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Calendar URI"
 msgstr "日历 URI"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Free/Busy URL"
 msgstr "空闲/繁忙 URL"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:236
 msgid "ICS Calendar"
 msgstr "ICS 日历"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:239
 msgid "Spouse's Name"
 msgstr "配偶姓名"
 
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:240
 msgid "Note"
 msgstr "注释"
 
-#: ../addressbook/libebook/e-contact.c:241
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Birth Date"
 msgstr "生日"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:243
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "周年纪念日"
 
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:245
 msgid "List"
 msgstr "列表"
 
-#: ../addressbook/libebook/e-contact.c:245
+#: ../addressbook/libebook/e-contact.c:246
 msgid "List Show Addresses"
 msgstr "列表显示地址"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:249
 msgid "Last Revision"
 msgstr "上次修订"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Book URI"
 msgstr "订阅 URI"
 
-#: ../addressbook/libebook/e-contact.c:1238
+#: ../addressbook/libebook/e-contact.c:1257
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "未命名的列表"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:247
 msgid "Birthday"
 msgstr "生日"
 
@@ -649,72 +650,74 @@ msgid "Anniversary: %s"
 msgstr "周年：%s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-msgid "Can't save calendar data: Malformed URI."
+msgid "Cannot save calendar data: Malformed URI."
 msgstr "无法保存日历数据：URI 格式错误。"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1467
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
 msgid "Reply Requested: by "
 msgstr "请求回复：由"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1472
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 msgid "Reply Requested: When convenient"
 msgstr "请求回复：方便时"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:191
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:245
 #, c-format
 msgid "Loading %s items"
 msgstr "装入 %s 项"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:718
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:777
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "日历"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:774
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:833
 msgid "Invalid server URI"
 msgstr "无效的服务器 URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:790
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:799
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:884
-#: ../calendar/libecal/e-cal.c:5131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:902
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:922
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:950
-#: ../camel/providers/groupwise/camel-groupwise-store.c:574
-#: ../camel/providers/groupwise/camel-groupwise-store.c:589
-#: ../camel/providers/groupwise/camel-groupwise-store.c:630
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1120
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:849
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:858
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:944
+#: ../calendar/libecal/e-cal.c:5148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1015
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1053
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "认证失败"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:840
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:901
 msgid "Could not create thread for getting deltas"
 msgstr "无法为获得差异创建线索"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:865
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1112
-#: ../calendar/backends/http/e-cal-backend-http.c:520
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1177
+#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "无法创建缓存文件"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:878
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:938
 msgid "Could not create thread for populating cache"
 msgstr "无法创建增殖缓存创建线索"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:259
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Redirected to Invalid URI"
 msgstr "已重定向到无效 URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:283
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "无效的文件格式。"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "不是日历。"
 
@@ -915,127 +918,127 @@ msgstr "%.1f-%.1f 英寸雪\n"
 msgid "Untitled appointment"
 msgstr "无标题约会"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1日"
 
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2日"
 
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3日"
 
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4日"
 
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5日"
 
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6日"
 
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7日"
 
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8日"
 
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9日"
 
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10日"
 
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11日"
 
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12日"
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13日"
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14日"
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15日"
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16日"
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17日"
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18八日"
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19日"
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20日"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21日"
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22日"
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23日"
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24日"
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25日"
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26日"
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27日"
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28日"
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29日"
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30日"
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31日"
 
@@ -1057,104 +1060,104 @@ msgid "Undefined"
 msgstr "未定义"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1705
+#: ../calendar/libecal/e-cal.c:1707
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "输入 %s 的密码，以便为用户 %s 启用代理服务器"
 
-#: ../calendar/libecal/e-cal.c:1708 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1710 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "为 %s 输入密码 (用户 %s)"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5120
 msgid "Invalid argument"
 msgstr "无效参数"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5122
 msgid "Backend is busy"
 msgstr "后台繁忙"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:5124
 msgid "Repository is offline"
 msgstr "仓库离线"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5126
 msgid "No such calendar"
 msgstr "没有这样的日历"
 
-#: ../calendar/libecal/e-cal.c:5111 ../servers/groupwise/e-gw-connection.c:172
+#: ../calendar/libecal/e-cal.c:5128 ../servers/groupwise/e-gw-connection.c:173
 msgid "Object not found"
 msgstr "找不到对象"
 
-#: ../calendar/libecal/e-cal.c:5113 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5130 ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid object"
 msgstr "无效对象"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5132
 msgid "URI not loaded"
 msgstr "URI 未装入"
 
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/libecal/e-cal.c:5134
 msgid "URI already loaded"
 msgstr "URI 已经载入"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:5136
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "没有权限"
 
-#: ../calendar/libecal/e-cal.c:5121 ../servers/groupwise/e-gw-connection.c:174
+#: ../calendar/libecal/e-cal.c:5138 ../servers/groupwise/e-gw-connection.c:175
 msgid "Unknown User"
 msgstr "未知用户"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5140
 msgid "Object ID already exists"
 msgstr "对象 ID 已经存在"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5142
 msgid "Protocol not supported"
 msgstr "不支持的协议"
 
-#: ../calendar/libecal/e-cal.c:5127
-msgid "Operation has been cancelled"
+#: ../calendar/libecal/e-cal.c:5144
+msgid "Operation has been canceled"
 msgstr "操作已取消"
 
-#: ../calendar/libecal/e-cal.c:5129
+#: ../calendar/libecal/e-cal.c:5146
 msgid "Could not cancel operation"
 msgstr "无法取消操作"
 
-#: ../calendar/libecal/e-cal.c:5133
+#: ../calendar/libecal/e-cal.c:5150
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "必须认证"
 
-#: ../calendar/libecal/e-cal.c:5135
+#: ../calendar/libecal/e-cal.c:5152
 msgid "A CORBA exception has occurred"
 msgstr "发生了 CORBA 异常"
 
-#: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
-#: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-command.c:411
-#: ../camel/providers/imap4/camel-imap4-store.c:383
-#: ../camel/providers/pop3/camel-pop3-store.c:533
-#: ../camel/providers/pop3/camel-pop3-store.c:540
-#: ../camel/providers/pop3/camel-pop3-store.c:546
+#: ../calendar/libecal/e-cal.c:5154
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
+#: ../camel/providers/imap/camel-imap-command.c:310
+#: ../camel/providers/imap/camel-imap-command.c:410
+#: ../camel/providers/imap4/camel-imap4-store.c:314
+#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:539
+#: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:180
+#: ../servers/groupwise/e-gw-connection.c:181
 msgid "Unknown error"
 msgstr "未知的错误"
 
-#: ../calendar/libecal/e-cal.c:5139
+#: ../calendar/libecal/e-cal.c:5156
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "无错误"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "“%s”不需要参数"
@@ -1163,7 +1166,7 @@ msgstr "“%s”不需要参数"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "“%s”需要一个参数"
@@ -1171,7 +1174,7 @@ msgstr "“%s”需要一个参数"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "“%s”需要第一个参数是字符串"
@@ -1183,8 +1186,8 @@ msgstr "“%s”的第一个参数必须是 ISO 8601 日期/时间字符串"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "“%s”需要两个参数"
@@ -1193,8 +1196,8 @@ msgstr "“%s”需要两个参数"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "“%s”的第一个参数应该是 time_t"
@@ -1205,29 +1208,29 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "“%s”的第二个参数应该是整数"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "“%s”的第一个参数应该是 time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "“%s”的第二个参数应该是字符串"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr "“%s”的第一个参数必须是“any”、“summary”、“description”或“location”之一"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "“%s”至少需要一个参数"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1323,12 +1326,11 @@ msgid "Preparing folder '%s' for offline"
 msgstr "准备脱机文件夹“%s”"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1311
-#: ../camel/providers/imap/camel-imap-store.c:2964
+#: ../camel/providers/imap/camel-imap-store.c:2971
 msgid "You must be working online to complete this operation"
 msgstr "您必须在线工作以便完成该操作"
 
-#: ../camel/camel-exception.c:308
+#: ../camel/camel-exception.c:303
 msgid "No description available"
 msgstr "没有可用的描述"
 
@@ -1400,26 +1402,26 @@ msgstr "在第%d封信失败，共%d封"
 msgid "Failed to retrieve message"
 msgstr "获取信件失败"
 
-#: ../camel/camel-filter-search.c:397
+#: ../camel/camel-filter-search.c:398
 msgid "Invalid arguments to (system-flag)"
 msgstr "(system-flag)参数无效"
 
-#: ../camel/camel-filter-search.c:412
+#: ../camel/camel-filter-search.c:413
 msgid "Invalid arguments to (user-tag)"
 msgstr "(user-tag)参数无效"
 
-#: ../camel/camel-filter-search.c:577
+#: ../camel/camel-filter-search.c:578
 #, c-format
 msgid "Failed to create create child process '%s': %s"
 msgstr "创建子进程“%s”失败：%s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:699 ../camel/camel-filter-search.c:707
+#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "执行过滤规则搜索错误：%s：%s"
 
-#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:478
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1428,7 +1430,7 @@ msgstr ""
 "无法解析搜索表达式：%s：\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:488
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1437,27 +1439,27 @@ msgstr ""
 "执行搜索表达式错误：%s：\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
+#: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
 msgid "(match-all) requires a single bool result"
 msgstr "(match-all) 需要一个布尔结果"
 
-#: ../camel/camel-folder-search.c:757
+#: ../camel/camel-folder-search.c:758
 msgid "(match-threads) not allowed inside match-all"
 msgstr "(match-threads) 不允许在 match-all 中使用"
 
-#: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
+#: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
 msgstr "(match-threads) 需要一个匹配类型字符串"
 
-#: ../camel/camel-folder-search.c:788
+#: ../camel/camel-folder-search.c:789
 msgid "(match-threads) expects an array result"
 msgstr "(match-threads) 需要一个数组结果"
 
-#: ../camel/camel-folder-search.c:794
+#: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
 msgstr "(match-threads) 需要文件夹集"
 
-#: ../camel/camel-folder-search.c:886
+#: ../camel/camel-folder-search.c:887
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "对未知的头进行查询：%s"
@@ -1474,8 +1476,8 @@ msgstr "不支持的操作：按表达式搜索：搜索 %s"
 
 #: ../camel/camel-folder.c:1278
 #, c-format
-msgid "Unsupported operation: search by uids: for %s"
-msgstr "不支持的操作：按 uid 搜索：搜索 %s"
+msgid "Unsupported operation: search by UIDs: for %s"
+msgstr "不支持的操作：按 UID 搜索：搜索 %s"
 
 #: ../camel/camel-folder.c:1394
 msgid "Moving messages"
@@ -1512,11 +1514,20 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "解析 gpg userid 提示失败。"
 
-#: ../camel/camel-gpg-context.c:791
+#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
 msgid "Failed to parse gpg passphrase request."
 msgstr "解析 gpg 密码句请求失败。"
 
-#: ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:824
+#, c-format
+msgid ""
+"You need a PIN to unlock the key for your\n"
+"SmartCard: \"%s\""
+msgstr ""
+"您需要一个 PIN 用来解锁您的智能卡：\n"
+"“%s”"
+
+#: ../camel/camel-gpg-context.c:827
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1525,92 +1536,97 @@ msgstr ""
 "您需要一个密码句用来解锁以下用户：\n"
 "“%s”"
 
-#: ../camel/camel-gpg-context.c:822 ../camel/camel-gpg-context.c:1026
-#: ../camel/providers/nntp/camel-nntp-store.c:1272
-msgid "Cancelled."
+#: ../camel/camel-gpg-context.c:832
+#, c-format
+msgid "Unexpected request from GnuPG for `%s'"
+msgstr "GnuPG 对“%s”的意外响应"
+
+#: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
+#: ../camel/providers/nntp/camel-nntp-store.c:1271
+msgid "Canceled."
 msgstr "已取消。"
 
-#: ../camel/camel-gpg-context.c:840
+#: ../camel/camel-gpg-context.c:871
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "解锁密钥失败：给出了 3 个错误的密码句。"
 
-#: ../camel/camel-gpg-context.c:846
+#: ../camel/camel-gpg-context.c:877
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "来自 GnuPG 的意外应答：%s"
 
-#: ../camel/camel-gpg-context.c:898
+#: ../camel/camel-gpg-context.c:929
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "加密失败：没有指定有效的收件人。"
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1164 ../camel/camel-gpg-context.c:1292
-#: ../camel/camel-gpg-context.c:1776 ../camel/camel-gpg-context.c:1821
+#: ../camel/camel-gpg-context.c:1195 ../camel/camel-gpg-context.c:1323
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1847
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "执行 gpg 失败：%s"
 
-#: ../camel/camel-gpg-context.c:1260 ../camel/camel-smime-context.c:387
+#: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "无法生成签名数据：%s"
 
-#: ../camel/camel-gpg-context.c:1307 ../camel/camel-gpg-context.c:1496
-#: ../camel/camel-gpg-context.c:1579 ../camel/camel-gpg-context.c:1594
-#: ../camel/camel-gpg-context.c:1698 ../camel/camel-gpg-context.c:1713
-#: ../camel/camel-gpg-context.c:1792 ../camel/camel-gpg-context.c:1837
+#: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
+#: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
 msgid "Failed to execute gpg."
 msgstr "执行 gpg 失败。"
 
-#: ../camel/camel-gpg-context.c:1326
+#: ../camel/camel-gpg-context.c:1357
 msgid "This is a digitally signed message part"
 msgstr "这是信件的数字签名部分"
 
-#: ../camel/camel-gpg-context.c:1414 ../camel/camel-gpg-context.c:1420
-#: ../camel/camel-gpg-context.c:1426 ../camel/camel-gpg-context.c:1443
+#: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
+#: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "无法校验信件签名：信件格式不对"
 
-#: ../camel/camel-gpg-context.c:1481
+#: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "无法校验信件签名：无法创建临时文件：%s"
 
-#: ../camel/camel-gpg-context.c:1562
+#: ../camel/camel-gpg-context.c:1588
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "无法生成加密数据：%s"
 
-#: ../camel/camel-gpg-context.c:1612
+#: ../camel/camel-gpg-context.c:1638
 msgid "This is a digitally encrypted message part"
 msgstr "这是信件的数字加密部分"
 
-#: ../camel/camel-gpg-context.c:1669
+#: ../camel/camel-gpg-context.c:1695
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "解密 MIME 部分失败：协议错误"
 
-#: ../camel/camel-gpg-context.c:1680
+#: ../camel/camel-gpg-context.c:1706
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "无法解密信件：信件格式不对"
 
-#: ../camel/camel-gpg-context.c:1734 ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "加密内容"
 
-#: ../camel/camel-gpg-context.c:1753
+#: ../camel/camel-gpg-context.c:1779
 msgid "Unable to parse message content"
 msgstr "无法分析信件内容"
 
-#: ../camel/camel-gpg-context.c:1777 ../camel/camel-gpg-context.c:1822
+#: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
 #: ../camel/providers/imap4/camel-imap4-engine.c:1634
 #: ../camel/providers/imap4/camel-imap4-engine.c:1690
-#: ../camel/providers/imap4/camel-imap4-store.c:886
-#: ../camel/providers/imap4/camel-imap4-store.c:1559
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 #: ../camel/providers/imap4/camel-imap4-utils.c:575
 #: ../camel/providers/smtp/camel-smtp-transport.c:160
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -1711,44 +1727,44 @@ msgstr "写入邮件临时文件错误：%s"
 msgid "Error copying mail temp file: %s"
 msgstr "复制邮件临时文件错误：%s"
 
-#: ../camel/camel-multipart-signed.c:596
+#: ../camel/camel-multipart-signed.c:593
 msgid "parse error"
 msgstr "解析错误"
 
-#: ../camel/camel-net-utils.c:495 ../camel/camel-net-utils.c:657
-#: ../camel/camel-net-utils.c:788
-#: ../camel/providers/pop3/camel-pop3-store.c:446
-#: ../camel/providers/pop3/camel-pop3-store.c:527
-msgid "Cancelled"
-msgstr "已经取消"
+#: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
+#: ../camel/camel-net-utils.c:790
+#: ../camel/providers/pop3/camel-pop3-store.c:445
+#: ../camel/providers/pop3/camel-pop3-store.c:526
+msgid "Canceled"
+msgstr "已取消"
 
-#: ../camel/camel-net-utils.c:514
+#: ../camel/camel-net-utils.c:516
 msgid "cannot create thread"
 msgstr "无法创建线索"
 
-#: ../camel/camel-net-utils.c:661
+#: ../camel/camel-net-utils.c:663
 #, c-format
 msgid "Resolving: %s"
 msgstr "解析：%s"
 
-#: ../camel/camel-net-utils.c:683
+#: ../camel/camel-net-utils.c:685
 msgid "Host lookup failed"
 msgstr "主机查阅失败"
 
-#: ../camel/camel-net-utils.c:685
+#: ../camel/camel-net-utils.c:687
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "主机查阅失败：%s：%s"
 
-#: ../camel/camel-net-utils.c:792
+#: ../camel/camel-net-utils.c:794
 msgid "Resolving address"
 msgstr "解析地址"
 
-#: ../camel/camel-net-utils.c:812
+#: ../camel/camel-net-utils.c:814
 msgid "Name lookup failed"
 msgstr "名称查阅失败"
 
-#: ../camel/camel-net-utils.c:815
+#: ../camel/camel-net-utils.c:817
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "名称查阅失败：%s"
@@ -1936,7 +1952,7 @@ msgstr "引用的证书已过期。"
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
-#: ../camel/providers/imap/camel-imap-store.c:1285
+#: ../camel/providers/imap/camel-imap-store.c:1281
 msgid "Bad authentication response from server."
 msgstr "来自服务器的无效认证应答。"
 
@@ -2243,7 +2259,7 @@ msgid "export keys: unimplemented"
 msgstr "导出密钥：尚未实现"
 
 #: ../camel/camel-store.c:214
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "无法获取文件夹：对该存储的无效操作"
 
@@ -2399,7 +2415,7 @@ msgstr "密钥不支持证书签名"
 msgid "Error in application verification"
 msgstr "应用程序验证错误"
 
-#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2412,11 +2428,11 @@ msgstr ""
 "指纹：          %s\n"
 "签名：          %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "好"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "坏"
 
@@ -2440,7 +2456,7 @@ msgstr ""
 "您仍然希望接受吗？"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:896
+#: ../camel/camel-tcp-stream-ssl.c:890
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2455,7 +2471,7 @@ msgstr ""
 "\n"
 "您希望接受吗？"
 
-#: ../camel/camel-tcp-stream-ssl.c:940
+#: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2464,7 +2480,7 @@ msgstr ""
 "证书问题：%s\n"
 "发行者：%s"
 
-#: ../camel/camel-tcp-stream-ssl.c:992
+#: ../camel/camel-tcp-stream-ssl.c:986
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2473,7 +2489,7 @@ msgstr ""
 "无效的证书域名：%s\n"
 "发行者：%s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1010
+#: ../camel/camel-tcp-stream-ssl.c:1004
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2482,7 +2498,7 @@ msgstr ""
 "证书过期：%s\n"
 "发行者：%s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1027
+#: ../camel/camel-tcp-stream-ssl.c:1021
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2532,8 +2548,8 @@ msgstr "无法将信件复制到回收站文件夹"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "无法将信件复制到垃圾邮件文件夹"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2063
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2048
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2542,73 +2558,79 @@ msgstr ""
 "无法获取信件：%s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2063
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2048
 #: ../camel/providers/local/camel-maildir-folder.c:245
-#: ../camel/providers/local/camel-mbox-folder.c:350
+#: ../camel/providers/local/camel-mbox-folder.c:351
 #: ../camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
 msgstr "没有该信件"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
 #: ../camel/providers/nntp/camel-nntp-folder.c:370
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
-#: ../camel/providers/pop3/camel-pop3-folder.c:510
-msgid "User cancelled"
+#: ../camel/providers/pop3/camel-pop3-folder.c:497
+#: ../camel/providers/pop3/camel-pop3-folder.c:558
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
+msgid "User canceled"
 msgstr "用户已取消"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
-#: ../camel/providers/pop3/camel-pop3-folder.c:434
-#: ../camel/providers/pop3/camel-pop3-folder.c:495
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
-#: ../camel/providers/pop3/camel-pop3-folder.c:513
+#: ../camel/providers/pop3/camel-pop3-folder.c:500
+#: ../camel/providers/pop3/camel-pop3-folder.c:561
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
+#: ../camel/providers/pop3/camel-pop3-folder.c:579
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "无法获取信件 %s：%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "该信件无法在脱机模式中使用。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1430
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1568
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1613
 msgid "Could not get message"
 msgstr "无法获得信件"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:707
-#: ../camel/providers/imap/camel-imap-folder.c:252
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:757
+#: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "无法为 %s 装入概要"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1037
-#: ../camel/providers/groupwise/camel-groupwise-store.c:618
-#: ../camel/providers/imap/camel-imap-folder.c:2375
-#: ../camel/providers/imap/camel-imap-folder.c:2445
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
+msgid "Trash Folder Full. Please Empty."
+msgstr "回收站文件夹已满。请清空。"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:743
+#: ../camel/providers/imap/camel-imap-folder.c:2361
+#: ../camel/providers/imap/camel-imap-folder.c:2431
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "从 %s 中的新信件中获取概要信息"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1668
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1716
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1881
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "无法将信件附加到文件夹“%s”：%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1704
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1911
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "无法创建信件：%s"
@@ -2640,7 +2662,7 @@ msgstr "在所有文件夹中检查新信件"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imap4/camel-imap4-provider.c:56
+#: ../camel/providers/imap4/camel-imap4-provider.c:49
 #: ../camel/providers/local/camel-local-provider.c:45
 #: ../camel/providers/local/camel-local-provider.c:85
 #: ../camel/providers/local/camel-local-provider.c:105
@@ -2682,10 +2704,10 @@ msgstr "访问 Novell GroupWise 服务器"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
 #: ../camel/providers/imap/camel-imap-provider.c:96
-#: ../camel/providers/imap4/camel-imap4-provider.c:88
+#: ../camel/providers/imap4/camel-imap4-provider.c:81
 #: ../camel/providers/imapp/camel-imapp-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:72
+#: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
 msgstr "密码"
 
@@ -2698,54 +2720,54 @@ msgstr "该选项将使用纯文本密码连接到 GroupWise 服务器。"
 msgid "Host or user not available in url"
 msgstr "URL 中的主机或用户不可用"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:198
+#: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%s请为 %s@%s 输入 GroupWise 密码"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:212
-#: ../camel/providers/imap/camel-imap-store.c:1364
-msgid "You didn't enter a password."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:219
+#: ../camel/providers/imap/camel-imap-store.c:1360
+msgid "You did not enter a password."
 msgstr "您没有输入密码。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:224
-msgid "Unable to authenticate to GroupWise server."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
+msgid "Unable to authenticate to GroupWise server. "
 msgstr "无法认证到 GroupWise 服务器。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:298
+#: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
 msgstr "某些特性可能无法与您目前的服务器版本共同工作"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:526
-#: ../camel/providers/imap/camel-imap-store.c:1873
-#: ../camel/providers/imap/camel-imap-store.c:2064
+#: ../camel/providers/groupwise/camel-groupwise-store.c:537
+#: ../camel/providers/imap/camel-imap-store.c:1869
+#: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "没有文件夹 %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1097
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "无法在脱机模式下创建 GroupWise 文件夹。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1111
-#: ../camel/providers/imap/camel-imap-store.c:1948
-#: ../camel/providers/imap/camel-imap-store.c:2317
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
+#: ../camel/providers/imap/camel-imap-store.c:1944
+#: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "父文件夹不允许含有子文件夹"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1188
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1209
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "无法将 GroupWise 文件夹“%s”重命名为“%s”"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise 服务器 %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1243
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%2$s 为 %1$s 提供的 GroupWise 服务"
@@ -2755,11 +2777,11 @@ msgstr "%2$s 为 %1$s 提供的 GroupWise 服务"
 msgid "GroupWise mail delivery via %s"
 msgstr "通过 %s 发送 GroupWise 邮件"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
 msgstr "发送信件"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:216
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2768,7 +2790,7 @@ msgstr ""
 "您已经达到了账户的存储限制。您的邮件正在发件箱中排队。请先删除/存档某些邮件之"
 "后再发送/接收。\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:218
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -2787,44 +2809,39 @@ msgstr "在所有文件夹中检查新信件(_H)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "Connection to Server"
 msgstr "连接服务器"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Use custom command to connect to server"
 msgstr "使用自定义命令连接到服务器(_U)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
-#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "Command:"
 msgstr "命令："
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imap4/camel-imap4-provider.c:48
+#: ../camel/providers/imap4/camel-imap4-provider.c:41
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "文件夹"
 
 #: ../camel/providers/hula/camel-hula-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imap4/camel-imap4-provider.c:50
+#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Show only subscribed folders"
 msgstr "只显示订阅了的文件夹(_S)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imap4/camel-imap4-provider.c:52
+#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "O_verride server-supplied folder namespace"
 msgstr "覆盖服务器提供的文件夹命名空间(_V)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
-#: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "Namespace"
 msgstr "命名空间"
 
@@ -2840,22 +2857,22 @@ msgstr "访问 Hula 服务器"
 msgid "This option will connect to the Hula server using a plaintext password."
 msgstr "该选项将使用纯文本密码连接到 Hula 服务器。"
 
-#: ../camel/providers/imap/camel-imap-command.c:223
-#: ../camel/providers/imap/camel-imap-command.c:265
-#: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3004
+#: ../camel/providers/imap/camel-imap-command.c:222
+#: ../camel/providers/imap/camel-imap-command.c:264
+#: ../camel/providers/imap/camel-imap-command.c:470
+#: ../camel/providers/imap/camel-imap-store.c:3011
 msgid "Operation cancelled"
 msgstr "操作已取消"
 
-#: ../camel/providers/imap/camel-imap-command.c:310
-#: ../camel/providers/imap/camel-imap-store.c:3007
+#: ../camel/providers/imap/camel-imap-command.c:309
+#: ../camel/providers/imap/camel-imap-store.c:3014
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "服务器意外地中止了连接：%s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:331
+#: ../camel/providers/imap/camel-imap-command.c:330
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -2864,73 +2881,73 @@ msgstr ""
 "来自 IMAP 服务器 %s@%s 的提醒：\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:400
+#: ../camel/providers/imap/camel-imap-command.c:399
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "来自 IMAP 服务器的意外应答：%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:410
+#: ../camel/providers/imap/camel-imap-command.c:409
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAP 命令失败：%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:486
+#: ../camel/providers/imap/camel-imap-command.c:484
 msgid "Server response ended too soon."
 msgstr "服务器应答结束太快。"
 
-#: ../camel/providers/imap/camel-imap-command.c:693
+#: ../camel/providers/imap/camel-imap-command.c:691
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP 服务器应答不含有 %s 信息"
 
-#: ../camel/providers/imap/camel-imap-command.c:729
+#: ../camel/providers/imap/camel-imap-command.c:727
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "来自 IMAP 服务器意外的 OK 应答：%s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:233
+#: ../camel/providers/imap/camel-imap-folder.c:228
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "无法创建目录 %s：%s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:337
+#: ../camel/providers/imap/camel-imap-folder.c:332
 msgid "Folder was destroyed and recreated on server."
 msgstr "文件夹已被删除并在服务器上重建了。"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:634
+#: ../camel/providers/imap/camel-imap-folder.c:623
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "扫描 %s 中更改了的信件"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2023
+#: ../camel/providers/imap/camel-imap-folder.c:2008
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "无法获取信件：%s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2102
-#: ../camel/providers/imap/camel-imap-folder.c:2717
+#: ../camel/providers/imap/camel-imap-folder.c:2087
+#: ../camel/providers/imap/camel-imap-folder.c:2689
 #: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
 msgstr "该信件目前不可用"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2553
+#: ../camel/providers/imap/camel-imap-folder.c:2539
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "不完整的服务器响应：没有为第%d封信提供信息"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2561
+#: ../camel/providers/imap/camel-imap-folder.c:2547
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "不完整的服务器响应：没有为第%d封信提供 UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2574
+#: ../camel/providers/imap/camel-imap-folder.c:2560
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "意外的服务器响应：为第%d封信和第%d封信提供了同样的 UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2755
+#: ../camel/providers/imap/camel-imap-folder.c:2725
 msgid "Could not find message body in FETCH response."
 msgstr "无法在 FETCH 应答中找到信体。"
 
@@ -2952,23 +2969,28 @@ msgstr "缓存信件 %s 失败：%s"
 msgid "Failed to cache %s: %s"
 msgstr "缓存 %s 失败：%s"
 
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace:"
+msgstr "命名空间："
+
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imap4/camel-imap4-provider.c:58
+#: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "应用过滤规则到本服务器上收件箱中的新信件(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imap4/camel-imap4-provider.c:60
+#: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "Check new messages for _Junk contents"
 msgstr "检查新信件的垃圾内容(_J)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imap4/camel-imap4-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Only check for Junk messa_ges in the INBOX folder"
 msgstr "仅在收件箱中检查垃圾邮件(_G)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imap4/camel-imap4-provider.c:64
+#: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "自动将远程邮件同步到本地(_Z)"
 
@@ -2985,119 +3007,109 @@ msgstr "IMAP 服务器上的邮件的读写。"
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "该选项将使用纯文本密码连接到 IMAP 服务器。"
 
-#: ../camel/providers/imap/camel-imap-store.c:447
-#: ../camel/providers/imap4/camel-imap4-store.c:215
+#: ../camel/providers/imap/camel-imap-store.c:446
+#: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP 服务器 %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:449
-#: ../camel/providers/imap4/camel-imap4-store.c:217
+#: ../camel/providers/imap/camel-imap-store.c:448
+#: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%2$s 为 %1$s 提供的 IMAP 服务"
 
-#: ../camel/providers/imap/camel-imap-store.c:579
-#: ../camel/providers/imap/camel-imap-store.c:594
-#: ../camel/providers/imap4/camel-imap4-store.c:329
-#: ../camel/providers/imap4/camel-imap4-store.c:344
-#: ../camel/providers/nntp/camel-nntp-store.c:185
-#: ../camel/providers/nntp/camel-nntp-store.c:200
-#: ../camel/providers/pop3/camel-pop3-store.c:167
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/imap/camel-imap-store.c:578
+#: ../camel/providers/imap/camel-imap-store.c:593
+#: ../camel/providers/imap4/camel-imap4-store.c:251
+#: ../camel/providers/imap4/camel-imap4-store.c:266
+#: ../camel/providers/nntp/camel-nntp-store.c:184
+#: ../camel/providers/nntp/camel-nntp-store.c:199
+#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:183
 #: ../camel/providers/smtp/camel-smtp-transport.c:254
 #: ../camel/providers/smtp/camel-smtp-transport.c:269
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "无法连接到 %s：%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:580
-#: ../camel/providers/imap4/camel-imap4-store.c:330
-#: ../camel/providers/nntp/camel-nntp-store.c:186
-#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/imap/camel-imap-store.c:579
+#: ../camel/providers/imap4/camel-imap4-store.c:252
+#: ../camel/providers/nntp/camel-nntp-store.c:185
+#: ../camel/providers/pop3/camel-pop3-store.c:169
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
 msgid "SSL unavailable"
 msgstr "SSL 不可用"
 
-#: ../camel/providers/imap/camel-imap-store.c:591
-#: ../camel/providers/imap/camel-imap-store.c:865
-#: ../camel/providers/imap4/camel-imap4-store.c:272
-#: ../camel/providers/imap4/camel-imap4-store.c:341
-#: ../camel/providers/imapp/camel-imapp-store.c:248
-#: ../camel/providers/nntp/camel-nntp-store.c:197
-#: ../camel/providers/nntp/camel-nntp-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:179
-#: ../camel/providers/smtp/camel-smtp-transport.c:266
+#: ../camel/providers/imap/camel-imap-store.c:590
+#: ../camel/providers/imap/camel-imap-store.c:864
 msgid "Connection cancelled"
 msgstr "连接已取消"
 
-#: ../camel/providers/imap/camel-imap-store.c:699
-#: ../camel/providers/imap/camel-imap-store.c:721
-#: ../camel/providers/imap/camel-imap-store.c:727
-#: ../camel/providers/imap4/camel-imap4-store.c:369
-#: ../camel/providers/imap4/camel-imap4-store.c:382
-#: ../camel/providers/imap4/camel-imap4-store.c:398
+#: ../camel/providers/imap/camel-imap-store.c:698
+#: ../camel/providers/imap/camel-imap-store.c:720
+#: ../camel/providers/imap/camel-imap-store.c:726
+#: ../camel/providers/imap4/camel-imap4-store.c:300
+#: ../camel/providers/imap4/camel-imap4-store.c:313
+#: ../camel/providers/imap4/camel-imap4-store.c:329
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "以安全模式连接到 IMAP 服务器 %s 失败：%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:700
+#: ../camel/providers/imap/camel-imap-store.c:699
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
 msgid "STARTTLS not supported"
 msgstr "不支持 STARTTLS"
 
-#: ../camel/providers/imap/camel-imap-store.c:722
-#: ../camel/providers/imap4/camel-imap4-store.c:370
-#: ../camel/providers/pop3/camel-pop3-store.c:244
+#: ../camel/providers/imap/camel-imap-store.c:721
+#: ../camel/providers/imap4/camel-imap4-store.c:301
 msgid "SSL negotiations failed"
 msgstr "SSL 协商失败"
 
-#: ../camel/providers/imap/camel-imap-store.c:728
-#: ../camel/providers/imap4/camel-imap4-store.c:399
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/imap/camel-imap-store.c:727
+#: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "本次编译中未包含 SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:868
-#: ../camel/providers/imap4/camel-imap4-store.c:275
+#: ../camel/providers/imap/camel-imap-store.c:867
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "无法使用命令“%s”连接：%s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1057
-#: ../camel/providers/imap/camel-imap-store.c:2413
+#: ../camel/providers/imap/camel-imap-store.c:1051
+#: ../camel/providers/imap/camel-imap-store.c:2409
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
-#: ../camel/providers/imap4/camel-imap4-store.c:1392
+#: ../camel/providers/imap4/camel-imap4-store.c:1313
 #: ../camel/providers/local/camel-maildir-folder.c:75
 #: ../camel/providers/local/camel-maildir-store.c:217
 #: ../camel/providers/local/camel-maildir-store.c:289
 #: ../camel/providers/local/camel-maildir-store.c:511
 #: ../camel/providers/local/camel-maildir-store.c:524
 #: ../camel/providers/local/camel-spool-store.c:461
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
 msgstr "收件箱"
 
-#: ../camel/providers/imap/camel-imap-store.c:1317
+#: ../camel/providers/imap/camel-imap-store.c:1313
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP 服务器 %s 不支持要求的验证类型 %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1327
-#: ../camel/providers/smtp/camel-smtp-transport.c:498
+#: ../camel/providers/imap/camel-imap-store.c:1323
+#: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "不支持验证类型 %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1350
+#: ../camel/providers/imap/camel-imap-store.c:1346
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%s请为 %s@%s 输入 IMAP 密码"
 
-#: ../camel/providers/imap/camel-imap-store.c:1393
+#: ../camel/providers/imap/camel-imap-store.c:1389
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3108,34 +3120,34 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1885
-#: ../camel/providers/imap/camel-imap-store.c:2255
-#: ../camel/providers/imap4/camel-imap4-store.c:1022
+#: ../camel/providers/imap/camel-imap-store.c:1881
+#: ../camel/providers/imap/camel-imap-store.c:2251
+#: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "文件夹名“%s”无效，原因是其中含有字符“%c”"
 
-#: ../camel/providers/imap/camel-imap-store.c:2002
+#: ../camel/providers/imap/camel-imap-store.c:1998
 #: ../camel/providers/local/camel-maildir-store.c:190
-#: ../camel/providers/local/camel-mbox-store.c:202
+#: ../camel/providers/local/camel-mbox-store.c:203
 #: ../camel/providers/local/camel-mh-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
 msgstr "无法创建文件夹：%s：文件夹已存在。"
 
-#: ../camel/providers/imap/camel-imap-store.c:2266
+#: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "未知的父文件夹：%s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:550
-#: ../camel/providers/imap4/camel-imap4-command.c:557
+#: ../camel/providers/imap4/camel-imap4-command.c:549
+#: ../camel/providers/imap4/camel-imap4-command.c:556
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
 msgstr "向 IMAP 服务器 %s 发送命令失败：%s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:660
+#: ../camel/providers/imap4/camel-imap4-command.c:659
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "来自 IMAP4 服务器 %s 的意外响应：%s"
@@ -3213,166 +3225,175 @@ msgstr "无法将信件附加到文件夹“%s”：文件夹为只读"
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "无法将信件追加到文件夹“%s”：未知错误"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1036
+#: ../camel/providers/imap4/camel-imap4-folder.c:1037
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "无法将信件追加到文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1156
+#: ../camel/providers/imap4/camel-imap4-folder.c:1157
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "无法将信件从文件夹“%s”移动到文件夹“%s”：未知"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1160
+#: ../camel/providers/imap4/camel-imap4-folder.c:1161
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "无法将信件从文件夹“%s”复制到文件夹“%s”：未知"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1168
+#: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr "无法将信件从文件夹“%s”移动到文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1172
+#: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "无法将信件从文件夹“%s”复制到文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:71
+#: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
 msgstr "IMAPrev1"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:73
+#: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "IMAPv4rev1 服务器上邮件的读写。"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:90
+#: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid ""
 "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "该选项将使用纯文本密码连接到 IMAPv4rev1 服务器。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:486
+#: ../camel/providers/imap4/camel-imap4-store.c:263
+#: ../camel/providers/imapp/camel-imapp-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:196
+#: ../camel/providers/nntp/camel-nntp-store.c:215
+#: ../camel/providers/pop3/camel-pop3-store.c:180
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
+msgid "Connection canceled"
+msgstr "连接已取消"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "无法使用 %2$s 身份验证算法对 IMAP 服务器 %1$s 进行身份验证"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:535
+#: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%s请输入 %s@%s 的 IMAP 密码"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:602
+#: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "无法使用 %2$s 认证到 IMAP 服务器 %1$s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:764
-#: ../camel/providers/imap4/camel-imap4-store.c:1032
+#: ../camel/providers/imap4/camel-imap4-store.c:685
+#: ../camel/providers/imap4/camel-imap4-store.c:953
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "无法在脱机模式下创建 IMAP 文件夹。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:803
+#: ../camel/providers/imap4/camel-imap4-store.c:724
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "无法获取 IMAP 服务器 %2$s 上的文件夹 %1$s：未知"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:884
+#: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr "无法在 IMAP 服务器 %2$s 上为“%1$s”获得 LIST 信息：%3$s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:886
-#: ../camel/providers/imap4/camel-imap4-store.c:1559
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 msgid "Bad command"
 msgstr "无效命令"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:965
+#: ../camel/providers/imap4/camel-imap4-store.c:886
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "无法创建文件夹“%s”：无效的邮箱名"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:970
+#: ../camel/providers/imap4/camel-imap4-store.c:891
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "无法创建文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1076
+#: ../camel/providers/imap4/camel-imap4-store.c:997
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "无法删除文件夹“%s”：特殊文件夹"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1083
+#: ../camel/providers/imap4/camel-imap4-store.c:1004
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "无法在脱机模式下删除 IMAP 文件夹。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1142
+#: ../camel/providers/imap4/camel-imap4-store.c:1063
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "无法删除文件夹“%s”：无效的邮箱名"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1147
+#: ../camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "无法删除文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1167
+#: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "无法将文件夹“%s”重命名为“%s”：特殊文件夹"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1174
+#: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "无法在脱机模式下重命名 IMAP 文件夹。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1205
+#: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "无法将文件夹“%s”重命名为“%s”：无效的邮箱名"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1210
+#: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "无法将文件夹“%s”重命名为“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1557
+#: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "无法在 IMAP 服务器 %3$s 上为模式“%2$s”获取 %1$s 信息：%4$s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1597
+#: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "无法在脱机模式下订阅 IMAP 文件夹。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1642
+#: ../camel/providers/imap4/camel-imap4-store.c:1565
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "无法订阅文件夹“%s”：无效的邮箱名"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1647
+#: ../camel/providers/imap4/camel-imap4-store.c:1570
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "无法订阅文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1669
+#: ../camel/providers/imap4/camel-imap4-store.c:1592
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "无法在脱机模式下退订 IMAP 文件夹。"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1714
+#: ../camel/providers/imap4/camel-imap4-store.c:1637
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "无法退订文件夹“%s”：无效的邮箱名"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1719
+#: ../camel/providers/imap4/camel-imap4-store.c:1642
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "无法退订文件夹“%s”：无效的命令"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1472
+#: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
 msgstr "扫描更改了的信件"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1497
+#: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
 msgstr "获取新新信件的信封"
 
@@ -3391,7 +3412,7 @@ msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "IMAP4 服务器 %s 意外断开连接：%s"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:40
-#: ../camel/providers/pop3/camel-pop3-provider.c:39
+#: ../camel/providers/pop3/camel-pop3-provider.c:40
 msgid "Message storage"
 msgstr "信件存储"
 
@@ -3499,7 +3520,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-store.c:156
 #: ../camel/providers/local/camel-local-store.c:267
-#: ../camel/providers/local/camel-mbox-store.c:345
+#: ../camel/providers/local/camel-mbox-store.c:346
 #: ../camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -3537,19 +3558,19 @@ msgid "Could not rename '%s': %s"
 msgstr "无法重命名“%s”：%s"
 
 #: ../camel/providers/local/camel-local-store.c:446
-#: ../camel/providers/local/camel-mbox-store.c:274
+#: ../camel/providers/local/camel-mbox-store.c:275
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "无法删除文件夹概要文件“%s”：%s"
 
 #: ../camel/providers/local/camel-local-store.c:456
-#: ../camel/providers/local/camel-mbox-store.c:286
+#: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
 msgstr "无法删除文件夹索引文件“%s”：%s"
 
 #: ../camel/providers/local/camel-local-store.c:479
-#: ../camel/providers/local/camel-mbox-store.c:310
+#: ../camel/providers/local/camel-mbox-store.c:311
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "无法删除文件夹元文件“%s”：%s"
@@ -3564,8 +3585,8 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "无法将信件添加到概要中：未知的原因"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
-msgid "Maildir append message cancelled"
-msgstr "邮件目录附加已放弃"
+msgid "Maildir append message canceled"
+msgstr "邮件目录附加消息已取消"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
@@ -3575,10 +3596,10 @@ msgstr "无法将信件附加到邮件目录文件夹：%s：%s"
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
 #: ../camel/providers/local/camel-maildir-folder.c:267
-#: ../camel/providers/local/camel-mbox-folder.c:349
-#: ../camel/providers/local/camel-mbox-folder.c:368
-#: ../camel/providers/local/camel-mbox-folder.c:399
-#: ../camel/providers/local/camel-mbox-folder.c:407
+#: ../camel/providers/local/camel-mbox-folder.c:350
+#: ../camel/providers/local/camel-mbox-folder.c:369
+#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:202
 #: ../camel/providers/local/camel-mh-folder.c:213
 #: ../camel/providers/local/camel-mh-folder.c:222
@@ -3596,21 +3617,21 @@ msgstr "无效的信件内容"
 
 #: ../camel/providers/local/camel-maildir-store.c:146
 #: ../camel/providers/local/camel-maildir-store.c:171
-#: ../camel/providers/local/camel-mbox-store.c:174
-#: ../camel/providers/local/camel-mbox-store.c:186
+#: ../camel/providers/local/camel-mbox-store.c:175
+#: ../camel/providers/local/camel-mbox-store.c:187
 #, c-format
 msgid "Cannot create folder `%s': %s"
 msgstr "无法创建文件夹“%s”：%s"
 
 #: ../camel/providers/local/camel-maildir-store.c:159
-#: ../camel/providers/local/camel-mbox-store.c:145
+#: ../camel/providers/local/camel-mbox-store.c:146
 #: ../camel/providers/local/camel-mh-store.c:217
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "无法获取文件夹“%s”：%s"
 
 #: ../camel/providers/local/camel-maildir-store.c:163
-#: ../camel/providers/local/camel-mbox-store.c:153
+#: ../camel/providers/local/camel-mbox-store.c:154
 #: ../camel/providers/local/camel-mh-store.c:224
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
@@ -3654,55 +3675,55 @@ msgid "Checking for new messages"
 msgstr "检查新信件"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:415
-#: ../camel/providers/local/camel-mbox-summary.c:588
-#: ../camel/providers/local/camel-mbox-summary.c:683
+#: ../camel/providers/local/camel-mbox-summary.c:417
+#: ../camel/providers/local/camel-mbox-summary.c:590
+#: ../camel/providers/local/camel-mbox-summary.c:685
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "存储文件夹"
 
-#: ../camel/providers/local/camel-mbox-folder.c:155
+#: ../camel/providers/local/camel-mbox-folder.c:156
 #: ../camel/providers/local/camel-spool-folder.c:148
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "无法在 %s 创建文件夹锁：%s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:216
+#: ../camel/providers/local/camel-mbox-folder.c:217
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "无法打开邮件箱：%s：%s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:276
-msgid "Mail append cancelled"
-msgstr "邮件追加取消"
+#: ../camel/providers/local/camel-mbox-folder.c:277
+msgid "Mail append canceled"
+msgstr "邮件追加已取消"
 
-#: ../camel/providers/local/camel-mbox-folder.c:279
+#: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "无法将信件附加到邮件箱文件：%s：%s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "文件夹好像已经被不可恢复地破坏了。"
 
-#: ../camel/providers/local/camel-mbox-folder.c:408
+#: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
 msgstr "信件构建失败。"
 
-#: ../camel/providers/local/camel-mbox-store.c:164
-#: ../camel/providers/local/camel-mbox-store.c:351
+#: ../camel/providers/local/camel-mbox-store.c:165
+#: ../camel/providers/local/camel-mbox-store.c:352
 msgid "Cannot create a folder by this name."
 msgstr "无法以此名称创建文件夹。"
 
-#: ../camel/providers/local/camel-mbox-store.c:196
+#: ../camel/providers/local/camel-mbox-store.c:197
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
 msgstr "无法获取文件夹“%s”：不是普通文件"
 
-#: ../camel/providers/local/camel-mbox-store.c:226
-#: ../camel/providers/local/camel-mbox-store.c:237
-#: ../camel/providers/local/camel-mbox-store.c:260
+#: ../camel/providers/local/camel-mbox-store.c:227
+#: ../camel/providers/local/camel-mbox-store.c:238
+#: ../camel/providers/local/camel-mbox-store.c:261
 #, c-format
 msgid ""
 "Could not delete folder `%s':\n"
@@ -3711,121 +3732,121 @@ msgstr ""
 "无法删除文件夹“%s”：\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:245
+#: ../camel/providers/local/camel-mbox-store.c:246
 #, c-format
 msgid "`%s' is not a regular file."
 msgstr "“%s”并不是普通文件。"
 
-#: ../camel/providers/local/camel-mbox-store.c:252
+#: ../camel/providers/local/camel-mbox-store.c:253
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "文件夹“%s”非空。没有删除。"
 
-#: ../camel/providers/local/camel-mbox-store.c:364
+#: ../camel/providers/local/camel-mbox-store.c:365
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "无法创建目录“%s”：%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:378
+#: ../camel/providers/local/camel-mbox-store.c:379
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "无法创建文件夹：%s：%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:380
+#: ../camel/providers/local/camel-mbox-store.c:381
 msgid "Folder already exists"
 msgstr "文件夹已经存在"
 
-#: ../camel/providers/local/camel-mbox-store.c:471
+#: ../camel/providers/local/camel-mbox-store.c:472
 msgid "The new folder name is illegal."
 msgstr "指定的文件夹名称不合法。"
 
-#: ../camel/providers/local/camel-mbox-store.c:484
+#: ../camel/providers/local/camel-mbox-store.c:485
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "无法重命名“%s”：“%s”：%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:559
+#: ../camel/providers/local/camel-mbox-store.c:560
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "无法将“%s”重命名为 %s：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:421
+#: ../camel/providers/local/camel-mbox-summary.c:423
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "无法打开文件夹：%s：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:469
+#: ../camel/providers/local/camel-mbox-summary.c:471
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "在文件夹 %2$s 中邻近 %1$ld 的位置出现致命的解析错误"
 
-#: ../camel/providers/local/camel-mbox-summary.c:525
+#: ../camel/providers/local/camel-mbox-summary.c:527
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "无法检查文件夹：%s：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:593
-#: ../camel/providers/local/camel-mbox-summary.c:688
+#: ../camel/providers/local/camel-mbox-summary.c:595
+#: ../camel/providers/local/camel-mbox-summary.c:690
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "无法打开文件：%s：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:607
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "无法打开临时邮件箱：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:618
-#: ../camel/providers/local/camel-mbox-summary.c:794
+#: ../camel/providers/local/camel-mbox-summary.c:620
+#: ../camel/providers/local/camel-mbox-summary.c:796
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "无法关闭来源文件夹 %s：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:627
+#: ../camel/providers/local/camel-mbox-summary.c:629
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "无法关闭临时文件夹：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:642
+#: ../camel/providers/local/camel-mbox-summary.c:644
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "无法重命名文件夹：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:699
-#: ../camel/providers/local/camel-mbox-summary.c:905
+#: ../camel/providers/local/camel-mbox-summary.c:701
+#: ../camel/providers/local/camel-mbox-summary.c:907
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "无法存储文件夹：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:736
-#: ../camel/providers/local/camel-mbox-summary.c:744
-#: ../camel/providers/local/camel-mbox-summary.c:936
-#: ../camel/providers/local/camel-mbox-summary.c:944
+#: ../camel/providers/local/camel-mbox-summary.c:738
+#: ../camel/providers/local/camel-mbox-summary.c:746
+#: ../camel/providers/local/camel-mbox-summary.c:938
+#: ../camel/providers/local/camel-mbox-summary.c:946
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "即使同步后，概要和文件夹仍然不匹配"
 
-#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:872
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "未知的错误：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:999
-#: ../camel/providers/local/camel-mbox-summary.c:1025
+#: ../camel/providers/local/camel-mbox-summary.c:1001
+#: ../camel/providers/local/camel-mbox-summary.c:1027
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "写入临时文件夹错误：%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1016
+#: ../camel/providers/local/camel-mbox-summary.c:1018
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "写入临时文件夹失败：%s：%s"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
-msgid "MH append message cancelled"
-msgstr "已取消 MH 附件信件"
+msgid "MH append message canceled"
+msgstr "MH 追加信件已取消"
 
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
@@ -3938,8 +3959,8 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:207
 #, c-format
-msgid "Internal error: uid in invalid format: %s"
-msgstr "内部错误：uid 的格式无效：%s"
+msgid "Internal error: UID in invalid format: %s"
+msgstr "内部错误：UID 的格式无效：%s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:327
 #: ../camel/providers/nntp/camel-nntp-folder.c:330
@@ -3980,22 +4001,22 @@ msgid ""
 "password."
 msgstr "该选项将以明文密码向进行 NNTP 服务器进行认证。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:219
+#: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
 msgid "Could not read greeting from %s: %s"
 msgstr "无法阅读来自 %s 的欢迎信息：%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:231
+#: ../camel/providers/nntp/camel-nntp-store.c:230
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP 服务器 %s 返回错误码 %d：%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:408
+#: ../camel/providers/nntp/camel-nntp-store.c:407
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET 新闻 %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:798
+#: ../camel/providers/nntp/camel-nntp-store.c:797
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4006,7 +4027,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:892
+#: ../camel/providers/nntp/camel-nntp-store.c:891
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4016,7 +4037,7 @@ msgstr ""
 "\n"
 "没有这样的新闻组。选中项目可能是父文件夹。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:924
+#: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4026,67 +4047,67 @@ msgstr ""
 "\n"
 "新闻组不存在！"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:949
+#: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "您无法在新闻存储中创建文件夹：应该订阅。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:957
+#: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
 msgstr "您无法在新闻存储中重命名文件夹。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:965
+#: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "您无法在新闻存储中删除文件夹：应该退订。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1146
+#: ../camel/providers/nntp/camel-nntp-store.c:1145
 msgid "Authentication requested but no username provided"
 msgstr "请求了身份验证，但未提供用户名"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1154
+#: ../camel/providers/nntp/camel-nntp-store.c:1153
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "请输入 %s@%s 的 NNTP 密码"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1158
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "无法认证到服务器：%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1273
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP 命令失败：%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1330
+#: ../camel/providers/nntp/camel-nntp-store.c:1329
 msgid "Not connected."
 msgstr "未连接。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1383
+#: ../camel/providers/nntp/camel-nntp-store.c:1382
 #, c-format
 msgid "No such folder: %s"
 msgstr "没有文件夹：%s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:220
-#: ../camel/providers/nntp/camel-nntp-summary.c:316
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
+#: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s：正在扫描新信件"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:227
+#: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "来自 xover 的意外服务器应答：%s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:330
+#: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "来自 head 的意外服务器应答：%s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:370
+#: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
 msgstr "使用取消"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:372
+#: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
 msgid "Operation failed: %s"
 msgstr "操作失败：%s"
@@ -4100,27 +4121,31 @@ msgstr "正在获取 POP 概要"
 msgid "Cannot get POP summary: %s"
 msgstr "无法获取 POP 概要：%s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:309
+#: ../camel/providers/pop3/camel-pop3-folder.c:308
+msgid "Expunging old messages"
+msgstr "销毁旧信件"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
 msgstr "彻底销毁已删除的信件"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:405
+#: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
-msgid "No message with uid %s"
-msgstr "没有 uid 为 %s 的信件"
+msgid "No message with UID %s"
+msgstr "没有 UID 为 %s 的信件"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:412
+#: ../camel/providers/pop3/camel-pop3-folder.c:478
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "正在获取 POP 信件 %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
 msgstr "未知原因"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:41
+#: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
 msgstr "在服务器上保留信件"
 
@@ -4129,19 +4154,19 @@ msgstr "在服务器上保留信件"
 msgid "Delete after %s day(s)"
 msgstr "%s 天之后删除"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:47
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
 msgstr "禁用所有 POP3 扩展的支持"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:55
+#: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:57
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "关于连接到 POP 服务器和从 POP 服务器下载邮件。"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:74
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4149,7 +4174,7 @@ msgstr ""
 "该选项使 Evolution 在连接到 POP 服务器时使用明文密码。这是许多 POP 服务器唯一"
 "支持的选项。"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:84
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4158,58 +4183,66 @@ msgstr ""
 "该选项使 Evolution 在连接到 POP 服务器时使用 APOP 协议。即使是声称支持这一功"
 "能的服务器，也不一定能使所有用户工作。"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:202
+#: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "从 POP 服务器 %s 读取欢迎词失败"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:233
-#: ../camel/providers/pop3/camel-pop3-store.c:243
-#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:220
+#: ../camel/providers/pop3/camel-pop3-store.c:237
+#: ../camel/providers/pop3/camel-pop3-store.c:247
+#: ../camel/providers/pop3/camel-pop3-store.c:253
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "以安全模式连接到 POP 服务器 %s 失败：%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:217
-msgid "STLS not supported"
-msgstr "不支持 STLS"
+#: ../camel/providers/pop3/camel-pop3-store.c:221
+msgid "STLS not supported by server"
+msgstr "服务器不支持 STLS"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:248
+msgid "TLS negotiations failed"
+msgstr "TLS 协商失败"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:254
+msgid "TLS is not available in this build"
+msgstr "本次编译中未包含 TLS"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:360
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "无法连接到 POP 服务器 %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:402
-#: ../camel/providers/pop3/camel-pop3-store.c:516
+#: ../camel/providers/pop3/camel-pop3-store.c:401
+#: ../camel/providers/pop3/camel-pop3-store.c:515
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr "无法连接到 POP 服务器 %s：不支持请求认证机制。"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:418
+#: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "使用SASL“%s”登录 POP 服务器 %s 失败：%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:430
+#: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "无法登录到 POP 服务器 %s：SASL 协议错误"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:449
+#: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "认证到 POP 服务器 %s 失败：%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:475
+#: ../camel/providers/pop3/camel-pop3-store.c:474
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%s请输入 %s@%s 的 POP 密码"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:530
-#: ../camel/providers/pop3/camel-pop3-store.c:543
+#: ../camel/providers/pop3/camel-pop3-store.c:529
+#: ../camel/providers/pop3/camel-pop3-store.c:542
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4218,7 +4251,7 @@ msgstr ""
 "无法连接到 POP 服务器 %s。\n"
 "发送密码错误：%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:537
+#: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4227,7 +4260,7 @@ msgstr ""
 "无法连接到 POP 服务器 %s。\n"
 "发送用户名错误：%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:643
+#: ../camel/providers/pop3/camel-pop3-store.c:642
 #, c-format
 msgid "No such folder `%s'."
 msgstr "没有文件夹“%s”。"
@@ -4403,17 +4436,17 @@ msgstr "STARTTLS 命令失败：%s"
 msgid "STARTTLS command failed"
 msgstr "STARTTLS 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:488
+#: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "SMTP 服务器 %s 不支持请求的认证类型 %s。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:526
+#: ../camel/providers/smtp/camel-smtp-transport.c:521
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
 msgstr "%s请为 %s@%s 输入 SMTP 密码"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:545
+#: ../camel/providers/smtp/camel-smtp-transport.c:540
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4424,93 +4457,93 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:669
+#: ../camel/providers/smtp/camel-smtp-transport.c:664
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP 服务器 %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:671
+#: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "通过 %s 发送 SMTP 邮件"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:689
+#: ../camel/providers/smtp/camel-smtp-transport.c:684
 msgid "Cannot send message: service not connected."
 msgstr "无法发送信件：服务未连接。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:695
+#: ../camel/providers/smtp/camel-smtp-transport.c:690
 msgid "Cannot send message: sender address not valid."
 msgstr "无法发送信件：发件人地址不合法。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:699
+#: ../camel/providers/smtp/camel-smtp-transport.c:694
 msgid "Sending message"
 msgstr "发送信件"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:714
+#: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: no recipients defined."
 msgstr "无法发送信件：没有定义收件人。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:720
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "无法发送信件：一个或多个非法收件人"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:894
+#: ../camel/providers/smtp/camel-smtp-transport.c:890
 msgid "SMTP Greeting"
 msgstr "SMTP 欢迎"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:920
+#: ../camel/providers/smtp/camel-smtp-transport.c:915
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO 命令失败：%s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:937
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "HELO command failed"
 msgstr "HELO 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1003
+#: ../camel/providers/smtp/camel-smtp-transport.c:998
 msgid "SMTP Authentication"
 msgstr "SMTP 认证"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1009
+#: ../camel/providers/smtp/camel-smtp-transport.c:1004
 msgid "Error creating SASL authentication object."
 msgstr "创建 SASL 认证对象错误。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1026
-#: ../camel/providers/smtp/camel-smtp-transport.c:1037
+#: ../camel/providers/smtp/camel-smtp-transport.c:1021
+#: ../camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH 命令失败：%s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1043
+#: ../camel/providers/smtp/camel-smtp-transport.c:1038
 msgid "AUTH command failed"
 msgstr "AUTH 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1105
+#: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Bad authentication response from server.\n"
 msgstr "来自服务器的错误认证应答。\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1130
+#: ../camel/providers/smtp/camel-smtp-transport.c:1125
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM 命令失败：%s：邮件未发送"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../camel/providers/smtp/camel-smtp-transport.c:1142
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1171
+#: ../camel/providers/smtp/camel-smtp-transport.c:1166
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO 命令失败：%s：邮件未发送"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1190
+#: ../camel/providers/smtp/camel-smtp-transport.c:1185
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> 失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1229
-#: ../camel/providers/smtp/camel-smtp-transport.c:1287
-#: ../camel/providers/smtp/camel-smtp-transport.c:1306
+#: ../camel/providers/smtp/camel-smtp-transport.c:1224
+#: ../camel/providers/smtp/camel-smtp-transport.c:1282
+#: ../camel/providers/smtp/camel-smtp-transport.c:1301
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA 命令失败：%s：邮件未发送"
@@ -4518,107 +4551,107 @@ msgstr "DATA 命令失败：%s：邮件未发送"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1246
-#: ../camel/providers/smtp/camel-smtp-transport.c:1322
+#: ../camel/providers/smtp/camel-smtp-transport.c:1241
+#: ../camel/providers/smtp/camel-smtp-transport.c:1317
 msgid "DATA command failed"
 msgstr "DATP 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1345
+#: ../camel/providers/smtp/camel-smtp-transport.c:1340
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET 命令失败：%s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1361
+#: ../camel/providers/smtp/camel-smtp-transport.c:1356
 msgid "RSET command failed"
 msgstr "RSET 命令失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1384
+#: ../camel/providers/smtp/camel-smtp-transport.c:1379
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT 命令失败：%s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1398
+#: ../camel/providers/smtp/camel-smtp-transport.c:1393
 msgid "QUIT command failed"
 msgstr "QUIT 命令失败"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:248
 msgid "Business"
 msgstr "商务"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:249
 msgid "Competition"
 msgstr "完成"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:250
 msgid "Favorites"
 msgstr "最爱"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:251
 msgid "Gifts"
 msgstr "礼物"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:252
 msgid "Goals/Objectives"
 msgstr "目标"
 
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:253
 msgid "Holiday"
 msgstr "假日"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
 msgstr "假日卡"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:256
 msgid "Hot Contacts"
 msgstr "亲密联系人"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:257
 msgid "Ideas"
 msgstr "想法"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:258
 msgid "International"
 msgstr "国际"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
 msgstr "关键客户"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
 msgstr "杂类"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:261
 msgid "Personal"
 msgstr "个人"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:262
 msgid "Phone Calls"
 msgstr "通电话"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:263
 msgid "Status"
 msgstr "状态"
 
-#: ../libedataserver/e-categories.c:258
+#: ../libedataserver/e-categories.c:264
 msgid "Strategies"
 msgstr "策略"
 
-#: ../libedataserver/e-categories.c:259
+#: ../libedataserver/e-categories.c:265
 msgid "Suppliers"
 msgstr "供应商"
 
-#: ../libedataserver/e-categories.c:260
+#: ../libedataserver/e-categories.c:266
 msgid "Time & Expenses"
 msgstr "时间和花费"
 
-#: ../libedataserver/e-categories.c:261
+#: ../libedataserver/e-categories.c:267
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:262
+#: ../libedataserver/e-categories.c:268
 msgid "Waiting"
 msgstr "等候"
 
@@ -4626,7 +4659,7 @@ msgstr "等候"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1319 ../libedataserver/e-time-utils.c:1562
+#: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%Y-%m-%d %A %H:%M:%S"
 
@@ -4634,7 +4667,7 @@ msgstr "%Y-%m-%d %A %H:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1324 ../libedataserver/e-time-utils.c:1553
+#: ../libedataserver/e-time-utils.c:1606 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%Y-%m-%d %A %H:%M:%S"
 
@@ -4642,7 +4675,7 @@ msgstr "%Y-%m-%d %A %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1329 ../libedataserver/e-time-utils.c:1558
+#: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%Y-%m-%d %A %H:%M"
 
@@ -4650,78 +4683,78 @@ msgstr "%Y-%m-%d %A %H:%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1334 ../libedataserver/e-time-utils.c:1549
+#: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%Y-%m-%d %A %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1339
+#: ../libedataserver/e-time-utils.c:1621
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%Y-%m-%d %A %H"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1344
+#: ../libedataserver/e-time-utils.c:1626
 msgid "%a %m/%d/%Y %H"
 msgstr "%Y-%m-%d %A %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1347 ../libedataserver/e-time-utils.c:1440
-#: ../libedataserver/e-time-utils.c:1544
+#: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
+#: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
 msgstr "%Y-%m-%d %A"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1355
+#: ../libedataserver/e-time-utils.c:1637
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Y-%m-%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1359
+#: ../libedataserver/e-time-utils.c:1641
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Y-%m-%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1364
+#: ../libedataserver/e-time-utils.c:1646
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Y-%m-%d %H:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1369
+#: ../libedataserver/e-time-utils.c:1651
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Y-%m-%d %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1374
+#: ../libedataserver/e-time-utils.c:1656
 msgid "%m/%d/%Y %I %p"
 msgstr "%Y-%m-%d %H"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1379
+#: ../libedataserver/e-time-utils.c:1661
 msgid "%m/%d/%Y %H"
 msgstr "%Y-%m-%d %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1382 ../libedataserver/e-time-utils.c:1443
+#: ../libedataserver/e-time-utils.c:1664 ../libedataserver/e-time-utils.c:1728
 msgid "%m/%d/%Y"
 msgstr "%Y-%m-%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1488 ../libedataserver/e-time-utils.c:1607
+#: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
 msgstr "%H:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1492 ../libedataserver/e-time-utils.c:1599
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1885
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4729,19 +4762,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1497 ../libedataserver/e-time-utils.c:1604
+#: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1501 ../libedataserver/e-time-utils.c:1596
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1882
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1505
+#: ../libedataserver/e-time-utils.c:1791
 msgid "%I %p"
 msgstr "%H"
 
@@ -4800,15 +4833,15 @@ msgstr "编辑(_E)"
 msgid "categories"
 msgstr "类别"
 
-#: ../libedataserverui/e-name-selector-dialog.c:260
+#: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
 msgstr "从地址簿中选择联系人"
 
-#: ../libedataserverui/e-name-selector-dialog.c:554
+#: ../libedataserverui/e-name-selector-dialog.c:598
 msgid "_Add"
 msgstr "添加(_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:579
+#: ../libedataserverui/e-name-selector-dialog.c:623
 msgid "_Remove"
 msgstr "删除(_R)"
 
@@ -4841,7 +4874,7 @@ msgid "C_ategory:"
 msgstr "类别(_A)："
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:258
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
 msgstr "联系人"
 
@@ -4854,13 +4887,13 @@ msgid "_Search:"
 msgstr "搜索(_S)："
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1947
+#: ../libedataserverui/e-name-selector-entry.c:2095
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "嵌入式展开 %s(_X)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1963
+#: ../libedataserverui/e-name-selector-entry.c:2111
 #, c-format
 msgid "_Edit %s"
 msgstr "编辑 %s(_E)"
@@ -4870,11 +4903,19 @@ msgstr "编辑 %s(_E)"
 msgid "_Delete %s"
 msgstr "删除 %s(_D)"
 
-#: ../libedataserverui/e-passwords.c:471
+#: ../libedataserverui/e-passwords.c:810
+msgid "_Remember this passphrase"
+msgstr "记住此密码句(_R)"
+
+#: ../libedataserverui/e-passwords.c:811
+msgid "_Remember this passphrase for the remainder of this session"
+msgstr "本次会话记住此密码句(_R)"
+
+#: ../libedataserverui/e-passwords.c:814
 msgid "_Remember this password"
 msgstr "记住此密码(_R)"
 
-#: ../libedataserverui/e-passwords.c:472
+#: ../libedataserverui/e-passwords.c:815
 msgid "_Remember this password for the remainder of this session"
 msgstr "本次会话记住此密码(_R)"
 
@@ -4887,14 +4928,14 @@ msgstr "选择目的地"
 msgid "_Destination"
 msgstr "目的(_D)"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1636
-#: ../servers/exchange/storage/exchange-account.c:936
+#: ../servers/exchange/lib/e2k-autoconfig.c:1645
+#: ../servers/exchange/storage/exchange-account.c:932
 #, c-format
 msgid "Enter password for %s"
 msgstr "输入 %s 的密码"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1637
-#: ../servers/exchange/storage/exchange-account.c:941
+#: ../servers/exchange/lib/e2k-autoconfig.c:1646
+#: ../servers/exchange/storage/exchange-account.c:937
 msgid "Enter password"
 msgstr "输入密码"
 
@@ -5006,70 +5047,70 @@ msgstr "该信件无法在脱机模式中使用"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:639
+#: ../servers/exchange/storage/exchange-account.c:635
 #, c-format
 msgid "%s's Folders"
 msgstr "%s 的文件夹"
 
-#: ../servers/exchange/storage/exchange-account.c:1242
+#: ../servers/exchange/storage/exchange-account.c:1238
 msgid "Personal Folders"
 msgstr "个人文件夹"
 
-#: ../servers/exchange/storage/exchange-account.c:1256
+#: ../servers/exchange/storage/exchange-account.c:1252
 msgid "Favorite Public Folders"
 msgstr "收藏的公开文件夹"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1273
+#: ../servers/exchange/storage/exchange-account.c:1269
 msgid "All Public Folders"
 msgstr "全部公开文件夹"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1287
+#: ../servers/exchange/storage/exchange-account.c:1283
 msgid "Global Address List"
 msgstr "全局地址列表"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:259
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Deleted Items"
 msgstr "已删项"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "草稿"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
 msgstr "日记"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
 msgstr "备忘"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
 msgstr "发件箱"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
 msgid "Sent Items"
 msgstr "已发项"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
 msgstr "任务"
 
-#: ../servers/groupwise/e-gw-connection.c:164
+#: ../servers/groupwise/e-gw-connection.c:165
 msgid "Invalid connection"
 msgstr "无效连接"
 
-#: ../servers/groupwise/e-gw-connection.c:168
+#: ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid response from server"
 msgstr "服务器的响应无效"
 
-#: ../servers/groupwise/e-gw-connection.c:170
+#: ../servers/groupwise/e-gw-connection.c:171
 msgid "No response from the server"
 msgstr "服务器的响应无效"
 
-#: ../servers/groupwise/e-gw-connection.c:176
+#: ../servers/groupwise/e-gw-connection.c:177
 msgid "Bad parameter"
 msgstr "无效参数"
 
@@ -5092,11 +5133,6 @@ msgstr "Evolution 数据服务器日志服务"
 #. dialog display isn't working out
 #: ../src/server.c:106
 #, c-format
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "发生了多个段错误；无法显示错误对话框\n"
 
-#~ msgid "Failed to create pipe to '%s': %s"
-#~ msgstr "创建到“%s”的管道失败：%s"
-
-#~ msgid "Fetching summary information for new messages"
-#~ msgstr "从新信件中获取概要信息"
