@@ -29,22 +29,40 @@
 
 struct _ECalBackendCachePrivate {
 	char *uri;
+	ECalSourceType source_type;
 	GHashTable *timezones;
 };
 
 /* Property IDs */
 enum {
 	PROP_0,
+	PROP_SOURCE_TYPE,
 	PROP_URI
 };
 
 static GObjectClass *parent_class = NULL;
 
 static char *
-get_filename_from_uri (const char *uri)
+get_filename_from_uri (const char *uri, ECalSourceType source_type)
 {
 	char *mangled_uri, *filename;
+	char *source = NULL;
 	int i;
+
+	switch (source_type) {
+		case E_CAL_SOURCE_TYPE_EVENT :
+			source = "calendar";
+			break;
+		case E_CAL_SOURCE_TYPE_TODO :
+			source = "tasks";
+			break;
+		case E_CAL_SOURCE_TYPE_JOURNAL :
+			source = "journal";
+			break;
+		case E_CAL_SOURCE_TYPE_LAST :
+		default :
+			break;
+	}	
 
 	/* mangle the URI to not contain invalid characters */
 	mangled_uri = g_strdup (uri);
@@ -57,8 +75,8 @@ get_filename_from_uri (const char *uri)
 	}
 
 	/* generate the file name */
-	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/calendar",
-				     mangled_uri, "cache.xml", NULL);
+	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/",
+				source, mangled_uri, "cache.xml", NULL);
 
 	/* free memory */
 	g_free (mangled_uri);
@@ -72,13 +90,20 @@ e_cal_backend_cache_set_property (GObject *object, guint property_id, const GVal
 	ECalBackendCache *cache;
 	ECalBackendCachePrivate *priv;
 	char *cache_file;
+	ECalSourceType source_type;
 
 	cache = E_CAL_BACKEND_CACHE (object);
 	priv = cache->priv;
 
 	switch (property_id) {
+	case PROP_SOURCE_TYPE :
+		source_type = g_value_get_enum (value);
+		priv->source_type = source_type;
+		break;
 	case PROP_URI :
-		cache_file = get_filename_from_uri (g_value_get_string (value));
+		/* Ensure both properties are set and then create the
+		 * cache_file property */
+		cache_file = get_filename_from_uri (g_value_get_string (value), priv->source_type);
 		if (!cache_file)
 			break;
 
@@ -104,6 +129,8 @@ e_cal_backend_cache_get_property (GObject *object, guint property_id, GValue *va
 	priv = cache->priv;
 
 	switch (property_id) {
+	case PROP_SOURCE_TYPE:
+		g_value_set_enum (value, priv->source_type);	
 	case PROP_URI :
 		g_value_set_string (value, priv->uri);
 		break;
@@ -154,6 +181,7 @@ e_cal_backend_cache_constructor (GType type,
 {
 	GObject *obj;
 	const char *uri;
+	ECalSourceType source_type;
 	ECalBackendCacheClass *klass;
 	GObjectClass *parent_class;
 
@@ -163,13 +191,15 @@ e_cal_backend_cache_constructor (GType type,
 	obj = parent_class->constructor (type,
 					 n_construct_properties,
 					 construct_properties);
-  
+
+	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "source_type")) 
+		source_type = g_value_get_enum (construct_properties->value);
 	/* extract uid */
 	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
 		char *cache_file;
 
 		uri = g_value_get_string (construct_properties->value);
-		cache_file = get_filename_from_uri (uri);
+		cache_file = get_filename_from_uri (uri, source_type);
 		g_object_set (obj, "filename", cache_file, NULL);
 		g_free (cache_file);
 	}
@@ -190,6 +220,13 @@ e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
 	object_class->get_property = e_cal_backend_cache_get_property;
 
         object_class->constructor = e_cal_backend_cache_constructor;
+	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
+					 g_param_spec_enum ("source_type", NULL, NULL, 
+					 e_cal_source_type_enum_get_type (),
+					 E_CAL_SOURCE_TYPE_EVENT, 
+					 G_PARAM_READABLE | G_PARAM_WRITABLE
+							      | G_PARAM_CONSTRUCT_ONLY));
+
 	g_object_class_install_property (object_class, PROP_URI,
 					 g_param_spec_string ("uri", NULL, NULL, "",
 							      G_PARAM_READABLE | G_PARAM_WRITABLE
@@ -254,11 +291,11 @@ e_cal_backend_cache_get_type (void)
  * Return value: The newly created object.
  */
 ECalBackendCache *
-e_cal_backend_cache_new (const char *uri)
+e_cal_backend_cache_new (const char *uri, ECalSourceType source_type)
 {
 	ECalBackendCache *cache;
         
-       	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "uri", uri, NULL);
+       	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "source_type", source_type, "uri", uri,  NULL);
 
         return cache;
 }

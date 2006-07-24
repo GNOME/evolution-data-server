@@ -1,3 +1,30 @@
+2006-07-24  Harish Krishnaswamy  <kharish@novell.com>
+
+	Patch to split the cache into multiple files based
+	on the type of objects it stores. This substantially
+	reduces the primary memory requirements of Evolution
+	and EDS for providers like GW, Exchange that manipulate
+	event/tasks/journals together.
+
+	* backends/caldav/e-cal-backend-caldav.c: (initialize_backend):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server), (e_cal_backend_groupwise_open):
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_open):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_open):
+	Update e_cal_backend_cache_new calls with an additional source
+	type argument.
+	* libecal/e-cal.[ch]: (e_cal_source_type_enum_get_type):
+	Implement the function.
+	* libedata-cal/e-cal-backend-cache.c:
+	(get_filename_from_uri),
+	(e_cal_backend_cache_set_property),
+	(e_cal_backend_cache_get_property),
+	(e_cal_backend_cache_constructor),
+	(e_cal_backend_cache_class_init), (e_cal_backend_cache_new):
+	Compute the cache destination using the source type.
+	* libedata-cal/e-cal-backend-cache.h: Include header e-cal.h.
+
 2006-07-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

@@ -519,7 +519,7 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	priv = cbhttp->priv;
 
 	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)));
+		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), E_CAL_SOURCE_TYPE_EVENT );
 
 
 		if (!priv->cache) {

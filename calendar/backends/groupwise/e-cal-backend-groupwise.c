@@ -813,6 +813,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	char *real_uri;
 	ECalBackendGroupwisePrivate *priv;
 	ESource *source;
+	ECalSourceType source_type;
 	const char *use_ssl;
 	char *http_uri;
 	int permissions;
@@ -832,118 +833,134 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	if (!real_uri) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Invalid server URI"));
 		return GNOME_Evolution_Calendar_NoSuchCal;
-	} else {
-		parent_user = (char *) e_source_get_property (source, "parent_id_name");
+	} 
+
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+
+	parent_user = (char *) e_source_get_property (source, "parent_id_name");
+	/* create connection to server */
+	if (parent_user) {
+		EGwConnection *cnc;
 		/* create connection to server */
-		if (parent_user) {
-			EGwConnection *cnc;
-			/* create connection to server */
-			cnc = e_gw_connection_new (real_uri, parent_user, priv->password);
-			if (!E_IS_GW_CONNECTION(cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
-				http_uri = g_strconcat ("http://", real_uri + 8, NULL);
-				cnc = e_gw_connection_new (http_uri, parent_user, priv->password);
-				g_free (http_uri);
-			}
-
-			if (!cnc) {
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
-				return GNOME_Evolution_Calendar_AuthenticationFailed;
-			}
-				
-			priv->cnc = e_gw_connection_get_proxy_connection (cnc, parent_user, priv->password, priv->username, &permissions);
-
-			g_object_unref(cnc);
-		
-			if (!priv->cnc) {
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
-				return GNOME_Evolution_Calendar_AuthenticationFailed;
-			}
-
-			kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-
-			cbgw->priv->read_only = TRUE;
-		
-			if (kind == ICAL_VEVENT_COMPONENT && (permissions & E_GW_PROXY_APPOINTMENT_WRITE) )
-				cbgw->priv->read_only = FALSE;
-			else if (kind == ICAL_VTODO_COMPONENT && (permissions & E_GW_PROXY_TASK_WRITE))
-				cbgw->priv->read_only = FALSE;
-			else if (kind == ICAL_VJOURNAL_COMPONENT && (permissions & E_GW_PROXY_NOTES_WRITE))
-				cbgw->priv->read_only = FALSE;
-
-		} else {
-
-			priv->cnc = e_gw_connection_new (
-					real_uri,
-					priv->username,
-					priv->password);
-
-			if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
-				http_uri = g_strconcat ("http://", real_uri + 8, NULL);
-				priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
-				g_free (http_uri);
-			}
-			cbgw->priv->read_only = FALSE;
+		cnc = e_gw_connection_new (real_uri, parent_user, priv->password);
+		if (!E_IS_GW_CONNECTION(cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
+			http_uri = g_strconcat ("http://", real_uri + 8, NULL);
+			cnc = e_gw_connection_new (http_uri, parent_user, priv->password);
+			g_free (http_uri);
 		}
-		g_free (real_uri);
-			
-		if (priv->cnc && priv->cache && priv->container_id) {
-			char *utc_str;
-			priv->mode = CAL_MODE_REMOTE;
-			if (priv->mode_changed && !priv->timeout_id ) {
-				GThread *thread1;
-				priv->mode_changed = FALSE;
 
-				thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
-				if (!thread1) {
-					g_warning (G_STRLOC ": %s", error->message);
-					g_error_free (error);
-
-					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
-					return GNOME_Evolution_Calendar_OtherError;
-				}
-				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
-			}
-			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
-			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
-
-			return GNOME_Evolution_Calendar_Success;
-		}
-		priv->mode_changed = FALSE;
-
-		if (E_IS_GW_CONNECTION (priv->cnc)) {
-			ECalBackendSyncStatus status;
-			/* get the ID for the container */
-			if (priv->container_id)
-				g_free (priv->container_id);
-			
-			if ((status = set_container_id_with_count (cbgw)) != GNOME_Evolution_Calendar_Success) {
-				return status;
-			}
-		
-			priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
-			if (!priv->cache) {
-				g_mutex_unlock (priv->mutex);
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
-				return GNOME_Evolution_Calendar_OtherError;
-			}
-
-			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
-	
-			/* spawn a new thread for opening the calendar */
-			thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
-			if (!thread) {
-				g_warning (G_STRLOC ": %s", error->message);
-				g_error_free (error);
-
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for populating cache"));
-				return GNOME_Evolution_Calendar_OtherError;
-			}
-
-
-		} else {
+		if (!cnc) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
 		}
+			
+		priv->cnc = e_gw_connection_get_proxy_connection (cnc, parent_user, priv->password, priv->username, &permissions);
+
+		g_object_unref(cnc);
+	
+		if (!priv->cnc) {
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
+			return GNOME_Evolution_Calendar_AuthenticationFailed;
+		}
+
+
+		cbgw->priv->read_only = TRUE;
+	
+		if (kind == ICAL_VEVENT_COMPONENT && (permissions & E_GW_PROXY_APPOINTMENT_WRITE) )
+			cbgw->priv->read_only = FALSE;
+		else if (kind == ICAL_VTODO_COMPONENT && (permissions & E_GW_PROXY_TASK_WRITE))
+			cbgw->priv->read_only = FALSE;
+		else if (kind == ICAL_VJOURNAL_COMPONENT && (permissions & E_GW_PROXY_NOTES_WRITE))
+			cbgw->priv->read_only = FALSE;
+
+	} else {
+
+		priv->cnc = e_gw_connection_new (
+				real_uri,
+				priv->username,
+				priv->password);
+
+		if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
+			http_uri = g_strconcat ("http://", real_uri + 8, NULL);
+			priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
+			g_free (http_uri);
+		}
+		cbgw->priv->read_only = FALSE;
+	}
+	g_free (real_uri);
+		
+	if (priv->cnc && priv->cache && priv->container_id) {
+		char *utc_str;
+		priv->mode = CAL_MODE_REMOTE;
+		if (priv->mode_changed && !priv->timeout_id ) {
+			GThread *thread1;
+			priv->mode_changed = FALSE;
+
+			thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
+			if (!thread1) {
+				g_warning (G_STRLOC ": %s", error->message);
+				g_error_free (error);
+
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
+				return GNOME_Evolution_Calendar_OtherError;
+			}
+			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
+		}
+		utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
+		e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
+
+		return GNOME_Evolution_Calendar_Success;
+	}
+	priv->mode_changed = FALSE;
+
+	switch (kind) {
+	case ICAL_VEVENT_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+		break;
+	case ICAL_VTODO_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_TODO;
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+		break;
+	default:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+
+	}
+
+	if (E_IS_GW_CONNECTION (priv->cnc)) {
+		ECalBackendSyncStatus status;
+		/* get the ID for the container */
+		if (priv->container_id)
+			g_free (priv->container_id);
+		
+		if ((status = set_container_id_with_count (cbgw)) != GNOME_Evolution_Calendar_Success) {
+			return status;
+		}
+	
+		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)), source_type);
+		if (!priv->cache) {
+			g_mutex_unlock (priv->mutex);
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
+			return GNOME_Evolution_Calendar_OtherError;
+		}
+
+		e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
+
+		/* spawn a new thread for opening the calendar */
+		thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
+		if (!thread) {
+			g_warning (G_STRLOC ": %s", error->message);
+			g_error_free (error);
+
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for populating cache"));
+			return GNOME_Evolution_Calendar_OtherError;
+		}
+
+
+	} else {
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
+		return GNOME_Evolution_Calendar_AuthenticationFailed;
 	}
 
 	if (!e_gw_connection_get_version (priv->cnc)) 
@@ -1146,6 +1163,8 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
 	ECalBackendSyncStatus status;
+	ECalSourceType source_type;
+	char *source;
 	char *filename;
 	char *mangled_uri;
 	int i;
@@ -1156,6 +1175,23 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	g_mutex_lock (priv->mutex);
 
 	cbgw->priv->read_only = FALSE;
+
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+	case ICAL_VEVENT_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+		source = "calendar";
+		break;
+	case ICAL_VTODO_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_TODO;
+		source = "tasks";
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+		source = "journal";
+		break;
+	default:
+		source_type = E_CAL_SOURCE_TYPE_EVENT;
+	}
 
 	if (priv->mode == CAL_MODE_LOCAL) {
 		ESource *source;
@@ -1171,7 +1207,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		}
 
 		if (!priv->cache) {
-			priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
+			priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)), source_type);
 			if (!priv->cache) {
 				g_mutex_unlock (priv->mutex);
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
@@ -1201,7 +1237,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	}
 
 	filename = g_build_filename (g_get_home_dir (),
-				     ".evolution/cache/calendar",
+				     ".evolution/cache/", source,
 				     mangled_uri,
 				     NULL);
 	g_free (mangled_uri);

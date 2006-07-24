@@ -444,7 +444,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
 	
 	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (uri);
+		priv->cache = e_cal_backend_cache_new (uri, E_CAL_SOURCE_TYPE_EVENT);
 
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not create cache file"));

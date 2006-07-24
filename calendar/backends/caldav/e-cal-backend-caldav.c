@@ -1393,7 +1393,7 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	} 
 		
 	if (priv->cache == NULL) {
-		priv->cache = e_cal_backend_cache_new (priv->uri);
+		priv->cache = e_cal_backend_cache_new (priv->uri, E_CAL_SOURCE_TYPE_EVENT);
 
 		if (priv->cache == NULL) {
 			result = GNOME_Evolution_Calendar_OtherError;

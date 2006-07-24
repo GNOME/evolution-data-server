@@ -196,6 +196,34 @@ e_calendar_error_quark (void)
 }
 
 /**
+ * e_cal_source_type_enum_get_type:
+ *
+ * Registers the #ECalSourceTypeEnum type with glib.
+ *
+ * Return value: the ID of the #ECalSourceTypeEnum type.
+ */
+GType
+e_cal_source_type_enum_get_type (void)
+{
+	static GType e_cal_source_type_enum_type = 0;
+
+	if (!e_cal_source_type_enum_type) {
+		static GEnumValue values [] = {
+			{ E_CAL_SOURCE_TYPE_EVENT, "Event", NULL},
+			{ E_CAL_SOURCE_TYPE_TODO, "ToDo", NULL},
+			{ E_CAL_SOURCE_TYPE_JOURNAL, "Journal", NULL},
+			{ E_CAL_SOURCE_TYPE_LAST, "Invalid", NULL},
+			{ -1, NULL, NULL}
+		};
+
+		e_cal_source_type_enum_type =
+			g_enum_register_static ("ECalSourceTypeEnum", values);
+	}
+
+	return e_cal_source_type_enum_type;
+}
+
+/**
  * e_cal_set_mode_status_enum_get_type:
  *
  * Registers the #ECalSetModeStatusEnum type with glib.
@@ -248,6 +276,8 @@ cal_mode_enum_get_type (void)
 
 	return cal_mode_enum_type;
 }
+
+
 
 static GNOME_Evolution_Calendar_CalObjType
 convert_type (ECalSourceType type) 

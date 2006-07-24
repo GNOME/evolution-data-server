@@ -24,6 +24,7 @@
 
 #include <libedataserver/e-file-cache.h>
 #include <libecal/e-cal-component.h>
+#include <libecal/e-cal.h>
 
 G_BEGIN_DECLS
 
@@ -46,7 +47,7 @@ typedef struct {
 
 GType               e_cal_backend_cache_get_type (void);
 
-ECalBackendCache   *e_cal_backend_cache_new (const char *uri);
+ECalBackendCache   *e_cal_backend_cache_new (const char *uri, ECalSourceType source_type);
 ECalComponent      *e_cal_backend_cache_get_component (ECalBackendCache *cache,
 						       const char *uid,
 						       const char *rid);
