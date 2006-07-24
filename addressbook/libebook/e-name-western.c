@@ -28,10 +28,10 @@ typedef struct {
 } ENameWesternIdxs;
 
 static int
-e_name_western_str_count_words (char *str)
+e_name_western_str_count_words (const char *str)
 {
 	int word_count;
-	char *p;
+	const char *p;
 
 	word_count = 0;
 
@@ -127,10 +127,10 @@ e_name_western_word_is_suffix (char *word)
 	 * g_utf8_casefold turns the string into lowercase, so we
 	 * don't need to casefold the suffixes.
 	 */
-	for (i = 0; e_name_western_sfx_table [i] != NULL; i ++) {
-		gboolean match = !g_utf8_collate (folded_word, e_name_western_sfx_table [i]);
+	for (i = 0; i < G_N_ELEMENTS (western_sfx_index); i++) {
+		const char *suffix = western_sfx_table + western_sfx_index[i];
 
-		if (match) {
+		if (!g_utf8_collate (folded_word, suffix)) {
 			g_free (folded_word);
 			return TRUE;
 		}
@@ -148,16 +148,18 @@ e_name_western_get_one_prefix_at_str (char *str)
 	/*
 	 * Check for prefixes from our table.
 	 */
-	for (i = 0; e_name_western_pfx_table [i] != NULL; i ++) {
+	for (i = 0; i < G_N_ELEMENTS (western_pfx_index); i++) {
 		int pfx_words;
+		const char *prefix;
 		char *words;
 		char *folded_words;
 
-		pfx_words = e_name_western_str_count_words (e_name_western_pfx_table [i]);
+		prefix = western_pfx_table + western_pfx_index[i];
+		pfx_words = e_name_western_str_count_words (prefix);
 		words = e_name_western_get_words_at_idx (str, 0, pfx_words);
 		folded_words = g_utf8_casefold (words, -1);
 
-		if (! g_utf8_collate (folded_words, e_name_western_pfx_table [i])) {
+		if (! g_utf8_collate (folded_words, prefix)) {
 			g_free (folded_words);
 			return words;
 		}
@@ -239,10 +241,9 @@ e_name_western_is_complex_last_beginning (char *word)
 	int i;
 	char *folded_word = g_utf8_casefold (word, -1);
 
-	for (i = 0; e_name_western_complex_last_table [i] != NULL; i ++) {
-
-		if (! g_utf8_collate (folded_word,
-				      e_name_western_complex_last_table [i])) {
+	for (i = 0; i < G_N_ELEMENTS (western_complex_last_index); i++) {
+		const char *last = western_complex_last_table + western_complex_last_index[i];
+		if (! g_utf8_collate (folded_word, last)) {
 			g_free (folded_word);
 			return TRUE;
 		}

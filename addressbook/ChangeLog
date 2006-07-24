@@ -1,5 +1,24 @@
 2006-07-24  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-name-western-tables.h:
+	* libebook/e-name-western-tables.h.in:
+	Add name tables as a machine readable form (.h.in) and provide a
+	pre-generated file (.h).
+
+	* libebook/gen-western-table.py:
+	And have a script to generate packed arrays from it.
+
+	* libebook/e-name-western.c:
+	Update to parse the packed array.
+
+	* libebook/Makefile.am:
+	Generate the file as required.
+
+	This removes many relocations and puts the name data in shared
+	memory (#342145).
+
+2006-07-24  Ross Burton  <ross@openedhand.com>
+
 	* libebook/e-vcard.[ch]:
 	Add e_vcard_attribute_remove_value and
 	e_vcard_attribute_remove_param_value() (#347899).

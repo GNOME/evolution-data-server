@@ -75,6 +75,9 @@ libebookinclude_HEADERS =				\
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
+e-name-western-tables.h: e-name-western-tables.h.in
+	./gen-western-table.py < $< > $@
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
