@@ -1,3 +1,28 @@
+Evolution-Data-Server 1.7.90, 2006-07-24
+----------------------------------------
+Updated Translations contributed by:
+
+Funda Wangi (zh_CN), Christophe Merlet (fr),
+Jonathan Ernst (fr), Changwoo Ryu (ko),
+Kostas Papadimas (el), Dzongkhalinux team, DIT (dz),
+Ilkka Tuohela (fi), Ankit Patel (gu), Daniel Nylander (sv),
+Priit Laes (et), Francisco Javier F. Serrador (es),
+Raivis Dejus (lv).
+
+New in EDS 1.7.90 : 
+Support for GW Reminder Notes (Chenthill)
+Split cache for less memory, better performance (Harish)
+Support for security-classifications in GW send options (Sankar)
+Support for default alarms in GW (Harish)
+Support for Gadu Gadu IM in Contact Entries 
+(Artur Flinta, Fryderyk Dziarmagowski) 
+Memory reduction and Performance improvements in Contacts (Ross Burton)
+
+Bug fixes :
+Andre Klapper, Shreyas Srinivasan, Sushma Rai, Vandana Shenoy,
+Harish Krishnaswamy, Devashish Sharma, Hiroyuki Ikezoe, Srinivasa Ragavan.
+Luca Ferretti
+
 Evolution-Data-Server 1.7.4, 2006-07-10
 ---------------------------------------
 Updated Translations contributed by:
