@@ -440,6 +440,38 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	return r;
 }
 
+static ESExpResult *
+func_exists_vcard(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *r;
+	int truth = FALSE;
+
+	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
+		const char *attr_name;
+		EVCardAttribute *attr;
+		GList *values;
+		char *s;
+
+		attr_name = argv[0]->value.string;
+		attr = e_vcard_get_attribute (E_VCARD (ctx->contact), attr_name);
+		if (attr) {
+			values = e_vcard_attribute_get_values (attr);
+			if (g_list_length (values) > 0) {
+				s = values->data;
+				if (s[0] != '\0') {
+					truth = TRUE;
+				}
+			}
+		}
+	}
+	
+	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r->value.bool = truth;
+
+	return r;
+}
+
 /* 'builtin' functions */
 static struct {
 	char *name;
@@ -452,6 +484,7 @@ static struct {
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
 	{ "exists", func_exists, 0 },
+	{ "exists_vcard", func_exists_vcard, 0 },
 };
 
 /**

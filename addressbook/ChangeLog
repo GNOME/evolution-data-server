@@ -1,5 +1,15 @@
 2006-07-24  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-book-query.[ch]:
+	Add e_book_query_vcard_field_exists().
+
+	* libedata-book/e-book-backend-sexp.c:
+	Add vcard_exists symbol.
+
+	Fixes #330255.
+
+2006-07-24  Ross Burton  <ross@openedhand.com>
+
 	* libebook/e-name-western-tables.h:
 	* libebook/e-name-western-tables.h.in:
 	Add name tables as a machine readable form (.h.in) and provide a

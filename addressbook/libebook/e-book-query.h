@@ -41,6 +41,7 @@ EBookQuery* e_book_query_orv          (EBookQuery *q, ...);
 EBookQuery* e_book_query_not          (EBookQuery *q, gboolean unref);
 
 EBookQuery* e_book_query_field_exists (EContactField   field);
+EBookQuery* e_book_query_vcard_field_exists (const char *field);
 EBookQuery* e_book_query_field_test   (EContactField   field,
 				       EBookQueryTest     test,
 				       const char        *value);

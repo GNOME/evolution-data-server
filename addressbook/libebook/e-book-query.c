@@ -39,6 +39,7 @@ struct EBookQuery {
 
 		struct {
 			EContactField  field;
+			char          *vcard_field;
 		} exist;
 
 		struct {
@@ -215,6 +216,27 @@ e_book_query_field_exists (EContactField field)
 
 	ret->type = E_BOOK_QUERY_TYPE_FIELD_EXISTS;
 	ret->query.exist.field = field;
+	ret->query.exist.vcard_field = NULL;
+
+	return ret;
+}
+
+/**
+ * e_book_query_vcard_field_exists:
+ * @field: a field name
+ *
+ * Creates a new #EBookQuery which tests if the field @field exists. @field
+ * should be a vCard field name, such as #FN or #X-MSN.
+ * Return value: the new #EBookQuery
+ **/
+EBookQuery *
+e_book_query_vcard_field_exists (const char *field)
+{
+	EBookQuery *ret = g_new0 (EBookQuery, 1);
+
+	ret->type = E_BOOK_QUERY_TYPE_FIELD_EXISTS;
+	ret->query.exist.field = 0;
+	ret->query.exist.vcard_field = g_strdup (field);
 
 	return ret;
 }
@@ -267,6 +289,10 @@ e_book_query_unref (EBookQuery *q)
 
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
 		g_free (q->query.field_test.value);
+		break;
+
+	case E_BOOK_QUERY_TYPE_FIELD_EXISTS:
+		g_free (q->query.exist.vcard_field);
 		break;
 
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:
@@ -504,7 +530,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 /* 'builtin' functions */
-static struct {
+static const struct {
 	char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or
@@ -618,7 +644,11 @@ e_book_query_to_string    (EBookQuery *q)
 		g_free (s);
 		break;
 	case E_BOOK_QUERY_TYPE_FIELD_EXISTS:
-		g_string_append_printf (str, "exists \"%s\"", e_contact_field_name (q->query.exist.field));
+		if (q->query.exist.vcard_field) {
+			g_string_append_printf (str, "exists_vcard \"%s\"", q->query.exist.vcard_field);
+		} else {
+			g_string_append_printf (str, "exists \"%s\"", e_contact_field_name (q->query.exist.field));
+		}
 		break;
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
 		switch (q->query.field_test.test) {
