@@ -78,6 +78,8 @@ extern int strdup_count, malloc_count, free_count;
 
 #define _PRIVATE(o) (((CamelFolderSummary *)(o))->priv)
 
+#define META_SUMMARY_SUFFIX_LEN 5 /* strlen("-meta") */
+
 /* trivial lists, just because ... */
 struct _node {
 	struct _node *next;
@@ -88,12 +90,15 @@ static int my_list_size(struct _node **list);
 
 static int summary_header_load(CamelFolderSummary *, FILE *);
 static int summary_header_save(CamelFolderSummary *, FILE *);
+static int summary_meta_header_load(CamelFolderSummary *, FILE *);
+static int summary_meta_header_save(CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg);
 static CamelMessageInfo * message_info_load(CamelFolderSummary *, FILE *);
 static int		  message_info_save(CamelFolderSummary *, FILE *, CamelMessageInfo *);
+static int		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *info);
 static void		  message_info_free(CamelFolderSummary *, CamelMessageInfo *);
 
 static CamelMessageContentInfo * content_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
@@ -146,6 +151,13 @@ camel_folder_summary_init (CamelFolderSummary *s)
 	p->filter_lock = g_mutex_new();
 	p->alloc_lock = g_mutex_new();
 	p->ref_lock = g_mutex_new();
+
+	s->meta_summary = g_malloc0(sizeof(CamelFolderMetaSummary));
+
+	/* Default is 20, any implementor having UIDs that has length
+	   exceeding 20, has to override this value 
+	*/
+	s->meta_summary->uid_len = 20;
 }
 
 static void free_o_name(void *key, void *value, void *data)
@@ -193,6 +205,10 @@ camel_folder_summary_finalize (CamelObject *obj)
 		camel_object_unref((CamelObject *)p->filter_stream);
 	if (p->index)
 		camel_object_unref((CamelObject *)p->index);
+
+	/* Freeing memory occupied by meta-summary-header */
+	g_free(s->meta_summary->path);
+	g_free(s->meta_summary);
 	
 	g_mutex_free(p->summary_lock);
 	g_mutex_free(p->io_lock);
@@ -255,6 +271,9 @@ camel_folder_summary_set_filename(CamelFolderSummary *s, const char *name)
 
 	g_free(s->summary_path);
 	s->summary_path = g_strdup(name);
+
+	g_free(s->meta_summary->path);
+	s->meta_summary->path = g_strconcat(name, "-meta", NULL);
 
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 }
@@ -544,7 +563,8 @@ camel_folder_summary_load(CamelFolderSummary *s)
 	int i;
 	CamelMessageInfo *mi;
 
-	if (s->summary_path == NULL)
+	if (s->summary_path == NULL ||
+	    s->meta_summary->path == NULL)
 		return 0;
 
 	in = g_fopen(s->summary_path, "rb");
@@ -630,14 +650,17 @@ int
 camel_folder_summary_save(CamelFolderSummary *s)
 {
 	FILE *out;
-	int fd, i;
+	FILE *out_meta;
+	int fd, i, fd_meta;
 	guint32 count;
 	CamelMessageInfo *mi;
 	char *path;
+	char *path_meta;
 
 	g_assert(s->message_info_size >= sizeof(CamelMessageInfoBase));
 
-	if (s->summary_path == NULL
+	if (s->summary_path == NULL 
+	    || s->meta_summary->path == NULL
 	    || (s->flags & CAMEL_SUMMARY_DIRTY) == 0)
 		return 0;
 
@@ -655,32 +678,65 @@ camel_folder_summary_save(CamelFolderSummary *s)
 		return -1;
 	}
 
+	/* Meta summary code */
+	/* This meta summary will be used by beagle in order to 
+	   quickly pass through the actual summary file, which 
+	   is quite time consuming otherwise.
+	*/
+	/* FIXME: Merge meta-summary and summary */
+	path_meta = alloca(strlen(s->meta_summary->path)+4);
+	sprintf(path_meta, "%s~", s->meta_summary->path);
+	fd_meta = g_open(path_meta, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
+	if (fd_meta == -1)
+		return -1;
+	out_meta = fdopen(fd_meta, "wb");
+	if (out_meta == NULL) {
+		i = errno;
+		g_unlink(path);
+		g_unlink(path_meta);
+		close(fd);
+		close(fd_meta);
+		errno = i;
+		return -1;
+	}
+
 	io(printf("saving header\n"));
 
 	CAMEL_SUMMARY_LOCK(s, io_lock);
 
 	if (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_save(s, out) == -1)
 		goto exception;
-	
+ 	
+	if (summary_meta_header_save(s, out_meta) == -1)
+		goto exception;
+
 	/* now write out each message ... */
 	/* we check ferorr when done for i/o errors */
 	count = s->messages->len;
 	for (i = 0; i < count; i++) {
 		mi = s->messages->pdata[i];
-		if (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->message_info_save (s, out, mi) == -1)
+		if (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->meta_message_info_save (s, out_meta, out, mi) == -1)
 			goto exception;
 		
+		if (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->message_info_save (s, out, mi) == -1)
+			goto exception;
+
 		if (s->build_content) {
 			if (perform_content_info_save (s, out, ((CamelMessageInfoBase *)mi)->content) == -1)
 				goto exception;
 		}
 	}
 	
+	/* FIXME: Can't we use the above "fd" variables, instead of fileno()? */
 	if (fflush (out) != 0 || fsync (fileno (out)) == -1)
 		goto exception;
 	
+	if (fflush (out_meta) != 0 || fsync (fileno (out_meta)) == -1)
+		goto exception;
+
 	fclose (out);
-	
+	fclose (out_meta);
+
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
 	
 #ifdef G_OS_WIN32
@@ -689,6 +745,13 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	if (g_rename(path, s->summary_path) == -1) {
 		i = errno;
 		g_unlink(path);
+		errno = i;
+		return -1;
+	}
+
+	if (g_rename(path_meta, s->meta_summary->path) == -1) {
+		i = errno;
+		g_unlink(path_meta);
 		errno = i;
 		return -1;
 	}
@@ -701,10 +764,12 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	i = errno;
 	
 	fclose (out);
+	fclose (out_meta);
 	
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
 	
 	g_unlink (path);
+	g_unlink (path_meta);
 	errno = i;
 	
 	return -1;
@@ -725,20 +790,30 @@ int
 camel_folder_summary_header_load(CamelFolderSummary *s)
 {
 	FILE *in;
+	FILE *in_meta;
 	int ret;
 
-	if (s->summary_path == NULL)
+	if (s->summary_path == NULL ||
+	    s->meta_summary->path == NULL)
 		return 0;
 
 	in = g_fopen(s->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 
+	in_meta = g_fopen(s->meta_summary->path, "rb");
+	if (in_meta == NULL) {
+		fclose(in);
+		return -1;
+	}
+
 	CAMEL_SUMMARY_LOCK(s, io_lock);
 	ret = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_load(s, in);
+	ret = summary_meta_header_load(s, in_meta);
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
 	
 	fclose(in);
+	fclose(in_meta);
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 	return ret;
 }
@@ -1086,6 +1161,7 @@ camel_folder_summary_clear(CamelFolderSummary *s)
 	g_hash_table_destroy(s->messages_uid);
 	s->messages_uid = g_hash_table_new(g_str_hash, g_str_equal);
 	s->flags |= CAMEL_SUMMARY_DIRTY;
+	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 }
 
@@ -1104,8 +1180,9 @@ camel_folder_summary_remove(CamelFolderSummary *s, CamelMessageInfo *info)
 	g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));
 	g_ptr_array_remove(s->messages, info);
 	s->flags |= CAMEL_SUMMARY_DIRTY;
+	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-
+	
 	camel_message_info_free(info);
 }
 
@@ -1390,8 +1467,30 @@ my_list_size(struct _node **list)
 }
 
 static int
+summary_meta_header_load(CamelFolderSummary *s, FILE *in)
+{
+	if (!s->meta_summary->path)
+		return -1;
+
+	fseek(in, 0, SEEK_SET);
+
+	io(printf("Loading meta-header\n"));
+
+	if (camel_file_util_decode_uint32(in, &s->meta_summary->major) == -1
+	    || camel_file_util_decode_uint32(in, &s->meta_summary->minor) == -1
+	    || camel_file_util_decode_uint32(in, &s->meta_summary->uid_len) == -1) {
+		return -1;
+	}
+	
+	return 0;
+}
+
+static int
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
+	if (!s->summary_path)
+		return -1;
+
 	fseek(in, 0, SEEK_SET);
 
 	io(printf("Loading header\n"));
@@ -1469,6 +1568,25 @@ summary_header_save(CamelFolderSummary *s, FILE *out)
 	camel_file_util_encode_fixed_int32(out, deleted);
 
 	return camel_file_util_encode_fixed_int32(out, junk);
+}
+
+static int
+summary_meta_header_save(CamelFolderSummary *s, FILE *out_meta)
+{
+	fseek(out_meta, 0, SEEK_SET);
+
+	/* Save meta-summary header */
+	if (s->meta_summary->msg_expunged) {
+		s->meta_summary->msg_expunged = FALSE;
+		camel_file_util_encode_uint32(out_meta, ++s->meta_summary->major);
+		camel_file_util_encode_uint32(out_meta, (s->meta_summary->minor=0));
+	} else {
+		camel_file_util_encode_uint32(out_meta, s->meta_summary->major);
+		camel_file_util_encode_uint32(out_meta, ++s->meta_summary->minor);
+	}
+	camel_file_util_encode_uint32(out_meta, s->meta_summary->uid_len);
+
+	return ferror(out_meta);
 }
 
 /* are these even useful for anything??? */
@@ -1759,6 +1877,25 @@ error:
 	camel_message_info_free((CamelMessageInfo *)mi);
 
 	return NULL;
+}
+
+static int
+meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *info)
+{
+	time_t timestamp;
+	off_t offset;
+	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
+
+	time (&timestamp);
+	offset = ftell (out);
+	/* FIXME: errno check after ftell */
+	
+	camel_file_util_encode_time_t(out_meta, timestamp);
+	camel_file_util_encode_fixed_string(out_meta, camel_message_info_uid(mi), s->meta_summary->uid_len);
+	camel_file_util_encode_uint32(out_meta, mi->flags);
+	camel_file_util_encode_off_t(out_meta, offset);	
+
+	return ferror(out);
 }
 
 static int
@@ -3101,6 +3238,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 	klass->message_info_new_from_message = message_info_new_from_message;
 	klass->message_info_load = message_info_load;
 	klass->message_info_save = message_info_save;
+	klass->meta_message_info_save = meta_message_info_save;
 	klass->message_info_free = message_info_free;
 	klass->message_info_clone = message_info_clone;
 

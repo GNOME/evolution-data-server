@@ -1,3 +1,22 @@
+2006-07-24  Veerapuram Varadhan <vvaradhan@novell.com>
+
+	* camel-folder-summary.h: Added CamelFolderMetaSummary structure
+	that holds values for meta summary file.
+
+	* camel-folder-summary.c (summary_meta_header_load),
+	(summary_meta_header_save), (meta_message_info_save): Newly added
+	virtual methods to load and save meta-headers and meta-message
+	infos.
+	(camel_folder_summary_load), (camel_folder_summary_save): Load and
+	save meta-summary information as well.
+
+	* providers/local/camel-mbox-summary.c (meta_message_info_save):
+	Save message offset in the meta-summary file.
+
+	* camel-file-utils.[c,h] (camel_file_util_encode_fixed_string),
+	(camel_file_util_decode_fixed_string): Encode and decode fixed
+	length string.
+	
 2006-07-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-string-utils.c (camel_pstring_add): If the value is in the

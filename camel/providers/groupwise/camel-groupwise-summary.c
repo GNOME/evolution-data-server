@@ -122,6 +122,9 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof(CamelGroupwiseMessageInfo);
 	s->content_info_size = sizeof(CamelGroupwiseMessageContentInfo);
+	
+	/* Meta-summary - Overriding UID len */
+	s->meta_summary->uid_len = 2048;
 }
 
 

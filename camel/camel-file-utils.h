@@ -54,6 +54,9 @@ int camel_file_util_encode_size_t (FILE *out, size_t);
 int camel_file_util_decode_size_t (FILE *in, size_t *);
 int camel_file_util_encode_string (FILE *out, const char *);
 int camel_file_util_decode_string (FILE *in, char **);
+int camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len);
+int camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len);
+
 
 char *camel_file_util_safe_filename (const char *name);
 

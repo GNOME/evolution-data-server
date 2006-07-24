@@ -46,6 +46,8 @@ typedef struct _CamelFolderSummaryClass CamelFolderSummaryClass;
 typedef struct _CamelMessageInfo CamelMessageInfo;
 typedef struct _CamelMessageInfoBase CamelMessageInfoBase;
 
+typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
+
 /* A tree of message content info structures
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
@@ -224,6 +226,7 @@ struct _CamelFolderSummary {
 	GHashTable *messages_uid; /* CamelMessageInfo's by uid */
 
 	struct _CamelFolder *folder; /* parent folder, for events */
+	struct _CamelFolderMetaSummary *meta_summary; /* Meta summary */
 };
 
 struct _CamelFolderSummaryClass {
@@ -238,7 +241,8 @@ struct _CamelFolderSummaryClass {
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *);
 	CamelMessageInfo * (*message_info_load)(CamelFolderSummary *, FILE *);
-	int		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
+ 	int		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
+	int		   (*meta_message_info_save)(CamelFolderSummary *, FILE *, FILE *, CamelMessageInfo *);
 
 	void		   (*message_info_free)(CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageInfo * (*message_info_clone)(CamelFolderSummary *, const CamelMessageInfo *);
@@ -272,6 +276,15 @@ struct _CamelFolderSummaryClass {
 	gboolean (*info_set_user_flag)(CamelMessageInfo *mi, const char *id, gboolean state);
 	gboolean (*info_set_user_tag)(CamelMessageInfo *mi, const char *id, const char *val);
 	gboolean (*info_set_flags)(CamelMessageInfo *mi, guint32 mask, guint32 set);
+};
+
+/* Meta-summary info */
+struct _CamelFolderMetaSummary {
+	guint32 major;		/* Major version of meta-summary */
+	guint32 minor;		/* Minor version of meta-summary */
+	guint32 uid_len;	/* Length of UID (for implementors to use) */
+	gboolean msg_expunged;	/* Whether any message is expunged or not */
+	char *path;		/* Path to meta-summary-file */
 };
 
 CamelType			 camel_folder_summary_get_type	(void);

@@ -55,6 +55,7 @@ static CamelMessageInfo * message_info_new_from_header(CamelFolderSummary *, str
 static CamelMessageInfo * message_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_load (CamelFolderSummary *, FILE *);
 static int		  message_info_save (CamelFolderSummary *, FILE *, CamelMessageInfo *);
+static int 		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *mi);
 /*static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);*/
 
 static char *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
@@ -154,6 +155,7 @@ camel_mbox_summary_class_init(CamelMboxSummaryClass *klass)
 	sklass->message_info_new_from_parser = message_info_new_from_parser;
 	sklass->message_info_load = message_info_load;
 	sklass->message_info_save = message_info_save;
+	sklass->meta_message_info_save = meta_message_info_save;
 	/*sklass->message_info_free = message_info_free;*/
 
 	sklass->info_set_user_flag = mbox_info_set_user_flag;
@@ -380,6 +382,20 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 error:
 	camel_message_info_free(mi);
 	return NULL;
+}
+
+static int
+meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *mi)
+{
+	CamelMboxMessageInfo *mbi = (CamelMboxMessageInfo *)mi;
+
+	io(printf("saving mbox message info\n"));
+
+	if (((CamelFolderSummaryClass *)camel_mbox_summary_parent)->meta_message_info_save(s, out_meta, out, mi) == -1
+	    || camel_file_util_encode_off_t(out_meta, mbi->frompos) == -1)
+		return -1;
+
+	return 0;
 }
 
 static int

@@ -316,6 +316,72 @@ camel_file_util_decode_string (FILE *in, char **str)
 	return 0;
 }
 
+/**
+ * camel_file_util_encode_fixed_string:
+ * @out: file to output to
+ * @str: value to output
+ * @len: total-len of str to store
+ * 
+ * Encode a normal string and save it in the output file.
+ * Unlike @camel_file_util_encode_string, it pads the
+ * @str with "NULL" bytes, if @len is > strlen(str)
+ * 
+ * Return value: 0 on success, -1 on error.
+ **/
+int
+camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
+{
+	char buf[len];
+
+	/* Don't allow empty strings to be written */
+	if (len < 1)
+		return -1;
+
+	/* Max size is 64K */
+	if (len > 65536)
+		len = 65536;
+		
+	memset(buf, 0x00, len);
+	g_strlcpy(buf, str, len);
+
+	if (fwrite (buf, len, 1, out) == len)
+		return 0;
+
+	return -1;
+}
+
+
+/**
+ * camel_file_util_decode_fixed_string:
+ * @in: file to read from
+ * @str: pointer to a variable to store the value in
+ * @len: total-len to decode.  
+ * 
+ * Decode a normal string from the input file.
+ * 
+ * Return value: 0 on success, -1 on error.
+ **/
+int
+camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len)
+{
+	register char *ret;
+
+	if (len > 65536) {
+		*str = NULL;
+		return -1;
+	}
+
+	ret = g_malloc (len+1);
+	if (len > 0 && fread (ret, len, 1, in) != 1) {
+		g_free (ret);
+		*str = NULL;
+		return -1;
+	}
+
+	ret[len] = 0;
+	*str = ret;
+	return 0;
+}
 
 /**
  * camel_file_util_safe_filename:
