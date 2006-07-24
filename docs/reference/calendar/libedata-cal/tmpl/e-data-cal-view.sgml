@@ -196,7 +196,7 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @query: 
-@uids: 
+@ids: 
 
 
 <!-- ##### FUNCTION e_data_cal_view_notify_objects_removed_1 ##### -->
@@ -205,7 +205,7 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @query: 
-@uid: 
+@id: 
 
 
 <!-- ##### FUNCTION e_data_cal_view_notify_progress ##### -->

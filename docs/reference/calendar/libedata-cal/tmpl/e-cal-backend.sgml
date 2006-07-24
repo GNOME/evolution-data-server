@@ -395,7 +395,7 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@uid: 
+@id: 
 @old_object: 
 @object: 
 

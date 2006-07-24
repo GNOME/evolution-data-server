@@ -132,8 +132,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @source: 
 @type: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@uri: 
 
 
 <!-- ##### FUNCTION e_cal_set_auth_func ##### -->
@@ -385,8 +383,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @end: 
 @cb: 
 @cb_data: 
-<!-- # Unused Parameters # -->
-@type: 
 
 
 <!-- ##### FUNCTION e_cal_get_alarms_in_range ##### -->
@@ -414,7 +410,7 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @ecal: 
-@uid: 
+@id: 
 @start: 
 @end: 
 @alarms: 

@@ -280,8 +280,6 @@ The writable status for this book is being reported.
 @contact: 
 @error: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@id: 
 
 
 <!-- ##### FUNCTION e_book_is_self ##### -->

@@ -37,9 +37,6 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 @cal_set_mode_fn: 
 @fn_data: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@error_occurred_fn: 
-@categories_changed_fn: 
 
 
 <!-- ##### FUNCTION e_cal_listener_new ##### -->
@@ -50,9 +47,6 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 @cal_set_mode_fn: 
 @fn_data: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@error_occurred_fn: 
-@categories_changed_fn: 
 
 
 <!-- ##### FUNCTION e_cal_listener_stop_notification ##### -->

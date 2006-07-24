@@ -88,6 +88,11 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
+<!-- ##### ARG EContact:book-uri ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:business-fax ##### -->
 <para>
 
@@ -244,6 +249,41 @@ A convenient way of accessing the contact information in EVCard objects.
 </para>
 
 <!-- ##### ARG EContact:im-aim-work-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-gadugadu-work-3 ##### -->
 <para>
 
 </para>
@@ -570,6 +610,7 @@ A convenient way of accessing the contact information in EVCard objects.
 
 @E_CONTACT_UID: 
 @E_CONTACT_FILE_AS: 
+@E_CONTACT_BOOK_URI: 
 @E_CONTACT_FULL_NAME: 
 @E_CONTACT_GIVEN_NAME: 
 @E_CONTACT_FAMILY_NAME: 
@@ -676,6 +717,13 @@ A convenient way of accessing the contact information in EVCard objects.
 @E_CONTACT_BIRTH_DATE: 
 @E_CONTACT_ANNIVERSARY: 
 @E_CONTACT_X509_CERT: 
+@E_CONTACT_IM_GADUGADU_HOME_1: 
+@E_CONTACT_IM_GADUGADU_HOME_2: 
+@E_CONTACT_IM_GADUGADU_HOME_3: 
+@E_CONTACT_IM_GADUGADU_WORK_1: 
+@E_CONTACT_IM_GADUGADU_WORK_2: 
+@E_CONTACT_IM_GADUGADU_WORK_3: 
+@E_CONTACT_IM_GADUGADU: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_FIELD_FIRST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 
@@ -704,8 +752,8 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
-@length: 
-@data: 
+@type: 
+@uri: 
 
 <!-- ##### STRUCT EContactAddress ##### -->
 <para>

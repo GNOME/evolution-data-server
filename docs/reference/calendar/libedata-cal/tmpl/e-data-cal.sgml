@@ -159,7 +159,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @status: 
-@uid: 
+@id: 
 @old_object: 
 @object: 
 

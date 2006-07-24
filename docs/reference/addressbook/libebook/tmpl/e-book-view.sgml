@@ -90,19 +90,3 @@ Fired with a status message reporting the progress of the view.
 @book: 
 
 
-<!-- ##### FUNCTION e_book_view_start ##### -->
-<para>
-
-</para>
-
-@book_view: 
-
-
-<!-- ##### FUNCTION e_book_view_stop ##### -->
-<para>
-
-</para>
-
-@book_view: 
-
-

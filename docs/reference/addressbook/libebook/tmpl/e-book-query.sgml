@@ -40,8 +40,6 @@ Handles queries of addressboook data.
 
 @query_string: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@sexp: 
 
 
 <!-- ##### FUNCTION e_book_query_to_string ##### -->
@@ -120,8 +118,6 @@ Handles queries of addressboook data.
 @q: 
 @unref: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@qs: 
 
 
 <!-- ##### FUNCTION e_book_query_field_exists ##### -->
