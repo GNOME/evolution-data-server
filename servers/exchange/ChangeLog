@@ -1,3 +1,8 @@
+2006-07-24  Veerapuram Varadhan <vvaradhan@novell.com>
+
+	* lib/e2k-context.c (e2k_context_set_auth): Create SoupSessionSync
+	with a default timeout of 30 secs.
+	
 2006-07-24  Sushma Rai  <rsushma@novell.com>
 
 	* storage/exchange-account.h: Added two more error codes 

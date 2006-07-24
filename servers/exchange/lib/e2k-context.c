@@ -110,6 +110,9 @@ struct _E2kContextPrivate {
 #define E2K_CONTEXT_MIN_BATCH_SIZE 25
 #define E2K_CONTEXT_MAX_BATCH_SIZE 100
 
+/* For soup sync session timeout */
+#define E2K_SOUP_SESSION_TIMEOUT 30
+
 #ifdef E2K_DEBUG
 char *e2k_debug;
 int e2k_debug_level;
@@ -357,6 +360,7 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		      const char *domain, const char *authmech,
 		      const char *password)
 {
+	guint timeout = E2K_SOUP_SESSION_TIMEOUT;
 
 	g_return_if_fail (E2K_IS_CONTEXT (ctx));
 
@@ -381,8 +385,15 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 	if (ctx->priv->async_session)
 		g_object_unref (ctx->priv->async_session);
 
+	/* Set a default timeout value of 30 seconds.
+	   FIXME: Make timeout configurable 
+	*/
+	if (g_getenv ("SOUP_SESSION_TIMEOUT"))
+		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
+	
 	ctx->priv->session = soup_session_sync_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),
+		SOUP_SESSION_TIMEOUT, timeout,
 		NULL);
 	g_signal_connect (ctx->priv->session, "authenticate",
 			  G_CALLBACK (session_authenticate), ctx);
