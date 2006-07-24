@@ -34,6 +34,8 @@
 #include "e-gw-message.h"
 #include "e-gw-filter.h"
 
+/* For soup sync session timeout */
+#define GW_SOUP_SESSION_TIMEOUT 30
 
 static GObjectClass *parent_class = NULL;
 static GHashTable *loaded_connections_permissions = NULL;
@@ -356,13 +358,20 @@ static void
 e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 {
 	EGwConnectionPrivate *priv;
+	guint timeout = GW_SOUP_SESSION_TIMEOUT;
 
 	/* allocate internal structure */
 	priv = g_new0 (EGwConnectionPrivate, 1);
 	cnc->priv = priv;
 
+	/* Set a default timeout value of 30 seconds.
+	   FIXME: Make timeout configurable 
+	*/
+	if (g_getenv ("SOUP_SESSION_TIMEOUT"))
+		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
+	
 	/* create the SoupSession for this connection */
-	priv->soup_session = soup_session_sync_new ();
+	priv->soup_session = soup_session_sync_new_with_options (SOUP_SESSION_TIMEOUT, timeout, NULL);
 	priv->reauth_mutex = g_mutex_new ();
 	priv->categories_by_id = NULL;
 	priv->categories_by_name = NULL;

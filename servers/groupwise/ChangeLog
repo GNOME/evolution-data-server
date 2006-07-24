@@ -1,3 +1,8 @@
+2006-07-24  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_init): Create SoupSessionSync
+	with a default timeout of 30 seconds.
+	
 2006-07-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_read_cal_ids):
