@@ -672,7 +672,7 @@ exchange_account_discover_shared_folder (ExchangeAccount *account,
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	if (!account->priv->gc)
-		return EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION;
+		return EXCHANGE_ACCOUNT_FOLDER_GC_NOTREACHABLE;
 
 	email = strchr (user, '<');
 	if (email)
@@ -709,9 +709,12 @@ exchange_account_discover_shared_folder (ExchangeAccount *account,
 	g_mutex_unlock (account->priv->discover_data_lock);
 
 	if (status != E2K_GLOBAL_CATALOG_OK) {
-		return (status == E2K_GLOBAL_CATALOG_ERROR) ?
-			EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR :
-			EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
+		if (status == E2K_GLOBAL_CATALOG_ERROR)
+			return EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR;
+		if (status == E2K_GLOBAL_CATALOG_NO_SUCH_USER)
+			return EXCHANGE_ACCOUNT_FOLDER_NO_SUCH_USER;
+		else
+			return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 	}
 
 	hier = get_hierarchy_for (account, entry);
@@ -2000,6 +2003,8 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	}
 
 	account = g_object_new (EXCHANGE_TYPE_ACCOUNT, NULL);
+	if (!account)
+		return NULL;
 	account->priv->account_list = account_list;
 	g_object_ref (account_list);
 	account->priv->account = adata;
