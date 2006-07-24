@@ -90,6 +90,14 @@ compare_im_yahoo (EContact *contact, const char *str,
 }
 
 static gboolean
+compare_im_gadugadu (EContact *contact, const char *str,
+		  char *(*compare)(const char*, const char*))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_GADUGADU);
+}
+
+
+static gboolean
 compare_im_jabber (EContact *contact, const char *str,
 		   char *(*compare)(const char*, const char*))
 {
@@ -259,6 +267,7 @@ static struct prop_info {
 	LIST_PROP ( "im_icq",    compare_im_icq ),
 	LIST_PROP ( "im_jabber", compare_im_jabber ),
 	LIST_PROP ( "im_yahoo",  compare_im_yahoo ),
+	LIST_PROP ( "im_gadugadu",  compare_im_gadugadu ),
 	LIST_PROP ( "im_groupwise", compare_im_groupwise ),
 	LIST_PROP ( "email",     compare_email ),
 	LIST_PROP ( "phone",     compare_phone ),

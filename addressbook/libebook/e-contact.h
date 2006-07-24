@@ -186,6 +186,17 @@ typedef enum {
 	/* Security Fields */
 	E_CONTACT_X509_CERT,     /* structured field (EContactCert) */
 
+	/*New Fields Added to the Enum and Padding for future*/
+	
+	E_CONTACT_IM_GADUGADU_HOME_1,  /* Synthetic string field */
+	E_CONTACT_IM_GADUGADU_HOME_2,  /* Synthetic string field */
+	E_CONTACT_IM_GADUGADU_HOME_3,  /* Synthetic string field */
+	E_CONTACT_IM_GADUGADU_WORK_1,  /* Synthetic string field */
+	E_CONTACT_IM_GADUGADU_WORK_2,  /* Synthetic string field */
+	E_CONTACT_IM_GADUGADU_WORK_3,  /* Synthetic string field */
+
+	E_CONTACT_IM_GADUGADU,   /* Multi-valued */
+	
 
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
@@ -278,7 +289,7 @@ EContact*               e_contact_duplicate        (EContact *contact);
 
 gpointer                e_contact_get              (EContact *contact, EContactField field_id);
 gconstpointer		e_contact_get_const        (EContact *contact, EContactField field_id);
-void                    e_contact_set              (EContact *contact, EContactField field_id, gpointer value);
+void                    e_contact_set              (EContact *contact, EContactField field_id, const gpointer value);
 
 /* the following two calls return and take a GList of
    EVCardAttribute*'s. */

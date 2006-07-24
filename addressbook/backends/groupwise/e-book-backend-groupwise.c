@@ -168,6 +168,7 @@ populate_ims (EContact *contact, gpointer data)
 	GList *aim_list = NULL;
 	GList *icq_list = NULL;
 	GList *yahoo_list = NULL;
+	GList *gadugadu_list = NULL;
 	GList *msn_list = NULL;
 	GList *jabber_list = NULL;
 	GList *groupwise_list = NULL;
@@ -203,6 +204,10 @@ populate_ims (EContact *contact, gpointer data)
 			im_field_id = E_CONTACT_IM_YAHOO;
 			im_attr_list = &yahoo_list;
 		}
+		else if (g_str_equal (address->service, "gadu-gadu")) {
+			im_field_id = E_CONTACT_IM_GADUGADU;
+			im_attr_list = &gadugadu_list;
+		}
 		else if (g_str_equal (address->service, "jabber")) {
 			im_field_id = E_CONTACT_IM_JABBER;
 			im_attr_list = &jabber_list;
@@ -225,6 +230,7 @@ populate_ims (EContact *contact, gpointer data)
 	e_contact_set_attributes (contact, E_CONTACT_IM_JABBER, jabber_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_ICQ, icq_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_YAHOO, yahoo_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_GADUGADU, gadugadu_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_MSN, msn_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_GROUPWISE, groupwise_list);
 	
@@ -232,6 +238,7 @@ populate_ims (EContact *contact, gpointer data)
 	free_attr_list (jabber_list);
 	free_attr_list (icq_list);
 	free_attr_list (yahoo_list);
+	free_attr_list (gadugadu_list);
 	free_attr_list (msn_list);
 	free_attr_list (groupwise_list);
 }
@@ -262,6 +269,7 @@ set_ims_in_gw_item (EGwItem *item, gpointer data)
   
 	append_ims_to_list (&im_list, contact, "aim", E_CONTACT_IM_AIM);
 	append_ims_to_list (&im_list, contact, "yahoo", E_CONTACT_IM_YAHOO);
+	append_ims_to_list (&im_list, contact, "gadu-gadu", E_CONTACT_IM_GADUGADU);
 	append_ims_to_list (&im_list, contact, "icq", E_CONTACT_IM_ICQ);
 	append_ims_to_list (&im_list, contact, "msn", E_CONTACT_IM_MSN);
 	append_ims_to_list (&im_list, contact, "jabber", E_CONTACT_IM_JABBER);
@@ -3269,6 +3277,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_ICQ)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_YAHOO)));
+	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_GADUGADU)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_MSN)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_JABBER)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_GROUPWISE)));

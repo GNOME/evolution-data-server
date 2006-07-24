@@ -1,3 +1,8 @@
+2006-07-24  Devashish Sharma  <sdevashish@novell.com>
+	
+	* libebook/e-contact.[ch] : Added support for Gadu Gadu IM
+	in contact entry.
+
 2006-07-24  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book-query.[ch]:
