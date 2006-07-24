@@ -106,7 +106,8 @@ libexchange_storageinclude_HEADERS = 				\
 	exchange-hierarchy-webdav.h				\
 	exchange-hierarchy-foreign.h				\
 	exchange-oof.h						\
-	exchange-types.h					
+	exchange-types.h					\
+	exchange-esource.h
 
 %-$(API_VERSION).pc: %.pc
 	cp $< $@
