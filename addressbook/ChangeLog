@@ -1,3 +1,9 @@
+2006-07-24  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-vcard.[ch]:
+	Add e_vcard_attribute_remove_value and
+	e_vcard_attribute_remove_param_value() (#347899).
+
 2006-07-18  Ross Burton  <ross@openedhand.com>
 
 	* backends/groupwise/Makefile.am:

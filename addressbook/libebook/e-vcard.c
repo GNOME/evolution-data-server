@@ -1279,6 +1279,29 @@ e_vcard_attribute_remove_values (EVCardAttribute *attr)
 }
 
 /**
+ * e_vcard_attribute_remove_value:
+ * @attr: an #EVCardAttribute
+ * @s: an value to remove
+ *
+ * Removes from the value list in @attr the value @s.
+ **/
+void
+e_vcard_attribute_remove_value (EVCardAttribute *attr, const char *s)
+{
+	GList *l;
+
+	g_return_if_fail (attr != NULL);
+	g_return_if_fail (s != NULL);
+
+	l = g_list_find_custom (attr->values, s, (GCompareFunc)strcmp);
+	if (l == NULL) {
+		return;
+	}
+	
+	attr->values = g_list_delete_link (attr->values, l);
+}
+
+/**
  * e_vcard_attribute_remove_params:
  * @attr: an #EVCardAttribute
  *
@@ -1506,6 +1529,45 @@ e_vcard_attribute_param_remove_values (EVCardAttributeParam *param)
 	g_list_foreach (param->values, (GFunc)g_free, NULL);
 	g_list_free (param->values);
 	param->values = NULL;
+}
+
+/**
+ * e_vcard_attribute_remove_param_value:
+ * @attr: an #EVCardAttribute
+ * @param_name: a parameter name
+ * @s: a value
+ *
+ * Removes the value @s from the parameter @param_name on the attribute @attr.
+ **/
+void
+e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const char *param_name, const char *s)
+{
+	GList *l, *params;
+	EVCardAttributeParam *param;
+
+	g_return_if_fail (attr != NULL);
+	g_return_if_fail (param_name != NULL);
+	g_return_if_fail (s != NULL);
+
+	params = e_vcard_attribute_get_params (attr);
+
+	for (l = params; l; l = l->next) {
+		param = l->data;
+		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param), param_name) == 0) {
+			l = g_list_find_custom (param->values, s, (GCompareFunc)strcmp);
+			if (l == NULL) {
+				return;
+			}
+			
+			param->values = g_list_delete_link (param->values, l);
+			if (param->values == NULL) {
+				e_vcard_attribute_param_free (param);
+				attr->params = g_list_remove (attr->params, param);
+			}
+			break;
+		}
+	}
+	return;
 }
 
 /**

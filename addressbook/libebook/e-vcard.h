@@ -147,8 +147,10 @@ void             e_vcard_add_attribute_with_values   (EVCard *evcard, EVCardAttr
 void             e_vcard_attribute_add_value         (EVCardAttribute *attr, const char *value);
 void             e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const char *value, int len);
 void             e_vcard_attribute_add_values        (EVCardAttribute *attr, ...);
+void             e_vcard_attribute_remove_value      (EVCardAttribute *attr, const char *s);
 void             e_vcard_attribute_remove_values     (EVCardAttribute *attr);
 void             e_vcard_attribute_remove_params     (EVCardAttribute *attr);
+void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const char *param_name, const char *s);
 
 /* attribute parameters */
 EVCardAttributeParam* e_vcard_attribute_param_new             (const char *param_name);
