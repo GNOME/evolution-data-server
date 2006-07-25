@@ -69,7 +69,7 @@ libebookinclude_HEADERS =				\
 	e-contact.h					\
 	e-destination.h					\
 	e-name-western.h				\
-	e-name-western-tables.h				\
+	e-name-western-tables.h                         \
 	e-vcard.h
 
 %-$(API_VERSION).pc: %.pc
@@ -81,13 +81,15 @@ e-name-western-tables.h: e-name-western-tables.h.in
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED) e-name-western-tables.h
 CLEANFILES    = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	e-book-marshal.list				\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)     \
+	e-name-western-tables.h.in                      \
+	gen-western-table.py
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
