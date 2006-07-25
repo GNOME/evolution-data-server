@@ -1,3 +1,8 @@
+2006-07-25  suka  <suka@gentoo.org>
+
+	* e-categories-dialog.glade: change default height of categories 
+	window. Fixes bug #348285. (committed by Andre Klapper)
+
 2006-07-20  Devashish Sharma  <sdevashish@novell.com>
 
 	** Fixes bug 273921
