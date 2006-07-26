@@ -598,13 +598,6 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 #endif
 	g_mutex_unlock(mp->lock);
 
-	if (fd != -1) {
-		m(printf("put: have pipe, writing notification to it\n"));
-		do {
-			w = E_WRITE (fd, "E", 1);
-		} while (w == -1 && E_IS_STATUS_INTR ());
-	}
-
 #ifdef HAVE_NSS
 	if (prfd != NULL) {
 		m(printf("put: have pr pipe, writing notification to it\n"));
@@ -613,6 +606,13 @@ void e_msgport_put(EMsgPort *mp, EMsg *msg)
 		} while (w == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
 	}
 #endif
+	if (fd != -1) {
+		m(printf("put: have pipe, writing notification to it\n"));
+		do {
+			w = E_WRITE (fd, "E", 1);
+		} while (w == -1 && E_IS_STATUS_INTR ());
+	}
+
 	m(printf("put: done\n"));
 }
 

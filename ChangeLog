@@ -1,3 +1,10 @@
+2006-07-26  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes #343976
+	* libedataserver/e-msgport.c (e_msgport_put): Make e_msgport_put
+	symmetric to e_msgport_wait
+	Patch contributed by Ed Catmur <ed@catmur.co.uk>
+	
 2006-07-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* configure.in, NEWS: EDS 1.7.90.1 release.
