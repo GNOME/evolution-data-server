@@ -186,6 +186,7 @@ const char *e_gw_item_get_message (EGwItem *item);
 void        e_gw_item_set_message (EGwItem *item, const char *new_message);
 const char *e_gw_item_get_place (EGwItem *item);
 void        e_gw_item_set_place (EGwItem *item, const char *new_place);
+void        e_gw_item_set_security (EGwItem *item, const char *new_class);
 gboolean    e_gw_item_get_completed (EGwItem *item);
 void        e_gw_item_set_completed (EGwItem *item, gboolean new_completed);
 gboolean    e_gw_item_get_is_allday_event (EGwItem *item);
