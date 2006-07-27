@@ -1,3 +1,9 @@
+2006-07-27  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-entry.c :Crash on closing the contact editor 
+	after closing the composer.
+	Fix for Bug #347779, 347706
+
 2006-07-25  suka  <suka@gentoo.org>
 
 	* e-categories-dialog.glade: change default height of categories 
