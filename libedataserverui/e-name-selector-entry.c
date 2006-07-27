@@ -1481,8 +1481,10 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	n = gtk_tree_path_get_indices (path) [0];
 	destination = e_destination_store_get_destination (name_selector_entry->destination_store, iter);
 
+	if (!destination)
+		return;
+
 	g_assert (n >= 0);
-	g_assert (destination != NULL);
 
 	entry_text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	if (!get_range_by_index (entry_text, n, &range_start, &range_end)) {
@@ -1757,6 +1759,7 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 	g_free (contact_uid);
 	g_object_unref (contact);
 	g_object_unref (editor);
+	g_object_unref (name_selector_entry);
 }
 
 static void
@@ -1828,6 +1831,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 			return;
 
 		contact_list_editor = (*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_list_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	} else {
@@ -1837,6 +1841,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 			return;
 
 		contact_editor = (*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
+		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	}

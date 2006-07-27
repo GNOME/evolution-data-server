@@ -1,3 +1,7 @@
+2006-07-27  Devashish Sharma  <sdevashish@novell.com>
+
+	* e-name-selector-entry.c : Fix for Bug #347779 and 347706.
+
 2006-07-06  Boby Wang  <boby.wang@sun.com>
 
 	** Fixes bug #345397
