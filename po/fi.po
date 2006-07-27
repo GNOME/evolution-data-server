@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-17 09:07+0300\n"
-"PO-Revision-Date: 2006-07-17 09:08+0300\n"
+"POT-Creation-Date: 2006-07-27 13:26+0300\n"
+"PO-Revision-Date: 2006-07-27 13:27+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -17,29 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:542
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2236
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "Ladataan..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:545
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4083
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2195
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2215
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2234
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4093
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Etsitään..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2604
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4257
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Haetaan yhteystietoja (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2761
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2950
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2994
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Päivitetään yhteystietojen välimuistia (%d)..."
@@ -68,11 +68,11 @@ msgstr "Poistetaan yhteystieto LDAP-palvelimelta..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Muokataan yhteystietoa LDAP-palvelimella..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3945
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3955
 msgid "Receiving LDAP search results..."
 msgstr "Vastaanotetaan LDAP-haun tuloksia..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4105
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4115
 msgid "Error performing search"
 msgstr "Virhe suoritettaessa hakua"
 
@@ -627,7 +627,35 @@ msgstr "Viimeisin tarkistettu versio"
 msgid "Book URI"
 msgstr "Kirjan URI"
 
-#: ../addressbook/libebook/e-contact.c:1239
+#: ../addressbook/libebook/e-contact.c:253
+msgid "Gadu-Gadu Home Id 1"
+msgstr "Gadu-Gadu kotitunniste 1"
+
+#: ../addressbook/libebook/e-contact.c:254
+msgid "Gadu-Gadu Home Id 2"
+msgstr "Gadu-Gadu kotitunniste 2"
+
+#: ../addressbook/libebook/e-contact.c:255
+msgid "Gadu-Gadu Home Id 3"
+msgstr "Gadu-Gadu kotitunniste 3"
+
+#: ../addressbook/libebook/e-contact.c:256
+msgid "Gadu-Gadu Work Id 1"
+msgstr "Gadu-Gadu työtunniste 1"
+
+#: ../addressbook/libebook/e-contact.c:257
+msgid "Gadu-Gadu Work Id 2"
+msgstr "Gadu-Gadu työtunniste 2"
+
+#: ../addressbook/libebook/e-contact.c:258
+msgid "Gadu-Gadu Work Id 3"
+msgstr "Gadu-Gadu työtunniste 3"
+
+#: ../addressbook/libebook/e-contact.c:259
+msgid "Gadu-Gadu Id List"
+msgstr "Gadu-Gadun tunnistelista"
+
+#: ../addressbook/libebook/e-contact.c:1265
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "Nimeämätön lista"
@@ -651,37 +679,37 @@ msgstr "Vuosipäivä: %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kalenteritietoja ei voi tallentaa: virheellinen URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1656
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
 msgid "Reply Requested: by "
 msgstr "Vastausta pyydetään: mennessä "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 msgid "Reply Requested: When convenient"
 msgstr "Vastausta pyydetään: kun sopii"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:245
 #, c-format
 msgid "Loading %s items"
 msgstr "Ladataan %s kohdetta"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:777
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Kalenteri"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:834
 msgid "Invalid server URI"
 msgstr "Virheellinen palvelimen URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:936
-#: ../calendar/libecal/e-cal.c:5148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1011
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:853
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
+#: ../calendar/libecal/e-cal.c:5178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1015
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1053
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 #: ../camel/providers/groupwise/camel-groupwise-store.c:711
@@ -692,18 +720,18 @@ msgstr "Virheellinen palvelimen URI"
 msgid "Authentication failed"
 msgstr "Todennus epäonnistui"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:904
 msgid "Could not create thread for getting deltas"
 msgstr "Deltojen hakuun ei voitu luoda säiettä"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1169
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:944
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1213
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Välimuistitiedostoa ei voitu luoda"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:930
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:956
 msgid "Could not create thread for populating cache"
 msgstr "Välimuistitiedoston luontia varten ei voitu luoda säiettä"
 
@@ -916,127 +944,127 @@ msgstr "%.1f-%.1ftuumaa lunta\n"
 msgid "Untitled appointment"
 msgstr "Nimeämätön tapaaminen"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31."
 
@@ -1058,84 +1086,84 @@ msgid "Undefined"
 msgstr "Määrittelemätön"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1707
+#: ../calendar/libecal/e-cal.c:1737
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Syötä salasana kohteelle %s ottaaksesi käyttöön välimuisti  käyttäjälle %s"
 
-#: ../calendar/libecal/e-cal.c:1710 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Syötä salasana tilille %s (käytäjä %s)"
 
-#: ../calendar/libecal/e-cal.c:5120
+#: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
 msgstr "Virheellinen argumentti"
 
-#: ../calendar/libecal/e-cal.c:5122
+#: ../calendar/libecal/e-cal.c:5152
 msgid "Backend is busy"
 msgstr "Taustajärjestelmä on käytössä"
 
-#: ../calendar/libecal/e-cal.c:5124
+#: ../calendar/libecal/e-cal.c:5154
 msgid "Repository is offline"
 msgstr "Varasto on yhteydettömässä tilassa"
 
-#: ../calendar/libecal/e-cal.c:5126
+#: ../calendar/libecal/e-cal.c:5156
 msgid "No such calendar"
 msgstr "Kalenteria ei ole olemassa"
 
-#: ../calendar/libecal/e-cal.c:5128 ../servers/groupwise/e-gw-connection.c:173
+#: ../calendar/libecal/e-cal.c:5158 ../servers/groupwise/e-gw-connection.c:175
 msgid "Object not found"
 msgstr "Kohdetta ei löydy"
 
-#: ../calendar/libecal/e-cal.c:5130 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid object"
 msgstr "Virheellinen kohde"
 
-#: ../calendar/libecal/e-cal.c:5132
+#: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
 msgstr "URIa ei ole ladattu"
 
-#: ../calendar/libecal/e-cal.c:5134
+#: ../calendar/libecal/e-cal.c:5164
 msgid "URI already loaded"
 msgstr "URI on jo ladattu"
 
-#: ../calendar/libecal/e-cal.c:5136
+#: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Lupa evätty"
 
-#: ../calendar/libecal/e-cal.c:5138 ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
 msgid "Unknown User"
 msgstr "Tuntematon käyttäjä"
 
-#: ../calendar/libecal/e-cal.c:5140
+#: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
 msgstr "OID on jo olemassa"
 
-#: ../calendar/libecal/e-cal.c:5142
+#: ../calendar/libecal/e-cal.c:5172
 msgid "Protocol not supported"
 msgstr "Protokolla ei ole tuettu"
 
-#: ../calendar/libecal/e-cal.c:5144
+#: ../calendar/libecal/e-cal.c:5174
 msgid "Operation has been canceled"
 msgstr "Toimenpide on peruttu"
 
-#: ../calendar/libecal/e-cal.c:5146
+#: ../calendar/libecal/e-cal.c:5176
 msgid "Could not cancel operation"
 msgstr "Toimenpidettä ei voitu perua"
 
-#: ../calendar/libecal/e-cal.c:5150
+#: ../calendar/libecal/e-cal.c:5180
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Todennus vaaditaan"
 
-#: ../calendar/libecal/e-cal.c:5152
+#: ../calendar/libecal/e-cal.c:5182
 msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
-#: ../calendar/libecal/e-cal.c:5154
+#: ../calendar/libecal/e-cal.c:5184
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
@@ -1144,19 +1172,19 @@ msgstr "Tapahtui CORBA-poikkeus"
 #: ../camel/providers/pop3/camel-pop3-store.c:539
 #: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:181
+#: ../servers/groupwise/e-gw-connection.c:183
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: ../calendar/libecal/e-cal.c:5156
+#: ../calendar/libecal/e-cal.c:5186
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Ei virhettä"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" ei ota argumentteja"
@@ -1165,7 +1193,7 @@ msgstr "\"%s\" ei ota argumentteja"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" ottaa yhden argumentin"
@@ -1173,7 +1201,7 @@ msgstr "\"%s\" ottaa yhden argumentin"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" olettaa ensimmäisen argumentin olevan merkkijonon"
@@ -1186,8 +1214,8 @@ msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" olettaa kahta argumenttia"
@@ -1196,8 +1224,8 @@ msgstr "\"%s\" olettaa kahta argumenttia"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" olettaa ensimmäisen argumentin olevan muotoa time_t"
@@ -1208,17 +1236,17 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" olettaa toisen argumentin olevan kokonaisluvun"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" olettaa toisen argumentin olevan muotoa time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" olettaa toisen argumentin olevan merkkijonon"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1227,12 +1255,12 @@ msgstr ""
 "\"%s\" olettaa ensimmäisen argumentin olevan joko joku joukosta \"any\", "
 "\"summary\" tai \"description\" tai \"sijainti\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" tahtoo vähintään yhden argumentin"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -2582,7 +2610,7 @@ msgstr "Viestejä ei voi kopioida roskakoriin"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Viestejä ei voi kopioida roskapostikansioon"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #, c-format
 msgid ""
@@ -2592,7 +2620,7 @@ msgstr ""
 "Viestiä ei voida hakea: %s\n"
 " %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
@@ -2600,7 +2628,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Ei tällaista viestiä"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
@@ -2612,7 +2640,7 @@ msgstr "Ei tällaista viestiä"
 msgid "User canceled"
 msgstr "Käyttäjä perui"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
@@ -2626,30 +2654,30 @@ msgstr "Käyttäjä perui"
 msgid "Cannot get message %s: %s"
 msgstr "Viestin %s hakeminen ei onnistu: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "Tämä viesti ei ole saatavilla yhteydettömässä tilassa."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:167
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1564
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1609
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1568
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1613
 msgid "Could not get message"
 msgstr "Viestiä ei voitu hakea"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:753
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:757
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Yhteenvetoa %s:lle ei voitu ladata"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
 msgid "Trash Folder Full. Please Empty."
 msgstr "Roskakori on täynnä, poista sieltä viestejä."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2361
@@ -2658,13 +2686,13 @@ msgstr "Roskakori on täynnä, poista sieltä viestejä."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1877
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1881
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Viestiä ei voida lisätä kansioon  '%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1907
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1911
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Viestiä ei voida luoda: %s"
@@ -3730,9 +3758,9 @@ msgid "Checking for new messages"
 msgstr "Etsitään uusia viestejä"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:417
-#: ../camel/providers/local/camel-mbox-summary.c:590
-#: ../camel/providers/local/camel-mbox-summary.c:685
+#: ../camel/providers/local/camel-mbox-summary.c:433
+#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "Tallennetaan kansiota"
@@ -3825,76 +3853,76 @@ msgstr "%s:n uudelleennimeäminen epäonnistui: %s: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Uudelleennimeäminen %s:stä %s:ksi epäonnistui: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:423
+#: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kansiota ei voitu avata: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:471
+#: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "Vakava sähköpostin käsittelyvirhe kohdassa %ld kansiossa %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:527
+#: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kansion tarkistus ei onnistu: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:595
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:611
+#: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Tiedostoa ei voitu avata: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:607
+#: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Väliaikaista sähköpostilaatikkoa ei voida avata: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:620
-#: ../camel/providers/local/camel-mbox-summary.c:796
+#: ../camel/providers/local/camel-mbox-summary.c:636
+#: ../camel/providers/local/camel-mbox-summary.c:812
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Lähdekansiota %s ei voitu sulkea: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:629
+#: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "Väliaikaista kansiota ei voitu sulkea: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:644
+#: ../camel/providers/local/camel-mbox-summary.c:660
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kansiota ei voitu uudelleen nimetä: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:701
-#: ../camel/providers/local/camel-mbox-summary.c:907
+#: ../camel/providers/local/camel-mbox-summary.c:717
+#: ../camel/providers/local/camel-mbox-summary.c:923
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kansiota ei voitu tallentaa: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:738
-#: ../camel/providers/local/camel-mbox-summary.c:746
-#: ../camel/providers/local/camel-mbox-summary.c:938
-#: ../camel/providers/local/camel-mbox-summary.c:946
+#: ../camel/providers/local/camel-mbox-summary.c:754
+#: ../camel/providers/local/camel-mbox-summary.c:762
+#: ../camel/providers/local/camel-mbox-summary.c:954
+#: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Yhteenveto ja kansio eivät täsmää edes virkistyksen jälkeen"
 
-#: ../camel/providers/local/camel-mbox-summary.c:872
+#: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Tuntematon virhe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1001
-#: ../camel/providers/local/camel-mbox-summary.c:1027
+#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Virhe kirjoitettaessa väliaikaiseen postikansioon: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1018
+#: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Väliaikaiseen postikansioon kirjoitus epäonnistui: %s: %s"
@@ -4901,15 +4929,15 @@ msgstr "_Muokkaa"
 msgid "categories"
 msgstr "luokat"
 
-#: ../libedataserverui/e-name-selector-dialog.c:282
+#: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
 msgstr "Valitse yhteystiedot osoitekirjasta"
 
-#: ../libedataserverui/e-name-selector-dialog.c:583
+#: ../libedataserverui/e-name-selector-dialog.c:598
 msgid "_Add"
 msgstr "_Lisää"
 
-#: ../libedataserverui/e-name-selector-dialog.c:608
+#: ../libedataserverui/e-name-selector-dialog.c:623
 msgid "_Remove"
 msgstr "_Poista"
 
@@ -4955,13 +4983,13 @@ msgid "_Search:"
 msgstr "_Etsi:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2045
+#: ../libedataserverui/e-name-selector-entry.c:2095
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "L_aajenna %s sisäkkäisesti"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2061
+#: ../libedataserverui/e-name-selector-entry.c:2111
 #, c-format
 msgid "_Edit %s"
 msgstr "_Muokkaa %s"
@@ -4997,13 +5025,13 @@ msgid "_Destination"
 msgstr "_Kohde"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
-#: ../servers/exchange/storage/exchange-account.c:932
+#: ../servers/exchange/storage/exchange-account.c:935
 #, c-format
 msgid "Enter password for %s"
 msgstr "Syötä salasana tilille %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
-#: ../servers/exchange/storage/exchange-account.c:937
+#: ../servers/exchange/storage/exchange-account.c:940
 msgid "Enter password"
 msgstr "Syötä salasana"
 
@@ -5120,21 +5148,21 @@ msgstr "Tätä toimintoa ei voida tehdä yhteydettömässä tilassa"
 msgid "%s's Folders"
 msgstr "%s:n kansiot"
 
-#: ../servers/exchange/storage/exchange-account.c:1238
+#: ../servers/exchange/storage/exchange-account.c:1241
 msgid "Personal Folders"
 msgstr "Omat kansiot"
 
-#: ../servers/exchange/storage/exchange-account.c:1252
+#: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
 msgstr "Julkisten kansioiden suosikit"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1269
+#: ../servers/exchange/storage/exchange-account.c:1272
 msgid "All Public Folders"
 msgstr "Kaikki julkiset kansiot"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1283
+#: ../servers/exchange/storage/exchange-account.c:1286
 msgid "Global Address List"
 msgstr "Osoitelista"
 
@@ -5166,19 +5194,19 @@ msgstr "Lähetetyt"
 msgid "Tasks"
 msgstr "Tehtävät"
 
-#: ../servers/groupwise/e-gw-connection.c:165
+#: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
 msgstr "Virheellinen yhteys"
 
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:171
 msgid "Invalid response from server"
 msgstr "Virheellinen vastaus palvelimelta"
 
-#: ../servers/groupwise/e-gw-connection.c:171
+#: ../servers/groupwise/e-gw-connection.c:173
 msgid "No response from the server"
 msgstr "Ei vastausta palvelimelta"
 
-#: ../servers/groupwise/e-gw-connection.c:177
+#: ../servers/groupwise/e-gw-connection.c:179
 msgid "Bad parameter"
 msgstr "Virheellinen parameteri"
 
