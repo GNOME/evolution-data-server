@@ -1920,6 +1920,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 			return;
 
 		contact_list_editor = (*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_list_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	} else {
