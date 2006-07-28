@@ -1,3 +1,13 @@
+2006-07-28  Devashish Sharma  <sdevashish@novell.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c : 
+	In groupwise there is no way to put arbitrary members into a group. There's no
+	mechanism for a group to contain members that are not already present in a system
+	or personal addressbook as a contact, and so they cant be saved and will be lost.
+	In order to save them we first need to create groupwise based contacts for these
+	arbitrary contacts and then add them as members to the group.
+	Fixes Bug #337228
+
 2006-07-25  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libebook/Makefile.am: Distribute e-name-western-tables.h.in

@@ -791,6 +791,9 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	char *id;
 	EGwItem *temp_item;
 	int count = 0;
+	int element_type;
+	int i;
+	char *value;
 	EGroupMember *member;
 
 	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
@@ -811,6 +814,19 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 						 EVC_X_DEST_CONTACT_UID)) {
 				GList *v = e_vcard_attribute_param_get_values (param);
 				id = v ? v->data : NULL;
+				if (id) {
+					EGwItem *gw_item = NULL;
+					e_gw_connection_get_item (egwb->priv->cnc, egwb->priv->container_id,id, "name email", &gw_item);
+					if (!gw_item) {
+						/* The item corresponding to this id is not found. This happens in case of
+						 * importing, in imported file the stored id is corresponding to the address
+						 * book from which the contact list was exported.
+						 */ 
+						id = NULL;
+					}
+					else
+						g_object_unref (gw_item);
+				}
 			} else if (!g_ascii_strcasecmp (param_name,
 							EVC_X_DEST_EMAIL)) {
 				GList *v = e_vcard_attribute_param_get_values (param);
@@ -850,6 +866,76 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		g_object_unref (temp_item);
 	}
        
+
+	/* In groupwise there is no way to put arbitrary members into a group. There's no 
+	 * mechanism for a group to contain members that are not already present in a system 
+	 * or personal addressbook as a contact, and so they cant be saved and will be lost.
+	 * In order to save them we first need to create groupwise based contacts for these 
+	 * arbitrary contacts and then add them as members to the group.
+	 */
+	
+	temp = emails_without_ids ;
+	for (; temp != NULL; temp = g_list_next (temp)) {
+		EContact *new_contact = e_contact_new ();
+		e_contact_set (new_contact,E_CONTACT_FULL_NAME, e_contact_name_from_string (strdup (temp->data))); 
+		e_contact_set (new_contact, E_CONTACT_EMAIL_1, strdup (temp->data));
+		e_contact_set (new_contact, E_CONTACT_IS_LIST, FALSE);
+		EGwItem *new_item = e_gw_item_new_empty ();
+		e_gw_item_set_item_type (new_item, E_GW_ITEM_TYPE_CONTACT);
+		e_gw_item_set_container_id (new_item, g_strdup(egwb->priv->container_id));
+		FullName *full_name;
+		full_name = g_new0 (FullName, 1);
+		full_name->name_prefix = NULL;
+		full_name->first_name = g_strdup(temp->data);
+		full_name->middle_name = NULL;
+		full_name->last_name = NULL;
+		full_name->name_suffix = NULL;
+		e_gw_item_set_full_name (new_item, full_name);
+		
+		for (i=0; i< num_mappings; i++) {
+			element_type = mappings[i].element_type;
+			if (element_type == ELEMENT_TYPE_SIMPLE) {
+				value = e_contact_get (new_contact, mappings[i].field_id);
+				if (value != NULL) {
+					e_gw_item_set_field_value (new_item, mappings[i].element_name, value);
+					g_free (value);
+				}
+			}
+			else if	(element_type == ELEMENT_TYPE_COMPLEX) {
+				if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
+					continue;
+				}
+				else if (mappings[i].field_id == E_CONTACT_EMAIL) {
+					if (e_contact_get (contact, E_CONTACT_IS_LIST))
+						continue;
+				}
+				else if (mappings[i].field_id == E_CONTACT_FULL_NAME) {
+					continue;
+				}
+				else {
+					mappings[i].set_value_in_gw_item (new_item, new_contact);
+				}
+			}
+		
+		}
+		id = NULL;
+		status = e_gw_connection_create_item (egwb->priv->cnc, new_item, &id);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_create_item (egwb->priv->cnc, new_item, &id);
+		
+		if (status == E_GW_CONNECTION_STATUS_OK && id) {
+			e_contact_set (new_contact, E_CONTACT_UID, id);
+			e_book_backend_db_cache_add_contact (egwb->priv->file_db, new_contact);
+			e_book_backend_summary_add_contact (egwb->priv->summary, new_contact);
+			member = g_new0 (EGroupMember, 1);
+			member->id = g_strdup (id);
+			group_members = g_list_append (group_members, member);
+			g_free (id);
+		}
+		g_object_unref (new_item);
+		g_object_unref (new_contact);
+	}
+
 	g_list_foreach (members, (GFunc) e_vcard_attribute_free, NULL);
 	g_list_free (members);
 	g_list_foreach (emails_without_ids, (GFunc) g_free, NULL);
