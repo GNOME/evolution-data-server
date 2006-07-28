@@ -1,5 +1,10 @@
 2006-07-28  Devashish Sharma  <sdevashish@novell.com>
 
+	* libedata-book/e-data-book-view.c :
+	Fix for a crash in addressbook while loading.
+
+2006-07-28  Devashish Sharma  <sdevashish@novell.com>
+
 	* backends/groupwise/e-book-backend-groupwise.c : 
 	In groupwise there is no way to put arbitrary members into a group. There's no
 	mechanism for a group to contain members that are not already present in a system

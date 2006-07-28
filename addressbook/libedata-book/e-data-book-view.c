@@ -288,13 +288,19 @@ void
 e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
 {
 	gboolean currently_in_view, want_in_view;
-	const char *id;
+	const char *id = NULL;
 	EContact *contact;
 	
 	g_mutex_lock (book_view->priv->pending_mutex);
 	
 	contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (contact, E_CONTACT_UID);
+	if (!id) {
+		free (vcard);
+		g_object_unref (contact);
+		g_mutex_unlock (book_view->priv->pending_mutex);
+		return;
+	}
 	
 	currently_in_view =
 		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
