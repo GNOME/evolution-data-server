@@ -16,38 +16,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.6.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-21 12:53+0200\n"
-"PO-Revision-Date: 2006-07-21 12:53+0200\n"
-"Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
+"POT-Creation-Date: 2006-07-30 00:23+0200\n"
+"PO-Revision-Date: 2006-07-30 00:09+0200\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2299
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "Chargement..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2258
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2278
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2297
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4038
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
-msgstr "Recherche..."
+msgstr "Recherche en cours..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2502
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2588
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4202
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Téléchargement des contacts (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2655
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2844
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2873
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2741
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2930
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2959
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Mise à jour du cache des contacts (%d)... "
@@ -78,7 +78,7 @@ msgstr "Modification du contact sur le serveur LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3900
 msgid "Receiving LDAP search results..."
-msgstr "Réception des résultats de recherche LDAP..."
+msgstr "Réception des résultats de la recherche LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4060
 msgid "Error performing search"
@@ -659,12 +659,12 @@ msgstr "Anniversaire : %s"
 msgid "Can't save calendar data: Malformed URI."
 msgstr "Impossible d'enregistrer les données du calendrier : URI erroné."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:936
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1586
 msgid "Reply Requested: by "
 msgstr "Réponse requise : par"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:941
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1591
 msgid "Reply Requested: When convenient"
 msgstr "Réponse requise : si nécessaire"
@@ -674,18 +674,18 @@ msgstr "Réponse requise : si nécessaire"
 msgid "Loading %s items"
 msgstr "Chargement de %s éléments"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:727
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:731
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:783
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:787
 msgid "Invalid server URI"
 msgstr "URI de serveur non valide"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:799
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:808
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:803
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:812
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:897
 #: ../calendar/libecal/e-cal.c:5137
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:960
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:983
@@ -698,18 +698,18 @@ msgstr "URI de serveur non valide"
 msgid "Authentication failed"
 msgstr "L'authentification a échoué"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:849
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:853
 msgid "Could not create thread for getting deltas"
 msgstr "Impossible de créer le thread pour obtenir les différences"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:874
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1121
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:878
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1125
 #: ../calendar/backends/http/e-cal-backend-http.c:520
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Impossible de créer le fichier cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:887
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:891
 msgid "Could not create thread for populating cache"
 msgstr "Impossible de créer la liste pour remplir le fichier cache"
 
@@ -1869,7 +1869,7 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"Cette option utilisera un mot de passe sécurisé CRAM-MD5 pour se connecter\n"
+"Cette option utilisera un mot de passe sécurisé CRAM-MD5 pour se connecter "
 "au serveur si le serveur le supporte."
 
 #: ../camel/camel-sasl-digest-md5.c:48
@@ -1881,8 +1881,7 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Cette option utilisera un mot de passe sécurisé DIGEST-MD5 pour se "
-"connecter\n"
+"Cette option utilisera un mot de passe sécurisé DIGEST-MD5 pour se connecter "
 "au serveur si le serveur le supporte."
 
 #: ../camel/camel-sasl-digest-md5.c:818
@@ -4960,7 +4959,7 @@ msgstr "Sélectionnez les contacts dans le carnet d'adresses"
 
 #: ../libedataserverui/e-name-selector-dialog.c:583
 msgid "_Add"
-msgstr "_Ajouter"
+msgstr "A_jouter"
 
 #: ../libedataserverui/e-name-selector-dialog.c:608
 msgid "_Remove"
@@ -4988,11 +4987,11 @@ msgstr "Carnet d'adresses"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Address _Book:"
-msgstr "_Carnet d'adresses : "
+msgstr "_Carnet d'adresses :"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
 msgid "C_ategory:"
-msgstr "C_atégorie : "
+msgstr "C_atégorie :"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
@@ -5008,13 +5007,13 @@ msgid "_Search:"
 msgstr "_Rechercher :"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2007
+#: ../libedataserverui/e-name-selector-entry.c:2012
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Étendre %s en ligne"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2023
+#: ../libedataserverui/e-name-selector-entry.c:2028
 #, c-format
 msgid "_Edit %s"
 msgstr "_Éditer %s"
