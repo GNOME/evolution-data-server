@@ -26,6 +26,7 @@
 #define MISSING_DAYS 11		/* They corrected out 11 days */
 #define THURSDAY 4		/* First day of reformation */
 #define SATURDAY 6		/* Offset value; 1 Jan 1 was a Saturday */
+#define ISODATE_LENGTH 17 /* 4+2+2+1+2+2+2+1 + 1 */
 
 
 /* Number of days in a month, using 0 (Jan) to 11 (Dec). For leap years,
@@ -579,10 +580,12 @@ isodate_from_time_t (time_t t)
 {
 	gchar *ret;
 	struct tm stm;
+	const char *fmt;
 
 	gmtime_r (&t, &stm);
-	ret = g_malloc (17); /* 4+2+2+1+2+2+2+1 + 1 */
-	strftime (ret, 17, "%Y%m%dT%H%M%SZ", &stm);
+	ret = g_malloc (ISODATE_LENGTH); 
+	fmt = "%04d%02d%02dT%02d%02d%02dZ";
+	g_snprintf (ret, ISODATE_LENGTH, fmt, (stm.tm_year+1900), (stm.tm_mon+1), stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec);
 
 	return ret;
 }

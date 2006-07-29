@@ -1,3 +1,10 @@
+2006-07-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #338203
+	* libecal/e-cal-time-util.c: 
+	(isodate_from_time_t): We format the time string ourselves
+	without using strftime as its not thread safe.
+
 2006-07-24  Harish Krishnaswamy  <kharish@novell.com>
 
 	Patch to split the cache into multiple files based
