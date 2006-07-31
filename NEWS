@@ -1,3 +1,43 @@
+Evolution-Data-Server 2.6.3, 2006-07-31
+---------------------------------------
+Updated Translations :
+
+Jonathan Ernst (fr), Raivis Dejus (lv),
+Francisco Javier F. Serrador (es),
+Yair Hershkovitz (he), Gabor Kelemen (hu). 
+
+Other bugs and fixes :
+
+bugzilla.gnome.org:
+
+#344798 - Update Colombo timezone info (Andre Klapper)
+#347987 - EDS exits frequently (Chenthill)
+#345397 - Accelerate key does not work in select contact window
+          (Boby Wang)
+#345373 - evolution mail adress completion 
+          is not working using Cut & Paste(Simon Zheng) 
+#343976 - crash suddenly.h (Ed Catmur)	  
+#335692 - EDS Crasher (Chenthill)
+
+bugzilla.novell.com:
+
+#167330 - Default alarms for GW events (Harish)
+#179350 - Evolution fails heavily sending UTF-8 messages 
+          and special characters (Jeffrey Stedfast)
+#173454 - Fix Evo. (Groupwise/SOAP) deadlock (Jeffrey Stedfast)
+
+- Tons of good fixes for Win32 (Tor Lillqvist)
+
+Memory Leak fixes :
+
+Chris Heath
+Hiroyuki Ikezoe
+Wang Xin
+
+- Prune redundant static linkage in cal providers (Ross Burton)
+- Prune Dist files to rid CVS/*, .cvsignore files (Harish)
+- Show attachment icon in message list - IMAP (Partha)
+
 Evolution-Data-Server 1.6.2, 2006-05-29
 ----------------------------------------
 
