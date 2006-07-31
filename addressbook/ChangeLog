@@ -1,3 +1,7 @@
+2006-07-31  Devashish Sharma  <sdevashish@novell.com>
+
+	* backends/file/e-book-backend-file.c :Fix for Bug #347495.
+
 2006-07-28  Devashish Sharma  <sdevashish@novell.com>
 
 	* libedata-book/e-data-book-view.c :

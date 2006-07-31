@@ -359,7 +359,7 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 	DBT             id_dbt, vcard_dbt;
 	int             db_error = 0;
 
-	bf = E_BOOK_BACKEND_FILE (e_data_book_get_backend (book));
+	bf = E_BOOK_BACKEND_FILE (backend);
 	db = bf->priv->file_db;
 
 	string_to_dbt (id, &id_dbt);
