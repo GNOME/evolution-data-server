@@ -1,3 +1,9 @@
+2006-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #310489
+	* libecal/e-cal.c: (open_calendar): get the uri from
+	ecal object.
+
 2006-07-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #338203
