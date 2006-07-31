@@ -1744,7 +1744,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		if (auth_type)
 			key = build_pass_key (ecal);
 		else
-			key = e_source_get_uri (priv->source);
+			key = g_strdup (e_cal_get_uri (ecal));
 
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
