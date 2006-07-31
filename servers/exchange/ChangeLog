@@ -1,3 +1,12 @@
+2006-07-31  Sushma Rai  <rsushma@novell.com>
+
+	* storage/exchange-account.c (setup_account_hierarchies)
+	* storage/exchange-hierarchy-favorites.c 
+	(exchange_hierarchy_favorites_new): Reverted the patch for displaying 
+	the sub-public folders, as if the huge public folders are already
+	subscribed, evolution takes lots of time to load during account 
+	creation. See #268412 and #346728. 
+
 2006-05-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #334626
