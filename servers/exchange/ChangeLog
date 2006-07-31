@@ -1,5 +1,10 @@
 2006-07-31  Sushma Rai  <rsushma@novell.com>
 
+	* storage/exchange-account.c (exchange_account_new): Checking for the
+	NULL account.
+
+2006-07-31  Sushma Rai  <rsushma@novell.com>
+
 	* storage/exchange-account.c (setup_account_hierarchies)
 	* storage/exchange-hierarchy-favorites.c 
 	(exchange_hierarchy_favorites_new): Reverted the patch for displaying 

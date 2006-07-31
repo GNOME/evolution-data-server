@@ -1984,6 +1984,8 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	}
 
 	account = g_object_new (EXCHANGE_TYPE_ACCOUNT, NULL);
+	if (!account)
+		return NULL;
 	account->priv->account_list = account_list;
 	g_object_ref (account_list);
 	account->priv->account = adata;
