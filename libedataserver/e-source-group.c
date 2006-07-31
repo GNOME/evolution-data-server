@@ -417,7 +417,11 @@ e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 	xmlChar *name;
 	char *retval;
 
-	if (strcmp (root->name, "group") != 0)
+	if (root && root->name) {
+		if (strcmp (root->name, "group") != 0)
+			return NULL;
+	}
+	else 
 		return NULL;
 
 	name = xmlGetProp (root, "uid");
