@@ -1,3 +1,15 @@
+2006-08-01  Tor Lillqvist  <tml@novell.com>
+
+	Why is there no mention in its CVS log or here in ChangeLog why
+	Makefile.am was changed in a way which broke building on Win32?
+	
+	* Makefile.am (libedataserverui_1_2_la_LDFLAGS): Re-add
+	$(NO_UNDEFINED) so that we build a shared library on Windows.
+	(libedataserverui_1_2_la_LIBADD): Re-add libedataserver and
+	E_DATA_SERVER_LIBS, but OK, conditionally only on Win32 then, if
+	it indeed causes problems on Linux? (But we do link to them on all
+	platforms in the stable branch...)
+
 2006-07-27  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-entry.c :Crash on closing the contact editor 
