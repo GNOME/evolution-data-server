@@ -19,6 +19,8 @@
 	
 2006-07-07  Jeffrey Stedfast  <fejj@novell.com>
 
+	Fix for a bug pvanhoof spotted with my last patch
+
 	* camel-string-utils.c (camel_pstring_add): If the value is in the
 	table already and 'own' is TRUE, g_free the passed-in string.
 
@@ -28,6 +30,8 @@
 	Fixes a variable naming error. Fixes build break.
 		
 2006-07-06  Jeffrey Stedfast  <fejj@novell.com>
+
+	Based on a suggestion/patch by pvanhoof
 
 	* camel-string-utils.c (camel_pstring_add): New function that now
 	holds the main logic of the old camel_pstring_strdup function. If
