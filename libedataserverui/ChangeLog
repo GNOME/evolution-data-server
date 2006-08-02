@@ -1,3 +1,8 @@
+2006-08-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-name-selector-entry.c: (user_delete_text): Removed the unwanted
+	code which was commented.
+
 2006-08-01  Tor Lillqvist  <tml@novell.com>
 
 	Why is there no mention in its CVS log or here in ChangeLog why

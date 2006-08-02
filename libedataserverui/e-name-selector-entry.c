@@ -1197,41 +1197,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	index_end   = get_index_at_position (text, end_pos);
 	
 	g_signal_stop_emission_by_name (name_selector_entry, "delete_text");
-	
-	/* If the user is trying to delete a ','-character, we assume the user 
-	 * wants to remove the entire destination.
-	 */
-#if 0	
-	printf("%d %d %d\n", already_selected, selection_start, selection_end);
-	printf("pos %d %d\n", start_pos, end_pos);
-	printf("it is -%c- -%c- -%c- -%c-\n", str_context[0], str_context[1], str_b_context[0], str_b_context[1]);
-	printf("it is -%d- -%d- -%d- -%d-\n", str_context[0], str_context[1], str_b_context[0], str_b_context[1]);
-#endif	
-	if ((str_b_context [0] != ',') && 0 && !already_selected && (str_b_context[1] == ' ' || str_b_context[1] == 0)) {
 
-		EDestination *dest = find_destination_at_position (name_selector_entry, end_pos-1);
-	  	const char *email = e_destination_get_email (dest);
-	  	if (email && (strcmp (email, "")!=0)) {
-	  
-			/* Therefore, in case it's a real destination, we select it. 
-		 	 * Deleting this selection afterwards will leave the destination
-		 	 * empty. */
-	 
-			gint t = end_pos, b=t;
-			do {
-				t--;
-			} while (t >= 1 && text[t-1] != ',');
-	
-			gtk_editable_select_region (GTK_EDITABLE(name_selector_entry), t, b);
-
-			/* Since this is a special-case, we don't want the rest of this method
-		 	 * to happen. However, we do need to reenable the signal which we
-		 	 * disabled above! */
-		
-			goto end_of_user_delete_text;
-	  	}
-	}
-	
 	/* If the deletion touches more than one destination, the first one is changed
 	 * and the rest are removed. If the last destination wasn't completely deleted,
 	 * it becomes part of the first one, since the separator between them was
