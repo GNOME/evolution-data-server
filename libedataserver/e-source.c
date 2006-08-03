@@ -435,9 +435,13 @@ e_source_build_absolute_uri (ESource *source)
 	 */
 	if (*base_uri_str && *(base_uri_str + strlen (base_uri_str) - 1) == '/')
 		uri_str = g_strconcat (base_uri_str, source->priv->relative_uri, NULL);
-	else
-		uri_str = g_strconcat (base_uri_str, "/", source->priv->relative_uri,
+	else {
+		if (source->priv->relative_uri != NULL)
+			uri_str = g_strconcat (base_uri_str, "/", source->priv->relative_uri,
 				       NULL);
+		else
+			uri_str = g_strdup (base_uri_str);
+	}
 
 	return uri_str;
 }

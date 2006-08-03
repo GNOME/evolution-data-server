@@ -1,3 +1,8 @@
+2006-08-03  Devashish Sharma  <sdevashish@novell.com>
+
+	* addressbook/libebook/e-book.c:
+	(e_book_new_from_uri) :set relative uri to NULL.
+
 2006-07-31  Devashish Sharma  <sdevashish@novell.com>
 
 	* backends/file/e-book-backend-file.c :Fix for Bug #347495.

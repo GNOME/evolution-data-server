@@ -3824,6 +3824,7 @@ e_book_new_from_uri (const char *uri, GError **error)
 	group = e_source_group_new ("", uri);
 	source = e_source_new ("", "");
 	e_source_set_group (source, group);
+	e_source_set_relative_uri (source, NULL);
 
 	book = e_book_new (source, error);
 
