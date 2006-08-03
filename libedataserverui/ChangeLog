@@ -1,3 +1,12 @@
+2006-08-01  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug 346730
+	
+	* e-passwords.c (ep_remember_password), (ep_forget_password),
+	(ep_get_password): Use the key as the user for LDAP and dont try to
+	access keyring for passphrases, since they are stored just for the
+	session.
+
 2006-08-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-name-selector-entry.c: (user_delete_text): Removed the unwanted

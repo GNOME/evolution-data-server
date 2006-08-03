@@ -382,6 +382,17 @@ ep_remember_password(EPassMsg *msg)
 		GList *pass = NULL, *tmp;	
 		EUri *uri = e_uri_new (okey);
 		int item_id;
+
+		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
+			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
+			char *keycopy = g_strdup (msg->key);
+			int i;
+			
+			for (i = 0; i < strlen (keycopy); i ++)
+				if (keycopy[i] == '/' || keycopy[i] =='=')
+					keycopy[i] = '_';		
+			uri->user = keycopy;
+		}
 		
 		attributes = gnome_keyring_attribute_list_new ();
 
@@ -467,6 +478,17 @@ ep_forget_password (EPassMsg *msg)
 	gpointer okey, value;
 	EUri *uri = e_uri_new (msg->key);
 
+	if (!strcmp (uri->protocol, "ldap") && !uri->user) {
+		/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
+		char *keycopy = g_strdup (msg->key);
+		int i;
+
+		for (i = 0; i < strlen (keycopy); i ++)
+			if (keycopy[i] == '/' || keycopy[i] =='=')
+				keycopy[i] = '_';		
+		uri->user = keycopy;
+	}
+	    
 	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
 		g_hash_table_remove (passwords, msg->key);
 		memset (value, 0, strlen (value));
@@ -474,6 +496,13 @@ ep_forget_password (EPassMsg *msg)
 		g_free (value);
 	}
 
+	if (!uri->host && !uri->user) {
+		/* No need to remove from keyring for pass phrases */
+		if (!msg->noreply)
+			e_msgport_reply(&msg->msg);
+		return;
+	}
+	
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	if (!default_keyring) {
 	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK) {
@@ -585,59 +614,74 @@ ep_get_password (EPassMsg *msg)
 		msg->password = g_strdup(passwd);
 	} else {
 		EUri *uri = e_uri_new (msg->key);
-
-		attributes = gnome_keyring_attribute_list_new ();
-		attribute.name = g_strdup ("user");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup(uri->user);;
-		g_array_append_val (attributes, attribute);
-		printf("get %s %s\n", attribute.value.string, msg->key);
-
-		attributes = gnome_keyring_attribute_list_new ();
-		attribute.name = g_strdup ("server");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup(uri->host);;
-		g_array_append_val (attributes, attribute);
 		
-		attributes = gnome_keyring_attribute_list_new ();
-		attribute.name = g_strdup ("application");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup("Evolution");
-		g_array_append_val (attributes, attribute);	
+		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
+			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
+			char *keycopy = g_strdup (msg->key);
+			int i;
 
-		result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
-		d(g_print ("Find Items %d\n", result));
+			for (i = 0; i < strlen (keycopy); i ++)
+				if (keycopy[i] == '/' || keycopy[i] =='=')
+					keycopy[i] = '_';		
+			uri->user = keycopy;
+		}
+		
+		if (uri->host &&  uri->user) {
+			/* We dont store passphrases.*/
+
+			attributes = gnome_keyring_attribute_list_new ();
+			attribute.name = g_strdup ("user");
+			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+			attribute.value.string = g_strdup(uri->user);;
+			g_array_append_val (attributes, attribute);
+			printf("get %s %s\n", attribute.value.string, msg->key);
+
+			attributes = gnome_keyring_attribute_list_new ();
+			attribute.name = g_strdup ("server");
+			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+			attribute.value.string = g_strdup(uri->host);;
+			g_array_append_val (attributes, attribute);
+		
+			attributes = gnome_keyring_attribute_list_new ();
+			attribute.name = g_strdup ("application");
+			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
+			attribute.value.string = g_strdup("Evolution");
+			g_array_append_val (attributes, attribute);	
+
+			result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
+			d(g_print ("Find Items %d\n", result));
 			
-		gnome_keyring_attribute_list_free (attributes);
+			gnome_keyring_attribute_list_free (attributes);
 
-		if (result) {
-			g_print ("Couldn't Get password %d\n", result);
-		} else {
-			/* FIXME: What to do if this returns more than one? */
-			for (tmp = matches; tmp; tmp = tmp->next) {
-				GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
-				int i;
-				GnomeKeyringAttribute *attr;
-				gboolean accept = TRUE;
-				guint present = 0;
+			if (result) {
+				g_print ("Couldn't Get password %d\n", result);
+			} else {
+				/* FIXME: What to do if this returns more than one? */
+				for (tmp = matches; tmp; tmp = tmp->next) {
+					GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
+					int i;
+					GnomeKeyringAttribute *attr;
+					gboolean accept = TRUE;
+					guint present = 0;
 
-				for (i =0; (i < pattr->len) && accept; i++)
-				{
-					attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
+					for (i =0; (i < pattr->len) && accept; i++)
+					{
+						attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
 
-					if (!strcmp(attr->name, "user")) {
-						present++;
-						if (strcmp (attr->value.string, uri->user))
-							accept = FALSE;
-					} else if (!strcmp(attr->name, "server")) {
-						present++;
-						if (strcmp (attr->value.string, uri->host))
-							accept = FALSE;						
+						if (!strcmp(attr->name, "user")) {
+							present++;
+							if (strcmp (attr->value.string, uri->user))
+								accept = FALSE;
+						} else if (!strcmp(attr->name, "server")) {
+							present++;
+							if (strcmp (attr->value.string, uri->host))
+								accept = FALSE;						
+						}
 					}
-				}
 					if (present == 2 && accept)
 						msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
-			}	
+				}	
+			}
 		}
 		
 	}
