@@ -31,20 +31,22 @@
 #include <gtk/gtk.h>
 #include <camel/camel.h>
 
+ENameSelectorDialog *name_selector_dialog;
+GtkWidget           *name_selector_entry_window;
+
 static void
 close_dialog (GtkWidget *widget, int response, gpointer data)
 {
-	GtkWidget *dialog = data;
-	
-	gtk_widget_destroy (dialog);
-	gtk_main_quit ();
+	gtk_widget_destroy (GTK_WIDGET (name_selector_dialog));
+	gtk_widget_destroy (name_selector_entry_window);
+
+	g_timeout_add (4000, (GSourceFunc) gtk_main_quit, NULL);
 }
 
 static gboolean
 start_test (void)
 {
 	ENameSelectorModel  *name_selector_model;
-	ENameSelectorDialog *name_selector_dialog;
 	ENameSelectorEntry  *name_selector_entry;
 	EDestinationStore   *destination_store;
 	GtkWidget           *container;
@@ -69,6 +71,8 @@ start_test (void)
 	container = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_add (GTK_CONTAINER (container), GTK_WIDGET (name_selector_entry));
 	gtk_widget_show_all (container);
+
+	name_selector_entry_window = container;
 
 	g_object_unref (name_selector_model);
 	g_object_unref (destination_store);

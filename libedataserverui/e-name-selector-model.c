@@ -43,6 +43,7 @@ static gint generate_contact_rows  (EContactStore *contact_store, GtkTreeIter *i
 static void override_email_address (EContactStore *contact_store, GtkTreeIter *iter,
 				    gint permutation_n, gint column, GValue *value,
 				    ENameSelectorModel *name_selector_model);
+static void free_section           (ENameSelectorModel *name_selector_model, gint n);
 
 /* ------------------ *
  * Class/object setup *
@@ -84,10 +85,16 @@ static void
 e_name_selector_model_finalize (GObject *object)
 {
 	ENameSelectorModel *name_selector_model = E_NAME_SELECTOR_MODEL (object);
+	gint                i;
 
-	/* TODO: Free sections */
+	for (i = 0; i < name_selector_model->sections->len; i++)
+		free_section (name_selector_model, i);
 
+	g_array_free (name_selector_model->sections, TRUE);
 	g_object_unref (name_selector_model->contact_filter);
+
+	if (name_selector_model->destination_uid_hash)
+		g_hash_table_destroy (name_selector_model->destination_uid_hash);
 
 	if (G_OBJECT_CLASS (e_name_selector_model_parent_class)->finalize)
 		G_OBJECT_CLASS (e_name_selector_model_parent_class)->finalize (object);

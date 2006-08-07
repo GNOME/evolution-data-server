@@ -74,6 +74,7 @@ static gboolean     e_destination_store_iter_parent     (GtkTreeModel       *tre
 							 GtkTreeIter        *child);
 
 static void destination_changed (EDestinationStore *destination_store, EDestination *destination);
+static void stop_destination    (EDestinationStore *destination_store, EDestination *destination);
 
 /* ------------------ *
  * Class/object setup *
@@ -160,7 +161,17 @@ e_destination_store_init (EDestinationStore *destination_store)
 static void
 e_destination_store_finalize (GObject *object)
 {
-	/* TODO: Free stuff */
+	EDestinationStore *destination_store = E_DESTINATION_STORE (object);
+	gint               i;
+
+	for (i = 0; i < destination_store->destinations->len; i++) {
+		EDestination *destination = g_ptr_array_index (destination_store->destinations, i);
+
+		stop_destination (destination_store, destination);
+		g_object_unref (destination);
+	}
+
+	g_ptr_array_free (destination_store->destinations, TRUE);
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);

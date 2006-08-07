@@ -1,3 +1,17 @@
+2006-08-07  Hans Petter Jansson  <hpj@novell.com>
+
+	* e-contact-store.c (e_contact_store_finalize): Fix memory leaks.
+	* e-destination-store.c (e_destinationstore_finalize): Fix memory leaks.
+	* e-name-selector-dialog.c (e_name_selector_dialog_dispose)
+	(e_name_selector_dialog_finalize)
+	(remove_books)
+	(setup_name_selector_model)
+	(shutdown_name_selector_model)
+	(e_name_selector_dialog_set_model): Consolidate cleanup code and fix memory
+	leaks.
+	* e-name-selector-model.c (e_name_selector_model_finalize): Fix memory leaks.
+	* test-name-selector.c: Modify test to reveal more memory leaks.
+
 2006-08-07  Devashish Sharma   <sdevashish@novell.com>
 
 	* e-name-selector-entry.c : Read the numbers of characters at

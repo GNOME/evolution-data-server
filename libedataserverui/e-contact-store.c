@@ -73,8 +73,6 @@ static gboolean     e_contact_store_iter_parent     (GtkTreeModel       *tree_mo
 						     GtkTreeIter        *iter,
 						     GtkTreeIter        *child);
 
-static void stop_view (EContactStore *contact_store, EBookView *view);
-
 typedef struct
 {
 	EBook     *book;
@@ -86,6 +84,10 @@ typedef struct
 	GPtrArray *contacts_pending;
 }
 ContactSource;
+
+static void free_contact_ptrarray (GPtrArray *contacts);
+static void clear_contact_source  (EContactStore *contact_store, ContactSource *source);
+static void stop_view             (EContactStore *contact_store, EBookView *view);
 
 /* ------------------ *
  * Class/object setup *
@@ -168,7 +170,23 @@ e_contact_store_init (EContactStore *contact_store)
 static void
 e_contact_store_finalize (GObject *object)
 {
-	/* TODO: Free stuff */
+	EContactStore *contact_store = E_CONTACT_STORE (object);
+	gint           i;
+
+	/* Free sources and cached contacts */
+
+	for (i = 0; i < contact_store->contact_sources->len; i++) {
+		ContactSource *source = &g_array_index (contact_store->contact_sources, ContactSource, i);
+
+		clear_contact_source (contact_store, source);
+
+		free_contact_ptrarray (source->contacts);
+		g_object_unref (source->book);
+	}
+
+	g_array_free (contact_store->contact_sources, TRUE);
+	if (contact_store->query)
+		e_book_query_unref (contact_store->query);
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);

@@ -70,6 +70,7 @@ static void     source_selected               (ENameSelectorDialog *name_selecto
 static void     transfer_button_clicked       (ENameSelectorDialog *name_selector_dialog, GtkButton *transfer_button);
 static void     contact_selection_changed     (ENameSelectorDialog *name_selector_dialog);
 static void     setup_name_selector_model     (ENameSelectorDialog *name_selector_dialog);
+static void     shutdown_name_selector_model  (ENameSelectorDialog *name_selector_dialog);
 static void     contact_activated             (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path);
 static void     destination_activated         (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path,
 					       GtkTreeViewColumn *column, GtkTreeView *tree_view);
@@ -302,17 +303,9 @@ e_name_selector_dialog_dispose (GObject *object)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
 
-	g_signal_handlers_disconnect_matched (name_selector_dialog->name_selector_model,
-					      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
-					      name_selector_dialog);
-
 	remove_books (name_selector_dialog);
+	shutdown_name_selector_model (name_selector_dialog);
 
-	if (name_selector_dialog->name_selector_model) {
-		g_object_unref (name_selector_dialog->name_selector_model);
-		name_selector_dialog->name_selector_model = NULL;
-	}
- 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose)
 		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
 }
@@ -321,7 +314,11 @@ e_name_selector_dialog_dispose (GObject *object)
 static void
 e_name_selector_dialog_finalize (GObject *object)
 {
-	/* TODO: Free stuff */
+	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
+
+	g_array_free (name_selector_dialog->sections, TRUE);
+	g_object_unref (name_selector_dialog->source_list);
+	g_object_unref (name_selector_dialog->button_size_group);
 	g_list_free (category_list);
 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize)
@@ -436,6 +433,9 @@ remove_books (ENameSelectorDialog *name_selector_dialog)
 	EContactStore *contact_store;
 	GList         *books;
 	GList         *l;
+
+	if (!name_selector_dialog->name_selector_model)
+		return;
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 
@@ -1063,14 +1063,6 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 	ETreeModelGenerator *contact_filter;
 	GList               *new_sections;
 	GList               *l;
-	gint                 i;
-
-	/* Rid UI of previous destination sections */
-
-	for (i = 0; i < name_selector_dialog->sections->len; i++)
-		free_section (name_selector_dialog, i);
-
-	g_array_set_size (name_selector_dialog->sections, 0);
 
 	/* Create new destination sections in UI */
 
@@ -1106,9 +1098,6 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	/* Create sorting model on top of filter, assign it to view */
 
-	if (name_selector_dialog->contact_sort)
-		g_object_unref (name_selector_dialog->contact_sort);
-
 	name_selector_dialog->contact_sort = GTK_TREE_MODEL_SORT (
 		gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (contact_filter)));
 
@@ -1123,6 +1112,36 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	search_changed (name_selector_dialog);
 	contact_selection_changed (name_selector_dialog);
+}
+
+static void
+shutdown_name_selector_model (ENameSelectorDialog *name_selector_dialog)
+{
+	gint i;
+
+	/* Rid UI of previous destination sections */
+
+	for (i = 0; i < name_selector_dialog->sections->len; i++)
+		free_section (name_selector_dialog, i);
+
+	g_array_set_size (name_selector_dialog->sections, 0);
+
+	/* Free sorting model */
+
+	if (name_selector_dialog->contact_sort) {
+		g_object_unref (name_selector_dialog->contact_sort);
+		name_selector_dialog->contact_sort = NULL;
+	}
+
+	/* Free backend model */
+
+	if (name_selector_dialog->name_selector_model) {
+		g_signal_handlers_disconnect_matched (name_selector_dialog->name_selector_model,
+						      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_dialog);
+
+		g_object_unref (name_selector_dialog->name_selector_model);
+		name_selector_dialog->name_selector_model = NULL;
+	}
 }
 
 static void
@@ -1242,10 +1261,7 @@ e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialog,
 	if (model == name_selector_dialog->name_selector_model)
 		return;
 
-	g_signal_handlers_disconnect_matched (name_selector_dialog->name_selector_model,
-					      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_dialog);
-
-	g_object_unref (name_selector_dialog->name_selector_model);
+	shutdown_name_selector_model (name_selector_dialog);
 	name_selector_dialog->name_selector_model = g_object_ref (model);
 
 	setup_name_selector_model (name_selector_dialog);
