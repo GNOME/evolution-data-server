@@ -1,3 +1,7 @@
+2006-08-07 Wouter Bolsterlee (uws) <uws+gnome@xs4all.nl>
+
+	* libebook/e-contact.c: Fix a build breaker.
+
 2006-08-07  Ross Burton <ross@burtonini.com>
 
 	* libebook/e-contact.c: (e_contact_class_init),
