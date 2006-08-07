@@ -46,9 +46,8 @@ enum {
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL] = { 0 };
+static guint COMPLETION_CUE_MIN_LEN = 0;
 #define ENS_DEBUG(x)
-
-#define COMPLETION_CUE_MIN_LEN 3
 
 G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY);
 
@@ -2106,6 +2105,15 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 	  g_warning ("ENameSelectorEntry can't find any addressbooks!");
 	  return;
   }
+
+  /* read minimum_query_length from gconf*/
+  GConfClient *gconf;
+  gconf = gconf_client_get_default();
+  if (COMPLETION_CUE_MIN_LEN == 0) {
+	  if (COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL));
+	  else COMPLETION_CUE_MIN_LEN = 3;
+  }
+  g_object_unref (G_OBJECT (gconf));
 
   /* Edit signals */
 

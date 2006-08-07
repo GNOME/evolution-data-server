@@ -1,3 +1,10 @@
+2006-08-07  Devashish Sharma   <sdevashish@novell.com>
+
+	* e-name-selector-entry.c : Read the numbers of characters at
+	which the autocompletion should kick in from gconf key 
+	"/apps/evolution/addressbook/completion/minimum_query_length".
+	Fix for Bug 251289
+
 2006-08-01  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Fix for bug 346730

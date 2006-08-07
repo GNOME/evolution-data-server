@@ -39,6 +39,8 @@ G_BEGIN_DECLS
 #define E_IS_NAME_SELECTOR_ENTRY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_entry_get_type ()))
 #define E_NAME_SELECTOR_ENTRY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_ENTRY_TYPE, ENameSelectorEntryClass))
 
+#define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
+
 typedef struct ENameSelectorEntry      ENameSelectorEntry;
 typedef struct ENameSelectorEntryClass ENameSelectorEntryClass;
 
