@@ -150,7 +150,7 @@ append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 	if (filter_component->operation == E_GW_FILTER_OP_AND || filter_component->operation == E_GW_FILTER_OP_OR
 	    ||  filter_component->operation == E_GW_FILTER_OP_NOT ) {
 		
-		soup_soap_message_start_element (msg, "element", NULL, NULL);
+		soup_soap_message_start_element (msg, "group", NULL, NULL);
 		if (filter_component->operation == E_GW_FILTER_OP_AND)
 			e_gw_message_write_string_parameter (msg, "op", NULL, "and");
 		else if (filter_component->operation == E_GW_FILTER_OP_OR) 
@@ -188,7 +188,7 @@ e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg)
  
 	priv = filter->priv;
 	component_list = priv->component_list;
-   
+
 	soup_soap_message_start_element (msg, "filter", NULL, NULL);
 	for (; component_list != NULL; component_list = g_slist_next (component_list)) {
 		filter_component = (FilterComponent *) (component_list->data);

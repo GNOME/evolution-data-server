@@ -1,3 +1,8 @@
+2006-08-07  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-filter.c (append_complex_component):
+	Filter elements are named 'group' not 'element'.
+
 2006-07-26  Matthew Barnes <mbarnes@redhat.com>
 
 	* e-gw-item.h: Add missing function declaration.
