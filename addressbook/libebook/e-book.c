@@ -3337,6 +3337,8 @@ fetch_corba_book (EBook       *book,
 	for (l = factories; l; l = l->next)
 		CORBA_Object_release ((CORBA_Object)l->data, NULL);
 
+	g_list_free (factories);
+
 	if (rv == TRUE) {
 		book->priv->corba_book = corba_book;
 		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);

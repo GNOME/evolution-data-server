@@ -349,10 +349,16 @@ e_book_view_listener_dispose (GObject *object)
 	d(printf ("%p: in e_book_view_listener_dispose (%p)\n", g_thread_self(), object));
 
 	if (listener->priv) {
+		EBookViewListenerResponse *response;
+
 		if (listener->priv->idle_id != -1)
 			g_source_remove (listener->priv->idle_id);
 
 		g_mutex_free (listener->priv->idle_mutex);
+
+		/* Free pending events */
+		while ((response = g_async_queue_try_pop (listener->priv->queue)) != NULL)
+			free_response (response);
 
 		g_async_queue_unref (listener->priv->queue);
 
