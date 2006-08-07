@@ -92,6 +92,7 @@ static ECalBackendSyncStatus
 e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 static const char * get_gw_item_id (icalcomponent *icalcomp);
 static void get_retract_data (ECalComponent *comp, const char **retract_comment, gboolean *all_instances);
+static const char * get_element_type (icalcomponent_kind kind);
 
 #define PARENT_TYPE E_TYPE_CAL_BACKEND_SYNC
 static ECalBackendClass *parent_class = NULL;
@@ -135,6 +136,23 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 
 static GMutex *mutex = NULL;
 
+static const char * 
+get_element_type (icalcomponent_kind kind) 
+{
+	
+	const char *type;
+
+	if (kind == ICAL_VEVENT_COMPONENT)
+		type = "Appointment";
+	else if (kind == ICAL_VTODO_COMPONENT)
+		type = "Task";
+	else
+		type = "Note";
+
+	return type;
+
+}
+
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
 populate_cache (ECalBackendGroupwise *cbgw)
@@ -160,19 +178,14 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	priv = cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	total = priv->total_count;
-	
+
 	if (!mutex) {
 		mutex = g_mutex_new ();
 	}
 
 	g_mutex_lock (mutex);
 
-	if (kind == ICAL_VEVENT_COMPONENT)
-		type = "Calendar";
-	else if (kind == ICAL_VTODO_COMPONENT)
-		type = "Task";
-	else
-		type = "Notes";
+	type = get_element_type (kind);	
 	
 	/* Fetch the data with a bias to present, near past/future */
 	temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
@@ -191,11 +204,16 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	filter[0] = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter[0], E_GW_FILTER_OP_GREATERTHAN_OR_EQUAL, "startDate", l_str);
 	e_gw_filter_add_filter_component (filter[0], E_GW_FILTER_OP_LESSTHAN_OR_EQUAL, "startDate", h_str);
-	e_gw_filter_group_conditions (filter[0], E_GW_FILTER_OP_AND, 2);
+	e_gw_filter_add_filter_component (filter[0], E_GW_FILTER_OP_EQUAL, "@type", type);
+	e_gw_filter_group_conditions (filter[0], E_GW_FILTER_OP_AND, 3);
 	filter[1] = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter[1], E_GW_FILTER_OP_GREATERTHAN, "startDate", h_str);
+	e_gw_filter_add_filter_component (filter[1], E_GW_FILTER_OP_EQUAL, "@type", type);
+	e_gw_filter_group_conditions (filter[1], E_GW_FILTER_OP_AND, 2);
 	filter[2] = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter[2], E_GW_FILTER_OP_LESSTHAN, "startDate", l_str);
+	e_gw_filter_add_filter_component (filter[2], E_GW_FILTER_OP_EQUAL, "@type", type);
+	e_gw_filter_group_conditions (filter[2], E_GW_FILTER_OP_AND, 2);
 
 	for (i = 0; i < 3; i++) {
 		status = e_gw_connection_create_cursor (priv->cnc,
@@ -249,11 +267,9 @@ populate_cache (ECalBackendGroupwise *cbgw)
 					char *comp_str;
 					
 					e_cal_component_commit_sequence (comp);
-					if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
-						comp_str = e_cal_component_get_as_string (comp);	
-						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const char *) comp_str);
-						g_free (comp_str);
-					}
+					comp_str = e_cal_component_get_as_string (comp);	
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const char *) comp_str);
+					g_free (comp_str);
 					e_cal_backend_cache_put_component (priv->cache, comp);
 					g_object_unref (comp);
 				}
@@ -272,7 +288,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	e_cal_backend_notify_view_done (E_CAL_BACKEND (cbgw), GNOME_Evolution_Calendar_Success);
 
 	g_mutex_unlock (mutex);
-
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
@@ -353,6 +368,8 @@ get_deltas (gpointer handle)
 	filter = e_gw_filter_new ();
 	/* Items modified after the time-stamp */
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_GREATERTHAN, "modified", time_string);
+	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
+	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_AND, 2);
 
 	status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -405,12 +422,10 @@ get_deltas (gpointer handle)
 		e_cal_component_commit_sequence (modified_comp);
 		e_cal_component_commit_sequence (cache_comp);
 
-		if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (modified_comp))) {
-			cache_comp_str = e_cal_component_get_as_string (cache_comp);
-			e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
-			g_free (cache_comp_str);
-			cache_comp_str = NULL;
-		}
+		cache_comp_str = e_cal_component_get_as_string (cache_comp);
+		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
+		g_free (cache_comp_str);
+		cache_comp_str = NULL;
 		e_cal_backend_cache_put_component (cache, modified_comp);
 
 		g_object_unref (item);
@@ -450,7 +465,11 @@ get_deltas (gpointer handle)
 	 * checking for deleted items.*/
 	position = E_GW_CURSOR_POSITION_END;
 	cursor = 0;
-	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey startDate", NULL, &cursor);
+	filter = e_gw_filter_new ();
+	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
+
+	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey startDate", filter, &cursor);
+	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
@@ -610,7 +629,6 @@ get_deltas (gpointer handle)
 	}
 	
 	g_static_mutex_unlock (&connecting);
-
 	return TRUE;        
 }
 
@@ -678,7 +696,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 	int time_interval;
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-	
 	time_interval = CACHE_REFRESH_INTERVAL;
 	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
 	if (time_interval_string) {
@@ -754,7 +771,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 			return GNOME_Evolution_Calendar_PermissionDenied;	
 		}
 	}
-	
 }
 
 static ECalBackendSyncStatus

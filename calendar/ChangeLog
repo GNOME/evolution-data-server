@@ -1,3 +1,12 @@
+2006-08-07  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(get_element_type), (populate_cache), (get_deltas),
+	(cache_init): Add local function to map icalcomponent
+	kind to GW item types. Add type checks to filters 
+	passed to createCursor calls, so that each component
+	fetches items of its own type and none other.
+
 2006-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #310489
