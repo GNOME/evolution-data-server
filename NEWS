@@ -1,3 +1,22 @@
+Evolution-Data-Server 1.7.91, 2006-08-07
+------------------------------------------
+
+Updated Translations
+
+Francisco Javier F. Serrador (es), Inaki Larranaga (eu), Ilkka Tuohela (fi),
+Christophe Merlet (fr), Ahmad Riza H Nst (id), Kjartan Maraas	 (nb), 
+Vincent van Adrighem (nl), Jovan Naumovski (mk), Theppitak Karoonboonyanan (th)
+
+New in EDS 1.7.91:
+- Add filters to Groupwise SOAP calls so that each component fetches items of
+  its own type and none other. (Harish)
+- Memory fixes in Addressbook (Hans Peters Jansson)  
+
+Bug Fixes:
+Matthew Barnes, Chenthill Palanisamy, Devashish Sharma, Srinivasa Ragavan, 
+Tor Lillqvist, Harish Krishnaswamy, Ed Catmur, Ross Burton, 
+Wouter Bolsterlee
+
 Evolution-Data-Server 1.7.90.1, 2006-07-25
 ------------------------------------------
 Fix a dist bug in tarball.
