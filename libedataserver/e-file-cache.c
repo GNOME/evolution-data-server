@@ -56,6 +56,12 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
 
+	/* FIXME: the property is being set twice. Need to investigate
+	 * why and fix. Until then, we just return when called the 
+	 * second time*/
+	if (priv->filename)
+		return;
+
 	switch (property_id) {
 	case PROP_FILENAME :
 		/* make sure the directory for the cache exists */

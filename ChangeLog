@@ -1,3 +1,8 @@
+2006-08-07  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libedataserver/e-file-cache.c: (e_file_cache_set_property):
+	Do not set the filename if it is already set.
+
 2006-07-26  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fixes #343976
