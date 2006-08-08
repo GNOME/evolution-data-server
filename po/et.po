@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-14 15:39+0200\n"
-"PO-Revision-Date: 2006-07-14 23:50+0200\n"
-"Last-Translator: Priit Laes <amd@store20.com>\n"
+"POT-Creation-Date: 2006-08-08 07:15+0200\n"
+"PO-Revision-Date: 2006-08-08 09:24+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,29 +23,29 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:542
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "Laadimine..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:545
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4083
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2301
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4093
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Otsing..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4257
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontaktide allalaadimine (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Kontaktide puhvri uuendamine (%d)... "
@@ -74,11 +74,11 @@ msgstr "Kontakti eemaldamine LDAP serverist..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Kontakti muutmine LDAP serveris..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3945
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3955
 msgid "Receiving LDAP search results..."
 msgstr "LDAP otsingutulemuste vastuvõtmine..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4105
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4115
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
 
@@ -86,77 +86,46 @@ msgstr "Viga otsingu teostamisel"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:257
-#: ../addressbook/libebook/e-book.c:261
-#: ../addressbook/libebook/e-book.c:473
-#: ../addressbook/libebook/e-book.c:477
-#: ../addressbook/libebook/e-book.c:618
-#: ../addressbook/libebook/e-book.c:622
-#: ../addressbook/libebook/e-book.c:711
-#: ../addressbook/libebook/e-book.c:715
-#: ../addressbook/libebook/e-book.c:1029
-#: ../addressbook/libebook/e-book.c:1034
-#: ../addressbook/libebook/e-book.c:1221
-#: ../addressbook/libebook/e-book.c:1225
-#: ../addressbook/libebook/e-book.c:1382
-#: ../addressbook/libebook/e-book.c:1386
-#: ../addressbook/libebook/e-book.c:1595
-#: ../addressbook/libebook/e-book.c:1599
-#: ../addressbook/libebook/e-book.c:1836
-#: ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2077
-#: ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2293
-#: ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3411
+#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
+#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
+#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
+#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
+#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
+#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
+#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
+#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
+#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
+#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
+#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
+#: ../addressbook/libebook/e-book.c:3413
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr ""
 
-#: ../addressbook/libebook/e-book.c:270
-#: ../addressbook/libebook/e-book.c:486
-#: ../addressbook/libebook/e-book.c:631
-#: ../addressbook/libebook/e-book.c:724
-#: ../addressbook/libebook/e-book.c:1044
-#: ../addressbook/libebook/e-book.c:1235
-#: ../addressbook/libebook/e-book.c:1396
-#: ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849
-#: ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306
-#: ../addressbook/libebook/e-book.c:2660
+#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
+#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
+#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
+#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
+#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
+#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2660
 #: ../addressbook/libebook/e-book.c:2866
 msgid "book busy"
-msgstr ""
+msgstr "raamat on hõivatud"
 
-#: ../addressbook/libebook/e-book.c:303
-#: ../addressbook/libebook/e-book.c:307
-#: ../addressbook/libebook/e-book.c:519
-#: ../addressbook/libebook/e-book.c:523
-#: ../addressbook/libebook/e-book.c:660
-#: ../addressbook/libebook/e-book.c:664
-#: ../addressbook/libebook/e-book.c:753
-#: ../addressbook/libebook/e-book.c:757
-#: ../addressbook/libebook/e-book.c:1073
-#: ../addressbook/libebook/e-book.c:1076
-#: ../addressbook/libebook/e-book.c:1267
-#: ../addressbook/libebook/e-book.c:1270
-#: ../addressbook/libebook/e-book.c:1425
-#: ../addressbook/libebook/e-book.c:1429
-#: ../addressbook/libebook/e-book.c:1644
-#: ../addressbook/libebook/e-book.c:1648
-#: ../addressbook/libebook/e-book.c:1896
-#: ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2123
-#: ../addressbook/libebook/e-book.c:2127
-#: ../addressbook/libebook/e-book.c:2334
-#: ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2601
-#: ../addressbook/libebook/e-book.c:2688
-#: ../addressbook/libebook/e-book.c:2692
-#: ../addressbook/libebook/e-book.c:2894
-#: ../addressbook/libebook/e-book.c:2898
-#: ../addressbook/libebook/e-book.c:3420
+#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
+#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
+#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
+#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
+#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
+#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
+#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
+#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
+#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
+#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
+#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
+#: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
+#: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3422
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA erandolukord \"%s\" käsu täitmisel"
@@ -171,8 +140,7 @@ msgstr "%s: käimasolevat toimingut ei ole"
 msgid "%s: could not cancel"
 msgstr "%s: pole võimalik tühistada"
 
-#: ../addressbook/libebook/e-book.c:2646
-#: ../addressbook/libebook/e-book.c:2650
+#: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr ""
@@ -187,8 +155,7 @@ msgstr "%s: tühistatud"
 msgid "%s: Invalid source."
 msgstr "%s: Vigane allikas"
 
-#: ../addressbook/libebook/e-book.c:3285
-#: ../addressbook/libebook/e-book.c:3349
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3351
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr ""
@@ -198,475 +165,508 @@ msgstr ""
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener'i pole võimalik luua"
 
-#: ../addressbook/libebook/e-book.c:3560
+#: ../addressbook/libebook/e-book.c:3562
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: gconf'i alla pole enda kontakti UID-i salvestatud"
 
-#: ../addressbook/libebook/e-book.c:3690
+#: ../addressbook/libebook/e-book.c:3692
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: gconf'i alla pole uid-i `%s' allikat salvestatud."
 
-#: ../addressbook/libebook/e-contact.c:108
+#. Dummy row as EContactField starts from 1
+#: ../addressbook/libebook/e-contact.c:112
 msgid "Unique ID"
 msgstr "Unikaalne ID"
 
-#: ../addressbook/libebook/e-contact.c:109
+#: ../addressbook/libebook/e-contact.c:113
 msgid "File Under"
 msgstr "Kategoriseeri kui"
+
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:115
+msgid "Book URI"
+msgstr "Raamatu URI"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:121
 msgid "Full Name"
 msgstr "Täisnimi"
 
-#: ../addressbook/libebook/e-contact.c:116
-msgid "Name"
-msgstr "Nimi"
-
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:122
 msgid "Given Name"
 msgstr "Antud nimi"
 
-#: ../addressbook/libebook/e-contact.c:118
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
 msgstr "Perekonnanimi"
 
-#: ../addressbook/libebook/e-contact.c:119
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Nickname"
 msgstr "Hüüdnimi"
 
-#: ../addressbook/libebook/e-contact.c:120
-msgid "Name or Org"
-msgstr "Nimi või organisatsioon"
-
-#. Address fields
-#: ../addressbook/libebook/e-contact.c:123
-msgid "Address List"
-msgstr "Aadresside loend"
-
-#: ../addressbook/libebook/e-contact.c:124
-msgid "Home Address"
-msgstr "Kodune aadress"
-
-#: ../addressbook/libebook/e-contact.c:125
-msgid "Work Address"
-msgstr "Töökoha aadress"
-
-#: ../addressbook/libebook/e-contact.c:126
-msgid "Other Address"
-msgstr "Muu aadress"
+#. Email fields
+#: ../addressbook/libebook/e-contact.c:127
+msgid "Email 1"
+msgstr "E-post 1"
 
 #: ../addressbook/libebook/e-contact.c:128
+msgid "Email 2"
+msgstr "E-post 2"
+
+#: ../addressbook/libebook/e-contact.c:129
+msgid "Email 3"
+msgstr "E-post 3"
+
+#: ../addressbook/libebook/e-contact.c:130
+msgid "Email 4"
+msgstr "Email 4"
+
+#: ../addressbook/libebook/e-contact.c:132
+msgid "Mailer"
+msgstr "Postiprogramm"
+
+#. Address Labels
+#: ../addressbook/libebook/e-contact.c:135
 msgid "Home Address Label"
 msgstr "Koduse aadressi etikett"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Work Address Label"
 msgstr "Tööaadressi etikett"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Other Address Label"
 msgstr "Muu aadressi etikett"
 
-#: ../addressbook/libebook/e-contact.c:132
+#. Phone fields
+#: ../addressbook/libebook/e-contact.c:140
 msgid "Assistant Phone"
 msgstr "Assistendi telefon"
 
-#: ../addressbook/libebook/e-contact.c:133
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Business Phone"
 msgstr "Telefon tööl"
 
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Business Phone 2"
 msgstr "Telefon tööl 2"
 
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Fax"
 msgstr "Fax tööl"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Callback Phone"
 msgstr "Tagasihelistamise telefon"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Car Phone"
 msgstr "Autotelefon"
 
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Company Phone"
 msgstr "Firma telefon"
 
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Home Phone"
 msgstr "Kodune telefon"
 
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Home Phone 2"
 msgstr "Kodune telefon 2"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Fax"
 msgstr "Kodune faks"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:150
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Mobile Phone"
 msgstr "Mobiiltelefon"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:152
 msgid "Other Phone"
 msgstr "Muu telefon"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Other Fax"
 msgstr "Muu faks"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Pager"
 msgstr "Piipar"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Primary Phone"
 msgstr "Telefon"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Radio"
 msgstr "Raadio"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:159
 msgid "TTY"
 msgstr "TTY"
 
-#. Email fields
-#: ../addressbook/libebook/e-contact.c:154
-msgid "Email List"
-msgstr "E-posti aadresside loend"
-
-#: ../addressbook/libebook/e-contact.c:155
-msgid "Email 1"
-msgstr "E-post 1"
-
-#: ../addressbook/libebook/e-contact.c:156
-msgid "Email 2"
-msgstr "E-post 2"
-
-#: ../addressbook/libebook/e-contact.c:157
-msgid "Email 3"
-msgstr "E-post 3"
-
-#: ../addressbook/libebook/e-contact.c:158
-msgid "Email 4"
-msgstr "Email 4"
-
-#: ../addressbook/libebook/e-contact.c:159
-msgid "Mailer"
-msgstr "Postiprogramm"
-
-#: ../addressbook/libebook/e-contact.c:160
-msgid "Wants HTML Mail"
-msgstr "Soovib HTML sõnumeid"
-
-#. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:163
-msgid "AIM Screen Name List"
-msgstr "AIM ekraaninimede loend"
-
-#: ../addressbook/libebook/e-contact.c:164
-msgid "GroupWise Id List"
-msgstr "Groupwise Id loend"
-
-#: ../addressbook/libebook/e-contact.c:165
-msgid "Jabber Id List"
-msgstr "Jabberi Id loend"
-
-#: ../addressbook/libebook/e-contact.c:166
-msgid "Yahoo! Screen Name List"
-msgstr "Yahoo! ekraaninimede loend"
-
-#: ../addressbook/libebook/e-contact.c:167
-msgid "MSN Screen Name List"
-msgstr "MSN ekraaninimede loend"
-
-#: ../addressbook/libebook/e-contact.c:168
-msgid "ICQ Id List"
-msgstr "ICQ Id loend"
-
-#: ../addressbook/libebook/e-contact.c:170
-msgid "AIM Home Screen Name 1"
-msgstr "AIM ekraaninimi kodus 1"
-
-#: ../addressbook/libebook/e-contact.c:171
-msgid "AIM Home Screen Name 2"
-msgstr "AIM ekraaninimi kodus 2"
-
-#: ../addressbook/libebook/e-contact.c:172
-msgid "AIM Home Screen Name 3"
-msgstr "AIM ekraaninimi kodus 3"
-
-#: ../addressbook/libebook/e-contact.c:173
-msgid "AIM Work Screen Name 1"
-msgstr "AIM ekraaninimi tööl 1"
-
-#: ../addressbook/libebook/e-contact.c:174
-msgid "AIM Work Screen Name 2"
-msgstr "AIM ekraaninimi tööl 2"
-
-#: ../addressbook/libebook/e-contact.c:175
-msgid "AIM Work Screen Name 3"
-msgstr "AIM ekraaninimi tööl 3"
-
-#: ../addressbook/libebook/e-contact.c:176
-msgid "GroupWise Home Screen Name 1"
-msgstr "Groupwise ekraaninimi kodus 1"
-
-#: ../addressbook/libebook/e-contact.c:177
-msgid "GroupWise Home Screen Name 2"
-msgstr "Groupwise ekraaninimi kodus 2"
-
-#: ../addressbook/libebook/e-contact.c:178
-msgid "GroupWise Home Screen Name 3"
-msgstr "Groupwise ekraaninimi kodus 3"
-
-#: ../addressbook/libebook/e-contact.c:179
-msgid "GroupWise Work Screen Name 1"
-msgstr "Groupwise ekraaninimi tööl 1"
-
-#: ../addressbook/libebook/e-contact.c:180
-msgid "GroupWise Work Screen Name 2"
-msgstr "Groupwise ekraaninimi tööl 2"
-
-#: ../addressbook/libebook/e-contact.c:181
-msgid "GroupWise Work Screen Name 3"
-msgstr "Groupwise ekraaninimi tööl 3"
-
-#: ../addressbook/libebook/e-contact.c:182
-msgid "Jabber Home Id 1"
-msgstr "Jabber kodus Id 1"
-
-#: ../addressbook/libebook/e-contact.c:183
-msgid "Jabber Home Id 2"
-msgstr "Jabber kodus Id 2"
-
-#: ../addressbook/libebook/e-contact.c:184
-msgid "Jabber Home Id 3"
-msgstr "Jabber kodus Id 2"
-
-#: ../addressbook/libebook/e-contact.c:185
-msgid "Jabber Work Id 1"
-msgstr "Jabber tööl Id 1"
-
-#: ../addressbook/libebook/e-contact.c:186
-msgid "Jabber Work Id 2"
-msgstr "Jabber tööl Id 2"
-
-#: ../addressbook/libebook/e-contact.c:187
-msgid "Jabber Work Id 3"
-msgstr "Jabber tööl Id 3"
-
-#: ../addressbook/libebook/e-contact.c:188
-msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! ekraaninimi kodus 1"
-
-#: ../addressbook/libebook/e-contact.c:189
-msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! ekraaninimi kodus 2"
-
-#: ../addressbook/libebook/e-contact.c:190
-msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! ekraaninimi kodus 3"
-
-#: ../addressbook/libebook/e-contact.c:191
-msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! ekraaninimi tööl 1"
-
-#: ../addressbook/libebook/e-contact.c:192
-msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! ekraaninimi tööl 2"
-
-#: ../addressbook/libebook/e-contact.c:193
-msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! ekraaninimi tööl 3"
-
-#: ../addressbook/libebook/e-contact.c:194
-msgid "MSN Home Screen Name 1"
-msgstr "MSN ekraaninimi kodus 1"
-
-#: ../addressbook/libebook/e-contact.c:195
-msgid "MSN Home Screen Name 2"
-msgstr "MSN ekraaninimi kodus 2"
-
-#: ../addressbook/libebook/e-contact.c:196
-msgid "MSN Home Screen Name 3"
-msgstr "MSN ekraaninimi kodus 3"
-
-#: ../addressbook/libebook/e-contact.c:197
-msgid "MSN Work Screen Name 1"
-msgstr "MSN ekraaninimi tööl 1"
-
-#: ../addressbook/libebook/e-contact.c:198
-msgid "MSN Work Screen Name 2"
-msgstr "MSN ekraaninimi tööl 2"
-
-#: ../addressbook/libebook/e-contact.c:199
-msgid "MSN Work Screen Name 3"
-msgstr "MSN ekraaninimi tööl 3"
-
-#: ../addressbook/libebook/e-contact.c:200
-msgid "ICQ Home Id 1"
-msgstr "ICQ kodus Id 1"
-
-#: ../addressbook/libebook/e-contact.c:201
-msgid "ICQ Home Id 2"
-msgstr "ICQ kodus Id 2"
-
-#: ../addressbook/libebook/e-contact.c:202
-msgid "ICQ Home Id 3"
-msgstr "ICQ kodus Id 3"
-
-#: ../addressbook/libebook/e-contact.c:203
-msgid "ICQ Work Id 1"
-msgstr "ICQ tööl Id 1"
-
-#: ../addressbook/libebook/e-contact.c:204
-msgid "ICQ Work Id 2"
-msgstr "ICQ tööl Id 2"
-
-#: ../addressbook/libebook/e-contact.c:205
-msgid "ICQ Work Id 3"
-msgstr "ICQ tööl Id 3"
-
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:162
 msgid "Organization"
 msgstr "Organisatsioon"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:163
 msgid "Organizational Unit"
 msgstr "Organisatsiooni allüksus"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
 msgstr "Kontor"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
 msgstr "Tiitel"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Role"
 msgstr "Roll"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Manager"
 msgstr "Juht"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:171
 msgid "Homepage URL"
 msgstr "Kodulehekülje URL"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:172
 msgid "Weblog URL"
 msgstr "Weblogi URL"
 
-#: ../addressbook/libebook/e-contact.c:220
-msgid "Video Conferencing URL"
-msgstr "Videokonverentsi URL"
-
-#. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:223
-msgid "Photo"
-msgstr "Foto"
-
-#: ../addressbook/libebook/e-contact.c:224
-msgid "Logo"
-msgstr "Logo"
-
-#. Security fields
-#: ../addressbook/libebook/e-contact.c:227
-msgid "X.509 Certificate"
-msgstr "X.509 sertifikaat"
-
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:230
-msgid "Category List"
-msgstr "Kategooriate loend"
-
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "Kategooriad"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:178
 msgid "Calendar URI"
 msgstr "Kalendri URI"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Free/Busy URL"
 msgstr "Vaba/Hõivatud URL"
 
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:180
 msgid "ICS Calendar"
 msgstr "ICS Kalender"
 
+#: ../addressbook/libebook/e-contact.c:181
+msgid "Video Conferencing URL"
+msgstr "Videokonverentsi URL"
+
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Spouse's Name"
 msgstr "Abikaasa nimi"
 
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
 msgstr "Märkus"
 
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:188
+msgid "AIM Home Screen Name 1"
+msgstr "AIM ekraaninimi kodus 1"
+
+#: ../addressbook/libebook/e-contact.c:189
+msgid "AIM Home Screen Name 2"
+msgstr "AIM ekraaninimi kodus 2"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "AIM Home Screen Name 3"
+msgstr "AIM ekraaninimi kodus 3"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "AIM Work Screen Name 1"
+msgstr "AIM ekraaninimi tööl 1"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "AIM Work Screen Name 2"
+msgstr "AIM ekraaninimi tööl 2"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "AIM Work Screen Name 3"
+msgstr "AIM ekraaninimi tööl 3"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "GroupWise Home Screen Name 1"
+msgstr "Groupwise ekraaninimi kodus 1"
+
+#: ../addressbook/libebook/e-contact.c:195
+msgid "GroupWise Home Screen Name 2"
+msgstr "Groupwise ekraaninimi kodus 2"
+
+#: ../addressbook/libebook/e-contact.c:196
+msgid "GroupWise Home Screen Name 3"
+msgstr "Groupwise ekraaninimi kodus 3"
+
+#: ../addressbook/libebook/e-contact.c:197
+msgid "GroupWise Work Screen Name 1"
+msgstr "Groupwise ekraaninimi tööl 1"
+
+#: ../addressbook/libebook/e-contact.c:198
+msgid "GroupWise Work Screen Name 2"
+msgstr "Groupwise ekraaninimi tööl 2"
+
+#: ../addressbook/libebook/e-contact.c:199
+msgid "GroupWise Work Screen Name 3"
+msgstr "Groupwise ekraaninimi tööl 3"
+
+#: ../addressbook/libebook/e-contact.c:200
+msgid "Jabber Home Id 1"
+msgstr "Jabber kodus Id 1"
+
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Jabber Home Id 2"
+msgstr "Jabber kodus Id 2"
+
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Jabber Home Id 3"
+msgstr "Jabber kodus Id 2"
+
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Jabber Work Id 1"
+msgstr "Jabber tööl Id 1"
+
+#: ../addressbook/libebook/e-contact.c:204
+msgid "Jabber Work Id 2"
+msgstr "Jabber tööl Id 2"
+
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Jabber Work Id 3"
+msgstr "Jabber tööl Id 3"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo! ekraaninimi kodus 1"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo! ekraaninimi kodus 2"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo! ekraaninimi kodus 3"
+
+#: ../addressbook/libebook/e-contact.c:209
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo! ekraaninimi tööl 1"
+
+#: ../addressbook/libebook/e-contact.c:210
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo! ekraaninimi tööl 2"
+
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo! ekraaninimi tööl 3"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "MSN Home Screen Name 1"
+msgstr "MSN ekraaninimi kodus 1"
+
+#: ../addressbook/libebook/e-contact.c:213
+msgid "MSN Home Screen Name 2"
+msgstr "MSN ekraaninimi kodus 2"
+
+#: ../addressbook/libebook/e-contact.c:214
+msgid "MSN Home Screen Name 3"
+msgstr "MSN ekraaninimi kodus 3"
+
+#: ../addressbook/libebook/e-contact.c:215
+msgid "MSN Work Screen Name 1"
+msgstr "MSN ekraaninimi tööl 1"
+
+#: ../addressbook/libebook/e-contact.c:216
+msgid "MSN Work Screen Name 2"
+msgstr "MSN ekraaninimi tööl 2"
+
+#: ../addressbook/libebook/e-contact.c:217
+msgid "MSN Work Screen Name 3"
+msgstr "MSN ekraaninimi tööl 3"
+
+#: ../addressbook/libebook/e-contact.c:218
+msgid "ICQ Home Id 1"
+msgstr "ICQ kodus Id 1"
+
+#: ../addressbook/libebook/e-contact.c:219
+msgid "ICQ Home Id 2"
+msgstr "ICQ kodus Id 2"
+
+#: ../addressbook/libebook/e-contact.c:220
+msgid "ICQ Home Id 3"
+msgstr "ICQ kodus Id 3"
+
+#: ../addressbook/libebook/e-contact.c:221
+msgid "ICQ Work Id 1"
+msgstr "ICQ tööl Id 1"
+
+#: ../addressbook/libebook/e-contact.c:222
+msgid "ICQ Work Id 2"
+msgstr "ICQ tööl Id 2"
+
+#: ../addressbook/libebook/e-contact.c:223
+msgid "ICQ Work Id 3"
+msgstr "ICQ tööl Id 3"
+
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:226
+msgid "Last Revision"
+msgstr "Viimane ülevaatus"
+
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Name or Org"
+msgstr "Nimi või organisatsioon"
+
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:230
+msgid "Address List"
+msgstr "Aadresside loend"
+
+#: ../addressbook/libebook/e-contact.c:231
+msgid "Home Address"
+msgstr "Kodune aadress"
+
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Work Address"
+msgstr "Töökoha aadress"
+
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Other Address"
+msgstr "Muu aadress"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:236
+msgid "Category List"
+msgstr "Kategooriate loend"
+
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:239
+msgid "Photo"
+msgstr "Foto"
+
+#: ../addressbook/libebook/e-contact.c:240
+msgid "Logo"
+msgstr "Logo"
+
 #: ../addressbook/libebook/e-contact.c:242
+msgid "Name"
+msgstr "Nimi"
+
+#: ../addressbook/libebook/e-contact.c:243
+msgid "Email List"
+msgstr "E-posti aadresside loend"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:246
+msgid "AIM Screen Name List"
+msgstr "AIM ekraaninimede loend"
+
+#: ../addressbook/libebook/e-contact.c:247
+msgid "GroupWise Id List"
+msgstr "Groupwise Id loend"
+
+#: ../addressbook/libebook/e-contact.c:248
+msgid "Jabber Id List"
+msgstr "Jabberi Id loend"
+
+#: ../addressbook/libebook/e-contact.c:249
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo! ekraaninimede loend"
+
+#: ../addressbook/libebook/e-contact.c:250
+msgid "MSN Screen Name List"
+msgstr "MSN ekraaninimede loend"
+
+#: ../addressbook/libebook/e-contact.c:251
+msgid "ICQ Id List"
+msgstr "ICQ Id loend"
+
+#: ../addressbook/libebook/e-contact.c:253
+msgid "Wants HTML Mail"
+msgstr "Soovib HTML sõnumeid"
+
+#: ../addressbook/libebook/e-contact.c:255
+msgid "List"
+msgstr "Loend"
+
+#: ../addressbook/libebook/e-contact.c:256
+msgid "List Show Addresses"
+msgstr "Ekraaninimede loend"
+
+#: ../addressbook/libebook/e-contact.c:258
 msgid "Birth Date"
 msgstr "Sünniaeg"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:259
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "Aastapäev"
 
-#: ../addressbook/libebook/e-contact.c:245
-msgid "List"
-msgstr "Loend"
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:262
+msgid "X.509 Certificate"
+msgstr "X.509 sertifikaat"
 
-#: ../addressbook/libebook/e-contact.c:246
-msgid "List Show Addresses"
-msgstr "Ekraaninimede loend"
+#: ../addressbook/libebook/e-contact.c:264
+msgid "Gadu-Gadu Home Id 1"
+msgstr "Gadu-Gadu kodus Id 1"
 
-#. Last modified time
-#: ../addressbook/libebook/e-contact.c:249
-msgid "Last Revision"
-msgstr "Viimane ülevaatus"
+#: ../addressbook/libebook/e-contact.c:265
+msgid "Gadu-Gadu Home Id 2"
+msgstr "Gadu-Gadu kodus Id 2"
 
-#. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:251
-msgid "Book URI"
-msgstr "Raamatu URI"
+#: ../addressbook/libebook/e-contact.c:266
+msgid "Gadu-Gadu Home Id 3"
+msgstr "Gadu-Gadu kodus Id 2"
 
-#: ../addressbook/libebook/e-contact.c:1239
+#: ../addressbook/libebook/e-contact.c:267
+msgid "Gadu-Gadu Work Id 1"
+msgstr "Gadu-Gadu tööl Id 1"
+
+#: ../addressbook/libebook/e-contact.c:268
+msgid "Gadu-Gadu Work Id 2"
+msgstr "Gadu-Gadu tööl Id 2"
+
+#: ../addressbook/libebook/e-contact.c:269
+msgid "Gadu-Gadu Work Id 3"
+msgstr "Gadu-Gadu tööl Id 3"
+
+#: ../addressbook/libebook/e-contact.c:270
+msgid "Gadu-Gadu Id List"
+msgstr "Gadu-Gadu ID-loend"
+
+#: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "Nimetute nimekiri"
@@ -690,37 +690,37 @@ msgstr "Aastapäev: %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kalendri andmeid pole võimalik salvestada: Vigane URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1656
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
 msgid "Reply Requested: by "
 msgstr ""
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1661
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 msgid "Reply Requested: When convenient"
 msgstr ""
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
 #, c-format
 msgid "Loading %s items"
 msgstr "%s kirjete laadimine"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:793
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:850
 msgid "Invalid server URI"
 msgstr "Vigane serveri URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:936
-#: ../calendar/libecal/e-cal.c:5148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1011
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:878
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:978
+#: ../calendar/libecal/e-cal.c:5178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1015
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1053
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 #: ../camel/providers/groupwise/camel-groupwise-store.c:711
@@ -731,18 +731,18 @@ msgstr "Vigane serveri URI"
 msgid "Authentication failed"
 msgstr "Tõrge autentimisel"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:920
 msgid "Could not create thread for getting deltas"
 msgstr "Deltade hankimise lõime pole võimalik luua"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1169
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1229
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Puhverfaili pole võimalik luua"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:930
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
 msgid "Could not create thread for populating cache"
 msgstr ""
 
@@ -929,7 +929,7 @@ msgstr "%.1f/%.1f°F - %s"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:346
 #, c-format
 msgid "%d%% chance of precipitation\n"
-msgstr ""
+msgstr "sademete võimalus %d%%\n"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:353
 #, c-format
@@ -955,142 +955,139 @@ msgstr "%.1f-%.1ftolli lund\n"
 msgid "Untitled appointment"
 msgstr "Nimetu sündmus"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:681
-#: ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:709
 msgid "High"
 msgstr "Kõrge"
 
-#: ../calendar/libecal/e-cal-util.c:683
-#: ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
 msgid "Normal"
 msgstr "Keskmine"
 
-#: ../calendar/libecal/e-cal-util.c:685
-#: ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
 msgid "Low"
 msgstr "Madal"
 
@@ -1100,87 +1097,83 @@ msgid "Undefined"
 msgstr "Määramata"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1707
+#: ../calendar/libecal/e-cal.c:1737
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Sisesta %s parool, et lubada proksi kasutajale %s"
 
-#: ../calendar/libecal/e-cal.c:1710
-#: ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Sisesta %s parool (kasutaja %s)"
 
-#: ../calendar/libecal/e-cal.c:5120
+#: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
 msgstr "Vigane parameeter"
 
-#: ../calendar/libecal/e-cal.c:5122
+#: ../calendar/libecal/e-cal.c:5152
 msgid "Backend is busy"
 msgstr "Taustaprogramm on hõivatud"
 
-#: ../calendar/libecal/e-cal.c:5124
+#: ../calendar/libecal/e-cal.c:5154
 msgid "Repository is offline"
 msgstr "Hoidla ei ole võrku ühendatud"
 
-#: ../calendar/libecal/e-cal.c:5126
+#: ../calendar/libecal/e-cal.c:5156
 msgid "No such calendar"
 msgstr "Kalendrit ei ole"
 
-#: ../calendar/libecal/e-cal.c:5128
-#: ../servers/groupwise/e-gw-connection.c:173
+#: ../calendar/libecal/e-cal.c:5158 ../servers/groupwise/e-gw-connection.c:175
 msgid "Object not found"
 msgstr "Objekti ei leitud"
 
-#: ../calendar/libecal/e-cal.c:5130
-#: ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid object"
 msgstr "Vigane objekt"
 
-#: ../calendar/libecal/e-cal.c:5132
+#: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
 msgstr "URI ei ole laaditud"
 
-#: ../calendar/libecal/e-cal.c:5134
+#: ../calendar/libecal/e-cal.c:5164
 msgid "URI already loaded"
 msgstr "URI on juba laaditud"
 
-#: ../calendar/libecal/e-cal.c:5136
+#: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Juurdepääs keelatud"
 
-#: ../calendar/libecal/e-cal.c:5138
-#: ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
 msgid "Unknown User"
 msgstr "Tundmatu kasutaja"
 
-#: ../calendar/libecal/e-cal.c:5140
+#: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
 msgstr "Objekti ID on juba olemas"
 
-#: ../calendar/libecal/e-cal.c:5142
+#: ../calendar/libecal/e-cal.c:5172
 msgid "Protocol not supported"
 msgstr "Toetamata protokoll"
 
-#: ../calendar/libecal/e-cal.c:5144
+#: ../calendar/libecal/e-cal.c:5174
 msgid "Operation has been canceled"
 msgstr "Tegevus on tühistatud"
 
-#: ../calendar/libecal/e-cal.c:5146
+#: ../calendar/libecal/e-cal.c:5176
 msgid "Could not cancel operation"
 msgstr "Toimingut pole võimalik katkestada"
 
-#: ../calendar/libecal/e-cal.c:5150
+#: ../calendar/libecal/e-cal.c:5180
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Autentimine on vajalik"
 
-#: ../calendar/libecal/e-cal.c:5152
+#: ../calendar/libecal/e-cal.c:5182
 msgid "A CORBA exception has occurred"
 msgstr "Tekkis CORBA viga"
 
-#: ../calendar/libecal/e-cal.c:5154
+#: ../calendar/libecal/e-cal.c:5184
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
@@ -1189,19 +1182,19 @@ msgstr "Tekkis CORBA viga"
 #: ../camel/providers/pop3/camel-pop3-store.c:539
 #: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:181
+#: ../servers/groupwise/e-gw-connection.c:183
 msgid "Unknown error"
 msgstr "Tundmatu viga"
 
-#: ../calendar/libecal/e-cal.c:5156
+#: ../calendar/libecal/e-cal.c:5186
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Vigu ei tekkinud"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" ei eelda argumente"
@@ -1210,7 +1203,7 @@ msgstr "\"%s\" ei eelda argumente"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" eeldab ühte argumenti"
@@ -1218,7 +1211,7 @@ msgstr "\"%s\" eeldab ühte argumenti"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" esimene argument peaks olema string"
@@ -1226,12 +1219,13 @@ msgstr "\"%s\" esimene argument peaks olema string"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
+msgstr ""
+"\"%s\" esimene argument peaks olema ISO 8601 vormingus kuupäeva/kella string"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" nõuab kahte argumenti"
@@ -1240,8 +1234,8 @@ msgstr "\"%s\" nõuab kahte argumenti"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" eeldab, et esimene argument oleks time_t"
@@ -1252,30 +1246,38 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" eeldab, et teine argument oleks täisarv"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" eeldab, et teine argument oleks time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" eeldab, et teine argument oleks string"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
-msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\""
-msgstr "\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või \"location\""
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\""
+msgstr ""
+"\"%s\" eeldab, et argument on kas: \"any\", \"summary\", \"description\" või "
+"\"location\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" vajab vähemalt ühte argumenti"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
-msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
-msgstr "\"%s\" eeldab, et kõik argumendid on stringid ja ühegi argumendi väärtus pole tõeväärtus 'väär' (#f)"
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\" eeldab, et kõik argumendid on stringid ja ühegi argumendi väärtus "
+"pole tõeväärtus 'väär' (#f)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1352,13 +1354,12 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "Taassünkroniseeritakse serveriga"
 
-#: ../camel/camel-disco-folder.c:42
-#: ../camel/camel-offline-folder.c:50
+#: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:50
 msgid "Copy folder content locally for offline operation"
-msgstr "Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
+msgstr ""
+"Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
 
-#: ../camel/camel-disco-folder.c:104
-#: ../camel/camel-offline-folder.c:109
+#: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:109
 msgid "Downloading new messages for offline mode"
 msgstr "Uute sõnumite allalaadimine autonoomse režiimi jaoks"
 
@@ -1386,19 +1387,16 @@ msgstr "Tõrge alamprotsessi '%s' käivitamisel: %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "Vastu võetud vigane sõnum %s'lt: %s"
 
-#: ../camel/camel-filter-driver.c:978
-#: ../camel/camel-filter-driver.c:987
+#: ../camel/camel-filter-driver.c:978 ../camel/camel-filter-driver.c:987
 msgid "Syncing folders"
 msgstr "Kaustade sünkroniseerimine"
 
-#: ../camel/camel-filter-driver.c:1076
-#: ../camel/camel-filter-driver.c:1454
+#: ../camel/camel-filter-driver.c:1076 ../camel/camel-filter-driver.c:1454
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Viga filtri analüüsil: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1085
-#: ../camel/camel-filter-driver.c:1463
+#: ../camel/camel-filter-driver.c:1085 ../camel/camel-filter-driver.c:1463
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Viga filtri täitmisel: %s: %s"
@@ -1420,19 +1418,16 @@ msgstr "Võetakse vastu teadet %d (%d%%)"
 msgid "Cannot open message"
 msgstr "Sõnumit pole võimalik avada"
 
-#: ../camel/camel-filter-driver.c:1181
-#: ../camel/camel-filter-driver.c:1193
+#: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1193
 #, c-format
 msgid "Failed on message %d"
 msgstr "Nurjumine teate %d juures"
 
-#: ../camel/camel-filter-driver.c:1207
-#: ../camel/camel-filter-driver.c:1298
+#: ../camel/camel-filter-driver.c:1207 ../camel/camel-filter-driver.c:1298
 msgid "Syncing folder"
 msgstr "Kausta sünkroniseerimine"
 
-#: ../camel/camel-filter-driver.c:1211
-#: ../camel/camel-filter-driver.c:1303
+#: ../camel/camel-filter-driver.c:1211 ../camel/camel-filter-driver.c:1303
 msgid "Complete"
 msgstr "Lõpetatud"
 
@@ -1464,14 +1459,12 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "Tõrge alamprotsessi \"%s\" loomisel: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:700
-#: ../camel/camel-filter-search.c:708
+#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Viga filterotsingu täitmisel: %s: %s"
 
-#: ../camel/camel-folder-search.c:357
-#: ../camel/camel-folder-search.c:479
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1480,8 +1473,7 @@ msgstr ""
 "Otsinguavaldist ei ole võimalik analüüsida: %s\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:367
-#: ../camel/camel-folder-search.c:489
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1490,8 +1482,7 @@ msgstr ""
 "Viga otsinguavaldise täitmisel: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:675
-#: ../camel/camel-folder-search.c:708
+#: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
 msgid "(match-all) requires a single bool result"
 msgstr "(match-all) nõuab ühtainust tõeväärtustüüpi tulemust"
 
@@ -1499,8 +1490,7 @@ msgstr "(match-all) nõuab ühtainust tõeväärtustüüpi tulemust"
 msgid "(match-threads) not allowed inside match-all"
 msgstr "(match-threads) pole match-all sees lubatud"
 
-#: ../camel/camel-folder-search.c:761
-#: ../camel/camel-folder-search.c:765
+#: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
 msgstr ""
 
@@ -1567,8 +1557,7 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "Tõrge gpg kasutajavihje analüüsimisel."
 
-#: ../camel/camel-gpg-context.c:791
-#: ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
 msgid "Failed to parse gpg passphrase request."
 msgstr "Tõrge gpg paroolipäringu analüüsimisel."
 
@@ -1595,8 +1584,7 @@ msgstr ""
 msgid "Unexpected request from GnuPG for `%s'"
 msgstr "Ootamatu GnuPG päring  `%s' jaoks"
 
-#: ../camel/camel-gpg-context.c:857
-#: ../camel/camel-gpg-context.c:1057
+#: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
 msgid "Canceled."
 msgstr "Tühistatud."
@@ -1615,28 +1603,21 @@ msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Tõrge krüptimisel: Korrektsed saajate aadressid on määramata."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1195
-#: ../camel/camel-gpg-context.c:1323
-#: ../camel/camel-gpg-context.c:1802
-#: ../camel/camel-gpg-context.c:1847
+#: ../camel/camel-gpg-context.c:1195 ../camel/camel-gpg-context.c:1323
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1847
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Tõrge gpg käivitamisel: %s"
 
-#: ../camel/camel-gpg-context.c:1291
-#: ../camel/camel-smime-context.c:387
+#: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Signeerimisandmeid pole võimalik genereerida: %s"
 
-#: ../camel/camel-gpg-context.c:1338
-#: ../camel/camel-gpg-context.c:1522
-#: ../camel/camel-gpg-context.c:1605
-#: ../camel/camel-gpg-context.c:1620
-#: ../camel/camel-gpg-context.c:1724
-#: ../camel/camel-gpg-context.c:1739
-#: ../camel/camel-gpg-context.c:1818
-#: ../camel/camel-gpg-context.c:1863
+#: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
+#: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
 msgid "Failed to execute gpg."
 msgstr "Tõrge gpg käivitamisel."
 
@@ -1644,12 +1625,9 @@ msgstr "Tõrge gpg käivitamisel."
 msgid "This is a digitally signed message part"
 msgstr "See on sõnumi digitaalselt allkirjastatud osa"
 
-#: ../camel/camel-gpg-context.c:1442
-#: ../camel/camel-gpg-context.c:1448
-#: ../camel/camel-gpg-context.c:1454
-#: ../camel/camel-gpg-context.c:1470
-#: ../camel/camel-smime-context.c:690
-#: ../camel/camel-smime-context.c:701
+#: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
+#: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
+#: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
@@ -1657,7 +1635,9 @@ msgstr "Sõnumi signatuuri pole võimalik kontrollida: Sõnumivorming on vigane"
 #: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik luua: %s"
+msgstr ""
+"Sõnimi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
+"luua: %s"
 
 #: ../camel/camel-gpg-context.c:1588
 #, c-format
@@ -1676,8 +1656,7 @@ msgstr "Tõrge MIME osa dekrüptimisel: protokolli viga"
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Sõnumit pole võimalik lahti krüptida: Sõnumi vorming on vigane"
 
-#: ../camel/camel-gpg-context.c:1760
-#: ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "Krüptitud sisu"
 
@@ -1685,8 +1664,7 @@ msgstr "Krüptitud sisu"
 msgid "Unable to parse message content"
 msgstr "Sõnumi sisu pole võimalik analüüsida"
 
-#: ../camel/camel-gpg-context.c:1803
-#: ../camel/camel-gpg-context.c:1848
+#: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
@@ -1710,19 +1688,18 @@ msgstr "Lukustamisabilise toru pole võimalik luua: %s"
 msgid "Cannot fork locking helper: %s"
 msgstr "Lukustamisabilist pole võimalik forkida: %s"
 
-#: ../camel/camel-lock-client.c:191
-#: ../camel/camel-lock-client.c:214
+#: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
+msgstr ""
+"'%s' pole võimalik lukustada: lukustusabilise (lock-helper) protokolli viga"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
 msgid "Could not lock '%s'"
 msgstr "'%s' pole võimalik lukustada"
 
-#: ../camel/camel-lock.c:95
-#: ../camel/camel-lock.c:116
+#: ../camel/camel-lock.c:95 ../camel/camel-lock.c:116
 #, c-format
 msgid "Could not create lock file for %s: %s"
 msgstr "%s jaoks pole võimalik lukufaili luua: %s"
@@ -1791,8 +1768,7 @@ msgstr "Viga sõnumifaili lugemisel: %s"
 msgid "Error writing mail temp file: %s"
 msgstr "Viga ajutise sõnumifaili kirjutamisel: %s"
 
-#: ../camel/camel-movemail.c:462
-#: ../camel/camel-movemail.c:529
+#: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "Viga ajutise sõnumifaili kopeerimisel: %s"
@@ -1801,8 +1777,7 @@ msgstr "Viga ajutise sõnumifaili kopeerimisel: %s"
 msgid "parse error"
 msgstr "analüüsimisviga"
 
-#: ../camel/camel-net-utils.c:497
-#: ../camel/camel-net-utils.c:659
+#: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
 #: ../camel/camel-net-utils.c:790
 #: ../camel/providers/pop3/camel-pop3-store.c:445
 #: ../camel/providers/pop3/camel-pop3-store.c:526
@@ -1845,11 +1820,11 @@ msgstr "Tõrge nime lahendamisel: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Sõnumite sünkroniseerimine kaustast '%s' kettale"
 
-#: ../camel/camel-offline-journal.c:163
-#: ../camel/camel-offline-journal.c:186
+#: ../camel/camel-offline-journal.c:163 ../camel/camel-offline-journal.c:186
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr "Autonoomse režiimi päevikusse pole kausta `%s' kohta võimalik kirjutada: %s"
+msgstr ""
+"Autonoomse režiimi päevikusse pole kausta `%s' kohta võimalik kirjutada: %s"
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
@@ -1874,8 +1849,7 @@ msgstr "%s pole võimalik laadida : %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s pole võimalik laadida: moodulis puudub lähtestamiskood."
 
-#: ../camel/camel-provider.c:377
-#: ../camel/camel-session.c:166
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:166
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr ""
@@ -1888,8 +1862,7 @@ msgstr "Anonüümne"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "See valik ühendub serveriga kasutades anonüümset sisselogimist."
 
-#: ../camel/camel-sasl-anonymous.c:122
-#: ../camel/camel-sasl-plain.c:89
+#: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:89
 msgid "Authentication failed."
 msgstr "Tõrge autentimisel."
 
@@ -1923,16 +1896,24 @@ msgid "CRAM-MD5"
 msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:40
-msgid "This option will connect to the server using a secure CRAM-MD5 password, if the server supports it."
-msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist CRAM-MD5 parooli."
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
+"kasutades turvalist CRAM-MD5 parooli."
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:50
-msgid "This option will connect to the server using a secure DIGEST-MD5 password, if the server supports it."
-msgstr "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse kasutades turvalist DIGEST-MD5 parooli."
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
+"kasutades turvalist DIGEST-MD5 parooli."
 
 #: ../camel/camel-sasl-digest-md5.c:818
 msgid "Server challenge too long (>2048 octets)"
@@ -1967,7 +1948,9 @@ msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "See valik ühendub serverisse kasutades Kerberos 5 autentimist."
 
 #: ../camel/camel-sasl-gssapi.c:157
-msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:162
@@ -1975,19 +1958,27 @@ msgid "The provided target_name parameter was ill-formed."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:165
-msgid "The provided target_name parameter contained an invalid or unsupported type of name."
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:169
-msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:174
-msgid "The input_token contains an invalid signature, or a signature that could not be verified."
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:178
-msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:183
@@ -2006,10 +1997,8 @@ msgstr ""
 msgid "The referenced credentials have expired."
 msgstr ""
 
-#: ../camel/camel-sasl-gssapi.c:198
-#: ../camel/camel-sasl-gssapi.c:246
-#: ../camel/camel-sasl-gssapi.c:282
-#: ../camel/camel-sasl-gssapi.c:297
+#: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
+#: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
 #: ../camel/providers/imap/camel-imap-store.c:1281
 msgid "Bad authentication response from server."
@@ -2040,8 +2029,7 @@ msgstr ""
 msgid "Login"
 msgstr "Kasutajanimi"
 
-#: ../camel/camel-sasl-login.c:36
-#: ../camel/camel-sasl-plain.c:36
+#: ../camel/camel-sasl-login.c:36 ../camel/camel-sasl-plain.c:36
 msgid "This option will connect to the server using a simple password."
 msgstr "See valik ühendub serveriga kasutades lihtsat parooli."
 
@@ -2054,8 +2042,12 @@ msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:34
-msgid "This option will connect to a Windows-based server using NTLM / Secure Password Authentication."
-msgstr "See valik ühendub Windowsil põhinevasse serverisse kasutades NTLM / Secure Password Authentication autentimist."
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
+msgstr ""
+"See valik ühendub Windowsil põhinevasse serverisse kasutades NTLM / Secure "
+"Password Authentication autentimist."
 
 #: ../camel/camel-sasl-plain.c:34
 msgid "PLAIN"
@@ -2143,8 +2135,7 @@ msgstr "Sertifikaadiahelat pole võimalik leida"
 msgid "Cannot add CMS Signing time"
 msgstr "CMS signeerimisaega pole võimalik lisada"
 
-#: ../camel/camel-smime-context.c:293
-#: ../camel/camel-smime-context.c:305
+#: ../camel/camel-smime-context.c:293 ../camel/camel-smime-context.c:305
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Krüptimissertifikaati pole \"%s\" jaoks olemas"
@@ -2165,8 +2156,7 @@ msgstr "Krüptimissertifikaati pole võimalik lisada"
 msgid "Cannot add CMS Signer information"
 msgstr "CMS signeerija andmeid pole võimalik lisada"
 
-#: ../camel/camel-smime-context.c:398
-#: ../camel/camel-smime-context.c:846
+#: ../camel/camel-smime-context.c:398 ../camel/camel-smime-context.c:846
 msgid "Cannot create encoder context"
 msgstr "Kodeerija konteksti pole võimalik luua"
 
@@ -2174,8 +2164,7 @@ msgstr "Kodeerija konteksti pole võimalik luua"
 msgid "Failed to add data to CMS encoder"
 msgstr "Tõrge andmete lisamisel CMS kodeerijale"
 
-#: ../camel/camel-smime-context.c:409
-#: ../camel/camel-smime-context.c:863
+#: ../camel/camel-smime-context.c:409 ../camel/camel-smime-context.c:863
 msgid "Failed to encode data"
 msgstr "Andmete kodeerimine nurjus."
 
@@ -2227,8 +2216,7 @@ msgstr "Signatuuris pole signeeritud andmeid"
 msgid "Digests missing from enveloped data"
 msgstr "Ümbrikus olevatel andmetel puudub sõnumilühend"
 
-#: ../camel/camel-smime-context.c:557
-#: ../camel/camel-smime-context.c:567
+#: ../camel/camel-smime-context.c:557 ../camel/camel-smime-context.c:567
 msgid "Cannot calculate digests"
 msgstr "Sõnumilühendit pole võimalik arvutada"
 
@@ -2236,8 +2224,7 @@ msgstr "Sõnumilühendit pole võimalik arvutada"
 msgid "Cannot set message digests"
 msgstr "Sõnumilühendit pole võimalik seada"
 
-#: ../camel/camel-smime-context.c:582
-#: ../camel/camel-smime-context.c:587
+#: ../camel/camel-smime-context.c:582 ../camel/camel-smime-context.c:587
 msgid "Certificate import failed"
 msgstr "Tõrge sertifikaadi importimisel"
 
@@ -2247,7 +2234,8 @@ msgstr "Sertifikaat on ainus sõnum, sertifikaate pole võimalik verifitseerida"
 
 #: ../camel/camel-smime-context.c:600
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "Sertifikaat on ainus sõnum, sertifikaadid on imporditud ja verifitseeritud"
+msgstr ""
+"Sertifikaat on ainus sõnum, sertifikaadid on imporditud ja verifitseeritud"
 
 #: ../camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2340,29 +2328,25 @@ msgstr ""
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kausta pole võimalik luua: %s: kaust on juba olemas"
 
-#: ../camel/camel-store.c:402
-#: ../camel/camel-vee-store.c:368
+#: ../camel/camel-store.c:402 ../camel/camel-vee-store.c:368
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kausta kustutamine nurjus: %s: vigane operatsioon"
 
-#: ../camel/camel-store.c:452
-#: ../camel/camel-vee-store.c:405
+#: ../camel/camel-store.c:452 ../camel/camel-vee-store.c:405
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kausta ümbernimetamine nurjus: %s: vigane operatsioon"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:793
-#: ../camel/camel-vtrash-folder.c:48
+#: ../camel/camel-store.c:793 ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Prügikast"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:796
-#: ../camel/camel-vtrash-folder.c:50
+#: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Rämps"
 
@@ -2380,7 +2364,8 @@ msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr "Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
+msgstr ""
+"Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
 
 #: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decode issuer's public key"
@@ -2482,8 +2467,7 @@ msgstr "Võtmekasutus ei toeta sertifikaatide signeerimist"
 msgid "Error in application verification"
 msgstr "Viga rakenduse verifitseerimisel"
 
-#: ../camel/camel-tcp-stream-openssl.c:696
-#: ../camel/camel-tcp-stream-ssl.c:880
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2496,13 +2480,11 @@ msgstr ""
 "Sõrmejälg:       %s\n"
 "Allkiri:         %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702
-#: ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "HEA"
 
-#: ../camel/camel-tcp-stream-openssl.c:702
-#: ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "HALB"
 
@@ -2592,13 +2574,11 @@ msgstr "Viga `%s' salvestamisel: %s"
 msgid "No such message %s in %s"
 msgstr "Sõnumit %s ei ole %s seas"
 
-#: ../camel/camel-vee-folder.c:642
-#: ../camel/camel-vee-folder.c:648
+#: ../camel/camel-vee-folder.c:642 ../camel/camel-vee-folder.c:648
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Sõnumeid pole võimalik virtuaalkausta kopeerida või liigutada"
 
-#: ../camel/camel-vee-store.c:101
-#: ../camel/camel-vee-store.c:344
+#: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
 msgstr "Puudub"
 
@@ -2620,7 +2600,7 @@ msgstr "Sõnumeid pole võimalik prügikausta kopeerida"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Sõnumeid pole võimalik rämpsukausta kopeerida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #, c-format
 msgid ""
@@ -2630,7 +2610,7 @@ msgstr ""
 "Sõnumit %s pole võimalik hankida: \n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
@@ -2638,7 +2618,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Sõnumit ei leitud"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
@@ -2650,7 +2630,7 @@ msgstr "Sõnumit ei leitud"
 msgid "User canceled"
 msgstr "Kasutaja tühistas"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
@@ -2664,30 +2644,30 @@ msgstr "Kasutaja tühistas"
 msgid "Cannot get message %s: %s"
 msgstr "Sõnumit %s pole võimalik hankida: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "See sõnum pole autonoomses režiimis kättesaadav."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:167
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1564
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1609
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1568
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1613
 msgid "Could not get message"
 msgstr "Sõnumit pole võimalik hankida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:753
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:757
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s kokkuvõtet pole võimalik laadida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
 msgid "Trash Folder Full. Please Empty."
-msgstr ""
+msgstr "Prügikaust on täis, palun tühjenda."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2361
@@ -2696,13 +2676,13 @@ msgstr ""
 msgid "Fetching summary information for new messages in %s"
 msgstr "Uutele sõnumitele kokkuvõtete võtmine (%s)"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1877
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1881
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Sõnumit pole võimalik kausta `%s' lisada: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1907
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1911
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Sõnumit pole võimalik luua: %s"
@@ -2715,7 +2695,8 @@ msgstr "Kausta konteinerit %s pole võimalik hankida"
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
+msgstr ""
+"Sõnumit pole autonoomses režiimis võimalik lisada: puhvrit pole saadaval"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:363
 #: ../camel/providers/imap4/camel-imap4-journal.c:336
@@ -2743,7 +2724,9 @@ msgstr "Valikud"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr "Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele sõnumitele "
+msgstr ""
+"Rakenda filtreid kõikidele selles serveris Sisendkastis asuvatele uutele "
+"sõnumitele "
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 msgid "Check new messages for Junk contents"
@@ -2784,8 +2767,10 @@ msgid "Password"
 msgstr "Parool"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
-msgid "This option will connect to the GroupWise server using a plaintext password."
-msgstr "See valik loob ühenduse GroupWise serveriga kasutades avatekstilist parooli."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr ""
+"See valik loob ühenduse GroupWise serveriga kasutades avatekstilist parooli."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 msgid "Host or user not available in url"
@@ -2807,7 +2792,8 @@ msgstr "GroupWise serverisse pole võimalik autentida."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
-msgstr "Käesoleva serveriversiooniga võivad mõned võimalused käituda ebakorrektselt"
+msgstr ""
+"Käesoleva serveriversiooniga võivad mõned võimalused käituda ebakorrektselt"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1869
@@ -2853,7 +2839,10 @@ msgid "Sending Message"
 msgstr "Sõnumi saatmine"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
-msgid "You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"
+msgid ""
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
@@ -2921,7 +2910,8 @@ msgstr "Hula serveritele ligipääsemiseks"
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr "See valik loob ühenduse Hula serveriga kasutades avatekstilist parooli."
+msgstr ""
+"See valik loob ühenduse Hula serveriga kasutades avatekstilist parooli."
 
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
@@ -3009,7 +2999,8 @@ msgstr "Mittetäielik serveri vastus: sõnumile %d on UID määramata"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2560
 #, c-format
-msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "Ootamatu vastus serverilt: sõnumitele %d ja %d on määratud identne UID"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2725
@@ -3070,7 +3061,8 @@ msgstr "E-posti loetakse ja hoitakse IMAP serveris."
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "See valik loob ühenduse IMAP serveriga kasutades avatekstilist parooli."
+msgstr ""
+"See valik loob ühenduse IMAP serveriga kasutades avatekstilist parooli."
 
 #: ../camel/providers/imap/camel-imap-store.c:446
 #: ../camel/providers/imap4/camel-imap4-store.c:214
@@ -3189,7 +3181,8 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2251
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Kaustanimi \"%s\" on vigane kuna see sisaldab märki \"%c\""
 
 #: ../camel/providers/imap/camel-imap-store.c:1998
@@ -3240,7 +3233,8 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "Ühendus IMAP4 serverisse %s suleti ootamatult: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
-msgid "Enable Mailing-List detection required for some filter and vFolder rules"
+msgid ""
+"Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
@@ -3306,12 +3300,14 @@ msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Tundmatu"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik liigutada kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
+msgstr ""
+"Sõnumeid pole võimalik kopeerida kaustast `%s' `%s' kausta: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
@@ -3322,8 +3318,10 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "E-posti loetakse ja hoitakse IMAPv4rev1 serveris."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr "See valik loob ühenduse IMAPv4rev1 serveriga kasutades avatekstilist parooli."
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"See valik loob ühenduse IMAPv4rev1 serveriga kasutades avatekstilist parooli."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:263
 #: ../camel/providers/imapp/camel-imapp-store.c:248
@@ -3336,8 +3334,10 @@ msgstr "Ühendus tühistatud"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr "IMAP serverisse %s pole võimalik %s autentimismehhanismi abil autentida"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+"IMAP serverisse %s pole võimalik %s autentimismehhanismi abil autentida"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
@@ -3401,7 +3401,8 @@ msgstr "Kausta `%s' pole võimalik kustutada: Puudulik käsk"
 #: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: kaust on eritähenduslik"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
@@ -3410,7 +3411,8 @@ msgstr "Autonoomses režiimis pole võimalik IMAP kaustu ümber nimetada."
 #: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
+msgstr ""
+"Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Vigane kirjakasti nimi"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
@@ -3420,7 +3422,8 @@ msgstr "Kausta `%s' pole võimalik ümber nimetada `%s'-ks: Puudulik käsk"
 #: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "`%s' andmeid mustri `%s' jaoks pole IMAP serverist %s võimalik hankida: %s"
+msgstr ""
+"`%s' andmeid mustri `%s' jaoks pole IMAP serverist %s võimalik hankida: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -3543,8 +3546,12 @@ msgid "Local delivery"
 msgstr "Kohalik postijagaja"
 
 #: ../camel/providers/local/camel-local-provider.c:73
-msgid "For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."
-msgstr "Kohalikku e-posti vastuvõtmine (tõstmine) standardsest \"mbox\" vorminguga puhvrist Evolution'i poolt hallatavatesse kaustadesse."
+msgid ""
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
+"folders managed by Evolution."
+msgstr ""
+"Kohalikku e-posti vastuvõtmine (tõstmine) standardsest \"mbox\" vorminguga "
+"puhvrist Evolution'i poolt hallatavatesse kaustadesse."
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -3571,7 +3578,10 @@ msgstr "Standardne Unix'i mbox puhverkataloog"
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
-msgstr "Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga puhverfailides. Seda võib kasutada ka programmide Elm, Pine ja Mutt kaustade lugemiseks."
+msgstr ""
+"Kohalikku e-posti loetakse ja hoitakse standardsetes \"mbox\" vorminguga "
+"puhverfailides. Seda võib kasutada ka programmide Elm, Pine ja Mutt kaustade "
+"lugemiseks."
 
 #: ../camel/providers/local/camel-local-store.c:156
 #: ../camel/providers/local/camel-local-store.c:267
@@ -3730,9 +3740,9 @@ msgid "Checking for new messages"
 msgstr "Uute sõnumite kontroll"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:417
-#: ../camel/providers/local/camel-mbox-summary.c:590
-#: ../camel/providers/local/camel-mbox-summary.c:685
+#: ../camel/providers/local/camel-mbox-summary.c:433
+#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "Kausta salvestamine"
@@ -3825,76 +3835,76 @@ msgstr "'%s' pole võimalik ümber nimetada: `%s': %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "'%s' pole võimalik %s-ks ümber nimetada: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:423
+#: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kausta %s pole võimalik avada: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:471
+#: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "Sõnumiparsija saatuslik viga asukoha %ld ligidal kaustas %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:527
+#: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kausta pole võimalik kontrollida: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:595
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:611
+#: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Faili %s pole võimalik avada: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:607
+#: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Ajutist kirjakasti pole võimalik avada: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:620
-#: ../camel/providers/local/camel-mbox-summary.c:796
+#: ../camel/providers/local/camel-mbox-summary.c:636
+#: ../camel/providers/local/camel-mbox-summary.c:812
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Lähtekausta %s pole võimalik sulgeda: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:629
+#: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "Ajutist kausta pole võimalik sulgeda: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:644
+#: ../camel/providers/local/camel-mbox-summary.c:660
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kataloogi pole võimalik ümber nimetada : %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:701
-#: ../camel/providers/local/camel-mbox-summary.c:907
+#: ../camel/providers/local/camel-mbox-summary.c:717
+#: ../camel/providers/local/camel-mbox-summary.c:923
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kausta pole võimalik salvestada: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:738
-#: ../camel/providers/local/camel-mbox-summary.c:746
-#: ../camel/providers/local/camel-mbox-summary.c:938
-#: ../camel/providers/local/camel-mbox-summary.c:946
+#: ../camel/providers/local/camel-mbox-summary.c:754
+#: ../camel/providers/local/camel-mbox-summary.c:762
+#: ../camel/providers/local/camel-mbox-summary.c:954
+#: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Kokkuvõtte ja kausta ebavõrdlus, isegi peale sünkroniseerimist"
 
-#: ../camel/providers/local/camel-mbox-summary.c:872
+#: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Tundmatu viga: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1001
-#: ../camel/providers/local/camel-mbox-summary.c:1027
+#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Viga ajutise kirjakasti kirjutamisel: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1018
+#: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s: %s"
@@ -4034,8 +4044,11 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Sõnumeid pole võimalik NNTP kaustast kopeerida!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
-msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr "Kaustanimesid näidatakse lühendatult (näiteks ee.arvutid.linux asemel e.a.linux)"
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+"Kaustanimesid näidatakse lühendatult (näiteks ee.arvutid.linux asemel e.a."
+"linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -4047,11 +4060,15 @@ msgstr "USENETi uudised"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr "USENET'i uudistegruppide lugemise ja neisse postitamise talitluse tagamine."
+msgstr ""
+"USENETi uudistegruppide lugemise ja neisse postitamise talitluse tagamine."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
-msgid "This option will authenticate with the NNTP server using a plaintext password."
-msgstr "See valik loob ühenduse NNTP serveriga kasutades avatekstilist parooli."
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
+msgstr ""
+"See valik loob ühenduse NNTP serveriga kasutades avatekstilist parooli."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
@@ -4101,7 +4118,9 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "Sul pole uudistehoidlasse võimalik kausta luua, selle asemel telli omale kaust."
+msgstr ""
+"Sul pole uudistehoidlasse võimalik kausta luua, selle asemel telli omale "
+"kaust."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
@@ -4109,7 +4128,9 @@ msgstr "Sul pole võimalik uudistegruppe ümber nimetada."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr "Sul pole uudistehoidlast võimalik kausta kustutada, selle asemel loobu kausta tellimusest."
+msgstr ""
+"Sul pole uudistehoidlast võimalik kausta kustutada, selle asemel loobu "
+"kausta tellimusest."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1145
 msgid "Authentication requested but no username provided"
@@ -4219,12 +4240,22 @@ msgid "For connecting to and downloading mail from POP servers."
 msgstr "E-posti laaditakse alla POP serverist"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:73
-msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
-msgstr "See valik loob ühenduse POP serveriga kasutades avatekstilist parooli. See on ainus valik, mida toetavad paljud POP serverid."
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"See valik loob ühenduse POP serveriga kasutades avatekstilist parooli. See "
+"on ainus valik, mida toetavad paljud POP serverid."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
-msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
-msgstr "See valik loob ühenduse POP serveriga kasutades krüptitud parooli üle APOP protokolli. See ei pruugi paljude kasutajate puhul töötada isegi serveritega, mis väidavad ennast seda protokolli toetavat."
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"See valik loob ühenduse POP serveriga kasutades krüptitud parooli üle APOP "
+"protokolli. See ei pruugi paljude kasutajate puhul töötada isegi "
+"serveritega, mis väidavad ennast seda protokolli toetavat."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
@@ -4259,8 +4290,12 @@ msgstr "POP serveriga %s pole võimalik ühenduda"
 #: ../camel/providers/pop3/camel-pop3-store.c:401
 #: ../camel/providers/pop3/camel-pop3-store.c:515
 #, c-format
-msgid "Unable to connect to POP server %s: No support for requested authentication mechanism."
-msgstr "POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi tugi."
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
+"tugi."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
@@ -4311,7 +4346,9 @@ msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:39
-msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
 msgstr "E-posti saatmiseks kohaliku süsteemi programmi \"sendmail\" abil."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
@@ -4326,7 +4363,8 @@ msgstr "Sendmaili toru pole võimalik luua: %s: sõnumit ei saadetud"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
+msgstr ""
+"Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
@@ -4421,7 +4459,8 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action not taken: insufficient system storage"
-msgstr "Nõutud toimingut ei teostatud: süsteemsel salvestil pole piisavalt ruumi"
+msgstr ""
+"Nõutud toimingut ei teostatud: süsteemsel salvestil pole piisavalt ruumi"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
@@ -4698,8 +4737,7 @@ msgstr "Ootamine"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1601
-#: ../libedataserver/e-time-utils.c:1848
+#: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a, %d.%m.%Y %l:%M:%S %p"
 
@@ -4707,8 +4745,7 @@ msgstr "%a, %d.%m.%Y %l:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1606
-#: ../libedataserver/e-time-utils.c:1839
+#: ../libedataserver/e-time-utils.c:1606 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a, %d.%m.%Y %H:%M:%S"
 
@@ -4716,8 +4753,7 @@ msgstr "%a, %d.%m.%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1611
-#: ../libedataserver/e-time-utils.c:1844
+#: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %d.%m.%Y %l:%M %p"
 
@@ -4725,8 +4761,7 @@ msgstr "%a, %d.%m.%Y %l:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1616
-#: ../libedataserver/e-time-utils.c:1835
+#: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %d.%m.%Y %H:%M"
 
@@ -4744,8 +4779,7 @@ msgstr "%a, %d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1629
-#: ../libedataserver/e-time-utils.c:1725
+#: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
 #: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
 msgstr "%a, %d.%m.%Y"
@@ -4786,22 +4820,19 @@ msgstr "%d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1664
-#: ../libedataserver/e-time-utils.c:1728
+#: ../libedataserver/e-time-utils.c:1664 ../libedataserver/e-time-utils.c:1728
 msgid "%m/%d/%Y"
 msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1774
-#: ../libedataserver/e-time-utils.c:1893
+#: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1778
-#: ../libedataserver/e-time-utils.c:1885
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1885
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4809,16 +4840,14 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1783
-#: ../libedataserver/e-time-utils.c:1890
+#: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
 msgstr "%l:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1787
-#: ../libedataserver/e-time-utils.c:1882
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1882
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -4837,8 +4866,11 @@ msgstr "Tõrge autentimisel.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:265
 #, c-format
-msgid "There is already a category '%s' in the configuration. Please use another name"
-msgstr "Kategooria '%s' on juba seadistustes olemas. Palun kasuta mõnda muud nime"
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
+msgstr ""
+"Kategooria '%s' on juba seadistustes olemas. Palun kasuta mõnda muud nime"
 
 #: ../libedataserverui/e-categories-dialog.c:435
 msgid "Category"
@@ -4866,11 +4898,11 @@ msgstr "Kategooria _nimi"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
-msgstr "Element(-id) kuulub(-vad) nendesse _kategooriatesse:"
+msgstr "Kirje(d) kuulub (kuuluvad) nendesse _kategooriatesse:"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
-msgstr "_Saadaolevad kategooriad:"
+msgstr "Saa_daolevad kategooriad:"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
@@ -4880,15 +4912,15 @@ msgstr "_Redaktor"
 msgid "categories"
 msgstr "kategooriad"
 
-#: ../libedataserverui/e-name-selector-dialog.c:282
+#: ../libedataserverui/e-name-selector-dialog.c:296
 msgid "Select Contacts from Address Book"
 msgstr "Vali aadressiraamatust kontaktid"
 
-#: ../libedataserverui/e-name-selector-dialog.c:583
+#: ../libedataserverui/e-name-selector-dialog.c:598
 msgid "_Add"
 msgstr "_Lisa"
 
-#: ../libedataserverui/e-name-selector-dialog.c:608
+#: ../libedataserverui/e-name-selector-dialog.c:623
 msgid "_Remove"
 msgstr "_Eemalda"
 
@@ -4934,13 +4966,13 @@ msgid "_Search:"
 msgstr "_Otsing:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2045
+#: ../libedataserverui/e-name-selector-entry.c:2066
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr ""
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2061
+#: ../libedataserverui/e-name-selector-entry.c:2082
 #, c-format
 msgid "_Edit %s"
 msgstr "_Redigeeri %s"
@@ -4950,19 +4982,19 @@ msgstr "_Redigeeri %s"
 msgid "_Delete %s"
 msgstr "_Kustuta %s"
 
-#: ../libedataserverui/e-passwords.c:810
+#: ../libedataserverui/e-passwords.c:854
 msgid "_Remember this passphrase"
 msgstr "_Parool jäetakse meelde"
 
-#: ../libedataserverui/e-passwords.c:811
+#: ../libedataserverui/e-passwords.c:855
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Parool jäetakse selle seansi ajaks meelde"
 
-#: ../libedataserverui/e-passwords.c:814
+#: ../libedataserverui/e-passwords.c:858
 msgid "_Remember this password"
 msgstr "_Parool jäetakse meelde"
 
-#: ../libedataserverui/e-passwords.c:815
+#: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Parool jäetakse selle seansi ajaks meelde"
 
@@ -4976,13 +5008,13 @@ msgid "_Destination"
 msgstr "_Sihtkoht"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
-#: ../servers/exchange/storage/exchange-account.c:932
+#: ../servers/exchange/storage/exchange-account.c:935
 #, c-format
 msgid "Enter password for %s"
 msgstr "Sisesta parool %s jaoks"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
-#: ../servers/exchange/storage/exchange-account.c:937
+#: ../servers/exchange/storage/exchange-account.c:940
 msgid "Enter password"
 msgstr "Sisesta parool"
 
@@ -5099,21 +5131,21 @@ msgstr "See toiming pole autonoomses režiimis teostatav"
 msgid "%s's Folders"
 msgstr "%s' kaustad"
 
-#: ../servers/exchange/storage/exchange-account.c:1238
+#: ../servers/exchange/storage/exchange-account.c:1241
 msgid "Personal Folders"
 msgstr "Isiklikud kaustad"
 
-#: ../servers/exchange/storage/exchange-account.c:1252
+#: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
 msgstr "Lemmikud avalikud kaustad"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1269
+#: ../servers/exchange/storage/exchange-account.c:1272
 msgid "All Public Folders"
 msgstr "Kõik avalikud kaustad"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1283
+#: ../servers/exchange/storage/exchange-account.c:1286
 msgid "Global Address List"
 msgstr "Globaalne aadresside loend"
 
@@ -5145,19 +5177,19 @@ msgstr "Saadetud"
 msgid "Tasks"
 msgstr "Ülesanded"
 
-#: ../servers/groupwise/e-gw-connection.c:165
+#: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
 msgstr "Vigane ühendus"
 
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:171
 msgid "Invalid response from server"
 msgstr "Vigane vastus serverilt"
 
-#: ../servers/groupwise/e-gw-connection.c:171
+#: ../servers/groupwise/e-gw-connection.c:173
 msgid "No response from the server"
 msgstr "Serverilt ei saabunud vastust"
 
-#: ../servers/groupwise/e-gw-connection.c:177
+#: ../servers/groupwise/e-gw-connection.c:179
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
@@ -5183,12 +5215,14 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Toimus mitu segmenteerimise viga: veadialoogi pole võimalik kuvada\n"
 
-#~ msgid "Failed to create pipe to '%s': %s"
-#~ msgstr "Tõrge '%s' toru loomisel: %s"
-#~ msgid "Cannot get folder info in offline mode."
-#~ msgstr "Kausta andmeid autonoomses režiimis võimalik hankida."
-#~ msgid "Cannot delete GroupWise folders in offline mode."
-#~ msgstr "GroupWise kaustu pole autonoomses režiimis võimalik kustutada."
-#~ msgid "Cannot rename GroupWise folders in offline mode."
-#~ msgstr "GroupWise kaustu pole autonoomses režiimis võimalik ümber nimetada."
+msgid "Failed to create pipe to '%s': %s"
+msgstr "Tõrge '%s' toru loomisel: %s"
 
+msgid "Cannot get folder info in offline mode."
+msgstr "Kausta andmeid autonoomses režiimis võimalik hankida."
+
+msgid "Cannot delete GroupWise folders in offline mode."
+msgstr "GroupWise kaustu pole autonoomses režiimis võimalik kustutada."
+
+msgid "Cannot rename GroupWise folders in offline mode."
+msgstr "GroupWise kaustu pole autonoomses režiimis võimalik ümber nimetada."
