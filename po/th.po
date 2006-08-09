@@ -1,4 +1,3 @@
-# translation of th.po to Thai
 # Thai translation of evolution-data-server.
 # Copyright (C) 2005, 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
@@ -9,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-30 10:09+0700\n"
-"PO-Revision-Date: 2006-07-30 10:17+0700\n"
+"POT-Creation-Date: 2006-08-03 12:58+0700\n"
+"PO-Revision-Date: 2006-08-09 14:41+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <l10n.opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +42,7 @@ msgstr "กำลังดาวน์โหลดที่อยู่ติด
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
 #, c-format
 msgid "Updating contacts cache (%d)... "
-msgstr "กำลังอัพเดตแคชที่อยู่ติดต่อ (%d)..."
+msgstr "กำลังปรับข้อมูลแคชที่อยู่ติดต่อ (%d)..."
 
 #: addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Distinguished Name (DN)"
@@ -1909,7 +1908,7 @@ msgstr "คำท้าทายจากเซิร์ฟเวอร์ผิ
 
 #: camel/camel-sasl-digest-md5.c:833
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr "คำท้าทายจากเซิร์ฟเวอร์มีโทเคน \"Quality of Protection\" ผิดรูปแบบ"
+msgstr "คำท้าทายจากเซิร์ฟเวอร์มีโทเค็น \"Quality of Protection\" ผิดรูปแบบ"
 
 #: camel/camel-sasl-digest-md5.c:863
 msgid "Server response did not contain authorization data"
@@ -3432,7 +3431,7 @@ msgstr "กำลังดึงซองจดหมายของข้อค
 #: camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr "ได้รับโทเคนที่ไม่คาดหมายในคำตอบจากเซิร์ฟเวอร์ IMAP %s: "
+msgstr "ได้รับโทเค็นที่ไม่คาดหมายในคำตอบจากเซิร์ฟเวอร์ IMAP %s: "
 
 #: camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -4919,13 +4918,13 @@ msgid "_Search:"
 msgstr "_ค้นหา:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: libedataserverui/e-name-selector-entry.c:2101
+#: libedataserverui/e-name-selector-entry.c:2067
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "กระ_จาย %s ในบรรทัด"
 
 #. Edit Contact item
-#: libedataserverui/e-name-selector-entry.c:2117
+#: libedataserverui/e-name-selector-entry.c:2083
 #, c-format
 msgid "_Edit %s"
 msgstr "แ_ก้ไข %s"
