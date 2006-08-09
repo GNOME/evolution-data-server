@@ -1135,11 +1135,12 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	if (gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), 
 					       &selection_start, 
 					       &selection_end)) 
-		if (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end - 1)) == ',') 
+		if ((g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == 0) ||
+		    (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == ","))
 			already_selected = TRUE;
 	
 	get_utf8_string_context (text, start_pos, str_context, 2);
-	get_utf8_string_context (text, end_pos-1, str_b_context, 2);
+	get_utf8_string_context (text, end_pos, str_b_context, 2);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
@@ -1157,34 +1158,6 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	
 	g_signal_stop_emission_by_name (name_selector_entry, "delete_text");
 	
-	/* If the user is trying to delete a ','-character, we assume the user 
-	 * wants to remove the entire destination.
-	 */
-
-	if (((str_b_context [0] == ',' && str_b_context [1] == ' ') || str_b_context [1] == ',') && !already_selected) {
-
-		EDestination *dest = find_destination_at_position (name_selector_entry, end_pos-1);
-	  	const char *email = e_destination_get_email (dest);
-	  	if (email && (strcmp (email, "")!=0)) {
-	  
-			/* Therefore, in case it's a real destination, we select it. 
-		 	 * Deleting this selection afterwards will leave the destination
-		 	 * empty. */
-	 
-			gint t = (str_b_context [1]==',')?end_pos:end_pos-1, b=t;
-			do {
-				t--;
-			} while (t >= 1 && text[t-1] != ',');
-	
-			gtk_editable_select_region (GTK_EDITABLE(name_selector_entry), t, b);
-
-			/* Since this is a special-case, we don't want the rest of this method
-		 	 * to happen. However, we do need to reenable the signal which we
-		 	 * disabled above! */
-		
-			goto end_of_user_delete_text;
-	  	}
-	}
 	
 	/* If the deletion touches more than one destination, the first one is changed
 	 * and the rest are removed. If the last destination wasn't completely deleted,

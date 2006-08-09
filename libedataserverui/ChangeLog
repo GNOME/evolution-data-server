@@ -1,3 +1,9 @@
+2006-08-9   Devashish Sharma  <sdevashish@novell.com>
+	
+	* e-name-selector-entry.c :Removing the comma doesnt select the entire
+	name, it just deletes the the comma.
+	Fixes Bug 322142.
+
 2006-07-27  Devashish Sharma  <sdevashish@novell.com>
 
 	* e-name-selector-entry.c : Fix for Bug #347779 and 347706.
