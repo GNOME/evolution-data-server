@@ -717,9 +717,8 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 						vcard_string);
 
 		g_object_unref (contact);
-		
-		g_free (vcard_dbt.data);
 	}
+	g_free (vcard_dbt.data);
 }
 
 static EBookBackendSyncStatus
@@ -784,6 +783,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 				/* check what type of change has occurred, if any */
 				switch (e_dbhash_compare (ehash, id, vcard_string)) {
 				case E_DBHASH_STATUS_SAME:
+					g_free(vcard_string);
 					break;
 				case E_DBHASH_STATUS_NOT_FOUND:
 					ctx.add_cards = g_list_append (ctx.add_cards, vcard_string);
