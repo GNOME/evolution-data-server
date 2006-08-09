@@ -1,3 +1,10 @@
+2006-08-09  Devashish Sharma  <sdevashish@novell.com>
+
+	* backends/file/e-book-backend-file.c : 
+	(e_book_backend_file_get_changes) : Dont leak libdb allocated 
+	buffers when checking for changes.
+	Patch by j@bitron.ch
+
 2006-08-07 Wouter Bolsterlee (uws) <uws+gnome@xs4all.nl>
 
 	* libebook/e-contact.c: Fix a build breaker.
