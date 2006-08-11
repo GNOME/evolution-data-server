@@ -1952,6 +1952,7 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	}	
 
 	g_object_unref (gconf);
+	g_object_unref (source_list);
 }
 
 gboolean
