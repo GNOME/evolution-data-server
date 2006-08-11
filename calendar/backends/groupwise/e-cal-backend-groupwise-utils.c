@@ -369,7 +369,6 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 					recipient->type = E_GW_ITEM_RECIPIENT_TO;
 
 					recipient_list = g_slist_prepend (recipient_list, recipient);
-					g_message (" email is %s \n", *iter);
 					iter++;
 				}
 
@@ -2022,6 +2021,7 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	}	
 
 	g_object_unref (gconf);
+	g_object_unref (source_list);
 }
 
 gboolean

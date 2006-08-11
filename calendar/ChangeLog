@@ -1,3 +1,9 @@
+2006-08-11  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attendees_to_item): removed the g_message.
+	(e_cal_backend_groupwise_store_settings):unref the source_list.
+
 2006-08-07  Harish Krishnaswamy  <kharish@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c: 
