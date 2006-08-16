@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-16 19:13+0300\n"
-"PO-Revision-Date: 2006-08-16 19:21+0300\n"
+"PO-Revision-Date: 2006-08-16 19:23+0300\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -660,7 +660,7 @@ msgstr "3-as Gadu-Gadu darbo ID"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Id List"
-msgstr ""
+msgstr "Gadu-Gadu ID sąrašas"
 
 #: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
@@ -2675,7 +2675,7 @@ msgstr "Nepavyko įkelti %s santraukos"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:987
 msgid "Trash Folder Full. Please Empty."
-msgstr ""
+msgstr "Šiukšlių aplankas pilnas. Išvalykite jį."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
