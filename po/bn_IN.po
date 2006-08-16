@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-10 23:20+0200\n"
-"PO-Revision-Date: 2006-08-15 00:02+0530\n"
+"PO-Revision-Date: 2006-08-16 12:21+0530\n"
 "Last-Translator: Runa Bhattacharjee <runabh@gmail.com>\n"
 "Language-Team: Bengali India\n"
 "MIME-Version: 1.0\n"
@@ -3129,13 +3129,13 @@ msgstr "ইনবক্স"
 #: ../camel/providers/imap/camel-imap-store.c:1313
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr ""
+msgstr "IMAP সার্ভার %s'র দ্বারা অনুরোধ করা অনুমোদন প্রণালী %s সমর্থিত নয়"
 
 #: ../camel/providers/imap/camel-imap-store.c:1323
 #: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
-msgstr ""
+msgstr "অনুমোদন প্রণালীর %s সমর্থিত নয়"
 
 #: ../camel/providers/imap/camel-imap-store.c:1346
 #: ../camel/providers/imapp/camel-imapp-store.c:364
@@ -3159,7 +3159,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr ""
+msgstr "\"%s\" ফোল্ডারের নামের মধ্যে অবৈধ অক্ষর \"%c\" উপস্থিত থাকার ফলে তা বৈধ নয়"
 
 #: ../camel/providers/imap/camel-imap-store.c:1998
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -3172,13 +3172,13 @@ msgstr "`%s' ফোল্ডার নির্মাণ করতে ব্য�
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
 msgid "Unknown parent folder: %s"
-msgstr ""
+msgstr "ঊর্ধ্বস্থ ফোল্ডার অজানা: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:549
 #: ../camel/providers/imap4/camel-imap4-command.c:556
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
-msgstr ""
+msgstr "IMAP সার্ভার %s'এ কমান্ড প্রেরণ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:659
 #, c-format
@@ -3193,12 +3193,12 @@ msgstr "IMAP সার্ভার %s থেকে অপ্রত্যাশ�
 #: ../camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s' ফোল্ডার নির্বাচন করতে ব্যর্থ: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:438
 #, c-format
 msgid "Cannot select folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডার নির্বাচন করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1549
 #: ../camel/providers/imap4/camel-imap4-engine.c:1588
@@ -3206,7 +3206,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-engine.c:1689
 #, c-format
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
-msgstr ""
+msgstr "IMAP4 সার্ভার %s'র সাথে অপ্রত্যাশিতভাবে সংযোগ বিচ্ছিন্ন হয়েছে: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
 msgid "Enable Mailing-List detection required for some filter and vFolder rules"
@@ -3215,80 +3215,80 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr ""
+msgstr "`%s' ফোল্ডার ব্যবহার করতে ব্যর্থ: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:458
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr ""
+msgstr "ফোল্ডার `%s'-র সাথে ফ্ল্যাগ সুসংগত (sync) করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:464
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr ""
+msgstr "ফোল্ডার `%s'-র সাথে ফ্ল্যাগ সুসংগত (sync) করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
-msgstr ""
+msgstr "`%s' ফোল্ডারের বিষয়বস্তু স্থায়ীরূপে বর্জন করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:609
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডারের বিষয়বস্তু স্থায়ীরূপে বর্জন করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:865
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
-msgstr ""
+msgstr "বার্তা %s, ফোল্ডার `%s' থেকে প্রাপ্ত করতপ ব্যর্থ: এই ধরনের বার্তা অনুপস্থিত"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:870
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
-msgstr ""
+msgstr "বার্তা %s, ফোল্ডার `%s' থেকে প্রাপ্ত করতপ ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:914
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr ""
+msgstr "ফোল্ডার `%s'-র শেষে বার্তা যোগ করতে ব্যর্থ: ফোল্ডার শুধুমাত্র পাঠযোগ্য"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1007
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
-msgstr ""
+msgstr "ফোল্ডার `%s'-র শেষে বার্তা যোগ করতে ব্যর্থ: অজানা সমস্যা"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1037
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr ""
+msgstr "ফোল্ডার `%s'-র শেষে বার্তা যোগ করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1157
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
+msgstr "ফোল্ডার `%s' থেকে `%s' ফোল্ডারে বার্তা স্থানান্তর করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1161
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
+msgstr "ফোল্ডার `%s' থেকে `%s' ফোল্ডারে বার্তা কপি করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
+msgstr "ফোল্ডার `%s' থেকে `%s' ফোল্ডারে বার্তা স্থানান্তর করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
+msgstr "ফোল্ডার `%s' থেকে `%s' ফোল্ডারে বার্তা কপি করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
-msgstr ""
+msgstr "IMAP4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr ""
+msgstr "IMAPv4rev1 সার্ভারে বার্তা পড়ার ও সংরক্ষণের উদ্দেশ্যে।"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
@@ -3301,154 +3301,154 @@ msgstr "এই বিকল্পের ফলে একটি প্লেই�
 #: ../camel/providers/pop3/camel-pop3-store.c:180
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection canceled"
-msgstr ""
+msgstr "সংযোগ বাতিল করা হয়েছে"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr ""
+msgstr "IMAP সার্ভার %s'র মধ্যে %s অনুমোদন প্রণালী সহযোগে অনুমোদন করতে ব্যর্থ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr "%sঅনুগ্রহ করে %s'র জন্য %s হোস্ট থেকে IMAP পাসওয়ার্ড লিখুন"
+msgstr "%sঅনুগ্রহ করে %s'র জন্য %s হোস্টে IMAP পাসওয়ার্ড লিখুন"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
-msgstr ""
+msgstr "IMAP সার্ভার %s'র মধ্যে %s সহযোগে অনুমোদন করতে ব্যর্থ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:685
 #: ../camel/providers/imap4/camel-imap4-store.c:953
 msgid "Cannot create IMAP folders in offline mode."
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় IMAP ফোল্ডার নির্মাণ করতে ব্যর্থ।"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:724
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr ""
+msgstr "`%s' নামক ফোল্ডারটি IMAP সার্ভার %s থেকে প্রাপ্ত করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
-msgstr ""
+msgstr "`%s'-র জন্য IMAP সার্ভার %s থেকে LIST সংক্রান্ত তথ্য প্রাপ্ত করতে ব্যর্থ: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:807
 #: ../camel/providers/imap4/camel-imap4-store.c:1482
 msgid "Bad command"
-msgstr ""
+msgstr "কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:886
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s' ফোল্ডার নির্মাণ করতে ব্যর্থ: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:891
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডার নির্মাণ করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:997
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
-msgstr ""
+msgstr "`%s' ফোল্ডার মুছে ফেলতে ব্যর্থ: বিশেষ ফোল্ডার"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1004
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় IMAP ফোল্ডার মুছে ফেলা যাবে না।"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1063
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s' ফোল্ডার মুছে ফেলতে ব্যর্থ: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডার মুছে ফেলতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr ""
+msgstr "ফোল্ডারের নাম `%s' থেকে `%s'-এ পরিবর্তন করা যাবে না: বিশেষ ফোল্ডার"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় IMAP ফোল্ডারের নাম পরিবর্তন করা যাবে না।"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr ""
+msgstr "ফোল্ডারের নাম `%s' থেকে `%s'-এ পরিবর্তন করা যাবে না: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr ""
+msgstr "ফোল্ডারের নাম `%s' থেকে `%s'-এ পরিবর্তন করা যাবে না: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr ""
+msgstr "%s তথ্য, `%s' বিন্যাস সংক্রান্ত IMAP সার্ভার %s থেকে প্রাপ্ত করতে ব্যর্থ: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় IMAP ফোল্ডারের সাব-স্ক্রাইব করা সম্ভব নয়।"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1565
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s' ফোল্ডারে সাব-স্ক্রাইব করতে ব্যর্থ: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1570
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডারে সাব-স্ক্রাইব করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1592
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় IMAP ফোল্ডার থেকে আন-সাবস্ক্রাইব করা সম্ভব নয়।"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1637
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s' ফোল্ডারে আন-সাবস্ক্রাইব করতে ব্যর্থ: মেইল-বক্সের নাম বৈধ নয়"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1642
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
-msgstr ""
+msgstr "`%s' ফোল্ডারে আন-সাবস্ক্রাইব করতে ব্যর্থ: কমান্ড সঠিক নয়"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
-msgstr ""
+msgstr "পরিবর্তিত বার্তা পরীক্ষা করা হচ্ছে"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr ""
+msgstr "নতুন বার্তার খাম প্রাপ্ত করা হচ্ছে"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr ""
+msgstr "IMAP সার্ভার %s থেকে প্রাপ্ত প্রত্যুত্তরের মধ্যে অপ্রত্যাশিত টোকেন উপস্থিত: "
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
-msgstr ""
+msgstr "তথ্যবিহীন"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:574
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
-msgstr ""
+msgstr "IMAP সার্ভার %s'র সাথেত অপ্রত্যাশিতভাবে সংযোগ বিচ্ছিন্ন হয়েছে: %s"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:40
 #: ../camel/providers/pop3/camel-pop3-provider.c:40
 msgid "Message storage"
-msgstr ""
+msgstr "বার্তা সংগ্রহ"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:48
 msgid "IMAP+"
-msgstr ""
+msgstr "IMAP+"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:50
 msgid ""
@@ -3461,7 +3461,7 @@ msgstr ""
 #: ../camel/providers/imapp/camel-imapp-store.c:251
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
-msgstr ""
+msgstr "%s'র (পোর্ট %s) সাথে সংযোগ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/imapp/camel-imapp-store.c:348
 #, c-format
@@ -3476,36 +3476,36 @@ msgstr ""
 #: ../camel/providers/local/camel-local-folder.c:384
 #, c-format
 msgid "~%s (%s)"
-msgstr ""
+msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
 #: ../camel/providers/local/camel-local-folder.c:388
 #: ../camel/providers/local/camel-local-folder.c:391
 #, c-format
 msgid "mailbox:%s (%s)"
-msgstr ""
+msgstr "মেইল-বক্স:%s (%s)"
 
 #. a full path + protocol
 #: ../camel/providers/local/camel-local-folder.c:395
 #, c-format
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-provider.c:47
 msgid "Use the `.folders' folder summary file (exmh)"
-msgstr ""
+msgstr "`.folders' ফোল্ডার সামারি ফাইল ব্যবহার করা হবে (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
-msgstr ""
+msgstr "MH-বিন্যাসের মেইল ডিরেক্টরি"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "MH-অনুরূপ মেইল ডিরেক্টরির মধ্যে স্থানীয় মেইল সংরক্ষণের উদ্দেশ্যে।"
 
 #: ../camel/providers/local/camel-local-provider.c:72
 msgid "Local delivery"
-msgstr ""
+msgstr "স্থানীয় বণ্টনব্যবস্থা"
 
 #: ../camel/providers/local/camel-local-provider.c:73
 msgid ""
@@ -3516,23 +3516,23 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
 msgid "Apply filters to new messages in INBOX"
-msgstr ""
+msgstr "INBOX ফোল্ডারে আগত নতুন বার্তায় ফিল্টার প্রয়োগ করা হবে"
 
 #: ../camel/providers/local/camel-local-provider.c:94
 msgid "Maildir-format mail directories"
-msgstr ""
+msgstr "Maildir-বিন্যাসের মেইল ডিরেক্টরি"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "For storing local mail in maildir directories."
-msgstr ""
+msgstr "maildir ডিরেক্টরির মধ্যে স্থানীয় মেইল সংরক্ষণের উদ্দেশ্যে।"
 
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "Store status headers in Elm/Pine/Mutt format"
-msgstr ""
+msgstr "অবস্থাসূচক হেডার Elm/Pine/Mutt বিন্যাসে সংরক্ষণ করা হবে"
 
 #: ../camel/providers/local/camel-local-provider.c:114
 msgid "Standard Unix mbox spool or directory"
-msgstr ""
+msgstr "প্রমিত Unix mbox স্পুল অথবা ডিরেক্টরি"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid ""
@@ -3546,74 +3546,74 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
-msgstr ""
+msgstr "সংগ্রহস্থলের root %s'র পাথ সুনির্দিষ্ট নয়"
 
 #: ../camel/providers/local/camel-local-store.c:163
 #, c-format
 msgid "Store root %s is not a regular directory"
-msgstr ""
+msgstr "সংগ্রহস্থলের root %s স্বাভাবিক ডিরেক্টরি নয়"
 
 #: ../camel/providers/local/camel-local-store.c:172
 #: ../camel/providers/local/camel-local-store.c:180
 #: ../camel/providers/local/camel-local-store.c:278
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr ""
+msgstr "ফোল্ডার প্রাপ্ত করতে বিফল: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:192
 msgid "Local stores do not have an inbox"
-msgstr ""
+msgstr "স্থানীয় সংগ্রহস্থলের মধ্যে ইনবক্স অনুপস্থিত"
 
 #: ../camel/providers/local/camel-local-store.c:238
 #, c-format
 msgid "Local mail file %s"
-msgstr ""
+msgstr "স্থানীয় মেইল ফাইল %s"
 
 #: ../camel/providers/local/camel-local-store.c:356
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
-msgstr ""
+msgstr "ফোল্ডারের নাম %s থেকে %s'এ পরিবর্তন করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:421
 #, c-format
 msgid "Could not rename '%s': %s"
-msgstr "'%s'-নাম পরিবর্তন করতে ব্যর্থ: %s"
+msgstr "'%s'-র পরিবর্তন করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:446
 #: ../camel/providers/local/camel-mbox-store.c:275
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
-msgstr ""
+msgstr "ফোল্ডার সামারি ফাইল `%s' মুছে ফেলতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:456
 #: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
-msgstr ""
+msgstr "ফোল্ডার ইনডেক্স ফাইল `%s' মুছে ফেলতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:479
 #: ../camel/providers/local/camel-mbox-store.c:311
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
-msgstr ""
+msgstr "ফোল্ডারের মিটা ফাইল `%s' মুছে ফেলতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:409
 #, c-format
 msgid "Could not save summary: %s: %s"
-msgstr ""
+msgstr "সামারি সংরক্ষণ করতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:467
 msgid "Unable to add message to summary: unknown reason"
-msgstr ""
+msgstr "সামারি তথ্যের মধ্যে বার্তা যোগ করতে ব্যর্থ: অজানা কারণ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message canceled"
-msgstr ""
+msgstr "Maildir'এ বার্তা যোগ কর্ম বাতিল করা হয়েছে"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr ""
+msgstr "maildir ফোল্ডারের বার্তা যোগ করতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
@@ -3630,6 +3630,8 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
+"বার্তা প্রাপ্ত করা যায়নি: %s, %s ফোল্ডার থেকে\n"
+"  %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:268
 msgid "Invalid message contents"
@@ -3641,37 +3643,37 @@ msgstr "বার্তার বিষয়বস্তু বৈধ নয়"
 #: ../camel/providers/local/camel-mbox-store.c:187
 #, c-format
 msgid "Cannot create folder `%s': %s"
-msgstr ""
+msgstr "ফোল্ডার `%s' নির্মাণ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:159
 #: ../camel/providers/local/camel-mbox-store.c:146
 #: ../camel/providers/local/camel-mh-store.c:217
 #, c-format
 msgid "Cannot get folder `%s': %s"
-msgstr ""
+msgstr "ফোল্ডার `%s' প্রাপ্ত করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:163
 #: ../camel/providers/local/camel-mbox-store.c:154
 #: ../camel/providers/local/camel-mh-store.c:224
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
-msgstr ""
+msgstr "ফোল্ডার `%s' প্রাপ্ত করতে ব্যর্থ: ফোল্ডার বর্তমানে অনুপস্থিত"
 
 #: ../camel/providers/local/camel-maildir-store.c:187
 #, c-format
 msgid "Cannot get folder `%s': not a maildir directory."
-msgstr ""
+msgstr "ফোল্ডার `%s' প্রাপ্ত করতে ব্যর্থ: maildir ডিরেক্টরি নয়।"
 
 #: ../camel/providers/local/camel-maildir-store.c:232
 #: ../camel/providers/local/camel-maildir-store.c:270
 #: ../camel/providers/local/camel-mh-store.c:273
 #, c-format
 msgid "Could not delete folder `%s': %s"
-msgstr ""
+msgstr "`%s' ফোল্ডার মুছে ফেলা যায়নি: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:234
 msgid "not a maildir directory"
-msgstr ""
+msgstr "maildir ডিরেক্টরি নয়"
 
 #: ../camel/providers/local/camel-maildir-store.c:436
 #: ../camel/providers/local/camel-spool-store.c:328
@@ -3692,7 +3694,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-maildir-summary.c:652
 msgid "Checking for new messages"
-msgstr ""
+msgstr "নতুন বার্তার উপস্থিতি পরীক্ষা করা হচ্ছে"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
 #: ../camel/providers/local/camel-mbox-summary.c:433
@@ -3700,18 +3702,18 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
-msgstr ""
+msgstr "ফোল্ডার সংরক্ষণ করা হচ্ছে"
 
 #: ../camel/providers/local/camel-mbox-folder.c:156
 #: ../camel/providers/local/camel-spool-folder.c:148
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
-msgstr ""
+msgstr "%s'র উপর ফোল্ডার লক নির্মাণ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:217
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
-msgstr ""
+msgstr "মেইল-বক্স খুলতে ব্যর্থ: %s: %s\n"
 
 #: ../camel/providers/local/camel-mbox-folder.c:277
 msgid "Mail append canceled"
@@ -3720,26 +3722,26 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr ""
+msgstr "mbox ফাইলের শেষে বার্তা যোগ করতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
-msgstr ""
+msgstr "ফোল্ডারটি স্থায়ীরূপে ক্ষতিগ্রস্ত হয়েছে এবং পুনরুদ্ধার করা সম্ভব নয়।"
 
 #: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
-msgstr "বার্তা গঠন করতে ব্যর্থ"
+msgstr "বার্তা গঠন করতে ব্যর্থ।"
 
 #: ../camel/providers/local/camel-mbox-store.c:165
 #: ../camel/providers/local/camel-mbox-store.c:352
 msgid "Cannot create a folder by this name."
-msgstr ""
+msgstr "চিহ্নিত নাম সহযোগে ফোল্ডার নির্মাণ করতে ব্যর্থ।"
 
 #: ../camel/providers/local/camel-mbox-store.c:197
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
-msgstr ""
+msgstr "`%s' ফোল্ডার প্রাপ্ত করা যায়নি: স্বাভাবিক ফাইল নয়।"
 
 #: ../camel/providers/local/camel-mbox-store.c:227
 #: ../camel/providers/local/camel-mbox-store.c:238
@@ -3749,26 +3751,28 @@ msgid ""
 "Could not delete folder `%s':\n"
 "%s"
 msgstr ""
+"ফোল্ডার `%s' মুছে ফেলা যায়নি:\n"
+"%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:246
 #, c-format
 msgid "`%s' is not a regular file."
-msgstr ""
+msgstr "`%s' স্বাভাবিক ফাইল নয়।"
 
 #: ../camel/providers/local/camel-mbox-store.c:253
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
-msgstr ""
+msgstr "ফোল্ডার `%s' ফাঁকা নয়। মুছে ফেলা হয়নি।"
 
 #: ../camel/providers/local/camel-mbox-store.c:365
 #, c-format
 msgid "Cannot create directory `%s': %s."
-msgstr ""
+msgstr "`%s' ডিরেক্টরি নির্মাণ করতে ব্যর্থ: %s।"
 
 #: ../camel/providers/local/camel-mbox-store.c:379
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr ""
+msgstr "ফোল্ডার নির্মাণ করতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:381
 msgid "Folder already exists"
@@ -3776,22 +3780,22 @@ msgstr "ফোল্ডার বর্তমানে উপস্থিত"
 
 #: ../camel/providers/local/camel-mbox-store.c:472
 msgid "The new folder name is illegal."
-msgstr ""
+msgstr "নতুন ফোল্ডারের নাম বৈধ নয়।"
 
 #: ../camel/providers/local/camel-mbox-store.c:485
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
-msgstr ""
+msgstr "`%s'-র নাম পরিবর্তন করা যায়নি: `%s': %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:560
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
-msgstr ""
+msgstr "'%s'র নাম %s'এ পরিবর্তন করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr ""
+msgstr "ফোল্ডার খুলতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
@@ -3801,20 +3805,20 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
 msgid "Cannot check folder: %s: %s"
-msgstr ""
+msgstr "ফোল্ডার পরীক্ষা করা যায়নি: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:611
 #: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr ""
+msgstr "ফাইল খুলতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
-msgstr ""
+msgstr "অস্থায়ী মেইল-বক্স খুলতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:636
 #: ../camel/providers/local/camel-mbox-summary.c:812
@@ -3855,21 +3859,21 @@ msgstr "অজানা সমস্যা: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
 msgid "Error writing to temp mailbox: %s"
-msgstr ""
+msgstr "অস্থায়ী মেইল-বক্সে লিখতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
-msgstr ""
+msgstr "tmp মেইল-বক্সে লিখতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
 msgid "MH append message canceled"
-msgstr ""
+msgstr "MH'এ বার্তা যোগ কর্ম বাতিল করা হয়েছে"
 
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr ""
+msgstr "mh ফোল্ডারের শেষে বার্তা যোগ করতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:232
 #, c-format
@@ -3879,27 +3883,27 @@ msgstr "ফোল্ডার `%s' নির্মাণ করতে ব্য�
 #: ../camel/providers/local/camel-mh-store.c:244
 #, c-format
 msgid "Cannot get folder `%s': not a directory."
-msgstr ""
+msgstr "ফোল্ডার `%s' প্রাপ্ত করতে ব্যর্থ: ডিরেক্টরি নয়।"
 
 #: ../camel/providers/local/camel-mh-summary.c:246
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
-msgstr ""
+msgstr "MH ডিরেক্টরির পাথ খুলতে ব্যর্থ: %s: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:132
 #, c-format
 msgid "Spool `%s' cannot be opened: %s"
-msgstr ""
+msgstr "স্পুল `%s' খুলতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:144
 #, c-format
 msgid "Spool `%s' is not a regular file or directory"
-msgstr ""
+msgstr "স্পুল `%s' স্বাভাবিক ফাইল অথবা ডিরেক্টরি নয়"
 
 #: ../camel/providers/local/camel-spool-store.c:163
 #, c-format
 msgid "Folder `%s/%s' does not exist."
-msgstr ""
+msgstr "ফোল্ডার `%s/%s' বর্তমানে অনুপস্থিত।"
 
 #: ../camel/providers/local/camel-spool-store.c:173
 #, c-format
@@ -3907,11 +3911,13 @@ msgid ""
 "Could not open folder `%s':\n"
 "%s"
 msgstr ""
+"ফোল্ডার `%s' খুলতে ব্যর্থ:\n"
+"%s"
 
 #: ../camel/providers/local/camel-spool-store.c:177
 #, c-format
 msgid "Folder `%s' does not exist."
-msgstr ""
+msgstr "ফোল্ডার `%s' বর্তমানে অনবুপস্থিত।"
 
 #: ../camel/providers/local/camel-spool-store.c:182
 #, c-format
@@ -3925,41 +3931,41 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:190
 #, c-format
 msgid "`%s' is not a mailbox file."
-msgstr ""
+msgstr "`%s' মেইল-বক্স ফাইল নয়।"
 
 #: ../camel/providers/local/camel-spool-store.c:207
 msgid "Store does not support an INBOX"
-msgstr ""
+msgstr "সংগ্রহস্থলে INBOX'র উপস্থিতি সমর্থিত নয়"
 
 #: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
 msgid "Spool mail file %s"
-msgstr ""
+msgstr "স্পুল মেইল ফাইল %s"
 
 #: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
 msgid "Spool folder tree %s"
-msgstr ""
+msgstr "স্পুল ফোল্ডার ট্রি %s"
 
 #: ../camel/providers/local/camel-spool-store.c:227
 msgid "Spool folders cannot be renamed"
-msgstr ""
+msgstr "স্পুল ফোল্ডারের নাম পরিবর্তন করা সম্ভব নয়"
 
 #: ../camel/providers/local/camel-spool-store.c:235
 msgid "Spool folders cannot be deleted"
-msgstr ""
+msgstr "স্পুল ফোল্ডার মুছে ফেলা যাবে না"
 
 #: ../camel/providers/local/camel-spool-summary.c:177
 #: ../camel/providers/local/camel-spool-summary.c:187
 #: ../camel/providers/local/camel-spool-summary.c:197
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
-msgstr ""
+msgstr "অস্থায়ী ফোল্ডার %s সুসংগত (sync) করতে ব্যর্থ: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:213
 #, c-format
 msgid "Could not sync spool folder %s: %s"
-msgstr ""
+msgstr "স্পুল ফোল্ডার %s সুসংগত (sync) করা যায়নি: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:244
 #: ../camel/providers/local/camel-spool-summary.c:263
@@ -3969,12 +3975,14 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in `%s'"
 msgstr ""
+"স্পুল ফোল্ডার %s সুসংগত (sync) করা যায়নি: %s\n"
+"ফোল্ডার সম্ভবত ক্ষতিগ্রস্ত, `%s'-এ কপি সংরক্ষণ করা হয়েছে"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:207
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
-msgstr ""
+msgstr "অভ্যন্তরীণ সমস্যা: UID'র বিন্যাস সঠিক নয়: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:327
 #: ../camel/providers/nntp/camel-nntp-folder.c:330
@@ -3982,19 +3990,19 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-folder.c:374
 #, c-format
 msgid "Posting failed: %s"
-msgstr ""
+msgstr "পোস্ট করতে ব্যর্থ: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:392
 msgid "You cannot post NNTP messages while working offline!"
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় NNTP বার্তা পোস্ট করা সম্ভব নয়!"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:403
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr ""
+msgstr "NNTP ফোল্ডার থেকে বার্তা কপি করা সম্ভব নয়!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
+msgstr "সংক্ষিপ্ত বিন্যাসে ফোল্ডার প্রদর্শন করা হবে (অর্থাত্‌ comp.os.linux'র পরিবর্তে c.o.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -4002,32 +4010,32 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
-msgstr ""
+msgstr "USENET নিউজ"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
+msgstr "USENET নিউজগ্রুপে বার্তা পাঠ ও পোস্ট করতে ব্যবহৃত উপলব্ধ ব্যবস্থা।"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr ""
+msgstr "এই বিকল্পের ফলে একটি প্লেইন-টেক্সট পাসওয়ার্ড সহযোগে NNTP সার্ভারে অনুমোদন করা হবে।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
 msgid "Could not read greeting from %s: %s"
-msgstr ""
+msgstr "%s থেকে প্রাপ্ত অভিবাদন পড়তে বিফল: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:230
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
-msgstr ""
+msgstr "NNTP সার্ভার %s দ্বারা এরার কোড %d উত্‌পন্ন হয়েছে: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:407
 #, c-format
 msgid "USENET News via %s"
-msgstr ""
+msgstr "%s'র মাধ্যমে USENET নিউজ"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:797
 #, c-format
@@ -4036,6 +4044,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"নিউজ-গ্রুপ উদ্ধার করতে সমস্যা:\n"
+"\n"
+"%s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:891
 msgid ""
@@ -4043,6 +4054,9 @@ msgid ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
+"চিহ্নিত নিউজগ্রুপে সাবস্ক্রাইব করতে ব্যর্থ:\n"
+"\n"
+"এই নিউজগ্রুপ উপস্থিত নেই। নির্বাচিত ফোল্ডার সম্ভবত একটি ঊর্ধ্বস্থ ফোল্ডার।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
@@ -4050,22 +4064,25 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
+"চিহ্নিত নিউজ-গ্রুপ থেকে আন-সাবস্ক্রাইব করা সম্ভব নয়:\n"
+"\n"
+"নিউজ-গ্রুপ উপস্থিত নেই!"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr ""
+msgstr "নিউজ সংগ্রহস্থলের ফোল্ডার নির্মাণ করতে ব্যর্থ: পরিবর্তে সাব-স্ক্রাইব করুন।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
-msgstr ""
+msgstr "নিউজ সংগ্রহস্থলের মধ্যে ফোল্ডারের নাম পরিবর্তন করা সম্ভব নয়।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
+msgstr "নিউজ সংগ্রহস্থলের মধ্যে ফোল্ডার মুছে ফেলা সম্ভব নয়: পরিবর্তে আন-সাবস্ক্রাইব করুন।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1145
 msgid "Authentication requested but no username provided"
-msgstr ""
+msgstr "অনুমোদনের অনুরোধ জানানো হয়েছে কিন্তু ব্যবহারকারীর না উল্লিখিত হয়নি"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1153
 #, c-format
@@ -4075,16 +4092,16 @@ msgstr "অনুগ্রহ করে  %s@%s'র জন্য NNTP পাস�
 #: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr ""
+msgstr "সার্ভারে অনুমোদন করতে ব্যর্থ: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1273
 #, c-format
 msgid "NNTP Command failed: %s"
-msgstr ""
+msgstr "NNTP কমান্ড সঞ্চালনে বিফল: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1329
 msgid "Not connected."
-msgstr ""
+msgstr "সংযুক্ত নয়।"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1382
 #, c-format
@@ -4095,17 +4112,17 @@ msgstr "এই ধরনের ফোল্ডার উপস্থিত ন�
 #: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr ""
+msgstr "%s: নতুন বার্তা স্ক্যান করা হচ্ছে"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr ""
+msgstr "xover থেকে অপ্রত্যাশিত সার্ভারের প্রতিক্রিয়া প্রাপ্ত হয়েছে: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "head থেকে অপ্রত্যাশিত সার্ভারের প্রতিক্রিয়া প্রাপ্ত হয়েছে: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
@@ -4118,32 +4135,32 @@ msgstr "কর্ম বিফল: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:247
 msgid "Retrieving POP summary"
-msgstr ""
+msgstr "POP'র সংক্ষিপ্ত তথ্য প্রাপ্ত করা হচ্ছে"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:266
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr ""
+msgstr "POP সংক্রান্ত সংক্ষিপ্ত তথ্য প্রাপ্ত করতে ব্যর্থ: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:308
 msgid "Expunging old messages"
-msgstr ""
+msgstr "পুরোনো বার্তা স্থায়ীরূপে বর্জন করা হচ্ছে"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
-msgstr ""
+msgstr "মুছে ফেলা বার্তা স্থায়ীরূপে বর্জন করা হচ্ছে"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
 msgid "No message with UID %s"
-msgstr ""
+msgstr "UID %s সহ কোনো বার্তা উপস্থিত নেই"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
 #: ../camel/providers/pop3/camel-pop3-folder.c:478
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr ""
+msgstr "POP বার্তা %d উদ্ধার করা হচ্ছে"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
@@ -4151,24 +4168,24 @@ msgstr "অজানা কারণ"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
-msgstr ""
+msgstr "সার্ভার থেকে বার্তা মুছে ফেলা হবে না"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "Delete after %s day(s)"
-msgstr ""
+msgstr "%s দিন অতিক্রান্ত হলে মুছে ফেলা হবে"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
-msgstr ""
+msgstr "সর্বধরনের POP3 এক্সটেনশনের জন্য সমর্থন নিষ্ক্রিয় করা হবে"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
-msgstr ""
+msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "For connecting to and downloading mail from POP servers."
-msgstr ""
+msgstr "সর্বধরনের POP সার্ভারের সাথে সংযোগ ও মেইল ডাউনলোড করার উদ্দেশ্যে।"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid ""
@@ -4181,12 +4198,12 @@ msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
-msgstr ""
+msgstr "এই বিকল্পের ফলে একটি এনক্রিপ্ট করা পাসওয়ার্ড সহযোগে APOP প্রোটোকলের মাধ্যমে POP সার্ভারের সাথে সংযোগ করা হবে। অনেক সার্ভারের দ্বারা এই বৈশিষ্ট্য সমর্থিত হলেও সব ব্যবহারকারীদের জন্য এটি ব্যবহার করা নাও সম্ভব হতে পারে।"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr ""
+msgstr "POP সার্ভার %s থেকে প্রাপ্ত অভিবাদন পড়তে ব্যর্থ"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:220
 #: ../camel/providers/pop3/camel-pop3-store.c:237
@@ -4194,11 +4211,11 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:253
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr ""
+msgstr "নিরাপদ মোডে POP সার্ভার %s'র সাথে সংযোগ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:221
 msgid "STLS not supported by server"
-msgstr ""
+msgstr "সার্ভারের দ্বারা STLS সমর্থিত নয়"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:248
 msgid "TLS negotiations failed"
@@ -4206,7 +4223,7 @@ msgstr "TLS মীমাংসা করতে ব্যর্থ"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:254
 msgid "TLS is not available in this build"
-msgstr ""
+msgstr "বর্তমান বিল্ডে TLS সমর্থিত নয়"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:360
 #, c-format
@@ -4219,22 +4236,22 @@ msgstr "POP সার্ভার %s'র সাথে সংযোগ করত�
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
-msgstr ""
+msgstr "POP সার্ভার %s'র সাথে সংযোগ করতে ব্যর্থ: অনুরোধ করার অনুমোদন প্রণালী সমর্থিত নয়।"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
-msgstr ""
+msgstr "SASL `%s' লগ-ইন, POP সার্ভার %s'র ক্ষেত্রে বিফল: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr ""
+msgstr "POP সার্ভার %s'এ লগ-ইন করতে ব্যর্থ: SASL প্রোটোকল সংক্রান্ত সমস্যা"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
-msgstr ""
+msgstr "POP সার্ভার %s'এ অনুমোদন করতে ব্যর্থ: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:474
 #, c-format
@@ -4257,6 +4274,8 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username: %s"
 msgstr ""
+"POP সার্ভার %s'র সাথে সংযোগ করুন।\n"
+"ব্যবহারকারীর নাম প্রেরণ করতে ব্যর্থ: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:642
 #, c-format
@@ -4265,7 +4284,7 @@ msgstr "`%s'-র অনুরূপ ফোল্ডার উপস্থিত 
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:37
 msgid "Sendmail"
-msgstr ""
+msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:39
 msgid ""
@@ -4280,51 +4299,51 @@ msgstr "প্রাপকদের তালিকা পার্স করত
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr ""
+msgstr "sendmail'র জন্য পাইপ নির্মাণ করতে ব্যর্থ: %s: মেইল প্রেরণ করা যায়নি"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr ""
+msgstr "sendmail fork করতে ব্যর্থ: %s: মেইল প্রেরণ করা যায়নি"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr ""
+msgstr "সিগনাল %s উত্‌পন্ন করে sendmail বন্ধ হয়েছে: মেইল প্রেরণ করা যায়নি।"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:241
 #, c-format
 msgid "Could not execute %s: mail not sent."
-msgstr ""
+msgstr "%s সঞ্চালন করতে ব্যর্থ: মেইল প্রেরণ করা যায়নি"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr ""
+msgstr "%d অবস্থার সূচনা প্রদান করে sendmail বন্ধ হয়েছে: মেইল প্রেরণ করা যায়নি।"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:260
 msgid "sendmail"
-msgstr ""
+msgstr "sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:262
 msgid "Mail delivery via the sendmail program"
-msgstr ""
+msgstr "sendmail প্রোগ্রামের মাধ্যমে মেইল বণ্টন"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:38
 msgid "SMTP"
-msgstr ""
+msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
+msgstr "SMTP সহযোগে দূরবর্তী মেইল-হাবের সাথে সংযোগ করে মেইল বণ্টনের উদ্দেশ্যে।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
-msgstr ""
+msgstr "সিনটেক্স জড়িত সমস্যা, অজানা কমান্ড"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:164
 msgid "Syntax error in parameters or arguments"
-msgstr ""
+msgstr "পরামিতি অথবা আর্গুমেন্টে সিনটেক্স জড়িত সমস্যা"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Command not implemented"
@@ -4340,63 +4359,63 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:172
 msgid "Help message"
-msgstr ""
+msgstr "সহায়তা বার্তা"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:174
 msgid "Service ready"
-msgstr ""
+msgstr "পরিসেবা প্রস্তুত"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:176
 msgid "Service closing transmission channel"
-msgstr ""
+msgstr "পরিসেবার দ্বারা পরিবহণ চ্যানেল বন্ধ করা হচ্ছে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:178
 msgid "Service not available, closing transmission channel"
-msgstr ""
+msgstr "পরিসেবা উপলব্ধ নয়, পরিবহণ চ্যানেল বন্ধ করা হচ্ছে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:180
 msgid "Requested mail action okay, completed"
-msgstr ""
+msgstr "মেইল সংক্রান্ত অনুরোধ করা কর্ম সঠিক, সম্পন্ন করা হয়েছে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:182
 msgid "User not local; will forward to <forward-path>"
-msgstr ""
+msgstr "স্থানীয় ব্যবহারকারী নয়; <forward-path>'এ অনুবর্তন করা হবে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:184
 msgid "Requested mail action not taken: mailbox unavailable"
-msgstr ""
+msgstr "মেইল সংক্রান্ত অনুরোধ করা কর্ম সঞ্চালিত হয়নি: মেইল-বক্স উপলব্ধ নয়"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:186
 msgid "Requested action not taken: mailbox unavailable"
-msgstr ""
+msgstr "অনুরোধ করা কর্ম সঞ্চালিত হয়নি: মেইল-বক্স উপলব্ধ নয়"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:188
 msgid "Requested action aborted: error in processing"
-msgstr ""
+msgstr "অনুরোধ করা কর্ম বাতিল করা হয়েছে: প্রক্রিয়াকরণে সমস্যা"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:190
 msgid "User not local; please try <forward-path>"
-msgstr ""
+msgstr "স্থানীয় ব্যবহারকারী নয়; অনুগ্রহ করে <forward-path> প্রচেষ্টা করুন"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action not taken: insufficient system storage"
-msgstr ""
+msgstr "অনুরোধ করা কর্ম সঞ্চালিত হয়নি: সংগ্রহস্থলে পর্যাপ্ত স্থান অনুপস্থিত"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
+msgstr "মেইল সংক্রান্ত অনুরোধ করা কর্ম বাতিল করা হয়েছে: সংগ্রহস্থলে বরাদ্দ স্থান অতিক্রান্ত হয়েছে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr ""
+msgstr "অনুরোধ করা কর্ম সঞ্চালিত হয়নি: মেইল-বক্সের নাম গ্রহণযোগ্য নয়"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr ""
+msgstr "মেইল ইনপুট আরম্ভ করুন; অন্তে ব্যবহার করুন <CRLF>.<CRLF>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Transaction failed"
-msgstr ""
+msgstr "ট্রানসাকশান বিফল"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:204
 msgid "A password transition is needed"
@@ -4404,11 +4423,11 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "Authentication mechanism is too weak"
-msgstr ""
+msgstr "অনুমোদন প্রণালী সুদৃঢ় নয়"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "Encryption required for requested authentication mechanism"
-msgstr ""
+msgstr "অনুরোধ করা অনুমোদন ব্যবস্থায় এনক্রিপশন প্রয়োজন"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:210
 msgid "Temporary authentication failure"
@@ -4423,21 +4442,21 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:361
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr ""
+msgstr "নিরাপদ মোডে SMTP সার্ভার %s'র সাথে সংযুক্ত করতে ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
 #, c-format
 msgid "STARTTLS command failed: %s"
-msgstr ""
+msgstr "STARTTLS কমান্ড সঞ্চালনে ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:346
 msgid "STARTTLS command failed"
-msgstr ""
+msgstr "STARTTLS কমান্ড সঞ্চালনে ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr ""
+msgstr "SMTP সার্ভার %s দ্বারা অনুরোধ করা অনুমোদন প্রণালী %s সমর্থিত নয়।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:521
 #, c-format
@@ -4451,49 +4470,52 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
+"SMTP সার্ভারে অনুমোদন করতে ব্যর্থ।\n"
+"%s\n"
+"\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:664
 #, c-format
 msgid "SMTP server %s"
-msgstr ""
+msgstr "SMTP সার্ভার %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr ""
+msgstr "%s'র মাধ্যমে SMTP মেইল বণ্টন"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:684
 msgid "Cannot send message: service not connected."
-msgstr ""
+msgstr "বার্তা প্রেরণ করতে ব্যর্থ: পরিসেবা সংযুক্ত নয়।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:690
 msgid "Cannot send message: sender address not valid."
-msgstr ""
+msgstr "বার্তা প্রেরণ করতে ব্যর্থ: প্রেরকের ঠিকানা বৈধ নয়।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:694
 msgid "Sending message"
-msgstr ""
+msgstr "বার্তা প্রেরণ করা হচ্ছে"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: no recipients defined."
-msgstr ""
+msgstr "বার্তা প্রেরণ করতে ব্যর্থ: প্রাপক উল্লিখিত হয়নি।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:720
 msgid "Cannot send message: one or more invalid recipients"
-msgstr ""
+msgstr "বার্তা প্রেরণ করতে ব্যর্থ: এক অথবা অধিক প্রাপক বৈধ নয়"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:890
 msgid "SMTP Greeting"
-msgstr ""
+msgstr "SMTP'র অভিবাদন"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:915
 #, c-format
 msgid "HELO command failed: %s"
-msgstr ""
+msgstr "HELO কমান্ড ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "HELO command failed"
-msgstr ""
+msgstr "HELO কমান্ড ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:998
 msgid "SMTP Authentication"
@@ -4501,47 +4523,47 @@ msgstr "SMTP অনুমোদন ব্যবস্থা"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1004
 msgid "Error creating SASL authentication object."
-msgstr ""
+msgstr "SASL অনুমোদনের অবজেক্ট নির্মাণ করতে ব্যর্থ।"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1021
 #: ../camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "AUTH command failed: %s"
-msgstr ""
+msgstr "AUTH কমান্ড ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1038
 msgid "AUTH command failed"
-msgstr ""
+msgstr "AUTH কমান্ড ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Bad authentication response from server.\n"
-msgstr ""
+msgstr "সার্ভার থেকে অনুমোদন সংক্রান্ত প্রাপ্ত প্রতিক্রিয় সঠিক নয়।\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1125
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
-msgstr ""
+msgstr "MAIL FROM কমান্ড ব্যর্থ: %s: মেইল পাঠানো হয়নি"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1142
 msgid "MAIL FROM command failed"
-msgstr ""
+msgstr "MAIL FROM কমান্ড ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1166
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
-msgstr ""
+msgstr "RCPT TO কমান্ড ব্যর্থ: %s: মেইল পাঠানো হয়নি"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1185
 #, c-format
 msgid "RCPT TO <%s> failed"
-msgstr ""
+msgstr "RCPT TO <%s> ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1224
 #: ../camel/providers/smtp/camel-smtp-transport.c:1282
 #: ../camel/providers/smtp/camel-smtp-transport.c:1301
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
-msgstr ""
+msgstr "DATA কমান্ড ব্যর্থ: %s: মেইল পাঠানো হয়নি"
 
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
@@ -4549,25 +4571,25 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:1241
 #: ../camel/providers/smtp/camel-smtp-transport.c:1317
 msgid "DATA command failed"
-msgstr ""
+msgstr "DATA কমান্ড ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1340
 #, c-format
 msgid "RSET command failed: %s"
-msgstr ""
+msgstr "RSET কমান্ড ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1356
 msgid "RSET command failed"
-msgstr ""
+msgstr "RSET কমান্ড ব্যর্থ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1379
 #, c-format
 msgid "QUIT command failed: %s"
-msgstr ""
+msgstr "QUIT কমান্ড ব্যর্থ: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1393
 msgid "QUIT command failed"
-msgstr ""
+msgstr "QUIT কমান্ড ব্যর্থ"
 
 #: ../libedataserver/e-categories.c:248
 msgid "Business"
@@ -4575,11 +4597,11 @@ msgstr "ব্যবসা"
 
 #: ../libedataserver/e-categories.c:249
 msgid "Competition"
-msgstr ""
+msgstr "প্রতিদ্বন্ধিতা"
 
 #: ../libedataserver/e-categories.c:250
 msgid "Favorites"
-msgstr ""
+msgstr "প্রিয়"
 
 #: ../libedataserver/e-categories.c:251
 msgid "Gifts"
@@ -4608,7 +4630,7 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:258
 msgid "International"
-msgstr ""
+msgstr "আন্তর্জাতিক"
 
 #: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
@@ -4616,19 +4638,19 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
-msgstr ""
+msgstr "বিবিধ"
 
 #: ../libedataserver/e-categories.c:261
 msgid "Personal"
-msgstr ""
+msgstr "ব্যক্তিগত"
 
 #: ../libedataserver/e-categories.c:262
 msgid "Phone Calls"
-msgstr ""
+msgstr "ফোন কল"
 
 #: ../libedataserver/e-categories.c:263
 msgid "Status"
-msgstr ""
+msgstr "অবস্থা"
 
 #: ../libedataserver/e-categories.c:264
 msgid "Strategies"
@@ -4640,7 +4662,7 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:266
 msgid "Time & Expenses"
-msgstr ""
+msgstr "সময় ও ব্যয়"
 
 #: ../libedataserver/e-categories.c:267
 msgid "VIP"
@@ -4648,7 +4670,7 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:268
 msgid "Waiting"
-msgstr ""
+msgstr "অপেক্ষারত"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -4656,7 +4678,7 @@ msgstr ""
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4664,7 +4686,7 @@ msgstr ""
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1606 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%a %m/%d/%Y %H:%M:%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4672,7 +4694,7 @@ msgstr ""
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%a %m/%d/%Y %I:%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4680,78 +4702,78 @@ msgstr ""
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
 msgid "%a %m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%a %m/%d/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1621
 msgid "%a %m/%d/%Y %I %p"
-msgstr ""
+msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1626
 msgid "%a %m/%d/%Y %H"
-msgstr ""
+msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
 #: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
 #: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
-msgstr ""
+msgstr "%a %m/%d/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1637
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1641
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1646
 msgid "%m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1651
 msgid "%m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1656
 msgid "%m/%d/%Y %I %p"
-msgstr ""
+msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1661
 msgid "%m/%d/%Y %H"
-msgstr ""
+msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
 #: ../libedataserver/e-time-utils.c:1664 ../libedataserver/e-time-utils.c:1728
 msgid "%m/%d/%Y"
-msgstr ""
+msgstr "%m/%d/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
-msgstr ""
+msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1885
 msgid "%H:%M:%S"
-msgstr ""
+msgstr "%H:%M:%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -4759,27 +4781,27 @@ msgstr ""
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
-msgstr ""
+msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1882
 msgid "%H:%M"
-msgstr ""
+msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1791
 msgid "%I %p"
-msgstr ""
+msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
-msgstr ""
+msgstr "অ্যানোনিমাস রূপে LDAP ব্যবহার"
 
 #: ../libedataserverui/e-book-auth-util.c:191
 msgid "Failed to authenticate.\n"
-msgstr ""
+msgstr "অনুমোদন করতে বিফল।\n"
 
 #: ../libedataserverui/e-categories-dialog.c:265
 #, c-format
@@ -4822,7 +4844,7 @@ msgstr "উপলব্ধ শ্রেণী: (_A)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
-msgstr ""
+msgstr "সম্পাদনা (_E)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
@@ -4830,31 +4852,31 @@ msgstr "শ্রেণীবিভাগ"
 
 #: ../libedataserverui/e-name-selector-dialog.c:296
 msgid "Select Contacts from Address Book"
-msgstr ""
+msgstr "ঠিকানা বই থেকে পরিচিতি নির্বাচন করুন"
 
 #: ../libedataserverui/e-name-selector-dialog.c:598
 msgid "_Add"
-msgstr ""
+msgstr "যোগ করুন (_A)"
 
 #: ../libedataserverui/e-name-selector-dialog.c:623
 msgid "_Remove"
-msgstr ""
+msgstr "মুছে ফেলুন (_R)"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
-msgstr ""
+msgstr "\t\t\t\t\t\t"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
-msgstr ""
+msgstr "<b>পরিচিতি তালিকা প্রদর্শন করা হবে</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
 msgid "<b>_Contacts</b>"
-msgstr ""
+msgstr "<b>পরিচিতি</b>(_C)"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
@@ -4871,7 +4893,7 @@ msgstr "শ্রেণী: (_a)"
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
-msgstr ""
+msgstr "পরিচিতি"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
@@ -4885,30 +4907,30 @@ msgstr "অনুসন্ধান: (_S)"
 #: ../libedataserverui/e-name-selector-entry.c:2066
 #, c-format
 msgid "E_xpand %s Inline"
-msgstr ""
+msgstr "ইন-লাইন অবস্থায় %s প্রসারণ করা হবে (_x)"
 
 #. Edit Contact item
 #: ../libedataserverui/e-name-selector-entry.c:2082
 #, c-format
 msgid "_Edit %s"
-msgstr ""
+msgstr "%s সম্পাদনা (_E)"
 
 #: ../libedataserverui/e-name-selector-list.c:480
 #, c-format
 msgid "_Delete %s"
-msgstr ""
+msgstr "%s মুছে ফেলুন (_D)"
 
 #: ../libedataserverui/e-passwords.c:854
 msgid "_Remember this passphrase"
-msgstr ""
+msgstr "পাসফ্রেস মনে রাখা হবে (_R)"
 
 #: ../libedataserverui/e-passwords.c:855
 msgid "_Remember this passphrase for the remainder of this session"
-msgstr ""
+msgstr "বর্তমানে সেশানের অবশিষ্ট সময়ের জন্য পাসফ্রেস মনে রাখা হবে (_R)"
 
 #: ../libedataserverui/e-passwords.c:858
 msgid "_Remember this password"
-msgstr ""
+msgstr "পাসওয়ার্ড মনে রাখা হবে (_R)"
 
 #: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
