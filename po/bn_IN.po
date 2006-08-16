@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server\n"
+"Project-Id-Version: bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-10 23:20+0200\n"
-"PO-Revision-Date: 2006-08-16 12:21+0530\n"
+"PO-Revision-Date: 2006-08-16 14:07+0530\n"
 "Last-Translator: Runa Bhattacharjee <runabh@gmail.com>\n"
 "Language-Team: Bengali India\n"
 "MIME-Version: 1.0\n"
@@ -760,11 +760,11 @@ msgstr "আবহাওয়া সম্পর্কে তথ্য প্রা
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:200
 msgid "Fair"
-msgstr ""
+msgstr "অনুকূল"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:201
 msgid "Snow showers"
-msgstr ""
+msgstr "তুষারযুক্ত বৃষ্টিপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Snow"
@@ -788,7 +788,7 @@ msgstr "মেঘলা"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Drizzle"
-msgstr "হাল্কা বৃষ্টি"
+msgstr "হালকা বৃষ্টি"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Sunny"
@@ -812,7 +812,7 @@ msgstr "ঝোড়া বাতাস"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Rain showers"
-msgstr ""
+msgstr "বৃষ্টিপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Foggy"
@@ -820,11 +820,11 @@ msgstr "কুয়াশা"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Rain/snow mixed"
-msgstr ""
+msgstr "মিশ্র বৃষ্টি/তুষারপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Sleet"
-msgstr ""
+msgstr "তুষার সহযোগে বৃষ্টিপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
@@ -832,27 +832,27 @@ msgstr "অত্যন্ত গরম/আর্দ্র"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Blizzard"
-msgstr ""
+msgstr "তুষারঝড়"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Freezing rain"
-msgstr ""
+msgstr "হিমশীতল বৃষ্টিপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Haze"
-msgstr ""
+msgstr "হালকা কুয়াশা"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Blowing snow"
-msgstr ""
+msgstr "প্রবাহিত তুষার"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Freezing drizzle"
-msgstr ""
+msgstr "হিমশীতল হালকা বৃষ্টিপাত"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Very cold/wind chill"
-msgstr ""
+msgstr "হিমশীতল/ঝড়"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Rain"
@@ -1495,7 +1495,7 @@ msgstr "(match-threads) একটি অ্যারে ফলাফল প্�
 
 #: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
-msgstr ""
+msgstr "(match-threads) ফোল্ডার সংকলন আবশ্যক"
 
 #: ../camel/camel-folder-search.c:887
 #, c-format
@@ -2169,7 +2169,7 @@ msgstr "ভুল স্বাক্ষর"
 
 #: ../camel/camel-smime-context.c:488
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "পরিবহকালে বিষয়বস্তুর সাথে কারচুপি করা হয়েছে অথবা পরিবর্তিত হয়েছে"
 
 #: ../camel/camel-smime-context.c:490
 msgid "Signing certificate not found"
@@ -2874,7 +2874,7 @@ msgstr "শুধুমাত্র সাব-স্ক্রাইব করা
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "O_verride server-supplied folder namespace"
-msgstr ""
+msgstr "সার্ভার দ্বারা উপলব্ধ ফোল্ডার নেম-স্পেস অগ্রাহ্য করা হবে (_v)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
 msgid "Namespace"
@@ -2947,7 +2947,7 @@ msgstr "%s ডিরেক্টরি নির্মাণ করতে ব্
 
 #: ../camel/providers/imap/camel-imap-folder.c:332
 msgid "Folder was destroyed and recreated on server."
-msgstr ""
+msgstr "সার্ভারে ফোল্ডার ধ্বংশ করে পুনরায় নির্মিত হয়েছে।"
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:623
@@ -3470,7 +3470,7 @@ msgstr "%s'র উপর POP সার্ভারের সাথে সংয�
 
 #: ../camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
-msgstr ""
+msgstr "ইনডেক্স বার্তার প্রধান অংশের তথ্য"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:384
@@ -3847,7 +3847,7 @@ msgstr "ফোল্ডার সংরক্ষণ করতে ব্যর্
 #: ../camel/providers/local/camel-mbox-summary.c:954
 #: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
-msgstr ""
+msgstr "সংক্ষিপ্ত তথ্য ও ফোল্ডারে গরমিল, সুসংগতির (sync) পরেও"
 
 #: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
@@ -4006,7 +4006,7 @@ msgstr "সংক্ষিপ্ত বিন্যাসে ফোল্ডা�
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
-msgstr ""
+msgstr "সাবস্ক্রিপশন ডায়লগে, আপেক্ষিক ফোল্ডারের নাম প্রদর্শন করা হবে"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -4126,7 +4126,7 @@ msgstr "head থেকে অপ্রত্যাশিত সার্ভা�
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
-msgstr ""
+msgstr "বাতিল ব্যবহার করুন"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
@@ -4290,7 +4290,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
+msgstr "স্থানীয় সিস্টেমে \"sendmail\" প্রোগ্রামের মাধ্যমে মেইল বণ্টনের উদ্দেশ্যে।"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
@@ -4347,15 +4347,15 @@ msgstr "পরামিতি অথবা আর্গুমেন্টে স
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Command not implemented"
-msgstr ""
+msgstr "কমান্ত সঞ্চালিত হয়নি"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:168
 msgid "Command parameter not implemented"
-msgstr ""
+msgstr "কমান্ডের পরামিতি সঞ্চালিত হয়নি"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:170
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "সিস্টেমের অবস্থা, অথবা সিস্টেম সহয়তা ব্যবস্থা থেকে প্রাপ্ত প্রত্যুত্তর"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:172
 msgid "Help message"
@@ -4419,7 +4419,7 @@ msgstr "ট্রানসাকশান বিফল"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:204
 msgid "A password transition is needed"
-msgstr ""
+msgstr "পাসওয়ার্ড পরিবর্তন প্রয়োজন"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "Authentication mechanism is too weak"
@@ -4435,7 +4435,7 @@ msgstr "অস্থায়ী অনমোদন প্রক্রিয়া ব
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:291
 msgid "Welcome response error"
-msgstr ""
+msgstr "স্বাগতম বার্তা সম্পর্কিত সমস্যা"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:322
 #: ../camel/providers/smtp/camel-smtp-transport.c:355
@@ -4613,16 +4613,16 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:253
 msgid "Holiday"
-msgstr ""
+msgstr "ছুটি"
 
 #: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
-msgstr ""
+msgstr "ছুটি উপলক্ষে কার্ড"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
 #: ../libedataserver/e-categories.c:256
 msgid "Hot Contacts"
-msgstr ""
+msgstr "গুরুগ্বপূর্ণ পরিচিতি"
 
 #: ../libedataserver/e-categories.c:257
 msgid "Ideas"
@@ -4634,7 +4634,7 @@ msgstr "আন্তর্জাতিক"
 
 #: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
-msgstr ""
+msgstr "গুরুত্বপূর্ণ গ্রাহক"
 
 #: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
@@ -4666,7 +4666,7 @@ msgstr "সময় ও ব্যয়"
 
 #: ../libedataserver/e-categories.c:267
 msgid "VIP"
-msgstr ""
+msgstr "গুরুত্বপূর্ণ ব্যক্তি (VIP)"
 
 #: ../libedataserver/e-categories.c:268
 msgid "Waiting"
@@ -4808,7 +4808,7 @@ msgstr "অনুমোদন করতে বিফল।\n"
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr ""
+msgstr "বর্তমান কনফিগারেশনে '%s' নামক একটি বিভাগ উপস্থিত রয়েছে। অনুগ্রহ করে একটি পৃথক নাম ব্যবহার করুন"
 
 #: ../libedataserverui/e-categories-dialog.c:435
 msgid "Category"
@@ -4836,7 +4836,7 @@ msgstr "শ্রেণীর নাম (_N)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
-msgstr ""
+msgstr "চিহ্নিত শ্রেণীর মধ্যে বস্তু অন্তর্ভুক্ত রয়েছে:(_c)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
@@ -4934,16 +4934,16 @@ msgstr "পাসওয়ার্ড মনে রাখা হবে (_R)"
 
 #: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
-msgstr ""
+msgstr "বর্তমানে সেশানের অবশিষ্ট সময়ের জন্য পাসওয়ার্ড মনে রাখা হবে (_R)"
 
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
 msgid "Select destination"
-msgstr ""
+msgstr "গন্তব্যস্থল নির্বাচন করুন"
 
 #: ../libedataserverui/e-source-selector-dialog.c:154
 msgid "_Destination"
-msgstr ""
+msgstr "গন্তব্যস্থল (_D)"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
 #: ../servers/exchange/storage/exchange-account.c:935
@@ -4960,23 +4960,23 @@ msgstr "পাসওয়ার্ড লিখুন"
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
 msgid "Owner"
-msgstr ""
+msgstr "মালিক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
-msgstr ""
+msgstr "প্রকাশনাকারী সম্পাদক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr ""
+msgstr "সম্পাদক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
-msgstr ""
+msgstr "প্রকাশনাকারী লেখক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
-msgstr ""
+msgstr "লেখক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
@@ -4984,11 +4984,11 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr ""
+msgstr "পরিদর্শক"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
-msgstr ""
+msgstr "অংশগ্রহণকারী"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:891
 msgid "None"
@@ -4996,27 +4996,27 @@ msgstr "শূণ্য"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
-msgstr ""
+msgstr "নিজস্ব"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:144
 msgid "Select User"
-msgstr ""
+msgstr "ব্যবহারকারী নির্বাচন করুন"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:182
 msgid "Addressbook..."
-msgstr ""
+msgstr "ঠিকানা বই..."
 
 #: ../servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
-msgstr ""
+msgstr "সাধারণ ত্রুটি"
 
 #: ../servers/exchange/storage/e-storage.c:558
 msgid "A folder with the same name already exists"
-msgstr ""
+msgstr "এক নামের একটি ফোল্ডার বর্তমানে উপস্থিত রয়েছে"
 
 #: ../servers/exchange/storage/e-storage.c:560
 msgid "The specified folder type is not valid"
-msgstr ""
+msgstr "উল্লিখিত ধরনের ফোল্ডার বৈধ নয়"
 
 #: ../servers/exchange/storage/e-storage.c:562
 msgid "I/O error"
@@ -5024,76 +5024,76 @@ msgstr "I/O জড়িত সমস্যা"
 
 #: ../servers/exchange/storage/e-storage.c:564
 msgid "Not enough space to create the folder"
-msgstr ""
+msgstr "ফোল্ডার নির্মাণের জন্য পর্যাপ্ত স্থান নেই"
 
 #: ../servers/exchange/storage/e-storage.c:566
 msgid "The folder is not empty"
-msgstr ""
+msgstr "ফোল্ডার ফাঁকা নয়"
 
 #: ../servers/exchange/storage/e-storage.c:568
 msgid "The specified folder was not found"
-msgstr ""
+msgstr "উল্লিখিত ফোল্ডার পাওয়া যায়নি"
 
 #: ../servers/exchange/storage/e-storage.c:570
 msgid "Function not implemented in this storage"
-msgstr ""
+msgstr "বর্তমানে সংগ্রস্থলের ক্ষেত্রে কর্ম সঞ্চালিত হয়নি"
 
 #: ../servers/exchange/storage/e-storage.c:574
 msgid "Operation not supported"
-msgstr "কর্ম সমর্থিত  নয়"
+msgstr "কর্ম সমর্থিত নয়"
 
 #: ../servers/exchange/storage/e-storage.c:576
 msgid "The specified type is not supported in this storage"
-msgstr ""
+msgstr "বর্তমানে সংগ্রস্থলের ক্ষেত্রে উল্লিখিত ধরন সমর্থিত নয়"
 
 #: ../servers/exchange/storage/e-storage.c:578
 msgid "The specified folder cannot be modified or removed"
-msgstr ""
+msgstr "উল্লিখিত ফোল্ডার পরিবর্তন অথবা অপসারণ করা সম্ভব নয়"
 
 #: ../servers/exchange/storage/e-storage.c:580
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "কোনো ফোল্ডারকে সেটির অধীন উপস্থিত ফোল্ডারের চাইল্ড "
 
 #: ../servers/exchange/storage/e-storage.c:582
 msgid "Cannot create a folder with that name"
-msgstr ""
+msgstr "উল্লিখিত নাম সহযোগে ফোল্ডার নির্মাণ করা সম্ভব নয়"
 
 #: ../servers/exchange/storage/e-storage.c:584
 msgid "This operation cannot be performed in off-line mode"
-msgstr ""
+msgstr "অফ-লাইন অবস্থায় এই কর্ম সঞ্চালন করা সম্ভব নয়"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
 #: ../servers/exchange/storage/exchange-account.c:635
 #, c-format
 msgid "%s's Folders"
-msgstr ""
+msgstr "%s'র ফোল্ডার"
 
 #: ../servers/exchange/storage/exchange-account.c:1241
 msgid "Personal Folders"
-msgstr ""
+msgstr "ব্যক্তিগত ফোল্ডার"
 
 #: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
-msgstr ""
+msgstr "প্রিয় সার্বজনীন ফোল্ডার"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1272
 msgid "All Public Folders"
-msgstr ""
+msgstr "সমস্ত সার্বজনীন ফোল্ডার"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1286
 msgid "Global Address List"
-msgstr ""
+msgstr "গ্রোবাল ঠিকানা তালিকা"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Deleted Items"
-msgstr ""
+msgstr "মুছে ফেলা বস্তু"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
-msgstr ""
+msgstr "খসড়া"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
@@ -5105,15 +5105,15 @@ msgstr "নোট"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
-msgstr ""
+msgstr "আউটবক্স"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
 msgid "Sent Items"
-msgstr ""
+msgstr "প্রেরিত বস্তু"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
-msgstr ""
+msgstr "কর্ম"
 
 #: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
@@ -5133,23 +5133,23 @@ msgstr "ভুল পরামিতি"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "ইভোলিউশন ঠিকানা-তালিকা ফাইল-এর ব্যাক-এন্ড"
+msgstr "Evolution ঠিকানা-বইয়ের ফাইল ব্যাক-এন্ড"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "ইভোলিউশন ক্যালেন্ডার ফাইল এবং ওয়েবক্যাল ব্যাক-এন্ড"
+msgstr "Evolution Calendar ফাইল ও webcal ব্যাক-এন্ড"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
-msgstr ""
+msgstr "Evolution Data Server প্রেক্ষাপট পরীক্ষণ পরিসেবা"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
-msgstr ""
+msgstr "Evolution Data Server লগিং পরিসেবা"
 
 #. dialog display isn't working out
 #: ../src/server.c:106
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-msgstr ""
+msgstr "একাধিক সেগমেন্টেশন ফল্ট ঘটেছে; ত্রুটি সূচক ডায়লগ বক্স প্রদর্শন করা সম্ভব নয়\n"
 
