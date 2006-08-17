@@ -8,3 +8,5 @@ ylwrap
 install-sh
 ltmain.sh
 missing
+mkinstalldirs
+
