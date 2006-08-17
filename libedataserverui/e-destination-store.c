@@ -262,11 +262,11 @@ static gint
 find_destination_by_email (EDestinationStore *destination_store, EDestination *destination)
 {
 	gint i;
-	char *e_mail = e_destination_get_email (destination);
+	const char *e_mail = e_destination_get_email (destination);
 
 	for (i = 0; i < destination_store->destinations->len; i++) {
 		EDestination *destination_here = g_ptr_array_index (destination_store->destinations, i);
-		char *mail = e_destination_get_email (destination_here);
+		const char *mail = e_destination_get_email (destination_here);
 
 		if (g_str_equal (e_mail, mail))
 			return i;

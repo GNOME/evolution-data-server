@@ -1,3 +1,19 @@
+2006-08-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* e-destination-store.c: (find_destination_by_email):
+	e_destination_get_email() returns const char*
+	* e-name-selector-dialog.c:
+	(e_name_selector_dialog_populate_categories),
+	(e_name_selector_dialog_init): Fix warning about unused result
+	and mixing declarations and code.
+	* e-name-selector-entry.c: (user_delete_text),
+	(e_name_selector_entry_init): Remove some unused code and fix
+	compiler warnings
+	* e-name-selector-list.c: (enl_tree_button_press_event),
+	(e_name_selector_list_new): Fix more compiler warnings
+	* e-passwords.c: (ep_remember_password), (ep_ask_password),
+	(decode_base64): Fix compiler warnings.
+
 2006-08-07  Hans Petter Jansson  <hpj@novell.com>
 
 	* e-contact-store.c (e_contact_store_finalize): Fix memory leaks.

@@ -97,8 +97,8 @@ struct _EPassMsg {
 	/* work variables */
 	GtkWidget *entry;
 	GtkWidget *check;
-	int ismain:1;
-	int noreply:1;		/* supress replies; when calling
+	guint ismain:1;
+	guint noreply:1;	/* supress replies; when calling
 				 * dispatch functions from others */
 };
 
@@ -446,7 +446,7 @@ ep_remember_password(EPassMsg *msg)
 		len = strlen (value);
 		pass64 = g_malloc0 ((len + 2) * 4 / 3 + 1);
 		state = save = 0;
-		base64_encode_close (value, len, FALSE, pass64, &state, &save);
+		base64_encode_close (value, len, FALSE, (guchar *)pass64, &state, &save);
 
 		gnome_config_private_set_string (path, pass64);
 		g_free (path);
@@ -800,7 +800,7 @@ ep_ask_password(EPassMsg *msg)
 {
 	GtkWidget *vbox;
 	int type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
-	int noreply = msg->noreply;
+	guint noreply = msg->noreply;
 	AtkObject *a11y;
 
 	msg->noreply = 1;
@@ -1326,17 +1326,19 @@ base64_decode_step(unsigned char *in, int len, unsigned char *out, int *state, u
 static char *
 decode_base64 (char *base64)
 {
-	char *plain, *pad = "==";
-	int len, out, state, save;
+	guchar *plain;
+	char *pad = "==";
+	int len, out, state;
+	unsigned int save;
 	
 	len = strlen (base64);
 	plain = g_malloc0 (len);
 	state = save = 0;
-	out = base64_decode_step (base64, len, plain, &state, &save);
+	out = base64_decode_step ((guchar *)base64, len, plain, &state, &save);
 	if (len % 4) {
-		base64_decode_step (pad, 4 - len % 4, plain + out,
+		base64_decode_step ((guchar *)pad, 4 - len % 4, plain + out,
 				    &state, &save);
 	}
 	
-	return plain;
+	return (char *)plain;
 }

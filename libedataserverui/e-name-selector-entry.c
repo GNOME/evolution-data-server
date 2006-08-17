@@ -535,12 +535,6 @@ utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 	return rv;
 }
 
-static gint
-utf8_casefold_collate (const gchar *str1, const gchar *str2)
-{
-	return utf8_casefold_collate_len (str1, str2, -1);
-}
-
 static gchar *
 build_textrep_for_contact (EContact *contact, EContactField cue_field)
 {
@@ -942,22 +936,6 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 }
 
 static void
-remove_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
-{
-	EDestination *destination;
-
-	destination = find_destination_at_position (name_selector_entry, pos);
-	if (destination) {
-		g_signal_handlers_block_by_func (name_selector_entry->destination_store,
-					 destination_row_deleted, name_selector_entry);
-		e_destination_store_remove_destination (name_selector_entry->destination_store,
-						destination);
-		g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
-					   destination_row_deleted, name_selector_entry);
-	}
-}
-
-static void
 sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint range_pos, gint *cursor_pos)
 {
 	EDestination *destination;
@@ -1160,7 +1138,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	const gchar *text;
 	gint         index_start, index_end;
 	gint	     selection_start, selection_end;	
-	gunichar     str_context [2], str_b_context [2];;
+	gunichar     str_context [2], str_b_context [2];
 	gint         len;
 	gint         i;
 	gboolean     already_selected = FALSE;
@@ -1175,7 +1153,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 					       &selection_start, 
 					       &selection_end)) 
 		if ((g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == 0) ||
-		    (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == ","))
+		    (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == ','))
 			already_selected = TRUE;
 	
 	get_utf8_string_context (text, start_pos, str_context, 2);
@@ -1250,7 +1228,6 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		name_selector_entry->type_ahead_complete_cb_id = 0;
 	}
 	
-end_of_user_delete_text:
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 }
 
@@ -2110,7 +2087,8 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   GConfClient *gconf;
   gconf = gconf_client_get_default();
   if (COMPLETION_CUE_MIN_LEN == 0) {
-	  if (COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL));
+	  if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
+		;
 	  else COMPLETION_CUE_MIN_LEN = 3;
   }
   g_object_unref (G_OBJECT (gconf));

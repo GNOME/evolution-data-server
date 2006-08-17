@@ -127,7 +127,7 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 
 	category_list = e_categories_get_list () ;
 	category_list = g_list_prepend (category_list, "Any Category");
-	g_list_sort (category_list, compare_func);
+	category_list = g_list_sort (category_list, compare_func);
 
 	category_menu = gtk_menu_new ();
 	l = category_list;
@@ -155,6 +155,8 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
 	char              *gladefile;
+	GConfClient *gconf_client;	
+	char *uid;
 
 	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	priv->destination_index = 0;
@@ -237,9 +239,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	widget = e_source_option_menu_new (name_selector_dialog->source_list);
         
-	GConfClient *gconf_client;	
-	char *uid;
-	
 	gconf_client = gconf_client_get_default();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);

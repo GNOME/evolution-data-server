@@ -370,8 +370,7 @@ enl_tree_button_press_event (GtkWidget *widget,
   	if ( !GTK_WIDGET_HAS_GRAB (list->popup))
         	enl_popup_grab (list);
   
-	
-	gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW (list->tree_view), event->x, event->y, &path, GTK_TREE_VIEW_DROP_BEFORE);
+	gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW (list->tree_view), event->x, event->y, &path, NULL);
 	selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (E_NAME_SELECTOR_ENTRY (list)->destination_store), &iter, path))
 		return FALSE;
@@ -655,7 +654,7 @@ e_name_selector_list_init (ENameSelectorList *list)
 }
 
 ENameSelectorList *
-e_name_selector_list_new ()
+e_name_selector_list_new (void)
 {
 	return g_object_new (e_name_selector_list_get_type (), NULL);
 }
