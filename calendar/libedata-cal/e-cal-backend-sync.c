@@ -764,7 +764,6 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *u
 	status = e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, mod, &old_object, &object);
 
 	if (status == GNOME_Evolution_Calendar_Success) {
-		char *calobj = NULL;
 
 		ECalComponentId *id = g_new0 (ECalComponentId, 1);
 		id->uid = g_strdup (uid);
