@@ -266,6 +266,8 @@ impl_dispose (GObject *object)
 
 		g_object_unref (priv->gconf_client);
 		priv->gconf_client = NULL;
+	} else {
+		g_assert_not_reached ();
 	}
 
 	(* G_OBJECT_CLASS (e_source_list_parent_class)->dispose) (object);
@@ -339,12 +341,26 @@ e_source_list_init (ESourceList *source_list)
 	source_list->priv = priv;
 }
 
+/* returns the type */
+static GType
+get_source_list_type (void) 
+{
+	static GType type = 0;
+	
+	if (!type) {
+		if (!(type = g_type_from_name ("ESourceList")))
+			type = e_source_list_get_type ();
+	}
+
+	return type;
+}
+
 /* Public methods.  */
 
 ESourceList *
 e_source_list_new (void)
 {
-	ESourceList *list = g_object_new (e_source_list_get_type (), NULL);
+	ESourceList *list = g_object_new (get_source_list_type (), NULL);
 
 	return list;
 }
@@ -358,7 +374,7 @@ e_source_list_new_for_gconf (GConfClient *client,
 	g_return_val_if_fail (GCONF_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (path != NULL, NULL);
 
-	list = g_object_new (e_source_list_get_type (), NULL);
+	list = g_object_new (get_source_list_type (), NULL);
 
 	list->priv->gconf_path = g_strdup (path);
 	list->priv->gconf_client = client;
@@ -382,7 +398,7 @@ e_source_list_new_for_gconf_default (const char  *path)
 
 	g_return_val_if_fail (path != NULL, NULL);
 
-	list = g_object_new (e_source_list_get_type (), NULL);
+	list = g_object_new (get_source_list_type (), NULL);
 
 	list->priv->gconf_path = g_strdup (path);
 	list->priv->gconf_client = gconf_client_get_default ();
