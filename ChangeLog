@@ -1,3 +1,12 @@
+2006-08-19  chenthill palanisamy  <pchenthill@novell.com>
+
+	fixes #340417
+	* libedataserver/e-source-list.c: 
+	(e_source_list_new), (e_source_list_new_for_gconf),
+	(e_source_list_new_for_gconf_default): use get_source_list_type. 
+	(get_source_list_type): check if the type is already registered and
+	return it.
+	
 2006-07-31  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Release updates - 
