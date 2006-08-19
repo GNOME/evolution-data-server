@@ -546,7 +546,7 @@ get_deltas (gpointer handle)
 			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
 			needs_to_get = TRUE;
 		} else  {
-			cache_keys = g_slist_delete_link (cache_keys, remove);
+			cache_keys = g_slist_remove_link (cache_keys, remove);
 		}
 	
 		g_free (real_key);

@@ -1,5 +1,11 @@
 2006-08-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes a gslice crash
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	replaced gslist_delete_link with remove link.
+
+2006-08-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #325648
 	* libecal/e-cal-util.c: (e_cal_util_parse_ics_string):
 	Check if the component is a VCALENDAR component before
