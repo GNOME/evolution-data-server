@@ -1,4 +1,4 @@
-2006-08-16  Chenthill Palanisamy  <pchenthill@novell.com>
+2006-08-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #340417
 	* libedataserver/e-source-list.c: 
