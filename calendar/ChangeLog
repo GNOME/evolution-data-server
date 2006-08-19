@@ -1,3 +1,9 @@
+2006-08-19  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_default_alarms): Unref GConf client on all exit
+	paths.
+
 2006-08-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* libedata-cal/e-cal-backend-sync.c:

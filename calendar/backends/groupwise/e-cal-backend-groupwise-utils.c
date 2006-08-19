@@ -864,7 +864,6 @@ set_default_alarms (ECalComponent *comp)
 
 			interval = gconf_client_get_int (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL, NULL);
 			units = gconf_client_get_string (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, NULL);
-			g_object_unref (gconf);
 
 			if (units == NULL) 
 				duration = MINUTES;
@@ -898,6 +897,7 @@ set_default_alarms (ECalComponent *comp)
 				break;
 			default:
 				e_cal_component_alarm_free (acomp);
+				g_object_unref (gconf);
 				return;
 			}
 
@@ -905,7 +905,8 @@ set_default_alarms (ECalComponent *comp)
 			e_cal_component_add_alarm (comp, acomp);
 
 			e_cal_component_alarm_free (acomp);
-			}
+		}
+		g_object_unref (gconf);
 }
 
 
