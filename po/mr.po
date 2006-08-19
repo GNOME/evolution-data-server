@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-06-13 06:22+0200\n"
-"PO-Revision-Date: 2006-08-13 16:04+0530\n"
+"PO-Revision-Date: 2006-08-18 17:06+0530\n"
 "Last-Translator: Rahul Bhalerao <b.rahul.pm@gmail.com>\n"
 "Language-Team: Marathi\n"
 "MIME-Version: 1.0\n"
@@ -169,9 +169,8 @@ msgstr "स्वतः संपर्क"
 
 #: ../addressbook/libebook/e-book.c:3690
 #, c-format
-#, fuzzy
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "%s: कोई स्व संपर्क uid `%s'साठी gconf में भंडारित नाही था"
+msgstr "%s: gconf में भंडारित uid `%s' साठी कोणताही स्त्रोत नाही होता"
 
 #: ../addressbook/libebook/e-contact.c:108
 msgid "Unique ID"
@@ -652,7 +651,7 @@ msgstr "वाढदिवस: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Can't save calendar data: Malformed URI."
-msgstr ""
+msgstr "दिनदर्शिका डेटा संग्रहू शकत नाही: बिघडलेला URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1615
@@ -1121,7 +1120,7 @@ msgstr "प्रोटोकॉल समर्थनीय नाही"
 
 #: ../calendar/libecal/e-cal.c:5133
 msgid "Operation has been cancelled"
-msgstr ""
+msgstr "ऑपरेशन रद्द करण्यात आले आहे"
 
 #: ../calendar/libecal/e-cal.c:5135
 msgid "Could not cancel operation"
@@ -1129,7 +1128,6 @@ msgstr "ऑपरेशन रद्द नाही करता आले"
 
 #: ../calendar/libecal/e-cal.c:5139
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
-#, fuzzy
 msgid "Authentication required"
 msgstr "अधिप्रमाणन आवश्यक"
 
@@ -1160,9 +1158,8 @@ msgstr "काही चूक नाही"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects no arguments"
-msgstr "\"%s\" किसी तर्क की आशा नाही करता"
+msgstr "\"%s\" ला कोणतेही आर्ग्यूमेंट अपेक्षित नाही"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
@@ -1170,18 +1167,16 @@ msgstr "\"%s\" किसी तर्क की आशा नाही करत
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects one argument"
-msgstr "\"%s\" एक तर्क की आशा करता"
+msgstr "\"%s\" ला एका आर्ग्यूमेंटची अपेक्षा आहे"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "\"%s\" पहले तर्क की स्ट्रिंग होने की आशा करता"
+msgstr "\"%s\" पहले आर्ग्यूमेंट स्ट्रिंग असणे अपेक्षित करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
@@ -1193,9 +1188,8 @@ msgstr "\"%s\" आधी तर्कास ISO 8601 date/time स्ट्र�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects two arguments"
-msgstr "\"%s\" दो तर्क की आशा करता"
+msgstr "\"%s\" दोन आर्ग्यूमेंटची अपेक्षा ठेवतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
@@ -1204,44 +1198,38 @@ msgstr "\"%s\" दो तर्क की आशा करता"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "\"%s\" पहले तर्क time_t होने की आशा करता"
+msgstr "\"%s\" पहिले आर्ग्यूमेंट time_t असण्याची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "\"%s\" दूसरे तर्क की एक पूर्णांक की आशा करता है"
+msgstr "\"%s\" दूसरे आर्ग्यूमेंट एक पूर्णांक असण्याची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "\"%s\" दूसरे तर्क की एक time_t की आशा करता है"
+msgstr "\"%s\" दूसरे आर्ग्यूमेंट एक time_t असण्याची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "\"%s\" दूसरे तर्क की एक स्ट्रिंग होने की आशा करता है"
+msgstr "\"%s\" दूसरे आर्ग्यूमेंट एक स्ट्रिंग असण्याची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
 #, c-format
-#, fuzzy
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
-"\"%s\" पहले तर्क को \"any\", \"summary\", or \"description\", या \"location\" "
-"में से किसी रूप में आशा करता है"
+"\"%s\" पहिले आर्ग्यूमेंट \"कोणतेही\", \"सारांश\", किंवा \"वर्णन\", किंवा \"ठिकाण\" "
+"यांपैकी एखादे असण्याची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
 #, c-format
-#, fuzzy
 msgid "\"%s\" expects at least one argument"
-msgstr "\"%s\" कम से कम एक तर्क की आशा करता है"
+msgstr "\"%s\" कमीत कमी एक आर्ग्यूमेंटची अपेक्षा करतो"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
 #, c-format
@@ -1270,9 +1258,8 @@ msgid "Verifying message"
 msgstr "संदेशाची पडताळणी करत आहे"
 
 #: ../camel/camel-cipher-context.c:189
-#, fuzzy
 msgid "Encryption is not supported by this cipher"
-msgstr "गोपन या सिफर के द्वारा समर्थित नाही है"
+msgstr "या सिफरद्वारा एनक्रिप्शन समर्थित नाही"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1287,14 +1274,12 @@ msgid "Decrypting message"
 msgstr "संदेश का डिक्रिप्ट करत आहे"
 
 #: ../camel/camel-cipher-context.c:271
-#, fuzzy
 msgid "You may not import keys with this cipher"
-msgstr "या सिफर से आप कळ आयात नाही कर सकते हैं"
+msgstr "या सिफरद्वारे तुम्ही कळ आयात करणार नाही"
 
 #: ../camel/camel-cipher-context.c:301
-#, fuzzy
 msgid "You may not export keys with this cipher"
-msgstr "या सिफर से आप कळ निर्यात नाही कर सकते हैं"
+msgstr "या सिफरद्वारे तुम्ही कळ निर्यात करणार नाही"
 
 #: ../camel/camel-data-cache.c:136
 msgid "Unable to create cache path"
@@ -1307,47 +1292,42 @@ msgstr "कॅश प्रविष्टि नाही हटवू शक�
 
 #: ../camel/camel-disco-diary.c:197
 #, c-format
-#, fuzzy
 msgid ""
 "Could not write log entry: %s\n"
 "Further operations on this server will not be replayed when you\n"
 "reconnect to the network."
 msgstr ""
-"लॉग प्रविष्टि नाही लिही शकत: %s\n"
-"या सर्वर पर आगे की संक्रिया पुनः नाही चलायी जायेगी जेव्हा आप\n"
-"संजाल से पुनर्संबंध जोड़ेंगे."
+"लॉग प्रविष्टि नाही लिहू शकत: %s\n"
+"या सर्वर वर पुढील संक्रिया पुनः नाही चालवली जाणार  जोपर्यंत तुम्ही\n"
+"संजाळाशी पुनर्संबंध जोडत नाही."
 
 #: ../camel/camel-disco-diary.c:260
 #, c-format
-#, fuzzy
 msgid ""
 "Could not open `%s':\n"
 "%s\n"
 "Changes made to this folder will not be resynchronized."
 msgstr ""
-"`%s' को नाही खोल सका :\n"
+"`%s' नाही खोलता आले :\n"
 "%s\n"
-"या फोल्डर में किया गया परिवर्तन पुनर्तुल्यकालिक नाही हो पायेगा."
+"या फोल्डर मध्ये केलेली परिवर्तने पुन्हा सिंक्रनाइझ नाही होणार."
 
 #: ../camel/camel-disco-diary.c:296
 msgid "Resynchronizing with server"
 msgstr "सर्वरशी रीसिंक्रनाइझ होत आहे"
 
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:50
-#, fuzzy
 msgid "Copy folder content locally for offline operation"
-msgstr "ऑफलाइन संक्रिया के लिए फोल्डर अंतर्वस्तु की स्थानीय रूप से कापी करें"
+msgstr "ऑफलाइन संक्रियेसाठी फोल्डर समाविष्टांस स्थानीय रित्या प्रतिलिपी करा"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:109
-#, fuzzy
 msgid "Downloading new messages for offline mode"
-msgstr "ऑफलाइन मोडसाठी नए संदेश को अधिभारित करत आहे"
+msgstr "ऑफलाइन मोडसाठी निवन संदेश डाउनलोड करत आहे"
 
 #: ../camel/camel-disco-folder.c:467
 #, c-format
-#, fuzzy
 msgid "Preparing folder '%s' for offline"
-msgstr "ऑफलाइनसाठी '%s' फोल्डर को तैयार करत आहे"
+msgstr "ऑफलाइनसाठी '%s' फोल्डर तयार करत आहे"
 
 #: ../camel/camel-disco-store.c:401
 #: ../camel/providers/imap/camel-imap-store.c:2971
@@ -1356,48 +1336,40 @@ msgid "You must be working online to complete this operation"
 msgstr "या संक्रिया को समाप्त करने के लिए आपको निश्चित रूप से ऑनलाइन काम करना पड़ेगा"
 
 #: ../camel/camel-exception.c:303
-#, fuzzy
 msgid "No description available"
-msgstr "नाही वर्णन"
+msgstr "वर्णन उपलब्ध नाही"
 
 #: ../camel/camel-filter-driver.c:749
 #, c-format
-#, fuzzy
 msgid "Failed to create child process '%s': %s"
-msgstr "'%s' बाल प्रक्रिया बनाने में विफल: %s"
+msgstr "'%s' अपत्य प्रक्रिया बनवण्यात असफल: %s"
 
 #: ../camel/camel-filter-driver.c:791
 #, c-format
-#, fuzzy
 msgid "Invalid message stream received from %s: %s"
-msgstr "%s से अवैध संदेश धारा प्राप्त: %s"
+msgstr "%s कडून अवैध संदेश धारा प्राप्त: %s"
 
 #: ../camel/camel-filter-driver.c:978 ../camel/camel-filter-driver.c:987
-#, fuzzy
 msgid "Syncing folders"
-msgstr "फोल्डर का तुल्यकालन करत आहे"
+msgstr "फोल्डर सिंक्रनाइझ करत आहे"
 
 #: ../camel/camel-filter-driver.c:1076 ../camel/camel-filter-driver.c:1454
 #, c-format
-#, fuzzy
 msgid "Error parsing filter: %s: %s"
-msgstr "निस्पंदन विश्लेषण में दोष: %s: %s"
+msgstr "गाळक विश्लेषणात चूक: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1085 ../camel/camel-filter-driver.c:1463
 #, c-format
-#, fuzzy
 msgid "Error executing filter: %s: %s"
-msgstr "निस्पंदन निस्पादन में त्रुटि: %s: %s"
+msgstr "गाळक चालवण्यात चूक: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1152
-#, fuzzy
 msgid "Unable to open spool folder"
-msgstr "स्पूल फोल्डर को खोलने में अक्षम"
+msgstr "स्पूल फोल्डर खोलण्यास अक्षम"
 
 #: ../camel/camel-filter-driver.c:1161
-#, fuzzy
 msgid "Unable to process spool folder"
-msgstr "स्पूल फोल्डर की प्रक्रिया में अक्षम"
+msgstr "स्पूल फोल्डर वर प्रक्रिया करण्यास अक्षम"
 
 #: ../camel/camel-filter-driver.c:1176
 #, c-format
@@ -1446,77 +1418,67 @@ msgstr "(उपयोक्ता-टैग) ला अवैध तर्क"
 #: ../camel/camel-filter-search.c:578
 #, c-format
 msgid "Failed to create create child process '%s': %s"
-msgstr "'%s' बाल प्रक्रिया बनवण्यात असफल: %s"
+msgstr "'%s' अपत्य प्रक्रिया बनवण्यात असफल: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
 #: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
-#, fuzzy
 msgid "Error executing filter search: %s: %s"
-msgstr "निस्पंदन शोध के निस्पादन में त्रुटि: %s: %s"
+msgstr "गाळक शोध चालवण्यात चूक: %s: %s"
 
 #: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
-#, fuzzy
 msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
-"शोध अभिव्यक्ति का विश्लेषण नाही कर सकता: %s:\n"
+"शोध अभिव्यक्ति चे विश्लेषण नाही करू शकत: %s:\n"
 "%s"
 
 #: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
-#, fuzzy
 msgid ""
 "Error executing search expression: %s:\n"
 "%s"
 msgstr ""
-"शोध अभिव्यक्ति के क्रियान्वयन में दोष: %s:\n"
+"शोध अभिव्यक्ति चालवण्यात चूक: %s:\n"
 "%s"
 
 #: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
-#, fuzzy
 msgid "(match-all) requires a single bool result"
-msgstr "(सबको मिलाएं) इसके लिए एकल बूल परिणाम जरूरी है"
+msgstr "(सर्व-जुळवा) यासाठी एकटे बूल परिणाम जरूरी आहे"
 
 #: ../camel/camel-folder-search.c:758
 #, fuzzy
 msgid "(match-threads) not allowed inside match-all"
-msgstr "(तंतुओं को मिलाएं) यह सबको मिलाइए के अंतर्गत आने की अनुमति नाही देता है"
+msgstr "(धागे-जुळवा) यह सबको मिलाइए के अंतर्गत आने की अनुमति नाही देता है"
 
 #: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
-#, fuzzy
 msgid "(match-threads) requires a match type string"
-msgstr "(तंतुओं को मिलाएं) इसके लिए एक सुमेल प्रकार तंतु चाहिए"
+msgstr "(धागे-जुळवा) साठी एक सुमेल प्रकार स्ट्रींगची गरज आहे"
 
 #: ../camel/camel-folder-search.c:789
-#, fuzzy
 msgid "(match-threads) expects an array result"
-msgstr "(तंतुओं को मिलाएं) इसे एक एरे परिणाम की आशा है"
+msgstr "(धागे-जुळवा) यास एका एरे परिणामाची अपेक्षा आहे"
 
 #: ../camel/camel-folder-search.c:795
-#, fuzzy
 msgid "(match-threads) requires the folder set"
-msgstr "(तंतुओं को मिलाएं) इसके लिए फोल्डर समुच्चय परिणाम जरूरी है"
+msgstr "(धागे-जुळवा) यासाठी फोल्डर संच जरूरी आहे"
 
 #: ../camel/camel-folder-search.c:887
 #, c-format
-#, fuzzy
 msgid "Performing query on unknown header: %s"
-msgstr "अज्ञात शीर्षक पर प्रश्न निस्पादन: %s"
+msgstr "अज्ञात शीर्षकावर प्रश्न चालवा: %s"
 
 #: ../camel/camel-folder.c:615
 #, c-format
-#, fuzzy
 msgid "Unsupported operation: append message: for %s"
-msgstr "असमर्थित संक्रिया: संदेश जोड़ें: %s के लिए"
+msgstr "असमर्थित संक्रिया: संदेश जोडा: %s साठी"
 
 #: ../camel/camel-folder.c:1237
 #, c-format
-#, fuzzy
 msgid "Unsupported operation: search by expression: for %s"
-msgstr "असमर्थित संक्रिया: भाव से खोजें: %s के लिए"
+msgstr "असमर्थित संक्रिया: अभिव्यक्तीने शोधा: %s साठी"
 
 #: ../camel/camel-folder.c:1278
 #, c-format
@@ -1525,75 +1487,66 @@ msgid "Unsupported operation: search by uids: for %s"
 msgstr "च्यासाठी"
 
 #: ../camel/camel-folder.c:1394
-#, fuzzy
 msgid "Moving messages"
 msgstr "संदेश प्रतिस्थापित करत आहे"
 
 #: ../camel/camel-folder.c:1394
-#, fuzzy
 msgid "Copying messages"
-msgstr "संदेश कापी करत आहे"
+msgstr "संदेश प्रतिलिपी करत आहे"
 
 #: ../camel/camel-folder.c:1648
-#, fuzzy
 msgid "Learning junk"
-msgstr "जंक को समझ रहा है"
+msgstr "जंक समजून घेत आहे"
 
 #: ../camel/camel-folder.c:1665
-#, fuzzy
 msgid "Learning non-junk"
-msgstr "गैर-जंक को समझ रहा है"
+msgstr "गैर-जंक समजून घेत आहे"
 
 #: ../camel/camel-folder.c:1684
-#, fuzzy
 msgid "Filtering new message(s)"
-msgstr "नए संदेश(शों) का निस्पंदन करत आहे"
+msgstr "नविन संदेश गाळत आहे"
 
 #: ../camel/camel-gpg-context.c:753
 #, c-format
-#, fuzzy
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
 "\n"
 "%s"
 msgstr ""
-"अनपेक्षित GnuPG स्थिति संदेश encountered:\n"
+"अनपेक्षित GnuPG स्थिति संदेश उद्भवला:\n"
 "\n"
 "%s"
 
 #: ../camel/camel-gpg-context.c:767
-#, fuzzy
 msgid "Failed to parse gpg userid hint."
-msgstr "gpg userid इशारे के विश्लेषण में विफल."
+msgstr "gpg userid इशाऱ्याच्या विश्लेषणात असफल."
 
 #: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
-#, fuzzy
 msgid "Failed to parse gpg passphrase request."
-msgstr "gpg गुप्तशब्द आग्रह के विश्लेषण में असफल."
+msgstr "gpg गुप्तशब्द विनंतीच्या विश्लेषणात असफल."
 
 #: ../camel/camel-gpg-context.c:824
 #, c-format
-#, fuzzy
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: \"%s\""
-msgstr "a च्यासाठी"
+msgstr ""
+"तुमच्या स्मार्टकार्डची कळ अनलॉक करण्यासाठी तुम्हास PIN\n"
+"ची गरज आहे: \"%s\""
 
 #: ../camel/camel-gpg-context.c:827
 #, c-format
-#, fuzzy
 msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
-"आपको उपयोक्ता के लिए कळ खोलने के लिए\n"
-"गुप्तशब्द की जरूरत है: \"%s\""
+"तुम्हांस उपयोक्त्यासाठी कळ खोलण्यासाठी \n"
+"गुप्तशब्दाची गरज आहे: \"%s\""
 
 #: ../camel/camel-gpg-context.c:832
 #, c-format
-#, fuzzy
 msgid "Unexpected request from GnuPG for `%s'"
-msgstr "च्यासाठी"
+msgstr "`%s' साठी GnuPG कडून अनपेक्षित विनंती"
 
 #: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
@@ -1601,9 +1554,8 @@ msgid "Cancelled."
 msgstr "रद्द केले ."
 
 #: ../camel/camel-gpg-context.c:871
-#, fuzzy
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "गुप्त कळ खोलने में असफल:३ गलत गुप्तशब्द दिया गया."
+msgstr "गुप्त कळ खोलण्यात असफल:३ चुकीचे गुप्तशब्द दिले गेले."
 
 #: ../camel/camel-gpg-context.c:877
 #, c-format
@@ -1623,36 +1575,31 @@ msgstr "gpg चालवण्यास असफल: %s"
 
 #: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
-#, fuzzy
 msgid "Could not generate signing data: %s"
-msgstr "स्वाक्षरी डेटा उत्पन्न नाही कर सका: %s"
+msgstr "स्वाक्षरी डेटा उत्पन्न करता आला नाही: %s"
 
 #: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
 #: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
 #: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
 #: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
-#, fuzzy
 msgid "Failed to execute gpg."
-msgstr "gpg के निस्पादन में विफल."
+msgstr "gpg चालवण्यात असफल."
 
 #: ../camel/camel-gpg-context.c:1357
-#, fuzzy
 msgid "This is a digitally signed message part"
-msgstr "यह डिजिटल रूप से स्वाक्षरीित संदेश का हिस्सा है"
+msgstr "हा डिजिटली स्वाक्षरीत संदेशाचा आहे"
 
 #: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
 #: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
-#, fuzzy
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "संदेश स्वाक्षरी की जांच नाही कर सकता: अशुद्ध संदेश प्रारूप"
+msgstr "संदेश स्वाक्षरीची पडताळणी नाही करू शकत: अशुद्ध संदेश स्वरूप"
 
 #: ../camel/camel-gpg-context.c:1507
 #, c-format
-#, fuzzy
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "संदेश स्वाक्षरी की जांच नाही कर सकता: अस्थायी संचिका नाही निर्मित कर सकता: %s"
+msgstr "संदेश स्वाक्षरीची पडताळणी नाही करू शकत: अस्थायी फाइल निर्माण करता आली नाही: %s"
 
 #: ../camel/camel-gpg-context.c:1588
 #, c-format
@@ -1660,29 +1607,24 @@ msgid "Could not generate encrypting data: %s"
 msgstr "एनक्रिप्टींग डेटा उत्पन्न नाही करता आला: %s"
 
 #: ../camel/camel-gpg-context.c:1638
-#, fuzzy
 msgid "This is a digitally encrypted message part"
-msgstr "यह डिजिटल रूप से गुप्त संदेश का हिस्सा है"
+msgstr "हा डिजिटली एनक्रिप्टेड संदेशाचा भाग आहे"
 
 #: ../camel/camel-gpg-context.c:1695
-#, fuzzy
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "MIME हिस्से के विगोपन में विफल: प्रोटोकाल त्रुटि"
+msgstr "MIME भागास डिक्रिप्ट करण्यात असफल: प्रोटोकॉल चूक"
 
 #: ../camel/camel-gpg-context.c:1706
-#, fuzzy
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "संदेश स्वाक्षरी की जांच नाही कर सकता: अशुद्ध संदेश प्रारूप"
+msgstr "संदेश स्वाक्षरी ची पडताळणी नाही करू शकत: अशुद्ध संदेश स्वरूप"
 
 #: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
-#, fuzzy
 msgid "Encrypted content"
-msgstr "गुप्त अंतर्वस्तु"
+msgstr "एनक्रिप्टेड समाविष्ट"
 
 #: ../camel/camel-gpg-context.c:1779
-#, fuzzy
 msgid "Unable to parse message content"
-msgstr "संदेश अंतर्वस्तु के विश्लेषण में अक्षम"
+msgstr "संदेश मजकुर विश्लेषण करण्यास अक्षम"
 
 #: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
@@ -1700,81 +1642,68 @@ msgstr "अपरिचित"
 
 #: ../camel/camel-lock-client.c:100
 #, c-format
-#, fuzzy
 msgid "Cannot build locking helper pipe: %s"
-msgstr "सहायता पाइप के लॉकिंग बिल्ड नाही कर सकता: %s"
+msgstr "सहाय्यक पाइप लॉकिंग बिल्ड नाही करू शकत: %s"
 
 #: ../camel/camel-lock-client.c:113
 #, c-format
-#, fuzzy
 msgid "Cannot fork locking helper: %s"
-msgstr "सहायक को लॉक करना फॉर्क नाही कर सकता: %s"
+msgstr "लॉकिंग सहाय्यक फॉर्क नाही करू शकत: %s"
 
 #: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
-#, fuzzy
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "'%s' पर ताला नाही लगा सका: ताला सहायक के साथ प्रोटोकाल त्रुटि"
+msgstr "'%s' वर टाळा नाही लावता आला: टाळा सहाय्यकासह प्रोटोकॉल त्रुटि"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
-#, fuzzy
 msgid "Could not lock '%s'"
-msgstr "'%s' पर ताला नाही लगा सका"
+msgstr "'%s' वर टाळा नाही लावता आला"
 
 #: ../camel/camel-lock.c:95 ../camel/camel-lock.c:116
 #, c-format
-#, fuzzy
 msgid "Could not create lock file for %s: %s"
-msgstr "%s के लिए ताला संचिका नाही बना सका: %s"
+msgstr "%s साठी टाळा फाइल नाही बनवता आली : %s"
 
 #: ../camel/camel-lock.c:157
 #, c-format
-#, fuzzy
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr "%s पर लॉक फाइल पानेसाठी कोशिश में समय समाप्त. फिर कोशिश करें."
+msgstr "%s वर लॉक फाइल मिळवण्यासाठी प्रयत्नाचा काळ समाप्त. नंतर पुन्हा प्रयत्न करा."
 
 #: ../camel/camel-lock.c:212
 #, c-format
-#, fuzzy
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "fcntl(2) के प्रयोग से ताला पाने में विफल: %s"
+msgstr "fcntl(2) वापरून प्रयोग टाळा मिळवण्यास असफल: %s"
 
 #: ../camel/camel-lock.c:275
 #, c-format
-#, fuzzy
 msgid "Failed to get lock using flock(2): %s"
-msgstr "flock(2) के प्रयोग से ताला पाने में विफल: %s"
+msgstr "flock(2) वापरून प्रयोग टाळा मिळवण्यास असफल: %s"
 
 #: ../camel/camel-movemail.c:104
 #, c-format
-#, fuzzy
 msgid "Could not check mail file %s: %s"
-msgstr "%s मेल संचिका की जांच नाही कर सका: %s"
+msgstr "%s मेल फाइलची पडताळणी नाही करता आली: %s"
 
 #: ../camel/camel-movemail.c:117
 #, c-format
-#, fuzzy
 msgid "Could not open mail file %s: %s"
-msgstr "%s मेल संचिका को नाही खोल सका: %s"
+msgstr "%s मेल फाइल नाही उघडता आली: %s"
 
 #: ../camel/camel-movemail.c:125
 #, c-format
-#, fuzzy
 msgid "Could not open temporary mail file %s: %s"
-msgstr "%s अस्थायी मेल संचिका को नाही खोल सका: %s"
+msgstr "%s अस्थायी मेल फाइल नाही उघडता आली: %s"
 
 #: ../camel/camel-movemail.c:154
 #, c-format
-#, fuzzy
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "%s अस्थायी संचिका में मेल संग्रहन में असफल: %s"
+msgstr "%s अस्थायी फाइल मेल संग्रहण्यास असफल: %s"
 
 #: ../camel/camel-movemail.c:184
 #, c-format
-#, fuzzy
 msgid "Could not create pipe: %s"
-msgstr "पाइप नाही बना सका: %s"
+msgstr "पाइप नाही बनवता आला: %s"
 
 #: ../camel/camel-movemail.c:196
 #, c-format
@@ -1783,9 +1712,8 @@ msgstr "फोर्क नाही करू शकत: %s"
 
 #: ../camel/camel-movemail.c:234
 #, c-format
-#, fuzzy
 msgid "Movemail program failed: %s"
-msgstr "Movemail प्रोग्राम विफल हो गया: %s"
+msgstr "Movemail कार्यक्रम असफल झाला: %s"
 
 #: ../camel/camel-movemail.c:235
 msgid "(Unknown error)"
@@ -1793,21 +1721,18 @@ msgstr "(अज्ञात त्रुटि)"
 
 #: ../camel/camel-movemail.c:258
 #, c-format
-#, fuzzy
 msgid "Error reading mail file: %s"
-msgstr "मेल संचिका पढ़ने में दोष: %s"
+msgstr "मेल फाइल वाचण्यात चूक: %s"
 
 #: ../camel/camel-movemail.c:269
 #, c-format
-#, fuzzy
 msgid "Error writing mail temp file: %s"
-msgstr "मेल अस्थायी संचिका को लिखने में दोष: %s"
+msgstr "मेल अस्थायी फाइल लिहीण्यात चूक: %s"
 
 #: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
 #, c-format
-#, fuzzy
 msgid "Error copying mail temp file: %s"
-msgstr "मेल अस्थायी संचिका को कापी करने में दोष: %s"
+msgstr "मेल अस्थायी फाइल प्रतिलिपी करण्यात चूक: %s"
 
 #: ../camel/camel-multipart-signed.c:593
 msgid "parse error"
@@ -1830,9 +1755,8 @@ msgid "Resolving: %s"
 msgstr "सोडवत आहे: %s"
 
 #: ../camel/camel-net-utils.c:685
-#, fuzzy
 msgid "Host lookup failed"
-msgstr "यजमान देखने में असफलता"
+msgstr "यजमान शोधण्यात असफलता"
 
 #: ../camel/camel-net-utils.c:687
 #, c-format
@@ -1854,59 +1778,49 @@ msgstr "नाव पाहणे विफल: %s"
 
 #: ../camel/camel-offline-folder.c:252
 #, c-format
-#, fuzzy
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "%s फोल्डर से डिस्क में संदेश तुल्यकालित करत आहे"
+msgstr "%s फोल्डर मधून डिस्क मध्ये संदेश सिंक करत आहे"
 
 #: ../camel/camel-offline-journal.c:163 ../camel/camel-offline-journal.c:186
 #, c-format
-#, fuzzy
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr "`%s' फोल्डरसाठी ऑफलाइन जर्नल लिख नाही सकता है: %s"
+msgstr "`%s' फोल्डरसाठी ऑफलाइन जर्नल लिहू नाही शकत: %s"
 
 #: ../camel/camel-provider.c:62
-#, fuzzy
 msgid "Virtual folder email provider"
-msgstr "आभासी फोल्डर ईमेलप्रस्तोता"
+msgstr "आभासी फोल्डर ईमेल दाता"
 
 #: ../camel/camel-provider.c:64
-#, fuzzy
 msgid "For reading mail as a query of another set of folders"
-msgstr "इतर फोल्डर समुच्चय के प्रश्न के रूप में मेल पढ़ने के लिए"
+msgstr "इतर फोल्डर संचाच्या प्रश्न रूपात मेल वाचण्यासाठी"
 
 #: ../camel/camel-provider.c:188
 #, c-format
-#, fuzzy
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr "%s अधिभारित नाही कर सका: या सिस्टम पर मोड्यूल अधिभारण को समर्थन नाही है."
+msgstr "%s भारित नाही करता आले: या सिस्टम वर मोड्यूल अधिभारण को समर्थन नाही है."
 
 #: ../camel/camel-provider.c:197
 #, c-format
-#, fuzzy
 msgid "Could not load %s: %s"
-msgstr "%s को अधिभारित नाही कर सका: %s"
+msgstr "%s को अधिभारित नाही करता आले: %s"
 
 #: ../camel/camel-provider.c:205
 #, c-format
-#, fuzzy
 msgid "Could not load %s: No initialization code in module."
-msgstr "%s को अधिभारित नाही कर सका: मोड्यूल में कोई आरंभीकरण कूट नाही है."
+msgstr "%s ला भारित नाही करता आले: मोड्यूल मध्ये कोणताही आरंभीकरण कोड नाही आहे."
 
 #: ../camel/camel-provider.c:377 ../camel/camel-session.c:166
 #, c-format
-#, fuzzy
 msgid "No provider available for protocol `%s'"
-msgstr "`%s' प्रोटोकालसाठी कोई प्रस्तोता उपलब्ध नाही"
+msgstr "`%s' प्रोटोकॉलसाठी कोणताही दाता उपलब्ध नाही"
 
 #: ../camel/camel-sasl-anonymous.c:35
-#, fuzzy
 msgid "Anonymous"
-msgstr "अज्ञात"
+msgstr "निनावी"
 
 #: ../camel/camel-sasl-anonymous.c:37
-#, fuzzy
 msgid "This option will connect to the server using an anonymous login."
-msgstr "अज्ञात लागिन के उपयोग से यह विकल्प सर्वर से जोड़ेगा."
+msgstr "हा पर्याय निनावी लॉगीनद्वारे सर्वरशी जोडेल."
 
 #: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:89
 msgid "Authentication failed."
@@ -1923,12 +1837,11 @@ msgstr ""
 
 #: ../camel/camel-sasl-anonymous.c:143
 #, c-format
-#, fuzzy
 msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
-"अवैध अपारदर्शी पत्ता अनुरेखी सूचना:\n"
+"अवैध अपारदर्शी पत्ता ट्रेस माहिती:\n"
 "%s"
 
 #: ../camel/camel-sasl-anonymous.c:155
@@ -1945,65 +1858,56 @@ msgid "CRAM-MD5"
 msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:40
-#, fuzzy
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"सुरक्षित CRAM-MD5 गुप्तशब्द के उपयोग से यह विकल्प सर्वर से जोड़ेगा, अगर सर्वर इसे समर्थन देता "
-"है."
+"सुरक्षित CRAM-MD5 गुप्तशब्द चा उपयोग करून हा पर्याय सर्वरशी जोडेल, जर सर्वर यास समर्थन देत "
+"असेल."
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:50
-#, fuzzy
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"सुरक्षित DIGEST-MD5 गुप्तशब्द के उपयोग से यह विकल्प सर्वर से जोड़ेगा, अगर सर्वर इसे समर्थन "
-"देता है."
+"सुरक्षित DIGEST-MD5 गुप्तशब्दाचा उपयोग करून हा पर्याय सर्वरशी जोडेल, जर सर्वर यास समर्थन "
+"देत असेल."
 
 #: ../camel/camel-sasl-digest-md5.c:818
-#, fuzzy
 msgid "Server challenge too long (>2048 octets)"
-msgstr "सर्वर चुनौती काफी लंबी है (>2048 octets)"
+msgstr "सर्वर आव्हान खूप लांब आहे (>2048 octets)"
 
 #: ../camel/camel-sasl-digest-md5.c:827
-#, fuzzy
 msgid "Server challenge invalid\n"
-msgstr "सर्वर चुनौती अवैध है\n"
+msgstr "सर्वर आव्हान अवैध आहे\n"
 
 #: ../camel/camel-sasl-digest-md5.c:833
-#, fuzzy
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr "सर्वर चुनौती के पास अवैध \"सुरक्षा की गुणवत्ता \" टोकन है"
+msgstr "सर्वर आव्हानाजवळ अवैध \"सुरक्षेची गुणवत्ता \" टोकन आहे"
 
 #: ../camel/camel-sasl-digest-md5.c:863
-#, fuzzy
 msgid "Server response did not contain authorization data"
-msgstr "सर्वर प्रतिसाद के पास प्राधिकार डेटा नाही है"
+msgstr "सर्वर प्रतिसादामध्ये प्राधिकार डेटा नाही"
 
 #: ../camel/camel-sasl-digest-md5.c:881
-#, fuzzy
 msgid "Server response contained incomplete authorization data"
-msgstr "सर्वर प्रतिसाद के पास अपूर्ण प्राधिकार डेटा है"
+msgstr "सर्वर प्रतिसादामध्ये अपूर्ण प्राधिकार डेटा आहे"
 
 #: ../camel/camel-sasl-digest-md5.c:891
-#, fuzzy
 msgid "Server response does not match"
-msgstr "सर्वर प्रतिसाद मेल नाही खाता है"
+msgstr "सर्वर प्रतिसाद मेळ नाही खात आहे"
 
 #: ../camel/camel-sasl-gssapi.c:57
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:59
-#, fuzzy
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Kerberos 5 अधिप्रमाणन के उपयोग से यह विकल्प सर्वर से जोड़ेगा."
+msgstr "Kerberos 5 अधिप्रमाणन चा उपयोग करून हा पर्याय सर्वरशी जोडेल."
 
 #: ../camel/camel-sasl-gssapi.c:157
 #, fuzzy
@@ -2015,9 +1919,8 @@ msgstr ""
 "अपरिचित है."
 
 #: ../camel/camel-sasl-gssapi.c:162
-#, fuzzy
 msgid "The provided target_name parameter was ill-formed."
-msgstr "दिया गया लक्ष्यनाव पैरामीटर कु-रूप था."
+msgstr "दिलेले लक्ष्यनाव पॅरामीटर बिघडलेले होते."
 
 #: ../camel/camel-sasl-gssapi.c:165
 #, fuzzy
@@ -2040,7 +1943,7 @@ msgstr ""
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
-msgstr "आगतटोकन के पास एक अवैध स्वाक्षरी है, या एक स्वाक्षरी है जिसको जांचा नाही जा सका है."
+msgstr "आगतटोकन के पास एक अवैध स्वाक्षरी है, या एक स्वाक्षरी है जिसको पडताळणीा नाही जा सका है."
 
 #: ../camel/camel-sasl-gssapi.c:178
 #, fuzzy
@@ -2057,27 +1960,23 @@ msgid "The supplied context handle did not refer to a valid context."
 msgstr "दी गई संदर्भ नियंत्रण मान्य संदर्भ का सहारा नाही लेती."
 
 #: ../camel/camel-sasl-gssapi.c:186
-#, fuzzy
 msgid "The consistency checks performed on the input_token failed."
-msgstr "सुसंगतता जांच input_token पर विफल रही."
+msgstr "सुसंगतता पडताळणी input_token वर असफल झाली."
 
 #: ../camel/camel-sasl-gssapi.c:189
-#, fuzzy
 msgid "The consistency checks performed on the credential failed."
-msgstr "महत्व पर किया सुसंगतता जांच विफल रही."
+msgstr "महत्व वर केलेली सुसंगतता पडताळणी असफल झाली."
 
 #: ../camel/camel-sasl-gssapi.c:192
-#, fuzzy
 msgid "The referenced credentials have expired."
-msgstr "सदर्भ महत्व का समय समाप्त हो गया."
+msgstr "संदर्भ महत्व चा काळ समाप्त झाला."
 
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
 #: ../camel/providers/imap/camel-imap-store.c:1281
-#, fuzzy
 msgid "Bad authentication response from server."
-msgstr "सर्वर से गलत अधिप्रमाणन प्रतिसाद."
+msgstr "सर्वर कडून चुकीचा अधिप्रमाणन प्रतिसाद."
 
 #: ../camel/camel-sasl-gssapi.c:307
 #, fuzzy
@@ -2091,7 +1990,7 @@ msgstr "Kerberos 4"
 #: ../camel/camel-sasl-kerberos4.c:47
 #, fuzzy
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "Kerberos 4 अधिप्रमाणन के उपयोग से यह विकल्प सर्वर से जोड़ेगा."
+msgstr "Kerberos 4 अधिप्रमाणन के उपयोग से यह पर्याय सर्वर से जोडेल."
 
 #: ../camel/camel-sasl-kerberos4.c:172
 #, c-format
@@ -2110,7 +2009,7 @@ msgstr "लॉगिन"
 #: ../camel/camel-sasl-login.c:36 ../camel/camel-sasl-plain.c:36
 #, fuzzy
 msgid "This option will connect to the server using a simple password."
-msgstr "साधारण गुप्तशब्द के उपयोग से यह विकल्प सर्वर से जोड़ेगा."
+msgstr "साधारण गुप्तशब्द के उपयोग से यह पर्याय सर्वर से जोडेल."
 
 #: ../camel/camel-sasl-login.c:133
 msgid "Unknown authentication state."
@@ -2125,7 +2024,7 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr "NTLM / सुरक्षित गुप्तशब्द अधिप्रमाणन के उपयोग से यह विकल्प विंडो आधारित सर्वर से जोड़ेगा."
+msgstr "NTLM / सुरक्षित गुप्तशब्द अधिप्रमाणन के उपयोग से यह पर्याय विंडो आधारित सर्वर से जोडेल."
 
 #: ../camel/camel-sasl-plain.c:34
 msgid "PLAIN"
@@ -2138,7 +2037,7 @@ msgstr "SMTP च्या आधी POP"
 #: ../camel/camel-sasl-popb4smtp.c:39
 #, fuzzy
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "SMTP पर प्रयास के पहले यह विकल्प एक POP संबंधन को प्राधिकृत करेगा"
+msgstr "SMTP वर प्रयास के पहले यह पर्याय एक POP संबंधन को प्राधिकृत करेगा"
 
 #: ../camel/camel-sasl-popb4smtp.c:104
 #, fuzzy
@@ -2185,7 +2084,7 @@ msgid ""
 "Could not create directory %s:\n"
 "%s"
 msgstr ""
-"%s डायरेक्टरी नाही निर्मित कर सका:\n"
+"%s डायरेक्टरी नाही निर्मित करता आले:\n"
 "%s"
 
 #: ../camel/camel-smime-context.c:229
@@ -2309,7 +2208,7 @@ msgstr "बिघडलेली स्वाक्षरी "
 
 #: ../camel/camel-smime-context.c:500
 msgid "Processing error"
-msgstr "प्रक्रिया दोष"
+msgstr "प्रक्रिया चूक"
 
 #: ../camel/camel-smime-context.c:537
 msgid "No signed data in signature"
@@ -2336,12 +2235,12 @@ msgstr "प्रमाणपत्र आयात असफल"
 #: ../camel/camel-smime-context.c:597
 #, fuzzy
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "सिर्फ संदेश को प्रमाणपत्र दें, प्रमाणपत्रों की जांच नाही कर सकता"
+msgstr "सिर्फ संदेश को प्रमाणपत्र दें, प्रमाणपत्रों की पडताळणी नाही कर सकता"
 
 #: ../camel/camel-smime-context.c:600
 #, fuzzy
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "प्रमाणपत्र अकेला संदेश है, प्रमाणपत्र आयातित किया गया और जांच किया गया"
+msgstr "प्रमाणपत्र अकेला संदेश है, प्रमाणपत्र आयातित किया गया आणि पडताळणी किया गया"
 
 #: ../camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2431,7 +2330,7 @@ msgstr "निर्यात कुंजी: लागू नाही हु�
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:168
 #, fuzzy
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr "फोल्डर प्राप्त नाही कर सकता है: या स्टोर पर अवैध संक्रिया"
+msgstr "फोल्डर प्राप्त नाही कर सकता है: या स्टोर वर अवैध संक्रिया"
 
 #: ../camel/camel-store.c:246
 #, c-format
@@ -2442,7 +2341,7 @@ msgstr "`%s' फोल्डर निर्मित नाही कर सक
 #: ../camel/camel-store.c:310
 #, fuzzy
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr "फोल्डर निर्मित नाही कर सकता है: या स्टोर पर अवैध संक्रिया"
+msgstr "फोल्डर निर्मित नाही कर सकता है: या स्टोर वर अवैध संक्रिया"
 
 #: ../camel/camel-store.c:338
 #, c-format
@@ -2531,7 +2430,7 @@ msgstr "CRL की समय सीमा समाप्त हो चुकी
 
 #: ../camel/camel-tcp-stream-openssl.c:593
 msgid "Error in CRL"
-msgstr "CRL मध्ये दोष"
+msgstr "CRL मध्ये चूक"
 
 #: ../camel/camel-tcp-stream-openssl.c:595
 msgid "Out of memory"
@@ -2550,12 +2449,12 @@ msgstr "श्रृँखला में स्व-स्वाक्षरी
 #: ../camel/camel-tcp-stream-openssl.c:601
 #, fuzzy
 msgid "Unable to get issuer's certificate locally"
-msgstr "निर्गमक के प्रमाणपत्र को स्थानीय स्तर पर पाने में असमर्थ"
+msgstr "निर्गमक के प्रमाणपत्र को स्थानीय स्तर वर पाने में असमर्थ"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 #, fuzzy
 msgid "Unable to verify leaf signature"
-msgstr "लीफ स्वाक्षरी की जांच में असमर्थ"
+msgstr "लीफ स्वाक्षरी की पडताळणी में असमर्थ"
 
 #: ../camel/camel-tcp-stream-openssl.c:605
 #, fuzzy
@@ -2607,7 +2506,7 @@ msgstr "कळ प्रयोग प्रमामपत्र स्वाक
 #: ../camel/camel-tcp-stream-openssl.c:629
 #, fuzzy
 msgid "Error in application verification"
-msgstr "आवेदन जांच में दोष"
+msgstr "आवेदन पडताळणी में चूक"
 
 #: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
@@ -2722,7 +2621,7 @@ msgstr "%s में %s कोई ऐसा संदेश नाही"
 #: ../camel/camel-vee-folder.c:642 ../camel/camel-vee-folder.c:648
 #, fuzzy
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "आभासी फोल्डर में संदेशों को कापी या प्रतिस्थापित नाही कर सकता है"
+msgstr "आभासी फोल्डर में संदेशों को प्रतिलिपी या प्रतिस्थापित नाही कर सकता है"
 
 #: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
@@ -2743,12 +2642,12 @@ msgstr "फोल्डर का पुनः नावकरण नाही �
 #: ../camel/camel-vtrash-folder.c:49
 #, fuzzy
 msgid "Cannot copy messages to the Trash folder"
-msgstr "ट्रैश फोल्डर से संदेशों को कापी नाही कर सकता है"
+msgstr "ट्रैश फोल्डर से संदेशों को प्रतिलिपी नाही कर सकता है"
 
 #: ../camel/camel-vtrash-folder.c:51
 #, fuzzy
 msgid "Cannot copy messages to the Junk folder"
-msgstr "जंक फोल्डर से संदेशों को कापी नाही कर सकता है"
+msgstr "जंक फोल्डर से संदेशों को प्रतिलिपी नाही कर सकता है"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:112
 #: ../camel/providers/imap/camel-imap-folder.c:2048
@@ -2816,7 +2715,7 @@ msgstr "संदेश नाही भेज सका"
 #, c-format
 #, fuzzy
 msgid "Could not load summary for %s"
-msgstr "%sसाठी सारांश अधिभारित नाही कर सका"
+msgstr "%sसाठी सारांश अधिभारित नाही करता आले"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:979
 #, fuzzy
@@ -2873,7 +2772,7 @@ msgstr "नविन मेलसाठी तपासत आहे"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 #, fuzzy
 msgid "Check for new messages in all folders"
-msgstr "सभी फोल्डर में नये संदेशसाठी जांचें"
+msgstr "सभी फोल्डर में नये संदेशसाठी पडताळणीें"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
@@ -2887,17 +2786,17 @@ msgstr "पर्याय"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 #, fuzzy
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr "या सर्वर पर इनबाक्स में नए संदेश के लिए निस्पंदक चलाएं"
+msgstr "या सर्वर वर इनबाक्स में नए संदेश के लिए निस्पंदक चलाएं"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #, fuzzy
 msgid "Check new messages for Junk contents"
-msgstr "नये संदेश को जंक अंतर्वस्तुसाठी जांचें"
+msgstr "नये संदेश को जंक अंतर्वस्तुसाठी पडताळणीें"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 #, fuzzy
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr "इनबाक्स फोल्डर में सिर्फ जंक संदेशसाठी जांचें"
+msgstr "इनबाक्स फोल्डर में सिर्फ जंक संदेशसाठी पडताळणीें"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 #, fuzzy
@@ -2935,7 +2834,7 @@ msgstr "गुप्तशब्द"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 #, fuzzy
 msgid "This option will connect to the GroupWise server using a plaintext password."
-msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह विकल्प ग्रूपवाइज सर्वर से जोड़ेगा."
+msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह पर्याय ग्रूपवाइज सर्वर से जोडेल."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 #, fuzzy
@@ -2987,7 +2886,7 @@ msgstr "मातृ फोल्डर को उपफोल्डर रख�
 #, c-format
 #, fuzzy
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "समूह के आधार पर फोल्डर `%s' को `%s' में पुनर्नावकरण नाही कर सकता"
+msgstr "समूह के आधार वर फोल्डर `%s' को `%s' में पुनर्नावकरण नाही कर सकता"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1386
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
@@ -2999,13 +2898,13 @@ msgstr "GroupWise सर्वर %s"
 #, c-format
 #, fuzzy
 msgid "GroupWise service for %s on %s"
-msgstr "%s पर %s के लिए समूह के आधार पर सेवा"
+msgstr "%s वर %s के लिए समूह के आधार वर सेवा"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 #, fuzzy
 msgid "GroupWise mail delivery via %s"
-msgstr "%s के द्वारा समूह के आधार पर मेल प्रदाय"
+msgstr "%s के द्वारा समूह के आधार वर मेल प्रदाय"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:161
 msgid "Sending Message"
@@ -3030,14 +2929,14 @@ msgstr "संदेश नाही भेज सका: %s"
 #: ../camel/providers/imap/camel-imap-provider.c:42
 #, fuzzy
 msgid "Checking for New Mail"
-msgstr "नयी मेलसाठी जांच"
+msgstr "नयी मेलसाठी पडताळणी"
 
 #: ../camel/providers/hula/camel-hula-provider.c:48
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 #, fuzzy
 msgid "C_heck for new messages in all folders"
-msgstr "सभी फोल्डर में नये संदेशसाठी जांचें (_h)"
+msgstr "सभी फोल्डर में नये संदेशसाठी पडताळणीें (_h)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
@@ -3152,12 +3051,12 @@ msgstr "IMAP सर्वर से अनपेक्षित OK प्रत�
 #, c-format
 #, fuzzy
 msgid "Could not create directory %s: %s"
-msgstr "%s डायरेक्टरी निर्मित नाही कर सका: %s"
+msgstr "%s डायरेक्टरी निर्मित नाही करता आले: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:332
 #, fuzzy
 msgid "Folder was destroyed and recreated on server."
-msgstr "सर्वर पर फोल्डर नष्ट कर दिया गया और पुनर्निर्मित किया गया."
+msgstr "सर्वर वर फोल्डर नष्ट कर दिया गया आणि पुनर्निर्मित किया गया."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:623
@@ -3195,7 +3094,7 @@ msgstr "अपूर्ण सर्वर प्रतिसाद: %d सं�
 #, c-format
 #, fuzzy
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr "अनपेक्षित सर्वर प्रतिसाद: %d और %d संदेशसाठी समान UIDs दिया गया"
+msgstr "अनपेक्षित सर्वर प्रतिसाद: %d आणि %d संदेशसाठी समान UIDs दिया गया"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2725
 #, fuzzy
@@ -3227,19 +3126,19 @@ msgstr "%s कॅश करने में विफल: %s"
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
 #, fuzzy
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "या सर्वर पर INBOX में नए संदेश के लिए निस्पंदक चलाएं (_A)"
+msgstr "या सर्वर वर INBOX में नए संदेश के लिए निस्पंदक चलाएं (_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 #, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "नये संदेश को जंक अंतर्वस्तुसाठी जांचें (_J)"
+msgstr "नये संदेश को जंक अंतर्वस्तुसाठी पडताळणीें (_J)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 #, fuzzy
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "इनबाक्स फोल्डर में सिर्फ जंक संदेशसाठी जांचें (_g)"
+msgstr "इनबाक्स फोल्डर में सिर्फ जंक संदेशसाठी पडताळणीें (_g)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
@@ -3255,13 +3154,13 @@ msgstr "IMAP"
 #: ../camel/providers/imap/camel-imap-provider.c:81
 #, fuzzy
 msgid "For reading and storing mail on IMAP servers."
-msgstr "IMAP सर्वर पर मेल पढ़ने और स्टोर करने के लिए"
+msgstr "IMAP सर्वर वर मेल पढ़ने आणि स्टोर करने के लिए"
 
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 #, fuzzy
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह विकल्प IMAP सर्वर से जोड़ेगा."
+msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह पर्याय IMAP सर्वर से जोडेल."
 
 #: ../camel/providers/imap/camel-imap-store.c:446
 #: ../camel/providers/imap4/camel-imap4-store.c:214
@@ -3275,7 +3174,7 @@ msgstr "IMAP सर्वर %s"
 #, c-format
 #, fuzzy
 msgid "IMAP service for %s on %s"
-msgstr "%s पर %s के लिए IMAP सेवा"
+msgstr "%s वर %s के लिए IMAP सेवा"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:593
@@ -3456,7 +3355,7 @@ msgstr "IMAP4 सर्वर %s अनपेक्षित रूप से �
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
 #, fuzzy
 msgid "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "कुछ फिल्टर और vFolder नियमसाठी मेलिंग यादी जांच सक्रिय करें"
+msgstr "कुछ फिल्टर आणि vFolder नियमसाठी मेलिंग यादी पडताळणी सक्रिय करें"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
@@ -3528,7 +3427,7 @@ msgstr "`%s' फोल्डर से %s फोल्डर में संद
 #, c-format
 #, fuzzy
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr "`%s' फोल्डर से %s फोल्डर में संदेश कापी नाही कर सकता है: अज्ञात"
+msgstr "`%s' फोल्डर से %s फोल्डर में संदेश प्रतिलिपी नाही कर सकता है: अज्ञात"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
@@ -3540,7 +3439,7 @@ msgstr "`%s' फोल्डर से %s फोल्डर में संद
 #, c-format
 #, fuzzy
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "`%s' फोल्डर से %s फोल्डर में संदेश कापी नाही कर सकता है: गलत आदेश"
+msgstr "`%s' फोल्डर से %s फोल्डर में संदेश प्रतिलिपी नाही कर सकता है: गलत आदेश"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 #, fuzzy
@@ -3550,12 +3449,12 @@ msgstr "IMAP4rev1"
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 #, fuzzy
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "IMAPv4rev1 सर्वर पर मेल पढ़ने और स्टोर करने के लिए"
+msgstr "IMAPv4rev1 सर्वर वर मेल पढ़ने आणि स्टोर करने के लिए"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 #, fuzzy
 msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह विकल्प IMAPv4rev1 सर्वर से जोड़ेगा."
+msgstr "प्लेनटेक्सट गुप्तशब्द के उपयोग से यह पर्याय IMAPv4rev1 सर्वर से जोडेल."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
@@ -3567,7 +3466,7 @@ msgstr "%s अधिप्रमाणन यांत्रिकी के प
 #, c-format
 #, fuzzy
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr "%s कृपया यजमान %s पर %sसाठी IMAP गुप्तशब्द दाखल करा"
+msgstr "%s कृपया यजमान %s वर %sसाठी IMAP गुप्तशब्द दाखल करा"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
@@ -3585,7 +3484,7 @@ msgstr "ऑफलाइन मोड में IMAP फोल्डर नाह
 #, c-format
 #, fuzzy
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
-msgstr "%s IMAP सर्वर पर `%s' फोल्डर नाही पा सकता है: अज्ञात"
+msgstr "%s IMAP सर्वर वर `%s' फोल्डर नाही पा सकता है: अज्ञात"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
@@ -3661,7 +3560,7 @@ msgstr "फोल्डर`%s' को `%s' नाव नाही दे सक�
 #, c-format
 #, fuzzy
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "%s IMAP सर्वर पर `%s' पैटर्नसाठी `%s' सूचना नाही प्राप्त कर सकता: %s"
+msgstr "%s IMAP सर्वर वर `%s' पैटर्नसाठी `%s' सूचना नाही प्राप्त कर सकता: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 #, fuzzy
@@ -3742,7 +3641,7 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "प्रायोगिक IMAP 4(.1) ग्राहक\n"
-"यह अपरीक्षित और असमर्थित कूट है, बदले में आप प्लेन imap का प्रयोग करना चाहते हैं.\n"
+"यह अपरीक्षित आणि असमर्थित कूट है, बदले में आप प्लेन imap का प्रयोग करना चाहते हैं.\n"
 "\n"
 " !!! उत्पादन ईमेलके लिए इसका प्रयोग नाही करें  !!!\n"
 
@@ -3756,7 +3655,7 @@ msgstr "%s (पोर्ट %s) से जोड़ नाही सका : %s"
 #, c-format
 #, fuzzy
 msgid "Could not connect to POP server on %s"
-msgstr "%s पर POP सर्वर से जोड़ नाही सका"
+msgstr "%s वर POP सर्वर से जोड़ नाही सका"
 
 #: ../camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
@@ -3784,11 +3683,11 @@ msgstr "%s (%s)"
 #: ../camel/providers/local/camel-local-provider.c:47
 #, fuzzy
 msgid "Use the `.folders' folder summary file (exmh)"
-msgstr "फोल्डर सारांश संचिका `.folders' (exmh) का प्रयोग करें"
+msgstr "फोल्डर सारांश फाइल `.folders' (exmh) का प्रयोग करें"
 
 #: ../camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
-msgstr "MH-प्रारूप मेल डायरेक्टरी"
+msgstr "MH-स्वरूप मेल डायरेक्टरी"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 #, fuzzy
@@ -3810,7 +3709,7 @@ msgstr "Evolution."
 #: ../camel/providers/local/camel-local-provider.c:106
 #, fuzzy
 msgid "Apply filters to new messages in INBOX"
-msgstr "INBOX में नए संदेश पर निस्पंदक चलाएं"
+msgstr "INBOX में नए संदेश वर निस्पंदक चलाएं"
 
 #: ../camel/providers/local/camel-local-provider.c:94
 msgid "Maildir-format mail directories"
@@ -3824,7 +3723,7 @@ msgstr "maildir डायरेक्टरी में स्थानीय �
 #: ../camel/providers/local/camel-local-provider.c:107
 #, fuzzy
 msgid "Store status headers in Elm/Pine/Mutt format"
-msgstr "Elm/Pine/Mutt प्रारूप में स्थिति शीर्षों को स्टोर करें"
+msgstr "Elm/Pine/Mutt स्वरूप में स्थिति शीर्षों को स्टोर करें"
 
 #: ../camel/providers/local/camel-local-provider.c:114
 msgid "Standard Unix mbox spool or directory"
@@ -3836,7 +3735,7 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"बाह्य मानक Unix mbox स्पूल संचिका में स्थानीय मेल को स्टोर करने और पढ़ने के लिए.\n"
+"बाह्य मानक Unix mbox स्पूल फाइल में स्थानीय मेल को स्टोर करने आणि वाचण्यासाठी.\n"
 "Elm, Pine, या Mutt शैली फोल्डरों के तरू को पढ़ने में भी प्रयुक्त हो सकता है."
 
 #: ../camel/providers/local/camel-local-store.c:156
@@ -3870,46 +3769,46 @@ msgstr "स्थानीय स्टोर इनबाक्स नाही
 #: ../camel/providers/local/camel-local-store.c:238
 #, c-format
 msgid "Local mail file %s"
-msgstr "स्थानीय मेल संचिका %s"
+msgstr "स्थानीय मेल फाइल %s"
 
 #: ../camel/providers/local/camel-local-store.c:356
 #, c-format
 #, fuzzy
 msgid "Could not rename folder %s to %s: %s"
-msgstr "फोल्डर `%s' से `%s' में पुनः नावकरण नाही कर सका: %s"
+msgstr "फोल्डर `%s' से `%s' में पुनः नावकरण नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-local-store.c:421
 #, c-format
 #, fuzzy
 msgid "Could not rename '%s': %s"
-msgstr "`%s' का पुनः नावकरण नाही कर सका: %s"
+msgstr "`%s' का पुनः नावकरण नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-local-store.c:446
 #: ../camel/providers/local/camel-mbox-store.c:275
 #, c-format
 #, fuzzy
 msgid "Could not delete folder summary file `%s': %s"
-msgstr "`%s' फोल्डर सारांश संचिका विलोपित नाही कर सका: %s"
+msgstr "`%s' फोल्डर सारांश फाइल विलोपित नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-local-store.c:456
 #: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 #, fuzzy
 msgid "Could not delete folder index file `%s': %s"
-msgstr "`%s' फोल्डर इंडेक्स संचिका विलोपित नाही कर सका: %s"
+msgstr "`%s' फोल्डर इंडेक्स फाइल विलोपित नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-local-store.c:479
 #: ../camel/providers/local/camel-mbox-store.c:311
 #, c-format
 #, fuzzy
 msgid "Could not delete folder meta file `%s': %s"
-msgstr "`%s' फोल्डर मेटा संचिका विलोपित नाही कर सका: %s"
+msgstr "`%s' फोल्डर मेटा फाइल विलोपित नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:409
 #, c-format
 #, fuzzy
 msgid "Could not save summary: %s: %s"
-msgstr "सारांश संग्रहित नाही कर सका: %s: %s"
+msgstr "सारांश संग्रहित नाही करता आले: %s: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:467
 #, fuzzy
@@ -4012,12 +3911,12 @@ msgstr "maildir डायरेक्टरी पथ खोल नाही स
 #: ../camel/providers/local/camel-maildir-summary.c:549
 #, fuzzy
 msgid "Checking folder consistency"
-msgstr "फोल्डर संगतता की जांच करत आहे"
+msgstr "फोल्डर संगतता की पडताळणी करत आहे"
 
 #: ../camel/providers/local/camel-maildir-summary.c:652
 #, fuzzy
 msgid "Checking for new messages"
-msgstr "नए संदेशसाठी जांच करत आहे"
+msgstr "नए संदेशसाठी पडताळणी करत आहे"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
 #: ../camel/providers/local/camel-mbox-summary.c:417
@@ -4033,7 +3932,7 @@ msgstr "फोल्डर स्टोर करत आहे"
 #, c-format
 #, fuzzy
 msgid "Cannot create folder lock on %s: %s"
-msgstr "%s पर फोल्डर ताला नाही निर्मित कर सकता: %s"
+msgstr "%s वर फोल्डर ताला नाही निर्मित कर सकता: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:217
 #, c-format
@@ -4050,7 +3949,7 @@ msgstr "मेल"
 #, c-format
 #, fuzzy
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr "mbox संचिका में संदेश जोड़ नाही सकता: %s: %s"
+msgstr "mbox फाइल में संदेश जोड़ नाही सकता: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:401
 #, fuzzy
@@ -4073,7 +3972,7 @@ msgstr "या नाव से फोल्डर नाही बना सक
 #, c-format
 #, fuzzy
 msgid "Cannot get folder `%s': not a regular file."
-msgstr "`%s' फोल्डर नाही प्राप्त कर सकता है: रेगुलर संचिका नाही है."
+msgstr "`%s' फोल्डर नाही प्राप्त कर सकता है: रेगुलर फाइल नाही है."
 
 #: ../camel/providers/local/camel-mbox-store.c:227
 #: ../camel/providers/local/camel-mbox-store.c:238
@@ -4091,7 +3990,7 @@ msgstr ""
 #, c-format
 #, fuzzy
 msgid "`%s' is not a regular file."
-msgstr "`%s' एक रेगुलर संचिका नाही है."
+msgstr "`%s' एक रेगुलर फाइल नाही है."
 
 #: ../camel/providers/local/camel-mbox-store.c:253
 #, c-format
@@ -4125,13 +4024,13 @@ msgstr "नए फोल्डर का नाव अवैध है."
 #, c-format
 #, fuzzy
 msgid "Could not rename `%s': `%s': %s"
-msgstr "का पुनर्नावकरण नाही कर सका: `%s': `%s': %s"
+msgstr "का पुनर्नावकरण नाही करता आले: `%s': `%s': %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:560
 #, c-format
 #, fuzzy
 msgid "Could not rename '%s' to %s: %s"
-msgstr "`%s' का %s यह पुनर्नावकरण नाही कर सका: %s"
+msgstr "`%s' का %s यह पुनर्नावकरण नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:423
 #, c-format
@@ -4149,7 +4048,7 @@ msgstr "%ld स्थिति में गंभीर मेल विश्�
 #, c-format
 #, fuzzy
 msgid "Cannot check folder: %s: %s"
-msgstr "फोल्डर की जांच नाही कर सकता है: %s: %s"
+msgstr "फोल्डर की पडताळणी नाही कर सकता है: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:595
 #: ../camel/providers/local/camel-mbox-summary.c:690
@@ -4157,7 +4056,7 @@ msgstr "फोल्डर की जांच नाही कर सकता 
 #, c-format
 #, fuzzy
 msgid "Could not open file: %s: %s"
-msgstr "संचिका को खोल नाही सका: %s: %s"
+msgstr "फाइल को खोल नाही सका: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:607
 #: ../camel/providers/local/camel-spool-summary.c:164
@@ -4171,26 +4070,26 @@ msgstr "यादीायी मेलपेटी नाही खोल स�
 #, c-format
 #, fuzzy
 msgid "Could not close source folder %s: %s"
-msgstr "स्त्रोत फोल्डर %s बंद नाही कर सका: %s"
+msgstr "स्त्रोत फोल्डर %s बंद नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:629
 #, c-format
 #, fuzzy
 msgid "Could not close temp folder: %s"
-msgstr "अस्थायी फोल्डर बंद नाही कर सका: %s"
+msgstr "अस्थायी फोल्डर बंद नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:644
 #, c-format
 #, fuzzy
 msgid "Could not rename folder: %s"
-msgstr "फोल्डर का पुनः नावकरण नाही कर सका: %s"
+msgstr "फोल्डर का पुनः नावकरण नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-mbox-summary.c:907
 #, c-format
 #, fuzzy
 msgid "Could not store folder: %s"
-msgstr "फोल्डर स्टोर नाही कर सका: %s"
+msgstr "फोल्डर स्टोर नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:738
 #: ../camel/providers/local/camel-mbox-summary.c:746
@@ -4198,14 +4097,14 @@ msgstr "फोल्डर स्टोर नाही कर सका: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:946
 #, fuzzy
 msgid "Summary and folder mismatch, even after a sync"
-msgstr "सारांश और फोल्डर बेमेल है, तुल्यकालन के पश्चात भी"
+msgstr "सारांश आणि फोल्डर बेमेल है, तुल्यकालन के पश्चात भी"
 
 #: ../camel/providers/local/camel-mbox-summary.c:872
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 #, fuzzy
 msgid "Unknown error: %s"
-msgstr "अज्ञात दोष:%s"
+msgstr "अज्ञात चूक:%s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1001
 #: ../camel/providers/local/camel-mbox-summary.c:1027
@@ -4234,7 +4133,7 @@ msgstr "mh फोल्डर में संदेश जोड़ नाह�
 #, c-format
 #, fuzzy
 msgid "Could not create folder `%s': %s"
-msgstr "फोल्डर `%s' निर्मित नाही कर सका: %s"
+msgstr "फोल्डर `%s' निर्मित नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:244
 #, c-format
@@ -4258,7 +4157,7 @@ msgstr "`%s' स्पूल खोल नाही सकता है: %s"
 #, c-format
 #, fuzzy
 msgid "Spool `%s' is not a regular file or directory"
-msgstr "`%s' स्पूल एक रेगुलर संचिका या डायरेक्टरी नाही है"
+msgstr "`%s' स्पूल एक रेगुलर फाइल या डायरेक्टरी नाही है"
 
 #: ../camel/providers/local/camel-spool-store.c:163
 #, c-format
@@ -4296,7 +4195,7 @@ msgstr ""
 #, c-format
 #, fuzzy
 msgid "`%s' is not a mailbox file."
-msgstr "`%s' एक मेलपेटी संचिका है."
+msgstr "`%s' एक मेलपेटी फाइल है."
 
 #: ../camel/providers/local/camel-spool-store.c:207
 #, fuzzy
@@ -4331,13 +4230,13 @@ msgstr "स्पूल फोल्डर विलोपित नाही �
 #, c-format
 #, fuzzy
 msgid "Could not sync temporary folder %s: %s"
-msgstr "%s अस्थायी फोल्डर का तुल्यकालन नाही कर सका: %s"
+msgstr "%s अस्थायी फोल्डर का तुल्यकालन नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:213
 #, c-format
 #, fuzzy
 msgid "Could not sync spool folder %s: %s"
-msgstr "%s स्पूल फोल्डर का तुल्यकालन नाही कर सका: %s"
+msgstr "%s स्पूल फोल्डर का तुल्यकालन नाही करता आले: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:244
 #: ../camel/providers/local/camel-spool-summary.c:263
@@ -4348,8 +4247,8 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in `%s'"
 msgstr ""
-"%s स्पूल फोल्डर का तुल्यकालन नाही कर सका: %s\n"
-"फोल्डर खराब हो सकता है, `%s' में कापी सुरक्षित है"
+"%s स्पूल फोल्डर का तुल्यकालन नाही करता आले: %s\n"
+"फोल्डर खराब हो सकता है, `%s' में प्रतिलिपी सुरक्षित है"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:207
@@ -4374,7 +4273,7 @@ msgstr "ऑफलाइन काम करते हुए आप NNTP सं�
 #: ../camel/providers/nntp/camel-nntp-folder.c:403
 #, fuzzy
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "NNTP फोल्डर से आप संदेश कापी नाही कर सकते हैं!"
+msgstr "NNTP फोल्डर से आप संदेश प्रतिलिपी नाही कर सकते हैं!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 #, fuzzy
@@ -4394,14 +4293,14 @@ msgstr "USENET समाचार"
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 #, fuzzy
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr "यह USENET समाचार समूह से पढ़ने और प्रेषित करनेसाठी प्रस्तुतकर्ता है."
+msgstr "यह USENET समाचार समूह से पढ़ने आणि प्रेषित करनेसाठी प्रस्तुतकर्ता है."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 #, fuzzy
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr "प्लेनटेक्सट गुप्तशब्द के प्रयोग से यह विकल्प NNTP सर्वर के साथ अधिप्रमाणन करेगा."
+msgstr "प्लेनटेक्सट गुप्तशब्द के प्रयोग से यह पर्याय NNTP सर्वर के साथ अधिप्रमाणन करेगा."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
@@ -4572,7 +4471,7 @@ msgstr "अज्ञात कारण"
 #: ../camel/providers/pop3/camel-pop3-provider.c:42
 #, fuzzy
 msgid "Leave messages on server"
-msgstr "सर्वर पर संदेश छोड़ें"
+msgstr "सर्वर वर संदेश छोड़ें"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, c-format
@@ -4593,7 +4492,7 @@ msgstr "POP"
 #: ../camel/providers/pop3/camel-pop3-provider.c:58
 #, fuzzy
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "POP सर्वर से जोड़ने और मेल अधिभारण के लिए."
+msgstr "POP सर्वर से जोड़ने आणि मेल अधिभारण के लिए."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:75
 #, fuzzy
@@ -4601,8 +4500,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"प्लेनटेक्सट गुप्तशब्द के प्रयोग से यह विकल्प POP सर्वर से जोड़ेगा. यह POP सर्वर द्वारा समर्थित "
-"एकमात्र विकल्प है."
+"प्लेनटेक्सट गुप्तशब्द के प्रयोग से यह पर्याय POP सर्वर से जोडेल. यह POP सर्वर द्वारा समर्थित "
+"एकमात्र पर्याय है."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:85
 #, fuzzy
@@ -4611,8 +4510,8 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"APOP प्रोटोकाल के द्वारा गुप्त गुप्तशब्द के प्रयोग से यह विकल्प POP सर्वर से जोड़ेगा. यह सभी "
-"उपयोक्ताओं के लिए काम नाही करेगा, उन सर्वरों पर भी जो इसको समर्थन करने का दावा करते हैं."
+"APOP प्रोटोकॉल के द्वारा गुप्त गुप्तशब्द के प्रयोग से यह पर्याय POP सर्वर से जोडेल. यह सभी "
+"उपयोक्ताओं के लिए काम नाही करेगा, उन सर्वरों वर भी जो इसको समर्थन करने का दावा करते हैं."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:202
 #, c-format
@@ -4679,7 +4578,7 @@ msgstr "%s POP सर्वर के अधिप्रमाणन में �
 #, c-format
 #, fuzzy
 msgid "%sPlease enter the POP password for %s on host %s"
-msgstr "%s कृपया %s यजमान पर %sसाठी POP गुप्तशब्द दाखल करा"
+msgstr "%s कृपया %s यजमान वर %sसाठी POP गुप्तशब्द दाखल करा"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:525
 #: ../camel/providers/pop3/camel-pop3-store.c:538
@@ -4718,7 +4617,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr "स्थानीय सिस्टम पर \"sendmail\" में भेजकर मेल देनेसाठी."
+msgstr "स्थानीय सिस्टम वर \"sendmail\" में भेजकर मेल देनेसाठी."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 #, fuzzy
@@ -4735,7 +4634,7 @@ msgstr "sendmail के लिए पाइप बना नाही सका:
 #, c-format
 #, fuzzy
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "sendmail को fork नाही कर सका:%s:मेल नाही भेजा गया"
+msgstr "sendmail को fork नाही करता आले:%s:मेल नाही भेजा गया"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
@@ -4928,7 +4827,7 @@ msgstr "%s SMTP सर्वर मांगे गए अधिप्रमा�
 #, c-format
 #, fuzzy
 msgid "%sPlease enter the SMTP password for %s on host %s"
-msgstr "%s कृपया यजमान %s पर %sसाठी SMTP गुप्तशब्द दाखल करा"
+msgstr "%s कृपया यजमान %s वर %sसाठी SMTP गुप्तशब्द दाखल करा"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:540
 #, c-format
@@ -4999,7 +4898,7 @@ msgstr "SMTP अधिप्रमाणन"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1004
 #, fuzzy
 msgid "Error creating SASL authentication object."
-msgstr "SASL अधिप्रमाणन अभिलक्ष्य निर्माण में दोष."
+msgstr "SASL अधिप्रमाणन अभिलक्ष्य निर्माण में चूक."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1021
 #: ../camel/providers/smtp/camel-smtp-transport.c:1032
