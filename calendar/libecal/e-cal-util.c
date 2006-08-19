@@ -188,12 +188,13 @@ e_cal_util_parse_ics_string (const char *string)
 					icalcomponent *tmp;
 
 					tmp = icalparser_parse_string (comp_str->str);
-					if (tmp) {
+					if (tmp && icalcomponent_isa (tmp) == ICAL_VCALENDAR_COMPONENT) {
 						if (icalcomp)
 							icalcomponent_merge_component (icalcomp, tmp);
 						else
 							icalcomp = tmp;
-					}
+					} else 
+						g_warning ("Could not merge the components, the component is either invalid or not a toplevel component \n");
 
 					g_string_free (comp_str, TRUE);
 					comp_str = NULL;
