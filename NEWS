@@ -1,3 +1,22 @@
+Evolution-Data-Server 1.7.92, 2006-08-21
+------------------------------------------
+
+Updated Translations
+
+Hendrik Richter (de), Alexander Shopov (bg), Rahul Bhalerao (mr),
+Satoru SATOH (ja), Kjartan Maraas (nb), Artur Flinta (pl),
+Žygimantas Beručka (lt), Daniel Nylander (sv), Runa Bhattacharjee (bn_IN),
+Gabor Kelemen (hu), Leonid Kanter (ru), Matic Žgur (sl), 
+Clytie Siddall (vi), Funda Wang (zh_CN), Changwoo Ryu (ko),
+Vladimer Sichinava (ka), Xavier Conde Rueda (ca), Maxim Dziumanenko (uk),
+Guntupalli Karunakar (dz), Theppitak Karoonboonyanan (th), 
+Priit Laes (et).
+
+Bug Fixes:
+
+Ricardo Markiewicz, Chenthill, Harish, Kjartan Maraas,
+j@bitron.ch
+
 Evolution-Data-Server 1.7.91, 2006-08-07
 ------------------------------------------
 
