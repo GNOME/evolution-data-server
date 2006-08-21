@@ -1,6 +1,6 @@
 2006-08-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
-	Fixes a gslice crash
+	Fixes #350887
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
 	replaced gslist_delete_link with remove link.
 
