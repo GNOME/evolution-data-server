@@ -444,7 +444,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	if (priv->uri == NULL) {
 		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
-		const char *secure_prop = e_source_get_property (source, "secure");
+		const char *secure_prop = e_source_get_property (source, "use_ssl");
 		
 		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
 		                                   (secure_prop && g_str_equal(e_source_get_property (source, "secure"), "1")));
