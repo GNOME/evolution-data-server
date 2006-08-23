@@ -42,7 +42,7 @@ libedataserverui_1_2_la_LIBADD = 				\
 else
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(E_DATA_SERVER_LIBS)
+	$(E_DATA_SERVER_UI_LIBS)
 endif
 
 libedataserverui_1_2_la_LDFLAGS = 										\

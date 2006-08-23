@@ -1,3 +1,10 @@
+2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	Fix for bug #348939 and bug #351317
+	
+	* Makefile.am: Fix a type. Patch from Matthew Barnes and
+	gpp666_999@yahoo.de.
+
 2006-08-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* e-destination-store.c: (find_destination_by_email):
