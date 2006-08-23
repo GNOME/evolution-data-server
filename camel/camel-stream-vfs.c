@@ -161,7 +161,7 @@ camel_stream_vfs_new_with_uri (const char *name, int flags, mode_t mode)
 		vfs_flag = vfs_flag | GNOME_VFS_OPEN_READ |GNOME_VFS_OPEN_WRITE;
 	
 	if (flags & O_CREAT)
-		result = gnome_vfs_create (&handle, name, vfs_flag, flags & O_TRUNC, mode);
+		result = gnome_vfs_create (&handle, name, vfs_flag, FALSE, mode);
 	else
 		result = gnome_vfs_open (&handle, name, vfs_flag);
 	

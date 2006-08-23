@@ -1,3 +1,10 @@
+2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug #349960 by Daniel Gryniewicz
+	
+	* camel-stream-vfs.c: (camel_stream_vfs_new_with_uri): Set the excl
+	flag to FALSE to over write existing file.
+
 2006-07-24  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	* camel-folder-summary.h: Added CamelFolderMetaSummary structure
