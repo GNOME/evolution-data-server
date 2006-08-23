@@ -262,7 +262,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
-	if (g_path_is_absolute(path)) {
+	if (!g_path_is_absolute(path)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Store root %s is not an absolute path"), path);
 		return NULL;

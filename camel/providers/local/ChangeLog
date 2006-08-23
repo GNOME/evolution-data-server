@@ -1,3 +1,10 @@
+2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #347905 by Matt Davey
+	
+	* camel-local-store.c: (create_folder): patch to fix mail folder 
+	creation with MH back end.
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-maildir-folder.c: 
