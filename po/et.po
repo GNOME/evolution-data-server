@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-08-08 09:24+0300\n"
+"PO-Revision-Date: 2006-08-23 09:37+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -3121,7 +3121,7 @@ msgstr "STARTTLS ei ole toetatud."
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
 msgid "SSL negotiations failed"
-msgstr ""
+msgstr "Tõrge SSL-läbirääkimistel"
 
 #: ../camel/providers/imap/camel-imap-store.c:727
 #: ../camel/providers/imap4/camel-imap4-store.c:330
@@ -4276,7 +4276,7 @@ msgstr "STLS pole serveri poolt toetatud"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:248
 msgid "TLS negotiations failed"
-msgstr ""
+msgstr "Tõrge TLS-läbirääkimistel"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:254
 msgid "TLS is not available in this build"
