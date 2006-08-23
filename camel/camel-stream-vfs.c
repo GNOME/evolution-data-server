@@ -177,7 +177,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	ssize_t nread = 0;
+	GnomeVFSFileSize nread = 0;
 	GnomeVFSResult result;
 	
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
@@ -198,7 +198,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	ssize_t nwritten = 0;
+	GnomeVFSFileSize nwritten = 0;
 	GnomeVFSResult result;
 	
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
@@ -236,7 +236,7 @@ static off_t
 stream_seek (CamelSeekableStream *stream, off_t offset, CamelStreamSeekPolicy policy)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
-	off_t real = 0;
+	GnomeVFSFileSize real = 0;
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle = stream_vfs->handle;
 	

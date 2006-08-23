@@ -1,3 +1,10 @@
+2006-08-23  Wang Xin  <jedy.wang@sun.com>
+
+	Fixes bug #352109.
+
+	* camel-stream-vfs.c: (stream_read), (stream_write), (stream_seek):
+	GnomeVFSFileSize should be used, not ssize_t.
+
 2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Fix for bug #349960 by Daniel Gryniewicz
