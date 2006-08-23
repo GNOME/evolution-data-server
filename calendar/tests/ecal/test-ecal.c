@@ -588,7 +588,7 @@ test_get_object (ECal *client)
 	char *actual;
 	icalcomponent *icalcomp;
 	gboolean compare;
-	GError *error;
+	GError *error = NULL;
 	
 	if (!e_cal_get_object (client, uid, NULL, &icalcomp, &error)) {
 		cl_printf (client, "Test Get object : Could not get the object: %s\n", error->message);

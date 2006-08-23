@@ -1,3 +1,10 @@
+2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #349847 by Matthew Barnes  
+	
+	* tests/ecal/test-ecal.c: (test_get_object): Initialize gerror to 
+	NULL.
+
 2006-08-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/http/e-cal-backend-http.c: (begin_retrieval_cb):

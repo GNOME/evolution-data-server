@@ -1,3 +1,10 @@
+2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #349847 by Matthew Barnes  
+	
+	* camel-imap-message-cache.c: (camel_imap_message_cache_new):
+	Initialize gerror to NULL.
+
 2006-07-12  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-imap-provider.c:

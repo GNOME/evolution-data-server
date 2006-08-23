@@ -152,7 +152,7 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 	char *uid, *p;
 	GPtrArray *deletes;
 	CamelMessageInfo *info;
-	GError *error;
+	GError *error = NULL;
 
 	dir = g_dir_open (path, 0, &error);
 	if (!dir) {
