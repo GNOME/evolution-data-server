@@ -307,8 +307,8 @@ get_deltas (gpointer handle)
 	EGwConnectionStatus status; 
 	icalcomponent_kind kind;
 	GList *item_list, *total_list = NULL, *l;
-	GSList *cache_keys = NULL;
-	GPtrArray *uid_array = g_ptr_array_new ();
+	GSList *cache_keys = NULL, *ls;
+	GPtrArray *uid_array = NULL;
 	char *time_string = NULL;
 	char t_str [26]; 
 	const char *serv_time;
@@ -513,7 +513,8 @@ get_deltas (gpointer handle)
 	}
 	e_gw_connection_destroy_cursor (cnc, cbgw->priv->container_id, cursor);
 	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-
+	
+	uid_array = g_ptr_array_new ();
 	for (l = total_list; l != NULL; l = l->next) {
 		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
 		GCompareFunc func = NULL;
@@ -552,19 +553,17 @@ get_deltas (gpointer handle)
 		g_free (real_key);
 	}
 
-	for (l = cache_keys; l ; l = g_slist_next (l)) {
-		/* assumes rid is null - which works for now */
+	for (ls = cache_keys; ls ; ls = g_slist_next (ls)) {
 		ECalComponent *comp = NULL;
-		ECalComponentVType vtype;
+		icalcomponent *icalcomp = NULL;
+		
 
-		comp = e_cal_backend_cache_get_component (cache, (const char *) l->data, NULL);	
+		comp = e_cal_backend_cache_get_component (cache, (const char *) ls->data, NULL);	
 
 		if (!comp)
 			continue;
-
-		vtype = e_cal_component_get_vtype (comp);
-		if ((vtype == E_CAL_COMPONENT_EVENT) ||
-				(vtype == E_CAL_COMPONENT_TODO)) {
+		icalcomp = e_cal_component_get_icalcomponent (comp);
+		if (kind == icalcomponent_isa (icalcomp)) {
 			char *comp_str = NULL;
 			ECalComponentId *id = e_cal_component_get_id (comp);
 			
@@ -742,24 +741,6 @@ cache_init (ECalBackendGroupwise *cbgw)
 		}
 
 	} else {
-		GList *cache_items = NULL, *l;
-		/* notify the ecal about the objects already in cache */
-		cache_items = e_cal_backend_cache_get_components (priv->cache);
-		
-		for (l = cache_items; l; l = g_list_next (l)) {
-			ECalComponent *comp = E_CAL_COMPONENT (l->data);
-			char *cal_string;
-
-			if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
-				cal_string = e_cal_component_get_as_string (comp);
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), cal_string);
-				g_free (cal_string);
-			}
-			g_object_unref (comp);
-		}		
-		if (cache_items)
-			g_list_free (cache_items);
-		
 		/* get the deltas from the cache */
 		if (get_deltas (cbgw)) {
 			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
@@ -971,7 +952,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for populating cache"));
 			return GNOME_Evolution_Calendar_OtherError;
-		}
+		} 
 
 
 	} else {

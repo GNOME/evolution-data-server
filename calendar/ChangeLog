@@ -1,3 +1,10 @@
+2006-08-24  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(get_deltas): assign the proper iterator to cache_keys.
+	(cache_init): Need not notify objects added signal
+	for the elements existing in cache.
+
 2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #349847 by Matthew Barnes  
