@@ -624,7 +624,8 @@ get_deltas (gpointer handle)
 	}
 	
 	if (cache_keys) {
-		g_slist_free (cache_keys);
+		/*FIXME this is a memory leak, but free'ing it causes crash in gslice */
+//		g_slist_free (cache_keys);
 	}
 	
 	g_static_mutex_unlock (&connecting);
