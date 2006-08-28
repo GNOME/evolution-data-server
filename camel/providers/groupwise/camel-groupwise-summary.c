@@ -265,7 +265,13 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 	 * we make sure this doesn't have any side effects*/
 	
 	if ((set == CAMEL_MESSAGE_JUNK_LEARN) && (old & CAMEL_GW_MESSAGE_JUNK)) {
-		mi->flags |= CAMEL_MESSAGE_JUNK;
+		mi->flags |= CAMEL_GW_MESSAGE_NOJUNK | CAMEL_MESSAGE_JUNK;
+
+		/* This has ugly side-effects. Evo will never learn unjunk. 
+
+		   We need to create one CAMEL_MESSAGE_HIDDEN flag which must be used for all hiding operations. We must also get rid of the seperate file that is maintained somewhere in evolution/mail/em-folder-browser.c for hidden messages
+		 */
+
 		if (mi->summary) {
 			camel_folder_summary_touch(mi->summary);
 		}

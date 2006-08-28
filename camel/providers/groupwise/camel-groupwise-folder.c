@@ -541,6 +541,7 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex
 	g_ptr_array_add (uids, (gpointer) uid);
 
 	dest = camel_store_get_folder (folder->parent_store, "Mailbox", 0, ex);
+	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN|CAMEL_GW_MESSAGE_NOJUNK|CAMEL_GW_MESSAGE_JUNK, 0);
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
 	else
@@ -561,6 +562,7 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 	g_ptr_array_add (uids, (gpointer) uid);
 
 	dest = camel_store_get_folder (folder->parent_store, JUNK_FOLDER, 0, ex);
+	
 	if (dest)
 		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
 	else {
@@ -571,9 +573,7 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 		else
 			groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
 	}
-
 	update_junk_list (folder->parent_store, info, ADD_JUNK_ENTRY);
-
 }
 
 /********************* back to folder functions*************************/
@@ -633,11 +633,21 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			continue;
 		flags = camel_message_info_flags (info);	
 
-		if ((flags & CAMEL_MESSAGE_JUNK) && !(flags & CAMEL_GW_MESSAGE_JUNK)) /*marked a message junk*/
+		if ((flags & CAMEL_MESSAGE_JUNK) && strcmp(camel_folder_get_name(folder), JUNK_FOLDER)) { 
+			/*marked a message junk*/
 			move_to_junk (folder, info, ex);
+			camel_folder_summary_remove_uid (folder->summary, camel_message_info_uid(info));
+			camel_data_cache_remove (gw_folder->cache, "cache", camel_message_info_uid(info), ex);
+			continue;
+		}
 
-		else if ((flags & CAMEL_MESSAGE_JUNK) && (flags & CAMEL_GW_MESSAGE_JUNK)) /*message was marked as junk, now unjunk*/ 
+		if ((flags & CAMEL_GW_MESSAGE_NOJUNK) && !strcmp(camel_folder_get_name(folder), JUNK_FOLDER)) {
+			/*message was marked as junk, now unjunk*/ 
 			move_to_mailbox (folder, info, ex);
+			camel_folder_summary_remove_uid (folder->summary, camel_message_info_uid(info));
+			camel_data_cache_remove (gw_folder->cache, "cache", camel_message_info_uid(info), ex);
+			continue;
+		}
 
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
@@ -684,7 +694,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		}
 		camel_message_info_free (info);
 	}
+	
 	CAMEL_GROUPWISE_FOLDER_UNLOCK (folder, cache_lock);
+
 	if (deleted_items) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 		if (!strcmp (folder->full_name, "Trash")) {
