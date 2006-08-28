@@ -2338,6 +2338,13 @@ imap_update_summary (CamelFolder *folder, int exists,
 	else
 		header_spec = "0";
 	
+	/* Used as a way to fetch all Headers instead of the selective headers.
+	   Support for fetching custom headers could be done in a better way,
+	   using CamelURL and EPlugins. */
+	
+	if( g_getenv ("EVO_IMAP_FETCH_ALL_HEADERS") )
+		header_spec = "HEADER";
+	
 	/* Figure out if any of the new messages are already cached (which
 	 * may be the case if we're re-syncing after disconnected operation).
 	 * If so, get their UIDs, FLAGS, and SIZEs. If not, get all that

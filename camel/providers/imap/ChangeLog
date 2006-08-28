@@ -1,3 +1,10 @@
+2006-08-28  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.c (imap_update_summary):
+	Provide a way to fetch all Headers while initial
+	downloading of mails.
+	Use EVO_IMAP_FETCH_ALL_HEADERS.
+
 2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #349847 by Matthew Barnes  
