@@ -1,3 +1,11 @@
+2006-08-28  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes bug #331099 based on patches by Eric Anholt
+	<anholt@FreeBSD.org> and Joe Marcus Clarke <marcus@FreeBSD.org>
+
+	* camel-object.c: (cobject_state_read): Cast the input for
+	g_try_malloc to gulong.
+	
 2006-08-23  Wang Xin  <jedy.wang@sun.com>
 
 	Fixes bug #352109.

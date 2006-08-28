@@ -457,7 +457,7 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 		}
 		
 		/* we batch up the properties and set them in one go */
-		if (!(argv = g_try_malloc (sizeof (*argv) + (count - CAMEL_ARGV_MAX) * sizeof (argv->argv[0]))))
+		if (!(argv = g_try_malloc ((gulong)(sizeof (*argv) + (count - CAMEL_ARGV_MAX) * sizeof (argv->argv[0])))))
 			return -1;
 		
 		argv->argc = 0;
