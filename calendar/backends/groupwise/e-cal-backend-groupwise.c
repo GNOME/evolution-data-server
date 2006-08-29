@@ -2371,7 +2371,7 @@ e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal
 static ECalBackendSyncStatus
 send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp, icalproperty_method method)
 {
-		return GNOME_Evolution_Calendar_UnsupportedMethod,
+		return GNOME_Evolution_Calendar_UnsupportedMethod;
 }
 
 static ECalBackendSyncStatus
