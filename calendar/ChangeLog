@@ -1,3 +1,10 @@
+2006-08-29  Harish Krishnaswamy  <kharish@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (send_object):
+	Mark this as an unsupported method in the gnome-2.14 revision.
+	Support for Retracting calendar items have been added using
+	the send_object call in the trunk. Fixes #344132.
+	
 2006-08-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes a gslice crash

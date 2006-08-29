@@ -2371,42 +2371,7 @@ e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal
 static ECalBackendSyncStatus
 send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp, icalproperty_method method)
 {
-	ECalComponent *comp, *found_comp;
-	ECalBackendGroupwisePrivate *priv;
-	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
-	char *uid, *comp_str;
-
-	priv = cbgw->priv;
-
-	comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
-
-	e_cal_component_get_uid (comp, (const char **) &uid);
-	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
-
-	switch (priv->mode) {
-	case CAL_MODE_ANY :
-	case CAL_MODE_REMOTE :
-		if (found_comp) {
-			char *comp_str;
-			status = e_cal_backend_groupwise_modify_object (E_CAL_BACKEND_SYNC (cbgw), cal, comp_str,
-									CALOBJ_MOD_THIS, &comp_str, NULL);
-			g_free (comp_str);
-		} else
-			status = e_cal_backend_groupwise_create_object (E_CAL_BACKEND_SYNC (cbgw), cal, &comp_str, NULL);
-
-		break;
-	case CAL_MODE_LOCAL :
-		/* in offline mode, we just update the cache */
-		e_cal_backend_cache_put_component (priv->cache, comp);
-		break;
-	default:
-		break;	
-	}
-
-	g_object_unref (comp);
-
-	return status;
+		return GNOME_Evolution_Calendar_UnsupportedMethod,
 }
 
 static ECalBackendSyncStatus
