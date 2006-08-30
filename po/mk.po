@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-02 17:51+0200\n"
-"PO-Revision-Date: 2006-08-02 18:29+0200\n"
+"POT-Creation-Date: 2006-08-30 08:45+0200\n"
+"PO-Revision-Date: 2006-08-30 17:53+0200\n"
 "Last-Translator: Jovan Naumovski <jovan@lugola.net>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -33,13 +33,13 @@ msgstr "Се вчитува..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2301
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4093
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Пребарувам..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4257
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4177
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Преземам контакти (%d)... "
@@ -51,35 +51,35 @@ msgstr "Преземам контакти (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Го ажурирам кешот за контактите (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:720
 msgid "Using Distinguished Name (DN)"
 msgstr "Употреба на име на распознавање (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Email Address"
 msgstr "Употреба на адреса за е-пошта"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:974
 msgid "Reconnecting to LDAP server..."
 msgstr "Преповрзување со LDAP серверот"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1568
 msgid "Adding contact to LDAP server..."
 msgstr "Го додавам контактот во LDAP серверот..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1696
 msgid "Removing contact from LDAP server..."
 msgstr "Го отстранувам контактот од LDAP серверот..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2001
 msgid "Modifying contact from LDAP server..."
 msgstr "Го менувам контактот на LDAP серверот..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3955
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3893
 msgid "Receiving LDAP search results..."
 msgstr "Се собираат резултатите на пребарувањето од LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4115
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4041
 msgid "Error performing search"
 msgstr "Грешка при пребарувањето"
 
@@ -98,7 +98,7 @@ msgstr "Грешка при пребарувањето"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3411
+#: ../addressbook/libebook/e-book.c:3413
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" во книгата претходно \"%s\""
@@ -126,7 +126,7 @@ msgstr "книгата е зафатена"
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
 #: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
 #: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
-#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3420
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3422
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA исклучокот прави \"%s\" повик"
@@ -156,7 +156,7 @@ msgstr "%s: откажано"
 msgid "%s: Invalid source."
 msgstr "%s: Невалиден извор."
 
-#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3349
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3351
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: нема достапни фабрики за URI адресата `%s'"
@@ -166,503 +166,508 @@ msgstr "%s: нема достапни фабрики за URI адресата `
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Не може да креира EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3560
+#: ../addressbook/libebook/e-book.c:3562
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: нема UID на контакт од сам себе складиран во gconf"
 
-#: ../addressbook/libebook/e-book.c:3690
+#: ../addressbook/libebook/e-book.c:3692
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: нема извор за uid `%s' складиран во gconf."
 
-#: ../addressbook/libebook/e-contact.c:108
+#. Dummy row as EContactField starts from 1
+#: ../addressbook/libebook/e-contact.c:112
 msgid "Unique ID"
 msgstr "Уникатно ID"
 
-#: ../addressbook/libebook/e-contact.c:109
+#: ../addressbook/libebook/e-contact.c:113
 msgid "File Under"
 msgstr "Датотека под"
+
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:115
+msgid "Book URI"
+msgstr "Адреса за книга"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:121
 msgid "Full Name"
 msgstr "Цело име"
 
-#: ../addressbook/libebook/e-contact.c:116
-msgid "Name"
-msgstr "Име"
-
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:122
 msgid "Given Name"
 msgstr "Дадено име"
 
-#: ../addressbook/libebook/e-contact.c:118
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
 msgstr "Фамилијарно име"
 
-#: ../addressbook/libebook/e-contact.c:119
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Nickname"
 msgstr "Прекар"
 
-#: ../addressbook/libebook/e-contact.c:120
-msgid "Name or Org"
-msgstr "Име или организација"
-
-#. Address fields
-#: ../addressbook/libebook/e-contact.c:123
-msgid "Address List"
-msgstr "Листа на адреси"
-
-#: ../addressbook/libebook/e-contact.c:124
-msgid "Home Address"
-msgstr "Домашна адреса"
-
-#: ../addressbook/libebook/e-contact.c:125
-msgid "Work Address"
-msgstr "Адреса на работа"
-
-#: ../addressbook/libebook/e-contact.c:126
-msgid "Other Address"
-msgstr "Друга адреса"
+#. Email fields
+#: ../addressbook/libebook/e-contact.c:127
+msgid "Email 1"
+msgstr "Е-пошта 1"
 
 #: ../addressbook/libebook/e-contact.c:128
+msgid "Email 2"
+msgstr "Е-пошта 2"
+
+#: ../addressbook/libebook/e-contact.c:129
+msgid "Email 3"
+msgstr "Е-пошта 3"
+
+#: ../addressbook/libebook/e-contact.c:130
+msgid "Email 4"
+msgstr "Е-пошта 4"
+
+#: ../addressbook/libebook/e-contact.c:132
+msgid "Mailer"
+msgstr "Поштар"
+
+#. Address Labels
+#: ../addressbook/libebook/e-contact.c:135
 msgid "Home Address Label"
 msgstr "Ознака за домашната адреса"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Work Address Label"
 msgstr "Ознака за адресата на работа"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Other Address Label"
 msgstr "Ознака за друга адреса"
 
-#: ../addressbook/libebook/e-contact.c:132
+#. Phone fields
+#: ../addressbook/libebook/e-contact.c:140
 msgid "Assistant Phone"
 msgstr "Телефон на помошникот"
 
-#: ../addressbook/libebook/e-contact.c:133
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Business Phone"
 msgstr "Бизнис телефон"
 
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Business Phone 2"
 msgstr "Бизнис телефон 2"
 
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Fax"
 msgstr "Бизнис факс"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Callback Phone"
 msgstr "Ѕвони повратно телефон"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Car Phone"
 msgstr "Телефон во автомобил"
 
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Company Phone"
 msgstr "Телефон на компанијата"
 
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Home Phone"
 msgstr "Домашен телефон"
 
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Home Phone 2"
 msgstr "Домашен телефон 2"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Fax"
 msgstr "Домашен факс"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:150
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Mobile Phone"
 msgstr "Мобилен телефон"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:152
 msgid "Other Phone"
 msgstr "Друг телефон"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Other Fax"
 msgstr "Друг факс"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Pager"
 msgstr "Пејџер"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Primary Phone"
 msgstr "Основен телефон"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Radio"
 msgstr "Радио"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Telex"
 msgstr "Телекс"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:159
 msgid "TTY"
 msgstr "TTY"
 
-#. Email fields
-#: ../addressbook/libebook/e-contact.c:154
-msgid "Email List"
-msgstr "Листа на е-пошта"
-
-#: ../addressbook/libebook/e-contact.c:155
-msgid "Email 1"
-msgstr "Е-пошта 1"
-
-#: ../addressbook/libebook/e-contact.c:156
-msgid "Email 2"
-msgstr "Е-пошта 2"
-
-#: ../addressbook/libebook/e-contact.c:157
-msgid "Email 3"
-msgstr "Е-пошта 3"
-
-#: ../addressbook/libebook/e-contact.c:158
-msgid "Email 4"
-msgstr "Е-пошта 4"
-
-#: ../addressbook/libebook/e-contact.c:159
-msgid "Mailer"
-msgstr "Поштар"
-
-#: ../addressbook/libebook/e-contact.c:160
-msgid "Wants HTML Mail"
-msgstr "Преферира HTML пошта"
-
-#. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:163
-msgid "AIM Screen Name List"
-msgstr "Листа за AIM имиња"
-
-#: ../addressbook/libebook/e-contact.c:164
-msgid "GroupWise Id List"
-msgstr "Листа со ID за GroupWise"
-
-#: ../addressbook/libebook/e-contact.c:165
-msgid "Jabber Id List"
-msgstr "Листа на на Jabber ID"
-
-#: ../addressbook/libebook/e-contact.c:166
-msgid "Yahoo! Screen Name List"
-msgstr "Листа на Yahoo имиња"
-
-#: ../addressbook/libebook/e-contact.c:167
-msgid "MSN Screen Name List"
-msgstr "Листа на MSN имиња"
-
-#: ../addressbook/libebook/e-contact.c:168
-msgid "ICQ Id List"
-msgstr "Листа на ICQ имиња"
-
-#: ../addressbook/libebook/e-contact.c:170
-msgid "AIM Home Screen Name 1"
-msgstr "Домашна листа за AIM имиња 1"
-
-#: ../addressbook/libebook/e-contact.c:171
-msgid "AIM Home Screen Name 2"
-msgstr "Домашна листа за AIM имиња 2"
-
-#: ../addressbook/libebook/e-contact.c:172
-msgid "AIM Home Screen Name 3"
-msgstr "Домашна листа за AIM имиња 3"
-
-#: ../addressbook/libebook/e-contact.c:173
-msgid "AIM Work Screen Name 1"
-msgstr "AIM Work Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:174
-msgid "AIM Work Screen Name 2"
-msgstr "AIM Work Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:175
-msgid "AIM Work Screen Name 3"
-msgstr "AIM Work Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:176
-msgid "GroupWise Home Screen Name 1"
-msgstr "GroupWise Home Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:177
-msgid "GroupWise Home Screen Name 2"
-msgstr "GroupWise Home Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:178
-msgid "GroupWise Home Screen Name 3"
-msgstr "GroupWise Home Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:179
-msgid "GroupWise Work Screen Name 1"
-msgstr "GroupWise Work Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:180
-msgid "GroupWise Work Screen Name 2"
-msgstr "GroupWise Work Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:181
-msgid "GroupWise Work Screen Name 3"
-msgstr "GroupWise Work Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:182
-msgid "Jabber Home Id 1"
-msgstr "Домашно ID за џабер 1"
-
-#: ../addressbook/libebook/e-contact.c:183
-msgid "Jabber Home Id 2"
-msgstr "Домашно ID за џабер 2"
-
-#: ../addressbook/libebook/e-contact.c:184
-msgid "Jabber Home Id 3"
-msgstr "Домашно ID за џабер 3"
-
-#: ../addressbook/libebook/e-contact.c:185
-msgid "Jabber Work Id 1"
-msgstr "Работно ID за џабер 1"
-
-#: ../addressbook/libebook/e-contact.c:186
-msgid "Jabber Work Id 2"
-msgstr "Работно ID за џабер 2"
-
-#: ../addressbook/libebook/e-contact.c:187
-msgid "Jabber Work Id 3"
-msgstr "Работно ID за џабер 3"
-
-#: ../addressbook/libebook/e-contact.c:188
-msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! Home Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:189
-msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! Home Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:190
-msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! Home Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:191
-msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! Work Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:192
-msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! Work Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:193
-msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! Work Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:194
-msgid "MSN Home Screen Name 1"
-msgstr "MSN Home Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:195
-msgid "MSN Home Screen Name 2"
-msgstr "MSN Home Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:196
-msgid "MSN Home Screen Name 3"
-msgstr "MSN Home Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:197
-msgid "MSN Work Screen Name 1"
-msgstr "MSN Work Screen Name 1"
-
-#: ../addressbook/libebook/e-contact.c:198
-msgid "MSN Work Screen Name 2"
-msgstr "MSN Work Screen Name 2"
-
-#: ../addressbook/libebook/e-contact.c:199
-msgid "MSN Work Screen Name 3"
-msgstr "MSN Work Screen Name 3"
-
-#: ../addressbook/libebook/e-contact.c:200
-msgid "ICQ Home Id 1"
-msgstr "ICQ Home Id 1"
-
-#: ../addressbook/libebook/e-contact.c:201
-msgid "ICQ Home Id 2"
-msgstr "ICQ Home Id 2"
-
-#: ../addressbook/libebook/e-contact.c:202
-msgid "ICQ Home Id 3"
-msgstr "ICQ Home Id 3"
-
-#: ../addressbook/libebook/e-contact.c:203
-msgid "ICQ Work Id 1"
-msgstr "ICQ Work Id 1"
-
-#: ../addressbook/libebook/e-contact.c:204
-msgid "ICQ Work Id 2"
-msgstr "ICQ Work Id 2"
-
-#: ../addressbook/libebook/e-contact.c:205
-msgid "ICQ Work Id 3"
-msgstr "ICQ Work Id 3"
-
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:162
 msgid "Organization"
 msgstr "Организација"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:163
 msgid "Organizational Unit"
 msgstr "Организациска единица"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
 msgstr "Канцеларија"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
 msgstr "Наслов"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Role"
 msgstr "Улога"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Manager"
 msgstr "Менаџер"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Assistant"
 msgstr "Асистент"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:171
 msgid "Homepage URL"
 msgstr "Адреса на домашната страна"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:172
 msgid "Weblog URL"
 msgstr "Адреса за веблог"
 
-#: ../addressbook/libebook/e-contact.c:220
-msgid "Video Conferencing URL"
-msgstr "Адреса за видеоконференција"
-
-#. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:223
-msgid "Photo"
-msgstr "Фотографија"
-
-#: ../addressbook/libebook/e-contact.c:224
-msgid "Logo"
-msgstr "Лого"
-
-#. Security fields
-#: ../addressbook/libebook/e-contact.c:227
-msgid "X.509 Certificate"
-msgstr "X.509 Сертификат"
-
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:230
-msgid "Category List"
-msgstr "Листа на категории"
-
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "Категории"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:178
 msgid "Calendar URI"
 msgstr "URI на календар"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Free/Busy URL"
 msgstr "Слободна/Зафатена адреса"
 
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:180
 msgid "ICS Calendar"
 msgstr "ICS календар"
 
+#: ../addressbook/libebook/e-contact.c:181
+msgid "Video Conferencing URL"
+msgstr "Адреса за видеоконференција"
+
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Spouse's Name"
 msgstr "Име на сопруг/сопруга"
 
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
 msgstr "Забелешка"
 
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:188
+msgid "AIM Home Screen Name 1"
+msgstr "Домашна листа за AIM имиња 1"
+
+#: ../addressbook/libebook/e-contact.c:189
+msgid "AIM Home Screen Name 2"
+msgstr "Домашна листа за AIM имиња 2"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "AIM Home Screen Name 3"
+msgstr "Домашна листа за AIM имиња 3"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "AIM Work Screen Name 1"
+msgstr "AIM Work Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "AIM Work Screen Name 2"
+msgstr "AIM Work Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "AIM Work Screen Name 3"
+msgstr "AIM Work Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "GroupWise Home Screen Name 1"
+msgstr "GroupWise Home Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:195
+msgid "GroupWise Home Screen Name 2"
+msgstr "GroupWise Home Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:196
+msgid "GroupWise Home Screen Name 3"
+msgstr "GroupWise Home Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:197
+msgid "GroupWise Work Screen Name 1"
+msgstr "GroupWise Work Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:198
+msgid "GroupWise Work Screen Name 2"
+msgstr "GroupWise Work Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:199
+msgid "GroupWise Work Screen Name 3"
+msgstr "GroupWise Work Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:200
+msgid "Jabber Home Id 1"
+msgstr "Домашно ID за џабер 1"
+
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Jabber Home Id 2"
+msgstr "Домашно ID за џабер 2"
+
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Jabber Home Id 3"
+msgstr "Домашно ID за џабер 3"
+
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Jabber Work Id 1"
+msgstr "Работно ID за џабер 1"
+
+#: ../addressbook/libebook/e-contact.c:204
+msgid "Jabber Work Id 2"
+msgstr "Работно ID за џабер 2"
+
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Jabber Work Id 3"
+msgstr "Работно ID за џабер 3"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo! Home Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo! Home Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo! Home Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:209
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo! Work Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:210
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo! Work Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo! Work Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "MSN Home Screen Name 1"
+msgstr "MSN Home Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:213
+msgid "MSN Home Screen Name 2"
+msgstr "MSN Home Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:214
+msgid "MSN Home Screen Name 3"
+msgstr "MSN Home Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:215
+msgid "MSN Work Screen Name 1"
+msgstr "MSN Work Screen Name 1"
+
+#: ../addressbook/libebook/e-contact.c:216
+msgid "MSN Work Screen Name 2"
+msgstr "MSN Work Screen Name 2"
+
+#: ../addressbook/libebook/e-contact.c:217
+msgid "MSN Work Screen Name 3"
+msgstr "MSN Work Screen Name 3"
+
+#: ../addressbook/libebook/e-contact.c:218
+msgid "ICQ Home Id 1"
+msgstr "ICQ Home Id 1"
+
+#: ../addressbook/libebook/e-contact.c:219
+msgid "ICQ Home Id 2"
+msgstr "ICQ Home Id 2"
+
+#: ../addressbook/libebook/e-contact.c:220
+msgid "ICQ Home Id 3"
+msgstr "ICQ Home Id 3"
+
+#: ../addressbook/libebook/e-contact.c:221
+msgid "ICQ Work Id 1"
+msgstr "ICQ Work Id 1"
+
+#: ../addressbook/libebook/e-contact.c:222
+msgid "ICQ Work Id 2"
+msgstr "ICQ Work Id 2"
+
+#: ../addressbook/libebook/e-contact.c:223
+msgid "ICQ Work Id 3"
+msgstr "ICQ Work Id 3"
+
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:226
+msgid "Last Revision"
+msgstr "Последна ревизија"
+
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Name or Org"
+msgstr "Име или организација"
+
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:230
+msgid "Address List"
+msgstr "Листа на адреси"
+
+#: ../addressbook/libebook/e-contact.c:231
+msgid "Home Address"
+msgstr "Домашна адреса"
+
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Work Address"
+msgstr "Адреса на работа"
+
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Other Address"
+msgstr "Друга адреса"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:236
+msgid "Category List"
+msgstr "Листа на категории"
+
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:239
+msgid "Photo"
+msgstr "Фотографија"
+
+#: ../addressbook/libebook/e-contact.c:240
+msgid "Logo"
+msgstr "Лого"
+
 #: ../addressbook/libebook/e-contact.c:242
+msgid "Name"
+msgstr "Име"
+
+#: ../addressbook/libebook/e-contact.c:243
+msgid "Email List"
+msgstr "Листа на е-пошта"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:246
+msgid "AIM Screen Name List"
+msgstr "Листа за AIM имиња"
+
+#: ../addressbook/libebook/e-contact.c:247
+msgid "GroupWise Id List"
+msgstr "Листа со ID за GroupWise"
+
+#: ../addressbook/libebook/e-contact.c:248
+msgid "Jabber Id List"
+msgstr "Листа на на Jabber ID"
+
+#: ../addressbook/libebook/e-contact.c:249
+msgid "Yahoo! Screen Name List"
+msgstr "Листа на Yahoo имиња"
+
+#: ../addressbook/libebook/e-contact.c:250
+msgid "MSN Screen Name List"
+msgstr "Листа на MSN имиња"
+
+#: ../addressbook/libebook/e-contact.c:251
+msgid "ICQ Id List"
+msgstr "Листа на ICQ имиња"
+
+#: ../addressbook/libebook/e-contact.c:253
+msgid "Wants HTML Mail"
+msgstr "Преферира HTML пошта"
+
+#: ../addressbook/libebook/e-contact.c:255
+msgid "List"
+msgstr "Листа"
+
+#: ../addressbook/libebook/e-contact.c:256
+msgid "List Show Addresses"
+msgstr "Прикажи адреси"
+
+#: ../addressbook/libebook/e-contact.c:258
 msgid "Birth Date"
 msgstr "Дата на раѓање"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:259
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "Годишнина"
 
-#: ../addressbook/libebook/e-contact.c:245
-msgid "List"
-msgstr "Листа"
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:262
+msgid "X.509 Certificate"
+msgstr "X.509 Сертификат"
 
-#: ../addressbook/libebook/e-contact.c:246
-msgid "List Show Addresses"
-msgstr "Прикажи адреси"
-
-#. Last modified time
-#: ../addressbook/libebook/e-contact.c:249
-msgid "Last Revision"
-msgstr "Последна ревизија"
-
-#. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:251
-msgid "Book URI"
-msgstr "Адреса за книга"
-
-#: ../addressbook/libebook/e-contact.c:253
+#: ../addressbook/libebook/e-contact.c:264
 msgid "Gadu-Gadu Home Id 1"
 msgstr "Gadu-Gadu домашно Ид. 1"
 
-#: ../addressbook/libebook/e-contact.c:254
+#: ../addressbook/libebook/e-contact.c:265
 msgid "Gadu-Gadu Home Id 2"
 msgstr "Gadu-Gadu домашно Ид. 2"
 
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 3"
 msgstr "Gadu-Gadu домашно Ид. 3"
 
-#: ../addressbook/libebook/e-contact.c:256
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Work Id 1"
 msgstr "Gadu-Gadu работно Ид. 1"
 
-#: ../addressbook/libebook/e-contact.c:257
+#: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Work Id 2"
 msgstr "Gadu-Gadu работно Ид. 2"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 3"
 msgstr "Gadu-Gadu работно Ид. 3"
 
-#: ../addressbook/libebook/e-contact.c:259
+#: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Id List"
 msgstr "Gadu-Gadu Ид. листа"
 
-#: ../addressbook/libebook/e-contact.c:1265
+#: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "Неименувана листа"
@@ -687,36 +692,36 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Не можам да зачувам податоци за календарот: Неправилна URI адреса."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
 msgid "Reply Requested: by "
 msgstr "Одговорот е побаран: од"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1677
 msgid "Reply Requested: When convenient"
 msgstr "Одговорот е побаран: Кога ќе може"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:245
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
 #, c-format
 msgid "Loading %s items"
 msgstr "Вчитувам %s предмети"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:777
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Календар"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:834
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
 msgid "Invalid server URI"
 msgstr "Невалидна адреса на серверот"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:853
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:851
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
 #: ../calendar/libecal/e-cal.c:5178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:991
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1015
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1053
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1003
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1027
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 #: ../camel/providers/groupwise/camel-groupwise-store.c:711
@@ -727,18 +732,18 @@ msgstr "Невалидна адреса на серверот"
 msgid "Authentication failed"
 msgstr "Автентификација е не успешна."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:904
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:902
 msgid "Could not create thread for getting deltas"
 msgstr "Could not create thread for getting deltas"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:944
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1213
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:942
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1211
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Не можам да креирам кеш датотека"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:956
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
 msgid "Could not create thread for populating cache"
 msgstr "Не можам да креирам нишка за населување на кешот"
 
@@ -1075,20 +1080,20 @@ msgstr "30-ти"
 msgid "31st"
 msgstr "31-ви"
 
-#: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "High"
 msgstr "Високо"
 
-#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Normal"
 msgstr "Нормално"
 
-#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Low"
 msgstr "Ниско"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:707
+#: ../calendar/libecal/e-cal-util.c:708
 msgid "Undefined"
 msgstr "Недефинирано"
 
@@ -2056,7 +2061,7 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Оваа опција ќе се врзе за Виндоус серверот користејќи NTLM / безбедна "
+"Оваа опција ќе се врзе за Windows серверот користејќи NTLM / безбедна "
 "проверка за лозинки."
 
 #: ../camel/camel-sasl-plain.c:34
@@ -2660,37 +2665,37 @@ msgstr "Оваа порака не е достапна во офлајн реж�
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:168
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1568
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1613
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1580
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1625
 msgid "Could not get message"
 msgstr "Не можам да ја добијам пораката"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:757
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:769
 #: ../camel/providers/imap/camel-imap-folder.c:247
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Не можам да вчитам информации за %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:987
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:999
 msgid "Trash Folder Full. Please Empty."
 msgstr "Папката со ѓубре е полна. Ве молам, испразнете ја."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1154
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
-#: ../camel/providers/imap/camel-imap-folder.c:2361
-#: ../camel/providers/imap/camel-imap-folder.c:2431
+#: ../camel/providers/imap/camel-imap-folder.c:2368
+#: ../camel/providers/imap/camel-imap-folder.c:2438
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Собирам информации за новите пораки во %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1881
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1893
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1935
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Не може да се додаде порака кон папката `%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1911
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Не можам да креирам порака: %s"
@@ -2985,27 +2990,27 @@ msgid "Unable to retrieve message: %s"
 msgstr "Не можам да ја соберам пораката: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2087
-#: ../camel/providers/imap/camel-imap-folder.c:2689
+#: ../camel/providers/imap/camel-imap-folder.c:2696
 #: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
 msgstr "Пораката не е достапна во моментов"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2539
+#: ../camel/providers/imap/camel-imap-folder.c:2546
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Нецелосен одговор од серверот: нема информации за пораката %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2547
+#: ../camel/providers/imap/camel-imap-folder.c:2554
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Нецелосен одговор од серверот: нема UID за пораката %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2560
+#: ../camel/providers/imap/camel-imap-folder.c:2567
 #, c-format
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "Нецелосен одговор од серверот: Идентични UID за пораките %d и %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2725
+#: ../camel/providers/imap/camel-imap-folder.c:2732
 msgid "Could not find message body in FETCH response."
 msgstr "Не можам да го најдам телото на пораката во FETCH одговорот."
 
@@ -4902,11 +4907,11 @@ msgstr "категории"
 msgid "Select Contacts from Address Book"
 msgstr "Изберете контакти од адресарот"
 
-#: ../libedataserverui/e-name-selector-dialog.c:598
+#: ../libedataserverui/e-name-selector-dialog.c:597
 msgid "_Add"
 msgstr "_Додади"
 
-#: ../libedataserverui/e-name-selector-dialog.c:623
+#: ../libedataserverui/e-name-selector-dialog.c:622
 msgid "_Remove"
 msgstr "_Отстрани"
 
@@ -4952,35 +4957,35 @@ msgid "_Search:"
 msgstr "_Барај:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2067
+#: ../libedataserverui/e-name-selector-entry.c:2043
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Прошири %s вметнато во линија"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2083
+#: ../libedataserverui/e-name-selector-entry.c:2059
 #, c-format
 msgid "_Edit %s"
 msgstr "_Уреди %s"
 
-#: ../libedataserverui/e-name-selector-list.c:480
+#: ../libedataserverui/e-name-selector-list.c:479
 #, c-format
 msgid "_Delete %s"
 msgstr "_Избриши %s"
 
-#: ../libedataserverui/e-passwords.c:810
+#: ../libedataserverui/e-passwords.c:854
 msgid "_Remember this passphrase"
 msgstr "_Запомни ја оваа лозинка"
 
-#: ../libedataserverui/e-passwords.c:811
+#: ../libedataserverui/e-passwords.c:855
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Памти ја оваа лозинка до крајот на оваа сесија"
 
-#: ../libedataserverui/e-passwords.c:814
+#: ../libedataserverui/e-passwords.c:858
 msgid "_Remember this password"
 msgstr "_Запомни ја оваа лозинка"
 
-#: ../libedataserverui/e-passwords.c:815
+#: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Запомни ја оваа лозинка до крајот на оваа сесија"
 
