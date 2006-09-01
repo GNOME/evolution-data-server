@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ml\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-31 09:42+0200\n"
-"PO-Revision-Date: 2006-08-31 20:26+0530\n"
+"PO-Revision-Date: 2006-09-01 11:11+0530\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam\n"
 "MIME-Version: 1.0\n"
@@ -179,9 +179,8 @@ msgid "Unique ID"
 msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:113
-#, fuzzy
 msgid "File Under"
-msgstr "രചനാനാമം"
+msgstr "എന്തിന്‍റെ കീഴിലുളള ഫയല്‍"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:115
@@ -193,29 +192,25 @@ msgstr ""
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
 #: ../addressbook/libebook/e-contact.c:121
-#, fuzzy
 msgid "Full Name"
-msgstr "മുഴുവന്‍ പേര്"
+msgstr "മുഴുവന്‍ പേര് "
 
 #: ../addressbook/libebook/e-contact.c:122
-#, fuzzy
 msgid "Given Name"
-msgstr "തന്നിരിക്കുന്ന പേര്"
+msgstr "തന്നിരിക്കുന്ന പേര് "
 
 #: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
 msgstr "കുടുംബ പേര്"
 
 #: ../addressbook/libebook/e-contact.c:124
-#, fuzzy
 msgid "Nickname"
-msgstr "ഇരട്ടപ്പേര്"
+msgstr "ഇരട്ടപ്പേര് "
 
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:127
-#, fuzzy
 msgid "Email 1"
-msgstr "ഈ മെയില്‍ 1"
+msgstr "ഈ മെയില്‍ 1 "
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Email 2"
@@ -226,9 +221,8 @@ msgid "Email 3"
 msgstr "ഇ മെയില് 3"
 
 #: ../addressbook/libebook/e-contact.c:130
-#, fuzzy
 msgid "Email 4"
-msgstr "ഈ മെയില്‍ 4"
+msgstr "ഈ മെയില്‍ 4 "
 
 #: ../addressbook/libebook/e-contact.c:132
 msgid "Mailer"
@@ -236,19 +230,16 @@ msgstr ""
 
 #. Address Labels
 #: ../addressbook/libebook/e-contact.c:135
-#, fuzzy
 msgid "Home Address Label"
-msgstr "വിലാസ ലിഖിതം"
+msgstr "വീട്ടിലെ വിലാസത്തിനുളള ലേബല്‍"
 
 #: ../addressbook/libebook/e-contact.c:136
-#, fuzzy
 msgid "Work Address Label"
-msgstr "വിലാസ ലിഖിതം"
+msgstr "ജോലിസ്ഥലത്തിന്‍റെ വിലാസത്തിനുളള ലേബല്‍"
 
 #: ../addressbook/libebook/e-contact.c:137
-#, fuzzy
 msgid "Other Address Label"
-msgstr "വിലാസ ലിഖിതം"
+msgstr "മറ്റ് വിലാസത്തിനുളള ലേബല്‍"
 
 #. Phone fields
 #: ../addressbook/libebook/e-contact.c:140
@@ -316,9 +307,8 @@ msgid "Primary Phone"
 msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:156
-#, fuzzy
 msgid "Radio"
-msgstr "റേഡിയോ"
+msgstr "റേഡിയോ "
 
 #: ../addressbook/libebook/e-contact.c:157
 msgid "Telex"
@@ -555,18 +545,16 @@ msgstr ""
 
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:230
-#, fuzzy
 msgid "Address List"
-msgstr "വിലാസം പട്ടിക"
+msgstr "മേല്‍വിലാസ പട്ടിക "
 
 #: ../addressbook/libebook/e-contact.c:231
 msgid "Home Address"
 msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:232
-#, fuzzy
 msgid "Work Address"
-msgstr "വിലാസം"
+msgstr "ജോലിസ്ഥലത്തിന്‍റെ മേല്‍വിലാസം"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Other Address"
@@ -579,23 +567,20 @@ msgstr ""
 
 #. Photo/Logo
 #: ../addressbook/libebook/e-contact.c:239
-#, fuzzy
 msgid "Photo"
-msgstr "ഫോട്ടോ"
+msgstr "ഫോട്ടോ "
 
 #: ../addressbook/libebook/e-contact.c:240
-#, fuzzy
 msgid "Logo"
-msgstr "ലോഗോ"
+msgstr "ലോഗോ "
 
 #: ../addressbook/libebook/e-contact.c:242
 msgid "Name"
 msgstr "പേര‍്"
 
 #: ../addressbook/libebook/e-contact.c:243
-#, fuzzy
 msgid "Email List"
-msgstr "ഇ മെയില് 2"
+msgstr "ഈമെയില്‍ ലിസ്റ്റ്"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:246
@@ -607,9 +592,8 @@ msgid "GroupWise Id List"
 msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:248
-#, fuzzy
 msgid "Jabber Id List"
-msgstr "പേരിടാത്ത പട്ടിക"
+msgstr "ജാബര്‍ Id ലിസ്റ്റ്"
 
 #: ../addressbook/libebook/e-contact.c:249
 msgid "Yahoo! Screen Name List"
@@ -687,19 +671,18 @@ msgstr "പേരിടാത്ത പട്ടിക"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
 #: ../libedataserver/e-categories.c:247
-#, fuzzy
 msgid "Birthday"
-msgstr "പിറന്നാള്‍"
+msgstr "പിറന്നാള്‍ "
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
-#, fuzzy, c-format
+#, c-format
 msgid "Birthday: %s"
-msgstr "ജന്മ ദിനം:%s"
+msgstr "ജന്മ ദിനം:%s "
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "വാര്‍ഷികം: %s"
+msgstr "വാര്‍ഷികം: %s "
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Cannot save calendar data: Malformed URI."
@@ -726,9 +709,8 @@ msgid "Calendar"
 msgstr "കലണ്ടര്"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
-#, fuzzy
 msgid "Invalid server URI"
-msgstr "അസാധുവായ സര്‍വര്‍ URI"
+msgstr "അസാധുവായ സര്‍വര്‍ URI "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:851
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
@@ -744,9 +726,8 @@ msgstr "അസാധുവായ സര്‍വര്‍ URI"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
-#, fuzzy
 msgid "Authentication failed"
-msgstr "ഓഥന്‍റിക്കേഷന്‍ പരാജയപ്പെട്ടു"
+msgstr "ആധികാരകത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:902
 msgid "Could not create thread for getting deltas"
@@ -764,18 +745,16 @@ msgid "Could not create thread for populating cache"
 msgstr ""
 
 #: ../calendar/backends/http/e-cal-backend-http.c:265
-#, fuzzy
 msgid "Redirected to Invalid URI"
-msgstr "സാധുതയില്ലാത്ത URI"
+msgstr "സാധുതയില്ലാത്ത URI-യിലേക്ക് തിരിച്ചിരിക്കുന്നു"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "തെറ്റായ ഫയല്‍ രീതി."
 
 #: ../calendar/backends/http/e-cal-backend-http.c:295
-#, fuzzy
 msgid "Not a calendar."
-msgstr "ഇത് ഒരു കലണ്ടര്‍ അല്ല."
+msgstr "ഇത് ഒരു കലണ്ടര്‍ അല്ല. "
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:142
 msgid "Could not retrieve weather data"
@@ -802,23 +781,20 @@ msgid "Smoke"
 msgstr "പുക"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:205
-#, fuzzy
 msgid "Thunderstorms"
-msgstr "ഇടിയോടുകൂടിയ കൊടുങ്കാറ്റ് "
+msgstr "ഇടിയോടുകൂടിയ കൊടുങ്കാറ്റ്"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:206
-#, fuzzy
 msgid "Cloudy"
-msgstr "പക‍ര്പ്പ്"
+msgstr "മഴമേഘങ്ങള്‍ നിറഞ്ഞ"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Drizzle"
 msgstr "ചാറ്റല്‍മഴ"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:208
-#, fuzzy
 msgid "Sunny"
-msgstr "ഞായറാഴ്ച"
+msgstr "വെയിലുളള"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Dust"
@@ -833,9 +809,8 @@ msgid "Mostly cloudy"
 msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:212
-#, fuzzy
 msgid "Windy"
-msgstr "കണ്ടെത്തുക"
+msgstr "ഭയങ്കര കാറ്റ്"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Rain showers"
@@ -850,9 +825,8 @@ msgid "Rain/snow mixed"
 msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
-#, fuzzy
 msgid "Sleet"
-msgstr "അയ‍യ്‍ക്കുക"
+msgstr "ആലിപ്പഴം"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
@@ -912,9 +886,8 @@ msgid "Weather: Fog"
 msgstr "കാലാവസ്ഥ: മഞ്ഞ്"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:239
-#, fuzzy
 msgid "Weather: Thunderstorms"
-msgstr "കാലാവസ്ഥ: കൊടുങ്കാറ്റ്"
+msgstr "കാലാവസ്ഥ: കൊടുങ്കാറ്റ് "
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:240
 #: ../calendar/backends/weather/e-cal-backend-weather.c:245
@@ -928,9 +901,8 @@ msgstr "കാലാവസ്ഥ: മഴമേഘങ്ങള്‍ നിറഞ
 #: ../calendar/backends/weather/e-cal-backend-weather.c:253
 #: ../calendar/backends/weather/e-cal-backend-weather.c:256
 #: ../calendar/backends/weather/e-cal-backend-weather.c:258
-#, fuzzy
 msgid "Weather: Rain"
-msgstr "കാലാവസ്ഥ: മഴ"
+msgstr "കാലാവസ്ഥ: മഴ "
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:333
 #, c-format
@@ -1124,14 +1096,14 @@ msgstr "വ്യക്തമല്ലാത്തത്"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
 #: ../calendar/libecal/e-cal.c:1737
-#, fuzzy, c-format
+#, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s എന്ന ഉപയോഗിക്കുന്ന വ്യക്തിയുടെ പ്രോക്സി സജ്ജമാക്കുന്നതിനായി %s-നുളള പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
-#, fuzzy, c-format
+#, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "%s-നുളള പാസ്‍വേര്‍ഡ് നല്‍കുക (ഉപയോക്താവ് %s)"
+msgstr "%s-നുളള പാസ്‍വേര്‍ഡ് നല്‍കുക (ഉപയോഗിക്കുന്ന ആള്‍ - %s)"
 
 #: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
@@ -1154,9 +1126,8 @@ msgid "Object not found"
 msgstr "ഒബ്ജക്ട് ലഭ്യമല്ല"
 
 #: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
-#, fuzzy
 msgid "Invalid object"
-msgstr "സാധുതയില്ലാത്ത "
+msgstr "സാധുതയില്ലാത്ത വസ്തു"
 
 #: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
@@ -1168,23 +1139,20 @@ msgstr "URI ലഭ്യമാണ്"
 
 #: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
-#, fuzzy
 msgid "Permission denied"
-msgstr "അനുവാദം നിഷേധിച്ചിരിക്കുന്നു"
+msgstr "അനുവാദം നിഷേധിച്ചിരിക്കുന്നു "
 
 #: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
-#, fuzzy
 msgid "Unknown User"
-msgstr "അപരിചിതമായ ഉപയോക്താവ്"
+msgstr "അപരിചിതമായ ഉപയോഗിക്കുന്ന ആള്‍"
 
 #: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
 msgstr "ഒബ്ജക്ട് ID നിലവിലുണ്ട്"
 
 #: ../calendar/libecal/e-cal.c:5172
-#, fuzzy
 msgid "Protocol not supported"
-msgstr "കീഴ്‍വഴക്കത്തിന് പിന്തുണ ലഭ്യമല്ല"
+msgstr "കീഴ്‍വഴക്കത്തിന് പിന്തുണ ലഭ്യമല്ല "
 
 #: ../calendar/libecal/e-cal.c:5174
 msgid "Operation has been canceled"
@@ -1309,9 +1277,8 @@ msgid "Signing is not supported by this cipher"
 msgstr ""
 
 #: ../camel/camel-cipher-context.c:128
-#, fuzzy
 msgid "Signing message"
-msgstr "ഈ സന്ദേശം അയ‍യ്‍ക്കുക"
+msgstr "ഈ സന്ദേശത്തിലേക്ക് പ്രവേശിക്കുന്നു"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
@@ -1326,18 +1293,16 @@ msgid "Encryption is not supported by this cipher"
 msgstr ""
 
 #: ../camel/camel-cipher-context.c:215
-#, fuzzy
 msgid "Encrypting message"
-msgstr "ഈ സന്ദേശം അയ‍യ്‍ക്കുക"
+msgstr "സന്ദേശം രഹസ്യഭാഷയിലാക്കുന്നു"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
 msgstr ""
 
 #: ../camel/camel-cipher-context.c:254
-#, fuzzy
 msgid "Decrypting message"
-msgstr "ഈ സന്ദേശം അയ‍യ്‍ക്കുക"
+msgstr "സന്ദേശത്തിന്‍റെ രഹസ്യഭാഷ മാറ്റുന്നു"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
@@ -1395,9 +1360,8 @@ msgid "You must be working online to complete this operation"
 msgstr ""
 
 #: ../camel/camel-exception.c:303
-#, fuzzy
 msgid "No description available"
-msgstr "വിവരണം ലഭ്യമല്ല"
+msgstr "വിവരണം ലഭ്യമല്ല "
 
 #: ../camel/camel-filter-driver.c:749
 #, c-format
@@ -1536,9 +1500,9 @@ msgid "Unsupported operation: search by expression: for %s"
 msgstr ""
 
 #: ../camel/camel-folder.c:1278
-#, fuzzy, c-format
+#, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
-msgstr "പിന്തുണയ്‌ക്കപ്പെടാത്ത സംക്രിയ"
+msgstr "പിന്തുണയ്ക്കപ്പെടാത്ത പ്രക്രിയ: UID ഉപയോഗിച്ച് തിരയുക: %s-നുളളത്"
 
 #: ../camel/camel-folder.c:1394
 msgid "Moving messages"
@@ -1549,9 +1513,8 @@ msgid "Copying messages"
 msgstr "സന്ദേശങ്ങള്‍ പകര്‍ത്തുന്നു"
 
 #: ../camel/camel-folder.c:1648
-#, fuzzy
 msgid "Learning junk"
-msgstr "മുന്നറിയിപ്പ്"
+msgstr "ആവശ്യമില്ലാത്തവ തിരയുന്നു"
 
 #: ../camel/camel-folder.c:1665
 msgid "Learning non-junk"
@@ -1598,7 +1561,6 @@ msgstr ""
 
 #: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
 #: ../camel/providers/nntp/camel-nntp-store.c:1271
-#, fuzzy
 msgid "Canceled."
 msgstr "റദ്ദാക്കിയിരിക്കുന്നു."
 
@@ -1791,9 +1753,8 @@ msgstr ""
 #: ../camel/camel-net-utils.c:790
 #: ../camel/providers/pop3/camel-pop3-store.c:445
 #: ../camel/providers/pop3/camel-pop3-store.c:526
-#, fuzzy
 msgid "Canceled"
-msgstr "റദ്ദാക്കപ്പെട്ടു"
+msgstr "റദ്ദാക്കപ്പെട്ടു "
 
 #: ../camel/camel-net-utils.c:516
 msgid "cannot create thread"
@@ -1873,9 +1834,8 @@ msgid "This option will connect to the server using an anonymous login."
 msgstr ""
 
 #: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:89
-#, fuzzy
 msgid "Authentication failed."
-msgstr "ഒഥന്‍റിക്കേഷന്‍ പരാജയപ്പെട്ടു."
+msgstr "ആധികാരികത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു."
 
 #: ../camel/camel-sasl-anonymous.c:131
 #, c-format
@@ -2202,9 +2162,8 @@ msgid "Malformed signature"
 msgstr ""
 
 #: ../camel/camel-smime-context.c:500
-#, fuzzy
 msgid "Processing error"
-msgstr "പെരുമാറ്റച്ചട്ട പിശക്"
+msgstr "പ്രവര്‍ത്തനത്തില്‍ പിശക്"
 
 #: ../camel/camel-smime-context.c:537
 msgid "No signed data in signature"
@@ -2223,9 +2182,8 @@ msgid "Cannot set message digests"
 msgstr ""
 
 #: ../camel/camel-smime-context.c:582 ../camel/camel-smime-context.c:587
-#, fuzzy
 msgid "Certificate import failed"
-msgstr "അധികൃതമാക്കല് പരാചയപ്പെട്ടു"
+msgstr "സര്‍ട്ടിഫിക്കേറ്റ് ഇംപോര്‍ട്ട് പ്രക്രിയ പരാജയപ്പെട്ടു"
 
 #: ../camel/camel-smime-context.c:597
 msgid "Certificate is the only message, cannot verify certificates"
@@ -2345,9 +2303,8 @@ msgstr "ചവറ്റുകുട്ട‌"
 
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:50
-#, fuzzy
 msgid "Junk"
-msgstr "ജൂണ്"
+msgstr "ആവശ്യമില്ലാത്തവ"
 
 #: ../camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
@@ -2710,9 +2667,8 @@ msgid "Automatically synchronize account locally"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:69
-#, fuzzy
 msgid "SOAP Settings"
-msgstr "സജ്ജീകരണം"
+msgstr "SOAP സജ്ജീകരണം"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:72
 msgid "Post Office Agent SOAP Port:"
@@ -2745,9 +2701,9 @@ msgid "Host or user not available in url"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:205
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%sദയവായി %s@%s-ന് ഗ്രൂപ്പ് തരത്തിലുളള പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:219
 #: ../camel/providers/imap/camel-imap-store.c:1360
@@ -2802,9 +2758,8 @@ msgid "GroupWise mail delivery via %s"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:167
-#, fuzzy
 msgid "Sending Message"
-msgstr "ഈ സന്ദേശം അയ‍യ്‍ക്കുക"
+msgstr "സന്ദേശം അയയ്ക്കുന്നു"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
@@ -2832,9 +2787,8 @@ msgstr ""
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#, fuzzy
 msgid "Connection to Server"
-msgstr "യോജനം"
+msgstr "സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുന്നു"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
@@ -2992,9 +2946,8 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:47
-#, fuzzy
 msgid "Namespace:"
-msgstr "നാമം:"
+msgstr "നെയിം സ്പെയിസ്:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
@@ -3080,9 +3033,8 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-store.c:699
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
-#, fuzzy
 msgid "STARTTLS not supported"
-msgstr "പ്രോട്ടോക്കോള് കണ്ടെത്തിയില്ല."
+msgstr "STARTTLS പിന്തുണയ്ക്കിന്നില്ല"
 
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
@@ -3286,9 +3238,8 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-store.c:215
 #: ../camel/providers/pop3/camel-pop3-store.c:180
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
-#, fuzzy
 msgid "Connection canceled"
-msgstr "യോജനം"
+msgstr "കണക്ഷന്‍ റദ്ദാക്കപ്പെട്ടിരിക്കുന്നു"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
@@ -3296,9 +3247,9 @@ msgid "Cannot authenticate to IMAP server %s using the %s authentication mechani
 msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s ദയവായി %s ഹോസ്റ്റില്‍ %s-നുളള IMAP പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
@@ -3715,9 +3666,8 @@ msgstr ""
 
 #: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:223
-#, fuzzy
 msgid "Message construction failed."
-msgstr "അധികൃതമാക്കല് പരാചയപ്പെട്ടു"
+msgstr "സന്ദശം ചിട്ടപ്പെടുത്തുന്നതില്‍ പരാജയം."
 
 #: ../camel/providers/local/camel-mbox-store.c:165
 #: ../camel/providers/local/camel-mbox-store.c:352
@@ -4054,9 +4004,9 @@ msgid "Authentication requested but no username provided"
 msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1153
-#, fuzzy, c-format
+#, c-format
 msgid "Please enter the NNTP password for %s@%s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s@%s-നുളള NNTP പാസ്‍വേര്‍ഡ് പരാജയപ്പെട്ടു"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
@@ -4187,9 +4137,8 @@ msgid "STLS not supported by server"
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-store.c:248
-#, fuzzy
 msgid "TLS negotiations failed"
-msgstr "അധികൃതമാക്കല് പരാചയപ്പെട്ടു"
+msgstr "TLS ഇടപാടുകള്‍ പരാജയപ്പെട്ടു"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:254
 msgid "TLS is not available in this build"
@@ -4224,9 +4173,9 @@ msgid "Failed to authenticate on POP server %s: %s"
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-store.c:474
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s ദയവായി %s ഹോസ്റ്റില്‍ %s-നുളള POP പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:529
 #: ../camel/providers/pop3/camel-pop3-store.c:542
@@ -4425,9 +4374,9 @@ msgid "SMTP server %s does not support requested authentication type %s."
 msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:521
-#, fuzzy, c-format
+#, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s ദയവായി %s ഹോസ്റ്റിലുളള %s-ന് SMTP പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:540
 #, c-format
@@ -4563,9 +4512,8 @@ msgid "Competition"
 msgstr ""
 
 #: ../libedataserver/e-categories.c:250
-#, fuzzy
 msgid "Favorites"
-msgstr "വ‍ര്ഗ്ഗങ്ങള്"
+msgstr "ഇഷ്ടമുളളവ"
 
 #: ../libedataserver/e-categories.c:251
 msgid "Gifts"
@@ -4576,9 +4524,8 @@ msgid "Goals/Objectives"
 msgstr ""
 
 #: ../libedataserver/e-categories.c:253
-#, fuzzy
 msgid "Holiday"
-msgstr "ഇന്ന്"
+msgstr "അവധി"
 
 #: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
@@ -4590,14 +4537,12 @@ msgid "Hot Contacts"
 msgstr ""
 
 #: ../libedataserver/e-categories.c:257
-#, fuzzy
 msgid "Ideas"
-msgstr "ഇന്ന്"
+msgstr "ആശയങ്ങള്‍"
 
 #: ../libedataserver/e-categories.c:258
-#, fuzzy
 msgid "International"
-msgstr "ഇന്‍റര്‍നാഷണല്‍"
+msgstr "ഇന്‍റര്‍നാഷണല്‍ "
 
 #: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
@@ -4612,22 +4557,20 @@ msgid "Personal"
 msgstr "വ്യക്തിപരം"
 
 #: ../libedataserver/e-categories.c:262
-#, fuzzy
 msgid "Phone Calls"
-msgstr "ഫോണ്്"
+msgstr "ഫോണ്‍ കോളുകള്‍"
 
 #: ../libedataserver/e-categories.c:263
 msgid "Status"
 msgstr "അവസ്ഥ"
 
 #: ../libedataserver/e-categories.c:264
-#, fuzzy
 msgid "Strategies"
-msgstr "വ‍ര്ഗ്ഗങ്ങള്"
+msgstr "തന്ത്രങ്ങള്‍"
 
 #: ../libedataserver/e-categories.c:265
 msgid "Suppliers"
-msgstr ""
+msgstr "വിതരണക്കാര്‍"
 
 #: ../libedataserver/e-categories.c:266
 msgid "Time & Expenses"
@@ -4638,9 +4581,8 @@ msgid "VIP"
 msgstr ""
 
 #: ../libedataserver/e-categories.c:268
-#, fuzzy
 msgid "Waiting"
-msgstr "മുന്നറിയിപ്പ്"
+msgstr "കാത്തിരിക്കുന്നു"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -4781,52 +4723,44 @@ msgid ""
 msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.c:435
-#, fuzzy
 msgid "Category"
-msgstr "വിഭാഗം"
+msgstr "വിഭാഗം "
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
-#, fuzzy
 msgid "Category Icon"
-msgstr "വിഭാഗങ്ങള്:"
+msgstr "വിഭാഗത്തിനുളള പ്രതിരൂപം"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:2
-#, fuzzy
 msgid "Category Properties"
-msgstr "വ‍ര്ഗ്ഗങ്ങള്"
+msgstr "വിഭാഗത്തിനുളള വിശേഷതകള്‍"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:3
-#, fuzzy
 msgid "Category _Color"
-msgstr "വിഭാഗങ്ങള്:"
+msgstr "വിഭാഗത്തിനുളള നിറം (_C)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:4
-#, fuzzy
 msgid "Category _Icon"
-msgstr "വിഭാഗങ്ങള്:"
+msgstr "വിഭാഗത്തിനുളള പ്രതിരൂപം (_I)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:5
-#, fuzzy
 msgid "Category _Name"
-msgstr "വിഭാഗങ്ങള്:"
+msgstr "വിഭാഗത്തിനുളള പേര് (_N)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "Item(s) belong to these _categories:"
 msgstr "ഈ വിഭാഗത്തില്‍പ്പെട്ട വസ്തുക്കള്‍: (_c)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:7
-#, fuzzy
 msgid "_Available Categories:"
-msgstr "ലഭ്യമായ വിഭാഗങ്ങള്‍: (_A)"
+msgstr "ലഭ്യമായ വിഭാഗങ്ങള്‍: (_A) "
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
 msgstr "ചിട്ട"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
-#, fuzzy
 msgid "categories"
-msgstr "വിഭാഗങ്ങള്‍"
+msgstr "വിഭാഗങ്ങള്‍ "
 
 #: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
@@ -4849,29 +4783,24 @@ msgid "*"
 msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:3
-#, fuzzy
 msgid "<b>Show Contacts</b>"
-msgstr "<b>അവസ്ഥ</b>"
+msgstr "<b>വിലാസങ്ങള്‍ കാണിക്കുക</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
-#, fuzzy
 msgid "<b>_Contacts</b>"
-msgstr "<b>അവസ്ഥ</b>"
+msgstr "<b>വിലാസങ്ങള്‍</b> (_C)"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
-#, fuzzy
 msgid "Address Book"
-msgstr "വിലാസപുസ്തകം"
+msgstr "മേല്‍വിലാസങ്ങള്‍"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
-#, fuzzy
 msgid "Address _Book:"
-msgstr "വിലാസം"
+msgstr "മേല്‍വിലാസങ്ങള്‍: (_B)"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-#, fuzzy
 msgid "C_ategory:"
-msgstr "വിഭാഗങ്ങള്:"
+msgstr "വിഭാഗങ്ങള്‍: (_a)"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
@@ -4879,14 +4808,12 @@ msgid "Contacts"
 msgstr "കോണ്‍ടാക്റ്റുകള്‍"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:9
-#, fuzzy
 msgid "Search"
-msgstr "തിരയുക"
+msgstr "തിരയുക "
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:10
-#, fuzzy
 msgid "_Search:"
-msgstr "തിരയുക: (_S)"
+msgstr "തിരയുക: (_S) "
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2043
@@ -4896,19 +4823,18 @@ msgstr ""
 
 #. Edit Contact item
 #: ../libedataserverui/e-name-selector-entry.c:2059
-#, fuzzy, c-format
+#, c-format
 msgid "_Edit %s"
-msgstr "ചിട്ട"
+msgstr "%s-ല്‍ മാറ്റം വരുത്തുക (_E)"
 
 #: ../libedataserverui/e-name-selector-list.c:479
-#, fuzzy, c-format
+#, c-format
 msgid "_Delete %s"
-msgstr "നീക്കം ചെയ്യ‍ുക"
+msgstr "%s മായിച്ചു കളയുക (_D)"
 
 #: ../libedataserverui/e-passwords.c:854
-#, fuzzy
 msgid "_Remember this passphrase"
-msgstr "ഈ പാസ്സ്‍വേ‍ര്ഡ് ഓര്ക്കുക"
+msgstr "ഈ പാസ്സ് ഫ്രെയിസ് ഓര്‍ത്തിരിക്കുക (_R)"
 
 #: ../libedataserverui/e-passwords.c:855
 msgid "_Remember this passphrase for the remainder of this session"
@@ -4928,55 +4854,49 @@ msgid "Select destination"
 msgstr ""
 
 #: ../libedataserverui/e-source-selector-dialog.c:154
-#, fuzzy
 msgid "_Destination"
-msgstr "വിവരണം"
+msgstr "ലക്ഷ്യസ്ഥാനംന (_D)"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
 #: ../servers/exchange/storage/exchange-account.c:935
-#, fuzzy, c-format
+#, c-format
 msgid "Enter password for %s"
-msgstr "%s അടയാളവാക്യം%s(ഉപയോക്താവ്%s)"
+msgstr "%s-നുളള പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
 #: ../servers/exchange/storage/exchange-account.c:940
-#, fuzzy
 msgid "Enter password"
-msgstr "പാസ്‍വേര്‍ഡ് നല്‍കുക"
+msgstr "പാസ്‍വേര്‍ഡ് നല്‍കുക "
 
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
-#, fuzzy
 msgid "Owner"
-msgstr "ഉടമസ്ഥന്‍"
+msgstr "ഉടമസ്ഥന്‍ "
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
 msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
-#, fuzzy
 msgid "Editor"
-msgstr "എഡിറ്റര്‍"
+msgstr "എഡിറ്റര്‍ "
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
 msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
-#, fuzzy
 msgid "Author"
-msgstr "ഓസ്‌ട്രിയ"
+msgstr "രചയിതാവ്"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
 msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
-#, fuzzy
 msgid "Reviewer"
-msgstr "തിരനോട്ടം"
+msgstr "വീണ്ടും പരിശോധിക്കുന്നതിനുളള സംവിധാനം"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
@@ -4987,14 +4907,12 @@ msgid "None"
 msgstr "ഒന്നുമില്ല"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
-#, fuzzy
 msgid "Custom"
-msgstr "യഥേഷ്ടം"
+msgstr "യഥേഷ്ടം "
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:144
-#, fuzzy
 msgid "Select User"
-msgstr "ഉപയോക്താവിനെ തിരഞ്ഞെടുക്കുക"
+msgstr "ഉപയോഗിക്കുന്ന ആള്‍ ആര് എന്ന് തിരഞ്ഞെടുക്കുക"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:182
 msgid "Addressbook..."
@@ -5059,14 +4977,13 @@ msgstr ""
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
 #: ../servers/exchange/storage/exchange-account.c:635
-#, fuzzy, c-format
+#, c-format
 msgid "%s's Folders"
-msgstr "കൂടുകള്"
+msgstr "%s-ന്‍റെ ഫോള്‍ഡറുകള്‍"
 
 #: ../servers/exchange/storage/exchange-account.c:1241
-#, fuzzy
 msgid "Personal Folders"
-msgstr "വ്യക്തിപരം"
+msgstr "വ്യക്തിപരമായ ഫോള്‍ഡറുകള്‍"
 
 #: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
@@ -5083,23 +5000,20 @@ msgid "Global Address List"
 msgstr ""
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
-#, fuzzy
 msgid "Deleted Items"
-msgstr "നീക്കം ചെയ‌്തൂ"
+msgstr "നീക്കം ചെയ്തിരിക്കുന്ന വസ്തുക്കള്‍"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "Drafts"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
-#, fuzzy
 msgid "Journal"
-msgstr "ജോര്‌ദാന്‌"
+msgstr "ജേര്‍ണല്‍"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
-#, fuzzy
 msgid "Notes"
-msgstr "നോട്ടുകള്‍"
+msgstr "കുറിപ്പുകള്‍"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
@@ -5110,9 +5024,8 @@ msgid "Sent Items"
 msgstr ""
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
-#, fuzzy
 msgid "Tasks"
-msgstr "ജോലികള്‍"
+msgstr "ജോലികള്‍ "
 
 #: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
@@ -5131,9 +5044,8 @@ msgid "Bad parameter"
 msgstr ""
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
-#, fuzzy
 msgid "Evolution Addressbook file backend"
-msgstr "ഇവലൂഷന് വിലാസപുസ്തകം"
+msgstr "Evolution-നിലുളള മേല്‍വിലാസങ്ങളുടെ ഫയലിന്‍റെ ബാക്കെന്‍ഡ്"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
