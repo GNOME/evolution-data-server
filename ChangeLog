@@ -1,3 +1,9 @@
+2006-09-01  Harish Krishnaswamy  <kharish@novell.com>
+
+	* configure.in, camel/providers/Makefile.am: 
+	Make IMAP4rev1 provider a conditional feature,
+	turned off by default. Fixes #324118.
+
 2006-08-21  Srinivasa Ragavan <sragavan@novell.com>
 
 	* configure.in, NEWS: EDS 1.7.92 release.
