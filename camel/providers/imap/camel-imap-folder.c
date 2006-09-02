@@ -37,11 +37,11 @@
 /*#include "libedataserver/e-path.h"*/
 #include "libedataserver/e-time-utils.h"
 #include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-msgport.h"
 
 #include "camel-imap-folder.h"
 #include "camel-imap-command.h"
 #include "camel-imap-message-cache.h"
+#include "camel-imap-private.h"
 #include "camel-imap-search.h"
 #include "camel-imap-store.h"
 #include "camel-imap-summary.h"
@@ -69,7 +69,6 @@
 #include "camel-debug.h"
 #include "camel-i18n.h"
 #include "camel/camel-store-summary.h"
-
 
 #define d(x) 
 
@@ -190,6 +189,12 @@ camel_imap_folder_init (gpointer object, gpointer klass)
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
 	
+	imap_folder->priv = g_malloc0(sizeof(*imap_folder->priv));
+#ifdef ENABLE_THREADS
+	imap_folder->priv->search_lock = e_mutex_new(E_MUTEX_SIMPLE);
+	imap_folder->priv->cache_lock = e_mutex_new(E_MUTEX_REC);
+#endif
+
 	imap_folder->need_rescan = TRUE;
 }
 
@@ -342,7 +347,9 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 	else if (validity != imap_summary->validity) {
 		imap_summary->validity = validity;
 		camel_folder_summary_clear (folder->summary);
+		CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 		camel_imap_message_cache_clear (imap_folder->cache);
+		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 		imap_folder->need_rescan = FALSE;
 		camel_imap_folder_changed (folder, exists, NULL, ex);
 		return;
@@ -416,6 +423,12 @@ imap_finalize (CamelObject *object)
 		camel_object_unref (CAMEL_OBJECT (imap_folder->search));
 	if (imap_folder->cache)
 		camel_object_unref (CAMEL_OBJECT (imap_folder->cache));
+
+#ifdef ENABLE_THREADS
+	e_mutex_destroy(imap_folder->priv->search_lock);
+	e_mutex_destroy(imap_folder->priv->cache_lock);
+#endif
+	g_free(imap_folder->priv);
 }
 
 static int
@@ -462,28 +475,26 @@ imap_rename (CamelFolder *folder, const char *new)
 	CamelImapStore *imap_store = (CamelImapStore *)folder->parent_store;
 	char *folder_dir, *summary_path, *state_file;
 	char *folders;
-	
-	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
-	
+
 	folders = g_strconcat (imap_store->storage_path, "/folders", NULL);
 	folder_dir = imap_path_to_physical (folders, new);
 	g_free (folders);
 	summary_path = g_strdup_printf("%s/summary", folder_dir);
-	
+
+	CAMEL_IMAP_FOLDER_LOCK (folder, cache_lock);
 	camel_imap_message_cache_set_path(imap_folder->cache, folder_dir);
-	
+	CAMEL_IMAP_FOLDER_UNLOCK (folder, cache_lock);
+
 	camel_folder_summary_set_filename(folder->summary, summary_path);
-	
+
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
 	g_free(state_file);
-	
+
 	g_free(summary_path);
 	g_free(folder_dir);
-	
+
 	((CamelFolderClass *)disco_folder_class)->rename(folder, new);
-	
-	CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
 }
 
 static void
@@ -1191,23 +1202,21 @@ imap_append_offline (CamelFolder *folder, CamelMimeMessage *message,
 	char *uid;
 
 	uid = get_temp_uid ();
-	
-	CAMEL_SERVICE_LOCK (imap_store, connect_lock);
-	
+
 	camel_imap_summary_add_offline (folder->summary, uid, message, info);
+	CAMEL_IMAP_FOLDER_LOCK (folder, cache_lock);
 	camel_imap_message_cache_insert_wrapper (cache, uid, "",
 						 CAMEL_DATA_WRAPPER (message), ex);
-	
+	CAMEL_IMAP_FOLDER_UNLOCK (folder, cache_lock);
+
 	changes = camel_folder_change_info_new ();
 	camel_folder_change_info_add_uid (changes, uid);
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed",
+				    changes);
 	camel_folder_change_info_free (changes);
 
 	camel_disco_diary_log (CAMEL_DISCO_STORE (imap_store)->diary,
 			       CAMEL_DISCO_DIARY_FOLDER_APPEND, folder, uid);
-	
-	CAMEL_SERVICE_UNLOCK (imap_store, connect_lock);
-	
 	if (appended_uid)
 		*appended_uid = uid;
 	else
@@ -1318,22 +1327,21 @@ imap_append_online (CamelFolder *folder, CamelMimeMessage *message,
 	CamelImapResponse *response;
 	char *uid;
 	int count;
-	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
-	
+
 	count = camel_folder_summary_count (folder->summary);
-	if (!(response = do_append (folder, message, info, &uid, ex))) {
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	response = do_append (folder, message, info, &uid, ex);
+	if (!response)
 		return;
-	}
 	
 	if (uid) {
 		/* Cache first, since freeing response may trigger a
 		 * summary update that will want this information.
 		 */
+		CAMEL_IMAP_FOLDER_LOCK (folder, cache_lock);
 		camel_imap_message_cache_insert_wrapper (
 			CAMEL_IMAP_FOLDER (folder)->cache, uid,
 			"", CAMEL_DATA_WRAPPER (message), ex);
+		CAMEL_IMAP_FOLDER_UNLOCK (folder, cache_lock);
 		if (appended_uid)
 			*appended_uid = uid;
 		else
@@ -1344,10 +1352,10 @@ imap_append_online (CamelFolder *folder, CamelMimeMessage *message,
 	camel_imap_response_free (store, response);
 	
 	/* Make sure a "folder_changed" is emitted. */
+	CAMEL_SERVICE_LOCK (store, connect_lock);
 	if (store->current_folder != folder ||
 	    camel_folder_summary_count (folder->summary) == count)
 		imap_refresh_info (folder, ex);
-	
 	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 }
 
@@ -1360,20 +1368,19 @@ imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
 	CamelImapResponse *response;
 	char *uid;
 	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
-	
-	if (!(response = do_append (folder, message, info, &uid, ex))) {
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	response = do_append (folder, message, info, &uid, ex);
+	if (!response)
 		return;
-	}
 	
 	if (uid) {
 		CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 		const char *olduid = camel_message_info_uid (info);
 		
+		CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 		camel_imap_message_cache_copy (imap_folder->cache, olduid,
 					       imap_folder->cache, uid, ex);
-		
+		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
+
 		if (appended_uid)
 			*appended_uid = uid;
 		else
@@ -1382,8 +1389,6 @@ imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
 		*appended_uid = NULL;
 	
 	camel_imap_response_free (store, response);
-	
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 }
 
 
@@ -1400,9 +1405,17 @@ imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 	CamelMessageInfo *mi;
 	char *uid, *destuid;
 	int i;
-	
+
+	/* We grab the store's command lock first, and then grab the
+	 * source and destination cache_locks. This way we can't
+	 * deadlock in the case where we're simultaneously also trying
+	 * to copy messages in the other direction from another thread.
+	 */
 	CAMEL_SERVICE_LOCK (store, connect_lock);
-	
+	CAMEL_IMAP_FOLDER_LOCK (source, cache_lock);
+	CAMEL_IMAP_FOLDER_LOCK (dest, cache_lock);
+	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+
 	if (transferred_uids) {
 		*transferred_uids = g_ptr_array_new ();
 		g_ptr_array_set_size (*transferred_uids, uids->len);
@@ -1438,15 +1451,16 @@ imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 		if (delete_originals)
 			camel_folder_delete_message (source, uid);
 	}
-	
+
+	CAMEL_IMAP_FOLDER_UNLOCK (dest, cache_lock);
+	CAMEL_IMAP_FOLDER_UNLOCK (source, cache_lock);
+
 	camel_object_trigger_event (CAMEL_OBJECT (dest), "folder_changed", changes);
 	camel_folder_change_info_free (changes);
 
 	camel_disco_diary_log (CAMEL_DISCO_STORE (store)->diary,
 			       CAMEL_DISCO_DIARY_FOLDER_TRANSFER,
 			       source, dest, uids, delete_originals);
-	
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 }
 
 static void
@@ -1476,14 +1490,22 @@ handle_copyuid (CamelImapResponse *response, CamelFolder *source,
 
 	src = imap_uid_set_to_array (source->summary, srcset);
 	dest = imap_uid_set_to_array (destination->summary, destset);
-	
+
 	if (src && dest && src->len == dest->len) {
+		/* We don't have to worry about deadlocking on the
+		 * cache locks here, because we've got the store's
+		 * command lock too, so no one else could be here.
+		 */
+		CAMEL_IMAP_FOLDER_LOCK (source, cache_lock);
+		CAMEL_IMAP_FOLDER_LOCK (destination, cache_lock);
 		for (i = 0; i < src->len; i++) {
 			camel_imap_message_cache_copy (scache, src->pdata[i],
 						       dcache, dest->pdata[i],
 						       NULL);
 		}
-		
+		CAMEL_IMAP_FOLDER_UNLOCK (source, cache_lock);
+		CAMEL_IMAP_FOLDER_UNLOCK (destination, cache_lock);
+
 		imap_uid_array_free (src);
 		imap_uid_array_free (dest);
 		return;
@@ -1545,9 +1567,7 @@ imap_transfer_online (CamelFolder *source, GPtrArray *uids,
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
 	
 	/* Now copy the messages */
-	CAMEL_SERVICE_LOCK (store, connect_lock);
 	do_copy(source, uids, dest, delete_originals, ex);
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 	if (camel_exception_is_set (ex))
 		return;
 
@@ -1567,14 +1587,11 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 			 gboolean delete_originals, CamelException *ex)
 {
 	CamelDiscoDiary *diary = CAMEL_DISCO_STORE (source->parent_store)->diary;
-	CamelStore *store = source->parent_store;
 	GPtrArray *realuids;
 	int first, i;
 	const char *uid;
 	CamelMimeMessage *message;
 	CamelMessageInfo *info;
-	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
 	
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
 	
@@ -1632,12 +1649,10 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 	}
 
 	g_ptr_array_free (realuids, FALSE);
-	
+
 	/* FIXME */
 	if (transferred_uids)
 		*transferred_uids = NULL;
-	
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 }
 
 static GPtrArray *
@@ -1645,36 +1660,36 @@ imap_search_by_expression (CamelFolder *folder, const char *expression, CamelExc
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	GPtrArray *matches;
-	
+
 	/* we could get around this by creating a new search object each time,
 	   but i doubt its worth it since any long operation would lock the
 	   command channel too */
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
-	
+	CAMEL_IMAP_FOLDER_LOCK(folder, search_lock);
+
 	camel_folder_search_set_folder (imap_folder->search, folder);
 	matches = camel_folder_search_search(imap_folder->search, expression, NULL, ex);
-	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
-	
+
+	CAMEL_IMAP_FOLDER_UNLOCK(folder, search_lock);
+
 	return matches;
 }
 
 static GPtrArray *
-imap_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+imap_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
 {
-	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER(folder);
 	GPtrArray *matches;
-	
+
 	if (uids->len == 0)
-		return g_ptr_array_new ();
-	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
-	
+		return g_ptr_array_new();
+
+	CAMEL_IMAP_FOLDER_LOCK(folder, search_lock);
+
 	camel_folder_search_set_folder(imap_folder->search, folder);
 	matches = camel_folder_search_search(imap_folder->search, expression, uids, ex);
-	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
-	
+
+	CAMEL_IMAP_FOLDER_UNLOCK(folder, search_lock);
+
 	return matches;
 }
 
@@ -1682,14 +1697,14 @@ static void
 imap_search_free (CamelFolder *folder, GPtrArray *uids)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
-	
+
 	g_return_if_fail (imap_folder->search);
-	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
-	
+
+	CAMEL_IMAP_FOLDER_LOCK(folder, search_lock);
+
 	camel_folder_search_free_result (imap_folder->search, uids);
-	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+
+	CAMEL_IMAP_FOLDER_UNLOCK(folder, search_lock);
 }
 
 static CamelMimeMessage *get_message (CamelImapFolder *imap_folder,
@@ -2041,7 +2056,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream = NULL;
 	int retry;
-	
+
 	mi = (CamelImapMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
 	if (mi == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
@@ -2051,7 +2066,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	   since we get stuff from the cache anyway.  It affects a busted connection though. */
-	if ((stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, NULL))
+	if ( (stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, NULL))
 	     && (msg = get_message_simple(imap_folder, uid, stream, ex)))
 		goto done;
 
@@ -2080,7 +2095,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				char *body, *found_uid;
 				int i;
 				
-				CAMEL_SERVICE_LOCK (store, connect_lock);
+				CAMEL_SERVICE_LOCK(store, connect_lock);
 				if (!camel_imap_store_connected(store, ex)) {
 					CAMEL_SERVICE_UNLOCK(store, connect_lock);
 					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -2089,7 +2104,8 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				}
 				
 				response = camel_imap_command (store, folder, ex, "UID FETCH %s BODY", uid);
-				
+				CAMEL_SERVICE_UNLOCK(store, connect_lock);
+
 				if (response) {
 					for (i = 0, body = NULL; i < response->untagged->len; i++) {
 						fetch_data = parse_fetch_response (imap_folder, response->untagged->pdata[i]);
@@ -2109,7 +2125,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 						imap_parse_body ((const char **) &body, folder, mi->info.content);
 						camel_folder_summary_touch (folder->summary);
 					}
-					
+
 					if (fetch_data)
 						g_datalist_clear (&fetch_data);
 					
@@ -2117,8 +2133,6 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				} else {
 					camel_exception_clear(ex);
 				}
-				
-				CAMEL_SERVICE_UNLOCK (store, connect_lock);
 			}
 
 			if (camel_debug_start("imap:folder")) {
@@ -2630,7 +2644,9 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 			}
 			
 			camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
+			CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, camel_message_info_uid (info));
+			CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 			camel_folder_summary_remove (folder->summary, info);
 			camel_message_info_free(info);
 		}
@@ -2677,23 +2693,36 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 	char *found_uid;
 	int i;
 	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	/* EXPUNGE responses have to modify the cache, which means
+	 * they have to grab the cache_lock while holding the
+	 * connect_lock.
+
+	 * Because getting the service lock may cause MUCH unecessary
+	 * delay when we already have the data locally, we do the
+	 * locking separately.  This could cause a race
+	 * getting the same data from the cache, but that is only
+	 * an inefficiency, and bad luck.
+	 */
+	CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 	stream = camel_imap_message_cache_get (imap_folder->cache, uid, section_text, ex);
 	if (!stream && (!strcmp (section_text, "HEADER") || !strcmp (section_text, "0"))) {
 		camel_exception_clear (ex);
 		stream = camel_imap_message_cache_get (imap_folder->cache, uid, "", ex);
 	}
+	CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 	
-	if (stream || cache_only) {
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	if (stream || cache_only)
 		return stream;
-	}
-	
+
 	camel_exception_clear(ex);
-	
+
+	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
+
 	if (!camel_imap_store_connected(store, ex)) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("This message is not currently available"));
+		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 		CAMEL_SERVICE_UNLOCK (store, connect_lock);
 		return NULL;
 	}
@@ -2708,9 +2737,11 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 					       "UID FETCH %s BODY.PEEK[%s]",
 					       uid, section_text);
 	}
+	/* We won't need the connect_lock again after this. */
+	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 	
 	if (!response) {
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 		return NULL;
 	}
 	
@@ -2724,9 +2755,8 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 		g_datalist_clear (&fetch_data);
 		stream = NULL;
 	}
-	
 	camel_imap_response_free (store, response);
-	
+	CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 	if (!stream) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				      _("Could not find message body in FETCH response."));
@@ -2734,8 +2764,6 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const char *uid,
 		camel_object_ref (CAMEL_OBJECT (stream));
 		g_datalist_clear (&fetch_data);
 	}
-	
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
 	
 	return stream;
 }
@@ -2747,8 +2775,6 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 	char *start, *part_spec = NULL, *body = NULL, *uid = NULL, *idate = NULL;
 	gboolean cache_header = TRUE, header = FALSE;
 	size_t body_len = 0;
-	
-	CAMEL_SERVICE_ASSERT_LOCKED (((CamelFolder *) imap_folder)->parent_store, connect_lock);
 	
 	if (*response != '(') {
 		long seq;
@@ -2868,9 +2894,11 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 		if (header && !cache_header) {
 			stream = camel_stream_mem_new_with_buffer (body, body_len);
 		} else {
+			CAMEL_IMAP_FOLDER_LOCK (imap_folder, cache_lock);
 			stream = camel_imap_message_cache_insert (imap_folder->cache,
 								  uid, part_spec,
 								  body, body_len, NULL);
+			CAMEL_IMAP_FOLDER_UNLOCK (imap_folder, cache_lock);
 			if (stream == NULL)
 				stream = camel_stream_mem_new_with_buffer (body, body_len);
 		}

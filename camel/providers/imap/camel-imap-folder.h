@@ -44,6 +44,8 @@ extern "C" {
 
 struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
+
+        struct _CamelImapFolderPrivate *priv;
 	
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;

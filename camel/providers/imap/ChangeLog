@@ -1,3 +1,10 @@
+2006-09-01  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.[ch]:
+	* camel-imap-private.h:
+	Show messages from cache, before checking for new mails.
+	Fixes #350250
+	
 2006-08-28  Sankar P  <psankar@novell.com>
 
 	* camel-imap-folder.c (imap_update_summary):
