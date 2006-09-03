@@ -1,3 +1,4 @@
+# translation of ml.po to Malayalam
 # translation of evolution-data-server.HEAD.ml.po to Malayalam
 # translation of evolution.HEAD.ml.po to Malayalam
 # This file is distributed under the same license as the PACKAGE package.
@@ -8,10 +9,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.HEAD.ml\n"
+"Project-Id-Version: ml\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-31 09:42+0200\n"
-"PO-Revision-Date: 2006-09-03 01:09+0530\n"
+"PO-Revision-Date: 2006-09-03 12:13+0530\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam\n"
 "MIME-Version: 1.0\n"
@@ -1681,7 +1682,7 @@ msgstr ""
 #: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr ""
+msgstr "'%s' പൂട്ടുവാന്‍ സാധ്യമായില്ല: lock-helper-ല്‍ സന്പ്രദായത്തില്‍ പിശക്"
 
 #: ../camel/camel-lock-client.c:204
 #, c-format
@@ -1696,17 +1697,17 @@ msgstr "%s-നുളള ലോക്ക് ഫയല്‍ ഉണ്ടാക്
 #: ../camel/camel-lock.c:157
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr ""
+msgstr "%s-നുളള ലോക്ക് ഫയല്‍ ലഭ്യമാകുന്നതിനുളള സമയം കഴിഞ്ഞിരിക്കുന്നു. പിന്നീട് വീണ്ടും ശ്രമിക്കുക."
 
 #: ../camel/camel-lock.c:212
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr ""
+msgstr "fcnt(2) ഉപയോഗിച്ച് പൂട്ടുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/camel-lock.c:275
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr ""
+msgstr "flock(2) ഉപയോഗിച്ച് പൂട്ടുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/camel-movemail.c:104
 #, c-format
@@ -1726,7 +1727,7 @@ msgstr "താല്‍ക്കാലിക മെയില്‍ ഫയല്�
 #: ../camel/camel-movemail.c:154
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr ""
+msgstr "temp ഫയല്‍ %s-ല്‍ മെയില്‍ സൂക്ഷിക്കുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/camel-movemail.c:184
 #, c-format
@@ -1741,7 +1742,7 @@ msgstr "fork ചെയ്യുവാന്‍ സാധ്യമായില്
 #: ../camel/camel-movemail.c:234
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr ""
+msgstr "Movemail പ്രോഗ്രാം പരാജയപ്പെട്ടു: %s"
 
 #: ../camel/camel-movemail.c:235
 msgid "(Unknown error)"
@@ -1812,11 +1813,11 @@ msgstr ""
 #: ../camel/camel-offline-journal.c:163 ../camel/camel-offline-journal.c:186
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ന് ഓഫ്‍ലൈന്‍ ജേര്‍ണല്‍ എഴുതുവാന്‍ സാധ്യമല്ല: %s"
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "വിര്‍ച്ച്വല്‍ ഫോള്‍ഡര്‍ ഈ മെയില്‍ പ്രൊവൈഡര്‍"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
@@ -1825,7 +1826,7 @@ msgstr ""
 #: ../camel/camel-provider.c:188
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
+msgstr "%s ലോഡ് ചെയ്യുവാന്‍ സാധ്യമല്ല: ഈ സിസ്റ്റത്തില്‍ ഘടകങ്ങള്‍ ലോഡ് ചെയ്യുന്നത് അനുവദിക്കുന്നില്ല."
 
 #: ../camel/camel-provider.c:197
 #, c-format
@@ -1884,6 +1885,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
+"സര്‍വറിന്‍റെ പിന്തുണ ലഭ്യമെങ്കില്‍, ഈ ഉപാധി നിങ്ങളെ സര്‍വറിലേക്ക് ഒരു സുരക്ഷിത CRAM-MD5 "
+"പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് കണക്ട് ചെയ്യിക്കുന്നു."
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
@@ -1894,14 +1897,16 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
+"സര്‍വറിന്‍റെ പിന്തുണ ലഭ്യമെങ്കില്‍, ഈ ഉപാധി നിങ്ങളെ സര്‍വറിലേക്ക് ഒരു സുരക്ഷിത DIGEST-MD5 "
+"പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് കണക്ട് ചെയ്യിക്കുന്നു."
 
 #: ../camel/camel-sasl-digest-md5.c:818
 msgid "Server challenge too long (>2048 octets)"
-msgstr ""
+msgstr "സര്‍വര്‍ ചാലഞ്ച് വളരെ വലുതാണ് (>2048 ഒക്റ്ററ്റ്)"
 
 #: ../camel/camel-sasl-digest-md5.c:827
 msgid "Server challenge invalid\n"
-msgstr ""
+msgstr "അസാധുവായ സര്‍വര്‍ ചാലഞ്ച്\n"
 
 #: ../camel/camel-sasl-digest-md5.c:833
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
@@ -1917,7 +1922,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:891
 msgid "Server response does not match"
-msgstr ""
+msgstr "സര്‍വറിന്‍റെ മറുപടി ചേരുന്നില്ല"
 
 #: ../camel/camel-sasl-gssapi.c:57
 msgid "GSSAPI"
@@ -1925,7 +1930,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:59
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
+msgstr "Kerberos 5-ലൂടെ ആധികാരികത ഉറപ്പാക്കി ഈ ഉപാധി സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുന്നു."
 
 #: ../camel/camel-sasl-gssapi.c:157
 msgid ""
@@ -1935,7 +1940,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
-msgstr ""
+msgstr "തെറ്റായ രീതിയില്‍ രൂപപ്പെട്ട target_name പരാമീറ്റര്‍ നല്‍കിയിരിക്കുന്നു."
 
 #: ../camel/camel-sasl-gssapi.c:165
 msgid ""
@@ -1982,11 +1987,11 @@ msgstr ""
 #: ../camel/camel-sasl-kerberos4.c:229
 #: ../camel/providers/imap/camel-imap-store.c:1281
 msgid "Bad authentication response from server."
-msgstr ""
+msgstr "ആധികാരികത ഉറപ്പാക്കുന്നതില്‍ സര്‍വറില്‍ നിന്നും തെറ്റായ മറുപടി."
 
 #: ../camel/camel-sasl-gssapi.c:307
 msgid "Unsupported security layer."
-msgstr ""
+msgstr "പിന്തുണയില്ലാത്ത സെക്ക്യൂരിറ്റി ലെയര്‍"
 
 #: ../camel/camel-sasl-kerberos4.c:45
 msgid "Kerberos 4"
@@ -2025,7 +2030,7 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr ""
+msgstr "NTLM / സുരക്ഷിത പാസ്‍വേര്‍ഡിലൂടെ ഒരു Windows സര്‍വറിലേക്ക് ആധികാരികത ഉറപ്പാക്കി കണ്ക്ട് ചെയ്യുന്നതിനായി ഈ ഉപാധി സഹായിക്കുന്നു "
 
 #: ../camel/camel-sasl-plain.c:34
 msgid "PLAIN"
@@ -2037,19 +2042,19 @@ msgstr "SMTP-യ്ക്ക് മുന്പ് POP "
 
 #: ../camel/camel-sasl-popb4smtp.c:39
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
+msgstr "SMTP ശ്രമിക്കുന്നതിന് മുന്പ് ഒരു POP കണക്ഷനെ ഈ ഉപാധി അധികാരപ്പെടുത്തുന്നു"
 
 #: ../camel/camel-sasl-popb4smtp.c:104
 msgid "POP Source URI"
-msgstr ""
+msgstr "POP Source URI"
 
 #: ../camel/camel-sasl-popb4smtp.c:107
 msgid "POP Before SMTP auth using an unknown transport"
-msgstr ""
+msgstr "SMTP auth-ന് മുന്പുളള POP ഒരു non-pop അപരിചിതമായ സംവിധാനം ഉപയോഗിക്കുന്നു"
 
 #: ../camel/camel-sasl-popb4smtp.c:112
 msgid "POP Before SMTP auth using a non-pop source"
-msgstr ""
+msgstr "SMTP auth-ന് മുന്പുളള POP ഒരു non-pop ഉറവിടം ഉപയോഗിക്കുന്നു"
 
 #: ../camel/camel-search-private.c:152
 #, c-format
@@ -2059,17 +2064,17 @@ msgstr ""
 #: ../camel/camel-service.c:270
 #, c-format
 msgid "URL '%s' needs a username component"
-msgstr ""
+msgstr "URL '%s'-ന് ഒരു ഉപയോഗിക്കുന്ന പേരിന്‍റെ ഘടകം ആവശ്യമുണ്ട്"
 
 #: ../camel/camel-service.c:274
 #, c-format
 msgid "URL '%s' needs a host component"
-msgstr ""
+msgstr "URL '%s'-ന് ഒരു ഹോസ്റ്റ് ഘടകം ആവശ്യമുണ്ട്"
 
 #: ../camel/camel-service.c:278
 #, c-format
 msgid "URL '%s' needs a path component"
-msgstr ""
+msgstr "URL '%s'-ന് ഒരു പാഥ് ഘടകം ആവശ്യമുണ്ട്"
 
 #: ../camel/camel-session.c:292
 #, c-format
@@ -2111,7 +2116,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:271
 msgid "Cannot add CMS Signing time"
-msgstr ""
+msgstr "CMS ഒപ്പ് വയ്ക്കുന്ന സമയം ചേര്‍ക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-smime-context.c:293 ../camel/camel-smime-context.c:305
 #, c-format
@@ -2140,11 +2145,11 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:404
 msgid "Failed to add data to CMS encoder"
-msgstr ""
+msgstr "CMS എന്‍കോഡറിലേക്ക് ഡേറ്റാ ചേര്‍ക്കുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-smime-context.c:409 ../camel/camel-smime-context.c:863
 msgid "Failed to encode data"
-msgstr ""
+msgstr "ഡേറ്റാ എന്‍കോഡ് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-smime-context.c:482
 msgid "Unverified"
@@ -2164,19 +2169,19 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:490
 msgid "Signing certificate not found"
-msgstr ""
+msgstr "ഒപ്പ് വയ്ക്കുന്നതിലുളള സര്‍ട്ടീഫിക്കേറ്റ് ലഭ്യമായില്ല"
 
 #: ../camel/camel-smime-context.c:492
 msgid "Signing certificate not trusted"
-msgstr ""
+msgstr "ഒപ്പ് വയ്ക്കുന്നതിലുളള സര്‍ട്ടീഫിക്കേറ്റ് വിശ്വസനീയമല്ല"
 
 #: ../camel/camel-smime-context.c:494
 msgid "Signature algorithm unknown"
-msgstr ""
+msgstr "ഒപ്പിനുളള അല്‍ഗോരിതം അപരിചിതം"
 
 #: ../camel/camel-smime-context.c:496
 msgid "Signature algorithm unsupported"
-msgstr ""
+msgstr "ഒപ്പിനുളള അല്‍ഗോരിതം പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../camel/camel-smime-context.c:498
 msgid "Malformed signature"
@@ -2188,7 +2193,7 @@ msgstr "പ്രവര്‍ത്തനത്തില്‍ പിശക്"
 
 #: ../camel/camel-smime-context.c:537
 msgid "No signed data in signature"
-msgstr ""
+msgstr "സിഗ്നേച്ചറില്‍ ഒപ്പ് വച്ച ഡേറ്റാ ഇല്ല"
 
 #: ../camel/camel-smime-context.c:544
 msgid "Digests missing from enveloped data"
@@ -2255,7 +2260,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:818
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "CMS ഡേറ്റാ ഒബ്ടക്ട് ചേര്‍ക്കുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-smime-context.c:827
 msgid "Cannot create CMS Recipient information"
@@ -2267,7 +2272,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:857
 msgid "Failed to add data to encoder"
-msgstr ""
+msgstr "എന്‍കോഡറിലേക്ക് ഡേറ്റാ ചേര്‍ക്കുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-smime-context.c:944
 #, c-format
@@ -2280,42 +2285,42 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:978
 msgid "import keys: unimplemented"
-msgstr ""
+msgstr "ഇംപോര്‍ട്ട് കീ: നടപ്പിലാക്കാത്തവ"
 
 #: ../camel/camel-smime-context.c:986
 msgid "export keys: unimplemented"
-msgstr ""
+msgstr "എക്സ്പോര്‍ട്ട് കീ: നടപ്പിലാക്കാത്തവ"
 
 #: ../camel/camel-store.c:214
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ ലഭ്യമായില്ല: തെറ്റായ പ്രക്രിയ"
 
 #: ../camel/camel-store.c:246
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'  ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: ഫോള്‍ഡര്‍ നിലവിലുണ്ട്"
 
 #: ../camel/camel-store.c:310
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: തെറ്റായ പ്രക്രിയ"
 
 #: ../camel/camel-store.c:338
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s: ഫോള്‍ഡര്‍ നിലവിലുണ്ട്"
 
 #: ../camel/camel-store.c:402 ../camel/camel-vee-store.c:368
 #: ../camel/providers/local/camel-maildir-store.c:217
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ നീക്കം ചെയ്യുവാന്‍ സാധ്യമല്ല: %s: തെറ്റായ പ്രക്രിയ"
 
 #: ../camel/camel-store.c:452 ../camel/camel-vee-store.c:405
 #: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr ""
+msgstr "ഫോള്‍ഡറിന്‍റെ പേര് മാറ്റുവാന്‍ സാധ്യമല്ല: %s: തെറ്റായ പ്രക്രിയ"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:793 ../camel/camel-vtrash-folder.c:48
@@ -2349,7 +2354,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:578
 msgid "Certificate signature failure"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റില്‍ ഒപ്പിടല്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-tcp-stream-openssl.c:580
 msgid "Certificate Revocation List signature failure"
@@ -2357,23 +2362,23 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റ് അസാധുവാണ്"
 
 #: ../camel/camel-tcp-stream-openssl.c:584
 msgid "Certificate has expired"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റിന്‍റെ കാലാവധി കഴിഞ്ഞിരിക്കുന്നു"
 
 #: ../camel/camel-tcp-stream-openssl.c:586
 msgid "CRL not yet valid"
-msgstr ""
+msgstr "CRL ഇപ്പോഴും സാധുതയില്ല"
 
 #: ../camel/camel-tcp-stream-openssl.c:588
 msgid "CRL has expired"
-msgstr ""
+msgstr "CRL-ന്‍റെ കാലാവധി കഴിഞ്ഞിരിക്കുന്നു"
 
 #: ../camel/camel-tcp-stream-openssl.c:593
 msgid "Error in CRL"
-msgstr ""
+msgstr "CRL-ല്‍ പിശക്"
 
 #: ../camel/camel-tcp-stream-openssl.c:595
 msgid "Out of memory"
@@ -2385,7 +2390,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Self-signed certificate in chain"
-msgstr ""
+msgstr "ചെയിനില്‍ സ്വയം ഒപ്പിട്ട സര്‍ട്ടീഫിക്കേറ്റ്"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Unable to get issuer's certificate locally"
@@ -2397,43 +2402,43 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:605
 msgid "Certificate chain too long"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റ് ചെയിന്‍ വളരെ വലുത്"
 
 #: ../camel/camel-tcp-stream-openssl.c:607
 msgid "Certificate Revoked"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റ് മടക്കി കളഞ്ഞു"
 
 #: ../camel/camel-tcp-stream-openssl.c:609
 msgid "Invalid Certificate Authority (CA)"
-msgstr ""
+msgstr "അസാധുവായ സര്‍ട്ടീഫിക്കേറ്റ് അഥോറിറ്റി (CA)"
 
 #: ../camel/camel-tcp-stream-openssl.c:611
 msgid "Path length exceeded"
-msgstr ""
+msgstr "പാഥിന്‍റെ നീളം പരിധി കവിഞ്ഞു"
 
 #: ../camel/camel-tcp-stream-openssl.c:613
 msgid "Invalid purpose"
-msgstr ""
+msgstr "അസാധുവായ ആവശ്യം"
 
 #: ../camel/camel-tcp-stream-openssl.c:615
 msgid "Certificate untrusted"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റ് അവിശ്വസനീയം"
 
 #: ../camel/camel-tcp-stream-openssl.c:617
 msgid "Certificate rejected"
-msgstr ""
+msgstr "സര്‍ട്ടീഫിക്കേറ്റ് നിഷേധിച്ചിരിക്കുന്നു"
 
 #: ../camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
-msgstr ""
+msgstr "Subject/Issuer പൊരുത്തക്കേട്"
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
-msgstr ""
+msgstr "AKID/SKID പൊരുത്തക്കേട്"
 
 #: ../camel/camel-tcp-stream-openssl.c:624
 msgid "AKID/Issuer serial mismatch"
-msgstr ""
+msgstr "AKID/Issuer സീരിയല്‍ പൊരുത്തക്കേട്"
 
 #: ../camel/camel-tcp-stream-openssl.c:626
 msgid "Key usage does not support certificate signing"
@@ -2441,7 +2446,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:629
 msgid "Error in application verification"
-msgstr ""
+msgstr "ആപ്ളിക്കേഷന്‍ ഉറപ്പ് വരുത്തുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
@@ -2475,6 +2480,13 @@ msgid ""
 "\n"
 "Do you wish to accept anyway?"
 msgstr ""
+"%s-ല്‍ നിന്നും തെറ്റായ സര്‍ട്ടീഫിക്കേറ്റ്:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"നിങ്ങള്‍ക്ക് സ്വീകാര്യമാണോ?"
 
 #. construct our user prompt
 #: ../camel/camel-tcp-stream-ssl.c:890
@@ -2486,6 +2498,11 @@ msgid ""
 "\n"
 "Do you wish to accept?"
 msgstr ""
+"%s-നുളള SSL സര്‍ട്ടീഫിക്കേറ്റ് പരിശോധന :\n"
+"\n"
+"%s\n"
+"\n"
+"നിങ്ങള്‍ക്ക് സ്വീകാര്യമാണോ?"
 
 #: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
@@ -2493,6 +2510,8 @@ msgid ""
 "Certificate problem: %s\n"
 "Issuer: %s"
 msgstr ""
+"സര്‍ട്ടീഫിക്കേറ്റ് പ്രശ്നം: %s\n"
+"Issuer: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:986
 #, c-format
@@ -2500,6 +2519,8 @@ msgid ""
 "Bad certificate domain: %s\n"
 "Issuer: %s"
 msgstr ""
+"തെറ്റായ സര്‍ട്ടീഫിക്കേറ്റ് ഡൊമെയിന്‍: %s\n"
+"Issuer: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:1004
 #, c-format
@@ -2507,6 +2528,8 @@ msgid ""
 "Certificate expired: %s\n"
 "Issuer: %s"
 msgstr ""
+"സര്‍ട്ടീഫിക്കേറ്റിന്‍റെ കാലാവധി കഴിഞ്ഞിരിക്കുന്നു: %s\n"
+"Issuer: %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:1021
 #, c-format
@@ -2518,21 +2541,21 @@ msgstr ""
 #: ../camel/camel-url.c:293
 #, c-format
 msgid "Could not parse URL `%s'"
-msgstr ""
+msgstr "URL `%s' പാഴ്സ് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-vee-folder.c:475
 #, c-format
 msgid "Error storing `%s': %s"
-msgstr ""
+msgstr "`%s' സൂക്ഷിക്കുന്നതില്‍ പിശക്: %s"
 
 #: ../camel/camel-vee-folder.c:517
 #, c-format
 msgid "No such message %s in %s"
-msgstr ""
+msgstr "%s-ല്‍ %s എന്ന സന്ദേശം ലഭ്യമല്ല"
 
 #: ../camel/camel-vee-folder.c:642 ../camel/camel-vee-folder.c:648
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
+msgstr "ഒരു വിര്‍ച്ച്വല്‍ ഫോള്‍ഡറിലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാനോ നീക്കുവാനോ സാധ്യമല്ല"
 
 #: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
@@ -2541,20 +2564,20 @@ msgstr "ചേര്‍ച്ചയില്ല"
 #: ../camel/camel-vee-store.c:391
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ നീക്കം ചെയ്യുവാന്‍ സാധ്യമല്ല: %s: ഇങ്ങനെ ഒരു ഫോള്‍ഡര്‍ നിലവിലില്ല"
 
 #: ../camel/camel-vee-store.c:413
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
+msgstr "ഫോള്‍ഡറിന്‍റെ പേര് മാറ്റുവാന്‍ സാധ്യമല്ല: %s: ഇങ്ങനെ ഒരു ഫോള്‍ഡര്‍ നിലവിലില്ല"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr ""
+msgstr "ചവറ്റുകുട്ടയിലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
+msgstr "ആവശ്യമില്ലാത്ത സന്ദേശങ്ങളുടെ ഫോള്‍ഡറിലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
@@ -2563,6 +2586,8 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
+"സന്ദേശം ലഭ്യമല്ല: %s\n"
+"  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:113
 #: ../camel/providers/imap/camel-imap-folder.c:2048
@@ -2582,7 +2607,7 @@ msgstr "സന്ദേശം ലഭ്യമല്ല"
 #: ../camel/providers/pop3/camel-pop3-folder.c:558
 #: ../camel/providers/pop3/camel-pop3-folder.c:576
 msgid "User canceled"
-msgstr ""
+msgstr "ഉപയോക്താവിനെ റദ്ദാക്കിയിരിക്കുന്നു"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
@@ -2596,7 +2621,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-folder.c:579
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr ""
+msgstr "സന്ദേശം %s ലഭ്യമായില്ല: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:157
@@ -2609,7 +2634,7 @@ msgstr "ഓഫ് ലൈന്‍ ആകുന്പോള്‍ സന്ദേ
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1580
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1625
 msgid "Could not get message"
-msgstr ""
+msgstr "സന്ദേശം ലഭ്യമായില്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:769
 #: ../camel/providers/imap/camel-imap-folder.c:247
@@ -2619,7 +2644,7 @@ msgstr "%s-നുളള സമ്മറി ലോഡ് ചെയ്യുവാ
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:999
 msgid "Trash Folder Full. Please Empty."
-msgstr ""
+msgstr "ചവറ്റുകുട്ട നിറഞ്ഞു, ദയവായി കാലിയാക്കുക."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
@@ -2628,23 +2653,23 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-folder.c:2438
 #, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr ""
+msgstr "പുതിയ സന്ദേശങ്ങള്‍ക്കുളള സമ്മറി വിവരം %s-ല്‍ നിന്നും ലഭ്യമാക്കുന്നു"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1893
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1935
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr ""
+msgstr "‍ഫോള്‍ഡര്‍`%s'-ലേക്ക് സന്ദേശം മാറ്റുവാന്‍ സാധ്യമല്ല: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot create message: %s"
-msgstr ""
+msgstr "സന്ദേശം ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
 msgid "Cannot get folder container %s"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ കണ്ടെയിനര്‍ %s ലഭ്യമല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
@@ -2664,7 +2689,7 @@ msgstr "പുതിയ മെയിലിനായി പരിശോധിക�
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 msgid "Check for new messages in all folders"
-msgstr ""
+msgstr "എല്ലാ ഫോള്‍ഡറുകളിലും പുതിയ സന്ദേശങ്ങള്‍ക്കായി തിരയുക"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
@@ -2678,14 +2703,16 @@ msgstr "ബദലുകള്‌"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
 msgstr ""
+"ഈ സര്‍വറിലുളള പോയ മെയിലുകളുടെ ഫോള്‍ഡറിലുളള പുതിയ സന്ദേശങ്ങള്‍ക്ക് ഫില്‍റ്ററുകള്‍ "
+"അംഗീകരിക്കുക"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 msgid "Check new messages for Junk contents"
-msgstr ""
+msgstr "ആവശ്യമില്ലാത്ത മെയിലുകള്‍ക്കായി പുതിയ സന്ദേശങ്ങളില്‍ തിരയുക"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr ""
+msgstr "പോയ മെയിലുകളുടെ ഫോള്‍ഡറില്‍ ആവശ്യമില്ലാത്ത മെയിലുകള്‍ മാത്രം തിരയുക"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Automatically synchronize account locally"
@@ -2697,7 +2724,7 @@ msgstr "SOAP സജ്ജീകരണം"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:72
 msgid "Post Office Agent SOAP Port:"
-msgstr ""
+msgstr "പോസ്റ്റ് ഓഫീസ് ഏജന്‍റ് SOAP പോര്‍ട്ട്:"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:85
 msgid "Novell GroupWise"
@@ -2705,7 +2732,7 @@ msgstr "Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
 msgid "For accessing Novell GroupWise servers"
-msgstr ""
+msgstr "Novell ഗ്രൂപ്പ് വൈസ് സര്‍വറുകളിലേക്ക് പ്രവേശിക്കുന്നതിന്"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
@@ -2715,15 +2742,17 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
 #: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
-msgstr "അടയാളവാക്യം"
+msgstr "പാസ്‍വേര്‍ഡ്"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
+"ഒരു പ്ളെയിന്‍ടെക്സ്റ്റ് പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് ഗ്രൂപ്പ് അനുസരിച്ചുളള സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുവാന്‍ "
+"ഈ ഉപാധി സഹായിക്കുന്നു."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 msgid "Host or user not available in url"
-msgstr ""
+msgstr "url-ല്‍ ഹോസ്റ്റ് അല്ലെങ്കില്‍ ഉപയോക്താവ് ലഭ്യമല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
@@ -2737,11 +2766,11 @@ msgstr "നിങ്ങള്‍ പാസ്‍വേര്‍ഡ് നല്�
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server. "
-msgstr ""
+msgstr "ഗ്രൂപ്പ് അനുസരിച്ചുളള സര്‍വറില്‍ ആധികാരികത ഉറപ്പ് വരുത്തുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
-msgstr ""
+msgstr "നിങ്ങളുടെ നിലവിലുളള സര്‍വറിന്‍റെ വേര്‍ഷനില്‍ ചില വിശേഷതകള്‍ പ്രവര്‍ത്തിക്കുന്നതല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1869
@@ -2752,35 +2781,35 @@ msgstr "%s ഫോള്‍ഡര്‍ ഇല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr ""
+msgstr "ഓഫ്‍ലൈന്‍ മോഡില്‍ ഗ്രൂപ്പ് അനുസരിച്ചുളള ഫോള്‍ഡറുകള്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1246
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
-msgstr ""
+msgstr "പേരന്‍റ് ഫോള്‍ഡറില്‍ ഉപഫോള്‍ഡറുകള്‍ അനുവദിക്കുന്നതല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1323
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr ""
+msgstr "ഗ്രൂപ്പ് അനുസരിച്ചുളള ഫോള്‍ഡര്‍ `%s'-നെ `%s' ആയി പേര് മാറ്റുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
-msgstr ""
+msgstr "ഗ്രൂപ്പ് അനുസരിച്ചുളള സര്‍വര്‍ %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
-msgstr ""
+msgstr "%s-ല്‍ %s-ന് ഗ്രൂപ്പ് അനുസരിച്ചുളള സര്‍വീസ്"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise mail delivery via %s"
-msgstr ""
+msgstr "%s വഴി ഗ്രൂപ്പ് അനുസരിച്ച് മെയില്‍ അയയ്ക്കുന്നു"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
@@ -2797,7 +2826,7 @@ msgstr ""
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
-msgstr ""
+msgstr "സന്ദേശം അയയ്ക്കുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../camel/providers/hula/camel-hula-provider.c:46
 #: ../camel/providers/imap/camel-imap-provider.c:42
@@ -2808,7 +2837,7 @@ msgstr "പുതിയ മെയില്‍ ഉണ്ടോ എന്ന പ�
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr ""
+msgstr "എല്ലാ ഫോള്‍ഡറുകളിലും പുതിയ സന്ദേശത്തിനായി തിരയുക (_h)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
@@ -2818,7 +2847,7 @@ msgstr "സര്‍വറിലേക്ക് കണക്ട് ചെയ്�
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
 msgid "_Use custom command to connect to server"
-msgstr ""
+msgstr "നിങ്ങള്‍ക്ക് ഇഷ്ടമുളള കമാന്‍ഡ് ഉപയോഗിച്ച് സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുക (_U)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
@@ -2836,7 +2865,7 @@ msgstr "ഫോള്‍ഡറുകള്‍"
 #: ../camel/providers/imap/camel-imap-provider.c:58
 #: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Show only subscribed folders"
-msgstr ""
+msgstr "അംഗത്വമുളള ഫോള്‍ഡറുകള്‍ മാത്രം കാണിക്കുക (_S)"
 
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:60
@@ -2854,11 +2883,11 @@ msgstr "Hula"
 
 #: ../camel/providers/hula/camel-hula-provider.c:77
 msgid "For accessing Hula servers"
-msgstr ""
+msgstr "Hula സര്‍വറുകളില്‍ പ്രവേശിക്കുന്നതിന്"
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr ""
+msgstr "ഒരു പ്ളെയിന്‍ ടെക്സ്റ്റ് പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് ഈ ഉപാധി Hula സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുന്നു."
 
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
@@ -2871,7 +2900,7 @@ msgstr "പ്രവര്‍ത്തനം റദ്ദാക്കപ്പ�
 #: ../camel/providers/imap/camel-imap-store.c:3014
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
-msgstr ""
+msgstr "അപ്രതീക്ഷിതമായി സര്‍വറിന്‍റെ കണക്ഷന്‍ വേര്‍പ്പെട്ടു: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
@@ -2881,30 +2910,32 @@ msgid ""
 "Alert from IMAP server %s@%s:\n"
 "%s"
 msgstr ""
+"IMAP സര്‍വര്‍ %s@%s-ല്‍ നിന്നും അറിയിപ്പ്:\n"
+"%s"
 
 #: ../camel/providers/imap/camel-imap-command.c:399
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
-msgstr ""
+msgstr "IMAP സര്‍വറില്‍ നിന്നും അപ്രതീക്ഷിതമായ മറുപടി: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:409
 #, c-format
 msgid "IMAP command failed: %s"
-msgstr ""
+msgstr "IMAP കമാന്‍ഡ് പരാജയപ്പെട്ടു: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:484
 msgid "Server response ended too soon."
-msgstr ""
+msgstr "സര്‍വറിന്‍റെ മറുപടി വളരെ വേഗം അവസാനിച്ചു."
 
 #: ../camel/providers/imap/camel-imap-command.c:691
 #, c-format
 msgid "IMAP server response did not contain %s information"
-msgstr ""
+msgstr "IMAP സര്‍വറിന്‍റെ മറുപടിയില്‍ %s വിവരം ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-command.c:727
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
-msgstr ""
+msgstr "IMAP സര്‍വറില്‍ നിന്നും അപ്രതീക്ഷിതമായ ശരി എന്ന മറുപടി: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:228
 #, c-format
@@ -2913,39 +2944,39 @@ msgstr "ഡയറക്ടറി %s ഉണ്ടാക്കുവാന്‍ �
 
 #: ../camel/providers/imap/camel-imap-folder.c:332
 msgid "Folder was destroyed and recreated on server."
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ ഇല്ലാതെയാക്കിയിരുന്നു, വീണ്ടും സര്‍വറില്‍ പുനഃര്‍നിര്‍മ്മിച്ചു."
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:623
 #, c-format
 msgid "Scanning for changed messages in %s"
-msgstr ""
+msgstr "%s-ല്‍ മാറ്റം വന്നിരിക്കുന്ന സന്ദേശങ്ങള്‍ക്കായി പരിശോധിക്കുന്നു"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2008
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr ""
+msgstr "സന്ദേശം ലഭ്യമാക്കുവാന്‍ സാധ്യമല്ല: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2087
 #: ../camel/providers/imap/camel-imap-folder.c:2696
 #: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
-msgstr ""
+msgstr "ഈ സന്ദേശം നിലവില്‍ ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2546
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "സര്‍വറിന്‍റെ അപൂര്‍ണ്ണമായ മറുപടി: %d സന്ദേശത്തിന് വിവരങ്ങള്‍ ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2554
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "സര്‍വറിന്‍റെ അപൂര്‍ണ്ണമായ മറുപടി: %d സന്ദേശത്തിന് UID ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2567
 #, c-format
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "സര്‍വറിന്‍റെ അപ്രതീക്ഷിതമായ മറുപടി: %d-ഉം %d-ഉം സന്ദേശങ്ങള്‍ക്ക് ഒരേ UID നല്‍കിയിരിക്കുന്നു"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2732
 msgid "Could not find message body in FETCH response."
@@ -2954,7 +2985,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-message-cache.c:160
 #, c-format
 msgid "Could not open cache directory: %s"
-msgstr ""
+msgstr "cache ഡയറക്ടറി തുറക്കുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:266
 #: ../camel/providers/imap/camel-imap-message-cache.c:323
@@ -2962,12 +2993,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-message-cache.c:386
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr ""
+msgstr "%s സന്ദേശം cache ചെയ്യുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:436
 #, c-format
 msgid "Failed to cache %s: %s"
-msgstr ""
+msgstr "%s cache ചെയ്യുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:47
@@ -2977,7 +3008,7 @@ msgstr "നെയിം സ്പെയിസ്:"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr ""
+msgstr "ഈ സര്‍വറിലുളള പോയ മെയിലുകളുടെ ഫോള്‍ഡറിലുളള പുതിയ സന്ദേശങ്ങള്‍ക്ക് ഫില്‍റ്ററുകള്‍ അംഗീകരിക്കുക (_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
@@ -2987,7 +3018,7 @@ msgstr "പുതിയ മെയിലുകളില്‍ അനാവശ്�
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr ""
+msgstr "പോയ മെയിലുകളുടെ ഫോള്‍ഡറില്‍ ആവശ്യമില്ലാത്ത മെയിലുകള്‍ക്കായി തിരയുക (_g)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
@@ -3000,12 +3031,12 @@ msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
 msgid "For reading and storing mail on IMAP servers."
-msgstr ""
+msgstr "IMAP സര്‍വറുകളില്‍ മെയില്‍ വായിക്കുന്നതിനും സൂക്ഷിക്കുന്നതിനും."
 
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
+msgstr "ഒരു പ്ളെയിന്‍ ടെക്സ്റ്റ് ഉപയോഗിച്ച് IMAP സര്‍വറിലേക്ക് ഈ ഉപാധി കണക്ട് ചെയ്യുന്നു."
 
 #: ../camel/providers/imap/camel-imap-store.c:446
 #: ../camel/providers/imap4/camel-imap4-store.c:214
@@ -3017,7 +3048,7 @@ msgstr "IMAP സര്‍വര്‍ %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
-msgstr ""
+msgstr "%s-ല്‍ %s-നുളള IMAP സര്‍വീസ്"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:593
@@ -3044,7 +3075,7 @@ msgstr "SSL ലഭ്യമല്ല"
 #: ../camel/providers/imap/camel-imap-store.c:590
 #: ../camel/providers/imap/camel-imap-store.c:864
 msgid "Connection cancelled"
-msgstr ""
+msgstr "കണക്ഷന്‍ റദ്ദാക്കിയിരിക്കുന്നു"
 
 #: ../camel/providers/imap/camel-imap-store.c:698
 #: ../camel/providers/imap/camel-imap-store.c:720
@@ -3054,7 +3085,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:329
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr ""
+msgstr "സുരക്ഷിത മോഡില്‍ IMAP സര്‍വര്‍ %s-ലേക്ക് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:699
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
@@ -3064,18 +3095,18 @@ msgstr "STARTTLS പിന്തുണയ്ക്കിന്നില്ല"
 #: ../camel/providers/imap/camel-imap-store.c:721
 #: ../camel/providers/imap4/camel-imap4-store.c:301
 msgid "SSL negotiations failed"
-msgstr ""
+msgstr "SSL ഇടപാടുകള്‍ പരാജയപ്പെട്ടു"
 
 #: ../camel/providers/imap/camel-imap-store.c:727
 #: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
-msgstr ""
+msgstr "ഈ ബിള്‍ഡില്‍ SSL ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-store.c:867
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
-msgstr ""
+msgstr "\"%s\" എന്ന നിര്‍ദ്ദേശമുപയോഗിച്ച് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമല്ല: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1051
@@ -3095,19 +3126,19 @@ msgstr "അയച്ച മെയിലുകള്‍"
 #: ../camel/providers/imap/camel-imap-store.c:1313
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ല്‍ %s എന്ന ആധികാരികത ഉറപ്പുവരുത്തല്‍ സംവിധാനത്തിന് പിന്തുണ ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-store.c:1323
 #: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
-msgstr ""
+msgstr "%s എന്ന ആധികാരികത ഉറപ്പുവരുത്തല്‍ സംവിധാനത്തിന് പിന്തുണ ലഭ്യമല്ല"
 
 #: ../camel/providers/imap/camel-imap-store.c:1346
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
-msgstr ""
+msgstr "%sദയവായി %s@%s-നുളള IMAP പാസ്‍വേര്‍ഡ് നല്‍കുക"
 
 #: ../camel/providers/imap/camel-imap-store.c:1389
 #, c-format
@@ -3116,13 +3147,16 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
+"IMAP സര്‍വറില്‍ ആധികാരികത ഉറപ്പുവരുത്തുവാന്‍ സാധ്യമായില്ല.\n"
+"%s\n"
+"\n"
 
 #: ../camel/providers/imap/camel-imap-store.c:1881
 #: ../camel/providers/imap/camel-imap-store.c:2251
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr ""
+msgstr "\"%s\" എന്ന് ഫോള്‍ജറിന്‍റെ പേര് അസാധുവാണ്, കാരണം ഇതില്‍ \"%c\" എന്ന അക്ഷരം ഉണ്ട് എന്നതാണ്"
 
 #: ../camel/providers/imap/camel-imap-store.c:1998
 #: ../camel/providers/local/camel-maildir-store.c:190
@@ -3130,38 +3164,38 @@ msgstr ""
 #: ../camel/providers/local/camel-mh-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s' നിര്‍മ്മിക്കുവാന്‍ സാധ്യമല്ല: ഫോള്‍ഡര്‍ നിലവിലുണ്ട്."
 
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
 msgid "Unknown parent folder: %s"
-msgstr ""
+msgstr "അറിയാത്ത പേരന്‍റ് ഫോള്‍ഡര്‍: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:549
 #: ../camel/providers/imap4/camel-imap4-command.c:556
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ലേക്ക് നിര്‍ദ്ദേശം അയയ്ക്കുന്നതില്‍ പരാജയം: %s"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:659
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ല്‍ നിന്നും അപ്രതീക്ഷിതമായ മറുപടി: %s"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:222
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ല്‍ നിന്നും അപ്രതീക്ഷിതമായ ഗ്രീറ്റിങ്."
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:432
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s' തിരഞ്ഞെടുക്കുവാന്‍ സാധ്യമായില്ല: തപാല്‍ പെട്ടിയുടെ പേര് അസാധുവാണ്"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:438
 #, c-format
 msgid "Cannot select folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s' തിരഞ്ഞെടുക്കുവാന്‍ സാധ്യമായില്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:1549
 #: ../camel/providers/imap4/camel-imap4-engine.c:1588
@@ -3169,7 +3203,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-engine.c:1689
 #, c-format
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
-msgstr ""
+msgstr "IMAP4 സര്‍വര്‍ %s-ന്‍റെ കണക്ഷന്‍ അപ്രതീക്ഷിതമായി വേര്‍പ്പെട്ടു: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
 msgid "Enable Mailing-List detection required for some filter and vFolder rules"
@@ -3178,72 +3212,72 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
 msgid "Cannot access folder `%s': %s"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് പ്രവേശനം ലഭ്യമല്ല: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:458
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് ഫ്ളാഗുകള്‍ സിന്‍ക് ചെയ്യുവാന്‍ സാധ്യമല്ല: അപരിചിതം"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:464
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് ഫ്ളാഗുകള്‍ സിന്‍ക് ചെയ്യുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s' മായിക്കുവാന്‍ സാധ്യമല്ല: അപരിചിതം"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:609
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s' മായിക്കുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:865
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ നിന്നും %s സന്ദേശം ലഭ്യമല്ല: അങ്ങനെ ഒരു സന്ദേശം നിലവിലില്ല"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:870
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ നിന്നും %s സന്ദേശം ലഭ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:914
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ മാറ്റുവാന്‍ സാധ്യമല്ല: ഫോള്‍ഡര്‍ വായിക്കുവാന്‍ മാത്രം സാധ്യമുളളൂ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1007
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ മാറ്റുവാന്‍ സാധ്യമല്ല: അപരിചിതമായ പിശക്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1037
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ മാറ്റുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1157
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
+msgstr "`%s'-ല്‍ നിന്നും `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ മാറ്റുവാന്‍ സാധ്യമല്ല: അപരിചിതം"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1161
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
+msgstr "`%s'-ല്‍ നിന്നും `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാന്‍ സാധ്യമല്ല: അപരിചിതം"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
+msgstr "`%s'-ല്‍ നിന്നും `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ മാറ്റുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr ""
+msgstr "`%s'-ല്‍ നിന്നും `%s'-ലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
@@ -3251,11 +3285,13 @@ msgstr "IMAP4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr ""
+msgstr "IMAPv4rev1 സര്‍വറുകളില്‍ മെയിലുകള്‍ വായിക്കുന്നതിനും സൂക്ഷിക്കുന്നതിനും."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
+"IMAPv4rev1 സര്‍വറിലേക്ക് ഒരു പ്ളെയില്‍ ടെക്സ്റ്റ് പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് കണക്ട് ചെയ്യുവാന്‍ "
+"സാധ്യമാകുന്ന ഒരു ഉപാധി ആണിത്."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:263
 #: ../camel/providers/imapp/camel-imapp-store.c:248
@@ -3269,7 +3305,7 @@ msgstr "കണക്ഷന്‍ റദ്ദാക്കപ്പെട്ട�
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr ""
+msgstr "%s സംവിധാനം ഉപയോഗിച്ച് IMAP സര്‍വര്‍ %s-ലേക്ക് ആധികാരികത ഉറപ്പാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
@@ -3279,12 +3315,12 @@ msgstr "%s ദയവായി %s ഹോസ്റ്റില്‍ %s-നുള�
 #: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
-msgstr ""
+msgstr "%s ഉപയോഗിച്ച് IMAP സര്‍വര്‍ %s-ലേക്ക് ആധികാരികത ഉറപ്പാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:685
 #: ../camel/providers/imap4/camel-imap4-store.c:953
 msgid "Cannot create IMAP folders in offline mode."
-msgstr ""
+msgstr "ഓഫ്‍ലൈന്‍ മോഡില്‍ IMAP ഫോള്‍ഡറുകള്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:724
 #, c-format
@@ -3294,7 +3330,7 @@ msgstr "IMAP സര്‍വറില്‍ %s-ല്‍ ഫോള്‍ഡര�
 #: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ലുളള `%s'-നുളള LIST വിവരങ്ങള്‍ ലഭ്യമല്ല: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:807
 #: ../camel/providers/imap4/camel-imap4-store.c:1482
@@ -3333,54 +3369,54 @@ msgstr "ഫോള്‍ഡര്‍ നീക്കം ചെയ്യുവാ�
 #: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr ""
+msgstr "`%s'-നെ `%s' ആയി പേര് മാറ്റുവാന്‍ സാധ്യമല്ല: പ്രത്യേക ഫോള്‍ഡര്‍"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr ""
+msgstr "ഓഫ്‍ലൈന്‍ മോഡില്‍ IMAP ഫോള്‍ഡറുകളുടെ പേര് മാറ്റുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
-msgstr ""
+msgstr "`%s'-നെ `%s' ആയി പേര് മാറ്റുവാന്‍ സാധ്യമല്ല: തപാല്‍ പെട്ടിയുടെ പേര് അസാധുവാണ്"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr ""
+msgstr "`%s'-നെ `%s' ആയി പേര് മാറ്റുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ല്‍ `%s' മാതൃകയെപ്പറ്റി %s വിവരം ലഭ്യമല്ല: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr ""
+msgstr "ഓഫ്‍ലൈന്‍ മോഡില്‍ IMAP ഫോള്‍ഡറുകളില്‍ അംഗത്വം നേടുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1565
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ അംഗത്വം നേടുവാന്‍ സാധ്യമല്ല: തപാല്‍ പെട്ടിയുടെ പേര് അസാധുവാണ്"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1570
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ അംഗത്വം നേടുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1592
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr ""
+msgstr "ഓഫ്‍ലൈന്‍ മോഡില്‍ IMAP ഫോള്‍ഡറുകളില്‍ നിന്നും അംഗത്വം ഉപേക്ഷിക്കുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1637
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ നിന്നും അംഗത്വം ഉപേക്ഷിക്കുവാന്‍ സാധ്യമല്ല: തപാല്‍ പെട്ടിയുടെ പേര് അസാധുവാണ്"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1642
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ `%s'-ല്‍ നിന്നും അംഗത്വം ഉപേക്ഷിക്കുവാന്‍ സാധ്യമല്ല: തെറ്റായ കമാന്‍ഡ്"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
@@ -3388,12 +3424,12 @@ msgstr "മാറ്റം വരുത്തിയിരിക്കുന്�
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr ""
+msgstr "പുതിയ സന്ദേശങ്ങള്‍ക്കുളള കവറുകള്‍ ലഭ്യമാക്കുന്നു"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
-msgstr ""
+msgstr "IMAP സര്‍വര്‍ %s-ല്‍ നിന്നുളള മറുപടിയില്‍ അപ്രതീക്ഷിതമായ ടോക്കന്‍: "
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:391
 msgid "No data"
@@ -3420,6 +3456,10 @@ msgid ""
 "\n"
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
+"പരീക്ഷണത്തിനുളള IMAP 4(.1) ക്ളൈന്‍റ്\n"
+"ഇത് പരീക്ഷിക്കാത്തതും പിന്തുണയില്ലാത്തതുമായ കോഡ് ആണ്, പകരം സാധാരണ imap ഉപയോഗിക്കേണ്ടതാണ്.\n"
+"\n"
+" !!! ഇത് പ്രൊഡക്ഷന്‍ ഈമെയിലിനായി ഉപയോഗിക്കുവാന്‍ പാടില്ല  !!!\n"
 
 #: ../camel/providers/imapp/camel-imapp-store.c:251
 #, c-format
@@ -3475,6 +3515,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
+"mbox-ഫോര്‍മാറ്റിലുളള സ്പൂളുകളില്‍ നിന്നും Evolution കൈകാര്യം ചെയ്യുന്ന ഫോള്‍ഡറുകളിലേക്ക് "
+"ലോക്കല്‍ മെയില്‍ മാറ്റുവാന്‍ ഉപയോഗിക്കുന്നു"
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -3502,6 +3544,8 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
+"പുറത്തുളള നിലവാരമുളളmbox spool ഫയലുകളില്‍ ഉളള ലോക്കല്‍ മെയില്‍ വായിക്കുന്നതിനും സൂക്ഷിക്കുന്നതിനും.\n"
+"Elm, Pine, Mutt ശൈലിയുളള ഫോള്‍ഡറുകളിലുളള ട്രീ വായിക്കുവാനും ഇത് ഉപയോഗിക്കുന്നു."
 
 #: ../camel/providers/local/camel-local-store.c:156
 #: ../camel/providers/local/camel-local-store.c:267
@@ -3763,7 +3807,7 @@ msgstr "ഫോള്‍ഡര്‍ തുറക്കുവാന്‍ സാ�
 #: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr ""
+msgstr "%ld-ആം ഫോള്‍ഡര്‍ %s-ല്‍ സ്ഥാനത്ത് തെറ്റായ മെയില്‍ പാഴ്സര്‍"
 
 #: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
@@ -3810,7 +3854,7 @@ msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുവാന്�
 #: ../camel/providers/local/camel-mbox-summary.c:954
 #: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
-msgstr ""
+msgstr "ഒരു സിന്‍കിന് ശേഷവും, സമ്മറിയും ഫോള്‍ഡറും തമ്മില്‍ പൊരുത്തക്കേട്"
 
 #: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
@@ -3969,7 +4013,7 @@ msgstr "ചെറിയ നൊട്ടേഷനില്‍ ഫോള്‍ഡ�
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
-msgstr ""
+msgstr "വരിക്കാരാകുന്നതിനുളള ഡയലോഗ് ബോക്സില്‍, ബന്ധമുളള ഫോള്‍ഡറുകളും കാണിക്കുക"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -3978,6 +4022,8 @@ msgstr "USENET വാര്‍ത്തകള്‍"
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
+"USENET വാര്‍ത്താഗ്രൂപ്പുകളിലില്‍ നിന്നും വായിക്കുവാനും അതിലേക്ക് അയയ്ക്കുവാനും സാധ്യമാകുന്ന "
+"ഒരു സംവിധാനം ആണിത്."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4009,6 +4055,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"വാര്‍ത്താഗ്രൂപ്പുകള്‍ ലഭ്യമാക്കുന്നതില്‍ പിശക്:\n"
+"\n"
+"%s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:891
 msgid ""
@@ -4016,6 +4065,9 @@ msgid ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
+"ഈ വാര്‍ത്താഗ്രൂപ്പില്‍ നിന്നും നിങ്ങള്‍ക്ക് അംഗത്വം നേടുവാന്‍ സാധ്യമല്ല:\n"
+"\n"
+"ഇങ്ങനെ ഒരു വാര്‍ത്താഗ്രൂപ്പ് നിലവിലില്ല. നിങ്ങള്‍ തിരഞ്ഞെടുത്ത വസ്തു മിക്കവാറും ഒരു പേരന്‍റ് ഫോള്‍ഡര്‍ ആവാം."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
@@ -4023,10 +4075,13 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
+"ഈ വാര്‍ത്താഗ്രൂപ്പില്‍ നിന്നും നിങ്ങള്‍ക്ക് അംഗത്വം ഉപേക്ഷിക്കുവാന്‍ സാധ്യമല്ല:\n"
+"\n"
+"ഇങ്ങനെ ഒരു വാര്‍ത്താഗ്രൂപ്പ് നിലവിലില്ല!"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr ""
+msgstr "നിങ്ങള്‍ക്ക് വാര്‍ത്തകളുടെ ശേഖരത്തില്‍ ഒരു ഫോള്‍ഡര്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: പകരം അംഗത്വം നേടുക."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
@@ -4034,7 +4089,7 @@ msgstr "ഒരു വാര്‍ത്തയുടെ ശേഖരത്തി�
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
+msgstr "നിങ്ങള്‍ക്ക് വാര്‍ത്തകളുടെ ശേഖരത്തില്‍ നിന്ന് ഒരു ഫോള്‍ഡര്‍ നീക്കം ചെയ്യുവാന്‍ സാധ്യമല്ല: പകരം അംഗത്വം ഉപേക്ഷിക്കുക."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1145
 msgid "Authentication requested but no username provided"
@@ -4150,6 +4205,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
+"പ്ളെയിന്‍ ടെകസ്റ്റ് പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് POP സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുന്ന "
+"ഉപാധിയാണ് ഇത്. POP സര്‍വറുകള്‍ മാത്രം ഈ ഉപാധി പിന്തുണയ്ക്കുന്നു"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
@@ -4157,6 +4214,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
+"APOP സന്പ്രദായം വഴി രഹസ്യ പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് POP സര്‍വറിലേക്ക് കണക്ട് ചെയ്യുന്ന "
+"ഉപാധിയാണ് ഇത്.ഇത് പിന്തുണയ്ക്കുന്നു എന്ന് അവകാശപ്പെടുന്ന സര്‍വറുകളിലുളള ഉപയോക്താക്കള്‍ക്കും "
+"ഇത് ശരിയായി പ്രവര്‍ത്തിക്കണമെന്നില്ല."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
@@ -4251,10 +4311,12 @@ msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
 msgstr ""
+"ലോക്കല്‍ സിസ്റ്റത്തിലുളള \"sendmail\" പ്രോഗ്രാമിലേക്ക് മെയില്‍ അയച്ച് അത് ലക്ഷ്യസ്ഥാനത്തേക്ക് "
+"പോകുന്നു."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
 msgid "Could not parse recipient list"
-msgstr ""
+msgstr "മെയില്‍ അയച്ച വിലാസങ്ങളുടെ ലിസ്റ്റ് പാഴ്സ് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
@@ -4295,7 +4357,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
+msgstr "SMTP ഉപയോഗിച്ച് വിദൂരത്തുളള ഒരു mailhub-ലോട്ട് കണക്ട് ചെയ്ത് മെയില്‍ അയയ്ക്കുന്നു."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
 msgid "Syntax error, command unrecognized"
@@ -5014,7 +5076,7 @@ msgstr "പറഞ്ഞിരിക്കുന്ന ഫോള്‍ഡറി�
 
 #: ../servers/exchange/storage/e-storage.c:580
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "ഫോള്‍ഡറിന്‍റെ പിന്‍ഗാമിയായി ചൈള്‍ഡ് ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../servers/exchange/storage/e-storage.c:582
 msgid "Cannot create a folder with that name"
