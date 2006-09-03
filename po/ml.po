@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ml\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-31 09:42+0200\n"
-"PO-Revision-Date: 2006-09-01 16:59+0530\n"
+"PO-Revision-Date: 2006-09-03 01:09+0530\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam\n"
 "MIME-Version: 1.0\n"
@@ -3402,7 +3402,7 @@ msgstr "ഡേറ്റാ ലഭ്യമല്ല"
 #: ../camel/providers/imap4/camel-imap4-utils.c:574
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
-msgstr ""
+msgstr "IMAP സര്‍വറിന്‍റെ %s അപ്രതീക്ഷിതമായി കണക്ഷന്‍ വേര്‍പ്പെട്ടിരിക്കുന്നു: %s"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:40
 #: ../camel/providers/pop3/camel-pop3-provider.c:40
@@ -3456,15 +3456,15 @@ msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-provider.c:47
 msgid "Use the `.folders' folder summary file (exmh)"
-msgstr ""
+msgstr "`.folders' ഫോള്‍ഡര്‍ സമ്മറി ഫയല്‍ ഉപയോഗിക്കുക (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
-msgstr ""
+msgstr "MH-ഫോര്‍മാറ്റിലുളള മെയില്‍ ഡയറക്ടറികള്‍"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "MH-പോലുളള മെയില്‍ ഡയറക്ടറികളില്‍ ലോക്കല്‍ മെയില്‍ സൂക്ഷിക്കുന്നതിന്."
 
 #: ../camel/providers/local/camel-local-provider.c:72
 msgid "Local delivery"
@@ -3479,23 +3479,23 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
 msgid "Apply filters to new messages in INBOX"
-msgstr ""
+msgstr "പോയ മെയിലുകളുടെ ഫോള്‍ഡറില്‍ ഫില്‍റ്ററുകള്‍ അംഗീകരിക്കുക"
 
 #: ../camel/providers/local/camel-local-provider.c:94
 msgid "Maildir-format mail directories"
-msgstr ""
+msgstr "Maildir-ഫോര്‍മാറ്റിലുളള മെയില്‍ ഡയറക്ടറികള്‍"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "For storing local mail in maildir directories."
-msgstr ""
+msgstr "maildir ഡയറക്ടറികളില്‍ ലോക്കല്‍ മെയില്‍ സൂക്ഷിക്കുന്നതിന്."
 
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "Store status headers in Elm/Pine/Mutt format"
-msgstr ""
+msgstr "Elm/Pine/Mutt ഫോര്‍മാറ്റില്‍ അവസ്ഥയുടെ തലക്കെട്ടുകള്‍ ശേഖരിക്കുന്നു"
 
 #: ../camel/providers/local/camel-local-provider.c:114
 msgid "Standard Unix mbox spool or directory"
-msgstr ""
+msgstr "സ്റ്റാന്‍ഡേര്‍ഡ് Unix mbox spool അല്ലെങ്കില്‍ ഡയറക്ടറി"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid ""
@@ -3509,12 +3509,12 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
-msgstr ""
+msgstr "സ്റ്റോര്‍ റൂട്ട് %s ഒരു മുഴുവന്‍ പാഥ് അല്ല"
 
 #: ../camel/providers/local/camel-local-store.c:163
 #, c-format
 msgid "Store root %s is not a regular directory"
-msgstr ""
+msgstr "സ്റ്റോര്‍ റൂട്ട് %s ഒരു സാധാരണ ഡയറക്ടറി അല്ല"
 
 #: ../camel/providers/local/camel-local-store.c:172
 #: ../camel/providers/local/camel-local-store.c:180
@@ -3525,7 +3525,7 @@ msgstr "ഫോള്‍ഡര്‍ ലഭ്യമല്ല: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:192
 msgid "Local stores do not have an inbox"
-msgstr ""
+msgstr "ലോക്കല്‍ ശേഖരങ്ങള്‍ക്ക് പോയ മെയിലുകളുടെ ഫോള്‍ഡര്‍ ഇല്ല"
 
 #: ../camel/providers/local/camel-local-store.c:238
 #, c-format
@@ -3546,19 +3546,19 @@ msgstr "'%s'-ന്‍റെ പേര് മാറ്റുവാന്‍ സ�
 #: ../camel/providers/local/camel-mbox-store.c:275
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
-msgstr ""
+msgstr "ഫോള്‍ഡറിന്‍റെ സമ്മറി ഫയല്‍ `%s' നീക്കം ചെയ്യുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../camel/providers/local/camel-local-store.c:456
 #: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
-msgstr ""
+msgstr "ഫോള്‍ഡറിന്‍റെ സൂചിക ഫയല്‍ `%s' നീക്കം ചെയ്യുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../camel/providers/local/camel-local-store.c:479
 #: ../camel/providers/local/camel-mbox-store.c:311
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
-msgstr ""
+msgstr "മെറ്റാ ഫയല്‍ ഫോള്‍ഡര്‍ നീക്കം ചെയ്യുവാന്‍ സാധ്യമായില്ല `%s': %s"
 
 #: ../camel/providers/local/camel-local-summary.c:409
 #, c-format
@@ -3567,16 +3567,16 @@ msgstr "സമ്മറി സൂക്ഷിക്കുവാന്‍ സാ�
 
 #: ../camel/providers/local/camel-local-summary.c:467
 msgid "Unable to add message to summary: unknown reason"
-msgstr ""
+msgstr "സമ്മറിയിലേക്ക് സന്ദേശം ചേര്‍ക്കുവാന്‍ സാധ്യമായില്ല: അപരിചിതമായ കാരണം"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message canceled"
-msgstr ""
+msgstr "Maildir-ല്‍ മാറ്റിയ സന്ദേശം റദ്ദാക്കിയിരിക്കുന്നു"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr ""
+msgstr "maildir ഫോള്‍ഡറിലേക്ക് സന്ദേശം മാറ്റുവാന്‍ സാധ്യമായില്ല: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
@@ -3649,7 +3649,7 @@ msgstr "ഫോള്‍ഡര്‍ `%s' പരിശോധിക്കുവാ
 #: ../camel/providers/local/camel-maildir-summary.c:556
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
-msgstr ""
+msgstr "maildir ഡയറക്ടറിയുടെ പാഥ് തുറക്കുവാന്‍ സാധ്യമവല്ല: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:549
 msgid "Checking folder consistency"
@@ -3685,11 +3685,11 @@ msgstr "മെയിലിന്‍ മാറ്റം വരുത്തിയ�
 #: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr ""
+msgstr "mbox ഫയലിലേക്ക് സന്ദേശം മാറ്റുവാന്‍ സാധ്യമാണ്: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
-msgstr ""
+msgstr "വീണ്ടെടുക്കുവാന്‍ പറ്റാത്ത രീതിയില്‍ ഫോള്‍ഡര്‍ തകരാറിലാണ്."
 
 #: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:223
@@ -3898,7 +3898,7 @@ msgstr "`%s' ഒരു തപാല്‍ പെട്ടി അല്ല."
 
 #: ../camel/providers/local/camel-spool-store.c:207
 msgid "Store does not support an INBOX"
-msgstr ""
+msgstr "വന്ന മെയിലുകളെ ശേഖരം പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
@@ -3965,7 +3965,7 @@ msgstr "നിങ്ങള്‍ക്ക് NNTP ഫോള്‍ഡറില്
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
+msgstr "ചെറിയ നൊട്ടേഷനില്‍ ഫോള്‍ഡറുകള്‍ കാണിക്കുന്നു (e.g. comp.os.linux-ന് പകരം c.o.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription dialog, show relative folder names"
@@ -3984,6 +3984,8 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
+"പ്ളെയിന്‍ ടെക്സ്റ്റ് പാസ്‍വേര്‍ഡ് ഉപയോഗിച്ച് ഈ ഉപാധി NNTP സര്‍വറുമായി നിങ്ങളുടെ "
+"ആധികാരികത ഉറപ്പാക്കുന്നു."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
@@ -4028,7 +4030,7 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
-msgstr ""
+msgstr "ഒരു വാര്‍ത്തയുടെ ശേഖരത്തിലുളള ഫോള്‍ഡറിന്‍റെ പേര് നിങ്ങള്‍ക്ക് മാറ്റുവാന്‍ സാധ്യമല്ല."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
@@ -4078,7 +4080,7 @@ msgstr "xover-ല്‍ നിന്നും അപ്രതീക്ഷിത�
 #: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "തലക്കെട്ടില്‍ നിന്നും അപ്രതീക്ഷിതമായി സര്‍വറിന്‍റെ മറുപടി: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
@@ -4100,11 +4102,11 @@ msgstr "POP സമ്മറി ലഭ്യമല്ല: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:308
 msgid "Expunging old messages"
-msgstr ""
+msgstr "പഴയ സന്ദേശങ്ങള്‍ എടുത്ത് കളയുന്നു"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
-msgstr ""
+msgstr "നീക്കം ചെയ്ത സന്ദേശങ്ങള്‍ എടുത്ത് കളയുന്നു"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
@@ -4385,7 +4387,7 @@ msgstr "ആധികാരികത ഉറപ്പാക്കുന്ന സ�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "Encryption required for requested authentication mechanism"
-msgstr ""
+msgstr "ആവശ്യപ്പെട്ട ആധികാരികത ഉറപ്പാക്കുന്ന സംവിധാനത്തില്‍ രഹസ്യഭാഷ ആവശ്യമുണ്ട്"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:210
 msgid "Temporary authentication failure"
@@ -4483,7 +4485,7 @@ msgstr "SMTP-യില്‍ ആധികാരികത ഉറപ്പ് വ�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1004
 msgid "Error creating SASL authentication object."
-msgstr ""
+msgstr "SASL-ലേക്കുളള ആധികാരികത ഉറപ്പാക്കുവാനുളള ഒബ്ജക്ട് ഉണ്ടാക്കുന്നതില്‍ പിശക്."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1021
 #: ../camel/providers/smtp/camel-smtp-transport.c:1032
