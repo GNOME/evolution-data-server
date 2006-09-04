@@ -1,4 +1,4 @@
-# traditional Chinese translation of Evolution-data-server.
+# Chinese (Hong Kong) translation of Evolution-data-server.
 # Copyright (C) 2001, 03 Free Software Foundation, Inc.
 # Joe Man <trmetal@yahoo.com.hk>, 2001.
 # Chao-Hsiung Liao <pesder.liao@msa.hinet.net>, 2003.
@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-25 14:40+0800\n"
-"PO-Revision-Date: 2006-06-25 08:06+0800\n"
+"POT-Creation-Date: 2006-09-04 18:36+0800\n"
+"PO-Revision-Date: 2006-09-04 18:50+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
-"Language-Team: Chinese (Traditional) <community@linuxhall.org>\n"
+"Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,73 +19,73 @@ msgstr ""
 
 # mail/mail-send-recv.c:287
 # mail/mail-send-recv.c:333
-#: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2228
+#: ../addressbook/backends/file/e-book-backend-file.c:542
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "載入中..."
 
 # addressbook/gui/search/e-addressbook-search-dialog.c:158
 # mail/mail-search.c:242
-#: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2187
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2207
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2226
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4083
+#: ../addressbook/backends/file/e-book-backend-file.c:545
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2301
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "搜尋..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2596
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4177
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "正在下載聯絡人 (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2753
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2942
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2986
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "正在更新聯絡人快取 (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:720
 msgid "Using Distinguished Name (DN)"
 msgstr "使用辨認的名稱 (DN)"
 
 # mail/mail-config.glade.h:29
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Email Address"
-msgstr "使用電郵地址"
+msgstr "使用電子郵件地址"
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:974
 msgid "Reconnecting to LDAP server..."
 msgstr "正重新連線至 LDAP 伺服器..."
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1568
 msgid "Adding contact to LDAP server..."
 msgstr "正在新增聯絡人至 LDAP 伺服器..."
 
 # mail/mail-ops.c:1195
 # mail/mail-ops.c:1333
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1696
 msgid "Removing contact from LDAP server..."
 msgstr "正在移除 LDAP 伺服器中的聯絡人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2001
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 伺服器中的聯絡人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3945
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3893
 msgid "Receiving LDAP search results..."
 msgstr "接收 LDAP 搜尋結果..."
 
 # executive-summary/component/e-summary.c:940
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4105
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4041
 msgid "Error performing search"
 msgstr "進行搜尋時發生錯誤"
 
@@ -104,7 +104,7 @@ msgstr "進行搜尋時發生錯誤"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3411
+#: ../addressbook/libebook/e-book.c:3413
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "在通訊錄中「%s」在「%s」之前"
@@ -132,7 +132,7 @@ msgstr "通訊錄忙碌中"
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
 #: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
 #: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
-#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3420
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3422
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA 例外造成「%s」呼叫"
@@ -169,7 +169,7 @@ msgstr "%s：無效的來源。"
 
 # camel/camel-session.c:295
 # camel/camel-session.c:364
-#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3349
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3351
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s：URI「%s」沒有可用的製造廠"
@@ -179,23 +179,29 @@ msgstr "%s：URI「%s」沒有可用的製造廠"
 msgid "%s: Could not create EBookListener"
 msgstr "%s：無法建立 EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3560
+#: ../addressbook/libebook/e-book.c:3562
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s：沒有儲存於 gconf 中的本身聯絡人 UID"
 
-#: ../addressbook/libebook/e-book.c:3690
+#: ../addressbook/libebook/e-book.c:3692
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s：沒有儲存於 gconf 中的 uid `%s' 來源。"
 
-#: ../addressbook/libebook/e-contact.c:108
+#. Dummy row as EContactField starts from 1
+#: ../addressbook/libebook/e-contact.c:112
 msgid "Unique ID"
 msgstr "獨特的 ID"
 
-#: ../addressbook/libebook/e-contact.c:109
+#: ../addressbook/libebook/e-contact.c:113
 msgid "File Under"
 msgstr "歸檔為"
+
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:115
+msgid "Book URI"
+msgstr "通訊錄 URI"
 
 # addressbook/contact-editor/e-contact-quick-add.c:276
 # addressbook/gui/widgets/e-addressbook-view.c:700
@@ -203,466 +209,225 @@ msgstr "歸檔為"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:121
 msgid "Full Name"
 msgstr "全名"
 
-#: ../addressbook/libebook/e-contact.c:116
-msgid "Name"
-msgstr "名稱"
-
 # addressbook/contact-editor/e-contact-quick-add.c:276
 # addressbook/gui/widgets/e-addressbook-view.c:700
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:122
 msgid "Given Name"
 msgstr "名"
 
 # addressbook/contact-editor/e-contact-quick-add.c:276
 # addressbook/gui/widgets/e-addressbook-view.c:700
-#: ../addressbook/libebook/e-contact.c:118
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
 msgstr "姓"
 
 # addressbook/gui/widgets/e-addressbook-view.c:734
-#: ../addressbook/libebook/e-contact.c:119
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Nickname"
 msgstr "暱稱"
 
-#: ../addressbook/libebook/e-contact.c:120
-msgid "Name or Org"
-msgstr "姓名或組織"
+# addressbook/contact-editor/e-contact-editor.c:1286
+# addressbook/gui/widgets/e-addressbook-view.c:726
+#. Email fields
+#: ../addressbook/libebook/e-contact.c:127
+msgid "Email 1"
+msgstr "電子郵件 1"
 
-# addressbook/backend/ebook/e-card.c:3346
-#. Address fields
-#: ../addressbook/libebook/e-contact.c:123
-msgid "Address List"
-msgstr "地址清單"
+# addressbook/contact-editor/e-contact-editor.c:1285
+# addressbook/gui/widgets/e-addressbook-view.c:725
+#: ../addressbook/libebook/e-contact.c:128
+msgid "Email 2"
+msgstr "電子郵件 2"
 
-# addressbook/gui/widgets/e-addressbook-view.c:710
-#: ../addressbook/libebook/e-contact.c:124
-msgid "Home Address"
-msgstr "住家地址"
+# addressbook/contact-editor/e-contact-editor.c:1286
+# addressbook/gui/widgets/e-addressbook-view.c:726
+#: ../addressbook/libebook/e-contact.c:129
+msgid "Email 3"
+msgstr "電子郵件 3"
 
-# addressbook/gui/widgets/e-addressbook-view.c:710
-#: ../addressbook/libebook/e-contact.c:125
-msgid "Work Address"
-msgstr "工作地址"
+# addressbook/contact-editor/e-contact-editor.c:1286
+# addressbook/gui/widgets/e-addressbook-view.c:726
+#: ../addressbook/libebook/e-contact.c:130
+msgid "Email 4"
+msgstr "電子郵件 4"
 
-# addressbook/gui/widgets/e-addressbook-view.c:724
-#: ../addressbook/libebook/e-contact.c:126
-msgid "Other Address"
-msgstr "其它地址"
+# addressbook/backend/ebook/e-card.c:3428
+#: ../addressbook/libebook/e-contact.c:132
+msgid "Mailer"
+msgstr "寄件者"
 
 # data/evolution.keys.in.h:1
-#: ../addressbook/libebook/e-contact.c:128
+#. Address Labels
+#: ../addressbook/libebook/e-contact.c:135
 msgid "Home Address Label"
 msgstr "住家地址標籤"
 
 # data/evolution.keys.in.h:1
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Work Address Label"
 msgstr "工作地址標籤"
 
 # data/evolution.keys.in.h:1
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Other Address Label"
 msgstr "其他地址標籤"
 
 # addressbook/gui/widgets/e-addressbook-view.c:703
-#: ../addressbook/libebook/e-contact.c:132
+#. Phone fields
+#: ../addressbook/libebook/e-contact.c:140
 msgid "Assistant Phone"
 msgstr "助理電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:704
-#: ../addressbook/libebook/e-contact.c:133
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Business Phone"
 msgstr "商務電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:715
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Business Phone 2"
 msgstr "商務電話 2"
 
 # addressbook/contact-editor/e-contact-editor.c:1245
 # addressbook/gui/widgets/e-addressbook-view.c:713
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Fax"
 msgstr "商務傅真"
 
 # addressbook/gui/widgets/e-addressbook-view.c:705
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Callback Phone"
 msgstr "回撥電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:712
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Car Phone"
 msgstr "汽車電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:706
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Company Phone"
 msgstr "公司電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:707
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Home Phone"
 msgstr "住家電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:716
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Home Phone 2"
 msgstr "住家電話 2"
 
 # addressbook/contact-editor/e-contact-editor.c:1251
 # addressbook/gui/widgets/e-addressbook-view.c:714
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Fax"
 msgstr "住家傳真"
 
 # addressbook/contact-editor/e-contact-editor.c:1252
 # addressbook/gui/widgets/e-addressbook-view.c:717
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:150
 msgid "ISDN"
 msgstr "ISDN"
 
 # addressbook/gui/widgets/e-addressbook-view.c:711
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Mobile Phone"
 msgstr "流動電話"
 
 # addressbook/gui/widgets/e-addressbook-view.c:718
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:152
 msgid "Other Phone"
 msgstr "其它電話"
 
 # addressbook/contact-editor/e-contact-editor.c:1255
 # addressbook/gui/widgets/e-addressbook-view.c:719
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Other Fax"
 msgstr "其它傳真"
 
 # addressbook/contact-editor/e-contact-editor.c:1256
 # addressbook/gui/widgets/e-addressbook-view.c:720
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Pager"
-msgstr "呼叫器"
+msgstr "call 機"
 
 # addressbook/gui/widgets/e-addressbook-view.c:702
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Primary Phone"
 msgstr "主要電話"
 
 # addressbook/contact-editor/e-contact-editor.c:1258
 # addressbook/gui/widgets/e-addressbook-view.c:721
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Radio"
 msgstr "無線電電話"
 
 # addressbook/contact-editor/e-contact-editor.c:1259
 # addressbook/gui/widgets/e-addressbook-view.c:722
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Telex"
 msgstr "電報"
 
 # addressbook/gui/widgets/e-addressbook-view.c:723
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:159
 msgid "TTY"
 msgstr "TTY"
 
-# addressbook/contact-editor/e-contact-editor.c:1285
-# addressbook/gui/widgets/e-addressbook-view.c:725
-#. Email fields
-#: ../addressbook/libebook/e-contact.c:154
-msgid "Email List"
-msgstr "電郵清單"
-
-# addressbook/contact-editor/e-contact-editor.c:1286
-# addressbook/gui/widgets/e-addressbook-view.c:726
-#: ../addressbook/libebook/e-contact.c:155
-msgid "Email 1"
-msgstr "電郵 1"
-
-# addressbook/contact-editor/e-contact-editor.c:1285
-# addressbook/gui/widgets/e-addressbook-view.c:725
-#: ../addressbook/libebook/e-contact.c:156
-msgid "Email 2"
-msgstr "電郵 2"
-
-# addressbook/contact-editor/e-contact-editor.c:1286
-# addressbook/gui/widgets/e-addressbook-view.c:726
-#: ../addressbook/libebook/e-contact.c:157
-msgid "Email 3"
-msgstr "電郵 3"
-
-# addressbook/contact-editor/e-contact-editor.c:1286
-# addressbook/gui/widgets/e-addressbook-view.c:726
-#: ../addressbook/libebook/e-contact.c:158
-msgid "Email 4"
-msgstr "電郵 4"
-
-# addressbook/backend/ebook/e-card.c:3428
-#: ../addressbook/libebook/e-contact.c:159
-msgid "Mailer"
-msgstr "寄件者"
-
-#: ../addressbook/libebook/e-contact.c:160
-msgid "Wants HTML Mail"
-msgstr "需要 HTML 電郵"
-
-#. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:163
-msgid "AIM Screen Name List"
-msgstr "AIM 螢幕名稱清單"
-
-#: ../addressbook/libebook/e-contact.c:164
-msgid "GroupWise Id List"
-msgstr "GroupWise Id 清單"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:165
-msgid "Jabber Id List"
-msgstr "Jabber Id 清單"
-
-#: ../addressbook/libebook/e-contact.c:166
-msgid "Yahoo! Screen Name List"
-msgstr "Yahoo!螢幕名稱清單"
-
-#: ../addressbook/libebook/e-contact.c:167
-msgid "MSN Screen Name List"
-msgstr "MSN 螢幕名稱清單"
-
-# mail/mail-config.glade.h:45
-#: ../addressbook/libebook/e-contact.c:168
-msgid "ICQ Id List"
-msgstr "ICQ Id 清單"
-
-#: ../addressbook/libebook/e-contact.c:170
-msgid "AIM Home Screen Name 1"
-msgstr "AIM 家用螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:171
-msgid "AIM Home Screen Name 2"
-msgstr "AIM 家用螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:172
-msgid "AIM Home Screen Name 3"
-msgstr "AIM 家用螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:173
-msgid "AIM Work Screen Name 1"
-msgstr "AIM 工作螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:174
-msgid "AIM Work Screen Name 2"
-msgstr "AIM 工作螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:175
-msgid "AIM Work Screen Name 3"
-msgstr "AIM 工作螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:176
-msgid "GroupWise Home Screen Name 1"
-msgstr "GroupWise 家用螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:177
-msgid "GroupWise Home Screen Name 2"
-msgstr "GroupWise 家用螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:178
-msgid "GroupWise Home Screen Name 3"
-msgstr "GroupWise 家用螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:179
-msgid "GroupWise Work Screen Name 1"
-msgstr "GroupWise 工作螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:180
-msgid "GroupWise Work Screen Name 2"
-msgstr "GroupWise 工作螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:181
-msgid "GroupWise Work Screen Name 3"
-msgstr "GroupWise 工作螢幕名稱 3"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:182
-msgid "Jabber Home Id 1"
-msgstr "Jabber 家用 Id 1"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:183
-msgid "Jabber Home Id 2"
-msgstr "Jabber 家用 Id 2"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:184
-msgid "Jabber Home Id 3"
-msgstr "Jabber 家用 Id 3"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:185
-msgid "Jabber Work Id 1"
-msgstr "Jabber 工作 Id 1"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:186
-msgid "Jabber Work Id 2"
-msgstr "Jabber 工作 Id 2"
-
-# addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:187
-msgid "Jabber Work Id 3"
-msgstr "Jabber 工作 Id 3"
-
-#: ../addressbook/libebook/e-contact.c:188
-msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo!家用螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:189
-msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo!家用螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:190
-msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo!家用螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:191
-msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo!工作螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:192
-msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo!工作螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:193
-msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo!工作螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:194
-msgid "MSN Home Screen Name 1"
-msgstr "MSN 家用螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:195
-msgid "MSN Home Screen Name 2"
-msgstr "MSN 家用螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:196
-msgid "MSN Home Screen Name 3"
-msgstr "MSN 家用螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:197
-msgid "MSN Work Screen Name 1"
-msgstr "MSN 工作螢幕名稱 1"
-
-#: ../addressbook/libebook/e-contact.c:198
-msgid "MSN Work Screen Name 2"
-msgstr "MSN 工作螢幕名稱 2"
-
-#: ../addressbook/libebook/e-contact.c:199
-msgid "MSN Work Screen Name 3"
-msgstr "MSN 工作螢幕名稱 3"
-
-#: ../addressbook/libebook/e-contact.c:200
-msgid "ICQ Home Id 1"
-msgstr "ICQ 家用 Id 1"
-
-# addressbook/contact-editor/e-contact-editor.c:1250
-#: ../addressbook/libebook/e-contact.c:201
-msgid "ICQ Home Id 2"
-msgstr "ICQ 家用 Id 2"
-
-#: ../addressbook/libebook/e-contact.c:202
-msgid "ICQ Home Id 3"
-msgstr "ICQ 家用 Id 3"
-
-#: ../addressbook/libebook/e-contact.c:203
-msgid "ICQ Work Id 1"
-msgstr "ICQ 工作 Id 1"
-
-#: ../addressbook/libebook/e-contact.c:204
-msgid "ICQ Work Id 2"
-msgstr "ICQ 工作 Id 2"
-
-#: ../addressbook/libebook/e-contact.c:205
-msgid "ICQ Work Id 3"
-msgstr "ICQ 工作 Id 3"
-
 # addressbook/gui/widgets/e-addressbook-view.c:708
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:162
 msgid "Organization"
 msgstr "團體"
 
 # addressbook/gui/widgets/e-addressbook-view.c:708
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:163
 msgid "Organizational Unit"
 msgstr "團體單位"
 
 # addressbook/gui/widgets/e-addressbook-view.c:729
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
 msgstr "辦公室"
 
 # addressbook/gui/widgets/e-addressbook-view.c:730
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
-msgstr "頭銜"
+msgstr "銜頭"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Role"
 msgstr "角色"
 
 # addressbook/gui/widgets/e-addressbook-view.c:732
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Manager"
 msgstr "主管"
 
 # addressbook/contact-editor/e-contact-editor.c:1242
 # addressbook/gui/widgets/e-addressbook-view.c:733
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Assistant"
 msgstr "助理"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:171
 msgid "Homepage URL"
 msgstr "首頁 URL"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:172
 msgid "Weblog URL"
 msgstr "網誌 URL"
 
-#: ../addressbook/libebook/e-contact.c:220
-msgid "Video Conferencing URL"
-msgstr "視訊會議 URL"
-
-# addressbook/gui/component/addressbook-config.c:409
-#. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:223
-msgid "Photo"
-msgstr "相片"
-
-# mail/mail-format.c:762
-# mail/message-list.c:1083
-#: ../addressbook/libebook/e-contact.c:224
-msgid "Logo"
-msgstr "標幟"
-
-#. Security fields
-#: ../addressbook/libebook/e-contact.c:227
-msgid "X.509 Certificate"
-msgstr "X.509 證書"
-
 # calendar/gui/e-calendar-table.c:150
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:230
-msgid "Category List"
-msgstr "分類清單"
-
-# calendar/gui/e-calendar-table.c:150
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "分類"
@@ -670,68 +435,342 @@ msgstr "分類"
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:178
 msgid "Calendar URI"
 msgstr "行事曆 URI"
 
 # addressbook/gui/widgets/e-addressbook-view.c:737
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Free/Busy URL"
 msgstr "空閒/忙碌 URL"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:180
 msgid "ICS Calendar"
 msgstr "ICS 行事曆"
 
+#: ../addressbook/libebook/e-contact.c:181
+msgid "Video Conferencing URL"
+msgstr "視像會議 URL"
+
 # addressbook/gui/widgets/e-addressbook-view.c:735
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Spouse's Name"
 msgstr "配偶姓名"
 
 # addressbook/gui/widgets/e-addressbook-view.c:736
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
 msgstr "備註"
 
-# addressbook/backend/ebook/e-card.c:3335
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:188
+msgid "AIM Home Screen Name 1"
+msgstr "AIM 家用螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:189
+msgid "AIM Home Screen Name 2"
+msgstr "AIM 家用螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "AIM Home Screen Name 3"
+msgstr "AIM 家用螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "AIM Work Screen Name 1"
+msgstr "AIM 工作螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "AIM Work Screen Name 2"
+msgstr "AIM 工作螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "AIM Work Screen Name 3"
+msgstr "AIM 工作螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "GroupWise Home Screen Name 1"
+msgstr "GroupWise 家用螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:195
+msgid "GroupWise Home Screen Name 2"
+msgstr "GroupWise 家用螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:196
+msgid "GroupWise Home Screen Name 3"
+msgstr "GroupWise 家用螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:197
+msgid "GroupWise Work Screen Name 1"
+msgstr "GroupWise 工作螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:198
+msgid "GroupWise Work Screen Name 2"
+msgstr "GroupWise 工作螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:199
+msgid "GroupWise Work Screen Name 3"
+msgstr "GroupWise 工作螢幕名稱 3"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:200
+msgid "Jabber Home Id 1"
+msgstr "Jabber 家用 Id 1"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Jabber Home Id 2"
+msgstr "Jabber 家用 Id 2"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Jabber Home Id 3"
+msgstr "Jabber 家用 Id 3"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Jabber Work Id 1"
+msgstr "Jabber 工作 Id 1"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:204
+msgid "Jabber Work Id 2"
+msgstr "Jabber 工作 Id 2"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Jabber Work Id 3"
+msgstr "Jabber 工作 Id 3"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo!家用螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo!家用螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo!家用螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:209
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo!工作螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:210
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo!工作螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo!工作螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "MSN Home Screen Name 1"
+msgstr "MSN 家用螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:213
+msgid "MSN Home Screen Name 2"
+msgstr "MSN 家用螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:214
+msgid "MSN Home Screen Name 3"
+msgstr "MSN 家用螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:215
+msgid "MSN Work Screen Name 1"
+msgstr "MSN 工作螢幕名稱 1"
+
+#: ../addressbook/libebook/e-contact.c:216
+msgid "MSN Work Screen Name 2"
+msgstr "MSN 工作螢幕名稱 2"
+
+#: ../addressbook/libebook/e-contact.c:217
+msgid "MSN Work Screen Name 3"
+msgstr "MSN 工作螢幕名稱 3"
+
+#: ../addressbook/libebook/e-contact.c:218
+msgid "ICQ Home Id 1"
+msgstr "ICQ 家用 Id 1"
+
+# addressbook/contact-editor/e-contact-editor.c:1250
+#: ../addressbook/libebook/e-contact.c:219
+msgid "ICQ Home Id 2"
+msgstr "ICQ 家用 Id 2"
+
+#: ../addressbook/libebook/e-contact.c:220
+msgid "ICQ Home Id 3"
+msgstr "ICQ 家用 Id 3"
+
+#: ../addressbook/libebook/e-contact.c:221
+msgid "ICQ Work Id 1"
+msgstr "ICQ 工作 Id 1"
+
+#: ../addressbook/libebook/e-contact.c:222
+msgid "ICQ Work Id 2"
+msgstr "ICQ 工作 Id 2"
+
+#: ../addressbook/libebook/e-contact.c:223
+msgid "ICQ Work Id 3"
+msgstr "ICQ 工作 Id 3"
+
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:226
+msgid "Last Revision"
+msgstr "上次改版"
+
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Name or Org"
+msgstr "姓名或組織"
+
+# addressbook/backend/ebook/e-card.c:3346
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:230
+msgid "Address List"
+msgstr "地址清單"
+
+# addressbook/gui/widgets/e-addressbook-view.c:710
+#: ../addressbook/libebook/e-contact.c:231
+msgid "Home Address"
+msgstr "住家地址"
+
+# addressbook/gui/widgets/e-addressbook-view.c:710
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Work Address"
+msgstr "工作地址"
+
+# addressbook/gui/widgets/e-addressbook-view.c:724
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Other Address"
+msgstr "其它地址"
+
+# calendar/gui/e-calendar-table.c:150
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:236
+msgid "Category List"
+msgstr "分類清單"
+
+# addressbook/gui/component/addressbook-config.c:409
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:239
+msgid "Photo"
+msgstr "相片"
+
+# mail/mail-format.c:762
+# mail/message-list.c:1083
+#: ../addressbook/libebook/e-contact.c:240
+msgid "Logo"
+msgstr "標幟"
+
 #: ../addressbook/libebook/e-contact.c:242
+msgid "Name"
+msgstr "名稱"
+
+# addressbook/contact-editor/e-contact-editor.c:1285
+# addressbook/gui/widgets/e-addressbook-view.c:725
+#: ../addressbook/libebook/e-contact.c:243
+msgid "Email List"
+msgstr "電子郵件清單"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:246
+msgid "AIM Screen Name List"
+msgstr "AIM 螢幕名稱清單"
+
+#: ../addressbook/libebook/e-contact.c:247
+msgid "GroupWise Id List"
+msgstr "GroupWise Id 清單"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:248
+msgid "Jabber Id List"
+msgstr "Jabber Id 清單"
+
+#: ../addressbook/libebook/e-contact.c:249
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo!螢幕名稱清單"
+
+#: ../addressbook/libebook/e-contact.c:250
+msgid "MSN Screen Name List"
+msgstr "MSN 螢幕名稱清單"
+
+# mail/mail-config.glade.h:45
+#: ../addressbook/libebook/e-contact.c:251
+msgid "ICQ Id List"
+msgstr "ICQ Id 清單"
+
+#: ../addressbook/libebook/e-contact.c:253
+msgid "Wants HTML Mail"
+msgstr "需要 HTML 郵件"
+
+# addressbook/contact-editor/fullname.glade.h:8
+#: ../addressbook/libebook/e-contact.c:255
+msgid "List"
+msgstr "清單"
+
+# addressbook/gui/widgets/e-addressbook-view.c:724
+#: ../addressbook/libebook/e-contact.c:256
+msgid "List Show Addresses"
+msgstr "清單顯示地址"
+
+# addressbook/backend/ebook/e-card.c:3335
+#: ../addressbook/libebook/e-contact.c:258
 msgid "Birth Date"
 msgstr "出生日期"
 
 # addressbook/contact-editor/contact-editor.glade.h:2
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:259
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "紀念日"
 
-# addressbook/contact-editor/fullname.glade.h:8
-#: ../addressbook/libebook/e-contact.c:245
-msgid "List"
-msgstr "清單"
-
-# addressbook/gui/widgets/e-addressbook-view.c:724
-#: ../addressbook/libebook/e-contact.c:246
-msgid "List Show Addresses"
-msgstr "清單顯示地址"
-
-#. Last modified time
-#: ../addressbook/libebook/e-contact.c:249
-msgid "Last Revision"
-msgstr "上次改版"
-
-#. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:251
-msgid "Book URI"
-msgstr "通訊錄 URI"
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:262
+msgid "X.509 Certificate"
+msgstr "X.509 證書"
 
 # addressbook/gui/component/addressbook-storage.c:99
-#: ../addressbook/libebook/e-contact.c:1239
+#: ../addressbook/libebook/e-contact.c:264
+msgid "Gadu-Gadu Home Id 1"
+msgstr "Gadu-Gadu 家用 Id 1"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:265
+msgid "Gadu-Gadu Home Id 2"
+msgstr "Gadu-Gadu 家用 Id 2"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:266
+msgid "Gadu-Gadu Home Id 3"
+msgstr "Gadu-Gadu 家用 Id 3"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:267
+msgid "Gadu-Gadu Work Id 1"
+msgstr "Gadu-Gadu 工作 Id 1"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:268
+msgid "Gadu-Gadu Work Id 2"
+msgstr "Gadu-Gadu 工作 Id 2"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:269
+msgid "Gadu-Gadu Work Id 3"
+msgstr "Gadu-Gadu 工作 Id 3"
+
+#: ../addressbook/libebook/e-contact.c:270
+msgid "Gadu-Gadu Id List"
+msgstr "Gadu-Gadu Id 清單"
+
+# addressbook/gui/component/addressbook-storage.c:99
+#: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "未命名的清單"
@@ -758,83 +797,84 @@ msgstr "紀念日：%s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "無法儲存行事曆資料：URI 的格式不正確。"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1593
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
 msgid "Reply Requested: by "
 msgstr "要求回覆：依"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1598
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1677
 msgid "Reply Requested: When convenient"
 msgstr "要求回覆：當有空時"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:243
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
 #, c-format
 msgid "Loading %s items"
 msgstr "載入 %s 個項目"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:11
 # ui/evolution-calendar.xml.h:3
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "行事曆"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:827
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
 msgid "Invalid server URI"
 msgstr "無效的伺服器 URI"
 
 # camel/camel-sasl-anonymous.c:110
 # camel/camel-sasl-plain.c:87
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:852
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:937
-#: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:983
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
-#: ../camel/providers/groupwise/camel-groupwise-store.c:588
-#: ../camel/providers/groupwise/camel-groupwise-store.c:603
-#: ../camel/providers/groupwise/camel-groupwise-store.c:714
-#: ../camel/providers/groupwise/camel-groupwise-store.c:756
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1264
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:851
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
+#: ../calendar/libecal/e-cal.c:5178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1003
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1027
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "驗證失敗"
 
 # camel/providers/imap/camel-imap-folder.c:172
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:893
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:902
 msgid "Could not create thread for getting deltas"
 msgstr "無法建立取得 deltas 的執行緒"
 
 # camel/providers/local/camel-mbox-store.c:110
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1165
-#: ../calendar/backends/http/e-cal-backend-http.c:520
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:942
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1211
+#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "無法建立快取檔案"
 
 # camel/providers/imap/camel-imap-folder.c:172
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:931
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
 msgid "Could not create thread for populating cache"
 msgstr "無法建立移植快取的執行緒"
 
 # mail/mail-config.glade.h:37
-#: ../calendar/backends/http/e-cal-backend-http.c:259
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Redirected to Invalid URI"
 msgstr "重新指向無效的 URI"
 
 # calendar/gui/dialogs/cal-prefs-dialog.glade.h:50
-#: ../calendar/backends/http/e-cal-backend-http.c:283
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "錯誤的檔案格式。"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "並非行事曆。"
 
@@ -1048,157 +1088,157 @@ msgid "Untitled appointment"
 msgstr "未命名的約會"
 
 # calendar/gui/print.c:300
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1日"
 
 # calendar/gui/print.c:300
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2日"
 
 # calendar/gui/print.c:300
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3日"
 
 # calendar/gui/print.c:300
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4日"
 
 # calendar/gui/print.c:300
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5日"
 
 # calendar/gui/print.c:301
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6日"
 
 # calendar/gui/print.c:301
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7日"
 
 # calendar/gui/print.c:301
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8日"
 
 # calendar/gui/print.c:301
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9日"
 
 # calendar/gui/print.c:301
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10日"
 
 # calendar/gui/print.c:302
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11日"
 
 # calendar/gui/print.c:302
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12日"
 
 # calendar/gui/print.c:302
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13日"
 
 # calendar/gui/print.c:302
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14日"
 
 # calendar/gui/print.c:302
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15日"
 
 # calendar/gui/print.c:303
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16日"
 
 # calendar/gui/print.c:303
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17日"
 
 # calendar/gui/print.c:303
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18日"
 
 # calendar/gui/print.c:303
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19日"
 
 # calendar/gui/print.c:303
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20日"
 
 # calendar/gui/print.c:304
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21日"
 
 # calendar/gui/print.c:304
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22日"
 
 # calendar/gui/print.c:304
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23日"
 
 # calendar/gui/print.c:304
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24日"
 
 # calendar/gui/print.c:304
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25日"
 
 # calendar/gui/print.c:305
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26日"
 
 # calendar/gui/print.c:305
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27日"
 
 # calendar/gui/print.c:305
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28日"
 
 # calendar/gui/print.c:305
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29日"
 
 # calendar/gui/print.c:305
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30日"
 
 # calendar/gui/print.c:306
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31日"
 
@@ -1207,11 +1247,11 @@ msgstr "31日"
 # calendar/gui/dialogs/task-editor-dialog.glade.h:10
 # calendar/gui/e-calendar-table.c:345
 # mail/message-list.c:689
-#: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "High"
 msgstr "高"
 
-#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Normal"
 msgstr "正常"
 
@@ -1220,7 +1260,7 @@ msgstr "正常"
 # calendar/gui/dialogs/task-editor-dialog.glade.h:12
 # calendar/gui/e-calendar-table.c:347
 # mail/message-list.c:687
-#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Low"
 msgstr "低"
 
@@ -1228,82 +1268,82 @@ msgstr "低"
 # calendar/gui/dialogs/task-editor-dialog.glade.h:22
 # calendar/gui/e-calendar-table.c:348
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:707
+#: ../calendar/libecal/e-cal-util.c:708
 msgid "Undefined"
 msgstr "未指定"
 
 # camel/camel-smime-context.c:194
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1707
+#: ../calendar/libecal/e-cal.c:1737
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "輸入 %s 的密碼以便使用者 %s 能使用代理伺服器"
 
 # camel/camel-smime-context.c:194
-#: ../calendar/libecal/e-cal.c:1710 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "輸入 %s (使用者 %s) 的密碼 "
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
 msgstr "無效的參數"
 
-#: ../calendar/libecal/e-cal.c:5111
+#: ../calendar/libecal/e-cal.c:5152
 msgid "Backend is busy"
 msgstr "後端忙碌中"
 
 # shell/e-shell-view-menu.c:602
 # shell/e-shell-view-menu.c:614
-#: ../calendar/libecal/e-cal.c:5113
+#: ../calendar/libecal/e-cal.c:5154
 msgid "Repository is offline"
 msgstr "倉庫已離線"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5156
 msgid "No such calendar"
 msgstr "無此行事曆"
 
-#: ../calendar/libecal/e-cal.c:5117 ../servers/groupwise/e-gw-connection.c:173
+#: ../calendar/libecal/e-cal.c:5158 ../servers/groupwise/e-gw-connection.c:175
 msgid "Object not found"
 msgstr "未發現物件"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: ../calendar/libecal/e-cal.c:5119 ../servers/groupwise/e-gw-connection.c:167
+#: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid object"
 msgstr "無效的物件"
 
 # addressbook/conduit/address-conduit.c:214
-#: ../calendar/libecal/e-cal.c:5121
+#: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
 msgstr "URI 未載入"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5164
 msgid "URI already loaded"
 msgstr "URI 已載入"
 
 # shell/e-storage.c:475
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "權限不足"
 
 # camel/providers/imap/camel-imap-command.c:241
 # shell/e-storage.c:481
-#: ../calendar/libecal/e-cal.c:5127 ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
 msgid "Unknown User"
 msgstr "不明的使用者"
 
-#: ../calendar/libecal/e-cal.c:5129
+#: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
 msgstr "物件 ID 已存在"
 
 # shell/e-storage.c:477
-#: ../calendar/libecal/e-cal.c:5131
+#: ../calendar/libecal/e-cal.c:5172
 msgid "Protocol not supported"
 msgstr "通訊協定不支援"
 
@@ -1311,50 +1351,50 @@ msgstr "通訊協定不支援"
 # camel/camel-remote-store.c:399
 # camel/camel-remote-store.c:470
 # camel/providers/imap/camel-imap-command.c:287
-#: ../calendar/libecal/e-cal.c:5133
+#: ../calendar/libecal/e-cal.c:5174
 msgid "Operation has been canceled"
 msgstr "操作已取消"
 
 # calendar/gui/e-itip-control.c:883
-#: ../calendar/libecal/e-cal.c:5135
+#: ../calendar/libecal/e-cal.c:5176
 msgid "Could not cancel operation"
 msgstr "無法取消操作"
 
 # camel/providers/smtp/camel-smtp-transport.c:218
-#: ../calendar/libecal/e-cal.c:5139
+#: ../calendar/libecal/e-cal.c:5180
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "要求驗證"
 
-#: ../calendar/libecal/e-cal.c:5141
+#: ../calendar/libecal/e-cal.c:5182
 msgid "A CORBA exception has occurred"
 msgstr "發生 CORBA 例外"
 
 # camel/providers/imap/camel-imap-command.c:241
 # shell/e-storage.c:481
-#: ../calendar/libecal/e-cal.c:5143
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../calendar/libecal/e-cal.c:5184
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
 #: ../camel/providers/imap4/camel-imap4-store.c:314
-#: ../camel/providers/pop3/camel-pop3-store.c:528
-#: ../camel/providers/pop3/camel-pop3-store.c:535
-#: ../camel/providers/pop3/camel-pop3-store.c:541
+#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:539
+#: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:181
+#: ../servers/groupwise/e-gw-connection.c:183
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
 # shell/e-storage.c:459
-#: ../calendar/libecal/e-cal.c:5145
+#: ../calendar/libecal/e-cal.c:5186
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "沒有錯誤"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "「%s」不需要引數"
@@ -1364,7 +1404,7 @@ msgstr "「%s」不需要引數"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "「%s」需要一個引數"
@@ -1372,7 +1412,7 @@ msgstr "「%s」需要一個引數"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "「%s」的第一個引數必須為字串"
@@ -1385,8 +1425,8 @@ msgstr "「%s」的第一個引數必須為 ISO 8601 日期/時間字串"
 # camel/providers/smtp/camel-smtp-transport.c:170
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "「%s」需要兩個引數"
@@ -1395,8 +1435,8 @@ msgstr "「%s」需要兩個引數"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "「%s」的第一個引數必須為 time_t"
@@ -1407,30 +1447,29 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "「%s」的第二個引數必須為整數"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "「%s」的第二個引數必須為 time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "「%s」的第二個引數必須為字串"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr ""
-"「%s」的第一個引數必須為「任何」、「摘要」之一，或「描述」、「位置」其中之一"
+msgstr "「%s」的第一個引數必須為「任何」、「摘要」之一，或「描述」、「位置」其中之一"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "「%s」需要至少一個引數"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1440,7 +1479,7 @@ msgstr "「%s」的所有引數必須為字串，或只有一個引數為布林�
 # camel/camel-cipher-context.c:171
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
-msgstr "此加密器不支援簽署"
+msgstr "這種加密方式不支援簽署"
 
 # mail/mail-ops.c:603
 #: ../camel/camel-cipher-context.c:128
@@ -1450,7 +1489,7 @@ msgstr "正在簽署訊息"
 # camel/camel-cipher-context.c:251
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "此加密器不支援驗證簽署"
+msgstr "這種加密方式不支援驗證簽署"
 
 # mail/mail-ops.c:603
 #: ../camel/camel-cipher-context.c:171
@@ -1460,7 +1499,7 @@ msgstr "正在確認訊息"
 # camel/camel-cipher-context.c:294
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "此加密器不支援加密"
+msgstr "這種加密方式不支援加密"
 
 # mail/mail-ops.c:603
 #: ../camel/camel-cipher-context.c:215
@@ -1470,7 +1509,7 @@ msgstr "正在加密訊息"
 # camel/camel-cipher-context.c:336
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "此加密器不支援解密"
+msgstr "這種加密方式不支援解密"
 
 # mail/mail-ops.c:603
 #: ../camel/camel-cipher-context.c:254
@@ -1480,12 +1519,12 @@ msgstr "正在解密訊息"
 # camel/camel-cipher-context.c:336
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
-msgstr "你不能匯入此加密器的密碼匙"
+msgstr "你不能匯入這種加密方式的密碼匙"
 
 # camel/camel-cipher-context.c:336
 #: ../camel/camel-cipher-context.c:301
 msgid "You may not export keys with this cipher"
-msgstr "你不能匯出此加密器的密碼匙"
+msgstr "你不能匯出這種加密方式的密碼匙"
 
 # mail/mail-ops.c:1728
 #: ../camel/camel-data-cache.c:136
@@ -1543,7 +1582,7 @@ msgstr "準備資料夾「%s」供離線使用"
 #: ../camel/camel-disco-store.c:401
 #: ../camel/providers/imap/camel-imap-store.c:2971
 msgid "You must be working online to complete this operation"
-msgstr "你必須於線上工作才能完成此操作"
+msgstr "你必須於網上工作才能完成此操作"
 
 #: ../camel/camel-exception.c:303
 msgid "No description available"
@@ -1594,19 +1633,19 @@ msgstr "無法處理 spool 資料夾"
 #: ../camel/camel-filter-driver.c:1176
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr "接收電郵 %d (%d%%)"
+msgstr "接收郵件 %d (%d%%)"
 
 # camel/camel-filter-driver.c:671
 #: ../camel/camel-filter-driver.c:1180
 msgid "Cannot open message"
-msgstr "不能開啟電郵"
+msgstr "不能開啟郵件"
 
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
 #: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1193
 #, c-format
 msgid "Failed on message %d"
-msgstr "在第 %d 封電郵發生錯誤"
+msgstr "在第 %d 封郵件發生錯誤"
 
 # camel/camel-filter-driver.c:690
 # camel/camel-filter-driver.c:788
@@ -1624,20 +1663,20 @@ msgstr "完成"
 #: ../camel/camel-filter-driver.c:1268
 #, c-format
 msgid "Getting message %d of %d"
-msgstr "正在接收第 %d / %d 封電郵"
+msgstr "正在接收第 %d / %d 封郵件"
 
 # camel/camel-filter-driver.c:753
 # camel/camel-filter-driver.c:771
 #: ../camel/camel-filter-driver.c:1283
 #, c-format
 msgid "Failed at message %d of %d"
-msgstr "在第 %d / %d 封電郵失敗"
+msgstr "在第 %d / %d 封郵件失敗"
 
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
 #: ../camel/camel-filter-search.c:137
 msgid "Failed to retrieve message"
-msgstr "取回電郵失敗。"
+msgstr "取回郵件失敗。"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
@@ -1721,7 +1760,7 @@ msgstr "在不明的檔頭內執行查詢：%s"
 #: ../camel/camel-folder.c:615
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr "不支援的操作：添加電郵： %s"
+msgstr "不支援的操作：添加郵件： %s"
 
 # camel/camel-folder-search.c:338
 #: ../camel/camel-folder.c:1237
@@ -1737,26 +1776,26 @@ msgstr "不支援的操作：以 UIDs 搜尋： %s"
 # mail/mail-ops.c:898
 #: ../camel/camel-folder.c:1394
 msgid "Moving messages"
-msgstr "移動電郵"
+msgstr "移動郵件"
 
 # mail/mail-ops.c:898
 #: ../camel/camel-folder.c:1394
 msgid "Copying messages"
-msgstr "複製電郵"
+msgstr "複製郵件"
 
 # widgets/misc/e-messagebox.c:159
 #: ../camel/camel-folder.c:1648
 msgid "Learning junk"
-msgstr "了解垃圾電郵"
+msgstr "了解垃圾郵件"
 
 #: ../camel/camel-folder.c:1665
 msgid "Learning non-junk"
-msgstr "了解非垃圾電郵"
+msgstr "了解非垃圾郵件"
 
 # mail/mail-ops.c:1565
 #: ../camel/camel-folder.c:1684
 msgid "Filtering new message(s)"
-msgstr "取回 %d 封電郵"
+msgstr "取回 %d 封郵件"
 
 #: ../camel/camel-gpg-context.c:753
 #, c-format
@@ -1820,7 +1859,7 @@ msgstr "從 GnuPG 傳回意外的回應： %s"
 # camel/providers/smtp/camel-smtp-transport.c:582
 #: ../camel/camel-gpg-context.c:929
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "不能加密電郵：沒有提供有效的收件者。"
+msgstr "不能加密郵件：沒有提供有效的收件者。"
 
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
@@ -1848,7 +1887,7 @@ msgstr "執行 gpg 失敗。"
 
 #: ../camel/camel-gpg-context.c:1357
 msgid "This is a digitally signed message part"
-msgstr "這是數碼簽署的電郵"
+msgstr "這是有數碼簽署的郵件"
 
 # camel/camel-pgp-context.c:890
 #: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
@@ -1856,13 +1895,13 @@ msgstr "這是數碼簽署的電郵"
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "不能驗證此電郵的簽署：錯誤的訊息格式"
+msgstr "不能驗證此郵件的簽署：錯誤的訊息格式"
 
 # camel/camel-pgp-context.c:890
 #: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "不能驗證此電郵的簽署：無法建立暫存檔案：%s"
+msgstr "不能驗證此郵件的簽署：無法建立暫存檔案：%s"
 
 # mail/mail-ops.c:1872
 #: ../camel/camel-gpg-context.c:1588
@@ -1881,7 +1920,7 @@ msgstr "解密 MIME 組件時失敗：通訊協定錯誤"
 # camel/camel-pgp-context.c:890
 #: ../camel/camel-gpg-context.c:1706
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "不能解密此電郵：錯誤的訊息格式"
+msgstr "不能解密此郵件：錯誤的訊息格式"
 
 #: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
@@ -1890,7 +1929,7 @@ msgstr "加密內容"
 # camel/providers/pop3/camel-pop3-folder.c:320
 #: ../camel/camel-gpg-context.c:1779
 msgid "Unable to parse message content"
-msgstr "無法從編輯器取得電郵"
+msgstr "無法從編輯器取得郵件"
 
 #: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
@@ -1960,25 +1999,25 @@ msgstr "使用 flock(2) 取得鎖失敗： %s"
 #: ../camel/camel-movemail.c:104
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "無法檢查電郵檔案 %s：%s"
+msgstr "無法檢查郵件檔案 %s：%s"
 
 # camel/camel-movemail.c:148
 #: ../camel/camel-movemail.c:117
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "無法開啟電郵檔案 %s：%s"
+msgstr "無法開啟郵件檔案 %s：%s"
 
 # camel/camel-movemail.c:158
 #: ../camel/camel-movemail.c:125
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "無法開啟暫存電郵檔案 %s：%s"
+msgstr "無法開啟暫存郵件檔案 %s：%s"
 
 # camel/camel-movemail.c:274
 #: ../camel/camel-movemail.c:154
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "儲存電郵至暫存檔案時失敗 %s：%s"
+msgstr "儲存郵件至暫存檔案時失敗 %s：%s"
 
 # camel/camel-movemail.c:306
 #: ../camel/camel-movemail.c:184
@@ -2007,19 +2046,19 @@ msgstr "(不明的錯誤)"
 #: ../camel/camel-movemail.c:258
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "讀取電郵檔案時發生錯誤：%s"
+msgstr "讀取郵件檔案時發生錯誤：%s"
 
 # camel/camel-movemail.c:256
 #: ../camel/camel-movemail.c:269
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "寫入電郵暫存檔案時發生錯誤：%s"
+msgstr "寫入郵件暫存檔案時發生錯誤：%s"
 
 # camel/camel-movemail.c:587
 #: ../camel/camel-movemail.c:462 ../camel/camel-movemail.c:529
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "複製電郵暫存檔案時發生錯誤：%s"
+msgstr "複製郵件暫存檔案時發生錯誤：%s"
 
 # shell/e-storage.c:467
 #: ../camel/camel-multipart-signed.c:593
@@ -2034,8 +2073,8 @@ msgstr "解析錯誤"
 # camel/camel-service.c:580
 #: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
 #: ../camel/camel-net-utils.c:790
-#: ../camel/providers/pop3/camel-pop3-store.c:441
-#: ../camel/providers/pop3/camel-pop3-store.c:522
+#: ../camel/providers/pop3/camel-pop3-store.c:445
+#: ../camel/providers/pop3/camel-pop3-store.c:526
 msgid "Canceled"
 msgstr "已取消"
 
@@ -2080,7 +2119,7 @@ msgstr "搜尋名稱失敗： %s"
 #: ../camel/camel-offline-folder.c:252
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "正在將資料夾「%s」中的電郵同步到磁碟"
+msgstr "正在將資料夾「%s」中的郵件同步到磁碟"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
@@ -2092,12 +2131,12 @@ msgstr "無法寫入資料夾」%s」的離線日誌：%s"
 # camel/camel-session.c:68
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr "虛擬資料夾電郵供應商"
+msgstr "虛擬資料夾電子郵件供應商"
 
 # camel/camel-session.c:70
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
-msgstr "使讀取電郵如同查詢其他資料夾"
+msgstr "使讀取郵件如同查詢其他資料夾"
 
 # camel/camel-provider.c:131
 #: ../camel/camel-provider.c:188
@@ -2147,7 +2186,7 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"無效的電郵地址追蹤資訊：\n"
+"無效的電子郵件地址追蹤資訊：\n"
 "%s"
 
 # camel/camel-sasl-anonymous.c:131
@@ -2180,9 +2219,7 @@ msgstr "CRAM-MD5"
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
-msgstr ""
-"這個選項將會使用 CRAM-MD5 加密的密碼連線至伺服器，若發現該伺服器支援這種服"
-"務。"
+msgstr "這個選項將會使用 CRAM-MD5 加密的密碼連線至伺服器，若發現該伺服器支援這種服務。"
 
 # camel/camel-sasl-digest-md5.c:43
 #: ../camel/camel-sasl-digest-md5.c:48
@@ -2194,9 +2231,7 @@ msgstr "DIGEST-MD5"
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
-msgstr ""
-"這個選項將會使用 DIGEST-MD5 加密的密碼連線至伺服器，若發現該伺服器支援這種服"
-"務。"
+msgstr "這個選項將會使用 DIGEST-MD5 加密的密碼連線至伺服器，若發現該伺服器支援這種服務。"
 
 # camel/camel-sasl-digest-md5.c:810
 #: ../camel/camel-sasl-digest-md5.c:818
@@ -2257,8 +2292,7 @@ msgstr "提供的 target_name 參數包含無效或不支援的名稱類型。"
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
-msgstr ""
-"input_token 包含不同的通道，透過  input_chan_bindings，連結至這些指定的參數。"
+msgstr "input_token 包含不同的通道，透過  input_chan_bindings，連結至這些指定的參數。"
 
 #: ../camel/camel-sasl-gssapi.c:174
 msgid ""
@@ -2510,7 +2544,7 @@ msgstr "找不到簽署證書"
 
 #: ../camel/camel-smime-context.c:492
 msgid "Signing certificate not trusted"
-msgstr "簽署證書不被信任"
+msgstr "簽署證書不受信任"
 
 #: ../camel/camel-smime-context.c:494
 msgid "Signature algorithm unknown"
@@ -2518,7 +2552,7 @@ msgstr "未知的簽署演算法"
 
 #: ../camel/camel-smime-context.c:496
 msgid "Signature algorithm unsupported"
-msgstr "簽署演算法不支援"
+msgstr "不支援這種簽署演算法"
 
 # mail/mail-config.glade.h:74
 #: ../camel/camel-smime-context.c:498
@@ -2553,7 +2587,7 @@ msgstr "無法計算摘要"
 # camel/providers/local/camel-mh-folder.c:202
 #: ../camel/camel-smime-context.c:572
 msgid "Cannot set message digests"
-msgstr "無法設定電郵摘要"
+msgstr "無法設定郵件摘要"
 
 # mail/mail-crypto.c:59
 #: ../camel/camel-smime-context.c:582 ../camel/camel-smime-context.c:587
@@ -2597,7 +2631,7 @@ msgstr "找不到一般大量加密演算法"
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:789
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "無法配置插槽給加密大量鑰匙"
+msgstr "無法配置插槽給加密大量密碼匙"
 
 # camel/camel-filter-driver.c:671
 #: ../camel/camel-smime-context.c:800
@@ -2647,15 +2681,15 @@ msgstr "S/MIME 解密：找不到加密內容"
 # camel/providers/smtp/camel-smtp-transport.c:172
 #: ../camel/camel-smime-context.c:978
 msgid "import keys: unimplemented"
-msgstr "匯入鑰匙：未執行"
+msgstr "匯入密碼匙：未執行"
 
 #: ../camel/camel-smime-context.c:986
 msgid "export keys: unimplemented"
-msgstr "匯出鑰匙：未執行"
+msgstr "匯出密碼匙：未執行"
 
 # camel/providers/local/camel-mbox-folder.c:152
 #: ../camel/camel-store.c:214
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "不能取得資料夾：在此儲存空間上無效的操作"
 
@@ -2701,13 +2735,13 @@ msgstr "不能重新命名資料夾： %s ：無效的操作"
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:793 ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
-msgstr "垃圾桶"
+msgstr "回收筒"
 
 # calendar/gui/goto-dialog.glade.h:9
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr "垃圾電郵"
+msgstr "垃圾郵件"
 
 #: ../camel/camel-tcp-stream-openssl.c:568
 msgid "Unable to get issuer's certificate"
@@ -2736,7 +2770,7 @@ msgstr "證書簽署失敗"
 
 #: ../camel/camel-tcp-stream-openssl.c:580
 msgid "Certificate Revocation List signature failure"
-msgstr "證書撒銷清單簽署失敗"
+msgstr "證書撤銷清單簽署失敗"
 
 #: ../camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate not yet valid"
@@ -2942,12 +2976,12 @@ msgstr "儲存「%s」時發生錯誤： %s"
 #: ../camel/camel-vee-folder.c:517
 #, c-format
 msgid "No such message %s in %s"
-msgstr "沒有 %s 這類電郵在 %s 中"
+msgstr "沒有 %s 這類郵件在 %s 中"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/camel-vee-folder.c:642 ../camel/camel-vee-folder.c:648
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "不能複製或移動電郵到虛擬資料夾中"
+msgstr "不能複製或移動郵件到虛擬資料夾中"
 
 #: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
@@ -2969,12 +3003,12 @@ msgstr "不能重新命名資料夾： %s ：沒有這個資料夾"
 # camel/providers/local/camel-mbox-summary.c:644
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr "無法複製訊息到「垃圾筒」資料夾"
+msgstr "無法複製訊息到「回收筒」資料夾"
 
 # camel/providers/local/camel-mbox-summary.c:644
 #: ../camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
-msgstr "無法複製訊息到「垃圾電郵」資料夾"
+msgstr "無法複製訊息到「垃圾郵件」資料夾"
 
 # camel/providers/local/camel-maildir-folder.c:197
 # camel/providers/local/camel-maildir-folder.c:209
@@ -2983,40 +3017,40 @@ msgstr "無法複製訊息到「垃圾電郵」資料夾"
 # camel/providers/local/camel-mh-folder.c:185
 # camel/providers/local/camel-mh-folder.c:194
 # camel/providers/local/camel-mh-folder.c:202
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
-#: ../camel/providers/imap/camel-imap-folder.c:2048
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
-"無法取得電郵： %s\n"
+"無法取得郵件： %s\n"
 "  %s"
 
 # camel/providers/local/camel-maildir-folder.c:197
 # camel/providers/local/camel-mbox-folder.c:319
 # camel/providers/local/camel-mh-folder.c:185
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:112
-#: ../camel/providers/imap/camel-imap-folder.c:2048
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
 #: ../camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
-msgstr "沒有這封電郵"
+msgstr "沒有這封郵件"
 
 # camel/camel-remote-store.c:337
 # camel/camel-remote-store.c:399
 # camel/camel-remote-store.c:470
 # camel/providers/imap/camel-imap-command.c:287
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
 #: ../camel/providers/imap4/camel-imap4-folder.c:788
 #: ../camel/providers/nntp/camel-nntp-folder.c:155
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
 #: ../camel/providers/nntp/camel-nntp-folder.c:370
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
-#: ../camel/providers/pop3/camel-pop3-folder.c:510
+#: ../camel/providers/pop3/camel-pop3-folder.c:497
+#: ../camel/providers/pop3/camel-pop3-folder.c:558
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
 msgid "User canceled"
 msgstr "使用者已取消"
 
@@ -3027,62 +3061,63 @@ msgstr "使用者已取消"
 # camel/providers/local/camel-mh-folder.c:185
 # camel/providers/local/camel-mh-folder.c:194
 # camel/providers/local/camel-mh-folder.c:202
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:131
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
 #: ../camel/providers/imap4/camel-imap4-folder.c:793
 #: ../camel/providers/nntp/camel-nntp-folder.c:146
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
-#: ../camel/providers/pop3/camel-pop3-folder.c:434
-#: ../camel/providers/pop3/camel-pop3-folder.c:495
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
-#: ../camel/providers/pop3/camel-pop3-folder.c:513
+#: ../camel/providers/pop3/camel-pop3-folder.c:500
+#: ../camel/providers/pop3/camel-pop3-folder.c:561
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
+#: ../camel/providers/pop3/camel-pop3-folder.c:579
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr "無法取得電郵 %s： %s"
+msgstr "無法取得郵件 %s： %s"
 
 # camel/providers/imap/camel-imap-folder.c:1047
 # camel/providers/imap/camel-imap-folder.c:1281
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
 #: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
-msgstr "這封電郵無法在離線模式下使用。"
+msgstr "這封郵件無法在離線模式下使用。"
 
 # camel/camel-movemail.c:306
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:167
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1556
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1580
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1625
 msgid "Could not get message"
-msgstr "無法取得電郵。"
+msgstr "無法取得郵件。"
 
 # camel/providers/imap/camel-imap-folder.c:191
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:752
-#: ../camel/providers/imap/camel-imap-folder.c:247
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:769
+#: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "無法載入給 %s 的摘要"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:979
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:999
 msgid "Trash Folder Full. Please Empty."
-msgstr "垃圾桶資料夾已滿。請將它清空。"
+msgstr "回收筒資料夾已滿。請將它清空。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
-#: ../camel/providers/groupwise/camel-groupwise-store.c:632
-#: ../camel/providers/groupwise/camel-groupwise-store.c:746
-#: ../camel/providers/imap/camel-imap-folder.c:2361
-#: ../camel/providers/imap/camel-imap-folder.c:2431
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:743
+#: ../camel/providers/imap/camel-imap-folder.c:2382
+#: ../camel/providers/imap/camel-imap-folder.c:2452
 #, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr "正取得 %s 中新電郵的摘要資訊"
+msgstr "正取得 %s 中新郵件的摘要資訊"
 
 # camel/providers/local/camel-mh-folder.c:149
 # camel/providers/local/camel-mh-folder.c:157
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1823
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1865
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1893
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1935
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
-msgstr "不能將電郵添加到資料夾「%s」： %s"
+msgstr "不能將郵件添加到資料夾「%s」： %s"
 
 # camel/providers/local/camel-maildir-folder.c:197
 # camel/providers/local/camel-maildir-folder.c:209
@@ -3091,10 +3126,10 @@ msgstr "不能將電郵添加到資料夾「%s」： %s"
 # camel/providers/local/camel-mh-folder.c:185
 # camel/providers/local/camel-mh-folder.c:194
 # camel/providers/local/camel-mh-folder.c:202
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1853
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot create message: %s"
-msgstr "無法建立電郵： %s"
+msgstr "無法建立郵件： %s"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
@@ -3108,26 +3143,26 @@ msgstr "不能取得資料夾容器 %s"
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "不能在離線模式中添加電郵：無法使用快取"
+msgstr "不能在離線模式中添加郵件：無法使用快取"
 
 # camel/providers/local/camel-mbox-folder.c:259
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:363
 #: ../camel/providers/imap4/camel-imap4-journal.c:336
 #, c-format
 msgid "Cannot append message in offline mode: %s"
-msgstr "不能在離線模式中加入電郵： %s"
+msgstr "不能在離線模式中加入郵件： %s"
 
 # camel/providers/imap/camel-imap-provider.c:43
 # mail/mail-config.glade.h:13
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:51
 #: ../camel/providers/imap4/camel-imap4-provider.c:36
 msgid "Checking for new mail"
-msgstr "檢查新電郵"
+msgstr "檢查新郵件"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 msgid "Check for new messages in all folders"
-msgstr "檢查所有資料夾裏的新電郵"
+msgstr "檢查所有資料夾裏的新郵件"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
@@ -3141,17 +3176,17 @@ msgstr "選項"
 # camel/providers/imap/camel-imap-provider.c:57
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
-msgstr "套用過濾器至此伺服器「收件信箱」的新訊息"
+msgstr "套用過濾器至此伺服器「收件匣」的新訊息"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 msgid "Check new messages for Junk contents"
-msgstr "檢查新訊息中是否有「垃圾電郵」內容"
+msgstr "檢查新訊息中是否有「垃圾郵件」內容"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "Only check for Junk messages in the INBOX folder"
-msgstr "只檢查「收件信箱」資料夾中的「垃圾電郵」"
+msgstr "只檢查「收件匣」資料夾中的「垃圾郵件」"
 
 # mail/mail-config.glade.h:12
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
@@ -3186,7 +3221,7 @@ msgstr "用於存取 Novell Groupwise 伺服器"
 #: ../camel/providers/imap4/camel-imap4-provider.c:81
 #: ../camel/providers/imapp/camel-imapp-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:73
+#: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
 msgstr "密碼"
 
@@ -3202,30 +3237,30 @@ msgid "Host or user not available in url"
 msgstr "網址中的使用者或主機無法使用"
 
 # camel/providers/pop3/camel-pop3-store.c:361
-#: ../camel/providers/groupwise/camel-groupwise-store.c:200
+#: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%s請輸入給 %s@%s 的 GroupWise 密碼"
 
 # camel/providers/imap/camel-imap-store.c:505
 # camel/providers/smtp/camel-smtp-transport.c:410
-#: ../camel/providers/groupwise/camel-groupwise-store.c:214
+#: ../camel/providers/groupwise/camel-groupwise-store.c:219
 #: ../camel/providers/imap/camel-imap-store.c:1360
 msgid "You did not enter a password."
 msgstr "你沒有輸入密碼。"
 
 # camel/providers/imap/camel-imap-store.c:531
-#: ../camel/providers/groupwise/camel-groupwise-store.c:226
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "無法驗證 GroupWise 伺服器。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:304
+#: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
 msgstr "某些功能可能無法在你目前的伺服器版本上正常運作"
 
 # camel/providers/imap/camel-imap-store.c:803
 # mail/mail-local.c:334
-#: ../camel/providers/groupwise/camel-groupwise-store.c:540
+#: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1869
 #: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
@@ -3233,11 +3268,11 @@ msgid "No such folder %s"
 msgstr "沒有這個資料夾 %s"
 
 # camel/providers/local/camel-mbox-folder.c:152
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "在離線模式中不能建立 GroupWise 資料夾。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
 #: ../camel/providers/imap/camel-imap-store.c:1944
 #: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
@@ -3245,21 +3280,21 @@ msgstr "母資料夾並不允許包含子資料夾"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1332
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "無法將 Groupwise 資料夾「%s」重新命名為「%s」"
 
 # shell/e-shortcuts-view.c:137
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1385
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise 伺服器 %s"
 
 # camel/camel-remote-store.c:195
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s 的 GroupWise 服務於 %s"
@@ -3268,42 +3303,40 @@ msgstr "%s 的 GroupWise 服務於 %s"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise mail delivery via %s"
-msgstr "經由 %s 傳送 GroupWise 電郵"
+msgstr "經由 %s 傳送 GroupWise 郵件"
 
 # mail/mail-ops.c:603
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
-msgstr "傳送電郵"
+msgstr "傳送郵件"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
-msgstr ""
-"你已經超過這個帳號的儲存限制。你的電郵會先存在寄件匣中。請先刪除/封存你的電郵"
-"後再按 傳送/接收 重新寄送。\n"
+msgstr "你已經超過這個帳號的儲存限制。你的郵件會先存在寄件匣中。請先刪除/封存你的郵件後再按 傳送/接收 重新寄送。\n"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:150
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
-msgstr "電郵無法傳送： %s"
+msgstr "郵件無法傳送： %s"
 
 # camel/providers/imap/camel-imap-provider.c:43
 # mail/mail-config.glade.h:13
 #: ../camel/providers/hula/camel-hula-provider.c:46
 #: ../camel/providers/imap/camel-imap-provider.c:42
 msgid "Checking for New Mail"
-msgstr "檢查新電郵"
+msgstr "檢查新郵件"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/hula/camel-hula-provider.c:48
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "檢查所有資料夾裏的新電郵(_H)"
+msgstr "檢查所有資料夾裏的新郵件(_H)"
 
 # mail/mail-config.c:1213
 # mail/mail-config.c:1216
@@ -3349,8 +3382,6 @@ msgstr "覆蓋伺服器提供之資料夾的命名空間(_V)"
 
 # camel/providers/imap/camel-imap-provider.c:54
 #: ../camel/providers/hula/camel-hula-provider.c:64
-#: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:47
 msgid "Namespace"
 msgstr "命名空間"
 
@@ -3427,47 +3458,47 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "從 IMAP 伺服器傳回不當的 OK 回應： %s"
 
 # camel/providers/imap/camel-imap-folder.c:172
-#: ../camel/providers/imap/camel-imap-folder.c:228
+#: ../camel/providers/imap/camel-imap-folder.c:233
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "無法建立目錄 %s： %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:332
+#: ../camel/providers/imap/camel-imap-folder.c:337
 msgid "Folder was destroyed and recreated on server."
 msgstr "資料夾已破壞並在伺服器上重建。"
 
 # mail/mail-ops.c:1649
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:623
+#: ../camel/providers/imap/camel-imap-folder.c:634
 #, c-format
 msgid "Scanning for changed messages in %s"
-msgstr "掃描 %s 中更改過的電郵"
+msgstr "掃描 %s 中更改過的郵件"
 
 # camel/providers/pop3/camel-pop3-folder.c:320
-#: ../camel/providers/imap/camel-imap-folder.c:2008
+#: ../camel/providers/imap/camel-imap-folder.c:2023
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr "無法從取回電郵： %s"
+msgstr "無法從取回郵件： %s"
 
 # camel/providers/imap/camel-imap-folder.c:1047
 # camel/providers/imap/camel-imap-folder.c:1281
-#: ../camel/providers/imap/camel-imap-folder.c:2087
-#: ../camel/providers/imap/camel-imap-folder.c:2689
+#: ../camel/providers/imap/camel-imap-folder.c:2102
+#: ../camel/providers/imap/camel-imap-folder.c:2724
 #: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
-msgstr "這封電郵目前仍未可用"
+msgstr "這封郵件目前仍未可用"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2539
+#: ../camel/providers/imap/camel-imap-folder.c:2560
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "不完整的伺服器回應：未提供任何資訊給訊息 %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2547
+#: ../camel/providers/imap/camel-imap-folder.c:2568
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "不完整的伺服器回應：未提供 UID 給訊息 %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2560
+#: ../camel/providers/imap/camel-imap-folder.c:2581
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
@@ -3475,9 +3506,9 @@ msgstr "非預期的伺服器回應：提供相同的 UID 給訊息 %d 和 %d"
 
 # camel/providers/imap/camel-imap-folder.c:1075
 # camel/providers/imap/camel-imap-folder.c:1314
-#: ../camel/providers/imap/camel-imap-folder.c:2725
+#: ../camel/providers/imap/camel-imap-folder.c:2762
 msgid "Could not find message body in FETCH response."
-msgstr "在 FETCH 的回應內找不到電郵的內文。"
+msgstr "在 FETCH 的回應內找不到郵件的內文。"
 
 # camel/providers/imap/camel-imap-message-cache.c:150
 #: ../camel/providers/imap/camel-imap-message-cache.c:160
@@ -3493,7 +3524,7 @@ msgstr "無法開啟快取目錄：%s"
 #: ../camel/providers/imap/camel-imap-message-cache.c:386
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr "快取電郵 %s 失敗： %s"
+msgstr "快取郵件 %s 失敗： %s"
 
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
@@ -3502,29 +3533,35 @@ msgstr "快取電郵 %s 失敗： %s"
 msgid "Failed to cache %s: %s"
 msgstr "快取 %s 失敗： %s"
 
+# camel/providers/imap/camel-imap-provider.c:54
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace:"
+msgstr "命名空間"
+
 # camel/providers/imap/camel-imap-provider.c:57
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "將過濾器套用於此伺服器上 INBOX 裏的新電郵(_A)"
+msgstr "將過濾器套用於此伺服器的收件匣的新郵件(_A)"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "Check new messages for _Junk contents"
-msgstr "檢查新訊息中是否有「垃圾電郵」內容(_J)"
+msgstr "檢查新訊息中是否有「垃圾郵件」內容(_J)"
 
 # camel/providers/imap/camel-imap-provider.c:45
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "只檢查「收件信箱」資料夾中的「垃圾電郵」(_G)"
+msgstr "只檢查「收件匣」資料夾中的「垃圾郵件」(_G)"
 
 # mail/mail-config.glade.h:12
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "自動將遠端電郵同步到本地端(_Z)"
+msgstr "自動將遠端郵件同步到本地端(_Z)"
 
 # camel/providers/imap/camel-imap-provider.c:63
 #: ../camel/providers/imap/camel-imap-provider.c:79
@@ -3534,7 +3571,7 @@ msgstr "IMAP"
 # camel/providers/imap/camel-imap-provider.c:65
 #: ../camel/providers/imap/camel-imap-provider.c:81
 msgid "For reading and storing mail on IMAP servers."
-msgstr "用作讀取及儲存電郵於 IMAP 伺服器。"
+msgstr "用作讀取及儲存郵件於 IMAP 伺服器。"
 
 # camel/providers/imap/camel-imap-provider.c:82
 #: ../camel/providers/imap/camel-imap-provider.c:98
@@ -3564,8 +3601,8 @@ msgstr "%s 的 IMAP 服務於 %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:184
 #: ../camel/providers/nntp/camel-nntp-store.c:199
-#: ../camel/providers/pop3/camel-pop3-store.c:167
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:183
 #: ../camel/providers/smtp/camel-smtp-transport.c:254
 #: ../camel/providers/smtp/camel-smtp-transport.c:269
 #, c-format
@@ -3575,7 +3612,7 @@ msgstr "無法連線至 %s ： %s"
 #: ../camel/providers/imap/camel-imap-store.c:579
 #: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:185
-#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:169
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
 msgid "SSL unavailable"
 msgstr "TLS 無法使用"
@@ -3678,7 +3715,7 @@ msgstr ""
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "資料夾名稱「%s」無效，因為它包括字元「%c」"
+msgstr "資料夾名稱「%s」無效，因為它包括字符「%c」"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
@@ -3799,7 +3836,7 @@ msgstr "無法取得訊息 %s (從資料夾 `%s')：錯誤的指令"
 #: ../camel/providers/imap4/camel-imap4-folder.c:914
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr "不能將電郵添加到資料夾「%s」：資料夾是唯讀的"
+msgstr "不能將郵件添加到資料夾「%s」：資料夾是唯讀的"
 
 # camel/providers/local/camel-mh-folder.c:149
 # camel/providers/local/camel-mh-folder.c:157
@@ -3855,7 +3892,7 @@ msgstr "IMAP4rev1"
 # camel/providers/imap/camel-imap-provider.c:65
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "用作讀取及儲存 IMAPv4rev1 伺服器的電郵。"
+msgstr "用作讀取及儲存 IMAPv4rev1 伺服器的郵件。"
 
 # camel/providers/imap/camel-imap-provider.c:82
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
@@ -3868,7 +3905,7 @@ msgstr "此選項會使用純文字密碼，連線到 IMAPv4rev1 伺服器。"
 #: ../camel/providers/imapp/camel-imapp-store.c:248
 #: ../camel/providers/nntp/camel-nntp-store.c:196
 #: ../camel/providers/nntp/camel-nntp-store.c:215
-#: ../camel/providers/pop3/camel-pop3-store.c:179
+#: ../camel/providers/pop3/camel-pop3-store.c:180
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "Connection canceled"
 msgstr "連線已取消"
@@ -4028,12 +4065,12 @@ msgstr "無法取消訂閱資料夾 `%s'：錯誤的指令"
 # mail/mail-ops.c:1649
 #: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
-msgstr "掃描更改過的電郵"
+msgstr "掃描更改過的郵件"
 
 # mail/mail-ops.c:992
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr "取得新電郵的封套"
+msgstr "取得新郵件的封套"
 
 # camel/providers/imap/camel-imap-command.c:232
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
@@ -4056,7 +4093,7 @@ msgstr "IMAP 伺服器 %s 意外中斷連線：%s"
 #: ../camel/providers/imapp/camel-imapp-provider.c:40
 #: ../camel/providers/pop3/camel-pop3-provider.c:40
 msgid "Message storage"
-msgstr "電郵儲存空間"
+msgstr "郵件儲存空間"
 
 # camel/providers/imap/camel-imap-provider.c:63
 #: ../camel/providers/imapp/camel-imapp-provider.c:48
@@ -4092,7 +4129,7 @@ msgstr "無法連線到 POP 伺服器 %s"
 # addressbook/gui/widgets/e-addressbook-view.c:613
 #: ../camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
-msgstr "傳送電郵給聯絡人"
+msgstr "傳送郵件給聯絡人"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:384
@@ -4121,11 +4158,11 @@ msgstr "使用「.folders」資料夾摘要檔案 (exmh)"
 # camel/providers/local/camel-local-provider.c:39
 #: ../camel/providers/local/camel-local-provider.c:54
 msgid "MH-format mail directories"
-msgstr "MH-format 電郵目錄"
+msgstr "MH-format 郵件目錄"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "For storing local mail in MH-like mail directories."
-msgstr "用於儲存本地端電郵至 MH-like 電郵目錄。"
+msgstr "用於儲存本地端郵件至 MH-like 郵件目錄。"
 
 # mail/mail-config.glade.h:76
 #: ../camel/providers/local/camel-local-provider.c:72
@@ -4136,23 +4173,22 @@ msgstr "本地端寄送"
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
-msgstr ""
-"用於自標準 mbox 格式排程器接收（移動）本地端電郵至 Evolution 管理的資料夾。"
+msgstr "用於自標準 mbox 格式排程器接收（移動）本地端郵件至 Evolution 管理的資料夾。"
 
 # camel/providers/imap/camel-imap-provider.c:57
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
 msgid "Apply filters to new messages in INBOX"
-msgstr "將過濾器套用於 INBOX 裏的新電郵"
+msgstr "將過濾器套用於 INBOX 裏的新郵件"
 
 # camel/providers/local/camel-local-provider.c:39
 #: ../camel/providers/local/camel-local-provider.c:94
 msgid "Maildir-format mail directories"
-msgstr "Maildir-format 電郵目錄"
+msgstr "Maildir-format 郵件目錄"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "For storing local mail in maildir directories."
-msgstr "用於儲存本地端電郵至 maildir 目錄。"
+msgstr "用於儲存本地端郵件至 maildir 目錄。"
 
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "Store status headers in Elm/Pine/Mutt format"
@@ -4169,7 +4205,7 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"用於讀取及儲存外部標準 mbox 排程器檔案中的本地端電郵。\n"
+"用於讀取及儲存外部標準 mbox 排程器檔案中的本地端郵件。\n"
 "也可以用來讀 Elm 、 Pine 或 Mutt 形式資料夾的樹狀結構。"
 
 # camel/providers/local/camel-local-store.c:127
@@ -4205,7 +4241,7 @@ msgstr "本地端的存儲沒有收件匣"
 #: ../camel/providers/local/camel-local-store.c:238
 #, c-format
 msgid "Local mail file %s"
-msgstr "本地端電郵檔案 %s"
+msgstr "本地端郵件檔案 %s"
 
 # camel/providers/local/camel-local-store.c:237
 #: ../camel/providers/local/camel-local-store.c:356
@@ -4249,13 +4285,13 @@ msgstr "無法儲存摘要： %s： %s"
 # camel/providers/local/camel-local-summary.c:404
 #: ../camel/providers/local/camel-local-summary.c:467
 msgid "Unable to add message to summary: unknown reason"
-msgstr "無法新增電郵到摘要資訊：不明的原因"
+msgstr "無法新增郵件到摘要資訊：不明的原因"
 
 # camel/camel-filter-driver.c:670
 # camel/camel-filter-driver.c:679
 #: ../camel/providers/local/camel-maildir-folder.c:215
 msgid "Maildir append message canceled"
-msgstr "Maildir 增添電郵已取消"
+msgstr "Maildir 增添郵件已取消"
 
 # camel/providers/local/camel-maildir-folder.c:150
 # camel/providers/local/camel-maildir-folder.c:158
@@ -4263,7 +4299,7 @@ msgstr "Maildir 增添電郵已取消"
 #: ../camel/providers/local/camel-maildir-folder.c:218
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr "無法將電郵儲存到 maildir 資料夾： %s： %s"
+msgstr "無法將郵件儲存到 maildir 資料夾： %s： %s"
 
 # camel/providers/local/camel-mbox-folder.c:335
 # camel/providers/local/camel-mbox-folder.c:367
@@ -4283,14 +4319,14 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
-"不能取得電郵：%s 從資料夾 %s\n"
+"不能取得郵件：%s 從資料夾 %s\n"
 "  %s"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
 #: ../camel/providers/local/camel-maildir-folder.c:268
 msgid "Invalid message contents"
-msgstr "無效的電郵內文"
+msgstr "無效的郵件內文"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
@@ -4368,14 +4404,14 @@ msgstr "檢查資料夾的一致性"
 # mail/mail-ops.c:992
 #: ../camel/providers/local/camel-maildir-summary.c:652
 msgid "Checking for new messages"
-msgstr "檢查新電郵"
+msgstr "檢查新郵件"
 
 # camel/camel-filter-driver.c:690
 # camel/camel-filter-driver.c:788
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:417
-#: ../camel/providers/local/camel-mbox-summary.c:590
-#: ../camel/providers/local/camel-mbox-summary.c:685
+#: ../camel/providers/local/camel-mbox-summary.c:433
+#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "儲存資料夾"
@@ -4399,13 +4435,13 @@ msgstr "不能開啟 mailbox：%s： %s\n"
 # camel/providers/imap/camel-imap-command.c:287
 #: ../camel/providers/local/camel-mbox-folder.c:277
 msgid "Mail append canceled"
-msgstr "電郵增添已取消"
+msgstr "郵件增添已取消"
 
 # camel/providers/local/camel-mbox-folder.c:259
 #: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr "不能將電郵儲存到 mbox 檔案： %s： %s"
+msgstr "不能將郵件儲存到 mbox 檔案： %s： %s"
 
 # camel/providers/local/camel-mbox-folder.c:368
 #: ../camel/providers/local/camel-mbox-folder.c:401
@@ -4493,34 +4529,34 @@ msgstr "無法將 '%s' 重新命名成 %s：%s"
 
 # camel/providers/local/camel-maildir-store.c:96
 # camel/providers/local/camel-mh-store.c:90
-#: ../camel/providers/local/camel-mbox-summary.c:423
+#: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "無法開啟資料夾： %s： %s"
 
 # camel/providers/local/camel-mbox-summary.c:296
-#: ../camel/providers/local/camel-mbox-summary.c:471
+#: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr "靠近 %ld (於資料夾 %s)的位置發生嚴重的電郵分析錯誤"
+msgstr "靠近 %ld (於資料夾 %s)的位置發生嚴重的郵件分析錯誤"
 
 # camel/providers/local/camel-local-store.c:142
 # camel/providers/local/camel-local-store.c:158
-#: ../camel/providers/local/camel-mbox-summary.c:527
+#: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "不能檢查資料夾：%s： %s"
 
 # camel/providers/local/camel-mbox-store.c:94
-#: ../camel/providers/local/camel-mbox-summary.c:595
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:611
+#: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "無法開啟檔案： %s： %s"
 
 # camel/providers/local/camel-mbox-summary.c:524
-#: ../camel/providers/local/camel-mbox-summary.c:607
+#: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
@@ -4528,27 +4564,27 @@ msgstr "不能開啟暫存 mailbox：%s"
 
 # camel/providers/local/camel-mbox-summary.c:635
 # camel/providers/local/camel-mbox-summary.c:804
-#: ../camel/providers/local/camel-mbox-summary.c:620
-#: ../camel/providers/local/camel-mbox-summary.c:796
+#: ../camel/providers/local/camel-mbox-summary.c:636
+#: ../camel/providers/local/camel-mbox-summary.c:812
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "無法關閉來源資料夾 %s ： %s"
 
 # camel/providers/local/camel-mbox-summary.c:644
-#: ../camel/providers/local/camel-mbox-summary.c:629
+#: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "無法關閉暫存資料夾： %s"
 
 # camel/providers/local/camel-mbox-summary.c:655
-#: ../camel/providers/local/camel-mbox-summary.c:644
+#: ../camel/providers/local/camel-mbox-summary.c:660
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "無法重新命名資料夾：%s "
 
 # camel/providers/local/camel-mbox-summary.c:655
-#: ../camel/providers/local/camel-mbox-summary.c:701
-#: ../camel/providers/local/camel-mbox-summary.c:907
+#: ../camel/providers/local/camel-mbox-summary.c:717
+#: ../camel/providers/local/camel-mbox-summary.c:923
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "無法儲存資料夾：%s "
@@ -4557,43 +4593,43 @@ msgstr "無法儲存資料夾：%s "
 # camel/providers/local/camel-mbox-summary.c:557
 # camel/providers/local/camel-mbox-summary.c:746
 # camel/providers/local/camel-mbox-summary.c:754
-#: ../camel/providers/local/camel-mbox-summary.c:738
-#: ../camel/providers/local/camel-mbox-summary.c:746
-#: ../camel/providers/local/camel-mbox-summary.c:938
-#: ../camel/providers/local/camel-mbox-summary.c:946
+#: ../camel/providers/local/camel-mbox-summary.c:754
+#: ../camel/providers/local/camel-mbox-summary.c:762
+#: ../camel/providers/local/camel-mbox-summary.c:954
+#: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "摘要與資料夾不協調，即使經過同步"
 
 # camel/providers/local/camel-mbox-summary.c:879
-#: ../camel/providers/local/camel-mbox-summary.c:872
+#: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "不明的錯誤： %s"
 
 # camel/providers/local/camel-mbox-summary.c:600
-#: ../camel/providers/local/camel-mbox-summary.c:1001
-#: ../camel/providers/local/camel-mbox-summary.c:1027
+#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "寫入暫存郵箱時發生錯誤：%s"
 
 # camel/providers/local/camel-mbox-summary.c:617
-#: ../camel/providers/local/camel-mbox-summary.c:1018
+#: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "寫入暫存郵箱失敗： %s： %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
 msgid "MH append message canceled"
-msgstr "MH 增添電郵已取消"
+msgstr "MH 增添郵件已取消"
 
 # camel/providers/local/camel-mh-folder.c:149
 # camel/providers/local/camel-mh-folder.c:157
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr "不能將電郵儲存到 mh 資料夾： %s： %s"
+msgstr "不能將郵件儲存到 mh 資料夾： %s： %s"
 
 # camel/providers/local/camel-maildir-store.c:107
 # camel/providers/local/camel-mh-store.c:103
@@ -4679,7 +4715,7 @@ msgstr "儲存並不支援 INBOX"
 #: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
 msgid "Spool mail file %s"
-msgstr "排程電郵檔案 %s"
+msgstr "排程郵件檔案 %s"
 
 #: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
@@ -4764,7 +4800,7 @@ msgstr "USENET 新聞"
 # camel/providers/nntp/camel-nntp-provider.c:44
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr "這是讀取與發信至 USENET 新聞群組的供應者。"
+msgstr "這是讀取與發信至 USENET 新聞羣組的供應者。"
 
 # camel/providers/nntp/camel-nntp-store.c:293
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
@@ -4798,7 +4834,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"取得新聞群組發生錯誤：\n"
+"取得新聞羣組發生錯誤：\n"
 "\n"
 "%s"
 
@@ -4808,9 +4844,9 @@ msgid ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
-"你無法訂閱此新聞群組：\n"
+"你無法訂閱此新聞羣組：\n"
 "\n"
-"沒有類似的新聞群組。選取的項目可能是父代資料夾。"
+"沒有類似的新聞羣組。選取的項目可能是父代資料夾。"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
@@ -4818,9 +4854,9 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
-"你無法取消訂閱此新聞群組：\n"
+"你無法取消訂閱此新聞羣組：\n"
 "\n"
-"新聞群組不存在！"
+"新聞羣組不存在！"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
@@ -4875,7 +4911,7 @@ msgstr "沒有這個資料夾： %s"
 #: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr "%s：掃描新電郵"
+msgstr "%s：掃描新郵件"
 
 # camel/providers/imap/camel-imap-command.c:232
 #: ../camel/providers/nntp/camel-nntp-summary.c:228
@@ -4916,144 +4952,145 @@ msgid "Cannot get POP summary: %s"
 msgstr "不能取得 POP 摘要： %s"
 
 # mail/message-browser.c:199
-#: ../camel/providers/pop3/camel-pop3-folder.c:309
+#: ../camel/providers/pop3/camel-pop3-folder.c:308
+msgid "Expunging old messages"
+msgstr "清空舊的郵件"
+
+# mail/message-browser.c:199
+#: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
-msgstr "清空刪除的電郵"
+msgstr "清空刪除的郵件"
 
 # camel/providers/pop3/camel-pop3-folder.c:292
-#: ../camel/providers/pop3/camel-pop3-folder.c:405
+#: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
 msgid "No message with UID %s"
-msgstr "沒有電郵具有這個 UID %s"
+msgstr "沒有郵件具有這個 UID %s"
 
 # camel/providers/pop3/camel-pop3-folder.c:296
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:412
+#: ../camel/providers/pop3/camel-pop3-folder.c:478
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "接收 POP 電郵 %d"
+msgstr "接收 POP 郵件 %d"
 
 # camel/camel-sasl-login.c:127
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
 msgstr "不明的原因"
 
 # camel/providers/pop3/camel-pop3-provider.c:39
 #: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
-msgstr "在伺服器保留電郵備份"
+msgstr "在伺服器保留郵件備份"
 
 # camel/providers/pop3/camel-pop3-provider.c:41
-#: ../camel/providers/pop3/camel-pop3-provider.c:45
+#: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "Delete after %s day(s)"
-msgstr "刪除 %s 天後的電郵"
+msgstr "刪除 %s 天後的郵件"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:48
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
 msgstr "停止所有 POP3 延伸功能的支援"
 
 # camel/providers/pop3/camel-pop3-provider.c:48
 # mail/mail-config.glade.h:51
-#: ../camel/providers/pop3/camel-pop3-provider.c:56
+#: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
 msgstr "POP"
 
 # camel/providers/imap/camel-imap-provider.c:65
-#: ../camel/providers/pop3/camel-pop3-provider.c:58
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "用於連線到 POP 伺服器並下載電郵。"
+msgstr "用於連線到 POP 伺服器並下載郵件。"
 
 # camel/providers/pop3/camel-pop3-provider.c:69
-#: ../camel/providers/pop3/camel-pop3-provider.c:75
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
-msgstr ""
-"這個選項將會使用純文字的密碼連線到 POP 伺服器。一般的 POP 伺服器只會支援這種"
-"方式。"
+msgstr "這個選項將會使用純文字的密碼連線到 POP 伺服器。一般的 POP 伺服器只會支援這種方式。"
 
 # camel/providers/pop3/camel-pop3-provider.c:79
-#: ../camel/providers/pop3/camel-pop3-provider.c:85
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
-msgstr ""
-"這個選項將會使用加密的密碼經由 APOP 通訊協定連線到 POP 伺服器。不過就算伺服器"
-"聲稱能夠支援，但對於所有使用者來講都未必一定可行。"
+msgstr "這個選項將會使用加密的密碼經由 APOP 通訊協定連線到 POP 伺服器。不過就算伺服器聲稱能夠支援，但對於所有使用者來講都未必一定可行。"
 
 # camel/providers/pop3/camel-pop3-store.c:199
-#: ../camel/providers/pop3/camel-pop3-store.c:202
+#: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "無法從 POP 伺服器 %s 讀取有效的問候語"
 
 # camel/providers/pop3/camel-pop3-store.c:379
-#: ../camel/providers/pop3/camel-pop3-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:233
-#: ../camel/providers/pop3/camel-pop3-store.c:243
-#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:220
+#: ../camel/providers/pop3/camel-pop3-store.c:237
+#: ../camel/providers/pop3/camel-pop3-store.c:247
+#: ../camel/providers/pop3/camel-pop3-store.c:253
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "無法以安全模式連線到 POP 伺服器 %s： %s"
 
 # shell/e-storage.c:477
-#: ../camel/providers/pop3/camel-pop3-store.c:217
+#: ../camel/providers/pop3/camel-pop3-store.c:221
 msgid "STLS not supported by server"
 msgstr "伺服器不支援 STLS"
 
 # camel/camel-sasl-anonymous.c:110
 # camel/camel-sasl-plain.c:87
-#: ../camel/providers/pop3/camel-pop3-store.c:244
+#: ../camel/providers/pop3/camel-pop3-store.c:248
 msgid "TLS negotiations failed"
 msgstr "TLS 協商失敗"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/pop3/camel-pop3-store.c:254
 msgid "TLS is not available in this build"
 msgstr "此一版本並未啟用 TLS"
 
 # camel/providers/pop3/camel-pop3-store.c:322
-#: ../camel/providers/pop3/camel-pop3-store.c:356
+#: ../camel/providers/pop3/camel-pop3-store.c:360
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "無法連線到 POP 伺服器 %s"
 
 # camel/providers/pop3/camel-pop3-store.c:409
-#: ../camel/providers/pop3/camel-pop3-store.c:397
-#: ../camel/providers/pop3/camel-pop3-store.c:511
+#: ../camel/providers/pop3/camel-pop3-store.c:401
+#: ../camel/providers/pop3/camel-pop3-store.c:515
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr "無法連線到 POP 伺服器 %s：不支援所要求的驗證機制。"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:413
+#: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "SASL 「%s」登入失敗於 POP 伺服器 %s： %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:425
+#: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "不能登入 POP 伺服器 %s： SASL 通訊協定錯誤"
 
 # camel/providers/pop3/camel-pop3-store.c:199
-#: ../camel/providers/pop3/camel-pop3-store.c:444
+#: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "無法驗證 POP 伺服器 %s：%s"
 
 # camel/providers/pop3/camel-pop3-store.c:361
-#: ../camel/providers/pop3/camel-pop3-store.c:470
+#: ../camel/providers/pop3/camel-pop3-store.c:474
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%s請輸入 POP 密碼 (%s 於主機 %s)"
 
 # camel/providers/pop3/camel-pop3-store.c:417
-#: ../camel/providers/pop3/camel-pop3-store.c:525
-#: ../camel/providers/pop3/camel-pop3-store.c:538
+#: ../camel/providers/pop3/camel-pop3-store.c:529
+#: ../camel/providers/pop3/camel-pop3-store.c:542
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5063,7 +5100,7 @@ msgstr ""
 "傳送密碼時發生錯誤：%s"
 
 # camel/providers/pop3/camel-pop3-store.c:417
-#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -5073,7 +5110,7 @@ msgstr ""
 "傳送使用者名稱發生錯誤：%s"
 
 # camel/providers/pop3/camel-pop3-store.c:484
-#: ../camel/providers/pop3/camel-pop3-store.c:638
+#: ../camel/providers/pop3/camel-pop3-store.c:642
 #, c-format
 msgid "No such folder `%s'."
 msgstr "沒有這個資料夾「%s」。"
@@ -5089,7 +5126,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr "將遞送的電郵交給本地端系統上的「sendmail」程式處理。"
+msgstr "將遞送的郵件交給本地端系統上的「sendmail」程式處理。"
 
 # camel/camel-url.c:289
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:114
@@ -5100,31 +5137,31 @@ msgstr "無法分析收件人清單"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:145
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr "無法建立導管到「sendmail」程式： %s：電郵無法傳送"
+msgstr "無法建立導管到「sendmail」程式： %s：郵件無法傳送"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:124
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:166
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "無法另外再啟動一個 sendmail 行程： %s：電郵無法傳送"
+msgstr "無法另外再啟動一個 sendmail 行程： %s：郵件無法傳送"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:163
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr "sendmail 回傳關閉訊息 %s：電郵無法傳送"
+msgstr "sendmail 回傳關閉訊息 %s：郵件無法傳送"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:170
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:241
 #, c-format
 msgid "Could not execute %s: mail not sent."
-msgstr "無法執行 %s： 電郵無法傳送。"
+msgstr "無法執行 %s： 郵件無法傳送。"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:175
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
-msgstr "sendmail 由於狀況 %d 關閉： 電郵無法傳送。"
+msgstr "sendmail 由於狀況 %d 關閉： 郵件無法傳送。"
 
 # camel/providers/sendmail/camel-sendmail-transport.c:247
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:260
@@ -5134,7 +5171,7 @@ msgstr "sendmail"
 # camel/providers/sendmail/camel-sendmail-transport.c:249
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:262
 msgid "Mail delivery via the sendmail program"
-msgstr "經由 sendmail 程式傳送電郵"
+msgstr "經由 sendmail 程式傳送郵件"
 
 # camel/providers/smtp/camel-smtp-provider.c:38
 # mail/mail-config.glade.h:62
@@ -5145,7 +5182,7 @@ msgstr "SMTP"
 # camel/providers/smtp/camel-smtp-provider.c:40
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "使用 SMTP 連線到遠端 mailhub 來傳送電郵。"
+msgstr "使用 SMTP 連線到遠端 mailhub 來傳送郵件。"
 
 # camel/providers/smtp/camel-smtp-transport.c:168
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
@@ -5195,7 +5232,7 @@ msgstr "此服務仍未可用，傳輸通道關閉"
 # camel/providers/smtp/camel-smtp-transport.c:186
 #: ../camel/providers/smtp/camel-smtp-transport.c:180
 msgid "Requested mail action okay, completed"
-msgstr " 所要求的電郵動作已成功完成"
+msgstr " 所要求的郵件動作已成功完成"
 
 # camel/providers/smtp/camel-smtp-transport.c:188
 #: ../camel/providers/smtp/camel-smtp-transport.c:182
@@ -5205,7 +5242,7 @@ msgstr "不是本地端的使用者；將會轉寄至 <轉寄路徑>"
 # camel/providers/smtp/camel-smtp-transport.c:190
 #: ../camel/providers/smtp/camel-smtp-transport.c:184
 msgid "Requested mail action not taken: mailbox unavailable"
-msgstr "所要求的電郵動作無法執行：郵箱仍未可用"
+msgstr "所要求的郵件動作無法執行：郵箱仍未可用"
 
 # camel/providers/smtp/camel-smtp-transport.c:192
 #: ../camel/providers/smtp/camel-smtp-transport.c:186
@@ -5230,7 +5267,7 @@ msgstr "所要求的動作無法執行：系統的儲存空間不足"
 # camel/providers/smtp/camel-smtp-transport.c:200
 #: ../camel/providers/smtp/camel-smtp-transport.c:194
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "所要求的電郵動作已放棄：超出可供儲存空間的限制"
+msgstr "所要求的郵件動作已放棄：超出可供儲存空間的限制"
 
 # camel/providers/smtp/camel-smtp-transport.c:202
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
@@ -5240,7 +5277,7 @@ msgstr "所要求的動作已放棄：不允許的郵箱名稱"
 # camel/providers/smtp/camel-smtp-transport.c:204
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "請開始輸入電郵的資料；<CRLF>.<CRLF> 結束撰寫電郵"
+msgstr "請開始輸入郵件的資料；<CRLF>.<CRLF> 結束撰寫郵件"
 
 # camel/providers/smtp/camel-smtp-transport.c:206
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
@@ -5260,7 +5297,7 @@ msgstr "驗證機制太弱了"
 # camel/providers/smtp/camel-smtp-transport.c:214
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "Encryption required for requested authentication mechanism"
-msgstr "所要求的驗證機制必須要加密處理"
+msgstr "所要求的驗證機制必須加密處理"
 
 # camel/providers/smtp/camel-smtp-transport.c:216
 #: ../camel/providers/smtp/camel-smtp-transport.c:210
@@ -5325,7 +5362,7 @@ msgstr "SMTP 伺服器 %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr "經由 %s 傳送 SMTP 電郵"
+msgstr "經由 %s 傳送 SMTP 郵件"
 
 # camel/providers/smtp/camel-smtp-transport.c:582
 #: ../camel/providers/smtp/camel-smtp-transport.c:684
@@ -5335,22 +5372,22 @@ msgstr "無法傳送訊息：服務未連線。"
 # camel/providers/smtp/camel-smtp-transport.c:568
 #: ../camel/providers/smtp/camel-smtp-transport.c:690
 msgid "Cannot send message: sender address not valid."
-msgstr "不能傳送電郵：寄件者的地址無效。"
+msgstr "不能傳送郵件：寄件者的地址無效。"
 
 # mail/mail-ops.c:603
 #: ../camel/providers/smtp/camel-smtp-transport.c:694
 msgid "Sending message"
-msgstr "傳送電郵"
+msgstr "傳送郵件"
 
 # camel/providers/smtp/camel-smtp-transport.c:582
 #: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: no recipients defined."
-msgstr "不能傳送電郵：沒有定義收件者。"
+msgstr "不能傳送郵件：沒有定義收件者。"
 
 # camel/providers/smtp/camel-smtp-transport.c:582
 #: ../camel/providers/smtp/camel-smtp-transport.c:720
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "不能傳送電郵：一或多個無效的收件者"
+msgstr "不能傳送郵件：一或多個無效的收件者"
 
 # importers/netscape-importer.c:790
 # importers/pine-importer.c:656
@@ -5400,7 +5437,7 @@ msgstr "從伺服器傳回不正確驗證的回應。\n"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1125
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
-msgstr "MAIL FROM 指令失敗：%s：電郵未傳送"
+msgstr "MAIL FROM 指令失敗：%s：郵件未傳送"
 
 # camel/providers/imap/camel-imap-command.c:240
 #: ../camel/providers/smtp/camel-smtp-transport.c:1142
@@ -5411,7 +5448,7 @@ msgstr "MAIL FROM 指令失敗"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1166
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
-msgstr "RCPT TO 指令失敗：%s：電郵未傳送"
+msgstr "RCPT TO 指令失敗：%s：郵件未傳送"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1185
 #, c-format
@@ -5424,7 +5461,7 @@ msgstr "RCPT TO <%s> 失敗"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1301
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
-msgstr "DATA 指令失敗：%s：電郵未傳送"
+msgstr "DATA 指令失敗：%s：郵件未傳送"
 
 # camel/providers/imap/camel-imap-command.c:240
 #. we should have gotten instructions on how to use the DATA command:
@@ -5779,15 +5816,15 @@ msgstr "編輯 (_E)"
 msgid "categories"
 msgstr "分類"
 
-#: ../libedataserverui/e-name-selector-dialog.c:282
+#: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
 msgstr "從通訊錄選取聯絡人"
 
-#: ../libedataserverui/e-name-selector-dialog.c:583
+#: ../libedataserverui/e-name-selector-dialog.c:597
 msgid "_Add"
 msgstr "加入(_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:608
+#: ../libedataserverui/e-name-selector-dialog.c:622
 msgid "_Remove"
 msgstr "移除(_R)"
 
@@ -5836,35 +5873,35 @@ msgid "_Search:"
 msgstr "搜尋(_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2049
+#: ../libedataserverui/e-name-selector-entry.c:2043
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "展開行內 %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2065
+#: ../libedataserverui/e-name-selector-entry.c:2059
 #, c-format
 msgid "_Edit %s"
 msgstr "編輯 %s(_E)"
 
-#: ../libedataserverui/e-name-selector-list.c:480
+#: ../libedataserverui/e-name-selector-list.c:479
 #, c-format
 msgid "_Delete %s"
 msgstr "刪除(_D) %s"
 
-#: ../libedataserverui/e-passwords.c:810
+#: ../libedataserverui/e-passwords.c:854
 msgid "_Remember this passphrase"
 msgstr "記住這個密語(_R)"
 
-#: ../libedataserverui/e-passwords.c:811
+#: ../libedataserverui/e-passwords.c:855
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "記住這個用於剩餘的工作階段的密語(_R)"
 
-#: ../libedataserverui/e-passwords.c:814
+#: ../libedataserverui/e-passwords.c:858
 msgid "_Remember this password"
 msgstr "記住這個密碼(_R)"
 
-#: ../libedataserverui/e-passwords.c:815
+#: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
 msgstr "記住這個用於剩餘的工作階段的密碼(_R)"
 
@@ -5880,13 +5917,13 @@ msgstr "目的端(_D)"
 
 # camel/camel-smime-context.c:194
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
-#: ../servers/exchange/storage/exchange-account.c:932
+#: ../servers/exchange/storage/exchange-account.c:935
 #, c-format
 msgid "Enter password for %s"
 msgstr "輸入 %s 的密碼 "
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
-#: ../servers/exchange/storage/exchange-account.c:937
+#: ../servers/exchange/storage/exchange-account.c:940
 msgid "Enter password"
 msgstr "輸入密碼"
 
@@ -6012,22 +6049,22 @@ msgstr "這個操作無法在離線模式下進行"
 msgid "%s's Folders"
 msgstr "%s 的資料夾"
 
-#: ../servers/exchange/storage/exchange-account.c:1238
+#: ../servers/exchange/storage/exchange-account.c:1241
 msgid "Personal Folders"
 msgstr "個人資料夾"
 
-#: ../servers/exchange/storage/exchange-account.c:1252
+#: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
 msgstr "喜好的公開資料夾"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1269
+#: ../servers/exchange/storage/exchange-account.c:1272
 msgid "All Public Folders"
 msgstr "所有的公開資料夾"
 
 # addressbook/backend/ebook/e-card.c:3346
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1283
+#: ../servers/exchange/storage/exchange-account.c:1286
 msgid "Global Address List"
 msgstr "全域地址清單"
 
@@ -6067,23 +6104,23 @@ msgstr "工作"
 
 # camel/providers/local/camel-maildir-folder.c:218
 # camel/providers/local/camel-mh-folder.c:203
-#: ../servers/groupwise/e-gw-connection.c:165
+#: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
 msgstr "無效的連線"
 
 # camel/camel-sasl-kerberos4.c:218
 # camel/providers/imap/camel-imap-store.c:433
-#: ../servers/groupwise/e-gw-connection.c:169
+#: ../servers/groupwise/e-gw-connection.c:171
 msgid "Invalid response from server"
 msgstr "無效的伺服器回應"
 
 # camel/camel-sasl-kerberos4.c:218
 # camel/providers/imap/camel-imap-store.c:433
-#: ../servers/groupwise/e-gw-connection.c:171
+#: ../servers/groupwise/e-gw-connection.c:173
 msgid "No response from the server"
 msgstr "無效的伺服器回應"
 
-#: ../servers/groupwise/e-gw-connection.c:177
+#: ../servers/groupwise/e-gw-connection.c:179
 msgid "Bad parameter"
 msgstr "錯誤的參數"
 
