@@ -1,81 +1,80 @@
-# translation of evolution-data-server.HEAD.nn.po to Norwegian Nynorsk
 # translation of nn.po to Norwegian Nynorsk
 # Norwegian (Nynorsk) translation of Evolution
 # Copyright (C) 2001-2002 Roy-Magne Mo, 2003 Åsmund Skjæveland
+#
 # Roy-Magne Mo <rmo@sunnmore.net>, 2001-2002.
 # Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003, 2004, 2005, 2006.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.HEAD.nn\n"
+"Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-12-30 22:18+0100\n"
-"PO-Revision-Date: 2006-01-01 17:03+0100\n"
+"POT-Creation-Date: 2006-09-05 02:26+0200\n"
+"PO-Revision-Date: 2006-09-05 02:26+0200\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.10.2\n"
+"X-Generator: KBabel 1.11.2\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:536
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2213
+#: ../addressbook/backends/file/e-book-backend-file.c:542
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "Lastar ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:538
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2172
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2192
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2211
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3739
+#: ../addressbook/backends/file/e-book-backend-file.c:545
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2301
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Søkjer ..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2496
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3903
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4177
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Lastar ned kontaktar (%d) ... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2645
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2812
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2848
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer kontakt-mellomlager (%d) ... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:702
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:720
 msgid "Using Distinguished Name (DN)"
 msgstr "Brukar unikt namn (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:705
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Email Address"
 msgstr "Brukar e-postadresse"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:924
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:974
 msgid "Reconnecting to LDAP server..."
 msgstr "Koplar til LDAP-tenar att ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1503
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1568
 msgid "Adding contact to LDAP server..."
 msgstr "Legg til kontakt til LDAP-tenar ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1637
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1696
 msgid "Removing contact from LDAP server..."
 msgstr "Fjernar kontakt frå LDAP-tenar ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1919
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2001
 msgid "Modifying contact from LDAP server..."
 msgstr "Endrar kontakt frå LDAP-tenar ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3601
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3893
 msgid "Receiving LDAP search results..."
 msgstr "Mottek LDAP-søkeresultat ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3761
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4041
 msgid "Error performing search"
 msgstr "Feil ved søk"
 
@@ -92,9 +91,9 @@ msgstr "Feil ved søk"
 #: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
 #: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2076 ../addressbook/libebook/e-book.c:2080
-#: ../addressbook/libebook/e-book.c:2292 ../addressbook/libebook/e-book.c:2296
-#: ../addressbook/libebook/e-book.c:3392
+#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
+#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
+#: ../addressbook/libebook/e-book.c:3413
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "«%s» i bok før «%s»"
@@ -103,9 +102,9 @@ msgstr "«%s» i bok før «%s»"
 #: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
 #: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
 #: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2090
-#: ../addressbook/libebook/e-book.c:2305 ../addressbook/libebook/e-book.c:2641
-#: ../addressbook/libebook/e-book.c:2847
+#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
+#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2660
+#: ../addressbook/libebook/e-book.c:2866
 msgid "book busy"
 msgstr "bok oppteken"
 
@@ -118,524 +117,558 @@ msgstr "bok oppteken"
 #: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
 #: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
 #: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2122 ../addressbook/libebook/e-book.c:2126
-#: ../addressbook/libebook/e-book.c:2333 ../addressbook/libebook/e-book.c:2337
-#: ../addressbook/libebook/e-book.c:2582 ../addressbook/libebook/e-book.c:2669
-#: ../addressbook/libebook/e-book.c:2673 ../addressbook/libebook/e-book.c:2875
-#: ../addressbook/libebook/e-book.c:2879 ../addressbook/libebook/e-book.c:3401
+#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
+#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
+#: ../addressbook/libebook/e-book.c:2601 ../addressbook/libebook/e-book.c:2688
+#: ../addressbook/libebook/e-book.c:2692 ../addressbook/libebook/e-book.c:2894
+#: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3422
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-unntak ved kall til «%s»"
 
-#: ../addressbook/libebook/e-book.c:2563
+#: ../addressbook/libebook/e-book.c:2582
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: ingen aktiv operasjon"
 
-#: ../addressbook/libebook/e-book.c:2598
+#: ../addressbook/libebook/e-book.c:2617
 #, c-format
-msgid "%s: couldn't cancel"
-msgstr "%s: kunne ikkje avbryta"
+msgid "%s: could not cancel"
+msgstr "%s: klarte ikkje avbryta"
 
-#: ../addressbook/libebook/e-book.c:2627 ../addressbook/libebook/e-book.c:2631
+#: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "«%s» på bok før «%s»"
 
-#: ../addressbook/libebook/e-book.c:2697
+#: ../addressbook/libebook/e-book.c:2716
 #, c-format
-msgid "%s: cancelled"
-msgstr "%s: avbrote"
+msgid "%s: canceled"
+msgstr "%s: avbroten"
 
-#: ../addressbook/libebook/e-book.c:3258
+#: ../addressbook/libebook/e-book.c:3277
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: ugyldig kjelde."
 
-#: ../addressbook/libebook/e-book.c:3266 ../addressbook/libebook/e-book.c:3330
+#: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3351
 #, c-format
-msgid "%s: no factories available for uri `%s'"
-msgstr "%s: ingen tilgjengelege fabrikkar for uri «%s»"
+msgid "%s: no factories available for URI `%s'"
+msgstr "%s: ingen tilgjengelege fabrikkar for adressa «%s»"
 
-#: ../addressbook/libebook/e-book.c:3278
+#: ../addressbook/libebook/e-book.c:3297
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Kunne ikkje laga EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3541
+#: ../addressbook/libebook/e-book.c:3562
 #, c-format
-msgid "%s: there was no self contact uid stored in gconf"
-msgstr "%s: ingen sjølvkontakt lagra i gconf"
+msgid "%s: there was no self contact UID stored in gconf"
+msgstr "%s: ingen UID for sjølvkontakt lagra i gconf"
 
-#: ../addressbook/libebook/e-book.c:3671
+#: ../addressbook/libebook/e-book.c:3692
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: inga kjelde til uid «%s» lagra i gconf."
 
-#: ../addressbook/libebook/e-contact.c:108
+#. Dummy row as EContactField starts from 1
+#: ../addressbook/libebook/e-contact.c:112
 msgid "Unique ID"
 msgstr "Unikt ID"
 
-#: ../addressbook/libebook/e-contact.c:109
+#: ../addressbook/libebook/e-contact.c:113
 msgid "File Under"
 msgstr "Arkiver under"
+
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:115
+msgid "Book URI"
+msgstr "Adresse til boka"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:121
 msgid "Full Name"
 msgstr "Fullt namn"
 
-#: ../addressbook/libebook/e-contact.c:116
-msgid "Name"
-msgstr "Namn"
-
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:122
 msgid "Given Name"
 msgstr "Førenamn"
 
-#: ../addressbook/libebook/e-contact.c:118
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
 msgstr "Etternamn"
 
-#: ../addressbook/libebook/e-contact.c:119
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Nickname"
 msgstr "Kallenamn"
 
-#: ../addressbook/libebook/e-contact.c:120
-msgid "Name or Org"
-msgstr "Namn eller organisasjon"
-
-#. Address fields
-#: ../addressbook/libebook/e-contact.c:123
-msgid "Address List"
-msgstr "Adresseliste"
-
-#: ../addressbook/libebook/e-contact.c:124
-msgid "Home Address"
-msgstr "Heimeadresse"
-
-#: ../addressbook/libebook/e-contact.c:125
-msgid "Work Address"
-msgstr "Arbeidsadresse"
-
-#: ../addressbook/libebook/e-contact.c:126
-msgid "Other Address"
-msgstr "Anna adresse"
-
-#: ../addressbook/libebook/e-contact.c:128
-msgid "Home Address Label"
-msgstr "Merkelapp på heimeadresse"
-
-#: ../addressbook/libebook/e-contact.c:129
-msgid "Work Address Label"
-msgstr "Merkelapp på arbeidsadresse"
-
-#: ../addressbook/libebook/e-contact.c:130
-msgid "Other Address Label"
-msgstr "Merkelapp på anna adresse"
-
-#: ../addressbook/libebook/e-contact.c:132
-msgid "Assistant Phone"
-msgstr "Telefon til assistent"
-
-#: ../addressbook/libebook/e-contact.c:133
-msgid "Business Phone"
-msgstr "Firmatelefon"
-
-#: ../addressbook/libebook/e-contact.c:134
-msgid "Business Phone 2"
-msgstr "Firmatelefon 2"
-
-#: ../addressbook/libebook/e-contact.c:135
-msgid "Business Fax"
-msgstr "Firmafax"
-
-#: ../addressbook/libebook/e-contact.c:136
-msgid "Callback Phone"
-msgstr "Tilbakering telefon"
-
-#: ../addressbook/libebook/e-contact.c:137
-msgid "Car Phone"
-msgstr "Bil-telefon"
-
-#: ../addressbook/libebook/e-contact.c:138
-msgid "Company Phone"
-msgstr "Firmatelefon"
-
-#: ../addressbook/libebook/e-contact.c:139
-msgid "Home Phone"
-msgstr "Heime-telefon"
-
-#: ../addressbook/libebook/e-contact.c:140
-msgid "Home Phone 2"
-msgstr "Heime-telefon 2"
-
-#: ../addressbook/libebook/e-contact.c:141
-msgid "Home Fax"
-msgstr "Heime-faks"
-
-#: ../addressbook/libebook/e-contact.c:142
-msgid "ISDN"
-msgstr "ISDN"
-
-#: ../addressbook/libebook/e-contact.c:143
-msgid "Mobile Phone"
-msgstr "Mobiltelefon"
-
-#: ../addressbook/libebook/e-contact.c:144
-msgid "Other Phone"
-msgstr "Alternativ telefon"
-
-#: ../addressbook/libebook/e-contact.c:145
-msgid "Other Fax"
-msgstr "Alternativ faks"
-
-#: ../addressbook/libebook/e-contact.c:146
-msgid "Pager"
-msgstr "Personsøkjar"
-
-#: ../addressbook/libebook/e-contact.c:147
-msgid "Primary Phone"
-msgstr "Primær telefon"
-
-#: ../addressbook/libebook/e-contact.c:148
-msgid "Radio"
-msgstr "Radio"
-
-#: ../addressbook/libebook/e-contact.c:149
-msgid "Telex"
-msgstr "Teleks"
-
-#: ../addressbook/libebook/e-contact.c:150
-msgid "TTY"
-msgstr "TTY"
-
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:153
-msgid "Email List"
-msgstr "E-postliste"
-
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:127
 msgid "Email 1"
 msgstr "E-post 1"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:128
 msgid "Email 2"
 msgstr "E-post 2"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Email 3"
 msgstr "E-post 3"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Email 4"
 msgstr "E-post 4"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:132
 msgid "Mailer"
 msgstr "E-postprogram"
 
+#. Address Labels
+#: ../addressbook/libebook/e-contact.c:135
+msgid "Home Address Label"
+msgstr "Merkelapp på heimeadresse"
+
+#: ../addressbook/libebook/e-contact.c:136
+msgid "Work Address Label"
+msgstr "Merkelapp på arbeidsadresse"
+
+#: ../addressbook/libebook/e-contact.c:137
+msgid "Other Address Label"
+msgstr "Merkelapp på anna adresse"
+
+#. Phone fields
+#: ../addressbook/libebook/e-contact.c:140
+msgid "Assistant Phone"
+msgstr "Telefon til assistent"
+
+#: ../addressbook/libebook/e-contact.c:141
+msgid "Business Phone"
+msgstr "Firmatelefon"
+
+#: ../addressbook/libebook/e-contact.c:142
+msgid "Business Phone 2"
+msgstr "Firmatelefon 2"
+
+#: ../addressbook/libebook/e-contact.c:143
+msgid "Business Fax"
+msgstr "Firmafax"
+
+#: ../addressbook/libebook/e-contact.c:144
+msgid "Callback Phone"
+msgstr "Tilbakering telefon"
+
+#: ../addressbook/libebook/e-contact.c:145
+msgid "Car Phone"
+msgstr "Bil-telefon"
+
+#: ../addressbook/libebook/e-contact.c:146
+msgid "Company Phone"
+msgstr "Firmatelefon"
+
+#: ../addressbook/libebook/e-contact.c:147
+msgid "Home Phone"
+msgstr "Heime-telefon"
+
+#: ../addressbook/libebook/e-contact.c:148
+msgid "Home Phone 2"
+msgstr "Heime-telefon 2"
+
+#: ../addressbook/libebook/e-contact.c:149
+msgid "Home Fax"
+msgstr "Heime-faks"
+
+#: ../addressbook/libebook/e-contact.c:150
+msgid "ISDN"
+msgstr "ISDN"
+
+#: ../addressbook/libebook/e-contact.c:151
+msgid "Mobile Phone"
+msgstr "Mobiltelefon"
+
+#: ../addressbook/libebook/e-contact.c:152
+msgid "Other Phone"
+msgstr "Alternativ telefon"
+
+#: ../addressbook/libebook/e-contact.c:153
+msgid "Other Fax"
+msgstr "Alternativ faks"
+
+#: ../addressbook/libebook/e-contact.c:154
+msgid "Pager"
+msgstr "Personsøkjar"
+
+#: ../addressbook/libebook/e-contact.c:155
+msgid "Primary Phone"
+msgstr "Primær telefon"
+
+#: ../addressbook/libebook/e-contact.c:156
+msgid "Radio"
+msgstr "Radio"
+
+#: ../addressbook/libebook/e-contact.c:157
+msgid "Telex"
+msgstr "Teleks"
+
+#. To translators: TTY is Teletypewriter
 #: ../addressbook/libebook/e-contact.c:159
-msgid "Wants HTML Mail"
-msgstr "Vil ha HTML-e-post"
-
-#. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:162
-msgid "AIM Screen Name List"
-msgstr "AIM-skjermnamn-liste"
-
-#: ../addressbook/libebook/e-contact.c:163
-msgid "GroupWise Id List"
-msgstr "GroupWise-id-liste"
-
-#: ../addressbook/libebook/e-contact.c:164
-msgid "Jabber Id List"
-msgstr "Jabber-id-liste"
-
-#: ../addressbook/libebook/e-contact.c:165
-msgid "Yahoo! Screen Name List"
-msgstr "Yahoo!-skjermnamnliste"
-
-#: ../addressbook/libebook/e-contact.c:166
-msgid "MSN Screen Name List"
-msgstr "MSN-skjermnamnliste"
-
-#: ../addressbook/libebook/e-contact.c:167
-msgid "ICQ Id List"
-msgstr "ICQ-id-liste"
-
-#: ../addressbook/libebook/e-contact.c:169
-msgid "AIM Home Screen Name 1"
-msgstr "AIM heime, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:170
-msgid "AIM Home Screen Name 2"
-msgstr "AIM heime, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:171
-msgid "AIM Home Screen Name 3"
-msgstr "AIM heime, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:172
-msgid "AIM Work Screen Name 1"
-msgstr "AIM arbeid, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:173
-msgid "AIM Work Screen Name 2"
-msgstr "AIM arbeid, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:174
-msgid "AIM Work Screen Name 3"
-msgstr "AIM arbeid, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:175
-msgid "GroupWise Home Screen Name 1"
-msgstr "GroupWise heime, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:176
-msgid "GroupWise Home Screen Name 2"
-msgstr "GroupWise heime, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:177
-msgid "GroupWise Home Screen Name 3"
-msgstr "GroupWise heime, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:178
-msgid "GroupWise Work Screen Name 1"
-msgstr "GroupWise arbeid, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:179
-msgid "GroupWise Work Screen Name 2"
-msgstr "GroupWise arbeid, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:180
-msgid "GroupWise Work Screen Name 3"
-msgstr "GroupWise arbeid, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:181
-msgid "Jabber Home Id 1"
-msgstr "Jabber heime, id 1"
-
-#: ../addressbook/libebook/e-contact.c:182
-msgid "Jabber Home Id 2"
-msgstr "Jabber heime, id 2"
-
-#: ../addressbook/libebook/e-contact.c:183
-msgid "Jabber Home Id 3"
-msgstr "Jabber heime, id 3"
-
-#: ../addressbook/libebook/e-contact.c:184
-msgid "Jabber Work Id 1"
-msgstr "Jabber arbeid, id 1"
-
-#: ../addressbook/libebook/e-contact.c:185
-msgid "Jabber Work Id 2"
-msgstr "Jabber arbeid, id 2"
-
-#: ../addressbook/libebook/e-contact.c:186
-msgid "Jabber Work Id 3"
-msgstr "Jabber arbeid, id 3"
-
-#: ../addressbook/libebook/e-contact.c:187
-msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! heime, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:188
-msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! heime, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:189
-msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! heime, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:190
-msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! arbeid, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:191
-msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! arbeid, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:192
-msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! arbeid, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:193
-msgid "MSN Home Screen Name 1"
-msgstr "MSN heime, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:194
-msgid "MSN Home Screen Name 2"
-msgstr "MSN heime, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:195
-msgid "MSN Home Screen Name 3"
-msgstr "MSN heime, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:196
-msgid "MSN Work Screen Name 1"
-msgstr "MSN arbeid, skjermnamn 1"
-
-#: ../addressbook/libebook/e-contact.c:197
-msgid "MSN Work Screen Name 2"
-msgstr "MSN arbeid, skjermnamn 2"
-
-#: ../addressbook/libebook/e-contact.c:198
-msgid "MSN Work Screen Name 3"
-msgstr "MSN arbeid, skjermnamn 3"
-
-#: ../addressbook/libebook/e-contact.c:199
-msgid "ICQ Home Id 1"
-msgstr "ICQ heime, id 1"
-
-#: ../addressbook/libebook/e-contact.c:200
-msgid "ICQ Home Id 2"
-msgstr "ICQ heime, id 2"
-
-#: ../addressbook/libebook/e-contact.c:201
-msgid "ICQ Home Id 3"
-msgstr "ICQ heime, id 3"
-
-#: ../addressbook/libebook/e-contact.c:202
-msgid "ICQ Work Id 1"
-msgstr "ICQ arbeid, id 1"
-
-#: ../addressbook/libebook/e-contact.c:203
-msgid "ICQ Work Id 2"
-msgstr "ICQ arbeid, id 2"
-
-#: ../addressbook/libebook/e-contact.c:204
-msgid "ICQ Work Id 3"
-msgstr "ICQ arbeid, id 3"
+msgid "TTY"
+msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:162
 msgid "Organization"
 msgstr "Organisasjon"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:163
 msgid "Organizational Unit"
 msgstr "Organisasjonseining"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
 msgstr "Kontor"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
 msgstr "Tittel"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Role"
 msgstr "Rolle"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Manager"
 msgstr "Sjef"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:171
 msgid "Homepage URL"
 msgstr "URL til heimeside"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:172
 msgid "Weblog URL"
 msgstr "URL til vevlogg"
 
-#: ../addressbook/libebook/e-contact.c:219
-msgid "Video Conferencing URL"
-msgstr "Videokonferanse-URL"
-
-#. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:222
-msgid "Photo"
-msgstr "Fotografi"
-
-#: ../addressbook/libebook/e-contact.c:223
-msgid "Logo"
-msgstr "Logo"
-
-#. Security fields
-#: ../addressbook/libebook/e-contact.c:226
-msgid "X.509 Certificate"
-msgstr "X.509-sertifikat"
-
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:229
-msgid "Category List"
-msgstr "Kategoriliste"
-
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
 msgstr "Kategoriar"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:178
 msgid "Calendar URI"
 msgstr "Kalender-URI"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Free/Busy URL"
 msgstr "Ledig/Oppteken-URL"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:180
 msgid "ICS Calendar"
 msgstr "ICS-kalender"
 
+#: ../addressbook/libebook/e-contact.c:181
+msgid "Video Conferencing URL"
+msgstr "Videokonferanse-URL"
+
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Spouse's Name"
 msgstr "Namn på ektefelle"
 
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
 msgstr "Merknad"
 
-#: ../addressbook/libebook/e-contact.c:241
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:188
+msgid "AIM Home Screen Name 1"
+msgstr "AIM heime, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:189
+msgid "AIM Home Screen Name 2"
+msgstr "AIM heime, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "AIM Home Screen Name 3"
+msgstr "AIM heime, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "AIM Work Screen Name 1"
+msgstr "AIM arbeid, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "AIM Work Screen Name 2"
+msgstr "AIM arbeid, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "AIM Work Screen Name 3"
+msgstr "AIM arbeid, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "GroupWise Home Screen Name 1"
+msgstr "GroupWise heime, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:195
+msgid "GroupWise Home Screen Name 2"
+msgstr "GroupWise heime, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:196
+msgid "GroupWise Home Screen Name 3"
+msgstr "GroupWise heime, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:197
+msgid "GroupWise Work Screen Name 1"
+msgstr "GroupWise arbeid, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:198
+msgid "GroupWise Work Screen Name 2"
+msgstr "GroupWise arbeid, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:199
+msgid "GroupWise Work Screen Name 3"
+msgstr "GroupWise arbeid, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:200
+msgid "Jabber Home Id 1"
+msgstr "Jabber heime, id 1"
+
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Jabber Home Id 2"
+msgstr "Jabber heime, id 2"
+
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Jabber Home Id 3"
+msgstr "Jabber heime, id 3"
+
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Jabber Work Id 1"
+msgstr "Jabber arbeid, id 1"
+
+#: ../addressbook/libebook/e-contact.c:204
+msgid "Jabber Work Id 2"
+msgstr "Jabber arbeid, id 2"
+
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Jabber Work Id 3"
+msgstr "Jabber arbeid, id 3"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Yahoo! Home Screen Name 1"
+msgstr "Yahoo! heime, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Yahoo! Home Screen Name 2"
+msgstr "Yahoo! heime, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Yahoo! Home Screen Name 3"
+msgstr "Yahoo! heime, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:209
+msgid "Yahoo! Work Screen Name 1"
+msgstr "Yahoo! arbeid, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:210
+msgid "Yahoo! Work Screen Name 2"
+msgstr "Yahoo! arbeid, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Yahoo! Work Screen Name 3"
+msgstr "Yahoo! arbeid, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "MSN Home Screen Name 1"
+msgstr "MSN heime, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:213
+msgid "MSN Home Screen Name 2"
+msgstr "MSN heime, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:214
+msgid "MSN Home Screen Name 3"
+msgstr "MSN heime, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:215
+msgid "MSN Work Screen Name 1"
+msgstr "MSN arbeid, skjermnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:216
+msgid "MSN Work Screen Name 2"
+msgstr "MSN arbeid, skjermnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:217
+msgid "MSN Work Screen Name 3"
+msgstr "MSN arbeid, skjermnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:218
+msgid "ICQ Home Id 1"
+msgstr "ICQ heime, id 1"
+
+#: ../addressbook/libebook/e-contact.c:219
+msgid "ICQ Home Id 2"
+msgstr "ICQ heime, id 2"
+
+#: ../addressbook/libebook/e-contact.c:220
+msgid "ICQ Home Id 3"
+msgstr "ICQ heime, id 3"
+
+#: ../addressbook/libebook/e-contact.c:221
+msgid "ICQ Work Id 1"
+msgstr "ICQ arbeid, id 1"
+
+#: ../addressbook/libebook/e-contact.c:222
+msgid "ICQ Work Id 2"
+msgstr "ICQ arbeid, id 2"
+
+#: ../addressbook/libebook/e-contact.c:223
+msgid "ICQ Work Id 3"
+msgstr "ICQ arbeid, id 3"
+
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:226
+msgid "Last Revision"
+msgstr "Siste revisjon"
+
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Name or Org"
+msgstr "Namn eller organisasjon"
+
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:230
+msgid "Address List"
+msgstr "Adresseliste"
+
+#: ../addressbook/libebook/e-contact.c:231
+msgid "Home Address"
+msgstr "Heimeadresse"
+
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Work Address"
+msgstr "Arbeidsadresse"
+
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Other Address"
+msgstr "Anna adresse"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:236
+msgid "Category List"
+msgstr "Kategoriliste"
+
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:239
+msgid "Photo"
+msgstr "Fotografi"
+
+#: ../addressbook/libebook/e-contact.c:240
+msgid "Logo"
+msgstr "Logo"
+
+#: ../addressbook/libebook/e-contact.c:242
+msgid "Name"
+msgstr "Namn"
+
+#: ../addressbook/libebook/e-contact.c:243
+msgid "Email List"
+msgstr "E-postliste"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:246
+msgid "AIM Screen Name List"
+msgstr "AIM-skjermnamn-liste"
+
+#: ../addressbook/libebook/e-contact.c:247
+msgid "GroupWise Id List"
+msgstr "GroupWise-id-liste"
+
+#: ../addressbook/libebook/e-contact.c:248
+msgid "Jabber Id List"
+msgstr "Jabber-id-liste"
+
+#: ../addressbook/libebook/e-contact.c:249
+msgid "Yahoo! Screen Name List"
+msgstr "Yahoo!-skjermnamnliste"
+
+#: ../addressbook/libebook/e-contact.c:250
+msgid "MSN Screen Name List"
+msgstr "MSN-skjermnamnliste"
+
+#: ../addressbook/libebook/e-contact.c:251
+msgid "ICQ Id List"
+msgstr "ICQ-id-liste"
+
+#: ../addressbook/libebook/e-contact.c:253
+msgid "Wants HTML Mail"
+msgstr "Vil ha HTML-e-post"
+
+#: ../addressbook/libebook/e-contact.c:255
+msgid "List"
+msgstr "Liste"
+
+#: ../addressbook/libebook/e-contact.c:256
+msgid "List Show Addresses"
+msgstr ""
+
+#: ../addressbook/libebook/e-contact.c:258
 msgid "Birth Date"
 msgstr "Fødselsdag"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:259
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
-#: ../libedataserver/e-categories.c:240
+#: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
 msgstr "Merkedag"
 
-#: ../addressbook/libebook/e-contact.c:244
-msgid "List"
-msgstr "Liste"
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:262
+msgid "X.509 Certificate"
+msgstr "X.509-sertifikat"
 
-#: ../addressbook/libebook/e-contact.c:245
-msgid "List Show Addresses"
-msgstr ""
+#: ../addressbook/libebook/e-contact.c:264
+msgid "Gadu-Gadu Home Id 1"
+msgstr "Gadu-Gadu heime, id 1"
 
-#. Last modified time
-#: ../addressbook/libebook/e-contact.c:248
-msgid "Last Revision"
-msgstr "Siste revisjon"
+#: ../addressbook/libebook/e-contact.c:265
+msgid "Gadu-Gadu Home Id 2"
+msgstr "Gadu-Gadu heime, id 2"
 
-#. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:250
-msgid "Book URI"
-msgstr "Adresse til boka"
+#: ../addressbook/libebook/e-contact.c:266
+msgid "Gadu-Gadu Home Id 3"
+msgstr "Gadu-Gadu heime, id 3"
 
-#: ../addressbook/libebook/e-contact.c:1238
-#: ../addressbook/libebook/e-destination.c:751
+#: ../addressbook/libebook/e-contact.c:267
+msgid "Gadu-Gadu Work Id 1"
+msgstr "Gadu-Gadu arbeid, id 1"
+
+#: ../addressbook/libebook/e-contact.c:268
+msgid "Gadu-Gadu Work Id 2"
+msgstr "Gadu-Gadu arbeid, id 2"
+
+#: ../addressbook/libebook/e-contact.c:269
+msgid "Gadu-Gadu Work Id 3"
+msgstr "Gadu-Gadu arbeid, id 3"
+
+#: ../addressbook/libebook/e-contact.c:270
+msgid "Gadu-Gadu Id List"
+msgstr "Gadu-Gadu id-liste"
+
+#: ../addressbook/libebook/e-contact.c:1258
+#: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
 msgstr "Liste utan namn"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
-#: ../libedataserver/e-categories.c:241
+#: ../libedataserver/e-categories.c:247
 msgid "Birthday"
 msgstr "Fødselsdag"
 
@@ -650,72 +683,74 @@ msgid "Anniversary: %s"
 msgstr "Bryllupsdag: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-msgid "Can't save calendar data: Malformed URI."
+msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kan ikkje lagra kalenderdata. Feil i adresse."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:871
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1437
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
 msgid "Reply Requested: by "
 msgstr "Svar etterspurd: av "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:876
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1442
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1677
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurd: Når det passar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:191
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
 #, c-format
 msgid "Loading %s items"
 msgstr "Lastar %s element"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:715
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:257
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:771
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
 msgid "Invalid server URI"
 msgstr "Ugyldig tenaradresse"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:787
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:796
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:881
-#: ../calendar/libecal/e-cal.c:5131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:891
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:911
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:939
-#: ../camel/providers/groupwise/camel-groupwise-store.c:517
-#: ../camel/providers/groupwise/camel-groupwise-store.c:532
-#: ../camel/providers/groupwise/camel-groupwise-store.c:574
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:178
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:851
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
+#: ../calendar/libecal/e-cal.c:5178
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1003
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1027
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
+#: ../camel/providers/groupwise/camel-groupwise-store.c:585
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:711
+#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "Autentisering feila"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:837
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:902
 msgid "Could not create thread for getting deltas"
 msgstr "Klarte ikkje å laga tråd for å henta delta-ar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1109
-#: ../calendar/backends/http/e-cal-backend-http.c:504
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:942
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1211
+#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Klarte ikkje å laga mellomlager-fil"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
 msgid "Could not create thread for populating cache"
 msgstr "Klarte ikkje å laga tråd for å fylla mellomlager"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:248
+#: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Redirected to Invalid URI"
 msgstr "Omdirigert til ugyldig adresse"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:272
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "Ugyldig filformat."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:278
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "Ikkje ein kalender."
 
@@ -789,7 +824,7 @@ msgstr "Regn og snø"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Sleet"
-msgstr ""
+msgstr "Sludd"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
@@ -917,246 +952,246 @@ msgstr "%.1f-%.1f tommar snø\n"
 msgid "Untitled appointment"
 msgstr "Avtale utan namn"
 
-#: ../calendar/libecal/e-cal-recur.c:4026
+#: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:4027
+#: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:4028
+#: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:4029
+#: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4030
+#: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4031
+#: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4032
+#: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4033
+#: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4034
+#: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4035
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4036
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4037
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "High"
 msgstr "Høg"
 
-#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Normal"
 msgstr "Vanleg"
 
-#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Low"
 msgstr "Låg"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:707
+#: ../calendar/libecal/e-cal-util.c:708
 msgid "Undefined"
 msgstr "Udefinert"
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
-#: ../calendar/libecal/e-cal.c:1705
+#: ../calendar/libecal/e-cal.c:1737
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Skriv inn passord for %s for å bruka mellomtenar for brukar %s"
 
-#: ../calendar/libecal/e-cal.c:1708 ../libedataserverui/e-book-auth-util.c:192
+#: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Skriv inn passord for %s (brukar %s)"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5152
 msgid "Backend is busy"
 msgstr "Motoren er oppteken"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:5154
 msgid "Repository is offline"
 msgstr "Lageret er fråkopla"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5156
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:5111 ../servers/groupwise/e-gw-connection.c:172
+#: ../calendar/libecal/e-cal.c:5158 ../servers/groupwise/e-gw-connection.c:175
 msgid "Object not found"
 msgstr "Fann ikkje objekt"
 
-#: ../calendar/libecal/e-cal.c:5113 ../servers/groupwise/e-gw-connection.c:166
+#: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
 msgstr "Adresse ikkje lasta"
 
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/libecal/e-cal.c:5164
 msgid "URI already loaded"
 msgstr "Adresse allereie lasta"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Nekta tilgang"
 
-#: ../calendar/libecal/e-cal.c:5121 ../servers/groupwise/e-gw-connection.c:174
+#: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
 msgid "Unknown User"
 msgstr "Ukjend brukar"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
 msgstr "Objekt-ID finst frå før"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5172
 msgid "Protocol not supported"
 msgstr "Protokollen er ikkje støtta"
 
-#: ../calendar/libecal/e-cal.c:5127
-msgid "Operation has been cancelled"
+#: ../calendar/libecal/e-cal.c:5174
+msgid "Operation has been canceled"
 msgstr "Operasjonen vart avbroten"
 
-#: ../calendar/libecal/e-cal.c:5129
+#: ../calendar/libecal/e-cal.c:5176
 msgid "Could not cancel operation"
 msgstr "Kunne ikkje avbryta operasjonen"
 
-#: ../calendar/libecal/e-cal.c:5133
+#: ../calendar/libecal/e-cal.c:5180
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Autentisering påkrevd"
 
-#: ../calendar/libecal/e-cal.c:5135
+#: ../calendar/libecal/e-cal.c:5182
 msgid "A CORBA exception has occurred"
 msgstr "Eit CORBA-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:5137
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../calendar/libecal/e-cal.c:5184
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
-#: ../camel/providers/imap4/camel-imap4-store.c:380
-#: ../camel/providers/pop3/camel-pop3-store.c:533
-#: ../camel/providers/pop3/camel-pop3-store.c:540
-#: ../camel/providers/pop3/camel-pop3-store.c:546
+#: ../camel/providers/imap4/camel-imap4-store.c:314
+#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:539
+#: ../camel/providers/pop3/camel-pop3-store.c:545
 #: ../servers/exchange/storage/e-storage.c:586
-#: ../servers/groupwise/e-gw-connection.c:180
+#: ../servers/groupwise/e-gw-connection.c:183
 msgid "Unknown error"
 msgstr "Ukjend feil"
 
-#: ../calendar/libecal/e-cal.c:5139
+#: ../calendar/libecal/e-cal.c:5186
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Ingen feil"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:769
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:796
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» ventar ingen argument"
@@ -1165,7 +1200,7 @@ msgstr "«%s» ventar ingen argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:834
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» ventar eitt argument"
@@ -1173,7 +1208,7 @@ msgstr "«%s» ventar eitt argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:520
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» ventar at det fyrste argumentet er ein streng"
@@ -1187,8 +1222,8 @@ msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:608
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» ventar to argument"
@@ -1197,8 +1232,8 @@ msgstr "«%s» ventar to argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:614
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:840
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» ventar at det fyrste argumentet er ein time_t"
@@ -1209,17 +1244,17 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» ventar at det fyrste argumentet er eit heiltal"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:622
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» ventar at det andre argumentet er ein time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:528
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» ventar at det andre argumentet er ein streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:548
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1228,12 +1263,12 @@ msgstr ""
 "«%s» ventar at det fyrste argumentet er anten «any», «summary», "
 "«description» eller «location»"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:671
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» ventar minst eitt argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:685
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1282,11 +1317,11 @@ msgstr "Du kan ikkje importera nøklar med denne krypteringsmetoden"
 msgid "You may not export keys with this cipher"
 msgstr "Du kan ikkje eksportera nøklar med denne krypteringsmetoden"
 
-#: ../camel/camel-data-cache.c:135
+#: ../camel/camel-data-cache.c:136
 msgid "Unable to create cache path"
 msgstr "Kan ikkje oppretta sti til mellomlager"
 
-#: ../camel/camel-data-cache.c:382
+#: ../camel/camel-data-cache.c:383
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kan ikkje fjerna oppføring i mellomlageret: %s %s"
@@ -1331,12 +1366,11 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Gjer mappa «%s» klar til å brukast fråkopla"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1252
-#: ../camel/providers/imap/camel-imap-store.c:2964
+#: ../camel/providers/imap/camel-imap-store.c:2971
 msgid "You must be working online to complete this operation"
 msgstr "Du må arbeida tilkopla for å fullføra denne handlinga"
 
-#: ../camel/camel-exception.c:308
+#: ../camel/camel-exception.c:303
 msgid "No description available"
 msgstr "Inga skildring tilgjengeleg"
 
@@ -1408,27 +1442,27 @@ msgstr "Feila på melding %d av %d"
 msgid "Failed to retrieve message"
 msgstr "Klarte ikkje å henta melding"
 
-#: ../camel/camel-filter-search.c:397
+#: ../camel/camel-filter-search.c:398
 msgid "Invalid arguments to (system-flag)"
 msgstr "Ugyldige argument til (systemflagg)"
 
-#: ../camel/camel-filter-search.c:412
+#: ../camel/camel-filter-search.c:413
 msgid "Invalid arguments to (user-tag)"
 msgstr "Ugyldige argument til (brukarmerke)"
 
-#: ../camel/camel-filter-search.c:577
+#: ../camel/camel-filter-search.c:578
 #, c-format
 msgid "Failed to create create child process '%s': %s"
 msgstr "Klarte ikkje å oppretta underprosess «%s»: %s"
 
 # TRN: Kva er eit filtersøk? Skjønar eg dette rett?
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:699 ../camel/camel-filter-search.c:707
+#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Feil under køyring av filtersøk: %s: %s"
 
-#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:478
+#: ../camel/camel-folder-search.c:357 ../camel/camel-folder-search.c:479
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1437,7 +1471,7 @@ msgstr ""
 "Kan ikkje tolka søkeuttrykket: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:488
+#: ../camel/camel-folder-search.c:367 ../camel/camel-folder-search.c:489
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1446,27 +1480,27 @@ msgstr ""
 "Feil under køyring av søkeuttrykket: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:674 ../camel/camel-folder-search.c:707
+#: ../camel/camel-folder-search.c:675 ../camel/camel-folder-search.c:708
 msgid "(match-all) requires a single bool result"
 msgstr "(treff-alle) krev eitt boolsk resultat"
 
-#: ../camel/camel-folder-search.c:757
+#: ../camel/camel-folder-search.c:758
 msgid "(match-threads) not allowed inside match-all"
 msgstr "(treff-trådar) ikkje tillate innanfor treff-alle"
 
-#: ../camel/camel-folder-search.c:760 ../camel/camel-folder-search.c:764
+#: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
 msgstr "(treff-trådar) treng trefftype streng"
 
-#: ../camel/camel-folder-search.c:786
+#: ../camel/camel-folder-search.c:789
 msgid "(match-threads) expects an array result"
 msgstr "(treff-trådar) ventar array-resultat"
 
-#: ../camel/camel-folder-search.c:792
+#: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
 msgstr "(treff-trådar) krev mappesettet"
 
-#: ../camel/camel-folder-search.c:881
+#: ../camel/camel-folder-search.c:887
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Utfører spørjing på ukjend hovud: %s"
@@ -1483,8 +1517,8 @@ msgstr "Ikkje støtta handling: Søk ved uttrykk: etter %s"
 
 #: ../camel/camel-folder.c:1278
 #, c-format
-msgid "Unsupported operation: search by uids: for %s"
-msgstr "Ikkje støtta handling: Søk ved uid: etter %s"
+msgid "Unsupported operation: search by UIDs: for %s"
+msgstr "Ikkje støtta handling: Søk etter adresse: etter %s"
 
 #: ../camel/camel-folder.c:1394
 msgid "Moving messages"
@@ -1521,11 +1555,18 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "Klarte ikkje å tolka gpg userid-vink."
 
-#: ../camel/camel-gpg-context.c:791
+#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
 msgid "Failed to parse gpg passphrase request."
 msgstr "Klarte ikkje å tolka kor gpg spør etter adgangsfrase."
 
-#: ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:824
+#, c-format
+msgid ""
+"You need a PIN to unlock the key for your\n"
+"SmartCard: \"%s\""
+msgstr "Du treng ein PIN-kode for å låsa opp nøkkelen til smartkortet: «%s»"
+
+#: ../camel/camel-gpg-context.c:827
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1534,92 +1575,99 @@ msgstr ""
 "Du treng ein adgangsfrase for å låsa opp nøkkelen til \n"
 "brukaren «%s»"
 
-#: ../camel/camel-gpg-context.c:822 ../camel/camel-gpg-context.c:1026
-#: ../camel/providers/nntp/camel-nntp-store.c:1272
-msgid "Cancelled."
+#: ../camel/camel-gpg-context.c:832
+#, c-format
+msgid "Unexpected request from GnuPG for `%s'"
+msgstr "Uventa førespurnad etter «%s» frå GnuPG"
+
+#: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1057
+#: ../camel/providers/nntp/camel-nntp-store.c:1271
+msgid "Canceled."
 msgstr "Avbroten."
 
-#: ../camel/camel-gpg-context.c:840
+#: ../camel/camel-gpg-context.c:871
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "Klarte ikkje å låsa opp hemmeleg nøkkel: 3 ugyldige adgangsfrasar oppgjevne."
+msgstr ""
+"Klarte ikkje å låsa opp hemmeleg nøkkel: 3 ugyldige adgangsfrasar oppgjevne."
 
-#: ../camel/camel-gpg-context.c:846
+#: ../camel/camel-gpg-context.c:877
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Uventa svar frå GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:898
+#: ../camel/camel-gpg-context.c:929
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Klarte ikkje kryptera: Ingen gyldige mottakarar oppgjevne."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1164 ../camel/camel-gpg-context.c:1292
-#: ../camel/camel-gpg-context.c:1776 ../camel/camel-gpg-context.c:1821
+#: ../camel/camel-gpg-context.c:1195 ../camel/camel-gpg-context.c:1323
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1847
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Kan ikkje køyra gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1260 ../camel/camel-smime-context.c:387
+#: ../camel/camel-gpg-context.c:1291 ../camel/camel-smime-context.c:387
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Klarte ikkje laga signeringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1307 ../camel/camel-gpg-context.c:1496
-#: ../camel/camel-gpg-context.c:1579 ../camel/camel-gpg-context.c:1594
-#: ../camel/camel-gpg-context.c:1698 ../camel/camel-gpg-context.c:1713
-#: ../camel/camel-gpg-context.c:1792 ../camel/camel-gpg-context.c:1837
+#: ../camel/camel-gpg-context.c:1338 ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1605 ../camel/camel-gpg-context.c:1620
+#: ../camel/camel-gpg-context.c:1724 ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1818 ../camel/camel-gpg-context.c:1863
 msgid "Failed to execute gpg."
 msgstr "Klarte ikkje å køyra gpg."
 
-#: ../camel/camel-gpg-context.c:1326
+#: ../camel/camel-gpg-context.c:1357
 msgid "This is a digitally signed message part"
 msgstr "Dette er ein del av ei digitalt signert melding"
 
-#: ../camel/camel-gpg-context.c:1414 ../camel/camel-gpg-context.c:1420
-#: ../camel/camel-gpg-context.c:1426 ../camel/camel-gpg-context.c:1443
+#: ../camel/camel-gpg-context.c:1442 ../camel/camel-gpg-context.c:1448
+#: ../camel/camel-gpg-context.c:1454 ../camel/camel-gpg-context.c:1470
 #: ../camel/camel-smime-context.c:690 ../camel/camel-smime-context.c:701
 #: ../camel/camel-smime-context.c:708
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kan ikkje stadfesta signaturen på meldinga: Feil format på meldinga"
 
-#: ../camel/camel-gpg-context.c:1481
+#: ../camel/camel-gpg-context.c:1507
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "Kan ikkje stadfesta signaturen på meldinga: Kan ikkje laga mellombels fil: %s"
+msgstr ""
+"Kan ikkje stadfesta signaturen på meldinga: Kan ikkje laga mellombels fil: %s"
 
-#: ../camel/camel-gpg-context.c:1562
+#: ../camel/camel-gpg-context.c:1588
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Klarte ikkje å laga krypteringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1612
+#: ../camel/camel-gpg-context.c:1638
 msgid "This is a digitally encrypted message part"
 msgstr "Dette er ein del av ei digitalt kryptert melding"
 
-#: ../camel/camel-gpg-context.c:1669
+#: ../camel/camel-gpg-context.c:1695
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Klarte ikkje dekryptera MIME-del: protokollfeil"
 
-#: ../camel/camel-gpg-context.c:1680
+#: ../camel/camel-gpg-context.c:1706
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Kan ikkje dekryptera meldinga: Feil meldingsformat"
 
-#: ../camel/camel-gpg-context.c:1734 ../camel/camel-smime-context.c:964
+#: ../camel/camel-gpg-context.c:1760 ../camel/camel-smime-context.c:964
 msgid "Encrypted content"
 msgstr "Kryptert innhald"
 
-#: ../camel/camel-gpg-context.c:1753
+#: ../camel/camel-gpg-context.c:1779
 msgid "Unable to parse message content"
 msgstr "Klarte ikkje å tolka meldingsinnhaldet"
 
-#: ../camel/camel-gpg-context.c:1777 ../camel/camel-gpg-context.c:1822
+#: ../camel/camel-gpg-context.c:1803 ../camel/camel-gpg-context.c:1848
 #: ../camel/camel-tcp-stream-openssl.c:631
 #: ../camel/providers/imap4/camel-imap4-engine.c:1550
 #: ../camel/providers/imap4/camel-imap4-engine.c:1589
 #: ../camel/providers/imap4/camel-imap4-engine.c:1634
 #: ../camel/providers/imap4/camel-imap4-engine.c:1690
-#: ../camel/providers/imap4/camel-imap4-store.c:883
-#: ../camel/providers/imap4/camel-imap4-store.c:1556
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 #: ../camel/providers/imap4/camel-imap4-utils.c:575
 #: ../camel/providers/smtp/camel-smtp-transport.c:160
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -1721,44 +1769,44 @@ msgstr "Feil under skriving av mellombels meldingsfil: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Feil under kopiering av mellombels meldingsfil: %s"
 
-#: ../camel/camel-multipart-signed.c:596
+#: ../camel/camel-multipart-signed.c:593
 msgid "parse error"
 msgstr "Tolkefeil"
 
-#: ../camel/camel-net-utils.c:495 ../camel/camel-net-utils.c:657
-#: ../camel/camel-net-utils.c:788
-#: ../camel/providers/pop3/camel-pop3-store.c:446
-#: ../camel/providers/pop3/camel-pop3-store.c:527
-msgid "Cancelled"
+#: ../camel/camel-net-utils.c:497 ../camel/camel-net-utils.c:659
+#: ../camel/camel-net-utils.c:790
+#: ../camel/providers/pop3/camel-pop3-store.c:445
+#: ../camel/providers/pop3/camel-pop3-store.c:526
+msgid "Canceled"
 msgstr "Avbroten"
 
-#: ../camel/camel-net-utils.c:514
+#: ../camel/camel-net-utils.c:516
 msgid "cannot create thread"
 msgstr "kan ikkje laga tråd"
 
-#: ../camel/camel-net-utils.c:661
+#: ../camel/camel-net-utils.c:663
 #, c-format
 msgid "Resolving: %s"
 msgstr "Slår opp: %s"
 
-#: ../camel/camel-net-utils.c:683
+#: ../camel/camel-net-utils.c:685
 msgid "Host lookup failed"
 msgstr "Vertsnamnoppslag feila"
 
-#: ../camel/camel-net-utils.c:685
+#: ../camel/camel-net-utils.c:687
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "Vertsnamnoppslag feila: %s: %s"
 
-#: ../camel/camel-net-utils.c:792
+#: ../camel/camel-net-utils.c:794
 msgid "Resolving address"
 msgstr "Slår opp addresse"
 
-#: ../camel/camel-net-utils.c:812
+#: ../camel/camel-net-utils.c:814
 msgid "Name lookup failed"
 msgstr "Namneoppslag feila"
 
-#: ../camel/camel-net-utils.c:815
+#: ../camel/camel-net-utils.c:817
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "Namneoppslag feila: %s"
@@ -1775,7 +1823,7 @@ msgstr "Kan ikkje skriva fråkopla journal for mappa «%s»: %s"
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "Virtuell mappe e-post-leverandør"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
@@ -1796,7 +1844,7 @@ msgstr "Klarte ikkje å laste %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Klarte ikkje lasta %s: Ingen oppstartskode i modulen."
 
-#: ../camel/camel-provider.c:377 ../camel/camel-session.c:165
+#: ../camel/camel-provider.c:377 ../camel/camel-session.c:166
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "Ingen tilbydar tilgjengeleg for protokollen «%s»"
@@ -1936,11 +1984,14 @@ msgstr ""
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr "Dei utleverte akkreditiva var ikkje gyldige for kontekstoppstart, eller akkreditivhandtaket refererte ingen akkreditiv."
+msgstr ""
+"Dei utleverte akkreditiva var ikkje gyldige for kontekstoppstart, eller "
+"akkreditivhandtaket refererte ingen akkreditiv."
 
 #: ../camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
-msgstr "Det utleverte konteksthandtaket refererte ikkje til ein gyldig kontekst."
+msgstr ""
+"Det utleverte konteksthandtaket refererte ikkje til ein gyldig kontekst."
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
@@ -1957,7 +2008,7 @@ msgstr "Dei refererte akkreditiva har gått ut."
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
-#: ../camel/providers/imap/camel-imap-store.c:1278
+#: ../camel/providers/imap/camel-imap-store.c:1281
 msgid "Bad authentication response from server."
 msgstr "Ugyldig autentiseringssvar frå tenaren."
 
@@ -2050,7 +2101,7 @@ msgstr "Adressa «%s» treng ein vertsnamn-del"
 msgid "URL '%s' needs a path component"
 msgstr "Adressa «%s» treng ein sti-del"
 
-#: ../camel/camel-session.c:291
+#: ../camel/camel-session.c:292
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2191,7 +2242,8 @@ msgstr "Sertifikatet er den einaste meldinga, kan ikkje stadfesta sertifikata"
 
 #: ../camel/camel-smime-context.c:600
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "Sertifikatet er den einaste meldinga, sertifikata importerte og stadfesta"
+msgstr ""
+"Sertifikatet er den einaste meldinga, sertifikata importerte og stadfesta"
 
 #: ../camel/camel-smime-context.c:604
 msgid "Cannot find signature digests"
@@ -2213,12 +2265,13 @@ msgstr "Kan ikkje finna sertifikatet til «%s»"
 
 #: ../camel/camel-smime-context.c:780
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "Klarte ikkje finna felles krypteringsalgoritme for store datasett"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:789
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr ""
+"Klarte ikkje halda av plass til nøkkel for kryptering av store datasett"
 
 #: ../camel/camel-smime-context.c:800
 msgid "Cannot create CMS Message"
@@ -2266,7 +2319,7 @@ msgid "export keys: unimplemented"
 msgstr "eksporter nøklar: ikkje implementert"
 
 #: ../camel/camel-store.c:214
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:168
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Kan ikkje henta mappe: Ugyldig operasjon på dette lageret"
 
@@ -2404,7 +2457,7 @@ msgstr "Sertifikatet vart avvist"
 
 #: ../camel/camel-tcp-stream-openssl.c:620
 msgid "Subject/Issuer mismatch"
-msgstr ""
+msgstr "Ikkje samsvar mellom sertifisert og utferda"
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
@@ -2422,7 +2475,7 @@ msgstr "Nøkkelbruken støttar ikkje sertifikatsignering"
 msgid "Error in application verification"
 msgstr "Feil i bruksstadfesting"
 
-#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:886
+#: ../camel/camel-tcp-stream-openssl.c:696 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2435,11 +2488,11 @@ msgstr ""
 "Fingeravtrykk:     %s\n"
 "Signatur:          %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "GYLDIG"
 
-#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "UGYLDIG"
 
@@ -2463,7 +2516,7 @@ msgstr ""
 "Vil du akseptera likevel?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:896
+#: ../camel/camel-tcp-stream-ssl.c:890
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2478,7 +2531,7 @@ msgstr ""
 "\n"
 "Godtek du sertifikatet?"
 
-#: ../camel/camel-tcp-stream-ssl.c:940
+#: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2487,7 +2540,7 @@ msgstr ""
 "Sertifikatproblem: %s\n"
 "Utferdar: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:992
+#: ../camel/camel-tcp-stream-ssl.c:986
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2496,7 +2549,7 @@ msgstr ""
 "Ugyldig sertifikatdomene: %s\n"
 "Utferdar: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1010
+#: ../camel/camel-tcp-stream-ssl.c:1004
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2505,7 +2558,7 @@ msgstr ""
 "Sertifikatet gått ut: %s\n"
 "Utferdar: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1027
+#: ../camel/camel-tcp-stream-ssl.c:1021
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2555,8 +2608,8 @@ msgstr "Kan ikkje kopiera meldingar til papirkorga"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Kan ikkje kopiera meldingar til skrotmappa"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2062
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2565,73 +2618,79 @@ msgstr ""
 "Klarar ikkje å hente melding: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/imap/camel-imap-folder.c:2062
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:113
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #: ../camel/providers/local/camel-maildir-folder.c:245
-#: ../camel/providers/local/camel-mbox-folder.c:350
+#: ../camel/providers/local/camel-mbox-folder.c:351
 #: ../camel/providers/local/camel-mh-folder.c:203
 msgid "No such message"
 msgstr "Ingen slik melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
-#: ../camel/providers/imap4/camel-imap4-folder.c:787
-#: ../camel/providers/nntp/camel-nntp-folder.c:154
-#: ../camel/providers/nntp/camel-nntp-folder.c:230
-#: ../camel/providers/nntp/camel-nntp-folder.c:369
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:125
+#: ../camel/providers/imap4/camel-imap4-folder.c:788
+#: ../camel/providers/nntp/camel-nntp-folder.c:155
+#: ../camel/providers/nntp/camel-nntp-folder.c:231
+#: ../camel/providers/nntp/camel-nntp-folder.c:370
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
-#: ../camel/providers/pop3/camel-pop3-folder.c:510
-msgid "User cancelled"
+#: ../camel/providers/pop3/camel-pop3-folder.c:497
+#: ../camel/providers/pop3/camel-pop3-folder.c:558
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
+msgid "User canceled"
 msgstr "Brukar avbraut"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
-#: ../camel/providers/imap4/camel-imap4-folder.c:792
-#: ../camel/providers/nntp/camel-nntp-folder.c:145
-#: ../camel/providers/nntp/camel-nntp-folder.c:147
-#: ../camel/providers/nntp/camel-nntp-folder.c:156
-#: ../camel/providers/nntp/camel-nntp-folder.c:232
-#: ../camel/providers/pop3/camel-pop3-folder.c:434
-#: ../camel/providers/pop3/camel-pop3-folder.c:495
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
-#: ../camel/providers/pop3/camel-pop3-folder.c:513
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:132
+#: ../camel/providers/imap4/camel-imap4-folder.c:793
+#: ../camel/providers/nntp/camel-nntp-folder.c:146
+#: ../camel/providers/nntp/camel-nntp-folder.c:148
+#: ../camel/providers/nntp/camel-nntp-folder.c:157
+#: ../camel/providers/nntp/camel-nntp-folder.c:233
+#: ../camel/providers/pop3/camel-pop3-folder.c:500
+#: ../camel/providers/pop3/camel-pop3-folder.c:561
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
+#: ../camel/providers/pop3/camel-pop3-folder.c:579
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Kan ikkje henta melding %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
-#: ../camel/providers/imap4/camel-imap4-folder.c:810
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:157
+#: ../camel/providers/imap4/camel-imap4-folder.c:811
 msgid "This message is not available in offline mode."
 msgstr "Denne meldinga er ikkje tilgjengeleg i fråkopla modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:171
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:178
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1400
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:175
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1580
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1625
 msgid "Could not get message"
 msgstr "Klarte ikkje henta meldinga"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:702
-#: ../camel/providers/imap/camel-imap-folder.c:251
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:769
+#: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Klarte ikkje å lasta samandrag for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1026
-#: ../camel/providers/groupwise/camel-groupwise-store.c:562
-#: ../camel/providers/imap/camel-imap-folder.c:2374
-#: ../camel/providers/imap/camel-imap-folder.c:2444
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:999
+msgid "Trash Folder Full. Please Empty."
+msgstr "Papirkorga er full. Du må tøma henne."
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:743
+#: ../camel/providers/imap/camel-imap-folder.c:2382
+#: ../camel/providers/imap/camel-imap-folder.c:2452
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Hentar samandrag om nye meldingar i %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1632
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1678
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1893
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1935
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan ikkje leggja til melding i mappa «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1666
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1923
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikkje laga meldinga: %s"
@@ -2639,12 +2698,13 @@ msgstr "Kan ikkje laga meldinga: %s"
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:283
 #, c-format
 msgid "Cannot get folder container %s"
-msgstr ""
+msgstr "Klarte ikkje henta mappehaldar %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:347
 #: ../camel/providers/imap4/camel-imap4-journal.c:320
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Kan ikkje leggja til melding i fråkopla modus: Mellomlager utilgjengeleg"
+msgstr ""
+"Kan ikkje leggja til melding i fråkopla modus: Mellomlager utilgjengeleg"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:363
 #: ../camel/providers/imap4/camel-imap4-journal.c:336
@@ -2663,7 +2723,7 @@ msgstr "Sjå etter ny e-post i alle mappene"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imap4/camel-imap4-provider.c:56
+#: ../camel/providers/imap4/camel-imap4-provider.c:49
 #: ../camel/providers/local/camel-local-provider.c:45
 #: ../camel/providers/local/camel-local-provider.c:85
 #: ../camel/providers/local/camel-local-provider.c:105
@@ -2706,69 +2766,73 @@ msgstr "For å kopla til Novell GroupWise-tenarar"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
 #: ../camel/providers/imap/camel-imap-provider.c:96
-#: ../camel/providers/imap4/camel-imap4-provider.c:88
+#: ../camel/providers/imap4/camel-imap4-provider.c:81
 #: ../camel/providers/imapp/camel-imapp-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:72
+#: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
 msgstr "Passord"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
-msgid "This option will connect to the GroupWise server using a plaintext password."
-msgstr "Dette valet let deg kopla til ein GroupWise-tenar med eit klartekst-passord."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
+msgstr ""
+"Dette valet let deg kopla til ein GroupWise-tenar med eit klartekst-passord."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 msgid "Host or user not available in url"
 msgstr "Ikkje brukar eller vert i adresse"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:202
+#: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sSkriv inn GroupWise-passordet for %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:216
-#: ../camel/providers/imap/camel-imap-store.c:1357
-msgid "You didn't enter a password."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:219
+#: ../camel/providers/imap/camel-imap-store.c:1360
+msgid "You did not enter a password."
 msgstr "Du tasta ikkje inn eit passord."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:230
-msgid "Unable to authenticate to GroupWise server."
+#: ../camel/providers/groupwise/camel-groupwise-store.c:231
+msgid "Unable to authenticate to GroupWise server. "
 msgstr "Ikkje i stand til å autentisera mot GroupWise-tenar."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:297
+#: ../camel/providers/groupwise/camel-groupwise-store.c:309
 msgid "Some features may not work correctly with your current server version"
-msgstr "Somme eigenskapar vil kanskje ikkje virka ordentleg med den noverande tenarversjonen"
+msgstr ""
+"Somme eigenskapar vil kanskje ikkje virka ordentleg med den noverande "
+"tenarversjonen"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:469
-#: ../camel/providers/imap/camel-imap-store.c:1872
-#: ../camel/providers/imap/camel-imap-store.c:2064
+#: ../camel/providers/groupwise/camel-groupwise-store.c:537
+#: ../camel/providers/imap/camel-imap-store.c:1869
+#: ../camel/providers/imap/camel-imap-store.c:2060
 #, c-format
 msgid "No such folder %s"
 msgstr "Mappa «%s» finst ikkje"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1038
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Kan ikkje laga GroupWise-mapper i fråkopla modus."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1052
-#: ../camel/providers/imap/camel-imap-store.c:1947
-#: ../camel/providers/imap/camel-imap-store.c:2317
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
+#: ../camel/providers/imap/camel-imap-store.c:1944
+#: ../camel/providers/imap/camel-imap-store.c:2313
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Foreldermappa kan ikkje ha undermapper"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1129
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1150
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Kan ikkje endra namnet på GroupWise-mappa «%s» til «%s»"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1182
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise-tenar %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1184
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise-teneste for %s på %s"
@@ -2778,17 +2842,21 @@ msgstr "GroupWise-teneste for %s på %s"
 msgid "GroupWise mail delivery via %s"
 msgstr "GroupWise levering av epost via %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:161
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
 msgstr "Sender melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:215
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
-"You have exceed this account's storage limit. Your messages are queued in "
-"Outbox. Try sending after deleting/archiving some mails.\n"
-msgstr "Du har gått over lagringskapasiteten til denne kontoen. Meldingane dine står i kø i utboksen. Prøv å senda dei etter å ha arkivert eller sletta nokre epostar.\n"
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
+msgstr ""
+"Du har gått over lagringskapasiteten til denne kontoen. Meldingane dine står "
+"i kø i utboksen. Prøv å senda dei etter å ha arkivert eller sletta nokre "
+"epostar.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:217
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
 #, c-format
 msgid "Could not send message: %s"
@@ -2807,44 +2875,39 @@ msgstr "_Sjå etter ny e-post i alle mappene"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "Connection to Server"
 msgstr "Tilkopling til tenar"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Use custom command to connect to server"
 msgstr "Br_uk eigendefinert kommando for å kopla til tenaren"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
-#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "Command:"
 msgstr "Kommando:"
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imap4/camel-imap4-provider.c:48
+#: ../camel/providers/imap4/camel-imap4-provider.c:41
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "Mapper"
 
 #: ../camel/providers/hula/camel-hula-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imap4/camel-imap4-provider.c:50
+#: ../camel/providers/imap4/camel-imap4-provider.c:43
 msgid "_Show only subscribed folders"
 msgstr "Vi_s berre tinga mapper"
 
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imap4/camel-imap4-provider.c:52
+#: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "O_verride server-supplied folder namespace"
 msgstr "O_verstyr mappe-namnerommet frå tenaren"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
-#: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "Namespace"
 msgstr "Namnerom"
 
@@ -2858,17 +2921,18 @@ msgstr "For å kopla til Hula-tenarar"
 
 #: ../camel/providers/hula/camel-hula-provider.c:94
 msgid "This option will connect to the Hula server using a plaintext password."
-msgstr "Dette valet let deg kopla til ein Hula-tenar med eit klartekst-passord."
+msgstr ""
+"Dette valet let deg kopla til ein Hula-tenar med eit klartekst-passord."
 
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
-#: ../camel/providers/imap/camel-imap-command.c:471
-#: ../camel/providers/imap/camel-imap-store.c:3004
+#: ../camel/providers/imap/camel-imap-command.c:470
+#: ../camel/providers/imap/camel-imap-store.c:3011
 msgid "Operation cancelled"
 msgstr "Operasjonen vart avbroten"
 
 #: ../camel/providers/imap/camel-imap-command.c:309
-#: ../camel/providers/imap/camel-imap-store.c:3007
+#: ../camel/providers/imap/camel-imap-store.c:3014
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Tenaren kopla frå uventa: %s"
@@ -2894,62 +2958,63 @@ msgstr "Uventa svar frå IMAP-tenaren: %s"
 msgid "IMAP command failed: %s"
 msgstr "IMAP-kommando feila: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:485
+#: ../camel/providers/imap/camel-imap-command.c:484
 msgid "Server response ended too soon."
 msgstr "Tenarsvaret slutta for tidleg."
 
-#: ../camel/providers/imap/camel-imap-command.c:692
+#: ../camel/providers/imap/camel-imap-command.c:691
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP-tenarsvar inneheldt ikkje informasjon om %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:728
+#: ../camel/providers/imap/camel-imap-command.c:727
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Uventa svar «OK» frå IMAP-tenar: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:232
+#: ../camel/providers/imap/camel-imap-folder.c:233
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Kan ikkje laga mappa %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:336
+#: ../camel/providers/imap/camel-imap-folder.c:337
 msgid "Folder was destroyed and recreated on server."
 msgstr "Mappa vart øydelagt og laga på nytt på tenaren."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:633
+#: ../camel/providers/imap/camel-imap-folder.c:634
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Leitar etter endra meldingar i %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2022
+#: ../camel/providers/imap/camel-imap-folder.c:2023
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Kan ikkje henta melding: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2101
-#: ../camel/providers/imap/camel-imap-folder.c:2716
-#: ../camel/providers/nntp/camel-nntp-folder.c:218
+#: ../camel/providers/imap/camel-imap-folder.c:2102
+#: ../camel/providers/imap/camel-imap-folder.c:2724
+#: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
 msgstr "Denne meldinga er ikkje tilgjengeleg"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2552
+#: ../camel/providers/imap/camel-imap-folder.c:2560
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Ufullstendig tenarsvar: ingen informasjon oppgitt om melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2560
+#: ../camel/providers/imap/camel-imap-folder.c:2568
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Ufullstendig tenarsvar: ingen UID oppgitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2573
+#: ../camel/providers/imap/camel-imap-folder.c:2581
 #, c-format
-msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "Ufullstendig tenarsvar: like UID oppgitt for meldingane %d og %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2754
+#: ../camel/providers/imap/camel-imap-folder.c:2762
 msgid "Could not find message body in FETCH response."
 msgstr "Fann ikkje meldingskropp i svar på FETCH."
 
@@ -2971,24 +3036,29 @@ msgstr "Kan ikkje leggja melding %s i mellomlageret: %s"
 msgid "Failed to cache %s: %s"
 msgstr "Kan ikkje leggja %s i mellomlageret: %s"
 
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:47
+msgid "Namespace:"
+msgstr "Namnerom:"
+
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imap4/camel-imap4-provider.c:58
+#: ../camel/providers/imap4/camel-imap4-provider.c:51
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Bruk filter på nye meldingar i innboksen på denne tenaren"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imap4/camel-imap4-provider.c:60
+#: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "Check new messages for _Junk contents"
 msgstr "Kontroller om ny e-post er _skrot"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imap4/camel-imap4-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Only check for Junk messa_ges in the INBOX folder"
 msgstr "Sj_å etter skrot berre i innboksen"
 
 # TRN: Kva betyr dette?
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imap4/camel-imap4-provider.c:64
+#: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "Automatisk s_ynkroniser ekstern e-post med lokal"
 
@@ -3003,121 +3073,112 @@ msgstr "For lesing og lagring av e-post på IMAP-tenarar."
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/imapp/camel-imapp-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "Dette valet let deg kopla til ein IMAP-tenar med eit klartekst-passord."
+msgstr ""
+"Dette valet let deg kopla til ein IMAP-tenar med eit klartekst-passord."
 
-#: ../camel/providers/imap/camel-imap-store.c:440
-#: ../camel/providers/imap4/camel-imap4-store.c:215
+#: ../camel/providers/imap/camel-imap-store.c:446
+#: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP-tenar %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:442
-#: ../camel/providers/imap4/camel-imap4-store.c:217
+#: ../camel/providers/imap/camel-imap-store.c:448
+#: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-teneste for %s på %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imap/camel-imap-store.c:587
-#: ../camel/providers/imap4/camel-imap4-store.c:326
-#: ../camel/providers/imap4/camel-imap4-store.c:341
-#: ../camel/providers/nntp/camel-nntp-store.c:185
-#: ../camel/providers/nntp/camel-nntp-store.c:200
-#: ../camel/providers/pop3/camel-pop3-store.c:167
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/imap/camel-imap-store.c:578
+#: ../camel/providers/imap/camel-imap-store.c:593
+#: ../camel/providers/imap4/camel-imap4-store.c:251
+#: ../camel/providers/imap4/camel-imap4-store.c:266
+#: ../camel/providers/nntp/camel-nntp-store.c:184
+#: ../camel/providers/nntp/camel-nntp-store.c:199
+#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:183
 #: ../camel/providers/smtp/camel-smtp-transport.c:254
 #: ../camel/providers/smtp/camel-smtp-transport.c:269
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "Klarte ikkje kopla til %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:573
-#: ../camel/providers/imap4/camel-imap4-store.c:327
-#: ../camel/providers/nntp/camel-nntp-store.c:186
-#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/imap/camel-imap-store.c:579
+#: ../camel/providers/imap4/camel-imap4-store.c:252
+#: ../camel/providers/nntp/camel-nntp-store.c:185
+#: ../camel/providers/pop3/camel-pop3-store.c:169
 #: ../camel/providers/smtp/camel-smtp-transport.c:255
 msgid "SSL unavailable"
 msgstr "SSL er ikkje tilgjengeleg"
 
-#: ../camel/providers/imap/camel-imap-store.c:584
-#: ../camel/providers/imap/camel-imap-store.c:858
-#: ../camel/providers/imap4/camel-imap4-store.c:272
-#: ../camel/providers/imap4/camel-imap4-store.c:338
-#: ../camel/providers/imapp/camel-imapp-store.c:248
-#: ../camel/providers/nntp/camel-nntp-store.c:197
-#: ../camel/providers/nntp/camel-nntp-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:179
-#: ../camel/providers/smtp/camel-smtp-transport.c:266
+#: ../camel/providers/imap/camel-imap-store.c:590
+#: ../camel/providers/imap/camel-imap-store.c:864
 msgid "Connection cancelled"
 msgstr "Tilknytning avbroten"
 
-#: ../camel/providers/imap/camel-imap-store.c:692
-#: ../camel/providers/imap/camel-imap-store.c:714
+#: ../camel/providers/imap/camel-imap-store.c:698
 #: ../camel/providers/imap/camel-imap-store.c:720
-#: ../camel/providers/imap4/camel-imap4-store.c:366
-#: ../camel/providers/imap4/camel-imap4-store.c:379
-#: ../camel/providers/imap4/camel-imap4-store.c:395
+#: ../camel/providers/imap/camel-imap-store.c:726
+#: ../camel/providers/imap4/camel-imap4-store.c:300
+#: ../camel/providers/imap4/camel-imap4-store.c:313
+#: ../camel/providers/imap4/camel-imap4-store.c:329
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kan ikkje kopla til IMAP-tenaren %s på ein sikker måte: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:693
+#: ../camel/providers/imap/camel-imap-store.c:699
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikkje støtta"
 
-#: ../camel/providers/imap/camel-imap-store.c:715
-#: ../camel/providers/imap4/camel-imap4-store.c:367
-#: ../camel/providers/pop3/camel-pop3-store.c:244
+#: ../camel/providers/imap/camel-imap-store.c:721
+#: ../camel/providers/imap4/camel-imap4-store.c:301
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandlinga feila"
 
-#: ../camel/providers/imap/camel-imap-store.c:721
-#: ../camel/providers/imap4/camel-imap4-store.c:396
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/imap/camel-imap-store.c:727
+#: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "SSL vart ikkje tatt med i denne versjonen av Evolution"
 
-#: ../camel/providers/imap/camel-imap-store.c:861
-#: ../camel/providers/imap4/camel-imap4-store.c:275
+#: ../camel/providers/imap/camel-imap-store.c:867
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Kan ikkje kopla til med kommandoen «%s»: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1050
-#: ../camel/providers/imap/camel-imap-store.c:2413
+#: ../camel/providers/imap/camel-imap-store.c:1051
+#: ../camel/providers/imap/camel-imap-store.c:2409
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
-#: ../camel/providers/imap4/camel-imap4-store.c:1389
+#: ../camel/providers/imap4/camel-imap4-store.c:1313
 #: ../camel/providers/local/camel-maildir-folder.c:75
 #: ../camel/providers/local/camel-maildir-store.c:217
 #: ../camel/providers/local/camel-maildir-store.c:289
 #: ../camel/providers/local/camel-maildir-store.c:511
 #: ../camel/providers/local/camel-maildir-store.c:524
-#: ../camel/providers/local/camel-spool-store.c:460
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
+#: ../camel/providers/local/camel-spool-store.c:461
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
 msgstr "Innboks"
 
-#: ../camel/providers/imap/camel-imap-store.c:1310
+#: ../camel/providers/imap/camel-imap-store.c:1313
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP-tenaren %s søttar ikkje den ønska autentiseringstypa %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1320
-#: ../camel/providers/smtp/camel-smtp-transport.c:498
+#: ../camel/providers/imap/camel-imap-store.c:1323
+#: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Autentiseringstype %s er ikkje støtta"
 
-#: ../camel/providers/imap/camel-imap-store.c:1343
+#: ../camel/providers/imap/camel-imap-store.c:1346
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sSkriv inn IMAP-passordet for %s@%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1386
+#: ../camel/providers/imap/camel-imap-store.c:1389
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3127,33 +3188,34 @@ msgstr ""
 "Ikkje i stand til å autentisera mot IMAP-tenar.\n"
 "%s\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1884
-#: ../camel/providers/imap/camel-imap-store.c:2255
-#: ../camel/providers/imap4/camel-imap4-store.c:1019
+#: ../camel/providers/imap/camel-imap-store.c:1881
+#: ../camel/providers/imap/camel-imap-store.c:2251
+#: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Mappenamnet «%s» er ugyldig. Det inneheld teiknet «%c»"
 
-#: ../camel/providers/imap/camel-imap-store.c:2001
+#: ../camel/providers/imap/camel-imap-store.c:1998
 #: ../camel/providers/local/camel-maildir-store.c:190
-#: ../camel/providers/local/camel-mbox-store.c:201
+#: ../camel/providers/local/camel-mbox-store.c:203
 #: ../camel/providers/local/camel-mh-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Kan ikkje laga mappa «%s»: Mappa finst."
 
-#: ../camel/providers/imap/camel-imap-store.c:2266
+#: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Ukjend opphavsmappe: %s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:550
-#: ../camel/providers/imap4/camel-imap4-command.c:557
+#: ../camel/providers/imap4/camel-imap4-command.c:549
+#: ../camel/providers/imap4/camel-imap4-command.c:556
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
 msgstr "Klarte ikkje å senda kommando til IMAP-tenaren %s: %s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:660
+#: ../camel/providers/imap4/camel-imap4-command.c:659
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "Uventa svar frå IMAP4-tenaren %s: %s"
@@ -3181,215 +3243,234 @@ msgstr "Kan ikkje velja mappa «%s»: Ugyldig kommando"
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "IMAP4-tenaren «%s» kopla frå uventa: %s"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:85
-msgid "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "Det er naudsynt å slå på automatisk oppdaging av epost-lister for somme filter- og vMappe-reglar"
+#: ../camel/providers/imap4/camel-imap4-folder.c:86
+msgid ""
+"Enable Mailing-List detection required for some filter and vFolder rules"
+msgstr ""
+"Det er naudsynt å slå på automatisk oppdaging av epost-lister for somme "
+"filter- og vMappe-reglar"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:398
+#: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
 msgid "Cannot access folder `%s': %s"
 msgstr "Kan ikkje aksessera mappa «%s»: %s"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:457
+#: ../camel/providers/imap4/camel-imap4-folder.c:458
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
 msgstr "Kan ikkje synkronisera flagg med mappa «%s»: Ukjend"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:463
+#: ../camel/providers/imap4/camel-imap4-folder.c:464
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr "Kan ikkje synkronisera flagg med mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:603
+#: ../camel/providers/imap4/camel-imap4-folder.c:604
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "Kan ikkje renska mappa «%s»: Ukjend"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:608
+#: ../camel/providers/imap4/camel-imap4-folder.c:609
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "Kan ikkje renska mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:864
+#: ../camel/providers/imap4/camel-imap4-folder.c:865
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr "Kan ikkje henta melding %s frå mappa «%s»: Meldinga finst ikkje"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:869
+#: ../camel/providers/imap4/camel-imap4-folder.c:870
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "Kan ikkje henta melding %s frå mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:913
+#: ../camel/providers/imap4/camel-imap4-folder.c:914
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
 msgstr "Kan ikkje leggja til melding i mappa «%s»: Mappa er skrivebeskytta"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1006
+#: ../camel/providers/imap4/camel-imap4-folder.c:1007
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "Kan ikkje leggja til meldinga i mappa «%s»: Ukjend feil"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1035
+#: ../camel/providers/imap4/camel-imap4-folder.c:1037
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "Kan ikkje leggja til meldinga i mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1155
+#: ../camel/providers/imap4/camel-imap4-folder.c:1157
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "Kan ikkje flytta meldingane frå mappa «%s» til mappa «%s»: Ukjend"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1159
+#: ../camel/providers/imap4/camel-imap4-folder.c:1161
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "Kan ikkje kopiera meldingane frå mappa «%s» til mappa «%s»: Ukjend"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1167
+#: ../camel/providers/imap4/camel-imap4-folder.c:1169
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
-msgstr "Kan ikkje flytta meldingane frå mappa «%s» til mappa «%s»: Ugyldig kommando"
+msgstr ""
+"Kan ikkje flytta meldingane frå mappa «%s» til mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1171
+#: ../camel/providers/imap4/camel-imap4-folder.c:1173
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
-msgstr "Kan ikkje kopiera meldingane frå mappa «%s» til mappa «%s»: Ugyldig kommando"
+msgstr ""
+"Kan ikkje kopiera meldingane frå mappa «%s» til mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:71
+#: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
 msgstr "IMAPv4rev1"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:73
+#: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "For lesing og lagring av e-post på IMAPv4rev1-tenarar."
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:90
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
-msgstr "Dette valet let deg kopla til IMAPv4rev1-tenaren med eit klartekst-passord."
+#: ../camel/providers/imap4/camel-imap4-provider.c:83
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgstr ""
+"Dette valet let deg kopla til IMAPv4rev1-tenaren med eit klartekst-passord."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:483
+#: ../camel/providers/imap4/camel-imap4-store.c:263
+#: ../camel/providers/imapp/camel-imapp-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:196
+#: ../camel/providers/nntp/camel-nntp-store.c:215
+#: ../camel/providers/pop3/camel-pop3-store.c:180
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
+msgid "Connection canceled"
+msgstr "Tilkopling avbroten"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:406
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr "Kan ikkje autentisera med IMAP-tenaren «%s» med autentiseringsmekanismen «%s»"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr ""
+"Kan ikkje autentisera med IMAP-tenaren «%s» med autentiseringsmekanismen «%s»"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:532
+#: ../camel/providers/imap4/camel-imap4-store.c:455
 #, c-format
 msgid "%sPlease enter the IMAP password for %s on host %s"
 msgstr "%sSkriv inn IMAP-passordet til %s på verten %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:599
+#: ../camel/providers/imap4/camel-imap4-store.c:522
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "Kan ikkje autentisera mot IMAP-tenaren «%s» med «%s»"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:761
-#: ../camel/providers/imap4/camel-imap4-store.c:1029
+#: ../camel/providers/imap4/camel-imap4-store.c:685
+#: ../camel/providers/imap4/camel-imap4-store.c:953
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "Kan ikkje laga IMAP-mapper ifråkopla modus."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:800
+#: ../camel/providers/imap4/camel-imap4-store.c:724
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "Kan ikkje henta mappa «%s» på IMAP-mappa «%s»: Ukjend"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:881
+#: ../camel/providers/imap4/camel-imap4-store.c:805
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr "Kan ikkje henta LIST-informasjon om «%s» på IMAP-tenaren «%s»: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:883
-#: ../camel/providers/imap4/camel-imap4-store.c:1556
+#: ../camel/providers/imap4/camel-imap4-store.c:807
+#: ../camel/providers/imap4/camel-imap4-store.c:1482
 msgid "Bad command"
 msgstr "Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:962
+#: ../camel/providers/imap4/camel-imap4-store.c:886
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "Kan ikkje laga mappa «%s»: Ugyldig postkassenamn"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:967
+#: ../camel/providers/imap4/camel-imap4-store.c:891
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "Kan ikkje laga mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1073
+#: ../camel/providers/imap4/camel-imap4-store.c:997
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "Kan ikkje sletta mappa «%s»: Spesiell mappe"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1080
+#: ../camel/providers/imap4/camel-imap4-store.c:1004
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "Kan ikkje sletta IMAP-mapper i fråkopla modus."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1139
+#: ../camel/providers/imap4/camel-imap4-store.c:1063
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "Kan ikkje sletta mappa «%s»: Ugyldig mappenamn"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1144
+#: ../camel/providers/imap4/camel-imap4-store.c:1068
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "Kan ikkje sletta mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1164
+#: ../camel/providers/imap4/camel-imap4-store.c:1088
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "Kan ikkje endra namnet på «%s» til «%s»: Spesiell mappe"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1171
+#: ../camel/providers/imap4/camel-imap4-store.c:1095
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "Kan ikkje endra namn på IMAP-mapper i fråkopla modus."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1202
+#: ../camel/providers/imap4/camel-imap4-store.c:1126
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "Kan ikkje endra namnet på «%s» til «%s»: Ugyldig postboksnamn"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1207
+#: ../camel/providers/imap4/camel-imap4-store.c:1131
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "Kan ikkje endra namnet på «%s» til «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1554
+#: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "Kan ikkje henta informasjonen «%s» om mønsteret «%s» på IMAP-tenaren «%s»: %s"
+msgstr ""
+"Kan ikkje henta informasjonen «%s» om mønsteret «%s» på IMAP-tenaren «%s»: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1594
+#: ../camel/providers/imap4/camel-imap4-store.c:1520
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "Kan ikkje tinga IMAP-mapper i fråkopla modus."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1639
+#: ../camel/providers/imap4/camel-imap4-store.c:1565
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "Kan ikkje tinga mappa «%s»: Ugyldig postboksnamn"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1644
+#: ../camel/providers/imap4/camel-imap4-store.c:1570
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "Kan ikkje tinga mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1666
+#: ../camel/providers/imap4/camel-imap4-store.c:1592
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "Kan ikkje slutta å tinga IMAP-mapper i fråkopla modus."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1711
+#: ../camel/providers/imap4/camel-imap4-store.c:1637
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "Kan ikkje slutta å tinga mappa «%s»: Ugyldig postboksnamn"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1716
+#: ../camel/providers/imap4/camel-imap4-store.c:1642
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Kan ikkje slutta å tinga mappa «%s»: Ugyldig kommando"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1472
+#: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
 msgstr "Leitar etter endra meldingar"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1497
+#: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr ""
+msgstr "Hentar konvoluttar for nye meldingar"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3406,7 +3487,7 @@ msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "IMAP-tenaren %s kopla ned uventa: %s"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:40
-#: ../camel/providers/pop3/camel-pop3-provider.c:39
+#: ../camel/providers/pop3/camel-pop3-provider.c:40
 msgid "Message storage"
 msgstr "Meldingslager"
 
@@ -3514,59 +3595,59 @@ msgstr ""
 "i mbox-format. Kan også brukast til å lesa eit tre av mapper av Elm-, Pine- "
 "og Mutt-type."
 
-#: ../camel/providers/local/camel-local-store.c:155
-#: ../camel/providers/local/camel-local-store.c:266
-#: ../camel/providers/local/camel-mbox-store.c:344
-#: ../camel/providers/local/camel-spool-store.c:125
+#: ../camel/providers/local/camel-local-store.c:156
+#: ../camel/providers/local/camel-local-store.c:267
+#: ../camel/providers/local/camel-mbox-store.c:346
+#: ../camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Lagerrota %s er ikkje ein absolutt sti"
 
-#: ../camel/providers/local/camel-local-store.c:162
+#: ../camel/providers/local/camel-local-store.c:163
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "Lagerrota %s er ikkje ein vanleg katalog"
 
-#: ../camel/providers/local/camel-local-store.c:171
-#: ../camel/providers/local/camel-local-store.c:179
-#: ../camel/providers/local/camel-local-store.c:277
+#: ../camel/providers/local/camel-local-store.c:172
+#: ../camel/providers/local/camel-local-store.c:180
+#: ../camel/providers/local/camel-local-store.c:278
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Kan ikkje henta mappa: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:191
+#: ../camel/providers/local/camel-local-store.c:192
 msgid "Local stores do not have an inbox"
 msgstr "Lokale lager har ikkje innboks"
 
-#: ../camel/providers/local/camel-local-store.c:237
+#: ../camel/providers/local/camel-local-store.c:238
 #, c-format
 msgid "Local mail file %s"
 msgstr "Lokal maldingsfil %s "
 
-#: ../camel/providers/local/camel-local-store.c:355
+#: ../camel/providers/local/camel-local-store.c:356
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "Kan ikkje endra namnet på mappa «%s» til «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:420
+#: ../camel/providers/local/camel-local-store.c:421
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "Kan ikkje endra namnet på «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:445
-#: ../camel/providers/local/camel-mbox-store.c:273
+#: ../camel/providers/local/camel-local-store.c:446
+#: ../camel/providers/local/camel-mbox-store.c:275
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "Kan ikkje sletta samandragsfila for mappa «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:455
-#: ../camel/providers/local/camel-mbox-store.c:285
+#: ../camel/providers/local/camel-local-store.c:456
+#: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
 msgstr "Kan ikkje sletta mappeindeksfila «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:478
-#: ../camel/providers/local/camel-mbox-store.c:309
+#: ../camel/providers/local/camel-local-store.c:479
+#: ../camel/providers/local/camel-mbox-store.c:311
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "Klarte ikkje sletta metafila til mappa «%s»: %s"
@@ -3581,7 +3662,7 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "Kan ikkje leggja til melding i samandraget. Årsaken er ukjend"
 
 #: ../camel/providers/local/camel-maildir-folder.c:215
-msgid "Maildir append message cancelled"
+msgid "Maildir append message canceled"
 msgstr "Operasjonen å leggja til ei melding i ei maildir vart avbroten"
 
 #: ../camel/providers/local/camel-maildir-folder.c:218
@@ -3592,10 +3673,10 @@ msgstr "Kan ikkje leggja til melding i maildir-mappe: %s: %s"
 #: ../camel/providers/local/camel-maildir-folder.c:244
 #: ../camel/providers/local/camel-maildir-folder.c:258
 #: ../camel/providers/local/camel-maildir-folder.c:267
-#: ../camel/providers/local/camel-mbox-folder.c:349
-#: ../camel/providers/local/camel-mbox-folder.c:368
-#: ../camel/providers/local/camel-mbox-folder.c:399
-#: ../camel/providers/local/camel-mbox-folder.c:407
+#: ../camel/providers/local/camel-mbox-folder.c:350
+#: ../camel/providers/local/camel-mbox-folder.c:369
+#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:202
 #: ../camel/providers/local/camel-mh-folder.c:213
 #: ../camel/providers/local/camel-mh-folder.c:222
@@ -3613,21 +3694,21 @@ msgstr "Ugyldig meldingsinnhald"
 
 #: ../camel/providers/local/camel-maildir-store.c:146
 #: ../camel/providers/local/camel-maildir-store.c:171
-#: ../camel/providers/local/camel-mbox-store.c:173
-#: ../camel/providers/local/camel-mbox-store.c:185
+#: ../camel/providers/local/camel-mbox-store.c:175
+#: ../camel/providers/local/camel-mbox-store.c:187
 #, c-format
 msgid "Cannot create folder `%s': %s"
 msgstr "Kan ikkje laga mappa «%s»: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:159
-#: ../camel/providers/local/camel-mbox-store.c:144
+#: ../camel/providers/local/camel-mbox-store.c:146
 #: ../camel/providers/local/camel-mh-store.c:217
 #, c-format
 msgid "Cannot get folder `%s': %s"
 msgstr "Kan ikkje henta mappa «%s»: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:163
-#: ../camel/providers/local/camel-mbox-store.c:152
+#: ../camel/providers/local/camel-mbox-store.c:154
 #: ../camel/providers/local/camel-mh-store.c:224
 #, c-format
 msgid "Cannot get folder `%s': folder does not exist."
@@ -3650,8 +3731,8 @@ msgid "not a maildir directory"
 msgstr "ikkje ein maildir-katalog"
 
 #: ../camel/providers/local/camel-maildir-store.c:436
-#: ../camel/providers/local/camel-spool-store.c:327
-#: ../camel/providers/local/camel-spool-store.c:341
+#: ../camel/providers/local/camel-spool-store.c:328
+#: ../camel/providers/local/camel-spool-store.c:342
 #, c-format
 msgid "Could not scan folder `%s': %s"
 msgstr "Kunne ikkje søka gjennom mappa «%s»: %s"
@@ -3671,55 +3752,55 @@ msgid "Checking for new messages"
 msgstr "Ser etter nye meldingar"
 
 #: ../camel/providers/local/camel-maildir-summary.c:741
-#: ../camel/providers/local/camel-mbox-summary.c:415
-#: ../camel/providers/local/camel-mbox-summary.c:588
-#: ../camel/providers/local/camel-mbox-summary.c:683
+#: ../camel/providers/local/camel-mbox-summary.c:433
+#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:701
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "Lagrar mappe"
 
-#: ../camel/providers/local/camel-mbox-folder.c:155
+#: ../camel/providers/local/camel-mbox-folder.c:156
 #: ../camel/providers/local/camel-spool-folder.c:148
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "Kan ikkje låsa mappa «%s»: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:216
+#: ../camel/providers/local/camel-mbox-folder.c:217
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "Kan ikkje opna postboksen: %s %s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:276
-msgid "Mail append cancelled"
+#: ../camel/providers/local/camel-mbox-folder.c:277
+msgid "Mail append canceled"
 msgstr "Å leggja til ein e-post vart avbrote"
 
-#: ../camel/providers/local/camel-mbox-folder.c:279
+#: ../camel/providers/local/camel-mbox-folder.c:280
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "Kan ikkje leggja til ei melding i mbox-fila: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Mappa ser ut til å vera øydelagt og kan ikkje reparerast."
 
-#: ../camel/providers/local/camel-mbox-folder.c:408
+#: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:223
 msgid "Message construction failed."
 msgstr "Bygginga av meldinga feila."
 
-#: ../camel/providers/local/camel-mbox-store.c:163
-#: ../camel/providers/local/camel-mbox-store.c:350
+#: ../camel/providers/local/camel-mbox-store.c:165
+#: ../camel/providers/local/camel-mbox-store.c:352
 msgid "Cannot create a folder by this name."
 msgstr "Kan ikkje laga ei mappe med dette namnet."
 
-#: ../camel/providers/local/camel-mbox-store.c:195
+#: ../camel/providers/local/camel-mbox-store.c:197
 #, c-format
 msgid "Cannot get folder `%s': not a regular file."
 msgstr "Kan ikkje henta mappa «%s»: ikkje ei vanleg fil."
 
-#: ../camel/providers/local/camel-mbox-store.c:225
-#: ../camel/providers/local/camel-mbox-store.c:236
-#: ../camel/providers/local/camel-mbox-store.c:259
+#: ../camel/providers/local/camel-mbox-store.c:227
+#: ../camel/providers/local/camel-mbox-store.c:238
+#: ../camel/providers/local/camel-mbox-store.c:261
 #, c-format
 msgid ""
 "Could not delete folder `%s':\n"
@@ -3728,120 +3809,120 @@ msgstr ""
 "Kan ikkje sletta mappa «%s»:\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:244
+#: ../camel/providers/local/camel-mbox-store.c:246
 #, c-format
 msgid "`%s' is not a regular file."
 msgstr "«%s» er ikkje ei vanleg fil."
 
-#: ../camel/providers/local/camel-mbox-store.c:251
+#: ../camel/providers/local/camel-mbox-store.c:253
 #, c-format
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "Mappa «%s» er ikkje tom. Ikkje sletta."
 
-#: ../camel/providers/local/camel-mbox-store.c:363
+#: ../camel/providers/local/camel-mbox-store.c:365
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "Kan ikkje laga katalogen «%s»: %s."
 
-#: ../camel/providers/local/camel-mbox-store.c:377
+#: ../camel/providers/local/camel-mbox-store.c:379
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Kan ikkje laga mappa: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:379
+#: ../camel/providers/local/camel-mbox-store.c:381
 msgid "Folder already exists"
 msgstr "Mappa finst frå før"
 
-#: ../camel/providers/local/camel-mbox-store.c:470
+#: ../camel/providers/local/camel-mbox-store.c:472
 msgid "The new folder name is illegal."
 msgstr "Det nye mappenamnet er ikkje gyldig."
 
-#: ../camel/providers/local/camel-mbox-store.c:483
+#: ../camel/providers/local/camel-mbox-store.c:485
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "Kan ikkje endra namnet på «%s»: «%s»: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:558
+#: ../camel/providers/local/camel-mbox-store.c:560
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Kan ikkje endra namnet på «%s» til «%s»: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:421
+#: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kan ikkje opna mappa: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:469
+#: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "Uoppretteleg posttolkarfeil nær posisjonen %ld i mappa «%s»"
 
-#: ../camel/providers/local/camel-mbox-summary.c:525
+#: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kan ikkje sjekka mappa: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:593
-#: ../camel/providers/local/camel-mbox-summary.c:688
+#: ../camel/providers/local/camel-mbox-summary.c:611
+#: ../camel/providers/local/camel-mbox-summary.c:706
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Kan ikkje opna fila: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Kan ikkje opna mellombels postboks: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:618
-#: ../camel/providers/local/camel-mbox-summary.c:794
+#: ../camel/providers/local/camel-mbox-summary.c:636
+#: ../camel/providers/local/camel-mbox-summary.c:812
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Kan ikkje lukka kjeldamappa %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:627
+#: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
 msgid "Could not close temp folder: %s"
 msgstr "Kan ikkje lukka mellombels mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:642
+#: ../camel/providers/local/camel-mbox-summary.c:660
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kan ikkje endra namnet på mappa: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:699
-#: ../camel/providers/local/camel-mbox-summary.c:905
+#: ../camel/providers/local/camel-mbox-summary.c:717
+#: ../camel/providers/local/camel-mbox-summary.c:923
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kan ikkje lagra mappa: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:736
-#: ../camel/providers/local/camel-mbox-summary.c:744
-#: ../camel/providers/local/camel-mbox-summary.c:936
-#: ../camel/providers/local/camel-mbox-summary.c:944
+#: ../camel/providers/local/camel-mbox-summary.c:754
+#: ../camel/providers/local/camel-mbox-summary.c:762
+#: ../camel/providers/local/camel-mbox-summary.c:954
+#: ../camel/providers/local/camel-mbox-summary.c:962
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Samandraget og mappa stemmer ikkje, sjølv etter synkronisering"
 
-#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:888
 #: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Ukjend feil: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:999
-#: ../camel/providers/local/camel-mbox-summary.c:1025
+#: ../camel/providers/local/camel-mbox-summary.c:1017
+#: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
 msgid "Error writing to temp mailbox: %s"
 msgstr "Feil under skriving til mellombels postboks: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1016
+#: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to tmp mailbox failed: %s: %s"
 msgstr "Skriving til mellombels postboks feila: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:175
-msgid "MH append message cancelled"
+msgid "MH append message canceled"
 msgstr "MH legg til melding avbrote"
 
 #: ../camel/providers/local/camel-mh-folder.c:178
@@ -3864,22 +3945,22 @@ msgstr "Kan ikkje henta mappa «%s»: Ikkje ein katalog."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Kan ikkje opna MH-katalogsti: %s: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:131
+#: ../camel/providers/local/camel-spool-store.c:132
 #, c-format
 msgid "Spool `%s' cannot be opened: %s"
 msgstr "Spool «%s» kan ikkje opnast: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:143
+#: ../camel/providers/local/camel-spool-store.c:144
 #, c-format
 msgid "Spool `%s' is not a regular file or directory"
 msgstr "Spool «%s» er ikkje ei vanleg fil eller katalog"
 
-#: ../camel/providers/local/camel-spool-store.c:162
+#: ../camel/providers/local/camel-spool-store.c:163
 #, c-format
 msgid "Folder `%s/%s' does not exist."
 msgstr "Mappa «%s/%s» finst ikkje."
 
-#: ../camel/providers/local/camel-spool-store.c:172
+#: ../camel/providers/local/camel-spool-store.c:173
 #, c-format
 msgid ""
 "Could not open folder `%s':\n"
@@ -3888,12 +3969,12 @@ msgstr ""
 "Kan ikkje opna mappa «%s»: \n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:176
+#: ../camel/providers/local/camel-spool-store.c:177
 #, c-format
 msgid "Folder `%s' does not exist."
 msgstr "Mappa «%s» eksisterar ikkje."
 
-#: ../camel/providers/local/camel-spool-store.c:181
+#: ../camel/providers/local/camel-spool-store.c:182
 #, c-format
 msgid ""
 "Could not create folder `%s':\n"
@@ -3902,30 +3983,30 @@ msgstr ""
 "Kan ikkje laga mappa «%s»:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:189
+#: ../camel/providers/local/camel-spool-store.c:190
 #, c-format
 msgid "`%s' is not a mailbox file."
 msgstr "«%s» er ikkje ei mailbox-fil."
 
-#: ../camel/providers/local/camel-spool-store.c:206
+#: ../camel/providers/local/camel-spool-store.c:207
 msgid "Store does not support an INBOX"
 msgstr "Lageret støttar ikkje ein INBOX"
 
-#: ../camel/providers/local/camel-spool-store.c:218
+#: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Spool e-post-fil %s"
 
-#: ../camel/providers/local/camel-spool-store.c:218
+#: ../camel/providers/local/camel-spool-store.c:219
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Tre av spool-mapper %s"
 
-#: ../camel/providers/local/camel-spool-store.c:226
+#: ../camel/providers/local/camel-spool-store.c:227
 msgid "Spool folders cannot be renamed"
 msgstr "Spool-mapper kan ikkje få nytt namn"
 
-#: ../camel/providers/local/camel-spool-store.c:234
+#: ../camel/providers/local/camel-spool-store.c:235
 msgid "Spool folders cannot be deleted"
 msgstr "Spool-mapper kan ikkje slettast"
 
@@ -3952,30 +4033,31 @@ msgstr ""
 "Kunne ikkje synkronisera spool-mappa «%s»: %s\n"
 "Mappa kan vera øydelagt, kopi lagra i «%s»"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:174
-#: ../camel/providers/nntp/camel-nntp-folder.c:206
+#: ../camel/providers/nntp/camel-nntp-folder.c:175
+#: ../camel/providers/nntp/camel-nntp-folder.c:207
 #, c-format
-msgid "Internal error: uid in invalid format: %s"
-msgstr "Intern feil: ugyldig format på uid: %s"
+msgid "Internal error: UID in invalid format: %s"
+msgstr "Intern feil: ugyldig format på UID: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:326
-#: ../camel/providers/nntp/camel-nntp-folder.c:329
-#: ../camel/providers/nntp/camel-nntp-folder.c:371
-#: ../camel/providers/nntp/camel-nntp-folder.c:373
+#: ../camel/providers/nntp/camel-nntp-folder.c:327
+#: ../camel/providers/nntp/camel-nntp-folder.c:330
+#: ../camel/providers/nntp/camel-nntp-folder.c:372
+#: ../camel/providers/nntp/camel-nntp-folder.c:374
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Postinga feila: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:391
+#: ../camel/providers/nntp/camel-nntp-folder.c:392
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "Du kan ikkje posta NNTP-meldingar når du arbeider fråkopla!"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:402
+#: ../camel/providers/nntp/camel-nntp-folder.c:403
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Du kan ikkje kopiera meldingar frå ei NNTP-mappe!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
-msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid ""
+"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr "Vis mappenamn på kortform (dvs. c.o.linux i staden for comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
@@ -3988,7 +4070,8 @@ msgstr "USENET-nyhende"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr "Dette er ein leverandør som gir tilgang til å lesa og skriva på USENET."
+msgstr ""
+"Dette er ein leverandør som gir tilgang til å lesa og skriva på USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -3996,22 +4079,22 @@ msgid ""
 "password."
 msgstr "Dette valet vil autentisera med NNTP-tenaren med eit klartekstpassord."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:219
+#: ../camel/providers/nntp/camel-nntp-store.c:218
 #, c-format
 msgid "Could not read greeting from %s: %s"
 msgstr "Kan ikkje lesa helsing frå %s: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:231
+#: ../camel/providers/nntp/camel-nntp-store.c:230
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP-tenaren %s svarte med feilkode %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:408
+#: ../camel/providers/nntp/camel-nntp-store.c:407
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET-nyhende via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:798
+#: ../camel/providers/nntp/camel-nntp-store.c:797
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4022,7 +4105,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:892
+#: ../camel/providers/nntp/camel-nntp-store.c:891
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4032,7 +4115,7 @@ msgstr ""
 "\n"
 "Inga slik diskusjonsgruppe. Det valde elementet er truleg ei foreldermappe."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:924
+#: ../camel/providers/nntp/camel-nntp-store.c:923
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4042,67 +4125,68 @@ msgstr ""
 "\n"
 "Diskusjonsgruppa finst ikkje!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:949
+#: ../camel/providers/nntp/camel-nntp-store.c:948
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Du kan ikkje laga ei mappe i eit diskusjonslager. Abonner i staden."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:957
+#: ../camel/providers/nntp/camel-nntp-store.c:956
 msgid "You cannot rename a folder in a News store."
 msgstr "Du kan ikkje endra namn på mapper i eit diskusjonslager."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:965
+#: ../camel/providers/nntp/camel-nntp-store.c:964
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr "Du kan ikkje sletta mapper i eit diskusjonslager. Slutt å abonnera i staden."
+msgstr ""
+"Du kan ikkje sletta mapper i eit diskusjonslager. Slutt å abonnera i staden."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1146
+#: ../camel/providers/nntp/camel-nntp-store.c:1145
 msgid "Authentication requested but no username provided"
 msgstr "Autentisering etterspurd, men brukarnamn ikkje oppgjeve"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1154
+#: ../camel/providers/nntp/camel-nntp-store.c:1153
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Skriv inn NNTP-passordet for %s@%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1158
+#: ../camel/providers/nntp/camel-nntp-store.c:1157
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Kan ikkje autentisera mot tenaren: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1274
+#: ../camel/providers/nntp/camel-nntp-store.c:1273
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP-kommando feila: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1330
+#: ../camel/providers/nntp/camel-nntp-store.c:1329
 msgid "Not connected."
 msgstr "Ikkje tilkopla."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1383
+#: ../camel/providers/nntp/camel-nntp-store.c:1382
 #, c-format
 msgid "No such folder: %s"
 msgstr "Mappa finst ikkje: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:220
-#: ../camel/providers/nntp/camel-nntp-summary.c:316
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
+#: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Ser gjennom nye meldingar"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:227
+#: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Uventa tenarsvar frå xover: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:330
+#: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Uventa tenarsvar frå hovud: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:370
+#: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
 msgstr "Bruk avbryt"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:372
+#: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Handlinga feila: %s"
@@ -4116,27 +4200,31 @@ msgstr "Hentar POP-samandrag"
 msgid "Cannot get POP summary: %s"
 msgstr "Kan ikkje henta POP-samandrag: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:309
+#: ../camel/providers/pop3/camel-pop3-folder.c:308
+msgid "Expunging old messages"
+msgstr "Fjernar sletta meldingar"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
 msgstr "Fjernar sletta meldingar"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:405
+#: ../camel/providers/pop3/camel-pop3-folder.c:471
 #, c-format
-msgid "No message with uid %s"
-msgstr "Inga melding med uid %s"
+msgid "No message with UID %s"
+msgstr "Inga melding med UID %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:412
+#: ../camel/providers/pop3/camel-pop3-folder.c:478
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Hentar POP-melding %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
 msgstr "Ukjend grunn"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:41
+#: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
 msgstr "Lat e-posten liggja på tenaren"
 
@@ -4146,19 +4234,19 @@ msgstr "Lat e-posten liggja på tenaren"
 msgid "Delete after %s day(s)"
 msgstr "Slett etter %s dag(ar)"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:47
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
 msgstr "Kopla ut støtte for alle POP3-utvidingar"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:55
+#: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:57
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "For å kopla til og lasta ned e-post frå POP-tenarar."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:74
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4166,7 +4254,7 @@ msgstr ""
 "Dette valet vil kopla til POP-tenarar med eit klartekstpassord. Dette er det "
 "einaste valet mange POP-tenarar støttar."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:84
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4176,30 +4264,38 @@ msgstr ""
 "protokollen. Dette vil ikkje nødvendigvis virka for alle brukarar, sjølv "
 "ikkje på tenarar som hevdar å støtta det."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:202
+#: ../camel/providers/pop3/camel-pop3-store.c:206
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Klarte ikkje lesa gyldig helsing frå POP-tenaren %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:216
-#: ../camel/providers/pop3/camel-pop3-store.c:233
-#: ../camel/providers/pop3/camel-pop3-store.c:243
-#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:220
+#: ../camel/providers/pop3/camel-pop3-store.c:237
+#: ../camel/providers/pop3/camel-pop3-store.c:247
+#: ../camel/providers/pop3/camel-pop3-store.c:253
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Kan ikkje kopla til POP-tenaren %s på ein sikker måte: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:217
-msgid "STLS not supported"
-msgstr "STLS er ikkje støtta"
+#: ../camel/providers/pop3/camel-pop3-store.c:221
+msgid "STLS not supported by server"
+msgstr "STLS er ikkje støtta av tenaren"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:248
+msgid "TLS negotiations failed"
+msgstr "TLS-forhandlinga feila"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:254
+msgid "TLS is not available in this build"
+msgstr "TLS vart ikkje tatt med i denne versjonen av Evolution"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:360
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Kan ikkje kopla til POP-tenaren %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:402
-#: ../camel/providers/pop3/camel-pop3-store.c:516
+#: ../camel/providers/pop3/camel-pop3-store.c:401
+#: ../camel/providers/pop3/camel-pop3-store.c:515
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4208,28 +4304,28 @@ msgstr ""
 "Kan ikkje kopla til POP-tenaren %s: Den etterpsurde autentiseringsmetoden er "
 "ikkje støtta."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:418
+#: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "SASL «%s»-innlogging feila for POP-tenaren «%s»: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:430
+#: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Kan ikkje logga på POP-tenaren %s: SASL-protokollfeil"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:449
+#: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "Autentisering mot POP-tenaren «%s» feila: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:475
+#: ../camel/providers/pop3/camel-pop3-store.c:474
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%sSkriv inn POP-passordet til %s på verten %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:530
-#: ../camel/providers/pop3/camel-pop3-store.c:543
+#: ../camel/providers/pop3/camel-pop3-store.c:529
+#: ../camel/providers/pop3/camel-pop3-store.c:542
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4238,7 +4334,7 @@ msgstr ""
 "Kan ikkje kopla til POP-tenaren «%s».\n"
 "Feil ved sending av passord: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:537
+#: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4247,7 +4343,7 @@ msgstr ""
 "Kan ikkje kopla til POP-tenaren «%s».\n"
 "Feil ved sending av passord: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:643
+#: ../camel/providers/pop3/camel-pop3-store.c:642
 #, c-format
 msgid "No such folder `%s'."
 msgstr "Inga slik mappe «%s»."
@@ -4391,7 +4487,7 @@ msgstr "Overføring feila"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:204
 msgid "A password transition is needed"
-msgstr ""
+msgstr "Treng ein passordovergang"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "Authentication mechanism is too weak"
@@ -4425,17 +4521,18 @@ msgstr "STARTTLS-kommandoen feila: %s"
 msgid "STARTTLS command failed"
 msgstr "STARTTLS-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:488
+#: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "SMTP-tenaren «%s» støttar ikkje den etterspurde autentiseringstypen %s."
+msgstr ""
+"SMTP-tenaren «%s» støttar ikkje den etterspurde autentiseringstypen %s."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:526
+#: ../camel/providers/smtp/camel-smtp-transport.c:521
 #, c-format
 msgid "%sPlease enter the SMTP password for %s on host %s"
 msgstr "%sSkriv inn SMTP-passordet til %s på verten %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:545
+#: ../camel/providers/smtp/camel-smtp-transport.c:540
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4446,93 +4543,93 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:669
+#: ../camel/providers/smtp/camel-smtp-transport.c:664
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP-tenar %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:671
+#: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Levering av e-post med SMTP gjennom %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:689
+#: ../camel/providers/smtp/camel-smtp-transport.c:684
 msgid "Cannot send message: service not connected."
 msgstr "Kan ikkje senda meldinga: tenesta ikkje kopla til."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:695
+#: ../camel/providers/smtp/camel-smtp-transport.c:690
 msgid "Cannot send message: sender address not valid."
 msgstr "Kan ikkje senda meldinga: sendaradressa ikkje gyldig."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:699
+#: ../camel/providers/smtp/camel-smtp-transport.c:694
 msgid "Sending message"
 msgstr "Sender melding"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:714
+#: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Cannot send message: no recipients defined."
 msgstr "Kan ikkje senda meldinga: ingen mottakarar."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:720
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Kan ikkje senda meldinga: Ein eller fleire ugyldige mottakarar"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:894
+#: ../camel/providers/smtp/camel-smtp-transport.c:890
 msgid "SMTP Greeting"
 msgstr "SMTP-helsing"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:920
+#: ../camel/providers/smtp/camel-smtp-transport.c:915
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO-kommandoen feila: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:937
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "HELO command failed"
 msgstr "HELO-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1003
+#: ../camel/providers/smtp/camel-smtp-transport.c:998
 msgid "SMTP Authentication"
 msgstr "SMTP-autentisering"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1009
+#: ../camel/providers/smtp/camel-smtp-transport.c:1004
 msgid "Error creating SASL authentication object."
 msgstr "Feil under oppretting av SASL-autentiseringsobjekt."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1026
-#: ../camel/providers/smtp/camel-smtp-transport.c:1037
+#: ../camel/providers/smtp/camel-smtp-transport.c:1021
+#: ../camel/providers/smtp/camel-smtp-transport.c:1032
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH-kommandoen feila: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1043
+#: ../camel/providers/smtp/camel-smtp-transport.c:1038
 msgid "AUTH command failed"
 msgstr "AUTH-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1105
+#: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Bad authentication response from server.\n"
 msgstr "Ugyldig autentiseringssvar frå tenaren.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1130
+#: ../camel/providers/smtp/camel-smtp-transport.c:1125
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM-kommandoen feila: %s: e-post ikkje sendt"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../camel/providers/smtp/camel-smtp-transport.c:1142
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1171
+#: ../camel/providers/smtp/camel-smtp-transport.c:1166
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO-kommandoen feila: %s: e-post ikkje sendt"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1190
+#: ../camel/providers/smtp/camel-smtp-transport.c:1185
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1229
-#: ../camel/providers/smtp/camel-smtp-transport.c:1287
-#: ../camel/providers/smtp/camel-smtp-transport.c:1306
+#: ../camel/providers/smtp/camel-smtp-transport.c:1224
+#: ../camel/providers/smtp/camel-smtp-transport.c:1282
+#: ../camel/providers/smtp/camel-smtp-transport.c:1301
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA-kommandoen feila: %s: e-post ikkje sendt"
@@ -4540,109 +4637,109 @@ msgstr "DATA-kommandoen feila: %s: e-post ikkje sendt"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1246
-#: ../camel/providers/smtp/camel-smtp-transport.c:1322
+#: ../camel/providers/smtp/camel-smtp-transport.c:1241
+#: ../camel/providers/smtp/camel-smtp-transport.c:1317
 msgid "DATA command failed"
 msgstr "DATA-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1345
+#: ../camel/providers/smtp/camel-smtp-transport.c:1340
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET-kommandoen feila: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1361
+#: ../camel/providers/smtp/camel-smtp-transport.c:1356
 msgid "RSET command failed"
 msgstr "RSET-kommandoen feila"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1384
+#: ../camel/providers/smtp/camel-smtp-transport.c:1379
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT-kommandoen feila: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1398
+#: ../camel/providers/smtp/camel-smtp-transport.c:1393
 msgid "QUIT command failed"
 msgstr "QUIT-kommandoen feila"
 
-#: ../libedataserver/e-categories.c:242
+#: ../libedataserver/e-categories.c:248
 msgid "Business"
 msgstr "Firma"
 
-#: ../libedataserver/e-categories.c:243
+#: ../libedataserver/e-categories.c:249
 msgid "Competition"
 msgstr "Tevling"
 
-#: ../libedataserver/e-categories.c:244
+#: ../libedataserver/e-categories.c:250
 msgid "Favorites"
 msgstr "Favorittar"
 
-#: ../libedataserver/e-categories.c:245
+#: ../libedataserver/e-categories.c:251
 msgid "Gifts"
 msgstr "Gåver"
 
-#: ../libedataserver/e-categories.c:246
+#: ../libedataserver/e-categories.c:252
 msgid "Goals/Objectives"
 msgstr "Mål"
 
 # TRN: Eller «Høgtid»?
-#: ../libedataserver/e-categories.c:247
+#: ../libedataserver/e-categories.c:253
 msgid "Holiday"
 msgstr "Ferie"
 
-#: ../libedataserver/e-categories.c:248
+#: ../libedataserver/e-categories.c:254
 msgid "Holiday Cards"
 msgstr "Høgtidskort"
 
 #. important people (e.g. new business partners) you should pay attention to/observe
-#: ../libedataserver/e-categories.c:250
+#: ../libedataserver/e-categories.c:256
 msgid "Hot Contacts"
 msgstr "Viktige kontaktar"
 
-#: ../libedataserver/e-categories.c:251
+#: ../libedataserver/e-categories.c:257
 msgid "Ideas"
 msgstr "Idear"
 
-#: ../libedataserver/e-categories.c:252
+#: ../libedataserver/e-categories.c:258
 msgid "International"
 msgstr "Internasjonal"
 
-#: ../libedataserver/e-categories.c:253
+#: ../libedataserver/e-categories.c:259
 msgid "Key Customer"
 msgstr "Nøkkelkunde"
 
-#: ../libedataserver/e-categories.c:254
+#: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
 msgstr "Ymse"
 
-#: ../libedataserver/e-categories.c:255
+#: ../libedataserver/e-categories.c:261
 msgid "Personal"
 msgstr "Personleg"
 
-#: ../libedataserver/e-categories.c:256
+#: ../libedataserver/e-categories.c:262
 msgid "Phone Calls"
 msgstr "Telefonsamtalar"
 
-#: ../libedataserver/e-categories.c:257
+#: ../libedataserver/e-categories.c:263
 msgid "Status"
 msgstr "Status"
 
-#: ../libedataserver/e-categories.c:258
+#: ../libedataserver/e-categories.c:264
 msgid "Strategies"
 msgstr "Strategiar"
 
 # TRN: «Bruk» rett? Kva med «Køyr» eller «Filtrer»?
-#: ../libedataserver/e-categories.c:259
+#: ../libedataserver/e-categories.c:265
 msgid "Suppliers"
 msgstr "Leverandørar"
 
-#: ../libedataserver/e-categories.c:260
+#: ../libedataserver/e-categories.c:266
 msgid "Time & Expenses"
 msgstr "Tid og utgifter"
 
-#: ../libedataserver/e-categories.c:261
+#: ../libedataserver/e-categories.c:267
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:262
+#: ../libedataserver/e-categories.c:268
 msgid "Waiting"
 msgstr "Ventar"
 
@@ -4651,7 +4748,7 @@ msgstr "Ventar"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1319 ../libedataserver/e-time-utils.c:1562
+#: ../libedataserver/e-time-utils.c:1601 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d.%m.%Y %H.%M.%S %p"
 
@@ -4659,7 +4756,7 @@ msgstr "%a %d.%m.%Y %H.%M.%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1324 ../libedataserver/e-time-utils.c:1553
+#: ../libedataserver/e-time-utils.c:1606 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d.%m.%Y %H.%M.%S"
 
@@ -4667,7 +4764,7 @@ msgstr "%a %d.%m.%Y %H.%M.%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1329 ../libedataserver/e-time-utils.c:1558
+#: ../libedataserver/e-time-utils.c:1611 ../libedataserver/e-time-utils.c:1844
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d.%m.%Y %H.%M"
 
@@ -4675,78 +4772,78 @@ msgstr "%a %d.%m.%Y %H.%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1334 ../libedataserver/e-time-utils.c:1549
+#: ../libedataserver/e-time-utils.c:1616 ../libedataserver/e-time-utils.c:1835
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d.%m.%Y %H.%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1339
+#: ../libedataserver/e-time-utils.c:1621
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d.%m.%Y %H"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1344
+#: ../libedataserver/e-time-utils.c:1626
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1347 ../libedataserver/e-time-utils.c:1440
-#: ../libedataserver/e-time-utils.c:1544
+#: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
+#: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
 msgstr "%a %d.%m.%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1355
+#: ../libedataserver/e-time-utils.c:1637
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d.%m.%Y %H.%M.%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1359
+#: ../libedataserver/e-time-utils.c:1641
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d.%m.%Y %H.%M.%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1364
+#: ../libedataserver/e-time-utils.c:1646
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d.%m.%Y %H.%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1369
+#: ../libedataserver/e-time-utils.c:1651
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d.%m.%Y %H.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1374
+#: ../libedataserver/e-time-utils.c:1656
 msgid "%m/%d/%Y %I %p"
 msgstr "%d.%m.%Y %H"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1379
+#: ../libedataserver/e-time-utils.c:1661
 msgid "%m/%d/%Y %H"
 msgstr "%d.%m.%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1382 ../libedataserver/e-time-utils.c:1443
+#: ../libedataserver/e-time-utils.c:1664 ../libedataserver/e-time-utils.c:1728
 msgid "%m/%d/%Y"
 msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1488 ../libedataserver/e-time-utils.c:1607
+#: ../libedataserver/e-time-utils.c:1774 ../libedataserver/e-time-utils.c:1893
 msgid "%I:%M:%S %p"
 msgstr "%H.%M.%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1492 ../libedataserver/e-time-utils.c:1599
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1885
 msgid "%H:%M:%S"
 msgstr "%H.%M.%S"
 
@@ -4754,19 +4851,19 @@ msgstr "%H.%M.%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1497 ../libedataserver/e-time-utils.c:1604
+#: ../libedataserver/e-time-utils.c:1783 ../libedataserver/e-time-utils.c:1890
 msgid "%I:%M %p"
 msgstr "%H.%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1501 ../libedataserver/e-time-utils.c:1596
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1882
 msgid "%H:%M"
 msgstr "%H.%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1505
+#: ../libedataserver/e-time-utils.c:1791
 msgid "%I %p"
 msgstr "%H"
 
@@ -4775,7 +4872,7 @@ msgstr "%H"
 msgid "Accessing LDAP Server anonymously"
 msgstr "Hentar data frå LDAP-tenar anonymt"
 
-#: ../libedataserverui/e-book-auth-util.c:185
+#: ../libedataserverui/e-book-auth-util.c:191
 msgid "Failed to authenticate.\n"
 msgstr "Kan ikkje autentisera.\n"
 
@@ -4784,7 +4881,9 @@ msgstr "Kan ikkje autentisera.\n"
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr "Det finst allereie ein kategori som heter «%s» i dette oppsettet. Bruk eit anna namn"
+msgstr ""
+"Det finst allereie ein kategori som heter «%s» i dette oppsettet. Bruk eit "
+"anna namn"
 
 #: ../libedataserverui/e-categories-dialog.c:435
 msgid "Category"
@@ -4826,15 +4925,15 @@ msgstr "R_edigér"
 msgid "categories"
 msgstr "kategoriar"
 
-#: ../libedataserverui/e-name-selector-dialog.c:260
+#: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
 msgstr "Vel kontaktar frå adresseboka"
 
-#: ../libedataserverui/e-name-selector-dialog.c:553
+#: ../libedataserverui/e-name-selector-dialog.c:597
 msgid "_Add"
 msgstr "_Legg til"
 
-#: ../libedataserverui/e-name-selector-dialog.c:578
+#: ../libedataserverui/e-name-selector-dialog.c:622
 msgid "_Remove"
 msgstr "Fje_rn"
 
@@ -4867,7 +4966,7 @@ msgid "C_ategory:"
 msgstr "K_ategori:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:258
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
 msgstr "Kontakter"
 
@@ -4880,22 +4979,35 @@ msgid "_Search:"
 msgstr "_Søk:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:1864
+#: ../libedataserverui/e-name-selector-entry.c:2043
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "_Utvid %s her"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:1880
+#: ../libedataserverui/e-name-selector-entry.c:2059
 #, c-format
 msgid "_Edit %s"
 msgstr "R_edigér %s"
 
-#: ../libedataserverui/e-passwords.c:471
+#: ../libedataserverui/e-name-selector-list.c:479
+#, c-format
+msgid "_Delete %s"
+msgstr "_Slett %s"
+
+#: ../libedataserverui/e-passwords.c:854
+msgid "_Remember this passphrase"
+msgstr "_Hugs denne passfrasen"
+
+#: ../libedataserverui/e-passwords.c:855
+msgid "_Remember this passphrase for the remainder of this session"
+msgstr "_Hugs denne passfrasen ut økta"
+
+#: ../libedataserverui/e-passwords.c:858
 msgid "_Remember this password"
 msgstr "_Hugs dette passordet"
 
-#: ../libedataserverui/e-passwords.c:472
+#: ../libedataserverui/e-passwords.c:859
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Hugs dette passordet ut økta"
 
@@ -4908,14 +5020,14 @@ msgstr "Vel mål"
 msgid "_Destination"
 msgstr "_Mål"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1630
-#: ../servers/exchange/storage/exchange-account.c:939
+#: ../servers/exchange/lib/e2k-autoconfig.c:1645
+#: ../servers/exchange/storage/exchange-account.c:935
 #, c-format
 msgid "Enter password for %s"
 msgstr "Skriv passord for %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1631
-#: ../servers/exchange/storage/exchange-account.c:944
+#: ../servers/exchange/lib/e2k-autoconfig.c:1646
+#: ../servers/exchange/storage/exchange-account.c:940
 msgid "Enter password"
 msgstr "Skriv passord"
 
@@ -5027,70 +5139,70 @@ msgstr "Denne operasjonen kan ikkje utførast i fråkopla modus"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:642
+#: ../servers/exchange/storage/exchange-account.c:635
 #, c-format
 msgid "%s's Folders"
 msgstr "%s sine mapper"
 
-#: ../servers/exchange/storage/exchange-account.c:1294
+#: ../servers/exchange/storage/exchange-account.c:1241
 msgid "Personal Folders"
 msgstr "Personlege mapper"
 
-#: ../servers/exchange/storage/exchange-account.c:1308
+#: ../servers/exchange/storage/exchange-account.c:1255
 msgid "Favorite Public Folders"
 msgstr "Foretrukne offentlege mapper"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1325
+#: ../servers/exchange/storage/exchange-account.c:1272
 msgid "All Public Folders"
 msgstr "Alle offentlege mapper"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1339
+#: ../servers/exchange/storage/exchange-account.c:1286
 msgid "Global Address List"
 msgstr "Global adresseliste"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:259
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
 msgid "Deleted Items"
 msgstr "Sletta element"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "Kladd"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
 msgstr "Journal"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
 msgstr "Notat"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
 msgstr "Utboks"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
 msgid "Sent Items"
 msgstr "Sendte element"
 
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
+#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
 msgstr "Oppgåver"
 
-#: ../servers/groupwise/e-gw-connection.c:164
+#: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
 msgstr "Ugyldig tilkopling"
 
-#: ../servers/groupwise/e-gw-connection.c:168
+#: ../servers/groupwise/e-gw-connection.c:171
 msgid "Invalid response from server"
 msgstr "Uventa svar frå tenaren"
 
-#: ../servers/groupwise/e-gw-connection.c:170
+#: ../servers/groupwise/e-gw-connection.c:173
 msgid "No response from the server"
 msgstr "Ikkje noko svar frå tenaren"
 
-#: ../servers/groupwise/e-gw-connection.c:176
+#: ../servers/groupwise/e-gw-connection.c:179
 msgid "Bad parameter"
 msgstr "Ugyldig parameter"
 
@@ -5115,6 +5227,5 @@ msgstr "Evolution Data Server loggføringsteneste"
 #. dialog display isn't working out
 #: ../src/server.c:106
 #, c-format
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Fleire segmenteringsfeil oppstod, kan ikkje visa feildialog\n"
-
