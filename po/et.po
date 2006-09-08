@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-08-23 09:37+0300\n"
+"PO-Revision-Date: 2006-09-07 11:03+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1828,11 +1828,12 @@ msgstr ""
 
 #: ../camel/camel-provider.c:62
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "E-posti virtuaalse kausta tagaja"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
 msgstr ""
+"Sõnumikaustade loomiseks teistest kaustadest tehtavate päringute põhjal"
 
 #: ../camel/camel-provider.c:188
 #, c-format
@@ -1987,15 +1988,15 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
-msgstr ""
+msgstr "Tõrge input_token'i terviklikkuse kontrollil."
 
 #: ../camel/camel-sasl-gssapi.c:189
 msgid "The consistency checks performed on the credential failed."
-msgstr ""
+msgstr "Tõrge tõendite terviklikkuse kontrollil."
 
 #: ../camel/camel-sasl-gssapi.c:192
 msgid "The referenced credentials have expired."
-msgstr ""
+msgstr "Viidatud tõendid on aegunud."
 
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
@@ -3459,7 +3460,7 @@ msgstr "Muudetud sõnumite olemasolu kontrollimine"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
-msgstr "Uutele sõnumitele ümbrike võtmine"
+msgstr "Uutele sõnumitele ümbrike hankimine"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:368
 #, c-format
@@ -3550,8 +3551,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Kohalikku e-posti vastuvõtmine (tõstmine) standardsest \"mbox\" vorminguga "
-"puhvrist Evolution'i poolt hallatavatesse kaustadesse."
+"Kohalikku e-posti vastuvõtmine (ümbertõstmine) standardsest \"mbox\" "
+"vorminguga puhvrist Evolution'i poolt hallatavatesse kaustadesse."
 
 #: ../camel/providers/local/camel-local-provider.c:87
 #: ../camel/providers/local/camel-local-provider.c:106
