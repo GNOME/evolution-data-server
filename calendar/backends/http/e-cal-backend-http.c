@@ -330,7 +330,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 		if (subcomp_kind == kind) {
 			comp = e_cal_component_new ();
-			if (e_cal_component_set_icalcomponent (comp, subcomp)) {
+			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
 				const char *uid, *orig_key, *orig_value;
 
 				e_cal_backend_cache_put_component (priv->cache, comp);
@@ -352,7 +352,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 			icaltimezone *zone;
 
 			zone = icaltimezone_new ();
-			icaltimezone_set_component (zone, subcomp);
+			icaltimezone_set_component (zone, icalcomponent_new_clone (subcomp));
 			e_cal_backend_cache_put_timezone (priv->cache, (const icaltimezone *) zone);
 
 			icaltimezone_free (zone, 1);

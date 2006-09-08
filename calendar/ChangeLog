@@ -1,3 +1,10 @@
+2006-09-06  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes a invalid read.
+	* backends/http/e-cal-backend-http.c: (retrieval_done):
+	clone the icalcomp before setting it in the new ECalComponent.
+	See bug #352596
+
 2006-08-24  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes the gslice crash
