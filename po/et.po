@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-09-07 11:03+0300\n"
+"PO-Revision-Date: 2006-09-12 19:52+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1853,7 +1853,7 @@ msgstr "%s pole võimalik laadida: moodulis puudub lähtestamiskood."
 #: ../camel/camel-provider.c:377 ../camel/camel-session.c:166
 #, c-format
 msgid "No provider available for protocol `%s'"
-msgstr ""
+msgstr "Protokoll `%s' pole millegagi tagatud"
 
 #: ../camel/camel-sasl-anonymous.c:35
 msgid "Anonymous"
@@ -1876,12 +1876,15 @@ msgstr ""
 "Vigased e-posti aadressi jälitusandmed:\n"
 "%s"
 
+# Ma pole kindel, kas see on hea tõlge, sestap panin selle fuzzy'ks
 #: ../camel/camel-sasl-anonymous.c:143
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
+"Vigased pimejälituse andmed:\n"
+"%s"
 
 #: ../camel/camel-sasl-anonymous.c:155
 #, c-format
@@ -1956,13 +1959,14 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:162
 msgid "The provided target_name parameter was ill-formed."
-msgstr ""
+msgstr "Kaasapandud target_name parameeter on halvasti vormindatud."
 
 #: ../camel/camel-sasl-gssapi.c:165
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
+"Kaasapandud target_name parameeter sisaldab vigast või toetamata nimetüüpi."
 
 #: ../camel/camel-sasl-gssapi.c:169
 msgid ""
@@ -2313,7 +2317,7 @@ msgstr "võtmete eksportimine: pole veel teostatud"
 #: ../camel/camel-store.c:214
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr ""
+msgstr "Kausta pole võimalik hankida: Selles hoidlas pole see toiming lubatud"
 
 #: ../camel/camel-store.c:246
 #, c-format
@@ -2322,7 +2326,7 @@ msgstr "Kausta `%s' pole võimalik luua: kaust on juba olemas"
 
 #: ../camel/camel-store.c:310
 msgid "Cannot create folder: Invalid operation on this store"
-msgstr ""
+msgstr "Kausta pole võimalik luua: Selles hoidlas pole see toiming lubatud"
 
 #: ../camel/camel-store.c:338
 #, c-format
@@ -2414,7 +2418,7 @@ msgstr "Ahelas on isesigneeritud sertifikaat"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Unable to get issuer's certificate locally"
-msgstr ""
+msgstr "Väljaandja sertifikaati pole kohapeal võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Unable to verify leaf signature"
@@ -2476,10 +2480,10 @@ msgid ""
 "Fingerprint:       %s\n"
 "Signature:         %s"
 msgstr ""
-"Väljastaja:            %s\n"
-"Teema:           %s\n"
-"Sõrmejälg:       %s\n"
-"Allkiri:         %s"
+"Väljaandja:       %s\n"
+"Teema:            %s\n"
+"Sõrmejälg:        %s\n"
+"Allkiri:          %s"
 
 #: ../camel/camel-tcp-stream-openssl.c:702 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
@@ -2975,7 +2979,7 @@ msgstr "Kaust hävitati ja taasloodi serveris."
 #: ../camel/providers/imap/camel-imap-folder.c:623
 #, c-format
 msgid "Scanning for changed messages in %s"
-msgstr "Muudetud sõnumite olemasolu kontrollimine (%s)"
+msgstr "Kausta %s läbivaatamine muudetud sõnumite leidmiseks"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2008
 #, c-format
@@ -3075,7 +3079,7 @@ msgstr "IMAP server %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
-msgstr ""
+msgstr "IMAP teenus kasutajale %s hostil %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:593
@@ -3456,7 +3460,7 @@ msgstr "Kausta `%s' tellimisest pole võimalik loobuda: Puudulik käsk"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1484
 msgid "Scanning for changed messages"
-msgstr "Muudetud sõnumite olemasolu kontrollimine"
+msgstr "Kaustade läbivaatamine muudetud sõnumite leidmiseks"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1509
 msgid "Fetching envelopes for new messages"
@@ -4165,21 +4169,21 @@ msgstr "Kausta ei leitud: %s"
 #: ../camel/providers/nntp/camel-nntp-summary.c:317
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr "%s: Uute sõnumite skannimine"
+msgstr "%s: Kaustade läbivaatamine uute sõnumite leidmiseks"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:228
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr ""
+msgstr "Serveri ootamatu vastus xover päringus: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:331
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "Serveri ootamatu vastus head päringus: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:371
 msgid "Use cancel"
-msgstr ""
+msgstr "Kasutajapoolne loobumine"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:373
 #, c-format
