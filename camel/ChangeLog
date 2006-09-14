@@ -1,4 +1,11 @@
-2006-08-28  Veerapuram Varadhan  <vvaradhan@novell.com>
+2006-09-14  Veerapuram Varadhan  <vvaradhan@novell.com> 
+
+	** Fixes bug #350907
+
+	* camel-filter-search.c: (run_command): Unref GMainContext
+	* camel-filter-driver.c: (pipe_to_system): ditto
+	
+2006-08-28  Veerapuram Varadhan  <vvaradhan@novell.com> 
 
 	** Fixes bug #331099 based on patches by Eric Anholt
 	<anholt@FreeBSD.org> and Joe Marcus Clarke <marcus@FreeBSD.org>

@@ -715,6 +715,7 @@ pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFil
 	GPtrArray *args;
 	child_watch_data_t child_watch_data;
 	GSource *source;
+	GMainContext *context;
 	
 	if (argc < 1 || argv[0]->value.string[0] == '\0')
 		return 0;
@@ -802,7 +803,9 @@ pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFil
 	camel_object_unref (parser);
 	
  wait:
-	child_watch_data.loop = g_main_loop_new (g_main_context_new (), FALSE);
+	context = g_main_context_new ();
+	child_watch_data.loop = g_main_loop_new (context, FALSE);
+	g_main_context_unref (context);
 
 	source = g_child_watch_source_new (child_pid);
 	g_source_set_callback (source, (GSourceFunc) child_watch, &child_watch_data, NULL);

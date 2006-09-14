@@ -533,7 +533,6 @@ child_watch (GPid     pid,
 	g_spawn_close_pid (pid);
 
 	child_watch_data->child_status = status;
-
 	g_main_loop_quit (child_watch_data->loop);
 }
 
@@ -549,6 +548,7 @@ run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessa
 	GPtrArray *args;
 	child_watch_data_t child_watch_data;
 	GSource *source;
+	GMainContext *context;
 	
 	if (argc < 1 || argv[0]->value.string[0] == '\0')
 		return 0;
@@ -590,7 +590,9 @@ run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessa
 	camel_stream_flush (stream);
 	camel_object_unref (stream);
 	
-	child_watch_data.loop = g_main_loop_new (g_main_context_new (), FALSE);
+	context = g_main_context_new ();
+	child_watch_data.loop = g_main_loop_new (context, FALSE);
+	g_main_context_unref (context);
 
 	source = g_child_watch_source_new (child_pid);
 	g_source_set_callback (source, (GSourceFunc) child_watch, &child_watch_data, NULL);
