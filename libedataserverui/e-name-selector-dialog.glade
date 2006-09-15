@@ -151,9 +151,6 @@
 		  <property name="visible">True</property>
 		  <property name="homogeneous">False</property>
 		  <property name="spacing">12</property>
-		  <accessibility>
-		    <atkproperty name="AtkObject::accessible_description" translatable="yes">						</atkproperty>
-		  </accessibility>
 
 		  <child>
 		    <widget class="GtkEntry" id="search">

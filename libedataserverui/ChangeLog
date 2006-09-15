@@ -1,3 +1,8 @@
+2006-09-15  Li Yuan  <li.yuan@sun.com>
+
+	* e-name-selector-dialog.glade:
+	Fix for #356051. Remove unused spaces.
+
 2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	Fix for bug #348939 and bug #351317
