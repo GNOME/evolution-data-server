@@ -8,15 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-05 02:26+0200\n"
-"PO-Revision-Date: 2006-09-05 02:26+0200\n"
+"POT-Creation-Date: 2006-09-17 22:46+0200\n"
+"PO-Revision-Date: 2006-09-17 23:08+0200\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:542
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
@@ -1374,66 +1373,66 @@ msgstr "Du må arbeida tilkopla for å fullføra denne handlinga"
 msgid "No description available"
 msgstr "Inga skildring tilgjengeleg"
 
-#: ../camel/camel-filter-driver.c:749
+#: ../camel/camel-filter-driver.c:750
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Klarte ikkje oppretta underprosess «%s»: %s"
 
-#: ../camel/camel-filter-driver.c:791
+#: ../camel/camel-filter-driver.c:792
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Ugyldig meldingsstraum motteken frå %s: %s"
 
-#: ../camel/camel-filter-driver.c:978 ../camel/camel-filter-driver.c:987
+#: ../camel/camel-filter-driver.c:981 ../camel/camel-filter-driver.c:990
 msgid "Syncing folders"
 msgstr "Synkroniserar mapper"
 
-#: ../camel/camel-filter-driver.c:1076 ../camel/camel-filter-driver.c:1454
+#: ../camel/camel-filter-driver.c:1079 ../camel/camel-filter-driver.c:1457
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Feil under lesing av filter: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1085 ../camel/camel-filter-driver.c:1463
+#: ../camel/camel-filter-driver.c:1088 ../camel/camel-filter-driver.c:1466
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Feil under køyring av filter: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1152
+#: ../camel/camel-filter-driver.c:1155
 msgid "Unable to open spool folder"
 msgstr "Klarte ikkje opna spool-mappa"
 
-#: ../camel/camel-filter-driver.c:1161
+#: ../camel/camel-filter-driver.c:1164
 msgid "Unable to process spool folder"
 msgstr "Kan ikkje handsama «spool»-mappe"
 
-#: ../camel/camel-filter-driver.c:1176
+#: ../camel/camel-filter-driver.c:1179
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Hentar melding %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1180
+#: ../camel/camel-filter-driver.c:1183
 msgid "Cannot open message"
 msgstr "Kan ikkje opne melding"
 
-#: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1193
+#: ../camel/camel-filter-driver.c:1184 ../camel/camel-filter-driver.c:1196
 #, c-format
 msgid "Failed on message %d"
 msgstr "Feila på melding %d"
 
-#: ../camel/camel-filter-driver.c:1207 ../camel/camel-filter-driver.c:1298
+#: ../camel/camel-filter-driver.c:1210 ../camel/camel-filter-driver.c:1301
 msgid "Syncing folder"
 msgstr "Synkroniser mapper"
 
-#: ../camel/camel-filter-driver.c:1211 ../camel/camel-filter-driver.c:1303
+#: ../camel/camel-filter-driver.c:1214 ../camel/camel-filter-driver.c:1306
 msgid "Complete"
 msgstr "Ferdig"
 
-#: ../camel/camel-filter-driver.c:1268
+#: ../camel/camel-filter-driver.c:1271
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Hentar melding %d av %d"
 
-#: ../camel/camel-filter-driver.c:1283
+#: ../camel/camel-filter-driver.c:1286
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Feila på melding %d av %d"
@@ -1457,7 +1456,7 @@ msgstr "Klarte ikkje å oppretta underprosess «%s»: %s"
 
 # TRN: Kva er eit filtersøk? Skjønar eg dette rett?
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:700 ../camel/camel-filter-search.c:708
+#: ../camel/camel-filter-search.c:702 ../camel/camel-filter-search.c:710
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Feil under køyring av filtersøk: %s: %s"
@@ -2465,7 +2464,7 @@ msgstr "Ikkje samsvar mellom AKID og SKID"
 
 #: ../camel/camel-tcp-stream-openssl.c:624
 msgid "AKID/Issuer serial mismatch"
-msgstr ""
+msgstr "AKID/Utferdar: Ikkje samsvar mellom serienummer"
 
 #: ../camel/camel-tcp-stream-openssl.c:626
 msgid "Key usage does not support certificate signing"
@@ -4938,43 +4937,39 @@ msgid "_Remove"
 msgstr "Fje_rn"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
-msgid "\t\t\t\t\t\t"
-msgstr "\t\t\t\t\t\t"
-
-#: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "*"
 msgstr "*"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:3
+#: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "<b>Show Contacts</b>"
 msgstr "<b>Vis kontaktar</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:4
+#: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>_Contacts</b>"
 msgstr "<b>_Kontaktar:</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:5
+#: ../libedataserverui/e-name-selector-dialog.glade.h:4
 msgid "Address Book"
 msgstr "Adressebok"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:6
+#: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address _Book:"
 msgstr "Adresse_bok:"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:7
+#: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "C_ategory:"
 msgstr "K_ategori:"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:8
+#: ../libedataserverui/e-name-selector-dialog.glade.h:7
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
 msgstr "Kontakter"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:9
+#: ../libedataserverui/e-name-selector-dialog.glade.h:8
 msgid "Search"
 msgstr "Søk"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:10
+#: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "_Search:"
 msgstr "_Søk:"
 
@@ -5059,7 +5054,7 @@ msgstr "Ikkje-redigerande forfattar"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr ""
+msgstr "Anmeldar"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
@@ -5229,3 +5224,6 @@ msgstr "Evolution Data Server loggføringsteneste"
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Fleire segmenteringsfeil oppstod, kan ikkje visa feildialog\n"
+
+#~ msgid "\t\t\t\t\t\t"
+#~ msgstr "\t\t\t\t\t\t"
