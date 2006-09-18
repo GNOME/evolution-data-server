@@ -1,3 +1,10 @@
+2006-09-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/http/e-cal-backend-http.c:
+	(begin_retrieval_cb): Check the right e-source property.
+
+	Committing the patch from Mikael Nilsson <mini@nada.kth.se>.
+
 2006-09-06  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes a invalid read.
