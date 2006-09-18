@@ -1,3 +1,13 @@
+2006-09-18  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes #353478
+
+	* src/server-logging.c: (server_logging_dispose)
+	Chain up to parent's dispose() method.
+
+	* src/server-logging.c: (server_logging_finalize)
+	Chain up to parent's finalize() method.
+
 2006-09-04  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.8.0

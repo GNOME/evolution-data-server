@@ -58,6 +58,8 @@ server_logging_dispose (GObject *object)
 	}
 	g_slist_free (priv->handlers);
 	priv->handlers = NULL;
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -66,6 +68,8 @@ server_logging_finalize (GObject *object)
 	ServerLogging *logging = SERVER_LOGGING (object);
 
 	g_free (logging->priv);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
