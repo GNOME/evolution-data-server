@@ -1,3 +1,10 @@
+2006-09-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes #356828
+
+	* src/Makefile.am: Add a uninstall-local rule to remove
+	$(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION).
+
 2006-09-18  Matthew Barnes  <mbarnes@redhat.com>
 
 	Fixes #353478

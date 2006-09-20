@@ -79,6 +79,9 @@ CLEANFILES = $(BUILT_SOURCES)
 
 install-exec-local: install-evolution-data-servers
 
+uninstall-local:
+	rm -f $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
+
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
 
