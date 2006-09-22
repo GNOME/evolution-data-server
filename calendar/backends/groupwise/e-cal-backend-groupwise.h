@@ -51,6 +51,11 @@ struct _ECalBackendGroupwiseClass {
 	ECalBackendSyncClass parent_class;
 };
 
+typedef struct {
+	ECalBackendGroupwise *cbgw;
+	EGwSendOptions *opts;
+} GwSettings;
+
 GType   e_cal_backend_groupwise_get_type (void);
 EGwConnection* e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw);
 GHashTable* e_cal_backend_groupwise_get_categories_by_id (ECalBackendGroupwise *cbgw);

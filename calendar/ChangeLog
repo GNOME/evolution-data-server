@@ -1,3 +1,15 @@
+2006-09-22  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #351330
+	* backends/groupwise/e-cal-backend-groupwise.c: 
+	(cache_init): call the store settings in a idle thread.
+	* backends/groupwise/e-cal-backend-groupwise.h: Defined a new structure
+	to hold Gw settings and groupwise backend.
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_cal_backend_groupwise_store_settings): 
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+	Pass Gwsettings as an argument.
+
 2006-09-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/http/e-cal-backend-http.c:

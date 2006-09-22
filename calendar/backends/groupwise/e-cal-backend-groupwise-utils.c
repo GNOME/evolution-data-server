@@ -1851,9 +1851,11 @@ add_return_value (EGwSendOptionsReturnNotify track, ESource *source, char *notif
 	g_free (value), value = NULL;
 }
 
-void
-e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwise *cbgw)
+gboolean
+e_cal_backend_groupwise_store_settings (GwSettings *hold)
 {
+	ECalBackendGroupwise *cbgw;
+	EGwSendOptions *opts;
 	EGwSendOptionsGeneral *gopts;
 	EGwSendOptionsStatusTracking *sopts;
 	icaltimetype tt;
@@ -1864,6 +1866,8 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 	const char *uid;
 	char *value;
 
+	cbgw = hold->cbgw;
+	opts = hold->opts;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)); 
 
@@ -1951,8 +1955,15 @@ e_cal_backend_groupwise_store_settings (EGwSendOptions *opts, ECalBackendGroupwi
 		add_return_value (sopts->completed, source, "return-complete"); 
 	}	
 
+	e_source_list_sync (source_list, NULL);
+
+	g_object_unref (hold->opts);
+	g_free (hold);
+
 	g_object_unref (gconf);
 	g_object_unref (source_list);
+
+	return FALSE;
 }
 
 gboolean
