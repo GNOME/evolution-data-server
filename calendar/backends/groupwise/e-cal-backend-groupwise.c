@@ -79,6 +79,9 @@ struct _ECalBackendGroupwisePrivate {
 
 	/* number of calendar items in the folder */
 	guint32 total_count;
+
+	/* timeout handler for syncing sendoptions */
+	guint sendoptions_sync_timeout;
 	
 	/* fields for storing info while offline */
 	char *user_email;
@@ -705,8 +708,14 @@ cache_init (ECalBackendGroupwise *cbgw)
 	}
 	cnc_status = e_gw_connection_get_settings (priv->cnc, &opts);	
 	if (cnc_status == E_GW_CONNECTION_STATUS_OK) {
-		e_cal_backend_groupwise_store_settings (opts, cbgw);
-		g_object_unref (opts);
+		GwSettings *hold = g_new0 (GwSettings, 1);
+
+		hold->cbgw = cbgw;
+		hold->opts = opts;
+		
+		/* We now sync the sendoptions into e-source using the GLIB main loop. Doing this operation
+		    in a thread causes crashes. */
+		priv->sendoptions_sync_timeout = g_idle_add ((GSourceFunc ) e_cal_backend_groupwise_store_settings, hold);
 	} else 
 		g_warning (G_STRLOC ": Could not get the settings from the server");
 	
@@ -1038,6 +1047,11 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
 		priv->timeout_id = 0;
+	}
+
+	if (priv->sendoptions_sync_timeout) {
+		g_source_remove (priv->sendoptions_sync_timeout);
+		priv->sendoptions_sync_timeout = 0;
 	}
 
 	if (priv->default_zone) {
@@ -2681,6 +2695,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 
 	priv->timeout_id = 0;
 	priv->cnc = NULL;
+	priv->sendoptions_sync_timeout = 0;
 
 	/* create the mutex for thread safety */
 	priv->mutex = g_mutex_new ();
