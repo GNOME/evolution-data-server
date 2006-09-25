@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-17 15:09+0200\n"
-"PO-Revision-Date: 2006-09-19 10:06+0200\n"
+"POT-Creation-Date: 2006-09-25 22:52+0200\n"
+"PO-Revision-Date: 2006-09-25 22:59+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team:  <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -712,7 +712,7 @@ msgstr "Id di lavoro Gadu-Gadu 3"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Id List"
-msgstr ""
+msgstr "Elenco Id Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
@@ -755,23 +755,23 @@ msgstr "Risposta richiesta: da "
 msgid "Reply Requested: When convenient"
 msgstr "Risposta richiesta: se conveniente"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:266
 #, c-format
 msgid "Loading %s items"
 msgstr "Caricamento %s voci"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:775
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:784
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:832
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:841
 msgid "Invalid server URI"
 msgstr "URI del server non valido"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:851
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:969
 #: ../calendar/libecal/e-cal.c:5178
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1003
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1027
@@ -786,18 +786,18 @@ msgstr "URI del server non valido"
 msgid "Authentication failed"
 msgstr "Autenticazione fallita"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:902
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:911
 msgid "Could not create thread for getting deltas"
 msgstr "Impossibile creare il thread per ottenere le differenze"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:942
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1211
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:951
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1225
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
 msgstr "Impossibile creare il file cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:963
 msgid "Could not create thread for populating cache"
 msgstr "Impossibile creare il thread per popolare la cache"
 
@@ -1679,12 +1679,12 @@ msgid "Failed to parse gpg passphrase request."
 msgstr "Analisi richiesta passphrase gpg fallita."
 
 #: ../camel/camel-gpg-context.c:824
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: \"%s\""
 msgstr ""
-"È necessaria un PIN per sbloccare la chiave\n"
+"È necessario un PIN per sbloccare la chiave\n"
 "della propria SmartCard: \"%s\""
 
 #: ../camel/camel-gpg-context.c:827
@@ -2844,7 +2844,7 @@ msgstr "Impossibile caricare il sommario di %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:999
 msgid "Trash Folder Full. Please Empty."
-msgstr ""
+msgstr "Cestino pieno. Si prega di svuotarlo."
 
 # LF
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
@@ -3235,9 +3235,8 @@ msgstr "Inserimento di %s nella cache fallito: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:47
-#, fuzzy
 msgid "Namespace:"
-msgstr "Spazi nomi:"
+msgstr "Spazio dei nomi:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
@@ -4521,9 +4520,8 @@ msgid "Cannot get POP summary: %s"
 msgstr "Impossibile ricevere l'indice POP: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:308
-#, fuzzy
 msgid "Expunging old messages"
-msgstr "Pulizia messaggi cancellati"
+msgstr "Pulizia messaggi vecchi"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
@@ -5348,14 +5346,12 @@ msgid "_Delete %s"
 msgstr "Eli_mina %s"
 
 #: ../libedataserverui/e-passwords.c:854
-#, fuzzy
 msgid "_Remember this passphrase"
-msgstr "_Ricordare questa password"
+msgstr "_Ricorda questa password"
 
 #: ../libedataserverui/e-passwords.c:855
-#, fuzzy
 msgid "_Remember this passphrase for the remainder of this session"
-msgstr "_Ricordare questa password per il resto della sessione in corso"
+msgstr "_Ricorda questa password per il resto della sessione in corso"
 
 # LF
 #: ../libedataserverui/e-passwords.c:858
@@ -5661,4 +5657,6 @@ msgstr "Servizio di log di Evolution Data Server"
 #: ../src/server.c:106
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-msgstr "Più di un errore di tipo segmentation fault: impossibile mostrare un dialogo di errore\n"
+msgstr ""
+"Più di un errore di tipo segmentation fault: impossibile mostrare un dialogo "
+"di errore\n"
