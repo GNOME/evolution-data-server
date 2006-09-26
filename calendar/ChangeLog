@@ -1,3 +1,10 @@
+2006-09-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes #357666
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (change_status)
+	Use g_ascii_strncasecmp instead of deprecated g_strncasecmp.
+
 2006-09-22  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #351330

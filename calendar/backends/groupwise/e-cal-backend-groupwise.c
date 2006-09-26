@@ -2322,7 +2322,7 @@ change_status (ECalComponent *comp, icalparameter_partstat status, const char *e
 			prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
 		const char *attendee = icalproperty_get_attendee (prop);
 
-		if (!g_strncasecmp (attendee, "mailto:", 7))
+		if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
 			attendee += 7;
 
 		if (!g_ascii_strcasecmp (attendee, email)) {
