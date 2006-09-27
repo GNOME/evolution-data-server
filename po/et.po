@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-09-12 19:52+0300\n"
+"PO-Revision-Date: 2006-09-27 23:34+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2865,7 +2865,7 @@ msgstr "Uute sõnumite kontroll"
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "Uut_e sõnumite _kontrollimine kõikides kaustades"
+msgstr "Uu_si sõnum_eid kontrollitakse kõikides kaustades"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
@@ -2875,7 +2875,7 @@ msgstr "Ühendus serveriga"
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:50
 msgid "_Use custom command to connect to server"
-msgstr "Ko_handatud käsu kasutamine serveriga ühendumiseks"
+msgstr "Serveriga ü_hendumiseks kasutatakse kohandatud käsku"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
