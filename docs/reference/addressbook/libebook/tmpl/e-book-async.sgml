@@ -72,6 +72,29 @@ Handles asynchronous interactions with the EBook.
 @closure: 
 
 
+<!-- ##### FUNCTION e_book_async_open ##### -->
+<para>
+
+</para>
+
+@book: 
+@only_if_exists: 
+@open_response: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_async_remove ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_async_get_supported_fields ##### -->
 <para>
 
@@ -201,6 +224,29 @@ Handles asynchronous interactions with the EBook.
 @query: 
 @requested_fields: 
 @max_results: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_async_get_changes ##### -->
+<para>
+
+</para>
+
+@book: 
+@changeid: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_async_get_required_fields ##### -->
+<para>
+
+</para>
+
+@book: 
 @cb: 
 @closure: 
 @Returns: 

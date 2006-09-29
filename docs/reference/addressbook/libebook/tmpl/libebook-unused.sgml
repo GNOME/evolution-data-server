@@ -1,3 +1,28 @@
+<!-- ##### SECTION ./tmpl/e-book-async.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-book-async.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-book-async.sgml:Short_Description ##### -->
+
+Handles asynchronous interactions with the EBook.
+
+
+<!-- ##### SECTION ./tmpl/e-book-async.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-book-async.sgml:Title ##### -->
+e-book-async
+
+
 <!-- ##### SECTION ./tmpl/e-book-marshal.sgml:Long_Description ##### -->
 <para>
 
@@ -16,6 +41,30 @@
 
 <!-- ##### SECTION ./tmpl/e-book-marshal.sgml:Title ##### -->
 e-book-marshal
+
+
+<!-- ##### SECTION ./tmpl/e-name-western-tables.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-name-western-tables.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-name-western-tables.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-name-western-tables.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-name-western-tables.sgml:Title ##### -->
+e-name-western-tables
 
 
 <!-- ##### SECTION ./tmpl/libebook-unused.sgml:Stability_Level ##### -->
@@ -231,6 +280,28 @@ e-book-marshal
 @book: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION e_contact_cert_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION e_destination_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION e_vcard_construct ##### -->
+<para>
+
+</para>
+
+@evc: 
+@str: 
 
 <!-- ##### FUNCTION e_book_view_listener_start ##### -->
 <para>

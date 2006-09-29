@@ -19,13 +19,13 @@ A convenient way of accessing the contact information in EVCard objects.
 
 <!-- ##### STRUCT EContact ##### -->
 <para>
-
+#EContact has no publicly available members. 
 </para>
 
 
 <!-- ##### ARG EContact:Rev ##### -->
 <para>
-
+The revision of the vCard.
 </para>
 
 <!-- ##### ARG EContact:address ##### -->
@@ -80,12 +80,17 @@ A convenient way of accessing the contact information in EVCard objects.
 
 <!-- ##### ARG EContact:birth-date ##### -->
 <para>
-
+The birth date.
 </para>
 
 <!-- ##### ARG EContact:blog-url ##### -->
 <para>
+The blog URL.
+</para>
 
+<!-- ##### ARG EContact:book-uri ##### -->
+<para>
+The URI of the book that this contact belongs to.
 </para>
 
 <!-- ##### ARG EContact:book-uri ##### -->
@@ -115,7 +120,7 @@ A convenient way of accessing the contact information in EVCard objects.
 
 <!-- ##### ARG EContact:caluri ##### -->
 <para>
-
+The URI of the contact's calendar.
 </para>
 
 <!-- ##### ARG EContact:car-phone ##### -->
@@ -778,6 +783,14 @@ A convenient way of accessing the contact information in EVCard objects.
 @month: 
 @day: 
 
+<!-- ##### STRUCT EContactCert ##### -->
+<para>
+
+</para>
+
+@length: 
+@data: 
+
 <!-- ##### FUNCTION e_contact_new ##### -->
 <para>
 
@@ -901,7 +914,7 @@ A convenient way of accessing the contact information in EVCard objects.
 
 </para>
 
-@name: 
+@n: 
 @Returns: 
 
 
@@ -961,6 +974,43 @@ A convenient way of accessing the contact information in EVCard objects.
 </para>
 
 @field_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_cert_free ##### -->
+<para>
+
+</para>
+
+@cert: 
+
+
+<!-- ##### FUNCTION e_contact_get_attributes ##### -->
+<para>
+
+</para>
+
+@contact: 
+@field_id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_set_attributes ##### -->
+<para>
+
+</para>
+
+@contact: 
+@field_id: 
+@attributes: 
+
+
+<!-- ##### FUNCTION e_contact_vcard_attribute ##### -->
+<para>
+
+</para>
+
+@field_id: 
 @Returns: 
 
 

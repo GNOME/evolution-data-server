@@ -1,5 +1,18 @@
 2006-09-29  Ross Burton  <ross@openedhand.com>
 
+	* docs/reference/addressbook/libebook/libebook-docs.sgml:
+	Add EDestination, remove e-book-async.
+	
+	* docs/reference/addressbook/libebook/tmpl/e-address-western.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-book-async.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-book.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-contact.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-vcard.sgml:
+	* docs/reference/addressbook/libebook/tmpl/libebook-unused.sgml:
+	Add some simple docs and re-gen.
+
+2006-09-29  Ross Burton  <ross@openedhand.com>
+
 	* docs/reference/addressbook/libebook/libebook.types:
 	* docs/reference/addressbook/libebook/libebook-sections.txt:
 	Add missing symbols and merge the async methods into the EBook

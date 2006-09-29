@@ -15,9 +15,9 @@
     <xi:include href="xml/e-book-listener.xml"/>
     <xi:include href="xml/e-book-view.xml"/>
     <xi:include href="xml/e-book-view-listener.xml"/>
-    <xi:include href="xml/e-book-async.xml"/>
     <xi:include href="xml/e-book-types.xml"/>
     <xi:include href="xml/e-address-western.xml"/>
     <xi:include href="xml/e-name-western.xml"/>
+    <xi:include href="xml/e-destination.xml"/>
   </chapter>
 </book>

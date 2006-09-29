@@ -43,15 +43,6 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 
-<!-- ##### FUNCTION e_vcard_construct ##### -->
-<para>
-
-</para>
-
-@evc: 
-@str: 
-
-
 <!-- ##### FUNCTION e_vcard_new ##### -->
 <para>
 
@@ -119,7 +110,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 </para>
 
-@evcard: 
+@evc: 
 @attr_group: 
 @attr_name: 
 
@@ -129,7 +120,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 </para>
 
-@evcard: 
+@evc: 
 @attr: 
 
 
@@ -138,7 +129,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 </para>
 
-@evcard: 
+@evc: 
 @attr: 
 
 
@@ -211,7 +202,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 </para>
 
-@param_name: 
+@name: 
 @Returns: 
 
 
@@ -287,6 +278,34 @@ Does the low-level parsing work for contact information. This data is more conve
 @param: 
 
 
+<!-- ##### FUNCTION e_vcard_attribute_param_get_name ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_param_get_values ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_get_attribute ##### -->
+<para>
+
+</para>
+
+@evc: 
+@name: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_vcard_get_attributes ##### -->
 <para>
 
@@ -341,21 +360,58 @@ Does the low-level parsing work for contact information. This data is more conve
 @Returns: 
 
 
-<!-- ##### FUNCTION e_vcard_attribute_param_get_name ##### -->
+<!-- ##### FUNCTION e_vcard_attribute_get_value ##### -->
 <para>
 
 </para>
 
-@param: 
+@attr: 
 @Returns: 
 
 
-<!-- ##### FUNCTION e_vcard_attribute_param_get_values ##### -->
+<!-- ##### FUNCTION e_vcard_attribute_get_value_decoded ##### -->
 <para>
 
 </para>
 
-@param: 
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_has_type ##### -->
+<para>
+
+</para>
+
+@attr: 
+@typestr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_is_single_valued ##### -->
+<para>
+
+</para>
+
+@attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_escape_string ##### -->
+<para>
+
+</para>
+
+@s: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_unescape_string ##### -->
+<para>
+
+</para>
+
+@s: 
 @Returns: 
 
 
@@ -416,6 +472,13 @@ Email address
 
 
 <!-- ##### MACRO EVC_ICSCALENDAR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_KEY ##### -->
 <para>
 
 </para>
@@ -656,6 +719,104 @@ Wants HTML mail
 <!-- ##### MACRO EVC_X_YAHOO ##### -->
 <para>
 Yahoo ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BOOK_URI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_CALLBACK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_COMPANY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_CONTACT_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_EMAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_EMAIL_NUM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_HTML_MAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_NAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_SOURCE_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_GROUPWISE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_RADIO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_TELEX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_TTYTDD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_VIDEO_URL ##### -->
+<para>
+
 </para>
 
 
