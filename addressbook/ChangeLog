@@ -1,4 +1,9 @@
-2006-08-24  Devashish Sharma  <sdevashish@novell.com>
+2006-09-29  Devashish Sharma  <sdevashish@novell.com>
+
+	* backends/ldap/e-book-backend-ldap.c :
+	Fix for Bug #352872.
+	
+2006-09-29  Devashish Sharma  <sdevashish@novell.com>
 
 	* backends/ldap/e-book-backend-ldap.c :
 	Code cleanups and fixes for some crashers in ldap addressbook.
