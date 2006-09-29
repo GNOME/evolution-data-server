@@ -140,9 +140,9 @@ void    e_vcard_dump_structure               (EVCard *evc);
 EVCardAttribute *e_vcard_attribute_new               (const char *attr_group, const char *attr_name);
 void             e_vcard_attribute_free              (EVCardAttribute *attr);
 EVCardAttribute *e_vcard_attribute_copy              (EVCardAttribute *attr);
-void             e_vcard_remove_attributes           (EVCard *evcard, const char *attr_group, const char *attr_name);
-void             e_vcard_remove_attribute            (EVCard *evcard, EVCardAttribute *attr);
-void             e_vcard_add_attribute               (EVCard *evcard, EVCardAttribute *attr);
+void             e_vcard_remove_attributes           (EVCard *evc, const char *attr_group, const char *attr_name);
+void             e_vcard_remove_attribute            (EVCard *evc, EVCardAttribute *attr);
+void             e_vcard_add_attribute               (EVCard *evc, EVCardAttribute *attr);
 void             e_vcard_add_attribute_with_value    (EVCard *evcard, EVCardAttribute *attr, const char *value);
 void             e_vcard_add_attribute_with_values   (EVCard *evcard, EVCardAttribute *attr, ...);
 void             e_vcard_attribute_add_value         (EVCardAttribute *attr, const char *value);
@@ -154,7 +154,7 @@ void             e_vcard_attribute_remove_params     (EVCardAttribute *attr);
 void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const char *param_name, const char *s);
 
 /* attribute parameters */
-EVCardAttributeParam* e_vcard_attribute_param_new             (const char *param_name);
+EVCardAttributeParam* e_vcard_attribute_param_new             (const char *name);
 void                  e_vcard_attribute_param_free            (EVCardAttributeParam *param);
 EVCardAttributeParam* e_vcard_attribute_param_copy            (EVCardAttributeParam *param);
 void                  e_vcard_attribute_add_param             (EVCardAttribute *attr, EVCardAttributeParam *param);
@@ -171,7 +171,7 @@ void                  e_vcard_attribute_param_remove_values   (EVCardAttributePa
 
 /* EVCard* accessors.  nothing returned from these functions should be
    freed by the caller. */
-EVCardAttribute *e_vcard_get_attribute        (EVCard *vcard, const char *name);
+EVCardAttribute *e_vcard_get_attribute        (EVCard *evc, const char *name);
 GList*           e_vcard_get_attributes       (EVCard *evcard);
 const char*      e_vcard_attribute_get_group  (EVCardAttribute *attr);
 const char*      e_vcard_attribute_get_name   (EVCardAttribute *attr);
@@ -192,8 +192,8 @@ GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param
 gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, const char *typestr);
 
 /* Utility functions. */
-char*            e_vcard_escape_string (const char *str);
-char*            e_vcard_unescape_string (const char *str);
+char*            e_vcard_escape_string (const char *s);
+char*            e_vcard_unescape_string (const char *s);
 
 G_END_DECLS
 

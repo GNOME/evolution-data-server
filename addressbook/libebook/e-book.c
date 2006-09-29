@@ -2390,6 +2390,18 @@ e_book_get_changes (EBook       *book,
 			       NULL, NULL);
 }
 
+/**
+ * e_book_async_get_changes:
+ * @book: an #EBook
+ * @changeid:  the change ID
+ * @cb: function to call when operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Get the set of changes since the previous call to #e_book_async_get_changes
+ * for a given change ID.
+ *
+ * Return value: TRUE on success, FALSE otherwise
+ */
 guint
 e_book_async_get_changes (EBook             *book,
 			  char              *changeid,

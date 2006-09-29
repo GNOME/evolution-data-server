@@ -1230,7 +1230,7 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const char *value, i
 /**
  * e_vcard_attribute_add_values:
  * @attr: an #EVCardAttribute
- * ...: a %NULL-terminated list of strings
+ * @Varargs: a %NULL-terminated list of strings
  *
  * Adds a list of values to @attr.
  **/
@@ -1443,7 +1443,7 @@ e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
 /**
  * e_vcard_attribute_param_add_values:
  * @param: an #EVCardAttributeParam
- * ...: a %NULL-terminated list of strings
+ * @Varargs: a %NULL-terminated list of strings
  *
  * Adds a list of values to @param.
  **/
@@ -1489,7 +1489,7 @@ e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
  * e_vcard_attribute_add_param_with_values:
  * @attr: an #EVCardAttribute
  * @param: an #EVCardAttributeParam
- * ...: a %NULL-terminated list of strings
+ * @Varargs: a %NULL-terminated list of strings
  *
  * Adds the list of values to @param, then adds @param
  * to @attr.
@@ -1587,19 +1587,29 @@ e_vcard_get_attributes (EVCard *evcard)
 	return evcard->priv->attributes;
 }
 
+/**
+ * e_vcard_get_attribute:
+ * @evc: an #EVCard
+ * @name: the name of the attribute to get
+ *
+ * Get the attribute @name from @evc.  The #EVCardAttribute is owned by
+ * @evcard and should not be freed. If the attribute does not exist, #NULL is
+ * returned.
+ *
+ * Return value: An #EVCardAttribute if found, or #NULL.
+ **/
 EVCardAttribute *
-e_vcard_get_attribute (EVCard     *vcard,
+e_vcard_get_attribute (EVCard     *evc,
 		       const char *name)
 {
         GList *attrs, *l;
 
-        g_return_val_if_fail (E_IS_VCARD (vcard), NULL);
+        g_return_val_if_fail (E_IS_VCARD (evc), NULL);
         g_return_val_if_fail (name != NULL, NULL);
 
-        attrs = e_vcard_get_attributes (vcard);
+        attrs = e_vcard_get_attributes (evc);
         for (l = attrs; l; l = l->next) {
                 EVCardAttribute *attr;
-                const char *n;
 		
                 attr = (EVCardAttribute *) l->data;
                 if (strcmp (attr->name, name) == 0)

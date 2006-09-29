@@ -202,8 +202,8 @@ e_destination_new (void)
  * Creates a new #EDestination identical to @dest.
  *
  * Return value: A newly created #EDestination, identical to @dest.
- **/
-EDestination *
+ */
+EDestination*
 e_destination_copy (const EDestination *dest)
 {
 	EDestination *new_dest;
@@ -296,7 +296,7 @@ nonempty (const char *s)
  * Checks if @dest is blank.
  *
  * Return value: %TRUE if @dest is empty, %FALSE otherwise.
- **/
+ */
 gboolean
 e_destination_empty (const EDestination *dest)
 
@@ -692,7 +692,7 @@ e_destination_get_contact (const EDestination *dest)
  * Gets the unique contact ID @dest is pointing to, if any.
  *
  * Return value: A unique contact ID, or %NULL if none was set.
- **/
+ */
 const char *
 e_destination_get_contact_uid (const EDestination *dest)
 {
@@ -709,7 +709,7 @@ e_destination_get_contact_uid (const EDestination *dest)
  * ID specifies which address book @dest's contact came from.
  *
  * Return value: A unique source ID, or %NULL if none was set.
- **/
+ */
 const char *
 e_destination_get_source_uid (const EDestination *dest)
 {
@@ -790,12 +790,27 @@ e_destination_get_name (const EDestination *dest)
 	return priv->name;
 }
 
+/**
+ * e_destination_is_ignored:
+ * @dest: an #EDestination
+ *
+ * Check if @dest is to be ignored.
+ *
+ * Return value: #TRUE if this destination should be ignored, else #FALSE.
+ */
 gboolean
 e_destination_is_ignored (const EDestination *dest)
 {
 	return dest->priv->ignored;
 }
 
+/**
+ * e_destination_set_ignored:
+ * @dest: an #EDestination
+ * @ignored: #TRUE if this #EDestination should be ignored.
+ *
+ * Set the ignore flag on a #EDestination.
+ */
 void
 e_destination_set_ignored (EDestination *dest, gboolean ignored)
 {
@@ -1072,18 +1087,18 @@ e_destination_get_html_mail_pref (const EDestination *dest)
 /**
  * e_destination_set_html_mail_pref:
  * @dest: an #EDestination
- * @x: whether the destination wants HTML mail
+ * @flag: whether the destination wants HTML mail
  *
  * Specifies whether @dest wants to get mail formatted as HTML.
  **/
 void
-e_destination_set_html_mail_pref (EDestination *dest, gboolean x)
+e_destination_set_html_mail_pref (EDestination *dest, gboolean flag)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	
 	dest->priv->html_mail_override = TRUE;
-	if (dest->priv->wants_html_mail != x) {
-		dest->priv->wants_html_mail = x;
+	if (dest->priv->wants_html_mail != flag) {
+		dest->priv->wants_html_mail = flag;
 
 		g_signal_emit (dest, signals [CHANGED], 0);
 	}

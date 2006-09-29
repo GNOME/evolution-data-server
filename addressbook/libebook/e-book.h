@@ -163,7 +163,7 @@ gboolean e_book_remove_contacts            (EBook       *book,
 					    GError     **error);
 
 guint    e_book_async_remove_contacts      (EBook                 *book,
-					    GList                 *id_list,
+					    GList                 *ids,
 					    EBookCallback          cb,
 					    gpointer               closure);
 

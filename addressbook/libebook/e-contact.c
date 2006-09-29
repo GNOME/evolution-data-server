@@ -318,26 +318,30 @@ e_contact_class_init (EContactClass *klass)
 		if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRING)
 			pspec = g_param_spec_string (field_info[i].field_name,
 						     _(field_info[i].pretty_name),
-						     "" /* XXX blurb */,
+						    field_info[i].pretty_name,
 						     NULL,
-						     field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
+						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
+						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_BOOLEAN)
 			pspec = g_param_spec_boolean (field_info[i].field_name,
 						      _(field_info[i].pretty_name),
-						      "" /* XXX blurb */,
+						    field_info[i].pretty_name,
 						      FALSE,
-						      field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
+						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
+						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRUCT)
 			pspec = g_param_spec_boxed (field_info[i].field_name,
 						    _(field_info[i].pretty_name),
-						    "" /* XXX blurb */,
+						    field_info[i].pretty_name,
 						    field_info[i].boxed_type_getter(),
-						    field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
+						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
+						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 		else
 			pspec = g_param_spec_pointer (field_info[i].field_name,
 						      _(field_info[i].pretty_name),
-						      "" /* XXX blurb */,
-						      field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE);
+						    field_info[i].pretty_name,
+						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
+						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 
 		g_object_class_install_property (object_class, field_info[i].field_id,
 						 pspec);
@@ -1870,14 +1874,14 @@ e_contact_date_copy (EContactDate *dt)
 
 /**
  * e_contact_date_free:
- * @dt: an #EContactDate
+ * @date: an #EContactDate
  *
- * Frees the @dt struct and its contents.
- **/
+ * Frees the @date struct and its contents.
+ */
 void
-e_contact_date_free (EContactDate *dt)
+e_contact_date_free (EContactDate *date)
 {
-	g_free (dt);
+	g_free (date);
 }
 
 GType

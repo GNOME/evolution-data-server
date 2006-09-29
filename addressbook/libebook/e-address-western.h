@@ -15,7 +15,7 @@ typedef struct {
 	char *country;
 } EAddressWestern;
 
-EAddressWestern *e_address_western_parse (const char *address);
+EAddressWestern *e_address_western_parse (const char *in_address);
 void e_address_western_free (EAddressWestern *eaw);
 
 G_END_DECLS

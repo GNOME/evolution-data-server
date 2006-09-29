@@ -309,7 +309,7 @@ GType                   e_contact_name_get_type    (void);
 EContactName           *e_contact_name_new         (void);
 char                   *e_contact_name_to_string   (const EContactName *name);
 EContactName           *e_contact_name_from_string (const char *name_str);
-EContactName           *e_contact_name_copy        (EContactName *name);
+EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
 
