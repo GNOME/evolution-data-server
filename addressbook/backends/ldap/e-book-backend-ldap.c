@@ -1855,16 +1855,6 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 			
 					printf (" %s:\n", mod->mod_type);
 			
-					if (mod->mod_op & LDAP_MOD_BVALUES) {
-						int j;
-						for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
-							printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
-					}
-					else {
-						int j;
-						for (j = 0; mod->mod_values[j]; j++)
-							printf ("\t\t'%s'\n", mod->mod_values[j]);
-					}
 				}
 			}
 #endif
