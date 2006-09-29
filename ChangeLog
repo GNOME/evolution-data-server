@@ -1,3 +1,10 @@
+2006-09-29  Ross Burton  <ross@openedhand.com>
+
+	* docs/reference/addressbook/libebook/libebook.types:
+	* docs/reference/addressbook/libebook/libebook-sections.txt:
+	Add missing symbols and merge the async methods into the EBook
+	docs (#346463)
+
 2006-09-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	Fixes #356828
