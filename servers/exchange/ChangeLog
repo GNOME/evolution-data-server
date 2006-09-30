@@ -1,3 +1,10 @@
+2006-09-30  Veerapuram Varadhan <vvaradhan@novell.com>
+
+	** Fixes #347811
+	* storage/exchange-account.c (setup_account_hierarchies): While
+	creating hierarchies for the folders, set offline_supported with
+	the account level settings.
+	
 2006-07-24  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	* lib/e2k-context.c (e2k_context_set_auth): Create SoupSessionSync

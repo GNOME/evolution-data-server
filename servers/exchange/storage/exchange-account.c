@@ -54,7 +54,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x) x
+#define d(x)
 #define ADS_UF_DONT_EXPIRE_PASSWORD 0x10000
 #define ONE_HUNDRED_NANOSECOND 0.000000100
 #define SECONDS_IN_DAY 86400
@@ -1244,7 +1244,9 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      account->priv->identity_name,
 					      account->priv->identity_email,
 					      account->priv->source_uri,
-					      TRUE);
+					      account->priv->offline_sync);
+	d(g_print ("exchange-account.c:setup_account_hierarchies:offline_sync=%d\n", account->priv->offline_sync));
+
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
 
@@ -1275,7 +1277,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      account->priv->identity_name,
 					      account->priv->identity_email,
 					      account->priv->source_uri,
-					      TRUE);
+					      account->priv->offline_sync);
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
 
