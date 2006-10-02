@@ -1,3 +1,14 @@
+2006-09-20  Harish Krishnaswamy <kharish@novell.com>
+
+	Modified Sankar's patch to avoid breaking the string
+	freeze.
+
+	* camel-imap-store.c: (connect_to_server):
+	* camel-imap-store.h:
+	Do not send the password in plain-text, 
+	if LOGINDISABLED Capability is set in the server
+	Fixes #350617
+
 2006-09-04  Harish Krishnaswamy  <kharish@novell.com>
 
 	* Makefile.am: Add camel-imap-private.h to

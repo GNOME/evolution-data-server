@@ -474,6 +474,7 @@ static struct {
 	{ "STARTTLS",           IMAP_CAPABILITY_STARTTLS },
 	{ "XGWEXTENSIONS",      IMAP_CAPABILITY_XGWEXTENSIONS },
 	{ "XGWMOVE",            IMAP_CAPABILITY_XGWMOVE },
+	{ "LOGINDISABLED",      IMAP_CAPABILITY_LOGINDISABLED },
 	{ NULL, 0 }
 };
 
@@ -745,7 +746,14 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		
 		return FALSE;
 	}
-	
+
+	if (store->capabilities & IMAP_CAPABILITY_LOGINDISABLED ) { 
+		clean_quit = TRUE;
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Failed to connect to IMAP server %s in secure mode: %s"), service->url->host, _("Unknown error"));
+		goto exception;
+	}
+
 	return TRUE;
 	
  exception:

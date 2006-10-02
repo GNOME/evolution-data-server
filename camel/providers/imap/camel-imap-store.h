@@ -97,6 +97,7 @@ typedef enum {
 #define IMAP_CAPABILITY_utf8_search		(1 << 8)
 #define IMAP_CAPABILITY_XGWEXTENSIONS		(1 << 9)
 #define IMAP_CAPABILITY_XGWMOVE			(1 << 10)
+#define IMAP_CAPABILITY_LOGINDISABLED		(1 << 11)
 
 #define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
 #define IMAP_PARAM_CHECK_ALL			(1 << 1)
