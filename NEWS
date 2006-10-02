@@ -1,3 +1,20 @@
+Evolution-Data-Server 1.8.1 2006-10-02
+--------------------------------------
+
+Updated Translations:
+
+Ivar Smolin (et), Marco Ciampa (it), Luca Ferretti (it),
+Åsmund Skjæveland (nn), David Lodge (en_GB).
+
+Bug fixes :
+
+350907, 350617, 347811, 357666, 351330, 352596, 352872, 356051. 
+
+Contributors:
+Li Yuan, Veerapuram Varadhan, Sankar, Chenthill Palanisamy, 
+Matthew Barnes, Mikael Nilsson, Devashish Sharma, Ross Burton,
+Harish Krishnaswamy.
+
 Evolution-Data-Server 1.8.0 2006-09-04
 --------------------------------------
 Evolution -Data-Server 1.8 Stable Release for GNOME 2.16.0.
