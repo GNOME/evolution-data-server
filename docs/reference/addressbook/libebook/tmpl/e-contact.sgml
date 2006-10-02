@@ -90,11 +90,6 @@ The blog URL.
 
 <!-- ##### ARG EContact:book-uri ##### -->
 <para>
-The URI of the book that this contact belongs to.
-</para>
-
-<!-- ##### ARG EContact:book-uri ##### -->
-<para>
 
 </para>
 

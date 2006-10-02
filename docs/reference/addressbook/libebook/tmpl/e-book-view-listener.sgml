@@ -62,6 +62,14 @@ Asynchronous events that are listened for.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_view_listener_start ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+
 <!-- ##### FUNCTION e_book_view_listener_stop ##### -->
 <para>
 
