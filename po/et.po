@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-09-27 23:34+0300\n"
+"PO-Revision-Date: 2006-10-04 22:46+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1356,8 +1356,7 @@ msgstr "Taassünkroniseeritakse serveriga"
 
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:50
 msgid "Copy folder content locally for offline operation"
-msgstr ""
-"Kausta sisu kopeerimine kohalikku masinasse kasutamiseks autonoomses režiimis"
+msgstr "Kaust kopeeritakse võrguvabaks kasutamiseks kohapeale"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:109
 msgid "Downloading new messages for offline mode"
@@ -1876,9 +1875,8 @@ msgstr ""
 "Vigased e-posti aadressi jälitusandmed:\n"
 "%s"
 
-# Ma pole kindel, kas see on hea tõlge, sestap panin selle fuzzy'ks
 #: ../camel/camel-sasl-anonymous.c:143
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Invalid opaque trace information:\n"
 "%s"
@@ -2832,7 +2830,7 @@ msgstr "GroupWise server %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1378
 #, c-format
 msgid "GroupWise service for %s on %s"
-msgstr ""
+msgstr "GroupWise teenus kasutajale %s hostil %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
