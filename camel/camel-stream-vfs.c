@@ -84,7 +84,7 @@ camel_stream_vfs_finalize (CamelObject *object)
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (object);
 
 	if (stream_vfs->handle != -1)
-		close (stream_vfs->handle);
+		gnome_vfs_close (stream_vfs->handle);
 }
 
 

@@ -1,3 +1,15 @@
+2006-10-05  Tor Lillqvist  <tml@novell.com>
+
+	Fixes from Steffen Eschenbacher:
+
+	* camel-stream-vfs.c (camel_stream_vfs_finalize): Call
+	gnome_vfs_close() on the GnomeVFSHandle *, not close(). (#350576,
+	#350885, #358010)
+
+	* camel-url.c (camel_url_new_with_base, camel_url_to_string): On
+	Win32, for file: urls, simply call g_filename_{to/from}_uri.
+	(#358010) We could do this on all platforms maybe?
+
 2006-09-14  Veerapuram Varadhan  <vvaradhan@novell.com> 
 
 	** Fixes bug #350907

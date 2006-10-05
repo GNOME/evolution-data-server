@@ -57,10 +57,12 @@ CamelURL *
 camel_url_new_with_base (CamelURL *base, const char *url_string)
 {
 	CamelURL *url;
+	const char *start;
 	const char *end, *hash, *colon, *semi, *at, *slash, *question;
 	const char *p;
 
 	url = g_new0 (CamelURL, 1);
+	start = url_string;
 
 	/* See RFC1808 for details. IF YOU CHANGE ANYTHING IN THIS
 	 * FUNCTION, RUN tests/misc/url AFTERWARDS.
@@ -90,6 +92,13 @@ camel_url_new_with_base (CamelURL *base, const char *url_string)
 
 	if (!*url_string && !base)
 		return url;
+
+#ifdef G_OS_WIN32
+	if (url->protocol && !strcmp(url->protocol, "file")) {
+		url->path = g_filename_from_uri(start, &url->host, NULL);
+		return url;
+	}
+#endif
 
 	/* Check for authority */
 	if (strncmp (url_string, "//", 2) == 0) {
@@ -315,6 +324,11 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 	/* IF YOU CHANGE ANYTHING IN THIS FUNCTION, RUN
 	 * tests/misc/url AFTERWARD.
 	 */
+	
+#ifdef G_OS_WIN32
+	if (url->protocol && !strcmp(url->protocol, "file"))
+		return g_filename_to_uri(url->path, url->host, NULL);
+#endif G_OS_WIN32
 	
 	str = g_string_sized_new (20);
 	
