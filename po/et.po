@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-10-06 23:19+0300\n"
+"PO-Revision-Date: 2006-10-08 12:44+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2456,11 +2456,11 @@ msgstr "Teema/väljastaja vastuolu"
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "AKID/SKID mismatch"
-msgstr "AKID/SKID mittesobivus"
+msgstr "AKID/SKID sobimatus"
 
 #: ../camel/camel-tcp-stream-openssl.c:624
 msgid "AKID/Issuer serial mismatch"
-msgstr ""
+msgstr "AKID/Väljaandja seerianumbri sobimatus"
 
 #: ../camel/camel-tcp-stream-openssl.c:626
 msgid "Key usage does not support certificate signing"
@@ -2847,6 +2847,9 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
+"Sinu hoidlad on täitnud kogu sellele kontole eraldatud ruumi. Sinu sõnumid "
+"on pandud sinu väljundkasti ootele. Kustuta või arhiveeri mõned oma sõnumid "
+"ja klõpsa uuesti saatmiseks nupul \"Saada/Võta vastu\".\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -3239,6 +3242,8 @@ msgstr "Ühendus IMAP4 serverisse %s suleti ootamatult: %s"
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
+"Postiloendi tuvastamise lubamine mõningate filtrite ja virtuaalkaustade "
+"reeglite jaoks"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, c-format
