@@ -62,7 +62,7 @@ share/evolution-data-server-@BASE_VERSION@/glade/e-categories-dialog.glade
 share/evolution-data-server-@BASE_VERSION@/glade/e-name-selector-dialog.glade
 EOF
 
-zip -r $ZIP share/evolution-data-server-1.6/zoneinfo
+zip -r $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
 
 zip -r $ZIP share/pixmaps/evolution-data-server-@BASE_VERSION@
 

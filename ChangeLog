@@ -1,3 +1,8 @@
+2006-10-10  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Use BASE_VERSION in path for the
+	zoneinfo, too.
+
 2006-10-02  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.8.1
