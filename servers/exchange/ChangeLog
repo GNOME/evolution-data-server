@@ -1,3 +1,11 @@
+2006-10-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for #bug 347811
+
+	* storage/exchange-account.c: Reverting Varadhan's last commit to
+	lookup hierarchies based on offline settings, and makeing that as
+	FALSE. Reopening bug #268412
+
 2006-09-30  Veerapuram Varadhan <vvaradhan@novell.com>
 
 	** Fixes #347811

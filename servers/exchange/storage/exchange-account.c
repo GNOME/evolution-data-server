@@ -1244,8 +1244,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      account->priv->identity_name,
 					      account->priv->identity_email,
 					      account->priv->source_uri,
-					      account->priv->offline_sync);
-	d(g_print ("exchange-account.c:setup_account_hierarchies:offline_sync=%d\n", account->priv->offline_sync));
+					      TRUE);
 
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
@@ -1277,7 +1276,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 					      account->priv->identity_name,
 					      account->priv->identity_email,
 					      account->priv->source_uri,
-					      account->priv->offline_sync);
+					      FALSE);
 	setup_hierarchy (account, hier);
 	g_free (phys_uri_prefix);
 
