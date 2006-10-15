@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-27 13:26+0300\n"
-"PO-Revision-Date: 2006-07-27 13:27+0300\n"
+"PO-Revision-Date: 2006-10-15 17:56+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2783,7 +2783,7 @@ msgstr "Ota yhteys Groupwise-palvelimeen selväkielistä salasanaa käyttäen."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 msgid "Host or user not available in url"
-msgstr "Isäntänimi tai käyttäjä ei ole määritelty URLissa"
+msgstr "Verkkonimi tai käyttäjä ei ole määritelty URLissa"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:205
 #, c-format
