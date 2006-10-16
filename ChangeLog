@@ -1,3 +1,16 @@
+2006-10-16  Sankar P  <psankar@novell.com>
+
+	* Committed the patch made by Matthew Barnes <mbarnes@redhat.com>
+
+	* libedataserver/e-msgport.c: (msgport_sync_with_pipe),
+	(msgport_sync_with_prpipe), (e_msgport_new), (e_msgport_destroy),
+	(e_msgport_fd), (e_msgport_prfd), (e_msgport_put),
+	(e_msgport_wait), (e_msgport_get), (e_msgport_reply),
+	(e_thread_put):
+	* libedataserver/e-msgport.h:
+
+	Re-written EMsgPort.c API using GAsyncQueue 
+
 2006-10-10  Tor Lillqvist  <tml@novell.com>
 
 	* evolution-data-server-zip.in: Use BASE_VERSION in path for the

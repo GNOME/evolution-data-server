@@ -56,6 +56,7 @@ typedef struct _EMsgPort EMsgPort;
 typedef struct _EMsg {
 	EDListNode ln;
 	EMsgPort *reply_port;
+	gint flags;
 } EMsg;
 
 EMsgPort *e_msgport_new(void);
