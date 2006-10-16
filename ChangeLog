@@ -1,3 +1,24 @@
+2006-10-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes bug #351930
+
+	* configure.in:
+	Remove EDS version from imagesdir.
+
+	* libedataserver/e-categories.c:
+	Store category information in ~/.evolution/categories.xml rather
+	than the "/apps/evolution/general/category_master_list" GConf key.
+	Streamline the code.
+
+	* libedataserver/e-categories.c: (e_categories_get_list)
+	Sort the list before returning it.
+
+	* libedataserver/e-categories.c:
+	(e_categories_get_color_for, e_categories_set_color_for,
+	 e_categories_get_icon_file_for, e_categories_set_icon_file_for,
+	 e_categories_is_searchable)
+	Issue a warning if the given category name does not exist.
+
 2006-10-16  Sankar P  <psankar@novell.com>
 
 	* Committed the patch made by Matthew Barnes <mbarnes@redhat.com>
