@@ -1,3 +1,8 @@
+2006-10-16  Harish Krishnaswamy  <kharish@novell.com>
+
+	* NEWS, configure.in: Evolution-Data-Server 1.9.1
+	release updates.
+
 2006-10-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	Fixes bug #351930
