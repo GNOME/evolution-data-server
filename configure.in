@@ -1352,7 +1352,7 @@ AC_SUBST(privlibdir)
 idldir="$datadir/idl/evolution-data-server-$API_VERSION"
 AC_SUBST(idldir)
 
-imagesdir="$datadir/pixmaps/evolution-data-server-$BASE_VERSION"
+imagesdir="$datadir/pixmaps/evolution-data-server"
 AC_SUBST(imagesdir)
 
 serverdir="$libdir/bonobo/servers"
