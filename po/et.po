@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-10-15 10:52+0300\n"
+"PO-Revision-Date: 2006-10-19 00:45+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -5009,7 +5009,7 @@ msgstr "_Parool jäetakse selle seansi ajaks meelde"
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
 msgid "Select destination"
-msgstr "Vali sihtkoht"
+msgstr "Sihtkoha valimine"
 
 #: ../libedataserverui/e-source-selector-dialog.c:154
 msgid "_Destination"
