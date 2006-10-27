@@ -11,10 +11,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server HEAD\n"
+"Project-Id-Version: Evolution-data-server 1.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-10-08 12:44+0300\n"
+"PO-Revision-Date: 2006-10-27 18:23+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1491,11 +1491,11 @@ msgstr "(match-threads) pole match-all sees lubatud"
 
 #: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
 msgid "(match-threads) requires a match type string"
-msgstr ""
+msgstr "(match-threads) nõuab vastavustüüpi stringi"
 
 #: ../camel/camel-folder-search.c:789
 msgid "(match-threads) expects an array result"
-msgstr "(match-threads) eeldab tulemust massiivi kujul"
+msgstr "(match-threads) ootab tulemust massiivi kujul"
 
 #: ../camel/camel-folder-search.c:795
 msgid "(match-threads) requires the folder set"
@@ -2185,7 +2185,7 @@ msgstr "Halb allkiri"
 
 #: ../camel/camel-smime-context.c:488
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "Sisu on ülekandmisel võltsitud või asendatud"
 
 #: ../camel/camel-smime-context.c:490
 msgid "Signing certificate not found"
@@ -2866,7 +2866,7 @@ msgstr "Uute sõnumite kontroll"
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr "Uu_si sõnum_eid kontrollitakse kõikides kaustades"
+msgstr "Uusi sõnum_eid kontrollitakse kõikides kaustades"
 
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:48
@@ -5009,7 +5009,7 @@ msgstr "_Parool jäetakse selle seansi ajaks meelde"
 #. prepare the dialog
 #: ../libedataserverui/e-source-selector-dialog.c:101
 msgid "Select destination"
-msgstr "Vali sihtkoht"
+msgstr "Sihtkoha valimine"
 
 #: ../libedataserverui/e-source-selector-dialog.c:154
 msgid "_Destination"
