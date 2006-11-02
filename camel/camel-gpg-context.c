@@ -1016,8 +1016,10 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	struct pollfd polls[6];
 	int status, i, cancel_fd;
 
-	for (i=0;i<6;i++)
+	for (i=0;i<6;i++) {
 		polls[i].fd = -1;
+		polls[i].events = 0;
+	}
 
 	if (!gpg->seen_eof1) {
 		polls[0].fd = gpg->stdout_fd;

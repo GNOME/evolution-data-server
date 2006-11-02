@@ -204,7 +204,7 @@ writeln (CamelMimeFilter *filter, const char *in, const char *inend, char *outpt
 			/* otherwise, FALL THROUGH */
 		case ' ':
 			if (html->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES
-			    && ((inptr == (in + 1) || *inptr == ' ' || *inptr == '\t'))) {
+			    && ((inptr == (in + 1) || (inptr < inend && (*inptr == ' ' || *inptr == '\t'))))) {
 				outptr = g_stpcpy (outptr, "&nbsp;");
 				html->column++;
 				break;
