@@ -97,7 +97,11 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 			*outptr++ = *inptr++;
 		}
 	} else {
-		camel_mime_filter_set_size (f, len, FALSE);
+		/* Output can "grow" by one byte if crlf->saw_cr was set as
+		 * a carry-over from the previous invocation. This will happen
+		 * in practice, as the input is processed in arbitrarily-sized
+		 * blocks. */
+		camel_mime_filter_set_size (f, len + 1, FALSE);
 		
 		outptr = f->outbuf;
 		while (inptr < inend) {

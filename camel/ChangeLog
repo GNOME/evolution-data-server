@@ -1,3 +1,8 @@
+2006-11-02  Harish Krishnaswamy  <kharish@novell.com>
+
+	* camel-mime-filter-crlf.c (filter): Fixes buffer overrun. 
+	 Bug #369168. Patch submitted by Hans Petter Jansson.
+
 2006-10-05  Tor Lillqvist  <tml@novell.com>
 
 	Fixes from Steffen Eschenbacher:
