@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "e-book.h"
-#include "e-book-view-private.h"
 #include "e-vcard.h"
 
 #include <bonobo-activation/bonobo-activation.h>
