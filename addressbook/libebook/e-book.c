@@ -3579,10 +3579,13 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	if (!e_book_get_contact (*book, uid, contact, &e)) {
 		g_object_unref (*book);
 		*book = NULL;
+		g_free (uid);
 		if (error)
 			g_propagate_error (error, e);
 		return FALSE;
 	}
+
+	g_free (uid);
 
 	return TRUE;
 }
