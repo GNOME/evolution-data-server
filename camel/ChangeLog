@@ -1,3 +1,11 @@
+2006-11-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #330157
+
+	* camel-vee-folder.c: (camel_vee_folder_remove_folder),
+	(camel_vee_folder_finalise): Dont unref if the sub folder is a
+	vfolder.
+
 2006-11-02  Hans Petter Jansson  <hpj@novell.com>
 
 	* camel-mime-filter-tohtml.c (writeln): Prevent potential buffer
