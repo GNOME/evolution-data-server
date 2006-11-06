@@ -12,6 +12,7 @@
 
 #include "e-book-view-listener.h"
 #include "e-book-view.h"
+#include "e-book-view-private.h"
 #include "e-book.h"
 #include "e-book-marshal.h"
 
