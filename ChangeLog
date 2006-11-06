@@ -1,5 +1,10 @@
 2006-11-06  Harish Krishnaswamy  <kharish@novell.com>
 
+	* NEWS, configure.in: Evolution-Data-Server 1.9.2
+	release updates.
+
+2006-11-06  Harish Krishnaswamy  <kharish@novell.com>
+
 	* libedataserver/e-list-iterator.c: (e_list_iterator_new):
 	Partial fix for #358004. Ensure type correctness on the argument.
 

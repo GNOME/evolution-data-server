@@ -1,3 +1,18 @@
+Evolution-Data-Server 1.9.2 2006-10-16
+--------------------------------------
+
+Updated Translations:
+
+Ivar Smolin (et), Francisco Javier F. Serrador (es).
+
+Bug fixes : 
+330157, 369368, 312348, 365000.
+
+Contributors :
+Srinivasa Ragavan, Hans Petter Jansson, Harish Krishnaswamy,
+Claudio Saavedra.
+
+
 Evolution-Data-Server 1.9.1 2006-10-16
 --------------------------------------
 
