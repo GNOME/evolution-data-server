@@ -231,6 +231,7 @@ camel_vee_folder_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
  * Removed the source folder, @sub, from the virtual folder, @vf.
  **/
 void
+
 camel_vee_folder_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
@@ -295,6 +296,9 @@ camel_vee_folder_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 
 	((CamelVeeFolderClass *)((CamelObject *)vf)->klass)->remove_folder(vf, sub);
 
+	if (CAMEL_IS_VEE_FOLDER(sub))
+		return;
+			
 	camel_object_unref((CamelObject *)sub);
 }
 
@@ -1719,7 +1723,6 @@ camel_vee_folder_finalise (CamelObject *obj)
 	} else {
 		while (p->folders) {
 			CamelFolder *f = p->folders->data;
-
 			camel_vee_folder_remove_folder(vf, f);
 		}
 	}
