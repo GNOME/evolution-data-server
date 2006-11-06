@@ -69,6 +69,7 @@ e_list_iterator_new (EList *list)
 	EListIterator *iterator = NULL;
 
 	g_return_val_if_fail (list != NULL, NULL);
+	g_return_val_if_fail (E_IS_LIST (list), NULL);
 
 	iterator = g_object_new (E_TYPE_LIST_ITERATOR, NULL);
 	if (!iterator)
