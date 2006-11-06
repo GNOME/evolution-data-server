@@ -1786,7 +1786,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		e_calendar_remove_op (ecal, our_op);
 		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
-		g_mutex_unlock (ecal->priv->mutex);
 		
 		CORBA_exception_free (&ev);
 
