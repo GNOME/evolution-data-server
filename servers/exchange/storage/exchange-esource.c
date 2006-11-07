@@ -48,10 +48,16 @@ add_folder_esource (ExchangeAccount *account,
 	char *username, *authtype = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
-	gboolean offline_flag, update_selection = TRUE;
+	gboolean offline_flag, update_selection = TRUE, foriegn_folder;
 
 	client = gconf_client_get_default ();
 
+	/* decode the flag */
+	foriegn_folder = folder_type & FORIEGN_FOLDER_FLAG;
+
+	/* Unset the flag */
+	folder_type = folder_type & ~FORIEGN_FOLDER_FLAG;
+	
 	if (folder_type == EXCHANGE_CONTACTS_FOLDER) {
 		source_list = e_source_list_new_for_gconf ( client, 
 							CONF_KEY_CONTACTS);
@@ -103,6 +109,10 @@ add_folder_esource (ExchangeAccount *account,
 			 */
 			e_source_set_property (source, "offline_sync", "1");
 		}
+		
+		if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER))
+			e_source_set_property (source, "alarm", "never");
+
 		e_source_set_property (source, "username", username);
 		e_source_set_property (source, "auth-domain", "Exchange");
 		if (authtype)
@@ -140,6 +150,10 @@ add_folder_esource (ExchangeAccount *account,
 				e_source_set_property (source, "auth", "plain/password");
 			else
 				e_source_set_property (source, "auth", "1");
+
+			if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER))
+				e_source_set_property (source, "alarm", "never");
+
 			e_source_group_add_source (source_group, source, -1);
 			source_new = TRUE;
 			e_source_list_sync (source_list, NULL);
