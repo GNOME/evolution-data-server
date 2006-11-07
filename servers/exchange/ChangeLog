@@ -1,3 +1,10 @@
+2006-11-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes the removal of properties.
+	* lib/e2k-context.c: (write_prop): Do not check for the 
+	existance of the value while removing the properties.
+	Fixes #207960 (buzilla.novell.com)
+
 2006-10-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for #bug 347811
