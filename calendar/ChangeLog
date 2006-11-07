@@ -1,3 +1,10 @@
+2006-11-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libecal/e-cal.c: (add_instance), (generate_instances),
+	(e_cal_generate_instances_for_object): Generate the recurrence
+	id picking up the right timezone from the start date.					       
+	Fixes #215636 (bugzilla.novell.com)
+
 2006-11-06  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libecal/e-cal.c: (open_calendar): Remove an 

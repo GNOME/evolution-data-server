@@ -3465,37 +3465,65 @@ struct comp_instance {
 	time_t end;
 };
 
+struct instances_info {
+	GList **instances;
+	icaltimezone *start_zone;
+};
+
 /* Called from cal_recur_generate_instances(); adds an instance to the list */
 static gboolean
 add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
-	struct icaltimetype itt, itt_start;
+	struct icaltimetype itt;
 	icalcomponent *icalcomp;
+	struct instances_info *instances_hold;
+	ECalComponentDateTime datetime;
 
-	list = data;
+	instances_hold = data;
+	list = instances_hold->instances;
 
 	ci = g_new (struct comp_instance, 1);
 
 	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
-	itt_start = icalcomponent_get_dtstart (icalcomp);
+	e_cal_component_get_dtstart (comp, &datetime);
+		
+	/* add the instance to the list */
+	ci->comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (ci->comp, icalcomp);
 
 	/* set the RECUR-ID for the instance */
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
-			if (itt_start.zone)
-				itt = icaltime_from_timet_with_zone (start, itt_start.is_date, itt_start.zone);
-			else
-				itt = icaltime_from_timet (start, itt_start.is_date);
-			icalcomponent_set_recurrenceid (icalcomp, itt);
+			ECalComponentRange *range;
+
+			if (instances_hold->start_zone) 
+				itt = icaltime_from_timet_with_zone (start, datetime.value->is_date, instances_hold->start_zone);
+			else {
+				itt = icaltime_from_timet (start, datetime.value->is_date);
+
+				if (datetime.tzid) {
+					g_free ((char *) datetime.tzid);
+					datetime.tzid = NULL;
+				}
+			}
+
+			g_free (datetime.value);
+			datetime.value = &itt;
+
+			range = g_new0 (ECalComponentRange, 1);
+			range->type = E_CAL_COMPONENT_RANGE_SINGLE;
+			range->datetime = datetime;
+
+			e_cal_component_set_recurid (ci->comp, range);
+
+			if (datetime.tzid)
+				g_free ((char *) datetime.tzid);
+			g_free (range);
 		}
 	}
 
-	/* add the instance to the list */
-	ci->comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (ci->comp, icalcomp);
-	
 	ci->start = start;
 	ci->end = end;
 
@@ -3692,10 +3720,24 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
  
 			detached_instances = g_list_prepend (detached_instances, ci);
 		} else {
-			e_cal_recur_generate_instances (comp, start, end, add_instance, &instances,
+			ECalComponentDateTime datetime;
+			icaltimezone *start_zone;
+			struct instances_info *instances_hold;
+			
+			/* Get the start timezone */
+			e_cal_component_get_dtstart (comp, &datetime);
+			e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+			e_cal_component_free_datetime (&datetime);
+
+			instances_hold = g_new0 (struct instances_info, 1);
+			instances_hold->instances = &instances;
+			instances_hold->start_zone = start_zone;
+
+			e_cal_recur_generate_instances (comp, start, end, add_instance, instances_hold,
 							e_cal_resolve_tzid_cb, ecal,
 							default_zone);
-
+			
+			g_free (instances_hold);
 			g_object_unref (comp);
 		}
 	}
@@ -3804,6 +3846,9 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	const char *uid, *rid;
 	gboolean result;
 	GList *instances = NULL;
+	ECalComponentDateTime datetime;
+	icaltimezone *start_zone;
+	struct instances_info *instances_hold;
 
 	g_return_if_fail (E_IS_CAL (ecal));
 	g_return_if_fail (start >= 0);
@@ -3829,9 +3874,19 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
 
-	/* generate all instances in the given time range */
-	generate_instances (ecal, start, end, uid, add_instance, &instances);
+	/* Get the start timezone */
+	e_cal_component_get_dtstart (comp, &datetime);
+	e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+	e_cal_component_free_datetime (&datetime);
 
+	instances_hold = g_new0 (struct instances_info, 1);
+	instances_hold->instances = &instances;
+	instances_hold->start_zone = start_zone;
+	
+	/* generate all instances in the given time range */
+	generate_instances (ecal, start, end, uid, add_instance, instances_hold);
+
+	instances = *(instances_hold->instances);
 	/* now only return back the instances for the given object */
 	result = TRUE;
 	while (instances != NULL) {
@@ -3858,6 +3913,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 
 	/* clean up */
 	g_object_unref (comp);
+	g_free (instances_hold);
 }
 
 /* Builds a list of ECalComponentAlarms structures */
