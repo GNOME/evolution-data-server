@@ -1593,29 +1593,30 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 			if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
 				if (attach->size > MAX_ATTACHMENT_SIZE) {
-					long count = 0;
-					int i, t_len=0, offset=0, t_offset=0;
+					int len_iter = 0, t_len , offset = 0, t_offset = 0;
 					char *t_attach = NULL;
 					GString *gstr = g_string_new (NULL);
-
-					count = (attach->size)/(1024*1024);
-					count++;
+					
 					len = 0;
-					for (i = 0; i<count; i++) {
+					do {
 						status = e_gw_connection_get_attachment_base64 (cnc, 
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE, 
 								(const char **)&t_attach, &t_len, &offset);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
-							gstr = g_string_append (gstr, t_attach);
+							char *temp = NULL;
+	
+							temp = soup_base64_decode(t_attach, &len_iter);
+							gstr = g_string_append_len (gstr, temp, len_iter);
+							g_free (temp);
+							len += len_iter;
 							t_offset = offset;
 							g_free (t_attach);
 							t_attach = NULL;
-							t_len = 0;
 						}
-					}
-					body = soup_base64_decode (gstr->str, &len);
+					} while (offset);
+					body = gstr->str;
 					body_len = len;
-					g_string_free (gstr, TRUE);
+					g_string_free (gstr, FALSE);
 				} else {
 					status = e_gw_connection_get_attachment (cnc, 
 							attach->id, 0, -1, 
@@ -1729,28 +1730,31 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				g_object_unref (temp_item);
 			} else {
 				if (attach->size > MAX_ATTACHMENT_SIZE) {
-					long count = 0;
-					int i, t_len=0, offset=0, t_offset=0;
+					int t_len=0, offset=0, t_offset=0;
 					char *t_attach = NULL;
 					GString *gstr = g_string_new (NULL);
 
-					count = (attach->size)/(1024*1024);
-					count++;
 					len = 0;
-					for (i = 0; i<count; i++) {
+					do {
 						status = e_gw_connection_get_attachment_base64 (cnc, 
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE, 
 								(const char **)&t_attach, &t_len, &offset);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
-							gstr = g_string_append (gstr, t_attach);
+							int len_iter = 0;
+							char *temp = NULL;
+	
+							temp = soup_base64_decode(t_attach, &len_iter);
+							gstr = g_string_append_len (gstr, temp, len_iter);
+							g_free (temp);
+							len += len_iter;
 							t_offset = offset;
 							g_free (t_attach);
 							t_attach = NULL;
 							t_len = 0;
 						}
-					}
-					attachment = soup_base64_decode (gstr->str, &len);
-					g_string_free (gstr, TRUE);
+					} while (t_offset);
+					attachment =  gstr->str;
+					g_string_free (gstr, FALSE);
 					is_base64_encoded = FALSE;
 				} else {
 					status = e_gw_connection_get_attachment (cnc, 

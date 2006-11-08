@@ -1,3 +1,8 @@
+2006-11-08  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Show the attachment icon for messages with valid attachments only
+
 2006-08-28  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-sumamry.c:
