@@ -1,3 +1,9 @@
+2006-11-08  Sankar P  <psankar@novell.com>
+
+	* camel-folder-summary.h: Added support for CAMEL_MESSAGE_HIDDEN and 
+	CAMEL_MESSAGE_USER_NOT_DELETABLE flags which can be used in mailer 
+	and for proxy rights management.
+
 2006-11-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #330157

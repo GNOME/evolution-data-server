@@ -1,5 +1,10 @@
 2006-11-08  Sankar P  <psankar@novell.com>
 
+	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):
+	Set CAMEL_MESSAGE_USER_NOT_DELETABLE flag if proxy has no delete permission
+
+2006-11-08  Sankar P  <psankar@novell.com>
+
 	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
 	Fixes the problem of attachments getting corrupt in SOAP mailer
 	Fixes some problems with Mime.822

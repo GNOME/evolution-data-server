@@ -1149,6 +1149,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	GList *item_list = list;
 	int total_items = g_list_length (item_list), i=0;
 
+	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_WRITE;
+
 	CAMEL_SERVICE_ASSERT_LOCKED (gw_store, connect_lock);
 
 	changes = camel_folder_change_info_new ();
@@ -1244,6 +1246,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		
 		if (e_gw_item_has_attachment (item))
 			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+                if (is_proxy)
+                        mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
@@ -1379,6 +1383,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 	gboolean is_junk = FALSE;
 	GList *item_list = list;
 
+	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_WRITE;
+
 	/*Assert lock???*/
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
@@ -1444,6 +1450,9 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		
 		if (e_gw_item_has_attachment (item))
 			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+
+		if (is_proxy) 
+			mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
