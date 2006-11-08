@@ -1,7 +1,10 @@
 2006-11-08  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
-	Show the attachment icon for messages with valid attachments only
+	Fixes the problem of attachments getting corrupt in SOAP mailer
+	Fixes some problems with Mime.822
+	Fixes the problem of signatures getting corrupt in SOAP
+	Fixes #350880 and a few duplicates in bnc
 
 2006-08-28  Sankar P  <psankar@novell.com>
 
