@@ -1656,6 +1656,25 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 }
 
 static char *
+build_proxy_pass_key (ECal *ecal, const char* parent_user)
+{
+	char *euri_str;
+	const char *uri;
+	EUri *euri;
+
+	uri = e_cal_get_uri (ecal);
+
+	euri = e_uri_new (uri);
+	g_free (euri->user);
+	euri->user = g_strdup(parent_user);
+
+	euri_str = e_uri_to_string (euri, FALSE);
+
+	e_uri_free (euri);
+	return euri_str;
+}
+
+static char *
 build_pass_key (ECal *ecal)
 {
 	char *euri_str;
@@ -1730,21 +1749,24 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
-		/* actually ask the client for authentication */
-		parent_user = e_source_get_property (priv->source, "parent_id_name");
-		if (parent_user) {			
-			/* FIXME: Try to get the parent uri so that we dont have to ask the password again */
-			prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
+		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
+				e_source_peek_name (priv->source), username);
 
-		} else {
-			prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-					e_source_peek_name (priv->source), username);
-		}
 		auth_type = e_source_get_property (priv->source, "auth-type");
-		if (auth_type)
+		if (auth_type) 
 			key = build_pass_key (ecal);
-		else
-			key = g_strdup (e_cal_get_uri (ecal));
+		else {
+			parent_user = e_source_get_property (priv->source, "parent_id_name");
+			if (parent_user) {
+				key = build_proxy_pass_key (ecal, parent_user);
+				/* 
+				   This password prompt will be prompted rarely. Since the key that is passed to 
+				   the auth_func corresponds to the parent user.
+				 */
+				prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
+			} else 
+				key = g_strdup (e_cal_get_uri (ecal));
+		}
 
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
@@ -1754,7 +1776,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			*status = E_CALENDAR_STATUS_URI_NOT_LOADED;
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
-			
+
 		password = priv->auth_func (ecal, prompt, key, priv->auth_user_data);
 
 		if (!password) {
@@ -1764,7 +1786,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED; 
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
-		}
+		} 
 
 		g_free (prompt);
 		g_free (key);
