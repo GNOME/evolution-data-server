@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-11-10 08:24+0200\n"
+"PO-Revision-Date: 2006-11-11 21:39+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -3518,7 +3518,7 @@ msgstr "POP serveriga %s pole võimalik ühenduda"
 
 #: ../camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
-msgstr "Sõnumite sisu indekseerimine"
+msgstr "Sõnumite sisu indekseeritakse"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:384
@@ -4230,7 +4230,7 @@ msgstr "Tundmatu põhjus"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
-msgstr "Jäta sõnumid serverisse"
+msgstr "Sõnumid jäetakse serverisse"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
@@ -4239,7 +4239,7 @@ msgstr "Kustutada %s päeva möödumisel"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable support for all POP3 extensions"
-msgstr "Keela kõigi POP3 laienduste toetus"
+msgstr "Kõigi POP3 laienduste toetus on keelatud"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "POP"
