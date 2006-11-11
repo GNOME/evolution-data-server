@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-10-27 18:23+0300\n"
+"PO-Revision-Date: 2006-11-10 08:24+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1977,6 +1977,8 @@ msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
+"input_token sisaldab vigast signatuuri või pole signatuuri võimalik "
+"verifitseerida."
 
 #: ../camel/camel-sasl-gssapi.c:178
 msgid ""
@@ -4447,7 +4449,7 @@ msgstr "Nõutud kirjategevus korras, lõpetatud"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:182
 msgid "User not local; will forward to <forward-path>"
-msgstr ""
+msgstr "Pole kohalik kasutaja, edastatakse <forward-path> kaudu"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:184
 msgid "Requested mail action not taken: mailbox unavailable"
@@ -4463,7 +4465,7 @@ msgstr "Nõutud tegevus nurjatud: viga töötlemisel"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:190
 msgid "User not local; please try <forward-path>"
-msgstr ""
+msgstr "Pole kohalik kasutaja, palun proovi <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "Requested action not taken: insufficient system storage"
