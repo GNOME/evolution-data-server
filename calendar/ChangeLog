@@ -1,3 +1,8 @@
+2006-11-15  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libecal/e-cal-listener.c: (convert_status): Map the
+	error status for 'No Such Calendar'.						      
+
 2006-11-08  Sankar P  <psankar@novell.com>
 
 	* libecal/e-cal.c: (build_proxy_pass_key), (open_calendar):
