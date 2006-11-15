@@ -1241,19 +1241,23 @@ write_prop (GString *xml, const char *propertyname,
 	GPtrArray *array;
 	int i;
 
-	if (value == NULL)
+	if (set && (value == NULL))
 		return;
+
 	namespace = e2k_prop_namespace_name (propertyname);
 	abbrev = e2k_prop_namespace_abbrev (propertyname);
 	name = e2k_prop_property_name (propertyname);
 
-	need_type = (strstr (namespace, "/mapi/id/") != NULL);
-
 	g_string_append_printf (xml, "<%c:%s", abbrev, name);
 	if (!set) {
+		/* This means we are removing the property, so just return
+		   with ending tag */
 		g_string_append (xml, "/>");
 		return;
-	} else if (!need_type)
+	}
+
+	need_type = (strstr (namespace, "/mapi/id/") != NULL);
+	if (!need_type)
 		g_string_append_c (xml, '>');
 
 	switch (type) {
