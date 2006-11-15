@@ -1,3 +1,10 @@
+2006-11-15  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* storage/exchange-account.c: 
+	(exchange_account_connect): Check if the mode is unsupported
+	and reset the connecting variable.
+	Fixes #219729 (bugzilla.novell.com)
+
 2006-11-07  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* storage/exchange-constants.h: Define a flag to

@@ -1372,9 +1372,16 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 
 	*info_result = EXCHANGE_ACCOUNT_CONNECT_SUCCESS;
 	exchange_account_is_offline (account, &mode);
-
+	
 	g_mutex_lock (account->priv->connect_lock);
 
+	if (mode == UNSUPPORTED_MODE) {
+		*info_result = EXCHANGE_ACCOUNT_CONNECT_ERROR;
+		account->priv->connecting = FALSE;
+		g_mutex_unlock (account->priv->connect_lock);
+		return NULL;
+	}
+	
 	if (account->priv->connecting || mode == OFFLINE_MODE) {
 		g_mutex_unlock (account->priv->connect_lock);
 		if (mode == OFFLINE_MODE) {
