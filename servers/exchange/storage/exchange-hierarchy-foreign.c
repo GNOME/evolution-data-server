@@ -429,6 +429,7 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 	const char *folder_type = NULL;
 	const char *physical_uri = NULL;
 	char *new_folder_name;
+	guint folder_mask = 0;
 
 	result =  create_internal (hier, hier->toplevel, folder_name, NULL, folder);
 	if (result == EXCHANGE_ACCOUNT_FOLDER_OK) {
@@ -440,23 +441,26 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 
 		if (!(strcmp (folder_type, "calendar")) ||
 		!(strcmp (folder_type, "calendar/public"))) {
+			folder_mask = EXCHANGE_CALENDAR_FOLDER | FORIEGN_FOLDER_FLAG;
 			add_folder_esource (hier->account,
-				     	    EXCHANGE_CALENDAR_FOLDER,
+				     	    folder_mask,
 				     	    new_folder_name,
 				    	    physical_uri);
 		}
 		else if (!(strcmp (folder_type, "tasks")) ||
 			 !(strcmp (folder_type, "tasks/public"))) {
+			folder_mask = EXCHANGE_TASKS_FOLDER | FORIEGN_FOLDER_FLAG;
 				add_folder_esource (hier->account,
-				     		    EXCHANGE_TASKS_FOLDER,
+				     		    folder_mask,
 				     		    new_folder_name,
 				     		    physical_uri);
 		}
 		else if (!(strcmp (folder_type, "contacts")) ||
 			 !(strcmp (folder_type, "contacts/public")) ||
 			 !(strcmp (folder_type, "contacts/ldap"))) {
+				folder_mask = EXCHANGE_CONTACTS_FOLDER | FORIEGN_FOLDER_FLAG;
 				add_folder_esource (hier->account,
-				     		    EXCHANGE_CONTACTS_FOLDER,
+				     		    folder_mask,
 				     		    new_folder_name,
 				     		    physical_uri);
 		}

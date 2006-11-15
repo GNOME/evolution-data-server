@@ -1,5 +1,16 @@
 2006-11-07  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* storage/exchange-constants.h: Define a flag to
+	indicate the foriegn folder.
+	* storage/exchange-esource.c: (add_folder_esource):
+	Disable alarms for foriegn folders.
+	* storage/exchange-hierarchy-foreign.c:
+	(exchange_hierarchy_foreign_add_folder):
+	Pass the masked value for the folder type.
+	Fixes #208318 (bugzilla.novell.com)
+
+2006-11-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes the removal of properties.
 	* lib/e2k-context.c: (write_prop): Do not check for the 
 	existance of the value while removing the properties.
