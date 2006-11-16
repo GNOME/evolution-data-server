@@ -1,3 +1,10 @@
+2006-11-16  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_sync), (gw_update_cache),
+	(gw_update_summary), (groupwise_transfer_messages_to):
+	Update read and unread counts across folders on folder-switch,
+	mail-deletion, moving mails and other operations.
+
 2006-11-08  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):

@@ -5,6 +5,7 @@
  * Authors:
  *  Sivaiah Nallagatla <snallagatla@novell.com>
  *  parthasarathi susarla <sparthasarathi@novell.com>
+ *  Sankar P <psankar@novell.com>
  *   
  *
  * Copyright (C) 2004, Novell Inc.
@@ -593,8 +594,8 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 	CamelMessageInfo *info = NULL;
 	CamelGroupwiseMessageInfo *gw_info;
-	GList *read_items = NULL;
-	flags_diff_t diff;
+	GList *read_items = NULL, *deleted_read_items = NULL, *unread_items = NULL;
+	flags_diff_t diff, unset_flags;
 	const char *container_id;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
@@ -651,6 +652,8 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
+			do_flags_diff (&unset_flags, flags, gw_info->server_flags);
+			
 			diff.changed &= folder->permanent_flags;
 
 			/* weed out flag changes that we can't sync to the server */
@@ -658,11 +661,15 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				camel_message_info_free(info);
 				continue;
 			} else {
+				gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				gw_info->server_flags = gw_info->info.flags;
 				const char *uid = camel_message_info_uid (info);
-				if (diff.changed & CAMEL_MESSAGE_SEEN)
-					read_items = g_list_append (read_items, (char *)uid);
-				if (diff.changed & CAMEL_MESSAGE_DELETED) {
+				if (diff.bits & CAMEL_MESSAGE_DELETED) {
+
+					/* In case a new message is READ and then deleted immediately */
+					if (diff.bits & CAMEL_MESSAGE_SEEN)
+						deleted_read_items = g_list_prepend (deleted_read_items, (char *) uid);
+
 					if (deleted_items)
 						deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
 					else {
@@ -673,6 +680,25 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 					if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
 						CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+
+						/* 
+							Sync up the READ changes before deleting the message. 
+							Note that if a message is marked as unread and then deleted,
+							Evo doesnt not take care of it, as I find that scenario to be impractical.
+						*/
+
+						if (deleted_read_items) {
+							
+							/* FIXME: As in many places, we need to handle the return value
+							and do some error handling. But, we do not have all error codes also
+							and errors are not returned always either */
+
+							status = e_gw_connection_mark_read (cnc, deleted_read_items);
+							g_list_free (deleted_read_items);
+							deleted_read_items = NULL;
+						}
+
+						/* And now delete the messages */
 						status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 						CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -689,6 +715,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 							}
 						}
 					}
+				} else if (diff.bits & CAMEL_MESSAGE_SEEN) {
+					read_items = g_list_prepend (read_items, (char *)uid);
+				} else if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
+					unread_items = g_list_prepend (unread_items, (char *)uid);
 				}
 			}
 		}
@@ -721,10 +751,18 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		g_list_free (deleted_head);
 	}
 
-	if (read_items && g_list_length (read_items)) {
+	if (read_items) {
 		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
 		e_gw_connection_mark_read (cnc, read_items);
 		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		g_list_free (read_items);
+	}
+
+	if (unread_items) {
+		CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+		e_gw_connection_mark_unread (cnc, unread_items);
+		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		g_list_free (unread_items);
 	}
 
 	if (expunge) {
@@ -1242,12 +1280,12 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
 		}
 
-		mi->server_flags = mi->info.flags;
-		
 		if (e_gw_item_has_attachment (item))
 			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
                 if (is_proxy)
                         mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
+		
+		mi->server_flags = mi->info.flags;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
@@ -1453,6 +1491,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 
 		if (is_proxy) 
 			mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
+
+		mi->server_flags = mi->info.flags;
 
 		org = e_gw_item_get_organizer (item); 
 		if (org) {
@@ -2039,12 +2079,63 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		return;
 	}
 
-	cnc = cnc_lookup (priv);
 
+	cnc = cnc_lookup (priv);
 	index = 0;
 	while (index < uids->len) {
+		CamelMessageInfo *info = NULL;
+		CamelGroupwiseMessageInfo *gw_info = NULL;
+		flags_diff_t diff, unset_flags;
 		int count;
 		count = camel_folder_summary_count (destination->summary);
+
+		info = camel_folder_summary_uid (source->summary, uids->pdata[index]);
+		gw_info = (CamelGroupwiseMessageInfo *) info;
+		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
+			do_flags_diff (&unset_flags, gw_info->info.flags, gw_info->server_flags);
+			diff.changed &= source->permanent_flags;
+
+			/* sync the read changes */
+			if (diff.changed) {
+				const char *uid = camel_message_info_uid (info);
+				GList *wrapper = NULL;
+				gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+				gw_info->server_flags = gw_info->info.flags;
+
+				if (diff.bits & CAMEL_MESSAGE_SEEN) {
+					
+					/*
+					wrapper is a list wrapper bcos e_gw_connection_mark_read 
+					is designed for passing multiple uids. Also, there are is not much
+					need/use for a e_gw_connection_mark_ITEM_[un]read	
+					*/
+
+					wrapper = g_list_prepend (wrapper, (char *)uid);
+					CAMEL_SERVICE_LOCK (source->parent_store, connect_lock);
+					e_gw_connection_mark_read (cnc, wrapper);
+					CAMEL_SERVICE_UNLOCK (source->parent_store, connect_lock);
+					g_list_free (wrapper);
+					wrapper = NULL;
+				}
+
+				/* A User may mark a message as Unread and then immediately move it to
+				some other folder. The following piece of code take care of such scenario.
+				
+				However, Remember that When a mail is deleted after being marked as unread, 
+				I am not syncing the read-status. 
+				*/
+
+				if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
+					wrapper = g_list_prepend (wrapper, (char *)uid);
+					CAMEL_SERVICE_LOCK (source->parent_store, connect_lock);
+					e_gw_connection_mark_unread (cnc, wrapper);
+					CAMEL_SERVICE_UNLOCK (source->parent_store, connect_lock);
+					g_list_free (wrapper);
+					wrapper = NULL;
+				}
+			}
+		}
 
 		if (delete_originals) 
 			status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index], 
