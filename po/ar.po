@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-10 21:38+0000\n"
+"POT-Creation-Date: 2006-11-17 08:30+0000\n"
 "PO-Revision-Date: 2006-11-10 06:29+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <support@eglug.org>\n"
@@ -771,7 +771,7 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1673
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1712
 #, fuzzy
 msgid "Reply Requested: by "
 msgstr ""
@@ -779,7 +779,7 @@ msgstr ""
 "  الموضوع: %s\n"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1678
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
 msgid "Reply Requested: When convenient"
 msgstr ""
 
@@ -801,10 +801,10 @@ msgstr "العنوان \"%s\" غير سليم."
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:969
-#: ../calendar/libecal/e-cal.c:5200
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1003
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1027
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
+#: ../calendar/libecal/e-cal.c:5256
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1040
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1064
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1102
 #: ../camel/providers/groupwise/camel-groupwise-store.c:585
 #: ../camel/providers/groupwise/camel-groupwise-store.c:600
 #: ../camel/providers/groupwise/camel-groupwise-store.c:711
@@ -1230,52 +1230,52 @@ msgstr "%s أدخل كلمة السّر لـ %s·(المستخدم %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s أدخل كلمة السّر لـ %s·(المستخدم %s)"
 
-#: ../calendar/libecal/e-cal.c:5172
+#: ../calendar/libecal/e-cal.c:5228
 #, fuzzy
 msgid "Invalid argument"
 msgstr "متغير غير صحيح: \"%s\"\n"
 
-#: ../calendar/libecal/e-cal.c:5174
+#: ../calendar/libecal/e-cal.c:5230
 #, fuzzy
 msgid "Backend is busy"
 msgstr "المشغل مشغول"
 
-#: ../calendar/libecal/e-cal.c:5176
+#: ../calendar/libecal/e-cal.c:5232
 #, fuzzy
 msgid "Repository is offline"
 msgstr "المستخدم البعيد ليس على الخط"
 
-#: ../calendar/libecal/e-cal.c:5178
+#: ../calendar/libecal/e-cal.c:5234
 #, fuzzy
 msgid "No such calendar"
 msgstr "لا رسالة بهذا الإسم"
 
-#: ../calendar/libecal/e-cal.c:5180 ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5236 ../servers/groupwise/e-gw-connection.c:175
 #, fuzzy
 msgid "Object not found"
 msgstr "لم يوجد الجسم"
 
-#: ../calendar/libecal/e-cal.c:5182 ../servers/groupwise/e-gw-connection.c:169
+#: ../calendar/libecal/e-cal.c:5238 ../servers/groupwise/e-gw-connection.c:169
 #, fuzzy
 msgid "Invalid object"
 msgstr "مميّز الجسم (%s)"
 
-#: ../calendar/libecal/e-cal.c:5184
+#: ../calendar/libecal/e-cal.c:5240
 #, fuzzy
 msgid "URI not loaded"
 msgstr "لم تحمّل صورة."
 
-#: ../calendar/libecal/e-cal.c:5186
+#: ../calendar/libecal/e-cal.c:5242
 #, fuzzy
 msgid "URI already loaded"
 msgstr "لم تحمّل صورة."
 
-#: ../calendar/libecal/e-cal.c:5188
+#: ../calendar/libecal/e-cal.c:5244
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "رُفض التّصريح"
 
-#: ../calendar/libecal/e-cal.c:5190 ../servers/groupwise/e-gw-connection.c:177
+#: ../calendar/libecal/e-cal.c:5246 ../servers/groupwise/e-gw-connection.c:177
 #, fuzzy
 msgid "Unknown User"
 msgstr "تبديل المستخدم"
@@ -1283,35 +1283,35 @@ msgstr "تبديل المستخدم"
 # checked, typed but the nchanged: you add a new ID and the other exists
 # the meaning of this dialog is more" you can't add a newone cz another one exists"
 #
-#: ../calendar/libecal/e-cal.c:5192
+#: ../calendar/libecal/e-cal.c:5248
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "هويّة المراسَل موجودة مسبقاً"
 
-#: ../calendar/libecal/e-cal.c:5194
+#: ../calendar/libecal/e-cal.c:5250
 msgid "Protocol not supported"
 msgstr "البروتوكول غير مدعوم"
 
-#: ../calendar/libecal/e-cal.c:5196
+#: ../calendar/libecal/e-cal.c:5252
 #, fuzzy
 msgid "Operation has been canceled"
 msgstr "تمّ حذف الرّسالة"
 
-#: ../calendar/libecal/e-cal.c:5198
+#: ../calendar/libecal/e-cal.c:5254
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "لم يمكن القيام بالعملية"
 
-#: ../calendar/libecal/e-cal.c:5202
+#: ../calendar/libecal/e-cal.c:5258
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "مطلوبٌ التّوثيق"
 
-#: ../calendar/libecal/e-cal.c:5204
+#: ../calendar/libecal/e-cal.c:5260
 msgid "A CORBA exception has occurred"
 msgstr ""
 
-#: ../calendar/libecal/e-cal.c:5206
+#: ../calendar/libecal/e-cal.c:5262
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
@@ -1325,7 +1325,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "خطأ مجهول"
 
-#: ../calendar/libecal/e-cal.c:5208
+#: ../calendar/libecal/e-cal.c:5264
 #: ../servers/exchange/storage/e-storage.c:554
 #, fuzzy
 msgid "No error"
@@ -2846,23 +2846,23 @@ msgstr "هذه الرسالة غير متوفّرة بالوضع دون اتّص
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:168
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1580
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1626
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1619
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1665
 #, fuzzy
 msgid "Could not get message"
 msgstr "لم يمكن إرسال الرّسالة: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:769
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:806
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "لم يمكن تحميل الملخّص لـ %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:999
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1036
 msgid "Trash Folder Full. Please Empty."
 msgstr ""
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1166
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1203
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:2382
@@ -2871,13 +2871,13 @@ msgstr ""
 msgid "Fetching summary information for new messages in %s"
 msgstr "جاري إحضار معلومات التّلخيص للرّسائل الجديدة"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1897
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1939
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1936
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1978
 #, fuzzy, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "لم يمكن إلحاق الرّسالة بدليل maildir: %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1927
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1966
 #, fuzzy, c-format
 msgid "Cannot create message: %s"
 msgstr "لا يمكن فتح الرّسالة"
