@@ -14,14 +14,13 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libebook/Evolution-DataServer-Addressbook.h>
-#include <libedataserver/e-source.h>
 #include <libedataserver/e-list.h>
+#include <libedataserver/e-source.h>
+#include <libedataserver/e-source-list.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-view.h>
 #include <libebook/e-book-types.h>
-#include <libedataserver/e-source-list.h>
 
 #define E_TYPE_BOOK        (e_book_get_type ())
 #define E_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK, EBook))

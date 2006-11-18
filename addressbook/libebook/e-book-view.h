@@ -13,8 +13,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libebook/Evolution-DataServer-Addressbook.h>
-#include <libebook/e-book-view-listener.h>
+#include "e-book-types.h"
 
 #define E_TYPE_BOOK_VIEW           (e_book_view_get_type ())
 #define E_BOOK_VIEW(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_VIEW, EBookView))
@@ -56,9 +55,6 @@ struct _EBookViewClass {
 	void (*_ebook_reserved3) (void);
 	void (*_ebook_reserved4) (void);
 };
-
-/* Creating a new addressbook. */
-EBookView         *e_book_view_new                    (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener);
 
 GType              e_book_view_get_type               (void);
 

@@ -40,6 +40,7 @@ libebook_1_2_la_SOURCES =					\
 	e-book-listener.c				\
 	e-book-query.c					\
 	e-book-view-listener.c				\
+	e-book-view-private.h					\
 	e-book-view.c					\
 	e-book.c					\
 	e-contact.c					\
