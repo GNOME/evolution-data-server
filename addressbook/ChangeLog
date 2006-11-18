@@ -1,3 +1,14 @@
+2006-11-18  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libebook/Makefile.am:
+	* libebook/e-book-view-private.h:
+	* libebook/e-book-view.c:
+	* libebook/e-book-view.h:
+	* libebook/e-book.c:
+	* libebook/e-book.h:
+	Hide Bonobo from public EBook API. Fix for #348123.
+	Patch submitted by Ross Burton.
+
 2006-11-06  Claudio Saavedra  <csaavedra@alumnos.utalca.cl>
 
 	* libebook/e-book.c: (e_book_get_self): Fix memory leak (#365000).
