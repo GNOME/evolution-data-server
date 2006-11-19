@@ -1,3 +1,11 @@
+2006-11-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes bug #353924
+
+	* e-name-selector-dialog.c
+	(e_name_selector_dialog_populate_categories): Translate
+	"Any Category" and make sure it's always listed first.
+
 2006-09-15  Li Yuan  <li.yuan@sun.com>
 
 	* e-name-selector-dialog.glade:
