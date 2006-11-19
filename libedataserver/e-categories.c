@@ -423,7 +423,7 @@ e_categories_get_list (void)
 
 	g_hash_table_foreach (categories_table, add_hash_to_list, &list);
 
-	return g_list_sort (list, g_ascii_strcasecmp);
+	return g_list_sort (list, (GCompareFunc) g_utf8_collate);
 }
 
 /**
