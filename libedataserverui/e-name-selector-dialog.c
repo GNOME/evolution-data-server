@@ -109,14 +109,6 @@ e_name_selector_dialog_set_property (GObject *object, guint prop_id,
 /* FIXME: category_list should become part of ENameSelectorDialog structure */
 GList *category_list;
 
-static int
-compare_func (const void *voida, const void *voidb)
-{
-	const char *stringa = voida;
-        const char *stringb = voidb;
-	return g_utf8_collate (stringa, stringb);
-}
-
 static void
 e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
 {
@@ -125,9 +117,9 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 	GList *l;
 	category_option_menu = glade_xml_get_widget (name_selector_dialog->gui, "optionmenu-category");
 
+	/* Categories are already sorted */
 	category_list = e_categories_get_list () ;
-	category_list = g_list_prepend (category_list, "Any Category");
-	category_list = g_list_sort (category_list, compare_func);
+	category_list = g_list_prepend (category_list, _("Any Category"));
 
 	category_menu = gtk_menu_new ();
 	l = category_list;
