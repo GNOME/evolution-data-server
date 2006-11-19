@@ -1,3 +1,10 @@
+2006-11-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	Fixes bug #353924
+
+	* libedataserver/e-categories.c (e_categories_get_list):
+	Sort categories using g_utf8_collate(), not g_ascii_strcasecmp().
+
 2006-11-06  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.9.2
