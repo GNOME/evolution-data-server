@@ -1,3 +1,7 @@
+2006-11-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* configure.in: Re-add the base version to imagesdir.
+
 2006-11-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	Fixes bug #353924
