@@ -1,3 +1,9 @@
+2006-11-20  Harish Krishnaswamy  <kharish@novell.com>
+
+	* libecal/e-cal.c: (open_calendar): Remove an
+	erroneous double mutex unlock. Fixes Bug #312348
+	partially - the original issue reported.
+
 2006-11-15  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* libecal/e-cal.c: (add_instance), (generate_instances),
