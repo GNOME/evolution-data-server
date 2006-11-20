@@ -1,3 +1,21 @@
+Evolution-Data-Server 1.8.2 2006-11-20
+--------------------------------------
+
+Updated Translations:
+
+Wouter Bolsterlee (pl), Priit Laes (et), Djihed Afifi (ar),
+Ignacio Casal Quinteiro (gl).
+
+Bug fixes :
+
+330157, 369259, 369168, 350576,350885, 358010, 350880, 347811, 
+328836, 365000, 353924 and downstream patches from SuSE
+
+Contributors:
+Claudio Saavedra, Tor Lillqvist, Veerapuram Varadhan, Sankar, 
+Chenthill Palanisamy, Matthew Barnes, Hans Petter Jansson, 
+Harish Krishnaswamy.
+
 Evolution-Data-Server 1.8.1 2006-10-02
 --------------------------------------
 
