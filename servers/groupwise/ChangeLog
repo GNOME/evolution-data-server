@@ -1,3 +1,10 @@
+2006-11-20  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_dispose):
+	Free user_uuid on dispose. This fixes a leak, one of
+	the several issues targeted by Bug #222605 on
+	bugzilla.novell.com
+
 2006-08-07  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-filter.c (append_complex_component):

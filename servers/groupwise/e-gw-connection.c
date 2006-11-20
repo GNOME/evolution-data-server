@@ -283,6 +283,10 @@ e_gw_connection_dispose (GObject *object)
 			priv->user_email = NULL;
 		}
 
+		if (priv->user_uuid) {
+			g_free (priv->user_uuid);
+			priv->user_uuid = NULL;
+		}
 	
 		if (priv->reauth_mutex) {
 			g_mutex_free (priv->reauth_mutex);
