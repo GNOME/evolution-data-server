@@ -541,7 +541,7 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 
 		if (icalcomp) {
 			icaltimezone_set_component (zone, icalcomp);
-			tzid = icaltimezone_get_tzid (zone);
+			tzid = g_strdup (icaltimezone_get_tzid (zone));
 		}
 
 		icaltimezone_free (zone, 1);

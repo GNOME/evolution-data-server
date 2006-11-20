@@ -1,3 +1,9 @@
+2006-11-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedata-cal/e-cal-backend-sync.c:
+	(e_cal_backend_sync_set_default_zone): Duplicate
+	the tzid. Fixes a memory corruption.					       
+
 2006-11-20  Harish Krishnaswamy  <kharish@novell.com>
 
 	* libecal/e-cal.c: (open_calendar): Remove an
