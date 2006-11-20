@@ -685,6 +685,21 @@ get_account_control_values (E2kGlobalCatalog *gc, E2kOperation *op,
 	
 }
 
+static void
+print_e2k_gc_entry (E2kGlobalCatalogEntry *gc)
+{
+	if (!gc)
+		return;
+
+	E2K_GC_DEBUG_MSG(("Printing GC data\n\n"));
+	E2K_GC_DEBUG_MSG(("DN = %s\n", gc->dn));
+	E2K_GC_DEBUG_MSG(("display_name = %s\n", gc->display_name));
+	E2K_GC_DEBUG_MSG(("email = %s\n", gc->email));
+	E2K_GC_DEBUG_MSG(("exchange_server = %s\n", gc->exchange_server));
+	E2K_GC_DEBUG_MSG(("mailbox = %s\n", gc->mailbox));
+	E2K_GC_DEBUG_MSG(("legacy_exchange_dn = %s\n", gc->legacy_exchange_dn));
+}
+
 /**
  * e2k_global_catalog_lookup:
  * @gc: the global catalog

@@ -527,6 +527,8 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
+	d(g_print ("exchange_account_remove_folder: path=[%s]\n", path));
+
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 

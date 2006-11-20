@@ -719,3 +719,33 @@ camel_url_copy(const CamelURL *in)
 
 	return out;
 }
+
+char *
+camel_url_decode_path (const char *path)
+{
+        gchar **comps;
+        char *new_path = NULL;
+        GString *str;
+        int i = 0;
+
+        if (!path)
+                return g_strdup("");    /* ??? or NULL? */
+
+        str = g_string_new (NULL);
+
+        comps = g_strsplit (path, "/", -1);
+        while (comps[i]) {
+                camel_url_decode (comps[i]);
+                g_string_append (str, comps[i]);
+                g_string_append_c (str, '/');
+                i++;
+        }
+
+        /* Strip-off the trailing "/" */
+        new_path = g_strndup (str->str, str->len-1);
+
+        g_strfreev (comps);
+        g_string_free (str, TRUE);
+
+        return new_path;
+}
