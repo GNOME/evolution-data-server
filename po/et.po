@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-08 07:15+0200\n"
-"PO-Revision-Date: 2006-11-19 00:06+0200\n"
+"PO-Revision-Date: 2006-11-22 14:02+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1988,7 +1988,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
+msgstr "Määratud kontekstikäsitleja ei viita ühelegi korrektsele kontekstile."
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The consistency checks performed on the input_token failed."
@@ -2262,12 +2262,12 @@ msgstr "`%s' jaoks pole sertifikaati võimalik leida"
 
 #: ../camel/camel-smime-context.c:780
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "Üldist masskrüptimise algoritmi pole võimalik leida"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:789
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr ""
+msgstr "Masskrüptimise võtmele pole võimalik slotti leida"
 
 #: ../camel/camel-smime-context.c:800
 msgid "Cannot create CMS Message"
@@ -2422,7 +2422,7 @@ msgstr "Väljaandja sertifikaati pole kohapeal võimalik hankida"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Unable to verify leaf signature"
-msgstr ""
+msgstr "Harusignatuuri pole võimalik verifitseerida"
 
 #: ../camel/camel-tcp-stream-openssl.c:605
 msgid "Certificate chain too long"
@@ -5224,6 +5224,10 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Toimus mitu segmenteerimise viga: veadialoogi pole võimalik kuvada\n"
+
+#: ../libedataserverui/e-name-selector-dialog.c:122
+msgid "Any Category"
+msgstr "Iga kategooria"
 
 msgid "Failed to create pipe to '%s': %s"
 msgstr "Tõrge '%s' toru loomisel: %s"
