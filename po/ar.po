@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-17 08:30+0000\n"
+"POT-Creation-Date: 2006-11-24 13:00+0000\n"
 "PO-Revision-Date: 2006-11-10 06:29+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <support@eglug.org>\n"
@@ -139,9 +139,9 @@ msgstr "الدليل مشغول"
 #: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
 #: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
 #: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3434
-#, c-format
+#, fuzzy, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr ""
+msgstr "جعل الاستثناء كوربا / ٪ ق / نداء"
 
 #: ../addressbook/libebook/e-book.c:2594
 #, fuzzy, c-format
@@ -179,14 +179,14 @@ msgid "%s: Could not create EBookListener"
 msgstr "لم يمكن إنشاء الأنبوب: %s"
 
 #: ../addressbook/libebook/e-book.c:3574
-#, c-format
+#, fuzzy, c-format
 msgid "%s: there was no self contact UID stored in gconf"
-msgstr ""
+msgstr "٪ ق : لم يكن هناك اتصال النفس رمز المستخدم المخزنه في غكونف"
 
 #: ../addressbook/libebook/e-book.c:3707
-#, c-format
+#, fuzzy, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr ""
+msgstr "٪ ق : لم يكن هناك مصدر ل٪ - رمز المستخدم او يخزن في غكونف '."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:112
@@ -440,16 +440,19 @@ msgid "AIM Home Screen Name 3"
 msgstr "إسم أيقونة منزل سطح المكتب"
 
 #: ../addressbook/libebook/e-contact.c:191
+#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr ""
+msgstr "هدف العمل باسم شاشة 1"
 
 #: ../addressbook/libebook/e-contact.c:192
+#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr ""
+msgstr "الهدف عمل الشاشه اسم 2"
 
 #: ../addressbook/libebook/e-contact.c:193
+#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr ""
+msgstr "الهدف عمل شاشة الاسم 3"
 
 #: ../addressbook/libebook/e-contact.c:194
 #, fuzzy
@@ -467,16 +470,19 @@ msgid "GroupWise Home Screen Name 3"
 msgstr "إسم أيقونة منزل سطح المكتب"
 
 #: ../addressbook/libebook/e-contact.c:197
+#, fuzzy
 msgid "GroupWise Work Screen Name 1"
-msgstr ""
+msgstr "في مجموعات عمل الشاشه اسم 1"
 
 #: ../addressbook/libebook/e-contact.c:198
+#, fuzzy
 msgid "GroupWise Work Screen Name 2"
-msgstr ""
+msgstr "في مجموعات عمل الشاشه اسم 2"
 
 #: ../addressbook/libebook/e-contact.c:199
+#, fuzzy
 msgid "GroupWise Work Screen Name 3"
-msgstr ""
+msgstr "في مجموعات عمل شاشة الاسم 3"
 
 #: ../addressbook/libebook/e-contact.c:200
 #, fuzzy
@@ -524,16 +530,19 @@ msgid "Yahoo! Home Screen Name 3"
 msgstr "إسم أيقونة منزل سطح المكتب"
 
 #: ../addressbook/libebook/e-contact.c:209
+#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr ""
+msgstr "ياهو!اسم عمل الشاشه 1"
 
 #: ../addressbook/libebook/e-contact.c:210
+#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr ""
+msgstr "ياهو!اسم عمل شاشة 2"
 
 #: ../addressbook/libebook/e-contact.c:211
+#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr ""
+msgstr "ياهو!اسم شاشة العمل 3"
 
 #: ../addressbook/libebook/e-contact.c:212
 #, fuzzy
@@ -551,16 +560,19 @@ msgid "MSN Home Screen Name 3"
 msgstr "إسم أيقونة منزل سطح المكتب"
 
 #: ../addressbook/libebook/e-contact.c:215
+#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr ""
+msgstr "اسم شاشة العمل الحر 1"
 
 #: ../addressbook/libebook/e-contact.c:216
+#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr ""
+msgstr "اسم العمل الحر الشاشه 2"
 
 #: ../addressbook/libebook/e-contact.c:217
+#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr ""
+msgstr "اسم العمل الحر الشاشه 3"
 
 #: ../addressbook/libebook/e-contact.c:218
 #, fuzzy
@@ -767,8 +779,9 @@ msgid "Anniversary: %s"
 msgstr "الذكرى ال_سنويّة:"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
+#, fuzzy
 msgid "Cannot save calendar data: Malformed URI."
-msgstr ""
+msgstr "لا يمكن انقاذ جدول البيانات مشوه وري."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1712
@@ -780,8 +793,9 @@ msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
+#, fuzzy
 msgid "Reply Requested: When convenient"
-msgstr ""
+msgstr "الرد الى حين مريحه"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:266
 #, fuzzy, c-format
@@ -801,7 +815,7 @@ msgstr "العنوان \"%s\" غير سليم."
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:969
-#: ../calendar/libecal/e-cal.c:5256
+#: ../calendar/libecal/e-cal.c:5255
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1040
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1064
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1102
@@ -880,8 +894,9 @@ msgid "Smoke"
 msgstr "دخان"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:205
+#, fuzzy
 msgid "Thunderstorms"
-msgstr ""
+msgstr "الزوابع الرعديه"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:206
 #, fuzzy
@@ -909,8 +924,9 @@ msgid "Clear"
 msgstr "مسح"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#, fuzzy
 msgid "Mostly cloudy"
-msgstr ""
+msgstr "غائم غالبا"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:212
 #, fuzzy
@@ -923,8 +939,9 @@ msgid "Rain showers"
 msgstr "وابل من المطر"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#, fuzzy
 msgid "Foggy"
-msgstr ""
+msgstr "ضبابي"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:215
 #, fuzzy
@@ -942,8 +959,9 @@ msgid "Very hot/humid"
 msgstr "خط عريض جدا"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#, fuzzy
 msgid "Blizzard"
-msgstr ""
+msgstr "العاصفة الثلجيه"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:219
 #, fuzzy
@@ -966,8 +984,9 @@ msgid "Freezing drizzle"
 msgstr "رذاذ متجمد"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#, fuzzy
 msgid "Very cold/wind chill"
-msgstr ""
+msgstr "باردا جدا والريح برد"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:224
 #, fuzzy
@@ -1026,14 +1045,14 @@ msgid "Weather: Rain"
 msgstr "مطر خفيف"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:333
-#, c-format
+#, fuzzy, c-format
 msgid "%.1f°C - %s"
-msgstr ""
+msgstr ".1 ٪ و س - ق ٪"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:335
-#, c-format
+#, fuzzy, c-format
 msgid "%.1f°F - %s"
-msgstr ""
+msgstr "اف.1 ٪ ° ٪ و ق"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:338
 #, fuzzy, c-format
@@ -1230,52 +1249,52 @@ msgstr "%s أدخل كلمة السّر لـ %s·(المستخدم %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s أدخل كلمة السّر لـ %s·(المستخدم %s)"
 
-#: ../calendar/libecal/e-cal.c:5228
+#: ../calendar/libecal/e-cal.c:5227
 #, fuzzy
 msgid "Invalid argument"
 msgstr "متغير غير صحيح: \"%s\"\n"
 
-#: ../calendar/libecal/e-cal.c:5230
+#: ../calendar/libecal/e-cal.c:5229
 #, fuzzy
 msgid "Backend is busy"
 msgstr "المشغل مشغول"
 
-#: ../calendar/libecal/e-cal.c:5232
+#: ../calendar/libecal/e-cal.c:5231
 #, fuzzy
 msgid "Repository is offline"
 msgstr "المستخدم البعيد ليس على الخط"
 
-#: ../calendar/libecal/e-cal.c:5234
+#: ../calendar/libecal/e-cal.c:5233
 #, fuzzy
 msgid "No such calendar"
 msgstr "لا رسالة بهذا الإسم"
 
-#: ../calendar/libecal/e-cal.c:5236 ../servers/groupwise/e-gw-connection.c:175
+#: ../calendar/libecal/e-cal.c:5235 ../servers/groupwise/e-gw-connection.c:175
 #, fuzzy
 msgid "Object not found"
 msgstr "لم يوجد الجسم"
 
-#: ../calendar/libecal/e-cal.c:5238 ../servers/groupwise/e-gw-connection.c:169
+#: ../calendar/libecal/e-cal.c:5237 ../servers/groupwise/e-gw-connection.c:169
 #, fuzzy
 msgid "Invalid object"
 msgstr "مميّز الجسم (%s)"
 
-#: ../calendar/libecal/e-cal.c:5240
+#: ../calendar/libecal/e-cal.c:5239
 #, fuzzy
 msgid "URI not loaded"
 msgstr "لم تحمّل صورة."
 
-#: ../calendar/libecal/e-cal.c:5242
+#: ../calendar/libecal/e-cal.c:5241
 #, fuzzy
 msgid "URI already loaded"
 msgstr "لم تحمّل صورة."
 
-#: ../calendar/libecal/e-cal.c:5244
+#: ../calendar/libecal/e-cal.c:5243
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "رُفض التّصريح"
 
-#: ../calendar/libecal/e-cal.c:5246 ../servers/groupwise/e-gw-connection.c:177
+#: ../calendar/libecal/e-cal.c:5245 ../servers/groupwise/e-gw-connection.c:177
 #, fuzzy
 msgid "Unknown User"
 msgstr "تبديل المستخدم"
@@ -1283,35 +1302,36 @@ msgstr "تبديل المستخدم"
 # checked, typed but the nchanged: you add a new ID and the other exists
 # the meaning of this dialog is more" you can't add a newone cz another one exists"
 #
-#: ../calendar/libecal/e-cal.c:5248
+#: ../calendar/libecal/e-cal.c:5247
 #, fuzzy
 msgid "Object ID already exists"
 msgstr "هويّة المراسَل موجودة مسبقاً"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5249
 msgid "Protocol not supported"
 msgstr "البروتوكول غير مدعوم"
 
-#: ../calendar/libecal/e-cal.c:5252
+#: ../calendar/libecal/e-cal.c:5251
 #, fuzzy
 msgid "Operation has been canceled"
 msgstr "تمّ حذف الرّسالة"
 
-#: ../calendar/libecal/e-cal.c:5254
+#: ../calendar/libecal/e-cal.c:5253
 #, fuzzy
 msgid "Could not cancel operation"
 msgstr "لم يمكن القيام بالعملية"
 
-#: ../calendar/libecal/e-cal.c:5258
+#: ../calendar/libecal/e-cal.c:5257
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "مطلوبٌ التّوثيق"
 
-#: ../calendar/libecal/e-cal.c:5260
+#: ../calendar/libecal/e-cal.c:5259
+#, fuzzy
 msgid "A CORBA exception has occurred"
-msgstr ""
+msgstr "فباستثناء حدث كوربا"
 
-#: ../calendar/libecal/e-cal.c:5262
+#: ../calendar/libecal/e-cal.c:5261
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
@@ -1325,7 +1345,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "خطأ مجهول"
 
-#: ../calendar/libecal/e-cal.c:5264
+#: ../calendar/libecal/e-cal.c:5263
 #: ../servers/exchange/storage/e-storage.c:554
 #, fuzzy
 msgid "No error"
@@ -1352,14 +1372,14 @@ msgstr "%s:·%s كالعامل التلي.\n"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع ان الحجه الاولى ان يكون الخيط"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع ان الحجه الاولى فايزو 8601 اليوم / الخيط"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
@@ -1380,27 +1400,28 @@ msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "%s عند إبتداء الموعد"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع الحجه الثانية ان تكون اعداد صحيحة"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع الثانية بحجه انها time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع الحجه الثانية ان يكون الخيط"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
 msgstr ""
+"/ ٪ ق / يتوقع الاولى لتكون حجة / ايه / ، / موجز / او / الوصف / او / الموقع /"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, fuzzy, c-format
@@ -1408,11 +1429,11 @@ msgid "\"%s\" expects at least one argument"
 msgstr "تحتاج إلى حاضرٍ واحد على الأقل."
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr ""
+msgstr "/ ٪ ق / يتوقع كل الحجج لقيود او واحدا فقط بحجه انها مزورة منطقي (# و)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1494,8 +1515,9 @@ msgid "Resynchronizing with server"
 msgstr "جاري المزامنة مع النّادل"
 
 #: ../camel/camel-disco-folder.c:42 ../camel/camel-offline-folder.c:50
+#, fuzzy
 msgid "Copy folder content locally for offline operation"
-msgstr ""
+msgstr "نسخة حافظة محتوى محليا لعملية النسخ"
 
 #: ../camel/camel-disco-folder.c:104 ../camel/camel-offline-folder.c:109
 msgid "Downloading new messages for offline mode"
@@ -1626,12 +1648,14 @@ msgid "(match-all) requires a single bool result"
 msgstr "(match-all) تحتاج ناتجاً منطقيّاً واحداً"
 
 #: ../camel/camel-folder-search.c:758
+#, fuzzy
 msgid "(match-threads) not allowed inside match-all"
-msgstr ""
+msgstr "(مباراة بين الخيوط (لا سمح داخل كل مباراة"
 
 #: ../camel/camel-folder-search.c:761 ../camel/camel-folder-search.c:765
+#, fuzzy
 msgid "(match-threads) requires a match type string"
-msgstr ""
+msgstr "(مباراة بين خيوط) الى المباراة نوع الخيط"
 
 #: ../camel/camel-folder-search.c:789
 #, fuzzy
@@ -2313,8 +2337,9 @@ msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "لايمكن إضافة ملف غير موجود '%s'"
 
 #: ../camel/camel-smime-context.c:317
+#, fuzzy
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "لا تضيف السيدة سميمينكيبريفس صفة"
 
 #: ../camel/camel-smime-context.c:322
 #, fuzzy
@@ -2388,8 +2413,9 @@ msgid "No signed data in signature"
 msgstr "إضافة توقيع المخطوط"
 
 #: ../camel/camel-smime-context.c:544
+#, fuzzy
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "ملخصات المفقودين يلفها من البيانات"
 
 #: ../camel/camel-smime-context.c:557 ../camel/camel-smime-context.c:567
 #, fuzzy
@@ -2407,12 +2433,14 @@ msgid "Certificate import failed"
 msgstr "فشل تسجيل %s إلى %s"
 
 #: ../camel/camel-smime-context.c:597
+#, fuzzy
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
+msgstr "الشهاده هي الرسالة الوحيدة ، لا يستطيع التحقق الشهادات"
 
 #: ../camel/camel-smime-context.c:600
+#, fuzzy
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
+msgstr "الشهاده هي الرسالة الوحيدة شهادات المستورده ومنها"
 
 #: ../camel/camel-smime-context.c:604
 #, fuzzy
@@ -2435,13 +2463,15 @@ msgid "Cannot find certificate for `%s'"
 msgstr "لا يمكن تلقي المخطط لـ %s : %s"
 
 #: ../camel/camel-smime-context.c:780
+#, fuzzy
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "لا يمكن إيجاد قاعدة مشتركة معظم التشفير"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:789
+#, fuzzy
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr ""
+msgstr "لا تخصص حيزا لمعظم مفتاح التشفير"
 
 #: ../camel/camel-smime-context.c:800
 #, fuzzy
@@ -2459,8 +2489,9 @@ msgid "Cannot attach CMS Enveloped data"
 msgstr "لا يمكن إرفاق الملف %s: %s"
 
 #: ../camel/camel-smime-context.c:818
+#, fuzzy
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "لا نولي موضوع حفظ البيانات"
 
 #: ../camel/camel-smime-context.c:827
 #, fuzzy
@@ -2487,8 +2518,9 @@ msgid "Decoder failed, error %d"
 msgstr "فشل تنشيط %s: خطأ مجهول\n"
 
 #: ../camel/camel-smime-context.c:951
+#, fuzzy
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr ""
+msgstr "ق / تفك المحاكاه : لا مشفره المحتوى وجد"
 
 #: ../camel/camel-smime-context.c:978
 #, fuzzy
@@ -2859,8 +2891,9 @@ msgid "Could not load summary for %s"
 msgstr "لم يمكن تحميل الملخّص لـ %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1036
+#, fuzzy
 msgid "Trash Folder Full. Please Empty."
-msgstr ""
+msgstr "النفايات ملف كامل.يرجى ارغة."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1203
 #: ../camel/providers/groupwise/camel-groupwise-store.c:629
@@ -2945,16 +2978,19 @@ msgid "SOAP Settings"
 msgstr "اختر الإعدادات"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:72
+#, fuzzy
 msgid "Post Office Agent SOAP Port:"
-msgstr ""
+msgstr "مكتب الوكيل بعد الصابون الميناء :"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:85
+#, fuzzy
 msgid "Novell GroupWise"
-msgstr ""
+msgstr "الطراز غروبوايز"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:87
+#, fuzzy
 msgid "For accessing Novell GroupWise servers"
-msgstr ""
+msgstr "للحصول على الطراز غروبوايز الخدمة"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:102
 #: ../camel/providers/hula/camel-hula-provider.c:92
@@ -2997,8 +3033,9 @@ msgstr ""
 "\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:309
+#, fuzzy
 msgid "Some features may not work correctly with your current server version"
-msgstr ""
+msgstr "بعض ملامح العمل بشكل صحيح لا يجوز لكم مع النسخه الحالية الخادم"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:537
 #: ../camel/providers/imap/camel-imap-store.c:1877
@@ -3046,11 +3083,14 @@ msgid "Sending Message"
 msgstr "جاري إرسال الرسالة %d من %d"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
+#, fuzzy
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
+"لقد تجاوز هذا التقرير في حد التخزين.لكم رسائل اصطف في بلدكم صندوق الصادرات."
+"أرسل ثانية من الضغط ارسال / تلقى بعد حذف وحفظ بعض لكم بريد. / ن"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:206
@@ -3112,8 +3152,9 @@ msgid "Namespace"
 msgstr "المجال المجرّد"
 
 #: ../camel/providers/hula/camel-hula-provider.c:75
+#, fuzzy
 msgid "Hula"
-msgstr ""
+msgstr "حولا"
 
 #: ../camel/providers/hula/camel-hula-provider.c:77
 #, fuzzy
@@ -3200,20 +3241,20 @@ msgid "This message is not currently available"
 msgstr "هذه الرّسالة غير متوفّرة حاليّاً"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2560
-#, c-format
+#, fuzzy, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "خادم عدم الرد : لا معلومات لرسالة د ٪"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2568
-#, c-format
+#, fuzzy, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "خادم عدم الرد : لا رمز المستخدم لرسالة د ٪"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2581
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
-msgstr ""
+msgstr "غير متوقع خادم الرد : ويدس مطابقه للرسائل و٪ ٪ د د"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2762
 msgid "Could not find message body in FETCH response."
@@ -3452,9 +3493,10 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "قطع النّادل الإتّصال بشكلٍ غير متوقّع: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
+#, fuzzy
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr ""
+msgstr "يمكن ارسال القائمة لكشف بعض القواعد والمرشح ففولدر"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
 #, fuzzy, c-format
@@ -3653,9 +3695,10 @@ msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "لم يمكن إعادة تسمية المجلّد %s إلى %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1480
-#, c-format
+#, fuzzy, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr ""
+"لا يستطيع الحصول على المعلومات ٪ أو نمط أو '- ٪ على الخادم او موسعه ٪ : ٪ ق"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 #, fuzzy
@@ -4283,8 +4326,9 @@ msgid "Posting failed: %s"
 msgstr "فشل الاختبار %d"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:392
+#, fuzzy
 msgid "You cannot post NNTP messages while working offline!"
-msgstr ""
+msgstr "لا يمكنك ما نتب رسائل بينما عمل بعيدا!"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:403
 #, fuzzy
@@ -4292,13 +4336,15 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "لم يمكن نسخ الرّسائل إلى مجلّد صندوق البريد المؤقّت: %s"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
+#, fuzzy
 msgid ""
 "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
+msgstr "عرض الملفات في قصر الترقيم (يقصد c.o.linux ليس comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
+#, fuzzy
 msgid "In the subscription dialog, show relative folder names"
-msgstr ""
+msgstr "الاشتراك في الحوار وعرض الاسماء المتعلقة بالوثائق"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -4339,22 +4385,27 @@ msgid ""
 msgstr "خطأ في جلب الرسالة"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:891
+#, fuzzy
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
+"لا يمكنك الإنضمام الى هذه اخبارى : / ن / ننو اخبارى هذه.الاعمال المختاره هي "
+"الارجح والد الحافظه."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:923
+#, fuzzy
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
 "newsgroup does not exist!"
-msgstr ""
+msgstr "لا يمكنك ونسوبسكريبي هذا اخبارى : / ن / نيوسغروب لا يوجد!"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:948
+#, fuzzy
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr ""
+msgstr "لا يمكنك انشاء ملف في مقال مخزن : اشترك بدلا منه."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:956
 #, fuzzy
@@ -4362,8 +4413,9 @@ msgid "You cannot rename a folder in a News store."
 msgstr "لم يمكن إعادة تسمية المجلّد %s إلى %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:964
+#, fuzzy
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
+msgstr "لا يمكنك رفع اي ملف مخزن في الاخبار : بدلا ونسوبسكريبي."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1145
 #, fuzzy
@@ -4913,12 +4965,14 @@ msgid "Favorites"
 msgstr "الفئات"
 
 #: ../libedataserver/e-categories.c:49
+#, fuzzy
 msgid "Gifts"
-msgstr ""
+msgstr "الهدايا"
 
 #: ../libedataserver/e-categories.c:50
+#, fuzzy
 msgid "Goals/Objectives"
-msgstr ""
+msgstr "الاهداف / المقاصد"
 
 #: ../libedataserver/e-categories.c:51
 #, fuzzy
@@ -4985,8 +5039,9 @@ msgid "Time & Expenses"
 msgstr "وقت غير سليم"
 
 #: ../libedataserver/e-categories.c:65
+#, fuzzy
 msgid "VIP"
-msgstr ""
+msgstr "الزوار"
 
 #: ../libedataserver/e-categories.c:66
 #, fuzzy
@@ -5125,11 +5180,11 @@ msgid "Failed to authenticate.\n"
 msgstr "فشل التّوثيق.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:265
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr ""
+msgstr "هناك بالفعل فئة '٪' او في التشكيل.الرجاء استخدام اسم آخر"
 
 #: ../libedataserverui/e-categories-dialog.c:435
 #, fuzzy
@@ -5180,16 +5235,21 @@ msgstr "_تحرير"
 msgid "categories"
 msgstr "الفئات"
 
-#: ../libedataserverui/e-name-selector-dialog.c:295
+#: ../libedataserverui/e-name-selector-dialog.c:122
+#, fuzzy
+msgid "Any Category"
+msgstr "الصنف"
+
+#: ../libedataserverui/e-name-selector-dialog.c:287
 #, fuzzy
 msgid "Select Contacts from Address Book"
 msgstr "إنتقاء مراسَلين من دفتر العناوين"
 
-#: ../libedataserverui/e-name-selector-dialog.c:597
+#: ../libedataserverui/e-name-selector-dialog.c:589
 msgid "_Add"
 msgstr "إ_ضافة"
 
-#: ../libedataserverui/e-name-selector-dialog.c:622
+#: ../libedataserverui/e-name-selector-dialog.c:614
 msgid "_Remove"
 msgstr "إ_زالة"
 
@@ -5284,13 +5344,13 @@ msgid "_Destination"
 msgstr "المقصد:"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1645
-#: ../servers/exchange/storage/exchange-account.c:935
+#: ../servers/exchange/storage/exchange-account.c:937
 #, fuzzy, c-format
 msgid "Enter password for %s"
 msgstr "ادخل كلمة السر لـ %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
-#: ../servers/exchange/storage/exchange-account.c:940
+#: ../servers/exchange/storage/exchange-account.c:942
 #, fuzzy
 msgid "Enter password"
 msgstr "أدخل كلمة المرور"
@@ -5393,8 +5453,9 @@ msgid "The specified folder was not found"
 msgstr "حساب المستخدم '%s' غير موجود"
 
 #: ../servers/exchange/storage/e-storage.c:570
+#, fuzzy
 msgid "Function not implemented in this storage"
-msgstr ""
+msgstr "المهمة لم تنفذ في هذا التخزين"
 
 #: ../servers/exchange/storage/e-storage.c:574
 #, fuzzy
@@ -5407,12 +5468,14 @@ msgid "The specified type is not supported in this storage"
 msgstr "التّحقّق غير مدعوم من قبل هذه الشّيفرة"
 
 #: ../servers/exchange/storage/e-storage.c:578
+#, fuzzy
 msgid "The specified folder cannot be modified or removed"
-msgstr ""
+msgstr "الملف المحدد لا يمكن تعديلها او ازالتها"
 
 #: ../servers/exchange/storage/e-storage.c:580
+#, fuzzy
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "لا تقدم ملفا طفل واحد من اصل افريقى"
 
 #: ../servers/exchange/storage/e-storage.c:582
 #, fuzzy
@@ -5420,34 +5483,35 @@ msgid "Cannot create a folder with that name"
 msgstr "لا يمكن إنشاء مجلّد بهذا الإسم."
 
 #: ../servers/exchange/storage/e-storage.c:584
+#, fuzzy
 msgid "This operation cannot be performed in off-line mode"
-msgstr ""
+msgstr "هذه العملية لا يمكن اجراؤها في نمط غير متصل"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:635
+#: ../servers/exchange/storage/exchange-account.c:637
 #, fuzzy, c-format
 msgid "%s's Folders"
 msgstr "المجلّدات"
 
-#: ../servers/exchange/storage/exchange-account.c:1241
+#: ../servers/exchange/storage/exchange-account.c:1243
 #, fuzzy
 msgid "Personal Folders"
 msgstr "اجلب حجم المجلدات الخاصة"
 
-#: ../servers/exchange/storage/exchange-account.c:1256
+#: ../servers/exchange/storage/exchange-account.c:1258
 #, fuzzy
 msgid "Favorite Public Folders"
 msgstr "جاري مسح الرسائل في \"%s\""
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1273
+#: ../servers/exchange/storage/exchange-account.c:1275
 #, fuzzy
 msgid "All Public Folders"
 msgstr "غل_ق جميع المجلّدات"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1287
+#: ../servers/exchange/storage/exchange-account.c:1289
 #, fuzzy
 msgid "Global Address List"
 msgstr "قائمة العناوين العامة / الدليل النشيط"
