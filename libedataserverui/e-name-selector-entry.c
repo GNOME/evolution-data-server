@@ -567,7 +567,7 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 	g_assert (strlen (email) > 0);
 
 	if (name)
-		textrep = g_strdup_printf ("%s", name);
+		textrep = g_strdup_printf ("%s <%s>", name, email);
 	else
 		textrep = g_strdup_printf ("%s", email);
 
@@ -914,8 +914,9 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	gboolean      rebuild_attributes = FALSE;
 
 	destination = find_destination_at_position (name_selector_entry, pos);
-	g_assert (destination);
-
+	if (!destination)
+		return;
+	
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	raw_address = get_address_at_position (text, pos);
 	g_assert (raw_address);
@@ -1141,7 +1142,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	gunichar     str_context [2], str_b_context [2];
 	gint         len;
 	gint         i;
-	gboolean     already_selected = FALSE;
+	gboolean     already_selected = FALSE, del_space = FALSE, del_comma = FALSE;
 
 	if (start_pos == end_pos) 
 		return;
@@ -1174,19 +1175,121 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	index_end   = get_index_at_position (text, end_pos);
 	
 	g_signal_stop_emission_by_name (name_selector_entry, "delete_text");
-
+	
 	/* If the deletion touches more than one destination, the first one is changed
 	 * and the rest are removed. If the last destination wasn't completely deleted,
 	 * it becomes part of the first one, since the separator between them was
 	 * removed.
 	 *
 	 * Here, we let the model know about removals. */
-	for (i = index_end; i > index_start; i--)
+	for (i = index_end; i > index_start; i--) {
+		EDestination *destination = find_destination_by_index (name_selector_entry, i);
+		int range_start, range_end;
+		char *ttext;
+		const char *email=NULL;
+		gboolean sel=FALSE;
+
+		if (destination)
+			email = e_destination_get_address (destination);
+
+		if (!email || !*email)
+			continue;
+		
+		if (!get_range_by_index (text, i, &range_start, &range_end)) {
+			g_warning ("ENameSelectorEntry is out of sync with model!");
+			return;
+		}
+
+		if ((selection_start < range_start && selection_end > range_start) ||
+		    (selection_end > range_start && selection_end < range_end))
+			sel=TRUE;
+
+		if (!sel) {
+			g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+			g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+			gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
+
+			ttext = sanitize_string (email);
+			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ttext, -1, &range_start);
+			g_free (ttext);
+
+			g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+			g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+
+		}
+		
 		remove_destination_by_index (name_selector_entry, i);
+	}
 	
 	/* Do the actual deletion */
 	
-	
+	if (end_pos == start_pos +1 &&  index_end == index_start) {
+		/* We could be just deleting the empty text */
+		char *c;
+
+		/* Get the actual deleted text */
+		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
+
+		if ( c[0] == ' ') {
+			/* If we are at the beginning or removing junk space, let us ignore it */
+			del_space = TRUE;
+		}
+	} else 	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
+		/* We could be just deleting the empty text */
+		char *c;
+
+		/* Get the actual deleted text */
+		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
+
+		if ( c[0] == ',' && !is_quoted_at (text, start_pos)) {
+			/* If we are at the beginning or removing junk space, let us ignore it */
+			del_comma = TRUE;
+		}
+	}
+
+	if (del_comma) {
+		int range_start=-1, range_end;
+		EDestination *dest = find_destination_by_index (name_selector_entry, index_end);
+		/* If we have deleted the last comma, let us autocomplete normally
+		 */
+		
+		if (dest && len - end_pos  != 0) {
+			
+			EDestination *destination1  = find_destination_by_index (name_selector_entry, index_start);
+			char *ttext;
+			const char *email=NULL;
+
+			if (destination1)
+				email = e_destination_get_address (destination1);
+
+			if (email && *email) {
+
+				if (!get_range_by_index (text, i, &range_start, &range_end)) {
+					g_warning ("ENameSelectorEntry is out of sync with model!");
+					return;
+				}
+
+				g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+				g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+				gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
+
+				ttext = sanitize_string (email);
+				gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ttext, -1, &range_start);
+				g_free (ttext);
+
+				g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+				g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+			}
+			
+			if (range_start != -1) {
+				start_pos = range_start;
+				end_pos = start_pos+1;
+				gtk_editable_set_position (GTK_EDITABLE (name_selector_entry),start_pos);
+			}
+		}
+	}
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry),
 				  start_pos, end_pos);
 	
@@ -1214,7 +1317,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		/* If the entry was completely cleared, remove the initial destination too */
 		remove_destination_by_index (name_selector_entry, 0);
 		generate_attribute_list (name_selector_entry);
-	} else {
+	} else  if (!del_space){
 		modify_destination_at_position (name_selector_entry, start_pos);
 	}
 
@@ -1274,10 +1377,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	gint         cursor_pos;
 	gint         range_start, range_end;
 	ENameSelectorEntryPrivate *priv;
-	EContact      *contact;
-	EContactField  matched_field;
 	EDestination  *destination;
-	gchar         *textrep;
 	gint           range_len;
 	const gchar   *text;
 	gchar         *cue_str;
@@ -1297,15 +1397,42 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
 
 	cue_str = get_entry_substring (name_selector_entry, range_start, range_end);
+#if 0	
 	if (!find_existing_completion (name_selector_entry, cue_str, &contact,
 				       &textrep, &matched_field)) {
 		g_free (cue_str);
 		return;
 	}
+#endif	
 	g_free (cue_str);	
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	/* Place cursor at end of address */
+	get_range_at_position (text, cursor_pos, &range_start, &range_end);
+
+	if (priv->is_completing) {
+		char *str_context=NULL;
+		
+		str_context = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), range_end, range_end+1);
+		
+		if (str_context[0] != ',') {
+			/* At the end*/
+			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &range_end);
+		} else {
+			/* In the middle */
+			int newpos = strlen (text);
+
+                        /* Doing this we can make sure that It wont ask for completion again. */
+			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &newpos);
+			g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+			gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), newpos-2, newpos);
+			g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+			/* Move it close to next destination*/
+			range_end = range_end+2;
+			
+		}
+	}
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
 	g_signal_emit (name_selector_entry, signals[UPDATED], 0, destination, NULL);
@@ -1511,7 +1638,7 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	n = gtk_tree_path_get_indices (path) [0];
 	destination = e_destination_store_get_destination (name_selector_entry->destination_store, iter);
 
-	if (!destination) 
+	if (!destination)
 		return;
 	
 	g_assert (n >= 0);
@@ -1762,9 +1889,8 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 	EBook *book;
 	gboolean result;
 	gint email_num;
-	
 	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (data);
-
+	
 	destination = name_selector_entry->popup_destination;
 	contact = e_destination_get_contact (destination);
 	if (!contact)
