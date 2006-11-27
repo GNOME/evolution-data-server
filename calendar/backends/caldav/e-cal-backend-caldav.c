@@ -1040,7 +1040,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	if (object->etag != NULL) {
 		soup_message_add_header (message->request_headers, 
-					"If-None-Match", object->etag);
+					"If-Match", object->etag);
 	}
 	
 	d(setup_debug (message);)
