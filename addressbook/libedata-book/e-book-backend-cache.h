@@ -57,6 +57,8 @@ GList*   e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char
 gboolean e_book_backend_cache_exists (const char *uri);
 void     e_book_backend_cache_set_populated (EBookBackendCache *cache);
 gboolean e_book_backend_cache_is_populated (EBookBackendCache *cache);
+void e_book_backend_cache_set_time (EBookBackendCache *cache, const char *t);
+char *e_book_backend_cache_get_time (EBookBackendCache *cache);
 GPtrArray* e_book_backend_cache_search (EBookBackendCache *cache, const char *query);
 
 
