@@ -1794,8 +1794,8 @@ sanitize_component (ECalBackendSync *backend, ECalComponent *comp, char *server_
 		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
 		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
 
-		g_string_free (str, TRUE);
 	}
+	g_string_free (str, TRUE);
 }
 
 static ECalBackendSyncStatus

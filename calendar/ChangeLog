@@ -1,5 +1,10 @@
 2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(sanitize_component): Fix leak of str.
+
+2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
+
 	* libedata-cal/e-cal-backend.c: (e_cal_backend_finalize):
 	Fix leak of uri and source.
 
