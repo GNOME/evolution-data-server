@@ -947,11 +947,11 @@ e_cal_backend_contacts_finalize (GObject *object)
 	cbc = E_CAL_BACKEND_CONTACTS (object);
 	priv = cbc->priv;
 
-	if (priv->default_zone) {
+	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icaltimezone_free (priv->default_zone, 1);
-		priv->default_zone = NULL;
 	}
-
+	
+	priv->default_zone = NULL;
 	g_hash_table_destroy (priv->addressbooks);
         g_hash_table_destroy (priv->tracked_contacts);
         g_hash_table_destroy (priv->zones);

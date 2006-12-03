@@ -300,11 +300,15 @@ e_cal_backend_file_finalize (GObject *object)
 		priv->uri = NULL;
 	}
 
-	if (priv->default_zone) {
+	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icaltimezone_free (priv->default_zone, 1);
-		priv->default_zone = NULL;
 	}
+	priv->default_zone = NULL;
 
+	if (priv->file_name) {
+		g_free (priv->file_name);
+		priv->file_name = NULL;
+	}	
 	g_free (priv);
 	cbfile->priv = NULL;
 

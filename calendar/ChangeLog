@@ -1,5 +1,14 @@
 2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
 
+	* backends/contacts/e-cal-backend-contacts.c:
+	(e_cal_backend_contacts_finalize): Do not free default_zone if
+	it is the built-in UTC timezone.
+	* backends/file/e-cal-backend-file.c
+	(e_cal_backend_file_finalize): Do not free default_zone if
+	it is the built-in UTC timezone. Fix leak of filename.
+
+2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
+
 	* backends/groupwise/e-cal-backend-groupwise.c:
 	(sanitize_component): Fix leak of str.
 
