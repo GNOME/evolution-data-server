@@ -219,7 +219,8 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 				sopts->autodelete = FALSE;
 
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnOpen")) {
-			val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
+			if (val_param)
+				val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
 			if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
 
@@ -230,7 +231,8 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 			
 
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnDelete")) {
-			val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
+			if (val_param)
+				val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
 			
 			if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
@@ -241,7 +243,8 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 				sopts->declined = E_GW_RETURN_NOTIFY_NONE;
 
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnAccept")) {
-			val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
+			if (val_param)
+				val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
 			
 			if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
@@ -253,7 +256,8 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 
 
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnCompleted")) {
-			val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
+			if (val_param)
+				val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
 			
 			if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
