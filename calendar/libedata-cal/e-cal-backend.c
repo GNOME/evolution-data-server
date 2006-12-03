@@ -297,7 +297,9 @@ e_cal_backend_finalize (GObject *object)
 
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->queries_mutex);
-
+	
+	g_free (priv->uri);
+	g_object_unref (priv->source);
 	g_free (priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

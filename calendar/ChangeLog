@@ -1,5 +1,10 @@
 2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
 
+	* libedata-cal/e-cal-backend.c: (e_cal_backend_finalize):
+	Fix leak of uri and source.
+
+2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
+
 	* libedata-cal/e-data-cal-view.c:
 	(e_data_cal_view_set_property): Do not dup backend. Fix this being
 	leaked.
