@@ -283,9 +283,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		value = soup_soap_parameter_get_string_value (subparam) ;
 		if (value)
 			container->priv->total = atoi(value) ;
-		else
-			/*XXX:Some problem - should return FALSE??*/
-			g_free (value) ;
+		g_free (value) ;
 	}
 	/* Is shared by me*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSharedByMe");
