@@ -1,5 +1,9 @@
 2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
 
+	* e-gw-item.c: (e_gw_item_dispose): Fix leak of end_date.
+
+2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
+
 	* e-gw-sendoptions.c: (parse_status_tracking_options):
 	Do not pass null params to libsoup calls.
 

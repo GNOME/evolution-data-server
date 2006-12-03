@@ -447,6 +447,11 @@ e_gw_item_dispose (GObject *object)
 			free_link_info (priv->link_info);
 			priv->link_info = NULL;
 		}
+
+		if (priv->end_date) {
+			g_free (priv->end_date);
+			priv->end_date = NULL;
+		}	
 		
 		free_changes (priv->additions);
 		free_changes (priv->deletions);
