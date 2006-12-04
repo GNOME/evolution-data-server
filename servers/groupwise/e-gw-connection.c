@@ -222,7 +222,7 @@ e_gw_connection_dispose (GObject *object)
 {
 	EGwConnection *cnc = (EGwConnection *) object;
 	EGwConnectionPrivate *priv;
-	char *hash_key, permissions_key;
+	char *hash_key;
 	
 	g_return_if_fail (E_IS_GW_CONNECTION (cnc));
 	
