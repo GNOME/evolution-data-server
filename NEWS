@@ -1,4 +1,19 @@
-Evolution-Data-Server 1.9.2 2006-10-16
+Evolution-Data-Server 1.9.3 2006-12-04
+--------------------------------------
+
+Updated Translations:
+Alexander Shopov (bg), Josep Puigdemont i Casamajó (ca),
+Ivar Smolin (et).
+
+Bug fixes : 330157, 350880, 328836, 348123, 365000, 353924. 
+174655, 222605, 219729, 208318, 207960. (bugzilla.novell.com)
+plus miscellaneous code clean-ups and memory leak fixes.
+
+Contributors :
+Harish Krishnaswamy, Sankar, Srinivasa Ragavan, Chenthill, 
+Claudio Saavedra, Ross Burton, Matthew Barnes, Andrew Ruthven.
+
+Evolution-Data-Server 1.9.2 2006-11-07
 --------------------------------------
 
 Updated Translations:

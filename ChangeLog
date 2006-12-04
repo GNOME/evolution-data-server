@@ -1,11 +1,7 @@
-2006-11-27  Andrew Ruthven  <andrew@etc.gen.nz>
+2006-12-04  Harish Krishnaswamy  <kharish@novell.com>
 
-	Fixes bug #349573
-
-	* calendar/backends/caldav/e-cal-backend-caldav.c
-        (caldav_server_delete_object):
-	Make sure that deleting CalDAV entries is RFC2068 compliant by
-	changing If-None-Match to If-Match.
+	* NEWS, configure.in: Evolution-Data-Server 1.9.3
+	release updates.
 
 2006-11-19  Matthew Barnes  <mbarnes@redhat.com>
 
