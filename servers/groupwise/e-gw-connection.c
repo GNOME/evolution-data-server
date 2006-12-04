@@ -33,6 +33,7 @@
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
 #include "e-gw-filter.h"
+#include "build-timestamp.h"
 
 /* For soup sync session timeout */
 #define GW_SOUP_SESSION_TIMEOUT 30
@@ -221,8 +222,7 @@ e_gw_connection_dispose (GObject *object)
 {
 	EGwConnection *cnc = (EGwConnection *) object;
 	EGwConnectionPrivate *priv;
-	char *hash_key;
-	gpointer orig_key, orig_value;
+	char *hash_key, permissions_key;
 	
 	g_return_if_fail (E_IS_GW_CONNECTION (cnc));
 	
@@ -235,14 +235,10 @@ e_gw_connection_dispose (GObject *object)
 					    priv->username ? priv->username : "",
 					    priv->password ? priv->password : "",
 					    priv->uri ? priv->uri : "");
-		if (g_hash_table_lookup_extended (loaded_connections_permissions, hash_key, &orig_key, &orig_value)) {
-			g_hash_table_remove (loaded_connections_permissions, hash_key);
-			if (g_hash_table_size (loaded_connections_permissions) == 0) {
-				g_hash_table_destroy (loaded_connections_permissions);
-				loaded_connections_permissions = NULL;
-			}
-
-			g_free (orig_key);
+		g_hash_table_remove (loaded_connections_permissions, hash_key);
+		if (g_hash_table_size (loaded_connections_permissions) == 0) {
+			g_hash_table_destroy (loaded_connections_permissions);
+			loaded_connections_permissions = NULL;
 		}
 		g_free (hash_key);
 	}
@@ -411,6 +407,7 @@ form_login_request (const char*uri, const char* username, const char* password)
 	SoupSoapMessage *msg;
 	/* build the SOAP message */
 	msg = e_gw_message_new_with_header (uri, NULL, "loginRequest");
+	e_gw_message_write_string_parameter (msg, "application", "types", build_timestamp);
 	soup_soap_message_start_element (msg, "auth", "types", NULL);
 	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
 					 "http://www.w3.org/2001/XMLSchema-instance");
@@ -553,7 +550,8 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 				    cnc->priv->password ? cnc->priv->password : "",
 				    cnc->priv->uri);
 	if (loaded_connections_permissions == NULL)
-		loaded_connections_permissions = g_hash_table_new (g_str_hash, g_str_equal);
+		loaded_connections_permissions = g_hash_table_new_full (g_str_hash, g_str_equal,
+				g_free, NULL);
 	g_hash_table_insert (loaded_connections_permissions, hash_key, cnc);
 
 	/* free memory */
@@ -3948,11 +3946,12 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, char *username,
 				parent_cnc->priv->uri);
 		cnc = g_hash_table_lookup (loaded_connections_permissions, hash_key);
 		permissions_key = g_strdup_printf ("%s:permissions", hash_key);
-		g_free (hash_key);
 
 		if (E_IS_GW_CONNECTION (cnc)) {
 			*permissions = GPOINTER_TO_INT (g_hash_table_lookup (loaded_connections_permissions, permissions_key));
 			g_free (permissions_key);
+			g_free (name);
+			g_free (hash_key);
 			g_object_ref (cnc);
 			g_static_mutex_unlock (&connecting);
 			return cnc;
@@ -4043,6 +4042,7 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, char *username,
 	/* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
+	g_free (name);
 	g_static_mutex_unlock (&connecting);
 	return cnc;
 }

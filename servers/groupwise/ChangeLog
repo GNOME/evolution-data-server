@@ -1,3 +1,18 @@
+2006-12-04  Harish Krishnaswamy  <kharish@novell.com>
+
+	* Makefile.am, e-gw-connection.c: (form_login_request):
+	Embed build timestamps into GroupWise login requests.
+	Fixes bugzilla.novell.com #174655.
+
+2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_dispose):
+	Clean up the code to remove redundant lookups and 
+	fix leaking of temporary strings.
+	(form_login_request), (e_gw_connection_new),
+	(e_gw_connection_get_proxy_connection): Fix leaks of
+	hash_key, name.
+
 2006-12-03  Harish Krishnaswamy  <kharish@novell.com>
 
 	* e-gw-item.c: (e_gw_item_dispose): Fix leak of end_date.

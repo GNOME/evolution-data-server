@@ -20,6 +20,13 @@ soap_test_LDADD = 					\
 	libegroupwise-1.2.la				\
 	$(E_DATA_SERVER_LIBS) 
 
+build-timestamp.h : $(top_builddir)/config.h
+	echo "const char *build_timestamp = \"Evolution-Data=Server-@BASE_VERSION@-`date +%F`\";" > $@
+
+BUILT_SOURCES = build-timestamp.h
+NODIST_FILES = build-timestamp.h
+CLEANFILES = build-timestamp.h
+
 lib_LTLIBRARIES = libegroupwise-1.2.la
 
 libegroupwise_1_2_la_SOURCES =			\
@@ -38,7 +45,8 @@ libegroupwise_1_2_la_SOURCES =			\
 	e-gw-recur-utils.c                      \
 	e-gw-recur-utils.h			\
 	e-gw-proxy.h				\
-	e-gw-proxy.c				
+	e-gw-proxy.c				\
+	build-timestamp.h
 
 libegroupwise_1_2_la_LIBADD =						\
 	$(E_DATA_SERVER_LIBS)						\
@@ -68,3 +76,4 @@ pkgconfig_DATA = libegroupwise-$(API_VERSION).pc
 EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
+
