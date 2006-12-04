@@ -21,7 +21,7 @@ soap_test_LDADD = 					\
 	$(E_DATA_SERVER_LIBS) 
 
 build-timestamp.h : $(top_builddir)/config.h
-	echo "const char *build_timestamp = \"Evolution-Data=Server-@BASE_VERSION@-`date +%F`\";" > $@
+	echo "const char *build_timestamp = \"Evolution-Data-Server-@BASE_VERSION@-`date +%F`\";" > $@
 
 BUILT_SOURCES = build-timestamp.h
 NODIST_FILES = build-timestamp.h
