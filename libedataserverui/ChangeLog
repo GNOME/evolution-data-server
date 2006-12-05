@@ -1,3 +1,10 @@
+2006-12-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+
+	* e-source-selector.c: (group_search_function),
+	(e_source_selector_init): Add searchable esource in
+	calendar/addressbook and other esource list.
+
 2006-11-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fixes lot of minor bugs around ENameSelector Entry

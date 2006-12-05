@@ -728,6 +728,36 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			      GDK_TYPE_EVENT|G_SIGNAL_TYPE_STATIC_SCOPE);
 }
 
+static gboolean
+group_search_function   (GtkTreeModel *model,
+			 gint column,
+			 const gchar *key,
+			 GtkTreeIter *iter,
+			 gpointer dummy)
+{
+	void *data;
+	char *name=NULL;
+	gboolean status = TRUE;
+	
+	gtk_tree_model_get (model, iter, 0, &data, -1);
+
+	if (E_IS_SOURCE_GROUP (data))
+		name = e_source_group_peek_name (E_SOURCE_GROUP (data));
+	else {
+		g_assert (E_IS_SOURCE (data));
+		
+		name = e_source_peek_name (E_SOURCE (data));
+	}
+
+	if (name)
+		status = g_ascii_strncasecmp (name, key, strlen(key)) != 0;
+
+						 
+	g_object_unref (data);
+	
+	return status;
+}
+
 static void
 e_source_selector_init (ESourceSelector *selector)
 {
@@ -738,7 +768,11 @@ e_source_selector_init (ESourceSelector *selector)
 
 	priv = g_new0 (ESourceSelectorPrivate, 1);
 	selector->priv = priv;
-
+	
+	gtk_tree_view_set_search_column (selector, 0);
+	gtk_tree_view_set_search_equal_func (selector, group_search_function, NULL, NULL);
+	gtk_tree_view_set_enable_search (selector, TRUE);
+	
 	g_signal_connect (G_OBJECT (selector), "button_press_event",
 			  G_CALLBACK (selector_button_press_event), selector);
 
