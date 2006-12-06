@@ -62,6 +62,7 @@ free_node(EShUsers *user)
 		g_free(user->email);
 		user->email = NULL;
 	}
+	g_free (user);
 	return ;
 }
 
@@ -339,8 +340,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 				} else {
 					value = soup_soap_parameter_get_string_value (email_rt_subparam);
 					if (value) {
-						user->email = g_strdup (value);
-						g_free (value);	
+						user->email = value;
 					}	
 					/* Retrieve Rights*/
 					email_rt_subparam = soup_soap_parameter_get_first_child_by_name (entry_subparam, "rights");
