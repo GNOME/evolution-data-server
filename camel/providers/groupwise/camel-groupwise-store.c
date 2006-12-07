@@ -1496,6 +1496,7 @@ camel_groupwise_store_class_init (CamelGroupwiseStoreClass *camel_groupwise_stor
 	camel_store_class->delete_folder = groupwise_delete_folder;
 	camel_store_class->rename_folder = groupwise_rename_folder;
 	camel_store_class->get_folder_info = groupwise_get_folder_info;
+	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
 	camel_store_class->get_trash = groupwise_get_trash;
 }
 
