@@ -282,17 +282,21 @@ static void e_contact_set_property (GObject *object, guint prop_id, const GValue
 static void e_contact_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void
-e_contact_dispose (GObject *object)
+e_contact_finalize (GObject *object)
 {
 	EContact *ec = E_CONTACT (object);
+	int i;
+
+	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
+		g_free (ec->priv->cached_strings[i]);
+	}
 
 	if (ec->priv) {
 		g_free (ec->priv);
 		ec->priv = NULL;
 	}
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -305,7 +309,7 @@ e_contact_class_init (EContactClass *klass)
 
 	parent_class = g_type_class_ref (E_TYPE_VCARD);
 
-	object_class->dispose = e_contact_dispose;
+	object_class->finalize = e_contact_finalize;
 	object_class->set_property = e_contact_set_property;
 	object_class->get_property = e_contact_get_property;
 
@@ -1549,9 +1553,6 @@ e_contact_get_const (EContact *contact, EContactField field_id)
 		value = e_contact_get (contact, field_id);
 		if (is_string && value)
 			contact->priv->cached_strings[field_id] = value;
-
-		if (value)
-			g_object_weak_ref (G_OBJECT (contact), free_const_data, value);
 	}
 
 	return value;

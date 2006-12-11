@@ -1,3 +1,8 @@
+2006-12-11  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-contact.c:
+	Don't use weak references to clean up the cache (#363445).
+
 2006-12-01  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* libedata-book/e-book-backend-cache.c:
