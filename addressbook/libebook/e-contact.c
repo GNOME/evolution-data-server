@@ -1518,12 +1518,6 @@ e_contact_get (EContact *contact, EContactField field_id)
 	return value;
 }
 
-static void
-free_const_data (gpointer data, GObject *where_object_was)
-{
-	g_free (data);
-}
-
 /**
  * e_contact_get_const:
  * @contact: an #EContact
