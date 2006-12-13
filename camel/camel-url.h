@@ -62,6 +62,7 @@ void camel_url_free (CamelURL *url);
 
 char *camel_url_encode (const char *part, const char *escape_extra);
 void camel_url_decode (char *part);
+char *camel_url_decode_path (const char *path);
 
 /* for editing url's */
 void camel_url_set_protocol (CamelURL *url, const char *protocol);
