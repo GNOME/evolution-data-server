@@ -48,6 +48,10 @@
 #include "exchange-folder-size.h"
 #include "exchange-esource.h"
 
+#define d(x)
+
+#define URI_ENCODE_CHARS "@;:/?=."
+
 struct _ExchangeHierarchyWebDAVPrivate {
 	GHashTable *folders_by_internal_path;
 	gboolean deep_searchable;
@@ -232,7 +236,10 @@ e_folder_webdav_new (ExchangeHierarchy *hier, const char *internal_uri,
 		     gboolean offline_supported)
 {
 	EFolder *folder;
-	char *real_type, *http_uri, *physical_uri;
+	char *real_type, *http_uri, *physical_uri, *fixed_name = NULL;
+
+	d( g_print ("exchange-hierarchy-webdave.c:e_folder_webdave_new: internal_uri=[%s], name=[%s], type=[%s], class=[%s]\n",
+		    internal_uri, name, type, outlook_class));
 
 	if (hier->type == EXCHANGE_HIERARCHY_PUBLIC &&
 	    !strstr (type, "/public"))
@@ -242,24 +249,10 @@ e_folder_webdav_new (ExchangeHierarchy *hier, const char *internal_uri,
 		real_type = g_strdup ("calendar/public"); /* Hack */
 	else
 		real_type = g_strdup (type);
-
-	if (strchr (name, '/')) {
-		char *fixed_name, *p;
-
-		/* We can't have a '/' in the path, so we replace it with
-		 * a '\' and just hope the user doesn't have another
-		 * folder with that name.
-		 */
-		fixed_name = g_strdup (name);
-		for (p = fixed_name; *p; p++) {
-			if (*p == '/')
-				*p = '\\';
-		}
-
-		physical_uri = e2k_uri_concat (e_folder_get_physical_uri (parent), fixed_name);
-		g_free (fixed_name);
-	} else
-		physical_uri = e2k_uri_concat (e_folder_get_physical_uri (parent), name);
+	
+	fixed_name = e2k_uri_encode (name, FALSE, URI_ENCODE_CHARS);
+	physical_uri = e2k_uri_concat (e_folder_get_physical_uri (parent), fixed_name);
+	g_free (fixed_name);
 
 	if (internal_uri) {
 		folder = e_folder_exchange_new (hier, name,
@@ -267,14 +260,27 @@ e_folder_webdav_new (ExchangeHierarchy *hier, const char *internal_uri,
 						physical_uri, internal_uri);
 	} else {
 		char *temp_name;
+		char *encoded_name = NULL;
+		const char *new_internal_uri;
+		int len;
+
+		len = strlen (name);
 
 		/* appending "/" here, so that hash table lookup in rescan() succeeds */
-		if (*(name + (strlen (name) - 1)) != '/')
-			temp_name = g_strdup_printf ("%s/", name);
-		else
-			temp_name = g_strdup (name);
+		if (name[len-1] != '/') {
+			encoded_name = e2k_uri_encode (name, FALSE, URI_ENCODE_CHARS);
+		} else {
+			temp_name = g_strndup (name, len-1);
+			encoded_name = e2k_uri_encode (temp_name, FALSE, URI_ENCODE_CHARS);
+			g_free (temp_name);
+		}
+		temp_name = g_strdup_printf ("%s/", encoded_name);
+		g_free (encoded_name);
 
-		http_uri = e2k_uri_concat (e_folder_exchange_get_internal_uri (parent), temp_name);
+		new_internal_uri = e_folder_exchange_get_internal_uri (parent);
+		http_uri = e2k_uri_concat (new_internal_uri, temp_name);
+		d(g_print ("exchange-hierarchy-webdave.c:e_folder_webdave_new: http_uri=[%s], new_internal_uri=[%s], temp_name=[%s], name[%s]\n",
+			   http_uri, new_internal_uri, temp_name, name));
 		g_free (temp_name);
 	
 		folder = e_folder_exchange_new (hier, name,

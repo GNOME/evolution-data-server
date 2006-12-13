@@ -46,6 +46,7 @@
 #include "exchange-esource.h"
 #include "exchange-hierarchy.h"
 
+#define d(x)
 
 struct _EFolderExchangePrivate {
 	ExchangeHierarchy *hier;
@@ -150,6 +151,7 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 {
 	EFolderExchange *efe;
 	EFolder *ef;
+	char *sanitized_path;
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
@@ -157,16 +159,25 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 	g_return_val_if_fail (physical_uri != NULL, NULL);
 	g_return_val_if_fail (internal_uri != NULL, NULL);
 
+	d(g_print ("e_folder_exchange_new: name=[%s], type=[%s], internal_uri=[%s], physical_uri=[%s]\n", 
+		   name, type, internal_uri, physical_uri));
+
 	efe = g_object_new (E_TYPE_FOLDER_EXCHANGE, NULL);
 	ef = (EFolder *)efe;
 
 	e_folder_construct (ef, name, type, "");
-	e_folder_set_physical_uri (ef, physical_uri);
 
 	efe->priv->hier = hier;
 	g_object_ref (hier);
+
 	efe->priv->internal_uri = g_strdup (internal_uri);
-	efe->priv->path = sanitize_path (e2k_uri_path (e_folder_get_physical_uri (ef)));
+	e_folder_set_physical_uri (ef, physical_uri);
+
+	sanitized_path = sanitize_path (e2k_uri_path (physical_uri));
+	e2k_uri_decode (sanitized_path);
+	efe->priv->path = sanitized_path;
+	d(g_print ("e_folder_exchange_new: sanitized=[%s]\n", sanitized_path));
+
 	efe->priv->outlook_class = g_strdup (outlook_class);
 
 	/* Add ESources */

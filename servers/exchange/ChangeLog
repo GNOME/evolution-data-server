@@ -1,3 +1,12 @@
+2006-12-13  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fix for bnc #208395
+
+	* storage/exchange-hierarchy-webdav.c: (e_folder_webdav_new): 
+	* storage/e-folder-exchange.c: (e_folder_exchange_new):
+	Folder name can contain any characters including URI special
+	characters, encode it and use it as physical uri.
+	
 2006-11-15  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* storage/exchange-account.c: 
