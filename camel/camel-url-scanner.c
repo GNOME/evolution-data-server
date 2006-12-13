@@ -159,6 +159,7 @@ static const struct {
 	{ '[', ']' },
 	{ '<', '>' },
 	{ '|', '|' },
+	{ '\'', '\'' },
 };
 
 static gboolean
@@ -175,14 +176,20 @@ is_open_brace (char c)
 }
 
 static char
-url_stop_at_brace (const char *in, size_t so)
+url_stop_at_brace (const char *in, size_t so, char *open_brace)
 {
 	int i;
-	
+
+	if (open_brace != NULL)
+		*open_brace == '\0';
+
 	if (so > 0) {
 		for (i = 0; i < G_N_ELEMENTS (url_braces); i++) {
-			if (in[so - 1] == url_braces[i].open)
+			if (in[so - 1] == url_braces[i].open) {
+				if (open_brace != NULL) 
+					*open_brace = url_braces[i].open;
 				return url_braces[i].close;
+			}
 		}
 	}
 	
@@ -304,7 +311,7 @@ camel_url_file_end (const char *in, const char *pos, const char *inend, urlmatch
 	if (*inptr == '/')
 		inptr++;
 	
-	close_brace = url_stop_at_brace (in, match->um_so);
+	close_brace = url_stop_at_brace (in, match->um_so, NULL);
 	
 	while (inptr < inend && is_urlsafe (*inptr) && *inptr != close_brace)
 		inptr++;
@@ -337,13 +344,14 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 	register const char *inptr = pos;
 	gboolean passwd = FALSE;
 	const char *save;
-	char close_brace;
+	char close_brace, open_brace;
+	int brace_stack = 0;
 	int port;
-	
+
 	inptr += strlen (match->pattern);
 	
-	close_brace = url_stop_at_brace (in, match->um_so);
-	
+	close_brace = url_stop_at_brace (in, match->um_so, &open_brace);
+
 	/* find the end of the domain */
 	if (is_atom (*inptr)) {
 		/* might be a domain or user@domain */
@@ -430,22 +438,33 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 		case '/': /* we've detected a path component to our url */
 			inptr++;
 		case '?':
-			while (inptr < inend && is_urlsafe (*inptr) && *inptr != close_brace)
+			while (inptr < inend && is_urlsafe (*inptr)) {
+				if (*inptr == open_brace) {
+					g_message ("++");
+					brace_stack++;
+				} else if (*inptr == close_brace) {
+					g_message ("--");
+					brace_stack--;
+					if (brace_stack == -1)
+						break;
+				}
 				inptr++;
-			
+			}
+
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	/* urls are extremely unlikely to end with any
 	 * punctuation, so strip any trailing
 	 * punctuation off. Also strip off any closing
-	 * braces or quotes. */
-	while (inptr > pos && strchr (",.:;?!-|)}]'\"", inptr[-1]))
+	 * double-quotes. */
+	while (inptr > pos && strchr (",.:;?!-|}]\"", inptr[-1]))
 		inptr--;
-	
+
+
 	match->um_eo = (inptr - in);
 	
 	return TRUE;

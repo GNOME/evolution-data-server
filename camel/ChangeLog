@@ -1,5 +1,13 @@
 2006-12-14  Veerapuram Varadhan  <vvaradhan@novell.com>
 
+	** Fixes for bgo #349445 - Patch submitted by Bastien Nocera
+
+	* camel-url-scanner.c: (url_stop_at_brace): Added parameter to
+	return appropriate "open" equivalent of the url_braces array.
+	(camel_url_web_end): Do not remove ')' and '\'' from the end of URL.
+	
+2006-12-14  Veerapuram Varadhan  <vvaradhan@novell.com>
+
         ** Fix for bnc #208395
 
         * camel-url.[ch]: (camel_url_decode_path): Added method to
