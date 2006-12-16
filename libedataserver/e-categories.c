@@ -30,9 +30,6 @@
 
 #include "libedataserver-private.h"
 
-#define ICON(basename) \
-	E_DATA_SERVER_IMAGESDIR G_DIR_SEPARATOR_S basename
-
 typedef struct {
 	char *category;
 	char *icon_file;
@@ -42,26 +39,26 @@ typedef struct {
 
 static CategoryInfo default_categories[] = {
 	{ N_("Anniversary") },
-	{ N_("Birthday"), ICON("category_birthday_16.png") },
-	{ N_("Business"), ICON("category_business_16.png") },
+	{ N_("Birthday"), "category_birthday_16.png" },
+	{ N_("Business"), "category_business_16.png" },
 	{ N_("Competition") },
-	{ N_("Favorites"), ICON("category_favorites_16.png") },
-	{ N_("Gifts"), ICON("category_gifts_16.png") },
-	{ N_("Goals/Objectives"), ICON("category_goals_16.png") },
-	{ N_("Holiday"), ICON("category_holiday_16.png") },
-	{ N_("Holiday Cards"), ICON("category_holiday-cards_16.png") },
+	{ N_("Favorites"), "category_favorites_16.png" },
+	{ N_("Gifts"), "category_gifts_16.png" },
+	{ N_("Goals/Objectives"), "category_goals_16.png" },
+	{ N_("Holiday"), "category_holiday_16.png" },
+	{ N_("Holiday Cards"), "category_holiday-cards_16.png" },
 	/* important people (e.g. new business partners) */
-	{ N_("Hot Contacts"), ICON("category_hot-contacts_16.png") },
-	{ N_("Ideas"), ICON("category_ideas_16.png") },
-	{ N_("International"), ICON("category_international_16.png") },
-	{ N_("Key Customer"), ICON("category_key-customer_16.png") },
-	{ N_("Miscellaneous"), ICON("category_miscellaneous_16.png") },
-	{ N_("Personal"), ICON("category_personal_16.png") },
-	{ N_("Phone Calls"), ICON("category_phonecalls_16.png") },
-	{ N_("Status"), ICON("category_status_16.png") },
-	{ N_("Strategies"), ICON("category_strategies_16.png") },
-	{ N_("Suppliers"), ICON("category_suppliers_16.png") },
-	{ N_("Time & Expenses"), ICON("category_time-and-expenses_16.png") },
+	{ N_("Hot Contacts"), "category_hot-contacts_16.png" },
+	{ N_("Ideas"), "category_ideas_16.png" },
+	{ N_("International"), "category_international_16.png" },
+	{ N_("Key Customer"), "category_key-customer_16.png" },
+	{ N_("Miscellaneous"), "category_miscellaneous_16.png" },
+	{ N_("Personal"), "category_personal_16.png" },
+	{ N_("Phone Calls"), "category_phonecalls_16.png" },
+	{ N_("Status"), "category_status_16.png" },
+	{ N_("Strategies"), "category_strategies_16.png" },
+	{ N_("Suppliers"), "category_suppliers_16.png" },
+	{ N_("Time & Expenses"), "category_time-and-expenses_16.png" },
 	{ N_("VIP") },
 	{ N_("Waiting") },
 	{ NULL }
@@ -335,9 +332,12 @@ load_default_categories (void)
 
 	/* Note: All default categories are searchable. */
 	while (cat_info->category != NULL) {
+		if (cat_info->icon_file != NULL)
+			cat_info->icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
 		e_categories_add (
 			gettext (cat_info->category),
 			NULL, cat_info->icon_file, TRUE);
+		g_free (cat_info->icon_file);
 		cat_info++;
 	}
 }

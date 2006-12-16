@@ -1,3 +1,11 @@
+2006-12-09  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-categories.c (default_categories[]): Don't use
+	E_DATA_SERVER_IMAGESDIR here, as it is a function call and not a
+	literal string on Windows.
+	(load_default_categories): Instead, construct the full image file
+	pathname at run-time.
+	
 2006-12-04  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.9.3
