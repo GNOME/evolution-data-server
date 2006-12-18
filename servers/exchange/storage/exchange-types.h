@@ -53,6 +53,14 @@ typedef struct  XCBackendView               	 XCBackendView;
 typedef struct  XCBackendViewPrivate        	 XCBackendViewPrivate;
 typedef struct  XCBackendViewClass          	 XCBackendViewClass;
 
+typedef enum {
+	EXCHANGE_HIERARCHY_PERSONAL,
+	EXCHANGE_HIERARCHY_FAVORITES,
+	EXCHANGE_HIERARCHY_PUBLIC,
+	EXCHANGE_HIERARCHY_GAL,
+	EXCHANGE_HIERARCHY_FOREIGN
+} ExchangeHierarchyType;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

@@ -1,5 +1,12 @@
 2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
 
+	** Missed changes
+
+	* storage/exchange-types.h: Moved ExchangeHierarchyTypes enum
+	here.
+	
+2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
+
 	** Fix for 346728, 268412
 
 	* storage/exchange-hierarchy.h: Move ExchangeHierarchyTypes to
