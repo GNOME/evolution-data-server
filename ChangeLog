@@ -1,3 +1,10 @@
+2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	* NEWS, configure.in: Evolution-Data-Server 1.9.4
+	release updates.
+
+	* camel/Makefile.am: Enable versioning for camel library
+
 2006-12-09  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-categories.c (default_categories[]): Don't use

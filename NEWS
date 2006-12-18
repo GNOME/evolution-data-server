@@ -1,3 +1,18 @@
+Evolution-Data-Server 1.9.4 2006-12-18
+--------------------------------------
+
+Updated Translations:
+Djihed Afifi (ar), Ilkka Tuohela (fi).
+
+Bug fixes : 349445, 346728, 268412, 363445, 
+208395, 222605 (bugzilla.novell.com), memory leak and 
+other cleanup fixes.
+
+Contributors: 
+Veerapuram Varadhan, Harish Krishnaswamy, Srinivasa Ragavan,
+Ross Burton, Tor Lillqvist, Bastien Nocera
+
+
 Evolution-Data-Server 1.9.3 2006-12-04
 --------------------------------------
 

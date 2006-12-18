@@ -281,7 +281,7 @@ libcamelinclude_HEADERS =			\
 	camel-utf8.h				\
 	camel.h
 
-libcamel_1_2_la_LDFLAGS = -version-info 0:0:0 $(NO_UNDEFINED)
+libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
 
 libcamel_1_2_la_LIBADD =				\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
