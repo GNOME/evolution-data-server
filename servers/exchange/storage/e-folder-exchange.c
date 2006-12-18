@@ -82,6 +82,7 @@ init (GObject *object)
 	EFolderExchange *folder = E_FOLDER_EXCHANGE (object);
 
 	folder->priv = g_new0 (EFolderExchangePrivate, 1);
+	folder->priv->rescan_tree = TRUE;
 }
 
 static void
