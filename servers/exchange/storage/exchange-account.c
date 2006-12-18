@@ -54,7 +54,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x)
+#define d(x) (x)
 #define ADS_UF_DONT_EXPIRE_PASSWORD 0x10000
 #define ONE_HUNDRED_NANOSECOND 0.000000100
 #define SECONDS_IN_DAY 86400
@@ -527,6 +527,8 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
+	d(g_print ("exchange_account_remove_folder: path=[%s]\n", path));
+
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
 
@@ -782,6 +784,8 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
+
+	d(g_print ("exchange_account_remove_folder: path=[%s]\n", path));
 
 	if (!get_folder (account, path, &folder, &hier))
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
@@ -1791,10 +1795,19 @@ folder_comparator (const void *a, const void *b)
 		       e_folder_exchange_get_path (*fb));
 }
 
+struct _folders_tree {
+	char *path;
+	GPtrArray *folders;
+};
+
+
 static void
 add_folder (gpointer key, gpointer value, gpointer folders)
 {
 	EFolder *folder = value;
+
+	d(g_print ("%s(%d):%s: key=[%s]\t folder-path=[%s]\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, 
+		   key, e_folder_exchange_get_path (folder)));
 
 	/* Each folder appears under three different keys, but
 	 * we only want to add it to the results array once. So
@@ -1802,6 +1815,20 @@ add_folder (gpointer key, gpointer value, gpointer folders)
 	 */
 	if (!strcmp (key, e_folder_exchange_get_path (folder))) 
 		g_ptr_array_add (folders, folder);
+}
+
+static void
+add_folder_tree (gpointer key, gpointer value, gpointer folders)
+{
+	EFolder *folder = value;
+	struct _folders_tree *fld_tree = (struct _folders_tree *) folders;
+	char *key1 = NULL;
+
+	if (!fld_tree || !fld_tree->path)
+		return;
+
+	if (g_str_has_prefix (key, fld_tree->path))
+		add_folder (key, folder, fld_tree->folders);
 }
 
 /**
@@ -1824,13 +1851,61 @@ exchange_account_get_folders (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	folders = g_ptr_array_new ();
-	if (account->priv->fresh_folders)
+	/*	if (account->priv->fresh_folders)
 		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
 	else
+	*/
 		g_hash_table_foreach (account->priv->folders, add_folder, folders);
 
 	qsort (folders->pdata, folders->len,
 	       sizeof (EFolder *), folder_comparator);
+
+	return folders;
+}	
+
+/**
+ * exchange_account_get_folder_tree:
+ * @account: an #ExchangeAccount
+ *
+ * Return an array of folders (sorted such that parents will occur
+ * before children). If the caller wants to keep up to date with the
+ * list of folders, he should also listen to %new_folder and
+ * %removed_folder signals.
+ *
+ * Return value: an array of folders. The array should be freed with
+ * g_ptr_array_free().
+ **/
+GPtrArray *
+exchange_account_get_folder_tree (ExchangeAccount *account, char* path)
+{
+	GPtrArray *folders = NULL;
+	EFolder *folder = NULL;
+	ExchangeHierarchy *hier = NULL;
+
+	struct _folders_tree *fld_tree = NULL;
+
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
+
+	if (!get_folder (account, path, &folder, &hier))
+		return folders;
+
+	exchange_hierarchy_scan_subtree (hier, folder, account->priv->account_online);
+
+	folders = g_ptr_array_new ();
+	fld_tree = g_new0 (struct _folders_tree, 1);
+	fld_tree->path = path;
+	fld_tree->folders = folders;
+
+	/*	if (account->priv->fresh_folders)
+		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
+	else
+	*/
+	g_hash_table_foreach (account->priv->folders, add_folder_tree, fld_tree);
+
+	qsort (folders->pdata, folders->len,
+	       sizeof (EFolder *), folder_comparator);
+
+ 	g_free (fld_tree);
 
 	return folders;
 }	
@@ -2145,4 +2220,19 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	e2k_uri_free (uri);
 
 	return account;
+}
+
+ExchangeHierarchy*
+exchange_account_get_hierarchy (ExchangeAccount* acct, 
+				ExchangeHierarchyType type)
+{
+	int i;
+	
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (acct), NULL);
+
+	for (i = 0; i < acct->priv->hierarchies->len; i++) {
+		if (EXCHANGE_HIERARCHY (acct->priv->hierarchies->pdata[i])->type == type)
+			return EXCHANGE_HIERARCHY (acct->priv->hierarchies->pdata[i]);
+	}
+	return NULL;
 }

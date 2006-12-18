@@ -55,6 +55,7 @@ struct _EFolderExchangePrivate {
 	char *path;
 	long long int folder_size;
 	gboolean has_subfolders;
+	gboolean rescan_tree;
 };
 
 #define PARENT_TYPE E_TYPE_FOLDER
@@ -132,6 +133,7 @@ sanitize_path (const char *path)
 	return new_path;	
 }
 
+#define d(x) 
 
 /**
  * e_folder_exchange_new:
@@ -365,6 +367,36 @@ e_folder_exchange_set_has_subfolders (EFolder *folder,
 	g_return_if_fail (E_IS_FOLDER_EXCHANGE (folder));
 
 	E_FOLDER_EXCHANGE (folder)->priv->has_subfolders = has_subfolders;
+}
+
+/**
+ * e_folder_exchange_get_rescan_tree:
+ * @folder: an #EFolderExchange
+ *
+ * Return value: whether or not to rescan @folder tree
+ **/
+gboolean
+e_folder_exchange_get_rescan_tree (EFolder *folder)
+{
+	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), FALSE);
+
+	return E_FOLDER_EXCHANGE (folder)->priv->rescan_tree;
+}
+
+/**
+ * e_folder_exchange_set_rescan_tree
+ * @folder: an #EFolderExchange
+ * @rescan_tree: whether or not @folder needs to be rescanned
+ *
+ * Sets @folder's has_subfolders flag.
+ **/
+void
+e_folder_exchange_set_rescan_tree (EFolder *folder,
+				   gboolean rescan_tree)
+{
+	g_return_if_fail (E_IS_FOLDER_EXCHANGE (folder));
+
+	E_FOLDER_EXCHANGE (folder)->priv->rescan_tree = rescan_tree;
 }
 
 /**

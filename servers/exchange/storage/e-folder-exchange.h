@@ -62,6 +62,10 @@ gboolean    e_folder_exchange_get_has_subfolders   (EFolder    *folder);
 void        e_folder_exchange_set_has_subfolders   (EFolder    *folder,
 						    gboolean   has_subfolders);
 
+gboolean    e_folder_exchange_get_rescan_tree   (EFolder    *folder);
+void        e_folder_exchange_set_rescan_tree   (EFolder    *folder,
+						 gboolean   has_subfolders);
+
 const char *e_folder_exchange_get_outlook_class    (EFolder    *folder);
 
 char       *e_folder_exchange_get_storage_file     (EFolder    *folder,

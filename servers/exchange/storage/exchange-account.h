@@ -100,6 +100,11 @@ EFolder               *exchange_account_get_folder           (ExchangeAccount  *
 							      const char       *path_or_uri);
 GPtrArray             *exchange_account_get_folders          (ExchangeAccount  *acct);
 
+GPtrArray 	       *exchange_account_get_folder_tree      (ExchangeAccount *account, char* path);
+
+ExchangeHierarchy     *exchange_account_get_hierarchy	      (ExchangeAccount *acct,
+							       ExchangeHierarchyType type);
+
 void                   exchange_account_rescan_tree          (ExchangeAccount  *acct);
 
 char 		      *exchange_account_get_password 	     (ExchangeAccount  *acct);

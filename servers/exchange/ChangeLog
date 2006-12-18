@@ -1,3 +1,24 @@
+2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fix for 346728, 268412
+
+	* storage/exchange-hierarchy.h: Move ExchangeHierarchyTypes to
+	exchange-types.h
+	
+	* storage/exchange-hierarchy-webdav.c: (scan_subtree):  Do not
+	rescan a tree/folder when its rescan_tree is set to FALSE.  Also,
+	just fetch DISPLAY_NAME and HAS_SUBS properties for public
+	folders.
+	
+	* storage/exchange-account.[ch]: (exchange_account_get_hierarchy):
+	Added to return hierarchy for a given type.
+	(exchange_account_get_folder_tree): Returns a tree of folders
+	for the requested URI/PATH.
+
+	* storage/e-folder-exchange.[ch]:
+	(e_folder_exchange_get_rescan_tree): Returns rescan_tree flag.
+	(e_folder_exchange_set_rescan_tree): Sets rescan_tree flag.
+	
 2006-12-13  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fix for bnc #208395

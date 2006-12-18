@@ -685,6 +685,12 @@ static const char *folder_props[] = {
 };
 static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
+static const char *pub_folder_props[] = {
+	E2K_PR_DAV_DISPLAY_NAME,
+	E2K_PR_DAV_HAS_SUBS
+};
+static const int n_pub_folder_props = sizeof (pub_folder_props) / sizeof (pub_folder_props[0]);
+
 static ExchangeAccountFolderResult
 scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 {
@@ -697,9 +703,18 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 	EFolder *folder, *tmp;
 	GPtrArray *folders;
 	int i;
+	static short level = 0;
 	gdouble fsize_d;
 	const char *name, *folder_size, *deleted_items_uri, *int_uri;
 	gboolean personal = ( EXCHANGE_HIERARCHY (hwd)->type == EXCHANGE_HIERARCHY_PERSONAL );
+
+	if (parent) {
+		if (!e_folder_exchange_get_rescan_tree (parent)) {
+			d(g_print ("%s(%d):%s: Donot RESCAN [%s] \n", __FILE__, __LINE__, __PRETTY_FUNCTION__,
+				   e_folder_get_name (parent)));
+			return EXCHANGE_ACCOUNT_FOLDER_OK;
+		}
+	}
 
 	if (mode == OFFLINE_MODE) {
 		folders = g_ptr_array_new ();
@@ -711,6 +726,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	}
 
+	
 	if (!folders_rn) {
 		folders_rn =
 			e2k_restriction_andv (
@@ -721,9 +737,16 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 				NULL);
 	}
 
-	iter = e_folder_exchange_search_start (parent, NULL,
-					       folder_props, n_folder_props,
-					       folders_rn, NULL, TRUE);
+	if (hier->type == EXCHANGE_HIERARCHY_PUBLIC) 
+		iter = e_folder_exchange_search_start (parent, NULL,
+						       pub_folder_props, 
+						       n_pub_folder_props,
+						       folders_rn, NULL, TRUE);
+	else
+		iter = e_folder_exchange_search_start (parent, NULL,
+						       folder_props, n_folder_props,
+						       folders_rn, NULL, TRUE);
+
 	while ((result = e2k_result_iter_next (iter))) {
 		folder = exchange_hierarchy_webdav_parse_folder (hwd, parent, result);
 		if (!folder)
@@ -738,20 +761,25 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 		//g_object_unref (folder);
 
 		/* Check the folder size here */
-		name = e2k_properties_get_prop (result->props,
+		if (hier->type != EXCHANGE_HIERARCHY_PUBLIC) {
+			name = e2k_properties_get_prop (result->props,
 							E2K_PR_DAV_DISPLAY_NAME);
-		folder_size = e2k_properties_get_prop (result->props,
-				E2K_PR_EXCHANGE_FOLDER_SIZE);
+			folder_size = e2k_properties_get_prop (result->props,
+							       E2K_PR_EXCHANGE_FOLDER_SIZE);
 
-		/* FIXME : Find a better way of doing this */
-		fsize_d = g_ascii_strtod (folder_size, NULL)/1024 ;
-		exchange_account_folder_size_add (hier->account, name, fsize_d);
+			/* FIXME : Find a better way of doing this */
+			fsize_d = g_ascii_strtod (folder_size, NULL)/1024 ;
+			exchange_account_folder_size_add (hier->account, name, fsize_d);
+		}
+
 		if (personal) {
 			/* calculate mail box size only for personal folders */
 			hwd->priv->total_folder_size = 
 				hwd->priv->total_folder_size + fsize_d;
 		}
+
 	}
+
 	status = e2k_result_iter_free (iter);
 
 	deleted_items_uri = exchange_account_get_standard_uri (hier->account, "deleteditems");
@@ -765,6 +793,8 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 			continue;
 		scan_subtree (hier, folder, mode);
 	}
+
+	e_folder_exchange_set_rescan_tree (parent, FALSE);
 
 	return exchange_hierarchy_webdav_status_to_folder_result (status);
 }
