@@ -3,7 +3,7 @@
 	** Fix for 387397
 
 	* storage/exchange-account.c: Change macro definitions to 
-	both linux and Solaris.
+	satisfy both linux and Solaris.
 
 2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
 
