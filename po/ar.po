@@ -1,4 +1,4 @@
-# translation of evolution-data-server.gnome-2-16.po to Arabic
+# translation of evolution-data-server.gnome-2-16.ar.po to Arabic
 # Arabic translation of PACKAGE.
 # Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -10,18 +10,17 @@
 # Khaled Hosny <khaledhosny@eglug.org>, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.gnome-2-16\n"
+"Project-Id-Version: evolution-data-server.gnome-2-16.ar\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-24 13:00+0000\n"
-"PO-Revision-Date: 2006-11-10 06:29+0200\n"
+"PO-Revision-Date: 2006-12-21 23:44+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
-"Language-Team: Arabic <support@eglug.org>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : "
-"3\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : 3\n"
 "\n"
 "\n"
 
@@ -37,60 +36,51 @@ msgstr "جاري التّحميل..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
-#, fuzzy
 msgid "Searching..."
 msgstr "جاري البحث..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4177
-#, fuzzy, c-format
+#, c-format
 msgid "Downloading contacts (%d)... "
-msgstr "مراسَلين بعيدين"
+msgstr "جارِ تحميل المراسَلين (%d)..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
-#, fuzzy, c-format
+#, c-format
 msgid "Updating contacts cache (%d)... "
-msgstr "حجم مخبأ القرص"
+msgstr "جارِ تحديث ذاكرة المراسَلين المخبّأة (%d)... "
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:720
-#, fuzzy
 msgid "Using Distinguished Name (DN)"
 msgstr "بإستخدام الإسم المُميّز (DN)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
-#, fuzzy
 msgid "Using Email Address"
-msgstr "سيستخدم عنوان البريد الإلكتروني"
+msgstr "باستخدام عنوان البريد الإلكتروني"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:974
-#, fuzzy
 msgid "Reconnecting to LDAP server..."
-msgstr "إعادة الاتصال بخادم LDAP..."
+msgstr "جارِ إعادة الاتصال بخادم LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1568
-#, fuzzy
 msgid "Adding contact to LDAP server..."
-msgstr "عنوان الخادم للاتصال لطلبات القرص المدمج"
+msgstr "جارِ إضافة مراسَل لخادم LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1696
-#, fuzzy
 msgid "Removing contact from LDAP server..."
-msgstr "فشل الإتّصال بخادم LDAP"
+msgstr "جارِ حذف مراسَل من خادم LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2001
-#, fuzzy
 msgid "Modifying contact from LDAP server..."
-msgstr "فشل الإتّصال بخادم LDAP"
+msgstr "جارِ تعديل مراسَل في خادم LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3893
-#, fuzzy
 msgid "Receiving LDAP search results..."
-msgstr "استقبال نتائج بحث LDAP..."
+msgstr "جارِ استقبال نتائج بحث LDAP..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4041
-#, fuzzy
 msgid "Error performing search"
 msgstr "خطأ في تنفيذ البحث"
 
@@ -110,9 +100,9 @@ msgstr "خطأ في تنفيذ البحث"
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
 #: ../addressbook/libebook/e-book.c:3425
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "قبل كل موعد"
+msgstr "\"%s\" في الدفتر قبل \"%s\""
 
 #: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
 #: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
@@ -121,9 +111,8 @@ msgstr "قبل كل موعد"
 #: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
 #: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2672
 #: ../addressbook/libebook/e-book.c:2878
-#, fuzzy
 msgid "book busy"
-msgstr "الدليل مشغول"
+msgstr "الدفتر مشغول"
 
 #: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
 #: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
@@ -139,71 +128,68 @@ msgstr "الدليل مشغول"
 #: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
 #: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
 #: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3434
-#, fuzzy, c-format
+#, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr "جعل الاستثناء كوربا / ٪ ق / نداء"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:2594
-#, fuzzy, c-format
+#, c-format
 msgid "%s: there is no current operation"
-msgstr "مساحة غير كافية في المقصد."
+msgstr "%s: لا توجد عملّية حالياً"
 
 #: ../addressbook/libebook/e-book.c:2629
-#, fuzzy, c-format
+#, c-format
 msgid "%s: could not cancel"
-msgstr "تعذّر العثور على '%s'"
+msgstr "%s: تعذّر الإلغاء"
 
 #: ../addressbook/libebook/e-book.c:2658 ../addressbook/libebook/e-book.c:2662
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "ت_غيير الصورة بعد:"
+msgstr "\"%s\" في الدفتر بعد \"%s\""
 
 #: ../addressbook/libebook/e-book.c:2728
-#, fuzzy, c-format
+#, c-format
 msgid "%s: canceled"
-msgstr "ألغي المستخدم"
+msgstr "%s: أُلغِيَ"
 
 #: ../addressbook/libebook/e-book.c:3289
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Invalid source."
-msgstr "_مصدر الصفحة"
+msgstr "%s: مصدر غير سليم."
 
 #: ../addressbook/libebook/e-book.c:3297 ../addressbook/libebook/e-book.c:3363
-#, fuzzy, c-format
+#, c-format
 msgid "%s: no factories available for URI `%s'"
-msgstr "لا مُقدّم متوفّر للبرتوكول `%s'"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3309
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not create EBookListener"
-msgstr "لم يمكن إنشاء الأنبوب: %s"
+msgstr "%s: لم يمكن إنشاء EBookListener"
 
 #: ../addressbook/libebook/e-book.c:3574
-#, fuzzy, c-format
+#, c-format
 msgid "%s: there was no self contact UID stored in gconf"
-msgstr "٪ ق : لم يكن هناك اتصال النفس رمز المستخدم المخزنه في غكونف"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3707
-#, fuzzy, c-format
+#, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "٪ ق : لم يكن هناك مصدر ل٪ - رمز المستخدم او يخزن في غكونف '."
+msgstr "%s: لا يوجد مصدر محفوظ للـ uid `%s' في gconf."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:112
-#, fuzzy
 msgid "Unique ID"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هويّة فريدة"
 
 #: ../addressbook/libebook/e-contact.c:113
-#, fuzzy
 msgid "File Under"
-msgstr "إنتقاء ملف"
+msgstr "ملف تحت"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:115
-#, fuzzy
 msgid "Book URI"
-msgstr "URI مرساة"
+msgstr "عنوان الدفتر"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -227,9 +213,8 @@ msgstr "الإسم المستعار"
 
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:127
-#, fuzzy
 msgid "Email 1"
-msgstr "البريد اﻻلكتروني"
+msgstr "البريد اﻻلكتروني الأول"
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Email 2"
@@ -240,29 +225,25 @@ msgid "Email 3"
 msgstr "البريد الإلكتروني الثّالث"
 
 #: ../addressbook/libebook/e-contact.c:130
-#, fuzzy
 msgid "Email 4"
-msgstr "البريد اﻻلكتروني"
+msgstr "البريد اﻻلكتروني الرابع"
 
 #: ../addressbook/libebook/e-contact.c:132
 msgid "Mailer"
-msgstr "المرسِل"
+msgstr "المبرِد"
 
 #. Address Labels
 #: ../addressbook/libebook/e-contact.c:135
-#, fuzzy
 msgid "Home Address Label"
-msgstr "عنوان صفحة المستخدم."
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:136
-#, fuzzy
 msgid "Work Address Label"
-msgstr "حدود الصّورة/العلامة"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:137
-#, fuzzy
 msgid "Other Address Label"
-msgstr "حدود الصّورة/العلامة"
+msgstr ""
 
 #. Phone fields
 #: ../addressbook/libebook/e-contact.c:140
@@ -282,9 +263,8 @@ msgid "Business Fax"
 msgstr "فاكس العمل"
 
 #: ../addressbook/libebook/e-contact.c:144
-#, fuzzy
 msgid "Callback Phone"
-msgstr "هاتف المساعد"
+msgstr "هاتف المكالمات العائدة"
 
 #: ../addressbook/libebook/e-contact.c:145
 msgid "Car Phone"
@@ -307,7 +287,6 @@ msgid "Home Fax"
 msgstr "فاكس المنزل"
 
 #: ../addressbook/libebook/e-contact.c:150
-#, fuzzy
 msgid "ISDN"
 msgstr "ISDN"
 
@@ -325,7 +304,7 @@ msgstr "فاكس آخر"
 
 #: ../addressbook/libebook/e-contact.c:154
 msgid "Pager"
-msgstr "بيبر"
+msgstr "جهاز الإستدعاء"
 
 #: ../addressbook/libebook/e-contact.c:155
 msgid "Primary Phone"
@@ -341,9 +320,8 @@ msgstr "تلكس"
 
 #. To translators: TTY is Teletypewriter
 #: ../addressbook/libebook/e-contact.c:159
-#, fuzzy
 msgid "TTY"
-msgstr "TTYTDD"
+msgstr "TTY"
 
 #. Organizational fields
 #: ../addressbook/libebook/e-contact.c:162
@@ -351,13 +329,12 @@ msgid "Organization"
 msgstr "المنظّمة"
 
 #: ../addressbook/libebook/e-contact.c:163
-#, fuzzy
 msgid "Organizational Unit"
-msgstr "الوحدة المؤسساتية:"
+msgstr "الوحدة المنظّماتيّة"
 
 #: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
-msgstr "مكتب"
+msgstr "المكتب"
 
 #: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
@@ -377,14 +354,12 @@ msgstr "المساعد"
 
 #. Web fields
 #: ../addressbook/libebook/e-contact.c:171
-#, fuzzy
 msgid "Homepage URL"
-msgstr "عنوان VoIP"
+msgstr "عنوان الصفحة الرئيسية"
 
 #: ../addressbook/libebook/e-contact.c:172
-#, fuzzy
 msgid "Weblog URL"
-msgstr "عنوان VoIP"
+msgstr "عنوان المدوّنة"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:175
@@ -394,30 +369,25 @@ msgstr "الفئات"
 
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:178
-#, fuzzy
 msgid "Calendar URI"
-msgstr "URI مرساة"
+msgstr "عنوان التقويم"
 
 #: ../addressbook/libebook/e-contact.c:179
-#, fuzzy
 msgid "Free/Busy URL"
-msgstr "معلومات متوفّر/مشغول"
+msgstr "عنوان متوفّر/مشغول"
 
 #: ../addressbook/libebook/e-contact.c:180
-#, fuzzy
 msgid "ICS Calendar"
-msgstr "رزنامة جنوم"
+msgstr "تقويم ICS"
 
 #: ../addressbook/libebook/e-contact.c:181
-#, fuzzy
 msgid "Video Conferencing URL"
-msgstr "handler عنوان غير صالح"
+msgstr "عنوان مؤتمرات الفيديو"
 
 #. Misc fields
 #: ../addressbook/libebook/e-contact.c:184
-#, fuzzy
 msgid "Spouse's Name"
-msgstr "اسم الموصول"
+msgstr "اسم الزوج"
 
 #: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
@@ -425,201 +395,162 @@ msgstr "ملاحظة"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:188
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم AIM المستعار الأول في المنزل "
 
 #: ../addressbook/libebook/e-contact.c:189
-#, fuzzy
 msgid "AIM Home Screen Name 2"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم AIM المستعار الثاني في المنزل "
 
 #: ../addressbook/libebook/e-contact.c:190
-#, fuzzy
 msgid "AIM Home Screen Name 3"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم AIM المستعار الثالث في المنزل "
 
 #: ../addressbook/libebook/e-contact.c:191
-#, fuzzy
 msgid "AIM Work Screen Name 1"
-msgstr "هدف العمل باسم شاشة 1"
+msgstr "إسم AIM المستعار الأول في العمل"
 
 #: ../addressbook/libebook/e-contact.c:192
-#, fuzzy
 msgid "AIM Work Screen Name 2"
-msgstr "الهدف عمل الشاشه اسم 2"
+msgstr "إسم AIM المستعار الثاني في العمل"
 
 #: ../addressbook/libebook/e-contact.c:193
-#, fuzzy
 msgid "AIM Work Screen Name 3"
-msgstr "الهدف عمل شاشة الاسم 3"
+msgstr "إسم AIM المستعار الثالث في العمل"
 
 #: ../addressbook/libebook/e-contact.c:194
-#, fuzzy
 msgid "GroupWise Home Screen Name 1"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم GroupWise المستعار الأول في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:195
-#, fuzzy
 msgid "GroupWise Home Screen Name 2"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم GroupWise المستعار الثاني في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:196
-#, fuzzy
 msgid "GroupWise Home Screen Name 3"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "إسم GroupWise المستعار الثالث في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:197
-#, fuzzy
 msgid "GroupWise Work Screen Name 1"
-msgstr "في مجموعات عمل الشاشه اسم 1"
+msgstr "إسم GroupWise المستعار الأول في العمل"
 
 #: ../addressbook/libebook/e-contact.c:198
-#, fuzzy
 msgid "GroupWise Work Screen Name 2"
-msgstr "في مجموعات عمل الشاشه اسم 2"
+msgstr "إسم GroupWise المستعار الثاني في العمل"
 
 #: ../addressbook/libebook/e-contact.c:199
-#, fuzzy
 msgid "GroupWise Work Screen Name 3"
-msgstr "في مجموعات عمل شاشة الاسم 3"
+msgstr "إسم GroupWise المستعار الثالث في العمل"
 
 #: ../addressbook/libebook/e-contact.c:200
-#, fuzzy
 msgid "Jabber Home Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الأولى في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:201
-#, fuzzy
 msgid "Jabber Home Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الثانية في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:202
-#, fuzzy
 msgid "Jabber Home Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الثالثة في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:203
-#, fuzzy
 msgid "Jabber Work Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الأولى في العمل"
 
 #: ../addressbook/libebook/e-contact.c:204
-#, fuzzy
 msgid "Jabber Work Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الثانية في العمل"
 
 #: ../addressbook/libebook/e-contact.c:205
-#, fuzzy
 msgid "Jabber Work Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Jabber الثالثة في العمل"
 
 #: ../addressbook/libebook/e-contact.c:206
-#, fuzzy
 msgid "Yahoo! Home Screen Name 1"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم ياهو! المستعار الأول في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:207
-#, fuzzy
 msgid "Yahoo! Home Screen Name 2"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم ياهو! المستعار الثاني في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:208
-#, fuzzy
 msgid "Yahoo! Home Screen Name 3"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم ياهو! المستعار الثالث في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:209
-#, fuzzy
 msgid "Yahoo! Work Screen Name 1"
-msgstr "ياهو!اسم عمل الشاشه 1"
+msgstr "اسم ياهو! المستعار الأول في العمل"
 
 #: ../addressbook/libebook/e-contact.c:210
-#, fuzzy
 msgid "Yahoo! Work Screen Name 2"
-msgstr "ياهو!اسم عمل شاشة 2"
+msgstr "اسم ياهو! المستعار الثاني في العمل"
 
 #: ../addressbook/libebook/e-contact.c:211
-#, fuzzy
 msgid "Yahoo! Work Screen Name 3"
-msgstr "ياهو!اسم شاشة العمل 3"
+msgstr "اسم ياهو! المستعار الثالث في العمل"
 
 #: ../addressbook/libebook/e-contact.c:212
-#, fuzzy
 msgid "MSN Home Screen Name 1"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم MSN المستعار الأول في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:213
-#, fuzzy
 msgid "MSN Home Screen Name 2"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم MSN المستعار الثاني في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:214
-#, fuzzy
 msgid "MSN Home Screen Name 3"
-msgstr "إسم أيقونة منزل سطح المكتب"
+msgstr "اسم MSN المستعار الثالث في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:215
-#, fuzzy
 msgid "MSN Work Screen Name 1"
-msgstr "اسم شاشة العمل الحر 1"
+msgstr "اسم MSN المستعار الأول في العمل"
 
 #: ../addressbook/libebook/e-contact.c:216
-#, fuzzy
 msgid "MSN Work Screen Name 2"
-msgstr "اسم العمل الحر الشاشه 2"
+msgstr "اسم MSN المستعار الثاني في العمل"
 
 #: ../addressbook/libebook/e-contact.c:217
-#, fuzzy
 msgid "MSN Work Screen Name 3"
-msgstr "اسم العمل الحر الشاشه 3"
+msgstr "اسم MSN المستعار الثالث في العمل"
 
 #: ../addressbook/libebook/e-contact.c:218
-#, fuzzy
 msgid "ICQ Home Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الأولى في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:219
-#, fuzzy
 msgid "ICQ Home Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الثانية في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:220
-#, fuzzy
 msgid "ICQ Home Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الثالثة في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:221
-#, fuzzy
 msgid "ICQ Work Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الأولى في العمل"
 
 #: ../addressbook/libebook/e-contact.c:222
-#, fuzzy
 msgid "ICQ Work Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الثانية في العمل"
 
 #: ../addressbook/libebook/e-contact.c:223
-#, fuzzy
 msgid "ICQ Work Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية ICQ الثالثة في العمل"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:226
-#, fuzzy
 msgid "Last Revision"
-msgstr "تاريخ التنقيح"
+msgstr "المراجعة الأخيرة"
 
 #: ../addressbook/libebook/e-contact.c:227
-#, fuzzy
 msgid "Name or Org"
-msgstr "%s: اسم ملف أو URI سيئ التركيب.\n"
+msgstr "الإسم أو المنظمة"
 
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:230
-#, fuzzy
 msgid "Address List"
-msgstr "قائمة الحسابات"
+msgstr "قائمة العناوين"
 
 #: ../addressbook/libebook/e-contact.c:231
 msgid "Home Address"
@@ -635,127 +566,105 @@ msgstr "عنوان آخر"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:236
-#, fuzzy
 msgid "Category List"
-msgstr "قائمة الحسابات"
+msgstr "قائمة الفئات"
 
 #. Photo/Logo
 #: ../addressbook/libebook/e-contact.c:239
-#, fuzzy
 msgid "Photo"
-msgstr "صورة تسجيل الدخول"
+msgstr "صورة"
 
 #: ../addressbook/libebook/e-contact.c:240
-#, fuzzy
 msgid "Logo"
-msgstr "الشعار"
+msgstr "شعار"
 
 #: ../addressbook/libebook/e-contact.c:242
 msgid "Name"
-msgstr "الإسم"
+msgstr "إسم"
 
 #: ../addressbook/libebook/e-contact.c:243
-#, fuzzy
 msgid "Email List"
-msgstr "قائمة الحسابات"
+msgstr "قائمة البريد"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:246
-#, fuzzy
 msgid "AIM Screen Name List"
-msgstr "ترتيب قائمة الملفات بحسب الإسم"
+msgstr "قائمة أسماء AIM المستعارة"
 
 #: ../addressbook/libebook/e-contact.c:247
-#, fuzzy
 msgid "GroupWise Id List"
-msgstr "قائمة هويات الشرائط"
+msgstr "قائمة هويّات GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:248
-#, fuzzy
 msgid "Jabber Id List"
-msgstr "قائمة هويات الشرائط"
+msgstr "قائمة هويّات Jabber"
 
 #: ../addressbook/libebook/e-contact.c:249
-#, fuzzy
 msgid "Yahoo! Screen Name List"
-msgstr "ترتيب قائمة الملفات بحسب الإسم"
+msgstr "قائمة أسماء ياهو! المستعارة"
 
 #: ../addressbook/libebook/e-contact.c:250
-#, fuzzy
 msgid "MSN Screen Name List"
-msgstr "ترتيب قائمة الملفات بحسب الإسم"
+msgstr "قائمة أسماء MSN المستعارة"
 
 #: ../addressbook/libebook/e-contact.c:251
-#, fuzzy
 msgid "ICQ Id List"
-msgstr "قائمة هويات الشرائط"
+msgstr "قائمة هويّات ICQ"
 
 #: ../addressbook/libebook/e-contact.c:253
-#, fuzzy
 msgid "Wants HTML Mail"
-msgstr "إرسال بريد HTML افتراضا"
+msgstr "يريد بريد HTML"
 
 #: ../addressbook/libebook/e-contact.c:255
 msgid "List"
 msgstr "قائمة"
 
 #: ../addressbook/libebook/e-contact.c:256
-#, fuzzy
 msgid "List Show Addresses"
-msgstr "عرض كقائمة"
+msgstr "قائمة تعرض العناوين"
 
 #: ../addressbook/libebook/e-contact.c:258
-#, fuzzy
 msgid "Birth Date"
-msgstr "تاريخ آخر"
+msgstr "تاريخ الميلاد"
 
 #: ../addressbook/libebook/e-contact.c:259
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:44
-#, fuzzy
 msgid "Anniversary"
-msgstr "الذكرى ال_سنويّة:"
+msgstr "الذكرى السنويّة"
 
 #. Security fields
 #: ../addressbook/libebook/e-contact.c:262
-#, fuzzy
 msgid "X.509 Certificate"
-msgstr "_حقول الشهادة"
+msgstr "شهادة X.509"
 
 #: ../addressbook/libebook/e-contact.c:264
-#, fuzzy
 msgid "Gadu-Gadu Home Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الأولى في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:265
-#, fuzzy
 msgid "Gadu-Gadu Home Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الثانية في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:266
-#, fuzzy
 msgid "Gadu-Gadu Home Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الثالثة في المنزل"
 
 #: ../addressbook/libebook/e-contact.c:267
-#, fuzzy
 msgid "Gadu-Gadu Work Id 1"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الأولى في العمل"
 
 #: ../addressbook/libebook/e-contact.c:268
-#, fuzzy
 msgid "Gadu-Gadu Work Id 2"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الثانية في العمل"
 
 #: ../addressbook/libebook/e-contact.c:269
-#, fuzzy
 msgid "Gadu-Gadu Work Id 3"
-msgstr "الهويّة الفريدة للمُصدر"
+msgstr "هوية Gadu-Gadu الثالثة في العمل"
 
 #: ../addressbook/libebook/e-contact.c:270
-#, fuzzy
 msgid "Gadu-Gadu Id List"
-msgstr "قائمة هويات الشرائط"
+msgstr "قائمة هويّات Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:1262
 #: ../addressbook/libebook/e-destination.c:771
@@ -764,53 +673,46 @@ msgstr "قائمة غير مسمّاة"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
 #: ../libedataserver/e-categories.c:45
-#, fuzzy
 msgid "Birthday"
-msgstr "عيد ال_ميلاد:"
+msgstr "عيد الميلاد"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
-#, fuzzy, c-format
+#, c-format
 msgid "Birthday: %s"
-msgstr "عيد ال_ميلاد:"
+msgstr "عيد الميلاد: %s"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
-#, fuzzy, c-format
+#, c-format
 msgid "Anniversary: %s"
-msgstr "الذكرى ال_سنويّة:"
+msgstr "الذكرى السنويّة: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
-#, fuzzy
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "لا يمكن انقاذ جدول البيانات مشوه وري."
+msgstr "تعذّر حفظ بيانات التقويم: نوان مشوّه."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1712
-#, fuzzy
 msgid "Reply Requested: by "
 msgstr ""
-"صادر من طرف:\n"
-"  الموضوع: %s\n"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
-#, fuzzy
 msgid "Reply Requested: When convenient"
-msgstr "الرد الى حين مريحه"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:266
-#, fuzzy, c-format
+#, c-format
 msgid "Loading %s items"
-msgstr "إنشاء عناصر"
+msgstr "تحميل عناصر %s"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:784
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
-msgstr "الرُّزنامة"
+msgstr "التقويم"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:841
-#, fuzzy
 msgid "Invalid server URI"
-msgstr "العنوان \"%s\" غير سليم."
+msgstr "عنوان خادم غير سليم"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
@@ -826,22 +728,19 @@ msgstr "العنوان \"%s\" غير سليم."
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
-#, fuzzy
 msgid "Authentication failed"
 msgstr "فشل التحقق"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:911
-#, fuzzy
 msgid "Could not create thread for getting deltas"
-msgstr "لم يمكن إنشاء ذاكرة مخبّأة للرزنامة الجديدة"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:951
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1225
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
-#, fuzzy
 msgid "Could not create cache file"
-msgstr "لم أستطع إنشاء ذاكرة مخبئيّة لـ%s"
+msgstr "لم أستطع إنشاء ملف ذاكرة مخبئيّة"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:963
 #, fuzzy
@@ -1420,8 +1319,7 @@ msgstr "/ ٪ ق / يتوقع الحجه الثانية ان يكون الخيط"
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\""
-msgstr ""
-"/ ٪ ق / يتوقع الاولى لتكون حجة / ايه / ، / موجز / او / الوصف / او / الموقع /"
+msgstr "/ ٪ ق / يتوقع الاولى لتكون حجة / ايه / ، / موجز / او / الوصف / او / الموقع /"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
 #, fuzzy, c-format
@@ -3004,8 +2902,7 @@ msgstr "كلمة السّر"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 #, fuzzy
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr "سيتّصل·هذا الخيار بخادم IMAP باستخدام كلمة سر نصٍّ بسيط."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
@@ -3252,8 +3149,7 @@ msgstr "خادم عدم الرد : لا رمز المستخدم لرسالة د 
 
 #: ../camel/providers/imap/camel-imap-folder.c:2581
 #, fuzzy, c-format
-msgid ""
-"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "غير متوقع خادم الرد : ويدس مطابقه للرسائل و٪ ٪ د د"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2762
@@ -3441,8 +3337,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2259
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, fuzzy, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "إسم المجلّد \"%s\" غير سليم لأنّه يحتوي الحرف \"%c\""
 
 #: ../camel/providers/imap/camel-imap-store.c:2006
@@ -3494,8 +3389,7 @@ msgstr "قطع النّادل الإتّصال بشكلٍ غير متوقّع: %
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:86
 #, fuzzy
-msgid ""
-"Enable Mailing-List detection required for some filter and vFolder rules"
+msgid "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr "يمكن ارسال القائمة لكشف بعض القواعد والمرشح ففولدر"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:399
@@ -3592,8 +3486,7 @@ msgstr "لقراءة و تخزين البريد على خوادم IMAP."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 #, fuzzy
-msgid ""
-"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "سيتّصل·هذا الخيار بخادم IMAP باستخدام كلمة سر نصٍّ بسيط."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:263
@@ -3608,8 +3501,7 @@ msgstr "تم إلغاء الإتّصال"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:406
 #, fuzzy, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "لا يمكن الإتّصال بخادم POP %s: لا دعم لآليّة التّوثيق المطلوبة"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:455
@@ -3697,8 +3589,7 @@ msgstr "لم يمكن إعادة تسمية المجلّد %s إلى %s: %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:1480
 #, fuzzy, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr ""
-"لا يستطيع الحصول على المعلومات ٪ أو نمط أو '- ٪ على الخادم او موسعه ٪ : ٪ ق"
+msgstr "لا يستطيع الحصول على المعلومات ٪ أو نمط أو '- ٪ على الخادم او موسعه ٪ : ٪ ق"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1520
 #, fuzzy
@@ -4337,8 +4228,7 @@ msgstr "لم يمكن نسخ الرّسائل إلى مجلّد صندوق ال�
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 #, fuzzy
-msgid ""
-"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr "عرض الملفات في قصر الترقيم (يقصد c.o.linux ليس comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
@@ -5594,3 +5484,4 @@ msgstr "خدمة التبليغ لمنبِّه رُزنامة إيفُليوشِ
 #, fuzzy, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "حدثت أخطاء فادحة عديدة، لن يمكنني عرض حوار الإنهيار\n"
+
