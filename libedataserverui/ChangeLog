@@ -1,5 +1,10 @@
-2006-12-05  Srinivasa Ragavan  <sragavan@novell.com>
+2007-01-08  Matthew Barnes  <mbarnes@redhat.com>
 
+	Fixes #387638
+	* e-source-selector.c: Include the header
+	file string.h.
+
+2006-12-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-source-selector.c: (group_search_function),
 	(e_source_selector_init): Add searchable esource in

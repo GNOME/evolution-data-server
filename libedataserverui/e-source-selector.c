@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreestore.h>
