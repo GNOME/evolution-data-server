@@ -1,3 +1,15 @@
+Evolution-Data-Server 1.9.5 2007-01-08
+--------------------------------------
+
+Updated Translations:
+Francisco Javier F. Serrador (es), Djihed Afifi (ar), Kjartan Maraas (nb), 
+Theppitak Karoonboonyanan (th), David Lodge (en_GB),  
+Christophe Fergeau (fr), Clytie Siddall (vi)
+
+Bug Fixes: 362638, 387397, 387638 and other downstream fixes
+
+Mathew Barnes, Veerapuram Varadhan, Chenthill Palaniswamy, Jeff Cai
+
 Evolution-Data-Server 1.9.4 2006-12-18
 --------------------------------------
 
