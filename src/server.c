@@ -338,7 +338,7 @@ main (int argc, char **argv)
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	g_message ("Starting server");
+	printf ("evolution-data-server-Message: Starting server\n");
 
 #ifdef DEBUG_BACKENDS
 	signal (SIGUSR2, dump_backends);

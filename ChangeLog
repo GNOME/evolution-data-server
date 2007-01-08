@@ -1,5 +1,10 @@
 2007-01-08  Harish Krishnaswamy  <kharish@novell.com>
 
+	* src/server.c : s/g_message/printf. Do not call
+	glib methods before g_thread_init.
+
+2007-01-08  Harish Krishnaswamy  <kharish@novell.com>
+
 	* NEWS, configure.in: Evolution-Data-Server 1.9.5
 	release updates.
 
