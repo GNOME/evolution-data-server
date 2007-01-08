@@ -89,6 +89,7 @@ char                  *exchange_account_get_standard_uri_for (ExchangeAccount  *
 char                  *exchange_account_get_foreign_uri      (ExchangeAccount  *acct,
 							      E2kGlobalCatalogEntry *entry,
 							      const char       *std_uri_prop);
+ExchangeHierarchy     *exchange_account_get_hierarchy_by_email (ExchangeAccount *account, const char *email);
 
 char 		      *exchange_account_get_authtype 	     (ExchangeAccount *account);
 
@@ -102,7 +103,7 @@ GPtrArray             *exchange_account_get_folders          (ExchangeAccount  *
 
 GPtrArray 	       *exchange_account_get_folder_tree      (ExchangeAccount *account, char* path);
 
-ExchangeHierarchy     *exchange_account_get_hierarchy	      (ExchangeAccount *acct,
+ExchangeHierarchy     *exchange_account_get_hierarchy_by_type	      (ExchangeAccount *acct,
 							       ExchangeHierarchyType type);
 
 void                   exchange_account_rescan_tree          (ExchangeAccount  *acct);
@@ -194,6 +195,7 @@ void 			exchange_account_folder_size_rename (ExchangeAccount *account,
 						     	     const char *old_name,
 						     	     const char *new_name);
 GtkListStore 	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
+
 
 #ifdef __cplusplus
 }

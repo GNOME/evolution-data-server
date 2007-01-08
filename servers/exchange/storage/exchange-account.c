@@ -1767,6 +1767,42 @@ exchange_account_get_foreign_uri (ExchangeAccount *account,
 }
 
 /**
+ * exchange_account_get_hierarchy_by_email:
+ * @account: an #ExchangeAccount
+ * @email: email id of the foreign user
+ *
+ * If the hierarchy is present just return it back. Else try to get it
+ * from the filesystem and return it. 
+ *
+ * Return value: Returns the ExchangeHierarchy of the foreign user's folder.
+ **/
+
+ExchangeHierarchy *
+exchange_account_get_hierarchy_by_email (ExchangeAccount *account, const char *email)
+{
+	char *dir;
+	ExchangeHierarchy *hier = NULL;
+	int mode;
+
+	g_return_val_if_fail (email != NULL, NULL);
+
+	hier = g_hash_table_lookup (account->priv->foreign_hierarchies, email);
+	if (!hier) {
+		dir = g_strdup_printf ("%s/%s", account->storage_dir, email);
+		if (g_file_test (dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+			hier = exchange_hierarchy_foreign_new_from_dir (account, dir);
+			g_free (dir);
+			if (hier) {
+				exchange_account_is_offline (account, &mode);
+				setup_hierarchy_foreign (account, hier);
+			}
+		}
+	}
+
+	return hier;
+ }
+
+/**
  * exchange_account_get_folder:
  * @account: an #ExchangeAccount
  * @path_or_uri: the shell path or URI referring to the folder
@@ -2222,13 +2258,24 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	return account;
 }
 
+/**
+ * exchange_account_get_hierarchy_by_type:
+ * @account: an #ExchangeAccount
+ * @type: Hierarchy type
+ *
+ * Returns the non-foreign hierarchy pointer for the requested type 
+ *
+ * Return value: Returns the hierarchy pointer for the requested type
+ **/
+
 ExchangeHierarchy*
-exchange_account_get_hierarchy (ExchangeAccount* acct, 
-				ExchangeHierarchyType type)
+exchange_account_get_hierarchy_by_type (ExchangeAccount* acct, 
+					ExchangeHierarchyType type)
 {
 	int i;
 	
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (acct), NULL);
+	g_return_val_if_fail (type != EXCHANGE_HIERARCHY_FOREIGN, NULL);
 
 	for (i = 0; i < acct->priv->hierarchies->len; i++) {
 		if (EXCHANGE_HIERARCHY (acct->priv->hierarchies->pdata[i])->type == type)
