@@ -1,3 +1,11 @@
+2006-01-08  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes eds part of bgo #362638 - Patch submitted by Matthew
+	Barnes
+
+	* camel/camel-private.h: 
+	* camel/camel-session.c: Replace EThread with GThreadPool.
+	
 2006-12-14  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fixes for bgo #349445 - Patch submitted by Bastien Nocera

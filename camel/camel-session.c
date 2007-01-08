@@ -76,17 +76,22 @@ camel_session_init (CamelSession *session)
 	session->priv->thread_lock = g_mutex_new();
 	session->priv->thread_id = 1;
 	session->priv->thread_active = g_hash_table_new(NULL, NULL);
-	session->priv->thread_queue = NULL;
+	session->priv->thread_pool = NULL;
 }
 
 static void
 camel_session_finalise (CamelObject *o)
 {
 	CamelSession *session = (CamelSession *)o;
+	GThreadPool *thread_pool = session->priv->thread_pool;
 	
 	g_hash_table_destroy(session->priv->thread_active);
-	if (session->priv->thread_queue)
-		e_thread_destroy(session->priv->thread_queue);
+
+	if (thread_pool != NULL) {
+		/* there should be no unprocessed tasks */
+		g_assert(g_thread_pool_unprocessed (thread_pool) == 0);
+		g_thread_pool_free(thread_pool, FALSE, FALSE);
+	}
 
 	g_free(session->storage_path);
 	
@@ -515,15 +520,9 @@ static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg
 	g_free(msg);
 }
 
-static void session_thread_destroy(EThread *thread, CamelSessionThreadMsg *msg, CamelSession *session)
+static void
+session_thread_proxy(CamelSessionThreadMsg *msg, CamelSession *session)
 {
-	d(printf("destroy message %p session %p\n", msg, session));
-	camel_session_thread_msg_free(session, msg);
-}
-
-static void session_thread_received(EThread *thread, CamelSessionThreadMsg *msg, CamelSession *session)
-{
-	d(printf("receive message %p session %p\n", msg, session));
 	if (msg->ops->receive) {
 		CamelOperation *oldop;
 
@@ -531,22 +530,27 @@ static void session_thread_received(EThread *thread, CamelSessionThreadMsg *msg,
 		msg->ops->receive(session, msg);
 		camel_operation_register(oldop);
 	}
+
+	camel_session_thread_msg_free(session, msg);
 }
 
 static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
 {
+	GThreadPool *thread_pool;
 	int id;
 
 	CAMEL_SESSION_LOCK(session, thread_lock);
-	if (session->priv->thread_queue == NULL) {
-		session->priv->thread_queue = e_thread_new(E_THREAD_QUEUE);
-		e_thread_set_msg_destroy(session->priv->thread_queue, (EThreadFunc)session_thread_destroy, session);
-		e_thread_set_msg_received(session->priv->thread_queue, (EThreadFunc)session_thread_received, session);
+	thread_pool = session->priv->thread_pool;
+	if (thread_pool == NULL) {
+		thread_pool = g_thread_pool_new (
+			(GFunc) session_thread_proxy,
+			session, 1, FALSE, NULL);
+		session->priv->thread_pool = thread_pool;
 	}
 	CAMEL_SESSION_UNLOCK(session, thread_lock);
 
 	id = msg->id;
-	e_thread_put(session->priv->thread_queue, &msg->msg);
+	g_thread_pool_push(thread_pool, msg, NULL);
 
 	return id;
 }

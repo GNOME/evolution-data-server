@@ -1,3 +1,10 @@
+2007-01-08  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes eds part of bgo #362638 - Patch submitted by Matthew
+	Barnes
+
+	* libedataserver/e-msgport.[ch]: Obsolete EThread
+	
 2006-12-18  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.9.4

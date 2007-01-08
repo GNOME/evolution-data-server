@@ -753,6 +753,8 @@ e_msgport_reply (EMsg *msg)
 	/* else lost? */
 }
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 struct _thread_info {
 	pthread_t id;
 	int busy;
@@ -1190,6 +1192,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 		thread_destroy_msg(e, dmsg);
 	}
 }
+#endif     /* EDS_DISABLE_DEPRECATED */
 
 /* yet-another-mutex interface */
 struct _EMutex {
