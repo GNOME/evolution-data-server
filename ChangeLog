@@ -1,3 +1,8 @@
+2007-01-08  Harish Krishnaswamy  <kharish@novell.com>
+
+	* NEWS, configure.in: Evolution-Data-Server 1.9.5
+	release updates.
+
 2007-01-08  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fixes eds part of bgo #362638 - Patch submitted by Matthew
