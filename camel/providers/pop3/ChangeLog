@@ -1,3 +1,10 @@
+2007-01-11  Nickolay V. Shmyrev  <nshmyrev@yandex.ru>
+
+	* Makefile.am:
+	
+	Add explicit translation domain to make things
+	translatable. Fixes bug #353060.
+
 2006-07-09  Parthasarathi Susarla <sparthasarathi@novell.com>
 	
 	** Fixes bug #201824
