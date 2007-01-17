@@ -599,9 +599,10 @@ ep_forget_password (EPassMsg *msg)
 }
 #endif
 
-#if WITH_GNOME_KEYRING
+static void
 ep_get_password (EPassMsg *msg)
 {
+#if WITH_GNOME_KEYRING
 	char *path, *passwd;
 	char *encoded = NULL;
 	GnomeKeyringAttributeList *attributes;
@@ -685,14 +686,7 @@ ep_get_password (EPassMsg *msg)
 		}
 		
 	}
-
-	if (!msg->noreply)
-		e_msgport_reply(&msg->msg);
-}
 #else
-static void
-ep_get_password (EPassMsg *msg)
-{
 	char *path, *passwd;
 	char *encoded = NULL;
 
@@ -710,10 +704,10 @@ ep_get_password (EPassMsg *msg)
 		}
 	}
 
+#endif
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#endif
 
 static void
 ep_add_password (EPassMsg *msg)
