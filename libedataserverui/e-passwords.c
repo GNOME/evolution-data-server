@@ -194,7 +194,7 @@ ep_msg_send(EPassMsg *msg)
 /* the functions that actually do the work */
 #if WITH_GNOME_KEYRING
 static void
-ep_clear_passwords(EPassMsg *msg)
+ep_clear_passwords_keyring(EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
@@ -234,7 +234,7 @@ ep_clear_passwords(EPassMsg *msg)
 	} else {
 		for (tmp = matches; tmp; tmp = tmp->next) {
 			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-			d(g_printf("Delete Items %d\n", result));
+			d(g_print("Delete Items %d\n", result));
 		}
 	}
 	
@@ -242,9 +242,9 @@ ep_clear_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#else
+#endif
 static void
-ep_clear_passwords(EPassMsg *msg)
+ep_clear_passwords_file(EPassMsg *msg)
 {
 	char *path;
 
@@ -258,7 +258,6 @@ ep_clear_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#endif
 
 static gboolean
 free_entry (gpointer key, gpointer value, gpointer user_data)
@@ -270,7 +269,8 @@ free_entry (gpointer key, gpointer value, gpointer user_data)
 }
 
 #if WITH_GNOME_KEYRING
-ep_forget_passwords(EPassMsg *msg)
+static void
+ep_forget_passwords_keyring(EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
@@ -309,7 +309,7 @@ ep_forget_passwords(EPassMsg *msg)
 	} else {
 		for (tmp = matches; tmp; tmp = tmp->next) {
 			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-			d(g_printf("Delete Items %d\n", result));
+			d(g_print("Delete Items %d\n", result));
 		}
 	}
 	
@@ -321,9 +321,10 @@ ep_forget_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#else
+#endif
+
 static void
-ep_forget_passwords(EPassMsg *msg)
+ep_forget_passwords_file(EPassMsg *msg)
 {
 	void *it;
 	char *key;
@@ -347,7 +348,6 @@ ep_forget_passwords(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#endif
 
 static char *
 password_path (const char *component_name, const char *key)
@@ -369,19 +369,17 @@ password_path (const char *component_name, const char *key)
 
 #if WITH_GNOME_KEYRING
 static void
-ep_remember_password(EPassMsg *msg)
+ep_remember_password_keyring(EPassMsg *msg)
 {
 	gpointer okey, value;
-	int len, state, save;
 
 	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
 		/* add it to the on-disk cache of passwords */
 		GnomeKeyringAttributeList *attributes;
 		GnomeKeyringAttribute attribute;
 		GnomeKeyringResult result;
-		GList *pass = NULL, *tmp;	
 		EUri *uri = e_uri_new (okey);
-		int item_id;
+		guint32 item_id;
 
 		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
 			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
@@ -431,9 +429,10 @@ ep_remember_password(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#else
+#endif
+
 static void
-ep_remember_password(EPassMsg *msg)
+ep_remember_password_file(EPassMsg *msg)
 {
 	gpointer okey, value;
 	char *path, *pass64;
@@ -463,17 +462,15 @@ ep_remember_password(EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#endif
 
 #if WITH_GNOME_KEYRING
 static void
-ep_forget_password (EPassMsg *msg)
+ep_forget_password_keyring (EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
-	char *path;
 	char *default_keyring = NULL;	
 	gpointer okey, value;
 	EUri *uri = e_uri_new (msg->key);
@@ -563,7 +560,7 @@ ep_forget_password (EPassMsg *msg)
 			}
 				if (present == 2 && accept) {
 					result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-					d(g_printf("Delete Items %s %s %d\n", uri->host, uri->user, result));			
+					d(g_print("Delete Items %s %s %d\n", uri->host, uri->user, result));			
 				}
 		}	
 
@@ -574,9 +571,10 @@ ep_forget_password (EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#else
+#endif
+
 static void
-ep_forget_password (EPassMsg *msg)
+ep_forget_password_file (EPassMsg *msg)
 {
 	gpointer okey, value;
 	char *path;
@@ -597,14 +595,13 @@ ep_forget_password (EPassMsg *msg)
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
-#endif
 
-static void
-ep_get_password (EPassMsg *msg)
-{
+
 #if WITH_GNOME_KEYRING
-	char *path, *passwd;
-	char *encoded = NULL;
+static void
+ep_get_password_keyring (EPassMsg *msg)
+{
+	char *passwd;
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
@@ -686,7 +683,15 @@ ep_get_password (EPassMsg *msg)
 		}
 		
 	}
-#else
+
+	if (!msg->noreply)
+		e_msgport_reply(&msg->msg);
+}	
+#endif
+
+static void
+ep_get_password_file (EPassMsg *msg)
+{	
 	char *path, *passwd;
 	char *encoded = NULL;
 
@@ -704,7 +709,6 @@ ep_get_password (EPassMsg *msg)
 		}
 	}
 
-#endif
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
@@ -750,9 +754,17 @@ pass_response(GtkDialog *dialog, int response, void *data)
 				msg->oldpass = msg->password;
 				ep_add_password(msg);
 			}
-
+#if WITH_GNOME_KEYRING
+			if (*msg->remember && type == E_PASSWORDS_REMEMBER_FOREVER) {
+				if (gnome_keyring_is_available())
+					ep_remember_password_keyring(msg);
+				else
+					ep_remember_password_file(msg);
+			}
+#else
 			if (*msg->remember && type == E_PASSWORDS_REMEMBER_FOREVER)
-				ep_remember_password(msg);
+				ep_remember_password_file(msg);				    
+#endif				    
 
 			msg->noreply = noreply;
 		}
@@ -769,9 +781,17 @@ pass_response(GtkDialog *dialog, int response, void *data)
 	mw = (EPassMsg *)request_list.head;
 	mn = (EPassMsg *)mw->msg.ln.next;
 	while (mn) {
-		if ((mw->dispatch == ep_forget_password
-		     || mw->dispatch == ep_get_password
-		     || mw->dispatch == ep_ask_password)
+#if WITH_GNOME_KEYRING		
+		if ((mw->dispatch == (gnome_keyring_is_available() ? ep_forget_password_keyring : ep_forget_password_file)
+#else
+		if ((mw->dispatch == ep_forget_password_file		     
+#endif
+#if WITH_GNOME_KEYRING				     
+		     || mw->dispatch == (gnome_keyring_is_available() ? ep_get_password_keyring : ep_get_password_file)
+#else
+		     || mw->dispatch == ep_get_password_file		     
+#endif
+		     || mw->dispatch == ep_ask_password)		    
 		    && (strcmp(mw->component, msg->component) == 0
 			&& strcmp(mw->key, msg->key) == 0)) {
 			e_dlist_remove((EDListNode *)mw);
@@ -832,7 +852,14 @@ ep_ask_password(EPassMsg *msg)
 	gtk_widget_grab_focus (msg->entry);
 	
 	if ((msg->flags & E_PASSWORDS_REPROMPT)) {
-		ep_get_password(msg);
+#if WITH_GNOME_KEYRING
+		if (gnome_keyring_is_available())
+			ep_get_password_keyring(msg);
+		else
+			ep_get_password_file(msg);			
+#else
+		ep_get_password_file(msg);
+#endif
 		if (msg->password) {
 			gtk_entry_set_text ((GtkEntry *) msg->entry, msg->password);
 			g_free (msg->password);
@@ -918,9 +945,9 @@ void
 e_passwords_shutdown (void)
 {
 	/* shouldn't need this really - everything is synchronous */
-#if !WITH_GNOME_KEYRING	
-	gnome_config_private_sync_file ("/Evolution");
-#endif
+	if (!gnome_keyring_is_available())
+		gnome_config_private_sync_file ("/Evolution");
+	
 	e_passwords_cancel();
 
 	if (passwords) {
@@ -956,8 +983,12 @@ e_passwords_set_online(int state)
 void
 e_passwords_forget_passwords (void)
 {
-	EPassMsg *msg = ep_msg_new(ep_forget_passwords);
-
+#if WITH_GNOME_KEYRING	
+	EPassMsg *msg = ep_msg_new(gnome_keyring_is_available() ? ep_forget_passwords_keyring : ep_forget_passwords_file);
+#else
+	EPassMsg *msg = ep_msg_new(ep_forget_passwords_file);
+#endif
+	
 	ep_msg_send(msg);
 	ep_msg_free(msg);
 }
@@ -970,7 +1001,11 @@ e_passwords_forget_passwords (void)
 void
 e_passwords_clear_passwords (const char *component_name)
 {
-	EPassMsg *msg = ep_msg_new(ep_clear_passwords);
+#if WITH_GNOME_KEYRING	
+	EPassMsg *msg = ep_msg_new(gnome_keyring_is_available() ? ep_clear_passwords_keyring : ep_clear_passwords_file);
+#else
+	EPassMsg *msg = ep_msg_new(ep_clear_passwords_file);		
+#endif
 
 	msg->component = component_name;
 	ep_msg_send(msg);
@@ -991,8 +1026,11 @@ e_passwords_remember_password (const char *component_name, const char *key)
 	g_return_if_fail(component_name != NULL);
 	g_return_if_fail(key != NULL);
 
-	msg = ep_msg_new(ep_remember_password);
-
+#if WITH_GNOME_KEYRING
+	msg = ep_msg_new(gnome_keyring_is_available() ? ep_remember_password_keyring : ep_remember_password_file);
+#else
+	msg = ep_msg_new(ep_remember_password_file);
+#endif	
 	msg->component = component_name;
 	msg->key = key;
 
@@ -1014,8 +1052,11 @@ e_passwords_forget_password (const char *component_name, const char *key)
 	g_return_if_fail(component_name != NULL);
 	g_return_if_fail(key != NULL);
 
-	msg = ep_msg_new(ep_forget_password);
-
+#if WITH_GNOME_KEYRING	
+	msg = ep_msg_new(gnome_keyring_is_available() ? ep_forget_password_keyring : ep_forget_password_file);
+#else	
+	msg = ep_msg_new(ep_forget_password_file);
+#endif	
 	msg->component = component_name;
 	msg->key = key;
 
@@ -1039,7 +1080,11 @@ e_passwords_get_password (const char *component_name, const char *key)
 	g_return_val_if_fail(component_name != NULL, NULL);
 	g_return_val_if_fail(key != NULL, NULL);
 
-	msg = ep_msg_new(ep_get_password);
+#if WITH_GNOME_KEYRING	
+	msg = ep_msg_new(gnome_keyring_is_available() ? ep_get_password_keyring : ep_get_password_file);
+#else
+	msg = ep_msg_new(ep_get_password_file);
+#endif	
 
 	msg->component = component_name;
 	msg->key = key;

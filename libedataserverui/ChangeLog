@@ -1,3 +1,14 @@
+2007-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Add fallback supoprt for GNOME Keyring to GNOME Private.
+
+	* e-passwords.c: (ep_clear_passwords_keyring),
+	(ep_clear_passwords_file), (ep_forget_passwords_keyring),
+	(ep_forget_passwords_file), (ep_remember_password_keyring),
+	(ep_remember_password_file), (ep_forget_password_keyring),
+	(ep_forget_password_file), (ep_get_password_keyring),
+	(ep_get_password_file), (pass_response):
+
 2007-01-17  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Downstream from openSUSE
