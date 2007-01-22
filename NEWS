@@ -1,3 +1,17 @@
+Evolution-Data-Server 1.9.6 2007-01-22
+--------------------------------------
+
+Updated Translations:
+Stéphane Raimbault (fr), Priit Laes (et),
+Daniel Nylander (sv)
+
+Contributors:
+Nickolay V. Shmyrev : #353060
+Sankar P : IMAP Configurable Headers
+Srinivasa Ragavan: Fallback code for Gnome Keyring
+Harish Krishnaswamy: Fixes calling glib methods
+
+
 Evolution-Data-Server 1.9.5 2007-01-08
 --------------------------------------
 
@@ -8,6 +22,7 @@ Christophe Fergeau (fr), Clytie Siddall (vi)
 
 Bug Fixes: 362638, 387397, 387638 and other downstream fixes
 
+Contributors:
 Mathew Barnes, Veerapuram Varadhan, Chenthill Palaniswamy, Jeff Cai
 
 Evolution-Data-Server 1.9.4 2006-12-18
