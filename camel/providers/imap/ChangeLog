@@ -1,3 +1,10 @@
+2007-01-22  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.c: (imap_update_summary):
+	* camel-imap-store.c: (camel_imap_store_finalize), (construct):
+	* camel-imap-store.h:
+	Make IMAP Headers fetching configurable.
+
 2006-09-20  Harish Krishnaswamy <kharish@novell.com>
 
 	Modified Sankar's patch to avoid breaking the string

@@ -211,6 +211,8 @@ camel_imap_store_finalize (CamelObject *object)
 		disco->diary = NULL;
 	}
 
+	if (imap_store->custom_headers)
+		g_free (imap_store->custom_headers);
 }
 
 static void
@@ -294,6 +296,17 @@ construct (CamelService *service, CamelSession *session,
 		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK;
 	if (camel_url_get_param (url, "filter_junk_inbox"))
 		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK_INBOX;
+
+	imap_store->headers = IMAP_FETCH_MAILING_LIST_HEADERS;
+	if (camel_url_get_param (url, "all_headers"))
+		imap_store->headers = IMAP_FETCH_ALL_HEADERS;
+	else if (camel_url_get_param (url, "basic_headers"))
+		imap_store->headers = IMAP_FETCH_MINIMAL_HEADERS;
+
+	if (camel_url_get_param (url, "imap_custom_headers")) {
+		imap_store->custom_headers = g_strdup(camel_url_get_param (url, "imap_custom_headers"));
+	}
+
 
 	/* setup journal*/
 	path = g_strdup_printf ("%s/journal", imap_store->storage_path);

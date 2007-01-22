@@ -2327,7 +2327,7 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 /* FIXME: this needs to be kept in sync with camel-mime-utils.c's list
    of mailing-list headers and so might be best if this were
    auto-generated? */
-#define MAILING_LIST_HEADERS "X-MAILING-LIST X-LOOP LIST-ID LIST-POST MAILING-LIST ORIGINATOR X-LIST SENDER RETURN-PATH X-BEENTHERE"
+#define MAILING_LIST_HEADERS "X-MAILING-LIST X-LOOP LIST-ID LIST-POST MAILING-LIST ORIGINATOR X-LIST SENDER RETURN-PATH X-BEENTHERE "
 
 static void
 imap_update_summary (CamelFolder *folder, int exists,
@@ -2340,24 +2340,28 @@ imap_update_summary (CamelFolder *folder, int exists,
 	guint32 flags, uidval;
 	int i, seq, first, size, got;
 	CamelImapResponseType type;
-	const char *header_spec;
+	GString *header_spec = NULL;
 	CamelImapMessageInfo *mi, *info;
 	CamelStream *stream;
 	char *uid, *resp;
 	GData *data;
 	
 	CAMEL_SERVICE_ASSERT_LOCKED (store, connect_lock);
-	if (store->server_level >= IMAP_LEVEL_IMAP4REV1)
-		header_spec = "HEADER.FIELDS (" CAMEL_MESSAGE_INFO_HEADERS MAILING_LIST_HEADERS ")";
-	else
-		header_spec = "0";
-	
-	/* Used as a way to fetch all Headers instead of the selective headers.
-	   Support for fetching custom headers could be done in a better way,
-	   using CamelURL and EPlugins. */
-	
-	if( g_getenv ("EVO_IMAP_FETCH_ALL_HEADERS") )
-		header_spec = "HEADER";
+	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
+		if (store->headers == IMAP_FETCH_ALL_HEADERS)
+			header_spec = g_string_new ("HEADER");
+		else {
+			header_spec = g_string_new ("HEADER.FIELDS (");
+			header_spec = g_string_append (header_spec, CAMEL_MESSAGE_INFO_HEADERS);
+			if (store->headers == IMAP_FETCH_MAILING_LIST_HEADERS)
+				header_spec = g_string_append (header_spec, MAILING_LIST_HEADERS);
+			if (store->custom_headers)
+				header_spec = g_string_append (header_spec, store->custom_headers);
+
+			header_spec = g_string_append (header_spec, " )");
+		}
+	} else
+		header_spec = g_string_new ("0");
 	
 	/* Figure out if any of the new messages are already cached (which
 	 * may be the case if we're re-syncing after disconnected operation).
@@ -2377,8 +2381,10 @@ imap_update_summary (CamelFolder *folder, int exists,
 	got = 0;
 	if (!camel_imap_command_start (store, folder, ex,
 				       "UID FETCH %d:* (FLAGS RFC822.SIZE INTERNALDATE BODY.PEEK[%s])",
-				       uidval + 1, header_spec))
+				       uidval + 1, header_spec->str)) {
+		g_string_free (header_spec, TRUE);
 		return;
+	}
 	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 	
 	/* Parse the responses. We can't add a message to the summary
@@ -2455,10 +2461,11 @@ imap_update_summary (CamelFolder *folder, int exists,
 			uidset = imap_uid_array_to_set (folder->summary, needheaders, uid, UID_SET_LIMIT, &uid);
 			if (!camel_imap_command_start (store, folder, ex,
 						       "UID FETCH %s BODY.PEEK[%s]",
-						       uidset, header_spec)) {
+						       uidset, header_spec->str)) {
 				g_ptr_array_free (needheaders, TRUE);
 				camel_operation_end (NULL);
 				g_free (uidset);
+				g_string_free (header_spec, TRUE);
 				goto lose;
 			}
 			g_free (uidset);
@@ -2485,7 +2492,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 				goto lose;
 			}
 		}
-		
+		g_string_free (header_spec, TRUE);	
 		g_ptr_array_free (needheaders, TRUE);
 		camel_operation_end (NULL);
 	}

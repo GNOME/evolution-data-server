@@ -106,6 +106,10 @@ typedef enum {
 #define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 4)
 #define IMAP_PARAM_SUBSCRIPTIONS		(1 << 5)
 
+#define IMAP_FETCH_ALL_HEADERS 1
+#define IMAP_FETCH_MAILING_LIST_HEADERS 2 /* Fetches Minimal and Mailing List Headers. Default behavior */
+#define IMAP_FETCH_MINIMAL_HEADERS 3
+
 struct _CamelImapStore {
 	CamelDiscoStore parent_object;	
 	
@@ -136,6 +140,9 @@ struct _CamelImapStore {
 	GHashTable *authtypes;
 	
 	time_t refresh_stamp;
+
+	guint32 headers;
+	char *custom_headers;
 };
 
 typedef struct {
