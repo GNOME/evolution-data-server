@@ -1,3 +1,8 @@
+2007-01-23  Tor Lillqvist  <tml@novell.com>
+
+	* e-passwords.c (e_passwords_shutdown): !WITH_GNOME_KEYRING
+	alternative was missing here.
+
 2007-01-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Add fallback supoprt for GNOME Keyring to GNOME Private.

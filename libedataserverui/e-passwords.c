@@ -944,10 +944,13 @@ e_passwords_cancel(void)
 void
 e_passwords_shutdown (void)
 {
+#ifdef WITH_GNOME_KEYRING
 	/* shouldn't need this really - everything is synchronous */
 	if (!gnome_keyring_is_available())
 		gnome_config_private_sync_file ("/Evolution");
-	
+#else
+	gnome_config_private_sync_file ("/Evolution");
+#endif
 	e_passwords_cancel();
 
 	if (passwords) {
