@@ -1,3 +1,9 @@
+2007-01-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Commiting on behalf of Andreas Henriksson <andreas@fatal.se>.
+	
+	* libdb/hash/hash_open.c: Fixes the order of memset arguments.
+
 2006-11-20  Harish Krishnaswamy  <kharish@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.8.2 release
