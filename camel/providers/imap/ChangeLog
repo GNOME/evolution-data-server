@@ -1,3 +1,9 @@
+2007-01-30  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.c: (imap_update_summary):
+	Some IMAP Servers doesnt return headers if there
+	is more than one consecutive space in the HEADER string. 
+
 2007-01-22  Sankar P  <psankar@novell.com>
 
 	* camel-imap-folder.c: (imap_update_summary):

@@ -2351,6 +2351,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 		if (store->headers == IMAP_FETCH_ALL_HEADERS)
 			header_spec = g_string_new ("HEADER");
 		else {
+			gchar *temp;
 			header_spec = g_string_new ("HEADER.FIELDS (");
 			header_spec = g_string_append (header_spec, CAMEL_MESSAGE_INFO_HEADERS);
 			if (store->headers == IMAP_FETCH_MAILING_LIST_HEADERS)
@@ -2358,10 +2359,16 @@ imap_update_summary (CamelFolder *folder, int exists,
 			if (store->custom_headers)
 				header_spec = g_string_append (header_spec, store->custom_headers);
 
-			header_spec = g_string_append (header_spec, " )");
+			temp = g_strdup(header_spec->str);
+			temp = g_strstrip (temp);
+			header_spec = g_string_new (temp);
+			g_free (temp);
+			header_spec = g_string_append (header_spec, ")");
 		}
 	} else
 		header_spec = g_string_new ("0");
+
+	g_print ("\n\a Header string finally is ********** \n%s\n", header_spec->str);
 	
 	/* Figure out if any of the new messages are already cached (which
 	 * may be the case if we're re-syncing after disconnected operation).
