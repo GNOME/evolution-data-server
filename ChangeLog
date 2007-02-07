@@ -1,3 +1,16 @@
+2007-02-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #359979, #384183
+
+	* e-msgport.c (e_msgport_wait): Behavior is now block-and-pop
+	instead of block-and-peek.  Eliminates the need for a cache.
+
+	* e-msgport.c (e_msgport_new), (e_msgport_get): Rip out the
+	cache logic, which was broken anyway.
+
+	* e-msgport.c (thread_dispatch): Adapt to new e_msgport_wait()
+	semantics, and simplify the logic.
+
 2007-01-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Commiting on behalf of Andreas Henriksson <andreas@fatal.se>.

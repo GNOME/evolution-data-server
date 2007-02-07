@@ -487,7 +487,6 @@ em_cache_clear(EMCache *emc)
 
 struct _EMsgPort {
 	GAsyncQueue *queue;
-	EMsg *cache;
 	gint pipe[2];  /* on Win32, actually a pair of SOCKETs */
 #ifdef HAVE_NSS
 	PRFileDesc *prpipe[2];
@@ -562,7 +561,6 @@ e_msgport_new (void)
 
 	msgport = g_slice_new (EMsgPort);
 	msgport->queue = g_async_queue_new ();
-	msgport->cache = NULL;
 	msgport->pipe[0] = -1;
 	msgport->pipe[1] = -1;
 #ifdef HAVE_NSS
@@ -683,21 +681,9 @@ e_msgport_wait (EMsgPort *msgport)
 
 	g_async_queue_lock (msgport->queue);
 
-	/* check the cache first */
-	if (msgport->cache != NULL) {
-		msg = msgport->cache;
-		/* don't clear the cache */
-		g_async_queue_unlock (msgport->queue);
-		return msg;
-	}
-
 	msg = g_async_queue_pop_unlocked (msgport->queue);
 
 	g_assert (msg != NULL);
-
-	/* The message is not actually "removed" from the EMsgPort until
- 	 * e_msgport_get() is called.  So we cache the popped message. */
-	msgport->cache = msg;
 
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
@@ -719,14 +705,6 @@ e_msgport_get (EMsgPort *msgport)
 	g_return_val_if_fail (msgport != NULL, NULL);
 
 	g_async_queue_lock (msgport->queue);
-
-	/* check the cache first */
-	if (msgport->cache != NULL) {
-		msg = msgport->cache;
-		msgport->cache = NULL;
-		g_async_queue_unlock (msgport->queue);
-		return msg;
-	}
 
 	msg = g_async_queue_try_pop_unlocked (msgport->queue);
 
@@ -1062,31 +1040,17 @@ thread_dispatch(void *din)
 		if (m == NULL) {
 			/* nothing to do?  If we are a 'new' type thread, just quit.
 			   Otherwise, go into waiting (can be cancelled here) */
-			info = NULL;
-			switch (e->type) {
-			case E_THREAD_NEW:
-			case E_THREAD_QUEUE:
-			case E_THREAD_DROP:
-				info = thread_find(e, self);
-				if (info)
-					info->busy = FALSE;
-				e->waiting++;
-				pthread_mutex_unlock(&e->mutex);
-				e_msgport_wait(e->server_port);
-				pthread_mutex_lock(&e->mutex);
-				e->waiting--;
-				pthread_mutex_unlock(&e->mutex);
-				break;
-#if 0
-			case E_THREAD_NEW:
-				e->id_list = g_list_remove(e->id_list, (void *)pthread_self());
-				pthread_mutex_unlock(&e->mutex);
-				return 0;
-#endif
-			}
+			info = thread_find(e, self);
+			if (info)
+				info->busy = FALSE;
+			e->waiting++;
+			pthread_mutex_unlock(&e->mutex);
+			m = e_msgport_wait(e->server_port);
+			pthread_mutex_lock(&e->mutex);
+			e->waiting--;
+		}
 
-			continue;
-		} else if (m->reply_port == E_THREAD_QUIT_REPLYPORT) {
+		if (m->reply_port == E_THREAD_QUIT_REPLYPORT) {
 			t(printf("Thread %" G_GUINT64_FORMAT " got quit message\n", e_util_pthread_id(self)));
 			/* Handle a quit message, say we're quitting, free the message, and break out of the loop */
 			info = thread_find(e, self);
@@ -1385,7 +1349,6 @@ void *server(void *data)
 	while (1) {
 		printf("server %d: waiting\n", id);
 		msg = e_msgport_wait(server_port);
-		msg = e_msgport_get(server_port);
 		if (msg) {
 			printf("server %d: got message\n", id);
 			g_usleep(1000000);
@@ -1413,7 +1376,6 @@ void *client(void *data)
 		e_msgport_put(server_port, msg);
 		printf("client: waiting for reply\n");
 		e_msgport_wait(replyport);
-		e_msgport_get(replyport);
 		printf("client: got reply\n");
 	}
 
@@ -1429,8 +1391,7 @@ void *client(void *data)
 
 	printf("client: receiving multiple\n");
 	for (i=0;i<10;i++) {
-		e_msgport_wait(replyport);
-		msg = e_msgport_get(replyport);
+		msg = e_msgport_wait(replyport);
 		g_free(msg);
 	}
 

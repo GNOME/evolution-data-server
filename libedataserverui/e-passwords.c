@@ -186,8 +186,8 @@ ep_msg_send(EPassMsg *msg)
 			g_main_context_iteration(NULL, TRUE);
 		g_assert(m == msg);
 	} else {
-		e_msgport_wait(msg->msg.reply_port);
-		g_assert(e_msgport_get(msg->msg.reply_port) == &msg->msg);
+		EMsg *reply_msg = e_msgport_wait(msg->msg.reply_port);
+		g_assert(reply_msg == &msg->msg);
 	}
 }
 

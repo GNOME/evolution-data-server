@@ -1,3 +1,10 @@
+2007-02-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #359979, #384183
+
+	* e-passwords.c (ep_msg_send): e_msgport_wait()'s behavior is now
+	block-and-pop instead of block-and-peek.
+
 2007-01-23  Tor Lillqvist  <tml@novell.com>
 
 	* e-passwords.c (e_passwords_shutdown): !WITH_GNOME_KEYRING
