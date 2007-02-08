@@ -1,4 +1,4 @@
-# translation of evolution-data-server.gnome-2-16.ar.po to Arabic
+# translation of evolution-data-server.HEAD.po to Arabic
 # Arabic translation of PACKAGE.
 # Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -7,20 +7,20 @@
 # Ossama Khayat <okhayat@yahoo.com>, 2003.
 # Ossama M. Khayat <okhayat@yahoo.com>, 2004.
 # Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
-# Khaled Hosny <khaledhosny@eglug.org>, 2006.
+# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.gnome-2-16.ar\n"
+"Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-24 13:00+0000\n"
-"PO-Revision-Date: 2006-12-23 23:39+0100\n"
-"Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
-"Language-Team: Arabic <support@arabeyes.org>\n"
+"PO-Revision-Date: 2007-01-04 08:01+0200\n"
+"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
+"Language-Team: Arabic <doc@arabeyes>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : 3\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : 3\n\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:542
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
@@ -4307,12 +4307,12 @@ msgstr "لا يمكن الإتّصال بخادم POP %s: لا دعم لآليّ
 #: ../camel/providers/pop3/camel-pop3-store.c:417
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
-msgstr "فشل تسجيل دخول SASL `%s' لخادم POP %s: %s"
+msgstr "فشل ولوج SASL `%s' لخادم POP %s: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:429
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr "لا يمكن تسجيل الدّخول لخادم POP %s: خطأ برتوكول SASL"
+msgstr "لا يمكن الولوج لخادم POP %s: خطأ برتوكول SASL"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
