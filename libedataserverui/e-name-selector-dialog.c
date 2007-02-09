@@ -779,7 +779,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
 	text_escaped = escape_sexp_string (text);
 
-	if ( !strcmp (category,"Any Category")) {
+	if ( !strcmp (category, _("Any Category"))) {
 		query_string = g_strdup_printf ("(or (beginswith \"file_as\" %s) "
 						"    (beginswith \"full_name\" %s) "
 						"    (beginswith \"email\" %s) "
