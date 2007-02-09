@@ -1217,6 +1217,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
 		gboolean is_sent_folder = FALSE;
+		const char *recurrence_key = NULL;
+		int rk;
 
 		exists = FALSE;
 
@@ -1228,7 +1230,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		camel_operation_progress (NULL, (100*i)/total_items);
 
-		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size", &item);
+		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size recurrenceKey", &item);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			i++;
 			continue;
@@ -1254,9 +1256,15 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi = (CamelGroupwiseMessageInfo *)camel_message_info_new (folder->summary); 
 			if (mi->info.content == NULL) {
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
-				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
+				mi->info.content->type = camel_content_type_new ("multipart", "mixed");	
 			}
 		}
+		
+		rk = e_gw_item_get_recurrence_key (item);
+		if (rk > 0) {
+			recurrence_key = g_strdup_printf("%d", rk); 
+			camel_message_info_set_user_tag ((CamelMessageInfo*)mi, "recurrence-key", recurrence_key);
+		} 
 
 		/*all items in the Junk Mail folder should have this flag set*/
 		if (is_junk)
@@ -1444,6 +1452,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		const char *id;
 		GSList *recp_list = NULL;
 		status_flags = 0;
+		const char *recurrence_key = NULL;
+		int rk;
 
 		id = e_gw_item_get_id (item);
 
@@ -1464,6 +1474,12 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
 			}
 		}
+		
+		rk = e_gw_item_get_recurrence_key (item);
+		if (rk > 0) {
+			recurrence_key = g_strdup_printf("%d", rk); 
+			camel_message_info_set_user_tag ((CamelMessageInfo*)mi, "recurrence-key", recurrence_key);
+		} 
 
 		/*all items in the Junk Mail folder should have this flag set*/
 		if (is_junk)
