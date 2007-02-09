@@ -3024,7 +3024,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			soup_soap_message_start_element (msg, "byDay", NULL, NULL);
 			max_elements = sizeof (rrule->by_day) / sizeof (rrule->by_day[0]);
 			/* expand into  a sequence of 'day' here  */
-			for (i = 0; i <= max_elements && rrule->by_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+			for (i = 0; i < max_elements && rrule->by_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
 				e_gw_message_write_string_parameter (msg, "day", NULL, 
 						e_gw_recur_get_day_of_week (rrule->by_day [i]));
@@ -3039,7 +3039,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			soup_soap_message_start_element (msg, "byMonthDay", NULL, NULL);
 			max_elements = sizeof (rrule->by_month_day)  / sizeof (rrule->by_month_day [i]);
 			/* expand into  a sequence of 'day' here  */
-			for (i = 0; i <= max_elements && rrule->by_month_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+			for (i = 0; i < max_elements && rrule->by_month_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
 				g_sprintf (month_day, "%d", rrule->by_month_day [i]);
 				e_gw_message_write_string_parameter (msg, "day", NULL, month_day);
@@ -3054,7 +3054,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			soup_soap_message_start_element (msg, "byYearDay", NULL, NULL);
 			max_elements = sizeof (rrule->by_year_day)  / sizeof (rrule->by_year_day [i]);
 			/* expand into  a sequence of 'day' here  */
-			for (i = 0; i <= max_elements && rrule->by_year_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+			for (i = 0; i < max_elements && rrule->by_year_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
 				g_sprintf (year_day, "%d", rrule->by_year_day [i]);
 				e_gw_message_write_string_parameter (msg, "day", NULL, year_day);
@@ -3069,7 +3069,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			soup_soap_message_start_element (msg, "byMonth", NULL, NULL);
 			max_elements = sizeof (rrule->by_month)  / sizeof (rrule->by_month [i]);
 			/* expand into  a sequence of 'month' here  */
-			for (i = 0; i <= max_elements && rrule->by_month [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
+			for (i = 0; i < max_elements && rrule->by_month [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
 				/*TODO occurence attribute */
 				g_sprintf (month, "%d", rrule->by_month [i]);
 				e_gw_message_write_string_parameter (msg, "month", NULL, month);
