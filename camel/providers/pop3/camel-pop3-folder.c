@@ -326,7 +326,12 @@ pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		}
 
 		if (fi->flags & CAMEL_MESSAGE_DELETED) {
-			fi->cmd = camel_pop3_engine_command_new(pop3_store->engine, 0, NULL, NULL, "DELE %u\r\n", fi->id);
+			fi->cmd = camel_pop3_engine_command_new(pop3_store->engine,
+								0,
+								NULL,
+								NULL,
+								"DELE %u\r\n",
+								fi->id);
 
 			/* also remove from cache */
 			if (pop3_store->cache && fi->uid)
@@ -365,29 +370,38 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	temp = time(&temp);
 
 	for (i = 0; i < pop3_folder->uids->len; i++) {
-	fi = pop3_folder->uids->pdata[i];
-
-	CamelMimeMessage *message = pop3_get_message (folder, fi->uid, ex);	
-	time_t message_time = message->date + message->date_offset;
-	if(message) {
-		double time_diff = difftime(temp,message_time);
-		int day_lag = time_diff/(60*60*24);
-		if( day_lag > days_to_delete)
-		{
-			if (fi->cmd) {
-			while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0)
-				;
-			camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
-			fi->cmd = NULL;
+		fi = pop3_folder->uids->pdata[i];
+	
+		CamelMimeMessage *message = pop3_get_message (folder, fi->uid, ex);
+		if(message) {
+			time_t message_time = message->date + message->date_offset;
+			double time_diff = difftime(temp,message_time);
+			int day_lag = time_diff/(60*60*24);
+			if( day_lag > days_to_delete)
+			{
+				if (fi->cmd) {
+					while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0) {
+						; /* do nothing - iterating until end */
+					}
+					
+					camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
+					fi->cmd = NULL;
+				}
+		
+				fi->cmd = camel_pop3_engine_command_new(pop3_store->engine, 
+									0,
+									NULL,
+									NULL,
+									"DELE %u\r\n",
+									fi->id);
+				/* also remove from cache */
+				if (pop3_store->cache && fi->uid) {
+					camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
+				}
+			}
+			/* free message - not used anymore */
+			camel_object_unref((CamelObject *)message);
 		}
-
-		fi->cmd = camel_pop3_engine_command_new(pop3_store->engine, 0, NULL, NULL, "DELE %u\r\n", fi->id);
-			/* also remove from cache */
-		if (pop3_store->cache && fi->uid)
-			camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
-		}
-	     }
-
 	}
 
 	for (i = 0; i < pop3_folder->uids->len; i++) {

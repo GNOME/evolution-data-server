@@ -1,3 +1,9 @@
+2007-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* camel-pop3-folder.c: (pop3_sync), (camel_pop3_delete_old):
+	Fix a nasty leak when using the "Delete after N days" option.
+	Patch from Nathan Owens. Closes bug #363328.
+
 2007-01-11  Nickolay V. Shmyrev  <nshmyrev@yandex.ru>
 
 	* Makefile.am:
