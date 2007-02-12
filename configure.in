@@ -1216,7 +1216,11 @@ case $CFLAGS in
 	;;
 esac
 
-AM_PATH_ORBIT2(2.9.8)
+PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= 2.9.8)
+ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
+AC_SUBST(ORBIT_CFLAGS)
+AC_SUBST(ORBIT_LIBS)
+AC_SUBST(ORBIT_IDL)
 
 AC_MSG_CHECKING(for CORBA include paths)
 IDL_INCLUDES="-I"`pkg-config --variable=idldir libbonobo-2.0`" -I"`pkg-config --variable=idldir bonobo-activation-2.0`

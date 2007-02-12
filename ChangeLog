@@ -1,3 +1,8 @@
+2007-02-12  Ross Burton  <ross@openedhand.com>
+
+	* configure.in:
+	Don't use AM_PATH_ORBIT, but pkg-config (#400544).
+
 2007-02-12  Priit Laes  <plaes@svn.gnome.org>
 
 	* configure.in: Prefix wasn't set for idl files which where then
