@@ -907,14 +907,19 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
+        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* Claim a succesful open if we are already open */
-	if (priv->uri && priv->comp_uid_hash)
-		return GNOME_Evolution_Calendar_Success;
+	if (priv->uri && priv->comp_uid_hash) {
+        	status = GNOME_Evolution_Calendar_Success;
+		goto done;
+        }
 	
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
-	if (!str_uri)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!str_uri) {
+		status = GNOME_Evolution_Calendar_OtherError;
+		goto done;
+        }
 	
 	if (g_access (str_uri, R_OK) == 0) {
 		status = open_cal (cbfile, str_uri);
@@ -938,6 +943,8 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 	g_free (str_uri);
 
+  done:
+        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return status;
 }
 
@@ -946,59 +953,63 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
-	char *str_uri, *dirname;
+	char *str_uri = NULL, *dirname = NULL;
+        char *full_path = NULL;
 	const char *fname;
-	GDir *dir;
+	GDir *dir = NULL;
 	GError *error = NULL;
 	gboolean success;
+        ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
 	
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
+        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
-	if (!str_uri)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!str_uri) {
+		status = GNOME_Evolution_Calendar_OtherError;
+                goto done;
+        }
 
 	if (g_access (str_uri, W_OK) != 0) {
-		g_free (str_uri);
-
-		return GNOME_Evolution_Calendar_PermissionDenied;
+		status = GNOME_Evolution_Calendar_PermissionDenied;
+                goto done;
 	}
 
 	/* remove all files in the directory */
 	dirname = g_path_get_dirname (str_uri);
 	dir = g_dir_open (dirname, 0, &error);
 	if (!dir) {
-		g_free (str_uri);
-		g_free (dirname);
-
-		return GNOME_Evolution_Calendar_PermissionDenied;
+		status = GNOME_Evolution_Calendar_PermissionDenied;
+                goto done;
 	}
 
 	while ((fname = g_dir_read_name (dir))) {
-		char *full_path;
-
 		full_path = g_build_filename (dirname, fname, NULL);
 		if (g_unlink (full_path) != 0) {
-			g_free (full_path);
-			g_free (str_uri);
-			g_free (dirname);
-			g_dir_close (dir);
-
-			return GNOME_Evolution_Calendar_OtherError;
+			status = GNOME_Evolution_Calendar_OtherError;
+                        goto done;
 		}
 
 		g_free (full_path);
+                full_path = NULL;
 	}
 
 	/* remove the directory itself */
-	success = g_rmdir (dirname) == 0;
+	if (g_rmdir (dirname) != 0) {
+		status = GNOME_Evolution_Calendar_OtherError;
+        }
 		
-	g_dir_close (dir);
+  done:
+        if (dir) {
+            g_dir_close (dir);
+        }
 	g_free (str_uri);
 	g_free (dirname);
+        g_free (full_path);
 
-	return success ? GNOME_Evolution_Calendar_Success : GNOME_Evolution_Calendar_OtherError;
+        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+        return status;
 }
 
 /* is_loaded handler for the file backend */
@@ -2633,7 +2644,11 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	/* The timezone defaults to UTC. */
 	priv->default_zone = icaltimezone_get_utc_timezone ();
 
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), TRUE);
+        /*
+         * data access is serialized via idle_save_rmutex, so locking at the
+         * backend method level is not needed
+         */
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
 }
 
 /* Class initialization function for the file backend */
@@ -2728,11 +2743,14 @@ e_cal_backend_file_set_file_name (ECalBackendFile *cbfile, const char *file_name
 	g_return_if_fail (file_name != NULL);
 
 	priv = cbfile->priv;
-	
+        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	if (priv->file_name)
 		g_free (priv->file_name);
 	
 	priv->file_name = g_strdup (file_name);
+
+        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 const char *
@@ -2756,10 +2774,13 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile)
 	ECalBackendSyncStatus status;
 	
 	priv = cbfile->priv;
+        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (cbfile));
-	if (!str_uri)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!str_uri) {
+		status = GNOME_Evolution_Calendar_OtherError;
+                goto done;
+        }
 
 	if (g_access (str_uri, R_OK) == 0) {
 		status = reload_cal (cbfile, str_uri);
@@ -2770,5 +2791,8 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile)
 	}
 
 	g_free (str_uri);
+
+  done:
+        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return status;
 }

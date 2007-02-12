@@ -2,6 +2,7 @@
 
 	Fixes #363102
 	* backends/file/e-cal-backend-file.c: (save_file_when_idle),
+	(e_cal_backend_file_open),
 	(save), (e_cal_backend_file_finalize),
 	(e_cal_backend_file_get_object), (e_cal_backend_file_get_timezone),
 	(e_cal_backend_file_add_timezone),
@@ -14,6 +15,8 @@
 	(e_cal_backend_file_create_object),
 	(e_cal_backend_file_modify_object),
 	(e_cal_backend_file_remove_object),
+	(e_cal_backend_file_remove), (e_cal_backend_file_init),
+	(e_cal_backend_file_set_file_name), (e_cal_backend_file_reload):
 	(e_cal_backend_file_receive_objects), (e_cal_backend_file_init): Added 
 	the idle save mutex lock.
 
