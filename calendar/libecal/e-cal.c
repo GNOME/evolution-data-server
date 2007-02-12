@@ -3608,6 +3608,21 @@ process_detached_instances (GList *instances, GList *detached_instances)
 
 					processed = TRUE;
 				} else {
+					if (!instance_recur_id.datetime.value ||
+					    !recur_id.datetime.value) {
+						/*
+						 * Prevent obvious segfault by ignoring missing
+						 * recurrency ids. Real problem might be elsewhere,
+						 * but anything is better than crashing...
+						 */
+						g_log (G_LOG_DOMAIN,
+						       G_LOG_LEVEL_CRITICAL,
+						       "UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
+						       uid,
+						       i_rid,
+						       d_rid);
+						continue;
+					}
 					cmp = icaltime_compare (*instance_recur_id.datetime.value,
 								*recur_id.datetime.value);
 					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||

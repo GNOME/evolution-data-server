@@ -1,3 +1,9 @@
+2007-02-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libecal/e-cal.c: (process_detached_instances): Don't crash
+	on Outlook meeting invitations. Closes bug #404886. Patch
+	from Patrick Ohly.
+
 2007-02-12 Patrick Ohly	<patrick.ohly@gmx.de>
 
 	Fixes #363102
