@@ -1,3 +1,8 @@
+2007-02-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libedataserver/e-sexp.c: (parse_value): Crash fix.
+	Closes bug #360017. Patch from Trond Myklebust.
+
 2007-01-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Commiting on behalf of Andreas Henriksson <andreas@fatal.se>.

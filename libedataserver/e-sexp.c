@@ -899,6 +899,8 @@ parse_value(ESExp *f)
 	
 	token = g_scanner_get_next_token(gs);
 	switch(token) {
+	case G_TOKEN_EOF:
+		break;
 	case G_TOKEN_LEFT_PAREN:
 		p(printf("got brace, its a list!\n"));
 		return parse_list(f, TRUE);
