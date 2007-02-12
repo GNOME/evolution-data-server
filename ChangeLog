@@ -1,3 +1,8 @@
+2007-02-12  Srinivasa Ragavan <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution-Data-Server 1.9.91 
+	release updates.
+
 2007-02-12  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* libedataserver/e-sexp.c: (parse_value): Fix a crash.
