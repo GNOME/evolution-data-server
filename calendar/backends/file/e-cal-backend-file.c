@@ -70,7 +70,12 @@ struct _ECalBackendFilePrivate {
 	gboolean is_dirty;
 	guint dirty_idle_id;
 
-	GMutex *idle_save_mutex;
+	/* locked in high-level functions to ensure data is consistent
+	 * in idle and CORBA thread(s?); because high-level functions
+	 * may call other high-level functions the mutex must allow
+	 * recursive locking
+	 */
+	GStaticRecMutex idle_save_rmutex;
 
 	/* Toplevel VCALENDAR component */
 	icalcomponent *icalcomp;
@@ -135,10 +140,10 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->uri != NULL);
 	g_assert (priv->icalcomp != NULL);
 
-	g_mutex_lock (priv->idle_save_mutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	if (!priv->is_dirty) {
 		priv->dirty_idle_id = 0;
-		g_mutex_unlock (priv->idle_save_mutex);
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return FALSE;
 	}
 
@@ -193,18 +198,18 @@ save_file_when_idle (gpointer user_data)
 	priv->is_dirty = FALSE;
 	priv->dirty_idle_id = 0;
 
-	g_mutex_unlock (priv->idle_save_mutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	return FALSE;
 
  error_malformed_uri:
-	g_mutex_unlock (priv->idle_save_mutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
 				  _("Cannot save calendar data: Malformed URI."));
 	return TRUE;
 
  error:
-	g_mutex_unlock (priv->idle_save_mutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result));
 	return TRUE;
 }
@@ -216,13 +221,13 @@ save (ECalBackendFile *cbfile)
 
 	priv = cbfile->priv;
 
-	g_mutex_lock (priv->idle_save_mutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	priv->is_dirty = TRUE;
 
 	if (!priv->dirty_idle_id)
 		priv->dirty_idle_id = g_idle_add ((GSourceFunc) save_file_when_idle, cbfile);
 
-	g_mutex_unlock (priv->idle_save_mutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 static void
@@ -290,10 +295,7 @@ e_cal_backend_file_finalize (GObject *object)
 		priv->dirty_idle_id = 0;
 	}
 
-	if (priv->idle_save_mutex) {
-		g_mutex_free (priv->idle_save_mutex);
-		priv->idle_save_mutex = NULL;
-	}
+	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
 	if (priv->uri) {
 	        g_free (priv->uri);
@@ -1089,9 +1091,13 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 	g_assert (priv->comp_uid_hash != NULL);
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
-	if (!obj_data)
+	if (!obj_data) {
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
 
 	if (rid && *rid) {
 		ECalComponent *comp;
@@ -1107,8 +1113,10 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			icalcomp = e_cal_util_construct_instance (
 				e_cal_component_get_icalcomponent (obj_data->full_object),
 				itt);
-			if (!icalcomp)
+			if (!icalcomp) {
+				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 				return GNOME_Evolution_Calendar_ObjectNotFound;
+                        }
 
 			*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
 
@@ -1134,6 +1142,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			*object = e_cal_component_get_as_string (obj_data->full_object);
 	}
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1152,23 +1161,30 @@ e_cal_backend_file_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
 	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	if (!strcmp (tzid, "UTC")) {
 		zone = icaltimezone_get_utc_timezone ();
 	} else {
 		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
 		if (!zone) {
 			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-			if (!zone)
+			if (!zone) {
+				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 				return GNOME_Evolution_Calendar_ObjectNotFound;
+			}
 		}
 	}
 	
 	icalcomp = icaltimezone_get_component (zone);
-	if (!icalcomp)
+	if (!icalcomp) {
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return GNOME_Evolution_Calendar_InvalidObject;
+	}
 
 	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1196,11 +1212,14 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
+
+		g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 		if (!icalcomponent_get_timezone (priv->icalcomp,
 						 icaltimezone_get_tzid (zone))) {
 			icalcomponent_add_component (priv->icalcomp, tz_comp);
 			save (cbfile);
 		}
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 		icaltimezone_free (zone, 1);
 	}
@@ -1230,11 +1249,13 @@ e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	if (priv->default_zone != icaltimezone_get_utc_timezone ())
 		icaltimezone_free (priv->default_zone, 1);
 
 	/* Set the default timezone to it. */
 	priv->default_zone = zone;
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1307,7 +1328,9 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	if (!match_data.obj_sexp)
 		return GNOME_Evolution_Calendar_InvalidQuery;
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp, &match_data);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	*objects = match_data.obj_list;
 
@@ -1354,7 +1377,9 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 		return;
 	}
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp, &match_data);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	/* notify listeners of all objects */
 	if (match_data.obj_list) {
@@ -1497,6 +1522,8 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	g_return_val_if_fail (start != -1 && end != -1, GNOME_Evolution_Calendar_InvalidRange);
 	g_return_val_if_fail (start <= end, GNOME_Evolution_Calendar_InvalidRange);
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	*freebusy = NULL;
 	
 	if (users == NULL) {
@@ -1520,6 +1547,8 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 			}
 		}		
 	}
+
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1568,6 +1597,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 
 	priv = cbfile->priv;
 
+
 	/* FIXME Will this always work? */
 	unescaped_uri = gnome_vfs_unescape_string (priv->uri, "");
 	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
@@ -1579,6 +1609,8 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	
 	g_free (filename);
 	
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	/* Calculate adds and modifies */
 	for (i = priv->comp; i != NULL; i = i->next) {
 		const char *uid;
@@ -1619,6 +1651,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	e_xmlhash_write (ehash);
   	e_xmlhash_destroy (ehash);
 	
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1673,6 +1706,8 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid
 
 	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	if (!strcmp (tzid, "UTC"))
 	        zone = icaltimezone_get_utc_timezone ();
 	else {
@@ -1681,6 +1716,7 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid
 			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 	}
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return zone;
 }
 
@@ -1759,6 +1795,8 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	/* Get the UID */
 	comp_uid = icalcomponent_get_uid (icalcomp);
 	if (!comp_uid) {
@@ -1767,6 +1805,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		new_uid = e_cal_component_gen_uid ();
 		if (!new_uid) {
 			icalcomponent_free (icalcomp);
+			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			return GNOME_Evolution_Calendar_InvalidObject;
 		}
 
@@ -1779,6 +1818,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 	/* check the object is not in our cache */
 	if (lookup_component (cbfile, comp_uid)) {
 		icalcomponent_free (icalcomp);
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return GNOME_Evolution_Calendar_ObjectIdAlreadyExists;
 	}
 
@@ -1805,6 +1845,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		*uid = g_strdup (comp_uid);
 	*calobj = e_cal_component_get_as_string (comp);
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -1873,12 +1914,15 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	/* Get the uid */
 	comp_uid = icalcomponent_get_uid (icalcomp);
 
 	/* Get the object from our cache */
 	if (!(obj_data = g_hash_table_lookup (priv->comp_uid_hash, comp_uid))) {
 		icalcomponent_free (icalcomp);
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
@@ -1916,6 +1960,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			save (cbfile);
 
+			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			return GNOME_Evolution_Calendar_Success;
 		}
 
@@ -2052,6 +2097,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	save (cbfile);
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2132,9 +2178,13 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	*old_object = *object = NULL;
 
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
-	if (!obj_data)
+	if (!obj_data) {
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
+	}
 	
 	if (rid && *rid)
 		recur_id = rid;
@@ -2163,8 +2213,10 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
-		if (!recur_id || !*recur_id)
+		if (!recur_id || !*recur_id) {
+			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			return GNOME_Evolution_Calendar_ObjectNotFound;
+		}
 
 		*old_object = e_cal_component_get_as_string (comp);
 
@@ -2194,6 +2246,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 	save (cbfile);
 
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2352,6 +2405,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	toplevel_comp = icalparser_parse_string ((char *) calobj);
 	if (!toplevel_comp)
 		return GNOME_Evolution_Calendar_InvalidObject;
+
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	kind = icalcomponent_isa (toplevel_comp);
 	if (kind != ICAL_VCALENDAR_COMPONENT) {
@@ -2542,7 +2597,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 
  error:
 	g_hash_table_destroy (tzdata.zones);
-	
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return status;
 }
 
@@ -2570,7 +2625,7 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	priv->read_only = FALSE;
 	priv->is_dirty = FALSE;
 	priv->dirty_idle_id = 0;
-	priv->idle_save_mutex = g_mutex_new ();
+	g_static_rec_mutex_init (&priv->idle_save_rmutex);
 	priv->icalcomp = NULL;
 	priv->comp_uid_hash = NULL;
 	priv->comp = NULL;

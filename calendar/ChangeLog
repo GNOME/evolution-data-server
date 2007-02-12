@@ -1,3 +1,38 @@
+2007-02-12 Patrick Ohly	<patrick.ohly@gmx.de>
+
+	Fixes #363102
+	* backends/file/e-cal-backend-file.c: (save_file_when_idle),
+	(save), (e_cal_backend_file_finalize),
+	(e_cal_backend_file_get_object), (e_cal_backend_file_get_timezone),
+	(e_cal_backend_file_add_timezone),
+	(e_cal_backend_file_set_default_zone),
+	(e_cal_backend_file_get_object_list),
+	(e_cal_backend_file_start_query),
+	(e_cal_backend_file_get_free_busy),
+	(e_cal_backend_file_compute_changes),
+	(e_cal_backend_file_internal_get_timezone),
+	(e_cal_backend_file_create_object),
+	(e_cal_backend_file_modify_object),
+	(e_cal_backend_file_remove_object),
+	(e_cal_backend_file_receive_objects), (e_cal_backend_file_init): Added 
+	the idle save mutex lock.
+
+2007-01-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(build_gwtz_from_icaltz), (set_properties_from_cal_component):
+	* libecal/e-cal.c: (e_cal_create_object):
+
+2007-01-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(build_gwtz_from_icaltz), (set_properties_from_cal_component):
+	* libecal/e-cal.c: (e_cal_create_object):
+
 2006-11-27  Andrew Ruthven  <andrew@etc.gen.nz>
 
 	Fixes bug #349573
