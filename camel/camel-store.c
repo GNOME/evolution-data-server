@@ -140,7 +140,7 @@ camel_store_init (void *o)
 	store->mode = CAMEL_STORE_READ|CAMEL_STORE_WRITE;
 
 	store->priv = g_malloc0 (sizeof (*store->priv));
-	store->priv->folder_lock = e_mutex_new (E_MUTEX_REC);
+	g_static_rec_mutex_init (&store->priv->folder_lock);
 }
 
 static void
@@ -151,7 +151,7 @@ camel_store_finalize (CamelObject *object)
 	if (store->folders)
 		camel_object_bag_destroy(store->folders);
 	
-	e_mutex_destroy (store->priv->folder_lock);
+	g_static_rec_mutex_free (&store->priv->folder_lock);
 	
 	g_free (store->priv);
 }
@@ -472,7 +472,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 				&& strncmp(folder->full_name, old_name, oldlen) == 0
 				&& folder->full_name[oldlen] == '/')) {
 				d(printf("Found subfolder of '%s' == '%s'\n", old_name, folder->full_name));
-				CAMEL_FOLDER_LOCK(folder, lock);
+				CAMEL_FOLDER_REC_LOCK(folder, lock);
 			} else {
 				g_ptr_array_remove_index_fast(folders, i);
 				i--;
@@ -499,7 +499,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 			camel_folder_rename(folder, new);
 			g_free(new);
 
-			CAMEL_FOLDER_UNLOCK(folder, lock);
+			CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 			camel_object_unref(folder);
 		}
 
@@ -517,7 +517,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 		/* Failed, just unlock our folders for re-use */
 		for (i=0;i<folders->len;i++) {
 			folder = folders->pdata[i];
-			CAMEL_FOLDER_UNLOCK(folder, lock);
+			CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 			camel_object_unref(folder);
 		}
 	}

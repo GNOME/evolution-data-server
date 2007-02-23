@@ -1,3 +1,16 @@
+2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #356177
+
+	* camel-folder.c:
+	* camel-object.c:
+	* camel-private.h:
+	* camel-provider.c:
+	* camel-service.c:
+	* camel-store.c:
+	* camel-text-index.c:
+	Migrate from EMutex to GStaticMutex or GStaticRecMutex.
+
 2006-01-08  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fixes eds part of bgo #362638 - Patch submitted by Matthew

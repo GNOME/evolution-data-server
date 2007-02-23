@@ -552,7 +552,7 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 	
 	/* gather a list of changes to sync to the server */
 	if (folder->permanent_flags) {
@@ -620,7 +620,7 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	
  done:
 	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
 
 static void
@@ -641,7 +641,7 @@ imap4_refresh_info (CamelFolder *folder, CamelException *ex)
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 	
 	if (folder != selected) {
 		if (camel_imap4_engine_select_folder (engine, folder, ex) == -1)
@@ -666,7 +666,7 @@ imap4_refresh_info (CamelFolder *folder, CamelException *ex)
 	
  done:
 	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
 
 static int
@@ -777,14 +777,14 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelIMAP4Command *ic;
 	int id;
 	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 	
 	if (imap4_folder->cache && (stream = camel_data_cache_get (imap4_folder->cache, "cache", uid, ex))) {
 		message = camel_mime_message_new ();
 		
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
 			if (errno == EINTR) {
-				CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+				CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 				camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 				camel_object_unref (message);
 				camel_object_unref (stream);
@@ -801,12 +801,12 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	}
 	
 	if (message != NULL) {
-		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 		return message;
 	}
 	
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("This message is not available in offline mode."));
 		return NULL;
@@ -878,7 +878,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	
  done:
 	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 	
 	return message;
 }
@@ -921,7 +921,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		return;
 	}
 	
-	CAMEL_SERVICE_LOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 	
 	/* construct the option flags list */
 	if (iinfo->info.flags & folder->permanent_flags) {
@@ -983,7 +983,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
 		camel_exception_xfer (ex, &ic->ex);
 		camel_imap4_command_unref (ic);
-		CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 		return;
 	}
 	
@@ -1044,7 +1044,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
 	camel_imap4_command_unref (ic);
 	
-	CAMEL_SERVICE_UNLOCK (folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
 
 
@@ -1100,7 +1100,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 	
 	g_ptr_array_sort (infos, (GCompareFunc) info_uid_sort);
 	
-	CAMEL_SERVICE_LOCK (src->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (src->parent_store, connect_lock);
 	
 	/* check for offline operation */
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
@@ -1196,7 +1196,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 		camel_message_info_free (infos->pdata[i]);
 	g_ptr_array_free (infos, TRUE);
 	
-	CAMEL_SERVICE_UNLOCK (src->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (src->parent_store, connect_lock);
 }
 
 static GPtrArray *
@@ -1205,12 +1205,12 @@ imap4_search_by_expression (CamelFolder *folder, const char *expr, CamelExceptio
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	GPtrArray *matches;
 	
-	CAMEL_SERVICE_LOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
 	
 	camel_folder_search_set_folder (imap4_folder->search, folder);
 	matches = camel_folder_search_search (imap4_folder->search, expr, NULL, ex);
 	
-	CAMEL_SERVICE_UNLOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
 	
 	return matches;
 }
@@ -1224,12 +1224,12 @@ imap4_search_by_uids (CamelFolder *folder, const char *expr, GPtrArray *uids, Ca
 	if (uids->len == 0)
 		return g_ptr_array_new ();
 	
-	CAMEL_SERVICE_LOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
 	
 	camel_folder_search_set_folder (imap4_folder->search, folder);
 	matches = camel_folder_search_search (imap4_folder->search, expr, uids, ex);
 	
-	CAMEL_SERVICE_UNLOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
 	
 	return matches;
 }
@@ -1241,9 +1241,9 @@ imap4_search_free (CamelFolder *folder, GPtrArray *uids)
 	
 	g_return_if_fail (imap4_folder->search);
 	
-	CAMEL_SERVICE_LOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
 	
 	camel_folder_search_free_result (imap4_folder->search, uids);
 	
-	CAMEL_SERVICE_UNLOCK(folder->parent_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
 }

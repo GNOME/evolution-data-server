@@ -182,7 +182,6 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	gboolean authenticated = FALSE;
 	char *uri;
 
-	CAMEL_SERVICE_ASSERT_LOCKED (groupwise_store, connect_lock);
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never")) 
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
 	else 
@@ -286,15 +285,15 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		camel_service_construct (service, service->session, service->provider, service->url, ex);
 	}
 
-	CAMEL_SERVICE_LOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
 	
 	if (priv->cnc) {
-		CAMEL_SERVICE_UNLOCK (service, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 		return TRUE;
 	}
 
 	if (!check_for_connection (service, ex) || !groupwise_auth_loop (service, ex)) {
-		CAMEL_SERVICE_UNLOCK (service, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
 	}
@@ -321,7 +320,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
 
-	CAMEL_SERVICE_UNLOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 	if (E_IS_GW_CONNECTION (priv->cnc)) {
 		return TRUE;
 	}
@@ -389,12 +388,12 @@ groupwise_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	
 	if (clean) {
-		CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
+		CAMEL_SERVICE_REC_LOCK (groupwise_store, connect_lock);
 		if (groupwise_store->priv && groupwise_store->priv->cnc) {
 			g_object_unref (groupwise_store->priv->cnc);
 			groupwise_store->priv->cnc = NULL;
 		}
-		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 	}
 	
 	//groupwise_disconnect_cleanup (service, clean, ex);
@@ -568,10 +567,10 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	camel_exception_clear (ex);
 
-	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 
 	if (!camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 		return NULL;
 	}
 	
@@ -583,7 +582,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			return NULL;
 		}
 	}
@@ -596,7 +595,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	g_free(storage_path);
 	folder = camel_gw_folder_new (store, folder_name, folder_dir, ex);
 	if (!folder) {
-		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 		g_free (folder_dir);
 		g_free (container_id);
@@ -621,7 +620,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			g_free (container_id);
 			return NULL;
 		}
@@ -637,7 +636,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				all_ok = FALSE;
 				break;
 				/*
-				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 				//camel_folder_summary_clear (folder->summary);
 				camel_folder_summary_save (folder->summary);
@@ -678,7 +677,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	camel_object_ref (folder);
 
 	g_free (container_id);
-	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 
 	return folder;
 }
@@ -699,17 +698,17 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	
 	camel_exception_clear (ex);
 
-	CAMEL_SERVICE_LOCK (gw_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 
 	if (!camel_groupwise_store_connected (gw_store, ex)) {
-		CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 		return;
 	}
 	
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE((CamelStore*)gw_store), ex)) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			return;
 		}
 	}
@@ -735,7 +734,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
-			CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			g_free (container_id);
 			return;
 		}
@@ -747,7 +746,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 							      cursor, FALSE, 
 							      CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
-				CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 				camel_folder_summary_save (folder->summary);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -786,7 +785,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	gw_store->current_folder = folder;
 	
 	g_free (container_id);
-	CAMEL_SERVICE_UNLOCK (gw_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	return;
 }
 
@@ -1077,7 +1076,7 @@ store_refresh_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _store_refresh_msg *m = (struct _store_refresh_msg *)msg;
 	CamelGroupwiseStore *groupwise_store = (CamelGroupwiseStore *)m->store;
 	
-	CAMEL_SERVICE_LOCK (m->store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (m->store, connect_lock);
 	if (!camel_groupwise_store_connected ((CamelGroupwiseStore *)m->store, &m->ex))
 		goto done;
 	/*Get the folder list and save it here*/
@@ -1086,7 +1085,7 @@ store_refresh_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
 		goto done;
 	camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
 done:
-	CAMEL_SERVICE_UNLOCK (m->store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (m->store, connect_lock);
 }
 
 static void
@@ -1132,17 +1131,17 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 	 * is used as is here.
 	 */
 	if (camel_store_summary_count ((CamelStoreSummary *)groupwise_store->summary) == 0) {
-		CAMEL_SERVICE_LOCK (store, connect_lock);
+		CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 		if (groupwise_store->list_loaded == 3) {
 			groupwise_folders_sync (groupwise_store, ex);
 			groupwise_store->list_loaded -= 1;
 		}
 		if (camel_exception_is_set (ex)) {
 			camel_store_summary_save ((CamelStoreSummary *) groupwise_store->summary);
-			CAMEL_SERVICE_UNLOCK (store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 			return NULL;
 		}
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 		camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
 		goto end_r;
 	}
@@ -1153,7 +1152,7 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 		goto end_r;
 	}
 
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	if ((groupwise_store->list_loaded == 1) && check_for_connection((CamelService *)store, ex)) {
 		if (!priv->cnc) {
 			if (groupwise_connect ((CamelService *)store, ex)) {
@@ -1166,14 +1165,14 @@ groupwise_get_folder_info (CamelStore *store, const char *top, guint32 flags, Ca
 				CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (groupwise_store->current_folder))->sync(groupwise_store->current_folder, FALSE, ex);
 			groupwise_folders_sync (groupwise_store, ex);
 			if (camel_exception_is_set (ex)) {
-				CAMEL_SERVICE_UNLOCK (store, connect_lock);
+				CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 				return NULL;
 			}
 			camel_store_summary_touch ((CamelStoreSummary *)groupwise_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *)groupwise_store->summary);
 		}
 	}
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 
 	/*camel_exception_clear (ex);*/
 end_r:
@@ -1196,7 +1195,7 @@ create_junk_folder (CamelStore *store)
 	parent_id = "";
 	/* TODO: check for offlining*/
 		
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	status = e_gw_connection_modify_junk_settings (priv->cnc, JUNK_ENABLE, 0, 0,  JUNK_PERSISTENCE);
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		root = groupwise_build_folder_info(groupwise_store, parent_name, folder_name);
@@ -1211,7 +1210,7 @@ create_junk_folder (CamelStore *store)
 		g_hash_table_insert (priv->parent_hash, g_strdup(child_container_id), g_strdup(parent_id));
 		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
 	}
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 
 	return root;
 }
@@ -1256,7 +1255,7 @@ groupwise_create_folder(CamelStore *store,
 			return NULL;
 		}
 	}
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	status = e_gw_connection_create_folder(priv->cnc,parent_id,folder_name, &child_container_id);
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		root = groupwise_build_folder_info(groupwise_store, parent_name,folder_name);
@@ -1268,7 +1267,7 @@ groupwise_create_folder(CamelStore *store,
 
 		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
 	}
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 	return root;
 }
 
@@ -1282,10 +1281,10 @@ groupwise_delete_folder(CamelStore *store,
 	EGwConnectionStatus status;
 	const char * container; 
 	
-	CAMEL_SERVICE_LOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	
 	if (!camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-		CAMEL_SERVICE_UNLOCK (store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 		return;
 	}
 
@@ -1304,7 +1303,7 @@ groupwise_delete_folder(CamelStore *store,
 		
 		g_hash_table_remove (priv->parent_hash, container);
 	}
-	CAMEL_SERVICE_UNLOCK (store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 }
 
 static void 
@@ -1325,10 +1324,10 @@ groupwise_rename_folder(CamelStore *store,
 		return;
 	}
 
-	CAMEL_SERVICE_LOCK (groupwise_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (groupwise_store, connect_lock);
 	
 	if (!camel_groupwise_store_connected ((CamelGroupwiseStore *)store, ex)) {
-		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 		return;
 	}
 	
@@ -1343,7 +1342,7 @@ groupwise_rename_folder(CamelStore *store,
 	{
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder `%s' to `%s'"),
 				      old_name, new_name);
-		CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 		return;
 	}
 
@@ -1366,7 +1365,7 @@ groupwise_rename_folder(CamelStore *store,
 
 	g_free (oldpath);
 	g_free (newpath);
-	CAMEL_SERVICE_UNLOCK (groupwise_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 }
 
 char * 

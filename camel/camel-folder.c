@@ -171,8 +171,8 @@ camel_folder_init (gpointer object, gpointer klass)
 	folder->priv = g_malloc0(sizeof(*folder->priv));
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new();
-	folder->priv->lock = e_mutex_new(E_MUTEX_REC);
-	folder->priv->change_lock = e_mutex_new(E_MUTEX_SIMPLE);
+	g_static_rec_mutex_init(&folder->priv->lock);
+	g_static_mutex_init(&folder->priv->change_lock);
 }
 
 static void
@@ -193,8 +193,8 @@ camel_folder_finalize (CamelObject *object)
 
 	camel_folder_change_info_free(p->changed_frozen);
 	
-	e_mutex_destroy(p->lock);
-	e_mutex_destroy(p->change_lock);
+	g_static_rec_mutex_free(&p->lock);
+	g_static_mutex_free(&p->change_lock);
 	
 	g_free(p);
 }
@@ -267,12 +267,12 @@ camel_folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	CAMEL_FOLDER_LOCK(folder, lock);
+	CAMEL_FOLDER_REC_LOCK(folder, lock);
 	
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
 		CF_CLASS (folder)->sync (folder, expunge, ex);
 	
-	CAMEL_FOLDER_UNLOCK(folder, lock);
+	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
 
@@ -529,12 +529,12 @@ camel_folder_expunge (CamelFolder *folder, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	
-	CAMEL_FOLDER_LOCK(folder, lock);
+	CAMEL_FOLDER_REC_LOCK(folder, lock);
 	
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
 		CF_CLASS (folder)->expunge (folder, ex);
 	
-	CAMEL_FOLDER_UNLOCK(folder, lock);
+	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
 static int
@@ -643,11 +643,11 @@ camel_folder_append_message (CamelFolder *folder, CamelMimeMessage *message,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	CAMEL_FOLDER_LOCK(folder, lock);
+	CAMEL_FOLDER_REC_LOCK(folder, lock);
 
 	CF_CLASS (folder)->append_message (folder, message, info, appended_uid, ex);
 
-	CAMEL_FOLDER_UNLOCK(folder, lock);
+	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
 
@@ -1065,11 +1065,11 @@ camel_folder_get_message (CamelFolder *folder, const char *uid, CamelException *
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	CAMEL_FOLDER_LOCK(folder, lock);
+	CAMEL_FOLDER_REC_LOCK(folder, lock);
 
 	ret = CF_CLASS (folder)->get_message (folder, uid, ex);
 
-	CAMEL_FOLDER_UNLOCK(folder, lock);
+	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 
 	if (ret && camel_debug_start(":folder")) {
 		printf("CamelFolder:get_message('%s', '%s') =\n", folder->full_name, uid);
@@ -1474,9 +1474,9 @@ camel_folder_delete (CamelFolder *folder)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	
-	CAMEL_FOLDER_LOCK (folder, lock);
+	CAMEL_FOLDER_REC_LOCK (folder, lock);
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED) {
-		CAMEL_FOLDER_UNLOCK (folder, lock);
+		CAMEL_FOLDER_REC_UNLOCK (folder, lock);
 		return;
 	}
 	
@@ -1484,7 +1484,7 @@ camel_folder_delete (CamelFolder *folder)
 	
 	CF_CLASS (folder)->delete (folder);
 
-	CAMEL_FOLDER_UNLOCK (folder, lock);
+	CAMEL_FOLDER_REC_UNLOCK (folder, lock);
 
 	camel_object_trigger_event (folder, "deleted", NULL);
 }

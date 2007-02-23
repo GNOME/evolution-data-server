@@ -1,3 +1,12 @@
+2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #356177
+
+	* camel-groupwise-folder.c:
+	* camel-groupwise-private.h:
+	* camel-groupwise-store.c:
+	Migrate from EMutex to GStaticMutex or GStaticRecMutex.
+
 2007-02-09  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):

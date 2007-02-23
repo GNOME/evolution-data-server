@@ -93,8 +93,8 @@ camel_service_init (void *o, void *k)
 	CamelService *service = o;
 	
 	service->priv = g_malloc0(sizeof(*service->priv));
-	service->priv->connect_lock = e_mutex_new(E_MUTEX_REC);
-	service->priv->connect_op_lock = e_mutex_new(E_MUTEX_SIMPLE);
+	g_static_rec_mutex_init(&service->priv->connect_lock);
+	g_static_mutex_init(&service->priv->connect_op_lock);
 }
 
 static void
@@ -119,8 +119,8 @@ camel_service_finalize (CamelObject *object)
 	if (service->session)
 		camel_object_unref (service->session);
 	
-	e_mutex_destroy (service->priv->connect_lock);
-	e_mutex_destroy (service->priv->connect_op_lock);
+	g_static_rec_mutex_free (&service->priv->connect_lock);
+	g_static_mutex_free (&service->priv->connect_op_lock);
 	
 	g_free (service->priv);
 }
@@ -346,10 +346,10 @@ camel_service_connect (CamelService *service, CamelException *ex)
 	g_return_val_if_fail (service->session != NULL, FALSE);
 	g_return_val_if_fail (service->url != NULL, FALSE);
 	
-	CAMEL_SERVICE_LOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
 	
 	if (service->status == CAMEL_SERVICE_CONNECTED) {
-		CAMEL_SERVICE_UNLOCK (service, connect_lock);
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 		return TRUE;
 	}
 
@@ -379,7 +379,7 @@ camel_service_connect (CamelService *service, CamelException *ex)
 	}
 	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
 
-	CAMEL_SERVICE_UNLOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 	
 	return ret;
 }
@@ -415,7 +415,7 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 	gboolean res = TRUE;
 	int unreg = FALSE;
 
-	CAMEL_SERVICE_LOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
 	
 	if (service->status != CAMEL_SERVICE_DISCONNECTED
 	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
@@ -441,7 +441,7 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
 	}
 	
-	CAMEL_SERVICE_UNLOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 	
 		service->status = CAMEL_SERVICE_DISCONNECTED;
 	return res;
@@ -638,9 +638,9 @@ camel_service_query_auth_types (CamelService *service, CamelException *ex)
 	
 	/* note that we get the connect lock here, which means the callee
 	   must not call the connect functions itself */
-	CAMEL_SERVICE_LOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
 	ret = CSERV_CLASS (service)->query_auth_types (service, ex);
-	CAMEL_SERVICE_UNLOCK (service, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 	
 	return ret;
 }

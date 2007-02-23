@@ -52,7 +52,7 @@
 
 /* A 'locked' hooklist, that is only allocated on demand */
 typedef struct _CamelHookList {
-	EMutex *lock;
+	GStaticRecMutex lock;
 
 	unsigned int depth:30;	/* recursive event depth */
 	unsigned int flags:2;	/* flags, see below */
@@ -125,7 +125,8 @@ static CamelHookList *camel_object_get_hooks(CamelObject *o);
 static void camel_object_free_hooks(CamelObject *o);
 static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks);
 
-#define camel_object_unget_hooks(o) (e_mutex_unlock((CAMEL_OBJECT(o)->hooks->lock)))
+#define camel_object_unget_hooks(o) \
+	(g_static_rec_mutex_unlock(&CAMEL_OBJECT(o)->hooks->lock))
 
 
 /* ********************************************************************** */
@@ -137,7 +138,7 @@ static EMemChunk *hook_chunks;
 static unsigned int pair_id = 1;
 
 /* type-lock must be recursive, for atomically creating classes */
-static EMutex *type_lock;
+static GStaticRecMutex type_lock = G_STATIC_REC_MUTEX_INIT;
 /* ref-lock must be global :-(  for object bags to work */
 static GMutex *ref_lock;
 
@@ -150,12 +151,12 @@ CamelType camel_interface_type;
 
 #define P_LOCK(l) (pthread_mutex_lock(&l))
 #define P_UNLOCK(l) (pthread_mutex_unlock(&l))
-#define E_LOCK(l) (e_mutex_lock(l))
-#define E_UNLOCK(l) (e_mutex_unlock(l))
 #define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
 #define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
 #define REF_LOCK() (g_mutex_lock(ref_lock))
 #define REF_UNLOCK() (g_mutex_unlock(ref_lock))
+#define TYPE_LOCK() (g_static_rec_mutex_lock(&type_lock))
+#define TYPE_UNLOCK() (g_static_rec_mutex_unlock(&type_lock))
 
 static struct _CamelHookPair *
 pair_alloc(void)
@@ -216,7 +217,6 @@ camel_type_init(void)
 	init = TRUE;
 	pair_chunks = e_memchunk_new(16, sizeof(CamelHookPair));
 	hook_chunks = e_memchunk_new(16, sizeof(CamelHookList));
-	type_lock = e_mutex_new(E_MUTEX_REC);
 	type_chunks = e_memchunk_new(32, sizeof(CamelType));
 	type_table = g_hash_table_new(NULL, NULL);
 	ref_lock = g_mutex_new();
@@ -723,7 +723,7 @@ co_type_register(CamelType parent, const char * name,
 	/*int offset;
 	  size_t size;*/
 
-	E_LOCK(type_lock);
+	TYPE_LOCK();
 
 	/* Have to check creation, it might've happened in another thread before we got here */
 	klass = g_hash_table_lookup(type_table, name);
@@ -734,7 +734,7 @@ co_type_register(CamelType parent, const char * name,
 			g_warning("camel_type_register: Trying to re-register class '%s'", name);
 			klass = NULL;
 		}
-		E_UNLOCK(type_lock);
+		TYPE_UNLOCK();
 		return klass;
 	}
 
@@ -758,7 +758,7 @@ co_type_register(CamelType parent, const char * name,
 	if (parent
 	    && klass_size < parent->klass_size) {
 		g_warning("camel_type_register: '%s' has smaller class size than parent '%s'", name, parent->name);
-		E_UNLOCK(type_lock);
+		TYPE_UNLOCK();
 		return NULL;
 	}
 
@@ -789,7 +789,7 @@ co_type_register(CamelType parent, const char * name,
 
 	camel_type_class_init(klass, klass);
 
-	E_UNLOCK(type_lock);
+	TYPE_UNLOCK();
 
 	return klass;
 }
@@ -1254,7 +1254,7 @@ camel_object_free_hooks(CamelObject *o)
 			pair_free(pair);
 			pair = next;
 		}
-		e_mutex_destroy(o->hooks->lock);
+		g_static_rec_mutex_free(&o->hooks->lock);
 		hooks_free(o->hooks);
 		o->hooks = NULL;
 	}
@@ -1273,7 +1273,7 @@ camel_object_get_hooks(CamelObject *o)
 		pthread_mutex_lock(&lock);
 		if (o->hooks == NULL) {
 			hooks = hooks_alloc();
-			hooks->lock = e_mutex_new(E_MUTEX_REC);
+			g_static_rec_mutex_init(&hooks->lock);
 			hooks->flags = 0;
 			hooks->depth = 0;
 			hooks->list_length = 0;
@@ -1283,7 +1283,7 @@ camel_object_get_hooks(CamelObject *o)
 		pthread_mutex_unlock(&lock);
 	}
 	
-	e_mutex_lock(o->hooks->lock);
+	g_static_rec_mutex_lock(&o->hooks->lock);
 	
 	return o->hooks;	
 }

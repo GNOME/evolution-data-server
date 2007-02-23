@@ -39,23 +39,31 @@ extern "C" {
 #include <libedataserver/e-msgport.h>
 
 struct _CamelFolderPrivate {
-	EMutex *lock;
-	EMutex *change_lock;
+	GStaticRecMutex lock;
+	GStaticMutex change_lock;
 	/* must require the 'change_lock' to access this */
 	int frozen;
 	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
 };
 
-#define CAMEL_FOLDER_LOCK(f, l) (e_mutex_lock(((CamelFolder *)f)->priv->l))
-#define CAMEL_FOLDER_UNLOCK(f, l) (e_mutex_unlock(((CamelFolder *)f)->priv->l))
+#define CAMEL_FOLDER_LOCK(f, l) \
+	(g_static_mutex_lock(&((CamelFolder *)f)->priv->l))
+#define CAMEL_FOLDER_UNLOCK(f, l) \
+	(g_static_mutex_unlock(&((CamelFolder *)f)->priv->l))
+#define CAMEL_FOLDER_REC_LOCK(f, l) \
+	(g_static_rec_mutex_lock(&((CamelFolder *)f)->priv->l))
+#define CAMEL_FOLDER_REC_UNLOCK(f, l) \
+	(g_static_rec_mutex_unlock(&((CamelFolder *)f)->priv->l))
 
 
 struct _CamelStorePrivate {
-	EMutex *folder_lock;	/* for locking folder operations */
+	GStaticRecMutex folder_lock;	/* for locking folder operations */
 };
 
-#define CAMEL_STORE_LOCK(f, l) (e_mutex_lock(((CamelStore *)f)->priv->l))
-#define CAMEL_STORE_UNLOCK(f, l) (e_mutex_unlock(((CamelStore *)f)->priv->l))
+#define CAMEL_STORE_LOCK(f, l) \
+	(g_static_rec_mutex_lock(&((CamelStore *)f)->priv->l))
+#define CAMEL_STORE_UNLOCK(f, l) \
+	(g_static_rec_mutex_unlock(&((CamelStore *)f)->priv->l))
 
 
 struct _CamelTransportPrivate {
@@ -67,13 +75,18 @@ struct _CamelTransportPrivate {
 
 
 struct _CamelServicePrivate {
-	EMutex *connect_lock;	/* for locking connection operations */
-	EMutex *connect_op_lock;/* for locking the connection_op */
+	GStaticRecMutex connect_lock;	/* for locking connection operations */
+	GStaticMutex connect_op_lock;	/* for locking the connection_op */
 };
 
-#define CAMEL_SERVICE_LOCK(f, l) (e_mutex_lock(((CamelService *)f)->priv->l))
-#define CAMEL_SERVICE_UNLOCK(f, l) (e_mutex_unlock(((CamelService *)f)->priv->l))
-#define CAMEL_SERVICE_ASSERT_LOCKED(f, l) (e_mutex_assert_locked (((CamelService *)f)->priv->l))
+#define CAMEL_SERVICE_LOCK(f, l) \
+	(g_static_mutex_lock(&((CamelService *)f)->priv->l))
+#define CAMEL_SERVICE_UNLOCK(f, l) \
+	(g_static_mutex_unlock(&((CamelService *)f)->priv->l))
+#define CAMEL_SERVICE_REC_LOCK(f, l) \
+	(g_static_rec_mutex_lock(&((CamelService *)f)->priv->l))
+#define CAMEL_SERVICE_REC_UNLOCK(f, l) \
+	(g_static_rec_mutex_unlock(&((CamelService *)f)->priv->l))
 
 
 struct _CamelSessionPrivate {

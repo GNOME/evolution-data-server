@@ -51,10 +51,10 @@
 static GHashTable *module_table;
 /* table of CamelProvider's */
 static GHashTable *provider_table;
-static EMutex *provider_lock;
+static GStaticRecMutex provider_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK() e_mutex_lock(provider_lock);
-#define UNLOCK() e_mutex_unlock(provider_lock);
+#define LOCK()		(g_static_rec_mutex_lock(&provider_lock))
+#define UNLOCK()	(g_static_rec_mutex_unlock(&provider_lock))
 
 /* The vfolder provider is always available */
 static CamelProvider vee_provider = {
@@ -76,7 +76,6 @@ static pthread_once_t setup_once = PTHREAD_ONCE_INIT;
 static void
 provider_setup(void)
 {
-	provider_lock = e_mutex_new(E_MUTEX_REC);
 	module_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
 	provider_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
 

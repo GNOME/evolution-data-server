@@ -35,16 +35,19 @@ extern "C" {
 #endif
 
 #ifdef ENABLE_THREADS
-#include "libedataserver/e-msgport.h"
-#endif
-
-
-#ifdef ENABLE_THREADS
-#define CAMEL_GROUPWISE_FOLDER_LOCK(f, l) (e_mutex_lock(((CamelGroupwiseFolder *)f)->priv->l))
-#define CAMEL_GROUPWISE_FOLDER_UNLOCK(f, l) (e_mutex_unlock(((CamelGroupwiseFolder *)f)->priv->l))
+#define CAMEL_GROUPWISE_FOLDER_LOCK(f, l) \
+	(g_static_mutex_lock(&((CamelGroupwiseFolder *)f)->priv->l))
+#define CAMEL_GROUPWISE_FOLDER_UNLOCK(f, l) \
+	(g_static_mutex_unlock(&((CamelGroupwiseFolder *)f)->priv->l))
+#define CAMEL_GROUPWISE_FOLDER_REC_LOCK(f, l) \
+	(g_static_rec_mutex_lock(&((CamelGroupwiseFolder *)f)->priv->l))
+#define CAMEL_GROUPWISE_FOLDER_REC_UNLOCK(f, l) \
+	(g_static_rec_mutex_unlock(&((CamelGroupwiseFolder *)f)->priv->l))
 #else
-#define CAMEL_GROUPWISE_FOLDER_LOCK(f, l)
-#define CAMEL_GROUPWISE_FOLDER_UNLOCK(f, l)
+#define GROUPWISE_FOLDER_LOCK(f, l)
+#define GROUPWISE_FOLDER_UNLOCK(f, l)
+#define GROUPWISE_FOLDER_REC_LOCK(f, l)
+#define GROUPWISE_FOLDER_REC_UNLOCK(f, l)
 #endif
 
 

@@ -13,23 +13,27 @@ extern "C" {
 #include <config.h>
 #endif
 
-#ifdef ENABLE_THREADS
-#include "libedataserver/e-msgport.h"
-#endif
-
 struct _CamelImapFolderPrivate {
 #ifdef ENABLE_THREADS
-	EMutex *search_lock;	/* for locking the search object */
-	EMutex *cache_lock;     /* for locking the cache object */
+	GStaticMutex search_lock;	/* for locking the search object */
+	GStaticRecMutex cache_lock;	/* for locking the cache object */
 #endif
 };
 
 #ifdef ENABLE_THREADS
-#define CAMEL_IMAP_FOLDER_LOCK(f, l) (e_mutex_lock(((CamelImapFolder *)f)->priv->l))
-#define CAMEL_IMAP_FOLDER_UNLOCK(f, l) (e_mutex_unlock(((CamelImapFolder *)f)->priv->l))
+#define CAMEL_IMAP_FOLDER_LOCK(f, l) \
+	(g_static_mutex_lock(&((CamelImapFolder *)f)->priv->l))
+#define CAMEL_IMAP_FOLDER_UNLOCK(f, l) \
+	(g_static_mutex_unlock(&((CamelImapFolder *)f)->priv->l))
+#define CAMEL_IMAP_FOLDER_REC_LOCK(f, l) \
+	(g_static_rec_mutex_lock(&((CamelImapFolder *)f)->priv->l))
+#define CAMEL_IMAP_FOLDER_REC_UNLOCK(f, l) \
+	(g_static_rec_mutex_unlock(&((CamelImapFolder *)f)->priv->l))
 #else
-#define CAMEL_IMAP_FOLDER_LOCK(f, l)
-#define CAMEL_IMAP_FOLDER_UNLOCK(f, l)
+#define CAMEL_IMAP_FOLDER_LOCK(obj)
+#define CAMEL_IMAP_FOLDER_UNLOCK(obj)
+#define CAMEL_IMAP_FOLDER_REC_LOCK(obj)
+#define CAMEL_IMAP_FOLDER_REC_UNLOCK(obj)
 #endif
 
 struct _CamelImapWrapperPrivate {

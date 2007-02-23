@@ -170,7 +170,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	unsigned int len;
 	char *path;
 	
-	CAMEL_SERVICE_LOCK(store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(store, connect_lock);
 
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
@@ -260,7 +260,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	store->current_folder = NULL;
 	
  fail:
-	CAMEL_SERVICE_UNLOCK(store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
 	return retval;
 }
 
@@ -360,7 +360,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
 	char *line;
 	
-	CAMEL_SERVICE_LOCK(store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(store, connect_lock);
 	
 	if (clean) {
 		camel_nntp_raw_command (store, ex, &line, "quit");
@@ -368,7 +368,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	}
 	
 	if (!service_class->disconnect (service, clean, ex)) {
-		CAMEL_SERVICE_UNLOCK(store, connect_lock);	
+		CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
 		return FALSE;
 	}
 	
@@ -377,7 +377,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	g_free(store->current_folder);
 	store->current_folder = NULL;
 
-	CAMEL_SERVICE_UNLOCK(store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
 	
 	return TRUE;
 }
@@ -422,11 +422,11 @@ nntp_get_folder(CamelStore *store, const char *folder_name, guint32 flags, Camel
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolder *folder;
 	
-	CAMEL_SERVICE_LOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 	
 	folder = camel_nntp_folder_new(store, folder_name, ex);
 	
-	CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 	
 	return folder;
 }
@@ -609,13 +609,13 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const char *top, g
 				if (folder) {
 					CamelFolderChangeInfo *changes = NULL;
 
-					CAMEL_SERVICE_LOCK(store, connect_lock);
+					CAMEL_SERVICE_REC_LOCK(store, connect_lock);
 					camel_nntp_command(store, ex, folder, &line, NULL);
 					if (camel_folder_change_info_changed(folder->changes)) {
 						changes = folder->changes;
 						folder->changes = camel_folder_change_info_new();
 					}
-					CAMEL_SERVICE_UNLOCK(store, connect_lock);
+					CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
 					if (changes) {
 						camel_object_trigger_event((CamelObject *) folder, "folder_changed", changes);
 						camel_folder_change_info_free(changes);
@@ -751,7 +751,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 	int ret = -1;
 	CamelFolderInfo *fi = NULL;
 
-	CAMEL_SERVICE_LOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 	
 	if (top == NULL)
 		top = "";
@@ -821,7 +821,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 	
 	fi = nntp_store_get_cached_folder_info (nntp_store, top, flags, ex);
  error:
-	CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 
 	return fi;
 }
@@ -883,7 +883,7 @@ nntp_store_subscribe_folder (CamelStore *store, const char *folder_name,
 	CamelStoreInfo *si;
 	CamelFolderInfo *fi;
 	
-	CAMEL_SERVICE_LOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 	
 	si = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 	if (!si) {
@@ -897,14 +897,14 @@ nntp_store_subscribe_folder (CamelStore *store, const char *folder_name,
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_subscribed", fi);
 			camel_folder_info_free (fi);
 			return;
 		}
 	}
 	
-	CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 }
 
 static void
@@ -914,7 +914,7 @@ nntp_store_unsubscribe_folder (CamelStore *store, const char *folder_name,
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
 	CamelFolderInfo *fi;
 	CamelStoreInfo *fitem;
-	CAMEL_SERVICE_LOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 	
 	fitem = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 	
@@ -928,14 +928,14 @@ nntp_store_unsubscribe_folder (CamelStore *store, const char *folder_name,
 			fi = nntp_folder_info_from_store_info (nntp_store, nntp_store->do_short_folder_notation, fitem);
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+			CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_unsubscribed", fi);
 			camel_folder_info_free (fi);
 			return;
 		}
 	}
 	
-	CAMEL_SERVICE_UNLOCK(nntp_store, connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 }
 
 /* stubs for various folder operations we're not implementing */
@@ -1200,7 +1200,6 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, char **line,
 	int d;
 	unsigned int u, u2;
 	
-	e_mutex_assert_locked(((CamelService *)store)->priv->connect_lock);
 	g_assert(store->stream->mode != CAMEL_NNTP_STREAM_DATA);
 
 	camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_LINE);
@@ -1322,8 +1321,6 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 	int ret, retry;
 	unsigned int u;
 	
-	e_mutex_assert_locked(((CamelService *)store)->priv->connect_lock);
-
 	if (((CamelDiscoStore *)store)->status == CAMEL_DISCO_STORE_OFFLINE) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SERVICE_NOT_CONNECTED,
 				     _("Not connected."));
