@@ -1,3 +1,10 @@
+2007-02-26  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #331813
+
+	* camel-mime-filter-tohtml.c: Patch from Gilles 
+	Dartiguelongue.
+
 2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #356177
