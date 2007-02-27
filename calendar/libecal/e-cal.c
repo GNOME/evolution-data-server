@@ -1529,18 +1529,13 @@ e_cal_new (ESource *source, ECalSourceType type)
 ECal *
 e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 {
-	ESourceGroup *group;
 	ESource *source;
 	ECal *cal;
 
-	group = e_source_group_new ("", uri);
-	source = e_source_new ("", "");
-	e_source_set_group (source, group);
-
+	source = e_source_new_with_absolute_uri ("", uri);
 	cal = e_cal_new (source, type);
 
 	g_object_unref (source);
-	g_object_unref (group);
 
 	return cal;
 }

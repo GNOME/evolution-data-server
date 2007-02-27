@@ -1,3 +1,9 @@
+2007-02-27  Ross Burton  <ross@openedhand.com>
+
+	* libecal/e-cal.c:
+	Use consistent URIs when opening calendars by using
+	e_source_new_with_absolute_uri() in e_cal_new_from_uri (#333507).
+
 2007-02-12  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* libecal/e-cal.c: (process_detached_instances): Don't crash
