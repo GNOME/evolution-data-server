@@ -44,7 +44,7 @@
 #include "camel-local-folder.h"
 #include "camel-local-store.h"
 
-#define d(x)
+#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
 /* Returns the class for a CamelLocalStore */
 #define CLOCALS_CLASS(so) CAMEL_LOCAL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
@@ -388,6 +388,9 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	if (xrename(old, new, path, ".ev-summary", TRUE, ex))
 		goto summary_failed;
 
+	if (xrename(old, new, path, ".ev-summary-meta", TRUE, ex))
+		goto summary_failed;
+
 	if (xrename(old, new, path, ".cmeta", TRUE, ex))
 		goto cmeta_failed;
 
@@ -409,7 +412,7 @@ base_failed:
 
 cmeta_failed:
 	xrename(new, old, path, ".ev-summary", TRUE, ex);
-
+	xrename(new, old, path, ".ev-summary-meta", TRUE, ex);
 summary_failed:
 	if (folder) {
 		if (folder->index)
@@ -441,6 +444,16 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ev-summary", name);
+	if (g_unlink(str) == -1 && errno != ENOENT) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not delete folder summary file `%s': %s"),
+				      str, g_strerror (errno));
+		g_free(str);
+		g_free (name);
+		return;
+	}
+	g_free(str);
+	str = g_strdup_printf("%s.ev-summary-meta", name);
 	if (g_unlink(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not delete folder summary file `%s': %s"),

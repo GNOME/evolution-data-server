@@ -1,3 +1,10 @@
+2007-03-05  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes BGO #413268
+	
+	* camel-mbox-store.c:
+	* camel-local-store.c: (rename_folder), (delete_folder):  Rename/delete meta summary file.
+	
 2006-08-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #347905 by Matt Davey

@@ -281,6 +281,18 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	
 	g_free(path);
 	
+	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary-meta");
+	if (g_unlink(path) == -1 && errno != ENOENT) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Could not delete folder summary file `%s': %s"),
+				     path, g_strerror(errno));
+		g_free(path);
+		g_free(name);
+		return;
+	}
+	
+	g_free(path);
+
 	path = camel_local_store_get_meta_path(store, folder_name, ".ibex");
 	if (camel_text_index_remove(path) == -1 && errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
@@ -514,6 +526,11 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 		goto summary_failed;
 	}
 
+	if (xrename(store, old, new, ".ev-summary-meta", TRUE) == -1) {
+		errnosav = errno;
+		goto summary_failed;
+	}
+
 	if (xrename(store, old, new, ".cmeta", TRUE) == -1) {
 		errnosav = errno;
 		goto cmeta_failed;
@@ -543,6 +560,7 @@ subdir_failed:
 	xrename(store, new, old, ".cmeta", TRUE);
 cmeta_failed:	
 	xrename(store, new, old, ".ev-summary", TRUE);
+	xrename(store, new, old, ".ev-summary-meta", TRUE);
 summary_failed:
 	if (folder) {
 		if (folder->index)
