@@ -1136,6 +1136,18 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 		g_free (folder_dir);
 		goto event;
 	}
+	camel_object_unref (summary);
+
+	g_unlink (summary_file);
+	g_free (summary_file);
+
+	summary_file = g_strdup_printf ("%s/summary-meta", folder_dir);
+	summary = camel_imap_summary_new (NULL, summary_file);
+	if (!summary) {
+		g_free (summary_file);
+		g_free (folder_dir);
+		goto event;
+	}
 	
 	cache = camel_imap_message_cache_new (folder_dir, summary, ex);
 	if (cache)
