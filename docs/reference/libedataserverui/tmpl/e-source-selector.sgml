@@ -1,0 +1,157 @@
+<!-- ##### SECTION Title ##### -->
+ESourceSelector
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ESourceSelector ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ESourceSelector::popup-event ##### -->
+<para>
+
+</para>
+
+@esourceselector: the object which received the signal.
+@arg1: 
+@event: 
+@Returns: 
+
+<!-- ##### SIGNAL ESourceSelector::primary-selection-changed ##### -->
+<para>
+
+</para>
+
+@esourceselector: the object which received the signal.
+
+<!-- ##### SIGNAL ESourceSelector::selection-changed ##### -->
+<para>
+
+</para>
+
+@esourceselector: the object which received the signal.
+
+<!-- ##### FUNCTION e_source_selector_new ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_selector_select_source ##### -->
+<para>
+
+</para>
+
+@selector: 
+@source: 
+
+
+<!-- ##### FUNCTION e_source_selector_unselect_source ##### -->
+<para>
+
+</para>
+
+@selector: 
+@source: 
+
+
+<!-- ##### FUNCTION e_source_selector_source_is_selected ##### -->
+<para>
+
+</para>
+
+@selector: 
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_selector_get_selection ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_selector_free_selection ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION e_source_selector_show_selection ##### -->
+<para>
+
+</para>
+
+@selector: 
+@show: 
+
+
+<!-- ##### FUNCTION e_source_selector_selection_shown ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_selector_set_select_new ##### -->
+<para>
+
+</para>
+
+@selector: 
+@state: 
+
+
+<!-- ##### FUNCTION e_source_selector_peek_primary_selection ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_selector_set_primary_selection ##### -->
+<para>
+
+</para>
+
+@selector: 
+@source: 
+
+
+<!-- ##### FUNCTION e_source_selector_get_primary_source_group ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+

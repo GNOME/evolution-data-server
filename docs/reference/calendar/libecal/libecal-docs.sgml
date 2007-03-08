@@ -8,14 +8,18 @@
 
   <chapter>
     <title>Evolution API Reference: libecal, the Calendar Library</title>
+    <xi:include href="xml/e-cal.xml"/>
     <xi:include href="xml/e-cal-component.xml"/>
     <xi:include href="xml/e-cal-listener.xml"/>
+    <xi:include href="xml/e-cal-view.xml"/>
     <xi:include href="xml/e-cal-view-listener.xml"/>
-    <xi:include href="xml/e-cal.xml"/>
     <xi:include href="xml/e-cal-recur.xml"/>
     <xi:include href="xml/e-cal-time-util.xml"/>
     <xi:include href="xml/e-cal-types.xml"/>
     <xi:include href="xml/e-cal-util.xml"/>
-    <xi:include href="xml/e-cal-view.xml"/>
   </chapter>
+
+  <index>
+    <title>Index</title>
+  </index>
 </book>

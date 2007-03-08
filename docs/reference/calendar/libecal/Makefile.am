@@ -9,7 +9,7 @@ HTML_IMAGES=
 DOC_MAIN_SGML_FILE = libecal-docs.sgml
 
 #SCANGOBJ_OPTIONS =
-SCAN_OPTIONS = 
+SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 
 DOC_SOURCE_DIR = $(top_srcdir)/calendar/libecal
 HFILE_GLOB = $(top_srcdir)/calendar/libecal/*.h

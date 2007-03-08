@@ -17,11 +17,21 @@ Cache for calendar backends.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECalBackendCachePrivate ##### -->
+<!-- ##### STRUCT ECalBackendCache ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### ARG ECalBackendCache:source-type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalBackendCache:uri ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION e_cal_backend_cache_new ##### -->
 <para>
@@ -71,6 +81,16 @@ Cache for calendar backends.
 </para>
 
 @cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_components_by_uid ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
 @Returns: 
 
 
@@ -165,6 +185,27 @@ Cache for calendar backends.
 </para>
 
 @cache: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_put_key_value ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_cache_get_key_value ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
 @Returns: 
 
 

@@ -1484,10 +1484,12 @@ docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
 docs/reference/addressbook/libebook/Makefile
+docs/reference/addressbook/libedata-book/Makefile
 docs/reference/calendar/Makefile
 docs/reference/calendar/libecal/Makefile
 docs/reference/calendar/libedata-cal/Makefile
 docs/reference/libedataserver/Makefile
+docs/reference/libedataserverui/Makefile
 po/Makefile.in
 ])
 

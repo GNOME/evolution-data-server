@@ -17,13 +17,6 @@ Implementation of the calendar CORBA search interface.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### MACRO E_DATA_CAL_VIEW_TYPE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO QUERY ##### -->
 <para>
 
@@ -32,42 +25,12 @@ Implementation of the calendar CORBA search interface.
 @obj: 
 
 
-<!-- ##### MACRO E_DATA_CAL_VIEW_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
 <!-- ##### MACRO IS_QUERY ##### -->
 <para>
 
 </para>
 
 @obj: 
-
-
-<!-- ##### MACRO IS_E_DATA_CAL_VIEW_CLASS ##### -->
-<para>
-
-</para>
-
-@klass: 
-
-
-<!-- ##### STRUCT EDataCalViewPrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### FUNCTION e_data_cal_view_get_type ##### -->
-<para>
-
-</para>
-
-@Returns: 
 
 
 <!-- ##### FUNCTION e_data_cal_view_new ##### -->

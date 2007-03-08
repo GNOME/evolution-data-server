@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+e-data-book-marshal
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO e_data_book_marshal_VOID__VOID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO e_data_book_marshal_NONE__NONE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO e_data_book_marshal_VOID__POINTER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO e_data_book_marshal_NONE__POINTER ##### -->
+<para>
+
+</para>
+
+
+

@@ -18,67 +18,67 @@ ECalView is a view of the ECal.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECal ##### -->
+<!-- ##### STRUCT ECalView ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### SIGNAL ECal::backend-died ##### -->
+<!-- ##### SIGNAL ECalView::objects-added ##### -->
 <para>
 
 </para>
 
-@: 
+@ecalview: the object which received the signal.
+@arg1: 
 
-<!-- ##### SIGNAL ECal::backend-error ##### -->
+<!-- ##### SIGNAL ECalView::objects-modified ##### -->
 <para>
 
 </para>
 
-@: 
-@: 
+@ecalview: the object which received the signal.
+@arg1: 
 
-<!-- ##### SIGNAL ECal::cal-opened ##### -->
+<!-- ##### SIGNAL ECalView::objects-removed ##### -->
 <para>
 
 </para>
 
-@: 
-@: 
+@ecalview: the object which received the signal.
+@arg1: 
 
-<!-- ##### SIGNAL ECal::cal-set-mode ##### -->
+<!-- ##### SIGNAL ECalView::view-done ##### -->
 <para>
 
 </para>
 
-@: 
-@: 
-@: 
+@ecalview: the object which received the signal.
+@arg1: 
 
-<!-- ##### MACRO E_CAL_VIEW ##### -->
+<!-- ##### SIGNAL ECalView::view-progress ##### -->
 <para>
 
 </para>
 
-@obj: 
+@ecalview: the object which received the signal.
+@arg1: 
+@arg2: 
 
-
-<!-- ##### MACRO E_CAL_VIEW_CLASS ##### -->
+<!-- ##### ARG ECalView:client ##### -->
 <para>
 
 </para>
 
-@klass: 
-
-
-<!-- ##### FUNCTION e_cal_view_get_type ##### -->
+<!-- ##### ARG ECalView:listener ##### -->
 <para>
 
 </para>
 
-@Returns: 
+<!-- ##### ARG ECalView:view ##### -->
+<para>
 
+</para>
 
 <!-- ##### FUNCTION e_cal_view_new ##### -->
 <para>

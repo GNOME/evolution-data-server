@@ -181,6 +181,15 @@ Does the low-level parsing work for contact information. This data is more conve
 @Varargs: 
 
 
+<!-- ##### FUNCTION e_vcard_attribute_remove_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@s: 
+
+
 <!-- ##### FUNCTION e_vcard_attribute_remove_values ##### -->
 <para>
 
@@ -204,6 +213,16 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 @attr: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_remove_param_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param_name: 
+@s: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_remove_param_value ##### -->
@@ -295,6 +314,16 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 @param: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_param ##### -->
+<para>
+
+</para>
+
+@attr: 
+@name: 
+@Returns: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_param_get_name ##### -->
@@ -755,6 +784,13 @@ Wants HTML mail
 <!-- ##### MACRO EVC_X_YAHOO ##### -->
 <para>
 Yahoo ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_GADUGADU ##### -->
+<para>
+
 </para>
 
 

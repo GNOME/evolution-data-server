@@ -54,6 +54,14 @@ Various utility functions.
 @CAL_MODE_REMOTE: 
 @CAL_MODE_ANY: 
 
+<!-- ##### MACRO cal_mode_to_corba ##### -->
+<para>
+
+</para>
+
+@mode: 
+
+
 <!-- ##### FUNCTION cal_obj_uid_list_free ##### -->
 <para>
 
@@ -67,6 +75,24 @@ Various utility functions.
 
 </para>
 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_new_component ##### -->
+<para>
+
+</para>
+
+@kind: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_parse_ics_string ##### -->
+<para>
+
+</para>
+
+@string: 
 @Returns: 
 
 
@@ -201,6 +227,15 @@ Various utility functions.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_util_component_has_attendee ##### -->
+<para>
+
+</para>
+
+@icalcomp: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_util_event_dates_match ##### -->
 <para>
 
@@ -303,6 +338,76 @@ Various utility functions.
 
 
 <!-- ##### MACRO CAL_STATIC_CAPABILITY_SAVE_SCHEDULES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_NO_ORGANIZER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING ##### -->
 <para>
 
 </para>

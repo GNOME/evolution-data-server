@@ -73,6 +73,33 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_util_utf8_strcasecmp ##### -->
+<para>
+
+</para>
+
+@s1: 
+@s2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_pthread_id ##### -->
+<para>
+
+</para>
+
+@t: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_filename_make_safe ##### -->
+<para>
+
+</para>
+
+@string: 
+
+
 <!-- ##### FUNCTION e_utf8_strftime ##### -->
 <para>
 
@@ -94,6 +121,41 @@ Miscellaneous utility functions for evolution-data-server.
 @max: 
 @fmt: 
 @tm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_get_prefix ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_get_cp_prefix ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_get_localedir ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_replace_prefix ##### -->
+<para>
+
+</para>
+
+@configure_time_prefix: 
+@runtime_prefix: 
+@configure_time_path: 
 @Returns: 
 
 

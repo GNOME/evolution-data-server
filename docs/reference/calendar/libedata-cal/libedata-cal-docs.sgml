@@ -8,14 +8,18 @@
 
   <chapter>
     <title>Evolution API Reference: libedata-cal, the Calendar Backend Library</title>
+    <xi:include href="xml/e-cal-backend.xml"/>
     <xi:include href="xml/e-cal-backend-cache.xml"/>
     <xi:include href="xml/e-cal-backend-factory.xml"/>
     <xi:include href="xml/e-cal-backend-sexp.xml"/>
     <xi:include href="xml/e-cal-backend-sync.xml"/>
     <xi:include href="xml/e-cal-backend-util.xml"/>
-    <xi:include href="xml/e-cal-backend.xml"/>
+    <xi:include href="xml/e-data-cal.xml"/>
     <xi:include href="xml/e-data-cal-factory.xml"/>
     <xi:include href="xml/e-data-cal-view.xml"/>
-    <xi:include href="xml/e-data-cal.xml"/>
   </chapter>
+
+  <index>
+    <title>Index</title>
+  </index>
 </book>

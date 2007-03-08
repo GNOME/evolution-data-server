@@ -1,1 +1,1 @@
-SUBDIRS = libebook
+SUBDIRS = libebook libedata-book

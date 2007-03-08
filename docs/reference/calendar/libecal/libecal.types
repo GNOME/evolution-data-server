@@ -1,6 +1,11 @@
-#include <glib-object.h>
+#include <libecal/e-cal.h>
+#include <libecal/e-cal-component.h>
+#include <libecal/e-cal-listener.h>
+#include <libecal/e-cal-view.h>
+#include <libecal/e-cal-view-listener.h>
+
 e_cal_get_type
-e_cal_view_get_type
-e_cal_listener_get_type
-e_cal_view_listener_get_type
 e_cal_component_get_type
+e_cal_listener_get_type
+e_cal_view_get_type
+e_cal_view_listener_get_type

@@ -17,12 +17,6 @@ Base class for calendar/tasks backend implementations.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECalBackendPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION e_cal_backend_get_source ##### -->
 <para>
 
@@ -246,6 +240,17 @@ Base class for calendar/tasks backend implementations.
 @sexp: 
 
 
+<!-- ##### FUNCTION e_cal_backend_get_attachment_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+
+
 <!-- ##### FUNCTION e_cal_backend_is_loaded ##### -->
 <para>
 
@@ -310,6 +315,16 @@ Base class for calendar/tasks backend implementations.
 @backend: 
 @cal: 
 @tzid: 
+
+
+<!-- ##### FUNCTION e_cal_backend_set_default_zone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzobj: 
 
 
 <!-- ##### FUNCTION e_cal_backend_get_changes ##### -->
@@ -425,5 +440,42 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @message: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_view_done ##### -->
+<para>
+
+</para>
+
+@backend: 
+@status: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_view_progress ##### -->
+<para>
+
+</para>
+
+@backend: 
+@message: 
+@percent: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_readonly ##### -->
+<para>
+
+</para>
+
+@backend: 
+@read_only: 
+
+
+<!-- ##### FUNCTION e_cal_backend_notify_cal_address ##### -->
+<para>
+
+</para>
+
+@backend: 
+@address: 
 
 

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <bookinfo>
+    <title>Evolution API Reference: libedata-book, the Addressbook backend library</title>
+  </bookinfo>
+
+  <chapter>
+    <title>Evolution API Reference: libedata-book, the Addressbook backend library</title>
+    <xi:include href="xml/e-book-backend.xml"/>
+    <xi:include href="xml/e-book-backend-cache.xml"/>
+    <xi:include href="xml/e-book-backend-db-cache.xml"/>
+    <xi:include href="xml/e-book-backend-factory.xml"/>
+    <xi:include href="xml/e-book-backend-sexp.xml"/>
+    <xi:include href="xml/e-book-backend-summary.xml"/>
+    <xi:include href="xml/e-book-backend-sync.xml"/>
+    <xi:include href="xml/e-data-book.xml"/>
+    <xi:include href="xml/e-data-book-factory.xml"/>
+    <xi:include href="xml/e-data-book-marshal.xml"/>
+    <xi:include href="xml/e-data-book-view.xml"/>
+    <xi:include href="xml/ximian-vcard.xml"/>
+  </chapter>
+
+  <index>
+    <title>Index</title>
+  </index>
+</book>

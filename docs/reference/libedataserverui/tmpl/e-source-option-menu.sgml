@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+ESourceOptionMenu
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ESourceOptionMenu ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ESourceOptionMenu::source-selected ##### -->
+<para>
+
+</para>
+
+@esourceoptionmenu: the object which received the signal.
+@arg1: 
+
+<!-- ##### FUNCTION e_source_option_menu_new ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_option_menu_peek_selected ##### -->
+<para>
+
+</para>
+
+@menu: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_source_option_menu_select ##### -->
+<para>
+
+</para>
+
+@menu: 
+@source: 
+
+

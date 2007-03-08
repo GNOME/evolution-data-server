@@ -105,10 +105,7 @@ EBookIdCallback
 EBookEListCallback
 EBookListCallback
 EBookContactCallback
-EBookContactsCallback
 EBookBookViewCallback
-EBookFieldsCallback
-EBookAuthMethodsCallback
 e_book_async_open
 e_book_async_remove
 e_book_async_get_supported_fields

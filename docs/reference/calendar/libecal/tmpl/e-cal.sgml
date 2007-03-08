@@ -69,6 +69,16 @@ Represents an entire calendar or task list, not individual items within them.2
 
 
 
+<!-- ##### ENUM ECalSourceType ##### -->
+<para>
+
+</para>
+
+@E_CAL_SOURCE_TYPE_EVENT: 
+@E_CAL_SOURCE_TYPE_TODO: 
+@E_CAL_SOURCE_TYPE_JOURNAL: 
+@E_CAL_SOURCE_TYPE_LAST: 
+
 <!-- ##### ENUM ECalSetModeStatus ##### -->
 <para>
 
@@ -108,6 +118,14 @@ Represents an entire calendar or task list, not individual items within them.2
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_source_type_enum_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_set_mode_status_enum_get_type ##### -->
 <para>
 
@@ -131,6 +149,40 @@ Represents an entire calendar or task list, not individual items within them.2
 
 @source: 
 @type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_new_from_uri ##### -->
+<para>
+
+</para>
+
+@uri: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_new_system_calendar ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_new_system_tasks ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_new_system_memos ##### -->
+<para>
+
+</para>
+
 @Returns: 
 
 
@@ -164,6 +216,16 @@ Represents an entire calendar or task list, not individual items within them.2
 @only_if_exists: 
 
 
+<!-- ##### FUNCTION e_cal_remove ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_uri_list ##### -->
 <para>
 
@@ -174,7 +236,25 @@ Represents an entire calendar or task list, not individual items within them.2
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_get_source_type ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_get_load_state ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_source ##### -->
 <para>
 
 </para>
@@ -273,6 +353,15 @@ Represents an entire calendar or task list, not individual items within them.2
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_get_organizer_must_accept ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_set_mode ##### -->
 <para>
 
@@ -303,6 +392,18 @@ Represents an entire calendar or task list, not individual items within them.2
 @uid: 
 @rid: 
 @icalcomp: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_objects_for_uid ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@objects: 
 @error: 
 @Returns: 
 
@@ -379,6 +480,19 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @ecal: 
+@start: 
+@end: 
+@cb: 
+@cb_data: 
+
+
+<!-- ##### FUNCTION e_cal_generate_instances_for_object ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@icalcomp: 
 @start: 
 @end: 
 @cb: 
@@ -573,6 +687,82 @@ Represents an entire calendar or task list, not individual items within them.2
 </para>
 
 @status: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_open_default ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@type: 
+@func: 
+@data: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_default ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_set_default_source ##### -->
+<para>
+
+</para>
+
+@source: 
+@type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_sources ##### -->
+<para>
+
+</para>
+
+@sources: 
+@type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_local_attachment_store ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_recurrences_no_master ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_attachments_for_comp ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@uid: 
+@rid: 
+@list: 
+@error: 
 @Returns: 
 
 

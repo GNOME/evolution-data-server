@@ -23,6 +23,14 @@ ECalComponent
 </para>
 
 
+<!-- ##### STRUCT ECalComponentId ##### -->
+<para>
+
+</para>
+
+@uid: 
+@rid: 
+
 <!-- ##### ENUM ECalComponentVType ##### -->
 <para>
 
@@ -176,6 +184,15 @@ ECalComponent
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_component_new_from_string ##### -->
+<para>
+
+</para>
+
+@calobj: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_component_clone ##### -->
 <para>
 
@@ -279,6 +296,23 @@ ECalComponent
 
 @comp: 
 @uid: 
+
+
+<!-- ##### FUNCTION e_cal_component_get_id ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_component_free_id ##### -->
+<para>
+
+</para>
+
+@id: 
 
 
 <!-- ##### FUNCTION e_cal_component_get_categories ##### -->
@@ -677,6 +711,15 @@ ECalComponent
 @recur_id: 
 
 
+<!-- ##### FUNCTION e_cal_component_get_recurid_as_string ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_component_set_recurid ##### -->
 <para>
 
@@ -909,6 +952,42 @@ ECalComponent
 
 @comp: 
 @location: 
+
+
+<!-- ##### FUNCTION e_cal_component_get_attachment_list ##### -->
+<para>
+
+</para>
+
+@comp: 
+@attachment_list: 
+
+
+<!-- ##### FUNCTION e_cal_component_set_attachment_list ##### -->
+<para>
+
+</para>
+
+@comp: 
+@attachment_list: 
+
+
+<!-- ##### FUNCTION e_cal_component_has_attachments ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_component_get_num_attachments ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
 
 
 <!-- ##### FUNCTION e_cal_component_event_dates_match ##### -->

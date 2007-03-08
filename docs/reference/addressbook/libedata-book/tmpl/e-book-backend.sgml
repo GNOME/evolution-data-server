@@ -1,0 +1,455 @@
+<!-- ##### SECTION Title ##### -->
+EBookBackend
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EBookBackend ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EBookBackend::last-client-gone ##### -->
+<para>
+
+</para>
+
+@ebookbackend: the object which received the signal.
+
+<!-- ##### FUNCTION e_book_backend_construct ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_load_source ##### -->
+<para>
+
+</para>
+
+@backend: 
+@source: 
+@only_if_exists: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_source ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_add_client ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_remove_client ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+
+
+<!-- ##### FUNCTION e_book_backend_has_out_of_proc_clients ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_static_capabilities ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_removed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_open ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@only_if_exists: 
+
+
+<!-- ##### FUNCTION e_book_backend_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+
+<!-- ##### FUNCTION e_book_backend_create_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@vcard: 
+
+
+<!-- ##### FUNCTION e_book_backend_remove_contacts ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@id_list: 
+
+
+<!-- ##### FUNCTION e_book_backend_modify_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@vcard: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@id: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_contact_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@query: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_changes ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@change_id: 
+
+
+<!-- ##### FUNCTION e_book_backend_authenticate_user ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@user: 
+@passwd: 
+@auth_method: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_required_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+
+<!-- ##### FUNCTION e_book_backend_cancel_operation ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_mode ##### -->
+<para>
+
+</para>
+
+@backend: 
+@mode: 
+
+
+<!-- ##### FUNCTION e_book_backend_start_book_view ##### -->
+<para>
+
+</para>
+
+@backend: 
+@view: 
+
+
+<!-- ##### FUNCTION e_book_backend_stop_book_view ##### -->
+<para>
+
+</para>
+
+@backend: 
+@view: 
+
+
+<!-- ##### FUNCTION e_book_backend_add_book_view ##### -->
+<para>
+
+</para>
+
+@backend: 
+@view: 
+
+
+<!-- ##### FUNCTION e_book_backend_remove_book_view ##### -->
+<para>
+
+</para>
+
+@backend: 
+@view: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_book_views ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_update ##### -->
+<para>
+
+</para>
+
+@backend: 
+@contact: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@id: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_complete ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_writable: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_connection_status ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_online: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_auth_required ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_loaded: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_is_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_writable: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_is_removed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_removed: 
+
+
+<!-- ##### FUNCTION e_book_backend_change_add_new ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_change_modify_new ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_change_delete_new ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+
+<!-- ##### STRUCT EBookBackendClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@load_source: 
+@remove: 
+@get_static_capabilities: 
+@create_contact: 
+@remove_contacts: 
+@modify_contact: 
+@get_contact: 
+@get_contact_list: 
+@start_book_view: 
+@stop_book_view: 
+@get_changes: 
+@authenticate_user: 
+@get_required_fields: 
+@get_supported_fields: 
+@get_supported_auth_methods: 
+@cancel_operation: 
+@set_mode: 
+@last_client_gone: 
+@_pas_reserved0: 
+@_pas_reserved1: 
+@_pas_reserved2: 
+@_pas_reserved3: 
+@_pas_reserved4: 
+

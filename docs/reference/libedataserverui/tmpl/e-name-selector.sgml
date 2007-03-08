@@ -1,0 +1,71 @@
+<!-- ##### SECTION Title ##### -->
+ENameSelector
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ENameSelector ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_name_selector_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_peek_model ##### -->
+<para>
+
+</para>
+
+@name_selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_peek_dialog ##### -->
+<para>
+
+</para>
+
+@name_selector: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_peek_section_entry ##### -->
+<para>
+
+</para>
+
+@name_selector: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_peek_section_list ##### -->
+<para>
+
+</para>
+
+@name_selector: 
+@name: 
+@Returns: 
+
+

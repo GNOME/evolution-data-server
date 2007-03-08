@@ -73,6 +73,17 @@ Functions for manipulating xml as a hash table.
 @user_data: 
 
 
+<!-- ##### USER_FUNCTION EXmlHashRemoveFunc ##### -->
+<para>
+
+</para>
+
+@key: 
+@value: 
+@user_data: 
+@Returns: 
+
+
 <!-- ##### TYPEDEF EXmlHash ##### -->
 <para>
 
@@ -119,6 +130,16 @@ Functions for manipulating xml as a hash table.
 
 
 <!-- ##### FUNCTION e_xmlhash_foreach_key ##### -->
+<para>
+
+</para>
+
+@hash: 
+@func: 
+@user_data: 
+
+
+<!-- ##### FUNCTION e_xmlhash_foreach_key_remove ##### -->
 <para>
 
 </para>

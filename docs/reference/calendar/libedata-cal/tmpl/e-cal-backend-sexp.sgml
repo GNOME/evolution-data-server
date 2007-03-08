@@ -17,12 +17,6 @@ Regular expressions for calendar searches.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECalBackendSExpPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION e_cal_backend_sexp_new ##### -->
 <para>
 

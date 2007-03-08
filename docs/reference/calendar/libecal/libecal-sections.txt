@@ -1,6 +1,8 @@
 <SECTION>
 <FILE>e-cal-component</FILE>
+<TITLE>ECalComponent</TITLE>
 ECalComponent
+ECalComponentId
 ECalComponentVType
 ECalComponentField
 ECalComponentClassification
@@ -13,9 +15,9 @@ ECalComponentText
 ECalComponentTransparency
 ECalComponentAttendee
 ECalComponentOrganizer
-<TITLE>ECalComponent</TITLE>
 e_cal_component_gen_uid
 e_cal_component_new
+e_cal_component_new_from_string
 e_cal_component_clone
 e_cal_component_set_new_vtype
 e_cal_component_set_icalcomponent
@@ -28,6 +30,8 @@ e_cal_component_commit_sequence
 e_cal_component_abort_sequence
 e_cal_component_get_uid
 e_cal_component_set_uid
+e_cal_component_get_id
+e_cal_component_free_id
 e_cal_component_get_categories
 e_cal_component_set_categories
 e_cal_component_get_categories_list
@@ -72,6 +76,7 @@ e_cal_component_set_percent
 e_cal_component_get_priority
 e_cal_component_set_priority
 e_cal_component_get_recurid
+e_cal_component_get_recurid_as_string
 e_cal_component_set_recurid
 e_cal_component_get_rdate_list
 e_cal_component_set_rdate_list
@@ -98,6 +103,10 @@ e_cal_component_set_attendee_list
 e_cal_component_has_attendees
 e_cal_component_get_location
 e_cal_component_set_location
+e_cal_component_get_attachment_list
+e_cal_component_set_attachment_list
+e_cal_component_has_attachments
+e_cal_component_get_num_attachments
 e_cal_component_event_dates_match
 e_cal_component_free_categories_list
 e_cal_component_free_datetime
@@ -148,19 +157,19 @@ e_cal_component_alarm_get_icalcomponent
 E_CAL_COMPONENT
 E_IS_CAL_COMPONENT
 E_TYPE_CAL_COMPONENT
-e_cal_component_get_type
 E_CAL_COMPONENT_CLASS
 E_IS_CAL_COMPONENT_CLASS
+ECalComponentClass
 <SUBSECTION Private>
 ECalComponentPrivate
+e_cal_component_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-listener</FILE>
 <TITLE>ECalListener</TITLE>
+ECalListener
 ECalListenerCalSetModeFn
-ECalListenerErrorOccurredFn
-ECalListenerCategoriesChangedFn
 e_cal_listener_construct
 e_cal_listener_new
 e_cal_listener_stop_notification
@@ -168,51 +177,59 @@ e_cal_listener_stop_notification
 E_CAL_LISTENER
 E_IS_CAL_LISTENER
 E_TYPE_CAL_LISTENER
-e_cal_listener_get_type
 E_CAL_LISTENER_CLASS
 E_IS_CAL_LISTENER_CLASS
+ECalListenerClass
+<SUBSECTION Private>
+ECalListenerPrivate
+e_cal_listener_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-view-listener</FILE>
 <TITLE>ECalViewListener</TITLE>
+ECalViewListener
 e_cal_view_listener_new
 <SUBSECTION Standard>
 E_CAL_VIEW_LISTENER
 E_IS_CAL_VIEW_LISTENER
 E_TYPE_CAL_VIEW_LISTENER
-e_cal_view_listener_get_type
 E_CAL_VIEW_LISTENER_CLASS
 E_IS_CAL_VIEW_LISTENER_CLASS
 E_CAL_VIEW_LISTENER_GET_CLASS
+ECalViewListenerClass
 <SUBSECTION Private>
 ECalViewListenerPrivate
+e_cal_view_listener_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal</FILE>
+<TITLE>ECal</TITLE>
 ECal
-E_CAL_OPEN_STATUS_ENUM_TYPE
-E_CAL_REMOVE_STATUS_ENUM_TYPE
 E_CAL_SET_MODE_STATUS_ENUM_TYPE
 CAL_MODE_ENUM_TYPE
-ECalOpenStatus
+ECalSourceType
 ECalSetModeStatus
-ECalGetStatus
-ECalResult
 ECalLoadState
-<TITLE>ECal</TITLE>
 ECalAuthFunc
 e_cal_open_status_enum_get_type
+e_cal_source_type_enum_get_type
 e_cal_set_mode_status_enum_get_type
 cal_mode_enum_get_type
 e_cal_new
+e_cal_new_from_uri
+e_cal_new_system_calendar
+e_cal_new_system_tasks
+e_cal_new_system_memos
 e_cal_set_auth_func
 e_cal_open
 e_cal_open_async
-e_cal_remove_calendar
+e_cal_remove
 e_cal_uri_list
+e_cal_get_source_type
 e_cal_get_load_state
+e_cal_get_source
 e_cal_get_uri
 e_cal_is_read_only
 e_cal_get_cal_address
@@ -222,9 +239,11 @@ e_cal_get_one_alarm_only
 e_cal_get_organizer_must_attend
 e_cal_get_save_schedules
 e_cal_get_static_capability
+e_cal_get_organizer_must_accept
 e_cal_set_mode
 e_cal_get_default_object
 e_cal_get_object
+e_cal_get_objects_for_uid
 e_cal_get_changes
 e_cal_free_change_list
 e_cal_get_object_list
@@ -232,6 +251,7 @@ e_cal_get_object_list_as_comp
 e_cal_free_object_list
 e_cal_get_free_busy
 e_cal_generate_instances
+e_cal_generate_instances_for_object
 e_cal_get_alarms_in_range
 e_cal_free_alarms
 e_cal_get_alarms_for_object
@@ -249,15 +269,23 @@ e_cal_get_query
 e_cal_resolve_tzid_cb
 e_cal_get_component_as_string
 e_cal_get_error_message
+e_cal_open_default
+e_cal_set_default
+e_cal_set_default_source
+e_cal_get_sources
+e_cal_get_local_attachment_store
+e_cal_get_recurrences_no_master
+e_cal_get_attachments_for_comp
 <SUBSECTION Standard>
 E_CAL
 E_IS_CAL
 E_TYPE_CAL
-e_cal_get_type
 E_CAL_CLASS
 E_IS_CAL_CLASS
+ECalClass
 <SUBSECTION Private>
 ECalPrivate
+e_cal_get_type
 </SECTION>
 
 <SECTION>
@@ -265,6 +293,8 @@ ECalPrivate
 ECalRecurInstanceFn
 ECalRecurResolveTimezoneFn
 e_cal_recur_generate_instances
+e_cal_get_recur_nth
+e_cal_recur_nth
 </SECTION>
 
 <SECTION>
@@ -303,18 +333,19 @@ ECalendarStatus
 <FILE>e-cal-util</FILE>
 CalObjInstance
 cal_obj_instance_list_free
-CalObjType
 CalObjModType
 CalMode
+cal_mode_to_corba
 cal_obj_uid_list_free
 e_cal_util_new_top_level
+e_cal_util_new_component
+e_cal_util_parse_ics_string
 e_cal_util_parse_ics_file
 e_cal_util_generate_alarms_for_comp
 e_cal_util_generate_alarms_for_list
 e_cal_util_resolve_tzid
 e_cal_util_priority_to_string
 e_cal_util_priority_from_string
-e_cal_util_expand_uri
 e_cal_util_add_timezones_from_component
 e_cal_util_component_is_instance
 e_cal_util_component_has_alarms
@@ -322,6 +353,7 @@ e_cal_util_component_has_organizer
 e_cal_util_component_has_recurrences
 e_cal_util_component_has_rdates
 e_cal_util_component_has_rrules
+e_cal_util_component_has_attendee
 e_cal_util_event_dates_match
 CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT
 CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS
@@ -337,24 +369,34 @@ CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND
 CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS
 CAL_STATIC_CAPABILITY_REMOVE_ALARMS
 CAL_STATIC_CAPABILITY_SAVE_SCHEDULES
+CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK
+CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR
+CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS
+CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS
+CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER
+CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT
+CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED
+CAL_STATIC_CAPABILITY_NO_ORGANIZER
+CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY
+CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING
 e_cal_util_construct_instance
 e_cal_util_remove_instances
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-view</FILE>
-ECal
-E_CAL_VIEW_TYPE
+<TITLE>ECalView</TITLE>
+ECalView
+e_cal_view_new
+<SUBSECTION Standard>
+E_TYPE_CAL_VIEW
 E_CAL_VIEW
 E_CAL_VIEW_CLASS
-IS_E_CAL_VIEW
-IS_E_CAL_VIEW_CLASS
-<TITLE>ECalView</TITLE>
-e_cal_view_get_type
-e_cal_view_new
-e_cal_view_get_client
-e_cal_view_start
+E_IS_CAL_VIEW
+E_IS_CAL_VIEW_CLASS
+ECalViewClass
 <SUBSECTION Private>
 ECalViewPrivate
+e_cal_view_get_type
 </SECTION>
 

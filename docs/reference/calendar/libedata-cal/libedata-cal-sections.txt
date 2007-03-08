@@ -1,12 +1,13 @@
 <SECTION>
 <FILE>e-cal-backend-cache</FILE>
-ECalBackendCachePrivate
 <TITLE>ECalBackendCache</TITLE>
+ECalBackendCache
 e_cal_backend_cache_new
 e_cal_backend_cache_get_component
 e_cal_backend_cache_put_component
 e_cal_backend_cache_remove_component
 e_cal_backend_cache_get_components
+e_cal_backend_cache_get_components_by_uid
 e_cal_backend_cache_get_timezone
 e_cal_backend_cache_put_timezone
 e_cal_backend_cache_remove_timezone
@@ -17,19 +18,24 @@ e_cal_backend_cache_get_marker
 e_cal_backend_cache_set_marker
 e_cal_backend_cache_put_server_utc_time
 e_cal_backend_cache_get_server_utc_time
+e_cal_backend_cache_put_key_value
+e_cal_backend_cache_get_key_value
 <SUBSECTION Standard>
 E_CAL_BACKEND_CACHE
 E_IS_CAL_BACKEND_CACHE
 E_TYPE_CAL_BACKEND_CACHE
-e_cal_backend_cache_get_type
 E_CAL_BACKEND_CACHE_CLASS
 E_IS_CAL_BACKEND_CACHE_CLASS
+ECalBackendCacheClass
+<SUBSECTION Private>
+ECalBackendCachePrivate
+e_cal_backend_cache_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-backend-factory</FILE>
-ECalBackendFactoryPrivate
 <TITLE>ECalBackendFactory</TITLE>
+ECalBackendFactory
 e_cal_backend_factory_get_kind
 e_cal_backend_factory_get_protocol
 e_cal_backend_factory_new_backend
@@ -37,15 +43,17 @@ e_cal_backend_factory_new_backend
 E_CAL_BACKEND_FACTORY
 E_IS_CAL_BACKEND_FACTORY
 E_TYPE_CAL_BACKEND_FACTORY
-e_cal_backend_factory_get_type
 E_CAL_BACKEND_FACTORY_CLASS
 E_IS_CAL_BACKEND_FACTORY_CLASS
 E_CAL_BACKEND_FACTORY_GET_CLASS
+ECalBackendFactoryClass
+<SUBSECTION Private>
+ECalBackendFactoryPrivate
+e_cal_backend_factory_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-backend-sexp</FILE>
-ECalBackendSExpPrivate
 <TITLE>ECalBackendSExp</TITLE>
 e_cal_backend_sexp_new
 e_cal_backend_sexp_text
@@ -60,17 +68,19 @@ e_cal_backend_sexp_func_time_day_end
 E_CAL_BACKEND_SEXP
 E_IS_CAL_BACKEND_SEXP
 E_TYPE_CAL_BACKEND_SEXP
-e_cal_backend_sexp_get_type
 E_CAL_BACKEND_SEXP_CLASS
 E_IS_CAL_BACKEND_SEXP_CLASS
 E_CAL_BACKEND_SEXP_GET_CLASS
+<SUBSECTION Private>
+ECalBackendSExpPrivate
+e_cal_backend_sexp_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-backend-sync</FILE>
-ECalBackendSyncPrivate
-ECalBackendSyncStatus
 <TITLE>ECalBackendSync</TITLE>
+ECalBackendSync
+ECalBackendSyncStatus
 ECalBackendSyncFactoryFn
 e_cal_backend_sync_set_lock
 e_cal_backend_sync_is_read_only
@@ -83,6 +93,7 @@ e_cal_backend_sync_remove
 e_cal_backend_sync_create_object
 e_cal_backend_sync_modify_object
 e_cal_backend_sync_remove_object
+e_cal_backend_sync_get_attachment_list
 e_cal_backend_sync_discard_alarm
 e_cal_backend_sync_receive_objects
 e_cal_backend_sync_send_objects
@@ -92,21 +103,24 @@ e_cal_backend_sync_get_object_list
 e_cal_backend_sync_get_timezone
 e_cal_backend_sync_add_timezone
 e_cal_backend_sync_set_default_timezone
+e_cal_backend_sync_set_default_zone
 e_cal_backend_sync_get_changes
 e_cal_backend_sync_get_free_busy
 <SUBSECTION Standard>
 E_CAL_BACKEND_SYNC
 E_IS_CAL_BACKEND_SYNC
 E_TYPE_CAL_BACKEND_SYNC
-e_cal_backend_sync_get_type
 E_CAL_BACKEND_SYNC_CLASS
 E_IS_CAL_BACKEND_SYNC_CLASS
 E_CAL_BACKEND_SYNC_GET_CLASS
+ECalBackendSyncClass
+<SUBSECTION Private>
+ECalBackendSyncPrivate
+e_cal_backend_sync_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-cal-backend</FILE>
-ECalBackendPrivate
 <TITLE>ECalBackend</TITLE>
 e_cal_backend_get_source
 e_cal_backend_get_uri
@@ -131,6 +145,7 @@ e_cal_backend_send_objects
 e_cal_backend_get_default_object
 e_cal_backend_get_object
 e_cal_backend_get_object_list
+e_cal_backend_get_attachment_list
 e_cal_backend_is_loaded
 e_cal_backend_start_query
 e_cal_backend_get_mode
@@ -138,6 +153,7 @@ e_cal_backend_set_mode
 e_cal_backend_get_timezone
 e_cal_backend_add_timezone
 e_cal_backend_set_default_timezone
+e_cal_backend_set_default_zone
 e_cal_backend_get_changes
 e_cal_backend_get_free_busy
 e_cal_backend_internal_get_default_timezone
@@ -150,19 +166,25 @@ e_cal_backend_notify_object_removed
 e_cal_backend_notify_mode
 e_cal_backend_notify_auth_required
 e_cal_backend_notify_error
+e_cal_backend_notify_view_done
+e_cal_backend_notify_view_progress
+e_cal_backend_notify_readonly
+e_cal_backend_notify_cal_address
 <SUBSECTION Standard>
 E_CAL_BACKEND
 E_IS_CAL_BACKEND
 E_TYPE_CAL_BACKEND
-e_cal_backend_get_type
 E_CAL_BACKEND_CLASS
 E_IS_CAL_BACKEND_CLASS
+<SUBSECTION Private>
+ECalBackendPrivate
+e_cal_backend_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-data-cal-factory</FILE>
-EDataCalFactoryPrivate
 <TITLE>EDataCalFactory</TITLE>
+EDataCalFactory
 e_data_cal_factory_new
 e_data_cal_factory_register_storage
 e_data_cal_factory_register_backend
@@ -174,14 +196,16 @@ e_data_cal_factory_set_backend_mode
 E_DATA_CAL_FACTORY
 E_IS_DATA_CAL_FACTORY
 E_TYPE_DATA_CAL_FACTORY
-e_data_cal_factory_get_type
 E_DATA_CAL_FACTORY_CLASS
 E_IS_DATA_CAL_FACTORY_CLASS
+EDataCalFactoryClass
+<SUBSECTION Private>
+EDataCalFactoryPrivate
+e_data_cal_factory_get_type
 </SECTION>
 
 <SECTION>
 <FILE>e-data-cal</FILE>
-EDataCalPrivate
 <TITLE>EDataCal</TITLE>
 e_data_cal_construct
 e_data_cal_new
@@ -212,13 +236,16 @@ e_data_cal_notify_free_busy
 e_data_cal_notify_mode
 e_data_cal_notify_auth_required
 e_data_cal_notify_error
+e_data_cal_notify_attachment_list
 <SUBSECTION Standard>
 E_DATA_CAL
 E_IS_DATA_CAL
 E_TYPE_DATA_CAL
-e_data_cal_get_type
 E_DATA_CAL_CLASS
 E_IS_DATA_CAL_CLASS
+<SUBSECTION Private>
+EDataCalPrivate
+e_data_cal_get_type
 </SECTION>
 
 <SECTION>
@@ -241,14 +268,9 @@ ECalBackendSExpClass
 
 <SECTION>
 <FILE>e-data-cal-view</FILE>
-E_DATA_CAL_VIEW_TYPE
-QUERY
-E_DATA_CAL_VIEW_CLASS
-IS_QUERY
-IS_E_DATA_CAL_VIEW_CLASS
-EDataCalViewPrivate
 <TITLE>EDataCalView</TITLE>
-e_data_cal_view_get_type
+QUERY
+IS_QUERY
 e_data_cal_view_new
 e_data_cal_view_add_listener
 e_data_cal_view_get_text
@@ -266,5 +288,11 @@ e_data_cal_view_notify_objects_removed
 e_data_cal_view_notify_objects_removed_1
 e_data_cal_view_notify_progress
 e_data_cal_view_notify_done
+<SUBSECTION Standard>
+E_DATA_CAL_VIEW_TYPE
+E_DATA_CAL_VIEW_CLASS
+IS_E_DATA_CAL_VIEW_CLASS
+<SUBSECTION Private>
+EDataCalViewPrivate
+e_data_cal_view_get_type
 </SECTION>
-

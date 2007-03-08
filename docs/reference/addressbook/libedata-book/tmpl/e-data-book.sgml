@@ -1,0 +1,229 @@
+<!-- ##### SECTION Title ##### -->
+EDataBook
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EDataBook ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_data_book_new ##### -->
+<para>
+
+</para>
+
+@backend: 
+@source: 
+@listener: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_get_listener ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_get_backend ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_get_source ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_open ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_remove ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_create ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@contact: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_remove_contacts ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@ids: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_modify ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@contact: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_authenticate_user ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@fields: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_required_fields ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@fields: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@fields: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_book_view ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@book_view: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_contact ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@vcard: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_contact_list ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@cards: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_changes ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@status: 
+@changes: 
+
+
+<!-- ##### FUNCTION e_data_book_report_writable ##### -->
+<para>
+
+</para>
+
+@book: 
+@writable: 
+
+
+<!-- ##### FUNCTION e_data_book_report_connection_status ##### -->
+<para>
+
+</para>
+
+@book: 
+@is_online: 
+
+
+<!-- ##### FUNCTION e_data_book_report_auth_required ##### -->
+<para>
+
+</para>
+
+@book: 
+
+

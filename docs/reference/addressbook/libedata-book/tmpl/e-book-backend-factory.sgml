@@ -1,0 +1,53 @@
+<!-- ##### SECTION Title ##### -->
+EBookBackendFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EBookBackendFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_book_backend_factory_get_protocol ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_factory_new_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### MACRO E_BOOK_BACKEND_FACTORY_SIMPLE ##### -->
+<para>
+
+</para>
+
+@p: 
+@t: 
+@f: 
+
+

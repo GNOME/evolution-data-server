@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+ENameSelectorDialog
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ENameSelectorDialog ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_name_selector_dialog_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_dialog_peek_model ##### -->
+<para>
+
+</para>
+
+@name_selector_dialog: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_dialog_set_model ##### -->
+<para>
+
+</para>
+
+@name_selector_dialog: 
+@model: 
+
+
+<!-- ##### FUNCTION e_name_selector_dialog_set_destination_index ##### -->
+<para>
+
+</para>
+
+@name_selector_dialog: 
+@index: 
+
+

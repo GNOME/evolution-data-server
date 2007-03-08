@@ -17,11 +17,18 @@ Implementation of the calendar CORBA factory.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT EDataCalFactoryPrivate ##### -->
+<!-- ##### STRUCT EDataCalFactory ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### SIGNAL EDataCalFactory::last-calendar-gone ##### -->
+<para>
+
+</para>
+
+@edatacalfactory: the object which received the signal.
 
 <!-- ##### FUNCTION e_data_cal_factory_new ##### -->
 <para>

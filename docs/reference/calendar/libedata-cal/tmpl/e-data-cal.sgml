@@ -17,12 +17,6 @@ Implementation of the calendar CORBA client interface.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT EDataCalPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION e_data_cal_construct ##### -->
 <para>
 
@@ -309,5 +303,15 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @message: 
+
+
+<!-- ##### FUNCTION e_data_cal_notify_attachment_list ##### -->
+<para>
+
+</para>
+
+@cal: 
+@status: 
+@objects: 
 
 

@@ -9,16 +9,13 @@ HTML_IMAGES=
 DOC_MAIN_SGML_FILE = libedataserver-docs.sgml
 
 #SCANGOBJ_OPTIONS =
-SCAN_OPTIONS = 
+SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 
 DOC_SOURCE_DIR = $(top_srcdir)/libedataserver
 HFILE_GLOB = $(top_srcdir)/libedataserver/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
-#IGNORE_HFILES = 			\
-#	e-account-list.h		\
-#	e-msgport.h			\
-#	e-sexp.h			\
-#	md5-utils.h
+IGNORE_HFILES = 			\
+	libedataserver-private.h
 
 GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/libedataserver			\

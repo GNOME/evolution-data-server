@@ -1,0 +1,119 @@
+<!-- ##### SECTION Title ##### -->
+EContactStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EContactStore ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_contact_store_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_store_get_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@iter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_store_get_contact ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@iter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_store_find_contact ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@uid: 
+@iter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_store_get_books ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_store_add_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+
+
+<!-- ##### FUNCTION e_contact_store_remove_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+
+
+<!-- ##### FUNCTION e_contact_store_set_query ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book_query: 
+
+
+<!-- ##### FUNCTION e_contact_store_peek_query ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@Returns: 
+
+
+<!-- ##### FUNCTION find_contact_source_by_book_return_view ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+@Returns: 
+
+

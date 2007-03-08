@@ -1,0 +1,136 @@
+<!-- ##### SECTION ./tmpl/e-data-book-types.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-types.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-types.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-types.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-types.sgml:Title ##### -->
+e-data-book-types
+
+
+<!-- ##### STRUCT EBookBackendCachePrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookBackendFactoryPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookBackendPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookBackendSExpClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+
+<!-- ##### STRUCT EBookBackendSExpPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookBackendSummaryClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+
+<!-- ##### STRUCT EBookBackendSummaryPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EBookBackendSyncClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@remove_sync: 
+@create_contact_sync: 
+@remove_contacts_sync: 
+@modify_contact_sync: 
+@get_contact_sync: 
+@get_contact_list_sync: 
+@get_changes_sync: 
+@authenticate_user_sync: 
+@get_required_fields_sync: 
+@get_supported_fields_sync: 
+@get_supported_auth_methods_sync: 
+@_pas_reserved0: 
+@_pas_reserved1: 
+@_pas_reserved2: 
+@_pas_reserved3: 
+@_pas_reserved4: 
+
+<!-- ##### STRUCT EBookBackendSyncPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataBookClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@epv: 
+@_pas_reserved0: 
+@_pas_reserved1: 
+@_pas_reserved2: 
+@_pas_reserved3: 
+@_pas_reserved4: 
+
+<!-- ##### STRUCT EDataBookFactoryPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataBookPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EDataBookViewClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@epv: 
+
+<!-- ##### STRUCT EDataBookViewPrivate ##### -->
+<para>
+
+</para>
+
+

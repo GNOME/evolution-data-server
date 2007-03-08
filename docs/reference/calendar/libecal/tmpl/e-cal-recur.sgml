@@ -54,3 +54,18 @@ Functions to expand recurrences for recurrent appointments.
 @default_timezone: 
 
 
+<!-- ##### FUNCTION e_cal_get_recur_nth ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO e_cal_recur_nth ##### -->
+<para>
+
+</para>
+
+
+

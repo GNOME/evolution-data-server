@@ -1,8 +1,15 @@
-#include <glib-object.h>
-e_book_listener_get_type
-e_book_view_listener_get_type
-e_book_view_get_type
+#include <libebook/e-book.h>
+#include <libebook/e-book-listener.h>
+#include <libebook/e-book-view.h>
+#include <libebook/e-book-view-listener.h>
+#include <libebook/e-contact.h>
+#include <libebook/e-destination.h>
+#include <libebook/e-vcard.h>
+
 e_book_get_type
+e_book_listener_get_type
+e_book_view_get_type
+e_book_view_listener_get_type
 e_contact_get_type
-e_vcard_get_type
 e_destination_get_type
+e_vcard_get_type

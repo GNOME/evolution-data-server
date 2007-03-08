@@ -1,0 +1,157 @@
+<!-- ##### SECTION Title ##### -->
+EDataBookView
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EDataBookView ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_data_book_view_new ##### -->
+<para>
+
+</para>
+
+@backend: 
+@listener: 
+@card_query: 
+@card_sexp: 
+@max_results: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_set_thresholds ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@minimum_grouping_threshold: 
+@maximum_grouping_threshold: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_card_query ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_card_sexp ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_max_results ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_backend ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_listener ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_get_mutex ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_update ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@contact: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_update_vcard ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@vcard: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_update_prefiltered_vcard ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@id: 
+@vcard: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_remove ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@id: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_complete ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Param2: 
+
+
+<!-- ##### FUNCTION e_data_book_view_notify_status_message ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@message: 
+
+

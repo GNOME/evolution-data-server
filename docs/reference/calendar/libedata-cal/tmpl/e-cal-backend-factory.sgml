@@ -17,7 +17,7 @@ Factory for creating backends.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECalBackendFactoryPrivate ##### -->
+<!-- ##### STRUCT ECalBackendFactory ##### -->
 <para>
 
 </para>

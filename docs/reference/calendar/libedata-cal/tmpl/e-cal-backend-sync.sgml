@@ -17,7 +17,7 @@ Base class for synchronous backends.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ECalBackendSyncPrivate ##### -->
+<!-- ##### STRUCT ECalBackendSync ##### -->
 <para>
 
 </para>
@@ -165,6 +165,19 @@ Base class for synchronous backends.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_sync_get_attachment_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@uid: 
+@rid: 
+@attachments: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_backend_sync_discard_alarm ##### -->
 <para>
 
@@ -268,6 +281,17 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @tzid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_set_default_zone ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@tzobj: 
 @Returns: 
 
 
