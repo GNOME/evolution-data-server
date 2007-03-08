@@ -1,3 +1,10 @@
+2007-03-08  Ross Burton  <ross@openedhand.com>
+
+	* docs/reference/addressbook/libebook/libebook-sections.txt:
+	* docs/reference/addressbook/libebook/tmpl/e-book-query.sgml:
+	* docs/reference/addressbook/libebook/tmpl/e-vcard.sgml:
+	Add missing symbols (#400169).
+
 2007-02-26  Srinivasa Ragavan <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.9.92 

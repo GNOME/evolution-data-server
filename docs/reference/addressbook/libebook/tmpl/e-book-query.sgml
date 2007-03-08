@@ -129,6 +129,15 @@ Handles queries of addressboook data.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_query_vcard_field_exists ##### -->
+<para>
+
+</para>
+
+@field: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_query_field_test ##### -->
 <para>
 

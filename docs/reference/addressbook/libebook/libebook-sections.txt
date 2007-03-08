@@ -191,7 +191,7 @@ e_contact_cert_get_type
 e_contact_photo_get_type
 e_contact_name_get_type
 e_contact_date_get_type
-
+EContactPhotoType
 <SUBSECTION Private>
 EContactPrivate
 </SECTION>
@@ -219,7 +219,9 @@ e_vcard_attribute_add_value
 e_vcard_attribute_add_value_decoded
 e_vcard_attribute_add_values
 e_vcard_attribute_remove_values
+e_vcard_attribute_remove_value
 e_vcard_attribute_remove_params
+e_vcard_attribute_remove_param_value
 e_vcard_attribute_param_new
 e_vcard_attribute_param_free
 e_vcard_attribute_param_copy
@@ -238,6 +240,7 @@ e_vcard_attribute_get_name
 e_vcard_attribute_get_values
 e_vcard_attribute_get_values_decoded
 e_vcard_attribute_get_params
+e_vcard_attribute_get_param
 e_vcard_attribute_get_value
 e_vcard_attribute_get_value_decoded
 e_vcard_attribute_has_type
@@ -279,6 +282,7 @@ EVC_X_ASSISTANT
 EVC_X_BIRTHDAY
 EVC_X_BLOG_URL
 EVC_X_FILE_AS
+EVC_X_GADUGADU
 EVC_X_ICQ
 EVC_X_JABBER
 EVC_X_LIST_SHOW_ADDRESSES
@@ -330,6 +334,7 @@ e_book_query_or
 e_book_query_orv
 e_book_query_not
 e_book_query_field_exists
+e_book_query_vcard_field_exists
 e_book_query_field_test
 e_book_query_any_field_contains
 e_book_query_copy

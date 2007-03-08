@@ -189,12 +189,31 @@ Does the low-level parsing work for contact information. This data is more conve
 @attr: 
 
 
+<!-- ##### FUNCTION e_vcard_attribute_remove_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@s: 
+
+
 <!-- ##### FUNCTION e_vcard_attribute_remove_params ##### -->
 <para>
 
 </para>
 
 @attr: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_remove_param_value ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param_name: 
+@s: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_param_new ##### -->
@@ -357,6 +376,16 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 @attr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_attribute_get_param ##### -->
+<para>
+
+</para>
+
+@attr: 
+@name: 
 @Returns: 
 
 
@@ -656,6 +685,13 @@ Blog URL
 <!-- ##### MACRO EVC_X_FILE_AS ##### -->
 <para>
 File As
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_GADUGADU ##### -->
+<para>
+
 </para>
 
 
