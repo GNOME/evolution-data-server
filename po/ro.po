@@ -1,6 +1,6 @@
-# translation of evolution-data-server.gnome-2-16.ro.po to Română
+# translation of ro.po to Română
 # evolution ro translation
-# Copyright (C) 2001, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2006, 2007 Free Software Foundation, Inc.
 # (sponsored by Marius Andreiana <mandreiana@yahoo.com>)
 # Marius Andreiana <mandreiana@yahoo.com> (small corrections, Tiberiu did the real work)
 #
@@ -8,13 +8,13 @@
 # Cristian Vat <deathgeneral@gmail.com>, 2005.
 # Eugen Paiuc <eug_paiuc@bluewin.ch>, 2005.
 # Dan Damian <dand@gnome.ro>, 2005-2006.
-# Mugurel Tudor <mugurelu@gnome.ro>, 2006.
+# Mugurel Tudor <mugurelu@gnome.ro>, 2006, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.gnome-2-16.ro\n"
+"Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-12-21 07:24+0100\n"
-"PO-Revision-Date: 2006-12-30 19:43+0200\n"
+"PO-Revision-Date: 2007-03-10 21:08+0200\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -144,7 +144,7 @@ msgstr "%s: nu am putut anula"
 #: ../addressbook/libebook/e-book.c:2658 ../addressbook/libebook/e-book.c:2662
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "„%s” după  „%s”"
+msgstr "„%s” după „%s”"
 
 #: ../addressbook/libebook/e-book.c:2728
 #, c-format
