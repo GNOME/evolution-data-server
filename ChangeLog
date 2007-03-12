@@ -1,3 +1,8 @@
+2007-03-12  Harish Krishnaswamy <kharish@novell.com>
+
+	* NEWS, configure.in: Evolution-Data-Server 1.10
+	release updates.
+
 2007-03-08  Ross Burton  <ross@openedhand.com>
 
 	* configure.in:
