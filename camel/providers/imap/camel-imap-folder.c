@@ -2364,7 +2364,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	} else
 		header_spec = g_string_new ("0");
 
-	g_print ("\n\a Header string finally is ********** \n%s\n", header_spec->str);
+	d(printf("Header is : %s", header_spec->str));
 	
 	/* Figure out if any of the new messages are already cached (which
 	 * may be the case if we're re-syncing after disconnected operation).
