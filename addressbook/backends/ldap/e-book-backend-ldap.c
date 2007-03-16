@@ -762,7 +762,6 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	int protocol_version = LDAP_VERSION3;
 	GTimeVal start, end;
 	unsigned long diff;
-	int ldap_flag = 0;
 
 	if (enable_debug) {
 		printf ("e_book_backend_ldap_connect ... \n");

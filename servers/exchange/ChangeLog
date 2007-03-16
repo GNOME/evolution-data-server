@@ -1,3 +1,12 @@
+2007-03-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #360240
+
+	* storage/exchange-hierarchy-webdav.c (scan_subtree):
+	* storage/exchange-account.c (add_folder_tree):
+	* lib/e2k-uri.c (e2k_uri_new):
+	Remove unused variables.
+
 2007-01-08  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	* storage/exchange-account.[ch]: (exchange_account_get_hierarchy_by_email):

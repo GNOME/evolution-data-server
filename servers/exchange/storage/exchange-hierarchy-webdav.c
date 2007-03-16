@@ -703,7 +703,6 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 	EFolder *folder, *tmp;
 	GPtrArray *folders;
 	int i;
-	static short level = 0;
 	gdouble fsize_d;
 	const char *name, *folder_size, *deleted_items_uri, *int_uri;
 	gboolean personal = ( EXCHANGE_HIERARCHY (hwd)->type == EXCHANGE_HIERARCHY_PERSONAL );

@@ -1858,7 +1858,6 @@ add_folder_tree (gpointer key, gpointer value, gpointer folders)
 {
 	EFolder *folder = value;
 	struct _folders_tree *fld_tree = (struct _folders_tree *) folders;
-	char *key1 = NULL;
 
 	if (!fld_tree || !fld_tree->path)
 		return;

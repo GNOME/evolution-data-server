@@ -1,3 +1,10 @@
+2007-03-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #360240
+
+	* camel-groupwise-folder.c (gw_update_cache), (gw_update_summary):
+	Remove unused variables.
+
 2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #356177

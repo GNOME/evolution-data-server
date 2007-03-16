@@ -1175,7 +1175,6 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
-	GSList *attach_list = NULL;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
@@ -1417,7 +1416,6 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
-	GSList *attach_list = NULL;
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;

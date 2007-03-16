@@ -121,7 +121,6 @@ camel_stream_vfs_new_with_handle (GnomeVFSHandle *handle)
 {
 	CamelStreamVFS *stream_vfs;
 	off_t offset;
-	GnomeVFSResult result;
 	
 	if (!handle)
 		return NULL;

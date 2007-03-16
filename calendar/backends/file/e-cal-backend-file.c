@@ -958,7 +958,6 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 	const char *fname;
 	GDir *dir = NULL;
 	GError *error = NULL;
-	gboolean success;
         ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
 	
 	cbfile = E_CAL_BACKEND_FILE (backend);

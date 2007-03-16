@@ -74,7 +74,7 @@ e2k_uri_new (const char *uri_string)
 		slash = uri_string + strcspn (uri_string, "/#");
 		at = strchr (uri_string, '@');
 		if (at && at < slash) {
-			char *backslash, *user_at;
+			char *backslash;
 
 			colon = strchr (uri_string, ':');
 			if (colon && colon < at) {
