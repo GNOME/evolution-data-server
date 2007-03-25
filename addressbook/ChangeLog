@@ -1,5 +1,11 @@
 2007-03-25  Ross Burton  <ross@openedhand.com>
 
+	* backends/file/e-book-backend-file.c:
+	Return decent error codes, and convert errors to human readable
+	strings for the console. (#422652).
+
+2007-03-25  Ross Burton  <ross@openedhand.com>
+
 	* libebook/Makefile.am:
 	Don't remove e-name-western-tables.h on clean, and don't install
 	it either. (#421445).
