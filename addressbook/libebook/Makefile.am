@@ -46,6 +46,7 @@ libebook_1_2_la_SOURCES =					\
 	e-contact.c					\
 	e-destination.c					\
 	e-name-western.c				\
+	e-name-western-tables.h                         \
 	e-vcard.c
 
 libebook_1_2_la_LIBADD =					\
@@ -70,7 +71,6 @@ libebookinclude_HEADERS =				\
 	e-contact.h					\
 	e-destination.h					\
 	e-name-western.h				\
-	e-name-western-tables.h                         \
 	e-vcard.h
 
 %-$(API_VERSION).pc: %.pc
@@ -82,7 +82,7 @@ e-name-western-tables.h: e-name-western-tables.h.in
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED) e-name-western-tables.h
+BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 

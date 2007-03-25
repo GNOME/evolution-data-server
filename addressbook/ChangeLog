@@ -1,5 +1,11 @@
 2007-03-25  Ross Burton  <ross@openedhand.com>
 
+	* libebook/Makefile.am:
+	Don't remove e-name-western-tables.h on clean, and don't install
+	it either. (#421445).
+
+2007-03-25  Ross Burton  <ross@openedhand.com>
+
 	* backends/file/e-book-backend-file.c:
 	Clean up dispose() and split part of it into finalise() (#421683).
 
