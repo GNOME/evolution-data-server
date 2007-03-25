@@ -1,3 +1,8 @@
+2007-03-25  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
+	Clean up dispose() and split part of it into finalise() (#421683).
+
 2007-03-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #360240
