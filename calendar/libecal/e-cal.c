@@ -3875,7 +3875,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 {
 	ECalPrivate *priv;
 	ECalComponent *comp;
-	const char *uid, *rid;
+	const char *uid;
+	char *rid;
 	gboolean result;
 	GList *instances = NULL;
 	ECalComponentDateTime datetime;
@@ -3904,7 +3905,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	}
 		
 	e_cal_component_get_uid (comp, &uid);
-	rid = e_cal_component_get_recurid_as_string (comp);
+	/* string might be freed at any time, keep a copy */
+	rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
 
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
@@ -3946,6 +3948,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	/* clean up */
 	g_object_unref (comp);
 	g_free (instances_hold);
+	g_free (rid);
 }
 
 /* Builds a list of ECalComponentAlarms structures */

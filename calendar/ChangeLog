@@ -1,3 +1,11 @@
+2007-03-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #420933
+
+	* libecal/e-cal.c (e_cal_generate_instances_for_object):
+	Copy the recurrence ID string so it doesn't disappear on us.
+	Patch from Patrick Ohly.
+
 2007-03-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #360240
