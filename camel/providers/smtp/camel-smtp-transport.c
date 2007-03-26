@@ -1082,6 +1082,7 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 		goto lose;
 	}
 	
+	g_free (respbuf);
 	camel_object_unref (sasl);
 	camel_operation_end (NULL);
 	
@@ -1093,6 +1094,7 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 	camel_stream_write (transport->ostream, "*\r\n", 3);
 	respbuf = camel_stream_buffer_read_line (CAMEL_STREAM_BUFFER (transport->istream));
 	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+	g_free (respbuf);
 	
  lose:
 	if (!camel_exception_is_set (ex)) {
