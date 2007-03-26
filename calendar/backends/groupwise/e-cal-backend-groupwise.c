@@ -406,12 +406,12 @@ get_deltas (gpointer handle)
 
 	for (; item_list != NULL; item_list = g_list_next(item_list)) {
 		EGwItem *item = NULL;
-		item = E_GW_ITEM(item_list->data);
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
 		char *cache_comp_str = NULL;
 		const char *uid, *rid = NULL;
 		int r_key;
 
+		item = E_GW_ITEM(item_list->data);
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
 			g_message ("Invalid component returned in update");
@@ -2585,9 +2585,11 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 					g_slist_free (comp_list);
 					g_free (old_object);
 				} else {
+					char * object;
+
 					id = e_cal_component_get_id (comp);
 					icalcomp = e_cal_component_get_icalcomponent (comp);
-					char * object = e_cal_component_get_as_string (comp);
+					object = e_cal_component_get_as_string (comp);
 				
 					if (e_cal_backend_cache_remove_component (priv->cache, id->uid, 
 								id->rid)) {

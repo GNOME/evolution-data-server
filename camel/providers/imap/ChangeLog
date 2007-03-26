@@ -1,3 +1,9 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-utils.c:
+	Don't mix declarations and code (#405495).
+	Patch from Jens Granseuer.
+
 2007-03-14  Sankar P  <psankar@novell.com>
 
 	* camel-imap-folder.c: (imap_update_summary):

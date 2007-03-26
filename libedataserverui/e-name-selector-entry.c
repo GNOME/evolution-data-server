@@ -2199,6 +2199,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
   GtkCellRenderer *renderer;
   ENameSelectorEntryPrivate *priv;
+  GConfClient *gconf;
 
   priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
@@ -2210,7 +2211,6 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
   }
 
   /* read minimum_query_length from gconf*/
-  GConfClient *gconf;
   gconf = gconf_client_get_default();
   if (COMPLETION_CUE_MIN_LEN == 0) {
 	  if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))

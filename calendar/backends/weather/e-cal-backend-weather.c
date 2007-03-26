@@ -146,8 +146,10 @@ finished_retrieval_cb (GList *forecasts, ECalBackendWeather *cbw)
 	/* update cache */
 	l = e_cal_backend_cache_get_components (priv->cache);
 	for (; l != NULL; l = g_list_next (l)) {
+		ECalComponentId *id;
+
 		icomp = e_cal_component_get_icalcomponent (E_CAL_COMPONENT (l->data));
-		ECalComponentId *id = e_cal_component_get_id (E_CAL_COMPONENT (l->data));
+		id = e_cal_component_get_id (E_CAL_COMPONENT (l->data));
 
 		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbw),
 			id,

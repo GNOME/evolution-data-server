@@ -661,9 +661,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				camel_message_info_free(info);
 				continue;
 			} else {
+				const char *uid;
+
 				gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				gw_info->server_flags = gw_info->info.flags;
-				const char *uid = camel_message_info_uid (info);
+				uid = camel_message_info_uid (info);
 				if (diff.bits & CAMEL_MESSAGE_DELETED) {
 
 					/* In case a new message is READ and then deleted immediately */
@@ -948,9 +950,8 @@ static CamelSessionThreadOps update_ops = {
 static void
 groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 {
-	CamelGroupwiseSummary *summary;
+	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *) folder->summary;
 	CamelStoreInfo *si;
-	summary = (CamelGroupwiseSummary *) folder->summary;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 	/*
 	 * Checking for the summary->time_string here since the first the a
@@ -1210,7 +1211,6 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		char *temp_date = NULL;
 		const char *id;
 		GSList *recp_list = NULL;
-		status_flags = 0;
 		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
 		gboolean is_sent_folder = FALSE;
@@ -1218,6 +1218,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		int rk;
 
 		exists = FALSE;
+		status_flags = 0;
 
 		if (uid_flag == FALSE) {
 			temp_item = (EGwItem *)item_list->data;
@@ -1447,10 +1448,10 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		char *temp_date = NULL;
 		const char *id;
 		GSList *recp_list = NULL;
-		status_flags = 0;
 		const char *recurrence_key = NULL;
 		int rk;
 
+		status_flags = 0;
 		id = e_gw_item_get_id (item);
 
 		mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_uid (folder->summary, id);

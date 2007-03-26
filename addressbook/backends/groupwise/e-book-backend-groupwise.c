@@ -877,13 +877,14 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	temp = emails_without_ids ;
 	for (; temp != NULL; temp = g_list_next (temp)) {
 		EContact *new_contact = e_contact_new ();
+		EGwItem *new_item = e_gw_item_new_empty ();
+		FullName *full_name;
+
 		e_contact_set (new_contact,E_CONTACT_FULL_NAME, e_contact_name_from_string (strdup (temp->data))); 
 		e_contact_set (new_contact, E_CONTACT_EMAIL_1, strdup (temp->data));
 		e_contact_set (new_contact, E_CONTACT_IS_LIST, FALSE);
-		EGwItem *new_item = e_gw_item_new_empty ();
 		e_gw_item_set_item_type (new_item, E_GW_ITEM_TYPE_CONTACT);
 		e_gw_item_set_container_id (new_item, g_strdup(egwb->priv->container_id));
-		FullName *full_name;
 		full_name = g_new0 (FullName, 1);
 		full_name->name_prefix = NULL;
 		full_name->first_name = g_strdup(temp->data);
@@ -2120,7 +2121,8 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 	if (enable_debug)
 		printf ("\nread contacts from cache for the ids found in summary\n");
 	for (i = 0; i < ids->len; i ++) {
-		char *uid = g_ptr_array_index (ids, i);
+		char *uid;
+		EContact *contact; 
 
 		g_mutex_lock (closure->mutex);
 		stopped = closure->stopped;
@@ -2129,8 +2131,8 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 		if (stopped)
 			break;	
 
-		EContact *contact = 
-			e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
+ 		uid = g_ptr_array_index (ids, i);
+		contact = e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
 		if (contact) {
 			e_data_book_view_notify_update (book_view, contact);
 			g_object_unref (contact);
@@ -2439,10 +2441,13 @@ static EDataBookView *
 find_book_view (EBookBackendGroupwise *ebgw)
 {
 	EList *views = e_book_backend_get_book_views (E_BOOK_BACKEND (ebgw));
+	EIterator *iter;
+	EDataBookView *rv = NULL;
+
 	if (!views)
 		return NULL;
-	EIterator *iter = e_list_get_iterator (views);
-	EDataBookView *rv = NULL;
+
+	iter = e_list_get_iterator (views);
 
 	if (!iter) {
 		g_object_unref (views);
@@ -2900,11 +2905,19 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
 	EGwItem *item;
+	EBookBackendGroupwisePrivate *priv;
+
+	GTimeVal start, end;
+	unsigned long diff;
+	const char *cache_file_name;
+	struct stat buf;
+	time_t mod_time;
+
 
 	if (!ebgw)
 		return FALSE;
 
-	EBookBackendGroupwisePrivate *priv = ebgw->priv;
+	priv = ebgw->priv;
 
 	g_mutex_lock (priv->update_mutex);
 	
@@ -2953,12 +2966,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 		g_mutex_unlock (priv->update_mutex);
 		return TRUE;
 	}
-
-	GTimeVal start, end;
-	unsigned long diff;
-	const char *cache_file_name;
-	struct stat buf;
-	time_t mod_time;
 
 	if (enable_debug)
 		g_get_current_time(&start);
@@ -3270,9 +3277,9 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 				g_thread_create ((GThreadFunc) update_cache, ebgw, FALSE, NULL);
 			}
 			else if (priv->marked_for_offline) {
+				GThread *t;
 				if (enable_debug)
 					printf("marked for offline\n");
-				GThread *t;
 				if (enable_debug)
 					printf("creating update_address_book_deltas thread\n");
 
@@ -3306,9 +3313,9 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			g_thread_create ((GThreadFunc) build_cache, ebgw, FALSE, NULL);
 		}
 		else if(priv->marked_for_offline) { 
+			GThread *t;
 			if (enable_debug)
 				printf("else if marked_for_offline\n");
-			GThread *t;
 			/* System address book */
 			/* cache is not populated and book is not writable and marked for offline usage */
 			if (enable_debug)

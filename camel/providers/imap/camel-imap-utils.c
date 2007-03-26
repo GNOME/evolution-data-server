@@ -373,6 +373,7 @@ imap_parse_list_response (CamelImapStore *store, const char *buf, int *flags, ch
 	
 	if (folder) {
 		char *astring;
+		char *mailbox;
 		
 		/* get the folder name */
 		word = imap_next_word (word);
@@ -381,8 +382,6 @@ imap_parse_list_response (CamelImapStore *store, const char *buf, int *flags, ch
 			return FALSE;
 
 		*folder = astring;
-
-		char *mailbox;
 
 		mailbox = imap_mailbox_decode (astring, strlen (astring));
 		g_free (astring);

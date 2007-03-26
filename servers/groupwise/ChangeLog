@@ -1,3 +1,9 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-gw-connection.c:
+	Don't mix declarations and code (#405495).
+	Patch from Jens Granseuer.
+
 2007-01-09  Harish Krishnaswamy <kharish@novell.com>
 
 	* e-gw-item.c : Fixes #242270 <bugzilla.novell.com>.

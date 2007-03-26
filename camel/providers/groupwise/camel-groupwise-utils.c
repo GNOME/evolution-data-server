@@ -637,9 +637,9 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			CamelMimePart *temp_part;
 			const char *cid = NULL;
 			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
-			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			CamelDataWrapper *temp_dw = NULL;
 			
+			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			if (temp_part) {
 				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));

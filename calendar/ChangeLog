@@ -1,3 +1,10 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	* backends/weather/e-cal-backend-weather.c:
+	Don't mix declarations and code (#405495).
+	Patch from Jens Granseuer.
+
 2007-03-25  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #420933

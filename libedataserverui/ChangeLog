@@ -1,3 +1,9 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-name-selector-entry.c:
+	Don't mix declarations and code (#405495).
+	Patch from Jens Granseuer.
+
 2007-02-09  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #405531

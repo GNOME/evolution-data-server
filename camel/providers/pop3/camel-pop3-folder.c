@@ -364,6 +364,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	int i;
 	CamelPOP3Store *pop3_store;
 	time_t temp;
+	CamelMimeMessage *message;
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);	
@@ -372,7 +373,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		fi = pop3_folder->uids->pdata[i];
 	
-		CamelMimeMessage *message = pop3_get_message (folder, fi->uid, ex);
+		message = pop3_get_message (folder, fi->uid, ex);
 		if(message) {
 			time_t message_time = message->date + message->date_offset;
 			double time_diff = difftime(temp,message_time);

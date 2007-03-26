@@ -510,7 +510,6 @@ char *
 e_book_backend_cache_get_time (EBookBackendCache *cache)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), 0);
-	const char *t = e_file_cache_get_object (E_FILE_CACHE (cache), "last_update_time");
-	return t;
+	return e_file_cache_get_object (E_FILE_CACHE (cache), "last_update_time");
 }
 

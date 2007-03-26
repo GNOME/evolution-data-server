@@ -1,3 +1,10 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* libedata-book/e-book-backend-cache.c:
+	Don't mix declarations and code (#405495).
+	Patch from Jens Granseuer.
+
 2007-03-25  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:

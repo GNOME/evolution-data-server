@@ -1996,8 +1996,9 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_i
 	EGwConnectionPrivate *priv;
         SoupSoapParameter *param, *subparam, *second_level_child;
 	char *id, *name;
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
+
+        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	priv = cnc->priv;
 	g_static_mutex_lock (&connecting);
