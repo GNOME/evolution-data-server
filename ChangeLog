@@ -1,3 +1,10 @@
+2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in: Use AC_TRY_RUN instead of AC_TRY_LINK when checking
+	for iconv() in -liconv (#388788).  Patch from Elijah Newren.
+
+	* iconv-detect.c: Fix an implicit function declaration.
+
 2007-03-26  Harish Krishnaswamy <harish.krishnaswamy@gmail.com>
 	
 	* MAINTAINERS : Updates on the new guards.
