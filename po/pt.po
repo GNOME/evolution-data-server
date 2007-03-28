@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-10 18:25+0000\n"
+"POT-Creation-Date: 2007-03-29 00:11+0100\n"
 "PO-Revision-Date: 2007-02-10 18:30+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
@@ -16,30 +16,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:542
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
+#: ../addressbook/backends/file/e-book-backend-file.c:560
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
 msgstr "A Ler..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:545
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2301
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2320
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
+#: ../addressbook/backends/file/e-book-backend-file.c:563
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2303
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4020
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "A Procurar..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4177
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4176
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "A obter os contactos (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2852
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3043
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3087
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "A actualizar a cache de contactos (%d)... "
@@ -52,27 +52,27 @@ msgstr "A Utilizar Nome Distinto (DN)"
 msgid "Using Email Address"
 msgstr "A Utilizar Endereço de Email"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:974
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:973
 msgid "Reconnecting to LDAP server..."
 msgstr "A ligar-se novamente ao servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1568
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1567
 msgid "Adding contact to LDAP server..."
 msgstr "A adicionar contacto ao servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1696
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1695
 msgid "Removing contact from LDAP server..."
 msgstr "A remover contacto do servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2001
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2000
 msgid "Modifying contact from LDAP server..."
 msgstr "A alterar contacto no servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3893
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:3892
 msgid "Receiving LDAP search results..."
 msgstr "A receber resultados da procura no LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4041
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4040
 msgid "Error performing search"
 msgstr "Erro ao efectuar a procura"
 
@@ -678,17 +678,17 @@ msgstr "Data de Nascimento: %s"
 msgid "Anniversary: %s"
 msgstr "Aniversário: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:203
+#: ../calendar/backends/file/e-cal-backend-file.c:208
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Incapaz de gravar dados de calendário: URI Malformado."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1738
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1735
 msgid "Reply Requested: by "
 msgstr "Resposta Pedida: até "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1743
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1740
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Pedida: Quando possível "
 
@@ -709,15 +709,15 @@ msgstr "URI de servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:969
-#: ../calendar/libecal/e-cal.c:5255
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1041
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1103
-#: ../camel/providers/groupwise/camel-groupwise-store.c:585
-#: ../camel/providers/groupwise/camel-groupwise-store.c:600
-#: ../camel/providers/groupwise/camel-groupwise-store.c:711
-#: ../camel/providers/groupwise/camel-groupwise-store.c:753
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../calendar/libecal/e-cal.c:5268
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1042
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1066
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1104
+#: ../camel/providers/groupwise/camel-groupwise-store.c:584
+#: ../camel/providers/groupwise/camel-groupwise-store.c:599
+#: ../camel/providers/groupwise/camel-groupwise-store.c:710
+#: ../camel/providers/groupwise/camel-groupwise-store.c:752
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1254
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
@@ -730,7 +730,7 @@ msgstr "Incapaz de criar thread para obter os deltas"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:951
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1225
 #: ../calendar/backends/http/e-cal-backend-http.c:526
-#: ../calendar/backends/weather/e-cal-backend-weather.c:450
+#: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Incapaz de criar o ficheiro de cache"
 
@@ -754,191 +754,191 @@ msgstr "Não é um calendário."
 msgid "Could not retrieve weather data"
 msgstr "Incapaz de obter os dados meteorológicos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:200
+#: ../calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Fair"
 msgstr "Ameno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:201
+#: ../calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Snow showers"
 msgstr "Chuviscos de neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:202
+#: ../calendar/backends/weather/e-cal-backend-weather.c:204
 msgid "Snow"
 msgstr "Neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:203
+#: ../calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Partly cloudy"
 msgstr "Parcialmente nublado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:204
+#: ../calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Smoke"
 msgstr "Fumo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:205
+#: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Thunderstorms"
 msgstr "Trovoada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:206
+#: ../calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Cloudy"
 msgstr "Enublado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:207
+#: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Drizzle"
 msgstr "Chuviscos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:208
+#: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Sunny"
 msgstr "Sol"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:209
+#: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Dust"
 msgstr "Pó"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Clear"
 msgstr "Limpo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Mostly cloudy"
 msgstr "Com bastantes nuvens"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Windy"
 msgstr "Ventoso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Rain showers"
 msgstr "Aguaceiros"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Foggy"
 msgstr "Nevoeiro"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Rain/snow mixed"
 msgstr "Mistura de chuva e neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Sleet"
 msgstr "Neve e alguma chuva"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Very hot/humid"
 msgstr "Muito quente/húmido"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Blizzard"
 msgstr "Granizo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Freezing rain"
 msgstr "Chuva gelada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Haze"
 msgstr "Orvalho"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Blowing snow"
 msgstr "Neve e vento"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Freezing drizzle"
 msgstr "Granizo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#: ../calendar/backends/weather/e-cal-backend-weather.c:225
 msgid "Very cold/wind chill"
 msgstr "Muito frio/vento frio"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
+#: ../calendar/backends/weather/e-cal-backend-weather.c:226
 msgid "Rain"
 msgstr "Chuva"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:234
-#: ../calendar/backends/weather/e-cal-backend-weather.c:242
+#: ../calendar/backends/weather/e-cal-backend-weather.c:236
 #: ../calendar/backends/weather/e-cal-backend-weather.c:244
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:246
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
 msgid "Weather: Sunny"
 msgstr "O Tempo: Sol"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:235
-#: ../calendar/backends/weather/e-cal-backend-weather.c:236
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:237
+#: ../calendar/backends/weather/e-cal-backend-weather.c:238
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:257
 msgid "Weather: Snow"
 msgstr "O Tempo: Neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:237
+#: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Weather: Partly Cloudy"
 msgstr "O Tempo: Parcialmente Nublado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:238
-#: ../calendar/backends/weather/e-cal-backend-weather.c:243
-#: ../calendar/backends/weather/e-cal-backend-weather.c:248
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:240
+#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
 msgid "Weather: Fog"
 msgstr "O Tempo: Nevoeiro"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:239
+#: ../calendar/backends/weather/e-cal-backend-weather.c:241
 msgid "Weather: Thunderstorms"
 msgstr "O Tempo: Trovoada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:240
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+#: ../calendar/backends/weather/e-cal-backend-weather.c:242
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
 msgid "Weather: Cloudy"
 msgstr "O Tempo: Enublado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:241
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:243
 #: ../calendar/backends/weather/e-cal-backend-weather.c:249
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 #: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:260
 msgid "Weather: Rain"
 msgstr "O Tempo: Chuva"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:333
+#: ../calendar/backends/weather/e-cal-backend-weather.c:335
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:335
+#: ../calendar/backends/weather/e-cal-backend-weather.c:337
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:338
+#: ../calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:340
+#: ../calendar/backends/weather/e-cal-backend-weather.c:342
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:346
+#: ../calendar/backends/weather/e-cal-backend-weather.c:348
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "%d%% de probabilidade de precipitação\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:353
+#: ../calendar/backends/weather/e-cal-backend-weather.c:355
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm de neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../calendar/backends/weather/e-cal-backend-weather.c:357
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1fpl de neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:358
+#: ../calendar/backends/weather/e-cal-backend-weather.c:360
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm de neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:360
+#: ../calendar/backends/weather/e-cal-backend-weather.c:362
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fpl de neve\n"
@@ -1088,7 +1088,7 @@ msgstr "Baixa"
 msgid "Undefined"
 msgstr "Indefinida"
 
-#: ../calendar/libecal/e-cal.c:1752 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1747 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza a senha para %s (utilizador %s)"
@@ -1097,83 +1097,83 @@ msgstr "Introduza a senha para %s (utilizador %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1766
+#: ../calendar/libecal/e-cal.c:1761
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Introduza a senha para %s para permitir o acesso à proxy ao utilizador %s"
 
-#: ../calendar/libecal/e-cal.c:5227
+#: ../calendar/libecal/e-cal.c:5240
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:5229
+#: ../calendar/libecal/e-cal.c:5242
 msgid "Backend is busy"
 msgstr "Motor de processamento ocupado"
 
-#: ../calendar/libecal/e-cal.c:5231
+#: ../calendar/libecal/e-cal.c:5244
 msgid "Repository is offline"
 msgstr "Repositório está desligado"
 
-#: ../calendar/libecal/e-cal.c:5233
+#: ../calendar/libecal/e-cal.c:5246
 msgid "No such calendar"
 msgstr "Calendário inexistente"
 
-#: ../calendar/libecal/e-cal.c:5235 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:5248 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objecto não foi encontrado"
 
-#: ../calendar/libecal/e-cal.c:5237 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:5250 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Objecto inválido"
 
-#: ../calendar/libecal/e-cal.c:5239
+#: ../calendar/libecal/e-cal.c:5252
 msgid "URI not loaded"
 msgstr "URI não foi lido"
 
-#: ../calendar/libecal/e-cal.c:5241
+#: ../calendar/libecal/e-cal.c:5254
 msgid "URI already loaded"
 msgstr "URI já foi lido"
 
-#: ../calendar/libecal/e-cal.c:5243
+#: ../calendar/libecal/e-cal.c:5256
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
 msgstr "Permissão negada"
 
-#: ../calendar/libecal/e-cal.c:5245 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:5258 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Utilizador Desconhecido"
 
-#: ../calendar/libecal/e-cal.c:5247
+#: ../calendar/libecal/e-cal.c:5260
 msgid "Object ID already exists"
 msgstr "ID de objecto já existe"
 
-#: ../calendar/libecal/e-cal.c:5249
+#: ../calendar/libecal/e-cal.c:5262
 msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
-#: ../calendar/libecal/e-cal.c:5251
+#: ../calendar/libecal/e-cal.c:5264
 msgid "Operation has been canceled"
 msgstr "A operação foi cancelada"
 
-#: ../calendar/libecal/e-cal.c:5253
+#: ../calendar/libecal/e-cal.c:5266
 msgid "Could not cancel operation"
 msgstr "Incapaz de cancelar a operação"
 
-#: ../calendar/libecal/e-cal.c:5257
+#: ../calendar/libecal/e-cal.c:5270
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
 msgstr "Autenticação requerida"
 
-#: ../calendar/libecal/e-cal.c:5259
+#: ../calendar/libecal/e-cal.c:5272
 msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma excepção CORBA"
 
-#: ../calendar/libecal/e-cal.c:5261
+#: ../calendar/libecal/e-cal.c:5274
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:310
 #: ../camel/providers/imap/camel-imap-command.c:410
-#: ../camel/providers/imap/camel-imap-store.c:766
+#: ../camel/providers/imap/camel-imap-store.c:764
 #: ../camel/providers/imap4/camel-imap4-store.c:314
 #: ../camel/providers/pop3/camel-pop3-store.c:532
 #: ../camel/providers/pop3/camel-pop3-store.c:539
@@ -1183,7 +1183,7 @@ msgstr "Ocorreu uma excepção CORBA"
 msgid "Unknown error"
 msgstr "Erro desconhecido"
 
-#: ../calendar/libecal/e-cal.c:5263
+#: ../calendar/libecal/e-cal.c:5276
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
 msgstr "Nenhum erro"
@@ -1366,7 +1366,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "A preparar a pasta '%s' para trabalhar em modo desligado"
 
 #: ../camel/camel-disco-store.c:401
-#: ../camel/providers/imap/camel-imap-store.c:2992
+#: ../camel/providers/imap/camel-imap-store.c:2999
 msgid "You must be working online to complete this operation"
 msgstr "Tem de estar a trabalhar ligado para terminar esta operação"
 
@@ -1582,7 +1582,7 @@ msgid "Unexpected request from GnuPG for `%s'"
 msgstr "Pedido inesperado do GnuPG para `%s'"
 
 #: ../camel/camel-gpg-context.c:857 ../camel/camel-gpg-context.c:1059
-#: ../camel/providers/nntp/camel-nntp-store.c:1271
+#: ../camel/providers/nntp/camel-nntp-store.c:1270
 msgid "Canceled."
 msgstr "Cancelado."
 
@@ -1835,22 +1835,22 @@ msgstr "Fornecedor de pasta virtual de mensagens"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Para ler mensagens como uma consulta de outro conjunto de pastas"
 
-#: ../camel/camel-provider.c:188
+#: ../camel/camel-provider.c:187
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Incapaz de ler %s: Leitura de módulos não suportada neste sistema."
 
-#: ../camel/camel-provider.c:197
+#: ../camel/camel-provider.c:196
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Incapaz de ler %s: %s"
 
-#: ../camel/camel-provider.c:205
+#: ../camel/camel-provider.c:204
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Incapaz de ler %s: Nenhum código de inicialização no módulo."
 
-#: ../camel/camel-provider.c:377 ../camel/camel-session.c:171
+#: ../camel/camel-provider.c:376 ../camel/camel-session.c:171
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "Nenhum fornecedor disponível para o protocolo `%s'"
@@ -2017,7 +2017,7 @@ msgstr "As credenciais de referência expiraram."
 #: ../camel/camel-sasl-gssapi.c:198 ../camel/camel-sasl-gssapi.c:246
 #: ../camel/camel-sasl-gssapi.c:282 ../camel/camel-sasl-gssapi.c:297
 #: ../camel/camel-sasl-kerberos4.c:229
-#: ../camel/providers/imap/camel-imap-store.c:1302
+#: ../camel/providers/imap/camel-imap-store.c:1310
 msgid "Bad authentication response from server."
 msgstr "Resposta de autenticação do servidor inválida."
 
@@ -2621,7 +2621,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "Incapaz de copiar as mensagens para a pasta de Não Solicitado"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:114
-#: ../camel/providers/imap/camel-imap-folder.c:2063
+#: ../camel/providers/imap/camel-imap-folder.c:2060
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2631,7 +2631,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:114
-#: ../camel/providers/imap/camel-imap-folder.c:2063
+#: ../camel/providers/imap/camel-imap-folder.c:2060
 #: ../camel/providers/local/camel-maildir-folder.c:245
 #: ../camel/providers/local/camel-mbox-folder.c:351
 #: ../camel/providers/local/camel-mh-folder.c:203
@@ -2644,9 +2644,9 @@ msgstr "Mensagem inexistente"
 #: ../camel/providers/nntp/camel-nntp-folder.c:231
 #: ../camel/providers/nntp/camel-nntp-folder.c:370
 #: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:511
-#: ../camel/providers/pop3/camel-pop3-folder.c:572
-#: ../camel/providers/pop3/camel-pop3-folder.c:590
+#: ../camel/providers/pop3/camel-pop3-folder.c:512
+#: ../camel/providers/pop3/camel-pop3-folder.c:573
+#: ../camel/providers/pop3/camel-pop3-folder.c:591
 msgid "User canceled"
 msgstr "Cancelado pelo utilizador"
 
@@ -2656,10 +2656,10 @@ msgstr "Cancelado pelo utilizador"
 #: ../camel/providers/nntp/camel-nntp-folder.c:148
 #: ../camel/providers/nntp/camel-nntp-folder.c:157
 #: ../camel/providers/nntp/camel-nntp-folder.c:233
-#: ../camel/providers/pop3/camel-pop3-folder.c:514
-#: ../camel/providers/pop3/camel-pop3-folder.c:575
-#: ../camel/providers/pop3/camel-pop3-folder.c:582
-#: ../camel/providers/pop3/camel-pop3-folder.c:593
+#: ../camel/providers/pop3/camel-pop3-folder.c:515
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
+#: ../camel/providers/pop3/camel-pop3-folder.c:583
+#: ../camel/providers/pop3/camel-pop3-folder.c:594
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Incapaz de obter a mensagem %s: %s"
@@ -2672,37 +2672,37 @@ msgstr "Esta mensagem não está disponível em modo desligado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:169
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:176
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1645
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1691
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1642
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1688
 msgid "Could not get message"
 msgstr "Incapaz de obter a mensagem"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:807
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:809
 #: ../camel/providers/imap/camel-imap-folder.c:252
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Incapaz de ler o resumo para %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1037
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1038
 msgid "Trash Folder Full. Please Empty."
 msgstr "Pasta de Lixo Cheia. Esvazie-a."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1206
-#: ../camel/providers/groupwise/camel-groupwise-store.c:629
-#: ../camel/providers/groupwise/camel-groupwise-store.c:743
-#: ../camel/providers/imap/camel-imap-folder.c:2395
-#: ../camel/providers/imap/camel-imap-folder.c:2465
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1204
+#: ../camel/providers/groupwise/camel-groupwise-store.c:628
+#: ../camel/providers/groupwise/camel-groupwise-store.c:742
+#: ../camel/providers/imap/camel-imap-folder.c:2391
+#: ../camel/providers/imap/camel-imap-folder.c:2461
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "A obter a informação de resumo para novas mensagens em %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1962
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2004
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1959
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2001
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Incapaz de adicionar a mensagem à pasta `%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1992
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1989
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Incapaz de criar a mensagem: %s"
@@ -2796,56 +2796,56 @@ msgstr ""
 msgid "Host or user not available in url"
 msgstr "Máquina ou utilizador inexistente no url"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:205
+#: ../camel/providers/groupwise/camel-groupwise-store.c:204
 #, c-format
 msgid "%sPlease enter the GroupWise password for %s@%s"
 msgstr "%sIntroduza a senha GroupWise para %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:219
-#: ../camel/providers/imap/camel-imap-store.c:1381
+#: ../camel/providers/groupwise/camel-groupwise-store.c:218
+#: ../camel/providers/imap/camel-imap-store.c:1388
 msgid "You did not enter a password."
 msgstr "Não introduziu uma senha."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:231
+#: ../camel/providers/groupwise/camel-groupwise-store.c:230
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "Incapaz de se autenticar no servidor Groupwise. "
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:309
+#: ../camel/providers/groupwise/camel-groupwise-store.c:308
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Algumas funcionalidades poderão não funcionar correctamente com a versão "
 "actual do seu servidor"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:537
-#: ../camel/providers/imap/camel-imap-store.c:1890
-#: ../camel/providers/imap/camel-imap-store.c:2081
+#: ../camel/providers/groupwise/camel-groupwise-store.c:536
+#: ../camel/providers/imap/camel-imap-store.c:1897
+#: ../camel/providers/imap/camel-imap-store.c:2088
 #, c-format
 msgid "No such folder %s"
 msgstr "Pasta %s inexistente"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1232
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1231
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Incapaz de criar pastas Groupwise em modo desligado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1246
-#: ../camel/providers/imap/camel-imap-store.c:1965
-#: ../camel/providers/imap/camel-imap-store.c:2334
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1245
+#: ../camel/providers/imap/camel-imap-store.c:1972
+#: ../camel/providers/imap/camel-imap-store.c:2341
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "A pasta pai não tem permissões para conter subpastas"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1323
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1344
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1322
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1343
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Incapaz de renomear a pasta Groupwise `%s' para `%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1376
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1375
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1378
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1377
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Serviço Groupwise para %s em %s"
@@ -2866,7 +2866,7 @@ msgid ""
 "of your mail.\n"
 msgstr ""
 "Excedeu o limite de armazenamento desta conta. As suas mensagens estão em "
-"fila na Pasta de Saída. Reenvie primindo Enviar/Receber após apagar/arquivar "
+"fila na Pasta de Saída. Reenvie premindo Enviar/Receber após apagar/arquivar "
 "algumas das suas mensagens.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
@@ -2941,12 +2941,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:222
 #: ../camel/providers/imap/camel-imap-command.c:264
 #: ../camel/providers/imap/camel-imap-command.c:470
-#: ../camel/providers/imap/camel-imap-store.c:3032
+#: ../camel/providers/imap/camel-imap-store.c:3039
 msgid "Operation cancelled"
 msgstr "Operação cancelada"
 
 #: ../camel/providers/imap/camel-imap-command.c:309
-#: ../camel/providers/imap/camel-imap-store.c:3035
+#: ../camel/providers/imap/camel-imap-store.c:3042
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Servidor desligou-se inesperadamente: %s"
@@ -2991,42 +2991,42 @@ msgstr "Resposta OK inesperada de servidor IMAP: %s"
 msgid "Could not create directory %s: %s"
 msgstr "Incapaz de criar o directório %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:337
+#: ../camel/providers/imap/camel-imap-folder.c:335
 msgid "Folder was destroyed and recreated on server."
 msgstr "Pasta foi destruída e recriada no servidor."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:634
+#: ../camel/providers/imap/camel-imap-folder.c:631
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "A procurar mensagens alteradas em %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2023
+#: ../camel/providers/imap/camel-imap-folder.c:2020
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Incapaz de obter a mensagem: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2102
-#: ../camel/providers/imap/camel-imap-folder.c:2738
+#: ../camel/providers/imap/camel-imap-folder.c:2099
+#: ../camel/providers/imap/camel-imap-folder.c:2732
 #: ../camel/providers/nntp/camel-nntp-folder.c:219
 msgid "This message is not currently available"
 msgstr "Esta mensagem de momento não está disponível"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2574
+#: ../camel/providers/imap/camel-imap-folder.c:2570
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Resposta de servidor incompleta: nenhuma informação disponibilizada para a "
 "mensagem %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2582
+#: ../camel/providers/imap/camel-imap-folder.c:2578
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Resposta de servidor incompleta: nenhum UID disponibilizado para a mensagem %"
 "d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2595
+#: ../camel/providers/imap/camel-imap-folder.c:2591
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
@@ -3034,7 +3034,7 @@ msgstr ""
 "Resposta de servidor inesperada: UIDs idênticos disponibilizados para as "
 "mensagens %d e %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2776
+#: ../camel/providers/imap/camel-imap-folder.c:2770
 msgid "Could not find message body in FETCH response."
 msgstr "Incapaz de encontrar o corpo da mensagem na resposta FETCH."
 
@@ -3111,8 +3111,8 @@ msgstr "Servidor IMAP %s"
 msgid "IMAP service for %s on %s"
 msgstr "Serviço IMAP para %s em %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imap/camel-imap-store.c:607
+#: ../camel/providers/imap/camel-imap-store.c:590
+#: ../camel/providers/imap/camel-imap-store.c:605
 #: ../camel/providers/imap4/camel-imap4-store.c:251
 #: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:184
@@ -3125,7 +3125,7 @@ msgstr "Serviço IMAP para %s em %s"
 msgid "Could not connect to %s: %s"
 msgstr "Incapaz de se ligar a %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:593
+#: ../camel/providers/imap/camel-imap-store.c:591
 #: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:185
 #: ../camel/providers/pop3/camel-pop3-store.c:169
@@ -3133,15 +3133,15 @@ msgstr "Incapaz de se ligar a %s: %s"
 msgid "SSL unavailable"
 msgstr "SSL indisponível"
 
-#: ../camel/providers/imap/camel-imap-store.c:604
-#: ../camel/providers/imap/camel-imap-store.c:885
+#: ../camel/providers/imap/camel-imap-store.c:602
+#: ../camel/providers/imap/camel-imap-store.c:883
 msgid "Connection cancelled"
 msgstr "Ligação cancelada"
 
-#: ../camel/providers/imap/camel-imap-store.c:712
-#: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imap/camel-imap-store.c:740
-#: ../camel/providers/imap/camel-imap-store.c:766
+#: ../camel/providers/imap/camel-imap-store.c:710
+#: ../camel/providers/imap/camel-imap-store.c:732
+#: ../camel/providers/imap/camel-imap-store.c:738
+#: ../camel/providers/imap/camel-imap-store.c:764
 #: ../camel/providers/imap4/camel-imap4-store.c:300
 #: ../camel/providers/imap4/camel-imap4-store.c:313
 #: ../camel/providers/imap4/camel-imap4-store.c:329
@@ -3149,30 +3149,30 @@ msgstr "Ligação cancelada"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Incapaz de se ligar ao servidor IMAP %s em modo seguro: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:713
+#: ../camel/providers/imap/camel-imap-store.c:711
 #: ../camel/providers/smtp/camel-smtp-transport.c:323
 msgid "STARTTLS not supported"
 msgstr "STARTLS não suportada"
 
-#: ../camel/providers/imap/camel-imap-store.c:735
+#: ../camel/providers/imap/camel-imap-store.c:733
 #: ../camel/providers/imap4/camel-imap4-store.c:301
 msgid "SSL negotiations failed"
 msgstr "Falha na negociação SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:741
+#: ../camel/providers/imap/camel-imap-store.c:739
 #: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/smtp/camel-smtp-transport.c:362
 msgid "SSL is not available in this build"
 msgstr "SSL não se encontra disponível nesta compilação"
 
-#: ../camel/providers/imap/camel-imap-store.c:888
+#: ../camel/providers/imap/camel-imap-store.c:886
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Incapaz de se ligar utilizando o comando \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1072
-#: ../camel/providers/imap/camel-imap-store.c:2430
+#: ../camel/providers/imap/camel-imap-store.c:1070
+#: ../camel/providers/imap/camel-imap-store.c:2437
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1313
 #: ../camel/providers/local/camel-maildir-folder.c:75
@@ -3185,24 +3185,24 @@ msgstr "Incapaz de se ligar utilizando o comando \"%s\": %s"
 msgid "Inbox"
 msgstr "Caixa de Entrada"
 
-#: ../camel/providers/imap/camel-imap-store.c:1334
+#: ../camel/providers/imap/camel-imap-store.c:1341
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "Servidor IMAP %s não suporta o tipo de autenticação %s pedido"
 
-#: ../camel/providers/imap/camel-imap-store.c:1344
+#: ../camel/providers/imap/camel-imap-store.c:1351
 #: ../camel/providers/smtp/camel-smtp-transport.c:493
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Sem suporte para o tipo de autenticação %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1367
+#: ../camel/providers/imap/camel-imap-store.c:1374
 #: ../camel/providers/imapp/camel-imapp-store.c:364
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sIntroduza a senha IMAP para %s@%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1410
+#: ../camel/providers/imap/camel-imap-store.c:1417
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3213,15 +3213,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1902
-#: ../camel/providers/imap/camel-imap-store.c:2272
+#: ../camel/providers/imap/camel-imap-store.c:1909
+#: ../camel/providers/imap/camel-imap-store.c:2279
 #: ../camel/providers/imap4/camel-imap4-store.c:943
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "O nome de pasta \"%s\" é inválido pois contém o caracter \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:2019
+#: ../camel/providers/imap/camel-imap-store.c:2026
 #: ../camel/providers/local/camel-maildir-store.c:190
 #: ../camel/providers/local/camel-mbox-store.c:203
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3229,7 +3229,7 @@ msgstr "O nome de pasta \"%s\" é inválido pois contém o caracter \"%c\""
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Incapaz de criar a pasta `%s': a pasta já existe."
 
-#: ../camel/providers/imap/camel-imap-store.c:2283
+#: ../camel/providers/imap/camel-imap-store.c:2290
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Pasta pai desconhecida: %s"
@@ -3630,7 +3630,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-store.c:156
 #: ../camel/providers/local/camel-local-store.c:267
-#: ../camel/providers/local/camel-mbox-store.c:346
+#: ../camel/providers/local/camel-mbox-store.c:358
 #: ../camel/providers/local/camel-spool-store.c:126
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -3662,25 +3662,27 @@ msgstr "Ficheiro local de email %s"
 msgid "Could not rename folder %s to %s: %s"
 msgstr "Incapaz de renomear a pasta %s para %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:421
+#: ../camel/providers/local/camel-local-store.c:424
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "Incapaz de renomear '%s': %s"
 
-#: ../camel/providers/local/camel-local-store.c:446
+#: ../camel/providers/local/camel-local-store.c:449
+#: ../camel/providers/local/camel-local-store.c:459
 #: ../camel/providers/local/camel-mbox-store.c:275
+#: ../camel/providers/local/camel-mbox-store.c:287
 #, c-format
 msgid "Could not delete folder summary file `%s': %s"
 msgstr "Incapaz de apagar o ficheiro de resumo da pasta `%s': %s"
 
-#: ../camel/providers/local/camel-local-store.c:456
-#: ../camel/providers/local/camel-mbox-store.c:287
+#: ../camel/providers/local/camel-local-store.c:469
+#: ../camel/providers/local/camel-mbox-store.c:299
 #, c-format
 msgid "Could not delete folder index file `%s': %s"
 msgstr "Incapaz de apagar o ficheiro de índice da pasta `%s': %s"
 
-#: ../camel/providers/local/camel-local-store.c:479
-#: ../camel/providers/local/camel-mbox-store.c:311
+#: ../camel/providers/local/camel-local-store.c:492
+#: ../camel/providers/local/camel-mbox-store.c:323
 #, c-format
 msgid "Could not delete folder meta file `%s': %s"
 msgstr "Incapaz de apagar o ficheiro meta da pasta `%s': %s"
@@ -3822,7 +3824,7 @@ msgid "Message construction failed."
 msgstr "Falha na construção da mensagem."
 
 #: ../camel/providers/local/camel-mbox-store.c:165
-#: ../camel/providers/local/camel-mbox-store.c:352
+#: ../camel/providers/local/camel-mbox-store.c:364
 msgid "Cannot create a folder by this name."
 msgstr "Incapaz de criar uma pasta com este nome."
 
@@ -3852,30 +3854,30 @@ msgstr "`%s' não é um ficheiro normal."
 msgid "Folder `%s' is not empty. Not deleted."
 msgstr "Pasta `%s' não está vazia. Não foi apagada."
 
-#: ../camel/providers/local/camel-mbox-store.c:365
+#: ../camel/providers/local/camel-mbox-store.c:377
 #, c-format
 msgid "Cannot create directory `%s': %s."
 msgstr "Incapaz de criar o directório `%s': %s."
 
-#: ../camel/providers/local/camel-mbox-store.c:379
+#: ../camel/providers/local/camel-mbox-store.c:391
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Incapaz de criar a pasta: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:381
+#: ../camel/providers/local/camel-mbox-store.c:393
 msgid "Folder already exists"
 msgstr "A pasta já existe"
 
-#: ../camel/providers/local/camel-mbox-store.c:472
+#: ../camel/providers/local/camel-mbox-store.c:484
 msgid "The new folder name is illegal."
 msgstr "O nome da nova pasta é inválido."
 
-#: ../camel/providers/local/camel-mbox-store.c:485
+#: ../camel/providers/local/camel-mbox-store.c:497
 #, c-format
 msgid "Could not rename `%s': `%s': %s"
 msgstr "Incapaz de renomear `%s': `%s': %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:560
+#: ../camel/providers/local/camel-mbox-store.c:578
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Incapaz de renomear '%s' para %s: %s"
@@ -4189,16 +4191,16 @@ msgstr "Introduza a senha NNTP para %s@%s"
 msgid "Cannot authenticate to server: %s"
 msgstr "Incapaz de se autenticar no servidor: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1273
+#: ../camel/providers/nntp/camel-nntp-store.c:1272
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "Falha no comando NNTP: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1329
+#: ../camel/providers/nntp/camel-nntp-store.c:1326
 msgid "Not connected."
 msgstr "Desligado."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1382
+#: ../camel/providers/nntp/camel-nntp-store.c:1379
 #, c-format
 msgid "No such folder: %s"
 msgstr "Pasta inexistente: %s"
@@ -4245,19 +4247,19 @@ msgstr "A expurgar as mensagens antigas"
 msgid "Expunging deleted messages"
 msgstr "A expurgar as mensagens apagadas"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:485
+#: ../camel/providers/pop3/camel-pop3-folder.c:486
 #, c-format
 msgid "No message with UID %s"
 msgstr "Nenhuma mensagem com o UID %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
+#: ../camel/providers/pop3/camel-pop3-folder.c:493
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "A obter a mensagem POP %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:582
+#: ../camel/providers/pop3/camel-pop3-folder.c:583
 msgid "Unknown reason"
 msgstr "Razão desconhecida"
 
@@ -4643,32 +4645,32 @@ msgstr "Falha no comando AUTH: %s"
 msgid "AUTH command failed"
 msgstr "Falha no comando AUTH"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1100
+#: ../camel/providers/smtp/camel-smtp-transport.c:1102
 msgid "Bad authentication response from server.\n"
 msgstr "Resposta de autenticação do servidor inválida.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1125
+#: ../camel/providers/smtp/camel-smtp-transport.c:1127
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "Falha no comando MAIL FROM: %s: a mensagem não foi enviada"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1142
+#: ../camel/providers/smtp/camel-smtp-transport.c:1144
 msgid "MAIL FROM command failed"
 msgstr "Falha no comando MAIL FROM"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1166
+#: ../camel/providers/smtp/camel-smtp-transport.c:1168
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "Falha no comando RCPT TO: %s: a mensagem não foi enviada"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1185
+#: ../camel/providers/smtp/camel-smtp-transport.c:1187
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "Falha no RCPT TO <%s>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1224
-#: ../camel/providers/smtp/camel-smtp-transport.c:1282
-#: ../camel/providers/smtp/camel-smtp-transport.c:1301
+#: ../camel/providers/smtp/camel-smtp-transport.c:1226
+#: ../camel/providers/smtp/camel-smtp-transport.c:1284
+#: ../camel/providers/smtp/camel-smtp-transport.c:1303
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "Falha no comando DATA: %s: a mensagem não foi enviada"
@@ -4676,26 +4678,26 @@ msgstr "Falha no comando DATA: %s: a mensagem não foi enviada"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1241
-#: ../camel/providers/smtp/camel-smtp-transport.c:1317
+#: ../camel/providers/smtp/camel-smtp-transport.c:1243
+#: ../camel/providers/smtp/camel-smtp-transport.c:1319
 msgid "DATA command failed"
 msgstr "Falha no comando DATA"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1340
+#: ../camel/providers/smtp/camel-smtp-transport.c:1342
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "Falha no comando RSET: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1356
+#: ../camel/providers/smtp/camel-smtp-transport.c:1358
 msgid "RSET command failed"
 msgstr "Falha no comando RSET"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1379
+#: ../camel/providers/smtp/camel-smtp-transport.c:1381
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "Falha no comando QUIT: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1393
+#: ../camel/providers/smtp/camel-smtp-transport.c:1395
 msgid "QUIT command failed"
 msgstr "Falha no comando QUIT"
 
