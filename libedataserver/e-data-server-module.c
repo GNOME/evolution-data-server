@@ -270,5 +270,5 @@ e_data_server_module_add_type (GType type)
 void
 e_data_server_module_remove_unused (void)
 {
-	g_list_foreach (module_objects, g_object_unref, NULL);
+	g_list_foreach (module_objects, (GFunc) g_object_unref, NULL);
 }

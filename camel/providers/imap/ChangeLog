@@ -1,3 +1,8 @@
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-store-summary.c:
+	Fix "incompatible pointer type" warnings (#360619).
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-utils.c:

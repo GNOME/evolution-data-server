@@ -1,5 +1,11 @@
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
+	* e-source-selector.c:
+	* e-name-selector-dialog.c:
+	Fix "incompatible pointer type" warnings (#360619).
+
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
 	* e-contact-store.h:
 	* e-destination-store.h:
 	* e-name-selector-dialog.h:

@@ -256,7 +256,7 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const char *path
 			else {
 				if (c == '/')
 					c = dir_sep;
-				camel_utf8_putc(&f, c);
+				camel_utf8_putc((unsigned char **) &f, c);
 			}
 			break;
 		case 1:
@@ -266,11 +266,11 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const char *path
 		case 2:
 			state = 0;
 			v |= hexnib(c);
-			camel_utf8_putc(&f, v);
+			camel_utf8_putc((unsigned char **) &f, v);
 			break;
 		}
 	}
-	camel_utf8_putc(&f, c);
+	camel_utf8_putc((unsigned char **) &f, c);
 
 	/* merge old path part if required */
 	f = g_strdup(full);

@@ -1,3 +1,8 @@
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-nntp-store-summary.c:
+	Fix "incompatible pointer type" warnings (#360619).
+
 2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-nntp-folder.c:

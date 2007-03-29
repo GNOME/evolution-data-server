@@ -1,3 +1,8 @@
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libedataserver/e-data-server-module.c:
+	Fix "incompatible pointer type" warnings (#360619).
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in: Use AC_TRY_RUN instead of AC_TRY_LINK when checking

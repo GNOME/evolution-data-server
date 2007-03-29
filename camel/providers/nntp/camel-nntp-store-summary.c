@@ -249,7 +249,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 			} else {
 				if (c == '/')
 					c = dir_sep;
-				camel_utf8_putc(&f, c);
+				camel_utf8_putc((unsigned char **) &f, c);
 			}
 			break;
 		case 1:
@@ -259,11 +259,11 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 		case 2:
 			state = 0;
 			v |= hexnib (c);
-			camel_utf8_putc (&f, v);
+			camel_utf8_putc ((unsigned char **) &f, v);
 			break;
 		}
 	}
-	camel_utf8_putc (&f, c);
+	camel_utf8_putc ((unsigned char **) &f, c);
 	
 	/* merge old path part if required */
 	f = camel_utf8_utf7 (full);

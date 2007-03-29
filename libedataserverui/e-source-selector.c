@@ -770,9 +770,9 @@ e_source_selector_init (ESourceSelector *selector)
 	priv = g_new0 (ESourceSelectorPrivate, 1);
 	selector->priv = priv;
 	
-	gtk_tree_view_set_search_column (selector, 0);
-	gtk_tree_view_set_search_equal_func (selector, group_search_function, NULL, NULL);
-	gtk_tree_view_set_enable_search (selector, TRUE);
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (selector), 0);
+	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (selector), group_search_function, NULL, NULL);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (selector), TRUE);
 	
 	g_signal_connect (G_OBJECT (selector), "button_press_event",
 			  G_CALLBACK (selector_button_press_event), selector);
