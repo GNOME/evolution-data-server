@@ -45,14 +45,14 @@ G_BEGIN_DECLS
 #define E_IS_NAME_SELECTOR_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_dialog_get_type ()))
 #define E_NAME_SELECTOR_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_DIALOG_TYPE, ENameSelectorDialogClass))
 
-typedef struct ENameSelectorDialog      ENameSelectorDialog;
-typedef struct ENameSelectorDialogClass ENameSelectorDialogClass;
+typedef struct _ENameSelectorDialog      ENameSelectorDialog;
+typedef struct _ENameSelectorDialogClass ENameSelectorDialogClass;
 
-struct ENameSelectorDialogClass {
+struct _ENameSelectorDialogClass {
 	GtkDialogClass parent_class;
 };
 
-struct ENameSelectorDialog {
+struct _ENameSelectorDialog {
 	GtkDialog           parent;
 
 	/* Private */

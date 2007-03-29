@@ -1421,8 +1421,11 @@ e_cal_component_abort_sequence (ECalComponent *comp)
  * e_cal_component_get_id:
  * @comp: A calendar component object.
  *
+ * Get the ID of the component as a #ECalComponentId.  The return value should
+ * be freed with e_cal_component_free_id() when you have finished with it.
+ *
  * Return value: the id of the component
- * */
+ */
 ECalComponentId *
 e_cal_component_get_id (ECalComponent *comp)
 {
@@ -1649,7 +1652,14 @@ e_cal_component_has_attachments (ECalComponent *comp)
 	return FALSE;
 }
 
-
+/**
+ * e_cal_component_get_num_attachments:
+ * @comp: A calendar component object.
+ *
+ * Get the number of attachments to this calendar component object.
+ *
+ * Return value: the number of attachments.
+ */
 int 
 e_cal_component_get_num_attachments (ECalComponent *comp)
 {
@@ -3800,7 +3810,7 @@ count_by_xxx (short *field, int max_elements)
  * Checks whether the given calendar component object has simple recurrence
  * rules or more complicated ones.
  *
- + Return value: TRUE if it has a simple recurrence rule, FALSE otherwise.
+ * Return value: TRUE if it has a simple recurrence rule, FALSE otherwise.
  */
 gboolean
 e_cal_component_has_simple_recurrence (ECalComponent *comp)
@@ -4892,7 +4902,7 @@ e_cal_component_free_sequence (int *sequence)
 
 /**
  * e_cal_component_free_id:
- * @id Component Id.
+ * @id: Component ID
  *
  * Frees the id.
  **/
@@ -5838,7 +5848,7 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 }
 
 /**
- * e_cal_component_alarm_set_attendee_list:
+ * e_cal_component_alarm_get_attendee_list:
  * @alarm: An alarm.
  * @attendee_list: Return value for the list of attendees.
  *

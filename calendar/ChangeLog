@@ -1,3 +1,11 @@
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libecal-e-cal.c:
+	* libecal/e-cal-component.c:
+	* libecal/e-cal-recur.c:
+	* libecal/e-cal-util.c:
+	Fix up the documentation (#413173).  Patch from Ross Burton.
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:

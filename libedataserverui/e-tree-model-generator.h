@@ -40,14 +40,14 @@ typedef void (*ETreeModelGeneratorModifyFunc)   (GtkTreeModel *model, GtkTreeIte
 						 gint permutation_n, gint column, GValue *value,
 						 gpointer data);
 
-typedef struct ETreeModelGenerator       ETreeModelGenerator;
-typedef struct ETreeModelGeneratorClass  ETreeModelGeneratorClass;
+typedef struct _ETreeModelGenerator       ETreeModelGenerator;
+typedef struct _ETreeModelGeneratorClass  ETreeModelGeneratorClass;
 
-struct ETreeModelGeneratorClass {
+struct _ETreeModelGeneratorClass {
 	GObjectClass parent_class;
 };
 
-struct ETreeModelGenerator {
+struct _ETreeModelGenerator {
 	GObject                          parent;
 
 	/* Private */

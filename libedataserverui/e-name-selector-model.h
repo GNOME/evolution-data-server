@@ -36,10 +36,10 @@ G_BEGIN_DECLS
 #define E_IS_NAME_SELECTOR_MODEL(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_NAME_SELECTOR_MODEL))
 #define E_IS_NAME_SELECTOR_MODEL_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_NAME_SELECTOR_MODEL))
 
-typedef struct ENameSelectorModel       ENameSelectorModel;
-typedef struct ENameSelectorModelClass  ENameSelectorModelClass;
+typedef struct _ENameSelectorModel       ENameSelectorModel;
+typedef struct _ENameSelectorModelClass  ENameSelectorModelClass;
 
-struct ENameSelectorModel {
+struct _ENameSelectorModel {
 	GObject              parent;
 
 	/* Private */
@@ -51,7 +51,7 @@ struct ENameSelectorModel {
 	GHashTable          *destination_uid_hash;
 };
 
-struct ENameSelectorModelClass {
+struct _ENameSelectorModelClass {
 	GObjectClass parent_class;
 
 	/* Signals */

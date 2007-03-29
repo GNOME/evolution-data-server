@@ -41,16 +41,16 @@ G_BEGIN_DECLS
 #define E_IS_NAME_SELECTOR_LIST_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_list_get_type ()))
 #define E_NAME_SELECTOR_LIST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_LIST_TYPE, ENameSelectorEntryClass))
 
-typedef struct ENameSelectorList      ENameSelectorList;
-typedef struct ENameSelectorListClass ENameSelectorListClass;
+typedef struct _ENameSelectorList      ENameSelectorList;
+typedef struct _ENameSelectorListClass ENameSelectorListClass;
 
-struct ENameSelectorListClass {
+struct _ENameSelectorListClass {
 	ENameSelectorEntryClass parent_class;
 
 	/* Signals */
 };
 
-struct ENameSelectorList {
+struct _ENameSelectorList {
 	ENameSelectorEntry	parent;
 
 	GtkWindow *popup;

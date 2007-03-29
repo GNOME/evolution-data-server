@@ -41,17 +41,17 @@ G_BEGIN_DECLS
 
 #define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
 
-typedef struct ENameSelectorEntry      ENameSelectorEntry;
-typedef struct ENameSelectorEntryClass ENameSelectorEntryClass;
+typedef struct _ENameSelectorEntry      ENameSelectorEntry;
+typedef struct _ENameSelectorEntryClass ENameSelectorEntryClass;
 
-struct ENameSelectorEntryClass {
+struct _ENameSelectorEntryClass {
 	GtkEntryClass parent_class;
 	void (*updated) (ENameSelectorEntry *entry, char *email);
 	void *reserved1;
 	void *reserved2;
 };
 
-struct ENameSelectorEntry {
+struct _ENameSelectorEntry {
 	GtkEntry             parent;
 
 	/* Private */

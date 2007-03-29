@@ -38,14 +38,14 @@ G_BEGIN_DECLS
 #define E_IS_CONTACT_STORE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_CONTACT_STORE))
 #define E_CONTACT_STORE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), E_TYPE_CONTACT_STORE, EContactStoreClass))
 
-typedef struct EContactStore       EContactStore;
-typedef struct EContactStoreClass  EContactStoreClass;
+typedef struct _EContactStore       EContactStore;
+typedef struct _EContactStoreClass  EContactStoreClass;
 
-struct EContactStoreClass {
+struct _EContactStoreClass {
 	GObjectClass parent_class;
 };
 
-struct EContactStore {
+struct _EContactStore {
 	GObject     parent;
 
 	/* Private */

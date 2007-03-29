@@ -550,7 +550,7 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  * @comp: The #ECalComponent to generate alarms from.
  * @start: Start time.
  * @end: End time.
- * @omit: 
+ * @omit: Alarm types to omit
  * @resolve_tzid: Callback for resolving timezones
  * @user_data: Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
@@ -617,7 +617,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * @comps: List of #ECalComponent's.
  * @start: Start time.
  * @end: End time.
- * @omit: 
+ * @omit: Alarm types to omit
  * @comp_alarms: List to be returned
  * @resolve_tzid: Callback for resolving timezones
  * @user_data: Data to be passed to the resolve_tzid callback
@@ -835,6 +835,14 @@ e_cal_util_component_has_organizer (icalcomponent *icalcomp)
 	return prop ? TRUE : FALSE;
 }
 
+/**
+ * e_cal_util_component_has_attendee:
+ * @icalcomp: An #icalcomponent.
+ *
+ * Checks if an #icalcomponent has any attendees.
+ * 
+ * Return value: TRUE if there are attendees, FALSE if not.
+ */
 gboolean
 e_cal_util_component_has_attendee (icalcomponent *icalcomp)
 {

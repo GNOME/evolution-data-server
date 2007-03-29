@@ -1596,6 +1596,16 @@ e_cal_new_system_tasks (void)
 	return ecal;
 }
 
+/**
+ * e_cal_new_system_memos:
+ *
+ * Create a calendar client for the system memos, which should always be present
+ * in all Evolution installations. This does not open the memos itself, for
+ * that, #e_cal_open or #e_cal_open_async needs to be called.
+ *
+ * Return value: A newly-created calendar client, or NULL if the client could
+ * not be constructed.
+ */
 ECal *
 e_cal_new_system_memos (void)
 {
@@ -3396,7 +3406,7 @@ e_cal_free_object_list (GList *objects)
  * @start: Start time for query.
  * @end: End time for query.
  * @freebusy: Return value for VFREEBUSY objects.
- * @error: 
+ * @error: Placeholder for error information.
  *
  * Gets free/busy information from the calendar server.
  *
@@ -4069,7 +4079,7 @@ e_cal_free_alarms (GSList *comp_alarms)
 /**
  * e_cal_get_alarms_for_object:
  * @ecal: A calendar client.
- * @uid: Unique identifier for a calendar component.
+ * @id: Unique identifier for a calendar component.
  * @start: Start time for query.
  * @end: End time for query.
  * @alarms: Return value for the component's alarm instances.  Will return NULL
@@ -5449,7 +5459,7 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 /**
  * e_cal_set_default_source:
  * @source: An #ESource.
- * type: Type of the source.
+ * @type: Type of the source.
  * @error: Placeholder for error information.
  *
  * Sets the default source for the specified @type.

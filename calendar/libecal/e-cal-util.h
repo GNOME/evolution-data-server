@@ -88,8 +88,6 @@ int e_cal_util_generate_alarms_for_list (GList *comps,
 				       gpointer user_data,
 				       icaltimezone *default_timezone);
 
-icaltimezone *e_cal_util_resolve_tzid (const char *tzid, gpointer data);
-
 char *e_cal_util_priority_to_string (int priority);
 int e_cal_util_priority_from_string (const char *string);
 

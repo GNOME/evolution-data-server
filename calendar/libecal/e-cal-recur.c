@@ -4028,6 +4028,12 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 #undef e_cal_recur_nth
 static
 #endif
+/**
+ * e_cal_recur_nth:
+ *
+ * An array of 31 translated strings for each day of the month (i.e. "1st",
+ * "2nd", and so on).
+ */
 const char *e_cal_recur_nth[31] = {
 	N_("1st"),
 	N_("2nd"),
@@ -4064,6 +4070,14 @@ const char *e_cal_recur_nth[31] = {
 
 #ifdef G_OS_WIN32
 
+/**
+ * e_cal_get_recur_nth:
+ *
+ * Returns an array of 31 translated strings for each day of the month
+ * (i.e. "1st", "2nd", and so on).
+ *
+ * Returns: a pointer to an array of strings.  This array is static, do not free it.
+ */
 const char **
 e_cal_get_recur_nth (void)
 {

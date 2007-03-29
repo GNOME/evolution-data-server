@@ -1,3 +1,15 @@
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-contact-store.h:
+	* e-destination-store.h:
+	* e-name-selector-dialog.h:
+	* e-name-selector-entry.h:
+	* e-name-selector-list.h:
+	* e-name-selector-model.h:
+	* e-name-selector.h:
+	* e-tree-model-generator.h:
+	Fix some Gtk-Doc warnings. (#413173)
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-name-selector-entry.c:

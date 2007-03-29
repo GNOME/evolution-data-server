@@ -39,10 +39,10 @@ G_BEGIN_DECLS
 #define E_IS_NAME_SELECTOR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_NAME_SELECTOR))
 #define E_IS_NAME_SELECTOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_NAME_SELECTOR))
 
-typedef struct ENameSelector       ENameSelector;
-typedef struct ENameSelectorClass  ENameSelectorClass;
+typedef struct _ENameSelector       ENameSelector;
+typedef struct _ENameSelectorClass  ENameSelectorClass;
 
-struct ENameSelector {
+struct _ENameSelector {
 	GObject              parent;
 
 	/* Private */
@@ -53,7 +53,7 @@ struct ENameSelector {
 	GArray              *sections;
 };
 
-struct ENameSelectorClass {
+struct _ENameSelectorClass {
 	GObjectClass parent_class;
 };
 

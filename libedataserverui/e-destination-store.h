@@ -35,10 +35,10 @@ G_BEGIN_DECLS
 #define E_IS_DESTINATION_STORE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_DESTINATION_STORE))
 #define E_DESTINATION_STORE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), E_TYPE_DESTINATION_STORE, EDestinationStoreClass))
 
-typedef struct EDestinationStore       EDestinationStore;
-typedef struct EDestinationStoreClass  EDestinationStoreClass;
+typedef struct _EDestinationStore       EDestinationStore;
+typedef struct _EDestinationStoreClass  EDestinationStoreClass;
 
-struct EDestinationStore {
+struct _EDestinationStore {
 	GObject     parent;
 
 	/* Private */
@@ -47,7 +47,7 @@ struct EDestinationStore {
 	GPtrArray  *destinations;
 };
 
-struct EDestinationStoreClass {
+struct _EDestinationStoreClass {
 	GObjectClass parent_class;
 };
 
