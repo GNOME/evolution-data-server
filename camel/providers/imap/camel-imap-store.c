@@ -63,10 +63,6 @@
 #include "camel-imap-summary.h"
 #include "camel-imap-utils.h"
 
-#if !GLIB_CHECK_VERSION (2, 8, 0)
-#define g_access access
-#endif
-
 #define d(x) 
 
 /* Specified in RFC 2060 */

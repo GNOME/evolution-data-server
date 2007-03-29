@@ -1,5 +1,13 @@
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
+	* libedataserver/e-data-server-util.c:
+	* libedataserver/e-uid.c:
+	* libedataserver/e-xml-utils.c:
+	E-D-S requires GLib 2.10 now; remove dead backward-compatibility
+	code for GLib < 2.8 (#418971).
+
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
 	* libedataserver/e-data-server-module.c:
 	Fix "incompatible pointer type" warnings (#360619).
 

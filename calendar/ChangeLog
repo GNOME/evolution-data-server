@@ -1,5 +1,12 @@
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
+	* backends/file/e-cal-backend-file.c:
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	E-D-S requires GLib 2.10 now; remove dead backward-compatibility
+	code for GLib < 2.8 (#418971).
+
+2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
+
 	* libecal-e-cal.c:
 	* libecal/e-cal-component.c:
 	* libecal/e-cal-recur.c:

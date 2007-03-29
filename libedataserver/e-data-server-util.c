@@ -45,47 +45,7 @@
 int
 e_util_mkdir_hier (const char *path, mode_t mode)
 {
-#if GLIB_CHECK_VERSION(2,8,0)
 	return g_mkdir_with_parents (path, mode);
-#else
-        char *copy, *p;
-                                                                                
-        if (g_path_is_absolute (path)) {
-                p = copy = g_strdup (path);
-        } else {
-                gchar *current_dir = g_get_current_dir();
-                p = copy = g_build_filename (current_dir, path, NULL);
-		g_free (current_dir);
-        }
-                                                                                
-	p = (char *)g_path_skip_root (p);                                                                       
-        do {
-                char *p1 = strchr (p, '/');
-#ifdef G_OS_WIN32
-		{
-			char *p2 = strchr (p, '\\');
-			if (p1 == NULL ||
-			    (p2 != NULL && p2 < p1))
-				p1 = p2;
-		}
-#endif
-		p = p1;
-		if (p)
-			*p = '\0';
-		if (!g_file_test (copy, G_FILE_TEST_IS_DIR)) {
-			if (g_mkdir (copy, mode) == -1) {
-				g_free (copy);
-				return -1;
-			}
-		}
-		if (p) {
-			*p++ = '/';
-		}
-        } while (p);
-                                                                                
-        g_free (copy);
-        return 0;
-#endif
 }
 
 /**

@@ -44,7 +44,6 @@ e_xml_parse_file (const char *filename)
 {
 	xmlDocPtr result = NULL;
 
-#if GLIB_CHECK_VERSION (2, 8, 0)
 	GMappedFile *mapped_file;
 
 	mapped_file = g_mapped_file_new (filename, FALSE, NULL);
@@ -53,9 +52,6 @@ e_xml_parse_file (const char *filename)
 					 g_mapped_file_get_length (mapped_file));
 		g_mapped_file_free (mapped_file);
 	}
-#else
-	result = xmlParseFile (filename);
-#endif
 	return result;
 }
 

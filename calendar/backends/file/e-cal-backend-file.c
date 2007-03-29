@@ -46,12 +46,6 @@
 #define O_BINARY 0
 #endif
 
-#if !GLIB_CHECK_VERSION (2, 8, 0)
-#define g_access access
-#endif
-
-
-
 /* Placeholder for each component and its recurrences */
 typedef struct {
 	ECalComponent *full_object;
@@ -2331,15 +2325,9 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 	for (l = attach_list; l ; l = l->next) {
 		char *sfname = (char *)l->data;
 		char *filename, *new_filename;
-#if GLIB_CHECK_VERSION (2, 8, 0)
 		GMappedFile *mapped_file;
-#else
-		char *file_contents;
-		int len;
-#endif
 		GError *error = NULL;
 
-#if GLIB_CHECK_VERSION (2, 8, 0)
 		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
 		if (!mapped_file) {
 			g_message ("DEBUG: could not map %s: %s\n",
@@ -2347,14 +2335,6 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 			g_error_free (error);
 			continue;
 		}
-#else
-		if (!g_file_get_contents (sfname, &file_contents, &len, &error)) {
-			g_message ("DEBUG: could not read %s: %s\n",
-				   sfname, error->message);
-			g_error_free (error);
-			continue;
-		}
-#endif
 		filename = g_path_get_basename (sfname);
 		new_filename = g_strconcat (uid, "-", filename, NULL);
 		g_free (filename);
@@ -2365,21 +2345,13 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 			/* TODO handle error conditions */
 			g_message ("DEBUG: could not open %s for writing\n",
 				   dest_file);
-#if GLIB_CHECK_VERSION (2, 8, 0)
 		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
 				  g_mapped_file_get_length (mapped_file)) == -1) {
-#else
-		} else if (write (fd, file_contents, len) == -1) {
-#endif
 			/* TODO handle error condition */
 			g_message ("DEBUG: attachment write failed.\n");
 		}
 
-#if GLIB_CHECK_VERSION (2, 8, 0)
 		g_mapped_file_free (mapped_file);
-#else
-		g_free (file_contents);
-#endif
 		close (fd);
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
