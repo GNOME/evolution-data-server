@@ -1,3 +1,11 @@
+2007-03-29  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message),
+	(gw_update_cache):
+	Status Tracking is rewritten. So Sent-Items folder can be
+	cached as any other normal folder.
+	Fixes a few performance issues and crashes
+
 2007-02-09  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):

@@ -182,9 +182,6 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 	if (msg)
 		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
 
-	if(!strcmp (folder->full_name, "Sent Items")) 
-		goto end; /*Dont cache if its sent items, since we need to Track Status*/
-
 	/* add to cache */
 	CAMEL_GROUPWISE_FOLDER_LOCK (folder, cache_lock);
 	if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
@@ -1213,7 +1210,6 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		status_flags = 0;
 		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
-		gboolean is_sent_folder = FALSE;
 		const char *recurrence_key = NULL;
 		int rk;
 
@@ -1376,12 +1372,10 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (!strcmp (folder->full_name, "Junk Mail"))
 			continue;
 
-		if (!strcmp (folder->full_name, "Sent Items"))
-			is_sent_folder = TRUE;
 		/******************** Begine Caching ************************/
 		/* add to cache if its a new message*/
 		t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
-		if (t_cache_stream && !is_sent_folder) {
+		if (t_cache_stream) {
 			camel_object_unref (t_cache_stream);
 
 			mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
