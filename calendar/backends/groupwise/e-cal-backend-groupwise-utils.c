@@ -272,7 +272,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		
 		EGwItemAttachment *attach_item;
 		char *file_contents, *encoded_data;
-		int file_len;
+		guint file_len;
 		char *attach_filename_full, *filename;
 		const char *uid;
 
@@ -1749,7 +1749,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				start = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (start);
-				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : 0);
+				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
 				ipt.start = itt;
 			}        
 
@@ -1757,7 +1757,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				end = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (end);
-				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : 0);
+				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
 				ipt.end = itt;
 			}
 			icalprop = icalproperty_new_freebusy (ipt);

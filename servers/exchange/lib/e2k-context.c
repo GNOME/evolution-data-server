@@ -326,7 +326,7 @@ e2k_context_new (const char *uri)
 	g_object_ref (ctx);
 	ctx->priv->get_local_address_sock =
 		soup_socket_client_new_async (
-			suri->host, suri->port, FALSE,
+			suri->host, suri->port, NULL,
 			got_connection, ctx);
 	soup_uri_free (suri);
 
@@ -451,7 +451,7 @@ e2k_debug_print_request (SoupMessage *msg, const char *note)
 		msg->method, uri->path,
 		uri->query ? "?" : "",
 		uri->query ? uri->query : "",
-		msg, (unsigned long)time (0));
+		msg, (unsigned long)time (NULL));
 	if (note)
 		printf (" [%s]\n", note);
 	else
@@ -476,7 +476,7 @@ e2k_debug_print_response (SoupMessage *msg)
 {
 	printf ("%d %s\nE2k-Debug: %p @ %lu\n",
 		msg->status_code, msg->reason_phrase,
-		msg, time (0));
+		msg, time (NULL));
 	if (e2k_debug_level > 1) {
 		soup_message_foreach_header (msg->response_headers,
 					     print_header, NULL);
@@ -2450,11 +2450,11 @@ do_notification (GIOChannel *source, GIOCondition condition, gpointer data)
 	E2kSubscription *sub;
 	char buffer[1024], *id, *lasts;
 	gsize len;
-	GIOError err;
+	GIOStatus status;
 
-	err = g_io_channel_read_chars (source, buffer, sizeof (buffer) - 1, &len, NULL);
-	if (err != G_IO_ERROR_NONE && err != G_IO_ERROR_AGAIN) {
-		g_warning ("do_notification I/O error: %d (%s)", err,
+	status = g_io_channel_read_chars (source, buffer, sizeof (buffer) - 1, &len, NULL);
+	if (status != G_IO_STATUS_NORMAL && status != G_IO_STATUS_AGAIN) {
+		g_warning ("do_notification I/O error: %d (%s)", status,
 			   g_strerror (errno));
 		return FALSE;
 	}

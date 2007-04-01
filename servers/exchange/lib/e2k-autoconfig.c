@@ -643,7 +643,8 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 	E2kResultIter *iter;
 	E2kResult *results;
 	GByteArray *entryid;
-	const char *exchange_dn, *timezone, *prop, *hrefs[] = { "" };
+	const char *exchange_dn, *timezone, *hrefs[] = { "" };
+	xmlChar *prop;
 	char *body;
 	int len;
 	E2kUri *euri;

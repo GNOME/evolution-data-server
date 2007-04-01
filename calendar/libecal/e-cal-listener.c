@@ -34,7 +34,7 @@ struct ECalListenerPrivate {
 	gpointer fn_data;
 
 	/* Whether notification is desired */
-	gboolean notify : 1;
+	guint notify : 1;
 };
 
 /* Signal IDs */

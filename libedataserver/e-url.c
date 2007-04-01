@@ -237,20 +237,20 @@ e_uri_new (const char *uri_string)
 	semi = memchr (uri_string, ';', end - uri_string);
 	if (semi) {
 		if (semi[1]) {
-			const char *cur, *p, *eq;
+			const char *cur, *ptr, *eq;
 			char *name, *value;
 
-			for (cur = semi + 1; cur < end; cur = p + 1) {
-				p = memchr (cur, ';', end - cur);
-				if (!p)
-					p = end;
-				eq = memchr (cur, '=', p - cur);
+			for (cur = semi + 1; cur < end; cur = ptr + 1) {
+				ptr = memchr (cur, ';', end - cur);
+				if (!ptr)
+					ptr = end;
+				eq = memchr (cur, '=', ptr - cur);
 				if (eq) {
 					name = g_strndup (cur, eq - cur);
-					value = g_strndup (eq + 1, p - (eq + 1));
+					value = g_strndup (eq + 1, ptr - (eq + 1));
 					uri_decode (value);
 				} else {
-					name = g_strndup (cur, p - cur);
+					name = g_strndup (cur, ptr - cur);
 					value = g_strdup ("");
 				}
 				uri_decode (name);

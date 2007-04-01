@@ -86,7 +86,7 @@ get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind
 	
 	kinds = g_hash_table_lookup (methods, method);
 	if (!kinds)
-		return 0;
+		return NULL;
 
 	factory = g_hash_table_lookup (kinds, GINT_TO_POINTER (kind));
 

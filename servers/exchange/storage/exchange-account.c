@@ -1365,7 +1365,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	E2kResult *results;
 	int nresults = 0, mode;
 	GByteArray *entryid;
-	const char *timezone;
+	const char *tz;
 	E2kGlobalCatalogStatus gcstatus;
 	E2kGlobalCatalogEntry *entry;
 	E2kOperation gcop;
@@ -1546,9 +1546,9 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		if (entryid)
 			account->legacy_exchange_dn = g_strdup (e2k_entryid_to_dn (entryid));
 
-		timezone = e2k_properties_get_prop (results[0].props, E2K_PR_EXCHANGE_TIMEZONE);
-		if (timezone)
-			account->default_timezone = g_strdup (timezone);
+		tz = e2k_properties_get_prop (results[0].props, E2K_PR_EXCHANGE_TIMEZONE);
+		if (tz)
+			account->default_timezone = g_strdup (tz);
 	}
 
 	if (!setup_account_hierarchies (account)) {
@@ -1964,7 +1964,7 @@ exchange_account_get_quota_limit (ExchangeAccount *account)
 int
 exchange_account_check_password_expiry (ExchangeAccount *account)
 {
-	E2kGlobalCatalogEntry *entry;
+	E2kGlobalCatalogEntry *entry; /* This is never set before it's used! */
 	int max_pwd_age_days = -1;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 0);

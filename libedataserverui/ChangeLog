@@ -1,3 +1,11 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-source-selector.c (group_search_function):
+	Fix a compiler warning.  Patch from Kjartan Maraas.
+
+	* e-passwords.c: Use #ifdef WITH_GNOME_KEYRING, not #if.
+	Patch from Kjartan Maraas.
+
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-source-selector.c:

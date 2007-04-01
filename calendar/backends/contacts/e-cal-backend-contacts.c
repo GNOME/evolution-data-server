@@ -87,7 +87,7 @@ static BookRecord *
 book_record_new (ECalBackendContacts *cbc, ESource *source)
 {
         EBook      *book;
-        GList      *fields = 0;
+        GList      *fields = NULL;
         EBookQuery *query;
         EBookView  *book_view;
         BookRecord *br;
@@ -214,7 +214,7 @@ contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
 
         cb_data->cbc = cbc;
         cb_data->sexp = sexp;
-        cb_data->result = 0;
+        cb_data->result = NULL;
 
         return cb_data;
 }
@@ -222,7 +222,7 @@ contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
 static void
 contact_record_cb_free (ContactRecordCB *cb_data)
 {
-        g_list_foreach (cb_data->result, (GFunc) g_free, 0);
+        g_list_foreach (cb_data->result, (GFunc) g_free, NULL);
         g_list_free (cb_data->result);
         
         g_free (cb_data);
@@ -306,7 +306,7 @@ static void
 source_group_removed_cb (ESourceList *source_list, ESourceGroup *group, gpointer user_data)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-        GSList *i = 0;
+        GSList *i = NULL;
         
         g_return_if_fail (cbc);
         
@@ -396,6 +396,7 @@ cdate_to_icaltime (EContactDate *cdate)
 	ret.is_date = TRUE;
 	ret.is_utc = FALSE;
 	ret.zone = NULL;
+	ret.is_daylight = FALSE;
 	
 	ret.hour = ret.minute = ret.second = 0;
 
@@ -414,7 +415,7 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
 	struct icalrecurrencetype  r;
         GSList recur_list;
 
-        g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), 0);
+        g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), NULL);
 
         if (!cdate)
                 return NULL;

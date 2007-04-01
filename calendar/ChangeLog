@@ -1,3 +1,16 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libedata-cal/e-data-cal-factory.c (get_backend_factory):
+	* backends/groupwise/e-cal-backend-groupwise-utils
+	(e_cal_backend_groupwise_set_attachments_from_comp),
+	(e_gw_connection_get_freebusy_info):
+	* backends/caldav/e-cal-backend-caldav.c (process_object):
+	* backends/contacts/e-cal-backend-contacts.c (book_record_new),
+	(contact_record_cb_new), (source_group_removed_cb),
+	(cdate_to_icaltime), (create_component):
+	* libecal/e-cal-listener.c (ECalListenerPrivate):
+	Fix some compiler warnings.  Patch from Kjartan Maraas.
+
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/file/e-cal-backend-file.c:

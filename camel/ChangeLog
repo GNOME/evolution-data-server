@@ -1,3 +1,13 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-mime-utils.c (rfc2047_encode_word):
+	Properly escape what would otherwise be a trigraph (??=).
+	Patch from Kjartan Maraas.
+
+	* camel-search-private.c (header_match):
+	* camel-url.c (camel_url_to_string):
+	Fix a compiler warning.  Patch from Kjartan Maraas.
+
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-private.h:

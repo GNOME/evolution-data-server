@@ -1330,7 +1330,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			proclen = -1;
 			p = inptr;
 			i = 0;
-			while (p < (in+len) && convlen < (75 - strlen("=?utf-8?q\?\?="))) {
+			while (p < (in+len) && convlen < (75 - strlen("=?utf-8?q?\?="))) {
 				unsigned char c = *p++;
 
 				if (c >= 0xc0)
@@ -1343,7 +1343,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 				else
 					convlen += 3;
 			}
-			if (proclen >= 0 && proclen < i && convlen < (75 - strlen("=?utf-8?q\?\?=")))
+			if (proclen >= 0 && proclen < i && convlen < (75 - strlen("=?utf-8?q?\?=")))
 				proclen = i;
 			/* well, we probably have broken utf8, just copy it anyway what the heck */
 			if (proclen == -1) {

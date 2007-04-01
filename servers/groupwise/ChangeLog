@@ -1,3 +1,12 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Various code-cleanups from Kjartan Maraas.
+
+	* e-gw-recur-utils.c: Declare private array as static.
+
+	* e-gw-message.c (debug_handler), (setup_debug):
+	Use NULL instead of zero (0).
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-gw-connection.c:

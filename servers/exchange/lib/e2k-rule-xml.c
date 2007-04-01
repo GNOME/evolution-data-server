@@ -31,8 +31,8 @@
 #include "e2k-utils.h"
 #include "mapi.h"
 
-const char *contains_types[] = { NULL, "contains", NULL, NULL, NULL, "not contains", NULL, NULL };
-const char *subject_types[] = { "is", "contains", "starts with", NULL, "is not", "not contains", "not starts with", NULL };
+static const char *contains_types[] = { NULL, "contains", NULL, NULL, NULL, "not contains", NULL, NULL };
+static const char *subject_types[] = { "is", "contains", "starts with", NULL, "is not", "not contains", "not starts with", NULL };
 #define E2K_FL_NEGATE 4
 #define E2K_FL_MAX 8
 
@@ -65,10 +65,10 @@ fuzzy_level_to_name (int fuzzy_level, gboolean negated, const char *map[])
 	return map[fuzzy_level];
 }
 
-const char *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
-const char *include_types[] = { NULL, NULL, NULL, NULL, "include", "not include" };
-const char *date_types[] = { "before", "before", "after", "after", NULL, NULL };
-const char *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
+static const char *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
+static const char *include_types[] = { NULL, NULL, NULL, NULL, "include", "not include" };
+static const char *date_types[] = { "before", "before", "after", "after", NULL, NULL };
+static const char *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
 
 #if 0
 static gboolean

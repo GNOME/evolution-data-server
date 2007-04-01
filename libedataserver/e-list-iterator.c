@@ -158,9 +158,9 @@ e_list_iterator_insert   (EIterator  *_iterator,
 			iterator->iterator = iterator->iterator->prev;
 		} else {
 			if (iterator->iterator->next)
-				g_list_prepend(iterator->iterator->next, data);
+				iterator->iterator->next = g_list_prepend(iterator->iterator->next, data);
 			else
-				g_list_append(iterator->iterator, data);
+				iterator->iterator = g_list_append(iterator->iterator, data);
 			iterator->iterator = iterator->iterator->next;
 		}
 		e_list_invalidate_iterators(iterator->list, E_ITERATOR(iterator));

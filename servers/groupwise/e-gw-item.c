@@ -1620,7 +1620,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 {
 	EGwItem *item;
         char *item_type;
-	SoupSoapParameter *subparam, *child, *category_param, *attachment_param;
+	SoupSoapParameter *subparameter, *child, *category_param, *attachment_param;
 	gboolean is_group_item = TRUE;
 	GList *user_email = NULL;
 	
@@ -1687,19 +1687,19 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 	e_gw_item_set_email_list (item, user_email);
 
 	/* If the parameter consists of changes - populate deltas */
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "changes");
-	if (subparam) {
-		SoupSoapParameter *changes = subparam;
-		subparam = soup_soap_parameter_get_first_child_by_name (changes, "add");
-		if (!subparam)
-			subparam = soup_soap_parameter_get_first_child_by_name (changes, "delete");
-		if (!subparam)
-			subparam = soup_soap_parameter_get_first_child_by_name (changes, "update");
+	subparameter = soup_soap_parameter_get_first_child_by_name (param, "changes");
+	if (subparameter) {
+		SoupSoapParameter *changes = subparameter;
+		subparameter = soup_soap_parameter_get_first_child_by_name (changes, "add");
+		if (!subparameter)
+			subparameter = soup_soap_parameter_get_first_child_by_name (changes, "delete");
+		if (!subparameter)
+			subparameter = soup_soap_parameter_get_first_child_by_name (changes, "update");
 	}
-	else subparam = param; /* The item is a complete one, not a delta  */
+	else subparameter = param; /* The item is a complete one, not a delta  */
 	
 	/* now add all properties to the private structure */
-	for (child = soup_soap_parameter_get_first_child (subparam);
+	for (child = soup_soap_parameter_get_first_child (subparameter);
 			child != NULL;
 			child = soup_soap_parameter_get_next_child (child)) {
 		const char *name;

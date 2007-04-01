@@ -7,8 +7,8 @@
 static void
 print_email (EContact *contact)
 {
-	char *file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-	char *name_or_org = e_contact_get_const (contact, E_CONTACT_NAME_OR_ORG);
+	const char *file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	const char *name_or_org = e_contact_get_const (contact, E_CONTACT_NAME_OR_ORG);
 	GList *emails, *e;
 
 	printf ("Contact: %s\n", file_as);

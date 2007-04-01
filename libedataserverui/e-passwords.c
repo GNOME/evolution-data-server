@@ -54,7 +54,7 @@
 #include "libedataserver/e-msgport.h"
 #include "libedataserver/e-url.h"
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 #include <gnome-keyring.h>
 #endif
 
@@ -192,7 +192,7 @@ ep_msg_send(EPassMsg *msg)
 }
 
 /* the functions that actually do the work */
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 static void
 ep_clear_passwords_keyring(EPassMsg *msg)
 {
@@ -268,7 +268,7 @@ free_entry (gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 static void
 ep_forget_passwords_keyring(EPassMsg *msg)
 {
@@ -367,7 +367,7 @@ password_path (const char *component_name, const char *key)
 	return path;
 }
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 static void
 ep_remember_password_keyring(EPassMsg *msg)
 {
@@ -463,7 +463,7 @@ ep_remember_password_file(EPassMsg *msg)
 		e_msgport_reply(&msg->msg);
 }
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 static void
 ep_forget_password_keyring (EPassMsg *msg)
 {
@@ -597,7 +597,7 @@ ep_forget_password_file (EPassMsg *msg)
 }
 
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 static void
 ep_get_password_keyring (EPassMsg *msg)
 {
@@ -754,7 +754,7 @@ pass_response(GtkDialog *dialog, int response, void *data)
 				msg->oldpass = msg->password;
 				ep_add_password(msg);
 			}
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 			if (*msg->remember && type == E_PASSWORDS_REMEMBER_FOREVER) {
 				if (gnome_keyring_is_available())
 					ep_remember_password_keyring(msg);
@@ -781,12 +781,12 @@ pass_response(GtkDialog *dialog, int response, void *data)
 	mw = (EPassMsg *)request_list.head;
 	mn = (EPassMsg *)mw->msg.ln.next;
 	while (mn) {
-#if WITH_GNOME_KEYRING		
+#ifdef WITH_GNOME_KEYRING		
 		if ((mw->dispatch == (gnome_keyring_is_available() ? ep_forget_password_keyring : ep_forget_password_file)
 #else
 		if ((mw->dispatch == ep_forget_password_file		     
 #endif
-#if WITH_GNOME_KEYRING				     
+#ifdef WITH_GNOME_KEYRING				     
 		     || mw->dispatch == (gnome_keyring_is_available() ? ep_get_password_keyring : ep_get_password_file)
 #else
 		     || mw->dispatch == ep_get_password_file		     
@@ -852,7 +852,7 @@ ep_ask_password(EPassMsg *msg)
 	gtk_widget_grab_focus (msg->entry);
 	
 	if ((msg->flags & E_PASSWORDS_REPROMPT)) {
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 		if (gnome_keyring_is_available())
 			ep_get_password_keyring(msg);
 		else
@@ -986,7 +986,7 @@ e_passwords_set_online(int state)
 void
 e_passwords_forget_passwords (void)
 {
-#if WITH_GNOME_KEYRING	
+#ifdef WITH_GNOME_KEYRING	
 	EPassMsg *msg = ep_msg_new(gnome_keyring_is_available() ? ep_forget_passwords_keyring : ep_forget_passwords_file);
 #else
 	EPassMsg *msg = ep_msg_new(ep_forget_passwords_file);
@@ -1004,7 +1004,7 @@ e_passwords_forget_passwords (void)
 void
 e_passwords_clear_passwords (const char *component_name)
 {
-#if WITH_GNOME_KEYRING	
+#ifdef WITH_GNOME_KEYRING	
 	EPassMsg *msg = ep_msg_new(gnome_keyring_is_available() ? ep_clear_passwords_keyring : ep_clear_passwords_file);
 #else
 	EPassMsg *msg = ep_msg_new(ep_clear_passwords_file);		
@@ -1029,7 +1029,7 @@ e_passwords_remember_password (const char *component_name, const char *key)
 	g_return_if_fail(component_name != NULL);
 	g_return_if_fail(key != NULL);
 
-#if WITH_GNOME_KEYRING
+#ifdef WITH_GNOME_KEYRING
 	msg = ep_msg_new(gnome_keyring_is_available() ? ep_remember_password_keyring : ep_remember_password_file);
 #else
 	msg = ep_msg_new(ep_remember_password_file);
@@ -1055,7 +1055,7 @@ e_passwords_forget_password (const char *component_name, const char *key)
 	g_return_if_fail(component_name != NULL);
 	g_return_if_fail(key != NULL);
 
-#if WITH_GNOME_KEYRING	
+#ifdef WITH_GNOME_KEYRING	
 	msg = ep_msg_new(gnome_keyring_is_available() ? ep_forget_password_keyring : ep_forget_password_file);
 #else	
 	msg = ep_msg_new(ep_forget_password_file);
@@ -1083,7 +1083,7 @@ e_passwords_get_password (const char *component_name, const char *key)
 	g_return_val_if_fail(component_name != NULL, NULL);
 	g_return_val_if_fail(key != NULL, NULL);
 
-#if WITH_GNOME_KEYRING	
+#ifdef WITH_GNOME_KEYRING	
 	msg = ep_msg_new(gnome_keyring_is_available() ? ep_get_password_keyring : ep_get_password_file);
 #else
 	msg = ep_msg_new(ep_get_password_file);

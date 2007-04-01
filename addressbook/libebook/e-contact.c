@@ -1648,7 +1648,7 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
  * Return value: A new #EContactName struct.
  **/
 EContactName*
-e_contact_name_new ()
+e_contact_name_new (void)
 {
 	return g_new0 (EContactName, 1);
 }

@@ -282,7 +282,7 @@ str_to_receipt_policy (const char *str)
 static char*
 receipt_policy_to_str (EAccountReceiptPolicy val)
 {
-	char *ret = 0;
+	char *ret = NULL;
 	
 	switch (val) {
 	case E_ACCOUNT_RECEIPT_NEVER:

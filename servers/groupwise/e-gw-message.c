@@ -37,7 +37,7 @@ debug_handler (SoupMessage *msg, gpointer user_data)
 {
 	g_print ("%d %s\nSOAP-Debug: %p @ %lu\n",
                 msg->status_code, msg->reason_phrase,
-                msg, time (0));
+                msg, time (NULL));
 
 	/* print headers */
 	soup_message_foreach_header (msg->response_headers, print_header, NULL);
@@ -60,7 +60,7 @@ setup_debug (SoupSoapMessage *msg)
 		 SOUP_MESSAGE (msg)->method, suri->path,
 		 suri->query ? "?" : "",
 		 suri->query ? suri->query : "",
-		 msg, (unsigned long) time (0));
+		 msg, (unsigned long) time (NULL));
 
 	/* print message headers */
 	print_header ("Host", suri->host, NULL);

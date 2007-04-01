@@ -793,7 +793,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 				 */
 				contact = create_contact (id_dbt.data, vcard_dbt.data);
 
-#if notyet
+#ifdef notyet
 				g_object_set (card, "last_use", NULL, "use_score", 0.0, NULL);
 #endif
 				vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);

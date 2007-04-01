@@ -753,7 +753,7 @@ e_vcard_construct (EVCard *evc, const char *str)
  * Return value: A new, blank #EVCard.
  **/
 EVCard *
-e_vcard_new ()
+e_vcard_new (void)
 {
 	return e_vcard_new_from_string ("");
 }
@@ -1848,8 +1848,8 @@ e_vcard_attribute_get_param (EVCardAttribute *attr, const char *name)
 {
 	GList *params, *p;
 	
-	g_return_val_if_fail (attr != NULL, FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (attr != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
 	
 	params = e_vcard_attribute_get_params (attr);
 
@@ -2103,7 +2103,7 @@ _evc_base64_encode_simple (const char *data, size_t len)
 {
 	unsigned char *out;
 	int state = 0, outlen;
-	unsigned int save = 0;
+	int save = 0;
 
 	g_return_val_if_fail (data != NULL, NULL);
 

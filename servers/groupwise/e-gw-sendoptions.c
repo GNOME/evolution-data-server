@@ -630,7 +630,7 @@ e_gw_sendoptions_form_message_to_modify (SoupSoapMessage *msg, EGwSendOptions *n
 }
 
 EGwSendOptions *
-e_gw_sendoptions_new ()
+e_gw_sendoptions_new (void)
 {
 	EGwSendOptions *opts;
 

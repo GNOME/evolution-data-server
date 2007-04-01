@@ -1,3 +1,30 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Various code clean-ups from Kjartan Maraas.
+
+	* libebook/e-book.c (e_book_new_system_address_book),
+	(e_book_new_default_addressbook):
+	* libebook/e-vcard.c (e_vcard_attribute_get_param),
+	(_evc_base64_encode_simple):
+	* backends/ldap/e-book-backend-ldap.c
+	(e_book_backend_ldap_get_contact_list), (member_compare):
+	* libedata-book/e-book-backend-db-cache.c
+	(e_book_backend_db_cache_add_contact):
+	* tests/ebook/test-ebook.c (print_email):
+	* tests/ebook/test-ebook-async.c (print_email):
+	Fix some compiler warnings.
+
+	* backends/ldap/e-book-backend-ldap.c:
+	Disable some unused functions.
+
+	* libedata-book/e-book-backend-cache.c
+	(e_book_backend_cache_constructor):
+	Use the global 'parent_class' variable.
+
+	* libedata-book/e-book-backend-cache.c
+	(e_book_backend_cache_set_time):
+	Return a duplicated string.
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c:

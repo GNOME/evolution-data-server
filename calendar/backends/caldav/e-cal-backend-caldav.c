@@ -1859,7 +1859,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 		case ICAL_METHOD_REPLY:
 
 		if (online) {
-			CalDAVObject object = { 0, };
+			CalDAVObject object = { NULL, };
 
 			if (ccomp) {
 				const char *href;

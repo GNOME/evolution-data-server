@@ -143,12 +143,8 @@ e_book_backend_cache_constructor (GType type,
 	GObject *obj;
 	const char *uri;
 	char *cache_file;
-	EBookBackendCacheClass *klass;
-	GObjectClass *parent_class;
 
 	/* Invoke parent constructor. */
-	klass = E_BOOK_BACKEND_CACHE_CLASS (g_type_class_peek (E_TYPE_BOOK_BACKEND_CACHE));
-	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
 	obj = parent_class->constructor (type,
 					 n_construct_properties,
 					 construct_properties);
@@ -509,7 +505,7 @@ e_book_backend_cache_set_time (EBookBackendCache *cache, const char *t)
 char *
 e_book_backend_cache_get_time (EBookBackendCache *cache)
 {
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), 0);
-	return e_file_cache_get_object (E_FILE_CACHE (cache), "last_update_time");
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);
+	return g_strdup (e_file_cache_get_object (E_FILE_CACHE (cache), "last_update_time"));
 }
 

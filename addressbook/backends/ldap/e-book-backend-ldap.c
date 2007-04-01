@@ -603,7 +603,7 @@ check_schema_support (EBookBackendLDAP *bl)
 
 #ifndef SUNLDAP
 static void
-get_ldap_library_info ()
+get_ldap_library_info (void)
 {
 	LDAPAPIInfo info;
 	LDAP *ldap;
@@ -2425,6 +2425,10 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 				     contact_list_handler, contact_list_dtor);
 			if (enable_debug) {
 				g_get_current_time (&end);
+
+				diff = end.tv_sec * 1000 + end.tv_usec/1000;
+				diff -= start.tv_sec * 1000 + start.tv_usec/1000;
+
 				printf ("e_book_backend_ldap_get_contact_list invoked contact_list_handler ");
 				printf ("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
 			}
@@ -2641,7 +2645,7 @@ member_compare (EContact *contact_new, EContact *contact_current)
 								if (dn_cur) {
 									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
 										found = TRUE;
-										g_list_remove (members_cur, attr_cur);
+										members_cur = g_list_remove (members_cur, attr_cur);
 										goto next_member;
 									}
 								}
@@ -4640,6 +4644,7 @@ e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 	return g_strdup("net,anon-access,do-initial-query,contact-lists");
 }
 
+#if 0
 static void
 stop_views (EBookBackend *backend)
 {
@@ -4677,6 +4682,7 @@ start_views (EBookBackend *backend)
 	g_object_unref (iter);
 	g_object_unref (book_views);
 }
+#endif
 
 static void 
 e_book_backend_ldap_set_mode (EBookBackend *backend, int mode)

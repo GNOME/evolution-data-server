@@ -369,7 +369,7 @@ e_folder_type_registry_get_display_name_for_type (EFolderTypeRegistry *folder_ty
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
 	if (folder_type == NULL)
-		return FALSE;
+		return NULL;
 
 	return folder_type->display_name;
 }
@@ -385,7 +385,7 @@ e_folder_type_registry_get_description_for_type (EFolderTypeRegistry *folder_typ
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
 	if (folder_type == NULL)
-		return FALSE;
+		return NULL;
 
 	return folder_type->description;
 }

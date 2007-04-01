@@ -1,3 +1,26 @@
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Various code clean-ups from Kjartan Maraas.
+
+	* storage/exchange-account.h (exchange_account_set_password):
+	Function declaration should not be subject to conditional compilation.
+
+	* storage/e-folder-type-registry.c
+	(e_folder_type_registry_get_display_name_for_type),
+	(e_folder_type_registry_get_description_for_type):
+	Return NULL, not FALSE.
+
+	* lib/e2k-rule-xml.c: Declare private arrays as static.
+
+	* lib/e2k-context.c (e2k_context_new), (e2k_debug_print_request),
+	(e2k_debug_print_response): Use NULL instead of zero (0).
+
+	* lib/e2k-context.c (do_notification):
+	g_io_channel_read_chars() returns GIOStatus, not GIOError.
+
+	* lib/e2k-autoconfig.c (e2k_autoconfig_check_exchange):
+	Fix a compiler warning.
+
 2007-03-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* storage/e-folder-exchange.c:

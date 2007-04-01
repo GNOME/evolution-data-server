@@ -340,7 +340,7 @@ e_trie_search (ETrie *trie, const char *buffer, size_t buflen, int *matched_id)
 	const unsigned char *inptr, *inend, *prev, *pat;
 	register size_t inlen = buflen;
 	struct _trie_state *q;
-	struct _trie_match *m;
+	struct _trie_match *m = NULL; /* init to please gcc */
 	gunichar c;
 	
 	inptr = (const unsigned char *) buffer;

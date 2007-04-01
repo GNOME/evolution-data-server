@@ -281,7 +281,7 @@ e_book_view_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatu
  * Return value: a new #EBookViewListener
  */
 EBookViewListener *
-e_book_view_listener_new ()
+e_book_view_listener_new (void)
 {
 	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 	static PortableServer_POA poa = NULL;

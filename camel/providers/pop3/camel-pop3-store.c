@@ -154,7 +154,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	guint32 flags = 0;
 	int clean_quit = TRUE;
 	int ret;
-	gchar *delete_days;
+	const gchar *delete_days;
 	
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL

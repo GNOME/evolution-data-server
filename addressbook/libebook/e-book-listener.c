@@ -399,7 +399,7 @@ impl_BookListener_respond_progress (PortableServer_Servant servant,
  * Returns: a new #EBookListener
  */
 EBookListener *
-e_book_listener_new ()
+e_book_listener_new (void)
 {
 	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 	static PortableServer_POA poa = NULL;

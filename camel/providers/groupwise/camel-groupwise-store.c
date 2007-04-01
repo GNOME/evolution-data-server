@@ -328,6 +328,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 	return FALSE;
 
 }
+#if 0
 static void
 groupwise_disconnect_cleanup (CamelService *service, gboolean clean, CamelException *ex)
 {
@@ -381,6 +382,7 @@ groupwise_disconnect_cleanup (CamelService *service, gboolean clean, CamelExcept
 		groupwise_store->priv = NULL;
 	}
 }
+#endif
 
 static gboolean
 groupwise_disconnect (CamelService *service, gboolean clean, CamelException *ex)
@@ -1070,6 +1072,7 @@ struct _store_refresh_msg {
 	CamelException ex;
 };
 
+#if 0
 static void
 store_refresh_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
 {
@@ -1101,6 +1104,7 @@ static CamelSessionThreadOps store_refresh_ops = {
 	store_refresh_refresh,
 	store_refresh_free,
 };
+#endif
 
 /*** Thread stuff ends ***/
 

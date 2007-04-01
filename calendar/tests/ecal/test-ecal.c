@@ -445,7 +445,7 @@ test_e_cal_remove (ECal *ecal, const char *uri)
 #endif
 
 static char *
-test_new_system_calendar()
+test_new_system_calendar(void)
 {
 	ECal *cal;
 	char *uri;
@@ -462,7 +462,7 @@ test_new_system_calendar()
 }
 
 static char *
-test_new_system_tasks()
+test_new_system_tasks(void)
 {
 	ECal *cal;
 	char *uri;
@@ -479,7 +479,7 @@ test_new_system_tasks()
 }
 
 static char *
-test_new_system_memos()
+test_new_system_memos(void)
 {
 	ECal *cal;
 	char *uri;

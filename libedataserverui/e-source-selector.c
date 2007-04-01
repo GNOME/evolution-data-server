@@ -737,7 +737,7 @@ group_search_function   (GtkTreeModel *model,
 			 gpointer dummy)
 {
 	void *data;
-	char *name=NULL;
+	const char *name = NULL;
 	gboolean status = TRUE;
 	
 	gtk_tree_model_get (model, iter, 0, &data, -1);

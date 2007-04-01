@@ -163,7 +163,7 @@ struct {
 static void e_dlist_init(EDList *v)
 {
         v->head = (EDListNode *)&v->tail;
-        v->tail = 0;
+        v->tail = NULL;
         v->tailpred = (EDListNode *)&v->head;
 }
 

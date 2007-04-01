@@ -3767,7 +3767,7 @@ startup_mainloop (void *arg)
 
 /* one-time start up for libebook */
 static void
-e_book_activate()
+e_book_activate(void)
 {
 	static GStaticMutex e_book_lock = G_STATIC_MUTEX_INIT;
 	static gboolean activated = FALSE;
@@ -3837,7 +3837,7 @@ e_book_new_from_uri (const char *uri, GError **error)
 	ESource *source;
 	EBook *book;
 
-	e_return_error_if_fail (uri,                      E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG);
 
 	group = e_source_group_new ("", uri);
 	source = e_source_new ("", "");
@@ -3874,7 +3874,7 @@ e_book_new_system_addressbook    (GError **error)
 	if (!e_book_get_addressbooks (&sources, &err)) {
 		if (error)
 			g_propagate_error (error, err);
-		return FALSE;
+		return NULL;
 	}
 
 	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
@@ -3944,7 +3944,7 @@ e_book_new_default_addressbook   (GError **error)
 	if (!e_book_get_addressbooks (&sources, &err)) {
 		if (error)
 			g_propagate_error (error, err);
-		return FALSE;
+		return NULL;
 	}
 
 	for (g = e_source_list_peek_groups (sources); g; g = g->next) {

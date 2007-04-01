@@ -328,7 +328,7 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 #ifdef G_OS_WIN32
 	if (url->protocol && !strcmp(url->protocol, "file"))
 		return g_filename_to_uri(url->path, url->host, NULL);
-#endif G_OS_WIN32
+#endif
 	
 	str = g_string_sized_new (20);
 	

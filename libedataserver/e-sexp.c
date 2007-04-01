@@ -583,7 +583,7 @@ term_eval_castint(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 		r->value.number = argv[0]->value.bool != 0;
 		break;
 	case ESEXP_RES_STRING:
-		r->value.number = strtoul(argv[0]->value.string, 0, 10);
+		r->value.number = strtoul(argv[0]->value.string, NULL, 10);
 		break;
 	default:
 		e_sexp_result_free(f, r);
@@ -1089,7 +1089,7 @@ e_sexp_finalise(void *o)
 	e_memchunk_destroy(s->term_chunks);
 	e_memchunk_destroy(s->result_chunks);
 
-	g_scanner_scope_foreach_symbol(s->scanner, 0, free_symbol, 0);
+	g_scanner_scope_foreach_symbol(s->scanner, 0, free_symbol, NULL);
 	g_scanner_destroy(s->scanner);
 
 #ifdef E_SEXP_IS_G_OBJECT
