@@ -412,15 +412,24 @@ pixbuf_cell_data_func (GtkTreeViewColumn *column,
 			      NULL);
 	} else {	
 		ESource *source;
-		guint32 color;
 		GdkPixbuf *pixbuf = NULL;
+		const gchar *color_spec;
+		GdkColor color;
 
 		g_assert (E_IS_SOURCE (data));
 		source = E_SOURCE (data);
 		
-		if (e_source_get_color (source, &color)) {
+		color_spec = e_source_peek_color_spec (source);
+		if (color_spec != NULL && gdk_color_parse (color_spec, &color)) {
+			guint32 rgba;
+
 			pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, 16, 16);
-			gdk_pixbuf_fill (pixbuf, color << 8);
+
+			rgba = (((color.red & 0xff00) << 8) |
+				((color.green & 0xff00)) |
+				((color.blue & 0xff00) >> 8)) << 8;
+
+			gdk_pixbuf_fill (pixbuf, rgba);
 		}
 			
 		g_object_set (renderer,

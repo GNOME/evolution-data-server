@@ -91,17 +91,16 @@ static void
 dump_source (ESource *source)
 {
 	char *uri = e_source_get_uri (source);
-	gboolean has_color;
-	guint32 color;
+	const gchar *color_spec;
 
 	g_print ("\tSource %s\n", e_source_peek_uid (source));
 	g_print ("\t\tname: %s\n", e_source_peek_name (source));
 	g_print ("\t\trelative_uri: %s\n", e_source_peek_relative_uri (source));
 	g_print ("\t\tabsolute_uri: %s\n", uri);
 
-	has_color = e_source_get_color (source, &color);
-	if (has_color)
-		g_print ("\t\tcolor: %06x\n", color);
+	color_spec = e_source_peek_color_spec (source);
+	if (color_spec != NULL)
+		g_print ("\t\tcolor: %s\n", color_spec);
 
 	g_print ("\t\tproperties:\n");
 	e_source_foreach_property (source, (GHFunc) dump_property, NULL);
@@ -429,7 +428,6 @@ on_idle_do_stuff (void *unused_data)
 
 	if (set_color_arg != NULL) {
 		ESource *source;
-		guint32 color;
 
 		if (add_source_arg == NULL && source_arg == NULL) {
 			fprintf (stderr,
@@ -442,8 +440,7 @@ on_idle_do_stuff (void *unused_data)
 		else
 			source = e_source_list_peek_source_by_uid (list, source_arg);
 
-		sscanf (set_color_arg, "%06x", &color);
-		e_source_set_color (source, color);
+		e_source_set_color_spec (source, set_color_arg);
 		e_source_list_sync (list, NULL);
 	}
 
@@ -461,7 +458,7 @@ on_idle_do_stuff (void *unused_data)
 		else
 			source = e_source_list_peek_source_by_uid (list, source_arg);
 
-		e_source_unset_color (source);
+		e_source_set_color_spec (source, NULL);
 		e_source_list_sync (list, NULL);
 	}
 

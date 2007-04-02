@@ -82,20 +82,27 @@ void  e_source_set_relative_uri  (ESource      *source,
 				  const char   *relative_uri);
 void  e_source_set_absolute_uri  (ESource      *source,
 				  const char   *absolute_uri);
+void  e_source_set_color_spec    (ESource      *source,
+				  const gchar  *color_spec);
 void  e_source_set_readonly      (ESource      *source,
 				  gboolean      readonly);
+#ifndef EDS_DISABLE_DEPRECATED
 void  e_source_set_color         (ESource      *source,
 				  guint32       color);
 void  e_source_unset_color       (ESource      *source);
+#endif
 
 ESourceGroup *e_source_peek_group         (ESource *source);
 const char   *e_source_peek_uid           (ESource *source);
 const char   *e_source_peek_name          (ESource *source);
 const char   *e_source_peek_relative_uri  (ESource *source);
 const char   *e_source_peek_absolute_uri  (ESource *source);
+const char   *e_source_peek_color_spec    (ESource *source);
 gboolean      e_source_get_readonly       (ESource *source);
+#ifndef EDS_DISABLE_DEPRECATED
 gboolean      e_source_get_color          (ESource *source,
 					   guint32 *color_return);
+#endif
 
 char *e_source_get_uri  (ESource *source);
 

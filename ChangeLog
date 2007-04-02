@@ -1,5 +1,21 @@
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
+	* libedataserver/e-source.c:
+	Store colors as a string specification instead of an integer.
+	Introduce new color API and deprecate the old. (#373117)
+
+	New API: e_source_set_color_spec()
+	         e_source_peek_color_spec()
+
+	Old API: e_source_set_color()
+	         e_source_unset_color()
+	         e_source_get_color()
+
+	* libedataserver/test-source-list.c:
+	Use the new ESource color API. (#373117)
+
+2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
 	* libedataserver/e-account.c (receipt_policy_to_str):
 	* libedataserver/e-iconv.c (e_dlist_init):
 	* libedataserver/e-list-iterator.c (e_list_iterator_insert):
