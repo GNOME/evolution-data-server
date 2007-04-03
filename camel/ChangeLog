@@ -1,3 +1,10 @@
+2007-04-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #322105
+
+	* camel-folder-summary.c: (info_set_flags): Fix for non-junk messages 
+	to learn ham.
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-mime-utils.c (rfc2047_encode_word):
