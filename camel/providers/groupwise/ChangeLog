@@ -1,3 +1,14 @@
+2007-04-03  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message),
+	(groupwise_msg_set_recipient_list), (gw_update_cache):
+	* camel-groupwise-store.c: (convert_to_folder_info):
+	Removed some ugly hacks and work-arounds made for the 
+	old implementation of the status-tracking. 
+
+	Sent Items will have cache hereafter and GroupWise mailer
+	should be more stable here-after.
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-groupwise-store.c:

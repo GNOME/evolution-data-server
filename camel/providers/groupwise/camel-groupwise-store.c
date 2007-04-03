@@ -875,19 +875,9 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	if (e_gw_container_get_is_shared_by_me (container))
 		fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
 
-	/*if (type == E_GW_CONTAINER_TYPE_INBOX) {
-		fi->total = -1;
-		fi->unread = -1;
-	} else	if (type == E_GW_CONTAINER_TYPE_TRASH) {*/
-			
-	if (type == E_GW_CONTAINER_TYPE_TRASH || type == E_GW_CONTAINER_TYPE_SENT) {
-		fi->total = e_gw_container_get_total_count (container);
-		fi->unread = 0; 
-		/* Done with a belief that user wont mark something as unread in Trash and Sent Items */
-	} else {
-		fi->total = e_gw_container_get_total_count (container);
-		fi->unread = e_gw_container_get_unread_count (container);
-	}
+	fi->total = e_gw_container_get_total_count (container);
+	fi->unread = e_gw_container_get_unread_count (container);
+
 	si->info.total = fi->total;
 	si->info.unread = fi->unread;
 	si->info.flags = fi->flags;
