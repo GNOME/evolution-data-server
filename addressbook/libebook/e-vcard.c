@@ -644,6 +644,8 @@ parse (EVCard *evc, const char *str)
 		e_vcard_attribute_free (attr);
 
 	g_free (buf);
+
+	evc->priv->attributes = g_list_reverse (evc->priv->attributes);
 }
 
 /**
@@ -996,7 +998,7 @@ e_vcard_attribute_new (const char *attr_group, const char *attr_name)
 {
 	EVCardAttribute *attr;
 
-	attr = g_new0 (EVCardAttribute, 1);
+	attr = g_slice_new0 (EVCardAttribute);
 
 	attr->group = g_strdup (attr_group);
 	attr->name = g_strdup (attr_name);
@@ -1022,7 +1024,7 @@ e_vcard_attribute_free (EVCardAttribute *attr)
 
 	e_vcard_attribute_remove_params (attr);
 
-	g_free (attr);
+	g_slice_free (EVCardAttribute, attr);
 }
 
 /**
@@ -1041,8 +1043,7 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 
 	g_return_val_if_fail (attr != NULL, NULL);
 
-	a = e_vcard_attribute_new (e_vcard_attribute_get_group (attr),
-				   e_vcard_attribute_get_name (attr));
+	a = e_vcard_attribute_new (attr->group, attr->name);
 
 	for (p = attr->values; p; p = p->next)
 		e_vcard_attribute_add_value (a, p->data);
@@ -1123,7 +1124,7 @@ e_vcard_add_attribute (EVCard *evc, EVCardAttribute *attr)
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr != NULL);
 
-	evc->priv->attributes = g_list_append (evc->priv->attributes, attr);
+	evc->priv->attributes = g_list_prepend (evc->priv->attributes, attr);
 }
 
 /**
@@ -1332,7 +1333,8 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
 EVCardAttributeParam*
 e_vcard_attribute_param_new (const char *name)
 {
-	EVCardAttributeParam *param = g_new0 (EVCardAttributeParam, 1);
+	EVCardAttributeParam *param = g_slice_new (EVCardAttributeParam);
+	param->values = NULL;
 	param->name = g_strdup (name);
 
 	return param;
@@ -1353,7 +1355,7 @@ e_vcard_attribute_param_free (EVCardAttributeParam *param)
 
 	e_vcard_attribute_param_remove_values (param);
 
-	g_free (param);
+	g_slice_free (EVCardAttributeParam, param);
 }
 
 /**
@@ -1395,7 +1397,7 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 	g_return_if_fail (attr != NULL);
 	g_return_if_fail (param != NULL);
 
-	attr->params = g_list_append (attr->params, param);
+	attr->params = g_list_prepend (attr->params, param);
 
 	/* we handle our special encoding stuff here */
 
@@ -1687,15 +1689,17 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 		switch (attr->encoding) {
 		case EVC_ENCODING_RAW:
 			for (l = attr->values; l; l = l->next)
-				attr->decoded_values = g_list_append (attr->decoded_values, g_string_new ((char*)l->data));
+				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new ((char*)l->data));
+			attr->decoded_values = g_list_reverse (attr->decoded_values);
 			break;
 		case EVC_ENCODING_BASE64:
 			for (l = attr->values; l; l = l->next) {
 				char *decoded = g_strdup ((char*)l->data);
 				int len = _evc_base64_decode_simple (decoded, strlen (decoded));
-				attr->decoded_values = g_list_append (attr->decoded_values, g_string_new_len (decoded, len));
+				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new_len (decoded, len));
 				g_free (decoded);
 			}
+			attr->decoded_values = g_list_reverse (attr->decoded_values);
 			break;
 		case EVC_ENCODING_QP:
 			g_warning ("need to implement quoted printable decoding");

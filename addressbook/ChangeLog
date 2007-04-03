@@ -1,3 +1,9 @@
+2007-04-03  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-vcard.c:
+	Use slice allocator, g_list_prepend/reverse and some other
+	micro-optimisations (#425464).
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Various code clean-ups from Kjartan Maraas.
