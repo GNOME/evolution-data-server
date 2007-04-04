@@ -38,7 +38,6 @@
 #include <libedataserverui/e-book-auth-util.h>
 #include <libedataserver/e-sexp.h>
 
-#include <libedataserverui/e-data-server-ui-marshal.h>
 #include "e-name-selector-entry.h"
 
 enum {
@@ -155,7 +154,7 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_c
 					 G_STRUCT_OFFSET (ENameSelectorEntryClass, updated),
 					 NULL,
 					 NULL,
-					 e_data_server_ui_marshal_VOID__POINTER,
+					 g_cclosure_marshal_VOID__POINTER,
 					 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	g_type_class_add_private (object_class, sizeof(ENameSelectorEntryPrivate));

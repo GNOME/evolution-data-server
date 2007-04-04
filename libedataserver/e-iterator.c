@@ -9,7 +9,6 @@
 #include <config.h>
 
 #include "e-iterator.h"
-#include "e-data-server-marshal.h"
 
 static void e_iterator_init (EIterator *card);
 static void e_iterator_class_init (EIteratorClass *klass);
@@ -36,7 +35,7 @@ e_iterator_class_init (EIteratorClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EIteratorClass, invalidate),
 			      NULL, NULL,
-			      e_data_server_marshal_NONE__NONE, /* XXX need a new marshaller here */
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	klass->invalidate = NULL;

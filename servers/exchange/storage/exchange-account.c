@@ -34,7 +34,6 @@
 #include "e2k-autoconfig.h"
 #include "e2k-encoding-utils.h"
 #include "e2k-kerberos.h"
-#include "e2k-marshal.h"
 #include "e2k-propnames.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
@@ -121,7 +120,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeAccountClass, connected),
 			      NULL, NULL,
-			      e2k_marshal_NONE__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      E2K_TYPE_CONTEXT);
 	signals[NEW_FOLDER] =
@@ -130,7 +129,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeAccountClass, new_folder),
 			      NULL, NULL,
-			      e2k_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 	signals[REMOVED_FOLDER] =
@@ -139,7 +138,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeAccountClass, removed_folder),
 			      NULL, NULL,
-			      e2k_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }

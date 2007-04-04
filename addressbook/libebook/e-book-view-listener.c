@@ -14,7 +14,6 @@
 #include "e-book-view-listener.h"
 #include "e-book-view.h"
 #include "e-contact.h"
-#include "e-book-marshal.h"
 
 #define d(x)
 
@@ -384,7 +383,7 @@ e_book_view_listener_class_init (EBookViewListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewListenerClass, response),
 			      NULL, NULL,
-			      e_book_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE,
 			      1, G_TYPE_POINTER);
 

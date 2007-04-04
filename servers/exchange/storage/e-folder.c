@@ -25,7 +25,6 @@
 #endif
 
 #include "e-folder.h"
-#include "e-shell-marshal.h"
 
 #include <string.h>
 #include <glib.h>
@@ -118,7 +117,7 @@ e_folder_class_init (EFolderClass *klass)
 					 G_SIGNAL_RUN_FIRST,
 					 G_STRUCT_OFFSET (EFolderClass, changed),
 					 NULL, NULL,
-					 e_shell_marshal_NONE__NONE,
+					 g_cclosure_marshal_VOID__VOID,
 					 G_TYPE_NONE, 0);
 
 	signals[NAME_CHANGED] = g_signal_new ("name_changed",
@@ -126,7 +125,7 @@ e_folder_class_init (EFolderClass *klass)
 					      G_SIGNAL_RUN_FIRST,
 					      G_STRUCT_OFFSET (EFolderClass, name_changed),
 					      NULL, NULL,
-					      e_shell_marshal_NONE__NONE,
+					      g_cclosure_marshal_VOID__VOID,
 					      G_TYPE_NONE, 0);
 }
 

@@ -26,14 +26,10 @@ $(CORBA_GENERATED_H): $(idls)
 	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
 $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
-MARSHAL_GENERATED = e-data-book-marshal.c e-data-book-marshal.h
-@EVO_MARSHAL_RULE@
-
 # The library
 lib_LTLIBRARIES = libedata-book-1.2.la
 
 libedata_book_1_2_la_SOURCES =				\
-	$(MARSHAL_GENERATED)				\
 	$(CORBA_GENERATED_C)				\
 	e-book-backend-factory.c			\
 	e-book-backend-sexp.c				\
@@ -78,12 +74,11 @@ libedata_bookinclude_HEADERS =				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-book-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(CORBA_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
-	e-data-book-marshal.list			\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 dist-hook:

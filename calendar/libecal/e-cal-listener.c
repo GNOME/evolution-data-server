@@ -816,7 +816,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, open),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);	
 	signals[REMOVE] =
 		g_signal_new ("remove",
@@ -824,7 +824,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, remove),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[CREATE_OBJECT] =
 		g_signal_new ("create_object",
@@ -840,7 +840,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, modify_object),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);	
 	signals[REMOVE_OBJECT] =
 		g_signal_new ("remove_object",
@@ -848,7 +848,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, remove_object),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[DISCARD_ALARM] =
 		g_signal_new ("discard_alarm",
@@ -856,7 +856,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, discard_alarm),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[RECEIVE_OBJECTS] =
 		g_signal_new ("receive_objects",
@@ -864,7 +864,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, receive_objects),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[SEND_OBJECTS] =
 		g_signal_new ("send_objects",
@@ -928,7 +928,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, set_default_timezone),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[GET_CHANGES] =
 		g_signal_new ("get_changes",
@@ -960,7 +960,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, auth_required),
 			      NULL, NULL,
-			      e_cal_marshal_NONE__NONE,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 	signals[BACKEND_ERROR] =
 		g_signal_new ("backend_error",
@@ -968,7 +968,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ECalListenerClass, backend_error),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 

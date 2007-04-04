@@ -26,7 +26,6 @@ lib_LTLIBRARIES =						\
 	libexchange-storage-1.2.la
 
 libexchange_storage_1_2_la_SOURCES =				\
-	$(MARSHAL_GENERATED)					\
 	e-folder.c						\
 	e-folder.h						\
 	e-folder-exchange.c					\
@@ -59,22 +58,6 @@ libexchange_storage_1_2_la_SOURCES =				\
 	exchange-oof.h						\
 	exchange-types.h					
 
-e-shell-marshal.h: e-shell-marshal.list
-	( @GLIB_GENMARSHAL@ --prefix=e_shell_marshal $(srcdir)/e-shell-marshal.list --header > e-shell-marshal.h.tmp \
-	&& mv e-shell-marshal.h.tmp e-shell-marshal.h ) \
-	|| ( rm -f e-shell-marshal.h.tmp && exit 1 )
-
-e-shell-marshal.c: e-shell-marshal.h
-	( (echo '#include "e-shell-marshal.h"'; @GLIB_GENMARSHAL@ --prefix=e_shell_marshal $(srcdir)/e-shell-marshal.list --body) > e-shell-marshal.c.tmp \
-	&& mv e-shell-marshal.c.tmp e-shell-marshal.c ) \
-	|| ( rm -f e-shell-marshal.c.tmp && exit 1 )
-
-MARSHAL_GENERATED = e-shell-marshal.c e-shell-marshal.h
-
-BUILT_SOURCES = $(MARSHAL_GENERATED)
-CLEANFILES = $(MARSHAL_GENERATED)
-NODIST_FILES = $(MARSHAL_GENERATED)
-
 libexchange_storage_1_2_la_LIBADD =				\
 	$(WIN32_BOOTSTRAP_LIBS)					\
 	$(top_builddir)/servers/exchange/lib/libexchange.la	\
@@ -96,7 +79,6 @@ libexchange_storageincludedir = $(privincludedir)/exchange
 libexchange_storageinclude_HEADERS = 				\
 	e-folder.h						\
 	e-folder-exchange.h					\
-	e-shell-marshal.h					\
 	e-storage.h						\
 	exchange-account.h					\
 	exchange-constants.h					\
@@ -115,7 +97,6 @@ libexchange_storageinclude_HEADERS = 				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libexchange-storage-$(API_VERSION).pc
 
-EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
-		e-shell-marshal.list
+EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

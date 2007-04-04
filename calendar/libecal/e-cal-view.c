@@ -263,7 +263,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_added),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[OBJECTS_MODIFIED] =
 		g_signal_new ("objects_modified",
@@ -271,7 +271,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_modified),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[OBJECTS_REMOVED] =
 		g_signal_new ("objects_removed",
@@ -279,7 +279,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_removed),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[VIEW_PROGRESS] =
 		g_signal_new ("view_progress",
@@ -295,7 +295,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, view_done),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 }
 

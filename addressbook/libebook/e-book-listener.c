@@ -13,7 +13,6 @@
 #include <bonobo/bonobo-main.h>
 #include "e-contact.h"
 #include "e-book-listener.h"
-#include "e-book-marshal.h"
 
 #define d(x)
 
@@ -461,7 +460,7 @@ e_book_listener_class_init (EBookListenerClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookListenerClass, response),
 			      NULL, NULL,
-			      e_book_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 

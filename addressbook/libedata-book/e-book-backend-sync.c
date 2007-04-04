@@ -10,7 +10,6 @@
 #include <config.h>
 #endif
 
-#include "e-data-book-marshal.h"
 #include "e-book-backend-sync.h"
 
 struct _EBookBackendSyncPrivate {

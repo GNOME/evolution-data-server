@@ -1,3 +1,11 @@
+2007-04-04  Ross Burton  <ross@openedhand.com>
+
+	* libecal/e-cal-marshal.list:
+	* libecal/e-cal-listener.c:
+	* libecal/e-cal-view-listener.c:
+	* libecal/e-cal-view.c:
+	Remove marshallers that are in GLib (#400970).
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libedata-cal/e-data-cal-factory.c (get_backend_factory):

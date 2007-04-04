@@ -27,7 +27,6 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 
-#include "e-data-server-ui-marshal.h"
 #include "e-source-option-menu.h"
 
 /* We set data on each menu item specifying the corresponding ESource using this key.  */
@@ -239,7 +238,7 @@ e_source_option_menu_class_init (ESourceOptionMenuClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceOptionMenuClass, source_selected),
 			      NULL, NULL,
-			      e_data_server_ui_marshal_VOID__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }

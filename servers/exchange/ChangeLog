@@ -1,3 +1,15 @@
+2007-04-04  Ross Burton  <ross@openedhand.com>
+
+	* storage/exchange-hierarchy.c:
+	* storage/e-shell-marshal.list:
+	* storage/exchange-account.c:
+	* storage/e-storage.c:
+	* storage/exchange-hierarchy-somedav.c:
+	* storage/e-folder.c:
+	* storage/Makefile.am:
+	* lib/e2k-marshal.list:
+	Remove marshallers that are in GLib already (#400970).
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Various code clean-ups from Kjartan Maraas.

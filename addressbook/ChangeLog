@@ -1,3 +1,20 @@
+2007-04-04  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-book-listener.c:
+	* libebook/e-destination.c:
+	* libebook/e-book-view-listener.c:
+	* libebook/e-book.c:
+	* libebook/e-book-view.c:
+	* libebook/Makefile.am:
+	* libebook/e-book-marshal.list:
+	* libedata-book/e-data-book-marshal.list:
+	* libedata-book/e-book-backend.c:
+	* libedata-book/e-book-backend-sync.c:
+	* libedata-book/e-data-book.c:
+	* libedata-book/Makefile.am:
+	* libedata-book/e-data-book-factory.c:
+	Remove marshallers that are in GLib (#400970).
+
 2007-04-03  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-vcard.c:

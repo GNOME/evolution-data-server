@@ -17,7 +17,6 @@
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-component-listener.h>
 
-#include "e-book-marshal.h"
 #include "e-book-listener.h"
 
 #define d(x)
@@ -4066,7 +4065,7 @@ e_book_class_init (EBookClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookClass, writable_status),
 			      NULL, NULL,
-			      e_book_marshal_NONE__BOOL,
+			      g_cclosure_marshal_VOID__BOOLEAN,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
 	
@@ -4076,7 +4075,7 @@ e_book_class_init (EBookClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookClass, connection_status),
 			      NULL, NULL,
-			      e_book_marshal_NONE__BOOL,
+			      g_cclosure_marshal_VOID__BOOLEAN,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
 
@@ -4086,7 +4085,7 @@ e_book_class_init (EBookClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookClass, auth_required),
 			      NULL, NULL,
-			      e_book_marshal_NONE__NONE,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	e_book_signals [BACKEND_DIED] =
@@ -4095,7 +4094,7 @@ e_book_class_init (EBookClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookClass, backend_died),
 			      NULL, NULL,
-			      e_book_marshal_NONE__NONE,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	object_class->dispose = e_book_dispose;

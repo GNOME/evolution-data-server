@@ -1,3 +1,14 @@
+2007-04-04  Ross Burton  <ross@burtonini.com>
+
+	* libedataserver/e-source-group.c:
+	* libedataserver/e-data-server-marshal.list:
+	* libedataserver/e-account-list.c:
+	* libedataserver/e-source-list.c:
+	* libedataserver/e-iterator.c:
+	* libedataserver/e-source.c:
+	* libedataserver/Makefile.am:
+	Remove marshallers that are in GLib (#400970).
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libedataserver/e-source.c:

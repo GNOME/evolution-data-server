@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include "e-data-server-marshal.h"
 #include "e-uid.h"
 #include "e-source.h"
 
@@ -123,7 +122,7 @@ e_source_class_init (ESourceClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceClass, changed),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 }
 

@@ -27,7 +27,6 @@
 #include "e-storage.h"
 
 #include "e-folder-tree.h"
-#include "e-shell-marshal.h"
 
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-data-server-util.h>
@@ -283,7 +282,7 @@ e_storage_class_init (EStorageClass *class)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EStorageClass, new_folder),
 			      NULL, NULL,
-			      e_shell_marshal_NONE__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
 	signals[UPDATED_FOLDER] =
@@ -292,7 +291,7 @@ e_storage_class_init (EStorageClass *class)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EStorageClass, updated_folder),
 			      NULL, NULL,
-			      e_shell_marshal_NONE__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
 	signals[REMOVED_FOLDER] =
@@ -301,7 +300,7 @@ e_storage_class_init (EStorageClass *class)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EStorageClass, removed_folder),
 			      NULL, NULL,
-			      e_shell_marshal_NONE__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
 }

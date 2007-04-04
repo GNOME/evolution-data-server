@@ -716,7 +716,7 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceSelectorClass, selection_changed),
 			      NULL, NULL,
-			      e_data_server_ui_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	signals[PRIMARY_SELECTION_CHANGED] = 
@@ -725,7 +725,7 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceSelectorClass, primary_selection_changed),
 			      NULL, NULL,
-			      e_data_server_ui_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 	signals[POPUP_EVENT] =
 		g_signal_new ("popup_event",

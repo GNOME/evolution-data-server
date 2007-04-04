@@ -13,7 +13,6 @@
 #include <bonobo/bonobo-arg.h>
 #include <libedataserver/e-list.h>
 #include <libebook/e-contact.h>
-#include "e-data-book-marshal.h"
 #include "e-data-book-view.h"
 #include "e-book-backend.h"
 #include "e-book-backend-sexp.h"

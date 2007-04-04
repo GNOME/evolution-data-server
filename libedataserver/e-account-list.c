@@ -23,7 +23,6 @@
 
 #include "e-account-list.h"
 #include "e-account.h"
-#include "e-data-server-marshal.h"
 
 #include <string.h>
 
@@ -62,7 +61,7 @@ e_account_list_class_init (EAccountListClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EAccountListClass, account_added),
 			      NULL, NULL,
-			      e_data_server_marshal_NONE__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      E_TYPE_ACCOUNT);
 	signals[ACCOUNT_CHANGED] =
@@ -71,7 +70,7 @@ e_account_list_class_init (EAccountListClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EAccountListClass, account_changed),
 			      NULL, NULL,
-			      e_data_server_marshal_NONE__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      E_TYPE_ACCOUNT);
 	signals[ACCOUNT_REMOVED] =
@@ -80,7 +79,7 @@ e_account_list_class_init (EAccountListClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EAccountListClass, account_removed),
 			      NULL, NULL,
-			      e_data_server_marshal_NONE__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      E_TYPE_ACCOUNT);
 }

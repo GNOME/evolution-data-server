@@ -1,3 +1,12 @@
+2007-04-04  Ross Burton  <ross@openedhand.com>
+
+	* e-source-selector.c:
+	* e-name-selector-entry.c:
+	* e-data-server-ui-marshal.list:
+	* e-name-selector-model.c:
+	* e-source-option-menu.c:
+	Remove marshallers that are in GLib (#400970).
+
 2007-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-source-selector.c (pixbuf_cell_data_func):

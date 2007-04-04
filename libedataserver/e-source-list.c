@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include "e-data-server-marshal.h"
 #include "e-source-list.h"
 
 struct _ESourceListPrivate {
@@ -307,7 +306,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, changed),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	signals[GROUP_REMOVED] = 
@@ -316,7 +315,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, group_removed),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
@@ -326,7 +325,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ESourceListClass, group_added),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__OBJECT,
+			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }

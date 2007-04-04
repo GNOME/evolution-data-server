@@ -29,7 +29,6 @@
 #include "exchange-account.h"
 #include "e-folder-exchange.h"
 #include "e2k-propnames.h"
-#include "e2k-marshal.h"
 #include "e2k-uri.h"
 #include "e2k-utils.h"
 
@@ -78,7 +77,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeHierarchySomeDAVClass, href_unreadable),
 			      NULL, NULL,
-			      e2k_marshal_NONE__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
 }

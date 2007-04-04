@@ -29,7 +29,6 @@
 
 #include "exchange-hierarchy.h"
 #include "e-folder-exchange.h"
-#include "e2k-marshal.h"
 
 enum {
 	NEW_FOLDER,
@@ -91,7 +90,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeHierarchyClass, new_folder),
 			      NULL, NULL,
-			      e2k_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 	signals[REMOVED_FOLDER] =
@@ -100,7 +99,7 @@ class_init (GObjectClass *object_class)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ExchangeHierarchyClass, removed_folder),
 			      NULL, NULL,
-			      e2k_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 }

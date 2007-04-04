@@ -27,7 +27,6 @@
 #include <string.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-data-server-marshal.h>
 #include "e-name-selector-model.h"
 
 typedef struct {
@@ -113,7 +112,7 @@ e_name_selector_model_class_init (ENameSelectorModelClass *name_selector_model_c
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ENameSelectorModelClass, section_added),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	signals [SECTION_REMOVED] =
@@ -122,7 +121,7 @@ e_name_selector_model_class_init (ENameSelectorModelClass *name_selector_model_c
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (ENameSelectorModelClass, section_removed),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 

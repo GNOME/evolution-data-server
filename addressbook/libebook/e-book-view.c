@@ -14,7 +14,6 @@
 #include "e-book-view.h"
 #include "e-book-view-private.h"
 #include "e-book.h"
-#include "e-book-marshal.h"
 
 static GObjectClass *parent_class;
 
@@ -317,7 +316,7 @@ e_book_view_class_init (EBookViewClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
 			      NULL, NULL,
-			      e_book_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
@@ -327,7 +326,7 @@ e_book_view_class_init (EBookViewClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewClass, contacts_added),
 			      NULL, NULL,
-			      e_book_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
@@ -337,7 +336,7 @@ e_book_view_class_init (EBookViewClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
 			      NULL, NULL,
-			      e_book_marshal_NONE__POINTER,
+			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
@@ -347,7 +346,7 @@ e_book_view_class_init (EBookViewClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
 			      NULL, NULL,
-			      e_book_marshal_NONE__INT,
+			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_INT);
 
@@ -357,7 +356,7 @@ e_book_view_class_init (EBookViewClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EBookViewClass, status_message),
 			      NULL, NULL,
-			      e_book_marshal_NONE__STRING,
+			      g_cclosure_marshal_VOID__STRING,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_STRING);
 

@@ -26,16 +26,11 @@ $(CORBA_GENERATED_H): $(idls)
 	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
 $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
-# The marshallers
-MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
-@EVO_MARSHAL_RULE@
-
 # The library
 lib_LTLIBRARIES = libebook-1.2.la
 
 libebook_1_2_la_SOURCES =					\
 	$(CORBA_GENERATED_C)				\
-	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
 	e-book-listener.c				\
 	e-book-query.c					\
@@ -82,12 +77,11 @@ e-name-western-tables.h: e-name-western-tables.h.in
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(CORBA_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
-	e-book-marshal.list				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)     \
 	e-name-western-tables.h.in                      \
 	gen-western-table.py

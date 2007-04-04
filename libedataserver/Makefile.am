@@ -9,15 +9,10 @@ INCLUDES =								\
 	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
 	$(E_DATA_SERVER_CFLAGS)
 
-# The marshallers
-MARSHAL_GENERATED = e-data-server-marshal.c e-data-server-marshal.h
-@EVO_MARSHAL_RULE@
-
 lib_LTLIBRARIES = libedataserver-1.2.la
 noinst_PROGRAMS = test-source-list
 
 libedataserver_1_2_la_SOURCES =		\
-	$(MARSHAL_GENERATED)		\
 	e-account-list.c		\
 	e-account.c			\
 	e-categories.c			\

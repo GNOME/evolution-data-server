@@ -40,7 +40,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <libebook/e-book.h>
-#include <libedataserver/e-data-server-marshal.h>
 
 #include <glib.h>
 #include <libxml/xmlmemory.h>
@@ -143,7 +142,7 @@ e_destination_class_init (EDestinationClass *klass)
 			      G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (EDestinationClass, changed),
 			      NULL, NULL,
-			      e_data_server_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 	object_class->dispose = e_destination_dispose;

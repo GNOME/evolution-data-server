@@ -17,7 +17,6 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-arg.h>
 #include "libedataserver/e-data-server-module.h"
-#include "e-data-book-marshal.h"
 #include "e-data-book-factory.h"
 
 #include <backends/groupwise/e-book-backend-groupwise.h>
@@ -586,7 +585,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EDataBookFactoryClass, last_book_gone),
 			      NULL, NULL,
-			      e_data_book_marshal_NONE__NONE,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
 

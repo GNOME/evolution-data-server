@@ -8,7 +8,6 @@
 
 #include <config.h>
 
-#include "e-data-book-marshal.h"
 #include "e-data-book-view.h"
 #include "e-book-backend.h"
 
@@ -1067,7 +1066,7 @@ e_book_backend_class_init (EBookBackendClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EBookBackendClass, last_client_gone),
 			      NULL, NULL,
-			      e_data_book_marshal_NONE__NONE,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 }
 
