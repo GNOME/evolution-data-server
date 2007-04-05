@@ -492,7 +492,7 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 		return NULL;
 	
 	/* If this doesn't work, stuff wont save, but let it continue anyway */
-	e_util_mkdir_hier (root, 0777);
+	g_mkdir_with_parents (root, 0777);
 	
 	folder = (CamelFolder *) camel_object_new (CAMEL_NNTP_FOLDER_TYPE);
 	nntp_folder = (CamelNNTPFolder *)folder;

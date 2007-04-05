@@ -135,7 +135,7 @@ camel_imapp_folder_new(CamelStore *store, const char *path)
 		char *base = g_build_filename(root, path, NULL);
 		char *file = g_build_filename(base, ".ev-summary", NULL);
 
-		e_util_mkdir_hier(base, 0777);
+		g_mkdir_with_parents (base, 0777);
 		g_free(base);
 
 		camel_folder_summary_set_filename(folder->summary, file);

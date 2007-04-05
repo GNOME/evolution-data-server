@@ -3196,7 +3196,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 	switch (ebgw->priv->mode) {
 	case GNOME_Evolution_Addressbook_MODE_LOCAL:
 		/* load summary file for offline use */
-		e_util_mkdir_hier (g_path_get_dirname (priv->summary_file_name), 0700);
+		g_mkdir_with_parents (g_path_get_dirname (priv->summary_file_name), 0700);
 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
 						    SUMMARY_FLUSH_TIMEOUT);
 		e_book_backend_summary_load (priv->summary);
@@ -3258,7 +3258,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		}
 
 		/* initialize summary file */
-		e_util_mkdir_hier (g_path_get_dirname (priv->summary_file_name), 0700);
+		g_mkdir_with_parents (g_path_get_dirname (priv->summary_file_name), 0700);
 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
 							    SUMMARY_FLUSH_TIMEOUT);
 
@@ -3560,7 +3560,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 
 		/* the databade didn't exist, so we create the 
 		   directory then the .db */
-		rv = e_util_mkdir_hier (dirname, 0777);
+		rv = g_mkdir_with_parents (dirname, 0777);
 		if (rv == -1 && errno != EEXIST) {
 			g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
 			g_free (dirname);

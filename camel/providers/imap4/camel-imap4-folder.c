@@ -346,7 +346,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	
 	folder->summary = camel_imap4_summary_new (folder);
 	imap4_folder->cachedir = imap4_store_build_filename (store, folder->full_name);
-	e_util_mkdir_hier (imap4_folder->cachedir, 0777);
+	g_mkdir_with_parents (imap4_folder->cachedir, 0777);
 	
 	imap4_folder->cache = camel_data_cache_new (imap4_folder->cachedir, 0, NULL);
 	

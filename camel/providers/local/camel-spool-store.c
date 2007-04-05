@@ -493,7 +493,7 @@ spool_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
 	if (root == NULL)
 		return NULL;
 
-	e_util_mkdir_hier(root, 0777);
+	g_mkdir_with_parents(root, 0777);
 	key = camel_file_util_safe_filename(full_name);
 	path = g_strdup_printf("%s/%s%s", root, key, ext);
 	g_free(key);

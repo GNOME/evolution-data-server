@@ -1,3 +1,8 @@
+2007-04-05  Ross Burton  <ross@openedhand.com>
+
+	* camel-imap4-folder.c:
+	Use g_mkdir_with_parents (#383686).
+
 2007-02-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #356177

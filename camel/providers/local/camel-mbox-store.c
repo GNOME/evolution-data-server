@@ -170,7 +170,7 @@ get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelExcep
 		g_free (basename);
 		
 		dirname = g_path_get_dirname(name);
-		if (e_util_mkdir_hier(dirname, 0777) == -1 && errno != EEXIST) {
+		if (g_mkdir_with_parents(dirname, 0777) == -1 && errno != EEXIST) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Cannot create folder `%s': %s"),
 					     folder_name, g_strerror (errno));
@@ -373,7 +373,7 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 	path = camel_local_store_get_full_path(store, name);
 	
 	dir = g_path_get_dirname(path);
-	if (e_util_mkdir_hier(dir, 0777) == -1 && errno != EEXIST) {
+	if (g_mkdir_with_parents(dir, 0777) == -1 && errno != EEXIST) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create directory `%s': %s."),
 				     dir, g_strerror(errno));
 		
@@ -491,7 +491,7 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
 	
 	newdir = g_path_get_dirname(newibex);
-	if (e_util_mkdir_hier(newdir, 0777) == -1) {
+	if (g_mkdir_with_parents(newdir, 0777) == -1) {
 		if (errno != EEXIST) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Could not rename `%s': `%s': %s"),

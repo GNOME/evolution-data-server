@@ -228,7 +228,7 @@ camel_imap_folder_new (CamelStore *parent, const char *folder_name,
 	const char *short_name;
 	char *summary_file, *state_file;
 
-	if (e_util_mkdir_hier (folder_dir, S_IRWXU) != 0) {
+	if (g_mkdir_with_parents (folder_dir, S_IRWXU) != 0) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not create directory %s: %s"),
 				      folder_dir, g_strerror (errno));

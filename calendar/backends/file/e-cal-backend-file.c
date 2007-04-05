@@ -857,7 +857,7 @@ create_cal (ECalBackendFile *cbfile, const char *uristr)
 
 	/* Create the directory to contain the file */
 	dirname = g_path_get_dirname (uristr);
-	if (e_util_mkdir_hier (dirname, 0700) != 0) {
+	if (g_mkdir_with_parents (dirname, 0700) != 0) {
 		g_free (dirname);
 		return GNOME_Evolution_Calendar_NoSuchCal;
 	}

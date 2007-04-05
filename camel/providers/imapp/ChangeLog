@@ -1,3 +1,8 @@
+2007-04-05  Ross Burton  <ross@openedhand.com>
+
+	* camel-imapp-folder.c:
+	Use g_mkdir_with_parents (#383686).
+
 2006-06-15  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-imapp-store.c: 

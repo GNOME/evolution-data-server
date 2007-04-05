@@ -131,7 +131,7 @@ camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
 {
 	CamelDataCache *cdc;
 
-	if (e_util_mkdir_hier (path, 0700) == -1) {
+	if (g_mkdir_with_parents (path, 0700) == -1) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Unable to create cache path"));
 		return NULL;
@@ -247,7 +247,7 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	if (access (dir, F_OK) == -1) {
 #endif
 		if (create)
-			e_util_mkdir_hier (dir, 0700);
+			g_mkdir_with_parents (dir, 0700);
 	} else if (cdc->priv->expire_inc == hash
 		   && (cdc->expire_age != -1 || cdc->expire_access != -1)) {
 		time_t now;

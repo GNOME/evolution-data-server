@@ -292,7 +292,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 #endif
 		return path;
 
-	if (e_util_mkdir_hier (path, S_IRWXU) == -1) {
+	if (g_mkdir_with_parents (path, S_IRWXU) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not create directory %s:\n%s"),
 				      path, g_strerror (errno));

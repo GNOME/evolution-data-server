@@ -64,7 +64,7 @@ camel_uid_cache_new (const char *filename)
 	int fd, i;
 	
 	dirname = g_path_get_dirname (filename);
-	if (e_util_mkdir_hier (dirname, 0777) == -1) {
+	if (g_mkdir_with_parents (dirname, 0777) == -1) {
 		g_free (dirname);
 		return NULL;
 	}

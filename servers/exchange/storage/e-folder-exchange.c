@@ -452,7 +452,7 @@ e_folder_exchange_get_storage_file (EFolder *folder, const char *filename)
 		efe->priv->storage_dir = e_path_to_physical (
 			efe->priv->hier->account->storage_dir,
 			efe->priv->path);
-		e_util_mkdir_hier (efe->priv->storage_dir, 0755);
+		g_mkdir_with_parents (efe->priv->storage_dir, 0755);
 	}
 
 	path = g_build_filename (efe->priv->storage_dir, filename, NULL);

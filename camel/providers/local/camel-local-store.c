@@ -175,7 +175,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 	}
 	
 	/* need to create the dir heirarchy */
-	if (e_util_mkdir_hier (path, 0777) == -1 && errno != EEXIST) {
+	if (g_mkdir_with_parents (path, 0777) == -1 && errno != EEXIST) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				      _("Cannot get folder: %s: %s"),
 				      path, g_strerror (errno));

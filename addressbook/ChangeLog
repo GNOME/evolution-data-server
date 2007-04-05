@@ -1,5 +1,16 @@
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
+	* backends/file/e-book-backend-file.c:
+	(e_book_backend_file_load_source):
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_authenticate_user),
+	(e_book_backend_groupwise_load_source):
+	* backends/vcf/e-book-backend-vcf.c:
+	(e_book_backend_vcf_load_source):
+	Use g_mkdir_with_parents (#383686).
+
+2007-04-05  Ross Burton  <ross@openedhand.com>
+
 	* libebook/e-contact.c:
 	Don't go via GObject properties when calling
 	e_contact_get. (#385078).

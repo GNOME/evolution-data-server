@@ -32,7 +32,10 @@ G_BEGIN_DECLS
 
 struct tm;
 
+#ifndef EDS_DISABLE_DEPRECATED
+G_GNUC_DEPRECATED
 int          e_util_mkdir_hier (const char *path, mode_t mode);
+#endif
 
 gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);

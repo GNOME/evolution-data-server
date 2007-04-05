@@ -1,3 +1,8 @@
+2007-04-05  Ross Burton  <ross@openedhand.com>
+
+	* camel-nntp-folder.c: (camel_nntp_folder_new):
+	Use g_mkdir_with_parents (#383686).
+
 2007-03-29  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-nntp-store-summary.c:
