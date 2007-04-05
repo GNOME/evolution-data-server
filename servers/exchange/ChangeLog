@@ -1,3 +1,8 @@
+2007-04-05  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-marshal.list:
+	Turns out, evolution-exchange still needs NONE:INT,INT.
+
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
 	* storage/e-folder-exchange.c:
