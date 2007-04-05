@@ -1121,8 +1121,8 @@ e_contact_get_property (GObject *object,
 			GValue *value,
 			GParamSpec *pspec)
 {
-	EContact *contact = E_CONTACT (object);
 	const EContactFieldInfo *info = NULL;
+	gpointer data;
 	
 	if (prop_id < 1 || prop_id >= E_CONTACT_FIELD_LAST) {
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1131,199 +1131,25 @@ e_contact_get_property (GObject *object,
 	}
 	
 	info = &field_info[prop_id];
-	
+	data = e_contact_get (E_CONTACT (object), prop_id);
+
 	if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		gboolean rv = FALSE;
-
-		if (attr) {
-			GList *v = e_vcard_attribute_get_values (attr);
-			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
-		}
-
-		g_value_set_boolean (value, rv);
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-
-		if (attr) {
-			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
-			GList *l;
-			for (l = list; l; l = l->next)
-				l->data = g_strdup (l->data);
-
-			g_value_set_pointer (value, list);
-		}
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
-		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-			GList *attrs, *l;
-
-			attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-			for (l = attrs; l; l = l->next) {
-				EVCardAttribute *attr = l->data;
-				const char *name;
-
-				name = e_vcard_attribute_get_name (attr);
-
-				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-					GList *v;
-					int count;
-
-					v = e_vcard_attribute_get_values (attr);
-					count = info->list_elem;
-
-					v = g_list_nth (v, info->list_elem);
-
-					g_value_set_string (value, v ? v->data : NULL);
-				}
-			}
-		}
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_MULTI_ELEM) {
-		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-			GList *attrs, *l;
-			int num_left = info->list_elem;
-
-			attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-			for (l = attrs; l; l = l->next) {
-				EVCardAttribute *attr = l->data;
-				const char *name;
-
-				name = e_vcard_attribute_get_name (attr);
-
-				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-					if (num_left-- == 0) {
-						GList *v = e_vcard_attribute_get_values (attr);
-
-						g_value_set_string (value, v ? v->data : NULL);
-						break;
-					}
-				}
-			}
-		}
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_ATTR_TYPE) {
-		EVCardAttribute *attr = e_contact_find_attribute_with_types (contact, info->vcard_field_name, info->attr_type1, info->attr_type2, info->list_elem);
-
-		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-			if (attr) {
-				GList *p = e_vcard_attribute_get_values (attr);
-				char *rv = p->data;
-
-				g_value_set_string (value, rv);
-			}
-			else {
-				g_value_set_string (value, NULL);
-			}
-		}
-		else { /* struct */
-			gpointer rv = info->struct_getter (contact, attr);
-
-			g_value_set_boxed (value, rv);
-		}
-
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		void *rv = NULL;
-
-		if (attr)
-			rv = info->struct_getter (contact, attr);
-
-		g_value_take_boxed (value, rv);
-	}
-	else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
-		void *rv = NULL;
-
-		if (attr)
-			rv = info->struct_getter (contact, attr);
-
-		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
-			g_value_set_boxed (value, rv);
-		else
-			g_value_set_string (value, (char*)rv);
-			
-	}
-
-	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
-		switch (info->field_id) {
-		case E_CONTACT_NAME_OR_ORG: {
-			const char *str;
-
-			str = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-			if (!str)
-				str = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
-			if (!str)
-				str = e_contact_get_const (contact, E_CONTACT_ORG);
-			if (!str) {
-				gboolean is_list = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_IS_LIST));
-
-				if (is_list)
-					str = _("Unnamed List");
-				else
-					str = e_contact_get_const (contact, E_CONTACT_EMAIL_1);
-			}
-
-			g_value_set_string (value, str);
-			break;
-		}
-		case E_CONTACT_CATEGORIES: {
-			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
-			char *rv = NULL;
-
-			if (attr) {
-				GString *str = g_string_new ("");
-				GList *v = e_vcard_attribute_get_values (attr);
-				while (v) {
-					g_string_append (str, (char*)v->data);
-					v = v->next;
-					if (v)
-						g_string_append_c (str, ',');
-				}
-
-				rv = g_string_free (str, FALSE);
-			}
-
-			g_value_set_string (value, rv);
-			g_free (rv);
-			break;
-		}
-		default:
-			g_warning ("unhandled synthetic field 0x%02x", info->field_id);
-			break;
-		}
-	}
-	else {
-		GList *attrs, *l;
-		GList *rv = NULL; /* used for multi attribute lists */
-
-		attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-		for (l = attrs; l; l = l->next) {
-			EVCardAttribute *attr = l->data;
-			const char *name;
-
-			name = e_vcard_attribute_get_name (attr);
-
-			if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-				GList *v;
-				v = e_vcard_attribute_get_values (attr);
-
-				if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-					g_value_set_string (value, v ? v->data : NULL);
-				}
-				else {
-					rv = g_list_append (rv, v ? g_strdup (v->data) : NULL);
-
-					g_value_set_pointer (value, rv);
-				}
-			}
-		}
-	}
+		g_value_set_boolean (value, (gboolean)data);
+	} else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
+		g_value_set_pointer (value, data);
+	} else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
+		g_value_take_boxed (value, data);
+	} else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
+		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
+			g_value_set_boxed (value, data);
+		} else {
+			g_value_set_string (value, data);
+ 		}
+	} else if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+		g_value_set_string (value, data);
+	} else {
+		g_value_set_pointer (value, data);
+ 	}
 }
 
 
@@ -1506,16 +1332,177 @@ e_contact_field_id (const char *field_name)
 gpointer
 e_contact_get (EContact *contact, EContactField field_id)
 {
-	gpointer value = NULL;
-
+	const EContactFieldInfo *info = NULL;
+ 
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), NULL);
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, NULL);
 
-	g_object_get (contact,
-		      e_contact_field_name (field_id), &value,
-		      NULL);
+	info = &field_info[field_id];
 
-	return value;
+	if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		gboolean rv = FALSE;
+
+		if (attr) {
+			GList *v = e_vcard_attribute_get_values (attr);
+			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
+			return (gpointer)rv;
+		}
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+
+		if (attr) {
+			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
+			GList *l;
+			for (l = list; l; l = l->next)
+				l->data = g_strdup (l->data);
+			return list;
+		}
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
+		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+			EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+
+			if (attr) {
+				GList *v;
+				
+				v = e_vcard_attribute_get_values (attr);
+				v = g_list_nth (v, info->list_elem);
+				
+				return v ? g_strdup (v->data) : NULL;
+			}
+		}
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_MULTI_ELEM) {
+		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+			GList *attrs, *l;
+			int num_left = info->list_elem;
+
+			attrs = e_vcard_get_attributes (E_VCARD (contact));
+
+			for (l = attrs; l; l = l->next) {
+				EVCardAttribute *attr = l->data;
+				const char *name;
+
+				name = e_vcard_attribute_get_name (attr);
+
+				if (!strcmp (name, info->vcard_field_name)) {
+					if (num_left-- == 0) {
+						GList *v = e_vcard_attribute_get_values (attr);
+
+						return v ? g_strdup (v->data) : NULL;
+					}
+				}
+			}
+		}
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_ATTR_TYPE) {
+		EVCardAttribute *attr = e_contact_find_attribute_with_types (contact, info->vcard_field_name, info->attr_type1, info->attr_type2, info->list_elem);
+
+		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+			if (attr) {
+				GList *p = e_vcard_attribute_get_values (attr);
+				return g_strdup (p->data);
+			}
+			else {
+				return NULL;
+			}
+		}
+		else { /* struct */
+			return info->struct_getter (contact, attr);
+		}
+
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		if (attr)
+			return info->struct_getter (contact, attr);
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
+		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		void *rv = NULL;
+
+		if (attr)
+			rv = info->struct_getter (contact, attr);
+
+		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
+			return (gpointer)info->boxed_type_getter();
+		else
+			return g_strdup (rv);
+	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
+		switch (info->field_id) {
+		case E_CONTACT_NAME_OR_ORG: {
+			const char *str;
+
+			str = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+			if (!str)
+				str = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
+			if (!str)
+				str = e_contact_get_const (contact, E_CONTACT_ORG);
+			if (!str) {
+				gboolean is_list = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_IS_LIST));
+
+				if (is_list)
+					str = _("Unnamed List");
+				else
+					str = e_contact_get_const (contact, E_CONTACT_EMAIL_1);
+			}
+
+			return g_strdup (str);
+		}
+		case E_CONTACT_CATEGORIES: {
+			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
+			char *rv = NULL;
+
+			if (attr) {
+				GString *str = g_string_new ("");
+				GList *v = e_vcard_attribute_get_values (attr);
+				while (v) {
+					g_string_append (str, (char*)v->data);
+					v = v->next;
+					if (v)
+						g_string_append_c (str, ',');
+				}
+
+				rv = g_string_free (str, FALSE);
+			}
+			return rv;
+			break;
+		}
+		default:
+			g_warning ("unhandled synthetic field 0x%02x", info->field_id);
+			break;
+		}
+	}
+	else {
+		GList *attrs, *l;
+		GList *rv = NULL; /* used for multi attribute lists */
+
+		attrs = e_vcard_get_attributes (E_VCARD (contact));
+
+		for (l = attrs; l; l = l->next) {
+			EVCardAttribute *attr = l->data;
+			const char *name;
+
+			name = e_vcard_attribute_get_name (attr);
+
+			if (!strcmp (name, info->vcard_field_name)) {
+				GList *v;
+				v = e_vcard_attribute_get_values (attr);
+
+				if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+					return v ? g_strdup (v->data) : NULL;
+				}
+				else {
+					rv = g_list_append (rv, v ? g_strdup (v->data) : NULL);
+				}
+			}
+		}
+		return rv;
+	}
+	return NULL;
 }
 
 /**
