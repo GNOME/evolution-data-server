@@ -1,5 +1,11 @@
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-contact.c:
+	Misc cleanups, g_new0 rather than g_new, and prepend to a list
+	then reverse rather then append. (#426564).
+
+2007-04-05  Ross Burton  <ross@openedhand.com>
+
 	* backends/file/e-book-backend-file.c:
 	(e_book_backend_file_load_source):
 	* backends/groupwise/e-book-backend-groupwise.c:

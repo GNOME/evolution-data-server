@@ -587,7 +587,7 @@ adr_getter (EContact *contact, EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
-		EContactAddress *addr = g_new (EContactAddress, 1);
+		EContactAddress *addr = g_new0 (EContactAddress, 1);
 
 		addr->address_format = g_strdup ("");
 		addr->po       = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
@@ -662,7 +662,7 @@ cert_getter (EContact *contact, EVCardAttribute *attr)
 
 		if (values && values->data) {
 			GString *s = values->data;
-			EContactCert *cert = g_new (EContactCert, 1);
+			EContactCert *cert = g_new0 (EContactCert, 1);
 
 			cert->length = s->len;
 			cert->data = g_malloc (cert->length);
@@ -1263,6 +1263,7 @@ e_contact_field_name (EContactField field_id)
 
 	return field_info[field_id].field_name;
 }
+
 /**
  * e_contact_pretty_name:
  * @field_id: an #EContactField
@@ -1284,6 +1285,7 @@ e_contact_pretty_name (EContactField field_id)
 
 	return _(field_info[field_id].pretty_name);
 }
+
 /**
  * e_contact_vcard_attribute:
  * @field_id: an #EContactField
@@ -1299,6 +1301,7 @@ e_contact_vcard_attribute  (EContactField field_id)
 
 	return field_info[field_id].vcard_field_name;
 }
+
 /**
  * e_contact_field_id:
  * @field_name: a string representing a contact field
@@ -1594,11 +1597,11 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
 		name = e_vcard_attribute_get_name (attr);
 
 		if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-			l = g_list_append (l, e_vcard_attribute_copy (attr));
+			l = g_list_prepend (l, e_vcard_attribute_copy (attr));
 		}
 	}
 
-	return l;
+	return g_list_reverse(l);
 }
 
 /**
@@ -1989,7 +1992,7 @@ e_contact_address_free (EContactAddress *address)
 static EContactAddress *
 e_contact_address_copy (EContactAddress *address)
 {
-	EContactAddress *address2 = g_new (EContactAddress, 1);
+	EContactAddress *address2 = g_new0 (EContactAddress, 1);
 
 	address2->address_format = g_strdup (address->address_format);
 	address2->po = g_strdup (address->po);
@@ -2034,7 +2037,7 @@ e_contact_cert_free (EContactCert *cert)
 static EContactCert *
 e_contact_cert_copy (EContactCert *cert)
 {
-	EContactCert *cert2 = g_new (EContactCert, 1);
+	EContactCert *cert2 = g_new0 (EContactCert, 1);
 	cert2->length = cert->length;
 	cert2->data = g_malloc (cert2->length);
 	memcpy (cert2->data, cert->data, cert->length);
