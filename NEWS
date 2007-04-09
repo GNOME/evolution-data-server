@@ -1,3 +1,15 @@
+Evolution-Data-Server 1.10.1 2007-04-09
+---------------------------------------
+
+Bug fixes:
+	#425512 - Simon Zheng
+	#388788 - Matthew Barnes
+	#362726 - Thomas Klausner
+
+Updated Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Ignacio Casal Quinteiro (gl)
+
 Evolution-Data-Server 1.10.0 2007-03-12
 ---------------------------------------
 
