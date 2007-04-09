@@ -1,3 +1,9 @@
+2007-04-09  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-summary.c (imap4_summary_fetch_all): Need to use
+	ther IMAP4_ALL macro here because ALL cannot be merged with other
+	items in a FETCH query.
+
 2007-04-08  Jeffrey Stedfast  <fejj@gnome.org>
 
 	* camel-imap4-summary.c: Synced up with my libspruce

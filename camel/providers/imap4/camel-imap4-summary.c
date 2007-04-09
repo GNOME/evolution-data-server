@@ -1132,9 +1132,9 @@ imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 seqid, const char 
 	fetch->count = 0;
 	
 	if (((CamelIMAP4Folder *) folder)->enable_mlist)
-		query = "UID FETCH %s:* (ALL BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
+		query = "UID FETCH %s:* (" IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" MORE_HEADER_FIELDS ")])\r\n";
 	else
-		query = "UID FETCH %s:* (ALL BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
+		query = "UID FETCH %s:* (" IMAP4_ALL " BODY.PEEK[HEADER.FIELDS (" BASE_HEADER_FIELDS ")])\r\n";
 	
 	ic = camel_imap4_engine_queue (engine, folder, query, uid);
 	
