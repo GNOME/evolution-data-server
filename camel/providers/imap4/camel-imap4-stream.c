@@ -469,7 +469,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 					token->token = CAMEL_IMAP4_TOKEN_LITERAL;
 					token->v.literal = literal;
 					
-					d(fprintf (stderr, "token: {%u}\n", (unsigned int)literal));
+					d(fprintf (stderr, "token: {%lu}\n", literal));
 					
 					stream->mode = CAMEL_IMAP4_STREAM_MODE_LITERAL;
 					stream->literal = literal;
@@ -496,7 +496,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 				token->token = CAMEL_IMAP4_TOKEN_NUMBER;
 				token->v.number = nz_number;
 				
-				d(fprintf (stderr, "token: %u\n", nz_number));
+				d(fprintf (stderr, "token: %lu\n", nz_number));
 				
 				break;
 			} else if (is_atom (*inptr)) {
@@ -641,6 +641,7 @@ camel_imap4_stream_line (CamelIMAP4Stream *stream, unsigned char **line, size_t 
 	inptr = stream->inptr;
 	inend = stream->inend;
 	
+	*inend = '\0';
 	if (inptr == inend || ((inend - inptr) < 2 && *inptr != '\n')) {
 		if (imap4_fill (stream) == -1 && stream->inptr == stream->inend)
 			return -1;

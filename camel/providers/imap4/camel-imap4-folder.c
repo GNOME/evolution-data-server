@@ -996,7 +996,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 			resp = ic->resp_codes->pdata[i];
 			if (resp->code == CAMEL_IMAP4_RESP_CODE_APPENDUID) {
 				if (resp->v.appenduid.uidvalidity == summary->uidvalidity)
-					*appended_uid = g_strdup_printf ("%u", resp->v.appenduid.uid);
+					*appended_uid = g_strdup_printf ("%lu", resp->v.appenduid.uid);
 				break;
 			}
 		}

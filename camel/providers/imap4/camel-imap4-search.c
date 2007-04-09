@@ -122,7 +122,7 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 		if (token->token != CAMEL_IMAP4_TOKEN_NUMBER || token->v.number == 0)
 			goto unexpected;
 		
-		sprintf (uid, "%u", token->v.number);
+		sprintf (uid, "%lu", token->v.number);
 		if ((info = camel_folder_summary_uid (summary, uid))) {
 			g_ptr_array_add (matches, (char *) camel_message_info_uid (info));
 			camel_message_info_free (info);

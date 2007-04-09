@@ -981,7 +981,7 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
 		
 		if (resp != NULL) {
 			if (token.token == CAMEL_IMAP4_TOKEN_NUMBER)
-				resp->v.copyuid.srcset = g_strdup_printf ("%u", token.v.number);
+				resp->v.copyuid.srcset = g_strdup_printf ("%lu", token.v.number);
 			else
 				resp->v.copyuid.srcset = g_strdup (token.v.atom);
 		}
@@ -997,7 +997,7 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
 		
 		if (resp != NULL) {
 			if (token.token == CAMEL_IMAP4_TOKEN_NUMBER)
-				resp->v.copyuid.destset = g_strdup_printf ("%u", token.v.number);
+				resp->v.copyuid.destset = g_strdup_printf ("%lu", token.v.number);
 			else
 				resp->v.copyuid.destset = g_strdup (token.v.atom);
 		}
@@ -1206,7 +1206,7 @@ camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, camel_imap4_toke
 			if (untagged (engine, ic, v, token, ex) == -1)
 				return -1;
 		} else {
-			d(fprintf (stderr, "Unrecognized untagged response: * %u %s\n", v, token->v.atom));
+			d(fprintf (stderr, "Unrecognized untagged response: * %lu %s\n", v, token->v.atom));
 		}
 		
 		/* find the eoln token */

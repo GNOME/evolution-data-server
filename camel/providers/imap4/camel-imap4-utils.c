@@ -296,7 +296,7 @@ uidset_add (struct _uidset *uidset, CamelMessageInfo *info)
 		return -1;
 	}
 	
-	d(fprintf (stderr, "added uid %s to uidset (summary index = %u)\n", iuid, index));
+	d(fprintf (stderr, "added uid %s to uidset (summary index = %lu)\n", iuid, index));
 	
 	if (uidset->setlen < uidset->maxlen)
 		return 0;
@@ -382,10 +382,10 @@ camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engi
 		g_string_append (errmsg, token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
-		g_string_append_printf (errmsg, "{%u}", (unsigned int)token->v.literal);
+		g_string_append_printf (errmsg, "{%lu}", token->v.literal);
 		break;
 	case CAMEL_IMAP4_TOKEN_NUMBER:
-		g_string_append_printf (errmsg, "%u", token->v.number);
+		g_string_append_printf (errmsg, "%lu", token->v.number);
 		break;
 	case CAMEL_IMAP4_TOKEN_NO_DATA:
 		g_string_append (errmsg, _("No data"));
