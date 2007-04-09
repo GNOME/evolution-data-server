@@ -1,3 +1,9 @@
+2007-04-09  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Committing on behalf of Thomas Klausner <wiz%@danbala.tuwien.ac.at>
+	* libdb/dist/configure.ac: Use = instead of == for test(1) construct.
+	Fixes #362726
+
 2007-04-04  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in: Use AC_TRY_RUN instead of AC_TRY_LINK when checking

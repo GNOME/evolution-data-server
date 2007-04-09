@@ -1,4 +1,4 @@
-# $Id$
+# $Id: configure.ac,v 1.5 2005/05/24 06:50:21 tml Exp $
 # Process this file with autoconf to produce a configure script.
 
 PACKAGE=db
@@ -253,7 +253,7 @@ AC_GCC_CONFIG2
 # we're using.
 case "$host_os" in
 sysv5UnixWare*|sysv5OpenUNIX8*)
-	if test "$GCC" == "yes"; then
+	if test "$GCC" = "yes"; then
 		CPPFLAGS="$CPPFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
 	else
