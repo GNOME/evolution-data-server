@@ -1163,6 +1163,15 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (db_error == 0) {
 		writable = TRUE;
 	} else {
+		db->close (db, 0);
+		
+        	db_error = db_create (&db, env, 0);
+        	if (db_error != 0) {
+                	g_warning ("db_create failed with %d", db_error);
+                	g_free (dirname);
+                	g_free (filename);
+                	return GNOME_Evolution_Addressbook_OtherError;
+        	}
 		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
@@ -1170,6 +1179,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 			/* the database didn't exist, so we create the
 			   directory then the .db */
+			db->close (db, 0);
 			rv = g_mkdir_with_parents (dirname, 0777);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
@@ -1181,8 +1191,17 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 					return GNOME_Evolution_Addressbook_OtherError;
 			}
 
+			db_error = db_create (&db, env, 0);
+			if (db_error != 0) {
+ 				g_warning ("db_create failed with %d", db_error);
+				g_free (dirname);
+				g_free (filename);
+				return GNOME_Evolution_Addressbook_OtherError;
+			}
+
 			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
 			if (db_error != 0) {
+				db->close (db, 0);
 				g_warning ("db->open (... DB_CREATE ...) failed with %d", db_error);
 			}
 			else {
