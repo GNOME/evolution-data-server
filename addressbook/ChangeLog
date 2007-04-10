@@ -1,3 +1,10 @@
+2007-04-10  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
+	Use g_list_prepend instead of _append when constructing lists.
+	Show human-readable messages instead of error codes.
+	Don't output spurious new lines (#428183)
+
 2007-04-09  simon.zheng  <simon.zheng@sun.com>
 
         ** Fix for bug #425512

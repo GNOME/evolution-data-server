@@ -430,7 +430,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 			if (db_error == 0) {
-				contact_list = g_list_append (contact_list, vcard_dbt.data);
+				contact_list = g_list_prepend (contact_list, vcard_dbt.data);
 			} else {
 				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
 				status = db_error_to_status (db_error);
@@ -469,7 +469,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
-					contact_list = g_list_append (contact_list, vcard_dbt.data);
+					contact_list = g_list_prepend (contact_list, vcard_dbt.data);
 				}
 			}
 
@@ -1007,7 +1007,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
 		}
 
 		if (card_failed) {
-			g_warning ("failed to update %d cards\n", card_failed);
+			g_warning ("failed to update %d cards", card_failed);
 			return FALSE;
 		}
 	}
@@ -1167,7 +1167,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		
         	db_error = db_create (&db, env, 0);
         	if (db_error != 0) {
-                	g_warning ("db_create failed with %d", db_error);
+                	g_warning ("db_create failed with %s", db_strerror (db_error));
                 	g_free (dirname);
                 	g_free (filename);
                 	return GNOME_Evolution_Addressbook_OtherError;
@@ -1193,7 +1193,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 			db_error = db_create (&db, env, 0);
 			if (db_error != 0) {
- 				g_warning ("db_create failed with %d", db_error);
+ 				g_warning ("db_create failed with %s", db_strerror (db_error));
 				g_free (dirname);
 				g_free (filename);
 				return GNOME_Evolution_Addressbook_OtherError;
