@@ -1,3 +1,8 @@
+2007-04-11  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Make the libiconv test program return a value. (#388788)
+
 2007-04-09  Srinivasa Ragavan <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.10.1 release updates.
