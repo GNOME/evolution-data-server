@@ -109,6 +109,19 @@ e_file_cache_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-flag</FILE>
+<TITLE>EFlag</TITLE>
+EFlag
+e_flag_new
+e_flag_is_set
+e_flag_set
+e_flag_clear
+e_flag_wait
+e_flag_timed_wait
+e_flag_free
+</SECTION>
+
+<SECTION>
 <FILE>e-iterator</FILE>
 <TITLE>EIterator</TITLE>
 EIterator

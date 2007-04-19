@@ -21,6 +21,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
 	e-file-cache.c			\
+	e-flag.c			\
 	e-iconv.c			\
 	e-iterator.c			\
 	e-list.c			\
@@ -61,6 +62,7 @@ libedataserverinclude_HEADERS =		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
 	e-file-cache.h			\
+	e-flag.h			\
 	e-iconv.h			\
 	e-iterator.h			\
 	e-list.h			\

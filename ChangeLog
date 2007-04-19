@@ -1,3 +1,14 @@
+2007-04-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	* Introduce EFlag in libedataserver (#415891)
+
+	* libedataserver/e-flag.[ch]:
+	New data structure, EFlag, is a simple thread synchronization
+	mechanism.  Based on Python's threading.Event class.
+
+	* docs/reference/libedataserver:
+	Add documentation for EFlag.
+
 2007-04-11  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in:

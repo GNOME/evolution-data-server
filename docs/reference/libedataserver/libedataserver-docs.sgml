@@ -16,6 +16,7 @@
     <xi:include href="xml/e-db3-utils.xml"/>
     <xi:include href="xml/e-dbhash.xml"/>
     <xi:include href="xml/e-file-cache.xml"/>
+    <xi:include href="xml/e-flag.xml"/>
     <xi:include href="xml/e-iconv.xml"/>
     <xi:include href="xml/e-iterator.xml"/>
     <xi:include href="xml/e-list.xml"/>
