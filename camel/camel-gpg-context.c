@@ -749,9 +749,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		printf ("status: %s\n", status);
 	
 	if (strncmp (status, "[GNUPG:] ", 9) != 0) {
+		char *message;
+		message = g_locale_to_utf8(status, -1, NULL, NULL, NULL);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Unexpected GnuPG status message encountered:\n\n%s"),
-				      status);
+				      message);
+		g_free(message);
 		return -1;
 	}
 	
@@ -873,9 +876,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		}
 	} else if (!strncmp (status, "UNEXPECTED ", 11)) {
 		/* this is an error */
+		char *message;
+		message = g_locale_to_utf8(status+11, -1, NULL, NULL, NULL);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Unexpected response from GnuPG: %s"),
-				      status + 11);
+				      message);
+		g_free(message);
 		return -1;
 	} else if (!strncmp (status, "NODATA", 6)) {
 		/* this is an error */
