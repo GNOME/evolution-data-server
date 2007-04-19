@@ -180,29 +180,33 @@ set_revision (EContact *contact)
 	
 }
 
-static EContact *
+static EBookBackendSyncStatus
 do_create(EBookBackendFile  *bf,
-	  const char      *vcard_req)
+	  const char      *vcard_req,
+	  EContact **contact)
 {
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
 	int            db_error;
 	char           *id;
-	EContact       *contact;
 	char           *vcard;
 	const char *rev;
 	
+	g_assert (bf);
+	g_assert (vcard_req);
+	g_assert (contact);
+
 	id = e_book_backend_file_create_unique_id ();
 
 	string_to_dbt (id, &id_dbt);
 
-	contact = e_contact_new_from_vcard (vcard_req);
-	e_contact_set (contact, E_CONTACT_UID, id);
-	rev = e_contact_get_const (contact,  E_CONTACT_REV);
+	*contact = e_contact_new_from_vcard (vcard_req);
+	e_contact_set (*contact, E_CONTACT_UID, id);
+	rev = e_contact_get_const (*contact,  E_CONTACT_REV);
 	if (!(rev && *rev))
-		set_revision (contact);
+		set_revision (*contact);
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	vcard = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
 
 	string_to_dbt (vcard, &vcard_dbt);
 
@@ -212,17 +216,17 @@ do_create(EBookBackendFile  *bf,
 
 	if (0 == db_error) {
 		db_error = db->sync (db, 0);
-		if (db_error != 0)
-			g_warning ("db->sync failed with %d", db_error);
-	}
-	else {
-		g_warning (G_STRLOC ": db->put failed with %d", db_error);
-		g_object_unref (contact);
-		contact = NULL;
+		if (db_error != 0) {
+			g_warning ("db->sync failed with %s", db_strerror (db_error));
+		}
+	} else {
+		g_warning (G_STRLOC ": db->put failed with %s", db_strerror (db_error));
+		g_object_unref (*contact);
+		*contact = NULL;
 	}
 
 	g_free (id);
-	return contact;
+	return db_error_to_status (db_error);
 }
 
 static EBookBackendSyncStatus
@@ -232,18 +236,14 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 				    const char *vcard,
 				    EContact **contact)
 {
+	EBookBackendSyncStatus status;
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
-	*contact = do_create (bf, vcard);
-	if (*contact) {
+	status = do_create (bf, vcard, contact);
+	if (status == GNOME_Evolution_Addressbook_Success) {
 		e_book_backend_summary_add_contact (bf->priv->summary, *contact);
-		return GNOME_Evolution_Addressbook_Success;
 	}
-	else {
-		/* XXX need a different call status for this case, i
-                   think */
-		return GNOME_Evolution_Addressbook_ContactNotFound;
-	}
+	return status;
 }
 
 static EBookBackendSyncStatus
@@ -1202,15 +1202,16 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
 			if (db_error != 0) {
 				db->close (db, 0);
-				g_warning ("db->open (... DB_CREATE ...) failed with %d", db_error);
+				g_warning ("db->open (... DB_CREATE ...) failed with %s", db_strerror (db_error));
 			}
 			else {
 #ifdef CREATE_DEFAULT_VCARD
-				EContact *contact;
+				EContact *contact = NULL;
 
-				contact = do_create(bf, XIMIAN_VCARD);
+				do_create(bf, XIMIAN_VCARD, &contact);
 				/* XXX check errors here */
-				g_object_unref (contact);
+				if (contact)
+					g_object_unref (contact);
 #endif
 
 				writable = TRUE;
