@@ -1521,21 +1521,16 @@ e_contact_get (EContact *contact, EContactField field_id)
 gconstpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
 {
-	gboolean is_string = FALSE;
 	gpointer value = NULL;
 
 	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
-	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_LAST_SIMPLE_STRING, NULL);
+	g_return_val_if_fail (field_info [field_id].t & E_CONTACT_FIELD_TYPE_STRING, NULL);
 
-	if (field_info [field_id].t & E_CONTACT_FIELD_TYPE_STRING)
-		is_string = TRUE;
-
-	if (is_string)
-		value = contact->priv->cached_strings[field_id];
+	value = contact->priv->cached_strings[field_id];
 
 	if (!value) {
 		value = e_contact_get (contact, field_id);
-		if (is_string && value)
+		if (value)
 			contact->priv->cached_strings[field_id] = value;
 	}
 

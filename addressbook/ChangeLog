@@ -1,3 +1,9 @@
+2007-04-19  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-contact.c:
+	Relax the checks in e_contact_get_const so that it works on string
+	fields outside the initial few (#422932).
+
 2007-04-10  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
