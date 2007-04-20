@@ -109,7 +109,7 @@ gnome_segv_handler (int signo)
 	
 	gnome_segv_path = GNOMEUI_SERVERDIR "/gnome_segv2";
 	
-	exec = g_strdup_printf ("%s \"" PREFIX "/libexec/" PACKAGE "-" BASE_VERSION "\" %d \"" VERSION "\"",
+	exec = g_strdup_printf ("%s \"" PACKAGE "-" BASE_VERSION "\" %d \"" VERSION "\"",
 				gnome_segv_path, signo);
 	system (exec);
 	g_free (exec);
