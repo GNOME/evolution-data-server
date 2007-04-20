@@ -1,5 +1,16 @@
 2007-04-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #426893 from Caolan McNamara
+	* backends/ldap/e-book-backend-ldap.c: (getormakeEContactAddress),
+	(address_populate), (work_city_populate), (work_state_populate),
+	(work_po_populate), (work_zip_populate), (work_country_populate),
+	(home_city_populate), (home_state_populate), (home_zip_populate),
+	(home_country_populate), (home_address_populate),
+	(work_address_populate), (other_address_populate): Added support from
+	address fields in LDAP addressbook.
+
+2007-04-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #422883 from Wang Xin
 
 	* backends/ldap/e-book-backend-ldap.c:

@@ -241,6 +241,16 @@ static void other_address_populate(EContact * card, char **values);
 static struct berval **other_address_ber(EContact * card);
 static gboolean other_address_compare(EContact * ecard1, EContact * ecard2);
 
+static void work_city_populate(EContact * card, char **values);
+static void work_state_populate(EContact * card, char **values);
+static void work_po_populate(EContact * card, char **values);
+static void work_zip_populate(EContact * card, char **values);
+static void work_country_populate(EContact * card, char **values);
+static void home_city_populate(EContact * card, char **values);
+static void home_state_populate(EContact * card, char **values);
+static void home_zip_populate(EContact * card, char **values);
+static void home_country_populate(EContact * card, char **values);
+
 static void photo_populate (EContact *contact, struct berval **ber_values);
 static struct berval **photo_ber (EContact * contact);
 static gboolean photo_compare(EContact * ecard1, EContact * ecard2);
@@ -279,6 +289,7 @@ struct prop_info {
 #define WRITE_ONLY_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_WRITE_ONLY}
 #define E_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_EVOLVE}
 #define GROUP_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_GROUP, ctor, ber, cmp}
+#define ADDRESS_STRING_PROP(fid,a, ctor) {fid, a, PROP_TYPE_COMPLEX, ctor}
 
 
 	/* name fields */
@@ -319,8 +330,19 @@ struct prop_info {
 
 	/* addresses */
 	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_WORK, "postalAddress", work_address_populate, work_address_ber, work_address_compare),
-	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_HOME,     "homePostalAddress", home_address_populate, home_address_ber, home_address_compare),
-	E_COMPLEX_PROP(E_CONTACT_ADDRESS_LABEL_OTHER,    "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "l", work_city_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "st", work_state_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "postofficebox", work_po_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "postalcode", work_zip_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "c", work_country_populate),
+
+	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_HOME, "homePostalAddress", home_address_populate, home_address_ber, home_address_compare),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeLocalityName", home_city_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeState", home_state_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomePostalCode", home_zip_populate),
+	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeCountryName", home_country_populate),
+
+	E_COMPLEX_PROP(E_CONTACT_ADDRESS_LABEL_OTHER, "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
 
 	/* photos */
 	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, photo_ber, photo_compare),
@@ -2975,10 +2997,21 @@ category_compare (EContact *contact1, EContact *contact2)
 	return equal;
 }
 
+static EContactAddress * getormakeEContactAddress(EContact * card, EContactField field)
+{
+    EContactAddress *contact_addr = e_contact_get(card, field);
+    if (!contact_addr)
+        contact_addr = g_new0(EContactAddress, 1);
+    return contact_addr;
+}
+
+
+
 static void
-address_populate(EContact * card, char **values, EContactField field)
+address_populate(EContact * card, char **values, EContactField field, EContactField other_field)
 {
 	if (values[0]) {
+        	EContactAddress *contact_addr;
 		char *temp = g_strdup(values[0]);
 		char *i;
 		for (i = temp; *i != '\0'; i++) {
@@ -2987,26 +3020,113 @@ address_populate(EContact * card, char **values, EContactField field)
 			}
 		}
 		e_contact_set(card, field, temp);
+
+        	contact_addr = getormakeEContactAddress(card, other_field);
+	        contact_addr->street = g_strdup (temp);
+	        e_contact_set (card, other_field, contact_addr);
+	        e_contact_address_free (contact_addr);
+
 		g_free(temp);
 	}
 }
 
 static void
+work_city_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+        contact_addr->locality = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+work_state_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+        contact_addr->region = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+work_po_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+        contact_addr->po = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+work_zip_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+        contact_addr->code = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+work_country_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+        contact_addr->country = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+home_city_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+        contact_addr->locality = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+home_state_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+        contact_addr->region = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+home_zip_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+        contact_addr->code = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
+home_country_populate(EContact * card, char **values)
+{
+	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+        contact_addr->country = g_strdup (values[0]);
+        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+        e_contact_address_free (contact_addr);
+}
+
+static void
 home_address_populate(EContact * card, char **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_HOME);
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_HOME, E_CONTACT_ADDRESS_HOME);
 }
 
 static void
 work_address_populate(EContact * card, char **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_WORK);
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_WORK, E_CONTACT_ADDRESS_WORK);
 }
 
 static void
 other_address_populate(EContact * card, char **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_OTHER);
+	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_OTHER, E_CONTACT_ADDRESS_OTHER);
 }
 
 static struct berval **
