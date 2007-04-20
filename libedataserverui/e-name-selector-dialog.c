@@ -1189,30 +1189,24 @@ destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, 
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (model);
 	EDestination      *destination;
-	gchar             *string;
+	GString           *buffer;
 
        	destination = e_destination_store_get_destination (destination_store, iter);
 	g_assert (destination);
 
-	if (e_destination_is_evolution_list (destination)) {
-		if (e_destination_list_show_addresses (destination)) {
-			const gchar *name;
-			const gchar *addresses;
+	buffer = g_string_new (e_destination_get_name (destination));
 
-			name      = e_destination_get_name (destination);
-			addresses = e_destination_get_address (destination);
+	if (!e_destination_is_evolution_list (destination)) {
+		const gchar *email;
 
-			string = g_strdup_printf ("%s%s(%s)", name ? name : "",
-						  name ? " " : "", addresses ? addresses : "?");
-		} else {
-			string = g_strdup (e_destination_get_name (destination));
-		}
-	} else {
-		string = g_strdup (e_destination_get_address (destination));
+		email = e_destination_get_email (destination);
+		if (email == NULL || *email == '\0')
+			email = "?";
+		g_string_append_printf (buffer, " <%s>", email);
 	}
 
-	g_object_set (cell, "text", string, NULL);
-	g_free (string);
+	g_object_set (cell, "text", buffer->str, NULL);
+	g_string_free (buffer, TRUE);
 }
 
 /* ----------------------- *
