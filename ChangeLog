@@ -1,3 +1,9 @@
+2007-04-20  Srinivasa Ragavan <sragavan@novell.com>
+
+	** Fix for bug #425535 from  Frederic Crozat
+
+	* src/server.c: Dont submit path of EDS for segv_handler.
+
 2007-04-19  Pascal Terjan  <pterjan@linuxfr.org>
 
 	* camel/camel-gpg-context.c:
