@@ -1,3 +1,59 @@
+Evolution-Data-Server 1.11.1 2007-04-23
+---------------------------------------
+
+Bug fixes:
+
+	#383686: Use g_mkdir_with_parents (Ross Burton)
+	#322105: Fix for non-junk messages to learn ham. (Srinivasa Ragavan)
+	#418971: E-D-S requires GLib 2.10 now; remove dead
+	 backward-compatibility code for GLib < 2.8 (Matthew Barnes)
+	#360240: Remove unused variable. (Matthew Barnes)
+	#360619: Fix "incompatible pointer type" warnings (Matthew Barnes)
+	#405495: Don't mix declarations and code (Jens Granseuer)
+	#360807: Fix a couple of memory leaks (Chris Heath)
+	#400970: Remove marshallers that are in GLib already (Ross Burton)
+	#413173: Fix up the documentation (Ross Burton & Matthew Barnes)
+	#420933: Copy the recurrence ID string so it doesn't disappear on us.
+	 (Patrick Ohly)
+	#426893: Added support from address fields in LDAP addressbook. (Caolan
+	 McNamara)
+	#422883: Build fix for SUN LDAP (Wang Xin)
+	#424837: Allow contact creation to fail, and propagate the error back
+	 (Ross Burton)
+	#422932: Make EContact extendable (Ross Burton)
+	#428183: BDBB backend cleanups (Ross Burton)
+	#425512: Fix issue with creating a new addressbook (Xiurong Simon Zheng)
+	#426564: Misc cleanups (Ross Burton)
+	#385078: Don't go via GObject properties when calling e_contact_get (Ross
+	 Burton)
+	#425464: e-vcard optimizations (Ross Burton)
+	#422652: Return decent error codes, and convert errors to human readable
+	 strings for the console. (Ross Burton)
+	#421445: Fix build logic for e-name-western-tables.h (Ross Burton)
+	#421683: Fix broken dispose/finalise in e-book-backend-file.c (Ross
+	 Burton)
+	#359806: Non-ascii characters generate trash in address lists (Matthew
+	 Barnes and Makuchaku)
+	#373117: Use the new ESource color API. (Matthew Barnes)
+	#425535: Dont submit path of EDS for segv_handler. (Frederic Crozat)
+	#423382: Convert messages from gnupg to UTF-8 (Pascal Terjan)
+	#415891: Introduce EFlag in libedataserver (Matthew Barnes)
+	#388789: Make the libiconv test program returns a value (Matthew Barnes)
+	#388788: Fix autotools checks for iconv (Elijah Newren)
+
+Other Contributors:
+	Debug statements should be conditional (Sankar P)
+	Fix compiler warnings and other code cleanups (Kjartan Maraas)
+	Many IMAP fixes. (Jeffrey Stedfast)
+	Improved GroupWise mailer component (Sankar P)
+
+Updated Translations:
+	Funda Wang (zh_CN)
+	Djihed Afifi (ar)
+	Duarte Loreto (pt)
+	Laurent Dhima (sq)
+	David Lodge (en_GB)
+
 Evolution-Data-Server 1.10.0 2007-03-12
 ---------------------------------------
 
