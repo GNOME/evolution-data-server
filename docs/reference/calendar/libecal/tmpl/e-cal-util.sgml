@@ -136,16 +136,6 @@ Various utility functions.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_cal_util_resolve_tzid ##### -->
-<para>
-
-</para>
-
-@tzid: 
-@data: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_cal_util_priority_to_string ##### -->
 <para>
 

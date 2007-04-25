@@ -165,6 +165,15 @@
 @tasks: 
 @Returns: 
 
+<!-- ##### FUNCTION e_cal_util_resolve_tzid ##### -->
+<para>
+
+</para>
+
+@tzid: 
+@data: 
+@Returns: 
+
 <!-- ##### FUNCTION e_cal_view_get_client ##### -->
 <para>
 

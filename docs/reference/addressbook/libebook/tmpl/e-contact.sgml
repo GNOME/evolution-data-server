@@ -747,14 +747,6 @@ The URI of the contact's calendar.
 @prefixes: 
 @suffixes: 
 
-<!-- ##### ENUM EContactPhotoType ##### -->
-<para>
-
-</para>
-
-@E_CONTACT_PHOTO_TYPE_INLINED: 
-@E_CONTACT_PHOTO_TYPE_URI: 
-
 <!-- ##### STRUCT EContactPhoto ##### -->
 <para>
 

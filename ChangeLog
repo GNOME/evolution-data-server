@@ -1,3 +1,9 @@
+2007-04-24  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference:
+	Refresh SGML templates and add the appropriate CFLAGS to satisfy
+	"make distcheck".
+
 2007-04-23  Srinivasa Ragavan <sragavan@novell.com>
 
 	** NEWS, configure.in:  Evolution data server 1.11.1 release

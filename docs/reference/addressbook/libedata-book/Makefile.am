@@ -14,17 +14,21 @@ SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 DOC_SOURCE_DIR = $(top_srcdir)/addressbook/libedata-book
 HFILE_GLOB = $(top_srcdir)/addressbook/libedata-book/*.h
 CFILE_GLOB = $(top_srcdir)/addressbook/libedata-book/*.c
-IGNORE_HFILES = 			\
+
+IGNORE_HFILES = \
 	e-data-book-types.h				\
 	Evolution-DataServer-Addressbook.h
 
-GTKDOC_CFLAGS  =					\
-	-I$(top_srcdir)/addressbook			\
+GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 				\
+	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)				\
-	-I$(top_srcdir)/addressbook/libical/src		\
+	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la $(EVOLUTION_ADDRESSBOOK_LIBS)
+
+GTKDOC_LIBS = \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 ####################################
 # Everything below here is generic #

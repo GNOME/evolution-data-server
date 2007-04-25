@@ -14,16 +14,24 @@ SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 DOC_SOURCE_DIR = $(top_srcdir)/calendar/libedata-cal
 HFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.h
 CFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.c
-IGNORE_HFILES = 			\
+
+IGNORE_HFILES = \
 	Evolution-DataServer-Calendar.h	
 
-GTKDOC_CFLAGS  =					\
-	-I$(top_srcdir)/calendar			\
+GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 				\
-	-I$(top_builddir)				\
+	-I$(top_srcdir)/calendar			\
 	-I$(top_srcdir)/calendar/libical/src		\
+	-I$(top_srcdir)/calendar/libical/src/libical	\
+	-I$(top_builddir)				\
+	-I$(top_builddir)/calendar			\
+	-I$(top_builddir)/calendar/libical/src		\
+	-I$(top_builddir)/calendar/libical/src/libical	\
 	$(EVOLUTION_CALENDAR_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la $(EVOLUTION_CALENDAR_LIBS)
+
+GTKDOC_LIBS = \
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+	$(EVOLUTION_CALENDAR_LIBS)
 
 ####################################
 # Everything below here is generic #
