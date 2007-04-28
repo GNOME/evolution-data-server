@@ -14,11 +14,19 @@ CamelStore
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStore ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
+@folders: 
+@flags: 
+@mode: 
 
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
@@ -154,6 +162,27 @@ CamelStore
 
 
 
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_SENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_READ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_WRITE ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### STRUCT CamelRenameInfo ##### -->
 <para>
 
@@ -184,6 +213,13 @@ CamelStore
 
 
 <!-- ##### MACRO CAMEL_STORE_VJUNK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_STORE_PROXY ##### -->
 <para>
 
 </para>
@@ -474,14 +510,6 @@ CamelStore
 @subscribed: 
 @subscribe: 
 @unsubscribe: 
-
-<!-- ##### FUNCTION camel_isubscribe_get_type ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
 
 <!-- ##### FUNCTION camel_isubscribe_subscribed ##### -->
 <para>

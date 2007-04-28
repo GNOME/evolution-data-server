@@ -24,19 +24,10 @@
 #ifndef CAMEL_NNTP_STORE_H
 #define CAMEL_NNTP_STORE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-disco-store.h>
 
 #include "camel-nntp-stream.h"
 #include "camel-nntp-store-summary.h"
-
-struct _CamelNNTPFolder;
-struct _CamelException;
 
 #define CAMEL_NNTP_STORE_TYPE     (camel_nntp_store_get_type ())
 #define CAMEL_NNTP_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_NNTP_STORE_TYPE, CamelNNTPStore))
@@ -51,6 +42,11 @@ struct _CamelException;
 #define CAMEL_NNTP_EXT_LISTMOTD   (1<<5)
 #define CAMEL_NNTP_EXT_LISTSUBSCR (1<<6)
 #define CAMEL_NNTP_EXT_LISTPNAMES (1<<7)
+
+G_BEGIN_DECLS
+
+struct _CamelNNTPFolder;
+struct _CamelException;
 
 typedef struct _CamelNNTPStore CamelNNTPStore;
 typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
@@ -105,9 +101,7 @@ int camel_nntp_raw_command(CamelNNTPStore *store, struct _CamelException *ex, ch
 int camel_nntp_raw_command_auth(CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, ...);
 int camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, struct _CamelNNTPFolder *folder, char **line, const char *fmt, ...);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_STORE_H */
 

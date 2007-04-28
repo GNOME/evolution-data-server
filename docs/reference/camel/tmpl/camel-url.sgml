@@ -14,6 +14,9 @@ camel-url
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelURL ##### -->
 <para>
 
@@ -112,6 +115,15 @@ camel-url
 </para>
 
 @part: 
+
+
+<!-- ##### FUNCTION camel_url_decode_path ##### -->
+<para>
+
+</para>
+
+@path: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_url_set_protocol ##### -->

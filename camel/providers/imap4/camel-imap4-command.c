@@ -22,23 +22,22 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
 
-#include <camel/camel-stream-null.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-mime-filter-crlf.h>
-#include <camel/camel-debug.h>
-#include <camel/camel-i18n.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-imap4-stream.h"
+#include "camel-debug.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-null.h"
+
+#include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"
 #include "camel-imap4-folder.h"
 #include "camel-imap4-specials.h"
-
-#include "camel-imap4-command.h"
-
+#include "camel-imap4-stream.h"
 
 #define d(x) (camel_debug ("imap4:command") ? (x) : 0)
 

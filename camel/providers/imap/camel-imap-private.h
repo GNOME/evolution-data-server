@@ -1,17 +1,14 @@
 #ifndef CAMEL_IMAP_PRIVATE_H
 #define CAMEL_IMAP_PRIVATE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+G_BEGIN_DECLS
 
 struct _CamelImapFolderPrivate {
 #ifdef ENABLE_THREADS
@@ -50,9 +47,6 @@ struct _CamelImapWrapperPrivate {
 #define CAMEL_IMAP_WRAPPER_UNLOCK(f, l)
 #endif
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_PRIVATE_H */
-

@@ -24,20 +24,22 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <errno.h>
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 
-#include "libedataserver/md5-utils.h"
+#include <libedataserver/md5-utils.h>
 
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-message.h"

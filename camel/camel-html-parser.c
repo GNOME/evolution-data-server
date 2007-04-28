@@ -18,20 +18,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** WARNING
- **
- ** DO NOT USE THIS CODE OUTSIDE OF CAMEL
- **
- ** IT IS SUBJECT TO CHANGE OR MAY VANISH AT ANY TIME
- **/
+/* WARNING
+ *
+ * DO NOT USE THIS CODE OUTSIDE OF CAMEL
+ *
+ * IT IS SUBJECT TO CHANGE OR MAY VANISH AT ANY TIME
+ */
 
-#include "camel-html-parser.h"
-
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <glib/gunicode.h>
-#include <ctype.h>
+#include <glib.h>
+
+#include "camel-html-parser.h"
 
 /* if defined, must also compile in dump_tag() below somewhere */
 #define d(x)

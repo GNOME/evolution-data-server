@@ -14,11 +14,19 @@ CamelSasl
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSasl ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@service_name: 
+@mech: 
+@service: 
+@authenticated: 
 
 <!-- ##### FUNCTION camel_sasl_challenge ##### -->
 <para>

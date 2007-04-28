@@ -30,6 +30,8 @@
 #define CAMEL_POP3_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_pop3_stream_get_type (), CamelPOP3StreamClass)
 #define CAMEL_IS_POP3_STREAM(obj)      CAMEL_CHECK_TYPE (obj, camel_pop3_stream_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelPOP3StreamClass CamelPOP3StreamClass;
 typedef struct _CamelPOP3Stream CamelPOP3Stream;
 
@@ -65,5 +67,7 @@ void		 camel_pop3_stream_set_mode     (CamelPOP3Stream *is, camel_pop3_stream_mo
 int              camel_pop3_stream_line		(CamelPOP3Stream *is, unsigned char **data, unsigned int *len);
 int 		 camel_pop3_stream_gets		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
 int 		 camel_pop3_stream_getd		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_POP3_STREAM_H */

@@ -22,23 +22,20 @@
 #ifndef _CAMEL_FOLDER_SUMMARY_H
 #define _CAMEL_FOLDER_SUMMARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <stdio.h>
 #include <time.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
 #include <camel/camel-index.h>
 
-struct _CamelFolder;
-
 #define CAMEL_FOLDER_SUMMARY_TYPE         camel_folder_summary_get_type ()
 #define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
 #define CAMEL_FOLDER_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_summary_get_type (), CamelFolderSummaryClass)
 #define CAMEL_IS_FOLDER_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_summary_get_type ())
+
+G_BEGIN_DECLS
+
+struct _CamelFolder;
 
 /*typedef struct _CamelFolderSummary      CamelFolderSummary;*/
 typedef struct _CamelFolderSummaryClass CamelFolderSummaryClass;
@@ -407,8 +404,6 @@ void camel_content_info_dump (CamelMessageContentInfo *ci, int depth);
 
 void camel_message_info_dump (CamelMessageInfo *mi);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_FOLDER_SUMMARY_H */

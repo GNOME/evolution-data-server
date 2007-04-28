@@ -23,17 +23,14 @@
 #ifndef _CAMEL_IMAPP_STORE_SUMMARY_H
 #define _CAMEL_IMAPP_STORE_SUMMARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-object.h>
 #include <camel/camel-store-summary.h>
 
 #define CAMEL_IMAPP_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imapp_store_summary_get_type (), CamelIMAPPStoreSummary)
 #define CAMEL_IMAPP_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapp_store_summary_get_type (), CamelIMAPPStoreSummaryClass)
 #define CAMEL_IS_IMAP_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_imapp_store_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAPPStoreSummary      CamelIMAPPStoreSummary;
 typedef struct _CamelIMAPPStoreSummaryClass CamelIMAPPStoreSummaryClass;
@@ -95,8 +92,6 @@ char *camel_imapp_store_summary_full_from_path(CamelIMAPPStoreSummary *s, const 
 /* helper macro's */
 #define camel_imapp_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_IMAPP_STORE_INFO_FULL_NAME))
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_IMAPP_STORE_SUMMARY_H */

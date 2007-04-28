@@ -25,12 +25,6 @@
 #ifndef CAMEL_FOLDER_H
 #define CAMEL_FOLDER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-object.h>
 #include <camel/camel-folder-summary.h>
@@ -39,6 +33,8 @@ extern "C" {
 #define CAMEL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_FOLDER_TYPE, CamelFolder))
 #define CAMEL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_FOLDER_TYPE, CamelFolderClass))
 #define CAMEL_IS_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelFolderChangeInfo CamelFolderChangeInfo;
 
@@ -229,6 +225,7 @@ const char *      camel_folder_get_full_name           (CamelFolder *folder);
 /* various properties accessors */
 guint32		   camel_folder_get_permanent_flags    (CamelFolder *folder);
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 guint32		   camel_folder_get_message_flags      (CamelFolder *folder,
 							const char *uid);
 
@@ -245,6 +242,7 @@ void		   camel_folder_set_message_user_flag  (CamelFolder *folder,
 							const char *uid,
 							const char *name,
 							gboolean value);
+
 const char *	   camel_folder_get_message_user_tag  (CamelFolder *folder,
 						       const char *uid,
 						       const char *name);
@@ -253,6 +251,7 @@ void		   camel_folder_set_message_user_tag  (CamelFolder *folder,
 						       const char *uid,
 						       const char *name,
 						       const char *value);
+#endif
 
 
 
@@ -270,7 +269,9 @@ gboolean           camel_folder_has_summary_capability (CamelFolder *folder);
 
 int                camel_folder_get_message_count     (CamelFolder *folder);
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 int                camel_folder_get_unread_message_count (CamelFolder *folder);
+#endif
 
 int                camel_folder_get_deleted_message_count (CamelFolder *folder);
 
@@ -298,7 +299,9 @@ void		   camel_folder_search_free	      (CamelFolder *folder, GPtrArray *result)
 /* summary info */
 CamelMessageInfo *camel_folder_get_message_info		(CamelFolder *folder, const char *uid);
 void		  camel_folder_free_message_info	(CamelFolder *folder, CamelMessageInfo *info);
+#ifndef CAMEL_DISABLE_DEPRECATED
 void		  camel_folder_ref_message_info		(CamelFolder *folder, CamelMessageInfo *info);
+#endif
 
 void               camel_folder_transfer_messages_to   (CamelFolder *source,
 							GPtrArray *uids,
@@ -340,8 +343,6 @@ void			camel_folder_change_info_remove_uid	(CamelFolderChangeInfo *info, const c
 void			camel_folder_change_info_change_uid	(CamelFolderChangeInfo *info, const char *uid);
 void			camel_folder_change_info_recent_uid	(CamelFolderChangeInfo *info, const char *uid);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_FOLDER_H */

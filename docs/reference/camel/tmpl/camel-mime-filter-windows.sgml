@@ -14,11 +14,17 @@ CamelMimeFilterWindows
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterWindows ##### -->
 <para>
 
 </para>
 
+@parent: 
+@is_windows: 
+@claimed_charset: 
 
 <!-- ##### FUNCTION camel_mime_filter_windows_new ##### -->
 <para>

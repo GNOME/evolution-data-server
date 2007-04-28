@@ -14,6 +14,9 @@ CamelImapMessageCache
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelImapMessageCache ##### -->
 <para>
 

@@ -32,8 +32,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-mime-utils.h"
 #include "camel-object.h"
 #include "camel-string-utils.h"
@@ -542,7 +544,7 @@ camel_url_set_param (CamelURL *url, const char *name, const char *value)
 
 /**
  * camel_url_get_param:
- * @a #CamelURL
+ * @url: a #CamelURL
  * @name: name of the param
  *
  * Get the value of the specified param on the URL.

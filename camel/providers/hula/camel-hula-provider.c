@@ -27,12 +27,15 @@
 #endif
 
 #include <string.h>
+
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gmodule.h>
+
 #include "camel-provider.h"
+#include "camel-sasl.h"
 #include "camel-session.h"
 #include "camel-url.h"
-#include "camel-sasl.h"
-#include "camel-i18n.h"
 
 static void add_hash (guint *hash, char *s);
 static guint hula_url_hash (gconstpointer key);

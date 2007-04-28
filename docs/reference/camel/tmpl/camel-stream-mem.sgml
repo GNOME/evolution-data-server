@@ -14,11 +14,18 @@ CamelStreamMem
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStreamMem ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@owner: 
+@secure: 
+@buffer: 
 
 <!-- ##### FUNCTION camel_stream_mem_new ##### -->
 <para>

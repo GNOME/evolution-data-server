@@ -26,11 +26,6 @@
 #ifndef CAMEL_DATA_WRAPPER_H
 #define CAMEL_DATA_WRAPPER_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <sys/types.h>
 #include <camel/camel-object.h>
@@ -40,6 +35,8 @@ extern "C" {
 #define CAMEL_DATA_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DATA_WRAPPER_TYPE, CamelDataWrapper))
 #define CAMEL_DATA_WRAPPER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DATA_WRAPPER_TYPE, CamelDataWrapperClass))
 #define CAMEL_IS_DATA_WRAPPER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DATA_WRAPPER_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelDataWrapper {
 	CamelObject parent_object;
@@ -98,8 +95,6 @@ int               camel_data_wrapper_construct_from_stream  (CamelDataWrapper *d
 
 gboolean          camel_data_wrapper_is_offline             (CamelDataWrapper *data_wrapper);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DATA_WRAPPER_H */

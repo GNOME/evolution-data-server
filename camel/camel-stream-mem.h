@@ -26,12 +26,6 @@
 #ifndef CAMEL_STREAM_MEM_H
 #define CAMEL_STREAM_MEM_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 #include <camel/camel-seekable-stream.h>
 
@@ -39,6 +33,8 @@ extern "C" {
 #define CAMEL_STREAM_MEM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_MEM_TYPE, CamelStreamMem))
 #define CAMEL_STREAM_MEM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_MEM_TYPE, CamelStreamMemClass))
 #define CAMEL_IS_STREAM_MEM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_MEM_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStreamMemClass CamelStreamMemClass;
 
@@ -71,8 +67,6 @@ void camel_stream_mem_set_secure(CamelStreamMem *mem);
 void camel_stream_mem_set_byte_array(CamelStreamMem *mem, GByteArray *buffer);
 void camel_stream_mem_set_buffer(CamelStreamMem *mem, const char *buffer, size_t len);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_STREAM_MEM_H */

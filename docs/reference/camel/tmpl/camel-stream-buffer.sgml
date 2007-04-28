@@ -14,11 +14,24 @@ CamelStreamBuffer
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStreamBuffer ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@stream: 
+@buf: 
+@ptr: 
+@end: 
+@size: 
+@linebuf: 
+@linesize: 
+@mode: 
+@flags: 
 
 <!-- ##### ENUM CamelStreamBufferMode ##### -->
 <para>

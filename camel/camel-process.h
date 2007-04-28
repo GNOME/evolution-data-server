@@ -28,17 +28,12 @@
 
 #include <camel/camel-exception.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 pid_t camel_process_fork (const char *path, char **argv, int *infd, int *outfd, int *errfd, CamelException *ex);
 
 int camel_process_wait (pid_t pid);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_PROCESS_H__ */

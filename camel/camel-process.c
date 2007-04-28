@@ -25,9 +25,9 @@
 #include <config.h>
 #endif
 
-#include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "camel-process.h"
 

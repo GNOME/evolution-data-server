@@ -14,11 +14,16 @@ CamelTcpStreamRaw
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelTcpStreamRaw ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@sockfd: 
 
 <!-- ##### FUNCTION camel_tcp_stream_raw_new ##### -->
 <para>

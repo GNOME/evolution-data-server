@@ -26,12 +26,13 @@
 #include <config.h>
 #endif
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"

@@ -14,6 +14,9 @@ CamelObject
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO CAMEL_OBJECT_TRACK_INSTANCES ##### -->
 <para>
 
@@ -32,6 +35,11 @@ CamelObject
 
 </para>
 
+@klass: 
+@magic: 
+@hooks: 
+@ref_count: 
+@flags: 
 
 <!-- ##### MACRO CAMEL_CHECK_CAST ##### -->
 <para>
@@ -665,5 +673,67 @@ CamelObject
 @tname: 
 @parent: 
 @pname: 
+
+
+<!-- ##### STRUCT CamelIteratorVTable ##### -->
+<para>
+
+</para>
+
+@free: 
+@next: 
+@reset: 
+@length: 
+
+<!-- ##### STRUCT CamelIterator ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+<!-- ##### FUNCTION camel_iterator_new ##### -->
+<para>
+
+</para>
+
+@klass: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_iterator_free ##### -->
+<para>
+
+</para>
+
+@it: 
+
+
+<!-- ##### FUNCTION camel_iterator_next ##### -->
+<para>
+
+</para>
+
+@it: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_iterator_reset ##### -->
+<para>
+
+</para>
+
+@it: 
+
+
+<!-- ##### FUNCTION camel_iterator_length ##### -->
+<para>
+
+</para>
+
+@it: 
+@Returns: 
 
 

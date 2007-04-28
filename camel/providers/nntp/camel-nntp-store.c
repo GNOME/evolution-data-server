@@ -25,26 +25,27 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <errno.h>
+#include <sys/types.h>
 
-#include <camel/camel-url.h>
-#include <camel/camel-string-utils.h>
-#include <camel/camel-session.h>
-#include <camel/camel-tcp-stream-raw.h>
-#include <camel/camel-tcp-stream-ssl.h>
+#include <glib/gi18n-lib.h>
 
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-data-cache.h>
-
-#include <camel/camel-disco-store.h>
-#include <camel/camel-disco-diary.h>
+#include "camel/camel-data-cache.h"
+#include "camel/camel-debug.h"
+#include "camel/camel-disco-diary.h"
+#include "camel/camel-disco-store.h"
+#include "camel/camel-net-utils.h"
 #include "camel/camel-private.h"
-#include <camel/camel-debug.h>
+#include "camel/camel-session.h"
+#include "camel/camel-stream-mem.h"
+#include "camel/camel-string-utils.h"
+#include "camel/camel-tcp-stream-raw.h"
+#include "camel/camel-tcp-stream-ssl.h"
+#include "camel/camel-url.h"
 
 #include "camel-nntp-summary.h"
 #include "camel-nntp-store.h"
@@ -52,8 +53,6 @@
 #include "camel-nntp-folder.h"
 #include "camel-nntp-private.h"
 #include "camel-nntp-resp-codes.h"
-#include "camel-i18n.h"
-#include "camel-net-utils.h"
 
 #define w(x)
 #define dd(x) (camel_debug("nntp")?(x):0)

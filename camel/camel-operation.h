@@ -22,10 +22,7 @@
 #ifndef CAMEL_OPERATION_H
 #define CAMEL_OPERATION_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
+G_BEGIN_DECLS
 
 /* cancellation helper stuff, not yet finalised */
 
@@ -66,8 +63,6 @@ void camel_operation_progress(CamelOperation *cc, int pc);
 void camel_operation_progress_count(CamelOperation *cc, int sofar);
 void camel_operation_end(CamelOperation *cc);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_OPERATION_H */

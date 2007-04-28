@@ -18,12 +18,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
-#include <sys/types.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -31,12 +33,12 @@
 #include <libsoup/soup-misc.h>
 
 #include "camel/camel-address.h"
+#include "camel/camel-mime-filter-charset.h"
 #include "camel/camel-mime-message.h"
 #include "camel/camel-multipart.h"
 #include "camel/camel-service.h"
-#include "camel/camel-stream-mem.h"
 #include "camel/camel-stream-filter.h"
-#include "camel/camel-mime-filter-charset.h"
+#include "camel/camel-stream-mem.h"
 
 #include "camel-groupwise-utils.h"
 

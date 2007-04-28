@@ -25,15 +25,16 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
+
+#include "camel-file-utils.h"
 
 #include "camel-imapp-summary.h"
-#include <camel/camel-file-utils.h>
 
 #define CAMEL_IMAPP_SUMMARY_VERSION (1)
 

@@ -24,10 +24,11 @@
 
 #include <string.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-private.h"
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"

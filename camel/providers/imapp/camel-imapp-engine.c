@@ -1,21 +1,21 @@
-
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "camel-data-wrapper.h"
+#include "camel-folder-summary.h"
+#include "camel-sasl.h"
+#include "camel-stream-mem.h"
+#include "camel-stream-null.h"
+
 #include "camel-imapp-engine.h"
+#include "camel-imapp-exception.h"
 #include "camel-imapp-stream.h"
 #include "camel-imapp-utils.h"
-#include "camel-imapp-exception.h"
-
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-null.h>
-#include <camel/camel-data-wrapper.h>
-#include <camel/camel-sasl.h>
-
-#include <ctype.h>
 
 #define e(x) 
 #define c(x)			/* command build debug */

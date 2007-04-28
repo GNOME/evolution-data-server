@@ -24,17 +24,14 @@
 #ifndef CAMEL_DISCO_FOLDER_H
 #define CAMEL_DISCO_FOLDER_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-folder.h"
 
 #define CAMEL_DISCO_FOLDER_TYPE     (camel_disco_folder_get_type ())
 #define CAMEL_DISCO_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DISCO_FOLDER_TYPE, CamelDiscoFolder))
 #define CAMEL_DISCO_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DISCO_FOLDER_TYPE, CamelDiscoFolderClass))
 #define CAMEL_IS_DISCO_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DISCO_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_DISCO_FOLDER_ARG_OFFLINE_SYNC = CAMEL_FOLDER_ARG_LAST,
@@ -125,8 +122,6 @@ void camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
 /* Standard Camel function */
 CamelType camel_disco_folder_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DISCO_FOLDER_H */

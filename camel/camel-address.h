@@ -22,17 +22,14 @@
 #ifndef _CAMEL_ADDRESS_H
 #define _CAMEL_ADDRESS_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-object.h>
 
 #define CAMEL_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_address_get_type (), CamelAddress)
 #define CAMEL_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_address_get_type (), CamelAddressClass)
 #define CAMEL_IS_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_address_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelAddressClass CamelAddressClass;
 
@@ -73,8 +70,6 @@ int		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
 
 void		camel_address_remove	(CamelAddress *addr, int index);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_ADDRESS_H */

@@ -25,16 +25,18 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <sys/time.h>
 #include <time.h>
+#include <sys/time.h>
+
+#include <glib.h>
+
+#include <libedataserver/e-time-utils.h>
 
 #include "broken-date-parser.h"
-#include "libedataserver/e-time-utils.h"
 
 #define d(x)
 

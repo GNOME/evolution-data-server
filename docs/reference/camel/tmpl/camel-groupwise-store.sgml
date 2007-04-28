@@ -14,6 +14,16 @@ CamelGroupwiseStore
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO GW_PARAM_FILTER_INBOX ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### STRUCT CamelGroupwiseStore ##### -->
 <para>
 
@@ -24,6 +34,8 @@ CamelGroupwiseStore
 @root_container: 
 @priv: 
 @current_folder: 
+@refresh_stamp: 
+@list_loaded: 
 
 <!-- ##### STRUCT CamelGroupwiseStorePrivate ##### -->
 <para>
@@ -70,16 +82,6 @@ CamelGroupwiseStore
 @Returns: 
 
 
-<!-- ##### FUNCTION gw_get_path ##### -->
-<para>
-
-</para>
-
-@gw_store: 
-@folder_name: 
-@Returns: 
-
-
 <!-- ##### FUNCTION storage_path_lookup ##### -->
 <para>
 
@@ -87,5 +89,44 @@ CamelGroupwiseStore
 
 @priv: 
 @Returns: 
+
+
+<!-- ##### FUNCTION groupwise_base_url_lookup ##### -->
+<para>
+
+</para>
+
+@priv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION create_junk_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_groupwise_store_connected ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gw_store_reload_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder: 
+@flags: 
+@ex: 
 
 

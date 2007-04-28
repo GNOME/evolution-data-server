@@ -25,17 +25,19 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <glib.h>
 
+#include <libedataserver/e-memory.h>
+
 #include "camel-folder-thread.h"
-#include "libedataserver/e-memory.h"
 
 #define d(x) 
 #define m(x) 

@@ -24,13 +24,10 @@
 #ifndef __CAMEL_ICONV_H__
 #define __CAMEL_ICONV_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 #include <iconv.h>
+
+G_BEGIN_DECLS
 
 const char *camel_iconv_locale_charset (void);
 const char *camel_iconv_locale_language (void);
@@ -43,8 +40,6 @@ iconv_t camel_iconv_open (const char *to, const char *from);
 size_t camel_iconv (iconv_t cd, const char **inbuf, size_t *inleft, char **outbuf, size_t *outleft);
 void camel_iconv_close (iconv_t cd);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_ICONV_H__ */

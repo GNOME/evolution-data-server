@@ -28,12 +28,12 @@
 #include <config.h>
 #endif
 
-#include <string.h>
-#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
-#include "libedataserver/e-iconv.h"
+#include <libedataserver/e-iconv.h>
 
 #include "camel-charset-map.h"
 #include "camel-exception.h"

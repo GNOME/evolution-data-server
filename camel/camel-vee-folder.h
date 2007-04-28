@@ -23,11 +23,6 @@
 #ifndef _CAMEL_VEE_FOLDER_H
 #define _CAMEL_VEE_FOLDER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-vee-summary.h>
@@ -35,6 +30,8 @@ extern "C" {
 #define CAMEL_VEE_FOLDER(obj)         CAMEL_CHECK_CAST (obj, camel_vee_folder_get_type (), CamelVeeFolder)
 #define CAMEL_VEE_FOLDER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vee_folder_get_type (), CamelVeeFolderClass)
 #define CAMEL_IS_VEE_FOLDER(obj)      CAMEL_CHECK_TYPE (obj, camel_vee_folder_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelVeeFolder      CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
@@ -89,8 +86,6 @@ void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const char *expr)
 
 void	     camel_vee_folder_hash_folder	(CamelFolder *folder, char buffer[8]);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_VEE_FOLDER_H */

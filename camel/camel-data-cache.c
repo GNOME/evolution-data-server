@@ -33,10 +33,11 @@
 #include <alloca.h>
 #endif
 
+#include <glib.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-data-server-util.h>
-#include "camel-i18n.h"
 #include "camel-data-cache.h"
 #include "camel-exception.h"
 #include "camel-stream-fs.h"
@@ -149,7 +150,7 @@ camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
 
 /**
  * camel_data_cache_set_expire_age:
- * @cdc: 
+ * @cdc: A #CamelDataCache
  * @when: Timeout for age expiry, or -1 to disable.
  * 
  * Set the cache expiration policy for aged entries.
@@ -170,7 +171,7 @@ camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
 
 /**
  * camel_data_cache_set_expire_access:
- * @cdc: 
+ * @cdc: A #CamelDataCache
  * @when: Timeout for access, or -1 to disable access expiry.
  * 
  * Set the cache expiration policy for access times.
@@ -272,7 +273,7 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 
 /**
  * camel_data_cache_add:
- * @cdc: 
+ * @cdc: A #CamelDataCache
  * @path: Relative path of item to add.
  * @key: Key of item to add.
  * @ex: 
@@ -320,7 +321,7 @@ camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, Cam
 
 /**
  * camel_data_cache_get:
- * @cdc: 
+ * @cdc: A #CamelDataCache
  * @path: Path to the (sub) cache the item exists in.
  * @key: Key for the cache item.
  * @ex: 
@@ -354,7 +355,7 @@ camel_data_cache_get(CamelDataCache *cdc, const char *path, const char *key, Cam
 
 /**
  * camel_data_cache_remove:
- * @cdc: 
+ * @cdc: A #CamelDataCache
  * @path: 
  * @key: 
  * @ex: 

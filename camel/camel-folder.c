@@ -22,23 +22,27 @@
  * USA
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 
-#include "libedataserver/e-memory.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-folder.h"
-#include "camel-exception.h"
-#include "camel-store.h"
-#include "camel-mime-message.h"
+#include <libedataserver/e-memory.h>
+
 #include "camel-debug.h"
-#include "camel-operation.h"
-#include "camel-session.h"
+#include "camel-exception.h"
 #include "camel-filter-driver.h"
+#include "camel-folder.h"
+#include "camel-mime-message.h"
+#include "camel-operation.h"
 #include "camel-private.h"
+#include "camel-session.h"
+#include "camel-store.h"
 #include "camel-vtrash-folder.h"
-#include "camel-i18n.h"
 
 #define d(x)
 #define w(x)

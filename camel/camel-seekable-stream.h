@@ -26,12 +26,6 @@
 #ifndef CAMEL_SEEKABLE_STREAM_H
 #define CAMEL_SEEKABLE_STREAM_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 #include <unistd.h>
 #include <camel/camel-stream.h>
@@ -41,6 +35,7 @@ extern "C" {
 #define CAMEL_SEEKABLE_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SEEKABLE_STREAM_TYPE, CamelSeekableStreamClass))
 #define CAMEL_IS_SEEKABLE_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SEEKABLE_STREAM_TYPE))
 
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_STREAM_SET = SEEK_SET,
@@ -78,8 +73,6 @@ off_t    camel_seekable_stream_seek            (CamelSeekableStream *stream, off
 off_t	 camel_seekable_stream_tell    	       (CamelSeekableStream *stream);
 int	 camel_seekable_stream_set_bounds      (CamelSeekableStream *stream, off_t start, off_t end);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SEEKABLE_STREAM_H */

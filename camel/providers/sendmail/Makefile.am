@@ -12,7 +12,6 @@ INCLUDES =						\
 	$(CAMEL_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)				\
 	$(GTK_INCLUDEDIR) 				\
-	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-sendmail-provider\"
 
 libcamelsendmail_la_SOURCES = 			\

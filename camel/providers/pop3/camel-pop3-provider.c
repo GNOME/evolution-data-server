@@ -27,12 +27,13 @@
 #include <config.h>
 #endif
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-pop3-store.h"
 #include "camel-provider.h"
+#include "camel-sasl.h"
 #include "camel-session.h"
 #include "camel-url.h"
-#include "camel-sasl.h"
-#include "camel-i18n.h"
 
 
 static CamelProviderConfEntry pop3_conf_entries[] = {

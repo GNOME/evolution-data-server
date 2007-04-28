@@ -14,11 +14,15 @@ CamelSaslCramMd5
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslCramMd5 ##### -->
 <para>
 
 </para>
 
+@parent_object: 
 
 <!-- ##### VARIABLE camel_sasl_cram_md5_authtype ##### -->
 <para>

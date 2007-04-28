@@ -1,0 +1,526 @@
+<!-- ##### SECTION ./tmpl/camel-groupwise-private.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-groupwise-private.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-groupwise-private.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-groupwise-private.sgml:Title ##### -->
+camel-groupwise-private
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-private.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-private.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-private.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-private.sgml:Title ##### -->
+camel-imap-private
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-types.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-types.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-types.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-imap-types.sgml:Title ##### -->
+camel-imap-types
+
+
+<!-- ##### SECTION ./tmpl/camel-local-private.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-local-private.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-local-private.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-local-private.sgml:Title ##### -->
+camel-local-private
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:Title ##### -->
+camel-nntp-private
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-types.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-types.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-types.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-nntp-types.sgml:Title ##### -->
+camel-nntp-types
+
+
+<!-- ##### SECTION ./tmpl/camel-search-private.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-search-private.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-search-private.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-search-private.sgml:Title ##### -->
+camel-search-private
+
+
+<!-- ##### SECTION ./tmpl/camel-types.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-types.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-types.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-types.sgml:Title ##### -->
+camel-types
+
+
+<!-- ##### MACRO CAMEL_GROUPWISE_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_GROUPWISE_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_IMAP_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_IMAP_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_IMAP_MESSAGE_RECENT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_IMAP_WRAPPER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_IMAP_WRAPPER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_LOCAL_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_LOCAL_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_NNTP_FOLDER_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_NNTP_FOLDER_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_NNTP_STORE_LOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### MACRO CAMEL_NNTP_STORE_UNLOCK ##### -->
+<para>
+
+</para>
+
+@f: 
+@l: 
+
+<!-- ##### STRUCT CamelImapFolderPrivate ##### -->
+<para>
+
+</para>
+
+@cache_lock: 
+
+<!-- ##### STRUCT CamelImapWrapperPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelLocalFolderPrivate ##### -->
+<para>
+
+</para>
+
+@search_lock: 
+
+<!-- ##### STRUCT CamelMimeFilterChomp ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelNNTPFolderPrivate ##### -->
+<para>
+
+</para>
+
+@search_lock: 
+@cache_lock: 
+
+<!-- ##### TYPEDEF CamelNNTPOverField ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelNNTPStoreClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+
+<!-- ##### STRUCT CamelNNTPStorePrivate ##### -->
+<para>
+
+</para>
+
+@dummy: 
+
+<!-- ##### STRUCT CamelSimpleDataWrapper ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelStreamDataWrapper ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT CamelTcpStreamOpenSSL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION add_recipients ##### -->
+<para>
+
+</para>
+
+@recipient_list: 
+@recipients: 
+@recipient_type: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_block_file_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_index_name_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_isubscribe_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_key_file_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_key_table_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_partition_table_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_search_build_match_regex ##### -->
+<para>
+
+</para>
+
+@pattern: 
+@type: 
+@argc: 
+@argv: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_search_camel_header_soundex ##### -->
+<para>
+
+</para>
+
+@header: 
+@match: 
+@Returns: 
+
+<!-- ##### ENUM camel_search_flags_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_SEARCH_MATCH_START: 
+@CAMEL_SEARCH_MATCH_END: 
+@CAMEL_SEARCH_MATCH_REGEX: 
+@CAMEL_SEARCH_MATCH_ICASE: 
+@CAMEL_SEARCH_MATCH_NEWLINE: 
+
+<!-- ##### FUNCTION camel_search_header_match ##### -->
+<para>
+
+</para>
+
+@value: 
+@match: 
+@how: 
+@type: 
+@default_charset: 
+@Returns: 
+
+<!-- ##### ENUM camel_search_match_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_SEARCH_MATCH_EXACT: 
+@CAMEL_SEARCH_MATCH_CONTAINS: 
+@CAMEL_SEARCH_MATCH_STARTS: 
+@CAMEL_SEARCH_MATCH_ENDS: 
+@CAMEL_SEARCH_MATCH_SOUNDEX: 
+
+<!-- ##### FUNCTION camel_search_message_body_contains ##### -->
+<para>
+
+</para>
+
+@object: 
+@pattern: 
+@Returns: 
+
+<!-- ##### ENUM camel_search_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_SEARCH_TYPE_ASIS: 
+@CAMEL_SEARCH_TYPE_ENCODED: 
+@CAMEL_SEARCH_TYPE_ADDRESS: 
+@CAMEL_SEARCH_TYPE_ADDRESS_ENCODED: 
+@CAMEL_SEARCH_TYPE_MLIST: 
+
+<!-- ##### STRUCT camel_search_word ##### -->
+<para>
+
+</para>
+
+@type: 
+@word: 
+
+<!-- ##### ENUM camel_search_word_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_SEARCH_WORD_SIMPLE: 
+@CAMEL_SEARCH_WORD_COMPLEX: 
+@CAMEL_SEARCH_WORD_8BIT: 
+
+<!-- ##### STRUCT camel_search_words ##### -->
+<para>
+
+</para>
+
+@len: 
+@type: 
+@words: 
+
+<!-- ##### FUNCTION camel_text_index_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_text_index_key_cursor_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_text_index_name_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_ustrstrcase ##### -->
+<para>
+
+</para>
+
+@haystack: 
+@needle: 
+@Returns: 
+
+<!-- ##### FUNCTION gw_get_path ##### -->
+<para>
+
+</para>
+
+@gw_store: 
+@folder_name: 
+@Returns: 
+

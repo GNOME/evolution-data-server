@@ -23,17 +23,14 @@
 #ifndef CAMEL_LOCAL_STORE_H
 #define CAMEL_LOCAL_STORE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-store.h"
 
 #define CAMEL_LOCAL_STORE_TYPE     (camel_local_store_get_type ())
 #define CAMEL_LOCAL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_LOCAL_STORE_TYPE, CamelLocalStore))
 #define CAMEL_LOCAL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_STORE_TYPE, CamelLocalStoreClass))
 #define CAMEL_IS_LOCAL_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_STORE_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelStore parent_object;	
@@ -56,9 +53,7 @@ const gchar *camel_local_store_get_toplevel_dir (CamelLocalStore *store);
 #define camel_local_store_get_full_path(ls, name) ((CamelLocalStoreClass *)((CamelObject *)ls)->klass)->get_full_path((CamelLocalStore *)ls, name)
 #define camel_local_store_get_meta_path(ls, name, ext) ((CamelLocalStoreClass *)((CamelObject *)ls)->klass)->get_meta_path((CamelLocalStore *)ls, name, ext)
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_LOCAL_STORE_H */
 

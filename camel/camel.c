@@ -35,10 +35,12 @@
 #include <ssl.h>
 #endif /* HAVE_NSS */
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel.h"
 #include "camel-certdb.h"
 #include "camel-debug.h"
-#include "camel-i18n.h"
 #include "camel-provider.h"
 #include "camel-private.h"
 

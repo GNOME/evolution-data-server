@@ -1,3 +1,37 @@
+2007-04-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #418852
+
+	* Note, these changes touch almost every file in Camel.
+
+	* Replace C++ declaration guards (extern "C" { ... }) with
+	  G_BEGIN_DECLS / G_END_DECLS, or add them to headers with
+	  no declaration guards at all.
+
+	* Use GLib's i18n support instead of Camel's (now deprecated).
+
+	* Use quotes and brackets consistently in #include directives.
+
+	* Remove CAMEL_EXPLICIT_TRANSLATION_DOMAIN from Makefiles.
+
+	* Fix documentation warnings identified by Gtk-Doc.
+
+	* camel.h:
+	Expose Camel's entire "core" (non-provider) API.
+
+	* camel-i18n.h:
+	Deprecate this API.  Use GLib's i18n support instead.
+
+	* camel-folder.h (camel_folder_get_message_flags):
+	* camel-folder.h (camel_folder_set_message_flags):
+	* camel-folder.h (camel_folder_get_message_user_flag):
+	* camel-folder.h (camel_folder_set_message_user_flag):
+	* camel-folder.h (camel_folder_get_message_user_tag):
+	* camel-folder.h (camel_folder_set_message_user_tag):
+	* camel-folder.h (camel_folder_get_unread_message_count):
+	* camel-folder.h (camel_folder_ref_message_info):
+	Add deprecation guards around these function declarations.
+
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
 	* camel-data-cache.c: (camel_data_cache_new):

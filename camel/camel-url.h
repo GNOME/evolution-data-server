@@ -30,10 +30,7 @@
 #include <glib.h>
 #include <camel/camel-types.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* if this changes, remember to change camel_url_copy */
 typedef struct _CamelURL {
@@ -83,9 +80,6 @@ guint camel_url_hash (const void *v);
 int camel_url_equal(const void *v, const void *v2);
 CamelURL *camel_url_copy(const CamelURL *in);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* URL_UTIL_H */

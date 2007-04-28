@@ -14,11 +14,23 @@ CamelMimePart
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimePart ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@headers: 
+@description: 
+@disposition: 
+@content_id: 
+@content_MD5: 
+@content_location: 
+@content_languages: 
+@encoding: 
 
 <!-- ##### FUNCTION camel_mime_part_new ##### -->
 <para>

@@ -31,17 +31,14 @@
 #include <camel/camel-offline-journal.h>
 #include <camel/camel-mime-message.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_IMAP4_JOURNAL            (camel_imap4_journal_get_type ())
 #define CAMEL_IMAP4_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_JOURNAL, CamelIMAP4Journal))
 #define CAMEL_IMAP4_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP4_JOURNAL, CamelIMAP4JournalClass))
 #define CAMEL_IS_IMAP4_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP4_JOURNAL))
 #define CAMEL_IS_IMAP4_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP4_JOURNAL))
 #define CAMEL_IMAP4_JOURNAL_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_IMAP4_JOURNAL, CamelIMAP4JournalClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4Journal CamelIMAP4Journal;
 typedef struct _CamelIMAP4JournalClass CamelIMAP4JournalClass;
@@ -85,8 +82,6 @@ void camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal);
 void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,
 				 char **appended_uid, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_JOURNAL_H__ */

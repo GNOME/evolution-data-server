@@ -14,6 +14,9 @@ CamelPOP3Folder
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelPOP3Folder ##### -->
 <para>
 
@@ -44,6 +47,17 @@ CamelPOP3Folder
 </para>
 
 @parent: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_pop3_delete_old ##### -->
+<para>
+
+</para>
+
+@folder: 
+@days_to_delete: 
 @ex: 
 @Returns: 
 

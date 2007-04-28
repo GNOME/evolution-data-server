@@ -14,11 +14,16 @@ CamelMimeParser
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeParser ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### ENUM camel_mime_parser_state_t ##### -->
 <para>

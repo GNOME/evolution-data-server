@@ -22,17 +22,14 @@
 #ifndef CAMEL_MH_STORE_H
 #define CAMEL_MH_STORE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif				/* __cplusplus } */
-
 #include "camel-local-store.h"
 
 #define CAMEL_MH_STORE_TYPE     (camel_mh_store_get_type ())
 #define CAMEL_MH_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MH_STORE_TYPE, CamelMhStore))
 #define CAMEL_MH_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MH_STORE_TYPE, CamelMhStoreClass))
 #define CAMEL_IS_MH_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MH_STORE_TYPE))
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_MH_DOTFOLDERS = (1<<0), /* update/use .folders file */
@@ -54,7 +51,6 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_mh_store_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif				/* __cplusplus */
-#endif				/* CAMEL_MH_STORE_H */
+G_END_DECLS
+
+#endif /* CAMEL_MH_STORE_H */

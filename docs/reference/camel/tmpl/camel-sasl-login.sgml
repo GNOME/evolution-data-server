@@ -14,11 +14,16 @@ CamelSaslLogin
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslLogin ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_login_authtype ##### -->
 <para>

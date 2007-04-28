@@ -27,12 +27,6 @@
 #ifndef CAMEL_TRANSPORT_H
 #define CAMEL_TRANSPORT_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <glib.h>
 #include <camel/camel-service.h>
 
@@ -41,6 +35,7 @@ extern "C" {
 #define CAMEL_TRANSPORT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TRANSPORT_TYPE, CamelTransportClass))
 #define CAMEL_IS_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TRANSPORT_TYPE))
 
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
@@ -75,8 +70,6 @@ gboolean camel_transport_send_to (CamelTransport *transport,
 /* Standard Camel function */
 CamelType camel_transport_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_TRANSPORT_H */

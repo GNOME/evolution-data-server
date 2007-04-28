@@ -14,11 +14,20 @@ CamelMimeFilterCRLF
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterCRLF ##### -->
 <para>
 
 </para>
 
+@parent: 
+@direction: 
+@mode: 
+@saw_cr: 
+@saw_lf: 
+@saw_dot: 
 
 <!-- ##### ENUM CamelMimeFilterCRLFDirection ##### -->
 <para>

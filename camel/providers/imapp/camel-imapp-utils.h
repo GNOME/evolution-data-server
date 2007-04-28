@@ -4,6 +4,8 @@
 
 #include <camel/camel-mime-utils.h>
 
+G_BEGIN_DECLS
+
 /* FIXME: the enum should be split up into logical groups, so that testing
    can be done more accurately? */
 
@@ -141,5 +143,7 @@ struct _CamelIMAPPCommand;
 void imapp_uidset_init(struct _uidset_state *ss, struct _CamelIMAPPEngine *ie);
 int imapp_uidset_done(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic);
 int imapp_uidset_add(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic, const char *uid);
+
+G_END_DECLS
 
 #endif

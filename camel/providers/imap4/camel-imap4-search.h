@@ -30,15 +30,12 @@
 #include <camel/camel-data-cache.h>
 #include <camel/camel-folder-search.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_IMAP4_SEARCH_TYPE         (camel_imap4_search_get_type ())
 #define CAMEL_IMAP4_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_imap4_search_get_type (), CamelIMAP4Search)
 #define CAMEL_IMAP4_SEARCH_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imap4_search_get_type (), CamelIMAP4SearchClass)
 #define CAMEL_IS_IMAP4_SEARCH(obj)      CAMEL_CHECK_TYPE (obj, camel_imap4_search_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4Search CamelIMAP4Search;
 typedef struct _CamelIMAP4SearchClass CamelIMAP4SearchClass;
@@ -71,8 +68,6 @@ CamelType camel_imap4_search_get_type (void);
 
 CamelFolderSearch *camel_imap4_search_new (struct _CamelIMAP4Engine *engine, const char *cachedir);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_SEARCH_H__ */

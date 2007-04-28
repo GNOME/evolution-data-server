@@ -27,12 +27,14 @@
 #include <config.h>
 #endif
 
-#include "camel-disco-store.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
+#include "camel-disco-store.h"
 #include "camel-exception.h"
 #include "camel-session.h"
-#include "camel-i18n.h"
 
 #define d(x) 
 

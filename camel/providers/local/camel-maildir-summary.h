@@ -30,6 +30,8 @@
 #define CAMEL_MAILDIR_SUMMARY_CLASS(klass)	CAMEL_CHECK_CLASS_CAST (klass, camel_maildir_summary_get_type (), CamelMaildirSummaryClass)
 #define CAMEL_IS_MAILDIR_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_maildir_summary_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelMaildirSummary	CamelMaildirSummary;
 typedef struct _CamelMaildirSummaryClass	CamelMaildirSummaryClass;
 
@@ -72,5 +74,6 @@ int camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const char
 #define camel_maildir_info_filename(x) (((CamelMaildirMessageInfo *)x)->filename)
 #define camel_maildir_info_set_filename(x, s) (g_free(((CamelMaildirMessageInfo *)x)->filename),((CamelMaildirMessageInfo *)x)->filename = s)
 
-#endif /* ! _CAMEL_MAILDIR_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_MAILDIR_SUMMARY_H */

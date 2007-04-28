@@ -22,16 +22,13 @@
 #ifndef _CAMEL_NNTP_ADDRESS_H
 #define _CAMEL_NNTP_ADDRESS_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-address.h>
 
 #define CAMEL_NNTP_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_nntp_address_get_type (), CamelNNTPAddress)
 #define CAMEL_NNTP_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_address_get_type (), CamelNNTPAddressClass)
 #define CAMEL_IS_NNTP_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_nntp_address_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelNNTPAddress CamelNNTPAddress;
 typedef struct _CamelNNTPAddressClass CamelNNTPAddressClass;
@@ -52,8 +49,6 @@ CamelNNTPAddress   *camel_nntp_address_new	(void);
 int			camel_nntp_address_add	(CamelNNTPAddress *, const char *);
 gboolean		camel_nntp_address_get	(const CamelNNTPAddress *, int, const char **);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_NNTP_ADDRESS_H */

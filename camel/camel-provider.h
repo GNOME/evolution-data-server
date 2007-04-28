@@ -28,18 +28,14 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-types.h>
 #include <camel/camel-object.h>
 #include <camel/camel-exception.h>
 #include <camel/camel-url.h>
 
 #define CAMEL_PROVIDER(obj) ((CamelProvider *)(obj))
+
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_PROVIDER_STORE,
@@ -236,8 +232,6 @@ void camel_provider_module_init(void);
 int camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 				GHashTable **auto_detected, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_PROVIDER_H */

@@ -26,12 +26,6 @@
 #ifndef CAMEL_IMAP_MESSAGE_CACHE_H
 #define CAMEL_IMAP_MESSAGE_CACHE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-imap-types.h"
 #include "camel-folder.h"
 #include <camel/camel-folder-search.h>
@@ -40,6 +34,8 @@ extern "C" {
 #define CAMEL_IMAP_MESSAGE_CACHE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_MESSAGE_CACHE_TYPE, CamelImapFolder))
 #define CAMEL_IMAP_MESSAGE_CACHE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_MESSAGE_CACHE_TYPE, CamelImapFolderClass))
 #define CAMEL_IS_IMAP_MESSAGE_CACHE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_MESSAGE_CACHE_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelImapMessageCache {
 	CamelObject parent_object;
@@ -104,8 +100,6 @@ void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
 /* Standard Camel function */
 CamelType camel_imap_message_cache_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_MESSAGE_CACHE_H */

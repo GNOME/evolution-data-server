@@ -25,12 +25,14 @@
 #include <config.h>
 
 #include <string.h>
+
+#include <glib/gi18n-lib.h>
+
 #include "camel-imap-store.h"
 #include "camel-provider.h"
+#include "camel-sasl.h"
 #include "camel-session.h"
 #include "camel-url.h"
-#include "camel-sasl.h"
-#include "camel-i18n.h"
 
 static void add_hash (guint *hash, char *s);
 static guint imap_url_hash (gconstpointer key);

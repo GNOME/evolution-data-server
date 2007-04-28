@@ -14,6 +14,9 @@ streams
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### FUNCTION test_stream_seekable_writepart ##### -->
 <para>
 

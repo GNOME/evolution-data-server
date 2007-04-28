@@ -14,11 +14,16 @@ CamelInternetAddress
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelInternetAddress ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_internet_address_new ##### -->
 <para>

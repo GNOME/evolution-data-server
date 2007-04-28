@@ -27,11 +27,6 @@
 #ifndef CAMEL_FILE_UTILS_H
 #define CAMEL_FILE_UTILS_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -41,6 +36,8 @@ extern "C" {
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
+
+G_BEGIN_DECLS
 
 int camel_file_util_encode_fixed_int32 (FILE *out, gint32);
 int camel_file_util_decode_fixed_int32 (FILE *in, gint32 *);
@@ -75,8 +72,6 @@ ssize_t camel_write_socket (int fd, const char *buf, size_t n);
 
 char *camel_file_util_savename(const char *filename);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_FILE_UTILS_H */

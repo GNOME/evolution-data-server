@@ -19,19 +19,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-
-
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include "camel-mime-filter-html.h"
 #include "camel-html-parser.h"
+#include "camel-mime-filter-html.h"
 
 #define d(x)
 

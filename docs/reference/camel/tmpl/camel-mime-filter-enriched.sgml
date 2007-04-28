@@ -14,11 +14,17 @@ CamelMimeFilterEnriched
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterEnriched ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@flags: 
+@nofill: 
 
 <!-- ##### MACRO CAMEL_MIME_FILTER_ENRICHED_IS_RICHTEXT ##### -->
 <para>

@@ -14,11 +14,16 @@ CamelOfflineStore
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelOfflineStore ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@state: 
 
 <!-- ##### FUNCTION camel_offline_store_set_network_state ##### -->
 <para>

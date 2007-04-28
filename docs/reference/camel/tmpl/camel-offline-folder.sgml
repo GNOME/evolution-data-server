@@ -14,11 +14,16 @@ CamelOfflineFolder
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelOfflineFolder ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@sync_offline: 
 
 <!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
 <para>

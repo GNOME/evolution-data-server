@@ -22,6 +22,8 @@
 #ifndef _CAMEL_LIST_UTILS_H
 #define _CAMEL_LIST_UTILS_H
 
+G_BEGIN_DECLS
+
 /* This is a copy of Amiga's Exec lists, the head and tail nodes are
  * overlapped and merged into a single list header.  All operations
  * are O(1), including node removal and addition from/to either end of
@@ -122,5 +124,7 @@ CamelSListNode *camel_slist_remhead(CamelSList *l);
 CamelSListNode *camel_slist_remtail(CamelSList *l);
 int camel_slist_empty(CamelSList *l);
 int camel_slist_length(CamelSList *l);
+
+G_END_DECLS
 
 #endif

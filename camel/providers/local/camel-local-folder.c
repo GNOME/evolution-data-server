@@ -24,37 +24,36 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <limits.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #if !defined (G_OS_WIN32) && !defined (_POSIX_PATH_MAX)
 #include <posix1_lim.h>
 #endif
 
-#include "camel-private.h"
-#include "camel-local-folder.h"
-#include "camel-local-store.h"
-#include "camel-stream-fs.h"
-#include "camel-local-summary.h"
 #include "camel-data-wrapper.h"
-#include "camel-mime-message.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-filter-from.h"
 #include "camel-exception.h"
-#include "camel-i18n.h"
-
-#include "camel-local-private.h"
-
+#include "camel-mime-filter-from.h"
+#include "camel-mime-message.h"
+#include "camel-private.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
 #include "camel-text-index.h"
+
+#include "camel-local-folder.h"
+#include "camel-local-private.h"
+#include "camel-local-store.h"
+#include "camel-local-summary.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

@@ -14,11 +14,16 @@ CamelSaslDigestMd5
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslDigestMd5 ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_digest_md5_authtype ##### -->
 <para>

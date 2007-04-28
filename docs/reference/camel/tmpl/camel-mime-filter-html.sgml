@@ -14,11 +14,16 @@ CamelMimeFilterHTML
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterHTML ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_html_new ##### -->
 <para>

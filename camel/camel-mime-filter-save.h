@@ -24,11 +24,6 @@
 #ifndef __CAMEL_MIME_FILTER_SAVE_H__
 #define __CAMEL_MIME_FILTER_SAVE_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-seekable-stream.h>
 
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_MIME_FILTER_SAVE(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_save_get_type (), CamelMimeFilterSave)
 #define CAMEL_MIME_FILTER_SAVE_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_save_get_type (), CamelMimeFilterSaveClass)
 #define CAMEL_IS_MIME_FILTER_SAVE(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_save_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterSaveClass CamelMimeFilterSaveClass;
 
@@ -54,8 +51,6 @@ CamelType camel_mime_filter_save_get_type (void);
 CamelMimeFilter *camel_mime_filter_save_new (void);
 CamelMimeFilter *camel_mime_filter_save_new_with_stream (CamelStream *stream);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_MIME_FILTER_SAVE_H__ */

@@ -14,11 +14,18 @@ CamelMultipart
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMultipart ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@parts: 
+@preface: 
+@postface: 
 
 <!-- ##### FUNCTION camel_multipart_new ##### -->
 <para>

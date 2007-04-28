@@ -24,17 +24,14 @@
 #ifndef __CAMEL_SMIME_CONTEXT_H__
 #define __CAMEL_SMIME_CONTEXT_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-cipher-context.h>
 
 #define CAMEL_SMIME_CONTEXT_TYPE    (camel_smime_context_get_type())
 #define CAMEL_SMIME_CONTEXT(obj)    (CAMEL_CHECK_CAST((obj), CAMEL_SMIME_CONTEXT_TYPE, CamelSMIMEContext))
 #define CAMEL_SMIME_CONTEXT_CLASS(k)(CAMEL_CHECK_CLASS_CAST((k), CAMEL_SMIME_CONTEXT_TYPE, CamelSMIMEContextClass))
 #define CAMEL_IS_SMIME_CONTEXT(o)   (CAMEL_CHECK_TYPE((o), CAMEL_SMIME_CONTEXT_TYPE))
+
+G_BEGIN_DECLS
 
 typedef enum _camel_smime_sign_t {
 	CAMEL_SMIME_SIGN_CLEARSIGN,
@@ -72,8 +69,6 @@ void camel_smime_context_set_sign_mode(CamelSMIMEContext *context, camel_smime_s
 
 guint32 camel_smime_context_describe_part(CamelSMIMEContext *, struct _CamelMimePart *);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_SMIME_CONTEXT_H__ */

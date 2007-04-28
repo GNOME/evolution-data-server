@@ -27,13 +27,10 @@
 #ifndef CAMEL_IMAP_COMMAND_H
 #define CAMEL_IMAP_COMMAND_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <glib.h>
 #include "camel-imap-types.h"
+
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_IMAP_RESPONSE_ERROR,
@@ -76,5 +73,7 @@ gboolean           camel_imap_command_start        (CamelImapStore *store,
 CamelImapResponseType camel_imap_command_response  (CamelImapStore *store,
 						    char **respbuf,
 						    CamelException *ex);
+
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_COMMAND_H */

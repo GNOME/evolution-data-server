@@ -21,7 +21,14 @@
 #ifndef _CAMEL_SEARCH_PRIVATE_H
 #define _CAMEL_SEARCH_PRIVATE_H
 
+/* POSIX requires <sys/types.h> be included before <regex.h> */
+#include <sys/types.h>
+
 #include <regex.h>
+
+#include "camel-exception.h"
+
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_SEARCH_MATCH_START = 1<<0,
@@ -79,5 +86,6 @@ struct _camel_search_words *camel_search_words_split(const unsigned char *in);
 struct _camel_search_words *camel_search_words_simple(struct _camel_search_words *wordin);
 void camel_search_words_free(struct _camel_search_words *);
 
-#endif /* ! _CAMEL_SEARCH_PRIVATE_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_SEARCH_PRIVATE_H */

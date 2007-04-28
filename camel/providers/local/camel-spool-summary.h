@@ -31,6 +31,8 @@
 #define CAMEL_SPOOL_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_spool_summary_get_type (), CamelSpoolSummaryClass)
 #define CAMEL_IS_SPOOL_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_spool_summary_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelSpoolSummary      CamelSpoolSummary;
 typedef struct _CamelSpoolSummaryClass CamelSpoolSummaryClass;
 
@@ -65,5 +67,6 @@ int camel_spool_summary_decode_x_evolution(CamelSpoolSummary *cls, const char *x
 /* utility functions - write headers to a file with optional X-Evolution header */
 int camel_spool_summary_write_headers(int fd, struct _camel_header_raw *header, char *xevline);
 
-#endif /* ! _CAMEL_SPOOL_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_SPOOL_SUMMARY_H */

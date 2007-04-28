@@ -26,18 +26,16 @@
 #include <config.h>
 #endif
 
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 
-#include <camel/camel-offline-store.h>
+#include "camel-offline-store.h"
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"
+#include "camel-imap4-search.h"
 #include "camel-imap4-stream.h"
 #include "camel-imap4-utils.h"
-
-#include "camel-imap4-search.h"
-
 
 static void camel_imap4_search_class_init (CamelIMAP4SearchClass *klass);
 static void camel_imap4_search_init (CamelIMAP4Search *search, CamelIMAP4SearchClass *klass);

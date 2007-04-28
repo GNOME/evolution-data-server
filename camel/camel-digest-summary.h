@@ -24,11 +24,6 @@
 #ifndef __CAMEL_DIGEST_SUMMARY_H__
 #define __CAMEL_DIGEST_SUMMARY_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-exception.h>
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_DIGEST_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_digest_summary_get_type (), CamelDigestSummary)
 #define CAMEL_DIGEST_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_digest_summary_get_type (), CamelDigestSummaryClass)
 #define CAMEL_IS_DIGEST_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_digest_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelDigestSummary      CamelDigestSummary;
 typedef struct _CamelDigestSummaryClass CamelDigestSummaryClass;
@@ -55,8 +52,6 @@ CamelType camel_digest_summary_get_type (void);
 
 CamelFolderSummary *camel_digest_summary_new (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_DIGEST_SUMMARY_H__ */

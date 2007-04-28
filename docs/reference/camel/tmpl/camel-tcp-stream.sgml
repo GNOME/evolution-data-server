@@ -14,11 +14,15 @@ CamelTcpStream
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelTcpStream ##### -->
 <para>
 
 </para>
 
+@parent_object: 
 
 <!-- ##### ENUM CamelSockOpt ##### -->
 <para>

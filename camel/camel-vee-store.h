@@ -23,17 +23,14 @@
 #ifndef _CAMEL_VEE_STORE_H
 #define _CAMEL_VEE_STORE_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-store.h>
 
 #define CAMEL_VEE_STORE(obj)         CAMEL_CHECK_CAST (obj, camel_vee_store_get_type (), CamelVeeStore)
 #define CAMEL_VEE_STORE_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vee_store_get_type (), CamelVeeStoreClass)
 #define CAMEL_IS_VEE_STORE(obj)      CAMEL_CHECK_TYPE (obj, camel_vee_store_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelVeeStore      CamelVeeStore;
 typedef struct _CamelVeeStoreClass CamelVeeStoreClass;
@@ -56,8 +53,6 @@ struct _CamelVeeStoreClass {
 CamelType		camel_vee_store_get_type	(void);
 CamelVeeStore      *camel_vee_store_new	(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_VEE_STORE_H */

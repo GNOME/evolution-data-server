@@ -14,6 +14,16 @@ camel-file-utils
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO O_BINARY ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION camel_file_util_encode_fixed_int32 ##### -->
 <para>
 
@@ -134,6 +144,28 @@ camel-file-utils
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_file_util_encode_fixed_string ##### -->
+<para>
+
+</para>
+
+@out: 
+@str: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_fixed_string ##### -->
+<para>
+
+</para>
+
+@in: 
+@str: 
+@len: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_file_util_safe_filename ##### -->
 <para>
 
@@ -155,6 +187,28 @@ camel-file-utils
 
 
 <!-- ##### FUNCTION camel_write ##### -->
+<para>
+
+</para>
+
+@fd: 
+@buf: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_read_socket ##### -->
+<para>
+
+</para>
+
+@fd: 
+@buf: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_write_socket ##### -->
 <para>
 
 </para>

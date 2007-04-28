@@ -23,11 +23,10 @@
 
 #include <time.h>
 
+G_BEGIN_DECLS
+
 /* prototypes for functions dealing with broken date formats */
 
 time_t parse_broken_date (const char *datestr, int *saveoffset);
 
-
-
-
-
+G_END_DECLS

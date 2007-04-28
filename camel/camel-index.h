@@ -28,6 +28,8 @@
 #define CAMEL_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_get_type (), CamelIndexClass)
 #define CAMEL_IS_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_index_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIndex      CamelIndex;
 typedef struct _CamelIndexClass CamelIndexClass;
 
@@ -161,5 +163,7 @@ CamelIndexCursor  *camel_index_find(CamelIndex *idx, const char *word);
 
 CamelIndexCursor  *camel_index_words(CamelIndex *idx);
 CamelIndexCursor  *camel_index_names(CamelIndex *idx);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_INDEX_H */

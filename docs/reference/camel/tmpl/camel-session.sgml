@@ -14,11 +14,21 @@ CamelSession
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSession ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
+@storage_path: 
+@junk_plugin: 
+@online: 
+@check_junk: 
+@network_state: 
 
 <!-- ##### USER_FUNCTION CamelTimeoutCallback ##### -->
 <para>
@@ -247,5 +257,23 @@ CamelSession
 
 @session: 
 @id: 
+
+
+<!-- ##### FUNCTION camel_session_get_network_state ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_session_set_network_state ##### -->
+<para>
+
+</para>
+
+@session: 
+@network_state: 
 
 

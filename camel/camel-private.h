@@ -23,11 +23,6 @@
 #ifndef CAMEL_PRIVATE_H
 #define CAMEL_PRIVATE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
 
@@ -37,6 +32,8 @@ extern "C" {
 
 #include <pthread.h>
 #include <libedataserver/e-msgport.h>
+
+G_BEGIN_DECLS
 
 struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
@@ -191,7 +188,6 @@ const char *_camel_get_providerdir (void) G_GNUC_CONST;
 
 #endif /* G_OS_WIN32 */
 
-#ifdef __cplusplus
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_PRIVATE_H */

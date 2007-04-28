@@ -27,17 +27,18 @@
 #include <config.h>
 #endif
 
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
-#include "camel-groupwise-summary.h"
-#include "camel-groupwise-folder.h"
+#include "camel-data-cache.h"
 #include "camel-file-utils.h"
-#include <camel/camel-folder.h>
-#include <camel/camel-data-cache.h>
+#include "camel-folder.h"
+
+#include "camel-groupwise-folder.h"
+#include "camel-groupwise-summary.h"
 
 #define CAMEL_GW_SUMMARY_VERSION (1)
 

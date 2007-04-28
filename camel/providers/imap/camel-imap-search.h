@@ -35,6 +35,8 @@
 #define CAMEL_IMAP_SEARCH_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imap_search_get_type (), CamelImapSearchClass)
 #define CAMEL_IS_IMAP_SEARCH(obj)      CAMEL_CHECK_TYPE (obj, camel_imap_search_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelImapSearchClass CamelImapSearchClass;
 
 struct _CamelImapSearch {
@@ -58,5 +60,7 @@ struct _CamelImapSearchClass {
 
 CamelType              camel_imap_search_get_type (void);
 CamelFolderSearch *camel_imap_search_new      (const char *cachedir);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_IMAP_SEARCH_H */

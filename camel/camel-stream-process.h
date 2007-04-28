@@ -23,16 +23,13 @@
 #ifndef _CAMEL_STREAM_NULL_H
 #define _CAMEL_STREAM_NULL_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-stream.h>
 
 #define CAMEL_STREAM_PROCESS(obj)         CAMEL_CHECK_CAST (obj, camel_stream_process_get_type (), CamelStreamProcess)
 #define CAMEL_STREAM_PROCESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_stream_process_get_type (), CamelStreamProcessClass)
 #define CAMEL_IS_STREAM_PROCESS(obj)      CAMEL_CHECK_TYPE (obj, camel_stream_process_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStreamProcessClass CamelStreamProcessClass;
 typedef struct _CamelStreamProcess CamelStreamProcess;
@@ -52,8 +49,6 @@ CamelType		camel_stream_process_get_type	(void);
 CamelStream            *camel_stream_process_new		(void);
 int camel_stream_process_connect(CamelStreamProcess *, const char *, const char **);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_STREAM_PROCESS_H */

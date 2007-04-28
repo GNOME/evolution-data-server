@@ -26,12 +26,6 @@
 #ifndef CAMEL_STREAM_FS_H
 #define CAMEL_STREAM_FS_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* for open flags */
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,6 +37,8 @@ extern "C" {
 #define CAMEL_STREAM_FS(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_FS_TYPE, CamelStreamFs))
 #define CAMEL_STREAM_FS_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_FS_TYPE, CamelStreamFsClass))
 #define CAMEL_IS_STREAM_FS(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_FS_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelStreamFs {
 	CamelSeekableStream parent_object;
@@ -66,8 +62,6 @@ CamelStream * camel_stream_fs_new_with_name_and_bounds (const char *name, int fl
 CamelStream * camel_stream_fs_new_with_fd              (int fd);
 CamelStream * camel_stream_fs_new_with_fd_and_bounds   (int fd, off_t start, off_t end);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_STREAM_FS_H */

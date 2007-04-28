@@ -27,6 +27,8 @@
 #define CAMEL_IMAPP_FETCH_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapp_fetch_stream_get_type (), CamelIMAPPFetchStreamClass)
 #define CAMEL_IS_IMAP_FETCH_STREAM(obj)      CAMEL_CHECK_TYPE (obj, camel_imapp_fetch_stream_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIMAPPFetchStreamClass CamelIMAPPFetchStreamClass;
 typedef struct _CamelIMAPPFetchStream CamelIMAPPFetchStream;
 
@@ -43,5 +45,7 @@ struct _CamelIMAPPFetchStreamClass {
 CamelType	 camel_imapp_fetch_stream_get_type	(void);
 
 CamelStream     *camel_imapp_fetch_stream_new		(struct _CamelIMAPPEngine *src, const char *uid, const char *spec);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_IMAPP_FETCH_STREAM_H */

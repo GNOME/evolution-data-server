@@ -25,9 +25,9 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "camel-charset-map.h"
 #include "camel-mime-filter-windows.h"

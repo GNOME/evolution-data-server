@@ -14,11 +14,17 @@ CamelSaslAnonymous
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslAnonymous ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@trace_info: 
+@type: 
 
 <!-- ##### ENUM CamelSaslAnonTraceType ##### -->
 <para>

@@ -22,27 +22,27 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/uio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <sys/types.h>
-#include <dirent.h>
-
 #include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-memory.h>
+
+#include "camel-mime-message.h"
+#include "camel-operation.h"
+#include "camel-private.h"
 
 #include "camel-maildir-summary.h"
-#include <camel/camel-mime-message.h>
-#include <camel/camel-operation.h>
-
-#include "camel-private.h"
-#include "libedataserver/e-memory.h"
-#include "camel-i18n.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

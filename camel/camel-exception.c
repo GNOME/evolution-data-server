@@ -26,14 +26,15 @@
 #endif
 
 #include <stdio.h>
-#include <glib.h>
 #include <pthread.h>
 
-#include "camel-exception.h"
-#include "libedataserver/e-memory.h"
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-memory.h>
 
 #include "camel-debug.h"
+#include "camel-exception.h"
 
 /* dont turn this off */
 #define w(x) x

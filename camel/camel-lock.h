@@ -22,11 +22,6 @@
 #ifndef _CAMEL_LOCK_H
 #define _CAMEL_LOCK_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-exception.h>
 
 /* for .lock locking, retry, delay and stale counts */
@@ -37,6 +32,8 @@ extern "C" {
 /* for locking folders, retry/interretry delay */
 #define CAMEL_LOCK_RETRY (5) /* number of times to retry lock */
 #define CAMEL_LOCK_DELAY (2) /* delay between locking retries */
+
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_LOCK_READ,
@@ -56,8 +53,6 @@ void camel_unlock_flock(int fd);
 int camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *ex);
 void camel_unlock_folder(const char *path, int fd);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* !_CAMEL_LOCK_H */

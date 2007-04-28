@@ -22,12 +22,9 @@
 #ifndef CAMEL_IMAP_TYPES_H
 #define CAMEL_IMAP_TYPES_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-types.h"
+
+G_BEGIN_DECLS
 
 typedef struct _CamelImapFolder       CamelImapFolder;
 typedef struct _CamelImapMessageCache CamelImapMessageCache;
@@ -35,5 +32,7 @@ typedef struct _CamelImapResponse     CamelImapResponse;
 typedef struct _CamelImapSearch       CamelImapSearch;
 typedef struct _CamelImapStore        CamelImapStore;
 typedef struct _CamelImapSummary      CamelImapSummary;
+
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_TYPES_H */

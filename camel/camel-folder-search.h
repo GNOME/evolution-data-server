@@ -22,11 +22,6 @@
 #ifndef _CAMEL_FOLDER_SEARCH_H
 #define _CAMEL_FOLDER_SEARCH_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <libedataserver/e-sexp.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-object.h>
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_FOLDER_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_folder_search_get_type (), CamelFolderSearch)
 #define CAMEL_FOLDER_SEARCH_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_search_get_type (), CamelFolderSearchClass)
 #define CAMEL_IS_FOLDER_SEARCH(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_search_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelFolderSearchClass CamelFolderSearchClass;
 
@@ -132,8 +129,6 @@ GPtrArray *camel_folder_search_execute_expression(CamelFolderSearch *search, con
 GPtrArray *camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArray *uids, CamelException *ex);
 void camel_folder_search_free_result(CamelFolderSearch *search, GPtrArray *);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_FOLDER_SEARCH_H */

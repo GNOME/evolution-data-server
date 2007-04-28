@@ -27,22 +27,24 @@
 
 #ifdef HAVE_OPENSSL
 
-#include "camel-tcp-stream-ssl.h"
-
-#include <openssl/ssl.h>
-#include <openssl/x509.h>
-#include <openssl/err.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include "camel-session.h"
-#include "camel-service.h"
-#include "camel-operation.h"
+
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+#include <openssl/x509.h>
+
 #include "camel-certdb.h"
+#include "camel-operation.h"
+#include "camel-service.h"
+#include "camel-session.h"
+
+#include "camel-tcp-stream-ssl.h"
 
 #define d(x)
 

@@ -27,6 +27,8 @@
 
 #include "camel-block-file.h"
 
+G_BEGIN_DECLS
+
 /* ********************************************************************** */
 
 /* CamelPartitionTable - index of key to keyid */
@@ -148,5 +150,7 @@ void camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_
 void camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, unsigned int flags, unsigned int set);
 camel_block_t camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **key, unsigned int *flags);
 camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned int *flagsp, camel_block_t *datap);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_PARTITION_TABLE_H */

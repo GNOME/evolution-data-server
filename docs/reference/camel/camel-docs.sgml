@@ -36,6 +36,7 @@
 <!ENTITY CamelMIMEFilterFrom SYSTEM "xml/camel-mime-filter-from.xml">
 <!ENTITY CamelMIMEFilterHTML SYSTEM "xml/camel-mime-filter-html.xml">
 <!ENTITY CamelMIMEFilterIndex SYSTEM "xml/camel-mime-filter-index.xml">
+<!ENTITY CamelMIMEFilterPgp SYSTEM "xml/camel-mime-filter-pgp.xml">
 <!ENTITY CamelMIMEFilterSave SYSTEM "xml/camel-mime-filter-save.xml">
 <!ENTITY CamelMIMEFilterToHTML SYSTEM "xml/camel-mime-filter-tohtml.xml">
 <!ENTITY CamelMIMEFilterWindows SYSTEM "xml/camel-mime-filter-windows.xml">
@@ -43,6 +44,7 @@
 <!ENTITY CamelMIMEMessage SYSTEM "xml/camel-mime-message.xml">
 <!ENTITY CamelMIMEParser SYSTEM "xml/camel-mime-parser.xml">
 <!ENTITY CamelMIMEPart SYSTEM "xml/camel-mime-part.xml">
+<!ENTITY CamelMIMEPartUtils SYSTEM "xml/camel-mime-part-utils.xml">
 <!ENTITY CamelMIMEUtils SYSTEM "xml/camel-mime-utils.xml">
 <!ENTITY CamelMultipart SYSTEM "xml/camel-multipart.xml">
 <!ENTITY CamelMultipartEncrypted SYSTEM "xml/camel-multipart-encrypted.xml">
@@ -79,6 +81,7 @@
 <!ENTITY CamelStreamFs SYSTEM "xml/camel-stream-fs.xml">
 <!ENTITY CamelStreamMem SYSTEM "xml/camel-stream-mem.xml">
 <!ENTITY CamelStreamNull SYSTEM "xml/camel-stream-null.xml">
+<!ENTITY CamelStreamVFS SYSTEM "xml/camel-stream-vfs.xml">
 <!ENTITY CamelStringUtils SYSTEM "xml/camel-string-utils.xml">
 <!ENTITY CamelTcpStream SYSTEM "xml/camel-tcp-stream.xml">
 <!ENTITY CamelTcpStreamRaw SYSTEM "xml/camel-tcp-stream-raw.xml">
@@ -161,6 +164,7 @@
       &CamelStreamFs;
       &CamelStreamMem;
       &CamelStreamNull;
+      &CamelStreamVFS;
       &CamelTcpStream;
       &CamelTcpStreamRaw;
       &CamelTcpStreamSSL;
@@ -178,6 +182,7 @@
       &CamelMIMEFilterFrom;
       &CamelMIMEFilterHTML;
       &CamelMIMEFilterIndex;
+      &CamelMIMEFilterPgp;
       &CamelMIMEFilterSave;
       &CamelMIMEFilterToHTML;
       &CamelMIMEFilterWindows;
@@ -239,5 +244,9 @@
       &CamelMIMEMessage;
       &CamelMIMEParser;
     </chapter>
+
+    <index>
+      <title>Index</title>
+    </index>
   </part>
 </book>

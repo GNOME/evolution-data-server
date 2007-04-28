@@ -24,11 +24,6 @@
 #ifndef __CAMEL_SASL_GSSAPI_H__
 #define __CAMEL_SASL_GSSAPI_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 #include <camel/camel-sasl.h>
 
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_SASL_GSSAPI(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_GSSAPI_TYPE, CamelSaslGssapi))
 #define CAMEL_SASL_GSSAPI_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_GSSAPI_TYPE, CamelSaslGssapiClass))
 #define CAMEL_IS_SASL_GSSAPI(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_GSSAPI_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelSaslGssapi CamelSaslGssapi;
 typedef struct _CamelSaslGssapiClass CamelSaslGssapiClass;
@@ -57,8 +54,6 @@ CamelType camel_sasl_gssapi_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_gssapi_authtype;
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_SASL_GSSAPI_H__ */

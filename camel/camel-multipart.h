@@ -27,18 +27,14 @@
 #ifndef CAMEL_MULTIPART_H
 #define CAMEL_MULTIPART_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-data-wrapper.h>
 
 #define CAMEL_MULTIPART_TYPE     (camel_multipart_get_type ())
 #define CAMEL_MULTIPART(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MULTIPART_TYPE, CamelMultipart))
 #define CAMEL_MULTIPART_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MULTIPART_TYPE, CamelMultipartClass))
 #define CAMEL_IS_MULTIPART(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MULTIPART_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelMimeParser;
 
@@ -96,9 +92,6 @@ void		    camel_multipart_set_postface   (CamelMultipart *multipart, const char 
 
 int		    camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *parser);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MULTIPART_H */
-

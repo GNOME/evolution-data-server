@@ -24,24 +24,25 @@
 #endif
 
 #include <ctype.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
+#include <glib/gi18n-lib.h>
+
+#include "camel/camel-data-cache.h"
+#include "camel/camel-debug.h"
 #include "camel/camel-file-utils.h"
 #include "camel/camel-mime-message.h"
-#include "camel/camel-stream-null.h"
 #include "camel/camel-operation.h"
-#include "camel/camel-data-cache.h"
-#include "camel/camel-i18n.h"
-#include "camel/camel-debug.h"
+#include "camel/camel-stream-null.h"
 
-#include "camel-nntp-summary.h"
 #include "camel-nntp-folder.h"
 #include "camel-nntp-store.h"
 #include "camel-nntp-stream.h"
+#include "camel-nntp-summary.h"
 
 #define w(x)
 #define io(x)

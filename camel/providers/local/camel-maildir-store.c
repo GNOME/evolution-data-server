@@ -23,21 +23,22 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <dirent.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include <dirent.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-maildir-store.h"
-#include "camel-maildir-folder.h"
 #include "camel-exception.h"
-#include "camel-url.h"
 #include "camel-private.h"
+#include "camel-url.h"
+
+#include "camel-maildir-folder.h"
+#include "camel-maildir-store.h"
 #include "camel-maildir-summary.h"
-#include "camel-i18n.h"
 
 #define d(x)
 

@@ -23,11 +23,6 @@
 #ifndef CAMEL_NET_UTILS_H
 #define CAMEL_NET_UTILS_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -37,6 +32,8 @@ extern "C" {
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #endif
+
+G_BEGIN_DECLS
 
 struct _CamelException;
 
@@ -97,8 +94,6 @@ void camel_freeaddrinfo(struct addrinfo *host);
 int camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, char **host, char **serv,
 		      int flags, struct _CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NET_UTILS_H */

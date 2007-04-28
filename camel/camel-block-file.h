@@ -26,6 +26,8 @@
 #include <libedataserver/e-msgport.h>
 #include <stdio.h>
 
+G_BEGIN_DECLS
+
 typedef guint32 camel_block_t;	/* block offset, absolute, bottom BLOCK_SIZE_BITS always 0 */
 typedef guint32 camel_key_t;	/* this is a bitfield of (block offset:BLOCK_SIZE_BITS) */
 
@@ -140,5 +142,6 @@ int	       camel_key_file_delete(CamelKeyFile *kf);
 int            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records);
 int            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records);
 
+G_END_DECLS
 
 #endif /* ! _CAMEL_BLOCK_FILE_H */

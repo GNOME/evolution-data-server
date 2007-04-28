@@ -25,12 +25,6 @@
 #ifndef CAMEL_SERVICE_H
 #define CAMEL_SERVICE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-object.h>
 #include <camel/camel-url.h>
 #include <camel/camel-provider.h>
@@ -40,6 +34,8 @@ extern "C" {
 #define CAMEL_SERVICE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SERVICE_TYPE, CamelService))
 #define CAMEL_SERVICE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SERVICE_TYPE, CamelServiceClass))
 #define CAMEL_IS_SERVICE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SERVICE_TYPE))
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_SERVICE_ARG_FIRST  = CAMEL_ARG_FIRST + 100,
@@ -132,9 +128,6 @@ GList *             camel_service_query_auth_types   (CamelService *service,
 /* Standard Camel function */
 CamelType camel_service_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SERVICE_H */
-

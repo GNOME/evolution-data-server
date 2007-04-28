@@ -25,11 +25,13 @@
 #endif
 
 #include <string.h>
-#include <camel-nntp-auth.h>
-#include <camel-nntp-store.h>
-#include <camel-nntp-resp-codes.h>
-#include <camel-exception.h>
-#include <camel-session.h>
+
+#include "camel-exception.h"
+#include "camel-session.h"
+
+#include "camel-nntp-auth.h"
+#include "camel-nntp-store.h"
+#include "camel-nntp-resp-codes.h"
 
 int
 camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex)

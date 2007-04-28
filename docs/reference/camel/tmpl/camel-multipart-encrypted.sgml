@@ -14,11 +14,19 @@ CamelMultipartEncrypted
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMultipartEncrypted ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@version: 
+@content: 
+@decrypted: 
+@protocol: 
 
 <!-- ##### FUNCTION camel_multipart_encrypted_new ##### -->
 <para>

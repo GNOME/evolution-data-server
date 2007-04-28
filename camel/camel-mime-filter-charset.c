@@ -24,13 +24,13 @@
 #include <config.h>
 #endif
 
-#include <string.h>
 #include <errno.h>
+#include <string.h>
 
-#include "libedataserver/e-iconv.h"
+#include <libedataserver/e-iconv.h>
 
-#include "camel-mime-filter-charset.h"
 #include "camel-charset-map.h"
+#include "camel-mime-filter-charset.h"
 
 #define d(x)
 #define w(x)

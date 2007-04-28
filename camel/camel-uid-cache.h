@@ -25,15 +25,12 @@
 #ifndef CAMEL_UID_CACHE_H
 #define CAMEL_UID_CACHE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 
 #include <stdio.h>
 #include <sys/types.h>
+
+G_BEGIN_DECLS
 
 typedef struct {
 	char *filename;
@@ -53,8 +50,6 @@ GPtrArray *camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids);
 void camel_uid_cache_save_uid (CamelUIDCache *cache, const char *uid);
 void camel_uid_cache_free_uids (GPtrArray *uids);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_UID_CACHE_H */

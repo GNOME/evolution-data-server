@@ -14,6 +14,9 @@ camel-exception
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### ENUM ExceptionId ##### -->
 <para>
 
@@ -25,6 +28,8 @@ camel-exception
 
 </para>
 
+@id: 
+@desc: 
 
 <!-- ##### MACRO CAMEL_EXCEPTION_INITIALISER ##### -->
 <para>

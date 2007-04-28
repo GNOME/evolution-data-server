@@ -25,11 +25,6 @@
 #ifndef CAMEL_SMTP_TRANSPORT_H
 #define CAMEL_SMTP_TRANSPORT_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include "camel-transport.h"
 #include "camel-tcp-stream.h"
 
@@ -44,6 +39,8 @@ extern "C" {
 #define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
 
 #define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)  /* set if we are using authtypes from a broken AUTH= */
+
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelTransport parent_object;
@@ -67,8 +64,6 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_smtp_transport_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SMTP_TRANSPORT_H */

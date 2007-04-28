@@ -24,17 +24,14 @@
 #ifndef __CAMEL_MULTIPART_ENCRYPTED_H__
 #define __CAMEL_MULTIPART_ENCRYPTED_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-multipart.h>
 
 #define CAMEL_MULTIPART_ENCRYPTED_TYPE     (camel_multipart_encrypted_get_type ())
 #define CAMEL_MULTIPART_ENCRYPTED(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MULTIPART_ENCRYPTED_TYPE, CamelMultipartEncrypted))
 #define CAMEL_MULTIPART_ENCRYPTED_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MULTIPART_ENCRYPTED_TYPE, CamelMultipartEncryptedClass))
 #define CAMEL_IS_MULTIPART_ENCRYPTED(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MULTIPART_ENCRYPTED_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMultipartEncrypted CamelMultipartEncrypted;
 typedef struct _CamelMultipartEncryptedClass CamelMultipartEncryptedClass;
@@ -64,8 +61,6 @@ CamelType camel_multipart_encrypted_get_type (void);
 
 CamelMultipartEncrypted *camel_multipart_encrypted_new (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_MULTIPART_ENCRYPTED_H__ */

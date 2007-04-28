@@ -9,6 +9,8 @@
 #include <setjmp.h>
 #include "camel/camel-exception.h"
 
+G_BEGIN_DECLS
+
 struct _CamelExceptionEnv {
 	struct _CamelExceptionEnv *parent;
 	CamelException *ex;
@@ -31,5 +33,7 @@ void camel_exception_drop(struct _CamelExceptionEnv *env);
 /* user functions */
 void camel_exception_throw_ex(CamelException *ex) __attribute__ ((noreturn));
 void camel_exception_throw(int id, char *fmt, ...) __attribute__ ((noreturn));
+
+G_END_DECLS
 
 #endif

@@ -19,13 +19,13 @@
  * USA
  */
 
+#include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
-#include <pthread.h>
+#include <libedataserver/e-data-server-util.h>
 
-#include "libedataserver/e-data-server-util.h"
 #include "camel-debug.h"
 
 int camel_verbose_debug;

@@ -30,6 +30,8 @@
 #define CAMEL_TEXT_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_text_index_get_type (), CamelTextIndexClass)
 #define CAMEL_IS_TEXT_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_text_index_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelTextIndex      CamelTextIndex;
 typedef struct _CamelTextIndexClass CamelTextIndexClass;
 
@@ -110,5 +112,6 @@ void camel_text_index_dump(CamelTextIndex *idx);
 void camel_text_index_info(CamelTextIndex *idx);
 void camel_text_index_validate(CamelTextIndex *idx);
 
-#endif /* ! _CAMEL_TEXT_INDEX_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_TEXT_INDEX_H */

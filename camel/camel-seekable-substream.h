@@ -26,18 +26,14 @@
 #ifndef CAMEL_SEEKABLE_SUBSTREAM_H
 #define CAMEL_SEEKABLE_SUBSTREAM_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-seekable-stream.h>
 
 #define CAMEL_SEEKABLE_SUBSTREAM_TYPE       (camel_seekable_substream_get_type ())
 #define CAMEL_SEEKABLE_SUBSTREAM(obj)       (CAMEL_CHECK_CAST((obj), CAMEL_SEEKABLE_SUBSTREAM_TYPE, CamelSeekableSubstream))
 #define CAMEL_SEEKABLE_SUBSTREAM_CLASS(k)   (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SEEKABLE_SUBSTREAM_TYPE, CamelSeekableSubstreamClass))
 #define CAMEL_IS_SEEKABLE_SUBSTREAM(o)      (CAMEL_CHECK_TYPE((o), CAMEL_SEEKABLE_SUBSTREAM_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelSeekableSubstream {
 	CamelSeekableStream parent_object;
@@ -59,8 +55,6 @@ CamelType camel_seekable_substream_get_type (void);
 /* obtain a new seekable substream */
 CamelStream *camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, off_t end);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SEEKABLE_SUBSTREAM_H */

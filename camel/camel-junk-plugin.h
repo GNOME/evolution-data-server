@@ -25,6 +25,8 @@
 
 #define CAMEL_JUNK_PLUGIN(x) ((CamelJunkPlugin *) x)
 
+G_BEGIN_DECLS
+
 typedef struct _CamelJunkPlugin CamelJunkPlugin;
 struct _CamelMimeMessage;
 
@@ -59,5 +61,7 @@ void camel_junk_plugin_report_junk (CamelJunkPlugin *csp, struct _CamelMimeMessa
 void camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 void camel_junk_plugin_commit_reports (CamelJunkPlugin *csp);
 void camel_junk_plugin_init (CamelJunkPlugin *csp);
+
+G_END_DECLS
 
 #endif

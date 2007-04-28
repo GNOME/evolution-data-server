@@ -27,33 +27,34 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
+#include <sys/types.h>
 
-#include "camel-operation.h"
+#include <glib/gi18n-lib.h>
 
-#include "camel-pop3-store.h"
-#include "camel-pop3-folder.h"
-#include "camel-stream-buffer.h"
-#include "camel-session.h"
-#include "camel-exception.h"
-#include "camel-url.h"
-#include "libedataserver/md5-utils.h"
-#include "camel-pop3-engine.h"
-#include "camel-sasl.h"
+#include <libedataserver/md5-utils.h>
+
 #include "camel-data-cache.h"
-#include "camel-tcp-stream.h"
+#include "camel-exception.h"
+#include "camel-net-utils.h"
+#include "camel-operation.h"
+#include "camel-pop3-engine.h"
+#include "camel-pop3-folder.h"
+#include "camel-pop3-store.h"
+#include "camel-sasl.h"
+#include "camel-session.h"
+#include "camel-stream-buffer.h"
 #include "camel-tcp-stream-raw.h"
+#include "camel-tcp-stream.h"
+#include "camel-url.h"
+
 #ifdef HAVE_SSL
 #include "camel-tcp-stream-ssl.h"
 #endif
-#include "camel-i18n.h"
-#include "camel-net-utils.h"
 
 /* Specified in RFC 1939 */
 #define POP3_PORT "110"

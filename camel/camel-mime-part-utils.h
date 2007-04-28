@@ -27,18 +27,12 @@
 #ifndef CAMEL_MIME_PART_UTILS_H
 #define CAMEL_MIME_PART_UTILS_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-mime-part.h>
+
+G_BEGIN_DECLS
 
 void camel_mime_part_construct_content_from_parser(CamelMimePart *, CamelMimeParser *mp);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /*  CAMEL_MIME_PART_UTILS_H  */
-

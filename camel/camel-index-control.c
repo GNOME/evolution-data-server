@@ -6,24 +6,21 @@
 #endif
 
 #include <ctype.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-
-#include "libedataserver/e-msgport.h"
-#include "libedataserver/e-memory.h"
-
-#include "camel/camel-object.h"
-
-#include "camel-text-index.h"
-
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <libedataserver/e-msgport.h>
+#include <libedataserver/e-memory.h>
+
+#include "camel-object.h"
+#include "camel-text-index.h"
 
 static void
 do_usage(char *argv0)

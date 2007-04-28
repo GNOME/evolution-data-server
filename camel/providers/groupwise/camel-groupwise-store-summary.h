@@ -23,17 +23,14 @@
 #ifndef _CAMEL_GW_STORE_SUMMARY_H
 #define _CAMEL_GW_STORE_SUMMARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-object.h>
 #include <camel/camel-store-summary.h>
 
 #define CAMEL_GW_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_groupwise_store_summary_get_type (), CamelGroupwiseStoreSummary)
 #define CAMEL_GW_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_groupwise_store_summary_get_type (), CamelGroupwiseStoreSummaryClass)
 #define CAMEL_IS_GW_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_groupwise_store_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelGroupwiseStoreSummary      CamelGroupwiseStoreSummary;
 typedef struct _CamelGroupwiseStoreSummaryClass CamelGroupwiseStoreSummaryClass;
@@ -88,9 +85,6 @@ void camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, 
 
 #define camel_groupwise_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_LAST))
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_IMAP_STORE_SUMMARY_H */
-

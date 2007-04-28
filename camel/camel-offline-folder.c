@@ -25,7 +25,9 @@
 #include <config.h>
 #endif
 
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-offline-folder.h"
 #include "camel-operation.h"
 #include "camel-service.h"

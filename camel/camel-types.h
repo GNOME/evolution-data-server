@@ -21,10 +21,9 @@
 #ifndef CAMEL_TYPES_H
 #define CAMEL_TYPES_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+#include <glib.h>
+
+G_BEGIN_DECLS
 
 typedef struct _CamelAddress CamelAddress;
 typedef struct _CamelDigestFolder CamelDigestFolder;
@@ -75,8 +74,6 @@ typedef struct _CamelTcpStreamOpenSSL CamelTcpStreamOpenSSL;
 typedef struct _CamelHttpStream CamelHttpStream;
 typedef struct _CamelTransport CamelTransport;
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_TYPES_H */

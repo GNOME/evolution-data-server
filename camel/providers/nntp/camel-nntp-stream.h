@@ -27,6 +27,8 @@
 #define CAMEL_NNTP_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_stream_get_type (), CamelNNTPStreamClass)
 #define CAMEL_IS_NNTP_STREAM(obj)      CAMEL_CHECK_TYPE (obj, camel_nntp_stream_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelNNTPStreamClass CamelNNTPStreamClass;
 typedef struct _CamelNNTPStream CamelNNTPStream;
 
@@ -62,5 +64,7 @@ void		 camel_nntp_stream_set_mode     (CamelNNTPStream *is, camel_nntp_stream_mo
 int              camel_nntp_stream_line		(CamelNNTPStream *is, unsigned char **data, unsigned int *len);
 int 		 camel_nntp_stream_gets		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
 int 		 camel_nntp_stream_getd		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_NNTP_STREAM_H */

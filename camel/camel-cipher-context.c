@@ -27,8 +27,8 @@
 #include <string.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-i18n.h"
 #include "camel-cipher-context.h"
 #include "camel-stream.h"
 #include "camel-operation.h"
@@ -195,8 +195,8 @@ cipher_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *reci
  * @context: Cipher Context
  * @userid: key id (or email address) to use when signing, or NULL to not sign.
  * @recipients: an array of recipient key ids and/or email addresses
- * @istream: cleartext input stream
- * @ostream: ciphertext output stream
+ * @ipart: cleartext input stream
+ * @opart: ciphertext output stream
  * @ex: exception
  *
  * Encrypts (and optionally signs) the cleartext input stream and
@@ -275,7 +275,7 @@ cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, C
 
 /**
  * camel_cipher_import_keys:
- * @ctx: Cipher Context
+ * @context: Cipher Context
  * @istream: input stream (containing keys)
  * @ex: exception
  *
@@ -305,7 +305,7 @@ cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 
 /**
  * camel_cipher_export_keys:
- * @ctx: Cipher Context
+ * @context: Cipher Context
  * @keys: an array of key ids
  * @ostream: output stream
  * @ex: exception
@@ -484,8 +484,8 @@ camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_
 
 /**
  * camel_cipher_validity_envelope:
- * @validity: 
- * @outer: 
+ * @parent:
+ * @valid:
  * 
  * Calculate a conglomerate validity based on wrapping one secure part inside
  * another one.

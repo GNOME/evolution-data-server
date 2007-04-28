@@ -30,6 +30,8 @@
 #define CAMEL_MH_SUMMARY_CLASS(klass)	CAMEL_CHECK_CLASS_CAST (klass, camel_mh_summary_get_type (), CamelMhSummaryClass)
 #define CAMEL_IS_MH_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_mh_summary_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelMhSummary	CamelMhSummary;
 typedef struct _CamelMhSummaryClass	CamelMhSummaryClass;
 
@@ -49,5 +51,6 @@ struct _CamelMhSummaryClass {
 CamelType	 camel_mh_summary_get_type	(void);
 CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *, const char *filename, const char *mhdir, CamelIndex *index);
 
-#endif /* ! _CAMEL_MH_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_MH_SUMMARY_H */

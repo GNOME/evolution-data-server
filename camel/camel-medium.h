@@ -27,12 +27,6 @@
 #ifndef CAMEL_MEDIUM_H
 #define CAMEL_MEDIUM_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-data-wrapper.h>
 
 #define CAMEL_MEDIUM_TYPE     (camel_medium_get_type ())
@@ -40,6 +34,7 @@ extern "C" {
 #define CAMEL_MEDIUM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MEDIUM_TYPE, CamelMediumClass))
 #define CAMEL_IS_MEDIUM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MEDIUM_TYPE))
 
+G_BEGIN_DECLS
 
 typedef struct {
 	const char *name;
@@ -89,9 +84,6 @@ CamelDataWrapper *camel_medium_get_content_object (CamelMedium *medium);
 void camel_medium_set_content_object (CamelMedium *medium,
 				      CamelDataWrapper *content);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MEDIUM_H */
-

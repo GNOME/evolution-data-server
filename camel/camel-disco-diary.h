@@ -24,11 +24,6 @@
 #ifndef CAMEL_DISCO_DIARY_H
 #define CAMEL_DISCO_DIARY_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-object.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -37,6 +32,8 @@ extern "C" {
 #define CAMEL_DISCO_DIARY(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DISCO_DIARY_TYPE, CamelDiscoDiary))
 #define CAMEL_DISCO_DIARY_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DISCO_DIARY_TYPE, CamelDiscoDiaryClass))
 #define CAMEL_IS_DISCO_DIARY(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DISCO_DIARY_TYPE))
+
+G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_DISCO_DIARY_END = 0,
@@ -91,8 +88,6 @@ const char *camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary,
 /* Standard Camel function */
 CamelType camel_disco_diary_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DISCO_DIARY_H */

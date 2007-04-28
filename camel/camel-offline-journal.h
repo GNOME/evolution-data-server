@@ -32,17 +32,14 @@
 #include <libedataserver/e-msgport.h>
 #include <camel/camel-object.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_OFFLINE_JOURNAL            (camel_offline_journal_get_type ())
 #define CAMEL_OFFLINE_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournal))
 #define CAMEL_OFFLINE_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
 #define CAMEL_IS_OFFLINE_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_OFFLINE_JOURNAL))
 #define CAMEL_IS_OFFLINE_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_OFFLINE_JOURNAL))
 #define CAMEL_OFFLINE_JOURNAL_GET_CLASS(o) (CAMEL_OFFLINE_JOURNAL_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelOfflineJournal CamelOfflineJournal;
 typedef struct _CamelOfflineJournalClass CamelOfflineJournalClass;
@@ -78,8 +75,6 @@ void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const cha
 int camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex);
 int camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_OFFLINE_JOURNAL_H__ */

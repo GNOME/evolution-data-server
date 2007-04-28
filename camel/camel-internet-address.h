@@ -22,16 +22,13 @@
 #ifndef _CAMEL_INTERNET_ADDRESS_H
 #define _CAMEL_INTERNET_ADDRESS_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-address.h>
 
 #define CAMEL_INTERNET_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_internet_address_get_type (), CamelInternetAddress)
 #define CAMEL_INTERNET_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_internet_address_get_type (), CamelInternetAddressClass)
 #define CAMEL_IS_INTERNET_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_internet_address_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelInternetAddressClass CamelInternetAddressClass;
 
@@ -58,8 +55,6 @@ int			camel_internet_address_find_address(CamelInternetAddress *addr, const char
 char *			camel_internet_address_encode_address(int *len, const char *name, const char *addr);
 char *			camel_internet_address_format_address(const char *real, const char *addr);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_INTERNET_ADDRESS_H */

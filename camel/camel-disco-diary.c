@@ -29,9 +29,10 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-i18n.h"
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"

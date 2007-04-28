@@ -22,21 +22,21 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
-#include <camel/camel-store.h>
-#include <camel/camel-i18n.h>
-#include <camel/camel-net-utils.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-imap4-engine.h"
-#include "camel-imap4-stream.h"
+#include "camel-net-utils.h"
+#include "camel-store.h"
+
 #include "camel-imap4-command.h"
-#include "camel-imap4-summary.h"
+#include "camel-imap4-engine.h"
 #include "camel-imap4-store-summary.h"
-
+#include "camel-imap4-stream.h"
+#include "camel-imap4-summary.h"
 #include "camel-imap4-utils.h"
 
 #define d(x)

@@ -23,19 +23,20 @@
 #include <config.h>
 #endif
 
-#include <sys/stat.h>
 #include <errno.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <sys/stat.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-data-server-util.h>
+
 #include "camel/camel-exception.h"
 #include "camel/camel-file-utils.h"
-#include "camel/camel-i18n.h"
 #include "camel/camel-private.h"
 #include "camel/camel-text-index.h"
 #include "camel/camel-url.h"

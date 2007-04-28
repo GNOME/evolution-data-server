@@ -23,29 +23,31 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <sys/types.h>
 #include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <glib/gi18n-lib.h>
+
+#include "camel-data-wrapper.h"
+#include "camel-exception.h"
+#include "camel-file-utils.h"
+#include "camel-local-private.h"
+#include "camel-lock-client.h"
+#include "camel-mime-filter-from.h"
+#include "camel-mime-message.h"
+#include "camel-session.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
 
 #include "camel-spool-folder.h"
 #include "camel-spool-store.h"
-#include "camel-stream-fs.h"
 #include "camel-spool-summary.h"
-#include "camel-data-wrapper.h"
-#include "camel-mime-message.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-filter-from.h"
-#include "camel-exception.h"
-#include "camel-session.h"
-#include "camel-file-utils.h"
-#include "camel-lock-client.h"
-#include "camel-local-private.h"
-#include "camel-i18n.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

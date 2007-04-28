@@ -29,33 +29,39 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h> 
 #endif
+
 #include <errno.h>
+#include <string.h>
 #include <time.h>
-#include <libedataserver/e-msgport.h>
-#include "camel-groupwise-folder.h"
-#include "camel-groupwise-store.h"
-#include "camel-folder.h"
-#include "camel-folder-search.h"
-#include "camel-groupwise-store.h"
-#include "camel-groupwise-summary.h"
-#include "camel-groupwise-utils.h"
-#include "camel-i18n.h" 
-#include "camel-private.h"
-#include "camel-groupwise-private.h"
-#include "camel-groupwise-journal.h"
-#include "camel-groupwise-utils.h"
-#include "camel-stream-mem.h"
-#include "camel-string-utils.h"
-#include "camel-session.h"
-#include <e-gw-connection.h>
-#include <e-gw-item.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include <libsoup/soup-misc.h>
 
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <libedataserver/e-msgport.h>
+
+#include <e-gw-connection.h>
+#include <e-gw-item.h>
+
+#include "camel-folder-search.h"
+#include "camel-folder.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-stream-mem.h"
+#include "camel-string-utils.h"
+
+#include "camel-groupwise-folder.h"
+#include "camel-groupwise-journal.h"
+#include "camel-groupwise-private.h"
+#include "camel-groupwise-store.h"
+#include "camel-groupwise-store.h"
+#include "camel-groupwise-summary.h"
+#include "camel-groupwise-utils.h"
+#include "camel-groupwise-utils.h"
 
 #define ADD_JUNK_ENTRY 1
 #define REMOVE_JUNK_ENTRY -1

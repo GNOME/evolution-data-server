@@ -28,15 +28,10 @@
 
 #include <camel-nntp-store.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
+G_BEGIN_DECLS
 
 int camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_AUTH_H */

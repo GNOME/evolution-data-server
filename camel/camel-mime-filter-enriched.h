@@ -24,11 +24,6 @@
 #ifndef __CAMEL_MIME_FILTER_ENRICHED_H__
 #define __CAMEL_MIME_FILTER_ENRICHED_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_TYPE_MIME_FILTER_ENRICHED         (camel_mime_filter_enriched_get_type ())
@@ -36,9 +31,9 @@ extern "C" {
 #define CAMEL_MIME_FILTER_ENRICHED_CLASS(klass) (CAMEL_CHECK_CLASS_CAST (klass, CAMEL_TYPE_MIME_FILTER_ENRICHED, CamelMimeFilterEnrichedClass))
 #define CAMEL_IS_MIME_FILTER_ENRICHED(obj)      (CAMEL_CHECK_TYPE (obj, CAMEL_TYPE_MIME_FILTER_ENRICHED))
 
-
 #define CAMEL_MIME_FILTER_ENRICHED_IS_RICHTEXT  (1 << 0)
 
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterEnriched CamelMimeFilterEnriched;
 typedef struct _CamelMimeFilterEnrichedClass CamelMimeFilterEnrichedClass;
@@ -60,8 +55,6 @@ CamelType        camel_mime_filter_enriched_get_type (void);
 CamelMimeFilter *camel_mime_filter_enriched_new (guint32 flags);
 char *camel_enriched_to_html(const char *in, guint32 flags);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_MIME_FILTER_ENRICHED_H__ */

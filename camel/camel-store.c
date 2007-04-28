@@ -28,13 +28,15 @@
 #endif
 
 #include <string.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-folder.h"
-#include "camel-i18n.h"
 #include "camel-private.h"
 #include "camel-session.h"
 #include "camel-store.h"

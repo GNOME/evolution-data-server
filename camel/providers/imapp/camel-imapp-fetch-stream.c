@@ -24,17 +24,17 @@
 #include <config.h>
 #endif
 
-#include <string.h>
-#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <glib.h>
 
-#include <camel/camel-stream-mem.h>
+#include "camel-stream-mem.h"
 
-#include "camel-imapp-stream.h"
 #include "camel-imapp-exception.h"
+#include "camel-imapp-stream.h"
 
 #define t(x) 
 #define io(x) x

@@ -14,11 +14,20 @@ CamelImapWrapper
 
 </para>
 
-<!-- ##### STRUCT CamelImapWrapperPrivate ##### -->
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT CamelImapWrapper ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
+@folder: 
+@uid: 
+@part_spec: 
+@part: 
 
 <!-- ##### FUNCTION camel_imap_wrapper_new ##### -->
 <para>

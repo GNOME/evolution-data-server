@@ -14,11 +14,23 @@ CamelFolder
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelFolder ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
+@name: 
+@full_name: 
+@description: 
+@parent_store: 
+@summary: 
+@folder_flags: 
+@permanent_flags: 
 
 <!-- ##### STRUCT CamelFolderChangeInfo ##### -->
 <para>

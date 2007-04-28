@@ -22,16 +22,13 @@
 #ifndef CAMEL_DEBUG_H
 #define CAMEL_DEBUG_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <glib.h>
 
 /* This is how the basic debug checking strings should be done */
 #define CAMEL_DEBUG_IMAP "imap"
 #define CAMEL_DEBUG_IMAP_FOLDER "imap:folder"
+
+G_BEGIN_DECLS
 
 void camel_debug_init(void);
 gboolean camel_debug(const char *mode);
@@ -42,8 +39,6 @@ void camel_debug_end(void);
 /* This interface is deprecated */
 extern int camel_verbose_debug;
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DEBUG_H */

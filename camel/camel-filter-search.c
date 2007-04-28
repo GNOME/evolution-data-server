@@ -22,34 +22,35 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
-/* (from glibc headers:
-   POSIX says that <sys/types.h> must be included (by the caller) before <regex.h>.  */
+/* POSIX requires <sys/types.h> be included before <regex.h> */
+#include <sys/types.h>
 
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <regex.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <errno.h>
-
-#include <glib.h>
 
 #ifndef G_OS_WIN32
 #include <sys/wait.h>
 #endif
 
-#include "libedataserver/e-sexp.h"
-#include "libedataserver/e-iconv.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-iconv.h>
+#include <libedataserver/e-sexp.h>
 
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-filter-search.h"
-#include "camel-i18n.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-provider.h"

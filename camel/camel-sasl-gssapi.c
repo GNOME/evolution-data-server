@@ -25,12 +25,13 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_KRB5
+#include <errno.h>
 
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#ifdef HAVE_KRB5
 #include <netdb.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
@@ -43,13 +44,14 @@
 #include <gssapi.h>
 #define gss_nt_service_name GSS_C_NT_HOSTBASED_SERVICE
 #endif
-#include <errno.h>
 
 #ifndef GSS_C_OID_KRBV5_DES
 #define GSS_C_OID_KRBV5_DES GSS_C_NO_OID
 #endif
 
-#include "camel-i18n.h"
+#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-net-utils.h"
 #include "camel-sasl-gssapi.h"
 

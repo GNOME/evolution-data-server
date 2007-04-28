@@ -14,11 +14,18 @@ CamelSeekableStream
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSeekableStream ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@position: 
+@bound_start: 
+@bound_end: 
 
 <!-- ##### ENUM CamelStreamSeekPolicy ##### -->
 <para>

@@ -18,7 +18,7 @@ HTML_IMAGES =
 #TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE_VERSIONED)
 
 # Extra options to supply to gtkdoc-scan
-#SCAN_OPTIONS = --deprecated-guards=""
+SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED"
 
 # Extra options to pass to gtkdoc-scangobj
 SCANGOBJ_OPTIONS=--type-init-func="camel_init (\".\", 0)"
@@ -51,9 +51,17 @@ CFILE_GLOB=$(top_srcdir)/camel/*.c
 
 # Header files to ignore when scanning
 IGNORE_HFILES = 			\
-	camel-charset-map-private.h	\
 	broken-date-parser.h		\
-	camel-private.h
+	camel-charset-map-private.h	\
+	camel-private.h			\
+	camel-search-private.h		\
+	camel-types.h			\
+	camel-groupwise-private.h	\
+	camel-imap-private.h		\
+	camel-imap-types.h		\
+	camel-local-private.h		\
+	camel-nntp-private.h		\
+	camel-nntp-types.h
 
 # Extra options to supply to gtkdoc-fixref
 FIXXREF_OPTIONS = 

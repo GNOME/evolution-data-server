@@ -29,15 +29,17 @@
 #endif
 
 #include <ctype.h>
+#include <errno.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
-#include <errno.h>
 
-#include "libedataserver/e-msgport.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-msgport.h>
 
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-operation.h"
 #include "camel-private.h"
 #include "camel-service.h"

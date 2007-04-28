@@ -14,11 +14,17 @@ CamelStreamFilter
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStreamFilter ##### -->
 <para>
 
 </para>
 
+@parent: 
+@source: 
+@priv: 
 
 <!-- ##### FUNCTION camel_stream_filter_new_with_stream ##### -->
 <para>

@@ -24,11 +24,6 @@
 #ifndef _CAMEL_MIME_UTILS_H
 #define _CAMEL_MIME_UTILS_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <time.h>
 #include <glib.h>
 
@@ -41,6 +36,8 @@ extern "C" {
 #define CAMEL_UUDECODE_STATE_BEGIN  (1 << 16)
 #define CAMEL_UUDECODE_STATE_END    (1 << 17)
 #define CAMEL_UUDECODE_STATE_MASK   (CAMEL_UUDECODE_STATE_BEGIN | CAMEL_UUDECODE_STATE_END)
+
+G_BEGIN_DECLS
 
 /* note, if you change this, make sure you change the 'encodings' array in camel-mime-part.c */
 typedef enum _CamelTransferEncoding {
@@ -281,8 +278,6 @@ extern unsigned short camel_mime_special_table[256];
 #define camel_mime_is_psafe(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_PSAFE) != 0)
 #define camel_mime_is_attrchar(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_ATTRCHAR) != 0)
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_UTILS_H */

@@ -26,13 +26,14 @@
 
 #include <config.h>
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #include "camel/camel-debug.h"
@@ -40,7 +41,6 @@
 #include "camel/camel-exception.h"
 #include "camel/camel-file-utils.h"
 #include "camel/camel-folder.h"
-#include "camel/camel-i18n.h"
 #include "camel/camel-net-utils.h"
 #include "camel/camel-private.h"
 #include "camel/camel-sasl.h"

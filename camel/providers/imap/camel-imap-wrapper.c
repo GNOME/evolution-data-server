@@ -28,17 +28,17 @@
 #include <errno.h>
 #include <string.h>
 
+#include <libedataserver/e-msgport.h>
+
+#include "camel-exception.h"
+#include "camel-mime-filter-basic.h"
+#include "camel-mime-filter-charset.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-part.h"
+#include "camel-stream-filter.h"
+
 #include "camel-imap-folder.h"
 #include "camel-imap-wrapper.h"
-#include "camel-exception.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-filter-basic.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-charset.h"
-#include "camel-mime-part.h"
-
-#include "libedataserver/e-msgport.h"
-
 
 struct _CamelImapWrapperPrivate {
 	GMutex *lock;

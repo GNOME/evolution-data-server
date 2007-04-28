@@ -26,15 +26,12 @@
 
 #include <camel/camel-folder.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_OFFLINE_FOLDER_TYPE     (camel_offline_folder_get_type ())
 #define CAMEL_OFFLINE_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_OFFLINE_FOLDER_TYPE, CamelOfflineFolder))
 #define CAMEL_OFFLINE_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_OFFLINE_FOLDER_TYPE, CamelOfflineFolderClass))
 #define CAMEL_IS_OFFLINE_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_OFFLINE_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelOfflineFolder CamelOfflineFolder;
 typedef struct _CamelOfflineFolderClass CamelOfflineFolderClass;
@@ -65,8 +62,6 @@ CamelType camel_offline_folder_get_type (void);
 
 void camel_offline_folder_downsync (CamelOfflineFolder *folder, const char *expression, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_OFFLINE_FOLDER_H__ */

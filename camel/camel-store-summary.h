@@ -23,11 +23,6 @@
 #ifndef _CAMEL_STORE_SUMMARY_H
 #define _CAMEL_STORE_SUMMARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <stdio.h>
 
 #include <glib.h>
@@ -39,6 +34,8 @@ extern "C" {
 #define CAMEL_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_store_summary_get_type (), CamelStoreSummary)
 #define CAMEL_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_store_summary_get_type (), CamelStoreSummaryClass)
 #define CAMEL_IS_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_store_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStoreSummary      CamelStoreSummary;
 typedef struct _CamelStoreSummaryClass CamelStoreSummaryClass;
@@ -181,8 +178,6 @@ void camel_store_info_set_string(CamelStoreSummary *summary, CamelStoreInfo *inf
 #define camel_store_info_uri(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_URI))
 #define camel_store_info_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_NAME))
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_STORE_SUMMARY_H */

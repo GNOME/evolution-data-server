@@ -26,13 +26,13 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
-#include <errno.h>
 
-#include "libedataserver/e-iconv.h"
+#include <libedataserver/e-iconv.h>
 
 #include "camel-charset-map.h"
 #include "camel-html-parser.h"

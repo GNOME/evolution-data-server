@@ -24,12 +24,9 @@
 #ifndef _CAMEL_LOCK_HELPER_H
 #define _CAMEL_LOCK_HELPER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <glib.h>
+
+G_BEGIN_DECLS
 
 struct _CamelLockHelperMsg {
 	guint32 magic;
@@ -62,8 +59,6 @@ enum {
 /* seconds between lock refreshes */
 #define CAMEL_DOT_LOCK_REFRESH (30)
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* !_CAMEL_LOCK_HELPER_H */

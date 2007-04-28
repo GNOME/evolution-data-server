@@ -20,31 +20,33 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
-#include <string.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
-
-#include <glib.h>
-#include <glib/gstdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
 
 #ifndef G_OS_WIN32
 #include <sys/wait.h>
 #endif
 
-#include "libedataserver/e-sexp.h"
-#include "libedataserver/e-memory.h"
-#include "libedataserver/e-msgport.h"
+#include <glib.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-sexp.h>
+#include <libedataserver/e-memory.h>
+#include <libedataserver/e-msgport.h>
 
 #include "camel-debug.h"
 #include "camel-file-utils.h"
 #include "camel-filter-driver.h"
 #include "camel-filter-search.h"
-#include "camel-i18n.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
 #include "camel-service.h"
@@ -1127,6 +1129,7 @@ camel_filter_driver_flush (CamelFilterDriver *driver, CamelException *ex)
  * camel_filter_driver_filter_mbox:
  * @driver: CamelFilterDriver
  * @mbox: mbox filename to be filtered
+ * @original_source_url:
  * @ex: exception
  *
  * Filters an mbox file based on rules defined in the FilterDriver

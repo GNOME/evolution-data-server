@@ -22,11 +22,6 @@
 #ifndef CAMEL_GROUPWISE_PRIVATE_H
 #define CAMEL_GROUPWISE_PRIVATE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
 
@@ -50,10 +45,4 @@ extern "C" {
 #define GROUPWISE_FOLDER_REC_UNLOCK(f, l)
 #endif
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
 #endif /* CAMEL_IMAP_PRIVATE_H */
-

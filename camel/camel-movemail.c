@@ -26,27 +26,30 @@
 #include <config.h>
 #endif
 
-#include <sys/stat.h>
-#include <sys/uio.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <stdlib.h>
+#include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <string.h>
-#include <signal.h>
+#include <sys/stat.h>
+#include <sys/uio.h>
+
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
 
-#include "camel-movemail.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-exception.h"
-#include "camel-mime-parser.h"
-#include "camel-mime-filter.h"
-#include "camel-mime-filter-from.h"
 #include "camel-lock-client.h"
-#include "camel-i18n.h"
+#include "camel-mime-filter-from.h"
+#include "camel-mime-filter.h"
+#include "camel-mime-parser.h"
+#include "camel-movemail.h"
 
 #define d(x)
 
@@ -70,8 +73,7 @@ static int camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes);
 #endif
 
 /**
- * camel_movemail: Copy an mbox file from a shared spool directory to a
- * new folder in a Camel store
+ * camel_movemail:
  * @source: source file
  * @dest: destination file
  * @ex: a CamelException

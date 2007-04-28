@@ -25,12 +25,13 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"
 #include "camel-exception.h"
-
 #include "camel-session.h"
-#include "camel-i18n.h"
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
 #define CDF_CLASS(o) (CAMEL_DISCO_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (o)))

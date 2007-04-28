@@ -23,13 +23,10 @@
 #ifndef CAMEL_ARG_H
 #define CAMEL_ARG_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif				/* __cplusplus } */
-
 #include <glib.h>
 #include <stdarg.h>
+
+G_BEGIN_DECLS
 
 enum camel_arg_t {
 	CAMEL_ARG_END = 0,
@@ -112,8 +109,6 @@ struct _CamelProperty {
 	char *description;
 };
 
-#ifdef __cplusplus
-}
-#endif				/* __cplusplus */
+G_END_DECLS
 
-#endif				/* CAMEL_ARG_H */
+#endif /* CAMEL_ARG_H */

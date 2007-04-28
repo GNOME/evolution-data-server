@@ -14,11 +14,20 @@ CamelDataWrapper
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelDataWrapper ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
+@encoding: 
+@mime_type: 
+@stream: 
+@offline: 
 
 <!-- ##### FUNCTION camel_data_wrapper_new ##### -->
 <para>

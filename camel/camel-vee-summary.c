@@ -23,11 +23,11 @@
 #include <config.h>
 #endif
 
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "camel-folder.h"
 #include "camel-vee-summary.h"

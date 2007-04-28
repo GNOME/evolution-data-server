@@ -14,11 +14,16 @@ CamelSaslGssapi
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslGssapi ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_gssapi_authtype ##### -->
 <para>

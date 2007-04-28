@@ -25,21 +25,44 @@
 
 #include <config.h> 
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <fcntl.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-/*#include "libedataserver/e-path.h"*/
-#include "libedataserver/e-time-utils.h"
-#include "libedataserver/e-data-server-util.h"
+#include <glib/gi18n-lib.h>
 
-#include "camel-imap-folder.h"
+#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-time-utils.h>
+
+#include "camel-data-wrapper.h"
+#include "camel-debug.h"
+#include "camel-disco-diary.h"
+#include "camel-exception.h"
+#include "camel-file-utils.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-filter-from.h"
+#include "camel-mime-message.h"
+#include "camel-mime-utils.h"
+#include "camel-multipart-encrypted.h"
+#include "camel-multipart-signed.h"
+#include "camel-multipart.h"
+#include "camel-operation.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-store-summary.h"
+#include "camel-stream-buffer.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-mem.h"
+#include "camel-stream.h"
+#include "camel-string-utils.h"
+
 #include "camel-imap-command.h"
+#include "camel-imap-folder.h"
 #include "camel-imap-message-cache.h"
 #include "camel-imap-private.h"
 #include "camel-imap-search.h"
@@ -47,28 +70,6 @@
 #include "camel-imap-summary.h"
 #include "camel-imap-utils.h"
 #include "camel-imap-wrapper.h"
-#include "camel-data-wrapper.h"
-#include "camel-disco-diary.h"
-#include "camel-exception.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-from.h"
-#include "camel-mime-message.h"
-#include "camel-mime-utils.h"
-#include "camel-multipart.h"
-#include "camel-multipart-signed.h"
-#include "camel-multipart-encrypted.h"
-#include "camel-operation.h"
-#include "camel-session.h"
-#include "camel-stream-buffer.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
-#include "camel-stream.h"
-#include "camel-private.h"
-#include "camel-string-utils.h"
-#include "camel-file-utils.h"
-#include "camel-debug.h"
-#include "camel-i18n.h"
-#include "camel/camel-store-summary.h"
 
 #define d(x) 
 

@@ -27,12 +27,6 @@
 #ifndef CAMEL_POP3_STORE_H
 #define CAMEL_POP3_STORE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-types.h>
 #include <camel/camel-store.h>
 #include "camel-pop3-engine.h"
@@ -42,6 +36,7 @@ extern "C" {
 #define CAMEL_POP3_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_POP3_STORE_TYPE, CamelPOP3StoreClass))
 #define CAMEL_IS_POP3_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_POP3_STORE_TYPE))
 
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelStore parent_object;
@@ -72,9 +67,7 @@ char *camel_pop3_command_get_additional_data (CamelPOP3Store *store, int total, 
 /* Standard Camel function */
 CamelType camel_pop3_store_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_POP3_STORE_H */
 

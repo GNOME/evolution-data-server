@@ -27,10 +27,9 @@
 
 #include <string.h>
 
-#include "camel-exception.h"
-#include "camel-digest-store.h"
 #include "camel-digest-folder.h"
-
+#include "camel-digest-store.h"
+#include "camel-exception.h"
 #include "camel-private.h"
 
 #define d(x)

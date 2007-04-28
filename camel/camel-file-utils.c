@@ -27,12 +27,12 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
+#include <fcntl.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
 
 #include <glib.h>
 
@@ -41,7 +41,7 @@
 #define EWOULDBLOCK EAGAIN
 #endif
 
-#include "libedataserver/e-data-server-util.h"
+#include <libedataserver/e-data-server-util.h>
 
 #include "camel-file-utils.h"
 #include "camel-operation.h"

@@ -24,16 +24,18 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 #include <unistd.h>
 
-#include "libedataserver/e-iconv.h"
-#include "libedataserver/md5-utils.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-iconv.h>
+#include <libedataserver/md5-utils.h>
 
 #include "camel-charset-map.h"
-#include "camel-i18n.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
 #include "camel-sasl-digest-md5.h"

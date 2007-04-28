@@ -24,14 +24,10 @@
 #ifndef __CAMEL_URL_SCANNER_H__
 #define __CAMEL_URL_SCANNER_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <sys/types.h>
 
+G_BEGIN_DECLS
 
 typedef struct {
 	const char *pattern;
@@ -66,8 +62,6 @@ void camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern);
 
 gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, urlmatch_t *match);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_URL_SCANNER_H__ */

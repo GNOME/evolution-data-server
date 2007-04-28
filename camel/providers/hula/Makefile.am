@@ -10,7 +10,6 @@ INCLUDES = -I.. \
         -I$(top_srcdir)/libedataserver          \
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
-	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-hula-provider\"
 
 libcamelhula_la_SOURCES = 			\

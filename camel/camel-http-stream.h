@@ -24,11 +24,6 @@
 #ifndef __CAMEL_HTTP_STREAM_H__
 #define __CAMEL_HTTP_STREAM_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-stream.h>
@@ -38,6 +33,8 @@ extern "C" {
 #define CAMEL_HTTP_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_HTTP_STREAM_TYPE, CamelHttpStream))
 #define CAMEL_HTTP_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_HTTP_STREAM_TYPE, CamelHttpStreamClass))
 #define CAMEL_IS_HTTP_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_HTTP_STREAM_TYPE))
+
+G_BEGIN_DECLS
 
 typedef enum {
 	/*CAMEL_HTTP_METHOD_OPTIONS,*/
@@ -98,8 +95,6 @@ void camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const c
 
 CamelContentType *camel_http_stream_get_content_type (CamelHttpStream *http_stream);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_HTTP_STREAM_H__ */

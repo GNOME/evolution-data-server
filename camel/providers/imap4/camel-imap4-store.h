@@ -23,17 +23,14 @@
 
 #include <camel/camel-offline-store.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_IMAP4_STORE            (camel_imap4_store_get_type ())
 #define CAMEL_IMAP4_STORE(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_STORE, CamelIMAP4Store))
 #define CAMEL_IMAP4_STORE_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP4_STORE, CamelIMAP4StoreClass))
 #define CAMEL_IS_IMAP4_STORE(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP4_STORE))
 #define CAMEL_IS_IMAP4_STORE_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP4_STORE))
 #define CAMEL_IMAP4_STORE_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_IMAP4_STORE, CamelIMAP4StoreClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4Store CamelIMAP4Store;
 typedef struct _CamelIMAP4StoreClass CamelIMAP4StoreClass;
@@ -56,8 +53,6 @@ struct _CamelIMAP4StoreClass {
 
 CamelType camel_imap4_store_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_STORE_H__ */

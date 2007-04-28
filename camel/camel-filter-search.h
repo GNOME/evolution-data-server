@@ -25,14 +25,11 @@
 #ifndef CAMEL_FILTER_SEARCH_H
 #define CAMEL_FILTER_SEARCH_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-folder-summary.h>
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_SEARCH_ERROR    = -1,
@@ -47,8 +44,6 @@ int camel_filter_search_match (CamelSession *session,
 			       CamelMessageInfo *info, const char *source,
 			       const char *expression, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! CAMEL_FILTER_SEARCH_H */

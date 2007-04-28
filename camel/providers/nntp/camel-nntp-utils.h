@@ -26,16 +26,10 @@
 #ifndef CAMEL_NNTP_UTILS_H
 #define CAMEL_NNTP_UTILS_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
+G_BEGIN_DECLS
 
 void camel_nntp_get_headers (CamelStore *store, CamelNNTPFolder *nntp_folder, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_UTILS_H */

@@ -23,17 +23,14 @@
 #ifndef _CAMEL_STREAM_FILTER_H
 #define _CAMEL_STREAM_FILTER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-stream.h>
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_STREAM_FILTER(obj)         CAMEL_CHECK_CAST (obj, camel_stream_filter_get_type (), CamelStreamFilter)
 #define CAMEL_STREAM_FILTER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_stream_filter_get_type (), CamelStreamFilterClass)
 #define CAMEL_IS_STREAM_FILTER(obj)      CAMEL_CHECK_TYPE (obj, camel_stream_filter_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStreamFilterClass CamelStreamFilterClass;
 
@@ -56,8 +53,6 @@ CamelStreamFilter      *camel_stream_filter_new_with_stream	(CamelStream *stream
 int camel_stream_filter_add	(CamelStreamFilter *stream, CamelMimeFilter *filter);
 void camel_stream_filter_remove	(CamelStreamFilter *stream, int id);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_STREAM_FILTER_H */

@@ -1,3 +1,3 @@
-SUBDIRS = addressbook calendar libedataserver libedataserverui
+SUBDIRS = addressbook calendar camel libedataserver libedataserverui
 MKDB_OPTIONS=--output-format=xml
 

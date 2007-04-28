@@ -37,6 +37,8 @@
 				 CAMEL_MESSAGE_FLAGGED | \
 				 CAMEL_MESSAGE_SEEN)
 
+G_BEGIN_DECLS
+
 enum {
 	CAMEL_IMAP_MESSAGE_RECENT = 1<<17,
 
@@ -89,5 +91,6 @@ void camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary,
 					      const char *uid,
 					      const CamelMessageInfo *info);
 
-#endif /* ! _CAMEL_IMAP_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_IMAP_SUMMARY_H */

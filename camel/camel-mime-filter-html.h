@@ -23,16 +23,13 @@
 #ifndef _CAMEL_MIME_FILTER_HTML_H
 #define _CAMEL_MIME_FILTER_HTML_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_HTML(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_html_get_type (), CamelMimeFilterHTML)
 #define CAMEL_MIME_FILTER_HTML_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_html_get_type (), CamelMimeFilterHTMLClass)
 #define CAMEL_IS_MIME_FILTER_HTML(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_html_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterHTMLClass CamelMimeFilterHTMLClass;
 typedef struct _CamelMimeFilterHTML CamelMimeFilterHTML;
@@ -50,8 +47,6 @@ struct _CamelMimeFilterHTMLClass {
 CamelType		camel_mime_filter_html_get_type	(void);
 CamelMimeFilterHTML      *camel_mime_filter_html_new	(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_HTML_H */

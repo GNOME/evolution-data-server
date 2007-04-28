@@ -22,11 +22,6 @@
 #ifndef CAMEL_LOCAL_FOLDER_H
 #define CAMEL_LOCAL_FOLDER_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-search.h>
 #include <camel/camel-index.h>
@@ -39,6 +34,8 @@ extern "C" {
 #define CAMEL_LOCAL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_LOCAL_FOLDER_TYPE, CamelLocalFolder))
 #define CAMEL_LOCAL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_FOLDER_TYPE, CamelLocalFolderClass))
 #define CAMEL_IS_LOCAL_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY = CAMEL_FOLDER_ARG_LAST,
@@ -98,8 +95,6 @@ CamelType camel_local_folder_get_type(void);
 int camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 int camel_local_folder_unlock(CamelLocalFolder *lf);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_LOCAL_FOLDER_H */

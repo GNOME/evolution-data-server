@@ -14,6 +14,9 @@ camel-imapp-exception
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelExceptionEnv ##### -->
 <para>
 

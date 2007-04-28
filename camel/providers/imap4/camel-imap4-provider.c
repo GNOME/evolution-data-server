@@ -24,12 +24,12 @@
 
 #include <string.h>
 
-#include <camel/camel-sasl.h>
-#include <camel/camel-provider.h>
-#include <camel/camel-i18n.h>
+#include <glib/gi18n-lib.h>
+
+#include "camel-provider.h"
+#include "camel-sasl.h"
 
 #include "camel-imap4-store.h"
-
 
 static CamelProviderConfEntry imap4_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,

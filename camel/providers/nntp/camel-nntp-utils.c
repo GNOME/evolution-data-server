@@ -21,18 +21,19 @@
  * USA
  */
 
+#include <stdlib.h>
+#include <string.h>
+
+#include <libedataserver/md5-utils.h>
+
 #include "camel-folder-summary.h"
+#include "camel-stream-mem.h"
+#include "camel-exception.h"
+
 #include "camel-nntp-resp-codes.h"
 #include "camel-nntp-folder.h"
 #include "camel-nntp-store.h"
 #include "camel-nntp-utils.h"
-#include "camel-stream-mem.h"
-#include "camel-exception.h"
-
-#include "libedataserver/md5-utils.h"
-
-#include <stdlib.h>
-#include <string.h>
 
 static void
 get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,

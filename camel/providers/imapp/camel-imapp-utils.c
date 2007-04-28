@@ -3,17 +3,18 @@
 #include <errno.h>
 #include <string.h>
 
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-store.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-string-utils.h>
+#include <libedataserver/e-memory.h>
 
+#include "camel-folder-summary.h"
+#include "camel-store.h"
+#include "camel-string-utils.h"
+#include "camel-utf8.h"
+
+#include "camel-imapp-engine.h"
+#include "camel-imapp-exception.h"
 #include "camel-imapp-folder.h"
 #include "camel-imapp-stream.h"
 #include "camel-imapp-utils.h"
-#include "camel-imapp-exception.h"
-#include "camel-imapp-engine.h"
-#include "libedataserver/e-memory.h"
 
 /* high-level parser state */
 #define p(x)
@@ -921,7 +922,7 @@ imap_free_fetch(struct _fetch_info *finfo)
 extern void camel_content_info_dump(CamelMessageContentInfo *ci, int depth);
 extern void camel_message_info_dump(CamelMessageInfo *mi);
 
-#include <camel/camel-stream-fs.h>
+#include "camel-stream-fs.h"
 
 /* debug, dump one out */
 void

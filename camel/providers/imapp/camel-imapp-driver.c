@@ -4,25 +4,24 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <ctype.h>
+
+#include "camel-folder-summary.h"
+#include "camel-mime-utils.h"
+#include "camel-sasl.h"
+#include "camel-store.h"
+#include "camel-stream-mem.h"
+#include "camel-stream-null.h"
 
 #include "camel-imapp-driver.h"
-#include "camel-imapp-utils.h"
-#include "camel-imapp-folder.h"
 #include "camel-imapp-engine.h"
-#include "camel-imapp-summary.h"
 #include "camel-imapp-exception.h"
-
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-null.h>
-
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-store.h>
-#include <camel/camel-mime-utils.h>
-#include <camel/camel-sasl.h>
+#include "camel-imapp-folder.h"
+#include "camel-imapp-summary.h"
+#include "camel-imapp-utils.h"
 
 #define d(x) x
 

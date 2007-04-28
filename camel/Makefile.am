@@ -37,7 +37,6 @@ INCLUDES = -I.. -I$(srcdir)/.. 			 	\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"	\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
 	-DG_LOG_DOMAIN=\"camel\"			\
-	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"		\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	$(CAMEL_CFLAGS)

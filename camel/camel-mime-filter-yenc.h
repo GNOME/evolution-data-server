@@ -26,17 +26,14 @@
 
 #include <camel/camel-mime-filter.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_MIME_FILTER_YENC            (camel_mime_filter_yenc_get_type ())
 #define CAMEL_MIME_FILTER_YENC(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYenc))
 #define CAMEL_MIME_FILTER_YENC_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
 #define CAMEL_IS_MIME_FILTER_YENC(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_MIME_FILTER_YENC))
 #define CAMEL_IS_MIME_FILTER_YENC_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_MIME_FILTER_YENC))
 #define CAMEL_MIME_FILTER_YENC_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterYenc CamelMimeFilterYenc;
 typedef struct _CamelMimeFilterYencClass CamelMimeFilterYencClass;
@@ -102,8 +99,6 @@ size_t camel_yencode_step  (const unsigned char *in, size_t inlen, unsigned char
 size_t camel_yencode_close (const unsigned char *in, size_t inlen, unsigned char *out,
 			    int *state, guint32 *pcrc, guint32 *crc);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_MIME_FILTER_YENC_H__ */

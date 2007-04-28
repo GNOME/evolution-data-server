@@ -25,17 +25,14 @@
 #ifndef _CAMEL_NNTP_STORE_SUMMARY_H
 #define _CAMEL_NNTP_STORE_SUMMARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-object.h>
 #include <camel/camel-store-summary.h>
 
 #define CAMEL_NNTP_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_nntp_store_summary_get_type (), CamelNNTPStoreSummary)
 #define CAMEL_NNTP_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_store_summary_get_type (), CamelNNTPStoreSummaryClass)
 #define CAMEL_IS_NNTP_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_nntp_store_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelNNTPStoreSummary      CamelNNTPStoreSummary;
 typedef struct _CamelNNTPStoreSummaryClass CamelNNTPStoreSummaryClass;
@@ -94,9 +91,6 @@ CamelNNTPStoreInfo *camel_nntp_store_summary_add_from_full(CamelNNTPStoreSummary
 /* a convenience lookup function. always use this if path known */
 char *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const char *path);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_NNTP_STORE_SUMMARY_H */

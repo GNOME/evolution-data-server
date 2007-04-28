@@ -43,9 +43,11 @@
 
 #include <errno.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-data-wrapper.h"
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-part.h"

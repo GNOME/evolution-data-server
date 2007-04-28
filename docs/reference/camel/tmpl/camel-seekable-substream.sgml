@@ -14,11 +14,16 @@ CamelSeekableSubstream
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSeekableSubstream ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@parent_stream: 
 
 <!-- ##### FUNCTION camel_seekable_substream_new ##### -->
 <para>

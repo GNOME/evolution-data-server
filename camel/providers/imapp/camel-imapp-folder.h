@@ -24,17 +24,14 @@
 #ifndef CAMEL_IMAPP_FOLDER_H
 #define CAMEL_IMAPP_FOLDER_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-folder.h>
 
 #define CAMEL_IMAPP_FOLDER_TYPE     (camel_imapp_folder_get_type ())
 #define CAMEL_IMAPP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPP_FOLDER_TYPE, CamelIMAPPFolder))
 #define CAMEL_IMAPP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPP_FOLDER_TYPE, CamelIMAPPFolderClass))
 #define CAMEL_IS_IMAP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPP_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAPPFolder {
 	CamelFolder parent_object;
@@ -59,8 +56,6 @@ CamelType camel_imapp_folder_get_type (void);
 /* public methods */
 CamelFolder *camel_imapp_folder_new(CamelStore *parent, const char *path);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAPP_FOLDER_H */

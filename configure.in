@@ -1257,7 +1257,7 @@ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUA
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0 $GNOME_KEYRING_REQUIREMENT"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0 gnome-vfs-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1493,6 +1493,7 @@ docs/reference/addressbook/libedata-book/Makefile
 docs/reference/calendar/Makefile
 docs/reference/calendar/libecal/Makefile
 docs/reference/calendar/libedata-cal/Makefile
+docs/reference/camel/Makefile
 docs/reference/libedataserver/Makefile
 docs/reference/libedataserverui/Makefile
 po/Makefile.in

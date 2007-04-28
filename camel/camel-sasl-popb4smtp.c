@@ -28,7 +28,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-sasl-popb4smtp.h"
 #include "camel-service.h"
 #include "camel-session.h"

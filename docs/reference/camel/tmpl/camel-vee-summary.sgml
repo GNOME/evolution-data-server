@@ -14,11 +14,15 @@ CamelVeeSummary
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelVeeSummary ##### -->
 <para>
 
 </para>
 
+@summary: 
 
 <!-- ##### STRUCT CamelVeeMessageInfo ##### -->
 <para>

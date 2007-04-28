@@ -26,17 +26,17 @@
 #include <config.h>
 #endif
 
-#include <string.h> /* strlen() */
-#include <unistd.h> /* for getpid */
-#include <time.h>   /* for time */
 #include <errno.h>
+#include <string.h> /* strlen() */
+#include <time.h>   /* for time */
+#include <unistd.h> /* for getpid */
 
-#include "libedataserver/md5-utils.h"
+#include <libedataserver/md5-utils.h>
 
-#include "camel-stream-mem.h"
-#include "camel-multipart.h"
 #include "camel-exception.h"
 #include "camel-mime-part.h"
+#include "camel-multipart.h"
+#include "camel-stream-mem.h"
 
 #define d(x)
 

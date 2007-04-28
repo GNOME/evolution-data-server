@@ -22,11 +22,6 @@
 #ifndef _CAMEL_MIME_FILTER_BESTENC_H
 #define _CAMEL_MIME_FILTER_BESTENC_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-part.h>
 #include <camel/camel-charset-map.h>
@@ -34,6 +29,8 @@ extern "C" {
 #define CAMEL_MIME_FILTER_BESTENC(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_bestenc_get_type (), CamelMimeFilterBestenc)
 #define CAMEL_MIME_FILTER_BESTENC_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_bestenc_get_type (), CamelMimeFilterBestencClass)
 #define CAMEL_IS_MIME_FILTER_BESTENC(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_bestenc_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterBestencClass CamelMimeFilterBestencClass;
 
@@ -92,8 +89,6 @@ CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilte
 const char *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
 void 			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_BESTENC_H */

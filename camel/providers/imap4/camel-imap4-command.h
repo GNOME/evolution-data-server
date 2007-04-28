@@ -31,10 +31,7 @@
 #include <camel/camel-exception.h>
 #include <camel/camel-data-wrapper.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 struct _CamelIMAP4Engine;
 struct _CamelIMAP4Folder;
@@ -137,8 +134,6 @@ int camel_imap4_command_step (CamelIMAP4Command *ic);
 
 void camel_imap4_command_reset (CamelIMAP4Command *ic);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_COMMAND_H__ */

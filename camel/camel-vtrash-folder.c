@@ -21,12 +21,16 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
 #include "camel-store.h"

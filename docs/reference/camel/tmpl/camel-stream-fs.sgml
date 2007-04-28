@@ -14,11 +14,16 @@ CamelStreamFs
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStreamFs ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@fd: 
 
 <!-- ##### FUNCTION camel_stream_fs_new_with_name ##### -->
 <para>

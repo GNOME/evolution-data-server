@@ -24,17 +24,14 @@
 #ifndef __CAMEL_GPG_CONTEXT_H__
 #define __CAMEL_GPG_CONTEXT_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-cipher-context.h>
 
 #define CAMEL_GPG_CONTEXT_TYPE     (camel_gpg_context_get_type ())
 #define CAMEL_GPG_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GPG_CONTEXT_TYPE, CamelGpgContext))
 #define CAMEL_GPG_CONTEXT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GPG_CONTEXT_TYPE, CamelGpgContextClass))
 #define CAMEL_IS_GPG_CONTEXT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GPG_CONTEXT_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelGpgContext CamelGpgContext;
 typedef struct _CamelGpgContextClass CamelGpgContextClass;
@@ -57,8 +54,6 @@ CamelCipherContext *camel_gpg_context_new (CamelSession *session);
 
 void camel_gpg_context_set_always_trust (CamelGpgContext *ctx, gboolean trust);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_GPG_CONTEXT_H__ */

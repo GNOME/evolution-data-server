@@ -25,12 +25,6 @@
 #ifndef CAMEL_MIME_MESSAGE_H
 #define CAMEL_MIME_MESSAGE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-mime-part.h>
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-internet-address.h>
@@ -49,9 +43,10 @@ extern "C" {
 #define CAMEL_MIME_MESSAGE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessageClass))
 #define CAMEL_IS_MIME_MESSAGE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_MESSAGE_TYPE))
 
-
 /* specify local time */
 #define CAMEL_MESSAGE_DATE_CURRENT (~0)
+
+G_BEGIN_DECLS
 
 struct _CamelMimeMessage
 {
@@ -135,8 +130,6 @@ char                       *camel_mime_message_build_mbox_from    (CamelMimeMess
 
 void camel_mime_message_dump(CamelMimeMessage *msg, int body);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MIME_MESSAGE_H */

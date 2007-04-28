@@ -24,11 +24,6 @@
 #ifndef _CAMEL_MIME_FILTER_H
 #define _CAMEL_MIME_FILTER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <sys/types.h>
 #include <camel/camel-object.h>
 
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_MIME_FILTER(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_get_type (), CamelMimeFilter)
 #define CAMEL_MIME_FILTER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_get_type (), CamelMimeFilterClass)
 #define CAMEL_IS_MIME_FILTER(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterClass CamelMimeFilterClass;
 
@@ -87,8 +84,6 @@ void camel_mime_filter_backup(CamelMimeFilter *filter, const char *data, size_t 
 /* ensure this much size available for filter output */
 void camel_mime_filter_set_size(CamelMimeFilter *filter, size_t size, int keep);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_H */

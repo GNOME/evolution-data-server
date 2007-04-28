@@ -24,11 +24,6 @@
 #ifndef __CAMEL_MIME_FILTER_TOHTML_H__
 #define __CAMEL_MIME_FILTER_TOHTML_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_TOHTML(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_tohtml_get_type (), CamelMimeFilterToHTML)
@@ -45,6 +40,8 @@ extern "C" {
 #define CAMEL_MIME_FILTER_TOHTML_CITE              (1 << 7)
 #define CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT     (1 << 8)
 #define CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED     (1 << 9)
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterToHTMLClass CamelMimeFilterToHTMLClass;
 typedef struct _CamelMimeFilterToHTML CamelMimeFilterToHTML;
@@ -75,8 +72,6 @@ CamelMimeFilter *camel_mime_filter_tohtml_new (guint32 flags, guint32 colour);
 
 char *camel_text_to_html (const char *in, guint32 flags, guint32 colour);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_MIME_FILTER_TOHTML_H__ */

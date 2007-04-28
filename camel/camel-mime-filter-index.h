@@ -23,16 +23,13 @@
 #ifndef _CAMEL_MIME_FILTER_INDEX_H
 #define _CAMEL_MIME_FILTER_INDEX_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_INDEX(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_index_get_type (), CamelMimeFilterIndex)
 #define CAMEL_MIME_FILTER_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_index_get_type (), CamelMimeFilterIndexClass)
 #define CAMEL_IS_MIME_FILTER_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_index_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterIndexClass CamelMimeFilterIndexClass;
 
@@ -58,8 +55,6 @@ CamelMimeFilterIndex      *camel_mime_filter_index_new_index(struct _CamelIndex 
 void camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter, struct _CamelIndexName *name);
 void camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter, struct _CamelIndex *index);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_INDEX_H */

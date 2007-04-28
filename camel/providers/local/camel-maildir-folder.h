@@ -23,16 +23,14 @@
 #ifndef CAMEL_MAILDIR_FOLDER_H
 #define CAMEL_MAILDIR_FOLDER_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif				/* __cplusplus } */
 #include "camel-local-folder.h"
 
 #define CAMEL_MAILDIR_FOLDER_TYPE     (camel_maildir_folder_get_type ())
 #define CAMEL_MAILDIR_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAILDIR_FOLDER_TYPE, CamelMaildirFolder))
 #define CAMEL_MAILDIR_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MAILDIR_FOLDER_TYPE, CamelMaildirFolderClass))
 #define CAMEL_IS_MAILDIR_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MAILDIR_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelLocalFolder parent_object;
@@ -52,7 +50,6 @@ CamelFolder *camel_maildir_folder_new(CamelStore *parent_store, const char *full
 /* Standard Camel function */
 CamelType camel_maildir_folder_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif				/* __cplusplus */
-#endif				/* CAMEL_MAILDIR_FOLDER_H */
+G_END_DECLS
+
+#endif /* CAMEL_MAILDIR_FOLDER_H */

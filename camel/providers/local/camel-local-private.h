@@ -24,11 +24,6 @@
 #ifndef CAMEL_LOCAL_PRIVATE_H
 #define CAMEL_LOCAL_PRIVATE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
 
@@ -38,6 +33,8 @@ extern "C" {
 
 #include <pthread.h>
 
+G_BEGIN_DECLS
+
 struct _CamelLocalFolderPrivate {
 	GMutex *search_lock;	/* for locking the search object */
 };
@@ -45,9 +42,7 @@ struct _CamelLocalFolderPrivate {
 #define CAMEL_LOCAL_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelLocalFolder *)f)->priv->l))
 #define CAMEL_LOCAL_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelLocalFolder *)f)->priv->l))
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_LOCAL_PRIVATE_H */
 

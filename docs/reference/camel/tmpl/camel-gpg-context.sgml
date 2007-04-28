@@ -14,11 +14,16 @@ CamelGpgContext
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelGpgContext ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@always_trust: 
 
 <!-- ##### FUNCTION camel_gpg_context_new ##### -->
 <para>

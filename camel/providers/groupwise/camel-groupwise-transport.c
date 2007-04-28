@@ -26,23 +26,25 @@
 #include <config.h>
 #endif
 
-#include "camel-groupwise-transport.h"
-#include "camel-groupwise-store.h"
-#include "camel-groupwise-utils.h"
-
-#include "camel-i18n.h"
-#include "camel-session.h" 
-#include "camel-stream.h"
-#include "camel-stream-mem.h"
-#include "camel-medium.h"
-#include "camel-data-wrapper.h"
-#include "camel-mime-message.h"
-#include "camel-multipart.h"
-#include "camel-mime-utils.h"
-
 #include <string.h>
+
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include <libsoup/soup-misc.h>
 
+#include "camel-data-wrapper.h"
+#include "camel-medium.h"
+#include "camel-mime-message.h"
+#include "camel-mime-utils.h"
+#include "camel-multipart.h"
+#include "camel-session.h" 
+#include "camel-stream-mem.h"
+#include "camel-stream.h"
+
+#include "camel-groupwise-store.h"
+#include "camel-groupwise-transport.h"
+#include "camel-groupwise-utils.h"
 
 static gboolean groupwise_send_to (CamelTransport *transport,
 				  CamelMimeMessage *message,

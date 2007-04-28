@@ -28,7 +28,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-part.h"
 #include "camel-mime-utils.h"

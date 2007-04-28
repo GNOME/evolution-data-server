@@ -24,12 +24,6 @@
 #ifndef CAMEL_TCP_STREAM_SSL_H
 #define CAMEL_TCP_STREAM_SSL_H
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-tcp-stream.h>
 
 #define CAMEL_TCP_STREAM_SSL_TYPE     (camel_tcp_stream_ssl_get_type ())
@@ -37,11 +31,13 @@ extern "C" {
 #define CAMEL_TCP_STREAM_SSL_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TCP_STREAM_SSL_TYPE, CamelTcpStreamSSLClass))
 #define CAMEL_IS_TCP_STREAM_SSL(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TCP_STREAM_SSL_TYPE))
 
-struct _CamelSession;
-
 #define CAMEL_TCP_STREAM_SSL_ENABLE_SSL2   (1 << 0)
 #define CAMEL_TCP_STREAM_SSL_ENABLE_SSL3   (1 << 1)
 #define CAMEL_TCP_STREAM_SSL_ENABLE_TLS    (1 << 2)
+
+G_BEGIN_DECLS
+
+struct _CamelSession;
 
 struct _CamelTcpStreamSSL {
 	CamelTcpStream parent_object;
@@ -66,8 +62,6 @@ CamelStream *camel_tcp_stream_ssl_new_raw (struct _CamelSession *session, const 
 
 int camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_TCP_STREAM_SSL_H */

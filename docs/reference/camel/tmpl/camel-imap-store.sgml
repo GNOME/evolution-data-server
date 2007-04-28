@@ -14,6 +14,9 @@ CamelImapStore
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelImapMsg ##### -->
 <para>
 
@@ -34,19 +37,23 @@ CamelImapStore
 @summary: 
 @connected: 
 @preauthed: 
+@braindamaged: 
+@renaming: 
+@nocustomappend: 
 @tag_prefix: 
 @command: 
 @current_folder: 
 @server_level: 
 @capabilities: 
 @parameters: 
-@braindamaged: 
 @namespace: 
 @dir_sep: 
 @base_url: 
 @storage_path: 
 @authtypes: 
-@renaming: 
+@refresh_stamp: 
+@headers: 
+@custom_headers: 
 
 <!-- ##### FUNCTION camel_imap_msg_new ##### -->
 <para>
@@ -210,6 +217,13 @@ CamelImapStore
 
 
 
+<!-- ##### MACRO IMAP_CAPABILITY_LOGINDISABLED ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO IMAP_PARAM_OVERRIDE_NAMESPACE ##### -->
 <para>
 
@@ -239,6 +253,34 @@ CamelImapStore
 
 
 <!-- ##### MACRO IMAP_PARAM_FILTER_JUNK_INBOX ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO IMAP_PARAM_SUBSCRIPTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO IMAP_FETCH_ALL_HEADERS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO IMAP_FETCH_MAILING_LIST_HEADERS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO IMAP_FETCH_MINIMAL_HEADERS ##### -->
 <para>
 
 </para>

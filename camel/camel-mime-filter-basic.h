@@ -22,16 +22,13 @@
 #ifndef _CAMEL_MIME_FILTER_BASIC_H
 #define _CAMEL_MIME_FILTER_BASIC_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_BASIC(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_basic_get_type (), CamelMimeFilterBasic)
 #define CAMEL_MIME_FILTER_BASIC_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_basic_get_type (), CamelMimeFilterBasicClass)
 #define CAMEL_IS_MIME_FILTER_BASIC(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_basic_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterBasicClass CamelMimeFilterBasicClass;
 
@@ -64,8 +61,6 @@ CamelType		camel_mime_filter_basic_get_type	(void);
 CamelMimeFilterBasic      *camel_mime_filter_basic_new	(void);
 CamelMimeFilterBasic      *camel_mime_filter_basic_new_type	(CamelMimeFilterBasicType type);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_BASIC_H */

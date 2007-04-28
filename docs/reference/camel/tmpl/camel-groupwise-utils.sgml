@@ -14,6 +14,9 @@ camel-groupwise-utils
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO X_SEND_OPTIONS ##### -->
 <para>
 
@@ -22,6 +25,13 @@ camel-groupwise-utils
 
 
 <!-- ##### MACRO X_SEND_OPT_PRIORITY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO X_SEND_OPT_SECURITY ##### -->
 <para>
 
 </para>
@@ -167,9 +177,9 @@ camel-groupwise-utils
 
 </para>
 
+@cnc: 
 @message: 
 @from: 
-@recipients: 
 @Returns: 
 
 
@@ -183,14 +193,23 @@ camel-groupwise-utils
 @_new: 
 
 
-<!-- ##### FUNCTION add_recipients ##### -->
+<!-- ##### FUNCTION gw_concat ##### -->
 <para>
 
 </para>
 
-@recipient_list: 
-@recipients: 
-@recipient_type: 
+@prefix: 
+@suffix: 
 @Returns: 
+
+
+<!-- ##### FUNCTION strip_lt_gt ##### -->
+<para>
+
+</para>
+
+@string: 
+@s_offset: 
+@e_offset: 
 
 

@@ -22,33 +22,33 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <limits.h>
-#include <utime.h>
-#include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <utime.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <glib/gi18n-lib.h>
 
 #include <libedataserver/md5-utils.h>
 
-#include <camel/camel-file-utils.h>
-#include <camel/camel-string-utils.h>
-#include <camel/camel-offline-journal.h>
-#include <camel/camel-i18n.h>
+#include "camel-file-utils.h"
+#include "camel-string-utils.h"
+#include "camel-offline-journal.h"
 
-#include "camel-imap4-store.h"
+#include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"
 #include "camel-imap4-folder.h"
-#include "camel-imap4-stream.h"
-#include "camel-imap4-command.h"
 #include "camel-imap4-journal.h"
-#include "camel-imap4-utils.h"
-
+#include "camel-imap4-store.h"
+#include "camel-imap4-stream.h"
 #include "camel-imap4-summary.h"
+#include "camel-imap4-utils.h"
 
 #define d(x) x
 

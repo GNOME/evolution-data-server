@@ -24,12 +24,9 @@
 #ifndef __CAMEL_STRING_UTILS_H__
 #define __CAMEL_STRING_UTILS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
+
+G_BEGIN_DECLS
 
 int   camel_strcase_equal (gconstpointer a, gconstpointer b);
 guint camel_strcase_hash  (gconstpointer v);
@@ -46,8 +43,6 @@ const char *camel_pstring_add (char *str, gboolean own);
 const char *camel_pstring_strdup(const char *s);
 void camel_pstring_free(const char *s);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_STRING_UTILS_H__ */

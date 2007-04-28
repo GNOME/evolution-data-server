@@ -28,12 +28,12 @@
 #include <errno.h>
 
 #include "camel-data-wrapper.h"
-#include "camel-stream.h"
-#include "camel-stream-filter.h"
+#include "camel-exception.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-crlf.h"
-#include "camel-exception.h"
 #include "camel-private.h"
+#include "camel-stream-filter.h"
+#include "camel-stream.h"
 
 #define d(x)
 
@@ -156,10 +156,9 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * camel_data_wrapper_write_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for output
- * @ex: a #CamelException
  *
- * Writes the content of @data_wrapper to @stream in a machine-independent format
- * appropriate for the data. It should be possible to construct an
+ * Writes the content of @data_wrapper to @stream in a machine-independent
+ * format appropriate for the data. It should be possible to construct an
  * equivalent data wrapper object later by passing this stream to
  * #camel_data_wrapper_construct_from_stream.
  *
@@ -224,7 +223,6 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * camel_data_wrapper_decode_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for decoded data to be written to
- * @ex: a #CamelException
  *
  * Writes the decoded data content to @stream.
  *

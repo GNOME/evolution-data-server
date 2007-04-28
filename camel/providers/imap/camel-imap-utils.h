@@ -23,15 +23,12 @@
 #ifndef CAMEL_IMAP_UTILS_H
 #define CAMEL_IMAP_UTILS_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <sys/types.h>
 
 #include "camel-folder-summary.h"
 #include "camel-imap-types.h"
+
+G_BEGIN_DECLS
 
 const char *imap_next_word (const char *buf);
 
@@ -94,8 +91,6 @@ typedef gboolean (*IMAPPathFindFoldersCallback) (const char *physical_path, cons
 char *imap_path_to_physical (const char *prefix, const char *vpath);
 gboolean imap_path_find_folders (const char *prefix, IMAPPathFindFoldersCallback callback, gpointer data);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_UTILS_H */

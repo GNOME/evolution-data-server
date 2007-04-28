@@ -30,6 +30,8 @@
 #define CAMEL_MBOX_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mbox_summary_get_type (), CamelMboxSummaryClass)
 #define CAMEL_IS_MBOX_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_mbox_summary_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelMboxSummary      CamelMboxSummary;
 typedef struct _CamelMboxSummaryClass CamelMboxSummaryClass;
 
@@ -72,5 +74,6 @@ void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, int state);
 /* build a new mbox from an existing mbox storing summary information */
 int camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, int fd, int fdout, CamelException *ex);
 
-#endif /* ! _CAMEL_MBOX_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_MBOX_SUMMARY_H */

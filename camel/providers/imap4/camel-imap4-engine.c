@@ -25,21 +25,21 @@
 #include <config.h>
 #endif
 
-#include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <string.h>
 
-#include <camel/camel-sasl.h>
-#include <camel/camel-stream-buffer.h>
-#include <camel/camel-i18n.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-imap4-summary.h"
+#include "camel-sasl.h"
+#include "camel-stream-buffer.h"
+
 #include "camel-imap4-command.h"
-#include "camel-imap4-stream.h"
-#include "camel-imap4-folder.h"
-#include "camel-imap4-utils.h"
-
 #include "camel-imap4-engine.h"
+#include "camel-imap4-folder.h"
+#include "camel-imap4-stream.h"
+#include "camel-imap4-summary.h"
+#include "camel-imap4-utils.h"
 
 #define d(x) x
 
@@ -758,8 +758,7 @@ engine_parse_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 }
 
 
-/**
- * 
+/*
  * resp-text-code  = "ALERT" /
  *                   "BADCHARSET" [SP "(" astring *(SP astring) ")" ] /
  *                   capability-data / "PARSE" /
@@ -768,7 +767,7 @@ engine_parse_namespace (CamelIMAP4Engine *engine, CamelException *ex)
  *                   "UIDNEXT" SP nz-number / "UIDVALIDITY" SP nz-number /
  *                   "UNSEEN" SP nz-number /
  *                   atom [SP 1*<any TEXT-CHAR except "]">]
- **/
+ */
 
 static struct {
 	const char *name;

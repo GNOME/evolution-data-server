@@ -28,12 +28,6 @@
 #ifndef CAMEL_GROUPWISE_FOLDER_H
 #define CAMEL_GROUPWISE_FOLDER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-offline-folder.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-folder-summary.h>
@@ -50,6 +44,8 @@ extern "C" {
 #define CAMEL_GROUPWISE_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GROUPWISE_FOLDER_TYPE, CamelGroupwiseFolder))
 #define CAMEL_GROUPWISE_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GROUPWISE_FOLDER_TYPE, CamelGroupwiseFolderClass))
 #define CAMEL_IS_GROUPWISE_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct  _CamelGroupwiseFolder CamelGroupwiseFolder;
 typedef struct  _CamelGroupwiseFolderClass CamelGroupwiseFolderClass;
@@ -86,8 +82,6 @@ CamelFolder * camel_gw_folder_new(CamelStore *store, const char *folder_dir, con
 void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
 void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_GROUPWISE_FOLDER_H */

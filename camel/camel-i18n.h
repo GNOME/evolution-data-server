@@ -20,16 +20,12 @@
  *
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef __CAMEL_I18N_H__
 #define __CAMEL_I18N_H__
 
 #include <glib.h>
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
 
 #ifdef ENABLE_NLS
 #    include <libintl.h>
@@ -55,8 +51,6 @@ extern "C" {
 #    define N_(String) (String)
 #endif
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
 #endif /* __CAMEL_I18N_H__ */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

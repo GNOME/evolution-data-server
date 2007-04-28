@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "glib.h"
 
+G_BEGIN_DECLS
+
 typedef struct CamelNNTPNewsrc CamelNNTPNewsrc;
 
 int              camel_nntp_newsrc_get_highest_article_read   (CamelNNTPNewsrc *newsrc, const char *group_name);
@@ -29,6 +31,6 @@ void             camel_nntp_newsrc_write_to_file              (CamelNNTPNewsrc *
 void             camel_nntp_newsrc_write                      (CamelNNTPNewsrc *newsrc);
 CamelNNTPNewsrc *camel_nntp_newsrc_read_for_server            (const char *server);
 
+G_END_DECLS
+
 #endif /* _CAMEL_NNTP_NEWSRC_H_ */
-
-

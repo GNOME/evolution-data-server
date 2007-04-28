@@ -24,24 +24,24 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <errno.h>
 
-#include "camel-net-utils.h"
+#include "camel-exception.h"
 #include "camel-http-stream.h"
-
 #include "camel-mime-utils.h"
+#include "camel-net-utils.h"
+#include "camel-service.h" /* for hostname stuff */
+#include "camel-session.h"
 #include "camel-stream-buffer.h"
 #include "camel-tcp-stream-raw.h"
+
 #ifdef HAVE_SSL
 #include "camel-tcp-stream-ssl.h"
 #endif
-#include "camel-exception.h"
-#include "camel-session.h"
-#include "camel-service.h" /* for hostname stuff */
 
 #define d(x) 
 

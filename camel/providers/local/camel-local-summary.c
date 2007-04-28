@@ -24,19 +24,19 @@
 #endif
 
 #include <ctype.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-mime-message.h"
-#include "camel/camel-stream-null.h"
-#include "camel/camel-file-utils.h"
-#include "camel/camel-i18n.h"
+#include "camel-file-utils.h"
+#include "camel-mime-message.h"
+#include "camel-stream-null.h"
 
 #include "camel-local-summary.h"
 

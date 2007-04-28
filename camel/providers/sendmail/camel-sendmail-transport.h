@@ -27,12 +27,6 @@
 #ifndef CAMEL_SENDMAIL_TRANSPORT_H
 #define CAMEL_SENDMAIL_TRANSPORT_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-transport.h"
 
 #define CAMEL_SENDMAIL_TRANSPORT_TYPE     (camel_sendmail_transport_get_type ())
@@ -40,6 +34,7 @@ extern "C" {
 #define CAMEL_SENDMAIL_TRANSPORT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SENDMAIL_TRANSPORT_TYPE, CamelSendmailTransportClass))
 #define CAMEL_IS_SENDMAIL_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SENDMAIL_TRANSPORT_TYPE))
 
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelTransport parent_object;
@@ -56,8 +51,6 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_sendmail_transport_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SENDMAIL_TRANSPORT_H */

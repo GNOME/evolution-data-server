@@ -29,23 +29,23 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "libedataserver/e-msgport.h"
+#include <libedataserver/e-msgport.h>
 
 #include "camel-exception.h"
-#include "camel-i18n.h"
+#include "camel-private.h"
 #include "camel-provider.h"
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
-#include "camel-private.h"
 
 /* table of CamelProviderModule's */
 static GHashTable *module_table;

@@ -27,6 +27,8 @@
 #include <time.h>
 #include "camel-nntp-store.h"
 
+G_BEGIN_DECLS
+
 struct CamelNNTPGroupListEntry {
 	char *group_name;
 	guint32 low;
@@ -47,5 +49,7 @@ struct CamelNNTPGroupList* camel_nntp_grouplist_fetch  (CamelNNTPStore *store, C
 gint                       camel_nntp_grouplist_update (struct CamelNNTPGroupList *group_list, CamelException *ex);
 void                       camel_nntp_grouplist_save   (struct CamelNNTPGroupList *group_list, CamelException *ex);
 void                       camel_nntp_grouplist_free   (struct CamelNNTPGroupList *group_list);
+
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_GROUPLIST_H */

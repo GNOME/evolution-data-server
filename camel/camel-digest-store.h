@@ -24,17 +24,14 @@
 #ifndef __CAMEL_DIGEST_STORE_H__
 #define __CAMEL_DIGEST_STORE_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <camel/camel-store.h>
 
 #define CAMEL_DIGEST_STORE(obj)         CAMEL_CHECK_CAST (obj, camel_digest_store_get_type (), CamelDigestStore)
 #define CAMEL_DIGEST_STORE_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_digest_store_get_type (), CamelDigestStoreClass)
 #define CAMEL_IS_DIGEST_STORE(obj)      CAMEL_CHECK_TYPE (obj, camel_digest_store_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelDigestStoreClass CamelDigestStoreClass;
 
@@ -52,8 +49,6 @@ CamelType camel_digest_store_get_type (void);
 
 CamelStore *camel_digest_store_new (const char *url);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_DIGEST_STORE_H__ */

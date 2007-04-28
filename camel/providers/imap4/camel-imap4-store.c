@@ -25,32 +25,31 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
-#include <camel/camel-sasl.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-tcp-stream-raw.h>
+#include <glib/gi18n-lib.h>
+
+#include "camel-net-utils.h"
+#include "camel-private.h"
+#include "camel-sasl.h"
+#include "camel-tcp-stream-raw.h"
+#include "camel-utf8.h"
 
 #ifdef HAVE_SSL
-#include <camel/camel-tcp-stream-ssl.h>
+#include "camel-tcp-stream-ssl.h"
 #endif
 
-#include <camel/camel-private.h>
-
-#include <camel/camel-i18n.h>
-#include <camel/camel-net-utils.h>
-
-#include "camel-imap4-store.h"
+#include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"
 #include "camel-imap4-folder.h"
-#include "camel-imap4-stream.h"
-#include "camel-imap4-command.h"
-#include "camel-imap4-utils.h"
-#include "camel-imap4-summary.h"
 #include "camel-imap4-store-summary.h"
+#include "camel-imap4-store.h"
+#include "camel-imap4-stream.h"
+#include "camel-imap4-summary.h"
+#include "camel-imap4-utils.h"
 
 #define d(x) x
 

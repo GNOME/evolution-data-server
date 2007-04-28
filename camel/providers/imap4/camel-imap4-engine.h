@@ -34,17 +34,14 @@
 #include <camel/camel-folder.h>
 #include <camel/camel-session.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_IMAP4_ENGINE            (camel_imap4_engine_get_type ())
 #define CAMEL_IMAP4_ENGINE(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_ENGINE, CamelIMAP4Engine))
 #define CAMEL_IMAP4_ENGINE_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP4_ENGINE, CamelIMAP4EngineClass))
 #define CAMEL_IS_IMAP4_ENGINE(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP4_ENGINE))
 #define CAMEL_IS_IMAP4_ENGINE_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP4_ENGINE))
 #define CAMEL_IMAP4_ENGINE_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_IMAP4_ENGINE, CamelIMAP4EngineClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4Engine CamelIMAP4Engine;
 typedef struct _CamelIMAP4EngineClass CamelIMAP4EngineClass;
@@ -235,8 +232,6 @@ int camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex);
 int camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex);
 void camel_imap4_resp_code_free (CamelIMAP4RespCode *rcode);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_ENGINE_H__ */

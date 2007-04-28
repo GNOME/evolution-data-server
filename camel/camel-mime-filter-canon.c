@@ -26,8 +26,8 @@
 #include <config.h>
 #endif
 
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "camel-mime-filter-canon.h"
 

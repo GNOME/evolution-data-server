@@ -14,11 +14,16 @@ CamelStream
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelStream ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@eos: 
 
 <!-- ##### FUNCTION camel_stream_read ##### -->
 <para>

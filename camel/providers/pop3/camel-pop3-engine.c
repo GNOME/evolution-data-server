@@ -25,17 +25,16 @@
 #endif
 
 #include <errno.h>
-
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel-pop3-engine.h"
 #include "camel-pop3-stream.h"
-#include "camel-service.h"
 #include "camel-sasl.h"
-#include "camel-i18n.h"
+#include "camel-service.h"
 
 /* max 'outstanding' bytes in output stream, so we can't deadlock waiting
    for the server to accept our data when pipelining */

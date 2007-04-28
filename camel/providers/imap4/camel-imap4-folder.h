@@ -27,17 +27,14 @@
 #include <camel/camel-offline-folder.h>
 #include <camel/camel-offline-journal.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_IMAP4_FOLDER            (camel_imap4_folder_get_type ())
 #define CAMEL_IMAP4_FOLDER(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_FOLDER, CamelIMAP4Folder))
 #define CAMEL_IMAP4_FOLDER_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP4_FOLDER, CamelIMAP4FolderClass))
 #define CAMEL_IS_IMAP4_FOLDER(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP4_FOLDER))
 #define CAMEL_IS_IMAP4_FOLDER_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP4_FOLDER))
 #define CAMEL_IMAP4_FOLDER_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_IMAP4_FOLDER, CamelIMAP4FolderClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4Folder CamelIMAP4Folder;
 typedef struct _CamelIMAP4FolderClass CamelIMAP4FolderClass;
@@ -80,8 +77,6 @@ CamelFolder *camel_imap4_folder_new (CamelStore *store, const char *full_name, C
 
 const char *camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_FOLDER_H__ */

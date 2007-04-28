@@ -25,19 +25,19 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 
-#include <camel/camel-i18n.h>
-#include <camel/camel-store.h>
-#include <camel/camel-file-utils.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-imap4-utils.h"
+#include "camel-file-utils.h"
+#include "camel-store.h"
+
 #include "camel-imap4-store-summary.h"
-
+#include "camel-imap4-utils.h"
 
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION_0 (0)
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION (0)

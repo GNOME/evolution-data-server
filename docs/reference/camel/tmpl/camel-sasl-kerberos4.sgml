@@ -14,11 +14,16 @@ CamelSaslKerberos4
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslKerberos4 ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_kerberos4_authtype ##### -->
 <para>

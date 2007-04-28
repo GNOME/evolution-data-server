@@ -14,11 +14,20 @@ CamelMimeFilterBasic
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterBasic ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
+@type: 
+@uubuf: 
+@state: 
+@save: 
 
 <!-- ##### ENUM CamelMimeFilterBasicType ##### -->
 <para>

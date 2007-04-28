@@ -25,19 +25,20 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
 
 #ifndef G_OS_WIN32
 #include <sys/poll.h>
 #endif
-#include <pthread.h>
-#include <stdio.h>
-#include <errno.h>
 
-#include "libedataserver/e-msgport.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/e-msgport.h>
 
 #include "camel-exception.h"
-#include "camel-i18n.h"
 #include "camel-net-utils.h"
 #include "camel-operation.h"
 

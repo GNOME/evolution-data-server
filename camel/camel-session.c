@@ -28,18 +28,20 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
+#include <sys/stat.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "libedataserver/e-data-server-util.h"
+#include <libedataserver/e-data-server-util.h>
+
 #include "camel-exception.h"
 #include "camel-file-utils.h"
-#include "camel-i18n.h"
 #include "camel-private.h"
 #include "camel-session.h"
 #include "camel-store.h"

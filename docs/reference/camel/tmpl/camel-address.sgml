@@ -14,11 +14,17 @@ CamelAddress
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelAddress ##### -->
 <para>
 
 </para>
 
+@parent: 
+@addresses: 
+@priv: 
 
 <!-- ##### FUNCTION camel_address_new ##### -->
 <para>

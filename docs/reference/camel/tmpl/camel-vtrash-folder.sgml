@@ -14,6 +14,9 @@ CamelVTrashFolder
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO CAMEL_VTRASH_NAME ##### -->
 <para>
 
@@ -33,6 +36,8 @@ CamelVTrashFolder
 
 </para>
 
+@parent: 
+@bit: 
 
 <!-- ##### ENUM camel_vtrash_folder_t ##### -->
 <para>

@@ -23,11 +23,6 @@
 #ifndef _CAMEL_MIME_PARSER_H
 #define _CAMEL_MIME_PARSER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-object.h>
 
 #include <camel/camel-mime-utils.h>
@@ -37,6 +32,8 @@ extern "C" {
 #define CAMEL_MIME_PARSER(obj)         CAMEL_CHECK_CAST (obj, camel_mime_parser_get_type (), CamelMimeParser)
 #define CAMEL_MIME_PARSER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_parser_get_type (), CamelMimeParserClass)
 #define CAMEL_IS_MIME_PARSER(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_parser_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeParserClass CamelMimeParserClass;
 
@@ -141,8 +138,6 @@ off_t camel_mime_parser_tell_start_headers (CamelMimeParser *parser);
 off_t camel_mime_parser_tell_start_from (CamelMimeParser *parser);
 off_t camel_mime_parser_tell_start_boundary(CamelMimeParser *parser);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_PARSER_H */

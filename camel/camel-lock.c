@@ -19,29 +19,31 @@
  * USA
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
+#include <time.h>
+#include <sys/stat.h>
+
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
-#include <time.h>
 
 #ifdef USE_DOT
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 #ifdef USE_FCNTL
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 #endif
 
 #ifdef USE_FLOCK
@@ -49,6 +51,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #ifdef G_OS_WIN32
@@ -56,7 +59,6 @@
 #endif
 
 #include "camel-lock.h"
-#include "camel-i18n.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

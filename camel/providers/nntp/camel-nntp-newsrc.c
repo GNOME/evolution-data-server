@@ -20,20 +20,22 @@
  *
  */
 
+#ifndef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-folder-summary.h"
+#include "camel-folder-summary.h"
 
 #include "camel-nntp-newsrc.h"
 

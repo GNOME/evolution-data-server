@@ -23,18 +23,14 @@
 #ifndef CAMEL_SPOOL_STORE_H
 #define CAMEL_SPOOL_STORE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-mbox-store.h"
 
 #define CAMEL_SPOOL_STORE_TYPE     (camel_spool_store_get_type ())
 #define CAMEL_SPOOL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SPOOL_STORE_TYPE, CamelSpoolStore))
 #define CAMEL_SPOOL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SPOOL_STORE_TYPE, CamelSpoolStoreClass))
 #define CAMEL_IS_SPOOL_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SPOOL_STORE_TYPE))
+
+G_BEGIN_DECLS
 
 typedef enum _camel_spool_store_t {
 	CAMEL_SPOOL_STORE_MBOX,	/* a single mbox */
@@ -60,9 +56,7 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_spool_store_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SPOOL_STORE_H */
 

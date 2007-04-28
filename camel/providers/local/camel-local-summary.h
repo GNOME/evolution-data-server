@@ -30,6 +30,8 @@
 #define CAMEL_LOCAL_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_local_summary_get_type (), CamelLocalSummaryClass)
 #define CAMEL_IS_LOCAL_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_local_summary_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelLocalSummary      CamelLocalSummary;
 typedef struct _CamelLocalSummaryClass CamelLocalSummaryClass;
 
@@ -92,5 +94,6 @@ int camel_local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *x
 /* utility functions - write headers to a file with optional X-Evolution header and/or status header */
 int camel_local_summary_write_headers(int fd, struct _camel_header_raw *header, const char *xevline, const char *status, const char *xstatus);
 
-#endif /* ! _CAMEL_LOCAL_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_LOCAL_SUMMARY_H */

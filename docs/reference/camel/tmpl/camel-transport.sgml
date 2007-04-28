@@ -14,11 +14,16 @@ CamelTransport
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelTransport ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@priv: 
 
 <!-- ##### FUNCTION camel_transport_send_to ##### -->
 <para>

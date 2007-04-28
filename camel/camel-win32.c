@@ -21,12 +21,12 @@
  * USA
  */
 
-#include <windows.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <io.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 
-#include <io.h>
+#include <windows.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>

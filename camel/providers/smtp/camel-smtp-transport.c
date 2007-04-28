@@ -26,34 +26,38 @@
 #include <config.h>
 #endif
 
-#include <sys/param.h>
-#include <sys/types.h>
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <unistd.h>
+#include <sys/param.h>
+#include <sys/types.h>
+
+#include <glib/gi18n-lib.h>
+
 #undef MIN
 #undef MAX
+
+#include "camel-exception.h"
 #include "camel-mime-filter-crlf.h"
-#include "camel-stream-filter.h"
-#include "camel-smtp-transport.h"
 #include "camel-mime-message.h"
-#include "camel-multipart.h"
 #include "camel-mime-part.h"
+#include "camel-multipart.h"
+#include "camel-net-utils.h"
 #include "camel-operation.h"
+#include "camel-sasl.h"
+#include "camel-session.h"
+#include "camel-smtp-transport.h"
 #include "camel-stream-buffer.h"
-#include "camel-tcp-stream.h"
+#include "camel-stream-filter.h"
 #include "camel-tcp-stream-raw.h"
+#include "camel-tcp-stream.h"
+
 #ifdef HAVE_SSL
 #include "camel-tcp-stream-ssl.h"
 #endif
-#include "camel-session.h"
-#include "camel-exception.h"
-#include "camel-sasl.h"
-#include "camel-i18n.h"
-#include "camel-net-utils.h"
 
 extern int camel_verbose_debug;
 #define d(x) (camel_verbose_debug ? (x) : 0)
@@ -762,7 +766,7 @@ smtp_next_token (const char *buf)
 
 #define HEXVAL(c) (isdigit (c) ? (c) - '0' : (c) - 'A' + 10)
 
-/**
+/*
  * example (rfc2034):
  * 5.1.1 Mailbox "nosuchuser" does not exist
  *
@@ -783,7 +787,7 @@ smtp_next_token (const char *buf)
  *
  *   hexchar = ASCII "+" immediately followed by two upper case
  *        hexadecimal digits
- **/
+ */
 static char *
 smtp_decode_status_code (const char *in, size_t len)
 {

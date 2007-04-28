@@ -14,11 +14,16 @@ CamelSMIMEContext
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSMIMEContext ##### -->
 <para>
 
 </para>
 
+@cipher: 
+@priv: 
 
 <!-- ##### ENUM camel_smime_sign_t ##### -->
 <para>

@@ -29,12 +29,14 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>
 
-#include "libedataserver/e-data-server-util.h"
+#include <libedataserver/e-data-server-util.h>
+
 #include "camel-file-utils.h"
 #include "camel-private.h"
 #include "camel-uid-cache.h"
@@ -189,7 +191,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	
 #ifdef ENABLE_SPASMOLYTIC
 	if (fd != -1) {
-		/**
+		/*
 		 * If our new cache size is larger than the old cache,
 		 * even if we haven't finished writing it out
 		 * successfully, we should still attempt to replace
@@ -202,7 +204,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 		 * uids to make up for the difference in size (or
 		 * more), then we should replace the old cache with
 		 * the new cache as well.
-		 **/
+		 */
 		
 		if (g_stat (cache->filename, &st) == 0 &&
 		    (cache->size > st.st_size || cache->size + cache->expired > st.st_size)) {

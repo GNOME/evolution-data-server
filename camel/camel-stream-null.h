@@ -23,16 +23,13 @@
 #ifndef _CAMEL_STREAM_NULL_H
 #define _CAMEL_STREAM_NULL_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-stream.h>
 
 #define CAMEL_STREAM_NULL(obj)         CAMEL_CHECK_CAST (obj, camel_stream_null_get_type (), CamelStreamNull)
 #define CAMEL_STREAM_NULL_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_stream_null_get_type (), CamelStreamNullClass)
 #define CAMEL_IS_STREAM_NULL(obj)      CAMEL_CHECK_TYPE (obj, camel_stream_null_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStreamNullClass CamelStreamNullClass;
 
@@ -50,8 +47,6 @@ CamelType			camel_stream_null_get_type	(void);
 
 CamelStream            *camel_stream_null_new		(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_STREAM_NULL_H */

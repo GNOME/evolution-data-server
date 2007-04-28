@@ -25,15 +25,14 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
-#include "libedataserver/e-trie.h"
+#include <libedataserver/e-trie.h>
 
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
-
 
 struct _CamelUrlScanner {
 	GPtrArray *patterns;

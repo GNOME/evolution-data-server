@@ -26,11 +26,11 @@
 #include <config.h>
 #endif
 
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "camel-stream-mem.h"
 

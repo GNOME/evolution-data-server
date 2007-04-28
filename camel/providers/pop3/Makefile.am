@@ -8,7 +8,6 @@ INCLUDES =					\
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\
-	-DCAMEL_EXPLICIT_TRANSLATION_DOMAIN=\"$(GETTEXT_PACKAGE)\"	\
 	-DG_LOG_DOMAIN=\"camel-pop3-provider\"
 
 libcamelpop3_la_SOURCES = 			\

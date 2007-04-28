@@ -26,11 +26,10 @@
 
 #include "camel-digest-folder.h"
 #include "camel-digest-summary.h"
-
 #include "camel-exception.h"
-#include "camel-multipart.h"
-#include "camel-mime-message.h"
 #include "camel-folder-search.h"
+#include "camel-mime-message.h"
+#include "camel-multipart.h"
 
 #define d(x)
 

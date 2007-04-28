@@ -25,11 +25,6 @@
 #ifndef CAMEL_OBJECT_H
 #define CAMEL_OBJECT_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
 #include <stdio.h>		/* FILE */
 #include <stdlib.h>		/* size_t */
@@ -41,6 +36,8 @@ extern "C" {
 
 /* turn on so that camel_object_class_dump_tree() dumps object instances as well */
 #define CAMEL_OBJECT_TRACK_INSTANCES
+
+G_BEGIN_DECLS
 
 typedef struct _CamelObjectClass *CamelType;
 
@@ -334,8 +331,6 @@ const void *camel_iterator_next(void *it, CamelException *ex);
 void camel_iterator_reset(void *it);
 int camel_iterator_length(void *it);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_OBJECT_H */

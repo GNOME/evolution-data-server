@@ -27,12 +27,6 @@
 #ifndef CAMEL_SESSION_H
 #define CAMEL_SESSION_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-object.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-junk-plugin.h>
@@ -44,6 +38,7 @@ extern "C" {
 #define CAMEL_SESSION_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SESSION_TYPE, CamelSessionClass))
 #define CAMEL_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SESSION_TYPE))
 
+G_BEGIN_DECLS
 
 typedef gboolean (*CamelTimeoutCallback) (gpointer data);
 typedef enum {
@@ -197,8 +192,7 @@ int camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg
 void camel_session_thread_wait(CamelSession *session, int id);
 gboolean camel_session_get_network_state (CamelSession *session);
 void camel_session_set_network_state (CamelSession *session, gboolean network_state);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+
+G_END_DECLS
 
 #endif /* CAMEL_SESSION_H */

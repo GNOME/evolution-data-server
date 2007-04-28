@@ -24,11 +24,11 @@
 #endif
 
 #include <ctype.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "camel-index.h"
 #include "camel-object.h"

@@ -14,11 +14,24 @@ CamelMimeMessage
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeMessage ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@date: 
+@date_offset: 
+@date_received: 
+@date_received_offset: 
+@subject: 
+@message_id: 
+@reply_to: 
+@from: 
+@recipients: 
 
 <!-- ##### MACRO CAMEL_RECIPIENT_TYPE_TO ##### -->
 <para>
@@ -199,6 +212,24 @@ CamelMimeMessage
 @recipients: 
 
 
+<!-- ##### FUNCTION camel_mime_message_set_source ##### -->
+<para>
+
+</para>
+
+@message: 
+@identity: 
+
+
+<!-- ##### FUNCTION camel_mime_message_get_source ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_mime_message_has_8bit_parts ##### -->
 <para>
 
@@ -243,5 +274,14 @@ CamelMimeMessage
 
 @message: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_message_dump ##### -->
+<para>
+
+</para>
+
+@msg: 
+@body: 
 
 

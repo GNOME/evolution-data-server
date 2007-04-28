@@ -29,18 +29,19 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <sys/wait.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
-#include "camel-sendmail-transport.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-stream-filter.h"
-#include "camel-mime-message.h"
+#include <glib/gi18n-lib.h>
+
 #include "camel-data-wrapper.h"
-#include "camel-stream-fs.h"
 #include "camel-exception.h"
-#include "camel-i18n.h"
+#include "camel-mime-filter-crlf.h"
+#include "camel-mime-message.h"
+#include "camel-sendmail-transport.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
 
 static char *get_name (CamelService *service, gboolean brief);
 

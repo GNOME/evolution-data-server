@@ -24,10 +24,14 @@
 #ifndef CAMEL_NNTP_TYPES_H
 #define CAMEL_NNTP_TYPES_H 1
 
+G_BEGIN_DECLS
+
 typedef struct CamelNNTPGroupList CamelNNTPGroupList;
 typedef struct CamelNNTPGroupListEntry CamelNNTPGroupListEntry;
 typedef struct CamelNNTPOverField CamelNNTPOverField;
 typedef struct CamelNNTPStore CamelNNTPStore;
 typedef struct CamelNNTPStoreClass CamelNNTPStoreClass;
+
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_TYPES_H */

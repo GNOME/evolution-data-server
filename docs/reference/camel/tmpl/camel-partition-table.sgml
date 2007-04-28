@@ -14,6 +14,9 @@ CamelKeyTable
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### TYPEDEF camel_hash_t ##### -->
 <para>
 
@@ -48,13 +51,18 @@ CamelKeyTable
 </para>
 
 
-<!-- ##### FUNCTION camel_partition_table_get_type ##### -->
+<!-- ##### STRUCT CamelPartitionTable ##### -->
 <para>
 
 </para>
 
-@Returns: 
-
+@parent: 
+@priv: 
+@blocks: 
+@rootid: 
+@is_key: 
+@is_key_data: 
+@partition: 
 
 <!-- ##### FUNCTION camel_partition_table_new ##### -->
 <para>
@@ -136,13 +144,17 @@ CamelKeyTable
 
 
 
-<!-- ##### FUNCTION camel_key_table_get_type ##### -->
+<!-- ##### STRUCT CamelKeyTable ##### -->
 <para>
 
 </para>
 
-@Returns: 
-
+@parent: 
+@priv: 
+@blocks: 
+@rootid: 
+@root: 
+@root_block: 
 
 <!-- ##### FUNCTION camel_key_table_new ##### -->
 <para>

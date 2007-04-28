@@ -26,26 +26,25 @@
 #endif
 
 #include <errno.h>
-
-#include "camel/camel-exception.h"
-#include "camel/camel-stream-mem.h"
-#include "camel/camel-stream-filter.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-operation.h"
-#include "camel/camel-data-cache.h"
-#include "camel/camel-session.h"
-#include "camel/camel-file-utils.h"
-
-#include "camel-imapp-store.h"
-#include "camel-imapp-folder.h"
-#include "camel-imapp-summary.h"
-#include "camel-imapp-exception.h"
+#include <stdlib.h>
+#include <string.h>
 
 #include <libedataserver/md5-utils.h>
 #include <libedataserver/e-data-server-util.h>
 
-#include <stdlib.h>
-#include <string.h>
+#include "camel-data-cache.h"
+#include "camel-exception.h"
+#include "camel-file-utils.h"
+#include "camel-mime-message.h"
+#include "camel-operation.h"
+#include "camel-session.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-mem.h"
+
+#include "camel-imapp-exception.h"
+#include "camel-imapp-folder.h"
+#include "camel-imapp-store.h"
+#include "camel-imapp-summary.h"
 
 #define d(x)
 

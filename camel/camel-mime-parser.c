@@ -26,18 +26,16 @@
    There is almost always a reason something was done a certain way.
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <string.h>
-
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <glib.h>
 
-#include "libedataserver/e-memory.h"
+#include <libedataserver/e-memory.h>
 
 #include "camel-mime-filter.h"
 #include "camel-mime-parser.h"

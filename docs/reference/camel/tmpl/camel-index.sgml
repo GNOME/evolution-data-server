@@ -14,6 +14,9 @@ CamelIndex
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelIndex ##### -->
 <para>
 
@@ -38,6 +41,15 @@ CamelIndex
 @data: 
 @Returns: 
 
+
+<!-- ##### STRUCT CamelIndexCursor ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+@index: 
 
 <!-- ##### FUNCTION camel_index_cursor_new ##### -->
 <para>
@@ -77,14 +89,6 @@ CamelIndex
 @name: 
 @buffer: 
 @words: 
-
-<!-- ##### FUNCTION camel_index_name_get_type ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
 
 <!-- ##### FUNCTION camel_index_name_new ##### -->
 <para>

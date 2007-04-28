@@ -23,11 +23,6 @@
 #ifndef CAMEL_SASL_H
 #define CAMEL_SASL_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <glib.h>
 #include <camel/camel-object.h>
 #include <camel/camel-exception.h>
@@ -37,6 +32,8 @@ extern "C" {
 #define CAMEL_SASL(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_TYPE, CamelSasl))
 #define CAMEL_SASL_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_TYPE, CamelSaslClass))
 #define CAMEL_IS_SASL(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelSasl {
 	CamelObject parent_object;
@@ -71,8 +68,6 @@ CamelSasl  *camel_sasl_new              (const char *service_name, const char *m
 GList                *camel_sasl_authtype_list (gboolean include_plain);
 CamelServiceAuthType *camel_sasl_authtype      (const char *mechanism);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_SASL_H */

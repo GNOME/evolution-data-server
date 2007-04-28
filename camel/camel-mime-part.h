@@ -27,12 +27,6 @@
 #ifndef CAMEL_MIME_PART_H
 #define CAMEL_MIME_PART_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-medium.h>
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-mime-parser.h>
@@ -41,6 +35,8 @@ extern "C" {
 #define CAMEL_MIME_PART(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_PART_TYPE, CamelMimePart))
 #define CAMEL_MIME_PART_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_PART_TYPE, CamelMimePartClass))
 #define CAMEL_IS_MIME_PART(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_PART_TYPE))
+
+G_BEGIN_DECLS
 
 /* Do not change these values directly, you would regret it one day */
 struct _CamelMimePart {
@@ -107,9 +103,6 @@ int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMime
 void      	camel_mime_part_set_content 	       (CamelMimePart *mime_part,
 							const char *content, int length, const char *type);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MIME_PART_H */
-

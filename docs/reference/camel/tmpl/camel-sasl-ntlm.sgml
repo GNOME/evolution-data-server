@@ -14,11 +14,15 @@ CamelSaslNTLM
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslNTLM ##### -->
 <para>
 
 </para>
 
+@parent_object: 
 
 <!-- ##### VARIABLE camel_sasl_ntlm_authtype ##### -->
 <para>

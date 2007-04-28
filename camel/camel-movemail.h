@@ -26,19 +26,12 @@
 #ifndef CAMEL_MOVEMAIL_H
 #define CAMEL_MOVEMAIL_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-exception.h>
+
+G_BEGIN_DECLS
 
 int camel_movemail (const char *source, const char *dest, CamelException *ex);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MOVEMAIL_H */

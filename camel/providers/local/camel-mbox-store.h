@@ -22,17 +22,14 @@
 #ifndef CAMEL_MBOX_STORE_H
 #define CAMEL_MBOX_STORE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel-local-store.h"
 
 #define CAMEL_MBOX_STORE_TYPE     (camel_mbox_store_get_type ())
 #define CAMEL_MBOX_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MBOX_STORE_TYPE, CamelMboxStore))
 #define CAMEL_MBOX_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MBOX_STORE_TYPE, CamelMboxStoreClass))
 #define CAMEL_IS_MBOX_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MBOX_STORE_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelLocalStore parent_object;	
@@ -49,9 +46,7 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_mbox_store_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MBOX_STORE_H */
 

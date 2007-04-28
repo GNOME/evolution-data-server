@@ -27,6 +27,8 @@
 #define CAMEL_IMAPP_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapp_stream_get_type (), CamelIMAPPStreamClass)
 #define CAMEL_IS_IMAP_STREAM(obj)      CAMEL_CHECK_TYPE (obj, camel_imapp_stream_get_type ())
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIMAPPStreamClass CamelIMAPPStreamClass;
 typedef struct _CamelIMAPPStream CamelIMAPPStream;
 
@@ -86,5 +88,7 @@ int		 camel_imapp_stream_text		(CamelIMAPPStream *is, unsigned char **text);
 
 /* gets a 'number' */
 guint32		 camel_imapp_stream_number(CamelIMAPPStream *is);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_IMAPP_STREAM_H */

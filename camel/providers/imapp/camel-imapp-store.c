@@ -25,39 +25,40 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <errno.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
-#include "camel/camel-operation.h"
+#include <glib/gi18n-lib.h>
 
-#include "camel/camel-stream-buffer.h"
-#include "camel/camel-session.h"
-#include "camel/camel-exception.h"
-#include "camel/camel-url.h"
-#include "camel/camel-sasl.h"
 #include "camel/camel-data-cache.h"
-#include "camel/camel-tcp-stream.h"
+#include "camel/camel-exception.h"
+#include "camel/camel-net-utils.h"
+#include "camel/camel-operation.h"
+#include "camel/camel-sasl.h"
+#include "camel/camel-session.h"
+#include "camel/camel-stream-buffer.h"
 #include "camel/camel-tcp-stream-raw.h"
+#include "camel/camel-tcp-stream.h"
+#include "camel/camel-url.h"
+
 #ifdef HAVE_SSL
 #include "camel/camel-tcp-stream-ssl.h"
 #endif
-#include "camel/camel-i18n.h"
 
-#include "camel-imapp-store-summary.h"
-#include "camel-imapp-store.h"
-#include "camel-imapp-folder.h"
+#include "camel-imapp-driver.h"
 #include "camel-imapp-engine.h"
 #include "camel-imapp-exception.h"
+#include "camel-imapp-folder.h"
+#include "camel-imapp-store-summary.h"
+#include "camel-imapp-store.h"
 #include "camel-imapp-utils.h"
-#include "camel-imapp-driver.h"
-#include "camel-net-utils.h"
 
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143

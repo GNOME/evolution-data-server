@@ -23,23 +23,24 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <sys/types.h>
 #include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
+#include <glib/gi18n-lib.h>
+
+#include "camel-data-wrapper.h"
+#include "camel-exception.h"
 #include "camel-mh-folder.h"
 #include "camel-mh-store.h"
-#include "camel-stream-fs.h"
 #include "camel-mh-summary.h"
-#include "camel-data-wrapper.h"
 #include "camel-mime-message.h"
-#include "camel-exception.h"
-#include "camel-i18n.h"
+#include "camel-stream-fs.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

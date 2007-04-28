@@ -26,12 +26,6 @@
 #ifndef CAMEL_NNTP_FOLDER_H
 #define CAMEL_NNTP_FOLDER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include "camel/camel-folder.h"
 #include "camel/camel-disco-folder.h"
 
@@ -41,6 +35,8 @@ extern "C" {
 #define CAMEL_NNTP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolder))
 #define CAMEL_NNTP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolderClass))
 #define CAMEL_IS_NNTP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_NNTP_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelNNTPFolder {
 	CamelDiscoFolder parent;
@@ -68,8 +64,6 @@ CamelFolder *camel_nntp_folder_new (CamelStore *parent, const char *folder_name,
 
 void camel_nntp_folder_selected(CamelNNTPFolder *folder, char *line, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_FOLDER_H */

@@ -38,6 +38,8 @@
 
 #define CAMEL_IMAPP_MESSAGE_RECENT (1 << 8)
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIMAPPSummaryClass CamelIMAPPSummaryClass;
 typedef struct _CamelIMAPPSummary CamelIMAPPSummary;
 
@@ -62,5 +64,6 @@ struct _CamelIMAPPSummaryClass {
 CamelType               camel_imapp_summary_get_type     (void);
 CamelFolderSummary *camel_imapp_summary_new          (void);
 
-#endif /* ! _CAMEL_IMAPP_SUMMARY_H */
+G_END_DECLS
 
+#endif /* ! _CAMEL_IMAPP_SUMMARY_H */

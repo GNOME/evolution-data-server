@@ -25,18 +25,14 @@
 #ifndef CAMEL_DISCO_STORE_H
 #define CAMEL_DISCO_STORE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-store.h>
 
 #define CAMEL_DISCO_STORE_TYPE     (camel_disco_store_get_type ())
 #define CAMEL_DISCO_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DISCO_STORE_TYPE, CamelDiscoStore))
 #define CAMEL_DISCO_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DISCO_STORE_TYPE, CamelDiscoStoreClass))
 #define CAMEL_IS_DISCO_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DISCO_STORE_TYPE))
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_DISCO_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100,
@@ -118,8 +114,6 @@ gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *);
 /* Convenience functions */
 gboolean camel_disco_store_check_online (CamelDiscoStore *store, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DISCO_STORE_H */

@@ -14,11 +14,19 @@ CamelMimeFilterCharset
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterCharset ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
+@ic: 
+@from: 
+@to: 
 
 <!-- ##### FUNCTION camel_mime_filter_charset_new ##### -->
 <para>

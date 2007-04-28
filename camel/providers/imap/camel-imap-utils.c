@@ -26,22 +26,24 @@
 #endif
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include "camel-imap-utils.h"
-#include "camel-imap-summary.h"
-#include "camel-imap-store.h"
+#include <glib.h>
+#include <glib/gstdio.h>
+
 #include "camel-folder.h"
 #include "camel-string-utils.h"
 #include "camel-utf8.h"
 
-#include <glib/gstdio.h>
+#include "camel-imap-store.h"
+#include "camel-imap-summary.h"
+#include "camel-imap-utils.h"
 
 #define d(x)
 

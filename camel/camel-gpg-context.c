@@ -30,43 +30,42 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <signal.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <ctype.h>
-
-#include <glib.h>
-#include <glib/gstdio.h>
+#include <sys/types.h>
 
 #ifndef G_OS_WIN32
 #include <sys/ioctl.h>
-#include <sys/wait.h>
 #include <sys/poll.h>
+#include <sys/wait.h>
 #include <termios.h>
 #endif
 
-#include "libedataserver/e-iconv.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
-#include "camel-gpg-context.h"
-#include "camel-mime-filter-charset.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
-#include "camel-stream-fs.h"
-#include "camel-operation.h"
-#include "camel-mime-part.h"
-#include "camel-mime-filter-canon.h"
-#include "camel-multipart-signed.h"
-#include "camel-multipart-encrypted.h"
+#include <libedataserver/e-iconv.h>
+
 #include "camel-debug.h"
-#include "camel-i18n.h"
+#include "camel-gpg-context.h"
+#include "camel-mime-filter-canon.h"
+#include "camel-mime-filter-charset.h"
+#include "camel-mime-part.h"
+#include "camel-multipart-encrypted.h"
+#include "camel-multipart-signed.h"
+#include "camel-operation.h"
+#include "camel-stream-filter.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 
 #define d(x) 
 

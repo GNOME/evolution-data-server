@@ -13,6 +13,8 @@
 #define CAMEL_IMAPP_ENGINE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPP_ENGINE_TYPE, CamelIMAPPEngineClass))
 #define CAMEL_IS_IMAP_ENGINE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPP_ENGINE_TYPE))
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIMAPPEngine CamelIMAPPEngine;
 typedef struct _CamelIMAPPEngineClass CamelIMAPPEngineClass;
 
@@ -152,5 +154,7 @@ CamelIMAPPCommand *camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, u
 /* util functions */
 CamelIMAPPSelectResponse *camel_imapp_engine_select(CamelIMAPPEngine *imap, const char *name);
 void camel_imapp_engine_select_free(CamelIMAPPEngine *imap, CamelIMAPPSelectResponse *select);
+
+G_END_DECLS
 
 #endif

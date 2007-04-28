@@ -14,14 +14,10 @@ CamelImapSummary
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### MACRO CAMEL_IMAP_SERVER_FLAGS ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_IMAP_MESSAGE_RECENT ##### -->
 <para>
 
 </para>

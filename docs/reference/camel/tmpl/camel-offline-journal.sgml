@@ -14,11 +14,18 @@ CamelOfflineJournal
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelOfflineJournal ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@folder: 
+@filename: 
+@queue: 
 
 <!-- ##### STRUCT CamelOfflineJournalEntry ##### -->
 <para>

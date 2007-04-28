@@ -23,12 +23,6 @@
 #ifndef CAMEL_IMAP_WRAPPER_H
 #define CAMEL_IMAP_WRAPPER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-data-wrapper.h>
 #include "camel-imap-types.h"
 
@@ -36,6 +30,8 @@ extern "C" {
 #define CAMEL_IMAP_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapper))
 #define CAMEL_IMAP_WRAPPER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapperClass))
 #define CAMEL_IS_IMAP_WRAPPER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_WRAPPER_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct {
 	CamelDataWrapper parent_object;
@@ -63,8 +59,6 @@ CamelDataWrapper *camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 					  const char *part_spec,
 					  CamelMimePart *part);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_DATA_WRAPPER_H */

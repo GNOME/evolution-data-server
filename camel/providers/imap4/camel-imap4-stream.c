@@ -25,16 +25,15 @@
 #include <config.h>
 #endif
 
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <ctype.h>
 
-#include <camel/camel-debug.h>
+#include "camel-debug.h"
 
 #include "camel-imap4-specials.h"
-
 #include "camel-imap4-stream.h"
 
 #define d(x) (camel_debug ("imap4:stream") ? (x) : 0)

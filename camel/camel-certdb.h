@@ -24,11 +24,6 @@
 #ifndef __CAMEL_CERTDB_H__
 #define __CAMEL_CERTDB_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <stdio.h>
 #include <camel/camel-object.h>
 
@@ -36,6 +31,8 @@ extern "C" {
 #define CAMEL_CERTDB(obj)         (CAMEL_CHECK_CAST (obj, camel_certdb_get_type (), CamelCertDB))
 #define CAMEL_CERTDB_CLASS(klass) (CAMEL_CHECK_CLASS_CAST (klass, camel_certdb_get_type (), CamelCertDBClass))
 #define CAMEL_IS_CERTDB(obj)      (CAMEL_CHECK_TYPE (obj, camel_certdb_get_type ()))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
@@ -147,8 +144,6 @@ void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, int string, co
 CamelCertTrust camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert);
 void camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_CERTDB_H__ */

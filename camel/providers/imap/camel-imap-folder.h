@@ -27,12 +27,6 @@
 #ifndef CAMEL_IMAP_FOLDER_H
 #define CAMEL_IMAP_FOLDER_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include "camel-imap-types.h"
 #include <camel/camel-disco-folder.h>
 #include <camel/camel-folder-search.h>
@@ -41,6 +35,8 @@ extern "C" {
 #define CAMEL_IMAP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolder))
 #define CAMEL_IMAP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolderClass))
 #define CAMEL_IS_IMAP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_FOLDER_TYPE))
+
+G_BEGIN_DECLS
 
 struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
@@ -85,8 +81,6 @@ CamelStream *camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 /* Standard Camel function */
 CamelType camel_imap_folder_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAP_FOLDER_H */

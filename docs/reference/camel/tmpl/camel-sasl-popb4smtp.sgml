@@ -14,11 +14,15 @@ CamelSaslPOPB4SMTP
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelSaslPOPB4SMTP ##### -->
 <para>
 
 </para>
 
+@parent_object: 
 
 <!-- ##### VARIABLE camel_sasl_popb4smtp_authtype ##### -->
 <para>

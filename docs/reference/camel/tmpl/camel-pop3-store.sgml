@@ -14,6 +14,9 @@ CamelPOP3Store
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelPOP3Store ##### -->
 <para>
 
@@ -22,6 +25,7 @@ CamelPOP3Store
 @parent_object: 
 @engine: 
 @cache: 
+@delete_after: 
 
 <!-- ##### FUNCTION camel_pop3_store_expunge ##### -->
 <para>

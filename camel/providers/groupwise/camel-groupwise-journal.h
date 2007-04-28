@@ -31,17 +31,14 @@
 #include <camel/camel-offline-journal.h>
 #include <camel/camel-mime-message.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_GROUPWISE_JOURNAL            (camel_groupwise_journal_get_type ())
 #define CAMEL_GROUPWISE_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournal))
 #define CAMEL_GROUPWISE_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
 #define CAMEL_IS_GROUPWISE_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL))
 #define CAMEL_IS_GROUPWISE_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_GROUPWISE_JOURNAL))
 #define CAMEL_GROUPWISE_JOURNAL_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelGroupwiseJournal CamelGroupwiseJournal;
 typedef struct _CamelGroupwiseJournalClass CamelGroupwiseJournalClass;
@@ -85,8 +82,6 @@ void camel_groupwise_journal_append (CamelGroupwiseJournal *journal, CamelMimeMe
 void camel_groupwise_journal_transfer (CamelGroupwiseJournal *journal, CamelGroupwiseFolder *source_folder, CamelMimeMessage *message, 
 				       const CamelMessageInfo *mi, const char *orginal_uid, char **transferred_uid, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_GROUPWISE_JOURNAL_H__ */

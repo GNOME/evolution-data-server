@@ -27,26 +27,27 @@
 #include <config.h>
 #endif
 
+/* POSIX requires <sys/types.h> be included before <regex.h> */
+#include <sys/types.h>
+
+#include <ctype.h>
+#include <regex.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <regex.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
-#include "libedataserver/e-memory.h"
-
-#include "camel-folder-search.h"
-#include "camel-folder-thread.h"
+#include <libedataserver/e-memory.h>
 
 #include "camel-exception.h"
+#include "camel-folder-search.h"
+#include "camel-folder-thread.h"
 #include "camel-medium.h"
-#include "camel-multipart.h"
 #include "camel-mime-message.h"
-#include "camel-stream-mem.h"
+#include "camel-multipart.h"
 #include "camel-search-private.h"
-#include "camel-i18n.h"
+#include "camel-stream-mem.h"
 
 #define d(x) 
 #define r(x) 

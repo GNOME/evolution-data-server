@@ -26,12 +26,14 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-exception.h>
 
-struct _CamelVeeFolder;
-struct _CamelFolder;
-
 #define CAMEL_VEE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_vee_summary_get_type (), CamelVeeSummary)
 #define CAMEL_VEE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vee_summary_get_type (), CamelVeeSummaryClass)
 #define CAMEL_IS_VEE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_vee_summary_get_type ())
+
+G_BEGIN_DECLS
+
+struct _CamelVeeFolder;
+struct _CamelFolder;
 
 typedef struct _CamelVeeSummary CamelVeeSummary;
 typedef struct _CamelVeeSummaryClass CamelVeeSummaryClass;
@@ -57,6 +59,8 @@ CamelType               camel_vee_summary_get_type     (void);
 CamelFolderSummary *camel_vee_summary_new(struct _CamelFolder *parent);
 
 CamelVeeMessageInfo * camel_vee_summary_add(CamelVeeSummary *s, CamelMessageInfo *info, const char hash[8]);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_VEE_SUMMARY_H */
 

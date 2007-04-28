@@ -27,17 +27,14 @@
 #ifndef CAMEL_MULTIPART_SIGNED_H
 #define CAMEL_MULTIPART_SIGNED_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-multipart.h>
 
 #define CAMEL_MULTIPART_SIGNED_TYPE     (camel_multipart_signed_get_type ())
 #define CAMEL_MULTIPART_SIGNED(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MULTIPART_SIGNED_TYPE, CamelMultipartSigned))
 #define CAMEL_MULTIPART_SIGNED_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MULTIPART_SIGNED_TYPE, CamelMultipartSignedClass))
 #define CAMEL_IS_MULTIPART_SIGNED(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MULTIPART_SIGNED_TYPE))
+
+G_BEGIN_DECLS
 
 /*
 enum {
@@ -92,10 +89,6 @@ CamelMultipartSigned *camel_multipart_signed_new           (void);
 
 CamelStream *camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_MULTIPART_SIGNED_H */
-
-

@@ -23,28 +23,31 @@
 #include <config.h>
 #endif
 
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <dirent.h>
+#include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-data-server-util.h>
-#include "camel-spool-store.h"
-#include "camel-spool-folder.h"
+
 #include "camel-exception.h"
-#include "camel-url.h"
-#include "camel-private.h"
-#include "camel-i18n.h"
-#include "camel-session.h"
 #include "camel-file-utils.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-url.h"
+
+#include "camel-spool-folder.h"
+#include "camel-spool-store.h"
 
 #define d(x)
 

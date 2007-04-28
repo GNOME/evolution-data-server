@@ -25,10 +25,7 @@
 
 #include <camel/camel-exception.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* IMAP4 flag merging */
 typedef struct {
@@ -100,8 +97,6 @@ void camel_imap4_status_free (camel_imap4_status_t *status);
 int camel_imap4_untagged_status (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
 				 guint32 index, struct _camel_imap4_token_t *token, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_UTILS_H__ */

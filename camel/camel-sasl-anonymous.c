@@ -27,7 +27,9 @@
 
 #include <string.h>
 
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-internet-address.h"
 #include "camel-sasl-anonymous.h"
 

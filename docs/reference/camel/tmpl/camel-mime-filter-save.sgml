@@ -14,11 +14,16 @@ CamelMimeFilterSave
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterSave ##### -->
 <para>
 
 </para>
 
+@parent: 
+@stream: 
 
 <!-- ##### FUNCTION camel_mime_filter_save_new ##### -->
 <para>

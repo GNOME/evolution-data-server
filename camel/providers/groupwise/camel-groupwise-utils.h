@@ -49,6 +49,8 @@
 #define DRAFT	  ""
 #define PERSONAL  "Cabinet"
 
+G_BEGIN_DECLS
+
 /*for syncing flags back to server*/
 typedef struct {
 	guint32 changed;
@@ -77,4 +79,7 @@ EGwItem *camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMe
 void do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new);
 char *gw_concat ( const char *prefix, const char *suffix);
 void strip_lt_gt (char **string, int s_offset, int e_offset);
+
+G_END_DECLS
+
 #endif

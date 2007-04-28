@@ -14,11 +14,34 @@ CamelFolderSummary
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelFolderSummary ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
+@version: 
+@flags: 
+@nextuid: 
+@time: 
+@saved_count: 
+@unread_count: 
+@deleted_count: 
+@junk_count: 
+@message_info_size: 
+@content_info_size: 
+@message_info_chunks: 
+@content_info_chunks: 
+@summary_path: 
+@build_content: 
+@messages: 
+@messages_uid: 
+@folder: 
+@meta_summary: 
 
 <!-- ##### STRUCT CamelMessageInfo ##### -->
 <para>
@@ -52,6 +75,17 @@ CamelFolderSummary
 @user_tags: 
 @content: 
 
+<!-- ##### STRUCT CamelFolderMetaSummary ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@uid_len: 
+@msg_expunged: 
+@path: 
+
 <!-- ##### STRUCT CamelMessageContentInfo ##### -->
 <para>
 
@@ -80,6 +114,8 @@ CamelFolderSummary
 @CAMEL_MESSAGE_ANSWERED_ALL: 
 @CAMEL_MESSAGE_JUNK: 
 @CAMEL_MESSAGE_SECURE: 
+@CAMEL_MESSAGE_USER_NOT_DELETABLE: 
+@CAMEL_MESSAGE_HIDDEN: 
 @CAMEL_MESSAGE_FOLDER_FLAGGED: 
 @CAMEL_MESSAGE_JUNK_LEARN: 
 @CAMEL_MESSAGE_USER: 
@@ -778,5 +814,22 @@ CamelFolderSummary
 @id: 
 @val: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_content_info_dump ##### -->
+<para>
+
+</para>
+
+@ci: 
+@depth: 
+
+
+<!-- ##### FUNCTION camel_message_info_dump ##### -->
+<para>
+
+</para>
+
+@mi: 
 
 

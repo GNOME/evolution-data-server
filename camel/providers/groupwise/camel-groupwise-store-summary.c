@@ -26,22 +26,20 @@
 #include <config.h>
 #endif
 
-#include <unistd.h>
 #include <ctype.h>
-#include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#include "camel-groupwise-store-summary.h"
+#include <libedataserver/e-memory.h>
+#include <libedataserver/md5-utils.h>
 
 #include "camel-file-utils.h"
-
-#include "libedataserver/md5-utils.h"
-#include "libedataserver/e-memory.h"
-
 #include "camel-private.h"
 #include "camel-utf8.h"
 
+#include "camel-groupwise-store-summary.h"
 
 #define CAMEL_GW_STORE_SUMMARY_VERSION (0)
 

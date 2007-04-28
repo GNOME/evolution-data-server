@@ -26,12 +26,6 @@
 #ifndef CAMEL_STREAM_VFS_H
 #define CAMEL_STREAM_VFS_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* for open flags */
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,6 +38,8 @@ extern "C" {
 #define CAMEL_STREAM_VFS(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_VFS_TYPE, CamelStreamVFS))
 #define CAMEL_STREAM_VFS_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_VFS_TYPE, CamelStreamVFSClass))
 #define CAMEL_IS_STREAM_VFS(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_VFS_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelStreamVFS CamelStreamVFS;
 
@@ -64,9 +60,6 @@ CamelType camel_stream_vfs_get_type (void);
 /* public methods */
 CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, int flags, mode_t mode);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_STREAM_VFS_H */

@@ -28,13 +28,9 @@
 #ifndef CAMEL_EXCEPTION_H
 #define CAMEL_EXCEPTION_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-types.h>
+
+G_BEGIN_DECLS
 
 typedef enum {
 #include "camel-exception-list.def"
@@ -76,9 +72,7 @@ const char *             camel_exception_get_description (CamelException *ex);
 
 #define camel_exception_is_set(ex) (camel_exception_get_id (ex) != CAMEL_EXCEPTION_NONE)
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_EXCEPTION_H */
 

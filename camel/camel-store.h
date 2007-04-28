@@ -27,16 +27,13 @@
 #ifndef CAMEL_STORE_H
 #define CAMEL_STORE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* for mode_t */
 #include <sys/types.h>
 
 #include <camel/camel-object.h>
 #include <camel/camel-service.h>
+
+G_BEGIN_DECLS
 
 enum {
 	CAMEL_STORE_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
@@ -270,8 +267,6 @@ gboolean camel_isubscribe_subscribed(CamelStore *store, const char *name);
 void camel_isubscribe_subscribe(CamelStore *store, const char *folder_name, CamelException *ex);
 void camel_isubscribe_unsubscribe(CamelStore *store, const char *folder_name, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_STORE_H */

@@ -28,22 +28,24 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
+
+#include <glib/gi18n-lib.h>
+
+#include "camel-debug.h"
+#include "camel-exception.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-utf8.h"
 
 #include "camel-imap-command.h"
-#include "camel-imap-utils.h"
 #include "camel-imap-folder.h"
-#include "camel-imap-store.h"
 #include "camel-imap-store-summary.h"
-#include <camel/camel-exception.h>
-#include <camel/camel-private.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-session.h>
-#include <camel/camel-i18n.h>
-#include <camel/camel-debug.h>
+#include "camel-imap-store.h"
+#include "camel-imap-utils.h"
 
 extern int camel_verbose_debug;
 

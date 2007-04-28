@@ -30,18 +30,18 @@
 
 #include <string.h>
 
+#include <libedataserver/md5-utils.h>	/* md5 hash building */
+
+#include "camel-mime-utils.h"	/* base64 encoding */
+#include "camel-search-private.h"
+#include "camel-seekable-stream.h"
+
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"
-#include "camel-imap-store.h"
 #include "camel-imap-search.h"
-#include "camel-imap-utils.h"
+#include "camel-imap-store.h"
 #include "camel-imap-summary.h"
-
-#include "libedataserver/md5-utils.h"	/* md5 hash building */
-#include "camel-mime-utils.h"	/* base64 encoding */
-
-#include "camel-seekable-stream.h"
-#include "camel-search-private.h"
+#include "camel-imap-utils.h"
 
 #define d(x)
 

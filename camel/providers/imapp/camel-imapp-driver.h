@@ -11,6 +11,8 @@
 #define CAMEL_IMAPP_DRIVER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPP_DRIVER_TYPE, CamelIMAPPDriverClass))
 #define CAMEL_IS_IMAP_DRIVER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPP_DRIVER_TYPE))
 
+G_BEGIN_DECLS
+
 typedef struct _CamelIMAPPDriver CamelIMAPPDriver;
 typedef struct _CamelIMAPPDriverClass CamelIMAPPDriverClass;
 
@@ -96,5 +98,7 @@ GPtrArray *		camel_imapp_driver_list(CamelIMAPPDriver *id, const char *name, gui
 
 struct _CamelStream *camel_imapp_driver_get(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const char *uid);
 void camel_imapp_driver_append(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, struct _CamelDataWrapper *);
+
+G_END_DECLS
 
 #endif

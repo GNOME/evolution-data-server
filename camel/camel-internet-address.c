@@ -21,8 +21,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "camel-mime-utils.h"
 #include "camel-internet-address.h"
+#include "camel-mime-utils.h"
 
 #define d(x)
 

@@ -26,16 +26,18 @@
 
 #include <string.h>
 
-#include "libedataserver/md5-utils.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
+#include <libedataserver/md5-utils.h>
 
 #if defined (DOEPOOLV) || defined (DOESTRV)
-#include "libedataserver/e-memory.h"
+#include <libedataserver/e-memory.h>
 #endif
 
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-folder-search.h"
-#include "camel-i18n.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
 #include "camel-session.h"
@@ -43,7 +45,6 @@
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"	/* for open flags */
 #include "camel-vee-summary.h"
-
 
 #define d(x) 
 #define dd(x) (camel_debug("vfolder")?(x):0)

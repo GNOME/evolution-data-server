@@ -14,11 +14,20 @@ CamelMimeFilterYenc
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterYenc ##### -->
 <para>
 
 </para>
 
+@parent_object: 
+@direction: 
+@part: 
+@state: 
+@pcrc: 
+@crc: 
 
 <!-- ##### ENUM CamelMimeFilterYencDirection ##### -->
 <para>

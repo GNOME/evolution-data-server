@@ -18,12 +18,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/** WARNING
- **
- ** DO NOT USE THIS CODE OUTSIDE OF CAMEL
- **
- ** IT IS SUBJECT TO CHANGE OR MAY VANISH AT ANY TIME
- **/
+/* WARNING
+ *
+ * DO NOT USE THIS CODE OUTSIDE OF CAMEL
+ *
+ * IT IS SUBJECT TO CHANGE OR MAY VANISH AT ANY TIME
+ */
 
 #ifndef _CAMEL_HTML_PARSER_H
 #define _CAMEL_HTML_PARSER_H
@@ -33,6 +33,8 @@
 #define CAMEL_HTML_PARSER(obj)         CAMEL_CHECK_CAST (obj, camel_html_parser_get_type (), CamelHTMLParser)
 #define CAMEL_HTML_PARSER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_html_parser_get_type (), CamelHTMLParserClass)
 #define CAMEL_IS_HTML_PARSER(obj)      CAMEL_CHECK_TYPE (obj, camel_html_parser_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelHTMLParserClass CamelHTMLParserClass;
 typedef struct _CamelHTMLParser CamelHTMLParser;
@@ -74,5 +76,7 @@ const char *camel_html_parser_left(CamelHTMLParser *hp, int *lenp);
 const char *camel_html_parser_tag(CamelHTMLParser *hp);
 const char *camel_html_parser_attr(CamelHTMLParser *hp, const char *name);
 const GPtrArray *camel_html_parser_attr_list(CamelHTMLParser *hp, const GPtrArray **values);
+
+G_END_DECLS
 
 #endif /* ! _CAMEL_HTML_PARSER_H */

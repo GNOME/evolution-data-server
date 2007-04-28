@@ -20,18 +20,21 @@
  * USA
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
+#include <errno.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
-#include <pthread.h>
-#include <errno.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>
 
-#include "libedataserver/e-memory.h"
-#include "libedataserver/e-msgport.h"
-#include "libedataserver/e-data-server-util.h"
+#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-memory.h>
+#include <libedataserver/e-msgport.h>
 
 #include "camel-file-utils.h"
 #include "camel-object.h"

@@ -25,12 +25,6 @@
 #ifndef CAMEL_GROUPWISE_STORE_H
 #define CAMEL_GROUPWISE_STORE_H 1
 
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-store.h>
 #include <camel/camel-offline-store.h>
 #include "camel-groupwise-store-summary.h"
@@ -44,6 +38,8 @@ extern "C" {
 #define CAMEL_IS_GROUPWISE_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_STORE_TYPE))
 
 #define GW_PARAM_FILTER_INBOX		(1 << 0)
+
+G_BEGIN_DECLS
 
 typedef struct _CamelGroupwiseStore CamelGroupwiseStore;
 typedef struct _CamelGroupwiseStoreClass CamelGroupwiseStoreClass;
@@ -84,8 +80,6 @@ CamelFolderInfo * create_junk_folder (CamelStore *store);
 gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex);
 void gw_store_reload_folder (CamelGroupwiseStore *store, CamelFolder *folder, guint32 flags, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_GROUPWISE_STORE_H */

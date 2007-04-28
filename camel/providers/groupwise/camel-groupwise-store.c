@@ -26,29 +26,29 @@
 
 #include <config.h>
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-session.h"
-#include "camel/camel-debug.h"
-#include "camel/camel-i18n.h"
-#include "camel/camel-types.h"
-#include "camel/camel-folder.h" 
-#include "camel/camel-private.h"
-#include "camel/camel-net-utils.h"
+#include "camel-debug.h"
+#include "camel-folder.h" 
+#include "camel-net-utils.h"
+#include "camel-private.h"
+#include "camel-session.h"
+#include "camel-types.h"
 
+#include "camel-groupwise-folder.h"
+#include "camel-groupwise-store-summary.h"
 #include "camel-groupwise-store.h"
 #include "camel-groupwise-summary.h"
-#include "camel-groupwise-store-summary.h"
-#include "camel-groupwise-folder.h"
 #include "camel-groupwise-utils.h"
 
 #define d(x) 

@@ -24,18 +24,13 @@
 #ifndef _CAMEL_LOCK_CLIENT_H
 #define _CAMEL_LOCK_CLIENT_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel-exception.h>
+
+G_BEGIN_DECLS
 
 int camel_lock_helper_lock(const char *path , CamelException *ex);
 int camel_lock_helper_unlock(int lockid);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* !_CAMEL_LOCK_HELPER_H */

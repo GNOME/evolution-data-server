@@ -27,14 +27,11 @@
 #include <camel/camel-store-summary.h>
 #include "camel-imap4-engine.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_IMAP4_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imap4_store_summary_get_type (), CamelIMAP4StoreSummary)
 #define CAMEL_IMAP4_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imap4_store_summary_get_type (), CamelIMAP4StoreSummaryClass)
 #define CAMEL_IS_IMAP4_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_imap4_store_summary_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4StoreSummary      CamelIMAP4StoreSummary;
 typedef struct _CamelIMAP4StoreSummaryClass CamelIMAP4StoreSummaryClass;
@@ -85,8 +82,6 @@ void camel_imap4_store_summary_unnote_info (CamelIMAP4StoreSummary *s, struct _C
 
 struct _CamelFolderInfo *camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char *top, guint32 flags);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_STORE_SUMMARY_H__ */

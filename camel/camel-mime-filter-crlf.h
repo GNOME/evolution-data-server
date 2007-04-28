@@ -24,17 +24,14 @@
 #ifndef _CAMEL_MIME_FILTER_CRLF_H
 #define _CAMEL_MIME_FILTER_CRLF_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_CRLF_TYPE         (camel_mime_filter_crlf_get_type ())
 #define CAMEL_MIME_FILTER_CRLF(obj)         CAMEL_CHECK_CAST (obj, CAMEL_MIME_FILTER_CRLF_TYPE, CamelMimeFilterCRLF)
 #define CAMEL_MIME_FILTER_CRLF_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, CAMEL_MIME_FILTER_CRLF_TYPE, CamelMimeFilterCRLFClass)
 #define CAMEL_IS_MIME_FILTER_CRLF(obj)      CAMEL_CHECK_TYPE (obj, CAMEL_MIME_FILTER_CRLF_TYPE)
+
+G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterCRLFClass CamelMimeFilterCRLFClass;
 
@@ -66,8 +63,6 @@ CamelType camel_mime_filter_crlf_get_type (void);
 
 CamelMimeFilter *camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction, CamelMimeFilterCRLFMode mode);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* ! _CAMEL_MIME_FILTER_CRLF_H */

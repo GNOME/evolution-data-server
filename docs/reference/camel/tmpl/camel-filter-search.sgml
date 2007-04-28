@@ -14,6 +14,9 @@ camel-filter-search
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### USER_FUNCTION CamelFilterSearchGetMessageFunc ##### -->
 <para>
 

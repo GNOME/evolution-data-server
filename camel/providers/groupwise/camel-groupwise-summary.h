@@ -30,6 +30,7 @@
 #define CAMEL_GROUPWISE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_groupwise_summary_get_type (), CamelGroupwiseSummaryClass)
 #define CAMEL_IS_GROUPWISE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_groupwise_summary_get_type ())
 
+G_BEGIN_DECLS
 
 typedef struct _CamelGroupwiseSummary CamelGroupwiseSummary ;
 typedef struct _CamelGroupwiseSummaryClass CamelGroupwiseSummaryClass ;
@@ -76,4 +77,7 @@ void camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid,
 
 void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const char *uid, const CamelMessageInfo *info) ;
 void groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache);
+
+G_END_DECLS
+
 #endif /*_CAMEL_GW_SUMMARY_H*/

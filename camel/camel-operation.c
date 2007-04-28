@@ -24,17 +24,18 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
-
-#include <stdio.h>
-#include <sys/time.h>
-#include <unistd.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/time.h>
+
 #ifdef HAVE_NSS
 #include <nspr.h>
 #endif
 
-#include "libedataserver/e-msgport.h"
+#include <glib.h>
+
+#include <libedataserver/e-msgport.h>
 
 #include "camel-operation.h"
 

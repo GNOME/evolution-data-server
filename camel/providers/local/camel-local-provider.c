@@ -26,14 +26,15 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-provider.h"
 #include "camel-session.h"
 #include "camel-url.h"
-#include "camel-i18n.h"
 
-#include "camel-mh-store.h"
-#include "camel-mbox-store.h"
 #include "camel-maildir-store.h"
+#include "camel-mbox-store.h"
+#include "camel-mh-store.h"
 #include "camel-spool-store.h"
 
 #define d(x)

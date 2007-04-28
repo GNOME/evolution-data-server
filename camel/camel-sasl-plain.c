@@ -26,7 +26,9 @@
 
 #include <string.h>
 
-#include "camel-i18n.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-sasl-plain.h"
 #include "camel-service.h"
 

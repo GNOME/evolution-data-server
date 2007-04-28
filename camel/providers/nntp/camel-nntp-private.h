@@ -23,11 +23,6 @@
 #ifndef CAMEL_NNTP_PRIVATE_H
 #define CAMEL_NNTP_PRIVATE_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
 
@@ -35,7 +30,9 @@ extern "C" {
 #include <config.h>
 #endif
 
-#include "libedataserver/e-msgport.h"
+#include <libedataserver/e-msgport.h>
+
+G_BEGIN_DECLS
 
 struct _CamelNNTPStorePrivate {
 	int dummy;
@@ -56,9 +53,6 @@ struct _CamelNNTPFolderPrivate {
 #define CAMEL_NNTP_FOLDER_LOCK(f, l)
 #define CAMEL_NNTP_FOLDER_UNLOCK(f, l)
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_NNTP_PRIVATE_H */
-

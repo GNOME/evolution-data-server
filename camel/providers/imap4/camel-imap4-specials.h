@@ -21,10 +21,7 @@
 #ifndef __CAMEL_IMAP4_SPECIALS_H__
 #define __CAMEL_IMAP4_SPECIALS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 enum {
 	IS_ASPECIAL   = (1 << 0),
@@ -46,8 +43,6 @@ extern unsigned char camel_imap4_specials[256];
 
 void camel_imap4_specials_init (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_SPECIALS_H__ */

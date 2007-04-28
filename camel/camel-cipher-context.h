@@ -27,20 +27,17 @@
 #include <camel/camel-exception.h>
 
 /* FIXME: camelise */
-#include "libedataserver/e-msgport.h"
-
-struct _CamelStream;
-struct _CamelMimePart;
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+#include <libedataserver/e-msgport.h>
 
 #define CAMEL_CIPHER_CONTEXT_TYPE     (camel_cipher_context_get_type ())
 #define CAMEL_CIPHER_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContext))
 #define CAMEL_CIPHER_CONTEXT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContextClass))
 #define CAMEL_IS_CIPHER_CONTEXT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_CIPHER_CONTEXT_TYPE))
+
+G_BEGIN_DECLS
+
+struct _CamelStream;
+struct _CamelMimePart;
 
 typedef struct _CamelCipherValidity CamelCipherValidity;
 typedef struct _CamelCipherCertInfo CamelCipherCertInfo;
@@ -184,8 +181,6 @@ void                 camel_cipher_validity_free (CamelCipherValidity *validity);
 /* utility functions */
 int		     camel_cipher_canonical_to_stream(CamelMimePart *part, guint32 flags, CamelStream *ostream);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_CIPHER_CONTEXT_H */

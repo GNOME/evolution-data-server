@@ -24,18 +24,19 @@
 
 #include <config.h>
 
-#include <sys/types.h>
+#include <ctype.h>
 #include <errno.h>
 #include <string.h>
-#include <ctype.h>
+#include <sys/types.h>
 
-#include "camel-imap-message-cache.h"
+#include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
+
 #include "camel-data-wrapper.h"
 #include "camel-exception.h"
 #include "camel-stream-fs.h"
-#include "camel-i18n.h"
 
-#include <glib/gstdio.h>
+#include "camel-imap-message-cache.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0

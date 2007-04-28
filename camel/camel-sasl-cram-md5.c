@@ -27,9 +27,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libedataserver/md5-utils.h"
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 
-#include "camel-i18n.h"
+#include <libedataserver/md5-utils.h>
+
 #include "camel-mime-utils.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"

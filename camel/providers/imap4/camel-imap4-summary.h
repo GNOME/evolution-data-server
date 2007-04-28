@@ -26,17 +26,14 @@
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-summary.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #define CAMEL_TYPE_IMAP4_SUMMARY            (camel_imap4_summary_get_type ())
 #define CAMEL_IMAP4_SUMMARY(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_SUMMARY, CamelIMAP4Summary))
 #define CAMEL_IMAP4_SUMMARY_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP4_SUMMARY, CamelIMAP4SummaryClass))
 #define CAMEL_IS_IMAP4_SUMMARY(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP4_SUMMARY))
 #define CAMEL_IS_IMAP4_SUMMARY_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP4_SUMMARY))
 #define CAMEL_IMAP4_SUMMARY_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelIMAP4SummaryClass))
+
+G_BEGIN_DECLS
 
 typedef struct _CamelIMAP4MessageInfo CamelIMAP4MessageInfo;
 typedef struct _CamelIMAP4MessageContentInfo CamelIMAP4MessageContentInfo;
@@ -97,8 +94,6 @@ void camel_imap4_summary_expunge (CamelFolderSummary *summary, int seqid);
 
 int camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *ex);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __CAMEL_IMAP4_SUMMARY_H__ */
