@@ -104,10 +104,15 @@ libcamel_providerinclude_HEADERS =		\
 	camel-folder.h				\
 	camel-gpg-context.h			\
 	camel-http-stream.h			\
+	camel-html-parser.h			\
+	camel-iconv.h				\
+	camel-lock-helper.h			\
 	camel-movemail.h			\
+	camel-news-address.h			\
 	camel-offline-folder.h			\
 	camel-offline-journal.h			\
 	camel-offline-store.h			\
+	camel-process.h				\
 	camel-provider.h			\
 	camel-sasl-anonymous.h			\
 	camel-sasl-cram-md5.h			\
@@ -344,8 +349,7 @@ install-exec-hook:
 noinst_HEADERS =				\
 	broken-date-parser.h			\
 	camel-charset-map-private.h		\
-	camel-private.h				\
-	camel-html-parser.h
+	camel-private.h				
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
