@@ -34,6 +34,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "camel-operation.h"
 
@@ -489,7 +490,21 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 	} else if (strcmp(service->url->authmech, "+APOP") == 0 && store->engine->apop) {
 		char *secret, md5asc[33], *d;
 		unsigned char md5sum[16], *s;
-		
+
+		d = store->engine->apop;
+
+		while (*d != '\0') {
+			if (!isascii((int)*d)) {
+
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+						_("Unable to connect to POP server %s: "),
+						CAMEL_SERVICE (store)->url->host);
+
+				return FALSE;
+			}
+			d++;
+		}
+
 		secret = g_alloca(strlen(store->engine->apop)+strlen(service->url->passwd)+1);
 		sprintf(secret, "%s%s",  store->engine->apop, service->url->passwd);
 		md5_get_digest(secret, strlen (secret), md5sum);
