@@ -497,7 +497,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 			if (!isascii((int)*d)) {
 
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-						_("Unable to connect to POP server %s: "),
+						_("Could not connect to POP server %s"),
 						CAMEL_SERVICE (store)->url->host);
 
 				return FALSE;
