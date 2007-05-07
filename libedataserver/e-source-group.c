@@ -229,6 +229,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 
 		if (new_source == NULL) {
 			g_object_unref (new);
+			new = NULL;
 			goto done;
 		}
 		e_source_group_add_source (new, new_source, -1);

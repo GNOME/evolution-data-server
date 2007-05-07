@@ -1,5 +1,10 @@
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
+	* libedataserver/e-source-group.c (e_source_group_new_from_xmldoc):
+	Nullify 'new' after dropping its reference, so that we return NULL.
+
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
 	* docs/reference/camel/Makefile.am:
 	Remove reference to nonexistent libutil.la.
 
