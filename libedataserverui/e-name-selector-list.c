@@ -407,17 +407,17 @@ enl_tree_button_press_event (GtkWidget *widget,
 	is_list = e_contact_get (contact, E_CONTACT_IS_LIST) ? TRUE : FALSE;
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
-		GList *iter;
-		int len = g_list_length ((GList *)dests);
+		GList *iters;
+		int length = g_list_length ((GList *)dests);
 
-		for (iter = (GList *)dests; iter; iter = iter->next) {
-			EDestination *dest = (EDestination *) iter->data;
+		for (iters = (GList *)dests; iters; iters = iters->next) {
+			EDestination *dest = (EDestination *) iters->data;
 			const char *email = e_destination_get_email (dest);
 			
 			if (!email || *email == '\0')
 				continue;	
 
-			if (len > 1) {
+			if (length > 1) {
 				menu_item = gtk_check_menu_item_new_with_label (email);
 				g_signal_connect (menu_item, "toggled", G_CALLBACK (destination_set_list), dest);				
 			} else {
@@ -428,7 +428,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 			show_menu = TRUE;
 
-			if ( len > 1 ) {
+			if (length > 1) {
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored(dest));
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_list),
 							  dest);	

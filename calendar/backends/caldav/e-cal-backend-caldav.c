@@ -1729,15 +1729,15 @@ caldav_remove_object (ECalBackendSync  *backend,
 	}
 
 	if (online) {
-		CalDAVObject object;
+		CalDAVObject caldav_object;
 	
-		object.href  = g_strdup (e_cal_component_get_href (cache_comp));
-		object.etag  = g_strdup (e_cal_component_get_etag (cache_comp));
-		object.cdata = NULL;
+		caldav_object.href  = g_strdup (e_cal_component_get_href (cache_comp));
+		caldav_object.etag  = g_strdup (e_cal_component_get_etag (cache_comp));
+		caldav_object.cdata = NULL;
 
-		status = caldav_server_delete_object (cbdav, &object);
+		status = caldav_server_delete_object (cbdav, &caldav_object);
 
-		caldav_object_free (&object, FALSE);
+		caldav_object_free (&caldav_object, FALSE);
 		
 	} else {
 		/* mark component as out of synch */
@@ -1824,6 +1824,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 	ECalBackend              *backend;
 	ECalComponent            *ccomp;
 	struct icaltimetype       now;
+	ECalComponentId          *id;
 	const char               *uid;	
 	const char               *rid;
 	char                     *ostr;
@@ -1953,9 +1954,11 @@ process_object (ECalBackendCalDAV   *cbdav,
 			e_cal_backend_cache_remove_component (priv->cache,
 							      uid,
 							      rid);
+
+			id = e_cal_component_get_id (ccomp);
 			
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend),
-							     uid,
+							     id,
 							     oostr,
 							     ostr);
 			break;

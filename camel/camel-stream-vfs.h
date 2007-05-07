@@ -59,6 +59,7 @@ CamelType camel_stream_vfs_get_type (void);
 
 /* public methods */
 CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, int flags, mode_t mode);
+CamelStream * camel_stream_vfs_new_with_handle         (GnomeVFSHandle *handle);
 
 G_END_DECLS
 

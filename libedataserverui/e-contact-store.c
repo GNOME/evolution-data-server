@@ -43,7 +43,7 @@ static void         e_contact_store_init            (EContactStore      *contact
 static void         e_contact_store_class_init      (EContactStoreClass *class);
 static void         e_contact_store_tree_model_init (GtkTreeModelIface  *iface);
 static void         e_contact_store_finalize        (GObject            *object);
-static guint        e_contact_store_get_flags       (GtkTreeModel       *tree_model);
+static GtkTreeModelFlags e_contact_store_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_contact_store_get_n_columns   (GtkTreeModel       *tree_model);
 static GType        e_contact_store_get_column_type (GtkTreeModel       *tree_model,
 						     gint                index);
@@ -1008,7 +1008,7 @@ e_contact_store_peek_query (EContactStore *contact_store)
  * GtkTreeModel API *
  * ---------------- */
 
-static guint
+static GtkTreeModelFlags
 e_contact_store_get_flags (GtkTreeModel *tree_model)
 {
 	g_return_val_if_fail (E_IS_CONTACT_STORE (tree_model), 0);

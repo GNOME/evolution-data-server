@@ -26,7 +26,7 @@ GMainContext *_ebook_context;
 static GObjectClass *parent_class;
 
 #ifdef __PRETTY_FUNCTION__
-#define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
+#define e_return_error_if_fail(expr,error_code,retval)	G_STMT_START{	\
      if G_LIKELY(expr) { } else						\
        {								\
 	 g_log (G_LOG_DOMAIN,						\
@@ -42,10 +42,10 @@ static GObjectClass *parent_class;
 		__LINE__,						\
 		__PRETTY_FUNCTION__,					\
 		#expr);							\
-	 return FALSE;							\
+	 return (retval);						\
        };				}G_STMT_END
 #else
-#define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
+#define e_return_error_if_fail(expr,error_code,retval)	G_STMT_START{	\
      if G_LIKELY(expr) { } else						\
        {								\
 	 g_log (G_LOG_DOMAIN,						\
@@ -59,7 +59,7 @@ static GObjectClass *parent_class;
 		__FILE__,						\
 		__LINE__,						\
 		#expr);							\
-	 return FALSE;							\
+	 return (retval);						\
        };				}G_STMT_END
 #endif
 
@@ -349,8 +349,8 @@ e_book_add_contact (EBook           *book,
 {
 	d(printf ("e_book_add_contact\n"));
 
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_add_contact (TRUE,
 			       book, contact, error,
@@ -565,8 +565,8 @@ e_book_commit_contact (EBook           *book,
 		       EContact        *contact,
 		       GError         **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_commit_contact (TRUE,
 				  book, contact, error,
@@ -801,8 +801,8 @@ e_book_get_required_fields  (EBook            *book,
 			      GList           **fields,
 			      GError          **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_required_fields (TRUE,
 					book, fields, error,
@@ -850,8 +850,8 @@ e_book_get_supported_fields  (EBook            *book,
 			      GList           **fields,
 			      GError          **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (fields,                   E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_supported_fields (TRUE,
 					book, fields, error,
@@ -1117,8 +1117,8 @@ e_book_get_supported_auth_methods (EBook            *book,
 				   GList           **auth_methods,
 				   GError          **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (auth_methods,             E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (auth_methods,             E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_supported_auth_methods (TRUE,
 					      book, auth_methods, error,
@@ -1314,10 +1314,10 @@ e_book_authenticate_user (EBook         *book,
 			  const char    *auth_method,
 			  GError       **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (user,                     E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (passwd,                   E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (auth_method,              E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (user,                     E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (passwd,                   E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (auth_method,              E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_authenticate_user (TRUE,
 				     book, user, passwd, auth_method, error,
@@ -1471,9 +1471,9 @@ e_book_get_contact (EBook       *book,
 		    EContact   **contact,
 		    GError     **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contact,                  E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (contact,                  E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_contact (TRUE,
 			       book, id, contact, error,
@@ -1687,8 +1687,8 @@ e_book_remove_contact (EBook       *book,
 	GList *list;
 	gboolean rv;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	list = g_list_append (NULL, (char*)id);
 
@@ -1717,8 +1717,8 @@ e_book_remove_contacts (EBook    *book,
 			GList    *ids,
 			GError  **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (ids,                      E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (ids,                      E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_remove_contacts (TRUE,
 				   book, ids, error,
@@ -1946,9 +1946,9 @@ e_book_get_book_view (EBook       *book,
 		      EBookView  **book_view,
 		      GError     **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book_view,                      E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (book_view,                      E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_book_view (TRUE,
 				 book, query, requested_fields, max_results, book_view, error,
@@ -2170,9 +2170,9 @@ e_book_get_contacts (EBook       *book,
 		     GList      **contacts,
 		     GError     **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contacts,                       E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (query,                          E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (contacts,                       E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_contacts (TRUE,
 				book, query, contacts, error,
@@ -2381,9 +2381,9 @@ e_book_get_changes (EBook       *book,
 		    GList      **changes,
 		    GError     **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (changeid,                       E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (changes,                        E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (changeid,                       E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (changes,                        E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_get_changes (TRUE,
 			       book, changeid, changes, error,
@@ -2584,7 +2584,7 @@ e_book_cancel (EBook   *book,
 	gboolean rv;
 	CORBA_Environment ev;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -2756,7 +2756,7 @@ e_book_open (EBook     *book,
 	     gboolean   only_if_exists,
 	     GError   **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_open (TRUE,
 			book, only_if_exists, error,
@@ -2948,7 +2948,7 @@ gboolean
 e_book_remove (EBook   *book,
 	       GError **error)
 {
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	return do_remove (TRUE,
 			  book, error,
@@ -3167,8 +3167,8 @@ e_book_unload_uri (EBook   *book,
 {
 	CORBA_Environment ev;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->load_state != E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_NOT_LOADED);
+	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (book->priv->load_state != E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_NOT_LOADED, FALSE);
 
 	if (book->priv->load_state == E_BOOK_SOURCE_LOADED) {
 		/* Release the remote GNOME_Evolution_Addressbook_Book in the PAS. */
@@ -3605,8 +3605,8 @@ e_book_set_self (EBook *book, EContact *contact, GError **error)
 {
 	GConfClient *gconf;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book),          E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (book && E_IS_BOOK (book),          E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (contact && E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	gconf = gconf_client_get_default();
 	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
@@ -3662,8 +3662,8 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 {
 	ESource *source;
 
-	e_return_error_if_fail (book && E_IS_BOOK (book),                        E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->load_state == E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_ALREADY_LOADED);
+	e_return_error_if_fail (book && E_IS_BOOK (book),                        E_BOOK_ERROR_INVALID_ARG, FALSE);
+	e_return_error_if_fail (book->priv->load_state == E_BOOK_SOURCE_NOT_LOADED, E_BOOK_ERROR_SOURCE_ALREADY_LOADED, FALSE);
 
 	source = e_book_get_source (book);
 
@@ -3689,7 +3689,7 @@ e_book_set_default_source (ESource *source, GError **error)
 	GError *err = NULL;
 	GSList *g;
 
-	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	uid = e_source_peek_uid (source);
 
@@ -3746,7 +3746,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
 	GConfClient *gconf;
 	
-	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	gconf = gconf_client_get_default();
 	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
@@ -3803,7 +3803,7 @@ e_book_new (ESource *source, GError **error)
 {
 	EBook *book;
 
-	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG, NULL);
 
 	e_book_activate ();
 
@@ -3836,7 +3836,7 @@ e_book_new_from_uri (const char *uri, GError **error)
 	ESource *source;
 	EBook *book;
 
-	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG);
+	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG, NULL);
 
 	group = e_source_group_new ("", uri);
 	source = e_source_new ("", "");

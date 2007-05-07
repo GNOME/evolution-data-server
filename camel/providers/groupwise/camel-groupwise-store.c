@@ -559,7 +559,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0;
 	CamelStoreInfo *si = NULL;
-	guint total;
+	guint total = 0;
 	
 	folder = groupwise_get_folder_from_disk (store, folder_name, flags, ex);
 	if (folder) {
@@ -696,7 +696,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	const char *position = E_GW_CURSOR_POSITION_END; 
 	int count = 0, cursor, summary_count = 0;
 	CamelStoreInfo *si = NULL;
-	guint total;
+	guint total = 0;
 	
 	camel_exception_clear (ex);
 

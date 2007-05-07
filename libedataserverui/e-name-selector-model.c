@@ -193,10 +193,7 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 	}
 
 	if (result) {
-		EContact *contact;
 		GList    *email_list;
-
-		contact = e_contact_store_get_contact (contact_store, iter);
 
 		if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 			n_rows = 1;

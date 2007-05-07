@@ -510,7 +510,7 @@ static char* cal_obj_time_to_string		(CalObjTime	*cotime);
 #endif
 
 
-ECalRecurVTable cal_obj_yearly_vtable = {
+static ECalRecurVTable cal_obj_yearly_vtable = {
 	cal_obj_yearly_find_start_position,
 	cal_obj_yearly_find_next_position,
 
@@ -524,7 +524,7 @@ ECalRecurVTable cal_obj_yearly_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_monthly_vtable = {
+static ECalRecurVTable cal_obj_monthly_vtable = {
 	cal_obj_monthly_find_start_position,
 	cal_obj_monthly_find_next_position,
 
@@ -538,7 +538,7 @@ ECalRecurVTable cal_obj_monthly_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_weekly_vtable = {
+static ECalRecurVTable cal_obj_weekly_vtable = {
 	cal_obj_weekly_find_start_position,
 	cal_obj_weekly_find_next_position,
 
@@ -552,7 +552,7 @@ ECalRecurVTable cal_obj_weekly_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_daily_vtable = {
+static ECalRecurVTable cal_obj_daily_vtable = {
 	cal_obj_daily_find_start_position,
 	cal_obj_daily_find_next_position,
 
@@ -566,7 +566,7 @@ ECalRecurVTable cal_obj_daily_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_hourly_vtable = {
+static ECalRecurVTable cal_obj_hourly_vtable = {
 	cal_obj_hourly_find_start_position,
 	cal_obj_hourly_find_next_position,
 
@@ -580,7 +580,7 @@ ECalRecurVTable cal_obj_hourly_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_minutely_vtable = {
+static ECalRecurVTable cal_obj_minutely_vtable = {
 	cal_obj_minutely_find_start_position,
 	cal_obj_minutely_find_next_position,
 
@@ -594,7 +594,7 @@ ECalRecurVTable cal_obj_minutely_vtable = {
 	cal_obj_bysecond_expand
 };
 
-ECalRecurVTable cal_obj_secondly_vtable = {
+static ECalRecurVTable cal_obj_secondly_vtable = {
 	cal_obj_secondly_find_start_position,
 	cal_obj_secondly_find_next_position,
 

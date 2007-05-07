@@ -1510,7 +1510,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 		struct attachment *attachment;
 		const char *data;
 		size_t buf_size;
-		char *buf;
+		char *buf = NULL;
 
 		attachment = l->data;
 		g_assert (attachment->attach != NULL);

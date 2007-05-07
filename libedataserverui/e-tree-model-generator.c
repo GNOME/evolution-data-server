@@ -50,7 +50,7 @@ static void         e_tree_model_generator_init            (ETreeModelGenerator 
 static void         e_tree_model_generator_class_init      (ETreeModelGeneratorClass *class);
 static void         e_tree_model_generator_tree_model_init (GtkTreeModelIface  *iface);
 static void         e_tree_model_generator_finalize        (GObject            *object);
-static guint        e_tree_model_generator_get_flags       (GtkTreeModel       *tree_model);
+static GtkTreeModelFlags e_tree_model_generator_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_tree_model_generator_get_n_columns   (GtkTreeModel       *tree_model);
 static GType        e_tree_model_generator_get_column_type (GtkTreeModel       *tree_model,
 							    gint                index);
@@ -523,11 +523,11 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 
 		/* Update parent pointers */
 		for (i = index + 1; i < group->len; i++) {
-			Node   *node = &g_array_index (group, Node, i);
+			Node   *pnode = &g_array_index (group, Node, i);
 			GArray *child_group;
 			gint    j;
 
-			child_group = node->child_nodes;
+			child_group = pnode->child_nodes;
 			if (!child_group)
 				continue;
 
@@ -607,11 +607,11 @@ delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 
 	/* Update parent pointers */
 	for (i = index; i < group->len; i++) {
-		Node   *node = &g_array_index (group, Node, i);
+		Node   *pnode = &g_array_index (group, Node, i);
 		GArray *child_group;
 		gint    j;
 
-		child_group = node->child_nodes;
+		child_group = pnode->child_nodes;
 		if (!child_group)
 			continue;
 
@@ -997,7 +997,7 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
  * GtkTreeModel API *
  * ---------------- */
 
-static guint
+static GtkTreeModelFlags
 e_tree_model_generator_get_flags (GtkTreeModel *tree_model)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);

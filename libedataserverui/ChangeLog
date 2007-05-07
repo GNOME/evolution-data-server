@@ -1,3 +1,15 @@
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-contact-store.c:
+	* e-destination-store.c:
+	* e-name-selector-dialog.c:
+	* e-name-selector-entry.c:
+	* e-name-selector-list.c:
+	* e-name-selector-model.c:
+	* e-source-option-menu.c:
+	* e-tree-model-generator.c:
+	Fix warnings reported by 'sparse'.  Patch from Kjartan Maraas.
+
 2007-04-20  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-name-selector-dialog.c: (destination_column_formatter): Fix for

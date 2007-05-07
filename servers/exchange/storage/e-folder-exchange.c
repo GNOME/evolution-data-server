@@ -476,7 +476,7 @@ e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
 	xmlNode *root;
 	const char *name, *type, *outlook_class;
 	const char *physical_uri, *internal_uri, *permanent_uri;
-	const char *folder_size;
+	char *folder_size;
 	long long int fsize;
 	int status;
 

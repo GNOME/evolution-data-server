@@ -200,7 +200,6 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 
 	CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 
-end:
 	camel_message_info_free (&mi->info);
 	g_free (container_id);
 	return msg;
@@ -1610,7 +1609,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	EGwItemType type;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
-	CamelMultipart *multipart;
+	CamelMultipart *multipart = NULL;
 	int errno;
 	char *body = NULL;
 	int body_len = 0;
@@ -1946,7 +1945,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
-	EGwConnectionStatus status;
+	EGwConnectionStatus status = { 0, };
 	EGwConnection *cnc;
 	EGwItem *item;
 	char *id;

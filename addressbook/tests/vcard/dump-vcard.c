@@ -3,11 +3,10 @@
 #include <stdio.h>
 #include <libebook/e-vcard.h>
 
-FILE *fp;
-
 int
 main(int argc, char **argv)
 {
+	FILE *fp;
 	EVCard *vcard;
 	GString *str = g_string_new ("");
 	char *parsed_vcard;

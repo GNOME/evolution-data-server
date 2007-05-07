@@ -1,3 +1,12 @@
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-rule-xml.c:
+	* lib/e2k-rule.h:
+	* lib/e2k-security-descriptor.c:
+	* lib/e2k-utils.c:
+	* storage/e-folder-exchange.c:
+	Fix warnings reported by 'sparse'.  Patch from Kjartan Maraas.
+
 2007-04-05  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-marshal.list:

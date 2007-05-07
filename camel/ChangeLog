@@ -1,3 +1,9 @@
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-stream-vfs.c:
+	* camel-stream-vfs.h:
+	Fix warnings reported by 'sparse'.  Patch from Kjartan Maraas.
+
 2007-04-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* Makefile.am: Added the include files part of core to the

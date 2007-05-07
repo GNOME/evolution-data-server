@@ -1299,12 +1299,12 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 	if (str_b_context [1] == '"') {
 		const gchar *p;
-		gint i;
+		gint j;
 		p = text + end_pos;
-		for (p = text + (end_pos-1), i = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), i++) {
+		for (p = text + (end_pos-1), j = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), j++) {
 			gunichar c = g_utf8_get_char (p);
 			if(c == ',') {
-				insert_destination_at_position (name_selector_entry, i+1);
+				insert_destination_at_position (name_selector_entry, j+1);
 			}
 		}
 		
@@ -2096,7 +2096,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
 		GList *iter;
-		int len = g_list_length ((GList *)dests);
+		int length = g_list_length ((GList *)dests);
 
 		for (iter = (GList *)dests; iter; iter = iter->next) {
 			EDestination *dest = (EDestination *) iter->data;
@@ -2105,7 +2105,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 			if (!email || *email == '\0')
 				continue;	
 
-			if (len > 1) {
+			if (length > 1) {
 				menu_item = gtk_check_menu_item_new_with_label (email);
 				g_signal_connect (menu_item, "toggled", G_CALLBACK (destination_set_list), dest);				
 			} else {
@@ -2116,7 +2116,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 			show_menu = TRUE;
 
-			if ( len > 1 ) {
+			if (length > 1) {
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored(dest));
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_list),
 							  dest);	

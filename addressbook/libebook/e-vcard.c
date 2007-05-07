@@ -806,10 +806,10 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 	g_string_append (str, "VERSION:3.0" CRLF);
 
 	for (l = evc->priv->attributes; l; l = l->next) {
-		GList *p;
+		GList *list;
 		EVCardAttribute *attr = l->data;
 		GString *attr_str;
-		int l;
+		int len;
 
 		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
@@ -828,8 +828,8 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		g_string_append (attr_str, attr->name);
 
 		/* handle the parameters */
-		for (p = attr->params; p; p = p->next) {
-			EVCardAttributeParam *param = p->data;
+		for (list = attr->params; list; list = list->next) {
+			EVCardAttributeParam *param = list->data;
 			/* 5.8.2:
 			 * param        = param-name "=" param-value *("," param-value)
 			 */
@@ -839,14 +839,14 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				g_string_append_c (attr_str, '=');
 				for (v = param->values; v; v = v->next) {
 					char *value = v->data;
-					char *p = value;
+					char *pval = value;
 					gboolean quotes = FALSE;
-					while (*p) {
-						if (!g_unichar_isalnum (g_utf8_get_char (p))) {
+					while (*pval) {
+						if (!g_unichar_isalnum (g_utf8_get_char (pval))) {
 							quotes = TRUE;
 							break;
 						}
-						p = g_utf8_next_char (p);
+						pval = g_utf8_next_char (pval);
 					}
 					if (quotes)
 						g_string_append_c (attr_str, '"');
@@ -885,20 +885,20 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		 * When generating a content line, lines longer than 75
 		 * characters SHOULD be folded
 		 */
-		l = 0;
+		len = 0;
 		do {
 			
-			if ((g_utf8_strlen (attr_str->str, -1) -l) > 75) {
+			if ((g_utf8_strlen (attr_str->str, -1) - len) > 75) {
 				char *p;
 
-				l += 75;
-				p = g_utf8_offset_to_pointer (attr_str->str, l);
+				len += 75;
+				p = g_utf8_offset_to_pointer (attr_str->str, len);
 			
 				g_string_insert_len (attr_str, (p - attr_str->str), CRLF " ", sizeof (CRLF " ") - 1);
 			}
 			else
 				break;
-		} while (l < g_utf8_strlen (attr_str->str, -1));
+		} while (len < g_utf8_strlen (attr_str->str, -1));
 
 		g_string_append (attr_str, CRLF);
 

@@ -114,7 +114,7 @@ typedef enum {
 #define EVOLUTIONPERSON      "evolutionPerson"
 #define GROUPOFNAMES         "groupOfNames"
 
-gboolean enable_debug = FALSE;
+static gboolean enable_debug = FALSE;
 
 static gchar *query_prop_to_ldap(gchar *query_prop);
 static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query);
@@ -257,7 +257,7 @@ static gboolean photo_compare(EContact * ecard1, EContact * ecard2);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
 
-struct prop_info {
+static struct prop_info {
 	EContactField field_id;
 	char *ldap_attr;
 #define PROP_TYPE_STRING    0x01
@@ -2267,8 +2267,10 @@ contact_list_handler (LDAPOp *op, LDAPMessage *res)
 	GTimeVal start, end;
 	unsigned long diff;
 
-	if (enable_debug)
+	if (enable_debug) {
 		printf ("contact_list_handler ...\n");
+		g_get_current_time (&start);
+	}
 	ldap = bl->priv->ldap;
 	if (!ldap) {
 		e_data_book_respond_get_contact_list (op->book, op->opid, GNOME_Evolution_Addressbook_OtherError, NULL);
@@ -2660,12 +2662,12 @@ member_compare (EContact *contact_new, EContact *contact_current)
 						char *dn_cur = NULL;
 
 						for (p_cur = e_vcard_attribute_get_params (attr_cur); p_cur; p_cur = p_cur->next) {
-							EVCardAttributeParam *param = p_cur->data;
-							const char *param_name2 = e_vcard_attribute_param_get_name (param);
+							EVCardAttributeParam *param2 = p_cur->data;
+							const char *param_name2 = e_vcard_attribute_param_get_name (param2);
 
 							if (!g_ascii_strcasecmp (param_name2, EVC_X_DEST_CONTACT_UID)) {
-								GList *v = e_vcard_attribute_param_get_values (param);
-								dn_cur = v ? v->data : NULL;
+								GList *v2 = e_vcard_attribute_param_get_values (param2);
+								dn_cur = v2 ? v2->data : NULL;
 							
 								if (dn_cur) {
 									if (!g_ascii_strcasecmp (dn_new, dn_cur)) {
@@ -3836,7 +3838,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 						}
 						else if (info->prop_type & PROP_TYPE_GROUP) {
 							char *grpattrs[3];
-							int i, view_limit = -1, ldap_error, count;
+							int j, view_limit = -1, ldap_error, count;
 							EDataBookView *book_view;
 							LDAPMessage *result;
 							char **email_values, **cn_values, **member_info;
@@ -3856,13 +3858,13 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							count = ldap_count_values (values);
 							member_info = g_new0 (gchar *, count+1);
 
-							for (i = 0; values[i] ; i ++) {
+							for (j = 0; values[j] ; j ++) {
 								/* get the email id for the given dn */
 								/* set base to DN and scope to base */
-								printf ("value (dn) = %s \n", values [i]);
+								printf ("value (dn) = %s \n", values [j]);
 								do {
 									if ((ldap_error = ldap_search_ext_s (bl->priv->ldap,
-						    						        values[i],
+						    						        values[j],
 						    						        LDAP_SCOPE_BASE,
 						    						        NULL,
 						    						        grpattrs, 0, 
@@ -3877,15 +3879,15 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 
 										if (email_values) {
 											printf ("email = %s \n", email_values[0]);
-											*(member_info + i) = 
+											*(member_info + j) = 
 												g_strdup_printf ("%s;%s;", 
-														 email_values[0], values[i]);
+														 email_values[0], values[j]);
 											ldap_value_free (email_values);
 										}
 										if (cn_values) {
 											printf ("cn = %s \n", cn_values[0]);
-											*(member_info + i) = 
-												g_strconcat (*(member_info + i), 
+											*(member_info + j) = 
+												g_strconcat (*(member_info + j), 
 													     cn_values [0], NULL);
 											ldap_value_free (cn_values);
 										}
@@ -3902,8 +3904,8 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							/* call populate function */	
 							info->populate_contact_func (contact, member_info); 
 						
-							for (i = 0; i < count; i++) {
-                						g_free (*(member_info + i));
+							for (j = 0; j < count; j++) {
+                						g_free (*(member_info + j));
         						}
         						g_free (member_info);	
 						}

@@ -809,9 +809,9 @@ e_contact_set_property (GObject *object,
 
 					for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 						EVCardAttributeParam *param = params->data;
-						const char *name = e_vcard_attribute_param_get_name (param);
+						const char *param_name = e_vcard_attribute_param_get_name (param);
 
-						if (!g_ascii_strcasecmp (name, EVC_TYPE)) {
+						if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
 							GList *values = e_vcard_attribute_param_get_values (param);
 							if (values && values->data) {
 								gboolean matches = FALSE;
@@ -1074,9 +1074,9 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 
 			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 				EVCardAttributeParam *param = params->data;
-				const char *name = e_vcard_attribute_param_get_name (param);
+				const char *param_name = e_vcard_attribute_param_get_name (param);
 
-				if (!g_ascii_strcasecmp (name, EVC_TYPE)) {
+				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
 					GList *values = e_vcard_attribute_param_get_values (param);
 					if (values && values->data) {
 						gboolean matches = FALSE;

@@ -239,14 +239,13 @@ impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
 				ld->notified_start = TRUE;
 
 				if (priv->done && !ld->notified_done) {
-					CORBA_Environment ev;
 
 					ld->notified_done = TRUE;
 
-					CORBA_exception_init (&ev);
+					CORBA_exception_init (ev);
 					GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (
-						ld->listener, priv->done_status, &ev);
-					CORBA_exception_free (&ev);
+						ld->listener, priv->done_status, ev);
+					CORBA_exception_free (ev);
 				}
 			}
 		}

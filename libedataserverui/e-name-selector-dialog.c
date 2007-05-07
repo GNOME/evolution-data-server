@@ -1277,7 +1277,7 @@ e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector
  * Widget creation functions for Glade *
  * ----------------------------------- */
 
-#if CATEGORIES_COMPONENTS_MOVED
+#ifdef CATEGORIES_COMPONENTS_MOVED
 
 GtkWidget *
 e_name_selector_dialog_create_categories (void)

@@ -1703,7 +1703,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	ECalendarOp *our_op;
 	const char *username = NULL, *auth_type = NULL;
 	char *password = NULL;
-	gboolean read_only;
+	gboolean read_only = FALSE;
 	
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -5102,42 +5102,6 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
-}
-
-
-/* This ensures that the given timezone is on the server. We use this to pass
-   the default timezone to the server, so it can resolve DATE and floating
-   DATE-TIME values into specific times. (Most of our IDL interface uses
-   time_t values to pass specific times from the server to the ecal.) */
-static gboolean
-e_cal_ensure_timezone_on_server (ECal *ecal, icaltimezone *zone, GError **error)
-{
-	ECalPrivate *priv;
-	char *tzid;
-	icaltimezone *tmp_zone;
-
-	priv = ecal->priv;
-
-	/* FIXME This is highly broken since there is no locking */
-
-	/* If the zone is NULL or UTC we don't need to do anything. */
-	if (!zone)
-		return TRUE;
-	
-	tzid = icaltimezone_get_tzid (zone);
-
-	if (!strcmp (tzid, "UTC"))
-		return TRUE;
-
-	/* See if we already have it in the cache. If we do, it must be on
-	   the server already. */
-	tmp_zone = g_hash_table_lookup (priv->timezones, tzid);
-	if (tmp_zone)
-		return TRUE;
-
-	/* Now we have to send it to the server, in case it doesn't already
-	   have it. */
-	return e_cal_add_timezone (ecal, zone, error);
 }
 
 /**

@@ -1,3 +1,15 @@
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/caldav/e-cal-backend-caldav.c:
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	* libecal/e-cal-component.c:
+	* libecal/e-cal-recur.c:
+	* libecal/e-cal.c:
+	* libedata-cal/e-cal-backend.c:
+	* libedata-cal/e-data-cal-view.c:
+	* tests/ecal/test-ecal.c:
+	Fix warnings reported by 'sparse'.  Patch from Kjartan Maraas.
+
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-cal-backend-file.c:

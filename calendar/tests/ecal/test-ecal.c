@@ -32,14 +32,14 @@
 #include <libecal/e-cal-time-util.h>
 #include <libical/ical.h>
 
-// start_testing_scaffold
+/* start_testing_scaffold */
 #define mu_assert(message, test) do { if (!(test)) return message; else { tests_passed++; return NULL;}} while (0)
 #define mu_run_test(test) do { char *message = test; tests_run++; \
                                 if (message) { cl_printf (client, "***Error***\n%s\n", message); break;} } while (0)
 
-int tests_run = 0;
-int tests_passed = 0;
-// end_testing_scaffold
+static int tests_run = 0;
+static int tests_passed = 0;
+/* end_testing_scaffold */
 
 static ECal *client1;
 static ECal *client2;

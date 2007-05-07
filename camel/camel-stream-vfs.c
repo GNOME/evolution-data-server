@@ -75,7 +75,7 @@ camel_stream_vfs_init (gpointer object, gpointer klass)
 {
 	CamelStreamVFS *stream = CAMEL_STREAM_VFS (object);
 
-	stream->handle = (gpointer) -1;
+	stream->handle = GINT_TO_POINTER (-1);
 	((CamelSeekableStream *)stream)->bound_end = CAMEL_STREAM_UNBOUND;
 }
 
@@ -84,7 +84,7 @@ camel_stream_vfs_finalize (CamelObject *object)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (object);
 
-	if (stream_vfs->handle != -1)
+	if (stream_vfs->handle != GINT_TO_POINTER (-1))
 		gnome_vfs_close (stream_vfs->handle);
 }
 
@@ -151,7 +151,7 @@ camel_stream_vfs_new_with_uri (const char *name, int flags, mode_t mode)
 {
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle;
-	int vfs_flag;
+	int vfs_flag = 0;
 	
 	if (flags & O_WRONLY)
 		vfs_flag = vfs_flag | GNOME_VFS_OPEN_WRITE;

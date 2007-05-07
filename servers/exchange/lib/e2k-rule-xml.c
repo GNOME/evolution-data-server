@@ -66,7 +66,6 @@ fuzzy_level_to_name (int fuzzy_level, gboolean negated, const char *map[])
 }
 
 static const char *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
-static const char *include_types[] = { NULL, NULL, NULL, NULL, "include", "not include" };
 static const char *date_types[] = { "before", "before", "after", "after", NULL, NULL };
 static const char *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
 

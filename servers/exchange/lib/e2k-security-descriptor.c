@@ -838,7 +838,7 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 }
 
 
-struct {
+static struct {
 	const char *name;
 	guint32 perms;
 } roles[E2K_PERMISSIONS_ROLE_NUM_ROLES] = {

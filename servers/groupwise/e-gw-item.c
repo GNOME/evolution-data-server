@@ -710,7 +710,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
                 item->priv->recipient_list = g_slist_append (item->priv->recipient_list, recipient);
         }        
 }
-static EGwTrackInfo
+static EGwItemReturnNotify
 get_notification_value (SoupSoapParameter *param, const char *param_name)
 {
 	SoupSoapParameter *subparam;
@@ -767,11 +767,11 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		value = soup_soap_parameter_get_string_value (subparam);
 	       if (value) {
 		       if (!g_ascii_strcasecmp (value, "Delivered")) 
-			       priv->track_info = E_GW_DELIVERED;
+			       priv->track_info = E_GW_ITEM_DELIVERED;
 		       else if (!g_ascii_strcasecmp (value, "DeliveredAndOpened")) 
-				priv->track_info = E_GW_DELIVERED_OPENED;
+				priv->track_info = E_GW_ITEM_DELIVERED_OPENED;
 		       else if (!g_ascii_strcasecmp (value, "All")) 
-				priv->track_info = E_GW_ALL;
+				priv->track_info = E_GW_ITEM_ALL;
 		       
 		       g_free (value), value = NULL;
 
@@ -1703,7 +1703,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			child != NULL;
 			child = soup_soap_parameter_get_next_child (child)) {
 		const char *name;
-		char *value;
+		char *value = NULL;
 
 		name = soup_soap_parameter_get_name (child);
 
@@ -1813,7 +1813,6 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		} else if (!g_ascii_strcasecmp (name, "options")) {
 			SoupSoapParameter *subparam;
-			char *value = NULL;
 
 			subparam = soup_soap_parameter_get_first_child_by_name (child, "priority");
 			if (subparam) {
@@ -1959,7 +1958,6 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		} else if (!g_ascii_strcasecmp (name, "subject"))
 			item->priv->subject = soup_soap_parameter_get_string_value (child);
 		else if (!g_ascii_strcasecmp (name, "source")) {
-			char *value;
 			value = soup_soap_parameter_get_string_value (child);
 			if (!strcmp (value, "personal")) {
 				if (item->priv->item_type == E_GW_ITEM_TYPE_TASK || 
@@ -1989,7 +1987,6 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			char *enabled;
 			enabled = soup_soap_parameter_get_property (child, "enabled");
 			if (!g_ascii_strcasecmp (enabled, "1") ) {
-				char *value;
 				value = soup_soap_parameter_get_string_value (child);
 				/* convert it into integer */
 				item->priv->trigger = atoi (value);

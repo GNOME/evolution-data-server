@@ -124,29 +124,29 @@ populate (ESourceOptionMenu *option_menu)
 	i = 0;
 	for (p = groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
-		GtkWidget *item = gtk_menu_item_new_with_label (e_source_group_peek_name (group));
+		GtkWidget *item1 = gtk_menu_item_new_with_label (e_source_group_peek_name (group));
 		GSList *q;
 
-		gtk_widget_set_sensitive (item, FALSE);
-		gtk_widget_show (item);
-		gtk_menu_append (GTK_MENU (menu), item);
+		gtk_widget_set_sensitive (item1, FALSE);
+		gtk_widget_show (item1);
+		gtk_menu_append (GTK_MENU (menu), item1);
 
 		i ++;
 
 		for (q = e_source_group_peek_sources (group); q != NULL; q = q->next) {
 			ESource *source = E_SOURCE (q->data);
 			char *label = g_strconcat ("    ", e_source_peek_name (source), NULL);
-			GtkWidget *item = gtk_menu_item_new_with_label (label);
+			GtkWidget *item2 = gtk_menu_item_new_with_label (label);
 			g_free (label);
 
-			gtk_object_set_data_full (GTK_OBJECT (item), MENU_ITEM_SOURCE_DATA_ID, source,
+			gtk_object_set_data_full (GTK_OBJECT (item2), MENU_ITEM_SOURCE_DATA_ID, source,
 						  (GtkDestroyNotify) g_object_unref);
 			g_object_ref (source);
 
-			g_signal_connect (item, "activate", G_CALLBACK (menu_item_activate_callback), option_menu);
+			g_signal_connect (item2, "activate", G_CALLBACK (menu_item_activate_callback), option_menu);
 
-			gtk_widget_show (item);
-			gtk_menu_append (GTK_MENU (menu), item);
+			gtk_widget_show (item2);
+			gtk_menu_append (GTK_MENU (menu), item2);
 
 			if (first_source_item == -1) {
 				first_source_item = i;

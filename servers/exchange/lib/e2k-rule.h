@@ -168,7 +168,7 @@ struct _E2kAction {
 		} reply;
 
 		GByteArray   *defer_data;
-		gint32        bounce_code;
+		guint32       bounce_code;
 		E2kAddrList  *addr_list;
 		E2kPropValue  proptag;
 	} act;

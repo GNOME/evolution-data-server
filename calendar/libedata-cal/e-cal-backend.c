@@ -267,7 +267,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 }
 
 /* Object initialization func for the calendar backend */
-void
+static void
 e_cal_backend_init (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
@@ -283,7 +283,7 @@ e_cal_backend_init (ECalBackend *backend)
 	priv->queries_mutex = g_mutex_new ();
 }
 
-void
+static void
 e_cal_backend_finalize (GObject *object)
 {
 	ECalBackend *backend = (ECalBackend *)object;
