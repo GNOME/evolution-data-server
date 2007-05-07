@@ -37,7 +37,6 @@ INCLUDES = \
 	$(GLIB_CFLAGS)
 
 GTKDOC_LIBS = 					\
-	$(top_builddir)/util/libutil.la		\
 	$(top_builddir)/camel/libcamel-2.0.la 	\
 	$(GLIB_LIBS)
 

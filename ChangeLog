@@ -1,5 +1,10 @@
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
+	* docs/reference/camel/Makefile.am:
+	Remove reference to nonexistent libutil.la.
+
+2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
 	* libedataserver/e-sexp.c:
 	Fix warnings reported by 'sparse'.  Patch from Kjartan Maraas.
 
