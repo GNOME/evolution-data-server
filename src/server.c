@@ -369,7 +369,7 @@ main (int argc, char **argv)
 		else if (!did_cals)
 			failed = "CALS";
 
-		g_error (G_STRLOC ": could not initialize Server service \"%s\"; terminating", failed);
+		g_warning (G_STRLOC ": could not initialize Server service \"%s\"; terminating", failed);
 
 		if (e_data_book_factory) {
 			bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
