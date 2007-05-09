@@ -1,3 +1,7 @@
+2007-05-09  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* lib/e2k-utils.c: Fix for build break.
+
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-rule-xml.c:
