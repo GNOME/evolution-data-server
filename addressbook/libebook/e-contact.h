@@ -232,7 +232,7 @@ typedef struct {
 	union {
 		struct {
 			char *mime_type;
-			int length;
+			gsize length;
 			guchar *data;
 		} inlined;
 		char *uri;
@@ -253,13 +253,13 @@ typedef struct {
 } EContactAddress;
 
 typedef struct {
-	int year;
-	int month;
-	int day;
+	unsigned int year;
+	unsigned int month;
+	unsigned int day;
 } EContactDate;
 
 typedef struct {
-	int length;
+	gsize length;
 	char *data;
 } EContactCert;
 
