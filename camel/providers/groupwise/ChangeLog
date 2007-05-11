@@ -1,3 +1,7 @@
+2007-05-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-groupwise-provider.c: Fix fo bug #347326 from Ebby Wiselyn
+
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-groupwise-folder.c:

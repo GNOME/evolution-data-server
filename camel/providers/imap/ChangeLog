@@ -1,3 +1,7 @@
+2007-05-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-imap-provider.c: Fix for bug #347326 from Ebby Wiselyn.
+
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
 	* camel-imap-folder.c:
