@@ -1,3 +1,11 @@
+2007-05-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #420496 from Ebby Wiselyn.
+
+	* e-name-selector-entry.c: (user_focus_out), (popup_activate_cut),
+	(popup_activate_copy), (populate_popup): Add support to cut/copy
+	contacts.
+
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-contact-store.c:

@@ -31,6 +31,7 @@
 #include <gtk/gtkradiomenuitem.h>
 #include <gtk/gtkseparatormenuitem.h>
 #include <glib/gi18n-lib.h>
+#include <gtk/gtkclipboard.h>
 
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>
@@ -1459,6 +1460,10 @@ user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_fo
 	if (!event_focus->in && priv->is_completing) {
 		entry_activate (name_selector_entry);
 	}
+	
+	if (name_selector_entry->type_ahead_complete_cb_id) {
+		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
+	}
 
 	clear_completion_model (name_selector_entry);
 
@@ -2031,6 +2036,61 @@ popup_activate_list (EDestination *destination, GtkWidget *item)
 }
 
 static void
+popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+{
+	EDestination *destination;
+	const char *contact_email;
+	char *pemail = NULL;
+	GtkClipboard *clipboard;
+
+	destination = name_selector_entry->popup_destination;
+	contact_email =e_destination_get_address(destination);
+
+	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+	pemail = g_strconcat (contact_email, ",");
+	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
+
+	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), 0, 0);
+	e_destination_store_remove_destination (name_selector_entry->destination_store, destination);
+
+	g_free (pemail);
+	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+}
+
+static void
+popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+{
+	EDestination *destination;
+	const char *contact_email;
+	char *pemail;
+	GtkClipboard *clipboard;
+
+	destination = name_selector_entry->popup_destination;
+	contact_email = e_destination_get_address(destination);
+
+	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+	pemail = g_strconcat (contact_email, ",");
+	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
+	g_free (pemail);
+	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
+
+}
+
+static void
 destination_set_list (GtkWidget *item, EDestination *destination)
 {
 	EContact *contact;
@@ -2069,6 +2129,8 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	GList        *l;
 	gint          i;
 	char 	     *edit_label;
+	char 	     *cut_label;
+	char         *copy_label;
 	int 	      email_num, len;
 	GSList 	     *group = NULL;
 	gboolean      is_list;
@@ -2174,6 +2236,32 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 					  name_selector_entry);
 
 		/* Separator */
+		menu_item = gtk_separator_menu_item_new ();
+		gtk_widget_show (menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+	}
+
+	/* Copy Contact Item */
+	copy_label = g_strdup_printf (_("Cop_y %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	menu_item = gtk_menu_item_new_with_mnemonic (copy_label);
+	g_free (copy_label);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+
+	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_copy),
+				  name_selector_entry);
+
+	/* Cut Contact Item */
+	cut_label = g_strdup_printf (_("C_ut %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	menu_item = gtk_menu_item_new_with_mnemonic (cut_label);
+	g_free (cut_label);	
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
+	
+	g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_cut),
+				  name_selector_entry);
+	
+	if (show_menu) {
 		menu_item = gtk_separator_menu_item_new ();
 		gtk_widget_show (menu_item);
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
