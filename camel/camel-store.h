@@ -49,8 +49,8 @@ typedef struct _CamelFolderInfo {
 	char *full_name;
 
 	guint32 flags;
-	guint32 unread;
-	guint32 total;
+	gint32 unread;
+	gint32 total;
 } CamelFolderInfo;
 
 /* Note: these are abstractions (duh), its upto the provider to make them make sense */

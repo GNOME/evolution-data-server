@@ -1,3 +1,13 @@
+2007-05-12  Jules Colding  <colding@omesc.com>
+
+	* camel-store.h (CamelFolderInfo): Change type of unread and total 
+	members to gint32 instead of guint32. The previous unsigned members 
+	are initialized to a negative value (-1) by many CamelFolderInfo 
+	producers. To do that is ugly. Changing the type to a signed data 
+	type will make a negative initialization value acceptable. We 
+	won't be able to index folders with more than ~2 billion messages, 
+	but who has that many anyway?
+
 2007-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-stream-vfs.c:
