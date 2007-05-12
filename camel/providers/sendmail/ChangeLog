@@ -1,3 +1,7 @@
+2007-05-11  Jules Colding  <colding@omesc.com>
+
+	* camel-sendmail-transport.c (sendmail_send_to): Fix file descriptor leak
+
 2005-09-16  Tor Lillqvist  <tml@novell.com>
 
 	* camel-sendmail-transport.c: Use g_ascii_strcasecmp() instead of

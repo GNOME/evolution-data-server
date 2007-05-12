@@ -94,11 +94,24 @@ static int camel_lock_helper_init(CamelException *ex)
 {
 	int i;
 
+	lock_stdin_pipe[0] = -1;
+	lock_stdin_pipe[1] = -1;
+	lock_stdout_pipe[0] = -1;
+	lock_stdout_pipe[1] = -1;
 	if (pipe(lock_stdin_pipe) == -1
 	    || pipe(lock_stdout_pipe) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot build locking helper pipe: %s"),
 				      g_strerror (errno));
+		if (lock_stdin_pipe[0] != -1)
+			close(lock_stdin_pipe[0]);
+		if (lock_stdin_pipe[1] != -1)
+			close(lock_stdin_pipe[1]);
+		if (lock_stdout_pipe[0] != -1)
+			close(lock_stdout_pipe[0]);
+		if (lock_stdout_pipe[1] != -1)
+			close(lock_stdout_pipe[1]);
+
 		return -1;
 	}
 

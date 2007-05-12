@@ -89,6 +89,8 @@ camel_process_fork (const char *path, char **argv, int *infd, int *outfd, int *e
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to create child process '%s': %s"),
 				      argv[0], strerror (errno));
+		for (i = 0; i < 6; i++) 
+			close (fd[i]);
 		return -1;
 	}
 	

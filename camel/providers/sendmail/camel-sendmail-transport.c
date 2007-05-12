@@ -167,6 +167,8 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 				      _("Could not fork sendmail: "
 					"%s: mail not sent"),
 				      g_strerror (errno));
+		close (fd[0]);
+		close (fd[1]);
 		sigprocmask (SIG_SETMASK, &omask, NULL);
 		g_free (argv);
 		

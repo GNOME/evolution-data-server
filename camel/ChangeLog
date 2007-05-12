@@ -1,4 +1,10 @@
 2007-05-12  Jules Colding  <colding@omesc.com>
+ 
+	* camel-lock-client.c (camel_lock_helper_init): Fix file descriptor leak
+ 
+	* camel-process.c (camel_process_fork): Fix file descriptor leak
+ 
+2007-05-12  Jules Colding  <colding@omesc.com>
 
 	* camel-store.h (CamelFolderInfo): Change type of unread and total 
 	members to gint32 instead of guint32. The previous unsigned members 
