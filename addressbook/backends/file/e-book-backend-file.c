@@ -1348,6 +1348,22 @@ e_book_backend_file_set_mode (EBookBackend *backend,  GNOME_Evolution_Addressboo
 		e_book_backend_notify_connection_status (backend, TRUE);
 	}
 }
+
+static void 
+e_book_backend_file_sync (EBookBackend *backend)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	int db_error;
+	
+	g_return_if_fail (bf != NULL);
+	
+	if (bf->priv->file_db) {
+		db_error = bf->priv->file_db->sync (bf->priv->file_db, 0);
+		if (db_error != 0)
+			g_warning ("db->sync failed with %d", db_error);
+	}
+}
+
 static gboolean
 e_book_backend_file_construct (EBookBackendFile *backend)
 {
@@ -1486,6 +1502,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	backend_class->stop_book_view          = e_book_backend_file_stop_book_view;
 	backend_class->cancel_operation        = e_book_backend_file_cancel_operation;
 	backend_class->set_mode                = e_book_backend_file_set_mode;
+	backend_class->sync                = e_book_backend_file_sync;
 	sync_class->remove_sync                = e_book_backend_file_remove;
 	sync_class->create_contact_sync        = e_book_backend_file_create_contact;
 	sync_class->remove_contacts_sync       = e_book_backend_file_remove_contacts;

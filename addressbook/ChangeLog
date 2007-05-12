@@ -1,3 +1,14 @@
+2007-05-12  Ross Burton  <ross@openedhand.com>
+
+	* libedata-book/e-book-backend.[ch]:
+	Add e_book_backend_sync(), to request that a backend flush any
+	buffers.
+
+	* backends/file/e-book-backend-file.c:
+	Implement the sync method.
+
+	Closes #339160.
+
 2007-05-11  Loïc Minier  <lool@dooz.org>
 
 	* libebook/e-contact.h:

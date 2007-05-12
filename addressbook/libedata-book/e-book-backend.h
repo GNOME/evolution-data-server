@@ -71,8 +71,9 @@ struct _EBookBackendClass {
 	/* Notification signals */
 	void (* last_client_gone) (EBookBackend *backend);
 
+	void (*sync) (EBookBackend *backend);
+
 	/* Padding for future expansion */
-	void (*_pas_reserved0) (void);
 	void (*_pas_reserved1) (void);
 	void (*_pas_reserved2) (void);
 	void (*_pas_reserved3) (void);
@@ -174,6 +175,8 @@ void        e_book_backend_notify_complete            (EBookBackend           *b
 void        e_book_backend_notify_writable            (EBookBackend *backend, gboolean is_writable);
 void        e_book_backend_notify_connection_status   (EBookBackend *backend, gboolean is_online);
 void        e_book_backend_notify_auth_required       (EBookBackend *backend);    
+void        e_book_backend_sync                       (EBookBackend *backend);
+
 GType       e_book_backend_get_type                 (void);
 
 

@@ -779,6 +779,23 @@ e_book_backend_set_mode (EBookBackend *backend,
 }
 
 /**
+ * e_book_backend_sync:
+ * @backend: an #EBookbackend
+ *
+ * Write all pending data to disk.  This is only required under special
+ * circumstances (for example before a live backup) and should not be used in
+ * normal use.
+ */
+void 
+e_book_backend_sync (EBookBackend *backend)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->sync)
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->sync) (backend);
+}
+
+/**
  * e_book_backend_change_add_new:
  * @vcard: a VCard string
  *
