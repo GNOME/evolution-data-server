@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-01 03:26+0100\n"
-"PO-Revision-Date: 2007-05-03 19:53+0200\n"
+"POT-Creation-Date: 2007-05-12 03:43+0100\n"
+"PO-Revision-Date: 2007-05-12 20:37+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,13 +33,13 @@ msgstr "Cargando…"
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2303
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4147
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
 msgstr "Buscando…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4303
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
@@ -75,11 +75,11 @@ msgstr "Eliminando contacto del servidor LDAP…"
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4019
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4167
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4169
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
@@ -690,12 +690,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "No se pueden guardar los datos del calendario: URI malformado."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1737
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1736
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1742
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1741
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
@@ -704,22 +704,22 @@ msgstr "Respuesta solicitada: Cuando convenga"
 msgid "Loading %s items"
 msgstr "Cargando %s elementos"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:784
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:786
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:841
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
 msgid "Invalid server URI"
 msgstr "URI del servidor inválido"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:860
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:969
-#: ../calendar/libecal/e-cal.c:5278
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1047
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1109
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
+#: ../calendar/libecal/e-cal.c:5242
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1108
 #: ../camel/providers/groupwise/camel-groupwise-store.c:586
 #: ../camel/providers/groupwise/camel-groupwise-store.c:601
 #: ../camel/providers/groupwise/camel-groupwise-store.c:712
@@ -730,18 +730,18 @@ msgstr "URI del servidor inválido"
 msgid "Authentication failed"
 msgstr "Falló la autenticación"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:911
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:913
 msgid "Could not create thread for getting deltas"
 msgstr "No se pudo crear el hilo para obtener deltas"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:951
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1225
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:963
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:965
 msgid "Could not create thread for populating cache"
 msgstr "No se pudo crear el hilo para la llenar la caché"
 
@@ -1109,73 +1109,73 @@ msgstr "Introduzca la contraseña para %s (usuario %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Introduzca la contraseña de %s para activar el proxy para el usuario %s"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5214
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:5252
+#: ../calendar/libecal/e-cal.c:5216
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: ../calendar/libecal/e-cal.c:5254
+#: ../calendar/libecal/e-cal.c:5218
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:5256
+#: ../calendar/libecal/e-cal.c:5220
 msgid "No such calendar"
 msgstr "No existe el calendario"
 
-#: ../calendar/libecal/e-cal.c:5258 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:5222 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: ../calendar/libecal/e-cal.c:5260 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:5224 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:5262
+#: ../calendar/libecal/e-cal.c:5226
 msgid "URI not loaded"
 msgstr "URI no cargado"
 
-#: ../calendar/libecal/e-cal.c:5264
+#: ../calendar/libecal/e-cal.c:5228
 msgid "URI already loaded"
 msgstr "URI ya cargado"
 
-#: ../calendar/libecal/e-cal.c:5266
+#: ../calendar/libecal/e-cal.c:5230
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../calendar/libecal/e-cal.c:5268 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:5232 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
-#: ../calendar/libecal/e-cal.c:5270
+#: ../calendar/libecal/e-cal.c:5234
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: ../calendar/libecal/e-cal.c:5272
+#: ../calendar/libecal/e-cal.c:5236
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: ../calendar/libecal/e-cal.c:5274
+#: ../calendar/libecal/e-cal.c:5238
 msgid "Operation has been canceled"
 msgstr "La operación ha sido cancelada"
 
-#: ../calendar/libecal/e-cal.c:5276
+#: ../calendar/libecal/e-cal.c:5240
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: ../calendar/libecal/e-cal.c:5280
+#: ../calendar/libecal/e-cal.c:5244
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: ../calendar/libecal/e-cal.c:5282
+#: ../calendar/libecal/e-cal.c:5246
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: ../calendar/libecal/e-cal.c:5284
+#: ../calendar/libecal/e-cal.c:5248
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1189,7 +1189,7 @@ msgstr "Ha ocurrido una excepción CORBA"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: ../calendar/libecal/e-cal.c:5286
+#: ../calendar/libecal/e-cal.c:5250
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Sin errores"
@@ -2668,22 +2668,22 @@ msgstr "Este mensaje no está disponible en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1644
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1690
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1643
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1689
 msgid "Could not get message"
 msgstr "No se puede obtener el mensaje"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:814
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:813
 #: ../camel/providers/imap/camel-imap-folder.c:253
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1043
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1042
 msgid "Trash Folder Full. Please Empty."
 msgstr "La papelera está llena. Por favor vacíela."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1209
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1208
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2392
@@ -2692,13 +2692,13 @@ msgstr "La papelera está llena. Por favor vacíela."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1961
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2003
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1960
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2002
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No se pudo agregar el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1990
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
@@ -2725,8 +2725,11 @@ msgid "Checking for new mail"
 msgstr "Comprobación de correo nuevo"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
-msgid "Check for new messages in all folders"
-msgstr "Comprobar si hay mensajes nuevos en todas las carpetas"
+#: ../camel/providers/hula/camel-hula-provider.c:51
+#: ../camel/providers/imap/camel-imap-provider.c:46
+#: ../camel/providers/imap4/camel-imap4-provider.c:38
+msgid "C_heck for new messages in all folders"
+msgstr "_Comprobar si hay mensajes nuevos en todas las carpetas"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:66
@@ -2738,22 +2741,21 @@ msgid "Options"
 msgstr "Opciones"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
-msgid "Apply filters to new messages in Inbox on this server"
-msgstr ""
-"Aplicar filtros a los mensajes nuevos en la bandeja de entrada de este "
-"servidor"
+msgid "_Apply filters to new messages in Inbox on this server"
+msgstr "_Aplicar filtros a los mensajes nuevos en la bandeja de entrada de este servidor"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
-msgid "Check new messages for Junk contents"
-msgstr "Comprobar si el contenido de los mensajes nuevos es spam"
+msgid "Check new messages for J_unk contents"
+msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
-msgid "Only check for Junk messages in the INBOX folder"
-msgstr "Sólo comprobar si hay spam en la carpeta INBOX"
+#: ../camel/providers/imap/camel-imap-provider.c:72
+msgid "Only check for Junk messages in the IN_BOX folder"
+msgstr "Sólo comprobar si hay spam en la carpeta _Bandeja de entrada"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
-msgid "Automatically synchronize account locally"
-msgstr "Sincronizar automáticamente la cuenta localmente"
+msgid "Automatically synchroni_ze account locally"
+msgstr "Sincroni_zar automáticamente la cuenta localmente"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:73
 msgid "SOAP Settings"
@@ -2874,12 +2876,6 @@ msgstr "No se pudo enviar mensaje: %s"
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
 msgstr "Comprobación de correo nuevo"
-
-#: ../camel/providers/hula/camel-hula-provider.c:51
-#: ../camel/providers/imap/camel-imap-provider.c:46
-#: ../camel/providers/imap4/camel-imap4-provider.c:38
-msgid "C_heck for new messages in all folders"
-msgstr "_Comprobar si hay mensajes nuevos en todas las carpetas"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:50
@@ -3061,14 +3057,8 @@ msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Aplicar filtros a los mensajes nuevos en INBOX en este servidor"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imap4/camel-imap4-provider.c:53
-msgid "Check new messages for _Junk contents"
+msgid "Check new messages for Jun_k contents"
 msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
-
-#: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imap4/camel-imap4-provider.c:55
-msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Sólo comprobar si hay _spam en la carpeta INBOX"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
@@ -3342,6 +3332,14 @@ msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "No se pueden copiar los mensajes desde la carpeta «%s» a la carpeta «%s»: "
 "Comando erróneo"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:53
+msgid "Check new messages for _Junk contents"
+msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
+msgid "Only check for Junk messa_ges in the INBOX folder"
+msgstr "Sólo comprobar si hay _spam en la carpeta INBOX"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
@@ -4371,7 +4369,9 @@ msgstr "%s Escriba la contraseña POP para %s en el servidor %s"
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr "No se pudo conectar con el servidor POP %s: \tID APOP recibida no válida. Se sospecha un ataque suplantación. Por favor, contacte con su administrador."
+msgstr ""
+"No se pudo conectar con el servidor POP %s: \tID APOP recibida no válida. Se "
+"sospecha un ataque suplantación. Por favor, contacte con su administrador."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
@@ -5004,7 +5004,7 @@ msgstr "_Libreta de direcciones:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "C_ategory:"
-msgstr "_Categoría:"
+msgstr "C_ategoría:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
@@ -5020,13 +5020,25 @@ msgid "_Search:"
 msgstr "_Buscar:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2168
+#: ../libedataserverui/e-name-selector-entry.c:2230
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s en línea"
 
+#. Copy Contact Item
+#: ../libedataserverui/e-name-selector-entry.c:2245
+#, c-format
+msgid "Cop_y %s"
+msgstr "_Copiar %s"
+
+#. Cut Contact Item
+#: ../libedataserverui/e-name-selector-entry.c:2255
+#, c-format
+msgid "C_ut %s"
+msgstr "Cor_tar %s"
+
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2184
+#: ../libedataserverui/e-name-selector-entry.c:2272
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
