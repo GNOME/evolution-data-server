@@ -809,7 +809,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		GList *list;
 		EVCardAttribute *attr = l->data;
 		GString *attr_str;
-		int len;
+		glong len;
 
 		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
@@ -885,21 +885,23 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		 * When generating a content line, lines longer than 75
 		 * characters SHOULD be folded
 		 */
-		len = 0;
-		do {
-			
-			if ((g_utf8_strlen (attr_str->str, -1) - len) > 75) {
-				char *p;
+		len = g_utf8_strlen (attr_str->str, -1);
+		if (len > 75) {
+			GString *fold_str = g_string_sized_new (attr_str->len + len/74*3);
+			gchar *pos1 = attr_str->str;
+			gchar *pos2 = pos1;
+			pos2 = g_utf8_offset_to_pointer (pos2, 75);
 
-				len += 75;
-				p = g_utf8_offset_to_pointer (attr_str->str, len);
-			
-				g_string_insert_len (attr_str, (p - attr_str->str), CRLF " ", sizeof (CRLF " ") - 1);
-			}
-			else
-				break;
-		} while (len < g_utf8_strlen (attr_str->str, -1));
-
+			do {
+				g_string_append_len (fold_str, pos1, pos2 - pos1);
+				g_string_append (fold_str, CRLF " ");
+				pos1 = pos2;
+				pos2 = g_utf8_offset_to_pointer (pos2, 74);
+			} while (pos2 < attr_str->str + attr_str->len);
+			g_string_append (fold_str, pos1);
+			g_string_free (attr_str, TRUE);
+			attr_str = fold_str;
+		}
 		g_string_append (attr_str, CRLF);
 
 		g_string_append (str, attr_str->str);
