@@ -4447,7 +4447,10 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 
 	status = our_op->status;
 	if (uid)
+	{
 		*uid = our_op->uid;
+		icalcomponent_set_uid (icalcomp, *uid);
+	}
 	
 	e_calendar_remove_op (ecal, our_op);
 	g_mutex_unlock (our_op->mutex);
