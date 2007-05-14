@@ -3638,7 +3638,7 @@ e_book_is_self (EContact *contact)
 	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
 	g_object_unref (gconf);
 
-	rv = (uid && strcmp (uid, e_contact_get_const (contact, E_CONTACT_UID)));
+	rv = (uid && !strcmp (uid, e_contact_get_const (contact, E_CONTACT_UID)));
 
 	g_free (uid);
 
