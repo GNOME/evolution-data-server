@@ -1,3 +1,10 @@
+2007-05-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #274035 from Jonty Wareing
+
+	* libebook/e-contact.c: (photo_getter): added test
+	for "base64" encoding, because it could be in vCard 2.1
+
 2007-05-14  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #431135 from Øystein Gisnås

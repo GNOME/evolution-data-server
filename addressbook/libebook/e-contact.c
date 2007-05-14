@@ -413,7 +413,9 @@ photo_getter (EContact *contact, EVCardAttribute *attr)
 		return NULL;
 	
 	values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
-	if (values && g_ascii_strcasecmp (values->data, "b") == 0) {
+	if (values && (g_ascii_strcasecmp (values->data, "b") == 0 ||
+		       /* second for photo vCard 2.1 support */
+		       g_ascii_strcasecmp (values->data, "base64") == 0)) {
 		values = e_vcard_attribute_get_values_decoded (attr);	
 		if (values && values->data) {
 			GString *s = values->data;
