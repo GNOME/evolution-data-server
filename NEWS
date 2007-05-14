@@ -1,3 +1,29 @@
+Evolution-Data-Server 1.11.2 2007-05-14
+---------------------------------------
+
+New in this release:
+	* EContact optimization from (Oystein Gisnas and Milan Crha)
+
+Bug fixes:
+	#420496: Add support to cut/copy contacts in composer (Ebby Wiselyn)
+	#339160: Implement the sync method for Addressbook backends (Ross Burton)
+	#414191: Type fixes for EContact ints (Loïc Minier)
+	#433782 and #336574: Optimise vCard folding (Oystein Gisnas and
+	 Milan Crha)
+	#431135: Fix a crash when modifying a calendar event (Rob
+	 Bradford)
+	#274035: Importing a Vcard with attached photo data is now possible
+	 (Jonty Wareing)
+	#361138: Fix a crash when double clicking text widget in calendar
+	 in indic locales (Matthew Barnes)
+
+Other Contributors:
+	Jules Colding
+
+Updated Translations:
+	Jorge Gonzalez (es)
+
+
 Evolution-Data-Server 1.11.1 2007-04-23
 ---------------------------------------
 

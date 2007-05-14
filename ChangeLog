@@ -1,3 +1,7 @@
+2007-05-14  Srinivasa Ragavan
+	
+	* NEWS, configure.in: Evolution Data Server 1.11.2 release.
+
 2007-05-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fix for bug #361138
