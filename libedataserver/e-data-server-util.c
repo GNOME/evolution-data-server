@@ -295,11 +295,11 @@ e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
  **/
 size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 {
+	size_t ret;
 #ifdef HAVE_LKSTRFTIME
-	return strftime(s, max, fmt, tm);
+	ret = strftime(s, max, fmt, tm);
 #else
 	char *c, *ffmt, *ff;
-	size_t ret;
 
 	ffmt = g_strdup(fmt);
 	ff = ffmt;
@@ -325,8 +325,10 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 
 	ret = strftime(s, max, ffmt, tm);
 	g_free(ffmt);
-	return ret;
 #endif
+	if (ret == 0 && max > 0)
+		s[0] = '\0';
+	return ret;
 }
 
 /** 

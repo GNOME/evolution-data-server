@@ -1,3 +1,10 @@
+2007-05-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fix for bug #361138
+
+	* libedataserver/e-data-server-util.c: Handle strftime for non-indic
+	locales.
+	
 2007-05-08  Josselin Mouette  <joss@malsain.org>
 
 	reviewed by: Srinivasa Ragavan <sragavan@novell.com>
