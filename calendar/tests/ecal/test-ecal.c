@@ -25,8 +25,6 @@
 #include <string.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <bonobo-activation/bonobo-activation.h>
-#include <bonobo/bonobo-main.h>
 #include <libecal/e-cal.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-time-util.h>
@@ -43,6 +41,8 @@ static int tests_passed = 0;
 
 static ECal *client1;
 static ECal *client2;
+
+static GMainLoop *loop;
 
 /* Prints a message with a client identifier */
 static void
@@ -139,7 +139,7 @@ client_destroy_cb (gpointer data, GObject *object)
 		g_assert_not_reached ();
 
 	if (!client1 && !client2)
-		bonobo_main_quit ();
+		g_main_loop_quit (loop);
 }
 
 static char * 
@@ -721,18 +721,13 @@ main (int argc, char **argv)
 	textdomain (GETTEXT_PACKAGE);
 
 	g_type_init ();
-	bonobo_activation_init (argc, argv);
-
-	if (!bonobo_init (&argc, argv)) {
-		g_message ("main(): could not initialize Bonobo");
-		exit (1);
-	}
+	loop = g_main_loop_new (NULL, TRUE);
 
 	/* arg1- file name; arg2- client suffix */
 	uri = g_strconcat (argv[1], argv[2], NULL);
 	create_client (&client1, uri, E_CAL_SOURCE_TYPE_EVENT, FALSE);
 	
 	g_free (uri);	
-	bonobo_main ();
+	g_main_loop_run (loop);
 	return 0;
 }
