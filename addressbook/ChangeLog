@@ -1,5 +1,13 @@
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-book-view-private.h:
+	* libebook/e-book-listener.h:
+	* libebook/e-book-view-listener.h:
+	* libebook/Makefile.am:
+	Don't install implementation detail headers (#438577).
+
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
 	* libedata-book/e-book-backend-db-cache.c:
 	Fix compile warnings by casting gpointer to char*.
 

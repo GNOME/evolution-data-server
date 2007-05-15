@@ -13,8 +13,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libebook/Evolution-DataServer-Addressbook.h>
-#include <libebook/e-book-view-listener.h>
+
+#include "Evolution-DataServer-Addressbook.h"
+#include "e-book-view-listener.h"
 
 /* Creating a new addressbook. */
 EBookView *e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener);

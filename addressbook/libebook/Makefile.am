@@ -55,11 +55,8 @@ libebook_1_2_la_LDFLAGS = 							\
 libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
-	$(CORBA_GENERATED_H)				\
 	e-address-western.h				\
-	e-book-listener.h				\
 	e-book-query.h					\
-	e-book-view-listener.h				\
 	e-book-view.h					\
 	e-book-types.h					\
 	e-book.h					\
