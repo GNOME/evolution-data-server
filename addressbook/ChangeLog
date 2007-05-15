@@ -1,5 +1,11 @@
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
+	* tests/ebook/test-ebook-async.c:
+	Now that e_book_async_get_contact works, remove the Bonobo usage
+	here too.  No more Bonobo in the test suite!
+
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
 	* libebook/e-book.c:
 	Fix e_book_async_get_contact() which previously deadlocked.
 
