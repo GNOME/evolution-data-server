@@ -1,3 +1,8 @@
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
+	* libedata-book/e-book-backend-db-cache.c:
+	Fix compile warnings by casting gpointer to char*.
+
 2007-05-04  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #274035 from Jonty Wareing
