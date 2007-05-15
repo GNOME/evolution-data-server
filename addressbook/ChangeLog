@@ -1,5 +1,10 @@
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-book.c:
+	Fix e_book_async_get_contact() which previously deadlocked.
+
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
 	* tests/ebook/test-stress-bookviews.c:
 	* tests/ebook/test-self.c:
 	* tests/ebook/test-ebook.c:

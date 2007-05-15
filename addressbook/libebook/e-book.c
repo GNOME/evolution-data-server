@@ -1397,7 +1397,7 @@ do_get_contact (gboolean sync,
 		return FALSE;
 	}
 
-	our_op = e_book_new_op (book, TRUE);
+	our_op = e_book_new_op (book, sync);
 
 	g_mutex_lock (our_op->mutex);
 
