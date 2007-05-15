@@ -24,11 +24,6 @@
 #include "e2k-user-dialog.h"
 #include "e2k-types.h"
 
-#include <bonobo-activation/bonobo-activation.h>
-#include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-widget.h>
-//#include <libedatserver/e-gtk-utils.h>
-//#include <libedatserver/e-dialog-utils.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>

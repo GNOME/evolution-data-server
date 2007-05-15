@@ -1,3 +1,8 @@
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
+	* lib/e2k-user-dialog.c:
+	Remove bonobo includes, they are not used.
+
 2007-05-09  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* lib/e2k-utils.c: Fix for build break.
