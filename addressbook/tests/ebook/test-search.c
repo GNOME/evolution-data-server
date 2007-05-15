@@ -1,6 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
@@ -12,8 +11,7 @@ main (int argc, char **argv)
 	EBookQuery *query;
 	GList *c, *contacts;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	if (argc < 3) {
 		printf ("usage: test-search <addressbook uri> <query>\n");

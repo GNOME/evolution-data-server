@@ -1,5 +1,15 @@
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
+	* tests/ebook/test-stress-bookviews.c:
+	* tests/ebook/test-self.c:
+	* tests/ebook/test-ebook.c:
+	* tests/ebook/test-search.c:
+	* tests/ebook/test-ebook-view.c:
+	* tests/ebook/test-changes.c:
+	Don't use bonobo_init() when g_type_init() will do.
+
+2007-05-15  Ross Burton  <ross@openedhand.com>
+
 	* tests/ebook/test-untyped-phones.c:
 	* tests/ebook/test-categories.c:
 	* tests/ebook/test-photo.c:

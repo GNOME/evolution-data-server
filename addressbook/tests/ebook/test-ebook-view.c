@@ -1,8 +1,9 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <bonobo/bonobo-main.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <libebook/e-book.h>
+
+static GMainLoop *loop;
 
 static void
 print_contact (EContact *contact)
@@ -47,6 +48,8 @@ static void
 sequence_complete (EBookView *book_view, EBookViewStatus status)
 {
   printf ("sequence_complete (status == %d)\n", status);
+  
+  g_main_loop_quit (loop);
 }
 
 int
@@ -57,8 +60,8 @@ main (int argc, char **argv)
 	EBookQuery *query;
 	EBookView *view;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
+	loop = g_main_loop_new (NULL, TRUE);
 
 	/*
 	** the actual ebook foo
@@ -90,7 +93,7 @@ main (int argc, char **argv)
 
 	e_book_view_start (view);
 
-	bonobo_main ();
+	g_main_loop_run (loop);
 
 	return 0;
 }

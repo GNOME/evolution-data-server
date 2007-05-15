@@ -1,6 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
@@ -22,8 +21,7 @@ main (int argc, char **argv)
 	gchar *file_template;
 	gchar *uri;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	file_template = g_build_filename (g_get_tmp_dir (),
 					  "change-test-XXXXXX",
@@ -95,8 +93,6 @@ main (int argc, char **argv)
 	}
 
 	g_object_unref (book);
-
-	bonobo_main_quit();
 
 	return 0;
 }

@@ -1,6 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
@@ -12,8 +11,7 @@ main (int argc, char **argv)
 	GError *error = NULL;
 	char *vcard;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	printf ("getting the self contact\n");
 
@@ -29,8 +27,6 @@ main (int argc, char **argv)
 
 	g_object_unref (contact);
 	g_object_unref (book);
-
-	bonobo_main_quit();
 
 	return 0;
 }
