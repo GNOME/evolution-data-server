@@ -407,3 +407,42 @@ camel_disco_store_check_online (CamelDiscoStore *store, CamelException *ex)
 
 	return TRUE;
 }
+
+void
+camel_disco_store_prepare_for_offline(CamelDiscoStore *disco_store, CamelException *ex)
+{
+	CamelException x;
+	CamelService *service = CAMEL_SERVICE (disco_store);
+	gboolean network_state = camel_session_get_network_state (service->session);
+
+	camel_exception_init(&x);
+	/* Sync the folder fully if we've been told to sync online for this store or this folder */
+
+	if (network_state) {
+		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE) {
+			if (((CamelStore *)disco_store)->folders) {
+				GPtrArray *folders;
+				CamelFolder *folder;
+				int i, sync;
+				
+				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
+				
+				folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
+				for (i=0;i<folders->len;i++) {
+					folder = folders->pdata[i];
+					if (CAMEL_CHECK_TYPE(folder, CAMEL_DISCO_FOLDER_TYPE)
+					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
+						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
+						camel_exception_clear(&x);
+					}
+					camel_object_unref(folder);
+				}
+				g_ptr_array_free(folders, TRUE);
+			}
+		}
+		
+		camel_store_sync(CAMEL_STORE (disco_store), FALSE, &x);
+		camel_exception_clear(&x);
+	}
+}
+

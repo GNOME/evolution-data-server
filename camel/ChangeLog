@@ -1,3 +1,10 @@
+2007-05-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+
+	* camel-disco-store.c: (camel_disco_store_prepare_for_offline): Added
+	a new api to fetch a folder for offline sync.
+	* camel-disco-store.h:
+
 2007-05-12  Jules Colding  <colding@omesc.com>
  
 	* camel-lock-client.c (camel_lock_helper_init): Fix file descriptor leak

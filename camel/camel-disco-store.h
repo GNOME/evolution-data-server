@@ -113,6 +113,7 @@ gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *);
 
 /* Convenience functions */
 gboolean camel_disco_store_check_online (CamelDiscoStore *store, CamelException *ex);
+void camel_disco_store_prepare_for_offline(CamelDiscoStore *store, CamelException *ex);
 
 G_END_DECLS
 
