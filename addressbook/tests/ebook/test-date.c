@@ -1,4 +1,3 @@
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
@@ -8,8 +7,7 @@ main (int argc, char **argv)
 	EContact *contact;
 	EContactDate date, *dp;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	contact = e_contact_new ();
 

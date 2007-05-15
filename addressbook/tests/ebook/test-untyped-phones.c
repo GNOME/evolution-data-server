@@ -1,4 +1,3 @@
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libebook/e-book.h>
@@ -28,8 +27,7 @@ main (int argc, char **argv)
 	EContact *contact;
 	const char *phone;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	contact = e_contact_new_from_vcard (VCARD);
 

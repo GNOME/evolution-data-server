@@ -1,4 +1,3 @@
-#include <bonobo/bonobo-main.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libebook/e-book.h>
@@ -32,8 +31,7 @@ main (int argc, char **argv)
 	EContact *contact;
 	EContactPhoto *photo, *new_photo;
 
-	if (bonobo_init (&argc, argv) == FALSE)
-		g_error ("Could not initialize Bonobo");
+	g_type_init ();
 
 	contact = e_contact_new ();
 
@@ -41,7 +39,7 @@ main (int argc, char **argv)
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 	photo->data.inlined.mime_type = NULL;
 	photo->data.inlined.data = (guchar*)g_strdup (photo_data);
-	photo->data.inlined.length = _evc_base64_decode_simple (photo->data.inlined.data, strlen (photo_data));
+	photo->data.inlined.length = _evc_base64_decode_simple ((char*)photo->data.inlined.data, strlen (photo_data));
 
 	/* set the photo */
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
