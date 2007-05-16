@@ -36,6 +36,8 @@ main (int argc, char **argv)
 	camel_test_init(argc, argv);
 	
 	dir = opendir (SOURCEDIR);
+	if (!dir)
+		return 1;
 	
 	while ((dent = readdir (dir))) {
 		char *infile, *outfile, *charset, *work;

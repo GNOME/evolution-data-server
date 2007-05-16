@@ -107,7 +107,7 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 		errno = errnosave;
 		return -1;
 	}
-	
+
 	while ((ret = close (fd)) == -1 && errno == EINTR)
 		;
 	

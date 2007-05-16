@@ -340,7 +340,7 @@ md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 	md5_init (&ctx);
 	fp = g_fopen(filename, "rb");
 	if (!fp) {
-	return;
+		return;
 	}
 	
 	while ((nb_bytes_read = fread (tmp_buf, 1, sizeof (tmp_buf), fp)) > 0)
@@ -350,7 +350,7 @@ md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 		fclose(fp);
 		return;
 	}
-
+	fclose(fp);
 	
 	md5_final (&ctx, digest);
 }

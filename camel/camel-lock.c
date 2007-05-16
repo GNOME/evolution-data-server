@@ -89,17 +89,6 @@ camel_lock_dot(const char *path, CamelException *ex)
 	sprintf(lock, "%s.lock", path);
 	locktmp = alloca(strlen(path) + strlen("XXXXXX") + 1);
 
-#ifndef HAVE_MKSTEMP
-	sprintf(locktmp, "%sXXXXXX", path);
-	if (mktemp(locktmp) == NULL) {
-		/* well, this is really only a programatic error */
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create lock file for %s: %s"),
-				      path, g_strerror (errno));
-		return -1;
-	}
-#endif
-
 	while (retry < CAMEL_LOCK_DOT_RETRY) {
 
 		d(printf("trying to lock '%s', attempt %d\n", lock, retry));
@@ -107,12 +96,8 @@ camel_lock_dot(const char *path, CamelException *ex)
 		if (retry > 0)
 			sleep(CAMEL_LOCK_DOT_DELAY);
 
-#ifdef HAVE_MKSTEMP
 		sprintf(locktmp, "%sXXXXXX", path);
-		fdtmp = mkstemp(locktmp);
-#else
-		fdtmp = open(locktmp, O_RDWR|O_CREAT|O_EXCL, 0600);
-#endif
+		fdtmp = g_mkstemp(locktmp);
 		if (fdtmp == -1) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Could not create lock file for %s: %s"),
@@ -372,7 +357,16 @@ int main(int argc, char **argv)
 #endif
 
 	fd1 = open("mylock", O_RDWR);
+	if (fd1 == -1) {
+		printf("Could not open lock file (mylock): %s", g_strerror (errno));
+		return 1;
+	}
 	fd2 = open("mylock", O_RDWR);
+	if (fd2 == -1) {		
+		printf("Could not open lock file (mylock): %s", g_strerror (errno));
+		close (fd1);
+		return 1;
+	}
 
 	if (camel_lock_fcntl(fd1, CAMEL_LOCK_WRITE, ex) == 0) {
 		printf("got fcntl write lock once\n");

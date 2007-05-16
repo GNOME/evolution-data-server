@@ -23,6 +23,7 @@ main(int argc, char **argv)
 		if (fgets (buf, sizeof(buf), fp))
 			str = g_string_append (str, buf);
 	}
+	fclose (fp);
 
 	vcard = e_vcard_new_from_string (str->str);
 

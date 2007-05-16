@@ -2279,7 +2279,8 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 		}
 
 		g_mapped_file_free (mapped_file);
-		close (fd);
+		if (fd != -1)
+			close (fd);
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
 		new_attach_list = g_slist_append (new_attach_list, dest_url);

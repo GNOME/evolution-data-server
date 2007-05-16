@@ -1,3 +1,27 @@
+2007-05-16  Jules Colding  <colding@omesc.com>
+
+	* camel-lock.c (camel_lock_dot): Use g_mkstemp()
+
+	* camel-folder-summary.c (camel_folder_summary_save): Fix file descriptor leak. 
+	fclose() a fdopen() stream instead of close()'ing the underlying file descriptor.
+
+	* camel-uid-cache.c (camel_uid_cache_save): Cleanups, such as 
+	setting cache->fd = -1 when fd has been closed.
+
+	* camel-block-file.c (key_file_use): Do not close() if (fd == -1)
+
+	* camel-index-control.c (do_perf): Fix file descriptor leak
+
+	* camel-charset-map.c (main): Check for return value
+
+	* camel-text-index.c (dump_raw): Fix file descriptor leak
+
+	* camel-lock.c (main): Fix file descriptor leak.
+
+	* camel-lock-client.c (camel_lock_helper_init): Fix file descriptor leak
+ 
+	* camel-process.c (camel_process_fork): Fix file descriptor leak
+ 
 2007-05-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 
@@ -5,12 +29,6 @@
 	a new api to fetch a folder for offline sync.
 	* camel-disco-store.h:
 
-2007-05-12  Jules Colding  <colding@omesc.com>
- 
-	* camel-lock-client.c (camel_lock_helper_init): Fix file descriptor leak
- 
-	* camel-process.c (camel_process_fork): Fix file descriptor leak
- 
 2007-05-12  Jules Colding  <colding@omesc.com>
 
 	* camel-store.h (CamelFolderInfo): Change type of unread and total 

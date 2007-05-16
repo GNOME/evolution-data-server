@@ -1,3 +1,16 @@
+2007-05-16  Jules Colding  <colding@omesc.com>
+
+	* camel-spool-summary.c (spool_summary_sync_full): Use g_mkstemp()
+
+2007-05-14  Jules Colding  <colding@omesc.com>
+
+	* camel-mh-summary.c (mh_summary_next_uid_string): Do not close() if (fd == -1).
+
+	* camel-spool-summary.c (spool_summary_sync_full): alloca() changed into malloc(). 
+	alloca() has undefined behaviour for stack overflow so it shouldn't really be used 
+	unless there is a *very* good reason. Cleanups related to this fix as well. Do not 
+	close() if (fd == -1).
+
 2007-04-05  Ross Burton  <ross@openedhand.com>
 
 	* camel-local-store.c: (get_folder):

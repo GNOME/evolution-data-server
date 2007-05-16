@@ -1,3 +1,9 @@
+2007-05-14  Jules Colding  <colding@omesc.com>
+
+	* mime-filter/test-charset.c (main): Check return value
+
+	* message/test2.c (convert): Check return value
+
 2006-06-22  Harish Krishnaswamy  <kharish@novell.com>
 
 	* Makefile.am: Remove CVS/*, .cvsignore files from

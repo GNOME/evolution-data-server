@@ -1,3 +1,14 @@
+2007-05-16  Jules Colding  <colding@omesc.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (fetch_attachments): 
+	Do not close() if (fd == -1)
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c (set_attachments_to_cal_component): 
+	Do not close() if (fd == -1)
+
+	* backends/file/e-cal-backend-file.c (fetch_attachments): 
+	Do not close() if (fd == -1)
+
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
 	* tests/ecal/test-ecal.c:

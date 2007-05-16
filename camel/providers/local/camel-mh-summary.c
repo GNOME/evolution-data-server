@@ -147,7 +147,8 @@ static char *mh_summary_next_uid_string(CamelFolderSummary *s)
 	} else {
 		/* else scan for one - and create it too, to make sure */
 		do {
-			close(fd);
+			if (fd != -1)
+				close(fd);
 			uid = camel_folder_summary_next_uid(s);
 			name = g_strdup_printf("%s/%u", cls->folder_path, uid);
 			/* O_EXCL isn't guaranteed, sigh.  Oh well, bad luck, mh has problems anyway */
@@ -155,7 +156,8 @@ static char *mh_summary_next_uid_string(CamelFolderSummary *s)
 			g_free(name);
 		} while (fd == -1 && errno == EEXIST);
 
-		close(fd);
+		if (fd != -1)
+			close(fd);
 
 		uidstr = g_strdup_printf("%u", uid);
 	}

@@ -110,6 +110,7 @@ load_file (EBookBackendVCF *vcf, int fd)
 
 	fp = fdopen (fd, "rb");
 	if (!fp) {
+		close (fd); /* callers depend on fd being closed by this function */
 		g_warning ("failed to open `%s' for reading", vcf->priv->filename);
 		return;
 	}
@@ -140,6 +141,7 @@ load_file (EBookBackendVCF *vcf, int fd)
 static gboolean
 save_file (EBookBackendVCF *vcf)
 {
+	gboolean retv = FALSE;
 	GList *l;
 	char *new_path;
 	int fd, rv;
@@ -151,6 +153,10 @@ save_file (EBookBackendVCF *vcf)
 	new_path = g_strdup_printf ("%s.new", vcf->priv->filename);
 
 	fd = g_open (new_path, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666);
+	if (fd == -1) {
+		g_warning ("write failed.  could not open output file\n");
+		goto out;
+	}
 
 	for (l = vcf->priv->contact_list; l; l = l->next) {
 		char *vcard_str = l->data;
@@ -161,34 +167,34 @@ save_file (EBookBackendVCF *vcf)
 		if (rv < len) {
 			/* XXX */
 			g_warning ("write failed.  we need to handle short writes\n");
-			close (fd);
 			g_unlink (new_path);
-			return FALSE;
+			goto out;
 		}
 
 		rv = write (fd, "\r\n\r\n", 4);
 		if (rv < 4) {
 			/* XXX */
 			g_warning ("write failed.  we need to handle short writes\n");
-			close (fd);
 			g_unlink (new_path);
-			return FALSE;
+			goto out;
 		}
 	}
 
 	if (0 > g_rename (new_path, vcf->priv->filename)) {
 		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, strerror(errno));
 		g_unlink (new_path);
-		return FALSE;
+		goto out;
 	}
+	retv = TRUE;
 
+out:
+	if (fd != -1)
+		close (fd);
 	g_free (new_path);
-
-	vcf->priv->dirty = FALSE;
-
+	vcf->priv->dirty = !retv;
 	g_mutex_unlock (vcf->priv->mutex);
 
-	return TRUE;
+	return retv;
 }
 
 static gboolean

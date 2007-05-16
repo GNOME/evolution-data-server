@@ -52,6 +52,9 @@ static char *convert(const char *in, const char *from, const char *to)
 		char *nout, *noutp;
 		iconv_t ic = iconv_open(from, to);
 
+		if (ic == (iconv_t)-1)
+			goto fail;
+
 		inp = out;
 		inlen = strlen(out);
 		outlen = inlen*5 + 16;
@@ -68,6 +71,7 @@ static char *convert(const char *in, const char *from, const char *to)
 		printf("Camel thinks the best encoding of '%s' is %s, although we converted from %s\n",
 		       in, camel_charset_best(out, strlen(out)), from);
 	}
+fail:
 #endif
 
 	return out;

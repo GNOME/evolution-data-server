@@ -172,6 +172,7 @@ do_perf(int argc, char **argv)
 	idx = (CamelIndex *)camel_text_index_new("/tmp/index", O_TRUNC|O_CREAT|O_RDWR);
 	if (idx == NULL) {
 		perror("open index");
+		closedir(dir);
 		return 1;
 	}
 

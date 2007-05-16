@@ -1172,6 +1172,7 @@ dump_raw(GHashTable *map, char *path)
 		} while (len);
 		printf("\n");
 	}
+	close (fd);
 }
 #endif
 
@@ -1937,6 +1938,7 @@ int main(int argc, char **argv)
 
 		index++;
 	}
+	fclose (fp);
 
 	printf("Freeing partition index\n");
 	camel_partition_table_free(cpi);

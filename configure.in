@@ -707,8 +707,6 @@ else
 fi
 
 
-AC_CHECK_FUNCS(mkstemp mkdtemp isblank)
-
 dnl **************************************************
 dnl ctime_r prototype
 dnl **************************************************

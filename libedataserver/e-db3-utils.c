@@ -83,11 +83,10 @@ cp_file (const char *src, const char *dest)
 			place += count;
 		}
 	}
-	if (close (i))
-		return -1;
-	if (close (o))
-		return -1;
-	return 0;
+	i = close (i);
+	if (close (o) == -1)
+		i = -1;
+	return (i == -1) ? -1 : 0;
 }
 
 static int
@@ -98,10 +97,7 @@ touch_file (const char *file)
 	if (o == -1)
 		return -1;
 
-	if (close (o) == -1)
-		return -1;
-
-	return 0;
+	return close (o);
 }
 
 static int

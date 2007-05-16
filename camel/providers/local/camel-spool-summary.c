@@ -128,7 +128,7 @@ static int
 spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	int fd = -1, fdout = -1;
-	char *tmpname = NULL;
+	char tmpname[64] = { '\0' };
 	char *buffer, *p;
 	off_t spoollen, outlen;
 	int size, sizeout;
@@ -149,16 +149,9 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 		return -1;
 	}
 
-#ifdef HAVE_MKSTEMP
-	tmpname = alloca (64);
 	sprintf (tmpname, "/tmp/spool.camel.XXXXXX");
-	fdout = mkstemp (tmpname);
-#else
-#warning "Your system has no mkstemp(3), spool updating may be insecure"
-	tmpname = alloca (L_tmpnam);
-	tmpnam (tmpname);
-	fdout = open (tmpname, O_RDWR|O_CREAT|O_EXCL, 0600);
-#endif
+	fdout = g_mkstemp (tmpname);
+
 	d(printf("Writing tmp file to %s\n", tmpname));
 	if (fdout == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -245,11 +238,9 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 					      _("Could not sync spool folder %s: %s\n"
 						"Folder may be corrupt, copy saved in `%s'"),
 					      ((CamelLocalSummary *)cls)->folder_path,
-					      g_strerror (errno), tmpnam);
+					      g_strerror (errno), tmpname);
 			/* so we dont delete it */
-			close(fdout);
-			tmpname = NULL;
-			fdout = -1;
+			tmpname[0] = '\0';
 			g_free(buffer);
 			goto error;
 		}
@@ -264,10 +255,8 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 				      _("Could not sync spool folder %s: %s\n"
 					"Folder may be corrupt, copy saved in `%s'"),
 				      ((CamelLocalSummary *)cls)->folder_path,
-				      g_strerror (errno), tmpnam);
-		close(fdout);
-		tmpname = NULL;
-		fdout = -1;
+				      g_strerror (errno), tmpname);
+		tmpname[0] = '\0';
 		goto error;
 	}
 
@@ -277,16 +266,16 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 				      _("Could not sync spool folder %s: %s\n"
 					"Folder may be corrupt, copy saved in `%s'"),
 				      ((CamelLocalSummary *)cls)->folder_path,
-				      g_strerror (errno), tmpnam);
-		close(fdout);
-		tmpname = NULL;
-		fdout = -1;
+				      g_strerror (errno), tmpname);
+		tmpname[0] = '\0';
 		fd = -1;
 		goto error;
 	}
 
 	close(fdout);
-	unlink(tmpname);
+
+	if (tmpname[0] != '\0')
+		unlink(tmpname);
 
 	camel_operation_end(NULL);
 		
@@ -298,7 +287,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 	if (fdout != -1)
 		close(fdout);
 	
-	if (tmpname)
+	if (tmpname[0] != '\0')
 		unlink(tmpname);
 
 	camel_operation_end(NULL);

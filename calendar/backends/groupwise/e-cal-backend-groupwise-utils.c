@@ -833,7 +833,8 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 				g_warning ("DEBUG: attachment write failed.\n");
 			}
 			g_free (attach_data);
-			close (fd);
+			if (fd != -1)
+				close (fd);
 		}
 		g_free (filename);
 

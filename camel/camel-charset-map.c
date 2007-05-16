@@ -106,6 +106,8 @@ int main (void)
 
 	for (j = 0; tables[j].name; j++) {
 		cd = iconv_open (UCS, tables[j].name);
+		if (cd == (iconv_t)-1)
+			exit (1);
 		inptr = in;
 		outptr = (char *)(out);
 		inlen = sizeof (in);

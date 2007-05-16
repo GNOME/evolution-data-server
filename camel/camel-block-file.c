@@ -916,7 +916,8 @@ key_file_use(CamelKeyFile *bs)
 	if ((fd = g_open(bs->path, bs->flags|O_BINARY, 0600)) == -1
 	    || (bs->fp = fdopen(fd, flag)) == NULL) {
 		err = errno;
-		close(fd);
+		if (fd != -1)
+			close(fd);
 		CAMEL_KEY_FILE_UNLOCK(bs, lock);
 		errno = err;
 		return -1;

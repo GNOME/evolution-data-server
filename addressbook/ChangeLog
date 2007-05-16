@@ -1,3 +1,10 @@
+2007-05-16  Jules Colding  <colding@omesc.com>
+
+	* backends/vcf/e-book-backend-vcf.c (load_file): Fix file descriptor leak.
+	(save_file): Cleanup. Fix file descriptor leak.
+
+	* tests/vcard/dump-vcard.c (main): Fix file descriptor leak
+
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
 	* tests/ebook/test-ebook-async.c:

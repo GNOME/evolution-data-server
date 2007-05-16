@@ -687,14 +687,16 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	path_meta = alloca(strlen(s->meta_summary->path)+4);
 	sprintf(path_meta, "%s~", s->meta_summary->path);
 	fd_meta = g_open(path_meta, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
-	if (fd_meta == -1)
+	if (fd_meta == -1) {
+		fclose(out);
 		return -1;
+	}
 	out_meta = fdopen(fd_meta, "wb");
 	if (out_meta == NULL) {
 		i = errno;
 		g_unlink(path);
 		g_unlink(path_meta);
-		close(fd);
+		fclose(out);
 		close(fd_meta);
 		errno = i;
 		return -1;
