@@ -305,11 +305,11 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
 	int            db_error;
-	char          *id, *lookup_id;
+	const char    *id, *lookup_id;
 	char          *vcard_with_rev;
 
 	*contact = e_contact_new_from_vcard (vcard);
-	id = e_contact_get(*contact, E_CONTACT_UID);
+	id = e_contact_get_const (*contact, E_CONTACT_UID);
 
 	if (id == NULL)
 		return GNOME_Evolution_Addressbook_OtherError;
@@ -337,7 +337,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	}
 	g_free (vcard_dbt.data);
 
-	/* update the revisio (modified time of contact) */
+	/* update the revision (modified time of contact) */
 	set_revision (*contact);
 	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
 	
@@ -356,7 +356,6 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	} else {
 		g_warning (G_STRLOC ": db->put failed with %s", db_strerror(db_error));
 	}
-	g_free (id);
 	g_free (vcard_with_rev);
 
 	if (0 == db_error)
