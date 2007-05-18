@@ -1,6 +1,12 @@
 2007-05-18  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
+	Tiny changes: disable debug output, make a warning more useful,
+	and fix some whitespace.
+
+2007-05-18  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
 	Don't duplicate the contact UID when modifying a contact.
 
 2007-05-16  Jules Colding  <colding@omesc.com>
