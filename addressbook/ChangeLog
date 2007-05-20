@@ -1,3 +1,10 @@
+2007-05-20  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
+	Don't fetch the existing contact when modifying a contact,
+	allowing modifications to work if there is a UID set correctly.
+	This also will speed up modifications.
+
 2007-05-18  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:

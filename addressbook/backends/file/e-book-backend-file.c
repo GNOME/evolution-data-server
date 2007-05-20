@@ -314,6 +314,10 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	if (id == NULL)
 		return GNOME_Evolution_Addressbook_OtherError;
 
+	/* update the revision (modified time of contact) */
+	set_revision (*contact);
+	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
+
 	/* This is disgusting, but for a time cards were added with
            ID's that are no longer used (they contained both the uri
            and the id.) If we recognize it as a uri (file:///...) trim
@@ -325,23 +329,8 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	else
 		lookup_id = id;
 
-	string_to_dbt (lookup_id, &id_dbt);	
-	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-	vcard_dbt.flags = DB_DBT_MALLOC;
-
-	/* get the old ecard - the one that's presently in the db */
-	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-	if (0 != db_error) {
-		g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
-		return GNOME_Evolution_Addressbook_ContactNotFound;
-	}
-	g_free (vcard_dbt.data);
-
-	/* update the revision (modified time of contact) */
-	set_revision (*contact);
-	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
-	
-	string_to_dbt (vcard_with_rev, &vcard_dbt);	
+	string_to_dbt (lookup_id, &id_dbt);
+	string_to_dbt (vcard_with_rev, &vcard_dbt);
 
 	db_error = db->put (db, NULL, &id_dbt, &vcard_dbt, 0);
 
