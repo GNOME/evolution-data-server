@@ -1,3 +1,8 @@
+2007-05-20  Ross Burton  <ross@openedhand.com>
+
+	* configure.in:
+	Use a faster pkgconfig call when checking for soup (#438975).
+
 2007-05-16  Jules Colding  <colding@omesc.com>
 
 	* configure.in: Removed unused function check

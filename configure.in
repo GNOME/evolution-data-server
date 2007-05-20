@@ -1286,7 +1286,7 @@ AC_SUBST(E_FACTORY_CFLAGS)
 AC_SUBST(E_FACTORY_LIBS)
 
 dnl --- Groupwise flags
-PKG_CHECK_MODULES(SOUPTEMP, libsoup-2.4, have_libsoup_24=yes, have_libsoup_24=no)
+PKG_CHECK_EXISTS(libsoup-2.4, have_libsoup_24=yes, have_libsoup_24=no)
 if test $have_libsoup_24 = yes; then
     LIBSOUP_REQUIRED=2.3.0
     LIBSOUP=libsoup-2.4
