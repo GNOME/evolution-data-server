@@ -724,8 +724,9 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 						vcard_string);
 
 		g_object_unref (contact);
+		
+		g_free (vcard_dbt.data);
 	}
-	g_free (vcard_dbt.data);
 }
 
 static EBookBackendSyncStatus

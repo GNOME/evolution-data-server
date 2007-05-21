@@ -1,3 +1,8 @@
+2007-05-21  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
+	Move a g_free to the correct place, to avoid calling g_free (NULL).
+
 2007-05-20  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
