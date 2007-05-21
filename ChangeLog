@@ -1,3 +1,7 @@
+2007-05-21  Wang Xin  <jedy.wang@sun.com>
+
+	* libedataserver/e-time-utils.c: Fixes #439050.
+
 2007-05-20  Ross Burton  <ross@openedhand.com>
 
 	* configure.in:

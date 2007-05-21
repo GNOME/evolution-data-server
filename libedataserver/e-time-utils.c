@@ -1484,7 +1484,7 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 	gchar *format_str;
 	ETimeParseStatus parse_ret;
 	gboolean parsed = FALSE;
-	int i;
+	int i, n;
 
 	if (string_is_empty (value)) {
 		memset (result, 0, sizeof (*result));
@@ -1496,7 +1496,7 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 	pos = (const char *) locale_str;
 
 	/* Skip whitespace */
-	while (isspace (*pos))
+	while (n = (int)((unsigned char)*pos), isspace (n) != 0)
 		pos++;
 
 	/* Try each of the formats in turn */
