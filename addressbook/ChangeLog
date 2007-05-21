@@ -1,6 +1,12 @@
 2007-05-21  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
+	Check the thread data is a book view before running it, just in
+	case something terrible has happened.
+
+2007-05-21  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
 	Call set_errcall() earlier, so it can catch errors in env->open.
 
 2007-05-21  Ross Burton  <ross@openedhand.com>

@@ -526,14 +526,24 @@ get_closure (EDataBookView *book_view)
 static gpointer
 book_view_thread (gpointer data)
 {
-	EDataBookView *book_view = data;
-	FileBackendSearchClosure *closure = get_closure (book_view);
-	EBookBackendFile *bf = closure->bf;
+	EDataBookView *book_view;
+	FileBackendSearchClosure *closure;
+	EBookBackendFile *bf;
 	const char *query;
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
 	int db_error;
 	gboolean stopped = FALSE, allcontacts;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
+
+	book_view = data;
+	closure = get_closure (book_view);
+	if (!closure) {
+		g_warning (G_STRLOC ": NULL closure in book view thread");
+		return NULL;
+	}
+	bf = closure->bf;
 
 	d(printf ("starting initial population of book view\n"));
 
