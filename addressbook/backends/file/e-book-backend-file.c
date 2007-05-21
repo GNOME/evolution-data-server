@@ -1100,6 +1100,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			return db_error_to_status (db_error);
 		}
 
+		env->set_errcall (env, file_errcall);
+
 		/* Set the allocation routines to the non-aborting GLib functions */
 		env->set_alloc (env, (void *(*)(size_t))g_try_malloc, 
 				(void *(*)(void *, size_t))g_try_realloc,
@@ -1114,8 +1116,6 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			g_free (filename);
 			return db_error_to_status (db_error);
 		}
-
-		env->set_errcall (env, file_errcall);
 
 		global_env.env = env;
 		global_env.ref_count = 1;
