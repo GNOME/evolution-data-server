@@ -62,16 +62,13 @@ libecal_1_2_la_LDFLAGS = 								\
 libecalincludedir = $(privincludedir)/libecal
 
 libecalinclude_HEADERS =	\
-	$(CORBA_GENERATED_H)	\
 	e-cal.h			\
 	e-cal-component.h	\
-	e-cal-listener.h	\
 	e-cal-recur.h		\
 	e-cal-time-util.h	\
 	e-cal-types.h		\
 	e-cal-util.h		\
-	e-cal-view.h		\
-	e-cal-view-listener.h
+	e-cal-view.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

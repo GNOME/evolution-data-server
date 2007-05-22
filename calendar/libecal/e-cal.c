@@ -38,6 +38,7 @@
 #include "e-cal-time-util.h"
 #include "e-cal-listener.h"
 #include "e-cal-view-listener.h"
+#include "e-cal-view-private.h"
 #include "e-cal.h"
 
 

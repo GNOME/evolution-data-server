@@ -22,9 +22,7 @@
 #define E_CAL_VIEW_H
 
 #include <glib-object.h>
-#include <libecal/Evolution-DataServer-Calendar.h>
 #include <libecal/e-cal-types.h>
-#include <libecal/e-cal-view-listener.h>
 
 G_BEGIN_DECLS
 
@@ -59,7 +57,6 @@ struct _ECalViewClass {
 
 GType      e_cal_view_get_type (void);
 
-ECalView *e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *listener, struct _ECal *client);
 struct _ECal *e_cal_view_get_client (ECalView *view);
 void e_cal_view_start (ECalView *view);
 

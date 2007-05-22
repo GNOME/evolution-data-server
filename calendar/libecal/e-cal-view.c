@@ -28,6 +28,7 @@
 #include "e-cal.h"
 #include "e-cal-view.h"
 #include "e-cal-view-listener.h"
+#include "e-cal-view-private.h"
 
 
 

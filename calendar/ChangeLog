@@ -1,3 +1,17 @@
+2007-05-22  Ross Burton  <ross@openedhand.com>
+
+	* libecal/Makefile.am:
+	* libecal/e-cal.c:
+	* libecal/e-cal-view.c:
+	* libecal/e-cal-view.h:
+	* libecal/e-cal-view-private.h:
+	* libecal/e-cal-listener.h:
+	* libecal/e-cal-view-listener.h:
+	Move e_cal_view_new to e-cal-view-private.h because it's an
+	internal function, don't install the listener headers, and
+	sanitise includes so that the installed headers don't mention
+	Bonobo (#438727).
+
 2007-05-16  Jules Colding  <colding@omesc.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c (fetch_attachments): 
