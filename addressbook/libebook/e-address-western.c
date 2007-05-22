@@ -141,7 +141,7 @@ e_address_western_is_po_box (gchar *line)
   deemed to be the line in the form of <town, region postal-code>. */
 
 static gboolean
-e_address_western_is_postal (guchar *line)
+e_address_western_is_postal (gchar *line)
 {
 	gboolean retval;
 	int cntr;

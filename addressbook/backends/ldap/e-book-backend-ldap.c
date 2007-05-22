@@ -3215,7 +3215,7 @@ photo_populate (EContact *contact, struct berval **ber_values)
                 EContactPhoto photo;
                 photo.type = E_CONTACT_PHOTO_TYPE_INLINED;
                 photo.data.inlined.mime_type = NULL;
-                photo.data.inlined.data = ber_values[0]->bv_val;
+                photo.data.inlined.data = (guchar*)ber_values[0]->bv_val;
                 photo.data.inlined.length = ber_values[0]->bv_len;
 
                 e_contact_set (contact, E_CONTACT_PHOTO, &photo);

@@ -3395,7 +3395,11 @@ e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *boo
 }
 
 static void
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3
+file_errcall (const DB_ENV *env, const char *buf1, const char *buf2)
+#else
 file_errcall (const char *buf1, char *buf2)
+#endif
 {
 	g_warning ("libdb error: %s", buf2);
 }
