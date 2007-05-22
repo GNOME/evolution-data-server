@@ -1,5 +1,11 @@
 2007-05-22  Ross Burton  <ross@openedhand.com>
 
+	* libebook/e-book-view-listener.c:
+	Use g_list_prepend/reverse rather than append. Thanks to Paolo
+	Borelli (#360114).
+
+2007-05-22  Ross Burton  <ross@openedhand.com>
+
 	* libebook/e-address-western.c:
 	Change a type from guchar to gchar, to stop compiler warnings.
 	

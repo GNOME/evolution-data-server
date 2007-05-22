@@ -162,9 +162,10 @@ e_book_view_listener_queue_sequence_event (EBookViewListener          *listener,
 	resp->status    = E_BOOK_VIEW_STATUS_OK;
 	
 	for ( i = 0; i < vcards->_length; i++ ) {
-		resp->contacts = g_list_append(resp->contacts, e_contact_new_from_vcard (vcards->_buffer[i]));
+		resp->contacts = g_list_prepend (resp->contacts, e_contact_new_from_vcard (vcards->_buffer[i]));
 	}
-
+	resp->contacts = g_list_reverse (resp->contacts);
+	
 	e_book_view_listener_queue_response (listener, resp);
 }
 
