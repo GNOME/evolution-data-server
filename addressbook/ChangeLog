@@ -1,3 +1,12 @@
+2007-05-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Downstream fixes from SUSE.
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_get_contact_list):
+	* libedata-book/e-data-book-view.c:
+	(e_data_book_view_notify_update):
+
 2007-05-21  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:

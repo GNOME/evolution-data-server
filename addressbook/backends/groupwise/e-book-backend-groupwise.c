@@ -1936,6 +1936,12 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	switch (egwb->priv->mode) {
 		
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
+
+		if (!egwb->priv->file_db) {
+			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
+			return;
+		}
+		
 		if (egwb->priv->is_summary_ready && 
 		    e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
 			int i;
@@ -1946,7 +1952,6 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				EContact *contact = 
 					e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 				contacts = g_list_append (contacts, contact);	
-				g_object_unref (contact);
 			}
 			g_ptr_array_free (ids, TRUE);
 		}

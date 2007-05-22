@@ -240,13 +240,18 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 			     EContact    *contact)
 {
 	gboolean currently_in_view, want_in_view;
-	const char *id;
+	const char *id=NULL;
 	char *vcard;
 
 	g_mutex_lock (book_view->priv->pending_mutex);
 
 	id = e_contact_get_const (contact, E_CONTACT_UID);
-
+	if (!id) {
+		g_object_unref (contact);
+		g_mutex_unlock (book_view->priv->pending_mutex);
+		return;
+	}
+	
 	currently_in_view =
 		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
 	want_in_view = e_book_backend_sexp_match_contact (
