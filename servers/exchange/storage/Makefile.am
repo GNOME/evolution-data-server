@@ -63,7 +63,6 @@ libexchange_storage_1_2_la_LIBADD =				\
 	$(top_builddir)/servers/exchange/lib/libexchange.la	\
 	$(top_builddir)/servers/exchange/xntlm/libxntlm.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(top_builddir)/libedataserverui/libedataserverui-1.2.la \
 	$(E_DATA_SERVER_LIBS)					\
 	$(E_DATA_SERVER_UI_LIBS)				\
 	$(LDAP_LIBS)						\
