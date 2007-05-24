@@ -1,3 +1,9 @@
+2007-05-24  Ross Burton  <ross@openedhand.com>
+
+	* storage/Makefile.am:
+	Link to libedataserverui, for e-passwords.  This breaks
+	--as-needed (#335038).
+
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
 	* lib/e2k-user-dialog.c:
