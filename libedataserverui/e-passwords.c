@@ -831,9 +831,6 @@ ep_ask_password(EPassMsg *msg)
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (password_dialog)->vbox), 0);
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (password_dialog)->action_area), 12);
 
-#if !GTK_CHECK_VERSION (2,4,0)
-	gtk_dialog_set_has_separator(password_dialog, FALSE);
-#endif
 	gtk_dialog_set_default_response(password_dialog, GTK_RESPONSE_OK);
 
 	vbox = gtk_vbox_new (FALSE, 12);

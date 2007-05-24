@@ -1,3 +1,8 @@
+2007-05-24  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (ep_ask_password):
+	Remove check for obsolete GTK+ version (#424562).
+
 2007-05-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #420496 from Ebby Wiselyn.
