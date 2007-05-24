@@ -1,3 +1,9 @@
+2007-05-24  Ross Burton  <ross@openedhand.com>
+
+	* providers/sendmail/Makefile.am:
+	Add missing link flags to fix build with -z,defs. (#409542, Loic
+	Minier)
+
 2007-05-16  Jules Colding  <colding@omesc.com>
 
 	* camel-lock.c (camel_lock_dot): Use g_mkstemp()

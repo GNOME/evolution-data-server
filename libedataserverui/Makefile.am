@@ -34,16 +34,10 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-source-option-menu.c		\
 	e-tree-model-generator.c
 
-if OS_WIN32
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
-else
-libedataserverui_1_2_la_LIBADD = 				\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
-endif
 
 libedataserverui_1_2_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED)

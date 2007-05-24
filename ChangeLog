@@ -1,3 +1,9 @@
+2007-05-24  Ross Burton  <ross@openedhand.com>
+
+	* libedataserverui/Makefile.am:
+	Add missing link flags to fix build with -z,defs. (#409542, Loic
+	Minier)
+
 2007-05-21  Wang Xin  <jedy.wang@sun.com>
 
 	* libedataserver/e-time-utils.c: Fixes #439050.

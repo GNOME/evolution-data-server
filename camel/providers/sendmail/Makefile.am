@@ -23,4 +23,9 @@ noinst_HEADERS =		\
 
 libcamelsendmail_la_LDFLAGS = -avoid-version -module
 
+libcamelsendmail_la_LIBADD = \
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(CAMEL_LIBS)
+
 EXTRA_DIST = libcamelsendmail.urls
