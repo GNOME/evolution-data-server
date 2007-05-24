@@ -971,7 +971,7 @@ if test "x${with_krb5}" != "xno"; then
 	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
 	[
 		LDFLAGS="$LDFLAGS -L$with_krb5_libs $mitlibs"
-		AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
+		AC_TRY_LINK([#include <krb5.h>],krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
 		[
 			LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $heimlibs"
 			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5="no")
@@ -998,11 +998,16 @@ if test "x${with_krb5}" != "xno"; then
 			msg_krb5="yes (Heimdal)"
 		fi
 		KRB5_LDFLAGS="-L$with_krb5_libs $ac_cv_lib_kerberos5"
+		AC_MSG_RESULT(msg_krb5)
+	else
+		dnl AC_MSG_CHECKING([for Kerberos 5])
+		AC_MSG_RESULT([no])
+		AC_MSG_ERROR([You specified with krb5, but it was not found.])
 	fi
 else
-	AC_MSG_CHECKING(for Kerberos 5)
-	AC_MSG_RESULT($with_krb5)
+	AC_MSG_WARN([krb5 support disabled])
 fi
+
 AM_CONDITIONAL(ENABLE_KRB5, test x$with_krb5 != xno)
 
 AC_CHECK_HEADER([et/com_err.h],[AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have et/comm_err.h])])

@@ -1,5 +1,11 @@
 2007-05-24  Ross Burton  <ross@openedhand.com>
 
+	* configure.in:
+	Fix krb5 checks when using --as-needed (part of #342830, John
+	N. Laliberte).
+
+2007-05-24  Ross Burton  <ross@openedhand.com>
+
 	* libedataserverui/Makefile.am:
 	Add missing link flags to fix build with -z,defs. (#409542, Loic
 	Minier)
