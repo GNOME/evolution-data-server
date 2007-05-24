@@ -1548,7 +1548,7 @@ e_contact_get_const (EContact *contact, EContactField field_id)
  * Sets the value of @contact's field specified by @field_id to @value.
  **/
 void
-e_contact_set (EContact *contact, EContactField field_id, gpointer value)
+e_contact_set (EContact *contact, EContactField field_id, const gpointer value)
 {
 	d(printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value));
 

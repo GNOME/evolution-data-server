@@ -1,3 +1,8 @@
+2007-05-24  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-contact.c:
+	Add const to declaration of e_contact_set to match the header.
+
 2007-05-22  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book-view-listener.c:
