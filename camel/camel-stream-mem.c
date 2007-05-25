@@ -130,7 +130,7 @@ camel_stream_mem_new (void)
  * @buffer: a memory buffer to use as the stream data
  * @len: length of @buffer
  *
- * Create a new memory stream using @byte_array as the stream data.
+ * Create a new memory stream using @buffer as the stream data.
  *
  * Note: @buffer will be copied into an internal #GByteArray structure
  * for use as the stream backing. This may have resource implications
@@ -222,7 +222,7 @@ camel_stream_mem_set_byte_array (CamelStreamMem *mem, GByteArray *buffer)
  *
  * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.
  *
- * Note: @bufer will eb copied into an internal #GByteArray structure
+ * Note: @buffer will be copied into an internal #GByteArray structure
  * and so may have resource implications to consider.
  **/
 void

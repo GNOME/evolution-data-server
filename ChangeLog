@@ -1,3 +1,7 @@
+2007-05-25  Pascal Terjan  <pterjan@linuxfr.org>
+
+	* camel/camel-stream-mem.c: fix typos in the API documentation
+
 2007-05-24  Ross Burton  <ross@openedhand.com>
 
 	* configure.in:
