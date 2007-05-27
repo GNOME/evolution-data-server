@@ -1,3 +1,8 @@
+2007-05-28  Pascal Terjan  <pterjan@linuxfr.org>
+
+	* e-passwords.c (e_passwords_ask_password):
+	Remove the parameter "secret" from the doc, it was dropped 3 years ago
+
 2007-05-24  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-passwords.c (ep_ask_password):
