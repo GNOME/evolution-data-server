@@ -1129,7 +1129,7 @@ e_passwords_add_password (const char *key, const char *passwd)
  * the password (e.g. Mail, Addressbook, etc.)
  * @key: key to store the password under
  * @prompt: prompt string
- * @remember_type: whether or not to offer to remember the password,
+ * @type: whether or not to offer to remember the password,
  * and for how long.
  * @remember: on input, the default state of the remember checkbox.
  * on output, the state of the checkbox when the dialog was closed.
