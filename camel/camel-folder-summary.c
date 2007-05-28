@@ -3060,7 +3060,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 			camel_folder_summary_touch(mi->summary);
 	}
 
-	if ((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK))
+	if (((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) && !((set & CAMEL_MESSAGE_JUNK_LEARN) && !(set & CAMEL_MESSAGE_JUNK)))
 		return FALSE;
 
 	if (mi->summary && mi->summary->folder && mi->uid) {
