@@ -1,3 +1,34 @@
+Evolution-Data-Server 1.10.2 2007-05-28
+---------------------------------------
+
+Bug fixes:
+	#322105: Allow not-junk training on non-junk messsages (Srini)
+	#424373: Fixes APOP Authentication Vulnerability issue. (Sankar
+	 P)
+	#431135: Fix a crash when modifying a calendar event (Rob
+	 Bradford)
+	#438765: Fixed a German typo (Hendrik Richter)
+	#439050: Fixed "Invliad Time..." error dialog in "ja" locale
+	 (Wang Xin)
+	#425535: Don't submit path of EDS for segv_handler. (Frederic
+	 Crozat)
+	#388788: Fixed a subtle bug in autotools checks for iconv
+	 (Matthew Barnes)
+	#425129: Fix a crash when the timezone has no name (Pascal Terjan)
+	#425129: Add a timezone name for Australia/Perth (Pascal Terjan)
+	#318176: Code cleanups (Ross Burton)
+	#431722: Add support for parsing GEO properties (Dodji Seketeli)
+
+Other Contributors:
+	Claude Paroz
+
+Updated Translations:
+	Hendrik Richter (de)
+	Jorge Gonzalez (es)
+	Duarte Loreto (pt)
+	Yang Zhang (zh_CN)
+	Peter Bach (da)
+
 Evolution-Data-Server 1.10.1 2007-04-09
 ---------------------------------------
 
