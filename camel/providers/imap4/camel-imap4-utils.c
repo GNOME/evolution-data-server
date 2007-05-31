@@ -405,24 +405,18 @@ static struct {
 	const char *name;
 	guint32 flag;
 } imap4_flags[] = {
-	{ "\\Answered", CAMEL_MESSAGE_ANSWERED     },
-	{ "\\Deleted",  CAMEL_MESSAGE_DELETED      },
-	{ "\\Draft",    CAMEL_MESSAGE_DRAFT        },
-	{ "\\Flagged",  CAMEL_MESSAGE_FLAGGED      },
-	{ "\\Seen",     CAMEL_MESSAGE_SEEN         },
-	{ "\\Recent",   CAMEL_IMAP4_MESSAGE_RECENT },
-	{ "\\*",        CAMEL_MESSAGE_USER         },
+	{ "\\Answered",  CAMEL_MESSAGE_ANSWERED     },
+	{ "\\Deleted",   CAMEL_MESSAGE_DELETED      },
+	{ "\\Draft",     CAMEL_MESSAGE_DRAFT        },
+	{ "\\Flagged",   CAMEL_MESSAGE_FLAGGED      },
+	{ "\\Seen",      CAMEL_MESSAGE_SEEN         },
+	{ "\\Recent",    CAMEL_IMAP4_MESSAGE_RECENT },
+	{ "\\*",         CAMEL_MESSAGE_USER         },
+	
+	/* user flags */
+	{ "Junk",        CAMEL_MESSAGE_JUNK         },
+	{ "NonJunk",     0                          },
 };
-
-#if 0
-static struct {
-	const char *name;
-	guint32 flag;
-} imap4_user_flags[] = {
-	{ "$Forwarded",  CAMEL_MESSAGE_FORWARDED   },
-};
-#endif
-
 
 int
 camel_imap4_parse_flags_list (CamelIMAP4Engine *engine, guint32 *flags, CamelException *ex)
@@ -452,22 +446,8 @@ camel_imap4_parse_flags_list (CamelIMAP4Engine *engine, guint32 *flags, CamelExc
 			}
 		}
 		
-#if 0
-		if (i == G_N_ELEMENTS (imap4_flags)) {
-			for (i = 0; i < G_N_ELEMENTS (imap4_user_flags); i++) {
-				if (!g_ascii_strcasecmp (imap4_user_flags[i].name, token.v.atom)) {
-					new |= imap4_user_flags[i].flag;
-					break;
-				}
-			}
-			
-			if (i == G_N_ELEMENTS (imap4_user_flags))
-				d(fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom));
-		}
-#else
 		if (i == G_N_ELEMENTS (imap4_flags))
 			d(fprintf (stderr, "Encountered unknown flag: %s\n", token.v.atom));
-#endif
 		
 		if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 			return -1;
@@ -490,9 +470,9 @@ static struct {
 	guint32 flag;
 } list_flags[] = {
 	{ "\\Marked",        CAMEL_IMAP4_FOLDER_MARKED    },
-	{ "\\Unmarked",      CAMEL_IMAP4_FOLDER_UNMARKED  },
-	{ "\\Noselect",      CAMEL_FOLDER_NOSELECT        },
-	{ "\\Noinferiors",   CAMEL_FOLDER_NOINFERIORS     },
+	{ "\\UnMarked",      CAMEL_IMAP4_FOLDER_UNMARKED  },
+	{ "\\NoSelect",      CAMEL_FOLDER_NOSELECT        },
+	{ "\\NoInferiors",   CAMEL_FOLDER_NOINFERIORS     },
 	{ "\\HasChildren",   CAMEL_FOLDER_CHILDREN        },
 	{ "\\HasNoChildren", CAMEL_FOLDER_NOCHILDREN      },
 };

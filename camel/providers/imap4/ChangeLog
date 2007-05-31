@@ -1,3 +1,8 @@
+2007-05-31  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-utils.c (camel_imap4_parse_flags_list): Handle
+	Junk/NonJunk flags.
+
 2007-04-09  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-summary.c (imap4_summary_fetch_all): Need to use
