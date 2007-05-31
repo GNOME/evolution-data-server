@@ -151,6 +151,7 @@ void             e_vcard_attribute_add_values        (EVCardAttribute *attr, ...
 void             e_vcard_attribute_remove_value      (EVCardAttribute *attr, const char *s);
 void             e_vcard_attribute_remove_values     (EVCardAttribute *attr);
 void             e_vcard_attribute_remove_params     (EVCardAttribute *attr);
+void             e_vcard_attribute_remove_param      (EVCardAttribute *attr, const char *param_name);
 void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const char *param_name, const char *s);
 
 /* attribute parameters */

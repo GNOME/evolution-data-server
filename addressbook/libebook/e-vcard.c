@@ -1305,6 +1305,35 @@ e_vcard_attribute_remove_value (EVCardAttribute *attr, const char *s)
 }
 
 /**
+ * e_vcard_attribute_remove_param:
+ * @attr: an #EVCardAttribute
+ * @param_name: a parameter name
+ *
+ * Removes the parameter @param_name from the attribute @attr.
+ *
+ * Since 1.11.3.
+ */
+void
+e_vcard_attribute_remove_param (EVCardAttribute *attr, const char *param_name)
+{
+	GList *l;
+	EVCardAttributeParam *param;
+
+	g_return_if_fail (attr != NULL);
+	g_return_if_fail (param_name != NULL);
+	
+	for (l = attr->params; l; l = l->next) {
+		param = l->data;
+		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param),
+					param_name) == 0) {
+			attr->params = g_list_delete_link (attr->params, l);
+			e_vcard_attribute_param_free(param);
+			break;
+		}
+	}
+}
+
+/**
  * e_vcard_attribute_remove_params:
  * @attr: an #EVCardAttribute
  *
