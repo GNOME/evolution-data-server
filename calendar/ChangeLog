@@ -1,3 +1,8 @@
+2007-05-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libecal/Makefile.am:
+	Fix some distcheck errors (#438577).
+
 2007-05-24  Ross Burton  <ross@openedhand.com>
 
 	* backends/caldav/Makefile.am:

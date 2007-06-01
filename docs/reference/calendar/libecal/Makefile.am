@@ -26,6 +26,7 @@ GTKDOC_CFLAGS = \
 	-I$(top_srcdir)/calendar/libical/src/libical		\
 	-I$(top_builddir)					\
 	-I$(top_builddir)/calendar				\
+	-I$(top_builddir)/calendar/libecal			\
 	-I$(top_builddir)/calendar/libical/src			\
 	-I$(top_builddir)/calendar/libical/src/libical		\
 	$(EVOLUTION_CALENDAR_CFLAGS)

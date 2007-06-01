@@ -5,6 +5,7 @@ INCLUDES =						\
 	-I. 						\
 	-I.. 						\
 	-I$(top_builddir)				\
+	-I$(top_builddir)/calendar/libecal		\
 	-I$(top_srcdir)/calendar/libical/src		\
 	-I$(top_builddir)/calendar/libical/src		\
 	-I$(top_srcdir)/calendar/libical/src/libical	\
@@ -37,17 +38,21 @@ MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
 # The library
 lib_LTLIBRARIES = libecal-1.2.la
 
-libecal_1_2_la_SOURCES =		\
+libecal_1_2_la_SOURCES =	\
 	$(CORBA_GENERATED_C)	\
+	$(CORBA_GENERATED_H)	\
 	$(MARSHAL_GENERATED)	\
 	e-cal.c			\
 	e-cal-component.c	\
 	e-cal-listener.c	\
+	e-cal-listener.h	\
 	e-cal-recur.c		\
 	e-cal-time-util.c	\
 	e-cal-util.c		\
 	e-cal-view.c		\
-	e-cal-view-listener.c
+	e-cal-view-listener.c	\
+	e-cal-view-listener.h	\
+	e-cal-view-private.h
 
 libecal_1_2_la_LIBADD =									\
 	$(EVOLUTION_CALENDAR_LIBS)							\

@@ -24,6 +24,7 @@ GTKDOC_CFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)				\
 	-I$(top_builddir)/addressbook			\
+	-I$(top_builddir)/addressbook/libebook		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 GTKDOC_LIBS = \

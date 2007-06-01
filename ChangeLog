@@ -1,3 +1,9 @@
+2007-05-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/addressbook/libebook/Makefile.am:
+	* docs/reference/calendar/libecal/Makefile.am:
+	Fix some distcheck errors (#438577).
+
 2007-05-25  Pascal Terjan  <pterjan@linuxfr.org>
 
 	* camel/camel-stream-mem.c: fix typos in the API documentation

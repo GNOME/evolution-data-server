@@ -5,6 +5,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
+	-I$(top_builddir)/addressbook/libebook		\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 # The corba stubs and skels
@@ -29,13 +30,16 @@ $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 # The library
 lib_LTLIBRARIES = libebook-1.2.la
 
-libebook_1_2_la_SOURCES =					\
+libebook_1_2_la_SOURCES =				\
 	$(CORBA_GENERATED_C)				\
+	$(CORBA_GENERATED_H)				\
 	e-address-western.c				\
 	e-book-listener.c				\
+	e-book-listener.h				\
 	e-book-query.c					\
 	e-book-view-listener.c				\
-	e-book-view-private.h					\
+	e-book-view-listener.h				\
+	e-book-view-private.h				\
 	e-book-view.c					\
 	e-book.c					\
 	e-contact.c					\
