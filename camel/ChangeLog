@@ -1,3 +1,20 @@
+2007-06-01  Karl Relton  <karllinuxtest.relton@ntlworld.com>
+
+        ** Fix for bug #311512
+
+	* camel-folder.c (folder_changed): Block "folder_changed" signal
+	propagation until filtering has completed.
+	(camel_folder_change_info_new): Added a new uid_filter array.
+	(change_info_recent_uid, change_info_filter_uid): Silently add
+	uids.
+	(camel_folder_change_info_cat): Silently add uids to recent and
+	filter uid sets.
+	(camel_folder_change_info_recent_uid): Use the new
+	change_info_recent_uid() function and also add the uid to the
+	filter set.
+	(camel_folder_change_info_clear): Clear the filter uid set.
+	(camel_folder_change_info_free): Free the filter uid set.
+
 2007-05-24  Ross Burton  <ross@openedhand.com>
 
 	* providers/sendmail/Makefile.am:
@@ -8,10 +25,11 @@
 
 	* camel-lock.c (camel_lock_dot): Use g_mkstemp()
 
-	* camel-folder-summary.c (camel_folder_summary_save): Fix file descriptor leak. 
-	fclose() a fdopen() stream instead of close()'ing the underlying file descriptor.
+	* camel-folder-summary.c (camel_folder_summary_save): Fix file
+	descriptor leak.  fclose() a fdopen() stream instead of
+	close()'ing the underlying file descriptor.
 
-	* camel-uid-cache.c (camel_uid_cache_save): Cleanups, such as 
+	* camel-uid-cache.c (camel_uid_cache_save): Cleanups, such as
 	setting cache->fd = -1 when fd has been closed.
 
 	* camel-block-file.c (key_file_use): Do not close() if (fd == -1)
@@ -24,16 +42,16 @@
 
 	* camel-lock.c (main): Fix file descriptor leak.
 
-	* camel-lock-client.c (camel_lock_helper_init): Fix file descriptor leak
+	* camel-lock-client.c (camel_lock_helper_init): Fix file
+	descriptor leak
  
 	* camel-process.c (camel_process_fork): Fix file descriptor leak
  
 2007-05-15  Srinivasa Ragavan  <sragavan@novell.com>
 
-
-	* camel-disco-store.c: (camel_disco_store_prepare_for_offline): Added
-	a new api to fetch a folder for offline sync.
-	* camel-disco-store.h:
+	* camel-disco-store.c: (camel_disco_store_prepare_for_offline):
+	Added a new api to fetch a folder for offline sync.  *
+	camel-disco-store.h:
 
 2007-05-12  Jules Colding  <colding@omesc.com>
 
