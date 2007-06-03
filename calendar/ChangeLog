@@ -1,3 +1,9 @@
+2007-06-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #442187 from John Stowers
+
+	* libecal/e-cal.c: (get_default):
+
 2007-05-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libecal/Makefile.am:

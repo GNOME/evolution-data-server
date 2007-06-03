@@ -5306,6 +5306,9 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, ECalAuthFun
 		case E_CAL_SOURCE_TYPE_TODO:
 			*ecal = e_cal_new_system_tasks ();
 			break;
+		case E_CAL_SOURCE_TYPE_JOURNAL:
+			*ecal = e_cal_new_system_memos ();
+			break;
 		default:
 			break;
 		}
