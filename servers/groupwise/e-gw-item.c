@@ -1165,10 +1165,36 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		g_hash_table_insert (simple_fields, "default_phone", soup_soap_parameter_get_property(subparam, "default"));
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
+				const char *key = NULL;
+
 				type =  soup_soap_parameter_get_property (temp, "type");
 				value = soup_soap_parameter_get_string_value (temp);
-				g_hash_table_insert (item->priv->simple_fields, g_strconcat("phone_", type, NULL) , value);
-				g_free (type);
+				switch (*type) {
+					case 'O' : 	
+						key = "phone_Office";
+						break;
+					case 'H' :
+						key = "phone_Home";
+						break;
+					case 'P' :
+						key = "phone_Pager";
+						break;
+					case 'M' :
+						key = "phone_Mobile";
+						break;
+					case 'F' :
+						key = "phone_Fax";
+						break;
+					default:
+						/* It should never come here. For the worst */
+						key = "phone_";
+						break;
+				};
+
+				if (type) {
+					g_hash_table_insert (item->priv->simple_fields, key, value);
+					g_free (type);
+				}
 			}
 	}
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "personalInfo");
@@ -1217,14 +1243,23 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "addressList");
 	if (subparam) {
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp)) {
-			
+			const char *add = NULL;
 			address = g_new0 (PostalAddress, 1);
 			set_postal_address_from_soap_parameter (address, temp);
 			value = soup_soap_parameter_get_property(temp, "type");
-			if (value)
-				g_hash_table_insert (item->priv->addresses, value, address);
+			
+			if (value && value[0] == 'H')
+				add = "Home";
+			else if (value && value[0] == 'O')
+				add = "Office";
+			else 
+				add = "Other";
+
+			if (value) 
+				g_hash_table_insert (item->priv->addresses, add, address);
 			else
 				free_postal_address (address);
+			g_free (value);
 		}
 		
 	}
