@@ -45,7 +45,9 @@
 
 #include <libedataserver/e-data-server-module.h>
 #include <libedata-book/e-data-book-factory.h>
+#if ENABLE_CALENDAR
 #include <libedata-cal/e-data-cal-factory.h>
+#endif
 
 #ifdef G_OS_WIN32
 #include <libedataserver/e-data-server-util.h>
@@ -63,7 +65,9 @@
 
 /* The and addressbook calendar factories */
 
+#if ENABLE_CALENDAR
 static EDataCalFactory *e_data_cal_factory;
+#endif
 
 static EDataBookFactory *e_data_book_factory;
 
@@ -143,9 +147,14 @@ setup_segv_handler (void)
 static gboolean
 termination_handler (gpointer data)
 {
-	
-	if (e_data_cal_factory_get_n_backends (e_data_cal_factory) == 0 &&
-	    e_data_book_factory_get_n_backends (e_data_book_factory) == 0) {
+	int count = 0;
+
+#if ENABLE_CALENDAR
+	count += e_data_cal_factory_get_n_backends (e_data_cal_factory);
+#endif
+	count += e_data_book_factory_get_n_backends (e_data_book_factory);
+
+	if (count == 0) {
 		g_message ("termination_handler(): Terminating the Server.  Have a nice day.");
 		bonobo_main_quit ();
 	}
@@ -201,6 +210,7 @@ setup_books (void)
 
 /* Personal calendar server */
 
+#if ENABLE_CALENDAR
 /* Callback used when the calendar factory has no more running backends */
 static void
 last_calendar_gone_cb (EDataCalFactory *factory, gpointer data)
@@ -233,7 +243,15 @@ setup_cals (void)
 			  NULL);
 
 	return TRUE;
+
 }
+#else
+static gboolean
+setup_cals (void)
+{
+	return TRUE;
+}
+#endif
 
 
 /* Logging iface.  */
@@ -284,7 +302,9 @@ static void
 dump_backends (int signal)
 {
 	e_data_book_factory_dump_active_backends (e_data_book_factory);
+#if ENABLE_CALENDAR
 	e_data_cal_factory_dump_active_backends (e_data_cal_factory);
+#endif
 }
 #endif
 
@@ -376,15 +396,20 @@ main (int argc, char **argv)
 			e_data_book_factory = NULL;
 		}
 
+#if ENABLE_CALENDAR
 		if (e_data_cal_factory) {
 			bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 			e_data_cal_factory = NULL;
 		}
+#endif
 		exit (EXIT_FAILURE);
 	}
 
-
-	offline_listener = offline_listener_new (e_data_book_factory, e_data_cal_factory);	
+#if ENABLE_CALENDAR
+	offline_listener = offline_listener_new (e_data_book_factory, e_data_cal_factory);
+#else
+	offline_listener = offline_listener_new (e_data_book_factory);
+#endif
 	
 	if ( setup_logging ()) {
 			if ( setup_interface_check ()) {
@@ -397,8 +422,11 @@ main (int argc, char **argv)
 		g_error (G_STRLOC "Cannot register DataServer::Logging object");
 
 	g_object_unref (offline_listener);
+
+#if ENABLE_CALENDAR
 	bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 	e_data_cal_factory = NULL;
+#endif
 
 	bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
 	e_data_book_factory = NULL;

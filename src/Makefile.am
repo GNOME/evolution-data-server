@@ -53,8 +53,11 @@ evolution_data_server_SOURCES = \
 
 evolution_data_server_LDADD =							\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la		\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(E_FACTORY_LIBS)
+
+if ENABLE_CALENDAR
+evolution_data_server_LDADD += $(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la
+endif
 
 install-evolution-data-servers:
 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)

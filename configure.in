@@ -869,6 +869,19 @@ fi
 AM_CONDITIONAL(ENABLE_IPv6, test "x$enable_ipv6" = "xyes")
 
 dnl **************************************************
+dnl Calendar support
+dnl **************************************************
+AC_MSG_CHECKING(if we should build the calendar)
+AC_ARG_ENABLE(calendar, AC_HELP_STRING([--disable-calendar],[Disable the calendar components]),
+        enable_calendar="$enableval", enable_calendar="yes")
+if test "x${enable_calendar}" != "xno"; then
+        AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
+fi
+AM_CONDITIONAL(ENABLE_CALENDAR, test x$enable_calendar = xyes)
+AC_MSG_RESULT($enable_calendar)
+msg_calendar=$enable_calendar
+
+dnl **************************************************
 dnl NNTP support.
 dnl **************************************************
 AC_ARG_ENABLE(nntp, 
@@ -1275,12 +1288,13 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 
 dnl --- evolution-calendar flags
+if test "x${enable_calendar}" = "xyes"; then
+	EVOLUTION_CALENDAR_DEPS="libxml-2.0 gobject-2.0 gconf-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gnome-vfs-2.0"
 
-EVOLUTION_CALENDAR_DEPS="libxml-2.0 gobject-2.0 gconf-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gnome-vfs-2.0"
-
-EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS)
-AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
-AC_SUBST(EVOLUTION_CALENDAR_LIBS)
+	EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS)
+	AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
+	AC_SUBST(EVOLUTION_CALENDAR_LIBS)
+fi
 
 dnl --- factory flags
 
@@ -1413,7 +1427,10 @@ dnl ******************************
 export privlibdir
 export privincludedir
 export privdatadir
-AC_CONFIG_SUBDIRS(calendar/libical)
+
+if test $enable_calendar = yes; then
+        AC_CONFIG_SUBDIRS(calendar/libical)
+fi
 if test $dynamic_libdb = no; then
         AC_CONFIG_SUBDIRS(libdb/dist)
 fi
@@ -1511,6 +1528,7 @@ esac
 
 echo "
 	evolution-data-server has been configured as follows:
+	Calendar:         $msg_calendar
 	Mail Directory:   $system_mail_dir, $system_mail_perm
 	LDAP support:     $msg_ldap"
 if test "$msg_nntp" = "yes"; then

@@ -26,7 +26,9 @@
 
 #include "offline-listener.h"
 #include <libedata-book/e-data-book-factory.h>
+#if ENABLE_CALENDAR
 #include <libedata-cal/e-data-cal-factory.h>
+#endif
 #include <gconf/gconf-client.h>
 
 enum {
@@ -40,7 +42,10 @@ static GObjectClass *parent_class = NULL;
 struct _OfflineListenerPrivate 
 {
 	GConfClient *default_client;
+
+#if ENABLE_CALENDAR
 	EDataCalFactory *cal_factory;
+#endif
 	EDataBookFactory *book_factory;
 	gboolean is_offline_now;
 };
@@ -52,17 +57,15 @@ set_online_status (OfflineListener *offline_listener, gboolean is_offline)
 	OfflineListenerPrivate *priv;
 	
 	priv = offline_listener->priv;
-	
-	if (is_offline) {
-		e_data_cal_factory_set_backend_mode (priv->cal_factory, OFFLINE_MODE);
-		e_data_book_factory_set_backend_mode (priv->book_factory, OFFLINE_MODE);
 
-	} else {
-		e_data_cal_factory_set_backend_mode (priv->cal_factory, ONLINE_MODE);
-		e_data_book_factory_set_backend_mode (priv->book_factory, ONLINE_MODE);
-	}
-
+#if ENABLE_CALENDAR
+	e_data_cal_factory_set_backend_mode
+		(priv->cal_factory, is_offline ? OFFLINE_MODE : ONLINE_MODE);
+#endif
+	e_data_book_factory_set_backend_mode
+		(priv->book_factory, is_offline ? OFFLINE_MODE : ONLINE_MODE);
 }
+
 static void 
 online_status_changed (GConfClient *client, int cnxn_id, GConfEntry *entry, gpointer data)
 {
@@ -97,14 +100,21 @@ setup_offline_listener (OfflineListener *offline_listener)
 	set_online_status (offline_listener, priv->is_offline_now); 
 }
 
+#if ENABLE_CALENDAR
 OfflineListener*
 offline_listener_new (EDataBookFactory *book_factory, EDataCalFactory *cal_factory)
+#else
+OfflineListener*
+offline_listener_new (EDataBookFactory *book_factory)
+#endif
 {
 	OfflineListener *offline_listener = g_object_new (OFFLINE_TYPE_LISTENER, NULL);
 	OfflineListenerPrivate *priv = offline_listener->priv;
 	
 	priv->book_factory = book_factory;
+#if ENABLE_CALENDAR
 	priv->cal_factory = cal_factory;
+#endif
 	setup_offline_listener (offline_listener);
 	return offline_listener;
 

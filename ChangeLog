@@ -1,3 +1,13 @@
+2007-06-03  Ross Burton  <ross@openedhand.com>
+
+	* configure.in:
+	* Makefile.am:
+	* src/Makefile.am:
+	* src/offline-listener.[ch]:
+	* src/server.c:
+	Add --disable-calendar to build without any calendar support
+	(#438928).
+
 2007-05-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	* docs/reference/addressbook/libebook/Makefile.am:
