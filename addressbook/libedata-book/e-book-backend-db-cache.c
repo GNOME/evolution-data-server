@@ -133,7 +133,7 @@ e_book_backend_db_cache_get_contact (DB *db, const char *uid)
 {
 	DBT        uid_dbt, vcard_dbt;
 	int        db_error;
-	const char *vcard_str;
+	EContact *contact = NULL;
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
@@ -147,10 +147,9 @@ e_book_backend_db_cache_get_contact (DB *db, const char *uid)
 		return NULL;
 	}
 	
-	vcard_str = g_strdup (vcard_dbt.data);
+	contact = e_contact_new_from_vcard ((const char *)vcard_dbt.data);
 	g_free (vcard_dbt.data);
-	
-	return e_contact_new_from_vcard (vcard_str);
+	return contact;
 }
 
 /**
@@ -296,10 +295,13 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	db_error = dbc->c_get(dbc, &uid_dbt, &vcard_dbt, DB_FIRST);
 
 	while(db_error == 0) {
-		if (vcard_dbt.data && !strncmp (vcard_dbt.data, "BEGIN:VCARD", 11))
-		if (e_book_backend_sexp_match_vcard(sexp, vcard_dbt.data)) {
+		if (vcard_dbt.data && !strncmp (vcard_dbt.data, "BEGIN:VCARD", 11)) {
 			contact = e_contact_new_from_vcard (vcard_dbt.data);
-			list = g_list_append (list, contact);
+
+			if (e_book_backend_sexp_match_contact(sexp, contact))
+				list = g_list_prepend (list, contact);
+			else
+				g_object_unref (contact);
 		}
 		db_error = dbc->c_get (dbc, &uid_dbt, &vcard_dbt, DB_NEXT);
 	}
@@ -311,7 +313,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	if (sexp)
 		g_object_unref (sexp);
 
-        return list;
+        return g_list_reverse (list);
 }
 
 /**
@@ -359,11 +361,11 @@ e_book_backend_db_cache_exists (const char *uri)
 	gboolean exists = FALSE;
 	file_name = get_filename_from_uri (uri);
 	
-	if (file_name && g_file_test (file_name, G_FILE_TEST_EXISTS)) {
+	if (file_name && g_file_test (file_name, G_FILE_TEST_EXISTS))
 		exists = TRUE;
-		g_free (file_name);
-	}
-	
+
+	g_free (file_name);
+
 	return exists;
 }
 

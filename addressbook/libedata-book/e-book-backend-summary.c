@@ -529,6 +529,8 @@ e_book_backend_summary_load (EBookBackendSummary *summary)
 	EBookBackendSummaryItem *new_item;
 	int i;
 	
+	clear_items (summary);
+
 	if (!e_book_backend_summary_open (summary))
 		return FALSE;
 

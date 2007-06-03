@@ -2818,6 +2818,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 
 	cache_file_name = e_book_backend_db_cache_get_filename(ebgw->priv->file_db);
 	g_stat (cache_file_name, &buf);
+	g_free (cache_file_name);
 	mod_time = buf.st_mtime;
 	tm = gmtime (&mod_time);
 	strftime (cache_time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
@@ -2914,7 +2915,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 
 	GTimeVal start, end;
 	unsigned long diff;
-	const char *cache_file_name;
+	char *cache_file_name;
 	struct stat buf;
 	time_t mod_time;
 
@@ -2993,6 +2994,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	/* load summary file */
 	cache_file_name = e_book_backend_db_cache_get_filename(ebgw->priv->file_db);
 	g_stat (cache_file_name, &buf);
+	g_free (cache_file_name);
 	mod_time = buf.st_mtime;
 	if (e_book_backend_summary_load (ebgw->priv->summary) == FALSE || 
 	    e_book_backend_summary_is_up_to_date (ebgw->priv->summary, mod_time) == FALSE) {
@@ -3018,6 +3020,8 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				add_sequence_to_cache (priv->file_db, server_first_sequence, 
 				       server_last_sequence, server_last_po_rebuild_time);
 				g_mutex_unlock (priv->update_mutex);
+				g_free (sequence);
+				g_free (count);
 				return TRUE;
 			}
 			sync_required = TRUE;
@@ -3181,7 +3185,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
-	char *id;
+	char *id, *tmpfile;
 	int status;
 	char *http_uri;
 	gboolean is_writable;
@@ -3263,7 +3267,9 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		}
 
 		/* initialize summary file */
-		g_mkdir_with_parents (g_path_get_dirname (priv->summary_file_name), 0700);
+		tmpfile = g_path_get_dirname (priv->summary_file_name);
+		g_mkdir_with_parents (tmpfile, 0700);
+		g_free (tmpfile);
 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
 							    SUMMARY_FLUSH_TIMEOUT);
 
@@ -3411,7 +3417,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
-	char *dirname, *filename;
+	char *dirname, *filename, *tmp;
         char *book_name;
         char *uri;
 	char **tokens;
@@ -3491,8 +3497,9 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	}
 
         g_free (priv->summary_file_name);
-	priv->summary_file_name = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
-        priv->summary_file_name = g_strconcat (ebgw->priv->summary_file_name, ".summary", NULL);
+	tmp = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
+        priv->summary_file_name = g_strconcat (tmp, ".summary", NULL);
+	g_free (tmp);
 
 	dirname = g_build_filename (g_get_home_dir(), ".evolution/cache/addressbook", uri, priv->book_name, NULL);
 	filename = g_build_filename (dirname, "cache.db", NULL);

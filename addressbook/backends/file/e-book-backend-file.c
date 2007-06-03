@@ -589,6 +589,7 @@ book_view_thread (gpointer data)
 
 			if (db_error == 0) {
 				e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard_dbt.data);
+				g_free (vcard_dbt.data);
 			}
 			else {
 				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
@@ -624,6 +625,7 @@ book_view_thread (gpointer data)
 						e_data_book_view_notify_update_prefiltered_vcard (book_view, id_dbt.data, vcard_dbt.data);
 					else
 						e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
+					g_free (vcard_dbt.data);
 				} else {
 					g_free (vcard_dbt.data);
 				}

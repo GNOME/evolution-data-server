@@ -1,3 +1,19 @@
+2007-06-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Memory leak fixes from bug #440524
+
+	* backends/file/e-book-backend-file.c: (book_view_thread):
+	* backends/groupwise/e-book-backend-groupwise.c: (update_cache),
+	(update_address_book_deltas),
+	(e_book_backend_groupwise_authenticate_user),
+	(e_book_backend_groupwise_load_source):
+	* libedata-book/e-book-backend-db-cache.c:
+	(e_book_backend_db_cache_get_contact),
+	(e_book_backend_db_cache_get_contacts),
+	(e_book_backend_db_cache_exists):
+	* libedata-book/e-book-backend-summary.c:
+	(e_book_backend_summary_load):
+
 2007-05-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libebook/Makefile.am:
