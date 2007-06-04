@@ -722,7 +722,7 @@ imap4_fetch_all_free (struct imap4_fetch_all_t *fetch)
 		if (!(envelope = fetch->added->pdata[i]))
 			continue;
 		
-		camel_message_info_free(envelope->info);
+		camel_message_info_free (envelope->info);
 		g_free (envelope);
 	}
 	
@@ -806,18 +806,19 @@ imap4_fetch_all_update (struct imap4_fetch_all_t *fetch)
 	struct imap4_envelope_t *envelope;
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
-	guint32 flags, last, i;
+	guint32 flags;
+	int total, i;
 	
 	changes = fetch->changes;
 	
-	last = camel_folder_summary_count (fetch->summary);
-	for (i = fetch->first - 1; i < last; i++) {
+	total = camel_folder_summary_count (fetch->summary);
+	for (i = 0; i < total; i++) {
 		info = camel_folder_summary_index (fetch->summary, i);
 		if (!(envelope = g_hash_table_lookup (fetch->uid_hash, camel_message_info_uid (info)))) {
 			/* remove it */
 			camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
 			camel_folder_summary_remove (fetch->summary, info);
-			last--;
+			total--;
 			i--;
 		} else if (envelope->changed & IMAP4_FETCH_FLAGS) {
 			/* update it with the new flags */

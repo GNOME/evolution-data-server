@@ -1,3 +1,10 @@
+2007-06-04  Jeffrey Stedfast  <fejj@gnome.org>
+
+	* camel-imap4-summary.c (imap4_fetch_all_update): Don't iterate
+	over just fetch->total messages. We need to iterate over the
+	entire summary in order to remove *all* messages which no longer
+	exist.
+
 2007-05-31  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-utils.c (camel_imap4_parse_flags_list): Handle
