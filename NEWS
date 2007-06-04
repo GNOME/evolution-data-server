@@ -1,3 +1,26 @@
+Evolution-Data-Server 1.11.3 2007-06-04
+---------------------------------------
+
+New in 1.11.3:
+	Addressbook optimizations (Ross Burton)
+	Introduced search capabilities in calendar (Keshav Upadhyaya,
+	 Abhishek Parwal)
+
+Bug fixes:
+	#360114: Use g_list_prepend/reverse rather than append (Paolo
+	 Borelli)
+	#409542: Fix various linking issues in e-d-s (Loic Minier)
+	#425129: Added timezone for Asia/Jerusalem, Australia/Perth and 
+	 fixed the crash when there is no tzname. (Pascal Terjan)
+	#438577: Fix some distcheck errors (Matthew Barnes)
+	#438577: Don't install implementation detail headers (Ross Burton)
+	#438727: Hide implementation details from public headers (Ross 
+	 Burton)
+	 support (Ross Burton)
+	#440524: Memory leak fixes (Srinivasa Ragavan)
+	#442187: Fix to open default memo component (John Stowers)
+	#438928: Ability to build EDS with just addressbook only.
+
 Evolution-Data-Server 1.11.2 2007-05-14
 ---------------------------------------
 
