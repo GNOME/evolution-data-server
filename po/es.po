@@ -1,3 +1,4 @@
+# translation of evolution-data-server.HEAD.es.po to Spanish
 # translation of evolution-data-server es.po spanish
 # Copyright © 2000-2002, 2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution package.
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-12 03:43+0100\n"
-"PO-Revision-Date: 2007-05-12 20:37+0200\n"
+"POT-Creation-Date: 2007-06-04 03:46+0100\n"
+"PO-Revision-Date: 2007-06-04 15:32+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,30 +24,30 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:560
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
+#: ../addressbook/backends/file/e-book-backend-file.c:558
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:563
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2303
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
+#: ../addressbook/backends/file/e-book-backend-file.c:561
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2852
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3043
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3087
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando caché de contactos (%d)…"
@@ -665,7 +666,7 @@ msgstr "Id Gadu-Gadu 3 (trabajo)"
 msgid "Gadu-Gadu Id List"
 msgstr "Lista de id Gadu-Gadu"
 
-#: ../addressbook/libebook/e-contact.c:1451
+#: ../addressbook/libebook/e-contact.c:1453
 #: ../addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
@@ -689,12 +690,12 @@ msgstr "Aniversario: %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "No se pueden guardar los datos del calendario: URI malformado."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1736
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1741
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
@@ -716,7 +717,7 @@ msgstr "URI del servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5242
+#: ../calendar/libecal/e-cal.c:5246
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1108
@@ -1095,7 +1096,7 @@ msgstr "Baja"
 msgid "Undefined"
 msgstr "Sin definir"
 
-#: ../calendar/libecal/e-cal.c:1757 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1758 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduzca la contraseña para %s (usuario %s)"
@@ -1104,78 +1105,78 @@ msgstr "Introduzca la contraseña para %s (usuario %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1771
+#: ../calendar/libecal/e-cal.c:1772
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Introduzca la contraseña de %s para activar el proxy para el usuario %s"
 
-#: ../calendar/libecal/e-cal.c:5214
+#: ../calendar/libecal/e-cal.c:5218
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:5216
+#: ../calendar/libecal/e-cal.c:5220
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: ../calendar/libecal/e-cal.c:5218
+#: ../calendar/libecal/e-cal.c:5222
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:5220
+#: ../calendar/libecal/e-cal.c:5224
 msgid "No such calendar"
 msgstr "No existe el calendario"
 
-#: ../calendar/libecal/e-cal.c:5222 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:5226 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: ../calendar/libecal/e-cal.c:5224 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:5228 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:5226
+#: ../calendar/libecal/e-cal.c:5230
 msgid "URI not loaded"
 msgstr "URI no cargado"
 
-#: ../calendar/libecal/e-cal.c:5228
+#: ../calendar/libecal/e-cal.c:5232
 msgid "URI already loaded"
 msgstr "URI ya cargado"
 
-#: ../calendar/libecal/e-cal.c:5230
+#: ../calendar/libecal/e-cal.c:5234
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../calendar/libecal/e-cal.c:5232 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:5236 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
-#: ../calendar/libecal/e-cal.c:5234
+#: ../calendar/libecal/e-cal.c:5238
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: ../calendar/libecal/e-cal.c:5236
+#: ../calendar/libecal/e-cal.c:5240
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: ../calendar/libecal/e-cal.c:5238
+#: ../calendar/libecal/e-cal.c:5242
 msgid "Operation has been canceled"
 msgstr "La operación ha sido cancelada"
 
-#: ../calendar/libecal/e-cal.c:5240
+#: ../calendar/libecal/e-cal.c:5244
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: ../calendar/libecal/e-cal.c:5244
+#: ../calendar/libecal/e-cal.c:5248
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: ../calendar/libecal/e-cal.c:5246
+#: ../calendar/libecal/e-cal.c:5250
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: ../calendar/libecal/e-cal.c:5248
+#: ../calendar/libecal/e-cal.c:5252
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1189,92 +1190,96 @@ msgstr "Ha ocurrido una excepción CORBA"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5254
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Sin errores"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:67
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:693
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:801
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:994
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1021
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» no espera ningún argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:210
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:252
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1059
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» espera un argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:106
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:113
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:735
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» espera que el primer argumento sea una cadena"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/"
 "hora"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:729
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» espera dos argumentos"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:166
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:216
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:258
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:367
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:419
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:839
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1065
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» espera que el primer argumento sea de tipo time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:174
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» espera que el segundo argumento sea un entero"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:375
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:428
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:847
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» espera que el segundo argumento sea de tipo time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:743
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» espera que el segundo argumento sea una cadena"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\""
-msgstr ""
-"«%s» espera que el primer argumento sea «any», «summary», «description» o "
-"«location»"
+"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"\"classification\""
+msgstr "«%s» espera que el primer argumento sea «any», «summary», «description» o «description », o «location», o «attendee», u «organizer», o «classification»"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» espera al menos un argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:910
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1675,50 +1680,50 @@ msgstr "No se pudo interpretar el contenido del mensaje"
 #: ../camel/providers/imap4/camel-imap4-engine.c:1689
 #: ../camel/providers/imap4/camel-imap4-store.c:814
 #: ../camel/providers/imap4/camel-imap4-store.c:1489
-#: ../camel/providers/imap4/camel-imap4-utils.c:575
+#: ../camel/providers/imap4/camel-imap4-utils.c:555
 #: ../camel/providers/smtp/camel-smtp-transport.c:164
 #: ../camel/providers/smtp/camel-smtp-transport.c:219
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../camel/camel-lock-client.c:100
+#: ../camel/camel-lock-client.c:104
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
 msgstr "No se pudo crear un conducto(pipe) para la ayuda: %s"
 
-#: ../camel/camel-lock-client.c:113
+#: ../camel/camel-lock-client.c:126
 #, c-format
 msgid "Cannot fork locking helper: %s"
 msgstr "No se pudo hacer un bifurcar del ayudante de bloqueo: %s"
 
-#: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
+#: ../camel/camel-lock-client.c:204 ../camel/camel-lock-client.c:227
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "No se pudo bloquear «%s»: error del protocolo con lock-helper"
 
-#: ../camel/camel-lock-client.c:204
+#: ../camel/camel-lock-client.c:217
 #, c-format
 msgid "Could not lock '%s'"
 msgstr "No se pudo bloquear «%s»"
 
-#: ../camel/camel-lock.c:97 ../camel/camel-lock.c:118
+#: ../camel/camel-lock.c:103
 #, c-format
 msgid "Could not create lock file for %s: %s"
 msgstr "No se pudo bloquear el archivo para %s: %s"
 
-#: ../camel/camel-lock.c:159
+#: ../camel/camel-lock.c:144
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
 msgstr ""
 "Expiró el tiempo tratando de obtener un bloqueo del archivo %s. Inténtelo "
 "más tarde."
 
-#: ../camel/camel-lock.c:214
+#: ../camel/camel-lock.c:199
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
 msgstr "Fallo al hacer un bloqueo usando fcntl(2): %s"
 
-#: ../camel/camel-lock.c:277
+#: ../camel/camel-lock.c:262
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
 msgstr "Fallo al hacer un bloqueo usando flock(2): %s"
@@ -2742,7 +2747,9 @@ msgstr "Opciones"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr "_Aplicar filtros a los mensajes nuevos en la bandeja de entrada de este servidor"
+msgstr ""
+"_Aplicar filtros a los mensajes nuevos en la bandeja de entrada de este "
+"servidor"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Check new messages for J_unk contents"
@@ -2867,7 +2874,7 @@ msgstr ""
 "de borrar/archivar algunos de sus mensajes.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:207
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:209
 #, c-format
 msgid "Could not send message: %s"
 msgstr "No se pudo enviar mensaje: %s"
@@ -3520,7 +3527,7 @@ msgstr "Token inesperado en la respuesta del servidor IMAP %s: "
 msgid "No data"
 msgstr "Sin datos"
 
-#: ../camel/providers/imap4/camel-imap4-utils.c:574
+#: ../camel/providers/imap4/camel-imap4-utils.c:554
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "El servidor IMAP %s se desconectó inesperadamente: %s"
@@ -3912,7 +3919,7 @@ msgid "Could not open file: %s: %s"
 msgstr "No se pudo abrir el archivo %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:623
-#: ../camel/providers/local/camel-spool-summary.c:165
+#: ../camel/providers/local/camel-spool-summary.c:158
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "No se pudo abrir el archivo de correo temporal: %s"
@@ -3947,7 +3954,7 @@ msgid "Summary and folder mismatch, even after a sync"
 msgstr "El resumen y la carpeta no concuerdan, incluso después de sincronizar"
 
 #: ../camel/providers/local/camel-mbox-summary.c:888
-#: ../camel/providers/local/camel-spool-summary.c:337
+#: ../camel/providers/local/camel-spool-summary.c:326
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Error desconocido: %s"
@@ -3983,7 +3990,7 @@ msgstr "No se pudo crear la carpeta «%s»: %s"
 msgid "Cannot get folder `%s': not a directory."
 msgstr "No se pudo acceder a la carpeta: «%s»: no es un directorio."
 
-#: ../camel/providers/local/camel-mh-summary.c:244
+#: ../camel/providers/local/camel-mh-summary.c:246
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "No se pudo abrir el directorio MH en la ruta: %s: %s"
@@ -4053,21 +4060,21 @@ msgstr "Las carpetas «spool» no se pueden renombrar"
 msgid "Spool folders cannot be deleted"
 msgstr "Las carpetas «spool» no se pueden borrar"
 
-#: ../camel/providers/local/camel-spool-summary.c:178
-#: ../camel/providers/local/camel-spool-summary.c:188
-#: ../camel/providers/local/camel-spool-summary.c:198
+#: ../camel/providers/local/camel-spool-summary.c:171
+#: ../camel/providers/local/camel-spool-summary.c:181
+#: ../camel/providers/local/camel-spool-summary.c:191
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
 msgstr "No se pudo sincronizar la carpeta temporal %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:214
+#: ../camel/providers/local/camel-spool-summary.c:207
 #, c-format
 msgid "Could not sync spool folder %s: %s"
 msgstr "No se pudo sincronizar la carpeta de correo %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:245
-#: ../camel/providers/local/camel-spool-summary.c:264
-#: ../camel/providers/local/camel-spool-summary.c:277
+#: ../camel/providers/local/camel-spool-summary.c:238
+#: ../camel/providers/local/camel-spool-summary.c:255
+#: ../camel/providers/local/camel-spool-summary.c:266
 #, c-format
 msgid ""
 "Could not sync spool folder %s: %s\n"
@@ -4421,26 +4428,26 @@ msgstr "No se pudo comunicar con sendmail: %s: correo no enviado"
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "No se pudo hacer un bifurcar a sendmail: %s: correo no enviado"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:235
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
 msgstr "sendmail finalizó con la señal %s: correo no enviado."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:242
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:244
 #, c-format
 msgid "Could not execute %s: mail not sent."
 msgstr "No se pudo ejecutar %s: correo no enviado."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:249
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
 msgstr "sendmail finalizó con estado %d: correo no enviado."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:261
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:263
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:263
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:265
 msgid "Mail delivery via the sendmail program"
 msgstr "Entregar correo por medio de sendmail"
 
@@ -5048,19 +5055,19 @@ msgstr "_Editar %s"
 msgid "_Delete %s"
 msgstr "_Borrar %s"
 
-#: ../libedataserverui/e-passwords.c:875
+#: ../libedataserverui/e-passwords.c:872
 msgid "_Remember this passphrase"
 msgstr "_Recordar esta frase de paso"
 
-#: ../libedataserverui/e-passwords.c:876
+#: ../libedataserverui/e-passwords.c:873
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Recordar esta frase de paso durante el resto de esta sesión"
 
-#: ../libedataserverui/e-passwords.c:879
+#: ../libedataserverui/e-passwords.c:876
 msgid "_Remember this password"
 msgstr "_Recordar esta contraseña"
 
-#: ../libedataserverui/e-passwords.c:880
+#: ../libedataserverui/e-passwords.c:877
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Recordar esta contraseña durante el resto de esta sesión"
 
@@ -5126,11 +5133,11 @@ msgstr "Ninguno"
 msgid "Custom"
 msgstr "Personalizado"
 
-#: ../servers/exchange/lib/e2k-user-dialog.c:144
+#: ../servers/exchange/lib/e2k-user-dialog.c:139
 msgid "Select User"
 msgstr "Seleccione usuario"
 
-#: ../servers/exchange/lib/e2k-user-dialog.c:182
+#: ../servers/exchange/lib/e2k-user-dialog.c:177
 msgid "Addressbook..."
 msgstr "Libreta de direcciones…"
 
@@ -5276,7 +5283,7 @@ msgid "Evolution Data Server logging service"
 msgstr "Servicio de registro de Evolution Data Server"
 
 #. dialog display isn't working out
-#: ../src/server.c:106
+#: ../src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
