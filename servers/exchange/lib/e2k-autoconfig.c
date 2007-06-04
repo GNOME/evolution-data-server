@@ -442,7 +442,9 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 
 	/* A redirection to "logon.asp" means this is Exchange 5.5
 	 * OWA. A redirection to "owalogon.asp" means this is Exchange
-	 * 2003 forms-based authentication. Other redirections most
+	 * 2003 forms-based authentication. A redirection to
+	 * "CookieAuth.dll" means that it's an Exchange 2003 server
+	 * behind an ISA Server 2004 proxy. Other redirections most
 	 * likely indicate that the user's mailbox has been moved to a
 	 * new server.
 	 */
@@ -460,7 +462,8 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 		if (strstr (location, "/logon.asp")) {
 			*result = E2K_AUTOCONFIG_EXCHANGE_5_5;
 			goto done;
-		} else if (strstr (location, "/owalogon.asp")) {
+		} else if (strstr (location, "/owalogon.asp") ||
+			   strstr (location, "/CookieAuth.dll")) {
 			if (e2k_context_fba (ctx, msg))
 				goto try_again;
 			*result = E2K_AUTOCONFIG_AUTH_ERROR;

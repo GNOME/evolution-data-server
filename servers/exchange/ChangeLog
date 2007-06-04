@@ -1,3 +1,10 @@
+2007-06-04  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes #415922
+	* lib/e2k-autoconfig.c (e2k_autoconfig_get_context): Add support
+	for Microsoft ISA Server 2004 proxy URLs.
+	* lib/e2k-context.c (e2k_context_fba): Decode the URI - just incase.
+	
 2007-05-15  Ross Burton  <ross@openedhand.com>
 
 	* lib/e2k-user-dialog.c:

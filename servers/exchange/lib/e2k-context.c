@@ -603,6 +603,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 		g_free (suri->path);
 		suri->path = g_strdup (value);
 		action = soup_uri_to_string (suri, FALSE);
+		soup_uri_decode (action);
 		soup_uri_free (suri);
 	} else
 		action = g_strdup (value);
