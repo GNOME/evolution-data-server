@@ -7,38 +7,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.7.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-08 15:35+0200\n"
-"PO-Revision-Date: 2007-05-08 15:36+0200\n"
+"POT-Creation-Date: 2007-06-04 14:36+0200\n"
+"PO-Revision-Date: 2007-06-04 14:38+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:560
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
+#: ../addressbook/backends/file/e-book-backend-file.c:558
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
 msgid "Loading..."
 msgstr "Laster..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:563
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2303
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
+#: ../addressbook/backends/file/e-book-backend-file.c:561
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
 msgid "Searching..."
 msgstr "Søker..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2852
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3043
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3087
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer buffer for kontakter (%d)..."
@@ -657,7 +657,7 @@ msgstr "Gadu-Gadu-ID 3 arbeid"
 msgid "Gadu-Gadu Id List"
 msgstr "Gadu-Gadu ID-liste"
 
-#: ../addressbook/libebook/e-contact.c:1451
+#: ../addressbook/libebook/e-contact.c:1453
 #: ../addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "Liste uten navn"
@@ -681,12 +681,12 @@ msgstr "Bryllupsdag: %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1736
 msgid "Reply Requested: by "
 msgstr "Svar etterspurt: innen "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:985
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1741
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurt: Når det passer"
@@ -708,7 +708,7 @@ msgstr "Ugyldig URI for tjener"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5242
+#: ../calendar/libecal/e-cal.c:5246
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1108
@@ -1087,7 +1087,7 @@ msgstr "Lav"
 msgid "Undefined"
 msgstr "Udefinert"
 
-#: ../calendar/libecal/e-cal.c:1757 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1758 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi passord for %s (bruker %s)"
@@ -1096,78 +1096,78 @@ msgstr "Oppgi passord for %s (bruker %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1771
+#: ../calendar/libecal/e-cal.c:1772
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Oppgi passord for %s for å aktivere proxy for bruker %s"
 
-#: ../calendar/libecal/e-cal.c:5214
+#: ../calendar/libecal/e-cal.c:5218
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: ../calendar/libecal/e-cal.c:5216
+#: ../calendar/libecal/e-cal.c:5220
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: ../calendar/libecal/e-cal.c:5218
+#: ../calendar/libecal/e-cal.c:5222
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: ../calendar/libecal/e-cal.c:5220
+#: ../calendar/libecal/e-cal.c:5224
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:5222 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:5226 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: ../calendar/libecal/e-cal.c:5224 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:5228 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:5226
+#: ../calendar/libecal/e-cal.c:5230
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: ../calendar/libecal/e-cal.c:5228
+#: ../calendar/libecal/e-cal.c:5232
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: ../calendar/libecal/e-cal.c:5230
+#: ../calendar/libecal/e-cal.c:5234
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: ../calendar/libecal/e-cal.c:5232 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:5236 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Ukjent bruker"
 
-#: ../calendar/libecal/e-cal.c:5234
+#: ../calendar/libecal/e-cal.c:5238
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:5236
+#: ../calendar/libecal/e-cal.c:5240
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: ../calendar/libecal/e-cal.c:5238
+#: ../calendar/libecal/e-cal.c:5242
 msgid "Operation has been canceled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../calendar/libecal/e-cal.c:5240
+#: ../calendar/libecal/e-cal.c:5244
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: ../calendar/libecal/e-cal.c:5244
+#: ../calendar/libecal/e-cal.c:5248
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: ../calendar/libecal/e-cal.c:5246
+#: ../calendar/libecal/e-cal.c:5250
 msgid "A CORBA exception has occurred"
 msgstr "Et CORBA-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:5248
+#: ../calendar/libecal/e-cal.c:5252
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1181,91 +1181,95 @@ msgstr "Et CORBA-unntak har oppstått"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5254
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Ingen feil"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:772
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:67
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:693
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:801
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:994
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1021
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» forventer ingen argumenter"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:250
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:286
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:210
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:252
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1059
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» forventer ett argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:106
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:113
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:735
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» forventer at første argument er en streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "«%s» forventer at første argument er en dato/tid-streng i ISO 8601 format"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:517
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:611
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:729
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» forventer to argumenter"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:164
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:214
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:256
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:365
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:617
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:843
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:166
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:216
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:258
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:367
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:419
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:839
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1065
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» forventer at første argument er av type time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:172
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:174
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» forventer at andre argument er et heltall"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:373
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:625
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:375
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:428
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:847
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» forventer at andre argument er av type time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:531
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:743
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» forventer at andre argument er en streng"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:551
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\""
-msgstr ""
-"«%s» forventer at første argument er en av «any», «summary», «description» "
-"eller «location»"
+"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"\"classification\""
+msgstr "«%s» forventer at første argument er en av «any», «summary», «description», «location», «attendee», «organizer» eller «classification»"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» forventer minst ett argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:688
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:910
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1666,48 +1670,48 @@ msgstr "Kunne ikke lese meldingsinnhold"
 #: ../camel/providers/imap4/camel-imap4-engine.c:1689
 #: ../camel/providers/imap4/camel-imap4-store.c:814
 #: ../camel/providers/imap4/camel-imap4-store.c:1489
-#: ../camel/providers/imap4/camel-imap4-utils.c:575
+#: ../camel/providers/imap4/camel-imap4-utils.c:555
 #: ../camel/providers/smtp/camel-smtp-transport.c:164
 #: ../camel/providers/smtp/camel-smtp-transport.c:219
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: ../camel/camel-lock-client.c:100
+#: ../camel/camel-lock-client.c:104
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
 msgstr "Kunne ikke rør for låshjelper: %s"
 
-#: ../camel/camel-lock-client.c:113
+#: ../camel/camel-lock-client.c:126
 #, c-format
 msgid "Cannot fork locking helper: %s"
 msgstr "Kan ikke kjøre fork for låshjelper: %s"
 
-#: ../camel/camel-lock-client.c:191 ../camel/camel-lock-client.c:214
+#: ../camel/camel-lock-client.c:204 ../camel/camel-lock-client.c:227
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "Kunne ikke låse «%s»: protokollfeil med låshjelper"
 
-#: ../camel/camel-lock-client.c:204
+#: ../camel/camel-lock-client.c:217
 #, c-format
 msgid "Could not lock '%s'"
 msgstr "Kunne ikke låse «%s»"
 
-#: ../camel/camel-lock.c:97 ../camel/camel-lock.c:118
+#: ../camel/camel-lock.c:103
 #, c-format
 msgid "Could not create lock file for %s: %s"
 msgstr "Kunne ikke opprette låsfil for %s: %s"
 
-#: ../camel/camel-lock.c:159
+#: ../camel/camel-lock.c:144
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
 msgstr "Tidsavbrudd under venting på låsfil for %s. Prøv igjen senere."
 
-#: ../camel/camel-lock.c:214
+#: ../camel/camel-lock.c:199
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
 msgstr "Feil under låsing ved bruk av fcntl(2): %s"
 
-#: ../camel/camel-lock.c:277
+#: ../camel/camel-lock.c:262
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
 msgstr "Feil under låsing ved bruk av flock(2): %s"
@@ -2719,8 +2723,11 @@ msgid "Checking for new mail"
 msgstr "Ser etter nye meldinger"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
-msgid "Check for new messages in all folders"
-msgstr "Se etter nye meldinger i alle mapper"
+#: ../camel/providers/hula/camel-hula-provider.c:51
+#: ../camel/providers/imap/camel-imap-provider.c:46
+#: ../camel/providers/imap4/camel-imap4-provider.c:38
+msgid "C_heck for new messages in all folders"
+msgstr "_Se etter nye meldinger i alle mapper"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:66
@@ -2732,20 +2739,21 @@ msgid "Options"
 msgstr "Alternativer"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
-msgid "Apply filters to new messages in Inbox on this server"
-msgstr "Bruk filtre for nye meldinger i Innboks på denne tjeneren"
+msgid "_Apply filters to new messages in Inbox on this server"
+msgstr "_Bruk filtre for nye meldinger i Innboks på denne tjeneren"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
-msgid "Check new messages for Junk contents"
-msgstr "Se etter søppelinnhold i nye meldinger"
+msgid "Check new messages for J_unk contents"
+msgstr "Se etter s_øppelinnhold i nye meldinger"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
-msgid "Only check for Junk messages in the INBOX folder"
-msgstr "Se kun etter søppelinnhold i nye meldinger i innboksen"
+#: ../camel/providers/imap/camel-imap-provider.c:72
+msgid "Only check for Junk messages in the IN_BOX folder"
+msgstr "Se kun etter søppelinnhold i nye meldinger i inn_boksen"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
-msgid "Automatically synchronize account locally"
-msgstr "Synkroniser konto lokalt automatisk"
+msgid "Automatically synchroni_ze account locally"
+msgstr "S_ynkroniser konto lokalt automatisk"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:73
 msgid "SOAP Settings"
@@ -2856,7 +2864,7 @@ msgstr ""
 "arkivert noen meldinger.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:207
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:209
 #, c-format
 msgid "Could not send message: %s"
 msgstr "Kunne ikke sende meldingen: %s"
@@ -2865,12 +2873,6 @@ msgstr "Kunne ikke sende meldingen: %s"
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
 msgstr "Ser etter nye meldinger"
-
-#: ../camel/providers/hula/camel-hula-provider.c:51
-#: ../camel/providers/imap/camel-imap-provider.c:46
-#: ../camel/providers/imap4/camel-imap4-provider.c:38
-msgid "C_heck for new messages in all folders"
-msgstr "_Se etter nye meldinger i alle mapper"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:50
@@ -3047,14 +3049,8 @@ msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Bruk filtre for nye meldinger i INBOX på denne tjeneren"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imap4/camel-imap4-provider.c:53
-msgid "Check new messages for _Junk contents"
-msgstr "Se etter _søppelinnhold i nye meldinger"
-
-#: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imap4/camel-imap4-provider.c:55
-msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "Se kun etter søppelinnhold i nye meldin_ger i innboks"
+msgid "Check new messages for Jun_k contents"
+msgstr "Se etter søppelinn_hold i nye meldinger"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
@@ -3323,6 +3319,14 @@ msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr ""
 "Kan ikke kopiere meldinger fra mappe «%s» til mappe «%s»: Ugyldig kommando"
 
+#: ../camel/providers/imap4/camel-imap4-provider.c:53
+msgid "Check new messages for _Junk contents"
+msgstr "Se etter _søppelinnhold i nye meldinger"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
+msgid "Only check for Junk messa_ges in the INBOX folder"
+msgstr "Se kun etter søppelinnhold i nye meldin_ger i innboks"
+
 #: ../camel/providers/imap4/camel-imap4-provider.c:64
 msgid "IMAP4rev1"
 msgstr "IMAP4rev1"
@@ -3504,7 +3508,7 @@ msgstr "Uventet tegn i svar fra IMAP-tjener %s: "
 msgid "No data"
 msgstr "Ingen data"
 
-#: ../camel/providers/imap4/camel-imap4-utils.c:574
+#: ../camel/providers/imap4/camel-imap4-utils.c:554
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "IMAP-tjener %s koblet fra uventet: %s"
@@ -3894,7 +3898,7 @@ msgid "Could not open file: %s: %s"
 msgstr "Kunne ikke åpne fil %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:623
-#: ../camel/providers/local/camel-spool-summary.c:165
+#: ../camel/providers/local/camel-spool-summary.c:158
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Kan ikke åpne midlertidig postboks: %s"
@@ -3929,7 +3933,7 @@ msgid "Summary and folder mismatch, even after a sync"
 msgstr "Feil i sammendrag og mappe, selv etter synkronisering"
 
 #: ../camel/providers/local/camel-mbox-summary.c:888
-#: ../camel/providers/local/camel-spool-summary.c:337
+#: ../camel/providers/local/camel-spool-summary.c:326
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Ukjent feil: %s"
@@ -3964,7 +3968,7 @@ msgstr "Kunne ikke opprette mappe «%s»: %s"
 msgid "Cannot get folder `%s': not a directory."
 msgstr "Kan ikke hente mappe «%s»: ikke en katalog."
 
-#: ../camel/providers/local/camel-mh-summary.c:244
+#: ../camel/providers/local/camel-mh-summary.c:246
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Kan ikke åpne MH-katalogsti: %s: %s"
@@ -4034,21 +4038,21 @@ msgstr "Spool-mapper kan ikke være gis nytt navn"
 msgid "Spool folders cannot be deleted"
 msgstr "Spoolmapper kan ikke være slettes"
 
-#: ../camel/providers/local/camel-spool-summary.c:178
-#: ../camel/providers/local/camel-spool-summary.c:188
-#: ../camel/providers/local/camel-spool-summary.c:198
+#: ../camel/providers/local/camel-spool-summary.c:171
+#: ../camel/providers/local/camel-spool-summary.c:181
+#: ../camel/providers/local/camel-spool-summary.c:191
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
 msgstr "Kunne ikke synkronisere midlertidig mappe %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:214
+#: ../camel/providers/local/camel-spool-summary.c:207
 #, c-format
 msgid "Could not sync spool folder %s: %s"
 msgstr "Kunne ikke synkronisere spool-mappe %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:245
-#: ../camel/providers/local/camel-spool-summary.c:264
-#: ../camel/providers/local/camel-spool-summary.c:277
+#: ../camel/providers/local/camel-spool-summary.c:238
+#: ../camel/providers/local/camel-spool-summary.c:255
+#: ../camel/providers/local/camel-spool-summary.c:266
 #, c-format
 msgid ""
 "Could not sync spool folder %s: %s\n"
@@ -4352,7 +4356,9 @@ msgstr "%sVennligst oppgi POP-passord for %s på vert %s"
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr "Kan ikke koble til POP-tjener %s:\\tUgyldig APOP-ID mottatt. Mulig identitetstyveri. Kontakt din administrator."
+msgstr ""
+"Kan ikke koble til POP-tjener %s:\\tUgyldig APOP-ID mottatt. Mulig "
+"identitetstyveri. Kontakt din administrator."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
@@ -4404,26 +4410,26 @@ msgstr "Kunne ikke opprette rør til sendmail: %s: melding ikke sendt"
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "Kunne ikke kjøre fork på sendmail: %s: melding ikke sendt"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:235
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
 msgstr "sendmail avsluttet med signal %s: melding ikke sendt."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:242
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:244
 #, c-format
 msgid "Could not execute %s: mail not sent."
 msgstr "Kunne ikke kjøre %s: melding ikke sendt."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:249
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
 msgstr "sendmail avsluttet med status %d: melding ikke sendt."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:261
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:263
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:263
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:265
 msgid "Mail delivery via the sendmail program"
 msgstr "Levering av e-post via sendmail programmet"
 
@@ -5005,13 +5011,25 @@ msgid "_Search:"
 msgstr "_Søk:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2168
+#: ../libedataserverui/e-name-selector-entry.c:2230
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Ut_vid %s i oppføringen"
 
+#. Copy Contact Item
+#: ../libedataserverui/e-name-selector-entry.c:2245
+#, c-format
+msgid "Cop_y %s"
+msgstr "Ko_pier %s"
+
+#. Cut Contact Item
+#: ../libedataserverui/e-name-selector-entry.c:2255
+#, c-format
+msgid "C_ut %s"
+msgstr "Klipp _ut %s"
+
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2184
+#: ../libedataserverui/e-name-selector-entry.c:2272
 #, c-format
 msgid "_Edit %s"
 msgstr "_Rediger %s"
@@ -5021,19 +5039,19 @@ msgstr "_Rediger %s"
 msgid "_Delete %s"
 msgstr "_Slett %s"
 
-#: ../libedataserverui/e-passwords.c:875
+#: ../libedataserverui/e-passwords.c:872
 msgid "_Remember this passphrase"
 msgstr "Husk dette passo_rdet"
 
-#: ../libedataserverui/e-passwords.c:876
+#: ../libedataserverui/e-passwords.c:873
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "Husk dette passo_rdet for resten av denne sesjonen"
 
-#: ../libedataserverui/e-passwords.c:879
+#: ../libedataserverui/e-passwords.c:876
 msgid "_Remember this password"
 msgstr "Husk dette passo_rdet"
 
-#: ../libedataserverui/e-passwords.c:880
+#: ../libedataserverui/e-passwords.c:877
 msgid "_Remember this password for the remainder of this session"
 msgstr "Husk dette passo_rdet for resten av denne sesjonen"
 
@@ -5046,13 +5064,13 @@ msgstr "Velg mål"
 msgid "_Destination"
 msgstr "_Mål"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1646
+#: ../servers/exchange/lib/e2k-autoconfig.c:1649
 #: ../servers/exchange/storage/exchange-account.c:938
 #, c-format
 msgid "Enter password for %s"
 msgstr "Oppgi passord for %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1647
+#: ../servers/exchange/lib/e2k-autoconfig.c:1650
 #: ../servers/exchange/storage/exchange-account.c:943
 msgid "Enter password"
 msgstr "Oppgi passord"
@@ -5099,11 +5117,11 @@ msgstr "Ingen"
 msgid "Custom"
 msgstr "Tilpasset"
 
-#: ../servers/exchange/lib/e2k-user-dialog.c:144
+#: ../servers/exchange/lib/e2k-user-dialog.c:139
 msgid "Select User"
 msgstr "Velg bruker"
 
-#: ../servers/exchange/lib/e2k-user-dialog.c:182
+#: ../servers/exchange/lib/e2k-user-dialog.c:177
 msgid "Addressbook..."
 msgstr "Adressebok..."
 
@@ -5249,7 +5267,7 @@ msgid "Evolution Data Server logging service"
 msgstr "Evolution Data Server loggtjeneste"
 
 #. dialog display isn't working out
-#: ../src/server.c:106
+#: ../src/server.c:110
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Flere minnesegmenteringsfeil oppsto; kan ikke vise feilinformasjon\n"
