@@ -45,6 +45,8 @@ struct _SearchContext {
 	gboolean occurs;
 };
 
+static ESExpResult *func_is_completed (ESExp *esexp, int argc, ESExpResult **argv, void *data);
+
 /**
  * e_cal_backend_sexp_func_time_now:
  * @esexp: An #ESExp object.
@@ -325,7 +327,7 @@ check_instance_time_range_cb (ECalComponent *comp, time_t instance_start, time_t
 }
 
 static icaltimezone *
-resolve_tzid_cb (const char *tzid, gpointer user_data)
+resolve_tzid (const char *tzid, gpointer user_data)
 {
 	SearchContext *ctx = user_data;
                                                                                 
@@ -385,12 +387,72 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 	ctx->occurs = FALSE;
 	e_cal_recur_generate_instances (ctx->comp, start, end,
 					(ECalRecurInstanceFn) check_instance_time_range_cb,
-					ctx, resolve_tzid_cb, ctx,
+					ctx, resolve_tzid, ctx,
 					default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = ctx->occurs;
 
+	return result;
+}
+
+static ESExpResult *
+func_due_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	time_t start, end;
+	ESExpResult *result;
+	icaltimezone *zone;
+	ECalComponentDateTime dt;
+	time_t due_t ;
+	gboolean retval;
+
+	/* Check argument types */
+
+	if (argc != 2) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
+				"due-in-time-range");
+		return NULL;
+	}
+
+	if (argv[0]->type != ESEXP_RES_TIME) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
+					"argument to be a time_t"),
+				"due-in-time-range");
+		return NULL;
+	}
+
+	start = argv[0]->value.time;
+
+	if (argv[1]->type != ESEXP_RES_TIME) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
+					"argument to be a time_t"),
+				"due-in-time-range");
+		return NULL;
+	}
+
+	end = argv[1]->value.time;
+	e_cal_component_get_due (ctx->comp, &dt);
+
+	if(dt.value != NULL) {
+		zone = resolve_tzid (dt.tzid, ctx);
+		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
+		if (zone)
+			due_t = icaltime_as_timet_with_zone(*dt.value,zone);
+		else
+			due_t = icaltime_as_timet(*dt.value);
+	} 	
+
+	if(dt.value != NULL && (due_t <= end && due_t >= start))
+		retval = TRUE;
+	else 
+		retval = FALSE; 
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = retval;
+
+	e_cal_component_free_datetime (&dt);
+	
 	return result;
 }
 
@@ -446,6 +508,70 @@ matches_description (ECalComponent *comp, const char *str)
 	return matches;
 }
 
+static gboolean
+matches_attendee (ECalComponent *comp, const char *str)
+{
+	GSList *a_list = NULL, *l;
+	gboolean matches = FALSE;
+
+	e_cal_component_get_attendee_list (comp, &a_list);
+
+	for (l = a_list; l; l = l->next) {
+		ECalComponentAttendee *att = l->data;
+
+		if ((att->value && e_util_strstrcase (att->value, str)) || (att->cn != NULL &&
+					e_util_strstrcase (att->cn, str))) {
+			matches = TRUE;
+			break;
+		}
+	}
+
+	e_cal_component_free_attendee_list (a_list);
+
+	return matches;
+
+}
+
+static gboolean
+matches_organizer (ECalComponent *comp, const char *str)
+{
+
+	ECalComponentOrganizer org;
+
+	e_cal_component_get_organizer (comp, &org);
+	if (str && !*str)
+		return TRUE;
+
+	if ((org.value && e_util_strstrcase (org.value, str)) || 
+			(org.cn && e_util_strstrcase (org.cn, str)))
+		return TRUE;
+
+	return FALSE;
+}
+
+static gboolean
+matches_classification (ECalComponent *comp, const char *str)
+{
+	ECalComponentClassification classification;
+	ECalComponentClassification classification1;
+
+	if (!*str)
+		return FALSE;
+	
+	if(g_str_equal (str, "Public"))
+		classification1 = E_CAL_COMPONENT_CLASS_PUBLIC;
+	else if(g_str_equal (str, "Private"))
+		classification1 = E_CAL_COMPONENT_CLASS_PRIVATE;
+	else if(g_str_equal (str, "Confidential"))
+		classification1 = E_CAL_COMPONENT_CLASS_CONFIDENTIAL;
+	else 	
+		classification1 = E_CAL_COMPONENT_CLASS_UNKNOWN;
+
+	e_cal_component_get_classification(comp, &classification);
+
+	return (classification == classification1 ? TRUE : FALSE);
+}
+
 /* Returns whether the summary in a component matches the specified string */
 static gboolean
 matches_summary (ECalComponent *comp, const char *str)
@@ -454,7 +580,7 @@ matches_summary (ECalComponent *comp, const char *str)
 
 	e_cal_component_get_summary (comp, &text);
 
-	if (str && !*str)
+	if (!*str)
 		return TRUE;
 
 	if (!text.value)
@@ -492,6 +618,92 @@ matches_any (ECalComponent *comp, const char *str)
 		|| matches_description (comp, str)
 		|| matches_summary (comp, str)
 		|| matches_location (comp, str));
+}
+
+static gboolean
+matches_priority (ECalComponent *comp ,const char *pr)
+{
+	int *priority = NULL;
+
+	e_cal_component_get_priority (comp, &priority);
+
+	if (!priority || !*priority)
+		return FALSE;
+
+	if (g_str_equal (pr, "HIGH") && *priority <= 4) 
+		return TRUE;
+	else if (g_str_equal (pr, "NORMAL") && *priority == 5)
+		return TRUE;
+	else if (g_str_equal (pr, "LOW") && *priority > 5)
+		return TRUE;
+	else if (g_str_equal (pr, "UNDEFINED") && (!priority || !*priority))
+		return TRUE ;
+
+	return FALSE;
+}
+
+static gboolean
+matches_status (ECalComponent *comp ,const char *str)
+{
+	icalproperty_status status ;
+
+	if (!*str)
+		return FALSE;
+
+	e_cal_component_get_status (comp, &status);
+
+	if (g_str_equal (str, "NOT STARTED") && status == ICAL_STATUS_NONE)
+			return TRUE;
+	else if (g_str_equal (str, "COMPLETED") && status == ICAL_STATUS_COMPLETED) 
+			return TRUE;
+	else if(g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)  
+			return TRUE;
+	else if(g_str_equal (str, "IN PROGRESS")  && status == ICAL_STATUS_INPROCESS)
+			return TRUE;
+
+	return FALSE;
+}
+
+static ESExpResult *
+func_has_attachment (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result;
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+				"has-attachments?");
+		return NULL;
+	}
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = e_cal_component_has_attachments (ctx->comp);
+
+	return result;
+}
+
+static ESExpResult *
+func_percent_complete (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result = NULL;
+	int *percent;
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+				"percent-completed");
+		return NULL;
+	}
+
+	e_cal_component_get_percent (ctx->comp, &percent);
+
+	if (percent && *percent) {	
+		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
+		result->value.number = *percent;
+
+	}  
+
+	return result;
 }
 
 /* (contains? FIELD STR)
@@ -547,10 +759,20 @@ func_contains (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		matches = matches_summary (ctx->comp, str);
 	else if (strcmp (field, "location") == 0)
 		matches = matches_location (ctx->comp, str);
+	else if (strcmp (field, "attendee") == 0)
+		matches = matches_attendee (ctx->comp, str);
+	else if (strcmp (field, "organizer") == 0)
+		matches = matches_organizer (ctx->comp, str);
+	else if(strcmp (field, "classification") == 0)
+		matches = matches_classification (ctx->comp, str);
+	else if(strcmp (field, "status") == 0)
+		matches = matches_status (ctx->comp, str);
+	else if(strcmp (field, "priority") == 0)
+		matches = matches_priority (ctx->comp, str);
 	else {
 		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
 					     "argument to be either \"any\", "
-					     "\"summary\", or \"description\", or \"location\""),
+					"\"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""),
 				    "contains");
 		return NULL;
 	}
@@ -635,7 +857,7 @@ func_has_alarms_in_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 		default_zone = icaltimezone_get_utc_timezone ();
 
 	alarms = e_cal_util_generate_alarms_for_comp (ctx->comp, start, end,
-						      omit, resolve_tzid_cb,
+						      omit, resolve_tzid,
 						      ctx, default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
@@ -775,7 +997,7 @@ func_has_recurrences (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = e_cal_component_has_recurrences (ctx->comp);
+	result->value.bool = (e_cal_component_has_recurrences (ctx->comp) || e_cal_component_is_instance (ctx->comp));
 
 	return result;
 }
@@ -1004,17 +1226,19 @@ static struct {
 	{ "time-add-day", e_cal_backend_sexp_func_time_add_day, 0 },
 	{ "time-day-begin", e_cal_backend_sexp_func_time_day_begin, 0 },
 	{ "time-day-end", e_cal_backend_sexp_func_time_day_end, 0 },
-
 	/* Component-related functions */
 	{ "uid?", func_uid, 0 },
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
+	{ "due-in-time-range?", func_due_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
 	{ "has-alarms-in-range?", func_has_alarms_in_range, 0 },
 	{ "has-recurrences?", func_has_recurrences, 0 },
 	{ "has-categories?", func_has_categories, 0 },
 	{ "is-completed?", func_is_completed, 0 },
-	{ "completed-before?", func_completed_before, 0 }
+	{ "completed-before?", func_completed_before, 0 },
+	{ "has-attachments?", func_has_attachment, 0 },
+	{ "percent-complete?", func_percent_complete, 0 }
 };
 
 /**

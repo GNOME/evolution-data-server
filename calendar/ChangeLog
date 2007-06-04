@@ -1,3 +1,16 @@
+2007-06-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedata-cal/e-cal-backend-sexp.c: (resolve_tzid),
+	(func_occur_in_time_range), (func_due_in_time_range),
+	(matches_attendee), (matches_organizer), (matches_classification),
+	(matches_summary), (matches_priority),(matches_status), (func_has_attachment),
+	(func_percent_complete), (func_contains), (func_has_alarms_in_range), 
+	(func_has_recurrences): Added search expressions for matching attendee, organizer,
+	classification, priority, status, percent, attachment fields.
+		
+	Committing on behalf of Keshav Upadhyaya <ukeshav@novell.com> and 
+	Abhishek Parwal <pabhishek@novell.com>.
+
 2007-06-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #442187 from John Stowers
