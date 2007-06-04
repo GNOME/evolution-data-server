@@ -498,7 +498,7 @@ parse_xgwextensions (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 in
 	}
 	
 	if (token->token != '\n') {
-		d(fprintf (stderr, "expected ')' to close untagged FETCH response\n"));
+		d(fprintf (stderr, "expected '\\n' at the end of the XGWEXTENSIONS response\n"));
 		goto unexpected;
 	}
 	

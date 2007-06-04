@@ -323,7 +323,7 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 	
 	camel_imap4_command_unref (ic);
 	
-	if (camel_tcp_stream_ssl_enable_ssl ((SpruceTcpStreamSSL *) tcp_stream) == -1) {
+	if (camel_tcp_stream_ssl_enable_ssl ((CamelTcpStreamSSL *) tcp_stream) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to IMAP server %s in secure mode: %s"),
 				      service->url->host, _("TLS negotiations failed"));
