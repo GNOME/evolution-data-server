@@ -44,10 +44,12 @@
 #ifdef HAVE_HEIMDAL_KRB5
 #include <gssapi.h>
 #define gss_nt_service_name GSS_C_NT_HOSTBASED_SERVICE
-#else /* HAVE_SUN_KRB5 */
+#else
+#ifdef  HAVE_SUN_KRB5 
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_ext.h>
 extern gss_OID gss_nt_service_name;
+#endif
 #endif
 
 #ifndef GSS_C_OID_KRBV5_DES
