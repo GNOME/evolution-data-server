@@ -184,12 +184,12 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream = NULL, *filter_stream = NULL;
-	CamelMimeFilter *filter_from = NULL;
+	CamelMimeFilter *filter_from;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)folder->summary;
 	CamelMessageInfo *mi;
 	char *fromline = NULL;
-	int fd, retval;
 	struct stat st;
+	int retval;
 #if 0
 	char *xev;
 #endif
@@ -211,7 +211,7 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
 
-	output_stream = camel_stream_fs_new_with_name(lf->folder_path, O_WRONLY|O_APPEND, 0600);
+	output_stream = camel_stream_fs_new_with_name(lf->folder_path, O_WRONLY | O_APPEND | O_LARGEFILE, 0666);
 	if (output_stream == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot open mailbox: %s: %s\n"),
@@ -240,24 +240,25 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	filter_stream = (CamelStream *) camel_stream_filter_new_with_stream(output_stream);
 	filter_from = (CamelMimeFilter *) camel_mime_filter_from_new();
 	camel_stream_filter_add((CamelStreamFilter *) filter_stream, filter_from);
-	if (camel_data_wrapper_write_to_stream((CamelDataWrapper *)message, filter_stream) == -1
-	    || camel_stream_write(filter_stream, "\n", 1) == -1
-	    || camel_stream_close(filter_stream) == -1)
+	camel_object_unref (filter_from);
+	
+	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) message, filter_stream) == -1 ||
+	    camel_stream_write (filter_stream, "\n", 1) == -1 ||
+	    camel_stream_flush (filter_stream) == -1)
 		goto fail_write;
-
+	
 	/* filter stream ref's the output stream itself, so we need to unref it too */
-	camel_object_unref((CamelObject *)filter_from);
-	camel_object_unref((CamelObject *)filter_stream);
-	camel_object_unref((CamelObject *)output_stream);
+	camel_object_unref (filter_stream);
+	camel_object_unref (output_stream);
 	g_free(fromline);
-
+	
 	/* now we 'fudge' the summary  to tell it its uptodate, because its idea of uptodate has just changed */
 	/* the stat really shouldn't fail, we just wrote to it */
-	if (g_stat(lf->folder_path, &st) == 0) {
+	if (g_stat (lf->folder_path, &st) == 0) {
+		((CamelFolderSummary *) mbs)->time = st.st_mtime;
 		mbs->folder_size = st.st_size;
-		((CamelFolderSummary *)mbs)->time = st.st_mtime;
 	}
-
+	
 	/* unlock as soon as we can */
 	camel_local_folder_unlock(lf);
 
@@ -280,31 +281,27 @@ fail_write:
 				      _("Cannot append message to mbox file: %s: %s"),
 				      lf->folder_path, g_strerror (errno));
 	
-	if (filter_stream)
-		camel_object_unref(CAMEL_OBJECT(filter_stream));
-
-	if (output_stream)
-		camel_object_unref(CAMEL_OBJECT(output_stream));
-
-	if (filter_from)
-		camel_object_unref(CAMEL_OBJECT(filter_from));
-
-	g_free(fromline);
-
-	/* reset the file to original size */
-	fd = g_open(lf->folder_path, O_LARGEFILE | O_WRONLY | O_BINARY, 0600);
-	if (fd != -1) {
-		ftruncate(fd, mbs->folder_size);
-		close(fd);
+	if (output_stream) {
+		/* reset the file to original size */
+		do {
+			retval = ftruncate (((CamelStreamFs *) output_stream)->fd, mbs->folder_size);
+		} while (retval == -1 && errno == EINTR);
+		
+		camel_object_unref (output_stream);
 	}
+	
+	if (filter_stream)
+		camel_object_unref (filter_stream);
+	
+	g_free(fromline);
 	
 	/* remove the summary info so we are not out-of-sync with the mbox */
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (mbs), camel_message_info_uid (mi));
 	
-	/* and tell the summary its uptodate */
-	if (g_stat(lf->folder_path, &st) == 0) {
+	/* and tell the summary it's up-to-date */
+	if (g_stat (lf->folder_path, &st) == 0) {
+		((CamelFolderSummary *) mbs)->time = st.st_mtime;
 		mbs->folder_size = st.st_size;
-		((CamelFolderSummary *)mbs)->time = st.st_mtime;
 	}
 	
 fail:

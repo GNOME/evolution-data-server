@@ -1,3 +1,15 @@
+2007-06-06  Jeffrey Stedfast  <fejj@novell.com>
+
+	Robustness fix while making sure the code would properly handle
+	disk-full problems.
+
+	* camel-mbox-folder.c (mbox_append_message): Open the mbox w/
+	O_LARGEFILE so that we support large files. After writing the
+	message to the mbox, check camel_stream_flush() for error instead
+	of camel_stream_close() so that we can continue re-using the same
+	fd for ftruncate (we want to avoid having to re-open the file as
+	it may not succeed). Also, ftruncate() can get EINTR, so loop.
+
 2007-05-16  Jules Colding  <colding@omesc.com>
 
 	* camel-spool-summary.c (spool_summary_sync_full): Use g_mkstemp()
