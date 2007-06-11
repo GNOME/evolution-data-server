@@ -1,3 +1,10 @@
+2007-06-11  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_refresh_folder),
+	(groupwise_transfer_messages_to):
+	Fetches "Sent Items" in all folders. Also, fixes some bugs
+	in moving mails across folders. Removes phantom removeRequests
+
 2007-05-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-groupwise-provider.c: Fix fo bug #347326 from Ebby Wiselyn

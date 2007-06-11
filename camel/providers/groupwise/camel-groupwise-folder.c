@@ -1063,9 +1063,17 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/*Get the New Items*/
 	if (!is_proxy) {
+		char *source;
+
+		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) {
+			source = NULL;
+		} else {
+			source = "sent received";
+		}
+
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
-				&t_str, "New", NULL, NULL, -1, &slist);
+				&t_str, "New", NULL, source, -1, &slist);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end2;
@@ -1102,7 +1110,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
-				&t_str, "Modified", NULL, NULL, -1, &slist);
+				&t_str, "Modified", NULL, source, -1, &slist);
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
@@ -2044,10 +2052,12 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
+	CamelFolderChangeInfo *changes = NULL;
 
 	count = camel_folder_summary_count (destination->summary);
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
 
+	changes = camel_folder_change_info_new ();
 	while (index < uids->len) {
 		item_ids = g_list_append (item_ids, g_ptr_array_index (uids, index));
 		index ++;
@@ -2085,8 +2095,10 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			if (camel_exception_is_set (ex))
 				break;
 
-			if (delete_originals)
-				camel_folder_delete_message(source, camel_message_info_uid (info));
+			/* if (delete_originals) {
+				camel_folder_summary_remove_uid (source->summary, camel_message_info_uid(info));
+				camel_data_cache_remove (((CamelGroupwiseFolder *)source)->cache, "cache", camel_message_info_uid(info), ex);
+			}*/
 		}
 
 		CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
@@ -2133,6 +2145,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					wrapper = NULL;
 				}
 
+				
 				/* A User may mark a message as Unread and then immediately move it to
 				some other folder. The following piece of code take care of such scenario.
 				
@@ -2157,17 +2170,23 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		else
 			status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index], 
 					dest_container_id, NULL);
+
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			if (delete_originals) 
-				camel_folder_delete_message(source, uids->pdata[index]);
+			if (delete_originals) { 
+				camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
+				camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
+			}
 		} else {
 			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
 		}
 		index ++;
 	}
+
+	camel_object_trigger_event (source, "folder_changed", changes);
+	camel_folder_change_info_free (changes);
+
 	/* Refresh the destination folder, if its not refreshed already */
-	if (gw_store->current_folder != destination || 
-			camel_folder_summary_count (destination->summary) == count)
+	if (gw_store->current_folder != destination )
 		camel_folder_refresh_info (destination, ex);
 
 	camel_folder_summary_touch (source->summary);
