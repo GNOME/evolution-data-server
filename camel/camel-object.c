@@ -458,9 +458,13 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 			/* maybe it was just version 0 afterall */
 			return 0;
 		}
+
+		count = MIN(count, CAMEL_ARGV_MAX);
 		
 		/* we batch up the properties and set them in one go */
-		if (!(argv = g_try_malloc ((gulong)(sizeof (*argv) + (count - CAMEL_ARGV_MAX) * sizeof (argv->argv[0])))))
+		argv = g_try_malloc(sizeof(CamelArgV) -
+			((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
+		if (argv == NULL)
 			return -1;
 		
 		argv->argc = 0;
@@ -539,9 +543,12 @@ cobject_state_write(CamelObject *obj, FILE *fp)
 	   we also need an argv to store the results - bit messy */
 
 	count = g_slist_length(props);
+	count = MIN(count, CAMEL_ARGV_MAX);
 
-	arggetv = g_malloc0(sizeof(*arggetv) + (count - CAMEL_ARGV_MAX) * sizeof(arggetv->argv[0]));
-	argv = g_malloc0(sizeof(*argv) + (count - CAMEL_ARGV_MAX) * sizeof(argv->argv[0]));
+	arggetv = g_malloc0(sizeof(CamelArgGetV) -
+		((CAMEL_ARGV_MAX - count) * sizeof(CamelArgGet)));
+	argv = g_malloc0(sizeof(CamelArgV) -
+		((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
 	l = props;
 	i = 0;
 	while (l) {
