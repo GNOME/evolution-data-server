@@ -637,7 +637,7 @@ cs_getaddrinfo(void *data)
 	info->result = getaddrinfo(info->name, info->service, info->hints, info->res);
 	
 	if (info->cancelled) {
-		g_free(info);
+		cs_freeinfo(info);
 	} else {
 		e_msgport_reply((EMsg *)info);
 	}
