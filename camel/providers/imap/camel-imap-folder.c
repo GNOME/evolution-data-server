@@ -656,7 +656,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 		uid = g_datalist_get_data (&data, "UID");
 		flags = GPOINTER_TO_UINT (g_datalist_get_data (&data, "FLAGS"));
 		
-		if (!uid || !seq || seq > summary_len) {
+		if (!uid || !seq || seq > summary_len || seq < 0) {
 			g_datalist_clear (&data);
 			continue;
 		}
@@ -2790,7 +2790,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 		
 		if (*response != '*' || *(response + 1) != ' ')
 			return NULL;
-		seq = strtol (response + 2, &response, 10);
+		seq = strtoul (response + 2, &response, 10);
 		if (seq == 0)
 			return NULL;
 		if (g_ascii_strncasecmp (response, " FETCH (", 8) != 0)

@@ -1,3 +1,8 @@
+2007-06-14  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* camel-imap-folder.c: Security bugfix. The sequence can be a negative
+	value while it is being used as the index of an array (#447414)
+
 2007-06-10  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-object.c (cobject_state_read), (cobject_state_write):
