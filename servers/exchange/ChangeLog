@@ -1,3 +1,9 @@
+2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* storage/exchange-hierarchy-webdav.c (xfer_folder):
+	Duplicate the string returned from e_folder_get_physical_uri()
+	(#312854).
+
 2007-06-04  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Fixes #415922
