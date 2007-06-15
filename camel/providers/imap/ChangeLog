@@ -1,3 +1,8 @@
+2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-command.c (imap_command_strdup_vprintf):
+	Fix a memory leak (#447753).
+
 2007-05-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-imap-provider.c: Fix for bug #347326 from Ebby Wiselyn.

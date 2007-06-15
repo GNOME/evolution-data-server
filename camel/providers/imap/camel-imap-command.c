@@ -857,6 +857,8 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 		start = *p ? p + 1 : p;
 	}
 	
+	g_ptr_array_free (args, TRUE);
+
 	return out;
 }
 
