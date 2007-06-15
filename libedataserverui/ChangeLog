@@ -1,3 +1,8 @@
+2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (ep_forget_password_keyring),
+	(ep_get_password_keyring): Free the EUri (#447749).
+
 2007-05-28  Pascal Terjan  <pterjan@linuxfr.org>
 
 	* e-passwords.c (e_passwords_ask_password):

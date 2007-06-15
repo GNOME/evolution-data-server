@@ -493,20 +493,14 @@ ep_forget_password_keyring (EPassMsg *msg)
 		g_free (value);
 	}
 
-	if (!uri->host && !uri->user) {
+	if (!uri->host && !uri->user)
 		/* No need to remove from keyring for pass phrases */
-		if (!msg->noreply)
-			e_msgport_reply(&msg->msg);
-		return;
-	}
+		goto exit;
 	
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	if (!default_keyring) {
-	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK) {
-				if (!msg->noreply)
-					e_msgport_reply(&msg->msg);
-				return;
-		}
+	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
+			goto exit;
 	        default_keyring = g_strdup ("default");			
 	}
 
@@ -568,8 +562,11 @@ ep_forget_password_keyring (EPassMsg *msg)
 	
 	g_free (default_keyring);
 
+exit:
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
+
+	e_uri_free(uri);
 }
 #endif
 
@@ -682,6 +679,7 @@ ep_get_password_keyring (EPassMsg *msg)
 			}
 		}
 		
+		e_uri_free (uri);
 	}
 
 	if (!msg->noreply)
