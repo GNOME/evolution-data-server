@@ -44,7 +44,7 @@
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 
-#define d(x) 
+#define d(x) (x)
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelFolderClass *parent_class;
@@ -305,6 +305,8 @@ pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	if(pop3_store->delete_after && !expunge)
 	{	
+		d(printf("%s(%d): pop3_store->delete_after = [%d], expunge=[%d]\n",
+			 __FILE__, __LINE__, pop3_store->delete_after, expunge));
 		camel_operation_start(NULL, _("Expunging old messages"));
 		camel_pop3_delete_old(folder, pop3_store->delete_after,ex);	
 	}	
@@ -364,20 +366,27 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	int i;
 	CamelPOP3Store *pop3_store;
 	time_t temp;
-	CamelMimeMessage *message;
+	CamelMessageInfo *minfo;
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);	
 	temp = time(&temp);
 
+	d(printf("%s(%d): pop3_folder->uids->len=[%s]\n", __FILE__, __LINE__, pop3_folder->uids->len));
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		fi = pop3_folder->uids->pdata[i];
-	
-		message = pop3_get_message (folder, fi->uid, ex);
-		if(message) {
-			time_t message_time = message->date + message->date_offset;
+
+		minfo = camel_folder_get_message_info (folder, fi->uid);
+		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
+		if(minfo) {
+			time_t message_time = ((CamelMessageInfoBase *)minfo)->date_received;
+			d(printf("%s(%d): message_time= [%d]\n", __FILE__, __LINE__, message_time));
+
 			double time_diff = difftime(temp,message_time);
 			int day_lag = time_diff/(60*60*24);
+			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n", 
+				 __FILE__, __LINE__, day_lag, days_to_delete));
+
 			if( day_lag > days_to_delete)
 			{
 				if (fi->cmd) {
@@ -388,7 +397,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 					camel_pop3_engine_command_free(pop3_store->engine, fi->cmd);
 					fi->cmd = NULL;
 				}
-		
+				d(printf("%s(%d): Deleting old messages\n", __FILE__, __LINE__));
 				fi->cmd = camel_pop3_engine_command_new(pop3_store->engine, 
 									0,
 									NULL,
@@ -401,7 +410,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 				}
 			}
 			/* free message - not used anymore */
-			camel_object_unref((CamelObject *)message);
+			camel_folder_free_message_info (folder, minfo);
 		}
 	}
 

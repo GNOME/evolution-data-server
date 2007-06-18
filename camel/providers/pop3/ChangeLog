@@ -1,3 +1,11 @@
+2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
+	
+	** Fix for bug #352284 from Varadhan
+
+	* camel-pop3-folder.c: (pop3_sync), (camel_pop3_delete_old): Do not fetch 
+	the message from server - instead use the header information to calculate 
+	the expiry period.
+
 2007-04-30  Sankar P  <psankar@novell.com>
 
 	* camel-pop3-store.c: (pop3_try_authenticate):
