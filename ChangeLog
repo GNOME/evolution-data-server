@@ -1,5 +1,11 @@
 2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
 
+	** Fix for bug #448589 from Tobias Mueller
+
+	** src/Makefile.am: Add support for automake 1.6
+
+2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
+
 	** Fix for bug #443958 from Sebastien Tandel 
 
 	* configure.in: Add support for help string.
