@@ -1,9 +1,15 @@
+2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
+	
+	** Fix for bug #437751 from Andreas Köhler
+
+	* libedataserver/e-time-utils.c: 
+
 2007-06-05  Irene Huang  <irene.huang@sun.com>
 
 	* configure.in: Add option for using Sun Kerberos
 	fixing bug #344728
 
-2007-05-14  Srinivasa Ragavan
+2007-05-14  Srinivasa Ragavan <sragavan@novell.com>
 	
 	* NEWS, configure.in: Evolution Data Server 1.11.3 release.
 
