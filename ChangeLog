@@ -1,4 +1,10 @@
 2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
+
+	** Fix for bug #443958 from Sebastien Tandel 
+
+	* configure.in: Add support for help string.
+
+2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
 	
 	** Fix for bug #437751 from Andreas Köhler
 

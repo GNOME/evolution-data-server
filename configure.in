@@ -193,7 +193,11 @@ dnl **************************************************
 dnl * libdb checking
 dnl **************************************************
 
-AC_ARG_WITH(libdb, AC_HELP_STRING([--with-libdb],[Prefix where libdb is installed]), dynamic_libdb=yes, dynamic_libdb=no)
+AC_ARG_WITH(libdb, 
+  AC_HELP_STRING( [--with-libdb],
+		  [Prefix where libdb is installed]), 
+  dynamic_libdb=yes, dynamic_libdb=no)
+
 if test "x${dynamic_libdb}" = "xyes"; then
         DB_CFLAGS="-I$withval/include"
         DB_LIBS="-L$withval/lib -ldb"
@@ -225,7 +229,9 @@ dnl ******************************
 dnl iconv checking
 dnl ******************************
 have_iconv=no
-AC_ARG_WITH(libiconv, [  --with-libiconv         Prefix where libiconv is installed])
+AC_ARG_WITH(libiconv, 
+  AC_HELP_STRING( [--with-libiconv],
+		  [Prefix where libiconv is installed]))
 case $withval in
 /*)
     ICONV_CFLAGS="-I$withval/include"
@@ -367,26 +373,40 @@ msg_ssl="no"
 msg_smime="no"
 
 dnl these 2 enable's are inverses of each other
-AC_ARG_ENABLE(nss, [  --enable-nss=[yes,no,static]        Attempt to use Mozilla libnss for SSL support.],
-	enable_nss="$enableval", enable_nss="yes")
+AC_ARG_ENABLE(nss,
+  AC_HELP_STRING( [--enable-nss=@<:@yes/no/static@:>@],
+		  [Attempt to use Mozilla libnss for SSL support.]),
+  enable_nss="$enableval", enable_nss="yes")
 
-AC_ARG_ENABLE(smime, [ --enable-smime=[yes,no]            Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)],
-	enable_smime="$enableval", enable_smime="yes")
+AC_ARG_ENABLE(smime, 
+  AC_HELP_STRING( [--enable-smime=@<:@yes/no@:>@],
+		  [Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
+  enable_smime="$enableval", enable_smime="yes")
 
-AC_ARG_ENABLE(gnome-keyring, [ --enable-gnome-keyring=[yes,no]            Attempt to use Gnome Keyring for storing passwords (this requires --enable-gnome-keyring)],
-	enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
+AC_ARG_ENABLE(gnome-keyring, 
+  AC_HELP_STRING( [--enable-gnome-keyring=@<:@yes/no@:>@],
+		  [Attempt to use Gnome Keyring for storing passwords (this requires --enable-gnome-keyring)]),
+  enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
 
-AC_ARG_WITH(nspr-includes, [  --with-nspr-includes=PREFIX	Location of Mozilla nspr4 includes.],
-	with_nspr_includes="$withval")
+AC_ARG_WITH(nspr-includes, 
+  AC_HELP_STRING( [--with-nspr-includes=PREFIX],
+		  [Location of Mozilla nspr4 includes.]),
+  with_nspr_includes="$withval")
 
-AC_ARG_WITH(nspr-libs, [  --with-nspr-libs=PREFIX       	Location of Mozilla nspr4 libs.],
-	with_nspr_libs="$withval")
+AC_ARG_WITH(nspr-libs, 
+  AC_HELP_STRING( [--with-nspr-libs=PREFIX],
+		  [Location of Mozilla nspr4 libs.]),
+  with_nspr_libs="$withval")
 
-AC_ARG_WITH(nss-includes, [  --with-nss-includes=PREFIX 	Location of Mozilla nss3 includes.],
-	with_nss_includes="$withval")
+AC_ARG_WITH(nss-includes, 
+  AC_HELP_STRING( [--with-nss-includes=PREFIX],
+		  [Location of Mozilla nss3 includes.]),
+  with_nss_includes="$withval")
 
-AC_ARG_WITH(nss-libs, [  --with-nss-libs=PREFIX         	Location of Mozilla nss3 libs.],
-	with_nss_libs="$withval")
+AC_ARG_WITH(nss-libs, 
+  AC_HELP_STRING( [--with-nss-libs=PREFIX],
+		  [Location of Mozilla nss3 libs.]),
+  with_nss_libs="$withval")
 
 if test "x${enable_gnome_keyring}" = "xyes"; then
 	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1, with_gnome_keyring="yes", with_gnome_keyring="no");
@@ -843,7 +863,10 @@ if test x"$have_addrinfo" = "xno" ; then
    fi
    msg_ipv6=no
 else
-   AC_ARG_ENABLE(ipv6, [  --enable-ipv6=[no/yes]      Enable support for resolving IPv6 addresses.],,enable_ipv6=yes)
+   AC_ARG_ENABLE(ipv6, 
+     AC_HELP_STRING( [--enable-ipv6=@<:@no/yes@:>@],
+		     [Enable support for resolving IPv6 addresses.]),
+     ,enable_ipv6=yes)
    if test x"$enable_ipv6" = "xyes"; then
         msg_ipv6=yes
 	AC_DEFINE(ENABLE_IPv6,1,[Enable IPv6 support])
@@ -872,8 +895,11 @@ dnl **************************************************
 dnl Calendar support
 dnl **************************************************
 AC_MSG_CHECKING(if we should build the calendar)
-AC_ARG_ENABLE(calendar, AC_HELP_STRING([--disable-calendar],[Disable the calendar components]),
-        enable_calendar="$enableval", enable_calendar="yes")
+AC_ARG_ENABLE(calendar, 
+  AC_HELP_STRING( [--enable-calendar=@<:@yes/no@:>@],
+		  [Enable the calendar components (default yes)]),
+  enable_calendar="$enableval", enable_calendar="yes")
+
 if test "x${enable_calendar}" != "xno"; then
         AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
 fi
@@ -885,7 +911,10 @@ dnl **************************************************
 dnl NNTP support.
 dnl **************************************************
 AC_ARG_ENABLE(nntp, 
-[  --enable-nntp=[no/yes]      Build Usenet news (NNTP) backend],,enable_nntp=yes)
+  AC_HELP_STRING( [--enable-nntp=@<:@no/yes@:>@],
+		  [Build Usenet news (NNTP) backend]),
+  ,enable_nntp=yes)
+
 if test "x$enable_nntp" = "xyes"; then
 	AC_DEFINE(ENABLE_NNTP,1,[Build NNTP backend])
 	msg_nntp=yes
@@ -898,7 +927,10 @@ dnl **************************************************
 dnl New IMAP code support.
 dnl **************************************************
 AC_ARG_ENABLE(imapp, 
-[  --enable-imapp=[no/yes]      Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code],,enable_imapp=no)
+  AC_HELP_STRING( [--enable-imapp=@<:@no/yes@:>@],
+		  [Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
+  ,enable_imapp=no)
+
 if test "x$enable_imapp" = "xyes"; then
 	AC_DEFINE(ENABLE_IMAPP,1,[Really don't try this at home])
 	msg_imapp=yes
@@ -910,22 +942,28 @@ AM_CONDITIONAL(ENABLE_IMAPP, test x$enable_imapp = xyes)
 dnl ************************************************** 	 
 dnl IMAP4rev1 code support. 	 
 dnl ************************************************** 	 
- AC_ARG_ENABLE(imap4, 	 
- [  --enable-imap4=[no/yes]      Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation],,enable_imap4=no) 	 
- if test "x$enable_imap4" = "xyes"; then 	 
+AC_ARG_ENABLE(imap4, 	 
+  AC_HELP_STRING( [--enable-imap4=@<:@no/yes@:>@],
+		  [Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
+  ,enable_imap4=no) 	 
+
+if test "x$enable_imap4" = "xyes"; then 	 
          AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home]) 	 
          msg_imap4=yes 	 
- else 	 
+else 	 
          msg_imap4=no 	 
- fi 	 
- AM_CONDITIONAL(ENABLE_IMAP4, test x$enable_imap4 = xyes)
+fi 	 
+AM_CONDITIONAL(ENABLE_IMAP4, test x$enable_imap4 = xyes)
  
 dnl **************************************************
 dnl * File locking
 dnl **************************************************
 
 AC_ARG_ENABLE(dot-locking, 
-[  --enable-dot-locking=[yes/no] Enable support for locking mail files with dot locking],,enable_dot_locking=yes)
+  AC_HELP_STRING( [--enable-dot-locking=@<:@yes/no@:>@],
+		  [Enable support for locking mail files with dot locking]),
+  ,enable_dot_locking=yes)
+
 if test $os_win32 != yes -a "x$enable_dot_locking" = "xyes"; then
   AC_DEFINE(USE_DOT,1,[Define to use dot locking for mbox files])
   msg_dot=yes
@@ -934,7 +972,10 @@ else
 fi
 
 AC_ARG_ENABLE(file-locking, 
-[  --enable-file-locking=[fcntl/flock/no] Enable support for locking mail files with file locking],,enable_file_locking=fcntl)
+  AC_HELP_STRING( [--enable-file-locking=@<:@fcntl/flock/no@:>@], 
+		  [Enable support for locking mail files with file locking]),
+  ,enable_file_locking=fcntl)
+
 if test $os_win32 != yes -a "x$enable_file_locking" = "xfcntl"; then
   AC_DEFINE(USE_FCNTL,1,[Define to use fcntl locking for mbox files])
   msg_file=fcntl
@@ -957,7 +998,9 @@ if test "x$host_os" = "xsunos" ; then
 fi
 
 AC_ARG_WITH(broken-spool, 
-[  --with-broken-spool=[yes/no] Using SunOS/Solaris sendmail which has a broken spool format],,with_broken_spool=${with_broken_spool:=no})
+  AC_HELP_STRING( [--with-broken-spool=@<:@yes/no@:>@],
+		  [Using SunOS/Solaris sendmail which has a broken spool format]),
+  ,with_broken_spool=${with_broken_spool:=no})
 
 if test "x$with_broken_spool" = "xyes"; then
   AC_DEFINE(HAVE_BROKEN_SPOOL,1,[Define if mail delivered to the system mail directory is in broken Content-Length format])
@@ -968,12 +1011,35 @@ AC_MSG_RESULT($with_broken_spool)
 dnl ********
 dnl Kerberos
 dnl ********
-AC_ARG_WITH(krb5, [  --with-krb5=DIR      Location of Kerberos 5 install dir], with_krb5="$withval", with_krb5="no")
-AC_ARG_WITH(krb5-libs, [  --with-krb5-libs=DIR Location of Kerberos 5 libraries], with_krb5_libs="$withval", with_krb5_libs="$with_krb5/lib")
-AC_ARG_WITH(krb5-includes, [  --with-krb5-includes=DIR Location of Kerberos 5 headers], with_krb5_includes="$withval", with_krb5_includes="")
-AC_ARG_WITH(krb4, [  --with-krb4=DIR      Location of Kerberos 4 install dir], with_krb4="$withval", with_krb4="no")
-AC_ARG_WITH(krb4-libs, [  --with-krb4-libs=DIR Location of Kerberos 4 libraries], with_krb4_libs="$withval", with_krb4_libs="$with_krb4/lib")
-AC_ARG_WITH(krb4-includes, [  --with-krb4-includes=DIR Location of Kerberos 4 headers], with_krb4_includes="$withval", with_krb4_includes="")
+AC_ARG_WITH(krb5, 
+  AC_HELP_STRING( [--with-krb5=DIR],
+		  [Location of Kerberos 5 install dir]),
+  with_krb5="$withval", with_krb5="no")
+
+AC_ARG_WITH(krb5-libs, 
+  AC_HELP_STRING( [--with-krb5-libs=DIR],
+		  [Location of Kerberos 5 libraries]), 
+  with_krb5_libs="$withval", with_krb5_libs="$with_krb5/lib")
+
+AC_ARG_WITH(krb5-includes, 
+  AC_HELP_STRING( [--with-krb5-includes=DIR],
+		  [Location of Kerberos 5 headers]), 
+  with_krb5_includes="$withval", with_krb5_includes="")
+
+AC_ARG_WITH(krb4, 
+  AC_HELP_STRING( [--with-krb4=DIR],
+		  [Location of Kerberos 4 install dir]), 
+  with_krb4="$withval", with_krb4="no")
+
+AC_ARG_WITH(krb4-libs, 
+  AC_HELP_STRING( [--with-krb4-libs=DIR],
+		  [Location of Kerberos 4 libraries]), 
+  with_krb4_libs="$withval", with_krb4_libs="$with_krb4/lib")
+
+AC_ARG_WITH(krb4-includes, 
+  AC_HELP_STRING( [--with-krb4-includes=DIR],
+		  [Location of Kerberos 4 headers]), 
+  with_krb4_includes="$withval", with_krb4_includes="")
 
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
@@ -1110,7 +1176,9 @@ EVO_PURIFY_SUPPORT
 dnl **************************************************
 dnl Exchange debug
 dnl **************************************************
-AC_ARG_WITH(e2k-debug,     [  --with-e2k-debug              Allow debugging])
+AC_ARG_WITH(e2k-debug,
+  AC_HELP_STRING( [--with-e2k-debug],
+		  [Allow debugging]))
 case $withval in
 no)
 	;;
