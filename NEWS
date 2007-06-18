@@ -1,3 +1,34 @@
+Evolution-Data-Server 1.11.4 2007-06-18
+---------------------------------------
+
+Bug fixes:
+	#312854: Fix a hang while renaming folders twice for exchange
+	 (Matthew Barnes)
+	#331099: Fix calculation of array index to avoid negative values
+	 (Matthew Barnes)
+	#344728: Add headers for Sun Kerberos v5 (Irene Huang)
+	#352284: Do not fetch the message from server - instead use the
+	 header information to calculate the expiry period. (Veerapuram
+	 Varadhan)
+	#437751: Fix time display in Windows (Andreas Köhler)
+	#443705: Fixed build break due to incorrect macro (Loïc Minier)
+	#443958: Add support for help string. (Sebastien Tandel)
+	#447414: Security bugfix - negative index of an array (Philip Van
+	 Hoof)
+	#447753, #447749: Fix a memory leak (Matthew Barnes)
+	#448589: Add support for automake 1.6 (Tobias Mueller)
+
+Other Contributors:
+	Check entire IMAP4 summary to remove non-existent messages (Jeffrey
+	 Stedfast)
+	Fetches "Sent Items" in all folders. Also, fixed some bugs in moving
+	 mails across folders. (Sankar P)
+
+Updated Translations:
+	Priit Laes (et)
+	Pema Geyleg (dz)
+	Jorge Gonzalez (es)
+
 Evolution-Data-Server 1.11.3 2007-06-04
 ---------------------------------------
 
@@ -16,6 +47,7 @@ Bug fixes:
 	#438577: Don't install implementation detail headers (Ross Burton)
 	#438727: Hide implementation details from public headers (Ross 
 	 Burton)
+	#438928: Add --disable-calendar to build without any calendar
 	 support (Ross Burton)
 	#440524: Memory leak fixes (Srinivasa Ragavan)
 	#442187: Fix to open default memo component (John Stowers)
