@@ -934,7 +934,8 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-	      if (!recursive (get_locale_string (LOCALE_STIMEFORMAT)))
+	      const char *posix_t_fmt = translate_picture (get_locale_string (LOCALE_STIMEFORMAT));
+	      if (!recursive (posix_t_fmt))
 		{
 		  if (*decided == loc)
 		    return NULL;
@@ -943,7 +944,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		}
 	      else
 		{
-		  if (strcmp (get_locale_string (LOCALE_STIMEFORMAT), HERE_T_FMT))
+		  if (strcmp (posix_t_fmt, HERE_T_FMT))
 		    *decided = loc;
 		  break;
 		}

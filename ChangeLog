@@ -1,3 +1,9 @@
+2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
+
+        ** Fix for bug #437751 from Andreas Köhler
+
+        * libedataserver/e-time-utils.c: 
+
 2007-05-28  Srinivasa Ragavan <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution-Data-Server 1.10.2 release updates.
