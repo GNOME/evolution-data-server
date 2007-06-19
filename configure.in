@@ -385,7 +385,7 @@ AC_ARG_ENABLE(smime,
 
 AC_ARG_ENABLE(gnome-keyring, 
   AC_HELP_STRING( [--enable-gnome-keyring=@<:@yes/no@:>@],
-		  [Attempt to use Gnome Keyring for storing passwords (this requires --enable-gnome-keyring)]),
+		  [Attempt to use Gnome Keyring for storing passwords]),
   enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
 
 AC_ARG_WITH(nspr-includes, 
