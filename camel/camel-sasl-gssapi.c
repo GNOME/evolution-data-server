@@ -43,7 +43,6 @@
 #endif
 #ifdef HAVE_HEIMDAL_KRB5
 #include <gssapi.h>
-#define gss_nt_service_name GSS_C_NT_HOSTBASED_SERVICE
 #else
 #ifdef  HAVE_SUN_KRB5 
 #include <gssapi/gssapi.h>
@@ -237,7 +236,7 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		
 		inbuf.value = str;
 		inbuf.length = strlen (str);
-		major = gss_import_name (&minor, &inbuf, gss_nt_service_name, &priv->target);
+		major = gss_import_name (&minor, &inbuf, GSS_C_NT_HOSTBASED_SERVICE, &priv->target);
 		g_free (str);
 		
 		if (major != GSS_S_COMPLETE) {
