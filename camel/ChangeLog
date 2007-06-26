@@ -1,3 +1,9 @@
+2007-06-26  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* providers/local/camel-maildir-folder.c: Bugfix when renaming from
+	tmp to cur didn't work (which can happen on FAT32 that doesn't allow
+	certain special characters that are used by the Maildir spec).
+
 2007-06-21  Irene Huang  <irene.huang@sun.com>
 
 	* camel-sasl-gssapi.c: (gssapi_challenge): replace gss_nt_service_name

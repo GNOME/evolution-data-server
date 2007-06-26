@@ -191,7 +191,7 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	
 	/* now move from tmp to cur (bypass new, does it matter?) */
 	dest = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
-	if (rename (name, dest) == 1)
+	if (rename (name, dest) == -1)
 		goto fail_write;
 
 	g_free (dest);
