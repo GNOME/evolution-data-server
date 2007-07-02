@@ -1,3 +1,10 @@
+2007-07-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #410823
+
+	* e-name-selector-entry.c: (get_range_at_position),
+	(user_focus_out):
+
 2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-passwords.c (ep_forget_password_keyring),

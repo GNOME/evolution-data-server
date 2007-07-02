@@ -241,6 +241,9 @@ get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end
 	gint         local_end_pos   = 0;
 	gint         i;
 
+	if (!string || !*string)
+		return FALSE;
+
 	for (p = string, i = 0; *p; p = g_utf8_next_char (p), i++) {
 		gunichar c = g_utf8_get_char (p);
 
@@ -1464,6 +1467,10 @@ user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_fo
 	if (name_selector_entry->type_ahead_complete_cb_id) {
 		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
 	}
+
+	if (name_selector_entry->update_completions_cb_id) {
+		g_source_remove (name_selector_entry->update_completions_cb_id);
+}
 
 	clear_completion_model (name_selector_entry);
 
