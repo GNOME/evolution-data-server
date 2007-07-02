@@ -1,3 +1,9 @@
+2007-07-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #412735 from Pascal Terjan
+
+	* camel-url-scanner.c: (url_stop_at_brace):
+
 2007-06-26  Philip Van Hoof  <pvanhoof@gnome.org>
 
 	* providers/local/camel-maildir-folder.c: Bugfix when renaming from
