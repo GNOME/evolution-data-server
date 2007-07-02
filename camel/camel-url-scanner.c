@@ -181,7 +181,7 @@ url_stop_at_brace (const char *in, size_t so, char *open_brace)
 	int i;
 
 	if (open_brace != NULL)
-		*open_brace == '\0';
+		*open_brace = '\0';
 
 	if (so > 0) {
 		for (i = 0; i < G_N_ELEMENTS (url_braces); i++) {
