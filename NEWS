@@ -1,3 +1,25 @@
+Evolution-Data-Server 1.10.3 2007-07-02
+---------------------------------------
+
+Bug fixes:
+	#312854: Fix a hang while renaming folders twice for exchange
+	 (Matthew Barnes)
+	#331099: Fix calculation of array index to avoid negative values
+	 (Matthew Barnes)
+	#410823: Fixed a crash when clicking on an URL and then closing the
+	 browser (Srinivasa Ragavan)
+	#412735: Fix a typo avoiding open_brace to be initialized (Pascal
+	 Terjan)
+	#425129: add a timezone name for Asia/Jerusalem (Pascal Terjan)
+	#437751: Fix time display in Windows (Andreas Köhler)
+	#442187: Fix to open default memo component (John Stowers)
+	#447414: Security bugfix. The sequence can be a negative
+	 value while it is being used as the index of an array (Philip Van Hoof)
+	#447753: Fix a memory leak (Matthew Barnes)
+
+Updated Translations:
+	Priit Laes (et)
+
 Evolution-Data-Server 1.10.2 2007-05-28
 ---------------------------------------
 
