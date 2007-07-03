@@ -1470,7 +1470,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		if (imap4_summary->exists < scount) {
 			/* broken server? wtf? this should never happen... */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("IMAP server %s is in an inconsistant state."),
+					      _("IMAP server %s is in an inconsistent state."),
 					      engine->url->host);
 			return -1;
 		} else if (imap4_summary->exists > scount) {
@@ -1497,7 +1497,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		
 		ic = imap4_summary_fetch_all (summary, seqid, uid);
 		
-		camel_operation_start (NULL, _("Fetching envelopes for new messages"));
+		camel_operation_start (NULL, _("Fetching envelopes of new messages"));
 		while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
 			;
 		

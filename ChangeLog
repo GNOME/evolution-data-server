@@ -1,3 +1,8 @@
+2007-07-02  Christian Kirbach  <Christian.Kirbach@googlemail.com>
+
+	* camel/providers/imap4/camel-imap4-summary.c:
+	Fix one typo and wrong preposition (bug #452996).
+
 2007-06-19  Karsten Bräckelmann  <guenther@rudersport.de>
 
 	* configure.in: Correct the comment for --enable-gnome-keyring,
