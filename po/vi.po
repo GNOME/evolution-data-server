@@ -1,6 +1,6 @@
 # Vietnamese translation for evolution-data-server.
 # Copyright © 2007 Gnome i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@gmx.net>, 2002-2004.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
 # 
 msgid ""
@@ -175,7 +175,7 @@ msgstr "\"%s\" trong sổ sau \"%s\""
 #: ../addressbook/libebook/e-book.c:2728
 #, c-format
 msgid "%s: canceled"
-msgstr "%s: bị thôi"
+msgstr "%s: bị huỷ"
 
 #: ../addressbook/libebook/e-book.c:3289
 #, c-format
@@ -1636,7 +1636,7 @@ msgstr "Nhận yêu cầu không mong đợi từ GnuPG cho « %s »"
 #: ../camel/camel-gpg-context.c:1064
 #: ../camel/providers/nntp/camel-nntp-store.c:1269
 msgid "Canceled."
-msgstr "Bị thôi."
+msgstr "Bị huỷ."
 
 #: ../camel/camel-gpg-context.c:873
 msgid "Failed to unlock secret key: 3 bad passphrases given."
@@ -2012,7 +2012,7 @@ msgstr "Tùy chọn này sẽ kết nối tới máy chu bằng cơ chế xác m
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr "Cơ chế xác định không được hỗ trợ do thông tin xác thức đã cung cấp, hoặc "
+msgstr "Cơ chế xác định không được hỗ trợ do thông tin xác thực đã cung cấp, hoặc "
 "không được chấp nhận do cách thực hiện."
 
 #: ../camel/camel-sasl-gssapi.c:164
@@ -2043,8 +2043,8 @@ msgstr "Tham số input_token (hiệu bài gõ chứa chữ ký không hợp l�
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr "Thông tin xác thức không hợp lệ để khởi động ngữ cảnh, hoặc móc nó không "
-"tham chiếu đến thông tin xác thức nào."
+msgstr "Thông tin xác thực không hợp lệ để khởi động ngữ cảnh, hoặc móc nó không "
+"tham chiếu đến thông tin xác thực nào."
 
 #: ../camel/camel-sasl-gssapi.c:185
 msgid "The supplied context handle did not refer to a valid context."
@@ -2057,11 +2057,11 @@ msgstr "Thao tác kiểm tra đồng bộ được thực hiện trên input_tok
 
 #: ../camel/camel-sasl-gssapi.c:191
 msgid "The consistency checks performed on the credential failed."
-msgstr "Thao tác kiểm tra đồng bộ được thực hiện trên thông tin xác thức đã thất bại."
+msgstr "Thao tác kiểm tra đồng bộ được thực hiện trên thông tin xác thực đã thất bại."
 
 #: ../camel/camel-sasl-gssapi.c:194
 msgid "The referenced credentials have expired."
-msgstr "Đã tham chiếu đến thông tin xác thức đã hết hạn."
+msgstr "Đã tham chiếu đến thông tin xác thực đã hết hạn."
 
 #: ../camel/camel-sasl-gssapi.c:200
 #: ../camel/camel-sasl-gssapi.c:248
@@ -3381,7 +3381,7 @@ msgstr "IMAPv4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "For reading and storing mail on IMAPv4rev1 servers."
-msgstr "Để đọc và lưu thư trên may chủ loại  IMAPv4rev1."
+msgstr "Để đọc và lưu thư trên máy chủ loại  IMAPv4rev1."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
 msgid ""
@@ -3414,7 +3414,7 @@ msgstr "Lỗi dàn xếp TLS"
 #, c-format
 msgid ""
 "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
-msgstr "Không thể xác thức với máy phục vụ IMAP %s dùng cơ chế xác thực %s"
+msgstr "Không thể xác thực với máy phục vụ IMAP %s dùng cơ chế xác thực %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:462
 #, c-format
@@ -4380,7 +4380,7 @@ msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr "Không thể kết nối tới máy phục vụ POP %s:\tNhận được mã nhận diện APOP không hợp lệ: có thể bị tấn công kiểu mạo nhân là người dùng hợp lệ. Hãy liên lạc với quản trị."
+msgstr "Không thể kết nối tới máy phục vụ POP %s:\tNhận được mã nhận diện APOP không hợp lệ: có thể bị tấn công kiểu mạo nhận là người dùng hợp lệ. Hãy liên lạc với quản trị."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
