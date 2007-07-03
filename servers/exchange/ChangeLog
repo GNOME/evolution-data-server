@@ -1,3 +1,10 @@
+2007-07-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	
+	* lib/e2k-autoconfig.c: (e2k_validate_user): Have the full url to
+	avoid asking the password again.
+	* lib/e2k-validate.h:
+
 2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* storage/exchange-hierarchy-webdav.c (xfer_folder):

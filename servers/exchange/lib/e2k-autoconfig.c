@@ -64,6 +64,7 @@
 #include "xntlm.h"
 
 #include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-url.h>
 #include <libedataserverui/e-passwords.h>
 #include <gconf/gconf-client.h>
 #include <libxml/tree.h>
@@ -1623,7 +1624,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 }
 
 gboolean
-e2k_validate_user (const char *owa_url, char **user,
+e2k_validate_user (const char *owa_url, char *pkey, char **user,
 		   ExchangeParams *exchange_params, gboolean *remember_password,
 		   E2kAutoconfigResult *result)
 {
@@ -1632,11 +1633,16 @@ e2k_validate_user (const char *owa_url, char **user,
 	char *username;
 	gchar **usernames;
 	int try = 0;
+	EUri *uri;
 
+	uri = e_uri_new (owa_url);
+	key = g_strdup_printf ("%s%s/", pkey, uri->host); /* FIXME */
+	e_uri_free (uri);
+	
 try_auth_again:
 	username = g_strdup (*user);
 
-	key = g_strdup_printf ("%s//%s@%s/", "exchange:", username, owa_url); /* FIXME */
+
 	password = e_passwords_get_password ("Exchange", key);
 	if (password) {
 		/* This can be the case, where user presses authenticate button and
