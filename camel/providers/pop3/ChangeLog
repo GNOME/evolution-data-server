@@ -1,3 +1,8 @@
+2007-07-08  Jens Granseuer  <jensgr@gmx.net>
+
+	* camel-pop3-folder.c: (camel_pop3_delete_old):
+	put declarations before code and don't use "%s" for int. Fixes #454570
+
 2007-06-18  Srinivasa Ragavan <sragavan@novell.com>
 	
 	** Fix for bug #352284 from Varadhan

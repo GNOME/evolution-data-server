@@ -372,7 +372,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);	
 	temp = time(&temp);
 
-	d(printf("%s(%d): pop3_folder->uids->len=[%s]\n", __FILE__, __LINE__, pop3_folder->uids->len));
+	d(printf("%s(%d): pop3_folder->uids->len=[%d]\n", __FILE__, __LINE__, pop3_folder->uids->len));
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		fi = pop3_folder->uids->pdata[i];
 
@@ -380,10 +380,10 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if(minfo) {
 			time_t message_time = ((CamelMessageInfoBase *)minfo)->date_received;
-			d(printf("%s(%d): message_time= [%d]\n", __FILE__, __LINE__, message_time));
-
 			double time_diff = difftime(temp,message_time);
 			int day_lag = time_diff/(60*60*24);
+
+			d(printf("%s(%d): message_time= [%d]\n", __FILE__, __LINE__, message_time));
 			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n", 
 				 __FILE__, __LINE__, day_lag, days_to_delete));
 
