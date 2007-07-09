@@ -1,3 +1,9 @@
+2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #352284 from Nathan Owens
+
+	* camel-pop3-folder.c: (camel_pop3_delete_old):
+
 2007-07-08  Jens Granseuer  <jensgr@gmx.net>
 
 	* camel-pop3-folder.c: (camel_pop3_delete_old):

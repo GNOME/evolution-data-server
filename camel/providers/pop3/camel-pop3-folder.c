@@ -383,7 +383,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 			double time_diff = difftime(temp,message_time);
 			int day_lag = time_diff/(60*60*24);
 
-			d(printf("%s(%d): message_time= [%d]\n", __FILE__, __LINE__, message_time));
+			d(printf("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));
 			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n", 
 				 __FILE__, __LINE__, day_lag, days_to_delete));
 
