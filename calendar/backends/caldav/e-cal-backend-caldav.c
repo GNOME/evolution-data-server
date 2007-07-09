@@ -747,7 +747,73 @@ soup_reauthenticate (SoupSession  *session,
 	priv->password = NULL;
 }
 
+static gint 
+caldav_ignore_host(gconstpointer a, gconstpointer b)
+{
+	gchar *hostname = (gchar*)a, 
+	      *ignore = (gchar*)b;
+ 
+	if (hostname && ignore)
+	  return strcmp(hostname, ignore);
+        return -1;
+}
 
+static void 
+caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
+{
+	GConfClient *conf_client;
+	SoupUri *uri_base;
+ 	
+ 	if (priv->session == NULL)
+ 		return;
+ 		
+	uri_base = soup_uri_new (priv->uri);
+	if (uri_base == NULL)
+		return;
+		
+	/* set the outbound HTTP proxy, if configuration is set to do so */
+	conf_client = gconf_client_get_default ();
+	if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
+		char *server, *proxy_uri;
+		int port;
+ 		GSList *ignore = gconf_client_get_list (conf_client, 
+  							"/system/http_proxy/ignore_hosts",
+  		                                	GCONF_VALUE_STRING, NULL); 
+  		if (ignore == NULL || 
+  		    g_slist_find_custom(ignore, uri_base->host, caldav_ignore_host) == NULL) {
+  			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
+			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
+
+			if (server && server[0]) {
+				SoupUri *suri;
+				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
+					char *user, *password;
+					user = gconf_client_get_string (conf_client,
+									"/system/http_proxy/authentication_user",
+									NULL);
+					password = gconf_client_get_string (conf_client,
+									    "/system/http_proxy/authentication_password",
+									    NULL);
+
+					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
+					g_free (user);
+					g_free (password);
+				} else
+					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
+
+				suri = soup_uri_new (proxy_uri);
+				g_object_set (G_OBJECT (priv->session), SOUP_SESSION_PROXY_URI, suri, NULL);
+
+				soup_uri_free (suri);
+				g_free (server);
+				g_free (proxy_uri);
+			}
+		}
+ 		g_slist_foreach(ignore, (GFunc) g_free, NULL);
+		g_slist_free(ignore);
+	}
+	soup_uri_free (uri_base);
+}
 
 
 /* ************************************************************************* */
@@ -1463,6 +1529,9 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	if (priv->mode == CAL_MODE_REMOTE) {
+		/* set forward proxy */
+		caldav_set_session_proxy(priv);
+	
 		status = caldav_server_open_calendar (cbdav);
 
 		if (status == GNOME_Evolution_Calendar_Success) {

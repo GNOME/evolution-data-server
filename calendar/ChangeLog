@@ -1,3 +1,10 @@
+2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #394572 from Jari Urpalainen
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_ignore_host),
+	(caldav_set_session_proxy), (caldav_do_open):
+
 2007-07-09  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #311098
