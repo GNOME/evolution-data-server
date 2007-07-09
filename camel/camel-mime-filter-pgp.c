@@ -120,8 +120,9 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 			o += (inptr - start);
 			break;
 		case PGP_HEADER:
-			/* pgp headers (Hash: SHA1, etc) end with a blank line */
-			if ((inptr - start) == 1)
+			/* pgp headers (Hash: SHA1, etc) end with a blank (zero-length,
+			   or containing only whitespace) line; see RFC2440 */
+			if ((inptr - start) == 1 || ((inptr - start) == 2 && *(inptr - 2) == 0x20))
 				pgp->state++;
 			break;
 		case PGP_MESSAGE:
