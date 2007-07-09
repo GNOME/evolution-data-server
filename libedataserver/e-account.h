@@ -101,6 +101,7 @@ typedef struct _EAccountService {
 	gboolean auto_check;
 	int auto_check_time;
 	gboolean save_passwd;
+	gboolean get_password_canceled;
 } EAccountService;
 
 typedef struct _EAccount {

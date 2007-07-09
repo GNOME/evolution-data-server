@@ -1,3 +1,9 @@
+2007-06-22  Milan Crha  <mcrha@redhat.com>
+
+	* libedataserver/e-account.h:
+	Added new property get_password_canceled into EAccountService
+	struct, because of bug #307410
+
 2007-07-02  Christian Kirbach  <Christian.Kirbach@googlemail.com>
 
 	* camel/providers/imap4/camel-imap4-summary.c:
