@@ -1,3 +1,9 @@
+2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #434356 from Jindrich Makovicka
+
+	* camel-mime-utils.c: (header_decode_lwsp), (header_decode_domain):
+
 2007-07-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #412735 from Pascal Terjan
