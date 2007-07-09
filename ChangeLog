@@ -1,3 +1,11 @@
+2007-07-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #364731
+
+	* libedataserver/e-sexp.c: (GScannerConfig):
+	The '+' and '-' are also unary operators, so
+	the identifier could not start with these characters.
+
 2007-06-22  Milan Crha  <mcrha@redhat.com>
 
 	* libedataserver/e-account.h:

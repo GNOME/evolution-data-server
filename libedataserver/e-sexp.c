@@ -113,7 +113,7 @@ static const GScannerConfig scanner_config =
 {
 	( " \t\r\n")		/* cset_skip_characters */,
 	( G_CSET_a_2_z
-	  "_+-<=>?"
+	  "_<=>?"
 	  G_CSET_A_2_Z)		/* cset_identifier_first */,
 	( G_CSET_a_2_z
 	  "_0123456789-<>?"
