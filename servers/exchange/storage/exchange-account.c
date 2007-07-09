@@ -891,6 +891,8 @@ static const char *mailbox_info_props[] = {
 };
 static const int n_mailbox_info_props = G_N_ELEMENTS (mailbox_info_props);
 
+
+
 static gboolean
 account_moved (ExchangeAccount *account, E2kAutoconfig *ac)
 {
@@ -1650,6 +1652,21 @@ exchange_account_get_global_catalog (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 		
 	return account->priv->gc;
+}
+
+/**
+ * exchange_account_fetch:
+ * @acct: an #ExchangeAccount
+ *
+ * Return value: @account's #EAccount, if it is connected and
+ * online, or %NULL if not.
+ **/	
+EAccount *
+exchange_account_fetch (ExchangeAccount *acct)
+{
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (acct), NULL);
+
+	return acct->priv->account;
 }
 
 /**

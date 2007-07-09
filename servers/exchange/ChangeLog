@@ -1,3 +1,14 @@
+2007-07-09  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* storage/exchange-account.c:
+	* storage/exchange-account.h: (exchange_account_fetch): Fetch
+	the EAaccount from the exchange account.								
+	* storage/exchange-esource.c: (add_folder_esource): Added the subscriber's
+	email id to corresponding esource.							    
+	
+	Committing on behalf of Suman Manjunath <msuman@novell.com> and 
+	Bharath Acharya <abharath@novell.com>	
+
 2007-07-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	

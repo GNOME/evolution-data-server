@@ -45,7 +45,7 @@ add_folder_esource (ExchangeAccount *account,
 	GConfClient *client;
 	gboolean is_contacts_folder = TRUE, group_new = FALSE, source_new = FALSE;
 	const char *offline = NULL;
-	char *username, *authtype = NULL;
+	char *username, *useremail, *authtype = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
 	gboolean offline_flag, update_selection = TRUE, foriegn_folder;
@@ -81,6 +81,7 @@ add_folder_esource (ExchangeAccount *account,
 
 	exchange_account_is_offline_sync_set (account, &mode);
 	username = exchange_account_get_username (account);
+	useremail = exchange_account_get_email_id (account);
 	authtype = exchange_account_get_authtype (account);
 
         if ((source_group = e_source_list_peek_group_by_name (source_list, 
@@ -110,8 +111,10 @@ add_folder_esource (ExchangeAccount *account,
 			e_source_set_property (source, "offline_sync", "1");
 		}
 		
-		if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER))
+		if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER)) {
 			e_source_set_property (source, "alarm", "never");
+			e_source_set_property (source, "subscriber", useremail);
+		}
 
 		e_source_set_property (source, "username", username);
 		e_source_set_property (source, "auth-domain", "Exchange");
@@ -151,8 +154,10 @@ add_folder_esource (ExchangeAccount *account,
 			else
 				e_source_set_property (source, "auth", "1");
 
-			if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER))
+			if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER)) {
 				e_source_set_property (source, "alarm", "never");
+				e_source_set_property (source, "subscriber", useremail);
+			}
 
 			e_source_group_add_source (source_group, source, -1);
 			source_new = TRUE;

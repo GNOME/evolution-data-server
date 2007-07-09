@@ -80,6 +80,8 @@ ExchangeAccount       *exchange_account_new                  (EAccountList *acco
 E2kContext            *exchange_account_get_context          (ExchangeAccount  *acct);
 E2kGlobalCatalog      *exchange_account_get_global_catalog   (ExchangeAccount  *acct);
 
+EAccount 	      *exchange_account_fetch 		     (ExchangeAccount *acct);
+
 const char            *exchange_account_get_standard_uri     (ExchangeAccount  *acct,
 							      const char       *item);
 
