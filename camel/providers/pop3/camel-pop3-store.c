@@ -200,7 +200,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	if (camel_url_get_param (service->url, "disable_extensions"))
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 	
-	if ((delete_days = camel_url_get_param(service->url,"delete_after"))) 
+	if ((delete_days = (gchar *) camel_url_get_param(service->url,"delete_after"))) 
 		store->delete_after =  atoi(delete_days);
 	
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
@@ -412,9 +412,9 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 	while (1) {
 		if (camel_pop3_stream_line(stream, &line, &len) == -1)
 			goto ioerror;
-		if (strncmp(line, "+OK", 3) == 0)
+		if (strncmp((char *) line, (char *) "+OK", 3) == 0)
 			break;
-		if (strncmp(line, "-ERR", 4) == 0) {
+		if (strncmp((char *) line, (char *) "-ERR", 4) == 0) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					      _("SASL `%s' Login failed for POP server %s: %s"),
 					      mech, CAMEL_SERVICE (store)->url->host, line);
@@ -422,9 +422,9 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 		}
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
 		   its a protocol error, so fail, and try reset the server */
-		if (strncmp(line, "+ ", 2) != 0
+		if (strncmp((char *) line, (char *) "+ ", 2) != 0
 		    || camel_sasl_authenticated(sasl)
-		    || (resp = camel_sasl_challenge_base64(sasl, line+2, ex)) == NULL) {
+		    || (resp = (unsigned char *) camel_sasl_challenge_base64(sasl, (const char *) line+2, ex)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
 			camel_pop3_stream_line(stream, &line, &len);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,

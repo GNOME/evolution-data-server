@@ -108,13 +108,13 @@ read_greeting (CamelPOP3Engine *pe)
 	
 	/* first, read the greeting */
 	if (camel_pop3_stream_line (pe->stream, &line, &len) == -1
-	    || strncmp (line, "+OK", 3) != 0)
+	    || strncmp ((char *) line, (char *) "+OK", 3) != 0)
 		return -1;
 	
-	if ((apop = strchr (line + 3, '<'))
-	    && (apopend = strchr (apop, '>'))) {
+	if ((apop = (unsigned char *) strchr ((char *) line + 3, '<'))
+	    && (apopend = (unsigned char *) strchr ((char *) apop, '>'))) {
 		apopend[1] = 0;
-		pe->apop = g_strdup (apop);
+		pe->apop = g_strdup ((gchar *) apop);
 		pe->capa = CAMEL_POP3_CAP_APOP;
 		pe->auth = g_list_append (pe->auth, &camel_pop3_apop_authtype);
 	}
@@ -198,14 +198,14 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
 		if (ret >= 0) {
-			if (strncmp(line, "SASL ", 5) == 0) {
+			if (strncmp((char *) line, "SASL ", 5) == 0) {
 				tok = line+5;
 				dd(printf("scanning tokens '%s'\n", tok));
 				while (tok) {
-					next = strchr(tok, ' ');
+					next = (unsigned char *) strchr((char *) tok, ' ');
 					if (next)
 						*next++ = 0;
-					auth = camel_sasl_authtype(tok);
+					auth = camel_sasl_authtype((const char *)tok);
 					if (auth) {
 						dd(printf("got auth type '%s'\n", tok));
 						pe->auth = g_list_prepend(pe->auth, auth);
@@ -216,7 +216,7 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 				}
 			} else {
 				for (i=0;i<sizeof(capa)/sizeof(capa[0]);i++) {
-					if (strcmp(capa[i].cap, line) == 0)
+					if (strcmp((char *) capa[i].cap, (char *) line) == 0)
 						pe->capa |= capa[i].flag;
 				}
 			}

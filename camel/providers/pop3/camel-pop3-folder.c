@@ -164,8 +164,8 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 		while (h) {
 			if (g_ascii_strcasecmp(h->name, "status") != 0
 			    && g_ascii_strcasecmp(h->name, "x-status") != 0) {
-				md5_update(&md5, h->name, strlen(h->name));
-				md5_update(&md5, h->value, strlen(h->value));
+				md5_update(&md5, (const guchar *) h->name, strlen(h->name));
+				md5_update(&md5, (const guchar *) h->value, strlen(h->value));
 			}
 			h = h->next;
 		}
@@ -174,7 +174,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	}
 	camel_object_unref(mp);
 	md5_final(&md5, digest);
-	fi->uid = camel_base64_encode_simple(digest, 16);
+	fi->uid = camel_base64_encode_simple((const char *) digest, 16);
 
 	d(printf("building uid for id '%d' = '%s'\n", fi->id, fi->uid));
 }
@@ -192,7 +192,7 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
 		if (ret>=0) {
-			if (sscanf(line, "%u %u", &id, &size) == 2) {
+			if (sscanf((char *) line, "%u %u", &id, &size) == 2) {
 				fi = g_malloc0(sizeof(*fi));
 				fi->size = size;
 				fi->id = id;
@@ -220,9 +220,9 @@ cmd_uidl(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
 		if (ret>=0) {
-			if (strlen(line) > 1024)
+			if (strlen((char *) line) > 1024)
 				line[1024] = 0;
-			if (sscanf(line, "%u %s", &id, uid) == 2) {
+			if (sscanf((char *) line, "%u %s", &id, uid) == 2) {
 				fi = g_hash_table_lookup(folder->uids_id, GINT_TO_POINTER(id));
 				if (fi) {
 					camel_operation_progress(NULL, (fi->index+1) * 100 / folder->uids->len);

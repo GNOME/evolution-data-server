@@ -172,8 +172,8 @@ writeln (CamelMimeFilter *filter, const char *in, const char *inend, char *outpt
 		guint32 u;
 		
 		outptr = check_size (filter, outptr, outend, 16);
-		
-		u = camel_utf8_getc_limit ((const unsigned char **) &inptr, (const unsigned char *) inend);
+
+		u = camel_utf8_getc_limit (&inptr, (const unsigned char *) inend);
 		switch (u) {
 		case 0xffff:
 			g_warning("Truncated utf8 buffer");

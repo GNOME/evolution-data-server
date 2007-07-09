@@ -1,3 +1,10 @@
+2007-07-09  Gilles Dartiguelongue  <gdartigu@svn.gnome.org>
+
+	* camel-pop3-engine.c: (read_greeting), (cmd_capa):
+	* camel-pop3-folder.c: (cmd_builduid), (cmd_list), (cmd_uidl):
+	* camel-pop3-store.c: (connect_to_server), (try_sasl):
+	Fix compilation warnings (#363384)
+
 2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #352284 from Nathan Owens

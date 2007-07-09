@@ -100,7 +100,7 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, 
 			return TRUE;
 		
 		inptr = pos;
-		if (camel_utf8_getc_limit ((const unsigned char **) &inptr, inend) == 0xffff)
+		if (camel_utf8_getc_limit (&inptr, (const unsigned char *) inend) == 0xffff)
 			break;
 		
 		inlen = inend - inptr;

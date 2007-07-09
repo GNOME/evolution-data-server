@@ -102,7 +102,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		f->startofline = FALSE;
 
 		/* See rfc2045 section 2 for definitions of 7bit/8bit/binary */
-		p = in;
+		p = (unsigned char *) in;
 		pend = p + len;
 		while (p<pend) {
 			c = *p++;
@@ -130,7 +130,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 					/* Check for "^From " lines */
 					if ((f->flags & CAMEL_BESTENC_NO_FROM) && !f->hadfrom) {
 						if (pend-p >= 5) {
-							f->hadfrom = strncmp(p, "From ", 5) == 0;
+							f->hadfrom = strncmp((char *) p, (char *) "From ", 5) == 0;
 						} else if (pend-p == 0) {
 							f->startofline = TRUE;
 						} else {

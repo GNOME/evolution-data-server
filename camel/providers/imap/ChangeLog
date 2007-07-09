@@ -1,3 +1,9 @@
+2007-07-09  Gilles Dartiguelongue  <gdartigu@svn.gnome.org>
+
+	* camel-imap-folder.c: (do_append), (decode_internaldate),
+	(add_message_from_data):
+	Fix compilation warnings (#363384)
+
 2007-06-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-command.c (imap_command_strdup_vprintf):

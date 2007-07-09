@@ -1290,7 +1290,7 @@ retry:
 	}
 	
 	/* send the rest of our data - the mime message */
-	response2 = camel_imap_command_continuation (store, ba->data, ba->len, ex);
+	response2 = camel_imap_command_continuation (store, (const char *) ba->data, ba->len, ex);
 	g_byte_array_free (ba, TRUE);
 
 	/* free it only after message is sent. This may cause more FETCHes. */
@@ -2235,7 +2235,7 @@ decode_internaldate (const unsigned char *in)
 	
 	memset ((void *) &tm, 0, sizeof (struct tm));
 	
-	tm.tm_mday = strtoul (inptr, (char **) &buf, 10);
+	tm.tm_mday = strtoul ((char *) inptr, (char **) &buf, 10);
 	if (buf == inptr || *buf != '-')
 		return (time_t) -1;
 	
@@ -2244,7 +2244,7 @@ decode_internaldate (const unsigned char *in)
 		return (time_t) -1;
 	
 	for (n = 0; n < 12; n++) {
-		if (!g_ascii_strncasecmp (inptr, tm_months[n], 3))
+		if (!g_ascii_strncasecmp ((gchar *) inptr, tm_months[n], 3))
 			break;
 	}
 	
@@ -2255,7 +2255,7 @@ decode_internaldate (const unsigned char *in)
 	
 	inptr += 4;
 	
-	n = strtoul (inptr, (char **) &buf, 10);
+	n = strtoul ((char *) inptr, (char **) &buf, 10);
 	if (buf == inptr || *buf != ' ')
 		return (time_t) -1;
 	
@@ -2269,7 +2269,7 @@ decode_internaldate (const unsigned char *in)
 	tm.tm_min = min;
 	tm.tm_sec = sec;
 	
-	n = strtol (inptr, NULL, 10);
+	n = strtol ((char *) inptr, NULL, 10);
 	
 	date = e_mktime_utc (&tm);
 	
@@ -2311,7 +2311,7 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 	camel_object_unref (CAMEL_OBJECT (msg));
 	
 	if ((idate = g_datalist_get_data (&data, "INTERNALDATE")))
-		mi->info.date_received = decode_internaldate (idate);
+		mi->info.date_received = decode_internaldate ((const unsigned char *) idate);
 	
 	if (mi->info.date_received == -1)
 		mi->info.date_received = mi->info.date_sent;

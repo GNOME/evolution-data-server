@@ -1,3 +1,20 @@
+2007-07-09  Gilles Dartiguelongue  <gdartigu@svn.gnome.org>
+
+	* camel-folder.c: (camel_folder_change_info_add_update),
+	(change_info_remove), (camel_folder_change_info_add_uid),
+	(camel_folder_change_info_remove_uid),
+	(camel_folder_change_info_change_uid):
+	* camel-gpg-context.c: (gpg_ctx_get_diagnostics),
+	(gpg_ctx_parse_status):
+	* camel-mime-filter-bestenc.c: (filter):
+	* camel-mime-filter-tohtml.c: (writeln):
+	* camel-search-private.c: (camel_ustrstrcase), (camel_ustrcasecmp),
+	(camel_ustrncasecmp), (camel_search_header_match),
+	(camel_search_message_body_contains), (camel_search_words_simple):
+	* camel-url-scanner.c: (camel_url_scanner_scan):
+	* camel-utf8.c: (g_string_append_u), (camel_utf8_ucs2):
+	Fix compilation warnings (#363384)
+
 2007-06-20  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #449531

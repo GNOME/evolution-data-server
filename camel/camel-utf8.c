@@ -177,7 +177,7 @@ g_string_append_u(GString *out, guint32 c)
 
 	camel_utf8_putc(&p, c);
 	*p = 0;
-	g_string_append(out, buffer);
+	g_string_append(out, (gchar *) buffer);
 }
 
 static const char utf7_alphabet[] =
@@ -360,13 +360,13 @@ camel_utf8_ucs2(const char *ptr)
 
 	/* what if c is > 0xffff ? */
 
-	while ( (c = camel_utf8_getc((const unsigned char **)&ptr)) ) {
+	while ( (c = camel_utf8_getc(&ptr)) ) {
 		guint16 s = g_htons(c);
 
-		g_byte_array_append(work, (char *)&s, 2);
+		g_byte_array_append(work, (unsigned char *) &s, 2);
 	}
 
-	g_byte_array_append(work, "\000\000", 2);
+	g_byte_array_append(work, (unsigned char *) "\000\000", 2);
 	out = g_malloc(work->len);
 	memcpy(out, work->data, work->len);
 	g_byte_array_free(work, TRUE);

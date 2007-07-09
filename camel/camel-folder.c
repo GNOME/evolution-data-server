@@ -2017,7 +2017,7 @@ camel_folder_change_info_add_update(CamelFolderChangeInfo *info, const char *uid
 		return;
 	}
 
-	if (g_hash_table_lookup_extended(p->uid_source, uid, (void **)&key, (void **)&value)) {
+	if (g_hash_table_lookup_extended(p->uid_source, uid, (gpointer) &key, (gpointer) &value)) {
 		g_hash_table_remove(p->uid_source, key);
 	} else {
 		camel_folder_change_info_add_uid(info, uid);
@@ -2051,7 +2051,7 @@ change_info_remove(char *key, void *value, CamelFolderChangeInfo *info)
 	GPtrArray *olduids;
 	char *olduid;
 
-	if (g_hash_table_lookup_extended(p->uid_stored, key, (void **)&olduid, (void **)&olduids)) {
+	if (g_hash_table_lookup_extended(p->uid_stored, key, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was added/changed them removed, then remove it */
 		if (olduids != info->uid_removed) {
 			g_ptr_array_remove_fast(olduids, olduid);
@@ -2171,7 +2171,7 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const char *uid)
 	
 	p = info->priv;
 	
-	if (g_hash_table_lookup_extended(p->uid_stored, uid, (void **)&olduid, (void **)&olduids)) {
+	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was removed then added, promote it to a changed */
 		/* if it was changed then added, leave as changed */
 		if (olduids == info->uid_removed) {
@@ -2206,7 +2206,7 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const char *uid
 	
 	p = info->priv;
 	
-	if (g_hash_table_lookup_extended(p->uid_stored, uid, (void **)&olduid, (void **)&olduids)) {
+	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was added/changed them removed, then remove it */
 		if (olduids != info->uid_removed) {
 			g_ptr_array_remove_fast(olduids, olduid);
@@ -2240,7 +2240,7 @@ camel_folder_change_info_change_uid(CamelFolderChangeInfo *info, const char *uid
 	
 	p = info->priv;
 	
-	if (g_hash_table_lookup_extended(p->uid_stored, uid, (void **)&olduid, (void **)&olduids)) {
+	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if we have it already, leave it as that */
 		return;
 	}

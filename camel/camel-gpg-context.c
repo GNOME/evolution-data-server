@@ -400,7 +400,7 @@ gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 		if (gpg->diagbuf->len == 0)
 			return NULL;
 		
-		g_byte_array_append (gpg->diagbuf, "", 1);
+		g_byte_array_append (gpg->diagbuf, (guchar *) "", 1);
 	}
 	
 	return (const char *) gpg->diagbuf->data;
@@ -759,11 +759,11 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	
 	status += 9;
 	
-	if (!strncmp (status, "USERID_HINT ", 12)) {
+	if (!strncmp ((char *) status, "USERID_HINT ", 12)) {
 		char *hint, *user;
 		
 		status += 12;
-		status = next_token (status, &hint);
+		status = (const unsigned char *) next_token ((char *) status, &hint);
 		if (!hint) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg userid hint."));
@@ -776,18 +776,18 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 			goto recycle;
 		}
 		
-		if (gpg->utf8 || !(user = g_locale_to_utf8 (status, -1, &nread, &nwritten, NULL)))
-			user = g_strdup (status);
+		if (gpg->utf8 || !(user = g_locale_to_utf8 ((gchar *) status, -1, &nread, &nwritten, NULL)))
+			user = g_strdup ((gchar *) status);
 		
 		g_strstrip (user);
 		
 		g_hash_table_insert (gpg->userid_hint, hint, user);
-	} else if (!strncmp (status, "NEED_PASSPHRASE ", 16)) {
+	} else if (!strncmp ((char *) status, "NEED_PASSPHRASE ", 16)) {
 		char *userid;
 		
 		status += 16;
 		
-		status = next_token (status, &userid);
+		status = (const unsigned char *) next_token ((char *) status, &userid);
 		if (!userid) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg passphrase request."));
@@ -796,12 +796,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
-	} else if (!strncmp (status, "NEED_PASSPHRASE_PIN ", 20)) {
+	} else if (!strncmp ((char *) status, "NEED_PASSPHRASE_PIN ", 20)) {
 		char *userid;
 		
 		status += 20;
 		
-		status = next_token (status, &userid);
+		status = (const unsigned char *) next_token ((char *) status, &userid);
 		if (!userid) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg passphrase request."));
@@ -810,7 +810,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
-	} else if (!strncmp (status, "GET_HIDDEN ", 11)) {
+	} else if (!strncmp ((char *) status, "GET_HIDDEN ", 11)) {
 		const char *name = NULL;
 		char *prompt, *passwd;
 		guint32 flags;
@@ -822,14 +822,14 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		else if (!name)
 			name = "";
 		
-		if (!strncmp (status, "passphrase.pin.ask", 18)) {
+		if (!strncmp ((char *) status, "passphrase.pin.ask", 18)) {
 			prompt = g_strdup_printf (_("You need a PIN to unlock the key for your\n"
 						    "SmartCard: \"%s\""), name);
-		} else if (!strncmp (status, "passphrase.enter", 16)) {
+		} else if (!strncmp ((char *) status, "passphrase.enter", 16)) {
 			prompt = g_strdup_printf (_("You need a passphrase to unlock the key for\n"
 						    "user: \"%s\""), name);
 		} else {
-			next_token (status, &prompt);
+			next_token ((char *) status, &prompt);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Unexpected request from GnuPG for `%s'"), prompt);
 			g_free (prompt);
@@ -861,9 +861,9 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		}
 		
 		g_free (prompt);
-	} else if (!strncmp (status, "GOOD_PASSPHRASE", 15)) {
+	} else if (!strncmp ((char *) status, "GOOD_PASSPHRASE", 15)) {
 		gpg->bad_passwds = 0;
-	} else if (!strncmp (status, "BAD_PASSPHRASE", 14)) {
+	} else if (!strncmp ((char *) status, "BAD_PASSPHRASE", 14)) {
 		gpg->bad_passwds++;
 		
 		camel_session_forget_password (gpg->session, NULL, NULL, gpg->need_id, ex);
@@ -890,55 +890,55 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		/* check to see if we are complete */
 		switch (gpg->mode) {
 		case GPG_CTX_MODE_SIGN:
-			if (!strncmp (status, "SIG_CREATED ", 12)) {
+			if (!strncmp ((char *) status, "SIG_CREATED ", 12)) {
 				/* FIXME: save this state? */
 			}
 			break;
 		case GPG_CTX_MODE_VERIFY:
-			if (!strncmp (status, "TRUST_", 6)) {
+			if (!strncmp ((char *) status, "TRUST_", 6)) {
 				status += 6;
-				if (!strncmp (status, "NEVER", 5)) {
+				if (!strncmp ((char *) status, "NEVER", 5)) {
 					gpg->trust = GPG_TRUST_NEVER;
-				} else if (!strncmp (status, "MARGINAL", 8)) {
+				} else if (!strncmp ((char *) status, "MARGINAL", 8)) {
 					gpg->trust = GPG_TRUST_MARGINAL;
-				} else if (!strncmp (status, "FULLY", 5)) {
+				} else if (!strncmp ((char *) status, "FULLY", 5)) {
 					gpg->trust = GPG_TRUST_FULLY;
-				} else if (!strncmp (status, "ULTIMATE", 8)) {
+				} else if (!strncmp ((char *) status, "ULTIMATE", 8)) {
 					gpg->trust = GPG_TRUST_ULTIMATE;
-				} else if (!strncmp (status, "UNDEFINED", 9)) {
+				} else if (!strncmp ((char *) status, "UNDEFINED", 9)) {
 					gpg->trust = GPG_TRUST_UNDEFINED;
 				}
-			} else if (!strncmp (status, "GOODSIG ", 8)) {
+			} else if (!strncmp ((char *) status, "GOODSIG ", 8)) {
 				gpg->goodsig = TRUE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp (status, "VALIDSIG ", 9)) {
+			} else if (!strncmp ((char *) status, "VALIDSIG ", 9)) {
 				gpg->validsig = TRUE;
-			} else if (!strncmp (status, "BADSIG ", 7)) {
+			} else if (!strncmp ((char *) status, "BADSIG ", 7)) {
 				gpg->badsig = FALSE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp (status, "ERRSIG ", 7)) {
+			} else if (!strncmp ((char *) status, "ERRSIG ", 7)) {
 				/* Note: NO_PUBKEY often comes after an ERRSIG */
 				gpg->errsig = FALSE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp (status, "NO_PUBKEY ", 10)) {
+			} else if (!strncmp ((char *) status, "NO_PUBKEY ", 10)) {
 				gpg->nopubkey = TRUE;
 			}
 			break;
 		case GPG_CTX_MODE_ENCRYPT:
-			if (!strncmp (status, "BEGIN_ENCRYPTION", 16)) {
+			if (!strncmp ((char *) status, "BEGIN_ENCRYPTION", 16)) {
 				/* nothing to do... but we know to expect data on stdout soon */
-			} else if (!strncmp (status, "END_ENCRYPTION", 14)) {
+			} else if (!strncmp ((char *) status, "END_ENCRYPTION", 14)) {
 				/* nothing to do, but we know the end is near? */
-			} else if (!strncmp (status, "NO_RECP", 7)) {
+			} else if (!strncmp ((char *) status, "NO_RECP", 7)) {
 				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 						     _("Failed to encrypt: No valid recipients specified."));
 				return -1;
 			}
 			break;
 		case GPG_CTX_MODE_DECRYPT:
-			if (!strncmp (status, "BEGIN_DECRYPTION", 16)) {
+			if (!strncmp ((char *) status, "BEGIN_DECRYPTION", 16)) {
 				/* nothing to do... but we know to expect data on stdout soon */
-			} else if (!strncmp (status, "END_DECRYPTION", 14)) {
+			} else if (!strncmp ((char *) status, "END_DECRYPTION", 14)) {
 				/* nothing to do, but we know the end is near? */
 			}
 			break;
