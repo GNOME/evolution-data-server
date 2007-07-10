@@ -1,3 +1,43 @@
+Evolution-Data-Server 1.11.5 2007-07-09
+---------------------------------------
+
+New in 1.11.5
+
+	Exchange delegation support (Bharath and Suman)
+
+Bug fixes:
+	#307410: Fix prompting for IMAP password a second time after
+	 canceling first request (Milan Crha)
+	#311098: Changes to appointment is visible across restarts (Milan
+	 Crha)
+	#352284: Do not fetch the message from server - instead use the
+	 header information to calculate the expiry period. (Veerapuram
+	 Varadhan)
+	#364731: Fix error dialog when creating searches with negative score
+	 (Milan Crha)
+	#394572: Include a missing forward http proxy in caldav module (Jari
+	 Urpalainen)
+	#410823: Fixed a crash when clicking on an URL and then closing the
+	 browser (Srinivasa Ragavan)
+	#412735: Fix a typo avoiding open_brace to be initialized (Pascal
+	 Terjan)
+	#434356: Fix USENET crash when retrieving gmane.linux.kernel
+	 (Jindrich Makovicka)
+	#448947: Fixed a cyclic configure option (Karsten Bräckelmann)
+	#449531: Fix partial email display when GPG verification fails
+	 (Milan Crha)
+	#452996: Fix a typo and wording (Christian Kirbach)
+	#454570: Fix build with gcc 2.x (Jens Granseuer)
+
+Updated Translations:
+	Ankit Patel (gu)
+	Jorge Gonzalez (es)
+	Nguyễn Thái Ngọc Duy (vi)
+	Clytie Siddall (vi)
+	Daniel Nylander (sv)
+	Funda Wang (zh_CN)
+	I. Felix (ta)
+
 Evolution-Data-Server 1.11.4 2007-06-18
 ---------------------------------------
 
