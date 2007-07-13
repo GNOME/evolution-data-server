@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server 2.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-05-03 17:22+0100\n"
-"PO-Revision-Date: 2007-06-05 08:16+0300\n"
+"PO-Revision-Date: 2007-07-07 21:18+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1991,6 +1991,8 @@ msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
+"Määratud tõendid pole konteksti lähtestamiseks sobilikud või ei saanud "
+"tõensite käsitleja viidet ühelegi tõendile."
 
 #: ../camel/camel-sasl-gssapi.c:183
 msgid "The supplied context handle did not refer to a valid context."
@@ -5063,11 +5065,11 @@ msgstr "Autor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
-msgstr ""
+msgstr "Kaasautor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:887
 msgid "Reviewer"
-msgstr "Ülevaataja"
+msgstr "Korrektor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:889
 msgid "Contributor"
