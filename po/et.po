@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-07-04 03:35+0100\n"
-"PO-Revision-Date: 2007-07-07 21:18+0300\n"
+"PO-Revision-Date: 2007-07-19 19:32+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1456,11 +1456,11 @@ msgstr "Sõnumi vastuvõtmine nurjus"
 
 #: ../camel/camel-filter-search.c:399
 msgid "Invalid arguments to (system-flag)"
-msgstr ""
+msgstr "Vigased argumendid parameetrile (system-flag)"
 
 #: ../camel/camel-filter-search.c:414
 msgid "Invalid arguments to (user-tag)"
-msgstr ""
+msgstr "Vigased argumendid parameetrile (user-tag)"
 
 #: ../camel/camel-filter-search.c:579
 #, c-format
