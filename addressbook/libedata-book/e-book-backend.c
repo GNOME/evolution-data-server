@@ -18,7 +18,7 @@ struct _EBookBackendPrivate {
 	GList *clients;
 
 	ESource *source;
-	gboolean loaded, writable, removed;
+	gboolean loaded, writable, removed, online;
 
 	GMutex *views_mutex;
 	EList *views;
@@ -123,6 +123,7 @@ e_book_backend_open (EBookBackend *backend,
 			book, opid, GNOME_Evolution_Addressbook_Success);
 
 		e_data_book_report_writable (book, backend->priv->writable);
+		e_data_book_report_connection_status (book, backend->priv->online);
 	} else {
 		GNOME_Evolution_Addressbook_CallStatus status =
 			e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists);
@@ -131,6 +132,7 @@ e_book_backend_open (EBookBackend *backend,
 
 		if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion)
 			e_data_book_report_writable (book, backend->priv->writable);
+			e_data_book_report_connection_status (book, backend->priv->online);
 	}
 
 	g_mutex_unlock (backend->priv->open_mutex);
@@ -994,6 +996,7 @@ e_book_backend_notify_connection_status (EBookBackend *backend, gboolean is_onli
 	GList *clients;
 	
 	priv = backend->priv;
+	priv->online = is_online;
 	g_mutex_lock (priv->clients_mutex);
 	
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
