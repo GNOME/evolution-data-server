@@ -163,6 +163,11 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 		g_object_unref (iter);
 	}
 
+	if (list) {
+		g_slist_foreach (list, (GFunc) g_free, NULL);
+		g_slist_free (list);
+	}
+
 	/* Now emit signals for each added account. (We do this after
 	 * adding all of them because otherwise if the signal handler
 	 * calls e_account_list_get_default_account() it will end up

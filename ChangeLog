@@ -1,3 +1,7 @@
+2007-07-27  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	* libedataserver/e-account-list.c: Plugged memory leak.
+
 2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 1.11.5 release 
