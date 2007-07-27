@@ -1,3 +1,10 @@
+2007-07-27  Johnny Jacob  <jjohnny@novell.com>
+
+	** Fix for bug #457523.
+
+	* libedataserver/e-sexp.c : Reverting fix for #364731. This is
+	fixed in evolution.
+
 2007-07-27  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	* libedataserver/e-account-list.c: Plugged memory leak.
