@@ -3041,6 +3041,9 @@ e_book_idle_connection (gpointer data)
 	EBook *book = data;
 	gboolean connected;
 
+	if (!book->priv)
+		return FALSE;
+
 	g_mutex_lock (book->priv->mutex);
 	connected = book->priv->connected;
 	book->priv->connection_idle_id = 0;
@@ -3058,6 +3061,9 @@ e_book_idle_auth_required (gpointer data)
 {
 	EBook *book = data;
 	gboolean connected;
+
+	if (!book->priv)
+		return FALSE;
 
 	g_mutex_lock (book->priv->mutex);
 	connected = book->priv->connected;
@@ -4040,6 +4046,12 @@ e_book_dispose (GObject *object)
 		g_hash_table_destroy (book->priv->id_to_op);
 
 		g_mutex_free (book->priv->mutex);
+
+		if (book->priv->connection_idle_id)
+			g_source_remove (book->priv->connection_idle_id);
+
+		if (book->priv->auth_idle_id)
+			g_source_remove (book->priv->auth_idle_id);
 
 		if (book->priv->writable_idle_id)
 			g_source_remove (book->priv->writable_idle_id);
