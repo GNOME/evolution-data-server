@@ -12,6 +12,16 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AM_CONFIG_HEADER(config.h)
 
+# Required Package Versions
+m4_define([gtk_minimum_version], [2.10.0])
+m4_define([ORBit_minimum_version], [2.9.8])
+m4_define([gnome_vfs_minimum_version], [2.4.0])
+m4_define([libbonobo_minimum_version], [2.4.2])
+m4_define([gconf_minimum_version], [2.0.0])             # XXX Just a Guess
+m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
+m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
+m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
+
 dnl *************************************************************************************************
 dnl Base Version
 dnl
@@ -179,6 +189,17 @@ AC_CHECK_FUNCS(fsync strptime strtok_r)
 
 dnl alloca()
 AC_CHECK_HEADERS(alloca.h)
+
+# Check for base dependencies early.
+PKG_CHECK_MODULES(GNOME_PLATFORM,
+        [gtk+-2.0 >= gtk_minimum_version
+         ORBit-2.0 >= ORBit_minimum_version
+         gnome-vfs-2.0 >= gnome_vfs_minimum_version
+         libbonobo-2.0 >= libbonobo_minimum_version
+         gconf-2.0 >= gconf_minimum_version
+         libglade-2.0 >= libglade_minimum_version
+         libgnome-2.0 >= libgnome_minimum_version
+         libxml-2.0 >= libxml_minimum_version])
 
 dnl **************************************************
 dnl * regex checking
@@ -1264,12 +1285,10 @@ msg_no_ntlm="no"
 msg_exchange="yes"
 fi # Win32
 
-GLIB_REQUIRED="2.10.0"
-LIBBONOBO_REQUIRED="2.4.2"
-ORBIT_REQUIRED="2.9.8"
-
-AC_SUBST(GLIB_REQUIRED)
+LIBBONOBO_REQUIRED=libbonobo_minimum_version
 AC_SUBST(LIBBONOBO_REQUIRED)
+
+ORBIT_REQUIRED=ORBit_minimum_version
 AC_SUBST(ORBIT_REQUIRED)
 
 dnl *******************
@@ -1320,7 +1339,7 @@ case $CFLAGS in
 	;;
 esac
 
-PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= 2.9.8)
+PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= ORBit_minimum_version)
 ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
 AC_SUBST(ORBIT_CFLAGS)
 AC_SUBST(ORBIT_LIBS)
@@ -1350,13 +1369,13 @@ dnl ****************************************
 
 dnl --- libedataserver and libedataserverui flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 gobject-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gconf-2.0 libgnome-2.0 gnome-vfs-2.0 $GNOME_KEYRING_REQUIREMENT"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 libgnome-2.0 gnome-vfs-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1364,7 +1383,7 @@ AC_SUBST(E_DATA_SERVER_UI_LIBS)
 
 dnl --- evolution-addressbook flags
 
-EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 gobject-2.0 gconf-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gnome-vfs-2.0"
+EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 libgnome-2.0 gnome-vfs-2.0"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
@@ -1372,7 +1391,7 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 
 dnl --- evolution-calendar flags
 if test "x${enable_calendar}" = "xyes"; then
-	EVOLUTION_CALENDAR_DEPS="libxml-2.0 gobject-2.0 gconf-2.0 libbonobo-2.0 >= $LIBBONOBO_REQUIRED libgnome-2.0 gnome-vfs-2.0"
+	EVOLUTION_CALENDAR_DEPS="libxml-2.0 libgnome-2.0 gnome-vfs-2.0"
 
 	EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS)
 	AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
@@ -1381,7 +1400,7 @@ fi
 
 dnl --- factory flags
 
-E_FACTORY_DEPS="gobject-2.0 >= $GLIB_REQUIRED libbonobo-2.0 >= $LIBBONOBO_REQUIRED gconf-2.0 gnome-vfs-2.0 libgnome-2.0 $mozilla_nspr"
+E_FACTORY_DEPS="gnome-vfs-2.0 libgnome-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_FACTORY, $E_FACTORY_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_FACTORY_CFLAGS)
@@ -1432,7 +1451,7 @@ AC_CACHE_CHECK([if large files (>2 GB) are supported], largefile_support,
 	])
 ])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, gthread-2.0 gmodule-2.0 gobject-2.0 $mozilla_nss gnome-vfs-2.0, 
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gnome-vfs-2.0, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
 	              -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)

@@ -1,3 +1,9 @@
+2007-07-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Collect all the required package versions in one place and
+	explicitly require GTK+ 2.10 or higher.  (#380534)
+
 2007-07-27  Johnny Jacob  <jjohnny@novell.com>
 
 	** Fix for bug #457523.
