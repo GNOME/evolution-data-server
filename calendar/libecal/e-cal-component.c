@@ -1522,7 +1522,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
 			buf_size = strlen (data);
-			buf = g_malloc0 (buf_size);
+			buf = g_malloc0 (buf_size+1);
 			icalvalue_decode_ical_string (data, buf, buf_size);	
 		}
 		else

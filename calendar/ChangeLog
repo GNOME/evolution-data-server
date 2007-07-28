@@ -1,3 +1,9 @@
+2007-07-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #460867
+
+	* libecal/e-cal-component.c: (get_attachment_list):
+
 2007-07-09  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #394572 from Jari Urpalainen
