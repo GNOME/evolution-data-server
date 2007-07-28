@@ -68,6 +68,9 @@ struct _ECalBackendHttpPrivate {
 
 	/* Flags */
 	gboolean opened;
+
+	char *username;
+	char *password;
 };
 
 
@@ -93,6 +96,9 @@ e_cal_backend_http_dispose (GObject *object)
 
 	cbhttp = E_CAL_BACKEND_HTTP (object);
 	priv = cbhttp->priv;
+
+	g_free (priv->username);
+	g_free (priv->password);
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
@@ -336,7 +342,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
 				e_cal_component_get_uid (comp, &uid);
-				if (g_hash_table_lookup_extended (old_cache, uid, (void **)&orig_key, (void **)&orig_value)) {
+				/* middle (void*) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
+				if (g_hash_table_lookup_extended (old_cache, uid, (void **)(void*)&orig_key, (void **)(void*)&orig_value)) {
 					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
 									      orig_value,
 									      icalcomponent_as_ical_string (subcomp));
@@ -373,6 +380,54 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	d(g_message ("Retrieval really done.\n"));
 }
 
+/* ************************************************************************* */
+/* Authentication helpers for libsoup */
+
+static void
+soup_authenticate (SoupSession  *session, 
+	           SoupMessage  *msg,
+		   const char   *auth_type, 
+		   const char   *auth_realm,
+		   char        **username, 
+		   char        **password, 
+		   gpointer      data)
+{
+	ECalBackendHttpPrivate *priv;
+	ECalBackendHttp        *cbhttp;
+	
+	cbhttp = E_CAL_BACKEND_HTTP (data);	
+	priv =  cbhttp->priv;
+
+	*username = priv->username;
+	*password = priv->password;
+	
+	priv->username = NULL;
+	priv->password = NULL;
+
+}
+
+static void
+soup_reauthenticate (SoupSession  *session, 
+		     SoupMessage  *msg,
+		     const char   *auth_type, 
+		     const char   *auth_realm,
+		     char        **username, 
+		     char        **password, 
+		     gpointer      data)
+{
+	ECalBackendHttpPrivate *priv;
+	ECalBackendHttp        *cbhttp;
+	
+	cbhttp = E_CAL_BACKEND_HTTP (data);	
+	priv = cbhttp->priv;
+
+	*username = priv->username;
+	*password = priv->password;
+	
+	priv->username = NULL;
+	priv->password = NULL;
+}
+
 static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
 static void     maybe_start_reload_timeout (ECalBackendHttp *cbhttp);
 
@@ -402,6 +457,11 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 		priv->soup_session = soup_session_async_new ();
 
+		g_signal_connect (priv->soup_session, "authenticate",
+				  G_CALLBACK (soup_authenticate), cbhttp);
+		g_signal_connect (priv->soup_session, "reauthenticate",
+				  G_CALLBACK (soup_reauthenticate), cbhttp);
+	
 		/* set the HTTP proxy, if configuration is set to do so */
 		conf_client = gconf_client_get_default ();
 		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
@@ -514,9 +574,20 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	ESource *source;
 	
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
+	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+	
+	if (e_source_get_property (source, "auth") != NULL) {
+		if ((username == NULL || password == NULL)) {
+			return GNOME_Evolution_Calendar_AuthenticationRequired;
+		}
+
+		priv->username = g_strdup (username);
+		priv->password = g_strdup (password);
+	}
 
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), E_CAL_SOURCE_TYPE_EVENT );
