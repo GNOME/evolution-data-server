@@ -92,6 +92,7 @@ camel_init (const char *configdir, gboolean nss_init)
 #ifdef HAVE_NSS
 	if (nss_init) {
 		char *nss_configdir;
+		PRUint16 indx;
 
 		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
 		
@@ -110,6 +111,11 @@ camel_init (const char *configdir, gboolean nss_init)
 		}
 
 		NSS_SetDomesticPolicy ();
+		/* we must enable all ciphersuites */
+		for (indx = 0; indx < SSL_NumImplementedCiphers; indx++) {
+			if (!SSL_IS_SSL2_CIPHER(SSL_ImplementedCiphers[indx]))
+				SSL_CipherPrefSetDefault (SSL_ImplementedCiphers[indx], PR_TRUE);
+		}	
 		
 		SSL_OptionSetDefault (SSL_ENABLE_SSL2, PR_TRUE);
 		SSL_OptionSetDefault (SSL_ENABLE_SSL3, PR_TRUE);
