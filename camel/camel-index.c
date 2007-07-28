@@ -115,6 +115,8 @@ camel_index_construct(CamelIndex *idx, const char *path, int flags)
 int
 camel_index_rename(CamelIndex *idx, const char *path)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->rename(idx, path);
 	else {
@@ -126,6 +128,8 @@ camel_index_rename(CamelIndex *idx, const char *path)
 void
 camel_index_set_normalise(CamelIndex *idx, CamelIndexNorm func, void *data)
 {
+	g_return_if_fail (CAMEL_IS_INDEX (idx));
+	
 	idx->normalise = func;
 	idx->normalise_data = data;
 }
@@ -133,6 +137,8 @@ camel_index_set_normalise(CamelIndex *idx, CamelIndexNorm func, void *data)
 int
 camel_index_sync(CamelIndex *idx)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->sync(idx);
 	else {
@@ -144,6 +150,8 @@ camel_index_sync(CamelIndex *idx)
 int
 camel_index_compress(CamelIndex *idx)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->compress(idx);
 	else {
@@ -157,6 +165,8 @@ camel_index_delete(CamelIndex *idx)
 {
 	int ret;
 
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0) {
 		ret = CI_CLASS(idx)->delete(idx);
 		idx->state |= CAMEL_INDEX_DELETED;
@@ -171,6 +181,8 @@ camel_index_delete(CamelIndex *idx)
 int
 camel_index_has_name(CamelIndex *idx, const char *name)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), FALSE);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->has_name(idx, name);
 	else
@@ -180,6 +192,8 @@ camel_index_has_name(CamelIndex *idx, const char *name)
 CamelIndexName *
 camel_index_add_name(CamelIndex *idx, const char *name)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->add_name(idx, name);
 	else
@@ -189,6 +203,8 @@ camel_index_add_name(CamelIndex *idx, const char *name)
 int
 camel_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->write_name(idx, idn);
 	else {
@@ -200,6 +216,8 @@ camel_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 CamelIndexCursor *
 camel_index_find_name(CamelIndex *idx, const char *name)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->find_name(idx, name);
 	else
@@ -209,6 +227,8 @@ camel_index_find_name(CamelIndex *idx, const char *name)
 void
 camel_index_delete_name(CamelIndex *idx, const char *name)
 {
+	g_return_if_fail (CAMEL_IS_INDEX (idx));
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		CI_CLASS(idx)->delete_name(idx, name);
 }
@@ -219,6 +239,8 @@ camel_index_find(CamelIndex *idx, const char *word)
 	char *b = (char *)word;
 	CamelIndexCursor *ret;
 
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) != 0)
 		return NULL;
 
@@ -236,6 +258,8 @@ camel_index_find(CamelIndex *idx, const char *word)
 CamelIndexCursor *
 camel_index_words(CamelIndex *idx)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->words(idx);
 	else
@@ -245,6 +269,8 @@ camel_index_words(CamelIndex *idx)
 CamelIndexCursor *
 camel_index_names(CamelIndex *idx)
 {
+	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->names(idx);
 	else

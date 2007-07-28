@@ -930,6 +930,9 @@ camel_folder_summary_add_from_header(CamelFolderSummary *s, struct _camel_header
 CamelMessageInfo *
 camel_folder_summary_add_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
 {
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (s), NULL);
+	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), NULL);
+
 	CamelMessageInfo *info = camel_folder_summary_info_new_from_parser(s, mp);
 
 	camel_folder_summary_add(s, info);
