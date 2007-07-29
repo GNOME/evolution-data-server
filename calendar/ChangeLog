@@ -1,3 +1,15 @@
+2007-07-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #456565
+
+	* backends/http/e-cal-backend-http-factory.c:
+	(_memos_new_backend), (_memos_get_kind),
+	(memos_backend_factory_class_init),
+	(memos_backend_factory_get_type), (http_types),
+	(eds_module_initialize), (eds_module_list_types):
+	Added support for Memos to webcal protocol, which is
+	used for memos 'On The Web'.
+
 2007-07-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #268162
