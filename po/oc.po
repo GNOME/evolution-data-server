@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-24 07:44+0200\n"
-"PO-Revision-Date: 2007-05-08 15:23+0200\n"
+"PO-Revision-Date: 2007-07-29 09:14+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:484
 msgid "Loading..."
-msgstr "ଧାରଣ କରୁଅଛି..."
+msgstr "Cargament..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:545
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2281
@@ -29,52 +29,52 @@ msgstr "ଧାରଣ କରୁଅଛି..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4093
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Searching..."
-msgstr "ସନ୍ଧାନ କରୁଅଛି..."
+msgstr ""
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2690
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4257
 #, c-format
 msgid "Downloading contacts (%d)... "
-msgstr "(%d) ସମ୍ପର୍କ ମାନଙ୍କୁ ଆହରଣ କରୁଅଛି... "
+msgstr ""
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3036
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
 #, c-format
 msgid "Updating contacts cache (%d)... "
-msgstr "(%d) ସମ୍ପର୍କ ସଞ୍ଚୟକୁ ଅଦ୍ଯତିତ କରୁଅଛି... "
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:723
 msgid "Using Distinguished Name (DN)"
-msgstr "ପ୍ରଖ୍ଯାତ ନାମକୁ ବ୍ଯବହାର କରୁଅଛି"
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:726
 msgid "Using Email Address"
-msgstr "ଇ-ଡାକ ଠିକଣାକୁ ବ୍ଯବହାର କରୁଅଛି"
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:980
 msgid "Reconnecting to LDAP server..."
-msgstr "LDAP ସେବକ ସହିତ ପୁନଃସଂଯୋଜିତ କରୁଅଛି..."
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1579
 msgid "Adding contact to LDAP server..."
-msgstr "LDAP ସେବକରେ ସମ୍ପର୍କ ଯୋଗ କରୁଅଛି..."
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1713
 msgid "Removing contact from LDAP server..."
-msgstr "LDAP ସେବକରୁ ସମ୍ପର୍କ ଅପସାରିତ କରୁଅଛି..."
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2033
 msgid "Modifying contact from LDAP server..."
-msgstr "LDAP ସେବକରୁ "
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:3955
 msgid "Receiving LDAP search results..."
-msgstr "LDAP ସନ୍ଧାନ ଫଳାଫଳକୁ ପ୍ରାପ୍ତ କରୁଅଛି..."
+msgstr ""
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4115
 msgid "Error performing search"
-msgstr "ସନ୍ଧାନ କରିବା ସମୟରେ ତ୍ରୁଟି"
+msgstr ""
 
 #. translators: the placeholders will be filled by
 #. * function names, e.g.
@@ -94,7 +94,7 @@ msgstr "ସନ୍ଧାନ କରିବା ସମୟରେ ତ୍ରୁଟି"
 #: ../addressbook/libebook/e-book.c:3413
 #, c-format
 msgid "\"%s\" on book before \"%s\""
-msgstr "ପୁସ୍ତକରେ \"%s\" ସମ୍ପର୍କଟି \"%s\" ପୂର୍ବରୁ ଅଛି"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
 #: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
@@ -104,7 +104,7 @@ msgstr "ପୁସ୍ତକରେ \"%s\" ସମ୍ପର୍କଟି \"%s\" ପ�
 #: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2660
 #: ../addressbook/libebook/e-book.c:2866
 msgid "book busy"
-msgstr "ପୁସ୍ତିକା ବ୍ଯସ୍ତ ଅଛି"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
 #: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
@@ -122,66 +122,66 @@ msgstr "ପୁସ୍ତିକା ବ୍ଯସ୍ତ ଅଛି"
 #: ../addressbook/libebook/e-book.c:2898 ../addressbook/libebook/e-book.c:3422
 #, c-format
 msgid "CORBA exception making \"%s\" call"
-msgstr "\"%s\" କଲ କରିବା ସମୟରେ କୋର୍ବା ବ୍ଯତିକ୍ରମ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:2582
 #, c-format
 msgid "%s: there is no current operation"
-msgstr "%s: ବର୍ତ୍ତମାନ ସେଠାରେ କୌଣସି କାର୍ଯ୍ଯକ୍ରମ ଚାଲୁନାହିଁ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:2617
 #, c-format
 msgid "%s: could not cancel"
-msgstr "%s: ବାତିଲ କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:2646 ../addressbook/libebook/e-book.c:2650
 #, c-format
 msgid "\"%s\" on book after \"%s\""
-msgstr "ପୁସ୍ତିକାରେ \"%s\" ସମ୍ପର୍କଟି \"%s\" ପରେ ଅଛି"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:2716
 #, c-format
 msgid "%s: canceled"
-msgstr "%s: ବାତିଲ କରାଗଲା"
+msgstr "%s : anullat"
 
 #: ../addressbook/libebook/e-book.c:3277
 #, c-format
 msgid "%s: Invalid source."
-msgstr "%s: ଅବୈଧ ଉତ୍ସ।"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3285 ../addressbook/libebook/e-book.c:3351
 #, c-format
 msgid "%s: no factories available for URI `%s'"
-msgstr "%s: `%s' ୟୁ.ଆର.ଆଇ. ପାଇଁ କୌଣସି କାରଖାନା ନାହିଁ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3297
 #, c-format
 msgid "%s: Could not create EBookListener"
-msgstr "%s: ଇଣ୍ଟରନେଟ-ପୁସ୍ତିକା-ଶ୍ରୋତା ସ୍ରୁଷ୍ଟି କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3562
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
-msgstr "%s: gconf ରେ ସଂଗ୍ରୁହିତ ଥିବା କୌଣସି ବ୍ଯକ୍ତିଗତ ୟୁ.ଆ.ଡି. ନାହିଁ"
+msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3692
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "%s: gconf ରେ ସଂଗ୍ରୁହିତ `%s' ୟୁ.ଆ.ଡି. ପାଇଁ କୌଣସି ଉତ୍ସ ନାହିଁ"
+msgstr ""
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:112
 msgid "Unique ID"
-msgstr "ଅନନ୍ଯ ପରିଚୟ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:113
 msgid "File Under"
-msgstr "ଏହା ଅଧୀନରେ ଦାଖଲ କରନ୍ତୁ"
+msgstr ""
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:115
 msgid "Book URI"
-msgstr "ପୁସ୍ତକ ୟୁ.ଆର.ଆଇ."
+msgstr ""
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -189,94 +189,94 @@ msgstr "ପୁସ୍ତକ ୟୁ.ଆର.ଆଇ."
 #. vcards that don't even have a N attribute.  *sigh*)
 #: ../addressbook/libebook/e-contact.c:121
 msgid "Full Name"
-msgstr "ପୂରା ନାମ"
+msgstr "Nom complet"
 
 #: ../addressbook/libebook/e-contact.c:122
 msgid "Given Name"
-msgstr "ଦିଆ ଯାଇଥିବା ନାମ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:123
 msgid "Family Name"
-msgstr "ପରିବାର ନାମ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:124
 msgid "Nickname"
-msgstr "ଡାକ ନାମ"
+msgstr "Escais"
 
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:127
 msgid "Email 1"
-msgstr "ଇ-ଡାକ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Email 2"
-msgstr "ଇ-ଡାକ ୨"
+msgstr "Adreça electronica 2"
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Email 3"
-msgstr "ଇ-ଡାକ ୩"
+msgstr "Adreça electronica 3"
 
 #: ../addressbook/libebook/e-contact.c:130
 msgid "Email 4"
-msgstr "ଇ-ଡାକ ୪"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:132
 msgid "Mailer"
-msgstr "ପ୍ରେରକ"
+msgstr ""
 
 #. Address Labels
 #: ../addressbook/libebook/e-contact.c:135
 msgid "Home Address Label"
-msgstr "ଘରୋଇ ଠିକଣା ସୂଚକ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:136
 msgid "Work Address Label"
-msgstr "କାର୍ଯ୍ଯ ଠିକଣା ସୂଚକ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:137
 msgid "Other Address Label"
-msgstr "ଅନ୍ଯାନ୍ଯ ଠିକଣା ସୂଚକ"
+msgstr ""
 
 #. Phone fields
 #: ../addressbook/libebook/e-contact.c:140
 msgid "Assistant Phone"
-msgstr "ସହାକାରୀ ଫୋନ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:141
 msgid "Business Phone"
-msgstr "ବ୍ଯବସାୟ ଫୋନ"
+msgstr "Telefòn personal"
 
 #: ../addressbook/libebook/e-contact.c:142
 msgid "Business Phone 2"
-msgstr "ବ୍ଯବସାୟ ଫୋନ ୨"
+msgstr "Telefòn personal 2"
 
 #: ../addressbook/libebook/e-contact.c:143
 msgid "Business Fax"
-msgstr "ବ୍ଯବସାୟ ଫ୍ଯାକ୍ସ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:144
 msgid "Callback Phone"
-msgstr "କଲ-ବେକ ଫୋନ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:145
 msgid "Car Phone"
-msgstr "କାର ଫୋନ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:146
 msgid "Company Phone"
-msgstr "କମ୍ପାନୀ ଫୋନ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:147
 msgid "Home Phone"
-msgstr "ଘରୋଇ ଫୋନ"
+msgstr "Telefòn personal"
 
 #: ../addressbook/libebook/e-contact.c:148
 msgid "Home Phone 2"
-msgstr "ଘରୋଇ ଫୋନ ୨"
+msgstr "Telefòn personal 2"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Home Fax"
-msgstr "ଘରୋଇ ଫ୍ଯାକ୍ସ"
+msgstr "Fax personal"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "ISDN"
@@ -284,31 +284,31 @@ msgstr "ISDN"
 
 #: ../addressbook/libebook/e-contact.c:151
 msgid "Mobile Phone"
-msgstr "ମୋବାଇଲ ଫୋନ"
+msgstr "Telefòn mobil"
 
 #: ../addressbook/libebook/e-contact.c:152
 msgid "Other Phone"
-msgstr "ଅନ୍ଯାନ୍ଯ ଫୋନ"
+msgstr "Autre telefòn"
 
 #: ../addressbook/libebook/e-contact.c:153
 msgid "Other Fax"
-msgstr "ଅନ୍ଯାନ୍ଯ ଫ୍ଯାକ୍ସ"
+msgstr "Autre fax"
 
 #: ../addressbook/libebook/e-contact.c:154
 msgid "Pager"
-msgstr "ପେଜର"
+msgstr "Recebedor d'apèl"
 
 #: ../addressbook/libebook/e-contact.c:155
 msgid "Primary Phone"
-msgstr "ପ୍ରାଥମିକ ଫୋନ"
+msgstr "Telefòn principal"
 
 #: ../addressbook/libebook/e-contact.c:156
 msgid "Radio"
-msgstr "ରେଡିଓ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:157
 msgid "Telex"
-msgstr "ଟେଲେକ୍ସ"
+msgstr ""
 
 #. To translators: TTY is Teletypewriter
 #: ../addressbook/libebook/e-contact.c:159
@@ -318,306 +318,306 @@ msgstr "TTY"
 #. Organizational fields
 #: ../addressbook/libebook/e-contact.c:162
 msgid "Organization"
-msgstr "ସଙ୍ଗଠନ"
+msgstr "Organizacion"
 
 #: ../addressbook/libebook/e-contact.c:163
 msgid "Organizational Unit"
-msgstr "ସଙ୍ଘଠନ ମୂଳକ ଏକକ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:164
 msgid "Office"
-msgstr "କାର୍ଯ୍ଯାଳୟ"
+msgstr "Burèu"
 
 #: ../addressbook/libebook/e-contact.c:165
 msgid "Title"
-msgstr "ଶୀର୍ଷକ"
+msgstr "Titol"
 
 #: ../addressbook/libebook/e-contact.c:166
 msgid "Role"
-msgstr "ଭୂମିକା"
+msgstr "Ròtle"
 
 #: ../addressbook/libebook/e-contact.c:167
 msgid "Manager"
-msgstr "ପରିଚାଳକ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:168
 msgid "Assistant"
-msgstr "ସହକାରୀ"
+msgstr ""
 
 #. Web fields
 #: ../addressbook/libebook/e-contact.c:171
 msgid "Homepage URL"
-msgstr "ମୂଳସ୍ଥାନ ପ୍ରୁଷ୍ଠାର ୟୁ.ଆର.ଏଲ."
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:172
 msgid "Weblog URL"
-msgstr "ୱେବଲଗ ୟୁ.ଆର.ଏଲ."
+msgstr ""
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
-msgstr "ବିଭାଗ ଗୁଡିକ"
+msgstr "Categorias"
 
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:178
 msgid "Calendar URI"
-msgstr "କ୍ଯାଲେଣ୍ଡର ୟୁ.ଆର.ଆଇ."
+msgstr "URI del calendièr"
 
 #: ../addressbook/libebook/e-contact.c:179
 msgid "Free/Busy URL"
-msgstr "ମୁକ୍ତ/ବ୍ଯସ୍ତ ୟୁ.ଆର.ଏଲ."
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:180
 msgid "ICS Calendar"
-msgstr "ICS କ୍ଯାଲେଣ୍ଡର"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:181
 msgid "Video Conferencing URL"
-msgstr "ଭିଡିଓ ସମ୍ମିଳନୀ ୟୁ.ଆର.ଏଲ."
+msgstr ""
 
 #. Misc fields
 #: ../addressbook/libebook/e-contact.c:184
 msgid "Spouse's Name"
-msgstr "ଜୀବନସାଥୀର ନାମ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:185
 msgid "Note"
-msgstr "ଟିପ୍ପଣୀ"
+msgstr "Nòta"
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:188
 msgid "AIM Home Screen Name 1"
-msgstr "AIM ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:189
 msgid "AIM Home Screen Name 2"
-msgstr "AIM ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 3"
-msgstr "AIM ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Work Screen Name 1"
-msgstr "AIM କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Work Screen Name 2"
-msgstr "AIM କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 3"
-msgstr "AIM କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "GroupWise Home Screen Name 1"
-msgstr "ସମୂହ ଅନୁଯାୟୀ ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "GroupWise Home Screen Name 2"
-msgstr "ସମୂହ ଅନୁଯାୟୀ ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 3"
-msgstr "ସମୂହ ଅନୁଯାୟୀ ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Work Screen Name 1"
-msgstr "ସମୂହ ଅନୁଯାୟୀ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Work Screen Name 2"
-msgstr "ସମୂହ ଅନୁଯାୟୀ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 3"
-msgstr "ସମୂହ ଅନୁଯାୟୀ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "Jabber Home Id 1"
-msgstr "Jabber ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "Jabber Home Id 2"
-msgstr "Jabber ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 3"
-msgstr "Jabber ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Work Id 1"
-msgstr "Jabber କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Work Id 2"
-msgstr "Jabber କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 3"
-msgstr "Jabber କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Yahoo! ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Yahoo! ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Yahoo! କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Yahoo! କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Yahoo! କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "MSN Home Screen Name 1"
-msgstr "MSN ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "MSN Home Screen Name 2"
-msgstr "MSN ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 3"
-msgstr "MSN ବ୍ଯକ୍ତିଗତ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Work Screen Name 1"
-msgstr "MSN କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Work Screen Name 2"
-msgstr "MSN କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 3"
-msgstr "MSN କାର୍ଯ୍ଯସ୍ଥଳୀ ପରଦା ନାମ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "ICQ Home Id 1"
-msgstr "ICQ ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "ICQ Home Id 2"
-msgstr "ICQ ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 3"
-msgstr "ICQ ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Work Id 1"
-msgstr "ICQ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Work Id 2"
-msgstr "ICQ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 3"
-msgstr "ICQ କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୩"
+msgstr ""
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:226
 msgid "Last Revision"
-msgstr "ଅନ୍ତିମ ସଂସ୍କରଣ"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:227
 msgid "Name or Org"
-msgstr "ନାମ କିମ୍ବା ସଙ୍ଘଠନ"
+msgstr ""
 
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:230
 msgid "Address List"
-msgstr "ଠିକଣା ତାଲିକା"
+msgstr "Tièra d'adreças"
 
 #: ../addressbook/libebook/e-contact.c:231
 msgid "Home Address"
-msgstr "ଘରୋଇ ଠିକଣା"
+msgstr "Adreça personala"
 
 #: ../addressbook/libebook/e-contact.c:232
 msgid "Work Address"
-msgstr "କାର୍ଯ୍ଯସ୍ଥଳୀ ଠିକଣା"
+msgstr "Adreça professionala"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Other Address"
-msgstr "ଅନ୍ଯାନ୍ଯ ଠିକଣା"
+msgstr ""
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:236
 msgid "Category List"
-msgstr "ବିଭାଗ ତାଲିକା"
+msgstr "Tièra de la categoria"
 
 #. Photo/Logo
 #: ../addressbook/libebook/e-contact.c:239
 msgid "Photo"
-msgstr "ଫଟୋ"
+msgstr "Fotografia"
 
 #: ../addressbook/libebook/e-contact.c:240
 msgid "Logo"
-msgstr "ପ୍ରତୀକ"
+msgstr "Lògo"
 
 #: ../addressbook/libebook/e-contact.c:242
 msgid "Name"
-msgstr "ନାମ"
+msgstr "Nom"
 
 #: ../addressbook/libebook/e-contact.c:243
 msgid "Email List"
-msgstr "ଇ-ଡାକ ତାଲିକା"
+msgstr ""
 
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:246
 msgid "AIM Screen Name List"
-msgstr "AIM ପରଦା ନାମ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:247
 msgid "GroupWise Id List"
-msgstr "GroupWise ପରିଚୟ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:248
 msgid "Jabber Id List"
-msgstr "Jabber ପରିଚୟ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:249
 msgid "Yahoo! Screen Name List"
-msgstr "Yahoo! ପରଦା ନାମ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:250
 msgid "MSN Screen Name List"
-msgstr "MSN ପରଦା ନାମ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:251
 msgid "ICQ Id List"
-msgstr "ICQ ପରିଚୟ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:253
 msgid "Wants HTML Mail"
-msgstr "HTML ଡାକ ଆଶା କରୁଅଛି"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:255
 msgid "List"
-msgstr "ତାଲିକା"
+msgstr "Tièra"
 
 #: ../addressbook/libebook/e-contact.c:256
 msgid "List Show Addresses"
-msgstr "ତାଲିକା ପ୍ରଦର୍ଶନ ଠିକଣା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:258
 msgid "Birth Date"
-msgstr "ଜନ୍ମ ତାରିଖ"
+msgstr "Data de naissença"
 
 #. Add default categories only if gconf doesn't contain any category list
 #. Make sure we have all categories
@@ -625,64 +625,64 @@ msgstr "ଜନ୍ମ ତାରିଖ"
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:246
 msgid "Anniversary"
-msgstr "ବାର୍ଷିକୀ"
+msgstr "Aniversari"
 
 #. Security fields
 #: ../addressbook/libebook/e-contact.c:262
 msgid "X.509 Certificate"
-msgstr "X.509 ପ୍ରମାଣପତ୍ର"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:264
 msgid "Gadu-Gadu Home Id 1"
-msgstr "Gadu-Gadu ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:265
 msgid "Gadu-Gadu Home Id 2"
-msgstr "Gadu-Gadu ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 3"
-msgstr "Gadu-Gadu ବ୍ଯକ୍ତିଗତ ପରିଚୟ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Work Id 1"
-msgstr "Gadu-Gadu କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୧"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Work Id 2"
-msgstr "Gadu-Gadu କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୨"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 3"
-msgstr "Gadu-Gadu କାର୍ଯ୍ଯସ୍ଥଳୀ ପରିଚୟ ୩"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Id List"
-msgstr "Gadu-Gadu ପରିଚୟ ତାଲିକା"
+msgstr ""
 
 #: ../addressbook/libebook/e-contact.c:1258
 #: ../addressbook/libebook/e-destination.c:771
 msgid "Unnamed List"
-msgstr "ଅନାମିକା ତାଲିକା"
+msgstr ""
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
 #: ../libedataserver/e-categories.c:247
 msgid "Birthday"
-msgstr "ଜନ୍ମଦିନ"
+msgstr "Aniversari"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
 #, c-format
 msgid "Birthday: %s"
-msgstr "ଜନ୍ମଦିନ: %s"
+msgstr "Aniversari : %s"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
-msgstr "ବାର୍ଷିକୀ: %s"
+msgstr "Aniversari : %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବ ନାହିଁ: ବିକ୍ରୁତ ଭାବରେ ପ୍ରସ୍ତୁତ ୟୁ.ଆର.ଆଇ.।"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:980
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1660
@@ -697,16 +697,16 @@ msgstr ""
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:263
 #, c-format
 msgid "Loading %s items"
-msgstr "%s ବସ୍ତୁକୁ ଧାରଣ କରୁଅଛି"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:793
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
-msgstr "କ୍ଯାଲେଣ୍ଡର"
+msgstr "Calendièr"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:850
 msgid "Invalid server URI"
-msgstr "ଅବୈଧ ସେବକ ୟୁ.ଆର.ଆଇ."
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:869
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:878
@@ -723,172 +723,172 @@ msgstr "ଅବୈଧ ସେବକ ୟୁ.ଆର.ଆଇ."
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
-msgstr "ବୈଧିକରଣ ବିଫଳ"
+msgstr "L'autentificacion a abocat"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:920
 msgid "Could not create thread for getting deltas"
-msgstr "delta ପ୍ରାପ୍ତ କରିବା ପାଇଁ ଥ୍ରେଡ ସ୍ରୁଷ୍ଟି କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1229
 #: ../calendar/backends/http/e-cal-backend-http.c:526
 #: ../calendar/backends/weather/e-cal-backend-weather.c:450
 msgid "Could not create cache file"
-msgstr "ସ୍ବଲ୍ପ ସଞ୍ଚୟ ଫାଇଲକୁ ସ୍ରୁଷ୍ଟି କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
 msgid "Could not create thread for populating cache"
-msgstr "ସ୍ବଲ୍ପ ସଞ୍ଚୟକୁ ଅଦ୍ଧୁଷିତ କରିବା ପାଇଁ ଥ୍ରେଡ ସ୍ରୁଷ୍ଟି କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/backends/http/e-cal-backend-http.c:265
 msgid "Redirected to Invalid URI"
-msgstr "ଅବୈଧ ୟୁ.ଆର.ଆଇ. ପୁନଃପ୍ରେରିତ କରାଗଲା"
+msgstr ""
 
 #: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
-msgstr "ଖରାପ ଫାଇଲ ଶୈଳୀ।"
+msgstr ""
 
 #: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
-msgstr "ଗୋଟିଏ କ୍ଯାଲେଣ୍ଡର ନୁହେଁ।"
+msgstr "Es pas un calendièr."
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:142
 msgid "Could not retrieve weather data"
-msgstr "ପାଣିପାଗ ସୂଚନାକୁ ପୁନରୁଦ୍ଧାର କରିପାରିଲା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:200
 msgid "Fair"
-msgstr "ସୁନ୍ଦର"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:201
 msgid "Snow showers"
-msgstr "ତୁଷାରପାତ"
+msgstr "Nevadas"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Snow"
-msgstr "ବରଫ"
+msgstr "Nèu"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Partly cloudy"
-msgstr "ଆଂଶିକ ମେଘାଚ୍ଛନ୍ନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:204
 msgid "Smoke"
-msgstr "ଧୁଆଁ"
+msgstr "Fum"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:205
 msgid "Thunderstorms"
-msgstr "ଘଡଘଡି ସହ ବର୍ଷା"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:206
 msgid "Cloudy"
-msgstr "ମେଘାଚ୍ଛନ୍ନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:207
 msgid "Drizzle"
-msgstr "ଝିପିଝିପି ବର୍ଷା"
+msgstr "Plovina"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Sunny"
-msgstr "ଖରାପାଗ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Dust"
-msgstr "ଧୂଳି"
+msgstr "Posca"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Clear"
-msgstr "ପରିଷ୍କାର"
+msgstr "Netejar"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Mostly cloudy"
-msgstr "ଅଧିକାଂଶ ମେଘାଚ୍ଛନ୍ନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Windy"
-msgstr "ତୋଫାନୀ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Rain showers"
-msgstr "ବ୍ରୁଷ୍ଟିପାତ"
+msgstr "Raissas"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Foggy"
-msgstr "କୁହୁଡିଆ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Rain/snow mixed"
-msgstr "ବର୍ଷା/ବରଫ ମିଶ୍ରିତ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Sleet"
-msgstr "କରକା ବ୍ରୁଷ୍ଟି"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Very hot/humid"
-msgstr "ବହୁତ ଗରମ/ଉଷ୍ନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Blizzard"
-msgstr "ଭୟଙ୍କର ତୁଷାର ଝଡ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Freezing rain"
-msgstr "ଶୀତଳ ବ୍ରୁଷ୍ଟି"
+msgstr "Pluèja glaçanta"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Haze"
-msgstr "ଅସ୍ପଷ୍ଟତା"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Blowing snow"
-msgstr "ବରଫ ଝଡ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Freezing drizzle"
-msgstr "ଝିପିଝିପି ଶୀତଳ ବ୍ରୁଷ୍ଟି"
+msgstr "Plovina gibranta"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Very cold/wind chill"
-msgstr "ବହୁତ ଥଣ୍ଡା/ଶୀତଳ ପବନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Rain"
-msgstr "ବ୍ରୁଷ୍ଟିପାତ"
+msgstr "Pluèja"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:234
 #: ../calendar/backends/weather/e-cal-backend-weather.c:242
 #: ../calendar/backends/weather/e-cal-backend-weather.c:244
 #: ../calendar/backends/weather/e-cal-backend-weather.c:251
 msgid "Weather: Sunny"
-msgstr "ପାଣିପାଗ: ଖରାପାଗ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:235
 #: ../calendar/backends/weather/e-cal-backend-weather.c:236
 #: ../calendar/backends/weather/e-cal-backend-weather.c:252
 #: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Snow"
-msgstr "ପାଣିପାଗ: ବରଫ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:237
 msgid "Weather: Partly Cloudy"
-msgstr "ପାଣିପାଗ: ଆଂଶିକ ମେଘାଚ୍ଛନ୍ନ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:238
 #: ../calendar/backends/weather/e-cal-backend-weather.c:243
 #: ../calendar/backends/weather/e-cal-backend-weather.c:248
 #: ../calendar/backends/weather/e-cal-backend-weather.c:254
 msgid "Weather: Fog"
-msgstr "ପାଣିପାଗ: କୁହୁଡି"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Weather: Thunderstorms"
-msgstr "ପାଣିପାଗ: ଘଡଘଡି ସହ ବର୍ଷା"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:240
 #: ../calendar/backends/weather/e-cal-backend-weather.c:245
 msgid "Weather: Cloudy"
-msgstr "ପାଣିପାଗ: ମେଘୁଆ"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:241
 #: ../calendar/backends/weather/e-cal-backend-weather.c:247
@@ -898,274 +898,274 @@ msgstr "ପାଣିପାଗ: ମେଘୁଆ"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:256
 #: ../calendar/backends/weather/e-cal-backend-weather.c:258
 msgid "Weather: Rain"
-msgstr "ପାଣିପାଗ: ବର୍ଷା"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:333
 #, c-format
 msgid "%.1f°C - %s"
-msgstr "%.1f°C - %s"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:335
 #, c-format
 msgid "%.1f°F - %s"
-msgstr "%.1f°F - %s"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:338
 #, c-format
 msgid "%.1f/%.1f°C - %s"
-msgstr "%.1f/%.1f°C - %s"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:340
 #, c-format
 msgid "%.1f/%.1f°F - %s"
-msgstr "%.1f/%.1f°F - %s"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:346
 #, c-format
 msgid "%d%% chance of precipitation\n"
-msgstr "%d%% ବର୍ଷାର ସମ୍ଭାବନା\n"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:353
 #, c-format
 msgid "%.1fcm snow\n"
-msgstr "%.1fcm ବରଫ\n"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:355
 #, c-format
 msgid "%.1fin snow\n"
-msgstr "%.1fin ବରଫ\n"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:358
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
-msgstr "%.1f-%.1fcm ବରଫ\n"
+msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:360
 #, c-format
 msgid "%.1f-%.1fin snow\n"
-msgstr "%.1f-%.1fin ବରଫ\n"
+msgstr ""
 
 #: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
-msgstr "ଶୀର୍ଷକ ବିହୀନ ନିଯୁକ୍ତି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal-recur.c:4032
 msgid "1st"
-msgstr "ପ୍ରଥମ"
+msgstr "1èr"
 
 #: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
-msgstr "ଦ୍ବିତୀୟ"
+msgstr "5"
 
 #: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
-msgstr "ତ୍ରୁତୀୟ"
+msgstr "3"
 
 #: ../calendar/libecal/e-cal-recur.c:4035
 msgid "4th"
-msgstr "ଚତୁର୍ଥ"
+msgstr "4"
 
 #: ../calendar/libecal/e-cal-recur.c:4036
 msgid "5th"
-msgstr "ପଞ୍ଚମ"
+msgstr "5"
 
 #: ../calendar/libecal/e-cal-recur.c:4037
 msgid "6th"
-msgstr "ଷଷ୍ଠ"
+msgstr "6"
 
 #: ../calendar/libecal/e-cal-recur.c:4038
 msgid "7th"
-msgstr "ସପ୍ତମ"
+msgstr "7"
 
 #: ../calendar/libecal/e-cal-recur.c:4039
 msgid "8th"
-msgstr "ଅଷ୍ଟମ"
+msgstr "8"
 
 #: ../calendar/libecal/e-cal-recur.c:4040
 msgid "9th"
-msgstr "ନବମ"
+msgstr "9"
 
 #: ../calendar/libecal/e-cal-recur.c:4041
 msgid "10th"
-msgstr "ଦଶମ"
+msgstr "10"
 
 #: ../calendar/libecal/e-cal-recur.c:4042
 msgid "11th"
-msgstr "ଏକାଦଶ"
+msgstr "11"
 
 #: ../calendar/libecal/e-cal-recur.c:4043
 msgid "12th"
-msgstr "ଦ୍ବାଦଶ"
+msgstr "12"
 
 #: ../calendar/libecal/e-cal-recur.c:4044
 msgid "13th"
-msgstr "ତ୍ରୟୋଦଶ"
+msgstr "13"
 
 #: ../calendar/libecal/e-cal-recur.c:4045
 msgid "14th"
-msgstr "ଚତୁର୍ଦ୍ଦଶ"
+msgstr "14"
 
 #: ../calendar/libecal/e-cal-recur.c:4046
 msgid "15th"
-msgstr "ପଞ୍ଚଦଶ"
+msgstr "15"
 
 #: ../calendar/libecal/e-cal-recur.c:4047
 msgid "16th"
-msgstr "ଷଡୋଶ"
+msgstr "16"
 
 #: ../calendar/libecal/e-cal-recur.c:4048
 msgid "17th"
-msgstr "ସପ୍ତଦଶ"
+msgstr "17"
 
 #: ../calendar/libecal/e-cal-recur.c:4049
 msgid "18th"
-msgstr "ଅଷ୍ଟଦଶ"
+msgstr "18"
 
 #: ../calendar/libecal/e-cal-recur.c:4050
 msgid "19th"
-msgstr "ଉନବିଂଶ"
+msgstr "19"
 
 #: ../calendar/libecal/e-cal-recur.c:4051
 msgid "20th"
-msgstr "ବିଂଶ"
+msgstr "20"
 
 #: ../calendar/libecal/e-cal-recur.c:4052
 msgid "21st"
-msgstr "ଏକବିଂଶ"
+msgstr "21"
 
 #: ../calendar/libecal/e-cal-recur.c:4053
 msgid "22nd"
-msgstr "ଦ୍ବିବିଂଶ"
+msgstr "22"
 
 #: ../calendar/libecal/e-cal-recur.c:4054
 msgid "23rd"
-msgstr "ତ୍ରୟୋବିଂଶ"
+msgstr "23"
 
 #: ../calendar/libecal/e-cal-recur.c:4055
 msgid "24th"
-msgstr "ଚତୁର୍ବିଂଶ"
+msgstr "24"
 
 #: ../calendar/libecal/e-cal-recur.c:4056
 msgid "25th"
-msgstr "ପଞ୍ଚବିଂଶ"
+msgstr "25"
 
 #: ../calendar/libecal/e-cal-recur.c:4057
 msgid "26th"
-msgstr "ଷଡବିଂଶ"
+msgstr "26"
 
 #: ../calendar/libecal/e-cal-recur.c:4058
 msgid "27th"
-msgstr "ସପ୍ତବିଂଶ"
+msgstr "27"
 
 #: ../calendar/libecal/e-cal-recur.c:4059
 msgid "28th"
-msgstr "ଅଷ୍ଟବିଂଶ"
+msgstr "28"
 
 #: ../calendar/libecal/e-cal-recur.c:4060
 msgid "29th"
-msgstr "ନବବିଂଶ"
+msgstr "29"
 
 #: ../calendar/libecal/e-cal-recur.c:4061
 msgid "30th"
-msgstr "ତିଂଶ"
+msgstr "30"
 
 #: ../calendar/libecal/e-cal-recur.c:4062
 msgid "31st"
-msgstr "ଏକତିଂଶ"
+msgstr "31"
 
 #: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
 msgid "High"
-msgstr "ବ୍ରୁହତ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "Normal"
-msgstr "ସାଧାରଣ"
+msgstr "Normal"
 
 #: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Low"
-msgstr "ଧୀର"
+msgstr ""
 
 #. An empty string is the same as 'None'.
 #: ../calendar/libecal/e-cal-util.c:708
 msgid "Undefined"
-msgstr "ଅପରିଭାଷିତ"
+msgstr ""
 
 #. FIXME: Try to get the parent uri so that we dont have to ask the password again
 #: ../calendar/libecal/e-cal.c:1737
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "%s ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତକୁ ଭରଣ କରନ୍ତୁ ଯାହାକି %s ଚାଳକ ପାଇଁ ପ୍ରୋକ୍ସିକୁ ସକ୍ରିୟ କରିବ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:1740 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "%s (%s ଚାଳକ) ପାଇଁ ପ୍ରବେଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5150
 msgid "Invalid argument"
-msgstr "ଅବୈଧ ସ୍ବତନ୍ତ୍ରଚର"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5152
 msgid "Backend is busy"
-msgstr "ପ୍ରୁଷ୍ଠଭାଗ ବ୍ଯସ୍ତ ଅଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5154
 msgid "Repository is offline"
-msgstr "ଭଣ୍ଡାର ଅଫଲାଇନ ଅଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5156
 msgid "No such calendar"
-msgstr "ଏଭଳି କୌଣସି କ୍ଯାଲେଣ୍ଡର ନାହିଁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5158 ../servers/groupwise/e-gw-connection.c:175
 msgid "Object not found"
-msgstr "ବସ୍ତୁ ମିଳିଲା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5160 ../servers/groupwise/e-gw-connection.c:169
 msgid "Invalid object"
-msgstr "ଅବୈଧ ବସ୍ତୁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5162
 msgid "URI not loaded"
-msgstr "ୟ.ଆର.ଆଇ. ଧାରଣ କରାଯାଇ ନାହିଁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5164
 msgid "URI already loaded"
-msgstr "ୟ.ଆର.ଆଇ. ପୂର୍ବରୁ ଧାରଣ କରାଯାଇଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5166
 #: ../servers/exchange/storage/e-storage.c:572
 msgid "Permission denied"
-msgstr "ଅନୁମତି ନିଷିଧ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5168 ../servers/groupwise/e-gw-connection.c:177
 msgid "Unknown User"
-msgstr "ଅଜଣା ତାଲିକା"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5170
 msgid "Object ID already exists"
-msgstr "ବସ୍ତୁ ପରିଚୟ ପୂର୍ବରୁ ରହିଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5172
 msgid "Protocol not supported"
-msgstr "ପ୍ରୋଟୋକଲ ସମର୍ଥିତ ନୁହେଁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5174
 msgid "Operation has been canceled"
-msgstr "କାର୍ଯ୍ଯ ବାତିଲ କରାଯାଇଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5176
 msgid "Could not cancel operation"
-msgstr "କାର୍ଯ୍ଯ ବାତିଲ କରିପାରଲିା ନାହିଁ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5180
 #: ../camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication required"
-msgstr "ବୈଧିକରଣ ଆବଶ୍ଯକ"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5182
 msgid "A CORBA exception has occurred"
-msgstr "ଗୋଟିଏ କୋର୍ବା ବ୍ଯତିକ୍ରମ ଘଟିଛି"
+msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5184
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
@@ -1178,12 +1178,12 @@ msgstr "ଗୋଟିଏ କୋର୍ବା ବ୍ଯତିକ୍ରମ ଘଟି
 #: ../servers/exchange/storage/e-storage.c:586
 #: ../servers/groupwise/e-gw-connection.c:183
 msgid "Unknown error"
-msgstr "ଅଜଣା ତ୍ରୁଟି"
+msgstr "Error desconeguda"
 
 #: ../calendar/libecal/e-cal.c:5186
 #: ../servers/exchange/storage/e-storage.c:554
 msgid "No error"
-msgstr "କୌଣସି ତ୍ରୁଟି ନାହିଁ"
+msgstr "Pas d'error"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:65
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
@@ -1191,7 +1191,7 @@ msgstr "କୌଣସି ତ୍ରୁଟି ନାହିଁ"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:799
 #, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "\"%s\" କୌଣସି ସ୍ବତନ୍ତ୍ରଚର ଆଶା କରୁନାହିଁ"
+msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:98
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:208
@@ -1200,7 +1200,7 @@ msgstr "\"%s\" କୌଣସି ସ୍ବତନ୍ତ୍ରଚର ଆଶା କ�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:837
 #, c-format
 msgid "\"%s\" expects one argument"
-msgstr "\"%s\" ଗୋଟିଏ ସ୍ବତନ୍ତ୍ରଚର ଆଶା କରୁଅଛି"
+msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:104
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:111
@@ -1208,12 +1208,12 @@ msgstr "\"%s\" ଗୋଟିଏ ସ୍ବତନ୍ତ୍ରଚର ଆଶା କ�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:523
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "\"%s\" ପ୍ରଥମ ସ୍ବତନ୍ତ୍ରଚରକୁ ଗୋଟିଏ ବାକ୍ଯଖଣ୍ଡ ବୋଲି ପ୍ରତ୍ଯାଶିତ କରୁଅଛି"
+msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:119
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" ପ୍ରଥମ ସ୍ବତନ୍ତ୍ରଚରକୁ ଗୋଟିଏ ତାରିଖ/ସମୟ ବାକ୍ଯଖଣ୍ଡ ବୋଲି ପ୍ରତ୍ଯାଶିତ କରୁଅଛି"
+msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:158
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:359
@@ -1411,7 +1411,7 @@ msgstr ""
 
 #: ../camel/camel-filter-driver.c:1211 ../camel/camel-filter-driver.c:1303
 msgid "Complete"
-msgstr "ସମାପ୍ତ"
+msgstr "Complet"
 
 #: ../camel/camel-filter-driver.c:1268
 #, c-format
@@ -1645,7 +1645,7 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:160
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "Unknown"
-msgstr "ଅଜଣା"
+msgstr "Desconegut"
 
 #: ../camel/camel-lock-client.c:100
 #, c-format
@@ -1750,7 +1750,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:445
 #: ../camel/providers/pop3/camel-pop3-store.c:526
 msgid "Canceled"
-msgstr "ବାତିଲ କରାଗଲା"
+msgstr "Anullat"
 
 #: ../camel/camel-net-utils.c:516
 msgid "cannot create thread"
@@ -1831,7 +1831,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-anonymous.c:122 ../camel/camel-sasl-plain.c:89
 msgid "Authentication failed."
-msgstr "ବୈଧିକରଣ ବିଫଳ।"
+msgstr ""
 
 #: ../camel/camel-sasl-anonymous.c:131
 #, c-format
@@ -1984,7 +1984,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-login.c:34
 msgid "Login"
-msgstr "ଲଗଇନ"
+msgstr "Connexion"
 
 #: ../camel/camel-sasl-login.c:36 ../camel/camel-sasl-plain.c:36
 msgid "This option will connect to the server using a simple password."
@@ -2297,7 +2297,7 @@ msgstr ""
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:793 ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
-msgstr "ଆବର୍ଜନା ପାତ୍ର"
+msgstr "Banasta"
 
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:50
@@ -2354,7 +2354,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:595
 msgid "Out of memory"
-msgstr "ଯଥେଷ୍ଟ ସ୍ମ୍ରୁତି ନାହିଁ"
+msgstr "Pas pro de memòria"
 
 #: ../camel/camel-tcp-stream-openssl.c:597
 msgid "Zero-depth self-signed certificate"
@@ -2509,7 +2509,7 @@ msgstr ""
 
 #: ../camel/camel-vee-store.c:101 ../camel/camel-vee-store.c:344
 msgid "Unmatched"
-msgstr "ଅମେଳ"
+msgstr ""
 
 #: ../camel/camel-vee-store.c:391
 #, c-format
@@ -2648,7 +2648,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:85
 #: ../camel/providers/local/camel-local-provider.c:105
 msgid "Options"
-msgstr "ବିକଲ୍ପ"
+msgstr "Opcions"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Apply filters to new messages in Inbox on this server"
@@ -2690,7 +2690,7 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
 #: ../camel/providers/pop3/camel-pop3-provider.c:71
 msgid "Password"
-msgstr "ପ୍ରବେଶ ସଙ୍କେତ"
+msgstr "Mot de pas"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 msgid "This option will connect to the GroupWise server using a plaintext password."
@@ -2798,14 +2798,14 @@ msgstr ""
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:52
 msgid "Command:"
-msgstr "ନିର୍ଦ୍ଦେଶ:"
+msgstr "Comanda :"
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
 #: ../camel/providers/imap/camel-imap-provider.c:56
 #: ../camel/providers/imap4/camel-imap4-provider.c:41
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
-msgstr "ଫୋଲଡର"
+msgstr "Repertòris"
 
 #: ../camel/providers/hula/camel-hula-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:58
@@ -2840,7 +2840,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:470
 #: ../camel/providers/imap/camel-imap-store.c:3011
 msgid "Operation cancelled"
-msgstr "ଚାଳନା ବାତିଲ କରାଯାଇଛି"
+msgstr ""
 
 #: ../camel/providers/imap/camel-imap-command.c:309
 #: ../camel/providers/imap/camel-imap-store.c:3014
@@ -3421,7 +3421,7 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:391
 #, c-format
 msgid "mailbox:%s (%s)"
-msgstr "ଚିଠିବାକ୍ସ:%s (%s)"
+msgstr ""
 
 #. a full path + protocol
 #: ../camel/providers/local/camel-local-folder.c:395
@@ -4089,7 +4089,7 @@ msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:568
 msgid "Unknown reason"
-msgstr "ଅଜ୍ଞାତ କାରଣ"
+msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Leave messages on server"
@@ -4556,11 +4556,11 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:260
 msgid "Miscellaneous"
-msgstr "ବିବିଦ୍ଧ"
+msgstr "Divèrs"
 
 #: ../libedataserver/e-categories.c:261
 msgid "Personal"
-msgstr "ବ୍ଯକ୍ତିଗତ"
+msgstr "Personal"
 
 #: ../libedataserver/e-categories.c:262
 msgid "Phone Calls"
@@ -4568,7 +4568,7 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:263
 msgid "Status"
-msgstr "ଅବସ୍ଥିତି"
+msgstr "Estatut"
 
 #: ../libedataserver/e-categories.c:264
 msgid "Strategies"
@@ -4715,11 +4715,11 @@ msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
-msgstr "LDAP ସେବକକୁ ଅଜ୍ଞାତ ଭାବରେ ଅଭିଗମ କରୁଅଛି"
+msgstr ""
 
 #: ../libedataserverui/e-book-auth-util.c:191
 msgid "Failed to authenticate.\n"
-msgstr "ବୈଧିକ୍ରୁତ କରିବାରେ ବିଫଳ।\n"
+msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.c:265
 #, c-format
@@ -4730,7 +4730,7 @@ msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.c:435
 msgid "Category"
-msgstr "ବିଭାଗ"
+msgstr "Categoria"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
 msgid "Category Icon"
@@ -4758,15 +4758,15 @@ msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
-msgstr "ଉପଲବ୍ଧ ବିଭାଗ (_A):"
+msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
-msgstr "ସମ୍ପାଦନ କରନ୍ତୁ (_E)"
+msgstr "_Edicion"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
-msgstr "ବିଭାଗ"
+msgstr "categorias"
 
 #: ../libedataserverui/e-name-selector-dialog.c:295
 msgid "Select Contacts from Address Book"
@@ -4774,15 +4774,15 @@ msgstr ""
 
 #: ../libedataserverui/e-name-selector-dialog.c:597
 msgid "_Add"
-msgstr "ଯୋଗ କରନ୍ତୁ (_A)"
+msgstr "_Apondre"
 
 #: ../libedataserverui/e-name-selector-dialog.c:622
 msgid "_Remove"
-msgstr "ଅପସାରଣ କରନ୍ତୁ (_R)"
+msgstr "_Suprimir"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "\t\t\t\t\t\t"
-msgstr "\t\t\t\t\t\t"
+msgstr ""
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "*"
@@ -4798,7 +4798,7 @@ msgstr "<b>_Contactes</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
-msgstr "ଠିକଣା ପୁସ୍ତିକା"
+msgstr "Quasernet d'adreças"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Address _Book:"
@@ -4811,15 +4811,15 @@ msgstr "C_ategoria :"
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
-msgstr "ଯୋଗାଯୋଗ"
+msgstr "Contactes"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
-msgstr "ଖୋଜନ୍ତୁ"
+msgstr "Recèrcar"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:10
 msgid "_Search:"
-msgstr "ସନ୍ଧାନ କରନ୍ତୁ (_S):"
+msgstr "_Recèrcar :"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2043
@@ -4872,13 +4872,13 @@ msgstr ""
 #: ../servers/exchange/lib/e2k-autoconfig.c:1646
 #: ../servers/exchange/storage/exchange-account.c:940
 msgid "Enter password"
-msgstr "ପ୍ରବେଶ ସଙ୍କେତ ଭରଣ କରନ୍ତୁ"
+msgstr "Picatz lo mot de pas"
 
 #. i18n: These are Outlook's words for the default roles in
 #. the folder permissions dialog.
 #: ../servers/exchange/lib/e2k-security-descriptor.c:847
 msgid "Owner"
-msgstr "ମାଲିକ"
+msgstr "Propietari"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:857
 msgid "Publishing Editor"
@@ -4886,7 +4886,7 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:865
 msgid "Editor"
-msgstr "ସମ୍ପାଦକ"
+msgstr "Editor"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:872
 msgid "Publishing Author"
@@ -4910,11 +4910,11 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:891
 msgid "None"
-msgstr "କିଛି ନୁହେଁ"
+msgstr "Pas cap"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
-msgstr "ଇଚ୍ଛାରୂପଣ"
+msgstr "Personalizat"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:144
 msgid "Select User"
@@ -4922,11 +4922,11 @@ msgstr "Seleccionar un utilizaire"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:182
 msgid "Addressbook..."
-msgstr "Quasernet d'adreças..."
+msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:556
 msgid "Generic error"
-msgstr "ସାଧାରଣ ତ୍ରୁଟି"
+msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:558
 msgid "A folder with the same name already exists"
@@ -4938,7 +4938,7 @@ msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:562
 msgid "I/O error"
-msgstr "ନିବେଶ/ନିର୍ଗମ ତ୍ରୁଟି"
+msgstr "Error E/S"
 
 #: ../servers/exchange/storage/e-storage.c:564
 msgid "Not enough space to create the folder"
@@ -5015,11 +5015,11 @@ msgstr "Borrolhons"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
-msgstr "ପତ୍ରିକା"
+msgstr "Jornal"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
-msgstr "ଟିପ୍ପଣୀ"
+msgstr "Nòtas"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
@@ -5031,7 +5031,7 @@ msgstr ""
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
-msgstr "କାର୍ଯ୍ଯ"
+msgstr "Prètzfaches"
 
 #: ../servers/groupwise/e-gw-connection.c:167
 msgid "Invalid connection"
