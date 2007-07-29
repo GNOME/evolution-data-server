@@ -1,3 +1,10 @@
+2007-07-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #342164 from Lucky and Jared Moore
+
+	* camel-mbox-summary.c: (mbox_summary_sync_full),
+	(camel_mbox_summary_sync_mbox): Harmonize the strings.
+
 2007-06-06  Jeffrey Stedfast  <fejj@novell.com>
 
 	Robustness fix while making sure the code would properly handle

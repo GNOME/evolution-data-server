@@ -616,7 +616,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 
 	tmpname = g_alloca (strlen (cls->folder_path) + 5);
 	sprintf (tmpname, "%s.tmp", cls->folder_path);
-	d(printf("Writing tmp file to %s\n", tmpname));
+	d(printf("Writing temporary file to %s\n", tmpname));
 	fdout = g_open(tmpname, O_LARGEFILE|O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fdout == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -640,9 +640,9 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	}
 
 	if (close(fdout) == -1) {
-		g_warning("Cannot close tmp folder: %s", strerror (errno));
+		g_warning("Cannot close temporary folder: %s", strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not close temp folder: %s"),
+				      _("Could not close temporary folder: %s"),
 				      g_strerror (errno));
 		fdout = -1;
 		goto error;
@@ -1012,9 +1012,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			}
 #endif
 			if (len == -1) {
-				d(printf("Error writing to tmp mailbox\n"));
+				d(printf("Writing to temporary mailbox failed\n"));
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Error writing to temp mailbox: %s"),
+						      _("Writing to temporary mailbox failed: %s"),
 						      g_strerror (errno));
 				goto error;
 			}
@@ -1028,10 +1028,10 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		if (info) {
 			d(printf("looking for message content to copy across from %d\n", (int)camel_mime_parser_tell(mp)));
 			while (camel_mime_parser_step(mp, &buffer, &len) == CAMEL_MIME_PARSER_STATE_PRE_FROM) {
-				/*d(printf("copying mbox contents to tmp: '%.*s'\n", len, buffer));*/
+				/*d(printf("copying mbox contents to temporary: '%.*s'\n", len, buffer));*/
 				if (write(fdout, buffer, len) != len) {
 					camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-							      _("Writing to tmp mailbox failed: %s: %s"),
+							      _("Writing to temporary mailbox failed: %s: %s"),
 							      ((CamelLocalSummary *)cls)->folder_path,
 							      g_strerror (errno));
 					goto error;
@@ -1040,7 +1040,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 			if (write(fdout, "\n", 1) != 1) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Error writing to temp mailbox: %s"),
+						      _("Writing to temporary mailbox failed: %s"),
 						      g_strerror (errno));
 				goto error;
 			}
