@@ -1,3 +1,10 @@
+2007-07-30  Milan Crha  <mcrha@redhat.com>
+
+	** Partial fix for bug #460649
+
+	* e-source-option-menu.c: (populate): Used image menu item and using
+	sources colors when possible. Didn't work for collapsed state.
+
 2007-07-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #410823

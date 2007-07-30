@@ -26,6 +26,7 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkimagemenuitem.h>
 
 #include "e-source-option-menu.h"
 
@@ -136,8 +137,26 @@ populate (ESourceOptionMenu *option_menu)
 		for (q = e_source_group_peek_sources (group); q != NULL; q = q->next) {
 			ESource *source = E_SOURCE (q->data);
 			char *label = g_strconcat ("    ", e_source_peek_name (source), NULL);
-			GtkWidget *item2 = gtk_menu_item_new_with_label (label);
+			const char *colour = e_source_peek_color_spec (source);
+			GtkWidget *item2 = gtk_image_menu_item_new_with_label (label);
 			g_free (label);
+
+			if (colour) {
+				GdkPixmap *pixmap;
+				GdkColor c;
+				GdkGC *gc;
+
+				pixmap = gdk_pixmap_new (gdk_get_default_root_window (), 16, 16, -1);
+				gdk_color_parse (colour, &c);
+				gdk_colormap_alloc_color (gdk_colormap_get_system(), &c, FALSE, TRUE);
+
+				gc = gdk_gc_new (gdk_get_default_root_window ());
+				gdk_gc_set_foreground (gc, &c);
+				gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, 16, 16);
+				g_object_unref (gc);
+
+				gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item2), gtk_image_new_from_pixmap (pixmap, NULL));
+			}
 
 			gtk_object_set_data_full (GTK_OBJECT (item2), MENU_ITEM_SOURCE_DATA_ID, source,
 						  (GtkDestroyNotify) g_object_unref);
