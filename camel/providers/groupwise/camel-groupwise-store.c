@@ -732,7 +732,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 		d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek id recipient attachments distribution subject status options priority startDate created delivered size",
+				"peek id recipient attachments distribution subject status options priority startDate created delivered size hasAttachment",
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {

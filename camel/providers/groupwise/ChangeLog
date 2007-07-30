@@ -1,3 +1,13 @@
+2007-07-30  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_sync),
+	(groupwise_refresh_folder), (gw_update_all_items),
+	(groupwise_transfer_messages_to), (groupwise_expunge):
+	* camel-groupwise-store.c: (gw_store_reload_folder):
+	More code cleanup. Fixes annoying "Is a Directory" error.
+	All (un)read count fixes should have been ported.
+	Moved items from sent-items are lost is fixed.
+
 2007-06-11  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (groupwise_refresh_folder),
