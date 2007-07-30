@@ -1,5 +1,10 @@
 2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* configure.in: Updated the libtool version for libedataserver
+	version since some APIS has been added.
+
+2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	* libedataserver/e-source.[ch]: (e_source_get_duped_property):
 	Added a API to get the duped property.
 
