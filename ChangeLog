@@ -1,3 +1,21 @@
+2007-07-30  Milan Crha  <mcrha@redhat.com>
+
+	* libedataserver/e-source-group.h: (e_source_group_get_property),
+	(e_source_group_set_property), (e_source_group_foreach_property):
+	* libedataserver/e-source-group.c: (struct _ESourceGroupPrivate),
+	(impl_finalize), (e_source_group_init), (import_properties),
+	(compare_str_hash), (compare_str_hashes), (property_dump_cb),
+	(e_source_group_new_from_xmldoc), (e_source_group_update_from_xml),
+	(e_source_group_update_from_xmldoc), (e_source_group_to_xml),
+	(e_source_group_get_property), (e_source_group_set_property),
+	(e_source_group_foreach_property):
+	Added support for properties in source group.
+
+	* libedataserver/e-source-group.c: (e_source_group_new_from_xml),
+	(e_source_group_new_from_xmldoc), (e_source_group_update_from_xmldoc),
+	(e_source_group_uid_from_xmldoc), (e_source_group_to_xml):
+	Warnings cleanup.
+
 2007-07-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in:

@@ -102,6 +102,15 @@ gboolean  e_source_group_remove_source         (ESourceGroup *group,
 gboolean  e_source_group_remove_source_by_uid  (ESourceGroup *group,
 						const char   *uid);
 
+gchar *e_source_group_get_property     (ESourceGroup *source,
+					      const gchar *property);
+void         e_source_group_set_property     (ESourceGroup *source,
+					      const gchar *property,
+					      const gchar *value);
+void         e_source_group_foreach_property (ESourceGroup *source,
+					      GHFunc func,
+					      gpointer data);
+
 char *e_source_group_to_xml (ESourceGroup *group);
 
 G_END_DECLS

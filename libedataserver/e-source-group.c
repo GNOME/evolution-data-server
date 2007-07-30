@@ -28,6 +28,9 @@
 #include "e-uid.h"
 #include "e-source-group.h"
 
+#define XC (const xmlChar *)
+#define GC (const gchar *)
+
 /* Private members.  */
 
 struct _ESourceGroupPrivate {
@@ -39,6 +42,8 @@ struct _ESourceGroupPrivate {
 
 	gboolean ignore_source_changed;
 	gboolean readonly;
+
+	GHashTable *properties;
 };
 
 
@@ -100,6 +105,9 @@ impl_finalize (GObject *object)
 	g_free (priv->uid);
 	g_free (priv->name);
 	g_free (priv->base_uri);
+
+	g_hash_table_destroy (priv->properties);
+
 	g_free (priv);
 
 	(* G_OBJECT_CLASS (e_source_group_parent_class)->finalize) (object);
@@ -152,6 +160,74 @@ e_source_group_init (ESourceGroup *source_group)
 
 	priv = g_new0 (ESourceGroupPrivate, 1);
 	source_group->priv = priv;
+
+	priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+						  g_free, g_free);
+}
+
+static void
+import_properties (ESourceGroup *source_group,
+		   xmlNodePtr prop_root)
+{
+	ESourceGroupPrivate *priv = source_group->priv;
+	xmlNodePtr prop_node;
+
+	for (prop_node = prop_root->children; prop_node; prop_node = prop_node->next) {
+		xmlChar *name, *value;
+
+		if (!prop_node->name || strcmp (GC prop_node->name, "property"))
+			continue;
+
+		name = xmlGetProp (prop_node, XC "name");
+		value = xmlGetProp (prop_node, XC "value");
+
+		if (name && value) {
+			g_hash_table_insert (priv->properties, g_strdup (GC name), g_strdup (GC value));
+		}
+
+		if (name)
+			xmlFree (name);
+		if (value)
+			xmlFree (value);
+	}
+}
+
+typedef struct
+{
+	gboolean equal;
+	GHashTable *table2;
+} hash_compare_data;
+
+static void
+compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
+{
+	gpointer value2 = g_hash_table_lookup (cd->table2, key);
+	if (value2 == NULL || g_str_equal (value, value2) == FALSE)
+		cd->equal = FALSE;
+}
+
+static gboolean
+compare_str_hashes (GHashTable *table1, GHashTable *table2)
+{
+	hash_compare_data cd;
+
+	if (g_hash_table_size (table1) != g_hash_table_size (table2))
+		return FALSE;
+
+	cd.equal = TRUE;
+	cd.table2 = table2;
+	g_hash_table_foreach (table1, (GHFunc) compare_str_hash, &cd);
+	return cd.equal;
+}
+
+static void
+property_dump_cb (const gchar *key, const gchar *value, xmlNodePtr root)
+{
+	xmlNodePtr node;
+
+	node = xmlNewChild (root, NULL, XC "property", NULL);
+	xmlSetProp (node, XC "name", XC key);
+	xmlSetProp (node, XC "value", XC value);
 }
 
 /* Public methods.  */
@@ -180,7 +256,7 @@ e_source_group_new_from_xml (const char *xml)
 	xmlDocPtr doc;
 	ESourceGroup *group;
 
-	doc = xmlParseDoc ((char *) xml);
+	doc = xmlParseDoc (XC xml);
 	if (doc == NULL)
 		return NULL;
 
@@ -203,13 +279,13 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	g_return_val_if_fail (doc != NULL, NULL);
 
 	root = doc->children;
-	if (strcmp (root->name, "group") != 0)
+	if (strcmp (GC root->name, "group") != 0)
 		return NULL;
 
-	uid = xmlGetProp (root, "uid");
-	name = xmlGetProp (root, "name");
-	base_uri = xmlGetProp (root, "base_uri");
-	readonly_str = xmlGetProp (root, "readonly");
+	uid = xmlGetProp (root, XC "uid");
+	name = xmlGetProp (root, XC "name");
+	base_uri = xmlGetProp (root, XC "base_uri");
+	readonly_str = xmlGetProp (root, XC "readonly");
 
 	if (uid == NULL || name == NULL || base_uri == NULL)
 		goto done;
@@ -219,13 +295,20 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	if (!new)
 		goto done;
 
-	new->priv->uid = g_strdup (uid);
+	new->priv->uid = g_strdup (GC uid);
 
-	e_source_group_set_name (new, name);
-	e_source_group_set_base_uri (new, base_uri);
+	e_source_group_set_name (new, GC name);
+	e_source_group_set_base_uri (new, GC base_uri);
 	
 	for (p = root->children; p != NULL; p = p->next) {
-		ESource *new_source = e_source_new_from_xml_node (p);
+		ESource *new_source;
+
+		if (p->name && !strcmp (GC p->name, "properties")) {
+			import_properties (new, p);
+			continue;
+		}
+
+		new_source = e_source_new_from_xml_node (p);
 
 		if (new_source == NULL) {
 			g_object_unref (new);
@@ -235,7 +318,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 		e_source_group_add_source (new, new_source, -1);
 	}
 
-	e_source_group_set_readonly (new, readonly_str && !strcmp (readonly_str, "yes"));
+	e_source_group_set_readonly (new, readonly_str && !strcmp (GC readonly_str, "yes"));
 
  done:
 	if (uid != NULL)
@@ -261,7 +344,8 @@ e_source_group_update_from_xml (ESourceGroup *group,
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 	g_return_val_if_fail (xml != NULL, FALSE);
 
-	xmldoc = xmlParseDoc ((char *) xml);
+	
+	xmldoc = xmlParseDoc (XC xml);
 
 	success = e_source_group_update_from_xmldoc (group, xmldoc, changed_return);
 
@@ -289,53 +373,77 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	*changed_return = FALSE;
 
 	root = doc->children;
-	if (strcmp (root->name, "group") != 0)
+	if (strcmp (GC root->name, "group") != 0)
 		return FALSE;
 
-	name = xmlGetProp (root, "name");
+	name = xmlGetProp (root, XC "name");
 	if (name == NULL)
 		return FALSE;
 
-	base_uri = xmlGetProp (root, "base_uri");
+	base_uri = xmlGetProp (root, XC "base_uri");
 	if (base_uri == NULL) {
 		xmlFree (name);
 		return FALSE;
 	}
 
-	if (strcmp (group->priv->name, name) != 0) {
+	if (strcmp (group->priv->name, GC name) != 0) {
 		g_free (group->priv->name);
-		group->priv->name = g_strdup (name);
+		group->priv->name = g_strdup (GC name);
 		changed = TRUE;
 	}
 	xmlFree (name);
 
-	if (strcmp (group->priv->base_uri, base_uri) != 0) {
+	if (strcmp (group->priv->base_uri, GC base_uri) != 0) {
 		g_free (group->priv->base_uri);
-		group->priv->base_uri = g_strdup (base_uri);
+		group->priv->base_uri = g_strdup (GC base_uri);
 		changed = TRUE;
 	}
 	xmlFree (base_uri);
 
-	readonly_str = xmlGetProp (root, "readonly");
-	readonly = readonly_str && !strcmp (readonly_str, "yes");
+	readonly_str = xmlGetProp (root, XC "readonly");
+	readonly = readonly_str && !strcmp (GC readonly_str, "yes");
 	if (readonly != group->priv->readonly) {
 		group->priv->readonly = readonly;
 		changed = TRUE;
 	}
 	xmlFree (readonly_str);
+
+	if (g_hash_table_size (group->priv->properties) && !root->children) {
+		g_hash_table_destroy (group->priv->properties);
+		group->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+								  g_free, g_free);
+		changed = TRUE;
+	}
 	
 	new_sources_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (nodep = root->children; nodep != NULL; nodep = nodep->next) {
 		ESource *existing_source;
-		char *uid = e_source_uid_from_xml_node (nodep);
+		char *uid;
 
+		if (!nodep->name)
+			continue;
+
+		if (!strcmp (GC nodep->name, "properties")) {
+			GHashTable *temp = group->priv->properties;
+			group->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
+									  g_free, g_free);
+			import_properties (group, nodep);
+			if (!compare_str_hashes (temp, group->priv->properties))
+				changed = TRUE;
+			g_hash_table_destroy (temp);
+			continue;
+		}
+
+		uid = e_source_uid_from_xml_node (nodep);
 		if (uid == NULL)
 			continue;
 
 		existing_source = e_source_group_peek_source_by_uid (group, uid);
-		if (g_hash_table_lookup (new_sources_hash, existing_source) != NULL)
+		if (g_hash_table_lookup (new_sources_hash, existing_source) != NULL) {
+			g_free (uid);
 			continue;
+		}
 
 		if (existing_source == NULL) {
 			ESource *new_source = e_source_new_from_xml_node (nodep);
@@ -418,17 +526,17 @@ e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 	char *retval;
 	
 	if (root && root->name) {
-		if (strcmp (root->name, "group") != 0)
+		if (strcmp (GC root->name, "group") != 0)
 			return NULL;
 	}
 	else 
 		return NULL;
 
-	name = xmlGetProp (root, "uid");
+	name = xmlGetProp (root, XC "uid");
 	if (name == NULL)
 		return NULL;
 
-	retval = g_strdup (name);
+	retval = g_strdup (GC name);
 	xmlFree (name);
 	return retval;
 }
@@ -652,13 +760,20 @@ e_source_group_to_xml (ESourceGroup *group)
 	int xml_buffer_size;
 	GSList *p;
 
-	doc = xmlNewDoc ("1.0");
+	doc = xmlNewDoc (XC "1.0");
 
-	root = xmlNewDocNode (doc, NULL, "group", NULL);
-	xmlSetProp (root, "uid", e_source_group_peek_uid (group));
-	xmlSetProp (root, "name", e_source_group_peek_name (group));
-	xmlSetProp (root, "base_uri", e_source_group_peek_base_uri (group));
-	xmlSetProp (root, "readonly", group->priv->readonly ? "yes" : "no");
+	root = xmlNewDocNode (doc, NULL, XC "group", NULL);
+	xmlSetProp (root, XC "uid", XC e_source_group_peek_uid (group));
+	xmlSetProp (root, XC "name", XC e_source_group_peek_name (group));
+	xmlSetProp (root, XC "base_uri", XC e_source_group_peek_base_uri (group));
+	xmlSetProp (root, XC "readonly", XC (group->priv->readonly ? "yes" : "no"));
+
+	if (g_hash_table_size (group->priv->properties) != 0) {
+		xmlNodePtr properties_node;
+
+		properties_node = xmlNewChild (root, NULL, XC "properties", NULL);
+		g_hash_table_foreach (group->priv->properties, (GHFunc) property_dump_cb, properties_node);
+	}
 	
 	xmlDocSetRootElement (doc, root);
 
@@ -675,3 +790,47 @@ e_source_group_to_xml (ESourceGroup *group)
 
 	return returned_buffer;
 }
+
+gchar *
+e_source_group_get_property (ESourceGroup *source_group,
+		             const gchar *property)
+{
+	ESourceGroupPrivate *priv;
+
+	g_return_val_if_fail (E_IS_SOURCE_GROUP (source_group), NULL);
+	priv = source_group->priv;
+
+	return g_strdup (g_hash_table_lookup (priv->properties, property));
+}
+
+void
+e_source_group_set_property (ESourceGroup *source_group,
+		             const gchar *property,
+		             const gchar *value)
+{
+	ESourceGroupPrivate *priv;
+
+	g_return_if_fail (E_IS_SOURCE_GROUP (source_group));
+	priv = source_group->priv;
+
+	if (value)
+		g_hash_table_replace (priv->properties, g_strdup (property), g_strdup (value));
+	else
+		g_hash_table_remove (priv->properties, property);
+
+	g_signal_emit (source_group, signals[CHANGED], 0);
+}
+
+void
+e_source_group_foreach_property (ESourceGroup *source_group, GHFunc func, gpointer data)
+{
+	ESourceGroupPrivate *priv;
+
+	g_return_if_fail (E_IS_SOURCE_GROUP (source_group));
+	priv = source_group->priv;
+
+	g_hash_table_foreach (priv->properties, func, data);
+}
+
+#undef XC
+#undef GC
