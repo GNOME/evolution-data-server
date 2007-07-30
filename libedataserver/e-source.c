@@ -387,7 +387,7 @@ e_source_update_from_xml_node (ESource *source,
 	}
 
 	retval = TRUE;
-
+	
  done:
 	if (changed)
 		g_signal_emit (source, signals[CHANGED], 0);
@@ -852,6 +852,16 @@ e_source_get_property (ESource *source,
 	return g_hash_table_lookup (priv->properties, property);
 }
 
+char *
+e_source_get_duped_property (ESource *source, const char *property)
+{
+	ESourcePrivate *priv;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	priv = source->priv;
+
+ 	return g_strdup (g_hash_table_lookup (priv->properties, property));
+}
 
 void
 e_source_set_property (ESource *source,

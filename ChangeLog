@@ -1,3 +1,8 @@
+2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedataserver/e-source.[ch]: (e_source_get_duped_property):
+	Added a API to get the duped property.
+
 2007-07-30  Milan Crha  <mcrha@redhat.com>
 
 	* libedataserver/e-source-group.h: (e_source_group_get_property),

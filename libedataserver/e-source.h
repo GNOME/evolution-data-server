@@ -119,6 +119,7 @@ void         e_source_foreach_property (ESource *source,
 					GHFunc func,
 					gpointer data);
 
+char *e_source_get_duped_property (ESource *source, const char *property);
 char *e_source_build_absolute_uri (ESource *source);
 
 G_END_DECLS
