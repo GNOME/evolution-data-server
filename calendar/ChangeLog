@@ -1,3 +1,8 @@
+2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes a memory corruption.
+	* libecal/e-cal.c: (open_calendar): Use e_source_get_duped_property.
+
 2007-07-13  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #456565

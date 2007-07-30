@@ -1702,8 +1702,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
-	const char *username = NULL, *auth_type = NULL;
-	char *password = NULL;
+	char *username = NULL, *auth_type = NULL, *password = NULL;
 	gboolean read_only = FALSE;
 	
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -1732,7 +1731,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	/* see if the backend needs authentication */
 	if ( (priv->mode !=  CAL_MODE_LOCAL) && e_source_get_property (priv->source, "auth")) {
 		char *prompt, *key;
-		const char *parent_user;
+		char *parent_user;
 
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
 
@@ -1745,7 +1744,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
-		username = e_source_get_property (priv->source, "username");
+		username = e_source_get_duped_property (priv->source, "username");
 		if (!username) {
 			e_calendar_remove_op (ecal, our_op);
 			g_mutex_unlock (our_op->mutex);
@@ -1758,11 +1757,11 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
 				e_source_peek_name (priv->source), username);
 
-		auth_type = e_source_get_property (priv->source, "auth-type");
+		auth_type = e_source_get_duped_property (priv->source, "auth-type");
 		if (auth_type) 
 			key = build_pass_key (ecal);
 		else {
-			parent_user = e_source_get_property (priv->source, "parent_id_name");
+			parent_user = e_source_get_duped_property (priv->source, "parent_id_name");
 			if (parent_user) {
 				key = build_proxy_pass_key (ecal, parent_user);
 				/* 
@@ -1770,9 +1769,11 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 				   the auth_func corresponds to the parent user.
 				 */
 				prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
+				g_free (parent_user);
 			} else 
 				key = g_strdup (e_cal_get_uri (ecal));
 		}
+		g_free (auth_type);
 
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
@@ -1807,8 +1808,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 					   username ? username : "",
 					   password ? password : "",
 					   &ev);
-	if (password)
-		g_free (password);
+	g_free (password);
+	g_free (username);
 
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
