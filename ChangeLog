@@ -1,3 +1,7 @@
+2007-07-30  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 1.11.6 release 
+
 2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* configure.in: Updated the libtool version for libedataserver

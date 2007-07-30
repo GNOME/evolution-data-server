@@ -1,3 +1,40 @@
+Evolution-Data-Server 1.11.6 2007-07-30
+---------------------------------------
+
+New in 1.11.6
+	Add username & password entries to webcal dialog (Milan Crha)
+
+Bug fixes:
+	#268162: Add username & password entries to webcal dialog (Milan
+	 Crha)
+	#342164: Harmonize error strings (Lakke Wankhede and Jared Moore)
+	#380534: Collect all the required package versions in one place and
+	 explicitly require GTK+ 2.10 or higher (Matthew Barnes)
+	#402925: Use strong SSL/TLS encryption (hggdh)
+	#455796: Fixed a crash when starting evolution (Srinivasa Ragavan)
+	#456565: Added support for Memos to webcal protocol, which is used
+	 for memos 'On The Web' (Milan Crha)
+	#457523: Fixed parse error in quick search bar (Johnny Jacob)
+	#460649: Used image menu item and using sources colors when
+	 possible. Didn't work for collapsed state (Milan Crha)
+	#460681: Always report connection status when connecting (Karl
+	 Relton)
+	#460861: Add some sanity checks in camel (Ross Burton)
+	#460867: Fixed a crash in calendar (Srinivasa Ragavan)
+
+Updated Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Andre Klapper (de)
+	Priit Laes (et)
+	Pramod (te)
+	Wouter Bolsterlee (nl)
+	Daniel Nylander (sv)
+	Ilkka Tuohela (fi)
+	Theppitak Karoonboonyanan (th)
+
+Other Contributors:
+	Plugged memory leak (Hiroyuki Ikezoe)
+
 Evolution-Data-Server 1.11.5 2007-07-09
 ---------------------------------------
 
