@@ -37,8 +37,8 @@
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <glade/glade-xml.h>
-#include <libedataserver/e-categories.h>
-#include <libedataserver/libedataserver-private.h>
+#include "libedataserver/e-categories.h"
+#include "libedataserver/libedataserver-private.h"
 #include "e-categories-dialog.h"
 
 struct _ECategoriesDialogPrivate {

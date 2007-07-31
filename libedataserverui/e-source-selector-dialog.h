@@ -25,7 +25,7 @@
 #define _E_SOURCE_SELECTOR_DIALOG_H_
 
 #include <gtk/gtkdialog.h>
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 G_BEGIN_DECLS
 

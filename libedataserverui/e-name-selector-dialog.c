@@ -36,9 +36,9 @@
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-book-auth-util.h>
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-categories.h>
-#include <libedataserver/libedataserver-private.h>
+#include "libedataserver/e-sexp.h"
+#include "libedataserver/e-categories.h"
+#include "libedataserver/libedataserver-private.h"
 #include "e-name-selector-dialog.h"
 
 typedef struct {

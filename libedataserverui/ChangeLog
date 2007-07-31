@@ -1,3 +1,16 @@
+2007-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-book-auth-util.c:
+	* e-categories-dialog.c:
+	* e-name-selector-dialog.c:
+	* e-name-selector-entry.c:
+	* e-name-selector-list.c:
+	* e-name-selector.h:
+	* e-source-option-menu.h:
+	* e-source-selector-dialog.h:
+	* e-source-selector.h: Changed the way header files are included so
+	that they are picked up from the source rather than install area.
+
 2007-07-30  Milan Crha  <mcrha@redhat.com>
 
 	** Partial fix for bug #460649

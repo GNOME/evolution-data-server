@@ -37,7 +37,7 @@
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
 #include <libedataserverui/e-book-auth-util.h>
-#include <libedataserver/e-sexp.h>
+#include "libedataserver/e-sexp.h"
 
 #include "e-name-selector-entry.h"
 

@@ -29,7 +29,7 @@
 #include <glib/gi18n-lib.h>
 #include <libebook/e-book.h>
 #include <libedataserverui/e-passwords.h>
-#include <libedataserver/e-url.h>
+#include "libedataserver/e-url.h"
 #include "e-book-auth-util.h"
 
 static void addressbook_authenticate (EBook *book, gboolean previous_failure,

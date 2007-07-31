@@ -26,7 +26,7 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtktreeview.h>
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 G_BEGIN_DECLS
 

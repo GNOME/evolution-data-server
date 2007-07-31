@@ -23,7 +23,7 @@
 #ifndef _E_SOURCE_OPTION_MENU_H_
 #define _E_SOURCE_OPTION_MENU_H_
 
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 #include <gtk/gtkoptionmenu.h>
 

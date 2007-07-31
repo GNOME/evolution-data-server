@@ -25,7 +25,7 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 #include <libedataserverui/e-name-selector-model.h>
 #include <libedataserverui/e-name-selector-dialog.h>
 #include <libedataserverui/e-name-selector-entry.h>
