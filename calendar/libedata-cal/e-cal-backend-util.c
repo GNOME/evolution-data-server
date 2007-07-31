@@ -22,7 +22,7 @@
 
 #include <string.h>
 #include "e-cal-backend-util.h"
-#include <libedataserver/e-account-list.h>
+#include "libedataserver/e-account-list.h"
 
 static EAccountList *accounts;
 

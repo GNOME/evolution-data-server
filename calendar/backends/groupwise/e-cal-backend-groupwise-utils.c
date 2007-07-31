@@ -44,7 +44,7 @@
 #include <libecal/e-cal-time-util.h>
 #include <libsoup/soup-misc.h>
 #include "e-cal-backend-groupwise-utils.h"
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 static gboolean 
 get_recur_instance (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)

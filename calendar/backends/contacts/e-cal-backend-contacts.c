@@ -31,7 +31,7 @@
 #include "e-cal-backend-contacts.h"
 
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-xml-hash-utils.h>
+#include "libedataserver/e-xml-hash-utils.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libedata-cal/e-cal-backend-util.h>
@@ -39,7 +39,7 @@
 
 #include <libebook/e-book.h>
 
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 static ECalBackendSyncClass *parent_class;
 

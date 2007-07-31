@@ -32,8 +32,8 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-main.h>
 
-#include <libedataserver/e-component-listener.h>
-#include <libedataserver/e-url.h>
+#include "libedataserver/e-component-listener.h"
+#include "libedataserver/e-url.h"
 #include "e-cal-marshal.h"
 #include "e-cal-time-util.h"
 #include "e-cal-listener.h"

@@ -24,8 +24,8 @@
 #ifndef E_CAL_BACKEND_H
 #define E_CAL_BACKEND_H
 
-#include <libedataserver/e-list.h>
-#include <libedataserver/e-source.h>
+#include "libedataserver/e-list.h"
+#include "libedataserver/e-source.h"
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
 #include <libedata-cal/Evolution-DataServer-Calendar.h>

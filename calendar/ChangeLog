@@ -1,3 +1,24 @@
+2007-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/caldav/create-account.c:
+	* backends/caldav/e-cal-backend-caldav.c:
+	* backends/contacts/e-cal-backend-contacts.c:
+	* backends/file/e-cal-backend-file.c:
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	* backends/http/e-cal-backend-http.c:
+	* backends/weather/e-weather-source-ccf.c:
+	* libecal/e-cal.c:
+	* libecal/e-cal.h:
+	* libedata-cal/e-cal-backend-cache.h:
+	* libedata-cal/e-cal-backend-sexp.c:
+	* libedata-cal/e-cal-backend-sexp.h:
+	* libedata-cal/e-cal-backend-util.c:
+	* libedata-cal/e-cal-backend.h:
+	* libedata-cal/e-data-cal-factory.c:
+	* libedata-cal/e-data-cal-view.c: Changed the way header files are included so
+	that they are picked up from the source rather than install area.
+
 2007-07-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes a memory corruption.

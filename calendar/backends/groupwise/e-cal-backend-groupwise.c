@@ -35,8 +35,8 @@
 #include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libedataserver/e-xml-hash-utils.h>
-#include <libedataserver/e-url.h>
+#include "libedataserver/e-xml-hash-utils.h"
+#include "libedataserver/e-url.h"
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libecal/e-cal-component.h>

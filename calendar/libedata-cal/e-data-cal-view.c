@@ -25,7 +25,7 @@
 #include <string.h>
 #include <glib.h>
 #include <bonobo/bonobo-exception.h>
-#include <libedataserver/e-component-listener.h>
+#include "libedataserver/e-component-listener.h"
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
 

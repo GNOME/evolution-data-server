@@ -27,7 +27,7 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-xml-hash-utils.h>
+#include "libedataserver/e-xml-hash-utils.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>

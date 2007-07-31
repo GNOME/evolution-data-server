@@ -28,7 +28,7 @@
 #include <glib-object.h>
 #include <libecal/e-cal-component.h>
 #include <libedata-cal/e-cal-backend.h>
-#include <libedataserver/e-sexp.h>
+#include "libedataserver/e-sexp.h"
 
 G_BEGIN_DECLS
 
