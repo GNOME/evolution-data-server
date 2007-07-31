@@ -1,3 +1,9 @@
+2007-07-31  Ross Burton  <ross@openedhand.com>
+
+	* libedata-book/e-data-book-view.c:
+	Only send remove notifications if the contact was in the view
+	originally.
+
 2007-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #455796

@@ -380,7 +380,10 @@ e_data_book_view_notify_remove (EDataBookView *book_view,
 			     const char  *id)
 {
 	g_mutex_lock (book_view->priv->pending_mutex);
-	notify_remove (book_view, id);
+
+	if (g_hash_table_lookup (book_view->priv->ids, id))
+		notify_remove (book_view, id);
+	
 	g_mutex_unlock (book_view->priv->pending_mutex);
 }
 
