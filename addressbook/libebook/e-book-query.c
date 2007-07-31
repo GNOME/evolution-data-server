@@ -3,7 +3,7 @@
 #include <config.h>
 
 #include "e-book-query.h"
-#include <libedataserver/e-sexp.h>
+#include "libedataserver/e-sexp.h"
 
 #include <stdarg.h>
 #include <string.h>

@@ -1,3 +1,21 @@
+2007-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/file/e-book-backend-file-factory.c:
+	* backends/groupwise/create-account.c:
+	* backends/groupwise/e-book-backend-groupwise-factory.c:
+	* backends/ldap/e-book-backend-ldap-factory.c:
+	* backends/ldap/e-book-backend-ldap.c:
+	* backends/vcf/e-book-backend-vcf-factory.c:
+	* libebook/e-book-query.c:
+	* libebook/e-book.c:
+	* libebook/e-book.h:
+	* libebook/e-contact.c:
+	* libedata-book/e-book-backend-cache.h:
+	* libedata-book/e-book-backend-sexp.c:
+	* libedata-book/e-data-book.c:
+	* libedata-book/e-data-book.h: Changed the way header files are included so
+	that they are picked up from the source rather than install area.
+
 2007-07-31  Ross Burton  <ross@openedhand.com>
 
 	* libedata-book/e-data-book-view.c:

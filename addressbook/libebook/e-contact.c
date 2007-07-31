@@ -35,7 +35,7 @@
 #include "e-name-western.h"
 
 #ifdef G_OS_WIN32
-#include <libedataserver/e-data-server-util.h>
+#include "libedataserver/e-data-server-util.h"
 #undef EVOLUTION_LOCALEDIR
 #define EVOLUTION_LOCALEDIR e_util_get_localedir ()
 #endif

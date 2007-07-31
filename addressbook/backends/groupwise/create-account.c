@@ -2,7 +2,7 @@
 #include <config.h>
 #include <gconf/gconf-client.h>
 #include <glib/gmain.h>
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-source-list.h"
 
 static GConfClient *conf_client;
 static GMainLoop *main_loop;

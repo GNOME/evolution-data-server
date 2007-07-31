@@ -14,9 +14,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libedataserver/e-list.h>
-#include <libedataserver/e-source.h>
-#include <libedataserver/e-source-list.h>
+#include "libedataserver/e-list.h"
+#include "libedataserver/e-source.h"
+#include "libedataserver/e-source-list.h"
 #include <libebook/e-contact.h>
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-view.h>

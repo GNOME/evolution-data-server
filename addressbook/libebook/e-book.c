@@ -15,7 +15,7 @@
 #include <gconf/gconf-client.h>
 
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-component-listener.h>
+#include "libedataserver/e-component-listener.h"
 
 #include "e-book-listener.h"
 

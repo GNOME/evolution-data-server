@@ -11,7 +11,7 @@
 
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-arg.h>
-#include <libedataserver/e-list.h>
+#include "libedataserver/e-list.h"
 #include <libebook/e-contact.h>
 #include "e-data-book-view.h"
 #include "e-book-backend.h"
