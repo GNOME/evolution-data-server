@@ -1,3 +1,23 @@
+Evolution-Data-Server 1.11.6.1 2007-07-31
+-----------------------------------------
+
+Bug fixes:
+    #327851: Partially fixes a critical warning crasher allowing
+    the events to appear properly in the view.
+
+Updated Translations:
+	 Jorge Gonzalez (es)	
+
+Other Contributors:
+      Fixed a warning (Matthew Barnes)
+      Look for the libedataserver header files from the source rather
+      than install area (Chenthill Palanisamy)
+      Only send remove notifications if the contact was in the view
+      originally. (Ross Burton)
+      Fixes annoying "Is a Directory" error,All (un)read count fixes should 
+      have been ported, Moved items from sent-items are lost is fixed (Sankar P)
+      Install the timezone files only on win32 systems. (Chenthill Palanisamy)
+
 Evolution-Data-Server 1.11.6 2007-07-30
 ---------------------------------------
 
