@@ -7,14 +7,12 @@
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2001.
 # Johan Dahlin <zilch.am@home.se>, 2001.
 #
-# $Id: sv.po,v 1.30 2006/08/16 05:29:07 dnylande Exp $
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-04 03:35+0100\n"
-"PO-Revision-Date: 2007-07-17 18:09+0100\n"
+"POT-Creation-Date: 2007-08-01 19:35+0200\n"
+"PO-Revision-Date: 2007-08-01 19:36+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -107,7 +105,7 @@ msgstr "Fel vid sökning"
 #: ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293
 #: ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:3431
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" i boken före \"%s\""
@@ -155,7 +153,7 @@ msgstr "boken upptagen"
 #: ../addressbook/libebook/e-book.c:2704
 #: ../addressbook/libebook/e-book.c:2906
 #: ../addressbook/libebook/e-book.c:2910
-#: ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:3440
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-undantag vid utförande av \"%s\"-anrop"
@@ -181,28 +179,28 @@ msgstr "\"%s\" i boken efter \"%s\""
 msgid "%s: canceled"
 msgstr "%s: avbruten"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3295
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Ogiltig källa."
 
-#: ../addressbook/libebook/e-book.c:3297
-#: ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3303
+#: ../addressbook/libebook/e-book.c:3369
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: inga fabriker tillgängliga för URI:n \"%s\""
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3315
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: Kunde inte skapa EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3574
+#: ../addressbook/libebook/e-book.c:3580
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: det finns inget självkontakt-uid lagrat i gconf"
 
-#: ../addressbook/libebook/e-book.c:3707
+#: ../addressbook/libebook/e-book.c:3713
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: det finns ingen källa för UID \"%s\" lagrad i gconf."
@@ -658,7 +656,7 @@ msgid "Birth Date"
 msgstr "Födelsedatum"
 
 #: ../addressbook/libebook/e-contact.c:259
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Jubileum"
@@ -701,17 +699,17 @@ msgstr "Gadu-Gadu-idlista"
 msgid "Unnamed List"
 msgstr "Namnlös lista"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "Födelsedag"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Birthday: %s"
 msgstr "Födelsedag: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Jubileum: %s"
@@ -721,12 +719,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kan inte spara kalenderdata: Felaktigt utformad URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1744
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
 msgid "Reply Requested: by "
 msgstr "Svar begärt: av "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1749
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1752
 msgid "Reply Requested: When convenient"
 msgstr "Svar begärt: Då det passar"
 
@@ -747,7 +745,7 @@ msgstr "Ogiltig server-URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5246
+#: ../calendar/libecal/e-cal.c:5247
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -767,7 +765,7 @@ msgstr "Kunde inte skapa tråd för framtagning av deltan"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
-#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Kunde inte skapa cachefil"
@@ -776,15 +774,15 @@ msgstr "Kunde inte skapa cachefil"
 msgid "Could not create thread for populating cache"
 msgstr "Kunde inte skapa tråd för populering av cache"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:265
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Redirected to Invalid URI"
 msgstr "Omdirigerad till ogiltig URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Bad file format."
 msgstr "Felaktigt filformat."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:295
+#: ../calendar/backends/http/e-cal-backend-http.c:301
 msgid "Not a calendar."
 msgstr "Inte en kalender."
 
@@ -1130,7 +1128,7 @@ msgstr "Låg"
 msgid "Undefined"
 msgstr "Odefinierad"
 
-#: ../calendar/libecal/e-cal.c:1758
+#: ../calendar/libecal/e-cal.c:1757
 #: ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
@@ -1140,81 +1138,81 @@ msgstr "Ange lösenord för %s (användare %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1772
+#: ../calendar/libecal/e-cal.c:1771
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Ange lösenord för %s för att aktivera proxyn för användaren %s"
 
-#: ../calendar/libecal/e-cal.c:5218
+#: ../calendar/libecal/e-cal.c:5219
 msgid "Invalid argument"
 msgstr "Ogiltigt argument"
 
-#: ../calendar/libecal/e-cal.c:5220
+#: ../calendar/libecal/e-cal.c:5221
 msgid "Backend is busy"
 msgstr "Bakänden är upptagen"
 
-#: ../calendar/libecal/e-cal.c:5222
+#: ../calendar/libecal/e-cal.c:5223
 msgid "Repository is offline"
 msgstr "Lagret är frånkopplat"
 
-#: ../calendar/libecal/e-cal.c:5224
+#: ../calendar/libecal/e-cal.c:5225
 msgid "No such calendar"
 msgstr "Det finns ingen sådan kalender"
 
-#: ../calendar/libecal/e-cal.c:5226
+#: ../calendar/libecal/e-cal.c:5227
 #: ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objektet kunde inte hittas"
 
-#: ../calendar/libecal/e-cal.c:5228
+#: ../calendar/libecal/e-cal.c:5229
 #: ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Ogiltigt objekt"
 
-#: ../calendar/libecal/e-cal.c:5230
+#: ../calendar/libecal/e-cal.c:5231
 msgid "URI not loaded"
 msgstr "URI:n är inte inläst"
 
-#: ../calendar/libecal/e-cal.c:5232
+#: ../calendar/libecal/e-cal.c:5233
 msgid "URI already loaded"
 msgstr "URI:n är redan inläst"
 
-#: ../calendar/libecal/e-cal.c:5234
+#: ../calendar/libecal/e-cal.c:5235
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Åtkomst nekas"
 
-#: ../calendar/libecal/e-cal.c:5236
+#: ../calendar/libecal/e-cal.c:5237
 #: ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Okänd användare"
 
-#: ../calendar/libecal/e-cal.c:5238
+#: ../calendar/libecal/e-cal.c:5239
 msgid "Object ID already exists"
 msgstr "Objektid finns redan"
 
-#: ../calendar/libecal/e-cal.c:5240
+#: ../calendar/libecal/e-cal.c:5241
 msgid "Protocol not supported"
 msgstr "Protokollet stöds inte"
 
-#: ../calendar/libecal/e-cal.c:5242
+#: ../calendar/libecal/e-cal.c:5243
 msgid "Operation has been canceled"
 msgstr "Åtgärden har avbrutits"
 
-#: ../calendar/libecal/e-cal.c:5244
+#: ../calendar/libecal/e-cal.c:5245
 msgid "Could not cancel operation"
 msgstr "Kunde inte avbryta åtgärden"
 
-#: ../calendar/libecal/e-cal.c:5248
+#: ../calendar/libecal/e-cal.c:5249
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autentisering krävs"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5251
 msgid "A CORBA exception has occurred"
 msgstr "Ett CORBA-undantag har inträffat"
 
-#: ../calendar/libecal/e-cal.c:5252
+#: ../calendar/libecal/e-cal.c:5253
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1228,7 +1226,7 @@ msgstr "Ett CORBA-undantag har inträffat"
 msgid "Unknown error"
 msgstr "Okänt fel"
 
-#: ../calendar/libecal/e-cal.c:5254
+#: ../calendar/libecal/e-cal.c:5255
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Inga fel"
@@ -2756,14 +2754,15 @@ msgstr "Kan inte hämta meddelande %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2104
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Detta meddelande är inte tillgängligt i frånkopplat läge."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1651
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1697
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1654
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1700
 msgid "Could not get message"
 msgstr "Kunde inte hämta meddelande"
 
@@ -2777,7 +2776,7 @@ msgstr "Kunde inte läsa in sammanfattning för %s"
 msgid "Trash Folder Full. Please Empty."
 msgstr "Papperskorgen är full. Var god töm den."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1216
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1219
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2392
@@ -2786,13 +2785,13 @@ msgstr "Papperskorgen är full. Var god töm den."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Hämtar sammandragsinformation för nya meddelanden i %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1968
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2010
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1971
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2013
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Kan inte lägga till meddelande i mappen \"%s\": %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1998
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2001
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan inte skapa meddelande: %s"
@@ -3974,8 +3973,8 @@ msgstr "Kunde inte stänga källmappen %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
-msgid "Could not close temp folder: %s"
-msgstr "Kunde inte stänga temporära mapp: %s"
+msgid "Could not close temporary folder: %s"
+msgstr "Kunde inte stänga temporär mapp: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:660
 #, c-format
@@ -4004,13 +4003,13 @@ msgstr "Okänt fel: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1017
 #: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
-msgid "Error writing to temp mailbox: %s"
-msgstr "Fel vid skrivning av temporär brevlåda: %s"
+msgid "Writing to temporary mailbox failed: %s"
+msgstr "Skrivning till temporär brevlåda misslyckades: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
-msgid "Writing to tmp mailbox failed: %s: %s"
-msgstr "Fel vid skrivning till temporär brevlåda: %s: %s"
+msgid "Writing to temporary mailbox failed: %s: %s"
+msgstr "Skrivning till temporär brevlåda misslyckades: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
 msgid "MH append message canceled"
@@ -5106,13 +5105,13 @@ msgid "_Destination"
 msgstr "_Mål"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1655
-#: ../servers/exchange/storage/exchange-account.c:938
+#: ../servers/exchange/storage/exchange-account.c:940
 #, c-format
 msgid "Enter password for %s"
 msgstr "Ange lösenord för %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1656
-#: ../servers/exchange/storage/exchange-account.c:943
+#: ../servers/exchange/storage/exchange-account.c:945
 msgid "Enter password"
 msgstr "Ange lösenord"
 
@@ -5247,23 +5246,23 @@ msgstr "Denna åtgärd kan inte utföras i frånkopplat läge"
 msgid "%s's Folders"
 msgstr "Mappar för %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1244
+#: ../servers/exchange/storage/exchange-account.c:1246
 msgid "Personal Folders"
 msgstr "Personliga mappar"
 
-#: ../servers/exchange/storage/exchange-account.c:1259
+#: ../servers/exchange/storage/exchange-account.c:1261
 msgid "Favorite Public Folders"
 msgstr "Publika favoritmappar"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1276
+#: ../servers/exchange/storage/exchange-account.c:1278
 msgid "All Public Folders"
 msgstr "Alla publika mappar"
 
 # Translation validated against Outlook/Exchange in Swedish.
 #
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1290
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Global Address List"
 msgstr "Global adresslista"
 
@@ -5347,6 +5346,8 @@ msgstr "Loggtjänst för Evolution Data Server"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Flera segmenteringsfel inträffade; kan inte visa feldialogen\n"
 
+#~ msgid "Error writing to temp mailbox: %s"
+#~ msgstr "Fel vid skrivning av temporär brevlåda: %s"
 #~ msgid "Check for new messages in all folders"
 #~ msgstr "Kontrollera nya meddelanden i alla mappar"
 #~ msgid "\t\t\t\t\t\t"
