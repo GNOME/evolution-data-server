@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-04 03:35+0100\n"
-"PO-Revision-Date: 2007-07-06 16:47+0530\n"
+"POT-Creation-Date: 2007-07-30 03:33+0100\n"
+"PO-Revision-Date: 2007-08-01 16:28+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <fedora-trans-gu@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -108,7 +109,7 @@ msgstr "શોધ કરવામાં ભૂલ"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:3431
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" પહેલા \"%s\" ચોપડીમાં હતું"
@@ -136,7 +137,7 @@ msgstr "ચોપડી વ્યસ્ત છે"
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
 #: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
 #: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA અપવાદ \"%s\" ને બોલાવે છે"
@@ -161,27 +162,27 @@ msgstr "\"%s\" પછી ચોપડીમાં \"%s\" છે"
 msgid "%s: canceled"
 msgstr "%s: રદ કરેલ છે"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3295
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: અયોગ્ય સ્રોત."
 
-#: ../addressbook/libebook/e-book.c:3297 ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: URI `%s' માટે કોઈ ફેક્ટરીઓ ઉપલબ્ધ નથી"
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3315
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener બનાવી શક્યા નથી"
 
-#: ../addressbook/libebook/e-book.c:3574
+#: ../addressbook/libebook/e-book.c:3580
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: gconf માં કોઈ સ્વયં સંપર્ક UID સંગ્રહાયેલ નથી"
 
-#: ../addressbook/libebook/e-book.c:3707
+#: ../addressbook/libebook/e-book.c:3713
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: જીકોન્ફમાં સંગ્રહિત uid `%s' માટે ત્યાં કોઈ સ્રોત ન હતો."
@@ -637,7 +638,7 @@ msgid "Birth Date"
 msgstr "જન્મ તારીખ"
 
 #: ../addressbook/libebook/e-contact.c:259
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "સાલગીરી"
@@ -680,17 +681,17 @@ msgstr "Gadu-Gadu Id List"
 msgid "Unnamed List"
 msgstr "નામ વગરની યાદી"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "જન્મ દિવસ"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Birthday: %s"
 msgstr "જન્મ દિવસ: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
 #, c-format
 msgid "Anniversary: %s"
 msgstr "સાલગીરી: %s"
@@ -746,7 +747,7 @@ msgstr "deltas મેળવવા માટે થ્રેડ બનાવી �
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
-#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
@@ -755,15 +756,15 @@ msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
 msgid "Could not create thread for populating cache"
 msgstr "કેશ બનાવવા માટે થ્રેડ બનાવી શક્યા નથી"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:265
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Redirected to Invalid URI"
 msgstr "અયોગ્ય URI ફરીથી દિશામાન કરાયું"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Bad file format."
 msgstr "ફાઈલનું બંધારણ ખરાબ છે."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:295
+#: ../calendar/backends/http/e-cal-backend-http.c:301
 msgid "Not a calendar."
 msgstr "કેલેન્ડર નથી."
 
@@ -1279,7 +1280,9 @@ msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
-msgstr "\"%s\" એ પહેલી દલીલ ક્યાં તો \"કંઈ પણ\", \"સારાંશ\" અથવા \"વર્ણન\" અથવા \"જગ્યા\" અથવા \"સભાજન\", અથવા \"આયોજક\", અથવા \"વર્ગીકરણ\" હોવી જોઈએ એમ ઈચ્છે છે"
+msgstr ""
+"\"%s\" એ પહેલી દલીલ ક્યાં તો \"કંઈ પણ\", \"સારાંશ\" અથવા \"વર્ણન\" અથવા \"જગ્યા\" "
+"અથવા \"સભાજન\", અથવા \"આયોજક\", અથવા \"વર્ગીકરણ\" હોવી જોઈએ એમ ઈચ્છે છે"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
 #, c-format
@@ -3883,7 +3886,7 @@ msgstr "સ્રોત ફોલ્ડર %s ને બંધ કરી શક�
 
 #: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
-msgid "Could not close temp folder: %s"
+msgid "Could not close temporary folder: %s"
 msgstr "કામચલાઉ ફોલ્ડર બંધ કરી શક્યા નહિં: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:660
@@ -3913,13 +3916,13 @@ msgstr "અજ્ઞાત ભૂલ: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1017
 #: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
-msgid "Error writing to temp mailbox: %s"
-msgstr "કામચલાઉ મેઈલબોક્સ લખવામાં ભૂલ: %s"
+msgid "Writing to temporary mailbox failed: %s"
+msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં નિષ્ફળ: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
-msgid "Writing to tmp mailbox failed: %s: %s"
-msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં ભૂલ: %s: %s"
+msgid "Writing to temporary mailbox failed: %s: %s"
+msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં નિષ્ફળ: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
 msgid "MH append message canceled"
@@ -4318,7 +4321,9 @@ msgstr "%s મહેરબાની કરીને %s માટે યજમા
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr "POP સર્વર %s સાથે જોડાવામાં અસમર્થ:\tઅયોગ્ય APOP ID મળ્યો. ઓચિંતો હુમલો શંકાજનક છે. મહેરબાની કરીને તમારા સંચાલકનો સંપર્ક કરો."
+msgstr ""
+"POP સર્વર %s સાથે જોડાવામાં અસમર્થ:\tઅયોગ્ય APOP ID મળ્યો. ઓચિંતો હુમલો શંકાજનક છે. "
+"મહેરબાની કરીને તમારા સંચાલકનો સંપર્ક કરો."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
@@ -5021,13 +5026,13 @@ msgid "_Destination"
 msgstr "અંતિમ મુકામ (_D)"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1655
-#: ../servers/exchange/storage/exchange-account.c:938
+#: ../servers/exchange/storage/exchange-account.c:940
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s માટે પાસવર્ડ દાખલ કરો"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1656
-#: ../servers/exchange/storage/exchange-account.c:943
+#: ../servers/exchange/storage/exchange-account.c:945
 msgid "Enter password"
 msgstr "પાસવર્ડ દાખલ કરો"
 
@@ -5144,21 +5149,21 @@ msgstr "આ પ્રક્રિયા ઓફ-લાઈન સ્થિતિ�
 msgid "%s's Folders"
 msgstr "%s ના ફોલ્ડરો"
 
-#: ../servers/exchange/storage/exchange-account.c:1244
+#: ../servers/exchange/storage/exchange-account.c:1246
 msgid "Personal Folders"
 msgstr "વ્યક્તિગત ફોલ્ડરો"
 
-#: ../servers/exchange/storage/exchange-account.c:1259
+#: ../servers/exchange/storage/exchange-account.c:1261
 msgid "Favorite Public Folders"
 msgstr "મનગમતા જાહેર ફોલ્ડરો"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1276
+#: ../servers/exchange/storage/exchange-account.c:1278
 msgid "All Public Folders"
 msgstr "બધા જાહેર ફોલ્ડરો"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1290
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Global Address List"
 msgstr "વૈશ્વિક સરનામા યાદી"
 
