@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-04 03:35+0100\n"
-"PO-Revision-Date: 2007-07-19 19:32+0300\n"
+"POT-Creation-Date: 2007-07-30 03:33+0100\n"
+"PO-Revision-Date: 2007-07-31 22:07+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,7 @@ msgstr "Viga otsingu teostamisel"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:3431
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr ""
@@ -126,7 +126,7 @@ msgstr "raamat on hõivatud"
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
 #: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
 #: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA erandolukord \"%s\" käsu täitmisel"
@@ -151,27 +151,27 @@ msgstr ""
 msgid "%s: canceled"
 msgstr "%s: tühistatud"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3295
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Vigane allikas"
 
-#: ../addressbook/libebook/e-book.c:3297 ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: URI-le `%s' pole saadaval ühtegi factory't"
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3315
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener'i pole võimalik luua"
 
-#: ../addressbook/libebook/e-book.c:3574
+#: ../addressbook/libebook/e-book.c:3580
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: gconf'i alla pole enda kontakti UID-i salvestatud"
 
-#: ../addressbook/libebook/e-book.c:3707
+#: ../addressbook/libebook/e-book.c:3713
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: gconf'i alla pole uid-i `%s' allikat salvestatud."
@@ -627,7 +627,7 @@ msgid "Birth Date"
 msgstr "Sünniaeg"
 
 #: ../addressbook/libebook/e-contact.c:259
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Aastapäev"
@@ -670,17 +670,17 @@ msgstr "Gadu-Gadu ID-loend"
 msgid "Unnamed List"
 msgstr "Nimetute nimekiri"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "Sünnipäev"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
 #, c-format
 msgid "Birthday: %s"
 msgstr "Sünnipäev: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aastapäev: %s"
@@ -736,7 +736,7 @@ msgstr "Deltade hankimise lõime pole võimalik luua"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
-#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Puhverfaili pole võimalik luua"
@@ -745,15 +745,15 @@ msgstr "Puhverfaili pole võimalik luua"
 msgid "Could not create thread for populating cache"
 msgstr "Puhvri paljundamiseks pole võimalik lõime luua"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:265
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Redirected to Invalid URI"
 msgstr "Ümber suunatud vigase URI peale"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Bad file format."
 msgstr "Vale failivorming."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:295
+#: ../calendar/backends/http/e-cal-backend-http.c:301
 msgid "Not a calendar."
 msgstr "Ei ole kalender."
 
@@ -3916,7 +3916,7 @@ msgstr "Lähtekausta %s pole võimalik sulgeda: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
-msgid "Could not close temp folder: %s"
+msgid "Could not close temporary folder: %s"
 msgstr "Ajutist kausta pole võimalik sulgeda: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:660
@@ -3946,12 +3946,12 @@ msgstr "Tundmatu viga: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1017
 #: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
-msgid "Error writing to temp mailbox: %s"
-msgstr "Viga ajutise kirjakasti kirjutamisel: %s"
+msgid "Writing to temporary mailbox failed: %s"
+msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
-msgid "Writing to tmp mailbox failed: %s: %s"
+msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
@@ -5072,13 +5072,13 @@ msgid "_Destination"
 msgstr "_Sihtkoht"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1655
-#: ../servers/exchange/storage/exchange-account.c:938
+#: ../servers/exchange/storage/exchange-account.c:940
 #, c-format
 msgid "Enter password for %s"
 msgstr "Sisesta parool %s jaoks"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1656
-#: ../servers/exchange/storage/exchange-account.c:943
+#: ../servers/exchange/storage/exchange-account.c:945
 msgid "Enter password"
 msgstr "Sisesta parool"
 
@@ -5196,21 +5196,21 @@ msgstr "See toiming pole autonoomses režiimis teostatav"
 msgid "%s's Folders"
 msgstr "%s' kaustad"
 
-#: ../servers/exchange/storage/exchange-account.c:1244
+#: ../servers/exchange/storage/exchange-account.c:1246
 msgid "Personal Folders"
 msgstr "Isiklikud kaustad"
 
-#: ../servers/exchange/storage/exchange-account.c:1259
+#: ../servers/exchange/storage/exchange-account.c:1261
 msgid "Favorite Public Folders"
 msgstr "Lemmikud avalikud kaustad"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1276
+#: ../servers/exchange/storage/exchange-account.c:1278
 msgid "All Public Folders"
 msgstr "Kõik avalikud kaustad"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1290
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Global Address List"
 msgstr "Globaalne aadresside loend"
 
