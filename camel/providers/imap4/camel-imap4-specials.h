@@ -23,6 +23,8 @@
 #ifndef __CAMEL_IMAP4_SPECIALS_H__
 #define __CAMEL_IMAP4_SPECIALS_H__
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 enum {
