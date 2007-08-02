@@ -1,3 +1,9 @@
+2007-08-02  Ross Burton  <ross@openedhand.com>
+
+	* configure.in:
+	If building against libsoup-2.2, we need 2.2.91 for
+	SOUP_SESSION_TIMEOUT (#451003).
+
 2007-07-31  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 1.11.6.1 release 

@@ -1412,7 +1412,7 @@ if test $have_libsoup_24 = yes; then
     LIBSOUP_REQUIRED=2.3.0
     LIBSOUP=libsoup-2.4
 else
-    LIBSOUP_REQUIRED=2.2.2
+    LIBSOUP_REQUIRED=2.2.91
     LIBSOUP=libsoup-2.2
 fi
 AC_SUBST(LIBSOUP_REQUIRED)
