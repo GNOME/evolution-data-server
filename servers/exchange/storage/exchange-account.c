@@ -53,7 +53,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x) (x)
+#define d(x) 
 #define ADS_UF_DONT_EXPIRE_PASSWORD 0x10000
 #define ONE_HUNDRED_NANOSECOND 0.000000100
 #define SECONDS_IN_DAY 86400
