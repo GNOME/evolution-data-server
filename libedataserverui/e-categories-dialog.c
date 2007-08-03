@@ -27,6 +27,7 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
+#include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkfilechooserbutton.h>
 #include <gtk/gtkliststore.h>
@@ -40,6 +41,13 @@
 #include "libedataserver/e-categories.h"
 #include "libedataserver/libedataserver-private.h"
 #include "e-categories-dialog.h"
+
+enum {
+	COLUMN_ACTIVE,
+	COLUMN_ICON,
+	COLUMN_CATEGORY,
+	N_COLUMNS
+};
 
 struct _ECategoriesDialogPrivate {
 	GladeXML *gui;
@@ -183,13 +191,16 @@ category_toggled_cb (GtkCellRenderer *renderer, const gchar *path, gpointer user
 		gchar *place_string;
 		GString *str;
 
-		gtk_tree_model_get (model, &iter, 0, &place_bool, 1, &place_string, -1);
+		gtk_tree_model_get (model, &iter,
+				    COLUMN_ACTIVE, &place_bool,
+				    COLUMN_CATEGORY, &place_string,
+				    -1);
 		if (place_bool) {
 			g_hash_table_remove (priv->selected_categories, place_string);
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, FALSE, -1);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ACTIVE, FALSE, -1);
 		} else {
 			g_hash_table_insert (priv->selected_categories, g_strdup (place_string), g_strdup (place_string));
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, TRUE, -1);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ACTIVE, TRUE, -1);
 		}
 
 		str = g_string_new ("");
@@ -249,7 +260,7 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 
 	do {
 		if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
-			const char *category_name, *category_icon;
+			const char *category_name;
 			char *correct_category_name;
 			GtkTreeIter iter;
 
@@ -269,20 +280,28 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 				gtk_widget_destroy (error_dialog);
 				g_free (correct_category_name);
 			} else {
+				gchar *category_icon;
+				GdkPixbuf *icon = NULL;
+				GtkListStore *list_store = GTK_LIST_STORE (
+								gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list)));
 				/* FIXME: get color */
 				category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
+				if (category_icon)
+					icon = gdk_pixbuf_new_from_file (category_icon, NULL);
 
 				e_categories_add (correct_category_name, NULL, category_icon ? category_icon : NULL, TRUE);
 
-				gtk_list_store_append (
-					GTK_LIST_STORE (gtk_tree_view_get_model (
-								GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-					&iter);
-				gtk_list_store_set (
-					GTK_LIST_STORE (gtk_tree_view_get_model (
-								GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list))),
-					&iter, 0, FALSE, 1, correct_category_name, -1);
+				gtk_list_store_append (list_store, &iter);
+				gtk_list_store_set (list_store, &iter,
+						    COLUMN_ACTIVE, FALSE,
+						    COLUMN_ICON, icon,
+						    COLUMN_CATEGORY,correct_category_name,
+						    -1);
 
+				if (icon)
+					g_object_unref (icon);
+				if (category_icon)
+					g_free (category_icon);
 				g_free (correct_category_name);
 
 				break;
@@ -319,20 +338,30 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	if (!prop_dialog)
 		return;
 
-	gtk_tree_model_get (model, &iter, 1, &category_name, -1);
+	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
 	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
 	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon), 
 				       e_categories_get_icon_file_for (category_name));
 
 	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
-		const char *category_icon;
+		gchar *category_icon;
 
 		/* FIXME: get color */
 		category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 
-		if (category_icon)
+		if (category_icon) {
+			GdkPixbuf *icon = NULL;
 			e_categories_set_icon_file_for (category_name, category_icon);
+			icon = gdk_pixbuf_new_from_file (category_icon, NULL);
+			if (icon) {
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ICON, icon, -1);
+				g_object_unref (icon);
+			}
+
+			g_free (category_icon);
+		}
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 	}
 
 	g_free (category_name);
@@ -358,7 +387,7 @@ delete_button_clicked_cb (GtkButton *button, gpointer user_data)
 					      NULL, &iter))
 		return;
 
-	gtk_tree_model_get (model, &iter, 1, &category_name, -1);
+	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
 	e_categories_remove (category_name);
 	gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 }
@@ -410,15 +439,26 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Categories"));
 
 	/* set up the categories list */
-	model = gtk_list_store_new (2, G_TYPE_BOOLEAN, G_TYPE_STRING);
+	model = gtk_list_store_new (N_COLUMNS, G_TYPE_BOOLEAN, GDK_TYPE_PIXBUF, G_TYPE_STRING);
 	cat_list = e_categories_get_list ();
 	while (cat_list != NULL) {
 		GtkTreeIter iter;
 
 		/* only add categories that are user-visible */
 		if (e_categories_is_searchable ((const char *) cat_list->data)) {
+			const gchar *icon_file;
+			GdkPixbuf *icon = NULL;
+			icon_file = e_categories_get_icon_file_for ((const char *) cat_list->data);
+			if (icon_file)
+				icon = gdk_pixbuf_new_from_file (icon_file, NULL);
 			gtk_list_store_append (model, &iter);
-			gtk_list_store_set (model, &iter, 0, FALSE, 1, cat_list->data, -1);
+			gtk_list_store_set (model, &iter, 
+					    COLUMN_ACTIVE, FALSE,
+					    COLUMN_ICON,   icon,
+					    COLUMN_CATEGORY,  cat_list->data,
+					    -1);
+			if (icon)
+				g_object_unref (icon);
 		}
 
 		cat_list = g_list_remove (cat_list, cat_list->data);
@@ -428,12 +468,17 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	renderer = gtk_cell_renderer_toggle_new ();
 	g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (category_toggled_cb), dialog);
 	column = gtk_tree_view_column_new_with_attributes ("?", renderer,
-							   "active", 0, NULL);
+							   "active", COLUMN_ACTIVE, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Icon"), renderer,
+							   "pixbuf", COLUMN_ICON, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("Category"), renderer,
-							   "text", 1, NULL);
+							   "text", COLUMN_CATEGORY, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
 
 	/* free memory */
@@ -524,11 +569,11 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categ
 		do {
 			char *place_string;
 
-			gtk_tree_model_get (model, &iter, 1, &place_string, -1);
+			gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &place_string, -1);
 			if (g_hash_table_lookup (priv->selected_categories, place_string))
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, TRUE, -1);
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ACTIVE, TRUE, -1);
 			else
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, FALSE, -1);
+				gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ACTIVE, FALSE, -1);
 
 			g_free (place_string);
 		} while (gtk_tree_model_iter_next (model, &iter));

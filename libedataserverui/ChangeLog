@@ -1,3 +1,11 @@
+2007-08-03  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	** Fix for bug #461989
+
+	* e-categories-dialog.c: Show category icons. 
+	Plugged memory leaks. The return value of
+	gtk_filechooser_get_filename() should be freed.
+
 2007-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-book-auth-util.c:
