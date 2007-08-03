@@ -1,5 +1,12 @@
 2007-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #460999
+
+	* e-passwords.c: (ep_get_password_keyring): If the keying has null
+	data, consider that as invalid.
+
+2007-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #458670
 
 	* e-name-selector-entry.c: (entry_activate): If there is no selectable

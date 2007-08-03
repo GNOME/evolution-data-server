@@ -663,18 +663,20 @@ ep_get_password_keyring (EPassMsg *msg)
 					{
 						attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
 
-						if (!strcmp(attr->name, "user")) {
+						if (!strcmp(attr->name, "user") && attr->value.string) {
 							present++;
 							if (strcmp (attr->value.string, uri->user))
 								accept = FALSE;
-						} else if (!strcmp(attr->name, "server")) {
+						} else if (!strcmp(attr->name, "server") && attr->value.string) {
 							present++;
 							if (strcmp (attr->value.string, uri->host))
 								accept = FALSE;						
 						}
 					}
-					if (present == 2 && accept)
+					if (present == 2 && accept) {
 						msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
+						break;
+					}
 				}	
 			}
 		}
