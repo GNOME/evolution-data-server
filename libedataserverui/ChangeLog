@@ -1,3 +1,10 @@
+2007-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #458670
+
+	* e-name-selector-entry.c: (entry_activate): If there is no selectable
+	text, there is no point auto-completing it.
+
 2007-08-03  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fix for bug #461989

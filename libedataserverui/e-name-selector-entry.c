@@ -1392,12 +1392,16 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	get_range_at_position (text, cursor_pos, &range_start, &range_end);
+	if (!get_range_at_position (text, cursor_pos, &range_start, &range_end))
+		return;
+
 	range_len = range_end - range_start;
 	if (range_len < COMPLETION_CUE_MIN_LEN)
 		return;
 
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
+	if (!destination)
+		return;
 
 	cue_str = get_entry_substring (name_selector_entry, range_start, range_end);
 #if 0	
