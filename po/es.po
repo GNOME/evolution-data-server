@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-04 03:31+0100\n"
-"PO-Revision-Date: 2007-08-05 12:12+0200\n"
+"POT-Creation-Date: 2007-08-05 11:41+0100\n"
+"PO-Revision-Date: 2007-08-05 13:31+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -4935,7 +4935,6 @@ msgid ""
 msgstr "Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
 
 #: ../libedataserverui/e-categories-dialog.c:475
-#, fuzzy
 msgid "Icon"
 msgstr "Icono"
 
