@@ -814,9 +814,10 @@ e_contact_set_property (GObject *object,
 						const char *param_name = e_vcard_attribute_param_get_name (param);
 
 						if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
+							gboolean matches = FALSE;
 							GList *values = e_vcard_attribute_param_get_values (param);
-							if (values && values->data) {
-								gboolean matches = FALSE;
+
+							while (values && values->data) {
 								if (!found_needed1 && !g_ascii_strcasecmp ((char*)values->data, info->attr_type1)) {
 									found_needed1 = TRUE;
 									matches = TRUE;
@@ -825,15 +826,18 @@ e_contact_set_property (GObject *object,
 									found_needed2 = TRUE;
 									matches = TRUE;
 								}
-								if (!matches) {
-									/* this is to enforce that we find an attribute
-									   with *only* the TYPE='s we need.  This may seem like
-									   an odd restriction but it's the only way at present to
-									   implement the Other Fax and Other Phone attributes. */
-									found_needed1 =
-										found_needed2 = FALSE;
-									break;
-								}
+
+								values = values->next;
+							}
+
+							if (!matches) {
+								/* this is to enforce that we find an attribute
+								   with *only* the TYPE='s we need.  This may seem like
+								   an odd restriction but it's the only way at present to
+								   implement the Other Fax and Other Phone attributes. */
+								found_needed1 =
+									found_needed2 = FALSE;
+								break;
 							}
 						}
 
@@ -1079,10 +1083,10 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 				const char *param_name = e_vcard_attribute_param_get_name (param);
 
 				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
+					gboolean matches = FALSE;
 					GList *values = e_vcard_attribute_param_get_values (param);
-					if (values && values->data) {
-						gboolean matches = FALSE;
 
+					while (values && values->data) {
 						if (!found_needed1 && !g_ascii_strcasecmp ((char*)values->data, type_needed1)) {
 							found_needed1 = TRUE;
 							matches = TRUE;
@@ -1091,16 +1095,17 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 							found_needed2 = TRUE;
 							matches = TRUE;
 						}
+						values = values->next;
+					}
 
-						if (!matches) {
-							/* this is to enforce that we find an attribute
-							   with *only* the TYPE='s we need.  This may seem like
-							   an odd restriction but it's the only way at present to
-							   implement the Other Fax and Other Phone attributes. */
-							found_needed1 =
-								found_needed2 = FALSE;
-							break;
-						}
+					if (!matches) {
+						/* this is to enforce that we find an attribute
+						   with *only* the TYPE='s we need.  This may seem like
+						   an odd restriction but it's the only way at present to
+						   implement the Other Fax and Other Phone attributes. */
+						found_needed1 =
+							found_needed2 = FALSE;
+						break;
 					}
 				}
 

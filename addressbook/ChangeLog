@@ -1,3 +1,10 @@
+2007-08-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #313221 and part of bug #427469
+	* libebook/e-contact.c:
+	(e_contact_set_property), (e_contact_find_attribute_with_types):
+	looping through all param values, not only testing first one
+
 2007-07-31  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/file/e-book-backend-file-factory.c:
