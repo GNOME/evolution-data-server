@@ -1420,21 +1420,73 @@ e_vcard_attribute_param_copy (EVCardAttributeParam *param)
  * @param: an #EVCardAttributeParam to add
  *
  * Adds @param to @attr's list of parameters.
+ * It tests for duplicities, only new parameters are added,
+ * when a new parameter already exists in attr, then those
+ * values are merged, also without creating duplicities.
+ * When we will not add whole param, then it's freed here.
  **/
 void
 e_vcard_attribute_add_param (EVCardAttribute *attr,
 			     EVCardAttributeParam *param)
 {
+	gboolean contains;
+	GList *params, *p;
+	const char *par_name;
+
 	g_return_if_fail (attr != NULL);
 	g_return_if_fail (param != NULL);
 
-	attr->params = g_list_prepend (attr->params, param);
+	contains = FALSE;
+	params = attr->params;
+	par_name = param->name;
+ 
+	for (p = params; p; p = p->next) {
+		EVCardAttributeParam *param2 = p->data;
+		if (g_ascii_strcasecmp (param2->name, par_name) == 0) {
+			/* param2 has same name as our new param;
+			   better merge them than have more parameters
+			   with same name within one attribute.
+			*/
+			GList *vals,*v;
+
+			vals = param->values;
+
+			for (v = vals; v; v = v->next) {
+				const char *my_value;
+				GList *vals2,*v2;
+
+				my_value = (const char *)v->data;
+				vals2 = param2->values;
+
+				for (v2 = vals2; v2; v2 = v2->next) {
+					if (g_ascii_strcasecmp ((const char *)v2->data, my_value) == 0) {
+						break;
+					}
+				}
+
+				if (!v2) {
+					/* we did loop through all values and none of them was my_value */
+					e_vcard_attribute_param_add_value (param2, my_value);
+				}
+			}
+
+			contains = TRUE;
+			break;
+		}
+	}
+	
+	if (!contains) {
+		attr->params = g_list_prepend (attr->params, param);
+	}
 
 	/* we handle our special encoding stuff here */
 
 	if (!g_ascii_strcasecmp (param->name, EVC_ENCODING)) {
 		if (attr->encoding_set) {
 			g_warning ("ENCODING specified twice");
+			if (contains) {
+				e_vcard_attribute_param_free (param);
+			}
 			return;
 		}
 
@@ -1454,6 +1506,10 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 		else {
 			g_warning ("ENCODING parameter added with no value");
 		}
+	}
+
+	if (contains) {
+		e_vcard_attribute_param_free (param);
 	}
 }
 

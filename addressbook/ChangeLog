@@ -1,5 +1,11 @@
 2007-08-06  Milan Crha  <mcrha@redhat.com>
 
+	** Partial fix for bug #427469
+	* libebook/e-vcard.c: (e_vcard_attribute_add_param)
+	Added test on duplicity and merging when adding new parameter.
+
+2007-08-06  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #313221 and part of bug #427469
 	* libebook/e-contact.c:
 	(e_contact_set_property), (e_contact_find_attribute_with_types):
