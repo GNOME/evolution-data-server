@@ -1,8 +1,0 @@
-Makefile
-Makefile.in
-Evolution-DataServer-common.c
-Evolution-DataServer-skels.c
-Evolution-DataServer-stubs.c
-Evolution-DataServer.h
-GNOME_Evolution_DataServer_1.0.server
-evolution-data-server
