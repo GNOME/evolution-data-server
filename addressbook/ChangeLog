@@ -1,3 +1,12 @@
+2007-08-08  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-vcard.h:
+	Add EVC_GEO define.
+	
+	* libebook/e-contact.[ch]:
+	Add E_CONTACT_GEO field and EContactGeo boxed struct to access GEO
+	fields.  Patch by Cosimo Cecchi (#314709).
+
 2007-08-06  Milan Crha  <mcrha@redhat.com>
 
 	** Partial fix for bug #427469

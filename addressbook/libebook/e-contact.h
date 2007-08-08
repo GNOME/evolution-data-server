@@ -197,6 +197,7 @@ typedef enum {
 
 	E_CONTACT_IM_GADUGADU,   /* Multi-valued */
 	
+	E_CONTACT_GEO,	/* structured field (EContactGeo) */	
 
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
@@ -221,6 +222,11 @@ typedef struct {
  	char *prefixes;
 	char *suffixes;
 } EContactName;
+
+typedef struct {
+	double latitude;
+	double longitude;
+} EContactGeo;
 
 typedef enum {
 	E_CONTACT_PHOTO_TYPE_INLINED,
@@ -315,6 +321,9 @@ void                    e_contact_name_free        (EContactName *name);
 
 GType                   e_contact_photo_get_type   (void);
 void                    e_contact_photo_free       (EContactPhoto *photo);
+
+GType			e_contact_geo_get_type	   (void);
+void			e_contact_geo_free	   (EContactGeo *geo);
 
 GType                   e_contact_cert_get_type    (void);
 void                    e_contact_cert_free        (EContactCert *cert);

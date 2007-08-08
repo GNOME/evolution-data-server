@@ -36,6 +36,7 @@ G_BEGIN_DECLS
 #define EVC_ENCODING        "ENCODING"
 #define EVC_FBURL           "FBURL"
 #define EVC_FN              "FN"
+#define EVC_GEO		    "GEO"
 #define EVC_ICSCALENDAR     "ICSCALENDAR" /* XXX should this be X-EVOLUTION-ICSCALENDAR? */
 #define EVC_KEY             "KEY"
 #define EVC_LABEL           "LABEL"

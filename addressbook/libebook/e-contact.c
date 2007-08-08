@@ -81,6 +81,8 @@ typedef struct {
 
 static void* photo_getter (EContact *contact, EVCardAttribute *attr);
 static void photo_setter (EContact *contact, EVCardAttribute *attr, void *data);
+static void* geo_getter (EContact *contact, EVCardAttribute *attr);
+static void geo_setter (EContact *contact, EVCardAttribute *attr, void *data);
 static void* fn_getter (EContact *contact, EVCardAttribute *attr);
 static void fn_setter (EContact *contact, EVCardAttribute *attr, void *data);
 static void* n_getter (EContact *contact, EVCardAttribute *attr);
@@ -267,7 +269,10 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GADUGADU_WORK_1,  EVC_X_GADUGADU,  "im_gadugadu_work_1",  N_("Gadu-Gadu Work Id 1"), FALSE, "WORK", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GADUGADU_WORK_2,  EVC_X_GADUGADU,  "im_gadugadu_work_2",  N_("Gadu-Gadu Work Id 2"), FALSE, "WORK", 1),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GADUGADU_WORK_3,  EVC_X_GADUGADU,  "im_gadugadu_work_3",  N_("Gadu-Gadu Work Id 3"), FALSE, "WORK", 2),
-	MULTI_LIST_FIELD (E_CONTACT_IM_GADUGADU,  EVC_X_GADUGADU,  "im_gadugadu", N_("Gadu-Gadu Id List"), FALSE)
+	MULTI_LIST_FIELD (E_CONTACT_IM_GADUGADU,  EVC_X_GADUGADU,  "im_gadugadu", N_("Gadu-Gadu Id List"), FALSE),
+
+	/* Geo information */
+	STRUCT_FIELD	(E_CONTACT_GEO,  EVC_GEO, "geo",  N_("Geographic Information"),  FALSE, geo_getter, geo_setter, e_contact_geo_get_type)
 };
 
 #undef LIST_ELEM_STR_FIELD
@@ -403,6 +408,35 @@ e_contact_get_first_attr (EContact *contact, const char *attr_name)
 }
 
 
+
+static void*
+geo_getter (EContact *contact, EVCardAttribute *attr)
+{
+	if (attr) {
+		GList *p = e_vcard_attribute_get_values (attr);
+		EContactGeo *geo = g_new0 (EContactGeo, 1);
+
+		geo->latitude  = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0); if (p) p = p->next;
+		geo->longitude = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0);
+
+		return geo;
+	}
+	else
+		return NULL;
+}
+
+static void
+geo_setter (EContact *contact, EVCardAttribute *attr, void *data)
+{
+	EContactGeo *geo = data;	
+	char buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+	e_vcard_attribute_add_value
+		(attr, g_ascii_dtostr (buf, sizeof (buf), geo->latitude));
+
+	e_vcard_attribute_add_value
+		(attr, g_ascii_dtostr (buf, sizeof (buf), geo->longitude));
+}
 
 static void*
 photo_getter (EContact *contact, EVCardAttribute *attr)
@@ -1966,6 +2000,41 @@ e_contact_photo_get_type (void)
 							(GBoxedFreeFunc) e_contact_photo_free);
 	return type_id;
 }
+
+/**
+ * e_contact_geo_free:
+ * @geo: an #EContactGeo
+ *
+ * Frees the @geo struct and its contents.
+ **/
+void
+e_contact_geo_free (EContactGeo *geo)
+{
+	g_free (geo);
+}
+
+static EContactGeo *
+e_contact_geo_copy (EContactGeo *geo)
+{
+	EContactGeo *geo2 = g_new0 (EContactGeo, 1);
+	geo2->latitude  = geo->latitude;
+	geo2->longitude = geo->longitude;
+
+	return geo2;
+}
+
+GType
+e_contact_geo_get_type (void)
+{
+	static GType type_id = 0;
+
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("EContactGeo",
+							(GBoxedCopyFunc) e_contact_geo_copy,
+							(GBoxedFreeFunc) e_contact_geo_free);
+	return type_id;
+}
+
 
 /**
  * e_contact_address_free:
