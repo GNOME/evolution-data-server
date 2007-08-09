@@ -2867,7 +2867,10 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 			response = strchr (response, ' ') + 1;
 			start = response;
 			imap_skip_list ((const char **) &response);
-			g_datalist_set_data_full (&data, "BODY", g_strndup (start, response - start), g_free);
+			if (response && (response != start)) {
+				/* To handle IMAP Server brokenness, Returning empty body, etc. See #355640 */
+				g_datalist_set_data_full (&data, "BODY", g_strndup (start, response - start), g_free);
+			}
 		} else if (!g_ascii_strncasecmp (response, "UID ", 4)) {
 			int len;
 			

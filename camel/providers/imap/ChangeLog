@@ -1,3 +1,9 @@
+2007-08-09  Sankar P  <psankar@novell.com>
+
+	* camel-imap-folder.c: (parse_fetch_response):
+	To handle IMAP Server brokenness, Returning empty body, etc. 
+	Fixes #355640 and a lot of duplicates as well.
+
 2007-07-09  Gilles Dartiguelongue  <gdartigu@svn.gnome.org>
 
 	* camel-imap-folder.c: (do_append), (decode_internaldate),
