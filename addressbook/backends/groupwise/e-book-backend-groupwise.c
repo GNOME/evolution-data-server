@@ -91,7 +91,7 @@ static struct {
 #define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
 #define SUMMARY_FLUSH_TIMEOUT 5000
 
-gboolean  enable_debug = FALSE;
+static gboolean enable_debug = FALSE;
 
 static void populate_emails (EContact *contact, gpointer data);
 static void set_emails_in_gw_item (EGwItem *item, gpointer data);
@@ -112,7 +112,7 @@ static void set_ims_in_gw_item (EGwItem *item, gpointer data);
 static void set_im_changes (EGwItem *new_item, EGwItem *old_item);
 static void fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categories_by_ids);
 
-struct field_element_mapping {
+static const struct field_element_mapping {
 	EContactField field_id;
   	int element_type;
 	char *element_name;
@@ -145,8 +145,6 @@ struct field_element_mapping {
 	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"},
 	{ E_CONTACT_BOOK_URI, ELEMENT_TYPE_SIMPLE, "book_uri"}
 }; 
-
-static int num_mappings = sizeof(mappings) / sizeof(mappings [0]);
 
 static void
 free_attr_list (GList *attr_list)
@@ -544,7 +542,7 @@ set_birth_date_changes (EGwItem *new_item, EGwItem *old_item)
 	}
 }
 
-static int email_fields [3] = {
+static const int email_fields[3] = {
 	E_CONTACT_EMAIL_1,
 	E_CONTACT_EMAIL_2,
 	E_CONTACT_EMAIL_3
@@ -893,7 +891,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		full_name->name_suffix = NULL;
 		e_gw_item_set_full_name (new_item, full_name);
 		
-		for (i=0; i< num_mappings; i++) {
+		for (i=0; i < G_N_ELEMENTS (mappings); i++) {
 			element_type = mappings[i].element_type;
 			if (element_type == ELEMENT_TYPE_SIMPLE) {
 				value = e_contact_get (new_contact, mappings[i].field_id);
@@ -1159,7 +1157,7 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 	if (is_contact_list)
 		e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (TRUE));
 
-	for ( i = 0; i < num_mappings; i++) {
+	for ( i = 0; i < G_N_ELEMENTS (mappings); i++) {
 		element_type = mappings[i].element_type;
 
 		if(element_type == ELEMENT_TYPE_SIMPLE) {
@@ -1232,7 +1230,7 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 		e_gw_item_set_item_type (item, e_contact_get (contact, E_CONTACT_IS_LIST) ? E_GW_ITEM_TYPE_GROUP :E_GW_ITEM_TYPE_CONTACT);
 		e_gw_item_set_container_id (item, g_strdup(egwb->priv->container_id));
 		
-		for (i = 0; i < num_mappings; i++) {
+		for (i = 0; i < G_N_ELEMENTS (mappings); i++) {
 			element_type = mappings[i].element_type;
 			if (element_type == ELEMENT_TYPE_SIMPLE)  {
 				value =  e_contact_get(contact, mappings[i].field_id);
@@ -1339,7 +1337,7 @@ set_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 	g_return_if_fail (E_IS_GW_ITEM(new_item));
 	g_return_if_fail (E_IS_GW_ITEM(old_item));
 	
-	for ( i = 0; i < num_mappings; i++) {
+	for ( i = 0; i < G_N_ELEMENTS (mappings); i++) {
 		element_type = mappings[i].element_type;
 		if (element_type == ELEMENT_TYPE_SIMPLE) {
 			if (mappings[i].field_id == E_CONTACT_ORG) {
@@ -1404,7 +1402,7 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 		contact = e_contact_new_from_vcard(vcard);
 		new_item = e_gw_item_new_empty ();
 
-		for (i = 0; i < num_mappings; i++) {
+		for (i = 0; i < G_N_ELEMENTS (mappings); i++) {
 			element_type = mappings[i].element_type;
 			if (element_type == ELEMENT_TYPE_SIMPLE)  {
 				value =  e_contact_get(contact, mappings[i].field_id);
@@ -1843,7 +1841,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 /* 'builtin' functions */
-static struct {
+static const struct {
 	char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or
@@ -2789,7 +2787,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	char cache_time_string[25], *status_msg;
 	const struct tm *tm;
 	struct stat buf;
-	const char *cache_file_name;
+	char *cache_file_name;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
 	GTimeVal start, end;
@@ -3375,7 +3373,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_supported_fields...\n");
   
-	for (i = 0; i < num_mappings ; i ++)
+	for (i = 0; i < G_N_ELEMENTS (mappings) ; i ++)
 		fields = g_list_append (fields, g_strdup (e_contact_field_name (mappings[i].field_id)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
