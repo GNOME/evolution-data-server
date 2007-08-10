@@ -33,6 +33,7 @@
 #include <bonobo/bonobo-main.h>
 
 #include "libedataserver/e-component-listener.h"
+#include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
 #include "e-cal-marshal.h"
 #include "e-cal-time-util.h"
@@ -50,8 +51,7 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error);
 
 
 typedef struct {
-	GMutex *mutex;
-	GCond *cond;
+	EFlag *done;
 	ECalendarStatus status;
 
 	char *uid;
@@ -304,8 +304,7 @@ e_calendar_new_op (ECal *ecal)
 {
 	ECalendarOp *op = g_new0 (ECalendarOp, 1);
 
-	op->mutex = g_mutex_new ();
-	op->cond = g_cond_new ();
+	op->done = e_flag_new ();
 
 	ecal->priv->current_op = op;
 
@@ -327,8 +326,7 @@ static void
 e_calendar_free_op (ECalendarOp *op)
 {
 	/* XXX more stuff here */
-	g_cond_free (op->cond);
-	g_mutex_free (op->mutex);
+	e_flag_free (op->done);
 	g_free (op);
 }
 
@@ -446,14 +444,10 @@ cal_read_only_cb (ECalListener *listener, ECalendarStatus status, gboolean read_
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->bool = read_only;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -475,14 +469,10 @@ cal_cal_address_cb (ECalListener *listener, ECalendarStatus status, const char *
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (address);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -498,14 +488,10 @@ cal_alarm_address_cb (ECalListener *listener, ECalendarStatus status, const char
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (address);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -521,14 +507,10 @@ cal_ldap_attribute_cb (ECalListener *listener, ECalendarStatus status, const cha
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (attribute);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -544,14 +526,10 @@ cal_static_capabilities_cb (ECalListener *listener, ECalendarStatus status, cons
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (capabilities);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -567,13 +545,9 @@ cal_opened_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -589,13 +563,9 @@ cal_removed_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -611,14 +581,10 @@ cal_object_created_cb (ECalListener *listener, ECalendarStatus status, const cha
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->uid = g_strdup (uid);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -634,13 +600,9 @@ cal_object_modified_cb (ECalListener *listener, ECalendarStatus status, gpointer
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -656,13 +618,9 @@ cal_object_removed_cb (ECalListener *listener, ECalendarStatus status, gpointer 
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -678,13 +636,9 @@ cal_alarm_discarded_cb (ECalListener *listener, ECalendarStatus status, gpointer
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -700,13 +654,9 @@ cal_objects_received_cb (ECalListener *listener, ECalendarStatus status, gpointe
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -723,8 +673,6 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->list = g_list_copy (users);
 	op->string = g_strdup (object);
@@ -732,9 +680,7 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 	for (l = op->list; l; l = l->next)
 		l->data = g_strdup (l->data);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -750,14 +696,10 @@ cal_default_object_requested_cb (ECalListener *listener, ECalendarStatus status,
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (object);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -773,14 +715,10 @@ cal_object_requested_cb (ECalListener *listener, ECalendarStatus status, const c
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (object);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -797,17 +735,13 @@ cal_object_list_cb (ECalListener *listener, ECalendarStatus status, GList *objec
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->list = g_list_copy (objects);
 	
 	for (l = op->list; l; l = l->next)
 		l->data = icalcomponent_new_clone (l->data);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -823,14 +757,10 @@ cal_attachment_list_cb (ECalListener *listener, ECalendarStatus status, GSList *
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->slist = g_slist_copy (attachments);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -846,15 +776,10 @@ cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const char 
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->string = g_strdup (object);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
-
+	e_flag_set (op->done);
 }
 
 static void
@@ -870,15 +795,10 @@ cal_add_timezone_cb (ECalListener *listener, ECalendarStatus status, const char 
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->uid = g_strdup (tzid);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
-
+	e_flag_set (op->done);
 }
 
 static void
@@ -894,13 +814,9 @@ cal_set_default_timezone_cb (ECalListener *listener, ECalendarStatus status, gpo
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -917,8 +833,6 @@ cal_get_changes_cb (ECalListener *listener, ECalendarStatus status, GList *chang
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->list = g_list_copy (changes);
 
@@ -932,9 +846,7 @@ cal_get_changes_cb (ECalListener *listener, ECalendarStatus status, GList *chang
 		l->data = new_ccc;
 	}
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -951,17 +863,13 @@ cal_get_free_busy_cb (ECalListener *listener, ECalendarStatus status, GList *fre
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->list = g_list_copy (freebusy);
 
 	for (l = op->list; l; l = l->next)
 		l->data = e_cal_component_clone (l->data);
 
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);
+	e_flag_set (op->done);
 }
 
 static void
@@ -977,14 +885,10 @@ cal_query_cb (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Ca
 		return;
 	}
 
-	g_mutex_lock (op->mutex);
-
 	op->status = status;
 	op->query = e_cal_view_new (query, op->listener, ecal);
 	
-	g_cond_signal (op->cond);
-
-	g_mutex_unlock (op->mutex);	
+	e_flag_set (op->done);
 }
 
 static gboolean  
@@ -1724,7 +1628,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	}
 	/* start the open operation */
 	our_op = e_calendar_new_op (ecal);
-	g_mutex_lock (our_op->mutex);
 
 	g_mutex_unlock (priv->mutex);
 
@@ -1737,7 +1640,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 		if (priv->auth_func == NULL) {
 			e_calendar_remove_op (ecal, our_op);
-			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
@@ -1747,7 +1649,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		username = e_source_get_duped_property (priv->source, "username");
 		if (!username) {
 			e_calendar_remove_op (ecal, our_op);
-			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
@@ -1777,7 +1678,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 		if (!key) {
 			e_calendar_remove_op (ecal, our_op);
-			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_URI_NOT_LOADED;
@@ -1788,7 +1688,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 		if (!password) {
 			e_calendar_remove_op (ecal, our_op);
-			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED; 
@@ -1813,7 +1712,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 		
 		CORBA_exception_free (&ev);
@@ -1827,14 +1725,11 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	*status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 	if (*status == E_CALENDAR_STATUS_OK) {
 		priv->load_state = E_CAL_LOAD_LOADED;
@@ -1990,8 +1885,6 @@ e_cal_remove (ECal *ecal, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2000,7 +1893,6 @@ e_cal_remove (ECal *ecal, GError **error)
 	GNOME_Evolution_Calendar_Cal_remove (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2012,14 +1904,11 @@ e_cal_remove (ECal *ecal, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2251,8 +2140,6 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	/* set it to true so that op does not emit cond signals for all notifications
 	   from the backend */
 	our_op->bool = TRUE;
@@ -2265,7 +2152,6 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 	GNOME_Evolution_Calendar_Cal_isReadOnly (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2277,9 +2163,7 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
@@ -2287,7 +2171,6 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 		*read_only = our_op->bool;
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 	E_CALENDAR_CHECK_STATUS (status, error);
 }
@@ -2330,8 +2213,6 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 
 		our_op = e_calendar_new_op (ecal);
 
-		g_mutex_lock (our_op->mutex);
-
 		g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2340,7 +2221,6 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 		GNOME_Evolution_Calendar_Cal_getCalAddress (priv->cal, &ev);
 		if (BONOBO_EX (&ev)) {
 			e_calendar_remove_op (ecal, our_op);
-			g_mutex_unlock (our_op->mutex);
 			e_calendar_free_op (our_op);
 
 			CORBA_exception_free (&ev);
@@ -2352,14 +2232,11 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 
 		CORBA_exception_free (&ev);
 
-		/* wait for something to happen (both cancellation and a
-		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->done);
 
 		status = our_op->status;
 		*cal_address = our_op->string;
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (status, error);
@@ -2407,8 +2284,6 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2417,7 +2292,6 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
 	GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2429,15 +2303,12 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*alarm_address = our_op->string;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2480,8 +2351,6 @@ e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2490,7 +2359,6 @@ e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
 	GNOME_Evolution_Calendar_Cal_getLdapAttribute (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2502,15 +2370,12 @@ e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*ldap_attribute = our_op->string;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2543,8 +2408,6 @@ load_static_capabilities (ECal *ecal, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -2553,7 +2416,6 @@ load_static_capabilities (ECal *ecal, GError **error)
 	GNOME_Evolution_Calendar_Cal_getStaticCapabilities (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2565,15 +2427,12 @@ load_static_capabilities (ECal *ecal, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	priv->capabilities = our_op->string;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2782,8 +2641,6 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -2791,7 +2648,6 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	GNOME_Evolution_Calendar_Cal_getDefaultObject (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2803,9 +2659,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
         if (status != E_CALENDAR_STATUS_OK) {
@@ -2818,7 +2672,6 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2863,15 +2716,12 @@ e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GS
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_Calendar_Cal_getAttachmentList (priv->cal, uid, rid ? rid : "", &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2883,9 +2733,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GS
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
         if (status != E_CALENDAR_STATUS_OK){ 
@@ -2895,7 +2743,6 @@ e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GS
 	}
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -2940,8 +2787,6 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -2949,7 +2794,6 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	GNOME_Evolution_Calendar_Cal_getObject (priv->cal, uid, rid ? rid : "", &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -2961,9 +2805,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
         if (status != E_CALENDAR_STATUS_OK){ 
@@ -3011,7 +2853,6 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -3057,8 +2898,6 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -3066,7 +2905,6 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 	GNOME_Evolution_Calendar_Cal_getObject (priv->cal, uid, "", &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -3078,9 +2916,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
         if (status != E_CALENDAR_STATUS_OK){ 
@@ -3138,7 +2974,6 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 	g_free (our_op->string);
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -3208,8 +3043,6 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -3218,7 +3051,6 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -3230,15 +3062,12 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 	
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*changes = our_op->list;
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -3308,8 +3137,6 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -3318,7 +3145,6 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
 
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -3330,15 +3156,12 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
 	
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*objects = our_op->list;
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -3441,8 +3264,6 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	/* create the CORBA user list to be passed to the backend */
@@ -3462,7 +3283,6 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -3474,15 +3294,12 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*freebusy = our_op->list;
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4176,8 +3993,6 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError *
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	e_cal_component_get_uid (comp, &uid);
@@ -4187,7 +4002,6 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError *
 	GNOME_Evolution_Calendar_Cal_discardAlarm (priv->cal, uid, auid, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4199,14 +4013,11 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError *
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4422,8 +4233,6 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -4431,7 +4240,6 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 	GNOME_Evolution_Calendar_Cal_createObject (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4443,9 +4251,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+        e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	if (uid)
@@ -4455,7 +4261,6 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 	}
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4505,8 +4310,6 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -4514,7 +4317,6 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	GNOME_Evolution_Calendar_Cal_modifyObject (priv->cal, icalcomponent_as_ical_string (icalcomp), mod, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4526,14 +4328,11 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4586,8 +4385,6 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 
@@ -4596,7 +4393,6 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 	GNOME_Evolution_Calendar_Cal_removeObject (priv->cal, uid, rid ? rid : "", mod, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4608,14 +4404,11 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4680,8 +4473,6 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -4689,7 +4480,6 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	GNOME_Evolution_Calendar_Cal_receiveObjects (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4701,14 +4491,11 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4754,8 +4541,6 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -4763,7 +4548,6 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	GNOME_Evolution_Calendar_Cal_sendObjects (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4775,9 +4559,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*users = our_op->list;
@@ -4798,7 +4580,6 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	g_free (our_op->string);
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4843,8 +4624,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (priv->mutex);
 
 	/* Check for well known zones and in the cache */
@@ -4853,7 +4632,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	/* If tzid is NULL or "" we return NULL, since it is a 'local time'. */
 	if (!tzid || !tzid[0]) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		*zone = NULL;
@@ -4871,7 +4649,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	
 	if (*zone) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);	
@@ -4883,7 +4660,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	GNOME_Evolution_Calendar_Cal_getTimezone (priv->cal, tzid, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -4895,9 +4671,7 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
         if (status != E_CALENDAR_STATUS_OK){ 
@@ -4911,7 +4685,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	
 	if (!icalcomp) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (status, error);
@@ -4922,7 +4695,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 		icaltimezone_free (*zone, 1);
 
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OBJECT_NOT_FOUND, error);
@@ -4932,7 +4704,6 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 	g_hash_table_insert (priv->timezones, icaltimezone_get_tzid (*zone), *zone);
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -4977,15 +4748,12 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (priv->mutex);
 
 	/* Make sure we have a valid component - UTC doesn't, nor do
 	 * we really have to add it */
 	if (izone == icaltimezone_get_utc_timezone ()) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 		
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
@@ -4994,7 +4762,6 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	icalcomp = icaltimezone_get_component (izone);
 	if (!icalcomp) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
@@ -5009,7 +4776,6 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	GNOME_Evolution_Calendar_Cal_addTimezone (priv->cal, tzobj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -5021,14 +4787,11 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -5070,8 +4833,6 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (ecal->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -5081,7 +4842,6 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -5093,9 +4853,7 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 	
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 	*query = our_op->query;
@@ -5103,7 +4861,6 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 	bonobo_object_unref (BONOBO_OBJECT (our_op->listener));
 	
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
@@ -5148,15 +4905,12 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 
 	our_op = e_calendar_new_op (ecal);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (priv->mutex);
 
 	/* FIXME Adding it to the server to change the tzid */
 	icalcomp = icaltimezone_get_component (zone);
 	if (!icalcomp) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
@@ -5171,7 +4925,6 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	GNOME_Evolution_Calendar_Cal_setDefaultTimezone (priv->cal, tzobj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
-		g_mutex_unlock (our_op->mutex);
 		e_calendar_free_op (our_op);
 
 		CORBA_exception_free (&ev);
@@ -5183,9 +4936,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 
 	CORBA_exception_free (&ev);
 
-	/* wait for something to happen (both cancellation and a
-	   successful response will notity us via our cv */
-	g_cond_wait (our_op->cond, our_op->mutex);
+	e_flag_wait (our_op->done);
 
 	status = our_op->status;
 
@@ -5197,7 +4948,6 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	}
 
 	e_calendar_remove_op (ecal, our_op);
-	g_mutex_unlock (our_op->mutex);
 	e_calendar_free_op (our_op);
 
 	E_CALENDAR_CHECK_STATUS (status, error);

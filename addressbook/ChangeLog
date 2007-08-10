@@ -1,3 +1,10 @@
+2007-08-10  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/file/e-book-backend-file.c:
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* backends/vcf/e-book-backend-vcf.c:
+	Use EFlag to simplify synchronization logic (#415891).
+
 2007-08-10  Ross Burton  <ross@openedhand.com>
 
 	* backends/groupwise/e-book-backend-groupwise.c:

@@ -41,6 +41,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "libedataserver/e-data-server-util.h"
+#include "libedataserver/e-flag.h"
 
 #include "libebook/e-contact.h"
  
@@ -433,18 +434,15 @@ e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
 typedef struct {
 	EBookBackendVCF *bvcf;
 	EDataBookView *view;
-	GMutex *mutex;
-	GCond *cond;
 	GThread *thread;
-	gboolean stopped;
+	EFlag *running;
 } VCFBackendSearchClosure;
 
 static void
 closure_destroy (VCFBackendSearchClosure *closure)
 {
 	d(printf ("destroying search closure\n"));
-	g_mutex_free (closure->mutex);
-	g_cond_free (closure->cond);
+	e_flag_free (closure->running);
 	g_free (closure);
 }
 
@@ -455,10 +453,8 @@ init_closure (EDataBookView *book_view, EBookBackendVCF *bvcf)
 
 	closure->bvcf = bvcf;
 	closure->view = book_view;
-	closure->mutex = g_mutex_new ();
-	closure->cond = g_cond_new ();
 	closure->thread = NULL;
-	closure->stopped = FALSE;
+	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendVCF.BookView::closure",
 				closure, (GDestroyNotify)closure_destroy);
@@ -492,9 +488,7 @@ book_view_thread (gpointer data)
 		e_data_book_view_notify_status_message (book_view, _("Searching..."));
 
 	d(printf ("signalling parent thread\n"));
-	g_mutex_lock (closure->mutex);
-	g_cond_signal (closure->cond);
-	g_mutex_unlock (closure->mutex);
+	e_flag_set (closure->running);
 
 	for (l = closure->bvcf->priv->contact_list; l; l = l->next) {
 		char *vcard_string = l->data;
@@ -502,11 +496,11 @@ book_view_thread (gpointer data)
 		e_data_book_view_notify_update (closure->view, contact);
 		g_object_unref (contact);
 
-		if (closure->stopped)
+		if (!e_flag_is_set (closure->running))
 			break;
 	}
 
-	if (!closure->stopped)
+	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (closure->view, GNOME_Evolution_Addressbook_Success);
 
 	/* unref the book view */
@@ -524,15 +518,12 @@ e_book_backend_vcf_start_book_view (EBookBackend  *backend,
 {
 	VCFBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_VCF (backend));
 
-	g_mutex_lock (closure->mutex);
-
 	d(printf ("starting book view thread\n"));
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 
-	g_cond_wait (closure->cond, closure->mutex);
+	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	g_mutex_unlock (closure->mutex);
 	d(printf ("returning from start_book_view\n"));
 
 }
@@ -542,14 +533,11 @@ e_book_backend_vcf_stop_book_view (EBookBackend  *backend,
 				   EDataBookView *book_view)
 {
 	VCFBackendSearchClosure *closure = get_closure (book_view);
-	gboolean need_join = FALSE;
+	gboolean need_join;
 
 	d(printf ("stopping query\n"));
-	g_mutex_lock (closure->mutex);
-	if (!closure->stopped)
-		need_join = TRUE;
-	closure->stopped = TRUE;
-	g_mutex_unlock (closure->mutex);
+	need_join = e_flag_is_set (closure->running);
+	e_flag_clear (closure->running);
 
 	if (need_join)
 		g_thread_join (closure->thread);

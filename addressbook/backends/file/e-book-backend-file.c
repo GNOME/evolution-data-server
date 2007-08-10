@@ -43,6 +43,7 @@
 #include "libedataserver/e-dbhash.h"
 #include "libedataserver/e-db3-utils.h"
 #include "libedataserver/e-data-server-util.h"
+#include "libedataserver/e-flag.h"
 
 #include "libebook/e-contact.h"
 
@@ -485,18 +486,15 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 typedef struct {
 	EBookBackendFile *bf;
-	GMutex *mutex;
-	GCond *cond;
 	GThread *thread;
-	gboolean stopped;
+	EFlag *running;
 } FileBackendSearchClosure;
 
 static void
 closure_destroy (FileBackendSearchClosure *closure)
 {
 	d(printf ("destroying search closure\n"));
-	g_mutex_free (closure->mutex);
-	g_cond_free (closure->cond);
+	e_flag_free (closure->running);
 	g_free (closure);
 }
 
@@ -506,10 +504,8 @@ init_closure (EDataBookView *book_view, EBookBackendFile *bf)
 	FileBackendSearchClosure *closure = g_new (FileBackendSearchClosure, 1);
 
 	closure->bf = bf;
-	closure->mutex = g_mutex_new ();
-	closure->cond = g_cond_new ();
 	closure->thread = NULL;
-	closure->stopped = FALSE;
+	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendFile.BookView::closure",
 				closure, (GDestroyNotify)closure_destroy);
@@ -533,7 +529,7 @@ book_view_thread (gpointer data)
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
 	int db_error;
-	gboolean stopped = FALSE, allcontacts;
+	gboolean allcontacts;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
 
@@ -563,9 +559,7 @@ book_view_thread (gpointer data)
 	}
 
 	d(printf ("signalling parent thread\n"));
-	g_mutex_lock (closure->mutex);
-	g_cond_signal (closure->cond);
-	g_mutex_unlock (closure->mutex);
+	e_flag_set (closure->running);
 
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, query)) {
 		/* do a summary query */
@@ -574,11 +568,8 @@ book_view_thread (gpointer data)
 
 		for (i = 0; i < ids->len; i ++) {
 			char *id = g_ptr_array_index (ids, i);
-			g_mutex_lock (closure->mutex);
-			stopped = closure->stopped;
-			g_mutex_unlock (closure->mutex);
 
-			if (stopped)
+			if (!e_flag_is_set (closure->running))
 				break;
 
 			string_to_dbt (id, &id_dbt);
@@ -612,11 +603,7 @@ book_view_thread (gpointer data)
 			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 			while (db_error == 0) {
 
-				g_mutex_lock (closure->mutex);
-				stopped = closure->stopped;
-				g_mutex_unlock (closure->mutex);
-
-				if (stopped)
+				if (!e_flag_is_set (closure->running))
 					break;
 
 				/* don't include the version in the list of cards */
@@ -647,7 +634,7 @@ book_view_thread (gpointer data)
 
 	}
 
-	if (!stopped)
+	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 
 	/* unref the */
@@ -665,15 +652,12 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 {
 	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
-	g_mutex_lock (closure->mutex);
-
 	d(printf ("starting book view thread\n"));
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 
-	g_cond_wait (closure->cond, closure->mutex);
+	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	g_mutex_unlock (closure->mutex);
 	d(printf ("returning from start_book_view\n"));
 }
 
@@ -682,14 +666,11 @@ e_book_backend_file_stop_book_view (EBookBackend  *backend,
 				    EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = get_closure (book_view);
-	gboolean need_join = FALSE;
+	gboolean need_join;
 
 	d(printf ("stopping query\n"));
-	g_mutex_lock (closure->mutex);
-	if (!closure->stopped)
-		need_join = TRUE;
-	closure->stopped = TRUE;
-	g_mutex_unlock (closure->mutex);
+	need_join = e_flag_is_set (closure->running);
+	e_flag_clear (closure->running);
 
 	if (need_join)
 		g_thread_join (closure->thread);

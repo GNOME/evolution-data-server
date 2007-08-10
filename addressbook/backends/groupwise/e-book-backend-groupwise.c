@@ -40,6 +40,7 @@
 #include "libedataserver/e-sexp.h"
 #include "libedataserver/e-data-server-util.h"
 #include "libedataserver/e-db3-utils.h"
+#include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h" 
 #include "libebook/e-contact.h"
 #include "libedata-book/e-book-backend-sexp.h"
@@ -2074,17 +2075,14 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 	
 typedef struct {
 	EBookBackendGroupwise *bg;
-	GMutex *mutex;
-	GCond *cond;
 	GThread *thread;
-	gboolean stopped;
+	EFlag *running;
 } GroupwiseBackendSearchClosure;
 
 static void
 closure_destroy (GroupwiseBackendSearchClosure *closure)
 {
-	g_mutex_free (closure->mutex);
-	g_cond_free (closure->cond);
+	e_flag_free (closure->running);
 	g_free (closure);
 }
 
@@ -2094,10 +2092,8 @@ init_closure (EDataBookView *book_view, EBookBackendGroupwise *bg)
 	GroupwiseBackendSearchClosure *closure = g_new (GroupwiseBackendSearchClosure, 1);
 
 	closure->bg = bg;
-	closure->mutex = g_mutex_new ();
-	closure->cond = g_cond_new ();
 	closure->thread = NULL;
-	closure->stopped = FALSE;
+	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendGroupwise.BookView::closure",
 				closure, (GDestroyNotify)closure_destroy);
@@ -2119,7 +2115,6 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 			 GroupwiseBackendSearchClosure *closure)
 {
 	int i;
-	gboolean stopped = FALSE;
 
 	if (enable_debug)
 		printf ("\nread contacts from cache for the ids found in summary\n");
@@ -2127,12 +2122,8 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 		char *uid;
 		EContact *contact; 
 
-		g_mutex_lock (closure->mutex);
-		stopped = closure->stopped;
-		g_mutex_unlock (closure->mutex);
-
-		if (stopped)
-			break;	
+                if (!e_flag_is_set (closure->running))
+                        break;
 
  		uid = g_ptr_array_index (ids, i);
 		contact = e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
@@ -2141,7 +2132,7 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 			g_object_unref (contact);
 		}
 	}
-	if (!stopped)
+	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, 
 						  GNOME_Evolution_Addressbook_Success);
 }
@@ -2156,7 +2147,6 @@ book_view_thread (gpointer data)
 	const char *query = NULL;
 	EGwFilter *filter = NULL;
 	GPtrArray *ids = NULL;
-	gboolean stopped = FALSE;
 	EDataBookView *book_view = data;
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
 	char *view = NULL;
@@ -2171,9 +2161,7 @@ book_view_thread (gpointer data)
 	if (enable_debug)
 		printf ("start book view for %s \n", gwb->priv->book_name);
        	bonobo_object_ref (book_view);
-	g_mutex_lock (closure->mutex);
-	g_cond_signal (closure->cond);
-	g_mutex_unlock (closure->mutex);
+	e_flag_set (closure->running);
 	
 	query = e_data_book_view_get_card_query (book_view);
 	if (enable_debug)
@@ -2205,10 +2193,7 @@ book_view_thread (gpointer data)
 		contacts = e_book_backend_db_cache_get_contacts (gwb->priv->file_db, query);
 		temp_list = contacts;
 		for (; contacts != NULL; contacts = g_list_next(contacts)) {
-			g_mutex_lock (closure->mutex);
-			stopped = closure->stopped;
-			g_mutex_unlock (closure->mutex);
-			if (stopped) {
+			if (!e_flag_is_set (closure->running)) {
 				for (;contacts != NULL; contacts = g_list_next (contacts))
 					g_object_unref (contacts->data);
 				break;
@@ -2216,7 +2201,7 @@ book_view_thread (gpointer data)
 			e_data_book_view_notify_update (book_view, E_CONTACT(contacts->data));
 			g_object_unref (contacts->data);
 		}
-		if (!stopped)
+		if (e_flag_is_set (closure->running))
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		if (temp_list)
 			g_list_free (temp_list);
@@ -2344,10 +2329,7 @@ book_view_thread (gpointer data)
 		temp_list = gw_items;
 		for (; gw_items != NULL; gw_items = g_list_next(gw_items)) { 
 
-			g_mutex_lock (closure->mutex);
-			stopped = closure->stopped;
-			g_mutex_unlock (closure->mutex);
-			if (stopped) {
+			if (!e_flag_is_set (closure->running)) {
 				for (;gw_items != NULL; gw_items = g_list_next (gw_items))
 					g_object_unref (gw_items->data);
 				break;
@@ -2368,7 +2350,7 @@ book_view_thread (gpointer data)
 		}
 		if (temp_list)
 			g_list_free (temp_list);
-		if (!stopped)
+		if (e_flag_is_set (closure->running))
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		if (filter)
 			g_object_unref (filter);
@@ -2397,12 +2379,10 @@ e_book_backend_groupwise_start_book_view (EBookBackend  *backend,
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_start_book_view...\n");
-	g_mutex_lock (closure->mutex);
 	closure->thread = g_thread_create (book_view_thread, book_view, FALSE, NULL);
-	g_cond_wait (closure->cond, closure->mutex);
+	e_flag_wait (closure->running);
 	
 	/* at this point we know the book view thread is actually running */
-	g_mutex_unlock (closure->mutex);
 }
   
 static void
@@ -2413,10 +2393,7 @@ e_book_backend_groupwise_stop_book_view (EBookBackend  *backend,
 	
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_stop_book_view...\n");
-	g_mutex_lock (closure->mutex);
-	if (!closure->stopped)
-		closure->stopped = TRUE;
-	g_mutex_unlock (closure->mutex);
+	e_flag_clear (closure->running);
 }
 
 static void
@@ -2658,11 +2635,8 @@ build_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-		if (closure) {
-			g_mutex_lock (closure->mutex);
-			g_cond_signal (closure->cond);
-			g_mutex_unlock (closure->mutex);
-		}
+		if (closure)
+			e_flag_set (closure->running);
 	}
 
 	while (!done) {
@@ -2807,11 +2781,8 @@ update_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-		if (closure) {
-			g_mutex_lock (closure->mutex);
-			g_cond_signal (closure->cond);
-			g_mutex_unlock (closure->mutex);
-		}
+		if (closure)
+			e_flag_set (closure->running);
 	}
 
 	cache_file_name = e_book_backend_db_cache_get_filename(ebgw->priv->file_db);
@@ -2978,11 +2949,8 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		closure = get_closure (book_view);
 		bonobo_object_ref (book_view);
-		if (closure){
-			g_mutex_lock (closure->mutex);
-			g_cond_signal (closure->cond);
-			g_mutex_unlock (closure->mutex);
-		}
+		if (closure)
+			e_flag_set (closure->running);
 	}
 
 	/* update the cache */
