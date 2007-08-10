@@ -4,6 +4,8 @@
 #ifndef __E2K_VALIDATE_H_
 #define __E2K_VALIDATE_H_
 
+#include <gtk/gtkwindow.h>
+
 #ifdef __cplusplus
 extern "C" {
 #pragma }
@@ -36,7 +38,7 @@ typedef enum {
 	E2K_AUTOCONFIG_FAILED
 } E2kAutoconfigResult;
 
-gboolean e2k_validate_user (const char *owa_url, char *key, char **user, ExchangeParams *exchange_params, gboolean *remember_password, E2kAutoconfigResult *result);
+gboolean e2k_validate_user (const char *owa_url, char *key, char **user, ExchangeParams *exchange_params, gboolean *remember_password, E2kAutoconfigResult *result, GtkWindow *parent);
 
 
 #ifdef __cplusplus

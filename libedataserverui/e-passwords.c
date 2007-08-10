@@ -105,7 +105,7 @@ struct _EPassMsg {
 typedef struct _EPassMsg EPassMsg;
 
 static GHashTable *passwords = NULL;
-static GtkDialog *password_dialog;
+static GtkDialog *password_dialog = NULL;
 static EDList request_list = E_DLIST_INITIALISER(request_list);
 static int idle_id;
 static int ep_online_state = TRUE;
@@ -887,7 +887,11 @@ ep_ask_password(EPassMsg *msg)
 	msg->noreply = noreply;
 
 	g_signal_connect(password_dialog, "response", G_CALLBACK (pass_response), msg);
-	gtk_widget_show((GtkWidget *)password_dialog);
+
+	if (msg->parent)
+		gtk_dialog_run (GTK_DIALOG (password_dialog));
+	else
+		gtk_widget_show((GtkWidget *)password_dialog);
 }
 
 

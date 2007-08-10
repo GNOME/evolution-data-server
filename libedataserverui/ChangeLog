@@ -1,3 +1,10 @@
+2007-08-10  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #327977
+
+	* e-passwords.c: (ep_ask_password):
+	Show dialog modal when we know parent window, otherwise non-modal.
+
 2007-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #460999

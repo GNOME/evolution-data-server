@@ -1626,7 +1626,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 gboolean
 e2k_validate_user (const char *owa_url, char *pkey, char **user,
 		   ExchangeParams *exchange_params, gboolean *remember_password,
-		   E2kAutoconfigResult *result)
+		   E2kAutoconfigResult *result, GtkWindow *parent)
 {
 	gboolean valid = FALSE, remember=FALSE;
 	char *key, *password, *prompt;
@@ -1656,7 +1656,7 @@ try_auth_again:
 	password = e_passwords_ask_password (_("Enter password"),
 				"Exchange", key, prompt,
 				E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
-				&remember, NULL);
+				&remember, parent);
 	g_free (prompt);
 	if (!password) {
 		g_free (key);

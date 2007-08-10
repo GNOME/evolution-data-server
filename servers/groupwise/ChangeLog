@@ -1,3 +1,9 @@
+2007-08-10  Milan Crha  <mcrha@redhat.com>
+
+	* e-gw-connection.c: (e_gw_connection_get_container_list):
+	Fixed critical warning when cnc is NULL (i.e. user cancels
+	password dialog.) Done together with bug #327977.
+
 2007-06-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Memory leak fixes from bug #440524

@@ -596,6 +596,10 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList *
         EGwConnectionStatus status;
 	SoupSoapParameter *param;
 
+	/* when user cancels password dialog, then the cnc is NULL */
+	if (!cnc)
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 

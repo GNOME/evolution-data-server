@@ -1,3 +1,11 @@
+2007-08-10  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #327977
+
+	* lib/e2k-validate.h: (e2k_validate_user):
+	* lib/e2k-autoconfig.c: (e2k_validate_user):
+	Added parameter for parent window to pass to password dialog.
+
 2007-08-03  Jeff Cai<jeff.cai@sun.com>
 
 	* storage/exchange-account.c:
