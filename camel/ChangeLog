@@ -1,3 +1,9 @@
+2007-08-12  Johnny Jacob  <jjohnny@novell.com>
+
+	** Fix for Bug 261084 from Jared Moore
+
+	* camel-folder-search.c :
+	
 2007-07-28  Ross Burton  <ross@openedhand.com>
 
 	* camel-index.c:

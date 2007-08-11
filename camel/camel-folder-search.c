@@ -655,6 +655,7 @@ search_match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, CamelFold
 	int i;
 	ESExpResult *r, *r1;
 	GPtrArray *v;
+	gchar *error_msg;
 
 	if (argc>1) {
 		g_warning("match-all only takes a single argument, other arguments ignored");
@@ -673,7 +674,9 @@ search_match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, CamelFold
 				r->value.bool = r1->value.bool;
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
-				e_sexp_fatal_error(f, _("(match-all) requires a single bool result"));
+				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
+				e_sexp_fatal_error(f, error_msg);
+				g_free(error_msg);
 			}
 			e_sexp_result_free(f, r1);
 		} else {
@@ -706,7 +709,9 @@ search_match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, CamelFold
 					g_ptr_array_add(r->value.ptrarray, (char *)uid);
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
-				e_sexp_fatal_error(f, _("(match-all) requires a single bool result"));
+				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
+				e_sexp_fatal_error(f, error_msg);
+				g_free(error_msg);
 			}
 			e_sexp_result_free(f, r1);
 		} else {
@@ -753,17 +758,27 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 	struct _CamelFolderSearchPrivate *p = search->priv;
 	int i, type;
 	GHashTable *results;
+	gchar *error_msg;
 
 	/* not supported in match-all */
-	if (search->current)
-		e_sexp_fatal_error(f, _("(match-threads) not allowed inside match-all"));
+	if (search->current) {
+		error_msg = g_strdup_printf(_("(%s) not allowed inside match-all"), "match-threads");
+		e_sexp_fatal_error(f, error_msg);
+		g_free(error_msg);
+	}
 
-	if (argc == 0)
-		e_sexp_fatal_error(f, _("(match-threads) requires a match type string"));
+	if (argc == 0) {
+		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
+		e_sexp_fatal_error(f, error_msg);
+		g_free(error_msg);
+	}
 
 	r = e_sexp_term_eval(f, argv[0]);
-	if (r->type != ESEXP_RES_STRING)
-		e_sexp_fatal_error(f, _("(match-threads) requires a match type string"));
+	if (r->type != ESEXP_RES_STRING) {
+		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
+		e_sexp_fatal_error(f, error_msg);
+		g_free(error_msg);
+	}
 
 	type = 0;
 	if (!strcmp(r->value.string, "none"))
@@ -786,14 +801,20 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 		r = e_sexp_term_eval(f, argv[i]);
 	}
 
-	if (r == NULL || r->type != ESEXP_RES_ARRAY_PTR)
-		e_sexp_fatal_error(f, _("(match-threads) expects an array result"));
+	if (r == NULL || r->type != ESEXP_RES_ARRAY_PTR) {
+		error_msg = g_strdup_printf(_("(%s) expects an array result"), "match-threads");
+		e_sexp_fatal_error(f, error_msg);
+		g_free(error_msg);
+	}
 
 	if (type == 0)
 		return r;
 
-	if (search->folder == NULL)
-		e_sexp_fatal_error(f, _("(match-threads) requires the folder set"));
+	if (search->folder == NULL) {
+		error_msg = g_strdup_printf(_("(%s) requires the folder set"), "match-threads");
+		e_sexp_fatal_error(f, error_msg);
+		g_free(error_msg);
+	}
 
 	/* cache this, so we only have to re-calculate once per search at most */
 	if (p->threads == NULL) {
