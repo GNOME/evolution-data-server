@@ -11,38 +11,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-01 19:35+0200\n"
-"PO-Revision-Date: 2007-08-01 19:36+0100\n"
+"POT-Creation-Date: 2007-08-11 12:45+0200\n"
+"PO-Revision-Date: 2007-08-11 12:45+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:558
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
+#: ../addressbook/backends/file/e-book-backend-file.c:554
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Loading..."
 msgstr "Läser in..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:561
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: ../addressbook/backends/file/e-book-backend-file.c:557
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Söker..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Hämtar kontakter (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2827
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3018
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3062
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Uppdaterar kontaktcache (%d)... "
@@ -123,6 +123,7 @@ msgstr "\"%s\" i boken före \"%s\""
 #: ../addressbook/libebook/e-book.c:2306
 #: ../addressbook/libebook/e-book.c:2672
 #: ../addressbook/libebook/e-book.c:2878
+#, c-format
 msgid "book busy"
 msgstr "boken upptagen"
 
@@ -206,16 +207,16 @@ msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: det finns ingen källa för UID \"%s\" lagrad i gconf."
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook/e-contact.c:112
+#: ../addressbook/libebook/e-contact.c:114
 msgid "Unique ID"
 msgstr "Unikt id"
 
-#: ../addressbook/libebook/e-contact.c:113
+#: ../addressbook/libebook/e-contact.c:115
 msgid "File Under"
 msgstr "Arkivera under"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:117
 msgid "Book URI"
 msgstr "Bok-URI"
 
@@ -223,478 +224,483 @@ msgstr "Bok-URI"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:121
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Full Name"
 msgstr "Fullständigt namn"
 
-#: ../addressbook/libebook/e-contact.c:122
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Given Name"
 msgstr "Förnamn"
 
-#: ../addressbook/libebook/e-contact.c:123
+#: ../addressbook/libebook/e-contact.c:125
 msgid "Family Name"
 msgstr "Efternamn"
 
-#: ../addressbook/libebook/e-contact.c:124
+#: ../addressbook/libebook/e-contact.c:126
 msgid "Nickname"
 msgstr "Smeknamn"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:127
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Email 1"
 msgstr "E-post 1"
 
-#: ../addressbook/libebook/e-contact.c:128
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Email 2"
 msgstr "E-post 2"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:131
 msgid "Email 3"
 msgstr "E-post 3"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:132
 msgid "Email 4"
 msgstr "E-post 4"
 
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:134
 msgid "Mailer"
 msgstr "E-postprogram"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Home Address Label"
 msgstr "Hemadressetikett"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:138
 msgid "Work Address Label"
 msgstr "Jobbadressetikett"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:139
 msgid "Other Address Label"
 msgstr "Etikett för annan adress"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Assistant Phone"
 msgstr "Sekreterartelefon"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Phone"
 msgstr "Arbetstelefon"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Business Phone 2"
 msgstr "Företagstelefon 2"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Business Fax"
 msgstr "Företagsfax"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Callback Phone"
 msgstr "Tillbakaringningstelefon"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Car Phone"
 msgstr "Biltelefon"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Company Phone"
 msgstr "Företagets telefon"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone"
 msgstr "Hemtelefon"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:150
 msgid "Home Phone 2"
 msgstr "Hemtelefon 2"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Home Fax"
 msgstr "Fax hem"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook/e-contact.c:152
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Mobile Phone"
 msgstr "Mobiltelefon"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Other Phone"
 msgstr "Annan telefon"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Other Fax"
 msgstr "Annan fax"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Pager"
 msgstr "Personsökare"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Primary Phone"
 msgstr "Primär telefon"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Radio"
 msgstr "Radio"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:161
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Organization"
 msgstr "Organisation"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Organizational Unit"
 msgstr "Organisationsenhet"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Office"
 msgstr "Kontor"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Title"
 msgstr "Titel"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Role"
 msgstr "Roll"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:169
 msgid "Manager"
 msgstr "Manager"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:170
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:173
 msgid "Homepage URL"
 msgstr "URL till hemsida"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:174
 msgid "Weblog URL"
 msgstr "URL till webblogg"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:175
-#: ../libedataserverui/e-categories-dialog.c:410
+#: ../addressbook/libebook/e-contact.c:177
+#: ../libedataserverui/e-categories-dialog.c:439
 msgid "Categories"
 msgstr "Kategorier"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:180
 msgid "Calendar URI"
 msgstr "Kalender-URI"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:181
 msgid "Free/Busy URL"
 msgstr "Ledig/Upptagen-URL"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:182
 msgid "ICS Calendar"
 msgstr "ICS-kalender"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Video Conferencing URL"
 msgstr "URL för videokonferens"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Spouse's Name"
 msgstr "Partnerns namn"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Note"
 msgstr "Notering"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 1"
 msgstr "AIM-hemskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 2"
 msgstr "AIM-hemskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Home Screen Name 3"
 msgstr "AIM-hemskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
 msgstr "AIM-jobbskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
 msgstr "AIM-jobbskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
 msgstr "AIM-jobbskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise-hemskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise-hemskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise-hemskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise-jobbskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise-jobbskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise-jobbskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
 msgstr "Jabber-hemid 1"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 2"
 msgstr "Jabber-hemid 2"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Home Id 3"
 msgstr "Jabber-hemid 3"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
 msgstr "Jabber-jobbid 1"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
 msgstr "Jabber-jobbid 2"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
 msgstr "Jabber-jobbid 3"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo!-hemskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo!-hemskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo!-hemskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo!-jobbskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo!-jobbskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo!-jobbskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
 msgstr "MSN-hemskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 2"
 msgstr "MSN-hemskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Home Screen Name 3"
 msgstr "MSN-hemskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
 msgstr "MSN-jobbskärmnamn 1"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
 msgstr "MSN-jobbskärmnamn 2"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
 msgstr "MSN-jobbskärmnamn 3"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
 msgstr "ICQ-hemid 1"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 2"
 msgstr "ICQ-hemid 2"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Home Id 3"
 msgstr "ICQ-hemid 3"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
 msgstr "ICQ-jobbid 1"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
 msgstr "ICQ-jobbid 2"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
 msgstr "ICQ-jobbid 3"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:228
 msgid "Last Revision"
 msgstr "Senaste version"
 
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook/e-contact.c:229
 msgid "Name or Org"
 msgstr "Namn eller organisation"
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:232
 msgid "Address List"
 msgstr "Adresslista"
 
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:233
 msgid "Home Address"
 msgstr "Hemadress"
 
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Work Address"
 msgstr "Jobbadress"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Other Address"
 msgstr "Annan adress"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:238
 msgid "Category List"
 msgstr "Kategorilista"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:241
 msgid "Photo"
 msgstr "Foto"
 
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Logo"
 msgstr "Logotyp"
 
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:244
 msgid "Name"
 msgstr "Namn"
 
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:245
 msgid "Email List"
 msgstr "E-postlista"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:246
+#: ../addressbook/libebook/e-contact.c:248
 msgid "AIM Screen Name List"
 msgstr "Lista med AIM-skärmnamn"
 
-#: ../addressbook/libebook/e-contact.c:247
+#: ../addressbook/libebook/e-contact.c:249
 msgid "GroupWise Id List"
 msgstr "Lista med GroupWise-id"
 
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:250
 msgid "Jabber Id List"
 msgstr "Lista med Jabber-id"
 
-#: ../addressbook/libebook/e-contact.c:249
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Yahoo! Screen Name List"
 msgstr "Lista med Yahoo!-skärmnamn"
 
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:252
 msgid "MSN Screen Name List"
 msgstr "Lista med MSN-skärmnamn"
 
-#: ../addressbook/libebook/e-contact.c:251
+#: ../addressbook/libebook/e-contact.c:253
 msgid "ICQ Id List"
 msgstr "Lista med ICQ-id"
 
-#: ../addressbook/libebook/e-contact.c:253
+#: ../addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
 msgstr "Vill ha HTML-epost"
 
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook/e-contact.c:257
 msgid "List"
 msgstr "Lista"
 
-#: ../addressbook/libebook/e-contact.c:256
+#: ../addressbook/libebook/e-contact.c:258
 msgid "List Show Addresses"
 msgstr "Lista visningsadresser"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:260
 msgid "Birth Date"
 msgstr "Födelsedatum"
 
-#: ../addressbook/libebook/e-contact.c:259
+#: ../addressbook/libebook/e-contact.c:261
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Jubileum"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:262
+#: ../addressbook/libebook/e-contact.c:264
 msgid "X.509 Certificate"
 msgstr "X.509-certifikat"
 
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 1"
 msgstr "Gadu-Gadu-hemid 1"
 
-#: ../addressbook/libebook/e-contact.c:265
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 2"
 msgstr "Gadu-Gadu-hemid 2"
 
-#: ../addressbook/libebook/e-contact.c:266
+#: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Home Id 3"
 msgstr "Gadu-Gadu-hemid 3"
 
-#: ../addressbook/libebook/e-contact.c:267
+#: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
 msgstr "Gadu-Gadu-jobbid 1"
 
-#: ../addressbook/libebook/e-contact.c:268
+#: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
 msgstr "Gadu-Gadu-jobbid 2"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
 msgstr "Gadu-Gadu-jobbid 3"
 
-#: ../addressbook/libebook/e-contact.c:270
+#: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
 msgstr "Gadu-Gadu-idlista"
 
-#: ../addressbook/libebook/e-contact.c:1453
+#. Geo information
+#: ../addressbook/libebook/e-contact.c:275
+msgid "Geographic Information"
+msgstr "Geografisk information"
+
+#: ../addressbook/libebook/e-contact.c:1492
 #: ../addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "Namnlös lista"
@@ -745,7 +751,7 @@ msgstr "Ogiltig server-URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5247
+#: ../calendar/libecal/e-cal.c:4997
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -1128,7 +1134,7 @@ msgstr "Låg"
 msgid "Undefined"
 msgstr "Odefinierad"
 
-#: ../calendar/libecal/e-cal.c:1757
+#: ../calendar/libecal/e-cal.c:1658
 #: ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
@@ -1138,81 +1144,81 @@ msgstr "Ange lösenord för %s (användare %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1771
+#: ../calendar/libecal/e-cal.c:1672
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Ange lösenord för %s för att aktivera proxyn för användaren %s"
 
-#: ../calendar/libecal/e-cal.c:5219
+#: ../calendar/libecal/e-cal.c:4969
 msgid "Invalid argument"
 msgstr "Ogiltigt argument"
 
-#: ../calendar/libecal/e-cal.c:5221
+#: ../calendar/libecal/e-cal.c:4971
 msgid "Backend is busy"
 msgstr "Bakänden är upptagen"
 
-#: ../calendar/libecal/e-cal.c:5223
+#: ../calendar/libecal/e-cal.c:4973
 msgid "Repository is offline"
 msgstr "Lagret är frånkopplat"
 
-#: ../calendar/libecal/e-cal.c:5225
+#: ../calendar/libecal/e-cal.c:4975
 msgid "No such calendar"
 msgstr "Det finns ingen sådan kalender"
 
-#: ../calendar/libecal/e-cal.c:5227
+#: ../calendar/libecal/e-cal.c:4977
 #: ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objektet kunde inte hittas"
 
-#: ../calendar/libecal/e-cal.c:5229
+#: ../calendar/libecal/e-cal.c:4979
 #: ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Ogiltigt objekt"
 
-#: ../calendar/libecal/e-cal.c:5231
+#: ../calendar/libecal/e-cal.c:4981
 msgid "URI not loaded"
 msgstr "URI:n är inte inläst"
 
-#: ../calendar/libecal/e-cal.c:5233
+#: ../calendar/libecal/e-cal.c:4983
 msgid "URI already loaded"
 msgstr "URI:n är redan inläst"
 
-#: ../calendar/libecal/e-cal.c:5235
+#: ../calendar/libecal/e-cal.c:4985
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Åtkomst nekas"
 
-#: ../calendar/libecal/e-cal.c:5237
+#: ../calendar/libecal/e-cal.c:4987
 #: ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Okänd användare"
 
-#: ../calendar/libecal/e-cal.c:5239
+#: ../calendar/libecal/e-cal.c:4989
 msgid "Object ID already exists"
 msgstr "Objektid finns redan"
 
-#: ../calendar/libecal/e-cal.c:5241
+#: ../calendar/libecal/e-cal.c:4991
 msgid "Protocol not supported"
 msgstr "Protokollet stöds inte"
 
-#: ../calendar/libecal/e-cal.c:5243
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Operation has been canceled"
 msgstr "Åtgärden har avbrutits"
 
-#: ../calendar/libecal/e-cal.c:5245
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Could not cancel operation"
 msgstr "Kunde inte avbryta åtgärden"
 
-#: ../calendar/libecal/e-cal.c:5249
+#: ../calendar/libecal/e-cal.c:4999
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autentisering krävs"
 
-#: ../calendar/libecal/e-cal.c:5251
+#: ../calendar/libecal/e-cal.c:5001
 msgid "A CORBA exception has occurred"
 msgstr "Ett CORBA-undantag har inträffat"
 
-#: ../calendar/libecal/e-cal.c:5253
+#: ../calendar/libecal/e-cal.c:5003
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1226,7 +1232,7 @@ msgstr "Ett CORBA-undantag har inträffat"
 msgid "Unknown error"
 msgstr "Okänt fel"
 
-#: ../calendar/libecal/e-cal.c:5255
+#: ../calendar/libecal/e-cal.c:5005
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Inga fel"
@@ -2317,12 +2323,14 @@ msgstr "Certifikatimport misslyckades"
 # Detta kräver en förklaring.
 # http://bugzilla.ximian.com/show_bug.cgi?id=61088
 #: ../camel/camel-smime-context.c:599
+#, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Certifikatet är enda meddelandet, kan inte verifiera certifikat"
 
 # Detta kräver en förklaring.
 # http://bugzilla.ximian.com/show_bug.cgi?id=61088
 #: ../camel/camel-smime-context.c:602
+#, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "Certifikatet är det enda meddelandet, certifikat importerade och verifierade"
 
@@ -2896,6 +2904,7 @@ msgid "You did not enter a password."
 msgstr "Du angav inte något lösenord."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:230
+#, c-format
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "Kunde inte autentisera mot GroupWise-servern. "
 
@@ -4949,12 +4958,16 @@ msgstr "Kommer åt LDAP-server anonymt"
 msgid "Failed to authenticate.\n"
 msgstr "Misslyckades med autentisering.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:265
+#: ../libedataserverui/e-categories-dialog.c:276
 #, c-format
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Det finns redan en kategori med namnet \"%s\" i konfigurationen. Använd ett annat namn"
 
-#: ../libedataserverui/e-categories-dialog.c:435
+#: ../libedataserverui/e-categories-dialog.c:475
+msgid "Icon"
+msgstr "Ikon"
+
+#: ../libedataserverui/e-categories-dialog.c:480
 msgid "Category"
 msgstr "Kategori"
 
@@ -5049,25 +5062,25 @@ msgid "_Search:"
 msgstr "_Sök:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2237
+#: ../libedataserverui/e-name-selector-entry.c:2241
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandera %s infogad"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2252
+#: ../libedataserverui/e-name-selector-entry.c:2256
 #, c-format
 msgid "Cop_y %s"
 msgstr "Kop_iera %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2262
+#: ../libedataserverui/e-name-selector-entry.c:2266
 #, c-format
 msgid "C_ut %s"
 msgstr "Klipp _ut %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2279
+#: ../libedataserverui/e-name-selector-entry.c:2283
 #, c-format
 msgid "_Edit %s"
 msgstr "_Redigera %s"
@@ -5079,19 +5092,19 @@ msgstr "_Redigera %s"
 msgid "_Delete %s"
 msgstr "_Ta bort %s"
 
-#: ../libedataserverui/e-passwords.c:870
+#: ../libedataserverui/e-passwords.c:872
 msgid "_Remember this passphrase"
 msgstr "_Kom ihåg denna lösenfras"
 
-#: ../libedataserverui/e-passwords.c:871
+#: ../libedataserverui/e-passwords.c:873
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Kom ihåg denna lösenfras under resten av denna session"
 
-#: ../libedataserverui/e-passwords.c:874
+#: ../libedataserverui/e-passwords.c:876
 msgid "_Remember this password"
 msgstr "_Kom ihåg detta lösenord"
 
-#: ../libedataserverui/e-passwords.c:875
+#: ../libedataserverui/e-passwords.c:877
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Kom ihåg detta lösenord under resten av denna session"
 
