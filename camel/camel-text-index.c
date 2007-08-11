@@ -844,14 +844,16 @@ camel_text_index_new(const char *path, int flags)
 	p->links = camel_key_file_new(link, flags, CAMEL_TEXT_INDEX_KEY_VERSION);
 
 	if (p->blocks == NULL || p->links == NULL) {
-		camel_object_unref((CamelObject *)idx);
-		return NULL;
-	}
+		goto fail;
 
 	rb = (struct _CamelTextIndexRoot *)p->blocks->root;
 
 	if (rb->word_index_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
+
+		if (bl == NULL)
+			goto fail;
+
 		rb->word_index_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
@@ -859,6 +861,10 @@ camel_text_index_new(const char *path, int flags)
 
 	if (rb->word_hash_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
+
+		if (bl == NULL)
+			goto fail;
+
 		rb->word_hash_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
@@ -866,6 +872,10 @@ camel_text_index_new(const char *path, int flags)
 
 	if (rb->name_index_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
+
+		if (bl == NULL)
+			goto fail;
+
 		rb->name_index_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
@@ -873,6 +883,10 @@ camel_text_index_new(const char *path, int flags)
 
 	if (rb->name_hash_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
+
+		if (bl == NULL)
+			goto fail;
+
 		rb->name_hash_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
@@ -890,6 +904,10 @@ camel_text_index_new(const char *path, int flags)
 	}
 
 	return idx;
+
+fail:
+	camel_object_unref((CamelObject *)idx);
+	return NULL;
 }
 
 /* returns 0 if the index exists, is valid, and synced, -1 otherwise */

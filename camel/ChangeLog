@@ -1,4 +1,11 @@
 2007-08-12  Johnny Jacob  <jjohnny@novell.com>
+ 
+	** Fix for 387806 by Rob Bradford  <rob@openedhand.com>
+	
+	* camel-text-index.c: Add some checking of return values when
+	calling camel_block_file_new_block. 
+ 
+2007-08-12  Johnny Jacob  <jjohnny@novell.com>
 
 	** Fix for Bug 261084 from Jared Moore
 
