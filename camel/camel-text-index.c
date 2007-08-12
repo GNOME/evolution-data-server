@@ -843,7 +843,7 @@ camel_text_index_new(const char *path, int flags)
 	sprintf(link, "%s.data", idx->parent.path);
 	p->links = camel_key_file_new(link, flags, CAMEL_TEXT_INDEX_KEY_VERSION);
 
-	if (p->blocks == NULL || p->links == NULL) {
+	if (p->blocks == NULL || p->links == NULL)
 		goto fail;
 
 	rb = (struct _CamelTextIndexRoot *)p->blocks->root;

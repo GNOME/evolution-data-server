@@ -1,3 +1,9 @@
+2007-08-12  Rob Bradford  <rob@openedhand.com>
+
+	* camel-text-index.c: (camel_text_index_new):
+	Fix syntax error introduced by my patch. Kudos to Theppitak
+	Karoonboonyanan for discovering it.
+
 2007-08-12  Johnny Jacob  <jjohnny@novell.com>
  
 	** Fix for 387806 by Rob Bradford  <rob@openedhand.com>
