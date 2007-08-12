@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-09 03:50+0100\n"
-"PO-Revision-Date: 2007-08-10 14:55+0200\n"
+"POT-Creation-Date: 2007-08-12 03:56+0100\n"
+"PO-Revision-Date: 2007-08-12 19:33+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,30 +23,30 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:558
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
+#: ../addressbook/backends/file/e-book-backend-file.c:554
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:561
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: ../addressbook/backends/file/e-book-backend-file.c:557
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2827
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3018
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3062
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando caché de contactos (%d)…"
@@ -721,7 +721,7 @@ msgstr "URI del servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5247
+#: ../calendar/libecal/e-cal.c:4997
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -1100,7 +1100,7 @@ msgstr "Baja"
 msgid "Undefined"
 msgstr "Sin definir"
 
-#: ../calendar/libecal/e-cal.c:1757 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1658 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduzca la contraseña para %s (usuario %s)"
@@ -1109,78 +1109,78 @@ msgstr "Introduzca la contraseña para %s (usuario %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1771
+#: ../calendar/libecal/e-cal.c:1672
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Introduzca la contraseña de %s para activar el proxy para el usuario %s"
 
-#: ../calendar/libecal/e-cal.c:5219
+#: ../calendar/libecal/e-cal.c:4969
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:5221
+#: ../calendar/libecal/e-cal.c:4971
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: ../calendar/libecal/e-cal.c:5223
+#: ../calendar/libecal/e-cal.c:4973
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:5225
+#: ../calendar/libecal/e-cal.c:4975
 msgid "No such calendar"
 msgstr "No existe el calendario"
 
-#: ../calendar/libecal/e-cal.c:5227 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:4977 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: ../calendar/libecal/e-cal.c:5229 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:4979 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:5231
+#: ../calendar/libecal/e-cal.c:4981
 msgid "URI not loaded"
 msgstr "URI no cargado"
 
-#: ../calendar/libecal/e-cal.c:5233
+#: ../calendar/libecal/e-cal.c:4983
 msgid "URI already loaded"
 msgstr "URI ya cargado"
 
-#: ../calendar/libecal/e-cal.c:5235
+#: ../calendar/libecal/e-cal.c:4985
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../calendar/libecal/e-cal.c:5237 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:4987 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
-#: ../calendar/libecal/e-cal.c:5239
+#: ../calendar/libecal/e-cal.c:4989
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: ../calendar/libecal/e-cal.c:5241
+#: ../calendar/libecal/e-cal.c:4991
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: ../calendar/libecal/e-cal.c:5243
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Operation has been canceled"
 msgstr "La operación ha sido cancelada"
 
-#: ../calendar/libecal/e-cal.c:5245
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: ../calendar/libecal/e-cal.c:5249
+#: ../calendar/libecal/e-cal.c:4999
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: ../calendar/libecal/e-cal.c:5251
+#: ../calendar/libecal/e-cal.c:5001
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: ../calendar/libecal/e-cal.c:5253
+#: ../calendar/libecal/e-cal.c:5003
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1194,7 +1194,7 @@ msgstr "Ha ocurrido una excepción CORBA"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: ../calendar/libecal/e-cal.c:5255
+#: ../calendar/libecal/e-cal.c:5005
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Sin errores"
@@ -1496,27 +1496,32 @@ msgstr ""
 "Error ejecutando la búsqueda según la expresión: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:676 ../camel/camel-folder-search.c:709
-msgid "(match-all) requires a single bool result"
-msgstr "(coincidir con todas) requiere un único resultado booleano"
+#: ../camel/camel-folder-search.c:677 ../camel/camel-folder-search.c:712
+#, c-format
+msgid "(%s) requires a single bool result"
+msgstr "(%s) requiere un único resultado booleano"
 
-#: ../camel/camel-folder-search.c:759
-msgid "(match-threads) not allowed inside match-all"
-msgstr "(coincidir-conversaciones) no se permite dentro de «coincidir-todo»"
+#: ../camel/camel-folder-search.c:765
+#, c-format
+msgid "(%s) not allowed inside match-all"
+msgstr "(%s) no se permite dentro de «coincidir-todo»"
 
-#: ../camel/camel-folder-search.c:762 ../camel/camel-folder-search.c:766
-msgid "(match-threads) requires a match type string"
-msgstr "(coincidir-conversaciones) requiere una cadena de coincidencia"
+#: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) requiere una cadena de coincidencia"
 
-#: ../camel/camel-folder-search.c:790
-msgid "(match-threads) expects an array result"
-msgstr "(coincidir-conversaciones) espera un resultado array"
+#: ../camel/camel-folder-search.c:805
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) espera un resultado «array»"
 
-#: ../camel/camel-folder-search.c:796
-msgid "(match-threads) requires the folder set"
-msgstr "(coincidir-conversaciones) requiere que se establezca una carpeta"
+#: ../camel/camel-folder-search.c:814
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) requiere que se establezca una carpeta"
 
-#: ../camel/camel-folder-search.c:888
+#: ../camel/camel-folder-search.c:909
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Realizando búsqueda en cabecera desconocida: %s"
