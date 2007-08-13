@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-06 16:36+0300\n"
+"POT-Creation-Date: 2007-08-13 19:40+0300\n"
 "PO-Revision-Date: 2006-12-09 06:15+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -16,30 +16,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:558
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
+#: ../addressbook/backends/file/e-book-backend-file.c:554
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Loading..."
 msgstr "Ladataan..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:561
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: ../addressbook/backends/file/e-book-backend-file.c:557
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Etsitään..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Haetaan yhteystietoja (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2827
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3018
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3062
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Päivitetään yhteystietojen välimuistia (%d)..."
@@ -103,6 +103,7 @@ msgstr "\"%s\" on kirjassa ennen kuin \"%s\""
 #: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
 #: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2672
 #: ../addressbook/libebook/e-book.c:2878
+#, c-format
 msgid "book busy"
 msgstr "kirja käytössä"
 
@@ -170,16 +171,16 @@ msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: gconf ei sisältänyt lähdettä uid:ille '%s'"
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook/e-contact.c:112
+#: ../addressbook/libebook/e-contact.c:114
 msgid "Unique ID"
 msgstr "Yksilöllinen tunniste"
 
-#: ../addressbook/libebook/e-contact.c:113
+#: ../addressbook/libebook/e-contact.c:115
 msgid "File Under"
 msgstr "Tallenna kohtaan"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:117
 msgid "Book URI"
 msgstr "Kirjan URI"
 
@@ -187,478 +188,483 @@ msgstr "Kirjan URI"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:121
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Full Name"
 msgstr "Koko nimi"
 
-#: ../addressbook/libebook/e-contact.c:122
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Given Name"
 msgstr "Sukunimi"
 
-#: ../addressbook/libebook/e-contact.c:123
+#: ../addressbook/libebook/e-contact.c:125
 msgid "Family Name"
 msgstr "Sukunimi"
 
-#: ../addressbook/libebook/e-contact.c:124
+#: ../addressbook/libebook/e-contact.c:126
 msgid "Nickname"
 msgstr "Lempinimi"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:127
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Email 1"
 msgstr "1. sähköposti"
 
-#: ../addressbook/libebook/e-contact.c:128
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Email 2"
 msgstr "2. sähköposti"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:131
 msgid "Email 3"
 msgstr "3. sähköposti"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:132
 msgid "Email 4"
 msgstr "4. sähköposti"
 
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:134
 msgid "Mailer"
 msgstr "Postittaja"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Home Address Label"
 msgstr "Kotiosoite "
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:138
 msgid "Work Address Label"
 msgstr "Työosoite"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:139
 msgid "Other Address Label"
 msgstr "Muu osoite"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Assistant Phone"
 msgstr "Apulaisen puhelin"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Phone"
 msgstr "Työpuhelin"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Business Phone 2"
 msgstr "Työpuhelin 2"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Business Fax"
 msgstr "Työ/faksi"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Callback Phone"
 msgstr "Takaisinsoitto"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Car Phone"
 msgstr "Autopuhelin"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Company Phone"
 msgstr "Yrityksen puhelin"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone"
 msgstr "Kotipuhelin"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:150
 msgid "Home Phone 2"
 msgstr "Kotipuhelin 2"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Home Fax"
 msgstr "Koti/faksi"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook/e-contact.c:152
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Mobile Phone"
 msgstr "Matkapuhelin"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Other Phone"
 msgstr "Muu puhelin"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Other Fax"
 msgstr "Muu faksi"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Pager"
 msgstr "Pager"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Primary Phone"
 msgstr "Ensisijainen puhelin"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Radio"
 msgstr "Radio"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:161
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Organization"
 msgstr "Organisaatio"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Organizational Unit"
 msgstr "Organisaatioyksikkö"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Office"
 msgstr "Asema"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Title"
 msgstr "Titteli"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Role"
 msgstr "Rooli"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:169
 msgid "Manager"
 msgstr "Johtaja"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:170
 msgid "Assistant"
 msgstr "Apulainen"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:173
 msgid "Homepage URL"
 msgstr "Kotisivun URL"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:174
 msgid "Weblog URL"
 msgstr "Weblogin URL"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:177
 #: ../libedataserverui/e-categories-dialog.c:439
 msgid "Categories"
 msgstr "Ryhmät"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:180
 msgid "Calendar URI"
 msgstr "Kalenterin URL"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:181
 msgid "Free/Busy URL"
 msgstr "Vapaa/varattu URL"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:182
 msgid "ICS Calendar"
 msgstr "ICS-kalenteri"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Video Conferencing URL"
 msgstr "Videoneuvottelun URL"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Spouse's Name"
 msgstr "Puolison nimi"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Note"
 msgstr "Huomio"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 1"
 msgstr "AIM kotinimi 1"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 2"
 msgstr "AIM kotinimi 2"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Home Screen Name 3"
 msgstr "AIM kotinimi 3"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
 msgstr "AIM työnimi 1"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
 msgstr "AIM työnimi 2"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
 msgstr "AIM työnimi 3"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise kotinimi 1"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise kotinimi 2"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise kotinimi 3"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise työnimi 1"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise työnimi 2"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise työnimi 3"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
 msgstr "Jabber kotitunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 2"
 msgstr "Jabber kotitunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Home Id 3"
 msgstr "Jabber kotitunniste 3"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
 msgstr "Jabber työtunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
 msgstr "Jabber työtunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
 msgstr "Jabber työtunniste 3"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo! kotinimi 1"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo! kotinimi 2"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo! kotinimi 3"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo! työnimi 1"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo! työnimi 2"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo! työnimi 3"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
 msgstr "MSN kotinimi 1"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 2"
 msgstr "MSN kotinimi 2"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Home Screen Name 3"
 msgstr "MSN kotinimi 3"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
 msgstr "MSN työnimi 1"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
 msgstr "MSN työnimi 2"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
 msgstr "MSN Work Screen Name 3"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
 msgstr "ICQ kotitunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 2"
 msgstr "ICQ työtunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Home Id 3"
 msgstr "ICQ kotitunniste 3"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
 msgstr "ICQ työtunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
 msgstr "ICQ työtunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
 msgstr "ICQ työtunniste 3"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:228
 msgid "Last Revision"
 msgstr "Viimeisin tarkistettu versio"
 
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook/e-contact.c:229
 msgid "Name or Org"
 msgstr "Nimi tai Org"
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:232
 msgid "Address List"
 msgstr "Osoitelista"
 
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:233
 msgid "Home Address"
 msgstr "Kotiosoite"
 
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Work Address"
 msgstr "Työosoite"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Other Address"
 msgstr "Muu osoite"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:238
 msgid "Category List"
 msgstr "Ryhmäluettelo"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:241
 msgid "Photo"
 msgstr "Valokuva"
 
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Logo"
 msgstr "Logo"
 
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:244
 msgid "Name"
 msgstr "Nimi"
 
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:245
 msgid "Email List"
 msgstr "Sähköpostilista"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:246
+#: ../addressbook/libebook/e-contact.c:248
 msgid "AIM Screen Name List"
 msgstr "AIM näyttönimien lista"
 
-#: ../addressbook/libebook/e-contact.c:247
+#: ../addressbook/libebook/e-contact.c:249
 msgid "GroupWise Id List"
 msgstr "Groupwisen Id-lista"
 
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:250
 msgid "Jabber Id List"
 msgstr "Jabber-tunnisteiden lista"
 
-#: ../addressbook/libebook/e-contact.c:249
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! näyttönimien lista"
 
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:252
 msgid "MSN Screen Name List"
 msgstr "MSN näyttönimien lista"
 
-#: ../addressbook/libebook/e-contact.c:251
+#: ../addressbook/libebook/e-contact.c:253
 msgid "ICQ Id List"
 msgstr "ICQ-tunnisteiden lista"
 
-#: ../addressbook/libebook/e-contact.c:253
+#: ../addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
 msgstr "Tahtoo HTML-postia"
 
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook/e-contact.c:257
 msgid "List"
 msgstr "Lista"
 
-#: ../addressbook/libebook/e-contact.c:256
+#: ../addressbook/libebook/e-contact.c:258
 msgid "List Show Addresses"
 msgstr "Lista näytettävistä osoitteista"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:260
 msgid "Birth Date"
 msgstr "Syntymäpäivä"
 
-#: ../addressbook/libebook/e-contact.c:259
+#: ../addressbook/libebook/e-contact.c:261
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Vuosipäivä"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:262
+#: ../addressbook/libebook/e-contact.c:264
 msgid "X.509 Certificate"
 msgstr "X.509-varmenne"
 
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 1"
 msgstr "Gadu-Gadu kotitunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:265
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 2"
 msgstr "Gadu-Gadu kotitunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:266
+#: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Home Id 3"
 msgstr "Gadu-Gadu kotitunniste 3"
 
-#: ../addressbook/libebook/e-contact.c:267
+#: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
 msgstr "Gadu-Gadu työtunniste 1"
 
-#: ../addressbook/libebook/e-contact.c:268
+#: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
 msgstr "Gadu-Gadu työtunniste 2"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
 msgstr "Gadu-Gadu työtunniste 3"
 
-#: ../addressbook/libebook/e-contact.c:270
+#: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
 msgstr "Gadu-Gadun tunnistelista"
 
-#: ../addressbook/libebook/e-contact.c:1453
+#. Geo information
+#: ../addressbook/libebook/e-contact.c:275
+msgid "Geographic Information"
+msgstr "Maantieteelliset tiedot"
+
+#: ../addressbook/libebook/e-contact.c:1492
 #: ../addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "Nimeämätön lista"
@@ -709,7 +715,7 @@ msgstr "Virheellinen palvelimen URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5247
+#: ../calendar/libecal/e-cal.c:4997
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -1088,7 +1094,7 @@ msgstr "Matala"
 msgid "Undefined"
 msgstr "Määrittelemätön"
 
-#: ../calendar/libecal/e-cal.c:1757 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1658 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Syötä salasana tilille %s (käytäjä %s)"
@@ -1097,79 +1103,79 @@ msgstr "Syötä salasana tilille %s (käytäjä %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1771
+#: ../calendar/libecal/e-cal.c:1672
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Syötä salasana kohteelle %s ottaaksesi käyttöön välimuisti  käyttäjälle %s"
 
-#: ../calendar/libecal/e-cal.c:5219
+#: ../calendar/libecal/e-cal.c:4969
 msgid "Invalid argument"
 msgstr "Virheellinen argumentti"
 
-#: ../calendar/libecal/e-cal.c:5221
+#: ../calendar/libecal/e-cal.c:4971
 msgid "Backend is busy"
 msgstr "Taustajärjestelmä on käytössä"
 
-#: ../calendar/libecal/e-cal.c:5223
+#: ../calendar/libecal/e-cal.c:4973
 msgid "Repository is offline"
 msgstr "Varasto on yhteydettömässä tilassa"
 
-#: ../calendar/libecal/e-cal.c:5225
+#: ../calendar/libecal/e-cal.c:4975
 msgid "No such calendar"
 msgstr "Kalenteria ei ole olemassa"
 
-#: ../calendar/libecal/e-cal.c:5227 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:4977 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Kohdetta ei löydy"
 
-#: ../calendar/libecal/e-cal.c:5229 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:4979 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Virheellinen kohde"
 
-#: ../calendar/libecal/e-cal.c:5231
+#: ../calendar/libecal/e-cal.c:4981
 msgid "URI not loaded"
 msgstr "URIa ei ole ladattu"
 
-#: ../calendar/libecal/e-cal.c:5233
+#: ../calendar/libecal/e-cal.c:4983
 msgid "URI already loaded"
 msgstr "URI on jo ladattu"
 
-#: ../calendar/libecal/e-cal.c:5235
+#: ../calendar/libecal/e-cal.c:4985
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Lupa evätty"
 
-#: ../calendar/libecal/e-cal.c:5237 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:4987 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Tuntematon käyttäjä"
 
-#: ../calendar/libecal/e-cal.c:5239
+#: ../calendar/libecal/e-cal.c:4989
 msgid "Object ID already exists"
 msgstr "OID on jo olemassa"
 
-#: ../calendar/libecal/e-cal.c:5241
+#: ../calendar/libecal/e-cal.c:4991
 msgid "Protocol not supported"
 msgstr "Protokolla ei ole tuettu"
 
-#: ../calendar/libecal/e-cal.c:5243
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Operation has been canceled"
 msgstr "Toimenpide on peruttu"
 
-#: ../calendar/libecal/e-cal.c:5245
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Could not cancel operation"
 msgstr "Toimenpidettä ei voitu perua"
 
-#: ../calendar/libecal/e-cal.c:5249
+#: ../calendar/libecal/e-cal.c:4999
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Todennus vaaditaan"
 
-#: ../calendar/libecal/e-cal.c:5251
+#: ../calendar/libecal/e-cal.c:5001
 msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
-#: ../calendar/libecal/e-cal.c:5253
+#: ../calendar/libecal/e-cal.c:5003
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1183,7 +1189,7 @@ msgstr "Tapahtui CORBA-poikkeus"
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: ../calendar/libecal/e-cal.c:5255
+#: ../calendar/libecal/e-cal.c:5005
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Ei virhettä"
@@ -1372,7 +1378,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Valmistellaan kansiota '%s' yhteydettömään tilaan"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:2995
+#: ../camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
 msgstr ""
 "Sinun täytyy olla yhteydellisessä tilassa suorittaaksesi tämän toiminnon "
@@ -1487,27 +1493,32 @@ msgstr ""
 "Virhe suoritettaessa hakulauseketta: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:676 ../camel/camel-folder-search.c:709
-msgid "(match-all) requires a single bool result"
-msgstr "(match-all) vaatii yhden totuusarvoisen tuloksen"
+#: ../camel/camel-folder-search.c:677 ../camel/camel-folder-search.c:712
+#, c-format
+msgid "(%s) requires a single bool result"
+msgstr "(%s) vaatii yhden totuusarvoisen tuloksen"
 
-#: ../camel/camel-folder-search.c:759
-msgid "(match-threads) not allowed inside match-all"
-msgstr "(match-threads) ei ole sallittu match-all:in sisällä"
+#: ../camel/camel-folder-search.c:765
+#, c-format
+msgid "(%s) not allowed inside match-all"
+msgstr "(%s) ei ole sallittu match-all:in sisällä"
 
-#: ../camel/camel-folder-search.c:762 ../camel/camel-folder-search.c:766
-msgid "(match-threads) requires a match type string"
-msgstr "(match-threads) vaatii vertaustyypin merkkijonon"
+#: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) vaatii vertaustyypin merkkijonon"
 
-#: ../camel/camel-folder-search.c:790
-msgid "(match-threads) expects an array result"
-msgstr "(match-threads) vaatii taulukon tuloksena"
+#: ../camel/camel-folder-search.c:805
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) olettaa tuloksena olevan taulukon"
 
-#: ../camel/camel-folder-search.c:796
-msgid "(match-threads) requires the folder set"
-msgstr "(match-threads) vaatii kansion asettamisen"
+#: ../camel/camel-folder-search.c:814
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) vaatii kansion asettamisen"
 
-#: ../camel/camel-folder-search.c:888
+#: ../camel/camel-folder-search.c:909
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Kysely tuntemattomaan otsakkeeseen: %s"
@@ -2253,10 +2264,12 @@ msgid "Certificate import failed"
 msgstr "Varmenteen tuonti epäonnistui"
 
 #: ../camel/camel-smime-context.c:599
+#, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Viesti on itsessään varmenne, varmenteita ei voida tarkistaa"
 
 #: ../camel/camel-smime-context.c:602
+#, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "Viesti on itsessään varmenne, varmenteet tuotu ja tarkistettu"
 
@@ -2815,6 +2828,7 @@ msgid "You did not enter a password."
 msgstr "Et antanut salasanaa."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:230
+#, c-format
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "Groupwise-palvelimelle kirjautuminen epäonnistui."
 
@@ -2940,12 +2954,12 @@ msgstr "Ota yhteys Hula-palvelimeen selväkielistä salasanaa käyttäen."
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3035
+#: ../camel/providers/imap/camel-imap-store.c:3037
 msgid "Operation cancelled"
 msgstr "Toiminto keskeytetty"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3038
+#: ../camel/providers/imap/camel-imap-store.c:3040
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Palvelin katkaisi yhteyden odottamatta: %s"
@@ -3623,10 +3637,11 @@ msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "Tallenna tila-otsakkeet Elm/Pine/Mutt-muodossa"
 
 #: ../camel/providers/local/camel-local-provider.c:115
-msgid "Standard Unix mbox spool or directory"
-msgstr "Tavallinen Unix mbox kansio tai hakemisto"
+msgid "Standard Unix mbox spool file"
+msgstr "Tavallinen Unixin mbox-kansio"
 
 #: ../camel/providers/local/camel-local-provider.c:116
+#: ../camel/providers/local/camel-local-provider.c:127
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3634,6 +3649,10 @@ msgstr ""
 "Sähköpostin tallennus ulkoisiin tavallisiin mbox-muotoisiin "
 "sähköpostitiedostoihin.\n"
 "Tällä voidaan myös lukea hakemisto Elm, Pine tai Mutt-tyylisiä kansioita."
+
+#: ../camel/providers/local/camel-local-provider.c:126
+msgid "Standard Unix mbox spool directory"
+msgstr "Tavallinen Unixin mbox-muotoinen saapuvien hakemisto"
 
 #: ../camel/providers/local/camel-local-store.c:157
 #: ../camel/providers/local/camel-local-store.c:268
