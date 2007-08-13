@@ -1,3 +1,10 @@
+2007-08-10  Suman Manjunath  <msuman@novell.com>
+
+	** Fixes bug #465419
+
+	* e-gw-item.c: (e_gw_item_append_to_soap_message):
+	If message body is NULL, use 0 as string length.
+
 2007-08-10  Milan Crha  <mcrha@redhat.com>
 
 	* e-gw-connection.c: (e_gw_connection_get_container_list):
