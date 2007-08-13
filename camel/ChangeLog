@@ -1,3 +1,11 @@
+2007-08-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #352346
+
+	* camel-provider.h: Added new constants CAMEL_URL_PART_PATH_DIR and
+	CAMEL_URL_NEED_PATH_DIR; when CAMEL_URL_NEED_PATH_DIR is set, then
+	in editor dialog is choosing file, without it directory.
+
 2007-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #420462

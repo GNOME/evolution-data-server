@@ -1,3 +1,12 @@
+2007-08-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #352346
+
+	* camel-local-provider.c: (camel_provider_module_init):
+	New provider spool_file_provider with virtual protocol 'spooldir'
+	and set CAMEL_URL_NEED_PATH_DIR; registering this provider
+	as copy for spool files.
+
 2007-07-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #342164 from Lucky and Jared Moore
