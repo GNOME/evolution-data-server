@@ -1,3 +1,10 @@
+2007-08-13  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #420462
+
+	* camel-store.c: (camel_folder_info_build): If the FolderInfo doesn't
+	have a child, unset the NO_CHILDREN flag.
+
 2007-08-12  Rob Bradford  <rob@openedhand.com>
 
 	* camel-text-index.c: (camel_text_index_new):

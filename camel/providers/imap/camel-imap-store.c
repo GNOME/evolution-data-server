@@ -2853,6 +2853,8 @@ get_folder_info_offline (CamelStore *store, const char *top,
 			} else {
 				fill_fi((CamelStore *)imap_store, fi, 0);
 			}
+			if (!fi->child)
+				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 			g_ptr_array_add (folders, fi);
 		}
 		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);

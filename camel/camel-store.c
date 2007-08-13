@@ -991,6 +991,10 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 	tail = top;
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
+
+		if (fi->child)
+			fi->flags &= ~CAMEL_FOLDER_NOCHILDREN;
+
 		if (fi->parent || fi == top)
 			continue;
 		if (tail == NULL) {
