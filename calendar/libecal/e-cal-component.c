@@ -2790,7 +2790,7 @@ set_period_list (ECalComponent *comp,
 	for (l = pl; l; l = l->next) {
 		ECalComponentPeriod *p;
 		struct period *period;
-		struct icaldatetimeperiodtype ip;
+		struct icaldatetimeperiodtype ip = {};
 		icalparameter_value value_type;
 
 		g_assert (l->data != NULL);

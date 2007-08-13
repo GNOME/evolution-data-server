@@ -63,19 +63,19 @@ parse_for_url (char *code, char *name, xmlNode *parent)
 {
 	xmlNode *child;
 	if (parent->type == XML_ELEMENT_NODE) {
-		if (strcmp (parent->name, "location") == 0) {
+		if (strcmp ((char*)parent->name, "location") == 0) {
 			child = parent->children;
 			g_assert (child->type == XML_TEXT_NODE);
-			if (strcmp (child->content, name) == 0) {
+			if (strcmp ((char*)child->content, name) == 0) {
 				xmlAttr *attr;
 				gchar *url = NULL;
 				for (attr = parent->properties; attr; attr = attr->next) {
-					if (strcmp (attr->name, "code") == 0) {
-						if (strcmp (attr->children->content, code) != 0)
+					if (strcmp ((char*)attr->name, "code") == 0) {
+						if (strcmp ((char*)attr->children->content, code) != 0)
 							return NULL;
 					}
-					if (strcmp (attr->name, "url") == 0)
-						url = attr->children->content;
+					if (strcmp ((char*)attr->name, "url") == 0)
+						url = (char*)attr->children->content;
 				}
 				return g_strdup (url);
 			}

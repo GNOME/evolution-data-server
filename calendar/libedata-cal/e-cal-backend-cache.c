@@ -181,7 +181,7 @@ e_cal_backend_cache_constructor (GType type,
 {
 	GObject *obj;
 	const char *uri;
-	ECalSourceType source_type;
+	ECalSourceType source_type = E_CAL_SOURCE_TYPE_EVENT;
 	ECalBackendCacheClass *klass;
 	GObjectClass *parent_class;
 
