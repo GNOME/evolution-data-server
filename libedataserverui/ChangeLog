@@ -1,3 +1,8 @@
+2007-08-13  Ross Burton  <ross@openedhand.com>
+
+	* e-name-selector-entry.c:
+	Fix compile warnings.
+
 2007-08-10  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #327977

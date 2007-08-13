@@ -2061,7 +2061,7 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-	pemail = g_strconcat (contact_email, ",");
+	pemail = g_strconcat (contact_email, ",", NULL);
 	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
 
 	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
@@ -2090,7 +2090,7 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-	pemail = g_strconcat (contact_email, ",");
+	pemail = g_strconcat (contact_email, ",", NULL);
 	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
 
 	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
