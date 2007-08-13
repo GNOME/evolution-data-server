@@ -1192,7 +1192,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				};
 
 				if (type) {
-					g_hash_table_insert (item->priv->simple_fields, key, value);
+					g_hash_table_insert (item->priv->simple_fields, (char*)key, value);
 					g_free (type);
 				}
 			}
@@ -1256,7 +1256,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				add = "Other";
 
 			if (value) 
-				g_hash_table_insert (item->priv->addresses, add, address);
+				g_hash_table_insert (item->priv->addresses, (char*)add, address);
 			else
 				free_postal_address (address);
 			g_free (value);
