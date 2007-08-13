@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-12 03:56+0100\n"
-"PO-Revision-Date: 2007-08-12 19:33+0200\n"
+"POT-Creation-Date: 2007-08-13 17:43+0100\n"
+"PO-Revision-Date: 2007-08-14 00:24+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1383,7 +1383,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Preparando carpeta «%s» para desconexión"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:2995
+#: ../camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
 msgstr "Para completar esta operación debe estar trabajando conectado a la red"
 
@@ -2951,12 +2951,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3035
+#: ../camel/providers/imap/camel-imap-store.c:3037
 msgid "Operation cancelled"
 msgstr "Operación cancelada"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3038
+#: ../camel/providers/imap/camel-imap-store.c:3040
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "El servidor se desconectó inesperadamente: %s"
@@ -3641,10 +3641,11 @@ msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "Almacenar cabeceras de estado en formato Elm/Pine/Mutt"
 
 #: ../camel/providers/local/camel-local-provider.c:115
-msgid "Standard Unix mbox spool or directory"
-msgstr "Cola de correo Mbox estándar de Unix o directorio"
+msgid "Standard Unix mbox spool file"
+msgstr "Archivo de cola de correo Mbox estándar de Unix"
 
 #: ../camel/providers/local/camel-local-provider.c:116
+#: ../camel/providers/local/camel-local-provider.c:127
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3652,6 +3653,10 @@ msgstr ""
 "Para leer y guardar el correo local en directorios externos estándar mbox.\n"
 "También puede ser usado para leer un árbol del estilo de carpetas de Elm, "
 "Pine o Mutt."
+
+#: ../camel/providers/local/camel-local-provider.c:126
+msgid "Standard Unix mbox spool directory"
+msgstr "Directorio de cola de correo Mbox estándar de Unix"
 
 #: ../camel/providers/local/camel-local-store.c:157
 #: ../camel/providers/local/camel-local-store.c:268
