@@ -315,7 +315,7 @@ md5_get_digest (const gchar *buffer, gint buffer_size, guchar digest[16])
 	MD5Context ctx;
 
 	md5_init (&ctx);
-	md5_update (&ctx, buffer, buffer_size);
+	md5_update (&ctx, (guchar*)buffer, buffer_size);
 	md5_final (&ctx, digest);
 	
 }

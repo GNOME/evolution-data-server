@@ -1,3 +1,14 @@
+2007-08-13  Ross Burton  <ross@openedhand.com>
+
+	* libedataserver/e-xml-hash-utils.c:
+	* libedataserver/e-data-server-util.c:
+	* libedataserver/e-dbhash.c:
+	* libedataserver/md5-utils.c:
+	* libedataserver/e-account.c:
+	* libedataserver/e-xml-utils.c:
+	* libedataserver/e-source.c:
+	Fix compile warnings.
+
 2007-08-08  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fix for bug #455799

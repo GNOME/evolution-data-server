@@ -118,7 +118,7 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
         gunichar *nuni;
         gunichar unival;
         gint nlen;
-        const guchar *o, *p;
+        const gchar *o, *p;
 
         if (haystack == NULL) return NULL;
         if (needle == NULL) return NULL;
@@ -165,7 +165,7 @@ stripped_char (gunichar ch)
 {
         gunichar *decomp, retval;
         GUnicodeType utype;
-        gint dlen;
+        gsize dlen;
 
         utype = g_unichar_type (ch);
 
@@ -210,7 +210,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         gunichar *nuni;
         gunichar unival;
         gint nlen;
-        const guchar *o, *p;
+        const gchar *o, *p;
 
         if (haystack == NULL) return NULL;
         if (needle == NULL) return NULL;

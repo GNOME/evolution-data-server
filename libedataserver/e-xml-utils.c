@@ -58,7 +58,8 @@ e_xml_parse_file (const char *filename)
 int
 e_xml_save_file (const char *filename, xmlDocPtr doc)
 {
-	char *filesave, *xmlbuf;
+	char *filesave;
+	xmlChar *xmlbuf;
 	size_t n, written = 0;
 	int ret, fd, size;
 	int errnosave;
@@ -78,7 +79,7 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 		return -1;
 	}
 	
-	xmlDocDumpFormatMemory (doc, (xmlChar **) &xmlbuf, &size, TRUE);
+	xmlDocDumpFormatMemory (doc, &xmlbuf, &size, TRUE);
 	if (size <= 0) {
 		close (fd);
 		g_unlink (filesave);

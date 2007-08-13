@@ -59,7 +59,7 @@ string_to_dbt(const char *str, DBT *dbt)
 }
 
 static void
-md5_to_dbt(const char str[16], DBT *dbt)
+md5_to_dbt(const guchar str[16], DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (void*)str;
