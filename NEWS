@@ -1,3 +1,39 @@
+Evolution-Data-Server 1.11.90 2007-08-13
+-----------------------------------------
+
+Bug Fixes:
+	#261084 - "match-all" and "match-threads" in evolution camel needs translator comments (Jared Moore)
+	#313221 - Import of vcards misses type information (Milan Crha)
+	#314709 - Add GEO field to EVCard and EContact (Cosimo Cecchi)
+	#327977 - Crash in e_account_set_string at e-account.c:929 (Milan Crha)
+	#352346 - Cannot create Maildir account (Milan Crha)
+	#355640 - crash on invalid response to the IMAP command "XX FETCH 1 BODY" (Sankar)
+	#387806 - camel_text_index_new() faults instead of handling allocation failure (Rob Bradford)
+	#415891 - Use EFlag for synchronization (Matthew Barnes)
+	#420462 - Crash while clicking refresh in folder subscription (Srini)
+	#427469 - Incorrect importing of VCard (Milan Crha)
+	#439147 - Don't print pages of debug information (Jeff Cai)
+	#451003 - Build fails because SOUP_SESSION_TIMEOUT is undefined (Ross Burton)
+	#455799 - Remove all .cvsignore and update svn:ignore porperty in whole directories (Hiroyuki Ikezoe)
+	#458670 - Crash while autocompleting in composer (Srini)
+	#460999 - Crashing while looking up passwords (Srini)
+	#461989 - Memory leaks fixes on e-categories* (Hiroyuki Ikezoe)
+	#464252 - Use /usr/share/lib/zoneinfo/tab/zone_sun.tab on Solaris (Jeff Cai)
+	#465419 - crash in e_gw_item_append_to_soap_message (Suman)
+
+Updated Translations:
+	Jorge Gonzalez (es)
+	Daniel Nylander (sv)
+	Ankit Patel (gu)
+	Kjartan Maraas (nb)
+	Ilkka Tuohela (fi)
+	Takeshi AIHANA (ja)
+	Runa Bhattacharjee (bn_IN)
+	Danishka Navin (si)
+	Daniel Nylander (sv)
+	Kjartan Maraas (nb)
+	Priit Laes (et)
+	
 Evolution-Data-Server 1.11.6.1 2007-07-31
 -----------------------------------------
 
