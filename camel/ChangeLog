@@ -1,3 +1,11 @@
+2007-08-14  Jens Granseuer  <jensgr@gmx.net>
+
+	** Fix for bug #466309
+
+	* camel-folder-summary.c: (camel_folder_summary_add_from_parser):
+	declare variables at the beginning of the block. Fixes building
+	with non-C99 compilers.
+
 2007-08-13  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #352346
