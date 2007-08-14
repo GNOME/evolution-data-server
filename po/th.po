@@ -6,40 +6,40 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: th\n"
+"Project-Id-Version: evolution-data-server 2.11.6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-30 16:26+0700\n"
-"PO-Revision-Date: 2007-07-30 16:30+0700\n"
+"POT-Creation-Date: 2007-08-14 14:36+0700\n"
+"PO-Revision-Date: 2007-08-14 14:42+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addressbook/backends/file/e-book-backend-file.c:558
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
-#: addressbook/backends/vcf/e-book-backend-vcf.c:490
+#: addressbook/backends/file/e-book-backend-file.c:554
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
+#: addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Loading..."
 msgstr "กำลังโหลด..."
 
-#: addressbook/backends/file/e-book-backend-file.c:561
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: addressbook/backends/file/e-book-backend-file.c:557
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
 #: addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: addressbook/backends/vcf/e-book-backend-vcf.c:492
+#: addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "กำลังค้นหา..."
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
 #: addressbook/backends/ldap/e-book-backend-ldap.c:4305
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "กำลังดาวน์โหลดที่อยู่ติดต่อ (%d)... "
 
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
-#: addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:2827
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:3018
+#: addressbook/backends/groupwise/e-book-backend-groupwise.c:3062
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "กำลังปรับข้อมูลแคชที่อยู่ติดต่อ (%d)... "
@@ -171,16 +171,16 @@ msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: ไม่มีแหล่งสำหรับ uid `%s' ใน gconf"
 
 #. Dummy row as EContactField starts from 1
-#: addressbook/libebook/e-contact.c:112
+#: addressbook/libebook/e-contact.c:114
 msgid "Unique ID"
 msgstr "ID ที่ไม่ซ้ำ"
 
-#: addressbook/libebook/e-contact.c:113
+#: addressbook/libebook/e-contact.c:115
 msgid "File Under"
 msgstr "เก็บด้วยชื่อ"
 
 #. URI of the book to which the contact belongs to
-#: addressbook/libebook/e-contact.c:115
+#: addressbook/libebook/e-contact.c:117
 msgid "Book URI"
 msgstr "URI ของสมุดที่อยู่"
 
@@ -188,478 +188,483 @@ msgstr "URI ของสมุดที่อยู่"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: addressbook/libebook/e-contact.c:121
+#: addressbook/libebook/e-contact.c:123
 msgid "Full Name"
 msgstr "ชื่อเต็ม"
 
-#: addressbook/libebook/e-contact.c:122
+#: addressbook/libebook/e-contact.c:124
 msgid "Given Name"
 msgstr "ชื่อ"
 
-#: addressbook/libebook/e-contact.c:123
+#: addressbook/libebook/e-contact.c:125
 msgid "Family Name"
 msgstr "นามสกุล"
 
-#: addressbook/libebook/e-contact.c:124
+#: addressbook/libebook/e-contact.c:126
 msgid "Nickname"
 msgstr "ชื่อเล่น"
 
 #. Email fields
-#: addressbook/libebook/e-contact.c:127
+#: addressbook/libebook/e-contact.c:129
 msgid "Email 1"
 msgstr "อีเมล 1"
 
-#: addressbook/libebook/e-contact.c:128
+#: addressbook/libebook/e-contact.c:130
 msgid "Email 2"
 msgstr "อีเมล 2"
 
-#: addressbook/libebook/e-contact.c:129
+#: addressbook/libebook/e-contact.c:131
 msgid "Email 3"
 msgstr "อีเมล 3"
 
-#: addressbook/libebook/e-contact.c:130
+#: addressbook/libebook/e-contact.c:132
 msgid "Email 4"
 msgstr "อีเมล 4"
 
-#: addressbook/libebook/e-contact.c:132
+#: addressbook/libebook/e-contact.c:134
 msgid "Mailer"
 msgstr "โปรแกรมส่งเมล"
 
 #. Address Labels
-#: addressbook/libebook/e-contact.c:135
+#: addressbook/libebook/e-contact.c:137
 msgid "Home Address Label"
 msgstr "ป้ายชื่อที่อยู่บ้าน"
 
-#: addressbook/libebook/e-contact.c:136
+#: addressbook/libebook/e-contact.c:138
 msgid "Work Address Label"
 msgstr "ป้ายชื่อที่อยู่ที่ทำงาน"
 
-#: addressbook/libebook/e-contact.c:137
+#: addressbook/libebook/e-contact.c:139
 msgid "Other Address Label"
 msgstr "ป้ายชื่อที่อยู่อื่น"
 
 #. Phone fields
-#: addressbook/libebook/e-contact.c:140
+#: addressbook/libebook/e-contact.c:142
 msgid "Assistant Phone"
 msgstr "โทรศัพท์ผู้ช่วย"
 
-#: addressbook/libebook/e-contact.c:141
+#: addressbook/libebook/e-contact.c:143
 msgid "Business Phone"
 msgstr "โทรศัพท์ที่ทำงาน"
 
-#: addressbook/libebook/e-contact.c:142
+#: addressbook/libebook/e-contact.c:144
 msgid "Business Phone 2"
 msgstr "โทรศัพท์ที่ทำงาน 2"
 
-#: addressbook/libebook/e-contact.c:143
+#: addressbook/libebook/e-contact.c:145
 msgid "Business Fax"
 msgstr "โทรสารที่ทำงาน"
 
-#: addressbook/libebook/e-contact.c:144
+#: addressbook/libebook/e-contact.c:146
 msgid "Callback Phone"
 msgstr "โทรศัพท์โทรกลับ"
 
-#: addressbook/libebook/e-contact.c:145
+#: addressbook/libebook/e-contact.c:147
 msgid "Car Phone"
 msgstr "โทรศัพท์รถ"
 
-#: addressbook/libebook/e-contact.c:146
+#: addressbook/libebook/e-contact.c:148
 msgid "Company Phone"
 msgstr "โทรศัพท์บริษัท"
 
-#: addressbook/libebook/e-contact.c:147
+#: addressbook/libebook/e-contact.c:149
 msgid "Home Phone"
 msgstr "โทรศัพท์บ้าน"
 
-#: addressbook/libebook/e-contact.c:148
+#: addressbook/libebook/e-contact.c:150
 msgid "Home Phone 2"
 msgstr "โทรศัพท์บ้าน 2"
 
-#: addressbook/libebook/e-contact.c:149
+#: addressbook/libebook/e-contact.c:151
 msgid "Home Fax"
 msgstr "โทรสารบ้าน"
 
-#: addressbook/libebook/e-contact.c:150
+#: addressbook/libebook/e-contact.c:152
 msgid "ISDN"
 msgstr "ISDN"
 
-#: addressbook/libebook/e-contact.c:151
+#: addressbook/libebook/e-contact.c:153
 msgid "Mobile Phone"
 msgstr "โทรศัพท์มือถือ"
 
-#: addressbook/libebook/e-contact.c:152
+#: addressbook/libebook/e-contact.c:154
 msgid "Other Phone"
 msgstr "โทรศัพท์อื่นๆ"
 
-#: addressbook/libebook/e-contact.c:153
+#: addressbook/libebook/e-contact.c:155
 msgid "Other Fax"
 msgstr "โทรสารอื่นๆ"
 
-#: addressbook/libebook/e-contact.c:154
+#: addressbook/libebook/e-contact.c:156
 msgid "Pager"
 msgstr "เพจเจอร์"
 
-#: addressbook/libebook/e-contact.c:155
+#: addressbook/libebook/e-contact.c:157
 msgid "Primary Phone"
 msgstr "โทรศัพท์หลัก"
 
-#: addressbook/libebook/e-contact.c:156
+#: addressbook/libebook/e-contact.c:158
 msgid "Radio"
 msgstr "วิทยุสื่อสาร"
 
-#: addressbook/libebook/e-contact.c:157
+#: addressbook/libebook/e-contact.c:159
 msgid "Telex"
 msgstr "เทเลกซ์"
 
 #. To translators: TTY is Teletypewriter
-#: addressbook/libebook/e-contact.c:159
+#: addressbook/libebook/e-contact.c:161
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: addressbook/libebook/e-contact.c:162
+#: addressbook/libebook/e-contact.c:164
 msgid "Organization"
 msgstr "องค์กร"
 
-#: addressbook/libebook/e-contact.c:163
+#: addressbook/libebook/e-contact.c:165
 msgid "Organizational Unit"
 msgstr "หน่วยงานองค์กร"
 
-#: addressbook/libebook/e-contact.c:164
+#: addressbook/libebook/e-contact.c:166
 msgid "Office"
 msgstr "สำนักงาน"
 
-#: addressbook/libebook/e-contact.c:165
+#: addressbook/libebook/e-contact.c:167
 msgid "Title"
 msgstr "ตำแหน่ง"
 
-#: addressbook/libebook/e-contact.c:166
+#: addressbook/libebook/e-contact.c:168
 msgid "Role"
 msgstr "บทบาท"
 
-#: addressbook/libebook/e-contact.c:167
+#: addressbook/libebook/e-contact.c:169
 msgid "Manager"
 msgstr "ผู้จัดการ"
 
-#: addressbook/libebook/e-contact.c:168
+#: addressbook/libebook/e-contact.c:170
 msgid "Assistant"
 msgstr "ผู้ช่วย"
 
 #. Web fields
-#: addressbook/libebook/e-contact.c:171
+#: addressbook/libebook/e-contact.c:173
 msgid "Homepage URL"
 msgstr "URL ของโฮมเพจ"
 
-#: addressbook/libebook/e-contact.c:172
+#: addressbook/libebook/e-contact.c:174
 msgid "Weblog URL"
 msgstr "URL ของเว็บล็อก"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:175
-#: libedataserverui/e-categories-dialog.c:410
+#: addressbook/libebook/e-contact.c:177
+#: libedataserverui/e-categories-dialog.c:439
 msgid "Categories"
 msgstr "หมวดหมู่"
 
 #. Collaboration fields
-#: addressbook/libebook/e-contact.c:178
+#: addressbook/libebook/e-contact.c:180
 msgid "Calendar URI"
 msgstr "URI ปฏิทิน"
 
-#: addressbook/libebook/e-contact.c:179
+#: addressbook/libebook/e-contact.c:181
 msgid "Free/Busy URL"
 msgstr "URL สถานะว่าง/ไม่ว่าง"
 
-#: addressbook/libebook/e-contact.c:180
+#: addressbook/libebook/e-contact.c:182
 msgid "ICS Calendar"
 msgstr "ปฏิทิน ICS"
 
-#: addressbook/libebook/e-contact.c:181
+#: addressbook/libebook/e-contact.c:183
 msgid "Video Conferencing URL"
 msgstr "URL ของการประชุมวีดิทัศน์"
 
 #. Misc fields
-#: addressbook/libebook/e-contact.c:184
+#: addressbook/libebook/e-contact.c:186
 msgid "Spouse's Name"
 msgstr "ชื่อคู่สมรส"
 
-#: addressbook/libebook/e-contact.c:185
+#: addressbook/libebook/e-contact.c:187
 msgid "Note"
 msgstr "หมายเหตุ"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:188
+#: addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่บ้าน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:189
+#: addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่บ้าน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:190
+#: addressbook/libebook/e-contact.c:192
 msgid "AIM Home Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่บ้าน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:191
+#: addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่ทำงาน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:192
+#: addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่ทำงาน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:193
+#: addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่ทำงาน สำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:194
+#: addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่บ้าน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:195
+#: addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่บ้าน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:196
+#: addressbook/libebook/e-contact.c:198
 msgid "GroupWise Home Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่บ้าน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:197
+#: addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่ทำงาน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:198
+#: addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่ทำงาน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:199
+#: addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่ทำงาน สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:200
+#: addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
 msgstr "Id 1 ที่บ้าน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:201
+#: addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 2"
 msgstr "Id 2 ที่บ้าน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:202
+#: addressbook/libebook/e-contact.c:204
 msgid "Jabber Home Id 3"
 msgstr "Id 3 ที่บ้าน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:203
+#: addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
 msgstr "Id 1 ที่ทำงาน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:204
+#: addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
 msgstr "Id 2 ที่ทำงาน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:205
+#: addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
 msgstr "Id 3 ที่ทำงาน สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:206
+#: addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่บ้าน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:207
+#: addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่บ้าน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:208
+#: addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Home Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่บ้าน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:209
+#: addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่ทำงาน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:210
+#: addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่ทำงาน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:211
+#: addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่ทำงาน สำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:212
+#: addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่บ้าน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:213
+#: addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่บ้าน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:214
+#: addressbook/libebook/e-contact.c:216
 msgid "MSN Home Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่บ้าน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:215
+#: addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
 msgstr "ชื่อเรียก 1 ที่ทำงาน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:216
+#: addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
 msgstr "ชื่อเรียก 2 ที่ทำงาน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:217
+#: addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
 msgstr "ชื่อเรียก 3 ที่ทำงาน สำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:218
+#: addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
 msgstr "Id 1 ที่บ้าน สำหรับ ICQ"
 
-#: addressbook/libebook/e-contact.c:219
+#: addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 2"
 msgstr "Id 2 ที่บ้าน สำหรับ ICQ"
 
-#: addressbook/libebook/e-contact.c:220
+#: addressbook/libebook/e-contact.c:222
 msgid "ICQ Home Id 3"
 msgstr "Id 3 ที่บ้าน สำหรับ ICQ"
 
-#: addressbook/libebook/e-contact.c:221
+#: addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
 msgstr "Id 1 ที่ทำงาน สำหรับ ICQ"
 
-#: addressbook/libebook/e-contact.c:222
+#: addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
 msgstr "Id 2 ที่ทำงาน สำหรับ ICQ"
 
-#: addressbook/libebook/e-contact.c:223
+#: addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
 msgstr "Id 3 ที่ทำงาน สำหรับ ICQ"
 
 #. Last modified time
-#: addressbook/libebook/e-contact.c:226
+#: addressbook/libebook/e-contact.c:228
 msgid "Last Revision"
 msgstr "แก้ไขล่าสุด"
 
-#: addressbook/libebook/e-contact.c:227
+#: addressbook/libebook/e-contact.c:229
 msgid "Name or Org"
 msgstr "ชื่อหรือองค์กร"
 
 #. Address fields
-#: addressbook/libebook/e-contact.c:230
+#: addressbook/libebook/e-contact.c:232
 msgid "Address List"
 msgstr "รายการที่อยู่"
 
-#: addressbook/libebook/e-contact.c:231
+#: addressbook/libebook/e-contact.c:233
 msgid "Home Address"
 msgstr "ที่อยู่บ้าน"
 
-#: addressbook/libebook/e-contact.c:232
+#: addressbook/libebook/e-contact.c:234
 msgid "Work Address"
 msgstr "ที่อยู่ที่ทำงาน"
 
-#: addressbook/libebook/e-contact.c:233
+#: addressbook/libebook/e-contact.c:235
 msgid "Other Address"
 msgstr "ที่อยู่อื่น"
 
 #. Contact categories
-#: addressbook/libebook/e-contact.c:236
+#: addressbook/libebook/e-contact.c:238
 msgid "Category List"
 msgstr "รายการหมวดหมู่"
 
 #. Photo/Logo
-#: addressbook/libebook/e-contact.c:239
+#: addressbook/libebook/e-contact.c:241
 msgid "Photo"
 msgstr "ภาพถ่าย"
 
-#: addressbook/libebook/e-contact.c:240
+#: addressbook/libebook/e-contact.c:242
 msgid "Logo"
 msgstr "โลโก"
 
-#: addressbook/libebook/e-contact.c:242
+#: addressbook/libebook/e-contact.c:244
 msgid "Name"
 msgstr "ชื่อ"
 
-#: addressbook/libebook/e-contact.c:243
+#: addressbook/libebook/e-contact.c:245
 msgid "Email List"
 msgstr "รายชื่ออีเมล"
 
 #. Instant messaging fields
-#: addressbook/libebook/e-contact.c:246
+#: addressbook/libebook/e-contact.c:248
 msgid "AIM Screen Name List"
 msgstr "รายการชื่อเรียกสำหรับ AIM"
 
-#: addressbook/libebook/e-contact.c:247
+#: addressbook/libebook/e-contact.c:249
 msgid "GroupWise Id List"
 msgstr "รายการ Id สำหรับ GroupWise"
 
-#: addressbook/libebook/e-contact.c:248
+#: addressbook/libebook/e-contact.c:250
 msgid "Jabber Id List"
 msgstr "รายการ Id สำหรับ Jabber"
 
-#: addressbook/libebook/e-contact.c:249
+#: addressbook/libebook/e-contact.c:251
 msgid "Yahoo! Screen Name List"
 msgstr "รายการชื่อเรียกสำหรับ Yahoo"
 
-#: addressbook/libebook/e-contact.c:250
+#: addressbook/libebook/e-contact.c:252
 msgid "MSN Screen Name List"
 msgstr "รายการชื่อเรียกสำหรับ MSN"
 
-#: addressbook/libebook/e-contact.c:251
+#: addressbook/libebook/e-contact.c:253
 msgid "ICQ Id List"
 msgstr "รายการ Id ของ ICQ"
 
-#: addressbook/libebook/e-contact.c:253
+#: addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
 msgstr "ต้องการเมล HTML"
 
-#: addressbook/libebook/e-contact.c:255
+#: addressbook/libebook/e-contact.c:257
 msgid "List"
 msgstr "รายการ"
 
-#: addressbook/libebook/e-contact.c:256
+#: addressbook/libebook/e-contact.c:258
 msgid "List Show Addresses"
 msgstr "รายการแสดงที่อยู่"
 
-#: addressbook/libebook/e-contact.c:258
+#: addressbook/libebook/e-contact.c:260
 msgid "Birth Date"
 msgstr "วันเกิด"
 
-#: addressbook/libebook/e-contact.c:259
+#: addressbook/libebook/e-contact.c:261
 #: calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "วันครบรอบปี"
 
 #. Security fields
-#: addressbook/libebook/e-contact.c:262
+#: addressbook/libebook/e-contact.c:264
 msgid "X.509 Certificate"
 msgstr "ใบรับรอง X.509"
 
-#: addressbook/libebook/e-contact.c:264
+#: addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 1"
 msgstr "Id 1 ที่บ้าน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:265
+#: addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 2"
 msgstr "Id 2 ที่บ้าน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:266
+#: addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Home Id 3"
 msgstr "Id 3 ที่บ้าน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:267
+#: addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
 msgstr "Id 1 ที่ทำงาน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:268
+#: addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
 msgstr "Id 2 ที่ทำงาน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:269
+#: addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
 msgstr "Id 3 ที่ทำงาน สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:270
+#: addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
 msgstr "รายการ Id สำหรับ Gadu-Gadu"
 
-#: addressbook/libebook/e-contact.c:1453
+#. Geo information
+#: addressbook/libebook/e-contact.c:275
+msgid "Geographic Information"
+msgstr "ข้อมูลภูมิศาสตร์"
+
+#: addressbook/libebook/e-contact.c:1492
 #: addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "รายการที่ยังไม่มีชื่อ"
@@ -684,12 +689,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "ไมสามารถบันทึกข้อมูลปฏิทิน: รูปแบบ URI ที่ไม่ถูกต้อง"
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: camel/providers/groupwise/camel-groupwise-folder.c:1744
+#: camel/providers/groupwise/camel-groupwise-folder.c:1747
 msgid "Reply Requested: by "
 msgstr "ต้องการการตอบกลับ: ภายใน "
 
 #: calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: camel/providers/groupwise/camel-groupwise-folder.c:1749
+#: camel/providers/groupwise/camel-groupwise-folder.c:1752
 msgid "Reply Requested: When convenient"
 msgstr "ต้องการการตอบกลับ: เมื่อสะดวก"
 
@@ -710,7 +715,7 @@ msgstr "URI ของเซิร์ฟเวอร์ไม่ถูกต้�
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: calendar/libecal/e-cal.c:5246
+#: calendar/libecal/e-cal.c:4997
 #: camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -1089,7 +1094,7 @@ msgstr "ต่ำ"
 msgid "Undefined"
 msgstr "ไม่ได้กำหนด"
 
-#: calendar/libecal/e-cal.c:1758 libedataserverui/e-book-auth-util.c:198
+#: calendar/libecal/e-cal.c:1658 libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "ป้อนรหัสผ่านสำหรับ %s (ผู้ใช้ %s)"
@@ -1098,77 +1103,78 @@ msgstr "ป้อนรหัสผ่านสำหรับ %s (ผู้ใ�
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: calendar/libecal/e-cal.c:1772
+#: calendar/libecal/e-cal.c:1672
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "ป้อนรหัสผ่านสำหรับ %s เพื่อเปิดใช้งานสำหรับผู้ใช้ %s"
 
-#: calendar/libecal/e-cal.c:5218
+#: calendar/libecal/e-cal.c:4969
 msgid "Invalid argument"
 msgstr "อาร์กิวเมนต์ไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5220
+#: calendar/libecal/e-cal.c:4971
 msgid "Backend is busy"
 msgstr "แบ็กเอนด์ใช้งานอยู่"
 
-#: calendar/libecal/e-cal.c:5222
+#: calendar/libecal/e-cal.c:4973
 msgid "Repository is offline"
 msgstr "แหล่งเก็บข้อมูลไม่ได้เชื่อมต่ออยู่"
 
-#: calendar/libecal/e-cal.c:5224
+#: calendar/libecal/e-cal.c:4975
 msgid "No such calendar"
 msgstr "ไม่มีปฏิทินดังกล่าว"
 
-#: calendar/libecal/e-cal.c:5226 servers/groupwise/e-gw-connection.c:176
+#: calendar/libecal/e-cal.c:4977 servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "ไม่พบวัตถุ"
 
-#: calendar/libecal/e-cal.c:5228 servers/groupwise/e-gw-connection.c:170
+#: calendar/libecal/e-cal.c:4979 servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "วัตถุไม่ถูกต้อง"
 
-#: calendar/libecal/e-cal.c:5230
+#: calendar/libecal/e-cal.c:4981
 msgid "URI not loaded"
 msgstr "ไม่ได้โหลด URI"
 
-#: calendar/libecal/e-cal.c:5232
+#: calendar/libecal/e-cal.c:4983
 msgid "URI already loaded"
 msgstr "โหลด URI เรียบร้อย"
 
-#: calendar/libecal/e-cal.c:5234 servers/exchange/storage/e-storage.c:571
+#: calendar/libecal/e-cal.c:4985
+#: servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "ไม่ได้รับอนุญาต"
 
-#: calendar/libecal/e-cal.c:5236 servers/groupwise/e-gw-connection.c:178
+#: calendar/libecal/e-cal.c:4987 servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "ผู้ใช้ที่ไม่รู้จัก"
 
-#: calendar/libecal/e-cal.c:5238
+#: calendar/libecal/e-cal.c:4989
 msgid "Object ID already exists"
 msgstr "ID ของวัตถุมีอยู่แล้ว"
 
-#: calendar/libecal/e-cal.c:5240
+#: calendar/libecal/e-cal.c:4991
 msgid "Protocol not supported"
 msgstr "โพรโทคอลไม่สนับสนุน"
 
-#: calendar/libecal/e-cal.c:5242
+#: calendar/libecal/e-cal.c:4993
 msgid "Operation has been canceled"
 msgstr "การปฏิบัติการได้ยกเลิกไปแล้ว"
 
-#: calendar/libecal/e-cal.c:5244
+#: calendar/libecal/e-cal.c:4995
 msgid "Could not cancel operation"
 msgstr "ไม่สามารถยกเลิกการปฏิบัติการ"
 
-#: calendar/libecal/e-cal.c:5248
+#: calendar/libecal/e-cal.c:4999
 #: camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "ต้องการการยืนยันตัวบุคคล"
 
-#: calendar/libecal/e-cal.c:5250
+#: calendar/libecal/e-cal.c:5001
 msgid "A CORBA exception has occurred"
 msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 
-#: calendar/libecal/e-cal.c:5252
+#: calendar/libecal/e-cal.c:5003
 #: camel/providers/groupwise/camel-groupwise-transport.c:225
 #: camel/providers/imap/camel-imap-command.c:312
 #: camel/providers/imap/camel-imap-command.c:412
@@ -1182,7 +1188,8 @@ msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: calendar/libecal/e-cal.c:5254 servers/exchange/storage/e-storage.c:553
+#: calendar/libecal/e-cal.c:5005
+#: servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "ไม่มีข้อผิดพลาด"
 
@@ -1367,7 +1374,8 @@ msgstr "กำหลังดาวน์โหลดข้อความให
 msgid "Preparing folder '%s' for offline"
 msgstr "กำลังเตรียมโฟลเดอร์ '%s' สำหรับออฟไลน์"
 
-#: camel/camel-disco-store.c:403 camel/providers/imap/camel-imap-store.c:2995
+#: camel/camel-disco-store.c:403
+#: camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
 msgstr "คุณจะต้องทำงานแบบออนไลน์เพื่อให้ปฏิบัติการนี้สมบูรณ์"
 
@@ -1480,27 +1488,32 @@ msgstr ""
 "เกิดข้อผิดพลาดระหว่างค้นด้วยนิพจน์ค้นหา: %s\n"
 "%s"
 
-#: camel/camel-folder-search.c:676 camel/camel-folder-search.c:709
-msgid "(match-all) requires a single bool result"
-msgstr "(match-all) ต้องการผลลัพธ์ชนิดบูลีนค่าเดียว"
+#: camel/camel-folder-search.c:677 camel/camel-folder-search.c:712
+#, c-format
+msgid "(%s) requires a single bool result"
+msgstr "(%s) ต้องการผลลัพธ์ชนิดบูลีนค่าเดียว"
 
-#: camel/camel-folder-search.c:759
-msgid "(match-threads) not allowed inside match-all"
-msgstr "(match-threads) อยู่ใน match-all ไม่ได้"
+#: camel/camel-folder-search.c:765
+#, c-format
+msgid "(%s) not allowed inside match-all"
+msgstr "(%s) อยู่ใน match-all ไม่ได้"
 
-#: camel/camel-folder-search.c:762 camel/camel-folder-search.c:766
-msgid "(match-threads) requires a match type string"
-msgstr "(match-threads) ต้องการรายการค้นพบชนิดสตริง"
+#: camel/camel-folder-search.c:771 camel/camel-folder-search.c:778
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) ต้องการรายการค้นพบชนิดสตริง"
 
-#: camel/camel-folder-search.c:790
-msgid "(match-threads) expects an array result"
-msgstr "(match-threads) ต้องการผลลัพธ์เป็นแอร์เรย์"
+#: camel/camel-folder-search.c:805
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) ต้องการผลลัพธ์เป็นแอร์เรย์"
 
-#: camel/camel-folder-search.c:796
-msgid "(match-threads) requires the folder set"
-msgstr "(match-threads) ต้องการชุดโฟลเดอร์"
+#: camel/camel-folder-search.c:814
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) ต้องการชุดโฟลเดอร์"
 
-#: camel/camel-folder-search.c:888
+#: camel/camel-folder-search.c:909
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "จะดำเนินการสืบค้นกับข้อมูลส่วนหัวที่ไม่รู้จัก: %s"
@@ -1773,7 +1786,8 @@ msgid "parse error"
 msgstr "เกิดข้อผิดพลาดขณะแจง"
 
 #: camel/camel-net-utils.c:498 camel/camel-net-utils.c:660
-#: camel/camel-net-utils.c:791 camel/providers/pop3/camel-pop3-store.c:447
+#: camel/camel-net-utils.c:791
+#: camel/providers/pop3/camel-pop3-store.c:447
 #: camel/providers/pop3/camel-pop3-store.c:543
 msgid "Canceled"
 msgstr "ยกเลิก"
@@ -2636,14 +2650,15 @@ msgstr "ไม่สามารถดูข้อความ %s: %s"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:156
 #: camel/providers/groupwise/camel-groupwise-folder.c:164
+#: camel/providers/groupwise/camel-groupwise-folder.c:2104
 #: camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "ข้อความนี้ ไม่สามารถอ่านได้ขณะออฟไลน์"
 
 #: camel/providers/groupwise/camel-groupwise-folder.c:175
 #: camel/providers/groupwise/camel-groupwise-folder.c:182
-#: camel/providers/groupwise/camel-groupwise-folder.c:1651
-#: camel/providers/groupwise/camel-groupwise-folder.c:1697
+#: camel/providers/groupwise/camel-groupwise-folder.c:1654
+#: camel/providers/groupwise/camel-groupwise-folder.c:1700
 msgid "Could not get message"
 msgstr "ไม่สามารถดูข้อความ"
 
@@ -2657,7 +2672,7 @@ msgstr "ไม่สามารถโหลดข้อมูลสรุปส
 msgid "Trash Folder Full. Please Empty."
 msgstr "โฟลเดอร์ถังขยะเต็มแล้ว กรุณาเทขยะ"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1216
+#: camel/providers/groupwise/camel-groupwise-folder.c:1219
 #: camel/providers/groupwise/camel-groupwise-store.c:630
 #: camel/providers/groupwise/camel-groupwise-store.c:744
 #: camel/providers/imap/camel-imap-folder.c:2392
@@ -2666,13 +2681,13 @@ msgstr "โฟลเดอร์ถังขยะเต็มแล้ว ก�
 msgid "Fetching summary information for new messages in %s"
 msgstr "กำลังดึงข้อมูลสรุปสำหรับข้อความใหม่ใน %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1968
-#: camel/providers/groupwise/camel-groupwise-folder.c:2010
+#: camel/providers/groupwise/camel-groupwise-folder.c:1971
+#: camel/providers/groupwise/camel-groupwise-folder.c:2013
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ไม่สามารถแนบข้อความไปยังโฟลเดอร์ `%s': %s"
 
-#: camel/providers/groupwise/camel-groupwise-folder.c:1998
+#: camel/providers/groupwise/camel-groupwise-folder.c:2001
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "ไม่สามารถสร้างข้อความ: %s"
@@ -2901,12 +2916,12 @@ msgstr "ต้วเลือกนี้จะเชื่อมต่อไป
 #: camel/providers/imap/camel-imap-command.c:224
 #: camel/providers/imap/camel-imap-command.c:266
 #: camel/providers/imap/camel-imap-command.c:472
-#: camel/providers/imap/camel-imap-store.c:3035
+#: camel/providers/imap/camel-imap-store.c:3037
 msgid "Operation cancelled"
 msgstr "ยกเลิกปฏิบัติการ"
 
 #: camel/providers/imap/camel-imap-command.c:311
-#: camel/providers/imap/camel-imap-store.c:3038
+#: camel/providers/imap/camel-imap-store.c:3040
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "เซิร์ฟเวอร์ยกเลิกการเชื่อมต่อโดยมิได้คาดหมาย: %s"
@@ -3569,16 +3584,21 @@ msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "เก็บข้อมูลส่วนหัวเกี่ยวกับสถานะเมลในรูปแบบ Elm/Pine/Mutt"
 
 #: camel/providers/local/camel-local-provider.c:115
-msgid "Standard Unix mbox spool or directory"
-msgstr "ที่เก็บพักหรือไดเรกทอรี mbox ในแบบยูนิกซ์มาตรฐาน"
+msgid "Standard Unix mbox spool file"
+msgstr "แฟ้มที่เก็บพัก mbox ในแบบยูนิกซ์มาตรฐาน"
 
 #: camel/providers/local/camel-local-provider.c:116
+#: camel/providers/local/camel-local-provider.c:127
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
 "ใช้สำหรับอ่านและเก็บเมลในเครื่องไว้ในแฟ้มที่เก็บพัก mbox มาตรฐานในที่ต่างหาก\n"
 "สามารถใช้อ่านลำดับชั้นโฟลเดอร์เมลในแบบ Elm, Pine หรือ Mutt ได้ด้วย"
+
+#: camel/providers/local/camel-local-provider.c:126
+msgid "Standard Unix mbox spool directory"
+msgstr "ไดเรกทอรีที่เก็บพัก mbox ในแบบยูนิกซ์มาตรฐาน"
 
 #: camel/providers/local/camel-local-store.c:157
 #: camel/providers/local/camel-local-store.c:268
@@ -4855,14 +4875,18 @@ msgstr "กำลังเข้าใช้เซิร์ฟเวอร์ LD
 msgid "Failed to authenticate.\n"
 msgstr "การยืนยันตัวบุคคลล้มเหลว\n"
 
-#: libedataserverui/e-categories-dialog.c:265
+#: libedataserverui/e-categories-dialog.c:276
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "มีหมวดหมู่ '%s' อยู่แล้วในการกำหนดค่า กรุณาใช้ชื่ออื่น"
 
-#: libedataserverui/e-categories-dialog.c:435
+#: libedataserverui/e-categories-dialog.c:475
+msgid "Icon"
+msgstr "ไอคอน"
+
+#: libedataserverui/e-categories-dialog.c:480
 msgid "Category"
 msgstr "หมวดหมู่"
 
@@ -4957,25 +4981,25 @@ msgid "_Search:"
 msgstr "_ค้นหา:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: libedataserverui/e-name-selector-entry.c:2237
+#: libedataserverui/e-name-selector-entry.c:2241
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "กระ_จาย %s ในบรรทัด"
 
 #. Copy Contact Item
-#: libedataserverui/e-name-selector-entry.c:2252
+#: libedataserverui/e-name-selector-entry.c:2256
 #, c-format
 msgid "Cop_y %s"
 msgstr "คัด_ลอก %s"
 
 #. Cut Contact Item
-#: libedataserverui/e-name-selector-entry.c:2262
+#: libedataserverui/e-name-selector-entry.c:2266
 #, c-format
 msgid "C_ut %s"
 msgstr "_ตัด %s"
 
 #. Edit Contact item
-#: libedataserverui/e-name-selector-entry.c:2279
+#: libedataserverui/e-name-selector-entry.c:2283
 #, c-format
 msgid "_Edit %s"
 msgstr "แ_ก้ไข %s"
@@ -4985,19 +5009,19 @@ msgstr "แ_ก้ไข %s"
 msgid "_Delete %s"
 msgstr "_ลบ %s"
 
-#: libedataserverui/e-passwords.c:870
+#: libedataserverui/e-passwords.c:872
 msgid "_Remember this passphrase"
 msgstr "_จำวลีรหัสผ่านนี้"
 
-#: libedataserverui/e-passwords.c:871
+#: libedataserverui/e-passwords.c:873
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_จำวลีรหัสผ่านนี้ไปตลอดวาระที่เหลือนี้"
 
-#: libedataserverui/e-passwords.c:874
+#: libedataserverui/e-passwords.c:876
 msgid "_Remember this password"
 msgstr "_จำรหัสผ่านนี้"
 
-#: libedataserverui/e-passwords.c:875
+#: libedataserverui/e-passwords.c:877
 msgid "_Remember this password for the remainder of this session"
 msgstr "_จำรหัสผ่านนี้ไปตลอดวาระที่เหลือนี้"
 
