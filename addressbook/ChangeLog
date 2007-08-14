@@ -1,3 +1,11 @@
+2007-08-14  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #356176 by Patrick Ohly
+
+	* libebook/e-vcard.c: (read_attribute_value):
+	Skip over folding by calling skip_newline() to find
+	the next real character after a backslash.
+
 2007-08-10  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/file/e-book-backend-file.c:

@@ -273,6 +273,12 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 				g_string_append_c (str, '\\');
 				break;
 			}
+
+			/* beware, there might be a line break due to folding,
+			 * need next real character
+			 */
+			lp = skip_newline (lp, quoted_printable);
+
 			switch (*lp) {
 			case 'n': g_string_append_c (str, '\n'); break;
 			case 'N': g_string_append_c (str, '\n'); break;
