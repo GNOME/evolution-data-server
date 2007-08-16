@@ -173,7 +173,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
 			if (g_ascii_strcasecmp("to", name) == 0 || g_ascii_strcasecmp("cc", name) == 0 || g_ascii_strcasecmp("from", name) == 0)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
-			else {
+			else if (message) {
 				ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
 				if (ct) {
 					charset = camel_content_type_param (ct, "charset");

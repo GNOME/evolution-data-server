@@ -1692,8 +1692,21 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	CamelMultipart *mp;
 	CamelContentType *ct;
 	int rv;
-	
+
+	if (!ipart) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Cannot decrypt message: Incorrect message format"));
+		return NULL;
+	}
+
 	content = camel_medium_get_content_object((CamelMedium *)ipart);
+
+	if (!content) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Cannot decrypt message: Incorrect message format"));
+		return NULL;
+	}
+
 	ct = camel_mime_part_get_content_type((CamelMimePart *)content);
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {	

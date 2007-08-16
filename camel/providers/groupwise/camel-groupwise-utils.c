@@ -626,6 +626,10 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		 * and an attachment otherwise.....
 		 */
 		part = camel_multipart_get_part (mp, i);
+
+		if (!part)
+			continue;
+
 		type = camel_mime_part_get_content_type(part);
 		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 		

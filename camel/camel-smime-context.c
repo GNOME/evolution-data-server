@@ -134,6 +134,9 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 	CamelContentType *ct;
 	const char *tmp;
 
+	if (!part)
+		return flags;
+
 	ct = camel_mime_part_get_content_type(part);
 
 	if (camel_content_type_is(ct, "multipart", "signed")) {

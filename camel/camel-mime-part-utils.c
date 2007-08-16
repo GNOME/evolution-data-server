@@ -86,6 +86,9 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	CamelContentType *ct;
 	char *encoding;
 
+	if (!dw)
+		return;
+
 	ct = camel_mime_parser_content_type (mp);
 
 	encoding = camel_content_transfer_encoding_decode (camel_mime_parser_header (mp, "Content-Transfer-Encoding", NULL));
