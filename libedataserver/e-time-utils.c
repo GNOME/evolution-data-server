@@ -1496,6 +1496,9 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 	locale_str = g_locale_from_utf8 (value, -1, NULL, NULL, NULL);
 	pos = (const char *) locale_str;
 
+	if (!locale_str)
+		return E_TIME_PARSE_INVALID;
+	
 	/* Skip whitespace */
 	while (n = (int)((unsigned char)*pos), isspace (n) != 0)
 		pos++;

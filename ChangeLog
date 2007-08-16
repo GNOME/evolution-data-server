@@ -1,3 +1,10 @@
+2007-08-16  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #351756
+
+	* libedataserver/e-time-utils.c: (parse_with_strptime):
+	g_locale_from_utf8 returns NULL on error, so test for that value.
+
 2007-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 1.11.90 release
