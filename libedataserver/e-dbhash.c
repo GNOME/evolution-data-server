@@ -33,9 +33,9 @@ e_dbhash_new (const char *filename)
 		return NULL;
 	}
 
-	rv = db->open (db, NULL, filename, NULL, DB_HASH, 0, 0666);
+	rv = (*db->open) (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 	if (rv != 0) {
-		rv = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
+		rv = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
 		if (rv != 0) {
 			db->close (db, 0);

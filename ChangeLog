@@ -1,3 +1,9 @@
+2007-08-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libdb/dbm/dbm.c (__db_ndbm_open):
+	* libedataserver/e-dbhash.c (e_dbhash_new):
+	Fix compilation errors caused by glibc's new "open" macro (#466987).
+
 2007-08-16  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #351756

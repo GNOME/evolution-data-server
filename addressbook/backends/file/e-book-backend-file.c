@@ -1100,7 +1100,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				(void *(*)(void *, size_t))g_try_realloc,
 				g_free);
 
-		db_error = env->open (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 		if (db_error != 0) {
 			env->close(env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
@@ -1125,7 +1125,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		return db_error_to_status (db_error);
 	}
 
-	db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+	db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
 
 	if (db_error == DB_OLD_VERSION) {
 		db_error = e_db3_utils_upgrade_format (filename);
@@ -1137,7 +1137,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			return db_error_to_status (db_error);
 		}
 
-		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
 	}
 
 	bf->priv->file_db = db;
@@ -1154,7 +1154,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
                 	g_free (filename);
                 	return GNOME_Evolution_Addressbook_OtherError;
         	}
-		db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
+		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
 			int rv;
@@ -1181,7 +1181,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				return GNOME_Evolution_Addressbook_OtherError;
 			}
 
-			db_error = db->open (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
+			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
 			if (db_error != 0) {
 				db->close (db, 0);
 				g_warning ("db->open (... DB_CREATE ...) failed with %s", db_strerror (db_error));
