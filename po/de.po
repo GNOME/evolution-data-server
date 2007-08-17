@@ -13,38 +13,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-24 13:56+0200\n"
-"PO-Revision-Date: 2007-07-24 14:15+0200\n"
+"POT-Creation-Date: 2007-08-17 16:05+0200\n"
+"PO-Revision-Date: 2007-08-17 16:07+0200\n"
 "Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:558
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:490
+#: ../addressbook/backends/file/e-book-backend-file.c:554
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:486
 msgid "Loading..."
 msgstr "Ladevorgang …"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:561
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2288
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
+#: ../addressbook/backends/file/e-book-backend-file.c:557
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4150
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Suchvorgang …"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4309
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontakte werden heruntergeladen (%d) …"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2858
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3052
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3096
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2827
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3018
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3062
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Zwischenspeicher für Kontakte wird aktualisiert (%d) …"
@@ -77,7 +77,7 @@ msgstr "Kontakt auf LDAP-Server wird verändert …"
 msgid "Receiving LDAP search results..."
 msgstr "LDAP-Suchergebnisse werden empfangen …"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4169
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4170
 msgid "Error performing search"
 msgstr "Fehler beim Ausführen der Suche"
 
@@ -96,7 +96,7 @@ msgstr "Fehler beim Ausführen der Suche"
 #: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
 #: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
 #: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:3431
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "»%s« vor »%s« auf Buch aufgerufen"
@@ -124,7 +124,7 @@ msgstr "Buch belegt"
 #: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
 #: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
 #: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-Exception führt »%s«-Aufruf durch"
@@ -149,43 +149,43 @@ msgstr "»%s« nach »%s« auf Buch aufgerufen"
 msgid "%s: canceled"
 msgstr "%s: abgebrochen"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3295
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Ungültige Quelle."
 
-#: ../addressbook/libebook/e-book.c:3297 ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: Keine Fabriken für URI »%s« verfügbar"
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3315
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener konnte nicht angelegt werden"
 
-#: ../addressbook/libebook/e-book.c:3574
+#: ../addressbook/libebook/e-book.c:3580
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: Es gab keine in GConf gespeicherte Self-Contact-Benutzerkennung"
 
-#: ../addressbook/libebook/e-book.c:3707
+#: ../addressbook/libebook/e-book.c:3713
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr ""
 "%s: Es gab keine in GConf gespeicherte Quelle der Benutzerkennung »%s«."
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook/e-contact.c:112
+#: ../addressbook/libebook/e-contact.c:114
 msgid "Unique ID"
 msgstr "Eindeutige Kennung"
 
-#: ../addressbook/libebook/e-contact.c:113
+#: ../addressbook/libebook/e-contact.c:115
 msgid "File Under"
 msgstr "Einordnen unter"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:117
 msgid "Book URI"
 msgstr "Buch-URI"
 
@@ -193,478 +193,483 @@ msgstr "Buch-URI"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:121
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Full Name"
 msgstr "Voller Name"
 
-#: ../addressbook/libebook/e-contact.c:122
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Given Name"
 msgstr "Vorname"
 
-#: ../addressbook/libebook/e-contact.c:123
+#: ../addressbook/libebook/e-contact.c:125
 msgid "Family Name"
 msgstr "Familienname"
 
-#: ../addressbook/libebook/e-contact.c:124
+#: ../addressbook/libebook/e-contact.c:126
 msgid "Nickname"
 msgstr "Spitzname"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:127
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Email 1"
 msgstr "E-Mail 1"
 
-#: ../addressbook/libebook/e-contact.c:128
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Email 2"
 msgstr "E-Mail 2"
 
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:131
 msgid "Email 3"
 msgstr "E-Mail 3"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:132
 msgid "Email 4"
 msgstr "E-Mail 4"
 
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:134
 msgid "Mailer"
 msgstr "Mailer"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Home Address Label"
 msgstr "Privatadresse"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook/e-contact.c:138
 msgid "Work Address Label"
 msgstr "Geschäftsadresse"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:139
 msgid "Other Address Label"
 msgstr "Weitere Adresse"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Assistant Phone"
 msgstr "Telefon des Assistenten"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Phone"
 msgstr "Telefon, geschäftlich"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Business Phone 2"
 msgstr "Telefon 2, geschäftlich"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Business Fax"
 msgstr "Fax, geschäftlich"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Callback Phone"
 msgstr "Rückruf-Telefon"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Car Phone"
 msgstr "Autotelefon"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Company Phone"
 msgstr "Firmentelefon"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone"
 msgstr "Telefon, privat"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:150
 msgid "Home Phone 2"
 msgstr "Telefon 2, privat"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:151
 msgid "Home Fax"
 msgstr "Fax, privat"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook/e-contact.c:152
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Mobile Phone"
 msgstr "Mobiltelefon"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Other Phone"
 msgstr "Weiteres Telefon"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Other Fax"
 msgstr "Weiteres Fax"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Pager"
 msgstr "Pager"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Primary Phone"
 msgstr "Telefon, primär"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Radio"
 msgstr "Funk"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:161
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Organization"
 msgstr "Organisation"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Organizational Unit"
 msgstr "Organisationseinheit"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Office"
 msgstr "Büro"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Title"
 msgstr "Anrede"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Role"
 msgstr "Position"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:169
 msgid "Manager"
 msgstr "Vorgesetzter"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:170
 msgid "Assistant"
 msgstr "Assistent"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:171
+#: ../addressbook/libebook/e-contact.c:173
 msgid "Homepage URL"
 msgstr "Homepage-URL"
 
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook/e-contact.c:174
 msgid "Weblog URL"
 msgstr "Weblog-URL"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:175
-#: ../libedataserverui/e-categories-dialog.c:410
+#: ../addressbook/libebook/e-contact.c:177
+#: ../libedataserverui/e-categories-dialog.c:439
 msgid "Categories"
 msgstr "Kategorien"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:180
 msgid "Calendar URI"
 msgstr "Kalender-URI"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:181
 msgid "Free/Busy URL"
 msgstr "Verfügbarkeits-URL"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:182
 msgid "ICS Calendar"
 msgstr "ICS-Kalender"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:183
 msgid "Video Conferencing URL"
 msgstr "Videokonferenz-URL"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Spouse's Name"
 msgstr "Ehepartner"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook/e-contact.c:187
 msgid "Note"
 msgstr "Notiz"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 1"
 msgstr "Angezeigter AIM-Privatname 1"
 
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 2"
 msgstr "Angezeigter AIM-Privatname 2"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Home Screen Name 3"
 msgstr "Angezeigter AIM-Privatname 3"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
 msgstr "Angezeigter AIM-Geschäftsname 1"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
 msgstr "Angezeigter AIM-Geschäftsname 2"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
 msgstr "Angezeigter AIM-Geschäftsname 3"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
 msgstr "Angezeigter GroupWise-Privatname 1"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 2"
 msgstr "Angezeigter GroupWise-Privatname 2"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Home Screen Name 3"
 msgstr "Angezeigter GroupWise-Privatname 3"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
 msgstr "Angezeigter GroupWise-Geschäftsname 1"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
 msgstr "Angezeigter GroupWise-Geschäftsname 2"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
 msgstr "Angezeigter GroupWise-Geschäftsname 3"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
 msgstr "Jabber-Privatkennung 1"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 2"
 msgstr "Jabber-Privatkennung 2"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Home Id 3"
 msgstr "Jabber-Privatkennung 3"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
 msgstr "Jabber-Geschäftskennung 1"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
 msgstr "Jabber-Geschäftskennung 2"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
 msgstr "Jabber-Geschäftskennung 3"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Angezeigter Yahoo!-Privatname 1"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Angezeigter Yahoo!-Privatname 2"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Angezeigter Yahoo!-Privatname 3"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Angezeigter Yahoo!-Geschäftsname 1"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Angezeigter Yahoo!-Geschäftsname 2"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Angezeigter Yahoo!-Geschäftsname 3"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
 msgstr "Angezeigter MSN-Privatname 1"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 2"
 msgstr "Angezeigter MSN-Privatname 2"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Home Screen Name 3"
 msgstr "Angezeigter MSN-Privatname 3"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
 msgstr "Angezeigter MSN-Geschäftsname 1"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
 msgstr "Angezeigter MSN-Geschäftsname 2"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
 msgstr "Angezeigter MSN-Geschäftsname 3"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
 msgstr "ICQ-Privatkennung 1"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 2"
 msgstr "ICQ-Privatkennung 2"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Home Id 3"
 msgstr "ICQ-Privatkennung 3"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
 msgstr "ICQ-Geschäftskennung 1"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
 msgstr "ICQ-Geschäftskennung 2"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
 msgstr "ICQ-Geschäftskennung 3"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:228
 msgid "Last Revision"
 msgstr "Letzte Überarbeitung"
 
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook/e-contact.c:229
 msgid "Name or Org"
 msgstr "Name oder Org."
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:232
 msgid "Address List"
 msgstr "Adressliste"
 
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:233
 msgid "Home Address"
 msgstr "Privatadresse"
 
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Work Address"
 msgstr "Geschäftsadresse"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:235
 msgid "Other Address"
 msgstr "Weitere Adresse"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook/e-contact.c:238
 msgid "Category List"
 msgstr "Kategorieliste"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook/e-contact.c:241
 msgid "Photo"
 msgstr "Foto"
 
-#: ../addressbook/libebook/e-contact.c:240
+#: ../addressbook/libebook/e-contact.c:242
 msgid "Logo"
 msgstr "Logo"
 
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:244
 msgid "Name"
 msgstr "Name"
 
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:245
 msgid "Email List"
 msgstr "E-Mail-Liste"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:246
+#: ../addressbook/libebook/e-contact.c:248
 msgid "AIM Screen Name List"
 msgstr "Liste angezeigter AIM-Namen"
 
-#: ../addressbook/libebook/e-contact.c:247
+#: ../addressbook/libebook/e-contact.c:249
 msgid "GroupWise Id List"
 msgstr "GroupWise-Kennungsliste"
 
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:250
 msgid "Jabber Id List"
 msgstr "Jabber-Kennungsliste"
 
-#: ../addressbook/libebook/e-contact.c:249
+#: ../addressbook/libebook/e-contact.c:251
 msgid "Yahoo! Screen Name List"
 msgstr "Liste angezeigter Yahoo!-Namen"
 
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:252
 msgid "MSN Screen Name List"
 msgstr "Liste angezeigter MSN-Namen"
 
-#: ../addressbook/libebook/e-contact.c:251
+#: ../addressbook/libebook/e-contact.c:253
 msgid "ICQ Id List"
 msgstr "ICQ-Kennungsliste"
 
-#: ../addressbook/libebook/e-contact.c:253
+#: ../addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
 msgstr "Wünscht HTML-E-Mails"
 
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook/e-contact.c:257
 msgid "List"
 msgstr "Liste"
 
-#: ../addressbook/libebook/e-contact.c:256
+#: ../addressbook/libebook/e-contact.c:258
 msgid "List Show Addresses"
 msgstr "Listenanzeige der Adressen"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:260
 msgid "Birth Date"
 msgstr "Geburtsdatum"
 
-#: ../addressbook/libebook/e-contact.c:259
+#: ../addressbook/libebook/e-contact.c:261
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Jahrestag"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:262
+#: ../addressbook/libebook/e-contact.c:264
 msgid "X.509 Certificate"
 msgstr "X.509-Zertifikat"
 
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 1"
 msgstr "Gadu-Gadu-Privatkennung 1"
 
-#: ../addressbook/libebook/e-contact.c:265
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 2"
 msgstr "Gadu-Gadu-Privatkennung 2"
 
-#: ../addressbook/libebook/e-contact.c:266
+#: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Home Id 3"
 msgstr "Gadu-Gadu-Privatkennung 3"
 
-#: ../addressbook/libebook/e-contact.c:267
+#: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
 msgstr "Gadu-Gadu-Geschäftskennung 1"
 
-#: ../addressbook/libebook/e-contact.c:268
+#: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
 msgstr "Gadu-Gadu-Geschäftskennung 2"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
 msgstr "Gadu-Gadu-Geschäftskennung 3"
 
-#: ../addressbook/libebook/e-contact.c:270
+#: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
 msgstr "Gadu-Gadu-Kennungsliste"
 
-#: ../addressbook/libebook/e-contact.c:1453
+#. Geo information
+#: ../addressbook/libebook/e-contact.c:275
+msgid "Geographic Information"
+msgstr "Geografische Information"
+
+#: ../addressbook/libebook/e-contact.c:1492
 #: ../addressbook/libebook/e-destination.c:770
 msgid "Unnamed List"
 msgstr "Namenlose Liste"
@@ -691,12 +696,12 @@ msgstr ""
 "formatiert."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1744
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
 msgid "Reply Requested: by "
 msgstr "Antwort erbeten: durch "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1749
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1752
 msgid "Reply Requested: When convenient"
 msgstr "Antwort erbeten: Wenn es passt"
 
@@ -717,7 +722,7 @@ msgstr "Ungültige Server-URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:5246
+#: ../calendar/libecal/e-cal.c:4997
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -737,7 +742,7 @@ msgstr "Thread zum Abrufen von Änderungen konnte nicht angelegt werden"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
-#: ../calendar/backends/http/e-cal-backend-http.c:526
+#: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
@@ -746,15 +751,15 @@ msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
 msgid "Could not create thread for populating cache"
 msgstr "Thread zum Belegen des Zwischenspeichers konnte nicht angelegt werden"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:265
+#: ../calendar/backends/http/e-cal-backend-http.c:271
 msgid "Redirected to Invalid URI"
 msgstr "Auf ungültige URI weitergeleitet"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:289
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Bad file format."
 msgstr "Dateiformat fehlerhaft."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:295
+#: ../calendar/backends/http/e-cal-backend-http.c:301
 msgid "Not a calendar."
 msgstr "Kein Kalender."
 
@@ -1096,7 +1101,7 @@ msgstr "Niedrig"
 msgid "Undefined"
 msgstr "Nicht festgelegt"
 
-#: ../calendar/libecal/e-cal.c:1758 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1658 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Geben Sie das Passwort für %s ein (Benutzer %s)"
@@ -1105,81 +1110,81 @@ msgstr "Geben Sie das Passwort für %s ein (Benutzer %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1772
+#: ../calendar/libecal/e-cal.c:1672
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Geben Sie das Passwort für %s ein, um die Stellvertretung für den Benutzer %"
 "s zu aktivieren"
 
-#: ../calendar/libecal/e-cal.c:5218
+#: ../calendar/libecal/e-cal.c:4969
 msgid "Invalid argument"
 msgstr "Argument ungültig"
 
-#: ../calendar/libecal/e-cal.c:5220
+#: ../calendar/libecal/e-cal.c:4971
 msgid "Backend is busy"
 msgstr "Backend belegt"
 
-#: ../calendar/libecal/e-cal.c:5222
+#: ../calendar/libecal/e-cal.c:4973
 msgid "Repository is offline"
 msgstr "Repository offline"
 
 # CHECK
-#: ../calendar/libecal/e-cal.c:5224
+#: ../calendar/libecal/e-cal.c:4975
 msgid "No such calendar"
 msgstr "Kein derartiger Kalender"
 
-#: ../calendar/libecal/e-cal.c:5226 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:4977 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "Objekt nicht gefunden"
 
-#: ../calendar/libecal/e-cal.c:5228 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:4979 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "Objekt ungültig"
 
-#: ../calendar/libecal/e-cal.c:5230
+#: ../calendar/libecal/e-cal.c:4981
 msgid "URI not loaded"
 msgstr "URI nicht geladen"
 
-#: ../calendar/libecal/e-cal.c:5232
+#: ../calendar/libecal/e-cal.c:4983
 msgid "URI already loaded"
 msgstr "URI bereits geladen"
 
-#: ../calendar/libecal/e-cal.c:5234
+#: ../calendar/libecal/e-cal.c:4985
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Erlaubnis verweigert"
 
-#: ../calendar/libecal/e-cal.c:5236 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:4987 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "Unbekannter Benutzer"
 
-#: ../calendar/libecal/e-cal.c:5238
+#: ../calendar/libecal/e-cal.c:4989
 msgid "Object ID already exists"
 msgstr "Objektkennung existiert bereits"
 
-#: ../calendar/libecal/e-cal.c:5240
+#: ../calendar/libecal/e-cal.c:4991
 msgid "Protocol not supported"
 msgstr "Protokoll nicht unterstützt"
 
-#: ../calendar/libecal/e-cal.c:5242
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Operation has been canceled"
 msgstr "Aktion wurde abgebrochen"
 
-#: ../calendar/libecal/e-cal.c:5244
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Could not cancel operation"
 msgstr "Aktion konnte nicht abgebrochen werden"
 
-#: ../calendar/libecal/e-cal.c:5248
+#: ../calendar/libecal/e-cal.c:4999
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Legitimation erforderlich"
 
-#: ../calendar/libecal/e-cal.c:5250
+#: ../calendar/libecal/e-cal.c:5001
 msgid "A CORBA exception has occurred"
 msgstr "Es ist eine CORBA-Exception aufgetreten"
 
-#: ../calendar/libecal/e-cal.c:5252
+#: ../calendar/libecal/e-cal.c:5003
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1193,7 +1198,7 @@ msgstr "Es ist eine CORBA-Exception aufgetreten"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: ../calendar/libecal/e-cal.c:5254
+#: ../calendar/libecal/e-cal.c:5005
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Kein Fehler"
@@ -1381,7 +1386,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Ordner »%s« wird für den Offline-Modus vorbereitet"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:2995
+#: ../camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
 
@@ -1494,28 +1499,32 @@ msgstr ""
 "Fehler beim Ausführen eines Suchausdrucks: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:676 ../camel/camel-folder-search.c:709
-msgid "(match-all) requires a single bool result"
-msgstr ""
-"(match-all) macht einen einzelnen Boole'schen Wert als Ergebnis erforderlich"
+#: ../camel/camel-folder-search.c:677 ../camel/camel-folder-search.c:712
+#, c-format
+msgid "(%s) requires a single bool result"
+msgstr "(%s) erfordert einen einzelnen Boole'schen Wert als Ergebnis"
 
-#: ../camel/camel-folder-search.c:759
-msgid "(match-threads) not allowed inside match-all"
-msgstr "(match-threads) in match-all nicht erlaubt"
+#: ../camel/camel-folder-search.c:765
+#, c-format
+msgid "(%s) not allowed inside match-all"
+msgstr "(%s) in match-all nicht erlaubt"
 
-#: ../camel/camel-folder-search.c:762 ../camel/camel-folder-search.c:766
-msgid "(match-threads) requires a match type string"
-msgstr "(match-threads) macht den Treffertyp Zeichenkette erforderlich"
+#: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) erfordert den Treffertyp Zeichenkette"
 
-#: ../camel/camel-folder-search.c:790
-msgid "(match-threads) expects an array result"
-msgstr "(match-threads) erwartet ein Array-Ergebnis"
+#: ../camel/camel-folder-search.c:805
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) erwartet ein Array-Ergebnis"
 
-#: ../camel/camel-folder-search.c:796
-msgid "(match-threads) requires the folder set"
-msgstr "(match-thread) macht erforderlich, dass der Ordner festgelegt ist"
+#: ../camel/camel-folder-search.c:814
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) erfordert, dass der Ordner festgelegt ist"
 
-#: ../camel/camel-folder-search.c:888
+#: ../camel/camel-folder-search.c:909
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Abfrage wird auf unbekannte Kopfzeile ausgeführt: %s"
@@ -1624,20 +1633,20 @@ msgstr ""
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1202 ../camel/camel-gpg-context.c:1330
-#: ../camel/camel-gpg-context.c:1809 ../camel/camel-gpg-context.c:1854
+#: ../camel/camel-gpg-context.c:1822 ../camel/camel-gpg-context.c:1867
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg konnte nicht ausgeführt werden: %s"
 
-#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:389
+#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:392
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Signaturdaten konnten nicht erzeugt werden: %s"
 
 #: ../camel/camel-gpg-context.c:1345 ../camel/camel-gpg-context.c:1529
 #: ../camel/camel-gpg-context.c:1612 ../camel/camel-gpg-context.c:1627
-#: ../camel/camel-gpg-context.c:1731 ../camel/camel-gpg-context.c:1746
-#: ../camel/camel-gpg-context.c:1825 ../camel/camel-gpg-context.c:1870
+#: ../camel/camel-gpg-context.c:1744 ../camel/camel-gpg-context.c:1759
+#: ../camel/camel-gpg-context.c:1838 ../camel/camel-gpg-context.c:1883
 msgid "Failed to execute gpg."
 msgstr "gpg konnte nicht ausgeführt werden."
 
@@ -1647,8 +1656,8 @@ msgstr "Dies ist ein digital signierter Nachrichtenteil"
 
 #: ../camel/camel-gpg-context.c:1449 ../camel/camel-gpg-context.c:1455
 #: ../camel/camel-gpg-context.c:1461 ../camel/camel-gpg-context.c:1477
-#: ../camel/camel-smime-context.c:692 ../camel/camel-smime-context.c:703
-#: ../camel/camel-smime-context.c:710
+#: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
+#: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "Nachrichtensignatur konnte nicht verifiziert werden: Nachrichtenformat "
@@ -1670,24 +1679,25 @@ msgstr "Verschlüsselungsdaten konnten nicht erzeugt werden: %s"
 msgid "This is a digitally encrypted message part"
 msgstr "Dies ist ein digital verschlüsselter Nachrichtenteil"
 
-#: ../camel/camel-gpg-context.c:1702
-msgid "Failed to decrypt MIME part: protocol error"
-msgstr "MIME-Teil konnte nicht entschlüsselt werden: Protokollfehler"
-
-#: ../camel/camel-gpg-context.c:1713
+#: ../camel/camel-gpg-context.c:1698 ../camel/camel-gpg-context.c:1706
+#: ../camel/camel-gpg-context.c:1726
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr ""
 "Nachricht konnte nicht entschlüsselt werden: Nachrichtenformat fehlerhaft"
 
-#: ../camel/camel-gpg-context.c:1767 ../camel/camel-smime-context.c:966
+#: ../camel/camel-gpg-context.c:1715
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "MIME-Teil konnte nicht entschlüsselt werden: Protokollfehler"
+
+#: ../camel/camel-gpg-context.c:1780 ../camel/camel-smime-context.c:969
 msgid "Encrypted content"
 msgstr "Verschlüsselter Inhalt"
 
-#: ../camel/camel-gpg-context.c:1786
+#: ../camel/camel-gpg-context.c:1799
 msgid "Unable to parse message content"
 msgstr "Syntax des Nachrichteninhalts konnte nicht analysiert werden"
 
-#: ../camel/camel-gpg-context.c:1810 ../camel/camel-gpg-context.c:1855
+#: ../camel/camel-gpg-context.c:1823 ../camel/camel-gpg-context.c:1868
 #: ../camel/camel-tcp-stream-openssl.c:633
 #: ../camel/providers/imap4/camel-imap4-engine.c:1548
 #: ../camel/providers/imap4/camel-imap4-engine.c:1587
@@ -2159,216 +2169,216 @@ msgstr ""
 "Verzeichnis %s konnte nicht angelegt werden:\n"
 "%s"
 
-#: ../camel/camel-smime-context.c:231
+#: ../camel/camel-smime-context.c:234
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Es konnte kein Zertifikat für »%s« gefunden werden"
 
-#: ../camel/camel-smime-context.c:237
+#: ../camel/camel-smime-context.c:240
 msgid "Cannot create CMS message"
 msgstr "CMS-Nachricht konnte nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:242
+#: ../camel/camel-smime-context.c:245
 msgid "Cannot create CMS signed data"
 msgstr "CMS-signierte Daten konnten nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:248
+#: ../camel/camel-smime-context.c:251
 msgid "Cannot attach CMS signed data"
 msgstr "CMS-signierte Daten konnten nicht beigelegt werden"
 
-#: ../camel/camel-smime-context.c:255
+#: ../camel/camel-smime-context.c:258
 msgid "Cannot attach CMS data"
 msgstr "CMS-Daten konnten nicht beigelegt werden"
 
-#: ../camel/camel-smime-context.c:261
+#: ../camel/camel-smime-context.c:264
 msgid "Cannot create CMS Signer information"
 msgstr "CMS-Unterzeichnerinformationen konnten nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:267
+#: ../camel/camel-smime-context.c:270
 msgid "Cannot find certificate chain"
 msgstr "Zertifikatkette konnte nicht gefunden werden"
 
-#: ../camel/camel-smime-context.c:273
+#: ../camel/camel-smime-context.c:276
 msgid "Cannot add CMS Signing time"
 msgstr "CMS-Unterzeichnungszeit konnte nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:295 ../camel/camel-smime-context.c:307
+#: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Es existiert kein Verschlüsselungszertifikat für »%s«"
 
-#: ../camel/camel-smime-context.c:314
+#: ../camel/camel-smime-context.c:317
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "SMIMEEncKeyPrefs-Attribut konnte nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:319
+#: ../camel/camel-smime-context.c:322
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "MS SMIMEEncKeyPrefs-Attribut konnte nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:324
+#: ../camel/camel-smime-context.c:327
 msgid "Cannot add encryption certificate"
 msgstr "Verschlüsselungszertifikat konnte nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:330
+#: ../camel/camel-smime-context.c:333
 msgid "Cannot add CMS Signer information"
 msgstr "CMS-Unterzeichnerinformation konnte nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:400 ../camel/camel-smime-context.c:848
+#: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
 msgid "Cannot create encoder context"
 msgstr "Verschlüsselungskontext konnte nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:406
+#: ../camel/camel-smime-context.c:409
 msgid "Failed to add data to CMS encoder"
 msgstr "Daten konnten nicht zu CMS-Kodierer hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:411 ../camel/camel-smime-context.c:865
+#: ../camel/camel-smime-context.c:414 ../camel/camel-smime-context.c:868
 msgid "Failed to encode data"
 msgstr "Datenverschlüsselung gescheitert"
 
-#: ../camel/camel-smime-context.c:484
+#: ../camel/camel-smime-context.c:487
 msgid "Unverified"
 msgstr "Nicht verifiziert"
 
-#: ../camel/camel-smime-context.c:486
+#: ../camel/camel-smime-context.c:489
 msgid "Good signature"
 msgstr "Signatur einwandfrei"
 
-#: ../camel/camel-smime-context.c:488
+#: ../camel/camel-smime-context.c:491
 msgid "Bad signature"
 msgstr "Signatur fehlerhaft"
 
-#: ../camel/camel-smime-context.c:490
+#: ../camel/camel-smime-context.c:493
 msgid "Content tampered with or altered in transit"
 msgstr "Inhalt bei Übertragung beschädigt oder verändert"
 
-#: ../camel/camel-smime-context.c:492
+#: ../camel/camel-smime-context.c:495
 msgid "Signing certificate not found"
 msgstr "Signaturzertifikat nicht gefunden"
 
-#: ../camel/camel-smime-context.c:494
+#: ../camel/camel-smime-context.c:497
 msgid "Signing certificate not trusted"
 msgstr "Signaturzertifikat nicht vertrauenswürdig"
 
-#: ../camel/camel-smime-context.c:496
+#: ../camel/camel-smime-context.c:499
 msgid "Signature algorithm unknown"
 msgstr "Signaturalgorithmus unbekannt"
 
-#: ../camel/camel-smime-context.c:498
+#: ../camel/camel-smime-context.c:501
 msgid "Signature algorithm unsupported"
 msgstr "Signaturalgorithmus nicht unterstützt"
 
-#: ../camel/camel-smime-context.c:500
+#: ../camel/camel-smime-context.c:503
 msgid "Malformed signature"
 msgstr "Signatur fehlerhaft formatiert"
 
-#: ../camel/camel-smime-context.c:502
+#: ../camel/camel-smime-context.c:505
 msgid "Processing error"
 msgstr "Verarbeitungsfehler"
 
-#: ../camel/camel-smime-context.c:539
+#: ../camel/camel-smime-context.c:542
 msgid "No signed data in signature"
 msgstr "Keine signierten Daten in Signatur"
 
-#: ../camel/camel-smime-context.c:546
+#: ../camel/camel-smime-context.c:549
 msgid "Digests missing from enveloped data"
 msgstr "Digest der kuvertieren Daten fehlt"
 
-#: ../camel/camel-smime-context.c:559 ../camel/camel-smime-context.c:569
+#: ../camel/camel-smime-context.c:562 ../camel/camel-smime-context.c:572
 msgid "Cannot calculate digests"
 msgstr "Digests konnten nicht berechnet werden"
 
-#: ../camel/camel-smime-context.c:574
+#: ../camel/camel-smime-context.c:577
 msgid "Cannot set message digests"
 msgstr "Nachrichten-Digests konnten nicht festgelegt werden"
 
-#: ../camel/camel-smime-context.c:584 ../camel/camel-smime-context.c:589
+#: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
 msgid "Certificate import failed"
 msgstr "Zertifikatimport gescheitert"
 
-#: ../camel/camel-smime-context.c:599
+#: ../camel/camel-smime-context.c:602
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 "Zertifikat ist die einzige Nachricht, Zertifikatverifizierung nicht möglich"
 
-#: ../camel/camel-smime-context.c:602
+#: ../camel/camel-smime-context.c:605
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "Zertifikat ist die einzige Nachricht, Zertifikate importiert und verifiziert"
 
-#: ../camel/camel-smime-context.c:606
+#: ../camel/camel-smime-context.c:609
 msgid "Cannot find signature digests"
 msgstr "Signatur-Digest konnte nicht gefunden werden"
 
-#: ../camel/camel-smime-context.c:622
+#: ../camel/camel-smime-context.c:625
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Unterzeichner: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:723
+#: ../camel/camel-smime-context.c:726
 msgid "Decoder failed"
 msgstr "Dekodiervorgang gescheitert"
 
-#: ../camel/camel-smime-context.c:775
+#: ../camel/camel-smime-context.c:778
 #, c-format
 msgid "Cannot find certificate for `%s'"
 msgstr "Es konnte kein Zertifikat für »%s« gefunden werden"
 
 # CHECK
-#: ../camel/camel-smime-context.c:782
+#: ../camel/camel-smime-context.c:785
 msgid "Cannot find common bulk encryption algorithm"
 msgstr ""
 "Es konnte kein gemeinsamer Massenverschlüsselungsalgorithmus gefunden werden"
 
 # CHECK
 #. PORT_GetError(); ??
-#: ../camel/camel-smime-context.c:791
+#: ../camel/camel-smime-context.c:794
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr ""
 "Es konnte kein Slot für den Massenverschlüsselungsschlüssel bereitgestellt "
 "werden"
 
-#: ../camel/camel-smime-context.c:802
+#: ../camel/camel-smime-context.c:805
 msgid "Cannot create CMS Message"
 msgstr "CMS-Nachricht konnte nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:808
+#: ../camel/camel-smime-context.c:811
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS-Umschlagsdaten konnten nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:814
+#: ../camel/camel-smime-context.c:817
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS-Umschlagsdaten konnten nicht beigelegt werden"
 
-#: ../camel/camel-smime-context.c:820
+#: ../camel/camel-smime-context.c:823
 msgid "Cannot attach CMS data object"
 msgstr "CMS-Datenobjekt konnte nicht beigelegt werden"
 
-#: ../camel/camel-smime-context.c:829
+#: ../camel/camel-smime-context.c:832
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS-Empfängerinformationen konnten nicht angelegt werden"
 
-#: ../camel/camel-smime-context.c:834
+#: ../camel/camel-smime-context.c:837
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS-Empfängerinformationen konnten nicht hinzugefügt werden"
 
-#: ../camel/camel-smime-context.c:859
+#: ../camel/camel-smime-context.c:862
 msgid "Failed to add data to encoder"
 msgstr "Hinzufügen von Daten zum Kodierer gescheitert"
 
-#: ../camel/camel-smime-context.c:946
+#: ../camel/camel-smime-context.c:949
 #, c-format
 msgid "Decoder failed, error %d"
 msgstr "Dekodierer gescheitert, Fehler %d"
 
-#: ../camel/camel-smime-context.c:953
+#: ../camel/camel-smime-context.c:956
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME-Entschlüsselung: Kein entschlüsselter Inhalt gefunden"
 
-#: ../camel/camel-smime-context.c:980
+#: ../camel/camel-smime-context.c:983
 msgid "import keys: unimplemented"
 msgstr "Schlüssel importieren: Nicht implementiert"
 
-#: ../camel/camel-smime-context.c:988
+#: ../camel/camel-smime-context.c:991
 msgid "export keys: unimplemented"
 msgstr "Schlüssel exportieren: Nicht implementiert"
 
@@ -2714,14 +2724,15 @@ msgstr "Nachricht %s konnte nicht abgerufen werden: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2104
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Diese Nachricht ist im Offline-Modus nicht verfügbar."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1651
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1697
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1654
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1700
 msgid "Could not get message"
 msgstr "Abrufen der Nachricht gescheitert"
 
@@ -2735,7 +2746,7 @@ msgstr "Zusammenfassung für %s konnte nicht geladen werden"
 msgid "Trash Folder Full. Please Empty."
 msgstr "Bitte leeren Sie den Müll, er ist voll."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1216
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1219
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2392
@@ -2745,13 +2756,13 @@ msgid "Fetching summary information for new messages in %s"
 msgstr ""
 "Zusammenfassende Informationen für neue Nachrichten in %s werden abgerufen"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1968
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2010
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1971
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2013
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Nachricht konnte nicht an Ordner »%s« angehängt werden: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1998
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2001
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nachricht konnte nicht angelegt werden: %s"
@@ -2990,12 +3001,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3035
+#: ../camel/providers/imap/camel-imap-store.c:3037
 msgid "Operation cancelled"
 msgstr "Vorgang abgebrochen"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3038
+#: ../camel/providers/imap/camel-imap-store.c:3040
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Server-Verbindung unerwartet getrennt: %s"
@@ -3695,10 +3706,11 @@ msgid "Store status headers in Elm/Pine/Mutt format"
 msgstr "Status-Kopfzeilen im Elm/Pine/Mutt-Format speichern"
 
 #: ../camel/providers/local/camel-local-provider.c:115
-msgid "Standard Unix mbox spool or directory"
-msgstr "Standard-UNIX-mbox-Spool oder -Verzeichnis"
+msgid "Standard Unix mbox spool file"
+msgstr "Standard-UNIX-mbox-Spool-Datei"
 
 #: ../camel/providers/local/camel-local-provider.c:116
+#: ../camel/providers/local/camel-local-provider.c:127
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3707,6 +3719,10 @@ msgstr ""
 "Spooldateien.\n"
 "Kann außerdem zum Einlesen eines Baums mit Elm-, Pine- oder Mutt-Ordnern "
 "verwendet werden."
+
+#: ../camel/providers/local/camel-local-provider.c:126
+msgid "Standard Unix mbox spool directory"
+msgstr "Standard-UNIX-mbox-Spool-Verzeichnis"
 
 #: ../camel/providers/local/camel-local-store.c:157
 #: ../camel/providers/local/camel-local-store.c:268
@@ -4002,7 +4018,7 @@ msgstr "Quellordner %s konnte nicht geschlossen werden: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:645
 #, c-format
-msgid "Could not close temp folder: %s"
+msgid "Could not close temporary folder: %s"
 msgstr "Temporärer Ordner konnte nicht geschlossen werden: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:660
@@ -4034,12 +4050,12 @@ msgstr "Unbekannter Fehler: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1017
 #: ../camel/providers/local/camel-mbox-summary.c:1043
 #, c-format
-msgid "Error writing to temp mailbox: %s"
+msgid "Writing to temporary mailbox failed: %s"
 msgstr "Fehler beim Schreiben in temporäres Postfach: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
-msgid "Writing to tmp mailbox failed: %s: %s"
+msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Fehler beim Schreiben in temporäres Postfach %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
@@ -4885,7 +4901,7 @@ msgstr "Wartend"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1602 ../libedataserver/e-time-utils.c:1849
+#: ../libedataserver/e-time-utils.c:1605 ../libedataserver/e-time-utils.c:1852
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a, %d.%m.%Y %I:%M:%S %p"
 
@@ -4893,7 +4909,7 @@ msgstr "%a, %d.%m.%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1607 ../libedataserver/e-time-utils.c:1840
+#: ../libedataserver/e-time-utils.c:1610 ../libedataserver/e-time-utils.c:1843
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a, %d. %m %Y %k:%M:%S"
 
@@ -4901,7 +4917,7 @@ msgstr "%a, %d. %m %Y %k:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1612 ../libedataserver/e-time-utils.c:1845
+#: ../libedataserver/e-time-utils.c:1615 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %d.%m.%Y, %I:%M %p"
 
@@ -4909,78 +4925,78 @@ msgstr "%a, %d.%m.%Y, %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1617 ../libedataserver/e-time-utils.c:1836
+#: ../libedataserver/e-time-utils.c:1620 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %d.%m.%Y, %k:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1622
+#: ../libedataserver/e-time-utils.c:1625
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a, %d.%m.%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1627
+#: ../libedataserver/e-time-utils.c:1630
 msgid "%a %m/%d/%Y %H"
 msgstr "%a, %d.%m.%Y %k"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1630 ../libedataserver/e-time-utils.c:1726
-#: ../libedataserver/e-time-utils.c:1831
+#: ../libedataserver/e-time-utils.c:1633 ../libedataserver/e-time-utils.c:1729
+#: ../libedataserver/e-time-utils.c:1834
 msgid "%a %m/%d/%Y"
 msgstr "%a, %d.%m.%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1638
+#: ../libedataserver/e-time-utils.c:1641
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d.%m.%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1642
+#: ../libedataserver/e-time-utils.c:1645
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d.%m.%Y %k:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1647
+#: ../libedataserver/e-time-utils.c:1650
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d.%m.%Y / %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1652
+#: ../libedataserver/e-time-utils.c:1655
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d.%m.%Y %k:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1657
+#: ../libedataserver/e-time-utils.c:1660
 msgid "%m/%d/%Y %I %p"
 msgstr "%d.%m.%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1662
+#: ../libedataserver/e-time-utils.c:1665
 msgid "%m/%d/%Y %H"
 msgstr "%d.%m.%Y %k"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1665 ../libedataserver/e-time-utils.c:1729
+#: ../libedataserver/e-time-utils.c:1668 ../libedataserver/e-time-utils.c:1732
 msgid "%m/%d/%Y"
 msgstr "%d.%m.%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1775 ../libedataserver/e-time-utils.c:1894
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1897
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1779 ../libedataserver/e-time-utils.c:1886
+#: ../libedataserver/e-time-utils.c:1782 ../libedataserver/e-time-utils.c:1889
 msgid "%H:%M:%S"
 msgstr "%k:%M:%S"
 
@@ -4988,19 +5004,19 @@ msgstr "%k:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1784 ../libedataserver/e-time-utils.c:1891
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1894
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1788 ../libedataserver/e-time-utils.c:1883
+#: ../libedataserver/e-time-utils.c:1791 ../libedataserver/e-time-utils.c:1886
 msgid "%H:%M"
 msgstr "%k:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1792
+#: ../libedataserver/e-time-utils.c:1795
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -5012,7 +5028,7 @@ msgstr "Der Zugriff auf den LDAP-Server erfolgt anonym"
 msgid "Failed to authenticate.\n"
 msgstr "Legitimation gescheitert.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:265
+#: ../libedataserverui/e-categories-dialog.c:276
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -5021,7 +5037,11 @@ msgstr ""
 "Es gibt bereits eine Kategorie »%s« in dieser Konfiguration. Bitte einen "
 "anderen Namen verwenden."
 
-#: ../libedataserverui/e-categories-dialog.c:435
+#: ../libedataserverui/e-categories-dialog.c:475
+msgid "Icon"
+msgstr "Symbol"
+
+#: ../libedataserverui/e-categories-dialog.c:480
 msgid "Category"
 msgstr "Kategorie"
 
@@ -5116,25 +5136,25 @@ msgid "_Search:"
 msgstr "_Suchen:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2237
+#: ../libedataserverui/e-name-selector-entry.c:2241
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s aus_klappen"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2252
+#: ../libedataserverui/e-name-selector-entry.c:2256
 #, c-format
 msgid "Cop_y %s"
 msgstr "%s _kopieren"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2262
+#: ../libedataserverui/e-name-selector-entry.c:2266
 #, c-format
 msgid "C_ut %s"
 msgstr "%s ausschnei_den"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2279
+#: ../libedataserverui/e-name-selector-entry.c:2283
 #, c-format
 msgid "_Edit %s"
 msgstr "%s _bearbeiten"
@@ -5144,19 +5164,19 @@ msgstr "%s _bearbeiten"
 msgid "_Delete %s"
 msgstr "%s _löschen"
 
-#: ../libedataserverui/e-passwords.c:870
+#: ../libedataserverui/e-passwords.c:872
 msgid "_Remember this passphrase"
 msgstr "An dieses Passwort _erinnern"
 
-#: ../libedataserverui/e-passwords.c:871
+#: ../libedataserverui/e-passwords.c:873
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "Für den Rest dieser Sitzung an dieses Passwort _erinnern"
 
-#: ../libedataserverui/e-passwords.c:874
+#: ../libedataserverui/e-passwords.c:876
 msgid "_Remember this password"
 msgstr "An dieses Passwort _erinnern"
 
-#: ../libedataserverui/e-passwords.c:875
+#: ../libedataserverui/e-passwords.c:877
 msgid "_Remember this password for the remainder of this session"
 msgstr "Für den Rest dieser Sitzung an dieses Passwort _erinnern"
 
