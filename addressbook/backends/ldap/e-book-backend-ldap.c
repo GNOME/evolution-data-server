@@ -4087,7 +4087,8 @@ ldap_search_dtor (LDAPOp *op)
 
 	bonobo_object_unref (search_op->view);
 
-	g_free (search_op);
+	if (!search_op->aborted)
+		g_free (search_op);
 }
 
 static void
@@ -4175,7 +4176,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				d(printf ("adding search_op (%p, %d)\n", view, search_msgid));
 
 				op->view = view;
-
+				op->aborted = FALSE;
 				bonobo_object_ref (view);
 
 				ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND(bl), book, view, 
@@ -4232,8 +4233,11 @@ e_book_backend_ldap_stop_book_view (EBookBackend  *backend,
 	d(printf ("stop_book_view (%p)\n", view));
 
 	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
-	if (op)
+	if (op) {
+		op->aborted = TRUE;
 		ldap_op_finished ((LDAPOp*)op);
+		g_free (op);
+	}
 }
 
 static void

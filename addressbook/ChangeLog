@@ -1,3 +1,11 @@
+2007-08-17  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #332979
+
+	* backends/ldap/e-book-backend-ldap.c: (ldap_search_dtor),
+	(e_book_backend_ldap_search), (e_book_backend_ldap_stop_book_view):
+	Fixes a thread synchronization issue while doing autocompletion.
+
 2007-08-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/file/e-book-backend-file (e_book_backend_file_load_source):
