@@ -43,7 +43,7 @@ e_gw_proxy_construct_proxy_access_list (SoupSoapParameter *param, GList **proxy_
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) {
 
 		proxyHandler *aclInstance;
-		aclInstance = (proxyHandler *) malloc(sizeof(proxyHandler));
+		aclInstance = (proxyHandler *) g_malloc0 (sizeof(proxyHandler));
 		aclInstance->permissions = 0;
 		aclInstance->flags = 0;
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "email");
