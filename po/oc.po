@@ -1398,7 +1398,7 @@ msgstr ""
 
 #: ../camel/camel-filter-driver.c:1180
 msgid "Cannot open message"
-msgstr "Impossible de dubrir lo messatge"
+msgstr "Impossible de dobrir lo messatge"
 
 #: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1193
 #, c-format
@@ -3731,7 +3731,7 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-summary.c:439
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr "Impossible de dubrir lo repertòri : %s : %s"
+msgstr "Impossible de dobrir lo repertòri : %s : %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
@@ -3748,7 +3748,7 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-summary.c:144
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr "Impossible de dubrir lo fichièr : %s : %s"
+msgstr "Impossible de dobrir lo fichièr : %s : %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:623
 #: ../camel/providers/local/camel-spool-summary.c:164
@@ -3847,7 +3847,7 @@ msgid ""
 "Could not open folder `%s':\n"
 "%s"
 msgstr ""
-"Impossible de dubrir lo repertòri '%s' :\n"
+"Impossible de dolbrir lo repertòri '%s' :\n"
 "%s"
 
 #: ../camel/providers/local/camel-spool-store.c:177
@@ -4815,11 +4815,11 @@ msgstr "Contactes"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
-msgstr "Recèrcar"
+msgstr "Recercar"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:10
 msgid "_Search:"
-msgstr "_Recèrcar :"
+msgstr "_Recercar :"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2043
@@ -4914,7 +4914,7 @@ msgstr "Pas cap"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
-msgstr "Personalizat"
+msgstr "Personalisat"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:144
 msgid "Select User"
