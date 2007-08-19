@@ -1,3 +1,9 @@
+2007-08-19  Leonardo Ferreira Fontenelle  <leonardof@svn.gnome.org>
+
+	* pt_BR.po: Brazilian Portuguese translation updated by Washington
+	Lins <washington-lins@uol.com.br> and myself, and reviewd by Raul
+	Pereira <contato@raulpereira.com> and myself.
+
 2007-08-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	* POTFILES.in: Remove servers/exchange/lib/e2k-user-dialog.c;
