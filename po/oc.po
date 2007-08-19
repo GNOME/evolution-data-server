@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-24 07:44+0200\n"
-"PO-Revision-Date: 2007-07-29 09:14+0200\n"
+"PO-Revision-Date: 2007-08-19 18:06+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -955,7 +955,7 @@ msgstr "1èr"
 
 #: ../calendar/libecal/e-cal-recur.c:4033
 msgid "2nd"
-msgstr "5"
+msgstr "2"
 
 #: ../calendar/libecal/e-cal-recur.c:4034
 msgid "3rd"
