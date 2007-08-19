@@ -1,3 +1,8 @@
+2007-08-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	* POTFILES.in: Remove servers/exchange/lib/e2k-user-dialog.c;
+	it's no longer distributed.
+
 2007-08-18  Daniel Nylander <po@danielnylander.se>
 
 	* sv.po: Updated Swedish translation.
