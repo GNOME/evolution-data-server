@@ -67,6 +67,7 @@ e_book_backend_notify_complete
 e_book_backend_notify_writable
 e_book_backend_notify_connection_status
 e_book_backend_notify_auth_required
+e_book_backend_sync
 e_book_backend_set_is_loaded
 e_book_backend_set_is_writable
 e_book_backend_set_is_removed
@@ -277,14 +278,6 @@ e_data_book_view_get_type
 <SECTION>
 <FILE>ximian-vcard</FILE>
 XIMIAN_VCARD
-</SECTION>
-
-<SECTION>
-<FILE>e-data-book-marshal</FILE>
-e_data_book_marshal_VOID__VOID
-e_data_book_marshal_NONE__NONE
-e_data_book_marshal_VOID__POINTER
-e_data_book_marshal_NONE__POINTER
 </SECTION>
 
 <SECTION>

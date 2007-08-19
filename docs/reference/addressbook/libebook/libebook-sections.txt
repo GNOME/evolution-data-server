@@ -140,6 +140,7 @@ EBookPrivate
 EContact
 EContactField
 EContactName
+EContactGeo
 EContactPhoto
 EContactAddress
 EContactDate
@@ -161,6 +162,7 @@ e_contact_name_copy
 e_contact_date_free
 e_contact_name_free
 e_contact_photo_free
+e_contact_geo_free
 e_contact_address_free
 e_contact_field_name
 e_contact_pretty_name
@@ -186,6 +188,7 @@ e_contact_get_type
 e_contact_address_get_type
 e_contact_cert_get_type
 e_contact_photo_get_type
+e_contact_geo_get_type
 e_contact_name_get_type
 e_contact_date_get_type
 EContactPhotoType
@@ -218,6 +221,7 @@ e_vcard_attribute_add_values
 e_vcard_attribute_remove_values
 e_vcard_attribute_remove_value
 e_vcard_attribute_remove_params
+e_vcard_attribute_remove_param
 e_vcard_attribute_remove_param_value
 e_vcard_attribute_param_new
 e_vcard_attribute_param_free
@@ -252,6 +256,7 @@ EVC_EMAIL
 EVC_ENCODING
 EVC_FBURL
 EVC_FN
+EVC_GEO
 EVC_ICSCALENDAR
 EVC_KEY
 EVC_LABEL

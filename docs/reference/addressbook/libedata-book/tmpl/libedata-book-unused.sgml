@@ -1,3 +1,27 @@
+<!-- ##### SECTION ./tmpl/e-data-book-marshal.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-marshal.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-marshal.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-marshal.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-book-marshal.sgml:Title ##### -->
+e-data-book-marshal
+
+
 <!-- ##### SECTION ./tmpl/e-data-book-types.sgml:Long_Description ##### -->
 <para>
 
@@ -129,6 +153,30 @@ e-data-book-types
 @epv: 
 
 <!-- ##### STRUCT EDataBookViewPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_data_book_marshal_NONE__NONE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_data_book_marshal_NONE__POINTER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_data_book_marshal_VOID__POINTER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO e_data_book_marshal_VOID__VOID ##### -->
 <para>
 
 </para>

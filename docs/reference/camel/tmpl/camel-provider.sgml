@@ -140,6 +140,13 @@ camel-provider
 
 
 
+<!-- ##### MACRO CAMEL_URL_PART_PATH_DIR ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_URL_PART_NEED ##### -->
 <para>
 
@@ -259,6 +266,13 @@ camel-provider
 
 
 <!-- ##### MACRO CAMEL_URL_NEED_PATH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PATH_DIR ##### -->
 <para>
 
 </para>

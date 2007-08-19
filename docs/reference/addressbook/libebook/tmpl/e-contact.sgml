@@ -183,6 +183,11 @@ The URI of the contact's calendar.
 
 </para>
 
+<!-- ##### ARG EContact:geo ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:given-name ##### -->
 <para>
 
@@ -724,6 +729,7 @@ The URI of the contact's calendar.
 @E_CONTACT_IM_GADUGADU_WORK_2: 
 @E_CONTACT_IM_GADUGADU_WORK_3: 
 @E_CONTACT_IM_GADUGADU: 
+@E_CONTACT_GEO: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_FIELD_FIRST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 
@@ -746,6 +752,14 @@ The URI of the contact's calendar.
 @additional: 
 @prefixes: 
 @suffixes: 
+
+<!-- ##### STRUCT EContactGeo ##### -->
+<para>
+
+</para>
+
+@latitude: 
+@longitude: 
 
 <!-- ##### STRUCT EContactPhoto ##### -->
 <para>
@@ -935,6 +949,14 @@ The URI of the contact's calendar.
 </para>
 
 @photo: 
+
+
+<!-- ##### FUNCTION e_contact_geo_free ##### -->
+<para>
+
+</para>
+
+@geo: 
 
 
 <!-- ##### FUNCTION e_contact_address_free ##### -->

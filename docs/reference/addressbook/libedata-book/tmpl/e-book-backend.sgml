@@ -369,6 +369,14 @@ EBookBackend
 @backend: 
 
 
+<!-- ##### FUNCTION e_book_backend_sync ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
 <!-- ##### FUNCTION e_book_backend_set_is_loaded ##### -->
 <para>
 
@@ -447,7 +455,7 @@ EBookBackend
 @cancel_operation: 
 @set_mode: 
 @last_client_gone: 
-@_pas_reserved0: 
+@sync: 
 @_pas_reserved1: 
 @_pas_reserved2: 
 @_pas_reserved3: 

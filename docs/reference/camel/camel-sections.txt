@@ -1244,6 +1244,7 @@ CAMEL_URL_PART_PASSWORD
 CAMEL_URL_PART_HOST
 CAMEL_URL_PART_PORT
 CAMEL_URL_PART_PATH
+CAMEL_URL_PART_PATH_DIR
 CAMEL_URL_PART_NEED
 CAMEL_URL_PART_HIDDEN
 CAMEL_PROVIDER_ALLOWS
@@ -1261,6 +1262,7 @@ CAMEL_URL_NEED_PASSWORD
 CAMEL_URL_NEED_HOST
 CAMEL_URL_NEED_PORT
 CAMEL_URL_NEED_PATH
+CAMEL_URL_NEED_PATH_DIR
 CAMEL_URL_HIDDEN_USER
 CAMEL_URL_HIDDEN_AUTH
 CAMEL_URL_HIDDEN_PASSWORD
@@ -1821,6 +1823,7 @@ camel_stream_process_get_type
 <TITLE>CamelStreamVFS</TITLE>
 CamelStreamVFS
 camel_stream_vfs_new_with_uri
+camel_stream_vfs_new_with_handle
 <SUBSECTION Standard>
 CAMEL_STREAM_VFS_TYPE
 CAMEL_STREAM_VFS
@@ -2014,6 +2017,7 @@ camel_disco_store_status
 camel_disco_store_set_status
 camel_disco_store_can_work_offline
 camel_disco_store_check_online
+camel_disco_store_prepare_for_offline
 <SUBSECTION Standard>
 CAMEL_DISCO_STORE
 CAMEL_IS_DISCO_STORE

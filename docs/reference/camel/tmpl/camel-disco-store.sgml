@@ -73,3 +73,12 @@ CamelDiscoStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_disco_store_prepare_for_offline ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+
+

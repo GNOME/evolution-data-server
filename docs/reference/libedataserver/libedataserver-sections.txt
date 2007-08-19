@@ -214,6 +214,9 @@ e_source_group_peek_source_by_name
 e_source_group_add_source
 e_source_group_remove_source
 e_source_group_remove_source_by_uid
+e_source_group_get_property
+e_source_group_set_property
+e_source_group_foreach_property
 e_source_group_to_xml
 <SUBSECTION Standard>
 E_SOURCE_GROUP
@@ -224,6 +227,7 @@ E_IS_SOURCE_GROUP_CLASS
 ESourceGroupClass
 <SUBSECTION Private>
 ESourceGroupPrivate
+PRFileDesc
 e_source_group_get_type
 </SECTION>
 
@@ -273,6 +277,7 @@ e_source_set_group
 e_source_set_name
 e_source_set_relative_uri
 e_source_set_absolute_uri
+e_source_set_color_spec
 e_source_set_readonly
 e_source_set_color
 e_source_unset_color
@@ -281,6 +286,7 @@ e_source_peek_uid
 e_source_peek_name
 e_source_peek_relative_uri
 e_source_peek_absolute_uri
+e_source_peek_color_spec
 e_source_get_readonly
 e_source_get_color
 e_source_get_uri
@@ -289,6 +295,7 @@ e_source_to_standalone_xml
 e_source_get_property
 e_source_set_property
 e_source_foreach_property
+e_source_get_duped_property
 e_source_build_absolute_uri
 <SUBSECTION Standard>
 E_SOURCE
@@ -568,16 +575,6 @@ md5_get_digest_from_file
 md5_init
 md5_update
 md5_final
-</SECTION>
-
-<SECTION>
-<FILE>e-data-server-marshal</FILE>
-e_data_server_marshal_VOID__VOID
-e_data_server_marshal_NONE__NONE
-e_data_server_marshal_VOID__OBJECT
-e_data_server_marshal_NONE__OBJECT
-e_data_server_marshal_VOID__STRING
-e_data_server_marshal_NONE__STRING
 </SECTION>
 
 <SECTION>

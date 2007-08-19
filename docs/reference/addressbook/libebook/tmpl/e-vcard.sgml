@@ -206,6 +206,15 @@ Does the low-level parsing work for contact information. This data is more conve
 @attr: 
 
 
+<!-- ##### FUNCTION e_vcard_attribute_remove_param ##### -->
+<para>
+
+</para>
+
+@attr: 
+@param_name: 
+
+
 <!-- ##### FUNCTION e_vcard_attribute_remove_param_value ##### -->
 <para>
 
@@ -494,6 +503,13 @@ Email address
 
 
 <!-- ##### MACRO EVC_FN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_GEO ##### -->
 <para>
 
 </para>

@@ -17,31 +17,3 @@ e-data-book-marshal
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### MACRO e_data_book_marshal_VOID__VOID ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO e_data_book_marshal_NONE__NONE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO e_data_book_marshal_VOID__POINTER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO e_data_book_marshal_NONE__POINTER ##### -->
-<para>
-
-</para>
-
-
-
