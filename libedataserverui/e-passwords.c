@@ -197,10 +197,8 @@ static void
 ep_clear_passwords_keyring(EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
-	char *path;
 	char *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
@@ -216,13 +214,8 @@ ep_clear_passwords_keyring(EPassMsg *msg)
 	d(g_print("Get Default %d\n", result));
 	
 	/* Not called at all */
-	path = g_strdup ("Evolution");
 	attributes = gnome_keyring_attribute_list_new ();
-
-	attribute.name = g_strdup ("application");
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = path;
-	g_array_append_val (attributes, attribute);
+	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
@@ -273,10 +266,8 @@ static void
 ep_forget_passwords_keyring(EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
-	char *path;
 	char *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
@@ -290,14 +281,8 @@ ep_forget_passwords_keyring(EPassMsg *msg)
 	}	
 	d(g_print("Get Default %d\n", result));
 	
-	path = g_strdup ("Evolution");
 	attributes = gnome_keyring_attribute_list_new ();
-
-	attribute.name = g_strdup ("application");
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = path;
-	g_array_append_val (attributes, attribute);
-
+	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
@@ -376,7 +361,6 @@ ep_remember_password_keyring(EPassMsg *msg)
 	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
 		/* add it to the on-disk cache of passwords */
 		GnomeKeyringAttributeList *attributes;
-		GnomeKeyringAttribute attribute;
 		GnomeKeyringResult result;
 		EUri *uri = e_uri_new (okey);
 		guint32 item_id;
@@ -393,21 +377,9 @@ ep_remember_password_keyring(EPassMsg *msg)
 		}
 		
 		attributes = gnome_keyring_attribute_list_new ();
-
-		attribute.name = g_strdup ("user");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup (uri->user);
-		g_array_append_val (attributes, attribute);
-	
-		attribute.name = g_strdup ("server");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup (uri->host);
-		g_array_append_val (attributes, attribute);
-	 
-		attribute.name = g_strdup ("application");
-		attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-		attribute.value.string = g_strdup ("Evolution");
-		g_array_append_val (attributes, attribute);		
+		gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
+		gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
+		gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 		
 		result = gnome_keyring_item_create_sync (NULL, /* Use default keyring */
 						         GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
@@ -418,6 +390,9 @@ ep_remember_password_keyring(EPassMsg *msg)
 				   			 &item_id);
 	
 		d(g_print("Remember %s: %d/%d\n", msg->key, result, item_id));
+
+		gnome_keyring_attribute_list_free (attributes);
+
 		/* now remove it from our session hash */
 		g_hash_table_remove (passwords, msg->key);
 		g_free (okey);
@@ -468,7 +443,6 @@ static void
 ep_forget_password_keyring (EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
 	char *default_keyring = NULL;	
@@ -507,22 +481,9 @@ ep_forget_password_keyring (EPassMsg *msg)
 	d(g_print("Get Default %d\n", result));
 	
 	attributes = gnome_keyring_attribute_list_new ();
-	attribute.name = g_strdup ("user");
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup(uri->user);;
-	g_array_append_val (attributes, attribute);
-
-	attributes = gnome_keyring_attribute_list_new ();
-	attribute.name = g_strdup ("server");
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup(uri->host);;
-	g_array_append_val (attributes, attribute);
-
-	attributes = gnome_keyring_attribute_list_new ();
-	attribute.name = g_strdup ("application");
-	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup("Evolution");;
-	g_array_append_val (attributes, attribute);	
+	gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
+	gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
+	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
@@ -600,7 +561,6 @@ ep_get_password_keyring (EPassMsg *msg)
 {
 	char *passwd;
 	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringAttribute attribute;
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
 
@@ -625,23 +585,10 @@ ep_get_password_keyring (EPassMsg *msg)
 			/* We dont store passphrases.*/
 
 			attributes = gnome_keyring_attribute_list_new ();
-			attribute.name = g_strdup ("user");
-			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-			attribute.value.string = g_strdup(uri->user);;
-			g_array_append_val (attributes, attribute);
-			printf("get %s %s\n", attribute.value.string, msg->key);
-
-			attributes = gnome_keyring_attribute_list_new ();
-			attribute.name = g_strdup ("server");
-			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-			attribute.value.string = g_strdup(uri->host);;
-			g_array_append_val (attributes, attribute);
-		
-			attributes = gnome_keyring_attribute_list_new ();
-			attribute.name = g_strdup ("application");
-			attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-			attribute.value.string = g_strdup("Evolution");
-			g_array_append_val (attributes, attribute);	
+			gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
+			gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
+			gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
+			printf("get %s %s\n", uri->user, msg->key);
 
 			result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 			d(g_print ("Find Items %d\n", result));
