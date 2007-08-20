@@ -455,9 +455,9 @@ e_filename_make_safe (gchar *string)
 	gchar *p, *ts;
 	gunichar c;
 #ifdef G_OS_WIN32
-	const char *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?";
+	const char *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?#";
 #else
-	const char *unsafe_chars = " /'\"`&();|<>$%{}!";
+	const char *unsafe_chars = " /'\"`&();|<>$%{}!#";
 #endif	
 	
 	g_return_if_fail (string != NULL);
