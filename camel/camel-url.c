@@ -63,6 +63,8 @@ camel_url_new_with_base (CamelURL *base, const char *url_string)
 	const char *end, *hash, *colon, *semi, *at, *slash, *question;
 	const char *p;
 
+	g_return_val_if_fail (url_string != NULL, NULL);
+
 	url = g_new0 (CamelURL, 1);
 	start = url_string;
 
@@ -296,7 +298,11 @@ copy_param (GQuark key_id, gpointer data, gpointer user_data)
 CamelURL *
 camel_url_new (const char *url_string, CamelException *ex)
 {
-	CamelURL *url = camel_url_new_with_base (NULL, url_string);
+	CamelURL *url;
+
+	g_return_val_if_fail (url_string != NULL, NULL);
+
+	url = camel_url_new_with_base (NULL, url_string);
 
 	if (!url->protocol) {
 		camel_url_free (url);
@@ -322,7 +328,9 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 {
 	GString *str;
 	char *return_result;
-	
+
+	g_return_val_if_fail (url != NULL, NULL);
+
 	/* IF YOU CHANGE ANYTHING IN THIS FUNCTION, RUN
 	 * tests/misc/url AFTERWARD.
 	 */
@@ -425,6 +433,8 @@ camel_url_free (CamelURL *url)
 void							\
 camel_url_set_##part (CamelURL *url, const char *part)	\
 {							\
+	g_return_if_fail (url != NULL);			\
+							\
 	g_free (url->part);				\
 	url->part = g_strdup (part);			\
 }
@@ -520,6 +530,8 @@ DEFINE_CAMEL_URL_SET (fragment)
 void
 camel_url_set_port (CamelURL *url, int port)
 {
+	g_return_if_fail (url != NULL);
+
 	url->port = port;
 }
 
@@ -535,6 +547,8 @@ camel_url_set_port (CamelURL *url, int port)
 void
 camel_url_set_param (CamelURL *url, const char *name, const char *value)
 {
+	g_return_if_fail (url != NULL);
+
 	if (value)
 		g_datalist_set_data_full (&url->params, name, g_strdup(value), g_free);
 	else
@@ -554,6 +568,8 @@ camel_url_set_param (CamelURL *url, const char *name, const char *value)
 const char *
 camel_url_get_param (CamelURL *url, const char *name)
 {
+	g_return_val_if_fail (url != NULL, NULL);
+
 	return g_datalist_get_data (&url->params, name);
 }
 
@@ -608,6 +624,8 @@ camel_url_encode (const char *part, const char *escape_extra)
 	GString *str;
 	char *encoded;
 
+	g_return_val_if_fail (part != NULL, NULL);
+
 	str = g_string_new (NULL);
 	append_url_encoded (str, part, escape_extra);
 	encoded = str->str;
@@ -628,6 +646,8 @@ void
 camel_url_decode (char *part)
 {
 	unsigned char *s, *d;
+
+	g_return_if_fail (part != NULL);
 
 #define XDIGIT(c) ((c) <= '9' ? (c) - '0' : ((c) & 0x4F) - 'A' + 10)
 
@@ -704,6 +724,8 @@ CamelURL *
 camel_url_copy(const CamelURL *in)
 {
 	CamelURL *out;
+
+	g_return_val_if_fail (in != NULL, NULL);
 
 	out = g_malloc(sizeof(*out));
 	out->protocol = g_strdup(in->protocol);
