@@ -1146,7 +1146,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 				 "Depth", "1");
 
 	soup_message_set_request (message, 
-				  "text/xml",
+				  "application/xml",
 				  SOUP_BUFFER_USER_OWNED,
 				  (char *) buf->buffer->content,
 				  buf->buffer->use);
