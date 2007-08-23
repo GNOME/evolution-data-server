@@ -683,63 +683,47 @@ cert_fingerprint(CERTCertificate *cert)
 CamelCert *
 camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 {
-	char *fingerprint, *path;
+	char *fingerprint;
 	CamelCert *ccert;
-	struct stat st;
-	size_t nread;
-	ssize_t n;
-	int fd;
-	
+
 	fingerprint = cert_fingerprint (cert);
 	ccert = camel_certdb_get_cert (certdb, fingerprint);
 	if (ccert == NULL) {
 		g_free (fingerprint);
 		return ccert;
 	}
-	
+
 	if (ccert->rawcert == NULL) {
-#ifndef G_OS_WIN32
-		path = g_strdup_printf ("%s/.camel_certs/%s", getenv ("HOME"), fingerprint);
-#else
-		path = g_build_filename (g_get_home_dir (), ".camel_certs", fingerprint, NULL);
-#endif
-		if (g_stat (path, &st) == -1
-		    || (fd = g_open (path, O_RDONLY | O_BINARY, 0)) == -1) {
-			g_warning ("could not load cert %s: %s", path, strerror (errno));
-			g_free (fingerprint);
-			g_free (path);
-			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+		GByteArray *array;
+		gchar *filename;
+		gchar *contents;
+		gsize length;
+		GError *error = NULL;
+
+		filename = g_build_filename (
+			g_get_home_dir (), ".camel_certs", fingerprint, NULL);
+		g_file_get_contents (filename, &contents, &length, &error);
+		if (error != NULL) {
+			g_warning (
+				"Could not load cert %s: %s",
+				filename, error->message);
+			g_error_free (error);
+
+			camel_cert_set_trust (
+				certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
 			camel_certdb_touch (certdb);
-			
-			return ccert;
-		}
-		g_free(path);
-		
-		ccert->rawcert = g_byte_array_new ();
-		g_byte_array_set_size (ccert->rawcert, st.st_size);
-		
-		nread = 0;
-		do {
-			do {
-				n = read (fd, ccert->rawcert->data + nread, st.st_size - nread);
-			} while (n == -1 && errno == EINTR);
-			
-			if (n > 0)
-				nread += n;
-		} while (nread < st.st_size && n != -1);
-		
-		close (fd);
-		
-		if (nread != st.st_size) {
-			g_warning ("cert size read truncated %s: %u != %ld", path, nread, st.st_size);
-			g_byte_array_free(ccert->rawcert, TRUE);
-			ccert->rawcert = NULL;
-			g_free(fingerprint);
-			camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
-			camel_certdb_touch(certdb);
+			g_free (fingerprint);
+			g_free (filename);
 
 			return ccert;
 		}
+		g_free (filename);
+
+		array = g_byte_array_sized_new (length);
+		g_byte_array_append (array, (guint8 *) contents, length);
+		g_free (contents);
+
+		ccert->rawcert = array;
 	}
 
 	g_free(fingerprint);

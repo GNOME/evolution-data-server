@@ -1,3 +1,8 @@
+2007-08-23  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-tcp-stream-ssl.c (camel_certdb_nss_cert_get):
+	Simplify the code; use g_file_get_contents() (#437331).
+
 2007-08-20  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-url.c:
