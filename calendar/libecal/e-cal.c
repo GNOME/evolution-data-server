@@ -3571,10 +3571,14 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 				end_zone = default_zone;
 			}
 
-			ci->start = icaltime_as_timet_with_zone (*dtstart.value,
-							start_zone);
-			ci->end = icaltime_as_timet_with_zone (*dtend.value,
-						   	end_zone);
+			ci->start = icaltime_as_timet_with_zone (*dtstart.value, start_zone);
+
+			if (dtend.value)
+				ci->end = icaltime_as_timet_with_zone (*dtend.value, end_zone);
+			else if (icaltime_is_date (*dtstart.value))
+				ci->end = time_day_end (ci->start);
+			else 
+				ci->end = ci->start;
 
 			e_cal_component_free_datetime (&dtstart);
 			e_cal_component_free_datetime (&dtend);

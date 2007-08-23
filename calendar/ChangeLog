@@ -1,3 +1,10 @@
+2007-08-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #337454
+
+	* libecal/e-cal.c: (generate_instances): Based on RFC 2445,
+	DTEND property is not required for reccuring VEVENT.
+
 2007-08-13  Ross Burton  <ross@openedhand.com>
 
 	* libedata-cal/e-cal-backend-cache.c:
