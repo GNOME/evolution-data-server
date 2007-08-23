@@ -929,7 +929,6 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	
 	sn = xmlNewTextChild (node, nscd, (xmlChar *) "comp-filter", NULL);
 	xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VEVENT");
-	xmlNewTextChild (sn, nscd, (xmlChar *) "is-defined", NULL);
 	/* ^^^ add timerange for performance?  */
 	
 	
