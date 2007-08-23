@@ -1,3 +1,12 @@
+2007-08-23  Sankar P  <psankar@novell.com>
+	
+	** Fix for bug #464636
+
+	* Committed on behalf of Ashish <shashish@novell.com>
+
+	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):
+	Sender field does not display anything.
+
 2007-08-16  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #350539
