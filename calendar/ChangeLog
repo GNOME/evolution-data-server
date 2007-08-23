@@ -1,6 +1,12 @@
 2007-08-23  Christian Kellner  <gicmo@gnome.org>
 
 	* backends/caldav/e-cal-backend-caldav.c:
+	Add new debugging framework which can be controlled during
+	runtime with the CALDAV_DEBUG debug enviroment variable.
+
+2007-08-23  Christian Kellner  <gicmo@gnome.org>
+
+	* backends/caldav/e-cal-backend-caldav.c:
 	(caldav_server_list_objects):
 	Get rid of the non rfc-compliant is-defined xml tag in REPORT
 	queries.

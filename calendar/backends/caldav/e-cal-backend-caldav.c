@@ -113,52 +113,216 @@ struct _ECalBackendCalDAVPrivate {
 	gboolean disposed;
 };
 
-#if 0
+/* ************************************************************************* */
+/* Debugging */
+
+#define DEBUG_MESSAGE "message"
+#define DEBUG_MESSAGE_HEADER "message:header"
+#define DEBUG_MESSAGE_BODY "message:body"
+
+static gboolean caldav_debug_all = FALSE;
+static GHashTable *caldav_debug_table = NULL;
+
+
 static void
-print_header (gpointer name, gpointer value, gpointer data)
+add_debug_key (const char *start, const char *end)
 {
-	g_print ("%s: %s\n", (char *) name, (char *) value);
+	char *debug_key;
+	char *debug_value;
+
+	if (start == end) {
+		return;
+	}
+
+	debug_key = debug_value = g_strndup (start, end - start);
+
+	debug_key = g_strchug (debug_key);
+	debug_key = g_strchomp (debug_key);
+
+	if (strlen (debug_key) == 0) {
+		g_free (debug_value);
+		return;
+	}
+
+	g_hash_table_insert (caldav_debug_table,
+			     debug_key,
+			     debug_value);
+			
+	g_debug ("Adding %s to enabled debugging keys", debug_key);
+}
+
+static gpointer
+caldav_debug_init_once (gpointer data)
+{
+	const char *dbg;
+
+	dbg = g_getenv ("CALDAV_DEBUG");
+
+	if (dbg) {
+		const char *ptr;
+
+		g_debug ("Got debug env variable: [%s]", dbg);
+
+		caldav_debug_table = g_hash_table_new (g_str_hash,
+						       g_str_equal);
+
+		ptr = dbg;
+
+		while (*ptr != '\0') {
+			if (*ptr == ',' || *ptr == ':') {
+			
+				add_debug_key (dbg, ptr);
+
+				if (*ptr == ',') {
+					dbg = ptr + 1;
+				}
+			}
+
+			ptr++;
+		}
+
+		if (ptr - dbg > 0) {
+			add_debug_key (dbg, ptr);
+		}
+
+		if (g_hash_table_lookup (caldav_debug_table, "all")) {
+			caldav_debug_all = TRUE;
+			g_hash_table_destroy (caldav_debug_table);
+			caldav_debug_table = NULL;
+		}
+	}
+	
+	return NULL;
 }
 
 static void
-debug_handler (SoupMessage *msg, gpointer user_data)
+caldav_debug_init ()
 {
-	g_print ("%d %s\nMessage-Debug: %p @ %lu\n",
-                msg->status_code, msg->reason_phrase,
-                msg, time (0));
+	static GOnce debug_once = G_ONCE_INIT;
+  
+	g_once (&debug_once,
+		caldav_debug_init_once,
+		NULL);
+}
 
-	/* print headers */
-	soup_message_foreach_header (msg->response_headers, print_header, NULL);
+static gboolean
+caldav_debug_show (const char *component)
+{
+	if (G_UNLIKELY (caldav_debug_all)) {
+		return TRUE;
+	} else if (G_UNLIKELY (caldav_debug_table != NULL) &&
+		   g_hash_table_lookup (caldav_debug_table, component)) {
+		return TRUE;
+	}
 
-	/* print response */
-	if (msg->response.length) {
-		fputc ('\n', stdout);
-		fwrite (msg->response.body, 1, msg->response.length, stdout);
-		fputc ('\n', stdout);
+	return FALSE; 
+}
+
+static void
+message_debug_print_header (gpointer name, gpointer value, gpointer data)
+{
+	g_debug ("%s: %s", (char *) name, (char *) value);
+}
+
+#define DEBUG_MAX_BODY_SIZE (100 * 1024 * 1024)
+
+static void
+message_response_debug_handler (SoupMessage *msg, gpointer user_data)
+{
+
+	g_debug ("%d %s\nMessage-Debug: %p @ %lu",
+		 msg->status_code,
+		 msg->reason_phrase,
+		 msg,
+		 time (0));
+
+	if (caldav_debug_show (DEBUG_MESSAGE_HEADER)) {
+		/* print headers */
+		soup_message_foreach_header (msg->response_headers,
+					     message_debug_print_header,
+					     NULL);
+
+	}
+
+	if (caldav_debug_show (DEBUG_MESSAGE_BODY)) {
+
+		/* print response */
+		if (msg->response.length) {
+			char *body;
+
+		        //needed for null terminal and truncation	
+			body = g_strndup (msg->response.body,
+					  MIN (msg->response.length,
+					       DEBUG_MAX_BODY_SIZE));
+
+			g_debug ("Response: \n[%s%s]%s", body,
+				 msg->response.length > DEBUG_MAX_BODY_SIZE ?
+				 " ..." : "",
+				  msg->response.length > DEBUG_MAX_BODY_SIZE ?
+				 " (trunkated)" : "");
+
+			g_free (body);
+		}
 	}
 }
 
 static void
-setup_debug (SoupMessage *msg)
+message_setup_debug (SoupMessage *msg)
 {
 	const SoupUri *suri;
 
+	if (G_LIKELY (! caldav_debug_show (DEBUG_MESSAGE))) {
+		return;
+	}
+
 	suri = soup_message_get_uri (msg);
-	g_print ("%s %s%s%s HTTP/1.1\nSOAP-Debug: %p @ %lu\n",
-		 SOUP_MESSAGE (msg)->method, suri->path,
+
+	g_debug ("%s %s%s%s HTTP/1.1\nMessage-ID: %p @ %lu",
+		 SOUP_MESSAGE (msg)->method,
+		 suri->path,
 		 suri->query ? "?" : "",
 		 suri->query ? suri->query : "",
-		 msg, (unsigned long) time (0));
+		 msg,
+		 (unsigned long) time (0));
+
+	soup_message_add_handler (SOUP_MESSAGE (msg),
+				  SOUP_HANDLER_POST_BODY,
+				  message_response_debug_handler,
+				  NULL);
+
+	if (G_LIKELY (! caldav_debug_show (DEBUG_MESSAGE_HEADER))) {
+		return;
+	}
 
 	/* print message headers */
-	print_header ("Host", suri->host, NULL);
-	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
+	message_debug_print_header ("Host", suri->host, NULL);
 
-	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
+	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers,
+				     message_debug_print_header,
+				     NULL);
+
+	if (caldav_debug_show (DEBUG_MESSAGE_BODY)) {
+
+		/* print response */
+		if (msg->request.length) {
+			char *body;
+
+		        //needed for null terminal and truncation	
+			body = g_strndup (msg->request.body,
+					  MIN (msg->request.length,
+					       DEBUG_MAX_BODY_SIZE));
+
+			g_debug ("Request: \n[%s%s]%s", body,
+				 msg->request.length > DEBUG_MAX_BODY_SIZE ?
+				 " ..." : "",
+				  msg->request.length > DEBUG_MAX_BODY_SIZE ?
+				 " (trunkated)" : "");
+
+			g_free (body);
+		}
+	}
 }
-#endif
 
-#define d(x)
 
 static ECalBackendSyncClass *parent_class = NULL;
 
@@ -838,7 +1002,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
-	d(setup_debug (message);)
+	message_setup_debug (message);
 	soup_session_send_message (priv->session, message);
 	
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
@@ -949,7 +1113,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 				  (char *) buf->buffer->content,
 				  buf->buffer->use);
 
-	d(setup_debug (message);)
+	message_setup_debug (message);
+
 	/* Send the request now */
 	soup_session_send_message (priv->session, message);
 	
@@ -989,7 +1154,8 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
-	d(setup_debug (message);)
+	message_setup_debug (message);
+
 	soup_session_send_message (priv->session, message);
 	
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
@@ -1063,7 +1229,8 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 				  strlen (object->cdata));
 
 	
-	d(setup_debug (message);)
+	message_setup_debug (message);
+
 	soup_session_send_message (priv->session, message);
 
 	/* FIXME: sepcial case precondition errors ?*/
@@ -1108,7 +1275,8 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 					"If-Match", object->etag);
 	}
 	
-	d(setup_debug (message);)
+	message_setup_debug (message);
+
 	soup_session_send_message (priv->session, message);
 	
 	result = status_code_to_result (message->status_code);	
@@ -1334,7 +1502,7 @@ synch_slave_loop (gpointer data)
 		/* Ok here we go, do some real work 
 		 * Synch it baby one more time ...
 		 */
-		d(g_print ("Synch-Slave: Goint to work ...\n"));
+		//d(g_print ("Synch-Slave: Goint to work ...\n")); XXX re-enable output please
 		synchronize_cache (cbdav); 
 
 		/* puhh that was hard, get some rest :) */
@@ -2579,6 +2747,8 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
+
+	caldav_debug_init ();
 
 	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 	g_type_class_add_private (class, sizeof (ECalBackendCalDAVPrivate));
