@@ -1,3 +1,8 @@
+2007-08-23  Adam Weinberger  <adamw@gnome.org>
+
+	* POTFILES.skip: Add missing file.
+	* en_CA.po: Updated Canadian English translation.
+
 2007-08-19  Duarte Loreto <happyguy_pt@hotmail.com>
 
 	* pt.po: Updated Portuguese translation.

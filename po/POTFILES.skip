@@ -5,3 +5,4 @@ camel/providers/nntp/camel-nntp-grouplist.c
 camel/providers/nntp/camel-nntp-newsrc.c
 camel/providers/nntp/camel-nntp-utils.c
 camel/providers/nntp/test-newsrc.c
+servers/exchange/lib/e2k-user-dialog.c
