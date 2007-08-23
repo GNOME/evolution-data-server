@@ -1,6 +1,14 @@
 2007-08-23  Christian Kellner  <gicmo@gnome.org>
 
 	* backends/caldav/e-cal-backend-caldav.c:
+	Only store relative hrefs (i.e. the filename of the object) in
+	the component and the local cache and create the full qualified
+	when needed (that means during server interaction).
+	That should fix b.g.o bug #326316 and bug #354855
+
+2007-08-23  Christian Kellner  <gicmo@gnome.org>
+
+	* backends/caldav/e-cal-backend-caldav.c:
 	Add new debugging framework which can be controlled during
 	runtime with the CALDAV_DEBUG debug enviroment variable.
 

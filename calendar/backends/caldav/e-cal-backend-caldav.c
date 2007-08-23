@@ -470,7 +470,7 @@ e_cal_component_set_synch_state (ECalComponent          *comp,
  * use it 
  * and btw FIXME!!! */
 static char *
-e_cal_component_gen_href (ECalComponent *comp, const char *base_uri)
+e_cal_component_gen_href (ECalComponent *comp)
 {
 	char *href, *iso;
 
@@ -478,11 +478,7 @@ e_cal_component_gen_href (ECalComponent *comp, const char *base_uri)
 
 	iso = isodate_from_time_t (time (NULL));
 
-	if (g_str_has_suffix (base_uri, "/")) {
-		href = g_strconcat (base_uri, iso, ".ics", NULL);
-	} else {
-		href = g_strconcat (base_uri, "/" ,iso, ".ics", NULL);
-	}
+	href = g_strconcat (iso, ".ics", NULL);
 
 	g_free (iso);	
 	
@@ -690,6 +686,34 @@ xp_object_get_string (xmlXPathObjectPtr result)
 	return ret;
 }
 
+/* as get_string but will normailze it (i.e. only take
+ * the last part of the href) */
+static char *
+xp_object_get_href (xmlXPathObjectPtr result)
+{
+	char *ret;
+	char *val;
+
+	if (result == NULL || result->type != XPATH_STRING) {
+		return NULL;	
+	}
+
+	val = (char *) result->stringval;
+
+	if ((ret = g_strrstr (val, "/")) == NULL) {
+		ret = val;
+	} else {
+		ret++; /* skip the unwanted "/" */
+	}
+
+	ret = g_strdup (ret);
+	g_debug ("found href: %s", ret);
+	
+	xmlXPathFreeObject (result);
+	return ret;
+}
+
+/* like get_string but will quote the etag if necessary */
 static char *
 xp_object_get_etag (xmlXPathObjectPtr result)
 {
@@ -825,7 +849,7 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, int *len)
 	
 	*objs = g_new0 (CalDAVObject, n);
 	
-	for (i = 0; i < n;i++) {
+	for (i = 0; i < n; i++) {
 		CalDAVObject *object;
 		xmlXPathObjectPtr xpres;
 		
@@ -833,7 +857,7 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, int *len)
 		/* see if we got a status child in the response element */
 
 		xpres = xpath_eval (xpctx, XPATH_HREF, i + 1);
-		object->href = xp_object_get_string (xpres);
+		object->href = xp_object_get_href (xpres);
 
 		xpres = xpath_eval (xpctx,XPATH_STATUS , i + 1);
 		object->status = xp_object_get_status (xpres);
@@ -982,6 +1006,20 @@ caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
 
 /* ************************************************************************* */
 /* direct CalDAV server access functions */
+
+static char *
+caldav_generate_uri (ECalBackendCalDAV *cbdav, const char *target)
+{
+	ECalBackendCalDAVPrivate  *priv;
+	char *uri;
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	/* priv->uri must NOT have trailing slash */
+	uri = g_strconcat (priv->uri, "/" , target, NULL);
+
+	return uri;
+}
 
 static ECalBackendSyncStatus
 caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
@@ -1143,14 +1181,17 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
 	const char               *hdr;
+	char                     *uri;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);	
 	result = GNOME_Evolution_Calendar_Success;
 
 	g_assert (object != NULL && object->href != NULL);
 	
-	message = soup_message_new (SOUP_METHOD_GET, object->href);
-	
+	uri = caldav_generate_uri (cbdav, object->href);
+	message = soup_message_new (SOUP_METHOD_GET, uri);
+	g_free (uri);
+
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
@@ -1198,15 +1239,18 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
 	const char               *hdr;
-	
+	char                     *uri;
+
 	priv   = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);	
 	result = GNOME_Evolution_Calendar_Success;
 	hdr    = NULL;
 	
 	g_assert (object != NULL && object->cdata != NULL);
 
-	message = soup_message_new (SOUP_METHOD_PUT, object->href);
-	
+	uri = caldav_generate_uri (cbdav, object->href);
+	message = soup_message_new (SOUP_METHOD_PUT, uri);
+	g_free (uri);
+
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
 
@@ -1259,13 +1303,16 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
-	
+	char                     *uri;
+
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);	
 	result = GNOME_Evolution_Calendar_Success;
 	
 	g_assert (object != NULL && object->href != NULL);
 
-	message = soup_message_new (SOUP_METHOD_DELETE, object->href);
+	uri = caldav_generate_uri (cbdav, object->href);
+	message = soup_message_new (SOUP_METHOD_DELETE, uri);
+	g_free (uri);
 	
 	soup_message_add_header (message->request_headers, 
 				 "User-Agent", "Evolution/" VERSION);
@@ -1594,6 +1641,7 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	GThread			 *slave;
 	const char		 *os_val;
 	const char               *uri;
+	gsize                     len;
 	
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	
@@ -1615,16 +1663,34 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	os_val = e_source_get_property(source, "ssl");
 	uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbdav));
 
+
+
 	if (g_str_has_prefix (uri, "caldav://")) {
+		const char *proto;
+
 		if (os_val && os_val[0] == '1') {
-			priv->uri = g_strconcat ("https://", uri + 9, NULL);
+			proto = "https://";
 		} else {
-			priv->uri = g_strconcat ("http://", uri + 9, NULL);
+			proto = "http://";
 		}
-	} else {		
+
+		priv->uri = g_strconcat (proto, uri + 9, NULL);
+
+	} else {
+
 		priv->uri = g_strdup (uri);
 	} 
-		
+
+	/* remove trailing slashes */
+	len = strlen (priv->uri);
+	while (len--) {
+		if (priv->uri[len] == '/') {
+			priv->uri[len] = '\0';
+		} else {
+			break;
+		}
+	}
+
 	if (priv->cache == NULL) {
 		priv->cache = e_cal_backend_cache_new (priv->uri, E_CAL_SOURCE_TYPE_EVENT);
 
@@ -1697,7 +1763,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 	if (priv->mode == CAL_MODE_REMOTE) {
 		/* set forward proxy */
-		caldav_set_session_proxy(priv);
+		caldav_set_session_proxy (priv);
 	
 		status = caldav_server_open_calendar (cbdav);
 
@@ -1819,7 +1885,7 @@ caldav_create_object (ECalBackendSync  *backend,
 	if (online) {
 		CalDAVObject object;
 	
-		href = e_cal_component_gen_href (comp, priv->uri);	
+		href = e_cal_component_gen_href (comp);	
 	
 		object.href  = href;
 		object.etag  = NULL;
@@ -1904,7 +1970,6 @@ caldav_modify_object (ECalBackendSync  *backend,
 
 		status = caldav_server_put_object (cbdav, &object);
 
-		e_cal_component_set_href (comp, object.href);
 		e_cal_component_set_etag (comp, object.etag);
 		caldav_object_free (&object, FALSE);
 		
@@ -2109,7 +2174,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 				object.etag  = g_strdup (etag);
 
 			} else {
-				object.href = e_cal_component_gen_href (ecomp, priv->uri);
+				object.href = e_cal_component_gen_href (ecomp);
 			}
 			
 			object.cdata = pack_cobj (cbdav, ecomp);
