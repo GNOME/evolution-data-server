@@ -1758,7 +1758,9 @@ content_info_get_part_spec (CamelMessageContentInfo *ci)
 		CamelMessageContentInfo *child;
 		
 		/* FIXME: is this only supposed to apply if 'node' is a multipart? */
-		if (node->parent->parent && camel_content_type_is (node->parent->type, "message", "*")) {
+		if (node->parent->parent &&
+				camel_content_type_is (node->parent->type, "message", "*") &&
+				!camel_content_type_is (node->parent->parent->type, "message", "*")) {
 			node = node->parent;
 			continue;
 		}

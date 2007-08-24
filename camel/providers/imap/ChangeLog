@@ -1,3 +1,10 @@
+2007-08-24  Wang Xin  <jedy.wang@sun.com>
+
+	** Fix for bug #365213
+
+	* camel-imap-folder.c: If a part's parent is message/* but its
+	grandparent is not, skip that part.
+
 2007-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #420462
