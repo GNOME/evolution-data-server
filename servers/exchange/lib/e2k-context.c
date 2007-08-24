@@ -594,7 +594,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	xmlFree (method);
 
 	value = xmlGetProp (node, "action");
-	if (!value)
+	if (!value || !*value)
 		goto failed;
 	if (*value == '/') {
 		SoupUri *suri;

@@ -1,3 +1,10 @@
+2007-08-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #381548 from John D. Ramsdell
+
+	* lib/e2k-context.c: (e2k_context_fba):
+	Make fail with zero-length action string like with NULL.
+
 2007-08-10  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #327977
