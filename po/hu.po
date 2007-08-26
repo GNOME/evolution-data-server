@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.hu\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-19 17:11+0100\n"
-"PO-Revision-Date: 2007-08-26 13:43+0200\n"
+"PO-Revision-Date: 2007-08-26 22:23+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -4373,7 +4373,7 @@ msgstr "%sAdja meg %s POP jelszavát a(z) %s gépen"
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr "Nem lehet csatlakozni a(z) %s POP kiszolgálóhoz:\tÉrvénytelen APOP azonosító érkezett. Ezt valószínűleg ééé támadás okozza, keresse meg a rendszergazdáját."
+msgstr "Nem lehet csatlakozni a(z) %s POP kiszolgálóhoz:\tÉrvénytelen APOP azonosító érkezett. Ezt valószínűleg egy személyiséglopási támadás okozza, keresse meg a rendszergazdát."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
