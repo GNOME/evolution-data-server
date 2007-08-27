@@ -514,7 +514,8 @@ e_categories_get_color_for (const char *category)
 		initialize_categories ();
 
 	cat_info = g_hash_table_lookup (categories_table, category);
-	g_return_val_if_fail (cat_info != NULL, NULL);
+	if (cat_info == NULL)
+		return NULL;
 
 	return cat_info->color;
 }
@@ -563,7 +564,8 @@ e_categories_get_icon_file_for (const char *category)
 		initialize_categories ();
 
 	cat_info = g_hash_table_lookup (categories_table, category);
-	g_return_val_if_fail (cat_info != NULL, NULL);
+	if (cat_info == NULL)
+		return NULL;
 
 	return cat_info->icon_file;
 }
@@ -612,7 +614,8 @@ e_categories_is_searchable (const char *category)
 		initialize_categories ();
 
 	cat_info = g_hash_table_lookup (categories_table, category);
-	g_return_val_if_fail (cat_info != NULL, FALSE);
+	if (cat_info == NULL)
+		return FALSE;
 
 	return cat_info->searchable;
 }

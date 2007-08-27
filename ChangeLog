@@ -1,3 +1,11 @@
+2007-08-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #469870
+
+	* libedataserver/e-categories.c: (e_categories_get_color_for),
+	(e_categories_get_icon_file_for), (e_categories_is_searchable):
+	Simply return from _get_ functions and don't show error warning.
+
 2007-08-20  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #367760
