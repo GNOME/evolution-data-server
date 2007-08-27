@@ -1,3 +1,10 @@
+2007-08-27  Johnny Jacob  <jjohnny@novell.com>
+ 
+	** Fix for 261084 by Jared Moore <cornflake.pirate@gmail.com>
+	
+	* camel-folder-search.c: String change.
+	
+	
 2007-08-27  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #256878 from Vincent Untz

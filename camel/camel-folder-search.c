@@ -762,7 +762,7 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 
 	/* not supported in match-all */
 	if (search->current) {
-		error_msg = g_strdup_printf(_("(%s) not allowed inside match-all"), "match-threads");
+		error_msg = g_strdup_printf(_("(%s) not allowed inside %s"), "match-threads", "match-all");
 		e_sexp_fatal_error(f, error_msg);
 		g_free(error_msg);
 	}
