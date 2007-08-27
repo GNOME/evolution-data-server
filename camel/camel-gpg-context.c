@@ -1546,6 +1546,8 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 			validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_GOOD;
 		else
 			validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
+	} else if (gpg->nopubkey) {
+		validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY;
 	} else {
 		validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 	}
@@ -1789,7 +1791,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 				else
 					valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			} else if (gpg->nopubkey) {
-				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
+				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY;
 			} else {
 				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			}

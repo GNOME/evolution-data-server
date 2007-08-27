@@ -57,6 +57,7 @@ typedef enum _camel_cipher_validity_sign_t {
 	CAMEL_CIPHER_VALIDITY_SIGN_GOOD,
 	CAMEL_CIPHER_VALIDITY_SIGN_BAD,
 	CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN,
+	CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY,
 } camel_cipher_validity_sign_t;
 
 typedef enum _camel_cipher_validity_encrypt_t {

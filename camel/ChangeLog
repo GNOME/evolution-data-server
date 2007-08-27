@@ -1,3 +1,10 @@
+2007-08-27  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #256878 from Vincent Untz
+
+	* camel-cipher-context.h:
+	* camel-gpg-context.c: (gpg_verify), (gpg_decrypt):
+
 2007-08-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-tcp-stream-ssl.c (camel_certdb_nss_cert_get):
