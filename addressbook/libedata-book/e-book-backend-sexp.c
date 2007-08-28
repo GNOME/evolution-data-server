@@ -244,6 +244,8 @@ static struct prop_info {
 	NORMAL_PROP ( E_CONTACT_FILE_AS, "file_as" ),
 	NORMAL_PROP ( E_CONTACT_UID, "id" ),
 	LIST_PROP ( "full_name", compare_name), /* not really a list, but we need to compare both full and surname */
+	NORMAL_PROP ( E_CONTACT_GIVEN_NAME, "given_name"),
+	NORMAL_PROP ( E_CONTACT_FAMILY_NAME, "family_name"),
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
 	NORMAL_PROP ( E_CONTACT_BLOG_URL, "blog_url"),
 	NORMAL_PROP ( E_CONTACT_CALENDAR_URI, "calurl"),
