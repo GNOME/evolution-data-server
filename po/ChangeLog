@@ -1,3 +1,8 @@
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
+	* POTFILES.in:
+	Add servers/exchange/lib/e2k-user-dialog.c (#469732)
+
 2007-08-28  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
 
 	* es.po: Updated Spanish translation
@@ -2454,7 +2459,7 @@
 
 2004-08-18  Metin Amiroff  <metin@karegen.com>
 
-	* az.po: Translation updated by Mətin Əmirov.
+	* az.po: Translation updated by Mətin ?mirov.
 
 2004-08-18  Takeshi AIHANA <aihana@gnome.gr.jp>
 
@@ -2572,7 +2577,7 @@
 
 2004-06-13  Metin Amiroff  <metin@karegen.com>
 
-	* az.po: Translation updated by Mətin Əmirov.
+	* az.po: Translation updated by Mətin ?mirov.
 
 2004-06-13  Funda Wang  <fundawang@linux.net.cn>
 
@@ -2580,7 +2585,7 @@
 
 2004-06-10  Metin Amiroff  <metin@karegen.com>
 
-	* az.po: Translation updated by Mətin Əmirov.
+	* az.po: Translation updated by Mətin ?mirov.
 
 2004-06-10  Ilkka Tuohela  <hile@iki.fi>
 
@@ -2908,7 +2913,7 @@
 
 2004-01-30  Metin Amiroff  <metin@karegen.com>
 
-	* az.po: Translation updated by Mətin Əmirov.
+	* az.po: Translation updated by Mətin ?mirov.
 
 2004-01-30  Miloslav Trmac  <mitr@volny.cz>
 
