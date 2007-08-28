@@ -44,7 +44,7 @@
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 
-#define d(x) (x)
+#define d(x)
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelFolderClass *parent_class;

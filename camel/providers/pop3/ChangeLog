@@ -1,3 +1,7 @@
+2007-08-28  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-pop3-folder.c: Silence debug messages.
+
 2007-07-09  Gilles Dartiguelongue  <gdartigu@svn.gnome.org>
 
 	* camel-pop3-engine.c: (read_greeting), (cmd_capa):
