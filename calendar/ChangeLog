@@ -1,5 +1,10 @@
 2007-08-28  Ross Burton  <ross@openedhand.com>
 
+	* backends/file/e-cal-backend-file-todo.c:
+	Add missing config.h include (part of #271841).
+
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
 	* */*:
 	Fix FSF address (Tobias Mueller, #470445)
 
