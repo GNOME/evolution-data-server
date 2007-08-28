@@ -1,3 +1,8 @@
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
+	* */*:
+	Fix FSF address (Tobias Mueller, #470445)
+
 2007-08-27  Johnny Jacob  <jjohnny@novell.com>
  
 	** Fix for 261084 by Jared Moore <cornflake.pirate@gmail.com>

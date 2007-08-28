@@ -38,7 +38,11 @@ typedef enum {
 	E2K_AUTOCONFIG_FAILED
 } E2kAutoconfigResult;
 
-gboolean e2k_validate_user (const char *owa_url, char *key, char **user, ExchangeParams *exchange_params, gboolean *remember_password, E2kAutoconfigResult *result, GtkWindow *parent);
+gboolean e2k_validate_user (const char *owa_url, char *key, char **user,
+			    ExchangeParams *exchange_params,
+			    gboolean *remember_password,
+			    E2kAutoconfigResult *result,
+			    GtkWindow *parent);
 
 
 #ifdef __cplusplus

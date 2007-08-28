@@ -1,3 +1,8 @@
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
+	* */*:
+	Fix FSF address (Tobias Mueller, #470445)
+
 2007-08-17  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #332979

@@ -1,3 +1,8 @@
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
+	* */*:
+	Fix FSF address (Tobias Mueller, #470445)
+
 2007-08-27  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 1.11.91 release
