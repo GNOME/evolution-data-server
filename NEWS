@@ -1,3 +1,49 @@
+Evolution-Data-Server 1.11.91 2007-08-27
+----------------------------------------
+
+Bug Fixes:
+	#261084: Translator comments for "match-all" and "match-threads"(Jared Moore)
+	#256878: Set the correct message for valid signatures (Vincent Untz)
+	#332979: Fixes a thread synchronization issue while doing autocompletion (Srinivasa Ragavan)
+	#337454: Fixed a crash when modifying a calendar entry (Milan Crha)
+	#350539: Check for NULL MIME part (Milan Crha)
+	#351756: Fixed a crash when modifying a datefield/date_entry (Milan Crha)
+	#354855: CalDAV: Support response with relative URLs (Christian Kellner)
+	#355659: CalDAV: New appointments disappear for 1 minute, and then reappear (Christian Kellner)
+	#356176: Importing .vcf replaces line breaks with literal \n in NOTE (Patrick Ohly)
+	#365213: Evolution can't show attachments in an attachment. (Wang Xin)
+	#367760: Fix multiple issues with Save / Save All attachment button (Milan Crha)
+	#381548: Fixed a crash in exchange (John D. Ramsdell)
+	#394571: Fixed a caldav request bug (Jari Urpalainen)
+	#437331: Read NSS certificate files more reliably (Matthew Barnes)
+	#458715: Fixed a crash in GW proxy setting (Johnny Jacob)
+	#464569: Plug memory leak and incorrect creation of gnome keyring attributes lists (Kevin Piche)
+	#464636: In groupwise account sender field does not display anything (Ashish)
+	#466309: Fix build with gcc 2.x (Jens Granseuer)
+	#466987: Fix compilation errors caused by glibc's new "open" macro (Matthew Barnes)
+	#467883: Add argument checks to several public functions (Matthew Barnes)
+	#469870: Simply return from _get_ functions and don't show error warning (Milan Crha)
+
+Other Contributons:
+	Add new debugging framework which can be controlled during
+	 runtime with the CALDAV_DEBUG debug enviroment variable
+	 (Christian Kellner)
+
+Updated Translations:
+	Adam Weinberger (en_CA)
+	Duarte Loreto (pt)
+	Washington Lins (pt_BR)
+	Daniel Nylander (sv)
+	Hendrik Richter (de)
+	Ivar Smolin (et)
+	Ankit Patel (gu)
+	Takeshi AIHANA (ja)
+	Claude Paroz and Stéphane Raimbault (fr)
+	Kjartan Maraas (nb)
+	Tirumurthi Vasudevan (ta)
+	Theppitak Karoonboonyanan (th)
+	Gabor Kelemen (hu)
+
 Evolution-Data-Server 1.11.90 2007-08-13
 -----------------------------------------
 
