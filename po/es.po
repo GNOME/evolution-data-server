@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-28 04:00+0100\n"
-"PO-Revision-Date: 2007-08-28 14:35+0200\n"
+"POT-Creation-Date: 2007-08-28 16:28+0100\n"
+"PO-Revision-Date: 2007-08-28 17:44+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -5154,6 +5154,14 @@ msgstr "Ninguno"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
 msgstr "Personalizado"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:139
+msgid "Select User"
+msgstr "Seleccione usuario"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:177
+msgid "Addressbook..."
+msgstr "Libreta de direcciones…"
 
 #: ../servers/exchange/storage/e-storage.c:555
 msgid "Generic error"
