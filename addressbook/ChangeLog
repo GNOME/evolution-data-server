@@ -1,5 +1,10 @@
 2007-08-28  Ross Burton  <ross@openedhand.com>
 
+	* libedata-book/e-book-backend-sexp.c:
+	Use G_N_ELEMENTS instead of a non-const int.
+
+2007-08-28  Ross Burton  <ross@openedhand.com>
+
 	* */*:
 	Fix FSF address (Tobias Mueller, #470445)
 

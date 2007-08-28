@@ -274,7 +274,6 @@ static struct prop_info {
 	LIST_PROP ( "address",   compare_address ),
 	LIST_PROP ( "category_list",  compare_category ),
 };
-static int num_prop_infos = sizeof(prop_info_table) / sizeof(prop_info_table[0]);
 
 static ESExpResult *
 entry_compare(SearchContext *ctx, struct _ESExp *f,
@@ -295,7 +294,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		propname = argv[0]->value.string;
 
 		any_field = !strcmp(propname, "x-evolution-any-field");
-		for (i = 0; i < num_prop_infos; i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];
@@ -419,7 +418,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 		propname = argv[0]->value.string;
 
-		for (i = 0; i < num_prop_infos; i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (!strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];
 				
