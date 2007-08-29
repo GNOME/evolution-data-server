@@ -66,7 +66,7 @@ libedata_bookinclude_HEADERS =				\
 	e-data-book-view.h				\
 	e-data-book.h                                   \
 	e-book-backend-cache.h 				\
-	e-book-backend-db-cache.h 								
+	e-book-backend-db-cache.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
