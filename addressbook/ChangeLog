@@ -1,3 +1,8 @@
+2007-08-29  Ross Burton  <ross@openedhand.com>
+
+	* libedata-book/e-book-backend-summary.c:
+	Add some const attributes.
+
 2007-08-28  Ross Burton  <ross@openedhand.com>
 
 	* libedata-book/e-book-backend-sexp.c:

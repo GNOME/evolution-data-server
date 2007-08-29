@@ -21,7 +21,9 @@
  * 02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 #include <sys/types.h>
@@ -932,7 +934,7 @@ func_check(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 /* 'builtin' functions */
-static struct {
+static const struct {
 	char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or
@@ -1116,7 +1118,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 }
 
 /* 'builtin' functions */
-static struct {
+static const struct {
 	char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or
