@@ -5,7 +5,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(DB_CFLAGS)					\
-        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 extension_LTLIBRARIES = libebookbackendfile.la
 
