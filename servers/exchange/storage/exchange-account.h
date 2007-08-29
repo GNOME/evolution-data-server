@@ -195,6 +195,8 @@ void 			exchange_account_folder_size_rename (ExchangeAccount *account,
 						     	     const char *old_name,
 						     	     const char *new_name);
 GtkListStore 	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
+void 		  	exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, 
+							      const char *user_email);
 
 
 #ifdef __cplusplus

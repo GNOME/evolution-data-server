@@ -1782,6 +1782,35 @@ exchange_account_get_foreign_uri (ExchangeAccount *account,
 	return foreign_uri;
 }
 
+/* Scans the subscribed users folders. */
+/*FIXME This function is not really required if the syncronization
+  problem between exchange and evolution is fixed. Exchange does not get to know 
+ if an user's folder is subscribed from evolution */
+void
+exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, const char *user_email)
+{
+	char *dir;
+	ExchangeHierarchy *hier;
+	int mode;
+	
+	hier = g_hash_table_lookup (account->priv->foreign_hierarchies, user_email);
+	if (hier) {
+		exchange_hierarchy_rescan (hier);
+		return;
+	}
+
+	dir = g_strdup_printf ("%s/%s", account->storage_dir, user_email);
+	if (g_file_test (dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		hier = exchange_hierarchy_foreign_new_from_dir (account, dir);
+		g_free (dir);
+		if (hier) {
+			exchange_account_is_offline (account, &mode);
+			setup_hierarchy_foreign (account, hier);
+			exchange_hierarchy_scan_subtree (hier, hier->toplevel, mode);
+		}
+	}
+}
+
 /**
  * exchange_account_get_hierarchy_by_email:
  * @account: an #ExchangeAccount

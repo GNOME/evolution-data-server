@@ -1,3 +1,11 @@
+2007-08-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #301263 (bnc)
+	* storage/exchange-account.[ch]: Added a new function
+	to scan foriegn folder hierarchy. 
+	* storage/exchange-esource.c: (add_folder_esource):
+	Set the foriegn folder property.
+
 2007-08-24  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #381548 from John D. Ramsdell

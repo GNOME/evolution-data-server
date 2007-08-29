@@ -113,6 +113,7 @@ add_folder_esource (ExchangeAccount *account,
 		
 		if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER)) {
 			e_source_set_property (source, "alarm", "never");
+			e_source_set_property (source, "foreign", "1");
 			e_source_set_property (source, "subscriber", useremail);
 		}
 
@@ -156,6 +157,7 @@ add_folder_esource (ExchangeAccount *account,
 
 			if (foriegn_folder && (folder_type != EXCHANGE_CONTACTS_FOLDER)) {
 				e_source_set_property (source, "alarm", "never");
+				e_source_set_property (source, "foreign", "1");
 				e_source_set_property (source, "subscriber", useremail);
 			}
 
