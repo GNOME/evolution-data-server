@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-13 17:43+0100\n"
-"PO-Revision-Date: 2007-08-16 13:09+0530\n"
+"POT-Creation-Date: 2007-08-28 16:28+0100\n"
+"PO-Revision-Date: 2007-08-29 13:23+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <fedora-trans-gu@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -47,13 +49,13 @@ msgstr "લાવી રહ્યા છીએ..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4150
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "શોધી રહ્યા છીએ..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4309
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "સંપર્કો ડાઉનલોડ કરી રહ્યા છીએ (%d)... "
@@ -93,7 +95,7 @@ msgstr "LDAP સર્વરમાં સંપર્ક સુધારી ર�
 msgid "Receiving LDAP search results..."
 msgstr "LDAP શોધનાં પરિણામો મેળવી રહ્યા છીએ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4169
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4170
 msgid "Error performing search"
 msgstr "શોધ કરવામાં ભૂલ"
 
@@ -343,7 +345,7 @@ msgstr "સંસ્થા"
 
 #: ../addressbook/libebook/e-contact.c:165
 msgid "Organizational Unit"
-msgstr "સંસ્થાનો અેકમ"
+msgstr "સંસ્થાનો એકમ"
 
 #: ../addressbook/libebook/e-contact.c:166
 msgid "Office"
@@ -709,12 +711,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "કેલેન્ડર માહિતી સંગ્રહી શકતા નથી: મલીન URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1760
 msgid "Reply Requested: by "
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: આમના દ્વારા "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1752
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1765
 msgid "Reply Requested: When convenient"
 msgstr "પ્રત્યુત્તરની માંગણી થયેલ છે: જ્યારે યોગ્ય હોય"
 
@@ -735,7 +737,7 @@ msgstr "અયોગ્ય સર્વર URI"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/libecal/e-cal.c:4997
+#: ../calendar/libecal/e-cal.c:5001
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
@@ -1128,73 +1130,73 @@ msgstr "%s (વપરાશકર્તા %s) માટે પાસવર્�
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "વપરાશકર્તા %s માટે પ્રોક્સી સક્રિય કરવા માટે %s માટે પાસવર્ડ દાખલ કરો"
 
-#: ../calendar/libecal/e-cal.c:4969
+#: ../calendar/libecal/e-cal.c:4973
 msgid "Invalid argument"
 msgstr "અયોગ્ય દલીલ"
 
-#: ../calendar/libecal/e-cal.c:4971
+#: ../calendar/libecal/e-cal.c:4975
 msgid "Backend is busy"
 msgstr "પાશ્વ ભાગ વ્યસ્ત છે"
 
-#: ../calendar/libecal/e-cal.c:4973
+#: ../calendar/libecal/e-cal.c:4977
 msgid "Repository is offline"
 msgstr "રીપોઝીટરી ઓફલાઈન છે"
 
-#: ../calendar/libecal/e-cal.c:4975
+#: ../calendar/libecal/e-cal.c:4979
 msgid "No such calendar"
 msgstr "આવુ કોઈ કેલેન્ડર જ નથી"
 
-#: ../calendar/libecal/e-cal.c:4977 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:4981 ../servers/groupwise/e-gw-connection.c:176
 msgid "Object not found"
 msgstr "ઓબ્જેક્ટ મળ્યો નથી"
 
-#: ../calendar/libecal/e-cal.c:4979 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:4983 ../servers/groupwise/e-gw-connection.c:170
 msgid "Invalid object"
 msgstr "અયોગ્ય ઓબ્જેક્ટ"
 
-#: ../calendar/libecal/e-cal.c:4981
+#: ../calendar/libecal/e-cal.c:4985
 msgid "URI not loaded"
 msgstr "URI લવાઈ નથી"
 
-#: ../calendar/libecal/e-cal.c:4983
+#: ../calendar/libecal/e-cal.c:4987
 msgid "URI already loaded"
 msgstr "URI પહેલેથી જ લવાઈ ગઈ છે"
 
-#: ../calendar/libecal/e-cal.c:4985
+#: ../calendar/libecal/e-cal.c:4989
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "પરવાનગી નથી"
 
-#: ../calendar/libecal/e-cal.c:4987 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:4991 ../servers/groupwise/e-gw-connection.c:178
 msgid "Unknown User"
 msgstr "અજ્ઞાત વપરાશકર્તા"
 
-#: ../calendar/libecal/e-cal.c:4989
+#: ../calendar/libecal/e-cal.c:4993
 msgid "Object ID already exists"
 msgstr "ઓબ્જેક્ટ ID પહેલાથી જ હાજર છે"
 
-#: ../calendar/libecal/e-cal.c:4991
+#: ../calendar/libecal/e-cal.c:4995
 msgid "Protocol not supported"
 msgstr "પ્રોટોકોલને આધાર નથી"
 
-#: ../calendar/libecal/e-cal.c:4993
+#: ../calendar/libecal/e-cal.c:4997
 msgid "Operation has been canceled"
 msgstr "પ્રક્રિયા રદ થઈ ગઈ"
 
-#: ../calendar/libecal/e-cal.c:4995
+#: ../calendar/libecal/e-cal.c:4999
 msgid "Could not cancel operation"
 msgstr "પ્રક્રિયા નકારી શકાતી નથી"
 
-#: ../calendar/libecal/e-cal.c:4999
+#: ../calendar/libecal/e-cal.c:5003
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "સત્તાધિકારની જરુરિયાત છે"
 
-#: ../calendar/libecal/e-cal.c:5001
+#: ../calendar/libecal/e-cal.c:5005
 msgid "A CORBA exception has occurred"
 msgstr "CORBA નો અપવાદ ઊભો થયો છે"
 
-#: ../calendar/libecal/e-cal.c:5003
+#: ../calendar/libecal/e-cal.c:5007
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1208,7 +1210,7 @@ msgstr "CORBA નો અપવાદ ઊભો થયો છે"
 msgid "Unknown error"
 msgstr "અજાણી ભૂલ"
 
-#: ../calendar/libecal/e-cal.c:5005
+#: ../calendar/libecal/e-cal.c:5009
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "કોઈ ભૂલ નથી"
@@ -1515,8 +1517,8 @@ msgstr "(%s) માટે એક બુટ પરિણામ જરૂરી �
 
 #: ../camel/camel-folder-search.c:765
 #, c-format
-msgid "(%s) not allowed inside match-all"
-msgstr "(%s) બધું-સરખાવો અંદર માન્ય નથી"
+msgid "(%s) not allowed inside %s"
+msgstr "(%s) %s અંદર માન્ય નથી"
 
 #: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
 #, c-format
@@ -1635,20 +1637,20 @@ msgstr "એનક્રિપ્ટ કરવામાં નિષ્ફળ: �
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1202 ../camel/camel-gpg-context.c:1330
-#: ../camel/camel-gpg-context.c:1809 ../camel/camel-gpg-context.c:1854
+#: ../camel/camel-gpg-context.c:1824 ../camel/camel-gpg-context.c:1869
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg ચલાવવામાં નિષ્ફળ: %s"
 
-#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:389
+#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:392
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "સહી કરવાની માહિતી બનાવી શક્યા નહિં: %s"
 
 #: ../camel/camel-gpg-context.c:1345 ../camel/camel-gpg-context.c:1529
-#: ../camel/camel-gpg-context.c:1612 ../camel/camel-gpg-context.c:1627
-#: ../camel/camel-gpg-context.c:1731 ../camel/camel-gpg-context.c:1746
-#: ../camel/camel-gpg-context.c:1825 ../camel/camel-gpg-context.c:1870
+#: ../camel/camel-gpg-context.c:1614 ../camel/camel-gpg-context.c:1629
+#: ../camel/camel-gpg-context.c:1746 ../camel/camel-gpg-context.c:1761
+#: ../camel/camel-gpg-context.c:1840 ../camel/camel-gpg-context.c:1885
 msgid "Failed to execute gpg."
 msgstr "gpg ચલાવવામાં નિષ્ફળ."
 
@@ -1658,8 +1660,8 @@ msgstr "આ ડિજીટલ રીતે સહી કરલે સંદે�
 
 #: ../camel/camel-gpg-context.c:1449 ../camel/camel-gpg-context.c:1455
 #: ../camel/camel-gpg-context.c:1461 ../camel/camel-gpg-context.c:1477
-#: ../camel/camel-smime-context.c:692 ../camel/camel-smime-context.c:703
-#: ../camel/camel-smime-context.c:710
+#: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
+#: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
@@ -1668,32 +1670,33 @@ msgstr "સંદેશાની સહી ચકાસી શકતા નથ�
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: કામચલાઉ ફાઈલ બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1595
+#: ../camel/camel-gpg-context.c:1597
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "એનક્રિપ્શન માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1645
+#: ../camel/camel-gpg-context.c:1647
 msgid "This is a digitally encrypted message part"
 msgstr "આ ડિજીટલ રીતે એનક્રિપ્ટ કરેલ સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1702
-msgid "Failed to decrypt MIME part: protocol error"
-msgstr "MIME ભાગ ડિક્રિપ્ટ કરવામાં ભૂલ: પ્રોટોકોલ ભૂલ"
-
-#: ../camel/camel-gpg-context.c:1713
+#: ../camel/camel-gpg-context.c:1700 ../camel/camel-gpg-context.c:1708
+#: ../camel/camel-gpg-context.c:1728
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "સંદેશો ડિક્રિપ્ટ કરી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1767 ../camel/camel-smime-context.c:966
+#: ../camel/camel-gpg-context.c:1717
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "MIME ભાગ ડિક્રિપ્ટ કરવામાં ભૂલ: પ્રોટોકોલ ભૂલ"
+
+#: ../camel/camel-gpg-context.c:1782 ../camel/camel-smime-context.c:969
 msgid "Encrypted content"
 msgstr "એનક્રિપ્ટ કરેલ સમાવિષ્ટ"
 
-#: ../camel/camel-gpg-context.c:1786
+#: ../camel/camel-gpg-context.c:1801
 msgid "Unable to parse message content"
 msgstr "સંદેશાના સમાવિષ્ટોનું પદચ્છેદ કરવામાં અસમર્થ"
 
-#: ../camel/camel-gpg-context.c:1810 ../camel/camel-gpg-context.c:1855
+#: ../camel/camel-gpg-context.c:1825 ../camel/camel-gpg-context.c:1870
 #: ../camel/camel-tcp-stream-openssl.c:633
 #: ../camel/providers/imap4/camel-imap4-engine.c:1548
 #: ../camel/providers/imap4/camel-imap4-engine.c:1587
@@ -2131,209 +2134,209 @@ msgstr ""
 "ડિરેક્ટરી %s બનાવી શક્યા નહિં:\n"
 "%s"
 
-#: ../camel/camel-smime-context.c:231
+#: ../camel/camel-smime-context.c:234
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "'%s' માટે પ્રમાણપત્ર શોધી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:237
+#: ../camel/camel-smime-context.c:240
 msgid "Cannot create CMS message"
 msgstr "CMS સંદેશો બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:242
+#: ../camel/camel-smime-context.c:245
 msgid "Cannot create CMS signed data"
 msgstr "CMS સહી થયેલ માહિતી બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:248
+#: ../camel/camel-smime-context.c:251
 msgid "Cannot attach CMS signed data"
 msgstr "CMS સહી થયેલ માહિત જોડી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:255
+#: ../camel/camel-smime-context.c:258
 msgid "Cannot attach CMS data"
 msgstr "CMS માહિતી જોડી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:261
+#: ../camel/camel-smime-context.c:264
 msgid "Cannot create CMS Signer information"
 msgstr "CMS સહી કરનાર જાણકારી બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:267
+#: ../camel/camel-smime-context.c:270
 msgid "Cannot find certificate chain"
 msgstr "પ્રમાણપત્ર સાંકળ શોધી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:273
+#: ../camel/camel-smime-context.c:276
 msgid "Cannot add CMS Signing time"
 msgstr "CMS સહીવાળો સમય ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:295 ../camel/camel-smime-context.c:307
+#: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "'%s' માટેનું એનક્રિપ્શન પ્રમાણપત્ર અસ્તિત્વમાં નથી"
 
-#: ../camel/camel-smime-context.c:314
+#: ../camel/camel-smime-context.c:317
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "SMIMEEncKeyPrefs લક્ષણ ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:319
+#: ../camel/camel-smime-context.c:322
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "MS SMIMEEncKeyPrefs લક્ષણ ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:324
+#: ../camel/camel-smime-context.c:327
 msgid "Cannot add encryption certificate"
 msgstr "એનક્રિપ્શન પ્રમાણપત્ર ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:330
+#: ../camel/camel-smime-context.c:333
 msgid "Cannot add CMS Signer information"
 msgstr "CMS સહી કરનાર જાણકારી ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:400 ../camel/camel-smime-context.c:848
+#: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
 msgid "Cannot create encoder context"
 msgstr "એનકોડર સંદર્ભ બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:406
+#: ../camel/camel-smime-context.c:409
 msgid "Failed to add data to CMS encoder"
 msgstr "CMS એનકોડરમાં માહિતી ઉમેરવામાં નિષ્ફળ"
 
-#: ../camel/camel-smime-context.c:411 ../camel/camel-smime-context.c:865
+#: ../camel/camel-smime-context.c:414 ../camel/camel-smime-context.c:868
 msgid "Failed to encode data"
 msgstr "માહિતીને એનકોડ કરવામાં નિષ્ફળ"
 
-#: ../camel/camel-smime-context.c:484
+#: ../camel/camel-smime-context.c:487
 msgid "Unverified"
 msgstr "ચકાસાયેલ નથી"
 
-#: ../camel/camel-smime-context.c:486
+#: ../camel/camel-smime-context.c:489
 msgid "Good signature"
 msgstr "સારી સહી"
 
-#: ../camel/camel-smime-context.c:488
+#: ../camel/camel-smime-context.c:491
 msgid "Bad signature"
 msgstr "ખરાબ સહી"
 
-#: ../camel/camel-smime-context.c:490
+#: ../camel/camel-smime-context.c:493
 msgid "Content tampered with or altered in transit"
 msgstr "પરિવહન સાથે સમાવિષ્ટો સંકળાયેલ છે અથવા બદલાયેલ છે"
 
-#: ../camel/camel-smime-context.c:492
+#: ../camel/camel-smime-context.c:495
 msgid "Signing certificate not found"
 msgstr "સહી કરવાનું પ્રમાણપત્ર મળ્યું નથી"
 
-#: ../camel/camel-smime-context.c:494
+#: ../camel/camel-smime-context.c:497
 msgid "Signing certificate not trusted"
 msgstr "સહી કરવાનું પ્રમાણપત્ર વિશ્વાસપાત્ર નથી"
 
-#: ../camel/camel-smime-context.c:496
+#: ../camel/camel-smime-context.c:499
 msgid "Signature algorithm unknown"
 msgstr "સહીનો અલગોરીધમ અજ્ઞાત છે"
 
-#: ../camel/camel-smime-context.c:498
+#: ../camel/camel-smime-context.c:501
 msgid "Signature algorithm unsupported"
 msgstr "સહીનો અલગોરિધમ બિન-આધારભૂત છે"
 
-#: ../camel/camel-smime-context.c:500
+#: ../camel/camel-smime-context.c:503
 msgid "Malformed signature"
 msgstr "કદરુપી સહી"
 
-#: ../camel/camel-smime-context.c:502
+#: ../camel/camel-smime-context.c:505
 msgid "Processing error"
 msgstr "પ્રક્રિયા ભૂલ"
 
-#: ../camel/camel-smime-context.c:539
+#: ../camel/camel-smime-context.c:542
 msgid "No signed data in signature"
 msgstr "સહીમાં કોઈ સહી કરેલ માહિતી નથી"
 
-#: ../camel/camel-smime-context.c:546
+#: ../camel/camel-smime-context.c:549
 msgid "Digests missing from enveloped data"
 msgstr "આવરેલ માહિતીમાં સારની જાણકારી ખોવાયેલ છે"
 
-#: ../camel/camel-smime-context.c:559 ../camel/camel-smime-context.c:569
+#: ../camel/camel-smime-context.c:562 ../camel/camel-smime-context.c:572
 msgid "Cannot calculate digests"
 msgstr "સારની જાણકારી ગણી શકાતી નથી"
 
-#: ../camel/camel-smime-context.c:574
+#: ../camel/camel-smime-context.c:577
 msgid "Cannot set message digests"
 msgstr "સંદેશાની સારની જાણકારી સુયોજિત કરી શકાશે નહિં"
 
-#: ../camel/camel-smime-context.c:584 ../camel/camel-smime-context.c:589
+#: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
 msgid "Certificate import failed"
 msgstr "પ્રમાણપત્ર આયાત કરવાનું નિષ્ફળ"
 
-#: ../camel/camel-smime-context.c:599
+#: ../camel/camel-smime-context.c:602
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "પ્રમાણપત્ર એ માત્ર સંદેશો છે, પ્રમાણપત્રો ચકાસી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:602
+#: ../camel/camel-smime-context.c:605
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "પ્રમાણપત્ર એ માત્ર સંદેશો છે, પ્રમાણપત્રો આયાત થયેલ છે અને ચકાસાયેલ છે"
 
-#: ../camel/camel-smime-context.c:606
+#: ../camel/camel-smime-context.c:609
 msgid "Cannot find signature digests"
 msgstr "સહી કરેલ જાણકારી શોધી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:622
+#: ../camel/camel-smime-context.c:625
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "સહી કરનાર: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:723
+#: ../camel/camel-smime-context.c:726
 msgid "Decoder failed"
 msgstr "ડિકોડર નિષ્ફળ"
 
-#: ../camel/camel-smime-context.c:775
+#: ../camel/camel-smime-context.c:778
 #, c-format
 msgid "Cannot find certificate for `%s'"
 msgstr "`%s' માટે પ્રમાણપત્ર શોધી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:782
+#: ../camel/camel-smime-context.c:785
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "સામાન્ય બલ્ક એનક્રિપ્શન અલગોરિધમ શોધી શકતા નથી"
 
 #. PORT_GetError(); ??
-#: ../camel/camel-smime-context.c:791
+#: ../camel/camel-smime-context.c:794
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "એનક્રિપ્શન બલ્ક કી માટે જગ્યા નક્કી કરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:802
+#: ../camel/camel-smime-context.c:805
 msgid "Cannot create CMS Message"
 msgstr "CMS સંદેશો બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:808
+#: ../camel/camel-smime-context.c:811
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS આવરિત માહિતી બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:814
+#: ../camel/camel-smime-context.c:817
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS આવરિત માહિતી જોડી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:820
+#: ../camel/camel-smime-context.c:823
 msgid "Cannot attach CMS data object"
 msgstr "CMS માહિતી ઓબ્જેક્ટો જોડી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:829
+#: ../camel/camel-smime-context.c:832
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS મેળવનાર જાણકારી બનાવી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:834
+#: ../camel/camel-smime-context.c:837
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS મેળવનાર જાણકારી ઉમેરી શકતા નથી"
 
-#: ../camel/camel-smime-context.c:859
+#: ../camel/camel-smime-context.c:862
 msgid "Failed to add data to encoder"
 msgstr "એનકોડરમાં માહિતી ઉમેરવામાં નિષ્ફળ"
 
-#: ../camel/camel-smime-context.c:946
+#: ../camel/camel-smime-context.c:949
 #, c-format
 msgid "Decoder failed, error %d"
 msgstr "ડિકોડર નિષ્ફળ, ભૂલ %d"
 
-#: ../camel/camel-smime-context.c:953
+#: ../camel/camel-smime-context.c:956
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME ડિક્રિપ્ટ: કોઈ એનક્રિપ્શન સમાવિષ્ટો મળ્યા નથી"
 
-#: ../camel/camel-smime-context.c:980
+#: ../camel/camel-smime-context.c:983
 msgid "import keys: unimplemented"
 msgstr "કી આયાત કરો: અમલમાં મુકાયેલ નથી"
 
-#: ../camel/camel-smime-context.c:988
+#: ../camel/camel-smime-context.c:991
 msgid "export keys: unimplemented"
 msgstr "કી નિકાસ કરો: અમલમાં મૂકાયેલ નથી"
 
@@ -2494,7 +2497,7 @@ msgstr "કીનો વપરાશ પ્રમાણપત્રને સહ
 msgid "Error in application verification"
 msgstr "કાર્યક્રમની ચકાસણીમાં ભૂલ"
 
-#: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:884
+#: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:868
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2507,11 +2510,11 @@ msgstr ""
 "આગળીની છાપ:       %s\n"
 "સહી:         %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:890
+#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:874
 msgid "GOOD"
 msgstr "સરસ"
 
-#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:890
+#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:874
 msgid "BAD"
 msgstr "ખરાબ"
 
@@ -2535,7 +2538,7 @@ msgstr ""
 "શું તમે કોઈપણ રીતે સ્વીકારવા માંગો છો?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:894
+#: ../camel/camel-tcp-stream-ssl.c:878
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2550,7 +2553,7 @@ msgstr ""
 "\n"
 "શું તમે એને સ્વીકારવા માંગો છો?"
 
-#: ../camel/camel-tcp-stream-ssl.c:938
+#: ../camel/camel-tcp-stream-ssl.c:922
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2559,7 +2562,7 @@ msgstr ""
 "પ્રમાણપત્ર સમસ્યા: %s\n"
 "અદા કરનાર: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:990
+#: ../camel/camel-tcp-stream-ssl.c:974
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2568,7 +2571,7 @@ msgstr ""
 "ખરાબ પ્રમાણપત્ર ડોમેઈન: %s\n"
 "અદા કરનાર: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1008
+#: ../camel/camel-tcp-stream-ssl.c:992
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2577,7 +2580,7 @@ msgstr ""
 "પ્રમાણપત્રની મર્યાદા પૂરી થઈ: %s\n"
 "અદા કરનાર: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1025
+#: ../camel/camel-tcp-stream-ssl.c:1009
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2586,7 +2589,7 @@ msgstr ""
 "પ્રમાણપત્રની કાયદાની યાદીની મર્યાદા પૂરી થઈ: %s\n"
 "અદા કરનાર: %s"
 
-#: ../camel/camel-url.c:304
+#: ../camel/camel-url.c:310
 #, c-format
 msgid "Could not parse URL `%s'"
 msgstr "URL નું પદચ્છેદ કરી શક્યા નહિં `%s'"
@@ -2628,7 +2631,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "નકામા ફોલ્ડરમાં સંદેશાઓની નકલ કરી શકાતી નથી"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:120
-#: ../camel/providers/imap/camel-imap-folder.c:2061
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2638,7 +2641,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:120
-#: ../camel/providers/imap/camel-imap-folder.c:2061
+#: ../camel/providers/imap/camel-imap-folder.c:2063
 #: ../camel/providers/local/camel-maildir-folder.c:247
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2673,15 +2676,15 @@ msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2104
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2117
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "આ સંદેશો ઓફલાઈન સ્થિતિમાં ઉપલબ્ધ નથી."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1654
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1667
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1713
 msgid "Could not get message"
 msgstr "સંદેશો મેળવી શક્યા નથી"
 
@@ -2698,19 +2701,19 @@ msgstr "કચરાપેટી ફોલ્ડર ભરાઈ ગયું. �
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1219
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
-#: ../camel/providers/imap/camel-imap-folder.c:2392
-#: ../camel/providers/imap/camel-imap-folder.c:2462
+#: ../camel/providers/imap/camel-imap-folder.c:2394
+#: ../camel/providers/imap/camel-imap-folder.c:2464
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s માં નવા સંદેશાઓ માટે સારની જાણકારી મેળવી રહ્યા છીએ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1971
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2013
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1984
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2026
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "ફોલ્ડર `%s' માં સંદેશો ઉમેરી શકતા નથી: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2001
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2014
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "સંદેશો બનાવી શકતા નથી: %s"
@@ -2998,33 +3001,33 @@ msgstr "ફોલ્ડર નાશ થઈ ગયું છે અને સર
 msgid "Scanning for changed messages in %s"
 msgstr "%s માં બદલાયેલ સંદેશાઓ માટે જોઈ રહ્યા છીએ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2021
+#: ../camel/providers/imap/camel-imap-folder.c:2023
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "સંદેશો મેળવવા માટે અસમર્થ: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2100
-#: ../camel/providers/imap/camel-imap-folder.c:2733
+#: ../camel/providers/imap/camel-imap-folder.c:2102
+#: ../camel/providers/imap/camel-imap-folder.c:2735
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "આ સંદેશો વર્તમાનમાં ઉપલબ્ધ નથી"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2571
+#: ../camel/providers/imap/camel-imap-folder.c:2573
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "અપૂર્ણ સર્વરનો જવાબ: સંદેશા %d માટે કોઈ જાણકારી પૂરી પાડેલ નથી"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2579
+#: ../camel/providers/imap/camel-imap-folder.c:2581
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "સર્વરનો અપૂર્ણ જવાબ: કોઈ UID સંદેશા %d માટે પૂરુ પાડેલ નથી"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2592
+#: ../camel/providers/imap/camel-imap-folder.c:2594
 #, c-format
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "સર્વરનો અપૂર્ણ જવાબ: સંદેશાઓ %d અને %d માટે ચોક્કસ UID પૂરા પાડેલ છે"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2771
+#: ../camel/providers/imap/camel-imap-folder.c:2773
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH જવાબમાં સંદેશાનો ભાગ શોધી શકાયો નહિં."
 
@@ -4269,7 +4272,7 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"આ વિકલ્પ POP સર્વર સાથે સાદા લખાણવાળા પાસવર્ડથી જોડાશે. આ માત્ર અેક જ વિકલ્પ છે જે ઘણા "
+"આ વિકલ્પ POP સર્વર સાથે સાદા લખાણવાળા પાસવર્ડથી જોડાશે. આ માત્ર એક જ વિકલ્પ છે જે ઘણા "
 "POP સર્વરો માટે આધારભૂત છે."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
@@ -4762,7 +4765,7 @@ msgstr "રાહમાં"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1602 ../libedataserver/e-time-utils.c:1849
+#: ../libedataserver/e-time-utils.c:1605 ../libedataserver/e-time-utils.c:1852
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
@@ -4770,7 +4773,7 @@ msgstr "%a %m/%d/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1607 ../libedataserver/e-time-utils.c:1840
+#: ../libedataserver/e-time-utils.c:1610 ../libedataserver/e-time-utils.c:1843
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %m/%d/%Y %H:%M:%S"
 
@@ -4778,7 +4781,7 @@ msgstr "%a %m/%d/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1612 ../libedataserver/e-time-utils.c:1845
+#: ../libedataserver/e-time-utils.c:1615 ../libedataserver/e-time-utils.c:1848
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %m/%d/%Y %I:%M %p"
 
@@ -4786,78 +4789,78 @@ msgstr "%a %m/%d/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1617 ../libedataserver/e-time-utils.c:1836
+#: ../libedataserver/e-time-utils.c:1620 ../libedataserver/e-time-utils.c:1839
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %m/%d/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1622
+#: ../libedataserver/e-time-utils.c:1625
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1627
+#: ../libedataserver/e-time-utils.c:1630
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1630 ../libedataserver/e-time-utils.c:1726
-#: ../libedataserver/e-time-utils.c:1831
+#: ../libedataserver/e-time-utils.c:1633 ../libedataserver/e-time-utils.c:1729
+#: ../libedataserver/e-time-utils.c:1834
 msgid "%a %m/%d/%Y"
 msgstr "%a %m/%d/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1638
+#: ../libedataserver/e-time-utils.c:1641
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1642
+#: ../libedataserver/e-time-utils.c:1645
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1647
+#: ../libedataserver/e-time-utils.c:1650
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1652
+#: ../libedataserver/e-time-utils.c:1655
 msgid "%m/%d/%Y %H:%M"
 msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1657
+#: ../libedataserver/e-time-utils.c:1660
 msgid "%m/%d/%Y %I %p"
 msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1662
+#: ../libedataserver/e-time-utils.c:1665
 msgid "%m/%d/%Y %H"
 msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1665 ../libedataserver/e-time-utils.c:1729
+#: ../libedataserver/e-time-utils.c:1668 ../libedataserver/e-time-utils.c:1732
 msgid "%m/%d/%Y"
 msgstr "%m/%d/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1775 ../libedataserver/e-time-utils.c:1894
+#: ../libedataserver/e-time-utils.c:1778 ../libedataserver/e-time-utils.c:1897
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1779 ../libedataserver/e-time-utils.c:1886
+#: ../libedataserver/e-time-utils.c:1782 ../libedataserver/e-time-utils.c:1889
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4865,19 +4868,19 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1784 ../libedataserver/e-time-utils.c:1891
+#: ../libedataserver/e-time-utils.c:1787 ../libedataserver/e-time-utils.c:1894
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1788 ../libedataserver/e-time-utils.c:1883
+#: ../libedataserver/e-time-utils.c:1791 ../libedataserver/e-time-utils.c:1886
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1792
+#: ../libedataserver/e-time-utils.c:1795
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -5023,19 +5026,19 @@ msgstr "%s માં ફેરફાર કરો (_E)"
 msgid "_Delete %s"
 msgstr "%s કાઢી નાંખો (_D)"
 
-#: ../libedataserverui/e-passwords.c:872
+#: ../libedataserverui/e-passwords.c:819
 msgid "_Remember this passphrase"
 msgstr "આ મહાવરો યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:873
+#: ../libedataserverui/e-passwords.c:820
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "આ સત્રને યાદ અપાવવા માટે આ મહાવરો યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:876
+#: ../libedataserverui/e-passwords.c:823
 msgid "_Remember this password"
 msgstr "આ પાસવર્ડ યાદ રાખો (_R)"
 
-#: ../libedataserverui/e-passwords.c:877
+#: ../libedataserverui/e-passwords.c:824
 msgid "_Remember this password for the remainder of this session"
 msgstr "આ સત્રના બાકીના ભાગ માટે આ પાસવર્ડ યાદ રાખો (_R)"
 
