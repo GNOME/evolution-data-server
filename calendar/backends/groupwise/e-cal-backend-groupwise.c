@@ -801,9 +801,10 @@ set_container_id_with_count (ECalBackendGroupwise *cbgw)
 	res =  GNOME_Evolution_Calendar_ObjectNotFound;
 	for (l = container_list; l != NULL; l = l->next) {
 		EGwContainer *container = E_GW_CONTAINER (l->data);
-		const char *name = e_gw_container_get_name (container);
 		
-		if (name && strcmp (name, "Calendar") == 0) {
+		if (e_gw_container_get_is_system_folder (container) && 
+				e_gw_container_get_container_type (container) == E_GW_CONTAINER_TYPE_CALENDAR) {
+
 			priv->container_id = g_strdup (e_gw_container_get_id (container));
 			priv->total_count = e_gw_container_get_total_count (container);
 			res = GNOME_Evolution_Calendar_Success;

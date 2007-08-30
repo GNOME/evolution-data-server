@@ -1,3 +1,11 @@
+2007-08-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #298095 (bnc)
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(set_container_id_with_count): Compare if the folder
+	is a system folder and calendar type to identify the
+	system calendar.		     					    
+
 2007-08-28  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-cal-backend-file-todo.c:
