@@ -97,6 +97,8 @@ int 	      e_gw_container_get_rights(EGwContainer *container, gchar *email);
 EGwContainerType e_gw_container_get_container_type (EGwContainer *container) ;
 void 	      e_gw_container_get_user_list(EGwContainer *container, GList **user_list);
 void	      e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const char *sub, const char *mesg, int flag);
+gboolean e_gw_container_get_is_system_folder (EGwContainer *container);
+void e_gw_container_set_is_system_folder (EGwContainer *container, gboolean is_system_folder);
 
 G_END_DECLS
 

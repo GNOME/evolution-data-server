@@ -1,3 +1,11 @@
+2007-08-30  Chenthill Palanisamy  <pchenthill@novell.com>
+	
+	Fixes #298095 (bnc)
+	* e-gw-container.[ch]: (e_gw_container_set_from_soap_parameter),
+	(e_gw_container_get_is_system_folder),
+	(e_gw_container_set_is_system_folder): Added a function to fetch
+	the system folder flag.					       
+
 2007-08-17  Johnny Jacob  <jjohnny@novell.com>
  
 	** Fix for bug #458715.

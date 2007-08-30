@@ -44,7 +44,7 @@ struct _EGwContainerPrivate {
 	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
 	gboolean is_shared_by_me;   
 	gboolean is_shared_to_me;
-
+	gboolean is_system_folder;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -261,6 +261,15 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			container->priv->type = E_GW_CONTAINER_TYPE_JUNK;
 		g_free (value) ;
 	}
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSystemFolder");
+	if (subparam) {
+		value = soup_soap_parameter_get_string_value (subparam);
+		if (!strcmp (value, "1"))
+			container->priv->is_system_folder = TRUE;
+		g_free (value);
+	}
+
 
 	/* retrive the unread and total count */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread") ;
@@ -521,6 +530,22 @@ e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolean is_shared_
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 	
 	container->priv->is_shared_to_me = is_shared_to_me;
+}
+
+gboolean
+e_gw_container_get_is_system_folder (EGwContainer *container)
+{
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
+	
+	return container->priv->is_system_folder;
+}
+
+void
+e_gw_container_set_is_system_folder (EGwContainer *container, gboolean is_system_folder)
+{
+	g_return_if_fail (E_IS_GW_CONTAINER (container));
+	
+	container->priv->is_system_folder = is_system_folder;
 }
 
 const char *
