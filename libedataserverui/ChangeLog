@@ -1,3 +1,10 @@
+2007-08-31  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #378759
+
+	* e-passwords.c: (e_passwords_ask_password): Added tests for non-NULL
+	component_name and key parameters.
+
 2007-08-19  Kevin Piche  <kpiche@gmail.com>
 
 	** Fix for bug #464569

@@ -1102,11 +1102,15 @@ e_passwords_ask_password (const char *title, const char *component_name,
 			  GtkWindow *parent)
 {
 	char *passwd;
-	EPassMsg *msg = ep_msg_new(ep_ask_password);
+	EPassMsg *msg;
+
+	g_return_val_if_fail (component_name != NULL, NULL);
+	g_return_val_if_fail (key != NULL, NULL);
 
 	if ((type & E_PASSWORDS_ONLINE) && !ep_online_state)
 		return NULL;
 
+	msg = ep_msg_new (ep_ask_password);
 	msg->title = title;
 	msg->component = component_name;
 	msg->key = key;
