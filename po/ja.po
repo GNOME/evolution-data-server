@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-30 21:56+0900\n"
-"PO-Revision-Date: 2007-08-30 21:44+0900\n"
+"POT-Creation-Date: 2007-08-31 23:02+0900\n"
+"PO-Revision-Date: 2007-08-31 23:01+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1311,7 +1311,7 @@ msgstr "符号化はこの暗号をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
-msgstr "メッセージの暗号化中"
+msgstr "メッセージを暗号化しています"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
@@ -1319,7 +1319,7 @@ msgstr "復号化はこの暗号をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
-msgstr "メッセージの暗号の解除中"
+msgstr "メッセージの暗号を解除しています"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
@@ -1375,7 +1375,7 @@ msgstr "オフライン・モードでの新しいメッセージのダウンロ
 #: ../camel/camel-disco-folder.c:468
 #, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "オフライン用の準備フォルダ '%s'"
+msgstr "オフラインに切り替える準備中 (%s)"
 
 #: ../camel/camel-disco-store.c:403
 #: ../camel/providers/imap/camel-imap-store.c:2997
@@ -1398,7 +1398,7 @@ msgstr "%s から受信したメッセージ・ストリームが正しくあり
 
 #: ../camel/camel-filter-driver.c:983 ../camel/camel-filter-driver.c:992
 msgid "Syncing folders"
-msgstr "フォルダを同期中"
+msgstr "フォルダの同期中"
 
 #: ../camel/camel-filter-driver.c:1081 ../camel/camel-filter-driver.c:1460
 #, c-format
@@ -3008,7 +3008,7 @@ msgstr "フォルダは破壊され再作成されました"
 #: ../camel/providers/imap/camel-imap-folder.c:632
 #, c-format
 msgid "Scanning for changed messages in %s"
-msgstr "%s にある (変更済み) メッセージの解析中"
+msgstr "%s にあるメッセージの解析中"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2023
 #, c-format
@@ -3806,7 +3806,7 @@ msgstr "maildir フォルダのパスを開けませんでした: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:549
 msgid "Checking folder consistency"
-msgstr "フォルダの整合性のチェック中"
+msgstr "フォルダの整合性の確認中"
 
 #: ../camel/providers/local/camel-maildir-summary.c:652
 msgid "Checking for new messages"
@@ -4282,7 +4282,7 @@ msgstr "UID %s のメッセージはありません"
 #: ../camel/providers/pop3/camel-pop3-folder.c:502
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "POP メッセージ %d を取得中"
+msgstr "メッセージ %d を POP で取得中"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:592
 msgid "Unknown reason"
@@ -4642,7 +4642,7 @@ msgstr "メッセージを送信できません: 不正な応答が一つ以上�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:894
 msgid "SMTP Greeting"
-msgstr "SMTP 接続中"
+msgstr "SMTP で接続中"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:919
 #, c-format
