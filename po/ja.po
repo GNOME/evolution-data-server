@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-31 23:02+0900\n"
-"PO-Revision-Date: 2007-08-31 23:01+0900\n"
+"POT-Creation-Date: 2007-09-01 11:16+0900\n"
+"PO-Revision-Date: 2007-09-01 11:15+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1291,7 +1291,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
-msgstr "サインはこの暗号をサポートしていません"
+msgstr "この暗号は署名をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
@@ -1299,7 +1299,7 @@ msgstr "メッセージの署名中"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "ベリファイはこの暗号をサポートしていません"
+msgstr "この暗号は妥当性の検証をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
@@ -1307,7 +1307,7 @@ msgstr "メッセージの検証中"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "符号化はこの暗号をサポートしていません"
+msgstr "この暗号化は符号化をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1315,7 +1315,7 @@ msgstr "メッセージを暗号化しています"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "復号化はこの暗号をサポートしていません"
+msgstr "この暗号は復号化をサポートしていません"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
@@ -1346,8 +1346,8 @@ msgid ""
 "reconnect to the network."
 msgstr ""
 "ログを書き込めませんでした: %s\n"
-"ネットワークに再接続しても、このサーバにおける\n"
-"それ以降の操作を再現しません。"
+"ネットワークに再接続しても、このサーバに対する\n"
+"これ以降の操作は再現されません。"
 
 #: ../camel/camel-disco-diary.c:261
 #, c-format
@@ -1370,12 +1370,12 @@ msgstr "フォルダの内容をローカルへコピーする (オフライン�
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
-msgstr "オフライン・モードでの新しいメッセージのダウンロード"
+msgstr "オフライン・モードでの新着メールのダウンロード中"
 
 #: ../camel/camel-disco-folder.c:468
 #, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "オフラインに切り替える準備中 (%s)"
+msgstr "オフラインに切り替える準備中: %s"
 
 #: ../camel/camel-disco-store.c:403
 #: ../camel/providers/imap/camel-imap-store.c:2997
@@ -1675,7 +1675,7 @@ msgstr "MIME 型の暗号解読に失敗しました: プロトコル・エラ�
 
 #: ../camel/camel-gpg-context.c:1782 ../camel/camel-smime-context.c:969
 msgid "Encrypted content"
-msgstr "暗号化された内容"
+msgstr "暗号化した内容"
 
 #: ../camel/camel-gpg-context.c:1801
 msgid "Unable to parse message content"
