@@ -95,7 +95,7 @@ static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelExcept
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
 
 
-#define d(x) 
+#define d(x)  
 
 static CamelMimeMessage *
 groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelException *ex )
@@ -1017,7 +1017,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
 
 	if (!container_id) {
-		g_warning ("\nERROR - Container id not present. Cannot refresh info for %s\n", folder->full_name);
+		d (printf ("\nERROR - Container id not present. Cannot refresh info for %s\n", folder->full_name));
 		return;
 	}
 
@@ -1207,7 +1207,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
-		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
+		d (printf("\nERROR - Container id not present. Cannot refresh info\n"));
 		camel_folder_change_info_free (changes);
 		return;
 	}
@@ -1450,7 +1450,7 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
-		g_warning ("\nERROR - Container id not present. Cannot refresh info\n");
+		d (printf("\nERROR - Container id not present. Cannot refresh info\n"));
 		camel_folder_change_info_free (changes);
 		return;
 	}
