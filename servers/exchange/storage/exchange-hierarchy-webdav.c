@@ -686,7 +686,9 @@ static const char *folder_props[] = {
 static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
 static const char *pub_folder_props[] = {
+	E2K_PR_EXCHANGE_FOLDER_CLASS,
 	E2K_PR_DAV_DISPLAY_NAME,
+	E2K_PR_EXCHANGE_PERMANENTURL,
 	E2K_PR_DAV_HAS_SUBS
 };
 static const int n_pub_folder_props = sizeof (pub_folder_props) / sizeof (pub_folder_props[0]);

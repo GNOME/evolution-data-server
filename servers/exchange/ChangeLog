@@ -1,3 +1,9 @@
+2007-09-03  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Fixes #290330 (bnc)
+	* storage/exchange-hierarchy-webdav.c: Fetch FOLDER_CLASS and
+	PERMANENT_URL properties for public folders as well.
+	
 2007-08-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #301263 (bnc)
