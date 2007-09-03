@@ -1,5 +1,12 @@
 2007-09-03  Veerapuram Varadhan  <vvaradhan@novell.com>
 
+	* storage/exchange-hierarchy-webdav.c: Check for validity of
+	deleted_items_uri before using it.  Fixes a crash that happens
+	when started in calendar mode.  Have seen some BGO traces showing
+	it - but do not have the bug-id atm.  Will close them later.
+	
+2007-09-03  Veerapuram Varadhan  <vvaradhan@novell.com>
+
 	** Fixes #290330 (bnc)
 	* storage/exchange-hierarchy-webdav.c: Fetch FOLDER_CLASS and
 	PERMANENT_URL properties for public folders as well.

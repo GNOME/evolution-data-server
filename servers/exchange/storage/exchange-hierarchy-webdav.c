@@ -790,7 +790,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 		subtrees = g_slist_remove (subtrees, folder);
 		/* Dont scan the subtree for deleteditems folder */
 		int_uri = e_folder_exchange_get_internal_uri (folder);
-		if (int_uri && !strcmp (int_uri, deleted_items_uri))
+		if (int_uri && deleted_items_uri && !strcmp (int_uri, deleted_items_uri))
 			continue;
 		scan_subtree (hier, folder, mode);
 	}
