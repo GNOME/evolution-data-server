@@ -1,3 +1,32 @@
+Evolution-Data-Server 1.11.92 2007-09-03
+----------------------------------------
+
+Bug Fixes:
+	#271841: Fix AIX compile errors (Ross Burton)
+	#290330: (Novell Bugzilla) Fetch FOLDER_CLASS and PERMANENT_URL properties for public folders as well. (Varadhan)
+	#298095: (Novell Bugzilla) Added a function to fetch the system folder flag (Chenthill Palanisamy)
+	#298788: (Novell Bugzilla) Fixes crash in 64 bit architectures. (Chenthill Palanisamy)
+	#301263: (Novell Bugzilla) Subscribed calendar requires restart (Chenthill Palanisamy)
+	#302038: (Novell Bugzilla) remove warnings and make them debug statements (Sankar)
+	#330185: Searching Evolution addressbooks only works for some fields (Ross Burton)
+	#378759: Fixed a crash when entering S/MIME password (Milan Crha)
+	#470445: Fix FSF address (Tobias Mueller)
+
+Updated Translations:
+	Kjartan Maraas (nb)
+	Takeshi AIHANA (ja)
+	Ivar Smolin (et)
+	Ilkka Tuohela (fi)
+	Ankit Patel (gu)
+	Tirumurthi Vasudevan (ta)
+	Wadim Dziedzic (pl)
+	Jorge Gonzalez (es)
+	Daniel Nylander (sv)
+	Theppitak Karoonboonyanan (th)
+	Clytie Siddall (vi)
+	Duarte Loreto (pt)
+	Stéphane Raimbault (fr)
+
 Evolution-Data-Server 1.11.91 2007-08-27
 ----------------------------------------
 
