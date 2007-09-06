@@ -1127,6 +1127,8 @@ ldap_error_to_response (int ldap_error)
 		return GNOME_Evolution_Addressbook_RepositoryOffline;
 	else if (ldap_error == LDAP_ALREADY_EXISTS)
 		return GNOME_Evolution_Addressbook_ContactIdAlreadyExists;
+	else if(ldap_error == LDAP_TYPE_OR_VALUE_EXISTS )
+		return GNOME_Evolution_Addressbook_ContactIdAlreadyExists;	
 	else
 		return GNOME_Evolution_Addressbook_OtherError;
 }

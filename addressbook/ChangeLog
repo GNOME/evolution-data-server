@@ -1,3 +1,10 @@
+2007-09-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix from Rashmi C for bug #275990 (Novell Bugzilla)
+
+	* backends/ldap/e-book-backend-ldap.c: (ldap_error_to_response):
+	Handle errors from ldap for duplicate fields.
+
 2007-08-29  Ross Burton  <ross@openedhand.com>
 
 	* libedata-book/e-book-backend-summary.c:
