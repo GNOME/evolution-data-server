@@ -1,3 +1,14 @@
+2007-09-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #469007
+
+	* camel-search-private.c: (camel_search_header_match):
+	Let work the code for skipping white spaces at the beginning of
+	header value.
+
+	* camel-search-private.c: (camel_ustrcasecmp), (camel_ustrncasecmp):
+	Fixed other compiler warnings in this file.
+
 2007-09-07  Milan Crha <mcrha@redhat.com>
 
 	** Fix for bug #473880

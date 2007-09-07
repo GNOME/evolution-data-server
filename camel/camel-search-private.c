@@ -297,9 +297,11 @@ camel_ustrstrcase (const char *haystack, const char *needle)
 } G_STMT_END
 
 static int
-camel_ustrcasecmp (const char *s1, const char *s2)
+camel_ustrcasecmp (const char *ps1, const char *ps2)
 {
 	gunichar u1, u2 = 0;
+	const unsigned char *s1 = (const unsigned char *)ps1;
+	const unsigned char *s2 = (const unsigned char *)ps2;
 	
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 	
@@ -327,9 +329,11 @@ camel_ustrcasecmp (const char *s1, const char *s2)
 }
 
 static int
-camel_ustrncasecmp (const char *s1, const char *s2, size_t len)
+camel_ustrncasecmp (const char *ps1, const char *ps2, size_t len)
 {
 	gunichar u1, u2 = 0;
+	const unsigned char *s1 = (const unsigned char *)ps1;
+	const unsigned char *s2 = (const unsigned char *)ps2;
 	
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 	
@@ -418,16 +422,17 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 gboolean
 camel_search_header_match (const char *value, const char *match, camel_search_match_t how, camel_search_t type, const char *default_charset)
 {
-	const char *name, *addr, *ptr;
+	const char *name, *addr;
+	const unsigned char *ptr;
 	int truth = FALSE, i;
 	CamelInternetAddress *cia;
 	char *v, *vdom, *mdom;
 	gunichar c;
 
-	ptr = value;
+	ptr = (const unsigned char *)value;
 	while ((c = camel_utf8_getc(&ptr)) && g_unichar_isspace(c))
-		value = ptr;
-	
+		value = (const char *)ptr;
+
 	switch(type) {
 	case CAMEL_SEARCH_TYPE_ENCODED:
 		v = camel_header_decode_string(value, default_charset); /* FIXME: Find header charset */
