@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server GNOME TRUNK\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-28 16:28+0100\n"
-"PO-Revision-Date: 2007-09-02 23:04+0930\n"
+"POT-Creation-Date: 2007-09-02 14:40+0100\n"
+"PO-Revision-Date: 2007-09-07 22:10+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -741,13 +741,13 @@ msgstr "Đang tải %s mục"
 msgid "Calendar"
 msgstr "Lịch"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
 msgid "Invalid server URI"
 msgstr "URI máy phục vụ không hợp lệ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
 #: ../calendar/libecal/e-cal.c:5001
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
@@ -762,18 +762,18 @@ msgstr "URI máy phục vụ không hợp lệ"
 msgid "Authentication failed"
 msgstr "Xác thực thất bại"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:913
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:914
 msgid "Could not create thread for getting deltas"
 msgstr "Không thể tạo mạch để lấy các delta"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
 #: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Could not create cache file"
 msgstr "Không thể tạo tập tin nhớ tạm"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:965
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
 msgid "Could not create thread for populating cache"
 msgstr "Không thể tạo mạch để đồ án bộ nhớ tạm"
 
@@ -1458,11 +1458,11 @@ msgstr "Lỗi thực hiện bộ lọc: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1158
 msgid "Unable to open spool folder"
-msgstr "Không thể mở thư mục ống chỉ"
+msgstr "Không thể mở thư mục hàng đợi"
 
 #: ../camel/camel-filter-driver.c:1167
 msgid "Unable to process spool folder"
-msgstr "Không thể xử lý thư mục ống chỉ"
+msgstr "Không thể xử lý thư mục hàng đợi"
 
 #: ../camel/camel-filter-driver.c:1182
 #, c-format
@@ -1552,8 +1552,7 @@ msgstr "(%s) cần thiết một kết quả đúng/sai riêng lẻ"
 #: ../camel/camel-folder-search.c:765
 #, c-format
 msgid "(%s) not allowed inside %s"
-msgstr ""
-"(%s) không được phép bên trong %s"
+msgstr "(%s) không được phép bên trong %s"
 
 #: ../camel/camel-folder-search.c:771
 #: ../camel/camel-folder-search.c:778
@@ -3512,7 +3511,8 @@ msgstr "Không thể lấy thư mục `%s' trên máy phục vụ IMAP %s: khôn
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr ""
-"Không thể lấy thông tin LIST (danh sách) cho « %s » trên máy phục vụ IMAP %s: %s"
+"Không thể lấy thông tin LIST (danh sách) cho « %s » trên máy phục vụ IMAP %"
+"s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:813
 #: ../camel/providers/imap4/camel-imap4-store.c:1488
@@ -3704,7 +3704,7 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Để gọi (di động) thư cục bộ từ ống chỉ dạng mbox chuẩn vào thư mục do "
+"Để gọi (di động) thư cục bộ từ hàng đợi dạng mbox chuẩn vào thư mục do "
 "Evolution quản lý."
 
 #: ../camel/providers/local/camel-local-provider.c:88
@@ -3726,7 +3726,7 @@ msgstr "Lưu dòng đầu trạng thái theo dạng thứ Elm/Pine/Mutt"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid "Standard Unix mbox spool file"
-msgstr "Tập tin ống chỉ mbox UNIX chuẩn"
+msgstr "Tập tin hàng đợi mbox UNIX chuẩn"
 
 #: ../camel/providers/local/camel-local-provider.c:116
 #: ../camel/providers/local/camel-local-provider.c:127
@@ -3734,13 +3734,12 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Để đọc và lưu thư cục bộ trong tập tin ống chỉ bên ngoại theo chuẩn mbox.\n"
-"Ngoài ra còn có thể được dùng để đọc một cây các thư mục kiểu Elm, Pine, "
-"hoặc Mutt."
+"Để đọc và lưu thư tín cục bộ trong tập tin hàng đợi được ghi bên ngoại theo định dạng mbox.\n"
+"Cũng có thể được dùng để đọc một cây các thư mục kiểu Elm, Pine, hay Mutt."
 
 #: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
-msgstr "Thư mục ống chỉ mbox UNIX chuẩn"
+msgstr "Thư mục hàng đợi mbox UNIX chuẩn"
 
 #: ../camel/providers/local/camel-local-store.c:157
 #: ../camel/providers/local/camel-local-store.c:268
@@ -4097,12 +4096,12 @@ msgstr "Không thể mở đường dẫn thư mục dạng MH: %s: %s"
 #: ../camel/providers/local/camel-spool-store.c:135
 #, c-format
 msgid "Spool `%s' cannot be opened: %s"
-msgstr "Không thể mở ống chỉ `%s': %s"
+msgstr "Không thể mở hàng đợi « %s »: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:147
 #, c-format
 msgid "Spool `%s' is not a regular file or directory"
-msgstr "Ống chỉ `%s' không phải là tập tin hay thư mục bình thường"
+msgstr "Hàng đợi « %s » không phải là tập tin hay thư mục chuẩn"
 
 #: ../camel/providers/local/camel-spool-store.c:166
 #, c-format
@@ -4144,20 +4143,20 @@ msgstr "Store không hỗ trợ Hộp nhận"
 #: ../camel/providers/local/camel-spool-store.c:222
 #, c-format
 msgid "Spool mail file %s"
-msgstr "Tập tin thư ống chỉ %s"
+msgstr "Tập tin thư tín hàng đợi %s"
 
 #: ../camel/providers/local/camel-spool-store.c:222
 #, c-format
 msgid "Spool folder tree %s"
-msgstr "Cây thư mục ống chỉ %s"
+msgstr "Cây thư mục hàng đợi %s"
 
 #: ../camel/providers/local/camel-spool-store.c:230
 msgid "Spool folders cannot be renamed"
-msgstr "Không thể đổi tên thư mục ống chỉ"
+msgstr "Không thể thay đổi tên của thư mục hàng đợi"
 
 #: ../camel/providers/local/camel-spool-store.c:238
 msgid "Spool folders cannot be deleted"
-msgstr "Không thể xóa bỏ thư mục ống chỉ"
+msgstr "Không thể xóa thư mục hàng đợi"
 
 #: ../camel/providers/local/camel-spool-summary.c:171
 #: ../camel/providers/local/camel-spool-summary.c:181
@@ -4169,7 +4168,7 @@ msgstr "Không thể đồng bộ thư mục tạm %s: %s"
 #: ../camel/providers/local/camel-spool-summary.c:207
 #, c-format
 msgid "Could not sync spool folder %s: %s"
-msgstr "Không thể đồng bộ thư mục ống chỉ %s: %s"
+msgstr "Không thể đồng bộ hoá thư mục hàng đợi: %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:238
 #: ../camel/providers/local/camel-spool-summary.c:255
@@ -4179,7 +4178,7 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in `%s'"
 msgstr ""
-"Không thể đồng bộ thư mục ống chỉ %s: %s\n"
+"Không thể đồng bộ hoá thư mục hàng đợi %s: %s\n"
 "Có lẽ thư mục bị hư; bản sao được lưu trong `%s'"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:176
