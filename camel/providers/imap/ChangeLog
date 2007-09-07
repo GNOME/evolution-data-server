@@ -1,3 +1,10 @@
+2007-19-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #473880
+
+	* camel-imap-search.c: Added header libedataserver/e-sexp.h
+	to fix compiler warning.
+
 2007-08-24  Wang Xin  <jedy.wang@sun.com>
 
 	** Fix for bug #365213

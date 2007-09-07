@@ -352,11 +352,12 @@ camel_utf8_utf7(const char *ptr)
  * Return value: 
  **/
 char *
-camel_utf8_ucs2(const char *ptr)
+camel_utf8_ucs2(const char *pptr)
 {
 	GByteArray *work = g_byte_array_new();
 	guint32 c;
 	char *out;
+	const unsigned char *ptr = (const unsigned char *) pptr;
 
 	/* what if c is > 0xffff ? */
 

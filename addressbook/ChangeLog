@@ -1,3 +1,10 @@
+2007-09-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #473880
+
+	* libebook/e-contact.c: (e_contact_get), (e_contact_get_property):
+	Fixes serious compiler warnings.
+
 2007-09-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix from Rashmi C for bug #275990 (Novell Bugzilla)

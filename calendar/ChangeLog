@@ -1,3 +1,11 @@
+2007-09-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #473880
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_cal_backend_groupwise_set_attachments_from_comp):
+	Fixes serious compiler warning
+
 2007-08-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #298095 (bnc)

@@ -1,3 +1,13 @@
+2007-09-07  Milan Crha <mcrha@redhat.com>
+
+	** Fix for bug #473880
+
+	* camel-mime-filter-tohtml.c: (writeln), (html_convert):
+	* camel-utf8.c: (camel_utf8_ucs2):
+	* camel-url-scanner.c: (camel_url_scanner_scan):
+	* camel-sasl-gssapi.c: (removed header glib/gi18n.h):
+	Fixes serious compiler warnings.
+
 2007-08-28  Ross Burton  <ross@openedhand.com>
 
 	* */*:

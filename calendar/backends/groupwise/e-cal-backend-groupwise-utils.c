@@ -272,7 +272,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		
 		EGwItemAttachment *attach_item;
 		char *file_contents, *encoded_data;
-		guint file_len;
+		gsize file_len;
 		char *attach_filename_full, *filename;
 		const char *uid;
 

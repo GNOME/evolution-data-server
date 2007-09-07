@@ -395,11 +395,15 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 			ha=camel_header_address_new_name(org->display_name, org->email);
 		else if (org->display_name)
 			ha=camel_header_address_new_group(org->display_name);
+		else
+			ha = NULL;
 
-		subs_email=camel_header_address_list_encode(ha);	
-		camel_medium_set_header( CAMEL_MEDIUM(msg), "From", subs_email);
-		camel_header_address_unref(ha);
-		g_free(subs_email);
+		if (ha) {
+			subs_email = camel_header_address_list_encode (ha);	
+			camel_medium_set_header (CAMEL_MEDIUM (msg), "From", subs_email);
+			camel_header_address_unref (ha);
+			g_free (subs_email);
+		}
 	}
 }
 

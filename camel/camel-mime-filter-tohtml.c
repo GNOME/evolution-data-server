@@ -163,17 +163,17 @@ citation_depth (const char *in)
 }
 
 static char *
-writeln (CamelMimeFilter *filter, const char *in, const char *inend, char *outptr, char **outend)
+writeln (CamelMimeFilter *filter, const unsigned char *in, const unsigned char *inend, char *outptr, char **outend)
 {
 	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
-	const char *inptr = in;
+	const unsigned char *inptr = in;
 	
 	while (inptr < inend) {
 		guint32 u;
 		
 		outptr = check_size (filter, outptr, outend, 16);
 
-		u = camel_utf8_getc_limit (&inptr, (const unsigned char *) inend);
+		u = camel_utf8_getc_limit (&inptr, inend);
 		switch (u) {
 		case 0xffff:
 			g_warning("Truncated utf8 buffer");
@@ -311,7 +311,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 			do {
 				if (camel_url_scanner_scan (html->scanner, start, len, &match)) {
 					/* write out anything before the first regex match */
-					outptr = writeln (filter, start, start + match.um_so,
+					outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)start + match.um_so,
 							  outptr, &outend);
 					
 					start += match.um_so;
@@ -340,12 +340,12 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 					outptr = g_stpcpy (outptr, "</a>");
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
-					outptr = writeln (filter, start, start + len, outptr, &outend);
+					outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)start + len, outptr, &outend);
 					break;
 				}
 			} while (len > 0);
 		} else {
-			outptr = writeln (filter, start, inptr, outptr, &outend);
+			outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)inptr, outptr, &outend);
 		}
 		
 		if ((html->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) && depth > 0) {
@@ -368,7 +368,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 	if (flush) {
 		/* flush the rest of our input buffer */
 		if (start < inend)
-			outptr = writeln (filter, start, inend, outptr, &outend);
+			outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)inend, outptr, &outend);
 		
 		if (html->pre_open) {
 			/* close the pre-tag */

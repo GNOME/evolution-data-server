@@ -1,3 +1,10 @@
+2007-09-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #473880
+
+	* providers/groupwise/camel-groupwise-folder.c:
+	(groupwise_msg_set_recipient_list): Fixes serious compiler warning.
+
 2007-09-03  Sankar P  <psankar@novell.com>
 
 	** Fix for bnc bug #302038

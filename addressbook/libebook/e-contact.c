@@ -1175,7 +1175,7 @@ e_contact_get_property (GObject *object,
 	data = e_contact_get (E_CONTACT (object), prop_id);
 
 	if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
-		g_value_set_boolean (value, (gboolean)data);
+		g_value_set_boolean (value, data != NULL);
 	} else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
 		g_value_set_pointer (value, data);
 	} else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
@@ -1390,7 +1390,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 		if (attr) {
 			GList *v = e_vcard_attribute_get_values (attr);
 			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
-			return (gpointer)rv;
+			return rv ? "1" : NULL;
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
