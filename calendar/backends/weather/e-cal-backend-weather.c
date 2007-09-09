@@ -64,6 +64,8 @@ struct _ECalBackendWeatherPrivate {
 
 	/* Weather source */
 	EWeatherSource *source;
+
+	guint begin_retrival_id;
 };
 
 static ECalBackendSyncClass *parent_class;
@@ -176,6 +178,7 @@ static gboolean
 begin_retrieval_cb (ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv = cbw->priv;
+	GSource *source;
 
 	if (priv->mode != CAL_MODE_REMOTE)
 		return TRUE;
@@ -184,6 +187,11 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 
 	if (priv->source == NULL)
 		priv->source = e_weather_source_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbw)));
+
+	source = g_main_current_source ();
+
+	if (priv->begin_retrival_id == g_source_get_id (source)) 
+		priv->begin_retrival_id = 0;
 
 	if (priv->is_loading)
 		return FALSE;
@@ -465,7 +473,8 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 		if (priv->mode == CAL_MODE_LOCAL)
 			return GNOME_Evolution_Calendar_Success;
 
-		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbw);
+		if (!priv->begin_retrival_id)
+			priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, cbw);
 	}
 
 	return GNOME_Evolution_Calendar_Success;
@@ -758,8 +767,8 @@ e_cal_backend_weather_set_mode (ECalBackend *backend, CalMode mode)
 		case CAL_MODE_ANY:
 			priv->mode = mode;
 			set_mode = cal_mode_to_corba (mode);
-			if (loaded)
-				g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
+			if (loaded && !priv->begin_retrival_id)
+				priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
 			break;
 		default:
 			set_mode = GNOME_Evolution_Calendar_MODE_ANY;
@@ -816,6 +825,16 @@ e_cal_backend_weather_finalize (GObject *object)
 	cbw = (ECalBackendWeather *) object;
 	priv = cbw->priv;
 
+	if (priv->reload_timeout_id) {
+		g_source_remove (priv->reload_timeout_id);
+		priv->reload_timeout_id = 0;
+	}
+
+	if (priv->begin_retrival_id) {
+		g_source_remove (priv->begin_retrival_id);
+		priv->begin_retrival_id = 0;
+	}
+
 	if (priv->cache) {
 		g_object_unref (priv->cache);
 		priv->cache = NULL;
@@ -852,6 +871,7 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw, ECalBackendWeatherClass *cl
 
 	priv->reload_timeout_id = 0;
 	priv->source_changed_id = 0;
+	priv->begin_retrival_id = 0;
 	priv->opened = FALSE;
 	priv->source = NULL;
 	priv->cache = NULL;

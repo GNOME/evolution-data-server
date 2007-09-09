@@ -1,3 +1,13 @@
+2007-09-10  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #402506
+
+	* backends/weather/e-cal-backend-weather.c:
+	(struct _ECalBackendWeatherPrivate), (begin_retrieval_cb),
+	(e_cal_backend_weather_open), (e_cal_backend_weather_set_mode),
+	(e_cal_backend_weather_finalize), (e_cal_backend_weather_init):
+	Remembers idle and timeout calls and removes them when finalizing.
+
 2007-09-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #473880
