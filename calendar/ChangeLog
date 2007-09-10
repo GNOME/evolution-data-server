@@ -1,3 +1,11 @@
+2007-09-10  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fix for bug #426421
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	(e_cal_backend_contacts_finalize): destroy the 
+	addressbook sources.					   
+
 2007-09-10  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #402506

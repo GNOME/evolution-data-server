@@ -955,6 +955,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 	}
 	
 	priv->default_zone = NULL;
+	g_object_unref (priv->addressbook_sources);
 	g_hash_table_destroy (priv->addressbooks);
         g_hash_table_destroy (priv->tracked_contacts);
         g_hash_table_destroy (priv->zones);
