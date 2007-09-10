@@ -867,7 +867,7 @@ camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **keyp, unsign
 
 	kb = (CamelKeyBlock *)&bl->data;
 
-#if 1
+#if 0
 	g_assert(kb->used < 127); /* this should be more accurate */
 	g_assert(index < kb->used);
 #else
