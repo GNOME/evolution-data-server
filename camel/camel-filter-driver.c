@@ -142,6 +142,7 @@ static ESExpResult *mark_forward (struct _ESExp *f, int argc, struct _ESExpResul
 static ESExpResult *do_copy (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_stop (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *do_label (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_colour (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_score (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_adjust_score(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
@@ -165,6 +166,7 @@ static struct {
 	{ "copy-to",           (ESExpFunc *) do_copy,      0 },
 	{ "move-to",           (ESExpFunc *) do_move,      0 },
 	{ "stop",              (ESExpFunc *) do_stop,      0 },
+	{ "set-label",         (ESExpFunc *) do_label,     0 },
 	{ "set-colour",        (ESExpFunc *) do_colour,    0 },
 	{ "set-score",         (ESExpFunc *) do_score,     0 },
 	{ "adjust-score",      (ESExpFunc *) do_adjust_score, 0 },
@@ -577,6 +579,23 @@ do_stop (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Stopped processing");
 	d(fprintf (stderr, "terminating message processing\n"));
 	p->terminated = TRUE;
+	
+	return NULL;
+}
+
+static ESExpResult *
+do_label (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+{
+	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
+	
+	d(fprintf (stderr, "setting label tag\n"));
+	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
+			camel_folder_set_message_user_tag (p->source, p->uid, "label", argv[0]->value.string);
+		else
+			camel_message_info_set_user_tag(p->info, "label", argv[0]->value.string);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set label to %s", argv[0]->value.string);
+	}
 	
 	return NULL;
 }

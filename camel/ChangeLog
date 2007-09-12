@@ -1,3 +1,10 @@
+2007-09-12  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #231178
+
+	* camel-filter-driver.c: (struct symbols), (do_label):
+	New symbol 'set-label' defined and added corresponding callback.
+
 2007-09-10  Sankar P  <psankar@novell.com>
 
 	* camel-partition-table.c: (camel_key_table_lookup):
