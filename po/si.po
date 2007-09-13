@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: si\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-07-30 10:32+0100\n"
-"PO-Revision-Date: 2007-07-30 18:40+0530\n"
+"PO-Revision-Date: 2007-09-13 12:49+0530\n"
 "Last-Translator: Danishka Navin <snavin@redhat.com>\n"
 "Language-Team: Sinhala <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "පුරණය වෙමින්..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4149
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:492
 msgid "Searching..."
-msgstr ""
+msgstr "සොයයමින්..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2700
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4305
@@ -358,7 +358,7 @@ msgstr ""
 #: ../addressbook/libebook/e-contact.c:175
 #: ../libedataserverui/e-categories-dialog.c:410
 msgid "Categories"
-msgstr ""
+msgstr "ප්‍රභේද"
 
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:178
@@ -722,7 +722,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:186
 msgid "Authentication failed"
-msgstr ""
+msgstr "සත්‍යාපනය අසමත් විය"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:913
 msgid "Could not create thread for getting deltas"
@@ -757,7 +757,7 @@ msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:202
 msgid "Fair"
-msgstr ""
+msgstr "සාමාන්‍ය"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:203
 msgid "Snow showers"
@@ -1092,7 +1092,7 @@ msgstr "නිර්වචනය නොකළ"
 #: ../calendar/libecal/e-cal.c:1758 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr ""
+msgstr "%s (user %s) සඳහා රහස්පදය ඇතුලත් කරන්න"
 
 #.
 #. This password prompt will be prompted rarely. Since the key that is passed to
@@ -1150,7 +1150,7 @@ msgstr ""
 
 #: ../calendar/libecal/e-cal.c:5240
 msgid "Protocol not supported"
-msgstr ""
+msgstr "නියමාවලිය සහය නොදක්වයි"
 
 #: ../calendar/libecal/e-cal.c:5242
 msgid "Operation has been canceled"
@@ -1186,7 +1186,7 @@ msgstr "නොදන්නා දෝෂයක්"
 #: ../calendar/libecal/e-cal.c:5254
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
-msgstr ""
+msgstr "දෝෂ නැත"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:67
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
@@ -2304,7 +2304,7 @@ msgstr ""
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:795 ../camel/camel-vtrash-folder.c:52
 msgid "Trash"
-msgstr "නොවැදගත්"
+msgstr "ඉවතලන බදුන"
 
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:798 ../camel/camel-vtrash-folder.c:54
@@ -2438,11 +2438,11 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:890
 msgid "GOOD"
-msgstr ""
+msgstr "GOOD"
 
 #: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:890
 msgid "BAD"
-msgstr ""
+msgstr "BAD"
 
 #: ../camel/camel-tcp-stream-openssl.c:706
 #, c-format
@@ -2641,7 +2641,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:55
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "Checking for new mail"
-msgstr ""
+msgstr "නව තැපැල් සඳහා පරික්‍ෂාකරමින්"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
 #: ../camel/providers/hula/camel-hula-provider.c:51
@@ -2678,7 +2678,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:73
 msgid "SOAP Settings"
-msgstr ""
+msgstr "SOAP සැකසුම්"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:76
 msgid "Post Office Agent SOAP Port:"
@@ -2787,7 +2787,7 @@ msgstr ""
 #: ../camel/providers/hula/camel-hula-provider.c:49
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr ""
+msgstr "නව තැපැල් සඳහා පිරික්සමින්"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:50
@@ -3228,7 +3228,7 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "IMAP4rev1"
-msgstr ""
+msgstr "IMAP4rev1"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:68
 msgid "For reading and storing mail on IMAPv4rev1 servers."
@@ -3409,7 +3409,7 @@ msgstr ""
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:49
 msgid "IMAP+"
-msgstr ""
+msgstr "IMAP+"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:51
 msgid ""
@@ -3437,7 +3437,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-folder.c:383
 #, c-format
 msgid "~%s (%s)"
-msgstr ""
+msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
 #: ../camel/providers/local/camel-local-folder.c:387
@@ -4125,7 +4125,7 @@ msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
-msgstr ""
+msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
@@ -4274,7 +4274,7 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:39
 msgid "SMTP"
-msgstr ""
+msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
@@ -4582,7 +4582,7 @@ msgstr ""
 
 #: ../libedataserver/e-categories.c:56
 msgid "Personal"
-msgstr ""
+msgstr "පෞද්ගලික"
 
 #: ../libedataserver/e-categories.c:57
 msgid "Phone Calls"
@@ -4594,7 +4594,7 @@ msgstr "තත්වය"
 
 #: ../libedataserver/e-categories.c:59
 msgid "Strategies"
-msgstr ""
+msgstr "උපක්‍රම"
 
 #: ../libedataserver/e-categories.c:60
 msgid "Suppliers"
@@ -4634,7 +4634,7 @@ msgstr "%a %m/%d/%Y %H:%M:%S"
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1612 ../libedataserver/e-time-utils.c:1845
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%a %m/%d/%Y %I:%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4642,19 +4642,19 @@ msgstr ""
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1617 ../libedataserver/e-time-utils.c:1836
 msgid "%a %m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%a %m/%d/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1622
 msgid "%a %m/%d/%Y %I %p"
-msgstr ""
+msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1627
 msgid "%a %m/%d/%Y %H"
-msgstr ""
+msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
@@ -4666,36 +4666,36 @@ msgstr "%a %m/%d/%Y"
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1638
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr ""
+msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1642
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr ""
+msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1647
 msgid "%m/%d/%Y %I:%M %p"
-msgstr ""
+msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1652
 msgid "%m/%d/%Y %H:%M"
-msgstr ""
+msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1657
 msgid "%m/%d/%Y %I %p"
-msgstr ""
+msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1662
 msgid "%m/%d/%Y %H"
-msgstr ""
+msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
@@ -4707,13 +4707,13 @@ msgstr "%m/%d/%Y"
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1775 ../libedataserver/e-time-utils.c:1894
 msgid "%I:%M:%S %p"
-msgstr ""
+msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1779 ../libedataserver/e-time-utils.c:1886
 msgid "%H:%M:%S"
-msgstr ""
+msgstr "%H:%M:%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -4721,19 +4721,19 @@ msgstr ""
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1784 ../libedataserver/e-time-utils.c:1891
 msgid "%I:%M %p"
-msgstr ""
+msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1788 ../libedataserver/e-time-utils.c:1883
 msgid "%H:%M"
-msgstr ""
+msgstr "%H:%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1792
 msgid "%I %p"
-msgstr ""
+msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:89
 msgid "Accessing LDAP Server anonymously"
@@ -4752,7 +4752,7 @@ msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.c:435
 msgid "Category"
-msgstr ""
+msgstr "ප්‍රභේද"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:1
 msgid "Category Icon"
@@ -4780,7 +4780,7 @@ msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Available Categories:"
-msgstr ""
+msgstr "භාවිතයට ඇති ප්‍රභේද (_A):"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "_Edit"
@@ -4788,7 +4788,7 @@ msgstr "සැකසුම් (_E)"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:9
 msgid "categories"
-msgstr ""
+msgstr "ප්‍රභේද"
 
 #: ../libedataserverui/e-name-selector-dialog.c:122
 #: ../libedataserverui/e-name-selector-dialog.c:782
@@ -4813,11 +4813,11 @@ msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "<b>Show Contacts</b>"
-msgstr ""
+msgstr "<b>සම්බන්ධතා පෙන්වන්න</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>_Contacts</b>"
-msgstr ""
+msgstr "<b>සම්බන්ධතා (_C)</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
 msgid "Address Book"
@@ -4825,16 +4825,16 @@ msgstr "ලිපින පොත"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address _Book:"
-msgstr ""
+msgstr "ලිපින පොත (_B):"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "C_ategory:"
-msgstr ""
+msgstr "ප්‍රභේද (_a):"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
-msgstr "සබැදි"
+msgstr "සම්බන්ධතා"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 msgid "Search"
@@ -4929,7 +4929,7 @@ msgstr ""
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:878
 msgid "Author"
-msgstr ""
+msgstr "කතෘ"
 
 #: ../servers/exchange/lib/e2k-security-descriptor.c:883
 msgid "Non-editing Author"
@@ -4957,7 +4957,7 @@ msgstr "පරිශීලක තෝරන්න"
 
 #: ../servers/exchange/lib/e2k-user-dialog.c:177
 msgid "Addressbook..."
-msgstr ""
+msgstr "ලිපින පොත..."
 
 #: ../servers/exchange/storage/e-storage.c:555
 msgid "Generic error"
@@ -4973,7 +4973,7 @@ msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:561
 msgid "I/O error"
-msgstr ""
+msgstr "I/O දෝෂය"
 
 #: ../servers/exchange/storage/e-storage.c:563
 msgid "Not enough space to create the folder"
@@ -5020,7 +5020,7 @@ msgstr ""
 #: ../servers/exchange/storage/exchange-account.c:636
 #, c-format
 msgid "%s's Folders"
-msgstr ""
+msgstr "%s ගේ බහලුම"
 
 #: ../servers/exchange/storage/exchange-account.c:1246
 msgid "Personal Folders"
@@ -5050,7 +5050,7 @@ msgstr "කෙටුම් පත්"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
 msgid "Journal"
-msgstr ""
+msgstr "දෛනික සටහන්"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
@@ -5062,11 +5062,11 @@ msgstr "නොයැවු"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
 msgid "Sent Items"
-msgstr ""
+msgstr "යැවු අයිතම"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
-msgstr "වැඩ"
+msgstr "කාර්‍යයන්"
 
 #: ../servers/groupwise/e-gw-connection.c:168
 msgid "Invalid connection"
