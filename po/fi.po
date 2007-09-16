@@ -3559,8 +3559,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "Kokeellinen IMAP 4(.1)-asiakas\n"
-"Tämä on testaamatonta ja ei-tuettua koodia, haluat käyttää oikeasti pelkkää "
-"IMAP:ia.\n"
+"Tämä on testaamatonta ja ei-tuettua koodia, haluat oikeasti käyttää pelkkää "
+"IMAP-yhteyttä.\n"
 " !!! ÄLÄ KÄYTÄ TÄTÄ TÄRKEÄN SÄHKÖPOSTIN KÄSITTELYYN !!!\n"
 
 #: ../camel/providers/imapp/camel-imapp-store.c:252
