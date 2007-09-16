@@ -3976,7 +3976,7 @@ msgstr "Сбой записи во временный почтовый ящик:
 #: ../camel/providers/local/camel-mbox-summary.c:1034
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
-msgstr "Сбой записи во временный почтовый ящик: %s"
+msgstr "Сбой записи во временный почтовый ящик: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
 msgid "MH append message canceled"
