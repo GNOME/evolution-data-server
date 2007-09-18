@@ -927,7 +927,7 @@ e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 /**
- * e_name_western_western_parse_fullname:
+ * e_name_western_parse:
  * @full_name: A string containing a western name.
  *
  * Parses @full_name and returns an #ENameWestern struct filled with

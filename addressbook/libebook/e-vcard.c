@@ -1159,7 +1159,7 @@ e_vcard_add_attribute_with_value (EVCard *evcard,
  * e_vcard_add_attribute_with_values:
  * @evcard: an @EVCard
  * @attr: an #EVCardAttribute to add
- * @...: a %NULL-terminated list of values to assign to the attribute
+ * @Varargs: a %NULL-terminated list of values to assign to the attribute
  *
  * Adds @attr to @evcard, assigning the list of values to it.
  **/
