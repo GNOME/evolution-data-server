@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-28 04:00+0100\n"
-"PO-Revision-Date: 2007-08-28 15:48+0530\n"
+"POT-Creation-Date: 2007-08-29 07:04+0100\n"
+"PO-Revision-Date: 2007-09-15 07:13+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: TAMIL <ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -5092,6 +5092,14 @@ msgstr "எதுவுமில்லாது"
 #: ../servers/exchange/lib/e2k-security-descriptor.c:906
 msgid "Custom"
 msgstr "வழக்கம்"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:139
+msgid "Select User"
+msgstr "பயனரை தேர்ந்தெடுக்கவும்"
+
+#: ../servers/exchange/lib/e2k-user-dialog.c:177
+msgid "Addressbook..."
+msgstr "முகவரி புத்தகம்..."
 
 #: ../servers/exchange/storage/e-storage.c:555
 msgid "Generic error"
