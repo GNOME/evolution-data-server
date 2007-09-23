@@ -1097,7 +1097,7 @@ msgstr "Määrittelemätön"
 #: ../calendar/libecal/e-cal.c:1658 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "Syötä salasana tilille %s (käytäjä %s)"
+msgstr "Syötä salasana tilille %s (käyttäjä %s)"
 
 #.
 #. This password prompt will be prompted rarely. Since the key that is passed to
@@ -1287,7 +1287,7 @@ msgid ""
 "be a boolean false (#f)"
 msgstr ""
 "\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja "
-"ainoastaan yhden olevan tottuusarvosen epätoden (#f)"
+"ainoastaan yhden olevan totuusarvoisen epätoden (#f)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1362,7 +1362,7 @@ msgstr ""
 
 #: ../camel/camel-disco-diary.c:297
 msgid "Resynchronizing with server"
-msgstr "Uudellentahdistetaan palvelimen kanssa"
+msgstr "Uudelleentahdistetaan palvelimen kanssa"
 
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
@@ -1396,7 +1396,7 @@ msgstr "Lapsiprosessin '%s' luominen epäonnistui: %s"
 #: ../camel/camel-filter-driver.c:794
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "Virheellinen viestivirhta lähteestä %s: %s"
+msgstr "Virheellinen viestivirta lähteestä %s: %s"
 
 #: ../camel/camel-filter-driver.c:983 ../camel/camel-filter-driver.c:992
 msgid "Syncing folders"
@@ -1778,7 +1778,7 @@ msgstr "(tuntematon virhe)"
 #: ../camel/camel-movemail.c:260
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "VIrhe luettaessa viestitiedostoa: %s"
+msgstr "Virhe luettaessa viestitiedostoa: %s"
 
 #: ../camel/camel-movemail.c:271
 #, c-format
@@ -1848,7 +1848,7 @@ msgstr "Virtuaalikansion sähköpostitarjoaja"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
-msgstr "Sähköpostien lukuun hakuna joukousta muita kansioita"
+msgstr "Sähköpostien lukuun hakuna joukosta muita kansioita"
 
 #: ../camel/camel-provider.c:187
 #, c-format
@@ -2214,7 +2214,7 @@ msgstr "Hyväksytty allekirjoitus"
 
 #: ../camel/camel-smime-context.c:491
 msgid "Bad signature"
-msgstr "Hylätty allekirjoiitus"
+msgstr "Hylätty allekirjoitus"
 
 #: ../camel/camel-smime-context.c:493
 msgid "Content tampered with or altered in transit"
@@ -2222,7 +2222,7 @@ msgstr "Sisältöä muutettu siirrettäessä"
 
 #: ../camel/camel-smime-context.c:495
 msgid "Signing certificate not found"
-msgstr "Allekirjoitusvarmennettä ei löytynyt"
+msgstr "Allekirjoitusvarmennetta ei löytynyt"
 
 #: ../camel/camel-smime-context.c:497
 msgid "Signing certificate not trusted"
@@ -2446,7 +2446,7 @@ msgstr "Nollansyvyinen itseallekirjoitettu varmenne"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Self-signed certificate in chain"
-msgstr "Katjussa on itseallekirjoitettu varmenne"
+msgstr "Ketjussa on itseallekirjoitettu varmenne"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Unable to get issuer's certificate locally"
@@ -2859,7 +2859,7 @@ msgstr "Ylempi kansio ei voi sisältää alikansioita"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1337
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Groupwise-kansitoa %s ei voida uudelleennimetä nimelle %s"
+msgstr "Groupwise-kansiota %s ei voida nimetä uudelleen nimelle %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1369
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
@@ -3485,7 +3485,7 @@ msgstr "Kansiota %s ei voida uudelleennimetä nimelle %s: virheellinen komento"
 #: ../camel/providers/imap4/camel-imap4-store.c:1486
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "Tietoa %s lausekkelle '%s' ei voida hakea IMAP-palvelimelta %s: %s"
+msgstr "Tietoa %s lausekkeelle '%s' ei voida hakea IMAP-palvelimelta %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1526
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -4238,12 +4238,12 @@ msgstr "%s: Etsii uusia viestejä"
 #: ../camel/providers/nntp/camel-nntp-summary.c:229
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr "Odottamaton palvelimenn vastaus xover:ilta: %s"
+msgstr "Odottamaton palvelimen vastaus xover:ilta: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:332
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr "Odottamaton palvelimenn vastaus head:ilta: %s"
+msgstr "Odottamaton palvelimen vastaus head:ilta: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:372
 msgid "Use cancel"
@@ -4360,7 +4360,7 @@ msgid ""
 "mechanism."
 msgstr ""
 "Yhdistäminen POP-palvelimeen %s  epäonnistui: pyydettyä "
-"tunnistatumismenetelmää ei tueta."
+"tunnistautumismenetelmää ei tueta."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:419
 #, c-format
@@ -4439,7 +4439,7 @@ msgstr "Putkea sendmailille ei voitu luoda: %s: sähköpostia ei lähetetty"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:167
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Sendmailia ei voida käynnistyää: %s: sähköpostia ei lähetetty"
+msgstr "Sendmailia ei voida käynnistää: %s: sähköpostia ei lähetetty"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
@@ -4596,7 +4596,7 @@ msgstr "Komento STARTTLS epäonnistui"
 #: ../camel/providers/smtp/camel-smtp-transport.c:487
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "SMTP-palvelin %s ei tue pyydettyä tunnistatumismenetelmää %s."
+msgstr "SMTP-palvelin %s ei tue pyydettyä tunnistautumismenetelmää %s."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:525
 #, c-format
@@ -4677,7 +4677,7 @@ msgstr "Komento AUTH epäonnistui"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "Bad authentication response from server.\n"
-msgstr "Virheelinen todennusvastaus palvelimelta.\n"
+msgstr "Virheellinen todennusvastaus palvelimelta.\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1131
 #, c-format
@@ -5286,7 +5286,7 @@ msgstr "Ei vastausta palvelimelta"
 
 #: ../servers/groupwise/e-gw-connection.c:180
 msgid "Bad parameter"
-msgstr "Virheellinen parameteri"
+msgstr "Virheellinen parametri"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
