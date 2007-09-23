@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-29 18:00+0300\n"
+"POT-Creation-Date: 2007-09-23 09:53+0300\n"
 "PO-Revision-Date: 2006-12-09 06:15+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -26,13 +26,13 @@ msgstr "Ladataan..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4150
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4152
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Etsitään..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4309
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4311
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Haetaan yhteystietoja (%d)..."
@@ -56,23 +56,23 @@ msgstr "Käytetään sähköpostiosoitetta"
 msgid "Reconnecting to LDAP server..."
 msgstr "Odotetaan uudelleen yhteyttä LDAP-palvelimeen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1592
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1594
 msgid "Adding contact to LDAP server..."
 msgstr "Lisätään yhteystieto LDAP-palvelimelle..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1720
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1722
 msgid "Removing contact from LDAP server..."
 msgstr "Poistetaan yhteystieto LDAP-palvelimelta..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2025
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2027
 msgid "Modifying contact from LDAP server..."
 msgstr "Muokataan yhteystietoa LDAP-palvelimella..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4023
 msgid "Receiving LDAP search results..."
 msgstr "Vastaanotetaan LDAP-haun tuloksia..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4170
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4172
 msgid "Error performing search"
 msgstr "Virhe suoritettaessa hakua"
 
@@ -689,12 +689,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kalenteritietoja ei voi tallentaa: virheellinen URI."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1760
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
 msgid "Reply Requested: by "
 msgstr "Vastausta pyydetään: mennessä "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1765
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1769
 msgid "Reply Requested: When convenient"
 msgstr "Vastausta pyydetään: kun sopii"
 
@@ -708,17 +708,17 @@ msgstr "Ladataan %s kohdetta"
 msgid "Calendar"
 msgstr "Kalenteri"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:843
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
 msgid "Invalid server URI"
 msgstr "Virheellinen palvelimen URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:862
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:871
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
 #: ../calendar/libecal/e-cal.c:5001
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1050
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1082
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1120
 #: ../camel/providers/groupwise/camel-groupwise-store.c:586
 #: ../camel/providers/groupwise/camel-groupwise-store.c:601
 #: ../camel/providers/groupwise/camel-groupwise-store.c:712
@@ -729,18 +729,18 @@ msgstr "Virheellinen palvelimen URI"
 msgid "Authentication failed"
 msgstr "Todennus epäonnistui"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:913
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:914
 msgid "Could not create thread for getting deltas"
 msgstr "Deltojen hakuun ei voitu luoda säiettä"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:953
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1227
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
 #: ../calendar/backends/http/e-cal-backend-http.c:597
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/weather/e-cal-backend-weather.c:460
 msgid "Could not create cache file"
 msgstr "Välimuistitiedostoa ei voitu luoda"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:965
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
 msgid "Could not create thread for populating cache"
 msgstr "Välimuistitiedoston luontia varten ei voitu luoda säiettä"
 
@@ -756,195 +756,195 @@ msgstr "Virheellinen tiedostomuoto."
 msgid "Not a calendar."
 msgstr "Ei kalenteri."
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:142
+#: ../calendar/backends/weather/e-cal-backend-weather.c:144
 msgid "Could not retrieve weather data"
 msgstr "Säätietoja ei voitu hakea"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:202
+#: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Fair"
 msgstr "Kohtuullista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:203
+#: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Snow showers"
 msgstr "Lumituiskuja"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:204
+#: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Snow"
 msgstr "Lunta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:205
+#: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Partly cloudy"
 msgstr "Puolipilvistä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:206
+#: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Smoke"
 msgstr "Savua"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:207
+#: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Thunderstorms"
 msgstr "Ukkosmyrskyjä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:208
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Cloudy"
 msgstr "Pilvistä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:209
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Drizzle"
 msgstr "Tihkusadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Sunny"
 msgstr "Aurinkoista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Dust"
 msgstr "Pölyä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Clear"
 msgstr "Kirkasta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Mostly cloudy"
 msgstr "Melko pilvistä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Windy"
 msgstr "Tuulista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Rain showers"
 msgstr "Sadekuuroja"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Foggy"
 msgstr "Sumuista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:225
 msgid "Rain/snow mixed"
 msgstr "Loskakeli"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:226
 msgid "Sleet"
 msgstr "Räntää"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
+#: ../calendar/backends/weather/e-cal-backend-weather.c:227
 msgid "Very hot/humid"
 msgstr "Hyvin kuumaa ja kosteaa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
+#: ../calendar/backends/weather/e-cal-backend-weather.c:228
 msgid "Blizzard"
 msgstr "Salamointia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
+#: ../calendar/backends/weather/e-cal-backend-weather.c:229
 msgid "Freezing rain"
 msgstr "Jäätävää sadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
+#: ../calendar/backends/weather/e-cal-backend-weather.c:230
 msgid "Haze"
 msgstr "Usvaa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Blowing snow"
 msgstr "Lumipyryä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
+#: ../calendar/backends/weather/e-cal-backend-weather.c:232
 msgid "Freezing drizzle"
 msgstr "Jäätävää tihkusadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:225
+#: ../calendar/backends/weather/e-cal-backend-weather.c:233
 msgid "Very cold/wind chill"
 msgstr "Hyvin kylmää tai kylmää tuulista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:226
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
 msgid "Rain"
 msgstr "Sadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:236
 #: ../calendar/backends/weather/e-cal-backend-weather.c:244
-#: ../calendar/backends/weather/e-cal-backend-weather.c:246
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:261
 msgid "Weather: Sunny"
 msgstr "Sää: Aurinkoista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:237
-#: ../calendar/backends/weather/e-cal-backend-weather.c:238
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
-#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+#: ../calendar/backends/weather/e-cal-backend-weather.c:246
+#: ../calendar/backends/weather/e-cal-backend-weather.c:262
+#: ../calendar/backends/weather/e-cal-backend-weather.c:265
 msgid "Weather: Snow"
 msgstr "Sää: sadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:239
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
 msgid "Weather: Partly Cloudy"
 msgstr "Sää: puolipilvistä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:240
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:264
 msgid "Weather: Fog"
 msgstr "Sää: sumuista"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:241
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 msgid "Weather: Thunderstorms"
 msgstr "Sää: ukkosta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:242
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Cloudy"
 msgstr "Sää: pilvistä"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:243
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 #: ../calendar/backends/weather/e-cal-backend-weather.c:251
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:259
 #: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:263
+#: ../calendar/backends/weather/e-cal-backend-weather.c:266
+#: ../calendar/backends/weather/e-cal-backend-weather.c:268
 msgid "Weather: Rain"
 msgstr "Sää: sadetta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:335
+#: ../calendar/backends/weather/e-cal-backend-weather.c:343
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:337
+#: ../calendar/backends/weather/e-cal-backend-weather.c:345
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:340
+#: ../calendar/backends/weather/e-cal-backend-weather.c:348
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:342
+#: ../calendar/backends/weather/e-cal-backend-weather.c:350
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:348
+#: ../calendar/backends/weather/e-cal-backend-weather.c:356
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "%d %% todennäköisyys sateelle\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../calendar/backends/weather/e-cal-backend-weather.c:363
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm lunta\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:357
+#: ../calendar/backends/weather/e-cal-backend-weather.c:365
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1ftuumaa lunta\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:360
+#: ../calendar/backends/weather/e-cal-backend-weather.c:368
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm lunta\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:362
+#: ../calendar/backends/weather/e-cal-backend-weather.c:370
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1ftuumaa lunta\n"
@@ -1097,7 +1097,7 @@ msgstr "Määrittelemätön"
 #: ../calendar/libecal/e-cal.c:1658 ../libedataserverui/e-book-auth-util.c:198
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "Syötä salasana tilille %s (käytäjä %s)"
+msgstr "Syötä salasana tilille %s (käyttäjä %s)"
 
 #.
 #. This password prompt will be prompted rarely. Since the key that is passed to
@@ -1287,7 +1287,7 @@ msgid ""
 "be a boolean false (#f)"
 msgstr ""
 "\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja "
-"ainoastaan yhden olevan tottuusarvosen epätoden (#f)"
+"ainoastaan yhden olevan totuusarvoisen epätoden (#f)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1362,7 +1362,7 @@ msgstr ""
 
 #: ../camel/camel-disco-diary.c:297
 msgid "Resynchronizing with server"
-msgstr "Uudellentahdistetaan palvelimen kanssa"
+msgstr "Uudelleentahdistetaan palvelimen kanssa"
 
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
@@ -1396,7 +1396,7 @@ msgstr "Lapsiprosessin '%s' luominen epäonnistui: %s"
 #: ../camel/camel-filter-driver.c:794
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "Virheellinen viestivirhta lähteestä %s: %s"
+msgstr "Virheellinen viestivirta lähteestä %s: %s"
 
 #: ../camel/camel-filter-driver.c:983 ../camel/camel-filter-driver.c:992
 msgid "Syncing folders"
@@ -1778,7 +1778,7 @@ msgstr "(tuntematon virhe)"
 #: ../camel/camel-movemail.c:260
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "VIrhe luettaessa viestitiedostoa: %s"
+msgstr "Virhe luettaessa viestitiedostoa: %s"
 
 #: ../camel/camel-movemail.c:271
 #, c-format
@@ -1848,7 +1848,7 @@ msgstr "Virtuaalikansion sähköpostitarjoaja"
 
 #: ../camel/camel-provider.c:64
 msgid "For reading mail as a query of another set of folders"
-msgstr "Sähköpostien lukuun hakuna joukousta muita kansioita"
+msgstr "Sähköpostien lukuun hakuna joukosta muita kansioita"
 
 #: ../camel/camel-provider.c:187
 #, c-format
@@ -1960,16 +1960,16 @@ msgstr "Palvelimen vaste sisälsi vajaata todennustietoa"
 msgid "Server response does not match"
 msgstr "Palvelimen vaste ei vastaa haluttua"
 
-#: ../camel/camel-sasl-gssapi.c:65
+#: ../camel/camel-sasl-gssapi.c:64
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:67
+#: ../camel/camel-sasl-gssapi.c:66
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Tämä vaihtoehto yhdistää palvelimeen käyttäen Kerberos 5 - tunnistautumista."
 
-#: ../camel/camel-sasl-gssapi.c:165
+#: ../camel/camel-sasl-gssapi.c:164
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -1977,11 +1977,11 @@ msgstr ""
 "Annettu valtuustieto ei tue määriteltyä mekanismia, tai se on toteutukselle "
 "tuntematon."
 
-#: ../camel/camel-sasl-gssapi.c:170
+#: ../camel/camel-sasl-gssapi.c:169
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Määritelty target_name parametri oli väärin muotoiltu."
 
-#: ../camel/camel-sasl-gssapi.c:173
+#: ../camel/camel-sasl-gssapi.c:172
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -1989,7 +1989,7 @@ msgstr ""
 "Määritelty target_name parametri sisälsi virheellisen tai tukemattoman "
 "tyyppisen nimen."
 
-#: ../camel/camel-sasl-gssapi.c:177
+#: ../camel/camel-sasl-gssapi.c:176
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -1997,7 +1997,7 @@ msgstr ""
 "input_token sisältää eri kanavasidontoja kun mitä on määritelty "
 "input_chan_bindings parametrissa."
 
-#: ../camel/camel-sasl-gssapi.c:182
+#: ../camel/camel-sasl-gssapi.c:181
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2005,7 +2005,7 @@ msgstr ""
 "input_token sisältää virheellisen allekirjoituksen tai allekirjoituksen, "
 "jota ei voida varmentaa."
 
-#: ../camel/camel-sasl-gssapi.c:186
+#: ../camel/camel-sasl-gssapi.c:185
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2013,30 +2013,30 @@ msgstr ""
 "Annetut valtuustiedot eivät ole kelvollisia tämän tilan alustamisessa tai "
 "valtuustiedon kahva ei viitannut mihinkään valtuustietoihin."
 
-#: ../camel/camel-sasl-gssapi.c:191
+#: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Määritelty tilakahva ei viittaa kelvolliseen tilaan."
 
-#: ../camel/camel-sasl-gssapi.c:194
+#: ../camel/camel-sasl-gssapi.c:193
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_check:ille tehdyt eheystarkistukset epäonnistuivat."
 
-#: ../camel/camel-sasl-gssapi.c:197
+#: ../camel/camel-sasl-gssapi.c:196
 msgid "The consistency checks performed on the credential failed."
 msgstr "Valtuustiedoille tehdyt eheystarkistukset epäonnistuivat."
 
-#: ../camel/camel-sasl-gssapi.c:200
+#: ../camel/camel-sasl-gssapi.c:199
 msgid "The referenced credentials have expired."
 msgstr "Viitatut valtuustiedot ovat vanhentuneet."
 
-#: ../camel/camel-sasl-gssapi.c:206 ../camel/camel-sasl-gssapi.c:254
-#: ../camel/camel-sasl-gssapi.c:290 ../camel/camel-sasl-gssapi.c:305
+#: ../camel/camel-sasl-gssapi.c:205 ../camel/camel-sasl-gssapi.c:253
+#: ../camel/camel-sasl-gssapi.c:289 ../camel/camel-sasl-gssapi.c:304
 #: ../camel/camel-sasl-kerberos4.c:231
 #: ../camel/providers/imap/camel-imap-store.c:1306
 msgid "Bad authentication response from server."
 msgstr "Virheellinen vastaus varmennukseen palvelimelta."
 
-#: ../camel/camel-sasl-gssapi.c:315
+#: ../camel/camel-sasl-gssapi.c:314
 msgid "Unsupported security layer."
 msgstr "Turvakerros ei ole tuettu."
 
@@ -2214,7 +2214,7 @@ msgstr "Hyväksytty allekirjoitus"
 
 #: ../camel/camel-smime-context.c:491
 msgid "Bad signature"
-msgstr "Hylätty allekirjoiitus"
+msgstr "Hylätty allekirjoitus"
 
 #: ../camel/camel-smime-context.c:493
 msgid "Content tampered with or altered in transit"
@@ -2222,7 +2222,7 @@ msgstr "Sisältöä muutettu siirrettäessä"
 
 #: ../camel/camel-smime-context.c:495
 msgid "Signing certificate not found"
-msgstr "Allekirjoitusvarmennettä ei löytynyt"
+msgstr "Allekirjoitusvarmennetta ei löytynyt"
 
 #: ../camel/camel-smime-context.c:497
 msgid "Signing certificate not trusted"
@@ -2446,7 +2446,7 @@ msgstr "Nollansyvyinen itseallekirjoitettu varmenne"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Self-signed certificate in chain"
-msgstr "Katjussa on itseallekirjoitettu varmenne"
+msgstr "Ketjussa on itseallekirjoitettu varmenne"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Unable to get issuer's certificate locally"
@@ -2684,29 +2684,29 @@ msgstr "Viestin %s hakeminen ei onnistu: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2117
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2121
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Tämä viesti ei ole saatavilla yhteydettömässä tilassa."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1667
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1713
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1671
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
 msgid "Could not get message"
 msgstr "Viestiä ei voitu hakea"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:813
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:817
 #: ../camel/providers/imap/camel-imap-folder.c:253
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Yhteenvetoa %s:lle ei voitu ladata"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1042
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
 msgid "Trash Folder Full. Please Empty."
 msgstr "Roskakori on täynnä, poista sieltä viestejä."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1219
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1223
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2394
@@ -2715,13 +2715,13 @@ msgstr "Roskakori on täynnä, poista sieltä viestejä."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1984
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2026
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1988
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Viestiä ei voida lisätä kansioon  '%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2014
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2018
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Viestiä ei voida luoda: %s"
@@ -2859,7 +2859,7 @@ msgstr "Ylempi kansio ei voi sisältää alikansioita"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1337
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
-msgstr "Groupwise-kansitoa %s ei voida uudelleennimetä nimelle %s"
+msgstr "Groupwise-kansiota %s ei voida nimetä uudelleen nimelle %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1369
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
@@ -3485,7 +3485,7 @@ msgstr "Kansiota %s ei voida uudelleennimetä nimelle %s: virheellinen komento"
 #: ../camel/providers/imap4/camel-imap4-store.c:1486
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
-msgstr "Tietoa %s lausekkelle '%s' ei voida hakea IMAP-palvelimelta %s: %s"
+msgstr "Tietoa %s lausekkeelle '%s' ei voida hakea IMAP-palvelimelta %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1526
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -3559,8 +3559,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "Kokeellinen IMAP 4(.1)-asiakas\n"
-"Tämä on testaamatonta ja ei-tuettua koodia, haluat käyttää oikeasti pelkkää "
-"IMAP:ia.\n"
+"Tämä on testaamatonta ja ei-tuettua koodia, haluat oikeasti käyttää pelkkää "
+"IMAP-yhteyttä.\n"
 " !!! ÄLÄ KÄYTÄ TÄTÄ TÄRKEÄN SÄHKÖPOSTIN KÄSITTELYYN !!!\n"
 
 #: ../camel/providers/imapp/camel-imapp-store.c:252
@@ -4238,12 +4238,12 @@ msgstr "%s: Etsii uusia viestejä"
 #: ../camel/providers/nntp/camel-nntp-summary.c:229
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr "Odottamaton palvelimenn vastaus xover:ilta: %s"
+msgstr "Odottamaton palvelimen vastaus xover:ilta: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:332
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr "Odottamaton palvelimenn vastaus head:ilta: %s"
+msgstr "Odottamaton palvelimen vastaus head:ilta: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:372
 msgid "Use cancel"
@@ -4360,7 +4360,7 @@ msgid ""
 "mechanism."
 msgstr ""
 "Yhdistäminen POP-palvelimeen %s  epäonnistui: pyydettyä "
-"tunnistatumismenetelmää ei tueta."
+"tunnistautumismenetelmää ei tueta."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:419
 #, c-format
@@ -4439,7 +4439,7 @@ msgstr "Putkea sendmailille ei voitu luoda: %s: sähköpostia ei lähetetty"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:167
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Sendmailia ei voida käynnistyää: %s: sähköpostia ei lähetetty"
+msgstr "Sendmailia ei voida käynnistää: %s: sähköpostia ei lähetetty"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
@@ -4596,7 +4596,7 @@ msgstr "Komento STARTTLS epäonnistui"
 #: ../camel/providers/smtp/camel-smtp-transport.c:487
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "SMTP-palvelin %s ei tue pyydettyä tunnistatumismenetelmää %s."
+msgstr "SMTP-palvelin %s ei tue pyydettyä tunnistautumismenetelmää %s."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:525
 #, c-format
@@ -4677,7 +4677,7 @@ msgstr "Komento AUTH epäonnistui"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "Bad authentication response from server.\n"
-msgstr "Virheelinen todennusvastaus palvelimelta.\n"
+msgstr "Virheellinen todennusvastaus palvelimelta.\n"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1131
 #, c-format
@@ -5286,7 +5286,7 @@ msgstr "Ei vastausta palvelimelta"
 
 #: ../servers/groupwise/e-gw-connection.c:180
 msgid "Bad parameter"
-msgstr "Virheellinen parameteri"
+msgstr "Virheellinen parametri"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
