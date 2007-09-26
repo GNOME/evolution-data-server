@@ -1,3 +1,35 @@
+Evolution-Data-Server 1.12.0 2007-09-17
+---------------------------------------
+
+Bug Fixes:
+	#275990: (Novell Bugzilla) Handle errors from ldap for duplicate fields. (Rashmi C)
+	#348149: Convert a g_assert to g_warning (Sankar P)
+	#402506: Remembers idle and timeout calls and removes them when finalizing (Milan Crha)
+	#426421: Fixed a crash when deleting two addressbooks (Chenthill Palanisamy)
+	#469007: Skip white spaces at the beginning of header value when running filters (Milan Crha)
+	#473880: Fixed serious compiler warnings (Milan Crha)
+
+Other Contributors:
+	Updated the timezones. (Chenthill Palanisamy)
+
+Updated Translations:
+	Nickolay V. Shmyrev (ru)
+	David Planella (ca)
+	Amitakhya Phukan (as)
+	Inaki Larranaga Murgoitio (eu)
+	Mugurel Tudor (ro)
+	Gabor Kelemen (hu)
+	Laurent Dhima (sq)
+	Danishka Navin (si)
+	Jamil Ahmed (bn)
+	Igor Nestorovi (sr)
+	Maxim Dziumanenko (uk)
+	Kenneth Nielsen (da)
+	Washington Lins (pt_BR)
+	Clytie Siddall (vi)
+	Jovan Naumovski (mk)
+	Luca Ferretti (it)
+
 Evolution-Data-Server 1.11.92 2007-09-03
 ----------------------------------------
 
