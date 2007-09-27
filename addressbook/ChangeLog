@@ -1,6 +1,14 @@
 2007-09-27  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:
+	* backends/ldap/e-book-backend-ldap.c:
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* backends/vcf/e-book-backend-vcf.c:
+	Use G_DEFINE_TYPE (#475493).
+
+2007-09-27  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
 	Use G_LOCK instead of a static mutex for clearer code (#475494).
 
 2007-09-18  Ross Burton  <ross@openedhand.com>

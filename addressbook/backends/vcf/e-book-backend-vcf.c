@@ -56,7 +56,8 @@
 
 #define d(x) x
 
-static EBookBackendSyncClass *e_book_backend_vcf_parent_class;
+G_DEFINE_TYPE (EBookBackendVCF, e_book_backend_vcf, E_TYPE_BOOK_BACKEND_SYNC);
+
 typedef struct _EBookBackendVCFBookView EBookBackendVCFBookView;
 typedef struct _EBookBackendVCFSearchContext EBookBackendVCFSearchContext;
 
@@ -67,11 +68,6 @@ struct _EBookBackendVCFPrivate {
 	GList      *contact_list;
 	gboolean    dirty;
 	int         flush_timeout_tag;
-	/* for future use */
-	void *reserved1;
-	void *reserved2;
-	void *reserved3;
-	void *reserved4;
 };
 
 static char *
@@ -766,8 +762,6 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	EBookBackendSyncClass *sync_class;
 	EBookBackendClass *backend_class;
 
-	e_book_backend_vcf_parent_class = g_type_class_peek_parent (klass);
-
 	sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
@@ -799,31 +793,4 @@ e_book_backend_vcf_init (EBookBackendVCF *backend)
 	priv->mutex = g_mutex_new();
 
 	backend->priv = priv;
-}
-
-/**
- * e_book_backend_vcf_get_type:
- */
-GType
-e_book_backend_vcf_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendVCFClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_vcf_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendVCF),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_vcf_init
-		};
-
-		type = g_type_register_static (E_TYPE_BOOK_BACKEND_SYNC, "EBookBackendVCF", &info, 0);
-	}
-
-	return type;
 }

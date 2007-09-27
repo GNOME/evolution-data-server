@@ -64,7 +64,7 @@
 #define PAS_ID_PREFIX "pas-id-"
 #define SUMMARY_FLUSH_TIMEOUT 5000
 
-static EBookBackendSyncClass *e_book_backend_file_parent_class;
+G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC);
 
 struct _EBookBackendFilePrivate {
 	char     *dirname;
@@ -1472,8 +1472,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	EBookBackendSyncClass *sync_class;
 	EBookBackendClass *backend_class;
 
-	e_book_backend_file_parent_class = g_type_class_peek_parent (klass);
-
 	sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
@@ -1520,31 +1518,4 @@ e_book_backend_file_init (EBookBackendFile *backend)
 	priv             = g_new0 (EBookBackendFilePrivate, 1);
 
 	backend->priv = priv;
-}
-
-/**
- * e_book_backend_file_get_type:
- */
-GType
-e_book_backend_file_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendFileClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_file_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendFile),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_file_init
-		};
-
-		type = g_type_register_static (E_TYPE_BOOK_BACKEND_SYNC, "EBookBackendFile", &info, 0);
-	}
-
-	return type;
 }

@@ -54,7 +54,7 @@
 #include "e-gw-item.h"
 #include "e-gw-filter.h"
 
-static EBookBackendClass *e_book_backend_groupwise_parent_class;
+G_DEFINE_TYPE (EBookBackendGroupwise, e_book_backend_groupwise, E_TYPE_BOOK_BACKEND);
                                                                                                                              
 struct _EBookBackendGroupwisePrivate {
 	EGwConnection *cnc; 
@@ -78,8 +78,6 @@ struct _EBookBackendGroupwisePrivate {
 	GMutex *update_mutex;
 	DB     *file_db;
 	DB_ENV *env;
-	/* for future use */
-	void *reserved1;
 };
 
 static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
@@ -3769,9 +3767,6 @@ e_book_backend_groupwise_class_init (EBookBackendGroupwiseClass *klass)
 	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
 	EBookBackendClass *parent_class;
 
-
-	e_book_backend_groupwise_parent_class = g_type_class_peek_parent (klass);
-
 	parent_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
@@ -3812,7 +3807,6 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->cache_timeout = 0;
 	priv->update_mutex = g_mutex_new();
 	priv->update_cache_mutex = g_mutex_new();
-	priv->reserved1 = NULL;
        	backend->priv = priv;
 
 	if (g_getenv ("GROUPWISE_DEBUG")) { 
@@ -3821,32 +3815,4 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 		else
 			enable_debug = FALSE;
 	}
-}
-
-
-/**
- * e_book_backend_groupwise_get_type:
- */
-GType
-e_book_backend_groupwise_get_type (void)
-{
-	static GType type = 0;
-                                                                                                                             
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendGroupwiseClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_groupwise_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendGroupwise),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_groupwise_init
-		};
-                                                                                                                             
-		type = g_type_register_static (E_TYPE_BOOK_BACKEND, "EBookBackendGroupwise", &info, 0);
-	}
-                                                                                                                             
-	return type;
 }

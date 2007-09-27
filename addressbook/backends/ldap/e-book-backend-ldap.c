@@ -119,9 +119,9 @@ static gboolean enable_debug = FALSE;
 static gchar *query_prop_to_ldap(gchar *query_prop);
 static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query);
 
-static EBookBackendClass *e_book_backend_ldap_parent_class;
 typedef struct LDAPOp LDAPOp;
 
+G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND);
 
 struct _EBookBackendLDAPPrivate {
 	gboolean connected;
@@ -4984,8 +4984,6 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	/* get client side information (extensions present in the library) */
 	get_ldap_library_info ();
 #endif
-	e_book_backend_ldap_parent_class = g_type_class_peek_parent (klass);
-
 	parent_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
@@ -5036,31 +5034,4 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 
 	if (g_getenv ("LDAP_DEBUG"))
 		enable_debug = TRUE;
-}
-
-/**
- * e_book_backend_ldap_get_type:
- */
-GType
-e_book_backend_ldap_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendLDAPClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_ldap_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendLDAP),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_ldap_init
-		};
-
-		type = g_type_register_static (E_TYPE_BOOK_BACKEND, "EBookBackendLDAP", &info, 0);
-	}
-
-	return type;
 }
