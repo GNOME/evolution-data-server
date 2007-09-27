@@ -1923,7 +1923,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 			if (msg && length) {
 				len = atoi (length);
-				item->priv->message = soup_base64_decode  (msg, &len);
+				item->priv->message = g_base64_decode  (msg, &len);
 				if (!(item->priv->message)) {
 					item->priv->msg_body_id = soup_soap_parameter_get_property (part, "id") ;
 				} 
@@ -3005,7 +3005,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	if (priv->message) {
 		char *str;
 		
-		str = soup_base64_encode (priv->message, strlen (priv->message));
+		str = g_base64_encode (priv->message, strlen (priv->message));
 		dtstring = g_strdup_printf ("%d", (int)strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 		g_free (dtstring);
@@ -3185,7 +3185,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			char *str ;
 			char *str_len ;
 
-			str = soup_base64_encode (priv->message, strlen (priv->message));
+			str = g_base64_encode (priv->message, strlen (priv->message));
 			//str = g_strdup (priv->message);
 			str_len = g_strdup_printf ("%d", str ? (int)strlen (str) : 0);
 			soup_soap_message_start_element (msg, "part", NULL, NULL);
@@ -3427,7 +3427,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 		if (priv->message) {
 			char *str, *message;
 
-			str = soup_base64_encode (priv->message, strlen (priv->message));
+			str = g_base64_encode (priv->message, strlen (priv->message));
 			message = g_strdup_printf ("%d", (int)strlen (str));
 			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
 			g_free (message);

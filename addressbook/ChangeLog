@@ -1,3 +1,13 @@
+2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* tests/ebook/test-photo.c (main):
+	Use GLib's Base64 API instead of EVCard's.
+
+	* libebook/e-vcard.c:
+	Remove redundant Base64 codec implementation.  Use GLib's.
+
 2007-09-27  Ross Burton  <ross@openedhand.com>
 
 	* backends/file/e-book-backend-file.c:

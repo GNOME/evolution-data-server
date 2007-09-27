@@ -80,8 +80,6 @@ libexchange_la_SOURCES =					\
 	e2k-autoconfig.h					\
 	e2k-context.c						\
 	e2k-context.h						\
-	e2k-encoding-utils.c					\
-	e2k-encoding-utils.h					\
 	e2k-freebusy.c						\
 	e2k-freebusy.h						\
 	e2k-global-catalog.c					\

@@ -1,3 +1,11 @@
+2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* camel-groupwise-utils.c (send_as_attachment):
+	* camel-groupwise-folder.c (groupwise_folder_item_to_msg):
+	Use GLib's Base64 API instead of libsoup's.
+
 2007-09-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #473880

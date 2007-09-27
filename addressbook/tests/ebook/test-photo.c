@@ -23,8 +23,6 @@ eor7UoAje18FtmLe9eeQT3EXPcglkJRPbv71EWu7Dajp2o3MGmlRCkjKQ30jPUe1WlrlNW0Rpt\
 TleNB84DnjkD0P9VlxT4Nqck9pmn8JuFp2zo0cgCWFi2e7555/NSHXLadso2m3sU0NxlV65HM+\
 VdTW3rgwvsUpSvAFKUoAUxSlAClKUAKUpQB//2Q==";
 
-size_t _evc_base64_decode_simple (char *data, size_t len);
-
 int
 main (int argc, char **argv)
 {
@@ -38,8 +36,7 @@ main (int argc, char **argv)
 	photo = g_new (EContactPhoto, 1);
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 	photo->data.inlined.mime_type = NULL;
-	photo->data.inlined.data = (guchar*)g_strdup (photo_data);
-	photo->data.inlined.length = _evc_base64_decode_simple ((char*)photo->data.inlined.data, strlen (photo_data));
+	photo->data.inlined.data = g_base64_decode (photo_data, &photo->data.inlined.length);
 
 	/* set the photo */
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);

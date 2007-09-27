@@ -583,7 +583,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 
 		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
 					http_stream->proxy->passwd?http_stream->proxy->passwd:"");
-		basic64 = camel_base64_encode_simple(basic, strlen(basic));
+		basic64 = g_base64_encode(basic, strlen(basic));
 		memset(basic, 0, strlen(basic));
 		g_free(basic);
 		camel_http_stream_set_proxy_authpass(http_stream, basic64);

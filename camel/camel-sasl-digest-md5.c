@@ -654,7 +654,7 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 	md5_get_digest (bgen, strlen (bgen), digest);
 	g_free (bgen);
 	/* take our recommended 64 bits of entropy */
-	resp->cnonce = camel_base64_encode_simple (digest, 8);
+	resp->cnonce = g_base64_encode (digest, 8);
 	
 	/* we don't support re-auth so the nonce count is always 1 */
 	strcpy (resp->nc, "00000001");

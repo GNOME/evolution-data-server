@@ -87,49 +87,10 @@ int free_count = 0;
 #define CAMEL_UUENCODE_CHAR(c)  ((c) ? (c) + ' ' : '`')
 #define	CAMEL_UUDECODE_CHAR(c)	(((c) - ' ') & 077)
 
-static const char base64_alphabet[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 static const unsigned char tohex[16] = {
 	'0', '1', '2', '3', '4', '5', '6', '7',
 	'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
-
-static const unsigned char camel_mime_base64_rank[256] = {
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0x3e, 0xff, 0xff, 0xff, 0x3f,
-	0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b,
-	0x3c, 0x3d, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff,
-	0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
-	0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
-	0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
-	0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
-	0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
-	0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30,
-	0x31, 0x32, 0x33, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-};
-
 
 /**
  * camel_base64_encode_close:
@@ -149,41 +110,14 @@ static const unsigned char camel_mime_base64_rank[256] = {
 size_t
 camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines, unsigned char *out, int *state, int *save)
 {
-	int c1, c2;
-	unsigned char *outptr = out;
+	gsize bytes = 0;
 
-	if (inlen>0)
-		outptr += camel_base64_encode_step(in, inlen, break_lines, outptr, state, save);
+	if (inlen > 0)
+		bytes += g_base64_encode_step (in, inlen, break_lines, out, state, save);
 
-	c1 = ((unsigned char *)save)[1];
-	c2 = ((unsigned char *)save)[2];
-	
-	d(printf("mode = %d\nc1 = %c\nc2 = %c\n",
-		 (int)((char *)save)[0],
-		 (int)((char *)save)[1],
-		 (int)((char *)save)[2]));
+	bytes += g_base64_encode_close (break_lines, out, state, save);
 
-	switch (((char *)save)[0]) {
-	case 2:
-		outptr[2] = base64_alphabet[ ( (c2 &0x0f) << 2 ) ];
-		g_assert(outptr[2] != 0);
-		goto skip;
-	case 1:
-		outptr[2] = '=';
-	skip:
-		outptr[0] = base64_alphabet[ c1 >> 2 ];
-		outptr[1] = base64_alphabet[ c2 >> 4 | ( (c1&0x3) << 4 )];
-		outptr[3] = '=';
-		outptr += 4;
-		break;
-	}
-	if (break_lines)
-		*outptr++ = '\n';
-
-	*save = 0;
-	*state = 0;
-
-	return outptr-out;
+	return bytes;
 }
 
 
@@ -206,76 +140,7 @@ camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines,
 size_t
 camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save)
 {
-	register unsigned char *inptr, *outptr;
-
-	if (len<=0)
-		return 0;
-
-	inptr = in;
-	outptr = out;
-
-	d(printf("we have %d chars, and %d saved chars\n", len, ((char *)save)[0]));
-
-	if (len + ((char *)save)[0] > 2) {
-		unsigned char *inend = in+len-2;
-		register int c1, c2, c3;
-		register int already;
-
-		already = *state;
-
-		switch (((char *)save)[0]) {
-		case 1:	c1 = ((unsigned char *)save)[1]; goto skip1;
-		case 2:	c1 = ((unsigned char *)save)[1];
-			c2 = ((unsigned char *)save)[2]; goto skip2;
-		}
-		
-		/* yes, we jump into the loop, no i'm not going to change it, it's beautiful! */
-		while (inptr < inend) {
-			c1 = *inptr++;
-		skip1:
-			c2 = *inptr++;
-		skip2:
-			c3 = *inptr++;
-			*outptr++ = base64_alphabet[ c1 >> 2 ];
-			*outptr++ = base64_alphabet[ c2 >> 4 | ( (c1&0x3) << 4 ) ];
-			*outptr++ = base64_alphabet[ ( (c2 &0x0f) << 2 ) | (c3 >> 6) ];
-			*outptr++ = base64_alphabet[ c3 & 0x3f ];
-			/* this is a bit ugly ... */
-			if (break_lines && (++already)>=19) {
-				*outptr++='\n';
-				already = 0;
-			}
-		}
-
-		((char *)save)[0] = 0;
-		len = 2-(inptr-inend);
-		*state = already;
-	}
-
-	d(printf("state = %d, len = %d\n",
-		 (int)((char *)save)[0],
-		 len));
-
-	if (len>0) {
-		register char *saveout;
-
-		/* points to the slot for the next char to save */
-		saveout = & (((char *)save)[1]) + ((char *)save)[0];
-
-		/* len can only be 0 1 or 2 */
-		switch(len) {
-		case 2:	*saveout++ = *inptr++;
-		case 1:	*saveout++ = *inptr++;
-		}
-		((char *)save)[0]+=len;
-	}
-
-	d(printf("mode = %d\nc1 = %c\nc2 = %c\n",
-		 (int)((char *)save)[0],
-		 (int)((char *)save)[1],
-		 (int)((char *)save)[2]));
-
-	return outptr-out;
+	return g_base64_encode_step (in, len, break_lines, out, state, save);
 }
 
 
@@ -294,49 +159,7 @@ camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, un
 size_t
 camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int *state, unsigned int *save)
 {
-	register unsigned char *inptr, *outptr;
-	unsigned char *inend, c;
-	register unsigned int v;
-	int i;
-
-	inend = in+len;
-	outptr = out;
-
-	/* convert 4 base64 bytes to 3 normal bytes */
-	v=*save;
-	i=*state;
-	inptr = in;
-	while (inptr<inend) {
-		c = camel_mime_base64_rank[*inptr++];
-		if (c != 0xff) {
-			v = (v<<6) | c;
-			i++;
-			if (i==4) {
-				*outptr++ = v>>16;
-				*outptr++ = v>>8;
-				*outptr++ = v;
-				i=0;
-			}
-		}
-	}
-
-	*save = v;
-	*state = i;
-
-	/* quick scan back for '=' on the end somewhere */
-	/* fortunately we can drop 1 output char for each trailing = (upto 2) */
-	i=2;
-	while (inptr>in && i) {
-		inptr--;
-		if (camel_mime_base64_rank[*inptr] != 0xff) {
-			if (*inptr == '=' && outptr>out)
-				outptr--;
-			i--;
-		}
-	}
-
-	/* if i!= 0 then there is a truncation error! */
-	return outptr-out;
+	return g_base64_decode_step (in, len, out, state, save);
 }
 
 
@@ -352,15 +175,7 @@ camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int 
 char *
 camel_base64_encode_simple (const char *data, size_t len)
 {
-	unsigned char *out;
-	int state = 0, outlen;
-	unsigned int save = 0;
-	
-	out = g_malloc (len * 4 / 3 + 5);
-	outlen = camel_base64_encode_close ((unsigned char *)data, len, FALSE,
-				      out, &state, &save);
-	out[outlen] = '\0';
-	return (char *)out;
+	return g_base64_encode (data, len);
 }
 
 
@@ -376,11 +191,16 @@ camel_base64_encode_simple (const char *data, size_t len)
 size_t
 camel_base64_decode_simple (char *data, size_t len)
 {
-	int state = 0;
-	unsigned int save = 0;
+	guchar *out_data;
+	gsize out_len;
 
-	return camel_base64_decode_step ((unsigned char *)data, len,
-				   (unsigned char *)data, &state, &save);
+	out_data = g_base64_decode (data, &out_len);
+	g_assert (out_len <= len); /* sanity check */
+	memcpy (data, out_data, out_len);
+	data[out_len] = '\0';
+	g_free (out_data);
+
+	return out_len;
 }
 
 /**

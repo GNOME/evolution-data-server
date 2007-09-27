@@ -131,15 +131,17 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
 {
 	GByteArray *token_binary, *ret_binary;
 	char *ret;
-	int len;
 	
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 	
 	if (token) {
+		guchar *data;
+		gsize length;
+
+		data = g_base64_decode (token, &length);
 		token_binary = g_byte_array_new ();
-		len = strlen (token);
-		g_byte_array_append (token_binary, token, len);
-		token_binary->len = camel_base64_decode_simple (token_binary->data, len);
+		g_byte_array_append (token_binary, data, length);
+		g_free (data);
 	} else
 		token_binary = NULL;
 	
@@ -149,7 +151,7 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
 	if (!ret_binary)
 		return NULL;
 	
-	ret = camel_base64_encode_simple (ret_binary->data, ret_binary->len);
+	ret = g_base64_encode (ret_binary->data, ret_binary->len);
 	g_byte_array_free (ret_binary, TRUE);
 
 	return ret;

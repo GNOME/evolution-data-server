@@ -95,13 +95,15 @@ static void
 complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
-	size_t newlen;
+	size_t newlen = 0;
 	
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
 		camel_mime_filter_set_size(mf, len*2+6, FALSE);
-		newlen = camel_base64_encode_close(in, len, TRUE, mf->outbuf, &f->state, &f->save);
+		if (len > 0)
+			newlen += g_base64_encode_step(in, len, TRUE, mf->outbuf, &f->state, &f->save);
+		newlen += g_base64_encode_close(TRUE, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len*2+6);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
@@ -119,7 +121,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
  		camel_mime_filter_set_size(mf, len, FALSE);
-		newlen = camel_base64_decode_step(in, len, mf->outbuf, &f->state, &f->save);
+		newlen = g_base64_decode_step(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
@@ -164,7 +166,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
 		camel_mime_filter_set_size(mf, len*2+6, FALSE);
-		newlen = camel_base64_encode_step(in, len, TRUE, mf->outbuf, &f->state, &f->save);
+		newlen = g_base64_encode_step(in, len, TRUE, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len*2+6);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
@@ -182,7 +184,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
 		camel_mime_filter_set_size(mf, len+3, FALSE);
-		newlen = camel_base64_decode_step(in, len, mf->outbuf, &f->state, &f->save);
+		newlen = g_base64_decode_step(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len+3);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:

@@ -1,3 +1,20 @@
+2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* camel-mime-utils.c:
+	* camel-mime-utils.h:
+	Deprecate Camel's Base64 API and make the functions thin wrappers
+	for GLib's Base64 API.
+
+	* camel-multipart.c (set_boundary):
+	* camel-vee-folder.c (camel_vee_folder_hash_folder):
+	* camel-mime-filter-basic.c (complete):
+	* camel-sasl-digest-md5.c (generate_response):
+	* camel-http-stream.c (camel_http_stream_set_proxy):
+	* camel-sasl.c (camel_sasl_challenge_base64):
+	Use GLib's Base64 API instead of Camel's.
+
 2007-09-12  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #231178

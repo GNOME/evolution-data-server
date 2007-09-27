@@ -305,7 +305,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		attach_item->name = g_strdup (filename + strlen(uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap
 		 * message */
-		encoded_data = soup_base64_encode (file_contents, file_len);
+		encoded_data = g_base64_encode (file_contents, file_len);
 		attach_item->data = encoded_data;
 		attach_item->size = strlen (encoded_data); 
 

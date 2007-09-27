@@ -190,7 +190,8 @@ hash_match(char hash[17], int argc, struct _ESExpResult **argv)
 	}
 	md5_final(&ctx, digest);
 
-	camel_base64_encode_close(digest, 12, FALSE, hash, &state, &save);
+	g_base64_encode_step(digest, 12, FALSE, hash, &state, &save);
+	g_base64_encode_close(FALSE, hash, &state, &save);
 
 	for (i=0;i<16;i++) {
 		if (hash[i] == '+')

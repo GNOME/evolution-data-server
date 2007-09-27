@@ -228,11 +228,13 @@ CamelTransferEncoding camel_transfer_encoding_from_string (const char *string);
 /* decode the mime-type header */
 void camel_header_mime_decode (const char *in, int *maj, int *min);
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 /* do incremental base64/quoted-printable (de/en)coding */
 size_t camel_base64_decode_step (unsigned char *in, size_t len, unsigned char *out, int *state, unsigned int *save);
 
 size_t camel_base64_encode_step (unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save);
 size_t camel_base64_encode_close (unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save);
+#endif
 
 size_t camel_uudecode_step (unsigned char *in, size_t len, unsigned char *out, int *state, guint32 *save);
 
@@ -246,8 +248,10 @@ size_t camel_quoted_decode_step (unsigned char *in, size_t len, unsigned char *o
 size_t camel_quoted_encode_step (unsigned char *in, size_t len, unsigned char *out, int *state, int *save);
 size_t camel_quoted_encode_close (unsigned char *in, size_t len, unsigned char *out, int *state, int *save);
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 char *camel_base64_encode_simple (const char *data, size_t len);
 size_t camel_base64_decode_simple (char *data, size_t len);
+#endif
 
 /* camel ctype type functions for rfc822/rfc2047/other, which are non-locale specific */
 enum {
