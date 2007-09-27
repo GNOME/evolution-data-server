@@ -96,7 +96,7 @@ static GHashTable *iconv_charsets = NULL;
 static char *locale_charset = NULL;
 static char *locale_lang = NULL;
 
-struct {
+static const struct {
 	char *charset;
 	char *iconv_name;
 } known_iconv_charsets[] = {
@@ -587,7 +587,7 @@ e_iconv_locale_language (void)
 /* NOTE: only support charset names that will be returned by
  * e_iconv_charset_name() so that we don't have to keep track of all
  * the aliases too. */
-static struct {
+static const struct {
 	char *charset;
 	char *lang;
 } cjkr_lang_map[] = {
