@@ -1,3 +1,8 @@
+2007-09-27  Ross Burton  <ross@openedhand.com>
+
+	* backends/file/e-book-backend-file.c:
+	Use G_LOCK instead of a static mutex for clearer code (#475494).
+
 2007-09-18  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-vcard.c:

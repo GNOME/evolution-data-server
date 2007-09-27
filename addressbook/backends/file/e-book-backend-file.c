@@ -80,7 +80,7 @@ struct _EBookBackendFilePrivate {
 	void *reserved4;
 };
 
-static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
+G_LOCK_DEFINE_STATIC (global_env);
 static struct {
 	int ref_count;
 	DB_ENV *env;
@@ -1079,7 +1079,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		return db_error_to_status (db_error);
 	}
 
-	g_static_mutex_lock(&global_env_lock);
+	G_LOCK (global_env);
 	if (global_env.ref_count > 0) {
 		env = global_env.env;
 		global_env.ref_count++;
@@ -1087,7 +1087,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		db_error = db_env_create (&env, 0);
 		if (db_error != 0) {
 			g_warning ("db_env_create failed with %s", db_strerror (db_error));
-			g_static_mutex_unlock(&global_env_lock);
+			G_UNLOCK (global_env);
 			g_free (dirname);
 			g_free (filename);
 			return db_error_to_status (db_error);
@@ -1104,7 +1104,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		if (db_error != 0) {
 			env->close(env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
-			g_static_mutex_unlock(&global_env_lock);
+			G_UNLOCK (global_env);
 			g_free (dirname);
 			g_free (filename);
 			return db_error_to_status (db_error);
@@ -1113,7 +1113,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		global_env.env = env;
 		global_env.ref_count = 1;
 	}
-	g_static_mutex_unlock(&global_env_lock);
+	G_UNLOCK (global_env);
 
 	bf->priv->env = env;
 
@@ -1389,13 +1389,13 @@ e_book_backend_file_dispose (GObject *object)
 		bf->priv->file_db = NULL;
 	}
 	
-	g_static_mutex_lock(&global_env_lock);
+	G_LOCK (global_env);
 	global_env.ref_count--;
 	if (global_env.ref_count == 0) {
 		global_env.env->close (global_env.env, 0);
 		global_env.env = NULL;
 	}
-	g_static_mutex_unlock (&global_env_lock);
+	G_UNLOCK (global_env);
 	
 	if (bf->priv->summary) {
 		g_object_unref (bf->priv->summary);
