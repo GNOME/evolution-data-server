@@ -1189,9 +1189,11 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			else {
 #ifdef CREATE_DEFAULT_VCARD
 				EContact *contact = NULL;
-
-				do_create(bf, XIMIAN_VCARD, &contact);
-				/* XXX check errors here */
+				EBookBackendSyncStatus status;
+				
+				status = do_create (bf, XIMIAN_VCARD, &contact);
+				if (status != GNOME_Evolution_Addressbook_Success)
+					g_warning ("Cannot create default contact: %d", status);
 				if (contact)
 					g_object_unref (contact);
 #endif
