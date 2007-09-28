@@ -1265,7 +1265,7 @@ write_prop (GString *xml, const char *propertyname,
 		if (need_type)
 			g_string_append (xml, " T:dt=\"bin.base64\">");
 		data = value;
-		encoded = e2k_base64_encode (data->data, data->len);
+		encoded = g_base64_encode (data->data, data->len);
 		g_string_append (xml, encoded);
 		g_free (encoded);
 		break;
@@ -1293,7 +1293,7 @@ write_prop (GString *xml, const char *propertyname,
 
 			if (b64enc) {
 				data = array->pdata[i];
-				encoded = e2k_base64_encode (data->data,
+				encoded = g_base64_encode (data->data,
 							     data->len);
 				g_string_append (xml, encoded);
 				g_free (encoded);

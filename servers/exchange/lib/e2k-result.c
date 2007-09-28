@@ -40,10 +40,19 @@ prop_get_binary_array (E2kResult *result, const char *propname, xmlNode *node)
 
 	array = g_ptr_array_new ();
 	for (node = node->xmlChildrenNode; node; node = node->next) {
-		if (node->xmlChildrenNode && node->xmlChildrenNode->content)
-			g_ptr_array_add (array, e2k_base64_decode (node->xmlChildrenNode->content));
-		else
-			g_ptr_array_add (array, g_byte_array_new ());
+		GByteArray *byte_array;
+
+		byte_array = g_byte_array_new ();
+		if (node->xmlChildrenNode && node->xmlChildrenNode->content) {
+			guchar *data;
+			gsize length;
+
+			data = g_base64_decode (
+				node->xmlChildrenNode->content, &length);
+			g_byte_array_append (byte_array, data, length);
+			g_free (data);
+		}
+		g_ptr_array_add (array, byte_array);
 	}
 
 	e2k_properties_set_binary_array (result->props, propname, array);
@@ -70,14 +79,20 @@ prop_get_string_array (E2kResult *result, const char *propname,
 static void
 prop_get_binary (E2kResult *result, const char *propname, xmlNode *node)
 {
-	GByteArray *data;
+	GByteArray *byte_array;
 
-	if (node->xmlChildrenNode && node->xmlChildrenNode->content)
-		data = e2k_base64_decode (node->xmlChildrenNode->content);
-	else
-		data = g_byte_array_new ();
+	byte_array = g_byte_array_new ();
+	if (node->xmlChildrenNode && node->xmlChildrenNode->content) {
+		guchar *data;
+		gsize length;
 
-	e2k_properties_set_binary (result->props, propname, data);
+		data = g_base64_decode (
+			node->xmlChildrenNode->content, &length);
+		g_byte_array_append (byte_array, data, length);
+		g_free (data);
+	}
+
+	e2k_properties_set_binary (result->props, propname, byte_array);
 }
 
 static void
