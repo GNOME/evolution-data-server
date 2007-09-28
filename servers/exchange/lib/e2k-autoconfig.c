@@ -54,7 +54,6 @@
 #endif
 
 #include "e2k-autoconfig.h"
-#include "e2k-encoding-utils.h"
 #include "e2k-context.h"
 #include "e2k-global-catalog.h"
 #include "e2k-propnames.h"

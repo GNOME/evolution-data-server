@@ -32,7 +32,6 @@
 #include "exchange-folder-size.h"
 #include "e-folder-exchange.h"
 #include "e2k-autoconfig.h"
-#include "e2k-encoding-utils.h"
 #include "e2k-kerberos.h"
 #include "e2k-propnames.h"
 #include "e2k-uri.h"

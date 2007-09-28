@@ -41,7 +41,6 @@
 #endif
 
 #include "e2k-context.h"
-#include "e2k-encoding-utils.h"
 #include "e2k-marshal.h"
 #include "e2k-propnames.h"
 #include "e2k-restriction.h"

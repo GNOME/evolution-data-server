@@ -22,7 +22,6 @@
 #endif
 
 #include "e2k-result.h"
-#include "e2k-encoding-utils.h"
 #include "e2k-http-utils.h"
 #include "e2k-propnames.h"
 #include "e2k-xml-utils.h"
