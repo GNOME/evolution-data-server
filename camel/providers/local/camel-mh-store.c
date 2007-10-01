@@ -165,7 +165,7 @@ folders_update(const char *root, int mode, const char *folder, const char *new)
 				if (camel_stream_printf(out, "%s\n", folder) == -1)
 					goto fail;
 				mode = UPDATE_NONE;
-			} else if (tmp == 0) {
+			} else if (tmp == NULL) {
 				/* already there */
 				mode = UPDATE_NONE;
 			}

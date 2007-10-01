@@ -748,7 +748,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 		camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
-		if (camel_mime_parser_step(mp, 0, 0) != CAMEL_MIME_PARSER_STATE_FROM) {
+		if (camel_mime_parser_step(mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM) {
 			g_warning("Expected a From line here, didn't get it");
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Summary and folder mismatch, even after a sync"));
@@ -763,7 +763,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 			goto error;
 		}
 
-		if (camel_mime_parser_step(mp, 0, 0) == CAMEL_MIME_PARSER_STATE_FROM_END) {
+		if (camel_mime_parser_step(mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END) {
 			g_warning("camel_mime_parser_step failed (2)");
 			goto error;
 		}

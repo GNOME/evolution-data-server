@@ -1,3 +1,13 @@
+2007-09-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* camel-maildir-summary.c: (maildir_summary_next_uid_string),
+	(message_info_load), (maildir_summary_load),
+	(maildir_summary_check):
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(mbox_summary_sync):
+	* camel-mh-store.c: (folders_update), (get_folder),
+	(recursive_scan): More NULL vs 0 fixes.
+
 2007-08-13  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #352346
