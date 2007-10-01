@@ -315,7 +315,7 @@ groupwise_connect (CamelService *service, CamelException *ex)
 
 	if (camel_store_summary_count ((CamelStoreSummary *)store->summary) == 0) {
 		/*Settting the refresh stamp to the current time*/
-		store->refresh_stamp = time (0);
+		store->refresh_stamp = time (NULL);
 	}
 
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);

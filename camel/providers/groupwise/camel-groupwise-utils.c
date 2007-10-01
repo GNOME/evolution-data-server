@@ -417,7 +417,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	if(!mp) {
 		g_warning ("ERROR: Could not get content object");
 		camel_operation_end (NULL);
-		return FALSE;
+		return NULL;
 	}
 
 	if (CAMEL_IS_MULTIPART (mp)) {

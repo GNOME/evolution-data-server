@@ -1202,7 +1202,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	const char *priority = NULL;
 	char *container_id = NULL;
 	gboolean is_junk = FALSE;
-	EGwItemStatus status;
+	EGwConnectionStatus status;
 	GList *item_list = list;
 	int total_items = g_list_length (item_list), i=0;
 

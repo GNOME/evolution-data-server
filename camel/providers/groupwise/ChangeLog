@@ -1,3 +1,15 @@
+2007-09-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary),
+	(groupwise_folder_item_to_msg): Use the right enum type.
+	* camel-groupwise-journal.c: (camel_groupwise_journal_get_type),
+	(groupwise_entry_play_append):
+	* camel-groupwise-store.c: (groupwise_connect),
+	(groupwise_get_folder), (gw_store_reload_folder),
+	(groupwise_folders_sync):
+	* camel-groupwise-utils.c:
+	(camel_groupwise_util_item_from_message): NULL vs 0 fixes.
+
 2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000
