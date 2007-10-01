@@ -3860,7 +3860,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							count = ldap_count_values (values);
 							member_info = g_new0 (gchar *, count+1);
 
-							for (j = 0; values[j] ; j ++) {
+							for (j = 0; values[j] ; j++) {
 								/* get the email id for the given dn */
 								/* set base to DN and scope to base */
 								printf ("value (dn) = %s \n", values [j]);

@@ -71,7 +71,7 @@ struct _EBookBackendVCFPrivate {
 };
 
 static char *
-e_book_backend_vcf_create_unique_id ()
+e_book_backend_vcf_create_unique_id (void)
 {
 	/* use a 32 counter and the 32 bit timestamp to make an id.
 	   it's doubtful 2^32 id's will be created in a second, so we

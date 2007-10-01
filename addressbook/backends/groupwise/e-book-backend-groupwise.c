@@ -879,7 +879,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 
 		e_contact_set (new_contact,E_CONTACT_FULL_NAME, e_contact_name_from_string (strdup (temp->data))); 
 		e_contact_set (new_contact, E_CONTACT_EMAIL_1, strdup (temp->data));
-		e_contact_set (new_contact, E_CONTACT_IS_LIST, FALSE);
+		e_contact_set (new_contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (FALSE));
 		e_gw_item_set_item_type (new_item, E_GW_ITEM_TYPE_CONTACT);
 		e_gw_item_set_container_id (new_item, g_strdup(egwb->priv->container_id));
 		full_name = g_new0 (FullName, 1);
@@ -2614,7 +2614,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	unsigned long diff;
 
 	if(!ebgw)
-		return FALSE;
+		return NULL;
 
 	if (enable_debug) {
 		g_get_current_time(&start);
@@ -2626,7 +2626,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (enable_debug)
 			printf("No connection with the server \n");
-		return FALSE;
+		return NULL;
 	}
 
 	book_view = find_book_view (ebgw);
