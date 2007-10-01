@@ -155,7 +155,7 @@ change_folder(CamelStore *store, const char *name, guint32 flags, int count)
 	else
 		tmp++;
 	fi->name = g_strdup(tmp);
-	url = camel_url_new("vfolder:", 0);
+	url = camel_url_new("vfolder:", NULL);
 	camel_url_set_path(url, ((CamelService *)store)->url->path);
 	if (flags & CHANGE_NOSELECT)
 		camel_url_set_param(url, "noselect", "yes");

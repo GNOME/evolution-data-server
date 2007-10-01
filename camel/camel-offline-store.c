@@ -49,7 +49,7 @@ static CamelStoreClass *parent_class = NULL;
 CamelType
 camel_offline_store_get_type (void)
 {
-	static CamelType type = 0;
+	static CamelType type = NULL;
 	
 	if (!type) {
 		type = camel_type_register (CAMEL_STORE_TYPE,

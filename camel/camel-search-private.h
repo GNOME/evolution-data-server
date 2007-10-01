@@ -27,6 +27,7 @@
 #include <regex.h>
 
 #include "camel-exception.h"
+#include "libedataserver/e-sexp.h"
 
 G_BEGIN_DECLS
 

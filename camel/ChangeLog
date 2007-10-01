@@ -1,3 +1,50 @@
+2007-10-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* camel-folder-summary.c: (camel_folder_summary_finalize),
+	(perform_content_info_load), (camel_folder_summary_load),
+	(camel_folder_summary_clear), (camel_folder_summary_encode_token),
+	(my_list_append), (camel_flag_set), (camel_tag_set):
+	* camel-folder-thread.c: (prune_empty), (thread_summary),
+	(camel_folder_thread_messages_new):
+	* camel-folder.c: (camel_folder_get_message_user_tag), (thaw):
+	* camel-mime-filter-charset.c: (reset), (complete):
+	* camel-mime-message.c: (camel_mime_message_set_date),
+	(find_best_encoding), (best_encoding):
+	* camel-mime-parser.c: (camel_mime_parser_filter_add),
+	(camel_mime_parser_filter_remove), (folder_seek),
+	(folder_scan_skip_line), (folder_scan_header), (folder_scan_step):
+	* camel-mime-part.c: (init_header_name_table), (write_to_stream):
+	* camel-multipart.c: (set_boundary), (write_to_stream):
+	* camel-object.c: (cobject_meta_get), (camel_object_hook_event),
+	(camel_object_trigger_event), (camel_object_get_ptr),
+	(camel_object_meta_get), (camel_object_bag_reserve):
+	* camel-offline-folder.c: (camel_offline_folder_get_type):
+	* camel-offline-journal.c: (camel_offline_journal_get_type):
+	* camel-offline-store.c: (camel_offline_store_get_type):
+	* camel-partition-table.c: (camel_key_table_lookup),
+	(camel_key_table_next):
+	* camel-sasl-digest-md5.c: (generate_response), (digest_response),
+	(digest_md5_challenge):
+	* camel-sasl-popb4smtp.c: (popb4smtp_challenge):
+	* camel-search-private.h: Include "libedataserver/e-sexp.h" to
+	get the _ESExpResult declaration.
+	* camel-stream-buffer.c: (camel_stream_buffer_init), (stream_read):
+	* camel-stream-mem.c: (camel_stream_mem_init):
+	* camel-tcp-stream-raw.c: (camel_tcp_stream_raw_new),
+	(socket_connect):
+	* camel-text-index.c: (text_index_add_name_to_word),
+	(text_index_compress_nosync), (camel_text_index_dump),
+	(text_index_cursor_reset):
+	* camel-vee-store.c: (change_folder), (vee_get_folder),
+	(vee_get_folder_info): NULL vs 0 and ANSIfy.
+
+2007-09-12  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #231178
+
+	* camel-filter-driver.c: (struct symbols), (do_label):
+	New symbol 'set-label' defined and added corresponding callback.
+
 2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000

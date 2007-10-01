@@ -56,7 +56,7 @@ static CamelProperty offline_prop_list[] = {
 CamelType
 camel_offline_folder_get_type (void)
 {
-	static CamelType type = 0;
+	static CamelType type = NULL;
 	
 	if (!type) {
 		type = camel_type_register (CAMEL_FOLDER_TYPE,

@@ -83,7 +83,7 @@ reset(CamelMimeFilter *mf)
 	/* what happens with the output bytes if this resets the state? */
 	if (f->ic != (iconv_t) -1) {
 		buffer = buf;
-		e_iconv (f->ic, NULL, 0, &buffer, &outlen);
+		e_iconv (f->ic, NULL, NULL, &buffer, &outlen);
 	}
 }
 

@@ -228,7 +228,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, int offset
 		struct tm local;
 		int tz;
 		
-		date = time(0);
+		date = time(NULL);
 		e_localtime_with_offset(date, &local, &tz);
 		offset = (((tz/60/60) * 100) + (tz/60 % 60));
 	}

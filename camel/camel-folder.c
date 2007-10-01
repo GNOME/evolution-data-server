@@ -888,7 +888,7 @@ camel_folder_get_message_user_tag (CamelFolder *folder, const char *uid,  const 
 {
 	const char *ret;
 
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	/* FIXME: should duplicate string */
 	ret = CF_CLASS (folder)->get_message_user_tag (folder, uid, name);

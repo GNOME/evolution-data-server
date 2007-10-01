@@ -122,7 +122,7 @@ prune_empty(CamelFolderThread *thread, CamelFolderThreadNode **cp)
 				e_memchunk_free(thread->node_chunks, c);
 				continue;
 			}
-			if (c->parent || c->child->next==0) {
+			if (c->parent || c->child->next == NULL) {
 				d(printf("promoting child\n"));
 				lastc->next = c->next; /* remove us */
 				child = c->child;

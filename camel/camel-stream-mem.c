@@ -71,7 +71,7 @@ camel_stream_mem_init (CamelObject *object)
 	CamelStreamMem *stream_mem = CAMEL_STREAM_MEM (object);
 
 	stream_mem->owner = FALSE;
-	stream_mem->buffer = 0;
+	stream_mem->buffer = NULL;
 }
 
 /* could probably be a util method */

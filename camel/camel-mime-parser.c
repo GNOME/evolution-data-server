@@ -275,7 +275,7 @@ camel_mime_parser_filter_add(CamelMimeParser *m, CamelMimeFilter *mf)
 	new->id = s->filterid++;
 	if (s->filterid == -1)
 		s->filterid++;
-	new->next = 0;
+	new->next = NULL;
 	camel_object_ref((CamelObject *)mf);
 
 	/* yes, this is correct, since 'next' is the first element of the struct */

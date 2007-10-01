@@ -852,7 +852,7 @@ camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **keyp, unsign
 	CamelKeyBlock *kb;
 
 	if (keyp)
-		*keyp = 0;
+		*keyp = NULL;
 	if (flags)
 		*flags = 0;
 	if (keyid == 0)
@@ -911,7 +911,7 @@ camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned 
 	int index;
 
 	if (keyp)
-		*keyp = 0;
+		*keyp = NULL;
 	if (flagsp)
 		*flagsp = 0;
 	if (datap)

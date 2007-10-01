@@ -103,7 +103,7 @@ static ssize_t write_raw(CamelStream *stream, struct _camel_header_raw *h);
 /* recognize and associate them with a unique enum  */
 /* identifier (see CamelHeaderType above)           */
 static void
-init_header_name_table()
+init_header_name_table(void)
 {
 	header_name_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 	g_hash_table_insert (header_name_table, "Content-Description", (gpointer)HEADER_DESCRIPTION);

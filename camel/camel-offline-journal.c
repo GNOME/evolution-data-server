@@ -58,7 +58,7 @@ static CamelObjectClass *parent_class = NULL;
 CamelType
 camel_offline_journal_get_type (void)
 {
-	static CamelType type = 0;
+	static CamelType type = NULL;
 	
 	if (!type) {
 		type = camel_type_register (camel_object_get_type (),

@@ -197,7 +197,7 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 			rb->words++;
 			camel_block_file_touch_block(p->blocks, p->blocks->root_block);
 		} else {
-			data = camel_key_table_lookup(p->word_index, wordid, NULL, 0);
+			data = camel_key_table_lookup(p->word_index, wordid, NULL, NULL);
 			if (data == 0) {
 				g_warning ("Could not find key entry for word '%s': %s\n",
 					   word, strerror (errno));

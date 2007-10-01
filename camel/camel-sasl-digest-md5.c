@@ -650,7 +650,7 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 	/* generate the cnonce */
 	bgen = g_strdup_printf ("%p:%lu:%lu", resp,
 				(unsigned long) getpid (),
-				(unsigned long) time (0));
+				(unsigned long) time (NULL));
 	md5_get_digest (bgen, strlen (bgen), digest);
 	g_free (bgen);
 	/* take our recommended 64 bits of entropy */

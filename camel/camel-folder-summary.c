@@ -178,7 +178,7 @@ camel_folder_summary_finalize (CamelObject *obj)
 	g_ptr_array_free(s->messages, TRUE);
 	g_hash_table_destroy(s->messages_uid);
 
-	g_hash_table_foreach(p->filter_charset, free_o_name, 0);
+	g_hash_table_foreach(p->filter_charset, free_o_name, NULL);
 	g_hash_table_destroy(p->filter_charset);
 
 	g_free(s->summary_path);
@@ -1456,7 +1456,7 @@ my_list_append(struct _node **list, struct _node *n)
 	struct _node *ln = (struct _node *)list;
 	while (ln->next)
 		ln = ln->next;
-	n->next = 0;
+	n->next = NULL;
 	ln->next = n;
 	return n;
 }
@@ -2391,7 +2391,7 @@ camel_flag_set(CamelFlag **list, const char *name, gboolean value)
 	if (value) {
 		tmp = g_malloc(sizeof(*tmp) + strlen(name));
 		strcpy(tmp->name, name);
-		tmp->next = 0;
+		tmp->next = NULL;
 		flag->next = tmp;
 	}
 	return value;
@@ -2546,7 +2546,7 @@ camel_tag_set(CamelTag **list, const char *name, const char *value)
 		tmp = g_malloc(sizeof(*tmp)+strlen(name));
 		strcpy(tmp->name, name);
 		tmp->value = g_strdup(value);
-		tmp->next = 0;
+		tmp->next = NULL;
 		tag->next = tmp;
 		return TRUE;
 	}

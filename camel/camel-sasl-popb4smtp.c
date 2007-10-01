@@ -116,7 +116,7 @@ popb4smtp_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	}
 
 	/* check if we've done it before recently in this session */
-	now = time(0);
+	now = time(NULL);
 
 	/* need to lock around the whole thing until finished with timep */
 

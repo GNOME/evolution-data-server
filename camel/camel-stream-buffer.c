@@ -80,7 +80,7 @@ camel_stream_buffer_init (gpointer object, gpointer klass)
 	sbf->ptr = sbf->buf;
 	sbf->end = sbf->buf;
 	sbf->mode = CAMEL_STREAM_BUFFER_READ | CAMEL_STREAM_BUFFER_BUFFER;
-	sbf->stream = 0;
+	sbf->stream = NULL;
 	sbf->linesize = 80;
 	sbf->linebuf = g_malloc(sbf->linesize);
 }

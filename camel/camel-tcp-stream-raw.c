@@ -235,7 +235,7 @@ flaky_tcp_read (int fd, char *buffer, size_t buflen)
  * Returns a new #CamelTcpStream object
  **/
 CamelStream *
-camel_tcp_stream_raw_new ()
+camel_tcp_stream_raw_new (void)
 {
 	CamelTcpStreamRaw *stream;
 	
@@ -359,7 +359,7 @@ socket_connect(struct addrinfo *h)
 			tv.tv_sec = 60 * 4;
 			tv.tv_usec = 0;
 			
-			status = select (fdmax, &rdset, &wrset, 0, &tv);
+			status = select (fdmax, &rdset, &wrset, NULL, &tv);
 		} while (status == -1 && SOCKET_ERROR_IS_EINTR ());
 		
 		if (status <= 0) {
