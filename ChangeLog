@@ -1,3 +1,10 @@
+2007-09-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libedataserver/e-msgport.c: (e_dlist_init), (em_cache_lookup),
+	(em_cache_add), (e_thread_new), (e_thread_destroy), (e_mutex_new),
+	(e_mutex_destroy): Fix a lot of 0 vs NULL issues.
+	* libedataserver/e-msgport.h: Same.
+
 2007-09-27  Ross Burton  <ross@openedhand.com>
 
 	* libedataserver/e-iconv.c:

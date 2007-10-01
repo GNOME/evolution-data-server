@@ -199,7 +199,7 @@ out0:
 void e_dlist_init(EDList *v)
 {
         v->head = (EDListNode *)&v->tail;
-        v->tail = 0;
+        v->tail = NULL;
         v->tailpred = (EDListNode *)&v->head;
 }
 
@@ -348,7 +348,7 @@ em_cache_lookup(EMCache *emc, const char *key)
 	if (n) {
 		e_dlist_remove((EDListNode *)n);
 		e_dlist_addhead(&emc->lru_list, (EDListNode *)n);
-		n->stamp = time(0);
+		n->stamp = time(NULL);
 		n->ref_count++;
 	}
 	g_mutex_unlock(emc->lock);
@@ -429,7 +429,7 @@ em_cache_add(EMCache *emc, EMCacheNode *n)
 	} else {
 		time_t now;
 	insert:
-		now = time(0);
+		now = time(NULL);
 		g_hash_table_insert(emc->key_table, n->key, n);
 		e_dlist_addhead(&emc->lru_list, (EDListNode *)n);
 		n->stamp = now;
@@ -809,7 +809,7 @@ EThread *e_thread_new(e_thread_t type)
 	EThread *e;
 
 	e = g_malloc0(sizeof(*e));
-	pthread_mutex_init(&e->mutex, 0);
+	pthread_mutex_init(&e->mutex, NULL);
 	e->type = type;
 	e->server_port = e_msgport_new();
 	e->have_thread = FALSE;
@@ -853,7 +853,7 @@ void e_thread_destroy(EThread *e)
 
 			pthread_mutex_unlock(&e->mutex);
 			t(printf("Joining thread '%" G_GUINT64_FORMAT "'\n", e_util_pthread_id(id)));
-			pthread_join(id, 0);
+			pthread_join(id, NULL);
 			t(printf("Joined thread '%" G_GUINT64_FORMAT "'!\n", e_util_pthread_id(id)));
 			pthread_mutex_lock(&e->mutex);
 		}
@@ -877,7 +877,7 @@ void e_thread_destroy(EThread *e)
 			e->id_list = g_list_remove(e->id_list, info);
 			pthread_mutex_unlock(&e->mutex);
 			t(printf("Joining thread '%" G_GUINT64_FORMAT "'\n", e_util_pthread_id(info->id)));
-			pthread_join(info->id, 0);
+			pthread_join(info->id, NULL);
 			t(printf("Joined thread '%" G_GUINT64_FORMAT "'!\n", e_util_pthread_id(info->id)));
 			pthread_mutex_lock(&e->mutex);
 			g_free(info);
@@ -1185,11 +1185,11 @@ EMutex *e_mutex_new(e_mutex_t type)
 
 	switch (type) {
 	case E_MUTEX_SIMPLE:
-		pthread_mutex_init(&m->mutex, 0);
+		pthread_mutex_init(&m->mutex, NULL);
 		break;
 	case E_MUTEX_REC:
-		pthread_mutex_init(&m->mutex, 0);
-		pthread_cond_init(&m->cond, 0);
+		pthread_mutex_init(&m->mutex, NULL);
+		pthread_cond_init(&m->cond, NULL);
 		break;
 		/* read / write ?  flags for same? */
 	}
