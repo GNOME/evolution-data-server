@@ -1554,7 +1554,7 @@ imap_connect_online (CamelService *service, CamelException *ex)
 				goto done;
 			get_folders_sync(store, "INBOX", ex);
 		}
-		store->refresh_stamp = time(0);
+		store->refresh_stamp = time(NULL);
 	}
 	
 	
@@ -2694,7 +2694,7 @@ get_folder_info_online (CamelStore *store, const char *top, guint32 flags, Camel
 		time_t now;
 		int ref;
 
-		now = time(0);
+		now = time(NULL);
 		ref = now > imap_store->refresh_stamp+60*60*1;
 		if (ref) {
 			CAMEL_SERVICE_REC_LOCK(store, connect_lock);
