@@ -330,7 +330,7 @@ msgstr "Burèu"
 
 #: ../addressbook/libebook/e-contact.c:167
 msgid "Title"
-msgstr "Titol"
+msgstr "Títol"
 
 #: ../addressbook/libebook/e-contact.c:168
 msgid "Role"
