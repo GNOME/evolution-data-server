@@ -2008,7 +2008,7 @@ exchange_account_get_quota_limit (ExchangeAccount *account)
 int
 exchange_account_check_password_expiry (ExchangeAccount *account)
 {
-	E2kGlobalCatalogEntry *entry; /* This is never set before it's used! */
+	E2kGlobalCatalogEntry *entry=NULL; /* This is never set before it's used! */
 	int max_pwd_age_days = -1;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 0);

@@ -1,3 +1,10 @@
+2007-10-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for BNC bug #203480
+
+	* storage/exchange-account.c: Compiler warning for usage of
+	unintialized variable.
+
 2007-09-28  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-context.c (write_prop):
