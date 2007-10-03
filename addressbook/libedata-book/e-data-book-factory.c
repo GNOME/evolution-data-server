@@ -218,23 +218,8 @@ backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
 		uri = NULL;
 
 	if (uri) {
-		gpointer orig_key;
-		gboolean result;
-		char *orig_uri;
-
 		g_mutex_lock (factory->priv->map_mutex);
-
-		result = g_hash_table_lookup_extended (factory->priv->active_server_map, uri,
-						       &orig_key, NULL);
-		g_assert (result != FALSE);
-
-		orig_uri = orig_key;
-
-		g_hash_table_remove (factory->priv->active_server_map, orig_uri);
-		g_free (orig_uri);
-
-		g_object_unref (backend);
-
+		g_hash_table_remove (factory->priv->active_server_map, uri);
 		g_mutex_unlock (factory->priv->map_mutex);
 	}
 
@@ -501,72 +486,61 @@ e_data_book_factory_set_backend_mode (EDataBookFactory *factory, int mode)
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
+	GHashTable *active_server_map;
+	GHashTable *backends;
+
+	active_server_map = g_hash_table_new_full (
+		g_str_hash, g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
+
+	backends = g_hash_table_new_full (
+		g_str_hash, g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
+
 	factory->priv = g_new0 (EDataBookFactoryPrivate, 1);
 
 	factory->priv->map_mutex         = g_mutex_new();
-	factory->priv->active_server_map = g_hash_table_new (g_str_hash, g_str_equal);
-	factory->priv->backends          = g_hash_table_new (g_str_hash, g_str_equal);
+	factory->priv->active_server_map = active_server_map;
+	factory->priv->backends          = backends;
 	factory->priv->registered        = FALSE;
-}
-
-static void
-free_active_server_map_entry (gpointer key, gpointer value, gpointer data)
-{
-	char *uri;
-	EBookBackend *backend;
-
-	uri = key;
-	g_free (uri);
-
-	backend = E_BOOK_BACKEND (value);
-	g_object_unref (backend);
-}
-
-static void
-remove_backends_entry (gpointer key, gpointer value, gpointer data)
-{
-	char *uri;
-
-	uri = key;
-	g_free (uri);
 }
 
 static void
 e_data_book_factory_dispose (GObject *object)
 {
 	EDataBookFactory *factory = E_DATA_BOOK_FACTORY (object);
+	EDataBookFactoryPrivate *priv = factory->priv;
 
-	if (factory->priv) {
-		EDataBookFactoryPrivate *priv = factory->priv;
+	g_hash_table_remove_all (priv->active_server_map);
+	g_hash_table_remove_all (priv->backends);
 
-		g_mutex_free (priv->map_mutex);
-
-		g_hash_table_foreach (priv->active_server_map,
-				      free_active_server_map_entry,
-				      NULL);
-		g_hash_table_destroy (priv->active_server_map);
-		priv->active_server_map = NULL;
-
-		g_hash_table_foreach (priv->backends,
-				      remove_backends_entry,
-				      NULL);
-		g_hash_table_destroy (priv->backends);
-		priv->backends = NULL;
-
-		if (priv->registered) {
-			bonobo_activation_active_server_unregister (priv->iid,
-							    bonobo_object_corba_objref (BONOBO_OBJECT (factory)));
-			priv->registered = FALSE;
-		}
-
-		g_free (priv->iid);
-	
-		g_free (priv);
-		factory->priv = NULL;
+	if (priv->registered) {
+		bonobo_activation_active_server_unregister (
+			priv->iid, bonobo_object_corba_objref (
+			BONOBO_OBJECT (factory)));
+		priv->registered = FALSE;
 	}
 
 	if (G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose)
 		G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
+}
+
+static void
+e_data_book_factory_finalize (GObject *object)
+{
+	EDataBookFactory *factory = E_DATA_BOOK_FACTORY (object);
+	EDataBookFactoryPrivate *priv = factory->priv;
+
+	g_mutex_free (priv->map_mutex);
+	g_hash_table_destroy (priv->active_server_map);
+	g_hash_table_destroy (priv->backends);
+	g_free (priv->iid);
+	g_free (priv);
+
+	if (G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize)
+		G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
 }
 
 static void
@@ -578,6 +552,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *klass)
 	e_data_book_factory_parent_class = g_type_class_peek_parent (klass);
 
 	object_class->dispose = e_data_book_factory_dispose;
+	object_class->finalize = e_data_book_factory_finalize;
 
 	factory_signals[LAST_BOOK_GONE] =
 		g_signal_new ("last_book_gone",

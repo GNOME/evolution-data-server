@@ -1,3 +1,11 @@
+2007-10-03  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #469657
+
+	* backends/vcf/e-book-backend-vcf.c:
+	* libedata-book/e-data-book-factory.c:
+	Use destroy functions in GHashTables to simplify memory management.
+
 2007-10-01  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* backends/groupwise/e-book-backend-groupwise.c:

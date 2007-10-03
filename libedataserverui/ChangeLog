@@ -1,3 +1,10 @@
+2007-10-03  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #469657
+
+	* e-passwords.c:
+	Use destroy functions in GHashTables to simplify memory management.
+
 2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000

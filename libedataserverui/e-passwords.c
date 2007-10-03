@@ -381,13 +381,14 @@ password_path (const char *component_name, const char *key)
 static void
 ep_remember_password_keyring(EPassMsg *msg)
 {
-	gpointer okey, value;
+	gchar *value;
 
-	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
+	value = g_hash_table_lookup (passwords, msg->key);
+	if (value != NULL) {
 		/* add it to the on-disk cache of passwords */
 		GnomeKeyringAttributeList *attributes;
 		GnomeKeyringResult result;
-		EUri *uri = e_uri_new (okey);
+		EUri *uri = e_uri_new (msg->key);
 		guint32 item_id;
 
 		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
@@ -420,8 +421,6 @@ ep_remember_password_keyring(EPassMsg *msg)
 
 		/* now remove it from our session hash */
 		g_hash_table_remove (passwords, msg->key);
-		g_free (okey);
-		g_free (value);
 		
 		e_uri_free (uri);
 	}
@@ -434,12 +433,12 @@ ep_remember_password_keyring(EPassMsg *msg)
 static void
 ep_remember_password_file(EPassMsg *msg)
 {
-	gpointer okey, value;
-	char *path, *pass64;
+	char *path, *pass64, *value;
 
-	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
+	value = g_hash_table_lookup (passwords, msg->key);
+	if (value != NULL) {
 		/* add it to the on-disk cache of passwords */
-		path = password_path (msg->component, okey);
+		path = password_path (msg->component, msg->key);
 		pass64 = ep_password_encode (value);
 
 		gnome_config_private_set_string (path, pass64);
@@ -448,8 +447,6 @@ ep_remember_password_file(EPassMsg *msg)
 
 		/* now remove it from our session hash */
 		g_hash_table_remove (passwords, msg->key);
-		g_free (okey);
-		g_free (value);
 
 		gnome_config_private_sync_file ("/Evolution");
 	}
@@ -466,7 +463,6 @@ ep_forget_password_keyring (EPassMsg *msg)
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
 	char *default_keyring = NULL;	
-	gpointer okey, value;
 	EUri *uri = e_uri_new (msg->key);
 
 	if (!strcmp (uri->protocol, "ldap") && !uri->user) {
@@ -480,12 +476,7 @@ ep_forget_password_keyring (EPassMsg *msg)
 		uri->user = keycopy;
 	}
 	    
-	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
-		g_hash_table_remove (passwords, msg->key);
-		memset (value, 0, strlen (value));
-		g_free (okey);
-		g_free (value);
-	}
+	g_hash_table_remove (passwords, msg->key);
 
 	if (!uri->host && !uri->user)
 		/* No need to remove from keyring for pass phrases */
@@ -554,15 +545,9 @@ exit:
 static void
 ep_forget_password_file (EPassMsg *msg)
 {
-	gpointer okey, value;
 	char *path;
 
-	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
-		g_hash_table_remove (passwords, msg->key);
-		memset (value, 0, strlen (value));
-		g_free (okey);
-		g_free (value);
-	}
+	g_hash_table_remove (passwords, msg->key);
 
 	/* clear it in the on disk db */
 	path = password_path (msg->component, msg->key);
@@ -683,14 +668,6 @@ ep_get_password_file (EPassMsg *msg)
 static void
 ep_add_password (EPassMsg *msg)
 {
-	gpointer okey, value;
-
-	if (g_hash_table_lookup_extended (passwords, msg->key, &okey, &value)) {
-		g_hash_table_remove (passwords, msg->key);
-		g_free (okey);
-		g_free (value);
-	}
-
 	g_hash_table_insert (passwords, g_strdup (msg->key), g_strdup (msg->oldpass));
 
 	if (!msg->noreply)
@@ -875,7 +852,10 @@ e_passwords_init (void)
 
 	if (!passwords) {
 		/* create the per-session hash table */
-		passwords = g_hash_table_new (g_str_hash, g_str_equal);
+		passwords = g_hash_table_new_full (
+			g_str_hash, g_str_equal,
+			(GDestroyNotify) g_free,
+			(GDestroyNotify) g_free);
 #ifdef ENABLE_THREADS
 		main_thread = pthread_self();
 #endif

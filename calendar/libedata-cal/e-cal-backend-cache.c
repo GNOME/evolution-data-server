@@ -140,13 +140,6 @@ e_cal_backend_cache_get_property (GObject *object, guint property_id, GValue *va
 }
 
 static void
-free_timezone_hash (gpointer key, gpointer value, gpointer user_data)
-{
-	g_free (key);
-	icaltimezone_free (value, 1);
-}
-
-static void
 e_cal_backend_cache_finalize (GObject *object)
 {
 	ECalBackendCache *cache;
@@ -161,11 +154,8 @@ e_cal_backend_cache_finalize (GObject *object)
 			priv->uri = NULL;
 		}
 
-		if (priv->timezones) {
-			g_hash_table_foreach (priv->timezones, (GHFunc) free_timezone_hash, NULL);
-			g_hash_table_destroy (priv->timezones);
-			priv->timezones = NULL;
-		}
+		g_hash_table_destroy (priv->timezones);
+		priv->timezones = NULL;
 
 		g_free (priv);
 		cache->priv = NULL;
@@ -234,12 +224,21 @@ e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
 }
 
 static void
+timezones_value_destroy (icaltimezone *zone)
+{
+	icaltimezone_free (zone, 1);
+}
+
+static void
 e_cal_backend_cache_init (ECalBackendCache *cache)
 {
 	ECalBackendCachePrivate *priv;
 
 	priv = g_new0 (ECalBackendCachePrivate, 1);
-	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->timezones = g_hash_table_new_full (
+		g_str_hash, g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) timezones_value_destroy);
 
 	cache->priv = priv;
 
@@ -602,7 +601,6 @@ gboolean
 e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone)
 {
 	ECalBackendCachePrivate *priv;
-	gpointer orig_key, orig_value;
 	icaltimezone *new_zone;
 	icalcomponent *icalcomp;
 	gboolean retval;
@@ -629,15 +627,6 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 
 	if (!retval)
 		return FALSE;
-
-	/* check if the timezone already exists */
-	if (g_hash_table_lookup_extended (priv->timezones, icaltimezone_get_tzid ((icaltimezone *)zone),
-					  &orig_key, &orig_value)) {
-		/* remove the previous timezone */
-		g_hash_table_remove (priv->timezones, orig_key);
-		g_free (orig_key);
-		icaltimezone_free (orig_value, 1);
-	}
 
 	/* add the timezone to the hash table */
 	new_zone = icaltimezone_new ();
@@ -740,7 +729,6 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 gboolean
 e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 {
-	gpointer orig_key, orig_value;
 	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
@@ -748,11 +736,7 @@ e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
 
 	priv = cache->priv;
 
-	if (g_hash_table_lookup_extended (priv->timezones, tzid, &orig_key, &orig_value)) {
-		g_hash_table_remove (priv->timezones, tzid);
-		g_free (orig_key);
-		icaltimezone_free (orig_value, 1);
-	}
+	g_hash_table_remove (priv->timezones, tzid);
 
 	return e_file_cache_remove_object (E_FILE_CACHE (cache), tzid);
 }

@@ -299,23 +299,19 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	char *id = id_list->data;
 	GList *elem;
-	gboolean success;
-	char *real_id;
 
 	g_mutex_lock (bvcf->priv->mutex);
-	success = g_hash_table_lookup_extended (bvcf->priv->contacts, id, (gpointer)&real_id, (gpointer)&elem);
-	if (!success) {
+	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
+	if (!elem) {
 		g_mutex_unlock (bvcf->priv->mutex);
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	}
 
-	success = g_hash_table_remove (bvcf->priv->contacts, real_id);
-	if (!success) {
+	if (!g_hash_table_remove (bvcf->priv->contacts, id)) {
 		g_mutex_unlock (bvcf->priv->mutex);
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	}
 
-	g_free (real_id);
 	g_free (elem->data);
 	bvcf->priv->contact_list = g_list_remove_link (bvcf->priv->contact_list, elem);
 
@@ -338,19 +334,16 @@ e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 				   EContact **contact)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	char *old_id;
 	GList *elem;
 	const char *id;
-	gboolean success;
 
 	/* create a new ecard from the request data */
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (*contact, E_CONTACT_UID);
 
 	g_mutex_lock (bvcf->priv->mutex);
-	success = g_hash_table_lookup_extended (bvcf->priv->contacts, id, (gpointer)&old_id, (gpointer)&elem);
-
-	if (!success) {
+	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
+	if (!elem) {
 		g_mutex_unlock (bvcf->priv->mutex);
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	}
@@ -611,7 +604,10 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 
 	fd = g_open (bvcf->priv->filename, O_RDWR | O_BINARY, 0);
 
-	bvcf->priv->contacts = g_hash_table_new (g_str_hash, g_str_equal);
+	bvcf->priv->contacts = g_hash_table_new_full (
+		g_str_hash, g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 
 	if (fd != -1) {
 		writable = TRUE;
@@ -737,7 +733,6 @@ e_book_backend_vcf_dispose (GObject *object)
 		if (bvcf->priv->dirty)
 			save_file (bvcf);
 
-		g_hash_table_foreach (bvcf->priv->contacts, (GHFunc)g_free, NULL);
 		g_hash_table_destroy (bvcf->priv->contacts);
 		g_list_foreach (bvcf->priv->contact_list, (GFunc)g_free, NULL);
 		g_list_free (bvcf->priv->contact_list);
