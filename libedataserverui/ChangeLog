@@ -1,3 +1,9 @@
+2007-10-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #478404
+
+	* e-name-selector-entry.c: (user_focus_out): Reset the id to zero.
+
 2007-10-03  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #469657
