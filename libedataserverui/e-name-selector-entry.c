@@ -1470,11 +1470,13 @@ user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_fo
 	
 	if (name_selector_entry->type_ahead_complete_cb_id) {
 		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
+		name_selector_entry->type_ahead_complete_cb_id = 0;
 	}
 
 	if (name_selector_entry->update_completions_cb_id) {
 		g_source_remove (name_selector_entry->update_completions_cb_id);
-}
+		name_selector_entry->update_completions_cb_id = 0;
+	}
 
 	clear_completion_model (name_selector_entry);
 
