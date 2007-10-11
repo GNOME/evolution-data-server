@@ -141,7 +141,7 @@ contact_record_new (ECalBackendContacts *cbc, EContact *contact)
         ContactRecord *cr = g_new0 (ContactRecord, 1);
 	char *comp_str;
         
-        cr->cbc = cbc;
+        cr->cbc = g_object_ref (cbc);
         cr->contact = contact;
         cr->comp_birthday = create_birthday (cbc, contact);
         cr->comp_anniversary = create_anniversary (cbc, contact);
@@ -196,7 +196,8 @@ contact_record_free (ContactRecord *cr)
 		g_free (comp_str);
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
 	}
-        
+
+	g_object_unref (cr->cbc);
         g_free (cr);
 }
 
@@ -212,7 +213,7 @@ contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
 {
         ContactRecordCB *cb_data = g_new (ContactRecordCB, 1);
 
-        cb_data->cbc = cbc;
+        cb_data->cbc = g_object_ref (cbc);
         cb_data->sexp = sexp;
         cb_data->result = NULL;
 

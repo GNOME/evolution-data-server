@@ -1,3 +1,12 @@
+2007-10-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #420167
+
+	* backends/contacts/e-cal-backend-contacts.c: (contact_record_new),
+	(contact_record_free), (contact_record_cb_new):
+	Ref and Unref backend used in ContactRecord to be sure it isn't
+	freed before we endup with it.
+
 2007-10-03  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #469657
