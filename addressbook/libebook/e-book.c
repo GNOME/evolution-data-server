@@ -119,9 +119,6 @@ typedef enum {
 } EBookLoadState;
 
 struct _EBookPrivate {
-	GList *book_factories;
-	GList *iter;
-
 	/* cached capabilites */
 	char *cap;
 	gboolean cap_queried;
@@ -3188,6 +3185,7 @@ e_book_unload_uri (EBook   *book,
 
 		CORBA_exception_free (&ev);
 
+		book->priv->corba_book = CORBA_OBJECT_NIL;
 		e_book_listener_stop (book->priv->listener);
 		bonobo_object_unref (BONOBO_OBJECT (book->priv->listener));
 
@@ -4001,9 +3999,6 @@ e_book_dispose (GObject *object)
 	EBook             *book = E_BOOK (object);
 
 	if (book->priv) {
-		CORBA_Environment  ev;
-		GList *l;
-
 		if (book->priv->comp_listener) {
 			g_signal_handler_disconnect (book->priv->comp_listener, book->priv->died_signal);
 			g_object_unref (book->priv->comp_listener);
@@ -4013,21 +4008,19 @@ e_book_dispose (GObject *object)
 		if (book->priv->load_state == E_BOOK_SOURCE_LOADED)
 			e_book_unload_uri (book, NULL);
 
-		CORBA_exception_init (&ev);
+		if (book->priv->corba_book) {
+			CORBA_Environment  ev;
 
-		for (l = book->priv->book_factories; l; l = l->next) {
-			CORBA_Object_release ((CORBA_Object)l->data, &ev);
-			if (ev._major != CORBA_NO_EXCEPTION) {
-				g_warning ("EBook: Exception while releasing BookFactory\n");
-
-				CORBA_exception_free (&ev);
-				CORBA_exception_init (&ev);
-			}
+			CORBA_exception_init (&ev);
+			bonobo_object_release_unref  (book->priv->corba_book, &ev);
+			if (ev._major != CORBA_NO_EXCEPTION)
+				g_warning ("%s: Exception releasing remote book interface!\n", __FUNCTION__);
+			CORBA_exception_free (&ev);
 		}
-		
-		CORBA_exception_free (&ev);
 
 		if (book->priv->listener) {
+			e_book_listener_stop (book->priv->listener);
+
 			/* GLib bug compatibility */
 			if (g_signal_handler_is_connected (book->priv->listener, book->priv->listener_signal))
 				g_signal_handler_disconnect (book->priv->listener, book->priv->listener_signal);
