@@ -1,3 +1,8 @@
+2007-10-15  Jeffrey Stedfast  <fejj@gnome.org>
+
+	* camel-mime-message.c (camel_mime_message_set_subject): Protect
+	against a NULL subject string.
+
 2007-10-01  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-folder-summary.c: (camel_folder_summary_finalize),

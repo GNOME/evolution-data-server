@@ -397,16 +397,23 @@ camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
  * Set the subject text of a message.
  **/
 void
-camel_mime_message_set_subject (CamelMimeMessage *mime_message, const char *subject)
+camel_mime_message_set_subject (CamelMimeMessage *message, const char *subject)
 {
 	char *text;
 	
-	g_assert(mime_message);
+	g_assert(message);
 	
-	g_free (mime_message->subject);
-	mime_message->subject = g_strstrip (g_strdup (subject));
-	text = camel_header_encode_string((unsigned char *)mime_message->subject);
-	CAMEL_MEDIUM_CLASS(parent_class)->set_header(CAMEL_MEDIUM (mime_message), "Subject", text);
+	g_free (message->subject);
+	
+	if (subject) {
+		message->subject = g_strstrip (g_strdup (subject));
+		text = camel_header_encode_string ((unsigned char *) message->subject);
+	} else {
+		message->subject = NULL;
+		text = NULL;
+	}
+	
+	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (message), "Subject", text);
 	g_free (text);
 }
 
