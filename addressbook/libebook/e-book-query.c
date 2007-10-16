@@ -552,7 +552,7 @@ static const struct {
  *
  * Parse @query_string and return a new #EBookQuery representing it.
  *
- * Return value: the new #EBookValue
+ * Return value: the new #EBookQuery.
  **/
 EBookQuery*
 e_book_query_from_string  (const char *query_string)
