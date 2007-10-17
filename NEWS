@@ -1,3 +1,18 @@
+Evolution-Data-Server 1.12.1 2007-10-15
+---------------------------------------
+
+Bug Fixes:
+	#420167: e-d-s now exits with gnome-session (Milan Crha)
+	#478404: Composer stops completing addresses if you come back to the To: line (Srinivasa Ragavan)
+
+Updated Translations:
+	Yavor Doganov (bg)
+	Theppitak Karoonboonyanan (th)
+	Vincent van Adrighem (nl)
+	Ignacio Casal Quinteiro (gl)
+	Changwoo Ryu (ko)
+	Ilkka Tuohela (fi)
+
 Evolution-Data-Server 1.12.0 2007-09-17
 ---------------------------------------
 
