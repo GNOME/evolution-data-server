@@ -4014,7 +4014,7 @@ e_book_dispose (GObject *object)
 			CORBA_exception_init (&ev);
 			bonobo_object_release_unref  (book->priv->corba_book, &ev);
 			if (ev._major != CORBA_NO_EXCEPTION)
-				g_warning ("%s: Exception releasing remote book interface!\n", __FUNCTION__);
+				g_warning ("%s: Exception releasing remote book interface!\n", G_GNUC_PRETTY_FUNCTION);
 			CORBA_exception_free (&ev);
 		}
 

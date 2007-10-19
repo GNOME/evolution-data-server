@@ -1,3 +1,8 @@
+2007-10-19  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-book.c:
+	Remove __FUNCTION__, which is a gcc-ism. (#488173, Jeff Cai)
+
 2007-10-16  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book-query.c:
