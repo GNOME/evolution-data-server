@@ -1137,23 +1137,30 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			return db_error_to_status (db_error);
 		}
 
+		db->close (db, 0);
+		db_error = db_create (&db, env, 0);
+		if (db_error != 0) {
+			g_warning ("db_create failed with %s", db_strerror (db_error));
+			g_free (dirname);
+			g_free (filename);
+			return db_error_to_status (db_error);
+		}
+
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
 	}
-
-	bf->priv->file_db = db;
 
 	if (db_error == 0) {
 		writable = TRUE;
 	} else {
 		db->close (db, 0);
-		
         	db_error = db_create (&db, env, 0);
         	if (db_error != 0) {
                 	g_warning ("db_create failed with %s", db_strerror (db_error));
                 	g_free (dirname);
                 	g_free (filename);
-                	return GNOME_Evolution_Addressbook_OtherError;
+                	return db_error_to_status (db_error);
         	}
+
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
@@ -1178,7 +1185,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
  				g_warning ("db_create failed with %s", db_strerror (db_error));
 				g_free (dirname);
 				g_free (filename);
-				return GNOME_Evolution_Addressbook_OtherError;
+				return db_error_to_status (db_error);
 			}
 
 			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
@@ -1203,6 +1210,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		}
 	}
 
+	bf->priv->file_db = db;
+	
 	if (db_error != 0) {
 		bf->priv->file_db = NULL;
 		g_free (dirname);

@@ -1,3 +1,12 @@
+2007-10-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #488351
+
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_load_source):
+	Don't reopen a database using the same DB handle.  Prevents an
+	error dialog from appearing in Contacts after a fresh install.
+
 2007-10-19  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book.c:
