@@ -1,3 +1,10 @@
+2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_connection_fetch_item),
+	(exchange_mapi_get_folders_list): Fix up the locks again and init the
+	msgstores well.
+
 2007-10-22  Sankar P  <psankar@novell.com>
 
 	* Makefile.am:

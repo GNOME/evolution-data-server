@@ -274,7 +274,7 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 		UNLOCK ();
 		return NULL;
 	}
-
+	mapi_object_init(&obj_message);
 	retval = OpenMessage(&obj_folder,
 			     fid,
 			     mid,
@@ -292,6 +292,7 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	}
 
 	mapi_object_release(&obj_folder);
+	
 
 	UNLOCK ();
 	
@@ -406,12 +407,14 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	char				*utf8_mailbox_name;
 	ExchangeMAPIFolder *folder;
 
+	LOCK ();
 	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_store);
 
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("OpenMsgStore", GetLastError());
+		UNLOCK ();
 		return FALSE;
 	}
 
@@ -419,12 +422,15 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	SPropTagArray = set_SPropTagArray(mem_ctx, 0x1, PR_DISPLAY_NAME);
 	retval = GetProps(&obj_store, SPropTagArray, &lpProps, &cValues);
 	MAPIFreeBuffer(SPropTagArray);
-	if (retval != MAPI_E_SUCCESS) 
+	if (retval != MAPI_E_SUCCESS) {
+		UNLOCK ();
 		return FALSE;
+	}
 
 	if (lpProps[0].value.lpszA) {
 		mailbox_name = lpProps[0].value.lpszA;
 	} else {
+		UNLOCK ();
 		return FALSE;
 	}	
 
@@ -432,6 +438,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderTopInformationStore);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("[Openchange_plugin] Error ", retval);
+		UNLOCK ();
 		return FALSE;
 	}
 	utf8_mailbox_name = utf8tolinux(mem_ctx, mailbox_name);
@@ -443,7 +450,8 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	get_child_folders (mem_ctx, &obj_store, utf8_mailbox_name, id_mailbox, 0, mapi_folders);
 
 	MAPIFreeBuffer(utf8_mailbox_name);
-	
+
+	UNLOCK ();
 	return TRUE;
 
 }
