@@ -4,4 +4,10 @@ else
 EXCHANGE =
 endif
 
-SUBDIRS = groupwise $(EXCHANGE)
+if ENABLE_MAPI
+MAPI = mapi
+else
+MAPI =
+endif
+
+SUBDIRS = groupwise $(EXCHANGE) $(MAPI)

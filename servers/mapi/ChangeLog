@@ -1,0 +1,11 @@
+2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Initial code drop for the Exchange MAPI provider.
+
+	* Makefile.am:
+	* exchange-mapi-connection.c: (mapi_profile_load),
+	(exchange_mapi_connection_new), (exchange_mapi_connection_exists),
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item):
+	* exchange-mapi-connection.h:
+	* libexchangemapi.pc.in:

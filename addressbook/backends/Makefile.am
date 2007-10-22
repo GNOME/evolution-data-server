@@ -4,4 +4,10 @@ else
 LDAP_SUBDIR =
 endif
 
-SUBDIRS = file vcf $(LDAP_SUBDIR) groupwise 
+if ENABLE_MAPI
+MAPI_SUBDIR = mapi
+else
+MAPI_SUBDIR =
+endif
+
+SUBDIRS = file vcf $(LDAP_SUBDIR) groupwise $(MAPI_SUBDIR)

@@ -1,0 +1,39 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ *  Srinivasa Ragavan <sragavan@novell.com>
+ *  Copyright (C) 2007 Novell, Inc.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#ifndef EXCHANGE_MAPI_CONNECTION_H
+#define EXCHANGE_MAPI_CONNECTION_H 
+
+#include <libmapi/libmapi.h>
+
+typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, gpointer data);
+typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid);
+
+gboolean 
+exchange_mapi_connection_new (const char *profile, const char *password);
+gboolean
+exchange_mapi_connection_exists ();
+
+gpointer
+exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb);
+gboolean
+exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, FetchItemsCallback cb, mapi_id_t fid, gpointer data);
+
+#endif

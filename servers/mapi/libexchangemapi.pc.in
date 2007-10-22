@@ -1,0 +1,18 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+idldir=@idldir@
+IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
+
+privincludedir=@privincludedir@
+
+Name: libexchangemapi
+Description: Client library for accessing Exchange with libmapi
+Version: @VERSION@
+Requires: @LIBMAPI@
+Libs: -L${libdir} -lexchangemapi-1.0 -lmapi
+Cflags: -I${privincludedir}/mapi
