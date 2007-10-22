@@ -444,6 +444,32 @@ build_restriction_emails_contains (struct mapi_SRestriction *res,
 	return TRUE;
 }
 
+static char *
+get_filename_from_uri (const char *uri)
+{
+	char *mangled_uri, *filename;
+	int i;
+
+	/* mangle the URI to not contain invalid characters */
+	mangled_uri = g_strdup (uri);
+	for (i = 0; i < strlen (mangled_uri); i++) {
+		switch (mangled_uri[i]) {
+		case ':' :
+		case '/' :
+			mangled_uri[i] = '_';
+		}
+	}
+
+	/* generate the file name */
+	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/addressbook",
+				     mangled_uri, "cache.summary", NULL);
+
+	/* free memory */
+	g_free (mangled_uri);
+
+	return filename;
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_mapi_load_source (EBookBackend           *backend,
 				       ESource                *source,
@@ -460,10 +486,7 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	if (offline  && g_str_equal (offline, "1"))
 		priv->marked_for_offline = TRUE;
 
-	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&
-	    !priv->marked_for_offline ) {
-		return GNOME_Evolution_Addressbook_OfflineUnavailable;
-	}
+
 
 	/* Either we are in Online mode or this is marked for offline */
 	
@@ -479,21 +502,32 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	}
   	g_strfreev (tokens);
 
+	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&
+	    !priv->marked_for_offline ) {
+		return GNOME_Evolution_Addressbook_OfflineUnavailable;
+	}
+	
 	if (priv->marked_for_offline) {
-		printf("Loading the summary\n");
- 		priv->summary_file_name = g_build_filename (g_get_home_dir(), ".evolution/cache/addressbook" , uri, priv->book_name, "cache.summary", NULL);
- 		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
- 							    SUMMARY_FLUSH_TIMEOUT);
- 		e_book_backend_summary_load (priv->summary);
+ 		priv->summary_file_name = get_filename_from_uri (priv->uri); 
+		if (g_file_test (priv->summary_file_name, G_FILE_TEST_EXISTS)) {
+			printf("Loading the summary\n");
+			priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
+								    SUMMARY_FLUSH_TIMEOUT);
+			e_book_backend_summary_load (priv->summary);
+			priv->is_summary_ready = TRUE;
+		}
 
 		/* Load the cache as well.*/
-		if (e_book_backend_cache_exists (priv->uri))
-		    priv->cache = e_book_backend_cache_new (priv->uri);
-		e_book_backend_summary_load (priv->summary);
+		if (e_book_backend_cache_exists (priv->uri)) {
+			printf("Loading the cache\n");
+			priv->cache = e_book_backend_cache_new (priv->uri);
+			priv->is_cache_ready = TRUE;
+		}
 		//FIXME: We may have to do a time based reload. Or deltas should upload.
 	}
 
 	g_free (uri);
+	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
 	
 	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL) {
 		e_book_backend_set_is_writable (backend, FALSE);
@@ -846,7 +880,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 	state = (const char*)find_mapi_SPropValue_data(properties, PR_STATE_OR_PROVINCE);
 	country = (const char*)find_mapi_SPropValue_data(properties, PR_COUNTRY);
 
-
+/*
 	if (card_name) 
 		printf("|== %s ==|\n", card_name );
 	else if (topic)
@@ -891,7 +925,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 	fflush(0);
 
 	printf("\n");
-
+*/
 	e_contact_set (contact, E_CONTACT_FULL_NAME, full_name);
 	e_contact_set (contact, E_CONTACT_EMAIL_1, email);
 
@@ -1009,7 +1043,7 @@ book_view_thread (gpointer data)
 
 		/* fall back to cache */
 		if (enable_debug)
-			printf ("summary not found, reading the contacts from cache\n");
+			printf ("summary not found or a summary query  reading the contacts from cache %s\n", query);
 		
 		contacts = e_book_backend_cache_get_contacts (priv->cache, 
 							      query);
@@ -1043,7 +1077,7 @@ book_view_thread (gpointer data)
 		}
 		
 
-		if (priv->marked_for_offline && priv->cache) {
+		if (priv->marked_for_offline && priv->cache && priv->is_cache_ready) {
 			if (priv->is_summary_ready && 
 			    e_book_backend_summary_is_summary_query (priv->summary, query)) {
 				if (enable_debug)
@@ -1149,17 +1183,10 @@ update_cache (EBookBackendMAPI *ebmapi)
 static gboolean 
 cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
 {
-	EDataBookView *book_view = data;
-	BESearchClosure *closure = get_closure (book_view);
-	EBookBackendMAPI *be = closure->bg;
+	EBookBackendMAPI *be = data;
 	EContact *contact;
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) be)->priv;
 	char *suid;
-	
-	if (!e_flag_is_set (closure->running)) {
-		printf("Might be that the operation is cancelled. Lets ask our parent also to do.\n");
-		return FALSE;
-	}
 
 	contact = emapidump_contact (array);
 	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
@@ -1180,39 +1207,32 @@ cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, cons
 static gpointer
 build_cache (EBookBackendMAPI *ebmapi)
 {
-	EDataBookView *book_view;
-	BESearchClosure *closure;
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) ebmapi)->priv;
 	
-	book_view = find_book_view (ebmapi);
-	if (book_view) {
-		closure = get_closure (book_view);
-		bonobo_object_ref (book_view);
-		if (closure)
-			e_flag_set (closure->running);
-	}
 	//FIXME: What if book view is NULL? Can it be? Check that.
+	if (!priv->cache) {
+		printf("Caching for the first time\n");
+		priv->cache = e_book_backend_cache_new (priv->uri);
+	}
+
+	if (!priv->summary) {
+		priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
+							    SUMMARY_FLUSH_TIMEOUT);
+		printf("Summary file name is %s\n", priv->summary_file_name);
+	}
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
-	e_data_book_view_notify_status_message (book_view, "Caching contacts...");
 	
-	if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, cache_contact_cb, priv->fid, book_view)) {
-		if (e_flag_is_set (closure->running)) {
-			printf("Error during caching addressbook\n");
-			bonobo_object_unref (book_view);
-			e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
-			return NULL;
-		}
-		
-		if (e_flag_is_set (closure->running))
-			e_data_book_view_notify_complete (book_view,
-							  GNOME_Evolution_Addressbook_Success);
-		bonobo_object_unref (book_view);
+	if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, cache_contact_cb, priv->fid, ebmapi)) {
+		printf("Error during caching addressbook\n");
+		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+		return NULL;
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 	e_book_backend_summary_save (priv->summary);
-	return NULL;
-		
+	priv->is_cache_ready = TRUE;
+	priv->is_summary_ready = TRUE;
+	return NULL;		
 }
 
 static void
@@ -1249,7 +1269,7 @@ e_book_backend_mapi_authenticate_user (EBookBackend *backend,
 		}
 		else if (priv->marked_for_offline){
 			/* Means we dont have a cache. Lets build that first */
-			g_thread_create ((GThreadFunc) build_cache, backend, FALSE, NULL);
+			g_thread_create ((GThreadFunc) build_cache, backend, FALSE, backend);
 		}
 		e_book_backend_set_is_writable (backend, TRUE);
 		e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success);
@@ -1448,6 +1468,8 @@ static void	e_book_backend_mapi_init (EBookBackendMAPI *backend)
 	priv->marked_for_offline = FALSE;
 	priv->uri = NULL;
 	priv->cache = NULL;
+	priv->is_summary_ready = FALSE;
+	priv->is_cache_ready = FALSE;
 	
 	if (g_getenv ("MAPI_DEBUG"))
 		enable_debug = TRUE;

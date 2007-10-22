@@ -1,5 +1,15 @@
 2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
 
+	
+	* e-book-backend-mapi.c: (get_filename_from_uri),
+	(e_book_backend_mapi_load_source), (emapidump_contact),
+	(book_view_thread), (cache_contact_cb), (build_cache),
+	(e_book_backend_mapi_authenticate_user),
+	(e_book_backend_mapi_init): Make it more offline friendly and
+	commented some logs as they were too much.
+
+2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* e-book-backend-mapi.c: (func_is_or_begins_with),
 	(e_book_backend_mapi_load_source),
 	(e_book_backend_mapi_authenticate_user),
