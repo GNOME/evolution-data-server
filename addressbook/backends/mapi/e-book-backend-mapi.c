@@ -425,12 +425,17 @@ static gboolean
 build_restriction_emails_contains (struct mapi_SRestriction *res, 
 				   char *query)
 {
-	char *email=NULL;
+	char *email=NULL, *tmp;;
 	int status;
 	
 
 	/* This currently supports "is email foo@bar.soo" */
 	status = build_query (query, &email);
+	email = strchr (email, '=');
+	email++;
+	tmp = strchr (email, ')');
+	*tmp = 0;
+	printf("building restrition on %s\n", email);
 
 	if (status != GNOME_Evolution_Addressbook_Success || email==NULL)
 		return FALSE;
@@ -580,6 +585,8 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 					  guint32 opid,
 					  const char *vcard )
 {
+	if(enable_debug)
+		printf("mapi create_contact \n");
 	/* FIXME : provide implmentation */
 }
 
@@ -589,6 +596,8 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 					   guint32 opid,
 					   GList *id_list)
 {
+	if(enable_debug)
+		printf("mapi: remove_contacts\n");
 	/* FIXME : provide implmentation */
 }
 
@@ -597,7 +606,9 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 					  EDataBook    *book,
 					  guint32       opid,
 					  const char   *vcard)
-{	
+{
+	if(enable_debug)
+		printf("mapi: modify_contacts\n");	
 	/* FIXME : provide implmentation */
 }
 
@@ -609,7 +620,7 @@ create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id
 	
 	contact = emapidump_contact (array);
 	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
-	
+	printf("got contact %s\n", suid);
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
 		e_contact_set (contact, E_CONTACT_UID, suid);		
@@ -677,9 +688,8 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 		} else {
 			mapi_id_t fid, mid;
 			
-			sscanf(id, "%llx%llx", &fid, &mid);
-			printf("FID %016llx mid %016llx\n", fid, mid);
-			contact = exchange_mapi_connection_fetch_item (olFolderContacts, fid, mid, create_contact_item);
+			sscanf(id, "%016llx%016llx", &fid, &mid);
+			contact = exchange_mapi_connection_fetch_item (olFolderContacts, priv->fid, mid, create_contact_item);
 			if (contact) {
 				e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
 				vcard =  e_vcard_to_string (E_VCARD (contact), 
@@ -756,6 +766,7 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 			}
 
 			g_list_free (contacts);
+			printf("get_contact_list in  %s returning %d contacts\n", priv->uri, g_list_length (vcard_strings));
 			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_Success, vcard_strings);
 			return;
 		}
@@ -780,6 +791,7 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 			}
 
 			g_list_free (contacts);
+			printf("get_contact_list in %s  returning %d contacts\n", priv->uri, g_list_length (vcard_strings));			
 			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_Success, vcard_strings);
 			return ;
 		}
@@ -794,6 +806,7 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;
 			}
+			printf("get_contact_list in %s returning %d contacts\n", priv->uri, g_list_length (vcard_str));			
 			e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_Success, vcard_str);
 			return ;
 			
@@ -1091,7 +1104,7 @@ book_view_thread (gpointer data)
 				return;
 			}
 			
-			printf("Summary seems to be not there, lets fetch from cache directly\n");
+			printf("Summary seems to be not there or not a summary query, lets fetch from cache directly\n");
 			
 			/* We are already cached. Lets return from there. */
 			contacts = e_book_backend_cache_get_contacts (priv->cache, 
@@ -1118,7 +1131,6 @@ book_view_thread (gpointer data)
 
 		//FIXME: We need to fetch only the query from the server live and not everything.
 		/* execute the query */
-
 		if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, create_contact_cb, priv->fid, book_view)) {
 			if (e_flag_is_set (closure->running))
 				e_data_book_view_notify_complete (book_view, 
@@ -1161,6 +1173,8 @@ static void
 e_book_backend_mapi_stop_book_view (EBookBackend  *backend,
 					  EDataBookView *book_view)
 {
+	if(enable_debug)
+		printf("mapi: stop book view\n");	
 	/* FIXME : provide implmentation */
 }
 
@@ -1170,6 +1184,8 @@ e_book_backend_mapi_get_changes (EBookBackend *backend,
 				       guint32       opid,
 				       const char *change_id  )
 {
+	if(enable_debug)
+		printf("mapi: get changes\n");	
 	/* FIXME : provide implmentation */
 }
 
@@ -1262,13 +1278,15 @@ e_book_backend_mapi_authenticate_user (EBookBackend *backend,
 		if (!exchange_mapi_connection_new (priv->profile, NULL))
 			return e_data_book_respond_authenticate_user (book, opid,GNOME_Evolution_Addressbook_OtherError);
 
-		if (priv->cache && e_book_backend_cache_is_populated (priv->cache)) {
+		if (priv->cache && priv->is_cache_ready) {
+			printf("FIXME: Should check for an update in the cache\n");
 /*			if (priv->is_writable)
 				g_thread_create ((GThreadFunc) update_cache, 
 						  backend, FALSE, NULL);*/
 		}
-		else if (priv->marked_for_offline){
+		else if (priv->marked_for_offline && !priv->is_cache_ready){
 			/* Means we dont have a cache. Lets build that first */
+			printf("Preparing to build cache\n");
 			g_thread_create ((GThreadFunc) build_cache, backend, FALSE, backend);
 		}
 		e_book_backend_set_is_writable (backend, TRUE);
@@ -1372,6 +1390,8 @@ e_book_backend_mapi_remove (EBookBackend *backend,
 				  EDataBook    *book,
 				  guint32      opid)
 {
+	if(enable_debug)
+		printf("mapi: remove\n");
 	
 	/* FIXME : provide implmentation */
 }
@@ -1381,6 +1401,9 @@ e_book_backend_mapi_set_mode (EBookBackend *backend, int mode)
 {
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
 
+	if(enable_debug)
+		printf("mapi: set_mode \n");
+	
 	priv->mode = mode;
 	if (e_book_backend_is_loaded (backend)) {
 		if (mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {

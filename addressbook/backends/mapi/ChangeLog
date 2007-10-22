@@ -1,5 +1,21 @@
 2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Add more logs. Now get_contact and get_contact_list works. Need to
+	fix the restrictions though.
+
+	* e-book-backend-mapi.c: (build_restriction_emails_contains),
+	(e_book_backend_mapi_create_contact),
+	(e_book_backend_mapi_remove_contacts),
+	(e_book_backend_mapi_modify_contact), (create_contact_item),
+	(e_book_backend_mapi_get_contact),
+	(e_book_backend_mapi_get_contact_list), (book_view_thread),
+	(e_book_backend_mapi_stop_book_view),
+	(e_book_backend_mapi_get_changes),
+	(e_book_backend_mapi_authenticate_user),
+	(e_book_backend_mapi_remove), (e_book_backend_mapi_set_mode):
+
+2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
+
 	
 	* e-book-backend-mapi.c: (get_filename_from_uri),
 	(e_book_backend_mapi_load_source), (emapidump_contact),
