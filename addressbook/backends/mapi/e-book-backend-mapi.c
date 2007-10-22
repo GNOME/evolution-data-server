@@ -311,7 +311,7 @@ func_is_or_begins_with(ESExp *f, int argc, ESExpResult **argv, gboolean exact)
 	if (!strcmp(propname, "file_as")) {
 		filter = g_strdup_printf("(displayName=%s%s)", str, star);
 		goto done;
-	}}
+	}
 
 	if (!strcmp (propname, "full_name")) {
 		char *first, *last, *space;
@@ -337,7 +337,7 @@ func_is_or_begins_with(ESExp *f, int argc, ESExpResult **argv, gboolean exact)
 						 str, star, str, star);
 		}
 	} else 
-		filter = g_strdup_printf("(%s=%s%s)", ldap_attr, str, star);
+		filter = g_strdup_printf("(%s=%s%s)", "email", str, star);
 
  done:
 	g_free (str);
@@ -511,7 +511,7 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	tmp = e_source_get_property (source, "folder-id");
 	sscanf (tmp, "%llx", &priv->fid);
 
-
+	printf("Folder is %s %016llx\n", tmp, priv->fid);
 
 	/* Once aunthentication in address book works this can be removed */
 	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
@@ -1242,7 +1242,7 @@ e_book_backend_mapi_authenticate_user (EBookBackend *backend,
 		if (!exchange_mapi_connection_new (priv->profile, NULL))
 			return e_data_book_respond_authenticate_user (book, opid,GNOME_Evolution_Addressbook_OtherError);
 
-		if (e_book_backend_cache_is_populated (priv->cache)) {
+		if (priv->cache && e_book_backend_cache_is_populated (priv->cache)) {
 /*			if (priv->is_writable)
 				g_thread_create ((GThreadFunc) update_cache, 
 						  backend, FALSE, NULL);*/
@@ -1447,7 +1447,8 @@ static void	e_book_backend_mapi_init (EBookBackendMAPI *backend)
 
 	priv->marked_for_offline = FALSE;
 	priv->uri = NULL;
-
+	priv->cache = NULL;
+	
 	if (g_getenv ("MAPI_DEBUG"))
 		enable_debug = TRUE;
 	else
