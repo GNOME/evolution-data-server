@@ -1,3 +1,18 @@
+2007-10-22  Sankar P  <psankar@novell.com>
+
+	* Makefile.am:
+	* exchange-mapi-connection.c: (utf8tolinux), (get_container_class),
+	(get_child_folders), (exchange_mapi_get_folders_list):
+	* exchange-mapi-connection.h:
+	* exchange-mapi-folder.c: (container_class_to_type),
+	(exchange_mapi_folder_new):
+	* exchange-mapi-folder.h:
+
+	Moved a few files from the plugin to the servers folder, 
+	which is where they are appropriate.
+
+	Now excahange-mapi exposes new header files and hence functions.
+
 2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_connection_new),

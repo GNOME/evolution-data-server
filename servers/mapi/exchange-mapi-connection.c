@@ -24,6 +24,7 @@
 
 #include <glib.h>
 #include "exchange-mapi-connection.h"
+#include "exchange-mapi-folder.h"
 
 #define DEFAULT_PROF_PATH ".evolution/mapi-profiles.ldb"
 #define d(x) x
@@ -297,4 +298,152 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	return retobj;
 }
 
+static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)
+{
+	char		*newstr;
 
+	newstr = windows_to_utf8(mem_ctx, wstring);
+	return newstr;
+}
+
+
+static const char *
+get_container_class(TALLOC_CTX *mem_ctx, mapi_object_t *parent, mapi_id_t folder_id)
+{
+	enum MAPISTATUS		retval;
+	mapi_object_t		obj_folder;
+	struct SPropTagArray	*SPropTagArray;
+	struct SPropValue	*lpProps;
+	uint32_t		count;
+
+	mapi_object_init(&obj_folder);
+	retval = OpenFolder(parent, folder_id, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) return false;
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x1, PR_CONTAINER_CLASS);
+	retval = GetProps(&obj_folder, SPropTagArray, &lpProps, &count);
+	MAPIFreeBuffer(SPropTagArray);
+	if ((lpProps[0].ulPropTag != PR_CONTAINER_CLASS) || (retval != MAPI_E_SUCCESS)) {
+		errno = 0;
+		return IPF_NOTE;
+	}
+	return lpProps[0].value.lpszA;
+}
+
+
+
+static gboolean
+get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent_name, mapi_id_t folder_id, int count, GSList **mapi_folders)
+{
+	enum MAPISTATUS		retval;
+	bool			ret;
+	mapi_object_t		obj_folder;
+	mapi_object_t		obj_htable;
+	struct SPropTagArray	*SPropTagArray;
+	struct SRowSet		rowset;
+	const char	       	*name;
+	const char 		*class;
+	char			*newname;
+	const uint32_t		*child;
+	uint32_t		index;
+	const uint64_t		*fid;
+	int			i;
+
+	mapi_object_init(&obj_folder);
+	retval = OpenFolder(parent, folder_id, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) 
+		return FALSE;
+
+	mapi_object_init(&obj_htable);
+	retval = GetHierarchyTable(&obj_folder, &obj_htable);
+	if (retval != MAPI_E_SUCCESS) 
+		return FALSE;
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x3,
+					  PR_DISPLAY_NAME,
+					  PR_FID,
+					  PR_FOLDER_CHILD_COUNT);
+	retval = SetColumns(&obj_htable, SPropTagArray);
+	MAPIFreeBuffer(SPropTagArray);
+	if (retval != MAPI_E_SUCCESS)
+		return FALSE;
+	
+	while ((retval = QueryRows(&obj_htable, 0x32, TBL_ADVANCE, &rowset) != MAPI_E_NOT_FOUND) && rowset.cRows) {
+		for (index = 0; index < rowset.cRows; index++) {
+			ExchangeMAPIFolder *folder;
+			fid = (const uint64_t *)find_SPropValue_data(&rowset.aRow[index], PR_FID);
+			name = (const char *)find_SPropValue_data(&rowset.aRow[index], PR_DISPLAY_NAME);
+			child = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_FOLDER_CHILD_COUNT);
+			class = get_container_class(mem_ctx, parent, *fid);
+			newname = utf8tolinux(mem_ctx, name);
+			printf("|---+ %-15s : (Container class: %s %016llx)\n", newname, class, *fid);
+			folder = exchange_mapi_folder_new (newname, parent_name, class, *fid, folder_id, *child);
+			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
+			if (*child)
+				get_child_folders(mem_ctx, &obj_folder, newname, *fid, count + 1, mapi_folders);
+			MAPIFreeBuffer(newname);
+
+			
+		}
+	}
+	return FALSE;
+}
+
+
+
+
+gboolean 
+exchange_mapi_get_folders_list (GSList **mapi_folders)
+{
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	enum MAPISTATUS			retval;
+	mapi_id_t			id_mailbox;
+	struct SPropTagArray		*SPropTagArray;
+	struct SPropValue		*lpProps = NULL;
+	uint32_t			cValues;
+	const char			*mailbox_name;
+	char				*utf8_mailbox_name;
+	ExchangeMAPIFolder *folder;
+
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_store);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		return FALSE;
+	}
+
+	/* Retrieve the mailbox folder name */
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x1, PR_DISPLAY_NAME);
+	retval = GetProps(&obj_store, SPropTagArray, &lpProps, &cValues);
+	MAPIFreeBuffer(SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) 
+		return FALSE;
+
+	if (lpProps[0].value.lpszA) {
+		mailbox_name = lpProps[0].value.lpszA;
+	} else {
+		return FALSE;
+	}	
+
+	/* Prepare the directory listing */
+	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderTopInformationStore);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("[Openchange_plugin] Error ", retval);
+		return FALSE;
+	}
+	utf8_mailbox_name = utf8tolinux(mem_ctx, mailbox_name);
+
+	/* FIXME: May have to get the child folders count? Do we need/use it? */
+	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, id_mailbox, 0, 0); 
+
+	*mapi_folders = g_slist_prepend (*mapi_folders, folder);
+	get_child_folders (mem_ctx, &obj_store, utf8_mailbox_name, id_mailbox, 0, mapi_folders);
+
+	MAPIFreeBuffer(utf8_mailbox_name);
+	
+	return TRUE;
+
+}

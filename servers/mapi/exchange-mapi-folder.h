@@ -18,24 +18,29 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EXCHANGE_MAPI_CONNECTION_H
-#define EXCHANGE_MAPI_CONNECTION_H 
+#ifndef EXCHANGE_MAPI_FOLDER_H
+#define EXCHANGE_MAPI_FOLDER_H
 
-#include <libmapi/libmapi.h>
 
-typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, gpointer data);
-typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid);
+typedef enum  {
+	MAPI_FOLDER_TYPE_MAIL=1,
+	MAPI_FOLDER_TYPE_APPOINTMENT,
+	MAPI_FOLDER_TYPE_CONTACT,
+	MAPI_FOLDER_TYPE_JOURNAL,
+	MAPI_FOLDER_TYPE_TASK
+} ExchangeMAPIFolderType;
 
-gboolean 
-exchange_mapi_connection_new (const char *profile, const char *password);
-gboolean
-exchange_mapi_connection_exists ();
+typedef struct _ExchangeMAPIFolder {
+	char *folder_name;
+	char *parent_folder_name;
+	ExchangeMAPIFolderType container_class;
+	uint64_t folder_id;
+	uint64_t parent_folder_id;
+	uint32_t child_count;
+} ExchangeMAPIFolder;
 
-gpointer
-exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb);
-gboolean
-exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, FetchItemsCallback cb, mapi_id_t fid, gpointer data);
-
-gboolean exchange_mapi_get_folders_list (GSList **mapi_folders); 
+ExchangeMAPIFolder *
+exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class,
+			  uint64_t folder_id, uint64_t parent_folder_id, uint32_t child_count);
 
 #endif
