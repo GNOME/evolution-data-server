@@ -31,8 +31,9 @@
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK()		(g_static_rec_mutex_lock(&connect_lock))
-#define UNLOCK()	(g_static_rec_mutex_unlock(&connect_lock))
+
+#define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
+#define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
@@ -101,13 +102,14 @@ gboolean
 exchange_mapi_connection_new (const char *profile, const char *password)
 {
 	LOCK ();
-	if (global_mapi_session)
+	if (global_mapi_session) {
+		UNLOCK ();
 		return TRUE;
-
+	}
 	global_mapi_session = mapi_profile_load (profile, password);
 	UNLOCK ();
 
-	if (!global_mapi_session) 
+	if (!global_mapi_session)
 		return FALSE;
 	
 	printf("Succccccccccccccccccccccccces\n");
@@ -290,6 +292,8 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 
 	mapi_object_release(&obj_folder);
 
+	UNLOCK ();
+	
 	return retobj;
 }
 
