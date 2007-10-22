@@ -32,7 +32,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserverui/e-source-option-menu.h>
+#include <libedataserverui/e-source-combo-box.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-book-auth-util.h>
@@ -64,9 +64,8 @@ struct _ENameSelectorDialogPrivate
 	guint destination_index;
 };
 
-static ESource *find_first_source             (ESourceList *source_list);
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
-static void     source_selected               (ENameSelectorDialog *name_selector_dialog, ESource *source);
+static void     source_changed                (ENameSelectorDialog *name_selector_dialog, ESourceComboBox *source_combo_box);
 static void     transfer_button_clicked       (ENameSelectorDialog *name_selector_dialog, GtkButton *transfer_button);
 static void     contact_selection_changed     (ENameSelectorDialog *name_selector_dialog);
 static void     setup_name_selector_model     (ENameSelectorDialog *name_selector_dialog);
@@ -106,33 +105,28 @@ e_name_selector_dialog_set_property (GObject *object, guint prop_id,
 {
 }
 
-/* FIXME: category_list should become part of ENameSelectorDialog structure */
-GList *category_list;
-
 static void
 e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
 {
-	GtkWidget *category_option_menu;
-	GtkWidget *category_menu;
-	GList *l;
-	category_option_menu = glade_xml_get_widget (name_selector_dialog->gui, "optionmenu-category");
+	GtkWidget *combo_box;
+	GList *category_list, *iter;
 
-	/* Categories are already sorted */
-	category_list = e_categories_get_list () ;
-	category_list = g_list_prepend (category_list, _("Any Category"));
+	/* "Any Category" is preloaded. */
+	combo_box = glade_xml_get_widget (
+		name_selector_dialog->gui, "combobox-category");
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
-	category_menu = gtk_menu_new ();
-	l = category_list;
-	while (l) {	
-		GtkWidget *item;
-		item = gtk_menu_item_new_with_label (l->data);
-		gtk_menu_shell_append (GTK_MENU_SHELL (category_menu), item);
-		l = l->next;
-	}
-	gtk_widget_show_all (category_menu);
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (category_option_menu), category_menu);
-	
-	g_signal_connect_swapped (category_option_menu, "changed", G_CALLBACK (search_changed), name_selector_dialog);
+	/* Categories are already sorted. */
+	category_list = e_categories_get_list ();
+	for (iter = category_list; iter != NULL; iter = iter->next)
+		gtk_combo_box_append_text (
+			GTK_COMBO_BOX (combo_box), iter->data);
+	g_list_free (category_list);
+
+	g_signal_connect_swapped (
+		combo_box, "changed",
+		G_CALLBACK (search_changed), name_selector_dialog);
 }
 
 static void
@@ -223,34 +217,26 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	name_selector_dialog->name_selector_model = e_name_selector_model_new ();
 	name_selector_dialog->sections            = g_array_new (FALSE, FALSE, sizeof (Section));
-	name_selector_dialog->source_list         = source_list;
 
 	setup_name_selector_model (name_selector_dialog);
 
 	/* Create source menu */
 
-	widget = e_source_option_menu_new (name_selector_dialog->source_list);
-        
+	widget = e_source_combo_box_new (source_list);
+	g_signal_connect_swapped (
+		widget, "changed",
+		G_CALLBACK (source_changed), name_selector_dialog);
+	g_object_unref (source_list);
+ 
 	gconf_client = gconf_client_get_default();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);
 	g_object_unref (gconf_client);
 	if (uid) {
-		ESource *source = e_source_list_peek_source_by_uid(name_selector_dialog->source_list, uid);
-		if (source) {
-			e_source_option_menu_select ((ESourceOptionMenu *)widget, source);
-			source_selected (name_selector_dialog, source);
-		}
-		else {
-			source_selected (name_selector_dialog, find_first_source (name_selector_dialog->source_list));
-		}
+		e_source_combo_box_set_active_uid (
+			E_SOURCE_COMBO_BOX (widget), uid);
 		g_free (uid);
 	}
-	else {
-		source_selected (name_selector_dialog, find_first_source (name_selector_dialog->source_list));
-	}
-
-	g_signal_connect_swapped (widget, "source_selected", G_CALLBACK (source_selected), name_selector_dialog);
 
 	label = glade_xml_get_widget (name_selector_dialog->gui, "AddressBookLabel");
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
@@ -308,9 +294,7 @@ e_name_selector_dialog_finalize (GObject *object)
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
 
 	g_array_free (name_selector_dialog->sections, TRUE);
-	g_object_unref (name_selector_dialog->source_list);
 	g_object_unref (name_selector_dialog->button_size_group);
-	g_list_free (category_list);
 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize)
 		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
@@ -382,26 +366,6 @@ sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkT
 
 	if (email_n)
 		*email_n = email_n_local;
-}
-
-static ESource *
-find_first_source (ESourceList *source_list)
-{
-	GSList *groups, *sources, *l, *m;
-			
-	groups = e_source_list_peek_groups (source_list);
-	for (l = groups; l; l = l->next) {
-		ESourceGroup *group = l->data;
-				
-		sources = e_source_group_peek_sources (group);
-		for (m = sources; m; m = m->next) {
-			ESource *source = m->data;
-
-			return source;
-		}				
-	}
-
-	return NULL;
 }
 
 static void
@@ -742,8 +706,13 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 }
 
 static void
-source_selected (ENameSelectorDialog *name_selector_dialog, ESource *source)
+source_changed (ENameSelectorDialog *name_selector_dialog,
+                ESourceComboBox *source_combo_box)
 {
+	ESource *source;
+
+	source = e_source_combo_box_get_active (source_combo_box);
+
 	/* Remove any previous books being shown or loaded */
 	remove_books (name_selector_dialog);
 
@@ -761,49 +730,54 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 {
 	EContactStore *contact_store;
 	EBookQuery    *book_query;
-	GtkWidget     *category_option_menu;
+	GtkWidget     *combo_box;
 	const gchar   *text;
-	gint 	      category_id;	
 	gchar         *text_escaped;
 	gchar         *query_string;
-	const gchar   *category;
+	gchar         *category;
 	gchar         *category_escaped;
 
-	category_option_menu = glade_xml_get_widget(name_selector_dialog->gui, "optionmenu-category");
-	category_id = gtk_option_menu_get_history (GTK_OPTION_MENU(category_option_menu));
-	category = g_list_nth_data (category_list, category_id);
-	if (!category)
-		return;
+	combo_box = glade_xml_get_widget (
+		name_selector_dialog->gui, "combobox-category");
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
+
+	category = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
 	category_escaped = escape_sexp_string (category);
 
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
 	text_escaped = escape_sexp_string (text);
 
-	if ( !strcmp (category, _("Any Category"))) {
-		query_string = g_strdup_printf ("(or (beginswith \"file_as\" %s) "
-						"    (beginswith \"full_name\" %s) "
-						"    (beginswith \"email\" %s) "
-						"    (beginswith \"nickname\" %s)))",
-						text_escaped, text_escaped, text_escaped, text_escaped);
-	}
-	else {
-		query_string = g_strdup_printf ("(and (is \"category_list\" %s) "
-						"(or (beginswith \"file_as\" %s) "
-						"    (beginswith \"full_name\" %s) "
-						"    (beginswith \"email\" %s) "
-						"    (beginswith \"nickname\" %s)))",
-						category_escaped,text_escaped, text_escaped, text_escaped, text_escaped);
-	}
+	if (!strcmp (category, _("Any Category")))
+		query_string = g_strdup_printf (
+			"(or (beginswith \"file_as\" %s) "
+			"    (beginswith \"full_name\" %s) "
+			"    (beginswith \"email\" %s) "
+			"    (beginswith \"nickname\" %s)))",
+			text_escaped, text_escaped,
+			text_escaped, text_escaped);
+	else
+		query_string = g_strdup_printf (
+			"(and (is \"category_list\" %s) "
+			"(or (beginswith \"file_as\" %s) "
+			"    (beginswith \"full_name\" %s) "
+			"    (beginswith \"email\" %s) "
+			"    (beginswith \"nickname\" %s)))",
+			category_escaped, text_escaped, text_escaped,
+			text_escaped, text_escaped);
 
 	book_query = e_book_query_from_string (query_string);
-	g_free (query_string);
-	g_free (text_escaped);
-	g_free (category_escaped);
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->name_selector_model);
 	e_contact_store_set_query (contact_store, book_query);
 
 	e_book_query_unref (book_query);
+
+	g_free (query_string);
+	g_free (text_escaped);
+	g_free (category_escaped);
+	g_free (category);
 }
 
 static void

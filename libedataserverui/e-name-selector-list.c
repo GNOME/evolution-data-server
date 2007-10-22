@@ -447,7 +447,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 		
 			if (len > 1) {
 				menu_item = gtk_radio_menu_item_new_with_label (group, email);
-				group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (menu_item));
+				group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (menu_item));
 				g_signal_connect (menu_item, "toggled", G_CALLBACK (destination_set_email), destination);
 			} else {
 				menu_item = gtk_menu_item_new_with_label (email);			

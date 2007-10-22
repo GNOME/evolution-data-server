@@ -58,7 +58,7 @@ struct _ENameSelectorDialog {
 	/* Private */
 
 	EBook              *pending_book;
-	ESourceList        *source_list;
+	gpointer            unused;	/* Maintain ABI compatibility */
 	ENameSelectorModel *name_selector_model;
 	GtkTreeModelSort   *contact_sort;
 

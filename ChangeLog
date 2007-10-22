@@ -1,3 +1,10 @@
+2007-10-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	* Fixes part of bug #417999
+
+	* docs/references/libedataserverui:
+	Add documentation for ESourceComboBox widget.
+
 2007-10-09  Matthew Barnes  <mbarnes@redhat.com>
 
 	* iconv-detect.c (main): Remove an unused variable (#483301).

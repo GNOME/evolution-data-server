@@ -25,6 +25,29 @@ e_tree_model_generator_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-combo-box</FILE>
+<TITLE>ESourceComboBox</TITLE>
+ESourceComboBox
+e_source_combo_box_new
+e_source_combo_box_get_source_list
+e_source_combo_box_set_source_list
+e_source_combo_box_get_active
+e_source_combo_box_set_active
+e_source_combo_box_get_active_uid
+e_source_combo_box_set_active_uid
+<SUBSECTION Standard>
+E_SOURCE_COMBO_BOX
+E_IS_SOURCE_COMBO_BOX
+E_TYPE_SOURCE_COMBO_BOX
+E_SOURCE_COMBO_BOX_CLASS
+E_IS_SOURCE_COMBO_BOX_CLASS
+E_SOURCE_COMBO_BOX_GET_CLASS
+ESourceComboBoxClass
+<SUBSECTION Private>
+e_source_combo_box_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-option-menu</FILE>
 <TITLE>ESourceOptionMenu</TITLE>
 ESourceOptionMenu

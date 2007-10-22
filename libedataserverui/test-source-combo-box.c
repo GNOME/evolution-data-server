@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* test-source-option-menu.c - Test for ESourceOptionMenu.
+/* test-source-combo-box.c - Test for ESourceComboBox.
  *
  * Copyright (C) 2003 Novell, Inc.
  *
@@ -24,17 +24,17 @@
 #include <config.h>
 #endif
 
-
-#include "e-source-option-menu.h"
+#include "e-source-combo-box.h"
 
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkmain.h>
 
 static void
-source_selected_callback (ESourceOptionMenu *menu,
-			  ESource *source,
-			  void *unused_data)
+source_changed_cb (ESourceComboBox *combo_box)
 {
+	ESource *source;
+
+	source = e_source_combo_box_get_active (combo_box);
 	g_print ("source selected: \"%s\"\n", e_source_peek_name (source));
 }
 
@@ -43,7 +43,7 @@ static int
 on_idle_create_widget (const char *gconf_path)
 {
 	GtkWidget *window;
-	GtkWidget *option_menu;
+	GtkWidget *combo_box;
 	ESourceList *source_list;
 	GConfClient *gconf_client;
 
@@ -51,10 +51,12 @@ on_idle_create_widget (const char *gconf_path)
 	source_list = e_source_list_new_for_gconf (gconf_client, gconf_path);
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	option_menu = e_source_option_menu_new (source_list);
-	g_signal_connect (option_menu, "source_selected", G_CALLBACK (source_selected_callback), NULL);
+	combo_box = e_source_combo_box_new (source_list);
+	g_signal_connect (
+		combo_box, "changed",
+		G_CALLBACK (source_changed_cb), NULL);
 
-	gtk_container_add (GTK_CONTAINER (window), option_menu);
+	gtk_container_add (GTK_CONTAINER (window), combo_box);
 	gtk_widget_show_all (window);
 
 	g_object_unref (gconf_client);

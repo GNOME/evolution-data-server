@@ -12,8 +12,8 @@ MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 
 lib_LTLIBRARIES = libedataserverui-1.2.la
 noinst_PROGRAMS = 			\
+	test-source-combo-box		\
 	test-source-selector		\
-	test-source-option-menu		\
 	test-contact-store		\
 	test-name-selector
 
@@ -31,6 +31,7 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-passwords.c			\
 	e-source-selector.c		\
 	e-source-selector-dialog.c	\
+	e-source-combo-box.c		\
 	e-source-option-menu.c		\
 	e-tree-model-generator.c
 
@@ -57,6 +58,7 @@ libedataserveruiinclude_HEADERS =	\
 	e-passwords.h			\
 	e-source-selector.h		\
 	e-source-selector-dialog.h	\
+	e-source-combo-box.h		\
 	e-source-option-menu.h		\
 	e-tree-model-generator.h
 
@@ -67,8 +69,8 @@ test_source_selector_LDADD = 					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
 
-test_source_option_menu_SOURCES = test-source-option-menu.c
-test_source_option_menu_LDADD = 				\
+test_source_combo_box_SOURCES = test-source-combo-box.c
+test_source_combo_box_LDADD = 					\
 	libedataserverui-1.2.la 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)

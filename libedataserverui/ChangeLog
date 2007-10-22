@@ -1,3 +1,40 @@
+2007-10-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #417999
+
+	* Makefile.am:
+	Add e-source-combo-box.[ch].
+	Rename test-source-option-menu to test-source-combo-box.
+
+	* e-source-combo-box.c:
+	* e-source-combo-box.h:
+	New widget replaces ESourceOptionMenu.  Same functionality, but
+	ESourceComboBox is a subclass of GtkComboBox, which itself replaces
+	GtkOptionMenu (deprecated).
+
+	* e-source-option-menu.h:
+	Deprecate ESourceOptionMenu.
+
+	* e-name-selector-dialog.glade:
+	List categories in a GtkComboBox instead of a GtkOptionMenu.
+
+	* e-name-selector-dialog.h:
+	Replace the ESourceList member pointer with a placeholder,
+	to maintain ABI compatibility.
+
+	* e-name-selector-dialog.c:
+	Use ESourceComboBox instead of ESourceOptionMenu.
+	Refactor some messy bits.
+
+	* e-name-selector-entry.c (populate_popup):
+	* e-name-selector-list.c (enl_tree_button_press_event):
+	Use gtk_radio_menu_item_get_group() instead of
+	gtk_radio_menu_item_group() (deprecated).
+
+	* test-source-option-menu.c:
+	Test ESourceComboBox instead of ESourceOptionMenu.
+	Rename the file appropriately.
+
 2007-10-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #478404
