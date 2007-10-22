@@ -136,6 +136,8 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	TALLOC_CTX *mem_ctx;
 	int i;
 
+	printf("Fetching folder %016llx\n", fid);
+	
 	LOCK ();
 	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_folder);
@@ -229,6 +231,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	mapi_object_release(&obj_table);
 	mapi_object_release(&obj_folder);
 
+	UNLOCK ();
 	return TRUE;
 }
 
@@ -247,7 +250,8 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	TALLOC_CTX *mem_ctx;
 	int i;
 	gpointer retobj = NULL;
-	
+
+
 	LOCK ();
 	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_folder);

@@ -1,5 +1,11 @@
 2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* exchange-mapi-connection.c:
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item): Unlock after the fetch is over.
+
+2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Initial code drop for the Exchange MAPI provider.
 
 	* Makefile.am:
