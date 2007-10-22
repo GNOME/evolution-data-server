@@ -20,7 +20,7 @@
 
 /* inspired by groupwise backend */
 
-#include "e-cal-backend-openchange.h"
+#include "e-cal-backend-mapi.h"
 
 static ECalBackendClass *parent_class = NULL;
 
