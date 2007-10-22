@@ -1,3 +1,7 @@
+2007-10-22  Johnny Jacob  <jjohnny@novell.com>
+
+	* Makefile.am : Added.
+	
 2007-10-22  Srinivasa Ragavan <sragavan@novell.com>
 
 	* Initial code drop for the Exchange MAPI provider.
