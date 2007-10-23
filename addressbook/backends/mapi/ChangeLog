@@ -1,3 +1,8 @@
+2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-book-backend-mapi.c: (e_book_backend_mapi_remove_contacts): Add
+	base code to delete contacts.
+
 2007-10-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Add more logs. Now get_contact and get_contact_list works. Need to

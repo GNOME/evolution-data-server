@@ -69,10 +69,48 @@ struct _EBookBackendMAPIPrivate
 
 #define LOCK() g_mutex_lock (priv->lock)
 #define UNLOCK() g_mutex_unlock (priv->lock)
+
+#define ELEMENT_TYPE_SIMPLE 0x01
+#define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
+
 #define SUMMARY_FLUSH_TIMEOUT 5000
 
 static EContact * emapidump_contact(struct mapi_SPropValue_array *properties);
-	
+/*
+static const struct field_element_mapping {
+	EContactField field_id;
+  	int element_type;
+	char *element_name;
+	void (*populate_contact_func)(EContact *contact,    gpointer data);
+	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
+	void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
+ 
+} mappings [] = { 
+  
+	{ E_CONTACT_UID, ELEMENT_TYPE_SIMPLE, "id"},
+	{ E_CONTACT_FILE_AS, ELEMENT_TYPE_SIMPLE, "name" },
+	{ E_CONTACT_FULL_NAME, ELEMENT_TYPE_COMPLEX, "full_name", populate_full_name, set_full_name_in_gw_item, set_full_name_changes},
+	{ E_CONTACT_BIRTH_DATE, ELEMENT_TYPE_COMPLEX, "birthday", populate_birth_date, set_birth_date_in_gw_item, set_birth_date_changes },
+	{ E_CONTACT_HOMEPAGE_URL, ELEMENT_TYPE_SIMPLE, "website"},
+	{ E_CONTACT_NOTE, ELEMENT_TYPE_SIMPLE, "comment"},
+	{ E_CONTACT_PHONE_PRIMARY, ELEMENT_TYPE_SIMPLE , "default_phone"},
+	{ E_CONTACT_PHONE_BUSINESS, ELEMENT_TYPE_SIMPLE, "phone_Office"},
+	{ E_CONTACT_PHONE_HOME, ELEMENT_TYPE_SIMPLE, "phone_Home"},
+	{ E_CONTACT_PHONE_MOBILE, ELEMENT_TYPE_SIMPLE, "phone_Mobile"},
+	{ E_CONTACT_PHONE_BUSINESS_FAX, ELEMENT_TYPE_SIMPLE, "phone_Fax" },
+	{ E_CONTACT_PHONE_PAGER, ELEMENT_TYPE_SIMPLE, "phone_Pager"},
+	{ E_CONTACT_ORG, ELEMENT_TYPE_SIMPLE, "organization"},
+	{ E_CONTACT_ORG_UNIT, ELEMENT_TYPE_SIMPLE, "department"},
+	{ E_CONTACT_TITLE, ELEMENT_TYPE_SIMPLE, "title"},
+	{ E_CONTACT_EMAIL, ELEMENT_TYPE_COMPLEX, "members", populate_contact_members, NULL, NULL},
+	{ E_CONTACT_ADDRESS_HOME, ELEMENT_TYPE_COMPLEX, "Home", populate_address, set_address_in_gw_item, set_address_changes },
+	{ E_CONTACT_IM_AIM, ELEMENT_TYPE_COMPLEX, "ims", populate_ims, set_ims_in_gw_item, set_im_changes },
+	{ E_CONTACT_CATEGORIES, ELEMENT_TYPE_COMPLEX, "categories", NULL, NULL, set_categories_changes},
+	{ E_CONTACT_EMAIL_1, ELEMENT_TYPE_COMPLEX, "email", populate_emails, set_emails_in_gw_item, set_emails_changes },
+	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"},
+	{ E_CONTACT_BOOK_URI, ELEMENT_TYPE_SIMPLE, "book_uri"}
+};
+*/
 static EDataBookView *
 find_book_view (EBookBackendMAPI *ebmapi)
 {
@@ -596,8 +634,35 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 					   guint32 opid,
 					   GList *id_list)
 {
+	GSList *list=NULL, *tmp = id_list;
+	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
+	mapi_id_t fid, mid;
+			
 	if(enable_debug)
 		printf("mapi: remove_contacts\n");
+
+	switch (priv->mode) {
+
+	case GNOME_Evolution_Addressbook_MODE_LOCAL :
+		e_data_book_respond_remove_contacts (book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
+		return;
+
+	case GNOME_Evolution_Addressbook_MODE_REMOTE:
+		
+		while (tmp) {
+			sscanf(tmp->data, "%016llx%016llx", &fid, &mid);
+			list = g_slist_prepend (list, (gpointer) mid);
+			tmp = tmp->next;
+		}
+
+		exchange_mapi_remove_items (olFolderContacts, priv->fid, list);
+		g_slist_free (list);
+		e_data_book_respond_remove_contacts (book, opid,
+							     GNOME_Evolution_Addressbook_Success,  id_list);
+		return;
+	default:
+		break;
+	}
 	/* FIXME : provide implmentation */
 }
 
