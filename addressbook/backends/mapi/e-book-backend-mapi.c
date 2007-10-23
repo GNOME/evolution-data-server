@@ -571,7 +571,7 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 
 	g_free (uri);
 	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
-	
+	e_book_backend_set_is_writable (backend, TRUE);	
 	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL) {
 		e_book_backend_set_is_writable (backend, FALSE);
 		e_book_backend_notify_writable (backend, FALSE);
@@ -596,7 +596,6 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	}
 
 	// writable property will be set in authenticate_user callback
-	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);
 	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_notify_connection_status (E_BOOK_BACKEND (backend), TRUE);
 
@@ -628,6 +627,9 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 	/* FIXME : provide implmentation */
 }
 
+struct folder_data {
+	mapi_id_t id;
+};
 static void
 e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 					   EDataBook    *book,
@@ -650,12 +652,22 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE:
 		
 		while (tmp) {
+			struct folder_data *data = g_new (struct folder_data, 1);
 			sscanf(tmp->data, "%016llx%016llx", &fid, &mid);
-			list = g_slist_prepend (list, (gpointer) mid);
+			data->id = mid;
+			list = g_slist_prepend (list, (gpointer) data);
 			tmp = tmp->next;
 		}
 
 		exchange_mapi_remove_items (olFolderContacts, priv->fid, list);
+	/*	tmp = id_list;
+		while (tmp) {
+			if (priv->is_cache_ready)
+				e_book_backend_db_cache_remove_contact (priv->cache, tmp->data);
+			if (priv->is_summary_ready)
+				e_book_backend_summary_remove_contact (priv->summary, tmp->data);			
+			tmp = tmp->next;
+		}*/		
 		g_slist_free (list);
 		e_data_book_respond_remove_contacts (book, opid,
 							     GNOME_Evolution_Addressbook_Success,  id_list);
@@ -663,7 +675,6 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 	default:
 		break;
 	}
-	/* FIXME : provide implmentation */
 }
 
 static void
@@ -938,6 +949,42 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 	const char      *business_fax = NULL;
 	const char      *business_home_page = NULL;
 
+
+	uint32_t i;
+/*
+	for (i = 0; i < properties->cValues; i++) {
+		struct mapi_SPropValue *lpProp = &properties->lpProps[i];
+//			return get_mapi_SPropValue_data(&properties->lpProps[i]);
+		switch(lpProp->ulPropTag & 0xFFFF) {
+		case PT_BOOLEAN:
+			printf(" - %d\n", (uint8_t *)&lpProp->value.b);
+		case PT_I2:
+			return (const void *)(uint16_t *)&lpProp->value.i;
+		case PT_LONG:
+			return (const void *)&lpProp->value.l;
+		case PT_DOUBLE:
+			return (const void *)&lpProp->value.dbl;
+		case PT_I8:
+			return (const void *)&lpProp->value.d;
+		case PT_SYSTIME:
+			return (const void *)(struct FILETIME *)&lpProp->value.ft;
+		case PT_ERROR:
+			return (const void *)lpProp->value.err;
+		case PT_STRING8:
+			return (const void *)lpProp->value.lpszA;
+		case PT_UNICODE:
+			return (const void *)lpProp->value.lpszW;
+		case PT_BINARY:
+			return (const void *)(struct SBinary_short *)&lpProp->value.bin;
+		case PT_MV_STRING8:
+			return (const void *)(struct mapi_SLPSTRArray *)&lpProp->value.MVszA;
+		default:
+			return NULL;
+		}
+		
+	}
+	return NULL;
+*/	
 	card_name = (const char *)find_mapi_SPropValue_data(properties, 0x8005001e);
 	topic = (const char *)find_mapi_SPropValue_data(properties, PR_CONVERSATION_TOPIC);
 	company = (const char *)find_mapi_SPropValue_data(properties, PR_COMPANY_NAME);

@@ -1,5 +1,11 @@
 2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* e-book-backend-mapi.c: (e_book_backend_mapi_load_source),
+	(e_book_backend_mapi_remove_contacts), (emapidump_contact): Fix delete
+	contacts. Added base code to dump entire contacts.
+
+2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* e-book-backend-mapi.c: (e_book_backend_mapi_remove_contacts): Add
 	base code to delete contacts.
 
