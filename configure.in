@@ -73,6 +73,14 @@ LIBEXCHANGE_STORAGE_CURRENT=3
 LIBEXCHANGE_STORAGE_REVISION=0
 LIBEXCHANGE_STORAGE_AGE=0
 
+LIBGDATA_CURRENT=1
+LIBGDATA_REVISION=0
+LIBGDATA_AGE=0
+
+LIBGDATA_GOOGLE_CURRENT=1
+LIBGDATA_GOOGLE_REVISION=0
+LIBGDATA_GOOGLE_AGE=0
+
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
 AC_SUBST(LIBEDATASERVER_AGE)
@@ -100,6 +108,12 @@ AC_SUBST(LIBCAMEL_AGE)
 AC_SUBST(LIBEXCHANGE_STORAGE_CURRENT)
 AC_SUBST(LIBEXCHANGE_STORAGE_REVISION)
 AC_SUBST(LIBEXCHANGE_STORAGE_AGE)
+AC_SUBST(LIBGDATA_CURRENT)
+AC_SUBST(LIBGDATA_REVISION)
+AC_SUBST(LIBGDATA_AGE)
+AC_SUBST(LIBGDATA_GOOGLE_CURRENT)
+AC_SUBST(LIBGDATA_GOOGLE_REVISION)
+AC_SUBST(LIBGDATA_GOOGLE_AGE)
 
 dnl Put the ACLOCAL flags in the Makefile
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -1568,6 +1582,7 @@ calendar/backends/groupwise/Makefile
 calendar/backends/http/Makefile
 calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
+calendar/backends/google/Makefile
 calendar/tests/Makefile
 calendar/tests/ecal/Makefile
 camel/Makefile
@@ -1604,7 +1619,12 @@ servers/exchange/Makefile
 servers/exchange/xntlm/Makefile
 servers/exchange/lib/Makefile
 servers/exchange/storage/Makefile
-servers/exchange/storage/libexchange-storage.pc 
+servers/exchange/storage/libexchange-storage.pc
+servers/google/Makefile
+servers/google/libgdata/Makefile
+servers/google/libgdata/libgdata.pc
+servers/google/libgdata-google/Makefile 
+servers/google/libgdata-google/libgdata-google.pc
 src/Makefile
 win32/Makefile
 docs/Makefile
