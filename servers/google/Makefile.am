@@ -1,0 +1,1 @@
+SUBDIRS = libgdata libgdata-google
