@@ -299,6 +299,66 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	return retobj;
 }
 
+gboolean
+exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
+{
+	mapi_object_t obj_store;	
+	mapi_object_t obj_folder;
+	mapi_object_t obj_table;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SRowSet SRowSet;
+	struct SPropTagArray *SPropTagArray;
+	struct mapi_SPropValue_array properties_array;
+	TALLOC_CTX *mem_ctx;
+	int i=0;
+	gpointer retobj = NULL;
+	mapi_id_t *id_messages;
+	GSList *tmp = mids;
+
+	LOCK ();
+
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_message);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items openmsgstore failed: %d\n", retval);
+		UNLOCK ();
+		return FALSE;
+	}
+
+	printf("Opening folder %llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items openfolder failed: %d\n", retval);
+		UNLOCK ();
+		return FALSE;
+	}
+
+	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids));
+	for (; tmp; tmp=tmp->next, i++)
+		id_messages [i] = (mapi_id_t) tmp->data;
+
+	retval = DeleteMessage(&obj_folder, id_messages, i);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items Delete Message failed: %d\n", retval);
+		UNLOCK ();
+		return FALSE;
+	}
+
+	mapi_object_release(&obj_folder);
+	
+
+	UNLOCK ();
+	
+	return TRUE;	
+}
+
+	
 static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)
 {
 	char		*newstr;
@@ -455,3 +515,4 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	return TRUE;
 
 }
+
