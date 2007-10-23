@@ -1378,8 +1378,15 @@ set_local_attachment_store (ECal *ecal)
                 priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
-        }
-
+        } else if (g_str_has_prefix (priv->uri, "google://")) {
+		gchar *filename = g_build_filename (g_get_home_dir (),
+						    ".evolution/cache/calendar",
+						    mangled_uri,
+						    NULL);
+		priv->local_attachment_store = 
+			g_filename_to_uri (filename, NULL, NULL);
+		g_free (filename);
+	}
 	g_free (mangled_uri);
 }
 

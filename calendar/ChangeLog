@@ -1,3 +1,17 @@
+2007-10-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libecal/e-cal.c
+	* backends/Makefile.am
+	* backends/google/e-cal-backend-google.c
+	* backends/google/e-cal-backend-google.h
+	* backends/google/e-cal-backend-google-utils.c
+	* backends/google/e-cal-backend-goole-utils.h
+	* backends/google/e-cal-backend-google-factory.c
+	* backends/google/e-cal-backend-google-factory.h
+	* backends/google/Makefile.am: Initial commit for the Google Calendar.
+
+	Committing on behalf of Ebby Wiselyn <ebbywiselyn@gmail.com>
+
 2007-10-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #420167
