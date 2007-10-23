@@ -1,5 +1,10 @@
 2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* exchange-mapi-connection.c: (mapi_profile_load),
+	(exchange_mapi_remove_items): Add logs and fix remove contacts.
+
+2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* exchange-mapi-connection.c: (exchange_mapi_remove_items): Add
 	implementation for remove items.
 

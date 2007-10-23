@@ -25,6 +25,7 @@
 #include <glib.h>
 #include "exchange-mapi-connection.h"
 #include "exchange-mapi-folder.h"
+#include <param.h>
 
 #define DEFAULT_PROF_PATH ".evolution/mapi-profiles.ldb"
 #define d(x) x
@@ -35,7 +36,8 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-
+#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+#define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -71,6 +73,7 @@ mapi_profile_load(const char *profname, const char *password)
 		}
 	}
 
+//	global_mapi_ctx->dumpdata = TRUE;
 	if (!profile) {
 		if ((retval = GetDefaultProfile(&profile)) != MAPI_E_SUCCESS) {
 /* 			mapi_errstr("GetDefaultProfile", GetLastError()); */
@@ -299,6 +302,10 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	return retobj;
 }
 
+struct folder_data {
+	mapi_id_t id;
+};
+
 gboolean
 exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 {
@@ -311,13 +318,14 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	struct SPropTagArray *SPropTagArray;
 	struct mapi_SPropValue_array properties_array;
 	TALLOC_CTX *mem_ctx;
-	int i=0;
+	uint32_t i=0;
 	gpointer retobj = NULL;
 	mapi_id_t *id_messages;
 	GSList *tmp = mids;
 
 	LOCK ();
 
+	LOGALL ();
 	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_store);
@@ -330,7 +338,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 		return FALSE;
 	}
 
-	printf("Opening folder %llx\n", fid);
+	printf("Opening folder %016llx\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -339,20 +347,23 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 		return FALSE;
 	}
 
-	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids));
-	for (; tmp; tmp=tmp->next, i++)
-		id_messages [i] = (mapi_id_t) tmp->data;
+	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids)+1);
+	for (; tmp; tmp=tmp->next, i++) {
+		struct folder_data *data = tmp->data;
+		id_messages [i] = data->id;
+	}
 
 	retval = DeleteMessage(&obj_folder, id_messages, i);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items Delete Message failed: %d\n", retval);
+		g_warning ("remove items Delete Message %d %d failed: %d\n", i, g_slist_length(mids), retval);
+		mapi_errstr("DeleteMessage ", GetLastError());		
 		UNLOCK ();
 		return FALSE;
 	}
 
 	mapi_object_release(&obj_folder);
 	
-
+	LOGNONE();
 	UNLOCK ();
 	
 	return TRUE;	
