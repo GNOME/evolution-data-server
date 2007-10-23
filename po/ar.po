@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-13 23:37+0100\n"
+"POT-Creation-Date: 2007-10-21 20:01+0100\n"
 "PO-Revision-Date: 2007-02-22 20:36+0200\n"
 "Last-Translator: Anas Husseini <linux.anas@gmail.com>\n"
 "Language-Team:  Arabic <doc@arabeyes.org>\n"
@@ -88,91 +88,92 @@ msgstr "خطأ في تنفيذ البحث"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
-#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
-#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
-#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
-#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
-#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
-#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
-#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
-#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3431
+#: ../addressbook/libebook/e-book.c:254 ../addressbook/libebook/e-book.c:258
+#: ../addressbook/libebook/e-book.c:470 ../addressbook/libebook/e-book.c:474
+#: ../addressbook/libebook/e-book.c:615 ../addressbook/libebook/e-book.c:619
+#: ../addressbook/libebook/e-book.c:708 ../addressbook/libebook/e-book.c:712
+#: ../addressbook/libebook/e-book.c:1026 ../addressbook/libebook/e-book.c:1031
+#: ../addressbook/libebook/e-book.c:1218 ../addressbook/libebook/e-book.c:1222
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1383
+#: ../addressbook/libebook/e-book.c:1592 ../addressbook/libebook/e-book.c:1596
+#: ../addressbook/libebook/e-book.c:1833 ../addressbook/libebook/e-book.c:1837
+#: ../addressbook/libebook/e-book.c:2074 ../addressbook/libebook/e-book.c:2078
+#: ../addressbook/libebook/e-book.c:2290 ../addressbook/libebook/e-book.c:2294
+#: ../addressbook/libebook/e-book.c:3429
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" في الدفتر قبل \"%s\""
 
-#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
-#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
-#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
-#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2672
-#: ../addressbook/libebook/e-book.c:2878
+#: ../addressbook/libebook/e-book.c:267 ../addressbook/libebook/e-book.c:483
+#: ../addressbook/libebook/e-book.c:628 ../addressbook/libebook/e-book.c:721
+#: ../addressbook/libebook/e-book.c:1041 ../addressbook/libebook/e-book.c:1232
+#: ../addressbook/libebook/e-book.c:1393 ../addressbook/libebook/e-book.c:1605
+#: ../addressbook/libebook/e-book.c:1846 ../addressbook/libebook/e-book.c:2088
+#: ../addressbook/libebook/e-book.c:2303 ../addressbook/libebook/e-book.c:2669
+#: ../addressbook/libebook/e-book.c:2875
+#, c-format
 msgid "book busy"
 msgstr "الدفتر مشغول"
 
-#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
-#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
-#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
-#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
-#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
-#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
-#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
-#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
-#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
-#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
-#: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
+#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:304
+#: ../addressbook/libebook/e-book.c:516 ../addressbook/libebook/e-book.c:520
+#: ../addressbook/libebook/e-book.c:657 ../addressbook/libebook/e-book.c:661
+#: ../addressbook/libebook/e-book.c:750 ../addressbook/libebook/e-book.c:754
+#: ../addressbook/libebook/e-book.c:1070 ../addressbook/libebook/e-book.c:1073
+#: ../addressbook/libebook/e-book.c:1264 ../addressbook/libebook/e-book.c:1267
+#: ../addressbook/libebook/e-book.c:1422 ../addressbook/libebook/e-book.c:1426
+#: ../addressbook/libebook/e-book.c:1641 ../addressbook/libebook/e-book.c:1645
+#: ../addressbook/libebook/e-book.c:1893 ../addressbook/libebook/e-book.c:1897
+#: ../addressbook/libebook/e-book.c:2120 ../addressbook/libebook/e-book.c:2124
+#: ../addressbook/libebook/e-book.c:2331 ../addressbook/libebook/e-book.c:2335
+#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2697
+#: ../addressbook/libebook/e-book.c:2701 ../addressbook/libebook/e-book.c:2903
+#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3438
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "خطأ كوبرا (COBRA)عند فعل  \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2594
+#: ../addressbook/libebook/e-book.c:2591
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: لا توجد عملّية حالياً"
 
-#: ../addressbook/libebook/e-book.c:2629
+#: ../addressbook/libebook/e-book.c:2626
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: تعذّر الإلغاء"
 
-#: ../addressbook/libebook/e-book.c:2658 ../addressbook/libebook/e-book.c:2662
+#: ../addressbook/libebook/e-book.c:2655 ../addressbook/libebook/e-book.c:2659
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" في الدفتر بعد \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2728
+#: ../addressbook/libebook/e-book.c:2725
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: أُلغِيَ"
 
-#: ../addressbook/libebook/e-book.c:3295
+#: ../addressbook/libebook/e-book.c:3293
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: مصدر غير سليم."
 
-#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
+#: ../addressbook/libebook/e-book.c:3301 ../addressbook/libebook/e-book.c:3367
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: لا معامل متوفرة للعنوان `%s'"
 
-#: ../addressbook/libebook/e-book.c:3315
+#: ../addressbook/libebook/e-book.c:3313
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: تعذّر إنشاء EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3580
+#: ../addressbook/libebook/e-book.c:3578
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: لم يوجد أي رمز اتصال ذاتي مخزن في جكونف gconf"
 
-#: ../addressbook/libebook/e-book.c:3713
+#: ../addressbook/libebook/e-book.c:3711
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: لا يوجد مصدر محفوظ للـ uid `%s' في gconf."
@@ -628,7 +629,7 @@ msgid "Birth Date"
 msgstr "تاريخ الميلاد"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:464
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "الذكرى السنويّة"
@@ -676,17 +677,17 @@ msgstr "المعلومات الجغرافية"
 msgid "Unnamed List"
 msgstr "قائمة غير مسمّاة"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:466
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "عيد الميلاد"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:492
 #, c-format
 msgid "Birthday: %s"
 msgstr "عيد الميلاد: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:516
 #, c-format
 msgid "Anniversary: %s"
 msgstr "الذكرى السنويّة: %s"
@@ -1278,8 +1279,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"\"%s\" يتوقع أن يكون المعامل الأول إما \"any\" أو \"summary\" أو \"description"
-"\" أو \"location\" أو \"attendee\" أو \"organizer\" أو \"classification\""
+"\"%s\" يتوقع أن يكون المعامل الأول إما \"any\" أو \"summary\" أو "
+"\"description\" أو \"location\" أو \"attendee\" أو \"organizer\" أو "
+"\"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
 #, c-format
@@ -1392,66 +1394,66 @@ msgstr "يجب أن تكون متّصلاً لإتمام هذه العمليّة
 msgid "No description available"
 msgstr "لا وجود لوصف"
 
-#: ../camel/camel-filter-driver.c:771
+#: ../camel/camel-filter-driver.c:752
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "فشل إنشاء العمليّة الإبنة '%s': %s"
 
-#: ../camel/camel-filter-driver.c:813
+#: ../camel/camel-filter-driver.c:794
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "تيّار رسائل غير صالح تلقّي من %s: %s"
 
-#: ../camel/camel-filter-driver.c:1002 ../camel/camel-filter-driver.c:1011
+#: ../camel/camel-filter-driver.c:983 ../camel/camel-filter-driver.c:992
 msgid "Syncing folders"
 msgstr "يجري مزامنة المجلّدات"
 
-#: ../camel/camel-filter-driver.c:1100 ../camel/camel-filter-driver.c:1479
+#: ../camel/camel-filter-driver.c:1081 ../camel/camel-filter-driver.c:1460
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "خطأ أثناء ترجمة المرشِّح: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1109 ../camel/camel-filter-driver.c:1488
+#: ../camel/camel-filter-driver.c:1090 ../camel/camel-filter-driver.c:1469
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "خطأ أثناء تنفيذ المرشِّح: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1177
+#: ../camel/camel-filter-driver.c:1158
 msgid "Unable to open spool folder"
 msgstr "تعذّر فتح مجلّد البكرة"
 
-#: ../camel/camel-filter-driver.c:1186
+#: ../camel/camel-filter-driver.c:1167
 msgid "Unable to process spool folder"
 msgstr "تعذّر معالجة مجلّد البكرة"
 
-#: ../camel/camel-filter-driver.c:1201
+#: ../camel/camel-filter-driver.c:1182
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "يجري جلب الرّسالة %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1205
+#: ../camel/camel-filter-driver.c:1186
 msgid "Cannot open message"
 msgstr "لا يمكن فتح الرّسالة"
 
-#: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1218
+#: ../camel/camel-filter-driver.c:1187 ../camel/camel-filter-driver.c:1199
 #, c-format
 msgid "Failed on message %d"
 msgstr "فشل عند الرّسالة %d"
 
-#: ../camel/camel-filter-driver.c:1232 ../camel/camel-filter-driver.c:1323
+#: ../camel/camel-filter-driver.c:1213 ../camel/camel-filter-driver.c:1304
 msgid "Syncing folder"
 msgstr "يجري مزامنة المجلّد"
 
-#: ../camel/camel-filter-driver.c:1236 ../camel/camel-filter-driver.c:1328
+#: ../camel/camel-filter-driver.c:1217 ../camel/camel-filter-driver.c:1309
 msgid "Complete"
 msgstr "تام"
 
-#: ../camel/camel-filter-driver.c:1293
+#: ../camel/camel-filter-driver.c:1274
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "يجري جلب الرّسالة %d من أصل %d"
 
-#: ../camel/camel-filter-driver.c:1308
+#: ../camel/camel-filter-driver.c:1289
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "فشل عند الرّسالة %d من أصل %d"
@@ -2253,10 +2255,12 @@ msgid "Certificate import failed"
 msgstr "فشل استيراد الشهادة"
 
 #: ../camel/camel-smime-context.c:602
+#, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "الشهاده هي الرسالة الوحيدة ، لا أستطيع التحقق الشهادات"
 
 #: ../camel/camel-smime-context.c:605
+#, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "الشهاده هي الرسالة الوحيدة، تم استيراد الشهادات والتحقق منها"
 
@@ -2810,6 +2814,7 @@ msgid "You did not enter a password."
 msgstr "لم تُدخِل كلمة سر."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:230
+#, c-format
 msgid "Unable to authenticate to GroupWise server. "
 msgstr "تعذّر التوثيق مع خادم GroupWise."
 
@@ -4343,8 +4348,8 @@ msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
-"تعذر الاتصال بخادم POP %s:\t معرّف APOP المستـَلم غير صالح. "
-"يُشتبه في أن يكون هذا عملية انتحال لشخصية. رجاءً اتصل بمديرك."
+"تعذر الاتصال بخادم POP %s:\t معرّف APOP المستـَلم غير صالح. يُشتبه في أن يكون "
+"هذا عملية انتحال لشخصية. رجاءً اتصل بمديرك."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #: ../camel/providers/pop3/camel-pop3-store.c:559
@@ -4997,25 +5002,25 @@ msgid "_Search:"
 msgstr "ا_بحث:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2241
+#: ../libedataserverui/e-name-selector-entry.c:2243
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "مدّ_د %s في السياق"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2256
+#: ../libedataserverui/e-name-selector-entry.c:2258
 #, c-format
 msgid "Cop_y %s"
 msgstr "_نسخ %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2266
+#: ../libedataserverui/e-name-selector-entry.c:2268
 #, c-format
 msgid "C_ut %s"
 msgstr "ق_صّ %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2283
+#: ../libedataserverui/e-name-selector-entry.c:2285
 #, c-format
 msgid "_Edit %s"
 msgstr "_حرّر %s"
