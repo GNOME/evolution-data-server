@@ -74,43 +74,74 @@ struct _EBookBackendMAPIPrivate
 #define ELEMENT_TYPE_COMPLEX 0x02 /* fields which require explicit functions to set values into EContact and EGwItem */
 
 #define SUMMARY_FLUSH_TIMEOUT 5000
+#define ELEMENT_TYPE_SIMPLE 0x01
+#define ELEMENT_TYPE_COMPLEX 0x02
 
 static EContact * emapidump_contact(struct mapi_SPropValue_array *properties);
-/*
+
 static const struct field_element_mapping {
-	EContactField field_id;
-  	int element_type;
-	char *element_name;
-	void (*populate_contact_func)(EContact *contact,    gpointer data);
-	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
-	void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
- 
-} mappings [] = { 
-  
-	{ E_CONTACT_UID, ELEMENT_TYPE_SIMPLE, "id"},
-	{ E_CONTACT_FILE_AS, ELEMENT_TYPE_SIMPLE, "name" },
-	{ E_CONTACT_FULL_NAME, ELEMENT_TYPE_COMPLEX, "full_name", populate_full_name, set_full_name_in_gw_item, set_full_name_changes},
-	{ E_CONTACT_BIRTH_DATE, ELEMENT_TYPE_COMPLEX, "birthday", populate_birth_date, set_birth_date_in_gw_item, set_birth_date_changes },
-	{ E_CONTACT_HOMEPAGE_URL, ELEMENT_TYPE_SIMPLE, "website"},
-	{ E_CONTACT_NOTE, ELEMENT_TYPE_SIMPLE, "comment"},
-	{ E_CONTACT_PHONE_PRIMARY, ELEMENT_TYPE_SIMPLE , "default_phone"},
-	{ E_CONTACT_PHONE_BUSINESS, ELEMENT_TYPE_SIMPLE, "phone_Office"},
-	{ E_CONTACT_PHONE_HOME, ELEMENT_TYPE_SIMPLE, "phone_Home"},
-	{ E_CONTACT_PHONE_MOBILE, ELEMENT_TYPE_SIMPLE, "phone_Mobile"},
-	{ E_CONTACT_PHONE_BUSINESS_FAX, ELEMENT_TYPE_SIMPLE, "phone_Fax" },
-	{ E_CONTACT_PHONE_PAGER, ELEMENT_TYPE_SIMPLE, "phone_Pager"},
-	{ E_CONTACT_ORG, ELEMENT_TYPE_SIMPLE, "organization"},
-	{ E_CONTACT_ORG_UNIT, ELEMENT_TYPE_SIMPLE, "department"},
-	{ E_CONTACT_TITLE, ELEMENT_TYPE_SIMPLE, "title"},
-	{ E_CONTACT_EMAIL, ELEMENT_TYPE_COMPLEX, "members", populate_contact_members, NULL, NULL},
-	{ E_CONTACT_ADDRESS_HOME, ELEMENT_TYPE_COMPLEX, "Home", populate_address, set_address_in_gw_item, set_address_changes },
-	{ E_CONTACT_IM_AIM, ELEMENT_TYPE_COMPLEX, "ims", populate_ims, set_ims_in_gw_item, set_im_changes },
-	{ E_CONTACT_CATEGORIES, ELEMENT_TYPE_COMPLEX, "categories", NULL, NULL, set_categories_changes},
-	{ E_CONTACT_EMAIL_1, ELEMENT_TYPE_COMPLEX, "email", populate_emails, set_emails_in_gw_item, set_emails_changes },
-	{ E_CONTACT_REV, ELEMENT_TYPE_SIMPLE, "modified_time"},
-	{ E_CONTACT_BOOK_URI, ELEMENT_TYPE_SIMPLE, "book_uri"}
-};
-*/
+		EContactField field_id;
+		int element_type;
+	        int mapi_id;
+	        int contact_type;
+//		char *element_name;
+//		void (*populate_contact_func)(EContact *contact,    gpointer data);
+//		void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
+//		void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
+
+	} mappings [] = { 
+
+	{ E_CONTACT_UID, PT_STRING8, 0, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_REV, PT_SYSTIME, PR_LAST_MODIFICATION_TIME, ELEMENT_TYPE_SIMPLE},
+		
+	{ E_CONTACT_FILE_AS, PT_STRING8, PR_EMS_AB_MANAGER_T, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_FULL_NAME, PT_STRING8, PR_DISPLAY_NAME, ELEMENT_TYPE_SIMPLE },
+	{ E_CONTACT_GIVEN_NAME, PT_STRING8, PR_GIVEN_NAME, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_FAMILY_NAME, PT_STRING8, PR_SURNAME , ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_NICKNAME, PT_STRING8, PR_NICKNAME, ELEMENT_TYPE_SIMPLE },
+
+	{ E_CONTACT_EMAIL_1, PT_STRING8, 0x8083001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_EMAIL_2, PT_STRING8, 0x8093001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_EMAIL_3, PT_STRING8, 0x80a3001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_IM_AIM, PT_STRING8, 0x8062001e, ELEMENT_TYPE_COMPLEX},
+		
+	{ E_CONTACT_PHONE_BUSINESS, PT_STRING8, PR_OFFICE_TELEPHONE_NUMBER, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_HOME, PT_STRING8, PR_HOME_TELEPHONE_NUMBER, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_MOBILE, PT_STRING8, PR_MOBILE_TELEPHONE_NUMBER, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_HOME_FAX, PT_STRING8, PR_HOME_FAX_NUMBER ,ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_BUSINESS_FAX, PT_STRING8, PR_BUSINESS_FAX_NUMBER,ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_PAGER, PT_STRING8, PR_PAGER_TELEPHONE_NUMBER,ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_ASSISTANT, PT_STRING8, PR_ASSISTANT_TELEPHONE_NUMBER ,ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_PHONE_COMPANY, PT_STRING8, PR_COMPANY_MAIN_PHONE_NUMBER ,ELEMENT_TYPE_SIMPLE},
+
+	{ E_CONTACT_HOMEPAGE_URL, PT_STRING8, 0x802b001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_FREEBUSY_URL, PT_STRING8, 0x80d8001e, ELEMENT_TYPE_SIMPLE},
+
+	{ E_CONTACT_ROLE, PT_STRING8, PR_PROFESSION, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_TITLE, PT_STRING8, PR_TITLE, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_ORG, PT_STRING8, PR_COMPANY_NAME, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_ORG_UNIT, PT_STRING8, PR_DEPARTMENT_NAME,ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_MANAGER, PT_STRING8, PR_MANAGER_NAME, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_ASSISTANT, PT_STRING8, PR_ASSISTANT, ELEMENT_TYPE_SIMPLE},
+		
+	{ E_CONTACT_OFFICE, PT_STRING8, PR_OFFICE_LOCATION, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_SPOUSE, PT_STRING8, PR_SPOUSE_NAME, ELEMENT_TYPE_SIMPLE},
+		
+	{ E_CONTACT_BIRTH_DATE,  PT_SYSTIME, PR_BIRTHDAY, ELEMENT_TYPE_COMPLEX},
+	{ E_CONTACT_ANNIVERSARY, PT_SYSTIME, PR_WEDDING_ANNIVERSARY, ELEMENT_TYPE_COMPLEX},
+		  
+	{ E_CONTACT_NOTE, PT_STRING8, PR_BODY, ELEMENT_TYPE_SIMPLE},
+		
+
+	{ E_CONTACT_ADDRESS_HOME, PT_STRING8, 0x801a001e, ELEMENT_TYPE_COMPLEX},
+	{ E_CONTACT_ADDRESS_WORK, PT_STRING8, 0x801c001e, ELEMENT_TYPE_COMPLEX},
+//		{ E_CONTACT_BOOK_URI, ELEMENT_TYPE_SIMPLE, "book_uri"}
+//		{ E_CONTACT_EMAIL, PT_STRING8, 0x8084001e},
+//		{ E_CONTACT_CATEGORIES, },		
+	};
+
+static maplen = G_N_ELEMENTS(mappings);
+
 static EDataBookView *
 find_book_view (EBookBackendMAPI *ebmapi)
 {
@@ -924,136 +955,157 @@ get_closure (EDataBookView *book_view)
 	return g_object_get_data (G_OBJECT (book_view), "closure");
 }
 
+static void
+mapi_dump_props (struct mapi_SPropValue_array *properties)
+{
+	int i;
+	
+	for (i = 0; i < properties->cValues; i++) {
+		struct mapi_SPropValue *lpProp = &properties->lpProps[i];
+		const char *tmp =  get_proptag_name (lpProp->ulPropTag);
+		if (tmp && *tmp)
+			printf("%s \t",tmp);
+		else
+			printf("%x \t", lpProp->ulPropTag);
+		switch(lpProp->ulPropTag & 0xFFFF) {
+		case PT_BOOLEAN:
+			printf(" (bool) - %d\n", lpProp->value.b);
+			break;
+		case PT_I2:
+			priintf(" (uint16_t) - %d\n", lpProp->value.i);
+			break;
+		case PT_LONG:
+			printf(" (long) - %ld\n", lpProp->value.l);
+			break;
+		case PT_DOUBLE:
+			printf (" (double) -  %lf\n", lpProp->value.dbl);
+			break;
+		case PT_I8:
+			printf (" (int) - %d\n", lpProp->value.d);
+			break;
+		case PT_SYSTIME:
+			printf (" (struct FILETIME *) - %p\n", &lpProp->value.ft);
+			break;
+		case PT_ERROR:
+			printf (" (error) - %p\n", lpProp->value.err);
+			break;
+		case PT_STRING8:
+			printf(" (string) - %s\n", lpProp->value.lpszA ? lpProp->value.lpszA : "null" );
+			break;
+		case PT_UNICODE:
+			printf(" (unicodestring) - %s\n", lpProp->value.lpszW ? lpProp->value.lpszW : "null");
+			break;
+		case PT_BINARY:
+			printf(" (struct SBinary_short *) - %p\n", &lpProp->value.bin);
+			break;
+		case PT_MV_STRING8:
+			printf(" (struct mapi_SLPSTRArray *) - %p\n", &lpProp->value.MVszA);
+			break;
+		default:
+			printf(" - NONE NULL\n");
+		}
+		
+	}
+	
+}
 //FIXME: Be more clever in dumping contacts. Can we have a callback mechanism for each types?
 static EContact *
 emapidump_contact(struct mapi_SPropValue_array *properties)
 {
 	EContact *contact = e_contact_new ();
-	const char	*card_name =NULL;
-	const char	*topic =NULL;
-	const char	*full_name = NULL;
-	const char	*given_name = NULL;
-	const char	*surname = NULL;
-	const char	*company = NULL;
-	const char	*email = NULL;
-	const char	*title = NULL;
-	const char      *office_phone = NULL;
-	const char      *home_phone = NULL;
-	const char      *mobile_phone = NULL;
-	const char      *postal_address = NULL;
-	const char      *street_address = NULL;
-	const char      *locality = NULL;
-	const char      *state = NULL;
-	const char      *country = NULL;
-	const char      *department = NULL;
-	const char      *business_fax = NULL;
-	const char      *business_home_page = NULL;
+	int i;
+	
+//	mapi_dump_props (properties);
+	for (i=1; i<maplen; i++) {
+		gpointer value;
 
+		value = find_mapi_SPropValue_data (properties, mappings[i].mapi_id);
+		if (mappings[i].element_type == PT_STRING8 && mappings[i].contact_type == ELEMENT_TYPE_SIMPLE) {
+			if (value)
+				e_contact_set (contact, mappings[i].field_id, value);
+		} else if (mappings[i].contact_type == ELEMENT_TYPE_SIMPLE) {
+			if (value && mappings[i].element_type == PT_SYSTIME) {
+				struct FILETIME *t = value;
+				time_t time;
+				NTTIME nt;
+				char *tmp;
+				nt = t->dwHighDateTime;
+				nt = nt << 32;
+				nt |= t->dwLowDateTime;
+				time = nt_time_to_unix (nt);
+				tmp = ctime (&time);
+				e_contact_set (contact, mappings[i].field_id, tmp);
+				//g_free (tmp);
+			} else
+				printf("Nothing is printed\n");
+		} else if (mappings[i].contact_type == ELEMENT_TYPE_COMPLEX) {
+			if (mappings[i].field_id == E_CONTACT_IM_AIM) {
+				GList *list = NULL;
+				EVCardAttribute *attr;
+				
+				attr = e_vcard_attribute_new ("", e_contact_vcard_attribute(E_CONTACT_IM_AIM));
+//				e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), "AIM");
+				e_vcard_attribute_add_value (attr, value);
+				list = g_list_append (list, value);
+				printf("%s -----\n", value);
+				e_contact_set (contact, mappings[i].field_id, list);
+				//FIXME: FREE them
+			} else if (mappings[i].field_id == E_CONTACT_BIRTH_DATE
+				   || mappings[i].field_id == E_CONTACT_ANNIVERSARY) {
+				struct FILETIME *t = value;
+				time_t time;
+				NTTIME nt;
+				struct tm * tmtime;
+				if (value) {
+					EContactDate *date = g_new (EContactDate, 1);
+					nt = t->dwHighDateTime;
+					nt = nt << 32;
+					nt |= t->dwLowDateTime;
+					time = nt_time_to_unix (nt);
+					tmtime = gmtime (&time);
 
-	uint32_t i;
-/*
-	for (i = 0; i < properties->cValues; i++) {
-		struct mapi_SPropValue *lpProp = &properties->lpProps[i];
-//			return get_mapi_SPropValue_data(&properties->lpProps[i]);
-		switch(lpProp->ulPropTag & 0xFFFF) {
-		case PT_BOOLEAN:
-			printf(" - %d\n", (uint8_t *)&lpProp->value.b);
-		case PT_I2:
-			return (const void *)(uint16_t *)&lpProp->value.i;
-		case PT_LONG:
-			return (const void *)&lpProp->value.l;
-		case PT_DOUBLE:
-			return (const void *)&lpProp->value.dbl;
-		case PT_I8:
-			return (const void *)&lpProp->value.d;
-		case PT_SYSTIME:
-			return (const void *)(struct FILETIME *)&lpProp->value.ft;
-		case PT_ERROR:
-			return (const void *)lpProp->value.err;
-		case PT_STRING8:
-			return (const void *)lpProp->value.lpszA;
-		case PT_UNICODE:
-			return (const void *)lpProp->value.lpszW;
-		case PT_BINARY:
-			return (const void *)(struct SBinary_short *)&lpProp->value.bin;
-		case PT_MV_STRING8:
-			return (const void *)(struct mapi_SLPSTRArray *)&lpProp->value.MVszA;
-		default:
-			return NULL;
+					date->day = tmtime->tm_mday + 1;
+					date->month = tmtime->tm_mon + 1;
+					date->year = tmtime->tm_year + 1900;
+					e_contact_set (contact, mappings[i].field_id, date);
+					
+				}
+				
+			} else if (mappings[i].field_id == E_CONTACT_ADDRESS_WORK
+				   || mappings[i].field_id == E_CONTACT_ADDRESS_HOME) {
+				EContactAddress *contact_addr;
+
+				contact_addr = g_new0(EContactAddress, 1);
+				if (mappings[i].field_id == E_CONTACT_ADDRESS_HOME) {
+						contact_addr->address_format = NULL;
+						contact_addr->po = NULL;
+						contact_addr->street = value;
+						contact_addr->ext = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_POST_OFFICE_BOX);
+						contact_addr->locality = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_CITY);
+						contact_addr->region = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_STATE_OR_PROVINCE);
+						contact_addr->code = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_POSTAL_CODE);
+						contact_addr->country = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_COUNTRY);
+
+				} else {
+
+						contact_addr->address_format = NULL;
+						contact_addr->po = NULL;
+						contact_addr->street = value;
+						contact_addr->ext = find_mapi_SPropValue_data (properties, PR_POST_OFFICE_BOX);
+						contact_addr->locality = find_mapi_SPropValue_data (properties, PR_LOCALITY);
+						contact_addr->region = find_mapi_SPropValue_data (properties, PR_STATE_OR_PROVINCE);
+						contact_addr->code = find_mapi_SPropValue_data (properties, PR_POSTAL_CODE);
+						contact_addr->country = find_mapi_SPropValue_data (properties, PR_COUNTRY);
+				}
+				e_contact_set (contact, mappings[i].field_id, contact_addr);
+				//FIXME: Free everything.
+				
+			}
+			
+			
 		}
-		
 	}
-	return NULL;
-*/	
-	card_name = (const char *)find_mapi_SPropValue_data(properties, 0x8005001e);
-	topic = (const char *)find_mapi_SPropValue_data(properties, PR_CONVERSATION_TOPIC);
-	company = (const char *)find_mapi_SPropValue_data(properties, PR_COMPANY_NAME);
-	title = (const char *)find_mapi_SPropValue_data(properties, PR_TITLE);
-	full_name = (const char *)find_mapi_SPropValue_data(properties, PR_DISPLAY_NAME);
-	given_name = (const char *)find_mapi_SPropValue_data(properties, PR_GIVEN_NAME);
-	surname = (const char *)find_mapi_SPropValue_data(properties, PR_SURNAME);
-	department = (const char *)find_mapi_SPropValue_data(properties, PR_DEPARTMENT_NAME);
-	email = (const char *)find_mapi_SPropValue_data(properties, 0x8084001e);
-	office_phone = (const char *)find_mapi_SPropValue_data(properties, PR_OFFICE_TELEPHONE_NUMBER);
-	home_phone = (const char *)find_mapi_SPropValue_data(properties, PR_HOME_TELEPHONE_NUMBER);
-	mobile_phone = (const char *)find_mapi_SPropValue_data(properties, PR_MOBILE_TELEPHONE_NUMBER);
-	business_fax = (const char *)find_mapi_SPropValue_data(properties, PR_BUSINESS_FAX_NUMBER);
-	business_home_page = (const char *)find_mapi_SPropValue_data(properties, PR_BUSINESS_HOME_PAGE);
-	postal_address = (const char*)find_mapi_SPropValue_data(properties, PR_POSTAL_ADDRESS);
-	street_address = (const char*)find_mapi_SPropValue_data(properties, PR_STREET_ADDRESS);
-	locality = (const char*)find_mapi_SPropValue_data(properties, PR_LOCALITY);
-	state = (const char*)find_mapi_SPropValue_data(properties, PR_STATE_OR_PROVINCE);
-	country = (const char*)find_mapi_SPropValue_data(properties, PR_COUNTRY);
-
-/*
-	if (card_name) 
-		printf("|== %s ==|\n", card_name );
-	else if (topic)
-		printf("|== %s ==|\n", topic );
-	else 
-		printf("|== <Unknown> ==|\n");
-	fflush(0);
-	if (topic) printf("Topic: %s\n", topic);
-	fflush(0);
-	if (full_name)
-		printf("Full Name: %s\n", full_name);
-	else if (given_name && surname)
-		printf("Full Name: %s %s\n", given_name, surname); // initials? l10n?
-	fflush(0);
-	if (title) printf("Job Title: %s\n", title);
-	fflush(0);
-	if (department) printf("Department: %s\n", department);
-	fflush(0);
-	if (company) printf("Company: %s\n", company);
-	fflush(0);
-	if (email) printf("E-mail: %s\n", email);
-	fflush(0);
-	if (office_phone) printf("Office phone number: %s\n", office_phone);
-	fflush(0);
-	if (home_phone) printf("Work phone number: %s\n", home_phone);
-	fflush(0);
-	if (mobile_phone) printf("Mobile phone number: %s\n", mobile_phone);
-	fflush(0);
-	if (business_fax) printf("Business fax number: %s\n", business_fax);
-	fflush(0);
-	if (business_home_page) printf("Business home page: %s\n", business_home_page);
-	fflush(0);
-	if (postal_address) printf("Postal address: %s\n", postal_address);
-	fflush(0);
-	if (street_address) printf("Street address: %s\n", street_address);
-	fflush(0);
-	if (locality) printf("Locality: %s\n", locality);
-	fflush(0);
-	if (state) printf("State / Province: %s\n", state);
-	fflush(0);
-	if (country) printf("Country: %s\n", country);
-	fflush(0);
-
-	printf("\n");
-*/
-	e_contact_set (contact, E_CONTACT_FULL_NAME, full_name);
-	e_contact_set (contact, E_CONTACT_EMAIL_1, email);
-
+	
 	return contact;
 }
 
@@ -1438,29 +1490,12 @@ e_book_backend_mapi_get_supported_fields (EBookBackend *backend,
 	if (enable_debug)
 		printf ("mapi get_supported_fields...\n");
 
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_UID)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_FILE_AS)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_FULL_NAME)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_HOMEPAGE_URL)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_NOTE)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_HOME)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_BUSINESS)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_MOBILE)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_ORG)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_ORG_UNIT)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_TITLE)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_ADDRESS_HOME)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_AIM)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_CATEGORIES)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_1)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_REV)));
+	for (i=0; i<maplen; i++)
+	{
+		fields = g_list_append (fields, (char *)e_contact_field_name (mappings[i].field_id));
+	}
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_BOOK_URI)));
-	//fields = g_list_append (fields, g_strdup (e_contact_field_name ()));
 
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
-	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_ADDRESS_WORK)));
 	e_data_book_respond_get_supported_fields (book, opid,
 						  GNOME_Evolution_Addressbook_Success,
 						  fields);

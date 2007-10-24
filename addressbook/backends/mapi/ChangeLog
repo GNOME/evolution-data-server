@@ -1,3 +1,9 @@
+2007-10-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-book-backend-mapi.c: (mapi_dump_props), (emapidump_contact),
+	(e_book_backend_mapi_get_supported_fields): Implemented support for
+	Fetching all entried in a contact.
+
 2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-book-backend-mapi.c: (e_book_backend_mapi_load_source),
