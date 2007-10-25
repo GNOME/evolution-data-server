@@ -44,6 +44,7 @@ E_IS_SOURCE_COMBO_BOX_CLASS
 E_SOURCE_COMBO_BOX_GET_CLASS
 ESourceComboBoxClass
 <SUBSECTION Private>
+ESourceComboBoxPrivate
 e_source_combo_box_get_type
 </SECTION>
 
