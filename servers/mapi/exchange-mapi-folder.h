@@ -43,4 +43,8 @@ ExchangeMAPIFolder *
 exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class,
 			  uint64_t folder_id, uint64_t parent_folder_id, uint32_t child_count);
 
+const gchar* exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder);
+const guint32 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder);
+const guint64 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder);
+
 #endif

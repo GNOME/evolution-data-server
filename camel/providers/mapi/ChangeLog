@@ -1,3 +1,14 @@
+2007-10-26  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-summary.[ch] : Added.
+
+	* Implemented get_folder_info and some base work.
+
+2007-10-22  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-provider.c : Added new licence. Renamed APIs.
+	* camel-mapi-store.c: Added new licence. Renamed APIs.
+	
 2007-10-22  Johnny Jacob  <jjohnny@novell.com>
 
 	* Makefile.am : Added.

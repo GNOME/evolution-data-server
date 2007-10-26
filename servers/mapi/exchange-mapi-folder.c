@@ -62,3 +62,27 @@ exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_nam
 
 	return folder;
 }
+
+const gchar*
+exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder)
+{
+	return folder->folder_name;
+}
+
+const guint32
+exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder)
+{
+	return folder->folder_id;
+}
+
+const guint64
+exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder)
+{
+	return folder->parent_folder_id;
+}
+
+ExchangeMAPIFolderType
+exchange_mapi_folder_get_type (ExchangeMAPIFolder *folder)
+{
+	return folder->container_class;
+}

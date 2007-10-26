@@ -656,9 +656,6 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 	return FALSE;
 }
 
-
-
-
 gboolean 
 exchange_mapi_get_folders_list (GSList **mapi_folders)
 {
@@ -702,6 +699,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 
 	/* Prepare the directory listing */
 	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderTopInformationStore);
+	//	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderInbox);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();

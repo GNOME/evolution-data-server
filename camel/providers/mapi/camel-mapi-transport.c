@@ -65,7 +65,7 @@
 CamelStore *get_store(void);
 
 void	set_store(CamelStore *);
-int	m_oc_initialize();
+gboolean mapi_initialize();
 
 /*
 ** this function is used to send message
@@ -156,7 +156,7 @@ static gboolean openchange_send_to (CamelTransport *transport,
 	oc_message_headers_set_from(&headers, namep);
 
 	oc_thread_connect_lock();
-	m_oc_initialize();
+	mapi_initialize();
 	
 	to = camel_mime_message_get_recipients(message, CAMEL_RECIPIENT_TYPE_TO);
 	for (i = 0; camel_internet_address_get(to, i, &namep, &addressp); i++){

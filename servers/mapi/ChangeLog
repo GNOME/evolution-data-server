@@ -1,3 +1,8 @@
+2007-10-26  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-folder.c : Added utility functions to retrive
+	ExchangeMAPIFolder members.
+
 2007-10-26  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	* exchange-mapi-connection.c: (mapi_profile_load),

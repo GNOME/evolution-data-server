@@ -1,26 +1,28 @@
-/*
- *  Copyright (C) Jean-Baptiste Arnoult 2007.
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Johnny Jacob <jjohnny@novell.com>
+ *   
+ * Copyright (C) 2007, Novell Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 3 of the GNU Lesser General Public 
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* camel-exchange-store.h: class for a openchange store */
+/* camel-mapi-store.h: class for a openchange store */
 
 
-#ifndef __CAMEL_OPENCHANGE_STORE_H__
-#define __CAMEL_OPENCHANGE_STORE_H__
+#ifndef __CAMEL_MAPI_STORE_H__
+#define __CAMEL_MAPI_STORE_H__
 
 #include <camel/camel-store.h>
 #include <camel/camel-offline-store.h>
@@ -28,44 +30,43 @@
 #include <camel/camel-net-utils.h>
 #include <camel/camel-i18n.h>
 
-#define FILE_NAME "/home/jibijoggs/tmp/eplugin/trunk/debug"
-#define OC_DEBUG(t) \
-{\
-gchar *oc_debug_defined;\
-oc_debug_defined = g_strdup_printf("echo %s >> %s;", t, FILE_NAME);\
-system(oc_debug_defined);\
-g_free(oc_debug_defined);\
-}\
+#include <exchange-mapi-folder.h>
 
+#define OC_DEBUG(t) 
+
+#define CAMEL_MAPI_STORE_TYPE     (camel_mapi_store_get_type ())
+#define CAMEL_MAPI_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAPI_STORE_TYPE, CamelMapiStore))
+#define CAMEL_MAPI_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MAPI_STORE_TYPE, CamelMapiStoreClass))
+#define CAMEL_IS_MAPI_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MAPI_STORE_TYPE))
 
 
 /**
- * DATA STRUCTURES
+ * definition of CamelMAPIStore
  */
+typedef struct _CamelMapiStore CamelMapiStore;
+typedef struct _CamelMapiStoreClass CamelMapiStoreClass;
+typedef struct _CamelMapiStorePrivate CamelMapiStorePrivate;
 
-/**
- * definition of CamelOpenchangeStore
- */
-typedef struct {
-	CamelStore		parent_object;	
-/* 	CamelStub		*stub; */
-	ocStoreSummary_t	*summary;
-	char			*storage_path;
-	char			*base_url;
-	CamelURL		*camel_url;
-	CamelFolderInfo		*fi;
-	char			*trash_name;
-	GHashTable		*folders;
-	GMutex			*folders_lock;
-	gboolean		stub_connected;
-	GMutex			*connect_lock;
-} CamelOpenchangeStore;
+struct _CamelMapiStore{
+	CamelOfflineStore parent_object;	
 
+	struct _CamelMapiStoreSummary *summary;
+	CamelMapiStorePrivate *priv;
+/* 	ocStoreSummary_t	*summary; */
+/* 	char			*base_url; */
+/* 	CamelURL		*camel_url; */
+/* 	CamelFolderInfo		*fi; */
+/* 	GHashTable		*folders; */
+/* 	GMutex			*folders_lock; */
+/* 	GMutex			*connect_lock; */
+};
 
 
-typedef struct {
+
+
+struct _CamelMapiStoreClass {
 	CamelOfflineStoreClass		parent_class;
-} CamelOpenchangeStoreClass;
+};
 
 
 /**
@@ -84,11 +85,11 @@ typedef struct {
 
 __BEGIN_DECLS
 /* Standard Camel function */
-CamelType camel_openchange_store_get_type(void);
-gboolean camel_openchange_store_connected(CamelOpenchangeStore *, CamelException *);
+CamelType camel_mapi_store_get_type(void);
+gboolean camel_mapi_store_connected(CamelMapiStore *, CamelException *);
 
 /* camel-openchange-provider.c */
-int m_oc_initialize(void);
+int mapi_initialize(void);
 __END_DECLS
 
 #endif /* __CAMEL_OPENCHANGE_STORE_H__ */

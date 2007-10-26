@@ -1,19 +1,21 @@
-/*
- *  Copyright (C) Jean-Baptiste Arnoult 2007.
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Johnny Jacob <jjohnny@novell.com>
+ *   
+ * Copyright (C) 2007, Novell Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 3 of the GNU Lesser General Public 
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include <oc.h>
@@ -38,7 +40,16 @@
  #include <pthread.h>
  #define DEBUG_FN( ) printf("----%u %s\n", (unsigned int)pthread_self(), __FUNCTION__);
 
- static CamelFolderClass *parent_class = NULL;
+static CamelOfflineFolderClass *parent_class = NULL;
+
+struct _CamelMapiFolderPrivate {
+ 
+#ifdef ENABLE_THREADS
+	GStaticMutex search_lock;	/* for locking the search object */
+	GStaticRecMutex cache_lock;	/* for locking the cache object */
+#endif
+
+};
 
 static void		openchange_refresh_info (CamelFolder *, CamelException *);
 static void		openchange_expunge (CamelFolder *, CamelException *);
@@ -193,7 +204,7 @@ void	openchange_construct_summary(CamelFolder *folder, CamelException *ex, char 
 	oc_thread_connect_lock();
 	oc_thread_fs_lock(((CamelOpenchangeFolder *)folder)->oc_thread);
 	oc_thread_i_lock(((CamelOpenchangeFolder *)folder)->oc_thread);
-	m_oc_initialize();
+	mapi_initialize();
 	retval = oc_inbox_list_message_ids(&uid, &n_id, &headers, ((CamelOpenchangeFolder *)folder)->folder_id);
 	if (retval == -1) {
 		printf("oc_list_message_ids : ERROR\n");
@@ -218,24 +229,206 @@ end:
 	oc_thread_i_unlock(((CamelOpenchangeFolder *)folder)->oc_thread);
 }
 
-CamelFolder *camel_openchange_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex)
-{
-	CamelFolder	*folder;
-	char		*name;
-	CamelOpenchangeFolderInfo *fi;
+//DONT KNOW WHAT /  Y V NEED THIS. LATER STUDY
 
-	fi = (CamelOpenchangeFolderInfo *)((CamelOpenchangeStore *)parent_store)->fi;
-	while (fi && strcmp(((CamelFolderInfo *)fi)->full_name, full_name) != 0){
-		fi = (CamelOpenchangeFolderInfo *)((CamelFolderInfo *)fi)->next;
+static int
+mapi_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
+{
+	CamelFolder *folder = (CamelFolder *)object;
+	int i, count = 0;
+	guint32 tag;
+
+	//FIXME : HACK . FOR NOW !
+	return 0;
+
+	for (i=0 ; i<args->argc ; i++) {
+		CamelArgGet *arg = &args->argv[i];
+
+		tag = arg->tag;
+
+		switch (tag & CAMEL_ARG_TAG) {
+
+			case CAMEL_OBJECT_ARG_DESCRIPTION:
+				if (folder->description == NULL) {
+					CamelURL *uri = ((CamelService *)folder->parent_store)->url;
+
+					folder->description = g_strdup_printf("%s@%s:%s", uri->user, uri->host, folder->full_name);
+				}
+				*arg->ca_str = folder->description;
+				break;
+			default:
+				count++;
+				continue;
+		}
+
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
 	}
-	if (!fi) return NULL;
-	name = g_strdup(full_name);
-	folder = (CamelFolder *)camel_object_new(camel_openchange_folder_get_type());
-	((CamelOpenchangeFolder *)folder)->folder_id = fi->fid;
-	camel_folder_construct(folder, parent_store, camel_url_encode((full_name), NULL), name);
-	openchange_construct_summary(folder, ex, fi->file_name);
-	folder->parent_store = parent_store;
-	return (folder);
+
+	if (count)
+		return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
+
+	return 0;
+
+}
+
+static void
+camel_mapi_folder_finalize (CamelObject *object)
+{
+	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (object);
+
+	if (mapi_folder->priv)
+		g_free(mapi_folder->priv);
+	if (mapi_folder->cache)
+		camel_object_unref (mapi_folder->cache);
+/* 	if (gw_folder->search) */
+/* 		camel_object_unref (gw_folder->search); */
+
+}
+
+static void
+camel_mapi_folder_class_init (CamelMapiFolderClass *camel_mapi_folder_class)
+{
+	CamelFolderClass *camel_folder_class = CAMEL_FOLDER_CLASS (camel_mapi_folder_class);
+
+	parent_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
+
+	((CamelObjectClass *) camel_mapi_folder_class)->getv = mapi_getv;
+
+/* 	camel_folder_class->get_message = mapi_folder_get_message; */
+/* 	camel_folder_class->rename = mapi_folder_rename; */
+/* 	camel_folder_class->search_by_expression = mapi_folder_search_by_expression; */
+/* 	camel_folder_class->search_by_uids = mapi_folder_search_by_uids;  */
+/* 	camel_folder_class->search_free = mapi_folder_search_free; */
+/* 	camel_folder_class->append_message = mapi_append_message; */
+/* 	camel_folder_class->refresh_info = mapi_refresh_info; */
+/* 	camel_folder_class->sync = mapi_sync; */
+/* 	camel_folder_class->expunge = mapi_expunge; */
+/* 	camel_folder_class->transfer_messages_to = mapi_transfer_messages_to; */
+}
+
+static void
+camel_mapi_folder_init (gpointer object, gpointer klass)
+{
+	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (object);
+	CamelFolder *folder = CAMEL_FOLDER (object);
+
+
+	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
+		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
+
+	folder->folder_flags = CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY | CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
+
+	mapi_folder->priv = g_malloc0 (sizeof(*mapi_folder->priv));
+
+/* #ifdef ENABLE_THREADS */
+/* 	g_static_mutex_init(&gw_folder->priv->search_lock); */
+/* 	g_static_rec_mutex_init(&gw_folder->priv->cache_lock); */
+/* #endif  */
+
+	mapi_folder->need_rescan = TRUE;
+}
+
+CamelType
+camel_mapi_folder_get_type (void)
+{
+	static CamelType camel_mapi_folder_type = CAMEL_INVALID_TYPE;
+
+
+	if (camel_mapi_folder_type == CAMEL_INVALID_TYPE) {
+		camel_mapi_folder_type =
+			camel_type_register (camel_offline_folder_get_type (),
+					"CamelMapiFolder",
+					sizeof (CamelMapiFolder),
+					sizeof (CamelMapiFolderClass),
+					(CamelObjectClassInitFunc) camel_mapi_folder_class_init,
+					NULL,
+					(CamelObjectInitFunc) camel_mapi_folder_init,
+					(CamelObjectFinalizeFunc) camel_mapi_folder_finalize);
+	}
+
+	return camel_mapi_folder_type;
+}
+
+CamelFolder *
+camel_mapi_folder_new(CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+{
+
+	CamelFolder	*folder = NULL;
+	CamelMapiFolder *mapi_folder;
+	char *summary_file, *state_file, *journal_file;
+	char *short_name;
+
+
+	folder = CAMEL_FOLDER (camel_object_new(camel_mapi_folder_get_type ()) );
+
+	mapi_folder = CAMEL_MAPI_FOLDER(folder);
+	short_name = strrchr (folder_name, '/');
+	if (short_name)
+		short_name++;
+	else
+		short_name = (char *) folder_name;
+	camel_folder_construct (folder, store, folder_name, short_name);
+
+	summary_file = g_strdup_printf ("%s-%s/summary",folder_name, "dir");
+	folder->summary = camel_mapi_summary_new(folder, summary_file);
+	g_free(summary_file);
+
+	if (!folder->summary) {
+		camel_object_unref (CAMEL_OBJECT (folder));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Could not load summary for %s"),
+				folder_name);
+		return NULL;
+	}
+
+	/* set/load persistent state */
+	state_file = g_strdup_printf ("%s/cmeta", g_strdup_printf ("%s-%s",folder_name, "dir"));
+	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
+	g_free(state_file);
+	camel_object_state_read(folder);
+
+	mapi_folder->cache = camel_data_cache_new (g_strdup_printf ("%s-%s",folder_name, "dir"),0 ,ex);
+	if (!mapi_folder->cache) {
+		camel_object_unref (folder);
+		return NULL;
+	}
+
+/* 	journal_file = g_strdup_printf ("%s/journal", g_strdup_printf ("%s-%s",folder_name, "dir")); */
+/* 	mapi_folder->journal = camel_mapi_journal_new (mapi_folder, journal_file); */
+/* 	g_free (journal_file); */
+/* 	if (!mapi_folder->journal) { */
+/* 		camel_object_unref (folder); */
+/* 		return NULL; */
+/* 	} */
+
+	if (!strcmp (folder_name, "Mailbox")) {
+		if (camel_url_get_param (((CamelService *) store)->url, "filter"))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+	}
+
+	mapi_folder->search = camel_folder_search_new ();
+	if (!mapi_folder->search) {
+		camel_object_unref (folder);
+		return NULL;
+	}
+
+	return folder;
+
+/* 	char		*name; */
+/* 	CamelOpenchangeFolderInfo *fi; */
+
+/* 	fi = (CamelOpenchangeFolderInfo *)((CamelMapiStore *)parent_store)->fi; */
+/* 	while (fi && strcmp(((CamelFolderInfo *)fi)->full_name, full_name) != 0){ */
+/* 		fi = (CamelOpenchangeFolderInfo *)((CamelFolderInfo *)fi)->next; */
+/* 	} */
+/* 	if (!fi) return NULL; */
+/* 	name = g_strdup(full_name); */
+/* 	folder = (CamelFolder *)camel_object_new(camel_openchange_folder_get_type()); */
+/* 	((CamelOpenchangeFolder *)folder)->folder_id = fi->fid; */
+/* 	camel_folder_construct(folder, parent_store, camel_url_encode((full_name), NULL), name); */
+/* 	openchange_construct_summary(folder, ex, fi->file_name); */
+/* 	folder->parent_store = parent_store; */
+/* 	return (folder); */
 }
 
 

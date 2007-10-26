@@ -1,27 +1,80 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) Jean-Baptiste Arnoult 2007.
+ * Copyright (C) 2002 Ximian Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * Authors: Parthasarathi Susarla <sparthasrathi@novell.com>
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
+ * License as published by the Free Software Foundation.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __OPENCHANGE_STORE_SUMMARY__
-#define __OPENCHANGE_STORE_SUMMARY__
 
+#ifndef _CAMEL_MAPI_STORE_SUMMARY_H
+#define _CAMEL_MAPI_STORE_SUMMARY_H
+
+#include <camel/camel-object.h>
 #include <camel/camel-store-summary.h>
-#include "camel-mapi-store.h"
-#include <pthread.h>
+
+#define CAMEL_MAPI_STORE_SUMMARY_VERSION (0)
+
+#define CAMEL_MAPI_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_mapi_store_summary_get_type (), CamelMapiStoreSummary)
+#define CAMEL_MAPI_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mapi_store_summary_get_type (), CamelMapiStoreSummaryClass)
+#define CAMEL_IS_MAPI_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_mapi_store_summary_get_type ())
+
+G_BEGIN_DECLS
+
+typedef struct _CamelMapiStoreSummary      CamelMapiStoreSummary;
+typedef struct _CamelMapiStoreSummaryClass CamelMapiStoreSummaryClass;
+
+typedef struct _CamelMapiStoreInfo CamelMapiStoreInfo;
+
+enum {
+	CAMEL_MAPI_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
+	CAMEL_MAPI_STORE_INFO_LAST,
+};
+
+struct _CamelMapiStoreInfo {
+	CamelStoreInfo info;
+	char *full_name;
+};
+
+struct _CamelMapiStoreSummary {
+	CamelStoreSummary summary;
+
+	struct _CamelMapiStoreSummaryPrivate *priv;
+
+	/* header info */
+	guint32 version;        /* version of base part of file */
+	guint32 capabilities;
+};
+
+struct _CamelMapiStoreSummaryClass {
+	CamelStoreSummaryClass summary_class;
+};
+
+CamelType                        camel_mapi_store_summary_get_type      (void);
+CamelMapiStoreSummary      *camel_mapi_store_summary_new        (void);
+CamelMapiStoreInfo *camel_mapi_store_summary_full_name(CamelMapiStoreSummary *s, const char *full_name) ;
+CamelMapiStoreInfo *camel_mapi_store_summary_add_from_full(CamelMapiStoreSummary *s, const char *full, char dir_sep) ;
+
+char *camel_mapi_store_summary_full_to_path(CamelMapiStoreSummary *s, const char *full_name, char dir_sep) ;
+char *camel_mapi_store_summary_path_to_full(CamelMapiStoreSummary *s, const char *path, char dir_sep) ;
+char *camel_mapi_store_summary_full_from_path(CamelMapiStoreSummary *s, const char *path) ;
+
+#define camel_mapi_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_LAST))
+
+/* --------------JUST FOR COMPILIING------------------------- */
 
 typedef struct {
 	CamelFolderInfo		fi;
@@ -29,7 +82,8 @@ typedef struct {
 	char			*file_name;
 } CamelOpenchangeFolderInfo;
 
-/* WRAPPER to the CamelStoreSummary */
+
+
 typedef struct {
 	CamelURL		*url;
 	CamelOpenchangeFolderInfo *fi;
@@ -42,21 +96,7 @@ typedef struct {
 	pthread_mutex_t		*mutex;		/* mutex using in internal */
 } ocStoreSummary_t;
 
-ocStoreSummary_t	*oc_store_summary_new(CamelURL *url); /* return a new instancen, which is initialize */
-void			oc_store_summary_release(ocStoreSummary_t *summary);/* release the summary but not the content(FolderInfo)*/
-int			oc_store_summary_add_info(ocStoreSummary_t *summary, CamelOpenchangeFolderInfo *folder_info); /* add the folder_info in the summary */
-int			oc_store_summary_del_info(ocStoreSummary_t *summary, CamelOpenchangeFolderInfo *folder_info); /* delete the folder_info in the summary */
-int			oc_store_summary_del_all_info(ocStoreSummary_t *summary); /* delete all FolderInfo and their content */
-int			oc_store_summary_del_info_by_fid(ocStoreSummary_t *summary, char *folder_id); /* delete the folder_info(from folder id) in the summary */
-CamelOpenchangeFolderInfo		*oc_store_summary_get_by_fid(ocStoreSummary_t *summary, char *folder_id); /* return the folder_info by folder id */
-CamelOpenchangeFolderInfo		*oc_store_summary_get_by_name(ocStoreSummary_t *summary, char *folder_name); /* return the folder_info by folder name */
-CamelOpenchangeFolderInfo		*oc_store_summary_get_by_fullname(ocStoreSummary_t *summary, char *folder_fullname); /* return the folder_info by folder fullname */
-int			oc_store_summary_update_info(ocStoreSummary_t *summary); /* refresh the summary */
-ocStoreSummary_t	*oc_store_summary_from_folder(CamelFolder *folder); /* return the store summary from a folder, NULL if cannot possible */
-int			oc_store_summary_set_filename(ocStoreSummary_t *summary, char *name);
-int			oc_store_summary_load(ocStoreSummary_t *summary); /* load the summary */
-int			oc_store_summary_save(ocStoreSummary_t *summary); /* save the summary */
-int			oc_store_summary_touch(ocStoreSummary_t *summary);
-void			oc_store_summary_recount_msg(ocStoreSummary_t *summary, int total, int unread, char *fid);
-char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring);
-#endif /* !__OPENCHANGE_STORE_SUMMARY__ */
+
+G_END_DECLS
+
+#endif /* ! _CAMEL_MAPI_STORE_SUMMARY_H */
