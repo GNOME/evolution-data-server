@@ -790,7 +790,6 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 		g_free (cue_str);
 		return;
 	}
-	g_free (cue_str);
 
 	temp_str = sanitize_string (textrep);
 	g_free (textrep);
@@ -805,12 +804,19 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 					 destination_row_changed, name_selector_entry);
 
 	if (textrep_len > range_len) {
+		int i;
+
+		/* keep character's case as user types */
+		for (i = 0; textrep [i] && cue_str [i]; i++)
+			textrep [i] = cue_str [i];
+
 		gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), textrep, -1, &pos);
 		gtk_editable_select_region (GTK_EDITABLE (name_selector_entry), range_end,
 					    range_start + textrep_len);
 		priv->is_completing = TRUE;
 	}
+	g_free (cue_str);
 
 	if (contact && destination) {
 		gint email_n = 0;
