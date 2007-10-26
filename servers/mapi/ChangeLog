@@ -1,3 +1,13 @@
+2007-10-26  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* exchange-mapi-connection.c: (mapi_profile_load),
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item),
+	(exchange_mapi_remove_items), (exchange_mapi_remove_folder),
+	(exchange_mapi_create_item), (exchange_mapi_get_folders_list): Add
+	function to create items. And make locks and logs easier.
+	* exchange-mapi-connection.h:
+
 2007-10-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-connection.c: (mapi_profile_load),

@@ -38,6 +38,8 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
+
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -73,7 +75,7 @@ mapi_profile_load(const char *profname, const char *password)
 		}
 	}
 
-//	global_mapi_ctx->dumpdata = TRUE;
+	ENABLE_VERBOSE_LOG ();
 	if (!profile) {
 		if ((retval = GetDefaultProfile(&profile)) != MAPI_E_SUCCESS) {
 /* 			mapi_errstr("GetDefaultProfile", GetLastError()); */
@@ -151,6 +153,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -160,6 +163,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
 		UNLOCK ();
 		return FALSE;
 	}
@@ -168,6 +172,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	retval = GetContentsTable(&obj_folder, &obj_table);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-getcontentstable failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -185,6 +190,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	MAPIFreeBuffer(SPropTagArray);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-setcolumns failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -194,6 +200,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		retval = Restrict(&obj_table, res);
 		if (retval != MAPI_E_SUCCESS) {
 			g_warning ("Failed while setting restrictions\n");
+			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());					
 			UNLOCK ();
 			return FALSE;
 		}
@@ -201,6 +208,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	retval = QueryRows(&obj_table, 0x32, TBL_ADVANCE, &SRowSet);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-queryrows failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -265,6 +273,7 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return NULL;
 	}
@@ -274,6 +283,7 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return NULL;
 	}
@@ -334,6 +344,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -343,6 +354,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
@@ -356,7 +368,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	retval = DeleteMessage(&obj_folder, id_messages, i);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items Delete Message %d %d failed: %d\n", i, g_slist_length(mids), retval);
-		mapi_errstr("DeleteMessage ", GetLastError());		
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
 		UNLOCK ();
 		return FALSE;
 	}
@@ -368,8 +380,191 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	
 	return TRUE;	
 }
+#if 0
+gboolean
+exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
+{
+	mapi_object_t obj_store;	
+	mapi_object_t obj_folder;
+	mapi_object_t obj_top;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SRowSet SRowSet;
+	struct SPropTagArray *SPropTagArray;
+	struct mapi_SPropValue_array properties_array;
+	TALLOC_CTX *mem_ctx;
+	uint32_t i=0;
+	gpointer retobj = NULL;
+	mapi_id_t id_top;
+	GSList *tmp = mids;
 
+	LOCK ();
+
+	LOGALL ();
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_top);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove folder openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	retval = GetDefaultFolder(&obj_store, &id_top, olFolder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items GetDefaultFolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
 	
+	printf("Opening folder %016llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, id_top, &obj_top);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids)+1);
+	for (; tmp; tmp=tmp->next, i++) {
+		struct folder_data *data = tmp->data;
+		id_messages [i] = data->id;
+	}
+
+	retval = DeleteMessage(&obj_folder, id_messages, i);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items Delete Message %d %d failed: %d\n", i, g_slist_length(mids), retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		UNLOCK ();
+		return FALSE;
+	}
+
+	mapi_object_release(&obj_folder);
+	
+	LOGNONE();
+	UNLOCK ();
+	
+	return TRUE;	
+}
+#endif
+
+mapi_id_t
+exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data)
+{
+	mapi_object_t obj_store;	
+	mapi_object_t obj_folder;
+	mapi_object_t obj_table;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SPropValue	*props=NULL;
+	struct mapi_nameid	*nameid;
+	struct SPropTagArray	*SPropTagArray;
+	TALLOC_CTX *mem_ctx;
+	int propslen;
+	mapi_id_t mid=0;
+	
+	LOCK ();
+
+	LOGALL ();
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_message);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+
+	printf("Opening folder %016llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+
+	retval = CreateMessage(&obj_folder, &obj_message);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item CreateMessage failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+	
+	nameid = mapi_nameid_new(mem_ctx);
+	if (!build_name_id (nameid, ni_data)) {
+		g_warning ("create item build name id failed: %d\n", retval);
+		LOGNONE ();
+		UNLOCK ();
+		return 0;		
+	}
+
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+	retval = GetIDsFromNames(&obj_folder, nameid->count,
+				 nameid->nameid, 0, &SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item GetIDsFromNames failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+	mapi_nameid_SPropTagArray(nameid, SPropTagArray);
+	MAPIFreeBuffer(nameid);
+
+	propslen = build_props (&props, SPropTagArray, p_data);
+	if (propslen <1) {
+		g_warning ("create item build props failed: %d\n", retval);
+		LOGNONE ();
+		UNLOCK ();
+		return 0;		
+	}
+
+	retval = SetProps(&obj_message, props, propslen);
+	MAPIFreeBuffer(SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item SetProps failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;				
+	}
+
+	retval = SaveChangesMessage(&obj_folder, &obj_message);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create item SaveChangesMessage failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		LOGNONE ();
+		UNLOCK ();
+		return 0;						
+	}
+
+	mid = mapi_object_get_id (&obj_message);
+	
+	mapi_object_release(&obj_message);
+	mapi_object_release(&obj_folder);
+	
+	LOGNONE ();
+	UNLOCK ();
+	return mid;
+}
+
 static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)
 {
 	char		*newstr;
@@ -508,7 +703,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	/* Prepare the directory listing */
 	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderTopInformationStore);
 	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("[Openchange_plugin] Error ", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
