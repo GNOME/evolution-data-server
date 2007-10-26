@@ -26,7 +26,4 @@ check_PROGRAMS =  	\
 	test2
 	split
 
-TESTS = url utf7 split url-scan rfc2047 test2
-
-
-
+#TESTS = url utf7 split url-scan rfc2047 test2

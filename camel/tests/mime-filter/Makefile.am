@@ -29,8 +29,5 @@ check_PROGRAMS =  		\
 	test-charset		\
 	test-tohtml
 
-TESTS = test1 \
-	test-crlf test-charset test-tohtml
-
-
-
+#TESTS = test1 \
+#	test-crlf test-charset test-tohtml

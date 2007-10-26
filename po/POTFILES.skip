@@ -5,4 +5,6 @@ camel/providers/nntp/camel-nntp-grouplist.c
 camel/providers/nntp/camel-nntp-newsrc.c
 camel/providers/nntp/camel-nntp-utils.c
 camel/providers/nntp/test-newsrc.c
+calendar/libical/src/libicalss/icalssyacc.c
+calendar/libical/src/libicalvcal/vcc.c
 servers/exchange/lib/e2k-user-dialog.c

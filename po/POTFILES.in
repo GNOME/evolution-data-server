@@ -10,6 +10,8 @@ addressbook/libebook/e-contact.c
 addressbook/libebook/e-destination.c
 calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/file/e-cal-backend-file.c
+calendar/backends/google/e-cal-backend-google-utils.c
+calendar/backends/google/e-cal-backend-google.c
 calendar/backends/groupwise/e-cal-backend-groupwise-utils.c
 calendar/backends/groupwise/e-cal-backend-groupwise.c
 calendar/backends/http/e-cal-backend-http.c
