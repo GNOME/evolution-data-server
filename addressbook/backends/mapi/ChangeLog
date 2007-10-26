@@ -1,3 +1,10 @@
+2007-10-26  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-book-backend-mapi.c: (get_filename_from_uri),
+	(e_book_backend_mapi_load_source), (build_name_id), (build_props),
+	(e_book_backend_mapi_create_contact), (e_book_backend_mapi_remove):
+	Implement create contact (basic) and base code for remove folder.
+
 2007-10-24  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-book-backend-mapi.c: (mapi_dump_props), (emapidump_contact),

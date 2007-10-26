@@ -519,7 +519,7 @@ build_restriction_emails_contains (struct mapi_SRestriction *res,
 }
 
 static char *
-get_filename_from_uri (const char *uri)
+get_filename_from_uri (const char *uri, const char *file)
 {
 	char *mangled_uri, *filename;
 	int i;
@@ -536,7 +536,7 @@ get_filename_from_uri (const char *uri)
 
 	/* generate the file name */
 	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/addressbook",
-				     mangled_uri, "cache.summary", NULL);
+				     mangled_uri, file, NULL);
 
 	/* free memory */
 	g_free (mangled_uri);
@@ -582,7 +582,7 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	}
 	
 	if (priv->marked_for_offline) {
- 		priv->summary_file_name = get_filename_from_uri (priv->uri); 
+ 		priv->summary_file_name = get_filename_from_uri (priv->uri, "cache.summary"); 
 		if (g_file_test (priv->summary_file_name, G_FILE_TEST_EXISTS)) {
 			printf("Loading the summary\n");
 			priv->summary = e_book_backend_summary_new (priv->summary_file_name, 
@@ -647,15 +647,90 @@ e_book_backend_mapi_get_static_capabilities (EBookBackend *backend)
 	return g_strdup ("net,bulk-removes,do-initial-query,contact-lists");
 }
 
+gboolean
+build_name_id (struct mapi_nameid *nameid, gpointer data)
+{
+	EContact *contact = data;
+	
+	mapi_nameid_OOM_add(nameid, "FileAs", PSETID_Address);
+	mapi_nameid_lid_add(nameid, 0x8084, PSETID_Address);
+	mapi_nameid_OOM_add(nameid, "Email1Address", PSETID_Address);
+	mapi_nameid_string_add(nameid, "urn:schemas:contacts:fileas", PS_PUBLIC_STRINGS);
+
+//	mapi_nameid_OOM_add(nameid, "HomeAddress", PSETID_Address);	
+	
+	return TRUE;
+}
+
+int
+build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, gpointer data)
+{
+	EContact *contact = data;	
+	int len = -1;
+	struct SPropValue *props;
+
+	props = g_new (struct SPropValue, 40); //FIXME: Correct value tbd
+	set_SPropValue_proptag(&props[0], SPropTagArray->aulPropTag[0], e_contact_get (contact, E_CONTACT_FILE_AS));
+	set_SPropValue_proptag(&props[1], PR_DISPLAY_NAME, e_contact_get (contact, E_CONTACT_FULL_NAME));
+	set_SPropValue_proptag(&props[2], PR_MESSAGE_CLASS, (const void *)"IPM.Contact");
+	set_SPropValue_proptag(&props[3], PR_NORMALIZED_SUBJECT, e_contact_get (contact, E_CONTACT_FILE_AS));
+	set_SPropValue_proptag(&props[4], SPropTagArray->aulPropTag[1], e_contact_get (contact, E_CONTACT_EMAIL_1));
+	set_SPropValue_proptag(&props[5], SPropTagArray->aulPropTag[2], e_contact_get (contact, E_CONTACT_EMAIL_1));
+	set_SPropValue_proptag(&props[6], SPropTagArray->aulPropTag[3], e_contact_get (contact, E_CONTACT_FILE_AS));
+
+	*value =props;
+	return 7;
+}
+
 static void
 e_book_backend_mapi_create_contact (EBookBackend *backend,
 					  EDataBook *book,
 					  guint32 opid,
 					  const char *vcard )
 {
+	EContact *contact;
+	char *id;
+	mapi_id_t status;
+	int element_type;
+	char* value;
+	int i;
+	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
+
 	if(enable_debug)
 		printf("mapi create_contact \n");
-	/* FIXME : provide implmentation */
+	
+	switch (priv->mode) {
+
+	case GNOME_Evolution_Addressbook_MODE_LOCAL :
+		e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
+		return;
+	   
+	case  GNOME_Evolution_Addressbook_MODE_REMOTE :
+		contact = e_contact_new_from_vcard(vcard);
+		status = exchange_mapi_create_item (olFolderContacts, priv->fid, build_name_id, contact, build_props, contact);
+		if (!status) {
+			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
+			return;
+		}
+		id = g_strdup_printf ("%016llx%016llx", priv->fid, status);
+	
+		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
+		e_contact_set (contact, E_CONTACT_UID, id);		
+		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
+		
+		//somehow get the mid.
+		//add to summary and cache.
+		if (priv->marked_for_offline && priv->is_cache_ready)
+			e_book_backend_cache_add_contact (priv->cache, contact);
+
+		if (priv->marked_for_offline && priv->is_summary_ready)
+			e_book_backend_summary_add_contact (priv->summary, contact);
+
+		e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_Success, contact);
+		return;			
+	}
+	
+	return;
 }
 
 struct folder_data {
@@ -1537,9 +1612,63 @@ e_book_backend_mapi_remove (EBookBackend *backend,
 				  EDataBook    *book,
 				  guint32      opid)
 {
+	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
+	char *cache_uri = NULL;
+	gboolean status;
+#if 0	
 	if(enable_debug)
 		printf("mapi: remove\n");
 	
+	switch (priv->mode) {
+	
+	case GNOME_Evolution_Addressbook_MODE_LOCAL:
+		e_data_book_respond_remove (book, opid, GNOME_Evolution_Addressbook_OfflineUnavailable);
+		return;
+		
+	case GNOME_Evolution_Addressbook_MODE_REMOTE:
+
+		status = exchange_mapi_remove_folder (olFolderContacts, priv->fid);
+		if (!status) {
+			e_data_book_respond_remove (book, opid, GNOME_Evolution_Addressbook_OtherError);
+			return;			
+		}
+		
+		if (priv->marked_for_offline && priv->is_summary_ready) {
+			g_object_unref (priv->summary);
+			priv->summary = NULL;
+		}
+
+		if (e_book_backend_cache_exists (priv->uri)) {
+
+			g_object_unref (priv->cache);
+			priv->cache= NULL;
+			
+		}
+
+		/* Remove the summary and cache independent of whether they are loaded or not. */		
+		cache_uri = get_filename_from_uri (priv->uri, "cache.summary");
+		if (g_file_test (cache_uri, G_FILE_TEST_EXISTS)) {
+			g_unlink (cache_uri);
+		}
+		g_free (cache_uri);
+		
+		cache_uri = get_filename_from_uri (priv->uri, "cache.xml");
+		if (g_file_test (cache_uri, G_FILE_TEST_EXISTS)) {
+			g_unlink (cache_uri);
+		}
+		g_free (cache_uri);
+				
+		e_data_book_respond_remove (book, opid, GNOME_Evolution_Addressbook_Success);
+		return;
+
+
+	default:
+		break;
+	}
+
+	return;
+	
+#endif	
 	/* FIXME : provide implmentation */
 }
 
