@@ -1,3 +1,9 @@
+2007-10-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/calendar/libecal/libecal-sections.txt:
+	* docs/reference/libedataserverui/libedataserverui-sections.txt:
+	Remove non-existent symbols.
+
 2007-10-23  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* configure.in:
@@ -11,7 +17,7 @@
 
 	* Fixes part of bug #417999
 
-	* docs/references/libedataserverui:
+	* docs/reference/libedataserverui:
 	Add documentation for ESourceComboBox widget.
 
 2007-10-09  Matthew Barnes  <mbarnes@redhat.com>

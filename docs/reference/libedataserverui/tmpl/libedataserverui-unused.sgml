@@ -1,40 +1,4 @@
-<!-- ##### SECTION ./tmpl/e-source-combo-box.sgml:Long_Description ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/e-source-combo-box.sgml:See_Also ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### SECTION ./tmpl/e-source-combo-box.sgml:Short_Description ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/e-source-combo-box.sgml:Stability_Level ##### -->
-
-
-
-<!-- ##### SECTION ./tmpl/e-source-combo-box.sgml:Title ##### -->
-ESourceComboBox
-
-
 <!-- ##### STRUCT ECategoriesDialogPrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### STRUCT ESourceComboBox ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ARG ESourceComboBox:source-list ##### -->
 <para>
 
 </para>
@@ -81,44 +45,4 @@ ESourceComboBox
 
 </para>
 
-
-<!-- ##### FUNCTION e_source_combo_box_get_active ##### -->
-<para>
-
-</para>
-
-@source_combo_box: 
-@Returns: 
-
-<!-- ##### FUNCTION e_source_combo_box_get_source_list ##### -->
-<para>
-
-</para>
-
-@source_combo_box: 
-@Returns: 
-
-<!-- ##### FUNCTION e_source_combo_box_new ##### -->
-<para>
-
-</para>
-
-@source_list: 
-@Returns: 
-
-<!-- ##### FUNCTION e_source_combo_box_set_active ##### -->
-<para>
-
-</para>
-
-@source_combo_box: 
-@source: 
-
-<!-- ##### FUNCTION e_source_combo_box_set_source_list ##### -->
-<para>
-
-</para>
-
-@source_combo_box: 
-@source_list: 
 

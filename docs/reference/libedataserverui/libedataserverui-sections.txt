@@ -290,10 +290,6 @@ e_name_selector_dialog_get_type
 
 <SECTION>
 <FILE>e-data-server-ui-marshal</FILE>
-e_data_server_ui_marshal_VOID__VOID
-e_data_server_ui_marshal_NONE__NONE
-e_data_server_ui_marshal_VOID__POINTER
-e_data_server_ui_marshal_NONE__POINTER
 e_data_server_ui_marshal_BOOLEAN__OBJECT_BOXED
 </SECTION>
 
