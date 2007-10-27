@@ -1,3 +1,8 @@
+2007-10-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	* POTFILES.in:
+	Remove servers/exchange/lib/e2k-user-dialog.c.
+
 2007-10-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* POTFILES.in:

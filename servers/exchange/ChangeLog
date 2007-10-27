@@ -1,3 +1,9 @@
+2007-10-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-user-dialog.c:
+	* lib/e2k-user-dialog.h:
+	Remove these dead files from SCM.
+
 2007-10-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for BNC bug #203480
