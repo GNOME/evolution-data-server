@@ -1,3 +1,17 @@
+2007-10-29  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
+
+	* exchange-mapi-folder.c (exchange_mapi_folder_new): Populate 
+	unread and total counts.
+	(exchange_mapi_folder_get_unread_count): Added. Utility function.
+	(exchange_mapi_folder_get_total_count): Added. Utility function.
+
+	* exchange-mapi-connection.c (get_child_folders): Populate
+	ExchangeMAPIFolder with  unread and total count data.
+
+	* exchange-mapi-folder.h (_ExchangeMAPIFolder): Adding new
+	fields for folder stats. Change prototype for 
+	exchange_mapi_folder_new.
+
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-folder.c: (exchange_mapi_peek_folder_list): Have a

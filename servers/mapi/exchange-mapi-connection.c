@@ -39,7 +39,7 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
-
+#define ENABLE_VERBOSE_LOG()
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -610,7 +610,7 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 	const char	       	*name;
 	const char 		*class;
 	char			*newname;
-	const uint32_t		*child;
+	const uint32_t		*child, *unread, *total;
 	uint32_t		index;
 	const uint64_t		*fid;
 	int			i;
@@ -625,9 +625,11 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 	if (retval != MAPI_E_SUCCESS) 
 		return FALSE;
 
-	SPropTagArray = set_SPropTagArray(mem_ctx, 0x3,
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x5,
 					  PR_DISPLAY_NAME,
 					  PR_FID,
+					  PR_CONTENT_UNREAD,
+					  PR_CONTENT_COUNT,
 					  PR_FOLDER_CHILD_COUNT);
 	retval = SetColumns(&obj_htable, SPropTagArray);
 	MAPIFreeBuffer(SPropTagArray);
@@ -639,11 +641,13 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 			ExchangeMAPIFolder *folder;
 			fid = (const uint64_t *)find_SPropValue_data(&rowset.aRow[index], PR_FID);
 			name = (const char *)find_SPropValue_data(&rowset.aRow[index], PR_DISPLAY_NAME);
+			unread = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_CONTENT_UNREAD);
+			total = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_CONTENT_COUNT);
 			child = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_FOLDER_CHILD_COUNT);
 			class = get_container_class(mem_ctx, parent, *fid);
 			newname = utf8tolinux(mem_ctx, name);
-			printf("|---+ %-15s : (Container class: %s %016llx)\n", newname, class, *fid);
-			folder = exchange_mapi_folder_new (newname, parent_name, class, *fid, folder_id, *child);
+			printf("|---+ %-15s : (Container class: %s %016llx) UnRead : %d Total : %d\n", newname, class, *fid, *unread, *total);
+			folder = exchange_mapi_folder_new (newname, parent_name, class, *fid, folder_id, *child, *unread, *total);
 			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 			if (*child)
 				get_child_folders(mem_ctx, &obj_folder, newname, *fid, count + 1, mapi_folders);
@@ -707,7 +711,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	utf8_mailbox_name = utf8tolinux(mem_ctx, mailbox_name);
 
 	/* FIXME: May have to get the child folders count? Do we need/use it? */
-	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, id_mailbox, 0, 0); 
+	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, id_mailbox, 0, 0, 0 ,0); 
 
 	*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 	get_child_folders (mem_ctx, &obj_store, utf8_mailbox_name, id_mailbox, 0, mapi_folders);

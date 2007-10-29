@@ -1,3 +1,8 @@
+2007-10-29  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
+
+	* camel-mapi-store.c (convert_to_folder_info): Include 
+	unread and total counts in folder info.
+
 2007-10-26  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-summary.[ch] : Added.

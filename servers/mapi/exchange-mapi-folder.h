@@ -37,15 +37,21 @@ typedef struct _ExchangeMAPIFolder {
 	uint64_t folder_id;
 	uint64_t parent_folder_id;
 	uint32_t child_count;
+	guint unread_count;
+	guint total;
 } ExchangeMAPIFolder;
 
 ExchangeMAPIFolder *
 exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class,
-			  uint64_t folder_id, uint64_t parent_folder_id, uint32_t child_count);
+			  uint64_t folder_id, uint64_t parent_folder_id, 
+			  uint32_t child_count, uint32_t unread_count, uint32_t total);
 
 const gchar* exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder);
 const guint32 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder);
 const guint64 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder);
+const guint32 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder);
+const guint32 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder);
+
 GSList * exchange_mapi_peek_folder_list ();
 
 #endif

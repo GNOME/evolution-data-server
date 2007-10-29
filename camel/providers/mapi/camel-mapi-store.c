@@ -46,6 +46,8 @@
 #include <camel/camel-session.h>
 #include <camel/camel-service.h>
 #include <camel/camel-store-summary.h>
+
+//#include <mapi/exchange-mapi-folder.h>
 //#define d(x) x
 
 #include <sys/types.h>
@@ -468,7 +470,7 @@ mapi_get_folder_info_offline (CamelStore *store, const char *top,
 	return fi;
 }
 
-CamelFolderInfo *
+static CamelFolderInfo *
 convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const char *url, CamelException *ex)
 {
 	const char *name = NULL;
@@ -555,15 +557,15 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 /* 	fi->total = e_gw_container_get_total_count (container); */
 /* 	fi->unread = e_gw_container_get_unread_count (container); */
 //FIXME:
-	fi->total = 0;
-	fi->unread = 0;
+	fi->total = folder->total;
+	fi->unread = folder->unread_count;
 
-/* 	si->info.total = fi->total; */
-/* 	si->info.unread = fi->unread; */
+	si->info.total = fi->total;
+	si->info.unread = fi->unread;
 /* 	si->info.flags = fi->flags; */
 //FIXME:
-	si->info.total = 0;
-	si->info.unread = 0;
+/* 	si->info.total = 0; */
+/* 	si->info.unread = 0; */
 	si->info.flags = 0;
 
 	/*refresh info*/
@@ -648,8 +650,11 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 
 /* 		if (e_gw_container_is_root(container)) */
 /* 			continue; */
-/* 		if ( (type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS) ) */
+/* 		if ( (folder->container_class == MAPI_FOLDER_TYPE_CONTACT) || (folder->container_class == MAPI_FOLDER_TYPE_APPOINTMENT)  */
+/* 		     (folder->container_class == MAPI_FOLDER_TYPE_JOURNAL) || (folder->container_class == MAPI_FOLDER_TYPE_TASK)) */
 /* 			continue; */
+		if ( folder->container_class != MAPI_FOLDER_TYPE_MAIL)
+			continue;
 
 		info = convert_to_folder_info (store, folder, (const char *)url, ex);
 		if (info) {
