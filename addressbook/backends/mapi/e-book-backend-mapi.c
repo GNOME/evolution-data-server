@@ -657,10 +657,16 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 	mapi_nameid_OOM_add(nameid, "Email1Address", PSETID_Address);
 	mapi_nameid_string_add(nameid, "urn:schemas:contacts:fileas", PS_PUBLIC_STRINGS);
 
-//	mapi_nameid_OOM_add(nameid, "HomeAddress", PSETID_Address);	
+	mapi_nameid_OOM_add(nameid, "WebPage", PSETID_Address);
+	mapi_nameid_OOM_add(nameid, "IMAddress", PSETID_Address);
+
+	mapi_nameid_OOM_add(nameid, "HomeAddress", PSETID_Address);	
+	mapi_nameid_OOM_add(nameid, "BusinessAddress", PSETID_Address);
 	
 	return TRUE;
 }
+
+#define set_str_value(field_id, hex) if (e_contact_get (contact, field_id)) set_SPropValue_proptag (&props[i++], hex, e_contact_get (contact, field_id));
 
 int
 build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, gpointer data)
@@ -668,18 +674,122 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 	EContact *contact = data;	
 	int len = -1;
 	struct SPropValue *props;
+	int i=0;
 
 	props = g_new (struct SPropValue, 40); //FIXME: Correct value tbd
-	set_SPropValue_proptag(&props[0], SPropTagArray->aulPropTag[0], e_contact_get (contact, E_CONTACT_FILE_AS));
-	set_SPropValue_proptag(&props[1], PR_DISPLAY_NAME, e_contact_get (contact, E_CONTACT_FULL_NAME));
-	set_SPropValue_proptag(&props[2], PR_MESSAGE_CLASS, (const void *)"IPM.Contact");
-	set_SPropValue_proptag(&props[3], PR_NORMALIZED_SUBJECT, e_contact_get (contact, E_CONTACT_FILE_AS));
-	set_SPropValue_proptag(&props[4], SPropTagArray->aulPropTag[1], e_contact_get (contact, E_CONTACT_EMAIL_1));
-	set_SPropValue_proptag(&props[5], SPropTagArray->aulPropTag[2], e_contact_get (contact, E_CONTACT_EMAIL_1));
-	set_SPropValue_proptag(&props[6], SPropTagArray->aulPropTag[3], e_contact_get (contact, E_CONTACT_FILE_AS));
+	set_str_value ( E_CONTACT_FILE_AS, SPropTagArray->aulPropTag[0]);
 
+	set_str_value (E_CONTACT_FULL_NAME, PR_DISPLAY_NAME);
+	set_SPropValue_proptag(&props[i++], PR_MESSAGE_CLASS, (const void *)"IPM.Contact");
+	set_str_value (E_CONTACT_FILE_AS, PR_NORMALIZED_SUBJECT);
+	set_str_value (E_CONTACT_EMAIL_1,  SPropTagArray->aulPropTag[1]);
+	set_str_value (E_CONTACT_EMAIL_1,  SPropTagArray->aulPropTag[2]);
+	set_str_value (E_CONTACT_FILE_AS,  SPropTagArray->aulPropTag[3]);
+
+	
+	set_str_value ( E_CONTACT_EMAIL_1, 0x8083001e);
+	set_str_value ( E_CONTACT_EMAIL_2, 0x8093001e);
+	set_str_value ( E_CONTACT_EMAIL_3, 0x80a3001e);
+	set_str_value (E_CONTACT_HOMEPAGE_URL, SPropTagArray->aulPropTag[4]);
+	set_str_value (E_CONTACT_FREEBUSY_URL, 0x812C001E);
+	
+
+	set_str_value ( E_CONTACT_PHONE_BUSINESS, PR_OFFICE_TELEPHONE_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_HOME, PR_HOME_TELEPHONE_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_MOBILE, PR_MOBILE_TELEPHONE_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_HOME_FAX, PR_HOME_FAX_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_BUSINESS_FAX, PR_BUSINESS_FAX_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_PAGER, PR_PAGER_TELEPHONE_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_ASSISTANT, PR_ASSISTANT_TELEPHONE_NUMBER);
+	set_str_value ( E_CONTACT_PHONE_COMPANY, PR_COMPANY_MAIN_PHONE_NUMBER);
+
+	set_str_value (E_CONTACT_MANAGER, PR_MANAGER_NAME);
+	set_str_value (E_CONTACT_ASSISTANT, PR_ASSISTANT);
+	set_str_value (E_CONTACT_ORG, PR_COMPANY_NAME);
+	set_str_value (E_CONTACT_ORG_UNIT, PR_DEPARTMENT_NAME);
+	set_str_value (E_CONTACT_ROLE, PR_PROFESSION);
+	set_str_value (E_CONTACT_TITLE, PR_TITLE);
+
+	set_str_value (E_CONTACT_OFFICE, PR_OFFICE_LOCATION);
+	set_str_value (E_CONTACT_SPOUSE, PR_SPOUSE_NAME);
+
+	set_str_value (E_CONTACT_NOTE, PR_BODY);
+
+	//BDAY AND ANNV
+	if (e_contact_get (contact, E_CONTACT_BIRTH_DATE)) {
+		EContactDate *date = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
+		struct tm tmtime;
+		time_t lt;
+		NTTIME nt;
+		struct FILETIME t;
+		
+		tmtime.tm_mday = date->day - 1;
+		tmtime.tm_mon = date->month - 1;
+		tmtime.tm_year = date->year - 1900;
+
+		lt = mktime (&tmtime);
+		unix_to_nt_time (&nt, lt);
+		t.dwLowDateTime = (nt << 32) >> 32;
+		t.dwHighDateTime = (nt >> 32);
+		printf("sending bday\n");
+		set_SPropValue_proptag (&props[i++], PR_BIRTHDAY, &t);
+	}
+
+	if (e_contact_get (contact, E_CONTACT_ANNIVERSARY)) {
+		EContactDate *date = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
+		struct tm tmtime;
+		time_t lt;
+		NTTIME nt;
+		struct FILETIME t;
+		
+		tmtime.tm_mday = date->day - 1;
+		tmtime.tm_mon = date->month - 1;
+		tmtime.tm_year = date->year - 1900;
+
+		lt = mktime (&tmtime);
+		unix_to_nt_time (&nt, lt);
+		t.dwLowDateTime = (nt << 32) >> 32;
+		t.dwHighDateTime = (nt >> 32);
+		printf("sending wed\n");
+		set_SPropValue_proptag (&props[i++], PR_WEDDING_ANNIVERSARY, &t);
+	}	
+	//Home and Office address
+	if (e_contact_get (contact, E_CONTACT_ADDRESS_HOME)) {
+		EContactAddress *contact_addr;
+
+		contact_addr = e_contact_get (contact, E_CONTACT_ADDRESS_HOME);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[6], contact_addr->street);
+		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_POST_OFFICE_BOX, contact_addr->ext);
+		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_CITY, contact_addr->locality);
+		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_STATE_OR_PROVINCE, contact_addr->region);
+		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_POSTAL_CODE, contact_addr->code);
+		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_COUNTRY, contact_addr->country);				
+	}
+
+	if (e_contact_get (contact, E_CONTACT_ADDRESS_WORK)) {
+		EContactAddress *contact_addr;
+
+		contact_addr = e_contact_get (contact, E_CONTACT_ADDRESS_WORK);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[7], contact_addr->street);
+		set_SPropValue_proptag (&props[i++], PR_POST_OFFICE_BOX, contact_addr->ext);
+		set_SPropValue_proptag (&props[i++], PR_LOCALITY, contact_addr->locality);
+		set_SPropValue_proptag (&props[i++], PR_STATE_OR_PROVINCE, contact_addr->region);
+		set_SPropValue_proptag (&props[i++], PR_POSTAL_CODE, contact_addr->code);
+		set_SPropValue_proptag (&props[i++], PR_COUNTRY, contact_addr->country);				
+	}
+
+	
+/* 	//set_str_value (E_CONTACT_NICKNAME, PR_NICKNAME); */
+/* 	if (e_contact_get (contact, E_CONTACT_IM_AIM)) { */
+/* 		GList *l = e_contact_get (contact, E_CONTACT_IM_AIM); */
+/* 		set_SPropValue_proptag (&props[i++], 0x8022001E, l->data); */
+/* 		printf("nick name %s\n", l->data); */
+/* 		i++; */
+/* 	} */
+	
 	*value =props;
-	return 7;
+	printf("Sending %d \n", i);
+	return i;
 }
 
 static void
@@ -766,6 +876,22 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 		}
 
 		exchange_mapi_remove_items (olFolderContacts, priv->fid, list);
+		if (priv->marked_for_offline && priv->is_cache_ready) {
+			tmp = id_list;
+			while (tmp) {
+				e_book_backend_cache_remove_contact (priv->cache, tmp->data);
+				tmp = tmp->next;
+			}
+		}
+
+		if (priv->marked_for_offline && priv->is_summary_ready) {
+			tmp = id_list;
+			while (tmp) {
+				e_book_backend_summary_remove_contact (priv->summary, tmp->data);		
+				tmp = tmp->next;
+			}
+		}
+			
 	/*	tmp = id_list;
 		while (tmp) {
 			if (priv->is_cache_ready)
@@ -789,9 +915,61 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 					  guint32       opid,
 					  const char   *vcard)
 {
+	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
+	EContact *contact;
+	mapi_id_t fid, mid, status;
+	char *tmp, *id;
+	GList *l = NULL;
+	
 	if(enable_debug)
-		printf("mapi: modify_contacts\n");	
-	/* FIXME : provide implmentation */
+		printf("mapi: modify_contacts\n");
+
+	switch (priv->mode) {
+
+	case GNOME_Evolution_Addressbook_MODE_LOCAL :
+		e_data_book_respond_modify(book, opid, GNOME_Evolution_Addressbook_RepositoryOffline, NULL);
+		return;
+	case GNOME_Evolution_Addressbook_MODE_REMOTE :
+		contact = e_contact_new_from_vcard(vcard);
+		tmp = e_contact_get (contact, E_CONTACT_UID);
+		printf("modify id %s\n", tmp);
+		status = exchange_mapi_create_item (olFolderContacts, priv->fid, build_name_id, contact, build_props, contact);
+		printf("getting %016llx\n", status);
+		if (!status) {
+			e_data_book_respond_modify(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
+			return;
+		}
+		id = g_strdup_printf ("%016llx%016llx", priv->fid, status);
+		
+		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
+		e_contact_set (contact, E_CONTACT_UID, id);		
+		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
+		printf("created contact %s\n", id);
+		//somehow get the mid.
+		//add to summary and cache.
+		sscanf(tmp, "%016llx%016llx", &fid, &mid);
+		l = g_slist_prepend (l, tmp);
+		if (!exchange_mapi_remove_items (olFolderContacts, priv->fid, l)) {
+			printf("FFFFFFFFFFFFFFFFFFFf\n");
+		}
+		//FIXME: Write it cleanly
+		if (priv->marked_for_offline && priv->is_cache_ready)
+			printf("delete cache %d\n", e_book_backend_cache_remove_contact (priv->cache, tmp));
+
+		if (priv->marked_for_offline && priv->is_summary_ready)
+				e_book_backend_summary_remove_contact (priv->summary, tmp);
+		
+		if (priv->marked_for_offline && priv->is_cache_ready)
+			e_book_backend_cache_add_contact (priv->cache, contact);
+
+		if (priv->marked_for_offline && priv->is_summary_ready)
+			e_book_backend_summary_add_contact (priv->summary, contact);
+		
+		
+		e_data_book_respond_modify (book, opid, GNOME_Evolution_Addressbook_Success, contact);
+
+
+	}
 }
 
 static gpointer
@@ -1138,7 +1316,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 					nt |= t->dwLowDateTime;
 					time = nt_time_to_unix (nt);
 					tmtime = gmtime (&time);
-
+					//FIXME: Move to new libmapi api to get string dates.
 					date->day = tmtime->tm_mday + 1;
 					date->month = tmtime->tm_mon + 1;
 					date->year = tmtime->tm_year + 1900;
