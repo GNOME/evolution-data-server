@@ -27,6 +27,12 @@
 #include <libmapi/libmapi.h>
 #include "exchange-mapi-folder.h"
 
+static GSList *folder_list = NULL;
+static GStaticRecMutex folder_lock = G_STATIC_REC_MUTEX_INIT;
+
+#define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&folder_lock)
+#define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&folder_lock)
+
 static ExchangeMAPIFolderType
 container_class_to_type (const char *type)
 {
@@ -85,4 +91,17 @@ ExchangeMAPIFolderType
 exchange_mapi_folder_get_type (ExchangeMAPIFolder *folder)
 {
 	return folder->container_class;
+}
+
+GSList *
+exchange_mapi_peek_folder_list ()
+{
+	if (folder_list) 
+		return folder_list;
+	LOCK ();
+	if (exchange_mapi_get_folders_list (&folder_list)) {
+		printf ("Get folders list call is sucessful \n\a");
+	}	
+	UNLOCK ();
+	return folder_list;
 }

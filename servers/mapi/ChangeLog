@@ -1,5 +1,11 @@
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* exchange-mapi-folder.c: (exchange_mapi_peek_folder_list): Have a
+	static folder list and serve.
+	* exchange-mapi-folder.h:
+
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Put the return types well. 
 
 	* exchange-mapi-connection.c: (exchange_mapi_create_item):
