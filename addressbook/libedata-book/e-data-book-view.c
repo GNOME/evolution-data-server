@@ -320,11 +320,9 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
 	} else {
 		if (currently_in_view)
 			notify_remove (book_view, id);
-		else
-			/* else nothing; we're removing a card that wasn't there */
-			free (vcard);
 	}
 	
+	g_free (vcard);
 	g_object_unref (contact);
 	g_mutex_unlock (book_view->priv->pending_mutex);
 }
@@ -364,6 +362,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, cons
 	else
 		notify_add (book_view, id, vcard);
 
+	g_free (vcard);
 	g_mutex_unlock (book_view->priv->pending_mutex);
 }
 

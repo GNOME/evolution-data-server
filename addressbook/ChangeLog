@@ -1,3 +1,13 @@
+2007-10-22  Akhil Laddha  <lakhil@novell.com>
+
+	** Fix for bug #486873
+
+	* backends/file/e-book-backend-file.c: (book_view_thread):
+	* libedata-book/e-data-book-view.c:
+	(e_data_book_view_notify_update_vcard),
+	(e_data_book_view_notify_update_prefiltered_vcard): Avoid a double free and 
+	make sure that the view_ functions free at all cases.
+
 2007-10-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #488351
