@@ -556,7 +556,6 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 	}
 
 	mid = mapi_object_get_id (&obj_message);
-	
 	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
 	

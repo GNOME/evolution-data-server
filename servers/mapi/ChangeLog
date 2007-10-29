@@ -1,3 +1,10 @@
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Put the return types well. 
+
+	* exchange-mapi-connection.c: (exchange_mapi_create_item):
+	* exchange-mapi-connection.h:
+
 2007-10-26  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-folder.c : Added utility functions to retrive
