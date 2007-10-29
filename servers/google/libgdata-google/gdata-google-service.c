@@ -183,7 +183,7 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 
 	if (!service_is_authenticated( GDATA_GOOGLE_SERVICE(service) )) {
 		status = service_authenticate(GDATA_GOOGLE_SERVICE(service));
-		if (g_strcasecmp(status, "SUCCESS")) {
+		if (g_ascii_strcasecmp(status, "SUCCESS")) {
 			return NULL;
 		}
 	}
@@ -235,7 +235,7 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 	if (!service_is_authenticated(GDATA_GOOGLE_SERVICE(service))) {
 		status = service_authenticate(GDATA_GOOGLE_SERVICE(service));
 
-		if (g_strcasecmp(status,"SUCCESS"))
+		if (g_ascii_strcasecmp(status,"SUCCESS"))
 			return NULL;
 	}
 
@@ -305,7 +305,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry)
 
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE(service))) {
 		status = (xmlChar *)service_authenticate (GDATA_GOOGLE_SERVICE(service));
-		if (g_strcasecmp((gchar *)status, "SUCCESS")) 
+		if (g_ascii_strcasecmp((gchar *)status, "SUCCESS")) 
 			return ;
 	}
 	
@@ -350,7 +350,7 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 	
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE (service))) {
 		status = service_authenticate (GDATA_GOOGLE_SERVICE (service));
-		if (g_strcasecmp (status, "SUCCESS"))
+		if (g_ascii_strcasecmp (status, "SUCCESS"))
 			return;
 	}
 
@@ -410,7 +410,7 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 	
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE(service))) {
 		status = service_authenticate (GDATA_GOOGLE_SERVICE(service));
-		if (g_strcasecmp (status, "SUCCESS"))
+		if (g_ascii_strcasecmp (status, "SUCCESS"))
 			return;
 	}
 

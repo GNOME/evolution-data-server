@@ -1,3 +1,10 @@
+2007-10-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* servers/google/libgdata/gdata-entry.c:
+	* servers/googgle/libgdata-google/gdata-google-service.c:
+	Fix implicit function declarations.
+	Use g_ascii_strcasecmp() instead of g_strcasecmp() (deprecated).
+
 2007-10-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* docs/reference/calendar/libecal/libecal-sections.txt:

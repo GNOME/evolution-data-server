@@ -31,6 +31,7 @@
 #include <libxml/xpath.h>  
 #include <libxml/xpathInternals.h>
 
+#include <string.h>
 #include <gdata-entry.h>
 
 #define GDATA_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_ENTRY, GDataEntryPrivate))
@@ -812,7 +813,7 @@ build_hash_table_entries (gchar *key, gchar *value, xmlNode **cur)
 
 		if (ptr->next == NULL) {
 			/* FIXME: Will we be needing , these nodes of entries when building them ? */
-			if (!g_strcasecmp (key, "published") || !g_strcasecmp (key, "id") || !g_strcasecmp (key, "updated"))
+			if (!g_ascii_strcasecmp (key, "published") || !g_ascii_strcasecmp (key, "id") || !g_ascii_strcasecmp (key, "updated"))
 				break;
 
 			ptr->next = xmlNewNode (NULL, (xmlChar *)key);
@@ -1081,7 +1082,7 @@ gdata_entry_get_edit_link (GDataEntry *entry)
 
 	while (list) {
 		link = list->data;
-		if (!g_strcasecmp (link->rel, "edit")) {
+		if (!g_ascii_strcasecmp (link->rel, "edit")) {
 			edit_link = g_strdup(link->href);
 		}
 		list = g_slist_next (list);
