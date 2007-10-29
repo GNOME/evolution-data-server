@@ -53,5 +53,5 @@ const guint32 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder)
 const guint32 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder);
 
 GSList * exchange_mapi_peek_folder_list ();
-
+ExchangeMAPIFolder * exchange_mapi_folder_get_folder (uint64_t fid);
 #endif

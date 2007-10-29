@@ -120,3 +120,23 @@ exchange_mapi_peek_folder_list ()
 	UNLOCK ();
 	return folder_list;
 }
+
+ExchangeMAPIFolder *
+exchange_mapi_folder_get_folder (uint64_t fid)
+{
+	GSList *tmp = folder_list;
+
+	if (!folder_list)
+		exchange_mapi_peek_folder_list ();
+	
+	tmp = folder_list;
+	while (tmp) {
+		ExchangeMAPIFolder * folder = tmp->data;
+		printf("%016llx %016llx\n", folder->folder_id, fid);
+		if (folder->folder_id == fid)
+			return folder;
+		tmp=tmp->next;
+	}
+
+	return NULL;
+}

@@ -1,3 +1,10 @@
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* exchange-mapi-connection.c: (exchange_mapi_remove_folder):
+	* exchange-mapi-folder.c: (exchange_mapi_folder_get_folder):
+	* exchange-mapi-folder.h: Fix the implentation for remove folder and
+	add api to fetch folder from fid.
+
 2007-10-29  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
 
 	* exchange-mapi-folder.c (exchange_mapi_folder_new): Populate 

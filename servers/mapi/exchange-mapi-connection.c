@@ -36,9 +36,9 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-#define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
-#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
+#define LOGALL() 	//lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+#define LOGNONE()       //lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+#define ENABLE_VERBOSE_LOG() 	//global_mapi_ctx->dumpdata = TRUE;
 #define ENABLE_VERBOSE_LOG()
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
@@ -380,11 +380,11 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	
 	return TRUE;	
 }
-#if 0
+
 gboolean
 exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 {
-	mapi_object_t obj_store;	
+	mapi_object_t obj_store, obj_tstore;	
 	mapi_object_t obj_folder;
 	mapi_object_t obj_top;
 	enum MAPISTATUS retval;
@@ -395,15 +395,16 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	TALLOC_CTX *mem_ctx;
 	uint32_t i=0;
 	gpointer retobj = NULL;
-	mapi_id_t id_top;
-	GSList *tmp = mids;
-
+	mapi_id_t id_top, pfid;
+	ExchangeMAPIFolder *folder;
+	
 	LOCK ();
 
 	LOGALL ();
 	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_tstore);	
 	mapi_object_init(&obj_top);
 
 	retval = OpenMsgStore(&obj_store);
@@ -413,18 +414,43 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 		UNLOCK ();
 		return FALSE;
 	}
-
-	retval = GetDefaultFolder(&obj_store, &id_top, olFolder);
+	
+	printf("Opening folder %016llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items GetDefaultFolder failed: %d\n", retval);
+		g_warning ("remove items openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
 	
-	printf("Opening folder %016llx\n", fid);
+	retval = EmptyFolder(&obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove items emptyfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	folder = exchange_mapi_folder_get_folder (fid);
+	if (!folder) {
+		g_warning (" Unable to get the folder from the list\n");
+		UNLOCK ();
+		return FALSE;		
+	}
+	
+	retval = OpenMsgStore(&obj_tstore);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("remove folder openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+	
+	printf("Opening folder %016llx\n", folder->parent_folder_id);
 	/* We now open the folder */
-	retval = OpenFolder(&obj_store, id_top, &obj_top);
+	retval = OpenFolder(&obj_tstore, folder->parent_folder_id, &obj_top);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
@@ -432,28 +458,23 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 		return FALSE;
 	}
 
-	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids)+1);
-	for (; tmp; tmp=tmp->next, i++) {
-		struct folder_data *data = tmp->data;
-		id_messages [i] = data->id;
-	}
-
-	retval = DeleteMessage(&obj_folder, id_messages, i);
+	
+	retval = DeleteFolder(&obj_top, fid);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items Delete Message %d %d failed: %d\n", i, g_slist_length(mids), retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		g_warning ("remove items Deletefolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
-
+	
 	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_top);
 	
 	LOGNONE();
 	UNLOCK ();
 	
 	return TRUE;	
 }
-#endif
 
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data)
