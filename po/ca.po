@@ -3282,13 +3282,13 @@ msgstr "Resposta inesperada del servidor IMAP4 %s: %s"
 #: ../camel/providers/imap4/camel-imap4-engine.c:221
 #, c-format
 msgid "Unexpected greeting from IMAP server %s."
-msgstr "Salut inesperat del servidor IMAP %s."
+msgstr "Salutació inesperada del servidor IMAP %s."
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:431
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
 msgstr ""
-"No s'ha pogut seleccionar la carpeta '%s'. El nom de la bústia no és válid"
+"No s'ha pogut seleccionar la carpeta '%s'. El nom de la bústia no és vàlid"
 
 #: ../camel/providers/imap4/camel-imap4-engine.c:437
 #, c-format
@@ -3709,7 +3709,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
-msgstr "Directory mbox estàndard per a cues de correu de l'Unix"
+msgstr "Directori mbox estàndard per a cues de correu de l'Unix"
 
 #: ../camel/providers/local/camel-local-store.c:157
 #: ../camel/providers/local/camel-local-store.c:268
@@ -4394,7 +4394,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:208
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "No s'ha llegit un salut correcte del servidor POP %s"
+msgstr "No s'ha llegit una salutació correcta del servidor POP %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:222
 #: ../camel/providers/pop3/camel-pop3-store.c:239
@@ -4447,7 +4447,7 @@ msgstr "S'ha produït un error en autenticar-se al servidor POP %s: %s"
 #: ../camel/providers/pop3/camel-pop3-store.c:476
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
-msgstr "%sIntroduïu la contrasenya POP per a %s a la máquina %s"
+msgstr "%sIntroduïu la contrasenya POP per a %s a la màquina %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:502
 #, c-format
