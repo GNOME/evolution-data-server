@@ -1,3 +1,8 @@
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* backends/file/e-book-backend-file.c: (book_view_thread): Fix the crash 
+	introduced by the previous commit.
+
 2007-10-22  Akhil Laddha  <lakhil@novell.com>
 
 	** Fix for bug #486873
