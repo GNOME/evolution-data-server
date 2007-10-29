@@ -1793,7 +1793,7 @@ e_book_backend_mapi_remove (EBookBackend *backend,
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
 	char *cache_uri = NULL;
 	gboolean status;
-#if 0	
+
 	if(enable_debug)
 		printf("mapi: remove\n");
 	
@@ -1846,7 +1846,6 @@ e_book_backend_mapi_remove (EBookBackend *backend,
 
 	return;
 	
-#endif	
 	/* FIXME : provide implmentation */
 }
 

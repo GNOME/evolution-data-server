@@ -1,5 +1,10 @@
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* e-book-backend-mapi.c: (e_book_backend_mapi_remove): Implement
+	folder remove.
+
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* e-book-backend-mapi.c: (build_name_id), (build_props),
 	(e_book_backend_mapi_remove_contacts),
 	(e_book_backend_mapi_modify_contact), (emapidump_contact): Create
