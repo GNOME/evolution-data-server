@@ -1,3 +1,7 @@
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.1 release.
+
 2007-10-29  Matthew Barnes  <mbarnes@redhat.com>
 
 	* servers/google/libgdata/gdata-entry.c:

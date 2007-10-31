@@ -1,3 +1,36 @@
+Evolution-Data-Server 2.21.1 2007-10-29
+---------------------------------------
+
+New in 2.21.1:
+	Support for Google Calendar (Ebby Wiselyn)
+
+Bug Fixes:
+	#203480: (Novell Bugzilla) Compiler warning fix for usage ofunintialized variable (Srinivasa Ragavan)
+	#231178: New symbol 'set-label' defined and added corresponding callback (Milan Crha)
+	#271777: Keep character's case as user types (Milan Crha)
+	#417999: Don't use deprecated GTK+ symbols (Matthew Barnes)
+	#420167: e-d-s now exits with gnome-session (Milan Crha)
+	#469657: Better use of GHashTable (Matthew Barnes)
+	#474000: Use GLib's Base64 API instead of Camel's (Matthew Barnes)
+	#475487: When creating the default contact, print errors to the console (Ross Burton)
+	#475493: Use G_DEFINE_TYPE (Ross Burton)
+	#475494: Use G_LOCK instead of a static mutex for clearer code (Ross Burton)
+	#478404: Reset the id to zero (Srinivasa Ragavan)
+	#483301: Remove an unused variable (Matthew Barnes)
+	#487270: Fix typo in documentation (Tollef Fog Heen)
+	#488173: Remove __FUNCTION__, which is a gcc-ism (Jeff Cai)
+	#488351: Fix an addressbook error on a fresh install (Matthew Barnes)
+
+Other Contributors:
+	Protect against a NULL subject string. (Jeffrey Stedfast)
+
+Updated Translations:
+	Anas Husseini (ar_
+	Matej Urbanči (sl)
+	Yavor Doganov (bg)
+	Theppitak Karoonboonyanan (th)
+	Ignacio Casal Quinteiro (gl)
+
 Evolution-Data-Server 1.12.0 2007-09-17
 ---------------------------------------
 
