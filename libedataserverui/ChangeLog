@@ -1,3 +1,10 @@
+2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #487229
+
+	* e-passwords.c:
+	Use GKeyFile instead of gnome-config to access stored passwords.
+
 2007-11-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #492130

@@ -42,7 +42,6 @@
 #endif
 
 #include <string.h>
-#include <libgnome/gnome-config.h>
 #include <glib/gi18n-lib.h>
 #include <gtk/gtkversion.h>
 #include <gtk/gtkentry.h>
@@ -104,11 +103,96 @@ struct _EPassMsg {
 
 typedef struct _EPassMsg EPassMsg;
 
-static GHashTable *passwords = NULL;
+static GHashTable *password_cache = NULL;
 static GtkDialog *password_dialog = NULL;
 static EDList request_list = E_DLIST_INITIALISER(request_list);
 static int idle_id;
 static int ep_online_state = TRUE;
+
+#define KEY_FILE_GROUP_PREFIX "Passwords-"
+static GKeyFile *key_file = NULL;
+
+static gchar *
+ep_key_file_get_filename (void)
+{
+	/* XXX It would be nice to someday move this data elsewhere, or else
+	 * fully migrate to GNOME Keyring or whatever software supercedes it.
+	 * Evolution is one of the few remaining GNOME-2 applications that
+	 * still uses the deprecated ~/.gnome2_private directory. */
+
+	return g_build_filename (
+		g_get_home_dir (), ".gnome2_private", "Evolution", NULL);
+}
+
+static gchar *
+ep_key_file_get_group (const gchar *component)
+{
+	return g_strconcat (KEY_FILE_GROUP_PREFIX, component, NULL);
+}
+
+static gchar *
+ep_key_file_normalize_key (const gchar *key)
+{
+	/* XXX Previous code converted all slashes and equal signs in the
+	 * key to underscores for use with "gnome-config" functions.  While
+	 * it may not be necessary to convert slashes for use with GKeyFile,
+	 * we continue to do the same for backward-compatibility. */
+
+	gchar *normalized_key, *cp;
+
+	normalized_key = g_strdup (key);
+	for (cp = normalized_key; *cp != '\0'; cp++)
+		if (*cp == '/' || *cp == '=')
+			*cp = '_';
+
+	return normalized_key;
+}
+
+static void
+ep_key_file_load (void)
+{
+	gchar *filename;
+	GError *error = NULL;
+
+	filename = ep_key_file_get_filename ();
+
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
+		goto exit;
+
+	g_key_file_load_from_file (
+		key_file, filename, G_KEY_FILE_KEEP_COMMENTS |
+		G_KEY_FILE_KEEP_TRANSLATIONS, &error);
+
+	if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+exit:
+	g_free (filename);
+}
+
+static void
+ep_key_file_save (void)
+{
+	gchar *contents;
+	gchar *filename;
+	gsize length;
+	GError *error = NULL;
+
+	filename = ep_key_file_get_filename ();
+	contents = g_key_file_to_data (key_file, &length, NULL);
+
+	g_file_set_contents (filename, contents, length, &error);
+
+	if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+	g_free (contents);
+	g_free (filename);
+}
 
 static gchar *
 ep_password_encode (const gchar *password)
@@ -264,26 +348,23 @@ ep_clear_passwords_keyring(EPassMsg *msg)
 static void
 ep_clear_passwords_file(EPassMsg *msg)
 {
-	char *path;
+	gchar *group;
+	GError *error = NULL;
 
-	path = g_strdup_printf ("/Evolution/Passwords-%s", msg->component);
+	group = ep_key_file_get_group (msg->component);
 
-	gnome_config_private_clean_section (path);
-	gnome_config_private_sync_file ("/Evolution");
+	g_key_file_remove_group (key_file, group, &error);
+	if (error == NULL)
+		ep_key_file_save ();
+	else {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
 
-	g_free (path);
+	g_free (group);
 
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
-}
-
-static gboolean
-free_entry (gpointer key, gpointer value, gpointer user_data)
-{
-	g_free (key);
-	memset (value, 0, strlen (value));
-	g_free (value);
-	return TRUE;
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -326,7 +407,7 @@ ep_forget_passwords_keyring(EPassMsg *msg)
 	g_free (default_keyring);
 
 	/* free up the session passwords */
-	g_hash_table_foreach_remove (passwords, free_entry, NULL);
+	g_hash_table_remove_all (password_cache);
 
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
@@ -336,45 +417,22 @@ ep_forget_passwords_keyring(EPassMsg *msg)
 static void
 ep_forget_passwords_file(EPassMsg *msg)
 {
-	void *it;
-	char *key;
+	gchar **groups;
+	gsize length, ii;
 
-	it = gnome_config_private_init_iterator_sections("/Evolution");
-	while ( (it = gnome_config_iterator_next(it, &key, NULL)) ) {
-		if (0 == strncmp(key, "Passwords-", 10)) {
-			char *section = g_strdup_printf("/Evolution/%s", key);
+	g_hash_table_remove_all (password_cache);
 
-			gnome_config_private_clean_section (section);
-			g_free(section);
-		}
-		g_free(key);
+	groups = g_key_file_get_groups (key_file, &length);
+	for (ii = 0; ii < length; ii++) {
+		if (!g_str_has_prefix (groups[ii], KEY_FILE_GROUP_PREFIX))
+			continue;
+		g_key_file_remove_group (key_file, groups[ii], NULL);
 	}
-
-	gnome_config_private_sync_file ("/Evolution");
-
-	/* free up the session passwords */
-	g_hash_table_foreach_remove (passwords, free_entry, NULL);
+	ep_key_file_save ();
+	g_strfreev (groups);
 
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
-}
-
-static char *
-password_path (const char *component_name, const char *key)
-{
-	char *keycopy, *path;
-	int i;
-	keycopy = g_strdup (key);
-
-	for (i = 0; i < strlen (keycopy); i ++)
-		if (keycopy[i] == '/' || keycopy[i] =='=')
-			keycopy[i] = '_';
-	
-	path = g_strdup_printf ("/Evolution/Passwords-%s/%s", component_name, keycopy);
-
-	g_free (keycopy);
-
-	return path;
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -383,7 +441,7 @@ ep_remember_password_keyring(EPassMsg *msg)
 {
 	gchar *value;
 
-	value = g_hash_table_lookup (passwords, msg->key);
+	value = g_hash_table_lookup (password_cache, msg->key);
 	if (value != NULL) {
 		/* add it to the on-disk cache of passwords */
 		GnomeKeyringAttributeList *attributes;
@@ -420,7 +478,7 @@ ep_remember_password_keyring(EPassMsg *msg)
 		gnome_keyring_attribute_list_free (attributes);
 
 		/* now remove it from our session hash */
-		g_hash_table_remove (passwords, msg->key);
+		g_hash_table_remove (password_cache, msg->key);
 		
 		e_uri_free (uri);
 	}
@@ -433,23 +491,25 @@ ep_remember_password_keyring(EPassMsg *msg)
 static void
 ep_remember_password_file(EPassMsg *msg)
 {
-	char *path, *pass64, *value;
+	gchar *group, *key, *password;
 
-	value = g_hash_table_lookup (passwords, msg->key);
-	if (value != NULL) {
-		/* add it to the on-disk cache of passwords */
-		path = password_path (msg->component, msg->key);
-		pass64 = ep_password_encode (value);
-
-		gnome_config_private_set_string (path, pass64);
-		g_free (path);
-		g_free (pass64);
-
-		/* now remove it from our session hash */
-		g_hash_table_remove (passwords, msg->key);
-
-		gnome_config_private_sync_file ("/Evolution");
+	password = g_hash_table_lookup (password_cache, msg->key);
+	if (password == NULL) {
+		g_warning ("Password for key \"%s\" not found", msg->key);
+		return;
 	}
+
+	group = ep_key_file_get_group (msg->component);
+	key = ep_key_file_normalize_key (msg->key);
+	password = ep_password_encode (password);
+
+	g_hash_table_remove (password_cache, msg->key);
+	g_key_file_set_string (key_file, group, key, password);
+	ep_key_file_save ();
+
+	g_free (group);
+	g_free (key);
+	g_free (password);
 
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
@@ -476,7 +536,7 @@ ep_forget_password_keyring (EPassMsg *msg)
 		uri->user = keycopy;
 	}
 	    
-	g_hash_table_remove (passwords, msg->key);
+	g_hash_table_remove (password_cache, msg->key);
 
 	if (!uri->host && !uri->user)
 		/* No need to remove from keyring for pass phrases */
@@ -545,16 +605,25 @@ exit:
 static void
 ep_forget_password_file (EPassMsg *msg)
 {
-	char *path;
+	gchar *group, *key;
+	GError *error = NULL;
 
-	g_hash_table_remove (passwords, msg->key);
+	g_hash_table_remove (password_cache, msg->key);
 
-	/* clear it in the on disk db */
-	path = password_path (msg->component, msg->key);
-	gnome_config_private_clean_key (path);
-	gnome_config_private_sync_file ("/Evolution");
-	g_free (path);
-	
+	group = ep_key_file_get_group (msg->component);
+	key = ep_key_file_normalize_key (msg->key);
+
+	g_key_file_remove_key (key_file, group, key, &error);
+	if (error == NULL)
+		ep_key_file_save ();
+	else {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+	g_free (group);
+	g_free (key);
+
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
 }
@@ -569,7 +638,7 @@ ep_get_password_keyring (EPassMsg *msg)
 	GnomeKeyringResult result;
 	GList *matches = NULL, *tmp;	
 
-	passwd = g_hash_table_lookup (passwords, msg->key);
+	passwd = g_hash_table_lookup (password_cache, msg->key);
 	if (passwd) {
 		msg->password = g_strdup(passwd);
 	} else {
@@ -643,23 +712,30 @@ ep_get_password_keyring (EPassMsg *msg)
 
 static void
 ep_get_password_file (EPassMsg *msg)
-{	
-	char *path, *passwd;
-	char *encoded = NULL;
+{
+	gchar *group, *key, *password;
+	GError *error = NULL;
 
-	passwd = g_hash_table_lookup (passwords, msg->key);
-	if (passwd) {
-		msg->password = g_strdup(passwd);
-	} else {
-		/* not part of the session hash, look it up in the on disk db */
-		path = password_path (msg->component, msg->key);
-		encoded = gnome_config_private_get_string_with_default (path, NULL);
-		g_free (path);
-		if (encoded) {
-			msg->password = ep_password_decode (encoded);
-			g_free (encoded);
-		}
+	password = g_hash_table_lookup (password_cache, msg->key);
+	if (password != NULL) {
+		msg->password = g_strdup (password);
+		return;
 	}
+
+	group = ep_key_file_get_group (msg->component);
+	key = ep_key_file_normalize_key (msg->key);
+
+	password = g_key_file_get_string (key_file, group, key, &error);
+	if (password != NULL) {
+		msg->password = ep_password_decode (password);
+		g_free (password);
+	} else {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+
+	g_free (group);
+	g_free (key);
 
 	if (!msg->noreply)
 		e_msgport_reply(&msg->msg);
@@ -668,10 +744,12 @@ ep_get_password_file (EPassMsg *msg)
 static void
 ep_add_password (EPassMsg *msg)
 {
-	g_hash_table_insert (passwords, g_strdup (msg->key), g_strdup (msg->oldpass));
+	g_hash_table_insert (
+		password_cache, g_strdup (msg->key),
+		g_strdup (msg->oldpass));
 
 	if (!msg->noreply)
-		e_msgport_reply(&msg->msg);
+		e_msgport_reply (&msg->msg);
 }
 
 static void ep_ask_password(EPassMsg *msg);
@@ -850,14 +928,23 @@ e_passwords_init (void)
 {
 	LOCK();
 
-	if (!passwords) {
-		/* create the per-session hash table */
-		passwords = g_hash_table_new_full (
+	if (password_cache == NULL) {
+		password_cache = g_hash_table_new_full (
 			g_str_hash, g_str_equal,
 			(GDestroyNotify) g_free,
 			(GDestroyNotify) g_free);
 #ifdef ENABLE_THREADS
 		main_thread = pthread_self();
+#endif
+
+#ifdef WITH_GNOME_KEYRING
+		if (!gnome_keyring_is_available ()) {
+			key_file = g_key_file_new ();
+			ep_key_file_load ();
+		}
+#else
+		key_file = g_key_file_new ();
+		ep_key_file_load ();
 #endif
 	}
 
@@ -892,20 +979,11 @@ e_passwords_cancel(void)
 void
 e_passwords_shutdown (void)
 {
-#ifdef WITH_GNOME_KEYRING
-	/* shouldn't need this really - everything is synchronous */
-	if (!gnome_keyring_is_available())
-		gnome_config_private_sync_file ("/Evolution");
-#else
-	gnome_config_private_sync_file ("/Evolution");
-#endif
 	e_passwords_cancel();
 
-	if (passwords) {
-		/* and destroy our per session hash */
-		g_hash_table_foreach_remove (passwords, free_entry, NULL);
-		g_hash_table_destroy (passwords);
-		passwords = NULL;
+	if (password_cache != NULL) {
+		g_hash_table_destroy (password_cache);
+		password_cache = NULL;
 	}
 }
 
