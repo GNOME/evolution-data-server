@@ -1,5 +1,12 @@
 2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
 
+	** Fixes bug #488156
+
+	* e-passwords.c:
+	Minimize use of the WITH_GNOME_KEYRING macro.
+
+2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
+
 	** Fixes bug #487229
 
 	* e-passwords.c:
