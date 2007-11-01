@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-28 16:28+0100\n"
-"PO-Revision-Date: 2007-08-28 19:48+0300\n"
+"PO-Revision-Date: 2007-11-01 06:55+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -3066,16 +3066,16 @@ msgstr "Nimeruum:"
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "_Filtrite rakendamine Sisendkasti uutele sõnumitele"
+msgstr "Sisendkasti uutele sõnumitele rakendatakse _filtreid"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 msgid "Check new messages for Jun_k contents"
-msgstr "_Uute sõnumite kontrollimine rämpsposti tuvastamiseks"
+msgstr "_Uusi sõnumeid kontrollitakse rämpsposti tuvastamiseks"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
 #: ../camel/providers/imap4/camel-imap4-provider.c:59
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Kohaliku posti automaatne _sünkroniseerimine kaugpostiga"
+msgstr "Kohalik post _sünkroniseeritakse automaatselt kaugpostiga"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
 msgid "IMAP"
