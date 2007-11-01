@@ -1,3 +1,14 @@
+2007-11-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #492130
+
+	* e-source-selector.c: (find_source): New helper function to find our
+	own instance of ESource, rather than use one with unknown origin.
+	* e-source-selector.c: (e_source_selector_select_source),
+	(e_source_selector_unselect_source),
+	(e_source_selector_source_is_selected),
+	(e_source_selector_set_primary_selection): Use new helper function.
+
 2007-10-26  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #271777

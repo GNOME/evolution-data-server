@@ -220,6 +220,31 @@ rebuild_existing_cb (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, 
 	return FALSE;
 }
 	
+static ESource *
+find_source (ESourceSelector *selector, ESource *source)
+{
+	GSList *groups, *p;
+
+	g_return_val_if_fail (selector != NULL, source);
+	g_return_val_if_fail (E_IS_SOURCE (source), source);
+
+	groups = e_source_list_peek_groups (selector->priv->list);
+	for (p = groups; p != NULL; p = p->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (p->data);
+		GSList *sources, *q;
+
+		sources = e_source_group_peek_sources (group);
+		for (q = sources; q != NULL; q = q->next) {
+			ESource *s = E_SOURCE (q->data);
+
+			if (e_source_equal (s, source))
+				return s;
+		}
+	}
+
+	return source;
+}
+
 static void
 rebuild_model (ESourceSelector *selector)
 {
@@ -999,7 +1024,9 @@ e_source_selector_select_source (ESourceSelector *selector,
 	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	if (source_is_selected (selector, source))
+	source = find_source (selector, source);
+
+	if (!source || source_is_selected (selector, source))
 		return;
 
 	select_source (selector, source);
@@ -1032,7 +1059,9 @@ e_source_selector_unselect_source (ESourceSelector *selector,
 	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	if (! source_is_selected (selector, source))
+	source = find_source (selector, source);
+
+	if (!source || !source_is_selected (selector, source))
 		return;
 
 	unselect_source (selector, source);
@@ -1065,7 +1094,9 @@ e_source_selector_source_is_selected (ESourceSelector *selector,
 	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	return source_is_selected (selector, source);
+	source = find_source (selector, source);
+
+	return source && source_is_selected (selector, source);
 }
 
 /**
@@ -1139,6 +1170,10 @@ e_source_selector_set_primary_selection (ESourceSelector *selector, ESource *sou
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	priv = selector->priv;
+	source = find_source (selector, source);
+
+	if (!source)
+		return;
 	
 	if (find_source_iter (selector, source, &parent_iter, &source_iter)) {
 		GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (selector));
