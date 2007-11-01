@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-09-22 22:10+0900\n"
-"PO-Revision-Date: 2007-09-28 00:55+0900\n"
+"PO-Revision-Date: 2007-11-01 21:29+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1398,12 +1398,12 @@ msgstr "폴더 동기중"
 #: ../camel/camel-filter-driver.c:1081 ../camel/camel-filter-driver.c:1460
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr "거르게 분석 중 오류: %s: %s"
+msgstr "필터 분석 중 오류: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1090 ../camel/camel-filter-driver.c:1469
 #, c-format
 msgid "Error executing filter: %s: %s"
-msgstr "거르게 실행 중 오류: %s: %s"
+msgstr "필터 실행 중 오류: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1158
 msgid "Unable to open spool folder"
@@ -1466,7 +1466,7 @@ msgstr "'%s' 하위 프로세스를 만드는 데 실패했습니다: %s"
 #: ../camel/camel-filter-search.c:703 ../camel/camel-filter-search.c:711
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr "거르게 찾기 실행 중 오류: %s: %s"
+msgstr "필터 찾기 실행 중 오류: %s: %s"
 
 #: ../camel/camel-folder-search.c:358 ../camel/camel-folder-search.c:480
 #, c-format
@@ -2748,7 +2748,7 @@ msgstr "옵션"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr "이 서버의 받은 편지함에 있는 새 메세지에 거르게 적용(_A)"
+msgstr "이 서버의 받은 편지함에 있는 새 메세지에 필터 적용(_A)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Check new messages for J_unk contents"
@@ -2880,12 +2880,12 @@ msgstr "메세지를 보낼 수 없음: %s"
 #: ../camel/providers/hula/camel-hula-provider.c:49
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr "새 메일을 확인하는 중입니다"
+msgstr "새 메일 확인"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:50
 msgid "Connection to Server"
-msgstr "서버에 연결하는 중입니다"
+msgstr "서버에 연결"
 
 #: ../camel/providers/hula/camel-hula-provider.c:56
 #: ../camel/providers/imap/camel-imap-provider.c:52
@@ -3055,7 +3055,7 @@ msgstr "이름 공간:"
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "이 서버의 INBOX에 있는 새 메세지에 거르게를 적용(_A)"
+msgstr "이 서버의 INBOX에 있는 새 메세지에 필터를 적용(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 msgid "Check new messages for Jun_k contents"
@@ -3251,7 +3251,7 @@ msgstr "IMAP4 서버 %s의 연결이 예상치 못하게 끊겼습니다: %s"
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
 msgid ""
 "Enable Mailing-List detection required for some filter and vFolder rules"
-msgstr "메일링 리스트 감지 기능 사용, 일부 거르게 및 가상 폴더 규칙에 필요"
+msgstr "메일링 리스트 감지 기능 사용, 일부 필터 및 가상 폴더 규칙에 필요"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:402
 #, c-format
@@ -3597,7 +3597,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "Apply filters to new messages in INBOX"
-msgstr "거르게를 받은 편지함의 새 메세지에 적용합니다"
+msgstr "필터를 받은 편지함의 새 메세지에 적용합니다"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
