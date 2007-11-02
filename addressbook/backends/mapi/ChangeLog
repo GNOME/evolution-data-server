@@ -1,3 +1,8 @@
+2007-11-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-book-backend-mapi.c: (e_book_backend_mapi_modify_contact): Add
+	modify contact support.
+
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-book-backend-mapi.c: (e_book_backend_mapi_remove): Implement

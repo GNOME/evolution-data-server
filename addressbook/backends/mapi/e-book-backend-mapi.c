@@ -917,7 +917,8 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 {
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) backend)->priv;
 	EContact *contact;
-	mapi_id_t fid, mid, status;
+	mapi_id_t fid, mid;
+	gboolean status;
 	char *tmp, *id;
 	GList *l = NULL;
 	
@@ -932,26 +933,18 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
 		contact = e_contact_new_from_vcard(vcard);
 		tmp = e_contact_get (contact, E_CONTACT_UID);
+		sscanf(tmp, "%016llx%016llx", &fid, &mid);		
 		printf("modify id %s\n", tmp);
-		status = exchange_mapi_create_item (olFolderContacts, priv->fid, build_name_id, contact, build_props, contact);
+		
+		status = exchange_mapi_modify_item (olFolderContacts, priv->fid, mid, build_name_id, contact, build_props, contact);
 		printf("getting %016llx\n", status);
 		if (!status) {
 			e_data_book_respond_modify(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
 		}
-		id = g_strdup_printf ("%016llx%016llx", priv->fid, status);
 		
-		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
-		e_contact_set (contact, E_CONTACT_UID, id);		
 		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
-		printf("created contact %s\n", id);
-		//somehow get the mid.
-		//add to summary and cache.
-		sscanf(tmp, "%016llx%016llx", &fid, &mid);
-		l = g_slist_prepend (l, tmp);
-		if (!exchange_mapi_remove_items (olFolderContacts, priv->fid, l)) {
-			printf("FFFFFFFFFFFFFFFFFFFf\n");
-		}
+
 		//FIXME: Write it cleanly
 		if (priv->marked_for_offline && priv->is_cache_ready)
 			printf("delete cache %d\n", e_book_backend_cache_remove_contact (priv->cache, tmp));
