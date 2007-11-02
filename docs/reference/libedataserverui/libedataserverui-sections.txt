@@ -1,4 +1,22 @@
 <SECTION>
+<FILE>e-cell-renderer-color</FILE>
+<TITLE>ECellRendererColor</TITLE>
+ECellRendererColor
+e_cell_renderer_color_new
+<SUBSECTION Standard>
+E_TYPE_CELL_RENDERER_COLOR
+E_CELL_RENDERER_COLOR
+E_CELL_RENDERER_COLOR_CLASS
+E_IS_CELL_RENDERER_COLOR
+E_IS_CELL_RENDERER_COLOR_CLASS
+E_CELL_RENDERER_COLOR_GET_CLASS
+ECellRendererColorClass
+<SUBSECTION Private>
+ECellRendererColorPrivate
+e_cell_renderer_color_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-tree-model-generator</FILE>
 <TITLE>ETreeModelGenerator</TITLE>
 ETreeModelGeneratorGenerateFunc

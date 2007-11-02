@@ -1,3 +1,18 @@
+2007-11-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #460649
+
+	* Makefile.am:
+	Add e-cell-renderer-color.[ch].
+
+	* e-cell-renderer-color.c:
+	* e-cell-renderer-color.h:
+	New GtkCellRenderer subclass by Milan Crha renders a solid color.
+
+	* e-source-combo-box.c:
+	Display the ESource's color next to its name.
+	Patch by Milan Crha and myself.
+
 2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #488156

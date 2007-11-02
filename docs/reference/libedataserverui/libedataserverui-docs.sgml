@@ -10,6 +10,7 @@
     <title>Evolution API Reference: libedataserverui, graphical utility library</title>
     <xi:include href="xml/e-book-auth-util.xml"/>
     <xi:include href="xml/e-categories-dialog.xml"/>
+    <xi:include href="xml/e-cell-renderer-color.xml"/>
     <xi:include href="xml/e-contact-store.xml"/>
     <xi:include href="xml/e-data-server-ui-marshal.xml"/>
     <xi:include href="xml/e-destination-store.xml"/>

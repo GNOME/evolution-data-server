@@ -23,6 +23,7 @@
 #endif
 
 #include "e-source-combo-box.h"
+#include "e-cell-renderer-color.h"
 
 #define E_SOURCE_COMBO_BOX_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -40,9 +41,11 @@ enum {
 };
 
 enum {
+	COLUMN_COLOR,		/* GDK_TYPE_COLOR */
 	COLUMN_NAME,		/* G_TYPE_STRING */
 	COLUMN_SENSITIVE,	/* G_TYPE_BOOLEAN */
 	COLUMN_SOURCE,		/* G_TYPE_OBJECT */
+	COLUMN_VISIBLE,		/* G_TYPE_BOOLEAN */
 	NUM_COLUMNS
 };
 
@@ -63,6 +66,8 @@ source_list_changed_cb (ESourceList *source_list,
 	const gchar *name;
 	const gchar *uid;
 	gchar *indented_name;
+	gboolean visible = FALSE;
+	gboolean iter_valid;
 
 	priv = source_combo_box->priv;
 	g_hash_table_remove_all (priv->uid_index);
@@ -85,6 +90,7 @@ source_list_changed_cb (ESourceList *source_list,
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (
 			store, &iter,
+			COLUMN_COLOR, NULL,
 			COLUMN_NAME, name,
 			COLUMN_SENSITIVE, FALSE,
 			COLUMN_SOURCE, groups->data,
@@ -92,17 +98,26 @@ source_list_changed_cb (ESourceList *source_list,
 
 		for (sources = e_source_group_peek_sources (groups->data);
 			sources != NULL; sources = sources->next) {
+			const gchar *color_spec;
+			GdkColor color;
 
 			name = e_source_peek_name (sources->data);
 			indented_name = g_strconcat ("    ", name, NULL);
+
+			color_spec = e_source_peek_color_spec (sources->data);
+			if (color_spec != NULL) {
+				gdk_color_parse (color_spec, &color);
+				visible = TRUE;
+			}
+
 			gtk_list_store_append (store, &iter);
 			gtk_list_store_set (
 				store, &iter,
+				COLUMN_COLOR, color_spec ? &color : NULL,
 				COLUMN_NAME, indented_name,
 				COLUMN_SENSITIVE, TRUE,
 				COLUMN_SOURCE, sources->data,
 				-1);
-			g_free (indented_name);
 
 			uid = e_source_peek_uid (sources->data);
 			path = gtk_tree_model_get_path (model, &iter);
@@ -110,7 +125,17 @@ source_list_changed_cb (ESourceList *source_list,
 				priv->uid_index, g_strdup (uid),
 				gtk_tree_row_reference_new (model, path));
 			gtk_tree_path_free (path);
+
+			g_free (indented_name);
 		}
+	}
+
+	/* Set the visible column based on whether we've seen a color. */
+	iter_valid = gtk_tree_model_get_iter_first (model, &iter);
+	while (iter_valid) {
+		gtk_list_store_set (
+			store, &iter, COLUMN_VISIBLE, visible, -1);
+		iter_valid = gtk_tree_model_iter_next (model, &iter);
 	}
 }
 
@@ -127,9 +152,24 @@ e_source_combo_box_constructor (GType type, guint n_construct_properties,
 		type, n_construct_properties, construct_properties);
 
 	store = gtk_list_store_new (
-		NUM_COLUMNS, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_OBJECT);
+		NUM_COLUMNS,
+		GDK_TYPE_COLOR,		/* COLUMN_COLOR */
+		G_TYPE_STRING,		/* COLUMN_NAME */
+		G_TYPE_BOOLEAN,		/* COLUMN_SENSITIVE */
+		G_TYPE_OBJECT,		/* COLUMN_SOURCE */
+		G_TYPE_BOOLEAN);	/* COLUMN_VISIBLE */
 	gtk_combo_box_set_model (
 		GTK_COMBO_BOX (object), GTK_TREE_MODEL (store));
+
+	renderer = e_cell_renderer_color_new ();
+	gtk_cell_layout_pack_start (
+		GTK_CELL_LAYOUT (object), renderer, FALSE);
+	gtk_cell_layout_set_attributes (
+		GTK_CELL_LAYOUT (object), renderer,
+		"color", COLUMN_COLOR,
+		"sensitive", COLUMN_SENSITIVE,
+		"visible", COLUMN_VISIBLE,
+		NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (
@@ -144,8 +184,10 @@ e_source_combo_box_constructor (GType type, guint n_construct_properties,
 }
 
 static void
-e_source_combo_box_set_property (GObject *object, guint property_id,
-                                 const GValue *value, GParamSpec *pspec)
+e_source_combo_box_set_property (GObject *object,
+                                 guint property_id,
+                                 const GValue *value,
+                                 GParamSpec *pspec)
 {
 	ESourceComboBoxPrivate *priv;
 
@@ -180,8 +222,10 @@ e_source_combo_box_set_property (GObject *object, guint property_id,
 }
 
 static void
-e_source_combo_box_get_property (GObject *object, guint property_id,
-                                 GValue *value, GParamSpec *pspec)
+e_source_combo_box_get_property (GObject *object,
+                                 guint property_id,
+                                 GValue *value,
+                                 GParamSpec *pspec)
 {
 	ESourceComboBoxPrivate *priv;
 
