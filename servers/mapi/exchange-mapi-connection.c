@@ -137,6 +137,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	mapi_object_t obj_folder;
 	mapi_object_t obj_table;
 	enum MAPISTATUS retval;
+	uint32_t count;
 	mapi_object_t obj_message;
 	struct SRowSet SRowSet;
 	struct SPropTagArray *SPropTagArray;
@@ -205,7 +206,16 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 			return FALSE;
 		}
 	}
-	retval = QueryRows(&obj_table, 0x32, TBL_ADVANCE, &SRowSet);
+
+	retval = GetRowCount(&obj_table, &count);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-getrowcount failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
+		UNLOCK ();
+		return FALSE;
+	}
+
+	retval = QueryRows(&obj_table, count, TBL_ADVANCE, &SRowSet);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("startbookview-queryrows failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
