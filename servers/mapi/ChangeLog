@@ -1,3 +1,10 @@
+2007-11-02  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_create_item), (exchange_mapi_modify_item): Add support
+	for modify item
+
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_remove_folder):

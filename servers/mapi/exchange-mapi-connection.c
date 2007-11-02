@@ -36,10 +36,10 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-#define LOGALL() 	//lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-#define LOGNONE()       //lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
-#define ENABLE_VERBOSE_LOG() 	//global_mapi_ctx->dumpdata = TRUE;
-#define ENABLE_VERBOSE_LOG()
+#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+#define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
+//#define ENABLE_VERBOSE_LOG()
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -225,7 +225,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 				     SRowSet.aRow[i].lpProps[1].value.d,
 				     &obj_message, 0);
 		//FIXME: Verify this
-		printf(" %016llx %016llx %016llx %016llx %016llx\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
+		//printf(" %016llx %016llx %016llx %016llx %016llx\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
 		if (retval != MAPI_E_NOT_FOUND) {
 			retval = GetPropsAll(&obj_message, &properties_array);
 			if (retval == MAPI_E_SUCCESS) {
@@ -527,7 +527,7 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		UNLOCK ();
 		return 0;
 	}
-	
+	mapi_object_debug (&obj_message);
 	nameid = mapi_nameid_new(mem_ctx);
 	if (!build_name_id (nameid, ni_data)) {
 		g_warning ("create item build name id failed: %d\n", retval);
@@ -583,6 +583,117 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 	LOGNONE ();
 	UNLOCK ();
 	return mid;
+}
+
+gboolean
+exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data)
+{
+	mapi_object_t obj_store;	
+	mapi_object_t obj_folder;
+	mapi_object_t obj_table;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SPropValue	*props=NULL;
+	struct mapi_nameid	*nameid;
+	struct SPropTagArray	*SPropTagArray;
+	TALLOC_CTX *mem_ctx;
+	int propslen;
+	
+	LOCK ();
+
+	LOGALL ();
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_message);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify item openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return FALSE;
+	}
+
+	printf("Opening folder %016llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify item openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return FALSE;
+	}
+
+
+	retval = OpenMessage(&obj_folder,
+			     fid,
+			     mid,
+			     &obj_message, MAPI_MODIFY);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify item open message failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return FALSE;
+	}
+
+	nameid = mapi_nameid_new(mem_ctx);
+	if (!build_name_id (nameid, ni_data)) {
+		g_warning ("modify item build name id failed: %d\n", retval);
+		LOGNONE ();
+		UNLOCK ();
+		return 0;		
+	}
+
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+	retval = GetIDsFromNames(&obj_folder, nameid->count,
+				 nameid->nameid, 0, &SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify  item GetIDsFromNames failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+	mapi_nameid_SPropTagArray(nameid, SPropTagArray);
+	MAPIFreeBuffer(nameid);
+
+	propslen = build_props (&props, SPropTagArray, p_data);
+	if (propslen <1) {
+		g_warning ("modify item build props failed: %d\n", retval);
+		LOGNONE ();
+		UNLOCK ();
+		return 0;		
+	}
+
+	retval = SetProps(&obj_message, props, propslen);
+	MAPIFreeBuffer(SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify item SetProps failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;				
+	}
+
+	retval = SaveChangesMessage(&obj_folder, &obj_message);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("modify item SaveChangesMessage failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		LOGNONE ();
+		UNLOCK ();
+		return 0;						
+	}
+
+	mapi_object_release(&obj_message);
+	mapi_object_release(&obj_folder);
+	
+	LOGNONE ();
+	UNLOCK ();
+	return TRUE;
 }
 
 static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)
