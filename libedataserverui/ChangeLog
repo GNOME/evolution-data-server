@@ -1,3 +1,17 @@
+2007-11-05  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #318842
+
+	* Sort sources within group alphabetically
+	in ESourceSelector and ESourceComboBox.
+	* e-source-selector.c: (compare_source_names), (get_sorted_sources):
+	* e-source-combo-box.c: (compare_source_names), (get_sorted_sources):
+	New helper functions to sort sources in a group.
+	* e-source-selector.c: (rebuild_model): Always sort sources and place
+	them on their right position, if not in a tree yet.
+	* e-source-combo-box.c: (source_list_changed_cb):
+	Add sources in sorted order within group.
+
 2007-11-02  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #460649

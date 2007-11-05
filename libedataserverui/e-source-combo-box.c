@@ -51,6 +51,44 @@ enum {
 
 static gpointer parent_class = NULL;
 
+/**
+ * compare_source_names
+ * Compares sources by name.
+ **/
+static gint
+compare_source_names (gconstpointer a, gconstpointer b)
+{
+	g_return_val_if_fail (E_IS_SOURCE (a), -1);
+	g_return_val_if_fail (E_IS_SOURCE (b),  1);
+
+	return g_utf8_collate (e_source_peek_name (E_SOURCE (a)), e_source_peek_name (E_SOURCE (b)));
+}
+
+/**
+ * get_sorted_sources
+ * Creates copy of GSList of sources (do not increase reference count for data members),
+ * and sorts this list alphabetically by source names.
+ *
+ * @param sources List of sources.
+ * @return New GSList of sorted sources, should be freed by g_slist_free,
+ *         but do not unref data members.
+ **/
+static GSList *
+get_sorted_sources (GSList *sources)
+{
+	GSList *res = NULL, *p;
+
+	if (!sources)
+		return NULL;
+
+	for (p = sources; p != NULL; p = p->next)
+		res = g_slist_prepend (res, p->data);
+
+	res = g_slist_sort (res, compare_source_names);
+
+	return res;
+}
+
 static void
 source_list_changed_cb (ESourceList *source_list,
                         ESourceComboBox *source_combo_box)
@@ -62,7 +100,7 @@ source_list_changed_cb (ESourceList *source_list,
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	GSList *groups;
-	GSList *sources;
+	GSList *sources, *s;
 	const gchar *name;
 	const gchar *uid;
 	gchar *indented_name;
@@ -96,15 +134,15 @@ source_list_changed_cb (ESourceList *source_list,
 			COLUMN_SOURCE, groups->data,
 			-1);
 
-		for (sources = e_source_group_peek_sources (groups->data);
-			sources != NULL; sources = sources->next) {
+		sources = get_sorted_sources (e_source_group_peek_sources (groups->data));
+		for (s = sources; s != NULL; s = s->next) {
 			const gchar *color_spec;
 			GdkColor color;
 
-			name = e_source_peek_name (sources->data);
+			name = e_source_peek_name (s->data);
 			indented_name = g_strconcat ("    ", name, NULL);
 
-			color_spec = e_source_peek_color_spec (sources->data);
+			color_spec = e_source_peek_color_spec (s->data);
 			if (color_spec != NULL) {
 				gdk_color_parse (color_spec, &color);
 				visible = TRUE;
@@ -116,10 +154,10 @@ source_list_changed_cb (ESourceList *source_list,
 				COLUMN_COLOR, color_spec ? &color : NULL,
 				COLUMN_NAME, indented_name,
 				COLUMN_SENSITIVE, TRUE,
-				COLUMN_SOURCE, sources->data,
+				COLUMN_SOURCE, s->data,
 				-1);
 
-			uid = e_source_peek_uid (sources->data);
+			uid = e_source_peek_uid (s->data);
 			path = gtk_tree_model_get_path (model, &iter);
 			g_hash_table_insert (
 				priv->uid_index, g_strdup (uid),
@@ -128,6 +166,7 @@ source_list_changed_cb (ESourceList *source_list,
 
 			g_free (indented_name);
 		}
+		g_slist_free (sources);
 	}
 
 	/* Set the visible column based on whether we've seen a color. */

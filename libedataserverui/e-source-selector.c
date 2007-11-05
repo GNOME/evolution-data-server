@@ -245,6 +245,44 @@ find_source (ESourceSelector *selector, ESource *source)
 	return source;
 }
 
+/**
+ * compare_source_names
+ * Compares sources by name.
+ **/
+static gint
+compare_source_names (gconstpointer a, gconstpointer b)
+{
+	g_return_val_if_fail (E_IS_SOURCE (a), -1);
+	g_return_val_if_fail (E_IS_SOURCE (b),  1);
+
+	return g_utf8_collate (e_source_peek_name (E_SOURCE (a)), e_source_peek_name (E_SOURCE (b)));
+}
+
+/**
+ * get_sorted_sources
+ * Creates copy of GSList of sources (do not increase reference count for data members),
+ * and sorts this list alphabetically by source names.
+ *
+ * @param sources List of sources.
+ * @return New GSList of sorted sources, should be freed by g_slist_free,
+ *         but do not unref data members.
+ **/
+static GSList *
+get_sorted_sources (GSList *sources)
+{
+	GSList *res = NULL, *p;
+
+	if (!sources)
+		return NULL;
+
+	for (p = sources; p != NULL; p = p->next)
+		res = g_slist_prepend (res, p->data);
+
+	res = g_slist_sort (res, compare_source_names);
+
+	return res;
+}
+
 static void
 rebuild_model (ESourceSelector *selector)
 {
@@ -278,6 +316,7 @@ rebuild_model (ESourceSelector *selector)
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
 		GSList *sources, *q;
 		GtkTreeRowReference *row_ref;
+		gint position;
 		
 		row_ref = g_hash_table_lookup (rebuild_data->remaining_uids, e_source_group_peek_uid (group));
 		if (!row_ref) {
@@ -294,8 +333,8 @@ rebuild_model (ESourceSelector *selector)
 			gtk_tree_path_free (path);
 		}
 		
-		sources = e_source_group_peek_sources (group);
-		for (q = sources; q != NULL; q = q->next) {
+		sources = get_sorted_sources (e_source_group_peek_sources (group));
+		for (q = sources, position = 0; q != NULL; q = q->next, position++) {
 			ESource *source = E_SOURCE (q->data);
 			GtkTreeIter child_iter;
 
@@ -305,9 +344,9 @@ rebuild_model (ESourceSelector *selector)
 					select_source (selector, source);
 					rebuild_data->selection_changed = TRUE;
 				}
-				gtk_tree_store_append (GTK_TREE_STORE (tree_store), &child_iter, &iter);
-				gtk_tree_store_set (GTK_TREE_STORE (tree_store), &child_iter, 0, source, -1);
 
+				gtk_tree_store_insert (GTK_TREE_STORE (tree_store), &child_iter, &iter, position);
+				gtk_tree_store_set (GTK_TREE_STORE (tree_store), &child_iter, 0, source, -1);
 			} else {
 				GtkTreePath *path;
 				
@@ -319,6 +358,9 @@ rebuild_model (ESourceSelector *selector)
 				gtk_tree_path_free (path);
 			}
 		}
+
+		if (sources)
+			g_slist_free (sources);
 	}
 
 	if (rebuild_data->selection_changed)
