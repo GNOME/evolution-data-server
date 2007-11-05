@@ -967,6 +967,18 @@ imap_body_decode (const char **in, CamelMessageContentInfo *ci, CamelFolder *fol
 		
 		/* size */
 		size = strtoul ((const char *) inptr, &p, 10);
+		/* check if the size wasn't negative */
+		if (p) {
+			while (inptr < p && *inptr != '-')
+				inptr++;
+
+			if (inptr < p)
+				size = 0;
+		}
+
+		if (size == 0)
+			goto exception;
+
 		inptr = (const unsigned char *) p;
 		
 		if (camel_content_type_is (ctype, "message", "rfc822")) {

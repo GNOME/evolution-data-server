@@ -1,3 +1,10 @@
+2007-11-05  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #430420
+
+	* camel-imap-utils.c: (imap_body_decode):
+	Returned size <= 0 is an error, as mentioned Robert Burrelldonkin.
+
 2007-09-07  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-imap-store.c: (imap_connect_online), (get_folder_status),
@@ -11,7 +18,7 @@
 	* camel-imap-search.c (hash_match):
 	Use GLib's Base64 API instead of Camel's.
 
-2007-19-07  Milan Crha  <mcrha@redhat.com>
+2007-09-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #473880
 
