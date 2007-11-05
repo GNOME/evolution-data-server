@@ -783,6 +783,35 @@ func_contains (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 	return result;
 }
 
+/* (has-start?)
+ *
+ * A boolean value for components that have/don't have filled start date/time.
+ *
+ * Returns: a boolean indicating whether the component has start date/time filled or not.
+ */
+static ESExpResult *
+func_has_start (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result;
+	ECalComponentDateTime dt;
+
+	/* Check argument types */
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+				    "has-start");
+		return NULL;
+	}
+
+	e_cal_component_get_dtstart (ctx->comp, &dt);
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = dt.value != NULL;
+	e_cal_component_free_datetime (&dt);
+
+	return result;
+}
+
 /* (has-alarms?)
  *
  * A boolean value for components that have/dont have alarms.
@@ -1231,6 +1260,7 @@ static struct {
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
 	{ "due-in-time-range?", func_due_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
+	{ "has-start?", func_has_start, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
 	{ "has-alarms-in-range?", func_has_alarms_in_range, 0 },
 	{ "has-recurrences?", func_has_recurrences, 0 },
