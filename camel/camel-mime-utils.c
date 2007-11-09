@@ -194,6 +194,9 @@ camel_base64_decode_simple (char *data, size_t len)
 	guchar *out_data;
 	gsize out_len;
 
+	g_return_val_if_fail (data != NULL, 0);
+	g_return_val_if_fail (strlen (data) > 1, 0);
+
 	out_data = g_base64_decode (data, &out_len);
 	g_assert (out_len <= len); /* sanity check */
 	memcpy (data, out_data, out_len);

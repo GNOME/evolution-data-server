@@ -1,3 +1,8 @@
+2007-11-09  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-mime-utils.c (camel_base64_decode_simple):
+	Add argument guards, although nothing should be using this anymore.
+
 2007-10-15  Jeffrey Stedfast  <fejj@gnome.org>
 
 	* camel-mime-message.c (camel_mime_message_set_subject): Protect
