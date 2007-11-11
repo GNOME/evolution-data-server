@@ -938,8 +938,6 @@ e_book_response_get_required_fields (EBook       *book,
 					     (EListFreeFunc) g_free,
 					     NULL);
 
-		g_object_ref (book);
-
 		for (l = fields; l; l = l->next)
 			e_list_append (efields, l->data);
 
@@ -987,8 +985,6 @@ e_book_response_get_supported_fields (EBook       *book,
 		EList *efields = e_list_new ((EListCopyFunc) g_strdup, 
 					     (EListFreeFunc) g_free,
 					     NULL);
-
-		g_object_ref (book);
 
 		for (l = fields; l; l = l->next)
 			e_list_append (efields, l->data);
@@ -3562,6 +3558,8 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 
 	status = e_book_open (*book, FALSE, &e);
 	if (status == FALSE) {
+		g_object_unref (*book);
+		*book = NULL;
 		if (error)
 			g_propagate_error (error, e);
 		return FALSE;

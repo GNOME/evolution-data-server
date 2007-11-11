@@ -1,3 +1,8 @@
+2007-11-11  Ross Burton  <ross@openedhand.com>
+
+	* addressbook/libebook/e-book.c:
+	Fix some memory leaks (#494304, thanks Ondrej Jirman)
+
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* backends/file/e-book-backend-file.c: (book_view_thread): Fix the crash 
