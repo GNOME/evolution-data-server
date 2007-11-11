@@ -1,3 +1,8 @@
+2007-11-11  Ross Burton  <ross@openedhand.com>
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	Fix leak (#494304, Ondrej Jirman)
+
 2007-11-05  Milan Crha  <mcrha@redhat.com>
 
 	* libedata-cal/e-cal-backend-sexp.c: (func_has_start),
