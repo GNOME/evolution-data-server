@@ -1,3 +1,10 @@
+2007-11-12  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #495086
+
+	* camel-imap-utils.c: (imap_body_decode):
+	Check for NULL too, so do not crash when something goes wrong.
+
 2007-11-05  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #430420
