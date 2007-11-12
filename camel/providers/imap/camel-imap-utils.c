@@ -989,7 +989,7 @@ imap_body_decode (const char **in, CamelMessageContentInfo *ci, CamelFolder *fol
 			/* envelope */
 			imap_skip_list (&inptr);
 			
-			if (*inptr++ != ' ')
+			if (!inptr || *inptr++ != ' ')
 				goto exception;
 			
 			/* body */
@@ -997,14 +997,14 @@ imap_body_decode (const char **in, CamelMessageContentInfo *ci, CamelFolder *fol
 				goto exception;
 			child->parent = ci;
 			
-			if (*inptr++ != ' ')
+			if (!inptr || *inptr++ != ' ')
 				goto exception;
 			
 			/* lines */
 			strtoul ((const char *) inptr, &p, 10);
 			inptr = (const unsigned char *) p;
 		} else if (camel_content_type_is (ctype, "text", "*")) {
-			if (*inptr++ != ' ')
+			if (!inptr || *inptr++ != ' ')
 				goto exception;
 			
 			/* lines */
@@ -1014,7 +1014,7 @@ imap_body_decode (const char **in, CamelMessageContentInfo *ci, CamelFolder *fol
 			/* body_type_basic */
 		}
 		
-		if (*inptr++ != ')')
+		if (!inptr || *inptr++ != ')')
 			goto exception;
 		
 		ci->type = ctype;
