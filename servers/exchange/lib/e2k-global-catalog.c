@@ -451,6 +451,13 @@ e2k_global_catalog_new (const char *server, int response_limit,
 	return gc;
 }
 
+void
+e2k_global_catalog_set_password (E2kGlobalCatalog *gc, const char *password)
+{
+	g_free (gc->priv->password);
+	gc->priv->password = g_strdup (password);
+}
+
 static const char *
 lookup_mta (E2kGlobalCatalog *gc, E2kOperation *op, const char *mta_dn)
 {

@@ -115,6 +115,9 @@ E2kGlobalCatalogStatus e2k_global_catalog_remove_delegate (E2kGlobalCatalog *gc,
 							   const char *self_dn,
 							   const char *delegate_dn);
 
+void
+e2k_global_catalog_set_password (E2kGlobalCatalog *gc, const char *password);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

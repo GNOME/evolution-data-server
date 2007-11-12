@@ -1,3 +1,9 @@
+2007-11-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* lib/e2k-global-catalog.c: (e2k_global_catalog_set_password): Added a
+	new api to set password into gc.
+	* lib/e2k-global-catalog.h:
+
 2007-10-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for BNC bug #203480
