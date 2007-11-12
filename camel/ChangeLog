@@ -1,3 +1,9 @@
+2007-11-11  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-tcp-stream-ssl.c (enable_ssl):
+	Disable SSLv2 compatible HELLO on SSL stream when SSLv2 is
+	disabled (#345135, patch from Niels Vorgaard Christensen).
+
 2007-11-09  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-mime-utils.c (camel_base64_decode_simple):
