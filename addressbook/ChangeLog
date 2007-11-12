@@ -1,3 +1,40 @@
+2007-11-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Added GAL using LDAP.
+
+	* backends/galldap/Makefile.am:
+	* backends/galldap/apps_galldap_addressbook.schemas.in.in:
+	* backends/galldap/e-book-backend-galldap-factory.c:
+	(eds_module_initialize), (eds_module_shutdown),
+	(eds_module_list_types):
+	* backends/galldap/e-book-backend-galldap.c:
+	(book_view_notify_status), (find_book_view), (gal_connect),
+	(ldap_reconnect), (gal_reconnect), (ldap_op_add),
+	(ldap_op_finished), (ldap_error_to_response), (create_contact),
+	(remove_contacts), (modify_contact), (get_contact_handler),
+	(get_contact_dtor), (get_contact), (contact_list_handler),
+	(contact_list_dtor), (get_contact_list), (rfc2254_escape),
+	(func_and), (func_or), (func_not), (query_prop_to_ldap),
+	(func_contains), (func_is_or_begins_with), (func_is),
+	(func_beginswith), (func_endswith), (build_query),
+	(manager_populate), (member_populate), (get_time_stamp),
+	(last_mod_time_populate), (build_contact_from_entry), (poll_ldap),
+	(ldap_search_handler), (ldap_search_dtor),
+	(get_contacts_from_cache), (start_book_view), (stop_book_view),
+	(get_changes), (tool_server_controls), (ber_dupbv),
+	(parse_page_control), (dosearch), (generate_cache),
+	(authenticate_user), (ber_flatten2), (ldap_cancel_op),
+	(cancel_operation), (set_mode), (get_supported_fields),
+	(get_required_fields), (get_supported_auth_methods), (load_source),
+	(remove_gal), (get_static_capabilities),
+	(e_book_backend_galldapnew), (call_dtor), (dispose),
+	(e_book_backend_galldap_new), (e_book_backend_galldap_class_init),
+	(e_book_backend_galldap_init):
+	* backends/galldap/e-book-backend-galldap.h:
+	* libedata-book/e-book-backend-db-cache.c:
+	(e_book_backend_db_cache_set_time),
+	(e_book_backend_db_cache_get_time):
+
 2007-10-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #488351

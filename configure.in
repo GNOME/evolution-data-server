@@ -1585,6 +1585,7 @@ addressbook/backends/vcf/Makefile
 addressbook/backends/ldap/Makefile
 addressbook/backends/groupwise/Makefile
 addressbook/backends/mapi/Makefile
+addressbook/backends/galldap/Makefile
 addressbook/tests/Makefile
 addressbook/tests/ebook/Makefile
 addressbook/tests/vcard/Makefile

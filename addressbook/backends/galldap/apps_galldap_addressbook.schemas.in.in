@@ -1,0 +1,21 @@
+<gconfschemafile>
+  <schemalist>
+
+    <!-- Completion uris -->
+
+    <schema>
+      <key>/schemas/apps/evolution/addressbook/gal_cache_interval</key>
+      <applyto>/apps/evolution/addressbook/gal_cache_interval</applyto>
+      <owner>evolution-addressbook</owner>
+      <type>int</type>
+      <default>7</default>
+      <locale name="C">
+        <short>Specifies the time interval to refresh the GAL Cache. </short>
+        <long>This key specifies the number of days interval between
+	the GAL cache refresh. Set this value to zero, if you don't want to 
+	update GAL and use the current cache forever. This will work only if
+	you have enabled offline caching for GAL.</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>

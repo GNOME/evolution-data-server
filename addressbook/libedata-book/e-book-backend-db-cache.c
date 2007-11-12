@@ -418,3 +418,41 @@ e_book_backend_db_cache_is_populated (DB *db)
 		return TRUE;
 	}
 }
+
+void 
+e_book_backend_db_cache_set_time(DB *db, const char *t)
+{
+	DBT uid_dbt, vcard_dbt ;
+	int db_error ;
+
+	string_to_dbt ("last_update_time", &uid_dbt);
+	string_to_dbt (t, &vcard_dbt);
+
+	db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->put failed with %d", db_error);
+	}
+}
+
+char *
+e_book_backend_db_cache_get_time (DB *db)
+{
+	DBT uid_dbt, vcard_dbt;
+	int db_error;
+	char *t;
+
+	string_to_dbt ("last_update_time", &uid_dbt);
+	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->get failed with %d", db_error);
+		return NULL;
+	}
+	else {
+		t = g_strdup (vcard_dbt.data);
+		g_free (vcard_dbt.data);
+		return t;
+	}
+}
