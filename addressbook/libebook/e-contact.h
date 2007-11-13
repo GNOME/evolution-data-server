@@ -197,6 +197,8 @@ typedef enum {
 	
 	E_CONTACT_GEO,	/* structured field (EContactGeo) */	
 
+	E_CONTACT_TEL, /* list of strings */
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 

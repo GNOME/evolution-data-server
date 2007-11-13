@@ -1,3 +1,8 @@
+2007-11-13  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-contact.[ch]:
+	Add E_CONTACT_TEL to get a list of phone numbers (#495287).
+
 2007-11-11  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-book.c:

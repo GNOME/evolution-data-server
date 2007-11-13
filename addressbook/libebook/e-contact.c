@@ -273,6 +273,8 @@ static const EContactFieldInfo field_info[] = {
 
 	/* Geo information */
 	STRUCT_FIELD	(E_CONTACT_GEO,  EVC_GEO, "geo",  N_("Geographic Information"),  FALSE, geo_getter, geo_setter, e_contact_geo_get_type)
+
+	MULTI_LIST_FIELD     (E_CONTACT_TEL,      EVC_TEL,        "phone",      N_("Telephone"),      FALSE),
 };
 
 #undef LIST_ELEM_STR_FIELD
