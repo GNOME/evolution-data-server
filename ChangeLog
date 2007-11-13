@@ -1,3 +1,12 @@
+2007-11-13  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494299
+
+	* libedataserver/e-file-cache.c: (add_key_to_slist),
+	(add_object_to_slist): Rename helper functions.
+	* libedataserver/e-file-cache.c: (e_file_cache_get_keys):
+	Fix memory corruption.
+
 2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.21.1 release.

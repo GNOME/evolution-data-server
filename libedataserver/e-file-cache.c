@@ -243,11 +243,11 @@ e_file_cache_remove (EFileCache *cache)
 }
 
 static void
-add_key_to_list (const char *key, const char *value, gpointer user_data)
+add_key_to_slist (const char *key, const char *value, gpointer user_data)
 {
-	GList **keys = user_data;
+	GSList **keys = user_data;
 
-	*keys = g_list_append (*keys, (char *) key);
+	*keys = g_slist_append (*keys, (char *) key);
 }
 
 /**
@@ -262,16 +262,16 @@ gboolean
 e_file_cache_clean (EFileCache *cache)
 {
 	EFileCachePrivate *priv;
-	GList *keys = NULL;
+	GSList *keys = NULL;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 
 	priv = cache->priv;
 
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_list, &keys);
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &keys);
 	while (keys != NULL) {
 		e_file_cache_remove_object (cache, (const char *) keys->data);
-		keys = g_list_remove (keys, keys->data);
+		keys = g_slist_remove (keys, keys->data);
 	}
 
 	return TRUE;
@@ -321,7 +321,7 @@ e_file_cache_get_object (EFileCache *cache, const char *key)
 }
 
 static void
-add_object_to_list (const char *key, const char *value, gpointer user_data)
+add_object_to_slist (const char *key, const char *value, gpointer user_data)
 {
 	GSList **list = user_data;
 
@@ -341,7 +341,7 @@ e_file_cache_get_objects (EFileCache *cache)
 
 	priv = cache->priv;
 
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_object_to_list, &list);
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_object_to_slist, &list);
 
 	return list;
 }
@@ -359,7 +359,7 @@ e_file_cache_get_keys (EFileCache *cache)
 
 	priv = cache->priv;
 
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_list, &list);
+	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &list);
 
 	return list;
 }
