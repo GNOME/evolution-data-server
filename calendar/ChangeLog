@@ -1,3 +1,10 @@
+2007-11-13  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494303
+
+	* libedata-cal/e-cal-backend-cache.c: (e_cal_backend_cache_get_timezone)
+	Return NULL pointer after freeing timezone structure.
+
 2007-11-11  Ross Burton  <ross@openedhand.com>
 
 	* backends/contacts/e-cal-backend-contacts.c:

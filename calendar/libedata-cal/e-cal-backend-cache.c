@@ -580,6 +580,7 @@ e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid)
 			else {
 				icalcomponent_free (icalcomp);
 				icaltimezone_free (zone, 1);
+				zone = NULL;
 			}
 		}
 	}
