@@ -540,6 +540,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove folder openmsgstore failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}
@@ -550,6 +551,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}
@@ -558,6 +560,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items emptyfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}
@@ -565,6 +568,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	folder = exchange_mapi_folder_get_folder (fid);
 	if (!folder) {
 		g_warning (" Unable to get the folder from the list\n");
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;		
 	}
@@ -573,6 +577,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove folder openmsgstore failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}
@@ -583,6 +588,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}
@@ -592,6 +598,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("remove items Deletefolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
 		UNLOCK ();
 		return FALSE;
 	}

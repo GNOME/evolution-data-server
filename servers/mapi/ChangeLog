@@ -1,4 +1,14 @@
-2007-11-13  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
+2007-11-13  Suman Manjunath  <msuman@novell.com>
+ 
+ 	* exchange-mapi-connection.c:
+ 	(exchange_mapi_connection_fetch_items),
+ 	(exchange_mapi_remove_folder): Added missing LOGNONE()s.
+ 	* exchange-mapi-connection.h: Fixed a compiler warning.
+ 	* exchange-mapi-folder.c: (exchange_mapi_folder_get_unread_count),
+ 	(exchange_mapi_folder_get_total_count): unread_count and total_count
+ 	were incorrectly swapped, fixed it.
+	
+2007-11-13  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-folder.c (UNLOCK/LOCK): More information on lock macro printfs.
 

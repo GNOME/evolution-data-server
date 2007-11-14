@@ -98,13 +98,13 @@ exchange_mapi_folder_get_type (ExchangeMAPIFolder *folder)
 const guint32
 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder)
 {
-	return folder->total;
+	return folder->unread_count;
 }
 
 const guint32
 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder)
 {
-	return folder->unread_count;
+	return folder->total;
 }
 
 
