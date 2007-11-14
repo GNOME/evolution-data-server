@@ -36,7 +36,7 @@ bool gl_init = FALSE;
 /* helper routines
  */
 
-static char *mapi_ids_to_uid(mapi_id_t id_folder, mapi_id_t id_message)
+char *mapi_ids_to_uid(mapi_id_t id_folder, mapi_id_t id_message)
 {
 	char	buffer[64];
 
@@ -53,7 +53,7 @@ char *folder_mapi_ids_to_uid(mapi_id_t id_folder)
 }
 
 
-static int uid_to_mapi_ids(const char *s, mapi_id_t *id_folder, mapi_id_t *id_message)
+int uid_to_mapi_ids(const char *s, mapi_id_t *id_folder, mapi_id_t *id_message)
 {
 	int	n;
 

@@ -1,3 +1,7 @@
+2007-11-13  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
+
+	* exchange-mapi-folder.c (UNLOCK/LOCK): More information on lock macro printfs.
+
 2007-11-02  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c:

@@ -1,3 +1,12 @@
+2007-11-13  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
+	
+	Crude message fetch.
+	
+	* camel-mapi-folder.c (mapi_populate_details_from_item): Added.
+	(mapi_populate_msg_body_from_item): Added.
+	(mapi_folder_item_to_msg): Added.
+	(mapi_folder_get_message): Fetch/Cache Mails.
+
 2007-10-29  Johnny Jacob  <jjohnny@trantor.blr.novell.com>
 
 	* camel-mapi-store.c (convert_to_folder_info): Include 

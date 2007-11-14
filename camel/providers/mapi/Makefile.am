@@ -29,6 +29,7 @@ noinst_HEADERS =         			\
 	camel-mapi-store-summary.h		\
 	camel-mapi-summary.h	         	\
 	camel-mapi-transport.h			\
+	camel-mapi-private.h				\
 	camel-private.h				\
 	oc.h					\
 	oc_thread.h

@@ -266,12 +266,12 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 						       CAMEL_URL_HIDE_AUTH)  );
 
 	/*Hash Table*/	
-/* 	priv->id_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free); */
-/* 	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free); */
-/* 	priv->parent_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free); */
+	priv->id_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->id_hash = g_hash_table_new (g_int_hash, g_int_equal);
-	priv->parent_hash = g_hash_table_new (g_int_hash, g_int_equal);
+	priv->parent_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+/* 	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free); */
+/* 	priv->id_hash = g_hash_table_new (g_int_hash, g_int_equal); */
+/* 	priv->parent_hash = g_hash_table_new (g_int_hash, g_int_equal); */
 
 	store->flags &= ~CAMEL_STORE_VJUNK;
 	//store->flags &= ~CAMEL_STORE_VTRASH;
@@ -474,8 +474,11 @@ static CamelFolderInfo *
 convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const char *url, CamelException *ex)
 {
 	const char *name = NULL;
-	gint32 *id = g_new0 (guint32, 1);
-	guint64 *parent = g_new0 (guint32, 1);
+/* 	gint64 *id = g_new0 (guint64, 1); */
+/* 	guint64 *parent = g_new0 (guint64, 1); */
+	gchar *parent, *id = NULL;
+	mapi_id_t mapi_id_folder;
+
 	char *par_name = NULL;
 	CamelFolderInfo *fi;
 	CamelMapiStoreInfo *si = NULL;
@@ -483,8 +486,8 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	ExchangeMAPIFolderType type;
 
 	name = exchange_mapi_folder_get_name (folder);
-	printf("%s(%d):%s:NAME : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, name);
-	*id = exchange_mapi_folder_get_fid (folder);
+	//	printf("%s(%d):%s:NAME : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, name);
+	id = folder_mapi_ids_to_uid(exchange_mapi_folder_get_fid (folder));
 	//	type = e_gw_container_get_container_type (container);
 		
 	fi = g_new0 (CamelFolderInfo, 1);
@@ -513,11 +516,12 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	   NULL is found
 	 */
 
-	*parent = exchange_mapi_folder_get_parent_id (folder);
+	mapi_id_folder = exchange_mapi_folder_get_parent_id (folder);
+	parent = folder_mapi_ids_to_uid(mapi_id_folder);
 	par_name = g_hash_table_lookup (priv->id_hash, parent);
 
 	if (par_name != NULL) {
-		guint64 *temp_parent = NULL;
+		gchar *temp_parent = NULL;
 		gchar *temp = NULL;
 		gchar *str = g_strconcat (par_name, "/", name, NULL);
 
@@ -598,6 +602,12 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 		}
 	}
 
+
+	if (!exchange_mapi_connection_exists ()) {
+		g_warning ("mapi_folder_sync : No Connection\n");
+		return;
+	}
+
 	status = exchange_mapi_get_folders_list (&folder_list);
 	if (!status) {
 		g_warning ("Could not get folder list..\n");
@@ -621,12 +631,14 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 	/*populate the hash table for finding the mapping from container id <-> folder name*/
 	for (;temp_list != NULL ; temp_list = g_slist_next (temp_list) ) {
 		const char *name;
-		guint32 *fid = g_new (guint32, 1);
-		guint64 *parent_id = g_new (guint64, 1) ;
+		gchar *fid = NULL, *parent_id = NULL;
+
+/* 		guint64 *fid = g_new (guint64, 1); */
+/* 		guint64 *parent_id = g_new (guint64, 1) ; */
 
 		name = exchange_mapi_folder_get_name ((ExchangeMAPIFolder *)(temp_list->data));
-		*fid = exchange_mapi_folder_get_fid((ExchangeMAPIFolder *)(temp_list->data));
-		*parent_id = exchange_mapi_folder_get_parent_id ((ExchangeMAPIFolder *)(temp_list->data));
+		fid = folder_mapi_ids_to_uid (exchange_mapi_folder_get_fid((ExchangeMAPIFolder *)(temp_list->data)));
+		parent_id = folder_mapi_ids_to_uid (exchange_mapi_folder_get_parent_id ((ExchangeMAPIFolder *)(temp_list->data)));
 
 /* 		if (e_gw_container_is_root (E_GW_CONTAINER(temp_list->data))) { */
 /* 			store->root_container = g_strdup (id); */
@@ -634,15 +646,15 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 /* 		} */
 
 		/*id_hash returns the name for a given container id*/
-		g_hash_table_insert (priv->id_hash, fid, g_strdup(name)); 
+		printf("%s(%d):%s:inserting fid : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, fid);
+		g_hash_table_insert (priv->id_hash, g_strdup (fid), g_strdup(name)); 
 		/*parent_hash returns the parent container id, given an id*/
-		g_hash_table_insert (priv->parent_hash, fid, parent_id);
+		g_hash_table_insert (priv->parent_hash, g_strdup(fid), g_strdup(parent_id));
 	}
 
 	present = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (;folder_list != NULL; folder_list = g_list_next (folder_list)) {
-		//		EGwContainerType type;
 		ExchangeMAPIFolder *folder = (ExchangeMAPIFolder *) folder_list->data;
 		
 		//TODO : Checking types. ignoring atm for poc.
@@ -760,6 +772,25 @@ end_r:
 	info = mapi_get_folder_info_offline (store, top, flags, ex);
 	return info;
 }
+
+const char *
+camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folder_name)
+{
+	CamelMapiStorePrivate *priv = mapi_store->priv;
+
+	return g_hash_table_lookup (priv->name_hash, folder_name);
+}
+
+const char *
+camel_mapi_store_folder_lookup (CamelMapiStore *mapi_store, const char *folder_id)
+{
+	CamelMapiStorePrivate *priv = mapi_store->priv;
+
+	return g_hash_table_lookup (priv->id_hash, folder_id);
+}
+
+
+
 /*
 ** this function return the folder list and hierarchy
 ** if failled : return NULL

@@ -30,8 +30,8 @@
 static GSList *folder_list = NULL;
 static GStaticRecMutex folder_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&folder_lock)
-#define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&folder_lock)
+#define LOCK()		printf("%s(%d):%s: lock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&folder_lock)
+#define UNLOCK()	printf("%s(%d):%s: unlock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&folder_lock)
 
 static ExchangeMAPIFolderType
 container_class_to_type (const char *type)
@@ -77,7 +77,7 @@ exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder)
 	return folder->folder_name;
 }
 
-const guint32
+const guint64
 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder)
 {
 	return folder->folder_id;

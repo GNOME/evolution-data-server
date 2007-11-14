@@ -90,6 +90,8 @@ gboolean camel_mapi_store_connected(CamelMapiStore *, CamelException *);
 
 /* camel-openchange-provider.c */
 int mapi_initialize(void);
+const gchar* camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folder_name);
+
 __END_DECLS
 
 #endif /* __CAMEL_OPENCHANGE_STORE_H__ */

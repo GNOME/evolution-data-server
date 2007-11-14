@@ -34,12 +34,13 @@ static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 
-#define LOCK()		printf("%s(%d):%s: lock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
-#define UNLOCK()	printf("%s(%d):%s: unlock \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
+#define LOCK()		printf("%s(%d):%s: lock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
+#define UNLOCK()	printf("%s(%d):%s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
-//#define ENABLE_VERBOSE_LOG()
+#define ENABLE_VERBOSE_LOG()
+
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -259,6 +260,124 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	return TRUE;
 }
 
+gboolean
+exchange_mapi_connection_fetch_items_list (uint32_t olFolder, struct mapi_SRestriction *res, GSList *slist, mapi_id_t fid, gpointer data)
+{
+	mapi_object_t obj_store;	
+	mapi_object_t obj_folder;
+	mapi_object_t obj_table;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SRowSet SRowSet;
+	struct SPropTagArray *SPropTagArray;
+	struct mapi_SPropValue_array properties_array;
+	TALLOC_CTX *mem_ctx;
+	int i;
+
+	printf("Fetching folder %016llx\n", fid);
+	
+	LOCK ();
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_store);
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	printf("Opening folder %llx\n", fid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		UNLOCK ();
+		return FALSE;
+	}
+
+	mapi_object_init(&obj_table);
+	retval = GetContentsTable(&obj_folder, &obj_table);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-getcontentstable failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x8,
+					  PR_FID,
+					  PR_MID,
+					  PR_INST_ID,
+					  PR_INSTANCE_NUM,
+					  PR_SUBJECT,
+					  PR_MESSAGE_CLASS,
+					  PR_RULE_MSG_PROVIDER,
+					  PR_RULE_MSG_NAME);
+	retval = SetColumns(&obj_table, SPropTagArray);
+	MAPIFreeBuffer(SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-setcolumns failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	if (res) {
+		/* Applying any restriction that are set. */
+		retval = Restrict(&obj_table, res);
+		if (retval != MAPI_E_SUCCESS) {
+			g_warning ("Failed while setting restrictions\n");
+			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());					
+			UNLOCK ();
+			return FALSE;
+		}
+	}
+	retval = QueryRows(&obj_table, 0x32, TBL_ADVANCE, &SRowSet);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("startbookview-queryrows failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		return FALSE;
+	}
+
+	for (i = 0; i < SRowSet.cRows; i++) {
+		mapi_object_init(&obj_message);
+		const mapi_id_t *pfid;
+		const mapi_id_t	*pmid;
+
+		pfid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_FID);
+		pmid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_MID);		
+		retval = OpenMessage(&obj_folder, 
+				     SRowSet.aRow[i].lpProps[0].value.d,
+				     SRowSet.aRow[i].lpProps[1].value.d,
+				     &obj_message, 0);
+		//FIXME: Verify this
+		printf(" %016llx %016llx %016llx %016llx %016llx\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
+		if (retval != MAPI_E_NOT_FOUND) {
+			retval = GetPropsAll(&obj_message, &properties_array);
+			if (retval == MAPI_E_SUCCESS) {
+
+				mapi_SPropValue_array_named(&obj_message, 
+							    &properties_array);
+				if (!cb (&properties_array, *pfid, *pmid, data)) {
+					printf("Breaking from fetching items\n");
+					break;
+				}
+
+				mapi_object_release(&obj_message);
+			}
+		}
+	}
+
+	mapi_object_release(&obj_table);
+	mapi_object_release(&obj_folder);
+
+	UNLOCK ();
+	return TRUE;
+}
 
 gpointer
 exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb)
