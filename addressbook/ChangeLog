@@ -1,3 +1,7 @@
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libebook/e-contact.c: Fix a syntax error.
+
 2007-11-13  Ross Burton  <ross@openedhand.com>
 
 	* libebook/e-contact.[ch]:
