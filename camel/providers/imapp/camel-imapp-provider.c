@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-pop3-provider.c: pop3 provider registration code */
 
-/* 
+/*
  * Authors :
  *   Dan Winship <danw@ximian.com>
  *   Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -45,30 +45,30 @@ CamelProviderConfEntry imapp_conf_entries[] = {
 
 static CamelProvider imapp_provider = {
 	"imapp",
-	
+
 	N_("IMAP+"),
-	
+
 	N_("Experimental IMAP 4(.1) client\n"
 	   "This is untested and unsupported code, you want to use plain imap instead.\n\n"
 	   " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"),
 	"mail",
-	
+
 	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_SUPPORTS_SSL,
-	
+
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
-	
+
 	imapp_conf_entries,
-	
+
 	/* ... */
 };
 
 CamelServiceAuthType camel_imapp_password_authtype = {
 	N_("Password"),
-	
+
 	N_("This option will connect to the IMAP server using a "
 	   "plaintext password."),
-	
+
 	"",
 	TRUE
 };

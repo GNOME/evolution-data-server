@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  Ebby Wiselyn <ebbywiselyn@gmail.com>
  *  Jason Willis <zenbrother@gmail.com>
  * Copyright 2007, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,7 +16,7 @@
  *
  * * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
  */
@@ -29,7 +29,7 @@
 /* LibXML2 includes */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <libxml/xpath.h>  
+#include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
 #include <string.h>
@@ -155,7 +155,7 @@ enum {
 
 };
 
-static void 
+static void
 gdata_feed_init(GTypeInstance *instance,
 		gpointer      g_class)
 {
@@ -187,7 +187,7 @@ gdata_feed_init(GTypeInstance *instance,
 	priv->feedXML = NULL;
 }
 
-static void 
+static void
 gdata_feed_dispose(GObject *obj)
 {
 	GObjectClass *parent_class;
@@ -210,7 +210,7 @@ gdata_feed_dispose(GObject *obj)
 	parent_class->dispose(obj);
 }
 
-static void 
+static void
 gdata_feed_finalize(GObject *obj)
 {
 	GDataFeedPrivate *priv;
@@ -253,7 +253,7 @@ gdata_feed_finalize(GObject *obj)
 	parent_class->finalize(obj);
 }
 
-static void 
+static void
 gdata_feed_get_property (GObject *obj,
 		guint    property_id,
 		GValue  *value,
@@ -265,7 +265,7 @@ gdata_feed_get_property (GObject *obj,
 
 }
 
-static void 
+static void
 gdata_feed_set_property (GObject *obj,
 		guint    property_id,
 		const GValue *value,
@@ -278,7 +278,7 @@ gdata_feed_set_property (GObject *obj,
 
 }
 
-static GObject * gdata_feed_constructor(GType type, 
+static GObject * gdata_feed_constructor(GType type,
 		guint n_construct_properties,
 		GObjectConstructParam *construct_properties)
 {
@@ -295,9 +295,9 @@ static GObject * gdata_feed_constructor(GType type,
 
 	return obj;
 
-}  
+}
 
-static void 
+static void
 gdata_feed_class_init(gpointer g_class,
 		gpointer g_class_data)
 {
@@ -313,7 +313,7 @@ gdata_feed_class_init(gpointer g_class,
 
 	gobject_class->dispose     = gdata_feed_dispose;
 	gobject_class->finalize    = gdata_feed_finalize;
-	gobject_class->constructor = gdata_feed_constructor; 
+	gobject_class->constructor = gdata_feed_constructor;
 
 }
 
@@ -340,7 +340,7 @@ GType gdata_feed_get_type(void)
 
 /*** API ***/
 	static GDataFeedAuthor *
-xmlnode_to_author(xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_author(xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataFeedAuthor *author;
 	xmlChar *value;
@@ -376,7 +376,7 @@ xmlnode_to_author(xmlDocPtr doc, xmlNodePtr cur)
 }
 
 static GDataFeedLink *
-xmlnode_to_link(xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_link(xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataFeedLink *link;
 	xmlChar *value;
@@ -417,7 +417,7 @@ xmlnode_to_link(xmlDocPtr doc, xmlNodePtr cur)
 
 
 static GDataFeedCategory *
-xmlnode_to_category(xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_category(xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataFeedCategory *category;
 	xmlChar *value;
@@ -449,7 +449,7 @@ xmlnode_to_category(xmlDocPtr doc, xmlNodePtr cur)
 	return category;
 }
 
-static xmlNodePtr 
+static xmlNodePtr
 link_to_xmlnode (GDataFeedLink *link)
 {
 	xmlNodePtr cur;
@@ -485,7 +485,7 @@ author_to_xmlnode (GDataFeedAuthor *author)
 
 	if (author->uri)
 	xmlNewChild (cur, NULL, (xmlChar *)"uri", (xmlChar *)author->uri);
-	
+
 	return cur;
 }
 
@@ -517,14 +517,14 @@ entry_to_xmlnode (GDataEntry *entry)
 	return cur;
 }
 
-GDataFeed * 
+GDataFeed *
 gdata_feed_new(void)
 {
 	return g_object_new(GDATA_TYPE_FEED, NULL);
 }
 
 
-GDataFeed * 
+GDataFeed *
 gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 {
 	GDataFeed *feed;
@@ -562,10 +562,10 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL) {
-		
+
 		if (!xmlStrcmp(cur->name, (xmlChar *)"author")) {
 			priv->authors = g_slist_prepend(priv->authors, xmlnode_to_author(doc, cur));
-		} 
+		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"link")) {
 			priv->links = g_slist_prepend(priv->links, xmlnode_to_link(doc, cur));
 		}
@@ -577,7 +577,7 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 		}
 		else {
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			g_hash_table_insert(priv->field_table, g_strdup((gchar *)cur->name), 
+			g_hash_table_insert(priv->field_table, g_strdup((gchar *)cur->name),
 					g_strdup((gchar *)value));
 			xmlFree(value);
 		}
@@ -586,7 +586,7 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 
 	xmlDocDumpFormatMemory(doc, &value, &value_size, 1);
 	priv->feedXML = g_strdup(feedXML);
-	
+
 	xmlFree(value);
 	xmlFreeDoc(doc);
 
@@ -594,7 +594,7 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 }
 
 
-gchar * 
+gchar *
 gdata_feed_generate_xml(GDataFeed *feed)
 {
 	GDataFeedPrivate *priv;
@@ -614,7 +614,7 @@ gdata_feed_generate_xml(GDataFeed *feed)
 	if (!priv->feedXML) {
 		doc = xmlNewDoc ((xmlChar *)"1.0");
 		root = xmlNewDocNode (doc, NULL, (xmlChar *)"feed", NULL);
-		
+
 		xmlSetProp (root, (xmlChar *)"xmlns", (xmlChar *)"http://www.w3.org/2005/Atom");
 		ns_os = xmlNewNs (root, (xmlChar *)"http://a9.com/-/spec/opensearchrss/1.0/", (xmlChar *)"openSearch");
 		ns_gd = xmlNewNs (root, (xmlChar *)"http://schemas.google.com/g/2005", (xmlChar *)"gd");
@@ -624,28 +624,28 @@ gdata_feed_generate_xml(GDataFeed *feed)
 			cur = xmlNewChild (root, NULL, (xmlChar *)"id", NULL);
 			xmlNodeSetContent (cur, (xmlChar *)priv->id);
 		}
-		
+
 		list = priv->categories;
 		while (list) {
 			cur = category_to_xmlnode (list->data);
 			xmlAddChild (root, cur);
 			list = g_slist_next (list);
 		}
-		
+
 		list = priv->links;
 		while (list) {
 			cur = link_to_xmlnode (list->data);
 			xmlAddChild (root, cur);
-			list = g_slist_next (list);	
+			list = g_slist_next (list);
 		}
-		
+
 		list = priv->authors;
 		while (list) {
 			cur = author_to_xmlnode (list->data);
 			xmlAddChild (root, cur);
 			list = g_slist_next (list);
 		}
-	
+
 		list = priv->entries;
 		while (list) {
 			cur = entry_to_xmlnode (list->data);
@@ -668,7 +668,7 @@ gdata_feed_get_entries (GDataFeed *feed)
 {
 	GDataFeedPrivate *priv;
 	priv = GDATA_FEED_GET_PRIVATE (feed);
-	
+
 	g_return_val_if_fail (feed !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_FEED(feed), NULL);
 

@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  Ebby Wiselyn <ebbywiselyn@gmail.com>
  *  Jason Willis <zenbrother@gmail.com>
  *
  * Copyright 2007, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -17,7 +17,7 @@
  *
  * * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
  */
@@ -28,7 +28,7 @@
 /* LibXML2 includes */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <libxml/xpath.h>  
+#include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
 #include <string.h>
@@ -278,7 +278,7 @@ GType gdata_entry_get_type (void)
 
 /*** API ***/
 static GDataEntryAuthor *
-xmlnode_to_author (xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_author (xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataEntryAuthor *author;
 	xmlChar *value;
@@ -314,7 +314,7 @@ xmlnode_to_author (xmlDocPtr doc, xmlNodePtr cur)
 }
 
 static GDataEntryLink *
-xmlnode_to_link (xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_link (xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataEntryLink *link;
 	xmlChar *value;
@@ -353,7 +353,7 @@ xmlnode_to_link (xmlDocPtr doc, xmlNodePtr cur)
 }
 
 static GDataEntryCategory *
-xmlnode_to_category (xmlDocPtr doc, xmlNodePtr cur) 
+xmlnode_to_category (xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataEntryCategory *category;
 	xmlChar *value;
@@ -393,16 +393,16 @@ xmlnode_to_attendee (xmlDocPtr doc, xmlNodePtr cur)
 	xmlChar *value;
 
 	attendee = g_new0 (Attendee, 1);
-	
-	while (cur != NULL) {	
+
+	while (cur != NULL) {
 		value = xmlGetProp(cur, (xmlChar *)"email");
 		if (value) {
 			attendee->attendee_email = g_strdup((gchar *)value);
 			xmlFree(value);
-		}	
-		
+		}
+
 		value = xmlGetProp(cur, (xmlChar *)"rel");
-	
+
 		if (value) {
 			attendee->attendee_rel = g_strdup((gchar *)value);
 			xmlFree (value);
@@ -413,13 +413,13 @@ xmlnode_to_attendee (xmlDocPtr doc, xmlNodePtr cur)
 			attendee->attendee_value = g_strdup((gchar *)value);
 			xmlFree (value);
 		}
-		
+
 		cur = cur->next;
-	}	
+	}
 	return attendee;
 }
 
-static xmlNodePtr 
+static xmlNodePtr
 entry_to_xmlnode (GDataEntry *entry)
 {
 	xmlDocPtr doc;
@@ -431,12 +431,12 @@ entry_to_xmlnode (GDataEntry *entry)
 	/* FIXME 3rd argument could carry a better name */
 	doc = xmlReadMemory (xmlEntry, strlen(xmlEntry), "feeds.xml", NULL, 0);
 	cur = xmlDocGetRootElement (doc);
-	
+
 	return cur;
 }
 
-static xmlNodePtr 
-author_to_xmlnode (GDataEntryAuthor *author) 
+static xmlNodePtr
+author_to_xmlnode (GDataEntryAuthor *author)
 {
 
 	xmlNodePtr author_node;
@@ -451,7 +451,7 @@ author_to_xmlnode (GDataEntryAuthor *author)
 	return author_node;
 }
 
-static xmlNodePtr 
+static xmlNodePtr
 link_to_xmlnode (GDataEntryLink *link)
 {
 	xmlNodePtr link_node;
@@ -476,7 +476,7 @@ link_to_xmlnode (GDataEntryLink *link)
 	return link_node;
 }
 
-static xmlNodePtr 
+static xmlNodePtr
 category_to_xmlnode (GDataEntryCategory *category)
 {
 	xmlNodePtr category_node;
@@ -501,7 +501,7 @@ category_to_xmlnode (GDataEntryCategory *category)
  * gdata_entry_new:
  * Creates a new #GDataEntry.
  **/
-GDataEntry * 
+GDataEntry *
 gdata_entry_new (void)
 {
 	return g_object_new(GDATA_TYPE_ENTRY, NULL);
@@ -511,21 +511,21 @@ gdata_entry_new (void)
  * gdata_entry_get_private:
  * @entry: A #GDataEntry object
  * Returns a #GDataEntryPrivate object
- **/ 
-GDataEntryPrivate * 
+ **/
+GDataEntryPrivate *
 gdata_entry_get_private (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 
-	return priv;	
+	return priv;
 }
 /**
- * gdata_entry_new_from_xmlptr: 
+ * gdata_entry_new_from_xmlptr:
  * @doc: A xml document pointer
  * @ptr: A xml Node pointer
  **/
-GDataEntry * 
+GDataEntry *
 gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 {
 	GDataEntry *entry;
@@ -541,11 +541,11 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 		return NULL;
 	}
 
-	entry = gdata_entry_new (); 
+	entry = gdata_entry_new ();
 	priv  = GDATA_ENTRY_GET_PRIVATE(entry);
 	buf = xmlAllocOutputBuffer (NULL);
 
-	if (buf == NULL) { 
+	if (buf == NULL) {
 		xmlString = NULL;
 	}
 	else {
@@ -554,7 +554,7 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 
 		if (buf->conv == NULL)
 			xmlString = g_strdup ((gchar *)buf->buffer->content);
-		else	
+		else
 			xmlString = g_strdup ((gchar *)buf->conv->content);
 		xmlOutputBufferClose (buf);
 	}
@@ -565,7 +565,7 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 
 		if (!xmlStrcmp(cur->name, (xmlChar *)"author")) {
 			priv->authors = g_slist_prepend(priv->authors, xmlnode_to_author(doc, cur));
-		} 
+		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"link")) {
 			priv->links = g_slist_prepend(priv->links, xmlnode_to_link(doc, cur));
 		}
@@ -573,7 +573,7 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 			priv->categories = g_slist_prepend(priv->categories, xmlnode_to_category(doc, cur));
 		}
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"where")) {
-			priv->location = (gchar *)xmlGetProp (cur, (xmlChar *)"valueString");	
+			priv->location = (gchar *)xmlGetProp (cur, (xmlChar *)"valueString");
 		}
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"eventStatus")) {
 			priv->status = (gchar *)xmlGetProp (cur, (xmlChar *)"value");
@@ -588,9 +588,9 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"recurrence")) {
 			priv->is_recurrent = TRUE;
 		}
-		
+
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"who")) {
-			priv->attendees = g_slist_prepend (priv->attendees, xmlnode_to_attendee (doc, cur));		
+			priv->attendees = g_slist_prepend (priv->attendees, xmlnode_to_attendee (doc, cur));
 			priv->has_attendees = TRUE;
 		}
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"sendEventNotifications")) {
@@ -602,25 +602,25 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 
 		else {
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			g_hash_table_insert(priv->field_table, g_strdup((gchar *)cur->name), 
+			g_hash_table_insert(priv->field_table, g_strdup((gchar *)cur->name),
 					g_strdup((gchar *)value));
 			xmlFree(value);
 		}
 		cur = cur->next;
 	}
-	
+
 	xmlFree(value);
 	return entry;
 }
 
 /**
- * gdata_entries_new_from_xml: 
+ * gdata_entries_new_from_xml:
  * @feed_xml: A xml tree.
  * @length: length of feed_xml
  * Returns the list of all the entries in a feed.
  **/
 /*Returns all the entries from the feed */
-GSList * 
+GSList *
 gdata_entries_new_from_xml (const gchar *feed_xml, const gint length)
 {
 	GSList *list;
@@ -632,16 +632,16 @@ gdata_entries_new_from_xml (const gchar *feed_xml, const gint length)
 	g_return_val_if_fail(feed_xml != NULL && *feed_xml != '\0', NULL);
 
 	doc = xmlReadMemory (feed_xml, strlen(feed_xml), "feed.xml", NULL, 0);
-	if (doc == NULL) 
+	if (doc == NULL)
 		return NULL;
 
 	cur = xmlDocGetRootElement (doc);
 	if (cur == NULL) {
 		xmlFree (doc);
 	}
-	
+
 	cur = cur->xmlChildrenNode;
-	while (cur != NULL) 	
+	while (cur != NULL)
 	{
 		if (!xmlStrcmp (cur->name, (xmlChar *)"entry")) {
 			list = g_slist_prepend (list, gdata_entry_new_from_xmlptr (doc, cur));
@@ -659,8 +659,8 @@ gdata_entries_new_from_xml (const gchar *feed_xml, const gint length)
 	return list;
 }
 
-/** 
- * gdata_entry_new_from_xml: 
+/**
+ * gdata_entry_new_from_xml:
  * @entry_xml: the xml tree
  * Returns a GDataEntry object:
  **/
@@ -671,18 +671,18 @@ gdata_entry_new_from_xml (const gchar *entry_xml)
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 
-	g_return_val_if_fail (entry_xml != NULL && *entry_xml != '\0', NULL);	
+	g_return_val_if_fail (entry_xml != NULL && *entry_xml != '\0', NULL);
 	doc = xmlReadMemory (entry_xml, strlen(entry_xml), "feed.xml", NULL, 0);
 
 	if (doc == NULL)
 		return NULL;
 
 	cur = xmlDocGetRootElement (doc);
-	if (cur == NULL) 
+	if (cur == NULL)
 		xmlFree (doc);
 
 	while (cur != NULL) {
-		if (!xmlStrcmp (cur->name,(xmlChar *)"entry")) 
+		if (!xmlStrcmp (cur->name,(xmlChar *)"entry"))
 			entry = gdata_entry_new_from_xmlptr (doc, cur);
 		cur = cur->next;
 	}
@@ -698,10 +698,10 @@ gdata_entry_new_from_xml (const gchar *entry_xml)
 
 /**
  *gdata_entry_generate_xml:
- *@entry: A GDataEntry Object 
+ *@entry: A GDataEntry Object
  *Returns the xml content:
  **/
-gchar * 
+gchar *
 gdata_entry_generate_xml (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
@@ -760,14 +760,14 @@ gdata_entry_generate_xml (GDataEntry *entry)
 		cur_child = xmlNewChild(root, NULL, (xmlChar *)"when", NULL);
 		xmlSetNs (cur_child, xmlNewNs (cur_child, NULL, (xmlChar *)"gd"));
 		xmlSetProp (cur_child, (xmlChar *)"startTime", (xmlChar *)priv->start_time);
-		xmlSetProp (cur_child, (xmlChar *)"endTime", (xmlChar *)priv->end_time);	
+		xmlSetProp (cur_child, (xmlChar *)"endTime", (xmlChar *)priv->end_time);
 
-		if (priv->reminder) {		
+		if (priv->reminder) {
 			cur = cur_child;
 			cur_child = xmlNewChild(cur, NULL, (xmlChar *)"reminder", (xmlChar *)"");
-			xmlSetNs (cur_child, xmlNewNs (cur_child, NULL, (xmlChar *)"gd"));		  
+			xmlSetNs (cur_child, xmlNewNs (cur_child, NULL, (xmlChar *)"gd"));
 			xmlSetProp (cur_child->xmlChildrenNode, (xmlChar *)"minutes", (xmlChar *)priv->reminder);
-		} 
+		}
 	}
 
 	if (priv->location ) {
@@ -797,8 +797,8 @@ gdata_entry_generate_xml (GDataEntry *entry)
 
 	xmlFree(xmlString);
 	xmlFreeDoc(doc);
- 
-	return priv->entry_xml;		 
+
+	return priv->entry_xml;
 }
 
 /* Builds the DOM tree for the entries stored in hash table */
@@ -820,17 +820,17 @@ build_hash_table_entries (gchar *key, gchar *value, xmlNode **cur)
 			(value) ? xmlNodeSetContent (ptr->next, (xmlChar *)value) : xmlNodeSetContent (ptr->next, (xmlChar *)"");
 			break;
 		}
-		else 
+		else
 			ptr = ptr->next;
 	}
 }
 
-/** 
+/**
  * gdata_entry_get_id:
  * @entry: A GDataEntry object
- * Returns the id of the Entry: 
+ * Returns the id of the Entry:
  **/
-gchar * 
+gchar *
 gdata_entry_get_id (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
@@ -839,15 +839,15 @@ gdata_entry_get_id (GDataEntry *entry)
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
 
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
-	return g_hash_table_lookup (priv->field_table, "id");	  
+	return g_hash_table_lookup (priv->field_table, "id");
 }
 
-/** 
+/**
  * gdata_entry_get_visibility:
  * @entry: A GDataEntry object
- * Returns the visibility of the Entry: 
+ * Returns the visibility of the Entry:
  **/
-gchar * 
+gchar *
 gdata_entry_get_visibility (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
@@ -859,88 +859,88 @@ gdata_entry_get_visibility (GDataEntry *entry)
 	return priv->visibility;
 }
 
-/** 
+/**
  * gdata_entry_get_content:
  * @entry: A #GDataEntry object
- * Returns the content of the Entry/Event. 
+ * Returns the content of the Entry/Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_content (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return g_hash_table_lookup (priv->field_table, "content");
 }
 
-/** 
+/**
  * gdata_entry_get_description:
  * @entry: A #GDataEntry object
- * Returns the description of the Entry. 
+ * Returns the description of the Entry.
  **/
 /* Returns the description of the entry */
-gchar * 
+gchar *
 gdata_entry_get_description (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return NULL;
 }
 
-/** 
+/**
  * gdata_entry_get_copyright:
  * @entry: A #GDataEntry object
  * Returns the copyright of the Entry
  **/
-gchar * 
+gchar *
 gdata_entry_get_copyright (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return g_hash_table_lookup (priv->field_table, "copyright");
 }
 
-/** 
+/**
  * gdata_entry_get_title:
  * @entry: A #GDataEntry object.
- * Returns the title of the Entry. 
+ * Returns the title of the Entry.
  **/
-gchar * 
+gchar *
 gdata_entry_get_title (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return g_hash_table_lookup (priv->field_table, "title");
 }
 
-/** 
+/**
  * gdata_entry_get_authors:
  * @entry: A #GDataEntry object.
- * Returns the list of authors of entry.  
+ * Returns the list of authors of entry.
  **/
-GSList * 
+GSList *
 gdata_entry_get_authors (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return priv->authors;
 }
@@ -954,72 +954,72 @@ GSList *
 gdata_entry_get_links (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
-	
+
 	g_return_val_if_fail (entry !=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return priv->links;
 }
 
-/** 
+/**
  * gdata_entry_get_start_time:
  * @entry: A #GDataEntry object.
- * Returns the starting time of the Event. 
+ * Returns the starting time of the Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_start_time (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry!=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY(entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->start_time;
 }
 
 
-/** 
+/**
  * gdata_entry_get_transparency:
  * @entry: A #GDataEntry object.
- * Returns the transparency of the Event. 
+ * Returns the transparency of the Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_transparency (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry!=NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY(entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->transparency;
 }
 
-/** 
+/**
  * gdata_entry_get_end_time:
  * @entry: A #GDataEntry object.
- * Returns the ending time of the Event. 
+ * Returns the ending time of the Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_end_time (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail (entry != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY(entry), NULL);
-		
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->end_time;
 }
 
-/** 
+/**
  * gdata_entry_get_location:
  * @entry: A #GDataEntry object.
- * Returns the location of the Event. 
+ * Returns the location of the Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_location (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
@@ -1028,30 +1028,30 @@ gdata_entry_get_location (GDataEntry *entry)
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
 
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
-	return priv->location; 
+	return priv->location;
 }
 
-/** 
+/**
  * gdata_entry_get_status:
  * @entry: A #GDataEntry object.
- * Returns the status of the Event. 
+ * Returns the status of the Event.
  **/
-gchar * 
+gchar *
 gdata_entry_get_status (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_val_if_fail(entry !=NULL, NULL);
 	g_return_val_if_fail(GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->status;
 }
 
-/** 
+/**
  * gdata_entry_get_categories:
  * @entry: A #GDataEntry object.
- * Returns the status of the Event. 
+ * Returns the status of the Event.
  **/
 GSList *
 gdata_entry_get_categories (GDataEntry *entry)
@@ -1060,7 +1060,7 @@ gdata_entry_get_categories (GDataEntry *entry)
 
 	g_return_val_if_fail(entry !=NULL, NULL);
 	g_return_val_if_fail(GDATA_IS_ENTRY (entry), NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->categories;
 }
@@ -1091,13 +1091,13 @@ gdata_entry_get_edit_link (GDataEntry *entry)
 	return edit_link;
 }
 
-/** 
+/**
  * gdata_entry_set_author:
  * @entry: A #GDataEntry object.
  * @author: A list of authors.
- * Sets the list of authors.  
+ * Sets the list of authors.
  **/
-void 
+void
 gdata_entry_set_author (GDataEntry *entry, GSList *author)
 {
 	GDataEntryPrivate *priv;
@@ -1110,13 +1110,13 @@ gdata_entry_set_author (GDataEntry *entry, GSList *author)
 	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_id:
  * @entry: A #GDataEntry object.
  * @id: Id of the entry.
- * Sets the list of authors.  
+ * Sets the list of authors.
  **/
-void 
+void
 gdata_entry_set_id (GDataEntry *entry, gchar *id)
 {
 	GDataEntryPrivate *priv;
@@ -1132,50 +1132,50 @@ gdata_entry_set_id (GDataEntry *entry, gchar *id)
 
 
 
-/** 
+/**
  * gdata_entry_set_categories:
  * @entry: A GDataEntry object.
  * @categories: A list of categories.
- * Sets the list of categories of the Entry. 
+ * Sets the list of categories of the Entry.
  **/
-void 
+void
 gdata_entry_set_categories (GDataEntry *entry, GSList *categories)
 {
 	GDataEntryPrivate *priv;
-	
+
 	g_return_if_fail(categories !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY(entry));
 
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->categories = categories;
-	priv->entry_needs_update = TRUE;		
+	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_title:
  * @entry: A GDataEntry object.
  * @title: title of the event.
- * Sets the title of the Entry. 
+ * Sets the title of the Entry.
  **/
-void 
+void
 gdata_entry_set_title (GDataEntry *entry, const gchar *title)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_if_fail(title !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY (entry));
-		
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	priv->title = g_strdup(title);
 	g_hash_table_insert (priv->field_table, g_strdup("title"), g_strdup(title));
 	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_content:
  * @entry: A GDataEntry object.
  * @content: The content of the event.
- * Sets the content of the Entry. 
+ * Sets the content of the Entry.
  **/
 void
 gdata_entry_set_content (GDataEntry *entry, const gchar *content)
@@ -1184,20 +1184,20 @@ gdata_entry_set_content (GDataEntry *entry, const gchar *content)
 
 	g_return_if_fail(content !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY(entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->content = g_strdup (content);
 	priv->entry_needs_update = TRUE;
 	g_hash_table_insert (priv->field_table, g_strdup("content"), g_strdup (content));
 }
 
-/** 
+/**
  * gdata_entry_set_links:
  * @entry: A GDataEntry object.
  * @links: A list of links associated.
- * Sets the links of the Event. 
+ * Sets the links of the Event.
  **/
-void 
+void
 gdata_entry_set_links (GDataEntry *entry, GSList *links)
 {
 	GDataEntryPrivate *priv;
@@ -1210,96 +1210,96 @@ gdata_entry_set_links (GDataEntry *entry, GSList *links)
 	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_status:
  * @entry: A GDataEntry object.
  * @status: The status of the event.
- * Sets the status of the Event. 
+ * Sets the status of the Event.
  **/
-void 
+void
 gdata_entry_set_status (GDataEntry *entry, const gchar *status)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_if_fail(status!=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY(entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
-	priv->status = g_strdup (status);	
+	priv->status = g_strdup (status);
 	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_sendNotification:
  * @entry: A GDataEntry object.
- * @sendNotification: Whether notification is required. 
- * Sets whether notification should be sent by the Event. 
+ * @sendNotification: Whether notification is required.
+ * Sets whether notification should be sent by the Event.
  **/
-void 
+void
 gdata_entry_set_send_notification (GDataEntry *entry, const gchar *send_notification)
 {
-	GDataEntryPrivate *priv;	
+	GDataEntryPrivate *priv;
 
 	g_return_if_fail (send_notification!=NULL);
 	g_return_if_fail (GDATA_IS_ENTRY (entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->send_notification = g_strdup(send_notification);
 	priv->entry_needs_update = TRUE;
-}	
+}
 
-/** 
+/**
  * gdata_entry_set_reminder:
  * @entry: A GDataEntry object.
  * @reminder: The reminder set.
  * Sets the reminder of the Event.
  **/
-void 
+void
 gdata_entry_set_reminder (GDataEntry *entry, const gchar *reminder)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_if_fail(reminder !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY (entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->reminder = g_strdup (reminder);
 	priv->entry_needs_update = TRUE;
 }
 
-/** 
+/**
  * gdata_entry_set_start_time:
  * @entry: A GDataEntry object.
  * @start_time: The starting time of the event.
- * Sets the starting time of the Event. 
+ * Sets the starting time of the Event.
  **/
-void 
+void
 gdata_entry_set_start_time (GDataEntry *entry, const gchar *start_time)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_if_fail(start_time !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY(entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->start_time = g_strdup(start_time);
 	priv->entry_needs_update = TRUE;
-}	
+}
 
-/** 
+/**
  * gdata_entry_set_end_time:
  * @entry: A GDataEntry object.
  * @end_time: The end time of the event.
  * Sets the end time of the event.
  **/
-void 
+void
 gdata_entry_set_end_time (GDataEntry *entry, const gchar *end_time)
 {
 	GDataEntryPrivate *priv;
 
 	g_return_if_fail(end_time !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY (entry));
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->end_time = g_strdup(end_time);
 	priv->entry_needs_update = TRUE;
@@ -1307,11 +1307,11 @@ gdata_entry_set_end_time (GDataEntry *entry, const gchar *end_time)
 
 /**
  * gdata_entry_set_transparency:
- * @entry: A GDataEntry object. 
+ * @entry: A GDataEntry object.
  * @transparency: Transparency of the Entry.
- * Sets the transparency of the entry. 
+ * Sets the transparency of the entry.
  **/
-void 
+void
 gdata_entry_set_transparency (GDataEntry *entry, const gchar *transparency)
 {
 	GDataEntryPrivate *priv;
@@ -1330,7 +1330,7 @@ gdata_entry_set_transparency (GDataEntry *entry, const gchar *transparency)
  * @location: Location of the event.
  * Sets the location of the event.
  **/
-void 
+void
 gdata_entry_set_location (GDataEntry *entry, const gchar *location)
 {
 	GDataEntryPrivate *priv;
@@ -1359,19 +1359,19 @@ gdata_entry_set_xml (GDataEntry *entry, const gchar *xml)
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->entry_xml = g_strdup (xml);
 	priv->entry_needs_update = TRUE;
-	
+
 }
 
-/** 
+/**
  * gdata_entry_create_authors:
  * @entry: A GDataEntry object.
  * @name: The name of the author.
  * @email: The email of the author.
  * Sets the list of authors to the Entry.
  **/
-void 
+void
 gdata_entry_create_authors (GDataEntry *entry,
-			    const gchar *name, 
+			    const gchar *name,
 			    const gchar *email)
 {
 	GDataEntryPrivate *priv;
@@ -1379,19 +1379,19 @@ gdata_entry_create_authors (GDataEntry *entry,
 
 	g_return_if_fail(name !=NULL || email !=NULL);
 	g_return_if_fail(GDATA_IS_ENTRY(entry));
-	
+
 	author = g_new0 (GDataEntryAuthor, 1);
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 
-	author->name = g_strdup(name); 
+	author->name = g_strdup(name);
 	author->email = g_strdup(email);
-	
+
 	priv->authors =	g_slist_prepend(priv->authors, author);
 	priv->entry_needs_update = TRUE;
-	
+
 }
 
-/** 
+/**
  * gdata_entry_create_categories:
  * @entry: A GDataEntry object.
  * @scheme:Scheme.
@@ -1399,10 +1399,10 @@ gdata_entry_create_authors (GDataEntry *entry,
  * @term: Term.
  * Sets the categories of the Event.
  **/
-void 
-gdata_entry_create_categories (GDataEntry *entry, 
-			       const gchar *scheme, 
-			       const gchar *label , 
+void
+gdata_entry_create_categories (GDataEntry *entry,
+			       const gchar *scheme,
+			       const gchar *label ,
 			       const gchar *term)
 {
 	GDataEntryPrivate *priv;
@@ -1426,10 +1426,10 @@ gboolean
 gdata_entry_is_recurrent (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
-	
+
 	g_return_val_if_fail (entry != NULL, 0);
 	g_return_val_if_fail (GDATA_IS_ENTRY (entry), 0);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE (entry);
 	return priv->is_recurrent;
 }
@@ -1438,8 +1438,8 @@ GSList *
 gdata_entry_get_attendee_list (GDataEntry *entry)
 {
 	GDataEntryPrivate *priv;
-	
-	g_return_val_if_fail (entry != NULL, NULL);	
+
+	g_return_val_if_fail (entry != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_ENTRY(entry), NULL);
 
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
@@ -1454,7 +1454,7 @@ gdata_entry_set_attendee_list (GDataEntry *entry, GSList *attendees)
 	g_return_if_fail (entry != NULL);
 	g_return_if_fail (GDATA_IS_ENTRY(entry));
 	g_return_if_fail (attendees != NULL);
-	
+
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->attendees = attendees;
 	priv->has_attendees = TRUE;

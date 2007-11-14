@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -49,7 +49,7 @@ typedef enum {
 	E_GW_ITEM_TYPE_ORGANISATION,
 	E_GW_ITEM_TYPE_RESOURCE,
 	E_GW_ITEM_TYPE_CATEGORY,
-	E_GW_ITEM_TYPE_NOTIFICATION, 
+	E_GW_ITEM_TYPE_NOTIFICATION,
 	E_GW_ITEM_TYPE_NOTE,
 	E_GW_ITEM_TYPE_UNKNOWN
 
@@ -190,7 +190,7 @@ void        e_gw_item_set_security (EGwItem *item, const char *new_class);
 gboolean    e_gw_item_get_completed (EGwItem *item);
 void        e_gw_item_set_completed (EGwItem *item, gboolean new_completed);
 gboolean    e_gw_item_get_is_allday_event (EGwItem *item);
-void	    e_gw_item_set_is_allday_event (EGwItem *item, gboolean is_allday);	
+void	    e_gw_item_set_is_allday_event (EGwItem *item, gboolean is_allday);
 char*       e_gw_item_get_field_value (EGwItem *item, char *field_name);
 void        e_gw_item_set_field_value (EGwItem *item, char *field_name, char* field_value);
 GList*      e_gw_item_get_email_list (EGwItem *item);
@@ -254,7 +254,7 @@ void        e_gw_item_set_classification (EGwItem *item, const char *new_class);
 
 #define E_GW_ITEM_ACCEPT_LEVEL_BUSY          "Busy"
 #define E_GW_ITEM_ACCEPT_LEVEL_OUT_OF_OFFICE "OutOfOffice"
-#define E_GW_ITEM_ACCEPT_LEVEL_FREE	     "Free" 	
+#define E_GW_ITEM_ACCEPT_LEVEL_FREE	     "Free"
 
 const char *e_gw_item_get_accept_level (EGwItem *item);
 void        e_gw_item_set_accept_level (EGwItem *item, const char *new_level);
@@ -287,7 +287,7 @@ void e_gw_item_set_exdate_list (EGwItem  *item, GSList *new_exdate_list);
 
 void e_gw_item_set_rrule (EGwItem *item, EGwItemRecurrenceRule *rrule);
 EGwItemRecurrenceRule *e_gw_item_get_rrule (EGwItem *item);
-		
+
 int e_gw_item_get_recurrence_key (EGwItem *item);
 void e_gw_item_set_recurrence_key (EGwItem *item, int recurrence_key);
 

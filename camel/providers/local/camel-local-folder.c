@@ -165,9 +165,9 @@ local_finalize(CamelObject * object)
 	g_free(local_folder->index_path);
 
 	camel_folder_change_info_free(local_folder->changes);
-	
+
 	g_mutex_free(local_folder->priv->search_lock);
-	
+
 	g_free(local_folder->priv);
 }
 
@@ -216,7 +216,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	int forceindex, len;
 	CamelURL *url;
 	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
-	
+
 	folder = (CamelFolder *)lf;
 
 	name = g_path_get_basename(full_name);
@@ -307,16 +307,16 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {
 		url = camel_url_copy (((CamelService *) parent_store)->url);
 		camel_url_set_fragment (url, full_name);
-	
+
 		fi = g_new0 (CamelFolderInfo, 1);
 		fi->full_name = g_strdup (full_name);
 		fi->name = g_strdup (name);
 		fi->uri = camel_url_to_string (url, 0);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->flags = CAMEL_FOLDER_NOCHILDREN;
-	
+
 		camel_url_free (url);
-	
+
 		camel_object_trigger_event(CAMEL_OBJECT (parent_store), "folder_created", fi);
 		camel_folder_info_free(fi);
 	}
@@ -391,7 +391,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else
 					/* a full path + protocol */
-					folder->description = g_strdup_printf(_("%s (%s)"), path, 
+					folder->description = g_strdup_printf(_("%s (%s)"), path,
 									      ((CamelService *)folder->parent_store)->url->protocol);
 			}
 			*arg->ca_str = folder->description;
@@ -517,7 +517,7 @@ static void
 local_delete(CamelFolder *folder)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-	
+
 	if (lf->index)
 		camel_index_delete(lf->index);
 

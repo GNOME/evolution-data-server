@@ -155,13 +155,13 @@ struct _E2kAction {
 	E2kActionType type;
 	guint32       flavor;
 	guint32       flags;
- 
+
 	union {
 		struct {
 			GByteArray *store_entryid;
 			GByteArray *folder_source_key;
 		} xfer;
- 
+
 		struct {
 			GByteArray *entryid;
 			guint8      reply_template_guid[16];

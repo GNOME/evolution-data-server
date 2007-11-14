@@ -26,7 +26,7 @@
 struct _imap_keyword { char *name; camel_imapp_id_t id; };
 /*
  gperf input file
- best hash generated using: gperf -o -s-2 -k1,'$' -t -H imap_hash -N imap_tokenise -L ANSI-C 
+ best hash generated using: gperf -o -s-2 -k1,'$' -t -H imap_hash -N imap_tokenise -L ANSI-C
 */
 
 #define TOTAL_KEYWORDS 23
@@ -337,7 +337,7 @@ imap_free_body(struct _CamelMessageContentInfo *cinfo)
 		imap_free_body(list);
 		list = next;
 	}
-	
+
 	if (cinfo->type)
 		camel_content_type_unref(cinfo->type);
 	g_free(cinfo->id);
@@ -362,7 +362,7 @@ imap_parse_param_list(CamelIMAPPStream *is, struct _camel_header_param **plist)
 			if (tok == ')')
 				break;
 			camel_imapp_stream_ungettoken(is, tok, token, len);
-			
+
 			camel_imapp_stream_astring(is, &token);
 			param = alloca(strlen(token)+1);
 			strcpy(param, token);
@@ -404,7 +404,7 @@ imap_parse_ext_optional(CamelIMAPPStream *is)
 			dinfo->refcount = 1;
 			/* should be string */
 			camel_imapp_stream_astring(is, &token);
-		
+
 			dinfo->disposition = g_strdup(token);
 			imap_parse_param_list(is, &dinfo->params);
 		case IMAP_TOK_TOKEN:
@@ -413,13 +413,13 @@ imap_parse_ext_optional(CamelIMAPPStream *is)
 		default:
 			camel_exception_throw(1, "body_fld_disp: expecting nil or list");
 		}
-	
+
 		p(printf("body_fld_lang\n"));
 
 		/* body_fld_lang   ::= nstring / "(" 1#string ")" */
-	
+
 		/* we just drop the lang string/list, save it somewhere? */
-	
+
 		tok = camel_imapp_stream_token(is, &token, &len);
 		switch (tok) {
 		case '(':
@@ -462,7 +462,7 @@ imap_parse_body_fields(CamelIMAPPStream *is)
 {
 	unsigned char *token, *type;
 	struct _CamelMessageContentInfo *cinfo;
-		
+
 	/* body_fields     ::= body_fld_param SPACE body_fld_id SPACE
 	   body_fld_desc SPACE body_fld_enc SPACE
 	   body_fld_octets */
@@ -479,20 +479,20 @@ imap_parse_body_fields(CamelIMAPPStream *is)
 		camel_imapp_stream_astring(is, &token);
 		cinfo->type = camel_content_type_new(type, token);
 		imap_parse_param_list(is, &cinfo->type->params);
-	
+
 		/* body_fld_id     ::= nstring */
 		camel_imapp_stream_nstring(is, &token);
 		cinfo->id = g_strdup(token);
-	
+
 		/* body_fld_desc   ::= nstring */
 		camel_imapp_stream_nstring(is, &token);
 		cinfo->description = g_strdup(token);
-	
+
 		/* body_fld_enc    ::= (<"> ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
 		   "QUOTED-PRINTABLE") <">) / string */
 		camel_imapp_stream_astring(is, &token);
 		cinfo->encoding = g_strdup(token);
-	
+
 		/* body_fld_octets ::= number */
 		cinfo->size = camel_imapp_stream_number(is);
 	} CAMEL_CATCH(ex) {
@@ -686,7 +686,7 @@ imap_parse_envelope(CamelIMAPPStream *is)
 
 	return (CamelMessageInfo *)minfo;
 }
-	
+
 struct _CamelMessageContentInfo *
 imap_parse_body(CamelIMAPPStream *is)
 {
@@ -756,7 +756,7 @@ imap_parse_body(CamelIMAPPStream *is)
 		} else {
 			/* body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
 			   [SPACE body_ext_1part]
-			   
+
 			   body_type_basic ::= media_basic SPACE body_fields
 			   body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
 			   body_type_msg   ::= media_message SPACE body_fields SPACE envelope
@@ -1041,7 +1041,7 @@ imap_parse_fetch(CamelIMAPPStream *is)
 						camel_imapp_stream_ungettoken(is, tok, token, len);
 					}
 					camel_imapp_stream_nstring_stream(is, &finfo->body);
-					finfo->got |= FETCH_BODY;					
+					finfo->got |= FETCH_BODY;
 				} else {
 					camel_exception_throw(1, "unknown body response");
 				}
@@ -1137,7 +1137,7 @@ imap_parse_status(CamelIMAPPStream *is)
 				sinfo->condition = IMAP_UNKNOWN;
 				printf("Got unknown response code: %s: ignored\n", token);
 			}
-			
+
 			/* ignore anything we dont know about */
 			do {
 				tok = camel_imapp_stream_token(is, &token, &len);
@@ -1197,7 +1197,7 @@ imap_parse_list(CamelIMAPPStream *is)
 	struct _list_info * volatile linfo;
 
 	linfo = g_malloc0(sizeof(*linfo));
-	
+
 	CAMEL_TRY {
 		/* mailbox_list    ::= "(" #("\Marked" / "\Noinferiors" /
 		   "\Noselect" / "\Unmarked" / flag_extension) ")"

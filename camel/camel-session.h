@@ -101,7 +101,7 @@ typedef struct {
 	CamelFilterDriver * (*get_filter_driver) (CamelSession *session,
 						  const char *type,
 						  CamelException *ex);
-	
+
 	/* mechanism for creating and maintaining multiple threads of control */
 	void *(*thread_msg_new)(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size);
 	void (*thread_msg_free)(CamelSession *session, CamelSessionThreadMsg *msg);
@@ -124,9 +124,9 @@ CamelService *  camel_session_get_service           (CamelSession *session,
 						     const char *url_string,
 						     CamelProviderType type,
 						     CamelException *ex);
-CamelService *  camel_session_get_service_connected (CamelSession *session, 
+CamelService *  camel_session_get_service_connected (CamelSession *session,
 						     const char *url_string,
-						     CamelProviderType type, 
+						     CamelProviderType type,
 						     CamelException *ex);
 
 #define camel_session_get_store(session, url_string, ex) \

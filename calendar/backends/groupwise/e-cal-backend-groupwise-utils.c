@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *  Harish Krishnaswamy <kharish@novell.com>
  *  Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -46,7 +46,7 @@
 #include "e-cal-backend-groupwise-utils.h"
 #include "libedataserver/e-source-list.h"
 
-static gboolean 
+static gboolean
 get_recur_instance (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
 {
 	GSList **recur_dates = (GSList **) data;
@@ -69,8 +69,8 @@ resolve_tzid_cb (const char *tzid, gpointer data)
 const char *
 e_cal_component_get_gw_id (ECalComponent *comp)
 {
-	icalproperty *prop;	
-	
+	icalproperty *prop;
+
 	prop = icalcomponent_get_first_property (e_cal_component_get_icalcomponent (comp),
 						 ICAL_X_PROPERTY);
 	while (prop) {
@@ -88,7 +88,7 @@ e_cal_component_get_gw_id (ECalComponent *comp)
 	return NULL;
 }
 
-static void 
+static void
 set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGroupwise *cbgw)
 {
 	GHashTable *categories_by_name, *categories_by_id;
@@ -103,9 +103,9 @@ set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGr
 	categories_by_name = e_cal_backend_groupwise_get_categories_by_name (cbgw);
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
-	
+
 	g_return_if_fail (categories_by_id != NULL || categories_by_name != NULL || cnc != NULL);
-	
+
 	for (; category_names != NULL; category_names = g_slist_next (category_names)) {
                      if (!category_names->data || strlen(category_names->data) == 0 )
                              continue;
@@ -121,7 +121,7 @@ set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGr
                              if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
                                      char **components = g_strsplit (id, "@", -1);
                                      char *temp_id = components[0];
-    
+
                                      g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup(temp_id));
                                      g_hash_table_insert (categories_by_id, g_strdup(temp_id), g_strdup (category_names->data));
                                      category_ids = g_list_append (category_ids, g_strdup(temp_id));
@@ -152,7 +152,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 	while (icalprop) {
 
 		x_name = icalproperty_get_x_name (icalprop);
-		
+
 		if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-PRIORITY")) {
 			sendoptions_set = TRUE;
 			x_val = icalproperty_get_x (icalprop);
@@ -177,13 +177,13 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 				icaltime_set_timezone (&temp, default_zone);
 				temp = icaltime_convert_to_zone (temp, utc);
 				value = icaltime_as_ical_string (temp);
-				e_gw_item_set_reply_within (item, (char *) value);	
+				e_gw_item_set_reply_within (item, (char *) value);
 			}
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-EXPIRE")) {
 			const char *expire = NULL;
 			x_val = icalproperty_get_x (icalprop);
 			temp = icaltime_current_time_with_zone (default_zone ? default_zone : utc);
-			icaltime_adjust (&temp, atoi (x_val), 0, 0, 0); 
+			icaltime_adjust (&temp, atoi (x_val), 0, 0, 0);
 			icaltime_set_timezone (&temp, default_zone);
 			temp = icaltime_convert_to_zone (temp, utc);
 			expire = icaltime_as_ical_string (temp);
@@ -197,7 +197,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 			temp = icaltime_convert_to_zone (temp, utc);
 			delay = icaltime_as_ical_string (temp);
 			e_gw_item_set_delay_until (item, (char *) delay);
-					
+
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-TRACKINFO")) {
 			sendoptions_set = TRUE;
 			x_val = icalproperty_get_x (icalprop);
@@ -220,7 +220,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 					break;
 				case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
 			}
-			
+
 		} else if (!strcmp (x_name, "X-EVOLUTION-OPTIONS-ACCEPTED")) {
 			int i = 0;
 			x_val = icalproperty_get_x (icalprop);
@@ -267,9 +267,9 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 	GSList *l;
 
 	e_cal_component_get_attachment_list (comp, &attach_file_list);
-	
+
 	for (l = attach_file_list; l ; l = l->next) {
-		
+
 		EGwItemAttachment *attach_item;
 		char *file_contents, *encoded_data;
 		gsize file_len;
@@ -285,10 +285,10 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 
 		/* Extract the simple file name from the
 		 * attach_filename_full which is of the form
-		 * file://<path>/compuid-<simple filename> 
+		 * file://<path>/compuid-<simple filename>
 		 */
 		e_cal_component_get_uid (comp, &uid);
-		filename = g_strrstr (attach_filename_full, uid); 		
+		filename = g_strrstr (attach_filename_full, uid);
 		if (filename == NULL) {
 			g_message ("DEBUG: This is an invalid attachment file\n");
 			g_free (attach_filename_full);
@@ -307,7 +307,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		 * message */
 		encoded_data = g_base64_encode (file_contents, file_len);
 		attach_item->data = encoded_data;
-		attach_item->size = strlen (encoded_data); 
+		attach_item->size = strlen (encoded_data);
 
 		g_free (file_contents);
 		attach_list = g_slist_append (attach_list, attach_item);
@@ -320,7 +320,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 static icalproperty *
 get_attendee_prop (icalcomponent *icalcomp, const char *attendee)
 {
-	icalproperty *prop;	
+	icalproperty *prop;
 
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
 			prop;
@@ -348,7 +348,7 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 			const char *attendees = NULL;
 			char **emails, **iter;
 
-			for (icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY); icalprop; 
+			for (icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY); icalprop;
 					icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY)) {
 				if (g_str_equal (icalproperty_get_x_name (icalprop), "X-EVOLUTION-RECIPIENTS")) {
 					break;
@@ -382,28 +382,28 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 	} else if (e_cal_component_has_attendees (comp)) {
 		GSList *attendee_list, *recipient_list = NULL, *al;
 
-		e_cal_component_get_attendee_list (comp, &attendee_list);	
+		e_cal_component_get_attendee_list (comp, &attendee_list);
 		for (al = attendee_list; al != NULL; al = al->next) {
 			ECalComponentAttendee *attendee = (ECalComponentAttendee *) al->data;
 			EGwItemRecipient *recipient;
-				
+
 			if (delegate && (g_str_equal (attendee->value + 7, user_email) || !(attendee->delfrom && *attendee->delfrom)))
-				continue;		
-			
+				continue;
+
 			if (delegate) {
-				icalproperty *prop = get_attendee_prop (e_cal_component_get_icalcomponent (comp), 
+				icalproperty *prop = get_attendee_prop (e_cal_component_get_icalcomponent (comp),
 						attendee->value);
-				if (prop) 
+				if (prop)
 					icalproperty_remove_parameter_by_kind (prop, ICAL_DELEGATEDFROM_PARAMETER);
 			}
-	
+
 			recipient = g_new0 (EGwItemRecipient, 1);
 
 			/* len (MAILTO:) + 1 = 7 */
 			recipient->email = g_strdup (attendee->value + 7);
 			if (attendee->cn != NULL)
 				recipient->display_name = g_strdup (attendee->cn);
-			if (attendee->role == ICAL_ROLE_REQPARTICIPANT) 
+			if (attendee->role == ICAL_ROLE_REQPARTICIPANT)
 				recipient->type = E_GW_ITEM_RECIPIENT_TO;
 			else if (attendee->role == ICAL_ROLE_OPTPARTICIPANT)
 				recipient->type = E_GW_ITEM_RECIPIENT_CC;
@@ -413,23 +413,23 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
 			else if (attendee->status == ICAL_PARTSTAT_DECLINED)
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
-			else 
+			else
 				recipient->status = E_GW_ITEM_STAT_NONE;
 
 			recipient_list = g_slist_append (recipient_list, recipient);
 		}
 
 		e_cal_component_free_attendee_list(attendee_list);
-	
+
 		/* recipient_list shouldn't be freed. Look into the function below. */
 		e_gw_item_set_recipient_list (item, recipient_list);
 	}
-	
+
 	if (e_cal_component_has_organizer (comp)) {
 		/* Send Options */
 		add_send_options_data_to_item (item, comp, default_zone);
 	}
-		
+
 	if (!delegate && e_cal_component_has_organizer (comp)) {
 		ECalComponentOrganizer cal_organizer;
 		EGwItemOrganizer *organizer = NULL;
@@ -457,7 +457,7 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 	if (rrule_list) {
 		/* assumes only one rrule is present  */
 		ical_recur = (struct icalrecurrencetype *) rrule_list->data;
-		
+
 		g_message ("DEBUG: Processing rule\n%s\n", icalrecurrencetype_as_string (ical_recur));
 		/*set the data */
 		switch (ical_recur->freq) {
@@ -479,7 +479,7 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 		if (ical_recur->count != 0)
 			item_rrule->count = ical_recur->count;
 		else
-			item_rrule->until =  g_strdup (icaltime_as_ical_string (ical_recur->until)); 
+			item_rrule->until =  g_strdup (icaltime_as_ical_string (ical_recur->until));
 
 		item_rrule->interval = ical_recur->interval;
 
@@ -500,24 +500,24 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 			GSList *l, *item_exdate_list = NULL;
 			icaltimezone *default_zone, *utc;
 			struct icaltimetype itt_utc;
-			
+
 
 			e_cal_component_get_exdate_list (comp, &exdate_list);
 			default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 			utc = icaltimezone_get_utc_timezone ();
 			for (l = exdate_list; l ; l = l->next) {
-				ECalComponentDateTime *dt = (ECalComponentDateTime *) l->data; 
+				ECalComponentDateTime *dt = (ECalComponentDateTime *) l->data;
 				if (dt->value) {
 					if (!icaltime_get_timezone (*(dt->value)))
 						icaltime_set_timezone (dt->value, default_zone ? default_zone : utc);
 					itt_utc = icaltime_convert_to_zone (*dt->value, utc);
 					item_exdate_list = g_slist_append (item_exdate_list, g_strdup (icaltime_as_ical_string (itt_utc)));
 				}
-			}			
+			}
 			e_gw_item_set_exdate_list (item, item_exdate_list);
 			e_cal_component_free_exdate_list (exdate_list);
 		}
-	} 
+	}
 }
 
 static EGwItem *
@@ -533,7 +533,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	GSList *slist, *sl;
 	icaltimezone *default_zone, *utc;
 	struct icaltimetype itt_utc;
-	
+
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	utc = icaltimezone_get_utc_timezone ();
 
@@ -569,8 +569,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			duration = abs (icaldurationtype_as_int (trigger.u.rel_duration));
 			e_gw_item_set_trigger (item, duration);
 		}
-		
-		
+
+
 
 		/* end date */
 		e_cal_component_get_dtend (comp, &dt);
@@ -594,7 +594,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 			e_gw_item_set_due_date (item, icaltime_as_ical_string (itt_utc));
 		}
-		
+
 			/* priority */
 		 priority = NULL;
 		 e_cal_component_get_priority (comp, &priority);
@@ -610,7 +610,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 
 			 e_cal_component_free_priority (priority);
 		 }
-	  
+
 			/* completed */
 		e_cal_component_get_completed (comp, &dt.value);
 		if (dt.value) {
@@ -630,8 +630,8 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	/* set common properties */
 	/* GW server ID */
 	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
-	
-	
+
+
 	/* UID */
 	e_cal_component_get_uid (comp, &uid);
 	e_gw_item_set_icalid (item, uid);
@@ -671,17 +671,17 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		g_object_unref (item);
 		return NULL;
 	}
-	
+
 	/* all day event */
 	if (dt.value && dt.value->is_date && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
 		e_gw_item_set_is_allday_event (item, TRUE);
-	
+
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
 	if (dt.value) {
 		if (!icaltime_get_timezone (*dt.value))
 			icaltime_set_timezone (dt.value, default_zone);
-		itt_utc = icaltime_convert_to_zone (*dt.value, utc); 
+		itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 		e_gw_item_set_creation_date (item, icaltime_as_ical_string (itt_utc));
 	} else {
 		struct icaltimetype itt;
@@ -708,7 +708,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 
 
 	set_attendees_to_item (item, comp, default_zone, FALSE, NULL);
-	
+
 	/* check if recurrences exist and update the item */
 	if (e_cal_component_has_recurrences (comp)) {
 		if (e_cal_component_has_rrules (comp))
@@ -716,23 +716,23 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		else {
 
 			GSList *recur_dates = NULL;
-			
+
 			if (dt.tzid)
-				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);		
-			else 
-				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);		
+				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);
+			else
+				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);
 
 			recur_dates = g_slist_delete_link (recur_dates, recur_dates);
-			
+
 			e_gw_item_set_recurrence_dates (item, recur_dates);
 		}
 	}
-	
+
 	/* attachments */
 	if (e_cal_component_has_attachments (comp)) {
-		e_cal_backend_groupwise_set_attachments_from_comp (comp, item); 
+		e_cal_backend_groupwise_set_attachments_from_comp (comp, item);
 	}
-	
+
 	return item;
 }
 
@@ -755,7 +755,7 @@ e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *
 	EGwItem *item;
 	icaltimezone *default_zone;
 	const char *user_email;
-   
+
    	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	item = e_gw_item_new_empty ();
@@ -768,7 +768,7 @@ e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *
 	return item;
 }
 
-/* Fetch data from the server and unencode it to the actual data 
+/* Fetch data from the server and unencode it to the actual data
  * and populate the attach_data
  */
 static gboolean
@@ -782,7 +782,7 @@ get_attach_data_from_server (EGwItemAttachment *attach_item, ECalBackendGroupwis
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
-	status = e_gw_connection_get_attachment (cnc, attach_item->id, 0, -1, (const char **) &data, &len); 
+	status = e_gw_connection_get_attachment (cnc, attach_item->id, 0, -1, (const char **) &data, &len);
 
 	if (status != E_GW_CONNECTION_STATUS_OK ) {
 		g_warning ("Failed to read the attachment from the server\n");
@@ -801,7 +801,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 	GSList *comp_attachment_list = NULL;
 	const char *uid;
 	char *attach_file_url;
-	
+
 	fetch_list = e_gw_item_get_attach_id_list (item);
 	if (fetch_list == NULL)
 		return; /* No attachments exist */
@@ -815,7 +815,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		char *filename;
 
 		attach_item = (EGwItemAttachment *) l->data;
-		attach_file_url = g_strconcat (e_cal_backend_groupwise_get_local_attachments_store (cbgw), 
+		attach_file_url = g_strconcat (e_cal_backend_groupwise_get_local_attachments_store (cbgw),
 			 "/", uid, "-", attach_item->name, NULL);
 
 		filename = g_filename_from_uri (attach_file_url, NULL, NULL);
@@ -825,7 +825,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 				return; /* Could not get the attachment from the server */
 			}
 			fd = g_open (filename, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
-			if (fd == -1) { 
+			if (fd == -1) {
 				/* skip gracefully */
 				g_warning ("DEBUG: could not serialize attachments\n");
 			} else if (write (fd, attach_item->data, attach_item->size) == -1) {
@@ -860,13 +860,13 @@ set_default_alarms (ECalComponent *comp)
 				DAYS,
 				HOURS,
 				MINUTES
-			} duration;	
+			} duration;
 			ECalComponentAlarmTrigger trigger;
 
 			interval = gconf_client_get_int (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_INTERVAL, NULL);
 			units = gconf_client_get_string (gconf, CALENDAR_CONFIG_DEFAULT_REMINDER_UNITS, NULL);
 
-			if (units == NULL) 
+			if (units == NULL)
 				duration = MINUTES;
 			else {
 				if (!strcmp (units, "days"))
@@ -890,10 +890,10 @@ set_default_alarms (ECalComponent *comp)
 			case MINUTES:
 				trigger.u.rel_duration.minutes = interval;
 				break;
-			case HOURS:	
+			case HOURS:
 				trigger.u.rel_duration.hours = interval;
 				break;
-			case DAYS:	
+			case DAYS:
 				trigger.u.rel_duration.days = interval;
 				break;
 			default:
@@ -964,9 +964,9 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
 	}
 
-	
+
 	if (e_gw_item_get_reply_request (item)) {
-		char *reply_within; 
+		char *reply_within;
 		const char *mess = e_gw_item_get_message (item);
 		char *value;
 
@@ -1014,7 +1014,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		if (!icaltime_get_timezone (itt_utc))
 			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+			itt = icaltime_convert_to_zone (itt_utc, default_zone);
 			icaltime_set_timezone (&itt, default_zone);
 			e_cal_component_set_created (comp, &itt);
 			e_cal_component_set_dtstamp (comp, &itt);
@@ -1025,7 +1025,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		}
 	}
 	g_free (t);
-	
+
 	/* categories */
 	category_ids = e_gw_item_get_categories (item);
 	categories = NULL;
@@ -1042,19 +1042,19 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	}
 
 	/* all day event */
-	is_allday = e_gw_item_get_is_allday_event (item);	
+	is_allday = e_gw_item_get_is_allday_event (item);
 
 	/* start date */
 	/* should i duplicate here ? */
 	t = e_gw_item_get_start_date (item);
 	if (t) {
 		itt_utc = icaltime_from_string (t);
-		
+
 		if (!is_allday && (item_type != E_GW_ITEM_TYPE_NOTE)) {
 			if (!icaltime_get_timezone (itt_utc))
 				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 			if (default_zone) {
-				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+				itt = icaltime_convert_to_zone (itt_utc, default_zone);
 				icaltime_set_timezone (&itt, default_zone);
 				dt.value = &itt;
 				dt.tzid = icaltimezone_get_tzid (default_zone);
@@ -1066,12 +1066,12 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			dt.value = &itt_utc;
 			dt.tzid = NULL;
 			dt.value->is_date = 1;
-		}	
+		}
 
 		e_cal_component_set_dtstart (comp, &dt);
-	} else 
+	} else
 		return NULL;
-	
+
 	/* UID */
 	if (e_gw_item_get_recurrence_key (item) != 0) {
 
@@ -1096,7 +1096,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			return NULL;
 		}
 	}
-		
+
 	g_free (t);
 
 	/* classification */
@@ -1126,9 +1126,9 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 					attendee->role = ICAL_ROLE_REQPARTICIPANT;
 				else if (recipient->type == E_GW_ITEM_RECIPIENT_CC || recipient->type == E_GW_ITEM_RECIPIENT_BC)
 					attendee->role = ICAL_ROLE_OPTPARTICIPANT;
-				else 
+				else
 					attendee->role = ICAL_ROLE_NONE;
-				/* FIXME  needs a server fix on the interface 
+				/* FIXME  needs a server fix on the interface
 				 * for getting cutype and the status */
 				attendee->cutype = ICAL_CUTYPE_INDIVIDUAL;
 
@@ -1143,10 +1143,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				else if (recipient->status == E_GW_ITEM_STAT_DECLINED)
 					attendee->status = ICAL_PARTSTAT_DECLINED;
 				else
-					attendee->status = ICAL_PARTSTAT_NEEDSACTION;	
+					attendee->status = ICAL_PARTSTAT_NEEDSACTION;
 
 
-				attendee_list = g_slist_append (attendee_list, attendee);				
+				attendee_list = g_slist_append (attendee_list, attendee);
 			}
 
 			e_cal_component_set_attendee_list (comp, attendee_list);
@@ -1157,7 +1157,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	organizer = e_gw_item_get_organizer (item);
 	if (organizer) {
 		ECalComponentOrganizer *cal_organizer;
-		
+
 		cal_organizer = g_new0 (ECalComponentOrganizer, 1);
 		cal_organizer->cn = g_strdup (organizer->display_name);
 		cal_organizer->value = g_strconcat("MAILTO:", organizer->email, NULL);
@@ -1191,7 +1191,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				if (!icaltime_get_timezone (itt_utc))
 					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 				if (default_zone) {
-					itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+					itt = icaltime_convert_to_zone (itt_utc, default_zone);
 					icaltime_set_timezone (&itt, default_zone);
 					dt.value = &itt;
 					dt.tzid = icaltimezone_get_tzid (default_zone);
@@ -1215,7 +1215,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		if (alarm_duration != 0) {
 			ECalComponentAlarm *alarm;
 			ECalComponentAlarmTrigger trigger;
-			
+
 			alarm = e_cal_component_alarm_new ();
 			e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
@@ -1223,7 +1223,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			e_cal_component_alarm_set_trigger (alarm, trigger);
 			e_cal_component_add_alarm (comp, alarm);
 
-		} else 
+		} else
 			set_default_alarms (comp);
 
 		break;
@@ -1235,7 +1235,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			if (!icaltime_get_timezone (itt_utc))
 				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 			if (default_zone) {
-				itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+				itt = icaltime_convert_to_zone (itt_utc, default_zone);
 				icaltime_set_timezone (&itt, default_zone);
 				dt.value = &itt;
 				dt.tzid = icaltimezone_get_tzid (default_zone);
@@ -1262,17 +1262,17 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		/* EGwItem's completed is a boolean */
 		if (e_gw_item_get_completed (item)) {
 			percent = 100;
-			
+
 			t = e_gw_item_get_completed_date (item);
 			if (t) {
 				itt_utc = icaltime_from_string (t);
 				if (!icaltime_get_timezone (itt_utc))
 					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
 				if (default_zone) {
-					itt = icaltime_convert_to_zone (itt_utc, default_zone); 
+					itt = icaltime_convert_to_zone (itt_utc, default_zone);
 					icaltime_set_timezone (&itt, default_zone);
 					e_cal_component_set_completed (comp, &itt);
-				} else 
+				} else
 					e_cal_component_set_completed (comp, &itt_utc);
 			} else {
 				/* We are setting the completion date as the current time due to
@@ -1281,7 +1281,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				itt = icaltime_today ();
 				e_cal_component_set_completed (comp,&itt);
 			}
-		} else 
+		} else
 			percent =0;
 		e_cal_component_set_percent (comp, &percent);
 
@@ -1320,15 +1320,15 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 	switch  (type) {
 
-		case E_CAL_COMPONENT_EVENT: 
+		case E_CAL_COMPONENT_EVENT:
 		case E_CAL_COMPONENT_TODO:
 		case E_CAL_COMPONENT_JOURNAL:
 			if (!g_str_has_suffix (gw_id, container)) {
 				item_id = g_strconcat (e_cal_component_get_gw_id (comp), GW_EVENT_TYPE_ID, container, NULL);
 				need_to_get = TRUE;
-				
+
 			}
-			else 
+			else
 				item_id = g_strdup (gw_id);
 			break;
 		default:
@@ -1342,7 +1342,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 	if (need_to_get) {
 		EGwItem *item = NULL;
-		 
+
 		status = e_gw_connection_get_item (cnc, container, item_id, "recipients message recipientStatus attachments default", &item);
 		if (status == E_GW_CONNECTION_STATUS_OK)
 			*created_comp = e_gw_item_to_cal_component (item, cbgw);
@@ -1376,12 +1376,12 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			const char *email_id;
 			ECalComponentAttendee  *attendee = NULL, *tmp;
 
-			
+
 			e_cal_component_get_attendee_list (comp, &attendee_list);
 			for (l = attendee_list; l ; l = g_slist_next (l)) {
 				tmp = (ECalComponentAttendee *) (l->data);
 				email_id = tmp->value;
-				
+
 				if (!g_ascii_strncasecmp (email_id, "mailto:", 7))
 					email_id += 7;
 
@@ -1399,7 +1399,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 			}
 			if (attendee_list)
 				e_cal_component_free_attendee_list (attendee_list);
-			
+
 		}
 		else {
 			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
@@ -1408,8 +1408,8 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 		*pstatus = partstat;
 		switch (partstat) {
 		ECalComponentTransparency transp;
-			
-		case ICAL_PARTSTAT_ACCEPTED: 
+
+		case ICAL_PARTSTAT_ACCEPTED:
 			e_cal_component_get_transparency (comp, &transp);
 			if (transp == E_CAL_COMPONENT_TRANSP_OPAQUE)  {
 				if (all_instances)
@@ -1429,7 +1429,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 				status = e_gw_connection_decline_request (cnc, item_id, NULL, recurrence_key);
 			else
 				status = e_gw_connection_decline_request (cnc, item_id, NULL, NULL);
-			
+
 			break;
 		case ICAL_PARTSTAT_TENTATIVE:
 			if (all_instances)
@@ -1442,7 +1442,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 
 		default :
 			status = E_GW_CONNECTION_STATUS_INVALID_OBJECT;
-	
+
 		}
 
 		break;
@@ -1459,7 +1459,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *contai
 	default:
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 	}
-	
+
 	return status;
 }
 
@@ -1506,7 +1506,7 @@ e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, E
 }
 
 static EGwConnectionStatus
-start_freebusy_session (EGwConnection *cnc, GList *users, 
+start_freebusy_session (EGwConnection *cnc, GList *users,
                time_t start, time_t end, const char **session)
 {
         SoupSoapMessage *msg;
@@ -1527,10 +1527,10 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 					    "startFreeBusySessionRequest");
         /* FIXME users is just a buch of user names - associate it with uid,
          * email id apart from the name*/
-        
-        soup_soap_message_start_element (msg, "users", NULL, NULL); 
+
+        soup_soap_message_start_element (msg, "users", NULL, NULL);
         for ( l = users; l != NULL; l = g_list_next (l)) {
-		soup_soap_message_start_element (msg, "user", NULL, NULL); 
+		soup_soap_message_start_element (msg, "user", NULL, NULL);
                 e_gw_message_write_string_parameter (msg, "email", NULL, l->data);
 		soup_soap_message_end_element (msg);
         }
@@ -1541,13 +1541,13 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 	utc = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
 	start_date = icaltime_as_ical_string (icaltime);
-	
+
 	icaltime = icaltime_from_timet_with_zone (end, FALSE, utc);
 	end_date = icaltime_as_ical_string (icaltime);
-        	
+
         e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
         e_gw_message_write_string_parameter (msg, "endDate", NULL, end_date);
-        
+
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
@@ -1564,7 +1564,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
                 g_object_unref (response);
                 return status;
         }
-        
+
        	/* if status is OK - parse result, return the list */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusySessionId");
         if (!param) {
@@ -1572,8 +1572,8 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
-	
-	*session = soup_soap_parameter_get_string_value (param); 
+
+	*session = soup_soap_parameter_get_string_value (param);
         /* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
@@ -1581,7 +1581,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 	return status;
 }
 
-static EGwConnectionStatus 
+static EGwConnectionStatus
 close_freebusy_session (EGwConnection *cnc, const char *session)
 {
         SoupSoapMessage *msg;
@@ -1623,7 +1623,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
 	/* Perform startFreeBusySession */
-        status = start_freebusy_session (cnc, users, start, end, &session); 
+        status = start_freebusy_session (cnc, users, start, end, &session);
         /*FIXME log error messages  */
         if (status != E_GW_CONNECTION_STATUS_OK)
                 return status;
@@ -1692,7 +1692,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		ECalComponentAttendee attendee;
 		GSList *attendee_list = NULL;
 		icalcomponent *icalcomp = NULL;
-		
+
 		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
 		if (tmp)
 			email = soup_soap_parameter_get_string_value (tmp);
@@ -1704,16 +1704,16 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			name = soup_soap_parameter_get_string_value (tmp);
 
 		comp = e_cal_component_new ();
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY); 
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY);
 		e_cal_component_commit_sequence (comp);
 		icalcomp = e_cal_component_get_icalcomponent (comp);
-		
+
 		memset (&attendee, 0, sizeof (ECalComponentAttendee));
 		if (name)
 			attendee.cn = name;
 		if (email)
 			attendee.value = email;
-		
+
 		attendee.cutype = ICAL_CUTYPE_INDIVIDUAL;
 		attendee.role = ICAL_ROLE_REQPARTICIPANT;
 		attendee.status = ICAL_PARTSTAT_NEEDSACTION;
@@ -1721,30 +1721,30 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		/* XXX the uuid is not currently used. hence it is
 		 * discarded */
 
-		attendee_list = g_slist_append (attendee_list, &attendee);	
+		attendee_list = g_slist_append (attendee_list, &attendee);
 
 		e_cal_component_set_attendee_list (comp, attendee_list);
 
-		
+
 		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
 		if (!param_blocks) {
 			g_object_unref (response);
 			g_object_unref (msg);
 			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 		}
-        
+
 		for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
 		     subparam_block != NULL;
 		     subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
 
-			/* process each block and create ECal free/busy components.*/ 
+			/* process each block and create ECal free/busy components.*/
 			SoupSoapParameter *tmp;
 			struct icalperiodtype ipt;
 			icalproperty *icalprop;
 			icaltimetype itt;
 			time_t t;
 			const char *start, *end, *accept_level;
-			
+
 			memset (&ipt, 0, sizeof (struct icalperiodtype));
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
 			if (tmp) {
@@ -1752,7 +1752,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 				t = e_gw_connection_get_date_from_string (start);
 				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
 				ipt.start = itt;
-			}        
+			}
 
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "endDate");
 			if (tmp) {
@@ -1806,7 +1806,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, (gpointer) fieldname );           \
 	}G_STMT_END
 
-static void 
+static void
 set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 {
 	GList *old_category_list;
@@ -1819,7 +1819,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 	if (old_category_list && new_category_list) {
 		old_categories_copy = g_list_copy (old_category_list);
 		for ( ; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
-			
+
 			category1  = new_category_list->data;
 			temp = old_category_list;
 			categories_matched  = FALSE;
@@ -1830,12 +1830,12 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 					old_categories_copy = g_list_remove (old_categories_copy, category2);
 					break;
 				}
-				
+
 			}
 			if (!categories_matched)
 				added_categories = g_list_append (added_categories, category1);
 		}
-		
+
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_ADD, "categories", added_categories);
 		e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_DELETE, "categories", old_categories_copy);
 
@@ -1868,7 +1868,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	SET_DELTA(message);
 	SET_DELTA(classification);
 
-	
+
 	SET_DELTA(start_date);
 	set_categories_changes (item, cache_item);
 	/*FIXME  recipient_list modifications need go here after server starts
@@ -1880,13 +1880,13 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 		SET_DELTA(place);
 		trigger = e_gw_item_get_trigger (item);
 		cache_trigger = e_gw_item_get_trigger (cache_item);
-		if (cache_trigger) {                                                                            
-			if (!trigger)                                                                               
+		if (cache_trigger) {
+			if (!trigger)
 				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, "alarm", &cache_trigger);
 			else if (trigger != cache_trigger)
 				e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "alarm", &trigger);
-		}                                                                                                 
-		else if (trigger)                                                                               
+		}
+		else if (trigger)
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, "alarm", &trigger);
 		is_allday = e_gw_item_get_is_allday_event (item);
 		cache_is_allday = e_gw_item_get_is_allday_event (cache_item);
@@ -1901,19 +1901,19 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 }
 
 
-static void 
+static void
 add_return_value (EGwSendOptionsReturnNotify track, ESource *source, char *notify)
 {
 	char *value;
-	
+
 	switch (track) {
 		case E_GW_RETURN_NOTIFY_MAIL:
 			value =  g_strdup ("mail");
 			break;
 		default:
-			value = g_strdup ("none");		
+			value = g_strdup ("none");
 	}
-	
+
 	e_source_set_property (source, notify, value);
 	g_free (value), value = NULL;
 }
@@ -1936,7 +1936,7 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 	cbgw = hold->cbgw;
 	opts = hold->opts;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
-	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)); 
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 
 	/* TODO implement send options for Notes */
 	if (kind == ICAL_VJOURNAL_COMPONENT)
@@ -1949,8 +1949,8 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 	} else {
 		source_list = e_source_list_new_for_gconf (gconf, "/apps/evolution/tasks/sources");
 		sopts = e_gw_sendoptions_get_status_tracking_options (opts, "task");
-	} 
-	
+	}
+
 	uid = e_source_peek_uid (source);
 	source = e_source_list_peek_source_by_uid (source_list, uid);
 	if (gopts) {
@@ -1975,7 +1975,7 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 		if (gopts->reply_enabled) {
 			if (gopts->reply_convenient)
 				value = g_strdup ("convinient");
-			else 
+			else
 				value = g_strdup_printf ("%d",gopts->reply_within);
 		} else
 			value = g_strdup ("none");
@@ -2020,11 +2020,11 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 		e_source_set_property (source, "status-tracking", value);
 		g_free (value), value = NULL;
 
-		add_return_value (sopts->opened, source, "return-open"); 
-		add_return_value (sopts->accepted, source, "return-accept"); 
-		add_return_value (sopts->declined, source, "return-decline"); 
-		add_return_value (sopts->completed, source, "return-complete"); 
-	}	
+		add_return_value (sopts->opened, source, "return-open");
+		add_return_value (sopts->accepted, source, "return-accept");
+		add_return_value (sopts->declined, source, "return-decline");
+		add_return_value (sopts->completed, source, "return-complete");
+	}
 
 	e_source_list_sync (source_list, NULL);
 
@@ -2040,9 +2040,9 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 gboolean
 e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *email)
 {
-	icalproperty *prop;	
+	icalproperty *prop;
 	icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
-	
+
 	/*TODO remove the argument email */
 	prop = icalcomponent_get_first_property (icalcomp,
 						 ICAL_X_PROPERTY);
@@ -2059,7 +2059,7 @@ e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *e
 		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
 							ICAL_X_PROPERTY);
  	}
- 
+
  	return FALSE;
 
 }

@@ -4,8 +4,8 @@
  *
  * Copyright (C) 2000 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -72,7 +72,7 @@ camel_local_store_class_init (CamelLocalStoreClass *camel_local_store_class)
 {
 	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS (camel_local_store_class);
 	CamelServiceClass *camel_service_class = CAMEL_SERVICE_CLASS (camel_local_store_class);
-	
+
 	parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
 
 	/* virtual method overload */
@@ -104,7 +104,7 @@ CamelType
 camel_local_store_get_type (void)
 {
 	static CamelType camel_local_store_type = CAMEL_INVALID_TYPE;
-	
+
 	if (camel_local_store_type == CAMEL_INVALID_TYPE)	{
 		camel_local_store_type = camel_type_register (CAMEL_STORE_TYPE, "CamelLocalStore",
 							     sizeof (CamelLocalStore),
@@ -114,7 +114,7 @@ camel_local_store_get_type (void)
 							     NULL,
 							     (CamelObjectFinalizeFunc) camel_local_store_finalize);
 	}
-	
+
 	return camel_local_store_type;
 }
 
@@ -151,7 +151,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 	strcpy(path, ((CamelLocalStore *)store)->toplevel_dir);
 	if (G_IS_DIR_SEPARATOR(path[len-1]))
 		path[len-1] = '\0';
-	
+
 	if (!g_path_is_absolute(path)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Store root %s is not an absolute path"), path);
@@ -174,7 +174,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 				      path, g_strerror (errno));
 		return NULL;
 	}
-	
+
 	/* need to create the dir heirarchy */
 	if (g_mkdir_with_parents (path, 0777) == -1 && errno != EEXIST) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
@@ -182,7 +182,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 				      path, g_strerror (errno));
 		return NULL;
 	}
-	
+
 	return (CamelFolder *) 0xdeadbeef;
 }
 
@@ -441,7 +441,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	CamelFolder *lf;
 	char *name;
 	char *str;
-	
+
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ev-summary", name);
@@ -484,10 +484,10 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	} else {
 		camel_exception_clear (&lex);
 	}
-	
+
 	if (str == NULL)
 		str = g_strdup_printf ("%s.cmeta", name);
-	
+
 	if (g_unlink (str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not delete folder meta file `%s': %s"),
@@ -496,19 +496,19 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 		g_free (str);
 		return;
 	}
-	
+
 	g_free (str);
 	g_free (name);
-	
+
 	fi = g_new0 (CamelFolderInfo, 1);
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
 	fi->uri = g_strdup_printf ("%s:%s#%s", ((CamelService *) store)->url->protocol,
 				   CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	fi->unread = -1;
-	
+
 	camel_object_trigger_event (store, "folder_deleted", fi);
-	
+
 	camel_folder_info_free (fi);
 }
 

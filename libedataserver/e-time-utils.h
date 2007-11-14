@@ -19,7 +19,7 @@
  * @E_TIME_PARSE_OK: The time string was parsed successfully.
  * @E_TIME_PARSE_NONE: The time string was empty.
  * @E_TIME_PARSE_INVALID: The time string was not formatted correctly.
- **/ 
+ **/
 typedef enum {
 	E_TIME_PARSE_OK,
 	E_TIME_PARSE_NONE,

@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*- */
 /* camel-mime-part.h : class for a mime part */
 
-/* 
+/*
  *
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  *	    Michael Zucchi <notzed@ximian.com>
  *
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -41,9 +41,9 @@ G_BEGIN_DECLS
 /* Do not change these values directly, you would regret it one day */
 struct _CamelMimePart {
 	CamelMedium parent_object;
-	
+
 	struct _camel_header_raw *headers; /* mime headers */
-	
+
 	/* All fields here are -** PRIVATE **- */
 	/* TODO: these should be in a camelcontentinfo */
 	char *description;
@@ -57,7 +57,7 @@ struct _CamelMimePart {
 
 typedef struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
-	
+
 	/* Virtual methods */
 	int (*construct_from_parser) (CamelMimePart *, CamelMimeParser *);
 } CamelMimePartClass;

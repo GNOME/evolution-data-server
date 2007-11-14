@@ -784,7 +784,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 		if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
 			icaltimetype start_t = icaltime_from_timet_with_zone (start, FALSE, default_timezone);
 			icaltimetype end_t = icaltime_from_timet_with_zone (end, FALSE, default_timezone);
-		
+
 			if ((icaltime_compare_date_only (*dtstart.value, start_t) >= 0) && ((icaltime_compare_date_only (*dtstart.value, end_t) < 0)))
 				(* cb) (comp, dtstart_time, dtend_time, cb_data);
 		} else if  ((end == -1 || dtstart_time < end) && dtend_time > start) {
@@ -827,7 +827,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 
 	cal_object_time_from_time (&event_start, dtstart_time, start_zone);
 	cal_object_time_from_time (&event_end, dtend_time, start_zone);
-	
+
 	/* Calculate the duration of the event, which we use for all
 	   occurrences. We can't just subtract start from end since that may
 	   be affected by daylight-saving time. So we want a value of days
@@ -926,10 +926,10 @@ array_to_list (short *array, int max_elements)
  * @convert_end_date: TRUE if the saved end date needs to be converted to the
  * given @zone timezone. This is needed if the DTSTART is a DATE or floating
  * time.
- * 
+ *
  * Converts an #icalproperty to a #ECalRecurrence.  This should be
  * freed using the e_cal_recur_free() function.
- * 
+ *
  * Return value: #ECalRecurrence structure.
  **/
 static ECalRecurrence *
@@ -1082,7 +1082,7 @@ e_cal_recur_ical_weekday_to_weekday	(enum icalrecurrencetype_weekday day)
 /**
  * e_cal_recur_free:
  * @r: A #ECalRecurrence structure.
- * 
+ *
  * Frees a #ECalRecurrence structure.
  **/
 static void
@@ -1171,7 +1171,7 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		else if (cal_obj_time_compare_func (event_start, chunk_start) >= 0)
 			g_array_append_vals (occs, event_start, 1);
 	}
-	
+
 	/* Expand each of the recurrence rules. */
 	for (elem = rrules; elem; elem = elem->next) {
 		icalproperty *prop;
@@ -1411,12 +1411,12 @@ cal_object_get_rdate_end	(CalObjTime	*occ,
 
 	while (lower < upper) {
 		middle = (lower + upper) >> 1;
-	  
+
 		rdate = &g_array_index (rdate_periods, CalObjRecurrenceDate,
 					middle);
 
 		cmp = cal_obj_time_compare_func (occ, &rdate->start);
-	  
+
 		if (cmp == 0)
 			break;
 		else if (cmp < 0)
@@ -2915,7 +2915,7 @@ cal_obj_bymonthday_expand	(RecurData  *recur_data,
 				cotime.day = time_days_in_month (occ->year, occ->month);
 				g_array_append_val (new_occs, cotime);
 			}
-				
+
 			elem = elem->next;
 		}
 	}
@@ -3923,7 +3923,7 @@ e_cal_recur_ensure_rule_end_date (ECalComponent			*comp,
 	/* Store the end date in the "X-EVOLUTION-ENDDATE" parameter of the
 	   rule. */
 	e_cal_recur_set_rule_end_date (prop, cb_data.end_date);
-		
+
 	return TRUE;
 }
 
@@ -3974,7 +3974,7 @@ e_cal_recur_get_rule_end_date	(icalproperty	*prop,
 				icaltime = icalvalue_get_datetime (value);
 				icalvalue_free (value);
 
-				zone = default_timezone ? default_timezone : 
+				zone = default_timezone ? default_timezone :
 					icaltimezone_get_utc_timezone ();
 				return icaltime_as_timet_with_zone (icaltime,
 								    zone);

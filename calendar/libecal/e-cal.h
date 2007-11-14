@@ -83,7 +83,7 @@ struct _ECalClass {
 	/* Notification signals */
 
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
-	void (* cal_set_mode) (ECal *ecal, ECalSetModeStatus status, CalMode mode);	
+	void (* cal_set_mode) (ECal *ecal, ECalSetModeStatus status, CalMode mode);
 
 	void (* backend_error) (ECal *ecal, const char *message);
 	void (* backend_died) (ECal *ecal);
@@ -154,7 +154,7 @@ gboolean e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, 
 gboolean e_cal_get_object_list_as_comp (ECal *ecal, const char *query, GList **objects, GError **error);
 void e_cal_free_object_list (GList *objects);
 
-gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end, 
+gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 			      GList **freebusy, GError **error);
 
 void e_cal_generate_instances (ECal *ecal, time_t start, time_t end,

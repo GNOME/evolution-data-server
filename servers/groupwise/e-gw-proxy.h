@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  Shreyas Srinivasan <sshreyas@novell.com>
  *  Sankar P <psankar@novell.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -29,14 +29,14 @@
 
 /*State of each proxy grant*/
 
-#define E_GW_PROXY_NEW           (1 << 0)           
+#define E_GW_PROXY_NEW           (1 << 0)
 #define E_GW_PROXY_DELETED       (1 << 1)
 #define E_GW_PROXY_EDITED	    (1 << 2)
 
 /*Permissions associated with a proxy grant*/
-#define E_GW_PROXY_MAIL_READ                (1 << 0)           
+#define E_GW_PROXY_MAIL_READ                (1 << 0)
 #define E_GW_PROXY_MAIL_WRITE               (1 << 1)
-#define E_GW_PROXY_APPOINTMENT_READ         (1 << 2)           
+#define E_GW_PROXY_APPOINTMENT_READ         (1 << 2)
 #define E_GW_PROXY_APPOINTMENT_WRITE        (1 << 3)
 #define E_GW_PROXY_NOTES_READ               (1 << 4)
 #define E_GW_PROXY_NOTES_WRITE              (1 << 5)
@@ -51,7 +51,7 @@
 struct _proxyHandler {
     char *uniqueid;
     char *proxy_name;
-    char *proxy_email;   
+    char *proxy_email;
     guint32 flags;
     guint32 permissions;
 };

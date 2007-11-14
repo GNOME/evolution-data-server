@@ -313,7 +313,7 @@ e2k_context_new (const char *uri)
 	suri = soup_uri_new (uri);
 	if (!suri)
 		return NULL;
-	
+
 	if (!suri->host) {
 		soup_uri_free (suri);
 		return NULL;
@@ -385,11 +385,11 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		g_object_unref (ctx->priv->async_session);
 
 	/* Set a default timeout value of 30 seconds.
-	   FIXME: Make timeout configurable 
+	   FIXME: Make timeout configurable
 	*/
 	if (g_getenv ("SOUP_SESSION_TIMEOUT"))
 		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
-	
+
 	ctx->priv->session = soup_session_sync_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),
 		SOUP_SESSION_TIMEOUT, timeout,
@@ -1632,7 +1632,7 @@ propfind_msg (E2kContext *ctx, const char *base_uri,
 	}
 	g_string_append (propxml, "\r\n</D:prop>\r\n</D:propfind>");
 
-	msg = e2k_soup_message_new_full (ctx, base_uri, 
+	msg = e2k_soup_message_new_full (ctx, base_uri,
 					 hrefs ? "BPROPFIND" : "PROPFIND",
 					 "text/xml", SOUP_BUFFER_SYSTEM_OWNED,
 					 propxml->str, propxml->len);
@@ -2598,7 +2598,7 @@ renew_subscription (gpointer user_data)
  * Notifications can be used *only* to discover changes made by other
  * clients! The code cannot assume that it will receive a notification
  * for every change that it makes to the server, for two reasons:
- * 
+ *
  * First, if multiple notifications occur within @min_interval seconds
  * of each other, the later ones will be suppressed, to avoid
  * excessive traffic between the client and the server as the client

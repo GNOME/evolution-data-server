@@ -193,7 +193,7 @@ e_cal_util_parse_ics_string (const char *string)
 							icalcomponent_merge_component (icalcomp, tmp);
 						else
 							icalcomp = tmp;
-					} else 
+					} else
 						g_warning ("Could not merge the components, the component is either invalid or not a toplevel component \n");
 
 					g_string_free (comp_str, TRUE);
@@ -323,7 +323,7 @@ struct alarm_occurrence_data {
 	time_t start;
 	time_t end;
 	ECalComponentAlarmAction *omit;
-	
+
 	/* This is what we compute */
 	GSList *triggers;
 	int n_triggers;
@@ -366,7 +366,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 		time_t dur_time;
 		time_t occur_time, trigger_time;
 		int i;
-		
+
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
 		g_assert (alarm != NULL);
@@ -382,7 +382,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 		}
 		if (aod->omit[i] != -1)
 			continue;
-		
+
 		if (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START
 		    && trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END)
 			continue;
@@ -453,7 +453,7 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 		time_t occur_start, occur_end;
 		icaltimezone *zone;
 		int i;
-		
+
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
 		g_assert (alarm != NULL);
@@ -840,7 +840,7 @@ e_cal_util_component_has_organizer (icalcomponent *icalcomp)
  * @icalcomp: An #icalcomponent.
  *
  * Checks if an #icalcomponent has any attendees.
- * 
+ *
  * Return value: TRUE if there are attendees, FALSE if not.
  */
 gboolean
@@ -948,7 +948,7 @@ e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2
 			return FALSE;
 	}
 
-	
+
 
 	/* now match the timezones */
 	if (!(!c1_dtstart.zone && !c2_dtstart.zone) ||

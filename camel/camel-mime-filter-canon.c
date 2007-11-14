@@ -43,7 +43,7 @@ static void
 camel_mime_filter_canon_class_init (CamelMimeFilterCanonClass *klass)
 {
 	CamelMimeFilterClass *mime_filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	mime_filter_class->filter = filter;
 	mime_filter_class->complete = complete;
 	mime_filter_class->reset = reset;
@@ -53,7 +53,7 @@ CamelType
 camel_mime_filter_canon_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterCanon",
 					    sizeof (CamelMimeFilterCanon),
@@ -63,7 +63,7 @@ camel_mime_filter_canon_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -136,7 +136,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 					/* empty line */
 					*o++ = '\r';
 				}
-				
+
 				*o++ = c;
 				start = inptr;
 				starto = o;
@@ -167,7 +167,7 @@ filter(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, si
 	filter_run(f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
-static void 
+static void
 complete(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run(f, in, len, prespace, out, outlen, outprespace, TRUE);

@@ -4,8 +4,8 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  *	    Jacob Berkman <jacob@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -116,10 +116,10 @@ typedef struct _EMemChunk {
  * e_memchunk_new:
  * @atomcount: The number of atoms stored in a single malloc'd block of memory.
  * @atomsize: The size of each allocation.
- * 
+ *
  * Create a new memchunk header.  Memchunks are an efficient way to allocate
  * and deallocate identical sized blocks of memory quickly, and space efficiently.
- * 
+ *
  * e_memchunks are effectively the same as gmemchunks, only faster (much), and
  * they use less memory overhead for housekeeping.
  *
@@ -139,8 +139,8 @@ MemChunk *e_memchunk_new(int atomcount, int atomsize)
 
 /**
  * memchunk_alloc:
- * @m: 
- * 
+ * @m:
+ *
  * Allocate a new atom size block of memory from a memchunk.
  **/
 void *e_memchunk_alloc(MemChunk *m)
@@ -182,9 +182,9 @@ void *e_memchunk_alloc0(EMemChunk *m)
 
 /**
  * e_memchunk_free:
- * @m: 
+ * @m:
  * @mem: Address of atom to free.
- * 
+ *
  * Free a single atom back to the free pool of atoms in the given
  * memchunk.
  **/
@@ -208,8 +208,8 @@ e_memchunk_free(MemChunk *m, void *mem)
 
 /**
  * e_memchunk_empty:
- * @m: 
- * 
+ * @m:
+ *
  * Clean out the memchunk buffers.  Marks all allocated memory as free blocks,
  * but does not give it back to the system.  Can be used if the memchunk
  * is to be used repeatedly.
@@ -257,9 +257,9 @@ static int tree_search(struct _cleaninfo *a, char *mem)
 
 /**
  * e_memchunk_clean:
- * @m: 
- * 
- * Scan all empty blocks and check for blocks which can be free'd 
+ * @m:
+ *
+ * Scan all empty blocks and check for blocks which can be free'd
  * back to the system.
  *
  * This routine may take a while to run if there are many allocated
@@ -306,7 +306,7 @@ e_memchunk_clean(MemChunk *m)
 	while (ci) {
 		if (ci->count == m->blocksize) {
 			MemChunkFreeNode *prev = NULL;
-			
+
 			f = m->free;
 			while (f) {
 				if (tree_search (ci, (void *) f) == 0) {
@@ -318,10 +318,10 @@ e_memchunk_clean(MemChunk *m)
 				} else {
 					prev = f;
 				}
-				
+
 				f = f->next;
 			}
-			
+
 			g_ptr_array_remove_fast(m->blocks, ci->base);
 			g_free(ci->base);
 		}
@@ -333,8 +333,8 @@ e_memchunk_clean(MemChunk *m)
 
 /**
  * e_memchunk_destroy:
- * @m: 
- * 
+ * @m:
+ *
  * Free the memchunk header, and all associated memory.
  **/
 void
@@ -386,7 +386,7 @@ static GStaticMutex mempool_mutex = G_STATIC_MUTEX_INIT;
  * struct alignment, E_MEMPOOL_ALIGN_WORD aligns to 16 bits (2 bytes),
  * and E_MEMPOOL_ALIGN_BYTE aligns to the nearest byte.  The default
  * is to align to native structures.
- * 
+ *
  * Create a new mempool header.  Mempools can be used to efficiently
  * allocate data which can then be freed as a whole.
  *
@@ -396,8 +396,8 @@ static GStaticMutex mempool_mutex = G_STATIC_MUTEX_INIT;
  *
  * However, each allocation cannot be freed individually, only all
  * or nothing.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 MemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags)
 {
@@ -436,9 +436,9 @@ MemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags)
 
 /**
  * e_mempool_alloc:
- * @pool: 
- * @size: 
- * 
+ * @pool:
+ * @size:
+ *
  * Allocate a new data block in the mempool.  Size will
  * be rounded up to the mempool's alignment restrictions
  * before being used.
@@ -485,9 +485,9 @@ char *e_mempool_strdup(EMemPool *pool, const char *str)
 
 /**
  * e_mempool_flush:
- * @pool: 
+ * @pool:
  * @freeall: Free all system allocated blocks as well.
- * 
+ *
  * Flush used memory and mark allocated blocks as free.
  *
  * If @freeall is #TRUE, then all allocated blocks are free'd
@@ -526,8 +526,8 @@ void e_mempool_flush(MemPool *pool, int freeall)
 
 /**
  * e_mempool_destroy:
- * @pool: 
- * 
+ * @pool:
+ *
  * Free all memory associated with a mempool.
  **/
 void e_mempool_destroy(MemPool *pool)
@@ -573,7 +573,7 @@ struct _e_strvunpacked {
  * e_strv_new:
  * @size: The number of elements in the strv.  Currently this is limited
  * to 254 elements.
- * 
+ *
  * Create a new strv (string array) header.  strv's can be used to
  * create and work with arrays of strings that can then be compressed
  * into a space-efficient static structure.  This is useful
@@ -583,8 +583,8 @@ struct _e_strvunpacked {
  * The size limit is currently 254 elements.  This will probably not
  * change as arrays of this size suffer significant performance
  * penalties when looking up strings with high indices.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 struct _EStrv *
 e_strv_new(int size)
@@ -629,13 +629,13 @@ strv_unpack(struct _EStrv *strv)
 
 /**
  * e_strv_set_ref:
- * @strv: 
- * @index: 
- * @str: 
- * 
+ * @strv:
+ * @index:
+ * @str:
+ *
  * Set a string array element by reference.  The string
  * is not copied until the array is packed.
- * 
+ *
  * If @strv has been packed, then it is unpacked ready
  * for more inserts, and should be packed again once finished with.
  * The memory used by the original @strv is not freed until
@@ -665,15 +665,15 @@ e_strv_set_ref(struct _EStrv *strv, int index, char *str)
 
 /**
  * e_strv_set_ref_free:
- * @strv: 
- * @index: 
- * @str: 
- * 
+ * @strv:
+ * @index:
+ * @str:
+ *
  * Set a string by reference, similar to set_ref, but also
  * free the string when finished with it.  The string
  * is not copied until the strv is packed, and not at
  * all if the index is overwritten.
- * 
+ *
  * Return value: @strv if already unpacked, otherwise an packed
  * EStrv.
  **/
@@ -701,13 +701,13 @@ e_strv_set_ref_free(struct _EStrv *strv, int index, char *str)
 
 /**
  * e_strv_set:
- * @strv: 
- * @index: 
- * @str: 
- * 
+ * @strv:
+ * @index:
+ * @str:
+ *
  * Set a string array reference.  The string @str is copied
  * into the string array at location @index.
- * 
+ *
  * If @strv has been packed, then it is unpacked ready
  * for more inserts, and should be packed again once finished with.
  *
@@ -739,14 +739,14 @@ e_strv_set(struct _EStrv *strv, int index, const char *str)
 
 /**
  * e_strv_pack:
- * @strv: 
- * 
+ * @strv:
+ *
  * Pack the @strv into a space efficient structure for later lookup.
  *
  * All strings are packed into a single allocated block, separated
  * by single \0 characters, together with a count byte.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 struct _EStrv *
 e_strv_pack(struct _EStrv *strv)
@@ -783,14 +783,14 @@ e_strv_pack(struct _EStrv *strv)
 
 /**
  * e_strv_get:
- * @strv: 
- * @index: 
- * 
+ * @strv:
+ * @index:
+ *
  * Retrieve a string by index.  This function works
  * identically on both packed and unpacked strv's, although
  * may be much slower on a packed strv.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 char *
 e_strv_get(struct _EStrv *strv, int index)
@@ -816,8 +816,8 @@ e_strv_get(struct _EStrv *strv, int index)
 
 /**
  * e_strv_destroy:
- * @strv: 
- * 
+ * @strv:
+ *
  * Free a strv and all associated memory.  Works on packed
  * or unpacked strv's.
  **/
@@ -1026,8 +1026,8 @@ poolv_profile_update (void)
 	if (new_time - last_time < 5)
 		return;
 
-	printf("poolv profile: %lu hits, %lu misses: %d%% hit rate, memory: %lu, instances: %lu\n", 
-	       poolv_hits, poolv_misses, 
+	printf("poolv profile: %lu hits, %lu misses: %d%% hit rate, memory: %lu, instances: %lu\n",
+	       poolv_hits, poolv_misses,
 	       (int)(100.0 * ((double) poolv_hits / (double) (poolv_hits + poolv_misses))),
 	       poolv_mem, poolv_count);
 
@@ -1304,7 +1304,7 @@ main()
 	}
 	time_end("allocating 1000000 malloc");
 #endif
-	
+
 }
 
 #endif

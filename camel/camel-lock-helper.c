@@ -4,8 +4,8 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -255,20 +255,20 @@ static void setup_process(void)
 {
 	struct sigaction sa;
 	sigset_t sigset;
-	
+
 	/* ignore sigint/sigio */
 	sa.sa_handler = SIG_IGN;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;
-	
+
 	sigemptyset(&sigset);
 	sigaddset(&sigset, SIGIO);
 	sigaddset(&sigset, SIGINT);
 	sigprocmask(SIG_UNBLOCK, &sigset, NULL);
-	
+
 	sigaction (SIGIO, &sa, NULL);
 	sigaction (SIGINT, &sa, NULL);
-	
+
 	/* FIXME: add more sanity checks/setup here */
 
 #ifdef SETEUID_SAVES
@@ -315,7 +315,7 @@ int main(int argc, char **argv)
 			tv.tv_sec = delay;
 			tv.tv_usec = 0;
 		}
-		
+
 		d(fprintf(stderr, "lock helper waiting for input\n"));
 		if (select(STDIN_FILENO+1, &rset, NULL, NULL, lock_info_list?&tv:NULL) == -1) {
 			if (errno == EINTR)
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 				}
 				info = info->next;
 			}
-			
+
 			continue;
 		}
 

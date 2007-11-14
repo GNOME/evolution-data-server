@@ -122,7 +122,7 @@ camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *gr
 		for (i = 0; i < group->ranges->len; i ++) {
 			guint range_low = g_array_index (group->ranges, ArticleRange, i).low;
 			guint range_high = g_array_index (group->ranges, ArticleRange, i).high;
-			
+
 			/* if it's already part of a range, return immediately. */
 			if (low >= range_low &&
 			    low <= range_high &&
@@ -185,7 +185,7 @@ camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *gr
 		tmp_range.high = high;
 		group->ranges = g_array_append_val (group->ranges, tmp_range);
 		newsrc->dirty = TRUE;
-	} 
+	}
 }
 
 int
@@ -268,7 +268,7 @@ camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const char *group_na
 
 	if (group) {
 		for (i = 0; i < group->ranges->len; i++) {
-			if (num >= g_array_index (group->ranges, ArticleRange, i).low && 
+			if (num >= g_array_index (group->ranges, ArticleRange, i).low &&
 			    num <= g_array_index (group->ranges, ArticleRange, i).high) {
 				ret = TRUE;
 				break;
@@ -281,7 +281,7 @@ camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const char *group_na
 	return FALSE;
 }
 
-gboolean  
+gboolean
 camel_nntp_newsrc_group_is_subscribed (CamelNNTPNewsrc *newsrc, const char *group_name)
 {
 	NewsrcGroup *group;
@@ -453,7 +453,7 @@ camel_nntp_newsrc_write_group_line(gpointer key, NewsrcGroup *group, struct news
 	fprintf (fp, "\n");
 }
 
-void 
+void
 camel_nntp_newsrc_write_to_file(CamelNNTPNewsrc *newsrc, FILE *fp)
 {
 	struct newsrc_fp newsrc_fp;
@@ -574,7 +574,7 @@ get_line (char *buf, char **p)
 			return NULL;
 
 		(*p) ++;
-	
+
 		/* if we just incremented to the end of the buffer, return NULL */
 		if (**p == '\0')
 			return NULL;
@@ -614,7 +614,7 @@ camel_nntp_newsrc_read_for_server (const char *server)
 	newsrc->filename = filename;
 	newsrc->groups = g_hash_table_new (g_str_hash, g_str_equal);
 	newsrc->lock = g_mutex_new();
-	
+
 	if ((fd = g_open(filename, O_RDONLY, 0)) == -1) {
 		g_warning ("~/.newsrc-%s not present.\n", server);
 		return newsrc;

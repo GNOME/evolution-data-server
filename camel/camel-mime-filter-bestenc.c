@@ -37,7 +37,7 @@ CamelType
 camel_mime_filter_bestenc_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBestenc",
 					    sizeof (CamelMimeFilterBestenc),
@@ -47,7 +47,7 @@ camel_mime_filter_bestenc_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_bestenc_init,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -81,7 +81,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 	if (f->flags & CAMEL_BESTENC_GET_ENCODING) {
 		register unsigned int /* hopefully reg's are assinged in the order they appear? */
 			c,
-			lastc=f->lastc, 
+			lastc=f->lastc,
 			countline=f->countline,
 			count0=f->count0,
 			count8 = f->count8;
@@ -197,8 +197,8 @@ camel_mime_filter_bestenc_init (CamelMimeFilter *f)
  * camel_mime_filter_bestenc_new:
  * @flags: a bitmask of data required.
  *
- * Create a new #CamelMimeFilterBestenc object. 
- * 
+ * Create a new #CamelMimeFilterBestenc object.
+ *
  * Returns a new #CamelMimeFilterBestenc object
  **/
 CamelMimeFilterBestenc *
@@ -214,10 +214,10 @@ camel_mime_filter_bestenc_new (unsigned int flags)
  * camel_mime_filter_bestenc_get_best_encoding:
  * @filter: a #CamelMimeFilterBestenc object
  * @required: maximum level of output encoding allowed.
- * 
+ *
  * Get the best encoding, given specific constraints, that can be used to
  * encode a stream of bytes.
- * 
+ *
  * Returns the best encoding to use
  **/
 CamelTransferEncoding
@@ -225,10 +225,10 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 {
 	CamelTransferEncoding bestenc;
 	int istext;
-	
+
 	istext = (required & CAMEL_BESTENC_TEXT) ? 1 : 0;
 	required = required & ~CAMEL_BESTENC_TEXT;
-	
+
 #if 0
 	printf("count0 = %d, count8 = %d, total = %d\n", filter->count0, filter->count8, filter->total);
 	printf("maxline = %d, crlfnoorder = %s\n", filter->maxline, filter->crlfnoorder?"TRUE":"FALSE");
@@ -248,7 +248,7 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 		bestenc = CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE;
 	else
 		bestenc = CAMEL_TRANSFER_ENCODING_BASE64;
-	
+
 	/* if we have nocrlf order, or long lines, we need to encode always */
 	if (filter->crlfnoorder || filter->maxline >= 998)
 		return bestenc;
@@ -276,9 +276,9 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 /**
  * camel_mime_filter_bestenc_get_best_charset:
  * @filter: a #CamelMimeFilterBestenc object
- * 
+ *
  * Gets the best charset that can be used to contain this content.
- * 
+ *
  * Returns the name of the best charset to use to encode the input
  * text filtered by @filter
  **/
@@ -293,7 +293,7 @@ camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
  * camel_mime_filter_bestenc_set_flags:
  * @filter: a #CamelMimeFilterBestenc object
  * @flags: bestenc filter flags
- * 
+ *
  * Set the flags for subsequent operations.
  **/
 void

@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  Ebby Wiselyn <ebbywiselyn@gmail.com>
  *  Jason Willis <zenbrother@gmail.com>
  *
  * Copyright 2007, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -17,7 +17,7 @@
  *
  * * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
  */
@@ -68,7 +68,7 @@ enum {
 static const gchar *GOOGLE_CLIENT_LOGIN = "https://www.google.com/accounts/ClientLogin";
 static const gchar *GOOGLE_CLIENT_LOGIN_MSG = "Email=%s&Passwd=%s&service=%s&source=%s";
 
-void 
+void
 gdata_google_service_set_credentials (GDataService *service, const gchar *username, const gchar *password)
 {
 	GDataGoogleServicePrivate *priv;
@@ -84,7 +84,7 @@ gdata_google_service_set_credentials (GDataService *service, const gchar *userna
 	auth->password = g_strdup(password);
 }
 
-static gboolean 
+static gboolean
 service_is_authenticated (GDataGoogleService *service)
 {
 	GDataGoogleServicePrivate *priv;
@@ -147,7 +147,7 @@ service_authenticate (GDataGoogleService *service)
 	auth->token = token;
 	if (!token)
 		return "FAILURE";
-	
+
 	g_free(request_body);
 	g_free(request_body_encoded);
 
@@ -160,15 +160,15 @@ service_authenticate (GDataGoogleService *service)
 
 /**
  *
- * gdata_google_service_get_feed: 
+ * gdata_google_service_get_feed:
  * @service A GDataService Object
  * @feed_url Feed Url , the private url to send request to , needs authentication
  * @entry A GDataFeed Object
- * returns the newly inserted entry 
- * 
+ * returns the newly inserted entry
+ *
  **/
 
-GDataFeed * 
+GDataFeed *
 gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 {
 	GDataFeed *feed = NULL;
@@ -177,7 +177,7 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 	SoupSession *soup_session;
 	SoupMessage *msg;
 	gchar *status;
-	
+
 	g_return_val_if_fail(service != NULL, NULL);
 	g_return_val_if_fail(GDATA_IS_GOOGLE_SERVICE(service),NULL);
 
@@ -194,16 +194,16 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 	msg = NULL;
 	msg = soup_message_new(SOUP_METHOD_GET, feed_url);
 
-	soup_message_add_header(msg->request_headers, 
+	soup_message_add_header(msg->request_headers,
 			"Authorization", (gchar *)g_strdup_printf("GoogleLogin auth=%s", auth->token));
 
-	soup_session_send_message(soup_session, msg); 
+	soup_session_send_message(soup_session, msg);
 	if (msg->response.length) {
 		feed = gdata_feed_new_from_xml(msg->response.body, msg->response.length);
 	}
-	
+
 	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref(msg); 
+		g_object_unref(msg);
 
 	return feed;
 }
@@ -211,12 +211,12 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 
 /**
  *
- * gdata_google_service_insert_entry: 
+ * gdata_google_service_insert_entry:
  * @service A #GDataService Object
  * @feed_url Feed Url , this is the private url of the author which requires authentication
  * @entry A #GDataEntry Object
- * returns the newly inserted entry 
- * 
+ * returns the newly inserted entry
+ *
  **/
 GDataEntry *
 gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url, GDataEntry *entry)
@@ -247,16 +247,16 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 	msg = soup_message_new(SOUP_METHOD_POST, feed_url);
 	soup_message_set_http_version (msg, SOUP_HTTP_1_0);
 
-	soup_message_add_header(msg->request_headers, 
-				"Authorization", 
-				(gchar *)g_strdup_printf("GoogleLogin auth=%s", 
+	soup_message_add_header(msg->request_headers,
+				"Authorization",
+				(gchar *)g_strdup_printf("GoogleLogin auth=%s",
 				auth->token));
 
-	soup_message_set_request (msg, 
-				"application/atom+xml", 
-				SOUP_BUFFER_USER_OWNED, 
-				entry_xml, 
-				strlen(entry_xml)); 
+	soup_message_set_request (msg,
+				"application/atom+xml",
+				SOUP_BUFFER_USER_OWNED,
+				entry_xml,
+				strlen(entry_xml));
 
 	soup_session_send_message(soup_session, msg);
 
@@ -272,8 +272,8 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 	}
 
 	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref (msg);	
-	
+		g_object_unref (msg);
+
 	if (entry_xml)
 		g_free (entry_xml);
 
@@ -283,14 +283,14 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 
 /**
  *
- * gdata_google_service_delete_entry: 
+ * gdata_google_service_delete_entry:
  * @service A #GDataService Object
  * @feed_url Feed Url , this is the private url of the author which requires authentication
  * @entry A #GDataEntry Object
- * Removes the entry 
- * 
+ * Removes the entry
+ *
  **/
-void 
+void
 gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry)
 {
 	GDataGoogleServiceAuth *auth;
@@ -299,16 +299,16 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry)
 	SoupMessage *msg;
 	const gchar *entry_edit_url;
 	xmlChar *status;
-	
+
 	g_return_if_fail (service !=NULL);
 	g_return_if_fail (GDATA_IS_GOOGLE_SERVICE(service));
 
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE(service))) {
 		status = (xmlChar *)service_authenticate (GDATA_GOOGLE_SERVICE(service));
-		if (g_ascii_strcasecmp((gchar *)status, "SUCCESS")) 
+		if (g_ascii_strcasecmp((gchar *)status, "SUCCESS"))
 			return ;
 	}
-	
+
 	entry_edit_url = gdata_entry_get_edit_link (entry);
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE (GDATA_GOOGLE_SERVICE (service));
 	auth = (GDataGoogleServiceAuth *) priv->auth;
@@ -323,18 +323,18 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry)
 
 	if (SOUP_IS_MESSAGE(msg))
 		g_object_unref (msg);
-}	
+}
 
 /**
  *
- * gdata_google_service_update_entry: 
+ * gdata_google_service_update_entry:
  * @service A GDataService Object
  * @feed_url Feed Url , this is the private url of the author which requires authentication
  * @entry A GDataEntry Object
- * updates the entry 
- * 
+ * updates the entry
+ *
  **/
-void 
+void
 gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 {
 	GDataGoogleServiceAuth *auth;
@@ -344,10 +344,10 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 	gchar *status;
 	gchar *entry_xml;
 	const gchar *entry_edit_url;
-	
+
 	g_return_if_fail (service !=NULL);
 	g_return_if_fail (GDATA_IS_GOOGLE_SERVICE (service));
-	
+
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE (service))) {
 		status = service_authenticate (GDATA_GOOGLE_SERVICE (service));
 		if (g_ascii_strcasecmp (status, "SUCCESS"))
@@ -371,14 +371,14 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 				"Authorization",
 				(gchar *)g_strdup_printf ("GoogleLogin auth=%s",
 				auth->token));
-	soup_message_set_request (msg, 
-			"application/atom+xml", 
-			SOUP_BUFFER_USER_OWNED, 
-			entry_xml, 
-			strlen(entry_xml)); 
+	soup_message_set_request (msg,
+			"application/atom+xml",
+			SOUP_BUFFER_USER_OWNED,
+			entry_xml,
+			strlen(entry_xml));
 
 	soup_session_send_message (soup_session, msg);
-	
+
 	if (SOUP_IS_MESSAGE(msg))
 		g_object_unref (msg);
 	if (entry_xml)
@@ -388,14 +388,14 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 
 /**
  *
- * gdata_google_update_entry_with_link: 
+ * gdata_google_update_entry_with_link:
  * @service A #GDataService Object
- * @edit_link url of the edit link of the entry 
+ * @edit_link url of the edit link of the entry
  * @entry A #GDataEntry Object
- * Updates the entry 
- * 
+ * Updates the entry
+ *
  **/
-void 
+void
 gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *entry, gchar *edit_link)
 {
 	GDataGoogleServiceAuth *auth;
@@ -404,10 +404,10 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 	SoupMessage *msg;
 	gchar *status;
 	gchar *entry_xml;
-	
+
 	g_return_if_fail (service !=NULL);
 	g_return_if_fail (GDATA_IS_GOOGLE_SERVICE (service));
-	
+
 	if (!service_is_authenticated (GDATA_GOOGLE_SERVICE(service))) {
 		status = service_authenticate (GDATA_GOOGLE_SERVICE(service));
 		if (g_ascii_strcasecmp (status, "SUCCESS"))
@@ -431,16 +431,16 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 				(gchar *)g_strdup_printf ("GoogleLogin auth=%s",
 				auth->token));
 
-	soup_message_set_request (msg, 
-				"application/atom+xml", 
-				SOUP_BUFFER_USER_OWNED, 
-				entry_xml, 
-				strlen(entry_xml)); 
+	soup_message_set_request (msg,
+				"application/atom+xml",
+				SOUP_BUFFER_USER_OWNED,
+				entry_xml,
+				strlen(entry_xml));
 
 	soup_session_send_message (soup_session, msg);
 
-	if (SOUP_IS_MESSAGE(msg)) 
-		g_object_unref (msg);	
+	if (SOUP_IS_MESSAGE(msg))
+		g_object_unref (msg);
 	if (entry_xml)
 		g_free (entry_xml);
 }
@@ -546,7 +546,7 @@ static void gdata_google_service_get_property (GObject *obj,
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(obj);
 
 	switch (property_id) {
-		case PROP_NAME: 
+		case PROP_NAME:
 			g_value_set_string(value, priv->name);
 			break;
 		case PROP_AGENT:
@@ -632,7 +632,7 @@ GType  gdata_google_service_get_type (void)
 
 	if (G_UNLIKELY(type == 0))
 	{
-		static const GTypeInfo info = 
+		static const GTypeInfo info =
 		{
 			sizeof (GDataGoogleServiceClass),
 			NULL,   /* base_init */
@@ -645,7 +645,7 @@ GType  gdata_google_service_get_type (void)
 			gdata_google_service_instance_init    /* instance_init */
 		};
 
-		static const GInterfaceInfo gdata_google_service_iface_info = 
+		static const GInterfaceInfo gdata_google_service_iface_info =
 		{
 			(GInterfaceInitFunc) gdata_google_service_iface_init, /* interface_init */
 			NULL,         /* interface_finalize */
@@ -669,16 +669,16 @@ GType  gdata_google_service_get_type (void)
 
 /**
  *
- * gdata_google_service_new: 
- * @service_name  
- * @agent 
+ * gdata_google_service_new:
+ * @service_name
+ * @agent
  * Returns a new #GDataGoogleService Object
- * 
+ *
  **/
 GDataGoogleService *
 gdata_google_service_new(const gchar *service_name, const gchar *agent)
 {
-	return g_object_new(GDATA_TYPE_GOOGLE_SERVICE, 
+	return g_object_new(GDATA_TYPE_GOOGLE_SERVICE,
 			"name", service_name,
 			"agent",agent,
 			NULL);

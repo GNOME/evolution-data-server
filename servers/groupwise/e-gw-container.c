@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -35,14 +35,14 @@ struct _EGwContainerPrivate {
 	guint32 unread ;
 	guint32 total ;
 	int sequence;
-	char *owner;	
-	GList *user_list;	
+	char *owner;
+	GList *user_list;
 	char *modified;
 	EGwContainerType type ;
 	gboolean is_root ;
 	gboolean is_writable;
 	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
-	gboolean is_shared_by_me;   
+	gboolean is_shared_by_me;
 	gboolean is_shared_to_me;
 	gboolean is_system_folder;
 };
@@ -239,25 +239,25 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 
 	/*retrieve the folder type*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "folderType") ;
-	if (!subparam) 
+	if (!subparam)
 		container->priv->type = E_GW_CONTAINER_TYPE_FOLDER ;
 	else {
 		value = soup_soap_parameter_get_string_value (subparam);
-		if (!strcmp (value, "Root")) 
+		if (!strcmp (value, "Root"))
 			container->priv->type = E_GW_CONTAINER_TYPE_ROOT ;
-		else if (!strcmp (value, "Mailbox")) 
+		else if (!strcmp (value, "Mailbox"))
 			container->priv->type = E_GW_CONTAINER_TYPE_INBOX ;
-		else if (!strcmp (value, "SentItems")) 
+		else if (!strcmp (value, "SentItems"))
 			container->priv->type = E_GW_CONTAINER_TYPE_SENT;
-		else if (!strcmp (value, "Calendar")) 
+		else if (!strcmp (value, "Calendar"))
 			container->priv->type = E_GW_CONTAINER_TYPE_CALENDAR ;
-		else if (!strcmp (value, "Contacts")) 
+		else if (!strcmp (value, "Contacts"))
 			container->priv->type = E_GW_CONTAINER_TYPE_CONTACTS ;
-		else if (!strcmp (value, "Draft")) 
+		else if (!strcmp (value, "Draft"))
 			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT ;
-		else if (!strcmp (value, "Trash")) 
+		else if (!strcmp (value, "Trash"))
 			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
-		else if (!strcmp (value, "JunkMail")) 
+		else if (!strcmp (value, "JunkMail"))
 			container->priv->type = E_GW_CONTAINER_TYPE_JUNK;
 		g_free (value) ;
 	}
@@ -314,7 +314,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	}
 	/* is shared to me*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSharedToMe");
-	
+
 	if (!subparam) {
 		e_gw_container_set_is_shared_to_me (container, FALSE);
 
@@ -323,11 +323,11 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		if (value) {
 			e_gw_container_set_is_shared_to_me (container, TRUE);
 			tome = TRUE;
-		} else { 
+		} else {
 			e_gw_container_set_is_shared_to_me (container, FALSE);
 			tome = FALSE;
 		}
-		
+
 		g_free (value);
 	}
 	/*Retrieve email add of the sharing person*/
@@ -350,7 +350,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 					value = soup_soap_parameter_get_string_value (email_rt_subparam);
 					if (value) {
 						user->email = value;
-					}	
+					}
 					/* Retrieve Rights*/
 					email_rt_subparam = soup_soap_parameter_get_first_child_by_name (entry_subparam, "rights");
 
@@ -358,16 +358,16 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 						g_warning (G_STRLOC ": User without any Rights");
 					else {
 						rights = 0;
-						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "add");	
-						if (rights_subparam) 	
+						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "add");
+						if (rights_subparam)
 							rights = rights | 0x1;
 
-						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "edit");	
-						if (rights_subparam) 
+						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "edit");
+						if (rights_subparam)
 							rights = rights | 0x2;
 
-						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "delete");	
-						if (rights_subparam) 	
+						rights_subparam = soup_soap_parameter_get_first_child_by_name (email_rt_subparam, "delete");
+						if (rights_subparam)
 							rights = rights | 0x4;
 
 						user->rights = rights;
@@ -375,7 +375,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 
 					container->priv->user_list = g_list_append (container->priv->user_list, user);
 
-				} 
+				}
 
 			}
 
@@ -388,7 +388,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			e_gw_container_set_owner (container, value);
 			g_free (value);
 		}
-	}	
+	}
 
 		/* shared folder*/
 		/*Retrieve When Modified last*/
@@ -403,19 +403,19 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		/*retrieve sequence*/
 		subparam = soup_soap_parameter_get_first_child_by_name (param, "sequence");
 
-		if (subparam) { 
+		if (subparam) {
 			int_value = soup_soap_parameter_get_int_value (subparam);
-			e_gw_container_set_sequence (container, int_value);		
+			e_gw_container_set_sequence (container, int_value);
 		}
 
 		return TRUE;
 }
 
-void 
+void
 e_gw_container_get_user_list (EGwContainer *container, GList **user_list)
 {
 	g_return_if_fail (E_GW_CONTAINER (container));
-	
+
 	*user_list = container->priv->user_list;
 
 }
@@ -424,11 +424,11 @@ int
 e_gw_container_get_sequence (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), 0);
-	
+
 	return (int)container->priv->sequence;
 }
 
-static  void 
+static  void
 e_gw_container_set_sequence (EGwContainer *container, int sequence)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
@@ -458,14 +458,14 @@ e_gw_container_set_modified (EGwContainer *container, const char *modified)
 	priv->modified = g_strdup (modified);
 }
 
-static void 
+static void
 e_gw_container_set_owner(EGwContainer *container, const char *owner)
 {
 	EGwContainerPrivate *priv;
-	
+
 	g_return_if_fail (E_IS_GW_CONTAINER(container));
 	g_return_if_fail (owner!=NULL);
-	
+
 	priv = container->priv;
 	if (priv->owner)
 		g_free (container->priv->owner);
@@ -476,7 +476,7 @@ const char *
 e_gw_container_get_owner (EGwContainer *container)
 {
 	g_return_val_if_fail (E_GW_CONTAINER (container), NULL);
-	
+
 	return (const char *) container->priv->owner;
 }
 
@@ -490,7 +490,7 @@ e_gw_container_get_rights (EGwContainer *container, gchar *email)
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), 0);
 
 	user_list = container->priv->user_list;
-	
+
 	for (node = user_list; node != NULL; node = node->next) {
 		user = node->data;
 		if( !strcmp (user->email, email))
@@ -504,7 +504,7 @@ gboolean
 e_gw_container_get_is_shared_by_me (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
-	
+
 	return (gboolean) container->priv->is_shared_by_me;
 }
 
@@ -512,7 +512,7 @@ static void
 e_gw_container_set_is_shared_by_me (EGwContainer *container, gboolean is_shared_by_me)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
-	
+
 	container->priv->is_shared_by_me = is_shared_by_me;
 }
 
@@ -520,7 +520,7 @@ gboolean
 e_gw_container_get_is_shared_to_me (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
-	
+
 	return (gboolean) container->priv->is_shared_to_me;
 }
 
@@ -528,7 +528,7 @@ static void
 e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolean is_shared_to_me)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
-	
+
 	container->priv->is_shared_to_me = is_shared_to_me;
 }
 
@@ -536,7 +536,7 @@ gboolean
 e_gw_container_get_is_system_folder (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
-	
+
 	return container->priv->is_system_folder;
 }
 
@@ -544,7 +544,7 @@ void
 e_gw_container_set_is_system_folder (EGwContainer *container, gboolean is_system_folder)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
-	
+
 	container->priv->is_system_folder = is_system_folder;
 }
 
@@ -595,7 +595,7 @@ e_gw_container_set_id (EGwContainer *container, const char *new_id)
 }
 
 const char *
-e_gw_container_get_parent_id (EGwContainer *container) 
+e_gw_container_get_parent_id (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
 
@@ -606,7 +606,7 @@ void
 e_gw_container_set_parent_id (EGwContainer *container, const char *parent_id)
 {
 	EGwContainerPrivate *priv ;
-	
+
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 	g_return_if_fail (parent_id != NULL);
 
@@ -625,7 +625,7 @@ e_gw_container_get_total_count (EGwContainer *container)
 
 	return container->priv->total ;
 }
-		
+
 guint32
 e_gw_container_get_unread_count (EGwContainer *container)
 {
@@ -636,28 +636,28 @@ e_gw_container_get_unread_count (EGwContainer *container)
 }
 
 
-gboolean 
+gboolean
 e_gw_container_get_is_writable (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
-	
+
 	return container->priv->is_writable;
 
 }
 
-void 
+void
 e_gw_container_set_is_writable (EGwContainer *container, gboolean is_writable)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
-	
+
 	container->priv->is_writable = is_writable;
 }
 
-gboolean 
+gboolean
 e_gw_container_get_is_frequent_contacts (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
-                                                                                                                             
+
         return container->priv->is_frequent_contacts;
 
 }
@@ -666,7 +666,7 @@ void
 e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts)
 {
         g_return_if_fail (E_IS_GW_CONTAINER (container));
-                                                                                                                             
+
         container->priv->is_frequent_contacts = is_frequent_contacts;
 }
 
@@ -674,7 +674,7 @@ gboolean
 e_gw_container_is_root (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
-	
+
 	return container->priv->is_root ;
 }
 
@@ -690,7 +690,7 @@ e_gw_container_get_container_type (EGwContainer *container)
  * flag = 2 :update entry
  * flag = 0 :add to acl
  */
-void	
+void
 e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const char *sub, const char *mesg, int flag)
 {
 	gboolean add, edit, del;
@@ -705,7 +705,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 	soup_soap_message_end_element (msg);
 	soup_soap_message_start_element (msg, "updates", NULL, NULL);
 
-	if (flag == 0) {	
+	if (flag == 0) {
 		soup_soap_message_start_element (msg, "add", NULL, NULL);
 		soup_soap_message_start_element (msg, "acl", NULL, NULL);
 
@@ -714,7 +714,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 			add=edit=del=FALSE;
 			soup_soap_message_start_element (msg, "entry", NULL, NULL);
 			e_gw_message_write_string_parameter (msg, "displayName", NULL,"");
-			email = g_strdup (user->email);	
+			email = g_strdup (user->email);
 			if (user->rights & 0x1)
 				add = TRUE;
 			if (user->rights & 0x2)
@@ -731,7 +731,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 
 			soup_soap_message_end_element (msg);
 			soup_soap_message_end_element (msg);
-		} 
+		}
 
 		soup_soap_message_end_element (msg);
 		soup_soap_message_end_element (msg);
@@ -745,7 +745,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 			add = edit = del = FALSE;
 			soup_soap_message_start_element (msg, "entry", NULL, NULL);
 			e_gw_message_write_string_parameter (msg, "displayName", NULL, "name");
-			email = g_strdup (user->email);	
+			email = g_strdup (user->email);
 
 			if(user->rights & 0x1)
 				add = TRUE;
@@ -768,7 +768,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 		soup_soap_message_end_element (msg);
 		soup_soap_message_end_element (msg);
 
-	} else if (flag == 2) {	
+	} else if (flag == 2) {
 		soup_soap_message_start_element (msg, "update", NULL, NULL);
 		soup_soap_message_start_element (msg, "acl", NULL, NULL);
 
@@ -777,7 +777,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 			add = edit = del = FALSE;
 			soup_soap_message_start_element (msg, "entry", NULL, NULL);
 			e_gw_message_write_string_parameter (msg, "displayName",NULL,"");
-			email = g_strdup (user->email);	
+			email = g_strdup (user->email);
 			if (user->rights & 0x1)
 				add = TRUE;
 			if (user->rights & 0x2)
@@ -801,5 +801,5 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 
 	}
 
-	soup_soap_message_end_element (msg);	
+	soup_soap_message_end_element (msg);
 }

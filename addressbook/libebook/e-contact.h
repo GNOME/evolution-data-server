@@ -170,7 +170,7 @@ typedef enum {
 	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
 	E_CONTACT_IM_MSN,     	 /* Multi-valued */
 	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
-       
+
 	E_CONTACT_WANTS_HTML,    /* boolean field */
 
 	/* fields used for describing contact lists.  a contact list
@@ -194,8 +194,8 @@ typedef enum {
 	E_CONTACT_IM_GADUGADU_WORK_3,  /* Synthetic string field */
 
 	E_CONTACT_IM_GADUGADU,   /* Multi-valued */
-	
-	E_CONTACT_GEO,	/* structured field (EContactGeo) */	
+
+	E_CONTACT_GEO,	/* structured field (EContactGeo) */
 
 	E_CONTACT_TEL, /* list of strings */
 

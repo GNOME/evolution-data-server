@@ -34,7 +34,7 @@ static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
 static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherForecast *report);
 static ECalBackendSyncStatus
 e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
-	
+
 /* Private part of the ECalBackendWeather structure */
 struct _ECalBackendWeatherPrivate {
 	/* URI to get remote weather data from */
@@ -190,7 +190,7 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 
 	source = g_main_current_source ();
 
-	if (priv->begin_retrival_id == g_source_get_id (source)) 
+	if (priv->begin_retrival_id == g_source_get_id (source))
 		priv->begin_retrival_id = 0;
 
 	if (priv->is_loading)
@@ -452,7 +452,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 	if (priv->city)
 		g_free (priv->city);
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
-	
+
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (uri, E_CAL_SOURCE_TYPE_EVENT);
 
@@ -927,7 +927,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 /**
  * e_cal_backend_weather_get_type:
- * @void: 
+ * @void:
  *
  * Registers the #ECalBackendWeather class if necessary, and returns
  * the type ID associated to it.

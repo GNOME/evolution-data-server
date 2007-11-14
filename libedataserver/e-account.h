@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2003 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -58,7 +58,7 @@ typedef enum _e_account_item_t {
 	E_ACCOUNT_BCC_ADDRS,
 
 	E_ACCOUNT_RECEIPT_POLICY,
-	
+
 	E_ACCOUNT_PGP_KEY,
 	E_ACCOUNT_PGP_ENCRYPT_TO_SELF,
 	E_ACCOUNT_PGP_ALWAYS_SIGN,
@@ -85,7 +85,7 @@ typedef struct _EAccountIdentity {
 	char *address;
 	char *reply_to;
 	char *organization;
-	
+
 	char *sig_uid;
 } EAccountIdentity;
 

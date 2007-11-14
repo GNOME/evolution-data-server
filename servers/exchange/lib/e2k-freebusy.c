@@ -437,7 +437,7 @@ e2k_freebusy_add_from_calendar_uri (E2kFreebusy *fb, const char *uri,
 		e2k_freebusy_add_interval (fb, busy,
 					   e2k_parse_timestamp (start),
 					   e2k_parse_timestamp (end));
-			      
+
 	}
 
 	return e2k_result_iter_free (iter);
@@ -475,7 +475,7 @@ add_events (GArray *events_array, E2kProperties *props,
 			start_tm.tm_year++;
 			start_tm.tm_mon = 0;
 		}
-	}	     
+	}
 	e2k_properties_set_int_array (props, month_list_prop, monthyears);
 
 	datas = g_ptr_array_new ();

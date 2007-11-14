@@ -108,7 +108,7 @@ CamelType
 camel_nntp_store_summary_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		camel_nntp_store_summary_parent = (CamelStoreSummaryClass *)camel_store_summary_get_type();
 		type = camel_type_register((CamelType)camel_nntp_store_summary_parent, "CamelNNTPStoreSummary",
@@ -119,7 +119,7 @@ camel_nntp_store_summary_get_type (void)
 					   (CamelObjectInitFunc) camel_nntp_store_summary_init,
 					   (CamelObjectFinalizeFunc) camel_nntp_store_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -155,7 +155,7 @@ camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const char *full_na
 {
 	int count, i;
 	CamelNNTPStoreInfo *info;
-	
+
 	count = camel_store_summary_count ((CamelStoreSummary *) s);
 	for (i = 0; i < count; i++) {
 		info = (CamelNNTPStoreInfo *)camel_store_summary_index ((CamelStoreSummary *) s, i);
@@ -165,7 +165,7 @@ camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const char *full_na
 			camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *)info);
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -190,7 +190,7 @@ camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const char *ful
 		*p = 0;
 	} else
 		path = (char *) full_name;
-	
+
 	return camel_utf7_utf8 (path);
 }
 
@@ -214,7 +214,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 	int state=0;
 	char *subpath, *last = NULL;
 	CamelStoreInfo *si;
-	
+
 	/* check to see if we have a subpath of path already defined */
 	subpath = g_alloca (strlen (path) + 1);
 	strcpy (subpath, path);
@@ -226,20 +226,20 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 				*last = 0;
 		}
 	} while (si == NULL && last);
-	
+
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
 		f = g_strdup (camel_nntp_store_info_full_name (s, si));
 		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
 		return f;
 	}
-	
+
 	f = full = g_alloca (strlen (path)*2+1);
 	if (si)
 		p = path + strlen (subpath);
 	else
 		p = path;
-	
+
 	while ((c = camel_utf8_getc ((const unsigned char **) &p))) {
 		switch (state) {
 		case 0:
@@ -263,7 +263,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 		}
 	}
 	camel_utf8_putc ((unsigned char **) &f, c);
-	
+
 	/* merge old path part if required */
 	f = camel_utf8_utf7 (full);
 	if (si) {
@@ -272,7 +272,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
 		f = full;
 	}
-	
+
 	return f;
 }
 
@@ -283,31 +283,31 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const char *fu
 	char *pathu8;
 	int len;
 	char *full_name;
-	
+
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
-	
+
 	len = strlen (full);
 	full_name = g_alloca (len+1);
 	strcpy(full_name, full);
 	if (full_name[len-1] == dir_sep)
 		full_name[len-1] = 0;
-	
+
 	info = camel_nntp_store_summary_full_name (s, full_name);
 	if (info) {
 		camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		d(printf("  already there\n"));
 		return info;
 	}
-	
+
 	pathu8 = camel_nntp_store_summary_full_to_path (s, full_name, dir_sep);
-	
+
 	info = (CamelNNTPStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
 		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_NNTP_STORE_INFO_FULL_NAME, full_name);
 	} else
 		d(printf("  failed\n"));
-	
+
 	return info;
 }
 
@@ -316,21 +316,21 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
 	gint32 version, nil;
-	
+
 	if (camel_nntp_store_summary_parent->summary_header_load ((CamelStoreSummary *) s, in) == -1
 	    || camel_file_util_decode_fixed_int32 (in, &version) == -1)
 		return -1;
-	
+
 	is->version = version;
-	
+
 	if (version < CAMEL_NNTP_STORE_SUMMARY_VERSION_0) {
 		g_warning("Store summary header version too low");
 		return -1;
 	}
-	
+
 	if (fread (is->last_newslist, 1, NNTP_DATE_SIZE, in) < NNTP_DATE_SIZE)
 		return -1;
-	
+
 	camel_file_util_decode_fixed_int32 (in, &nil);
 
 	return 0;
@@ -340,14 +340,14 @@ static int
 summary_header_save (CamelStoreSummary *s, FILE *out)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
-	
+
 	/* always write as latest version */
 	if (camel_nntp_store_summary_parent->summary_header_save ((CamelStoreSummary *) s, out) == -1
 	    || camel_file_util_encode_fixed_int32 (out, CAMEL_NNTP_STORE_SUMMARY_VERSION) == -1
 	    || fwrite (is->last_newslist, 1, NNTP_DATE_SIZE, out) < NNTP_DATE_SIZE
 	    || camel_file_util_encode_fixed_int32 (out, 0) == -1)
 		return -1;
-	
+
 	return 0;
 }
 
@@ -355,7 +355,7 @@ static CamelStoreInfo *
 store_info_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelNNTPStoreInfo *ni;
-	
+
 	ni = (CamelNNTPStoreInfo *) camel_nntp_store_summary_parent->store_info_load (s, in);
 	if (ni) {
 		if (camel_file_util_decode_string (in, &ni->full_name) == -1) {
@@ -371,7 +371,7 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 		}
 		/* set the URL */
 	}
-	
+
 	return (CamelStoreInfo *) ni;
 }
 
@@ -379,13 +379,13 @@ static int
 store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelNNTPStoreInfo *isi = (CamelNNTPStoreInfo *)mi;
-	
+
 	if (camel_nntp_store_summary_parent->store_info_save (s, out, mi) == -1
 	    || camel_file_util_encode_string (out, isi->full_name) == -1
 	    || camel_file_util_encode_uint32(out, isi->first) == -1
 	    || camel_file_util_encode_uint32(out, isi->last) == -1)
 		return -1;
-	
+
 	return 0;
 }
 
@@ -393,7 +393,7 @@ static void
 store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
-	
+
 	g_free (nsi->full_name);
 	camel_nntp_store_summary_parent->store_info_free (s, mi);
 }
@@ -402,11 +402,11 @@ static const char *
 store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *)mi;
-	
+
 	/* FIXME: Locks? */
-	
+
 	g_assert (mi != NULL);
-	
+
 	switch (type) {
 	case CAMEL_NNTP_STORE_INFO_FULL_NAME:
 		return nsi->full_name;
@@ -419,9 +419,9 @@ static void
 store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *str)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *)mi;
-	
+
 	g_assert(mi != NULL);
-	
+
 	switch (type) {
 	case CAMEL_NNTP_STORE_INFO_FULL_NAME:
 		d(printf("Set full name %s -> %s\n", nsi->full_name, str));

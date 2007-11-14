@@ -109,7 +109,7 @@ CamelType
 camel_imap_store_summary_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		camel_imap_store_summary_parent = (CamelStoreSummaryClass *)camel_store_summary_get_type();
 		type = camel_type_register((CamelType)camel_imap_store_summary_parent, "CamelImapStoreSummary",
@@ -120,7 +120,7 @@ camel_imap_store_summary_get_type (void)
 					   (CamelObjectInitFunc) camel_imap_store_summary_init,
 					   (CamelObjectFinalizeFunc) camel_imap_store_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -128,7 +128,7 @@ camel_imap_store_summary_get_type (void)
  * camel_imap_store_summary_new:
  *
  * Create a new CamelImapStoreSummary object.
- * 
+ *
  * Return value: A new CamelImapStoreSummary widget.
  **/
 CamelImapStoreSummary *
@@ -141,14 +141,14 @@ camel_imap_store_summary_new (void)
 
 /**
  * camel_imap_store_summary_full_name:
- * @s: 
- * @path: 
- * 
+ * @s:
+ * @path:
+ *
  * Retrieve a summary item by full name.
  *
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
- * 
+ *
  * Return value: The summary item, or NULL if the @full_name name
  * is not available.
  * It must be freed using camel_store_summary_info_free().
@@ -320,7 +320,7 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const char *ful
 		} else {
 			if (full_name[len] == ns->sep)
 				len++;
-			
+
 			prefix = camel_imap_store_summary_full_to_path(s, full_name+len, ns->sep);
 			if (*ns->path) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->path, prefix);
@@ -537,7 +537,7 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 	if (camel_imap_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1
 	    || camel_file_util_encode_fixed_int32(out, CAMEL_IMAP_STORE_SUMMARY_VERSION) == -1
 	    || camel_file_util_encode_fixed_int32(out, is->capabilities) == -1
-	    || camel_file_util_encode_fixed_int32(out, count) == -1)	    
+	    || camel_file_util_encode_fixed_int32(out, count) == -1)
 		return -1;
 
 	if (is->namespace && namespace_save(s, out, is->namespace) == -1)

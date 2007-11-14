@@ -41,7 +41,7 @@ camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *klass)
 {
 	CamelMimeFilterClass *mime_filter_class =
 		(CamelMimeFilterClass *) klass;
-	
+
 	mime_filter_class->filter = filter;
 	mime_filter_class->complete = complete;
 	mime_filter_class->reset = reset;
@@ -51,7 +51,7 @@ CamelType
 camel_mime_filter_save_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterSave",
 					    sizeof (CamelMimeFilterSave),
@@ -61,7 +61,7 @@ camel_mime_filter_save_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -70,16 +70,16 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	char **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterSave *save = (CamelMimeFilterSave *) f;
-	
+
 	if (save->stream)
 		camel_stream_write (save->stream, in, len);
-	
+
 	*out = in;
 	*outlen = len;
 	*outprespace = f->outpre;
 }
 
-static void 
+static void
 complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	  char **out, size_t *outlen, size_t *outprespace)
 {
@@ -105,9 +105,9 @@ CamelMimeFilter *
 camel_mime_filter_save_new (void)
 {
 	CamelMimeFilterSave *save = CAMEL_MIME_FILTER_SAVE (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
-	
+
 	save->stream = camel_stream_mem_new ();
-	
+
 	return (CamelMimeFilter *) save;
 }
 
@@ -125,9 +125,9 @@ CamelMimeFilter *
 camel_mime_filter_save_new_with_stream (CamelStream *stream)
 {
 	CamelMimeFilterSave *save = CAMEL_MIME_FILTER_SAVE (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
-	
+
 	save->stream = stream;
 	camel_object_ref (stream);
-	
+
 	return (CamelMimeFilter *) save;
 }

@@ -7,8 +7,8 @@
  *
  * Copyright 1999-2003 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -61,18 +61,18 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	GByteArray *buffer;
 	CamelStream *mem;
 	size_t len;
-	
+
 	d(printf ("simple_data_wrapper_construct_from_parser()\n"));
-	
+
 	/* read in the entire content */
 	buffer = g_byte_array_new ();
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END) {
 		d(printf("appending o/p data: %d: %.*s\n", len, len, buf));
 		g_byte_array_append (buffer, buf, len);
 	}
-	
+
 	d(printf("message part kept in memory!\n"));
-	
+
 	mem = camel_stream_mem_new_with_byte_array (buffer);
 	camel_data_wrapper_construct_from_stream (dw, mem);
 	camel_object_unref (mem);
@@ -92,7 +92,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	ct = camel_mime_parser_content_type (mp);
 
 	encoding = camel_content_transfer_encoding_decode (camel_mime_parser_header (mp, "Content-Transfer-Encoding", NULL));
-	
+
 	switch (camel_mime_parser_state (mp)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		d(printf("Creating body part\n"));
@@ -118,14 +118,14 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 			content = (CamelDataWrapper *) camel_multipart_signed_new ();
 		else
 			content = (CamelDataWrapper *) camel_multipart_new ();
-		
+
 		camel_multipart_construct_from_parser((CamelMultipart *)content, mp);
 		d(printf("Created multi-part\n"));
 		break;
 	default:
 		g_warning("Invalid state encountered???: %u", camel_mime_parser_state (mp));
 	}
-	
+
 	if (content) {
 		if (encoding)
 			content->encoding = camel_transfer_encoding_from_string (encoding);

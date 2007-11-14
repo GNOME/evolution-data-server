@@ -2,15 +2,15 @@
 /* camel-mime-part-utils : Utility for mime parsing and so on */
 
 
-/* 
+/*
  *
- * Author : 
+ * Author :
  *  Bertrand Guiheneuf <bertrand@helixcode.com>
  *
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,

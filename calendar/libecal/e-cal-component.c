@@ -82,7 +82,7 @@ struct period {
 
 struct recur_id {
 	struct datetime recur_time;
-	
+
 	icalparameter *range_param;
 };
 
@@ -97,7 +97,7 @@ struct _ECalComponentPrivate {
 
 	icalproperty *status;
 	GSList *attendee_list;
-	
+
 	icalproperty *categories;
 
 	icalproperty *classification;
@@ -130,14 +130,14 @@ struct _ECalComponentPrivate {
 	GSList *exrule_list; /* list of icalproperty objects */
 
 	struct organizer organizer;
-	
+
 	icalproperty *geo;
 	icalproperty *last_modified;
 	icalproperty *percent;
 	icalproperty *priority;
 
 	struct recur_id recur_id;
-	
+
 	GSList *rdate_list; /* list of struct period */
 
 	GSList *rrule_list; /* list of icalproperty objects */
@@ -288,7 +288,7 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
-	
+
 	priv = comp->priv;
 
 	if (!priv->icalcomp)
@@ -300,7 +300,7 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 		icalcomponent_free (priv->icalcomp);
 		priv->icalcomp = NULL;
 	}
-	
+
 	/* Free the mappings */
 
 	priv->uid = NULL;
@@ -316,7 +316,7 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 		g_free (l->data);
 	g_slist_free (priv->attendee_list);
 	priv->attendee_list = NULL;
-	
+
 	priv->categories = NULL;
 
 	priv->classification = NULL;
@@ -524,10 +524,10 @@ e_cal_component_clone (ECalComponent *comp)
 
 /* Scans an attachment property */
 static void
-scan_attachment (GSList **attachment_list, icalproperty *prop) 
+scan_attachment (GSList **attachment_list, icalproperty *prop)
 {
 	struct attachment *attachment;
-	
+
 	attachment = g_new (struct attachment, 1);
 	attachment->prop = prop;
 
@@ -538,10 +538,10 @@ scan_attachment (GSList **attachment_list, icalproperty *prop)
 
 /* Scans an attendee property */
 static void
-scan_attendee (GSList **attendee_list, icalproperty *prop) 
+scan_attendee (GSList **attendee_list, icalproperty *prop)
 {
 	struct attendee *attendee;
-	
+
 	attendee = g_new (struct attendee, 1);
 	attendee->prop = prop;
 
@@ -555,7 +555,7 @@ scan_attendee (GSList **attendee_list, icalproperty *prop)
 	attendee->sentby_param = icalproperty_get_first_parameter (prop, ICAL_SENTBY_PARAMETER);
 	attendee->cn_param = icalproperty_get_first_parameter (prop, ICAL_CN_PARAMETER);
 	attendee->language_param = icalproperty_get_first_parameter (prop, ICAL_LANGUAGE_PARAMETER);
-	
+
 	*attendee_list = g_slist_append (*attendee_list, attendee);
 }
 
@@ -589,7 +589,7 @@ scan_exdate (ECalComponent *comp, icalproperty *prop)
 
 /* Scans and attendee property */
 static void
-scan_organizer (ECalComponent *comp, struct organizer *organizer, icalproperty *prop) 
+scan_organizer (ECalComponent *comp, struct organizer *organizer, icalproperty *prop)
 {
 	organizer->prop = prop;
 
@@ -1177,7 +1177,7 @@ void
 e_cal_component_strip_errors (ECalComponent *comp)
 {
 	ECalComponentPrivate *priv;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
@@ -1437,13 +1437,13 @@ e_cal_component_get_id (ECalComponent *comp)
 
 	priv = comp->priv;
 	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
-	
+
 	id = g_new0 (ECalComponentId, 1);
 	id->uid = g_strdup (icalproperty_get_uid (priv->uid));
 	id->rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
 
 	return id;
-} 
+}
 
 /**
  * e_cal_component_get_uid:
@@ -1518,12 +1518,12 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 		if (icalattach_get_is_url (attachment->attach)) {
 			/* FIXME : this ref count is screwed up
 			 * These structures are being leaked.
-			 */   
+			 */
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
 			buf_size = strlen (data);
 			buf = g_malloc0 (buf_size+1);
-			icalvalue_decode_ical_string (data, buf, buf_size);	
+			icalvalue_decode_ical_string (data, buf, buf_size);
 		}
 		else
 			data = NULL;
@@ -1570,7 +1570,7 @@ set_attachment_list (icalcomponent *icalcomp,
 		buf_size = 2 * strlen ((char *)l->data);
 		buf = g_malloc0 (buf_size);
 		icalvalue_encode_ical_string (l->data, buf, buf_size);
-		attachment->attach = icalattach_new_from_url ((char *) buf); 	
+		attachment->attach = icalattach_new_from_url ((char *) buf);
 		attachment->prop = icalproperty_new_attach (attachment->attach);
 		icalcomponent_add_property (icalcomp, attachment->prop);
 		g_free (buf);
@@ -1582,10 +1582,10 @@ set_attachment_list (icalcomponent *icalcomp,
 
 
 /**
- * e_cal_component_get_attachment_list: 
- * @comp: A calendar component object. 
+ * e_cal_component_get_attachment_list:
+ * @comp: A calendar component object.
  * @attachment_list: Return list of URLS to attachments.
- * 
+ *
  * Queries the attachment properties of the calendar component object. When done,
  * the @attachment_list should be freed by calling #g_slist_free.
  **/
@@ -1593,7 +1593,7 @@ void
 e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_list)
 {
 	ECalComponentPrivate *priv;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (attachment_list != NULL);
@@ -1606,7 +1606,7 @@ e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_li
 
 /**
  * e_cal_component_set_attachment_list:
- * @comp: A calendar component object. 
+ * @comp: A calendar component object.
  * @attachment_list: list of urls to attachment pointers.
  *
  * This currently handles only attachments that are urls
@@ -1648,7 +1648,7 @@ e_cal_component_has_attachments (ECalComponent *comp)
 
 	if (g_slist_length (priv->attachment_list) > 0)
 		return TRUE;
-	
+
 	return FALSE;
 }
 
@@ -1660,7 +1660,7 @@ e_cal_component_has_attachments (ECalComponent *comp)
  *
  * Return value: the number of attachments.
  */
-int 
+int
 e_cal_component_get_num_attachments (ECalComponent *comp)
 {
 	ECalComponentPrivate *priv;
@@ -1671,7 +1671,7 @@ e_cal_component_get_num_attachments (ECalComponent *comp)
 	priv = comp->priv;
 
 	return g_slist_length (priv->attachment_list) > 0;
-	
+
 }
 
 /**
@@ -2471,7 +2471,7 @@ e_cal_component_get_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
 
 	dt->tzid = NULL;
 	dt->value = NULL;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
@@ -2591,7 +2591,7 @@ e_cal_component_get_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
 
 	dt->tzid = NULL;
 	dt->value = NULL;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
@@ -2644,7 +2644,7 @@ e_cal_component_get_due (ECalComponent *comp, ECalComponentDateTime *dt)
 
 	dt->tzid = NULL;
 	dt->value = NULL;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
@@ -3252,7 +3252,7 @@ e_cal_component_set_last_modified (ECalComponent *comp, struct icaltimetype *t)
  * e_cal_component_get_organizer:
  * @comp:  A calendar component object
  * @organizer: A value for the organizer
- * 
+ *
  * Queries the organizer property of a calendar component object
  **/
 void
@@ -3293,7 +3293,7 @@ e_cal_component_get_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
  * e_cal_component_set_organizer:
  * @comp:  A calendar component object.
  * @organizer: Value for the organizer property
- * 
+ *
  * Sets the organizer of a calendar component object
  **/
 void
@@ -3388,9 +3388,9 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 /**
  * e_cal_component_has_organizer:
  * @comp: A calendar component object.
- * 
+ *
  * Check whether a calendar component object has an organizer or not.
- * 
+ *
  * Return value: TRUE if there is an organizer, FALSE otherwise.
  **/
 gboolean
@@ -3405,7 +3405,7 @@ e_cal_component_has_organizer (ECalComponent *comp)
 
 	return priv->organizer.prop != NULL;
 }
-		
+
 /**
  * e_cal_component_get_percent:
  * @comp: A calendar component object.
@@ -3540,10 +3540,10 @@ e_cal_component_set_priority (ECalComponent *comp, int *priority)
  * e_cal_component_get_recurid:
  * @comp: A calendar component object.
  * @recur_id: Return value for the recurrence id property
- * 
+ *
  * Queries the recurrence id property of a calendar component object.
  **/
-void 
+void
 e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
 {
 	ECalComponentPrivate *priv;
@@ -3555,8 +3555,8 @@ e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	get_datetime (&priv->recur_id.recur_time, 
-		      icalproperty_get_recurrenceid, 
+	get_datetime (&priv->recur_id.recur_time,
+		      icalproperty_get_recurrenceid,
 		      &recur_id->datetime);
 }
 
@@ -3582,7 +3582,7 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
                 return "0";
         tt = *range.datetime.value;
         e_cal_component_free_range (&range);
-                                                                                   
+
         return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
                 icaltime_as_ical_string (tt) : "0";
 }
@@ -3591,7 +3591,7 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
  * e_cal_component_set_recurid:
  * @comp: A calendar component object.
  * @recur_id: Value for the recurrence id property.
- * 
+ *
  * Sets the recurrence id property of a calendar component object.
  **/
 void
@@ -3604,7 +3604,7 @@ e_cal_component_set_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
-	
+
 	set_datetime (comp, &priv->recur_id.recur_time,
 		      icalproperty_new_recurrenceid,
 		      icalproperty_set_recurrenceid,
@@ -3825,7 +3825,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 
 	if (!e_cal_component_has_recurrences (comp))
 		return TRUE;
-	
+
 	e_cal_component_get_rrule_list (comp, &rrule_list);
 	len = g_slist_length (rrule_list);
 	if (len > 1
@@ -3858,7 +3858,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 	if (n_by_second != 0
 	    || n_by_minute != 0
 	    || n_by_hour != 0)
-		goto cleanup;	
+		goto cleanup;
 
 	switch (r->freq) {
 	case ICAL_DAILY_RECURRENCE:
@@ -3888,7 +3888,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 			if (pos != 0)
 				goto cleanup;
 		}
-		
+
 		simple = TRUE;
 		break;
 
@@ -3908,9 +3908,9 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 			nth = r->by_month_day[0];
 			if (nth < 1 && nth != -1)
 				goto cleanup;
-			
+
 			simple = TRUE;
-			
+
 		} else if (n_by_day == 1) {
 			enum icalrecurrencetype_weekday weekday;
 			int pos;
@@ -3946,7 +3946,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 		} else {
 			goto cleanup;
 		}
-		
+
 		simple = TRUE;
 		break;
 
@@ -3958,7 +3958,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 		    || n_by_month != 0
 		    || n_by_set_pos != 0)
 			goto cleanup;
-		
+
 		simple = TRUE;
 		break;
 
@@ -3981,7 +3981,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
  *
  * Return value: TRUE if it is an instance, FALSE if not.
  */
-gboolean 
+gboolean
 e_cal_component_is_instance (ECalComponent *comp)
 {
 	ECalComponentPrivate *priv;
@@ -4265,7 +4265,7 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 		}
 	} else if (priv->summary.altrep_param) {
  		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
- 		priv->summary.altrep_param = NULL; 
+ 		priv->summary.altrep_param = NULL;
 	}
 
 	/* look for alarms that need a description */
@@ -4454,7 +4454,7 @@ get_attendee_list (GSList *attendee_list, GSList **al)
 		a->value = icalproperty_get_attendee (attendee->prop);
 
 		if (attendee->member_param)
-			a->member = icalparameter_get_member (attendee->member_param);		
+			a->member = icalparameter_get_member (attendee->member_param);
 		if (attendee->cutype_param)
 			a->cutype = icalparameter_get_cutype (attendee->cutype_param);
 		else
@@ -4546,7 +4546,7 @@ set_attendee_list (icalcomponent *icalcomp,
 		else
 			attendee->rsvp_param = icalparameter_new_rsvp (ICAL_RSVP_FALSE);
 		icalproperty_add_parameter (attendee->prop, attendee->rsvp_param);
-	
+
 		if (a->delfrom) {
 			attendee->delfrom_param = icalparameter_new_delegatedfrom (a->delfrom);
 			icalproperty_add_parameter (attendee->prop, attendee->delfrom_param);
@@ -4575,19 +4575,19 @@ set_attendee_list (icalcomponent *icalcomp,
 }
 
 /**
- * e_cal_component_get_attendee_list: 
- * @comp: A calendar component object. 
+ * e_cal_component_get_attendee_list:
+ * @comp: A calendar component object.
  * @attendee_list: Return value for the attendee property.
  * This should be freed using the e_cal_component_free_attendee_list ()
  * function.
- * 
+ *
  * Queries the attendee properties of the calendar component object
  **/
 void
 e_cal_component_get_attendee_list (ECalComponent *comp, GSList **attendee_list)
 {
 	ECalComponentPrivate *priv;
-	
+
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 	g_return_if_fail (attendee_list != NULL);
@@ -4600,9 +4600,9 @@ e_cal_component_get_attendee_list (ECalComponent *comp, GSList **attendee_list)
 
 /**
  * e_cal_component_set_attendee_list:
- * @comp: A calendar component object. 
+ * @comp: A calendar component object.
  * @attendee_list: Values for attendee properties
- * 
+ *
  * Sets the attendees of a calendar component object
  **/
 void
@@ -4639,7 +4639,7 @@ e_cal_component_has_attendees (ECalComponent *comp)
 
 	if (g_slist_length (priv->attendee_list) > 0)
 		return TRUE;
-	
+
 	return FALSE;
 }
 
@@ -4647,7 +4647,7 @@ e_cal_component_has_attendees (ECalComponent *comp)
  * e_cal_component_get_location:
  * @comp: A calendar component object
  * @location: Return value for the location.
- * 
+ *
  * Queries the location property of a calendar component object.
  **/
 void
@@ -4672,7 +4672,7 @@ e_cal_component_get_location (ECalComponent *comp, const char **location)
  * e_cal_component_set_location:
  * @comp: A calendar component object.
  * @location: Location value.
- * 
+ *
  * Sets the location property of a calendar component object.
  **/
 void
@@ -4744,7 +4744,7 @@ e_cal_component_free_datetime (ECalComponentDateTime *dt)
  *
  * Frees an #ECalComponentRange structure.
  */
-void 
+void
 e_cal_component_free_range (ECalComponentRange *range)
 {
 	g_return_if_fail (range != NULL);
@@ -4915,7 +4915,7 @@ e_cal_component_free_id (ECalComponentId *id)
 		g_free (id->uid);
 		id->uid = NULL;
 	}
-	
+
 	if (id->rid) {
 		g_free (id->rid);
 		id->rid = NULL;
@@ -4953,9 +4953,9 @@ e_cal_component_free_text_list (GSList *text_list)
 /**
  * e_cal_component_free_attendee_list:
  * @attendee_list:  List of attendees.
- * 
+ *
  * Frees a list of #ECalComponentAttendee structures.
- * 
+ *
  **/
 void
 e_cal_component_free_attendee_list (GSList *attendee_list)
@@ -5003,7 +5003,7 @@ e_cal_component_has_alarms (ECalComponent *comp)
  * e_cal_component_add_alarm:
  * @comp: A calendar component.
  * @alarm: An alarm.
- * 
+ *
  * Adds an alarm subcomponent to a calendar component.  You should have created
  * the @alarm by using e_cal_component_alarm_new(); it is invalid to use a
  * #ECalComponentAlarm structure that came from e_cal_component_get_alarm().  After
@@ -5030,7 +5030,7 @@ e_cal_component_add_alarm (ECalComponent *comp, ECalComponentAlarm *alarm)
  * e_cal_component_remove_alarm:
  * @comp: A calendar component.
  * @auid: UID of the alarm to remove.
- * 
+ *
  * Removes an alarm subcomponent from a calendar component.  If the alarm that
  * corresponds to the specified @auid had been fetched with
  * e_cal_component_get_alarm(), then those alarm structures will be invalid; you
@@ -5065,19 +5065,19 @@ for_each_remove_all_alarms (gpointer key, gpointer value, gpointer data)
 	ECalComponent *comp = E_CAL_COMPONENT (data);
 	ECalComponentPrivate *priv;
 	icalcomponent *alarm = value;
-	
+
 	priv = comp->priv;
-	
+
 	icalcomponent_remove_component (priv->icalcomp, alarm);
 	icalcomponent_free (alarm);
 
-	return TRUE;	
+	return TRUE;
 }
 
 /**
  * e_cal_component_remove_all_alarms:
  * @comp: A calendar component
- * 
+ *
  * Remove all alarms from the calendar component
  **/
 void
@@ -5137,7 +5137,7 @@ scan_alarm_property (ECalComponentAlarm *alarm, icalproperty *prop)
 	case ICAL_ATTENDEE_PROPERTY:
 		scan_attendee (&alarm->attendee_list, prop);
 		break;
-		
+
 	case ICAL_X_PROPERTY:
 		xname = icalproperty_get_x_name (prop);
 		g_assert (xname != NULL);
@@ -5172,7 +5172,7 @@ make_alarm (icalcomponent *subcomp)
 	alarm->repeat = NULL;
 	alarm->trigger = NULL;
 	alarm->attendee_list = NULL;
-	
+
 	for (prop = icalcomponent_get_first_property (subcomp, ICAL_ANY_PROPERTY);
 	     prop;
 	     prop = icalcomponent_get_next_property (subcomp, ICAL_ANY_PROPERTY))
@@ -5212,19 +5212,19 @@ e_cal_component_get_alarm_uids (ECalComponent *comp)
 	     icalcompiter_next (&iter)) {
 		icalcomponent *subcomp;
 		icalproperty *prop;
-		
+
 		subcomp = icalcompiter_deref (&iter);
 		for (prop = icalcomponent_get_first_property (subcomp, ICAL_X_PROPERTY);
 		     prop;
 		     prop = icalcomponent_get_next_property (subcomp, ICAL_X_PROPERTY)) {
 			const char *xname;
-			
+
 			xname = icalproperty_get_x_name (prop);
 			g_assert (xname != NULL);
-			
+
 			if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0) {
 				const char *auid;
-				
+
 				auid = alarm_uid_from_prop (prop);
 				l = g_list_append (l, g_strdup (auid));
 			}
@@ -5326,16 +5326,16 @@ e_cal_component_alarm_new (void)
 	alarm->repeat = NULL;
 	alarm->trigger = NULL;
 	alarm->attendee_list = NULL;
-	
+
 	return alarm;
 }
 
 /**
  * e_cal_component_alarm_clone:
  * @alarm: An alarm subcomponent.
- * 
+ *
  * Creates a new alarm subcomponent by copying the information from another one.
- * 
+ *
  * Return value: A newly-created alarm subcomponent with the same values as the
  * original one.  Should be freed with e_cal_component_alarm_free().
  **/
@@ -5360,7 +5360,7 @@ void
 e_cal_component_alarm_free (ECalComponentAlarm *alarm)
 {
 	GSList *l;
-	
+
 	g_return_if_fail (alarm != NULL);
 
 	g_assert (alarm->icalcomp != NULL);
@@ -5382,7 +5382,7 @@ e_cal_component_alarm_free (ECalComponentAlarm *alarm)
 		g_free (l->data);
 	g_slist_free (alarm->attendee_list);
 	alarm->attendee_list = NULL;
-	
+
 	g_free (alarm);
 }
 
@@ -5504,7 +5504,7 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
  * e_cal_component_alarm_get_attach:
  * @alarm: An alarm.
  * @attach: Return value for the attachment; should be freed using icalattach_unref().
- * 
+ *
  * Queries the attachment property of an alarm.
  **/
 void
@@ -5526,7 +5526,7 @@ e_cal_component_alarm_get_attach (ECalComponentAlarm *alarm, icalattach **attach
  * e_cal_component_alarm_set_attach:
  * @alarm: An alarm.
  * @attach: Attachment property or NULL to remove an existing property.
- * 
+ *
  * Sets the attachment property of an alarm.
  **/
 void
@@ -5552,7 +5552,7 @@ e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm, icalattach *attach)
  * e_cal_component_alarm_get_description:
  * @alarm: An alarm.
  * @description: Return value for the description property and its parameters.
- * 
+ *
  * Queries the description property of an alarm.
  **/
 void
@@ -5578,7 +5578,7 @@ e_cal_component_alarm_get_description (ECalComponentAlarm *alarm, ECalComponentT
  * e_cal_component_alarm_set_description:
  * @alarm: An alarm.
  * @description: Description property and its parameters, or NULL for no description.
- * 
+ *
  * Sets the description property of an alarm.
  **/
 void
@@ -5616,7 +5616,7 @@ e_cal_component_alarm_set_description (ECalComponentAlarm *alarm, ECalComponentT
  * e_cal_component_alarm_get_repeat:
  * @alarm: An alarm.
  * @repeat: Return value for the repeat/duration properties.
- * 
+ *
  * Queries the repeat/duration properties of an alarm.
  **/
 void
@@ -5642,7 +5642,7 @@ e_cal_component_alarm_get_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmR
  * @alarm: An alarm.
  * @repeat: Repeat/duration values.  To remove any repetitions from the alarm,
  * set the @repeat.repetitions to 0.
- * 
+ *
  * Sets the repeat/duration values for an alarm.
  **/
 void
@@ -5854,11 +5854,11 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
  *
  * Gets the list of attendees associated with an alarm.
  */
-void 
+void
 e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **attendee_list)
 {
 	g_return_if_fail (alarm != NULL);
-	
+
 	get_attendee_list (alarm->attendee_list, attendee_list);
 }
 
@@ -5869,7 +5869,7 @@ e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **att
  *
  * Sets the list of attendees for an alarm.
  */
-void 
+void
 e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *attendee_list)
 {
 	g_return_if_fail (alarm != NULL);
@@ -5885,7 +5885,7 @@ e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *atte
  *
  * Return value: TRUE if there are attendees in the alarm, FALSE if not.
  */
-gboolean 
+gboolean
 e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)
 {
 
@@ -5893,8 +5893,8 @@ e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)
 
 	if (g_slist_length (alarm->attendee_list) > 0)
 		return TRUE;
-	
-	return FALSE;	
+
+	return FALSE;
 }
 
 

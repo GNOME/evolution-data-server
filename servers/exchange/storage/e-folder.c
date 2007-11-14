@@ -250,7 +250,7 @@ e_folder_get_has_subfolders (EFolder *folder)
 /**
  * e_folder_get_custom_icon:
  * @folder: An EFolder
- * 
+ *
  * Get the name of the custom icon for @folder, or NULL if no custom icon is
  * associated with it.
  **/
@@ -265,9 +265,9 @@ e_folder_get_custom_icon_name (EFolder *folder)
 /**
  * e_folder_get_sorting_priority:
  * @folder: An EFolder
- * 
+ *
  * Get the sorting priority for @folder.
- * 
+ *
  * Return value: Sorting priority value for @folder.
  **/
 int
@@ -400,7 +400,7 @@ e_folder_set_has_subfolders (EFolder *folder,
  * @folder: An EFolder
  * @icon_name: Name of the icon to be set (to be found in the standard
  * Evolution icon dir)
- * 
+ *
  * Set a custom icon for @folder (thus overriding the default icon, which is
  * the one associated to the type of the folder).
  **/
@@ -426,7 +426,7 @@ e_folder_set_custom_icon (EFolder *folder,
  * e_folder_set_sorting_priority:
  * @folder: An EFolder
  * @sorting_priority: A sorting priority number
- * 
+ *
  * Set the sorting priority for @folder.  Folders have a default sorting
  * priority of zero; when deciding the sort order in the Evolution folder tree,
  * folders with the same priority value are compared by name, while folders

@@ -119,10 +119,10 @@ ECalBackendSyncStatus e_cal_backend_sync_remove_object           (ECalBackendSyn
 							       CalObjModType    mod,
 							       char **old_object,
 							       char **object);
-ECalBackendSyncStatus	e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, 
-								EDataCal *cal, 
-								const char *uid, 
-								const char *rid, 
+ECalBackendSyncStatus	e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend,
+								EDataCal *cal,
+								const char *uid,
+								const char *rid,
 								GSList **attachments);
 
 ECalBackendSyncStatus e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);

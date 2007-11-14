@@ -1,4 +1,4 @@
-/* This file is Based on output from 
+/* This file is Based on output from
  * Perl/Pollution/Portability Version 2.0000 */
 
 #ifndef _P_P_PORTABILITY_H_
@@ -50,12 +50,12 @@
 #    define pTHX_
 #    define aTHX
 #    define aTHX_
-#endif         
+#endif
 
 #ifndef PTR2IV
 #    define PTR2IV(d)   (IV)(d)
 #endif
- 
+
 #ifndef INT2PTR
 #    define INT2PTR(any,d)      (any)(d)
 #endif
@@ -107,9 +107,9 @@
 #    if defined(CRIPPLED_CC) || defined(USE_THREADS)
 static SV * newRV_noinc (SV * sv)
 {
-          SV *nsv = (SV*)newRV(sv);       
-          SvREFCNT_dec(sv);               
-          return nsv;                     
+          SV *nsv = (SV*)newRV(sv);
+          SvREFCNT_dec(sv);
+          return nsv;
 }
 #    else
 #      define newRV_noinc(sv)    \
@@ -255,7 +255,7 @@ SV *sv;
 #  define PERL_UNUSED_DECL __attribute__((unused))
 #else
 #  define PERL_UNUSED_DECL
-#endif    
+#endif
 
 #ifndef dNOOP
 #  define dNOOP extern int Perl___notused PERL_UNUSED_DECL
@@ -274,16 +274,16 @@ SV *sv;
 #define aMY_CXT_
 #define _aMY_CXT
 
-#endif 
+#endif
 
 #endif /* START_MY_CXT */
 
 
 #ifndef DBM_setFilter
 
-/* 
-   The DBM_setFilter & DBM_ckFilter macros are only used by 
-   the *DB*_File modules 
+/*
+   The DBM_setFilter & DBM_ckFilter macros are only used by
+   the *DB*_File modules
 */
 
 #define DBM_setFilter(db_type,code)				\

@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2000-2003 Ximian, Inc.
  *
- * Authors: 
+ * Authors:
  *   Federico Mena-Quintero <federico@ximian.com>
  *   JP Rosevear <jpr@ximian.com>
  *
@@ -48,9 +48,9 @@ struct _EDataCalFactoryPrivate {
 
 	/* Whether we have been registered with OAF yet */
 	guint registered : 1;
-        
+
         int mode;
-        
+
 };
 
 /* Signal IDs */
@@ -74,7 +74,7 @@ calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 	case GNOME_Evolution_Calendar_TYPE_JOURNAL:
 		return ICAL_VJOURNAL_COMPONENT;
 	}
-	
+
 	return ICAL_NO_COMPONENT;
 }
 
@@ -83,7 +83,7 @@ get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind
 {
 	GHashTable *kinds;
 	ECalBackendFactory *factory;
-	
+
 	kinds = g_hash_table_lookup (methods, method);
 	if (!kinds)
 		return NULL;
@@ -150,7 +150,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	char *str_uri;
 	EUri *uri;
 	char *uri_type_string;
-	
+
 	factory = E_DATA_CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
@@ -188,7 +188,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
 		goto cleanup;
 	}
-		
+
 	/* Duplicate the listener object */
 	CORBA_exception_init (&ev2);
 	listener_copy = CORBA_Object_duplicate (listener, &ev2);
@@ -220,7 +220,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 				  G_CALLBACK (backend_last_client_gone_cb),
 				  factory);
 	}
-	
+
 	/* Create the corba calendar */
 	cal = e_data_cal_new (backend, listener);
 	printf ("cal = %p\n", cal);
@@ -233,7 +233,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	/* Let the backend know about its clients corba clients */
 	e_cal_backend_add_client (backend, cal);
 	e_cal_backend_set_mode (backend, priv->mode);
-	
+
 	ret_cal = CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
  cleanup:
 	e_uri_free (uri);
@@ -259,8 +259,8 @@ e_data_cal_factory_new (void)
 {
 	EDataCalFactory *factory;
 
-	factory = g_object_new (E_TYPE_DATA_CAL_FACTORY, 
-				"poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL), 
+	factory = g_object_new (E_TYPE_DATA_CAL_FACTORY,
+				"poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				NULL);
 
 	return factory;
@@ -324,7 +324,7 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *klass)
 	epv->getCal = impl_CalFactory_getCal;
 }
 
-static void 
+static void
 set_backend_online_status (gpointer key, gpointer value, gpointer data)
 {
 	ECalBackend *backend = E_CAL_BACKEND (value);
@@ -339,12 +339,12 @@ set_backend_online_status (gpointer key, gpointer value, gpointer data)
  *
  * Sets the online mode for all backends created by the given factory.
  */
-void 
+void
 e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
-	
-	
+
+
 	priv->mode = mode;
 	g_hash_table_foreach (priv->backends, set_backend_online_status, GINT_TO_POINTER (priv->mode));
 }
@@ -359,9 +359,9 @@ e_data_cal_factory_init (EDataCalFactory *factory, EDataCalFactoryClass *klass)
 	priv = g_new0 (EDataCalFactoryPrivate, 1);
 	factory->priv = priv;
 
-	priv->methods = g_hash_table_new_full (g_str_hash, g_str_equal, 
+	priv->methods = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       (GDestroyNotify) g_free, (GDestroyNotify) g_hash_table_destroy);
-	priv->backends = g_hash_table_new_full (g_str_hash, g_str_equal, 
+	priv->backends = g_hash_table_new_full (g_str_hash, g_str_equal,
 						(GDestroyNotify) g_free, (GDestroyNotify) g_object_unref);
 	priv->registered = FALSE;
 }
@@ -375,10 +375,10 @@ BONOBO_TYPE_FUNC_FULL (EDataCalFactory,
  * e_data_cal_factory_register_storage:
  * @factory: A calendar factory.
  * @iid: OAFIID for the factory to be registered.
- * 
+ *
  * Registers a calendar factory with the OAF object activation daemon.  This
  * function must be called before any clients can activate the factory.
- * 
+ *
  * Return value: TRUE on success, FALSE otherwise.
  **/
 gboolean
@@ -432,7 +432,7 @@ e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid)
  * e_data_cal_factory_register_backend:
  * @factory: A calendar factory.
  * @backend_factory: The object responsible for creating backends.
- * 
+ *
  * Registers an #ECalBackend subclass that will be used to handle URIs
  * with a particular method.  When the factory is asked to open a
  * particular URI, it will look in its list of registered methods and
@@ -473,7 +473,7 @@ e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactor
 		kinds = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 		g_hash_table_insert (priv->methods, method_str, kinds);
 	}
-	
+
 	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), backend_factory);
 }
 

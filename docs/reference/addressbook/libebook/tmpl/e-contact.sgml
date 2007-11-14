@@ -553,6 +553,11 @@ The URI of the contact's calendar.
 
 </para>
 
+<!-- ##### ARG EContact:phone ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:photo ##### -->
 <para>
 
@@ -730,6 +735,7 @@ The URI of the contact's calendar.
 @E_CONTACT_IM_GADUGADU_WORK_3: 
 @E_CONTACT_IM_GADUGADU: 
 @E_CONTACT_GEO: 
+@E_CONTACT_TEL: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_FIELD_FIRST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 

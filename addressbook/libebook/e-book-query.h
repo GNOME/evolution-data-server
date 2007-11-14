@@ -17,7 +17,7 @@ typedef enum {
   E_BOOK_QUERY_ENDS_WITH,
 
   /*
-    Consider these "coming soon". 
+    Consider these "coming soon".
 
     E_BOOK_QUERY_LT,
     E_BOOK_QUERY_LE,

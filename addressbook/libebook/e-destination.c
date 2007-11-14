@@ -13,12 +13,12 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
@@ -120,7 +120,7 @@ e_destination_dispose (GObject *obj)
 
 	if (dest->priv) {
 		e_destination_clear (dest);
-	  
+
 		g_free (dest->priv);
 		dest->priv = NULL;
 	}
@@ -249,16 +249,16 @@ e_destination_clear (EDestination *dest)
 
 	g_free (dest->priv->raw);
 	dest->priv->raw = NULL;
-	
+
 	g_free (dest->priv->name);
 	dest->priv->name = NULL;
-	
+
 	g_free (dest->priv->email);
 	dest->priv->email = NULL;
-	
+
 	g_free (dest->priv->addr);
 	dest->priv->addr = NULL;
-	
+
 	g_free (dest->priv->textrep);
 	dest->priv->textrep = NULL;
 
@@ -267,7 +267,7 @@ e_destination_clear (EDestination *dest)
 		dest->priv->contact = NULL;
 	}
 	dest->priv->email_num = -1;
-	
+
 	g_list_foreach (dest->priv->list_dests, (GFunc) g_object_unref, NULL);
 	g_list_free (dest->priv->list_dests);
 	dest->priv->list_dests = NULL;
@@ -303,9 +303,9 @@ e_destination_empty (const EDestination *dest)
 	struct _EDestinationPrivate *p;
 
 	g_return_val_if_fail (E_IS_DESTINATION (dest), TRUE);
-	
+
 	p = dest->priv;
-	
+
 	return !(p->contact != NULL
 		 || (p->source_uid && *p->source_uid)
 		 || (p->contact_uid && *p->contact_uid)
@@ -330,34 +330,34 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 {
 	const struct _EDestinationPrivate *pa, *pb;
 	const char *na, *nb;
-	
+
 	g_return_val_if_fail (E_IS_DESTINATION (a), FALSE);
 	g_return_val_if_fail (E_IS_DESTINATION (b), FALSE);
 
 	if (a == b)
 		return TRUE;
-	
+
 	pa = a->priv;
 	pb = b->priv;
-	
+
 	/* Check equality of contacts. */
 	if (pa->contact || pb->contact) {
 		if (! (pa->contact && pb->contact))
 			return FALSE;
-		
+
 		if (pa->contact == pb->contact || !strcmp (e_contact_get_const (pa->contact, E_CONTACT_UID),
 							   e_contact_get_const (pb->contact, E_CONTACT_UID)))
 			return TRUE;
-		
+
 		return FALSE;
 	}
-	
+
 	/* Just in case name returns NULL */
 	na = e_destination_get_name (a);
 	nb = e_destination_get_name (b);
 	if ((na || nb) && !(na && nb && ! utf8_casefold_collate (na, nb)))
 		return FALSE;
-	
+
 	if (!g_ascii_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))
 		return TRUE;
 	else
@@ -469,10 +469,10 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 
 		dest->priv->email_num = email_num;
-	
-		g_signal_emit (dest, signals [CHANGED], 0);		
+
+		g_signal_emit (dest, signals [CHANGED], 0);
 	}
-	
+
 }
 
 /**
@@ -515,15 +515,15 @@ e_destination_set_contact_uid (EDestination *dest, const char *uid, gint email_n
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (uid != NULL);
-	
+
 	if (dest->priv->contact_uid == NULL
 	    || strcmp (dest->priv->contact_uid, uid)
 	    || dest->priv->email_num != email_num) {
-		
+
 		g_free (dest->priv->contact_uid);
 		dest->priv->contact_uid = g_strdup (uid);
 		dest->priv->email_num = email_num;
-		
+
 		/* If we already have a contact, remove it unless it's uid matches the one
 		   we just set. */
 		if (dest->priv->contact && strcmp (uid,
@@ -541,7 +541,7 @@ e_destination_set_source_uid (EDestination *dest, const char *uid)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (uid != NULL);
-	
+
 	if (dest->priv->source_uid == NULL
 	    || strcmp (dest->priv->source_uid, uid)) {
 
@@ -565,7 +565,7 @@ e_destination_set_name (EDestination *dest, const char *name)
 	gboolean changed = FALSE;
 
 	g_return_if_fail (E_IS_DESTINATION (dest));
-	
+
 	if (name == NULL) {
 		if (dest->priv->name != NULL) {
 			g_free (dest->priv->name);
@@ -577,7 +577,7 @@ e_destination_set_name (EDestination *dest, const char *name)
 		dest->priv->name = g_strdup (name);
 		changed = TRUE;
 	}
-	
+
 	if (changed) {
 		g_free (dest->priv->addr);
 		dest->priv->addr = NULL;
@@ -601,7 +601,7 @@ e_destination_set_email (EDestination *dest, const char *email)
 	gboolean changed = FALSE;
 
 	g_return_if_fail (E_IS_DESTINATION (dest));
-	
+
 	if (email == NULL) {
 		if (dest->priv->email != NULL) {
 			g_free (dest->priv->addr);
@@ -613,7 +613,7 @@ e_destination_set_email (EDestination *dest, const char *email)
 		dest->priv->email = g_strdup (email);
 		changed = TRUE;
 	}
-	
+
 	if (changed) {
 		g_free (dest->priv->addr);
 		dest->priv->addr = NULL;
@@ -645,7 +645,7 @@ gboolean
 e_destination_is_auto_recipient (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), FALSE);
-	
+
 	return dest->priv->auto_recipient;
 }
 
@@ -653,7 +653,7 @@ e_destination_is_auto_recipient (const EDestination *dest)
  * e_destination_set_auto_recipient:
  * @dest: an #EDestination
  * @value: the auto recipient flag
- * 
+ *
  * Sets the flag indicating if @dest is an automatic recipient, meaning
  * it was not explicitly specified by the user. This can be used
  * to hide it from some UI elements.
@@ -662,7 +662,7 @@ void
 e_destination_set_auto_recipient (EDestination *dest, gboolean value)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
-	
+
 	dest->priv->auto_recipient = value;
 
 	g_signal_emit (dest, signals [CHANGED], 0);
@@ -680,7 +680,7 @@ EContact *
 e_destination_get_contact (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	return dest->priv->contact;
 }
 
@@ -696,7 +696,7 @@ const char *
 e_destination_get_contact_uid (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	return dest->priv->contact_uid;
 }
 
@@ -730,17 +730,17 @@ gint
 e_destination_get_email_num (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), -1);
-	
+
 	if (dest->priv->contact == NULL && (dest->priv->source_uid == NULL || dest->priv->contact_uid == NULL))
 		return -1;
-	
+
 	return dest->priv->email_num;
 }
 
 /**
  * e_destination_get_name:
  * @dest: an #EDestination
- * 
+ *
  * Gets the full name of @dest's addressee, or if the addressee is
  * a contact list, the name the list was filed under.
  *
@@ -752,18 +752,18 @@ e_destination_get_name (const EDestination *dest)
 	struct _EDestinationPrivate *priv;
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	priv = (struct _EDestinationPrivate *)dest->priv; /* cast out const */
-	
+
 	if (priv->name == NULL) {
 		if (priv->contact != NULL) {
 			priv->name = e_contact_get (priv->contact, E_CONTACT_FULL_NAME);
-			
+
 			if (priv->name == NULL || *priv->name == '\0') {
 				g_free (priv->name);
 				priv->name = e_contact_get (priv->contact, E_CONTACT_FILE_AS);
 			}
-			
+
 			if (priv->name == NULL || *priv->name == '\0') {
 				g_free (priv->name);
 				if (e_contact_get (priv->contact, E_CONTACT_IS_LIST))
@@ -777,15 +777,15 @@ e_destination_get_name (const EDestination *dest)
 
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
 				const char *camel_name = NULL;
-				
+
 				camel_internet_address_get (addr, 0, &camel_name, NULL);
 				priv->name = g_strdup (camel_name);
 			}
-			
+
 			camel_object_unref (CAMEL_OBJECT (addr));
 		}
 	}
-	
+
 	return priv->name;
 }
 
@@ -828,11 +828,11 @@ const char *
 e_destination_get_email (const EDestination *dest)
 {
 	struct _EDestinationPrivate *priv;
-	
+
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	priv = (struct _EDestinationPrivate *)dest->priv; /* cast out const */
-	
+
 	if (priv->email == NULL) {
 		if (priv->contact != NULL) {
 			/* Pull the address out of the card. */
@@ -842,30 +842,30 @@ e_destination_get_email (const EDestination *dest)
 
 				if (e)
 					priv->email = g_strdup (e);
-			} 
+			}
 			if (email) {
 				g_list_foreach (email, (GFunc)g_free, NULL);
 				g_list_free (email);
 			}
-			
+
 		} else if (priv->raw != NULL) {
 			CamelInternetAddress *addr = camel_internet_address_new ();
-			
+
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
 				const char *camel_email = NULL;
 				camel_internet_address_get (addr, 0, NULL, &camel_email);
 				priv->email = g_strdup (camel_email);
 			}
-			
+
 			camel_object_unref (CAMEL_OBJECT (addr));
-		} 
-		
+		}
+
 		/* Force e-mail to be non-null... */
 		if (priv->email == NULL) {
 			priv->email = g_strdup ("");
 		}
 	}
-	
+
 	return priv->email;
 }
 
@@ -884,18 +884,18 @@ e_destination_get_address (const EDestination *dest)
 	struct _EDestinationPrivate *priv;
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	priv = (struct _EDestinationPrivate *)dest->priv; /* cast out const */
-	
+
 	if (priv->addr == NULL) {
 		CamelInternetAddress *addr = camel_internet_address_new ();
-		
+
 		if (e_destination_is_evolution_list (dest)) {
 			GList *iter = dest->priv->list_dests;
-			
+
 			while (iter) {
 				EDestination *list_dest = E_DESTINATION (iter->data);
-				
+
 				if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
 					const char *name, *email;
 					name = e_destination_get_name (list_dest);
@@ -911,7 +911,7 @@ e_destination_get_address (const EDestination *dest)
 				}
 				iter = g_list_next (iter);
 			}
-			
+
 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 		} else if (priv->raw) {
 
@@ -930,13 +930,13 @@ e_destination_get_address (const EDestination *dest)
 			else /* this case loses i suppose, but there's
 				nothing we can do here */
 				camel_address_decode (CAMEL_ADDRESS (addr), name);
-			
+
 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 		}
-		
+
 		camel_object_unref (CAMEL_OBJECT (addr));
 	}
-	
+
 	return priv->addr;
 }
 
@@ -953,9 +953,9 @@ e_destination_set_raw (EDestination *dest, const char *raw)
 {
 	g_return_if_fail (E_IS_DESTINATION (dest));
 	g_return_if_fail (raw != NULL);
-	
+
 	if (dest->priv->raw == NULL || strcmp (dest->priv->raw, raw)) {
-			
+
 		e_destination_clear (dest);
 		dest->priv->raw = g_strdup (raw);
 
@@ -977,34 +977,34 @@ const char *
 e_destination_get_textrep (const EDestination *dest, gboolean include_email)
 {
 	const char *name, *email;
-	
+
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	if (dest->priv->raw)
 		return dest->priv->raw;
-	
+
 	name  = e_destination_get_name (dest);
 	email = e_destination_get_email (dest);
-	
+
 	if (e_destination_from_contact (dest) && name != NULL && (!include_email || !email || !*email))
 		return name;
-	
+
 	/* Make sure that our address gets quoted properly */
 	if (name && email && dest->priv->textrep == NULL) {
 		CamelInternetAddress *addr = camel_internet_address_new ();
-		
+
 		camel_internet_address_add (addr, name, email);
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = camel_address_format (CAMEL_ADDRESS (addr));
 		camel_object_unref (CAMEL_OBJECT (addr));
 	}
-	
+
 	if (dest->priv->textrep != NULL)
 		return dest->priv->textrep;
 
 	if (email)
 		return email;
-	
+
 	return "";
 }
 
@@ -1037,10 +1037,10 @@ gboolean
 e_destination_list_show_addresses (const EDestination *dest)
 {
 	g_return_val_if_fail (E_IS_DESTINATION (dest), FALSE);
-	
+
 	if (dest->priv->contact != NULL)
 		return GPOINTER_TO_UINT (e_contact_get (dest->priv->contact, E_CONTACT_LIST_SHOW_ADDRESSES));
-	
+
 	return dest->priv->show_addresses;
 }
 
@@ -1057,7 +1057,7 @@ const GList *
 e_destination_list_get_dests (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	if (!e_destination_is_evolution_list (dest))
 		return NULL;
 
@@ -1076,10 +1076,10 @@ gboolean
 e_destination_get_html_mail_pref (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), FALSE);
-	
+
 	if (dest->priv->html_mail_override || dest->priv->contact == NULL)
 		return dest->priv->wants_html_mail;
-	
+
 	return e_contact_get (dest->priv->contact, E_CONTACT_WANTS_HTML) ? TRUE : FALSE;
 }
 
@@ -1094,7 +1094,7 @@ void
 e_destination_set_html_mail_pref (EDestination *dest, gboolean flag)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
-	
+
 	dest->priv->html_mail_override = TRUE;
 	if (dest->priv->wants_html_mail != flag) {
 		dest->priv->wants_html_mail = flag;
@@ -1124,11 +1124,11 @@ e_destination_get_textrepv (EDestination **destv)
 	char *str;
 
 	g_return_val_if_fail (destv, NULL);
-	
+
 	/* Q: Please tell me this is only for assertion
            reasons. If this is considered to be ok behavior then you
-           shouldn't use g_return's. Just a reminder ;-) 
-	   
+           shouldn't use g_return's. Just a reminder ;-)
+
 	   A: Yes, this is just an assertion.  (Though it does find the
 	   length of the vector in the process...)
 	*/
@@ -1136,7 +1136,7 @@ e_destination_get_textrepv (EDestination **destv)
 		g_return_val_if_fail (E_IS_DESTINATION (destv[len]), NULL);
 		len++;
 	}
-	
+
 	strv = g_new0 (char *, len + 1);
 	for (i = 0, j = 0; destv[i]; i++) {
 		if (!e_destination_empty (destv[i])) {
@@ -1144,11 +1144,11 @@ e_destination_get_textrepv (EDestination **destv)
 			strv[j++] = addr ? (char *) addr : "";
 		}
 	}
-	
+
 	str = g_strjoinv (", ", strv);
-	
+
 	g_free (strv);
-	
+
 	return str;
 }
 
@@ -1165,22 +1165,22 @@ e_destination_xml_encode (const EDestination *dest)
 {
 	xmlNodePtr dest_node;
 	const char *str;
-	
+
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	dest_node = xmlNewNode (NULL, (xmlChar*)"destination");
-	
+
 	str = e_destination_get_name (dest);
 	if (str)
 		xmlNewTextChild (dest_node, NULL, (xmlChar*)"name", (xmlChar*)str);
-	
+
 	if (!e_destination_is_evolution_list (dest)) {
 		str = e_destination_get_email (dest);
 		if (str)
 			xmlNewTextChild (dest_node, NULL, (xmlChar*)"email", (xmlChar*)str);
 	} else {
 		GList *iter = dest->priv->list_dests;
-		
+
 		while (iter) {
 			EDestination *list_dest = E_DESTINATION (iter->data);
 			xmlNodePtr list_node = xmlNewNode (NULL, (xmlChar*)"list_entry");
@@ -1191,45 +1191,45 @@ e_destination_xml_encode (const EDestination *dest)
 				xmlNewTextChild (list_node, NULL, (xmlChar*)"name", escaped);
 				xmlFree (escaped);
 			}
-			
+
 			str = e_destination_get_email (list_dest);
 			if (str) {
 				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*)str);
 				xmlNewTextChild (list_node, NULL, (xmlChar*)"email", escaped);
 				xmlFree (escaped);
 			}
-			
+
 			xmlAddChild (dest_node, list_node);
-			
+
 			iter = g_list_next (iter);
 		}
-		
+
 		xmlNewProp (dest_node, (xmlChar*)"is_list", (xmlChar*)"yes");
-		xmlNewProp (dest_node, (xmlChar*)"show_addresses", 
+		xmlNewProp (dest_node, (xmlChar*)"show_addresses",
 			    e_destination_list_show_addresses (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
 	}
-	
+
 	str = e_destination_get_source_uid (dest);
 	if (str) {
 		xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*)str);
 		xmlNewTextChild (dest_node, NULL, (xmlChar*)"source_uid", escaped);
 		xmlFree (escaped);
 	}
-	
+
 	str = e_destination_get_contact_uid (dest);
 	if (str) {
 		char buf[16];
-		
+
 		xmlNodePtr uri_node = xmlNewTextChild (dest_node, NULL, (xmlChar*)"card_uid", (xmlChar*)str);
 		g_snprintf (buf, 16, "%d", e_destination_get_email_num (dest));
 		xmlNewProp (uri_node, (xmlChar*)"email_num", (xmlChar*)buf);
 	}
-	
+
 	xmlNewProp (dest_node, (xmlChar*)"html_mail", e_destination_get_html_mail_pref (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
-	
+
 	xmlNewProp (dest_node, (xmlChar*)"auto_recipient",
 		    e_destination_is_auto_recipient (dest) ? (xmlChar*)"yes" : (xmlChar*)"no");
-	
+
 	return dest_node;
 }
 
@@ -1255,34 +1255,34 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), FALSE);
 	g_return_val_if_fail (node != NULL, FALSE);
-	
+
 	if (strcmp ((char*)node->name, "destination"))
 		return FALSE;
-	
+
 	tmp = (char*)xmlGetProp (node, (xmlChar*)"html_mail");
 	if (tmp) {
 		html_mail = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
-	
+
 	tmp = (char*)xmlGetProp (node, (xmlChar*)"is_list");
 	if (tmp) {
 		is_list = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
-	
+
 	tmp = (char*)xmlGetProp (node, (xmlChar*)"show_addresses");
 	if (tmp) {
 		show_addr = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
-	
+
 	tmp = (char*)xmlGetProp (node, (xmlChar*)"auto_recipient");
 	if (tmp) {
 		auto_recip = !strcmp (tmp, "yes");
 		xmlFree (tmp);
 	}
-	
+
 	node = node->xmlChildrenNode;
 	while (node) {
 		if (!strcmp ((char*)node->name, "name")) {
@@ -1298,7 +1298,7 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 		} else if (is_list && !strcmp ((char*)node->name, "list_entry")) {
 			xmlNodePtr subnode = node->xmlChildrenNode;
 			char *list_name = NULL, *list_email = NULL;
-			
+
 			while (subnode) {
 				if (!strcmp ((char*)subnode->name, "name")) {
 					tmp = (char*)xmlNodeGetContent (subnode);
@@ -1311,21 +1311,21 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 					list_email = g_strdup (tmp);
 					xmlFree (tmp);
 				}
-				
+
 				subnode = subnode->next;
 			}
-			
+
 			if (list_name || list_email) {
 				EDestination *list_dest = e_destination_new ();
-				
+
 				if (list_name)
 					e_destination_set_name (list_dest, list_name);
 				if (list_email)
 					e_destination_set_email (list_dest, list_email);
-				
+
 				g_free (list_name);
 				g_free (list_email);
-				
+
 				list_dests = g_list_append (list_dests, list_dest);
 			}
 		} else if (!strcmp ((char*)node->name, "source_uid")) {
@@ -1338,17 +1338,17 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 			g_free (card_uid);
 			card_uid = g_strdup (tmp);
 			xmlFree (tmp);
-			
+
 			tmp = (char*)xmlGetProp (node, (xmlChar*)"email_num");
 			email_num = atoi (tmp);
 			xmlFree (tmp);
 		}
-		
+
 		node = node->next;
 	}
-	
+
 	e_destination_clear (dest);
-	
+
 	if (name) {
 		e_destination_set_name (dest, name);
 		g_free (name);
@@ -1367,14 +1367,14 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 	}
 	if (list_dests)
 		dest->priv->list_dests = list_dests;
-	
+
 	dest->priv->html_mail_override = TRUE;
 	dest->priv->wants_html_mail = html_mail;
-	
+
 	dest->priv->show_addresses = show_addr;
-	
+
 	dest->priv->auto_recipient = auto_recip;
-	
+
 	return TRUE;
 }
 
@@ -1384,21 +1384,21 @@ null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
 	gboolean skip_white = FALSE;
 	char *xml, *r, *w;
 
-	if (xml_in == NULL || size <= 0) 
+	if (xml_in == NULL || size <= 0)
 		return NULL;
-	
+
 	xml = g_strndup ((char*)xml_in, size);
 	r = w = xml;
-	
+
 	while (*r) {
 		if (*r == '\n' || *r == '\r') {
 			skip_white = TRUE;
 		} else {
 			gunichar c = g_utf8_get_char (r);
 			gboolean is_space = g_unichar_isspace (c);
-			
+
 			*w = *r;
-			
+
 			if (!(skip_white && is_space))
 				w++;
 			if (!is_space)
@@ -1406,9 +1406,9 @@ null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
 		}
 		r = g_utf8_next_char (r);
 	}
-	
+
 	*w = '\0';
-	
+
 	return xml;
 }
 
@@ -1430,20 +1430,20 @@ e_destination_export (const EDestination *dest)
 	char *str;
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
-	
+
 	dest_node = e_destination_xml_encode (dest);
 	if (dest_node == NULL)
 		return NULL;
-	
+
 	dest_doc = xmlNewDoc ((xmlChar*)XML_DEFAULT_VERSION);
 	xmlDocSetRootElement (dest_doc, dest_node);
-	
+
 	xmlDocDumpMemory (dest_doc, &buffer, &size);
 	xmlFreeDoc (dest_doc);
-	
+
 	str = null_terminate_and_remove_extra_whitespace (buffer, size);
 	xmlFree (buffer);
-	
+
 	return str;
 }
 
@@ -1463,7 +1463,7 @@ e_destination_import (const char *str)
 
 	if (!(str && *str))
 		return NULL;
-	
+
 	dest_doc = xmlParseMemory ((char *) str, strlen (str));
 	if (dest_doc && dest_doc->xmlRootNode) {
 		dest = e_destination_new ();
@@ -1473,7 +1473,7 @@ e_destination_import (const char *str)
 		}
 	}
 	xmlFreeDoc (dest_doc);
-	
+
 	return dest;
 }
 
@@ -1496,11 +1496,11 @@ e_destination_exportv (EDestination **destv)
 
 	if (destv == NULL || *destv == NULL)
 		return NULL;
-	
+
 	destv_doc  = xmlNewDoc ((xmlChar*)XML_DEFAULT_VERSION);
 	destv_node = xmlNewNode (NULL, (xmlChar*)"destinations");
 	xmlDocSetRootElement (destv_doc, destv_node);
-	
+
 	for (i = 0; destv[i]; i++) {
 		if (! e_destination_empty (destv[i])) {
 			xmlNodePtr dest_node = e_destination_xml_encode (destv[i]);
@@ -1508,13 +1508,13 @@ e_destination_exportv (EDestination **destv)
 				xmlAddChild (destv_node, dest_node);
 		}
 	}
-	
+
 	xmlDocDumpMemory (destv_doc, &buffer, &size);
 	xmlFreeDoc (destv_doc);
-	
+
 	str = null_terminate_and_remove_extra_whitespace (buffer, size);
 	xmlFree (buffer);
-	
+
 	return str;
 }
 
@@ -1534,45 +1534,45 @@ e_destination_importv (const char *str)
 	xmlDocPtr destv_doc;
 	xmlNodePtr node;
 	EDestination **destv = NULL;
-	
+
 	if (!(str && *str))
 		return NULL;
-	
+
 	destv_doc = xmlParseMemory ((char *)str, strlen (str));
 	if (destv_doc == NULL)
 		return NULL;
-	
+
 	node = destv_doc->xmlRootNode;
-	
+
 	if (strcmp ((char*)node->name, "destinations"))
 		goto finished;
-	
+
 	node = node->xmlChildrenNode;
-	
+
 	dest_array = g_ptr_array_new ();
-	
+
 	while (node) {
 		EDestination *dest;
-		
+
 		dest = e_destination_new ();
 		if (e_destination_xml_decode (dest, node) && !e_destination_empty (dest)) {
 			g_ptr_array_add (dest_array, dest);
 		} else {
 			g_object_unref (dest);
 		}
-		
+
 		node = node->next;
 	}
-	
+
 	/* we need destv to be NULL terminated */
 	g_ptr_array_add (dest_array, NULL);
-	
+
 	destv = (EDestination **) dest_array->pdata;
 	g_ptr_array_free (dest_array, FALSE);
-	
+
  finished:
 	xmlFreeDoc (destv_doc);
-	
+
 	return destv;
 }
 
@@ -1586,7 +1586,7 @@ void
 e_destination_freev (EDestination **destv)
 {
 	int i;
-	
+
 	if (destv) {
 		for (i = 0; destv[i] != NULL; ++i) {
 			g_object_unref (destv[i]);

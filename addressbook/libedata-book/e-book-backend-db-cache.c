@@ -28,7 +28,7 @@
 #include "e-book-backend.h"
 #include "e-book-backend-sexp.h"
 
-void 
+void
 string_to_dbt(const char *str, DBT *dbt)
 {
 	memset(dbt, 0, sizeof(dbt));
@@ -71,7 +71,7 @@ get_filename_from_uri (const char *uri)
  * Set the filename for db cacahe file.
  **/
 
-void 
+void
 e_book_backend_db_cache_set_filename(DB *db, const char *filename)
 {
 	DBT uid_dbt, vcard_dbt;
@@ -84,7 +84,7 @@ e_book_backend_db_cache_set_filename(DB *db, const char *filename)
 	if (db_error != 0) {
 		g_warning ("db->put failed with %d", db_error);
 	}
-	
+
 }
 
 /**
@@ -104,7 +104,7 @@ e_book_backend_db_cache_get_filename(DB *db)
 	string_to_dbt ("filename", &uid_dbt);
 	memset (&vcard_dbt, 0 , sizeof(vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
-	
+
 	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
 	if (db_error != 0) {
 		g_warning ("db-<get failed with %d", db_error);
@@ -140,13 +140,13 @@ e_book_backend_db_cache_get_contact (DB *db, const char *uid)
 	string_to_dbt (uid, &uid_dbt);
 	memset (&vcard_dbt, 0 , sizeof(vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
-	
+
 	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt,0);
-	if (db_error != 0) { 
+	if (db_error != 0) {
 		g_warning ("db->get failed with %d", db_error);
 		return NULL;
 	}
-	
+
 	contact = e_contact_new_from_vcard ((const char *)vcard_dbt.data);
 	g_free (vcard_dbt.data);
 	return contact;
@@ -176,10 +176,10 @@ e_book_backend_db_cache_add_contact (DB *db,
 		printf("name:%s, email:%s\n",
 		       (char*)e_contact_get (contact, E_CONTACT_GIVEN_NAME),
 		       (char*)e_contact_get (contact, E_CONTACT_EMAIL_1));
-		return FALSE; 
+		return FALSE;
 	}
 	string_to_dbt (uid, &uid_dbt);
-	
+
 	vcard_str = e_vcard_to_string (E_VCARD(contact), EVC_FORMAT_VCARD_30);
 	string_to_dbt (vcard_str, &vcard_dbt);
 
@@ -188,11 +188,11 @@ e_book_backend_db_cache_add_contact (DB *db,
 
 	g_free (vcard_str);
 
-	if (db_error != 0) { 
+	if (db_error != 0) {
 		g_warning ("db->put failed with %d", db_error);
 		return FALSE;
 	}
-	else 
+	else
 		return TRUE;
 }
 
@@ -208,7 +208,7 @@ e_book_backend_db_cache_add_contact (DB *db,
 gboolean
 e_book_backend_db_cache_remove_contact (DB *db,
 				    const char *uid)
-				      
+
 {
 	DBT        uid_dbt;
 	int        db_error;
@@ -218,11 +218,11 @@ e_book_backend_db_cache_remove_contact (DB *db,
 	string_to_dbt (uid, &uid_dbt);
 	db_error = db->del (db, NULL, &uid_dbt, 0);
 
-	if (db_error != 0) { 
+	if (db_error != 0) {
 		g_warning ("db->del failed with %d", db_error);
 		return FALSE;
 	}
-	else 
+	else
 		return TRUE;
 
 }
@@ -236,7 +236,7 @@ e_book_backend_db_cache_remove_contact (DB *db,
  *
  * Return value: %TRUE if the cache contains the contact, %FALSE otherwise.
  **/
-gboolean 
+gboolean
 e_book_backend_db_cache_check_contact (DB *db, const char *uid)
 {
 	DBT        uid_dbt, vcard_dbt;
@@ -247,9 +247,9 @@ e_book_backend_db_cache_check_contact (DB *db, const char *uid)
 	string_to_dbt (uid, &uid_dbt);
 	memset (&vcard_dbt, 0 , sizeof(vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
-	
+
 	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt,0);
-	if (db_error != 0) 
+	if (db_error != 0)
 		return FALSE;
  	else {
 		free (vcard_dbt.data);
@@ -285,7 +285,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	}
 
 	db_error = db->cursor (db, NULL, &dbc, 0);
-	if (db_error != 0) { 
+	if (db_error != 0) {
 		g_warning ("db->cursor failed with %d", db_error);
 		return NULL;
 	}
@@ -309,7 +309,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	db_error = dbc->c_close (dbc);
 	if(db_error != 0)
 		g_warning ("db->c_close failed with %d", db_error);
-		
+
 	if (sexp)
 		g_object_unref (sexp);
 
@@ -332,17 +332,17 @@ e_book_backend_db_cache_search (DB *db, const char *query)
 {
 	GList *matching_contacts, *temp;
 	GPtrArray *ptr_array;
-	
+
 	matching_contacts = e_book_backend_db_cache_get_contacts (db, query);
 	ptr_array = g_ptr_array_new ();
-	
+
 	temp = matching_contacts;
 	for (; matching_contacts != NULL; matching_contacts = g_list_next (matching_contacts)) {
 		g_ptr_array_add (ptr_array, e_contact_get (matching_contacts->data, E_CONTACT_UID));
 		g_object_unref (matching_contacts->data);
 	}
 	g_list_free (temp);
-	
+
 	return ptr_array;
 }
 
@@ -354,13 +354,13 @@ e_book_backend_db_cache_search (DB *db, const char *query)
  *
  * Return value: %TRUE if cache exists, %FALSE if not.
  **/
-gboolean 
+gboolean
 e_book_backend_db_cache_exists (const char *uri)
 {
 	char *file_name;
 	gboolean exists = FALSE;
 	file_name = get_filename_from_uri (uri);
-	
+
 	if (file_name && g_file_test (file_name, G_FILE_TEST_EXISTS))
 		exists = TRUE;
 
@@ -373,7 +373,7 @@ e_book_backend_db_cache_exists (const char *uri)
  * e_book_backend_db_cache_set_populated:
  * @backend: an #EBookBackend
  *
- * Flags @cache as being populated - that is, it is up-to-date on the 
+ * Flags @cache as being populated - that is, it is up-to-date on the
  * contents of the book it's caching.
  **/
 void
@@ -385,10 +385,10 @@ e_book_backend_db_cache_set_populated (DB *db)
 	string_to_dbt ("populated", &uid_dbt);
 	string_to_dbt ("TRUE", &vcard_dbt);
 	db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
-	if (db_error != 0) { 
+	if (db_error != 0) {
 		g_warning ("db->put failed with %d", db_error);
 	}
-	
+
 }
 
 /**
@@ -404,7 +404,7 @@ e_book_backend_db_cache_is_populated (DB *db)
 {
 	DBT        uid_dbt, vcard_dbt;
 	int        db_error;
-	
+
 	string_to_dbt ("populated", &uid_dbt);
 	memset(&vcard_dbt, 0, sizeof(vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;

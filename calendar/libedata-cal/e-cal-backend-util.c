@@ -4,7 +4,7 @@
  * Copyright (C) 2000 Ximian, Inc.
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Authors: Rodrigo Moya <rodrigo@ximian.com>    
+ * Authors: Rodrigo Moya <rodrigo@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public

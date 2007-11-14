@@ -47,7 +47,7 @@
 
 
 #define w(x)
-#define io(x) 
+#define io(x)
 #define d(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
 
 /* cursor debug */
@@ -204,7 +204,7 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 				return;
 			}
 		}
-		
+
 		w = g_malloc0(sizeof(*w));
 		w->word = g_strdup(word);
 		w->wordid = wordid;
@@ -295,7 +295,7 @@ text_index_sync(CamelIndex *idx)
 		g_hash_table_remove(p->words, ww->word);
 		g_free(ww->word);
 		g_free(ww);
-	}	
+	}
 
 	if (camel_key_table_sync(p->word_index) == -1
 	    || camel_key_table_sync(p->name_index) == -1
@@ -462,7 +462,7 @@ text_index_compress_nosync(CamelIndex *idx)
 			}
 			g_free(records);
 		}
-		
+
 		if (newcount > 0) {
 			if (camel_key_file_write(newp->links, &newdata, newcount, newrecords) == -1)
 				goto fail;
@@ -479,7 +479,7 @@ text_index_compress_nosync(CamelIndex *idx)
 	}
 
 	camel_block_file_touch_block(newp->blocks, newp->blocks->root_block);
-	
+
 	if (camel_index_sync((CamelIndex *)newidx) == -1)
 		goto fail;
 
@@ -606,7 +606,7 @@ text_index_add_name(CamelIndex *idx, const char *name)
 		camel_key_table_set_flags(p->name_index, keyid, 1, 1);
 		camel_partition_table_remove(p->name_hash, name);
 	}
-	
+
 	keyid = camel_key_table_add(p->name_index, name, 0, 0);
 	if (keyid != 0) {
 		camel_partition_table_add(p->name_hash, name, keyid);
@@ -643,9 +643,9 @@ text_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 	/* see text_index_add_name for when this can be 0 */
 	if (((CamelTextIndexName *)idn)->priv->nameid != 0) {
 		CAMEL_TEXT_INDEX_LOCK(idx, lock);
-		
+
 		g_hash_table_foreach(idn->words, (GHFunc)hash_write_word, idn);
-		
+
 		CAMEL_TEXT_INDEX_UNLOCK(idx, lock);
 	}
 
@@ -761,7 +761,7 @@ camel_text_index_init(CamelTextIndex *idx)
 	/* this cache size and the block cache size have been tuned for about the best
 	   with moderate memory usage.  Doubling the memory usage barely affects performance. */
 	p->word_cache_limit = 4096; /* 1024 = 128K */
-	
+
 	g_static_rec_mutex_init(&p->lock);
 }
 
@@ -790,9 +790,9 @@ camel_text_index_finalise(CamelTextIndex *idx)
 		camel_object_unref((CamelObject *)p->blocks);
 	if (p->links)
 		camel_object_unref((CamelObject *)p->links);
-	
+
 	g_static_rec_mutex_free(&p->lock);
-	
+
 	g_free(p);
 }
 
@@ -800,7 +800,7 @@ CamelType
 camel_text_index_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_index_get_type(), "CamelTextIndex",
 					   sizeof (CamelTextIndex),
@@ -810,7 +810,7 @@ camel_text_index_get_type(void)
 					   (CamelObjectInitFunc) camel_text_index_init,
 					   (CamelObjectFinalizeFunc) camel_text_index_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -857,7 +857,7 @@ camel_text_index_new(const char *path, int flags)
 		rb->word_index_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
-	}	
+	}
 
 	if (rb->word_hash_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
@@ -868,7 +868,7 @@ camel_text_index_new(const char *path, int flags)
 		rb->word_hash_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
-	}	
+	}
 
 	if (rb->name_index_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
@@ -879,7 +879,7 @@ camel_text_index_new(const char *path, int flags)
 		rb->name_index_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
-	}	
+	}
 
 	if (rb->name_hash_root == 0) {
 		bl = camel_block_file_new_block(p->blocks);
@@ -890,7 +890,7 @@ camel_text_index_new(const char *path, int flags)
 		rb->name_hash_root = bl->id;
 		camel_block_file_unref_block(p->blocks, bl);
 		camel_block_file_touch_block(p->blocks, p->blocks->root_block);
-	}	
+	}
 
 	p->word_index = camel_key_table_new(p->blocks, rb->word_index_root);
 	p->word_hash = camel_partition_table_new(p->blocks, rb->word_hash_root);
@@ -1226,7 +1226,7 @@ camel_text_index_dump(CamelTextIndex *idx)
 		CamelIndexCursor *idc;
 
 		printf("Word: '%s':\n", word);
-		
+
 		idc = camel_index_find((CamelIndex *)idx, word);
 		while ( (name = camel_index_cursor_next(idc)) ) {
 			printf(" %s", name);
@@ -1492,7 +1492,7 @@ text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
 				text_index_name_add_word(idn, p->buffer->str);
 				/*camel_index_name_add_word(idn, p->buffer->str);*/
 			}
-			
+
 			g_string_truncate (p->buffer, 0);
 		}
 	}
@@ -1527,7 +1527,7 @@ static void
 camel_text_index_name_finalise(CamelTextIndexName *idn)
 {
 	CamelTextIndexNamePrivate *p = CIN_PRIVATE(idn);
-	
+
 	g_hash_table_destroy(idn->parent.words);
 
 	g_string_free(p->buffer, TRUE);
@@ -1540,7 +1540,7 @@ CamelType
 camel_text_index_name_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_index_name_get_type(), "CamelTextIndexName",
 					   sizeof (CamelTextIndexName),
@@ -1550,7 +1550,7 @@ camel_text_index_name_get_type(void)
 					   (CamelObjectInitFunc) camel_text_index_name_init,
 					   (CamelObjectFinalizeFunc) camel_text_index_name_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -1604,7 +1604,7 @@ text_index_cursor_next(CamelIndexCursor *idc)
 		if (flags & 1) {
 			g_free(p->current);
 			p->current = NULL;
-		}		
+		}
 		p->record_index++;
 	} while (p->current == NULL);
 
@@ -1656,7 +1656,7 @@ CamelType
 camel_text_index_cursor_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_index_cursor_get_type(), "CamelTextIndexCursor",
 					   sizeof (CamelTextIndexCursor),
@@ -1666,7 +1666,7 @@ camel_text_index_cursor_get_type(void)
 					   (CamelObjectInitFunc) camel_text_index_cursor_init,
 					   (CamelObjectFinalizeFunc) camel_text_index_cursor_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -1768,7 +1768,7 @@ CamelType
 camel_text_index_key_cursor_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_index_cursor_get_type(), "CamelTextIndexKeyCursor",
 					   sizeof (CamelTextIndexKeyCursor),
@@ -1778,7 +1778,7 @@ camel_text_index_key_cursor_get_type(void)
 					   (CamelObjectInitFunc) camel_text_index_key_cursor_init,
 					   (CamelObjectFinalizeFunc) camel_text_index_key_cursor_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -1909,7 +1909,7 @@ int main(int argc, char **argv)
 		line[strlen(line)-1] = 0;
 
 		/* see if its already there */
-		keyid = camel_partition_table_lookup(cpi, line);		
+		keyid = camel_partition_table_lookup(cpi, line);
 		if (keyid == 0) {
 			m(printf("Adding word '%s' %d\n", line, index));
 
@@ -1919,7 +1919,7 @@ int main(int argc, char **argv)
 			camel_partition_table_add(cpi, line, keyid);
 
 			m(printf("Lookup word '%s'\n", line));
-			keyid = camel_partition_table_lookup(cpi, line);		
+			keyid = camel_partition_table_lookup(cpi, line);
 			m(printf(" key = %08x\n", keyid));
 		}
 
@@ -1943,7 +1943,7 @@ int main(int argc, char **argv)
 	while (fgets(line, sizeof(line), fp) != NULL) {
 		line[strlen(line)-1] = 0;
 		m(printf("Lookup word '%s' %d\n", line, index));
-		keyid = camel_partition_table_lookup(cpi, line);		
+		keyid = camel_partition_table_lookup(cpi, line);
 		m(printf(" key = %08d\n", keyid));
 
 		m(printf("Lookup key %08x\n", keyid));

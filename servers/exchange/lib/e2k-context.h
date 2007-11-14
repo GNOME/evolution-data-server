@@ -204,8 +204,8 @@ SoupMessage   *e2k_soup_message_new_full (E2kContext *ctx,
 					  const char *body,
 					  gulong length);
 void           e2k_context_queue_message (E2kContext *ctx,
-					  SoupMessage *msg, 
-					  SoupMessageCallbackFn callback, 
+					  SoupMessage *msg,
+					  SoupMessageCallbackFn callback,
 					  gpointer user_data);
 E2kHTTPStatus  e2k_context_send_message  (E2kContext *ctx,
 					  E2kOperation *op,

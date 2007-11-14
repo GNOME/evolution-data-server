@@ -146,7 +146,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 
 		*message = g_strndup (ta_start, ta_end - ta_start);
 		/* FIXME: HTML decode */
-		
+
 	}
 
 	return TRUE;

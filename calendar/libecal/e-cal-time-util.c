@@ -420,7 +420,7 @@ time_day_end_with_zone (time_t time, icaltimezone *zone)
  * @time: A time value.
  * @zone: Desired timezone for destination @date, or NULL if the UTC timezone
  * is desired.
- * 
+ *
  * Converts a time_t value to a #GDate structure using the specified timezone.
  * This is analogous to g_date_set_time() but takes the timezone into account.
  **/
@@ -570,9 +570,9 @@ time_leap_years_up_to (int year)
 /**
  * isodate_from_time_t:
  * @t: A time value.
- * 
+ *
  * Creates an ISO 8601 UTC representation from a time value.
- * 
+ *
  * Return value: String with the ISO 8601 representation of the UTC time.
  **/
 char *
@@ -583,7 +583,7 @@ isodate_from_time_t (time_t t)
 	const char *fmt;
 
 	gmtime_r (&t, &stm);
-	ret = g_malloc (ISODATE_LENGTH); 
+	ret = g_malloc (ISODATE_LENGTH);
 	fmt = "%04d%02d%02dT%02d%02d%02dZ";
 	g_snprintf (ret, ISODATE_LENGTH, fmt, (stm.tm_year+1900), (stm.tm_mon+1), stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec);
 
@@ -593,9 +593,9 @@ isodate_from_time_t (time_t t)
 /**
  * time_from_isodate:
  * @str: Date/time value in ISO 8601 format.
- * 
+ *
  * Converts an ISO 8601 UTC time string into a time_t value.
- * 
+ *
  * Return value: Time_t corresponding to the specified ISO string.
  * Note that we only allow UTC times at present.
  **/
@@ -661,7 +661,7 @@ struct tm
 icaltimetype_to_tm (struct icaltimetype *itt)
 {
 	struct tm tm;
-	
+
 	memset (&tm, 0, sizeof (struct tm));
 
 	if (!itt->is_date) {
@@ -675,7 +675,7 @@ icaltimetype_to_tm (struct icaltimetype *itt)
 	tm.tm_year = itt->year - 1900;
 	tm.tm_wday = time_day_of_week (itt->day, itt->month - 1, itt->year);
 	tm.tm_isdst = -1;
-	
+
 	return tm;
 }
 
@@ -684,10 +684,10 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  * @itt: A time value.
  * @from_zone: Source timezone.
  * @to_zone: Destination timezone.
- * 
+ *
  * Converts a time value from one timezone to another, and returns a struct tm
  * representation of the time.
- * 
+ *
  * Return value: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  **/
@@ -737,10 +737,10 @@ tm_to_icaltimetype (struct tm *tm, gboolean is_date)
 	itt.day = tm->tm_mday;
 	itt.month = tm->tm_mon + 1;
 	itt.year = tm->tm_year+ 1900;
-    
+
 	itt.is_utc = 0;
-	itt.is_date = is_date; 
-	
+	itt.is_date = is_date;
+
 	return itt;
 }
 

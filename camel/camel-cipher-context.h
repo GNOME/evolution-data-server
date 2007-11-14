@@ -99,11 +99,11 @@ struct _CamelCipherValidity {
 
 typedef struct _CamelCipherContext {
 	CamelObject parent_object;
-	
+
 	struct _CamelCipherContextPrivate *priv;
-	
+
 	CamelSession *session;
-	
+
 	/* these MUST be set by implementors */
 	const char *sign_protocol;
 	const char *encrypt_protocol;
@@ -112,25 +112,25 @@ typedef struct _CamelCipherContext {
 
 typedef struct _CamelCipherContextClass {
 	CamelObjectClass parent_class;
-	
+
 	CamelCipherHash	      (*id_to_hash)(CamelCipherContext *context, const char *id);
 	const char *	      (*hash_to_id)(CamelCipherContext *context, CamelCipherHash hash);
-	
+
 	int                   (*sign)      (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 					    struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex);
-	
+
 	CamelCipherValidity * (*verify)    (CamelCipherContext *context, struct _CamelMimePart *ipart, CamelException *ex);
-	
+
 	int                   (*encrypt)   (CamelCipherContext *context, const char *userid,
 					    GPtrArray *recipients, struct _CamelMimePart *ipart, struct _CamelMimePart *opart,
 					    CamelException *ex);
-	
+
 	CamelCipherValidity  *(*decrypt)  (CamelCipherContext *context, struct _CamelMimePart *ipart, struct _CamelMimePart *opart,
 					   CamelException *ex);
-	
+
 	int                   (*import_keys) (CamelCipherContext *context, struct _CamelStream *istream,
 					      CamelException *ex);
-	
+
 	int                   (*export_keys) (CamelCipherContext *context, GPtrArray *keys,
 					      struct _CamelStream *ostream, CamelException *ex);
 } CamelCipherContextClass;

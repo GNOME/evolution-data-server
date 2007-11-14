@@ -67,7 +67,7 @@ CamelType
 camel_internet_address_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_address_get_type(), "CamelInternetAddress",
 					   sizeof (CamelInternetAddress),
@@ -77,7 +77,7 @@ camel_internet_address_get_type(void)
 					   (CamelObjectInitFunc) camel_internet_address_init,
 					   NULL);
 	}
-	
+
 	return type;
 }
 
@@ -107,7 +107,7 @@ internet_decode	(CamelAddress *a, const char *raw)
 		}
 		camel_header_address_list_clear(&ha);
 	}
-	
+
 	return a->addresses->len - count;
 }
 
@@ -121,9 +121,9 @@ internet_encode	(CamelAddress *a)
 
 	if (a->addresses->len == 0)
 		return NULL;
-	
+
 	out = g_string_new("");
-	
+
 	for (i = 0;i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index(a->addresses, i);
 		char *enc;
@@ -135,10 +135,10 @@ internet_encode	(CamelAddress *a)
 		g_string_append(out, enc);
 		g_free(enc);
 	}
-	
+
 	ret = out->str;
 	g_string_free(out, FALSE);
-	
+
 	return ret;
 }
 
@@ -214,12 +214,12 @@ internet_format	(CamelAddress *a)
 	int i;
 	GString *out;
 	char *ret;
-	
+
 	if (a->addresses->len == 0)
 		return NULL;
-	
+
 	out = g_string_new("");
-	
+
 	for (i = 0;i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index(a->addresses, i);
 		char *enc;
@@ -231,10 +231,10 @@ internet_format	(CamelAddress *a)
 		g_string_append(out, enc);
 		g_free(enc);
 	}
-	
+
 	ret = out->str;
 	g_string_free(out, FALSE);
-	
+
 	return ret;
 }
 
@@ -257,10 +257,10 @@ static void
 internet_remove	(CamelAddress *a, int index)
 {
 	struct _address *addr;
-	
+
 	if (index < 0 || index >= a->addresses->len)
 		return;
-	
+
 	addr = g_ptr_array_index(a->addresses, index);
 	g_free(addr->name);
 	g_free(addr->address);
@@ -273,7 +273,7 @@ internet_remove	(CamelAddress *a, int index)
  * camel_internet_address_new:
  *
  * Create a new #CamelInternetAddress object.
- * 
+ *
  * Returns a new #CamelInternetAddress object
  **/
 CamelInternetAddress *
@@ -289,9 +289,9 @@ camel_internet_address_new (void)
  * @addr: a #CamelInternetAddress object
  * @name: name associated with the new address
  * @address: routing address associated with the new address
- * 
+ *
  * Add a new internet address to @addr.
- * 
+ *
  * Returns the index of added entry
  **/
 int
@@ -318,9 +318,9 @@ camel_internet_address_add (CamelInternetAddress *addr, const char *name, const 
  * @index: address's array index
  * @namep: holder for the returned name, or %NULL, if not required.
  * @addressp: holder for the returned address, or %NULL, if not required.
- * 
+ *
  * Get the address at @index.
- * 
+ *
  * Returns %TRUE if such an address exists, or %FALSE otherwise
  **/
 gboolean
@@ -347,9 +347,9 @@ camel_internet_address_get (const CamelInternetAddress *addr, int index, const c
  * @addr: a #CamelInternetAddress object
  * @name: name to lookup
  * @addressp: holder for address part, or %NULL, if not required.
- * 
+ *
  * Find address by real name.
- * 
+ *
  * Returns the index of the address matching the name, or %-1 if no
  * match was found
  **/
@@ -379,9 +379,9 @@ camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, c
  * @addr: a #CamelInternetAddress object
  * @address: address to lookup
  * @namep: holder for the matching name, or %NULL, if not required.
- * 
+ *
  * Find an address by address.
- * 
+ *
  * Returns the index of the address, or %-1 if not found
  **/
 int
@@ -447,13 +447,13 @@ append:
  * @len: the length of the line the address is being appended to
  * @name: the unencoded real name associated with the address
  * @addr: the routing address
- * 
+ *
  * Encode a single address ready for internet usage.  Header folding
  * as per rfc822 is also performed, based on the length *@len.  If @len
  * is %NULL, then no folding will occur.
  *
  * Note: The value at *@in will be updated based on any linewrapping done
- * 
+ *
  * Returns the encoded address
  **/
 char *
@@ -505,12 +505,12 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
 		g_string_append_printf(out, ">");
 
 	len += out->len;
-	
+
 	if (inlen != NULL)
 		*inlen = len;
 
 	g_free(name);
-	
+
 	ret = out->str;
 	g_string_free(out, FALSE);
 
@@ -522,9 +522,9 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
  * camel_internet_address_format_address:
  * @name: a name, quotes may be stripped from it
  * @addr: an rfc822 routing address
- * 
+ *
  * Function to format a single address, suitable for display.
- * 
+ *
  * Returns a nicely formatted string containing the rfc822 address
  **/
 char *

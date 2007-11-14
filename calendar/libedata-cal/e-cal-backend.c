@@ -6,7 +6,7 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          JP Rosevear <jpr@ximian.com>
- *          Rodrigo Moya <rodrigo@ximian.com>    
+ *          Rodrigo Moya <rodrigo@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -41,7 +41,7 @@ struct _ECalBackendPrivate {
 
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
-	
+
 	/* List of Cal objects */
 	GMutex *clients_mutex;
 	GList *clients;
@@ -115,10 +115,10 @@ e_cal_backend_set_property (GObject *object, guint property_id, const GValue *va
 {
 	ECalBackend *backend;
 	ECalBackendPrivate *priv;
-	
+
 	backend = E_CAL_BACKEND (object);
 	priv = backend->priv;
-	
+
 	switch (property_id) {
 	case PROP_SOURCE:
 		{
@@ -160,7 +160,7 @@ e_cal_backend_get_property (GObject *object, guint property_id, GValue *value, G
 {
  	ECalBackend *backend;
 	ECalBackendPrivate *priv;
-	
+
 	backend = E_CAL_BACKEND (object);
 	priv = backend->priv;
 
@@ -194,22 +194,22 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class->get_property = e_cal_backend_get_property;
 	object_class->finalize = e_cal_backend_finalize;
 
-	g_object_class_install_property (object_class, PROP_SOURCE, 
+	g_object_class_install_property (object_class, PROP_SOURCE,
 					 g_param_spec_object ("source", NULL, NULL, E_TYPE_SOURCE,
 							      G_PARAM_READABLE | G_PARAM_WRITABLE
 							      | G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (object_class, PROP_URI, 
+	g_object_class_install_property (object_class, PROP_URI,
 					 g_param_spec_string ("uri", NULL, NULL, "",
 							      G_PARAM_READABLE | G_PARAM_WRITABLE
 							      | G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (object_class, PROP_KIND, 
-					 g_param_spec_ulong ("kind", NULL, NULL, 
-							     ICAL_NO_COMPONENT, ICAL_XLICMIMEPART_COMPONENT, 
+	g_object_class_install_property (object_class, PROP_KIND,
+					 g_param_spec_ulong ("kind", NULL, NULL,
+							     ICAL_NO_COMPONENT, ICAL_XLICMIMEPART_COMPONENT,
 							     ICAL_NO_COMPONENT,
 							     G_PARAM_READABLE | G_PARAM_WRITABLE
-							     | G_PARAM_CONSTRUCT_ONLY));	
+							     | G_PARAM_CONSTRUCT_ONLY));
 	e_cal_backend_signals[LAST_CLIENT_GONE] =
 		g_signal_new ("last_client_gone",
 			      G_TYPE_FROM_CLASS (class),
@@ -249,7 +249,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	class->is_read_only = NULL;
 	class->start_query = NULL;
 	class->get_mode = NULL;
-	class->set_mode = NULL;	
+	class->set_mode = NULL;
 	class->get_object = NULL;
 	class->get_default_object = NULL;
 	class->get_object_list = NULL;
@@ -297,7 +297,7 @@ e_cal_backend_finalize (GObject *object)
 
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->queries_mutex);
-	
+
 	g_free (priv->uri);
 	g_object_unref (priv->source);
 	g_free (priv);
@@ -319,12 +319,12 @@ ESource *
 e_cal_backend_get_source (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
-	
+
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
 	priv = backend->priv;
-	
+
 	return priv->source;
 }
 
@@ -341,12 +341,12 @@ const char *
 e_cal_backend_get_uri (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
-	
+
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
 	priv = backend->priv;
-	
+
 	return priv->uri;
 }
 
@@ -362,12 +362,12 @@ icalcomponent_kind
 e_cal_backend_get_kind (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
-	
+
 	g_return_val_if_fail (backend != NULL, ICAL_NO_COMPONENT);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
 
 	priv = backend->priv;
-	
+
 	return priv->kind;
 }
 
@@ -405,14 +405,14 @@ void
 e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendPrivate *priv;
-	
+
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	priv = backend->priv;
-	
+
 	bonobo_object_set_immortal (BONOBO_OBJECT (cal), TRUE);
 
 	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
@@ -435,7 +435,7 @@ void
 e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendPrivate *priv;
-	
+
 	/* XXX this needs a bit more thinking wrt the mutex - we
 	   should be holding it when we check to see if clients is
 	   NULL */
@@ -476,7 +476,7 @@ e_cal_backend_add_query (ECalBackend *backend, EDataCalView *query)
 	g_mutex_lock (backend->priv->queries_mutex);
 
 	e_list_append (backend->priv->queries, query);
-	
+
 	g_mutex_unlock (backend->priv->queries_mutex);
 }
 
@@ -638,9 +638,9 @@ e_cal_backend_remove (ECalBackend *backend, EDataCal *cal)
 /**
  * e_cal_backend_is_loaded:
  * @backend: A calendar backend.
- * 
+ *
  * Queries whether a calendar backend has been loaded yet.
- * 
+ *
  * Return value: TRUE if the backend has been loaded with data, FALSE
  * otherwise.
  */
@@ -683,7 +683,7 @@ e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal)
  *
  * Starts a new live query on the given backend.
  */
-void 
+void
 e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query)
 {
 	g_return_if_fail (backend != NULL);
@@ -695,10 +695,10 @@ e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query)
 
 /**
  * e_cal_backend_get_mode:
- * @backend: A calendar backend. 
- * 
+ * @backend: A calendar backend.
+ *
  * Queries whether a calendar backend is connected remotely.
- * 
+ *
  * Return value: The current mode the calendar is in
  **/
 CalMode
@@ -720,8 +720,8 @@ e_cal_backend_get_mode (ECalBackend *backend)
  * e_cal_backend_set_mode:
  * @backend: A calendar backend
  * @mode: Mode to change to
- * 
- * Sets the mode of the calendar 
+ *
+ * Sets the mode of the calendar
  */
 void
 e_cal_backend_set_mode (ECalBackend *backend, CalMode mode)
@@ -776,7 +776,7 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid, 
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.
  * @sexp: Expression to search for.
- * 
+ *
  * Calls the get_object_list method on the given backend.
  */
 void
@@ -796,7 +796,7 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *
  * @uid: Unique identifier for a calendar object.
  * @rid: ID for the object's recurrence to get.
  *
- * Queries a calendar backend for attachments present in a calendar object based 
+ * Queries a calendar backend for attachments present in a calendar object based
  * on its unique identifier and its recurrence ID (if a recurrent appointment).
  */
 void
@@ -817,7 +817,7 @@ e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const ch
  * @users: List of users to get free/busy information for.
  * @start: Start time for query.
  * @end: End time for query.
- * 
+ *
  * Gets a free/busy object for the given time interval
  */
 void
@@ -837,12 +837,12 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, 
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.
  * @change_id: A unique uid for the callers change list
- * 
+ *
  * Builds a sequence of objects and the type of change that occurred on them since
  * the last time the give change_id was seen
  */
 void
-e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *change_id) 
+e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *change_id)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -924,7 +924,7 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *ca
  * @uid: Unique identifier of the object to remove.
  * @rid: A recurrence ID.
  * @mod: Type of removal.
- * 
+ *
  * Removes an object in a calendar backend.  The backend will notify all of its
  * clients about the change.
  */
@@ -983,7 +983,7 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *cal
  * @cal: An #EDataCal object.
  * @tzid: Unique identifier of a VTIMEZONE object. Note that this must not be
  * NULL.
- * 
+ *
  * Returns the icaltimezone* corresponding to the TZID, or NULL if the TZID
  * can't be found.
  */
@@ -1003,9 +1003,9 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tzi
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.
  * @tzobj: The timezone object, in a string.
- * 
+ *
  * Sets the default timezone for the calendar, which is used to resolve
- * DATE and floating DATE-TIME values. 
+ * DATE and floating DATE-TIME values.
  */
 void
 e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char *tzobj)
@@ -1026,10 +1026,10 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char 
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.
  * @tzid: The TZID identifying the timezone.
- * 
+ *
  * Sets the default timezone for the calendar, which is used to resolve
- * DATE and floating DATE-TIME values. 
- * 
+ * DATE and floating DATE-TIME values.
+ *
  */
 void
 e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
@@ -1143,7 +1143,7 @@ e_cal_backend_notify_object_created (ECalBackend *backend, const char *calobj)
 		query = QUERY (e_iterator_get (iter));
 
 		bonobo_object_ref (query);
-		if (e_data_cal_view_object_matches (query, calobj))		
+		if (e_data_cal_view_object_matches (query, calobj))
 			e_data_cal_view_notify_objects_added_1 (query, calobj);
 		bonobo_object_unref (query);
 
@@ -1167,13 +1167,13 @@ match_query_and_notify (EDataCalView *query, const char *old_object, const char 
 		e_data_cal_view_notify_objects_added_1 (query, object);
 	else if (old_match) {
 		ECalComponent *comp = NULL;
-	
+
 		comp = e_cal_component_new_from_string (old_object);
 		if (comp) {
 			ECalComponentId *id = e_cal_component_get_id (comp);
 
 			e_data_cal_view_notify_objects_removed_1 (query, id);
-			
+
 			e_cal_component_free_id (id);
 			g_object_unref (comp);
 		}
@@ -1272,7 +1272,7 @@ e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_C
  * modified by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_modified (ECalBackend *backend, 
+e_cal_backend_notify_object_modified (ECalBackend *backend,
 				      const char *old_object, const char *object)
 {
 	ECalBackendPrivate *priv;
@@ -1367,7 +1367,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
  **/
 void
 e_cal_backend_notify_mode (ECalBackend *backend,
-			   GNOME_Evolution_Calendar_CalListener_SetModeStatus status, 
+			   GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
 			   GNOME_Evolution_Calendar_CalMode mode)
 {
 	ECalBackendPrivate *priv = backend->priv;
@@ -1394,7 +1394,7 @@ e_cal_backend_notify_auth_required (ECalBackend *backend)
 {
         ECalBackendPrivate *priv = backend->priv;
         GList *l;
-                                                                                                                             
+
         for (l = priv->clients; l; l = l->next)
                 e_data_cal_notify_auth_required (l->data);
 }

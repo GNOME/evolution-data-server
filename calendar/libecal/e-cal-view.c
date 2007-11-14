@@ -142,10 +142,10 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 {
 	ECalView *view;
 	ECalViewPrivate *priv;
-	
+
 	view = E_CAL_VIEW (object);
 	priv = view->priv;
-	
+
 	switch (property_id) {
 	case PROP_VIEW:
 		if (priv->view != CORBA_OBJECT_NIL)
@@ -161,17 +161,17 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 
 		priv->listener = bonobo_object_ref (g_value_get_pointer (value));
 
-		g_signal_connect (G_OBJECT (priv->listener), "objects_added", 
+		g_signal_connect (G_OBJECT (priv->listener), "objects_added",
 				  G_CALLBACK (objects_added_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "objects_modified", 
+		g_signal_connect (G_OBJECT (priv->listener), "objects_modified",
 				  G_CALLBACK (objects_modified_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "objects_removed", 
+		g_signal_connect (G_OBJECT (priv->listener), "objects_removed",
 				  G_CALLBACK (objects_removed_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "view_progress", 
+		g_signal_connect (G_OBJECT (priv->listener), "view_progress",
 				  G_CALLBACK (view_progress_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "view_done", 
+		g_signal_connect (G_OBJECT (priv->listener), "view_done",
 				  G_CALLBACK (view_done_cb), view);
-		break;		
+		break;
 	case PROP_CLIENT:
 		priv->client = E_CAL (g_value_dup_object (value));
 		break;
@@ -186,7 +186,7 @@ e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GPar
 {
 	ECalView *view;
 	ECalViewPrivate *priv;
-	
+
 	view = E_CAL_VIEW (object);
 	priv = view->priv;
 
@@ -238,7 +238,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 {
 	GObjectClass *object_class;
 	GParamSpec *param;
-	
+
 	object_class = (GObjectClass *) klass;
 
 	parent_class = g_type_class_peek_parent (klass);
@@ -257,7 +257,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 	param =  g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_CLIENT, param);
-	
+
 	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects_added",
 			      G_TYPE_FROM_CLASS (klass),
@@ -302,10 +302,10 @@ e_cal_view_class_init (ECalViewClass *klass)
 
 /**
  * e_cal_view_get_type:
- * 
+ *
  * Registers the #ECalView class if necessary, and returns the type ID assigned
  * to it.
- * 
+ *
  * Return value: The type ID of the #ECalView class.
  **/
 GType
@@ -335,10 +335,10 @@ e_cal_view_get_type (void)
  * @corba_view: The CORBA object for the view.
  * @listener: An #ECalViewListener.
  * @client: An #ECal object.
- * 
+ *
  * Creates a new view object by issuing the view creation request to the
  * calendar server.
- * 
+ *
  * Return value: A newly-created view object, or NULL if the request failed.
  **/
 ECalView *
@@ -346,7 +346,7 @@ e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *l
 {
 	ECalView *view;
 
-	view = g_object_new (E_TYPE_CAL_VIEW, "view", corba_view, "listener", 
+	view = g_object_new (E_TYPE_CAL_VIEW, "view", corba_view, "listener",
 			      listener, "client", client, NULL);
 
 	return view;
@@ -382,13 +382,13 @@ e_cal_view_start (ECalView *view)
 
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
-	
+
 	priv = view->priv;
-	
+
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_CalView_start (priv->view, &ev);
-	if (BONOBO_EX (&ev)) 
+	if (BONOBO_EX (&ev))
 		g_warning (G_STRLOC ": Unable to start view");
 
 	CORBA_exception_free (&ev);

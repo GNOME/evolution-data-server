@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -118,11 +118,11 @@ e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, con
 	soup_soap_message_end_element (msg);
 }
 
-void 
+void
 e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
 						    const char *name,
 						    const char *prefix,
-						    const char *value, 
+						    const char *value,
 						    const char *attribute_name,
 						    const char *attribute_value)
 {
@@ -163,25 +163,25 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 			gchar *body;
 			gchar *begin = NULL;
 			gchar *end = NULL;
-			
+
 			body = g_strndup (SOUP_MESSAGE (msg)->request.body, SOUP_MESSAGE (msg)->request.length);
 			begin = g_strrstr (body, "<types:password>");
-			if (begin) 
+			if (begin)
 				begin = begin + strlen ("<types:password>");
 			end = g_strrstr (body , "</types:password>");
 			if (begin && end) {
 				gchar *tmp;
 				for (tmp = begin; tmp < end; tmp++)
 					*tmp='X';
-				
+
 			}
 			fputc ('\n', stdout);
 			fwrite (body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
-			fputc ('\n', stdout);	
+			fputc ('\n', stdout);
 			g_free (body);
 		}
-		else {		
-	
+		else {
+
 			/* print request's body */
 			fputc ('\n', stdout);
 			fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);

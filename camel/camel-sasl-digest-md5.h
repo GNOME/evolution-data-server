@@ -36,13 +36,13 @@ G_BEGIN_DECLS
 typedef struct _CamelSaslDigestMd5 {
 	CamelSasl parent_object;
 	struct _CamelSaslDigestMd5Private *priv;
-	
+
 } CamelSaslDigestMd5;
 
 
 typedef struct _CamelSaslDigestMd5Class {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslDigestMd5Class;
 
 

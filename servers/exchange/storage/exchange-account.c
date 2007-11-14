@@ -52,7 +52,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x) 
+#define d(x)
 #define ADS_UF_DONT_EXPIRE_PASSWORD 0x10000
 #define ONE_HUNDRED_NANOSECOND 0.000000100
 #define SECONDS_IN_DAY 86400
@@ -64,7 +64,7 @@ struct _ExchangeAccountPrivate {
 	ExchangeFolderSize *fsize;
 
 	GMutex *connect_lock;
-	gboolean connecting, connected; 
+	gboolean connecting, connected;
 	int account_online;
 
 	GPtrArray *hierarchies;
@@ -373,8 +373,8 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		g_hash_table_insert (account->priv->fresh_folders,
 				     key,
 				     folder);
-	}	
-	
+	}
+
 	key = (char *) e_folder_get_physical_uri (folder);
 	if (!g_hash_table_lookup (account->priv->folders, key)) {
 		/* Avoid dupilcations since the user could add a folder as
@@ -388,8 +388,8 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 
 	key = (char *) e_folder_exchange_get_internal_uri (folder);
 	if (!g_hash_table_lookup (account->priv->folders, key)) {
-		/* The internal_uri for public folders and favorites folder 
-		   is same !!! Without this check the folder value could 
+		/* The internal_uri for public folders and favorites folder
+		   is same !!! Without this check the folder value could
 		   overwrite the previously added folder. */
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->folders,
@@ -398,7 +398,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		table_updated = 1;
 	}
 
-	if (permanent_uri && (!g_hash_table_lookup (account->priv->folders, 
+	if (permanent_uri && (!g_hash_table_lookup (account->priv->folders,
 					permanent_uri))) {
 		g_object_ref (folder);
 		g_hash_table_insert (account->priv->folders,
@@ -406,10 +406,10 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 				     folder);
 		table_updated = 1;
 	}
-	
+
 	if (table_updated)
 	{
-		g_hash_table_insert (account->priv->hierarchies_by_folder, 
+		g_hash_table_insert (account->priv->hierarchies_by_folder,
 					folder, hier);
 
 		g_signal_emit (account, signals[NEW_FOLDER], 0, folder);
@@ -420,18 +420,18 @@ static void
 hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 			  ExchangeAccount *account)
 {
-	if (!g_hash_table_lookup (account->priv->folders, 
+	if (!g_hash_table_lookup (account->priv->folders,
 					e_folder_exchange_get_path (folder)))
 		return;
 
-	g_hash_table_remove (account->priv->folders, 
+	g_hash_table_remove (account->priv->folders,
 					e_folder_exchange_get_path (folder));
-	g_hash_table_remove (account->priv->folders, 
+	g_hash_table_remove (account->priv->folders,
 					e_folder_get_physical_uri (folder));
-	/* Dont remove this for favorites, as the internal_uri is shared 
+	/* Dont remove this for favorites, as the internal_uri is shared
 		by the public folder as well */
 	if (hier->type != EXCHANGE_HIERARCHY_FAVORITES) {
-		g_hash_table_remove (account->priv->folders, 
+		g_hash_table_remove (account->priv->folders,
 					e_folder_exchange_get_internal_uri (folder));
 	}
 	g_hash_table_remove (account->priv->hierarchies_by_folder, folder);
@@ -494,7 +494,7 @@ exchange_account_create_folder (ExchangeAccount *account,
 	ExchangeHierarchy *hier;
 	EFolder *parent;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	if (!get_parent_and_name (account, &path, &parent, &hier))
@@ -522,7 +522,7 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 	EFolder *folder;
 	const char *int_uri;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	d(g_print ("exchange_account_remove_folder: path=[%s]\n", path));
@@ -532,7 +532,7 @@ exchange_account_remove_folder (ExchangeAccount *account, const char *path)
 
 	int_uri = e_folder_exchange_get_internal_uri (folder);
 
-	if (g_hash_table_find (account->priv->standard_uris, 
+	if (g_hash_table_find (account->priv->standard_uris,
 					check_if_sf, (char *)int_uri)) {
 		return EXCHANGE_ACCOUNT_FOLDER_UNSUPPORTED_OPERATION;
 	}
@@ -550,7 +550,7 @@ exchange_account_xfer_folder (ExchangeAccount *account,
 	ExchangeHierarchy *source_hier, *dest_hier;
 	const char *name;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	if (!get_folder (account, source_path, &source, &source_hier) ||
@@ -668,7 +668,7 @@ exchange_account_discover_shared_folder (ExchangeAccount *account,
 	E2kGlobalCatalogStatus status;
 	E2kGlobalCatalogEntry *entry;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	if (!account->priv->gc)
@@ -762,7 +762,7 @@ exchange_account_remove_shared_folder (ExchangeAccount *account,
 	ExchangeHierarchy *hier;
 	EFolder *folder;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	if (!get_folder (account, path, &folder, &hier))
@@ -780,7 +780,7 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 	EFolder *folder;
 	int mode;
 
-	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), 
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account),
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 
 	d(g_print ("exchange_account_remove_folder: path=[%s]\n", path));
@@ -797,8 +797,8 @@ exchange_account_open_folder (ExchangeAccount *account, const char *path)
 		 * anyway. So just ignore the request for now.
 		 */
 		return EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST;
-	}		
-	
+	}
+
 	return exchange_hierarchy_scan_subtree (hier, folder, mode);
 }
 
@@ -938,25 +938,25 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 
 			prompt = g_strdup_printf (_("Enter password for %s"),
 						  account->account_name);
-			oldremember = remember = 
+			oldremember = remember =
 					account->priv->account->source->save_passwd;
 			password = e_passwords_ask_password (
 					_("Enter password"),
-					"Exchange", 
+					"Exchange",
 					account->priv->password_key,
-					prompt, 
+					prompt,
 					E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET,
-					&remember, 
+					&remember,
 					NULL);
 			if (remember != oldremember) {
 				account->priv->account->source->save_passwd = remember;
 			}
 			g_free (prompt);
-		} 
+		}
 		else if (!account->priv->account->source->save_passwd) {
-			/* get_password returns the password cached but user has not 
-		 	 * selected remember password option, forget this password 
-		 	 * whis is stored temporarily by e2k_validate_user() 
+			/* get_password returns the password cached but user has not
+		 	 * selected remember password option, forget this password
+		 	 * whis is stored temporarily by e2k_validate_user()
 		 	 */
 			e_passwords_forget_password ("Exchange", account->priv->password_key);
 		}
@@ -965,9 +965,9 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 	if (!password) {
 	}
 	else if (!account->priv->account->source->save_passwd) {
-		/* get_password returns the password cached but user has not 
-	 	 * selected remember password option, forget this password 
-	 	 * whis is stored temporarily by e2k_validate_user() 
+		/* get_password returns the password cached but user has not
+	 	 * selected remember password option, forget this password
+	 	 * whis is stored temporarily by e2k_validate_user()
 	 	 */
 		e_passwords_forget_password ("Exchange", account->priv->password_key);
 	}
@@ -1007,15 +1007,15 @@ is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 
 	result = e2k_kerberos_check_password (ac->username, domain,
 					      ac->password);
-	if (result != E2K_KERBEROS_OK && 
+	if (result != E2K_KERBEROS_OK &&
 	    result != E2K_KERBEROS_PASSWORD_EXPIRED) {
 		/* try again with nt domain */
 		domain = ac->nt_domain;
 		if (domain)
-			result = e2k_kerberos_check_password (ac->username, 
+			result = e2k_kerberos_check_password (ac->username,
 							      domain,
 							      ac->password);
-	} 
+	}
 
 	return (result == E2K_KERBEROS_PASSWORD_EXPIRED);
 }
@@ -1033,43 +1033,43 @@ find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 	if (account->priv->passwd_exp_warn_period == -1)
 		return -1;
 
-	/* Check for password expiry period */ 
-	/* This needs to be invoked after is_password_expired(), i.e., 
+	/* Check for password expiry period */
+	/* This needs to be invoked after is_password_expired(), i.e.,
 	   only if password is not expired */
 
 	/* Check for account control value for a user */
 
 	e2k_operation_init (&gcop);
-	gcstatus = e2k_global_catalog_lookup (account->priv->gc, 
-					      &gcop, 
-					      E2K_GLOBAL_CATALOG_LOOKUP_BY_EMAIL, 
-					      account->priv->identity_email, 
-					      E2K_GLOBAL_CATALOG_LOOKUP_ACCOUNT_CONTROL, 
-					      &entry); 
+	gcstatus = e2k_global_catalog_lookup (account->priv->gc,
+					      &gcop,
+					      E2K_GLOBAL_CATALOG_LOOKUP_BY_EMAIL,
+					      account->priv->identity_email,
+					      E2K_GLOBAL_CATALOG_LOOKUP_ACCOUNT_CONTROL,
+					      &entry);
 	e2k_operation_free (&gcop);
-	if (gcstatus != E2K_GLOBAL_CATALOG_OK) 
+	if (gcstatus != E2K_GLOBAL_CATALOG_OK)
 		return -1;
-       
+
 	if (entry->user_account_control & ADS_UF_DONT_EXPIRE_PASSWORD) {
 		return -1;         /* Password is not set to expire */
 	}
 
-	/* Here we don't check not setting the password and expired password */ 
+	/* Here we don't check not setting the password and expired password */
 	/* Check for the maximum password age set */
 
-	e2k_operation_init (&gcop); 
-	max_pwd_age = lookup_passwd_max_age (account->priv->gc, &gcop); 
+	e2k_operation_init (&gcop);
+	max_pwd_age = lookup_passwd_max_age (account->priv->gc, &gcop);
 	e2k_operation_free (&gcop);
 
 	if (max_pwd_age > 0) {
 		/* Calculate password expiry period */
-		max_pwd_age_days = 
+		max_pwd_age_days =
 		( max_pwd_age * ONE_HUNDRED_NANOSECOND ) / SECONDS_IN_DAY;
 
 		if (max_pwd_age_days <= account->priv->passwd_exp_warn_period) {
 			return max_pwd_age_days;
 		}
-	} 
+	}
 	return -1;
 }
 
@@ -1113,7 +1113,7 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 		/* try with nt_domain */
 		domain = account->priv->nt_domain;
 		if (domain)
-			result = e2k_kerberos_change_password (account->priv->username, 
+			result = e2k_kerberos_change_password (account->priv->username,
 							       domain, old_pass,
 							       new_pass);
 	}
@@ -1132,7 +1132,7 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 	default:
 		return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_FAILED;
 	}
-	
+
 	return EXCHANGE_ACCOUNT_PASSWORD_CHANGE_SUCCESS;
 #else
 	g_warning ("exchange_account_set_password: Not implemented (no KRB5)");
@@ -1140,13 +1140,13 @@ exchange_account_set_password (ExchangeAccount *account, char *old_pass, char *n
 #endif
 }
 
-void 
+void
 exchange_account_set_save_password (ExchangeAccount *account, gboolean save_password)
 {
 	account->priv->account->source->save_passwd = save_password;
 }
 
-gboolean 
+gboolean
 exchange_account_is_save_password (ExchangeAccount *account)
 {
 	return account->priv->account->source->save_passwd;
@@ -1167,7 +1167,7 @@ exchange_account_is_save_password (ExchangeAccount *account)
 gboolean
 exchange_account_set_offline (ExchangeAccount *account)
 {
-		
+
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), FALSE);
 
 	g_mutex_lock (account->priv->connect_lock);
@@ -1200,7 +1200,7 @@ exchange_account_set_online (ExchangeAccount *account)
 	g_mutex_lock (account->priv->connect_lock);
 	account->priv->account_online = ONLINE_MODE;
 	g_mutex_unlock (account->priv->connect_lock);
-	
+
 	return TRUE;
 }
 
@@ -1214,7 +1214,7 @@ void
 exchange_account_is_offline (ExchangeAccount *account, int *state)
 {
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
-	
+
 	*state = account->priv->account_online;
 }
 
@@ -1311,7 +1311,7 @@ setup_account_hierarchies (ExchangeAccount *account)
 	}
 
 hierarchies_created:
-	
+
 	/* Scan the personal and favorite folders so we can resolve references
 	 * to the Calendar, Contacts, etc even if the tree isn't
 	 * opened.
@@ -1319,7 +1319,7 @@ hierarchies_created:
 
 	/* Assuming the first element being personal hierarchy. */
 	personal_hier = account->priv->hierarchies->pdata[0];
-	
+
 	fresult = exchange_hierarchy_scan_subtree (personal_hier,
 						   personal_hier->toplevel,
 						   mode);
@@ -1335,7 +1335,7 @@ hierarchies_created:
 		account->priv->favorites_hierarchy,
 		account->priv->favorites_hierarchy->toplevel,
 		mode);
-	if (fresult != EXCHANGE_ACCOUNT_FOLDER_OK && 
+	if (fresult != EXCHANGE_ACCOUNT_FOLDER_OK &&
 	    fresult != EXCHANGE_ACCOUNT_FOLDER_DOES_NOT_EXIST) {
 		account->priv->connecting = FALSE;
 		return FALSE;
@@ -1355,7 +1355,7 @@ hierarchies_created:
  * failed.
  **/
 E2kContext *
-exchange_account_connect (ExchangeAccount *account, const char *pword, 
+exchange_account_connect (ExchangeAccount *account, const char *pword,
 			  ExchangeAccountResult *info_result)
 {
 	E2kAutoconfig *ac;
@@ -1371,12 +1371,12 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	E2kOperation gcop;
 	char *user_name = NULL;
 
-	*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR; 
+	*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	*info_result = EXCHANGE_ACCOUNT_CONNECT_SUCCESS;
 	exchange_account_is_offline (account, &mode);
-	
+
 	g_mutex_lock (account->priv->connect_lock);
 
 	if (mode == UNSUPPORTED_MODE) {
@@ -1385,7 +1385,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 		g_mutex_unlock (account->priv->connect_lock);
 		return NULL;
 	}
-	
+
 	if (account->priv->connecting || mode == OFFLINE_MODE) {
 		g_mutex_unlock (account->priv->connect_lock);
 		if (mode == OFFLINE_MODE) {
@@ -1571,22 +1571,22 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
                                             E2K_GLOBAL_CATALOG_LOOKUP_BY_EMAIL,
                                             account->priv->identity_email,
 					    E2K_GLOBAL_CATALOG_LOOKUP_QUOTA,
-                                            &entry);	
+                                            &entry);
 	e2k_operation_free (&gcop);
 
-	/* FIXME: warning message should have quota limit value 
+	/* FIXME: warning message should have quota limit value
 	 */
 	if (gcstatus == E2K_GLOBAL_CATALOG_OK) {
 
-		if (entry->quota_norecv && 
+		if (entry->quota_norecv &&
 			account->mbox_size >= entry->quota_norecv) {
 				*info_result = EXCHANGE_ACCOUNT_QUOTA_RECIEVE_ERROR;
 				account->priv->quota_limit = entry->quota_norecv;
-		} else if (entry->quota_nosend && 
+		} else if (entry->quota_nosend &&
 				account->mbox_size >= entry->quota_nosend) {
 					*info_result = EXCHANGE_ACCOUNT_QUOTA_SEND_ERROR;
 					account->priv->quota_limit = entry->quota_nosend;
-		} else if (entry->quota_warn && 
+		} else if (entry->quota_warn &&
 				account->mbox_size >= entry->quota_warn) {
 					*info_result = EXCHANGE_ACCOUNT_QUOTA_WARN;
 					account->priv->quota_limit = entry->quota_warn;
@@ -1649,7 +1649,7 @@ E2kGlobalCatalog *
 exchange_account_get_global_catalog (ExchangeAccount *account)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-		
+
 	return account->priv->gc;
 }
 
@@ -1659,7 +1659,7 @@ exchange_account_get_global_catalog (ExchangeAccount *account)
  *
  * Return value: @account's #EAccount, if it is connected and
  * online, or %NULL if not.
- **/	
+ **/
 EAccount *
 exchange_account_fetch (ExchangeAccount *acct)
 {
@@ -1783,7 +1783,7 @@ exchange_account_get_foreign_uri (ExchangeAccount *account,
 
 /* Scans the subscribed users folders. */
 /*FIXME This function is not really required if the syncronization
-  problem between exchange and evolution is fixed. Exchange does not get to know 
+  problem between exchange and evolution is fixed. Exchange does not get to know
  if an user's folder is subscribed from evolution */
 void
 exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, const char *user_email)
@@ -1791,7 +1791,7 @@ exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, const char *u
 	char *dir;
 	ExchangeHierarchy *hier;
 	int mode;
-	
+
 	hier = g_hash_table_lookup (account->priv->foreign_hierarchies, user_email);
 	if (hier) {
 		exchange_hierarchy_rescan (hier);
@@ -1816,7 +1816,7 @@ exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, const char *u
  * @email: email id of the foreign user
  *
  * If the hierarchy is present just return it back. Else try to get it
- * from the filesystem and return it. 
+ * from the filesystem and return it.
  *
  * Return value: Returns the ExchangeHierarchy of the foreign user's folder.
  **/
@@ -1886,14 +1886,14 @@ add_folder (gpointer key, gpointer value, gpointer folders)
 {
 	EFolder *folder = value;
 
-	d(g_print ("%s(%d):%s: key=[%s]\t folder-path=[%s]\n", __FILE__, __LINE__, G_GNUC_PRETTY_FUNCTION, 
+	d(g_print ("%s(%d):%s: key=[%s]\t folder-path=[%s]\n", __FILE__, __LINE__, G_GNUC_PRETTY_FUNCTION,
 		   key, e_folder_exchange_get_path (folder)));
 
 	/* Each folder appears under three different keys, but
 	 * we only want to add it to the results array once. So
 	 * we only add when we see the "path" key.
 	 */
-	if (!strcmp (key, e_folder_exchange_get_path (folder))) 
+	if (!strcmp (key, e_folder_exchange_get_path (folder)))
 		g_ptr_array_add (folders, folder);
 }
 
@@ -1940,7 +1940,7 @@ exchange_account_get_folders (ExchangeAccount *account)
 	       sizeof (EFolder *), folder_comparator);
 
 	return folders;
-}	
+}
 
 /**
  * exchange_account_get_folder_tree:
@@ -1987,7 +1987,7 @@ exchange_account_get_folder_tree (ExchangeAccount *account, char* path)
  	g_free (fld_tree);
 
 	return folders;
-}	
+}
 
 /**
  * exchange_account_get_quota_limit:
@@ -2021,7 +2021,7 @@ char *
 exchange_account_get_username (ExchangeAccount *account)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-	
+
 	return account->priv->username;
 }
 
@@ -2029,7 +2029,7 @@ exchange_account_get_username (ExchangeAccount *account)
   * exchange_account_get_email_id :
   * @account : #ExchangeAccount
   *
-  * Retunrs user's e-mail id. 
+  * Retunrs user's e-mail id.
   *
   * Return value : e-mail id string.
   **/
@@ -2039,12 +2039,12 @@ exchange_account_get_email_id (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	return account->priv->identity_email;
-} 
+}
 
 /**
   * exchange_account_folder_size_add :
   * @account : #ExchangeAccount
-  * @folder_name : 
+  * @folder_name :
   * @size : Size of @folder_name
   *
   * Updates the #ExchangeFolderSize object with the @size of @folder_name
@@ -2064,7 +2064,7 @@ exchange_account_folder_size_add (ExchangeAccount *account,
 /**
   * exchange_account_folder_size_remove :
   * @account : #ExchangeAccount
-  * @folder_name : 
+  * @folder_name :
   *
   * Removes the entry for @folder_name in #ExchangeFolderSize object
   *
@@ -2090,7 +2090,7 @@ exchange_account_folder_size_remove (ExchangeAccount *account,
   *
   * Return value : void
   **/
-void 
+void
 exchange_account_folder_size_rename (ExchangeAccount *account,
 					const char *old_name,
 					const char *new_name)
@@ -2104,7 +2104,7 @@ exchange_account_folder_size_rename (ExchangeAccount *account,
 	if (cached_size >= 0) {
 		exchange_folder_size_remove (account->priv->fsize, old_name);
 		exchange_folder_size_update (account->priv->fsize,
-						new_name, cached_size);		
+						new_name, cached_size);
 	}
 
 }
@@ -2153,7 +2153,7 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 {
 	ExchangeAccount *account;
 	char *enc_user, *mailbox;
-	const char *param, *proto="http", *owa_path, *pf_server, *owa_url; 
+	const char *param, *proto="http", *owa_path, *pf_server, *owa_url;
 	const char *passwd_exp_warn_period, *offline_sync;
 	E2kUri *uri;
 
@@ -2203,10 +2203,10 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	 * password from this to source_uri.
 	 * old_uri_authority = g_strdup_printf ("%s@%s", enc_user,
 	 *					uri->host);
-	 * old_uri_authority needs to be used in the key for migrating 
+	 * old_uri_authority needs to be used in the key for migrating
 	 * passwords remembered.
 	 */
-	account->priv->password_key = g_strdup_printf ("exchange://%s/", 
+	account->priv->password_key = g_strdup_printf ("exchange://%s/",
 							account->priv->uri_authority);
 
 	account->priv->username = g_strdup (uri->user);
@@ -2226,7 +2226,7 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 		if (param)
 			account->priv->ad_limit = atoi (param);
 	}
-	
+
 	passwd_exp_warn_period = e2k_uri_get_param (uri, "passwd_exp_warn_period");
 	if (!passwd_exp_warn_period || !*passwd_exp_warn_period)
 		account->priv->passwd_exp_warn_period = -1;
@@ -2234,9 +2234,9 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 		account->priv->passwd_exp_warn_period = atoi (passwd_exp_warn_period);
 
 	offline_sync = e2k_uri_get_param (uri, "offline_sync");
-	if (!offline_sync) 
+	if (!offline_sync)
 		account->priv->offline_sync = FALSE;
-	else 
+	else
 		account->priv->offline_sync = TRUE;
 
 	owa_path = e2k_uri_get_param (uri, "owa_path");
@@ -2249,7 +2249,7 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 	if (!pf_server || !*pf_server)
 		pf_server = uri->host;
 
-	/* We set protocol reading owa_url, instead of having use_ssl parameter 
+	/* We set protocol reading owa_url, instead of having use_ssl parameter
 	 * because we don't have SSL section anymore in the account creation
 	 * druid and account editor
 	 */
@@ -2257,7 +2257,7 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 
 	owa_url = e2k_uri_get_param (uri, "owa_url");
 	if (owa_url) {
-		account->priv->owa_url = g_strdup (owa_url); 
+		account->priv->owa_url = g_strdup (owa_url);
 		if (!strncmp (owa_url, "https:", 6))
 			proto = "https";
 	}
@@ -2306,17 +2306,17 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
  * @account: an #ExchangeAccount
  * @type: Hierarchy type
  *
- * Returns the non-foreign hierarchy pointer for the requested type 
+ * Returns the non-foreign hierarchy pointer for the requested type
  *
  * Return value: Returns the hierarchy pointer for the requested type
  **/
 
 ExchangeHierarchy*
-exchange_account_get_hierarchy_by_type (ExchangeAccount* acct, 
+exchange_account_get_hierarchy_by_type (ExchangeAccount* acct,
 					ExchangeHierarchyType type)
 {
 	int i;
-	
+
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (acct), NULL);
 	g_return_val_if_fail (type != EXCHANGE_HIERARCHY_FOREIGN, NULL);
 

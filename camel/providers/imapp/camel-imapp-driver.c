@@ -72,7 +72,7 @@ camel_imapp_driver_get_type (void)
 			(CamelObjectInitFunc) object_init,
 			(CamelObjectFinalizeFunc) object_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -84,7 +84,7 @@ camel_imapp_driver_new(CamelIMAPPStream *stream)
 
 	driver = CAMEL_IMAPP_DRIVER (camel_object_new (CAMEL_IMAPP_DRIVER_TYPE));
 	ie = driver->engine = camel_imapp_engine_new(stream);
-	
+
 	camel_imapp_engine_add_handler(ie, "FETCH", (CamelIMAPPEngineFunc)driver_resp_fetch, driver);
 	camel_imapp_engine_add_handler(ie, "EXPUNGE", (CamelIMAPPEngineFunc)driver_resp_expunge, driver);
 	camel_imapp_engine_add_handler(ie, "EXISTS", (CamelIMAPPEngineFunc)driver_resp_exists, driver);
@@ -170,7 +170,7 @@ camel_imapp_driver_select(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder
 	}
 
 	summary = ((CamelFolder *)folder)->summary;
-	
+
 	ic = camel_imapp_engine_command_new(id->engine, "SELECT", NULL, "SELECT %t", folder->raw_name);
 	camel_imapp_engine_command_queue(id->engine, ic);
 	while (camel_imapp_engine_iterate(id->engine, ic)>0)
@@ -311,7 +311,7 @@ imapp_write_flags(CamelIMAPPDriver *id, guint32 orset, gboolean on, CamelFolderS
 	count = camel_folder_summary_count(summary);
 	for (j=0;j<sizeof(flag_table)/sizeof(flag_table[0]);j++) {
 		int flush;
-		
+
 		if ((orset & flag_table[j].flag) == 0)
 			continue;
 
@@ -329,7 +329,7 @@ imapp_write_flags(CamelIMAPPDriver *id, guint32 orset, gboolean on, CamelFolderS
 				     || (!on && (((flags ^ sflags) & ~flags) & flag_table[j].flag))) {
 					if (ic == NULL)
 						ic = camel_imapp_engine_command_new(id->engine, "STORE", NULL, "UID STORE ");
-					flush = imapp_uidset_add(&ss, ic, camel_message_info_uid(info));				
+					flush = imapp_uidset_add(&ss, ic, camel_message_info_uid(info));
 				}
 				camel_message_info_free((CamelMessageInfo *)info);
 			}
@@ -511,7 +511,7 @@ camel_imapp_driver_list(CamelIMAPPDriver *id, const char *name, guint32 flags)
 
 			if (id->list_commands) {
 				GSList *top = id->list_commands;
-				
+
 				id->list_commands = top->next;
 				ic = top->data;
 				g_slist_free_1(top);
@@ -578,7 +578,7 @@ driver_resp_list(CamelIMAPPEngine *ie, guint32 idx, CamelIMAPPDriver *id)
 			if (depth < 10
 			    && (linfo->name[0] == 0 || linfo->name[strlen(linfo->name)-1] != c)) {
 				CamelIMAPPCommand *ic;
-				
+
 				ic = camel_imapp_engine_command_new(id->engine, "LIST", NULL, "LIST \"\" %t%c%%", linfo->name, c);
 				id->list_commands = g_slist_prepend(id->list_commands, ic);
 				camel_imapp_engine_command_queue(id->engine, ic);
@@ -610,12 +610,12 @@ driver_status(CamelIMAPPEngine *ie, struct _status_info *sinfo, CamelIMAPPDriver
 	case IMAP_UIDVALIDITY:
 		sdata->uidvalidity = sinfo->u.uidvalidity;
 		break;
-#if 0	
+#if 0
 			/* not defined yet ... */
 	case IMAP_UIDNEXT:
 		printf("got uidnext for folder: %d\n", sinfo->u.uidnext);
 		break;
-#endif	
+#endif
 	case IMAP_UNSEEN:
 		sdata->unseen = sinfo->u.unseen;
 		break;
@@ -709,7 +709,7 @@ driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 				info->info.uid = g_strdup(uidtmp);
 				printf("inserting empty uid %s\n", uidtmp);
 			}
-		
+
 			camel_folder_summary_add(summary, (CamelMessageInfo *)info);
 		}
 		info = (CamelIMAPPMessageInfo *)camel_folder_summary_index(summary, id-1);

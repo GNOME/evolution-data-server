@@ -62,7 +62,7 @@ get_filename_from_uri (const char *uri, ECalSourceType source_type)
 		case E_CAL_SOURCE_TYPE_LAST :
 		default :
 			break;
-	}	
+	}
 
 	/* mangle the URI to not contain invalid characters */
 	mangled_uri = g_strdup (uri);
@@ -130,7 +130,7 @@ e_cal_backend_cache_get_property (GObject *object, guint property_id, GValue *va
 
 	switch (property_id) {
 	case PROP_SOURCE_TYPE:
-		g_value_set_enum (value, priv->source_type);	
+		g_value_set_enum (value, priv->source_type);
 	case PROP_URI :
 		g_value_set_string (value, priv->uri);
 		break;
@@ -182,7 +182,7 @@ e_cal_backend_cache_constructor (GType type,
 					 n_construct_properties,
 					 construct_properties);
 
-	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "source_type")) 
+	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "source_type"))
 		source_type = g_value_get_enum (construct_properties->value);
 	/* extract uid */
 	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
@@ -211,9 +211,9 @@ e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
 
         object_class->constructor = e_cal_backend_cache_constructor;
 	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
-					 g_param_spec_enum ("source_type", NULL, NULL, 
+					 g_param_spec_enum ("source_type", NULL, NULL,
 					 e_cal_source_type_enum_get_type (),
-					 E_CAL_SOURCE_TYPE_EVENT, 
+					 E_CAL_SOURCE_TYPE_EVENT,
 					 G_PARAM_READABLE | G_PARAM_WRITABLE
 							      | G_PARAM_CONSTRUCT_ONLY));
 
@@ -257,7 +257,7 @@ GType
 e_cal_backend_cache_get_type (void)
 {
 	static GType type = 0;
-	static GStaticMutex registering = G_STATIC_MUTEX_INIT;	
+	static GStaticMutex registering = G_STATIC_MUTEX_INIT;
 
 	g_static_mutex_lock (&registering);
 	if (!type) {
@@ -293,7 +293,7 @@ ECalBackendCache *
 e_cal_backend_cache_new (const char *uri, ECalSourceType source_type)
 {
 	ECalBackendCache *cache;
-        
+
        	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "source_type", source_type, "uri", uri,  NULL);
 
         return cache;
@@ -460,7 +460,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 	GList *list = NULL;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL;
-        
+
         /* return null if cache is not a valid Backend Cache.  */
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
@@ -486,7 +486,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 					icalcomponent_free (icalcomp);
                         }
                 }
-                
+
         }
 
         return list;
@@ -509,7 +509,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *
 	GSList *list = NULL;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL;
-        
+
         /* return null if cache is not a valid Backend Cache.  */
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
@@ -526,7 +526,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *
 				if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT) {
 					comp = e_cal_component_new ();
 					if ((e_cal_component_set_icalcomponent (comp, icalcomp)) &&
-						!strcmp (icalcomponent_get_uid (icalcomp), uid)) 
+						!strcmp (icalcomponent_get_uid (icalcomp), uid))
 							list = g_slist_prepend (list, comp);
 					else {
 						g_object_unref (comp);
@@ -535,7 +535,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *
 					icalcomponent_free (icalcomp);
                         }
                 }
-                
+
         }
 
         return list;
@@ -801,7 +801,7 @@ gboolean
 e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *utc_str)
 {
 	gboolean ret_val = FALSE;
-	
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
 	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), "server_utc_time", utc_str)))
@@ -821,7 +821,7 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 {
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
-	
+
        	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
 }
 
@@ -837,14 +837,14 @@ gboolean
 e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value)
 {
 	gboolean ret_val = FALSE;
-	
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
 	if (value) {
 		e_file_cache_remove_object (E_FILE_CACHE (cache), key);
 		return TRUE;
 	}
-	
+
 	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), key, value)))
 		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), key, value);
 
@@ -862,6 +862,6 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key)
 {
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
-	
+
        	return	e_file_cache_get_object (E_FILE_CACHE (cache), key);
 }

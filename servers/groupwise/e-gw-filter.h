@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
- * Sivaiah Nallagatla <snallagatla@novell.com> 
- * 
+/*
+ * Authors :
+ * Sivaiah Nallagatla <snallagatla@novell.com>
+ *
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -56,7 +56,7 @@ typedef enum {
 	E_GW_FILTER_OP_BEGINS,
 	E_GW_FILTER_OP_EXISTS,
 	E_GW_FILTER_OP_NOTEXISTS
-	
+
 } EGwFilterOpType;
 
 struct _EGwFilter {

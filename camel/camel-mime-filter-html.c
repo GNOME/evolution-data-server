@@ -77,7 +77,7 @@ CamelType
 camel_mime_filter_html_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterHTML",
 					    sizeof (CamelMimeFilterHTML),
@@ -87,7 +87,7 @@ camel_mime_filter_html_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_html_init,
 					    (CamelObjectFinalizeFunc) camel_mime_filter_html_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -115,20 +115,20 @@ run(CamelMimeFilter *mf, char *in, size_t inlen, size_t prespace, char **out, si
 	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *) mf;
 	camel_html_parser_t state;
 	char *outp;
-	
+
 	d(printf("converting html:\n%.*s\n", (int)inlen, in));
-	
+
 	/* We should generally shrink the data, but this'll do */
 	camel_mime_filter_set_size (mf, inlen * 2 + 256, FALSE);
 	outp = mf->outbuf;
-	
+
 	camel_html_parser_set_data (f->priv->ctxt, in, inlen, last);
 	do {
 		const char *data;
 		int len;
-		
+
 		state = camel_html_parser_step(f->priv->ctxt, &data, &len);
-		
+
 		switch(state) {
 		case CAMEL_HTML_PARSER_DATA:
 		case CAMEL_HTML_PARSER_ENT:
@@ -176,7 +176,7 @@ static void
 camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	camel_mime_filter_html_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
 	filter_class->reset = reset;
@@ -189,7 +189,7 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
  * camel_mime_filter_html_new:
  *
  * Create a new #CamelMimeFilterHTML object.
- * 
+ *
  * Returns a new #CamelMimeFilterHTML object
  **/
 CamelMimeFilterHTML *

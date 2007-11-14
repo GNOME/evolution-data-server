@@ -1,14 +1,14 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-provider.c: nntp provider registration code */
 
-/* 
+/*
  * Authors :
  *   Chris Toshok <toshok@ximian.com>
  *
  * Copyright (C) 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -89,7 +89,7 @@ camel_provider_module_init(void)
 	news_provider.url_equal = nntp_url_equal;
 	news_provider.authtypes = g_list_append (NULL, &camel_nntp_password_authtype);
 	news_provider.translation_domain = GETTEXT_PACKAGE;
-	
+
 	camel_provider_register(&news_provider);
 }
 
@@ -109,7 +109,7 @@ nntp_url_hash (gconstpointer key)
 	add_hash (&hash, u->user);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-	
+
 	return hash;
 }
 
@@ -122,7 +122,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-	
+
 	if (s2 == NULL)
 		return FALSE;
 
@@ -133,7 +133,7 @@ static gint
 nntp_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-	
+
 	return check_equal(u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->host, u2->host)

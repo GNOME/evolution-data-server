@@ -1,11 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*-
- * 
+ *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2001-2003 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -168,10 +168,10 @@ spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 		}
 		retry++;
 	}
-	
+
 	close (mf->lockfd);
 	mf->lockfd = -1;
-	
+
 	return -1;
 }
 

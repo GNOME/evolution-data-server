@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
- 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -60,11 +60,11 @@ cell_renderer_color_get_size (GtkCellRenderer *cell,
 
 	calc_width  = (gint) cell->xpad * 2 + color_width;
 	calc_height = (gint) cell->ypad * 2 + color_height;
-  
+
 	if (cell_area && color_width > 0 && color_height > 0) {
 		if (x_offset) {
 			*x_offset = (((gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) ?
-					(1.0 - cell->xalign) : cell->xalign) * 
+					(1.0 - cell->xalign) : cell->xalign) *
 					(cell_area->width - calc_width));
 			*x_offset = MAX (*x_offset, 0);
 		}
@@ -121,7 +121,7 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 
 	gdk_colormap_alloc_color (
 		gdk_colormap_get_system(), priv->color, FALSE, TRUE);
-	
+
 	gc = gdk_gc_new (window);
 	gdk_gc_set_foreground (gc, priv->color);
 	gdk_draw_rectangle (
@@ -139,7 +139,7 @@ cell_renderer_color_set_property (GObject *object,
 	ECellRendererColorPrivate *priv;
 
 	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
-  
+
 	switch (property_id) {
 		case PROP_COLOR:
 			if (priv->color != NULL)

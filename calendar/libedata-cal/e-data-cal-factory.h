@@ -50,7 +50,7 @@ struct _EDataCalFactory {
 
 struct _EDataCalFactoryClass {
 	BonoboObjectClass parent_class;
-	
+
 	POA_GNOME_Evolution_Calendar_CalFactory__epv epv;
 
 	/* Notification signals */

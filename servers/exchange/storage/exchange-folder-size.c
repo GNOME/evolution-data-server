@@ -47,7 +47,7 @@ typedef struct {
 
 
 struct _ExchangeFolderSizePrivate {
-	
+
 	GHashTable *table;
 	GtkListStore *model;
 	GHashTable *row_refs;
@@ -141,7 +141,7 @@ exchange_folder_size_new (void)
 }
 
 void
-exchange_folder_size_update (ExchangeFolderSize *fsize, 
+exchange_folder_size_update (ExchangeFolderSize *fsize,
 				const char *folder_name,
 				gdouble folder_size)
 {
@@ -178,14 +178,14 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 		f_info = g_new0(folder_info, 1);
 		f_info->folder_name = g_strdup (folder_name);
 		f_info->folder_size = folder_size;
-		g_hash_table_insert (folder_size_table, f_info->folder_name, f_info); 
+		g_hash_table_insert (folder_size_table, f_info->folder_name, f_info);
 
 		gtk_list_store_append (fsize->priv->model, &iter);
 		gtk_list_store_set (fsize->priv->model, &iter,
 				      COLUMN_NAME, f_info->folder_name,
 				      COLUMN_SIZE, f_info->folder_size,
 				      -1);
-		
+
 		path = gtk_tree_model_get_path (GTK_TREE_MODEL (fsize->priv->model), &iter);
 		row = gtk_tree_row_reference_new (GTK_TREE_MODEL (fsize->priv->model), path);
 		gtk_tree_path_free (path);
@@ -195,7 +195,7 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 }
 
 void
-exchange_folder_size_remove (ExchangeFolderSize *fsize, 
+exchange_folder_size_remove (ExchangeFolderSize *fsize,
 				const char *folder_name)
 {
 	ExchangeFolderSizePrivate *priv;
@@ -233,7 +233,7 @@ exchange_folder_size_get (ExchangeFolderSize *fsize,
 	folder_info *cached_info;
 
 	g_return_val_if_fail (EXCHANGE_IS_FOLDER_SIZE (fsize), -1);
-	
+
 	priv = fsize->priv;
 	folder_size_table = priv->table;
 

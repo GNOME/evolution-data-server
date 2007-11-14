@@ -46,12 +46,12 @@ server_logging_dispose (GObject *object)
 	ServerLogging *logging = SERVER_LOGGING (object);
 	ServerLoggingPrivate *priv;
 	GSList *l;
-	
+
 	priv = logging->priv;
-	
+
 	for (l = priv->handlers; l; l = l->next) {
 		ServerLoggingHandler *handler = l->data;
-		
+
 		g_log_remove_handler (handler->domain, handler->id);
 		g_free (handler->domain);
 		g_free (handler);
@@ -88,7 +88,7 @@ static void
 server_logging_init (ServerLogging *logging)
 {
 	ServerLoggingPrivate *priv;
-	
+
 	priv = g_new0 (ServerLoggingPrivate, 1);
 
 	logging->priv = priv;
@@ -143,7 +143,7 @@ server_log_handler(const gchar *domain,
 
 	if (bonobo_event_source_has_listener (es, "log_event")) {
 		CORBA_exception_init (&ev);
-		bonobo_event_source_notify_listeners (es, "log_event", &value, &ev); 
+		bonobo_event_source_notify_listeners (es, "log_event", &value, &ev);
 		CORBA_exception_free (&ev);
 	}
 
@@ -158,7 +158,7 @@ server_logging_register_domain (ServerLogging *logging,
 	guint handler_id;
 
 	priv = logging->priv;
-	
+
 	handler_id = g_log_set_handler(domain, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
 				       server_log_handler, logging);
 
@@ -168,7 +168,7 @@ server_logging_register_domain (ServerLogging *logging,
 		handler = g_new0 (ServerLoggingHandler, 1);
 		handler->domain = g_strdup (domain);
 		handler->id = handler_id;
-		
+
 		priv->handlers = g_slist_prepend (priv->handlers, handler);
 	}
 }

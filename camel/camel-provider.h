@@ -148,10 +148,10 @@ typedef int (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_det
 typedef struct {
 	/* Provider name used in CamelURLs. */
 	char *protocol;
-	
+
 	/* Provider name as used by people. (May be the same as protocol) */
 	char *name;
-	
+
 	/* Description of the provider. A novice user should be able
 	 * to read this description, and the information provided by
 	 * an ISP, IS department, etc, and determine whether or not
@@ -159,19 +159,19 @@ typedef struct {
 	 * information goes with it.
 	 */
 	char *description;
-	
+
 	/* The category of message that this provider works with.
 	 * (evolution-mail will only list a provider in the store/transport
 	 * config dialogs if its domain is "mail".)
 	 */
 	char *domain;
-	
+
 	/* Flags describing the provider, flags describing its URLs */
 	int flags, url_flags;
 
 	/* The ConfEntry and AutoDetect functions will probably be
 	 * DEPRECATED in a future release */
-	
+
 	/* Extra configuration information */
 	CamelProviderConfEntry *extra_conf;
 
@@ -184,12 +184,12 @@ typedef struct {
 	 * uses the store type (eg, Exchange or NNTP).
 	 */
 	CamelType object_types[CAMEL_NUM_PROVIDER_TYPES];
-	
+
 	/* GList of CamelServiceAuthTypes the provider supports */
 	GList *authtypes;
-	
+
 	CamelObjectBag *service_cache[CAMEL_NUM_PROVIDER_TYPES];
-	
+
 	GHashFunc url_hash;
 	GCompareFunc url_equal;
 
@@ -201,14 +201,14 @@ typedef struct {
 	/* This string points to the provider's gconf key value
 	 */
 	const char *license;
-	
+
 	/* This holds the license file name [ ascii text format ] containing
-	 * the license agreement. This should be the absolute file path. This 
+	 * the license agreement. This should be the absolute file path. This
 	 * is read only when the HAS_LICENSE flag is set
 	 */
 	const char *license_file;
 
-	/* Private to the provider */	
+	/* Private to the provider */
 	void *priv;
 } CamelProvider;
 

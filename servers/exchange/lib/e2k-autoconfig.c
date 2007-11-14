@@ -1387,7 +1387,7 @@ read_config (void)
 		gchar *filename = g_build_filename (CONNECTOR_PREFIX,
 						    "etc/connector.conf",
 						    NULL);
-		
+
 		fd = g_open (filename, O_RDONLY, 0);
 		g_free (filename);
 	}
@@ -1455,7 +1455,7 @@ e2k_autoconfig_lookup_option (const char *option)
 	return g_hash_table_lookup (config_options, option);
 }
 
-static gboolean 
+static gboolean
 validate (const char *owa_url, char *user, char *password, ExchangeParams *exchange_params, E2kAutoconfigResult *result)
 {
 	E2kAutoconfig *ac;
@@ -1465,7 +1465,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 	const char *old, *new;
 	char *path, *mailbox;
 
-	ac = e2k_autoconfig_new (owa_url, user, password, 
+	ac = e2k_autoconfig_new (owa_url, user, password,
 				 E2K_AUTOCONFIG_USE_EITHER);
 
 	e2k_operation_init (&op);
@@ -1475,15 +1475,15 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 
 	if (*result == E2K_AUTOCONFIG_OK) {
 		/*
-		 * On error code 403 and SSL seen in server response 
+		 * On error code 403 and SSL seen in server response
 		 * e2k_autoconfig_get_context() tries to
 		 * connect using https if owa url has http and vice versa.
 		 * And also re-sets the owa_uri in E2kAutoconfig.
-		 * So even if the uri is incorrect, 
+		 * So even if the uri is incorrect,
 		 * e2k_autoconfig_check_exchange() will return success.
 		 * In this case of account set up, owa_url paramter will still
 		 * have wrong url entered, and we throw the error, instead of
-		 * going ahead with account setup and failing later. 
+		 * going ahead with account setup and failing later.
 		 */
 		if (g_str_has_prefix (ac->owa_uri, "http:")) {
 		    if (!g_str_has_prefix (owa_url, "http:"))
@@ -1496,8 +1496,8 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 	if (*result == E2K_AUTOCONFIG_OK) {
 		*result = e2k_autoconfig_check_global_catalog (ac, &op);
 		e2k_operation_free (&op);
-		
-		/* find mailbox and owa_path values */	
+
+		/* find mailbox and owa_path values */
 		euri = e2k_uri_new (ac->home_uri);
 		path = g_strdup (euri->path + 1);
 		e2k_uri_free (euri);
@@ -1513,7 +1513,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		exchange_params->owa_path = g_strdup_printf ("%s%s", "/", path);
 		g_free (path);
 		exchange_params->host = g_strdup (ac->pf_server);
-		if (ac->gc_server) 
+		if (ac->gc_server)
 			exchange_params->ad_server = g_strdup (ac->gc_server);
 		exchange_params->is_ntlm = ac->saw_ntlm;
 
@@ -1638,7 +1638,7 @@ e2k_validate_user (const char *owa_url, char *pkey, char **user,
 	uri = e_uri_new (owa_url);
 	key = g_strdup_printf ("%s%s/", pkey, uri->host); /* FIXME */
 	e_uri_free (uri);
-	
+
 try_auth_again:
 	username = g_strdup (*user);
 
@@ -1647,11 +1647,11 @@ try_auth_again:
 	if (password) {
 		/* This can be the case, where user presses authenticate button and
 		 * later cancels the account setup or removal of account fails for
-		 * some reason. We need to prompt for the password always when 
+		 * some reason. We need to prompt for the password always when
 		 * authenticate button is pressed */
 		e_passwords_forget_password ("Exchange", key);
 	}
-	
+
 	prompt = g_strdup_printf (_("Enter password for %s"), username);
 	password = e_passwords_ask_password (_("Enter password"),
 				"Exchange", key, prompt,
@@ -1667,16 +1667,16 @@ try_auth_again:
 
 	valid = validate (owa_url, username, password, exchange_params, result);
 	if (valid) {
-		/* generate the proper key once the host name 
-		 * is read and remember password temporarily, 
-		 * so that at the end of * account creation, 
+		/* generate the proper key once the host name
+		 * is read and remember password temporarily,
+		 * so that at the end of * account creation,
 		 * user will not be prompted, for password will
-		 * not be asked again. 
+		 * not be asked again.
 		 */
 		*remember_password = remember;
 		g_free (key);
 		if (exchange_params->is_ntlm)
-			key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/", 
+			key = g_strdup_printf ("exchange://%s;auth=NTLM@%s/",
 						       username, exchange_params->host);
 		else
 			key = g_strdup_printf ("exchange://%s@%s/", username, exchange_params->host);
@@ -1685,8 +1685,8 @@ try_auth_again:
 	}
 	else {
 		if (try == 0) {
-			/* Check for name as e-mail id and try once again 
-			 * extracing username from e-mail id. 
+			/* Check for name as e-mail id and try once again
+			 * extracing username from e-mail id.
 			 */
 			usernames = g_strsplit (*user, "@", 2);
 			if (usernames && usernames[0] && usernames[1]) {

@@ -110,9 +110,9 @@ gnome_segv_handler (int signo)
                 fprintf (stderr, _("Multiple segmentation faults occurred; cannot display error dialog\n"));
                 _exit (1);
         }
-	
+
 	gnome_segv_path = GNOMEUI_SERVERDIR "/gnome_segv2";
-	
+
 	exec = g_strdup_printf ("%s \"" PACKAGE "-" BASE_VERSION "\" %d \"" VERSION "\"",
 				gnome_segv_path, signo);
 	system (exec);
@@ -125,7 +125,7 @@ static void
 setup_segv_handler (void)
 {
 	struct sigaction sa;
-	
+
 	sa.sa_flags = 0;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_handler = gnome_segv_handler;
@@ -353,7 +353,7 @@ main (int argc, char **argv)
 {
 	gboolean did_books=FALSE, did_cals=FALSE;
 	OfflineListener *offline_listener = NULL;
-	
+
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -410,11 +410,11 @@ main (int argc, char **argv)
 #else
 	offline_listener = offline_listener_new (e_data_book_factory);
 #endif
-	
+
 	if ( setup_logging ()) {
 			if ( setup_interface_check ()) {
 				g_message ("Server up and running");
-				
+
 				bonobo_main ();
 			} else
 				g_error (G_STRLOC "Cannot register DataServer::InterfaceCheck object");
@@ -436,7 +436,7 @@ main (int argc, char **argv)
 
 	bonobo_object_unref (BONOBO_OBJECT (interface_check_iface));
 	interface_check_iface = NULL;
-	
+
 	gnome_vfs_shutdown ();
 
 	return 0;

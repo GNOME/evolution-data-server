@@ -40,7 +40,7 @@ typedef struct _CamelSaslPOPB4SMTP {
 
 typedef struct _CamelSaslPOPB4SMTPClass {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslPOPB4SMTPClass;
 
 

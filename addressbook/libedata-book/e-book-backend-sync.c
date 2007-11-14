@@ -123,7 +123,7 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  * @opid: the unique ID of the operation
  * @vcard: the string representation of a contact
  * @contact: a pointer to a location to store the resulting #EContact
- * 
+ *
  * Modifies the contact specified by the ID embedded in @vcard, to
  * reflect the full contents of @vcard.
  *
@@ -185,7 +185,7 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
  *
  * Gets a list of contacts from @book. The list and its elements must be freed
  * by the caller.
- * 
+ *
  * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
@@ -288,7 +288,7 @@ e_book_backend_sync_get_required_fields (EBookBackendSync *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (fields, GNOME_Evolution_Addressbook_OtherError);
-	
+
 	g_assert (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_required_fields_sync);
 
 	return (* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_required_fields_sync) (backend, book, opid, fields);
@@ -316,7 +316,7 @@ e_book_backend_sync_get_supported_fields (EBookBackendSync *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (fields, GNOME_Evolution_Addressbook_OtherError);
-	
+
 	g_assert (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_supported_fields_sync);
 
 	return (* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_supported_fields_sync) (backend, book, opid, fields);

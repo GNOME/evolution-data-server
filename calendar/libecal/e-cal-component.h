@@ -134,7 +134,7 @@ typedef enum {
 
 typedef struct {
 	ECalComponentRangeType type;
-	
+
 	ECalComponentDateTime datetime;
 } ECalComponentRange;
 
@@ -155,23 +155,23 @@ typedef enum {
 	E_CAL_COMPONENT_TRANSP_UNKNOWN
 } ECalComponentTransparency;
 
-/* Organizer & Attendee */	
+/* Organizer & Attendee */
 typedef struct {
 	const char *value;
-	
+
 	const char *member;
 	icalparameter_cutype cutype;
 	icalparameter_role role;
 	icalparameter_partstat status;
 	gboolean rsvp;
-	
+
 	const char *delto;
 	const char *delfrom;
 	const char *sentby;
 	const char *cn;
 	const char *language;
 } ECalComponentAttendee;
-	
+
 typedef struct {
 	const char *value;
 	const char *sentby;

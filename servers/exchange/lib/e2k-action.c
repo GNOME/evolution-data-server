@@ -638,7 +638,7 @@ extract_action (guint8 **data, int *len, E2kAction **act_ret)
 
  lose:
 	e2k_action_free (act);
-	return FALSE;	
+	return FALSE;
 }
 
 /**

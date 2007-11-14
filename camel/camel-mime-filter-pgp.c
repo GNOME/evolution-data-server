@@ -50,7 +50,7 @@ static void
 camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *klass)
 {
 	CamelMimeFilterClass *mime_filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	mime_filter_class->filter = filter;
 	mime_filter_class->complete = complete;
 	mime_filter_class->reset = reset;
@@ -60,7 +60,7 @@ CamelType
 camel_mime_filter_pgp_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (),
 					    "CamelMimeFilterPgp",
@@ -71,7 +71,7 @@ camel_mime_filter_pgp_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -86,18 +86,18 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 	const char *start, *inend = in + len;
 	register const char *inptr = in;
 	register char *o;
-	
+
 	/* only need as much space as the input, we're stripping chars */
 	camel_mime_filter_set_size (f, len, FALSE);
-	
+
 	o = f->outbuf;
-	
+
 	while (inptr < inend) {
 		start = inptr;
-		
+
 		while (inptr < inend && *inptr != '\n')
 			inptr++;
-		
+
 		if (inptr == inend) {
 			if (!last) {
 				camel_mime_filter_backup (f, start, inend - start);
@@ -105,9 +105,9 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 			}
 			break;
 		}
-		
+
 		inptr++;
-		
+
 		switch (pgp->state) {
 		case PGP_PREFACE:
 			/* check for the beginning of the pgp block */
@@ -115,7 +115,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 				pgp->state++;
 				break;
 			}
-			
+
 			memcpy (o, start, inptr - start);
 			o += (inptr - start);
 			break;
@@ -131,13 +131,13 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 				pgp->state++;
 				break;
 			}
-			
+
 			/* do dash decoding */
 			if (!strncmp (start, "- ", 2)) {
 				/* Dash encoded line found, skip encoding */
 				start += 2;
 			}
-			
+
 			memcpy (o, start, inptr - start);
 			o += (inptr - start);
 			break;
@@ -147,7 +147,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 			break;
 		}
 	}
-	
+
 	*out = f->outbuf;
 	*outlen = o - f->outbuf;
 	*outprespace = f->outpre;
@@ -159,7 +159,7 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, s
 	filter_run (f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
-static void 
+static void
 complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run (f, in, len, prespace, out, outlen, outprespace, TRUE);

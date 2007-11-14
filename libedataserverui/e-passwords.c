@@ -10,12 +10,12 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
@@ -81,7 +81,7 @@ struct _EPassMsg {
 	void (*dispatch) (struct _EPassMsg *);
 
 	/* input */
-	struct _GtkWindow *parent;	
+	struct _GtkWindow *parent;
 	const gchar *component;
 	const gchar *key;
 	const gchar *title;
@@ -307,25 +307,25 @@ ep_clear_passwords_keyring (EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;	
+	GList *matches = NULL, *tmp;
 	gchar *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	if (!default_keyring) {
 	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
 			return;
-	        default_keyring = g_strdup ("default");			
+	        default_keyring = g_strdup ("default");
 	}
 
 	d(g_print ("Get Default %d\n", result));
-	
+
 	/* Not called at all */
 	attributes = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
-		
+
 	gnome_keyring_attribute_list_free (attributes);
 
 	if (result) {
@@ -336,7 +336,7 @@ ep_clear_passwords_keyring (EPassMsg *msg)
 			d(g_print ("Delete Items %d\n", result));
 		}
 	}
-	
+
 	g_free (default_keyring);
 }
 #endif
@@ -382,23 +382,23 @@ ep_forget_passwords_keyring (EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;	
+	GList *matches = NULL, *tmp;
 	gchar *default_keyring = NULL;
 
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	if (!default_keyring) {
 	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
 			return;
-	        default_keyring = g_strdup ("default");			
-	}	
+	        default_keyring = g_strdup ("default");
+	}
 	d(g_print ("Get Default %d\n", result));
-	
+
 	attributes = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
-		
+
 	gnome_keyring_attribute_list_free (attributes);
 
 	if (result) {
@@ -409,7 +409,7 @@ ep_forget_passwords_keyring (EPassMsg *msg)
 			d(g_print ("Delete Items %d\n", result));
 		}
 	}
-	
+
 	g_free (default_keyring);
 
 	/* free up the session passwords */
@@ -469,18 +469,18 @@ ep_remember_password_keyring (EPassMsg *msg)
 			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
 			gchar *keycopy = g_strdup (msg->key);
 			gint i;
-			
+
 			for (i = 0; i < strlen (keycopy); i ++)
 				if (keycopy[i] == '/' || keycopy[i] =='=')
-					keycopy[i] = '_';		
+					keycopy[i] = '_';
 			uri->user = keycopy;
 		}
-		
+
 		attributes = gnome_keyring_attribute_list_new ();
 		gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
 		gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
 		gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-		
+
 		result = gnome_keyring_item_create_sync (NULL, /* Use default keyring */
 						         GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
 				   			 msg->key, /* name */
@@ -488,14 +488,14 @@ ep_remember_password_keyring (EPassMsg *msg)
 				   			 value, /* password */
 				   			 TRUE, /* Update if already exists */
 				   			 &item_id);
-	
+
 		d(g_print ("Remember %s: %d/%d\n", msg->key, result, item_id));
 
 		gnome_keyring_attribute_list_free (attributes);
 
 		/* now remove it from our session hash */
 		g_hash_table_remove (password_cache, msg->key);
-		
+
 		e_uri_free (uri);
 	}
 }
@@ -547,8 +547,8 @@ ep_forget_password_keyring (EPassMsg *msg)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;	
-	gchar *default_keyring = NULL;	
+	GList *matches = NULL, *tmp;
+	gchar *default_keyring = NULL;
 	EUri *uri = e_uri_new (msg->key);
 
 	if (!strcmp (uri->protocol, "ldap") && !uri->user) {
@@ -558,25 +558,25 @@ ep_forget_password_keyring (EPassMsg *msg)
 
 		for (i = 0; i < strlen (keycopy); i ++)
 			if (keycopy[i] == '/' || keycopy[i] =='=')
-				keycopy[i] = '_';		
+				keycopy[i] = '_';
 		uri->user = keycopy;
 	}
-	    
+
 	g_hash_table_remove (password_cache, msg->key);
 
 	if (!uri->host && !uri->user)
 		/* No need to remove from keyring for pass phrases */
 		goto exit;
-	
+
 	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
 	if (!default_keyring) {
 	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
 			goto exit;
-	        default_keyring = g_strdup ("default");			
+	        default_keyring = g_strdup ("default");
 	}
 
 	d(g_print ("Get Default %d\n", result));
-	
+
 	attributes = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
 	gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
@@ -584,7 +584,7 @@ ep_forget_password_keyring (EPassMsg *msg)
 
 	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 	d(g_print ("Find Items %d\n", result));
-		
+
 	gnome_keyring_attribute_list_free (attributes);
 
 	if (result) {
@@ -607,17 +607,17 @@ ep_forget_password_keyring (EPassMsg *msg)
 				} else if (!strcmp (attr->name, "server")) {
 					present++;
 					if (strcmp (attr->value.string, uri->host))
-						accept = FALSE;						
+						accept = FALSE;
 				}
 			}
 				if (present == 2 && accept) {
 					result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-					d(g_print ("Delete Items %s %s %d\n", uri->host, uri->user, result));			
+					d(g_print ("Delete Items %s %s %d\n", uri->host, uri->user, result));
 				}
-		}	
+		}
 
 	}
-	
+
 	g_free (default_keyring);
 
 exit:
@@ -671,14 +671,14 @@ ep_get_password_keyring (EPassMsg *msg)
 	gchar *passwd;
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;	
+	GList *matches = NULL, *tmp;
 
 	passwd = g_hash_table_lookup (password_cache, msg->key);
 	if (passwd) {
 		msg->password = g_strdup (passwd);
 	} else {
 		EUri *uri = e_uri_new (msg->key);
-		
+
 		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
 			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
 			gchar *keycopy = g_strdup (msg->key);
@@ -686,10 +686,10 @@ ep_get_password_keyring (EPassMsg *msg)
 
 			for (i = 0; i < strlen (keycopy); i ++)
 				if (keycopy[i] == '/' || keycopy[i] =='=')
-					keycopy[i] = '_';		
+					keycopy[i] = '_';
 			uri->user = keycopy;
 		}
-		
+
 		if (uri->host &&  uri->user) {
 			/* We dont store passphrases.*/
 
@@ -701,7 +701,7 @@ ep_get_password_keyring (EPassMsg *msg)
 
 			result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
 			d(g_print ("Find Items %d\n", result));
-			
+
 			gnome_keyring_attribute_list_free (attributes);
 
 			if (result) {
@@ -726,20 +726,20 @@ ep_get_password_keyring (EPassMsg *msg)
 						} else if (!strcmp (attr->name, "server") && attr->value.string) {
 							present++;
 							if (strcmp (attr->value.string, uri->host))
-								accept = FALSE;						
+								accept = FALSE;
 						}
 					}
 					if (present == 2 && accept) {
 						msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
 						break;
 					}
-				}	
+				}
 			}
 		}
-		
+
 		e_uri_free (uri);
 	}
-}	
+}
 #endif
 
 static void
@@ -822,7 +822,7 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 				ep_add_password (msg);
 			}
 			if (*msg->remember && type == E_PASSWORDS_REMEMBER_FOREVER)
-				ep_remember_password (msg);				    
+				ep_remember_password (msg);
 
 			msg->noreply = noreply;
 		}
@@ -841,7 +841,7 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 	while (mn) {
 		if ((mw->dispatch == ep_forget_password
 		     || mw->dispatch == ep_get_password
-		     || mw->dispatch == ep_ask_password)		    
+		     || mw->dispatch == ep_ask_password)
 		    && (strcmp (mw->component, msg->component) == 0
 			&& strcmp (mw->key, msg->key) == 0)) {
 			e_dlist_remove ((EDListNode *)mw);
@@ -887,7 +887,7 @@ ep_ask_password (EPassMsg *msg)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (password_dialog)->vbox), vbox, TRUE, FALSE, 0);
 	gtk_container_set_border_width ((GtkContainer *)vbox, 12);
-	
+
 	msg->entry = gtk_entry_new ();
 
 	a11y = gtk_widget_get_accessible (msg->entry);
@@ -897,7 +897,7 @@ ep_ask_password (EPassMsg *msg)
 	gtk_box_pack_start (GTK_BOX (vbox), msg->entry, TRUE, FALSE, 3);
 	gtk_widget_show (msg->entry);
 	gtk_widget_grab_focus (msg->entry);
-	
+
 	if ((msg->flags & E_PASSWORDS_REPROMPT)) {
 		ep_get_password (msg);
 		if (msg->password) {
@@ -918,7 +918,7 @@ ep_ask_password (EPassMsg *msg)
 			msg->check = gtk_check_button_new_with_mnemonic (type == E_PASSWORDS_REMEMBER_FOREVER
 									? _("_Remember this password")
 									: _("_Remember this password for the remainder of this session"));
-			
+
 		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (msg->check), *msg->remember);
 		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 3);
@@ -926,7 +926,7 @@ ep_ask_password (EPassMsg *msg)
 			gtk_widget_set_sensitive (msg->check, FALSE);
 		gtk_widget_show (msg->check);
 	}
-	
+
 	msg->noreply = noreply;
 
 	g_signal_connect (password_dialog, "response", G_CALLBACK (pass_response), msg);
@@ -974,7 +974,7 @@ e_passwords_init (void)
 
 /**
  * e_passwords_cancel:
- * 
+ *
  * Cancel any outstanding password operations and close any dialogues
  * currently being shown.
  **/
@@ -1010,8 +1010,8 @@ e_passwords_shutdown (void)
 
 /**
  * e_passwords_set_online:
- * @state: 
- * 
+ * @state:
+ *
  * Set the offline-state of the application.  This is a work-around
  * for having the backends fully offline aware, and returns a
  * cancellation response instead of prompting for passwords.
@@ -1034,7 +1034,7 @@ void
 e_passwords_forget_passwords (void)
 {
 	EPassMsg *msg = ep_msg_new (ep_forget_passwords);
-	
+
 	ep_msg_send (msg);
 	ep_msg_free (msg);
 }
@@ -1047,7 +1047,7 @@ e_passwords_forget_passwords (void)
 void
 e_passwords_clear_passwords (const gchar *component_name)
 {
-	EPassMsg *msg = ep_msg_new (ep_clear_passwords);		
+	EPassMsg *msg = ep_msg_new (ep_clear_passwords);
 
 	msg->component = component_name;
 	ep_msg_send (msg);
@@ -1201,6 +1201,6 @@ e_passwords_ask_password (const gchar *title, const gchar *component_name,
 	passwd = msg->password;
 	msg->password = NULL;
 	ep_msg_free (msg);
-	
+
 	return passwd;
 }

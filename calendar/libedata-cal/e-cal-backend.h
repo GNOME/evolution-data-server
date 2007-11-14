@@ -72,7 +72,7 @@ struct _ECalBackendClass {
 	void (* get_alarm_email_address) (ECalBackend *backend, EDataCal *cal);
 	void (* get_ldap_attribute) (ECalBackend *backend, EDataCal *cal);
 	void (* get_static_capabilities) (ECalBackend *backend, EDataCal *cal);
-	
+
 	void (* open) (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password);
 	void (* remove) (ECalBackend *backend, EDataCal *cal);
 
@@ -87,11 +87,11 @@ struct _ECalBackendClass {
 	void (* send_objects) (ECalBackend *backend, EDataCal *cal, const char *calobj);
 
 	void (* get_default_object) (ECalBackend *backend, EDataCal *cal);
-	void (* get_object) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);	
+	void (* get_object) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);
 	void (* get_object_list) (ECalBackend *backend, EDataCal *cal, const char *sexp);
 
-	void (* get_attachment_list) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);	
-	
+	void (* get_attachment_list) (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid);
+
 	/* Timezone related virtual methods */
 	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, const char *tzid);
 	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, const char *object);
@@ -174,7 +174,7 @@ void e_cal_backend_notify_object_modified (ECalBackend *backend, const char *old
 void e_cal_backend_notify_object_removed  (ECalBackend *backend, const ECalComponentId *id, const char *old_object, const char *object);
 
 void e_cal_backend_notify_mode      (ECalBackend *backend,
-				     GNOME_Evolution_Calendar_CalListener_SetModeStatus status, 
+				     GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
 				     GNOME_Evolution_Calendar_CalMode mode);
 void e_cal_backend_notify_auth_required (ECalBackend *backend);
 void e_cal_backend_notify_error     (ECalBackend *backend, const char *message);

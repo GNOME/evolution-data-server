@@ -161,9 +161,9 @@ remove_folder (EFolderTree *folder_tree,
  * e_folder_tree_new:
  * @folder_destroy_notify: Function to be called when a folder gets removed from the tree
  * @closure: Additional data to pass to @folder_destroy_notify
- * 
+ *
  * Create a new EFolderTree.
- * 
+ *
  * Return value: A pointer to the newly created EFolderTree.
  **/
 EFolderTree *
@@ -188,7 +188,7 @@ e_folder_tree_new (EFolderDestroyNotify folder_destroy_notify,
 /**
  * e_folder_tree_destroy:
  * @folder_tree: A pointer to an EFolderTree
- * 
+ *
  * Destroy @folder_tree.
  **/
 void
@@ -212,7 +212,7 @@ e_folder_tree_destroy (EFolderTree *folder_tree)
  * @folder_tree: A pointer to an EFolderTree
  * @path: Path at which the new folder must be added
  * @data: Data associated with the new folder
- * 
+ *
  * Insert a new folder at @path, with the specified @data.
  *
  * Return value: %TRUE if successful, %FALSE if failed.
@@ -286,7 +286,7 @@ e_folder_tree_add (EFolderTree *folder_tree,
  * e_folder_tree_remove:
  * @folder_tree: A pointer to an EFolderTree
  * @path: Path of the folder to remove
- * 
+ *
  * Remove the folder at @path from @folder_tree.
  *
  * Return value: %TRUE if successful, %FALSE if failed.
@@ -316,35 +316,35 @@ count_nodes (EFolderTree *tree,
 	     void *closure)
 {
 	int *count = closure;
-	
+
 	(*count)++;
 }
 
 /**
  * e_folder_tree_get_count:
  * @folder_tree: A pointer to an EFolderTree
- * 
+ *
  * Gets the number of folders in the tree
- * 
+ *
  * Return value: The number of folders in the tree
  **/
 int
 e_folder_tree_get_count (EFolderTree *folder_tree)
 {
 	int count = 0;
-	
+
 	e_folder_tree_foreach (folder_tree, count_nodes, &count);
-	
+
 	return count;
 }
-					      
+
 /**
  * e_folder_tree_get_folder:
  * @folder_tree: A pointer to an EFolderTree
  * @path: Path of the folder for which we want to get the data
- * 
+ *
  * Get the data for the folder at @path.
- * 
+ *
  * Return value: The pointer to the data for the folder at @path.
  **/
 void *
@@ -368,9 +368,9 @@ e_folder_tree_get_folder (EFolderTree *folder_tree,
  * e_folder_tree_get_subfolders:
  * @folder_tree: A pointer to an EFolderTree
  * @path: A path in @folder_tree
- * 
+ *
  * Get a list of the paths of the subfolders of @path.
- * 
+ *
  * Return value: A list of pointers to the paths of the subfolders.  The list
  * and the strings must be freed by the caller.
  **/
@@ -403,10 +403,10 @@ e_folder_tree_get_subfolders (EFolderTree *folder_tree,
 
 /**
  * e_folder_tree_foreach:
- * @folder_tree: 
- * @foreach_func: 
- * @data: 
- * 
+ * @folder_tree:
+ * @foreach_func:
+ * @data:
+ *
  * Call @foreach_func with the specified @data for all the folders
  * in @folder_tree, starting at the root node.
  **/
@@ -434,9 +434,9 @@ e_folder_tree_foreach (EFolderTree *folder_tree,
  * e_folder_tree_get_path_for_data:
  * @folder_tree: A pointer to an EFolderTree
  * @data: The data for the folder for which the path is needed
- * 
+ *
  * Look up the path for the specified @data.
- * 
+ *
  * Return value: The path for the folder that holds that @data.
  **/
 const char *

@@ -72,10 +72,10 @@ e_pipe (int *fds)
 #ifndef G_OS_WIN32
 	if (pipe (fds) != -1)
 		return 0;
-	
+
 	fds[0] = -1;
 	fds[1] = -1;
-	
+
 	return -1;
 #else
 	SOCKET temp, socket1 = -1, socket2 = -1;
@@ -86,11 +86,11 @@ e_pipe (int *fds)
 	struct timeval tv;
 
 	temp = socket (AF_INET, SOCK_STREAM, 0);
-	
+
 	if (temp == INVALID_SOCKET) {
 		goto out0;
 	}
-  	
+
 	arg = 1;
 	if (ioctlsocket (temp, FIONBIO, &arg) == SOCKET_ERROR) {
 		goto out0;
@@ -115,13 +115,13 @@ e_pipe (int *fds)
 	}
 
 	socket1 = socket (AF_INET, SOCK_STREAM, 0);
-	
+
 	if (socket1 == INVALID_SOCKET) {
 		goto out0;
 	}
 
 	arg = 1;
-	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) { 
+	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) {
 		goto out1;
 	}
 
@@ -187,10 +187,10 @@ out1:
 out0:
 	closesocket (temp);
 	errno = EMFILE;		/* FIXME: use the real syscall errno? */
-	
+
 	fds[0] = -1;
 	fds[1] = -1;
-	
+
 	return -1;
 
 #endif
@@ -289,14 +289,14 @@ struct _EMCache {
 
 /**
  * em_cache_new:
- * @timeout: 
- * @nodesize: 
- * @nodefree: 
- * 
+ * @timeout:
+ * @nodesize:
+ * @nodefree:
+ *
  * Setup a new timeout cache.  @nodesize is the size of nodes in the
  * cache, and @nodefree will be called to free YOUR content.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 EMCache *
 em_cache_new(time_t timeout, size_t nodesize, GFreeFunc nodefree)
@@ -316,8 +316,8 @@ em_cache_new(time_t timeout, size_t nodesize, GFreeFunc nodefree)
 
 /**
  * em_cache_destroy:
- * @emc: 
- * 
+ * @emc:
+ *
  * destroy the cache, duh.
  **/
 void
@@ -330,13 +330,13 @@ em_cache_destroy(EMCache *emc)
 
 /**
  * em_cache_lookup:
- * @emc: 
- * @key: 
- * 
+ * @emc:
+ * @key:
+ *
  * Lookup a cache node.  once you're finished with it, you need to
  * unref it.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 EMCacheNode *
 em_cache_lookup(EMCache *emc, const char *key)
@@ -360,13 +360,13 @@ em_cache_lookup(EMCache *emc, const char *key)
 
 /**
  * em_cache_node_new:
- * @emc: 
- * @key: 
- * 
+ * @emc:
+ * @key:
+ *
  * Create a new key'd cache node.  The node will not be added to the
  * cache until you insert it.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 EMCacheNode *
 em_cache_node_new(EMCache *emc, const char *key)
@@ -382,9 +382,9 @@ em_cache_node_new(EMCache *emc, const char *key)
 
 /**
  * em_cache_node_unref:
- * @emc: 
- * @n: 
- * 
+ * @emc:
+ * @n:
+ *
  * unref a cache node, you can only unref nodes which have been looked
  * up.
  **/
@@ -399,9 +399,9 @@ em_cache_node_unref(EMCache *emc, EMCacheNode *n)
 
 /**
  * em_cache_add:
- * @emc: 
- * @n: 
- * 
+ * @emc:
+ * @n:
+ *
  * Add a cache node to the cache, once added the memory is owned by
  * the cache.  If there are conflicts and the old node is still in
  * use, then the new node is not added, otherwise it is added and any
@@ -462,8 +462,8 @@ em_cache_add(EMCache *emc, EMCacheNode *n)
 
 /**
  * em_cache_clear:
- * @emc: 
- * 
+ * @emc:
+ *
  * clear the cache.  just for api completeness.
  **/
 void
@@ -510,10 +510,10 @@ e_prpipe (PRFileDesc **fds)
 	if (PR_CreatePipe (&fds[0], &fds[1]) != PR_FAILURE)
 		return 0;
 #endif
-	
+
 	fds[0] = NULL;
 	fds[1] = NULL;
-	
+
 	return -1;
 }
 #endif
@@ -868,7 +868,7 @@ void e_thread_destroy(EThread *e)
 			msg = g_malloc0(sizeof(*msg));
 			msg->reply_port = E_THREAD_QUIT_REPLYPORT;
 			e_msgport_put(e->server_port, msg);
-			l = l->next;			
+			l = l->next;
 		}
 
 		/* then, wait for everyone to quit */
@@ -984,7 +984,7 @@ thread_destroy_msg(EThread *e, EMsg *m)
 	func = e->destroy;
 	func_data = e->destroy_data;
 	pthread_mutex_unlock(&e->mutex);
-	
+
 	if (func)
 		func(e, m, func_data);
 }
@@ -1000,7 +1000,7 @@ thread_received_msg(EThread *e, EMsg *m)
 	func = e->received;
 	func_data = e->received_data;
 	pthread_mutex_unlock(&e->mutex);
-	
+
 	if (func)
 		func(e, m, func_data);
 	else
@@ -1018,7 +1018,7 @@ thread_lost_msg(EThread *e, EMsg *m)
 	func = e->lost;
 	func_data = e->lost_data;
 	pthread_mutex_unlock(&e->mutex);
-	
+
 	if (func)
 		func(e, m, func_data);
 }

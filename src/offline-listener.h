@@ -49,7 +49,7 @@ typedef struct _OfflineListenerClass   OfflineListenerClass;
 struct _OfflineListener {
 	GObject parent;
 	OfflineListenerPrivate *priv;
-  
+
 };
 
 struct _OfflineListenerClass {

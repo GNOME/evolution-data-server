@@ -50,25 +50,25 @@ static void
 camel_shutdown (void)
 {
 	CamelCertDB *certdb;
-	
+
 	if (!initialised)
 		return;
-	
+
 #if defined (HAVE_NSS) && !defined (G_OS_WIN32)
 	/* For some reason we get into trouble on Win32 if we call these.
 	 * But they shouldn't be necessary as the process is exiting anywy?
 	 */
 	NSS_Shutdown ();
-	
+
 	PR_Cleanup ();
 #endif /* HAVE_NSS */
-	
+
 	certdb = camel_certdb_get_default ();
 	if (certdb) {
 		camel_certdb_save (certdb);
 		camel_object_unref (certdb);
 	}
-	
+
 	initialised = FALSE;
 }
 
@@ -77,7 +77,7 @@ camel_init (const char *configdir, gboolean nss_init)
 {
 	CamelCertDB *certdb;
 	char *path;
-	
+
 	if (initialised)
 		return 0;
 
@@ -95,7 +95,7 @@ camel_init (const char *configdir, gboolean nss_init)
 		PRUint16 indx;
 
 		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
-		
+
 #ifndef G_OS_WIN32
 		nss_configdir = g_strdup (configdir);
 #else
@@ -115,31 +115,31 @@ camel_init (const char *configdir, gboolean nss_init)
 		for (indx = 0; indx < SSL_NumImplementedCiphers; indx++) {
 			if (!SSL_IS_SSL2_CIPHER(SSL_ImplementedCiphers[indx]))
 				SSL_CipherPrefSetDefault (SSL_ImplementedCiphers[indx], PR_TRUE);
-		}	
-		
+		}
+
 		SSL_OptionSetDefault (SSL_ENABLE_SSL2, PR_TRUE);
 		SSL_OptionSetDefault (SSL_ENABLE_SSL3, PR_TRUE);
 		SSL_OptionSetDefault (SSL_ENABLE_TLS, PR_TRUE);
 		SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
 	}
 #endif /* HAVE_NSS */
-	
+
 	path = g_strdup_printf ("%s/camel-cert.db", configdir);
 	certdb = camel_certdb_new ();
 	camel_certdb_set_filename (certdb, path);
 	g_free (path);
-	
+
 	/* if we fail to load, who cares? it'll just be a volatile certdb */
 	camel_certdb_load (certdb);
-	
+
 	/* set this certdb as the default db */
 	camel_certdb_set_default (certdb);
-	
+
 	camel_object_unref (certdb);
-	
+
 	g_atexit (camel_shutdown);
-	
+
 	initialised = TRUE;
-	
+
 	return 0;
 }

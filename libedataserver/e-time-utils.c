@@ -44,7 +44,7 @@ get_locale_string (int lctype)
 {
 	int nbytes = GetLocaleInfo (GetThreadLocale (), lctype, NULL, 0);
 	char *tem;
-	GQuark quark; 
+	GQuark quark;
 
 	if (nbytes == 0)
 		return "???";
@@ -645,9 +645,9 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 				   get_locale_string (LOCALE_STIMEFORMAT),
 				   NULL);
 	      const char *posix_d_t_fmt = translate_picture (d_t_fmt);
-	      
+
 	      g_free (d_t_fmt);
-		      
+
 	      if (!recursive (posix_d_t_fmt))
 		{
 		  if (*decided == loc)
@@ -1492,13 +1492,13 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 		result->tm_isdst = -1;
 		return E_TIME_PARSE_NONE;
 	}
-	
+
 	locale_str = g_locale_from_utf8 (value, -1, NULL, NULL, NULL);
 	pos = (const char *) locale_str;
 
 	if (!locale_str)
 		return E_TIME_PARSE_INVALID;
-	
+
 	/* Skip whitespace */
 	while (n = (int)((unsigned char)*pos), isspace (n) != 0)
 		pos++;
@@ -1541,7 +1541,7 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
    case the user can choose between 12 and 24-hour time formats. */
 static gboolean
 locale_supports_12_hour_format (void)
-{  
+{
 	struct tm tmp_tm = { 0 };
 	char s[16];
 
@@ -1563,7 +1563,7 @@ locale_supports_12_hour_format (void)
  * formats with am/pm can be used.
  *
  * Returns: E_TIME_PARSE_OK if the string was successfully parsed,
- *          E_TIME_PARSE_NONE if the string was empty, or 
+ *          E_TIME_PARSE_NONE if the string was empty, or
  *          E_TIME_PARSE_INVALID if the string could not be parsed.
  */
 ETimeParseStatus
@@ -1605,7 +1605,7 @@ e_time_parse_date_and_time		(const char	*value,
 		format[num_formats++] = _("%a %m/%d/%Y %I:%M:%S %p");
 	}
 
-	/* strptime format of a weekday, a date and a time, 
+	/* strptime format of a weekday, a date and a time,
 	   in 24-hour format. */
 	format[num_formats++] = _("%a %m/%d/%Y %H:%M:%S");
 
@@ -1704,10 +1704,10 @@ e_time_parse_date_and_time		(const char	*value,
  * e_time_parse_date:
  * @value: A date string.
  * @result: Return value for the parsed date.
- * 
+ *
  * Takes in a date string entered by the user and tries to convert it to
  * a struct #tm.
- * 
+ *
  * Returns: An #ETimeParseStatus result code indicating whether
  * @value was an empty string, a valid date, or an invalid date.
  **/
@@ -1724,7 +1724,7 @@ e_time_parse_date (const char *value, struct tm *result)
 
 	/* according to the current locale */
 	format [0] = ("%x");
-	
+
 	/* strptime format of a weekday and a date. */
 	format[1] = _("%a %m/%d/%Y");
 
@@ -1738,16 +1738,16 @@ e_time_parse_date (const char *value, struct tm *result)
 		if (result->tm_year < 0) {
 			t = time (NULL);
 			today_tm = localtime (&t);
-			
+
 			/* This should convert it into a value from 0 to 99. */
 			result->tm_year += 1900;
-			
+
 			/* Now add on the century. */
 			result->tm_year += today_tm->tm_year
 				- (today_tm->tm_year % 100);
 		}
 	}
-	
+
 	return status;
 }
 
@@ -1866,7 +1866,7 @@ e_time_format_date_and_time		(struct tm	*date_tm,
  * @show_zero_seconds: A #gboolean.
  * @buffer: The #char buffer to store the result in.
  * @buffer_size: The length of @buffer.
- *  
+ *
  * Creates a string representation of a time value in @date_tm and
  * stores it in @buffer. @buffer_size should be at least 64.
  **/
@@ -1896,7 +1896,7 @@ e_time_format_time			(struct tm	*date_tm,
 			/* strftime format of a time in 12-hour format. */
 			format = _("%I:%M:%S %p");
 	}
-			
+
 	/* strftime returns 0 if the string doesn't fit, and leaves the buffer
 	   undefined, so we set it to the empty string in that case. */
 	if (e_utf8_strftime (buffer, buffer_size, format, date_tm) == 0)
@@ -1907,9 +1907,9 @@ e_time_format_time			(struct tm	*date_tm,
 /**
  * e_mktime_utc:
  * @tm: The #tm to convert to a calendar time representation.
- * 
+ *
  * Like mktime(3), but assumes UTC instead of local timezone.
- * 
+ *
  * Returns: The calendar time representation of @tm.
  **/
 time_t

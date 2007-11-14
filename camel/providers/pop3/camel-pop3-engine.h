@@ -93,9 +93,9 @@ struct _CamelPOP3Command {
 
 struct _CamelPOP3Engine {
 	CamelObject parent;
-	
+
 	guint32 flags;
-	
+
 	camel_pop3_engine_t state;
 
 	GList *auth;		/* authtypes supported */

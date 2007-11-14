@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * pas-backend-summary.c
  * Copyright 2000, 2001, Ximian, Inc.
  *
@@ -530,7 +530,7 @@ e_book_backend_summary_load (EBookBackendSummary *summary)
 {
 	EBookBackendSummaryItem *new_item;
 	int i;
-	
+
 	clear_items (summary);
 
 	if (!e_book_backend_summary_open (summary))
@@ -763,7 +763,7 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 
 	/* ID normally should not be NULL for a contact. */
 	/* Added this check as groupwise server sometimes returns
-	 * contacts with NULL id 
+	 * contacts with NULL id
 	 */
 	id = e_contact_get (contact, E_CONTACT_UID);
 	if (!id) {
@@ -862,9 +862,9 @@ summary_flush_func (gpointer data)
 		g_warning ("failed to flush summary file to disk");
 		return TRUE; /* try again after the next timeout */
 	}
-	
+
 	g_message ("Flushed summary to disk");
-	
+
 	/* we only want this to execute once, so return FALSE and set
 	   summary->flush_timeout to 0 */
 	summary->priv->flush_timeout = 0;
@@ -929,7 +929,7 @@ func_check(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
-	
+
 	return r;
 }
 

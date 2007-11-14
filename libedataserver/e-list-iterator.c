@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Authors: 
+ * Authors:
  *   Christopher James Lahey <clahey@umich.edu>
  *
  * Copyright (C) 2000 Ximian, Inc.
@@ -14,7 +14,7 @@
 
 static void        e_list_iterator_init       (EListIterator *list);
 static void        e_list_iterator_class_init (EListIteratorClass *klass);
-		   
+
 static void        e_list_iterator_invalidate (EIterator *iterator);
 static gboolean    e_list_iterator_is_valid   (EIterator *iterator);
 static void        e_list_iterator_set        (EIterator  *iterator,
@@ -82,7 +82,7 @@ e_list_iterator_new (EList *list)
 }
 
 /*
- * Virtual functions: 
+ * Virtual functions:
  */
 static void
 e_list_iterator_dispose (GObject *object)

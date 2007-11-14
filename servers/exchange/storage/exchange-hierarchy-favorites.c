@@ -134,7 +134,7 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 	 * permanent_urls. Unfortunately it doesn't seem to be possible
 	 * to BPROPFIND a group of permanent_urls.
 	 */
-	iter = e2k_context_search_start (ctx, NULL, hfav->priv->shortcuts_uri, 
+	iter = e2k_context_search_start (ctx, NULL, hfav->priv->shortcuts_uri,
 					 shortcuts_props, n_shortcuts_props,
 					 NULL, NULL, TRUE);
 	while ((result = e2k_result_iter_next (iter))) {
@@ -169,7 +169,7 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 	}
 
 	return hrefs;
-}	
+}
 /**
  * exchange_hierarchy_favorites_is_added:
  * @hier: the hierarchy
@@ -189,7 +189,7 @@ exchange_hierarchy_favorites_is_added (ExchangeHierarchy *hier, EFolder *folder)
 
 	folder_uri = e_folder_exchange_get_internal_uri (folder);
 	shortcut_uri = g_hash_table_lookup (hfav->priv->shortcuts, folder_uri);
-	
+
 	return shortcut_uri ? TRUE : FALSE;
 }
 
@@ -236,7 +236,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 					       physical_uri);
 		}
 	}
-	
+
 	return exchange_hierarchy_webdav_status_to_folder_result (status);
 }
 
@@ -269,7 +269,7 @@ exchange_hierarchy_favorites_add_folder (ExchangeHierarchy *hier,
 	props = e2k_properties_new ();
 	e2k_properties_set_string (props, PR_FAV_DISPLAY_NAME,
 				   g_strdup (e_folder_get_name (folder)));
-	if (permanent_uri)	
+	if (permanent_uri)
 		e2k_properties_set_binary (props, PR_FAV_PUBLIC_SOURCE_KEY,
 				   e2k_permanenturl_to_entryid (permanent_uri));
 	e2k_properties_set_int (props, PR_FAV_LEVEL_MASK, 1);

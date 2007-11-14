@@ -75,33 +75,33 @@ enum {
 
 struct _CamelIMAP4Stream {
 	CamelStream parent_object;
-	
+
 	CamelStream *stream;
-	
+
 	guint disconnected:1;  /* disconnected state */
 	guint have_unget:1;    /* have an unget token */
 	guint mode:1;          /* TOKEN vs LITERAL */
 	guint eol:1;           /* end-of-literal */
-	
+
 	size_t literal;
-	
+
 	/* i/o buffers */
 	unsigned char realbuf[IMAP4_READ_PRELEN + IMAP4_READ_BUFLEN + 1];
 	unsigned char *inbuf;
 	unsigned char *inptr;
 	unsigned char *inend;
-	
+
 	/* token buffers */
 	unsigned char *tokenbuf;
 	unsigned char *tokenptr;
 	unsigned int tokenleft;
-	
+
 	camel_imap4_token_t unget;
 };
 
 struct _CamelIMAP4StreamClass {
 	CamelStreamClass parent_class;
-	
+
 	/* Virtual methods */
 };
 

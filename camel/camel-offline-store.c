@@ -50,7 +50,7 @@ CamelType
 camel_offline_store_get_type (void)
 {
 	static CamelType type = NULL;
-	
+
 	if (!type) {
 		type = camel_type_register (CAMEL_STORE_TYPE,
 					    "CamelOfflineStore",
@@ -61,7 +61,7 @@ camel_offline_store_get_type (void)
 					    (CamelObjectInitFunc) camel_offline_store_init,
 					    (CamelObjectFinalizeFunc) camel_offline_store_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -70,7 +70,7 @@ static void
 camel_offline_store_class_init (CamelOfflineStoreClass *klass)
 {
 	parent_class = (CamelStoreClass *) camel_type_get_global_classfuncs (CAMEL_STORE_TYPE);
-	
+
 	((CamelServiceClass *) klass)->construct = offline_store_construct;
 }
 
@@ -93,11 +93,11 @@ offline_store_construct (CamelService *service, CamelSession *session,
 			  CamelException *ex)
 {
 	CamelOfflineStore *store = CAMEL_OFFLINE_STORE (service);
-	
+
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
 		return;
-	
+
 	store->state = camel_session_is_online (session) ?
 		CAMEL_OFFLINE_STORE_NETWORK_AVAIL : CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 }
@@ -121,7 +121,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 
 	if (store->state == state)
 		return;
-	
+
 	camel_exception_init (&lex);
 	if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 		/* network available -> network unavailable */
@@ -130,25 +130,25 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 				GPtrArray *folders;
 				CamelFolder *folder;
 				int i, sync;
-				
+
 				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
-				
+
 				folders = camel_object_bag_list (((CamelStore *) store)->folders);
 				for (i = 0; i < folders->len; i++) {
 					folder = folders->pdata[i];
-					
+
 					if (CAMEL_CHECK_TYPE (folder, CAMEL_OFFLINE_FOLDER_TYPE)
 					    && (sync || ((CamelOfflineFolder *) folder)->sync_offline)) {
 						camel_offline_folder_downsync ((CamelOfflineFolder *) folder, NULL, &lex);
 						camel_exception_clear (&lex);
 					}
-					
+
 					camel_object_unref (folder);
 				}
-				
+
 				g_ptr_array_free (folders, TRUE);
 			}
-			
+
 			camel_store_sync (CAMEL_STORE (store), FALSE, &lex);
 			camel_exception_clear (&lex);
 		}
@@ -160,6 +160,6 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 		if (!camel_service_connect (CAMEL_SERVICE (store), ex))
 			return;
 	}
-	
+
 	store->state = state;
 }

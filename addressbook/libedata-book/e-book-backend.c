@@ -84,9 +84,9 @@ e_book_backend_load_source (EBookBackend           *backend,
 /**
  * e_book_backend_get_source:
  * @backend: An addressbook backend.
- * 
+ *
  * Queries the source that an addressbook backend is serving.
- * 
+ *
  * Return value: ESource for the backend.
  **/
 ESource *
@@ -603,7 +603,7 @@ e_book_backend_remove_client (EBookBackend *backend,
 	 */
 	if (!backend->priv->clients)
 		last_client_gone (backend);
-	
+
 	g_mutex_unlock (backend->priv->clients_mutex);
 
 	g_object_unref (backend);
@@ -626,18 +626,18 @@ e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
 
 	if (!backend->priv->clients) {
 		g_mutex_unlock (backend->priv->clients_mutex);
-		
+
 		return FALSE;
 	}
-	
+
 	for (l = backend->priv->clients; l; l = l->next) {
 		if (ORBit_small_get_connection_status (e_data_book_get_listener (l->data)) != ORBIT_CONNECTION_IN_PROC) {
 			g_mutex_unlock (backend->priv->clients_mutex);
-			
+
 			return TRUE;
 		}
 	}
-	
+
 	g_mutex_unlock (backend->priv->clients_mutex);
 
 	/* If we get here, all remaining clients are in proc */
@@ -657,7 +657,7 @@ char *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
-	
+
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities);
 
 	return E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities (backend);
@@ -708,7 +708,7 @@ gboolean
 e_book_backend_is_writable (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-	
+
 	return backend->priv->writable;
 }
 
@@ -724,7 +724,7 @@ void
 e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	
+
 	backend->priv->writable = is_writable;
 }
 
@@ -740,7 +740,7 @@ gboolean
 e_book_backend_is_removed (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-	
+
 	return backend->priv->removed;
 }
 
@@ -756,7 +756,7 @@ void
 e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	
+
 	backend->priv->removed = is_removed;
 }
 
@@ -768,7 +768,7 @@ e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
  * Sets @backend's online/offline mode to @mode. Mode can be 1 for offline
  * or 2 indicating that it is connected and online.
  **/
-void 
+void
 e_book_backend_set_mode (EBookBackend *backend,
 			 GNOME_Evolution_Addressbook_BookMode  mode)
 {
@@ -776,7 +776,7 @@ e_book_backend_set_mode (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->set_mode);
 
-        (* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);	
+        (* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);
 
 }
 
@@ -788,11 +788,11 @@ e_book_backend_set_mode (EBookBackend *backend,
  * circumstances (for example before a live backup) and should not be used in
  * normal use.
  */
-void 
+void
 e_book_backend_sync (EBookBackend *backend)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	
+
 	if (E_BOOK_BACKEND_GET_CLASS (backend)->sync)
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->sync) (backend);
 }
@@ -964,16 +964,16 @@ e_book_backend_notify_complete (EBookBackend *backend)
  *
  * Notifies all backends clients about the current writable state.
  **/
-void 
+void
 e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
 {
 	EBookBackendPrivate *priv;
 	GList *clients;
-	
+
 	priv = backend->priv;
 	priv->writable = is_writable;
 	g_mutex_lock (priv->clients_mutex);
-	
+
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_writable (E_DATA_BOOK (clients->data), is_writable);
 
@@ -989,16 +989,16 @@ e_book_backend_notify_writable (EBookBackend *backend, gboolean is_writable)
  * Notifies clients of @backend's connection status indicated by @is_online.
  * Meant to be used by backend implementations.
  **/
-void 
+void
 e_book_backend_notify_connection_status (EBookBackend *backend, gboolean is_online)
 {
 	EBookBackendPrivate *priv;
 	GList *clients;
-	
+
 	priv = backend->priv;
 	priv->online = is_online;
 	g_mutex_lock (priv->clients_mutex);
-	
+
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_connection_status (E_DATA_BOOK (clients->data), is_online);
 
@@ -1017,10 +1017,10 @@ e_book_backend_notify_auth_required (EBookBackend *backend)
 {
 	EBookBackendPrivate *priv;
 	GList *clients;
-	
+
 	priv = backend->priv;
 	g_mutex_lock (priv->clients_mutex);
-	
+
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_auth_required (E_DATA_BOOK (clients->data));
 	g_mutex_unlock (priv->clients_mutex);

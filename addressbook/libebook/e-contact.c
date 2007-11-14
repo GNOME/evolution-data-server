@@ -66,7 +66,7 @@ typedef struct {
 	const char *vcard_field_name;
 	const char *field_name;      /* non translated */
 	const char *pretty_name;     /* translated */
-	
+
 	gboolean read_only;
 
 	int list_elem;
@@ -159,7 +159,7 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TELEX,        EVC_TEL, "telex",             N_("Telex"),            FALSE, EVC_X_TELEX,     0),
 	/* To translators: TTY is Teletypewriter */
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_TTYTDD,       EVC_TEL, "tty",               N_("TTY"),              FALSE, EVC_X_TTYTDD,    0),
-	
+
 	/* Organizational fields */
 	LIST_ELEM_STR_FIELD (E_CONTACT_ORG,      EVC_ORG, "org",      N_("Organization"),        FALSE, 0),
 	LIST_ELEM_STR_FIELD (E_CONTACT_ORG_UNIT, EVC_ORG, "org_unit", N_("Organizational Unit"), FALSE, 1),
@@ -325,7 +325,7 @@ e_contact_class_init (EContactClass *klass)
 
 		/* Verify the table is correctly ordered */
 		g_assert (i == field_info[i].field_id);
-		
+
 		if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRING)
 			pspec = g_param_spec_string (field_info[i].field_name,
 						     _(field_info[i].pretty_name),
@@ -430,7 +430,7 @@ geo_getter (EContact *contact, EVCardAttribute *attr)
 static void
 geo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
-	EContactGeo *geo = data;	
+	EContactGeo *geo = data;
 	char buf[G_ASCII_DTOSTR_BUF_SIZE];
 
 	e_vcard_attribute_add_value
@@ -447,19 +447,19 @@ photo_getter (EContact *contact, EVCardAttribute *attr)
 
 	if (!attr)
 		return NULL;
-	
+
 	values = e_vcard_attribute_get_param (attr, EVC_ENCODING);
 	if (values && (g_ascii_strcasecmp (values->data, "b") == 0 ||
 		       /* second for photo vCard 2.1 support */
 		       g_ascii_strcasecmp (values->data, "base64") == 0)) {
-		values = e_vcard_attribute_get_values_decoded (attr);	
+		values = e_vcard_attribute_get_values_decoded (attr);
 		if (values && values->data) {
 			GString *s = values->data;
 			EContactPhoto *photo;
-			
+
 			if (!s->len)
 				return NULL;
-			
+
 			photo = g_new0 (EContactPhoto, 1);
 			photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 			photo->data.inlined.length = s->len;
@@ -493,7 +493,7 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 	switch (photo->type) {
 	case E_CONTACT_PHOTO_TYPE_INLINED:
 		g_return_if_fail (photo->data.inlined.length > 0);
-		
+
 		e_vcard_attribute_add_param_with_value (attr,
 							e_vcard_attribute_param_new (EVC_ENCODING),
 							"b");
@@ -505,7 +505,7 @@ photo_setter (EContact *contact, EVCardAttribute *attr, void *data)
 		e_vcard_attribute_add_param_with_value (attr,
 							e_vcard_attribute_param_new (EVC_TYPE),
 							image_type);
-		
+
 		e_vcard_attribute_add_value_decoded (attr, (char*)photo->data.inlined.data, photo->data.inlined.length);
 		break;
 	case E_CONTACT_PHOTO_TYPE_URI:
@@ -714,7 +714,7 @@ cert_getter (EContact *contact, EVCardAttribute *attr)
 	   up via NSS, but that would require the additional NSS dep
 	   here, and we'd have more than one process opening the
 	   certdb, which is bad.  *sigh* */
-	
+
 	return NULL;
 }
 
@@ -801,8 +801,8 @@ e_contact_set_property (GObject *object,
 				else {
 					/* we didn't find it - add a new attribute */
 					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-					if (!strcmp(info->vcard_field_name, "EMAIL") && 
-					    !info->attr_type1 && 
+					if (!strcmp(info->vcard_field_name, "EMAIL") &&
+					    !info->attr_type1 &&
 					    !info->attr_type2) {
 						/* Add default type */
 						e_vcard_attribute_add_param_with_value ( attr,
@@ -936,7 +936,7 @@ e_contact_set_property (GObject *object,
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 				e_vcard_add_attribute (E_VCARD (contact), attr);
 			}
-			
+
 			values = e_vcard_attribute_get_values (attr);
 			p = g_list_nth (values, info->list_elem);
 
@@ -1166,13 +1166,13 @@ e_contact_get_property (GObject *object,
 {
 	const EContactFieldInfo *info = NULL;
 	gpointer data;
-	
+
 	if (prop_id < 1 || prop_id >= E_CONTACT_FIELD_LAST) {
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		g_value_reset (value);
 		return;
 	}
-	
+
 	info = &field_info[prop_id];
 	data = e_contact_get (E_CONTACT (object), prop_id);
 
@@ -1213,7 +1213,7 @@ e_contact_new (void)
 /**
  * e_contact_new_from_vcard:
  * @vcard: a string representing a vcard
- * 
+ *
  * Creates a new #EContact based on a vcard.
  *
  * Return value: A new #EContact.
@@ -1348,7 +1348,7 @@ e_contact_vcard_attribute  (EContactField field_id)
 /**
  * e_contact_field_id:
  * @field_name: a string representing a contact field
- * 
+ *
  * Gets the #EContactField corresponding to the @field_name.
  *
  * Return value: An #EContactField corresponding to @field_name, or %0 if it doesn't exist.
@@ -1379,7 +1379,7 @@ gpointer
 e_contact_get (EContact *contact, EContactField field_id)
 {
 	const EContactFieldInfo *info = NULL;
- 
+
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), NULL);
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, NULL);
 
@@ -1412,10 +1412,10 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 			if (attr) {
 				GList *v;
-				
+
 				v = e_vcard_attribute_get_values (attr);
 				v = g_list_nth (v, info->list_elem);
-				
+
 				return v ? g_strdup (v->data) : NULL;
 			}
 		}
@@ -1727,15 +1727,15 @@ e_contact_name_from_string (const char *name_str)
 	g_return_val_if_fail (name_str != NULL, NULL);
 
 	western = e_name_western_parse (name_str ? name_str : "");
-	
+
 	name->prefixes   = g_strdup (western->prefix);
 	name->given      = g_strdup (western->first );
 	name->additional = g_strdup (western->middle);
 	name->family     = g_strdup (western->last  );
 	name->suffixes   = g_strdup (western->suffix);
-	
+
 	e_name_western_free(western);
-	
+
 	return name;
 }
 
@@ -1755,13 +1755,13 @@ e_contact_name_copy (EContactName *n)
 	g_return_val_if_fail (n != NULL, NULL);
 
 	name = e_contact_name_new();
-	
+
 	name->prefixes   = g_strdup (n->prefixes);
 	name->given      = g_strdup (n->given);
 	name->additional = g_strdup (n->additional);
 	name->family     = g_strdup (n->family);
 	name->suffixes   = g_strdup (n->suffixes);
-	
+
 	return name;
 }
 
@@ -1821,7 +1821,7 @@ e_contact_date_from_string (const char *str)
 		length = t - str;
 	else
 		length = strlen(str);
-	
+
 	if (length == 10 ) {
 		date->year = str[0] * 1000 + str[1] * 100 + str[2] * 10 + str[3] - '0' * 1111;
 		date->month = str[5] * 10 + str[6] - '0' * 11;
@@ -1831,7 +1831,7 @@ e_contact_date_from_string (const char *str)
 		date->month = str[4] * 10 + str[5] - '0' * 11;
 		date->day = str[6] * 10 + str[7] - '0' * 11;
 	}
-	
+
 	return date;
 }
 
@@ -1847,7 +1847,7 @@ e_contact_date_from_string (const char *str)
 char *
 e_contact_date_to_string (EContactDate *dt)
 {
-	if (dt) 
+	if (dt)
 		return g_strdup_printf ("%04d-%02d-%02d",
 					CLAMP(dt->year, 1000, 9999),
 					CLAMP(dt->month, 1, 12),
@@ -1921,7 +1921,7 @@ e_contact_date_get_type (void)
 
 /**
  * e_contact_date_new:
- * 
+ *
  * Creates a new #EContactDate struct.
  *
  * Return value: A new #EContactDate struct.
@@ -1943,7 +1943,7 @@ e_contact_photo_free (EContactPhoto *photo)
 {
 	if (!photo)
 		return;
-	
+
 	switch (photo->type) {
 	case E_CONTACT_PHOTO_TYPE_INLINED:
 		g_free (photo->data.inlined.mime_type);

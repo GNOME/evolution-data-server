@@ -118,7 +118,7 @@ ExchangeAccountResult exchange_account_set_password 	     (ExchangeAccount  *acc
 
 void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
 
-void		       exchange_account_set_save_password    (ExchangeAccount *account, 
+void		       exchange_account_set_save_password    (ExchangeAccount *account,
 							      gboolean save_password);
 
 gboolean	       exchange_account_is_save_password     (ExchangeAccount *account);
@@ -195,7 +195,7 @@ void 			exchange_account_folder_size_rename (ExchangeAccount *account,
 						     	     const char *old_name,
 						     	     const char *new_name);
 GtkListStore 	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
-void 		  	exchange_account_scan_foreign_hierarchy (ExchangeAccount *account, 
+void 		  	exchange_account_scan_foreign_hierarchy (ExchangeAccount *account,
 							      const char *user_email);
 
 

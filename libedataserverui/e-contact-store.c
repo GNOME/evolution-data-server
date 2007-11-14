@@ -602,7 +602,7 @@ view_sequence_complete (EContactStore *contact_store, EBookViewStatus status, EB
 
 	/* However, if it was a pending view, calculate and emit the differences between that
 	 * and the current view, and move the pending view up to current.
-	 * 
+	 *
 	 * This is O(m * n), and can be sped up with a temporary hash table if needed. */
 
 	/* Deletions */
@@ -844,7 +844,7 @@ e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
  * @iter: a destination #GtkTreeIter to set
  *
  * Sets @iter to point to the contact row matching @uid.
- * 
+ *
  * Return value: %TRUE if the contact was found, and @iter was set. %FALSE otherwise.
  **/
 gboolean

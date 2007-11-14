@@ -42,7 +42,7 @@ struct _ESourcePrivate {
 	char *absolute_uri;
 
 	gboolean readonly;
-	
+
 	gchar *color_spec;
 
 	GHashTable *properties;
@@ -116,7 +116,7 @@ e_source_class_init (ESourceClass *class)
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
 
-	signals[CHANGED] = 
+	signals[CHANGED] =
 		g_signal_new ("changed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -303,9 +303,9 @@ compare_str_hashes (GHashTable *table1, GHashTable *table2)
  * e_source_update_from_xml_node:
  * @source: An ESource.
  * @node: A pointer to the node to parse.
- * 
+ *
  * Update the ESource properties from @node.
- * 
+ *
  * Return value: %TRUE if the data in @node was recognized and parsed into
  * acceptable values for @source, %FALSE otherwise.
  **/
@@ -369,7 +369,7 @@ e_source_update_from_xml_node (ESource *source,
 								  g_free, g_free);
 		changed = TRUE;
 	}
-	
+
 	for (node = node->children; node; node = node->next) {
 		if (!node->name)
 			continue;
@@ -387,7 +387,7 @@ e_source_update_from_xml_node (ESource *source,
 	}
 
 	retval = TRUE;
-	
+
  done:
 	if (changed)
 		g_signal_emit (source, signals[CHANGED], 0);
@@ -412,10 +412,10 @@ e_source_update_from_xml_node (ESource *source,
 /**
  * e_source_name_from_xml_node:
  * @node: A pointer to an XML node.
- * 
+ *
  * Assuming that @node is a valid ESource specification, retrieve the name of
  * the source from it.
- * 
+ *
  * Return value: Name of the source in the specified @node.  The caller must
  * free the string.
  **/
@@ -440,7 +440,7 @@ e_source_build_absolute_uri (ESource *source)
 	gchar *uri_str;
 
 	g_return_val_if_fail (source->priv->group != NULL, NULL);
-	
+
 	base_uri_str = e_source_group_peek_base_uri (source->priv->group);
 
 	/* If last character in base URI is a slash, just concat the
@@ -471,7 +471,7 @@ e_source_set_group (ESource *source,
 
 	if (source->priv->readonly)
 		return;
-	
+
 	if (source->priv->group == group)
 		return;
 
@@ -495,7 +495,7 @@ e_source_set_name (ESource *source,
 
 	if (source->priv->readonly)
 		return;
-	
+
 	if (source->priv->name != NULL &&
 	    strcmp (source->priv->name, name) == 0)
 		return;
@@ -516,7 +516,7 @@ e_source_set_relative_uri (ESource *source,
 
 	if (source->priv->readonly)
 		return;
-	
+
 	if (source->priv->relative_uri == relative_uri)
 		return;
 
@@ -524,7 +524,7 @@ e_source_set_relative_uri (ESource *source,
 	source->priv->relative_uri = g_strdup (relative_uri);
 
 	/* reset the absolute uri */
-	if (source->priv->absolute_uri && 
+	if (source->priv->absolute_uri &&
 	    (absolute_uri = e_source_build_absolute_uri (source))) {
 		g_free (source->priv->absolute_uri);
 		source->priv->absolute_uri = absolute_uri;
@@ -561,7 +561,7 @@ e_source_set_readonly (ESource  *source,
 	source->priv->readonly = readonly;
 
 	g_signal_emit (source, signals[CHANGED], 0);
-	
+
 }
 
 void
@@ -648,10 +648,10 @@ e_source_peek_absolute_uri (ESource *source)
 /**
  * e_source_peek_color_spec:
  * @source: an ESource
- * 
+ *
  * Return the textual representation of the color for @source, or %NULL if it
  * has none.  The returned string should be parsable by #gdk_color_parse().
- * 
+ *
  * Return value: a string specifying the color
  *
  * Since: 1.10
@@ -678,9 +678,9 @@ e_source_get_readonly (ESource *source)
  * @source: An ESource
  * @color_return: Pointer to a variable where the returned color will be
  * stored.
- * 
+ *
  * If @source has an associated color, return it in *@color_return.
- * 
+ *
  * Return value: %TRUE if the @source has a defined color (and hence
  * *@color_return was set), %FALSE otherwise.
  **/

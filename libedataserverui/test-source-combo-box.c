@@ -72,7 +72,7 @@ main (int argc, char **argv)
 	const char *gconf_path;
 
 	gtk_init (&argc, &argv);
-	
+
 	if (argc < 2)
 		gconf_path = "/apps/evolution/calendar/sources";
 	else

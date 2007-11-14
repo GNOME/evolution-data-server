@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-store.h : class for an nntp store */
 
-/* 
+/*
  *
  * Copyright (C) 2000 Ximian, Inc. <toshok@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -66,23 +66,23 @@ struct _xover_header {
 };
 
 struct _CamelNNTPStore {
-	CamelDiscoStore parent_object;	
-	
+	CamelDiscoStore parent_object;
+
 	struct _CamelNNTPStorePrivate *priv;
-	
+
 	guint32 extensions;
-	
+
 	unsigned int posting_allowed:1;
 	unsigned int do_short_folder_notation:1;
 	unsigned int folder_hierarchy_relative:1;
 
 	struct _CamelNNTPStoreSummary *summary;
-	
+
 	struct _CamelNNTPStream *stream;
 	struct _CamelStreamMem *mem;
-	
+
 	struct _CamelDataCache *cache;
-	
+
 	char *current_folder, *storage_path, *base_url;
 
 	struct _xover_header *xover;

@@ -17,7 +17,7 @@
 #include "camel-imapp-stream.h"
 #include "camel-imapp-utils.h"
 
-#define e(x) 
+#define e(x)
 #define c(x)			/* command build debug */
 
 static void imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, va_list ap);
@@ -88,7 +88,7 @@ camel_imapp_engine_get_type (void)
 			(CamelObjectInitFunc) object_init,
 			(CamelObjectFinalizeFunc) object_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -285,7 +285,7 @@ camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const char *response, Cam
 	struct _handler *h;
 	const unsigned char *p;
 	unsigned char *o, c;
-	
+
 	h = g_malloc0(sizeof(*h) + strlen(response));
 	h->func = func;
 	h->data = data;
@@ -349,7 +349,7 @@ iterate_untagged(CamelIMAPPEngine *imap)
 	int tok;
 	struct _handler *h;
 	struct _status_info *sinfo;
-	
+
 	e(printf("got untagged response\n"));
 	id = 0;
 	tok = camel_imapp_stream_token(imap->stream, &token, &len);
@@ -403,12 +403,12 @@ iterate_untagged(CamelIMAPPEngine *imap)
 			if (imap->select_response)
 				imap->select_response->uidvalidity = sinfo->u.uidvalidity;
 			break;
-#if 0	
+#if 0
 			/* not defined yet ... */
 		case IMAP_UIDNEXT:
 			printf("got uidnext for folder: %d\n", sinfo->u.uidnext);
 			break;
-#endif	
+#endif
 		case IMAP_UNSEEN:
 			if (imap->select_response)
 				imap->select_response->unseen = sinfo->u.unseen;
@@ -444,7 +444,7 @@ iterate_continuation(CamelIMAPPEngine *imap)
 {
 	CamelIMAPPCommand *ic;
 	CamelIMAPPCommandPart *cp;
-	
+
 	printf("got continuation response\n");
 
 	ic = imap->literal;
@@ -471,29 +471,29 @@ iterate_continuation(CamelIMAPPEngine *imap)
 		char *resp;
 		unsigned char *token;
 		int tok, len;
-		
+
 		tok = camel_imapp_stream_token(imap->stream, &token, &len);
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, token, ex);
 		if (camel_exception_is_set(ex))
 			camel_exception_throw_ex(ex);
 		camel_exception_free(ex);
-		
+
 		printf("got auth continuation, feeding token '%s' back to auth mech\n", resp);
-		
+
 		camel_stream_write((CamelStream *)imap->stream, resp, strlen(resp));
-		
+
 		/* we want to keep getting called until we get a status reponse from the server
 		   ignore what sasl tells us */
 		imap->literal = ic;
-		
+
 		break; }
 	default:
 		/* should we just ignore? */
 		camel_exception_throw(1, "continuation response for non-continuation request");
 	}
-	
+
 	camel_imapp_engine_skip(imap);
-	
+
 	cp = cp->next;
 	if (cp->next) {
 		ic->current = cp;
@@ -508,7 +508,7 @@ iterate_continuation(CamelIMAPPEngine *imap)
 		printf("%p: queueing continuation\n", ic);
 		camel_stream_printf((CamelStream *)imap->stream, "\r\n");
 	}
-	
+
 	if (imap->literal == NULL) {
 		ic = (CamelIMAPPCommand *)e_dlist_remhead(&imap->queue);
 		if (ic) {
@@ -556,7 +556,7 @@ iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
 	} else {
 		camel_exception_throw(1, "got response tag unexpectedly: %s", token);
 	}
-	
+
 	if (imap->literal != NULL) {
 		printf("Warning: continuation command '%s' finished with outstanding continuation\n", imap->literal->name);
 		ic = imap->literal;
@@ -565,13 +565,13 @@ iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
 		e_dlist_addtail(&imap->done, (EDListNode *)ic);
 		imap->literal = NULL;
 	}
-	
+
 	ic = (CamelIMAPPCommand *)e_dlist_remhead(&imap->queue);
 	if (ic) {
 		printf("found outstanding op, queueing\n");
 		camel_imapp_engine_command_queue(imap, ic);
 	}
-	
+
 	return 1;
 }
 
@@ -785,7 +785,7 @@ imap_engine_command_add_part(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, came
 	CamelIMAPPCommandPart *cp;
 	CamelStreamNull *null;
 	unsigned int ob_size = 0;
-	
+
 	switch(type & CAMEL_IMAPP_COMMAND_MASK) {
 	case CAMEL_IMAPP_COMMAND_DATAWRAPPER:
 	case CAMEL_IMAPP_COMMAND_STREAM:
@@ -851,7 +851,7 @@ imap_engine_command_complete(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 	c(printf("command has %d parts\n", len(&ic->parts)));
 	if (ic->mem->buffer->len > 0)
 		imap_engine_command_add_part(imap, ic, CAMEL_IMAPP_COMMAND_SIMPLE, NULL);
-	
+
 	c(printf("command has %d parts\n", len(&ic->parts)));
 
 	camel_object_unref((CamelObject *)ic->mem);
@@ -1009,7 +1009,7 @@ cie_worker(void *data)
 	/* see if we need to pre-queue a select command to select the right folder first */
 	if (ic->select && (imap->last_select == NULL || strcmp(ic->select, imap->last_select) != 0)) {
 		CamelIMAPPCommand *select;
-		
+
 		/* of course ... we can't do anything like store/search if we have to select
 		   first, because it'll mess up all the sequence numbers ... hrm ... bugger */
 
@@ -1019,7 +1019,7 @@ cie_worker(void *data)
 		camel_imapp_engine_command_queue(imap, select);
 		/* how does it get freed? handle inside engine? */
 	}
-	
+
 	/* first, check if command can be sent yet ... queue if not */
 	if (imap->literal != NULL) {
 		printf("%p: queueing while literal active\n", ic);

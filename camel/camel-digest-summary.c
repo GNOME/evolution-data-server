@@ -41,7 +41,7 @@ CamelType
 camel_digest_summary_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (
 			camel_folder_summary_get_type (),
@@ -53,7 +53,7 @@ camel_digest_summary_get_type(void)
 			(CamelObjectInitFunc) camel_digest_summary_init,
 			(CamelObjectFinalizeFunc) camel_digest_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -67,11 +67,11 @@ static void
 camel_digest_summary_init (CamelDigestSummary *summary)
 {
 	CamelFolderSummary *s = (CamelFolderSummary *) summary;
-	
+
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof (CamelMessageInfo);
 	s->content_info_size = sizeof (CamelMessageContentInfo);
-	
+
 	/* and a unique file version */
 	s->version += CAMEL_DIGEST_SUMMARY_VERSION;
 }
@@ -79,7 +79,7 @@ camel_digest_summary_init (CamelDigestSummary *summary)
 static void
 camel_digest_summary_finalise (CamelObject *object)
 {
-	
+
 }
 
 

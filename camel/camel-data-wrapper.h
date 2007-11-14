@@ -41,18 +41,18 @@ G_BEGIN_DECLS
 struct _CamelDataWrapper {
 	CamelObject parent_object;
 	struct _CamelDataWrapperPrivate *priv;
-	
+
 	CamelTransferEncoding encoding;
-	
+
 	CamelContentType *mime_type;
 	CamelStream *stream;
-	
+
 	unsigned int offline:1;
 };
 
 typedef struct {
 	CamelObjectClass parent_class;
-	
+
 	/* Virtual methods */
 	void                (*set_mime_type)          (CamelDataWrapper *data_wrapper,
 						       const char *mime_type);
@@ -60,16 +60,16 @@ typedef struct {
 	CamelContentType *  (*get_mime_type_field)    (CamelDataWrapper *data_wrapper);
 	void                (*set_mime_type_field)    (CamelDataWrapper *data_wrapper,
 						       CamelContentType *mime_type_field);
-	
+
 	ssize_t             (*write_to_stream)        (CamelDataWrapper *data_wrapper,
 						       CamelStream *stream);
-	
+
 	ssize_t             (*decode_to_stream)       (CamelDataWrapper *data_wrapper,
 						       CamelStream *stream);
-	
+
 	int                 (*construct_from_stream)  (CamelDataWrapper *data_wrapper,
 						       CamelStream *);
-	
+
 	gboolean            (*is_offline)             (CamelDataWrapper *data_wrapper);
 } CamelDataWrapperClass;
 

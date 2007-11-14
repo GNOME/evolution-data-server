@@ -75,7 +75,7 @@ E2kRestriction *e2k_restriction_compare     (const char           *propname1,
 					     const char           *propname2);
 E2kRestriction *e2k_restriction_bitmask     (const char           *propname,
 					     E2kRestrictionBitop   bitop,
-					     guint32               mask); 
+					     guint32               mask);
 E2kRestriction *e2k_restriction_size        (const char           *propname,
 					     E2kRestrictionRelop   relop,
 					     guint32               size);

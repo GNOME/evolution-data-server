@@ -526,7 +526,7 @@ fail:					\n\
 	blr 				\n\
 success:				\n\
 	li 	r3,1			\n\
-	blr");	
+	blr");
 }
 #define	MUTEX_SET(tsl)  __db_mutex_set(tsl)
 #endif

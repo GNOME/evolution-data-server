@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2001-2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or

@@ -296,17 +296,17 @@ e_account_list_save (EAccountList *account_list)
 	gconf_client_suggest_sync (account_list->priv->gconf, NULL);
 }
 
-void 
+void
 e_account_list_prune_proxies (EAccountList *account_list)
 {
 	EAccount *account;
 	EIterator *iter;
-	
+
 	for (iter = e_list_get_iterator (E_LIST (account_list));
 	     e_iterator_is_valid (iter);
 	     e_iterator_next (iter)) {
 		account = (EAccount *)e_iterator_get (iter);
-		if (account->parent_uid) 
+		if (account->parent_uid)
 			e_account_list_remove (account_list, account);
 	}
 
@@ -314,7 +314,7 @@ e_account_list_prune_proxies (EAccountList *account_list)
 	g_object_unref (iter);
 }
 
-void 
+void
 e_account_list_remove_account_proxies (EAccountList *accounts, EAccount *account)
 {
 	EAccount *child_account;
@@ -338,9 +338,9 @@ e_account_list_account_has_proxies (EAccountList *accounts, EAccount *account)
 
 /**
  * e_account_list_add:
- * @accounts: 
- * @account: 
- * 
+ * @accounts:
+ * @account:
+ *
  * Add an account to the account list.  Will emit the account-changed
  * event.
  **/
@@ -355,9 +355,9 @@ e_account_list_add(EAccountList *accounts, EAccount *account)
 
 /**
  * e_account_list_change:
- * @accounts: 
- * @account: 
- * 
+ * @accounts:
+ * @account:
+ *
  * Signal that the details of an account have changed.
  **/
 void
@@ -369,9 +369,9 @@ e_account_list_change(EAccountList *accounts, EAccount *account)
 
 /**
  * e_account_list_remove:
- * @accounts: 
- * @account: 
- * 
+ * @accounts:
+ * @account:
+ *
  * Remove an account from the account list, and emit the
  * account-removed signal.  If the account was the default account,
  * then reset the default to the first account.
@@ -391,11 +391,11 @@ e_account_list_remove(EAccountList *accounts, EAccount *account)
 
 /**
  * e_account_list_get_default:
- * @accounts: 
- * 
+ * @accounts:
+ *
  * Get the default account.  If no default is specified, or the default
  * has become stale, then the first account is made the default.
- * 
+ *
  * Return value: The account or NULL if no accounts are defined.
  **/
 const EAccount *
@@ -433,9 +433,9 @@ e_account_list_get_default(EAccountList *accounts)
 
 /**
  * e_account_list_set_default:
- * @accounts: 
- * @account: 
- * 
+ * @accounts:
+ * @account:
+ *
  * Set the account @account to be the default account.
  **/
 void
@@ -446,17 +446,17 @@ e_account_list_set_default(EAccountList *accounts, EAccount *account)
 
 /**
  * e_account_list_find:
- * @accounts: 
+ * @accounts:
  * @type: Type of search.
  * @key: Search key.
- * 
+ *
  * Perform a search of the account list on a single key.
  *
  * @type must be set from one of the following search types:
  * E_ACCOUNT_FIND_NAME - Find an account by account name.
  * E_ACCOUNT_FIND_ID_NAME - Find an account by the owner's identity name.
  * E_ACCOUNT_FIND_ID_ADDRESS - Find an account by the owner's identity address.
- * 
+ *
  * Return value: The account or NULL if it doesn't exist.
  **/
 const EAccount *
@@ -471,7 +471,7 @@ e_account_list_find(EAccountList *accounts, e_account_find_t type, const char *k
 
 	if (!key)
 		return NULL;
-	
+
 	for (it = e_list_get_iterator ((EList *)accounts);
 	     e_iterator_is_valid (it);
 	     e_iterator_next (it)) {

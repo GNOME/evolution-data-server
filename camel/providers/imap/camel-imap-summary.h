@@ -87,7 +87,7 @@ void camel_imap_summary_add_offline (CamelFolderSummary *summary,
 				     CamelMimeMessage *message,
 				     const CamelMessageInfo *info);
 
-void camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, 
+void camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary,
 					      const char *uid,
 					      const CamelMessageInfo *info);
 

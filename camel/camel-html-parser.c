@@ -74,7 +74,7 @@ CamelType
 camel_html_parser_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_object_get_type (), "CamelHTMLParser",
 					    sizeof (CamelHTMLParser),
@@ -84,7 +84,7 @@ camel_html_parser_get_type (void)
 					    (CamelObjectInitFunc) camel_html_parser_init,
 					    (CamelObjectFinalizeFunc) camel_html_parser_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -116,7 +116,7 @@ camel_html_parser_class_init (CamelHTMLParserClass *klass)
  * camel_html_parser_new:
  *
  * Create a new CamelHTMLParser object.
- * 
+ *
  * Return value: A new CamelHTMLParser widget.
  **/
 CamelHTMLParser *
@@ -487,7 +487,7 @@ static CamelHTMLParserPrivate *tokenise_init(void)
 	p->tag = g_string_new("");
 	p->ent = g_string_new("");
 	p->charset = NULL;
-	
+
 	if (entities == NULL)
 		tokenise_setup();
 

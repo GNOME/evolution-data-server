@@ -60,9 +60,9 @@ exchange_hierarchy_gal_new (ExchangeAccount *account,
 				      EXCHANGE_HIERARCHY_GAL, toplevel,
 				      NULL, NULL, NULL);
 	/* Add ESource */
-	add_folder_esource (hier->account, EXCHANGE_CONTACTS_FOLDER, 
+	add_folder_esource (hier->account, EXCHANGE_CONTACTS_FOLDER,
 		     	    hierarchy_name, physical_uri_prefix);
-	
+
 	g_object_unref (toplevel);
 
 	return hier;

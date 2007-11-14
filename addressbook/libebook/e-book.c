@@ -249,7 +249,7 @@ do_add_contact (gboolean          sync,
 			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_SOURCE_NOT_LOADED,
 				     /* translators: the placeholders will be filled by
 				      * function names, e.g.
-				      * "e_book_add_contact" on book before 
+				      * "e_book_add_contact" on book before
 				      * "e_book_open */
 				     _("\"%s\" on book before \"%s\""),
 				     "e_book_add_contact", "e_book_open");
@@ -361,7 +361,7 @@ e_book_add_contact (EBook           *book,
  * @cb: function to call when the operation finishes
  * @closure: data to pass to callback function
  *
- * Adds @contact to @book without blocking. 
+ * Adds @contact to @book without blocking.
  *
  * Return value: %TRUE if the operation was started, %FALSE otherwise.
  **/
@@ -568,7 +568,7 @@ e_book_commit_contact (EBook           *book,
 	return do_commit_contact (TRUE,
 				  book, contact, error,
 				  NULL, NULL);
-				  
+
 }
 
 /**
@@ -934,7 +934,7 @@ e_book_response_get_required_fields (EBook       *book,
 	}
 	else {
 		GList *l;
-		EList *efields = e_list_new ((EListCopyFunc) g_strdup, 
+		EList *efields = e_list_new ((EListCopyFunc) g_strdup,
 					     (EListFreeFunc) g_free,
 					     NULL);
 
@@ -982,7 +982,7 @@ e_book_response_get_supported_fields (EBook       *book,
 	}
 	else {
 		GList *l;
-		EList *efields = e_list_new ((EListCopyFunc) g_strdup, 
+		EList *efields = e_list_new ((EListCopyFunc) g_strdup,
 					     (EListFreeFunc) g_free,
 					     NULL);
 
@@ -1171,7 +1171,7 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 	}
 	else {
 		GList *l;
-		EList *emethods = e_list_new ((EListCopyFunc) g_strdup, 
+		EList *emethods = e_list_new ((EListCopyFunc) g_strdup,
 					      (EListFreeFunc) g_free,
 					      NULL);
 
@@ -1218,7 +1218,7 @@ do_authenticate_user (gboolean        sync,
 			g_warning (_("\"%s\" on book before \"%s\""),
 				   "e_book_authenticate_user", "e_book_open");
 		}
-			
+
 		return FALSE;
 	}
 
@@ -1365,7 +1365,7 @@ do_get_contact (gboolean sync,
 	EBookOp *our_op;
 	EBookStatus status;
 	CORBA_Environment ev;
-			       
+
 	g_mutex_lock (book->priv->mutex);
 
 	if (book->priv->load_state != E_BOOK_SOURCE_LOADED) {
@@ -1643,7 +1643,7 @@ do_remove_contacts (gboolean sync,
 		}
 		return FALSE;
 	}
-	
+
 	CORBA_exception_free (&ev);
 
 	if (sync) {
@@ -1896,7 +1896,7 @@ do_get_book_view (gboolean sync,
 
 		return FALSE;
 	}
-	
+
 	CORBA_exception_free (&ev);
 
 	if (sync) {
@@ -2026,7 +2026,7 @@ e_book_response_get_book_view (EBook       *book,
 	op->status = status;
 	op->view = e_book_view_new (corba_book_view, op->listener);
 	e_book_view_set_book (op->view, book);
-	
+
 	bonobo_object_unref(BONOBO_OBJECT(op->listener));
 
 	if (op->synchronous) {
@@ -2123,7 +2123,7 @@ do_get_contacts (gboolean sync,
 
 		return FALSE;
 	}
-	
+
 	CORBA_exception_free (&ev);
 
 	if (sync) {
@@ -2144,7 +2144,7 @@ do_get_contacts (gboolean sync,
 		return TRUE;
 	}
 }
-		 
+
 /**
  * e_book_get_contacts:
  * @book: an #EBook
@@ -2334,7 +2334,7 @@ do_get_changes (gboolean sync,
 
 		return FALSE;
 	}
-	
+
 	CORBA_exception_free (&ev);
 
 	if (sync) {
@@ -3028,7 +3028,7 @@ e_book_idle_writable (gpointer data)
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 e_book_idle_connection (gpointer data)
 {
 	EBook *book = data;
@@ -3049,7 +3049,7 @@ e_book_idle_connection (gpointer data)
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 e_book_idle_auth_required (gpointer data)
 {
 	EBook *book = data;
@@ -3114,9 +3114,9 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 	case GetSupportedAuthMethodsResponse:
 		e_book_response_get_supported_auth_methods (book, resp->opid, resp->status, resp->list);
 		break;
-	case WritableStatusEvent: 
+	case WritableStatusEvent:
 		book->priv->writable = resp->writable;
-	
+
 		g_mutex_lock (book->priv->mutex);
 		if (book->priv->writable_idle_id == 0) {
 			g_object_ref (book);
@@ -3142,7 +3142,7 @@ e_book_handle_response (EBookListener *listener, EBookListenerResponse *resp, EB
 		}
 		g_mutex_unlock (book->priv->mutex);
 		break;
-		
+
 	default:
 		g_error ("EBook: Unknown response code %d!\n",
 			 resp->op);
@@ -3209,7 +3209,7 @@ static void
 backend_died_cb (EComponentListener *cl, gpointer user_data)
 {
 	EBook *book = user_data;
-                                                                                                                              
+
 	book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
         g_signal_emit (book, e_book_signals [BACKEND_DIED], 0);
 }
@@ -3226,7 +3226,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" API_VERSION "')";
 
 	CORBA_exception_init (&ev);
-	
+
 	info_list = bonobo_activation_query (query, NULL, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
@@ -3326,7 +3326,7 @@ fetch_corba_book (EBook       *book,
 	for (l = factories; l; l = l->next) {
 		GNOME_Evolution_Addressbook_BookFactory factory = l->data;
 		CORBA_Environment ev;
-		
+
 		CORBA_exception_init (&ev);
 
 		corba_book = GNOME_Evolution_Addressbook_BookFactory_getBook (factory, source_xml,
@@ -3362,7 +3362,7 @@ fetch_corba_book (EBook       *book,
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_PROTOCOL_NOT_SUPPORTED,
 			     _("%s: no factories available for URI `%s'"), "e_book_new", uri);
 	}
-		
+
 	return rv;
 }
 
@@ -3497,9 +3497,9 @@ e_book_is_opened (EBook *book)
 /**
  * e_book_is_writable:
  * @book: an #EBook
- * 
+ *
  * Check if this book is writable.
- * 
+ *
  * Return value: %TRUE if this book is writable, otherwise %FALSE.
  */
 gboolean
@@ -3518,7 +3518,7 @@ e_book_is_writable (EBook *book)
  *
  * Return value: %TRUE if this book is connected, otherwise %FALSE.
  **/
-gboolean 
+gboolean
 e_book_is_online (EBook *book)
 {
 	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
@@ -3653,10 +3653,10 @@ e_book_is_self (EContact *contact)
  * e_book_set_default_addressbook:
  * @book: An #EBook pointer
  * @error: A #GError pointer
- * 
+ *
  * sets the #ESource of the #EBook as the "default" addressbook.  This is the source
  * that will be loaded in the e_book_get_default_addressbook call.
- * 
+ *
  * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
@@ -3677,10 +3677,10 @@ e_book_set_default_addressbook (EBook *book, GError **error)
  * e_book_set_default_source:
  * @source: An #ESource pointer
  * @error: A #GError pointer
- * 
+ *
  * sets @source as the "default" addressbook.  This is the source that
  * will be loaded in the e_book_get_default_addressbook call.
- * 
+ *
  * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
@@ -3747,7 +3747,7 @@ gboolean
 e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
 	GConfClient *gconf;
-	
+
 	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG, FALSE);
 
 	gconf = gconf_client_get_default();
@@ -3907,7 +3907,7 @@ e_book_new_system_addressbook    (GError **error)
 		uri = g_filename_to_uri (filename, NULL, NULL);
 
 		g_free (filename);
-	
+
 		book = e_book_new_from_uri (uri, error);
 
 		g_free (uri);
@@ -4025,7 +4025,7 @@ e_book_dispose (GObject *object)
 			bonobo_object_unref (book->priv->listener);
 			book->priv->listener = NULL;
 		}
-		
+
 		g_free (book->priv->cap);
 
 		g_free (book->priv->uri);
@@ -4071,7 +4071,7 @@ e_book_class_init (EBookClass *klass)
 			      g_cclosure_marshal_VOID__BOOLEAN,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
-	
+
 	e_book_signals [CONNECTION_STATUS] =
 		g_signal_new ("connection_status",
 			      G_OBJECT_CLASS_TYPE (object_class),

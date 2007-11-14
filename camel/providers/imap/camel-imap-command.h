@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-command.h: IMAP command sending/parsing routines */
 
-/* 
+/*
  * Authors:
  *   Dan Winship <danw@ximian.com>
  *   Jeffrey Stedfast <fejj@ximian.com>
  *
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,

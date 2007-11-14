@@ -33,11 +33,11 @@ static ECalBackendFileClass *parent_class;
 
 /**
  * e_cal_backend_file_journal_get_type:
- * @void: 
- * 
+ * @void:
+ *
  * Registers the #ECalBackendFileJournal class if necessary, and returns the type ID
  * associated to it.
- * 
+ *
  * Return value: The type ID of the #ECalBackendFileJournal class.
  **/
 GType

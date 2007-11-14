@@ -887,7 +887,7 @@ extract_restriction (guint8 **data, int *len, E2kRestriction **rn)
 
 		if (!e2k_rule_extract_byte (data, len, &nprops))
 			return FALSE;
-		
+
 		props = g_new0 (E2kPropValue, nprops);
 		for (i = 0; i < nprops; i++) {
 			if (!e2k_rule_extract_propvalue (data, len, &props[i])) {

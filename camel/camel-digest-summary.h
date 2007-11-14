@@ -39,12 +39,12 @@ typedef struct _CamelDigestSummaryClass CamelDigestSummaryClass;
 
 struct _CamelDigestSummary {
 	CamelFolderSummary parent_object;
-	
+
 };
 
 struct _CamelDigestSummaryClass {
 	CamelFolderSummaryClass parent_class;
-	
+
 };
 
 

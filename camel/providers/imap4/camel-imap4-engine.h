@@ -78,10 +78,10 @@ enum {
 	CAMEL_IMAP4_CAPABILITY_ACL              = (1 << 10),
 	CAMEL_IMAP4_CAPABILITY_MULTIAPPEND      = (1 << 11),
 	CAMEL_IMAP4_CAPABILITY_UNSELECT         = (1 << 12),
-	
+
 	CAMEL_IMAP4_CAPABILITY_XGWEXTENSIONS    = (1 << 16),
 	CAMEL_IMAP4_CAPABILITY_XGWMOVE          = (1 << 17),
-	
+
 	CAMEL_IMAP4_CAPABILITY_useful_lsub      = (1 << 30),
 	CAMEL_IMAP4_CAPABILITY_utf8_search      = (1 << 31),
 };
@@ -155,40 +155,40 @@ typedef gboolean (* CamelIMAP4ReconnectFunc) (CamelIMAP4Engine *engine, CamelExc
 
 struct _CamelIMAP4Engine {
 	CamelObject parent_object;
-	
+
 	CamelIMAP4ReconnectFunc reconnect;
 	gboolean reconnecting;
-	
+
 	CamelSession *session;
 	CamelService *service;
 	CamelURL *url;
-	
+
 	camel_imap4_engine_t state;
 	camel_imap4_level_t level;
 	guint32 capa;
-	
+
 	guint32 maxlen:31;
 	guint32 maxlentype:1;
-	
+
 	CamelIMAP4NamespaceList namespaces;
 	GHashTable *authtypes;                    /* supported authtypes */
-	
+
 	struct _CamelIMAP4Stream *istream;
 	CamelStream *ostream;
-	
+
 	unsigned char tagprefix;             /* 'A'..'Z' */
 	unsigned int tag;                    /* next command tag */
 	int nextid;
-	
+
 	struct _CamelIMAP4Folder *folder;    /* currently selected folder */
-	
+
 	EDList queue;                          /* queue of waiting commands */
 	struct _CamelIMAP4Command *current;
 };
 
 struct _CamelIMAP4EngineClass {
 	CamelObjectClass parent_class;
-	
+
 	unsigned char tagprefix;
 };
 

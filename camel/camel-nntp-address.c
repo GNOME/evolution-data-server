@@ -65,7 +65,7 @@ CamelType
 camel_nntp_address_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_address_get_type(), "CamelNNTPAddress",
 					   sizeof (CamelNNTPAddress),
@@ -75,7 +75,7 @@ camel_nntp_address_get_type(void)
 					   (CamelObjectInitFunc) camel_nntp_address_init,
 					   NULL);
 	}
-	
+
 	return type;
 }
 
@@ -92,7 +92,7 @@ nntp_decode(CamelAddress *a, const char *raw)
 			camel_nntp_address_add((CamelNNTPAddress *)a, n->newsgroup);
 		camel_header_newsgroups_free(ha);
 	}
-	
+
 	return a->addresses->len - count;
 }
 
@@ -103,22 +103,22 @@ nntp_encode(CamelAddress *a)
 	int i;
 	GString *out;
 	char *ret;
-	
+
 	if (a->addresses->len == 0)
 		return NULL;
-	
+
 	out = g_string_new("");
-	
+
 	for (i = 0;i < a->addresses->len; i++) {
 		if (i != 0)
 			g_string_append(out, ", ");
 
 		g_string_append(out, g_ptr_array_index(a->addresses, i));
 	}
-	
+
 	ret = out->str;
 	g_string_free(out, FALSE);
-	
+
 	return ret;
 }
 
@@ -140,7 +140,7 @@ nntp_remove	(CamelAddress *a, int index)
 {
 	if (index < 0 || index >= a->addresses->len)
 		return;
-	
+
 	g_free(g_ptr_array_index(a->addresses, index));
 	g_ptr_array_remove_index(a->addresses, index);
 }
@@ -149,7 +149,7 @@ nntp_remove	(CamelAddress *a, int index)
  * camel_nntp_address_new:
  *
  * Create a new CamelNNTPAddress object.
- * 
+ *
  * Return value: A new CamelNNTPAddress object.
  **/
 CamelNNTPAddress *
@@ -162,10 +162,10 @@ camel_nntp_address_new (void)
 /**
  * camel_nntp_address_add:
  * @a: nntp address object
- * @name: 
- * 
+ * @name:
+ *
  * Add a new nntp address to the address object.  Duplicates are not added twice.
- * 
+ *
  * Return value: Index of added entry, or existing matching entry.
  **/
 int
@@ -190,9 +190,9 @@ camel_nntp_address_add (CamelNNTPAddress *a, const char *name)
  * @a: nntp address object
  * @index: address's array index
  * @addressp: Holder for the returned address, or NULL, if not required.
- * 
+ *
  * Get the address at @index.
- * 
+ *
  * Return value: TRUE if such an address exists, or FALSE otherwise.
  **/
 gboolean

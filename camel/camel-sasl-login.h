@@ -34,15 +34,15 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSaslLogin {
 	CamelSasl parent_object;
-	
+
 	struct _CamelSaslLoginPrivate *priv;
-	
+
 } CamelSaslLogin;
 
 
 typedef struct _CamelSaslLoginClass {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslLoginClass;
 
 

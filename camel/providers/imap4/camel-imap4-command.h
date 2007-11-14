@@ -72,7 +72,7 @@ typedef struct _CamelIMAP4CommandPart {
 	struct _CamelIMAP4CommandPart *next;
 	unsigned char *buffer;
 	size_t buflen;
-	
+
 	CamelIMAP4Literal *literal;
 } CamelIMAP4CommandPart;
 
@@ -92,30 +92,30 @@ enum {
 
 struct _CamelIMAP4Command {
 	EDListNode node;
-	
+
 	struct _CamelIMAP4Engine *engine;
-	
+
 	unsigned int ref_count:26;
 	unsigned int status:3;
 	unsigned int result:3;
 	int id;
-	
+
 	char *tag;
-	
+
 	GPtrArray *resp_codes;
-	
+
 	struct _CamelIMAP4Folder *folder;
 	CamelException ex;
-	
+
 	/* command parts - logical breaks in the overall command based on literals */
 	CamelIMAP4CommandPart *parts;
-	
+
 	/* current part */
 	CamelIMAP4CommandPart *part;
-	
+
 	/* untagged handlers */
 	GHashTable *untagged;
-	
+
 	/* '+' callback/data */
 	CamelIMAP4PlusCallback plus;
 	void *user_data;

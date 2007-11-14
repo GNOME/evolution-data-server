@@ -6,7 +6,7 @@
    Jesse Pavel (jpavel@ximian.com)
 
  Copyright 2000, Ximian, Inc.
-   -------------------------------------------------- 
+   --------------------------------------------------
 */
 
 #include <ctype.h>
@@ -63,7 +63,7 @@ e_address_western_shift_line (gchar *lines[], gint line_num, gint num_lines)
 }
 
 
-static void 
+static void
 e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
 {
 	gint cntr;
@@ -74,7 +74,7 @@ e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
 			   one spot to fill its old spot. */
 			e_address_western_shift_line (lines, cntr, *linecntr);
 
-			/* Since we must check the newly shifted line, let's 
+			/* Since we must check the newly shifted line, let's
 			  not advance the counter on this next pass. */
 			cntr--;
 
@@ -83,7 +83,7 @@ e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
 		}
 	}
 }
- 
+
 
 static gboolean
 e_address_western_is_po_box (gchar *line)
@@ -92,12 +92,12 @@ e_address_western_is_po_box (gchar *line)
 
 	/* In which phase of processing are we? */
 	enum State { FIRSTCHAR, SECONDCHAR, WHITESPACE } state;
-	
-	
+
+
 	/* If the first two letters of the line are `p' and `o', and these
 	 are in turn followed by whitespace before another letter, then I
 	 will deem the line a representation of a PO Box address. */
-	
+
 	gint cntr;
 
 	state = FIRSTCHAR;
@@ -145,19 +145,19 @@ e_address_western_is_postal (gchar *line)
 {
 	gboolean retval;
 	int cntr;
-	
+
 	if (strchr (line, ',') == NULL)
 		retval = FALSE;  /* No comma. */
 	else {
 		int index;
-		
+
 		/* Ensure that the first character after the comma is
 		 a letter. */
 		index = strcspn (line, ",");
 		index++;
 		while (isspace(line[index]))
 			index++;
-		
+
 		if (!isalpha (line[index]))
 			return FALSE;   /* FIXME: ugly control flow. */
 
@@ -166,8 +166,8 @@ e_address_western_is_postal (gchar *line)
 		/* Go to the character immediately following the last
 		  whitespace character. */
 		while (cntr >= 0 && isspace(line[cntr]))
-			cntr--;	
-		
+			cntr--;
+
 		while (cntr >= 0 && !isspace(line[cntr]))
 			cntr--;
 
@@ -179,7 +179,7 @@ e_address_western_is_postal (gchar *line)
 			else
 				retval = FALSE;
 		}
-	}	
+	}
 
 	return retval;
 }
@@ -189,16 +189,16 @@ e_address_western_extract_po_box (gchar *line)
 {
 	/* Return everything from the beginning of the line to
 	   the end of the first word that contains a number. */
-	
+
 	int index;
 
 	index = 0;
 	while (!isdigit(line[index]))
 		index++;
-	
+
 	while (isgraph(line[index]))
 		index++;
-	
+
 	return g_strndup (line, index);
 }
 
@@ -229,7 +229,7 @@ e_address_western_extract_region (gchar *line)
 	start++;
 	while (isspace(line[start]))
 		start++;
-	
+
 	end = strlen(line) - 1;
 	while (isspace (line[end]))
 		end--;
@@ -260,13 +260,13 @@ e_address_western_extract_postal_code (gchar *line)
 	end = strlen (line) - 1;
 	while (isspace(line[end]))
 		end--;
-	
+
 	start = end;
 	end++;
 
 	while (!isspace(line[start]))
 		start--;
-	start++;	
+	start++;
 
 	/* Between start and end lie the string. */
 	return g_strndup ( (line+start), end-start);
@@ -320,7 +320,7 @@ e_address_western_parse (const gchar *in_address)
 
 	if (in_address == NULL)
 		return NULL;
-	
+
 	eaw = (EAddressWestern *)g_malloc (sizeof(EAddressWestern));
 	eaw->po_box = NULL;
 	eaw->extended = NULL;
@@ -329,7 +329,7 @@ e_address_western_parse (const gchar *in_address)
 	eaw->region = NULL;
 	eaw->postal_code = NULL;
 	eaw->country = NULL;
-	
+
 	address = g_strndup (in_address, 2047);
 
 	/* The first thing I'll do is divide the multiline input string
@@ -341,7 +341,7 @@ e_address_western_parse (const gchar *in_address)
 	while (address[lineindex] != '\0') {
 		if (address[lineindex] == '\n')
 			linecntr++;
-			
+
 		lineindex++;
 	}
 
@@ -416,13 +416,13 @@ e_address_western_parse (const gchar *in_address)
 				}
 			}
 		}
-	}			
-	
+	}
+
 	g_free (lines);
-	g_free (address);	
-	
+	g_free (address);
+
 	return eaw;
-}	
+}
 
 /**
  * e_address_western_free:
@@ -430,12 +430,12 @@ e_address_western_parse (const gchar *in_address)
  *
  * Frees @eaw and its contents.
  **/
-void 
+void
 e_address_western_free (EAddressWestern *eaw)
 {
 	if (eaw == NULL)
 		return;
-	
+
 	if (eaw->po_box != NULL)
 		g_free(eaw->po_box);
 	if (eaw->extended != NULL)
@@ -450,7 +450,7 @@ e_address_western_free (EAddressWestern *eaw)
 		g_free(eaw->postal_code);
 	if (eaw->country != NULL)
 		g_free(eaw->country);
-	
+
 	g_free (eaw);
 }
 

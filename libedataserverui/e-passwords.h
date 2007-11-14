@@ -8,12 +8,12 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
@@ -61,7 +61,7 @@ typedef enum {
 	E_PASSWORDS_PASSPHRASE = 1<<12, /* We are asking a passphrase */
 } EPasswordsRememberType;
 
-char *      e_passwords_ask_password      (const char *title, 
+char *      e_passwords_ask_password      (const char *title,
 					   const char*component_name, const char *key,
 					   const char *prompt,
 					   EPasswordsRememberType remember_type,

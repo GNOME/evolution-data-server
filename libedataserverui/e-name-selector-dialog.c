@@ -45,7 +45,7 @@ typedef struct {
 	gchar        *name;
 
 	GtkBox       *section_box;
-	GtkLabel     *label;  
+	GtkLabel     *label;
 	GtkButton    *transfer_button;
 	GtkButton    *remove_button;
 	GtkTreeView  *destination_view;
@@ -141,12 +141,12 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
 	char              *gladefile;
-	GConfClient *gconf_client;	
+	GConfClient *gconf_client;
 	char *uid;
 
 	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	priv->destination_index = 0;
-	
+
 	/* Get Glade GUI */
 	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
 				      "e-name-selector-dialog.glade",
@@ -227,7 +227,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		widget, "changed",
 		G_CALLBACK (source_changed), name_selector_dialog);
 	g_object_unref (source_list);
- 
+
 	gconf_client = gconf_client_get_default();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);
@@ -273,7 +273,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
 	gtk_widget_grab_focus (widget);
 }
-	
+
 /* Partial, repeatable destruction. Release references. */
 static void
 e_name_selector_dialog_dispose (GObject *object)
@@ -509,7 +509,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	/* Set up transfer button */
 	g_signal_connect_swapped (section.transfer_button, "clicked",
 				  G_CALLBACK (transfer_button_clicked), name_selector_dialog);
-	
+
 	/*data for the remove callback*/
 	data = g_malloc0(sizeof(SelData));
 	data->view = section.destination_view;
@@ -517,10 +517,10 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	/*Associate to an object destroy so that it gets freed*/
 	g_object_set_data_full ((GObject *)section.destination_view, "sel-remove-data", data, g_free);
-	
+
 	g_signal_connect(section.remove_button, "clicked",
 				  G_CALLBACK (remove_button_clicked), data);
-	
+
 	/* Set up view */
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
@@ -541,7 +541,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.transfer_button));
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 6);
 	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (section.transfer_button));
-	
+
 	/*to get the image embedded in the button*/
 	widget = gtk_alignment_new (0.7, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (section.transfer_button), GTK_WIDGET (widget));
@@ -557,7 +557,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	image = gtk_image_new_from_stock ("gtk-go-forward", GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (image);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-	
+
 	widget = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.remove_button));
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 0);
@@ -580,7 +580,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	vbox = gtk_vbox_new (FALSE, 0);
-	
+
 	widget = gtk_alignment_new (0.5, 0.0, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.label));
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 0);
@@ -667,7 +667,7 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
  * -------------------- */
 
 static void
-status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog) 
+status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
 {
 	if(message == NULL)
 		gtk_label_set_text(dialog->status_label, "");
@@ -686,7 +686,7 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (data);
 	EContactStore       *contact_store;
-	EBookView           *view; 
+	EBookView           *view;
 
 	if (status != E_BOOK_ERROR_OK) {
 		/* TODO: Handle errors gracefully */
@@ -786,7 +786,7 @@ contact_selection_changed (ENameSelectorDialog *name_selector_dialog)
 	GtkTreeSelection *contact_selection;
 	gboolean          have_selection = FALSE;
 	gint              i;
-	
+
 	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
 	if (gtk_tree_selection_count_selected_rows (contact_selection))
 		have_selection = TRUE;
@@ -814,7 +814,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 
 	/* If we have no sections, we can't transfer */
-	if (name_selector_dialog->sections->len == 0) 
+	if (name_selector_dialog->sections->len == 0)
 		return;
 
 	/* Get the contact to be transferred */
@@ -878,7 +878,7 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 	e_destination_store_remove_destination (destination_store, destination);
 }
 
-static gboolean 
+static gboolean
 remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_view)
 {
 	gint               section_index;
@@ -935,14 +935,14 @@ remove_button_clicked (GtkButton *button, SelData *data)
 {
 	GtkTreeView *view;
 	ENameSelectorDialog *name_selector_dialog;
-	
-	view = data->view; 
+
+	view = data->view;
 	name_selector_dialog = data->dlg_ptr;
 	remove_selection (name_selector_dialog, view);
 }
-	
-static gboolean 
-destination_key_press (ENameSelectorDialog *name_selector_dialog, 
+
+static gboolean
+destination_key_press (ENameSelectorDialog *name_selector_dialog,
 		       GdkEventKey *event, GtkTreeView *tree_view)
 {
 
@@ -1001,7 +1001,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 			gtk_tree_path_free (path);
 			return ;
 		}
-			
+
 		gtk_tree_path_free (path);
 		sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
 
@@ -1231,7 +1231,7 @@ e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialog,
  * @name_selector_dialog: an #ENameSelectorDialog
  * @index: index of the destination section, starting from 0.
  *
- * Sets the index number of the destination section. 
+ * Sets the index number of the destination section.
  **/
 void
 e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,

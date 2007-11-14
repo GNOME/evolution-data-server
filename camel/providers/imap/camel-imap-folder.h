@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-folder.h: class for an imap folder */
 
-/* 
+/*
  * Authors:
  *   Dan Winship <danw@ximian.com>
- *   Jeffrey Stedfast <fejj@ximian.com> 
+ *   Jeffrey Stedfast <fejj@ximian.com>
  *
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -42,7 +42,7 @@ struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
 
         struct _CamelImapFolderPrivate *priv;
-	
+
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;
 
@@ -54,8 +54,8 @@ struct _CamelImapFolder {
 typedef struct {
 	CamelDiscoFolderClass parent_class;
 
-	/* Virtual methods */	
-	
+	/* Virtual methods */
+
 } CamelImapFolderClass;
 
 

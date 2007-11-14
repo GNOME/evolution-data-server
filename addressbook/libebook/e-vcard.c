@@ -34,7 +34,7 @@
 
 #define CRLF "\r\n"
 
-/** Encoding used in v-card 
+/** Encoding used in v-card
  *  Note: v-card spec defines additional 7BIT 8BIT and X- encoding
  */
 typedef enum {
@@ -127,14 +127,14 @@ e_vcard_get_type (void)
 
 
 /*  Skip newline characters and return the next character.
- *  This function takes care of folding lines, skipping 
+ *  This function takes care of folding lines, skipping
  *  newline characters if found, taking care of equal characters
  *  and other strange things.
  */
 static char*
 skip_newline (char *str, gboolean quoted_printable)
 {
-	char *p; 
+	char *p;
 	char *next;
 	char *next2;
 	p = str;
@@ -231,7 +231,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 	/* read in the value */
 	str = g_string_new ("");
 	for( lp =  skip_newline( *p, quoted_printable );
-	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline( lp, quoted_printable ) ) {
 
 		if (*lp == '=' && quoted_printable) {
@@ -246,15 +246,15 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 
 				c = (((a>='a'?a-'a'+10:a-'0')&0x0f) << 4)
 					| ((b>='a'?b-'a'+10:b-'0')&0x0f);
-				
+
 				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
 			}
-			else 
+			else
 				{
 					g_string_append_c (str, a);
 					g_string_append_c (str, b);
 				}
-			
+
 			lp++;
 
 		} else if (*lp == '\\') {
@@ -318,7 +318,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 
 	str = g_string_new ("");
 	for( lp =  skip_newline( *p, *quoted_printable );
-	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline( lp, *quoted_printable ) ) {
 
 		if (*lp == '"') {
@@ -349,7 +349,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 				} else if (*lp == ':') {
 					/* do nothing */
 
-				} else {				
+				} else {
 					skip_to_next_line( &lp );
 					break;
 				}
@@ -421,7 +421,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 				else {
 					/* we've got an attribute with a truly empty
 					   attribute parameter.  So it's of the form:
-					   
+
 					   ATTR;[PARAM=value;]*;[PARAM=value;]*:
 
 					   (note the extra ';')
@@ -446,7 +446,7 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 			g_warning ("invalid character found in parameter spec");
 			g_string_assign (str, "");
 			/*			skip_until (&lp, ":;"); */
-			
+
 			skip_to_next_line( &lp );
 		}
 	}
@@ -472,7 +472,7 @@ read_attribute (char **p)
 	/* first read in the group/name */
 	str = g_string_new ("");
 	for( lp =  skip_newline( *p, is_qp );
-	     *lp != '\n' && *lp != '\r' && *lp != '\0'; 
+	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline( lp, is_qp ) ) {
 
 		if (*lp == ':' || *lp == ';') {
@@ -562,34 +562,34 @@ make_valid_utf8 (const gchar *name)
 	GString *string;
 	const gchar *remainder, *invalid;
 	gint remaining_bytes, valid_bytes;
-  
+
 	string = NULL;
   	remainder = name;
 	remaining_bytes = strlen (name);
-  
+
  	while (remaining_bytes != 0) {
-		if (g_utf8_validate (remainder, remaining_bytes, &invalid)) 
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
 			break;
 	      valid_bytes = invalid - remainder;
-    
-		if (string == NULL) 
+
+		if (string == NULL)
 			string = g_string_sized_new (remaining_bytes);
 
 		g_string_append_len (string, remainder, valid_bytes);
 	        /* append U+FFFD REPLACEMENT CHARACTER */
 	        g_string_append (string, "\357\277\275");
-      
+
 	        remaining_bytes -= valid_bytes + 1;
 	        remainder = invalid + 1;
 	}
-  
+
   	if (string == NULL)
     		return g_strdup (name);
-  
+
 	g_string_append (string, remainder);
 
         g_assert (g_utf8_validate (string->str, -1, NULL));
-  
+
         return g_string_free (string, FALSE);
 }
 
@@ -603,7 +603,7 @@ parse (EVCard *evc, const char *str)
 	char *buf ;
 	char *p;
 	EVCardAttribute *attr;
-	
+
 	buf = make_valid_utf8 (str);
 
 	//buf = fold_lines (buf);
@@ -747,7 +747,7 @@ e_vcard_construct (EVCard *evc, const char *str)
 
 /**
  * e_vcard_new:
- * 
+ *
  * Creates a new, blank #EVCard.
  *
  * Return value: A new, blank #EVCard.
@@ -1060,7 +1060,7 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
  * @attr_group: group name of attributes to be removed
  * @attr_name: name of the arributes to be removed
  *
- * Removes all the attributes with group name and attribute name equal to 
+ * Removes all the attributes with group name and attribute name equal to
  * passed in values. If @attr_group is %NULL or an empty string,
  * it removes all the attributes with passed in name irrespective of
  * their group names.
@@ -1298,7 +1298,7 @@ e_vcard_attribute_remove_value (EVCardAttribute *attr, const char *s)
 	if (l == NULL) {
 		return;
 	}
-	
+
 	attr->values = g_list_delete_link (attr->values, l);
 }
 
@@ -1319,7 +1319,7 @@ e_vcard_attribute_remove_param (EVCardAttribute *attr, const char *param_name)
 
 	g_return_if_fail (attr != NULL);
 	g_return_if_fail (param_name != NULL);
-	
+
 	for (l = attr->params; l; l = l->next) {
 		param = l->data;
 		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param),
@@ -1437,7 +1437,7 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 	contains = FALSE;
 	params = attr->params;
 	par_name = param->name;
- 
+
 	for (p = params; p; p = p->next) {
 		EVCardAttributeParam *param2 = p->data;
 		if (g_ascii_strcasecmp (param2->name, par_name) == 0) {
@@ -1472,7 +1472,7 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 			break;
 		}
 	}
-	
+
 	if (!contains) {
 		attr->params = g_list_prepend (attr->params, param);
 	}
@@ -1645,7 +1645,7 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const char *param_n
 			if (l == NULL) {
 				return;
 			}
-			
+
 			param->values = g_list_delete_link (param->values, l);
 			if (param->values == NULL) {
 				e_vcard_attribute_param_free (param);
@@ -1697,7 +1697,7 @@ e_vcard_get_attribute (EVCard     *evc,
         attrs = e_vcard_get_attributes (evc);
         for (l = attrs; l; l = l->next) {
                 EVCardAttribute *attr;
-		
+
                 attr = (EVCardAttribute *) l->data;
                 if (strcmp (attr->name, name) == 0)
                         return attr;
@@ -1743,7 +1743,7 @@ e_vcard_attribute_get_name (EVCardAttribute *attr)
  *
  * Gets the list of values from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
- * 
+ *
  * Return value: A list of string values.
  **/
 GList*
@@ -1910,7 +1910,7 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const char *typestr)
 /**
  * e_vcard_attribute_get_params:
  * @attr: an #EVCardAttribute
- * 
+ *
  * Gets the list of parameters from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
@@ -1928,7 +1928,7 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
  * e_vcard_attribute_get_param:
  * @attr: an #EVCardAttribute
  * @name: a parameter name
- * 
+ *
  * Gets the list of values for the paramater @name from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
@@ -1938,10 +1938,10 @@ GList *
 e_vcard_attribute_get_param (EVCardAttribute *attr, const char *name)
 {
 	GList *params, *p;
-	
+
 	g_return_val_if_fail (attr != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
-	
+
 	params = e_vcard_attribute_get_params (attr);
 
 	for (p = params; p; p = p->next) {
@@ -1973,7 +1973,7 @@ e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
 /**
  * e_vcard_attribute_param_get_values:
  * @param: an #EVCardAttributeParam
- * 
+ *
  * Gets the list of values from @param. The list and its
  * contents are owned by @param, and must not be freed.
  *

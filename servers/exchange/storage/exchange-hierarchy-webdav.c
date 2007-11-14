@@ -183,7 +183,7 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 {
 	const char *internal_uri ;
 	char *mf_path;
-	
+
 	g_return_if_fail (E_IS_FOLDER (folder));
 	internal_uri = e_folder_exchange_get_internal_uri (folder);
 
@@ -249,7 +249,7 @@ e_folder_webdav_new (ExchangeHierarchy *hier, const char *internal_uri,
 		real_type = g_strdup ("calendar/public"); /* Hack */
 	else
 		real_type = g_strdup (type);
-	
+
 	fixed_name = e2k_uri_encode (name, FALSE, URI_ENCODE_CHARS);
 	physical_uri = e2k_uri_concat (e_folder_get_physical_uri (parent), fixed_name);
 	g_free (fixed_name);
@@ -282,7 +282,7 @@ e_folder_webdav_new (ExchangeHierarchy *hier, const char *internal_uri,
 		d(g_print ("exchange-hierarchy-webdave.c:e_folder_webdave_new: http_uri=[%s], new_internal_uri=[%s], temp_name=[%s], name[%s]\n",
 			   http_uri, new_internal_uri, temp_name, name));
 		g_free (temp_name);
-	
+
 		folder = e_folder_exchange_new (hier, name,
 						real_type, outlook_class,
 						physical_uri, http_uri);
@@ -340,7 +340,7 @@ create_folder (ExchangeHierarchy *hier, EFolder *parent,
 		exchange_hierarchy_new_folder (hier, dest);
 		g_object_unref (dest);
 
-		/* update the folder size table, new folder, initialize the size to 0 */ 
+		/* update the folder size table, new folder, initialize the size to 0 */
 		exchange_account_folder_size_add (hier->account, name, 0);
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	}
@@ -365,7 +365,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
         exchange_account_is_offline (hier->account, &mode);
 
         if (mode != ONLINE_MODE)
-                return EXCHANGE_ACCOUNT_FOLDER_OFFLINE; 
+                return EXCHANGE_ACCOUNT_FOLDER_OFFLINE;
 
 	if (folder == hier->toplevel)
 		return EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED;
@@ -375,7 +375,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 		exchange_hierarchy_removed_folder (hier, folder);
 
 		/* update the folder size info */
-		exchange_account_folder_size_remove (hier->account, 
+		exchange_account_folder_size_remove (hier->account,
 					e_folder_get_name(folder));
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	} else
@@ -423,24 +423,24 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 		g_object_unref (dest);
 		ret_code = EXCHANGE_ACCOUNT_FOLDER_OK;
 
-		/* Find if folder movement or rename.  
+		/* Find if folder movement or rename.
 		 * update folder size in case of rename.
 		 */
 
 		source_folder_name = strrchr (physical_uri, '/') + 1;
-		source_parent = g_strndup (physical_uri, 
-					   source_folder_name - physical_uri); 
+		source_parent = g_strndup (physical_uri,
+					   source_folder_name - physical_uri);
 		if (!strcmp (e_folder_get_physical_uri (dest_parent), source_parent)) {
-			/* rename - remove folder entry from hash, and 
-			 * update the hash table with new name 
+			/* rename - remove folder entry from hash, and
+			 * update the hash table with new name
 			 */
-			exchange_account_folder_size_rename (hier->account, 
+			exchange_account_folder_size_rename (hier->account,
 				source_folder_name+1, dest_name);
 		}
 		g_free (source_parent);
 	} else {
 		physical_uri = e2k_uri_concat (
-				e_folder_get_physical_uri (dest_parent), 
+				e_folder_get_physical_uri (dest_parent),
 				dest_name);
 		g_object_unref (dest);
 		if (status == E2K_HTTP_FORBIDDEN ||
@@ -451,25 +451,25 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 	}
 
 	/* Remove the ESource of the source folder, in case of rename/move */
-	if ((hier->type == EXCHANGE_HIERARCHY_PERSONAL || 
-	     hier->type == EXCHANGE_HIERARCHY_FAVORITES) && remove_source && 
+	if ((hier->type == EXCHANGE_HIERARCHY_PERSONAL ||
+	     hier->type == EXCHANGE_HIERARCHY_FAVORITES) && remove_source &&
 	     ret_code == EXCHANGE_ACCOUNT_FOLDER_OK) {
-		
+
 		if ((strcmp (folder_type, "calendar") == 0) ||
 		    (strcmp (folder_type, "calendar/public") == 0)) {
-			remove_folder_esource (hier->account, 
+			remove_folder_esource (hier->account,
 					       EXCHANGE_CALENDAR_FOLDER,
 					       physical_uri);
 		}
 		else if ((strcmp (folder_type, "tasks") == 0) ||
 			 (strcmp (folder_type, "tasks/public") == 0)){
-			remove_folder_esource (hier->account, 
+			remove_folder_esource (hier->account,
 					       EXCHANGE_TASKS_FOLDER,
 					       physical_uri);
 		}
 		else if ((strcmp (folder_type, "contacts") == 0) ||
 			 (strcmp (folder_type, "contacts/public") == 0)) {
-			remove_folder_esource (hier->account, 
+			remove_folder_esource (hier->account,
 					       EXCHANGE_CONTACTS_FOLDER,
 					       physical_uri);
 		}
@@ -483,12 +483,12 @@ static void
 add_href (gpointer path, gpointer folder, gpointer hrefs)
 {
 	const char *folder_type;
-	
+
 	folder_type = e_folder_get_type_string (folder);
 
 	if (!folder_type)
 		return;
-	
+
 	if (!strcmp (folder_type, "noselect"))
 		return;
 
@@ -557,10 +557,10 @@ rescan (ExchangeHierarchy *hier)
 		if (folder_size) {
 			folder_name = e_folder_get_name (folder);
 			fsize_d = g_ascii_strtod (folder_size, NULL)/1024;
-			exchange_account_folder_size_add (hier->account, 
+			exchange_account_folder_size_add (hier->account,
 							folder_name, fsize_d);
 			if (personal)
-				hwd->priv->total_folder_size = 
+				hwd->priv->total_folder_size =
 					hwd->priv->total_folder_size + fsize_d;
 		}
 	}
@@ -602,7 +602,7 @@ exchange_hierarchy_webdav_parse_folder (ExchangeHierarchyWebDAV *hwd,
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY_WEBDAV (hwd), NULL);
 	g_return_val_if_fail (E_IS_FOLDER (parent), NULL);
-	
+
 	/* It's possible to have a localized inbox folder named, eg,
 	 * "Innboks", with children whose URIs go through "Inbox"
 	 * instead. (See bugzilla 27065.) This is probably related to
@@ -637,11 +637,11 @@ exchange_hierarchy_webdav_parse_folder (ExchangeHierarchyWebDAV *hwd,
 		outlook_class = folder_type->contentclass;
 
 	/*
-	 * The permanenturl Field provides a unique identifier for an item 
-	 * across the *store* and will not change as long as the item remains 
-	 * in the same folder. The permanenturl Field contains the ID of the 
-	 * parent folder of the item, which changes when the item is moved to a 
-	 * different folder or deleted. Changing a field on an item will not 
+	 * The permanenturl Field provides a unique identifier for an item
+	 * across the *store* and will not change as long as the item remains
+	 * in the same folder. The permanenturl Field contains the ID of the
+	 * parent folder of the item, which changes when the item is moved to a
+	 * different folder or deleted. Changing a field on an item will not
 	 * change the permanenturl Field and neither will adding more items to
 	 * the folder with the same display name or message subject.
 	 */
@@ -659,8 +659,8 @@ exchange_hierarchy_webdav_parse_folder (ExchangeHierarchyWebDAV *hwd,
 	if (hassubs)
 		e_folder_exchange_set_has_subfolders (folder, TRUE);
 	if (permanenturl) {
-		/* Favorite folders and subscribed folders will not have 
-		 * permanenturl 
+		/* Favorite folders and subscribed folders will not have
+		 * permanenturl
 		 */
 		e_folder_exchange_set_permanent_uri (folder, permanenturl);
 	}
@@ -727,7 +727,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	}
 
-	
+
 	if (!folders_rn) {
 		folders_rn =
 			e2k_restriction_andv (
@@ -738,9 +738,9 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 				NULL);
 	}
 
-	if (hier->type == EXCHANGE_HIERARCHY_PUBLIC) 
+	if (hier->type == EXCHANGE_HIERARCHY_PUBLIC)
 		iter = e_folder_exchange_search_start (parent, NULL,
-						       pub_folder_props, 
+						       pub_folder_props,
 						       n_pub_folder_props,
 						       folders_rn, NULL, TRUE);
 	else
@@ -775,7 +775,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 
 		if (personal) {
 			/* calculate mail box size only for personal folders */
-			hwd->priv->total_folder_size = 
+			hwd->priv->total_folder_size =
 				hwd->priv->total_folder_size + fsize_d;
 		}
 
@@ -813,7 +813,7 @@ scan_offline_cb (const char *physical_path, const char *path, gpointer data)
 	struct scan_offline_data *sod = data;
 	EFolder *folder;
 	char *mf_name;
-	
+
 
 	mf_name = g_build_filename (physical_path, "connector-metadata.xml", NULL);
 	folder = e_folder_exchange_new_from_file (sod->hier, mf_name);
@@ -864,7 +864,7 @@ exchange_hierarchy_webdav_offline_scan_subtree (ExchangeHierarchy *hier,
 	dir = e_path_to_physical (hier->account->storage_dir, prefix);
 	g_free (prefix);
 	e_path_find_folders (dir, scan_offline_cb, &sod);
-	
+
 	if (sod.badpaths) {
 		for (i = 0; i < sod.badpaths->len; i++) {
 			e_path_rmdir (dir, sod.badpaths->pdata[i]);
@@ -897,7 +897,7 @@ exchange_hierarchy_webdav_construct (ExchangeHierarchyWebDAV *hwd,
 
 	toplevel = e_folder_exchange_new (EXCHANGE_HIERARCHY (hwd),
 					  hierarchy_name,
-					  "noselect", NULL, 
+					  "noselect", NULL,
 					  physical_uri_prefix,
 					  internal_uri_prefix);
 	e_folder_set_custom_icon (toplevel, "stock_folder");

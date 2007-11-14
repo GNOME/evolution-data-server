@@ -6,8 +6,8 @@
  *
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -73,7 +73,7 @@ struct _CamelMimeMessage
 typedef struct {
 	CamelMimePartClass parent_class;
 
-	/* Virtual methods */	
+	/* Virtual methods */
 
 } CamelMimeMessageClass;
 
@@ -115,7 +115,7 @@ void                        camel_mime_message_set_recipients     (CamelMimeMess
 void                        camel_mime_message_set_source         (CamelMimeMessage           *message,
 								   const char                 *identity);
 const char                 *camel_mime_message_get_source         (CamelMimeMessage           *message);
-								   
+
 
 /* utility functions */
 gboolean                    camel_mime_message_has_8bit_parts     (CamelMimeMessage           *message);

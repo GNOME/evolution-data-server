@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * libedataserver-private.h: For e-d-s (not just libedataserver)
  * Copyright 2005, Novell, Inc.
  *

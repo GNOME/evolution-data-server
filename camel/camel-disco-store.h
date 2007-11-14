@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-disco-store.h: abstruct class for a disconnectable store */
 
-/* 
+/*
  * Authors: Dan Winship <danw@ximian.com>
  *
  * Copyright (C) 2001 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -45,7 +45,7 @@ typedef enum {
 } CamelDiscoStoreStatus;
 
 struct _CamelDiscoStore {
-	CamelStore parent_object;	
+	CamelStore parent_object;
 
 	CamelDiscoStoreStatus status;
 	CamelDiscoDiary *diary;

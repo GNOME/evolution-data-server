@@ -403,12 +403,12 @@ e_book_listener_new (void)
 	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 	static PortableServer_POA poa = NULL;
 	EBookListener *listener;
-	
+
 	g_static_mutex_lock (&mutex);
 	if (poa == NULL)
 		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_ON_CONTEXT, _ebook_context, NULL);
 	g_static_mutex_unlock (&mutex);
-	
+
 	listener = g_object_new (E_TYPE_BOOK_LISTENER, "poa", poa, NULL);
 
 	return listener;

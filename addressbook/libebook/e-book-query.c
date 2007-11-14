@@ -331,7 +331,7 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		int i;
 
 		qs = g_new0(EBookQuery*, argc);
-		
+
 		for (i = 0; i < argc; i ++) {
 			GList *list_head = *list;
 			if (!list_head)
@@ -340,7 +340,7 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			*list = g_list_delete_link(*list, list_head);
 		}
 
-		*list = g_list_prepend(*list, 
+		*list = g_list_prepend(*list,
 				       e_book_query_and (argc, qs, TRUE));
 
 		g_free (qs);
@@ -363,7 +363,7 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		int i;
 
 		qs = g_new0(EBookQuery*, argc);
-		
+
 		for (i = 0; i < argc; i ++) {
 			GList *list_head = *list;
 			if (!list_head)
@@ -372,7 +372,7 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			*list = g_list_delete_link(*list, list_head);
 		}
 
-		*list = g_list_prepend(*list, 
+		*list = g_list_prepend(*list,
 				       e_book_query_or (argc, qs, TRUE));
 
 		g_free (qs);
@@ -673,7 +673,7 @@ e_book_query_to_string    (EBookQuery *q)
 		e_sexp_encode_string (str, q->query.any_field_contains.value);
 		break;
 	}
-	 
+
 
 	g_string_append (str, ")");
 

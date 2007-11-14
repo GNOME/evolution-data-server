@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  *  A class to cache address book conents on local file system
- * 
+ *
  * Copyright (C) 2004 Novell, Inc.
  *
  * Authors: Sivaiah Nallagatla <snallagatla@ximian.com>

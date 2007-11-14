@@ -56,7 +56,7 @@ struct _ETrie {
 	struct _trie_state root;
 	GPtrArray *fail_states;
 	gboolean icase;
-	
+
 	EMemChunk *match_chunks;
 	EMemChunk *state_chunks;
 };
@@ -69,10 +69,10 @@ trie_utf8_getc (const unsigned char **in, size_t inlen)
 	const unsigned char *inend = inptr + inlen;
 	register unsigned char c, r;
 	register gunichar u, m;
-	
+
 	if (inlen == 0)
 		return 0;
-	
+
 	r = *inptr++;
 	if (r < 0x80) {
 		*in = inptr;
@@ -83,25 +83,25 @@ trie_utf8_getc (const unsigned char **in, size_t inlen)
 		do {
 			if (inptr >= inend)
 				return 0;
-			
+
 			c = *inptr++;
 			if ((c & 0xc0) != 0x80)
 				goto error;
-			
+
 			u = (u << 6) | (c & 0x3f);
 			r <<= 1;
 			m <<= 5;
 		} while (r & 0x40);
-		
+
 		*in = inptr;
-		
+
 		u &= ~m;
 	} else {
 	error:
 		*in = (*in)+1;
 		u = 0xfffe;
 	}
-	
+
 	return u;
 }
 
@@ -118,19 +118,19 @@ ETrie *
 e_trie_new (gboolean icase)
 {
 	ETrie *trie;
-	
+
 	trie = g_new (ETrie, 1);
 	trie->root.next = NULL;
 	trie->root.fail = NULL;
 	trie->root.match = NULL;
 	trie->root.final = 0;
-	
+
 	trie->fail_states = g_ptr_array_sized_new (8);
 	trie->icase = icase;
-	
+
 	trie->match_chunks = e_memchunk_new (8, sizeof (struct _trie_match));
 	trie->state_chunks = e_memchunk_new (8, sizeof (struct _trie_state));
-	
+
 	return trie;
 }
 
@@ -155,10 +155,10 @@ static struct _trie_match *
 g (struct _trie_state *s, gunichar c)
 {
 	struct _trie_match *m = s->match;
-	
+
 	while (m && m->c != c)
 		m = m->next;
-	
+
 	return m;
 }
 
@@ -166,42 +166,42 @@ static struct _trie_state *
 trie_insert (ETrie *trie, int depth, struct _trie_state *q, gunichar c)
 {
 	struct _trie_match *m;
-	
+
 	m = e_memchunk_alloc (trie->match_chunks);
 	m->next = q->match;
 	m->c = c;
-	
+
 	q->match = m;
 	q = m->state = e_memchunk_alloc (trie->state_chunks);
 	q->match = NULL;
 	q->fail = &trie->root;
 	q->final = 0;
 	q->id = -1;
-	
+
 	if (trie->fail_states->len < depth + 1) {
 		unsigned int size = trie->fail_states->len;
-		
+
 		size = MAX (size + 64, depth + 1);
 		g_ptr_array_set_size (trie->fail_states, size);
 	}
-	
+
 	q->next = trie->fail_states->pdata[depth];
 	trie->fail_states->pdata[depth] = q;
-	
+
 	return q;
 }
 
 
 #if 1
-static void 
+static void
 dump_trie (struct _trie_state *s, int depth)
 {
 	char *p = g_alloca ((depth * 2) + 1);
 	struct _trie_match *m;
-	
+
 	memset (p, ' ', depth * 2);
 	p[depth * 2] = '\0';
-	
+
 	fprintf (stderr, "%s[state] %p: final=%d; pattern-id=%d; fail=%p\n",
 		 p, s, s->final, s->id, s->fail);
 	m = s->match;
@@ -209,7 +209,7 @@ dump_trie (struct _trie_state *s, int depth)
 		fprintf (stderr, " %s'%c' -> %p\n", p, m->c, m->state);
 		if (m->state)
 			dump_trie (m->state, depth + 1);
-		
+
 		m = m->next;
 	}
 }
@@ -246,30 +246,30 @@ e_trie_add (ETrie *trie, const char *pattern, int pattern_id)
 	struct _trie_match *m, *n;
 	int i, depth = 0;
 	gunichar c;
-	
+
 	/* Step 1: add the pattern to the trie */
-	
+
 	q = &trie->root;
-	
+
 	while ((c = trie_utf8_getc (&inptr, -1))) {
 		if (trie->icase)
 			c = g_unichar_tolower (c);
-		
+
 		m = g (q, c);
 		if (m == NULL) {
 			q = trie_insert (trie, depth, q, c);
 		} else {
 			q = m->state;
 		}
-		
+
 		depth++;
 	}
-	
+
 	q->final = depth;
 	q->id = pattern_id;
-	
+
 	/* Step 2: compute failure graph */
-	
+
 	for (i = 0; i < trie->fail_states->len; i++) {
 		q = trie->fail_states->pdata[i];
 		while (q) {
@@ -280,7 +280,7 @@ e_trie_add (ETrie *trie, const char *pattern, int pattern_id)
 				r = q->fail;
 				while (r && (n = g (r, c)) == NULL)
 					r = r->fail;
-				
+
 				if (r != NULL) {
 					q1->fail = n->state;
 					if (q1->fail->final > q1->final)
@@ -291,14 +291,14 @@ e_trie_add (ETrie *trie, const char *pattern, int pattern_id)
 					else
 						q1->fail = &trie->root;
 				}
-				
+
 				m = m->next;
 			}
-			
+
 			q = q->next;
 		}
 	}
-	
+
 	d(fprintf (stderr, "\nafter adding pattern '%s' to trie %p:\n", pattern, trie));
 	d(dump_trie (&trie->root, 0));
 }
@@ -342,42 +342,42 @@ e_trie_search (ETrie *trie, const char *buffer, size_t buflen, int *matched_id)
 	struct _trie_state *q;
 	struct _trie_match *m = NULL; /* init to please gcc */
 	gunichar c;
-	
+
 	inptr = (const unsigned char *) buffer;
 	inend = inptr + buflen;
-	
+
 	q = &trie->root;
 	pat = prev = inptr;
 	while ((c = trie_utf8_getc (&inptr, inlen))) {
 		inlen = (inend - inptr);
-		
+
 		if (c != 0xfffe) {
 			if (trie->icase)
 				c = g_unichar_tolower (c);
-			
+
 			while (q != NULL && (m = g (q, c)) == NULL)
 				q = q->fail;
-			
+
 			if (q == &trie->root)
 				pat = prev;
-			
+
 			if (q == NULL) {
 				q = &trie->root;
 				pat = inptr;
 			} else if (m != NULL) {
 				q = m->state;
-				
+
 				if (q->final) {
 					if (matched_id)
 						*matched_id = q->id;
-					
+
 					return (const char *) pat;
 				}
 			}
 		}
-		
+
 		prev = inptr;
 	}
-	
+
 	return NULL;
 }

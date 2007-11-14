@@ -75,14 +75,14 @@ typedef struct {
 	void (*object_list) (ECalListener *listener, ECalendarStatus status, GList **objects);
 
 	void (*attachment_list) (ECalListener *listener, ECalendarStatus status, GSList **objects);
-	
+
 	void (*get_timezone) (ECalListener *listener, ECalendarStatus status, const char *object);
 	void (*add_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);
 	void (*set_default_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);
 
 	void (*get_changes) (ECalListener *listener, ECalendarStatus status, GList *changes);
 	void (*get_free_busy) (ECalListener *listener, ECalendarStatus status, GList *freebusy);
-	
+
 	void (*query) (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Calendar_CalView query);
 
 	void (*auth_required)      (ECalListener *listener);

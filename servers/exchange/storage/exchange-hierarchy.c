@@ -145,7 +145,7 @@ exchange_hierarchy_new_folder (ExchangeHierarchy *hier,
 {
 	g_return_if_fail (EXCHANGE_IS_HIERARCHY (hier));
 	g_return_if_fail (E_IS_FOLDER (folder));
-	
+
 	g_signal_emit (hier, signals[NEW_FOLDER], 0, folder);
 }
 

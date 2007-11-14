@@ -1,8 +1,8 @@
 #include <string.h>
 #include <libebook/e-book.h>
 
-#define QUERY_STRING1 
-#define QUERY_STRING2 
+#define QUERY_STRING1
+#define QUERY_STRING2
 
 static char* queries[] = {
 	"(exists \"full_name\")",
@@ -20,7 +20,7 @@ main (int argc, char **argv)
 	for (i = 0; i < G_N_ELEMENTS (queries); i ++) {
 		EBookQuery *query = e_book_query_from_string (queries[i]);
 		char *str;
-		
+
 		str = e_book_query_to_string (query);
 
 		if (strcmp (str, queries[i])) {

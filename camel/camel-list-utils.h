@@ -35,10 +35,10 @@ typedef struct _CamelDListNode CamelDListNode;
 
 /**
  * struct _CamelDListNode - A double-linked list node.
- * 
+ *
  * @next: The next node link.
  * @prev: The previous node link.
- * 
+ *
  * A double-linked list node header.  Put this at the start of the
  * list node structure.  Data is stored in the list by subclassing the
  * node header rather than using a pointer.  Or more normally by just
@@ -51,11 +51,11 @@ struct _CamelDListNode {
 
 /**
  * struct _CamelDList - A double-linked list header.
- * 
+ *
  * @head: The head node's next pointer.
  * @tail: The tail node's next pointer.
  * @tailpred: The previous node to the tail node.
- * 
+ *
  * This is the merging of two separate head and tail nodes into a
  * single structure.  i.e. if you ahve a NULL terminated head and tail
  * node such as head = { first, NULL } and tail = { NULL, last } then
@@ -91,7 +91,7 @@ typedef struct _CamelSList CamelSList;
 
 /**
  * struct _CamelSListNode - A single-linked list node.
- * 
+ *
  * @next: The next node in the list.
  *
  * A single-linked list node header.  Put this at hte start of the
@@ -105,9 +105,9 @@ struct _CamelSListNode {
 
 /**
  * struct _CamelSList - A single-linked list header.
- * 
+ *
  * @head: The head of the list.
- * 
+ *
  * This is the header of a single-linked list.
  **/
 struct _CamelSList {

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- * camel-signed--multipart.h : class for a signed-multipart 
+ * camel-signed--multipart.h : class for a signed-multipart
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *

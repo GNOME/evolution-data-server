@@ -251,7 +251,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 		g_mutex_unlock (book_view->priv->pending_mutex);
 		return;
 	}
-	
+
 	currently_in_view =
 		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
 	want_in_view = e_book_backend_sexp_match_contact (
@@ -295,9 +295,9 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
 	gboolean currently_in_view, want_in_view;
 	const char *id = NULL;
 	EContact *contact;
-	
+
 	g_mutex_lock (book_view->priv->pending_mutex);
-	
+
 	contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!id) {
@@ -306,12 +306,12 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
 		g_mutex_unlock (book_view->priv->pending_mutex);
 		return;
 	}
-	
+
 	currently_in_view =
 		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
 	want_in_view =
 		e_book_backend_sexp_match_contact (book_view->priv->card_sexp, contact);
-	
+
 	if (want_in_view) {
 		if (currently_in_view)
 			notify_change (book_view, vcard);
@@ -321,7 +321,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
 		if (currently_in_view)
 			notify_remove (book_view, id);
 	}
-	
+
 	g_free (vcard);
 	g_object_unref (contact);
 	g_mutex_unlock (book_view->priv->pending_mutex);
@@ -351,12 +351,12 @@ void
 e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const char *id, char *vcard)
 {
 	gboolean currently_in_view;
-	
+
 	g_mutex_lock (book_view->priv->pending_mutex);
-	
+
 	currently_in_view =
 		g_hash_table_lookup (book_view->priv->ids, id) != NULL;
-	
+
 	if (currently_in_view)
 		notify_change (book_view, vcard);
 	else
@@ -382,7 +382,7 @@ e_data_book_view_notify_remove (EDataBookView *book_view,
 
 	if (g_hash_table_lookup (book_view->priv->ids, id))
 		notify_remove (book_view, id);
-	
+
 	g_mutex_unlock (book_view->priv->pending_mutex);
 }
 
@@ -550,7 +550,7 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
 /**
  * e_data_book_view_get_max_results:
  * @book_view: an #EDataBookView
- * 
+ *
  * Gets the maximum number of results returned by
  * @book_view's query.
  *
@@ -639,7 +639,7 @@ e_data_book_view_set_thresholds (EDataBookView *book_view,
  * @backend: an #EBookBackend to view
  * @listener: a CORBA listener to reveive notifications
  * @card_query: an s-expression representing the query
- * @card_sexp: 
+ * @card_sexp:
  * @max_results: the maximum number of results for the query
  *
  * Return value: A new #EDataBookView.
@@ -661,7 +661,7 @@ e_data_book_view_new (EBookBackend *backend,
 	g_static_mutex_unlock (&mutex);
 
 	book_view = g_object_new (E_TYPE_DATA_BOOK_VIEW, "poa", poa, NULL);
-	
+
 	e_data_book_view_construct (book_view, backend, listener, card_query, card_sexp, max_results);
 
 	return book_view;
@@ -697,7 +697,7 @@ e_data_book_view_dispose (GObject *object)
 	}
 
 	if (G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose)
-		G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose (object);	
+		G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose (object);
 }
 
 static void

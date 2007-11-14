@@ -43,15 +43,15 @@ main (int argc, char **argv)
 
 	/* then get the photo */
 	new_photo = e_contact_get (contact, E_CONTACT_PHOTO);
-	
+
 	/* and compare */
 	if (new_photo->data.inlined.length != photo->data.inlined.length)
 	  g_error ("photo lengths differ");
-	 
+
 	if (memcmp (new_photo->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length))
 	  g_error ("photo data differs");
 
 	printf ("photo test passed\n");
-	
+
 	return 0;
 }

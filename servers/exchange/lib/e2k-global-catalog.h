@@ -74,7 +74,7 @@ typedef struct {
 	E2kSid *sid;
 	char *email, *exchange_server, *mailbox, *legacy_exchange_dn;
 	GPtrArray *delegates, *delegators;
-	int quota_warn, quota_nosend, quota_norecv; 
+	int quota_warn, quota_nosend, quota_norecv;
 	int user_account_control;
 
 	E2kGlobalCatalogLookupFlags mask;
@@ -100,7 +100,7 @@ void             e2k_global_catalog_async_lookup (E2kGlobalCatalog *gc,
 						  E2kGlobalCatalogCallback callback,
 						  gpointer user_data);
 
-double		lookup_passwd_max_age (E2kGlobalCatalog *gc, 
+double		lookup_passwd_max_age (E2kGlobalCatalog *gc,
 				      E2kOperation *op);
 
 

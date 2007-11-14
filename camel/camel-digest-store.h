@@ -37,12 +37,12 @@ typedef struct _CamelDigestStoreClass CamelDigestStoreClass;
 
 struct _CamelDigestStore {
 	CamelStore parent;
-	
+
 };
 
 struct _CamelDigestStoreClass {
 	CamelStoreClass parent_class;
-	
+
 };
 
 CamelType camel_digest_store_get_type (void);

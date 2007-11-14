@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-auth.c : authentication for nntp */
 
-/* 
+/*
  *
  * Copyright (C) 2000 Ximian, Inc. <toshok@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -42,16 +42,16 @@ camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex)
 
 	if (!service->url->authmech && !service->url->passwd) {
 		gchar *prompt;
-			
+
 		prompt = g_strdup_printf (_("Please enter the NNTP password for %s@%s"),
 					  service->url->user, service->url->host);
 		service->url->passwd =
 			camel_session_get_password (session, prompt,
 						    TRUE, service, "password", ex);
 		g_free (prompt);
-			
+
 		if (!service->url->passwd) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, 
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     "You didn\'t enter a password.");
 			resp = 666;
 			goto done;

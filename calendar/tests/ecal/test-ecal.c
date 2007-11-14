@@ -62,7 +62,7 @@ static void
 objects_added_cb (GObject *object, GList *objects, gpointer data)
 {
 	GList *l;
-	
+
 	for (l = objects; l; l = l->next)
 		cl_printf (data, "Object added %s\n", icalcomponent_get_uid (l->data));
 }
@@ -71,7 +71,7 @@ static void
 objects_modified_cb (GObject *object, GList *objects, gpointer data)
 {
 	GList *l;
-	
+
 	for (l = objects; l; l = l->next)
 		cl_printf (data, "Object modified %s\n", icalcomponent_get_uid (l->data));
 }
@@ -80,7 +80,7 @@ static void
 objects_removed_cb (GObject *object, GList *objects, gpointer data)
 {
 	GList *l;
-	
+
 	for (l = objects; l; l = l->next)
 		cl_printf (data, "Object removed %s\n", icalcomponent_get_uid (l->data));
 }
@@ -96,10 +96,10 @@ list_uids (ECal *client)
 {
 	GList *objects = NULL;
 	GList *l;
-	
+
 	if (!e_cal_get_object_list (client, "(contains? \"any\" \"test\")", &objects, NULL))
 		return FALSE;
-	
+
 	cl_printf (client, "UIDS: ");
 
 	cl_printf (client, "\nGot %d objects\n", g_list_length (objects));
@@ -142,7 +142,7 @@ client_destroy_cb (gpointer data, GObject *object)
 		g_main_loop_quit (loop);
 }
 
-static char * 
+static char *
 test_object_creation (ECal *client,  char **uid)
 {
 	ECalComponent *comp, *comp_retrieved;
@@ -153,7 +153,7 @@ test_object_creation (ECal *client,  char **uid)
 	ECalComponentTransparency transp;
 	gboolean compare;
 	GError *error = NULL;
-	
+
 	comp = e_cal_component_new ();
 	/* set fields */
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
@@ -169,10 +169,10 @@ test_object_creation (ECal *client,  char **uid)
 	dt.tzid ="UTC";
 	e_cal_component_set_dtend (comp, &dt);
 	e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
-	
+
 
 	e_cal_component_commit_sequence (comp);
-	icalcomp = e_cal_component_get_icalcomponent (comp); 
+	icalcomp = e_cal_component_get_icalcomponent (comp);
 	if (!e_cal_create_object (client, icalcomp, uid, &error)) {
 		cl_printf (client, "Object creation:  %s\n", error->message);
 		g_free (comp);
@@ -198,26 +198,26 @@ test_object_creation (ECal *client,  char **uid)
 		g_free (icalcomp_retrieved);
 		return "Test Object Creation failed";
 
-	}	
+	}
 	/* Dumping icalcomp into a string is not useful as the retrieved object
-	 * has some generated information like timestamps. We compare 
+	 * has some generated information like timestamps. We compare
 	 * member values we set during creation*/
 	compare = e_cal_component_event_dates_match (comp, comp_retrieved);
-	
+
 	if (compare) {
 		e_cal_component_get_transparency (comp_retrieved, &transp);
-		compare = (transp == E_CAL_COMPONENT_TRANSP_OPAQUE); 
+		compare = (transp == E_CAL_COMPONENT_TRANSP_OPAQUE);
 	}
-	
+
 	g_free (comp_retrieved);
 	g_free (comp);
 	g_free (icalcomp);
 	g_free (icalcomp_retrieved);
-	
+
 	mu_assert ("Test Object creation : Created object does not match retrieved data\n", compare);
 	return NULL;
 }
-	
+
 static char *
 test_object_modification (ECal *client, char *uid)
 {
@@ -225,7 +225,7 @@ test_object_modification (ECal *client, char *uid)
 	icalcomponent *icalcomp, *icalcomp_modified;
 	gboolean compare;
 	GError *error = NULL;
-	
+
 	if (!e_cal_get_object (client, uid, NULL, &icalcomp, &error)) {
 		cl_printf (client, "Test Modify object : Could not get the object: %s\n", error->message);
 		g_free (uid);
@@ -263,39 +263,39 @@ test_object_modification (ECal *client, char *uid)
 static char *
 test_object_removal (ECal *client)
 {
-	
+
 	char *uid;
 	ECalComponent *comp;
 	icalcomponent *icalcomp;
 	gboolean compare = 1;
 	GError *error = NULL;
-	
+
 	comp = e_cal_component_new ();
 	e_cal_component_commit_sequence (comp);
-	icalcomp = e_cal_component_get_icalcomponent (comp); 
+	icalcomp = e_cal_component_get_icalcomponent (comp);
 	if (!e_cal_create_object (client, icalcomp, &uid, &error)) {
 		cl_printf (client, "Test object removal - Object creation:  %s\n", error->message);
 		g_object_unref (comp);
 		g_object_unref(icalcomp);
 		return "Test Object Removal failed\n";
 	}
-	
+
 	if (!e_cal_remove_object (client, uid, &error)) {
 		cl_printf (client, "Test object removal - Could not remove the object\n");
 		g_free (uid);
 		g_object_unref (comp);
 		g_object_unref (icalcomp);
 		return "Test Object Removal failed\n";
-		
-	}	
+
+	}
 
 	compare =  e_cal_get_object (client, uid, NULL, &icalcomp, &error);
 
 	g_free (uid);
 	g_object_unref (comp);
 	g_object_unref (icalcomp);
-	
-	mu_assert ("Test object removal - Failed\n", compare);	
+
+	mu_assert ("Test object removal - Failed\n", compare);
 	return NULL;
 }
 #endif
@@ -307,22 +307,22 @@ test_get_alarms_in_range (ECal *client)
 	icaltimezone *utc;
 	time_t start = time (NULL), end;
 	gboolean compare;
-	
+
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
 	end = time_add_day_with_zone (start, 2, utc);
 
 	alarms = e_cal_get_alarms_in_range (client, start, end);
-	compare = (g_slist_length (alarms) == 3); 
-	
+	compare = (g_slist_length (alarms) == 3);
+
 	e_cal_free_alarms (alarms);
 	mu_assert ("Test getting alarms in range\n", compare);
-	
+
 	return NULL;
 }
 
 static char *
-test_set_uri (ECal *client, const gchar *uri) 
+test_set_uri (ECal *client, const gchar *uri)
 {
 	/* The uri is set as part of create_client call. This method merely
 	 * verifies it was done correctly.
@@ -331,10 +331,10 @@ test_set_uri (ECal *client, const gchar *uri)
 	gboolean compare = 0;
 	cal_uri = g_strconcat ("file://", uri, NULL);
 	compare = !strcmp (e_cal_get_uri (client), cal_uri);
-	
+
 	g_free (cal_uri);
-	mu_assert ("Test set_uri : uri was not set correctly\n", compare);  
-	
+	mu_assert ("Test set_uri : uri was not set correctly\n", compare);
+
 	return NULL;
 }
 
@@ -343,7 +343,7 @@ test_cal_loaded (ECal *client)
 {
 	/* Test one loaded calendar and another that is not loaded. */
 	mu_assert ("Test get_cal_load_state : Failed \n",
-			(E_CAL_LOAD_LOADED == e_cal_get_load_state (client)) && 
+			(E_CAL_LOAD_LOADED == e_cal_get_load_state (client)) &&
 			(E_CAL_LOAD_NOT_LOADED == e_cal_get_load_state (NULL)));
 
 	return NULL;
@@ -356,7 +356,7 @@ test_get_source (ECal *client, const gchar *expected)
 	char *uri;
 	char *cal_uri;
 	gboolean compare = 0;
-	
+
 	source = e_cal_get_source (client);
 	uri = e_source_get_uri (source);
 	cal_uri = g_strconcat ("file://", expected, NULL);
@@ -364,7 +364,7 @@ test_get_source (ECal *client, const gchar *expected)
 
 	g_free (cal_uri);
 	mu_assert ("Test get_source : Failed\n", compare);
-			
+
 	return NULL;
 }
 
@@ -373,7 +373,7 @@ test_query (ECal *client, const char *query, int expected)
 {
 	/* This uses pre-loaded data. Hence its results are valid only
 	 * when called before any write operation is performed.
-	 */ 
+	 */
 	int i = 0;
 	GList *objects = NULL;
 
@@ -381,7 +381,7 @@ test_query (ECal *client, const char *query, int expected)
 		return "Could not get the list of objects";
 	i = g_list_length (objects);
 	e_cal_free_object_list (objects);
-	
+
 	mu_assert ("Test get_object_list : Expected number of objects not found", i == expected);
 
 	return NULL;
@@ -394,7 +394,7 @@ test_e_cal_new (ECal **cal, const char *uri)
 	GError *error = NULL;
 	char *cal_uri, *cal_file;
 	gboolean created = 0;
-	
+
 	cal_uri = g_strconcat ("file://", uri, NULL);
 	*cal = e_cal_new_from_uri (cal_uri, E_CAL_SOURCE_TYPE_EVENT);
 	if (!*cal) {
@@ -419,7 +419,7 @@ test_e_cal_new (ECal **cal, const char *uri)
 	g_free (cal_file);
 
 	mu_assert ("Test creation of new calendar : Failed", created);
-	
+
 	return NULL;
 }
 
@@ -429,19 +429,19 @@ test_e_cal_remove (ECal *ecal, const char *uri)
 	char *cal_uri;
 	GError *error = NULL;
 	gboolean removed = 0;
-	
+
 	cal_uri = g_strconcat (uri, "/calendar.ics", NULL);
 	if (!e_cal_remove (ecal, &error)) {
 		cl_printf (ecal, "Test Calendar removal : Could not remove the Calendar : %s\n", error->message);
 	}
-	
+
 	removed = !g_file_test (uri, G_FILE_TEST_EXISTS);
 	g_free (cal_uri);
-	
+
 	mu_assert ("Test Remove calendar : Failed ", removed);
-	
+
 	return NULL;
-} 
+}
 #endif
 
 static char *
@@ -450,14 +450,14 @@ test_new_system_calendar(void)
 	ECal *cal;
 	char *uri;
 	gboolean created;
-	
+
 	cal = e_cal_new_system_calendar ();
 	uri = g_build_filename (g_get_home_dir (), ".evolution", "calendar", "local", "system", "calendar.ics", NULL);
 	created = g_file_test (uri, G_FILE_TEST_EXISTS);
 	g_free (uri);
-	
+
 	mu_assert ("Test creation of default system calendar : Failed", created);
-	
+
 	return NULL;
 }
 
@@ -467,14 +467,14 @@ test_new_system_tasks(void)
 	ECal *cal;
 	char *uri;
 	gboolean created;
-	
+
 	cal = e_cal_new_system_tasks ();
 	uri = g_build_filename (g_get_home_dir (), ".evolution", "tasks", "local", "system", "tasks.ics", NULL);
 	created = g_file_test (uri, G_FILE_TEST_EXISTS);
 	g_free (uri);
-	
+
 	mu_assert ("Test creation of default system tasks : Failed", created);
-	
+
 	return NULL;
 }
 
@@ -484,14 +484,14 @@ test_new_system_memos(void)
 	ECal *cal;
 	char *uri;
 	gboolean created;
-	
+
 	cal = e_cal_new_system_memos ();
 	uri = g_build_filename (g_get_home_dir (), ".evolution", "memos", "local", "system", "journal.ics", NULL);
 	created = g_file_test (uri, G_FILE_TEST_EXISTS);
 	g_free (uri);
-	
+
 	mu_assert ("Test creation of default system memos : Failed", created);
-	
+
 	return NULL;
 }
 
@@ -503,7 +503,7 @@ test_get_free_busy (ECal *client)
 	GError *error = NULL;
 	icaltimezone *utc;
 	time_t start = time (NULL), end;
-	
+
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
 	end = time_add_day_with_zone (start, 2, utc);
@@ -517,17 +517,17 @@ test_get_free_busy (ECal *client)
 		for (l = freebusy; l; l = l->next) {
 			char *comp_string;
 			ECalComponent *comp = E_CAL_COMPONENT (l->data);
-			
+
 			comp_string = e_cal_component_get_as_string (comp);
 			cl_printf (client, "%s\n\n", comp_string);
 			g_object_unref (comp);
 			g_free (comp_string);
-		}	
-	}	
+		}
+	}
 	else {
 		cl_printf (client, "free_busy was returned but NULL");
-	}	
-	return NULL;	
+	}
+	return NULL;
 }
 
 
@@ -543,16 +543,16 @@ test_get_default_object (ECal *client)
 		g_free (ical_string);
 		tests_passed++;
 		return NULL;
-		
-	} else 
-		cl_printf (client, "Test Get default object : Could not get the default object: %s\n", error->message); 
+
+	} else
+		cl_printf (client, "Test Get default object : Could not get the default object: %s\n", error->message);
 	return error->message;
 }
 
 
 /* XXX The string pasted below is *really* ugly. Alternatively, it could be
  * read from a file at run-time. Not sure if it is an elegant solution when
- * multiple clients try to load the same file during stress testing. 
+ * multiple clients try to load the same file during stress testing.
  * how can this be done better ?
  */
 #define EXPECTED \
@@ -582,14 +582,14 @@ LAST-MODIFIED:20040213T055647Z\
 END:VEVENT"
 
 static char *
-test_get_object (ECal *client) 
+test_get_object (ECal *client)
 {
 	const char *uid = "20040213T055519Z-15802-500-1-3@testcal";
 	char *actual;
 	icalcomponent *icalcomp;
 	gboolean compare;
 	GError *error = NULL;
-	
+
 	if (!e_cal_get_object (client, uid, NULL, &icalcomp, &error)) {
 		cl_printf (client, "Test Get object : Could not get the object: %s\n", error->message);
 		return error->message;
@@ -597,12 +597,12 @@ test_get_object (ECal *client)
 
 	actual = icalcomponent_as_ical_string (icalcomp);
 	compare = !strcmp (actual, EXPECTED);
-	
+
 	g_free (actual);
 
 	mu_assert ("Test : get_object does not match the expected output", compare);
 	return NULL;
-}	
+}
 
 static char *
 test_timezones (ECal *client)
@@ -616,30 +616,30 @@ test_timezones (ECal *client)
 
 	printf ("\n\nTime Zones : \n%s *** %s", icaltimezone_get_display_name (zone), icaltimezone_get_tzid (zone));
 	printf ("\n\nTime Zones : \n%s", icaltimezone_get_location (zone));
-	
-	
+
+
 	return NULL;
 }
 
 static char *
-all_tests(ECal *client, const gchar *uri) 
+all_tests(ECal *client, const gchar *uri)
 {
 	char *uid;
-		
+
 	mu_run_test (test_new_system_calendar ());
 	mu_run_test (test_new_system_tasks ());
 	mu_run_test (test_new_system_memos ());
 	mu_run_test (test_set_uri (client, uri));
 	mu_run_test (test_get_source (client, uri));
 	mu_run_test (test_cal_loaded (client));
-	
+
 	/* test_query acts on pre-loaded data. Hence it must executed before
 	 * any writes are made */
 	mu_run_test (test_query (client, "(contains? \"any\" \"test\")", 2));
 	mu_run_test (test_query (client, "(contains? \"summary\" \"Kansas\")", 1));
 	mu_run_test (test_query (client, "(contains? \"any\" \"gibberish\")", 0));
 
-	
+
 	mu_run_test (test_get_default_object (client));
 	mu_run_test (test_get_object (client));
 	mu_run_test (test_get_free_busy (client));
@@ -652,9 +652,9 @@ all_tests(ECal *client, const gchar *uri)
 //	mu_run_test (test_e_cal_new (&ecal, tmp));
 //	mu_run_test (test_e_cal_remove (ecal, tmp));
 //	g_free (tmp);
-	
+
 	test_timezones (client);
-	
+
 	return NULL;
 }
 
@@ -666,7 +666,7 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 	ECalView *query;
 	char *cal_uri;
 	GError *error = NULL;
-	
+
 	cal_uri = g_strconcat ("file://", uri, NULL);
 	*client = e_cal_new_from_uri (cal_uri, type);
 	if (!*client) {
@@ -683,30 +683,30 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 		exit (1);
 	}
 	g_clear_error (&error);
-	
+
 	if (!e_cal_get_query (*client, "(contains? \"any\" \"Event\")", &query, NULL)) {
 		cl_printf (*client, G_STRLOC ": Unable to obtain query");
-		exit (1);		
+		exit (1);
 	}
 
-	g_signal_connect (G_OBJECT (query), "objects_added", 
+	g_signal_connect (G_OBJECT (query), "objects_added",
 			  G_CALLBACK (objects_added_cb), client);
-	g_signal_connect (G_OBJECT (query), "objects_modified", 
+	g_signal_connect (G_OBJECT (query), "objects_modified",
 			  G_CALLBACK (objects_modified_cb), client);
-	g_signal_connect (G_OBJECT (query), "objects_removed", 
+	g_signal_connect (G_OBJECT (query), "objects_removed",
 			  G_CALLBACK (objects_removed_cb), client);
 	g_signal_connect (G_OBJECT (query), "view_done",
 			  G_CALLBACK (view_done_cb), client);
-	
+
 	e_cal_view_start (query);
-	
+
 	results = all_tests (*client, uri);
-	cl_printf (*client, "\n\n\n*************Tests run: %d****************\n\n", tests_run); 
+	cl_printf (*client, "\n\n\n*************Tests run: %d****************\n\n", tests_run);
 	cl_printf (*client, "*************Tests passed: %d*************\n\n\n", tests_passed);
-	if (results != 0) 
+	if (results != 0)
 		cl_printf (*client, "***Failures********%s\n", results);
 
-	
+
 	cl_printf (*client, "dump of the test calendar data");
 	list_uids (*client);
 	g_free (cal_uri);
@@ -726,8 +726,8 @@ main (int argc, char **argv)
 	/* arg1- file name; arg2- client suffix */
 	uri = g_strconcat (argv[1], argv[2], NULL);
 	create_client (&client1, uri, E_CAL_SOURCE_TYPE_EVENT, FALSE);
-	
-	g_free (uri);	
+
+	g_free (uri);
 	g_main_loop_run (loop);
 	return 0;
 }

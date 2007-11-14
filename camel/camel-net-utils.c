@@ -6,8 +6,8 @@
  *
  * Copyright (C) 2004 Ximian Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -204,7 +204,7 @@ camel_gethostbyname_r (const char *name, struct hostent *host,
 	struct addrinfo hints, *res;
 	int retval, len;
 	char *addr;
-	
+
 	memset (&hints, 0, sizeof (struct addrinfo));
 #ifdef HAVE_AI_ADDRCONFIG
 	hints.ai_flags = AI_CANONNAME | AI_ADDRCONFIG;
@@ -214,49 +214,49 @@ camel_gethostbyname_r (const char *name, struct hostent *host,
 	hints.ai_family = PF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
-	
+
 	if ((retval = getaddrinfo (name, NULL, &hints, &res)) != 0) {
 		*herr = ai_to_herr (retval);
 		return -1;
 	}
-	
+
 	len = ALIGN (strlen (res->ai_canonname) + 1);
 	if (buflen < IPv6_BUFLEN_MIN + len + res->ai_addrlen + sizeof (char *))
 		return ERANGE;
-	
+
 	/* h_name */
 	strcpy (buf, res->ai_canonname);
 	host->h_name = buf;
 	buf += len;
-	
+
 	/* h_aliases */
 	((char **) buf)[0] = NULL;
 	host->h_aliases = (char **) buf;
 	buf += sizeof (char *);
-	
+
 	/* h_addrtype and h_length */
 	host->h_length = res->ai_addrlen;
 	if (res->ai_family == PF_INET6) {
 		host->h_addrtype = AF_INET6;
-		
+
 		addr = (char *) &((struct sockaddr_in6 *) res->ai_addr)->sin6_addr;
 	} else {
 		host->h_addrtype = AF_INET;
-		
+
 		addr = (char *) &((struct sockaddr_in *) res->ai_addr)->sin_addr;
 	}
-	
+
 	memcpy (buf, addr, host->h_length);
 	addr = buf;
 	buf += ALIGN (host->h_length);
-	
+
 	/* h_addr_list */
 	((char **) buf)[0] = addr;
 	((char **) buf)[1] = NULL;
 	host->h_addr_list = (char **) buf;
-	
+
 	freeaddrinfo (res);
-	
+
 	return 0;
 #else /* No support for IPv6 addresses */
 #ifdef HAVE_GETHOSTBYNAME_R
@@ -268,7 +268,7 @@ camel_gethostbyname_r (const char *name, struct hostent *host,
 #else
 	struct hostent *hp;
 	int retval;
-	
+
 	retval = gethostbyname_r (name, host, buf, buflen, &hp, herr);
 	if (hp != NULL) {
 		*herr = 0;
@@ -282,26 +282,26 @@ camel_gethostbyname_r (const char *name, struct hostent *host,
 		 */
 		retval = -1;
 	}
-	
+
 	return retval;
 #endif
 #else /* No support for gethostbyname_r */
 	struct hostent *h;
-	
+
 	G_LOCK (gethost_mutex);
-	
+
 	h = gethostbyname (name);
-	
+
 	if (!h) {
 		*herr = h_errno;
 		G_UNLOCK (gethost_mutex);
 		return -1;
 	}
-	
+
 	GETHOST_PROCESS (h, host, buf, buflen, herr);
-	
+
 	G_UNLOCK (gethost_mutex);
-	
+
 	return 0;
 #endif /* HAVE_GETHOSTBYNAME_R */
 #endif /* ENABLE_IPv6 */
@@ -313,38 +313,38 @@ camel_gethostbyaddr_r (const char *addr, int addrlen, int type, struct hostent *
 {
 #ifdef ENABLE_IPv6
 	int retval, len;
-	
+
 	if ((retval = getnameinfo (addr, addrlen, buf, buflen, NULL, 0, NI_NAMEREQD)) != 0) {
 		*herr = ai_to_herr (retval);
 		return -1;
 	}
-	
+
 	len = ALIGN (strlen (buf) + 1);
 	if (buflen < IPv6_BUFLEN_MIN + len + addrlen + sizeof (char *))
 		return ERANGE;
-	
+
 	/* h_name */
 	host->h_name = buf;
 	buf += len;
-	
+
 	/* h_aliases */
 	((char **) buf)[0] = NULL;
 	host->h_aliases = (char **) buf;
 	buf += sizeof (char *);
-	
+
 	/* h_addrtype and h_length */
 	host->h_length = addrlen;
 	host->h_addrtype = type;
-	
+
 	memcpy (buf, addr, host->h_length);
 	addr = buf;
 	buf += ALIGN (host->h_length);
-	
+
 	/* h_addr_list */
 	((char **) buf)[0] = addr;
 	((char **) buf)[1] = NULL;
 	host->h_addr_list = (char **) buf;
-	
+
 	return 0;
 #else /* No support for IPv6 addresses */
 #ifdef HAVE_GETHOSTBYADDR_R
@@ -356,7 +356,7 @@ camel_gethostbyaddr_r (const char *addr, int addrlen, int type, struct hostent *
 #else
 	struct hostent *hp;
 	int retval;
-	
+
 	retval = gethostbyaddr_r (addr, addrlen, type, host, buf, buflen, &hp, herr);
 	if (hp != NULL) {
 		*herr = 0;
@@ -371,26 +371,26 @@ camel_gethostbyaddr_r (const char *addr, int addrlen, int type, struct hostent *
 		 */
 		retval = -1;
 	}
-	
+
 	return retval;
 #endif
 #else /* No support for gethostbyaddr_r */
 	struct hostent *h;
-	
+
 	G_LOCK (gethost_mutex);
-	
+
 	h = gethostbyaddr (addr, addrlen, type);
-	
+
 	if (!h) {
 		*herr = h_errno;
 		G_UNLOCK (gethost_mutex);
 		return -1;
 	}
-	
+
 	GETHOST_PROCESS (h, host, buf, buflen, herr);
-	
+
 	G_UNLOCK (gethost_mutex);
-	
+
 	return 0;
 #endif /* HAVE_GETHOSTBYADDR_R */
 #endif /* ENABLE_IPv6 */
@@ -450,7 +450,7 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 		worker(msg);
 		return 0;
 	}
-	
+
 	reply_port = msg->msg.reply_port = e_msgport_new();
 	fd = e_msgport_fd(msg->msg.reply_port);
 	if ((err = pthread_create(&id, NULL, worker, msg)) == 0) {
@@ -496,7 +496,7 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 						     );
 			else
 				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
-			
+
 			/* We cancel so if the thread impl is decent it causes immediate exit.
 			   We detach so we dont need to wait for it to exit if it isn't.
 			   We check the reply port incase we had a reply in the mean time, which we free later */
@@ -540,7 +540,7 @@ cs_getaddrinfo(void *data)
                 msg->hostbuflen *= 2;
                 msg->hostbufmem = g_realloc(msg->hostbufmem, msg->hostbuflen);
 	}
-	
+
 	/* If we got cancelled, dont reply, just free it */
 	if (msg->cancelled)
 		goto cancel;
@@ -635,13 +635,13 @@ cs_getaddrinfo(void *data)
 	struct _addrinfo_msg *info = data;
 
 	info->result = getaddrinfo(info->name, info->service, info->hints, info->res);
-	
+
 	if (info->cancelled) {
 		cs_freeinfo(info);
 	} else {
 		e_msgport_reply((EMsg *)info);
 	}
-	
+
 	return NULL;
 }
 #endif /* NEED_ADDRINFO */
@@ -655,7 +655,7 @@ camel_getaddrinfo(const char *name, const char *service, const struct addrinfo *
 	struct addrinfo myhints;
 #endif
 	g_return_val_if_fail(name != NULL, NULL);
-	
+
 	if (camel_operation_cancel_check(NULL)) {
 		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 		return NULL;
@@ -669,7 +669,7 @@ camel_getaddrinfo(const char *name, const char *service, const struct addrinfo *
 		memset(&myhints, 0, sizeof(myhints));
 	else
 		memcpy (&myhints, hints, sizeof (myhints));
-	
+
 	myhints.ai_family = AF_INET;
 	hints = &myhints;
 #endif
@@ -682,16 +682,16 @@ camel_getaddrinfo(const char *name, const char *service, const struct addrinfo *
 #ifdef NEED_ADDRINFO
 	msg->hostbuflen = 1024;
 	msg->hostbufmem = g_malloc(msg->hostbuflen);
-#endif	
+#endif
 	if (cs_waitinfo(cs_getaddrinfo, msg, _("Host lookup failed"), ex) == 0) {
 		if (msg->result != 0)
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Host lookup failed: %s: %s"),
 					      name, gai_strerror (msg->result));
-		
+
 		cs_freeinfo(msg);
 	} else
 		res = NULL;
-	
+
 	camel_operation_end(NULL);
 
 	return res;
@@ -737,7 +737,7 @@ cs_getnameinfo(void *data)
                 msg->hostbuflen *= 2;
                 msg->hostbufmem = g_realloc(msg->hostbufmem, msg->hostbuflen);
 	}
-	
+
 	if (msg->cancelled)
 		goto cancel;
 
@@ -747,7 +747,7 @@ cs_getnameinfo(void *data)
 			msg->host = g_strdup(h.h_name);
 		} else {
 			unsigned char *in = (unsigned char *)&sin->sin_addr;
-			
+
 			/* sin_addr is always network order which is big-endian */
 			msg->host = g_strdup_printf("%u.%u.%u.%u", in[0], in[1], in[2], in[3]);
 		}
@@ -771,7 +771,7 @@ cs_getnameinfo(void *data)
 
 	/* there doens't appear to be a return code which says host or serv buffers are too short, lengthen them */
 	msg->result = getnameinfo(msg->addr, msg->addrlen, msg->host, msg->hostlen, msg->serv, msg->servlen, msg->flags);
-	
+
 	if (msg->cancelled)
 		cs_freeinfo(msg);
 	else

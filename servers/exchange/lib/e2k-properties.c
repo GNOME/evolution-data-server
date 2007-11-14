@@ -742,7 +742,7 @@ e2k_prop_property_name (const char *prop)
  *
  * Computes the MAPI proptag value of @prop, which must be the name
  * of a MAPI property.
- * 
+ *
  * Return value: the MAPI proptag value
  **/
 guint32

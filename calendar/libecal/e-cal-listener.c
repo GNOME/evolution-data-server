@@ -97,7 +97,7 @@ convert_status (const GNOME_Evolution_Calendar_CallStatus status)
 		return E_CALENDAR_STATUS_INVALID_SERVER_VERSION;
 	case GNOME_Evolution_Calendar_NoSuchCal:
 	      return E_CALENDAR_STATUS_NO_SUCH_CALENDAR;
-	
+
 	case GNOME_Evolution_Calendar_OtherError:
 	default:
 		return E_CALENDAR_STATUS_OTHER_ERROR;
@@ -305,7 +305,7 @@ impl_notifyObjectsReceived (PortableServer_Servant servant,
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
@@ -342,15 +342,15 @@ impl_notifyObjectsSent (PortableServer_Servant servant,
 	g_list_free (users);
 }
 
-static void 
+static void
 impl_notifyDefaultObjectRequested (PortableServer_Servant servant,
 				   const GNOME_Evolution_Calendar_CallStatus status,
 				   const CORBA_char *object,
-				   CORBA_Environment *ev) 
+				   CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
@@ -360,15 +360,15 @@ impl_notifyDefaultObjectRequested (PortableServer_Servant servant,
 	g_signal_emit (G_OBJECT (listener), signals[DEFAULT_OBJECT], 0, convert_status (status), object);
 }
 
-static void 
+static void
 impl_notifyObjectRequested (PortableServer_Servant servant,
 			    const GNOME_Evolution_Calendar_CallStatus status,
 			    const CORBA_char *object,
-			    CORBA_Environment *ev) 
+			    CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
@@ -387,27 +387,27 @@ build_object_list (const GNOME_Evolution_Calendar_stringlist *seq)
 	list = NULL;
 	for (i = 0; i < seq->_length; i++) {
 		icalcomponent *comp;
-		
+
 		comp = icalcomponent_new_from_string (seq->_buffer[i]);
 		if (!comp)
 			continue;
-		
+
 		list = g_list_prepend (list, comp);
 	}
 
 	return list;
 }
 
-static void 
+static void
 impl_notifyObjectListRequested (PortableServer_Servant servant,
 				const GNOME_Evolution_Calendar_CallStatus status,
 				const GNOME_Evolution_Calendar_stringlist *objects,
-				CORBA_Environment *ev) 
+				CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GList *object_list, *l;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
@@ -415,7 +415,7 @@ impl_notifyObjectListRequested (PortableServer_Servant servant,
 		return;
 
 	object_list = build_object_list (objects);
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[OBJECT_LIST], 0, convert_status (status), object_list);
 
 	for (l = object_list; l; l = l->next)
@@ -423,17 +423,17 @@ impl_notifyObjectListRequested (PortableServer_Servant servant,
 	g_list_free (object_list);
 }
 
-static void 
+static void
 impl_notifyAttachmentListRequested (PortableServer_Servant servant,
 				const GNOME_Evolution_Calendar_CallStatus status,
 				const GNOME_Evolution_Calendar_stringlist *attachments,
-				CORBA_Environment *ev) 
+				CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GSList *a_list = NULL;
 	int i;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
@@ -458,13 +458,13 @@ impl_notifyTimezoneRequested (PortableServer_Servant servant,
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[GET_TIMEZONE], 0, convert_status (status), object);
 }
 
@@ -476,13 +476,13 @@ impl_notifyTimezoneAdded (PortableServer_Servant servant,
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[ADD_TIMEZONE], 0, convert_status (status), tzid);
 }
 
@@ -493,13 +493,13 @@ impl_notifyDefaultTimezoneSet (PortableServer_Servant servant,
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[SET_DEFAULT_TIMEZONE], 0, convert_status (status));
 }
 
@@ -547,15 +547,15 @@ impl_notifyChanges (PortableServer_Servant servant,
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GList *changes, *l;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	changes = build_change_list (seq);
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[GET_CHANGES], 0, convert_status (status), changes);
 
 	for (l = changes; l; l = l->next)
@@ -587,7 +587,7 @@ build_free_busy_list (const GNOME_Evolution_Calendar_CalObjSeq *seq)
 				g_object_unref (G_OBJECT (comp));
 				continue;
 			}
-			
+
 			list = g_list_append (list, comp);
 		} else {
 			icalcomponent_free (icalcomp);
@@ -606,15 +606,15 @@ impl_notifyFreeBusy (PortableServer_Servant servant,
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GList *freebusy, *l;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	freebusy = build_free_busy_list (seq);
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[GET_FREE_BUSY], 0, convert_status (status), freebusy);
 
 	for (l = freebusy; l; l = l->next)
@@ -622,21 +622,21 @@ impl_notifyFreeBusy (PortableServer_Servant servant,
 	g_list_free (freebusy);
 }
 
-static void 
+static void
 impl_notifyQuery (PortableServer_Servant servant,
 		  const GNOME_Evolution_Calendar_CallStatus status,
 		  const GNOME_Evolution_Calendar_CalView query,
-		  CORBA_Environment *ev) 
+		  CORBA_Environment *ev)
 {
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
-	
+
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
 
 	if (!priv->notify)
 		return;
-	
+
 	g_signal_emit (G_OBJECT (listener), signals[QUERY], 0, convert_status (status), query);
 }
 
@@ -672,7 +672,7 @@ impl_notifyAuthRequired (PortableServer_Servant servant,
 
 	if (!priv->notify)
 		return;
-       
+
 	g_signal_emit (G_OBJECT (listener), signals[AUTH_REQUIRED], 0);
 }
 
@@ -801,7 +801,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, ldap_attribute),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_STRING,
-			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);	
+			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);
 	signals[STATIC_CAPABILITIES] =
 		g_signal_new ("static_capabilities",
 			      G_TYPE_FROM_CLASS (klass),
@@ -817,7 +817,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, open),
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE, 1, G_TYPE_INT);	
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[REMOVE] =
 		g_signal_new ("remove",
 			      G_TYPE_FROM_CLASS (klass),
@@ -841,7 +841,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, modify_object),
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE, 1, G_TYPE_INT);	
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[REMOVE_OBJECT] =
 		g_signal_new ("remove_object",
 			      G_TYPE_FROM_CLASS (klass),
@@ -1016,7 +1016,7 @@ e_cal_listener_construct (ECalListener *listener,
  * calendar changed modes.
  * @fn_data: Closure data pointer that will be passed to the notification
  * functions.
- * 
+ *
  * Creates a new #ECalListener object.
  *
  * Return value: A newly-created #ECalListener object.
@@ -1029,7 +1029,7 @@ e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
 
 	g_return_val_if_fail (cal_set_mode_fn != NULL, NULL);
 
-	listener = g_object_new (E_TYPE_CAL_LISTENER, 
+	listener = g_object_new (E_TYPE_CAL_LISTENER,
 				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				 NULL);
 
@@ -1041,7 +1041,7 @@ e_cal_listener_new (ECalListenerCalSetModeFn cal_set_mode_fn,
 /**
  * e_cal_listener_stop_notification:
  * @listener: A calendar listener.
- * 
+ *
  * Informs a calendar listener that no further notification is desired.  The
  * callbacks specified when the listener was created will no longer be invoked
  * after this function is called.

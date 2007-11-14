@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2005 Novell, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -341,7 +341,7 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
 	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
 	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
-	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon), 
+	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon),
 				       e_categories_get_icon_file_for (category_name));
 
 	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
@@ -452,7 +452,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 			if (icon_file)
 				icon = gdk_pixbuf_new_from_file (icon_file, NULL);
 			gtk_list_store_append (model, &iter);
-			gtk_list_store_set (model, &iter, 
+			gtk_list_store_set (model, &iter,
 					    COLUMN_ACTIVE, FALSE,
 					    COLUMN_ICON,   icon,
 					    COLUMN_CATEGORY,  cat_list->data,
@@ -502,7 +502,7 @@ e_categories_dialog_new (const char *initial_category_list)
 	if (initial_category_list)
 		e_categories_dialog_set_categories (dialog, initial_category_list);
 
-	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed", 
+	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed",
 			  G_CALLBACK (entry_changed_cb), dialog);
 
 	return GTK_WIDGET (dialog);

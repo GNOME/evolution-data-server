@@ -946,7 +946,7 @@ e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_mod
  * @child_iter: a #GtkTreeIter to set
  * @permutation_n: a permutation index to set
  * @generator_iter: a #GtkTreeIter indicating the row to convert
- * 
+ *
  * Converts a @tree_model_generator row into a child row and permutation index.
  * The permutation index is the index of the generated row based on this
  * child row, with the first generated row based on this child row being 0.
