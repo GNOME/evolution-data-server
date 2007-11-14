@@ -1,3 +1,49 @@
+2007-11-13  Suman Manjunath  <msuman@novell.com>
+
+	* Makefile.am:
+	* e-cal-backend-mapi-factory.c:
+	(e_cal_backend_mapi_factory_instance_init), (_get_protocol),
+	(_todos_new_backend), (_todos_get_kind),
+	(todos_backend_factory_class_init),
+	(todos_backend_factory_get_type), (_events_new_backend),
+	(_events_get_kind), (events_backend_factory_class_init),
+	(events_backend_factory_get_type), (_journal_new_backend),
+	(_journal_get_kind), (journal_backend_factory_class_init),
+	(journal_backend_factory_get_type), (eds_module_initialize),
+	(eds_module_shutdown), (eds_module_list_types):
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_dispose),
+	(e_cal_backend_mapi_finalize), (e_cal_backend_mapi_is_read_only),
+	(e_cal_backend_mapi_get_cal_address),
+	(e_cal_backend_mapi_get_alarm_email_address),
+	(e_cal_backend_mapi_get_ldap_attribute),
+	(e_cal_backend_mapi_get_static_capabilities),
+	(e_cal_backend_mapi_remove), (ecbmapi_item_to_cal_component_cb),
+	(get_deltas), (get_deltas_timeout), (ecbmapi_cache_create_cb),
+	(e_cal_backend_mapi_get_default_object),
+	(e_cal_backend_mapi_get_object),
+	(e_cal_backend_mapi_get_object_list),
+	(e_cal_backend_mapi_get_attachment_list), (populate_cache),
+	(cache_init), (e_cal_backend_mapi_connect),
+	(e_cal_backend_mapi_open), (e_cal_backend_mapi_create_object),
+	(e_cal_backend_mapi_modify_object),
+	(e_cal_backend_mapi_remove_object),
+	(e_cal_backend_mapi_discard_alarm),
+	(e_cal_backend_mapi_receive_objects),
+	(e_cal_backend_mapi_send_objects),
+	(e_cal_backend_mapi_get_timezone),
+	(e_cal_backend_mapi_add_timezone),
+	(e_cal_backend_mapi_set_default_zone),
+	(e_cal_backend_mapi_get_free_busy),
+	(e_cal_backend_mapi_get_changes), (e_cal_backend_mapi_is_loaded),
+	(e_cal_backend_mapi_start_query), (e_cal_backend_mapi_get_mode),
+	(e_cal_backend_mapi_set_mode),
+	(e_cal_backend_mapi_internal_get_default_timezone),
+	(e_cal_backend_mapi_internal_get_timezone),
+	(e_cal_backend_mapi_class_init), (e_cal_backend_mapi_init),
+	(e_cal_backend_mapi_get_type):
+	* e-cal-backend-mapi.h: 
+	The basic functionality for MAPI-Exchange based calendar.
+
 2007-10-22  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi.c: Fixed a build break.
