@@ -1684,7 +1684,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 			if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
 				if (attach->size > MAX_ATTACHMENT_SIZE) {
-					int len_iter = 0, t_len , offset = 0, t_offset = 0;
+					int t_len , offset = 0, t_offset = 0;
 					char *t_attach = NULL;
 					GString *gstr = g_string_new (NULL);
 
@@ -1694,6 +1694,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
+							gsize len_iter = 0;
 							char *temp = NULL;
 
 							temp = g_base64_decode(t_attach, &len_iter);
@@ -1831,7 +1832,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
-							int len_iter = 0;
+							gsize len_iter = 0;
 							char *temp = NULL;
 
 							temp = g_base64_decode(t_attach, &len_iter);

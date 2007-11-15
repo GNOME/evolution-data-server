@@ -214,7 +214,7 @@ ep_password_decode (const gchar *encoded_password)
 	 * to the decoded data to make it a nul-terminated string. */
 
 	gchar *password;
-	gsize length;
+	gsize length = 0;
 
 	password = (gchar *) g_base64_decode (encoded_password, &length);
 	password = g_realloc (password, length + 1);

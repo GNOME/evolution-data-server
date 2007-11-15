@@ -1,3 +1,10 @@
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* camel-groupwise-folder.c (groupwise_folder_item_to_msg):
+	Always initialize 'len_iter' before calling g_base64_decode().
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Merge a bunch of compiler warning fixes and cosmetic

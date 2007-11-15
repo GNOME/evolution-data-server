@@ -1,3 +1,11 @@
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* camel-mime-utils.c (camel_base64_decode_simple):
+	* camel-sasl.c (camel_sasl_challenge_base64):
+	Initialize 'length' before calling g_base64_decode().
+
 2007-11-15  Milan Crha  <mcrha@redhat.com>
 
 	** Typo fix in previous commit causing crash.

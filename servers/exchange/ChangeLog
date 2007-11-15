@@ -1,3 +1,9 @@
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-autoconfig.c (get_ctx_auth_handler):
+	* lib/e2k-result.c (prop_get_binary_array), (prop_get_binary):
+	Initialize 'length' before calling g_base64_decode().
+
 2007-10-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-user-dialog.c:

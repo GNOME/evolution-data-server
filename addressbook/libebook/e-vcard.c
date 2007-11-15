@@ -1780,7 +1780,7 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 		case EVC_ENCODING_BASE64:
 			for (l = attr->values; l; l = l->next) {
 				guchar *decoded;
-				gsize len;
+				gsize len = 0;
 
 				decoded = g_base64_decode (l->data, &len);
 				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new_len (decoded, len));

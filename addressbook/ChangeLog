@@ -1,3 +1,11 @@
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* tests/ebook/test-photo.c (main):
+	* libebook/e-vcard.c (e_vcard_attribute_get_values_decoded):
+	Initialize 'length' before calling g_base64_decode().
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libebook/e-contact.c: Fix a syntax error.

@@ -134,9 +134,9 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
 
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
-	if (token) {
+	if (token && *token) {
 		guchar *data;
-		gsize length;
+		gsize length = 0;
 
 		data = g_base64_decode (token, &length);
 		token_binary = g_byte_array_new ();

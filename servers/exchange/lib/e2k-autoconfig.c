@@ -306,8 +306,6 @@ get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 	E2kAutoconfig *ac = user_data;
 	const GSList *headers;
 	const char *challenge_hdr;
-	guchar *challenge;
-	gsize length;
 
 	ac->saw_ntlm = ac->saw_basic = FALSE;
 	headers = soup_message_get_header_list (msg->response_headers,
@@ -322,6 +320,9 @@ get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 
 		if (!strncmp (challenge_hdr, "NTLM ", 5) &&
 		    (!ac->w2k_domain || !ac->nt_domain)) {
+			guchar *challenge;
+			gsize length = 0;
+
 			challenge = g_base64_decode (challenge_hdr + 5, &length);
 			if (!ac->nt_domain)
 				ac->nt_domain_defaulted = TRUE;

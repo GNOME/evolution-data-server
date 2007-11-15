@@ -45,7 +45,7 @@ prop_get_binary_array (E2kResult *result, const char *propname, xmlNode *node)
 		byte_array = g_byte_array_new ();
 		if (node->xmlChildrenNode && node->xmlChildrenNode->content) {
 			guchar *data;
-			gsize length;
+			gsize length = 0;
 
 			data = g_base64_decode (
 				node->xmlChildrenNode->content, &length);
@@ -84,7 +84,7 @@ prop_get_binary (E2kResult *result, const char *propname, xmlNode *node)
 	byte_array = g_byte_array_new ();
 	if (node->xmlChildrenNode && node->xmlChildrenNode->content) {
 		guchar *data;
-		gsize length;
+		gsize length = 0;
 
 		data = g_base64_decode (
 			node->xmlChildrenNode->content, &length);

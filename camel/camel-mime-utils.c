@@ -192,7 +192,7 @@ size_t
 camel_base64_decode_simple (char *data, size_t len)
 {
 	guchar *out_data;
-	gsize out_len;
+	gsize out_len = 0;
 
 	g_return_val_if_fail (data != NULL, 0);
 	g_return_val_if_fail (strlen (data) > 1, 0);
