@@ -1,3 +1,7 @@
+2007-11-15  Milan Crha  <mcrha@redhat.com>
+
+	** Typo fix in previous commit causing crash.
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Merge a bunch of compiler warning fixes and cosmetic

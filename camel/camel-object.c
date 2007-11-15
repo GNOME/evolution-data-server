@@ -751,7 +751,7 @@ co_type_register(CamelType parent, const char * name,
 		return NULL;
 	}
 
-	klass = g_slice_alloc (klass_size);
+	klass = g_slice_alloc0 (klass_size);
 	klass->klass_size = klass_size;
 	klass->object_size = object_size;
 	klass->lock = g_mutex_new();
