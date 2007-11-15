@@ -1,3 +1,7 @@
+2007-11-15  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c: (exchange_mapi_connection_fetch_items_list) : Removed. 
+
 2007-11-15  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-folder.c: (container_class_to_type):
