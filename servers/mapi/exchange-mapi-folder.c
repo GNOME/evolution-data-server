@@ -42,8 +42,8 @@ container_class_to_type (const char *type)
 		folder_type = MAPI_FOLDER_TYPE_APPOINTMENT;
 	else if (!strcmp (type, IPF_CONTACT))
 		folder_type = MAPI_FOLDER_TYPE_CONTACT;
-	else if (!strcmp (type, IPF_JOURNAL))
-		folder_type = MAPI_FOLDER_TYPE_JOURNAL;
+	else if (!strcmp (type, IPF_STICKYNOTE))
+		folder_type = MAPI_FOLDER_TYPE_MEMO;
 	else if (!strcmp (type, IPF_TASK))
 		folder_type = MAPI_FOLDER_TYPE_TASK;
 

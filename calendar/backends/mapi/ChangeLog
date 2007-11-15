@@ -1,3 +1,14 @@
+2007-11-15  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-factory.c: (eds_module_initialize),
+	(eds_module_list_types): Add memos factory.
+	* e-cal-backend-mapi-factory.h:
+	* e-cal-backend-mapi-utils.c: Cleans up the mess from previous commits.
+	* e-cal-backend-mapi.c: (get_changes_cb), (cache_create_cb),
+	(e_cal_backend_mapi_get_default_object),
+	(e_cal_backend_mapi_connect), (e_cal_backend_mapi_open):
+	Support for memos.
+
 2007-11-13  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am:

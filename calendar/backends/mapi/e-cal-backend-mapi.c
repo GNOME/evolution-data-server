@@ -276,8 +276,12 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 			case ICAL_VTODO_COMPONENT:
 				type = E_CAL_COMPONENT_TODO;
 				break;
+			case ICAL_VJOURNAL_COMPONENT:
+				type = E_CAL_COMPONENT_JOURNAL;
+				break;
 			default:
 				type = E_CAL_COMPONENT_EVENT;
+				break;
 		}
 
 		comp = e_cal_component_new ();
@@ -528,8 +532,12 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 		case ICAL_VTODO_COMPONENT:
 			type = E_CAL_COMPONENT_TODO;
 			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			type = E_CAL_COMPONENT_JOURNAL;
+			break;
 		default:
 			type = E_CAL_COMPONENT_EVENT;
+			break;
 	}
 	
 	comp = e_cal_component_new ();
@@ -619,6 +627,9 @@ e_cal_backend_mapi_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 		break;
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
 		break;
 	default:
 		g_object_unref (comp);
@@ -996,8 +1007,12 @@ e_cal_backend_mapi_connect (ECalBackendMAPI *cbmapi)
 	case ICAL_VTODO_COMPONENT:
 		source_type = E_CAL_SOURCE_TYPE_TODO;
 		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+		break;
 	default:
 		source_type = E_CAL_SOURCE_TYPE_EVENT;
+		break;
 	}
 
 	priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbmapi)), source_type);
@@ -1055,8 +1070,14 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		source = "tasks";
 		olFolder = olFolderTasks;
 		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+		source = "memos";
+		olFolder = olFolderNotes;
+		break;
 	default:
 		source_type = E_CAL_SOURCE_TYPE_EVENT;
+		break;
 	}
 
 	esource = e_cal_backend_get_source (E_CAL_BACKEND (cbmapi));

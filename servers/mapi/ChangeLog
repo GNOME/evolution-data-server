@@ -1,3 +1,9 @@
+2007-11-15  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-folder.c: (container_class_to_type):
+	* exchange-mapi-folder.h:
+	Changed _JOURNAL to _MEMO.
+
 2007-11-13  Suman Manjunath  <msuman@novell.com>
  
  	* exchange-mapi-connection.c:

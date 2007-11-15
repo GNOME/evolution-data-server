@@ -141,8 +141,8 @@ events_backend_factory_get_type (GTypeModule *module)
 
 	return type;
 }
-#if 0
-/* Exchange server does not support memos [VJOURNAL components] */
+
+/* NOTE: Outlook "Notes" = Evolution "Memos" */
 static ECalBackend*
 _journal_new_backend (ECalBackendFactory *factory, ESource *source)
 {
@@ -190,14 +190,15 @@ journal_backend_factory_get_type (GTypeModule *module)
 
 	return type;
 }
-#endif
-static GType mapi_types[2];
+
+static GType mapi_types[3];
 
 void
 eds_module_initialize (GTypeModule *module)
 {
 	mapi_types[0] = todos_backend_factory_get_type (module);
 	mapi_types[1] = events_backend_factory_get_type (module);
+	mapi_types[2] = journal_backend_factory_get_type (module);
 }
 
 void
@@ -209,6 +210,6 @@ void
 eds_module_list_types (const GType **types, int *num_types)
 {
 	*types = mapi_types;
-	*num_types = 2;
+	*num_types = 3;
 }
 

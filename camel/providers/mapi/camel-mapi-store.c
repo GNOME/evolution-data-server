@@ -663,7 +663,7 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 /* 		if (e_gw_container_is_root(container)) */
 /* 			continue; */
 /* 		if ( (folder->container_class == MAPI_FOLDER_TYPE_CONTACT) || (folder->container_class == MAPI_FOLDER_TYPE_APPOINTMENT)  */
-/* 		     (folder->container_class == MAPI_FOLDER_TYPE_JOURNAL) || (folder->container_class == MAPI_FOLDER_TYPE_TASK)) */
+/* 		     (folder->container_class == MAPI_FOLDER_TYPE_MEMO) || (folder->container_class == MAPI_FOLDER_TYPE_TASK)) */
 /* 			continue; */
 		if ( folder->container_class != MAPI_FOLDER_TYPE_MAIL)
 			continue;

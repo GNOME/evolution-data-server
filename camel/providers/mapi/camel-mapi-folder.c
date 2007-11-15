@@ -59,7 +59,7 @@ typedef enum  {
 	MAPI_ITEM_TYPE_MAIL=1,
 	MAPI_ITEM_TYPE_APPOINTMENT,
 	MAPI_ITEM_TYPE_CONTACT,
-	MAPI_ITEM_TYPE_JOURNAL,
+	MAPI_ITEM_TYPE_MEMO,
 	MAPI_ITEM_TYPE_TASK
 } MapiItemType;
 
@@ -371,8 +371,8 @@ mapi_item_class_to_type (const char *type)
 		item_type = MAPI_FOLDER_TYPE_APPOINTMENT;
 	else if (!strcmp (type, IPF_CONTACT))
 		item_type = MAPI_FOLDER_TYPE_CONTACT;
-	else if (!strcmp (type, IPF_JOURNAL))
-		item_type = MAPI_FOLDER_TYPE_JOURNAL;
+	else if (!strcmp (type, IPF_STICKYNOTE))
+		item_type = MAPI_FOLDER_TYPE_MEMO;
 	else if (!strcmp (type, IPF_TASK))
 		item_type = MAPI_FOLDER_TYPE_TASK;
 
