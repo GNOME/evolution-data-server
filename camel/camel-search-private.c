@@ -383,7 +383,7 @@ header_match(const char *value, const char *match, camel_search_match_t how)
 	/* from dan the man, if we have mixed case, perform a case-sensitive match,
 	   otherwise not */
 	p = (const unsigned char *)match;
-	while ((c = camel_utf8_getc(&p))) {
+	while ((c = camel_utf8_getc (&p))) {
 		if (g_unichar_isupper(c)) {
 			switch (how) {
 			case CAMEL_SEARCH_MATCH_EXACT:

@@ -438,6 +438,7 @@ camel_store_summary_save(CamelStoreSummary *s)
 		io(printf("**  open error: %s\n", strerror (errno)));
 		return -1;
 	}
+
 	out = fdopen(fd, "wb");
 	if ( out == NULL ) {
 		i = errno;
@@ -831,11 +832,7 @@ camel_store_summary_info_new(CamelStoreSummary *s)
 {
 	CamelStoreInfo *info;
 
-	CAMEL_STORE_SUMMARY_LOCK(s, alloc_lock);
-	if (s->store_info_chunks == NULL)
-		s->store_info_chunks = e_memchunk_new(32, s->store_info_size);
-	info = e_memchunk_alloc0(s->store_info_chunks);
-	CAMEL_STORE_SUMMARY_UNLOCK(s, alloc_lock);
+	info = g_slice_alloc0(s->store_info_size);
 	info->refcount = 1;
 	return info;
 }
@@ -944,7 +941,7 @@ store_info_free(CamelStoreSummary *s, CamelStoreInfo *info)
 {
 	g_free(info->path);
 	g_free(info->uri);
-	e_memchunk_free(s->store_info_chunks, info);
+	g_slice_free1(s->store_info_size, info);
 }
 
 static const char *

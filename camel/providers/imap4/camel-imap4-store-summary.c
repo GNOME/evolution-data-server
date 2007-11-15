@@ -354,7 +354,7 @@ store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 	CamelFolderInfo *fi;
 	const char *name;
 
-	fi = g_malloc0 (sizeof (CamelFolderInfo));
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (camel_store_info_path (s, si));
 	fi->uri = g_strdup (camel_store_info_uri (s, si));
 	fi->flags = si->flags;

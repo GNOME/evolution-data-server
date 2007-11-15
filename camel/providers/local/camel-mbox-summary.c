@@ -406,7 +406,7 @@ message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *mi)
 	io(printf("saving mbox message info\n"));
 
 	if (((CamelFolderSummaryClass *)camel_mbox_summary_parent)->message_info_save(s, out, mi) == -1
-	    || camel_file_util_encode_off_t(out, mbi->frompos) == -1)
+	    || camel_file_util_encode_off_t (out, mbi->frompos) == -1)
 		return -1;
 
 	return 0;
@@ -1012,7 +1012,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			}
 #endif
 			if (len == -1) {
-				d(printf("Writing to temporary mailbox failed\n"));
+				d(printf("Error writing to temporary mailbox\n"));
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 						      _("Writing to temporary mailbox failed: %s"),
 						      g_strerror (errno));

@@ -122,7 +122,7 @@ datetok (const char *date)
 	const unsigned char *start, *end;
 	unsigned int mask;
 
-	start = date;
+	start = (const unsigned char *)date;
 	while (*start) {
 		/* kill leading whitespace */
 		while (*start && isspace ((int) *start))
@@ -195,7 +195,7 @@ get_wday (const unsigned char *in, unsigned int inlen)
 		return -1;
 
 	for (wday = 0; wday < 7; wday++)
-		if (!g_ascii_strncasecmp (in, tm_days[wday], 3))
+		if (!g_ascii_strncasecmp ((const char *)in, tm_days[wday], 3))
 			return wday;
 
 	return -1;  /* unknown week day */
@@ -223,7 +223,7 @@ get_month (const unsigned char *in, unsigned int inlen)
 		return -1;
 
 	for (i = 0; i < 12; i++)
-		if (!g_ascii_strncasecmp (in, tm_months[i], 3))
+		if (!g_ascii_strncasecmp ((const char*)in, tm_months[i], 3))
 			return i;
 
 	return -1;  /* unknown month */
@@ -313,7 +313,7 @@ get_tzone (struct _date_token **token)
 				if (len != inlen)
 					continue;
 
-				if (!strncmp (inptr, tz_offsets[t].name, len))
+				if (!strncmp ((const char*)inptr, tz_offsets[t].name, len))
 					return tz_offsets[t].offset;
 			}
 		}

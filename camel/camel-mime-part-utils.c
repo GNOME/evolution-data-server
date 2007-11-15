@@ -68,7 +68,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	buffer = g_byte_array_new ();
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END) {
 		d(printf("appending o/p data: %d: %.*s\n", len, len, buf));
-		g_byte_array_append (buffer, buf, len);
+		g_byte_array_append (buffer, (guint8 *) buf, len);
 	}
 
 	d(printf("message part kept in memory!\n"));

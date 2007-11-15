@@ -1,3 +1,8 @@
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-06-04  Jeffrey Stedfast  <fejj@gnome.org>
 
 	* camel-imap4-summary.c (imap4_fetch_all_update): Don't iterate

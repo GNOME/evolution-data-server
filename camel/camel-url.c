@@ -338,7 +338,7 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 #ifdef G_OS_WIN32
 	if (url->protocol && !strcmp(url->protocol, "file"))
 		return g_filename_to_uri(url->path, url->host, NULL);
-#endif
+#endif /* G_OS_WIN32 */
 
 	str = g_string_sized_new (20);
 
@@ -727,7 +727,7 @@ camel_url_copy(const CamelURL *in)
 
 	g_return_val_if_fail (in != NULL, NULL);
 
-	out = g_malloc(sizeof(*out));
+	out = g_malloc0(sizeof(*out));
 	out->protocol = g_strdup(in->protocol);
 	out->user = g_strdup(in->user);
 	out->authmech = g_strdup(in->authmech);

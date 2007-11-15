@@ -638,6 +638,8 @@ camel_service_query_auth_types (CamelService *service, CamelException *ex)
 {
 	GList *ret;
 
+	g_return_val_if_fail (service != NULL, NULL);
+
 	/* note that we get the connect lock here, which means the callee
 	   must not call the connect functions itself */
 	CAMEL_SERVICE_REC_LOCK (service, connect_lock);

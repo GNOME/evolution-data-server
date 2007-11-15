@@ -41,7 +41,7 @@ G_BEGIN_DECLS
 struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
 
-        struct _CamelImapFolderPrivate *priv;
+	struct _CamelImapFolderPrivate *priv;
 
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;

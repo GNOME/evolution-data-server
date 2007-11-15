@@ -279,7 +279,7 @@ spool_new_fi(CamelStore *store, CamelFolderInfo *parent, CamelFolderInfo **fip, 
 	else
 		name = full;
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 	url = camel_url_copy(((CamelService *)store)->url);
 	camel_url_set_fragment(url, full);
 	fi->uri = camel_url_to_string(url, 0);

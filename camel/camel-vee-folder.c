@@ -379,16 +379,17 @@ camel_vee_folder_hash_folder(CamelFolder *folder, char buffer[8])
 {
 	MD5Context ctx;
 	unsigned char digest[16];
-	unsigned int state = 0, save = 0;
+	int state = 0, save = 0;
 	char *tmp;
 	int i;
 
 	md5_init(&ctx);
 	tmp = camel_service_get_url((CamelService *)folder->parent_store);
-	md5_update(&ctx, tmp, strlen(tmp));
+	md5_update(&ctx, (unsigned char*) tmp, strlen(tmp));
 	g_free(tmp);
-	md5_update(&ctx, folder->full_name, strlen(folder->full_name));
+	md5_update(&ctx, (unsigned char*)folder->full_name, strlen(folder->full_name));
 	md5_final(&ctx, digest);
+
 	g_base64_encode_step(digest, 6, FALSE, buffer, &state, &save);
 	g_base64_encode_close(FALSE, buffer, &state, &save);
 
@@ -1337,6 +1338,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 			g_hash_table_insert(matches_hash, matches_changed->pdata[i], matches_changed->pdata[i]);
 		}
 		dd(printf("\n"));
+
 		for (i=0;i<changed->len;i++) {
 			uid = changed->pdata[i];
 			if (strlen(uid)+9 > vuidlen) {

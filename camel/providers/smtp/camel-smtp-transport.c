@@ -223,7 +223,7 @@ smtp_error_string (int error)
 enum {
 	MODE_CLEAR,
 	MODE_SSL,
-	MODE_TLS,
+	MODE_TLS
 };
 
 #ifdef HAVE_SSL
@@ -527,7 +527,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 							  service->url->host);
 
 				service->url->passwd = camel_session_get_password (session, service, NULL,
-										   prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+						prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
 
 				g_free (prompt);
 				g_free (errbuf);
@@ -623,7 +623,7 @@ esmtp_get_authtypes (const unsigned char *buffer)
 		while (*end && !isspace ((int) *end))
 			end++;
 
-		type = g_strndup (start, end - start);
+		type = g_strndup ((gchar*) start, end - start);
 		g_hash_table_insert (table, type, type);
 
 		/* advance to the next token */
@@ -795,7 +795,8 @@ smtp_decode_status_code (const char *in, size_t len)
 	const unsigned char *inend;
 	char *outbuf;
 
-	outptr = outbuf = g_malloc (len + 1);
+	outbuf = (char *) g_malloc (len + 1);
+	outptr = (unsigned char *) outbuf;
 
 	inptr = (unsigned char *) in;
 	inend = inptr + len;
@@ -980,7 +981,7 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 						g_hash_table_destroy (transport->authtypes);
 					}
 
-					transport->authtypes = esmtp_get_authtypes (token);
+					transport->authtypes = esmtp_get_authtypes ((const unsigned char *) token);
 				}
 			}
 		}
@@ -1401,6 +1402,7 @@ smtp_quit (CamelSmtpTransport *transport, CamelException *ex)
 			return FALSE;
 		}
 	} while (*(respbuf+3) == '-'); /* if we got "221-" then loop again */
+
 	g_free (respbuf);
 
 	return TRUE;

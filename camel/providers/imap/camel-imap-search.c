@@ -180,13 +180,13 @@ hash_match(char hash[17], int argc, struct _ESExpResult **argv)
 {
 	MD5Context ctx;
 	unsigned char digest[16];
-	unsigned int state = 0, save = 0;
+	int state = 0, save = 0;
 	int i;
 
 	md5_init(&ctx);
 	for (i=0;i<argc;i++) {
 		if (argv[i]->type == ESEXP_RES_STRING)
-			md5_update(&ctx, argv[i]->value.string, strlen(argv[i]->value.string));
+			md5_update(&ctx, (const guchar *) argv[i]->value.string, strlen(argv[i]->value.string));
 	}
 	md5_final(&ctx, digest);
 
@@ -330,7 +330,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	/* TODO: Handle multiple search terms */
 
 	/* This handles multiple search words within a single term */
-	words = camel_search_words_split (mr->terms[0]);
+	words = camel_search_words_split ((const unsigned char *) mr->terms[0]);
 	search = g_string_new ("");
 	g_string_append_printf (search, "UID %d:%d", mr->lastuid + 1, is->lastuid);
 	for (i = 0; i < words->len; i++) {

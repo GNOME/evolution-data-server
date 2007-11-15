@@ -95,7 +95,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
 		camel_mime_filter_set_size (filter, (len + 2) * 2 + 62, FALSE);
-		newlen = camel_yencode_step (in, len, filter->outbuf, &yenc->state,
+		newlen = camel_yencode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
 					     &yenc->pcrc, &yenc->crc);
 		g_assert (newlen <= (len + 2) * 2 + 62);
 		break;
@@ -166,7 +166,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		if ((yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE) && !(yenc->state & CAMEL_MIME_YDECODE_STATE_END)) {
 			/* all yEnc headers have been found so we can now start decoding */
 			camel_mime_filter_set_size (filter, len + 3, FALSE);
-			newlen = camel_ydecode_step (in, len, filter->outbuf, &yenc->state, &yenc->pcrc, &yenc->crc);
+			newlen = camel_ydecode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state, &yenc->pcrc, &yenc->crc);
 			g_assert (newlen <= len + 3);
 		} else {
 			newlen = 0;
@@ -190,7 +190,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
 		camel_mime_filter_set_size (filter, (len + 2) * 2 + 62, FALSE);
-		newlen = camel_yencode_close (in, len, filter->outbuf, &yenc->state,
+		newlen = camel_yencode_close ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
 					       &yenc->pcrc, &yenc->crc);
 		g_assert (newlen <= (len + 2) * 2 + 62);
 		break;
@@ -198,7 +198,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		if ((yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE) && !(yenc->state & CAMEL_MIME_YDECODE_STATE_END)) {
 			/* all yEnc headers have been found so we can now start decoding */
 			camel_mime_filter_set_size (filter, len + 3, FALSE);
-			newlen = camel_ydecode_step (in, len, filter->outbuf, &yenc->state,
+			newlen = camel_ydecode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
 						      &yenc->pcrc, &yenc->crc);
 			g_assert (newlen <= len + 3);
 		} else {

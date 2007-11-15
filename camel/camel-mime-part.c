@@ -341,7 +341,7 @@ free_headers (CamelMedium *medium, GArray *gheaders)
 void
 camel_mime_part_set_description (CamelMimePart *mime_part, const char *description)
 {
-	char *text = camel_header_encode_string (description);
+	char *text = camel_header_encode_string ((const unsigned char *) description);
 
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Description", text);

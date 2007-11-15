@@ -177,7 +177,7 @@ g_string_append_u(GString *out, guint32 c)
 
 	camel_utf8_putc(&p, c);
 	*p = 0;
-	g_string_append(out, (gchar *) buffer);
+	g_string_append(out, (const char *) buffer);
 }
 
 static const char utf7_alphabet[] =

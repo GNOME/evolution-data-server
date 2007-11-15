@@ -54,7 +54,7 @@ typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
 typedef enum _xover_t {
 	XOVER_STRING = 0,
 	XOVER_MSGID,
-	XOVER_SIZE,
+	XOVER_SIZE
 } xover_t;
 
 struct _xover_header {

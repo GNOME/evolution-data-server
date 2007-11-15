@@ -57,7 +57,7 @@ stream_fill(CamelPOP3Stream *is)
 		memcpy(is->buf, is->ptr, left);
 		is->end = is->buf + left;
 		is->ptr = is->buf;
-		left = camel_stream_read(is->source, is->end, CAMEL_POP3_STREAM_SIZE - (is->end - is->buf));
+		left = camel_stream_read(is->source, (char *) is->end, CAMEL_POP3_STREAM_SIZE - (is->end - is->buf));
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';

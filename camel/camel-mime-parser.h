@@ -59,7 +59,7 @@ typedef enum _camel_mime_parser_state_t {
 	CAMEL_MIME_PARSER_STATE_HEADER_END,     /* dummy value */
 	CAMEL_MIME_PARSER_STATE_BODY_END,       /* end of message */
 	CAMEL_MIME_PARSER_STATE_MULTIPART_END,  /* end of multipart  */
-	CAMEL_MIME_PARSER_STATE_MESSAGE_END,    /* end of message */
+	CAMEL_MIME_PARSER_STATE_MESSAGE_END     /* end of message */
 } camel_mime_parser_state_t;
 
 struct _CamelMimeParser {

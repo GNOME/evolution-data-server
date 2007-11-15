@@ -560,7 +560,7 @@ folders_build_info(CamelURL *base, struct _list_info *li)
 	sprintf(path, "/%s", full_name);
 	camel_url_set_path(base, path);
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 	fi->uri = camel_url_to_string(base, CAMEL_URL_HIDE_ALL);
 	fi->name = g_strdup(name);
 	fi->full_name = full_name;
@@ -721,7 +721,7 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		CamelURL *uri = camel_url_copy(((CamelService *)store)->url);
 
 		camel_url_set_path(uri, "/INBOX");
-		fi = g_malloc0(sizeof(*fi));
+		fi = camel_folder_info_new();
 		fi->url = camel_url_to_string(uri, CAMEL_URL_HIDE_ALL);
 		camel_url_free(uri);
 		fi->name = g_strdup("INBOX");

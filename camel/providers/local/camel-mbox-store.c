@@ -332,7 +332,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	g_free(path);
 	g_free(name);
 
-	fi = g_new0(CamelFolderInfo, 1);
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup(folder_name);
 	fi->name = g_path_get_basename(folder_name);
 	fi->uri = g_strdup_printf("mbox:%s#%s",((CamelService *) store)->url->path, folder_name);
@@ -713,7 +713,7 @@ scan_dir(CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo 
 				fi->flags &= ~CAMEL_FOLDER_NOSELECT;
 			}
 		} else {
-			fi = g_new0(CamelFolderInfo, 1);
+			fi = camel_folder_info_new ();
 			fi->parent = parent;
 
 			camel_url_set_fragment (url, full_name);
@@ -822,7 +822,7 @@ get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExceptio
 	url = camel_url_copy (((CamelService *) store)->url);
 	camel_url_set_fragment (url, top);
 
-	fi = g_new0(CamelFolderInfo, 1);
+	fi = camel_folder_info_new ();
 	fi->parent = NULL;
 	fi->uri = camel_url_to_string (url, 0);
 	fi->name = basename;

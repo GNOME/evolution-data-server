@@ -134,19 +134,12 @@ static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject 
 
 /* ********************************************************************** */
 
-static pthread_mutex_t chunks_lock = PTHREAD_MUTEX_INITIALIZER;
-
-static EMemChunk *pair_chunks;
-static EMemChunk *hook_chunks;
-static unsigned int pair_id = 1;
-
 /* type-lock must be recursive, for atomically creating classes */
 static GStaticRecMutex type_lock = G_STATIC_REC_MUTEX_INIT;
 /* ref-lock must be global :-(  for object bags to work */
 static GMutex *ref_lock;
 
 static GHashTable *type_table;
-static EMemChunk *type_chunks;
 
 /* fundamental types are accessed via global */
 CamelType camel_object_type;
@@ -164,14 +157,17 @@ CamelType camel_interface_type;
 static struct _CamelHookPair *
 pair_alloc(void)
 {
+	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+	static guint next_id = 1;
 	CamelHookPair *pair;
 
-	P_LOCK(chunks_lock);
-	pair = e_memchunk_alloc(pair_chunks);
-	pair->id = pair_id++;
-	if (pair_id == 0)
-		pair_id = 1;
-	P_UNLOCK(chunks_lock);
+	pair = g_slice_new (CamelHookPair);
+
+	g_static_mutex_lock (&mutex);
+	pair->id = next_id++;
+	if (next_id == 0)
+		next_id = 1;
+	g_static_mutex_unlock (&mutex);
 
 	return pair;
 }
@@ -179,33 +175,19 @@ pair_alloc(void)
 static void
 pair_free(CamelHookPair *pair)
 {
-	g_assert(pair_chunks != NULL);
-
-	P_LOCK(chunks_lock);
-	e_memchunk_free(pair_chunks, pair);
-	P_UNLOCK(chunks_lock);
+	g_slice_free (CamelHookPair, pair);
 }
 
 static struct _CamelHookList *
 hooks_alloc(void)
 {
-	CamelHookList *hooks;
-
-	P_LOCK(chunks_lock);
-	hooks = e_memchunk_alloc(hook_chunks);
-	P_UNLOCK(chunks_lock);
-
-	return hooks;
+	return g_slice_new0 (CamelHookList);
 }
 
 static void
 hooks_free(CamelHookList *hooks)
 {
-	g_assert(hook_chunks != NULL);
-
-	P_LOCK(chunks_lock);
-	e_memchunk_free(hook_chunks, hooks);
-	P_UNLOCK(chunks_lock);
+	g_slice_free (CamelHookList, hooks);
 }
 
 /* not checked locked, who cares, only required for people that want to redefine root objects */
@@ -218,9 +200,6 @@ camel_type_init(void)
 		return;
 
 	init = TRUE;
-	pair_chunks = e_memchunk_new(16, sizeof(CamelHookPair));
-	hook_chunks = e_memchunk_new(16, sizeof(CamelHookList));
-	type_chunks = e_memchunk_new(32, sizeof(CamelType));
 	type_table = g_hash_table_new(NULL, NULL);
 	ref_lock = g_mutex_new();
 }
@@ -478,7 +457,7 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 			switch(argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
 			case CAMEL_ARG_INT:
 			case CAMEL_ARG_BOO:
-				if (camel_file_util_decode_uint32(fp, &argv->argv[argv->argc].ca_int) == -1)
+				if (camel_file_util_decode_uint32(fp, (guint32 *) &argv->argv[argv->argc].ca_int) == -1)
 					goto cleanup;
 				break;
 			case CAMEL_ARG_STR:
@@ -754,7 +733,7 @@ co_type_register(CamelType parent, const char * name,
 
 	size = offset + klass_size;
 
-	klass = g_malloc0(size);
+	klass = g_slice_alloc0(size);
 
 	klass->klass_size = size;
 	klass->klass_data = offset;
@@ -772,11 +751,11 @@ co_type_register(CamelType parent, const char * name,
 		return NULL;
 	}
 
-	klass = g_malloc0(klass_size);
+	klass = g_slice_alloc (klass_size);
 	klass->klass_size = klass_size;
 	klass->object_size = object_size;
 	klass->lock = g_mutex_new();
-	klass->instance_chunks = e_memchunk_new(8, object_size);
+	klass->hooks = NULL;
 
 	klass->parent = parent;
 	if (parent) {
@@ -858,7 +837,7 @@ camel_object_new(CamelType type)
 
 	CLASS_LOCK(type);
 
-	o = e_memchunk_alloc0(type->instance_chunks);
+	o = g_slice_alloc0 (type->object_size);
 
 #ifdef CAMEL_OBJECT_TRACK_INSTANCES
 	if (type->instances)
@@ -950,7 +929,7 @@ camel_object_unref(void *vo)
 	if (o->next)
 		o->next->prev = o->prev;
 #endif
-	e_memchunk_free(klass->instance_chunks, o);
+	g_slice_free1 (klass->object_size, o);
 	CLASS_UNLOCK(klass);
 }
 
@@ -1097,7 +1076,7 @@ camel_object_cast(CamelObject *o, CamelType ctype)
 		k = k->parent;
 	}
 
-	g_warning("Object %p (class '%s') doesn't have '%s' in its hierarchy", o, o->klass->name, ctype->name);
+	g_warning("Object %p (class '%s') doesn't have '%s' in its hierarchy", (void *) o, o->klass->name, ctype->name);
 
 	return NULL;
 }
@@ -1442,7 +1421,7 @@ camel_object_unhook_event(void *vo, const char * name, CamelObjectEventHookFunc 
 	camel_object_unget_hooks(obj);
 
 	g_warning("camel_object_unhook_event: cannot find hook/data pair %p/%p in an instance of `%s' attached to `%s'",
-		  func, data, obj->klass->name, name);
+		  (void *) func, data, obj->klass->name, name);
 }
 
 void
@@ -1489,6 +1468,7 @@ trigger:
 	/* also, no hooks, dont bother going further */
 	if (obj->hooks == NULL)
 		return;
+
 trigger_interface:
 	/* lock the object for hook emission */
 	camel_object_ref(obj);
@@ -1922,10 +1902,11 @@ object_class_dump_tree_rec(CamelType root, int depth)
 			CamelHookPair *pair = root->hooks;
 
 			while (pair) {
-				printf("%s  event '%s' prep %p\n", p, pair->name, pair->func.prep);
+				printf("%s  event '%s' prep %p\n", p, pair->name, (void *) pair->func.prep);
 				pair = pair->next;
 			}
 		}
+
 #ifdef CAMEL_OBJECT_TRACK_INSTANCES
 		o = root->instances;
 		while (o) {

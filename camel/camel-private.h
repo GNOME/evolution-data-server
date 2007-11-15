@@ -44,13 +44,13 @@ struct _CamelFolderPrivate {
 };
 
 #define CAMEL_FOLDER_LOCK(f, l) \
-	(g_static_mutex_lock(&((CamelFolder *)f)->priv->l))
+	(g_static_mutex_lock(&((CamelFolder *) (f))->priv->l))
 #define CAMEL_FOLDER_UNLOCK(f, l) \
-	(g_static_mutex_unlock(&((CamelFolder *)f)->priv->l))
+	(g_static_mutex_unlock(&((CamelFolder *) (f))->priv->l))
 #define CAMEL_FOLDER_REC_LOCK(f, l) \
-	(g_static_rec_mutex_lock(&((CamelFolder *)f)->priv->l))
+	(g_static_rec_mutex_lock(&((CamelFolder *) (f))->priv->l))
 #define CAMEL_FOLDER_REC_UNLOCK(f, l) \
-	(g_static_rec_mutex_unlock(&((CamelFolder *)f)->priv->l))
+	(g_static_rec_mutex_unlock(&((CamelFolder *) (f))->priv->l))
 
 
 struct _CamelStorePrivate {
@@ -58,17 +58,19 @@ struct _CamelStorePrivate {
 };
 
 #define CAMEL_STORE_LOCK(f, l) \
-	(g_static_rec_mutex_lock(&((CamelStore *)f)->priv->l))
+	(g_static_rec_mutex_lock(&((CamelStore *) (f))->priv->l))
 #define CAMEL_STORE_UNLOCK(f, l) \
-	(g_static_rec_mutex_unlock(&((CamelStore *)f)->priv->l))
+	(g_static_rec_mutex_unlock(&((CamelStore *) (f))->priv->l))
 
 
 struct _CamelTransportPrivate {
 	GMutex *send_lock;   /* for locking send operations */
 };
 
-#define CAMEL_TRANSPORT_LOCK(f, l) (g_mutex_lock(((CamelTransport *)f)->priv->l))
-#define CAMEL_TRANSPORT_UNLOCK(f, l) (g_mutex_unlock(((CamelTransport *)f)->priv->l))
+#define CAMEL_TRANSPORT_LOCK(f, l) \
+	(g_mutex_lock(((CamelTransport *) (f))->priv->l))
+#define CAMEL_TRANSPORT_UNLOCK(f, l) \
+	(g_mutex_unlock(((CamelTransport *) (f))->priv->l))
 
 
 struct _CamelServicePrivate {
@@ -77,13 +79,15 @@ struct _CamelServicePrivate {
 };
 
 #define CAMEL_SERVICE_LOCK(f, l) \
-	(g_static_mutex_lock(&((CamelService *)f)->priv->l))
+	(g_static_mutex_lock(&((CamelService *) (f))->priv->l))
 #define CAMEL_SERVICE_UNLOCK(f, l) \
-	(g_static_mutex_unlock(&((CamelService *)f)->priv->l))
+	(g_static_mutex_unlock(&((CamelService *) (f))->priv->l))
 #define CAMEL_SERVICE_REC_LOCK(f, l) \
-	(g_static_rec_mutex_lock(&((CamelService *)f)->priv->l))
+	(g_static_rec_mutex_lock(&((CamelService *) (f))->priv->l))
 #define CAMEL_SERVICE_REC_UNLOCK(f, l) \
-	(g_static_rec_mutex_unlock(&((CamelService *)f)->priv->l))
+	(g_static_rec_mutex_unlock(&((CamelService *) (f))->priv->l))
+#define CAMEL_SERVICE_REC_TRYLOCK(f, l) \
+	(g_static_rec_mutex_trylock(&((CamelService *) (f))->priv->l))
 
 
 struct _CamelSessionPrivate {
@@ -97,8 +101,10 @@ struct _CamelSessionPrivate {
 	GHashTable *thread_msg_op;
 };
 
-#define CAMEL_SESSION_LOCK(f, l) (g_mutex_lock(((CamelSession *)f)->priv->l))
-#define CAMEL_SESSION_UNLOCK(f, l) (g_mutex_unlock(((CamelSession *)f)->priv->l))
+#define CAMEL_SESSION_LOCK(f, l) \
+	(g_mutex_lock(((CamelSession *) (f))->priv->l))
+#define CAMEL_SESSION_UNLOCK(f, l) \
+	(g_mutex_unlock(((CamelSession *) (f))->priv->l))
 
 
 /* most of this stuff really is private, but the lock can be used by subordinate classes */
@@ -123,8 +129,10 @@ struct _CamelFolderSummaryPrivate {
 	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 };
 
-#define CAMEL_SUMMARY_LOCK(f, l) (g_mutex_lock(((CamelFolderSummary *)f)->priv->l))
-#define CAMEL_SUMMARY_UNLOCK(f, l) (g_mutex_unlock(((CamelFolderSummary *)f)->priv->l))
+#define CAMEL_SUMMARY_LOCK(f, l) \
+	(g_mutex_lock(((CamelFolderSummary *) (f))->priv->l))
+#define CAMEL_SUMMARY_UNLOCK(f, l) \
+	(g_mutex_unlock(((CamelFolderSummary *) (f))->priv->l))
 
 
 struct _CamelStoreSummaryPrivate {
@@ -134,8 +142,10 @@ struct _CamelStoreSummaryPrivate {
 	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 };
 
-#define CAMEL_STORE_SUMMARY_LOCK(f, l) (g_mutex_lock(((CamelStoreSummary *)f)->priv->l))
-#define CAMEL_STORE_SUMMARY_UNLOCK(f, l) (g_mutex_unlock(((CamelStoreSummary *)f)->priv->l))
+#define CAMEL_STORE_SUMMARY_LOCK(f, l) \
+	(g_mutex_lock(((CamelStoreSummary *) (f))->priv->l))
+#define CAMEL_STORE_SUMMARY_UNLOCK(f, l) \
+	(g_mutex_unlock(((CamelStoreSummary *) (f))->priv->l))
 
 
 struct _CamelVeeFolderPrivate {
@@ -147,16 +157,20 @@ struct _CamelVeeFolderPrivate {
 	GMutex *changed_lock;		/* for locking the folders-changed list */
 };
 
-#define CAMEL_VEE_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelVeeFolder *)f)->priv->l))
-#define CAMEL_VEE_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelVeeFolder *)f)->priv->l))
+#define CAMEL_VEE_FOLDER_LOCK(f, l) \
+	(g_mutex_lock(((CamelVeeFolder *) (f))->priv->l))
+#define CAMEL_VEE_FOLDER_UNLOCK(f, l) \
+	(g_mutex_unlock(((CamelVeeFolder *) (f))->priv->l))
 
 
 struct _CamelDataWrapperPrivate {
 	pthread_mutex_t stream_lock;
 };
 
-#define CAMEL_DATA_WRAPPER_LOCK(dw, l)   (pthread_mutex_lock(&((CamelDataWrapper *)dw)->priv->l))
-#define CAMEL_DATA_WRAPPER_UNLOCK(dw, l) (pthread_mutex_unlock(&((CamelDataWrapper *)dw)->priv->l))
+#define CAMEL_DATA_WRAPPER_LOCK(dw, l) \
+	(pthread_mutex_lock(&((CamelDataWrapper *) (dw))->priv->l))
+#define CAMEL_DATA_WRAPPER_UNLOCK(dw, l) \
+	(pthread_mutex_unlock(&((CamelDataWrapper *) (dw))->priv->l))
 
 
 /* most of this stuff really is private, but the lock can be used by subordinate classes */
@@ -167,8 +181,10 @@ struct _CamelCertDBPrivate {
 	GMutex *ref_lock;	/* for reffing/unreffing certs */
 };
 
-#define CAMEL_CERTDB_LOCK(db, l) (g_mutex_lock (((CamelCertDB *) db)->priv->l))
-#define CAMEL_CERTDB_UNLOCK(db, l) (g_mutex_unlock (((CamelCertDB *) db)->priv->l))
+#define CAMEL_CERTDB_LOCK(db, l) \
+	(g_mutex_lock (((CamelCertDB *) (db))->priv->l))
+#define CAMEL_CERTDB_UNLOCK(db, l) \
+	(g_mutex_unlock (((CamelCertDB *) (db))->priv->l))
 
 #ifdef G_OS_WIN32
 int fsync (int fd);

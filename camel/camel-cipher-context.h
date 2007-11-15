@@ -57,19 +57,19 @@ typedef enum _camel_cipher_validity_sign_t {
 	CAMEL_CIPHER_VALIDITY_SIGN_GOOD,
 	CAMEL_CIPHER_VALIDITY_SIGN_BAD,
 	CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN,
-	CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY,
+	CAMEL_CIPHER_VALIDITY_SIGN_NEED_PUBLIC_KEY
 } camel_cipher_validity_sign_t;
 
 typedef enum _camel_cipher_validity_encrypt_t {
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_NONE,
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_WEAK,
 	CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED, /* encrypted, unknown strenght */
-	CAMEL_CIPHER_VALIDITY_ENCRYPT_STRONG,
+	CAMEL_CIPHER_VALIDITY_ENCRYPT_STRONG
 } camel_cipher_validity_encrypt_t;
 
 typedef enum _camel_cipher_validity_mode_t {
 	CAMEL_CIPHER_VALIDITY_SIGN,
-	CAMEL_CIPHER_VALIDITY_ENCRYPT,
+	CAMEL_CIPHER_VALIDITY_ENCRYPT
 } camel_cipher_validity_mode_t;
 
 struct _CamelCipherCertInfo {

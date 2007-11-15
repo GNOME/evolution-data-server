@@ -229,7 +229,8 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	g_free (dest);
 }
 
-static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
+static CamelMimeMessage *
+maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *message_stream = NULL;

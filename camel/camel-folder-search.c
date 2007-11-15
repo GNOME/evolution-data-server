@@ -136,7 +136,7 @@ free_mempool(void *key, void *value, void *data)
 	GPtrArray *uids = key;
 	EMemPool *pool = value;
 
-	g_warning("Search closed with outstanding result unfreed: %p", uids);
+	g_warning("Search closed with outstanding result unfreed: %p", (void *) uids);
 
 	g_ptr_array_free(uids, TRUE);
 	e_mempool_destroy(pool);
@@ -919,7 +919,7 @@ check_header(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolder
 					truth = TRUE;
 				} else if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
 					/* doesn't make sense to split words on anything but contains i.e. we can't have an ending match different words */
-					words = camel_search_words_split(argv[i]->value.string);
+					words = camel_search_words_split((const unsigned char *) argv[i]->value.string);
 					truth = TRUE;
 					for (j=0;j<words->len && truth;j++) {
 						truth = camel_search_header_match(header, words->words[j]->word, how, type, NULL);
@@ -1120,7 +1120,7 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		camel_stream_write (CAMEL_STREAM (mem), "", 1);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
-			if (camel_ustrstrcase(mem->buffer->data, words->words[i]->word) != NULL) {
+			if (camel_ustrstrcase((const char *) mem->buffer->data, words->words[i]->word) != NULL) {
 				*mask |= (1<<i);
 				/* shortcut a match */
 				if (*mask == (1<<(words->len))-1)
@@ -1209,7 +1209,7 @@ search_body_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 		} else {
 			for (i=0;i<argc && !truth;i++) {
 				if (argv[i]->type == ESEXP_RES_STRING) {
-					words = camel_search_words_split(argv[i]->value.string);
+					words = camel_search_words_split((const unsigned char *) argv[i]->value.string);
 					truth = TRUE;
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
 						for (j=0;j<words->len && truth;j++)
@@ -1242,7 +1242,7 @@ search_body_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 
 			for (i=0;i<argc;i++) {
 				if (argv[i]->type == ESEXP_RES_STRING) {
-					words = camel_search_words_split(argv[i]->value.string);
+					words = camel_search_words_split((const unsigned char *) argv[i]->value.string);
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
 						matches = match_words_index(search, words, ex);
 					} else {

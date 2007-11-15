@@ -43,7 +43,7 @@ enum {
 	PGP_PREFACE,
 	PGP_HEADER,
 	PGP_MESSAGE,
-	PGP_FOOTER,
+	PGP_FOOTER
 };
 
 static void

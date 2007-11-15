@@ -32,7 +32,7 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_MH_DOTFOLDERS = (1<<0), /* update/use .folders file */
+	CAMEL_MH_DOTFOLDERS = (1<<0) /* update/use .folders file */
 };
 
 typedef struct {

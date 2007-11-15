@@ -34,7 +34,7 @@ G_BEGIN_DECLS
 
 typedef enum _camel_spool_store_t {
 	CAMEL_SPOOL_STORE_MBOX,	/* a single mbox */
-	CAMEL_SPOOL_STORE_ELM,	/* elm/pine/etc tree of mbox files in folders */
+	CAMEL_SPOOL_STORE_ELM	/* elm/pine/etc tree of mbox files in folders */
 } camel_spool_store_t;
 
 typedef struct {

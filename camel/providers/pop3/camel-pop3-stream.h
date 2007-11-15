@@ -38,7 +38,7 @@ typedef struct _CamelPOP3Stream CamelPOP3Stream;
 typedef enum {
 	CAMEL_POP3_STREAM_LINE,
 	CAMEL_POP3_STREAM_DATA,
-	CAMEL_POP3_STREAM_EOD,	/* end of data, acts as if end of stream */
+	CAMEL_POP3_STREAM_EOD	/* end of data, acts as if end of stream */
 } camel_pop3_stream_mode_t;
 
 struct _CamelPOP3Stream {

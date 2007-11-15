@@ -192,7 +192,7 @@ struct _CamelChangeInfo {
 */
 
 typedef enum _CamelFolderSummaryFlags {
-	CAMEL_SUMMARY_DIRTY = 1<<0,
+	CAMEL_SUMMARY_DIRTY = 1<<0
 } CamelFolderSummaryFlags;
 
 struct _CamelFolderSummary {

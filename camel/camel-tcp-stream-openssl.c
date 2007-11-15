@@ -313,6 +313,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 
 			timeout.tv_sec = 0;
 			timeout.tv_usec = TIMEOUT_USEC;
+
 			select (fdmax, &rdset, 0, 0, &timeout);
 			if (FD_ISSET (cancel_fd, &rdset)) {
 				fcntl (openssl->priv->sockfd, F_SETFL, flags);
@@ -377,6 +378,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 		fcntl (openssl->priv->sockfd, F_SETFL, flags | O_NONBLOCK);
 
 		fdmax = MAX (openssl->priv->sockfd, cancel_fd) + 1;
+
 		do {
 			FD_ZERO (&rdset);
 			FD_ZERO (&wrset);
@@ -666,13 +668,13 @@ ssl_verify (int ok, X509_STORE_CTX *ctx)
 	md5len = sizeof (md5sum);
 	X509_digest (cert, EVP_md5 (), md5sum, &md5len);
 	for (i = 0, f = fingerprint; i < 16; i++, f += 3)
-		sprintf (f, "%.2x%c", md5sum[i], i != 15 ? ':' : '\0');
+		sprintf ((char *) f, "%.2x%c", md5sum[i], i != 15 ? ':' : '\0');
 
 #define GET_STRING(name) X509_NAME_oneline (name, buf, 256)
 
 	certdb = camel_certdb_get_default ();
 	if (certdb) {
-		ccert = camel_certdb_get_cert (certdb, fingerprint);
+		ccert = camel_certdb_get_cert (certdb, (const char *) fingerprint);
 		if (ccert) {
 			if (ccert->trust != CAMEL_CERT_TRUST_UNKNOWN) {
 				ok = ccert->trust != CAMEL_CERT_TRUST_NEVER;
@@ -686,8 +688,8 @@ ssl_verify (int ok, X509_STORE_CTX *ctx)
 			ccert = camel_certdb_cert_new (certdb);
 			camel_cert_set_issuer (certdb, ccert, GET_STRING (X509_get_issuer_name (cert)));
 			camel_cert_set_subject (certdb, ccert, GET_STRING (X509_get_subject_name (cert)));
-			camel_cert_set_hostname (certdb, ccert, stream->priv->expected_host);
-			camel_cert_set_fingerprint (certdb, ccert, fingerprint);
+			camel_cert_set_hostname (certdb, ccert, (const char *) stream->priv->expected_host);
+			camel_cert_set_fingerprint (certdb, ccert, (const char *) fingerprint);
 			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
 
 			/* Add the certificate to our db */
@@ -850,7 +852,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 			   get_sockopt_level (data),
 			   optname,
 			   (void *) &data->value,
-			   &optlen);
+			   (socklen_t *) &optlen);
 }
 
 static int

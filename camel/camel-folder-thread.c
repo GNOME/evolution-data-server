@@ -225,7 +225,7 @@ remove_node(CamelFolderThreadNode **list, CamelFolderThreadNode *node, CamelFold
 		c = c->next;
 	}
 
-	printf("ERROR: removing node %p failed\n", node);
+	printf("ERROR: removing node %p failed\n", (void *) node);
 }
 
 static void
@@ -330,16 +330,16 @@ dump_tree_rec(struct _tree_info *info, CamelFolderThreadNode *c, int depth)
 
 	while (c) {
 		if (g_hash_table_lookup(info->visited, c)) {
-			printf("WARNING: NODE REVISITED: %p\n", c);
+			printf("WARNING: NODE REVISITED: %p\n", (void *) c);
 		} else {
 			g_hash_table_insert(info->visited, c, c);
 		}
 		if (c->message) {
-			printf("%s %p Subject: %s <%08x%08x>\n", p, c, camel_message_info_subject(c->message),
+			printf("%s %p Subject: %s <%08x%08x>\n", p, (void *) c, camel_message_info_subject(c->message),
 			       camel_message_info_message_id(c->message)->id.part.hi, camel_message_info_message_id(c->message)->id.part.lo);
 			count += 1;
 		} else {
-			printf("%s %p <empty>\n", p, c);
+			printf("%s %p <empty>\n", p, (void *) c);
 		}
 		if (c->child)
 			count += dump_tree_rec(info, c->child, depth+1);

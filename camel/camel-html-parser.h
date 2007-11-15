@@ -54,7 +54,7 @@ typedef enum _camel_html_parser_t {
 	CAMEL_HTML_PARSER_VAL,			/* value */
 	CAMEL_HTML_PARSER_VAL_ENT,		/* entity in value */
 	CAMEL_HTML_PARSER_EOD,			/* end of current data */
-	CAMEL_HTML_PARSER_EOF,			/* end of file */
+	CAMEL_HTML_PARSER_EOF			/* end of file */
 } camel_html_parser_t;
 
 struct _CamelHTMLParser {

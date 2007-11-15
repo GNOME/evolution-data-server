@@ -529,7 +529,7 @@ perform_content_info_load(CamelFolderSummary *s, FILE *in)
 		return NULL;
 
 	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500) {
-		camel_folder_summary_content_info_free(s, ci);
+		camel_folder_summary_content_info_free (s, ci);
 		return NULL;
 	}
 
@@ -540,7 +540,7 @@ perform_content_info_load(CamelFolderSummary *s, FILE *in)
 			part->parent = ci;
 		} else {
 			d(fprintf (stderr, "Summary file format messed up?"));
-			camel_folder_summary_content_info_free(s, ci);
+			camel_folder_summary_content_info_free (s, ci);
 			return NULL;
 		}
 	}
@@ -714,6 +714,7 @@ camel_folder_summary_save(CamelFolderSummary *s)
 
 	/* now write out each message ... */
 	/* we check ferorr when done for i/o errors */
+
 	count = s->messages->len;
 	for (i = 0; i < count; i++) {
 		mi = s->messages->pdata[i];
@@ -744,6 +745,7 @@ camel_folder_summary_save(CamelFolderSummary *s)
 #ifdef G_OS_WIN32
 	g_unlink(s->summary_path);
 #endif
+
 	if (g_rename(path, s->summary_path) == -1) {
 		i = errno;
 		g_unlink(path);
@@ -761,10 +763,9 @@ camel_folder_summary_save(CamelFolderSummary *s)
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 	return 0;
 
- exception:
+exception:
 
 	i = errno;
-
 	fclose (out);
 	fclose (out_meta);
 
@@ -826,9 +827,10 @@ summary_assign_uid(CamelFolderSummary *s, CamelMessageInfo *info)
 	const char *uid;
 	CamelMessageInfo *mi;
 
-	uid = camel_message_info_uid(info);
+	uid = camel_message_info_uid (info);
+
 	if (uid == NULL || uid[0] == 0) {
-		g_free(info->uid);
+		g_free (info->uid);
 		uid = info->uid = camel_folder_summary_next_uid_string(s);
 	}
 
@@ -836,12 +838,17 @@ summary_assign_uid(CamelFolderSummary *s, CamelMessageInfo *info)
 
 	while ((mi = g_hash_table_lookup(s->messages_uid, uid))) {
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
 		if (mi == info)
 			return 0;
+
 		d(printf ("Trying to insert message with clashing uid (%s).  new uid re-assigned", camel_message_info_uid(info)));
+
 		g_free(info->uid);
 		uid = info->uid = camel_folder_summary_next_uid_string(s);
+
 		camel_message_info_set_flags(info, CAMEL_MESSAGE_FOLDER_FLAGGED, CAMEL_MESSAGE_FOLDER_FLAGGED);
+
 		CAMEL_SUMMARY_LOCK(s, summary_lock);
 	}
 
@@ -1216,7 +1223,7 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 		camel_folder_summary_remove(s, oldinfo);
 		camel_message_info_free(oldinfo);
-        } else {
+	} else {
 		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 	}
@@ -2017,7 +2024,7 @@ content_info_load(CamelFolderSummary *s, FILE *in)
 	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500)
 		goto error;
 
-	for (i=0;i<count;i++) {
+	for (i = 0; i < count; i++) {
 		char *name, *value;
 		camel_folder_summary_decode_token(in, &name);
 		camel_folder_summary_decode_token(in, &value);
@@ -2074,6 +2081,7 @@ content_info_save(CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *ci)
 	camel_folder_summary_encode_token(out, ci->id);
 	camel_folder_summary_encode_token(out, ci->description);
 	camel_folder_summary_encode_token(out, ci->encoding);
+
 	return camel_file_util_encode_uint32(out, ci->size);
 }
 
@@ -2295,6 +2303,7 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART(containee)) {
 		parts = camel_multipart_get_number(CAMEL_MULTIPART(containee));
+
 		for (i=0;i<parts;i++) {
 			CamelMimePart *part = camel_multipart_get_part(CAMEL_MULTIPART(containee), i);
 			g_assert(part);

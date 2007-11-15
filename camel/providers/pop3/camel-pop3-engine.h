@@ -40,7 +40,7 @@ typedef enum {
 	CAMEL_POP3_ENGINE_DISCONNECT = 0,
 	CAMEL_POP3_ENGINE_AUTH,
 	CAMEL_POP3_ENGINE_TRANSACTION,
-	CAMEL_POP3_ENGINE_UPDATE,
+	CAMEL_POP3_ENGINE_UPDATE
 } camel_pop3_engine_t;
 
 /* state of a command */
@@ -51,13 +51,13 @@ typedef enum {
 	/* completion codes */
 	CAMEL_POP3_COMMAND_OK,	/* plain ok response */
 	CAMEL_POP3_COMMAND_DATA, /* processing command response */
-	CAMEL_POP3_COMMAND_ERR,	/* error response */
+	CAMEL_POP3_COMMAND_ERR	/* error response */
 } camel_pop3_command_t;
 
 /* flags for command types */
 enum {
 	CAMEL_POP3_COMMAND_SIMPLE = 0, /* dont expect multiline response */
-	CAMEL_POP3_COMMAND_MULTI = 1, /* expect multiline response */
+	CAMEL_POP3_COMMAND_MULTI = 1 /* expect multiline response */
 };
 
 /* flags for server options */

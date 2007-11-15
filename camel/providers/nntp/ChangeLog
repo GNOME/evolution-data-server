@@ -1,3 +1,8 @@
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-05-14  Jules Colding  <colding@omesc.com>
 
 	* camel-nntp-newsrc.c (camel_nntp_newsrc_read_for_server): Fix file descriptor leak

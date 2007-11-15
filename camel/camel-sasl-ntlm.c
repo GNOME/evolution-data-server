@@ -105,15 +105,15 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	ret = g_byte_array_new ();
 
 	if (!token || !token->len) {
-		g_byte_array_append (ret, NTLM_REQUEST,
+		g_byte_array_append (ret, (guint8 *) NTLM_REQUEST,
 				     sizeof (NTLM_REQUEST) - 1);
 		return ret;
 	}
 
 	memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
-	ntlm_lanmanager_hash (sasl->service->url->passwd, hash);
+	ntlm_lanmanager_hash (sasl->service->url->passwd, (char *) hash);
 	ntlm_calc_response (hash, nonce, lm_resp);
-	ntlm_nt_hash (sasl->service->url->passwd, hash);
+	ntlm_nt_hash (sasl->service->url->passwd, (char *) hash);
 	ntlm_calc_response (hash, nonce, nt_resp);
 
 	ret = g_byte_array_new ();
@@ -125,17 +125,17 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		NTLM_RESPONSE_FLAGS, sizeof (NTLM_RESPONSE_FLAGS) - 1);
 
 	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
-			 token->data + NTLM_CHALLENGE_DOMAIN_OFFSET,
-			 atoi (token->data + NTLM_CHALLENGE_DOMAIN_LEN_OFFSET));
+			 (const char *) token->data + NTLM_CHALLENGE_DOMAIN_OFFSET,
+			 atoi ((char *) token->data + NTLM_CHALLENGE_DOMAIN_LEN_OFFSET));
 	ntlm_set_string (ret, NTLM_RESPONSE_USER_OFFSET,
 			 sasl->service->url->user,
 			 strlen (sasl->service->url->user));
 	ntlm_set_string (ret, NTLM_RESPONSE_HOST_OFFSET,
 			 "UNKNOWN", sizeof ("UNKNOWN") - 1);
 	ntlm_set_string (ret, NTLM_RESPONSE_LM_RESP_OFFSET,
-			 lm_resp, sizeof (lm_resp));
+			 (const char *) lm_resp, sizeof (lm_resp));
 	ntlm_set_string (ret, NTLM_RESPONSE_NT_RESP_OFFSET,
-			 nt_resp, sizeof (nt_resp));
+			 (const char *) nt_resp, sizeof (nt_resp));
 
 	sasl->authenticated = TRUE;
 	return ret;
@@ -177,10 +177,10 @@ ntlm_lanmanager_hash (const char *password, char hash[21])
 	memcpy (hash, LM_PASSWORD_MAGIC, 21);
 
 	setup_schedule (lm_password, ks);
-	des (ks, hash);
+	des (ks, (unsigned char *) hash);
 
 	setup_schedule (lm_password + 7, ks);
-	des (ks, hash + 8);
+	des (ks, (unsigned char *) hash + 8);
 }
 
 static void
@@ -195,7 +195,7 @@ ntlm_nt_hash (const char *password, char hash[21])
 		*p++ = '\0';
 	}
 
-	md4sum (buf, p - buf, hash);
+	md4sum (buf, p - buf, (unsigned char *) hash);
 	memset (hash + 16, 0, 5);
 
 	g_free (buf);
@@ -208,7 +208,7 @@ ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
 	ba->data[offset + 1] = ba->data[offset + 3] = (len >> 8) & 0xFF;
 	ba->data[offset + 4] =  ba->len       & 0xFF;
 	ba->data[offset + 5] = (ba->len >> 8) & 0xFF;
-	g_byte_array_append (ba, data, len);
+	g_byte_array_append (ba, (guint8 *) data, len);
 }
 
 

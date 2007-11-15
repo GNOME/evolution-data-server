@@ -108,7 +108,7 @@ enum {
 	UPDATE_NONE,
 	UPDATE_ADD,
 	UPDATE_REMOVE,
-	UPDATE_RENAME,
+	UPDATE_RENAME
 };
 
 /* update the .folders file if it exists, or create it if it doesn't */
@@ -358,7 +358,7 @@ folder_info_new (CamelStore *store, CamelURL *url, const char *root, const char 
 	camel_url_set_fragment (url, path);
 
 	/* Build the folder info structure. */
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 	fi->uri = camel_url_to_string (url, 0);
 	fi->full_name = g_strdup(path);
 	fi->name = g_strdup(base?base+1:path);

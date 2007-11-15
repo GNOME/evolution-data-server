@@ -164,11 +164,13 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 				}
 			}
 		} else {
-			CamelMimeMessage *message = camel_filter_search_get_message (fms, f);
+			CamelMimeMessage *message;
 			struct _camel_header_raw *header;
 			const char *charset = NULL;
 			camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
 			CamelContentType *ct;
+
+			message = camel_filter_search_get_message (fms, f);
 
 			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
 			if (g_ascii_strcasecmp("to", name) == 0 || g_ascii_strcasecmp("cc", name) == 0 || g_ascii_strcasecmp("from", name) == 0)

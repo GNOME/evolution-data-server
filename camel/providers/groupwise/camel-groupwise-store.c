@@ -435,7 +435,7 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const char *parent_na
 	CamelFolderInfo *fi;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 
 	fi->unread = -1;
 	fi->total = -1;
@@ -805,7 +805,7 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	id = e_gw_container_get_id (container);
 	type = e_gw_container_get_container_type (container);
 
-	fi = g_new0 (CamelFolderInfo, 1);
+	fi = camel_folder_info_new ();
 
 	if (type == E_GW_CONTAINER_TYPE_INBOX)
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;

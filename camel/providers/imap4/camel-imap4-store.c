@@ -873,7 +873,7 @@ imap4_folder_create (CamelStore *store, const char *folder_name, const char *sub
 
 		c = strrchr (folder_name, '/');
 
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (folder_name);
 		fi->name = g_strdup (c ? c + 1: folder_name);
 		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -1048,7 +1048,7 @@ imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException 
 
 		p = strrchr (folder_name, '/');
 
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (folder_name);
 		fi->name = g_strdup (p ? p + 1: folder_name);
 		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -1278,7 +1278,7 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 
 	for (i = 0; i < array->len; i++) {
 		list = array->pdata[i];
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi = camel_folder_info_new ();
 
 		p = name = camel_utf7_utf8 (list->name);
 		while (*p != '\0') {
@@ -1551,7 +1551,7 @@ imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelExcepti
 
 		p = strrchr (folder_name, '/');
 
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (folder_name);
 		fi->name = g_strdup (p ? p + 1: folder_name);
 		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -1623,7 +1623,7 @@ imap4_unsubscribe_folder (CamelStore *store, const char *folder_name, CamelExcep
 
 		p = strrchr (folder_name, '/');
 
-		fi = g_malloc0 (sizeof (CamelFolderInfo));
+		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (folder_name);
 		fi->name = g_strdup (p ? p + 1: folder_name);
 		fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);

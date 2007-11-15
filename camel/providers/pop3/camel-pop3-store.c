@@ -139,7 +139,7 @@ finalize (CamelObject *object)
 enum {
 	MODE_CLEAR,
 	MODE_SSL,
-	MODE_TLS,
+	MODE_TLS
 };
 
 #ifdef HAVE_SSL
@@ -167,24 +167,23 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		}
 #else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				      _("Could not connect to %s: %s"),
-				      service->url->host, _("SSL unavailable"));
+				_("Could not connect to %s: %s"),
+				service->url->host, _("SSL unavailable"));
 
 		return FALSE;
 #endif /* HAVE_SSL */
-	} else {
+	} else
 		tcp_stream = camel_tcp_stream_raw_new ();
-	}
 
 	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
 		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection canceled"));
+				_("Connection canceled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Could not connect to %s: %s"),
-					      service->url->host,
-					      g_strerror (errno));
+				_("Could not connect to %s: %s"),
+				service->url->host,
+				g_strerror (errno));
 
 		camel_object_unref (tcp_stream);
 
@@ -205,8 +204,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to read a valid greeting from POP server %s"),
-				      service->url->host);
+			_("Failed to read a valid greeting from POP server %s"),
+			service->url->host);
 		camel_object_unref (tcp_stream);
 		return FALSE;
 	}
@@ -219,8 +218,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 #ifdef HAVE_SSL
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, _("STLS not supported by server"));
+			_("Failed to connect to POP server %s in secure mode: %s"),
+			service->url->host, _("STLS not supported by server"));
 		goto stls_exception;
 	}
 
@@ -236,8 +235,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 
 	if (ret == FALSE) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, store->engine->line);
+			_("Failed to connect to POP server %s in secure mode: %s"),
+			service->url->host, store->engine->line);
 		goto stls_exception;
 	}
 
@@ -252,15 +251,15 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	}
 #else
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Failed to connect to POP server %s in secure mode: %s"),
-			      service->url->host, _("TLS is not available in this build"));
+		_("Failed to connect to POP server %s in secure mode: %s"),
+		service->url->host, _("TLS is not available in this build"));
 	goto stls_exception;
 #endif /* HAVE_SSL */
 
 	camel_object_unref (tcp_stream);
 
 	/* rfc2595, section 4 states that after a successful STLS
-           command, the client MUST discard prior CAPA responses */
+	   command, the client MUST discard prior CAPA responses */
 	camel_pop3_engine_reget_capabilities (store->engine);
 
 	return TRUE;
@@ -350,7 +349,7 @@ query_auth_types (CamelService *service, CamelException *ex)
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
 	GList *types = NULL;
 
-        types = CAMEL_SERVICE_CLASS (parent_class)->query_auth_types (service, ex);
+	types = CAMEL_SERVICE_CLASS (parent_class)->query_auth_types (service, ex);
 	if (camel_exception_is_set (ex))
 		return NULL;
 
@@ -412,9 +411,9 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 	while (1) {
 		if (camel_pop3_stream_line(stream, &line, &len) == -1)
 			goto ioerror;
-		if (strncmp((char *) line, (char *) "+OK", 3) == 0)
+		if (strncmp((char *) line, "+OK", 3) == 0)
 			break;
-		if (strncmp((char *) line, (char *) "-ERR", 4) == 0) {
+		if (strncmp((char *) line, "-ERR", 4) == 0) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					      _("SASL `%s' Login failed for POP server %s: %s"),
 					      mech, CAMEL_SERVICE (store)->url->host, line);
@@ -422,7 +421,7 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 		}
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
 		   its a protocol error, so fail, and try reset the server */
-		if (strncmp((char *) line, (char *) "+ ", 2) != 0
+		if (strncmp((char *) line, "+ ", 2) != 0
 		    || camel_sasl_authenticated(sasl)
 		    || (resp = (unsigned char *) camel_sasl_challenge_base64(sasl, (const char *) line+2, ex)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
@@ -561,7 +560,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 				      CAMEL_SERVICE (store)->url->host,
 				      store->engine->line ? (char *)store->engine->line : _("Unknown error"));
 
-	camel_pop3_engine_command_free(store->engine, pcp);
+	camel_pop3_engine_command_free (store->engine, pcp);
 
 	if (pcu)
 		camel_pop3_engine_command_free(store->engine, pcu);

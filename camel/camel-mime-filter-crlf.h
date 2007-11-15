@@ -42,7 +42,7 @@ typedef enum {
 
 typedef enum {
 	CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS,
-	CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY,
+	CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY
 } CamelMimeFilterCRLFMode;
 
 struct _CamelMimeFilterCRLF {

@@ -149,9 +149,8 @@ local_finalize(CamelObject * object)
 		folder->summary = NULL;
 	}
 
-	if (local_folder->search) {
+	if (local_folder->search)
 		camel_object_unref((CamelObject *)local_folder->search);
-	}
 
 	if (local_folder->index)
 		camel_object_unref((CamelObject *)local_folder->index);
@@ -308,7 +307,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		url = camel_url_copy (((CamelService *) parent_store)->url);
 		camel_url_set_fragment (url, full_name);
 
-		fi = g_new0 (CamelFolderInfo, 1);
+		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (full_name);
 		fi->name = g_strdup (name);
 		fi->uri = camel_url_to_string (url, 0);

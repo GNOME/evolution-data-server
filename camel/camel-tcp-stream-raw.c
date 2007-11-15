@@ -487,7 +487,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 			   get_sockopt_level (data),
 			   optname,
 			   (void *) &data->value,
-			   &optlen);
+			   (socklen_t *) &optlen);
 }
 
 static int

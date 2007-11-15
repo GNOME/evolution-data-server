@@ -684,9 +684,10 @@ camel_getaddrinfo(const char *name, const char *service, const struct addrinfo *
 	msg->hostbufmem = g_malloc(msg->hostbuflen);
 #endif
 	if (cs_waitinfo(cs_getaddrinfo, msg, _("Host lookup failed"), ex) == 0) {
-		if (msg->result != 0)
+		if (msg->result != 0) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Host lookup failed: %s: %s"),
 					      name, gai_strerror (msg->result));
+		}
 
 		cs_freeinfo(msg);
 	} else

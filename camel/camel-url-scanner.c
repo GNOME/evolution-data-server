@@ -138,7 +138,7 @@ enum {
 	IS_SPACE	= (1 << 4),
 	IS_SPECIAL	= (1 << 5),
 	IS_DOMAIN       = (1 << 6),
-	IS_URLSAFE      = (1 << 7),
+	IS_URLSAFE      = (1 << 7)
 };
 
 #define is_ctrl(x) ((url_scanner_table[(unsigned char)(x)] & IS_CTRL) != 0)

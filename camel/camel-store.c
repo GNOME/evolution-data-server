@@ -234,6 +234,7 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 {
 	CamelFolder *folder = NULL;
 
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 	g_return_val_if_fail (folder_name != NULL, NULL);
 
 	/* O_EXCL doesn't make sense if we aren't requesting to also create the folder if it doesn't exist */
@@ -291,7 +292,7 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 	if (camel_debug_start(":store")) {
 		char *u = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_PASSWORD);
 
-		printf("CamelStore('%s'):get_folder('%s', %u) = %p\n", u, folder_name, flags, folder);
+		printf("CamelStore('%s'):get_folder('%s', %u) = %p\n", u, folder_name, flags, (void *) folder);
 		if (ex && ex->id)
 			printf("  failed: '%s'\n", ex->desc);
 		g_free(u);
@@ -713,7 +714,7 @@ add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, co
 		g_free (vinfo->uri);
 	} else {
 		/* There wasn't a Trash/Junk folder so create a new folder entry */
-		vinfo = g_new0 (CamelFolderInfo, 1);
+		vinfo = camel_folder_info_new ();
 
 		g_assert(parent != NULL);
 
@@ -800,7 +801,7 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 
 	if (camel_debug_start("store:folder_info")) {
 		char *url = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
-		printf("Get folder info(%p:%s, '%s') =\n", store, url, top?top:"<null>");
+		printf("Get folder info(%p:%s, '%s') =\n", (void *) store, url, top?top:"<null>");
 		g_free(url);
 		dump_fi(info, 2);
 		camel_debug_end();
@@ -873,8 +874,19 @@ camel_folder_info_free (CamelFolderInfo *fi)
 		g_free (fi->name);
 		g_free (fi->full_name);
 		g_free (fi->uri);
-		g_free (fi);
+		g_slice_free (CamelFolderInfo, fi);
 	}
+}
+
+/**
+ * camel_folder_info_new:
+ *
+ * Return value: a new empty CamelFolderInfo instance
+ **/
+CamelFolderInfo *
+camel_folder_info_new (void)
+{
+	return g_slice_new0 (CamelFolderInfo);
 }
 
 static int
@@ -945,7 +957,7 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 				CamelURL *url;
 				char *sep;
 
-				pfi = g_new0 (CamelFolderInfo, 1);
+				pfi = camel_folder_info_new ();
 				if (short_names) {
 					pfi->name = strrchr (pname, separator);
 					if (pfi->name)
@@ -1014,7 +1026,7 @@ folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderInfo *parent)
 {
 	CamelFolderInfo *info;
 
-	info = g_malloc(sizeof(*info));
+	info = camel_folder_info_new ();
 	info->parent = parent;
 	info->uri = g_strdup(fi->uri);
 	info->name = g_strdup(fi->name);

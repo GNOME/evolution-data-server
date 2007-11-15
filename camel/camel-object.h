@@ -89,7 +89,7 @@ enum {
 	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,	/* Get a copy of the meta-data list (should be freed) */
 	CAMEL_OBJECT_ARG_METADATA,
 	CAMEL_OBJECT_ARG_STATE_FILE,
-	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES,
+	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
 };
 
 enum {
@@ -99,11 +99,11 @@ enum {
 	/* sets where the persistent data should reside, otherwise it isn't persistent */
 	CAMEL_OBJECT_STATE_FILE = CAMEL_OBJECT_ARG_STATE_FILE | CAMEL_ARG_STR,
 	/* returns a GSList CamelProperties of persistent properties */
-	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES | CAMEL_ARG_PTR,
+	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES | CAMEL_ARG_PTR
 };
 
 typedef enum _CamelObjectFlags {
-	CAMEL_OBJECT_DESTROY = (1<<0),
+	CAMEL_OBJECT_DESTROY = (1<<0)
 } CamelObjectFlags;
 
 /* returned by get::CAMEL_OBJECT_METADATA */

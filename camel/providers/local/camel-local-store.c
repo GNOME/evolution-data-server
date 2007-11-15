@@ -45,7 +45,7 @@
 #include "camel-local-folder.h"
 #include "camel-local-store.h"
 
-#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
+#define d(x)
 
 /* Returns the class for a CamelLocalStore */
 #define CLOCALS_CLASS(so) CAMEL_LOCAL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
@@ -402,7 +402,7 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 
 	return;
 
@@ -500,7 +500,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	g_free (str);
 	g_free (name);
 
-	fi = g_new0 (CamelFolderInfo, 1);
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
 	fi->uri = g_strdup_printf ("%s:%s#%s", ((CamelService *) store)->url->protocol,

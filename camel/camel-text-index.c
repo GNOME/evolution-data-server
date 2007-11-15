@@ -1468,8 +1468,8 @@ text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
 	CamelTextIndexNamePrivate *p = CIN_PRIVATE(idn);
 	const unsigned char *ptr, *ptrend;
 	guint32 c;
-	unsigned char utf8[8];
-	size_t utf8len;
+	char utf8[8];
+	int utf8len;
 
 	if (buffer == NULL) {
 		if (p->buffer->len) {
@@ -1479,8 +1479,8 @@ text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
 		return 0;
 	}
 
-	ptr = buffer;
-	ptrend = buffer+len;
+	ptr = (const unsigned char *) buffer;
+	ptrend = (const unsigned char *) buffer+len;
 	while ((c = camel_utf8_next(&ptr, ptrend))) {
 		if (g_unichar_isalnum(c)) {
 			c = g_unichar_tolower(c);

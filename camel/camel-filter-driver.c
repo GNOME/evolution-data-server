@@ -1210,6 +1210,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 
 		info = camel_message_info_new_from_header(NULL, ((CamelMimePart *)msg)->headers);
 		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell(mp) - last;
+
 		last = camel_mime_parser_tell(mp);
 		status = camel_filter_driver_filter_message (driver, msg, info, NULL, NULL, source_url,
 							     original_source_url ? original_source_url : source_url, ex);

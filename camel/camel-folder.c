@@ -85,7 +85,6 @@ static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 			    const CamelMessageInfo *info, char **appended_uid,
 			    CamelException *ex);
 
-
 static GPtrArray        *get_uids            (CamelFolder *folder);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
@@ -310,7 +309,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	guint32 tag;
 	int unread = -1, deleted = 0, junked = 0, visible = 0, count = -1;
 
-	for (i=0;i<args->argc;i++) {
+	for (i = 0; i < args->argc; i++) {
 		CamelArgGet *arg = &args->argv[i];
 
 		tag = arg->tag;
@@ -350,9 +349,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 				/* TODO: Locking? */
 				unread = 0;
-				count = camel_folder_summary_count(folder->summary);
-				for (j=0; j<count; j++) {
-					if ((info = camel_folder_summary_index(folder->summary, j))) {
+				count = camel_folder_summary_count (folder->summary);
+				for (j = 0; j < count; j++) {
+					if ((info = camel_folder_summary_index (folder->summary, j))) {
 						guint32 flags = camel_message_info_flags(info);
 
 						if ((flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
@@ -1748,7 +1747,7 @@ filter_free(CamelSession *session, CamelSessionThreadMsg *msg)
 
 static CamelSessionThreadOps filter_ops = {
 	filter_filter,
-	filter_free,
+	filter_free
 };
 
 struct _CamelFolderChangeInfoPrivate {
@@ -1925,12 +1924,12 @@ camel_folder_change_info_new(void)
 {
 	CamelFolderChangeInfo *info;
 
-	info = g_malloc(sizeof(*info));
+	info = g_slice_new (CamelFolderChangeInfo);
 	info->uid_added = g_ptr_array_new();
 	info->uid_removed = g_ptr_array_new();
 	info->uid_changed = g_ptr_array_new();
 	info->uid_recent = g_ptr_array_new();
-	info->priv = g_malloc0(sizeof(*info->priv));
+	info->priv = g_slice_new (struct _CamelFolderChangeInfoPrivate);
 	info->priv->uid_stored = g_hash_table_new(g_str_hash, g_str_equal);
 	info->priv->uid_source = NULL;
 	info->priv->uid_filter = g_ptr_array_new();
@@ -2339,11 +2338,11 @@ camel_folder_change_info_free(CamelFolderChangeInfo *info)
 	g_hash_table_destroy(p->uid_stored);
 	g_ptr_array_free(p->uid_filter, TRUE);
 	e_mempool_destroy(p->uid_pool);
-	g_free(p);
+	g_slice_free (struct _CamelFolderChangeInfoPrivate, p);
 
 	g_ptr_array_free(info->uid_added, TRUE);
 	g_ptr_array_free(info->uid_removed, TRUE);
 	g_ptr_array_free(info->uid_changed, TRUE);
 	g_ptr_array_free(info->uid_recent, TRUE);
-	g_free(info);
+	g_slice_free (CamelFolderChangeInfo, info);
 }

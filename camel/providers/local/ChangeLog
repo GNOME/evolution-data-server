@@ -1,3 +1,8 @@
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-09-07  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-maildir-summary.c: (maildir_summary_next_uid_string),

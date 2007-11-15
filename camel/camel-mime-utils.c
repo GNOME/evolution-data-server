@@ -113,9 +113,9 @@ camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines,
 	gsize bytes = 0;
 
 	if (inlen > 0)
-		bytes += g_base64_encode_step (in, inlen, break_lines, out, state, save);
+		bytes += g_base64_encode_step (in, inlen, break_lines, (gchar *) out, state, save);
 
-	bytes += g_base64_encode_close (break_lines, out, state, save);
+	bytes += g_base64_encode_close (break_lines, (gchar *) out, state, save);
 
 	return bytes;
 }
@@ -140,7 +140,7 @@ camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines,
 size_t
 camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save)
 {
-	return g_base64_encode_step (in, len, break_lines, out, state, save);
+	return g_base64_encode_step (in, len, break_lines, (gchar *) out, state, save);
 }
 
 
@@ -159,7 +159,7 @@ camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, un
 size_t
 camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int *state, unsigned int *save)
 {
-	return g_base64_decode_step (in, len, out, state, save);
+	return g_base64_decode_step ((gchar *) in, len, out, state, save);
 }
 
 
@@ -175,7 +175,7 @@ camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int 
 char *
 camel_base64_encode_simple (const char *data, size_t len)
 {
-	return g_base64_encode (data, len);
+	return g_base64_encode ((const guchar *) data, len);
 }
 
 
@@ -857,13 +857,13 @@ rfc2047_decode_word(const char *in, size_t len)
 		decword = g_alloca (tmplen); /* this will always be more-than-enough room */
 		switch(toupper(inptr[0])) {
 		case 'Q':
-			inlen = quoted_decode(inptr+2, tmplen, decword);
+			inlen = quoted_decode((const unsigned char *) inptr+2, tmplen, (unsigned char *) decword);
 			break;
 		case 'B': {
 			int state = 0;
 			unsigned int save = 0;
 
-			inlen = camel_base64_decode_step((char *)inptr+2, tmplen, decword, &state, &save);
+			inlen = camel_base64_decode_step((unsigned char *) inptr+2, tmplen, (unsigned char *) decword, &state, &save);
 			/* if state != 0 then error? */
 			break;
 		}
@@ -1205,7 +1205,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			else
 				*out++ = ' ';
 			out += sprintf (out, "=?%s?Q?", type);
-			out += quoted_encode (buffer, enclen, out, safemask);
+			out += quoted_encode ((unsigned char *) buffer, enclen, (unsigned char *) out, safemask);
 			sprintf (out, "?=");
 
 			d(printf("converted part = %s\n", ascii));
@@ -1239,7 +1239,7 @@ camel_header_encode_string (const unsigned char *in)
 	GString *out;
 	char *outstr;
 
-	g_return_val_if_fail (g_utf8_validate (in, -1, NULL), NULL);
+	g_return_val_if_fail (g_utf8_validate ((const gchar *) in, -1, NULL), NULL);
 
 	if (in == NULL)
 		return NULL;
@@ -1251,7 +1251,7 @@ camel_header_encode_string (const unsigned char *in)
 		inptr++;
 	}
 	if (*inptr == '\0')
-		return g_strdup (in);
+		return g_strdup ((gchar *) in);
 
 	/* This gets each word out of the input, and checks to see what charset
 	   can be used to encode it. */
@@ -1266,7 +1266,7 @@ camel_header_encode_string (const unsigned char *in)
 		const char *newinptr;
 
 		newinptr = g_utf8_next_char (inptr);
-		c = g_utf8_get_char (inptr);
+		c = g_utf8_get_char ((gchar *) inptr);
 		if (newinptr == NULL || !g_unichar_validate (c)) {
 			w(g_warning ("Invalid UTF-8 sequence encountered (pos %d, char '%c'): %s",
 				     (inptr-in), inptr[0], in));
@@ -1278,29 +1278,29 @@ camel_header_encode_string (const unsigned char *in)
 			/* we've reached the end of a 'word' */
 			if (word && !(last_was_encoded && encoding)) {
 				/* output lwsp between non-encoded words */
-				g_string_append_len (out, start, word - start);
+				g_string_append_len (out, (const gchar *) start, word - start);
 				start = word;
 			}
 
 			switch (encoding) {
 			case 0:
-				g_string_append_len (out, start, inptr - start);
+				g_string_append_len (out, (const char *) start, inptr - start);
 				last_was_encoded = FALSE;
 				break;
 			case 1:
 				if (last_was_encoded)
 					g_string_append_c (out, ' ');
 
-				rfc2047_encode_word (out, start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
+				rfc2047_encode_word (out, (const char *) start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
 				last_was_encoded = TRUE;
 				break;
 			case 2:
 				if (last_was_encoded)
 					g_string_append_c (out, ' ');
 
-				if (!(charset = camel_charset_best (start, inptr - start)))
+				if (!(charset = camel_charset_best ((const char *) start, inptr - start)))
 					charset = "UTF-8";
-				rfc2047_encode_word (out, start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
+				rfc2047_encode_word (out, (const char *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 				last_was_encoded = TRUE;
 				break;
 			}
@@ -1322,32 +1322,32 @@ camel_header_encode_string (const unsigned char *in)
 		if (!(c < 256 && camel_mime_is_lwsp (c)) && !word)
 			word = inptr;
 
-		inptr = newinptr;
+		inptr = (const unsigned char *) newinptr;
 	}
 
 	if (inptr - start) {
 		if (word && !(last_was_encoded && encoding)) {
-			g_string_append_len (out, start, word - start);
+			g_string_append_len (out, (const gchar *) start, word - start);
 			start = word;
 		}
 
 		switch (encoding) {
 		case 0:
-			g_string_append_len (out, start, inptr - start);
+			g_string_append_len (out, (const gchar *) start, inptr - start);
 			break;
 		case 1:
 			if (last_was_encoded)
 				g_string_append_c (out, ' ');
 
-			rfc2047_encode_word (out, start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
+			rfc2047_encode_word (out, (const char *) start, inptr - start, "ISO-8859-1", CAMEL_MIME_IS_ESAFE);
 			break;
 		case 2:
 			if (last_was_encoded)
 				g_string_append_c (out, ' ');
 
-			if (!(charset = camel_charset_best (start, inptr - start)))
+			if (!(charset = camel_charset_best ((const char *) start, inptr - start)))
 				charset = "UTF-8";
-			rfc2047_encode_word (out, start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
+			rfc2047_encode_word (out, (const char *) start, inptr - start, charset, CAMEL_MIME_IS_ESAFE);
 			break;
 		}
 	}
@@ -1426,7 +1426,7 @@ header_encode_phrase_get_words (const unsigned char *in)
 		const char *newinptr;
 
 		newinptr = g_utf8_next_char (inptr);
-		c = g_utf8_get_char (inptr);
+		c = g_utf8_get_char ((gchar *) inptr);
 
 		if (!g_unichar_validate (c)) {
 			w(g_warning ("Invalid UTF-8 sequence encountered (pos %d, char '%c'): %s",
@@ -1435,7 +1435,7 @@ header_encode_phrase_get_words (const unsigned char *in)
 			continue;
 		}
 
-		inptr = newinptr;
+		inptr = (const unsigned char *) newinptr;
 		if (g_unichar_isspace (c)) {
 			if (count > 0) {
 				word = g_new0 (struct _phrase_word, 1);
@@ -1571,28 +1571,28 @@ camel_header_encode_phrase (const unsigned char *in)
 		if (last_word && !(last_word->type == WORD_2047 && word->type == WORD_2047)) {
 			/* one or both of the words are not encoded so we write the spaces out untouched */
 			len = word->start - last_word->end;
-			out = g_string_append_len (out, last_word->end, len);
+			out = g_string_append_len (out, (char *) last_word->end, len);
 		}
 
 		switch (word->type) {
 		case WORD_ATOM:
-			out = g_string_append_len (out, word->start, word->end - word->start);
+			out = g_string_append_len (out, (char *) word->start, word->end - word->start);
 			break;
 		case WORD_QSTRING:
-			quote_word (out, TRUE, word->start, word->end - word->start);
+			quote_word (out, TRUE, (char *) word->start, word->end - word->start);
 			break;
 		case WORD_2047:
 			if (last_word && last_word->type == WORD_2047) {
 				/* include the whitespace chars between these 2 words in the
                                    resulting rfc2047 encoded word. */
 				len = word->end - last_word->end;
-				start = last_word->end;
+				start = (const char *) last_word->end;
 
 				/* encoded words need to be separated by linear whitespace */
 				g_string_append_c (out, ' ');
 			} else {
 				len = word->end - word->start;
-				start = word->start;
+				start = (const char *) word->start;
 			}
 
 			if (word->encoding == 1) {
@@ -1782,11 +1782,12 @@ camel_header_decode_int(const char **in)
 static char *
 hex_decode (const char *in, size_t len)
 {
-	const unsigned char *inend = in + len;
+	const unsigned char *inend = (const unsigned char *) (in + len);
 	unsigned char *inptr, *outptr;
 	char *outbuf;
 
-	outptr = outbuf = g_malloc (len + 1);
+	outbuf = (char *) g_malloc (len + 1);
+	outptr = (unsigned char *) outbuf;
 
 	inptr = (unsigned char *) in;
 	while (inptr < inend) {
@@ -2033,12 +2034,14 @@ camel_header_param_list_free(struct _camel_header_param *p)
 CamelContentType *
 camel_content_type_new(const char *type, const char *subtype)
 {
-	CamelContentType *t = g_malloc(sizeof(*t));
+	CamelContentType *t;
 
+	t = g_slice_new (CamelContentType);
 	t->type = g_strdup(type);
 	t->subtype = g_strdup(subtype);
 	t->params = NULL;
 	t->refcount = 1;
+
 	return t;
 }
 
@@ -2071,7 +2074,7 @@ camel_content_type_unref(CamelContentType *ct)
 			camel_header_param_list_free(ct->params);
 			g_free(ct->type);
 			g_free(ct->subtype);
-			g_free(ct);
+			g_slice_free (CamelContentType, ct);
 			ct = NULL;
 		} else {
 			ct->refcount--;
@@ -3040,15 +3043,15 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 
 	/* if we have really broken utf8 passed in, we just treat it as binary data */
 
-	charset = camel_charset_best(in, strlen(in));
+	charset = camel_charset_best((char *) in, strlen((char *) in));
 	if (charset == NULL)
-		return g_strdup(in);
+		return g_strdup((char *) in);
 
 	if (g_ascii_strcasecmp(charset, "UTF-8") != 0) {
-		if ((outbuf = header_convert(charset, "UTF-8", in, strlen(in))))
+		if ((outbuf = (unsigned char *) header_convert(charset, "UTF-8", (const char *) in, strlen((char *) in))))
 			inptr = outbuf;
 		else
-			return g_strdup(in);
+			return g_strdup((char *) in);
 	}
 
 	/* FIXME: set the 'language' as well, assuming we can get that info...? */
@@ -3087,7 +3090,7 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 			continue;
 		}
 
-		value = header_encode_param (p->value, &encoded);
+		value = header_encode_param ((unsigned char *) p->value, &encoded);
 		if (!value) {
 			w(g_warning ("appending parameter %s=%s violates rfc2184", p->name, p->value));
 			value = g_strdup (p->value);
@@ -3608,7 +3611,7 @@ check_header(struct _camel_header_raw *h)
 {
 	unsigned char *p;
 
-	p = h->value;
+	p = (unsigned char *) h->value;
 	while (p && *p) {
 		if (!isascii(*p)) {
 			w(g_warning("Appending header violates rfc: %s: %s", h->name, h->value));
@@ -4074,7 +4077,7 @@ header_address_list_encode_append (GString *out, int encode, struct _camel_heade
 		switch (a->type) {
 		case CAMEL_HEADER_ADDRESS_NAME:
 			if (encode)
-				text = camel_header_encode_phrase (a->name);
+				text = camel_header_encode_phrase ((unsigned char *) a->name);
 			else
 				text = a->name;
 			if (text && *text)
@@ -4086,7 +4089,7 @@ header_address_list_encode_append (GString *out, int encode, struct _camel_heade
 			break;
 		case CAMEL_HEADER_ADDRESS_GROUP:
 			if (encode)
-				text = camel_header_encode_phrase (a->name);
+				text = camel_header_encode_phrase ((unsigned char *) a->name);
 			else
 				text = a->name;
 			g_string_append_printf (out, "%s: ", text);

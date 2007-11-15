@@ -134,12 +134,12 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 
 	/* lowercase hexify that bad-boy... */
 	for (s = digest, p = md5asc; p < md5asc + 32; s++, p += 2)
-		sprintf (p, "%.2x", *s);
+		sprintf ((char *) p, "%.2x", *s);
 
 	ret = g_byte_array_new ();
-	g_byte_array_append (ret, sasl->service->url->user, strlen (sasl->service->url->user));
-	g_byte_array_append (ret, " ", 1);
-	g_byte_array_append (ret, md5asc, 32);
+	g_byte_array_append (ret, (guint8 *) sasl->service->url->user, strlen (sasl->service->url->user));
+	g_byte_array_append (ret, (guint8 *) " ", 1);
+	g_byte_array_append (ret, (guint8 *) md5asc, 32);
 
 	sasl->authenticated = TRUE;
 

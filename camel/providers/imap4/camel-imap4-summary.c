@@ -129,7 +129,6 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 static void
 camel_imap4_summary_finalize (CamelObject *object)
 {
-	;
 }
 
 

@@ -38,7 +38,7 @@ typedef struct _CamelMimeFilterCanonClass CamelMimeFilterCanonClass;
 enum {
 	CAMEL_MIME_FILTER_CANON_CRLF = (1<<0), /* canoncialise end of line to crlf, otherwise canonicalise to lf only */
 	CAMEL_MIME_FILTER_CANON_FROM = (1<<1), /* escape "^From " using quoted-printable semantics into "=46rom " */
-	CAMEL_MIME_FILTER_CANON_STRIP = (1<<2),	/* strip trailing space */
+	CAMEL_MIME_FILTER_CANON_STRIP = (1<<2)	/* strip trailing space */
 };
 
 struct _CamelMimeFilterCanon {

@@ -137,7 +137,7 @@ anon_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		}
 		camel_object_unref (cia);
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_OPAQUE:
 		if (strchr (sasl_anon->trace_info, '@')) {
@@ -147,7 +147,7 @@ anon_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			return NULL;
 		}
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_EMPTY:
 		ret = g_byte_array_new ();

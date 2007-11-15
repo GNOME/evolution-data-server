@@ -38,14 +38,14 @@ typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
 
 enum {
-	CAMEL_CERTDB_DIRTY  = (1 << 0),
+	CAMEL_CERTDB_DIRTY  = (1 << 0)
 };
 
 enum {
 	CAMEL_CERT_STRING_ISSUER,
 	CAMEL_CERT_STRING_SUBJECT,
 	CAMEL_CERT_STRING_HOSTNAME,
-	CAMEL_CERT_STRING_FINGERPRINT,
+	CAMEL_CERT_STRING_FINGERPRINT
 };
 
 typedef enum {
@@ -53,7 +53,7 @@ typedef enum {
 	CAMEL_CERT_TRUST_NEVER,
 	CAMEL_CERT_TRUST_MARGINAL,
 	CAMEL_CERT_TRUST_FULLY,
-	CAMEL_CERT_TRUST_ULTIMATE,
+	CAMEL_CERT_TRUST_ULTIMATE
 } CamelCertTrust;
 
 typedef struct {

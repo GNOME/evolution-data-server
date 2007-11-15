@@ -160,7 +160,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 					   NULL, NULL,	/* password callback    */
 					   NULL, NULL); /* decrypt key callback */
 
-		NSS_CMSDecoder_Update(dec, istream->buffer->data, istream->buffer->len);
+		NSS_CMSDecoder_Update(dec, (char *) istream->buffer->data, istream->buffer->len);
 		camel_object_unref(istream);
 
 		cmsg = NSS_CMSDecoder_Finish(dec);
@@ -404,7 +404,7 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		goto fail;
 	}
 
-	if (NSS_CMSEncoder_Update(enc, ((CamelStreamMem *)istream)->buffer->data, ((CamelStreamMem *)istream)->buffer->len) != SECSuccess) {
+	if (NSS_CMSEncoder_Update(enc, (char *) ((CamelStreamMem *)istream)->buffer->data, ((CamelStreamMem *)istream)->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to add data to CMS encoder"));
 		goto fail;
@@ -720,7 +720,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 				   NULL, NULL); /* decrypt key callback */
 
 	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)sigpart), (CamelStream *)mem);
-	(void)NSS_CMSDecoder_Update(dec, mem->buffer->data, mem->buffer->len);
+	(void)NSS_CMSDecoder_Update(dec, (char *) mem->buffer->data, mem->buffer->len);
 	cmsg = NSS_CMSDecoder_Finish(dec);
 	if (cmsg == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Decoder failed"));
@@ -856,7 +856,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	/* FIXME: Canonicalise the input? */
 	mem = (CamelStreamMem *)camel_stream_mem_new();
 	camel_data_wrapper_write_to_stream((CamelDataWrapper *)ipart, (CamelStream *)mem);
-	if (NSS_CMSEncoder_Update(enc, mem->buffer->data, mem->buffer->len) != SECSuccess) {
+	if (NSS_CMSEncoder_Update(enc, (char *) mem->buffer->data, mem->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		camel_object_unref(mem);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to add data to encoder"));
@@ -939,7 +939,7 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 				   NULL, NULL,
 				   NULL, NULL); /* decrypt key callback */
 
-	if (NSS_CMSDecoder_Update(dec, istream->buffer->data, istream->buffer->len) != SECSuccess) {
+	if (NSS_CMSDecoder_Update(dec, (char *) istream->buffer->data, istream->buffer->len) != SECSuccess) {
 		printf("decoder update failed\n");
 	}
 	camel_object_unref(istream);

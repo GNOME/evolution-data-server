@@ -41,7 +41,7 @@ typedef enum _CamelBestencRequired {
 	/* do we treat 'lf' as if it were crlf? */
 	CAMEL_BESTENC_LF_IS_CRLF = 1<<8,
 	/* do we not allow "From " to appear at the start of a line in any part? */
-	CAMEL_BESTENC_NO_FROM = 1<<9,
+	CAMEL_BESTENC_NO_FROM = 1<<9
 } CamelBestencRequired;
 
 typedef enum _CamelBestencEncoding {
@@ -50,7 +50,7 @@ typedef enum _CamelBestencEncoding {
 	CAMEL_BESTENC_BINARY,
 
 	/* is the content stream to be treated as text? */
-	CAMEL_BESTENC_TEXT = 1<<8,
+	CAMEL_BESTENC_TEXT = 1<<8
 } CamelBestencEncoding;
 
 struct _CamelMimeFilterBestenc {

@@ -119,7 +119,7 @@ xover_setup(CamelNNTPStore *store, CamelException *ex)
 
 	/* supported command */
 	while ((ret = camel_nntp_stream_line(store->stream, (unsigned char **)&line, &len)) > 0) {
-		p = line;
+		p = (unsigned char *) line;
 		xover = g_malloc0(sizeof(*xover));
 		last->next = xover;
 		last = xover;
@@ -129,7 +129,7 @@ xover_setup(CamelNNTPStore *store, CamelException *ex)
 				for (i=0;i<sizeof(headers)/sizeof(headers[0]);i++) {
 					if (strcmp(line, headers[i].name) == 0) {
 						xover->name = headers[i].name;
-						if (strncmp(p, "full", 4) == 0)
+						if (strncmp((char *) p, "full", 4) == 0)
 							xover->skip = strlen(xover->name)+1;
 						else
 							xover->skip = 0;
@@ -150,7 +150,7 @@ xover_setup(CamelNNTPStore *store, CamelException *ex)
 enum {
 	MODE_CLEAR,
 	MODE_SSL,
-	MODE_TLS,
+	MODE_TLS
 };
 
 #ifdef HAVE_SSL
@@ -223,7 +223,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 		goto fail;
 	}
 
-	len = strtoul (buf, (char **) &buf, 10);
+	len = strtoul ((char *) buf, (char **) &buf, 10);
 	if (len != 200 && len != 201) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("NNTP server %s returned error code %d: %s"),
@@ -468,10 +468,11 @@ static CamelFolderInfo *
 nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation, CamelStoreInfo *si)
 {
 	CamelURL *base_url = ((CamelService *) store)->url;
-	CamelFolderInfo *fi = g_malloc0(sizeof(*fi));
+	CamelFolderInfo *fi;
 	CamelURL *url;
 	char *path;
 
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (si->path);
 
 	if (short_notation)
@@ -494,11 +495,12 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation
 static CamelFolderInfo *
 nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, const char *name)
 {
-	CamelFolderInfo *fi = g_malloc0(sizeof(*fi));
 	CamelURL *base_url = ((CamelService *)store)->url;
+	CamelFolderInfo *fi;
 	CamelURL *url;
 	char *path;
 
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (name);
 
 	if (short_notation)
@@ -713,7 +715,7 @@ nntp_get_date(CamelNNTPStore *nntp_store, CamelException *ex)
 	nntp_store->summary->last_newslist[0] = 0;
 
 	if (ret == 111) {
-		ptr = line + 3;
+		ptr = (char *) line + 3;
 		while (*ptr == ' ' || *ptr == '\t')
 			ptr++;
 
@@ -778,7 +780,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 			}
 
 			while ((ret = camel_nntp_stream_line (nntp_store->stream, &line, &len)) > 0)
-				nntp_store_info_update(nntp_store, line);
+				nntp_store_info_update(nntp_store, (char *) line);
 		} else {
 			GHashTable *all;
 			int i;
@@ -802,7 +804,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const char *top, guin
 				g_hash_table_insert(all, si->info.path, si);
 
 			while ((ret = camel_nntp_stream_line(nntp_store->stream, &line, &len)) > 0) {
-				si = nntp_store_info_update(nntp_store, line);
+				si = nntp_store_info_update(nntp_store, (char *) line);
 				g_hash_table_remove(all, si->info.path);
 			}
 
@@ -1203,12 +1205,14 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, char **line,
 
 	camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_LINE);
 
-	ps = p = fmt;
+	p = (const unsigned char *) fmt;
+	ps = (const unsigned char *) p;
+
 	while ((c = *p++)) {
 		switch (c) {
 		case '%':
 			c = *p++;
-			camel_stream_write ((CamelStream *) store->mem, ps, p - ps - (c == '%' ? 1 : 2));
+			camel_stream_write ((CamelStream *) store->mem, (const char *) ps, p - ps - (c == '%' ? 1 : 2));
 			ps = p;
 			switch (c) {
 			case 's':
@@ -1242,11 +1246,11 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, char **line,
 		}
 	}
 
-	camel_stream_write ((CamelStream *) store->mem, ps, p-ps-1);
+	camel_stream_write ((CamelStream *) store->mem, (const char *) ps, p-ps-1);
 	dd(printf("NNTP_COMMAND: '%.*s'\n", (int)store->mem->buffer->len, store->mem->buffer->data));
 	camel_stream_write ((CamelStream *) store->mem, "\r\n", 2);
 
-	if (camel_stream_write((CamelStream *) store->stream, store->mem->buffer->data, store->mem->buffer->len) == -1)
+	if (camel_stream_write((CamelStream *) store->stream, (const char *) store->mem->buffer->data, store->mem->buffer->len) == -1)
 		goto ioerror;
 
 	/* FIXME: hack */

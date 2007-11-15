@@ -43,7 +43,7 @@ enum {
 	GZIP_FLAG_FCOMMENT  = (1 << 4),
 	GZIP_FLAG_RESERVED0 = (1 << 5),
 	GZIP_FLAG_RESERVED1 = (1 << 6),
-	GZIP_FLAG_RESERVED2 = (1 << 7),
+	GZIP_FLAG_RESERVED2 = (1 << 7)
 };
 
 #define GZIP_FLAG_RESERVED (GZIP_FLAG_RESERVED0 | GZIP_FLAG_RESERVED1 | GZIP_FLAG_RESERVED2)
@@ -185,18 +185,18 @@ gzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 
 		memcpy (filter->outbuf, priv->hdr.buf, 10);
 
-		priv->stream->next_out = filter->outbuf + 10;
+		priv->stream->next_out = (Bytef *) filter->outbuf + 10;
 		priv->stream->avail_out = filter->outsize - 10;
 
 		priv->state.zip.wrote_hdr = TRUE;
 	} else {
 		camel_mime_filter_set_size (filter, (len * 2) + 12, FALSE);
 
-		priv->stream->next_out = filter->outbuf;
+		priv->stream->next_out = (Bytef *) filter->outbuf;
 		priv->stream->avail_out = filter->outsize;
 	}
 
-	priv->stream->next_in = in;
+	priv->stream->next_in = (Bytef *) in;
 	priv->stream->avail_in = len;
 
 	do {
@@ -210,7 +210,7 @@ gzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			n = filter->outsize - priv->stream->avail_out;
 			camel_mime_filter_set_size (filter, n + (priv->stream->avail_in * 2) + 12, TRUE);
 			priv->stream->avail_out = filter->outsize - n;
-			priv->stream->next_out = filter->outbuf + n;
+			priv->stream->next_out = (Bytef *) filter->outbuf + n;
 
 			if (priv->stream->avail_in == 0) {
 				guint32 val;
@@ -229,13 +229,13 @@ gzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			}
 		} else {
 			if (priv->stream->avail_in > 0)
-				camel_mime_filter_backup (filter, priv->stream->next_in, priv->stream->avail_in);
+				camel_mime_filter_backup (filter, (const char *) priv->stream->next_in, priv->stream->avail_in);
 
 			break;
 		}
 	} while (1);
 
-	priv->crc32 = crc32 (priv->crc32, in, len - priv->stream->avail_in);
+	priv->crc32 = crc32 (priv->crc32, (unsigned char *) in, len - priv->stream->avail_in);
 	priv->isize += len - priv->stream->avail_in;
 
 	*out = filter->outbuf;
@@ -346,10 +346,10 @@ gunzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 
 	camel_mime_filter_set_size (filter, (len * 2) + 12, FALSE);
 
-	priv->stream->next_in = in;
+	priv->stream->next_in = (Bytef *) in;
 	priv->stream->avail_in = len - 8;
 
-	priv->stream->next_out = filter->outbuf;
+	priv->stream->next_out = (Bytef *) filter->outbuf;
 	priv->stream->avail_out = filter->outsize;
 
 	do {
@@ -368,12 +368,12 @@ gunzip_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			n = filter->outsize - priv->stream->avail_out;
 			camel_mime_filter_set_size (filter, n + (priv->stream->avail_in * 2) + 12, TRUE);
 			priv->stream->avail_out = filter->outsize - n;
-			priv->stream->next_out = filter->outbuf + n;
+			priv->stream->next_out = (Bytef *) filter->outbuf + n;
 		} else {
 			priv->stream->avail_in += 8;
 
 			if (priv->stream->avail_in > 0)
-				camel_mime_filter_backup (filter, priv->stream->next_in, priv->stream->avail_in);
+				camel_mime_filter_backup (filter, (char *) priv->stream->next_in, priv->stream->avail_in);
 
 			break;
 		}

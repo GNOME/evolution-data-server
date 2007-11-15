@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_LOCK_READ,
-	CAMEL_LOCK_WRITE,
+	CAMEL_LOCK_WRITE
 } CamelLockType;
 
 /* specific locking strategies */

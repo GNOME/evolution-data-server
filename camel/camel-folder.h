@@ -52,7 +52,7 @@ enum {
 	CAMEL_FOLDER_ARG_UID_ARRAY,
 	CAMEL_FOLDER_ARG_INFO_ARRAY,
 	CAMEL_FOLDER_ARG_PROPERTIES,
-	CAMEL_FOLDER_ARG_LAST = CAMEL_ARG_FIRST + 0x2000,
+	CAMEL_FOLDER_ARG_LAST = CAMEL_ARG_FIRST + 0x2000
 };
 
 enum {
@@ -70,7 +70,7 @@ enum {
 	CAMEL_FOLDER_INFO_ARRAY = CAMEL_FOLDER_ARG_INFO_ARRAY | CAMEL_ARG_PTR,
 
 	/* GSList of settable folder properties */
-	CAMEL_FOLDER_PROPERTIES = CAMEL_FOLDER_ARG_PROPERTIES | CAMEL_ARG_PTR,
+	CAMEL_FOLDER_PROPERTIES = CAMEL_FOLDER_ARG_PROPERTIES | CAMEL_ARG_PTR
 };
 
 struct _CamelFolderChangeInfo {
@@ -105,7 +105,7 @@ struct _CamelFolder {
 #define CAMEL_FOLDER_HAS_BEEN_DELETED       (1<<3)
 #define CAMEL_FOLDER_IS_TRASH               (1<<4)
 #define CAMEL_FOLDER_IS_JUNK                (1<<5)
-#define CAMEL_FOLDER_FILTER_JUNK  	    (1<<6)
+#define CAMEL_FOLDER_FILTER_JUNK	    (1<<6)
 
 typedef struct {
 	CamelObjectClass parent_class;

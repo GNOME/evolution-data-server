@@ -108,7 +108,7 @@ read_greeting (CamelPOP3Engine *pe)
 
 	/* first, read the greeting */
 	if (camel_pop3_stream_line (pe->stream, &line, &len) == -1
-	    || strncmp ((char *) line, (char *) "+OK", 3) != 0)
+	    || strncmp ((char *) line, "+OK", 3) != 0)
 		return -1;
 
 	if ((apop = (unsigned char *) strchr ((char *) line + 3, '<'))
@@ -205,7 +205,7 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 					next = (unsigned char *) strchr((char *) tok, ' ');
 					if (next)
 						*next++ = 0;
-					auth = camel_sasl_authtype((const char *)tok);
+					auth = camel_sasl_authtype((const char *) tok);
 					if (auth) {
 						dd(printf("got auth type '%s'\n", tok));
 						pe->auth = g_list_prepend(pe->auth, auth);
@@ -257,24 +257,24 @@ engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 	    && pe->current != NULL) {
 		e_dlist_addtail(&pe->queue, (EDListNode *)pc);
 		return FALSE;
-	} else {
-		/* ??? */
-		if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data)) == -1) {
-			e_dlist_addtail(&pe->queue, (EDListNode *)pc);
-			return FALSE;
-		}
-
-		pe->sentlen += strlen(pc->data);
-
-		pc->state = CAMEL_POP3_COMMAND_DISPATCHED;
-
-		if (pe->current == NULL)
-			pe->current = pc;
-		else
-			e_dlist_addtail(&pe->active, (EDListNode *)pc);
-
-		return TRUE;
 	}
+
+	/* ??? */
+	if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data)) == -1) {
+		e_dlist_addtail(&pe->queue, (EDListNode *)pc);
+		return FALSE;
+	}
+
+	pe->sentlen += strlen(pc->data);
+
+	pc->state = CAMEL_POP3_COMMAND_DISPATCHED;
+
+	if (pe->current == NULL)
+		pe->current = pc;
+	else
+		e_dlist_addtail(&pe->active, (EDListNode *)pc);
+
+	return TRUE;
 }
 
 /* returns -1 on error (sets errno), 0 when no work to do, or >0 if work remaining */
@@ -335,6 +335,7 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 	/* check the queue for sending any we can now send also */
 	pw = (CamelPOP3Command *)pe->queue.head;
 	pn = pw->next;
+
 	while (pn) {
 		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen(pw->data)) > CAMEL_POP3_SEND_LIMIT)
 		    && pe->current != NULL)

@@ -36,7 +36,7 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_STORE_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
+	CAMEL_STORE_ARG_FIRST = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
 typedef struct _CamelFolderInfo {
@@ -228,6 +228,7 @@ void             camel_store_free_folder_info_full (CamelStore *store,
 void             camel_store_free_folder_info_nop  (CamelStore *store,
 						    CamelFolderInfo *fi);
 
+CamelFolderInfo *camel_folder_info_new             (void);
 void             camel_folder_info_free            (CamelFolderInfo *fi);
 CamelFolderInfo *camel_folder_info_build           (GPtrArray *folders,
 						    const char *namespace,

@@ -121,11 +121,11 @@ login_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	switch (priv->state) {
 	case LOGIN_USER:
 		buf = g_byte_array_new ();
-		g_byte_array_append (buf, url->user, strlen (url->user));
+		g_byte_array_append (buf, (guint8 *) url->user, strlen (url->user));
 		break;
 	case LOGIN_PASSWD:
 		buf = g_byte_array_new ();
-		g_byte_array_append (buf, url->passwd, strlen (url->passwd));
+		g_byte_array_append (buf, (guint8 *) url->passwd, strlen (url->passwd));
 
 		sasl->authenticated = TRUE;
 		break;

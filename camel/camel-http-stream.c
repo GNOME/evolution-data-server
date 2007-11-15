@@ -268,7 +268,7 @@ http_get_statuscode (CamelHttpStream *http)
 
 	/* parse the HTTP status code */
 	if (!g_ascii_strncasecmp (buffer, "HTTP/", 5)) {
-		token = http_next_token (buffer);
+		token = http_next_token ((const unsigned char *) buffer);
 		http->statuscode = camel_header_decode_int (&token);
 		return http->statuscode;
 	}
@@ -583,7 +583,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 
 		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
 					http_stream->proxy->passwd?http_stream->proxy->passwd:"");
-		basic64 = g_base64_encode(basic, strlen(basic));
+		basic64 = g_base64_encode((const guchar *) basic, strlen(basic));
 		memset(basic, 0, strlen(basic));
 		g_free(basic);
 		camel_http_stream_set_proxy_authpass(http_stream, basic64);

@@ -39,16 +39,6 @@
 /* dont turn this off */
 #define w(x) x
 
-/* i dont know why gthread_mutex stuff even exists, this is easier */
-
-/* also, i'm not convinced mutexes are needed here.  But it
-   doesn't really hurt either */
-static pthread_mutex_t exception_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-#define CAMEL_EXCEPTION_LOCK(e) (pthread_mutex_lock(&exception_mutex))
-#define CAMEL_EXCEPTION_UNLOCK(e) (pthread_mutex_unlock(&exception_mutex))
-
-static EMemChunk *exception_chunks = NULL;
 
 /**
  * camel_exception_new: allocate a new exception object.
@@ -62,18 +52,11 @@ camel_exception_new (void)
 {
 	CamelException *ex;
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
-	if (exception_chunks == NULL)
-		exception_chunks = e_memchunk_new(16, sizeof(CamelException));
-
-	ex = e_memchunk_alloc(exception_chunks);
+	ex = g_slice_new (CamelException);
 	ex->desc = NULL;
 
 	/* set the Exception Id to NULL */
 	ex->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 
 	return ex;
 }
@@ -109,14 +92,10 @@ camel_exception_clear (CamelException *exception)
 	if (!exception)
 		return;
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	if (exception->desc)
 		g_free (exception->desc);
 	exception->desc = NULL;
 	exception->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
@@ -135,11 +114,7 @@ camel_exception_free (CamelException *exception)
 	if (exception->desc)
 		g_free (exception->desc);
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
-	e_memchunk_free(exception_chunks, exception);
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
+	g_slice_free (CamelException, exception);
 }
 
 /**
@@ -160,21 +135,14 @@ void
 camel_exception_set (CamelException *ex, ExceptionId id, const char *desc)
 {
 	if (camel_debug("exception"))
-		printf("CamelException.set(%p, %u, '%s')\n", ex, id, desc);
-
+		printf("CamelException.set(%p, %u, '%s')\n", (void *) ex, id, desc);
 	if (!ex)
 		return;
-
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	ex->id = id;
-
 	if (desc != ex->desc) {
 		g_free (ex->desc);
 		ex->desc = g_strdup (desc);
 	}
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
@@ -208,20 +176,16 @@ camel_exception_setv (CamelException *ex, ExceptionId id, const char *format, ..
 	va_end (args);
 
 	if (camel_debug("exception"))
-		printf("CamelException.setv(%p, %u, '%s')\n", ex, id, desc);
+		printf("CamelException.setv(%p, %u, '%s')\n", (void *) ex, id, desc);
 
 	if (!ex) {
 		g_free(desc);
 		return;
 	}
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	g_free(ex->desc);
 	ex->desc = desc;
 	ex->id = id;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
@@ -248,8 +212,6 @@ camel_exception_xfer (CamelException *ex_dst,
 		return;
 	}
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	if (ex_dst->desc)
 		g_free (ex_dst->desc);
 
@@ -258,8 +220,6 @@ camel_exception_xfer (CamelException *ex_dst,
 
 	ex_src->desc = NULL;
 	ex_src->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**

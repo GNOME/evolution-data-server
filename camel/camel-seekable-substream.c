@@ -139,7 +139,7 @@ parent_reset (CamelSeekableSubstream *seekable_substream, CamelSeekableStream *p
 	if (camel_seekable_stream_tell (parent) == seekable_stream->position)
 		return TRUE;
 
-	return camel_seekable_stream_seek (parent, seekable_stream->position, CAMEL_STREAM_SET)	== seekable_stream->position;
+	return camel_seekable_stream_seek (parent, (off_t) seekable_stream->position, CAMEL_STREAM_SET) == seekable_stream->position;
 }
 
 static ssize_t

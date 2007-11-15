@@ -39,7 +39,7 @@ typedef struct _CamelLocalSummaryClass CamelLocalSummaryClass;
 enum {
 	CAMEL_MESSAGE_FOLDER_NOXEV = 1<<17,
 	CAMEL_MESSAGE_FOLDER_XEVCHANGE = 1<<18,
-	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1<<19, /* have we seen this in processing this loop? */
+	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1<<19 /* have we seen this in processing this loop? */
 };
 
 typedef struct _CamelLocalMessageInfo CamelLocalMessageInfo;
