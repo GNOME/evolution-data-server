@@ -591,6 +591,7 @@ static void
 groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 {
 	camel_folder_summary_save (folder->summary);
+	camel_store_summary_touch ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 }
 
@@ -2208,13 +2209,13 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					dest_container_id, NULL);
 
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			if (delete_originals) {
-				if ( !strcmp(source->full_name, SENT) ) {
+			if (delete_originals) { 
+				/*if ( !strcmp(source->full_name, SENT) ) {
 					camel_folder_delete_message(source, uids->pdata[index]);
-				} else {
+				} else {*/
 					camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
 					camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
-				}
+				//}
 			}
 		} else {
 			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);

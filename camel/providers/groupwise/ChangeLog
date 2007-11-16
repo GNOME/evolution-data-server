@@ -1,3 +1,12 @@
+2007-11-16  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #481093
+
+	* camel-groupwise-folder.c: (groupwise_sync_summary),
+	(groupwise_transfer_messages_to):
+	Move mail to/from sent-items case missed while porting.
+	Solves (un)read count issues as well
+
 2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000
