@@ -1,3 +1,9 @@
+2007-11-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-spool-store.c (free_folder_info):
+	Missed that CamelSpoolStore has its own free_folder_info()
+	implementation (why?).  Change it to use g_slice_free().
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Merge a bunch of compiler warning fixes and cosmetic

@@ -244,7 +244,7 @@ static void free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 		g_free(fi->uri);
 		g_free(fi->name);
 		g_free(fi->full_name);
-		g_free(fi);
+		g_slice_free(CamelFolderInfo, fi);
 	}
 }
 
