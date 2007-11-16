@@ -1,3 +1,10 @@
+2007-11-16  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #300584 by Peter Lord
+
+	* backends/contacts/e-cal-backend-contacts.c: (cdate_to_icaltime):
+	Use correct year when filling structure, not only years 1970+.
+
 2007-11-13  Ondrej Jirman  <megous@megous.com>
 
 	** Fix for bug #494303

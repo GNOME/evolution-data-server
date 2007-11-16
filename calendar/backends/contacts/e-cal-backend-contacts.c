@@ -391,11 +391,7 @@ cdate_to_icaltime (EContactDate *cdate)
 {
 	struct icaltimetype ret;
 
-/*FIXME: this is a really _ugly_ (temporary) hack
- *	since several functions are still depending on the epoch,
- *	let entries start (earliest) at 19700101
- */
-	ret.year = cdate->year >= 1970 ? cdate->year : 1970;
+	ret.year = cdate->year;
 	ret.month = cdate->month;
 	ret.day = cdate->day;
 	ret.is_date = TRUE;
