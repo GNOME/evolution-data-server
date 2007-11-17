@@ -1,3 +1,21 @@
+Evolution-Data-Server 2.21.2 2007-11-12
+---------------------------------------
+
+Bug Fixes:
+	#318842: Task lists should be sorted (Milan Crha)
+	#345135: Disable SSLv2 compatible HELLO on SSL stream when SSLv2 is disabled (Niels Vorgaard Christensen)
+	#359267: Not all memos are showed in calendar view (Milan Crha)
+	#430420: Returned size <= 0 is an error (Milan Crha)
+	#460649: Meeting UI Needs To Show Color Of Selected Calendar Source (Matthew Barnes, Milan Crha)
+	#487229: Use GKeyFile instead of gnome-config to access stored passwords (Matthew Barnes)
+	#488156: Minimize use of the WITH_GNOME_KEYRING macro (Matthew Barnes)
+	#492130: ESourceSelector uses pointers to ESource (Milan Crha)
+	#494304: Fix leak (Ondrej Jirman)
+
+Updated Translations:
+	Ignacio Casal Quinteiro (gl)
+	Priit Laes (et)
+
 Evolution-Data-Server 2.21.1 2007-10-29
 ---------------------------------------
 
