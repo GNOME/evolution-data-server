@@ -1,0 +1,8 @@
+2007-11-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-book-backend-galldap.c: (load_source): Read the proper gal server
+	and limit from the uri.
+
+2007-11-11  Srinivasa Ragavan <sragavan@novell.com>
+
+	** Added initial support for GAL-LDAP.

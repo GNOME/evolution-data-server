@@ -2390,6 +2390,8 @@ load_source (EBookBackend *backend,
 	char *dirname, *filename;
 	int i, db_error;
 	char *domain, *user;
+	char *slimit;
+	int limit=500;
 #if ENABLE_CACHE	
 	DB *db;
 	DB_ENV *env;
@@ -2417,7 +2419,14 @@ load_source (EBookBackend *backend,
 	bl->priv->port = 3268;
 	user = e_source_get_duped_property (source, "user");
 	domain = e_source_get_duped_property (source, "domain");
-	bl->priv->gc = e2k_global_catalog_new (bl->priv->server, 500, user, domain, NULL);
+	slimit = e_source_get_property (source, "view-limit");
+	printf("slimit is %s\n", slimit);
+	if (slimit && *slimit) {
+		limit = atoi (slimit);
+		if (limit <= 0)
+			limit = 500;
+	}
+	bl->priv->gc = e2k_global_catalog_new (bl->priv->server, limit, user, domain, NULL);
   	bl->priv->gal_uri = g_strdup (uri);
   	tokens = g_strsplit (uri, ";", 2);
   	g_free (uri);
