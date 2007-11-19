@@ -23,7 +23,16 @@
 
 #include <libmapi/libmapi.h>
 
-typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, gpointer data);
+typedef struct {
+	GByteArray *value;
+	const char *filename;
+} ExchangeMAPIAttachment;
+
+typedef struct {
+} ExchangeMAPIRecipient;
+
+
+typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data);
 typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid);
 typedef gboolean  (*BuildNameID) (struct mapi_nameid	*nameid, gpointer data);
 typedef int  (*BuildProps) (struct SPropValue **, struct SPropTagArray *, gpointer data);

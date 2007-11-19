@@ -1,3 +1,10 @@
+2007-11-19  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c: (exchange_mapi_util_get_attachments),
+	(exchange_mapi_connection_fetch_items):
+	* exchange-mapi-connection.h: Fetch attachments from server. 
+	Note: attachments are fetched in (_fetch_items) only atm. 
+
 2007-11-15  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_connection_fetch_items_list) : Removed. 
