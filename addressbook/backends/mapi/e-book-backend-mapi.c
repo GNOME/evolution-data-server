@@ -1070,7 +1070,7 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 }
 
 static gboolean
-create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	GList *list = * (GList **) data;
 	EContact *contact;
@@ -1386,7 +1386,7 @@ get_contacts_from_cache (EBookBackendMAPI *ebmapi,
 }
 
 static gboolean
-create_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+create_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	EDataBookView *book_view = data;
 	BESearchClosure *closure = get_closure (book_view);
@@ -1607,7 +1607,7 @@ update_cache (EBookBackendMAPI *ebmapi)
 }
 
 static gboolean 
-cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	EBookBackendMAPI *be = data;
 	EContact *contact;
