@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-08-28 16:28+0100\n"
-"PO-Revision-Date: 2007-11-20 14:30+0100\n"
+"PO-Revision-Date: 2007-11-21 20:00+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);X-Generator: KBabel 1.11.4\n"
-"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);X-Generator: KBabel 1.11.4"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:554
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2312
@@ -788,7 +787,7 @@ msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:208
 msgid "Cloudy"
-msgstr ""
+msgstr "Nivolós"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:209
 msgid "Drizzle"
@@ -2593,7 +2592,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-folder.c:603
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr ""
+msgstr "Impossible d'obténer lo messatge %s : %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
@@ -4892,7 +4891,7 @@ msgstr "Cop_iar %s"
 #: ../libedataserverui/e-name-selector-entry.c:2266
 #, c-format
 msgid "C_ut %s"
-msgstr ""
+msgstr "C_opar %s"
 
 #. Edit Contact item
 #: ../libedataserverui/e-name-selector-entry.c:2283
