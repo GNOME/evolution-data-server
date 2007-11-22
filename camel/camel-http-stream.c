@@ -540,7 +540,7 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 	g_return_val_if_fail (CAMEL_IS_HTTP_STREAM (http_stream), NULL);
 
 	if (!http_stream->content_type && !http_stream->raw) {
-		if (http_connect (http_stream, http_stream->url) == NULL)
+		if (http_connect (http_stream, http_stream->proxy ? http_stream->proxy : http_stream->url) == NULL)
 			return NULL;
 
 		if (http_method_invoke (http_stream) == -1)
@@ -578,7 +578,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 	else
 		http_stream->proxy = camel_url_new (proxy_url, NULL);
 
-	if (http_stream->proxy) {
+	if (http_stream->proxy && ((http_stream->proxy->user && *http_stream->proxy->user) || (http_stream->proxy->passwd && *http_stream->proxy->passwd))) {
 		char *basic, *basic64;
 
 		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
