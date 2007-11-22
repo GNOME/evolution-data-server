@@ -438,7 +438,7 @@ debug_mapi_property_dump (struct mapi_SPropValue_array *properties)
 	}
 }
 static gboolean
-fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(data);
 	GSList *slist = mapi_folder->priv->item_list;
