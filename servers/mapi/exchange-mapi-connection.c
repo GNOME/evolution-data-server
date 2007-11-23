@@ -41,6 +41,10 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
 #define ENABLE_VERBOSE_LOG()
 
+/* Specifies READ/WRITE sizes to be used while handling attachment streams */
+#define ATTACH_MAX_READ_SIZE  0x1000
+#define ATTACH_MAX_WRITE_SIZE 0x1000
+
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -191,8 +195,9 @@ exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mess
 		while (!done) {
 			uint16_t 	cn_written = 0;
 			DATA_BLOB 	blob;
-			/* we are using a MAX_WRITE_SIZE of 0x1000 */
-			blob.length = (attachment->value->len - total_written) < 0x1000 ? (attachment->value->len - total_written) : 0x1000;
+
+			blob.length = (attachment->value->len - total_written) < ATTACH_MAX_WRITE_SIZE ? 
+					(attachment->value->len - total_written) : ATTACH_MAX_WRITE_SIZE;
 			blob.data = (attachment->value->data) + total_written;
 
 			retval = WriteStream(&obj_stream,
@@ -313,10 +318,9 @@ exchange_mapi_util_get_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mess
 
 		/* Read attachment from stream */
 		while (!done) {
-			/* we are using a MAX_READ_SIZE of 0x1000 */
 			retval = ReadStream(&obj_stream,
 					    (buf_data) + off_data,
-					    0x1000,
+					    ATTACH_MAX_READ_SIZE,
 					    &cn_read);
 			if ((retval != MAPI_E_SUCCESS) || (cn_read == 0)) {
 				mapi_errstr("ReadStream", GetLastError());
