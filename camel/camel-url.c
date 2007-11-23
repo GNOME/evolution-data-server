@@ -224,7 +224,9 @@ camel_url_new_with_base (CamelURL *base, const char *url_string)
 		} else if (*url->path != '/') {
 			char *newpath, *last, *p, *q;
 
-			last = strrchr (base->path, '/');
+			/* the base->path is NULL if given Content-Base url was without last slash,
+			   i.e. like "http://example.com" (this expected only "http://example.com/") */
+			last = base->path ? strrchr (base->path, '/') : NULL;
 			if (last) {
 				newpath = g_strdup_printf ("%.*s/%s",
 							   (int)(last - base->path),
