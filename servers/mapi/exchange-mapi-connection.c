@@ -38,7 +38,7 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define UNLOCK()	printf("%s(%d):%s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
-#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
+//#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
 #define ENABLE_VERBOSE_LOG()
 
 /* Specifies READ/WRITE sizes to be used while handling attachment streams */
@@ -756,6 +756,105 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 	return TRUE;	
 }
 
+mapi_id_t 
+exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name)
+{
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	mapi_object_t obj_top;
+	enum MAPISTATUS retval;
+	mapi_object_t obj_message;
+	struct SRowSet SRowSet;
+	struct SPropTagArray *SPropTagArray;
+	struct mapi_SPropValue_array properties_array;
+	TALLOC_CTX *mem_ctx;
+	uint32_t i=0;
+	gpointer retobj = NULL;
+	mapi_id_t fid;
+	ExchangeMAPIFolder *folder;
+	struct SPropValue vals[1];
+	const char *type;
+
+	LOCK ();
+
+	LOGALL ();
+	mem_ctx = talloc_init("Evolution");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_top);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("createfolder openmsgstore failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+
+	printf("Opening folder %016llx\n", pfid);
+	/* We now open the folder */
+	retval = OpenFolder(&obj_store, pfid, &obj_top);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create folder openfolder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+	
+	retval = CreateFolder(&obj_top, name, "Created using Evolution/libmapi", &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create folder failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+
+	fid = mapi_object_get_id (&obj_folder);
+	switch (olFolder) {
+	case olFolderInbox:
+		type = IPF_NOTE;
+		break;
+	case olFolderCalendar:
+		type = IPF_APPOINTMENT;
+		break;
+	case olFolderContacts:
+		type = IPF_CONTACT;
+		break;
+	case olFolderTasks:
+		type = IPF_TASK;
+		break;
+	case olFolderNotes:
+		type = IPF_STICKYNOTE;
+		break;
+	default:
+		type = IPF_NOTE;
+	}
+
+	vals[0].value.lpszA = type;
+	vals[0].ulPropTag = PR_CONTAINER_CLASS;
+	retval = SetProps(&obj_folder, vals, 1);
+
+	if (retval != MAPI_E_SUCCESS) {
+		g_warning ("create folder set props failed: %d\n", retval);
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		LOGNONE ();
+		UNLOCK ();
+		return 0;
+	}
+
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_top);
+	
+	LOGNONE();
+	UNLOCK ();
+	
+	printf("Got %016llx\n", fid);
+	return fid;	
+}
+
+
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data, GSList *recipients, GSList *attachments)
 {
@@ -1119,7 +1218,6 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 
 	/* Prepare the directory listing */
 	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderTopInformationStore);
-	//	retval = GetDefaultFolder(&obj_store, &id_mailbox, olFolderInbox);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
@@ -1136,6 +1234,8 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	MAPIFreeBuffer(utf8_mailbox_name);
 
 	UNLOCK ();
+
+	*mapi_folders = g_slist_reverse (*mapi_folders);
 	return TRUE;
 
 }

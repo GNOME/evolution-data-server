@@ -1,3 +1,12 @@
+2007-11-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Implement Create folder.
+	* exchange-mapi-connection.c: (exchange_mapi_create_folder),
+	(exchange_mapi_get_folders_list):
+	* exchange-mapi-connection.h:
+	* exchange-mapi-folder.c: (exchange_mapi_container_class):
+	* exchange-mapi-folder.h:
+
 2007-11-23  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_util_set_attachments),
