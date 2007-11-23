@@ -129,117 +129,235 @@ exchange_mapi_connection_exists ()
 	return global_mapi_session != NULL;
 }
 
+/* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
+static gboolean
+exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList *attach_list)
+{
+	const uint32_t 	cn_props_attach = 4;
+	GSList 		*l;
+	enum MAPISTATUS	retval;
+	gboolean 	status = TRUE;
+
+	for (l = attach_list; l; l = l->next) {
+		ExchangeMAPIAttachment 	*attachment = (ExchangeMAPIAttachment *) (l->data);
+		int32_t 		flag;
+		uint32_t 		total_written;
+		gboolean 		done = FALSE;
+		struct SPropValue 	*props_attach;
+		mapi_object_t		obj_attach;
+		mapi_object_t		obj_stream;
+
+		props_attach = g_new (struct SPropValue, cn_props_attach);
+		mapi_object_init(&obj_attach);
+		mapi_object_init(&obj_stream);
+
+		/* CreateAttach */
+		retval = CreateAttach(obj_message, &obj_attach);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("CreateAttach", GetLastError());
+			goto cleanup;
+		}
+
+		flag = ATTACH_BY_VALUE; 
+		set_SPropValue_proptag(&props_attach[0], PR_ATTACH_METHOD, (const void *) (&flag));
+
+		/* MSDN Documentation: When the supplied offset is -1 (0xFFFFFFFF), the 
+		 * attachment is not rendered using the PR_RENDERING_POSITION property. 
+		 * All values other than -1 indicate the position within PR_BODY at which 
+		 * the attachment is to be rendered. 
+		 */
+		flag = -1;
+		set_SPropValue_proptag(&props_attach[1], PR_RENDERING_POSITION, (const void *) (&flag));
+
+		set_SPropValue_proptag(&props_attach[2], PR_ATTACH_FILENAME, (const void *) attachment->filename);
+		set_SPropValue_proptag(&props_attach[3], PR_ATTACH_LONG_FILENAME, (const void *) attachment->filename);
+
+		/* SetProps */
+		retval = SetProps(&obj_attach, props_attach, cn_props_attach);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("SetProps", GetLastError());
+			goto cleanup;
+		}
+
+		/* OpenStream on CreateAttach handle */
+		retval = OpenStream(&obj_attach, PR_ATTACH_DATA_BIN, 2, &obj_stream);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("OpenStream", GetLastError());
+			goto cleanup;
+		}
+
+		total_written = 0;
+		/* Write attachment */
+		while (!done) {
+			uint16_t 	cn_written = 0;
+			DATA_BLOB 	blob;
+			/* we are using a MAX_WRITE_SIZE of 0x1000 */
+			blob.length = (attachment->value->len - total_written) < 0x1000 ? (attachment->value->len - total_written) : 0x1000;
+			blob.data = (attachment->value->data) + total_written;
+
+			retval = WriteStream(&obj_stream,
+					     &blob,
+					     &cn_written);
+
+			if ((retval != MAPI_E_SUCCESS) || (cn_written == 0)) {
+				mapi_errstr("WriteStream", GetLastError());
+				done = TRUE;
+			} else {
+				total_written += cn_written;
+				if (total_written >= attachment->value->len)
+					done = TRUE;
+			}
+		}
+
+		/* message->SaveChanges() */
+		retval = SaveChanges(obj_message, &obj_attach, KEEP_OPEN_READWRITE);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("SaveChanges", GetLastError());
+//			goto cleanup;
+		}
+
+	cleanup:
+		if (retval != MAPI_E_SUCCESS) 
+			status = FALSE;
+		mapi_object_release(&obj_stream);
+		mapi_object_release(&obj_attach);
+		g_free (props_attach);
+	}
+
+	return status;
+}
+
+/* Returns TRUE if all attachments were read succcesfully, else returns FALSE */
 static gboolean
 exchange_mapi_util_get_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList **attach_list)
 {
-	enum MAPISTATUS	retval;
-	mapi_object_t	obj_tb_attach;
+	enum MAPISTATUS		retval;
+	mapi_object_t 		obj_tb_attach;
+	struct SPropTagArray	*proptags;
+	struct SRowSet		rows_attach;
+	uint32_t		attach_count;
+	uint32_t		i_row_attach;
+	gboolean 		status = TRUE;
+
+	/* do we need MIME tag, MIME sequence etc ? */
+	proptags = set_SPropTagArray(mem_ctx, 0x7, 
+				     PR_ATTACH_NUM, 
+				     PR_INSTANCE_KEY, 
+				     PR_RECORD_KEY, 
+				     PR_RENDERING_POSITION,
+				     PR_ATTACH_FILENAME, 
+				     PR_ATTACH_LONG_FILENAME,  
+				     PR_ATTACH_SIZE);
 
 	mapi_object_init(&obj_tb_attach);
 
 	/* open attachment table */
 	retval = GetAttachmentTable(obj_message, &obj_tb_attach);
-	mapi_errstr("GetAttachmentTable", GetLastError());
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetAttachmentTable", GetLastError());
+		goto cleanup;
+	}
+
+	retval = SetColumns(&obj_tb_attach, proptags);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SetColumns", GetLastError());
+		goto cleanup;
+	}
+
+	retval = GetRowCount(&obj_tb_attach, &attach_count);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetRowCount", GetLastError());
+		goto cleanup;
+	}
+
+	retval = QueryRows(&obj_tb_attach, attach_count, TBL_ADVANCE, &rows_attach);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("QueryRows", GetLastError());
+		goto cleanup;
+	}
 
 	/* foreach attachment, open by PR_ATTACH_NUM */
-	if (retval == MAPI_E_SUCCESS) {
-		struct SPropTagArray	*proptags;
-		struct SRowSet		rows_attach;
-		uint32_t		attach_count;
-		uint32_t		i_row_attach;
+	for (i_row_attach = 0; i_row_attach < rows_attach.cRows; i_row_attach++) {
+		const uint32_t	*num_attach;
+		mapi_object_t	obj_attach;
+		mapi_object_t 	obj_stream;
+		uint32_t 	cn_read = 0;
+		uint32_t 	off_data = 0;
+		gboolean 	done = FALSE;
+		uint8_t 	*buf_data = NULL;
+		const uint32_t 	*sz_data;
 
-		/* do we need MIME tag, MIME sequence etc ? */
-		proptags = set_SPropTagArray(mem_ctx, 0x7, 
-					     PR_ATTACH_NUM, 
-					     PR_INSTANCE_KEY, 
-					     PR_RECORD_KEY, 
-					     PR_RENDERING_POSITION,
-					     PR_ATTACH_FILENAME, 
-					     PR_ATTACH_LONG_FILENAME,  
-					     PR_ATTACH_SIZE);
+		mapi_object_init(&obj_attach);
+		mapi_object_init(&obj_stream);
 
-		retval = SetColumns(&obj_tb_attach, proptags);
-		mapi_errstr("SetColumns", GetLastError());
-		if (retval != MAPI_E_SUCCESS) return FALSE;
+		num_attach = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_NUM);
 
-		retval = GetRowCount(&obj_tb_attach, &attach_count);
-		mapi_errstr("GetRowCount", GetLastError());
-		if (retval != MAPI_E_SUCCESS) return FALSE;
-
-		retval = QueryRows(&obj_tb_attach, attach_count, TBL_ADVANCE, &rows_attach);
-		mapi_errstr("QueryRows", GetLastError());
-		if (retval != MAPI_E_SUCCESS) return FALSE;
+		retval = OpenAttach(obj_message, *num_attach, &obj_attach);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("OpenAttach", GetLastError());
+			goto loop_cleanup;
+		}
 
 		/* get a stream on PR_ATTACH_DATA_BIN */
-		for (i_row_attach = 0; i_row_attach < rows_attach.cRows; i_row_attach++) {
-			const uint32_t	*num_attach;
-			mapi_object_t	obj_attach;
-
-			mapi_object_init(&obj_attach);
-
-			num_attach = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_NUM);
-
-			retval = OpenAttach(obj_message, *num_attach, &obj_attach);
-			mapi_errstr("OpenAttach", GetLastError());
-			if (retval == MAPI_E_SUCCESS) {
-				mapi_object_t 	obj_stream;
-
-				mapi_object_init(&obj_stream);
-
-				retval = OpenStream(&obj_attach, PR_ATTACH_DATA_BIN, 0, &obj_stream);
-				mapi_errstr("OpenStream", GetLastError());
-				/* read stream content */
-				if (retval == MAPI_E_SUCCESS) {
-					uint32_t 	cn_read;
-					uint32_t 	off_data = 0;
-					int 		done = 0;
-					uint8_t 	*buf_data = NULL;
-					const uint32_t 	*sz_data;
-
-					/* Alloc buffer */
-					sz_data = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_SIZE);
-					buf_data = talloc_size(mem_ctx, *sz_data);
-					if (buf_data == 0)
-						return FALSE;
-
-					/* Read attachment */
-					while (done == 0) {
-						retval = ReadStream(&obj_stream,
-								    (buf_data) + off_data,
-								    0x1000,
-								    &cn_read);
-						mapi_errstr("ReadStream", GetLastError());
-						if ((retval != MAPI_E_SUCCESS) || (cn_read == 0))
-							done = 1;
-						else {
-							off_data += cn_read;
-							if (off_data >= *sz_data)
-							done = 1;
-						}
-					}
-
-					/* FIXME: should we utf8tolinux (mem_ctx, buf_data) ??*/
-
-					if (retval == MAPI_E_SUCCESS) {
-						ExchangeMAPIAttachment 	*attachment = g_new0 (ExchangeMAPIAttachment, 1);
-
-						attachment->value = g_byte_array_sized_new (off_data);
-						attachment->value = g_byte_array_append (attachment->value, buf_data, off_data);
-						attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_LONG_FILENAME);
-						if (!(attachment->filename && *attachment->filename))
-							attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_FILENAME);
-						*attach_list = g_slist_append (*attach_list, attachment);
-					}
-				}
-				mapi_object_release(&obj_stream);
-			}
-			mapi_object_release(&obj_attach);
+		retval = OpenStream(&obj_attach, PR_ATTACH_DATA_BIN, 0, &obj_stream);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("OpenStream", GetLastError());
+			goto loop_cleanup;
 		}
-		MAPIFreeBuffer(proptags);
-	}
-	mapi_object_release(&obj_tb_attach);
 
-	return TRUE;
+		/* Alloc buffer */
+		sz_data = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_SIZE);
+		buf_data = talloc_size(mem_ctx, *sz_data);
+		if (buf_data == 0)
+			goto loop_cleanup;
+
+		/* Read attachment from stream */
+		while (!done) {
+			/* we are using a MAX_READ_SIZE of 0x1000 */
+			retval = ReadStream(&obj_stream,
+					    (buf_data) + off_data,
+					    0x1000,
+					    &cn_read);
+			if ((retval != MAPI_E_SUCCESS) || (cn_read == 0)) {
+				mapi_errstr("ReadStream", GetLastError());
+				done = TRUE;
+			} else {
+				off_data += cn_read;
+				if (off_data >= *sz_data)
+					done = TRUE;
+			}
+		}
+
+		/* FIXME: should we utf8tolinux (mem_ctx, buf_data) ??*/
+
+		if (retval == MAPI_E_SUCCESS) {
+			ExchangeMAPIAttachment 	*attachment = g_new0 (ExchangeMAPIAttachment, 1);
+
+			attachment->value = g_byte_array_sized_new (off_data);
+			attachment->value = g_byte_array_append (attachment->value, buf_data, off_data);
+
+			attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_LONG_FILENAME);
+			if (!(attachment->filename && *attachment->filename))
+				attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_FILENAME);
+
+			*attach_list = g_slist_append (*attach_list, attachment);
+		}
+		talloc_free (buf_data);
+
+	loop_cleanup:
+		if (retval != MAPI_E_SUCCESS)
+			status = FALSE;
+		mapi_object_release(&obj_stream);
+		mapi_object_release(&obj_attach);
+	}
+
+cleanup:
+	if (retval != MAPI_E_SUCCESS)
+		status = FALSE;
+	mapi_object_release(&obj_tb_attach);
+	MAPIFreeBuffer(proptags);
+
+	return status;
 }
 
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
@@ -457,7 +575,6 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	}
 
 	mapi_object_release(&obj_folder);
-	
 
 	UNLOCK ();
 	
@@ -636,7 +753,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 }
 
 mapi_id_t
-exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data)
+exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data, GSList *recipients, GSList *attachments)
 {
 	mapi_object_t obj_store;	
 	mapi_object_t obj_folder;
@@ -686,6 +803,11 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		UNLOCK ();
 		return 0;
 	}
+
+	if (attachments) {
+		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments);
+	}
+
 	mapi_object_debug (&obj_message);
 	nameid = mapi_nameid_new(mem_ctx);
 	if (!build_name_id (nameid, ni_data)) {
@@ -713,26 +835,26 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		g_warning ("create item build props failed: %d\n", retval);
 		LOGNONE ();
 		UNLOCK ();
-		return 0;		
+		return 0;
 	}
 
 	retval = SetProps(&obj_message, props, propslen);
 	MAPIFreeBuffer(SPropTagArray);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("create item SetProps failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
 		LOGNONE ();
 		UNLOCK ();
-		return 0;				
+		return 0;
 	}
 
 	retval = SaveChangesMessage(&obj_folder, &obj_message);
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("create item SaveChangesMessage failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
 		LOGNONE ();
 		UNLOCK ();
-		return 0;						
+		return 0;
 	}
 
 	mid = mapi_object_get_id (&obj_message);
