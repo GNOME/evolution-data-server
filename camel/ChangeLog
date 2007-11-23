@@ -1,3 +1,10 @@
+2007-11-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #461979
+
+	* camel-url.c: (camel_url_new_with_base):
+	The base URL can be without a path, so do not crash, if that happen.
+
 2007-11-22  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #376425
