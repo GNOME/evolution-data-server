@@ -655,6 +655,10 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 	mapi_nameid_OOM_add(nameid, "FileAs", PSETID_Address);
 	mapi_nameid_lid_add(nameid, 0x8084, PSETID_Address);
 	mapi_nameid_OOM_add(nameid, "Email1Address", PSETID_Address);
+
+	mapi_nameid_lid_add(nameid, 0x8093, PSETID_Address);
+	mapi_nameid_lid_add(nameid, 0x80A3, PSETID_Address);
+	
 	mapi_nameid_string_add(nameid, "urn:schemas:contacts:fileas", PS_PUBLIC_STRINGS);
 
 	mapi_nameid_OOM_add(nameid, "WebPage", PSETID_Address);
@@ -662,7 +666,14 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 
 	mapi_nameid_OOM_add(nameid, "HomeAddress", PSETID_Address);	
 	mapi_nameid_OOM_add(nameid, "BusinessAddress", PSETID_Address);
+	mapi_nameid_lid_add(nameid, 0x3A4F, PS_MAPI);
+
+	mapi_nameid_lid_add(nameid, 0x8094, PSETID_Address);
+	mapi_nameid_lid_add(nameid, 0x80A4, PSETID_Address);
 	
+
+	printf("NAMMMMMMMMMMMM %d\n", nameid->count);
+
 	return TRUE;
 }
 
@@ -676,7 +687,10 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 	struct SPropValue *props;
 	int i=0;
 
-	props = g_new (struct SPropValue, 40); //FIXME: Correct value tbd
+	for (i=0; i<13; i++)
+		printf("hex %x\n", SPropTagArray->aulPropTag[i]);
+	i=0;
+	props = g_new (struct SPropValue, 50); //FIXME: Correct value tbd
 	set_str_value ( E_CONTACT_FILE_AS, SPropTagArray->aulPropTag[0]);
 
 	set_str_value (E_CONTACT_FULL_NAME, PR_DISPLAY_NAME);
@@ -684,13 +698,17 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 	set_str_value (E_CONTACT_FILE_AS, PR_NORMALIZED_SUBJECT);
 	set_str_value (E_CONTACT_EMAIL_1,  SPropTagArray->aulPropTag[1]);
 	set_str_value (E_CONTACT_EMAIL_1,  SPropTagArray->aulPropTag[2]);
-	set_str_value (E_CONTACT_FILE_AS,  SPropTagArray->aulPropTag[3]);
+	set_str_value (E_CONTACT_FILE_AS,  SPropTagArray->aulPropTag[5]);
 
 	
-	set_str_value ( E_CONTACT_EMAIL_1, 0x8083001e);
-	set_str_value ( E_CONTACT_EMAIL_2, 0x8093001e);
-	set_str_value ( E_CONTACT_EMAIL_3, 0x80a3001e);
-	set_str_value (E_CONTACT_HOMEPAGE_URL, SPropTagArray->aulPropTag[4]);
+//	set_str_value ( E_CONTACT_EMAIL_1, 0x8083001e);
+	set_str_value ( E_CONTACT_EMAIL_2, SPropTagArray->aulPropTag[3]);
+	set_str_value ( E_CONTACT_EMAIL_2, SPropTagArray->aulPropTag[11]);
+	
+	set_str_value ( E_CONTACT_EMAIL_3, SPropTagArray->aulPropTag[4]);
+	set_str_value ( E_CONTACT_EMAIL_3, SPropTagArray->aulPropTag[12]);
+	
+	set_str_value (E_CONTACT_HOMEPAGE_URL, SPropTagArray->aulPropTag[6]);
 	set_str_value (E_CONTACT_FREEBUSY_URL, 0x812C001E);
 	
 
@@ -758,7 +776,7 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 		EContactAddress *contact_addr;
 
 		contact_addr = e_contact_get (contact, E_CONTACT_ADDRESS_HOME);
-		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[6], contact_addr->street);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[8], contact_addr->street);
 		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_POST_OFFICE_BOX, contact_addr->ext);
 		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_CITY, contact_addr->locality);
 		set_SPropValue_proptag (&props[i++], PR_HOME_ADDRESS_STATE_OR_PROVINCE, contact_addr->region);
@@ -770,7 +788,7 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 		EContactAddress *contact_addr;
 
 		contact_addr = e_contact_get (contact, E_CONTACT_ADDRESS_WORK);
-		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[7], contact_addr->street);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[9], contact_addr->street);
 		set_SPropValue_proptag (&props[i++], PR_POST_OFFICE_BOX, contact_addr->ext);
 		set_SPropValue_proptag (&props[i++], PR_LOCALITY, contact_addr->locality);
 		set_SPropValue_proptag (&props[i++], PR_STATE_OR_PROVINCE, contact_addr->region);
@@ -779,13 +797,17 @@ build_props (struct SPropValue ** value, struct SPropTagArray * SPropTagArray, g
 	}
 
 	
-/* 	//set_str_value (E_CONTACT_NICKNAME, PR_NICKNAME); */
-/* 	if (e_contact_get (contact, E_CONTACT_IM_AIM)) { */
-/* 		GList *l = e_contact_get (contact, E_CONTACT_IM_AIM); */
-/* 		set_SPropValue_proptag (&props[i++], 0x8022001E, l->data); */
-/* 		printf("nick name %s\n", l->data); */
-/* 		i++; */
-/* 	} */
+// 	set_str_value (E_CONTACT_NICKNAME, SPropTagArray->aulPropTag[10]); 
+	if (e_contact_get (contact, E_CONTACT_IM_AIM)) {
+		GList *l = e_contact_get (contact, E_CONTACT_IM_AIM);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[7], l->data);
+	}
+
+	if (e_contact_get (contact, E_CONTACT_NICKNAME)) {
+		char *nick  = e_contact_get (contact, E_CONTACT_NICKNAME);
+		set_SPropValue_proptag (&props[i++], SPropTagArray->aulPropTag[10], nick);
+		printf("nickname %s %x\n", nick,  SPropTagArray->aulPropTag[10]);
+	}
 	
 	*value =props;
 	printf("Sending %d \n", i);
@@ -891,15 +913,7 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 				tmp = tmp->next;
 			}
 		}
-			
-	/*	tmp = id_list;
-		while (tmp) {
-			if (priv->is_cache_ready)
-				e_book_backend_db_cache_remove_contact (priv->cache, tmp->data);
-			if (priv->is_summary_ready)
-				e_book_backend_summary_remove_contact (priv->summary, tmp->data);			
-			tmp = tmp->next;
-		}*/		
+		
 		g_slist_free (list);
 		e_data_book_respond_remove_contacts (book, opid,
 							     GNOME_Evolution_Addressbook_Success,  id_list);
@@ -1151,7 +1165,7 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 		else {
 			struct mapi_SRestriction res;
 			GList *vcard_str = NULL;
-			if (!build_restriction_emails_contains (&res, query)) {
+			if (1 || !build_restriction_emails_contains (&res, query)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;				
 			}
@@ -1333,7 +1347,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 						contact_addr->country = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_COUNTRY);
 
 				} else {
-
+					printf("Value %s\n", value);
 						contact_addr->address_format = NULL;
 						contact_addr->po = NULL;
 						contact_addr->street = value;

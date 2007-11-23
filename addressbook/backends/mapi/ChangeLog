@@ -1,3 +1,11 @@
+2007-11-23  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Complete creation of contacts.
+
+	* e-book-backend-mapi.c: (build_name_id), (build_props),
+	(e_book_backend_mapi_remove_contacts),
+	(e_book_backend_mapi_get_contact_list), (emapidump_contact):
+
 2007-11-19  Suman Manjunath  <msuman@novell.com>
 
 	* e-book-backend-mapi.c: (create_contact_list_cb),
