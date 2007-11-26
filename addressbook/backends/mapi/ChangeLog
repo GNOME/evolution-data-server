@@ -1,3 +1,11 @@
+2007-11-26  Johnny Jacob  <jjohnny@novell.com>
+
+	** Build break fixes.
+	
+	* e-book-backend-mapi.c (e_book_backend_mapi_create_contact): create_item api 
+	changed.
+	(build_name_id): PS_MAPI is not in libmapi yet. 
+
 2007-11-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Complete creation of contacts.

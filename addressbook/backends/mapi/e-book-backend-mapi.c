@@ -666,7 +666,9 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 
 	mapi_nameid_OOM_add(nameid, "HomeAddress", PSETID_Address);	
 	mapi_nameid_OOM_add(nameid, "BusinessAddress", PSETID_Address);
-	mapi_nameid_lid_add(nameid, 0x3A4F, PS_MAPI);
+
+	// FIXME : Patch has to go into libmapi.
+	//	mapi_nameid_lid_add(nameid, 0x3A4F, PS_MAPI);
 
 	mapi_nameid_lid_add(nameid, 0x8094, PSETID_Address);
 	mapi_nameid_lid_add(nameid, 0x80A4, PSETID_Address);
@@ -839,7 +841,7 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 	   
 	case  GNOME_Evolution_Addressbook_MODE_REMOTE :
 		contact = e_contact_new_from_vcard(vcard);
-		status = exchange_mapi_create_item (olFolderContacts, priv->fid, build_name_id, contact, build_props, contact);
+		status = exchange_mapi_create_item (olFolderContacts, priv->fid, build_name_id, contact, build_props, contact, NULL, NULL);
 		if (!status) {
 			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
