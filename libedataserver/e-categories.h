@@ -27,12 +27,16 @@ G_BEGIN_DECLS
 
 GList      *e_categories_get_list (void);
 
-void        e_categories_add (const char *category, const char *color, const char *icon_file, gboolean searchable);
+/* 'unused' parameter was 'color', but it is deprecated now (see bug #308815) */
+void        e_categories_add (const char *category, const char *unused, const char *icon_file, gboolean searchable);
+
 void        e_categories_remove (const char *category);
 
 gboolean    e_categories_exist (const char *category);
+#ifndef EDS_DISABLE_DEPRECATED
 const char *e_categories_get_color_for (const char *category);
 void        e_categories_set_color_for (const char *category, const char *color);
+#endif
 const char *e_categories_get_icon_file_for (const char *category);
 void        e_categories_set_icon_file_for (const char *category, const char *icon_file);
 gboolean    e_categories_is_searchable (const char *category);

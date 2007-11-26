@@ -33,7 +33,9 @@
 typedef struct {
 	char *category;
 	char *icon_file;
+	#ifndef EDS_DISABLE_DEPRECATED
 	char *color;
+	#endif
 	gboolean searchable;
 } CategoryInfo;
 
@@ -81,7 +83,9 @@ free_category_info (CategoryInfo *cat_info)
 {
 	g_free (cat_info->category);
 	g_free (cat_info->icon_file);
+	#ifndef EDS_DISABLE_DEPRECATED
 	g_free (cat_info->color);
+	#endif
 	g_free (cat_info);
 }
 
@@ -133,9 +137,11 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 		g_string_append_printf (
 			string, " icon=\"%s\"", cat_info->icon_file);
 
+	#ifndef EDS_DISABLE_DEPRECATED
 	if (cat_info->color != NULL)
 		g_string_append_printf (
 			string, " color=\"%s\"", cat_info->color);
+	#endif
 
 	g_string_append_printf (
 		string, " searchable=\"%d\"", cat_info->searchable);
@@ -208,17 +214,26 @@ parse_categories (const gchar *contents, gsize length)
 	}
 
 	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
-		xmlChar *category, *icon, *color, *searchable;
+		xmlChar *category, *icon, *searchable;
+		#ifndef EDS_DISABLE_DEPRECATED
+		xmlChar *color;
+		#endif
 
 		category = xmlGetProp (node, (xmlChar *) "a");
 		icon = xmlGetProp (node, (xmlChar *) "icon");
+		#ifndef EDS_DISABLE_DEPRECATED
 		color = xmlGetProp (node, (xmlChar *) "color");
+		#endif
 		searchable = xmlGetProp (node, (xmlChar *) "searchable");
 
 		if (category != NULL) {
 			e_categories_add (
 				(gchar *) category,
+				#ifndef EDS_DISABLE_DEPRECATED
 				(gchar *) color,
+				#else
+				NULL,
+				#endif
 				(gchar *) icon,
 				(searchable != NULL) &&
 				strcmp ((gchar *) searchable, "0") != 0);
@@ -227,7 +242,9 @@ parse_categories (const gchar *contents, gsize length)
 
 		xmlFree (category);
 		xmlFree (icon);
+		#ifndef EDS_DISABLE_DEPRECATED
 		xmlFree (color);
+		#endif
 		xmlFree (searchable);
 	}
 
@@ -336,7 +353,12 @@ load_default_categories (void)
 			cat_info->icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
 		e_categories_add (
 			gettext (cat_info->category),
-			NULL, cat_info->icon_file, TRUE);
+			#ifndef EDS_DISABLE_DEPRECATED
+			cat_info->color,
+			#else
+			NULL,
+			#endif
+			cat_info->icon_file, TRUE);
 		g_free (cat_info->icon_file);
 		cat_info++;
 	}
@@ -429,15 +451,15 @@ e_categories_get_list (void)
 /**
  * e_categories_add:
  * @category: name of category to add.
- * @color: associated color.
+ * @unused: DEPRECATED! associated color. DEPRECATED!
  * @icon_file: full path of the icon associated to the category.
  * @searchable: whether the category can be used for searching in the GUI.
  *
- * Adds a new category, with its corresponding color and icon, to the
+ * Adds a new category, with its corresponding icon, to the
  * configuration database.
  */
 void
-e_categories_add (const char *category, const char *color, const char *icon_file, gboolean searchable)
+e_categories_add (const char *category, const char *unused, const char *icon_file, gboolean searchable)
 {
 	CategoryInfo *cat_info;
 
@@ -449,7 +471,9 @@ e_categories_add (const char *category, const char *color, const char *icon_file
 	/* add the new category */
 	cat_info = g_new0 (CategoryInfo, 1);
 	cat_info->category = g_strdup (category);
-	cat_info->color = g_strdup (color);
+#ifndef EDS_DISABLE_DEPRECATED
+	cat_info->color = g_strdup (unused);
+#endif
 	cat_info->icon_file = g_strdup (icon_file);
 	cat_info->searchable = searchable;
 
@@ -495,6 +519,7 @@ e_categories_exist (const char *category)
 	return (g_hash_table_lookup (categories_table, category) != NULL);
 }
 
+#ifndef EDS_DISABLE_DEPRECATED
 /**
  * e_categories_get_color_for:
  * @category: category to retrieve the color for.
@@ -502,6 +527,8 @@ e_categories_exist (const char *category)
  * Gets the color associated with the given category.
  *
  * Return value: a string representation of the color.
+ *
+ * DEPRECATED!
  */
 const char *
 e_categories_get_color_for (const char *category)
@@ -526,6 +553,8 @@ e_categories_get_color_for (const char *category)
  * @color: X color.
  *
  * Sets the color associated with the given category.
+ *
+ * DEPRECATED!
  */
 void
 e_categories_set_color_for (const char *category, const char *color)
@@ -544,6 +573,7 @@ e_categories_set_color_for (const char *category, const char *color)
 	cat_info->color = g_strdup (color);
 	save_categories ();
 }
+#endif /* EDS_DISABLE_DEPRECATED */
 
 /**
  * e_categories_get_icon_file_for:
@@ -551,7 +581,7 @@ e_categories_set_color_for (const char *category, const char *color)
  *
  * Gets the icon file associated with the given category.
  *
- * Return value: a string representation of the color.
+ * Return value: icon file name.
  */
 const char *
 e_categories_get_icon_file_for (const char *category)
@@ -573,7 +603,7 @@ e_categories_get_icon_file_for (const char *category)
 /**
  * e_categories_set_icon_file_for:
  * @category: category to set the icon file for.
- * @color: X color.
+ * @icon_file: icon file.
  *
  * Sets the icon file associated with the given category.
  */
