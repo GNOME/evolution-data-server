@@ -138,13 +138,11 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 			const GNOME_Evolution_Calendar_CalListener listener,
 			CORBA_Environment *ev)
 {
-	GNOME_Evolution_Calendar_Cal ret_cal = NULL;
+	GNOME_Evolution_Calendar_Cal ret_cal = CORBA_OBJECT_NIL;
 	EDataCalFactory *factory;
 	EDataCalFactoryPrivate *priv;
 	EDataCal *cal = CORBA_OBJECT_NIL;
 	ECalBackend *backend;
-	CORBA_Environment ev2;
-	GNOME_Evolution_Calendar_CalListener listener_copy;
 	ECalBackendFactory *backend_factory;
 	ESource *source;
 	char *str_uri;
@@ -189,18 +187,6 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		goto cleanup;
 	}
 
-	/* Duplicate the listener object */
-	CORBA_exception_init (&ev2);
-	listener_copy = CORBA_Object_duplicate (listener, &ev2);
-
-	if (BONOBO_EX (&ev2)) {
-		g_warning (G_STRLOC ": could not duplicate the listener");
-		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_NilListener);
-		CORBA_exception_free (&ev2);
-		goto cleanup;
-	}
-	CORBA_exception_free (&ev2);
-
 	/* Look for an existing backend */
 	backend = g_hash_table_lookup (factory->priv->backends, uri_type_string);
 	if (!backend) {
@@ -223,18 +209,16 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 
 	/* Create the corba calendar */
 	cal = e_data_cal_new (backend, listener);
-	printf ("cal = %p\n", cal);
-	if (!cal) {
+	if (cal) {
+		/* Let the backend know about its clients corba clients */
+		e_cal_backend_add_client (backend, cal);
+		e_cal_backend_set_mode (backend, priv->mode);
+		ret_cal = bonobo_object_corba_objref (BONOBO_OBJECT (cal));
+	} else {
 		g_warning (G_STRLOC ": could not create the corba calendar");
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
-		goto cleanup;
 	}
 
-	/* Let the backend know about its clients corba clients */
-	e_cal_backend_add_client (backend, cal);
-	e_cal_backend_set_mode (backend, priv->mode);
-
-	ret_cal = CORBA_Object_duplicate (BONOBO_OBJREF (cal), ev);
  cleanup:
 	e_uri_free (uri);
 	g_free (uri_type_string);

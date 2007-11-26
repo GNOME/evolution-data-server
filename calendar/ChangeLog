@@ -1,3 +1,10 @@
+2007-11-26  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494314
+
+	* libedata-cal/e-data-cal-factory.c: (impl_CalFactory_getCal):
+	Don't leak Cal object reference.
+
 2007-11-16  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #300584 by Peter Lord
