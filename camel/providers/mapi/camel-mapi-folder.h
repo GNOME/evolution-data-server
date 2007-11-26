@@ -27,10 +27,11 @@
 #include <camel/camel-data-cache.h>
 #include <camel/camel-offline-folder.h>
 #include <camel/camel-offline-journal.h>
+#include <libmapi/libmapi.h>
 
 #include "oc_thread.h"
 
-#define PATH_FOLDER ".evolution/mail/openchange"
+#define PATH_FOLDER ".evolution/mail/mapi"
 
 #define CAMEL_MAPI_FOLDER_TYPE     (camel_mapi_folder_get_type ())
 #define CAMEL_MAPI_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAPI_FOLDER_TYPE, CamelMapiFolder))
@@ -42,6 +43,44 @@
  */
 
 G_BEGIN_DECLS
+
+typedef enum  {
+	MAPI_ITEM_TYPE_MAIL=1,
+	MAPI_ITEM_TYPE_APPOINTMENT,
+	MAPI_ITEM_TYPE_CONTACT,
+	MAPI_ITEM_TYPE_JOURNAL,
+	MAPI_ITEM_TYPE_TASK
+} MapiItemType;
+
+
+typedef struct {
+	gchar *subject;
+	gchar *from;
+	gchar *to;
+	gchar *cc;
+	gchar *bcc;
+
+	int flags;
+	glong size;
+	time_t recieved_time;
+	time_t send_time;
+} MapiItemHeader;
+
+typedef struct {
+	gchar *body;
+	//Temp. Find a proper place for this
+	CamelStream *body_stream;
+} MapiItemMessage;
+
+
+typedef struct  {
+	mapi_id_t fid;
+	mapi_id_t mid;
+
+	MapiItemHeader header;
+	MapiItemMessage msg;
+}MapiItem;
+
 
 typedef struct  _CamelMapiFolder CamelMapiFolder;
 typedef struct  _CamelMapiFolderClass CamelMapiFolderClass;

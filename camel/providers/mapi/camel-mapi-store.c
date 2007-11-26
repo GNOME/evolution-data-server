@@ -92,7 +92,7 @@ static gboolean	mapi_disconnect(CamelService *, gboolean , CamelException *);
 static GList	*mapi_query_auth_types(CamelService *, CamelException *);
 
 /* store methods */
-static CamelFolder	*openchange_get_folder(CamelStore *, const char *, guint32, CamelException *);
+static CamelFolder	*mapi_get_folder(CamelStore *, const char *, guint32, CamelException *);
 static CamelFolderInfo	*openchange_create_folder(CamelStore *, const char *, const char *, CamelException *);
 static void		openchange_delete_folder(CamelStore *, const char *, CamelException *);
 static void		openchange_rename_folder(CamelStore *, const char *, const char *, CamelException *);
@@ -161,7 +161,7 @@ camel_mapi_store_class_init(CamelMapiStoreClass *klass)
 	store_class->hash_folder_name = mapi_hash_folder_name;
 	store_class->compare_folder_name = mapi_compare_folder_name;
 	store_class->get_inbox = openchange_get_inbox;
-	store_class->get_folder = openchange_get_folder;
+	store_class->get_folder = mapi_get_folder;
 	store_class->create_folder = openchange_create_folder;
 	store_class->delete_folder = openchange_delete_folder;
 	store_class->rename_folder = openchange_rename_folder;
@@ -244,6 +244,7 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 
 	/*storage path*/
 	priv->storage_path = camel_session_get_storage_path (session, service, ex);
+	printf("%s(%d):%s:storage_path = %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, priv->storage_path);
 	if (!priv->storage_path)
 		return;
 	
@@ -304,13 +305,20 @@ static GList *mapi_query_auth_types(CamelService *service, CamelException *ex)
   return NULL;
 }
 
-static CamelFolder *openchange_get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+static CamelFolder *
+mapi_get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
 {
-/* 	if (!(((CamelSummaryStore *)store)->fi)) { */
-/* 		oc_store_summary_update_info(((CamelOpenchangeStore *)store)->summary); */
-/* 		openchange_get_folder_info(store, NULL, 0, ex); */
-/* 	} */
-	return camel_mapi_folder_new(store, folder_name, flags, ex);
+	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
+	CamelMapiStorePrivate *priv = mapi_store->priv;
+	char *storage_path = NULL;
+	char *folder_dir = NULL;
+
+	storage_path = g_strdup_printf("%s/folders", priv->storage_path);
+	//	folder_dir = e_path_to_physical (storage_path, folder_name);
+	//	g_free(storage_path);
+
+	//	return camel_mapi_folder_new(store, folder_name, folder_dir, flags, ex);
+	return camel_mapi_folder_new(store, folder_name, storage_path, flags, ex);
 }
 
 /* FIXME: testing */
@@ -380,8 +388,7 @@ mapi_build_folder_info(CamelMapiStore *mapi_store, const char *parent_name, cons
 	const char *name;
 	CamelFolderInfo *fi;
 	CamelMapiStorePrivate *priv = mapi_store->priv;
-	printf("%s(%d):%s:folder_name : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, folder_name);
-	printf("%s(%d):%s:mapi_name : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, parent_name);
+
 	fi = g_malloc0(sizeof(*fi));
 	
 	fi->unread = -1;
@@ -406,12 +413,12 @@ mapi_build_folder_info(CamelMapiStore *mapi_store, const char *parent_name, cons
 		name = fi->full_name;
 	else
 		name++;
-	//	printf("%s(%d):%s:\tfull_name : %s\n\turi : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, name, fi->uri);
+
 	if (!strcmp (folder_name, "Sent Items"))
 		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
-	else if (!strcmp (folder_name, "Mailbox"))
+	else if (!strcmp (folder_name, "Inbox"))
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
-	else if (!strcmp (folder_name, "Trash"))
+	else if (!strcmp (folder_name, "Deleted Items"))
 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 	else if (!strcmp (folder_name, "Junk Mail"))
 		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
@@ -446,18 +453,21 @@ mapi_get_folder_info_offline (CamelStore *store, const char *top,
 
 	path = mapi_concat (name, "*");
 
+	printf("%s(%d):%s:summary count : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__ ,camel_store_summary_count((CamelStoreSummary *)mapi_store->summary));
 	for (i=0;i<camel_store_summary_count((CamelStoreSummary *)mapi_store->summary);i++) {
 		CamelStoreInfo *si = camel_store_summary_index((CamelStoreSummary *)mapi_store->summary, i);
 
 		if (si == NULL) 
 			continue;
-		printf("%s(%d):%s:si->path : %s\nsi->uri : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, si->path, si->uri);
+
 		if ( !strcmp(name, camel_mapi_store_info_full_name (mapi_store->summary, si))
 		     || match_path (path, camel_mapi_store_info_full_name (mapi_store->summary, si))) {
+
 			fi = mapi_build_folder_info(mapi_store, NULL, camel_store_info_path((CamelStoreSummary *)mapi_store->summary, si));
+
 			fi->unread = si->unread;
 			fi->total = si->total;
-			fi->flags = si->flags;
+
 			g_ptr_array_add (folders, fi);
 		}
 		camel_store_summary_info_free((CamelStoreSummary *)mapi_store->summary, si);
@@ -474,44 +484,33 @@ static CamelFolderInfo *
 convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const char *url, CamelException *ex)
 {
 	const char *name = NULL;
-/* 	gint64 *id = g_new0 (guint64, 1); */
-/* 	guint64 *parent = g_new0 (guint64, 1); */
 	gchar *parent, *id = NULL;
 	mapi_id_t mapi_id_folder;
 
 	char *par_name = NULL;
+	char *folder_name = NULL;
 	CamelFolderInfo *fi;
 	CamelMapiStoreInfo *si = NULL;
 	CamelMapiStorePrivate *priv = store->priv;
 	ExchangeMAPIFolderType type;
 
 	name = exchange_mapi_folder_get_name (folder);
-	//	printf("%s(%d):%s:NAME : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, name);
+
 	id = folder_mapi_ids_to_uid(exchange_mapi_folder_get_fid (folder));
-	//	type = e_gw_container_get_container_type (container);
 		
 	fi = g_new0 (CamelFolderInfo, 1);
 
-	//	if (type == E_GW_CONTAINER_TYPE_INBOX)
+	if (!strcmp (name, "Sent Items"))
+		fi->flags |= CAMEL_FOLDER_TYPE_SENT;
+	else if (!strcmp (name, "Inbox"))
 		fi->flags |= CAMEL_FOLDER_TYPE_INBOX;
-//TODO :
-/* 	if (type == E_GW_CONTAINER_TYPE_TRASH) */
-/* 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH; */
-/* 	if (type == E_GW_CONTAINER_TYPE_SENT) */
-/* 		fi->flags |= CAMEL_FOLDER_TYPE_SENT; */
-//TODO :
-/* 	if ( (type == E_GW_CONTAINER_TYPE_INBOX) || */
-/* 		(type == E_GW_CONTAINER_TYPE_SENT) || */
-/* 		(type == E_GW_CONTAINER_TYPE_DOCUMENTS) || */
-/* 		(type == E_GW_CONTAINER_TYPE_QUERY) || */
-/* 		(type == E_GW_CONTAINER_TYPE_CHECKLIST) || */
-/* 		(type == E_GW_CONTAINER_TYPE_DRAFT) || */
-/* 		(type == E_GW_CONTAINER_TYPE_CABINET) || */
-/* 		(type == E_GW_CONTAINER_TYPE_JUNK) || */
-/* 		(type == E_GW_CONTAINER_TYPE_TRASH) )  */
-		fi->flags |= CAMEL_FOLDER_SYSTEM;
+	else if (!strcmp (name, "Deleted Items"))
+		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
+	else if (!strcmp (name, "Junk Mail"))
+		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+
 	/*
-	   parent_hash contains the "parent id <-> container id" combination. So we form
+	   parent_hash contains the "parent id <-> folder id" combination. So we form
 	   the path for the full name in camelfolder info by looking up the hash table until
 	   NULL is found
 	 */
@@ -538,7 +537,6 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 			temp_parent = g_hash_table_lookup (priv->parent_hash, temp_parent);
 
 		} 
-		printf("%s(%d):%s:PAR_NAME != NULL : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, str);
 		fi->full_name = g_strdup (str);
 		fi->uri = g_strconcat (url, str, NULL);
 		g_free (str);
@@ -558,21 +556,14 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	/*name_hash returns the container id given the name */
 	g_hash_table_insert (priv->name_hash, g_strdup(fi->full_name), id);
 
-/* 	fi->total = e_gw_container_get_total_count (container); */
-/* 	fi->unread = e_gw_container_get_unread_count (container); */
-//FIXME:
 	fi->total = folder->total;
 	fi->unread = folder->unread_count;
 
 	si->info.total = fi->total;
 	si->info.unread = fi->unread;
-/* 	si->info.flags = fi->flags; */
-//FIXME:
-/* 	si->info.total = 0; */
-/* 	si->info.unread = 0; */
 	si->info.flags = 0;
 
-	/*refresh info*/
+	/*Refresh info*/
 	//FIXME : Disable for now . later fix this
 /* 	if (store->current_folder  */
 /* 	    && !strcmp (store->current_folder->full_name, fi->full_name) */
@@ -633,21 +624,16 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 		const char *name;
 		gchar *fid = NULL, *parent_id = NULL;
 
-/* 		guint64 *fid = g_new (guint64, 1); */
-/* 		guint64 *parent_id = g_new (guint64, 1) ; */
-
 		name = exchange_mapi_folder_get_name ((ExchangeMAPIFolder *)(temp_list->data));
 		fid = folder_mapi_ids_to_uid (exchange_mapi_folder_get_fid((ExchangeMAPIFolder *)(temp_list->data)));
 		parent_id = folder_mapi_ids_to_uid (exchange_mapi_folder_get_parent_id ((ExchangeMAPIFolder *)(temp_list->data)));
 
-/* 		if (e_gw_container_is_root (E_GW_CONTAINER(temp_list->data))) { */
-/* 			store->root_container = g_strdup (id); */
-/* 			continue; */
-/* 		} */
+		if (exchange_mapi_folder_is_root ((ExchangeMAPIFolder *)(temp_list->data)))
+			continue;
 
 		/*id_hash returns the name for a given container id*/
-		printf("%s(%d):%s:inserting fid : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, fid);
 		g_hash_table_insert (priv->id_hash, g_strdup (fid), g_strdup(name)); 
+
 		/*parent_hash returns the parent container id, given an id*/
 		g_hash_table_insert (priv->parent_hash, g_strdup(fid), g_strdup(parent_id));
 	}
@@ -657,25 +643,18 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 	for (;folder_list != NULL; folder_list = g_list_next (folder_list)) {
 		ExchangeMAPIFolder *folder = (ExchangeMAPIFolder *) folder_list->data;
 		
-		//TODO : Checking types. ignoring atm for poc.
-/* 		type = e_gw_container_get_container_type (container); */
+		if (exchange_mapi_folder_is_root ((ExchangeMAPIFolder *)(folder)))
+			continue;
 
-/* 		if (e_gw_container_is_root(container)) */
-/* 			continue; */
-/* 		if ( (folder->container_class == MAPI_FOLDER_TYPE_CONTACT) || (folder->container_class == MAPI_FOLDER_TYPE_APPOINTMENT)  */
-/* 		     (folder->container_class == MAPI_FOLDER_TYPE_MEMO) || (folder->container_class == MAPI_FOLDER_TYPE_TASK)) */
-/* 			continue; */
-		if ( folder->container_class != MAPI_FOLDER_TYPE_MAIL)
+		if ( folder->container_class != MAPI_FOLDER_TYPE_MAIL) 
 			continue;
 
 		info = convert_to_folder_info (store, folder, (const char *)url, ex);
 		if (info) {
 			hfi = g_hash_table_lookup (present, info->full_name);
 			if (hfi == NULL) {
-				printf("%s(%d):%s:Inserting : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, info->full_name);
 				g_hash_table_insert (present, info->full_name, info);
 			} else {
-				printf("%s(%d):%s:freeing :s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, info->full_name);
 				camel_folder_info_free (info);
 				info = NULL;
 			}
@@ -684,8 +663,6 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 	
 	g_free ((char *)url);
 	//	e_gw_connection_free_container_list (list);
-	count = camel_store_summary_count ((CamelStoreSummary *)store->summary);
-	printf("%s(%d):%s:summary_count : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, camel_store_summary_count ((CamelStoreSummary *)store->summary));
 	count = camel_store_summary_count ((CamelStoreSummary *)store->summary);
 	for (i=0;i<count;i++) {
 		si = camel_store_summary_index ((CamelStoreSummary *)store->summary, i);
@@ -739,7 +716,6 @@ mapi_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 	 * is used as is here.
 	 */
 	if (camel_store_summary_count ((CamelStoreSummary *)mapi_store->summary) == 0) {
-		d("summary count is zero");
 	/* 	if (mapi_store->list_loaded == 3) { */
 			mapi_folders_sync (mapi_store, ex);
 /* 			mapi_store->list_loaded -= 1; */

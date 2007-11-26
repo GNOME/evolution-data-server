@@ -36,7 +36,7 @@ static GStaticRecMutex folder_lock = G_STATIC_REC_MUTEX_INIT;
 static ExchangeMAPIFolderType
 container_class_to_type (const char *type)
 {
-	ExchangeMAPIFolderType folder_type = MAPI_FOLDER_TYPE_MAIL;
+	ExchangeMAPIFolderType folder_type = MAPI_FOLDER_TYPE_UNKNOWN;;
 
 	if (!strcmp (type, IPF_APPOINTMENT)) 
 		folder_type = MAPI_FOLDER_TYPE_APPOINTMENT;
@@ -46,8 +46,13 @@ container_class_to_type (const char *type)
 		folder_type = MAPI_FOLDER_TYPE_MEMO;
 	else if (!strcmp (type, IPF_TASK))
 		folder_type = MAPI_FOLDER_TYPE_TASK;
-
-	/* Else it has to be a mail folder only. It is assumed in MAPI code as well. */
+	else if (!strcmp (type, IPF_NOTE))
+		folder_type = MAPI_FOLDER_TYPE_MAIL;
+	/* Fixme : no definition for this is available in mapidef.h */
+	else if (!strcmp (type, "IPF.Note.HomePage"))
+		folder_type = MAPI_FOLDER_TYPE_NOTE_HOMEPAGE;
+	else if (!strcmp (type, IPF_JOURNAL))
+		folder_type = MAPI_FOLDER_TYPE_JOURNAL;
 
 	return folder_type;
 }
@@ -93,6 +98,12 @@ const guint64
 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder)
 {
 	return folder->parent_folder_id;
+}
+
+gboolean
+exchange_mapi_folder_is_root (ExchangeMAPIFolder *folder)
+{
+	return (folder->parent_folder_id == NULL);
 }
 
 ExchangeMAPIFolderType

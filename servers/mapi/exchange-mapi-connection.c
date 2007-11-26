@@ -27,8 +27,57 @@
 #include "exchange-mapi-folder.h"
 #include <param.h>
 
+#include <camel/camel-data-wrapper.h>
+#include <camel/camel-exception.h>
+#include <camel/camel-mime-filter-crlf.h>
+#include <camel/camel-mime-message.h>
+#include <camel/camel-multipart.h>
+#include <camel/camel-session.h>
+#include <camel/camel-stream-filter.h>
+#include <camel/camel-stream-mem.h>
+
+#define CN_MSG_PROPS 2
+#define	STREAM_SIZE	0x4000
 #define DEFAULT_PROF_PATH ".evolution/mapi-profiles.ldb"
 #define d(x) x
+
+typedef enum  {
+	MAPI_ITEM_TYPE_MAIL=1,
+	MAPI_ITEM_TYPE_APPOINTMENT,
+	MAPI_ITEM_TYPE_CONTACT,
+	MAPI_ITEM_TYPE_JOURNAL,
+	MAPI_ITEM_TYPE_TASK
+} MapiItemType;
+
+
+typedef struct {
+	gchar *subject;
+	gchar *from;
+	gchar *to;
+	gchar *cc;
+	gchar *bcc;
+
+	int flags;
+	glong size;
+	time_t recieved_time;
+	time_t send_time;
+} MapiItemHeader;
+
+typedef struct {
+	gchar *body;
+	//Temp. Find a proper place for this
+	CamelStream *body_stream;
+} MapiItemMessage;
+
+
+typedef struct  {
+	mapi_id_t fid;
+	mapi_id_t mid;
+
+	MapiItemHeader header;
+	MapiItemMessage msg;
+}MapiItem;
+
 
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
@@ -887,6 +936,16 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		return 0;
 	}
 
+	if (fid == 0 ){ /*fid not present then we'll use olFolder. Document this in API doc.*/
+		retval = GetDefaultFolder(&obj_store, &fid, olFolder);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetDefaultFolder", GetLastError());				
+			LOGNONE ();
+			UNLOCK ();
+			return 0;
+		}
+	}
+
 	printf("Opening folder %016llx\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
@@ -911,44 +970,57 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments);
 	}
 
+	if (recipients) {
+		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments);
+	}
+
 	mapi_object_debug (&obj_message);
-	nameid = mapi_nameid_new(mem_ctx);
-	if (!build_name_id (nameid, ni_data)) {
-		g_warning ("create item build name id failed: %d\n", retval);
-		LOGNONE ();
-		UNLOCK ();
-		return 0;		
+
+	if (build_name_id) {
+		nameid = mapi_nameid_new(mem_ctx);
+		if (!build_name_id (nameid, ni_data)) {
+			g_warning ("create item build name id failed: %d\n", retval);
+			LOGNONE ();
+			UNLOCK ();
+			return 0;
+		}
+		
+		SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+		retval = GetIDsFromNames(&obj_folder, nameid->count,
+					 nameid->nameid, 0, &SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			g_warning ("create item GetIDsFromNames failed: %d\n", retval);
+			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
+			LOGNONE ();
+			UNLOCK ();
+			return 0;
+		}
+		mapi_nameid_SPropTagArray(nameid, SPropTagArray);
+		MAPIFreeBuffer(nameid);
 	}
 
-	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
-	retval = GetIDsFromNames(&obj_folder, nameid->count,
-				 nameid->nameid, 0, &SPropTagArray);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item GetIDsFromNames failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
-	}
-	mapi_nameid_SPropTagArray(nameid, SPropTagArray);
-	MAPIFreeBuffer(nameid);
+	if (build_props) {
+		propslen = build_props (&props, SPropTagArray, p_data);
 
-	propslen = build_props (&props, SPropTagArray, p_data);
-	if (propslen <1) {
-		g_warning ("create item build props failed: %d\n", retval);
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
-	}
+		if (propslen <1) {
+			g_warning ("create item build props failed: %d\n", retval);
+			LOGNONE ();
+			UNLOCK ();
+			return 0;
+		}
 
-	retval = SetProps(&obj_message, props, propslen);
-	MAPIFreeBuffer(SPropTagArray);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item SetProps failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		retval = SetProps(&obj_message, props, propslen);
+
+		/* FixME */ 
+		//		MAPIFreeBuffer(SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			g_warning ("create item SetProps failed: %d\n", retval);
+			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
+			LOGNONE ();
+			UNLOCK ();
+			return 0;
+		}
+
 	}
 
 	retval = SaveChangesMessage(&obj_folder, &obj_message);
@@ -1239,4 +1311,3 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	return TRUE;
 
 }
-

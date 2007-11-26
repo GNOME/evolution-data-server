@@ -29,6 +29,11 @@ typedef struct {
 } ExchangeMAPIAttachment;
 
 typedef struct {
+	GByteArray *data;
+	uint32_t stream_prop;
+} ExchangeMAPIStream;
+
+typedef struct {
 } ExchangeMAPIRecipient;
 
 

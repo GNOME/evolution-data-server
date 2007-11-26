@@ -42,6 +42,7 @@
 #include "camel-mapi-summary.h"
 
 #define DEBUG_FN( ) printf("----%u %s\n", (unsigned int)pthread_self(), __FUNCTION__);
+#define d(x) x
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
@@ -54,7 +55,7 @@ struct _CamelMapiFolderPrivate {
 #endif
 
 };
-
+#if 0
 typedef enum  {
 	MAPI_ITEM_TYPE_MAIL=1,
 	MAPI_ITEM_TYPE_APPOINTMENT,
@@ -89,7 +90,7 @@ typedef struct  {
 	MapiItemHeader header;
 	MapiItemMessage msg;
 }MapiItem;
-
+#endif
 static void		openchange_refresh_info (CamelFolder *, CamelException *);
 static void		openchange_expunge (CamelFolder *, CamelException *);
 static void		openchange_sync (CamelFolder *, gboolean, CamelException *);
@@ -228,7 +229,7 @@ void	openchange_construct_summary(CamelFolder *folder, CamelException *ex, char 
 		
 		path = g_strdup_printf("%s/%s/%s", getenv("HOME"), PATH_FOLDER, file_name);
 		folder->summary = camel_folder_summary_new(folder);
-		camel_folder_summary_set_filename(folder->summary, path);
+/* 		camel_folder_summary_set_filename(folder->summary, path); */
 	}
 	/* try to load summay, return if ok */
 	retval = camel_folder_summary_load(folder->summary);
@@ -339,6 +340,7 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 	if(1){
 		mapi_refresh_folder(folder, ex);
 		si = camel_store_summary_path ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary, folder->full_name);
+
 		if (si) {
 			guint32 unread, total;
 			camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
@@ -1446,7 +1448,7 @@ camel_mapi_folder_get_type (void)
 }
 
 CamelFolder *
-camel_mapi_folder_new(CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+camel_mapi_folder_new(CamelStore *store, const char *folder_name, const char *folder_dir, guint32 flags, CamelException *ex)
 {
 
 	CamelFolder	*folder = NULL;
@@ -1465,7 +1467,11 @@ camel_mapi_folder_new(CamelStore *store, const char *folder_name, guint32 flags,
 		short_name = (char *) folder_name;
 	camel_folder_construct (folder, store, folder_name, short_name);
 
-	summary_file = g_strdup_printf ("%s-%s/summary",folder_name, "dir");
+	summary_file = g_strdup_printf ("%s/%s/summary",folder_dir, folder_name);
+
+	printf("%s(%d):%s:summary_file: %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, summary_file);
+	printf("%s(%d):%s:folder_name : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, folder_name);
+
 	folder->summary = camel_mapi_summary_new(folder, summary_file);
 	g_free(summary_file);
 
@@ -1478,12 +1484,12 @@ camel_mapi_folder_new(CamelStore *store, const char *folder_name, guint32 flags,
 	}
 
 	/* set/load persistent state */
-	state_file = g_strdup_printf ("%s/cmeta", g_strdup_printf ("%s-%s",folder_name, "dir"));
+	state_file = g_strdup_printf ("%s/cmeta", g_strdup_printf ("%s/%s",folder_dir, folder_name));
 	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
 	g_free(state_file);
 	camel_object_state_read(folder);
 
-	mapi_folder->cache = camel_data_cache_new (g_strdup_printf ("%s-%s",folder_name, "dir"),0 ,ex);
+	mapi_folder->cache = camel_data_cache_new (g_strdup_printf ("%s/%s",folder_dir, folder_name),0 ,ex);
 	if (!mapi_folder->cache) {
 		camel_object_unref (folder);
 		return NULL;

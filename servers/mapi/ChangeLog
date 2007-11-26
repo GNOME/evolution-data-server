@@ -1,3 +1,25 @@
+2007-11-26  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_create_item): Use callbacks only if they
+	are available. Null check for build_name_id and build_props.
+
+2007-11-25  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_set_recipient_table): API to set 
+	recipient table. Added.
+
+2007-11-23  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_create_item): Resolve and use
+	olFolder if fid is 0.
+
+	* exchange-mapi-folder.c (exchange_mapi_folder_is_root): Utility function Added.
+	
+	* exchange-mapi-folder.h (ExchangeMAPIFolderType): MAPI_FOLDER_TYPE_NOTE_HOMEPAGE,
+	MAPI_FOLDER_TYPE_UNKNOWN Added.
+
+	* exchange-mapi-folder.c (container_class_to_type): Handle unknown types.
+	
 2007-11-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Implement Create folder.
@@ -20,7 +42,7 @@
 	(exchange_mapi_connection_fetch_item), (exchange_mapi_create_item):
 	* exchange-mapi-connection.h: Set attachments implementation. 
 
-2007-11-19  Suman Manjunath  <msuman@novell.com>
+2007-11-19  Suman Manjunath  <msuman@novell.com>	
 
 	* exchange-mapi-connection.c: (exchange_mapi_util_get_attachments),
 	(exchange_mapi_connection_fetch_items):

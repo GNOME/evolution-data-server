@@ -1,59 +1,51 @@
-/*
- *  Copyright (C) Jean-Baptiste Arnoult 2007.
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Johnny Jacob <jjohnny@novell.com>
+ *   
+ * Copyright (C) 2007, Novell Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 3 of the GNU Lesser General Public 
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* camel-openchange-transport.h: Openchange-based transport class */
-
-
-#ifndef CAMEL_OPENCHANGE_TRANSPORT_H
-#define CAMEL_OPENCHANGE_TRANSPORT_H 1
+#ifndef CAMEL_MAPI_TRANSPORT_H
+#define CAMEL_MAPI_TRANSPORT_H 1
 
 #include <camel/camel-transport.h>
 
-/**
- * DATA STRUCTURES
- */
+#define CAMEL_MAPI_TRANSPORT_TYPE     (camel_mapi_transport_get_type ())
+#define CAMEL_MAPI_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAPI_TRANSPORT_TYPE, CamelMapiTransport))
+#define CAMEL_MAPI_TRANSPORT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MAPI_TRANSPORT_TYPE, CamelMapiTransportClass))
+#define CAMEL_IS_MAPI_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MAPI_TRANSPORT_TYPE))
+
+G_BEGIN_DECLS
 
 typedef struct {
-	CamelTransport parent_object;	
-} CamelOpenchangeTransport;
+	CamelTransport parent_object;
+	gboolean connected ;
+
+} CamelMapiTransport;
 
 
 typedef struct {
 	CamelTransportClass parent_class;
-} CamelOpenchangeTransportClass;
 
-/**
- * PROTOTYPES
- */
+} CamelMapiTransportClass;
 
-#ifndef __BEGIN_DECLS
-#ifdef __cplusplus
-#define __BEGIN_DECLS		extern "C" {
-#define __END_DECLS		}
-#else
-#define __BEGIN_DECLS
-#define __END_DECLS
-#endif
-#endif
 
-__BEGIN_DECLS
 /* Standard Camel function */
-CamelType camel_openchange_transport_get_type (void);
-__END_DECLS
+CamelType camel_mapi_transport_get_type (void);
 
-#endif /* CAMEL_OPENCHANGE_TRANSPORT_H */
+G_END_DECLS
+
+#endif /* CAMEL_MAPI_TRANSPORT_H */

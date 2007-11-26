@@ -143,7 +143,7 @@ camel_provider_module_init(void)
 	mapi_provider.url_equal = mapi_url_equal;
 	mapi_provider.license = "LGPL";
 	mapi_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mapi_store_get_type();
-	mapi_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_openchange_transport_get_type();
+	mapi_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_mapi_transport_get_type();
 	camel_provider_register (&mapi_provider);
 	mapi_initialize();
 }
