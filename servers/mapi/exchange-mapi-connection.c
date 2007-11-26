@@ -50,38 +50,8 @@ typedef enum  {
 } MapiItemType;
 
 
-typedef struct {
-	gchar *subject;
-	gchar *from;
-	gchar *to;
-	gchar *cc;
-	gchar *bcc;
-
-	int flags;
-	glong size;
-	time_t recieved_time;
-	time_t send_time;
-} MapiItemHeader;
-
-typedef struct {
-	gchar *body;
-	//Temp. Find a proper place for this
-	CamelStream *body_stream;
-} MapiItemMessage;
-
-
-typedef struct  {
-	mapi_id_t fid;
-	mapi_id_t mid;
-
-	MapiItemHeader header;
-	MapiItemMessage msg;
-}MapiItem;
-
-
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
-
 
 #define LOCK()		printf("%s(%d):%s: lock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK()	printf("%s(%d):%s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
@@ -102,13 +72,13 @@ mapi_profile_load(const char *profname, const char *password)
 	gchar *profpath = NULL;
 	struct mapi_session *session = NULL;
 	char *profile = profname;
-	/* Check if the session is already there before calling this. This cant/wont check that. */
 
 	d(printf("Loading profile with %s\n", profname));
 	
 	profpath = g_build_filename (g_getenv("HOME"), DEFAULT_PROF_PATH, NULL);
 	if (!g_file_test (profpath, G_FILE_TEST_EXISTS)) {
-		g_warning ("Database not found\n");
+		g_free (profpath);
+		g_warning ("Mapi profile database not found\n");
 		return NULL;
 	}
 
@@ -116,10 +86,9 @@ mapi_profile_load(const char *profname, const char *password)
 
 	if (MAPIInitialize(profpath) != MAPI_E_SUCCESS){
 		g_free(profpath);
-		profpath = NULL;
 		status = GetLastError();
 		if (status == MAPI_E_SESSION_LIMIT){
-			d(printf("Already connect - Still connected"));
+			d(printf("Already connected"));
 			mapi_errstr("MAPIInitialize", GetLastError());
 			return NULL;
 		}
@@ -129,17 +98,19 @@ mapi_profile_load(const char *profname, const char *password)
 		}
 	}
 
+	g_free (profpath);
+
 	ENABLE_VERBOSE_LOG ();
 	if (!profile) {
 		if ((retval = GetDefaultProfile(&profile)) != MAPI_E_SUCCESS) {
-/* 			mapi_errstr("GetDefaultProfile", GetLastError()); */
+			mapi_errstr("GetDefaultProfile", GetLastError());
 			return -1;
 		}
 
 	}
 	if (MapiLogonEx(&session, profile, password) == -1){
 		retval = GetLastError();
-		mapi_errstr("Error ", retval);
+		mapi_errstr("MapiLogonEx ", retval);
 		if (retval == MAPI_E_NETWORK_ERROR){
 			g_warning ("Network error\n");
 			return NULL;
@@ -152,7 +123,7 @@ mapi_profile_load(const char *profname, const char *password)
 		return NULL;
 	}
 	
-	g_free (profpath);
+
 	
 	return session;
   
@@ -166,13 +137,16 @@ exchange_mapi_connection_new (const char *profile, const char *password)
 		UNLOCK ();
 		return TRUE;
 	}
-	global_mapi_session = mapi_profile_load (profile, password);
+
+	if (!exchange_mapi_connection_exists ()) {
+		global_mapi_session = mapi_profile_load (profile, password);
+	}
 	UNLOCK ();
 
 	if (!global_mapi_session)
 		return FALSE;
 	
-	printf("Succccccccccccccccccccccccces\n");
+	d(printf("%s(%d):%s:Connected \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 	return TRUE;
 }
 

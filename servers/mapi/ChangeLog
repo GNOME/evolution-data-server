@@ -1,5 +1,15 @@
 2007-11-26  Johnny Jacob  <jjohnny@novell.com>
 
+	* exchange-mapi-folder.c (exchange_mapi_peek_folder_list): Check connection 
+	and connect before a folder_list call.
+
+	* exchange-mapi-connection.c: Removed MapiItem structs.
+	(exchange_mapi_connection_new): Check for connection and load profile.
+	(mapi_profile_load): free strings.
+	(exchange_mapi_connection_new): call function properly.
+
+2007-11-26  Johnny Jacob  <jjohnny@novell.com>
+
 	* exchange-mapi-connection.c (exchange_mapi_create_item): Use callbacks only if they
 	are available. Null check for build_name_id and build_props.
 
