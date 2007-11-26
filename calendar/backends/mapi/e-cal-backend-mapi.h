@@ -75,6 +75,9 @@ struct _ECalBackendMAPIClass {
 
 GType	e_cal_backend_mapi_get_type(void);
 
+const char *	
+e_cal_backend_mapi_get_local_attachments_store (ECalBackend *backend);
+
 G_END_DECLS
 
 #endif

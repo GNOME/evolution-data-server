@@ -26,8 +26,11 @@
 #include <e-cal-backend-mapi.h>
 #include <libecal/e-cal-component.h>
 
+//void
+//set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList *attach_list);
 void
-e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECalComponent *comp, const icaltimezone *default_zone);
+e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValue_array *properties, ECalComponent *comp, 
+				  GSList *recipients, GSList *attachments, const icaltimezone *default_zone);
 
 gboolean
 build_name_id (struct mapi_nameid *nameid, gpointer data);

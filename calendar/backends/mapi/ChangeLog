@@ -1,3 +1,18 @@
+2007-11-26  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-utils.c: (fetch_attachments),
+	(set_attachments_to_cal_component),
+	(e_cal_backend_mapi_props_to_comp):	
+	* e-cal-backend-mapi-utils.h: Support for fetching attachments, 
+	improved property mapping. 
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_remove),
+	(get_changes_cb), (get_deltas), (cache_create_cb),
+	(e_cal_backend_mapi_open), (e_cal_backend_mapi_create_object),
+	(e_cal_backend_mapi_get_local_attachments_store),
+	(e_cal_backend_mapi_authenticate):
+	* e-cal-backend-mapi.h: Support for removing folders, dummy create
+	attachments implementation. 
+
 2007-11-15  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi-factory.c: (eds_module_initialize),

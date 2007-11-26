@@ -55,6 +55,9 @@ struct _ECalBackendMAPIPrivate {
 	
 	char			*user_email;
 	char			*local_attachments_store;
+
+	/* used exclusively for delta fetching */
+	GSList 			*cache_keys;
 };
 
 #define CACHE_REFRESH_INTERVAL 600000
@@ -234,9 +237,27 @@ e_cal_backend_mapi_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendMAPI *cbmapi;
 	ECalBackendMAPIPrivate *priv;
+	gboolean authenticated = FALSE, status = FALSE;
 
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
+
+	if (priv->mode == CAL_MODE_LOCAL)
+		return GNOME_Evolution_Calendar_RepositoryOffline;
+#if 0
+	if (exchange_mapi_connection_exists ())
+		authenticated = TRUE;
+	else if (exchange_mapi_connection_new (priv->user_email, NULL)) 
+		authenticated = TRUE;
+	else { 
+		authenticated = FALSE;
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Authentication failed"));
+		return GNOME_Evolution_Calendar_AuthenticationFailed;
+	}
+#endif
+	status = exchange_mapi_remove_folder (priv->olFolder, priv->fid);
+	if (!status)
+		return GNOME_Evolution_Calendar_OtherError;
 
 	g_mutex_lock (priv->mutex);
 
@@ -244,17 +265,15 @@ e_cal_backend_mapi_remove (ECalBackendSync *backend, EDataCal *cal)
 	if (priv->cache)
 		e_file_cache_remove (E_FILE_CACHE (priv->cache));
 
-	/* anything else ? */
-
 	g_mutex_unlock (priv->mutex);
+
+	/* anything else ? */
 
 	return GNOME_Evolution_Calendar_Success;
 }
 
-static GSList *cache_keys = NULL;
-
 static gboolean
-get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	ECalBackendMAPI *cbmapi	= data;
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
@@ -263,7 +282,8 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	GSList *cache_comp_uid = NULL;
 
 	tmp = g_strdup_printf ("%016llx", mid);
-	cache_comp_uid = g_slist_find (cache_keys, tmp);
+	cache_comp_uid = g_slist_find_custom (priv->cache_keys, tmp, (GCompareFunc) (g_ascii_strcasecmp));
+printf ("\n******* mid [%s] *******\n", tmp);
 
 	if (cache_comp_uid == NULL) {
 		ECalComponentVType type = E_CAL_COMPONENT_NO_TYPE;
@@ -280,14 +300,13 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 				type = E_CAL_COMPONENT_JOURNAL;
 				break;
 			default:
-				type = E_CAL_COMPONENT_EVENT;
-				break;
+				return FALSE;
 		}
 
 		comp = e_cal_component_new ();
 		e_cal_component_set_new_vtype (comp, type);
 
-		e_cal_backend_mapi_props_to_comp (array, comp, priv->default_zone);
+		e_cal_backend_mapi_props_to_comp (cbmapi, array, comp, recipients, attachments, priv->default_zone);
 
 		e_cal_component_set_uid (comp, tmp);
 
@@ -319,7 +338,7 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 				e_cal_component_commit_sequence (comp);
 				old_comp_str = e_cal_component_get_as_string (comp);
 
-				e_cal_backend_mapi_props_to_comp (array, comp, priv->default_zone);
+				e_cal_backend_mapi_props_to_comp (cbmapi, array, comp, recipients, attachments, priv->default_zone);
 
 				e_cal_component_commit_sequence (comp);
 				new_comp_str = e_cal_component_get_as_string (comp);
@@ -331,7 +350,7 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 			}
 			g_object_unref (comp);
 		}
-		cache_keys = g_slist_remove_link (cache_keys, cache_comp_uid);
+		priv->cache_keys = g_slist_remove_link (priv->cache_keys, cache_comp_uid);
 	}
 
 	g_free (tmp);
@@ -395,19 +414,19 @@ get_deltas (gpointer handle)
 	 /* e_cal_backend_cache_get_keys returns a list of all the keys. 
 	  * The items in the list are pointers to internal data, 
 	  * so should not be freed, only the list should. */
-	cache_keys = e_cal_backend_cache_get_keys (cache);
+	priv->cache_keys = e_cal_backend_cache_get_keys (cache);
 
-	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+//	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
 	if (!exchange_mapi_connection_fetch_items (priv->olFolder, NULL, get_changes_cb, priv->fid, cbmapi)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (cache));
-		g_slist_free (cache_keys); cache_keys = NULL;
+		priv->cache_keys = NULL;
 		return GNOME_Evolution_Calendar_OtherError;
 	}
-	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+//	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
-	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	for (ls = cache_keys; ls ; ls = g_slist_next (ls)) {
+//	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+	for (ls = priv->cache_keys; ls ; ls = g_slist_next (ls)) {
 		ECalComponent *comp = NULL;
 		icalcomponent *icalcomp = NULL;
 
@@ -431,10 +450,10 @@ get_deltas (gpointer handle)
 		}
 		g_object_unref (comp);
 	}
-	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
+//	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
-//	g_slist_free (cache_keys); 
-	cache_keys = NULL;
+//	g_slist_free (priv->cache_keys); 
+	priv->cache_keys = NULL;
 
 #if 0
 	filter = e_gw_filter_new ();
@@ -516,7 +535,7 @@ get_deltas_timeout (gpointer cbmapi)
 static GMutex *mutex = NULL;
 
 static gboolean
-cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, const mapi_id_t mid, gpointer data)
+cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
 	ECalBackendMAPI *cbmapi	= data;
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
@@ -536,17 +555,18 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 			type = E_CAL_COMPONENT_JOURNAL;
 			break;
 		default:
-			type = E_CAL_COMPONENT_EVENT;
-			break;
+			return FALSE; 
 	}
 	
 	comp = e_cal_component_new ();
 	e_cal_component_set_new_vtype (comp, type);
-	e_cal_backend_mapi_props_to_comp (properties, comp, priv->default_zone);
-
 	tmp = g_strdup_printf ("%016llx", mid);
+printf ("\n******* mid [%s] *******\n", tmp);
 	e_cal_component_set_uid (comp, tmp);
+	e_cal_backend_mapi_props_to_comp (cbmapi, properties, comp, recipients, attachments, priv->default_zone);
+//set_attachments_to_cal_component (cbmapi, comp, attachments);
 	g_free (tmp);
+#if 0
 printf ("\n******* start of item *******\n");
 for (i = 0; i < properties->cValues; i++) { 
 	for (i = 0; i < properties->cValues; i++) {
@@ -595,11 +615,12 @@ for (i = 0; i < properties->cValues; i++) {
 				break;
 			default:
 				printf(" - NONE NULL");
+				break;
 		}
 	}
 }
 printf ("\n****** end of item *******\n");
-
+#endif
 	if (E_IS_CAL_COMPONENT (comp)) {
 		char *comp_str;
 
@@ -1045,15 +1066,19 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
 	ESource *esource;
-	char *source = NULL;
+	const char *source = NULL;
 	char *filename;
 	char *mangled_uri;
 	int i;
 	const gchar *tmp;
 	uint32_t olFolder = 0;
-	
+
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
+
+	esource = e_cal_backend_get_source (E_CAL_BACKEND (cbmapi));
+	if (!e_source_get_property (esource, "folder-id"))
+		return GNOME_Evolution_Calendar_Success;
 
 	g_mutex_lock (priv->mutex);
 
@@ -1072,7 +1097,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		break;
 	case ICAL_VJOURNAL_COMPONENT:
 		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-		source = "memos";
+		source = "journal";
 		olFolder = olFolderNotes;
 		break;
 	default:
@@ -1080,12 +1105,10 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		break;
 	}
 
-	esource = e_cal_backend_get_source (E_CAL_BACKEND (cbmapi));
-
 	/* Not for remote */	
 	if (priv->mode == CAL_MODE_LOCAL) {
 		const gchar *display_contents = NULL;
-			
+
 		cbmapi->priv->read_only = TRUE;				
 		display_contents = e_source_get_property (esource, "offline_sync");
 		
@@ -1152,6 +1175,14 @@ e_cal_backend_mapi_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 	ECalComponent *comp;
 	mapi_id_t mid = 0;
 	gchar *tmp = NULL;
+	GSList *attachments = NULL;
+int i;
+ExchangeMAPIAttachment *att1 = g_new0 (ExchangeMAPIAttachment, 1);
+att1->filename = "somefile.txt";
+att1->value = g_byte_array_new ();
+  for (i = 0; i < 10000; i++)
+    g_byte_array_append (att1->value, (guint8*) "abcd", 4);
+attachments = g_slist_append (attachments, att1);
 
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
@@ -1180,7 +1211,7 @@ e_cal_backend_mapi_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		case CAL_MODE_ANY:
 		case CAL_MODE_REMOTE:
 			/* Create an appointment */
-			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, build_name_id, comp, build_props, comp);
+			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, build_name_id, comp, build_props, comp, NULL, attachments);
 			if (!mid) {
 				g_object_unref (comp);
 				return GNOME_Evolution_Calendar_OtherError;
@@ -1712,3 +1743,23 @@ e_cal_backend_mapi_get_type (void)
 
 	return e_cal_backend_mapi_type;
 }
+
+
+/***** UTILITY FUNCTIONS *****/
+const char *	
+e_cal_backend_mapi_get_local_attachments_store (ECalBackend *backend)
+{
+	ECalBackendMAPI *cbmapi;
+	ECalBackendMAPIPrivate *priv;
+
+	cbmapi = E_CAL_BACKEND_MAPI (backend);
+	priv = cbmapi->priv;
+
+	return priv->local_attachments_store;
+}
+
+static ECalBackendSyncStatus
+e_cal_backend_mapi_authenticate ()
+{
+}
+

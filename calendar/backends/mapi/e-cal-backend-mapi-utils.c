@@ -24,6 +24,10 @@
 #include <config.h>
 #endif
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-utils.h"
 
@@ -95,8 +99,107 @@ foo (const time_t tm, const int is_date, const icaltimezone *comp_zone)
 	return itt;
 }
 
+/* This function is largely duplicated in
+ * ../file/e-cal-backend-file.c
+ */
+static void
+fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponent *comp)
+{
+	GSList *attach_list = NULL, *new_attach_list = NULL;
+	GSList *l;
+	char  *attach_store;
+	char *dest_url, *dest_file;
+	int fd;
+	const char *uid;
+
+	e_cal_component_get_attachment_list (comp, &attach_list);
+	e_cal_component_get_uid (comp, &uid);
+	/*FIXME  get the uri rather than computing the path */
+	attach_store = g_strdup (e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi)));
+	
+	for (l = attach_list; l ; l = l->next) {
+		char *sfname = (char *)l->data;
+		char *filename, *new_filename;
+		GMappedFile *mapped_file;
+		GError *error = NULL;
+
+		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
+		if (!mapped_file) {
+			g_message ("DEBUG: could not map %s: %s\n",
+				   sfname, error->message);
+			g_error_free (error);
+			continue;
+		}
+		filename = g_path_get_basename (sfname);
+		new_filename = g_strconcat (uid, "-", filename, NULL);
+		g_free (filename);
+		dest_file = g_build_filename (attach_store, new_filename, NULL);
+		g_free (new_filename);
+		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
+		if (fd == -1) {
+			/* TODO handle error conditions */
+			g_message ("DEBUG: could not open %s for writing\n",
+				   dest_file);
+		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
+				  g_mapped_file_get_length (mapped_file)) == -1) {
+			/* TODO handle error condition */
+			g_message ("DEBUG: attachment write failed.\n");
+		}
+
+		g_mapped_file_free (mapped_file);
+		if (fd != -1)
+			close (fd);
+		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
+		g_free (dest_file);
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
+	}
+	g_free (attach_store);
+	e_cal_component_set_attachment_list (comp, new_attach_list);
+}
+
+static void
+set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList *attach_list)
+{
+	GSList *comp_attachment_list = NULL, *l;
+	const char *uid;
+	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi));
+	
+	e_cal_component_get_uid (comp, &uid);
+	for (l = attach_list; l ; l = l->next) {
+		ExchangeMAPIAttachment *attach_item = (ExchangeMAPIAttachment *) (l->data);
+		gchar *attach_file_url, *filename;
+		struct stat st;
+
+		attach_file_url = g_strconcat (local_store, "/", uid, "-", attach_item->filename, NULL);
+		filename = g_filename_from_uri (attach_file_url, NULL, NULL);
+
+		if (g_stat (filename, &st) == -1) {
+			int fd = g_open (filename, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
+			if (fd == -1) { 
+				/* skip gracefully */
+				g_warning ("DEBUG: could not serialize attachments\n");
+			} else if (write (fd, attach_item->value->data, attach_item->value->len) == -1) {
+				/* skip gracefully */
+				g_warning ("DEBUG: attachment write failed.\n");
+			}
+			if (fd != -1) {
+				close (fd);
+				comp_attachment_list = g_slist_append (comp_attachment_list, attach_file_url);
+printf ("\n\nattached [%s] to an icalcomponent [%s] \n\n", attach_item->filename, uid);
+			} else 
+				g_free (attach_file_url);
+		}
+
+		g_free (filename);
+//		g_free (attach_file_url);
+	}
+
+	e_cal_component_set_attachment_list (comp, comp_attachment_list);
+}
+
 void
-e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECalComponent *comp, const icaltimezone *default_zone)
+e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValue_array *properties, ECalComponent *comp, 
+				  GSList *recipients, GSList *attachments, const icaltimezone *default_zone)
 {
 	struct timeval t;
 	const char *subject = NULL;
@@ -111,7 +214,9 @@ e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECal
 	ical_comp = e_cal_component_get_icalcomponent (comp);
 	utc_zone = icaltimezone_get_utc_timezone ();
 
-//	subject = (const char *)find_mapi_SPropValue_data(properties, PR_CONVERSATION_TOPIC);
+	subject = (const char *)find_mapi_SPropValue_data(properties, PR_SUBJECT);
+	if (!subject)
+		subject = (const char *)find_mapi_SPropValue_data(properties, PR_NORMALIZED_SUBJECT);
 	/* FIXME: you gotta better way to do this ?? */
 	if (!subject) {
 		const gchar *tmp;
@@ -152,6 +257,8 @@ e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECal
 	if (icalcomponent_isa (ical_comp) == ICAL_VEVENT_COMPONENT) {
 		const uint32_t *transp;
 		const bool *all_day;
+		const bool *recurring;
+		const bool *reminder_set;
 
 		all_day = (const bool *)find_mapi_SPropValue_data(properties, 0x8215000B);
 
@@ -184,6 +291,33 @@ e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECal
 			prop = icalproperty_new_transp (ical_transp);
 			icalcomponent_add_property (ical_comp, prop);
 		}
+
+		recurring = (const bool *)find_mapi_SPropValue_data(properties, 0x8223000B);
+		if (recurring && *recurring) {
+			/* FIXME: recurrence */
+		}
+
+		/* FIXME: the ALARM definitely needs more work */
+		reminder_set = (const bool *)find_mapi_SPropValue_data(properties, 0x8503000B);
+		if (reminder_set && *reminder_set) {
+			struct timeval start, before;
+
+			if ((get_mapi_SPropValue_array_date_timeval (&start, properties, 0x85160040) == MAPI_E_SUCCESS) 
+			 && (get_mapi_SPropValue_array_date_timeval (&before, properties, 0x85600040) == MAPI_E_SUCCESS)) {
+				ECalComponentAlarm *e_alarm = e_cal_component_alarm_new ();
+				ECalComponentAlarmTrigger trigger;
+
+				trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
+				trigger.u.rel_duration = icaltime_subtract (icaltime_from_timet_with_zone (before.tv_sec, 0, 0), icaltime_from_timet_with_zone (start.tv_sec, 0, 0));
+
+				e_cal_component_alarm_set_action (e_alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
+				e_cal_component_alarm_set_trigger (e_alarm, trigger);
+
+				e_cal_component_add_alarm (comp, e_alarm);
+			}
+		} else
+			e_cal_component_remove_all_alarms (comp);
+
 	} else if (icalcomponent_isa (ical_comp) == ICAL_VTODO_COMPONENT) {
 		const double *complete = 0;
 		const uint32_t *status;
@@ -232,30 +366,35 @@ e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECal
 			prop = icalproperty_new_percentcomplete ((int)(*complete * 100));
 			icalcomponent_add_property (ical_comp, prop);
 		}
+	} else if (icalcomponent_isa (ical_comp) == ICAL_VJOURNAL_COMPONENT) {
+		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PR_LAST_MODIFICATION_TIME) == MAPI_E_SUCCESS)
+			icalcomponent_set_dtstart (ical_comp, foo (t.tv_sec, TRUE, default_zone));
 	}
 
-	/* priority */
-	priority = (const uint32_t *)find_mapi_SPropValue_data(properties, PR_PRIORITY);
-	if (priority) {
-		int ical_priority;
-		switch (*priority) {
-			case PRIORITY_LOW:
-				ical_priority = 7;
-				break;
-			case PRIORITY_NORMAL:
-				ical_priority = 5;
-				break;
-			case PRIORITY_HIGH:
-				ical_priority = 1;
-				break;
-			default: 
-				ical_priority = 5;
-				break;
+	if (icalcomponent_isa (ical_comp) == ICAL_VEVENT_COMPONENT || icalcomponent_isa (ical_comp) == ICAL_VTODO_COMPONENT) {
+		/* priority */
+		priority = (const uint32_t *)find_mapi_SPropValue_data(properties, PR_PRIORITY);
+		if (priority) {
+			int ical_priority;
+			switch (*priority) {
+				case PRIORITY_LOW:
+					ical_priority = 7;
+					break;
+				case PRIORITY_NORMAL:
+					ical_priority = 5;
+					break;
+				case PRIORITY_HIGH:
+					ical_priority = 1;
+					break;
+				default: 
+					ical_priority = 5;
+					break;
+			}
+			if ((prop = icalcomponent_get_first_property (ical_comp, ICAL_PRIORITY_PROPERTY)) != 0)
+				icalcomponent_remove_property (ical_comp, prop);
+			prop = icalproperty_new_priority (ical_priority);
+			icalcomponent_add_property (ical_comp, prop);
 		}
-		if ((prop = icalcomponent_get_first_property (ical_comp, ICAL_PRIORITY_PROPERTY)) != 0)
-			icalcomponent_remove_property (ical_comp, prop);
-		prop = icalproperty_new_priority (ical_priority);
-		icalcomponent_add_property (ical_comp, prop);
 	}
 
 	/* classification */
@@ -284,29 +423,11 @@ e_cal_backend_mapi_props_to_comp (struct mapi_SPropValue_array *properties, ECal
 		icalcomponent_add_property (ical_comp, prop);
 	}
 
-	/* FIXME: attachments */
 	/* FIXME: categories */
 
-	/* FIXME: the ALARM definitely needs more work */
-	if (icalcomponent_isa (ical_comp) == ICAL_VEVENT_COMPONENT) {
-		struct timeval start, before;
-
-		if ((get_mapi_SPropValue_array_date_timeval (&start, properties, 0x85020040) == MAPI_E_SUCCESS) 
-		 && (get_mapi_SPropValue_array_date_timeval (&before, properties, 0x85600040) == MAPI_E_SUCCESS)) {
-			ECalComponentAlarm *e_alarm = e_cal_component_alarm_new ();
-			ECalComponentAlarmTrigger trigger;
-
-			trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
-			trigger.u.rel_duration = icaltime_subtract (icaltime_from_timet_with_zone (before.tv_sec, 0, 0), icaltime_from_timet_with_zone (start.tv_sec, 0, 0));
-
-			e_cal_component_alarm_set_action (e_alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
-			e_cal_component_alarm_set_trigger (e_alarm, trigger);
-
-			e_cal_component_add_alarm (comp, e_alarm);
-		}
-	}
-
 	e_cal_component_rescan (comp);
+
+	set_attachments_to_cal_component (cbmapi, comp, attachments);
 }
 
 gboolean
