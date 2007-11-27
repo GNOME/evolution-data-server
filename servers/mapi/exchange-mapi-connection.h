@@ -45,7 +45,7 @@ typedef int  (*BuildProps) (struct SPropValue **, struct SPropTagArray *, gpoint
 gboolean 
 exchange_mapi_connection_new (const char *profile, const char *password);
 
-gboolean
+void
 exchange_mapi_connection_close ();
 
 gboolean

@@ -134,6 +134,7 @@ exchange_mapi_connection_new (const char *profile, const char *password)
 {
 	LOCK ();
 	if (global_mapi_session) {
+		d(printf("Already logged\n"));
 		UNLOCK ();
 		return TRUE;
 	}
@@ -142,8 +143,10 @@ exchange_mapi_connection_new (const char *profile, const char *password)
 
 	UNLOCK ();
 
-	if (!global_mapi_session)
+	if (!global_mapi_session) {
+		g_warning ("Login failed\n");
 		return FALSE;
+	}
 	
 	d(printf("%s(%d):%s:Connected \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 	return TRUE;
@@ -155,7 +158,7 @@ exchange_mapi_connection_exists ()
 	return global_mapi_session != NULL;
 }
 
-gboolean
+void
 exchange_mapi_connection_close ()
 {
 	global_mapi_session = NULL;
