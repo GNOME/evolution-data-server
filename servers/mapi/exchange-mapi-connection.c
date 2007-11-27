@@ -138,9 +138,8 @@ exchange_mapi_connection_new (const char *profile, const char *password)
 		return TRUE;
 	}
 
-	if (!exchange_mapi_connection_exists ()) {
-		global_mapi_session = mapi_profile_load (profile, password);
-	}
+	global_mapi_session = mapi_profile_load (profile, password);
+
 	UNLOCK ();
 
 	if (!global_mapi_session)
@@ -154,6 +153,13 @@ gboolean
 exchange_mapi_connection_exists ()
 {
 	return global_mapi_session != NULL;
+}
+
+gboolean
+exchange_mapi_connection_close ()
+{
+	global_mapi_session = NULL;
+	MAPIUninitialize ();	
 }
 
 /* Returns TRUE if all attachments were written succcesfully, else returns FALSE */

@@ -5,6 +5,14 @@
 
 2007-11-26  Johnny Jacob  <jjohnny@novell.com>
 
+	* exchange-mapi-connection.c (exchange_mapi_connection_new): Redundant connection check.
+
+	* exchange-mapi-connection.h: Added prototype for exchange_mapi_connection_close.
+
+	* exchange-mapi-connection.c (exchange_mapi_connection_close): Added. 
+
+2007-11-26  Johnny Jacob  <jjohnny@novell.com>
+
 	* exchange-mapi-folder.c (exchange_mapi_peek_folder_list): Check connection 
 	and connect before a folder_list call.
 
