@@ -1,5 +1,10 @@
 2007-11-27  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* exchange-mapi-folder.c: (exchange_mapi_peek_folder_list): Make a
+	warning than a message.
+
+2007-11-27  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* exchange-mapi-connection.c: (exchange_mapi_connection_new): Make the
 	close function as void.
 	* exchange-mapi-connection.h:

@@ -130,10 +130,11 @@ exchange_mapi_peek_folder_list ()
 {
 	if (folder_list) 
 		return folder_list;
+
 	LOCK ();
-	if (exchange_mapi_get_folders_list (&folder_list)) {
-		printf ("Get folders list call is sucessful \n\a");
-	}	
+	if (!exchange_mapi_get_folders_list (&folder_list))
+		g_warning ("Get folders list call failed \n\a");
+	
 	UNLOCK ();
 	return folder_list;
 }
