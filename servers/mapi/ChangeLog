@@ -1,3 +1,8 @@
+2007-11-27  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* exchange-mapi-folder.c: (exchange_mapi_peek_folder_list): Let the
+	caller worry about authentication.
+
 2007-11-26  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-folder.c (exchange_mapi_peek_folder_list): Check connection 

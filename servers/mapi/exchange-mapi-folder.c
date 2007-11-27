@@ -131,12 +131,6 @@ exchange_mapi_peek_folder_list ()
 	if (folder_list) 
 		return folder_list;
 	LOCK ();
-	if (!exchange_mapi_connection_exists ()) {
-		/* Fixme : No profilename : so default profile will be loaded. 
-		   No password here : So prompt for a passowrd here ? */
-		exchange_mapi_connection_new (NULL, NULL);
-	}
-
 	if (exchange_mapi_get_folders_list (&folder_list)) {
 		printf ("Get folders list call is sucessful \n\a");
 	}	
