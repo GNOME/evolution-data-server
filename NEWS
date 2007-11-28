@@ -1,3 +1,24 @@
+Evolution-Data-Server 1.12.2 2007-11-26
+---------------------------------------
+
+Bug Fixes:
+	#271777: Keep character's case as user types. (Milan Crha)
+	#300584: Use correct year when filling structure, not only years 1970+ (Peter Lord)
+	#345135: Disable SSLv2 compatible HELLO on SSL stream when SSLv2 is disabled (Niels Vorgaard Christensen)
+	#376425: Use proxy if user uses it and do not crash if have proxy without name and password (Milan Crha)
+	#430420: Fix a crash when IMAP server sent response to FETCH BODY containing size=0 (Milan Crha)
+	#461979: The base URL can be without a path, so do not crash, if that happen (Milan Crha)
+	#481093: Move mail to/from sent-items (Sankar P)
+	#486873: Avoid a double free and make sure that the view_ functions free at all cases (Akhil Laddha)
+	#488351: Don't reopen a database using the same DB handle (Matthew Barnes)
+	#494303: Return NULL pointer after freeing timezone structure (Ondrej Jirman)
+	#495086: Check for NULL too, so do not crash when something goes wrong (Milan Crha)
+
+Updated Translations:
+	Ivar Smolin (et)
+	Changwoo Ryu (ko)
+	Anas Husseini (ar)
+
 Evolution-Data-Server 1.12.1 2007-10-15
 ---------------------------------------
 
