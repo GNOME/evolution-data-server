@@ -41,15 +41,6 @@
 #define DEFAULT_PROF_PATH ".evolution/mapi-profiles.ldb"
 #define d(x) x
 
-typedef enum  {
-	MAPI_ITEM_TYPE_MAIL=1,
-	MAPI_ITEM_TYPE_APPOINTMENT,
-	MAPI_ITEM_TYPE_CONTACT,
-	MAPI_ITEM_TYPE_JOURNAL,
-	MAPI_ITEM_TYPE_TASK
-} MapiItemType;
-
-
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
@@ -77,8 +68,8 @@ mapi_profile_load(const char *profname, const char *password)
 	
 	profpath = g_build_filename (g_getenv("HOME"), DEFAULT_PROF_PATH, NULL);
 	if (!g_file_test (profpath, G_FILE_TEST_EXISTS)) {
+		g_warning ("Mapi profile database @ %s not found\n", profpath);
 		g_free (profpath);
-		g_warning ("Mapi profile database not found\n");
 		return NULL;
 	}
 
@@ -88,12 +79,12 @@ mapi_profile_load(const char *profname, const char *password)
 		g_free(profpath);
 		status = GetLastError();
 		if (status == MAPI_E_SESSION_LIMIT){
-			d(printf("Already connected"));
+			d(printf("%s(%d):%s:Already connected \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 			mapi_errstr("MAPIInitialize", GetLastError());
 			return NULL;
 		}
 		else {
-			g_warning ("Load profile: Generic error : %d\n", status);
+			g_warning ("mapi_profile_load : Generic error : %d\n", status);
 			return NULL;
 		}
 	}
@@ -104,29 +95,21 @@ mapi_profile_load(const char *profname, const char *password)
 	if (!profile) {
 		if ((retval = GetDefaultProfile(&profile)) != MAPI_E_SUCCESS) {
 			mapi_errstr("GetDefaultProfile", GetLastError());
-			return -1;
+			MAPIUninitialize ();
+			return NULL;
 		}
 
 	}
-	if (MapiLogonEx(&session, profile, password) == -1){
+	if (MapiLogonEx(&session, profile, password) != MAPI_E_SUCCESS){
 		retval = GetLastError();
 		mapi_errstr("MapiLogonEx ", retval);
-		if (retval == MAPI_E_NETWORK_ERROR){
-			g_warning ("Network error\n");
-			return NULL;
-		}
-		if (retval == MAPI_E_LOGON_FAILED){
-			g_warning ("LOGIN Failed\n");
-			return NULL;
-		}
-		g_warning ("Generic error\n");
+		g_warning ("mapi_profile_load failed.\n");
+
+		MAPIUninitialize ();
 		return NULL;
 	}
 	
-
-	
 	return session;
-  
 }
 
 gboolean 

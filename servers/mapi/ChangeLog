@@ -1,3 +1,9 @@
+2007-11-28  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (mapi_profile_load): Use proper status enums.
+	MAPIUninitialize when profile load fails.
+	Removed MapiItemType.
+
 2007-11-27  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-folder.c: (exchange_mapi_peek_folder_list): Make a
