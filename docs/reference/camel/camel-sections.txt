@@ -1668,6 +1668,7 @@ camel_store_get_folder_info
 camel_store_free_folder_info
 camel_store_free_folder_info_full
 camel_store_free_folder_info_nop
+camel_folder_info_new
 camel_folder_info_free
 camel_folder_info_build
 camel_folder_info_clone
