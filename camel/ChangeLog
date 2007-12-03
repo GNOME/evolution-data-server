@@ -1,3 +1,10 @@
+2007-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #324008
+
+	* camel-text-index.c: (text_index_sync):
+	Don't sync when wasn't created successfully.
+
 2007-11-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #461979

@@ -263,7 +263,9 @@ text_index_sync(CamelIndex *idx)
 
 	d(printf("sync: blocks = %p\n", p->blocks));
 
-	if (p->blocks == NULL)
+	if (p->blocks == NULL || p->links == NULL
+	    || p->word_index == NULL || p->word_hash == NULL
+	    || p->name_index == NULL || p->name_hash == NULL)
 		return 0;
 
 	rb = (struct _CamelTextIndexRoot *)p->blocks->root;
