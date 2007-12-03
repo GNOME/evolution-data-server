@@ -74,7 +74,7 @@ static CamelProvider mbox_provider = {
 	N_("For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR |CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	mbox_conf_entries,
 	/* ... */
 };
