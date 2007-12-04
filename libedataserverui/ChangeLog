@@ -1,3 +1,11 @@
+2007-12-04  Alex Kloss  <alexkloss@att.net>
+
+	** Fix for bug #322917
+
+	* e-name-selector-dialog.glade:
+	Change mnemonics for Contacts, Address Book labels
+	Add mnemonic for Category label
+
 2007-11-26  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #308815
