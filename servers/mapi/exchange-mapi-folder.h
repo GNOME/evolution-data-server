@@ -33,19 +33,31 @@ typedef enum  {
 	MAPI_FOLDER_TYPE_UNKNOWN
 } ExchangeMAPIFolderType;
 
+typedef enum {
+	MAPI_PERSONAL_FOLDER,
+	MAPI_FAVOURITE_FOLDER,
+	MAPI_FOREIGN_FOLDER
+} ExchangeMAPIFolderCategory;
 typedef struct _ExchangeMAPIFolder {
 	char *folder_name;
 	char *parent_folder_name;
 	ExchangeMAPIFolderType container_class;
+	ExchangeMAPIFolderCategory category;
 	uint64_t folder_id;
 	uint64_t parent_folder_id;
 	uint32_t child_count;
 	guint unread_count;
 	guint total;
+
+	/* reserved */
+	gpointer reserved1;
+	gpointer reserved2;
+	gpointer reserved3;
 } ExchangeMAPIFolder;
 
 ExchangeMAPIFolder *
-exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class,
+exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class, 
+			  ExchangeMAPIFolderCategory catgory, 
 			  uint64_t folder_id, uint64_t parent_folder_id, 
 			  uint32_t child_count, uint32_t unread_count, uint32_t total);
 ExchangeMAPIFolderType exchange_mapi_container_class (char *type);
@@ -58,4 +70,6 @@ const guint32 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder);
 
 GSList * exchange_mapi_peek_folder_list ();
 ExchangeMAPIFolder * exchange_mapi_folder_get_folder (uint64_t fid);
+void exchange_mapi_folder_list_add (ExchangeMAPIFolder *folder);
+void exchange_mapi_folder_list_free ();
 #endif

@@ -1,3 +1,13 @@
+2007-12-04  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fixup mapi folders.
+
+	* exchange-mapi-connection.c: (get_child_folders),
+	(exchange_mapi_get_folders_list):
+	* exchange-mapi-folder.c: (exchange_mapi_folder_new),
+	(exchange_mapi_folder_list_free), (exchange_mapi_folder_list_add):
+	* exchange-mapi-folder.h:
+
 2007-11-28  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-connection.c (mapi_profile_load): Use proper status enums.

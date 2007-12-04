@@ -32,7 +32,7 @@ static GStaticRecMutex folder_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK()		printf("%s(%d):%s: lock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&folder_lock)
 #define UNLOCK()	printf("%s(%d):%s: unlock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&folder_lock)
-
+#define d(x) x
 static ExchangeMAPIFolderType
 container_class_to_type (const char *type)
 {
@@ -58,8 +58,7 @@ container_class_to_type (const char *type)
 }
 
 ExchangeMAPIFolder *
-exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class,
-			  uint64_t folder_id, uint64_t parent_folder_id, uint32_t child_count, uint32_t unread_count, uint32_t total)
+exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_name, const char *container_class, ExchangeMAPIFolderCategory category, uint64_t folder_id, uint64_t parent_folder_id, uint32_t child_count, uint32_t unread_count, uint32_t total)
 {
 	ExchangeMAPIFolder *folder;
 
@@ -72,7 +71,7 @@ exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_nam
 	folder->child_count = child_count;
 	folder->unread_count = unread_count;
 	folder->total = total;
-
+	folder->category = category;
 	return folder;
 }
 
@@ -157,4 +156,41 @@ exchange_mapi_folder_get_folder (uint64_t fid)
 	}
 
 	return NULL;
+}
+
+void
+exchange_mapi_folder_list_free ()
+{
+	LOCK ();
+	g_slist_foreach (folder_list, g_free, NULL);
+	g_slist_free (folder_list);
+
+	folder_list = NULL;
+	UNLOCK ();
+
+	d(printf("Folder list freed\n"));
+	return;
+}
+
+void
+exchange_mapi_folder_list_add (ExchangeMAPIFolder *folder)
+{
+	GSList *tmp = folder_list;
+	LOCK ();
+	while (tmp) {
+		ExchangeMAPIFolder *data = tmp->data;
+		if (data->folder_id == folder->parent_folder_id) {
+			/* Insert it here */
+			d(printf ("Inserted below the parent\n"));
+			folder_list = g_slist_insert_before (folder_list, tmp->next, folder);
+			UNLOCK ();
+			return;
+		}
+		tmp = tmp->next;
+	}
+
+	/* Append at the end */
+	folder_list = g_slist_append (folder_list, folder);
+	UNLOCK ();
+	d(printf("Appended folder at the end\n"));
 }

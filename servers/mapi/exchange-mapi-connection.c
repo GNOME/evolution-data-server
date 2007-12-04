@@ -1201,7 +1201,7 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 			class = get_container_class(mem_ctx, parent, *fid);
 			newname = utf8tolinux(mem_ctx, name);
 			printf("|---+ %-15s : (Container class: %s %016llx) UnRead : %d Total : %d\n", newname, class, *fid, *unread, *total);
-			folder = exchange_mapi_folder_new (newname, parent_name, class, *fid, folder_id, *child, *unread, *total);
+			folder = exchange_mapi_folder_new (newname, parent_name, class, MAPI_PERSONAL_FOLDER, *fid, folder_id, *child, *unread, *total);
 			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 			if (*child)
 				get_child_folders(mem_ctx, &obj_folder, newname, *fid, count + 1, mapi_folders);
@@ -1264,7 +1264,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	utf8_mailbox_name = utf8tolinux(mem_ctx, mailbox_name);
 
 	/* FIXME: May have to get the child folders count? Do we need/use it? */
-	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, id_mailbox, 0, 0, 0 ,0); 
+	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, MAPI_PERSONAL_FOLDER, id_mailbox, 0, 0, 0 ,0); 
 
 	*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 	get_child_folders (mem_ctx, &obj_store, utf8_mailbox_name, id_mailbox, 0, mapi_folders);
