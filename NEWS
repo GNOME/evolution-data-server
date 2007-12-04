@@ -1,3 +1,20 @@
+Evolution-Data-Server 2.21.3 2007-12-03
+---------------------------------------
+
+Bug Fixes:
+	#308815: Colors for categories can now be changed (Milan Crha)
+	#376425: Use proxy if user uses it. Do not crash if have proxy without name and password (Milan Crha)
+	#415817: Update start/end time for recurrence instances even when only end time has been changed (Milan Crha)
+	#461979: Fixed a repeatable crash when entering an IMAP folder (Milan Crha)
+	#492426: Do not iterate beyond bounds of the array (Robert Noland)
+	#494314: Don't leak Cal object reference (Ondrej Jirman)
+
+Updated Translations:
+	Matej Urbanči (sl)
+	Ivar Smolin (et)
+	Yannig Marchegay (oc)
+	Changwoo Ryu (ko)
+
 Evolution-Data-Server 2.21.2 2007-11-12
 ---------------------------------------
 
