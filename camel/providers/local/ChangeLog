@@ -1,3 +1,9 @@
+2007-12-04  David Turner  <cillian64@googlemail.com>
+
+	** Fix for bug #466499
+
+	* camel-local-provider.c: Added mnemonics to configuration options
+
 2007-12-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #500018
