@@ -1,3 +1,14 @@
+2007-12-05  Suman Manjunath  <msuman@novell.com>
+
+	* e-book-backend-mapi.c: (e_book_backend_mapi_load_source),
+	(e_book_backend_mapi_create_contact),
+	(e_book_backend_mapi_remove_contacts),
+	(e_book_backend_mapi_modify_contact), (create_contact_item),
+	(e_book_backend_mapi_get_contact), (create_contact_list_cb),
+	(mapi_dump_props), (create_contact_cb), (cache_contact_cb):
+	* e-book-backend-mapi.h: Use utility APIs for inter-converting
+	UIDs and combination of FID, MID.
+
 2007-11-26  Johnny Jacob  <jjohnny@novell.com>
 
 	** Build break fixes.

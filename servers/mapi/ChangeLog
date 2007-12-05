@@ -1,5 +1,28 @@
 2007-12-05  Suman Manjunath  <msuman@novell.com>
 
+	* Makefile.am: Added two new files: exchange-mapi-utils.[ch]
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_delete_attachments),
+	(exchange_mapi_util_set_attachments),
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item),
+	(exchange_mapi_remove_items), (exchange_mapi_remove_folder),
+	(exchange_mapi_create_folder), (exchange_mapi_create_item),
+	(exchange_mapi_modify_item), (get_child_folders),
+	(exchange_mapi_get_folders_list): Added dummy API (to delete attachments), 
+	Use utility APIs for inter-converting UIDs and combination of FID, MID
+	* exchange-mapi-connection.h:
+	* exchange-mapi-utils.c: (exchange_mapi_util_mapi_id_to_string),
+	(exchange_mapi_util_mapi_id_from_string),
+	(exchange_mapi_util_mapi_ids_to_uid),
+	(exchange_mapi_util_mapi_ids_from_uid),
+	(exchange_mapi_util_find_row_propval),
+	(exchange_mapi_util_find_array_propval):
+	* exchange-mapi-utils.h: Added/moved some utility functions to these
+	files. 
+
+2007-12-05  Suman Manjunath  <msuman@novell.com>
+
 	* exchange-mapi-connection.c:
 	(exchange_mapi_util_find_row_propval),
 	(exchange_mapi_util_find_array_propval): Utility functions.

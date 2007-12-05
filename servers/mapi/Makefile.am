@@ -13,7 +13,9 @@ libexchangemapi_1_0_la_SOURCES =			\
 	exchange-mapi-folder.c				\
 	exchange-mapi-folder.h				\
 	exchange-mapi-connection.c			\
-	exchange-mapi-connection.h
+	exchange-mapi-connection.h			\
+	exchange-mapi-utils.c				\
+	exchange-mapi-utils.h
 
 libexchangemapi_1_0_la_LIBADD =						\
 	$(E_DATA_SERVER_LIBS)						\
@@ -21,9 +23,10 @@ libexchangemapi_1_0_la_LIBADD =						\
 
 libexchangemapiincludedir = $(privincludedir)/mapi
 
-libexchangemapiinclude_HEADERS =                  \
+libexchangemapiinclude_HEADERS = 		\
 	exchange-mapi-folder.h			\
-	exchange-mapi-connection.h
+	exchange-mapi-connection.h		\
+	exchange-mapi-utils.h
 
 %-1.0.pc: %.pc
 	 cp $< $@

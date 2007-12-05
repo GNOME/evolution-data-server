@@ -616,10 +616,10 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 	}
 	
 	priv->profile = g_strdup (e_source_get_property (source, "profile"));
-	tmp = e_source_get_property (source, "folder-id");
-	sscanf (tmp, "%llx", &priv->fid);
+	exchange_mapi_util_mapi_id_from_string (e_source_get_property (source, "folder-id"), &priv->fid);
 
-	printf("Folder is %s %016llx\n", tmp, priv->fid);
+	tmp = e_source_get_property (source, "folder-id");
+	printf("Folder is %s %016llX\n", tmp, priv->fid);
 
 	/* Once aunthentication in address book works this can be removed */
 	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
@@ -632,7 +632,7 @@ e_book_backend_mapi_load_source (EBookBackend           *backend,
 
 
 	if (enable_debug)
-		printf("For profile %s and folder %s - %llx\n", priv->profile, tmp, priv->fid);
+		printf("For profile %s and folder %s - %016llX\n", priv->profile, tmp, priv->fid);
 
 	return GNOME_Evolution_Addressbook_Success;
 }
@@ -846,7 +846,7 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
 		}
-		id = g_strdup_printf ("%016llx%016llx", priv->fid, status);
+		id = exchange_mapi_util_mapi_ids_to_uid (priv->fid, status); 
 	
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
 		e_contact_set (contact, E_CONTACT_UID, id);		
@@ -893,7 +893,7 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 		
 		while (tmp) {
 			struct folder_data *data = g_new (struct folder_data, 1);
-			sscanf(tmp->data, "%016llx%016llx", &fid, &mid);
+			exchange_mapi_util_mapi_ids_from_uid (tmp->data, &fid, &mid);
 			data->id = mid;
 			list = g_slist_prepend (list, (gpointer) data);
 			tmp = tmp->next;
@@ -949,11 +949,11 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
 		contact = e_contact_new_from_vcard(vcard);
 		tmp = e_contact_get (contact, E_CONTACT_UID);
-		sscanf(tmp, "%016llx%016llx", &fid, &mid);		
+		exchange_mapi_util_mapi_ids_from_uid (tmp, &fid, &mid);		
 		printf("modify id %s\n", tmp);
 		
 		status = exchange_mapi_modify_item (olFolderContacts, priv->fid, mid, build_name_id, contact, build_props, contact);
-		printf("getting %016llx\n", status);
+		printf("getting %016llX\n", status);
 		if (!status) {
 			e_data_book_respond_modify(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;
@@ -988,7 +988,7 @@ create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id
 	char *suid;
 	
 	contact = emapidump_contact (array);
-	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
+	suid = exchange_mapi_util_mapi_ids_to_uid (fid, mid);
 	printf("got contact %s\n", suid);
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
@@ -1057,7 +1057,7 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 		} else {
 			mapi_id_t fid, mid;
 			
-			sscanf(id, "%016llx%016llx", &fid, &mid);
+			exchange_mapi_util_mapi_ids_from_uid (id, &fid, &mid);
 			contact = exchange_mapi_connection_fetch_item (olFolderContacts, priv->fid, mid, create_contact_item);
 			if (contact) {
 				e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
@@ -1093,7 +1093,7 @@ create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid
 	char *suid;
 	
 	contact = emapidump_contact (array);
-	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
+	suid = exchange_mapi_util_mapi_ids_to_uid (fid, mid);
 	
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
@@ -1234,7 +1234,7 @@ mapi_dump_props (struct mapi_SPropValue_array *properties)
 			printf(" (bool) - %d\n", lpProp->value.b);
 			break;
 		case PT_I2:
-			priintf(" (uint16_t) - %d\n", lpProp->value.i);
+			printf(" (uint16_t) - %d\n", lpProp->value.i);
 			break;
 		case PT_LONG:
 			printf(" (long) - %ld\n", lpProp->value.l);
@@ -1417,7 +1417,7 @@ create_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, con
 	}
 	
 	contact = emapidump_contact (array);
-	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
+	suid = exchange_mapi_util_mapi_ids_to_uid (fid, mid);
 	
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
@@ -1631,7 +1631,7 @@ cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, cons
 	char *suid;
 
 	contact = emapidump_contact (array);
-	suid = g_strdup_printf ("%016llx%016llx", fid, mid);
+	suid = exchange_mapi_util_mapi_ids_to_uid (fid, mid);
 	
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/

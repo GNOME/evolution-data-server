@@ -1,3 +1,12 @@
+2007-12-05  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi.c: (get_changes_cb), (cache_create_cb),
+	(e_cal_backend_mapi_open), (e_cal_backend_mapi_create_object),
+	(e_cal_backend_mapi_modify_object),
+	(e_cal_backend_mapi_remove_object):
+	* e-cal-backend-mapi.h: Use utility APIs for inter-converting 
+	UIDs and combination of FID, MID.
+
 2007-11-26  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi-utils.c: (fetch_attachments),

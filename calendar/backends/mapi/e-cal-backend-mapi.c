@@ -281,7 +281,7 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	gchar *tmp = NULL;
 	GSList *cache_comp_uid = NULL;
 
-	tmp = g_strdup_printf ("%016llx", mid);
+	tmp = exchange_mapi_util_mapi_id_to_string (mid);
 	cache_comp_uid = g_slist_find_custom (priv->cache_keys, tmp, (GCompareFunc) (g_ascii_strcasecmp));
 printf ("\n******* mid [%s] *******\n", tmp);
 
@@ -560,7 +560,7 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 	
 	comp = e_cal_component_new ();
 	e_cal_component_set_new_vtype (comp, type);
-	tmp = g_strdup_printf ("%016llx", mid);
+	tmp = exchange_mapi_util_mapi_id_to_string (mid);
 printf ("\n******* mid [%s] *******\n", tmp);
 	e_cal_component_set_uid (comp, tmp);
 	e_cal_backend_mapi_props_to_comp (cbmapi, properties, comp, recipients, attachments, priv->default_zone);
@@ -1070,7 +1070,6 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	char *filename;
 	char *mangled_uri;
 	int i;
-	const gchar *tmp;
 	uint32_t olFolder = 0;
 
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
@@ -1135,8 +1134,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 	priv->user_email = g_strdup (e_source_get_property (esource, "profile"));
-	tmp = e_source_get_property (esource, "folder-id");
-	sscanf (tmp, "%llx", &priv->fid);
+	exchange_mapi_util_mapi_id_from_string (e_source_get_property (esource, "folder-id"), &priv->fid);
 	priv->olFolder = olFolder;
 
 	/* Set the local attachment store*/
@@ -1217,7 +1215,7 @@ attachments = g_slist_append (attachments, att1);
 				return GNOME_Evolution_Calendar_OtherError;
 			} 
 
-			tmp = g_strdup_printf ("%016llx", mid);
+			tmp = exchange_mapi_util_mapi_id_to_string (mid);
 			e_cal_component_set_uid (comp, tmp);
 			g_free (tmp);
 
@@ -1279,7 +1277,7 @@ e_cal_backend_mapi_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			g_message ("CRITICAL : Could not find the object in cache");
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
-		sscanf(uid, "%016llx", &mid);
+		exchange_mapi_util_mapi_id_from_string (uid, &mid);
 		status = exchange_mapi_modify_item (priv->olFolder, priv->fid, mid, build_name_id, comp, build_props, comp);
 		if (!status) {
 			g_object_unref (comp);
@@ -1340,7 +1338,7 @@ e_cal_backend_mapi_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			return GNOME_Evolution_Calendar_InvalidObject;
 		}
 
-		sscanf(uid, "%016llx", &mid);
+		exchange_mapi_util_mapi_id_from_string (uid, &mid);
 
 		if (mod == CALOBJ_MOD_THIS && rid && *rid) {
 			char *obj = NULL, *new_object = NULL, *new_calobj = NULL;

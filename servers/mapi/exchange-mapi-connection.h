@@ -81,9 +81,4 @@ gboolean exchange_mapi_get_folders_list (GSList **mapi_folders);
 
 gboolean exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid);
 
-void *
-exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag);
-void *
-exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag);
-
 #endif

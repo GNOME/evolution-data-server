@@ -25,6 +25,7 @@
 #include <glib.h>
 #include "exchange-mapi-connection.h"
 #include "exchange-mapi-folder.h"
+#include "exchange-mapi-utils.h"
 #include <param.h>
 
 #include <camel/camel-data-wrapper.h>
@@ -150,80 +151,6 @@ exchange_mapi_connection_close ()
 {
 	global_mapi_session = NULL;
 	MAPIUninitialize ();	
-}
-
-/*
- * Retrieve the property value for a given SRow and property tag.  
- *
- * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
- * in case the desired property is not available in first choice.
- *
- * Fetch property normally for any others properties
- */
-/* NOTE: For now, since this function has special significance only for
- * 'string' type properties, callers should (preferably) use it for fetching 
- * such properties alone. If callers are sure that proptag would, for instance, 
- * return an 'int' or a 'systime', they should prefer find_SPropValue_data.
- */
-void *
-exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag)
-{
-	if (((proptag & 0xFFFF) == PT_STRING8) ||
-	    ((proptag & 0xFFFF) == PT_UNICODE)) {
-		const char 	*str;
-
-		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
-		str = (const char *)find_SPropValue_data(aRow, proptag);
-		if (str) 
-			return (void *)str;
-
-		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
-		str = (const char *)find_SPropValue_data(aRow, proptag);
-		return (void *)str;
-	} 
-
-	/* NOTE: Similar generalizations (if any) for other property types 
-	 * can be made here. 
-	 */
-
-	return (void *)find_SPropValue_data(aRow, proptag);
-}
-
-/*
- * Retrieve the property value for a given mapi_SPropValue_array and property tag.  
- *
- * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
- * in case the desired property is not available in first choice.
- *
- * Fetch property normally for any others properties
- */
-/* NOTE: For now, since this function has special significance only for
- * 'string' type properties, callers should (preferably) use it for fetching 
- * such properties alone. If callers are sure that proptag would, for instance, 
- * return an 'int' or a 'systime', they should prefer find_mapi_SPropValue_data.
- */
-void *
-exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag)
-{
-	if (((proptag & 0xFFFF) == PT_STRING8) ||
-	    ((proptag & 0xFFFF) == PT_UNICODE)) {
-		const char 	*str;
-
-		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
-		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
-		if (str) 
-			return (void *)str;
-
-		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
-		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
-		return (void *)str;
-	} 
-
-	/* NOTE: Similar generalizations (if any) for other property types 
-	 * can be made here. 
-	 */
-
-	return (void *)find_mapi_SPropValue_data(properties, proptag);
 }
 
 static gboolean 
@@ -442,14 +369,24 @@ exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mes
 	return (retval == MAPI_E_SUCCESS);
 }
 
+static gboolean
+exchange_mapi_util_delete_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message)
+{
+	/* FIXME: write the code */
+	return TRUE;
+}
+
 /* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
 static gboolean
-exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList *attach_list)
+exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList *attach_list, gboolean remove_existing)
 {
 	const uint32_t 	cn_props_attach = 4;
 	GSList 		*l;
 	enum MAPISTATUS	retval;
 	gboolean 	status = TRUE;
+
+	if (remove_existing)
+		exchange_mapi_util_delete_attachments (mem_ctx, obj_message);
 
 	for (l = attach_list; l; l = l->next) {
 		ExchangeMAPIAttachment 	*attachment = (ExchangeMAPIAttachment *) (l->data);
@@ -690,7 +627,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	TALLOC_CTX *mem_ctx;
 	int i;
 
-	printf("Fetching folder %016llx\n", fid);
+	printf("Fetching folder %016llX\n", fid);
 	
 	LOCK ();
 	mem_ctx = talloc_init("Evolution");
@@ -704,7 +641,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		return FALSE;
 	}
 
-	printf("Opening folder %llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -790,7 +727,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		retval = OpenMessage(&obj_folder, *pfid, *pmid, &obj_message, 0);
 
 		//FIXME: Verify this
-		//printf(" %016llx %016llx %016llx %016llx %016llx\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
+		//printf(" %016llX %016llX %016llX %016llX %016llX\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
 		if (retval != MAPI_E_NOT_FOUND) {
 			if (has_attach && *has_attach) {
 				exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
@@ -883,7 +820,7 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 		return NULL;
 	}
 
-	printf("Opening folder %llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -953,7 +890,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 		return FALSE;
 	}
 
-	printf("Opening folder %016llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1020,7 +957,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 		return FALSE;
 	}
 	
-	printf("Opening folder %016llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1057,7 +994,7 @@ exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 		return FALSE;
 	}
 	
-	printf("Opening folder %016llx\n", folder->parent_folder_id);
+	printf("Opening folder %016llX\n", folder->parent_folder_id);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_tstore, folder->parent_folder_id, &obj_top);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1122,7 +1059,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name)
 		return 0;
 	}
 
-	printf("Opening folder %016llx\n", pfid);
+	printf("Opening folder %016llX\n", pfid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, pfid, &obj_top);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1181,7 +1118,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name)
 	LOGNONE();
 	UNLOCK ();
 	
-	printf("Got %016llx\n", fid);
+	printf("Got %016llX\n", fid);
 	return fid;	
 }
 
@@ -1228,7 +1165,7 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 		}
 	}
 
-	printf("Opening folder %016llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1249,11 +1186,11 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_n
 	}
 
 	if (attachments) {
-		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments);
+		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
 	}
 
 	if (recipients) {
-		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments);
+		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
 	}
 
 	mapi_object_debug (&obj_message);
@@ -1354,7 +1291,7 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, Buil
 		return FALSE;
 	}
 
-	printf("Opening folder %016llx\n", fid);
+	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
@@ -1466,8 +1403,6 @@ get_container_class(TALLOC_CTX *mem_ctx, mapi_object_t *parent, mapi_id_t folder
 	return lpProps[0].value.lpszA;
 }
 
-
-
 static gboolean
 get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent_name, mapi_id_t folder_id, int count, GSList **mapi_folders)
 {
@@ -1516,7 +1451,7 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 			child = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_FOLDER_CHILD_COUNT);
 			class = get_container_class(mem_ctx, parent, *fid);
 			newname = utf8tolinux(mem_ctx, name);
-			printf("|---+ %-15s : (Container class: %s %016llx) UnRead : %d Total : %d\n", newname, class, *fid, *unread, *total);
+			printf("|---+ %-15s : (Container class: %s %016llX) UnRead : %d Total : %d\n", newname, class, *fid, *unread, *total);
 			folder = exchange_mapi_folder_new (newname, parent_name, class, MAPI_PERSONAL_FOLDER, *fid, folder_id, *child, *unread, *total);
 			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 			if (*child)
@@ -1590,6 +1525,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	UNLOCK ();
 
 	*mapi_folders = g_slist_reverse (*mapi_folders);
+
 	return TRUE;
 
 }

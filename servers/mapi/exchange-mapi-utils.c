@@ -1,0 +1,142 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+ *
+ *  Suman Manjunath <msuman@novell.com>
+ *  Copyright (C) 2007 Novell, Inc.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <glib.h>
+#include "exchange-mapi-utils.h"
+
+
+inline gchar *
+exchange_mapi_util_mapi_id_to_string (mapi_id_t id)
+{
+	return g_strdup_printf ("%016llX", id);
+}
+
+inline gboolean 
+exchange_mapi_util_mapi_id_from_string (const char *str, mapi_id_t *id)
+{
+	gint n = 0;
+
+	if (str && *str)
+		n = sscanf (str, "%016llX", id);
+
+	return (n == 1);
+}
+
+/* NOTE: We use the UID as a combination of the folder-id and the message-id. 
+ * Specifically, it is in this format: ("%016llX%016llX", fid, mid).
+ */
+inline gchar *
+exchange_mapi_util_mapi_ids_to_uid (mapi_id_t fid, mapi_id_t mid)
+{
+	return g_strdup_printf ("%016llX%016llX", fid, mid);
+}
+
+inline gboolean 
+exchange_mapi_util_mapi_ids_from_uid (const char *str, mapi_id_t *fid, mapi_id_t *mid)
+{
+	gint n = 0;
+
+	if (str && *str)
+		n = sscanf (str, "%016llX%016llX", fid, mid);
+
+	return (n == 2);
+}
+
+/*
+ * Retrieve the property value for a given SRow and property tag.  
+ *
+ * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
+ * in case the desired property is not available in first choice.
+ *
+ * Fetch property normally for any others properties
+ */
+/* NOTE: For now, since this function has special significance only for
+ * 'string' type properties, callers should (preferably) use it for fetching 
+ * such properties alone. If callers are sure that proptag would, for instance, 
+ * return an 'int' or a 'systime', they should prefer find_SPropValue_data.
+ */
+void *
+exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag)
+{
+	if (((proptag & 0xFFFF) == PT_STRING8) ||
+	    ((proptag & 0xFFFF) == PT_UNICODE)) {
+		const char 	*str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
+		str = (const char *)find_SPropValue_data(aRow, proptag);
+		if (str) 
+			return (void *)str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
+		str = (const char *)find_SPropValue_data(aRow, proptag);
+		return (void *)str;
+	} 
+
+	/* NOTE: Similar generalizations (if any) for other property types 
+	 * can be made here. 
+	 */
+
+	return (void *)find_SPropValue_data(aRow, proptag);
+}
+
+/*
+ * Retrieve the property value for a given mapi_SPropValue_array and property tag.  
+ *
+ * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
+ * in case the desired property is not available in first choice.
+ *
+ * Fetch property normally for any others properties
+ */
+/* NOTE: For now, since this function has special significance only for
+ * 'string' type properties, callers should (preferably) use it for fetching 
+ * such properties alone. If callers are sure that proptag would, for instance, 
+ * return an 'int' or a 'systime', they should prefer find_mapi_SPropValue_data.
+ */
+void *
+exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag)
+{
+	if (((proptag & 0xFFFF) == PT_STRING8) ||
+	    ((proptag & 0xFFFF) == PT_UNICODE)) {
+		const char 	*str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
+		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
+		if (str) 
+			return (void *)str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
+		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
+		return (void *)str;
+	} 
+
+	/* NOTE: Similar generalizations (if any) for other property types 
+	 * can be made here. 
+	 */
+
+	return (void *)find_mapi_SPropValue_data(properties, proptag);
+}
+
+

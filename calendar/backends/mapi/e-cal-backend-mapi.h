@@ -36,6 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include "exchange-mapi-connection.h"
 #include "exchange-mapi-folder.h"
+#include "exchange-mapi-utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
