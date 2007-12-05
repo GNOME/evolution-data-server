@@ -55,6 +55,10 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define ATTACH_MAX_READ_SIZE  0x1000
 #define ATTACH_MAX_WRITE_SIZE 0x1000
 
+/* Specifies READ/WRITE sizes to be used while handling normal streams (struct SBinary_short) */
+#define STREAM_MAX_READ_SIZE  0x1000
+#define STREAM_MAX_WRITE_SIZE 0x1000
+
 static struct mapi_session *
 mapi_profile_load(const char *profname, const char *password)
 {
@@ -146,6 +150,296 @@ exchange_mapi_connection_close ()
 {
 	global_mapi_session = NULL;
 	MAPIUninitialize ();	
+}
+
+/*
+ * Retrieve the property value for a given SRow and property tag.  
+ *
+ * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
+ * in case the desired property is not available in first choice.
+ *
+ * Fetch property normally for any others properties
+ */
+/* NOTE: For now, since this function has special significance only for
+ * 'string' type properties, callers should (preferably) use it for fetching 
+ * such properties alone. If callers are sure that proptag would, for instance, 
+ * return an 'int' or a 'systime', they should prefer find_SPropValue_data.
+ */
+void *
+exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag)
+{
+	if (((proptag & 0xFFFF) == PT_STRING8) ||
+	    ((proptag & 0xFFFF) == PT_UNICODE)) {
+		const char 	*str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
+		str = (const char *)find_SPropValue_data(aRow, proptag);
+		if (str) 
+			return (void *)str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
+		str = (const char *)find_SPropValue_data(aRow, proptag);
+		return (void *)str;
+	} 
+
+	/* NOTE: Similar generalizations (if any) for other property types 
+	 * can be made here. 
+	 */
+
+	return (void *)find_SPropValue_data(aRow, proptag);
+}
+
+/*
+ * Retrieve the property value for a given mapi_SPropValue_array and property tag.  
+ *
+ * If the property type is a string: fetch PT_STRING8 then PT_UNICODE
+ * in case the desired property is not available in first choice.
+ *
+ * Fetch property normally for any others properties
+ */
+/* NOTE: For now, since this function has special significance only for
+ * 'string' type properties, callers should (preferably) use it for fetching 
+ * such properties alone. If callers are sure that proptag would, for instance, 
+ * return an 'int' or a 'systime', they should prefer find_mapi_SPropValue_data.
+ */
+void *
+exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag)
+{
+	if (((proptag & 0xFFFF) == PT_STRING8) ||
+	    ((proptag & 0xFFFF) == PT_UNICODE)) {
+		const char 	*str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_STRING8;
+		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
+		if (str) 
+			return (void *)str;
+
+		proptag = (proptag & 0xFFFF0000) | PT_UNICODE;
+		str = (const char *)find_mapi_SPropValue_data(properties, proptag);
+		return (void *)str;
+	} 
+
+	/* NOTE: Similar generalizations (if any) for other property types 
+	 * can be made here. 
+	 */
+
+	return (void *)find_mapi_SPropValue_data(properties, proptag);
+}
+
+static gboolean 
+exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, uint32_t proptag, GSList **stream_list)
+{
+	enum MAPISTATUS			retval;
+	DATA_BLOB 			body;
+	struct SPropTagArray 		*SPropTagArray;
+	struct SPropValue 		*lpProps;
+	uint32_t			count;
+	struct SRow			aRow;
+	const struct SBinary_short 	*bin = NULL;
+
+	/* sanity */
+	g_return_val_if_fail (obj_message, FALSE);
+	g_return_val_if_fail (((proptag & 0xFFFF) == PT_BINARY), FALSE);
+
+	/* if compressed RTF stream, then return */
+	g_return_val_if_fail (proptag != PR_RTF_COMPRESSED, FALSE);
+
+	/* initialize body DATA_BLOB */
+	body.length = 0;
+	body.data = talloc_zero(mem_ctx, uint8_t);
+
+	/* Build the array of properties we want to fetch */
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x1, proptag);
+	retval = GetProps(obj_message, SPropTagArray, &lpProps, &count);
+	MAPIFreeBuffer(SPropTagArray);
+
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetProps", GetLastError());
+		return FALSE;
+	}
+
+	/* Build a SRow structure */
+	aRow.ulAdrEntryPad = 0;
+	aRow.cValues = count;
+	aRow.lpProps = lpProps;
+
+	bin = (const struct SBinary_short *) find_SPropValue_data(&aRow, proptag);
+	if (bin && bin->lpb) {
+		body.data = talloc_memdup(mem_ctx, bin->lpb, bin->cb);
+		body.length = bin->cb;
+	} else {
+		mapi_object_t 	obj_stream;
+		uint32_t 	cn_read;
+		uint8_t		buf[STREAM_MAX_READ_SIZE];
+
+		mapi_object_init(&obj_stream);
+
+		/* get a stream on specified proptag */
+		retval = OpenStream(obj_message, proptag, 0, &obj_stream);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("OpenStream", GetLastError());
+			goto cleanup;
+		}
+
+		/* read from the stream */
+		do {
+			retval = ReadStream(&obj_stream, buf, STREAM_MAX_READ_SIZE, &cn_read);
+			if (retval != MAPI_E_SUCCESS) {
+				cn_read = 0;
+				mapi_errstr("ReadStream", GetLastError());
+			} else if (cn_read) {
+				body.data = talloc_realloc(mem_ctx, body.data, uint8_t,
+							    body.length + cn_read);
+				memcpy(&(body.data[body.length]), buf, cn_read);
+				body.length += cn_read;
+			}
+		} while (cn_read);
+	cleanup: 
+		mapi_object_release(&obj_stream);
+	}
+
+	if (retval == MAPI_E_SUCCESS && body.length) {
+		ExchangeMAPIStream 	*stream = g_new0 (ExchangeMAPIStream, 1);
+
+		stream->value = g_byte_array_sized_new (body.length);
+		stream->value = g_byte_array_append (stream->value, body.data, body.length);
+
+		stream->proptag = proptag;
+
+		*stream_list = g_slist_append (*stream_list, stream);
+	}
+
+	if (body.length)
+		talloc_free (body.data);
+
+	return (retval == MAPI_E_SUCCESS);
+}
+
+/*
+ * Fetch the body given PR_MSG_EDITOR_FORMAT property value
+ */
+static gboolean
+exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList **stream_list)
+{
+	enum MAPISTATUS			retval;
+	struct SPropTagArray		*SPropTagArray;
+	struct SPropValue		*lpProps;
+	struct SRow			aRow;
+	uint32_t			count;
+	/* common email fields */
+	DATA_BLOB			body;
+	const uint32_t			*editor;
+	mapi_object_t			obj_stream;
+	const char			*data = NULL;
+	const bool 			*rtf_in_sync;
+	uint32_t 			dflt;
+	uint32_t 			proptag = 0;
+
+	/* sanity check */
+	g_return_val_if_fail (obj_message, FALSE);
+
+	/* Build the array of properties we want to fetch */
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x8,
+					  PR_MSG_EDITOR_FORMAT,
+					  PR_BODY,
+					  PR_BODY_UNICODE,
+					  PR_BODY_HTML, 
+					  PR_BODY_HTML_UNICODE, 
+					  PR_HTML,
+					  PR_RTF_COMPRESSED,
+					  PR_RTF_IN_SYNC);
+
+	lpProps = talloc_zero(mem_ctx, struct SPropValue);
+	retval = GetProps(obj_message, SPropTagArray, &lpProps, &count);
+	MAPIFreeBuffer(SPropTagArray);
+
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetProps", GetLastError());
+		return FALSE;
+	}
+
+	/* Build a SRow structure */
+	aRow.ulAdrEntryPad = 0;
+	aRow.cValues = count;
+	aRow.lpProps = lpProps;
+
+	editor = (const uint32_t *) find_SPropValue_data(&aRow, PR_MSG_EDITOR_FORMAT);
+	/* if PR_MSG_EDITOR_FORMAT doesn't exist, set it to PLAINTEXT */
+	if (!editor) {
+		dflt = EDITOR_FORMAT_PLAINTEXT;
+		editor = &dflt;
+	}
+
+	/* initialize body DATA_BLOB */
+	body.data = NULL;
+	body.length = 0;
+
+	retval = -1;
+	switch (*editor) {
+		case EDITOR_FORMAT_PLAINTEXT:
+			if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY)) != NULL)
+				proptag = PR_BODY;
+			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_UNICODE)) != NULL)
+				proptag = PR_BODY_UNICODE;
+			if (data) {
+				body.data = talloc_memdup(mem_ctx, data, strlen(data));
+				body.length = strlen(data);
+				retval = MAPI_E_SUCCESS;
+			} 
+			break;
+		case EDITOR_FORMAT_HTML: 
+			if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_HTML)) != NULL)
+				proptag = PR_BODY_HTML;
+			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_HTML_UNICODE)) != NULL)
+				proptag = PR_BODY_HTML_UNICODE;
+			if (data) {
+				body.data = talloc_memdup(mem_ctx, data, strlen(data));
+				body.length = strlen(data);
+				retval = MAPI_E_SUCCESS;
+			} else if (exchange_mapi_util_read_generic_stream (mem_ctx, obj_message, PR_HTML, stream_list)) {
+				retval = MAPI_E_SUCCESS;
+			}
+			break;
+		case EDITOR_FORMAT_RTF: 
+			rtf_in_sync = (const bool *)find_SPropValue_data (&aRow, PR_RTF_IN_SYNC);
+//			if (!(rtf_in_sync && *rtf_in_sync)) {
+				mapi_object_init(&obj_stream);
+
+				retval = OpenStream(obj_message, PR_RTF_COMPRESSED, 0, &obj_stream);
+				if (retval != MAPI_E_SUCCESS) {
+					mapi_errstr("OpenStream", GetLastError());
+					mapi_object_release(&obj_stream);
+					break;
+				}
+
+				retval = WrapCompressedRTFStream(&obj_stream, &body);
+				if (retval != MAPI_E_SUCCESS)
+					mapi_errstr("WrapCompressedRTFStream", GetLastError());
+
+				proptag = PR_RTF_COMPRESSED;
+
+				mapi_object_release(&obj_stream);
+//			}
+			break;
+		default: 
+			break;
+	}
+
+	if (retval == MAPI_E_SUCCESS && proptag) {
+		ExchangeMAPIStream 	*stream = g_new0 (ExchangeMAPIStream, 1);
+
+		stream->value = g_byte_array_sized_new (body.length);
+		stream->value = g_byte_array_append (stream->value, body.data, body.length);
+
+		stream->proptag = proptag;
+
+		*stream_list = g_slist_append (*stream_list, stream);
+	}
+
+	if (body.length) 
+		talloc_free (body.data);
+
+	return (retval == MAPI_E_SUCCESS);
 }
 
 /* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
@@ -485,6 +779,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		const bool *disclose_recipients = NULL;
 		GSList *attach_list = NULL;
 		GSList *recip_list = NULL;
+		GSList *stream_list = NULL;
 
 		pfid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_FID);
 		pmid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_MID);
@@ -494,21 +789,31 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 
 		retval = OpenMessage(&obj_folder, *pfid, *pmid, &obj_message, 0);
 
-		if (has_attach && *has_attach) {
-			exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
-		}
-
-		if (disclose_recipients && *disclose_recipients) {
-		}
-
 		//FIXME: Verify this
 		//printf(" %016llx %016llx %016llx %016llx %016llx\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
 		if (retval != MAPI_E_NOT_FOUND) {
+			if (has_attach && *has_attach) {
+				exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
+			}
+
+			if (disclose_recipients && *disclose_recipients) {
+			}
+
+			/* get the main body stream no matter what */
+			exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
+
 			retval = GetPropsAll(&obj_message, &properties_array);
+
 			if (retval == MAPI_E_SUCCESS) {
+				int z;
 
 				mapi_SPropValue_array_named(&obj_message, 
 							    &properties_array);
+
+				/* just to get all the other streams */
+				for (z=0; z < properties_array.cValues; z++)
+					if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
+						exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
 				if (!cb (&properties_array, *pfid, *pmid, recip_list, attach_list, data)) {
 					printf("Breaking from fetching items\n");
 					break;
@@ -530,6 +835,17 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		}
 
 		if (recip_list) {
+		}
+
+		if (stream_list) {
+			GSList *l;
+			for (l = stream_list; l; l = l->next) {
+				ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
+				g_byte_array_free (stream->value, TRUE);
+				stream->value = NULL;
+			}
+			g_slist_free (stream_list);
+			stream_list = NULL;
 		}
 	}
 

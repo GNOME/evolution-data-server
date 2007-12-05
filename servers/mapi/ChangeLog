@@ -1,3 +1,16 @@
+2007-12-05  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_find_row_propval),
+	(exchange_mapi_util_find_array_propval): Utility functions.
+	(exchange_mapi_util_read_generic_stream),
+	(exchange_mapi_util_read_body_stream),
+	(exchange_mapi_connection_fetch_items): Read the PR_BODY (or analogues)
+	from relevant streams after proper decoding. Utlity function for reading
+	generic streams.
+	* exchange-mapi-connection.h: Fixed a couple of compliler warnings, 
+	declarations for new APIs added. 
+
 2007-12-04  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fixup mapi folders.

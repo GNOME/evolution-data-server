@@ -23,15 +23,22 @@
 
 #include <libmapi/libmapi.h>
 
+/* FIXME: need to accomodate rendering position */
 typedef struct {
 	GByteArray *value;
 	const char *filename;
 } ExchangeMAPIAttachment;
 
 typedef struct {
-	GByteArray *data;
-	uint32_t stream_prop;
+	GByteArray *value;
+	uint32_t proptag;
 } ExchangeMAPIStream;
+
+typedef struct {
+	GByteArray *value;
+	uint32_t proptag;
+	uint32_t editor_format;
+} ExchangeMAPIBodyStream;
 
 typedef struct {
 } ExchangeMAPIRecipient;
@@ -46,10 +53,10 @@ gboolean
 exchange_mapi_connection_new (const char *profile, const char *password);
 
 void
-exchange_mapi_connection_close ();
+exchange_mapi_connection_close (void);
 
 gboolean
-exchange_mapi_connection_exists ();
+exchange_mapi_connection_exists (void);
 
 gpointer
 exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb);
@@ -73,5 +80,10 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids);
 gboolean exchange_mapi_get_folders_list (GSList **mapi_folders); 
 
 gboolean exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid);
+
+void *
+exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag);
+void *
+exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag);
 
 #endif
