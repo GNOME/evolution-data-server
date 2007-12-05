@@ -151,7 +151,10 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
 	if (!ret_binary)
 		return NULL;
 
-	ret = g_base64_encode (ret_binary->data, ret_binary->len);
+	if (ret_binary->len > 0)
+		ret = g_base64_encode (ret_binary->data, ret_binary->len);
+	else
+		ret = g_strdup ("");
 	g_byte_array_free (ret_binary, TRUE);
 
 	return ret;

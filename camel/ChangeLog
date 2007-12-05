@@ -1,3 +1,11 @@
+2007-12-05  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #501622
+
+	* camel-sasl.c (camel_sasl_challenge_base64):
+	Return an empty string instead of NULL for empty SASL responses.
+	Fixes broken Digest-MD5 authentication.
+
 2007-12-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #324008
