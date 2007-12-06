@@ -401,6 +401,10 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 			      ac->use_ntlm ? "NTLM" : "Basic", ac->password);
 
 	msg = e2k_soup_message_new (ctx, ac->owa_uri, SOUP_METHOD_GET);
+
+	g_return_val_if_fail (msg != NULL, NULL);
+	g_return_val_if_fail (SOUP_IS_MESSAGE (msg), NULL);
+
 	soup_message_add_header (msg->request_headers, "Accept-Language",
 				 e2k_http_accept_language ());
 	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);

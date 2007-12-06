@@ -1,3 +1,13 @@
+2007-12-06  Tobias Mueller <tobiasmue@svn.gnome.org>
+	Patch by Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #462593
+
+	* lib/e2k-context.c: (e2k_soup_message_new): Print message on console
+	if invalid uri has been passed to soup_message_new.
+	* lib/e2k-autoconfig.c: (e2k_autoconfig_get_context):
+	Prevent from crash on invalid uri.
+
 2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-autoconfig.c (get_ctx_auth_handler):

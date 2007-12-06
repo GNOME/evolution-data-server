@@ -789,9 +789,14 @@ e2k_soup_message_new (E2kContext *ctx, const char *uri, const char *method)
 	if (method[0] == 'B') {
 		char *slash_uri = e2k_strdup_with_trailing_slash (uri);
 		msg = soup_message_new (method, slash_uri);
+		if (!msg)
+			g_warning ("Invalid uri '%s'", slash_uri ? slash_uri : "[null]");
 		g_free (slash_uri);
-	} else
+	} else {
 		msg = soup_message_new (method, uri);
+		if (!msg)
+			g_warning ("Invalid uri '%s'", uri ? uri : "[null]");
+	}
 
 	return msg;
 }
