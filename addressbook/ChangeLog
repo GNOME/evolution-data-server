@@ -1,3 +1,13 @@
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_authenticate_user):
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_connect):
+	Passwords should not be forgotten all errors.
+
 2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000

@@ -1,3 +1,13 @@
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* e-gw-connection.c:
+	(e_gw_connection_response_parse_status_and_description),
+	(e_gw_connection_new_with_error_handler), (e_gw_connection_new):
+	* e-gw-connection.h:
+	Password should not be forgotten on all errors
+
 2007-09-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #474000

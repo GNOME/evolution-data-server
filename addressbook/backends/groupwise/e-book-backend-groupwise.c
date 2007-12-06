@@ -3149,6 +3149,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
+	EGwConnectionErrors error;
 	char *id, *tmpfile;
 	int status;
 	char *http_uri;
@@ -3187,14 +3188,19 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			return;
 		}
 
-		priv->cnc = e_gw_connection_new (priv->uri, user, passwd);
+		priv->cnc = e_gw_connection_new_with_error_handler (priv->uri, user, passwd, &error);
 		if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
 			http_uri = g_strconcat ("http://", priv->uri + 8, NULL);
 			priv->cnc = e_gw_connection_new (http_uri, user, passwd);
 			g_free (http_uri);
 		}
+	
 		if (!E_IS_GW_CONNECTION(priv->cnc)) {
-			e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_AuthenticationFailed);
+
+			if (error.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) 
+				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_AuthenticationFailed);
+			else
+				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_OtherError);
 			return;
 		}
 

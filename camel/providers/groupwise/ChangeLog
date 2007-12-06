@@ -1,3 +1,12 @@
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* camel-groupwise-store.c: (groupwise_store_construct),
+	(groupwise_auth_loop), (groupwise_get_folder),
+	(gw_store_reload_folder), (groupwise_create_folder):
+	Passwords should not be forgotten on all errors.
+
 2007-11-16  Sankar P  <psankar@novell.com>
 
 	** Fixes bug #481093

@@ -919,6 +919,10 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			return GNOME_Evolution_Addressbook_RepositoryOffline;
+		} else if (ldap_error == LDAP_INVALID_CREDENTIALS) {
+			g_warning ("Invalid credentials while connecting (ldap_error 0x%02x)", ldap_error);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+			return (GNOME_Evolution_Addressbook_AuthenticationFailed);
 		}
 
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);

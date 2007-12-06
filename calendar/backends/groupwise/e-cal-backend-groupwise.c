@@ -831,7 +831,7 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 	GError *error = NULL;
 	char *parent_user = NULL;
 	icalcomponent_kind kind;
-
+	EGwConnectionErrors errors;
 	priv = cbgw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbgw));
@@ -885,41 +885,46 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 	} else {
 
-		priv->cnc = e_gw_connection_new (
-				real_uri,
-				priv->username,
-				priv->password);
+		priv->cnc = e_gw_connection_new_with_error_handler ( real_uri, priv->username, priv->password, &errors);
 
 		if (!E_IS_GW_CONNECTION(priv->cnc) && use_ssl && g_str_equal (use_ssl, "when-possible")) {
 			http_uri = g_strconcat ("http://", real_uri + 8, NULL);
-			priv->cnc = e_gw_connection_new (http_uri, priv->username, priv->password);
+			priv->cnc = e_gw_connection_new_with_error_handler (http_uri, priv->username, priv->password, &errors);
 			g_free (http_uri);
 		}
 		cbgw->priv->read_only = FALSE;
 	}
 	g_free (real_uri);
 
-	if (priv->cnc && priv->cache && priv->container_id) {
-		char *utc_str;
-		priv->mode = CAL_MODE_REMOTE;
-		if (priv->mode_changed && !priv->timeout_id ) {
-			GThread *thread1;
-			priv->mode_changed = FALSE;
+	if (priv->cnc ) {
+		if (priv->cache && priv->container_id) {
+			char *utc_str;
+			priv->mode = CAL_MODE_REMOTE;
+			if (priv->mode_changed && !priv->timeout_id ) {
+				GThread *thread1;
+				priv->mode_changed = FALSE;
 
-			thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
-			if (!thread1) {
-				g_warning (G_STRLOC ": %s", error->message);
-				g_error_free (error);
+				thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
+				if (!thread1) {
+					g_warning (G_STRLOC ": %s", error->message);
+					g_error_free (error);
 
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
-				return GNOME_Evolution_Calendar_OtherError;
+					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
+					return GNOME_Evolution_Calendar_OtherError;
+				}
+				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
 			}
-			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
-		}
-		utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
-		e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
+			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
+			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
-		return GNOME_Evolution_Calendar_Success;
+			return GNOME_Evolution_Calendar_Success;
+		}
+	} else {
+		if (errors.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD)
+			return GNOME_Evolution_Calendar_AuthenticationFailed;
+
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _(errors.description));
+		return GNOME_Evolution_Calendar_OtherError;
 	}
 	priv->mode_changed = FALSE;
 

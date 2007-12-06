@@ -128,6 +128,30 @@ reauthenticate (EGwConnection *cnc)
 
 }
 
+static gboolean 
+e_gw_connection_response_parse_status_and_description (SoupSoapResponse *response, int *status, char **description)
+{
+	SoupSoapParameter *param, *subparam;
+
+	param = soup_soap_response_get_first_parameter_by_name (response, "status");
+	if (!param)
+		return FALSE;
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "code");
+	if (!subparam)
+		return FALSE;
+
+	*status = soup_soap_parameter_get_int_value (subparam);
+
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "description");
+	if (!subparam)
+		return FALSE;
+	
+	*description =  soup_soap_parameter_get_string_value (subparam);
+
+	return TRUE;
+}
+
 EGwConnectionStatus
 e_gw_connection_parse_response_status (SoupSoapResponse *response)
 {
@@ -420,7 +444,7 @@ form_login_request (const char*uri, const char* username, const char* password)
 }
 
 EGwConnection *
-e_gw_connection_new (const char *uri, const char *username, const char *password)
+e_gw_connection_new_with_error_handler (const char *uri, const char *username, const char *password, EGwConnectionErrors *errors)
 {
 	EGwConnection *cnc;
 	SoupSoapMessage *msg;
@@ -429,17 +453,20 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	EGwConnectionStatus status;
 	char *hash_key;
 	char *redirected_uri = NULL;
+	int code;
+	char *description = NULL;
 
-	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
+
 
 	g_static_mutex_lock (&connecting);
 
 	/* search the connection in our hash table */
 	if (loaded_connections_permissions != NULL) {
 		hash_key = g_strdup_printf ("%s:%s@%s",
-					    username ? username : "",
-					    password ? password : "",
-					    uri);
+				username ? username : "",
+				password ? password : "",
+				uri);
 		cnc = g_hash_table_lookup (loaded_connections_permissions, hash_key);
 		g_free (hash_key);
 
@@ -494,10 +521,15 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	}
 	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {
+		if (errors && e_gw_connection_response_parse_status_and_description (response, &code, &description) ) {
+			errors->status = code;
+			errors->description = description;
+		}
 		g_object_unref (response);
 		g_object_unref (msg);
 		g_object_unref (cnc);
 		g_static_mutex_unlock (&connecting);
+
 		return NULL;
 	}
 
@@ -538,7 +570,7 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 		param_value = soup_soap_parameter_get_string_value (param);
 		cnc->priv->version = param_value;
 	} else
-	       	cnc->priv->version = NULL;
+		cnc->priv->version = NULL;	
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "serverUTCTime");
 	if (param)
@@ -546,9 +578,9 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 
 	/* add the connection to the loaded_connections_permissions hash table */
 	hash_key = g_strdup_printf ("%s:%s@%s",
-				    cnc->priv->username ? cnc->priv->username : "",
-				    cnc->priv->password ? cnc->priv->password : "",
-				    cnc->priv->uri);
+			cnc->priv->username ? cnc->priv->username : "",
+			cnc->priv->password ? cnc->priv->password : "",
+			cnc->priv->uri);
 	if (loaded_connections_permissions == NULL)
 		loaded_connections_permissions = g_hash_table_new_full (g_str_hash, g_str_equal,
 				g_free, NULL);
@@ -560,6 +592,16 @@ e_gw_connection_new (const char *uri, const char *username, const char *password
 	g_static_mutex_unlock (&connecting);
 	g_free (redirected_uri);
 	return cnc;
+
+}
+
+
+EGwConnection *
+e_gw_connection_new (const char *uri, const char *username, const char *password)
+{
+	/* This is where I miss function-overloading and default-parameters */
+
+	return e_gw_connection_new_with_error_handler (uri, username, password, NULL);
 }
 
 SoupSoapResponse *

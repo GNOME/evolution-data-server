@@ -45,6 +45,11 @@ typedef struct _EGwConnection        EGwConnection;
 typedef struct _EGwConnectionClass   EGwConnectionClass;
 typedef struct _EGwConnectionPrivate EGwConnectionPrivate;
 
+typedef struct {
+	int status;
+	char *description;
+}EGwConnectionErrors;
+
 struct _EGwConnection {
 	GObject parent;
 	EGwConnectionPrivate *priv;
@@ -67,6 +72,8 @@ typedef struct {
 GType          e_gw_connection_get_type (void);
 EGwConnection *e_gw_connection_new (const char *uri, const char *username, const char *password);
 
+EGwConnection * e_gw_connection_new_with_error_handler (const char *uri, const char *username, const char *password, EGwConnectionErrors *errors);
+
 typedef enum {
 	E_GW_CONNECTION_STATUS_OK,
 	E_GW_CONNECTION_STATUS_INVALID_CONNECTION,
@@ -79,7 +86,8 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED,
 	E_GW_CONNECTION_STATUS_REDIRECT,
 	E_GW_CONNECTION_STATUS_OTHER,
-	E_GW_CONNECTION_STATUS_UNKNOWN
+	E_GW_CONNECTION_STATUS_UNKNOWN,
+	E_GW_CONNECTION_STATUS_INVALID_PASSWORD = 53273
 } EGwConnectionStatus;
 
 #define E_GW_CURSOR_POSITION_CURRENT "current"

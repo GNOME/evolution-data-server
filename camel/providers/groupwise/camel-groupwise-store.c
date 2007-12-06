@@ -92,7 +92,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	char *path = NULL;
 
-	d("in groupwise store constrcut\n");
+	d(printf ("\nin groupwise store constrcut\n"));
 
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -178,9 +178,9 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	CamelStore *store = CAMEL_STORE (service);
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
-	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
 	char *uri;
+	EGwConnectionErrors errors;
 
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never"))
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
@@ -190,28 +190,18 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 
 
 	while (!authenticated) {
-		if (errbuf) {
-			/* We need to un-cache the password before prompting again */
-			camel_session_forget_password (session, service, "Groupwise", "password", ex);
-			g_free (service->url->passwd);
-			service->url->passwd = NULL;
-		}
-
-
+	
 		if (!service->url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
 			char *prompt;
 
-			prompt = g_strdup_printf (_("%sPlease enter the GroupWise "
+			prompt = g_strdup_printf (_("Please enter the GroupWise "
 						    "password for %s@%s"),
-						  errbuf ? errbuf : "",
 						  service->url->user,
 						  service->url->host);
 			service->url->passwd =
 				camel_session_get_password (session, service, "Groupwise",
 							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
 			g_free (prompt);
-			g_free (errbuf);
-			errbuf = NULL;
 
 			if (!service->url->passwd) {
 				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
@@ -220,17 +210,23 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 
-		priv->cnc = e_gw_connection_new (uri, priv->user, service->url->passwd);
+		priv->cnc = e_gw_connection_new_with_error_handler (uri, priv->user, service->url->passwd, &errors);
 		if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
 			char *http_uri = g_strconcat ("http://", uri + 8, NULL);
 			priv->cnc = e_gw_connection_new (http_uri, priv->user, service->url->passwd);
 			g_free (http_uri);
 		}
 		if (!E_IS_GW_CONNECTION(priv->cnc)) {
-			errbuf = g_strdup_printf (_("Unable to authenticate "
-					    "to GroupWise server. "));
-
-			camel_exception_clear (ex);
+			if (errors.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) {
+				/* We need to un-cache the password before prompting again */
+				camel_session_forget_password (session, service, "Groupwise", "password", ex);
+				g_free (service->url->passwd);
+				service->url->passwd = NULL;
+				camel_exception_clear (ex);
+			} else {
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, g_strdup (errors.description));
+				return FALSE;
+			}
 		} else
 			authenticated = TRUE;
 
@@ -583,7 +579,6 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			return NULL;
 		}
@@ -709,7 +704,6 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE((CamelStore*)gw_store), ex)) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			return;
 		}
@@ -1245,7 +1239,6 @@ groupwise_create_folder(CamelStore *store,
 
 	if (!E_IS_GW_CONNECTION( priv->cnc)) {
 		if (!groupwise_connect (CAMEL_SERVICE(store), ex)) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 			return NULL;
 		}
 	}

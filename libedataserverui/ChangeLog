@@ -1,3 +1,10 @@
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* e-book-auth-util.c: (load_source_auth_cb):
+	Passwords should not be forgotten on all errors.
+
 2007-12-04  Alex Kloss  <alexkloss@att.net>
 
 	** Fix for bug #322917
