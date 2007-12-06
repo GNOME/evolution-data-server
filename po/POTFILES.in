@@ -215,3 +215,4 @@ servers/exchange/storage/exchange-hierarchy-foreign.c
 servers/groupwise/e-gw-connection.c
 src/GNOME_Evolution_DataServer.server.in.in
 src/server.c
+libedataserverui/e-cell-renderer-color.c
