@@ -825,7 +825,7 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 /* 		} */
 		mapi_id_t temp_folder_id;
 		folder_uid_to_mapi_ids (folder_id, &temp_folder_id);
-		status = exchange_mapi_connection_fetch_items (NULL, NULL, fetch_items_cb, temp_folder_id, folder);
+		status = exchange_mapi_connection_fetch_items (NULL, NULL, NULL, fetch_items_cb, temp_folder_id, folder);
 		if (!status) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Fetch items failed"));
 			goto end2;
