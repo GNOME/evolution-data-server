@@ -1,3 +1,8 @@
+2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* e-cal-backend-mapi.c: (get_deltas), (populate_cache): Add a new
+	param to exchange_mapi_connection_fetch_items
+
 2007-12-05  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi.c: (get_changes_cb), (cache_create_cb),
