@@ -1,3 +1,10 @@
+2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* exchange-mapi-connection.c: Add a new parm to fetch items to enable
+	to use restrictions fully.
+	(exchange_mapi_connection_fetch_items):
+	* exchange-mapi-connection.h:
+
 2007-12-05  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am: Added two new files: exchange-mapi-utils.[ch]

@@ -48,7 +48,7 @@ typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const ma
 typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid);
 typedef gboolean  (*BuildNameID) (struct mapi_nameid	*nameid, gpointer data);
 typedef int  (*BuildProps) (struct SPropValue **, struct SPropTagArray *, gpointer data);
-
+typedef struct SPropTagArray *  (*BuildPropTagArray) (TALLOC_CTX *ctx);
 gboolean 
 exchange_mapi_connection_new (const char *profile, const char *password);
 
@@ -61,7 +61,7 @@ exchange_mapi_connection_exists (void);
 gpointer
 exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb);
 gboolean
-exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, FetchItemsCallback cb, mapi_id_t fid, gpointer data);
+exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, FetchItemsCallback cb, mapi_id_t fid, gpointer data);
 
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name);

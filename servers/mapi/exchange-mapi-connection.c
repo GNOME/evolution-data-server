@@ -613,7 +613,7 @@ cleanup:
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
 
 gboolean
-exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, FetchItemsCallback cb, mapi_id_t fid, gpointer data)
+exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, FetchItemsCallback cb, mapi_id_t fid, gpointer data)
 {
 	mapi_object_t obj_store;	
 	mapi_object_t obj_folder;
@@ -635,7 +635,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	mapi_object_init(&obj_store);
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-openmsgstore failed: %d\n", retval);
+		g_warning ("fetch items-openmsgstore failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
 		UNLOCK ();
 		return FALSE;
@@ -645,7 +645,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	/* We now open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-openfolder failed: %d\n", retval);
+		g_warning ("fetch items-openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
 		UNLOCK ();
 		return FALSE;
@@ -654,28 +654,34 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	mapi_object_init(&obj_table);
 	retval = GetContentsTable(&obj_folder, &obj_table);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-getcontentstable failed: %d\n", retval);
+		g_warning ("fetch items-getcontentstable failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
 	}
 
-	SPropTagArray = set_SPropTagArray(mem_ctx, 0x9,
-					  PR_FID,
-					  PR_MID,
-					  PR_INST_ID,
-					  PR_INSTANCE_NUM,
-					  PR_SUBJECT,
-					  PR_MESSAGE_CLASS,
-					  PR_HASATTACH,
-					/* FIXME: is this tag fit to check if a recipient table exists or not ? */
-//					  PR_DISCLOSURE_OF_RECIPIENTS,
-					  PR_RULE_MSG_PROVIDER,
-					  PR_RULE_MSG_NAME);
+	if (!bpta_cb) {
+		SPropTagArray = set_SPropTagArray(mem_ctx, 0x9,
+						  PR_FID,
+						  PR_MID,
+						  PR_INST_ID,
+						  PR_INSTANCE_NUM,
+						  PR_SUBJECT,
+						  //0x801f001e,
+						  PR_MESSAGE_CLASS,
+						  PR_HASATTACH,
+						  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
+//					          PR_DISCLOSURE_OF_RECIPIENTS,
+						  PR_RULE_MSG_PROVIDER,
+						  PR_RULE_MSG_NAME);
+	} else {
+		SPropTagArray = bpta_cb (mem_ctx);
+	}
+	
 	retval = SetColumns(&obj_table, SPropTagArray);
 	MAPIFreeBuffer(SPropTagArray);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-setcolumns failed: %d\n", retval);
+		g_warning ("fetch items-setcolumns failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
@@ -694,7 +700,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 
 	retval = GetRowCount(&obj_table, &count);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-getrowcount failed: %d\n", retval);
+		g_warning ("fetch items-getrowcount failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
 		UNLOCK ();
 		return FALSE;
@@ -702,7 +708,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 
 	retval = QueryRows(&obj_table, count, TBL_ADVANCE, &SRowSet);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-queryrows failed: %d\n", retval);
+		g_warning ("fetch items-queryrows failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
 		UNLOCK ();
 		return FALSE;
