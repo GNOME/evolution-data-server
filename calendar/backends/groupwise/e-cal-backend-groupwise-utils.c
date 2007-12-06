@@ -568,6 +568,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			e_cal_component_alarm_get_trigger (alarm, &trigger);
 			duration = abs (icaldurationtype_as_int (trigger.u.rel_duration));
 			e_gw_item_set_trigger (item, duration);
+			cal_obj_uid_list_free (l);
 		}
 
 

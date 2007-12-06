@@ -599,6 +599,8 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	/* We add the ABSOLUTE triggers separately */
 	generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
 
+	cal_obj_uid_list_free (alarm_uids);
+
 	if (aod.n_triggers == 0)
 		return NULL;
 

@@ -1,3 +1,12 @@
+2007-12-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #501548
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component):
+	* libecal/e-cal-util.c: (e_cal_util_generate_alarms_for_comp):
+	Free memory returned by e_cal_component_get_alarm_uids properly.
+
 2007-12-06  Sankar P  <psankar@novell.com>
 
 	** Fixes bug #501969
