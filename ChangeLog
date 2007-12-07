@@ -1,3 +1,10 @@
+2007-12-07  James "Doc" Livingston  <doclivingston@gmail.com>
+
+	** Fix for bug #339510
+
+	* libedataserver/e-time-utils.c: (e_time_parse_time): Accept time
+	inputs with 4 figures (e.g. '1830' would be converted to '18:30')
+
 2007-12-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.21.3 release.

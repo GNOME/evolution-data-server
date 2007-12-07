@@ -1769,7 +1769,7 @@ e_time_parse_date (const char *value, struct tm *result)
 ETimeParseStatus
 e_time_parse_time (const char *value, struct tm *result)
 {
-	const char *format[6];
+	const char *format[7];
 	int num_formats = 0;
 	gboolean use_12_hour_formats = locale_supports_12_hour_format ();
 
@@ -1789,6 +1789,9 @@ e_time_parse_time (const char *value, struct tm *result)
 
 	/* strptime format for time of day, without seconds 24-hour format. */
 	format[num_formats++] = _("%H:%M");
+
+	/* strptime format for time of day, without seconds 24-hour format, and no colon. */
+	format[num_formats++] = _("%H%M");
 
 	if (use_12_hour_formats) {
 		/* strptime format for hour and AM/PM, 12-hour format. */
