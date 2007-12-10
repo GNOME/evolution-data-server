@@ -68,7 +68,7 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 				      FetchItemsCallback cb, gpointer data);
 
 mapi_id_t 
-exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name);
+exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name);
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 

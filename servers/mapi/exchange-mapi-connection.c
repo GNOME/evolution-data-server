@@ -1012,206 +1012,164 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	return TRUE;	
 }
 
+/* FIXME: param olFolder is never used in the routine. Remove it and cleanup at the backends */
 gboolean
 exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 {
-	mapi_object_t obj_store, obj_tstore;	
-	mapi_object_t obj_folder;
-	mapi_object_t obj_top;
 	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SRowSet SRowSet;
-	struct SPropTagArray *SPropTagArray;
-	struct mapi_SPropValue_array properties_array;
-	TALLOC_CTX *mem_ctx;
-	uint32_t i=0;
-	gpointer retobj = NULL;
-	mapi_id_t id_top, pfid;
+	mapi_object_t obj_store;
+	mapi_object_t obj_top;
+	mapi_object_t obj_folder;
 	ExchangeMAPIFolder *folder;
-	
-	LOCK ();
+	gboolean result = FALSE;
 
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	folder = exchange_mapi_folder_get_folder (fid);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	LOCK ();
 	LOGALL ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_store);
-	mapi_object_init(&obj_tstore);	
 	mapi_object_init(&obj_top);
+	mapi_object_init(&obj_folder);
 
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove folder openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
-	
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
+
+	/* Attempt to open the folder to be removed */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
-	
+
+	/* FIXME: If the folder has sub-folders, open each of them in turn, empty them and delete them.
+	 * Note that this has to be done recursively, for the sub-folders as well. 
+	 */
+
+	/* Empty the contents of the folder */
 	retval = EmptyFolder(&obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items emptyfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("EmptyFolder", GetLastError());
+		goto cleanup;
 	}
 
-	folder = exchange_mapi_folder_get_folder (fid);
-	if (!folder) {
-		g_warning (" Unable to get the folder from the list\n");
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;		
-	}
-	
-	retval = OpenMsgStore(&obj_tstore);
+	/* Attempt to open the top/parent folder */
+	retval = OpenFolder(&obj_store, folder->parent_folder_id, &obj_top);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove folder openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
-	}
-	
-	printf("Opening folder %016llX\n", folder->parent_folder_id);
-	/* We now open the folder */
-	retval = OpenFolder(&obj_tstore, folder->parent_folder_id, &obj_top);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 
-	
+	/* Attempt to delete the folder */
 	retval = DeleteFolder(&obj_top, fid);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items Deletefolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("DeleteFolder", GetLastError());
+		goto cleanup;
 	}
-	
+
+	result = TRUE;
+	printf("Folder with id %016llX deleted\n", fid);
+
+cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_top);
-	
+	mapi_object_release(&obj_store);
 	LOGNONE();
 	UNLOCK ();
-	
-	return TRUE;	
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return result;
 }
 
 mapi_id_t 
-exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name)
+exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name)
 {
+	enum MAPISTATUS retval;
 	mapi_object_t obj_store;
 	mapi_object_t obj_folder;
 	mapi_object_t obj_top;
-	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SRowSet SRowSet;
-	struct SPropTagArray *SPropTagArray;
-	struct mapi_SPropValue_array properties_array;
-	TALLOC_CTX *mem_ctx;
-	uint32_t i=0;
-	gpointer retobj = NULL;
-	mapi_id_t fid;
-	ExchangeMAPIFolder *folder;
 	struct SPropValue vals[1];
 	const char *type;
+	mapi_id_t fid = 0;
+
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-
 	LOGALL ();
-	mem_ctx = talloc_init("Evolution");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_top);
+	mapi_object_init(&obj_folder);
 
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("createfolder openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
 
-	printf("Opening folder %016llX\n", pfid);
-	/* We now open the folder */
+	/* We now open the top/parent folder */
 	retval = OpenFolder(&obj_store, pfid, &obj_top);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create folder openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 	
-	retval = CreateFolder(&obj_top, name, "Created using Evolution/libmapi", &obj_folder);
+	/* Attempt to create the folder */
+	retval = CreateFolder(&obj_top, FOLDER_GENERIC, name, "Created using Evolution/libmapi", OPEN_IF_EXISTS, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create folder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("CreateFolder", GetLastError());
+		goto cleanup;
 	}
 
-	fid = mapi_object_get_id (&obj_folder);
 	switch (olFolder) {
-	case olFolderInbox:
-		type = IPF_NOTE;
-		break;
-	case olFolderCalendar:
-		type = IPF_APPOINTMENT;
-		break;
-	case olFolderContacts:
-		type = IPF_CONTACT;
-		break;
-	case olFolderTasks:
-		type = IPF_TASK;
-		break;
-	case olFolderNotes:
-		type = IPF_STICKYNOTE;
-		break;
-	default:
-		type = IPF_NOTE;
+		case olFolderInbox:
+			type = IPF_NOTE;
+			break;
+		case olFolderCalendar:
+			type = IPF_APPOINTMENT;
+			break;
+		case olFolderContacts:
+			type = IPF_CONTACT;
+			break;
+		case olFolderTasks:
+			type = IPF_TASK;
+			break;
+		case olFolderNotes:
+			type = IPF_STICKYNOTE;
+			break;
+		default:
+			type = IPF_NOTE;
 	}
 
 	vals[0].value.lpszA = type;
 	vals[0].ulPropTag = PR_CONTAINER_CLASS;
-	retval = SetProps(&obj_folder, vals, 1);
 
+	retval = SetProps(&obj_folder, vals, 1);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create folder set props failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("SetProps", GetLastError());
+		goto cleanup;
 	}
 
+	fid = mapi_object_get_id (&obj_folder);
+	printf("Folder created with id %016llX\n", fid);
+
+cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_top);
-	
+	mapi_object_release(&obj_store);
 	LOGNONE();
 	UNLOCK ();
-	
-	printf("Got %016llX\n", fid);
-	return fid;	
-}
 
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	/* Shouldn't we return (ExchangeMAPIFolder *) instead of a plain fid ? */
+	return fid;
+}
 
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data, GSList *recipients, GSList *attachments)
