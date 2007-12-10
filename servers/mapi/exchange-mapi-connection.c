@@ -696,7 +696,6 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 						  PR_INST_ID,
 						  PR_INSTANCE_NUM,
 						  PR_SUBJECT,
-						  //0x801f001e,
 						  PR_MESSAGE_CLASS,
 						  PR_HASATTACH,
 						  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
@@ -1120,7 +1119,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	}
 	
 	/* Attempt to create the folder */
-	retval = CreateFolder(&obj_top, FOLDER_GENERIC, name, "Created using Evolution/libmapi", OPEN_IF_EXISTS, &obj_folder);
+	retval = CreateFolder(&obj_top, name, "Created using Evolution/libmapi", &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("CreateFolder", GetLastError());
 		goto cleanup;

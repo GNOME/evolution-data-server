@@ -1,3 +1,11 @@
+2007-12-10  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix Suman's build break patch.
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_create_folder):
+
 2007-12-10  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_remove_folder),
