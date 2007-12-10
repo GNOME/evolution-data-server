@@ -1,3 +1,13 @@
+2007-12-10  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Implement Restrictions
+
+	* e-book-backend-mapi.c: (build_restriction_emails_contains),
+	(create_contact_list_cb), (build_ptags),
+	(e_book_backend_mapi_get_contact_list), (emapidump_contact),
+	(book_view_thread), (build_cache), (build_ptags_update),
+	(update_cache), (e_book_backend_mapi_authenticate_user):
+
 2007-12-05  Suman Manjunath  <msuman@novell.com>
 
 	* e-book-backend-mapi.c: (e_book_backend_mapi_load_source),

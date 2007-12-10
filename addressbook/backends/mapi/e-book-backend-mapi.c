@@ -100,9 +100,9 @@ static const struct field_element_mapping {
 	{ E_CONTACT_FAMILY_NAME, PT_STRING8, PR_SURNAME , ELEMENT_TYPE_SIMPLE},
 	{ E_CONTACT_NICKNAME, PT_STRING8, PR_NICKNAME, ELEMENT_TYPE_SIMPLE },
 
-	{ E_CONTACT_EMAIL_1, PT_STRING8, 0x8083001e, ELEMENT_TYPE_SIMPLE},
-	{ E_CONTACT_EMAIL_2, PT_STRING8, 0x8093001e, ELEMENT_TYPE_SIMPLE},
-	{ E_CONTACT_EMAIL_3, PT_STRING8, 0x80a3001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_EMAIL_1, PT_STRING8, 0x8084001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_EMAIL_2, PT_STRING8, 0x8094001e, ELEMENT_TYPE_SIMPLE},
+	{ E_CONTACT_EMAIL_3, PT_STRING8, 0x80a4001e, ELEMENT_TYPE_SIMPLE},
 	{ E_CONTACT_IM_AIM, PT_STRING8, 0x8062001e, ELEMENT_TYPE_COMPLEX},
 		
 	{ E_CONTACT_PHONE_BUSINESS, PT_STRING8, PR_OFFICE_TELEPHONE_NUMBER, ELEMENT_TYPE_SIMPLE},
@@ -172,347 +172,40 @@ find_book_view (EBookBackendMAPI *ebmapi)
 	return rv;
 }
 
-#define IS_RFC2254_CHAR(c) ((c) == '*' || (c) =='\\' || (c) == '(' || (c) == ')' || (c) == '\0')
-static char *
-rfc2254_escape(char *str)
-{
-	int i;
-	int len = strlen(str);
-	int newlen = 0;
-
-	for (i = 0; i < len; i ++) {
-		if (IS_RFC2254_CHAR(str[i]))
-			newlen += 3;
-		else
-			newlen ++;
-	}
-
-	if (len == newlen) {
-		return g_strdup (str);
-	}
-	else {
-		char *newstr = g_malloc0 (newlen + 1);
-		int j = 0;
-		for (i = 0; i < len; i ++) {
-			if (IS_RFC2254_CHAR(str[i])) {
-				sprintf (newstr + j, "\\%02x", str[i]);
-				j+= 3;
-			}
-			else {
-				newstr[j++] = str[i];
-			}
-		}
-		return newstr;
-	}
-}
-
-/* Sigh somewhere libmapi/samba defines it and it breaks us. */
-#undef bool
-
-static ESExpResult *
-func_and(ESExp *f, int argc, ESExpResult **argv, void *data)
-{
-	ESExpResult *r;
-	GString *string;
-	int i;
-
-	/* Check for short circuit */
-	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_BOOL &&
-		    argv[i]->value.bool == FALSE) {
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-			r->value.bool = FALSE;
-			return r;
-		} else if (argv[i]->type == ESEXP_RES_UNDEFINED)
-			return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	}
-
-	string = g_string_new("(&");
-	for (i = 0; i < argc; i ++) {
-		if (argv[i]->type != ESEXP_RES_STRING)
-			continue;
-		g_string_append(string, argv[i]->value.string);
-	}
-	g_string_append(string, ")");
-
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = string->str;
-	g_string_free(string, FALSE);
-
-	return r;
-}
-
-static ESExpResult *
-func_or(ESExp *f, int argc, ESExpResult **argv, void *data)
-{
-	ESExpResult *r;
-	GString *string;
-	int i;
-
-	/* Check for short circuit */
-	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_BOOL &&
-		    argv[i]->value.bool == TRUE) {
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-			r->value.bool = TRUE;
-			return r;
-		} else if (argv[i]->type == ESEXP_RES_UNDEFINED)
-			return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	}
-
-	string = g_string_new("(|");
-	for (i = 0; i < argc; i ++) {
-		if (argv[i]->type != ESEXP_RES_STRING)
-			continue;
-		g_string_append(string, argv[i]->value.string);
-	}
-	g_string_append(string, ")");
-
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = string->str;
-	g_string_free(string, FALSE);
-
-	return r;
-}
-
-static ESExpResult *
-func_not(ESExp *f, int argc, ESExpResult **argv, void *data)
-{
-	ESExpResult *r;
-
-	if (argc != 1 ||
-	    (argv[0]->type != ESEXP_RES_STRING &&
-	     argv[0]->type != ESEXP_RES_BOOL))
-		return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-
-	if (argv[0]->type == ESEXP_RES_STRING) {
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup_printf ("(!%s)",
-						   argv[0]->value.string);
-	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = !argv[0]->value.bool;
-	}
-
-	return r;
-}
-
-static ESExpResult *
-func_contains(ESExp *f, int argc, ESExpResult **argv, void *data)
-{
-	ESExpResult *r;
-	char *propname, *ldap_attr, *str;
-
-	if (argc != 2 ||
-	    argv[0]->type != ESEXP_RES_STRING ||
-	    argv[1]->type != ESEXP_RES_STRING)
-		return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-
-	propname = argv[0]->value.string;
-	str = argv[1]->value.string;
-
-	if (!strcmp(propname, "x-evolution-any-field")) {
-		/* This gui does (contains "x-evolution-any-field" ""),
-		 * when you hit "Clear". We want that to be empty. But
-		 * other "any field contains" searches should give an
-		 * error.
-		 */
-		if (strlen(str) == 0) {
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-			r->value.bool = FALSE;
-		} else {
-			r = e_sexp_result_new(f, ESEXP_RES_STRING);
-			r->value.string = g_strdup_printf ("(mailNickname=%s)", str);			
-		}
-		
-		return r;
-	}
-
-	ldap_attr = query_prop_to_ldap(argv[0]->value.string);
-	if (!ldap_attr) {
-		/* Attribute doesn't exist, so it can't possibly match */
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = FALSE;
-		return r;
-	}
-
-	/* AD doesn't do substring indexes, so we only allow
-	 * (contains FIELD ""), meaning "FIELD exists".
-	 */
-	if (strlen(str) == 0) {
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup_printf ("(%s=*)", ldap_attr);
-	} else if (!strcmp(propname, "file_as")) {
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup_printf ("(|(displayName=%s*)(sn=%s*)(%s=%s*))", str, str, ldap_attr, str);
-	} else 
-		r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	return r;
-}
-
-static ESExpResult *
-func_is_or_begins_with(ESExp *f, int argc, ESExpResult **argv, gboolean exact)
-{
-	ESExpResult *r;
-	char *propname, *str, *star, *filter;
-
-	if (argc != 2
-	    || argv[0]->type != ESEXP_RES_STRING
-	    || argv[1]->type != ESEXP_RES_STRING)
-		return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-
-	propname = argv[0]->value.string;
-	str = rfc2254_escape(argv[1]->value.string);
-	star = exact ? "" : "*";
-
-	if (!exact && strlen (str) == 0 && strcmp(propname, "file_as")) {
-		/* Can't do (beginswith FIELD "") */
-		return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	}
-
-	/* We use the query "(beginswith fileas "")" while building cache for
-	 * GAL offline, where we try to retrive all the contacts and store it 
-	 * locally. Retrieving *all* the contacts may not be possible in case 
-	 * of large number of contacts and huge data, (for the same reason
-	 * we don't support empty queries in GAL when online.) In such cases 
-	 * cache may not be complete.
-	 */
-	if (!strcmp(propname, "file_as")) {
-		filter = g_strdup_printf("(displayName=%s%s)", str, star);
-		goto done;
-	}
-
-	if (!strcmp (propname, "full_name")) {
-		char *first, *last, *space;
-
-		space = strchr (str, ' ');
-		if (space && space > str) {
-			if (*(space - 1) == ',') {
-				first = g_strdup (space + 1);
-				last = g_strndup (str, space - str - 1);
-			} else {
-				first = g_strndup (str, space - str);
-				last = g_strdup (space + 1);
-			}
-			filter = g_strdup_printf("(|(displayName=%s%s)(sn=%s%s)(givenName=%s%s)(&(givenName=%s%s)(sn=%s%s)))",
-						 str, star, str, star,
-						 str, star, first, star,
-						 last, star);
-			g_free (first);
-			g_free (last);
-		} else {
-			filter = g_strdup_printf("(|(displayName=%s%s)(sn=%s%s)(givenName=%s%s)(mailNickname=%s%s))",
-						 str, star, str, star,
-						 str, star, str, star);
-		}
-	} else 
-		filter = g_strdup_printf("(%s=%s%s)", "email", str, star);
-
- done:
-	g_free (str);
-
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = filter;
-	return r;
-}
-
-static ESExpResult *
-func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
-{
-	return func_is_or_begins_with(f, argc, argv, TRUE);
-}
-
-static ESExpResult *
-func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
-{
-	return func_is_or_begins_with(f, argc, argv, FALSE);
-}
-
-static ESExpResult *
-func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
-{
-	/* We don't allow endswith searches */
-	return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-}
-
-/* 'builtin' functions */
-static struct {
-	char *name;
-	ESExpFunc *func;
-} symbols[] = {
-	{ "and", func_and },
-	{ "or", func_or },
-	{ "not", func_not },
-	{ "contains", func_contains },
-	{ "is", func_is },
-	{ "beginswith", func_beginswith },
-	{ "endswith", func_endswith },
-};
-
-static int
-build_query (const char *query, char **query_email)
-{
-	ESExp *sexp;
-	ESExpResult *r;
-	int i, retval;
-
-	sexp = e_sexp_new();
-
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
-		e_sexp_add_function(sexp, 0, symbols[i].name,
-				    symbols[i].func, NULL);
-	}
-
-	e_sexp_input_text (sexp, query, strlen (query));
-	e_sexp_parse (sexp);
-
-	r = e_sexp_eval (sexp);
-
-	if (r->type == ESEXP_RES_STRING) {
-		*query_email = g_strdup (r->value.string);
-		retval = GNOME_Evolution_Addressbook_Success;
-	} else if (r->type == ESEXP_RES_BOOL) {
-		/* If it's FALSE, that means "no matches". If it's TRUE
-		 * that means "everything matches", but we don't support
-		 * that, so it also means "no matches".
-		 */
-		*query_email = NULL;
-		retval = GNOME_Evolution_Addressbook_Success;
-	} else {
-		/* Bad query */
-		*query_email = NULL;
-		retval = GNOME_Evolution_Addressbook_QueryRefused;
-	}
-
-	e_sexp_result_free(sexp, r);
-	e_sexp_unref (sexp);
-
-	return retval;
-}
-
 static gboolean
 build_restriction_emails_contains (struct mapi_SRestriction *res, 
 				   char *query)
 {
-	char *email=NULL, *tmp;;
+	char *email=NULL, *tmp, *tmp1;
 	int status;
+
+	/* This currently supports "email foo@bar.soo" */
+	tmp = strdup (query);
+	
+	tmp = strstr (tmp, "email");
+	if (tmp ) {
+		tmp = strchr (tmp, '\"');
+		if (tmp && ++tmp) {
+			tmp = strchr (tmp, '\"');
+			if (tmp && ++tmp) {
+				tmp1 = tmp;
+				tmp1 = strchr (tmp1, '\"');
+				if (tmp1) {
+					*tmp1 = 0;
+					email = tmp;
+				}
+			}
+		}
+	}
 	
 
-	/* This currently supports "is email foo@bar.soo" */
-	status = build_query (query, &email);
-	email = strchr (email, '=');
-	email++;
-	tmp = strchr (email, ')');
-	*tmp = 0;
-	printf("building restrition on %s\n", email);
-
-	if (status != GNOME_Evolution_Addressbook_Success || email==NULL)
+	if (email==NULL || !strchr (email, '@'))
 		return FALSE;
 
 	res->rt = RES_PROPERTY;
 	res->res.resProperty.relop = RES_PROPERTY;
-	res->res.resProperty.ulPropTag = 0x8084001e; /* EMAIL */
-	res->res.resProperty.lpProp.ulPropTag = 0x8084001e; /* EMAIL*/
+	res->res.resProperty.ulPropTag = 0x801f001e; /* EMAIL */
+	res->res.resProperty.lpProp.ulPropTag = 0x801f001e; /* EMAIL*/
 	res->res.resProperty.lpProp.value.lpszA = email;
 
 	return TRUE;
@@ -1097,16 +790,41 @@ create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid
 	
 	if (contact) {
 		/* UID of the contact is nothing but the concatenated string of hex id of folder and the message.*/
+		printf("Contact added %s\n", suid);
 		e_contact_set (contact, E_CONTACT_UID, suid);		
 //		e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
 		//FIXME: Should we set this? How can we get this first?
 		list = g_list_prepend (list, e_vcard_to_string (E_VCARD (contact),
 							        EVC_FORMAT_VCARD_30));
 		g_object_unref (contact);
+		if (* (GList **)data == NULL)
+			* (GList **)data = list;
 	}
 
 	g_free (suid);
 	return TRUE;
+}
+
+static struct SPropTagArray *
+build_ptags (TALLOC_CTX *ctx)
+{
+	struct SPropTagArray *SPropTagArray;
+
+	SPropTagArray = set_SPropTagArray(ctx, 10,
+					  PR_FID,
+					  PR_MID,
+					  PR_INST_ID,
+					  PR_INSTANCE_NUM,
+					  PR_SUBJECT,
+					  0x801f001e,
+					  0x8020001e,
+					  0x8021001e,
+					  PR_MESSAGE_CLASS,
+					  PR_HASATTACH,
+					  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
+//					  PR_DISCLOSURE_OF_RECIPIENTS,
+					  PR_RULE_MSG_PROVIDER,
+					  PR_RULE_MSG_NAME);
 }
 
 static void
@@ -1167,11 +885,15 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 		else {
 			struct mapi_SRestriction res;
 			GList *vcard_str = NULL;
-			if (1 || !build_restriction_emails_contains (&res, query)) {
+
+			printf("Not marked for cache\n");
+
+			/* Unfortunately MAPI Doesn't support searching well, we do allow only online search for emails rest all are returned as error. */
+			if (!build_restriction_emails_contains (&res, query)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;				
 			}
-			if (!exchange_mapi_connection_fetch_items (olFolderContacts, &res, create_contact_list_cb, priv->fid, &vcard_str)) {
+			if (!exchange_mapi_connection_fetch_items (olFolderContacts, &res, build_ptags, create_contact_list_cb, priv->fid, &vcard_str)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;
 			}
@@ -1309,7 +1031,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 //				e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), "AIM");
 				e_vcard_attribute_add_value (attr, value);
 				list = g_list_append (list, value);
-				printf("%s -----\n", value);
+				//printf("%s -----\n", value);
 				e_contact_set (contact, mappings[i].field_id, list);
 				//FIXME: FREE them
 			} else if (mappings[i].field_id == E_CONTACT_BIRTH_DATE
@@ -1349,7 +1071,7 @@ emapidump_contact(struct mapi_SPropValue_array *properties)
 						contact_addr->country = find_mapi_SPropValue_data (properties, PR_HOME_ADDRESS_COUNTRY);
 
 				} else {
-					printf("Value %s\n", value);
+					
 						contact_addr->address_format = NULL;
 						contact_addr->po = NULL;
 						contact_addr->street = value;
@@ -1557,7 +1279,7 @@ book_view_thread (gpointer data)
 
 		//FIXME: We need to fetch only the query from the server live and not everything.
 		/* execute the query */
-		if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, create_contact_cb, priv->fid, book_view)) {
+		if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, NULL, create_contact_cb, priv->fid, book_view)) {
 			if (e_flag_is_set (closure->running))
 				e_data_book_view_notify_complete (book_view, 
 								  GNOME_Evolution_Addressbook_OtherError);	
@@ -1615,13 +1337,6 @@ e_book_backend_mapi_get_changes (EBookBackend *backend,
 	/* FIXME : provide implmentation */
 }
 
-
-static gboolean
-update_cache (EBookBackendMAPI *ebmapi)
-{
-	//FIXME: Implement this once libmapi has notification/mod-time based restrictions.
-}
-
 static gboolean 
 cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
 {
@@ -1650,6 +1365,7 @@ static gpointer
 build_cache (EBookBackendMAPI *ebmapi)
 {
 	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) ebmapi)->priv;
+	char *tmp;
 	
 	//FIXME: What if book view is NULL? Can it be? Check that.
 	if (!priv->cache) {
@@ -1665,7 +1381,70 @@ build_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, cache_contact_cb, priv->fid, ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, NULL, cache_contact_cb, priv->fid, ebmapi)) {
+		printf("Error during caching addressbook\n");
+		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+		return NULL;
+	}
+	tmp = g_strdup_printf("%d", (int)time (NULL));
+	e_book_backend_cache_set_time (priv->cache, tmp);
+	printf("setting time  %s\n", tmp);
+	g_free (tmp);
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+	e_book_backend_summary_save (priv->summary);
+	priv->is_cache_ready = TRUE;
+	priv->is_summary_ready = TRUE;
+	return NULL;		
+}
+
+static struct SPropTagArray *
+build_ptags_update (TALLOC_CTX *ctx)
+{
+	struct SPropTagArray *SPropTagArray;
+	
+	SPropTagArray = set_SPropTagArray(ctx, 10,
+					  PR_FID,
+					  PR_MID,
+					  PR_INST_ID,
+					  PR_INSTANCE_NUM,
+					  PR_SUBJECT,
+					  PR_LAST_MODIFICATION_TIME,
+					  PR_MESSAGE_CLASS,
+					  PR_HASATTACH,
+					  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
+//					  PR_DISCLOSURE_OF_RECIPIENTS,
+					  PR_RULE_MSG_PROVIDER,
+					  PR_RULE_MSG_NAME);
+
+	return SPropTagArray;
+}
+static gpointer
+update_cache (EBookBackendMAPI *ebmapi)
+{
+	EBookBackendMAPIPrivate *priv = ((EBookBackendMAPI *) ebmapi)->priv;
+	char *tmp = e_book_backend_cache_get_time (priv->cache);
+	//FIXME: What if book view is NULL? Can it be? Check that.
+	time_t t=0;
+	struct mapi_SRestriction res;
+	
+	if (tmp)
+		t = atoi (tmp);
+
+	
+	
+//	res.rt = RES_PROPERTY;
+//	res.res.resProperty.relop = RES_PROPERTY;
+//	res.res.resProperty.ulPropTag = PR_LAST_MODIFICATION_TIME;
+//	res.res.resProperty.lpProp.ulPropTag = PR_LAST_MODIFICATION_TIME;
+//	res.res.resProperty.lpProp.value.lpszA = email;
+
+#if 0
+	printf("time updated was %d\n", t);
+	/* Assume the cache and summary are already there */
+	
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
+	
+	if (!exchange_mapi_connection_fetch_items (olFolderContacts, &res, build_ptags_update, cache_contact_cb, priv->fid, ebmapi)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;
@@ -1674,7 +1453,9 @@ build_cache (EBookBackendMAPI *ebmapi)
 	e_book_backend_summary_save (priv->summary);
 	priv->is_cache_ready = TRUE;
 	priv->is_summary_ready = TRUE;
-	return NULL;		
+#endif
+	
+	return NULL;
 }
 
 static void
@@ -1706,15 +1487,13 @@ e_book_backend_mapi_authenticate_user (EBookBackend *backend,
 
 		if (priv->cache && priv->is_cache_ready) {
 			printf("FIXME: Should check for an update in the cache\n");
-/*			if (priv->is_writable)
-				g_thread_create ((GThreadFunc) update_cache, 
-						  backend, FALSE, NULL);*/
-		}
-		else if (priv->marked_for_offline && !priv->is_cache_ready){
+//			g_thread_create ((GThreadFunc) update_cache, 
+	//					  backend, FALSE, backend);
+		} else if (priv->marked_for_offline && !priv->is_cache_ready) {
 			/* Means we dont have a cache. Lets build that first */
 			printf("Preparing to build cache\n");
 			g_thread_create ((GThreadFunc) build_cache, backend, FALSE, backend);
-		}
+		} 
 		e_book_backend_set_is_writable (backend, TRUE);
 		e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_Success);
 		return;
