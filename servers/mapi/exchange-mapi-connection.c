@@ -28,19 +28,11 @@
 #include "exchange-mapi-utils.h"
 #include <param.h>
 
-#include <camel/camel-data-wrapper.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-mime-filter-crlf.h>
-#include <camel/camel-mime-message.h>
-#include <camel/camel-multipart.h>
-#include <camel/camel-session.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-stream-mem.h>
-
 #define CN_MSG_PROPS 2
 #define	STREAM_SIZE	0x4000
 #define DEFAULT_PROF_PATH ".evolution/mapi-profiles.ldb"
 #define d(x) x
+#define DATATEST 1
 
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
@@ -610,10 +602,45 @@ cleanup:
 	return status;
 }
 
+struct SPropTagArray *
+exchange_mapi_util_SPropTagArray_new (uint32_t prop_nb, ...)
+{
+	struct SPropTagArray	*SPropTag;
+	va_list			ap;
+	uint32_t		i;
+	uint32_t		*aulPropTag;
+
+	printf("%s(%d):%s:prop_nb : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, prop_nb);
+	aulPropTag = g_new0(uint32_t, prop_nb);
+
+	va_start(ap, prop_nb);
+	for (i = 0; i < prop_nb; i++) {
+		aulPropTag[i] = va_arg(ap, int);
+		printf("%s(%d):%s:aulPropTag[i] = %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, aulPropTag[i]);
+	}
+	va_end(ap);
+
+	SPropTag = g_new0 (struct SPropTagArray, 1);
+	SPropTag->aulPropTag = aulPropTag;
+	SPropTag->cValues = prop_nb;
+
+	return SPropTag;
+}
+
+void 
+exchange_mapi_util_SPropTagArray_free (struct SPropTagArray * SPropTagArray)
+{
+	g_return_if_fail (SPropTagArray != NULL);
+
+	g_free (SPropTagArray->aulPropTag);
+	g_free (SPropTagArray);
+}
+
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
 
 gboolean
-exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, FetchItemsCallback cb, mapi_id_t fid, gpointer data)
+exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPropsTagArray, struct mapi_SRestriction *res,
+				      BuildPropTagArray bpta_cb, FetchItemsCallback cb,  gpointer data)
 {
 	mapi_object_t obj_store;	
 	mapi_object_t obj_folder;
@@ -623,7 +650,7 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	mapi_object_t obj_message;
 	struct SRowSet SRowSet;
 	struct SPropTagArray *SPropTagArray;
-	struct mapi_SPropValue_array properties_array;
+
 	TALLOC_CTX *mem_ctx;
 	int i;
 
@@ -643,7 +670,8 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 
 	printf("Opening folder %016llX\n", fid);
 	/* We now open the folder */
-	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	OpenFolder(&obj_store, fid, &obj_folder);
+	retval = GetLastError();
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("fetch items-openfolder failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
@@ -652,7 +680,8 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	}
 
 	mapi_object_init(&obj_table);
-	retval = GetContentsTable(&obj_folder, &obj_table);
+	GetContentsTable(&obj_folder, &obj_table);
+	retval = GetLastError();
 	if (retval != MAPI_E_SUCCESS) {
 		g_warning ("fetch items-getcontentstable failed: %d\n", retval);
 		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
@@ -724,28 +753,53 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 		GSList *recip_list = NULL;
 		GSList *stream_list = NULL;
 
+		struct SPropTagArray *SPropTagArray1;
+		uint32_t mycount;
+
+		struct mapi_SPropValue_array properties_array;
+		uint32_t prop_count;
+
 		pfid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_FID);
 		pmid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_MID);
 
 		has_attach = (const bool *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_HASATTACH);
-//		disclose_recipients = (const bool *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_DISCLOSURE_OF_RECIPIENTS);
+		/* disclose_recipients = (const bool *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_DISCLOSURE_OF_RECIPIENTS); */
 
 		retval = OpenMessage(&obj_folder, *pfid, *pmid, &obj_message, 0);
+		retval = GetLastError ();
 
 		//FIXME: Verify this
 		//printf(" %016llX %016llX %016llX %016llX %016llX\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
-		if (retval != MAPI_E_NOT_FOUND) {
-			if (has_attach && *has_attach) {
+		if (retval == MAPI_E_SUCCESS) {
+
+			struct SPropValue *lpProps;
+			if (has_attach && *has_attach)
 				exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
-			}
 
 			if (disclose_recipients && *disclose_recipients) {
+				//TODO : RecipientTable handling. 
 			}
 
 			/* get the main body stream no matter what */
 			exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
 
-			retval = GetPropsAll(&obj_message, &properties_array);
+			if (GetPropsTagArray) {
+				int i=0;
+
+				lpProps = talloc_zero(mem_ctx, struct SPropValue);
+
+				retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
+
+				/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
+				properties_array.cValues = prop_count;
+				properties_array.lpProps = g_new0 (struct mapi_SPropValue, prop_count);
+				for (i=0; i < prop_count; i++)
+					cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);					
+
+			} else {
+				 GetPropsAll (&obj_message, &properties_array);
+				 retval = GetLastError ();
+			}
 
 			if (retval == MAPI_E_SUCCESS) {
 				int z;
@@ -756,7 +810,9 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 				/* just to get all the other streams */
 				for (z=0; z < properties_array.cValues; z++)
 					if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
-						exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
+						exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
+											properties_array.lpProps[z].ulPropTag, &stream_list);
+
 				if (!cb (&properties_array, *pfid, *pmid, recip_list, attach_list, data)) {
 					printf("Breaking from fetching items\n");
 					break;
@@ -764,7 +820,10 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 
 				mapi_object_release(&obj_message);
 			}
-		}
+		} else 
+			mapi_errstr("OpenMessage", GetLastError());
+
+
 		/* should I ?? */
 		if (attach_list) {
 			GSList *l;
@@ -798,8 +857,9 @@ exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestrictio
 	UNLOCK ();
 	return TRUE;
 }
+
 gpointer
-exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb)
+exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropTagArray *GetPropsTagArray, FetchItemCallback cb)
 {
 	mapi_object_t obj_store;	
 	mapi_object_t obj_folder;
@@ -809,7 +869,10 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 	struct SRowSet SRowSet;
 	struct SPropTagArray *SPropTagArray;
 	struct mapi_SPropValue_array properties_array;
+	struct SPropValue *lpProps;
+
 	TALLOC_CTX *mem_ctx;
+	uint32_t prop_count;
 	int i;
 	gpointer retobj = NULL;
 
@@ -841,7 +904,28 @@ exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t
 			     mid,
 			     &obj_message, 0);
 	if (retval != MAPI_E_NOT_FOUND) {
-		retval = GetPropsAll(&obj_message, &properties_array);
+		
+		if (GetPropsTagArray) {
+			int i=0;
+
+			struct SRow aRow;
+			
+			lpProps = talloc_zero(mem_ctx, struct SPropValue);
+			
+			retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
+
+			/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
+			properties_array.cValues = prop_count;
+			properties_array.lpProps = g_new0 (struct mapi_SPropValue, prop_count);
+
+			for (i=0; i < prop_count; i++)
+				cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);					
+
+		} else {
+			GetPropsAll (&obj_message, &properties_array);
+			retval = GetLastError ();
+		}
+		
 		if (retval == MAPI_E_SUCCESS) {
 			
 			mapi_SPropValue_array_named(&obj_message, 

@@ -1,7 +1,13 @@
-2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
+2007-12-10  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c: (mapi_refresh_folder): Add a new param for 
 	exchange_mapi_connection_fetch_items.
+
+2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* camel-mapi-folder.c (mapi_folder_get_message): Fix for fetch_item
+	API change.
+	(mapi_refresh_folder): Fix for fetch_items API change.
 
 2007-11-24  Johnny Jacob  <jjohnny@novell.com>
 	

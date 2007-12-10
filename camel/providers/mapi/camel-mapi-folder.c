@@ -817,15 +817,31 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 	/*Get the New Items*/
 	if (!is_proxy) {
 		char *source;
-
+		struct SPropTagArray *SPropTagArray;
 /* 		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) { */
 /* 			source = NULL; */
 /* 		} else { */
 /* 			source = "sent received"; */
 /* 		} */
 		mapi_id_t temp_folder_id;
+		TALLOC_CTX *mem_ctx;
+		mem_ctx = talloc_init("Evolution");
 		folder_uid_to_mapi_ids (folder_id, &temp_folder_id);
-		status = exchange_mapi_connection_fetch_items (NULL, NULL, NULL, fetch_items_cb, temp_folder_id, folder);
+
+		SPropTagArray = set_SPropTagArray( mem_ctx, 8,
+						   PR_URL_NAME,
+						   PR_MESSAGE_SIZE,
+						   PR_MESSAGE_DELIVERY_TIME,
+						   PR_MESSAGE_FLAGS,
+						   PR_SENT_REPRESENTING_NAME,
+						   PR_DISPLAY_TO,
+						   PR_DISPLAY_CC,
+						   PR_DISPLAY_BCC);
+
+
+		status = exchange_mapi_connection_fetch_items (temp_folder_id, SPropTagArray, NULL, NULL, fetch_items_cb, folder);
+		//exchange_mapi_util_SPropTagArray_free (SPropTagArray);
+
 		if (!status) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Fetch items failed"));
 			goto end2;
@@ -955,13 +971,13 @@ fetch_item_cb (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid
 /* 	item->header.subject = find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT); */
 /* 	item->header.subject = find_mapi_SPropValue_data (array, PR_CONVERSATION_TOPIC_UNICODE); */
 /* 	item->header.subject = find_mapi_SPropValue_data (array, PR_SUBJECT); */
-	item->header.subject = find_mapi_SPropValue_data (array, PR_URL_NAME);
+//	item->header.subject = find_mapi_SPropValue_data (array, PR_URL_NAME);
 	item->header.to = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_TO));
 	item->header.cc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_CC));
 	item->header.bcc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_BCC));
 	item->header.from = g_strdup (find_mapi_SPropValue_data (array, PR_SENT_REPRESENTING_NAME));
 	item->header.size = *(glong *)(find_mapi_SPropValue_data (array, PR_MESSAGE_SIZE));
-	item->msg.body = g_strdup (find_mapi_SPropValue_data (array, PR_BODY));
+	//	item->msg.body = g_strdup (find_mapi_SPropValue_data (array, PR_BODY));
 
 	delivery_date = (struct FILETIME *)find_mapi_SPropValue_data(array, PR_MESSAGE_DELIVERY_TIME);
 	if (delivery_date) {
@@ -1265,7 +1281,7 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	//	printf("%s(%d):%s:folder_id : %s|%s|%s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, folder_id, folder_mapi_ids_to_uid(id_message), folder_mapi_ids_to_uid(id_folder));
 	//	cnc = cnc_lookup (priv);
 	//Insert MAPI call for GetItem.
-	item = exchange_mapi_connection_fetch_item (NULL, id_folder, id_message, fetch_item_cb);
+	item = exchange_mapi_connection_fetch_item (id_folder, id_message, NULL, fetch_item_cb);
 	//	status = e_gw_connection_get_item (cnc, container_id, uid, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
 
 //TODO : Later.

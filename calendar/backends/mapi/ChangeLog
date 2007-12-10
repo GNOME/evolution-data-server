@@ -1,3 +1,8 @@
+2007-12-10  Johnny Jacob  <jjohnny@novell.com>
+
+	* e-cal-backend-mapi.c (get_deltas): Fix for fetch_items API change.
+	(populate_cache): Fix for fetch_items API change.
+	
 2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-cal-backend-mapi.c: (get_deltas), (populate_cache): Add a new

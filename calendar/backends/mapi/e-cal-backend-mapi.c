@@ -417,7 +417,7 @@ get_deltas (gpointer handle)
 	priv->cache_keys = e_cal_backend_cache_get_keys (cache);
 
 //	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	if (!exchange_mapi_connection_fetch_items (priv->olFolder, NULL, NULL, get_changes_cb, priv->fid, cbmapi)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, get_changes_cb, cbmapi)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 		priv->cache_keys = NULL;
@@ -888,7 +888,8 @@ populate_cache (ECalBackendMAPI *cbmapi)
 	e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbmapi), progress_string, 99);
 
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
-	if (!exchange_mapi_connection_fetch_items (priv->olFolder, NULL, NULL, cache_create_cb, priv->fid, cbmapi)) {
+
+	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, cache_create_cb, cbmapi)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		g_free (progress_string);

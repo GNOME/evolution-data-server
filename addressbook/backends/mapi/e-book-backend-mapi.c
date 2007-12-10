@@ -751,7 +751,8 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 			mapi_id_t fid, mid;
 			
 			exchange_mapi_util_mapi_ids_from_uid (id, &fid, &mid);
-			contact = exchange_mapi_connection_fetch_item (olFolderContacts, priv->fid, mid, create_contact_item);
+			contact = exchange_mapi_connection_fetch_item (priv->fid, mid, NULL, create_contact_item);
+
 			if (contact) {
 				e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
 				vcard =  e_vcard_to_string (E_VCARD (contact), 
@@ -893,7 +894,8 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;				
 			}
-			if (!exchange_mapi_connection_fetch_items (olFolderContacts, &res, build_ptags, create_contact_list_cb, priv->fid, &vcard_str)) {
+
+			if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, &res, build_ptags, create_contact_list_cb, &vcard_str)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;
 			}
@@ -1279,7 +1281,7 @@ book_view_thread (gpointer data)
 
 		//FIXME: We need to fetch only the query from the server live and not everything.
 		/* execute the query */
-		if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, NULL, create_contact_cb, priv->fid, book_view)) {
+		if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, create_contact_cb,  book_view)) {
 			if (e_flag_is_set (closure->running))
 				e_data_book_view_notify_complete (book_view, 
 								  GNOME_Evolution_Addressbook_OtherError);	
@@ -1381,7 +1383,7 @@ build_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items (olFolderContacts, NULL, NULL, cache_contact_cb, priv->fid, ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, cache_contact_cb, ebmapi)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;

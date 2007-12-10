@@ -1,3 +1,13 @@
+2007-12-10  Johnny Jacob  <jjohnny@novell.com>
+	
+	** Support for 	GetProps in exchange_mapi_connection_fetch_items.
+	
+	* exchange-mapi-connection.h: Prototype change for fetch_item/fetch_items
+	API change.
+	* exchange-mapi-connection.c (exchange_mapi_connection_fetch_item): GetProps
+	Support added. Only after successfull openmessage we should do mesg 
+	operations. Added GetPropsTagArray.
+
 2007-12-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* exchange-mapi-connection.c: Add a new parm to fetch items to enable
@@ -27,8 +37,10 @@
 	(exchange_mapi_util_find_array_propval):
 	* exchange-mapi-utils.h: Added/moved some utility functions to these
 	files. 
-
+	
 2007-12-05  Suman Manjunath  <msuman@novell.com>
+
+	Removed unnecessary header files.
 
 	* exchange-mapi-connection.c:
 	(exchange_mapi_util_find_row_propval),
@@ -51,8 +63,8 @@
 	(exchange_mapi_folder_list_free), (exchange_mapi_folder_list_add):
 	* exchange-mapi-folder.h:
 
-2007-11-28  Johnny Jacob  <jjohnny@novell.com>
-
+2007-11-28  Johnny Jacob  <jjohnny@novell.com>	
+	
 	* exchange-mapi-connection.c (mapi_profile_load): Use proper status enums.
 	MAPIUninitialize when profile load fails.
 	Removed MapiItemType.

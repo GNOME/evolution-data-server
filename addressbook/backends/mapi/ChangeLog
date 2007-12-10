@@ -1,3 +1,13 @@
+2007-12-10  Johnny Jacob  <jjohnny@novell.com>
+	
+	** Fix for fetch_item/fetch_items API change.
+	
+	* e-book-backend-mapi.c (e_book_backend_mapi_get_contact): Fix for fetch_item
+	API change.
+	(build_cache): Fix for fetch_items API change.
+	(book_view_thread): Fix for fetch_items API change.
+	(e_book_backend_mapi_get_contact_list): Fix for fetch_items API change.
+
 2007-12-10  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Implement Restrictions

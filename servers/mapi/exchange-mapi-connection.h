@@ -59,9 +59,13 @@ gboolean
 exchange_mapi_connection_exists (void);
 
 gpointer
-exchange_mapi_connection_fetch_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, FetchItemCallback cb);
+exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
+				     struct SPropTagArray *GetPropsTagArray, FetchItemCallback cb);
+
 gboolean
-exchange_mapi_connection_fetch_items (uint32_t olFolder, struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, FetchItemsCallback cb, mapi_id_t fid, gpointer data);
+exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPropsTagArray, 
+				      struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, 
+				      FetchItemsCallback cb, gpointer data);
 
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, char *name);
