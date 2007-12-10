@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-27 16:33+0100\n"
-"PO-Revision-Date: 2007-11-27 15:10+0100\n"
+"PO-Revision-Date: 2007-12-10 15:41+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,13 +26,13 @@ msgstr "Nalaganje ..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2269
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2289
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4152
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4156
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Iskanje ..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2670
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4311
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4315
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Prenašanje stikov (%d) ..."
@@ -52,27 +52,27 @@ msgstr "Z uporabo razločnega imena (DN)"
 msgid "Using Email Address"
 msgstr "Z uporabo elektronskega naslova"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:998
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1002
 msgid "Reconnecting to LDAP server..."
 msgstr "Ponovno povezovanje s strežnikom LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1594
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1598
 msgid "Adding contact to LDAP server..."
 msgstr "Dodajanje stika na strežnik LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1722
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1726
 msgid "Removing contact from LDAP server..."
 msgstr "Odstranjujem stik iz strežnika LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2027
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2031
 msgid "Modifying contact from LDAP server..."
 msgstr "Spreminjam stik na strežniku LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4023
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4027
 msgid "Receiving LDAP search results..."
 msgstr "Dobivam rezultate iskanja LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4172
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4176
 msgid "Error performing search"
 msgstr "Napaka ob iskanju"
 
@@ -725,30 +725,30 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Ni mogoče shraniti podatkov koledarja: Nepravilen URI."
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:332
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:914
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:912
 msgid "Could not create thread for getting deltas"
 msgstr "Ni mogoče ustvariti niti za pridobivanje delt"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:364
 #: ../calendar/backends/google/e-cal-backend-google.c:799
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
-#: ../calendar/backends/http/e-cal-backend-http.c:597
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:959
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1233
+#: ../calendar/backends/http/e-cal-backend-http.c:596
 #: ../calendar/backends/weather/e-cal-backend-weather.c:460
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke s predpomnilnikom"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:377
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
 msgid "Could not create thread for populating cache"
 msgstr "Ni mogoče ustvariti niti za naselitev predpomnilnika"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:982
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1766
 msgid "Reply Requested: by "
 msgstr "Zahtevan odgovor: s strani"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:987
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1771
 msgid "Reply Requested: When convenient"
 msgstr "Zahtevan odgovor: ko ustreza"
@@ -769,16 +769,13 @@ msgstr "Neveljaven URI strežnika"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:977
 #: ../calendar/libecal/e-cal.c:5008
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1083
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1121
-#: ../camel/providers/groupwise/camel-groupwise-store.c:586
-#: ../camel/providers/groupwise/camel-groupwise-store.c:601
-#: ../camel/providers/groupwise/camel-groupwise-store.c:712
-#: ../camel/providers/groupwise/camel-groupwise-store.c:754
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1248
+#: ../camel/providers/groupwise/camel-groupwise-store.c:596
+#: ../camel/providers/groupwise/camel-groupwise-store.c:748
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:186
 msgid "Authentication failed"
@@ -1118,28 +1115,28 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:682
-#: ../calendar/libecal/e-cal-util.c:710
+#: ../calendar/libecal/e-cal-util.c:684
+#: ../calendar/libecal/e-cal-util.c:712
 msgid "High"
 msgstr "visoka"
 
-#: ../calendar/libecal/e-cal-util.c:684
-#: ../calendar/libecal/e-cal-util.c:712
+#: ../calendar/libecal/e-cal-util.c:686
+#: ../calendar/libecal/e-cal-util.c:714
 msgid "Normal"
 msgstr "običajna"
 
-#: ../calendar/libecal/e-cal-util.c:686
-#: ../calendar/libecal/e-cal-util.c:714
+#: ../calendar/libecal/e-cal-util.c:688
+#: ../calendar/libecal/e-cal-util.c:716
 msgid "Low"
 msgstr "nizka"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:708
+#: ../calendar/libecal/e-cal-util.c:710
 msgid "Undefined"
 msgstr "ni definirana"
 
 #: ../calendar/libecal/e-cal.c:1665
-#: ../libedataserverui/e-book-auth-util.c:198
+#: ../libedataserverui/e-book-auth-util.c:200
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Vnesite geslo za %s (uporabnik %s)"
@@ -1170,12 +1167,12 @@ msgid "No such calendar"
 msgstr "Ni takega koledarja"
 
 #: ../calendar/libecal/e-cal.c:4988
-#: ../servers/groupwise/e-gw-connection.c:176
+#: ../servers/groupwise/e-gw-connection.c:200
 msgid "Object not found"
 msgstr "Predmeta ni mogoče najti"
 
 #: ../calendar/libecal/e-cal.c:4990
-#: ../servers/groupwise/e-gw-connection.c:170
+#: ../servers/groupwise/e-gw-connection.c:194
 msgid "Invalid object"
 msgstr "Neveljaven predmet"
 
@@ -1193,7 +1190,7 @@ msgid "Permission denied"
 msgstr "Nimate dovoljenja"
 
 #: ../calendar/libecal/e-cal.c:4998
-#: ../servers/groupwise/e-gw-connection.c:178
+#: ../servers/groupwise/e-gw-connection.c:202
 msgid "Unknown User"
 msgstr "Neznan uporabnik"
 
@@ -1232,7 +1229,7 @@ msgstr "Prišlo je do izjeme CORBA"
 #: ../camel/providers/pop3/camel-pop3-store.c:555
 #: ../camel/providers/pop3/camel-pop3-store.c:561
 #: ../servers/exchange/storage/e-storage.c:585
-#: ../servers/groupwise/e-gw-connection.c:184
+#: ../servers/groupwise/e-gw-connection.c:208
 msgid "Unknown error"
 msgstr "Neznana napaka"
 
@@ -2746,8 +2743,8 @@ msgid "Trash Folder Full. Please Empty."
 msgstr "Koš je pol. Prosim, izpraznite ga."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1224
-#: ../camel/providers/groupwise/camel-groupwise-store.c:630
-#: ../camel/providers/groupwise/camel-groupwise-store.c:744
+#: ../camel/providers/groupwise/camel-groupwise-store.c:625
+#: ../camel/providers/groupwise/camel-groupwise-store.c:738
 #: ../camel/providers/imap/camel-imap-folder.c:2394
 #: ../camel/providers/imap/camel-imap-folder.c:2464
 #, c-format
@@ -2853,54 +2850,50 @@ msgstr "Ta možnost bo vzpostavila povezavo s strežnikom GroupWise z uporabo ne
 msgid "Host or user not available in url"
 msgstr "Gostitelj ali uporabnik ni na voljo v url."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:204
+#: ../camel/providers/groupwise/camel-groupwise-store.c:197
 #, c-format
-msgid "%sPlease enter the GroupWise password for %s@%s"
-msgstr "%sVnesite geslo GroupWise za %s@%s"
+msgid "Please enter the GroupWise password for %s@%s"
+msgstr "Vnesite geslo GroupWise za %s@%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:218
+#: ../camel/providers/groupwise/camel-groupwise-store.c:208
 #: ../camel/providers/imap/camel-imap-store.c:1385
 msgid "You did not enter a password."
 msgstr "Niste vnesli gesla."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:230
-msgid "Unable to authenticate to GroupWise server. "
-msgstr "Overovitev na strežniku GroupWise ni uspela. "
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:308
+#: ../camel/providers/groupwise/camel-groupwise-store.c:304
 msgid "Some features may not work correctly with your current server version"
 msgstr "Nekatere možnosti z vašo različico strežnika morda ne bodo delovale pravilno "
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:538
+#: ../camel/providers/groupwise/camel-groupwise-store.c:534
 #: ../camel/providers/imap/camel-imap-store.c:1896
 #: ../camel/providers/imap/camel-imap-store.c:2087
 #, c-format
 msgid "No such folder %s"
 msgstr "Ni takšne mape %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1225
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1219
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Ni mogoče ustvariti mape GroupWise, ko niste na zvezi."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1239
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1233
 #: ../camel/providers/imap/camel-imap-store.c:1971
 #: ../camel/providers/imap/camel-imap-store.c:2340
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "V nadrejeni mapi ni dovoljeno vsebovati podmape"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1316
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1337
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1309
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1330
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "Ni mogoče preimenovati mape GroupWise '%s' v '%s'"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1369
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1362
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Strežnik GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1371
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Storitev GroupWise za %s na %s"
@@ -3600,8 +3593,8 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-provider.c:48
-msgid "Use the `.folders' folder summary file (exmh)"
-msgstr "Uporabite datoteko z izvlečki map '.folders' (exmh)"
+msgid "_Use the `.folders' folder summary file (exmh)"
+msgstr "_Uporabite datoteko z izvlečki map '.folders' (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "MH-format mail directories"
@@ -3621,8 +3614,8 @@ msgstr "Za pridobivanje (premikanje) lokalne pošte iz običajnih map spool vrst
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
-msgid "Apply filters to new messages in INBOX"
-msgstr "Uveljavi filtre na novih sporočilih v mapi INBOX"
+msgid "_Apply filters to new messages in INBOX"
+msgstr "_Uveljavi filtre na novih sporočilih v mapi INBOX"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -3633,8 +3626,8 @@ msgid "For storing local mail in maildir directories."
 msgstr "Za shranjevanje krajevne pošte v mapah vrste maildir."
 
 #: ../camel/providers/local/camel-local-provider.c:108
-msgid "Store status headers in Elm/Pine/Mutt format"
-msgstr "Shrani glave stanja v obliki Elm/Pine/Mutt "
+msgid "_Store status headers in Elm/Pine/Mutt format"
+msgstr "_Shrani glave stanja v obliki Elm/Pine/Mutt "
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid "Standard Unix mbox spool file"
@@ -4116,12 +4109,12 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Ni mogoče kopirati sporočil iz mape NNTP!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr "Prikaži mape v kratkem zapisu (npr. c.o.linux namesto comp.os.linux)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr "_Prikaži mape v kratkem zapisu (npr. c.o.linux namesto comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
-msgid "In the subscription dialog, show relative folder names"
-msgstr "V pogovornem oknu za naročilo prikaži relativna imena map"
+msgid "In the subscription _dialog, show relative folder names"
+msgstr "V _pogovornem oknu za naročilo prikaži relativna imena map"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "USENET news"
@@ -4280,17 +4273,17 @@ msgid "Unknown reason"
 msgstr "Neznan razlog"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
-msgid "Leave messages on server"
-msgstr "Pusti sporočila na strežniku"
+msgid "_Leave messages on server"
+msgstr "_Pusti sporočila na strežniku"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, c-format
-msgid "Delete after %s day(s)"
-msgstr "Zbriši po %s dneh"
+msgid "_Delete after %s day(s)"
+msgstr "_izbriši po %s dneh"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
-msgid "Disable support for all POP3 extensions"
-msgstr "Onemogoči podporo za vse razširitve POP3"
+msgid "Disable _support for all POP3 extensions"
+msgstr "Onemogoči _podporo za vse razširitve POP3"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
@@ -4782,7 +4775,7 @@ msgstr "Čakanje"
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1605
-#: ../libedataserver/e-time-utils.c:1852
+#: ../libedataserver/e-time-utils.c:1855
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4791,7 +4784,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1610
-#: ../libedataserver/e-time-utils.c:1843
+#: ../libedataserver/e-time-utils.c:1846
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4800,7 +4793,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1615
-#: ../libedataserver/e-time-utils.c:1848
+#: ../libedataserver/e-time-utils.c:1851
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4809,7 +4802,7 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1620
-#: ../libedataserver/e-time-utils.c:1839
+#: ../libedataserver/e-time-utils.c:1842
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
@@ -4829,7 +4822,7 @@ msgstr "%a %d/%m/%Y %H"
 #. strftime format of a weekday and a date.
 #: ../libedataserver/e-time-utils.c:1633
 #: ../libedataserver/e-time-utils.c:1729
-#: ../libedataserver/e-time-utils.c:1834
+#: ../libedataserver/e-time-utils.c:1837
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
@@ -4877,14 +4870,14 @@ msgstr "%d/%m/%Y"
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1778
-#: ../libedataserver/e-time-utils.c:1897
+#: ../libedataserver/e-time-utils.c:1900
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1782
-#: ../libedataserver/e-time-utils.c:1889
+#: ../libedataserver/e-time-utils.c:1892
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4893,7 +4886,7 @@ msgstr "%H:%M:%S"
 #. strftime format of a time in 12-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1787
-#: ../libedataserver/e-time-utils.c:1894
+#: ../libedataserver/e-time-utils.c:1897
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
@@ -4901,12 +4894,17 @@ msgstr "%I:%M %p"
 #. strftime format of a time in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1791
-#: ../libedataserver/e-time-utils.c:1886
+#: ../libedataserver/e-time-utils.c:1889
 msgid "%H:%M"
 msgstr "%H:%M"
 
+#. strptime format for time of day, without seconds 24-hour format, and no colon.
+#: ../libedataserver/e-time-utils.c:1794
+msgid "%H%M"
+msgstr "%H%M"
+
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1795
+#: ../libedataserver/e-time-utils.c:1798
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -4914,7 +4912,7 @@ msgstr "%I %p"
 msgid "Accessing LDAP Server anonymously"
 msgstr "Anonimno dostopanje do strežnika LDAP"
 
-#: ../libedataserverui/e-book-auth-util.c:191
+#: ../libedataserverui/e-book-auth-util.c:193
 msgid "Failed to authenticate.\n"
 msgstr "Overovitev ni uspela.\n"
 
@@ -4985,23 +4983,23 @@ msgid "*"
 msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
+msgid "<b>Co_ntacts</b>"
+msgstr "<b>_Stiki</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>Prikaži stike</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:3
-msgid "<b>_Contacts</b>"
-msgstr "<b>_Stiki</b>"
-
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
+msgid "Address B_ook:"
+msgstr "_Imenik:"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
 msgstr "Adresar"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:5
-msgid "Address _Book:"
-msgstr "A_dresar:"
-
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-msgid "C_ategory:"
+msgid "Cate_gory:"
 msgstr "K_ategorija:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
@@ -5071,13 +5069,13 @@ msgstr "Izberi cilj"
 msgid "_Destination"
 msgstr "_Cilj"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1656
+#: ../servers/exchange/lib/e2k-autoconfig.c:1660
 #: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Vnesite geslo za %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1657
+#: ../servers/exchange/lib/e2k-autoconfig.c:1661
 #: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Vnesite geslo"
@@ -5233,19 +5231,19 @@ msgstr "Poslano"
 msgid "Tasks"
 msgstr "Naloge"
 
-#: ../servers/groupwise/e-gw-connection.c:168
+#: ../servers/groupwise/e-gw-connection.c:192
 msgid "Invalid connection"
 msgstr "Neveljavna povezava"
 
-#: ../servers/groupwise/e-gw-connection.c:172
+#: ../servers/groupwise/e-gw-connection.c:196
 msgid "Invalid response from server"
 msgstr "Neveljaven odgovor strežnika"
 
-#: ../servers/groupwise/e-gw-connection.c:174
+#: ../servers/groupwise/e-gw-connection.c:198
 msgid "No response from the server"
 msgstr "Brez odgovora strežnika"
 
-#: ../servers/groupwise/e-gw-connection.c:180
+#: ../servers/groupwise/e-gw-connection.c:204
 msgid "Bad parameter"
 msgstr "Napačen parameter"
 
@@ -5270,4 +5268,12 @@ msgstr "Dnevniška storitev Evolution Data Server"
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Pojavilo se je več razčlenitvenih napak. Pogovornega okna z napakami ni mogoče prikazati\n"
+
+#: ../libedataserverui/e-cell-renderer-color.c:210
+msgid "Color Info"
+msgstr "Podrobnosti barve"
+
+#: ../libedataserverui/e-cell-renderer-color.c:211
+msgid "The color to render"
+msgstr "Oblikovanje barve"
 
