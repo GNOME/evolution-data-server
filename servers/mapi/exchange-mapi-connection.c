@@ -1011,81 +1011,6 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	return TRUE;	
 }
 
-/* FIXME: param olFolder is never used in the routine. Remove it and cleanup at the backends */
-gboolean
-exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
-{
-	enum MAPISTATUS retval;
-	mapi_object_t obj_store;
-	mapi_object_t obj_top;
-	mapi_object_t obj_folder;
-	ExchangeMAPIFolder *folder;
-	gboolean result = FALSE;
-
-	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
-
-	folder = exchange_mapi_folder_get_folder (fid);
-	g_return_val_if_fail (folder != NULL, FALSE);
-
-	LOCK ();
-	LOGALL ();
-	mapi_object_init(&obj_store);
-	mapi_object_init(&obj_top);
-	mapi_object_init(&obj_folder);
-
-	retval = OpenMsgStore(&obj_store);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("OpenMsgStore", GetLastError());
-		goto cleanup;
-	}
-
-	/* Attempt to open the folder to be removed */
-	retval = OpenFolder(&obj_store, fid, &obj_folder);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("OpenFolder", GetLastError());
-		goto cleanup;
-	}
-
-	/* FIXME: If the folder has sub-folders, open each of them in turn, empty them and delete them.
-	 * Note that this has to be done recursively, for the sub-folders as well. 
-	 */
-
-	/* Empty the contents of the folder */
-	retval = EmptyFolder(&obj_folder);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("EmptyFolder", GetLastError());
-		goto cleanup;
-	}
-
-	/* Attempt to open the top/parent folder */
-	retval = OpenFolder(&obj_store, folder->parent_folder_id, &obj_top);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("OpenFolder", GetLastError());
-		goto cleanup;
-	}
-
-	/* Attempt to delete the folder */
-	retval = DeleteFolder(&obj_top, fid);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("DeleteFolder", GetLastError());
-		goto cleanup;
-	}
-
-	result = TRUE;
-	printf("Folder with id %016llX deleted\n", fid);
-
-cleanup:
-	mapi_object_release(&obj_folder);
-	mapi_object_release(&obj_top);
-	mapi_object_release(&obj_store);
-	LOGNONE();
-	UNLOCK ();
-
-	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
-
-	return result;
-}
-
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name)
 {
@@ -1119,6 +1044,9 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	}
 	
 	/* Attempt to create the folder */
+/* libmapi revision 317 */
+//	retval = CreateFolder(&obj_top, FOLDER_GENERIC, name, "Created using Evolution/libmapi", OPEN_IF_EXISTS, &obj_folder);
+/* libmapi 0.6 */
 	retval = CreateFolder(&obj_top, name, "Created using Evolution/libmapi", &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("CreateFolder", GetLastError());
@@ -1170,252 +1098,339 @@ cleanup:
 	return fid;
 }
 
-mapi_id_t
-exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data, GSList *recipients, GSList *attachments)
+/* FIXME: param olFolder is never used in the routine. Remove it and cleanup at the backends */
+gboolean
+exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid)
 {
-	mapi_object_t obj_store;	
-	mapi_object_t obj_folder;
-	mapi_object_t obj_table;
 	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SPropValue	*props=NULL;
-	struct mapi_nameid	*nameid;
-	struct SPropTagArray	*SPropTagArray;
-	TALLOC_CTX *mem_ctx;
-	int propslen;
-	mapi_id_t mid=0;
-	
-	LOCK ();
+	mapi_object_t obj_store;
+	mapi_object_t obj_top;
+	mapi_object_t obj_folder;
+	ExchangeMAPIFolder *folder;
+	gboolean result = FALSE;
 
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	folder = exchange_mapi_folder_get_folder (fid);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	LOCK ();
 	LOGALL ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_store);
-	mapi_object_init(&obj_message);
+	mapi_object_init(&obj_top);
+	mapi_object_init(&obj_folder);
 
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
 
-	if (fid == 0 ){ /*fid not present then we'll use olFolder. Document this in API doc.*/
+	/* FIXME: If the folder has sub-folders, open each of them in turn, empty them and delete them.
+	 * Note that this has to be done recursively, for the sub-folders as well. 
+	 */
+
+	/* Attempt to open the folder to be removed */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	/* Empty the contents of the folder */
+	retval = EmptyFolder(&obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("EmptyFolder", GetLastError());
+		goto cleanup;
+	}
+
+	printf("Folder with id %016llX was emptied\n", fid);
+
+	/* Attempt to open the top/parent folder */
+	retval = OpenFolder(&obj_store, folder->parent_folder_id, &obj_top);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	/* Call DeleteFolder on the folder to be removed */
+	retval = DeleteFolder(&obj_top, fid);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("DeleteFolder", GetLastError());
+		goto cleanup;
+	}
+
+	printf("Folder with id %016llX was deleted\n", fid);
+
+	result = TRUE;
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_top);
+	mapi_object_release(&obj_store);
+	LOGNONE();
+	UNLOCK ();
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return result;
+}
+
+mapi_id_t
+exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
+			   BuildNameID build_name_id, gpointer ni_data, 
+			   BuildProps build_props, gpointer p_data, 
+			   GSList *recipients, GSList *attachments)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	mapi_object_t obj_message;
+	struct mapi_nameid *nameid;
+	struct SPropTagArray *SPropTagArray;
+	struct SPropValue *props = NULL;
+	gint propslen = 0;
+	mapi_id_t mid = 0;
+
+	LOCK ();
+	LOGALL ();
+	mem_ctx = talloc_init("ExchangeMAPI_CreateItem");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_message);
+	nameid = mapi_nameid_new(mem_ctx);
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* If fid not present then we'll use olFolder. Document this in API doc. */
+	if (fid == 0) {
 		retval = GetDefaultFolder(&obj_store, &fid, olFolder);
 		if (retval != MAPI_E_SUCCESS) {
-			mapi_errstr("GetDefaultFolder", GetLastError());				
-			LOGNONE ();
-			UNLOCK ();
-			return 0;
+			mapi_errstr("GetDefaultFolder", GetLastError());
+			goto cleanup;
 		}
 	}
 
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
+	/* Attempt to open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 
+	/* Create the item */
 	retval = CreateMessage(&obj_folder, &obj_message);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item CreateMessage failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("CreateMessage", GetLastError());
+		goto cleanup;
 	}
 
+//	d(mapi_object_debug (&obj_message));
+
+	/* Add named props using callback */
+	if (build_name_id) {
+		if (!build_name_id (nameid, ni_data)) {
+			g_warning ("%s(%d): (%s): Could not build named props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			goto cleanup;
+		}
+
+		retval = GetIDsFromNames(&obj_folder, nameid->count, nameid->nameid, 0, &SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetIDsFromNames", GetLastError());
+			goto cleanup;
+		}
+
+		retval = mapi_nameid_SPropTagArray(nameid, SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("mapi_nameid_SPropTagArray", GetLastError());
+			goto cleanup;
+		}
+	}
+
+	/* Add regular props using callback */
+	if (build_props) {
+		propslen = build_props (&props, SPropTagArray, p_data);
+		if (propslen < 1) {
+			g_warning ("%s(%d): (%s): Could not build props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			goto cleanup;
+		}
+	}
+
+	/* set properties for the item */
+	retval = SetProps(&obj_message, props, propslen);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SetProps", GetLastError());
+		goto cleanup;
+	}
+
+	/* Set attachments if any */
 	if (attachments) {
 		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
 	}
 
+	/* Set recipients if any */
 	if (recipients) {
 		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
 	}
 
-	mapi_object_debug (&obj_message);
-
-	if (build_name_id) {
-		nameid = mapi_nameid_new(mem_ctx);
-		if (!build_name_id (nameid, ni_data)) {
-			g_warning ("create item build name id failed: %d\n", retval);
-			LOGNONE ();
-			UNLOCK ();
-			return 0;
-		}
-		
-		SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
-		retval = GetIDsFromNames(&obj_folder, nameid->count,
-					 nameid->nameid, 0, &SPropTagArray);
-		if (retval != MAPI_E_SUCCESS) {
-			g_warning ("create item GetIDsFromNames failed: %d\n", retval);
-			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
-			LOGNONE ();
-			UNLOCK ();
-			return 0;
-		}
-		mapi_nameid_SPropTagArray(nameid, SPropTagArray);
-		MAPIFreeBuffer(nameid);
-	}
-
-	if (build_props) {
-		propslen = build_props (&props, SPropTagArray, p_data);
-
-		if (propslen <1) {
-			g_warning ("create item build props failed: %d\n", retval);
-			LOGNONE ();
-			UNLOCK ();
-			return 0;
-		}
-
-		retval = SetProps(&obj_message, props, propslen);
-
-		/* FixME */ 
-		//		MAPIFreeBuffer(SPropTagArray);
-		if (retval != MAPI_E_SUCCESS) {
-			g_warning ("create item SetProps failed: %d\n", retval);
-			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
-			LOGNONE ();
-			UNLOCK ();
-			return 0;
-		}
-
-	}
-
+	/* Finally, save all changes */
 	retval = SaveChangesMessage(&obj_folder, &obj_message);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("create item SaveChangesMessage failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
+		mapi_errstr("SaveChangesMessage", GetLastError());
+		goto cleanup;
+	}
+
+	/* Mark message as ready to be sent */
+	retval = SubmitMessage(&obj_message);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SubmitMessage", GetLastError());
+		goto cleanup;
 	}
 
 	mid = mapi_object_get_id (&obj_message);
+
+cleanup:
+	MAPIFreeBuffer(nameid);
+	MAPIFreeBuffer(SPropTagArray);
 	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
-	
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
 	LOGNONE ();
 	UNLOCK ();
+
 	return mid;
 }
 
 gboolean
-exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, BuildNameID build_name_id, gpointer ni_data, BuildProps build_props, gpointer p_data)
+exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, 
+			   BuildNameID build_name_id, gpointer ni_data, 
+			   BuildProps build_props, gpointer p_data, 
+			   GSList *recipients, GSList *attachments)
 {
-	mapi_object_t obj_store;	
-	mapi_object_t obj_folder;
-	mapi_object_t obj_table;
 	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SPropValue	*props=NULL;
-	struct mapi_nameid	*nameid;
-	struct SPropTagArray	*SPropTagArray;
 	TALLOC_CTX *mem_ctx;
-	int propslen;
-	
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	mapi_object_t obj_message;
+	struct mapi_nameid *nameid;
+	struct SPropTagArray *SPropTagArray;
+	struct SPropValue *props = NULL;
+	gint propslen = 0;
+	gboolean result = FALSE;
+
 	LOCK ();
-
 	LOGALL ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
+	mem_ctx = talloc_init("ExchangeMAPI_ModifyItem");
 	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_message);
+	nameid = mapi_nameid_new(mem_ctx);
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
 
+	/* Open the message store */
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify item openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
 
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
+	/* Attempt to open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify item openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 
-
-	retval = OpenMessage(&obj_folder,
-			     fid,
-			     mid,
-			     &obj_message, MAPI_MODIFY);
+	/* Open the item to be modified */
+	retval = OpenMessage(&obj_folder, fid, mid, &obj_message, MAPI_MODIFY);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify item open message failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenMessage", GetLastError());
+		goto cleanup;
 	}
 
-	nameid = mapi_nameid_new(mem_ctx);
-	if (!build_name_id (nameid, ni_data)) {
-		g_warning ("modify item build name id failed: %d\n", retval);
-		LOGNONE ();
-		UNLOCK ();
-		return 0;		
+//	d(mapi_object_debug (&obj_message));
+
+	/* Add named props using callback */
+	if (build_name_id) {
+		if (!build_name_id (nameid, ni_data)) {
+			g_warning ("%s(%d): (%s): Could not build named props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			goto cleanup;
+		}
+
+		retval = GetIDsFromNames(&obj_folder, nameid->count, nameid->nameid, 0, &SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetIDsFromNames", GetLastError());
+			goto cleanup;
+		}
+
+		retval = mapi_nameid_SPropTagArray(nameid, SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("mapi_nameid_SPropTagArray", GetLastError());
+			goto cleanup;
+		}
 	}
 
-	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
-	retval = GetIDsFromNames(&obj_folder, nameid->count,
-				 nameid->nameid, 0, &SPropTagArray);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify  item GetIDsFromNames failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;
-	}
-	mapi_nameid_SPropTagArray(nameid, SPropTagArray);
-	MAPIFreeBuffer(nameid);
-
-	propslen = build_props (&props, SPropTagArray, p_data);
-	if (propslen <1) {
-		g_warning ("modify item build props failed: %d\n", retval);
-		LOGNONE ();
-		UNLOCK ();
-		return 0;		
+	/* Add regular props using callback */
+	if (build_props) {
+		propslen = build_props (&props, SPropTagArray, p_data);
+		if (propslen < 1) {
+			g_warning ("%s(%d): (%s): Could not build props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			goto cleanup;
+		}
 	}
 
+	/* set properties for the item */
 	retval = SetProps(&obj_message, props, propslen);
-	MAPIFreeBuffer(SPropTagArray);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify item SetProps failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		LOGNONE ();
-		UNLOCK ();
-		return 0;				
+		mapi_errstr("SetProps", GetLastError());
+		goto cleanup;
 	}
 
+	/* Set attachments if any */
+	if (attachments) {
+		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, TRUE);
+	}
+
+	/* Set recipients if any */
+	if (recipients) {
+		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, TRUE);
+	}
+ 
+	/* Finally, save all changes */
 	retval = SaveChangesMessage(&obj_folder, &obj_message);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("modify item SaveChangesMessage failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
-		LOGNONE ();
-		UNLOCK ();
-		return 0;						
+		mapi_errstr("SaveChangesMessage", GetLastError());
+		goto cleanup;
 	}
 
+	/* Mark message as ready to be sent */
+	retval = SubmitMessage(&obj_message);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SubmitMessage", GetLastError());
+		goto cleanup;
+	}
+
+	result = TRUE;
+
+cleanup:
+	MAPIFreeBuffer(nameid);
+	MAPIFreeBuffer(SPropTagArray);
 	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
-	
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
 	LOGNONE ();
 	UNLOCK ();
-	return TRUE;
+
+	return result;
 }
 
 static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)

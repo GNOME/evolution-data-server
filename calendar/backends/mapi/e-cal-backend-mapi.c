@@ -1279,7 +1279,7 @@ e_cal_backend_mapi_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 		exchange_mapi_util_mapi_id_from_string (uid, &mid);
-		status = exchange_mapi_modify_item (priv->olFolder, priv->fid, mid, build_name_id, comp, build_props, comp);
+		status = exchange_mapi_modify_item (priv->olFolder, priv->fid, mid, build_name_id, comp, build_props, comp, NULL, NULL);
 		if (!status) {
 			g_object_unref (comp);
 			g_object_unref (cache_comp);
