@@ -1,3 +1,20 @@
+2007-12-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #336074
+
+	* camel-imap-folder.h: (struct _CamelImapFolder):
+	* camel-imap-folder.c: (imap_property_list), 
+	(camel_imap_folder_get_type), (camel_imap_folder_class_init),
+	(imap_getv), (imap_setv): New property of IMAP folder, check_folder,
+	to let user setup for each folder to check for new mail here or not,
+	but only if not enabled 'check_all' for the store.
+	* camel-imap-store.c: (imap_can_refresh_folder),
+	(camel_imap_store_class_init): Implements its own CamelStore's
+	can_refresh_folder function - IMAP folder has a property if it
+	should be refreshed always or not, so depends on this property
+	in case parent class doesn't permit refresh of the folder or
+	the store doesn't have enabled 'check_all' property.
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Merge a bunch of compiler warning fixes and cosmetic

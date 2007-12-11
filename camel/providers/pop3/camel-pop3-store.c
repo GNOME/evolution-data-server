@@ -74,6 +74,8 @@ static CamelFolder *get_folder (CamelStore *store, const char *folder_name,
 
 static CamelFolder *get_trash  (CamelStore *store, CamelException *ex);
 
+static gboolean pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
+
 static void
 camel_pop3_store_class_init (CamelPOP3StoreClass *camel_pop3_store_class)
 {
@@ -91,6 +93,7 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *camel_pop3_store_class)
 
 	camel_store_class->get_folder = get_folder;
 	camel_store_class->get_trash = get_trash;
+	camel_store_class->can_refresh_folder = pop3_can_refresh_folder;
 }
 
 
@@ -666,4 +669,11 @@ get_trash (CamelStore *store, CamelException *ex)
 {
 	/* no-op */
 	return NULL;
+}
+
+static gboolean
+pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	/* any pop3 folder can be refreshed */
+	return TRUE;
 }

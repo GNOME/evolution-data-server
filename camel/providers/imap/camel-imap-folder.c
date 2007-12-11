@@ -83,8 +83,13 @@
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelDiscoFolderClass *disco_folder_class = NULL;
 
+static CamelProperty imap_property_list[] = {
+	{ CAMEL_IMAP_FOLDER_CHECK_FOLDER, "check_folder", N_("Always check for new mail in this folder") },
+};
+
 static void imap_finalize (CamelObject *object);
-static int imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static int imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static int imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
 
 static void imap_rescan (CamelFolder *folder, int exists, CamelException *ex);
 static void imap_refresh_info (CamelFolder *folder, CamelException *ex);
@@ -151,6 +156,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 
 	/* virtual method overload */
 	((CamelObjectClass *)camel_imap_folder_class)->getv = imap_getv;
+	((CamelObjectClass *)camel_imap_folder_class)->setv = imap_setv;
 
 	camel_folder_class->get_message = imap_get_message;
 	camel_folder_class->rename = imap_rename;
@@ -205,6 +211,8 @@ camel_imap_folder_get_type (void)
 	static CamelType camel_imap_folder_type = CAMEL_INVALID_TYPE;
 
 	if (camel_imap_folder_type == CAMEL_INVALID_TYPE) {
+		int i;
+
 		parent_class = camel_disco_folder_get_type();
 		camel_imap_folder_type =
 			camel_type_register (parent_class, "CamelImapFolder",
@@ -214,6 +222,10 @@ camel_imap_folder_get_type (void)
 					     NULL,
 					     (CamelObjectInitFunc) camel_imap_folder_init,
 					     (CamelObjectFinalizeFunc) imap_finalize);
+
+		/* only localize here, do not create GSList, we do not want to leak */
+		for (i = 0; i < sizeof (imap_property_list)/sizeof (imap_property_list [0]); i++)
+			imap_property_list [i].description = _(imap_property_list [i].description);
 	}
 
 	return camel_imap_folder_type;
@@ -443,6 +455,22 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		tag = arg->tag;
 
 		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
+		case CAMEL_FOLDER_ARG_PROPERTIES: {
+			CamelArgGetV props;
+			int i;
+
+			props.argc = 1;
+			props.argv[0] = *arg;
+			((CamelObjectClass *)parent_class)->getv(object, ex, &props);
+
+			for (i = 0; i < sizeof (imap_property_list)/sizeof (imap_property_list [0]); i++)
+				*arg->ca_ptr = g_slist_append (*arg->ca_ptr, &imap_property_list[i]);
+			break; }
+			/* imap args */
+		case CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER:
+			*arg->ca_int = ((CamelImapFolder *)object)->check_folder;
+			break;
 			/* CamelObject args */
 		case CAMEL_OBJECT_ARG_DESCRIPTION:
 			if (folder->description == NULL) {
@@ -465,6 +493,38 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
 
 	return 0;
+}
+
+static int
+imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
+{
+	int save = 0;
+	int i;
+	guint32 tag;
+
+	for (i = 0; i < args->argc; i++) {
+		CamelArg *arg = &args->argv[i];
+
+		tag = arg->tag;
+
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER:
+			if (((CamelImapFolder *)object)->check_folder != arg->ca_int) {
+				((CamelImapFolder *)object)->check_folder = arg->ca_int;
+				save = 1;
+			}
+			break;
+		default:
+			continue;
+		}
+
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+
+	if (save)
+		camel_object_state_write (object);
+
+	return ((CamelObjectClass *)parent_class)->setv (object, ex, args);
 }
 
 static void

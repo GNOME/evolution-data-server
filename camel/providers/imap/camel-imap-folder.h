@@ -38,6 +38,15 @@
 
 G_BEGIN_DECLS
 
+enum {
+	CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER = CAMEL_DISCO_FOLDER_ARG_LAST,
+	CAMEL_IMAP_FOLDER_ARG_LAST = CAMEL_DISCO_FOLDER_ARG_LAST + 0x100
+};
+
+enum {
+	CAMEL_IMAP_FOLDER_CHECK_FOLDER = CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER | CAMEL_ARG_BOO,
+};
+
 struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
 
@@ -49,6 +58,7 @@ struct _CamelImapFolder {
 	unsigned int need_rescan:1;
 	unsigned int need_refresh:1;
 	unsigned int read_only:1;
+	unsigned int check_folder:1;
 };
 
 typedef struct {

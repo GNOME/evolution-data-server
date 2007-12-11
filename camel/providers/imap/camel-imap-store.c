@@ -128,6 +128,8 @@ static gboolean imap_check_folder_still_extant (CamelImapStore *imap_store, cons
 static void imap_forget_folder(CamelImapStore *imap_store, const char *folder_name, CamelException *ex);
 static void imap_set_server_level (CamelImapStore *store);
 
+static gboolean imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
+
 static void
 camel_imap_store_class_init (CamelImapStoreClass *camel_imap_store_class)
 {
@@ -162,6 +164,7 @@ camel_imap_store_class_init (CamelImapStoreClass *camel_imap_store_class)
 	camel_store_class->noop = imap_noop;
 	camel_store_class->get_trash = imap_get_trash;
 	camel_store_class->get_junk = imap_get_junk;
+	camel_store_class->can_refresh_folder = imap_can_refresh_folder;
 
 	camel_disco_store_class->can_work_offline = can_work_offline;
 	camel_disco_store_class->connect_online = imap_connect_online;
@@ -3068,4 +3071,23 @@ camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *e
 	g_byte_array_free (ba, FALSE);
 
 	return nread;
+}
+
+static gboolean
+imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	gboolean res;
+
+	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
+	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL);
+
+	if (!res && !camel_exception_is_set (ex)) {
+		CamelFolder *folder;
+
+		folder = camel_store_get_folder (store, info->full_name, 0, ex);
+		if (folder && CAMEL_IS_IMAP_FOLDER (folder))
+			res = CAMEL_IMAP_FOLDER (folder)->check_folder;
+	}
+
+	return res;
 }

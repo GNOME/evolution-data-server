@@ -61,6 +61,7 @@ static CamelFolderInfo *get_folder_info (CamelStore *store, const char *top, gui
 static void delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
 static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
 static CamelFolderInfo *create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex);
+static gboolean local_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
 
 static char *local_get_full_path(CamelLocalStore *lf, const char *full_name);
 static char *local_get_meta_path(CamelLocalStore *lf, const char *full_name, const char *ext);
@@ -88,6 +89,7 @@ camel_local_store_class_init (CamelLocalStoreClass *camel_local_store_class)
 	camel_store_class->create_folder = create_folder;
 	camel_store_class->delete_folder = delete_folder;
 	camel_store_class->rename_folder = rename_folder;
+	camel_store_class->can_refresh_folder = local_can_refresh_folder;
 
 	camel_local_store_class->get_full_path = local_get_full_path;
 	camel_local_store_class->get_meta_path = local_get_meta_path;
@@ -522,4 +524,11 @@ static char *
 local_get_meta_path(CamelLocalStore *ls, const char *full_name, const char *ext)
 {
 	return g_strdup_printf("%s%s%s", ls->toplevel_dir, full_name, ext);
+}
+
+static gboolean
+local_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	/* any local folder can be refreshed */
+	return TRUE;
 }

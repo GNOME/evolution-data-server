@@ -185,6 +185,11 @@ typedef struct {
 						     CamelException *ex);
 	void            (*noop)                     (CamelStore *store,
 						     CamelException *ex);
+
+	gboolean        (*can_refresh_folder)       (CamelStore *store,
+						     CamelFolderInfo *info,
+						     CamelException *ex);
+
 } CamelStoreClass;
 
 /* Standard Camel function */
@@ -253,6 +258,10 @@ void             camel_store_noop                     (CamelStore *store,
 int              camel_store_folder_uri_equal         (CamelStore *store,
 						       const char *uri0,
 						       const char *uri1);
+
+gboolean         camel_store_can_refresh_folder       (CamelStore *store,
+						       CamelFolderInfo *info,
+						       CamelException *ex);
 
 typedef struct _CamelISubscribe CamelISubscribe;
 struct _CamelISubscribe {

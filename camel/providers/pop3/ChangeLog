@@ -1,3 +1,11 @@
+2007-12-11  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #336074
+
+	* camel-pop3-store.c: (pop3_can_refresh_folder),
+	(camel_pop3_store_class_init): Implements its own CamelStore's
+	can_refresh_folder function - any folder can be refreshed here.
+
 2007-12-04 David Turner <cillian64@googlemail.com>
 
 	** Fix for bug #466499

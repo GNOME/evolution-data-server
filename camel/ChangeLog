@@ -1,3 +1,14 @@
+2007-12-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #336074
+
+	* camel-store.h: (struct CamelStoreClass::can_refresh_folder),
+	(camel_store_can_refresh_folder):
+	* camel-store.c: (can_refresh_folder), (camel_store_class_init),
+	(camel_store_can_refresh_folder):
+	New virtual function to check if folder can be refreshed or not.
+	Default behavior of this function is that the Inbox will be refreshed.
+
 2007-12-05  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #501622

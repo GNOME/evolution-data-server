@@ -1004,6 +1004,13 @@ nntp_store_finalize (CamelObject *object)
 	g_free(p);
 }
 
+static gboolean 
+nntp_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	/* any nntp folder can be refreshed */
+	return TRUE;
+}
+
 static void
 nntp_store_class_init (CamelNNTPStoreClass *camel_nntp_store_class)
 {
@@ -1041,6 +1048,7 @@ nntp_store_class_init (CamelNNTPStoreClass *camel_nntp_store_class)
 	camel_store_class->create_folder = nntp_create_folder;
 	camel_store_class->delete_folder = nntp_delete_folder;
 	camel_store_class->rename_folder = nntp_rename_folder;
+	camel_store_class->can_refresh_folder = nntp_can_refresh_folder;
 }
 
 /* construction function in which we set some basic store properties */

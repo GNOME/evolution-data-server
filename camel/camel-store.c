@@ -77,6 +77,8 @@ static void unsubscribe_folder (CamelStore *store, const char *folder_name, Came
 
 static void noop (CamelStore *store, CamelException *ex);
 
+static gboolean can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
+
 static void construct (CamelService *service, CamelSession *session,
 		       CamelProvider *provider, CamelURL *url,
 		       CamelException *ex);
@@ -109,6 +111,7 @@ camel_store_class_init (CamelStoreClass *camel_store_class)
 	camel_store_class->subscribe_folder = subscribe_folder;
 	camel_store_class->unsubscribe_folder = unsubscribe_folder;
 	camel_store_class->noop = noop;
+	camel_store_class->can_refresh_folder = can_refresh_folder;
 
 	/* virtual method overload */
 	camel_service_class->construct = construct;
@@ -1256,6 +1259,33 @@ camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *u
 	camel_url_free (url1);
 
 	return equal;
+}
+
+static gboolean
+can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	return ((info->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_INBOX);
+}
+
+/**
+ * camel_store_can_refresh_folder
+ * Returns if this folder (param info) should be checked for new mail or not.
+ * It should not look into sub infos (info->child) or next infos, it should
+ * return value only for the actual folder info.
+ * Default behavior is that all Inbox folders are intended to be refreshed.
+ *
+ * @param store Store, to which belong folder.
+ * @param info Info of folder of our interest.
+ * @param ex [out] Will set this exception in case of any error.
+ * @return Whether folder should be checked for new mails or not.
+ **/
+gboolean
+camel_store_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	g_return_val_if_fail (store != NULL, FALSE);
+	g_return_val_if_fail (info != NULL, FALSE);
+
+	return CS_CLASS (store)->can_refresh_folder (store, info, ex);	
 }
 
 /* subscriptions interface */
