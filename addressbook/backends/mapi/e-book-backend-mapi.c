@@ -560,9 +560,6 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 	return;
 }
 
-struct folder_data {
-	mapi_id_t id;
-};
 static void
 e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 					   EDataBook    *book,
@@ -585,7 +582,7 @@ e_book_backend_mapi_remove_contacts (EBookBackend *backend,
 	case GNOME_Evolution_Addressbook_MODE_REMOTE:
 		
 		while (tmp) {
-			struct folder_data *data = g_new (struct folder_data, 1);
+			struct id_list *data = g_new (struct id_list, 1);
 			exchange_mapi_util_mapi_ids_from_uid (tmp->data, &fid, &mid);
 			data->id = mid;
 			list = g_slist_prepend (list, (gpointer) data);
@@ -675,7 +672,7 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 }
 
 static gpointer
-create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid)
+create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, GSList *recipients, GSList *attachments)
 {
 	EContact *contact;
 	char *suid;

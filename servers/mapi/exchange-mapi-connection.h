@@ -43,9 +43,12 @@ typedef struct {
 typedef struct {
 } ExchangeMAPIRecipient;
 
+struct id_list {
+	mapi_id_t id;
+};
 
 typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data);
-typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid);
+typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments);
 typedef gboolean  (*BuildNameID) (struct mapi_nameid	*nameid, gpointer data);
 typedef int  (*BuildProps) (struct SPropValue **, struct SPropTagArray *, gpointer data);
 typedef struct SPropTagArray *  (*BuildPropTagArray) (TALLOC_CTX *ctx);

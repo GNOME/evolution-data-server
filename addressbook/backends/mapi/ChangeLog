@@ -1,3 +1,9 @@
+2007-12-11  Suman Manjunath  <msuman@novell.com>
+
+	* e-book-backend-mapi.c: (e_book_backend_mapi_remove_contacts):
+	Use 'struct id_list' defined in exchange-mapi-connection.h
+	(create_contact_item): Fix for fetch_item_cb API change.
+
 2007-12-10  Suman Manjunath  <msuman@novell.com>
 
 	* e-book-backend-mapi.c: (e_book_backend_mapi_modify_contact):

@@ -1,3 +1,8 @@
+2007-12-11  Suman Manjunath  <msuman@novell.com>
+
+	* camel-mapi-folder.c: (fetch_item_cb): Fix for fetch_item_cb 
+	API change.
+
 2007-12-10  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c: (mapi_refresh_folder): Add a new param for 

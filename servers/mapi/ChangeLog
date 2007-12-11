@@ -1,3 +1,15 @@
+2007-12-11  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item),
+	(exchange_mapi_create_folder), (exchange_mapi_create_item),
+	(exchange_mapi_modify_item), (exchange_mapi_remove_items),
+	(get_child_folders): Code cleanup
+	* exchange-mapi-connection.h: API change for fetch_item_cb (added 
+	support for attachments and recipients), defined 'struct id_list' 
+	used in remove_items.
+
 2007-12-10  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_create_folder),

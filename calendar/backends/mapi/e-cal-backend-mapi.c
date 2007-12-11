@@ -1299,10 +1299,6 @@ e_cal_backend_mapi_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	return GNOME_Evolution_Calendar_Success;
 }
 
-struct folder_data {
-	mapi_id_t id;
-};
-
 static ECalBackendSyncStatus 
 e_cal_backend_mapi_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				  const char *uid, const char *rid, CalObjModType mod, 
@@ -1360,7 +1356,7 @@ e_cal_backend_mapi_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 //			if (e_cal_component_has_attendees (E_CAL_COMPONENT (comp_list->data))) { 
 //			} else { 
-				struct folder_data *data = g_new (struct folder_data, 1);
+				struct id_list *data = g_new (struct id_list, 1);
 				data->id = mid;
 				list = g_slist_prepend (list, (gpointer) data);
 //			}

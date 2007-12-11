@@ -637,59 +637,56 @@ exchange_mapi_util_SPropTagArray_free (struct SPropTagArray * SPropTagArray)
 }
 
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
-
 gboolean
-exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPropsTagArray, struct mapi_SRestriction *res,
-				      BuildPropTagArray bpta_cb, FetchItemsCallback cb,  gpointer data)
+exchange_mapi_connection_fetch_items   (mapi_id_t fid, 
+					struct SPropTagArray *GetPropsTagArray, 
+					struct mapi_SRestriction *res,
+					BuildPropTagArray bpta_cb, 
+					FetchItemsCallback cb, 
+					gpointer data)
 {
-	mapi_object_t obj_store;	
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
 	mapi_object_t obj_folder;
 	mapi_object_t obj_table;
-	enum MAPISTATUS retval;
-	uint32_t count;
-	mapi_object_t obj_message;
-	struct SRowSet SRowSet;
 	struct SPropTagArray *SPropTagArray;
+	struct SRowSet SRowSet;
+	uint32_t count, i;
+	gboolean result = FALSE;
 
-	TALLOC_CTX *mem_ctx;
-	int i;
+	d(printf("%s(%d): Entering %s: folder-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, fid));
 
-	printf("Fetching folder %016llX\n", fid);
-	
 	LOCK ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
+	mem_ctx = talloc_init("ExchangeMAPI_FetchItems");
 	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_table);
+
+	/* Open the message store */
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
 
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
-	OpenFolder(&obj_store, fid, &obj_folder);
-	retval = GetLastError();
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 
-	mapi_object_init(&obj_table);
-	GetContentsTable(&obj_folder, &obj_table);
-	retval = GetLastError();
+	/* Get a handle on the container */
+	retval = GetContentsTable(&obj_folder, &obj_table);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-getcontentstable failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("GetContentsTable", GetLastError());
+		goto cleanup;
 	}
 
-	if (!bpta_cb) {
+	if (bpta_cb)
+		SPropTagArray = bpta_cb (mem_ctx);
+	else {
 		SPropTagArray = set_SPropTagArray(mem_ctx, 0x9,
 						  PR_FID,
 						  PR_MID,
@@ -702,48 +699,41 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 //					          PR_DISCLOSURE_OF_RECIPIENTS,
 						  PR_RULE_MSG_PROVIDER,
 						  PR_RULE_MSG_NAME);
-	} else {
-		SPropTagArray = bpta_cb (mem_ctx);
 	}
-	
+
+	/* Set primary columns to be fetched */
 	retval = SetColumns(&obj_table, SPropTagArray);
-	MAPIFreeBuffer(SPropTagArray);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-setcolumns failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("SetColumns", GetLastError());
+		goto cleanup;
 	}
 
 	if (res) {
 		/* Applying any restriction that are set. */
 		retval = Restrict(&obj_table, res);
 		if (retval != MAPI_E_SUCCESS) {
-			g_warning ("Failed while setting restrictions\n");
-			mapi_errstr(__PRETTY_FUNCTION__, GetLastError());					
-			UNLOCK ();
-			return FALSE;
+			mapi_errstr("Restrict", GetLastError());
+			goto cleanup;
 		}
 	}
 
+	/* Number of items in the container */
 	retval = GetRowCount(&obj_table, &count);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-getrowcount failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("GetRowCount", GetLastError());
+		goto cleanup;
 	}
 
+	/* Fill the table columns with data from the rows */
 	retval = QueryRows(&obj_table, count, TBL_ADVANCE, &SRowSet);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("fetch items-queryrows failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
+		mapi_errstr("QueryRows", GetLastError());
+		goto cleanup;
 	}
 
 	for (i = 0; i < SRowSet.cRows; i++) {
-		mapi_object_init(&obj_message);
+		mapi_object_t obj_message;
+		struct mapi_SPropValue_array properties_array;
 		const mapi_id_t *pfid;
 		const mapi_id_t	*pmid;
 		const bool *has_attach = NULL;
@@ -752,11 +742,7 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 		GSList *recip_list = NULL;
 		GSList *stream_list = NULL;
 
-		struct SPropTagArray *SPropTagArray1;
-		uint32_t mycount;
-
-		struct mapi_SPropValue_array properties_array;
-		uint32_t prop_count;
+		mapi_object_init(&obj_message);
 
 		pfid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_FID);
 		pmid = (const uint64_t *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_MID);
@@ -765,63 +751,57 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 		/* disclose_recipients = (const bool *) get_SPropValue_SRow_data(&SRowSet.aRow[i], PR_DISCLOSURE_OF_RECIPIENTS); */
 
 		retval = OpenMessage(&obj_folder, *pfid, *pmid, &obj_message, 0);
-		retval = GetLastError ();
-
-		//FIXME: Verify this
-		//printf(" %016llX %016llX %016llX %016llX %016llX\n", *pfid, *pmid, SRowSet.aRow[i].lpProps[0].value.d, SRowSet.aRow[i].lpProps[1].value.d, fid);
-		if (retval == MAPI_E_SUCCESS) {
-
-			struct SPropValue *lpProps;
-			if (has_attach && *has_attach)
-				exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
-
-			if (disclose_recipients && *disclose_recipients) {
-				//TODO : RecipientTable handling. 
-			}
-
-			/* get the main body stream no matter what */
-			exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
-
-			if (GetPropsTagArray) {
-				int i=0;
-
-				lpProps = talloc_zero(mem_ctx, struct SPropValue);
-
-				retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
-
-				/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
-				properties_array.cValues = prop_count;
-				properties_array.lpProps = g_new0 (struct mapi_SPropValue, prop_count);
-				for (i=0; i < prop_count; i++)
-					cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);					
-
-			} else {
-				 GetPropsAll (&obj_message, &properties_array);
-				 retval = GetLastError ();
-			}
-
-			if (retval == MAPI_E_SUCCESS) {
-				int z;
-
-				mapi_SPropValue_array_named(&obj_message, 
-							    &properties_array);
-
-				/* just to get all the other streams */
-				for (z=0; z < properties_array.cValues; z++)
-					if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
-						exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
-											properties_array.lpProps[z].ulPropTag, &stream_list);
-
-				if (!cb (&properties_array, *pfid, *pmid, recip_list, attach_list, data)) {
-					printf("Breaking from fetching items\n");
-					break;
-				}
-
-				mapi_object_release(&obj_message);
-			}
-		} else 
+		if (retval != MAPI_E_SUCCESS) {
 			mapi_errstr("OpenMessage", GetLastError());
+			goto loop_cleanup;
+		}
 
+		if (has_attach && *has_attach)
+			exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
+
+		if (disclose_recipients && *disclose_recipients) {
+			//TODO : RecipientTable handling. 
+		}
+
+		/* get the main body stream no matter what */
+		exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
+
+		if (GetPropsTagArray) {
+			struct SPropValue *lpProps;
+			uint32_t prop_count = 0, i;
+
+			lpProps = talloc_zero(mem_ctx, struct SPropValue);
+
+			retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
+
+			/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
+			properties_array.cValues = prop_count;
+			properties_array.lpProps = talloc_array (mem_ctx, struct mapi_SPropValue, prop_count);
+			for (i=0; i < prop_count; i++)
+				cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);
+
+			MAPIFreeBuffer(lpProps);
+		} else
+			retval = GetPropsAll (&obj_message, &properties_array);
+
+		if (retval == MAPI_E_SUCCESS) {
+			uint32_t z;
+
+			mapi_SPropValue_array_named(&obj_message, &properties_array);
+
+			/* just to get all the other streams */
+			for (z=0; z < properties_array.cValues; z++)
+				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
+					exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
+										properties_array.lpProps[z].ulPropTag, &stream_list);
+
+			if (!cb (&properties_array, *pfid, *pmid, recip_list, attach_list, data)) {
+				g_warning ("%s(%d): %s: Callback failed for message-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, *pmid);
+			}
+		}
+
+	loop_cleanup:
+		mapi_object_release(&obj_message);
 
 		/* should I ?? */
 		if (attach_list) {
@@ -850,166 +830,142 @@ exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPr
 		}
 	}
 
-	mapi_object_release(&obj_table);
-	mapi_object_release(&obj_folder);
+	result = TRUE;
 
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_table);
+	mapi_object_release(&obj_store);
+	talloc_free (mem_ctx);
 	UNLOCK ();
-	return TRUE;
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return result;
 }
 
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropTagArray *GetPropsTagArray, FetchItemCallback cb)
 {
-	mapi_object_t obj_store;	
-	mapi_object_t obj_folder;
-	mapi_object_t obj_table;
 	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SRowSet SRowSet;
-	struct SPropTagArray *SPropTagArray;
-	struct mapi_SPropValue_array properties_array;
-	struct SPropValue *lpProps;
-
 	TALLOC_CTX *mem_ctx;
-	uint32_t prop_count;
-	int i;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	mapi_object_t obj_message;
+	struct mapi_SPropValue_array properties_array;
+	GSList *attach_list = NULL;
+	GSList *recip_list = NULL;
+	GSList *stream_list = NULL;
 	gpointer retobj = NULL;
 
+	d(printf("%s(%d): Entering %s: folder-id %016llX message-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, fid, mid));
 
 	LOCK ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
+	mem_ctx = talloc_init("ExchangeMAPI_FetchItem");
 	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_message);
+
+	/* Open the message store */
 	retval = OpenMsgStore(&obj_store);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return NULL;
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
 	}
 
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
+	/* Attempt to open the folder */
 	retval = OpenFolder(&obj_store, fid, &obj_folder);
 	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("startbookview-openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return NULL;
-	}
-	mapi_object_init(&obj_message);
-	retval = OpenMessage(&obj_folder,
-			     fid,
-			     mid,
-			     &obj_message, 0);
-	if (retval != MAPI_E_NOT_FOUND) {
-		
-		if (GetPropsTagArray) {
-			int i=0;
-
-			struct SRow aRow;
-			
-			lpProps = talloc_zero(mem_ctx, struct SPropValue);
-			
-			retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
-
-			/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
-			properties_array.cValues = prop_count;
-			properties_array.lpProps = g_new0 (struct mapi_SPropValue, prop_count);
-
-			for (i=0; i < prop_count; i++)
-				cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);					
-
-		} else {
-			GetPropsAll (&obj_message, &properties_array);
-			retval = GetLastError ();
-		}
-		
-		if (retval == MAPI_E_SUCCESS) {
-			
-			mapi_SPropValue_array_named(&obj_message, 
-						    &properties_array);
-			retobj = cb (&properties_array, fid, mid);
-
-			mapi_object_release(&obj_message);
-		}
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
 	}
 
+	/* Open the item */
+	retval = OpenMessage(&obj_folder, fid, mid, &obj_message, 0x0);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMessage", GetLastError());
+		goto cleanup;
+	}
+
+	/* Fetch attachments */
+	exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
+
+	/* TODO: RecipientTable handling */
+
+
+	/* get the main body stream no matter what */
+	exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
+
+	if (GetPropsTagArray) {
+		struct SPropValue *lpProps;
+		uint32_t prop_count = 0, i;
+
+		lpProps = talloc_zero(mem_ctx, struct SPropValue);
+
+		retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
+
+		/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
+		properties_array.cValues = prop_count;
+		properties_array.lpProps = talloc_array (mem_ctx, struct mapi_SPropValue, prop_count);
+		for (i=0; i < prop_count; i++)
+			cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);
+
+		MAPIFreeBuffer(lpProps);
+	} else
+		retval = GetPropsAll (&obj_message, &properties_array);
+
+	if (retval == MAPI_E_SUCCESS) {
+		uint32_t z;
+
+		mapi_SPropValue_array_named(&obj_message, &properties_array);
+
+		/* just to get all the other streams */
+		for (z=0; z < properties_array.cValues; z++)
+			if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
+				exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
+									properties_array.lpProps[z].ulPropTag, &stream_list);
+
+		retobj = cb (&properties_array, fid, mid, recip_list, attach_list);
+	}
+
+	/* should I ?? */
+	if (attach_list) {
+		GSList *l;
+		for (l = attach_list; l; l = l->next) {
+			ExchangeMAPIAttachment *attachment = (ExchangeMAPIAttachment *) (l->data);
+			g_byte_array_free (attachment->value, TRUE);
+			attachment->value = NULL;
+		}
+		g_slist_free (attach_list);
+		attach_list = NULL;
+	}
+
+	if (recip_list) {
+	}
+
+	if (stream_list) {
+		GSList *l;
+		for (l = stream_list; l; l = l->next) {
+			ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
+			g_byte_array_free (stream->value, TRUE);
+			stream->value = NULL;
+		}
+		g_slist_free (stream_list);
+		stream_list = NULL;
+	}
+
+cleanup:
+	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
-
+	mapi_object_release(&obj_store);
+	talloc_free (mem_ctx);
 	UNLOCK ();
-	
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
 	return retobj;
 }
 
-struct folder_data {
-	mapi_id_t id;
-};
-
-gboolean
-exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
-{
-	mapi_object_t obj_store;	
-	mapi_object_t obj_folder;
-	mapi_object_t obj_table;
-	enum MAPISTATUS retval;
-	mapi_object_t obj_message;
-	struct SRowSet SRowSet;
-	struct SPropTagArray *SPropTagArray;
-	struct mapi_SPropValue_array properties_array;
-	TALLOC_CTX *mem_ctx;
-	uint32_t i=0;
-	gpointer retobj = NULL;
-	mapi_id_t *id_messages;
-	GSList *tmp = mids;
-
-	LOCK ();
-
-	LOGALL ();
-	mem_ctx = talloc_init("Evolution");
-	mapi_object_init(&obj_folder);
-	mapi_object_init(&obj_store);
-	mapi_object_init(&obj_message);
-
-	retval = OpenMsgStore(&obj_store);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items openmsgstore failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
-	}
-
-	printf("Opening folder %016llX\n", fid);
-	/* We now open the folder */
-	retval = OpenFolder(&obj_store, fid, &obj_folder);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items openfolder failed: %d\n", retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
-	}
-
-	id_messages = talloc_array(mem_ctx, uint64_t, g_slist_length (mids)+1);
-	for (; tmp; tmp=tmp->next, i++) {
-		struct folder_data *data = tmp->data;
-		id_messages [i] = data->id;
-	}
-
-	retval = DeleteMessage(&obj_folder, id_messages, i);
-	if (retval != MAPI_E_SUCCESS) {
-		g_warning ("remove items Delete Message %d %d failed: %d\n", i, g_slist_length(mids), retval);
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());		
-		UNLOCK ();
-		return FALSE;
-	}
-
-	mapi_object_release(&obj_folder);
-	
-	LOGNONE();
-	UNLOCK ();
-	
-	return TRUE;	
-}
 
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name)
@@ -1083,7 +1039,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	}
 
 	fid = mapi_object_get_id (&obj_folder);
-	printf("Folder created with id %016llX\n", fid);
+	printf("Folder %s created with id %016llX\n", name, fid);
 
 cleanup:
 	mapi_object_release(&obj_folder);
@@ -1193,12 +1149,15 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 	gint propslen = 0;
 	mapi_id_t mid = 0;
 
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
 	LOCK ();
 	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_CreateItem");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_message);
+
 	nameid = mapi_nameid_new(mem_ctx);
 	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
 
@@ -1297,14 +1256,14 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 	mid = mapi_object_get_id (&obj_message);
 
 cleanup:
-	MAPIFreeBuffer(nameid);
-	MAPIFreeBuffer(SPropTagArray);
 	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
 	LOGNONE ();
 	UNLOCK ();
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	return mid;
 }
@@ -1326,12 +1285,15 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 	gint propslen = 0;
 	gboolean result = FALSE;
 
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
 	LOCK ();
 	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_ModifyItem");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
 	mapi_object_init(&obj_message);
+
 	nameid = mapi_nameid_new(mem_ctx);
 	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
 
@@ -1421,14 +1383,76 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 	result = TRUE;
 
 cleanup:
-	MAPIFreeBuffer(nameid);
-	MAPIFreeBuffer(SPropTagArray);
 	mapi_object_release(&obj_message);
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
 	LOGNONE ();
 	UNLOCK ();
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return result;
+}
+
+/* FIXME: param olFolder is never used in the routine. Remove it and cleanup at the backends */
+gboolean
+exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	uint32_t i;
+	mapi_id_t *id_messages;
+	GSList *tmp = mids;
+	gboolean result = FALSE;
+
+	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	LOCK ();
+	LOGALL ();
+	mem_ctx = talloc_init("ExchangeMAPI_RemoveItems");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	id_messages = talloc_array(mem_ctx, mapi_id_t, g_slist_length (mids)+1);
+	for (i=0; tmp; tmp=tmp->next, i++) {
+		struct id_list *data = tmp->data;
+		id_messages[i] = data->id;
+	}
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	/* Delete the messages from the folder */
+	retval = DeleteMessage(&obj_folder, id_messages, i);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("DeleteMessage", GetLastError());
+		goto cleanup;
+	}
+
+	result = TRUE;
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	LOGNONE();
+	UNLOCK ();
+
+	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	return result;
 }
@@ -1469,7 +1493,6 @@ static gboolean
 get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent_name, mapi_id_t folder_id, int count, GSList **mapi_folders)
 {
 	enum MAPISTATUS		retval;
-	bool			ret;
 	mapi_object_t		obj_folder;
 	mapi_object_t		obj_htable;
 	struct SPropTagArray	*SPropTagArray;
@@ -1480,7 +1503,6 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 	const uint32_t		*child, *unread, *total;
 	uint32_t		index;
 	const uint64_t		*fid;
-	int			i;
 
 	mapi_object_init(&obj_folder);
 	retval = OpenFolder(parent, folder_id, &obj_folder);

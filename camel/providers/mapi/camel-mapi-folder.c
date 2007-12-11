@@ -953,7 +953,7 @@ end1:
 }
 
 static gpointer
-fetch_item_cb (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid)
+fetch_item_cb (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, GSList *recipients, GSList *attachments)
 {
 	debug_mapi_property_dump (array);
 	printf("%s(%d):%s:reached \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
