@@ -1,3 +1,10 @@
+2007-12-12  Evil Ninja Squirrel  <evilninjasquirrel@hotbrev.com>
+
+	** Fix for bug #486126
+
+	* camel-filter-driver.c: (camel_filter_driver_filter_message):
+	Fixed an incorrect format string usage that can lead to crashes.
+
 2007-12-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #336074

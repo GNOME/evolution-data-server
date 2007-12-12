@@ -1468,7 +1468,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 			goto error;
 		case CAMEL_SEARCH_MATCHED:
 			filtered = TRUE;
-			camel_filter_driver_log (driver, FILTER_LOG_START, node->name);
+			camel_filter_driver_log (driver, FILTER_LOG_START, "%s", node->name);
 
 			if (camel_debug(":filter"))
 				printf("filtering '%s' applying rule %s\n",
