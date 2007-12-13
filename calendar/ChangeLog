@@ -1,3 +1,10 @@
+2007-12-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #502866
+
+	* libecal/e-cal.c: (e_cal_get_objects_for_uid):
+	Allow get the VJOURNAL component at once same as other components.
+
 2007-12-06  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #501548

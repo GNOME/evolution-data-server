@@ -2930,9 +2930,25 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
                 *objects = NULL;
         } else {
 		icalcomponent *icalcomp;
-		icalcomponent_kind kind;
+		icalcomponent_kind kind, kind_to_find;
 
-		icalcomp = icalparser_parse_string (our_op->string);
+		switch (priv->type) {
+		case E_CAL_SOURCE_TYPE_EVENT :
+			kind_to_find = ICAL_VEVENT_COMPONENT;
+			break;
+		case E_CAL_SOURCE_TYPE_TODO :
+			kind_to_find = ICAL_VTODO_COMPONENT;
+			break;
+		case E_CAL_SOURCE_TYPE_JOURNAL :
+			kind_to_find = ICAL_VJOURNAL_COMPONENT;
+			break;
+		default:
+			/* ignore everything else */
+			kind_to_find = ICAL_NO_COMPONENT;
+			break;
+		}
+
+				icalcomp = icalparser_parse_string (our_op->string);
 		if (!icalcomp) {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
 			*objects = NULL;
@@ -2940,30 +2956,12 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 			ECalComponent *comp;
 
 			kind = icalcomponent_isa (icalcomp);
-			if ((kind == ICAL_VEVENT_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_EVENT) ||
-			    (kind == ICAL_VTODO_COMPONENT && priv->type == E_CAL_SOURCE_TYPE_TODO)) {
+			if (kind == kind_to_find) {
 				comp = e_cal_component_new ();
 				e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 				*objects = g_list_append (NULL, comp);
 			} else if (kind == ICAL_VCALENDAR_COMPONENT) {
 				icalcomponent *subcomp;
-				icalcomponent_kind kind_to_find;
-
-				switch (priv->type) {
-				case E_CAL_SOURCE_TYPE_EVENT :
-					kind_to_find = ICAL_VEVENT_COMPONENT;
-					break;
-				case E_CAL_SOURCE_TYPE_TODO :
-					kind_to_find = ICAL_VTODO_COMPONENT;
-					break;
-				case E_CAL_SOURCE_TYPE_JOURNAL :
-					kind_to_find = ICAL_VJOURNAL_COMPONENT;
-					break;
-				default:
-					/* ignore everything else */
-					kind_to_find = ICAL_NO_COMPONENT;
-					break;
-				}
 
 				*objects = NULL;
 				subcomp = icalcomponent_get_first_component (icalcomp, kind_to_find);
