@@ -29,6 +29,7 @@ CamelImapFolder
 @need_rescan: 
 @need_refresh: 
 @read_only: 
+@check_folder: 
 
 <!-- ##### FUNCTION camel_imap_folder_new ##### -->
 <para>

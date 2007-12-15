@@ -413,6 +413,14 @@ CamelStore
 @fi: 
 
 
+<!-- ##### FUNCTION camel_folder_info_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_info_free ##### -->
 <para>
 

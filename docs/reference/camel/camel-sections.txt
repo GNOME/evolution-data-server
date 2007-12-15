@@ -1678,6 +1678,7 @@ camel_store_subscribe_folder
 camel_store_unsubscribe_folder
 camel_store_noop
 camel_store_folder_uri_equal
+camel_store_can_refresh_folder
 CamelISubscribe
 camel_isubscribe_subscribed
 camel_isubscribe_subscribe
