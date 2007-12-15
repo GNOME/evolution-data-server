@@ -1,3 +1,10 @@
+2007-12-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-tcp-stream-ssl.c (camel_tcp_stream_ssl_finalize),
+	(stream_close), (socket_connect):
+	Call PR_Shutdown() before PR_Close() (based on discussion with
+	Philip Van Hoof on evolution-hackers).
+
 2007-12-12  Evil Ninja Squirrel  <evilninjasquirrel@hotbrev.com>
 
 	** Fix for bug #486126

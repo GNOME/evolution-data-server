@@ -132,8 +132,10 @@ camel_tcp_stream_ssl_finalize (CamelObject *object)
 {
 	CamelTcpStreamSSL *stream = CAMEL_TCP_STREAM_SSL (object);
 
-	if (stream->priv->sockfd != NULL)
+	if (stream->priv->sockfd != NULL) {
+		PR_Shutdown (stream->priv->sockfd, PR_SHUTDOWN_BOTH);
 		PR_Close (stream->priv->sockfd);
+	}
 
 	if (stream->priv->session)
 		camel_object_unref(stream->priv->session);
@@ -527,6 +529,7 @@ stream_close (CamelStream *stream)
 		return -1;
 	}
 
+	PR_Shutdown (((CamelTcpStreamSSL *)stream)->priv->sockfd, PR_SHUTDOWN_BOTH);
 	if (PR_Close (((CamelTcpStreamSSL *)stream)->priv->sockfd) == PR_FAILURE)
 		return -1;
 
@@ -1138,6 +1141,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 
 			set_errno (PR_GetError ());
 			errnosave = errno;
+			PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
 			PR_Close (fd);
 			errno = errnosave;
 
@@ -1189,6 +1193,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 		} else {
 		exception:
 			errnosave = errno;
+			PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
 			PR_Close (fd);
 			ssl->priv->sockfd = NULL;
 			errno = errnosave;
