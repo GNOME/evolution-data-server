@@ -1,3 +1,7 @@
+2007-12-17  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.4 release.
+
 2007-12-17  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in:

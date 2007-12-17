@@ -1,3 +1,25 @@
+Evolution-Data-Server 2.21.4 2007-12-17
+---------------------------------------
+
+Bug Fixes:
+	#322917: Change mnemonics for Contacts, Address Book labels. Add mnemonic for Category label (Alex Kloss)
+	#336074: Check for mail only in active folders (Milan Crha)
+	#339510: Accept time inputs with 4 figures (e.g. '1830' would be converted to '18:30') (James "Doc" Livingston)
+	#462593: Prevent from crash on invalid uri (Milan Crha)
+	#466499: Added mnemonics to configuration options (David Turner)
+	#486126: Fixed an incorrect format string usage that can lead to crashes (Evil Ninja Squirrel)
+	#487687: Do not dereference NULL when a geo parsing error occurs. (Christian Krause)
+	#501548: Fix leaks (Milan Crha)
+	#501622: Fixes broken Digest-MD5 authentication (Matthew Barnes)
+	#501969: Passwords should not be forgotten on all errors (Sankar P)
+	#502866: Allow get the VJOURNAL component at once same as other components (Milan Crha)
+
+Updated Translations:
+	Kjartan Maraas (nb)
+	Jorge Gonzalez (es)
+	Matej Urbanči (sl)
+	Andre Klapper (de)
+
 Evolution-Data-Server 2.21.3 2007-12-03
 ---------------------------------------
 
