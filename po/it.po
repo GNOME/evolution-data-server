@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.20.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-06 08:51+0200\n"
-"PO-Revision-Date: 2007-09-06 08:51+0200\n"
+"POT-Creation-Date: 2007-12-17 14:35+0100\n"
+"PO-Revision-Date: 2007-12-17 14:45+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -38,13 +38,13 @@ msgstr "Caricamento..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2271
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2291
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4150
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4152
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:488
 msgid "Searching..."
 msgstr "Ricerca..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2672
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4309
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4311
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Scaricamento contatti (%d)... "
@@ -68,24 +68,24 @@ msgstr "Uso indirizzo email"
 msgid "Reconnecting to LDAP server..."
 msgstr "Riconnessione al server LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1592
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1594
 msgid "Adding contact to LDAP server..."
 msgstr "Aggiunta contatto al server LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1720
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1722
 msgid "Removing contact from LDAP server..."
 msgstr "Rimozione contatto dal server LDAP..."
 
 # o "sul server" ? -Luca
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2025
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2027
 msgid "Modifying contact from LDAP server..."
 msgstr "Modifica contatto dal server LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4021
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4023
 msgid "Receiving LDAP search results..."
 msgstr "Ricezione risultati della ricerca LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4170
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4172
 msgid "Error performing search"
 msgstr "Errore nell'eseguire la ricerca"
 
@@ -93,92 +93,92 @@ msgstr "Errore nell'eseguire la ricerca"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
-#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
-#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
-#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
-#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
-#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
-#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
-#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
-#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3431
+#: ../addressbook/libebook/e-book.c:254 ../addressbook/libebook/e-book.c:258
+#: ../addressbook/libebook/e-book.c:470 ../addressbook/libebook/e-book.c:474
+#: ../addressbook/libebook/e-book.c:615 ../addressbook/libebook/e-book.c:619
+#: ../addressbook/libebook/e-book.c:708 ../addressbook/libebook/e-book.c:712
+#: ../addressbook/libebook/e-book.c:1026 ../addressbook/libebook/e-book.c:1031
+#: ../addressbook/libebook/e-book.c:1218 ../addressbook/libebook/e-book.c:1222
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1383
+#: ../addressbook/libebook/e-book.c:1592 ../addressbook/libebook/e-book.c:1596
+#: ../addressbook/libebook/e-book.c:1833 ../addressbook/libebook/e-book.c:1837
+#: ../addressbook/libebook/e-book.c:2074 ../addressbook/libebook/e-book.c:2078
+#: ../addressbook/libebook/e-book.c:2290 ../addressbook/libebook/e-book.c:2294
+#: ../addressbook/libebook/e-book.c:3429
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" sulla rubrica prima di \"%s\""
 
-#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
-#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
-#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
-#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2672
-#: ../addressbook/libebook/e-book.c:2878
+#: ../addressbook/libebook/e-book.c:267 ../addressbook/libebook/e-book.c:483
+#: ../addressbook/libebook/e-book.c:628 ../addressbook/libebook/e-book.c:721
+#: ../addressbook/libebook/e-book.c:1041 ../addressbook/libebook/e-book.c:1232
+#: ../addressbook/libebook/e-book.c:1393 ../addressbook/libebook/e-book.c:1605
+#: ../addressbook/libebook/e-book.c:1846 ../addressbook/libebook/e-book.c:2088
+#: ../addressbook/libebook/e-book.c:2303 ../addressbook/libebook/e-book.c:2669
+#: ../addressbook/libebook/e-book.c:2875
 #, c-format
 msgid "book busy"
 msgstr "rubrica occupata"
 
-#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
-#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
-#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
-#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
-#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
-#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
-#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
-#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
-#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
-#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
-#: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
+#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:304
+#: ../addressbook/libebook/e-book.c:516 ../addressbook/libebook/e-book.c:520
+#: ../addressbook/libebook/e-book.c:657 ../addressbook/libebook/e-book.c:661
+#: ../addressbook/libebook/e-book.c:750 ../addressbook/libebook/e-book.c:754
+#: ../addressbook/libebook/e-book.c:1070 ../addressbook/libebook/e-book.c:1073
+#: ../addressbook/libebook/e-book.c:1264 ../addressbook/libebook/e-book.c:1267
+#: ../addressbook/libebook/e-book.c:1422 ../addressbook/libebook/e-book.c:1426
+#: ../addressbook/libebook/e-book.c:1641 ../addressbook/libebook/e-book.c:1645
+#: ../addressbook/libebook/e-book.c:1893 ../addressbook/libebook/e-book.c:1897
+#: ../addressbook/libebook/e-book.c:2120 ../addressbook/libebook/e-book.c:2124
+#: ../addressbook/libebook/e-book.c:2331 ../addressbook/libebook/e-book.c:2335
+#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2697
+#: ../addressbook/libebook/e-book.c:2701 ../addressbook/libebook/e-book.c:2903
+#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3438
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Eccezione CORBA durante la chiamata \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2594
+#: ../addressbook/libebook/e-book.c:2591
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: non c'è alcuna operazione in corso"
 
-#: ../addressbook/libebook/e-book.c:2629
+#: ../addressbook/libebook/e-book.c:2626
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: impossibile annullare"
 
-#: ../addressbook/libebook/e-book.c:2658 ../addressbook/libebook/e-book.c:2662
+#: ../addressbook/libebook/e-book.c:2655 ../addressbook/libebook/e-book.c:2659
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" sulla rubrica prima di \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2728
+#: ../addressbook/libebook/e-book.c:2725
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: annullato"
 
-#: ../addressbook/libebook/e-book.c:3295
+#: ../addressbook/libebook/e-book.c:3293
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: sorgente non valida."
 
-#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
+#: ../addressbook/libebook/e-book.c:3301 ../addressbook/libebook/e-book.c:3367
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: nessuna factory accessibile per l'URI «%s»"
 
-#: ../addressbook/libebook/e-book.c:3315
+#: ../addressbook/libebook/e-book.c:3313
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: impossibile creare EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3580
+#: ../addressbook/libebook/e-book.c:3578
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: non c'è un UID del proprio contatto memorizzato in gconf"
 
-#: ../addressbook/libebook/e-book.c:3713
+#: ../addressbook/libebook/e-book.c:3711
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: non c'è sorgente per l'uid \"%s\"  memorizzato in gconf."
@@ -248,11 +248,11 @@ msgstr "Gestore di posta"
 #. Address Labels
 #: ../addressbook/libebook/e-contact.c:137
 msgid "Home Address Label"
-msgstr "Etichetta indirizzo di casa"
+msgstr "Etichetta indirizzo abitazione"
 
 #: ../addressbook/libebook/e-contact.c:138
 msgid "Work Address Label"
-msgstr "Etichetta indirizzo di lavoro"
+msgstr "Etichetta indirizzo lavoro"
 
 #: ../addressbook/libebook/e-contact.c:139
 msgid "Other Address Label"
@@ -289,15 +289,15 @@ msgstr "Telefono ditta"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone"
-msgstr "Telefono di casa"
+msgstr "Telefono abitazione"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Home Phone 2"
-msgstr "Telefono casa 2"
+msgstr "Telefono abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:151
 msgid "Home Fax"
-msgstr "Fax casa"
+msgstr "Fax abitazione"
 
 #: ../addressbook/libebook/e-contact.c:152
 msgid "ISDN"
@@ -421,147 +421,147 @@ msgstr "Annotazioni"
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 1"
-msgstr "Nominativo pubblico di casa AIM 1"
+msgstr "Nominativo pubblico AIM abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 2"
-msgstr "Nominativo pubblico di casa AIM 2"
+msgstr "Nominativo pubblico AIM abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Home Screen Name 3"
-msgstr "Nominativo pubblico di casa AIM 3"
+msgstr "Nominativo pubblico AIM abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
-msgstr "Nominativo pubblico di lavoro AIM 1"
+msgstr "Nominativo pubblico AIM lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
-msgstr "Nominativo pubblico di lavoro AIM 2"
+msgstr "Nominativo pubblico AIM lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
-msgstr "Nominativo pubblico di lavoro AIM 3"
+msgstr "Nominativo pubblico AIM lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
-msgstr "Nominativo pubblico di casa Groupwise 1"
+msgstr "Nominativo pubblico Groupwise abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 2"
-msgstr "Nominativo pubblico di casa Groupwise 2"
+msgstr "Nominativo pubblico Groupwise abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Home Screen Name 3"
-msgstr "Nominativo pubblico di casa Groupwise 3"
+msgstr "Nominativo pubblico Groupwise abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
-msgstr "Nominativo pubblico di lavoro Groupwise 1"
+msgstr "Nominativo pubblico Groupwise lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
-msgstr "Nominativo pubblico di lavoro Groupwise 2"
+msgstr "Nominativo pubblico Groupwise lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
-msgstr "Nominativo pubblico di lavoro Groupwise 3"
+msgstr "Nominativo pubblico Groupwise lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
-msgstr "Id di casa Jabber 1"
+msgstr "ID Jabber abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 2"
-msgstr "Id di casa Jabber 2"
+msgstr "ID Jabber abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Home Id 3"
-msgstr "Id di casa Jabber 3"
+msgstr "ID Jabber abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
-msgstr "Id di lavoro Jabber 1"
+msgstr "ID Jabber lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
-msgstr "Id di lavoro Jabber 2"
+msgstr "ID Jabber lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
-msgstr "Id di lavoro Jabber 3"
+msgstr "ID Jabber lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Nominativo pubblico di casa Yahoo! 1"
+msgstr "Nominativo pubblico Yahoo! abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Nominativo pubblico di casa Yahoo! 2"
+msgstr "Nominativo pubblico Yahoo! abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Nominativo pubblico di casa Yahoo! 3"
+msgstr "Nominativo pubblico Yahoo! abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Nominativo pubblico di lavoro Yahoo! 1"
+msgstr "Nominativo pubblico Yahoo! lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Nominativo pubblico di lavoro Yahoo! 2"
+msgstr "Nominativo pubblico Yahoo! lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Nominativo pubblico di lavoro Yahoo! 3"
+msgstr "Nominativo pubblico Yahoo! lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
-msgstr "Nominativo pubblico di casa MSN 1"
+msgstr "Nominativo pubblico MSN abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 2"
-msgstr "Nominativo pubblico di casa MSN 2"
+msgstr "Nominativo pubblico MSN abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Home Screen Name 3"
-msgstr "Nominativo pubblico di casa MSN 3"
+msgstr "Nominativo pubblico MSN abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
-msgstr "Nominativo pubblico di lavoro 1 MSN"
+msgstr "Nominativo pubblico MSN lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
-msgstr "Nominativo pubblico di lavoro 2 MSN"
+msgstr "Nominativo pubblico MSN lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
-msgstr "Nominativo pubblico di lavoro 3 MSN"
+msgstr "Nominativo pubblico MSN lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
-msgstr "Id ICQ di casa 1"
+msgstr "ID ICQ abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 2"
-msgstr "Id ICQ di casa 2"
+msgstr "ID ICQ abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Home Id 3"
-msgstr "Id ICQ di casa 3"
+msgstr "ID ICQ abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
-msgstr "Id ICQ di lavoro 1"
+msgstr "ID ICQ lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
-msgstr "Id ICQ di lavoro 2"
+msgstr "ID ICQ lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
-msgstr "Id ICQ di lavoro 3"
+msgstr "ID ICQ lavoro 3"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:228
@@ -579,11 +579,11 @@ msgstr "Elenco degli indirizzi"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Home Address"
-msgstr "Indirizzo di casa"
+msgstr "Indirizzo abitazione"
 
 #: ../addressbook/libebook/e-contact.c:234
 msgid "Work Address"
-msgstr "Indirizzo del lavoro"
+msgstr "Indirizzo lavoro"
 
 #: ../addressbook/libebook/e-contact.c:235
 msgid "Other Address"
@@ -618,11 +618,11 @@ msgstr "Elenco nominativi pubblici AIM"
 
 #: ../addressbook/libebook/e-contact.c:249
 msgid "GroupWise Id List"
-msgstr "Elenco Id GroupWise"
+msgstr "Elenco ID GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:250
 msgid "Jabber Id List"
-msgstr "Elenco Id Jabber"
+msgstr "Elenco ID Jabber"
 
 #: ../addressbook/libebook/e-contact.c:251
 msgid "Yahoo! Screen Name List"
@@ -634,7 +634,7 @@ msgstr "Elenco nominativi pubblici MSN"
 
 #: ../addressbook/libebook/e-contact.c:253
 msgid "ICQ Id List"
-msgstr "Elenco Id ICQ"
+msgstr "Elenco ID ICQ"
 
 #: ../addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
@@ -653,7 +653,7 @@ msgid "Birth Date"
 msgstr "Data di nascita"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Anniversario"
@@ -665,31 +665,31 @@ msgstr "Certificato X.509"
 
 #: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 1"
-msgstr "Id di casa Gadu-Gadu 1"
+msgstr "ID Gadu-Gadu abitazione 1"
 
 #: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 2"
-msgstr "Id di casa Gadu-Gadu 2"
+msgstr "ID Gadu-Gadu abitazione 2"
 
 #: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Home Id 3"
-msgstr "Id di casa Gadu-Gadu 3"
+msgstr "ID Gadu-Gadu abitazione 3"
 
 #: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
-msgstr "Id di lavoro Gadu-Gadu 1"
+msgstr "ID Gadu-Gadu lavoro 1"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
-msgstr "Id di lavoro Gadu-Gadu 2"
+msgstr "ID Gadu-Gadu lavoro 2"
 
 #: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
-msgstr "Id di lavoro Gadu-Gadu 3"
+msgstr "ID Gadu-Gadu lavoro 3"
 
 #: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
-msgstr "Elenco Id Gadu-Gadu"
+msgstr "Elenco ID Gadu-Gadu"
 
 # NEW
 #. Geo information
@@ -706,17 +706,17 @@ msgstr "Elenco senza nome"
 # Evolution salva il gg/mm/aaa in cui si è nati (giorno di nascita)
 # o il giorno in cui ricorre (compleanno) ? -Luca
 #
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "Compleanno"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
 #, c-format
 msgid "Birthday: %s"
 msgstr "Compleanno: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Anniversario: %s"
@@ -726,12 +726,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Impossibile salvare i dati del calendario: URI mal formulata."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1760
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1765
 msgid "Reply Requested: by "
 msgstr "Risposta richiesta: da "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1765
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1770
 msgid "Reply Requested: When convenient"
 msgstr "Risposta richiesta: se conveniente"
 
@@ -753,9 +753,9 @@ msgstr "URI del server non valido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
 #: ../calendar/libecal/e-cal.c:5001
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1078
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1116
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1083
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1121
 #: ../camel/providers/groupwise/camel-groupwise-store.c:586
 #: ../camel/providers/groupwise/camel-groupwise-store.c:601
 #: ../camel/providers/groupwise/camel-groupwise-store.c:712
@@ -773,7 +773,7 @@ msgstr "Impossibile creare il thread per ottenere le differenze"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
 #: ../calendar/backends/http/e-cal-backend-http.c:597
-#: ../calendar/backends/weather/e-cal-backend-weather.c:452
+#: ../calendar/backends/weather/e-cal-backend-weather.c:460
 msgid "Could not create cache file"
 msgstr "Impossibile creare il file cache"
 
@@ -793,195 +793,195 @@ msgstr "Formato di file errato"
 msgid "Not a calendar."
 msgstr "Non è un calendario."
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:142
+#: ../calendar/backends/weather/e-cal-backend-weather.c:144
 msgid "Could not retrieve weather data"
 msgstr "Impossibile scaricare i dati meteo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:202
+#: ../calendar/backends/weather/e-cal-backend-weather.c:210
 msgid "Fair"
 msgstr "Sereno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:203
+#: ../calendar/backends/weather/e-cal-backend-weather.c:211
 msgid "Snow showers"
 msgstr "Neve intensa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:204
+#: ../calendar/backends/weather/e-cal-backend-weather.c:212
 msgid "Snow"
 msgstr "Neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:205
+#: ../calendar/backends/weather/e-cal-backend-weather.c:213
 msgid "Partly cloudy"
 msgstr "Parzialmente nuvoloso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:206
+#: ../calendar/backends/weather/e-cal-backend-weather.c:214
 msgid "Smoke"
 msgstr "Fumo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:207
+#: ../calendar/backends/weather/e-cal-backend-weather.c:215
 msgid "Thunderstorms"
 msgstr "Temporali"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:208
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Cloudy"
 msgstr "Nuvolo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:209
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Drizzle"
 msgstr "Pioggia leggera"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Sunny"
 msgstr "Soleggiato"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Dust"
 msgstr "Polvere"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Clear"
 msgstr "Sereno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Mostly cloudy"
 msgstr "Abbastanza nuvoloso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Windy"
 msgstr "Ventoso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Rain showers"
 msgstr "Pioggia intensa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Foggy"
 msgstr "Nebbioso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:225
 msgid "Rain/snow mixed"
 msgstr "Pioggia mista a neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:226
 msgid "Sleet"
 msgstr "Neve bagnata"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
+#: ../calendar/backends/weather/e-cal-backend-weather.c:227
 msgid "Very hot/humid"
 msgstr "Molto caldo/umido"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
+#: ../calendar/backends/weather/e-cal-backend-weather.c:228
 msgid "Blizzard"
 msgstr "Bufera"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
+#: ../calendar/backends/weather/e-cal-backend-weather.c:229
 msgid "Freezing rain"
 msgstr "Neve ghiacciata"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
+#: ../calendar/backends/weather/e-cal-backend-weather.c:230
 msgid "Haze"
 msgstr "Foschia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Blowing snow"
 msgstr "Vento e neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
+#: ../calendar/backends/weather/e-cal-backend-weather.c:232
 msgid "Freezing drizzle"
 msgstr "Pioggia leggera giacciata"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:225
+#: ../calendar/backends/weather/e-cal-backend-weather.c:233
 msgid "Very cold/wind chill"
 msgstr "Molto freddo/vento ghiacciato"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:226
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
 msgid "Rain"
 msgstr "Pioggia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:236
 #: ../calendar/backends/weather/e-cal-backend-weather.c:244
-#: ../calendar/backends/weather/e-cal-backend-weather.c:246
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:261
 msgid "Weather: Sunny"
 msgstr "Meteo: soleggiato"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:237
-#: ../calendar/backends/weather/e-cal-backend-weather.c:238
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
-#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:245
+#: ../calendar/backends/weather/e-cal-backend-weather.c:246
+#: ../calendar/backends/weather/e-cal-backend-weather.c:262
+#: ../calendar/backends/weather/e-cal-backend-weather.c:265
 msgid "Weather: Snow"
 msgstr "Meteo: neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:239
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
 msgid "Weather: Partly Cloudy"
 msgstr "Meteo: parzialmente nuvoloso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:240
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:264
 msgid "Weather: Fog"
 msgstr "Meteo: nebbia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:241
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 msgid "Weather: Thunderstorms"
 msgstr "Meteo: temporali"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:242
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Cloudy"
 msgstr "Meteo: nuvoloso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:243
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 #: ../calendar/backends/weather/e-cal-backend-weather.c:251
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:259
 #: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:263
+#: ../calendar/backends/weather/e-cal-backend-weather.c:266
+#: ../calendar/backends/weather/e-cal-backend-weather.c:268
 msgid "Weather: Rain"
 msgstr "Meteo: pioggia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:335
+#: ../calendar/backends/weather/e-cal-backend-weather.c:343
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:337
+#: ../calendar/backends/weather/e-cal-backend-weather.c:345
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:340
+#: ../calendar/backends/weather/e-cal-backend-weather.c:348
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:342
+#: ../calendar/backends/weather/e-cal-backend-weather.c:350
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:348
+#: ../calendar/backends/weather/e-cal-backend-weather.c:356
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "%d%% probabilità di pioggia\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:355
+#: ../calendar/backends/weather/e-cal-backend-weather.c:363
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:357
+#: ../calendar/backends/weather/e-cal-backend-weather.c:365
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1fin neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:360
+#: ../calendar/backends/weather/e-cal-backend-weather.c:368
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm neve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:362
+#: ../calendar/backends/weather/e-cal-backend-weather.c:370
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fin neve\n"
@@ -2026,16 +2026,16 @@ msgstr "La risposta del server non contiene dati completi per l'autenticazione"
 msgid "Server response does not match"
 msgstr "La risposta del server non corrisponde"
 
-#: ../camel/camel-sasl-gssapi.c:65
+#: ../camel/camel-sasl-gssapi.c:64
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:67
+#: ../camel/camel-sasl-gssapi.c:66
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Opzione per connessioni al server usando Kerberos 5 per l'autenticazione."
 
-#: ../camel/camel-sasl-gssapi.c:165
+#: ../camel/camel-sasl-gssapi.c:164
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2043,11 +2043,11 @@ msgstr ""
 "Il meccanismo specificato non è supportato dalle credenziali fornite o non è "
 "stato riconosciuto dalla implementazione."
 
-#: ../camel/camel-sasl-gssapi.c:170
+#: ../camel/camel-sasl-gssapi.c:169
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Il parametro target_name fornito era malformulato."
 
-#: ../camel/camel-sasl-gssapi.c:173
+#: ../camel/camel-sasl-gssapi.c:172
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2055,7 +2055,7 @@ msgstr ""
 "Il parametro target_name fornito conteneva un tipo di nome non valido o non "
 "supportato."
 
-#: ../camel/camel-sasl-gssapi.c:177
+#: ../camel/camel-sasl-gssapi.c:176
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2063,7 +2063,7 @@ msgstr ""
 "I'input_token contiene connessioni di canale diverse da quelle specificate "
 "attraverso il parametro input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:182
+#: ../camel/camel-sasl-gssapi.c:181
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2071,7 +2071,7 @@ msgstr ""
 "L'input_token contiene una firma non valida o una firma che non può essere "
 "verificata."
 
-#: ../camel/camel-sasl-gssapi.c:186
+#: ../camel/camel-sasl-gssapi.c:185
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2079,30 +2079,30 @@ msgstr ""
 "Le credenziali fornite non erano valide per l'inizializzazione del contenuto "
 "o l'handle delle credenziali non si riferisce a nessuna credenziale."
 
-#: ../camel/camel-sasl-gssapi.c:191
+#: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "L'handle al contenuto fornito non si riferisce ad un contesto valido."
 
-#: ../camel/camel-sasl-gssapi.c:194
+#: ../camel/camel-sasl-gssapi.c:193
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Il controllo di consistenza eseguito su input_token è fallito."
 
-#: ../camel/camel-sasl-gssapi.c:197
+#: ../camel/camel-sasl-gssapi.c:196
 msgid "The consistency checks performed on the credential failed."
 msgstr "Il controllo di consistenza eseguito sulle credenziali è fallito."
 
-#: ../camel/camel-sasl-gssapi.c:200
+#: ../camel/camel-sasl-gssapi.c:199
 msgid "The referenced credentials have expired."
 msgstr "Le credenziali di riferimento sono scadute."
 
-#: ../camel/camel-sasl-gssapi.c:206 ../camel/camel-sasl-gssapi.c:254
-#: ../camel/camel-sasl-gssapi.c:290 ../camel/camel-sasl-gssapi.c:305
+#: ../camel/camel-sasl-gssapi.c:205 ../camel/camel-sasl-gssapi.c:253
+#: ../camel/camel-sasl-gssapi.c:289 ../camel/camel-sasl-gssapi.c:304
 #: ../camel/camel-sasl-kerberos4.c:231
 #: ../camel/providers/imap/camel-imap-store.c:1306
 msgid "Bad authentication response from server."
 msgstr "Risposta di autenticazione dal server errata."
 
-#: ../camel/camel-sasl-gssapi.c:315
+#: ../camel/camel-sasl-gssapi.c:314
 msgid "Unsupported security layer."
 msgstr "Livello di sicurezza non supportato."
 
@@ -2661,7 +2661,7 @@ msgstr ""
 "L'elenco revoche dei certificati è scaduto: %s\n"
 "Emittente: %s"
 
-#: ../camel/camel-url.c:310
+#: ../camel/camel-url.c:312
 #, c-format
 msgid "Could not parse URL `%s'"
 msgstr "Impossibile interpretare URL \"%s\""
@@ -2748,29 +2748,29 @@ msgstr "Impossibile ricevere il messaggio: %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2117
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2122
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Questo messaggio non è disponibile in modalità fuori rete."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1667
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1713
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1718
 msgid "Could not get message"
 msgstr "Impossibile ricevere il messaggio."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:813
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:253
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Impossibile caricare il sommario di %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1042
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1047
 msgid "Trash Folder Full. Please Empty."
 msgstr "Cestino pieno. Si prega di svuotarlo."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1219
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1224
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2394
@@ -2779,13 +2779,13 @@ msgstr "Cestino pieno. Si prega di svuotarlo."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recupero informazioni di sommario per nuovi messaggi in %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1984
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2026
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1989
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2031
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Impossibile accodare il messaggio alla cartella \"%s\": %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2014
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2019
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Impossibile creare il messaggio: %s"
@@ -5202,7 +5202,7 @@ msgid "_Search:"
 msgstr "C_erca:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2241
+#: ../libedataserverui/e-name-selector-entry.c:2249
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_spandere %s in linea"
@@ -5210,7 +5210,7 @@ msgstr "E_spandere %s in linea"
 # Controllare acceleratore !!
 #
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2256
+#: ../libedataserverui/e-name-selector-entry.c:2264
 #, c-format
 msgid "Cop_y %s"
 msgstr "Cop_ia %s"
@@ -5218,13 +5218,13 @@ msgstr "Cop_ia %s"
 # Controllare acceleratore !!
 #
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2266
+#: ../libedataserverui/e-name-selector-entry.c:2274
 #, c-format
 msgid "C_ut %s"
 msgstr "_Taglia %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2283
+#: ../libedataserverui/e-name-selector-entry.c:2291
 #, c-format
 msgid "_Edit %s"
 msgstr "_Modifica %s"
