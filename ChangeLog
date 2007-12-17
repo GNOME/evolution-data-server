@@ -1,3 +1,7 @@
+2007-12-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Version bump to 2.21.5.
+
 2007-12-17  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.21.4 release.
