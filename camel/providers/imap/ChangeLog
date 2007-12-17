@@ -1,3 +1,15 @@
+2007-12-14  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #211353
+
+	* camel-imap-summary.h:
+	* camel-imap-summary.c:
+	* camel-imap-utils.h:
+	* camel-imap-utils.c:
+	* camel-imap-folder.c:
+	Dropped previous storing of labels into message flags and user_tags
+	and storing them only to user_flags.
+
 2007-12-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #336074

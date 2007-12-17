@@ -591,9 +591,9 @@ do_label (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDri
 	d(fprintf (stderr, "setting label tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_tag (p->source, p->uid, "label", argv[0]->value.string);
+			camel_folder_set_message_user_flag (p->source, p->uid, argv[0]->value.string, TRUE);
 		else
-			camel_message_info_set_user_tag(p->info, "label", argv[0]->value.string);
+			camel_message_info_set_user_flag (p->info, argv[0]->value.string, TRUE);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set label to %s", argv[0]->value.string);
 	}
 

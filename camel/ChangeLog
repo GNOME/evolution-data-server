@@ -1,3 +1,10 @@
+2007-12-14  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #211353
+
+	* camel-filter-driver.c: (do_label):
+	Labels are newly stored in user_flags, not in user_tags.
+
 2007-12-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-tcp-stream-ssl.c (camel_tcp_stream_ssl_finalize),

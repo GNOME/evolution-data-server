@@ -462,13 +462,44 @@ imap_parse_folder_name (CamelImapStore *store, const char *folder_name)
 	return paths;
 }
 
-char *
-imap_create_flag_list (guint32 flags)
+/*
+ * rename_flag
+ * Converts label flag name on server to name used in Evolution or back.
+ * It will never return NULL, it will return empty string, instead.
+ *
+ * @param flag Flag to rename.
+ * @param len Length of the flag name.
+ * @param server_to_evo if TRUE, then converting server names to evo's names, if FALSE then opposite.
+ */
+static const char *
+rename_label_flag (const char *flag, int len, gboolean server_to_evo)
 {
-	GString *gstr;
-	char *flag_list;
+	int i;
+	const char *labels[] = {
+		"$Label1", "$Labelimportant",
+		"$Label2", "$Labelwork",
+		"$Label3", "$Labelpersonal",
+		"$Label4", "$Labeltodo",
+		"$Label5", "$Labellater",
+		NULL,      NULL };
 
-	gstr = g_string_new ("(");
+	/* It really can pass zero-length flags inside, in that case it was able
+	   to always add first label, which is definitely wrong. */
+	if (!len || !flag || !*flag)
+		return "";
+
+	for (i = 0 + (server_to_evo ? 0 : 1); labels[i]; i = i + 2) {
+		if (!g_ascii_strncasecmp (flag, labels[i], len))
+			return labels [i + (server_to_evo ? 1 : -1)];
+	}
+
+	return "";
+}
+
+char *
+imap_create_flag_list (guint32 flags, CamelMessageInfo *info)
+{
+	GString *gstr = g_string_new ("(");
 
 	if (flags & CAMEL_MESSAGE_ANSWERED)
 		g_string_append (gstr, "\\Answered ");
@@ -482,63 +513,55 @@ imap_create_flag_list (guint32 flags)
 		g_string_append (gstr, "\\Seen ");
 	if (flags & CAMEL_MESSAGE_JUNK)
 		g_string_append (gstr, "Junk ");
-	if (flags & CAMEL_IMAP_MESSAGE_LABEL1)
-		g_string_append(gstr, "$Label1 ");
-	if (flags & CAMEL_IMAP_MESSAGE_LABEL2)
-		g_string_append(gstr, "$Label2 ");
-	if (flags & CAMEL_IMAP_MESSAGE_LABEL3)
-		g_string_append(gstr, "$Label3 ");
-	if (flags & CAMEL_IMAP_MESSAGE_LABEL4)
-		g_string_append(gstr, "$Label4 ");
-	if (flags & CAMEL_IMAP_MESSAGE_LABEL5)
-		g_string_append(gstr, "$Label5 ");
+
+	if (info) {
+		const CamelFlag *flag;
+		const char *name;
+
+		/* FIXME: All the custom flags are sent to the server. Not just the changed ones */
+		flag = camel_message_info_user_flags(info);
+		while (flag) {
+			if (flag->name && *flag->name) {
+				name = rename_label_flag (flag->name, strlen (flag->name), FALSE);
+
+				if (name && *name)
+					g_string_append (gstr, name);
+				else
+					g_string_append (gstr, flag->name);
+
+				g_string_append (gstr, " ");
+			}
+
+			flag = flag->next;
+		}
+	}
 
 	if (gstr->str[gstr->len - 1] == ' ')
 		gstr->str[gstr->len - 1] = ')';
 	else
 		g_string_append_c (gstr, ')');
 
-	flag_list = gstr->str;
-	g_string_free (gstr, FALSE);
-	return flag_list;
+	return g_string_free (gstr, FALSE);
 }
 
-guint32
-imap_label_to_flags(CamelMessageInfo *info)
-{
-	const char *label;
-	guint32 flags;
-
-	label = camel_message_info_user_tag(info, "label");
-	if (label == NULL)
-		flags = 0;
-	else if (!strcmp(label, "important"))
-		flags = CAMEL_IMAP_MESSAGE_LABEL1;
-	else if (!strcmp(label, "work"))
-		flags =  CAMEL_IMAP_MESSAGE_LABEL2;
-	else if (!strcmp(label, "personal"))
-		flags = CAMEL_IMAP_MESSAGE_LABEL3;
-	else if (!strcmp(label, "todo"))
-		flags = CAMEL_IMAP_MESSAGE_LABEL4;
-	else if (!strcmp(label, "later"))
-		flags = CAMEL_IMAP_MESSAGE_LABEL5;
-	else
-		flags = 0;
-
-	return flags;
-}
-
-guint32
-imap_parse_flag_list (char **flag_list_p)
+gboolean
+imap_parse_flag_list (char **flag_list_p, guint32 *flags_out, char **custom_flags_out)
 {
 	char *flag_list = *flag_list_p;
 	guint32 flags = 0;
 	int len;
+	GString *custom_flags = NULL;
+	char *iter;
+
+	*flags_out = 0;
 
 	if (*flag_list++ != '(') {
 		*flag_list_p = NULL;
-		return 0;
+		return FALSE;
 	}
+
+	if (custom_flags_out)
+		custom_flags = g_string_new ("");
 
 	while (*flag_list && *flag_list != ')') {
 		len = strcspn (flag_list, " )");
@@ -555,19 +578,29 @@ imap_parse_flag_list (char **flag_list_p)
 		else if (!g_ascii_strncasecmp (flag_list, "\\Recent", len))
 			flags |= CAMEL_IMAP_MESSAGE_RECENT;
 		else if (!g_ascii_strncasecmp(flag_list, "\\*", len))
-			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK|CAMEL_IMAP_MESSAGE_LABEL_MASK;
+			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK;
 		else if (!g_ascii_strncasecmp(flag_list, "Junk", len))
 			flags |= CAMEL_MESSAGE_JUNK;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label1", len))
-			flags |= CAMEL_IMAP_MESSAGE_LABEL1;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label2", len))
-			flags |= CAMEL_IMAP_MESSAGE_LABEL2;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label3", len))
-			flags |= CAMEL_IMAP_MESSAGE_LABEL3;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label4", len))
-			flags |= CAMEL_IMAP_MESSAGE_LABEL4;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label5", len))
-			flags |= CAMEL_IMAP_MESSAGE_LABEL5;
+		else if (!g_ascii_strncasecmp(flag_list, "$Label1", len) ||
+			 !g_ascii_strncasecmp(flag_list, "$Label2", len) ||
+			 !g_ascii_strncasecmp(flag_list, "$Label3", len) ||
+			 !g_ascii_strncasecmp(flag_list, "$Label4", len) ||
+			 !g_ascii_strncasecmp(flag_list, "$Label5", len)) {
+			if (custom_flags) {
+				g_string_append (custom_flags, rename_label_flag (flag_list, len, TRUE));
+				g_string_append_c (custom_flags, ' ');
+			}
+		} else {
+			iter = flag_list;
+			while (*iter != ' ' && *iter != ')') {
+				if (custom_flags)
+					g_string_append_c (custom_flags, *iter);
+				++iter;
+			}
+
+			if (custom_flags)
+				g_string_append_c (custom_flags, ' ');
+		}
 
 		flag_list += len;
 		if (*flag_list == ' ')
@@ -576,11 +609,22 @@ imap_parse_flag_list (char **flag_list_p)
 
 	if (*flag_list++ != ')') {
 		*flag_list_p = NULL;
-		return 0;
+
+		if (custom_flags)
+			g_string_free (custom_flags, TRUE);
+
+		return FALSE;
 	}
 
 	*flag_list_p = flag_list;
-	return flags;
+	*flags_out = flags;
+
+	if (custom_flags_out && custom_flags->len) {
+		*custom_flags_out = g_string_free (custom_flags, FALSE);
+	} else if (custom_flags)
+		g_string_free (custom_flags, TRUE);
+
+	return TRUE;
 }
 
 /*

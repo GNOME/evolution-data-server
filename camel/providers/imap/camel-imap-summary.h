@@ -41,17 +41,6 @@ G_BEGIN_DECLS
 
 enum {
 	CAMEL_IMAP_MESSAGE_RECENT = 1<<17,
-
-	/* We store the label in flags too, to ease processing.
-	   TODO: Move this to camel-folder-summary, BUT don't use
-	   1 bit per label, instead use a bitfield of 3 bits */
-
-	CAMEL_IMAP_MESSAGE_LABEL1 = 1<<18,
-	CAMEL_IMAP_MESSAGE_LABEL2 = 1<<19,
-	CAMEL_IMAP_MESSAGE_LABEL3 = 1<<20,
-	CAMEL_IMAP_MESSAGE_LABEL4 = 1<<21,
-	CAMEL_IMAP_MESSAGE_LABEL5 = 1<<22,
-	CAMEL_IMAP_MESSAGE_LABEL_MASK = 31<<18
 };
 
 typedef struct _CamelImapSummaryClass CamelImapSummaryClass;

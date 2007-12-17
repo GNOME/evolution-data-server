@@ -313,15 +313,17 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 
 	for (i = 0; i < response->untagged->len; i++) {
 		resp = response->untagged->pdata[i] + 2;
+
 		if (!g_ascii_strncasecmp (resp, "FLAGS ", 6) && !perm_flags) {
 			resp += 6;
-			folder->permanent_flags = imap_parse_flag_list (&resp);
+			imap_parse_flag_list (&resp, &folder->permanent_flags, NULL);
 		} else if (!g_ascii_strncasecmp (resp, "OK [PERMANENTFLAGS ", 19)) {
 			resp += 19;
 
 			/* workaround for broken IMAP servers that send "* OK [PERMANENTFLAGS ()] Permanent flags"
 			 * even tho they do allow storing flags. *Sigh* So many fucking broken IMAP servers out there. */
-			if ((perm_flags = imap_parse_flag_list (&resp)) != 0)
+			imap_parse_flag_list (&resp, &perm_flags, NULL);
+			if (perm_flags != 0)
 				folder->permanent_flags = perm_flags;
 		} else if (!g_ascii_strncasecmp (resp, "OK [UIDVALIDITY ", 16)) {
 			validity = strtoul (resp + 16, NULL, 10);
@@ -629,35 +631,19 @@ done:
 }
 
 static void
-flags_to_label(CamelFolder *folder, CamelImapMessageInfo *mi)
+fillup_custom_flags (CamelMessageInfo *mi, char *custom_flags)
 {
-	/* We snoop the server flag setting, and map it to
-	   the label 'user tag'.  We also clean it up at this
-	   point, there can only be 1 label set at a time */
-	if (folder->permanent_flags & CAMEL_IMAP_MESSAGE_LABEL_MASK) {
-		const char *label = NULL;
-		guint32 mask = 0;
+	gchar **array_str;
+	int index = 0;
 
-		if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL1) {
-			mask = CAMEL_IMAP_MESSAGE_LABEL1;
-			label = "important";
-		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL2) {
-			mask = CAMEL_IMAP_MESSAGE_LABEL2;
-			label = "work";
-		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL3) {
-			mask = CAMEL_IMAP_MESSAGE_LABEL3;
-			label = "personal";
-		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL4) {
-			mask = CAMEL_IMAP_MESSAGE_LABEL4;
-			label = "todo";
-		} else if (mi->info.flags & CAMEL_IMAP_MESSAGE_LABEL5) {
-			mask = CAMEL_IMAP_MESSAGE_LABEL5;
-			label = "later";
-		}
+	array_str = g_strsplit (custom_flags, " ", -1);
 
-		mi->info.flags = (mi->info.flags & ~CAMEL_IMAP_MESSAGE_LABEL_MASK) | mask;
-		camel_tag_set(&mi->info.user_tags, "label", label);
+	while (array_str[index] != NULL) {
+		camel_message_info_set_user_flag (mi, array_str[index], TRUE);
+		++ index;
 	}
+
+	g_strfreev (array_str);
 }
 
 /* Called with the store's connect_lock locked */
@@ -772,7 +758,6 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 			if (changes == NULL)
 				changes = camel_folder_change_info_new();
 			camel_folder_change_info_change_uid(changes, new[i].uid);
-			flags_to_label(folder, (CamelImapMessageInfo *)info);
 		}
 
 		camel_message_info_free(info);
@@ -814,12 +799,23 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
  * caller must free the infos, the array, and the set string.
  */
 static GPtrArray *
-get_matching (CamelFolder *folder, guint32 flags, guint32 mask, char **set)
+get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo *master_info, char **set)
 {
 	GPtrArray *matches;
 	CamelImapMessageInfo *info;
 	int i, max, range;
 	GString *gset;
+	GSList *list1 = NULL;
+	int count1 = 0;
+
+	#define close_range()										\
+		if (range != -1) {									\
+			if (range != i - 1) {								\
+				info = matches->pdata[matches->len - 1];				\
+				g_string_append_printf (gset, ":%s", camel_message_info_uid (info));	\
+			}										\
+			range = -1;									\
+		}
 
 	matches = g_ptr_array_new ();
 	gset = g_string_new ("");
@@ -831,14 +827,50 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, char **set)
 			continue;
 		if ((info->info.flags & mask) != flags) {
 			camel_message_info_free((CamelMessageInfo *)info);
-			if (range != -1) {
-				if (range != i - 1) {
-					info = matches->pdata[matches->len - 1];
-					g_string_append_printf (gset, ":%s", camel_message_info_uid (info));
-				}
-				range = -1;
-			}
+			close_range ();
 			continue;
+		}
+
+		/* only check user flags when we see other message than our 'master' */
+		if (strcmp (master_info->uid, ((CamelMessageInfo *)info)->uid)) {
+			const CamelFlag *flag;
+			GSList *list2 = NULL, *l1, *l2;
+			int count2 = 0, cmp = 0;
+
+			if (!list1) {
+				for (flag = camel_message_info_user_flags (master_info); flag; flag = flag->next) {
+					if (flag->name && *flag->name) {
+						count1++;
+						list1 = g_slist_prepend (list1, (char *)flag->name);
+					}
+				}
+
+				list1 = g_slist_sort (list1, (GCompareFunc) strcmp);
+			}
+
+			for (flag = camel_message_info_user_flags (info); flag; flag = flag->next) {
+				if (flag->name && *flag->name) {
+					count2++;
+					list2 = g_slist_prepend (list2, (char *)flag->name);
+				}
+			}
+
+			if (count1 != count2) {
+				g_slist_free (list2);
+				close_range ();
+				continue;
+			}
+
+			list2 = g_slist_sort (list2, (GCompareFunc) strcmp);
+			for (l1 = list1, l2 = list2; l1 && l2 && !cmp; l1 = l1->next, l2 = l2->next) {
+				cmp = strcmp (l1->data, l2->data);
+			}
+
+			if (cmp) {
+				g_slist_free (list2);
+				close_range ();
+				continue;
+			}
 		}
 
 		g_ptr_array_add (matches, info);
@@ -855,6 +887,9 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, char **set)
 		g_string_append_printf (gset, ":%s", camel_message_info_uid (info));
 	}
 
+	if (list1)
+		g_slist_free (list1);
+
 	if (matches->len) {
 		*set = gset->str;
 		g_string_free (gset, FALSE);
@@ -865,6 +900,8 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, char **set)
 		g_ptr_array_free (matches, TRUE);
 		return NULL;
 	}
+
+	#undef close_range
 }
 
 static void
@@ -919,7 +956,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		   they will be scooped up later by our parent loop (I
 		   think?). -- Jeff */
 		matches = get_matching (folder, info->info.flags & (folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED),
-					folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED, &set);
+					folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED, (CamelMessageInfo *)info, &set);
 		camel_message_info_free(info);
 		if (matches == NULL)
 			continue;
@@ -932,7 +969,8 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 
 		/* FIXME: since we don't know the previously set flags,
 		   if unset is TRUE then just unset all the flags? */
-		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags);
+		/* FIXME: Sankar: What about custom flags ? */
+		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info);
 
 		/* Note: to `unset' flags, use -FLAGS.SILENT (<flag list>) */
 		response = camel_imap_command (store, folder, &local_ex,
@@ -1313,18 +1351,16 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	camel_object_unref (CAMEL_OBJECT (crlf_filter));
 	camel_object_unref (CAMEL_OBJECT (memstream));
 
-	/* Some servers dont let us append with custom flags.  If the command fails for
+	/* Some servers don't let us append with (CamelMessageInfo *)custom flags.  If the command fails for
 	   whatever reason, assume this is the case and save the state and try again */
 retry:
 	if (info) {
 		flags = camel_message_info_flags(info);
-		if (!store->nocustomappend)
-			flags |= imap_label_to_flags((CamelMessageInfo *)info);
 	}
 
 	flags &= folder->permanent_flags;
 	if (flags)
-		flagstr = imap_create_flag_list (flags);
+		flagstr = imap_create_flag_list (flags, (CamelMessageInfo *)info);
 	else
 		flagstr = NULL;
 
@@ -2609,12 +2645,17 @@ imap_update_summary (CamelFolder *folder, int exists,
 			mi->info.uid = g_strdup (uid);
 		flags = GPOINTER_TO_INT (g_datalist_get_data (&data, "FLAGS"));
 		if (flags) {
+			char *custom_flags = NULL;
+
 			((CamelImapMessageInfo *)mi)->server_flags = flags;
 			/* "or" them in with the existing flags that may
 			 * have been set by summary_info_new_from_message.
 			 */
 			mi->info.flags |= flags;
-			flags_to_label(folder, mi);
+
+			custom_flags = g_datalist_get_data (&data, "CUSTOM.FLAGS");
+			if (custom_flags)
+				fillup_custom_flags ((CamelMessageInfo *)mi, custom_flags);
 		}
 		size = GPOINTER_TO_INT (g_datalist_get_data (&data, "RFC822.SIZE"));
 		if (size)
@@ -2868,12 +2909,16 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 
 		if (!g_ascii_strncasecmp (response, "FLAGS ", 6)) {
 			guint32 flags;
+			char *custom_flags = NULL;
 
 			response += 6;
-			/* FIXME user flags */
-			flags = imap_parse_flag_list (&response);
 
-			g_datalist_set_data (&data, "FLAGS", GUINT_TO_POINTER (flags));
+			if (imap_parse_flag_list (&response, &flags, &custom_flags)) {
+				g_datalist_set_data (&data, "FLAGS", GUINT_TO_POINTER (flags));
+
+				if (custom_flags)
+					g_datalist_set_data_full (&data, "CUSTOM.FLAGS", custom_flags, g_free);
+			}
 		} else if (!g_ascii_strncasecmp (response, "RFC822.SIZE ", 12)) {
 			unsigned long size;
 

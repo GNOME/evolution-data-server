@@ -44,7 +44,7 @@ static int summary_header_save (CamelFolderSummary *, FILE *);
 static CamelMessageInfo *message_info_load (CamelFolderSummary *s, FILE *in);
 static int message_info_save (CamelFolderSummary *s, FILE *out,
 			      CamelMessageInfo *info);
-static gboolean info_set_user_tag(CamelMessageInfo *info, const char *name, const char  *value);
+static gboolean info_set_user_flag (CamelMessageInfo *info, const char *id, gboolean state);
 static CamelMessageContentInfo *content_info_load (CamelFolderSummary *s, FILE *in);
 static int content_info_save (CamelFolderSummary *s, FILE *out,
 			      CamelMessageContentInfo *info);
@@ -104,7 +104,7 @@ camel_imap_summary_class_init (CamelImapSummaryClass *klass)
 	cfs_class->content_info_load = content_info_load;
 	cfs_class->content_info_save = content_info_save;
 
-	cfs_class->info_set_user_tag = info_set_user_tag;
+	cfs_class->info_set_user_flag = info_set_user_flag;
 }
 
 static void
@@ -194,18 +194,6 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 	return camel_file_util_encode_fixed_int32(out, ims->validity);
 }
 
-/* We snoop the setting of the 'label' tag, so we can store it on
-   the server, also in a mozilla compatiable way as a bonus */
-static void
-label_to_flags(CamelImapMessageInfo *info)
-{
-	guint32 flags;
-
-	flags = imap_label_to_flags((CamelMessageInfo *)info);
-	if ((info->info.flags & CAMEL_IMAP_MESSAGE_LABEL_MASK) != flags)
-		info->info.flags = (info->info.flags & ~CAMEL_IMAP_MESSAGE_LABEL_MASK) | flags | CAMEL_MESSAGE_FOLDER_FLAGGED;
-}
-
 static CamelMessageInfo *
 message_info_load (CamelFolderSummary *s, FILE *in)
 {
@@ -218,8 +206,6 @@ message_info_load (CamelFolderSummary *s, FILE *in)
 
 		if (camel_file_util_decode_uint32 (in, &iinfo->server_flags) == -1)
 			goto error;
-
-		label_to_flags(iinfo);
 	}
 
 	return info;
@@ -240,14 +226,15 @@ message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 }
 
 static gboolean
-info_set_user_tag(CamelMessageInfo *info, const char *name, const char  *value)
+info_set_user_flag (CamelMessageInfo *info, const char *id, gboolean state)
 {
-	int res;
+	gboolean res;
 
-	res = camel_imap_summary_parent->info_set_user_tag(info, name, value);
+	res = camel_imap_summary_parent->info_set_user_flag (info, id, state);
 
-	if (!strcmp(name, "label"))
-		label_to_flags((CamelImapMessageInfo *)info);
+	/* there was a change, so do not forget to store it to server */
+	if (res)
+		((CamelImapMessageInfo *)info)->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 
 	return res;
 }
@@ -301,8 +288,6 @@ camel_imap_summary_add_offline (CamelFolderSummary *summary, const char *uid,
 	mi->info.size = camel_message_info_size(info);
 	mi->info.uid = g_strdup (uid);
 
-	label_to_flags(mi);
-
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }
 
@@ -314,8 +299,6 @@ camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const char
 
 	mi = camel_message_info_clone(info);
 	mi->info.uid = g_strdup(uid);
-
-	label_to_flags(mi);
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }
