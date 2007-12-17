@@ -1,3 +1,8 @@
+2007-12-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Bump gtk-doc requirement to 1.9 for gtkdoc-rebase.
+
 2007-12-07  James "Doc" Livingston  <doclivingston@gmail.com>
 
 	** Fix for bug #339510

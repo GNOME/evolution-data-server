@@ -509,6 +509,17 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_can_refresh_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@info: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### STRUCT CamelISubscribe ##### -->
 <para>
 
