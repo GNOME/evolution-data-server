@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-13 16:19+0000\n"
-"PO-Revision-Date: 2007-11-25 11:01+0200\n"
+"POT-Creation-Date: 2007-12-06 19:25+0000\n"
+"PO-Revision-Date: 2007-12-07 09:08+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -33,13 +33,13 @@ msgstr "Laadimine..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2269
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2289
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4152
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4156
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Otsing..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2670
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4311
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4315
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontaktide allalaadimine (%d)... "
@@ -59,27 +59,27 @@ msgstr "Eraldusnime (DN) kasutamine"
 msgid "Using Email Address"
 msgstr "E-posti aadressi kasutamine"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:998
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1002
 msgid "Reconnecting to LDAP server..."
 msgstr "Taasühendumine LDAP serveriga..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1594
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1598
 msgid "Adding contact to LDAP server..."
 msgstr "Kontakti lisamine LDAP serverisse..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1722
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1726
 msgid "Removing contact from LDAP server..."
 msgstr "Kontakti eemaldamine LDAP serverist..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2027
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2031
 msgid "Modifying contact from LDAP server..."
 msgstr "Kontakti muutmine LDAP serveris..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4023
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4027
 msgid "Receiving LDAP search results..."
 msgstr "LDAP otsingutulemuste vastuvõtmine..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4172
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4176
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
 
@@ -627,8 +627,8 @@ msgid "Birth Date"
 msgstr "Sünniaeg"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:466
-#: ../libedataserver/e-categories.c:41
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: ../libedataserver/e-categories.c:43
 msgid "Anniversary"
 msgstr "Aastapäev"
 
@@ -679,17 +679,17 @@ msgstr "Telefon"
 msgid "Unnamed List"
 msgstr "Nimetute nimekiri"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:468
-#: ../libedataserver/e-categories.c:42
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: ../libedataserver/e-categories.c:44
 msgid "Birthday"
 msgstr "Sünnipäev"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:494
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:490
 #, c-format
 msgid "Birthday: %s"
 msgstr "Sünnipäev: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:518
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:514
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aastapäev: %s"
@@ -699,31 +699,31 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kalendri andmeid pole võimalik salvestada: Vigane URI."
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:332
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:914
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:912
 msgid "Could not create thread for getting deltas"
 msgstr "Deltade hankimise lõime pole võimalik luua"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:364
 #: ../calendar/backends/google/e-cal-backend-google.c:799
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
-#: ../calendar/backends/http/e-cal-backend-http.c:597
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:959
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1233
+#: ../calendar/backends/http/e-cal-backend-http.c:596
 #: ../calendar/backends/weather/e-cal-backend-weather.c:460
 msgid "Could not create cache file"
 msgstr "Puhverfaili pole võimalik luua"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:377
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
 msgid "Could not create thread for populating cache"
 msgstr "Puhvri paljundamiseks pole võimalik lõime luua"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:982
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1766
 msgid "Reply Requested: by "
 msgstr "Vastuse soovija: "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1769
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:987
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1771
 msgid "Reply Requested: When convenient"
 msgstr "Vastuse soov: sobival hetkel"
 
@@ -743,16 +743,13 @@ msgstr "Vigane serveri URI"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:977
 #: ../calendar/libecal/e-cal.c:5008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1050
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1082
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1120
-#: ../camel/providers/groupwise/camel-groupwise-store.c:586
-#: ../camel/providers/groupwise/camel-groupwise-store.c:601
-#: ../camel/providers/groupwise/camel-groupwise-store.c:712
-#: ../camel/providers/groupwise/camel-groupwise-store.c:754
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1248
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1083
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1121
+#: ../camel/providers/groupwise/camel-groupwise-store.c:596
+#: ../camel/providers/groupwise/camel-groupwise-store.c:748
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:186
 msgid "Authentication failed"
@@ -1091,24 +1088,24 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:710
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "High"
 msgstr "Kõrge"
 
-#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
+#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Normal"
 msgstr "Keskmine"
 
-#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
+#: ../calendar/libecal/e-cal-util.c:688 ../calendar/libecal/e-cal-util.c:716
 msgid "Low"
 msgstr "Madal"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:708
+#: ../calendar/libecal/e-cal-util.c:710
 msgid "Undefined"
 msgstr "Määramata"
 
-#: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:200
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Sisesta %s parool (kasutaja %s)"
@@ -1138,11 +1135,11 @@ msgstr "Hoidla ei ole võrku ühendatud"
 msgid "No such calendar"
 msgstr "Kalendrit ei ole"
 
-#: ../calendar/libecal/e-cal.c:4988 ../servers/groupwise/e-gw-connection.c:176
+#: ../calendar/libecal/e-cal.c:4988 ../servers/groupwise/e-gw-connection.c:200
 msgid "Object not found"
 msgstr "Objekti ei leitud"
 
-#: ../calendar/libecal/e-cal.c:4990 ../servers/groupwise/e-gw-connection.c:170
+#: ../calendar/libecal/e-cal.c:4990 ../servers/groupwise/e-gw-connection.c:194
 msgid "Invalid object"
 msgstr "Vigane objekt"
 
@@ -1159,7 +1156,7 @@ msgstr "URI on juba laaditud"
 msgid "Permission denied"
 msgstr "Juurdepääs keelatud"
 
-#: ../calendar/libecal/e-cal.c:4998 ../servers/groupwise/e-gw-connection.c:178
+#: ../calendar/libecal/e-cal.c:4998 ../servers/groupwise/e-gw-connection.c:202
 msgid "Unknown User"
 msgstr "Tundmatu kasutaja"
 
@@ -1192,13 +1189,13 @@ msgstr "Tekkis CORBA viga"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:225
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
-#: ../camel/providers/imap/camel-imap-store.c:760
+#: ../camel/providers/imap/camel-imap-store.c:759
 #: ../camel/providers/imap4/camel-imap4-store.c:313
-#: ../camel/providers/pop3/camel-pop3-store.c:549
-#: ../camel/providers/pop3/camel-pop3-store.c:556
-#: ../camel/providers/pop3/camel-pop3-store.c:562
+#: ../camel/providers/pop3/camel-pop3-store.c:548
+#: ../camel/providers/pop3/camel-pop3-store.c:555
+#: ../camel/providers/pop3/camel-pop3-store.c:561
 #: ../servers/exchange/storage/e-storage.c:585
-#: ../servers/groupwise/e-gw-connection.c:184
+#: ../servers/groupwise/e-gw-connection.c:208
 msgid "Unknown error"
 msgstr "Tundmatu viga"
 
@@ -1392,11 +1389,11 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Kausta '%s' ettevalmistamine autonoomse režiimi jaoks"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:2997
+#: ../camel/providers/imap/camel-imap-store.c:3002
 msgid "You must be working online to complete this operation"
 msgstr "Selle operatsiooni täitmiseks pead olema onlainis"
 
-#: ../camel/camel-exception.c:304
+#: ../camel/camel-exception.c:264
 msgid "No description available"
 msgstr "Kirjeldust pole saadaval"
 
@@ -1414,12 +1411,12 @@ msgstr "Vastu võetud vigane sõnum %s'lt: %s"
 msgid "Syncing folders"
 msgstr "Kaustade sünkroniseerimine"
 
-#: ../camel/camel-filter-driver.c:1100 ../camel/camel-filter-driver.c:1479
+#: ../camel/camel-filter-driver.c:1100 ../camel/camel-filter-driver.c:1480
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Viga filtri analüüsil: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1109 ../camel/camel-filter-driver.c:1488
+#: ../camel/camel-filter-driver.c:1109 ../camel/camel-filter-driver.c:1489
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Viga filtri täitmisel: %s: %s"
@@ -1441,25 +1438,25 @@ msgstr "Võetakse vastu teadet %d (%d%%)"
 msgid "Cannot open message"
 msgstr "Sõnumit pole võimalik avada"
 
-#: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1218
+#: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1219
 #, c-format
 msgid "Failed on message %d"
 msgstr "Nurjumine teate %d juures"
 
-#: ../camel/camel-filter-driver.c:1232 ../camel/camel-filter-driver.c:1323
+#: ../camel/camel-filter-driver.c:1233 ../camel/camel-filter-driver.c:1324
 msgid "Syncing folder"
 msgstr "Kausta sünkroniseerimine"
 
-#: ../camel/camel-filter-driver.c:1236 ../camel/camel-filter-driver.c:1328
+#: ../camel/camel-filter-driver.c:1237 ../camel/camel-filter-driver.c:1329
 msgid "Complete"
 msgstr "Lõpetatud"
 
-#: ../camel/camel-filter-driver.c:1293
+#: ../camel/camel-filter-driver.c:1294
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Tõmban %d. sõnumit %dst"
 
-#: ../camel/camel-filter-driver.c:1308
+#: ../camel/camel-filter-driver.c:1309
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%d. teate juures %d'st tekkis viga"
@@ -1468,21 +1465,21 @@ msgstr "%d. teate juures %d'st tekkis viga"
 msgid "Failed to retrieve message"
 msgstr "Sõnumi vastuvõtmine nurjus"
 
-#: ../camel/camel-filter-search.c:399
+#: ../camel/camel-filter-search.c:401
 msgid "Invalid arguments to (system-flag)"
 msgstr "Vigased argumendid parameetrile (system-flag)"
 
-#: ../camel/camel-filter-search.c:414
+#: ../camel/camel-filter-search.c:416
 msgid "Invalid arguments to (user-tag)"
 msgstr "Vigased argumendid parameetrile (user-tag)"
 
-#: ../camel/camel-filter-search.c:579
+#: ../camel/camel-filter-search.c:581
 #, c-format
 msgid "Failed to create create child process '%s': %s"
 msgstr "Tõrge alamprotsessi \"%s\" loomisel: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:703 ../camel/camel-filter-search.c:711
+#: ../camel/camel-filter-search.c:705 ../camel/camel-filter-search.c:713
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Viga filterotsingu täitmisel: %s: %s"
@@ -1535,38 +1532,38 @@ msgstr "(%s) nõuab, et kataloog oleks seatud"
 msgid "Performing query on unknown header: %s"
 msgstr "Täidetakse päring tundmatul päisel: %s"
 
-#: ../camel/camel-folder.c:619
+#: ../camel/camel-folder.c:618
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Toetamata operatsioon: lisa sõnum: %s"
 
-#: ../camel/camel-folder.c:1241
+#: ../camel/camel-folder.c:1240
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Toetamata operatsioon: otsimine avaldise järgi: %s"
 
-#: ../camel/camel-folder.c:1282
+#: ../camel/camel-folder.c:1281
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "Toetamata operatsioon: %s otsing UID järgi"
 
-#: ../camel/camel-folder.c:1398
+#: ../camel/camel-folder.c:1397
 msgid "Moving messages"
 msgstr "Sõnumite liigutamine"
 
-#: ../camel/camel-folder.c:1398
+#: ../camel/camel-folder.c:1397
 msgid "Copying messages"
 msgstr "Sõnumite kopeerimine"
 
-#: ../camel/camel-folder.c:1652
+#: ../camel/camel-folder.c:1651
 msgid "Learning junk"
 msgstr "Rämpsposti õppimine"
 
-#: ../camel/camel-folder.c:1669
+#: ../camel/camel-folder.c:1668
 msgid "Learning non-junk"
 msgstr "Mitte-rämpsposti õppimine"
 
-#: ../camel/camel-folder.c:1688
+#: ../camel/camel-folder.c:1687
 msgid "Filtering new message(s)"
 msgstr "Uute sõnumite filtreerimine"
 
@@ -1613,7 +1610,7 @@ msgid "Unexpected request from GnuPG for `%s'"
 msgstr "Ootamatu GnuPG päring  `%s' jaoks"
 
 #: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1064
-#: ../camel/providers/nntp/camel-nntp-store.c:1269
+#: ../camel/providers/nntp/camel-nntp-store.c:1273
 msgid "Canceled."
 msgstr "Tühistatud."
 
@@ -1694,7 +1691,7 @@ msgid "Unable to parse message content"
 msgstr "Sõnumi sisu pole võimalik analüüsida"
 
 #: ../camel/camel-gpg-context.c:1825 ../camel/camel-gpg-context.c:1870
-#: ../camel/camel-tcp-stream-openssl.c:633
+#: ../camel/camel-tcp-stream-openssl.c:635
 #: ../camel/providers/imap4/camel-imap4-engine.c:1548
 #: ../camel/providers/imap4/camel-imap4-engine.c:1587
 #: ../camel/providers/imap4/camel-imap4-engine.c:1632
@@ -1807,9 +1804,9 @@ msgid "parse error"
 msgstr "analüüsimisviga"
 
 #: ../camel/camel-net-utils.c:498 ../camel/camel-net-utils.c:660
-#: ../camel/camel-net-utils.c:791
-#: ../camel/providers/pop3/camel-pop3-store.c:447
-#: ../camel/providers/pop3/camel-pop3-store.c:543
+#: ../camel/camel-net-utils.c:792
+#: ../camel/providers/pop3/camel-pop3-store.c:446
+#: ../camel/providers/pop3/camel-pop3-store.c:542
 msgid "Canceled"
 msgstr "Tühistatud"
 
@@ -1831,15 +1828,15 @@ msgstr "Tõrge hostinime lahendamisel"
 msgid "Host lookup failed: %s: %s"
 msgstr "Tõrge hostinime lahendamisel: %s: %s"
 
-#: ../camel/camel-net-utils.c:795
+#: ../camel/camel-net-utils.c:796
 msgid "Resolving address"
 msgstr "Aadressi lahendamine"
 
-#: ../camel/camel-net-utils.c:815
+#: ../camel/camel-net-utils.c:816
 msgid "Name lookup failed"
 msgstr "Tõrge nime lahendamisel"
 
-#: ../camel/camel-net-utils.c:818
+#: ../camel/camel-net-utils.c:819
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "Tõrge nime lahendamisel: %s"
@@ -2354,160 +2351,160 @@ msgstr "võtmete eksportimine: pole veel teostatud"
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Kausta pole võimalik hankida: Selles hoidlas pole see toiming lubatud"
 
-#: ../camel/camel-store.c:248
+#: ../camel/camel-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists"
 msgstr "Kausta `%s' pole võimalik luua: kaust on juba olemas"
 
-#: ../camel/camel-store.c:312
+#: ../camel/camel-store.c:313
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Kausta pole võimalik luua: Selles hoidlas pole see toiming lubatud"
 
-#: ../camel/camel-store.c:340
+#: ../camel/camel-store.c:341
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kausta pole võimalik luua: %s: kaust on juba olemas"
 
-#: ../camel/camel-store.c:404 ../camel/camel-vee-store.c:369
+#: ../camel/camel-store.c:405 ../camel/camel-vee-store.c:369
 #: ../camel/providers/local/camel-maildir-store.c:218
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kausta kustutamine nurjus: %s: vigane operatsioon"
 
-#: ../camel/camel-store.c:454 ../camel/camel-vee-store.c:406
+#: ../camel/camel-store.c:455 ../camel/camel-vee-store.c:406
 #: ../camel/providers/local/camel-maildir-store.c:290
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kausta ümbernimetamine nurjus: %s: vigane operatsioon"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:795 ../camel/camel-vtrash-folder.c:52
+#: ../camel/camel-store.c:796 ../camel/camel-vtrash-folder.c:52
 msgid "Trash"
 msgstr "Prügikast"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:798 ../camel/camel-vtrash-folder.c:54
+#: ../camel/camel-store.c:799 ../camel/camel-vtrash-folder.c:54
 msgid "Junk"
 msgstr "Rämps"
 
-#: ../camel/camel-tcp-stream-openssl.c:570
+#: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to get issuer's certificate"
 msgstr "Väljaandja sertifikaati pole võimalik hankida"
 
-#: ../camel/camel-tcp-stream-openssl.c:572
+#: ../camel/camel-tcp-stream-openssl.c:574
 msgid "Unable to get Certificate Revocation List"
 msgstr "Sertifikaatide tühistusnimekirja pole võimalik hankida"
 
-#: ../camel/camel-tcp-stream-openssl.c:574
+#: ../camel/camel-tcp-stream-openssl.c:576
 msgid "Unable to decrypt certificate signature"
 msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
 
-#: ../camel/camel-tcp-stream-openssl.c:576
+#: ../camel/camel-tcp-stream-openssl.c:578
 msgid "Unable to decrypt Certificate Revocation List signature"
 msgstr ""
 "Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
 
-#: ../camel/camel-tcp-stream-openssl.c:578
+#: ../camel/camel-tcp-stream-openssl.c:580
 msgid "Unable to decode issuer's public key"
 msgstr "Väljaandja avalikku võtit pole võimalik dekodeerida"
 
-#: ../camel/camel-tcp-stream-openssl.c:580
+#: ../camel/camel-tcp-stream-openssl.c:582
 msgid "Certificate signature failure"
 msgstr "Sertifikaadi signatuuri tõrge"
 
-#: ../camel/camel-tcp-stream-openssl.c:582
+#: ../camel/camel-tcp-stream-openssl.c:584
 msgid "Certificate Revocation List signature failure"
 msgstr "Tõrge Sertifikaatide tühistusnimekirja signatuuri kontrollimisel"
 
-#: ../camel/camel-tcp-stream-openssl.c:584
+#: ../camel/camel-tcp-stream-openssl.c:586
 msgid "Certificate not yet valid"
 msgstr "Sertifikaat ei ole veel kehtiv"
 
-#: ../camel/camel-tcp-stream-openssl.c:586
+#: ../camel/camel-tcp-stream-openssl.c:588
 msgid "Certificate has expired"
 msgstr "Sertifikaat on aegunud"
 
-#: ../camel/camel-tcp-stream-openssl.c:588
+#: ../camel/camel-tcp-stream-openssl.c:590
 msgid "CRL not yet valid"
 msgstr "CRL ei ole veel kehtiv"
 
-#: ../camel/camel-tcp-stream-openssl.c:590
+#: ../camel/camel-tcp-stream-openssl.c:592
 msgid "CRL has expired"
 msgstr "CRL on aegunud."
 
-#: ../camel/camel-tcp-stream-openssl.c:595
+#: ../camel/camel-tcp-stream-openssl.c:597
 msgid "Error in CRL"
 msgstr "Viga CRL'is"
 
-#: ../camel/camel-tcp-stream-openssl.c:597
+#: ../camel/camel-tcp-stream-openssl.c:599
 msgid "Out of memory"
 msgstr "Mälu puudujääk"
 
-#: ../camel/camel-tcp-stream-openssl.c:599
+#: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Zero-depth self-signed certificate"
 msgstr "Isesigneeritud nulltaseme sertifikaat"
 
-#: ../camel/camel-tcp-stream-openssl.c:601
+#: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Self-signed certificate in chain"
 msgstr "Ahelas on isesigneeritud sertifikaat"
 
-#: ../camel/camel-tcp-stream-openssl.c:603
+#: ../camel/camel-tcp-stream-openssl.c:605
 msgid "Unable to get issuer's certificate locally"
 msgstr "Väljaandja sertifikaati pole kohapeal võimalik hankida"
 
-#: ../camel/camel-tcp-stream-openssl.c:605
+#: ../camel/camel-tcp-stream-openssl.c:607
 msgid "Unable to verify leaf signature"
 msgstr "Harusignatuuri pole võimalik verifitseerida"
 
-#: ../camel/camel-tcp-stream-openssl.c:607
+#: ../camel/camel-tcp-stream-openssl.c:609
 msgid "Certificate chain too long"
 msgstr "Sertifikaadiahel on liiga pikk"
 
-#: ../camel/camel-tcp-stream-openssl.c:609
+#: ../camel/camel-tcp-stream-openssl.c:611
 msgid "Certificate Revoked"
 msgstr "Sertifikaat tühistatud"
 
-#: ../camel/camel-tcp-stream-openssl.c:611
+#: ../camel/camel-tcp-stream-openssl.c:613
 msgid "Invalid Certificate Authority (CA)"
 msgstr "Vigane sertifitseerimiskeskus (CA)"
 
-#: ../camel/camel-tcp-stream-openssl.c:613
+#: ../camel/camel-tcp-stream-openssl.c:615
 msgid "Path length exceeded"
 msgstr "Raja piirang on ületatud"
 
-#: ../camel/camel-tcp-stream-openssl.c:615
+#: ../camel/camel-tcp-stream-openssl.c:617
 msgid "Invalid purpose"
 msgstr "Vigane eesmärk"
 
-#: ../camel/camel-tcp-stream-openssl.c:617
+#: ../camel/camel-tcp-stream-openssl.c:619
 msgid "Certificate untrusted"
 msgstr "Sertifikaat pole usaldusväärne"
 
-#: ../camel/camel-tcp-stream-openssl.c:619
+#: ../camel/camel-tcp-stream-openssl.c:621
 msgid "Certificate rejected"
 msgstr "Sertifikaat lükati tagasi"
 
-#: ../camel/camel-tcp-stream-openssl.c:622
+#: ../camel/camel-tcp-stream-openssl.c:624
 msgid "Subject/Issuer mismatch"
 msgstr "Teema/väljastaja vastuolu"
 
-#: ../camel/camel-tcp-stream-openssl.c:624
+#: ../camel/camel-tcp-stream-openssl.c:626
 msgid "AKID/SKID mismatch"
 msgstr "AKID/SKID sobimatus"
 
-#: ../camel/camel-tcp-stream-openssl.c:626
+#: ../camel/camel-tcp-stream-openssl.c:628
 msgid "AKID/Issuer serial mismatch"
 msgstr "AKID/Väljaandja seerianumbri sobimatus"
 
-#: ../camel/camel-tcp-stream-openssl.c:628
+#: ../camel/camel-tcp-stream-openssl.c:630
 msgid "Key usage does not support certificate signing"
 msgstr "Võtmekasutus ei toeta sertifikaatide signeerimist"
 
-#: ../camel/camel-tcp-stream-openssl.c:631
+#: ../camel/camel-tcp-stream-openssl.c:633
 msgid "Error in application verification"
 msgstr "Viga rakenduse verifitseerimisel"
 
-#: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:868
+#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:868
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2520,15 +2517,15 @@ msgstr ""
 "Sõrmejälg:        %s\n"
 "Allkiri:          %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:874
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:874
 msgid "GOOD"
 msgstr "HEA"
 
-#: ../camel/camel-tcp-stream-openssl.c:704 ../camel/camel-tcp-stream-ssl.c:874
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:874
 msgid "BAD"
 msgstr "HALB"
 
-#: ../camel/camel-tcp-stream-openssl.c:706
+#: ../camel/camel-tcp-stream-openssl.c:708
 #, c-format
 msgid ""
 "Bad certificate from %s:\n"
@@ -2599,22 +2596,22 @@ msgstr ""
 "Sertifikaatide tühistusnimekiri on aegunud: %s\n"
 "Väljaandja: %s"
 
-#: ../camel/camel-url.c:310
+#: ../camel/camel-url.c:312
 #, c-format
 msgid "Could not parse URL `%s'"
 msgstr "URL-i `%s' pole võimalik töödelda"
 
-#: ../camel/camel-vee-folder.c:481
+#: ../camel/camel-vee-folder.c:482
 #, c-format
 msgid "Error storing `%s': %s"
 msgstr "Viga `%s' salvestamisel: %s"
 
-#: ../camel/camel-vee-folder.c:523
+#: ../camel/camel-vee-folder.c:524
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Sõnumit %s ei ole %s seas"
 
-#: ../camel/camel-vee-folder.c:648 ../camel/camel-vee-folder.c:654
+#: ../camel/camel-vee-folder.c:649 ../camel/camel-vee-folder.c:655
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Sõnumeid pole võimalik virtuaalkausta kopeerida või liigutada"
 
@@ -2652,7 +2649,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:120
 #: ../camel/providers/imap/camel-imap-folder.c:2063
-#: ../camel/providers/local/camel-maildir-folder.c:247
+#: ../camel/providers/local/camel-maildir-folder.c:248
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
@@ -2663,10 +2660,10 @@ msgstr "Sõnumit ei leitud"
 #: ../camel/providers/nntp/camel-nntp-folder.c:156
 #: ../camel/providers/nntp/camel-nntp-folder.c:232
 #: ../camel/providers/nntp/camel-nntp-folder.c:371
-#: ../camel/providers/pop3/camel-pop3-folder.c:263
-#: ../camel/providers/pop3/camel-pop3-folder.c:521
-#: ../camel/providers/pop3/camel-pop3-folder.c:582
-#: ../camel/providers/pop3/camel-pop3-folder.c:600
+#: ../camel/providers/pop3/camel-pop3-folder.c:262
+#: ../camel/providers/pop3/camel-pop3-folder.c:518
+#: ../camel/providers/pop3/camel-pop3-folder.c:579
+#: ../camel/providers/pop3/camel-pop3-folder.c:597
 msgid "User canceled"
 msgstr "Kasutaja tühistas"
 
@@ -2676,54 +2673,54 @@ msgstr "Kasutaja tühistas"
 #: ../camel/providers/nntp/camel-nntp-folder.c:149
 #: ../camel/providers/nntp/camel-nntp-folder.c:158
 #: ../camel/providers/nntp/camel-nntp-folder.c:234
-#: ../camel/providers/pop3/camel-pop3-folder.c:524
-#: ../camel/providers/pop3/camel-pop3-folder.c:585
-#: ../camel/providers/pop3/camel-pop3-folder.c:592
-#: ../camel/providers/pop3/camel-pop3-folder.c:603
+#: ../camel/providers/pop3/camel-pop3-folder.c:521
+#: ../camel/providers/pop3/camel-pop3-folder.c:582
+#: ../camel/providers/pop3/camel-pop3-folder.c:589
+#: ../camel/providers/pop3/camel-pop3-folder.c:600
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Sõnumit %s pole võimalik hankida: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2121
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2123
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "See sõnum pole autonoomses režiimis kättesaadav."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1671
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1719
 msgid "Could not get message"
 msgstr "Sõnumit pole võimalik hankida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:817
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:253
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s kokkuvõtet pole võimalik laadida"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1047
 msgid "Trash Folder Full. Please Empty."
 msgstr "Prügikaust on täis, palun tühjenda."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1223
-#: ../camel/providers/groupwise/camel-groupwise-store.c:630
-#: ../camel/providers/groupwise/camel-groupwise-store.c:744
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1224
+#: ../camel/providers/groupwise/camel-groupwise-store.c:625
+#: ../camel/providers/groupwise/camel-groupwise-store.c:738
 #: ../camel/providers/imap/camel-imap-folder.c:2394
 #: ../camel/providers/imap/camel-imap-folder.c:2464
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Uutele sõnumitele kokkuvõtete võtmine (%s)"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1988
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1990
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2032
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "Sõnumit pole võimalik kausta `%s' lisada: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2018
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2020
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Sõnumit pole võimalik luua: %s"
@@ -2821,55 +2818,51 @@ msgstr ""
 msgid "Host or user not available in url"
 msgstr "Urlis pole kasutajat või hostinime"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:204
+#: ../camel/providers/groupwise/camel-groupwise-store.c:197
 #, c-format
-msgid "%sPlease enter the GroupWise password for %s@%s"
-msgstr "%sPalun sisesta GroupWise parool %s@%s jaoks"
+msgid "Please enter the GroupWise password for %s@%s"
+msgstr "Palun sisesta GroupWise parool %s@%s jaoks"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:218
-#: ../camel/providers/imap/camel-imap-store.c:1384
+#: ../camel/providers/groupwise/camel-groupwise-store.c:208
+#: ../camel/providers/imap/camel-imap-store.c:1385
 msgid "You did not enter a password."
 msgstr "Sa ei sisestanud parooli."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:230
-msgid "Unable to authenticate to GroupWise server. "
-msgstr "GroupWise serverisse pole võimalik autentida."
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:308
+#: ../camel/providers/groupwise/camel-groupwise-store.c:304
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "Käesoleva serveriversiooniga võivad mõned võimalused käituda ebakorrektselt"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:538
-#: ../camel/providers/imap/camel-imap-store.c:1893
-#: ../camel/providers/imap/camel-imap-store.c:2084
+#: ../camel/providers/groupwise/camel-groupwise-store.c:534
+#: ../camel/providers/imap/camel-imap-store.c:1896
+#: ../camel/providers/imap/camel-imap-store.c:2087
 #, c-format
 msgid "No such folder %s"
 msgstr "Kausta %s ei leitud"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1225
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1219
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise kaustu pole autonoomses režiimis võimalik luua."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1239
-#: ../camel/providers/imap/camel-imap-store.c:1968
-#: ../camel/providers/imap/camel-imap-store.c:2337
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1233
+#: ../camel/providers/imap/camel-imap-store.c:1971
+#: ../camel/providers/imap/camel-imap-store.c:2340
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Emakausta alla pole lubatud alamkaustu luua"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1316
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1337
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1309
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1330
 #, c-format
 msgid "Cannot rename Groupwise folder `%s' to `%s'"
 msgstr "GroupWise kausta `%s' pole võimalik `%s'-ks ümber nimetada"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1369
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1362
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:123
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise server %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1371
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise teenus kasutajale %s hostil %s"
@@ -2958,12 +2951,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3037
+#: ../camel/providers/imap/camel-imap-store.c:3042
 msgid "Operation cancelled"
 msgstr "Operatsioon katekstatud"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3040
+#: ../camel/providers/imap/camel-imap-store.c:3045
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Server katkestas ootamatult: %s"
@@ -3062,7 +3055,7 @@ msgstr "Puhvermälu kausta pole võimalik avada: %s "
 msgid "Failed to cache message %s: %s"
 msgstr "Tõrge sõnumi %s puhverdamisel: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:437
+#: ../camel/providers/imap/camel-imap-message-cache.c:438
 #, c-format
 msgid "Failed to cache %s: %s"
 msgstr "Tõrge %s puhverdamisel: %s"
@@ -3100,33 +3093,33 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "See valik loob ühenduse IMAP serveriga kasutades avatekstilist parooli."
 
-#: ../camel/providers/imap/camel-imap-store.c:455
+#: ../camel/providers/imap/camel-imap-store.c:454
 #: ../camel/providers/imap4/camel-imap4-store.c:212
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP server %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:457
+#: ../camel/providers/imap/camel-imap-store.c:456
 #: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP teenus kasutajale %s hostil %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:586
-#: ../camel/providers/imap/camel-imap-store.c:601
+#: ../camel/providers/imap/camel-imap-store.c:584
+#: ../camel/providers/imap/camel-imap-store.c:599
 #: ../camel/providers/imap4/camel-imap4-store.c:249
 #: ../camel/providers/imap4/camel-imap4-store.c:264
 #: ../camel/providers/nntp/camel-nntp-store.c:183
 #: ../camel/providers/nntp/camel-nntp-store.c:198
 #: ../camel/providers/pop3/camel-pop3-store.c:170
-#: ../camel/providers/pop3/camel-pop3-store.c:185
+#: ../camel/providers/pop3/camel-pop3-store.c:184
 #: ../camel/providers/smtp/camel-smtp-transport.c:258
 #: ../camel/providers/smtp/camel-smtp-transport.c:273
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "Hostiga %s pole võimalik ühenduda: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:587
+#: ../camel/providers/imap/camel-imap-store.c:585
 #: ../camel/providers/imap4/camel-imap4-store.c:250
 #: ../camel/providers/nntp/camel-nntp-store.c:184
 #: ../camel/providers/pop3/camel-pop3-store.c:171
@@ -3134,15 +3127,15 @@ msgstr "Hostiga %s pole võimalik ühenduda: %s"
 msgid "SSL unavailable"
 msgstr "SSL ei ole saadaval"
 
-#: ../camel/providers/imap/camel-imap-store.c:598
-#: ../camel/providers/imap/camel-imap-store.c:879
+#: ../camel/providers/imap/camel-imap-store.c:596
+#: ../camel/providers/imap/camel-imap-store.c:878
 msgid "Connection cancelled"
 msgstr "Ühendus katkestatud"
 
-#: ../camel/providers/imap/camel-imap-store.c:706
-#: ../camel/providers/imap/camel-imap-store.c:728
-#: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imap/camel-imap-store.c:760
+#: ../camel/providers/imap/camel-imap-store.c:704
+#: ../camel/providers/imap/camel-imap-store.c:726
+#: ../camel/providers/imap/camel-imap-store.c:732
+#: ../camel/providers/imap/camel-imap-store.c:758
 #: ../camel/providers/imap4/camel-imap4-store.c:312
 #: ../camel/providers/imap4/camel-imap4-store.c:327
 #: ../camel/providers/imap4/camel-imap4-store.c:335
@@ -3150,36 +3143,36 @@ msgstr "Ühendus katkestatud"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Tõrge turvatud ühendumisel IMAP serveriga %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:707
+#: ../camel/providers/imap/camel-imap-store.c:705
 #: ../camel/providers/smtp/camel-smtp-transport.c:327
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ei ole toetatud."
 
-#: ../camel/providers/imap/camel-imap-store.c:729
+#: ../camel/providers/imap/camel-imap-store.c:727
 msgid "SSL negotiations failed"
 msgstr "Tõrge SSL-läbirääkimistel"
 
-#: ../camel/providers/imap/camel-imap-store.c:735
+#: ../camel/providers/imap/camel-imap-store.c:733
 #: ../camel/providers/imap4/camel-imap4-store.c:336
 #: ../camel/providers/smtp/camel-smtp-transport.c:366
 msgid "SSL is not available in this build"
 msgstr "SSL ei ole toetatud"
 
-#: ../camel/providers/imap/camel-imap-store.c:882
+#: ../camel/providers/imap/camel-imap-store.c:881
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Käsu \"%s\" abil pole võimalik ühenduda: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1066
-#: ../camel/providers/imap/camel-imap-store.c:2433
+#: ../camel/providers/imap/camel-imap-store.c:2436
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:367
 #: ../camel/providers/imap4/camel-imap4-store.c:1319
 #: ../camel/providers/local/camel-maildir-folder.c:77
 #: ../camel/providers/local/camel-maildir-store.c:218
 #: ../camel/providers/local/camel-maildir-store.c:290
-#: ../camel/providers/local/camel-maildir-store.c:512
-#: ../camel/providers/local/camel-maildir-store.c:525
+#: ../camel/providers/local/camel-maildir-store.c:514
+#: ../camel/providers/local/camel-maildir-store.c:527
 #: ../camel/providers/local/camel-spool-store.c:464
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
@@ -3213,15 +3206,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1905
-#: ../camel/providers/imap/camel-imap-store.c:2275
+#: ../camel/providers/imap/camel-imap-store.c:1908
+#: ../camel/providers/imap/camel-imap-store.c:2278
 #: ../camel/providers/imap4/camel-imap4-store.c:949
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Kaustanimi \"%s\" on vigane kuna see sisaldab märki \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:2022
+#: ../camel/providers/imap/camel-imap-store.c:2025
 #: ../camel/providers/local/camel-maildir-store.c:191
 #: ../camel/providers/local/camel-mbox-store.c:204
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3229,7 +3222,7 @@ msgstr "Kaustanimi \"%s\" on vigane kuna see sisaldab märki \"%c\""
 msgid "Cannot create folder `%s': folder exists."
 msgstr "Kausta `%s' pole võimalik luua: kaust on juba olemas"
 
-#: ../camel/providers/imap/camel-imap-store.c:2286
+#: ../camel/providers/imap/camel-imap-store.c:2289
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Tundmatu ülemkaust: %s"
@@ -3373,7 +3366,7 @@ msgstr ""
 #: ../camel/providers/imapp/camel-imapp-store.c:249
 #: ../camel/providers/nntp/camel-nntp-store.c:195
 #: ../camel/providers/nntp/camel-nntp-store.c:214
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/pop3/camel-pop3-store.c:181
 #: ../camel/providers/smtp/camel-smtp-transport.c:270
 msgid "Connection canceled"
 msgstr "Ühendus tühistatud"
@@ -3387,7 +3380,7 @@ msgstr ""
 "Tõrge turvatud ühendumisel IMAP serveriga %s: Server ei toeta STARTTLS-i"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:328
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/pop3/camel-pop3-store.c:249
 msgid "TLS negotiations failed"
 msgstr "Tõrge TLS-läbirääkimistel"
 
@@ -3512,16 +3505,16 @@ msgstr "Kausta `%s' tellimisest pole võimalik loobuda: Vigane kirjakasti nimi"
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "Kausta `%s' tellimisest pole võimalik loobuda: Puudulik käsk"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1452
+#: ../camel/providers/imap4/camel-imap4-summary.c:1451
 msgid "Scanning for changed messages"
 msgstr "Kaustade läbivaatamine muudetud sõnumite leidmiseks"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1473
+#: ../camel/providers/imap4/camel-imap4-summary.c:1472
 #, c-format
 msgid "IMAP server %s is in an inconsistent state."
 msgstr "IMAP server %s pole kooskõlaline."
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1500
+#: ../camel/providers/imap4/camel-imap4-summary.c:1499
 msgid "Fetching envelopes of new messages"
 msgstr "Uutele sõnumitele ümbrike hankimine"
 
@@ -3570,32 +3563,32 @@ msgstr "Hostiga %s pole võimalik ühendust luua (port %s): %s"
 msgid "Could not connect to POP server on %s"
 msgstr "POP serveriga %s pole võimalik ühenduda"
 
-#: ../camel/providers/local/camel-local-folder.c:175
+#: ../camel/providers/local/camel-local-folder.c:174
 msgid "Index message body data"
 msgstr "Sõnumite sisu indekseeritakse"
 
 #. $HOME relative path + protocol string
-#: ../camel/providers/local/camel-local-folder.c:383
+#: ../camel/providers/local/camel-local-folder.c:382
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
-#: ../camel/providers/local/camel-local-folder.c:387
-#: ../camel/providers/local/camel-local-folder.c:390
+#: ../camel/providers/local/camel-local-folder.c:386
+#: ../camel/providers/local/camel-local-folder.c:389
 #, c-format
 msgid "mailbox:%s (%s)"
 msgstr "postkast:%s (%s)"
 
 #. a full path + protocol
-#: ../camel/providers/local/camel-local-folder.c:394
+#: ../camel/providers/local/camel-local-folder.c:393
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-provider.c:48
-msgid "Use the `.folders' folder summary file (exmh)"
-msgstr "Kasuta `.folders' kaustakokkuvõttefaili (exmh)"
+msgid "_Use the `.folders' folder summary file (exmh)"
+msgstr "Kasuta `.folders' kaustakokkuvõtte_faili (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "MH-format mail directories"
@@ -3619,8 +3612,8 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
-msgid "Apply filters to new messages in INBOX"
-msgstr "Rakenda filtreid Sisendkasti uutele sõnumitele"
+msgid "_Apply filters to new messages in INBOX"
+msgstr "Rakenda _filtreid Sisendkasti uutele sõnumitele"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -3631,8 +3624,8 @@ msgid "For storing local mail in maildir directories."
 msgstr "Kohalikku posti hoitakse maildir vorminguga kataloogides."
 
 #: ../camel/providers/local/camel-local-provider.c:108
-msgid "Store status headers in Elm/Pine/Mutt format"
-msgstr "Salvesta olekupäised Elm/Pine/Mutt vormingus"
+msgid "_Store status headers in Elm/Pine/Mutt format"
+msgstr "Salvesta _olekupäised Elm/Pine/Mutt vormingus"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid "Standard Unix mbox spool file"
@@ -3729,9 +3722,9 @@ msgstr "Sõnumi lisamine maildir kausta tühistatud"
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Sõnumit pole võimalik maildir kausta lisada: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:246
-#: ../camel/providers/local/camel-maildir-folder.c:260
-#: ../camel/providers/local/camel-maildir-folder.c:269
+#: ../camel/providers/local/camel-maildir-folder.c:247
+#: ../camel/providers/local/camel-maildir-folder.c:261
+#: ../camel/providers/local/camel-maildir-folder.c:270
 #: ../camel/providers/local/camel-mbox-folder.c:347
 #: ../camel/providers/local/camel-mbox-folder.c:366
 #: ../camel/providers/local/camel-mbox-folder.c:397
@@ -3747,7 +3740,7 @@ msgstr ""
 "Sõnumit pole võimalik hankida: %s kaustast %s\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:270
+#: ../camel/providers/local/camel-maildir-folder.c:271
 msgid "Invalid message contents"
 msgstr "Vigane sõnumi sisu"
 
@@ -3789,28 +3782,28 @@ msgstr "Kausta `%s' pole võimalik kustutada: %s"
 msgid "not a maildir directory"
 msgstr "ei ole maildir vormingus kataloog"
 
-#: ../camel/providers/local/camel-maildir-store.c:437
+#: ../camel/providers/local/camel-maildir-store.c:439
 #: ../camel/providers/local/camel-spool-store.c:331
 #: ../camel/providers/local/camel-spool-store.c:345
 #, c-format
 msgid "Could not scan folder `%s': %s"
 msgstr "Kausta `%s' pole võimalik läbi vaadata: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:425
-#: ../camel/providers/local/camel-maildir-summary.c:556
+#: ../camel/providers/local/camel-maildir-summary.c:430
+#: ../camel/providers/local/camel-maildir-summary.c:562
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Maildir kataloogi rada %s pole võimalik avada: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:549
+#: ../camel/providers/local/camel-maildir-summary.c:555
 msgid "Checking folder consistency"
 msgstr "Kausta terviklikkuse kontrollimine"
 
-#: ../camel/providers/local/camel-maildir-summary.c:652
+#: ../camel/providers/local/camel-maildir-summary.c:658
 msgid "Checking for new messages"
 msgstr "Uute sõnumite kontroll"
 
-#: ../camel/providers/local/camel-maildir-summary.c:741
+#: ../camel/providers/local/camel-maildir-summary.c:747
 #: ../camel/providers/local/camel-mbox-summary.c:433
 #: ../camel/providers/local/camel-mbox-summary.c:606
 #: ../camel/providers/local/camel-mbox-summary.c:701
@@ -4116,14 +4109,14 @@ msgstr "Sõnumeid pole võimalik NNTP kaustast kopeerida!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid ""
-"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Kaustanimesid näidatakse lühendatult (näiteks ee.arvutid.linux asemel e.a."
+"Kaustanimesid näidatakse lü_hendatult (näiteks ee.arvutid.linux asemel e.a."
 "linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
-msgid "In the subscription dialog, show relative folder names"
-msgstr "Tellimisdialoogis näidatakse kaustanimesid lühendatuna"
+msgid "In the subscription _dialog, show relative folder names"
+msgstr "_Tellimisdialoogis näidatakse kaustanimesid lühendatuna"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "USENET news"
@@ -4156,7 +4149,7 @@ msgstr "NNTP server %s tagastas veakoodi %d: %s"
 msgid "USENET News via %s"
 msgstr "USENETi uudised üle %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:796
+#: ../camel/providers/nntp/camel-nntp-store.c:798
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4167,7 +4160,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:890
+#: ../camel/providers/nntp/camel-nntp-store.c:892
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4177,7 +4170,7 @@ msgstr ""
 "\n"
 "Sellist uudistegruppi pole olemas. Valitud kirje on arvatavasti vanemkirje."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:922
+#: ../camel/providers/nntp/camel-nntp-store.c:924
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4187,46 +4180,46 @@ msgstr ""
 "\n"
 "Uudistegruppi pole olemas!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:947
+#: ../camel/providers/nntp/camel-nntp-store.c:949
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Sul pole uudistehoidlasse võimalik kausta luua, selle asemel telli omale "
 "kaust."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:955
+#: ../camel/providers/nntp/camel-nntp-store.c:957
 msgid "You cannot rename a folder in a News store."
 msgstr "Sul pole võimalik uudistegruppe ümber nimetada."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:963
+#: ../camel/providers/nntp/camel-nntp-store.c:965
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Sul pole uudistehoidlast võimalik kausta kustutada, selle asemel loobu "
 "kausta tellimusest."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1144
+#: ../camel/providers/nntp/camel-nntp-store.c:1146
 msgid "Authentication requested but no username provided"
 msgstr "Nõutakse autentimist kuid kasutajanime pole määratud"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1152
+#: ../camel/providers/nntp/camel-nntp-store.c:1154
 #, c-format
 msgid "Please enter the NNTP password for %s@%s"
 msgstr "Palun sisesta NNTP parool %s@%s jaoks"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1156
+#: ../camel/providers/nntp/camel-nntp-store.c:1158
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Serverisse pole võimalik autentida: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1271
+#: ../camel/providers/nntp/camel-nntp-store.c:1275
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "Tõrge NNTP käsu täitmisel: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1325
+#: ../camel/providers/nntp/camel-nntp-store.c:1329
 msgid "Not connected."
 msgstr "Ühendamata."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1378
+#: ../camel/providers/nntp/camel-nntp-store.c:1382
 #, c-format
 msgid "No such folder: %s"
 msgstr "Kausta ei leitud: %s"
@@ -4260,47 +4253,47 @@ msgstr "Tõrge toimingu läbiviimisel: %s"
 msgid "Retrieving POP summary"
 msgstr "POP kokkuvõtte vastuvõtmine"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:266
+#: ../camel/providers/pop3/camel-pop3-folder.c:265
 #, c-format
 msgid "Cannot get POP summary: %s"
 msgstr "POP kokkuvõtet pole võimalik hankida: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:310
+#: ../camel/providers/pop3/camel-pop3-folder.c:308
 msgid "Expunging old messages"
 msgstr "Kustutatud sõnumite hävitamine"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:318
+#: ../camel/providers/pop3/camel-pop3-folder.c:316
 msgid "Expunging deleted messages"
 msgstr "Kustutatud sõnumite hävitamine"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:495
+#: ../camel/providers/pop3/camel-pop3-folder.c:492
 #, c-format
 msgid "No message with UID %s"
 msgstr "Sõnumit UID-ga %s ei ole"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:502
+#: ../camel/providers/pop3/camel-pop3-folder.c:499
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "POP sõnumi %d vastuvõtmine"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:592
+#: ../camel/providers/pop3/camel-pop3-folder.c:589
 msgid "Unknown reason"
 msgstr "Tundmatu põhjus"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
-msgid "Leave messages on server"
-msgstr "Sõnumid jäetakse serverisse"
+msgid "_Leave messages on server"
+msgstr "Sõnumid _jäetakse serverisse"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, c-format
-msgid "Delete after %s day(s)"
-msgstr "Kustutatakse %s päeva möödumisel"
+msgid "_Delete after %s day(s)"
+msgstr "_Kustutatakse %s päeva möödumisel"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
-msgid "Disable support for all POP3 extensions"
-msgstr "Kõigi POP3 laienduste toetus on keelatud"
+msgid "Disable _support for all POP3 extensions"
+msgstr "Kõigi POP3 _laienduste toetus on keelatud"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
@@ -4328,34 +4321,34 @@ msgstr ""
 "protokolli. See ei pruugi paljude kasutajate puhul töötada isegi "
 "serveritega, mis väidavad ennast seda protokolli toetavat."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:208
+#: ../camel/providers/pop3/camel-pop3-store.c:207
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Tõrge korrektse tervituse lugemisel POP serverilt %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:222
-#: ../camel/providers/pop3/camel-pop3-store.c:239
-#: ../camel/providers/pop3/camel-pop3-store.c:249
-#: ../camel/providers/pop3/camel-pop3-store.c:255
+#: ../camel/providers/pop3/camel-pop3-store.c:221
+#: ../camel/providers/pop3/camel-pop3-store.c:238
+#: ../camel/providers/pop3/camel-pop3-store.c:248
+#: ../camel/providers/pop3/camel-pop3-store.c:254
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Tõrge turvatud ühendumisel POP serveriga %s: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:223
+#: ../camel/providers/pop3/camel-pop3-store.c:222
 msgid "STLS not supported by server"
 msgstr "STLS pole serveri poolt toetatud"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:256
+#: ../camel/providers/pop3/camel-pop3-store.c:255
 msgid "TLS is not available in this build"
 msgstr "TLS ei ole toetatud"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:362
+#: ../camel/providers/pop3/camel-pop3-store.c:361
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "POP serveriga %s pole võimalik ühenduda"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:403
-#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:402
+#: ../camel/providers/pop3/camel-pop3-store.c:531
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4364,27 +4357,27 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
 "tugi."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:419
+#: ../camel/providers/pop3/camel-pop3-store.c:418
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "SASL `%s' Tõrge POP serverisse %s sisselogimisel: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:431
+#: ../camel/providers/pop3/camel-pop3-store.c:430
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP serverisse %s pole võimalik sisse logida: SASL protokolli viga"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:450
+#: ../camel/providers/pop3/camel-pop3-store.c:449
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "Autentimine POP serverisse %s nurjus: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:476
+#: ../camel/providers/pop3/camel-pop3-store.c:475
 #, c-format
 msgid "%sPlease enter the POP password for %s on host %s"
 msgstr "%sPalun sisesta POP parool %s jaoks hostil %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:502
+#: ../camel/providers/pop3/camel-pop3-store.c:501
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4394,8 +4387,8 @@ msgstr ""
 "alust kahtlustada umbisikulist rünnet. Palun võta ühendust oma "
 "süsteemiülemaga."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:546
-#: ../camel/providers/pop3/camel-pop3-store.c:559
+#: ../camel/providers/pop3/camel-pop3-store.c:545
+#: ../camel/providers/pop3/camel-pop3-store.c:558
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4404,7 +4397,7 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda.\n"
 "Viga parooli saatmisel: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:553
+#: ../camel/providers/pop3/camel-pop3-store.c:552
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4413,7 +4406,7 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda.\n"
 "Viga kasutajanime saatmisel: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:659
+#: ../camel/providers/pop3/camel-pop3-store.c:658
 #, c-format
 msgid "No such folder `%s'."
 msgstr "Kausta '%s' ei ole olemas."
@@ -4642,63 +4635,63 @@ msgstr "Sõnumit pole võimalik saata: saajate aadressid on määramata."
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Sõnumit pole võimalik saata: üks või enam adressaate on vigased"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:894
+#: ../camel/providers/smtp/camel-smtp-transport.c:895
 msgid "SMTP Greeting"
 msgstr "SMTP Tervitus"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:919
+#: ../camel/providers/smtp/camel-smtp-transport.c:920
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "Tõrge HELO käsu täitmisel: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:936
+#: ../camel/providers/smtp/camel-smtp-transport.c:937
 msgid "HELO command failed"
 msgstr "Tõrge HELO käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1002
+#: ../camel/providers/smtp/camel-smtp-transport.c:1003
 msgid "SMTP Authentication"
 msgstr "SMTP autentimine"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1008
+#: ../camel/providers/smtp/camel-smtp-transport.c:1009
 msgid "Error creating SASL authentication object."
 msgstr "Viga SASL autentimisobjekti loomise."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1025
-#: ../camel/providers/smtp/camel-smtp-transport.c:1036
+#: ../camel/providers/smtp/camel-smtp-transport.c:1026
+#: ../camel/providers/smtp/camel-smtp-transport.c:1037
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "Tõrge AUTH käsu täitmisel: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1042
+#: ../camel/providers/smtp/camel-smtp-transport.c:1043
 msgid "AUTH command failed"
 msgstr "Tõrge AUTH käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1106
+#: ../camel/providers/smtp/camel-smtp-transport.c:1107
 msgid "Bad authentication response from server.\n"
 msgstr "Halb autentimisvastus serverilt.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1131
+#: ../camel/providers/smtp/camel-smtp-transport.c:1132
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "Tõrge MAIL FROM käsu täitmisel: %s: e-kiri jäi saatmata"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1148
+#: ../camel/providers/smtp/camel-smtp-transport.c:1149
 msgid "MAIL FROM command failed"
 msgstr "Tõrge MAIL FROM käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1172
+#: ../camel/providers/smtp/camel-smtp-transport.c:1173
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "Tõrge RCPT TO käsu täitmisel: %s: e-kiri jäi saatmata"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1191
+#: ../camel/providers/smtp/camel-smtp-transport.c:1192
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "Tõrge RCPT TO <%s> käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1230
-#: ../camel/providers/smtp/camel-smtp-transport.c:1288
-#: ../camel/providers/smtp/camel-smtp-transport.c:1307
+#: ../camel/providers/smtp/camel-smtp-transport.c:1231
+#: ../camel/providers/smtp/camel-smtp-transport.c:1289
+#: ../camel/providers/smtp/camel-smtp-transport.c:1308
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "Tõrge DATA käsu täitmisel: %s: e-kiri jäi saatmata"
@@ -4706,107 +4699,107 @@ msgstr "Tõrge DATA käsu täitmisel: %s: e-kiri jäi saatmata"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1247
-#: ../camel/providers/smtp/camel-smtp-transport.c:1323
+#: ../camel/providers/smtp/camel-smtp-transport.c:1248
+#: ../camel/providers/smtp/camel-smtp-transport.c:1324
 msgid "DATA command failed"
 msgstr "Tõrge DATA käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1346
+#: ../camel/providers/smtp/camel-smtp-transport.c:1347
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "Tõrge RSET käsu täitmisel: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1362
+#: ../camel/providers/smtp/camel-smtp-transport.c:1363
 msgid "RSET command failed"
 msgstr "Tõrge RSET käsu täitmisel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1385
+#: ../camel/providers/smtp/camel-smtp-transport.c:1386
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "Tõrge QUIT käsu täitmisel: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1399
+#: ../camel/providers/smtp/camel-smtp-transport.c:1400
 msgid "QUIT command failed"
 msgstr "Tõrge QUIT käsu täitmisel"
 
-#: ../libedataserver/e-categories.c:43
+#: ../libedataserver/e-categories.c:45
 msgid "Business"
 msgstr "Äri"
 
-#: ../libedataserver/e-categories.c:44
+#: ../libedataserver/e-categories.c:46
 msgid "Competition"
 msgstr "Võistlused"
 
-#: ../libedataserver/e-categories.c:45
+#: ../libedataserver/e-categories.c:47
 msgid "Favorites"
 msgstr "Lemmikud"
 
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:48
 msgid "Gifts"
 msgstr "Kingitused"
 
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:49
 msgid "Goals/Objectives"
 msgstr "Eesmärgid"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:50
 msgid "Holiday"
 msgstr "Puhkus"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:51
 msgid "Holiday Cards"
 msgstr "Puhkusekaardid"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:53
 msgid "Hot Contacts"
 msgstr "Kuumad kontaktid"
 
-#: ../libedataserver/e-categories.c:52
+#: ../libedataserver/e-categories.c:54
 msgid "Ideas"
 msgstr "Ideed"
 
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:55
 msgid "International"
 msgstr "Rahvusvaheline"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:56
 msgid "Key Customer"
 msgstr "Võtmeklient"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:57
 msgid "Miscellaneous"
 msgstr "Muu"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:58
 msgid "Personal"
 msgstr "Isiklik"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:59
 msgid "Phone Calls"
 msgstr "Telefonikõned"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:60
 msgid "Status"
 msgstr "Olek"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:61
 msgid "Strategies"
 msgstr "Strateegiad"
 
-#: ../libedataserver/e-categories.c:60
+#: ../libedataserver/e-categories.c:62
 msgid "Suppliers"
 msgstr "Tarnijad"
 
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:63
 msgid "Time & Expenses"
 msgstr "Aeg ja kulutused"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:64
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:65
 msgid "Waiting"
 msgstr "Ootamine"
 
@@ -4937,11 +4930,11 @@ msgstr "%l %p"
 msgid "Accessing LDAP Server anonymously"
 msgstr "Anonüümne ligipääs LDAP serverile"
 
-#: ../libedataserverui/e-book-auth-util.c:191
+#: ../libedataserverui/e-book-auth-util.c:193
 msgid "Failed to authenticate.\n"
 msgstr "Tõrge autentimisel.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:276
+#: ../libedataserverui/e-categories-dialog.c:274
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4966,30 +4959,26 @@ msgid "Category Properties"
 msgstr "Kategooria omadused"
 
 #: ../libedataserverui/e-categories-dialog.glade.h:3
-msgid "Category _Color"
-msgstr "Kategooria _värvus"
-
-#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Icon"
 msgstr "Kategooria _ikoon"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:5
+#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Name"
 msgstr "Kategooria _nimi"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:6
+#: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Item(s) belong to these _categories:"
 msgstr "Kirje(d) kuulub (kuuluvad) nendesse _kategooriatesse:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:7
+#: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "_Available Categories:"
 msgstr "Saa_daolevad kategooriad:"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:8
+#: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
 msgstr "_Redaktor"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:9
+#: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "categories"
 msgstr "kategooriad"
 
@@ -5015,23 +5004,23 @@ msgid "*"
 msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
+msgid "<b>Co_ntacts</b>"
+msgstr "<b>_Kontaktid</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>Kontaktide näitamine</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:3
-msgid "<b>_Contacts</b>"
-msgstr "<b>_Kontaktid</b>"
-
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
+msgid "Address B_ook:"
+msgstr "_Aadressiraamat:"
+
+#: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
 msgstr "Aadressiraamat"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:5
-msgid "Address _Book:"
-msgstr "_Aadressiraamat:"
-
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-msgid "C_ategory:"
+msgid "Cate_gory:"
 msgstr "K_ategooria:"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
@@ -5101,13 +5090,13 @@ msgstr "Sihtkoha valimine"
 msgid "_Destination"
 msgstr "_Sihtkoht"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1655
+#: ../servers/exchange/lib/e2k-autoconfig.c:1660
 #: ../servers/exchange/storage/exchange-account.c:939
 #, c-format
 msgid "Enter password for %s"
 msgstr "Sisesta parool %s jaoks"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1656
+#: ../servers/exchange/lib/e2k-autoconfig.c:1661
 #: ../servers/exchange/storage/exchange-account.c:944
 msgid "Enter password"
 msgstr "Sisesta parool"
@@ -5264,19 +5253,19 @@ msgstr "Saadetud"
 msgid "Tasks"
 msgstr "Ülesanded"
 
-#: ../servers/groupwise/e-gw-connection.c:168
+#: ../servers/groupwise/e-gw-connection.c:192
 msgid "Invalid connection"
 msgstr "Vigane ühendus"
 
-#: ../servers/groupwise/e-gw-connection.c:172
+#: ../servers/groupwise/e-gw-connection.c:196
 msgid "Invalid response from server"
 msgstr "Vigane vastus serverilt"
 
-#: ../servers/groupwise/e-gw-connection.c:174
+#: ../servers/groupwise/e-gw-connection.c:198
 msgid "No response from the server"
 msgstr "Serverilt ei saabunud vastust"
 
-#: ../servers/groupwise/e-gw-connection.c:180
+#: ../servers/groupwise/e-gw-connection.c:204
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
@@ -5302,8 +5291,10 @@ msgstr "Evolution'i andmeserveri logimisteenus"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Toimus mitu segmenteerimise viga: veadialoogi pole võimalik kuvada\n"
 
-#~ msgid "Select User"
-#~ msgstr "Vali kasutaja"
+#: ../libedataserverui/e-cell-renderer-color.c:210
+msgid "Color Info"
+msgstr "Värvuse andmed"
 
-#~ msgid "Addressbook..."
-#~ msgstr "Aadressiraamat..."
+#: ../libedataserverui/e-cell-renderer-color.c:211
+msgid "The color to render"
+msgstr "Renderdatav värvus"
