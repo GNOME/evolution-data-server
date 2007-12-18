@@ -38,7 +38,7 @@
 #include <glib.h>
 #include <camel/camel-utf8.h>
 
-#define d(x) x
+#define d(x) 
 
 static void namespace_clear(CamelStoreSummary *s);
 
@@ -132,13 +132,13 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 		return -1 ;
 
 	summary->version = version ;
+/* FIXME */
+/* 	if (camel_file_util_decode_fixed_int32(in, &capabilities) == -1 */
+/* 			|| camel_file_util_decode_fixed_int32(in, &count) == -1 */
+/* 			|| count > 1) */
+/* 		return -1; */
 
-	if (camel_file_util_decode_fixed_int32(in, &capabilities) == -1
-			|| camel_file_util_decode_fixed_int32(in, &count) == -1
-			|| count > 1)
-		return -1;
-
-	summary->capabilities = capabilities ;
+/* 	summary->capabilities = capabilities ; */
 	return 0 ;
 }
 
@@ -148,9 +148,10 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 {
 	CamelMapiStoreSummary *summary = (CamelMapiStoreSummary *) s ;
 
-	if (camel_mapi_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1
-			|| camel_file_util_encode_fixed_int32(out, 0) == -1
-	                || camel_file_util_encode_fixed_int32(out, summary->capabilities) == -1)
+	if (camel_mapi_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1)
+/* FIXME */
+/* 			|| camel_file_util_encode_fixed_int32(out, 0) == -1 */
+/* 	                || camel_file_util_encode_fixed_int32(out, summary->capabilities) == -1) */
 		return -1;
 
 	return 0 ;
@@ -168,7 +169,6 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 			si = NULL;
 		}
 	}
-
 	return (CamelStoreInfo *)si;
 }
 
@@ -176,9 +176,8 @@ static int
 store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelMapiStoreInfo *summary = (CamelMapiStoreInfo *)mi;
-
 	if (camel_mapi_store_summary_parent->store_info_save(s, out, mi) == -1
-			|| camel_file_util_encode_string(out, summary->full_name) == -1)
+	    || camel_file_util_encode_string(out, summary->full_name) == -1) 
 		return -1;
 
 	return 0;
@@ -269,7 +268,7 @@ camel_mapi_store_summary_full_to_path(CamelMapiStoreSummary *s, const char *full
 		while ( (c = *f++ & 0xff) ) {
 			if (c == dir_sep)
 				*p++ = '/';
-			//FIXME : why ?? :(
+//FIXME : why ?? :(
 /* 			else if (c == '/' || c == '%') */
 /* 				p += sprintf(p, "%%%02X", c); */
 			else
@@ -306,13 +305,9 @@ camel_mapi_store_summary_add_from_full(CamelMapiStoreSummary *s, const char *ful
 		return info;
 	}
 	pathu8 = camel_mapi_store_summary_full_to_path(s, full_name, NULL);
-	printf("%s(%d):%s:pathu8 : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, pathu8);
 	info = (CamelMapiStoreInfo *)camel_store_summary_add_from_path((CamelStoreSummary *)s, pathu8);
-	if (info) {
-		printf("  '%s' -> '%s'\n", pathu8, full_name);
+	if (info) 
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_STORE_INFO_LAST, full_name);
-	} else
-		d(printf("  failed\n"));
 
 	return info;
 }

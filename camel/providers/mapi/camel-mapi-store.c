@@ -244,7 +244,6 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 
 	/*storage path*/
 	priv->storage_path = camel_session_get_storage_path (session, service, ex);
-	printf("%s(%d):%s:storage_path = %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, priv->storage_path);
 	if (!priv->storage_path)
 		return;
 	
@@ -254,9 +253,13 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 
 	mapi_store->summary = camel_mapi_store_summary_new ();
 	camel_store_summary_set_filename ((CamelStoreSummary *)mapi_store->summary, path);
+
 	camel_store_summary_touch ((CamelStoreSummary *)mapi_store->summary);
 	camel_store_summary_load ((CamelStoreSummary *) mapi_store->summary);
-	
+	printf("%s(%d):%s:summary : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, path);
+	printf("%s(%d):%s:summary : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, 
+	       camel_store_summary_count ((CamelStoreSummary *)mapi_store->summary));	
+
 	/*user and profile*/
 	priv->user = g_strdup (url->user);
 	priv->profile = camel_url_get_param(url, "profile");
@@ -270,17 +273,14 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 	priv->id_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->parent_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-/* 	priv->name_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free); */
-/* 	priv->id_hash = g_hash_table_new (g_int_hash, g_int_equal); */
-/* 	priv->parent_hash = g_hash_table_new (g_int_hash, g_int_equal); */
 
 	store->flags &= ~CAMEL_STORE_VJUNK;
 	//store->flags &= ~CAMEL_STORE_VTRASH;
 }
 
-static char *mapi_get_name(CamelService *service, gboolean brief)
+static char
+*mapi_get_name(CamelService *service, gboolean brief)
 {
-	printf("%s(%d):%s:REACHED \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 	if (brief) {
 		return g_strdup_printf(_("Exchange MAPI server %s"), service->url->host);
 	} else {
@@ -289,20 +289,138 @@ static char *mapi_get_name(CamelService *service, gboolean brief)
 	}
 }
 
-static gboolean mapi_connect(CamelService *service, CamelException *ex)
+static gboolean
+check_for_connection (CamelService *service, CamelException *ex)
 {
-	//TODO : Connection here ? init mapi ?
+	/*Fixme : What happens when the network connection drops. 
+	  will mapi subsystem handle that ?*/
+	return exchange_mapi_connection_exists ();
+}
+
+static gboolean
+mapi_auth_loop (CamelService *service, CamelException *ex)
+{
+	CamelSession *session = camel_service_get_session (service);
+	CamelStore *store = CAMEL_STORE (service);
+	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
+	CamelMapiStorePrivate *priv = mapi_store->priv;
+
+	char *errbuf = NULL;
+	gboolean authenticated = FALSE;
+	char *uri;
+/* 	char *profile_name = NULL; */
+
+	service->url->passwd = NULL;
+
+	while (!authenticated) {
+		if (errbuf) {
+			/* We need to un-cache the password before prompting again */
+			camel_session_forget_password (session, service, "Mapi", "password", ex);
+			g_free (service->url->passwd);
+			service->url->passwd = NULL;
+		}
+	
+		if (!service->url->passwd ){
+			char *prompt;
+			
+			prompt = g_strdup_printf (_("%sPlease enter the MAPI "
+						    "password for %s@%s"),
+						  errbuf ? errbuf : "",
+						  service->url->user,
+						  service->url->host);
+			service->url->passwd =
+				camel_session_get_password (session, service, "Mapi",
+							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+			g_free (prompt);
+			g_free (errbuf);
+			errbuf = NULL;
+			
+			if (!service->url->passwd) {
+				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+						     _("You did not enter a password."));
+				return FALSE;
+			}
+		}
+		
+/* 		profile_name = camel_url_get_param (service->url, "profile"); */
+/* 		printf("%s(%d):%s:url->profile \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, profile_name);		 */
+
+		exchange_mapi_connection_new (NULL,service->url->passwd);
+
+		if (!exchange_mapi_connection_exists ()) {
+			errbuf = g_strdup_printf (_("Unable to authenticate "
+					    "to Exchange MAPI server. "));
+						  
+			camel_exception_clear (ex);
+		} else 
+			authenticated = TRUE;
+		
+	}
 	return TRUE;
 }
 
-static gboolean mapi_disconnect(CamelService *service, gboolean clean, CamelException *ex)
+
+static gboolean
+mapi_connect(CamelService *service, CamelException *ex)
 {
+	REACHED;
+	CamelMapiStore *store = CAMEL_MAPI_STORE (service);
+	CamelMapiStorePrivate *priv = store->priv;
+	CamelSession *session = service->session;
+
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL ||
+	    (service->status == CAMEL_SERVICE_DISCONNECTED)) {
+		return FALSE;
+	}
+
+	if (service->status == CAMEL_SERVICE_DISCONNECTED) {
+		return FALSE;
+	}
+
+	if (!priv) {
+		store->priv = g_new0 (CamelMapiStorePrivate, 1);
+		priv = store->priv;
+		camel_service_construct (service, service->session, service->provider, service->url, ex);
+	}
+
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+	if (check_for_connection (service, ex)) {
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+		return TRUE;
+	}
+
+	if (!mapi_auth_loop (service, ex)) {
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+		camel_service_disconnect (service, TRUE, NULL);
+		return FALSE;
+	}
+	
+	service->status = CAMEL_SERVICE_CONNECTED;
+	((CamelOfflineStore *) store)->state = CAMEL_OFFLINE_STORE_NETWORK_AVAIL;
+
+	if (camel_store_summary_count ((CamelStoreSummary *)store->summary) == 0) {
+		/*Settting the refresh stamp to the current time*/
+		//store->refresh_stamp = time (NULL);
+	}
+
+	//camel_store_summary_save ((CamelStoreSummary *) store->summary);
+
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+
+	return TRUE;
+}
+
+static gboolean 
+mapi_disconnect(CamelService *service, gboolean clean, CamelException *ex)
+{
+	/* Close the mapi subsystem */
+	exchange_mapi_connection_close ();
 	return TRUE;
 }
 
 static GList *mapi_query_auth_types(CamelService *service, CamelException *ex)
 {
-  return NULL;
+	return NULL;
 }
 
 static CamelFolder *
@@ -573,6 +691,26 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	return fi;
 }
 
+gboolean
+camel_mapi_store_connected (CamelMapiStore *store, CamelException *ex)
+{
+	printf("%s(%d):%s:reached \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
+		printf("%s(%d):%s:not CAMEL_OFFLINE_STORE_NETWORK_AVAIL \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+	}
+
+/* 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL */
+/* 	    && camel_service_connect ((CamelService *)store, ex)) { */
+	if (camel_service_connect ((CamelService *)store, ex)) {
+		/* 	if (camel_service_connect ((CamelService *)store, ex)){ */
+		printf("%s(%d):%s:connected: returning true \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 {
@@ -586,16 +724,16 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 	CamelStoreInfo *si = NULL;
 	int count, i;
 
-	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
+/* 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) { */
 		if (((CamelService *)store)->status == CAMEL_SERVICE_DISCONNECTED){
 			((CamelService *)store)->status = CAMEL_SERVICE_CONNECTING;
 			mapi_connect ((CamelService *)store, ex);
 		}
-	}
+/* 	} */
 
-
-	if (!exchange_mapi_connection_exists ()) {
-		g_warning ("mapi_folder_sync : No Connection\n");
+	if (!camel_mapi_store_connected (store, ex)) {
+/* 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, */
+/* 				_("Folder list not available in offline mode.")); */
 		return;
 	}
 
@@ -696,7 +834,7 @@ mapi_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 	CamelMapiStorePrivate *priv = mapi_store->priv;
 	CamelFolderInfo *info = NULL;
 	char *top_folder = NULL;
-	
+	int s_count = 0;	
 	if (top) {
 		top_folder = g_hash_table_lookup (priv->name_hash, top);
 		/* 'top' is a valid path, but doesnt have a container id
@@ -708,15 +846,16 @@ mapi_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		}*/
 	}
 
-/* 	if (top && mapi_is_system_folder (top))  */
-/* 		return mapi_build_folder_info (mapi_store, NULL, top ); */
+	if (top && mapi_is_system_folder (top))
+		return mapi_build_folder_info (mapi_store, NULL, top );
 
 	/*
 	 * Thanks to Michael, for his cached folders implementation in IMAP
 	 * is used as is here.
 	 */
 	if (camel_store_summary_count ((CamelStoreSummary *)mapi_store->summary) == 0) {
-	/* 	if (mapi_store->list_loaded == 3) { */
+/* 		if (mapi_store->list_loaded == 3) { */
+		
 			mapi_folders_sync (mapi_store, ex);
 /* 			mapi_store->list_loaded -= 1; */
 /* 		} */
@@ -729,22 +868,32 @@ mapi_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		goto end_r;
 	}
 
-	if ((camel_store_summary_count((CamelStoreSummary *)mapi_store->summary) > 0) ) {//&& (mapi_store->list_loaded > 1)) {
+	if ((camel_store_summary_count((CamelStoreSummary *)mapi_store->summary) > 0)) {
 		/*Load from cache*/
-		//		mapi_store->list_loaded -= 1;
+		printf("%s(%d):%s:Loading fro cache \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 		goto end_r;
 	}
 
-	mapi_folders_sync (mapi_store, ex);
-	if (camel_exception_is_set (ex)) {
-		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
-		return NULL;
-	}
-	camel_store_summary_touch ((CamelStoreSummary *)mapi_store->summary);
-	camel_store_summary_save ((CamelStoreSummary *)mapi_store->summary);
+	if (check_for_connection((CamelService *)store, ex)) {
+		printf("%s(%d):%s:ONLINE NOW \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		if ((camel_store_summary_count((CamelStoreSummary *)mapi_store->summary) > 0) ) {
+			printf("%s(%d):%s:we have something in cache. read it  \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			/*Load from cache*/
+			goto end_r;
+		}
 
+		mapi_folders_sync (mapi_store, ex);
+		if (camel_exception_is_set (ex)) {
+			CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
+			return NULL;
+		}
+		camel_store_summary_touch ((CamelStoreSummary *)mapi_store->summary);
+		camel_store_summary_save ((CamelStoreSummary *)mapi_store->summary);
+	}
 	/*camel_exception_clear (ex);*/
 end_r:
+	s_count = camel_store_summary_count((CamelStoreSummary *)mapi_store->summary);
+	printf("%s(%d):%s:summary count : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, s_count);
 	info = mapi_get_folder_info_offline (store, top, flags, ex);
 	return info;
 }

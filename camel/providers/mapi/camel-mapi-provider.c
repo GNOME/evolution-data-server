@@ -126,8 +126,9 @@ mapi_auto_detect_cb(CamelURL *url, GHashTable **auto_detected, CamelException *e
 gboolean
 mapi_initialize(void)
 {
-	if (!exchange_mapi_connection_new (NULL, NULL))
-		return FALSE;
+	//TODO : Remove this connection
+/* 	if (!exchange_mapi_connection_new (NULL, NULL)) */
+/* 		return FALSE; */
 
 	return TRUE;
 }
@@ -145,7 +146,6 @@ camel_provider_module_init(void)
 	mapi_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mapi_store_get_type();
 	mapi_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_mapi_transport_get_type();
 	camel_provider_register (&mapi_provider);
-	mapi_initialize();
 }
 
 static void

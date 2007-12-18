@@ -352,7 +352,7 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 			camel_store_summary_info_free ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary, si);
 		}
 		camel_folder_summary_save (folder->summary);
-		camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary);
+/* 		camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary); */
 	} else {
 		/* We probably could not get the messages the first time. (get_folder) failed???!
 		 * so do a get_folder again. And hope that it works
@@ -730,14 +730,14 @@ mapi_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolea
 
 	camel_folder_change_info_free (changes);
 	//TASK 2.
-	printf("%s(%d):%s:reached \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+
 }
 
 static void 
 mapi_sync_summary (CamelFolder *folder, CamelException *ex)
 {
-	camel_folder_summary_save (folder->summary);
-	camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary);
+/* 	camel_folder_summary_save (folder->summary); */
+/* 	camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary); */
 }
 
 void
@@ -782,35 +782,9 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
 
-/* 	if (!camel_mapi_store_connected (mapi_store, ex))  */
-/* 		goto end1; */
-
-#if 0
-	if (!strcmp (folder->full_name, "Trash")) {
-
-		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created delivered attachments subject status size", NULL, &list);
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
-				g_warning ("Trash full....Empty Trash!!!!\n");
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Trash Folder Full. Please Empty."));
-				goto end1;
-				/*groupwise_expunge (folder, ex);*/
-			} else
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-			goto end1;
-		}
-		if (list || g_list_length(list)) {
-			camel_folder_summary_clear (folder->summary);
-			gw_update_summary (folder, list, ex);
-			g_list_foreach (list, (GFunc) g_object_unref, NULL);
-			g_list_free (list);
-			list = NULL;
-		}
+	if (!camel_mapi_store_connected (mapi_store, ex))
 		goto end1;
 
-
-	}
-#endif
 		       //	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
 		       //	t_str = g_strdup (time_string); 
 
@@ -838,6 +812,12 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 						   PR_DISPLAY_CC,
 						   PR_DISPLAY_BCC);
 
+		if (!camel_mapi_store_connected (mapi_store, ex)) {
+			//TODO : Fix exception string.
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					     _("This message is not available in offline mode."));
+			goto end2;
+		}
 
 		status = exchange_mapi_connection_fetch_items (temp_folder_id, SPropTagArray, NULL, NULL, fetch_items_cb, folder);
 		//exchange_mapi_util_SPropTagArray_free (SPropTagArray);
@@ -1265,12 +1245,12 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	}
 
 	/* Check if we are really offline */
-/* 	if (!camel_mapi_store_connected (mapi_store, ex)) { */
-/* 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, */
-/* 				_("This message is not available in offline mode.")); */
-/* 		camel_message_info_free (&mi->info); */
-/* 		return NULL; */
-/* 	} */
+	if (!camel_mapi_store_connected (mapi_store, ex)) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("This message is not available in offline mode."));
+		camel_message_info_free (&mi->info);
+		return NULL;
+	}
 
 	mapi_id_t id_folder;
 	mapi_id_t id_message;
@@ -1484,9 +1464,6 @@ camel_mapi_folder_new(CamelStore *store, const char *folder_name, const char *fo
 	camel_folder_construct (folder, store, folder_name, short_name);
 
 	summary_file = g_strdup_printf ("%s/%s/summary",folder_dir, folder_name);
-
-	printf("%s(%d):%s:summary_file: %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, summary_file);
-	printf("%s(%d):%s:folder_name : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, folder_name);
 
 	folder->summary = camel_mapi_summary_new(folder, summary_file);
 	g_free(summary_file);
