@@ -3049,7 +3049,6 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Unerwartete OK-Antwort von IMAP-Server: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:87
-#, fuzzy
 msgid "Always check for new mail in this folder"
 msgstr "Immer in diesem Ordner nach neuen E-Mails schauen"
 
