@@ -125,7 +125,7 @@ camel_mapi_summary_init (CamelMapiSummary *obj)
 
 
 /**
- * camel_groupwise_summary_new:
+ * camel_mapi_summary_new:
  * @filename: the file to store the summary in.
  *
  * This will create a new CamelGroupwiseSummary object and read in the

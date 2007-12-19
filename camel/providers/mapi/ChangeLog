@@ -1,3 +1,17 @@
+2007-12-19  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (mapi_refresh_folder): Use the new util
+	functions for id conversions.
+
+	* camel-mapi-store.c (convert_to_folder_info):Use the new util
+	functions for id conversions.
+
+	* camel-mapi-folder.h: Cleanup.
+
+	* camel-mapi-provider.c : Cleanups.
+
+	* camel-mapi-store.h : Cleanups.
+
 2007-12-10  Johnny Jacob  <jjohnny@novell.com>
 
 	** Connection Fixes.

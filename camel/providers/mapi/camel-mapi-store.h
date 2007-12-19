@@ -32,8 +32,6 @@
 
 #include <exchange-mapi-folder.h>
 
-#define OC_DEBUG(t) 
-
 #define CAMEL_MAPI_STORE_TYPE     (camel_mapi_store_get_type ())
 #define CAMEL_MAPI_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAPI_STORE_TYPE, CamelMapiStore))
 #define CAMEL_MAPI_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MAPI_STORE_TYPE, CamelMapiStoreClass))
@@ -52,7 +50,6 @@ struct _CamelMapiStore{
 
 	struct _CamelMapiStoreSummary *summary;
 	CamelMapiStorePrivate *priv;
-/* 	ocStoreSummary_t	*summary; */
 /* 	char			*base_url; */
 /* 	CamelURL		*camel_url; */
 /* 	CamelFolderInfo		*fi; */
@@ -88,8 +85,6 @@ __BEGIN_DECLS
 CamelType camel_mapi_store_get_type(void);
 gboolean camel_mapi_store_connected(CamelMapiStore *, CamelException *);
 
-/* camel-openchange-provider.c */
-int mapi_initialize(void);
 const gchar* camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folder_name);
 
 __END_DECLS

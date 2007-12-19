@@ -29,8 +29,6 @@
 #include <camel/camel-offline-journal.h>
 #include <libmapi/libmapi.h>
 
-#include "oc_thread.h"
-
 #define PATH_FOLDER ".evolution/mail/mapi"
 
 #define CAMEL_MAPI_FOLDER_TYPE     (camel_mapi_folder_get_type ())
@@ -112,48 +110,11 @@ struct _CamelMapiFolderClass {
 CamelType camel_mapi_folder_get_type (void);
 
 /* implemented */
-CamelFolder * camel_gw_folder_new(CamelStore *store, const char *folder_dir, const char *folder_name, CamelException *ex) ;
-void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
+CamelFolder *
+camel_mapi_folder_new(CamelStore *store, const char *folder_name, const char *folder_dir, guint32 flags, CamelException *ex);
+
+void mapi_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
 void mapi_refresh_folder(CamelFolder *folder, CamelException *ex);
-
-
-/* -----------CLEANUP - JUST FOR COMPILING ----------------------------------- */
-typedef struct {
-	CamelFolder		folder;
-	CamelOfflineFolder	parent_object;
-  	CamelFolderSearch	*search;
-  	CamelOfflineJournal	*journal;
-	CamelDataCache		*cache;
-	openchange_thread_t	*oc_thread;
-  	char			*cachedir;
-  	char			*folder_uid;
-	char			*utf7_name;
-  	unsigned int		read_only:1;
-	unsigned int		enable_mlist:1;
-	GHashTable		*modified; /* use to update server from summary */
-	GPtrArray		*modified_key; /* a key table for hash table */
-	int			n_modified;
-	char			*folder_id;
-} CamelOpenchangeFolder;
-
-/**
- * PROTOTYPES
- */
-
-#ifndef __BEGIN_DECLS
-#ifdef __cplusplus
-#define __BEGIN_DECLS		extern "C" {
-#define __END_DECLS		}
-#else
-#define __BEGIN_DECLS
-#define __END_DECLS
-#endif
-#endif
-
-__BEGIN_DECLS
-CamelFolder		*camel_openchange_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex);
-CamelMessageInfo	*openchange_get_message_info(CamelFolder *folder, const char *uid);
-__END_DECLS
 
 G_END_DECLS
 

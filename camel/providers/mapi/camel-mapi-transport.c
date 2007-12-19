@@ -18,8 +18,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "oc.h"
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -65,65 +63,6 @@
 CamelStore *get_store(void);
 
 void	set_store(CamelStore *);
-gboolean mapi_initialize();
-
-/*
-** this function is used to send message
-*/
-static gboolean 
-do_multipart(CamelMultipart *mp,
-	     oc_message_headers_t *headers,
-	     oc_message_contents_t *contents)
-{
-	CamelDataWrapper *dw;
-	CamelStream *stream;
-	CamelContentType *type;
-	CamelMimePart *part;
-	int n_part;
-	int i_part;
-	const char *filename;
-	const char *description;
-	const char *content_id;
-	int sz_content;
-
-	n_part = camel_multipart_get_number(mp);
-	for (i_part = 0; i_part < n_part; i_part++) {
-		/* getting part */
-		part = camel_multipart_get_part(mp, i_part);
-		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
-		if (CAMEL_IS_MULTIPART(dw)) {
-			/* recursive */
-			if (!do_multipart(CAMEL_MULTIPART(dw), headers, contents))
-				return FALSE;
-			continue ;
-		}
-
-    		/* getting part information */
-	
-		/* filename */
-		filename = camel_mime_part_get_filename(part);
-		/* getting body */
-		dw = camel_medium_get_content_object(CAMEL_MEDIUM(part));
-		stream = camel_stream_mem_new();
-		sz_content = camel_data_wrapper_decode_to_stream (dw, (CamelStream *) stream);
-		camel_seekable_stream_seek((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET);
-		/* description */
-		description = camel_mime_part_get_description(part);
-		content_id = camel_mime_part_get_content_id(part);
-		
-		/* openchange setting */
-		type = camel_mime_part_get_content_type(part);
-		if (i_part == 0 && camel_content_type_is (type, "text", "plain")) {
-			oc_message_contents_set_body(contents, stream);
-		} else {
-			oc_message_contents_add_attach(contents, filename,
-						       description, stream,
-						       (int)sz_content);
-		}
-	}
-
-  return TRUE;
-}
 
 static void
 mapi_item_debug_dump (MapiItem *item)

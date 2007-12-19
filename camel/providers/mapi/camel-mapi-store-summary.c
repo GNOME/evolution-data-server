@@ -31,10 +31,8 @@
 #include "camel-private.h"
 #include "camel-utf8.h"
 
-#include "oc.h"
 #include "camel-mapi-store.h"
 #include "camel-mapi-store-summary.h"
-#include "oc_thread.h"
 #include <glib.h>
 #include <camel/camel-utf8.h>
 

@@ -19,9 +19,7 @@ libcamelmapi_la_SOURCES = 			\
         camel-mapi-store.c	                \
 	camel-mapi-store-summary.c         	\
 	camel-mapi-summary.c	         	\
-	camel-mapi-transport.c			\
-	oc.c					\
-	oc_thread.c			
+	camel-mapi-transport.c			
 
 noinst_HEADERS =         			\
 	camel-mapi-folder.h			\
@@ -29,10 +27,9 @@ noinst_HEADERS =         			\
 	camel-mapi-store-summary.h		\
 	camel-mapi-summary.h	         	\
 	camel-mapi-transport.h			\
-	camel-mapi-private.h				\
-	camel-private.h				\
-	oc.h					\
-	oc_thread.h
+	camel-mapi-private.h			\
+	camel-private.h				
+
 
 
 libcamelmapi_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)

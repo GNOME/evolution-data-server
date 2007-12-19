@@ -36,8 +36,6 @@
 #include "camel-mapi-store.h"
 #include "camel-mapi-transport.h"
 
-#include "oc.h"
-
 #define d(x) x
 
 static void add_hash (guint *, char *);
