@@ -816,6 +816,44 @@ smtp_decode_status_code (const char *in, size_t len)
 	return outbuf;
 }
 
+/* converts string str to local encoding, thinking it's in utf8.
+   If fails, then converts all character greater than 127 to hex values.
+   Also those under 32, other than \n, \r, \t.
+   Note that the c is signed character, so all characters above 127 have
+   negative value.
+*/
+static void
+convert_to_local (GString *str)
+{
+	char *buf;
+
+	buf = g_locale_from_utf8 (str->str, str->len, NULL, NULL, NULL);
+
+	if (!buf) {
+		int i;
+		gchar c;
+		GString *s = g_string_new_len (str->str, str->len);
+
+		g_string_truncate (str, 0);
+
+		for (i = 0; i < s->len; i++) {
+			c = s->str[i];
+
+			if (c < 32 && c != '\n' && c != '\r' && c != '\t')
+				g_string_append_printf (str, "<%X%X>", (c >> 4) & 0xF, c & 0xF);
+			else
+				g_string_append_c (str, c);
+		}
+
+		g_string_free (s, TRUE);
+	} else {
+		g_string_truncate (str, 0);
+		g_string_append (str, buf);
+
+		g_free (buf);
+	}
+}
+
 static void
 smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const char *respbuf, const char *message, CamelException *ex)
 {
@@ -824,7 +862,7 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 	GString *string;
 	int error;
 
-	if (!respbuf || !(transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES)) {
+	if (!respbuf) {
 	fake_status_code:
 		error = respbuf ? atoi (respbuf) : 0;
 		camel_exception_setv (ex, error == 0 && errno == EINTR ? CAMEL_EXCEPTION_USER_CANCEL : CAMEL_EXCEPTION_SYSTEM,
@@ -832,7 +870,11 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 	} else {
 		string = g_string_new ("");
 		do {
-			token = smtp_next_token (rbuf + 4);
+			if (transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES)
+				token = smtp_next_token (rbuf + 4);
+			else
+				token = rbuf + 4;
+
 			if (*token == '\0') {
 				g_free (buffer);
 				g_string_free (string, TRUE);
@@ -852,15 +894,31 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 			rbuf = buffer;
 		} while (rbuf);
 
-		buffer = smtp_decode_status_code (string->str, string->len);
-		g_string_free (string, TRUE);
-		if (!buffer)
-			goto fake_status_code;
+		convert_to_local (string);
+		if (!(transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES) && string->len) {
+			string->str = g_strstrip (string->str);
+			string->len = strlen (string->str);
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s: %s", message, buffer);
+			if (!string->len) {
+				g_string_free (string, TRUE);
+				goto fake_status_code;
+			}
 
-		g_free (buffer);
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+					      "%s: %s", message, string->str);
+
+			g_string_free (string, TRUE);
+		} else {
+			buffer = smtp_decode_status_code (string->str, string->len);
+			g_string_free (string, TRUE);
+			if (!buffer)
+				goto fake_status_code;
+
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+					      "%s: %s", message, buffer);
+
+			g_free (buffer);
+		}
 	}
 
 	if (!respbuf) {

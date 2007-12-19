@@ -1,3 +1,14 @@
+2007-12-19  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #341579
+
+	* camel-smtp-transport.c: (convert_to_local):
+	Helper function to convert error text to user's locale.
+	* camel-smtp-transport.c: (smtp_set_exception):
+	Try to parse error message returned by server always, even without
+	CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES, and show this text
+	to user, if have any.
+
 2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Merge a bunch of compiler warning fixes and cosmetic
