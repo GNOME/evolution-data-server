@@ -21,7 +21,9 @@ libecalbackendmapi_la_SOURCES =		\
 	e-cal-backend-mapi.c		\
 	e-cal-backend-mapi.h		\
 	e-cal-backend-mapi-utils.c	\
-	e-cal-backend-mapi-utils.h
+	e-cal-backend-mapi-utils.h	\
+	e-cal-backend-mapi-tz-utils.c	\
+	e-cal-backend-mapi-tz-utils.h
 
 libecalbackendmapi_la_LIBADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\

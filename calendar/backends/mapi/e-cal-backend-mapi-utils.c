@@ -57,6 +57,13 @@
 #define SENSITIVITY_CONFIDENTIAL 	3
 
 /*
+ * Appointment meeting status
+ */
+
+#define MEETING_STATUS_NONMEETING	0
+#define MEETING_STATUS_MEETING		1
+
+/*
  * Appointment flags with PR_APPOINTMENT_BUSY_STATUS
  */
 
@@ -64,6 +71,14 @@
 #define	BUSY_STATUS_TENTATIVE 	1
 #define	BUSY_STATUS_BUSY 	2
 #define	BUSY_STATUS_OUTOFOFFICE 3
+
+/*
+ * Task OwnerShip
+ */
+
+#define	olNewTask 	0
+#define	olDelegatedTask 1
+#define	olOwnTask 	2
 
 /*
  * Task status
@@ -99,68 +114,73 @@ foo (const time_t tm, const int is_date, const icaltimezone *comp_zone)
 	return itt;
 }
 
-/* This function is largely duplicated in
- * ../file/e-cal-backend-file.c
- */
-static void
-fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponent *comp)
+void
+e_cal_backend_mapi_util_fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList **attach_list)
 {
-	GSList *attach_list = NULL, *new_attach_list = NULL;
+	GSList *comp_attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
-	char  *attach_store;
-	char *dest_url, *dest_file;
+	char *dest_file;
 	int fd;
 	const char *uid;
+	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi));
 
-	e_cal_component_get_attachment_list (comp, &attach_list);
+	e_cal_component_get_attachment_list (comp, &comp_attach_list);
 	e_cal_component_get_uid (comp, &uid);
-	/*FIXME  get the uri rather than computing the path */
-	attach_store = g_strdup (e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi)));
 	
-	for (l = attach_list; l ; l = l->next) {
-		char *sfname = (char *)l->data;
-		char *filename, *new_filename;
+	for (l = comp_attach_list; l ; l = l->next) {
+		gchar *sfname = (gchar *) l->data;
+		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
+		guint filelength = 0;
 
 		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
 		if (!mapped_file) {
-			g_message ("DEBUG: could not map %s: %s\n",
-				   sfname, error->message);
+			g_message ("DEBUG: could not map %s: %s\n", sfname, error->message);
 			g_error_free (error);
 			continue;
 		}
+
 		filename = g_path_get_basename (sfname);
 		new_filename = g_strconcat (uid, "-", filename, NULL);
 		g_free (filename);
-		dest_file = g_build_filename (attach_store, new_filename, NULL);
+		dest_file = g_build_filename (local_store, new_filename, NULL);
 		g_free (new_filename);
+
+		filelength = g_mapped_file_get_length (mapped_file);
+
 		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 		if (fd == -1) {
-			/* TODO handle error conditions */
-			g_message ("DEBUG: could not open %s for writing\n",
-				   dest_file);
-		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
-				  g_mapped_file_get_length (mapped_file)) == -1) {
-			/* TODO handle error condition */
+			/* skip gracefully */
+			g_message ("DEBUG: could not open %s for writing\n", dest_file);
+		} else if (write (fd, g_mapped_file_get_contents (mapped_file), filelength) == -1) {
+			/* skip gracefully */
 			g_message ("DEBUG: attachment write failed.\n");
+		}
+		if (fd != -1) {
+			ExchangeMAPIAttachment *attach_item;
+
+			close (fd);
+			new_attach_list = g_slist_append (new_attach_list, g_filename_to_uri (dest_file, NULL, NULL));
+
+			attach_item = g_new0 (ExchangeMAPIAttachment, 1);
+			attach_item->filename = g_path_get_basename (sfname);
+			attach_item->value = g_byte_array_sized_new (filelength);
+			attach_item->value = g_byte_array_append (attach_item->value, g_mapped_file_get_contents (mapped_file), filelength);
+			*attach_list = g_slist_append (*attach_list, attach_item);
 		}
 
 		g_mapped_file_free (mapped_file);
-		if (fd != -1)
-			close (fd);
-		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
-		new_attach_list = g_slist_append (new_attach_list, dest_url);
 	}
-	g_free (attach_store);
+
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 }
 
 static void
 set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList *attach_list)
 {
-	GSList *comp_attachment_list = NULL, *l;
+	GSList *comp_attach_list = NULL, *l;
 	const char *uid;
 	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi));
 	
@@ -177,24 +197,22 @@ set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, 
 			int fd = g_open (filename, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 			if (fd == -1) { 
 				/* skip gracefully */
-				g_warning ("DEBUG: could not serialize attachments\n");
+				g_message ("DEBUG: could not open %s for writing\n", filename);
 			} else if (write (fd, attach_item->value->data, attach_item->value->len) == -1) {
 				/* skip gracefully */
-				g_warning ("DEBUG: attachment write failed.\n");
+				g_message ("DEBUG: attachment write failed.\n");
 			}
 			if (fd != -1) {
 				close (fd);
-				comp_attachment_list = g_slist_append (comp_attachment_list, attach_file_url);
-printf ("\n\nattached [%s] to an icalcomponent [%s] \n\n", attach_item->filename, uid);
-			} else 
-				g_free (attach_file_url);
+				comp_attach_list = g_slist_append (comp_attach_list, g_strdup (attach_file_url));
+			}
 		}
 
 		g_free (filename);
-//		g_free (attach_file_url);
+		g_free (attach_file_url);
 	}
 
-	e_cal_component_set_attachment_list (comp, comp_attachment_list);
+	e_cal_component_set_attachment_list (comp, comp_attach_list);
 }
 
 void
@@ -202,9 +220,8 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 				  GSList *recipients, GSList *attachments, const icaltimezone *default_zone)
 {
 	struct timeval t;
-	const char *subject = NULL;
+	const gchar *subject = NULL;
 	const char *body = NULL;
-	const char *location = NULL;
 	const uint32_t *priority;
 	const uint32_t *sensitivity;
 	icalcomponent *ical_comp;
@@ -214,9 +231,9 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 	ical_comp = e_cal_component_get_icalcomponent (comp);
 	utc_zone = icaltimezone_get_utc_timezone ();
 
-	subject = (const char *)find_mapi_SPropValue_data(properties, PR_SUBJECT);
+	subject = (const gchar *)find_mapi_SPropValue_data(properties, PR_SUBJECT);
 	if (!subject)
-		subject = (const char *)find_mapi_SPropValue_data(properties, PR_NORMALIZED_SUBJECT);
+		subject = (const gchar *)find_mapi_SPropValue_data(properties, PR_NORMALIZED_SUBJECT);
 	/* FIXME: you gotta better way to do this ?? */
 	if (!subject) {
 		const gchar *tmp;
@@ -226,8 +243,7 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 			subject = g_strndup (tmp, (strlen(tmp) - 4));
 		}
 	} 
-	body = (const char *)find_mapi_SPropValue_data(properties, PR_BODY);
-	location = (const char *)find_mapi_SPropValue_data(properties, 0x8208001e);
+//	body = (const char *)find_mapi_SPropValue_data(properties, PR_BODY);
 
 	/* set dtstamp - in UTC */
 	if (get_mapi_SPropValue_array_date_timeval (&t, properties, PR_CREATION_TIME) == MAPI_E_SUCCESS)
@@ -251,24 +267,27 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 		icalcomponent_set_summary (ical_comp, subject);
 	if (body && *body)
 		icalcomponent_set_description (ical_comp, body);
-	if (location && *location)
-		icalcomponent_set_location (ical_comp, location);
 
 	if (icalcomponent_isa (ical_comp) == ICAL_VEVENT_COMPONENT) {
+		const char *location = NULL;
 		const uint32_t *transp;
 		const bool *all_day;
 		const bool *recurring;
 		const bool *reminder_set;
 
-		all_day = (const bool *)find_mapi_SPropValue_data(properties, 0x8215000B);
+		location = (const char *)exchange_mapi_util_find_array_propval(properties, PROP_TAG(PT_STRING8, 0x8208));
+		if (location && *location)
+			icalcomponent_set_location (ical_comp, location);
 
-		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PR_START_DATE) == MAPI_E_SUCCESS)
+		all_day = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8215));
+
+		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PROP_TAG(PT_SYSTIME, 0x820D)) == MAPI_E_SUCCESS)
 			icalcomponent_set_dtstart (ical_comp, foo (t.tv_sec, (all_day && *all_day), default_zone));
 
-		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PR_END_DATE) == MAPI_E_SUCCESS)
+		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PROP_TAG(PT_SYSTIME, 0x820E)) == MAPI_E_SUCCESS)
 			icalcomponent_set_dtend (ical_comp, foo (t.tv_sec, (all_day && *all_day), default_zone));
 
-		transp = (const uint32_t *)find_mapi_SPropValue_data(properties, 0x82050003);
+		transp = (const uint32_t *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_LONG, 0x8205));
 		if (transp) {
 			icalproperty_transp ical_transp;
 			switch (*transp) {
@@ -292,23 +311,24 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 			icalcomponent_add_property (ical_comp, prop);
 		}
 
-		recurring = (const bool *)find_mapi_SPropValue_data(properties, 0x8223000B);
+		recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8223));
 		if (recurring && *recurring) {
 			/* FIXME: recurrence */
 		}
 
 		/* FIXME: the ALARM definitely needs more work */
-		reminder_set = (const bool *)find_mapi_SPropValue_data(properties, 0x8503000B);
+		reminder_set = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8503));
 		if (reminder_set && *reminder_set) {
 			struct timeval start, before;
 
-			if ((get_mapi_SPropValue_array_date_timeval (&start, properties, 0x85160040) == MAPI_E_SUCCESS) 
-			 && (get_mapi_SPropValue_array_date_timeval (&before, properties, 0x85600040) == MAPI_E_SUCCESS)) {
+			if ((get_mapi_SPropValue_array_date_timeval (&start, properties, PROP_TAG(PT_SYSTIME, 0x8502)) == MAPI_E_SUCCESS) 
+			 && (get_mapi_SPropValue_array_date_timeval (&before, properties, PROP_TAG(PT_SYSTIME, 0x8560)) == MAPI_E_SUCCESS)) {
 				ECalComponentAlarm *e_alarm = e_cal_component_alarm_new ();
 				ECalComponentAlarmTrigger trigger;
 
 				trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
-				trigger.u.rel_duration = icaltime_subtract (icaltime_from_timet_with_zone (before.tv_sec, 0, 0), icaltime_from_timet_with_zone (start.tv_sec, 0, 0));
+				trigger.u.rel_duration = icaltime_subtract (icaltime_from_timet_with_zone (before.tv_sec, 0, 0), 
+									    icaltime_from_timet_with_zone (start.tv_sec, 0, 0));
 
 				e_cal_component_alarm_set_action (e_alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
 				e_cal_component_alarm_set_trigger (e_alarm, trigger);
@@ -323,12 +343,12 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 		const uint32_t *status;
 
 		/* NOTE: Exchange tasks are DATE values, not DATE-TIME values, but maybe someday, we could expect Exchange to support it ;) */
-		if (get_mapi_SPropValue_array_date_timeval (&t, properties, 0x81040040) == MAPI_E_SUCCESS)
+		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PROP_TAG(PT_SYSTIME, 0x8104)) == MAPI_E_SUCCESS)
 			icalcomponent_set_dtstart (ical_comp, foo (t.tv_sec, 0, default_zone));
-		if (get_mapi_SPropValue_array_date_timeval (&t, properties, 0x81050040) == MAPI_E_SUCCESS)
+		if (get_mapi_SPropValue_array_date_timeval (&t, properties, PROP_TAG(PT_SYSTIME, 0x8105)) == MAPI_E_SUCCESS)
 			icalcomponent_set_due (ical_comp, foo (t.tv_sec, 0, default_zone));
 
-		status = (const uint32_t *)find_mapi_SPropValue_data(properties, 0x81010003);
+		status = (const uint32_t *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_LONG, 0x8101));
 		if (status) {
 			icalproperty_status ical_status;
 			switch (*status) {
@@ -351,7 +371,8 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 					break;
 			}
 			icalcomponent_set_status (ical_comp, ical_status);
-			if (*status == olTaskComplete && get_mapi_SPropValue_array_date_timeval (&t, properties, 0x810F0040) == MAPI_E_SUCCESS) {
+			if (*status == olTaskComplete 
+			&& get_mapi_SPropValue_array_date_timeval (&t, properties, PROP_TAG(PT_SYSTIME, 0x810F)) == MAPI_E_SUCCESS) {
 				if ((prop = icalcomponent_get_first_property (ical_comp, ICAL_COMPLETED_PROPERTY)) != 0)
 					icalcomponent_remove_property (ical_comp, prop);
 				prop = icalproperty_new_completed (foo (t.tv_sec, 0, default_zone));
@@ -359,7 +380,7 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 			}
 		}
 
-		complete = (const double *)find_mapi_SPropValue_data(properties, 0x81020005);
+		complete = (const double *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_DOUBLE, 0x8102));
 		if (complete) {
 			if ((prop = icalcomponent_get_first_property (ical_comp, ICAL_PERCENTCOMPLETE_PROPERTY)) != 0)
 				icalcomponent_remove_property (ical_comp, prop);
@@ -430,24 +451,77 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValu
 	set_attachments_to_cal_component (cbmapi, comp, attachments);
 }
 
+#define CAL_NAMED_PROPS_N  0
+#define TASK_NAMED_PROPS_N 0
+#define MEMO_NAMED_PROPS_N 0
+
 gboolean
 build_name_id (struct mapi_nameid *nameid, gpointer data)
 {
-	ECalComponent *comp = E_CAL_COMPONENT (data);
+	ECalBackendMAPI *cbmapi	= E_CAL_BACKEND_MAPI (data);
+	icalcomponent_kind kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi));
 
-	mapi_nameid_OOM_add(nameid, "Location", PSETID_Appointment);
-	mapi_nameid_OOM_add(nameid, "BusyStatus", PSETID_Appointment);
-	mapi_nameid_OOM_add(nameid, "MeetingStatus", PSETID_Appointment);
-	mapi_nameid_OOM_add(nameid, "CommonStart", PSETID_Common);
-	mapi_nameid_OOM_add(nameid, "CommonEnd", PSETID_Common);
-//	mapi_nameid_OOM_add(nameid, "Label", PSETID_Appointment);
-//	mapi_nameid_OOM_add(nameid, "ReminderMinutesBeforeStart", PSETID_Common);
+	/* NOTE: Avoid using mapi_nameid_OOM_add because: 
+	 * a) its inefficient (uses strcmp) 
+	 * b) names may vary in different server versions 
+	 */
+
+	mapi_nameid_lid_add(nameid, 0x8501, PSETID_Common); 	// PT_LONG - ReminderMinutesBeforeStart
+	mapi_nameid_lid_add(nameid, 0x8502, PSETID_Common); 	// PT_SYSTIME - ReminderTime
+	mapi_nameid_lid_add(nameid, 0x8503, PSETID_Common); 	// PT_BOOLEAN - ReminderSet
+	mapi_nameid_lid_add(nameid, 0x8506, PSETID_Common); 	// PT_BOOLEAN - Private
+	mapi_nameid_lid_add(nameid, 0x8516, PSETID_Common); 	// PT_SYSTIME - CommonStart
+	mapi_nameid_lid_add(nameid, 0x8517, PSETID_Common); 	// PT_SYSTIME - CommonEnd
+	mapi_nameid_lid_add(nameid, 0x8560, PSETID_Common); 	// PT_SYSTIME - ReminderNextTime
+
+	if (kind == ICAL_VEVENT_COMPONENT) {
+//		mapi_nameid_lid_add(nameid, 0x8200, PSETID_Appointment); 	// PT_BOOLEAN - SendAsICAL
+		mapi_nameid_lid_add(nameid, 0x8205, PSETID_Appointment); 	// PT_LONG - BusyStatus
+		mapi_nameid_lid_add(nameid, 0x8208, PSETID_Appointment); 	// PT_STRING8 - Location
+		mapi_nameid_lid_add(nameid, 0x820D, PSETID_Appointment); 	// PT_SYSTIME - Start/ApptStartWhole
+		mapi_nameid_lid_add(nameid, 0x820E, PSETID_Appointment); 	// PT_SYSTIME - End/ApptEndWhole
+		mapi_nameid_lid_add(nameid, 0x8213, PSETID_Appointment); 	// PT_LONG - Duration/ApptDuration
+//		mapi_nameid_lid_add(nameid, 0x8214, PSETID_Appointment); 	// PT_LONG - Label
+		mapi_nameid_lid_add(nameid, 0x8215, PSETID_Appointment); 	// PT_BOOLEAN - AllDayEvent
+		mapi_nameid_lid_add(nameid, 0x8217, PSETID_Appointment); 	// PT_LONG - MeetingStatus
+		mapi_nameid_lid_add(nameid, 0x8218, PSETID_Appointment); 	// PT_LONG - ResponseStatus
+		mapi_nameid_lid_add(nameid, 0x8223, PSETID_Appointment); 	// PT_BOOLEAN - IsRecurring/Recurring
+//		mapi_nameid_lid_add(nameid, 0x8231, PSETID_Appointment); 	// PT_LONG - RecurrenceType
+//		mapi_nameid_lid_add(nameid, 0x8232, PSETID_Appointment); 	// PT_STRING8 - RecurrencePattern
+//		mapi_nameid_lid_add(nameid, 0x8234, PSETID_Appointment); 	// PT_STRING8 - TimeZone
+		mapi_nameid_lid_add(nameid, 0x8235, PSETID_Appointment); 	// PT_SYSTIME - (dtstart)(for recurring events UTC 12 AM of day of start)
+		mapi_nameid_lid_add(nameid, 0x8236, PSETID_Appointment); 	// PT_SYSTIME - (dtend)(for recurring events UTC 12 AM of day of end)
+//		mapi_nameid_lid_add(nameid, 0x8238, PSETID_Appointment); 	// PT_STRING8 - AllAttendees
+//		mapi_nameid_lid_add(nameid, 0x823B, PSETID_Appointment); 	// PT_STRING8 - ToAttendeesString (dupe PR_DISPLAY_TO)
+//		mapi_nameid_lid_add(nameid, 0x823C, PSETID_Appointment); 	// PT_STRING8 - CCAttendeesString (dupe PR_DISPLAY_CC)
+		mapi_nameid_lid_add(nameid, 0x8240, PSETID_Appointment); 	// PT_BOOLEAN - IsOnlineMeeting
+		mapi_nameid_lid_add(nameid, 0x825E, PSETID_Appointment); 	// PT_BINARY - (timezone for dtstart)
+		mapi_nameid_lid_add(nameid, 0x825F, PSETID_Appointment); 	// PT_BINARY - (timezone for dtend)
+	} else if (kind == ICAL_VTODO_COMPONENT) {
+		mapi_nameid_lid_add(nameid, 0x8101, PSETID_Task); 	// PT_LONG - Status
+		mapi_nameid_lid_add(nameid, 0x8102, PSETID_Task); 	// PT_DOUBLE - PercentComplete
+//		mapi_nameid_lid_add(nameid, 0x8103, PSETID_Task); 	// PT_BOOLEAN - TeamTask
+		mapi_nameid_lid_add(nameid, 0x8104, PSETID_Task); 	// PT_SYSTIME - StartDate/TaskStartDate
+		mapi_nameid_lid_add(nameid, 0x8105, PSETID_Task); 	// PT_SYSTIME - DueDate/TaskDueDate
+		mapi_nameid_lid_add(nameid, 0x810F, PSETID_Task); 	// PT_SYSTIME - DateCompleted
+//		mapi_nameid_lid_add(nameid, 0x8110, PSETID_Task); 	// PT_LONG - ActualWork/TaskActualEffort
+//		mapi_nameid_lid_add(nameid, 0x8111, PSETID_Task); 	// PT_LONG - TotalWork/TaskEstimatedEffort
+		mapi_nameid_lid_add(nameid, 0x811C, PSETID_Task); 	// PT_BOOLEAN - Complete
+//		mapi_nameid_lid_add(nameid, 0x811F, PSETID_Task); 	// PT_STRING8 - Owner
+//		mapi_nameid_lid_add(nameid, 0x8121, PSETID_Task); 	// PT_STRING8 - Delegator
+		mapi_nameid_lid_add(nameid, 0x8126, PSETID_Task); 	// PT_BOOLEAN - IsRecurring/TaskFRecur
+//		mapi_nameid_lid_add(nameid, 0x8127, PSETID_Task); 	// PT_STRING8 - Role
+//		mapi_nameid_lid_add(nameid, 0x8129, PSETID_Task); 	// PT_LONG - Ownership
+//		mapi_nameid_lid_add(nameid, 0x812A, PSETID_Task); 	// PT_LONG - DelegationState
+	} else if (kind == ICAL_VJOURNAL_COMPONENT) {
+//		mapi_nameid_lid_add(nameid, 0x8B00, PSETID_Note); 	// PT_LONG - Color
+	}
 
 	return TRUE;
 }
 
 int
-build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray, gpointer data)
+build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data)
 {
 	ECalComponent *comp = E_CAL_COMPONENT (data);
 	icalcomponent *ical_comp = e_cal_component_get_icalcomponent (comp);
@@ -461,10 +535,47 @@ build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray, gpo
 
 	props = g_new (struct SPropValue, 40); //FIXME: Correct value tbd
 
-	set_SPropValue_proptag(&props[i++], PR_CONVERSATION_TOPIC, 
-						   (const void *) icalcomponent_get_summary (ical_comp));
+	/* FIXME: convert to unicode */
+	set_SPropValue_proptag(&props[i++], PR_SUBJECT, 
+					(const void *) icalcomponent_get_summary (ical_comp));
+	/* FIXME: convert to unicode */
 	set_SPropValue_proptag(&props[i++], PR_NORMALIZED_SUBJECT, 
-						   (const void *) icalcomponent_get_summary (ical_comp));
+					(const void *) icalcomponent_get_summary (ical_comp));
+	/* FIXME: convert to unicode */
+	set_SPropValue_proptag(&props[i++], PR_CONVERSATION_TOPIC, 
+					(const void *) icalcomponent_get_summary (ical_comp));
+
+	/* we don't support HTML event/task/memo editor */
+	flag = EDITOR_FORMAT_PLAINTEXT;
+	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, &flag);
+
+	/* it'd be better to convert, then set it in unicode */
+	set_SPropValue_proptag(&props[i++], PR_BODY, 
+					(const void *) icalcomponent_get_description (ical_comp));
+
+/* 
+PR_SENT_REPRESENTING_NAME
+PR_SENT_REPRESENTING_ADDRTYPE
+PR_SENT_REPRESENTING_EMAIL_ADDRESS
+PR_SENDER_NAME
+PR_SENDER_ADDRTYPE
+PR_SENDER_EMAIL_ADDRESS
+*/
+	if (icalcomponent_isa (ical_comp) == ICAL_VEVENT_COMPONENT) {
+		set_SPropValue_proptag(&props[i++], PR_MESSAGE_CLASS, (const void *)"IPM.Appointment");
+
+		flag = e_cal_component_has_attendees (comp) ? MEETING_STATUS_MEETING : MEETING_STATUS_NONMEETING;
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[2], (const void *) &flag);
+
+	} else if (icalcomponent_isa (ical_comp) == ICAL_VTODO_COMPONENT) {
+		set_SPropValue_proptag(&props[i++], PR_MESSAGE_CLASS, (const void *)"IPM.Task");
+
+	} else if (icalcomponent_isa (ical_comp) == ICAL_VJOURNAL_COMPONENT) {
+		set_SPropValue_proptag(&props[i++], PR_MESSAGE_CLASS, (const void *)"IPM.StickyNote");
+
+	}
+
+
 
 	t.tv_sec = icaltime_as_timet_with_zone (icalcomponent_get_dtstart (ical_comp), utc_zone);
 	t.tv_usec = 0;
@@ -474,30 +585,25 @@ build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray, gpo
 	t.tv_usec = 0;
 	set_SPropValue_proptag_date_timeval(&props[i++], PR_END_DATE, &t);
 
-	set_SPropValue_proptag(&props[i++], PR_MESSAGE_CLASS, (const void *)"IPM.Appointment");
 
 	flag = 1;
 	set_SPropValue_proptag(&props[i++], PR_MESSAGE_FLAGS, (const void *) &flag);
 
-	set_SPropValue_proptag(&props[i++], SPropTagArray->aulPropTag[0], (const void *) icalcomponent_get_location (ical_comp));
+	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[0], (const void *) icalcomponent_get_location (ical_comp));
 
 	flag = 2;
-	set_SPropValue_proptag(&props[i++], SPropTagArray->aulPropTag[1], (const void *) &flag);
+	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[1], (const void *) &flag);
 
-	flag= MEETING_STATUS_NONMEETING;
-	set_SPropValue_proptag(&props[i++], SPropTagArray->aulPropTag[2], (const void *) &flag);
 
 //	flag2 = true;
 
-	set_SPropValue_proptag_date_timeval(&props[i++], SPropTagArray->aulPropTag[3], &t);
-	set_SPropValue_proptag_date_timeval(&props[i++], SPropTagArray->aulPropTag[4], &t);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[3], &t);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[4], &t);
 
-//	set_SPropValue_proptag(&props[i++], SPropTagArray->aulPropTag[5], (const void *)&oclient->label);
+//	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[5], (const void *)&oclient->label);
 
 //	flag = 30;
-//	set_SPropValue_proptag(&props[i++], SPropTagArray->aulPropTag[6], (const void *)&flag);
-
-	set_SPropValue_proptag(&props[i++], PR_BODY, (const void *) icalcomponent_get_description (ical_comp));
+//	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[6], (const void *)&flag);
 
 	*value = props;
 	return i;

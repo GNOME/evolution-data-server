@@ -235,7 +235,8 @@ debug_mapi_property_dump (struct mapi_SPropValue_array *properties)
 	}
 }
 static gboolean
-fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
+fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
+		GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(data);
 	GSList *slist = mapi_folder->priv->item_list;
@@ -441,6 +442,18 @@ mapi_sync_summary (CamelFolder *folder, CamelException *ex)
 /* 	camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary); */
 }
 
+static const uint32_t GetPropsList[] = {
+	PR_URL_NAME,
+	PR_MESSAGE_SIZE,
+	PR_MESSAGE_DELIVERY_TIME,
+	PR_MESSAGE_FLAGS,
+	PR_SENT_REPRESENTING_NAME,
+	PR_DISPLAY_TO,
+	PR_DISPLAY_CC,
+	PR_DISPLAY_BCC
+};
+static const uint16_t n_GetPropsList = G_N_ELEMENTS (GetPropsList);
+
 void
 mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 {
@@ -491,26 +504,13 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 	/*Get the New Items*/
 	if (!is_proxy) {
 		char *source;
-		struct SPropTagArray *SPropTagArray;
 /* 		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) { */
 /* 			source = NULL; */
 /* 		} else { */
 /* 			source = "sent received"; */
 /* 		} */
 		mapi_id_t temp_folder_id;
-		TALLOC_CTX *mem_ctx;
-		mem_ctx = talloc_init("Evolution");
 		exchange_mapi_util_mapi_id_from_string (folder_id, &temp_folder_id);
-
-		SPropTagArray = set_SPropTagArray( mem_ctx, 8,
-						   PR_URL_NAME,
-						   PR_MESSAGE_SIZE,
-						   PR_MESSAGE_DELIVERY_TIME,
-						   PR_MESSAGE_FLAGS,
-						   PR_SENT_REPRESENTING_NAME,
-						   PR_DISPLAY_TO,
-						   PR_DISPLAY_CC,
-						   PR_DISPLAY_BCC);
 
 		if (!camel_mapi_store_connected (mapi_store, ex)) {
 			//TODO : Fix exception string.
@@ -519,7 +519,7 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 			goto end2;
 		}
 
-		status = exchange_mapi_connection_fetch_items (temp_folder_id, SPropTagArray, NULL, NULL, fetch_items_cb, folder);
+		status = exchange_mapi_connection_fetch_items (temp_folder_id, GetPropsList, n_GetPropsList, NULL, NULL, fetch_items_cb, folder);
 
 		if (!status) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Fetch items failed"));
@@ -632,7 +632,8 @@ end1:
 }
 
 static gpointer
-fetch_item_cb (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, GSList *recipients, GSList *attachments)
+fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, 
+		GSList *streams, GSList *recipients, GSList *attachments)
 {
 	debug_mapi_property_dump (array);
 	long *flags;
@@ -888,7 +889,7 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	exchange_mapi_util_mapi_ids_from_uid (uid, &id_folder, &id_message);
 
 	folder_id =  g_strdup (camel_mapi_store_folder_id_lookup (mapi_store, folder->full_name)) ;
-	item = exchange_mapi_connection_fetch_item (id_folder, id_message, NULL, fetch_item_cb);
+	item = exchange_mapi_connection_fetch_item (id_folder, id_message, NULL, 0, NULL, fetch_item_cb, NULL);
 
 	if (item == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));

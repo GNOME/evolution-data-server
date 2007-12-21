@@ -672,7 +672,7 @@ e_book_backend_mapi_modify_contact (EBookBackend *backend,
 }
 
 static gpointer
-create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, GSList *recipients, GSList *attachments)
+create_contact_item (struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, GSList *streams, GSList *recipients, GSList *attachments)
 {
 	EContact *contact;
 	char *suid;
@@ -748,7 +748,7 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 			mapi_id_t fid, mid;
 			
 			exchange_mapi_util_mapi_ids_from_uid (id, &fid, &mid);
-			contact = exchange_mapi_connection_fetch_item (priv->fid, mid, NULL, create_contact_item);
+			contact = exchange_mapi_connection_fetch_item (priv->fid, mid, NULL, 0, NULL, create_contact_item, NULL);
 
 			if (contact) {
 				e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
@@ -777,7 +777,8 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 }
 
 static gboolean
-create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
+create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
+			GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	GList *list = * (GList **) data;
 	EContact *contact;
@@ -803,26 +804,29 @@ create_contact_list_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid
 	return TRUE;
 }
 
-static struct SPropTagArray *
-build_ptags (TALLOC_CTX *ctx)
-{
-	struct SPropTagArray *SPropTagArray;
+static const uint32_t GetPropsList[] = {
+	PR_FID,
+	PR_MID,
+	PR_INST_ID,
+	PR_INSTANCE_NUM,
+	PR_SUBJECT,
+	PR_MESSAGE_CLASS,
+	PR_HASATTACH,
+/* FIXME: is this tag fit to check if a recipient table exists or not ? */
+//	PR_DISCLOSURE_OF_RECIPIENTS,
+	PR_RULE_MSG_PROVIDER,
+	PR_RULE_MSG_NAME
+};
+static const uint16_t n_GetPropsList = G_N_ELEMENTS (GetPropsList);
 
-	SPropTagArray = set_SPropTagArray(ctx, 10,
-					  PR_FID,
-					  PR_MID,
-					  PR_INST_ID,
-					  PR_INSTANCE_NUM,
-					  PR_SUBJECT,
-					  0x801f001e,
-					  0x8020001e,
-					  0x8021001e,
-					  PR_MESSAGE_CLASS,
-					  PR_HASATTACH,
-					  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
-//					  PR_DISCLOSURE_OF_RECIPIENTS,
-					  PR_RULE_MSG_PROVIDER,
-					  PR_RULE_MSG_NAME);
+gboolean
+build_name_id_for_getprops (struct mapi_nameid *nameid, gpointer data)
+{
+	mapi_nameid_lid_add(nameid, 0x8084, PSETID_Address); /* PT_STRING8 - EmailOriginalDisplayName */
+//	mapi_nameid_lid_add(nameid, 0x8020, PSETID_Address);
+//	mapi_nameid_lid_add(nameid, 0x8021, PSETID_Address);
+
+	return TRUE;
 }
 
 static void
@@ -892,7 +896,9 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 				return ;				
 			}
 
-			if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, &res, build_ptags, create_contact_list_cb, &vcard_str)) {
+			if (!exchange_mapi_connection_fetch_items (priv->fid, 
+								GetPropsList, n_GetPropsList, build_name_id_for_getprops, 
+								&res, create_contact_list_cb, &vcard_str)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;
 			}
@@ -1123,7 +1129,8 @@ get_contacts_from_cache (EBookBackendMAPI *ebmapi,
 }
 
 static gboolean
-create_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
+create_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
+		   GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	EDataBookView *book_view = data;
 	BESearchClosure *closure = get_closure (book_view);
@@ -1278,7 +1285,7 @@ book_view_thread (gpointer data)
 
 		//FIXME: We need to fetch only the query from the server live and not everything.
 		/* execute the query */
-		if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, create_contact_cb,  book_view)) {
+		if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, create_contact_cb, book_view)) {
 			if (e_flag_is_set (closure->running))
 				e_data_book_view_notify_complete (book_view, 
 								  GNOME_Evolution_Addressbook_OtherError);	
@@ -1337,7 +1344,8 @@ e_book_backend_mapi_get_changes (EBookBackend *backend,
 }
 
 static gboolean 
-cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data)
+cache_contact_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
+		  GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	EBookBackendMAPI *be = data;
 	EContact *contact;
@@ -1380,7 +1388,7 @@ build_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, NULL, NULL, cache_contact_cb, ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, cache_contact_cb, ebmapi)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;
@@ -1396,27 +1404,6 @@ build_cache (EBookBackendMAPI *ebmapi)
 	return NULL;		
 }
 
-static struct SPropTagArray *
-build_ptags_update (TALLOC_CTX *ctx)
-{
-	struct SPropTagArray *SPropTagArray;
-	
-	SPropTagArray = set_SPropTagArray(ctx, 10,
-					  PR_FID,
-					  PR_MID,
-					  PR_INST_ID,
-					  PR_INSTANCE_NUM,
-					  PR_SUBJECT,
-					  PR_LAST_MODIFICATION_TIME,
-					  PR_MESSAGE_CLASS,
-					  PR_HASATTACH,
-					  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
-//					  PR_DISCLOSURE_OF_RECIPIENTS,
-					  PR_RULE_MSG_PROVIDER,
-					  PR_RULE_MSG_NAME);
-
-	return SPropTagArray;
-}
 static gpointer
 update_cache (EBookBackendMAPI *ebmapi)
 {
@@ -1443,7 +1430,7 @@ update_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items (olFolderContacts, &res, build_ptags_update, cache_contact_cb, priv->fid, ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items ( priv->fid, NULL, 0, NULL, &res, cache_contact_cb,ebmapi)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;

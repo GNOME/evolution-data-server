@@ -19,25 +19,19 @@
  */
 
 
-#ifndef E_CAL_BACKEND_MAPI_UTILS_H
-#define E_CAL_BACKEND_MAPI_UTILS_H
+
+#ifndef E_CAL_BACKEND_MAPI_TZ_UTILS_H
+#define E_CAL_BACKEND_MAPI_TZ_UTILS_H
 #endif
 
-#include <e-cal-backend-mapi.h>
-#include <libecal/e-cal-component.h>
+#include <glib.h>
 
-void
-e_cal_backend_mapi_util_fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList **attach_list);
-//void
-//set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, GSList *attach_list);
+const gchar *
+e_cal_backend_mapi_tz_util_get_mapi_equivalent (const gchar *ical_tzid);
 
-void
-e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, struct mapi_SPropValue_array *properties, ECalComponent *comp, 
-				  GSList *recipients, GSList *attachments, const icaltimezone *default_zone);
+const gchar *
+e_cal_backend_mapi_tz_util_get_ical_equivalent (const gchar *mapi_tzid);
 
 gboolean
-build_name_id (struct mapi_nameid *nameid, gpointer data);
-
-int
-build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data);
+e_cal_backend_mapi_tz_util_populate ();
 

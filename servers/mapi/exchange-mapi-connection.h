@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- *  Srinivasa Ragavan <sragavan@novell.com>
+ *  Authors:
+ *  	Srinivasa Ragavan <sragavan@novell.com>
+ *  	Suman Manjunath <msuman@novell.com>
  *  Copyright (C) 2007 Novell, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -47,11 +49,13 @@ struct id_list {
 	mapi_id_t id;
 };
 
-typedef gboolean (*FetchItemsCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments, gpointer data);
-typedef gpointer  (*FetchItemCallback) (struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, GSList *recipients, GSList *attachments);
-typedef gboolean  (*BuildNameID) (struct mapi_nameid	*nameid, gpointer data);
-typedef int  (*BuildProps) (struct SPropValue **, struct SPropTagArray *, gpointer data);
-typedef struct SPropTagArray *  (*BuildPropTagArray) (TALLOC_CTX *ctx);
+typedef gboolean (*FetchItemsCallback) 	(struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, 
+					GSList *streams, GSList *recipients, GSList *attachments, gpointer data);
+typedef gpointer (*FetchItemCallback) 	(struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, 
+					GSList *streams, GSList *recipients, GSList *attachments);
+typedef gboolean (*BuildNameID) 	(struct mapi_nameid *nameid, gpointer data);
+typedef int 	 (*BuildProps) 		(struct SPropValue **, struct SPropTagArray *, gpointer data);
+
 gboolean 
 exchange_mapi_connection_new (const char *profile, const char *password);
 
@@ -63,11 +67,14 @@ exchange_mapi_connection_exists (void);
 
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
-				     struct SPropTagArray *GetPropsTagArray, FetchItemCallback cb);
-
+				     const uint32_t *GetPropsList, const uint16_t cn_props, 
+				     BuildNameID build_name_id, 
+				     FetchItemCallback cb, 
+				     gpointer data);
 gboolean
-exchange_mapi_connection_fetch_items (mapi_id_t fid, struct SPropTagArray *GetPropsTagArray, 
-				      struct mapi_SRestriction *res, BuildPropTagArray bpta_cb, 
+exchange_mapi_connection_fetch_items (mapi_id_t fid, 
+				      const uint32_t *GetPropsList, const uint16_t cn_props, BuildNameID build_name_id,  
+				      struct mapi_SRestriction *res, 
 				      FetchItemsCallback cb, gpointer data);
 
 mapi_id_t 

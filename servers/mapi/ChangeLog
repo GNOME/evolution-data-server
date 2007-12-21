@@ -1,3 +1,24 @@
+2007-12-21  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_read_generic_stream),
+	(exchange_mapi_util_read_body_stream),
+	(exchange_mapi_util_delete_attachments),
+	(exchange_mapi_util_set_attachments),
+	(exchange_mapi_util_get_attachments), (exchange_mapi_create_item), 
+	(exchange_mapi_modify_item), (get_child_folders), 
+	(exchange_mapi_get_folders_list): Make use of function specific 
+	TALLOC_CTX for better re-usability. Related changes. 
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item): 
+	* exchange-mapi-connection.h: API changes in fetch_item(s) and 
+	fetch_item(s)_cb. Added support for using named properties while using
+	GetProps. 
+	* exchange-mapi-utils.c: (utf8tolinux),
+	(exchange_mapi_util_free_attachment_list),
+	(exchange_mapi_util_free_stream_list):
+	* exchange-mapi-utils.h: New utility functions. 
+
 2007-12-11  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c:

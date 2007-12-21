@@ -24,6 +24,10 @@
 #define EXCHANGE_MAPI_UTILS_H 
 
 #include <libmapi/libmapi.h>
+#include <glib.h>
+
+gchar *
+utf8tolinux (const char *wstring);
 
 gchar *
 exchange_mapi_util_mapi_id_to_string (mapi_id_t id);
@@ -39,5 +43,10 @@ void *
 exchange_mapi_util_find_row_propval (struct SRow *aRow, uint32_t proptag);
 void *
 exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties, uint32_t proptag);
+
+void 
+exchange_mapi_util_free_attachment_list (GSList **attach_list);
+void 
+exchange_mapi_util_free_stream_list (GSList **stream_list);
 
 #endif

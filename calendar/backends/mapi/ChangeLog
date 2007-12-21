@@ -1,3 +1,29 @@
+2007-12-21  Suman Manjunath  <msuman@novell.com>
+
+	* Makefile.am:
+	* e-cal-backend-mapi-tz-utils.c:
+	(e_cal_backend_mapi_tz_util_get_mapi_equivalent),
+	(e_cal_backend_mapi_tz_util_get_ical_equivalent),
+	(e_cal_backend_mapi_tz_util_populate):
+	* e-cal-backend-mapi-tz-utils.h: Basic utilities for timezone handling.
+	Incomplete. 
+	* e-cal-backend-mapi-utils.c:
+	(e_cal_backend_mapi_util_fetch_attachments),
+	(set_attachments_to_cal_component),
+	(e_cal_backend_mapi_props_to_comp), (build_name_id), (build_props):
+	* e-cal-backend-mapi-utils.h: Send attachments in components instead of
+	a dummy. Improved property mapping. 
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_authenticate),
+	(e_cal_backend_mapi_get_static_capabilities), (get_changes_cb),
+	(get_deltas), (cache_create_cb), (populate_cache), (cache_init),
+	(e_cal_backend_mapi_connect), (create_auth_mutex),
+	(e_cal_backend_mapi_open), (e_cal_backend_mapi_create_object),
+	(e_cal_backend_mapi_modify_object),
+	(e_cal_backend_mapi_discard_alarm), (e_cal_backend_mapi_init): Fixes 
+	for fetch_item(s) and fetch_item(s)_cb API changes. Use GetProps instead
+	of GetPropsAll. Don't process/accept items with recipients and/or 
+	recurring items (not supported temporarily). 
+
 2007-12-11  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi.c: (e_cal_backend_mapi_remove_object):

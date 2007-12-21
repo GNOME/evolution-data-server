@@ -1,3 +1,13 @@
+2007-12-21  Suman Manjunath  <msuman@novell.com>
+
+	* e-book-backend-mapi.c: (create_contact_item),
+	(e_book_backend_mapi_get_contact), (create_contact_list_cb),
+	(build_name_id_for_getprops),
+	(e_book_backend_mapi_get_contact_list), (create_contact_cb),
+	(book_view_thread), (cache_contact_cb), (build_cache),
+	(update_cache): Fixes for fetch_item(s) and fetch_item(s)_cb API change. 
+	Make use of GetProps instead of BuildPropTagArray (which has been removed).
+
 2007-12-11  Suman Manjunath  <msuman@novell.com>
 
 	* e-book-backend-mapi.c: (e_book_backend_mapi_remove_contacts):

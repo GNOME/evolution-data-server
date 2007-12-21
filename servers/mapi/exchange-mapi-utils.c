@@ -24,9 +24,31 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
 #include "exchange-mapi-utils.h"
+#include "exchange-mapi-connection.h"
 
+
+/* Converts a string from Windows-UTF8 to classic-UTF8.
+ * NOTE: If the returned value is non-NULL, the caller has to free the newly
+ * allocated string using g_free()
+ */
+gchar *
+utf8tolinux (const char *wstring)
+{
+	TALLOC_CTX 	*mem_ctx;
+	gchar		*newstr, *retval = NULL;
+
+	mem_ctx = talloc_init ("ExchangeMAPI_utf8tolinux");
+
+	newstr = windows_to_utf8(mem_ctx, wstring);
+
+	if (g_utf8_validate (newstr, -1, NULL)) 
+		retval = g_strdup (newstr);
+
+	talloc_free (mem_ctx);
+
+	return retval;
+}
 
 inline gchar *
 exchange_mapi_util_mapi_id_to_string (mapi_id_t id)
@@ -139,4 +161,37 @@ exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties,
 	return (void *)find_mapi_SPropValue_data(properties, proptag);
 }
 
+void 
+exchange_mapi_util_free_attachment_list (GSList **attach_list)
+{
+	GSList *l = *attach_list;
+
+	if(!l)
+		return;
+
+	for (; l != NULL; l = l->next) {
+		ExchangeMAPIAttachment *attachment = (ExchangeMAPIAttachment *) (l->data);
+		g_byte_array_free (attachment->value, TRUE);
+		attachment->value = NULL;
+	}
+	g_slist_free (l);
+	l = NULL;
+}
+
+void 
+exchange_mapi_util_free_stream_list (GSList **stream_list)
+{
+	GSList *l = *stream_list;
+
+	if(!l)
+		return;
+
+	for (; l != NULL; l = l->next) {
+		ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
+		g_byte_array_free (stream->value, TRUE);
+		stream->value = NULL;
+	}
+	g_slist_free (l);
+	l = NULL;
+}
 

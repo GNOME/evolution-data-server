@@ -1,6 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- *  Srinivasa Ragavan <sragavan@novell.com>
+ *  Authors:
+ *  	Srinivasa Ragavan <sragavan@novell.com>
+ *  	Suman Manjunath <msuman@novell.com>
  *  Copyright (C) 2007 Novell, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -146,15 +148,16 @@ exchange_mapi_connection_close ()
 }
 
 static gboolean 
-exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, uint32_t proptag, GSList **stream_list)
+exchange_mapi_util_read_generic_stream (mapi_object_t *obj_message, uint32_t proptag, GSList **stream_list)
 {
 	enum MAPISTATUS			retval;
+	TALLOC_CTX 			*mem_ctx;
 	DATA_BLOB 			body;
 	struct SPropTagArray 		*SPropTagArray;
 	struct SPropValue 		*lpProps;
-	uint32_t			count;
-	struct SRow			aRow;
-	const struct SBinary_short 	*bin = NULL;
+	uint32_t			count, i;
+	const struct SBinary_short 	*bin;
+	struct mapi_SPropValue_array 	properties_array;
 
 	/* sanity */
 	g_return_val_if_fail (obj_message, FALSE);
@@ -162,6 +165,8 @@ exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_
 
 	/* if compressed RTF stream, then return */
 	g_return_val_if_fail (proptag != PR_RTF_COMPRESSED, FALSE);
+
+	mem_ctx = talloc_init ("ExchangeMAPI_ReadGenericStream");
 
 	/* initialize body DATA_BLOB */
 	body.length = 0;
@@ -172,17 +177,18 @@ exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_
 	retval = GetProps(obj_message, SPropTagArray, &lpProps, &count);
 	MAPIFreeBuffer(SPropTagArray);
 
-	if (retval != MAPI_E_SUCCESS) {
+	if (retval != MAPI_E_SUCCESS || count != 0x1) {
 		mapi_errstr("GetProps", GetLastError());
 		return FALSE;
 	}
 
-	/* Build a SRow structure */
-	aRow.ulAdrEntryPad = 0;
-	aRow.cValues = count;
-	aRow.lpProps = lpProps;
+	/* Build a mapi_SPropValue_array structure */
+	properties_array.cValues = count;
+	properties_array.lpProps = talloc_array (mem_ctx, struct mapi_SPropValue, count);
+//	for (i=0; i < count; i++)
+		cast_mapi_SPropValue(&properties_array.lpProps[0], &lpProps[0]);
 
-	bin = (const struct SBinary_short *) find_SPropValue_data(&aRow, proptag);
+	bin = (const struct SBinary_short *) find_mapi_SPropValue_data(&properties_array, proptag);
 	if (bin && bin->lpb) {
 		body.data = talloc_memdup(mem_ctx, bin->lpb, bin->cb);
 		body.length = bin->cb;
@@ -220,16 +226,18 @@ exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_
 	if (retval == MAPI_E_SUCCESS && body.length) {
 		ExchangeMAPIStream 	*stream = g_new0 (ExchangeMAPIStream, 1);
 
+		/* This call is needed in case the read stream was a named prop. */
+		mapi_SPropValue_array_named (obj_message, &properties_array);
+
 		stream->value = g_byte_array_sized_new (body.length);
 		stream->value = g_byte_array_append (stream->value, body.data, body.length);
 
-		stream->proptag = proptag;
+		stream->proptag = properties_array.lpProps[0].ulPropTag;
 
 		*stream_list = g_slist_append (*stream_list, stream);
 	}
 
-	if (body.length)
-		talloc_free (body.data);
+	talloc_free (mem_ctx);
 
 	return (retval == MAPI_E_SUCCESS);
 }
@@ -238,9 +246,10 @@ exchange_mapi_util_read_generic_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_
  * Fetch the body given PR_MSG_EDITOR_FORMAT property value
  */
 static gboolean
-exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList **stream_list)
+exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream_list)
 {
 	enum MAPISTATUS			retval;
+	TALLOC_CTX 			*mem_ctx;
 	struct SPropTagArray		*SPropTagArray;
 	struct SPropValue		*lpProps;
 	struct SRow			aRow;
@@ -256,6 +265,8 @@ exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mes
 
 	/* sanity check */
 	g_return_val_if_fail (obj_message, FALSE);
+
+	mem_ctx = talloc_init ("ExchangeMAPI_ReadBodyStream");
 
 	/* Build the array of properties we want to fetch */
 	SPropTagArray = set_SPropTagArray(mem_ctx, 0x8,
@@ -315,7 +326,7 @@ exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mes
 				body.data = talloc_memdup(mem_ctx, data, strlen(data));
 				body.length = strlen(data);
 				retval = MAPI_E_SUCCESS;
-			} else if (exchange_mapi_util_read_generic_stream (mem_ctx, obj_message, PR_HTML, stream_list)) {
+			} else if (exchange_mapi_util_read_generic_stream (obj_message, PR_HTML, stream_list)) {
 				retval = MAPI_E_SUCCESS;
 			}
 			break;
@@ -355,30 +366,32 @@ exchange_mapi_util_read_body_stream (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mes
 		*stream_list = g_slist_append (*stream_list, stream);
 	}
 
-	if (body.length) 
-		talloc_free (body.data);
+	talloc_free (mem_ctx);
 
 	return (retval == MAPI_E_SUCCESS);
 }
 
 static gboolean
-exchange_mapi_util_delete_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message)
+exchange_mapi_util_delete_attachments (mapi_object_t *obj_message)
 {
-	/* FIXME: write the code */
+	/* FIXME: write the code after API is implemented in libmapi */
 	return TRUE;
 }
 
 /* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
 static gboolean
-exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList *attach_list, gboolean remove_existing)
+exchange_mapi_util_set_attachments (mapi_object_t *obj_message, GSList *attach_list, gboolean remove_existing)
 {
+	TALLOC_CTX 	*mem_ctx;
 	const uint32_t 	cn_props_attach = 4;
 	GSList 		*l;
 	enum MAPISTATUS	retval;
 	gboolean 	status = TRUE;
 
 	if (remove_existing)
-		exchange_mapi_util_delete_attachments (mem_ctx, obj_message);
+		exchange_mapi_util_delete_attachments (obj_message);
+
+	mem_ctx = talloc_init ("ExchangeMAPI_SetAttachments");
 
 	for (l = attach_list; l; l = l->next) {
 		ExchangeMAPIAttachment 	*attachment = (ExchangeMAPIAttachment *) (l->data);
@@ -389,7 +402,7 @@ exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mess
 		mapi_object_t		obj_attach;
 		mapi_object_t		obj_stream;
 
-		props_attach = g_new (struct SPropValue, cn_props_attach);
+		props_attach = talloc_array (mem_ctx, struct SPropValue, cn_props_attach);
 		mapi_object_init(&obj_attach);
 		mapi_object_init(&obj_stream);
 
@@ -464,23 +477,28 @@ exchange_mapi_util_set_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mess
 			status = FALSE;
 		mapi_object_release(&obj_stream);
 		mapi_object_release(&obj_attach);
-		g_free (props_attach);
+		talloc_free (props_attach);
 	}
+
+	talloc_free (mem_ctx);
 
 	return status;
 }
 
 /* Returns TRUE if all attachments were read succcesfully, else returns FALSE */
 static gboolean
-exchange_mapi_util_get_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message, GSList **attach_list)
+exchange_mapi_util_get_attachments (mapi_object_t *obj_message, GSList **attach_list)
 {
 	enum MAPISTATUS		retval;
+	TALLOC_CTX 		*mem_ctx;
 	mapi_object_t 		obj_tb_attach;
 	struct SPropTagArray	*proptags;
 	struct SRowSet		rows_attach;
 	uint32_t		attach_count;
 	uint32_t		i_row_attach;
 	gboolean 		status = TRUE;
+
+	mem_ctx = talloc_init ("ExchangeMAPI_GetAttachments");
 
 	/* do we need MIME tag, MIME sequence etc ? */
 	proptags = set_SPropTagArray(mem_ctx, 0x7, 
@@ -570,7 +588,7 @@ exchange_mapi_util_get_attachments (TALLOC_CTX *mem_ctx, mapi_object_t *obj_mess
 			}
 		}
 
-		/* FIXME: should we utf8tolinux (mem_ctx, buf_data) ??*/
+		/* FIXME: should we utf8tolinux (buf_data) ??*/
 
 		if (retval == MAPI_E_SUCCESS) {
 			ExchangeMAPIAttachment 	*attachment = g_new0 (ExchangeMAPIAttachment, 1);
@@ -597,51 +615,17 @@ cleanup:
 	if (retval != MAPI_E_SUCCESS)
 		status = FALSE;
 	mapi_object_release(&obj_tb_attach);
-	MAPIFreeBuffer(proptags);
+	talloc_free (mem_ctx);
 
 	return status;
-}
-
-struct SPropTagArray *
-exchange_mapi_util_SPropTagArray_new (uint32_t prop_nb, ...)
-{
-	struct SPropTagArray	*SPropTag;
-	va_list			ap;
-	uint32_t		i;
-	uint32_t		*aulPropTag;
-
-	printf("%s(%d):%s:prop_nb : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, prop_nb);
-	aulPropTag = g_new0(uint32_t, prop_nb);
-
-	va_start(ap, prop_nb);
-	for (i = 0; i < prop_nb; i++) {
-		aulPropTag[i] = va_arg(ap, int);
-		printf("%s(%d):%s:aulPropTag[i] = %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, aulPropTag[i]);
-	}
-	va_end(ap);
-
-	SPropTag = g_new0 (struct SPropTagArray, 1);
-	SPropTag->aulPropTag = aulPropTag;
-	SPropTag->cValues = prop_nb;
-
-	return SPropTag;
-}
-
-void 
-exchange_mapi_util_SPropTagArray_free (struct SPropTagArray * SPropTagArray)
-{
-	g_return_if_fail (SPropTagArray != NULL);
-
-	g_free (SPropTagArray->aulPropTag);
-	g_free (SPropTagArray);
 }
 
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
 gboolean
 exchange_mapi_connection_fetch_items   (mapi_id_t fid, 
-					struct SPropTagArray *GetPropsTagArray, 
+					const uint32_t *GetPropsList, const uint16_t cn_props, 
+					BuildNameID build_name_id, 
 					struct mapi_SRestriction *res,
-					BuildPropTagArray bpta_cb, 
 					FetchItemsCallback cb, 
 					gpointer data)
 {
@@ -650,7 +634,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 	mapi_object_t obj_store;
 	mapi_object_t obj_folder;
 	mapi_object_t obj_table;
-	struct SPropTagArray *SPropTagArray;
+	struct SPropTagArray *SPropTagArray, *GetPropsTagArray;
 	struct SRowSet SRowSet;
 	uint32_t count, i;
 	gboolean result = FALSE;
@@ -684,22 +668,22 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		goto cleanup;
 	}
 
-	if (bpta_cb)
-		SPropTagArray = bpta_cb (mem_ctx);
-	else {
-		SPropTagArray = set_SPropTagArray(mem_ctx, 0x9,
-						  PR_FID,
-						  PR_MID,
-						  PR_INST_ID,
-						  PR_INSTANCE_NUM,
-						  PR_SUBJECT,
-						  PR_MESSAGE_CLASS,
-						  PR_HASATTACH,
-						  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
-//					          PR_DISCLOSURE_OF_RECIPIENTS,
-						  PR_RULE_MSG_PROVIDER,
-						  PR_RULE_MSG_NAME);
-	}
+	GetPropsTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+	GetPropsTagArray->cValues = 0;
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0xA,
+					  PR_FID,
+					  PR_MID,
+					  PR_INST_ID,
+					  PR_INSTANCE_NUM,
+					  PR_SUBJECT,
+					  PR_MESSAGE_CLASS,
+					  PR_LAST_MODIFICATION_TIME,
+					  PR_HASATTACH,
+					  /* FIXME: is this tag fit to check if a recipient table exists or not ? */
+//				          PR_DISCLOSURE_OF_RECIPIENTS,
+					  PR_RULE_MSG_PROVIDER,
+					  PR_RULE_MSG_NAME);
 
 	/* Set primary columns to be fetched */
 	retval = SetColumns(&obj_table, SPropTagArray);
@@ -731,6 +715,43 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		goto cleanup;
 	}
 
+	if ((GetPropsList && (cn_props > 0)) || build_name_id) {
+		struct SPropTagArray *NamedPropsTagArray;
+		uint32_t m, n=0;
+		struct mapi_nameid *nameid;
+
+		nameid = mapi_nameid_new(mem_ctx);
+		NamedPropsTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+		NamedPropsTagArray->cValues = 0;
+		/* Add named props using callback */
+		if (build_name_id) {
+			if (!build_name_id (nameid, data)) {
+				g_warning ("%s(%d): (%s): Could not build named props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+				goto GetProps_cleanup;
+			}
+
+			retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, NamedPropsTagArray);
+			if (retval != MAPI_E_SUCCESS) {
+				mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
+				goto GetProps_cleanup;
+			}
+		}
+
+		GetPropsTagArray->cValues = (cn_props + NamedPropsTagArray->cValues);
+		GetPropsTagArray->aulPropTag = talloc_array(mem_ctx, uint32_t, (cn_props + NamedPropsTagArray->cValues));
+
+		for (m = 0; m < NamedPropsTagArray->cValues; m++, n++)
+			GetPropsTagArray->aulPropTag[n] = NamedPropsTagArray->aulPropTag[m];
+
+		for (m = 0; m < cn_props; m++, n++)
+			GetPropsTagArray->aulPropTag[n] = GetPropsList[m];
+
+	GetProps_cleanup:
+			MAPIFreeBuffer (NamedPropsTagArray);
+			talloc_free (nameid);
+	}
+
 	for (i = 0; i < SRowSet.cRows; i++) {
 		mapi_object_t obj_message;
 		struct mapi_SPropValue_array properties_array;
@@ -757,28 +778,27 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		}
 
 		if (has_attach && *has_attach)
-			exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
+			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 
 		if (disclose_recipients && *disclose_recipients) {
 			//TODO : RecipientTable handling. 
 		}
 
 		/* get the main body stream no matter what */
-		exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
+		exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
 
-		if (GetPropsTagArray) {
+		if (GetPropsTagArray->cValues) {
 			struct SPropValue *lpProps;
-			uint32_t prop_count = 0, i;
+			uint32_t prop_count = 0, k;
 
 			lpProps = talloc_zero(mem_ctx, struct SPropValue);
-
 			retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
 
 			/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
 			properties_array.cValues = prop_count;
 			properties_array.lpProps = talloc_array (mem_ctx, struct mapi_SPropValue, prop_count);
-			for (i=0; i < prop_count; i++)
-				cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);
+			for (k=0; k < prop_count; k++)
+				cast_mapi_SPropValue(&properties_array.lpProps[k], &lpProps[k]);
 
 			MAPIFreeBuffer(lpProps);
 		} else
@@ -787,47 +807,33 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		if (retval == MAPI_E_SUCCESS) {
 			uint32_t z;
 
-			mapi_SPropValue_array_named(&obj_message, &properties_array);
-
 			/* just to get all the other streams */
 			for (z=0; z < properties_array.cValues; z++)
-				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
-					exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
-										properties_array.lpProps[z].ulPropTag, &stream_list);
+				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY) 
+					exchange_mapi_util_read_generic_stream (&obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
 
-			if (!cb (&properties_array, *pfid, *pmid, recip_list, attach_list, data)) {
+			mapi_SPropValue_array_named(&obj_message, &properties_array);
+
+			if (!cb (&properties_array, *pfid, *pmid, stream_list, recip_list, attach_list, data)) {
 				g_warning ("%s(%d): %s: Callback failed for message-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, *pmid);
 			}
 		}
+
+		if (GetPropsTagArray->cValues) 
+			talloc_free (properties_array.lpProps);
 
 	loop_cleanup:
 		mapi_object_release(&obj_message);
 
 		/* should I ?? */
-		if (attach_list) {
-			GSList *l;
-			for (l = attach_list; l; l = l->next) {
-				ExchangeMAPIAttachment *attachment = (ExchangeMAPIAttachment *) (l->data);
-				g_byte_array_free (attachment->value, TRUE);
-				attachment->value = NULL;
-			}
-			g_slist_free (attach_list);
-			attach_list = NULL;
-		}
+		if (attach_list)
+			exchange_mapi_util_free_attachment_list (&attach_list);
 
 		if (recip_list) {
 		}
 
-		if (stream_list) {
-			GSList *l;
-			for (l = stream_list; l; l = l->next) {
-				ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
-				g_byte_array_free (stream->value, TRUE);
-				stream->value = NULL;
-			}
-			g_slist_free (stream_list);
-			stream_list = NULL;
-		}
+		if (stream_list) 
+			exchange_mapi_util_free_stream_list (&stream_list);
 	}
 
 	result = TRUE;
@@ -845,7 +851,11 @@ cleanup:
 }
 
 gpointer
-exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropTagArray *GetPropsTagArray, FetchItemCallback cb)
+exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
+				     const uint32_t *GetPropsList, const uint16_t cn_props, 
+				     BuildNameID build_name_id, 
+				     FetchItemCallback cb, 
+				     gpointer data)
 {
 	enum MAPISTATUS retval;
 	TALLOC_CTX *mem_ctx;
@@ -853,6 +863,7 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropT
 	mapi_object_t obj_folder;
 	mapi_object_t obj_message;
 	struct mapi_SPropValue_array properties_array;
+	struct SPropTagArray *GetPropsTagArray;
 	GSList *attach_list = NULL;
 	GSList *recip_list = NULL;
 	GSList *stream_list = NULL;
@@ -880,6 +891,46 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropT
 		goto cleanup;
 	}
 
+	GetPropsTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+	GetPropsTagArray->cValues = 0;
+
+	if ((GetPropsList && (cn_props > 0)) || build_name_id) {
+		struct SPropTagArray *NamedPropsTagArray;
+		uint32_t m, n=0;
+		struct mapi_nameid *nameid;
+
+		nameid = mapi_nameid_new(mem_ctx);
+		NamedPropsTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+		NamedPropsTagArray->cValues = 0;
+		/* Add named props using callback */
+		if (build_name_id) {
+			if (!build_name_id (nameid, data)) {
+				g_warning ("%s(%d): (%s): Could not build named props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+				goto GetProps_cleanup;
+			}
+
+			retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, NamedPropsTagArray);
+			if (retval != MAPI_E_SUCCESS) {
+				mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
+				goto GetProps_cleanup;
+			}
+		}
+
+		GetPropsTagArray->cValues = (cn_props + NamedPropsTagArray->cValues);
+		GetPropsTagArray->aulPropTag = talloc_array(mem_ctx, uint32_t, (cn_props + NamedPropsTagArray->cValues));
+
+		for (m = 0; m < NamedPropsTagArray->cValues; m++, n++)
+			GetPropsTagArray->aulPropTag[n] = NamedPropsTagArray->aulPropTag[m];
+
+		for (m = 0; m < cn_props; m++, n++)
+			GetPropsTagArray->aulPropTag[n] = GetPropsList[m];
+
+	GetProps_cleanup:
+			MAPIFreeBuffer (NamedPropsTagArray);
+			talloc_free (nameid);
+	}
+
 	/* Open the item */
 	retval = OpenMessage(&obj_folder, fid, mid, &obj_message, 0x0);
 	if (retval != MAPI_E_SUCCESS) {
@@ -888,27 +939,26 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropT
 	}
 
 	/* Fetch attachments */
-	exchange_mapi_util_get_attachments (mem_ctx, &obj_message, &attach_list);
+	exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 
 	/* TODO: RecipientTable handling */
 
 
 	/* get the main body stream no matter what */
-	exchange_mapi_util_read_body_stream (mem_ctx, &obj_message, &stream_list);
+	exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
 
-	if (GetPropsTagArray) {
+	if (GetPropsTagArray->cValues) {
 		struct SPropValue *lpProps;
-		uint32_t prop_count = 0, i;
+		uint32_t prop_count = 0, k;
 
 		lpProps = talloc_zero(mem_ctx, struct SPropValue);
-
 		retval = GetProps (&obj_message, GetPropsTagArray, &lpProps, &prop_count);
 
 		/* Conversion from SPropValue to mapi_SPropValue. (no padding here) */
 		properties_array.cValues = prop_count;
 		properties_array.lpProps = talloc_array (mem_ctx, struct mapi_SPropValue, prop_count);
-		for (i=0; i < prop_count; i++)
-			cast_mapi_SPropValue(&properties_array.lpProps[i], &lpProps[i]);
+		for (k=0; k < prop_count; k++)
+			cast_mapi_SPropValue(&properties_array.lpProps[k], &lpProps[k]);
 
 		MAPIFreeBuffer(lpProps);
 	} else
@@ -917,42 +967,28 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, struct SPropT
 	if (retval == MAPI_E_SUCCESS) {
 		uint32_t z;
 
-		mapi_SPropValue_array_named(&obj_message, &properties_array);
-
 		/* just to get all the other streams */
 		for (z=0; z < properties_array.cValues; z++)
 			if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
-				exchange_mapi_util_read_generic_stream (mem_ctx, &obj_message, 
-									properties_array.lpProps[z].ulPropTag, &stream_list);
+				exchange_mapi_util_read_generic_stream (&obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
 
-		retobj = cb (&properties_array, fid, mid, recip_list, attach_list);
+		mapi_SPropValue_array_named(&obj_message, &properties_array);
+
+		retobj = cb (&properties_array, fid, mid, stream_list, recip_list, attach_list);
 	}
+
+//	if (GetPropsTagArray->cValues) 
+//		talloc_free (properties_array.lpProps);
 
 	/* should I ?? */
-	if (attach_list) {
-		GSList *l;
-		for (l = attach_list; l; l = l->next) {
-			ExchangeMAPIAttachment *attachment = (ExchangeMAPIAttachment *) (l->data);
-			g_byte_array_free (attachment->value, TRUE);
-			attachment->value = NULL;
-		}
-		g_slist_free (attach_list);
-		attach_list = NULL;
-	}
+	if (attach_list)
+		exchange_mapi_util_free_attachment_list (&attach_list);
 
 	if (recip_list) {
 	}
 
-	if (stream_list) {
-		GSList *l;
-		for (l = stream_list; l; l = l->next) {
-			ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
-			g_byte_array_free (stream->value, TRUE);
-			stream->value = NULL;
-		}
-		g_slist_free (stream_list);
-		stream_list = NULL;
-	}
+	if (stream_list) 
+		exchange_mapi_util_free_stream_list (&stream_list);
 
 cleanup:
 	mapi_object_release(&obj_message);
@@ -1200,15 +1236,9 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 			goto cleanup;
 		}
 
-		retval = GetIDsFromNames(&obj_folder, nameid->count, nameid->nameid, 0, &SPropTagArray);
+		retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, SPropTagArray);
 		if (retval != MAPI_E_SUCCESS) {
-			mapi_errstr("GetIDsFromNames", GetLastError());
-			goto cleanup;
-		}
-
-		retval = mapi_nameid_SPropTagArray(nameid, SPropTagArray);
-		if (retval != MAPI_E_SUCCESS) {
-			mapi_errstr("mapi_nameid_SPropTagArray", GetLastError());
+			mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
 			goto cleanup;
 		}
 	}
@@ -1231,12 +1261,12 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 
 	/* Set attachments if any */
 	if (attachments) {
-		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
+		exchange_mapi_util_set_attachments (&obj_message, attachments, FALSE);
 	}
 
 	/* Set recipients if any */
 	if (recipients) {
-		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, FALSE);
+		//exchange_mapi_util_set_attachments (&obj_message, attachments, FALSE);
 	}
 
 	/* Finally, save all changes */
@@ -1327,15 +1357,9 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 			goto cleanup;
 		}
 
-		retval = GetIDsFromNames(&obj_folder, nameid->count, nameid->nameid, 0, &SPropTagArray);
+		retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, SPropTagArray);
 		if (retval != MAPI_E_SUCCESS) {
-			mapi_errstr("GetIDsFromNames", GetLastError());
-			goto cleanup;
-		}
-
-		retval = mapi_nameid_SPropTagArray(nameid, SPropTagArray);
-		if (retval != MAPI_E_SUCCESS) {
-			mapi_errstr("mapi_nameid_SPropTagArray", GetLastError());
+			mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
 			goto cleanup;
 		}
 	}
@@ -1358,12 +1382,12 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 
 	/* Set attachments if any */
 	if (attachments) {
-		exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, TRUE);
+		exchange_mapi_util_set_attachments (&obj_message, attachments, TRUE);
 	}
 
 	/* Set recipients if any */
 	if (recipients) {
-		//exchange_mapi_util_set_attachments (mem_ctx, &obj_message, attachments, TRUE);
+		//exchange_mapi_util_set_attachments (&obj_message, attachments, TRUE);
 	}
  
 	/* Finally, save all changes */
@@ -1457,15 +1481,6 @@ cleanup:
 	return result;
 }
 
-static char *utf8tolinux(TALLOC_CTX *mem_ctx, const char *wstring)
-{
-	char		*newstr;
-
-	newstr = windows_to_utf8(mem_ctx, wstring);
-	return newstr;
-}
-
-
 static const char *
 get_container_class(TALLOC_CTX *mem_ctx, mapi_object_t *parent, mapi_id_t folder_id)
 {
@@ -1534,13 +1549,13 @@ get_child_folders(TALLOC_CTX *mem_ctx, mapi_object_t *parent, const char *parent
 			total = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_CONTENT_COUNT);
 			child = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_FOLDER_CHILD_COUNT);
 			class = get_container_class(mem_ctx, parent, *fid);
-			newname = utf8tolinux(mem_ctx, name);
+			newname = utf8tolinux(name);
 			printf("|---+ %-15s : (Container class: %s %016llX) UnRead : %d Total : %d\n", newname, class, *fid, *unread, *total);
 			folder = exchange_mapi_folder_new (newname, parent_name, class, MAPI_PERSONAL_FOLDER, *fid, folder_id, *child, *unread, *total);
 			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 			if (*child)
 				get_child_folders(mem_ctx, &obj_folder, newname, *fid, count + 1, mapi_folders);
-			MAPIFreeBuffer(newname);
+			g_free (newname);
 
 			
 		}
@@ -1596,7 +1611,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 		UNLOCK ();
 		return FALSE;
 	}
-	utf8_mailbox_name = utf8tolinux(mem_ctx, mailbox_name);
+	utf8_mailbox_name = utf8tolinux(mailbox_name);
 
 	/* FIXME: May have to get the child folders count? Do we need/use it? */
 	folder = exchange_mapi_folder_new (utf8_mailbox_name, NULL, IPF_NOTE, MAPI_PERSONAL_FOLDER, id_mailbox, 0, 0, 0 ,0); 
@@ -1604,7 +1619,7 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	*mapi_folders = g_slist_prepend (*mapi_folders, folder);
 	get_child_folders (mem_ctx, &obj_store, utf8_mailbox_name, id_mailbox, 0, mapi_folders);
 
-	MAPIFreeBuffer(utf8_mailbox_name);
+	g_free(utf8_mailbox_name);
 
 	UNLOCK ();
 

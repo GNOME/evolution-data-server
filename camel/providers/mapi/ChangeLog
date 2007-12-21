@@ -1,3 +1,9 @@
+2007-12-21  Suman Manjunath  <msuman@novell.com>
+
+	* camel-mapi-folder.c: (fetch_items_cb), (mapi_refresh_folder),
+	(fetch_item_cb), (mapi_folder_get_message): Fixes for fetch_item(s) and
+	fetch_item(s)_cb API changes. 
+
 2007-12-21  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-store.h, camel-mapi-transport.h : chmod -x .
