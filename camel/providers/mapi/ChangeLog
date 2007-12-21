@@ -1,3 +1,7 @@
+2007-12-21  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-store.h, camel-mapi-transport.h : chmod -x .
+	
 2007-12-19  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c (mapi_refresh_folder): Use the new util
