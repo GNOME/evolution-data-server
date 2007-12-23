@@ -998,18 +998,15 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 
 			return FALSE;
 		}
-
+		
 		token = respbuf + 4;
-
+		
 		if (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) {
 			if (!strncmp (token, "8BITMIME", 8)) {
-				d(fprintf (stderr, "This server supports 8bit MIME\n"));
 				transport->flags |= CAMEL_SMTP_TRANSPORT_8BITMIME;
 			} else if (!strncmp (token, "ENHANCEDSTATUSCODES", 19)) {
-				d(fprintf (stderr, "This server supports enhanced status codes\n"));
 				transport->flags |= CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES;
 			} else if (!strncmp (token, "STARTTLS", 8)) {
-				d(fprintf (stderr, "This server supports STARTTLS\n"));
 				transport->flags |= CAMEL_SMTP_TRANSPORT_STARTTLS;
 			} else if (!strncmp (token, "AUTH", 4)) {
 				if (!transport->authtypes || transport->flags & CAMEL_SMTP_TRANSPORT_AUTH_EQUAL) {
