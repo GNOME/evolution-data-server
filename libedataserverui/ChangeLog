@@ -1,3 +1,10 @@
+2007-12-23  Ted Percival  <ted@midg3t.net>
+
+	** Partial fix for bug #503400
+
+	* e-passwords.c: (ep_ask_password): Remove excessive whitespace on 
+	password dialogs.
+
 2007-12-06  Sankar P  <psankar@novell.com>
 
 	** Fixes bug #501969

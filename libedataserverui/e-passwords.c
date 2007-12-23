@@ -876,17 +876,14 @@ ep_ask_password (EPassMsg *msg)
 							       GTK_BUTTONS_OK_CANCEL,
 							       "%s", msg->prompt);
 	gtk_window_set_title (GTK_WINDOW (password_dialog), msg->title);
+	gtk_container_set_border_width(GTK_CONTAINER(password_dialog), 12);
 
 	gtk_widget_ensure_style (GTK_WIDGET (password_dialog));
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (password_dialog)->vbox), 0);
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (password_dialog)->action_area), 12);
 
 	gtk_dialog_set_default_response (password_dialog, GTK_RESPONSE_OK);
 
-	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_widget_show (vbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (password_dialog)->vbox), vbox, TRUE, FALSE, 0);
-	gtk_container_set_border_width ((GtkContainer *)vbox, 12);
+	vbox = GTK_DIALOG(password_dialog)->vbox;
+	gtk_box_set_spacing(GTK_BOX(vbox), 6);
 
 	msg->entry = gtk_entry_new ();
 
@@ -894,7 +891,7 @@ ep_ask_password (EPassMsg *msg)
 	atk_object_set_description (a11y, msg->prompt);
 	gtk_entry_set_visibility ((GtkEntry *)msg->entry, !(msg->flags & E_PASSWORDS_SECRET));
 	gtk_entry_set_activates_default ((GtkEntry *)msg->entry, TRUE);
-	gtk_box_pack_start (GTK_BOX (vbox), msg->entry, TRUE, FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (vbox), msg->entry, TRUE, FALSE, 0);
 	gtk_widget_show (msg->entry);
 	gtk_widget_grab_focus (msg->entry);
 
@@ -921,7 +918,7 @@ ep_ask_password (EPassMsg *msg)
 
 		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (msg->check), *msg->remember);
-		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 3);
+		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 0);
 		if ((msg->flags & E_PASSWORDS_DISABLE_REMEMBER))
 			gtk_widget_set_sensitive (msg->check, FALSE);
 		gtk_widget_show (msg->check);
