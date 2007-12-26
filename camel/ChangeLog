@@ -1,5 +1,10 @@
 2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-mime-utils.c (header_decode_domain): Check *inptr before
+	calling camel_mime_is_dtext()
+
+2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
+
 	Fixes the remainder of the "evolution won't decode
 	this/that/whatever brokenly rfc2047 encoded header" bugs.
 

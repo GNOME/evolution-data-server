@@ -2355,7 +2355,7 @@ header_decode_domain(const char **in)
 			domain = g_string_append_c(domain, '[');
 			inptr++;
 			header_decode_lwsp(&inptr);
-			while (camel_mime_is_dtext(*inptr) && *inptr) {
+			while (*inptr && camel_mime_is_dtext (*inptr)) {
 				domain = g_string_append_c(domain, *inptr);
 				inptr++;
 			}
