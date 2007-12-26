@@ -1,3 +1,21 @@
+2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
+
+	Fixes the remainder of the "evolution won't decode
+	this/that/whatever brokenly rfc2047 encoded header" bugs.
+
+	* camel-mime-utils.c (camel_iconv_strndup): New (internal, tho
+	could maybe be made public eventually) function to convert a
+	string from one charset into another which returns NULL on
+	failure.
+	(decode_8bit): New function to try to find the best charset to
+	convert raw 8bit/multibyte strings into UTF-8 by any means
+	necessary.
+	(rfc2047_decode_word): Rewritten. Now also takes a default_charset
+	argument to aid in charset conversion.
+	(header_decode_text): Rewritten to handle a wider variety of
+	utterly broken encodings from crap mailers. No longer takes an
+	inlen argument because it wasn't necessary.
+
 2007-12-14  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #211353

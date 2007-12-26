@@ -821,116 +821,321 @@ header_decode_lwsp(const char **in)
 	*in = inptr;
 }
 
-/* decode rfc 2047 encoded string segment */
 static char *
-rfc2047_decode_word(const char *in, size_t len)
+camel_iconv_strndup (iconv_t cd, const char *string, size_t n)
 {
-	const char *inptr = in+2;
-	const char *inend = in+len-2;
+	size_t inleft, outleft, converted = 0;
+	char *out, *outbuf;
 	const char *inbuf;
-	const char *charset;
-	char *encname, *p;
-	int tmplen;
-	size_t ret;
-	char *decword = NULL;
-	char *decoded = NULL;
-	char *outbase = NULL;
-	char *outbuf;
-	size_t inlen, outlen;
-	gboolean retried = FALSE;
-	iconv_t ic;
+	size_t outlen;
+	int errnosav;
+	
+	if (cd == (iconv_t) -1)
+		return g_strndup (string, n);
+	
+	outlen = n * 2 + 16;
+	out = g_malloc (outlen + 4);
+	
+	inbuf = string;
+	inleft = n;
+	
+	do {
+		errno = 0;
+		outbuf = out + converted;
+		outleft = outlen - converted;
+		
+		converted = iconv (cd, (char **) &inbuf, &inleft, &outbuf, &outleft);
+		if (converted == (size_t) -1) {
+			if (errno != E2BIG && errno != EINVAL)
+				goto fail;
+		}
+		
+		/*
+		 * E2BIG   There is not sufficient room at *outbuf.
+		 *
+		 * We just need to grow our outbuffer and try again.
+		 */
+		
+		converted = outbuf - out;
+		if (errno == E2BIG) {
+			outlen += inleft * 2 + 16;
+			out = g_realloc (out, outlen + 4);
+			outbuf = out + converted;
+		}
+	} while (errno == E2BIG && inleft > 0);
+	
+	/*
+	 * EINVAL  An  incomplete  multibyte sequence has been encoun­
+	 *         tered in the input.
+	 *
+	 * We'll just have to ignore it...
+	 */
+	
+	/* flush the iconv conversion */
+	iconv (cd, NULL, NULL, &outbuf, &outleft);
+	
+	/* Note: not all charsets can be nul-terminated with a single
+           nul byte. UCS2, for example, needs 2 nul bytes and UCS4
+           needs 4. I hope that 4 nul bytes is enough to terminate all
+           multibyte charsets? */
+	
+	/* nul-terminate the string */
+	memset (outbuf, 0, 4);
+	
+	/* reset the cd */
+	iconv (cd, NULL, NULL, NULL, NULL);
+	
+	return out;
+	
+ fail:
+	
+	errnosav = errno;
+	
+	w(g_warning ("camel_iconv_strndup: %s at byte %lu", strerror (errno), n - inleft));
+	
+	g_free (out);
+	
+	/* reset the cd */
+	iconv (cd, NULL, NULL, NULL, NULL);
+	
+	errno = errnosav;
+	
+	return NULL;
+}
 
-	d(printf("rfc2047: decoding '%.*s'\n", len, in));
+#define is_ascii(c) isascii ((int) ((unsigned char) (c)))
 
-	/* quick check to see if this could possibly be a real encoded word */
-	if (len < 8 || !(in[0] == '=' && in[1] == '?' && in[len-1] == '=' && in[len-2] == '?')) {
-		d(printf("invalid\n"));
-		return NULL;
+static char *
+decode_8bit (const char *text, size_t len, const char *default_charset)
+{
+	const char *charsets[4] = { "UTF-8", NULL, NULL, NULL };
+	size_t inleft, outleft, outlen, rc, min, n;
+	const char *locale_charset, *best;
+	char *out, *outbuf;
+	const char *inbuf;
+	iconv_t cd;
+	int i = 1;
+	
+	if (default_charset && g_ascii_strcasecmp (default_charset, "UTF-8") != 0)
+		charsets[i++] = default_charset;
+	
+	locale_charset = e_iconv_locale_charset ();
+	if (g_ascii_strcasecmp (locale_charset, "UTF-8") != 0)
+		charsets[i++] = locale_charset;
+	
+	min = len;
+	best = charsets[0];
+	
+	outlen = (len * 2) + 16; 
+	out = g_malloc (outlen + 1);
+	
+	for (i = 0; charsets[i]; i++) {
+		if ((cd = e_iconv_open ("UTF-8", charsets[i])) == (iconv_t) -1)
+			continue;
+		
+		outleft = outlen;
+		outbuf = out;
+		inleft = len;
+		inbuf = text;
+		n = 0;
+		
+		do {
+			rc = iconv (cd, (char **) &inbuf, &inleft, &outbuf, &outleft);
+			if (rc == (size_t) -1) {
+				if (errno == EINVAL) {
+					/* incomplete sequence at the end of the input buffer */
+					n += inleft;
+					break;
+				}
+				
+				if (errno == E2BIG) {
+					outlen += (inleft * 2) + 16;
+					rc = (size_t) (outbuf - out);
+					out = g_realloc (out, outlen + 1);
+					outleft = outlen - rc;
+					outbuf = out + rc;
+				} else {
+					inleft--;
+					inbuf++;
+					n++;
+				}
+			}
+		} while (inleft > 0);
+		
+		rc = iconv (cd, NULL, NULL, &outbuf, &outleft);
+		*outbuf = '\0';
+		
+		e_iconv_close (cd);
+		
+		if (rc != (size_t) -1 && n == 0)
+			return out;
+		
+		if (n < min) {
+			best = charsets[i];
+			min = n;
+		}
 	}
-
-	/* skip past the charset to the encoding type */
-	inptr = memchr (inptr, '?', inend-inptr);
-	if (inptr != NULL && inptr < inend + 2 && inptr[2] == '?') {
-		d(printf("found ?, encoding is '%c'\n", inptr[0]));
-		inptr++;
-		tmplen = inend-inptr-2;
-		decword = g_alloca (tmplen); /* this will always be more-than-enough room */
-		switch(toupper(inptr[0])) {
-		case 'Q':
-			inlen = quoted_decode((const unsigned char *) inptr+2, tmplen, (unsigned char *) decword);
-			break;
-		case 'B': {
-			int state = 0;
-			unsigned int save = 0;
-
-			inlen = camel_base64_decode_step((unsigned char *) inptr+2, tmplen, (unsigned char *) decword, &state, &save);
-			/* if state != 0 then error? */
-			break;
+	
+	/* if we get here, then none of the charsets fit the 8bit text flawlessly...
+	 * try to find the one that fit the best and use that to convert what we can,
+	 * replacing any byte we can't convert with a '?' */
+	
+	if ((cd = e_iconv_open ("UTF-8", best)) == (iconv_t) -1) {
+		/* this shouldn't happen... but if we are here, then
+		 * it did...  the only thing we can do at this point
+		 * is replace the 8bit garbage and pray */
+		register const char *inptr = text;
+		const char *inend = inptr + len;
+		
+		outbuf = out;
+		
+		while (inptr < inend) {
+			if (is_ascii (*inptr))
+				*outbuf++ = *inptr++;
+			else
+				*outbuf++ = '?';
 		}
-		default:
-			/* uhhh, unknown encoding type - probably an invalid encoded word string */
-			return NULL;
-		}
-		d(printf("The encoded length = %d\n", inlen));
-		if (inlen > 0) {
-			/* yuck, all this snot is to setup iconv! */
-			tmplen = inptr - in - 3;
-			encname = g_alloca (tmplen + 1);
-			memcpy (encname, in + 2, tmplen);
-			encname[tmplen] = '\0';
-
-			/* rfc2231 updates rfc2047 encoded words...
-			 * The ABNF given in RFC 2047 for encoded-words is:
-			 *   encoded-word := "=?" charset "?" encoding "?" encoded-text "?="
-			 * This specification changes this ABNF to:
-			 *   encoded-word := "=?" charset ["*" language] "?" encoding "?" encoded-text "?="
-			 */
-
-			/* trim off the 'language' part if it's there... */
-			p = strchr (encname, '*');
-			if (p)
-				*p = '\0';
-
-			charset = e_iconv_charset_name (encname);
-
-			inbuf = decword;
-
-			outlen = inlen * 6 + 16;
-			outbase = g_alloca (outlen);
-			outbuf = outbase;
-
-		retry:
-			ic = e_iconv_open ("UTF-8", charset);
-			if (ic != (iconv_t) -1) {
-				ret = e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
-				if (ret != (size_t) -1) {
-					e_iconv (ic, NULL, 0, &outbuf, &outlen);
-					*outbuf = 0;
-					decoded = g_strdup (outbase);
-				}
-				e_iconv_close (ic);
+		
+		*outbuf = '\0';
+		
+		return out;
+	}
+	
+	outleft = outlen;
+	outbuf = out;
+	inleft = len;
+	inbuf = text;
+	
+	do {
+		rc = iconv (cd, (char **) &inbuf, &inleft, &outbuf, &outleft);
+		if (rc == (size_t) -1) {
+			if (errno == EINVAL) {
+				/* incomplete sequence at the end of the input buffer */
+				break;
+			}
+			
+			if (errno == E2BIG) {
+				rc = outbuf - out;
+				outlen += inleft * 2 + 16;
+				out = g_realloc (out, outlen + 1);
+				outleft = outlen - rc;
+				outbuf = out + rc;
 			} else {
-				w(g_warning ("Cannot decode charset, header display may be corrupt: %s: %s",
-					     charset, strerror (errno)));
-
-				if (!retried) {
-					charset = e_iconv_locale_charset ();
-					if (!charset)
-						charset = "iso-8859-1";
-
-					retried = TRUE;
-					goto retry;
-				}
-
-				/* we return the encoded word here because we've got to return valid utf8 */
-				decoded = g_strndup (in, inlen);
+				*outbuf++ = '?';
+				outleft--;
+				inleft--;
+				inbuf++;
 			}
 		}
+	} while (inleft > 0);
+	
+	iconv (cd, NULL, NULL, &outbuf, &outleft);
+	*outbuf = '\0';
+	
+	e_iconv_close (cd);
+	
+	return out;
+}
+
+#define is_rfc2047_encoded_word(atom, len) (len >= 7 && !strncmp (atom, "=?", 2) && !strncmp (atom + len - 2, "?=", 2))
+
+/* decode an rfc2047 encoded-word token */
+static char *
+rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
+{
+	const unsigned char *instart = (const unsigned char *) in;
+	const register unsigned char *inptr = instart + 2;
+	const unsigned char *inend = instart + inlen - 2;
+	unsigned char *decoded;
+	const char *charset;
+	char *charenc, *p;
+	guint32 save = 0;
+	ssize_t declen;
+	int state = 0;
+	size_t len;
+	iconv_t cd;
+	char *buf;
+	
+	/* skip over the charset */
+	if (!(inptr = memchr (inptr, '?', inend - inptr)) || inptr[2] != '?')
+		return NULL;
+	
+	inptr++;
+	
+	switch (*inptr) {
+	case 'B':
+	case 'b':
+		inptr += 2;
+		decoded = g_alloca (inend - inptr);
+		declen = camel_base64_decode_step ((unsigned char *) inptr, inend - inptr, decoded, &state, &save);
+		break;
+	case 'Q':
+	case 'q':
+		inptr += 2;
+		decoded = g_alloca (inend - inptr);
+		declen = quoted_decode (inptr, inend - inptr, decoded);
+		
+		if (declen == -1) {
+			d(fprintf (stderr, "encountered broken 'Q' encoding\n"));
+			return NULL;
+		}
+		break;
+	default:
+		d(fprintf (stderr, "unknown encoding\n"));
+		return NULL;
 	}
-
-	d(printf("decoded '%s'\n", decoded));
-
-	return decoded;
+	
+	len = (inptr - 3) - (instart + 2);
+	charenc = g_alloca (len + 1);
+	memcpy (charenc, in + 2, len);
+	charenc[len] = '\0';
+	charset = charenc;
+	
+	/* rfc2231 updates rfc2047 encoded words...
+	 * The ABNF given in RFC 2047 for encoded-words is:
+	 *   encoded-word := "=?" charset "?" encoding "?" encoded-text "?="
+	 * This specification changes this ABNF to:
+	 *   encoded-word := "=?" charset ["*" language] "?" encoding "?" encoded-text "?="
+	 */
+	
+	/* trim off the 'language' part if it's there... */
+	if ((p = strchr (charset, '*')))
+		*p = '\0';
+	
+	/* slight optimization? */
+	if (!g_ascii_strcasecmp (charset, "UTF-8")) {
+		p = (char *) decoded;
+		len = declen;
+		
+		while (!g_utf8_validate (p, len, (const char **) &p)) {
+			len = declen - (p - (char *) decoded);
+			*p = '?';
+		}
+		
+		return g_strndup ((char *) decoded, declen);
+	}
+	
+	if (charset[0])
+		charset = e_iconv_charset_name (charset);
+	
+	if (!charset[0] || (cd = e_iconv_open ("UTF-8", charset)) == (iconv_t) -1) {
+		w(g_warning ("Cannot convert from %s to UTF-8, header display may "
+			     "be corrupt: %s", charset[0] ? charset : "unspecified charset",
+			     g_strerror (errno)));
+		
+		return decode_8bit ((char *) decoded, declen, default_charset);
+	}
+	
+	buf = camel_iconv_strndup (cd, (char *) decoded, declen);
+	e_iconv_close (cd);
+	
+	if (buf != NULL)
+		return buf;
+	
+	w(g_warning ("Failed to convert \"%.*s\" to UTF-8, display may be "
+		     "corrupt: %s", declen, decoded, g_strerror (errno)));
+	
+	return decode_8bit ((char *) decoded, declen, default_charset);
 }
 
 /* ok, a lot of mailers are BROKEN, and send iso-latin1 encoded
@@ -988,7 +1193,7 @@ append_8bit (GString *out, const char *inbuf, size_t inlen, const char *charset)
 }
 
 static GString *
-append_quoted_pair (GString *str, const char *in, gssize inlen)
+append_quoted_pair (GString *str, const char *in, size_t inlen)
 {
 	register const char *inptr = in;
 	const char *inend = in + inlen;
@@ -1007,67 +1212,117 @@ append_quoted_pair (GString *str, const char *in, gssize inlen)
 
 /* decodes a simple text, rfc822 + rfc2047 */
 static char *
-header_decode_text (const char *in, size_t inlen, int ctext, const char *default_charset)
+header_decode_text (const char *in, int ctext, const char *default_charset)
 {
+	register const char *inptr = in;
+	gboolean encoded = FALSE;
+	const char *lwsp, *text;
+	size_t nlwsp, n;
+	gboolean ascii;
+	char *decoded;
 	GString *out;
-	const char *inptr, *inend, *start, *chunk, *locale_charset;
-	GString *(* append) (GString *, const char *, gssize);
-	char *dword = NULL;
-	guint32 mask;
-
-	locale_charset = e_iconv_locale_charset ();
-
-	if (ctext) {
-		mask = (CAMEL_MIME_IS_SPECIAL | CAMEL_MIME_IS_SPACE | CAMEL_MIME_IS_CTRL);
-		append = append_quoted_pair;
-	} else {
-		mask = (CAMEL_MIME_IS_LWSP);
-		append = g_string_append_len;
-	}
-
-	out = g_string_new ("");
-	inptr = in;
-	inend = inptr + inlen;
-	chunk = NULL;
-
-	while (inptr < inend) {
-		start = inptr;
-		while (inptr < inend && camel_mime_is_type (*inptr, mask))
+	
+	if (in == NULL)
+		return g_strdup ("");
+	
+	out = g_string_sized_new (strlen (in) + 1);
+	
+	while (*inptr != '\0') {
+		lwsp = inptr;
+		while (camel_mime_is_lwsp (*inptr))
 			inptr++;
-
-		if (inptr == inend) {
-			append (out, start, inptr - start);
+		
+		nlwsp = (size_t) (inptr - lwsp);
+		
+		if (*inptr != '\0') {
+			text = inptr;
+			ascii = TRUE;
+			
+			if (!strncmp (inptr, "=?", 2)) {
+				inptr += 2;
+				
+				/* skip past the charset (if one is even declared, sigh) */
+				while (*inptr && *inptr != '?') {
+					ascii = ascii && is_ascii (*inptr);
+					inptr++;
+				}
+				
+				/* sanity check encoding type */
+				if (inptr[0] != '?' || !strchr ("BbQq", inptr[1]) || inptr[2] != '?')
+					goto non_rfc2047;
+				
+				inptr += 3;
+				
+				/* find the end of the rfc2047 encoded word token */
+				while (*inptr && strncmp (inptr, "?=", 2) != 0) {
+					ascii = ascii && is_ascii (*inptr);
+					inptr++;
+				}
+				
+				if (!strncmp (inptr, "?=", 2))
+					inptr += 2;
+			} else {
+			non_rfc2047:
+				/* stop if we encounter a possible rfc2047 encoded
+				 * token even if it's inside another word, sigh. */
+				while (*inptr && !camel_mime_is_lwsp (*inptr) &&
+				       strncmp (inptr, "=?", 2) != 0) {
+					ascii = ascii && is_ascii (*inptr);
+					inptr++;
+				}
+			}
+			
+			n = (size_t) (inptr - text);
+			if (is_rfc2047_encoded_word (text, n)) {
+				if ((decoded = rfc2047_decode_word (text, n, default_charset))) {
+					/* rfc2047 states that you must ignore all
+					 * whitespace between encoded words */
+					if (!encoded)
+						g_string_append_len (out, lwsp, nlwsp);
+					
+					g_string_append (out, decoded);
+					g_free (decoded);
+					
+					encoded = TRUE;
+				} else {
+					/* append lwsp and invalid rfc2047 encoded-word token */
+					g_string_append_len (out, lwsp, nlwsp + n);
+					encoded = FALSE;
+				}
+			} else {
+				/* append lwsp */
+				g_string_append_len (out, lwsp, nlwsp);
+				
+				/* append word token */
+				if (!ascii) {
+					/* *sigh* I hate broken mailers... */
+					decoded = decode_8bit (text, n, default_charset);
+					n = strlen (decoded);
+					text = decoded;
+				} else {
+					decoded = NULL;
+				}
+				
+				if (!ctext)
+					g_string_append_len (out, text, n);
+				else
+					append_quoted_pair (out, text, n);
+				
+				g_free (decoded);
+				
+				encoded = FALSE;
+			}
+		} else {
+			/* appending trailing lwsp */
+			g_string_append_len (out, lwsp, nlwsp);
 			break;
-		} else if (dword == NULL) {
-			append (out, start, inptr - start);
-		} else {
-			chunk = start;
 		}
-
-		start = inptr;
-		while (inptr < inend && !camel_mime_is_type (*inptr, mask))
-			inptr++;
-
-		dword = rfc2047_decode_word(start, inptr-start);
-		if (dword) {
-			g_string_append(out, dword);
-			g_free(dword);
-		} else {
-			if (!chunk)
-				chunk = start;
-
-			if ((default_charset == NULL || !append_8bit (out, chunk, inptr-chunk, default_charset))
-			    && (locale_charset == NULL || !append_8bit(out, chunk, inptr-chunk, locale_charset)))
-				append_latin1(out, chunk, inptr-chunk);
-		}
-
-		chunk = NULL;
 	}
-
-	dword = out->str;
+	
+	decoded = out->str;
 	g_string_free (out, FALSE);
-
-	return dword;
+	
+	return decoded;
 }
 
 
@@ -1086,7 +1341,8 @@ camel_header_decode_string (const char *in, const char *default_charset)
 {
 	if (in == NULL)
 		return NULL;
-	return header_decode_text (in, strlen (in), FALSE, default_charset);
+	
+	return header_decode_text (in, FALSE, default_charset);
 }
 
 
@@ -1106,7 +1362,8 @@ camel_header_format_ctext (const char *in, const char *default_charset)
 {
 	if (in == NULL)
 		return NULL;
-	return header_decode_text (in, strlen (in), TRUE, default_charset);
+	
+	return header_decode_text (in, TRUE, default_charset);
 }
 
 /* how long a sequence of pre-encoded words should be less than, to attempt to
@@ -2342,8 +2599,7 @@ header_decode_mailbox(const char **in, const char *charset)
 			g_free(text);
 
 			/* or maybe that we've added up a bunch of broken bits to make an encoded word */
-			text = rfc2047_decode_word(name->str, name->len);
-			if (text) {
+			if ((text = rfc2047_decode_word (name->str, name->len, charset))) {
 				g_string_truncate(name, 0);
 				g_string_append(name, text);
 				g_free(text);
@@ -2901,7 +3157,7 @@ header_append_param(struct _camel_header_param *last, char *name, char *value)
 	node->next = NULL;
 	node->name = name;
 	if (strncmp(value, "=?", 2) == 0
-	    && (node->value = header_decode_text(value, strlen(value), FALSE, NULL))) {
+	    && (node->value = header_decode_text(value, FALSE, NULL))) {
 		g_free(value);
 	} else if (g_ascii_strcasecmp (name, "boundary") != 0 && !g_utf8_validate(value, -1, NULL)) {
 		const char *charset = e_iconv_locale_charset();
