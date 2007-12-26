@@ -11109,7 +11109,7 @@ static const struct {
 	{ NULL, NULL, NULL, }, { NULL, NULL, NULL, }, { NULL, NULL, mfe2, }, { NULL, mff1, mff2, }, 
 };
 
-struct {
+static const struct {
 	const char *name;
 	unsigned int bit;
 } camel_charinfo[] = {

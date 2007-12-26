@@ -276,7 +276,7 @@ int main (int argc, char **argv)
 	}
 	printf ("\n};\n\n");
 	
-	printf ("struct {\n\tconst char *name;\n\tunsigned int bit;\n} camel_charinfo[] = {\n");
+	printf ("static const struct {\n\tconst char *name;\n\tunsigned int bit;\n} camel_charinfo[] = {\n");
 	for (j = 0; tables[j].name; j++)
 		printf ("\t{ \"%s\", 0x%08x },\n", tables[j].name, tables[j].bit);
 	printf ("};\n\n");
