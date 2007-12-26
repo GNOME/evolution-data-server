@@ -1,5 +1,15 @@
 2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
 
+	Fixes bug #224026
+
+	* camel-charset-map-private.h: Regenerated.
+
+	* camel-charset-map.c (main): Rewritten to be in-sync with GMime's
+	implementation which has support for multibyte charsets and
+	Arabic.
+
+2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
+
 	* camel-mime-utils.c (header_decode_domain): Check *inptr before
 	calling camel_mime_is_dtext()
 
