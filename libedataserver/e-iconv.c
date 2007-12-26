@@ -100,59 +100,56 @@ static const struct {
 	char *charset;
 	char *iconv_name;
 } known_iconv_charsets[] = {
-#if 0
-	/* charset name, iconv-friendly charset name */
-	{ "iso-8859-1",     "iso-8859-1" },
-	{ "iso8859-1",      "iso-8859-1" },
-	/* the above mostly serves as an example for iso-style charsets,
-	   but we have code that will populate the iso-*'s if/when they
-	   show up in e_iconv_charset_name() so I'm
-	   not going to bother putting them all in here... */
-	{ "windows-cp1251", "cp1251"     },
-	{ "windows-1251",   "cp1251"     },
-	{ "cp1251",         "cp1251"     },
-	/* the above mostly serves as an example for windows-style
-	   charsets, but we have code that will parse and convert them
-	   to their cp#### equivalents if/when they show up in
-	   e_iconv_charset_name() so I'm not going to bother
-	   putting them all in here either... */
-#endif
 	/* charset name (lowercase!), iconv-friendly name (sometimes case sensitive) */
-	{ "utf-8",          "UTF-8"      },
+	{ "utf-8",           "UTF-8"      },
 
 	/* 10646 is a special case, its usually UCS-2 big endian */
 	/* This might need some checking but should be ok for solaris/linux */
-	{ "iso-10646-1",    "UCS-2BE"    },
-	{ "iso_10646-1",    "UCS-2BE"    },
-	{ "iso10646-1",     "UCS-2BE"    },
-	{ "iso-10646",      "UCS-2BE"    },
-	{ "iso_10646",      "UCS-2BE"    },
-	{ "iso10646",       "UCS-2BE"    },
-
-	{ "ks_c_5601-1987", "EUC-KR"     },
-
-	/* FIXME: Japanese/Korean/Chinese stuff needs checking */
-	{ "euckr-0",        "EUC-KR"     },
-	{ "5601",           "EUC-KR"     },
-	{ "zh_TW-euc",      "EUC-TW"     },
-	{ "zh_CN.euc",      "gb2312"     },
-	{ "zh_TW-big5",     "BIG5"       },
-	{ "euc-cn",         "gb2312"     },
-	{ "big5-0",         "BIG5"       },
-	{ "big5.eten-0",    "BIG5"       },
-	{ "big5hkscs-0",    "BIG5HKSCS"  },
-	{ "gb2312-0",       "gb2312"     },
-	{ "gb2312.1980-0",  "gb2312"     },
-	{ "gb-2312",        "gb2312"     },
-	{ "gb18030-0",      "gb18030"    },
-	{ "gbk-0",          "GBK"        },
-
-	{ "eucjp-0",        "eucJP"  	 },
-	{ "ujis-0",         "ujis"  	 },
-	{ "jisx0208.1983-0","SJIS"       },
-	{ "jisx0212.1990-0","SJIS"       },
-	{ "pck",	    "SJIS"       },
-	{ NULL,             NULL         }
+	{ "iso-10646-1",     "UCS-2BE"    },
+	{ "iso_10646-1",     "UCS-2BE"    },
+	{ "iso10646-1",      "UCS-2BE"    },
+	{ "iso-10646",       "UCS-2BE"    },
+	{ "iso_10646",       "UCS-2BE"    },
+	{ "iso10646",        "UCS-2BE"    },
+	
+	/* Korean charsets */
+	/* Note: according to http://www.iana.org/assignments/character-sets,
+	 * ks_c_5601-1987 should really map to ISO-2022-KR, but the EUC-KR
+	 * mapping was given to me via a native Korean user, so I'm not sure
+	 * if I should change this... perhaps they are compatable? */
+	{ "ks_c_5601-1987",  "EUC-KR"     },
+	{ "5601",            "EUC-KR"     },
+	{ "ksc-5601",        "EUC-KR"     },
+	{ "ksc-5601-1987",   "EUC-KR"     },
+	{ "ksc-5601_1987",   "EUC-KR"     },
+	{ "ks_c_5861-1992",  "EUC-KR"     },
+	{ "euckr-0",         "EUC-KR"     },
+	
+	/* Chinese charsets */
+	{ "big5-0",          "BIG5"       },
+	{ "big5.eten-0",     "BIG5"       },
+	{ "big5hkscs-0",     "BIG5HKSCS"  },
+	/* Note: GBK is a superset of gb2312 (see
+	 * http://en.wikipedia.org/wiki/GBK for details), so 'upgrade'
+	 * gb2312 to GBK so that we can completely convert GBK text
+	 * that is incorrectly tagged as gb2312 to UTF-8. */
+	{ "gb2312",          "GBK"        },
+	{ "gb-2312",         "GBK"        },
+	{ "gb2312-0",        "GBK"        },
+	{ "gb2312-80",       "GBK"        },
+	{ "gb2312.1980-0",   "GBK"        },
+	/* euc-cn is an alias for gb2312 */
+	{ "euc-cn",          "GBK"        },
+	{ "gb18030-0",       "gb18030"    },
+	{ "gbk-0",           "GBK"        },
+	
+	/* Japanese charsets */
+	{ "eucjp-0",         "eucJP"  	  },  /* should this map to "EUC-JP" instead? */
+	{ "ujis-0",          "ujis"  	  },  /* we might want to map this to EUC-JP */
+	{ "jisx0208.1983-0", "SJIS"       },
+	{ "jisx0212.1990-0", "SJIS"       },
+	{ "pck",	     "SJIS"       },
+	{ NULL,              NULL         }
 };
 
 
