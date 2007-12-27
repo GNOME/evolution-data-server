@@ -1,3 +1,11 @@
+2007-12-27  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c (rfc2047_decode_word): If we fail to
+	completely convert the text using the supplied charset, pass the
+	declared charset as the 'default_charset' argument to
+	decode_8bit() rather than the default_charset argument we were
+	passed.
+
 2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
 
 	Fixes bug #224026

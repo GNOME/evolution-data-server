@@ -1135,7 +1135,7 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 	w(g_warning ("Failed to convert \"%.*s\" to UTF-8, display may be "
 		     "corrupt: %s", declen, decoded, g_strerror (errno)));
 	
-	return decode_8bit ((char *) decoded, declen, default_charset);
+	return decode_8bit ((char *) decoded, declen, charset);
 }
 
 /* ok, a lot of mailers are BROKEN, and send iso-latin1 encoded
