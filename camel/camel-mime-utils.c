@@ -1057,7 +1057,7 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 	char *buf;
 	
 	/* skip over the charset */
-	if (!(inptr = memchr (inptr, '?', inend - inptr)) || inptr[2] != '?')
+	if (inlen < 8 || !(inptr = memchr (inptr, '?', inend - inptr)) || inptr[2] != '?')
 		return NULL;
 	
 	inptr++;
