@@ -45,7 +45,7 @@ add_folder_esource (ExchangeAccount *account,
 	GConfClient *client;
 	gboolean is_contacts_folder = TRUE, group_new = FALSE, source_new = FALSE;
 	const char *offline = NULL;
-	char *username, *useremail, *authtype = NULL;
+	char *username, *windows_domain, *useremail, *authtype = NULL;
 	int mode;
 	ESourceList *source_list = NULL;
 	gboolean offline_flag, update_selection = TRUE, foriegn_folder;
@@ -80,7 +80,14 @@ add_folder_esource (ExchangeAccount *account,
 	}
 
 	exchange_account_is_offline_sync_set (account, &mode);
-	username = exchange_account_get_username (account);
+
+	windows_domain =  exchange_account_get_windows_domain (account);
+	if (windows_domain)
+		username = g_strdup_printf ("%s\\%s", windows_domain,
+					    exchange_account_get_username (account));
+	else
+		username = g_strdup (exchange_account_get_username (account));
+
 	useremail = exchange_account_get_email_id (account);
 	authtype = exchange_account_get_authtype (account);
 
@@ -93,6 +100,9 @@ add_folder_esource (ExchangeAccount *account,
 			g_object_unref (source_group);
 			g_object_unref (client);
         		g_free (relative_uri);
+			g_free (username);
+			if (authtype)
+				g_free (authtype);
 			return;
 		}
 		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
@@ -210,7 +220,9 @@ add_folder_esource (ExchangeAccount *account,
 	}
 
 	g_free (relative_uri);
-	g_free (authtype);
+	g_free (username);
+	if (authtype)
+		g_free (authtype);
 
 	if (source_new)
 		g_object_unref (source);

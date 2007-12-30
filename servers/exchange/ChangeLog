@@ -1,3 +1,13 @@
+2007-12-31  Sushma Rai  <rsushma@novell.com>
+
+	** Fixes bug #327965
+
+	* storage/exchange-account.[ch] (exchange_account_get_windows_domain):
+	Added new, to return the windows domain value.
+
+	* storage/exchange-esource.c (add_folder_esource): Setting the e-source
+	property username with the domain, if the domain is specified. 
+	
 2007-12-06  Tobias Mueller <tobiasmue@svn.gnome.org>
 	Patch by Milan Crha  <mcrha@redhat.com>
 

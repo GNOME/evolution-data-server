@@ -179,6 +179,8 @@ gboolean exchange_account_is_favorite_folder              (ExchangeAccount *acco
 
 char * exchange_account_get_username 			  (ExchangeAccount *account);
 
+char * exchange_account_get_windows_domain 		  (ExchangeAccount *account);
+
 char * exchange_account_get_email_id 			  (ExchangeAccount *account);
 
 int exchange_account_get_quota_limit			  (ExchangeAccount *account);
