@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-23 20:43+0100\n"
-"PO-Revision-Date: 2007-12-24 00:14+0100\n"
+"POT-Creation-Date: 2007-12-31 16:06+0100\n"
+"PO-Revision-Date: 2007-12-31 16:16+0100\n"
 "Last-Translator: wadim dziedzic <wdziedzi@aviary.pl>\n"
 "Language-Team: Polish <translators@gnomepl.org>\n"
 "MIME-Version: 1.0\n"
@@ -380,7 +380,7 @@ msgstr "Rola"
 
 #: ../addressbook/libebook/e-contact.c:169
 msgid "Manager"
-msgstr "Menadżer"
+msgstr "Menedżer"
 
 #: ../addressbook/libebook/e-contact.c:170
 msgid "Assistant"
@@ -443,15 +443,15 @@ msgstr "3. kontakt domowy AIM"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 1"
-msgstr "1. kontakt AIM do pracy"
+msgstr "1. kontakt służbowy AIM"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 2"
-msgstr "2. kontakt AIM do pracy"
+msgstr "2. kontakt służbowy AIM"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 3"
-msgstr "3. kontakt AIM do pracy"
+msgstr "3. kontakt służbowy AIM"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 1"
@@ -467,15 +467,15 @@ msgstr "3. kontakt domowy GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 1"
-msgstr "1. kontakt GroupWise do pracy"
+msgstr "1. kontakt służbowy GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 2"
-msgstr "2. kontakt GroupWise do pracy"
+msgstr "2. kontakt służbowy GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 3"
-msgstr "3. kontakt GroupWise do pracy"
+msgstr "3. kontakt służbowy GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 1"
@@ -491,15 +491,15 @@ msgstr "3. kontakt domowy Jabber"
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 1"
-msgstr "1. kontakt Jabber do pracy"
+msgstr "1. kontakt służbowy Jabber"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 2"
-msgstr "2. kontakt Jabber do pracy"
+msgstr "2. kontakt służbowy Jabber"
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work Id 3"
-msgstr "3. kontakt Jabber do pracy"
+msgstr "3. kontakt służbowy Jabber"
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 1"
@@ -515,15 +515,15 @@ msgstr "3. kontakt domowy Yahoo!"
 
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 1"
-msgstr "1. kontakt Yahoo! do pracy"
+msgstr "1. kontakt służbowy Yahoo!"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 2"
-msgstr "2. kontakt Yahoo! do pracy"
+msgstr "2. kontakt służbowy Yahoo!"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 3"
-msgstr "3. kontakt Yahoo! do pracy"
+msgstr "3. kontakt służbowy Yahoo!"
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 1"
@@ -539,15 +539,15 @@ msgstr "3. kontakt domowy MSN"
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 1"
-msgstr "1. kontakt MSN do pracy"
+msgstr "1. kontakt służbowy MSN"
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 2"
-msgstr "2. kontakt MSN do pracy"
+msgstr "2. kontakt służbowy MSN"
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 3"
-msgstr "3. kontakt MSN do pracy"
+msgstr "3. kontakt służbowy MSN"
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 1"
@@ -563,15 +563,15 @@ msgstr "3. kontakt domowy ICQ"
 
 #: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 1"
-msgstr "1. kontakt ICQ do pracy"
+msgstr "1. kontakt służbowy ICQ"
 
 #: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 2"
-msgstr "2. kontakt ICQ do pracy"
+msgstr "2. kontakt służbowy ICQ"
 
 #: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work Id 3"
-msgstr "3. kontakt ICQ do pracy"
+msgstr "3. kontakt służbowy ICQ"
 
 # FIXME - rewizja?
 #. Last modified time
@@ -594,7 +594,7 @@ msgstr "Adres domowy"
 
 #: ../addressbook/libebook/e-contact.c:234
 msgid "Work Address"
-msgstr "Adres do pracy"
+msgstr "Adres służbowy"
 
 #: ../addressbook/libebook/e-contact.c:235
 msgid "Other Address"
@@ -649,7 +649,7 @@ msgstr "Lista kontaktów ICQ"
 
 #: ../addressbook/libebook/e-contact.c:255
 msgid "Wants HTML Mail"
-msgstr "Chce otrzymywać wiadomości w formacie HTML"
+msgstr "Odbiera wiadomości w formacie HTML"
 
 #: ../addressbook/libebook/e-contact.c:257
 msgid "List"
@@ -688,15 +688,15 @@ msgstr "3. kontakt domowy Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 1"
-msgstr "1. kontakt Gadu-Gadu do pracy"
+msgstr "1. kontakt służbowy Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 2"
-msgstr "2. kontakt Gadu-Gadu do pracy"
+msgstr "2. kontakt służbowy Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work Id 3"
-msgstr "3. kontakt Gadu-Gadu do pracy"
+msgstr "3. kontakt służbowy Gadu-Gadu"
 
 #: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Id List"
@@ -1168,7 +1168,7 @@ msgstr "Niepoprawny argument"
 # FIXME - jakieś inne wersje?
 #: ../calendar/libecal/e-cal.c:4980
 msgid "Backend is busy"
-msgstr "Wsparcie jest zajęte"
+msgstr "Mechanizm jest zajęty"
 
 #: ../calendar/libecal/e-cal.c:4982
 msgid "Repository is offline"
@@ -1605,11 +1605,11 @@ msgstr "Kopiowanie wiadomości"
 
 #: ../camel/camel-folder.c:1651
 msgid "Learning junk"
-msgstr "Nauka rozpoznawania śmieci"
+msgstr "Nauka rozpoznawania niechcianych"
 
 #: ../camel/camel-folder.c:1668
 msgid "Learning non-junk"
-msgstr "Nauka rozpoznawania nie-śmieci"
+msgstr "Nauka rozpoznawania pożądanych"
 
 #: ../camel/camel-folder.c:1687
 msgid "Filtering new message(s)"
@@ -3036,9 +3036,8 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Nieoczekiwana odpowiedź OK od serwera IMAP: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:87
-#, fuzzy
 msgid "Always check for new mail in this folder"
-msgstr "Sprawdzanie nowych wiadomości we wszystkich folderach"
+msgstr "Zawsze sprawdza nową pocztę w tym folderze"
 
 #: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
@@ -4638,50 +4637,50 @@ msgstr "Nie powiodło się polecenie HELO: %s"
 msgid "HELO command failed"
 msgstr "Nie powiodło się polecenie HELO"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1061
+#: ../camel/providers/smtp/camel-smtp-transport.c:1058
 msgid "SMTP Authentication"
 msgstr "Uwierzytelnianie SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1067
+#: ../camel/providers/smtp/camel-smtp-transport.c:1064
 msgid "Error creating SASL authentication object."
 msgstr "Błąd przy tworzeniu obiektu uwierzytelniającego SASL."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1084
-#: ../camel/providers/smtp/camel-smtp-transport.c:1095
+#: ../camel/providers/smtp/camel-smtp-transport.c:1081
+#: ../camel/providers/smtp/camel-smtp-transport.c:1092
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "Nie powiodło się polecenie AUTH: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1101
+#: ../camel/providers/smtp/camel-smtp-transport.c:1098
 msgid "AUTH command failed"
 msgstr "Nie powiodło się polecenie AUTH"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1165
+#: ../camel/providers/smtp/camel-smtp-transport.c:1162
 msgid "Bad authentication response from server.\n"
 msgstr "Niepoprawna odpowiedź serwera na uwierzytelnienie.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1190
+#: ../camel/providers/smtp/camel-smtp-transport.c:1187
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "Nie powiodło się polecenie: %s: nie wysłano poczty"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1207
+#: ../camel/providers/smtp/camel-smtp-transport.c:1204
 msgid "MAIL FROM command failed"
 msgstr "Nie powiodło się polecenie MAIL FROM"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1231
+#: ../camel/providers/smtp/camel-smtp-transport.c:1228
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "Nie powiodło się polecenie RCPT TO: %s: nie wysłano poczty"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1250
+#: ../camel/providers/smtp/camel-smtp-transport.c:1247
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "Nie powiodło się wykonanie RCPT TO <%s>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1289
-#: ../camel/providers/smtp/camel-smtp-transport.c:1347
-#: ../camel/providers/smtp/camel-smtp-transport.c:1366
+#: ../camel/providers/smtp/camel-smtp-transport.c:1286
+#: ../camel/providers/smtp/camel-smtp-transport.c:1344
+#: ../camel/providers/smtp/camel-smtp-transport.c:1363
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "Nie powiodło się polecenie DATA: %s: nie wysłano poczty"
@@ -4689,26 +4688,26 @@ msgstr "Nie powiodło się polecenie DATA: %s: nie wysłano poczty"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1306
-#: ../camel/providers/smtp/camel-smtp-transport.c:1382
+#: ../camel/providers/smtp/camel-smtp-transport.c:1303
+#: ../camel/providers/smtp/camel-smtp-transport.c:1379
 msgid "DATA command failed"
 msgstr "Nie powiodło się polecenie DATA"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1405
+#: ../camel/providers/smtp/camel-smtp-transport.c:1402
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "Nie powiodło się polecenie RSET: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1421
+#: ../camel/providers/smtp/camel-smtp-transport.c:1418
 msgid "RSET command failed"
 msgstr "Nie powiodło się polecenie RSET"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1444
+#: ../camel/providers/smtp/camel-smtp-transport.c:1441
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "Nie powiodło się polecenie QUIT: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1458
+#: ../camel/providers/smtp/camel-smtp-transport.c:1455
 msgid "QUIT command failed"
 msgstr "Nie powiodło się polecenie QUIT"
 
@@ -4718,7 +4717,7 @@ msgstr "Służbowe"
 
 #: ../libedataserver/e-categories.c:46
 msgid "Competition"
-msgstr "Współzawodnictwo"
+msgstr "Konkurencja"
 
 #: ../libedataserver/e-categories.c:47
 msgid "Favorites"
@@ -4791,7 +4790,7 @@ msgstr "VIP"
 
 #: ../libedataserver/e-categories.c:65
 msgid "Waiting"
-msgstr "Oczekiwanie"
+msgstr "Oczekujące"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -5215,12 +5214,12 @@ msgstr "Foldery osobiste"
 
 #: ../servers/exchange/storage/exchange-account.c:1260
 msgid "Favorite Public Folders"
-msgstr "Ulubione publiczne foldery"
+msgstr "Ulubione foldery publiczne"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1277
 msgid "All Public Folders"
-msgstr "Wszystkie publiczne foldery"
+msgstr "Wszystkie foldery publiczne"
 
 #. i18n: Outlookism
 #: ../servers/exchange/storage/exchange-account.c:1291
@@ -5269,15 +5268,15 @@ msgstr "Brak odpowiedzi z serwera"
 
 #: ../servers/groupwise/e-gw-connection.c:204
 msgid "Bad parameter"
-msgstr "Zły parametr"
+msgstr "Błędny parametr"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "Wsparcie plikowe książki adresowej Evolution"
+msgstr "Mechanizm plikowy książki adresowej Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Wsparcie plikowe i sieciowe kalendarza Evolution"
+msgstr "Mechanizm plikowy i sieciowy kalendarza Evolution"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
@@ -5295,11 +5294,11 @@ msgstr "Wystąpiło wielokrotne naruszenie ochrony pamięci; nie można wyświet
 
 #: ../libedataserverui/e-cell-renderer-color.c:210
 msgid "Color Info"
-msgstr ""
+msgstr "Informacje koloru"
 
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
-msgstr ""
+msgstr "Kolor do renderowania"
 
 #~ msgid "Unable to authenticate to GroupWise server. "
 #~ msgstr "Nie można uwierzytelnić na serwerze GroupWise."
