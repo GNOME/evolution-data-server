@@ -101,12 +101,14 @@ static void		mapi_noop(CamelStore *, CamelException *);
 
 static void mapi_folders_sync (CamelMapiStore *store, CamelException *ex);
 
-CamelStore *get_store(void)
+CamelStore
+*get_store(void)
 {
 	return (gl_store);
 }
 
-void set_store(CamelStore *store)
+void
+set_store(CamelStore *store)
 {
 	gl_store = store;
 }
@@ -131,16 +133,10 @@ mapi_compare_folder_name(gconstpointer a, gconstpointer b)
 static void
 camel_mapi_store_class_init(CamelMapiStoreClass *klass)
 {
-	REACHED;
-	CamelServiceClass	*service_class = //(CamelServiceClass *) klass;
+	CamelServiceClass	*service_class = 
 		CAMEL_SERVICE_CLASS (klass);
 	CamelStoreClass		*store_class = (CamelStoreClass *) klass;
 		CAMEL_STORE_CLASS (klass);
-
-/* 	CamelServiceClass *camel_service_class = */
-/* 		CAMEL_SERVICE_CLASS (camel_mapi_store_class); */
-/* 	CamelStoreClass *camel_store_class = */
-/* 		CAMEL_STORE_CLASS (camel_mapi_store_class); */
 
 	parent_class = (CamelOfflineStoreClass *) camel_type_get_global_classfuncs(CAMEL_TYPE_OFFLINE_STORE);
 

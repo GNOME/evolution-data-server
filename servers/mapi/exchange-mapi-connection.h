@@ -25,6 +25,12 @@
 
 #include <libmapi/libmapi.h>
 
+typedef enum {
+	RECIPIENT_TO,
+	RECIPIENT_CC,
+	RECIPIENT_BCC
+} ExchangeMAPIRecipientType;
+
 /* FIXME: need to accomodate rendering position */
 typedef struct {
 	GByteArray *value;
@@ -43,6 +49,10 @@ typedef struct {
 } ExchangeMAPIBodyStream;
 
 typedef struct {
+	gchar *email_id;
+	gchar *name;
+	guint32 flags;
+	ExchangeMAPIRecipientType type;
 } ExchangeMAPIRecipient;
 
 struct id_list {
