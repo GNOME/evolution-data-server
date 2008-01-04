@@ -42,6 +42,8 @@ struct _EDataCalFactoryPrivate {
 
 	/* Hash table from GnomeVFSURI structures to CalBackend objects */
 	GHashTable *backends;
+	/* mutex to access backends hash table */
+	GMutex *backends_mutex;
 
 	/* OAFIID of the factory */
 	char *iid;
@@ -50,7 +52,6 @@ struct _EDataCalFactoryPrivate {
 	guint registered : 1;
 
         int mode;
-
 };
 
 /* Signal IDs */
@@ -102,6 +103,7 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	ECalBackend *ret_backend;
 	const char *uristr;
 	char *uri;
+	gboolean last_calendar;
 
 	fprintf (stderr, "backend_last_client_gone_cb() called!\n");
 
@@ -114,6 +116,8 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	g_assert (uristr != NULL);
 	uri = g_strdup_printf("%s:%d", uristr, (int)e_cal_backend_get_kind(backend));
 
+	g_mutex_lock (priv->backends_mutex);
+
 	ret_backend = g_hash_table_lookup (factory->priv->backends, uri);
 	g_assert (ret_backend != NULL);
 	g_assert (ret_backend == backend);
@@ -124,8 +128,12 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	g_signal_handlers_disconnect_matched (backend, G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL, NULL, data);
 
+	last_calendar = (g_hash_table_size (priv->backends) == 0);
+
+	g_mutex_unlock (priv->backends_mutex);
+
 	/* Notify upstream if there are no more backends */
-	if (g_hash_table_size (priv->backends) == 0)
+	if (last_calendar)
 		g_signal_emit (G_OBJECT (factory), signals[LAST_CALENDAR_GONE], 0);
 }
 
@@ -187,6 +195,8 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		goto cleanup;
 	}
 
+	g_mutex_lock (priv->backends_mutex);
+
 	/* Look for an existing backend */
 	backend = g_hash_table_lookup (factory->priv->backends, uri_type_string);
 	if (!backend) {
@@ -220,6 +230,11 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	}
 
  cleanup:
+	/* The reason why the lock is held for such a long time is that there is
+	   a subtle race where e_cal_backend_add_client() can be called just
+	   before e_cal_backend_finalize() is called from the
+	   backend_last_client_gone_cb(), for details see bug 506457. */
+	g_mutex_unlock (priv->backends_mutex);
 	e_uri_free (uri);
 	g_free (uri_type_string);
 	g_object_unref (source);
@@ -268,6 +283,7 @@ e_data_cal_factory_finalize (GObject *object)
 
 	/* Should we assert that there are no more backends? */
 	g_hash_table_destroy (priv->backends);
+	g_mutex_free (priv->backends_mutex);
 	priv->backends = NULL;
 
 	if (priv->registered) {
@@ -328,9 +344,10 @@ e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
 
-
 	priv->mode = mode;
+	g_mutex_lock (priv->backends_mutex);
 	g_hash_table_foreach (priv->backends, set_backend_online_status, GINT_TO_POINTER (priv->mode));
+	g_mutex_unlock (priv->backends_mutex);
 }
 
 
@@ -348,6 +365,7 @@ e_data_cal_factory_init (EDataCalFactory *factory, EDataCalFactoryClass *klass)
 	priv->backends = g_hash_table_new_full (g_str_hash, g_str_equal,
 						(GDestroyNotify) g_free, (GDestroyNotify) g_object_unref);
 	priv->registered = FALSE;
+	priv->backends_mutex = g_mutex_new ();
 }
 
 BONOBO_TYPE_FUNC_FULL (EDataCalFactory,
@@ -494,11 +512,16 @@ int
 e_data_cal_factory_get_n_backends (EDataCalFactory *factory)
 {
 	EDataCalFactoryPrivate *priv;
+	int sz;
 
 	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (factory), 0);
 
 	priv = factory->priv;
-	return g_hash_table_size (priv->backends);
+	g_mutex_lock (priv->backends_mutex);
+	sz = g_hash_table_size (priv->backends);
+	g_mutex_unlock (priv->backends_mutex);
+
+	return sz;
 }
 
 /* Frees a uri/backend pair from the backends hash table */
@@ -529,5 +552,7 @@ e_data_cal_factory_dump_active_backends (EDataCalFactory *factory)
 	g_message ("Active PCS backends");
 
 	priv = factory->priv;
+	g_mutex_lock (priv->backends_mutex);
 	g_hash_table_foreach (priv->backends, dump_backend, NULL);
+	g_mutex_unlock (priv->backends_mutex);
 }
