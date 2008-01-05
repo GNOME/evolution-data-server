@@ -1,3 +1,8 @@
+2008-01-05  Leonardo Ferreira Fontenelle  <leonardof@svn.gnome.org>
+
+	* pt_BR.po: Brazilian Portuguese translation updated by Washington
+	Lins.
+
 2008-01-05   Clytie Siddall <clytie@riverland.net.au>
 
 	* vi.po: Updated Vietnamese translation.
@@ -5,7 +10,8 @@
 2007-12-31  Yannig Marchegay <yannig@marchegay.org>
 
 	* oc.po: Updated Occitan translation.
-2007-12-31  Wadim Dziedzic  <wadimd@svn.gnome.org>
+
+2007-12-31  Wadim Dziedzic  <wadimd@svn.gnome.org>
 
 	* pl.po: Updated polish translation
 
@@ -16,6 +22,7 @@
 2007-12-28  Priit Laes  <plaes at svn dot gnome dot org>
 
 	* et.po: Translation updated by Ivar Smolin echo 
+
 2007-12-24  Wadim Dziedzic  <wadimd@svn.gnome.org>
 
 	* pl.po: Unification of Polish date format strings
