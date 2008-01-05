@@ -66,7 +66,7 @@ enum {
 };
 
 static const gchar *GOOGLE_CLIENT_LOGIN = "https://www.google.com/accounts/ClientLogin";
-static const gchar *GOOGLE_CLIENT_LOGIN_MSG = "Email=%s&Passwd=%s&service=%s&source=%s";
+static const gchar *GOOGLE_CLIENT_LOGIN_MSG = "Email=%s&Passwd=%s&service=%s&source=%s&accountType=HOSTED_OR_GOOGLE";
 
 void
 gdata_google_service_set_credentials (GDataService *service, const gchar *username, const gchar *password)
