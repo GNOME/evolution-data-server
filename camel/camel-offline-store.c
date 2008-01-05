@@ -163,3 +163,41 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 
 	store->state = state;
 }
+
+void
+camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex)
+{
+	CamelException lex;
+	CamelService *service = CAMEL_SERVICE (store);
+	gboolean network_state = camel_session_get_network_state (service->session);
+
+	camel_exception_init (&lex);
+	if (network_state) {	
+		if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
+			if (((CamelStore *) store)->folders) {
+				GPtrArray *folders;
+				CamelFolder *folder;
+				int i, sync;
+				
+				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
+				
+				folders = camel_object_bag_list (((CamelStore *) store)->folders);
+				for (i = 0; i < folders->len; i++) {
+					folder = folders->pdata[i];
+
+					if (CAMEL_CHECK_TYPE (folder, CAMEL_OFFLINE_FOLDER_TYPE)
+					    && (sync || ((CamelOfflineFolder *) folder)->sync_offline)) {
+						camel_offline_folder_downsync ((CamelOfflineFolder *) folder, NULL, &lex);
+						camel_exception_clear (&lex);
+					}
+					camel_object_unref (folder);
+				}
+				g_ptr_array_free (folders, TRUE);
+			}
+		}	
+
+		camel_store_sync (CAMEL_STORE (store), FALSE, &lex);
+		camel_exception_clear (&lex);
+	
+	}
+}

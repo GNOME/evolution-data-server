@@ -65,6 +65,8 @@ CamelType camel_offline_store_get_type (void);
 
 void camel_offline_store_set_network_state (CamelOfflineStore *store, int state, CamelException *ex);
 
+void camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex);
+
 G_END_DECLS
 
 #endif /* __CAMEL_OFFLINE_STORE_H__ */

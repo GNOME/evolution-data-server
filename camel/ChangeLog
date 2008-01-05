@@ -1,3 +1,11 @@
+2008-01-06  Bharath Acharya  <abharath@novell.com>
+
+	** Fix for bug #474118
+
+	* camel-offline-store.c: (camel_offline_store_prepare_for_offline):
+	* camel-offline-store.h:
+	Downsyncs all the messages from folders marked for offline use.
+
 2007-12-27  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-utils.c (rfc2047_decode_word): If we fail to
