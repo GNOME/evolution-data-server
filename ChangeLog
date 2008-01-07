@@ -1,3 +1,19 @@
+2008-01-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #339813
+
+	* libedataserver/e-time-utils.h: (e_time_parse_date_and_time_ex),
+	(e_time_parse_date_ex), (e_time_get_d_fmt_with_4digit_year):
+	New API functions, returns is parsed string had two-digit year and
+	last one changes "%x" on format of strftime with forced 4-digit year.
+	* libedataserver/e-time-utils.c: (parse_with_strptime):
+	Fix issue when read all text but actual date isn't correct to this format.
+	* libedataserver/e-time-utils.c: (correct_two_digit_year):
+	New helper function.
+	* libedataserver/e-time-utils.c: (e_time_parse_date_and_time_ex),
+	(e_time_parse_date_ex), (e_time_get_d_fmt_with_4digit_year):
+	Implementing new API functions.
+
 2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
 
 	* libedataserver/e-iconv.c: Map gb2312-compat charsets to GBK

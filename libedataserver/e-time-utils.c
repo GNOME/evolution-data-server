@@ -19,6 +19,7 @@
 #include <sys/time.h>
 
 #ifdef __linux__
+#include <langinfo.h>
 #undef _GNU_SOURCE
 #endif /* __linux__ */
 
@@ -1484,7 +1485,6 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 	gchar *locale_str;
 	gchar *format_str;
 	ETimeParseStatus parse_ret;
-	gboolean parsed = FALSE;
 	int i, n;
 
 	if (string_is_empty (value)) {
@@ -1493,6 +1493,7 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 		return E_TIME_PARSE_NONE;
 	}
 
+	parse_ret =  E_TIME_PARSE_INVALID;
 	locale_str = g_locale_from_utf8 (value, -1, NULL, NULL, NULL);
 	pos = (const char *) locale_str;
 
@@ -1511,24 +1512,19 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 		parse_end = strptime (pos, format_str, result);
 		g_free (format_str);
 		if (parse_end) {
-			parsed = TRUE;
-			break;
+			/* If we parsed something, make sure we parsed the entire string. */
+			/* Skip whitespace */
+			while (isspace (*parse_end))
+				parse_end++;
+
+			if (*parse_end == '\0') {
+				parse_ret = E_TIME_PARSE_OK;
+				break;
+			}
 		}
 	}
 
 	result->tm_isdst = -1;
-
-	parse_ret =  E_TIME_PARSE_INVALID;
-
-	/* If we parsed something, make sure we parsed the entire string. */
-	if (parsed) {
-		/* Skip whitespace */
-		while (isspace (*parse_end))
-			parse_end++;
-
-		if (*parse_end == '\0')
-			parse_ret = E_TIME_PARSE_OK;
-	}
 
 	g_free (locale_str);
 
@@ -1536,6 +1532,30 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 
 }
 
+static void
+correct_two_digit_year (struct tm *result, gboolean *two_digit_year)
+{
+	g_return_if_fail (result != NULL);
+
+	if (two_digit_year)
+		*two_digit_year = FALSE;
+
+	/* If a 2-digit year was used we use the current century. */
+	if (result->tm_year < 0 && result->tm_year < -1800) {
+		time_t t = time (NULL);
+		struct tm *today_tm = localtime (&t);
+		
+		/* This should convert it into a value from 0 to 99. */
+		result->tm_year += 1900;
+		
+		/* Now add on the century. */
+		result->tm_year += today_tm->tm_year
+			- (today_tm->tm_year % 100);
+
+		if (two_digit_year)
+			*two_digit_year = TRUE;
+	}
+}
 
 /* Returns TRUE if the locale has 'am' and 'pm' strings defined, in which
    case the user can choose between 12 and 24-hour time formats. */
@@ -1551,9 +1571,11 @@ locale_supports_12_hour_format (void)
 
 
 /**
- * e_time_parse_date_and_time:
+ * e_time_parse_date_and_time_ex:
  * @value: The string to parse a date and time from.
  * @result: A #tm to store the result in.
+ * @two_digit_year: set to TRUE, is parsing with two-digit year, else FALSE,
+ *    but only when not NULL.
  *
  * Parses a string @value containing a date and a time and stores the
  * result in @result. The date in @value is expected to be in a format
@@ -1567,8 +1589,9 @@ locale_supports_12_hour_format (void)
  *          E_TIME_PARSE_INVALID if the string could not be parsed.
  */
 ETimeParseStatus
-e_time_parse_date_and_time		(const char	*value,
-					 struct tm	*result)
+e_time_parse_date_and_time_ex		(const char	*value,
+					 struct tm	*result,
+					 gboolean	*two_digit_year)
 {
 	struct tm *today_tm;
 	time_t t;
@@ -1667,23 +1690,14 @@ e_time_parse_date_and_time		(const char	*value,
 	/* strptime format of a weekday and a date. */
 	format[num_formats++] = _("%m/%d/%Y");
 
-
+	if (two_digit_year)
+		*two_digit_year = FALSE;
+	
 	status = parse_with_strptime (value, result, format, num_formats);
 	/* Note that we checked if it was empty already, so it is either OK
 	   or INVALID here. */
 	if (status == E_TIME_PARSE_OK) {
-		/* If a 2-digit year was used we use the current century. */
-		if (result->tm_year < 0) {
-			t = time (NULL);
-			today_tm = localtime (&t);
-
-			/* This should convert it into a value from 0 to 99. */
-			result->tm_year += 1900;
-
-			/* Now add on the century. */
-			result->tm_year += today_tm->tm_year
-				- (today_tm->tm_year % 100);
-		}
+		correct_two_digit_year (result, two_digit_year);
 	} else {
 		/* Now we try to just parse a time, assuming the current day.*/
 		status = e_time_parse_time (value, result);
@@ -1700,10 +1714,19 @@ e_time_parse_date_and_time		(const char	*value,
 	return status;
 }
 
+ETimeParseStatus
+e_time_parse_date_and_time		(const char	*value,
+					 struct tm	*result)
+{
+	return e_time_parse_date_and_time_ex (value, result, NULL);
+}
+
 /**
- * e_time_parse_date:
+ * e_time_parse_date_ex:
  * @value: A date string.
  * @result: Return value for the parsed date.
+ * @two_digit_year: set to TRUE, is parsing with two-digit year, else FALSE,
+ *    but only when not NULL.
  *
  * Takes in a date string entered by the user and tries to convert it to
  * a struct #tm.
@@ -1712,11 +1735,9 @@ e_time_parse_date_and_time		(const char	*value,
  * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
-e_time_parse_date (const char *value, struct tm *result)
+e_time_parse_date_ex (const char *value, struct tm *result, gboolean *two_digit_year)
 {
-	const char *format[3];
-	struct tm *today_tm;
-	time_t t;
+	const char *format[4];
 	ETimeParseStatus status;
 
 	g_return_val_if_fail (value != NULL, E_TIME_PARSE_INVALID);
@@ -1725,32 +1746,43 @@ e_time_parse_date (const char *value, struct tm *result)
 	/* according to the current locale */
 	format [0] = ("%x");
 
+	/* according to the current locale with forced 4-digit year*/
+	format [1] = e_time_get_d_fmt_with_4digit_year ();
+
 	/* strptime format of a weekday and a date. */
-	format[1] = _("%a %m/%d/%Y");
+	format [2] = _("%a %m/%d/%Y");
 
 	/* This is the preferred date format for the locale. */
-	format[2] = _("%m/%d/%Y");
+	format [3] = _("%m/%d/%Y");
 
+	if (two_digit_year) {
+		/* when we need to know about two digit year, then always first try
+		   full year, because for example nl_NL have format %d-%m-%y and it
+		   changes from two year itself, which isn't what we want */
+		const char *tmp = format [1];
+		format [1] = format [0];
+		format [0] = tmp;
+		*two_digit_year = FALSE;
+	}
 
 	status = parse_with_strptime (value, result, format, sizeof (format)/sizeof (format [0]));
 	if (status == E_TIME_PARSE_OK) {
-		/* If a 2-digit year was used we use the current century. */
-		if (result->tm_year < 0) {
-			t = time (NULL);
-			today_tm = localtime (&t);
-
-			/* This should convert it into a value from 0 to 99. */
-			result->tm_year += 1900;
-
-			/* Now add on the century. */
-			result->tm_year += today_tm->tm_year
-				- (today_tm->tm_year % 100);
-		}
+		correct_two_digit_year (result, two_digit_year);
 	}
+
+	if (two_digit_year)
+		g_free ((char*)format [0]);
+	else
+		g_free ((char*)format [1]);
 
 	return status;
 }
 
+ETimeParseStatus
+e_time_parse_date (const char *value, struct tm *result)
+{
+	return e_time_parse_date_ex (value, result, NULL);
+}
 
 /**
  * e_time_parse_time:
@@ -1966,4 +1998,25 @@ e_localtime_with_offset (time_t tt, struct tm *tm, int *offset)
 	} else
 		*offset = -timezone;
 #endif
+}
+
+char *
+e_time_get_d_fmt_with_4digit_year (void)
+{
+	char *p;
+	char *res = 
+	#if defined(__linux__)
+		g_strdup (nl_langinfo (D_FMT) );
+	/*#elif defined(G_OS_WIN32)
+	**TODO** implement this for Win32 (GetLocaleInfo?) and/or other systems
+	*/
+	#else
+		/* this will not work for other systems */
+		g_strdup ("%x");
+	#endif
+
+	while (p = strchr (res, 'y'), p)
+		*p = 'Y';
+
+	return res;
 }
