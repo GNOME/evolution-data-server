@@ -1446,9 +1446,13 @@ static CamelSessionThreadOps folder_changed_ops = {
 static void
 folder_changed_base(CamelVeeFolder *vf, CamelFolder *sub, CamelFolderChangeInfo *changes)
 {
+	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);	
 	struct _folder_changed_msg *m;
 	CamelSession *session = ((CamelService *)((CamelFolder *)vf)->parent_store)->session;
 
+	if (p->destroyed)
+		return; 
+	
 	m = camel_session_thread_msg_new(session, &folder_changed_ops, sizeof(*m));
 	m->changes = camel_folder_change_info_new();
 	camel_folder_change_info_cat(m->changes, changes);
@@ -1691,7 +1695,7 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 	CamelFolder *folder = (CamelFolder *)obj;
 
 	p = _PRIVATE(obj) = g_malloc0(sizeof(*p));
-
+	
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
 
@@ -1717,6 +1721,8 @@ camel_vee_folder_finalise (CamelObject *obj)
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	GList *node;
+	
+	p->destroyed = TRUE;
 
 	/* TODO: there may be other leaks? */
 
