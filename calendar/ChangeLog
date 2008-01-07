@@ -1,3 +1,10 @@
+2008-01-07  P Chenthill <pchenthill@novell.com>
+
+	** Fix for bug #503574
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas): Dont spawn 
+	many threads. Use locks to avoid them.
+
 2008-01-04  Ondrej Jirman  <megous@megous.com>
 
 	** Fix for bug #506457
