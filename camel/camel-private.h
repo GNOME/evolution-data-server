@@ -139,6 +139,7 @@ struct _CamelStoreSummaryPrivate {
 
 
 struct _CamelVeeFolderPrivate {
+	gboolean destroyed;
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
 	GList *folders_changed;		/* for list of folders that have changed between updates */
 	
