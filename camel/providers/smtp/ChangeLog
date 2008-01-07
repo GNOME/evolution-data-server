@@ -1,3 +1,10 @@
+2008-01-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #504837
+
+	* camel-smtp-transport.c: (connect_to_server):
+	Do not ignore HELO failed message.
+
 2007-12-23  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-smtp-transport.c (smtp_helo): Get rid of some unneccessary
