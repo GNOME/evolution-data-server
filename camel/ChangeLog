@@ -1,3 +1,10 @@
+2008-01-07  Sankar P  <psankar@novell.com>
+
+	* camel-partition-table.c: (camel_key_table_add),
+	(camel_key_table_set_flags):
+	Convert a g_assert to g_warning. 
+	Reduces the severity of	#348149
+
 2008-01-07  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #405497

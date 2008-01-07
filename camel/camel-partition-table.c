@@ -761,7 +761,15 @@ camel_key_table_add(CamelKeyTable *ki, const char *key, camel_block_t data, unsi
 
 	kblast->used++;
 
+#if 0
 	g_assert(kblast->used < 127);
+#else
+	if (kblast->used >=127) {
+		g_warning("Invalid value for used %d\n", kblast->used);
+		return 0;
+	}
+#endif
+
 
 	camel_block_file_touch_block(ki->blocks, last);
 	camel_block_file_unref_block(ki->blocks, last);
@@ -826,8 +834,15 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, unsigned int fla
 		return;
 	kb = (CamelKeyBlock *)&bl->data;
 
-	g_assert(kb->used < 127);
+#if 0
+	g_assert(kb->used < 127); /* this should be more accurate */
 	g_assert(index < kb->used);
+#else
+	if (kb->used >=127 || index >= kb->used) {
+		g_warning("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
+		return ;
+	}
+#endif
 
 	CAMEL_KEY_TABLE_LOCK(ki, lock);
 
