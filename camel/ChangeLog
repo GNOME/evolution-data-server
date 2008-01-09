@@ -1,3 +1,11 @@
+2008-01-09  Sankar P  <psankar@novell.com>
+
+	* camel-mime-part.c: (camel_mime_part_set_filename):
+	Use the right API to get the mime_type. Accessing Data Wrapper's
+	field directly is not advisable.
+
+	** Fix for bug #460204
+
 2008-01-07  Sankar P  <psankar@novell.com>
 
 	* camel-partition-table.c: (camel_key_table_add),
