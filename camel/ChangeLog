@@ -1,3 +1,8 @@
+2008-01-09  Milan Crha  <mcrha@redhat.com>
+
+	* Reverted previous patch because it doesn't play well with
+	prefer plain plugin.
+
 2008-01-09  Sankar P  <psankar@novell.com>
 
 	* camel-mime-part.c: (camel_mime_part_set_filename):

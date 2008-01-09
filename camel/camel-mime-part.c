@@ -447,9 +447,8 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
 				 "Content-Disposition", str);
 	g_free(str);
 
-	camel_content_type_set_param ( (camel_data_wrapper_get_mime_type ((CamelDataWrapper *) mime_part)), "name", filename);
-
-	str = camel_content_type_format ((camel_data_wrapper_get_mime_type ((CamelDataWrapper *) mime_part)));
+	camel_content_type_set_param (((CamelDataWrapper *) mime_part)->mime_type, "name", filename);
+	str = camel_content_type_format (((CamelDataWrapper *) mime_part)->mime_type);
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Type", str);
 	g_free (str);
 }
