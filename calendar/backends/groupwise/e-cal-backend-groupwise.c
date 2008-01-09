@@ -345,8 +345,7 @@ get_deltas (gpointer handle)
 
 	attempts = e_cal_backend_cache_get_key_value (cache, key);
 
-	if (!g_static_mutex_trylock (&connecting))
-			return TRUE;
+	g_static_mutex_lock (&connecting);
 
 	serv_time = e_cal_backend_cache_get_server_utc_time (cache);
 	if (serv_time) {
