@@ -1,3 +1,17 @@
+Evolution-Data-Server 1.12.3 2008-01-07
+---------------------------------------
+
+Bug Fixes:
+	#348149: Random crash in partition table (Sankar)
+	#405497: Crash in vfolder while quitting (Srini)
+	#415817: Update start/end time for recurrence instances even when only end time has been changed (Milan Crha)
+	#500018: Allow choose files, instead of directories, for mbox (Milan Crha)
+	#503574: Huge thread spawn in Groupwise Calendar (Chenthill)
+
+Updated Translations:
+	Ivar Smolin (et)
+	Luca Ferretti (it)
+
 Evolution-Data-Server 1.12.2 2007-11-26
 ---------------------------------------
 
