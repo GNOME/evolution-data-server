@@ -1,3 +1,7 @@
+2008-01-11  Suman Manjunath  <msuman@novell.com>
+
+	* e-book-backend-galldap-factory.h: File was missing. Added it. 
+
 2007-11-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* e-book-backend-galldap.c: (load_source): Read the proper gal server

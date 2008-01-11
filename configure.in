@@ -1524,6 +1524,9 @@ AC_SUBST(extensiondir)
 gladedir="$privdatadir/glade"
 AC_SUBST(gladedir)
 
+mapidatadir="$privdatadir/mapi"
+AC_SUBST(mapidatadir)
+
 weatherdatadir="$privdatadir/weather"
 AC_SUBST(weatherdatadir)
 

@@ -23,6 +23,7 @@
 
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-utils.h"
+#include "e-cal-backend-mapi-tz-utils.h"
 
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 
@@ -161,6 +162,8 @@ e_cal_backend_mapi_finalize (GObject *object)
 	g_free (priv);
 	cbmapi->priv = NULL;
 
+	e_cal_backend_mapi_tz_util_destroy ();
+
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
@@ -290,7 +293,10 @@ e_cal_backend_mapi_remove (ECalBackendSync *backend, EDataCal *cal)
 	return GNOME_Evolution_Calendar_Success;
 }
 
+/* we don't have to specify the PR_BODY_* tags since it is fetched by default */
 static const uint32_t GetPropsList[] = {
+	PR_FID, 
+	PR_MID, 
 	PR_SUBJECT, 
 	PR_SUBJECT_UNICODE, 
 	PR_SUBJECT_ERROR, 
@@ -314,7 +320,6 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 {
 	ECalBackendMAPI *cbmapi	= data;
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
-        ECalComponent *comp = NULL;
 	gchar *tmp = NULL;
 	GSList *cache_comp_uid = NULL;
 	const bool *recurring;
@@ -337,32 +342,9 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 
 	tmp = exchange_mapi_util_mapi_id_to_string (mid);
 	cache_comp_uid = g_slist_find_custom (priv->cache_keys, tmp, (GCompareFunc) (g_ascii_strcasecmp));
-printf ("\n******* mid [%s] *******\n", tmp);
 
 	if (cache_comp_uid == NULL) {
-		ECalComponentVType type = E_CAL_COMPONENT_NO_TYPE;
-		icalcomponent_kind kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi));
-
-		switch (kind) {
-			case ICAL_VEVENT_COMPONENT:
-				type = E_CAL_COMPONENT_EVENT;
-				break;
-			case ICAL_VTODO_COMPONENT:
-				type = E_CAL_COMPONENT_TODO;
-				break;
-			case ICAL_VJOURNAL_COMPONENT:
-				type = E_CAL_COMPONENT_JOURNAL;
-				break;
-			default:
-				return FALSE;
-		}
-
-		comp = e_cal_component_new ();
-		e_cal_component_set_new_vtype (comp, type);
-
-		e_cal_backend_mapi_props_to_comp (cbmapi, array, comp, recipients, attachments, priv->default_zone);
-
-		e_cal_component_set_uid (comp, tmp);
+		ECalComponent *comp = e_cal_backend_mapi_props_to_comp (cbmapi, tmp, array, streams, recipients, attachments, priv->default_zone);
 
 		if (E_IS_CAL_COMPONENT (comp)) {
 			char *comp_str;
@@ -380,19 +362,22 @@ printf ("\n******* mid [%s] *******\n", tmp);
 		struct timeval t;
 
 		if (get_mapi_SPropValue_array_date_timeval (&t, array, PR_LAST_MODIFICATION_TIME) == MAPI_E_SUCCESS) {
+			ECalComponent *cache_comp;
 			struct icaltimetype itt, *cache_comp_lm = NULL;
 			itt = icaltime_from_timet_with_zone (t.tv_sec, 0, 0);
 			icaltime_set_timezone (&itt, icaltimezone_get_utc_timezone ());
 
-			comp = e_cal_backend_cache_get_component (priv->cache, (const char *) cache_comp_uid->data, NULL);
-			e_cal_component_get_last_modified (comp, &cache_comp_lm);
+			cache_comp = e_cal_backend_cache_get_component (priv->cache, (const char *) cache_comp_uid->data, NULL);
+			e_cal_component_get_last_modified (cache_comp, &cache_comp_lm);
 			if (icaltime_compare (itt, *cache_comp_lm) != 0) {
+				ECalComponent *comp;
 				char *old_comp_str = NULL, *new_comp_str = NULL;
 
-				e_cal_component_commit_sequence (comp);
-				old_comp_str = e_cal_component_get_as_string (comp);
+				e_cal_component_commit_sequence (cache_comp);
+				old_comp_str = e_cal_component_get_as_string (cache_comp);
 
-				e_cal_backend_mapi_props_to_comp (cbmapi, array, comp, recipients, attachments, priv->default_zone);
+				comp = e_cal_backend_mapi_props_to_comp (cbmapi, (const char *) cache_comp_uid->data, array, 
+									streams, recipients, attachments, priv->default_zone);
 
 				e_cal_component_commit_sequence (comp);
 				new_comp_str = e_cal_component_get_as_string (comp);
@@ -400,9 +385,11 @@ printf ("\n******* mid [%s] *******\n", tmp);
 				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbmapi), old_comp_str, new_comp_str);
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
-				g_free (old_comp_str); g_free (new_comp_str);
+				g_object_unref (comp);
+				g_free (old_comp_str); 
+				g_free (new_comp_str);
 			}
-			g_object_unref (comp);
+			g_object_unref (cache_comp);
 		}
 		priv->cache_keys = g_slist_remove_link (priv->cache_keys, cache_comp_uid);
 	}
@@ -595,7 +582,6 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 	ECalBackendMAPI *cbmapi	= E_CAL_BACKEND_MAPI (data);
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
         ECalComponent *comp = NULL;
-	ECalComponentVType type = E_CAL_COMPONENT_NO_TYPE;
 	int i;
 	gchar *tmp = NULL;
 	const bool *recurring = NULL;
@@ -606,89 +592,29 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi))) {
 		case ICAL_VEVENT_COMPONENT:
-			type = E_CAL_COMPONENT_EVENT;
 			/* FIXME: Provide backend support for recurrence */
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8223));
 			if (recurring && *recurring)
 				return TRUE;
 			break;
 		case ICAL_VTODO_COMPONENT:
-			type = E_CAL_COMPONENT_TODO;
 			/* FIXME: Evolution does not support recurring tasks */
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8126));
 			if (recurring && *recurring)
 				return TRUE;
 			break;
 		case ICAL_VJOURNAL_COMPONENT:
-			type = E_CAL_COMPONENT_JOURNAL;
 			break;
 		default:
 			return FALSE; 
 	}
 	
-	comp = e_cal_component_new ();
-	e_cal_component_set_new_vtype (comp, type);
 	tmp = exchange_mapi_util_mapi_id_to_string (mid);
-printf ("\n******* mid [%s] *******\n", tmp);
-	e_cal_component_set_uid (comp, tmp);
-	e_cal_backend_mapi_props_to_comp (cbmapi, properties, comp, recipients, attachments, priv->default_zone);
-//set_attachments_to_cal_component (cbmapi, comp, attachments);
+	comp = e_cal_backend_mapi_props_to_comp (cbmapi, tmp, properties, streams, recipients, attachments, priv->default_zone);
 	g_free (tmp);
-#if 0
-printf ("\n******* start of item *******\n");
-for (i = 0; i < properties->cValues; i++) { 
-	for (i = 0; i < properties->cValues; i++) {
-		struct mapi_SPropValue *lpProp = &properties->lpProps[i];
-		const char *tmp =  get_proptag_name (lpProp->ulPropTag);
-		struct timeval t;
-		if (tmp && *tmp)
-			printf("\n%s \t",tmp);
-		else
-			printf("\n%x \t", lpProp->ulPropTag);
-		switch(lpProp->ulPropTag & 0xFFFF) {
-			case PT_BOOLEAN:
-				printf(" (bool) - %d", lpProp->value.b);
-				break;
-			case PT_I2:
-				printf(" (uint16_t) - %d", lpProp->value.i);
-				break;
-			case PT_LONG:
-				printf(" (long) - %d", lpProp->value.l);
-				break;
-			case PT_DOUBLE:
-				printf (" (double) -  %lf", lpProp->value.dbl);
-				break;
-			case PT_I8:
-				printf (" (int) - %lld", lpProp->value.d);
-				break;
-			case PT_SYSTIME:
-				get_mapi_SPropValue_array_date_timeval (&t, properties, lpProp->ulPropTag);
-				printf (" (struct FILETIME *) - %p\t[%s]\t", &lpProp->value.ft, icaltime_as_ical_string (icaltime_from_timet_with_zone (t.tv_sec, 0, 0)));
-				break;
-			case PT_ERROR:
-//				printf (" (error) - %p", lpProp->value.err);
-				break;
-			case PT_STRING8:
-				printf(" (string) - %s", lpProp->value.lpszA ? lpProp->value.lpszA : "null" );
-				break;
-			case PT_UNICODE:
-				printf(" (unicodestring) - %s", lpProp->value.lpszW ? lpProp->value.lpszW : "null");
-				break;
-			case PT_BINARY:
-				printf(" (struct SBinary_short *) - %p", &lpProp->value.bin);
-//				{ gchar *str; GByteArray *ba = g_byte_array_sized_new (lpProp->value.bin.cb); g_byte_array_append (ba, lpProp->value.bin.lpb, lpProp->value.bin.cb); str = g_strndup (ba->data, ba->len); printf ("\n%s\n", str); g_free (str); }
-				break;
-			case PT_MV_STRING8:
-// 				printf(" (struct mapi_SLPSTRArray *) - %p", &lpProp->value.MVszA);
-				break;
-			default:
-				printf(" - NONE NULL");
-				break;
-		}
-	}
-}
-printf ("\n****** end of item *******\n");
-#endif
+
+//	e_cal_backend_mapi_dump_properties (properties);
+
 	if (E_IS_CAL_COMPONENT (comp)) {
 		char *comp_str;
 
@@ -1823,11 +1749,10 @@ e_cal_backend_mapi_init (ECalBackendMAPI *cbmapi, ECalBackendMAPIClass *class)
 
 	cbmapi->priv = priv;
 
-	priv->mutex = g_mutex_new ();
-
-	cbmapi->priv = priv;
-
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbmapi), TRUE);
+
+	e_cal_backend_mapi_tz_util_populate ();
+//	e_cal_backend_mapi_tz_util_dump ();
 }
 
 GType

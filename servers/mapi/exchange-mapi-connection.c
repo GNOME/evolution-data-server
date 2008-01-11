@@ -39,8 +39,8 @@
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK()		printf("%s(%d):%s: lock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);;g_static_rec_mutex_lock(&connect_lock)
-#define UNLOCK()	printf("%s(%d):%s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
+#define LOCK()		printf("%s(%d): %s: lock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
+#define UNLOCK()	printf("%s(%d): %s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 //#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
@@ -1191,7 +1191,7 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-	//	LOGALL ();
+//	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_CreateItem");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
@@ -1279,11 +1279,13 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 		goto cleanup;
 	}
 
-	/* Mark message as ready to be sent */
-	retval = SubmitMessage(&obj_message);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("SubmitMessage", GetLastError());
-		goto cleanup;
+	if (recipients) {
+		/* Mark message as ready to be sent */
+		retval = SubmitMessage(&obj_message);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("SubmitMessage", GetLastError());
+			goto cleanup;
+		}
 	}
 
 	mid = mapi_object_get_id (&obj_message);
@@ -1293,7 +1295,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
-	//	LOGNONE ();
+//	LOGNONE ();
 	UNLOCK ();
 
 	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
@@ -1400,11 +1402,13 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 		goto cleanup;
 	}
 
-	/* Mark message as ready to be sent */
-	retval = SubmitMessage(&obj_message);
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr("SubmitMessage", GetLastError());
-		goto cleanup;
+	if (recipients) {
+		/* Mark message as ready to be sent */
+		retval = SubmitMessage(&obj_message);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("SubmitMessage", GetLastError());
+			goto cleanup;
+		}
 	}
 
 	result = TRUE;

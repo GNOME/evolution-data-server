@@ -1,3 +1,8 @@
+2008-01-11  Suman Manjunath  <msuman@novell.com>
+
+	* configure.in: Added a data-directory variable for the 
+	Exchange MAPI plugin. 
+
 2007-10-09  Matthew Barnes  <mbarnes@redhat.com>
 
 	* iconv-detect.c (main): Remove an unused variable (#483301).

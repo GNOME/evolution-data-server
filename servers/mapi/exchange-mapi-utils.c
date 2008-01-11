@@ -25,7 +25,6 @@
 #endif
 
 #include "exchange-mapi-utils.h"
-#include "exchange-mapi-connection.h"
 
 
 /* Converts a string from Windows-UTF8 to classic-UTF8.
@@ -159,6 +158,20 @@ exchange_mapi_util_find_array_propval (struct mapi_SPropValue_array *properties,
 	 */
 
 	return (void *)find_mapi_SPropValue_data(properties, proptag);
+}
+
+ExchangeMAPIStream *
+exchange_mapi_util_find_stream (GSList *stream_list, uint32_t proptag)
+{
+	GSList *l = stream_list;
+
+	for (; l != NULL; l = l->next) {
+		ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
+		if (stream->proptag == proptag)
+			return stream;
+	}
+
+	return NULL;
 }
 
 void 

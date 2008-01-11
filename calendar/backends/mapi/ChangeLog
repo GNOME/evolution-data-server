@@ -1,3 +1,29 @@
+2008-01-11  Suman Manjunath  <msuman@novell.com>
+
+	* Makefile.am:
+	* e-cal-backend-mapi-tz-utils.c:
+	(e_cal_backend_mapi_tz_util_get_mapi_equivalent),
+	(e_cal_backend_mapi_tz_util_get_ical_equivalent),
+	(e_cal_backend_mapi_tz_util_destroy), (file_contents_to_hashtable),
+	(e_cal_backend_mapi_tz_util_populate),
+	(e_cal_backend_mapi_tz_util_dump_ical_tzs),
+	(e_cal_backend_mapi_tz_util_dump),
+	(e_cal_backend_mapi_util_mapi_tz_to_bin),
+	(e_cal_backend_mapi_util_bin_to_mapi_tz):
+	* e-cal-backend-mapi-tz-utils.h: Initial support for handling timezones
+	* e-cal-backend-mapi-utils.c: (e_cal_backend_mapi_props_to_comp),
+	(appt_build_name_id), (task_build_name_id), (note_build_name_id),
+	(build_name_id), (build_props),
+	(e_cal_backend_mapi_util_dump_properties): Better property handling,
+	better property setting, code cleanup. 
+	* e-cal-backend-mapi-utils.h:
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_finalize),
+	(get_changes_cb), (cache_create_cb), (e_cal_backend_mapi_init): Code 
+	cleanup. 
+	* tz-ical-to-mapi:
+	* tz-mapi-to-ical: Timezone mappings from iCal <-> MAPI. These are 
+	installable files. 
+
 2007-12-21  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am:
