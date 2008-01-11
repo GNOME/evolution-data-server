@@ -1,3 +1,11 @@
+2008-01-11  Jeffrey Stedfast  <fejj@novell.com>
+
+	Slightly modified version of a patch submitted by Jean-Christophe
+	BEGUE for bug #329692.
+
+	* camel-mime-part.c (camel_mime_part_get_content_size): Get the
+	decoded content size of a MIME part.
+
 2008-01-09  Milan Crha  <mcrha@redhat.com>
 
 	* Reverted previous patch because it doesn't play well with

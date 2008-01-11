@@ -1060,3 +1060,31 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 		medium->content = NULL;
 	}
 }
+
+/**
+ * camel_mime_part_get_content_size:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the decoded size of the MIME part's content.
+ *
+ * Returns the size of the MIME part's content in bytes.
+ **/
+size_t
+camel_mime_part_get_content_size (CamelMimePart *mime_part)
+{
+	CamelStreamNull *null;
+	CamelDataWrapper *dw;
+	size_t size;
+	
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), 0);
+	
+	dw = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
+	
+	null = camel_stream_null_new ();
+	camel_data_wrapper_decode_to_stream (dw, null);
+	size = null->written;
+	
+	camel_object_unref (null);
+	
+	return size;
+}
