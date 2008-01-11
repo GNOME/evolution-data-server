@@ -353,8 +353,10 @@ ep_clear_passwords_keyfile (EPassMsg *msg)
 	if (error == NULL)
 		ep_key_file_save ();
 	else {
-		g_warning ("%s", error->message);
-		g_error_free (error);
+		if (error) {
+			g_warning ("%s", error->message);
+			g_error_free (error);
+		}
 	}
 
 	g_free (group);
@@ -762,8 +764,10 @@ ep_get_password_keyfile (EPassMsg *msg)
 		msg->password = ep_password_decode (password);
 		g_free (password);
 	} else {
-		g_warning ("%s", error->message);
-		g_error_free (error);
+		if (error) {
+			g_warning ("%s", error->message);
+			g_error_free (error);
+		}
 	}
 
 	g_free (group);

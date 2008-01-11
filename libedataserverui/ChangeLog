@@ -1,3 +1,10 @@
+2008-01-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #508438
+
+	* e-passwords.c: (ep_get_password_keyfile): (ep_get_password_keyfile):
+	Extract error only if it is there.
+
 2007-12-23  Ted Percival  <ted@midg3t.net>
 
 	** Partial fix for bug #503400
