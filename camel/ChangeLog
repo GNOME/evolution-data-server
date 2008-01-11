@@ -1,3 +1,9 @@
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #500233 
+
+	* camel-url.c: (camel_url_new): Handle empty strings.
+
 2008-01-11  Jeffrey Stedfast  <fejj@novell.com>
 
 	Slightly modified version of a patch submitted by Jean-Christophe
