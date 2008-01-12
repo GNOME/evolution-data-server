@@ -1,3 +1,10 @@
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #361972
+
+	* lib/e2k-context.c: (e2k_context_fba): No point crashing if the
+	action is not recognised by soup. So if the message is null return.
+
 2007-12-31  Sushma Rai  <rsushma@novell.com>
 
 	** Fixes bug #327965

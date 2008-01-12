@@ -646,6 +646,9 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 					      "application/x-www-form-urlencoded",
 					      SOUP_BUFFER_SYSTEM_OWNED,
 					      form_body->str, form_body->len);
+	if (!post_msg)
+		goto failed;
+
 	soup_message_set_flags (post_msg, SOUP_MESSAGE_NO_REDIRECT);
 	e2k_context_send_message (ctx, NULL /* FIXME? */, post_msg);
 	g_string_free (form_body, FALSE);
