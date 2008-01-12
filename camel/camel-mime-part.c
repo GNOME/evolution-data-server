@@ -1082,7 +1082,7 @@ camel_mime_part_get_content_size (CamelMimePart *mime_part)
 	dw = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
 	
 	null = camel_stream_null_new ();
-	camel_data_wrapper_decode_to_stream (dw, null);
+	camel_data_wrapper_decode_to_stream (dw, (CamelStream *) null);
 	size = null->written;
 	
 	camel_object_unref (null);
