@@ -1,5 +1,9 @@
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-mime-part.c: Fix a build break.
+
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #379896
 
 	* camel-mime-utils.c: (camel_header_param): Check the value for NULL 

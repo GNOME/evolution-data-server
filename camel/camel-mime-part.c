@@ -46,6 +46,7 @@
 #include "camel-mime-utils.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
+#include "camel-stream-null.h"
 #include "camel-string-utils.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
