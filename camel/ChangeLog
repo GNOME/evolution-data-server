@@ -1,5 +1,12 @@
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #379896
+
+	* camel-mime-utils.c: (camel_header_param): Check the value for NULL 
+	before comparing.
+
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #500233 
 
 	* camel-url.c: (camel_url_new): Handle empty strings.

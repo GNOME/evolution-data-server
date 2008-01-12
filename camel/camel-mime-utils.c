@@ -2138,7 +2138,7 @@ rfc2184_decode (const char *in, size_t len)
 char *
 camel_header_param (struct _camel_header_param *p, const char *name)
 {
-	while (p && g_ascii_strcasecmp (p->name, name) != 0)
+	while (p && p->name && g_ascii_strcasecmp (p->name, name) != 0)
 		p = p->next;
 	if (p)
 		return p->value;
