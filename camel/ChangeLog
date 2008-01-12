@@ -1,5 +1,10 @@
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-mime-part.c: (camel_mime_part_get_content_size): Fixes few
+	warnings.
+
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-mime-part.c: Fix a build break.
 
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
