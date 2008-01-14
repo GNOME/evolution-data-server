@@ -42,12 +42,8 @@
 #endif
 
 #include <string.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <gtk/gtkversion.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkmessagedialog.h>
 
 #include "e-passwords.h"
 #include "libedataserver/e-msgport.h"
@@ -866,66 +862,119 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 static void
 ep_ask_password (EPassMsg *msg)
 {
-	GtkWidget *vbox;
+	GtkWidget *widget;
+	GtkWidget *container;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
 	guint noreply = msg->noreply;
+	gboolean visible;
 	AtkObject *a11y;
 
 	msg->noreply = 1;
 
-	/*password_dialog = (GtkDialog *)e_error_new (msg->parent, "mail:ask-session-password", msg->prompt, NULL);*/
-	password_dialog = (GtkDialog *)gtk_message_dialog_new (msg->parent,
-							       0,
-							       GTK_MESSAGE_QUESTION,
-							       GTK_BUTTONS_OK_CANCEL,
-							       "%s", msg->prompt);
-	gtk_window_set_title (GTK_WINDOW (password_dialog), msg->title);
-	gtk_container_set_border_width(GTK_CONTAINER(password_dialog), 12);
+	widget = gtk_dialog_new_with_buttons (
+		msg->title, msg->parent, 0,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		NULL);
+	gtk_dialog_set_has_separator (GTK_DIALOG (widget), FALSE);
+	gtk_dialog_set_default_response (
+		GTK_DIALOG (widget), GTK_RESPONSE_ACCEPT);
+        gtk_window_set_resizable (GTK_WINDOW (widget), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
+	password_dialog = GTK_DIALOG (widget);
 
-	gtk_widget_ensure_style (GTK_WIDGET (password_dialog));
+        /* Override GtkDialog defaults */
+	widget = password_dialog->vbox;
+	gtk_box_set_spacing (GTK_BOX (widget), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);
+	widget = password_dialog->action_area;
+	gtk_box_set_spacing (GTK_BOX (widget), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);
 
-	gtk_dialog_set_default_response (password_dialog, GTK_RESPONSE_OK);
+	/* Table */
+	container = gtk_table_new (2, 3, FALSE);
+	gtk_table_set_col_spacings (GTK_TABLE (container), 12);
+	gtk_table_set_row_spacings (GTK_TABLE (container), 12);
+	gtk_table_set_row_spacing (GTK_TABLE (container), 1, 6);
+	gtk_widget_show (container);
 
-	vbox = GTK_DIALOG(password_dialog)->vbox;
-	gtk_box_set_spacing(GTK_BOX(vbox), 6);
+	gtk_box_pack_start (
+		GTK_BOX (password_dialog->vbox),
+		container, FALSE, TRUE, 0);
 
-	msg->entry = gtk_entry_new ();
+	/* Question Image */
+	widget = gtk_image_new_from_stock (
+		GTK_STOCK_DIALOG_QUESTION,
+		GTK_ICON_SIZE_DIALOG);
+	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.0);
+	gtk_widget_show (widget);
 
-	a11y = gtk_widget_get_accessible (msg->entry);
+	gtk_table_attach (
+		GTK_TABLE (container), widget,
+		0, 1, 0, 3, GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+	/* Password Label */
+	widget = gtk_label_new (NULL);
+	gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
+        gtk_label_set_markup (GTK_LABEL (widget), msg->prompt);
+	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+	gtk_widget_show (widget);
+
+	gtk_table_attach (
+		GTK_TABLE (container), widget,
+		1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
+	/* Password Entry */
+	widget = gtk_entry_new ();
+	a11y = gtk_widget_get_accessible (widget);
+	visible = !(msg->flags & E_PASSWORDS_SECRET);
 	atk_object_set_description (a11y, msg->prompt);
-	gtk_entry_set_visibility ((GtkEntry *)msg->entry, !(msg->flags & E_PASSWORDS_SECRET));
-	gtk_entry_set_activates_default ((GtkEntry *)msg->entry, TRUE);
-	gtk_box_pack_start (GTK_BOX (vbox), msg->entry, TRUE, FALSE, 0);
-	gtk_widget_show (msg->entry);
-	gtk_widget_grab_focus (msg->entry);
+	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
+	gtk_entry_set_activates_default (GTK_ENTRY (widget), TRUE);
+	gtk_widget_grab_focus (widget);
+	gtk_widget_show (widget);
+	msg->entry = widget;
 
 	if ((msg->flags & E_PASSWORDS_REPROMPT)) {
 		ep_get_password (msg);
-		if (msg->password) {
-			gtk_entry_set_text ((GtkEntry *) msg->entry, msg->password);
+		if (msg->password != NULL) {
+			gtk_entry_set_text (GTK_ENTRY (widget), msg->password);
 			g_free (msg->password);
 			msg->password = NULL;
 		}
 	}
 
+	gtk_table_attach (
+		GTK_TABLE (container), widget,
+		1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
 	/* static password, shouldn't be remembered between sessions,
 	   but will be remembered within the session beyond our control */
 	if (type != E_PASSWORDS_REMEMBER_NEVER) {
 		if (msg->flags & E_PASSWORDS_PASSPHRASE) {
-			msg->check = gtk_check_button_new_with_mnemonic (type == E_PASSWORDS_REMEMBER_FOREVER
-									? _("_Remember this passphrase")
-									: _("_Remember this passphrase for the remainder of this session"));
+			widget = gtk_check_button_new_with_mnemonic (
+				(type == E_PASSWORDS_REMEMBER_FOREVER)
+				? _("_Remember this passphrase")
+				: _("_Remember this passphrase for"
+				    " the remainder of this session"));
 		} else {
-			msg->check = gtk_check_button_new_with_mnemonic (type == E_PASSWORDS_REMEMBER_FOREVER
-									? _("_Remember this password")
-									: _("_Remember this password for the remainder of this session"));
-
+			widget = gtk_check_button_new_with_mnemonic (
+				(type == E_PASSWORDS_REMEMBER_FOREVER)
+				? _("_Remember this password")
+				: _("_Remember this password for"
+				    " the remainder of this session"));
 		}
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (msg->check), *msg->remember);
-		gtk_box_pack_start (GTK_BOX (vbox), msg->check, TRUE, FALSE, 0);
-		if ((msg->flags & E_PASSWORDS_DISABLE_REMEMBER))
-			gtk_widget_set_sensitive (msg->check, FALSE);
-		gtk_widget_show (msg->check);
+
+		gtk_toggle_button_set_active (
+			GTK_TOGGLE_BUTTON (widget), *msg->remember);
+		if (msg->flags & E_PASSWORDS_DISABLE_REMEMBER)
+			gtk_widget_set_sensitive (widget, FALSE);
+		gtk_widget_show (widget);
+		msg->check = widget;
+
+		gtk_table_attach (
+			GTK_TABLE (container), widget,
+			1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	}
 
 	msg->noreply = noreply;

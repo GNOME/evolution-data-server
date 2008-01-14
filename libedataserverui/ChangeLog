@@ -1,3 +1,10 @@
+2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fix for bug #503400
+
+	* e-passwords.c: (ep_ask_password): Remove excessive whitespace on 
+	password dialogs.
+
 2008-01-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #508438
