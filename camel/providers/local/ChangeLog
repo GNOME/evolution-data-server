@@ -1,3 +1,7 @@
+2008-01-14  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* camel-maildir-folder.c: Memory leak fix
+
 2007-12-11  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #336074

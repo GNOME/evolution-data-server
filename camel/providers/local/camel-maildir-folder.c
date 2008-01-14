@@ -204,6 +204,9 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	if (appended_uid)
 		*appended_uid = g_strdup(camel_message_info_uid(mi));
 
+	if (output_stream)
+		camel_object_unref (output_stream);
+
 	return;
 
  fail_write:
