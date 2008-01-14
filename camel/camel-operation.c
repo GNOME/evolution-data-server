@@ -713,7 +713,7 @@ camel_operation_end (CamelOperation *cc)
 		cc->lastreport = s;
 	}
 	g_free(s);
-	cc->status_stack = g_slist_remove_link(cc->status_stack, cc->status_stack);
+	cc->status_stack = g_slist_delete_link(cc->status_stack, cc->status_stack);
 
 	UNLOCK();
 

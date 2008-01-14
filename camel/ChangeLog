@@ -1,3 +1,8 @@
+2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-operation.c (camel_operation_end):
+	Use g_slist_delete_link() to discard the list node (#509370).
+
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-mime-part.c: (camel_mime_part_get_content_size): Fixes few
