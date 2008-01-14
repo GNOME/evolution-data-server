@@ -58,7 +58,6 @@ static void                  set_boundary      (CamelMultipart *multipart,
 static const gchar *         get_boundary      (CamelMultipart *multipart);
 static ssize_t               write_to_stream   (CamelDataWrapper *data_wrapper,
 						CamelStream *stream);
-static void                  unref_part        (gpointer data, gpointer user_data);
 
 static int construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp);
 
@@ -105,6 +104,7 @@ camel_multipart_init (gpointer object, gpointer klass)
 
 	camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart),
 					  "multipart/mixed");
+	multipart->parts = NULL;
 	multipart->preface = NULL;
 	multipart->postface = NULL;
 }
@@ -114,10 +114,14 @@ camel_multipart_finalize (CamelObject *object)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (object);
 
-	g_list_foreach (multipart->parts, unref_part, NULL);
+	g_list_foreach (multipart->parts, (GFunc) camel_object_unref, NULL);
+
+	if (multipart->parts)
+		g_list_free (multipart->parts);
 
 	/*if (multipart->boundary)
 	  g_free (multipart->boundary);*/
+
 	if (multipart->preface)
 		g_free (multipart->preface);
 	if (multipart->postface)
@@ -143,13 +147,6 @@ camel_multipart_get_type (void)
 	return camel_multipart_type;
 }
 
-static void
-unref_part (gpointer data, gpointer user_data)
-{
-	CamelObject *part = data;
-
-	camel_object_unref (part);
-}
 
 /**
  * camel_multipart_new:
