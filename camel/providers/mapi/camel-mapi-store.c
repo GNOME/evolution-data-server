@@ -98,7 +98,7 @@ static CamelFolderInfo	*mapi_get_folder_info(CamelStore *, const char *, guint32
 static void		mapi_subscribe_folder(CamelStore *, const char *, CamelException *);
 static void		mapi_unsubscribe_folder(CamelStore *, const char *, CamelException *);
 static void		mapi_noop(CamelStore *, CamelException *);
-
+static CamelFolderInfo * mapi_build_folder_info(CamelMapiStore *mapi_store, const char *parent_name, const char *folder_name);
 static void mapi_folders_sync (CamelMapiStore *store, CamelException *ex);
 
 CamelStore
@@ -422,6 +422,60 @@ mapi_get_folder(CamelStore *store, const char *folder_name, guint32 flags, Camel
 
 	//	return camel_mapi_folder_new(store, folder_name, folder_dir, flags, ex);
 	return camel_mapi_folder_new(store, folder_name, storage_path, flags, ex);
+}
+
+static CamelFolderInfo*
+mapi_create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+{
+	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
+	CamelMapiStorePrivate  *priv = mapi_store->priv;
+	CamelFolderInfo *root = NULL;
+	char *parent_id;
+	mapi_id_t parent_fid, new_folder_id;
+	int status;
+
+	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create MAPI folders in offline mode."));
+		return NULL;
+	}
+	
+	if(parent_name == NULL) {
+		parent_name = "";
+		if (mapi_is_system_folder (folder_name)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, NULL);
+			return NULL;
+		}
+	}
+
+	if (parent_name && (strlen(parent_name) > 0) )
+		parent_id = g_hash_table_lookup (priv->name_hash, parent_name);
+	else
+		parent_id = "";
+
+	if (!mapi_connect (CAMEL_SERVICE(store), ex)) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
+			return NULL;
+	}
+
+	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
+
+
+	exchange_mapi_util_mapi_id_from_string (parent_id, &parent_fid);
+	new_folder_id = exchange_mapi_create_folder(olFolderInbox, parent_fid, folder_name);
+	if (new_folder_id != 0) {
+		root = mapi_build_folder_info(mapi_store, parent_name, folder_name);
+		camel_store_summary_save((CamelStoreSummary *)mapi_store->summary);
+
+		g_hash_table_insert (priv->id_hash, exchange_mapi_util_mapi_id_to_string (new_folder_id), g_strdup(folder_name));
+		g_hash_table_insert (priv->name_hash, g_strdup(root->full_name), exchange_mapi_util_mapi_id_to_string (new_folder_id));
+		g_hash_table_insert (priv->parent_hash, exchange_mapi_util_mapi_id_to_string (new_folder_id), g_strdup(parent_id));
+
+		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+	}
+
+	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
+	return root;
+
 }
 
 /* FIXME: testing */

@@ -1,5 +1,9 @@
 2008-01-15  Johnny Jacob  <jjohnny@novell.com>
 
+	* camel-mapi-store.c (mapi_create_folder): Added. Create Folder support.
+
+2008-01-15  Johnny Jacob  <jjohnny@novell.com>
+
 	* camel-mapi-transport.c (mapi_item_set_body_stream): Fixed build break.
 	
 2008-01-15  Johnny Jacob  <jjohnny@novell.com>
