@@ -1,7 +1,11 @@
 2008-01-15  Johnny Jacob  <jjohnny@novell.com>
 
+	* camel-mapi-transport.c (mapi_item_set_body_stream): Fixed build break.
+	
+2008-01-15  Johnny Jacob  <jjohnny@novell.com>
+
 	* camel-mapi-transport.c (mapi_item_set_body_stream): Initial support
-	for sennding plain text mails.
+	for sending plain text mails.
 
 2007-12-21  Suman Manjunath  <msuman@novell.com>
 

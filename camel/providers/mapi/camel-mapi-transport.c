@@ -184,7 +184,7 @@ mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
 		
 		if (item->msg.body_stream)// && (*(item->msg.body_stream)))
 			item->msg.body_stream = g_strconcat (item->msg.body_stream, (char *) buf, NULL);
-		else {
+		else
 			item->msg.body_stream = g_strdup ((char *) buf);
 	}
 }
