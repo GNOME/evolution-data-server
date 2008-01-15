@@ -60,6 +60,9 @@
 #define d(x) x
 
 #include <camel/camel-seekable-stream.h>
+
+#define STREAM_SIZE 1000
+
 CamelStore *get_store(void);
 
 void	set_store(CamelStore *);
@@ -170,7 +173,20 @@ mapi_item_set_subject(MapiItem *item, const char *subject)
 static void
 mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
 {
-	item->msg.body_stream = body;
+	guint8 *buf = g_new0 (guint8 , STREAM_SIZE);
+	guint32	read_size;
+	item->msg.body_stream = NULL;
+
+	camel_seekable_stream_seek((CamelSeekableStream *)body, 0, CAMEL_STREAM_SET);
+	while((read_size = camel_stream_read(body, (char *)buf, STREAM_SIZE))){
+		if (read_size == -1)
+			return (-1);
+		
+		if (item->msg.body_stream)// && (*(item->msg.body_stream)))
+			item->msg.body_stream = g_strconcat (item->msg.body_stream, (char *) buf, NULL);
+		else {
+			item->msg.body_stream = g_strdup ((char *) buf);
+	}
 }
 
 
@@ -393,14 +409,17 @@ mail_build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray
 	MapiItem *item = (MapiItem *) data;
 	struct SPropValue *props;
 	uint32_t msgflag;
+	uint32_t editor = 1;
 	int i=0;
 
-	props = g_new0 (struct SPropValue, 4);
+	props = g_new0 (struct SPropValue, 5);
 
 	set_SPropValue_proptag(&props[i++], PR_CONVERSATION_TOPIC, g_strdup (item->header.subject));
 	set_SPropValue_proptag(&props[i++], PR_NORMALIZED_SUBJECT, g_strdup (item->header.subject));
-/* TODO : Handle Body stream */
-/* 	set_SPropValue_proptag(&props[i++], PR_BODY, g_strdup (item->msg.body_stream)); */
+
+	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, (const void *)&editor);
+	set_SPropValue_proptag(&props[i++], PR_BODY, g_strdup (item->msg.body_stream));
+
 	msgflag = MSGFLAG_UNSENT;
 	set_SPropValue_proptag(&props[i++], PR_MESSAGE_FLAGS, (void *)&msgflag);
 
