@@ -1,3 +1,36 @@
+Evolution-Data-Server 2.21.5 2008-01-14
+---------------------------------------
+
+New in 2.21.5
+	- Improved Mime header decoding (Jeffrey Stedfast)
+Bug Fixes:
+	#224026: Do not send headers in UTF-8 (Jeffrey Stedfast)
+	#327965: Fixed multiple password prompts in an exchange account (Sushma Rai)
+	#329692: Get the decoded content size of a MIME part (Jean-Christophe BEGUE)
+	#339813: Always store birthday of contact with 4-digit year and modify it according to locale setting upon display (Milan Crha)
+	#341579: Improve SMTP error reporting (Milan Crha)
+	#348149: Convert a g_assert to g_warning. (Sankar P)
+	#361972: Fix a crash if the action is not recognised by soup. So if the message is null return (Srinivasa Ragavan)
+	#379896: Check the value for NULL before comparing. (Srinivasa Ragavan)
+	#405497: Don't pass events if the object is being destroyed. (Srinivasa Ragavan)
+	#474118: Downsyncs all the messages from folders marked for offline use (Bharath Acharya)
+	#500233: Handle empty strings (Srinivasa Ragavan)
+	#503400: Remove excessive whitespace on password dialogs (Ted Percival)
+	#504837: Do not ignore HELO failed message (Milan Crha)
+	#506457: Fixed a crash in calendar (Ondrej Jirman)
+	#508438: Extract error only if it is there (Srinivasa Ragavan)
+
+Updated Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Washington Lins (pt_BR)
+	Clytie Siddall (vi)
+	Yannig Marchegay (oc)
+	Wadim Dziedzic (pl)
+	Daniel Nylander (sv)
+	Ivar Smolin (et)
+	Seán de Búrca (ga)
+	Andre Klapper (de)
+
 Evolution-Data-Server 2.21.4 2007-12-17
 ---------------------------------------
 
