@@ -873,12 +873,12 @@ ep_ask_password (EPassMsg *msg)
 
 	widget = gtk_dialog_new_with_buttons (
 		msg->title, msg->parent, 0,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_OK, GTK_RESPONSE_OK,
 		NULL);
 	gtk_dialog_set_has_separator (GTK_DIALOG (widget), FALSE);
 	gtk_dialog_set_default_response (
-		GTK_DIALOG (widget), GTK_RESPONSE_ACCEPT);
+		GTK_DIALOG (widget), GTK_RESPONSE_OK);
         gtk_window_set_resizable (GTK_WINDOW (widget), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
 	password_dialog = GTK_DIALOG (widget);

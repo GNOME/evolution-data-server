@@ -1,3 +1,11 @@
+2008-01-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #509644
+
+	* e-passwords.c (ep_ask_password):
+	Use the correct response codes for the dialog buttons.
+	Fixes some severe password breakage that slipped into 2.21.5.
+
 2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fix for bug #503400
