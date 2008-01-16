@@ -699,6 +699,8 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	int len;
 	off_t lastpos;
 
+	int mbox_file_is_corrupt = 0;
+
 	d(printf("Performing quick summary sync\n"));
 
 	camel_operation_start(NULL, _("Storing folder"));
@@ -753,11 +755,24 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 		if (camel_mime_parser_step(mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM) {
 			g_warning("Expected a From line here, didn't get it");
-			/*
-			   camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-			   _("Summary and folder mismatch, even after a sync"));
-			   goto error;
-			 */
+
+			if (mbox_file_is_corrupt  > 3) {
+				/* 
+				   MBox file is probably corrupted. 
+				   Mail does not have a valid From: header probably
+
+				   Does not make sense to re-build frompos in summary 
+				   if it happens more than 3 times in a row.
+
+				 */
+
+				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+						_("Corrupt mbox file or Invalid from address detected"));
+				goto error;
+			}
+
+			++ mbox_file_is_corrupt;  
+
 			if (!fix_summary_mismatch (s, ex)) {
 				/* Now go back one level */
 				--i;
@@ -769,11 +784,23 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		if (camel_mime_parser_tell_start_from(mp) != info->frompos) {
 			g_warning("Didn't get the next message where I expected (%d) got %d instead",
 					(int)info->frompos, (int)camel_mime_parser_tell_start_from(mp));
-			/*
-			   camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-			   _("Summary and folder mismatch, even after a sync"));
-			   goto error;
-			 */
+
+			if (mbox_file_is_corrupt  > 3) {
+				/* 
+				   MBox file is probably corrupted. 
+				   Mail does not have a valid From: header probably
+
+				   Does not make sense to re-build frompos in summary 
+				   if it happens more than 3 times in a row.
+
+				 */
+
+				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+						_("Corrupt mbox file or Invalid from address detected"));
+				goto error;
+			}
+
+			++ mbox_file_is_corrupt;  
 
 			if (!fix_summary_mismatch (s, ex)) {
 				/* Now go back one level */
@@ -941,7 +968,7 @@ fix_summary_mismatch (CamelFolderSummary *s, CamelException *ex)
 	mbox_fd = g_open(((CamelLocalSummary *)s)->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (mbox_fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				_("Folder %s cannot be opened\n  %s"),
+				_("Folder %s cannot be opened: %s"),
 				((CamelLocalSummary *)s)->folder_path, g_strerror (errno));
 		return -1;
 	} 
@@ -1005,6 +1032,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	size_t len;
 	const char *fromline;
 	int lastdel = FALSE;
+	int mbox_file_is_corrupt = 0;
 #ifdef STATUS_PINE
 	char statnew[8], xstatnew[8];
 #endif
@@ -1045,8 +1073,24 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 		if (camel_mime_parser_step(mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM) {
 			g_warning("Expected a From line here, didn't get it. SO recovering....\n");
-			/*camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-			  _("Summary and folder mismatch, even after a sync"));*/
+
+			if (mbox_file_is_corrupt  > 3) {
+				/* 
+				   MBox file is probably corrupted. 
+				   Mail does not have a valid From: header probably
+
+				   Does not make sense to re-build frompos in summary 
+				   if it happens more than 3 times in a row.
+
+				 */
+
+				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+						_("Corrupt mbox file or Invalid from address detected"));
+				goto error;
+			}
+
+			++ mbox_file_is_corrupt;  
+
 			if (!fix_summary_mismatch (s, ex)) {
 				/* Now go back one level */
 				--i;
@@ -1058,6 +1102,24 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		if (camel_mime_parser_tell_start_from(mp) != info->frompos) {
 			g_warning("Didn't get the next message where I expected (%d) got %d instead",
 					(int)info->frompos, (int)camel_mime_parser_tell_start_from(mp));
+
+			if (mbox_file_is_corrupt  > 3) {
+				/* 
+				   MBox file is probably corrupted. 
+				   Mail does not have a valid From: header probably
+
+				   Does not make sense to re-build frompos in summary 
+				   if it happens more than 3 times in a row.
+
+				 */
+
+				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+						_("Corrupt mbox file or Invalid from address detected"));
+				goto error;
+			}
+
+			++ mbox_file_is_corrupt;  
+
 			if (!fix_summary_mismatch (s, ex)) {
 				/* Now go back one level */
 				--i;

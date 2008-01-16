@@ -2,6 +2,15 @@
 
 	* camel-mbox-summary.c: (mbox_summary_sync_quick),
 	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
+	Avoids the infinite loop that might be caused in case
+	of broken mbox files or null From addresses.
+
+	** Part of fix for #213072
+
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
 	Remove the error condition that inits and persists 
 	the infamous "folder summary mismatch" bug.
 
