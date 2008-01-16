@@ -399,7 +399,7 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 	unsigned int len;
 	int ret;
 
-	sasl = camel_sasl_new("pop3", mech, (CamelService *)store);
+	sasl = camel_sasl_new("pop", mech, (CamelService *)store);
 	if (sasl == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
 				      _("Unable to connect to POP server %s: "
