@@ -9,5 +9,6 @@ privincludedir=@privincludedir@
 Name: camel
 Description: the Evolution MIME message handling library
 Version: @VERSION@
-Libs: -L${libdir} -lcamel-1.2 -ledataserver-1.2
+Requires: glib-2.0, libedataserver-@API_VERSION@
+Libs: -L${libdir} -lcamel-@API_VERSION@
 Cflags: -I${privincludedir}

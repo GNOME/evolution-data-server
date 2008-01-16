@@ -1,3 +1,12 @@
+2008-01-16  Øystein Gisnås  <oystein@gisnas.net>
+
+	** Fix for bug #300098
+
+	* camel-provider.pc.in:
+	* camel.pc.in:
+	Set proper dependencies for stand-alone programs linking against
+	camel.
+
 2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-operation.c (camel_operation_end):
