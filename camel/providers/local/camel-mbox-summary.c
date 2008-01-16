@@ -767,7 +767,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 				 */
 
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-						_("Corrupt mbox file or Invalid from address detected"));
+						_("Detected a corrupt mbox file or an invalid 'From' header"));
 				goto error;
 			}
 
@@ -796,7 +796,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 				 */
 
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-						_("Corrupt mbox file or Invalid from address detected"));
+						_("Detected a corrupt mbox file or an invalid 'From' header"));
 				goto error;
 			}
 
@@ -1085,7 +1085,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				 */
 
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-						_("Corrupt mbox file or Invalid from address detected"));
+						_("Detected a corrupt mbox file or an invalid 'From' header"));
 				goto error;
 			}
 
@@ -1114,7 +1114,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				 */
 
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-						_("Corrupt mbox file or Invalid from address detected"));
+						_("Detected a corrupt mbox file or an invalid 'From' header"));
 				goto error;
 			}
 

@@ -1,6 +1,14 @@
 2008-01-16  Sankar P  <psankar@novell.com>
 
 	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(camel_mbox_summary_sync_mbox):
+	Changed error message to a better string as suggested by
+
+	Wouter Bolsterlee <uws+gnome@xs4all.nl>
+
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
 	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
 	Avoids the infinite loop that might be caused in case
 	of broken mbox files or null From addresses.
