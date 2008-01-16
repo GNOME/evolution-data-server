@@ -1,3 +1,14 @@
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
+	Remove the error condition that inits and persists 
+	the infamous "folder summary mismatch" bug.
+
+	** Fix for bug #213072
+
+	** Let there be light at the end of the tunnel :)
+
 2008-01-14  Philip Van Hoof  <pvanhoof@gnome.org>
 
 	* camel-maildir-folder.c: Memory leak fix
