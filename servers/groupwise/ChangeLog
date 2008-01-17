@@ -1,3 +1,13 @@
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* e-gw-message.c: Update for libsoup 2.4
+
+	* soup-soap-message.c: 
+	* soup-soap-response.c: Moved here from libsoup. (FIXME: integrate
+	with the rest of libegroupwise better.)
+
+	* *.h: tweak soup-soap includes
+
 2007-12-06  Sankar P  <psankar@novell.com>
 
 	** Fixes bug #501969

@@ -24,7 +24,7 @@
 #ifndef E_GW_MESSAGE_H
 #define E_GW_MESSAGE_H
 
-#include <libsoup/soup-soap-message.h>
+#include "soup-soap-message.h"
 
 G_BEGIN_DECLS
 

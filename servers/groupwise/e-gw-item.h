@@ -24,8 +24,8 @@
 #ifndef E_GW_ITEM_H
 #define E_GW_ITEM_H
 
-#include <libsoup/soup-soap-message.h>
-#include <libsoup/soup-soap-response.h>
+#include "soup-soap-message.h"
+#include "soup-soap-response.h"
 #include "e-gw-recur-utils.h"
 
 G_BEGIN_DECLS

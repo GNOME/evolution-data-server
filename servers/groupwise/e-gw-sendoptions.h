@@ -24,7 +24,7 @@
 #ifndef E_GW_SENDOPTIONS_H
 #define E_GW_SENDOPTIONS_H
 
-#include <libsoup/soup-soap-response.h>
+#include "soup-soap-response.h"
 
 G_BEGIN_DECLS
 

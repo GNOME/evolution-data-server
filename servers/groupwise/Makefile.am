@@ -46,6 +46,8 @@ libegroupwise_1_2_la_SOURCES =			\
 	e-gw-recur-utils.h			\
 	e-gw-proxy.h				\
 	e-gw-proxy.c				\
+	soup-soap-message.c			\
+	soup-soap-response.c			\
 	build-timestamp.h
 
 libegroupwise_1_2_la_LIBADD =						\
@@ -65,7 +67,9 @@ libegroupwiseinclude_HEADERS =                  \
 	e-gw-sendoptions.h			\
 	e-gw-filter.h                        	\
 	e-gw-recur-utils.h			\
-	e-gw-proxy.h				
+	e-gw-proxy.h				\
+	soup-soap-message.h			\
+	soup-soap-response.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

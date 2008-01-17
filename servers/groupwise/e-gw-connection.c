@@ -27,9 +27,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <glib/gi18n-lib.h>
-#include <libsoup/soup-session-sync.h>
-#include <libsoup/soup-soap-message.h>
-#include <libsoup/soup-misc.h>
+#include <libsoup/soup.h>
+#include "soup-soap-message.h"
 #include "e-gw-connection.h"
 #include "e-gw-message.h"
 #include "e-gw-filter.h"
@@ -401,6 +400,17 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	priv->categories_by_name = NULL;
 	priv->book_list = NULL;
 	priv->opts = NULL;
+
+	if (g_getenv ("GROUPWISE_DEBUG")) {
+		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1) {
+			SoupLogger *logger;
+
+			logger = soup_logger_new (SOUP_LOGGER_LOG_BODY,
+						  SOUP_LOGGER_LOG_BODY);
+			soup_logger_attach (logger, priv->soup_session);
+			g_object_unref (logger);
+		}
+	}
 }
 
 GType

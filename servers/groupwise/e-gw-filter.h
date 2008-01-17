@@ -25,8 +25,8 @@
 #define E_GW_FILTER_H
 
 
-#include <libsoup/soup-soap-message.h>
-#include <libsoup/soup-soap-response.h>
+#include "soup-soap-message.h"
+#include "soup-soap-response.h"
 
 G_BEGIN_DECLS
 

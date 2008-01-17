@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include <libsoup/soup-soap-message.h>
+#include "soup-soap-message.h"
 
 /*State of each proxy grant*/
 

@@ -25,7 +25,7 @@
 #define E_GW_CONNECTION_H
 
 #include <glib-object.h>
-#include <libsoup/soup-soap-message.h>
+#include "soup-soap-message.h"
 #include "e-gw-proxy.h"
 #include "e-gw-container.h"
 #include "e-gw-item.h"
