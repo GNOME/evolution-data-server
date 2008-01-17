@@ -296,12 +296,15 @@ e2k_results_array_add_from_multistatus (GArray *results_array,
 
 	g_return_if_fail (msg->status_code == E2K_HTTP_MULTI_STATUS);
 
-	body = sanitize_bad_multistatus (msg->response.body, msg->response.length);
+	body = sanitize_bad_multistatus (msg->response_body->data,
+					 msg->response_body->length);
 	if (body) {
 		doc = e2k_parse_xml (body, -1);
 		g_free (body);
-	} else
-		doc = e2k_parse_xml (msg->response.body, msg->response.length);
+	} else {
+		doc = e2k_parse_xml (msg->response_body->data,
+				     msg->response_body->length);
+	}
 	if (!doc)
 		return;
 	node = doc->xmlRootNode;

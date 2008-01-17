@@ -153,3 +153,33 @@ e2k_http_accept_language (void)
 	return accept;
 }
 
+typedef struct {
+	const char *wanted_header;
+	GSList *matches;
+} GetHeadersData;
+
+static void
+maybe_append_header (const char *header_name, const char *value, gpointer data)
+{
+	GetHeadersData *ghd = data;
+
+	if (!g_ascii_strcasecmp (header_name, ghd->wanted_header))
+		ghd->matches = g_slist_append (ghd->matches, (char *)value);
+}
+
+/* This is a cheat to recreate the behavior of libsoup 2.2's
+ * soup_message_get_header_list. See the docs for
+ * soup_message_headers_get() for an explanation of why we shouldn't
+ * be doing this...
+ */
+GSList *
+e2k_http_get_headers (SoupMessageHeaders *hdrs, const char *header_name)
+{
+	GetHeadersData ghd;
+
+	ghd.wanted_header = header_name;
+	ghd.matches = NULL;
+	soup_message_headers_foreach (hdrs, maybe_append_header, &ghd);
+	return ghd.matches;
+}
+

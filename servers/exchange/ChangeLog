@@ -1,3 +1,22 @@
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-autoconfig.c: Update for libsoup 2.4
+
+	* lib/e2k-context.c: Update for libsoup 2.4
+	(e2k_context_fba): Use soup-forms methods.
+	(setup_message): Rewrite the old SoupMessageFilter-based stuff to
+	use SoupSession::request-started instead.
+	(e2k_context_get, e2k_context_get_owa): Return a SoupBuffer
+	directly rather than returning a char * and length.
+
+	* lib/e2k-http-utils.c (e2k_http_get_headers): kludge to get
+	around the auto-header-merging behavior of SoupMessageHeaders,
+	which makes it hard to parse WWW-Authenticate and Set-Cookie.
+
+	* storage/exchange-oof.c (find_str_case, exchange_oof_get):
+	Update for e2k_context_get_owa() change. Rewrite to not modify the
+	response body, to avoid needing an extra strdup.
+
 2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #361972

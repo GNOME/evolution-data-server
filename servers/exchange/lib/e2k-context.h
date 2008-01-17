@@ -5,6 +5,7 @@
 #define __E2K_CONTEXT_H__
 
 #include <libsoup/soup-message.h>
+#include <libsoup/soup-session.h>
 #include <sys/time.h>
 
 #include <glib-object.h>
@@ -60,12 +61,12 @@ E2kHTTPStatus  e2k_context_get               (E2kContext *ctx,
 					      E2kOperation *op,
 					      const char *uri,
 					      char **content_type,
-					      char **body, int *len);
+					      SoupBuffer **response);
 E2kHTTPStatus  e2k_context_get_owa           (E2kContext *ctx,
 					      E2kOperation *op,
 					      const char *uri,
 					      gboolean claim_ie,
-					      char **body, int *len);
+					      SoupBuffer **response);
 
 E2kHTTPStatus  e2k_context_put               (E2kContext *ctx,
 					      E2kOperation *op,
@@ -200,12 +201,12 @@ SoupMessage   *e2k_soup_message_new_full (E2kContext *ctx,
 					  const char *uri,
 					  const char *method,
 					  const char *content_type,
-					  SoupOwnership owner,
+					  SoupMemoryUse use,
 					  const char *body,
 					  gulong length);
 void           e2k_context_queue_message (E2kContext *ctx,
 					  SoupMessage *msg,
-					  SoupMessageCallbackFn callback,
+					  SoupSessionCallback callback,
 					  gpointer user_data);
 E2kHTTPStatus  e2k_context_send_message  (E2kContext *ctx,
 					  E2kOperation *op,

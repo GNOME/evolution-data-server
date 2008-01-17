@@ -304,12 +304,12 @@ static void
 get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kAutoconfig *ac = user_data;
-	const GSList *headers;
+	GSList *headers;
 	const char *challenge_hdr;
 
 	ac->saw_ntlm = ac->saw_basic = FALSE;
-	headers = soup_message_get_header_list (msg->response_headers,
-						"WWW-Authenticate");
+	headers = e2k_http_get_headers (msg->response_headers,
+					"WWW-Authenticate");
 	while (headers) {
 		challenge_hdr = headers->data;
 
@@ -332,11 +332,13 @@ get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 					       ac->w2k_domain ? NULL : &ac->w2k_domain);
 			g_free (challenge);
 			ac->saw_ntlm = TRUE;
+			g_slist_free (headers);
 			return;
 		}
 
 		headers = headers->next;
 	}
+	g_slist_free (headers);
 }
 
 /*
@@ -405,13 +407,14 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	g_return_val_if_fail (msg != NULL, NULL);
 	g_return_val_if_fail (SOUP_IS_MESSAGE (msg), NULL);
 
-	soup_message_add_header (msg->request_headers, "Accept-Language",
-				 e2k_http_accept_language ());
+	soup_message_headers_append (msg->request_headers, "Accept-Language",
+				     e2k_http_accept_language ());
 	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);
 
-	soup_message_add_status_code_handler (msg, E2K_HTTP_UNAUTHORIZED,
-					      SOUP_HANDLER_PRE_BODY,
-					      get_ctx_auth_handler, ac);
+	soup_message_add_status_code_handler (msg, "got-headers",
+					      E2K_HTTP_UNAUTHORIZED,
+					      G_CALLBACK (get_ctx_auth_handler),
+					      ac);
 
  try_again:
 	e2k_context_send_message (ctx, op, msg);
@@ -458,8 +461,8 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 		const char *location;
 		char *new_uri;
 
-		location = soup_message_get_header (msg->response_headers,
-						   "Location");
+		location = soup_message_headers_get (msg->response_headers,
+						     "Location");
 		if (!location) {
 			*result = E2K_AUTOCONFIG_FAILED;
 			goto done;
@@ -487,10 +490,8 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	 * with a body explaining that.
 	 */
 	if (status == E2K_HTTP_FORBIDDEN &&
-	    !strncmp (ac->owa_uri, "http:", 5) &&
-	    msg->response.length > 0) {
-		msg->response.body[msg->response.length - 1] = '\0';
-		if (strstr (msg->response.body, "SSL")) {
+	    !strncmp (ac->owa_uri, "http:", 5) && msg->response_body->length > 0) {
+		if (strstr (msg->response_body->data, "SSL")) {
 			char *new_uri =
 				g_strconcat ("https:", ac->owa_uri + 5, NULL);
 			e2k_autoconfig_set_owa_uri (ac, new_uri);
@@ -501,8 +502,8 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	}
 
 	/* Figure out some stuff about the server */
-	ms_webstorage = soup_message_get_header (msg->response_headers,
-						 "MS-WebStorage");
+	ms_webstorage = soup_message_headers_get (msg->response_headers,
+						  "MS-WebStorage");
 	if (ms_webstorage) {
 		if (!strncmp (ms_webstorage, "6.0.", 4))
 			ac->version = E2K_EXCHANGE_2000;
@@ -511,7 +512,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 		else
 			ac->version = E2K_EXCHANGE_FUTURE;
 	} else {
-		const char *server = soup_message_get_header (msg->response_headers, "Server");
+		const char *server = soup_message_headers_get (msg->response_headers, "Server");
 
 		/* If the server explicitly claims to be something
 		 * other than IIS, then return the "not windows"
@@ -548,7 +549,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	}
 
 	/* Parse the returned HTML. */
-	doc = e2k_parse_html (msg->response.body, msg->response.length);
+	doc = e2k_parse_html (msg->response_body->data, msg->response_body->length);
 	if (!doc) {
 		/* Not HTML? */
 		*result = ac->version == E2K_EXCHANGE_UNKNOWN ?
@@ -654,8 +655,7 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 	GByteArray *entryid;
 	const char *exchange_dn, *timezone, *hrefs[] = { "" };
 	xmlChar *prop;
-	char *body;
-	int len;
+	SoupBuffer *response;
 	E2kUri *euri;
 
 	g_return_val_if_fail (ac->owa_uri != NULL, E2K_AUTOCONFIG_FAILED);
@@ -713,11 +713,11 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 	else
 		pf_uri = g_strdup_printf ("%s/?Cmd=navbar", ac->owa_uri);
 
-	status = e2k_context_get_owa (ctx, NULL, pf_uri, FALSE, &body, &len);
+	status = e2k_context_get_owa (ctx, NULL, pf_uri, FALSE, &response);
 	g_free (pf_uri);
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
-		doc = e2k_parse_html (body, len);
-		g_free (body);
+		doc = e2k_parse_html (response->data, response->length);
+		soup_buffer_free (response);
 	} else
 		doc = NULL;
 

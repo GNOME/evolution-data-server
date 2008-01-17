@@ -48,12 +48,7 @@
 #include "e2k-utils.h"
 #include "e2k-xml-utils.h"
 
-#include <libsoup/soup-address.h>
-#include <libsoup/soup-message-filter.h>
-#include <libsoup/soup-session-async.h>
-#include <libsoup/soup-session-sync.h>
-#include <libsoup/soup-socket.h>
-#include <libsoup/soup-uri.h>
+#include <libsoup/soup.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
@@ -115,13 +110,20 @@ struct _E2kContextPrivate {
 #ifdef E2K_DEBUG
 char *e2k_debug;
 int e2k_debug_level;
+
+static SoupLoggerLogLevel e2k_debug_request_filter  (SoupLogger  *logger,
+						     SoupMessage *msg,
+						     gpointer     user_data);
+static SoupLoggerLogLevel e2k_debug_response_filter (SoupLogger  *logger,
+						     SoupMessage *msg,
+						     gpointer     user_data);
 #endif
 
 static gboolean renew_subscription (gpointer user_data);
 static void unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list);
 static gboolean do_notification (GIOChannel *source, GIOCondition condition, gpointer data);
 
-static void setup_message (SoupMessageFilter *filter, SoupMessage *msg);
+static void setup_message (SoupSession *session, SoupMessage *msg, SoupSocket *socket, gpointer user_data);
 
 static void
 init (GObject *object)
@@ -205,13 +207,6 @@ class_init (GObjectClass *object_class)
 			      G_TYPE_INT,
 			      G_TYPE_STRING,
 			      G_TYPE_STRING);
-}
-
-static void
-filter_iface_init (SoupMessageFilterClass *filter_class)
-{
-	/* interface implementation */
-	filter_class->setup_message = setup_message;
 
 #ifdef E2K_DEBUG
 	e2k_debug = getenv ("E2K_DEBUG");
@@ -220,7 +215,7 @@ filter_iface_init (SoupMessageFilterClass *filter_class)
 #endif
 }
 
-E2K_MAKE_TYPE_WITH_IFACE (e2k_context, E2kContext, class_init, init, PARENT_TYPE, filter_iface_init, SOUP_TYPE_MESSAGE_FILTER)
+E2K_MAKE_TYPE (e2k_context, E2kContext, class_init, init, PARENT_TYPE)
 
 
 static void
@@ -308,7 +303,8 @@ E2kContext *
 e2k_context_new (const char *uri)
 {
 	E2kContext *ctx;
-	SoupUri *suri;
+	SoupURI *suri;
+	SoupAddress *addr;
 
 	suri = soup_uri_new (uri);
 	if (!suri)
@@ -319,28 +315,30 @@ e2k_context_new (const char *uri)
 		return NULL;
 	}
 
+	addr = soup_address_new (suri->host, suri->port);
+	soup_uri_free (suri);
+
 	ctx = g_object_new (E2K_TYPE_CONTEXT, NULL);
 	ctx->priv->owa_uri = g_strdup (uri);
 
-	g_object_ref (ctx);
 	ctx->priv->get_local_address_sock =
-		soup_socket_client_new_async (
-			suri->host, suri->port, NULL,
-			got_connection, ctx);
-	soup_uri_free (suri);
+		soup_socket_new (SOUP_SOCKET_REMOTE_ADDRESS, addr,
+				 NULL);
+	soup_socket_connect_async (ctx->priv->get_local_address_sock, NULL,
+				   got_connection, g_object_ref (ctx));
+	g_object_unref (addr);
 
 	return ctx;
 }
 
 static void
 session_authenticate (SoupSession *session, SoupMessage *msg,
-		      const char *auth_type, const char *auth_realm,
-		      char **username, char **password, gpointer user_data)
+		      SoupAuth *auth, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
 
-	*username = g_strdup (ctx->priv->username);
-	*password = g_strdup (ctx->priv->password);
+	soup_auth_authenticate (auth, ctx->priv->username,
+				ctx->priv->password);
 }
 
 /**
@@ -360,6 +358,10 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		      const char *password)
 {
 	guint timeout = E2K_SOUP_SESSION_TIMEOUT;
+#ifdef E2K_DEBUG
+	SoupLogger *logger;
+	SoupLoggerLogLevel level;
+#endif
 
 	g_return_if_fail (E2K_IS_CONTEXT (ctx));
 
@@ -396,16 +398,30 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		NULL);
 	g_signal_connect (ctx->priv->session, "authenticate",
 			  G_CALLBACK (session_authenticate), ctx);
-	soup_session_add_filter (ctx->priv->session,
-				 SOUP_MESSAGE_FILTER (ctx));
+	g_signal_connect (ctx->priv->session, "request_started",
+			  G_CALLBACK (setup_message), ctx);
 
 	ctx->priv->async_session = soup_session_async_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),
 		NULL);
 	g_signal_connect (ctx->priv->async_session, "authenticate",
 			  G_CALLBACK (session_authenticate), ctx);
-	soup_session_add_filter (ctx->priv->async_session,
-				 SOUP_MESSAGE_FILTER (ctx));
+	g_signal_connect (ctx->priv->async_session, "request_started",
+			  G_CALLBACK (setup_message), ctx);
+
+#ifdef E2K_DEBUG
+	if (e2k_debug_level < 4)
+		level = (SoupLoggerLogLevel)e2k_debug_level;
+	else
+		level = SOUP_LOGGER_LOG_BODY;
+	logger = soup_logger_new (level, -1);
+	if (level == SOUP_LOGGER_LOG_BODY && e2k_debug_level < 5) {
+		soup_logger_set_request_filter (logger, e2k_debug_request_filter, NULL, NULL);
+		soup_logger_set_response_filter (logger, e2k_debug_response_filter, NULL, NULL);
+	}
+	soup_logger_attach (logger, ctx->priv->session);
+	soup_logger_attach (logger, ctx->priv->async_session);
+#endif
 }
 
 /**
@@ -428,103 +444,46 @@ e2k_context_get_last_timestamp (E2kContext *ctx)
 #ifdef E2K_DEBUG
 /* Debug levels:
  * 0 - None
- * 1 - Basic request and response
- * 2 - 1 plus all headers
- * 3 - 2 plus all bodies
+ * 1 - Basic request and response (SOUP_LOGGER_LOG_MINIMAL)
+ * 2 - 1 plus all headers (SOUP_LOGGER_LOG_HEADERS)
+ * 3 - 2 plus most bodies (SOUP_LOGGER_LOG_BODY with filters)
  * 4 - 3 plus Global Catalog debug too
+ * 5 - 4 plus all bodies (SOUP_LOGGER_LOG_BODY)
  */
 
-static void
-print_header (gpointer name, gpointer value, gpointer data)
+/* The filters are only used when e2k_debug_level is 3 or 4,
+ * meaning we want to show most, but not all, bodies.
+ */
+static SoupLoggerLogLevel
+e2k_debug_request_filter (SoupLogger *logger, SoupMessage *msg,
+			  gpointer user_data)
 {
-	printf ("%s: %s\n", (char *)name, (char *)value);
-}
-
-static void
-e2k_debug_print_request (SoupMessage *msg, const char *note)
-{
-	const SoupUri *uri;
-
-	uri = soup_message_get_uri (msg);
-	printf ("%s %s%s%s HTTP/1.1\nE2k-Debug: %p @ %lu",
-		msg->method, uri->path,
-		uri->query ? "?" : "",
-		uri->query ? uri->query : "",
-		msg, (unsigned long)time (NULL));
-	if (note)
-		printf (" [%s]\n", note);
+	if (msg->method == SOUP_METHOD_POST)
+		return SOUP_LOGGER_LOG_HEADERS;
 	else
-		printf ("\n");
-	if (e2k_debug_level > 1) {
-		print_header ("Host", uri->host, NULL);
-		soup_message_foreach_header (msg->request_headers,
-					     print_header, NULL);
-	}
-	if (e2k_debug_level > 2 && msg->request.length &&
-	    strcmp (msg->method, "POST")) {
-		printf ("\n");
-		fwrite (msg->request.body, 1, msg->request.length, stdout);
-		if (msg->request.body[msg->request.length - 1] != '\n')
-			printf ("\n");
-	}
-	printf ("\n");
+		return SOUP_LOGGER_LOG_BODY;
 }
 
-static void
-e2k_debug_print_response (SoupMessage *msg)
+static SoupLoggerLogLevel
+e2k_debug_response_filter (SoupLogger *logger, SoupMessage *msg,
+			   gpointer user_data)
 {
-	printf ("%d %s\nE2k-Debug: %p @ %lu\n",
-		msg->status_code, msg->reason_phrase,
-		msg, time (NULL));
-	if (e2k_debug_level > 1) {
-		soup_message_foreach_header (msg->response_headers,
-					     print_header, NULL);
-	}
-	if (e2k_debug_level > 2 && msg->response.length &&
-	    E2K_HTTP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
-		const char *content_type =
-			soup_message_get_header (msg->response_headers,
+	const char *content_type;
+
+	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (msg->status_code))
+		return SOUP_LOGGER_LOG_HEADERS;
+
+	content_type = soup_message_headers_get (msg->response_headers,
 						 "Content-Type");
-		if (!content_type || e2k_debug_level > 4 ||
-		    g_ascii_strcasecmp (content_type, "text/html")) {
-			printf ("\n");
-			fwrite (msg->response.body, 1, msg->response.length, stdout);
-			if (msg->response.body[msg->response.length - 1] != '\n')
-				printf ("\n");
-		}
-	}
-	printf ("\n");
-}
-
-static void
-e2k_debug_handler (SoupMessage *msg, gpointer user_data)
-{
-	gboolean restarted = GPOINTER_TO_INT (user_data);
-
-	e2k_debug_print_response (msg);
-	if (restarted)
-		e2k_debug_print_request (msg, "restarted");
-}
-
-static void
-e2k_debug_setup (SoupMessage *msg)
-{
-	if (!e2k_debug_level)
-		return;
-
-	e2k_debug_print_request (msg, NULL);
-
-	g_signal_connect (msg, "finished",
-			  G_CALLBACK (e2k_debug_handler),
-			  GINT_TO_POINTER (FALSE));
-	g_signal_connect (msg, "restarted",
-			  G_CALLBACK (e2k_debug_handler),
-			  GINT_TO_POINTER (TRUE));
+	if (!content_type || g_ascii_strncasecmp (content_type, "text/html", 9))
+		return SOUP_LOGGER_LOG_BODY;
+	else
+		return SOUP_LOGGER_LOG_HEADERS;
 }
 #endif
 
-#define E2K_FBA_FLAG_FORCE_DOWNLEVEL 1
-#define E2K_FBA_FLAG_TRUSTED         4
+#define E2K_FBA_FLAG_FORCE_DOWNLEVEL "1"
+#define E2K_FBA_FLAG_TRUSTED         "4"
 
 /**
  * e2k_context_fba:
@@ -542,13 +501,15 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 {
 	static gboolean in_fba_auth = FALSE;
 	int status, len;
-	char *body = NULL;
+	SoupBuffer *response = NULL;
 	char *action, *method, *name, *value;
 	xmlDoc *doc = NULL;
 	xmlNode *node;
 	SoupMessage *post_msg;
-	GString *form_body, *cookie_str;
-	const GSList *cookies, *c;
+	GHashTable *form_data;
+	char *form_body;
+	GString *cookie_str;
+	GSList *cookies, *c;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), FALSE);
 
@@ -573,12 +534,15 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	in_fba_auth = TRUE;
 
 	status = e2k_context_get_owa (ctx, NULL, ctx->priv->owa_uri,
-				      FALSE, &body, &len);
-	if (!SOUP_STATUS_IS_SUCCESSFUL (status) || len == 0)
+				      FALSE, &response);
+	if (!SOUP_STATUS_IS_SUCCESSFUL (status) || response->length == 0) {
+		if (response)
+			soup_buffer_free (response);
 		goto failed;
+	}
 
-	doc = e2k_parse_html (body, len);
-	g_free (body);
+	doc = e2k_parse_html (response->data, response->length);
+	soup_buffer_free (response);
 
 	node = e2k_xml_find (doc->children, "form");
 	if (!node)
@@ -596,7 +560,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	if (!value || !*value)
 		goto failed;
 	if (*value == '/') {
-		SoupUri *suri;
+		SoupURI *suri;
 
 		suri = soup_uri_new (ctx->priv->owa_uri);
 		g_free (suri->path);
@@ -608,7 +572,8 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 		action = g_strdup (value);
 	xmlFree (value);
 
-	form_body = g_string_new (NULL);
+	form_data = g_hash_table_new_full (g_str_hash, g_str_equal,
+					   NULL, g_free);
 	while ((node = e2k_xml_find (node, "input"))) {
 		name = xmlGetProp (node, "name");
 		if (!name)
@@ -616,42 +581,41 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 		value = xmlGetProp (node, "value");
 
 		if (!g_ascii_strcasecmp (name, "destination") && value) {
-			g_string_append (form_body, name);
-			g_string_append_c (form_body, '=');
-			e2k_uri_append_encoded (form_body, value, FALSE, NULL);
-			g_string_append_c (form_body, '&');
+			g_hash_table_insert (form_data, "destination",
+					     g_strdup (value));
 		} else if (!g_ascii_strcasecmp (name, "flags")) {
-			g_string_append_printf (form_body, "flags=%d",
-						E2K_FBA_FLAG_TRUSTED);
-			g_string_append_c (form_body, '&');
+			g_hash_table_insert (form_data, "flags",
+					     g_strdup (E2K_FBA_FLAG_TRUSTED));
 		} else if (!g_ascii_strcasecmp (name, "username")) {
-			g_string_append (form_body, "username=");
-			e2k_uri_append_encoded (form_body, ctx->priv->username, FALSE, NULL);
-			g_string_append_c (form_body, '&');
+			g_hash_table_insert (form_data, "username",
+					     g_strdup (ctx->priv->username));
 		} else if (!g_ascii_strcasecmp (name, "password")) {
-			g_string_append (form_body, "password=");
-			e2k_uri_append_encoded (form_body, ctx->priv->password, FALSE, NULL);
-			g_string_append_c (form_body, '&');
+			g_hash_table_insert (form_data, "password",
+					     g_strdup (ctx->priv->password));
 		}
 
 		if (value)
 			xmlFree (value);
 		xmlFree (name);
 	}
-	g_string_append_printf (form_body, "trusted=%d", E2K_FBA_FLAG_TRUSTED);
+	g_hash_table_insert (form_data, "trusted",
+			     g_strdup (E2K_FBA_FLAG_TRUSTED));
 	xmlFreeDoc (doc);
 	doc = NULL;
 
+	form_body = soup_form_encode_urlencoded (form_data);
+	g_hash_table_destroy (form_data);
+
 	post_msg = e2k_soup_message_new_full (ctx, action, "POST",
 					      "application/x-www-form-urlencoded",
-					      SOUP_BUFFER_SYSTEM_OWNED,
-					      form_body->str, form_body->len);
+					      SOUP_MEMORY_TAKE,
+					      form_body, strlen (form_body));
 	if (!post_msg)
 		goto failed;
 
 	soup_message_set_flags (post_msg, SOUP_MESSAGE_NO_REDIRECT);
 	e2k_context_send_message (ctx, NULL /* FIXME? */, post_msg);
-	g_string_free (form_body, FALSE);
+	g_free (form_body);
 	g_free (action);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (post_msg->status_code) &&
@@ -661,8 +625,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	}
 
 	/* Extract the cookies */
-	cookies = soup_message_get_header_list (post_msg->response_headers,
-						"Set-Cookie");
+	cookies = e2k_http_get_headers (post_msg->response_headers, "Set-Cookie");
 	cookie_str = g_string_new (NULL);
 
 	for (c = cookies; c; c = c->next) {
@@ -676,14 +639,15 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	ctx->priv->cookie = cookie_str->str;
 	ctx->priv->cookie_verified = FALSE;
 	g_string_free (cookie_str, FALSE);
+	g_slist_free (cookies);
 	g_object_unref (post_msg);
 
 	in_fba_auth = FALSE;
 
 	/* Set up the failed message to be requeued */
-	soup_message_remove_header (failed_msg->request_headers, "Cookie");
-	soup_message_add_header (failed_msg->request_headers,
-				 "Cookie", ctx->priv->cookie);
+	soup_message_headers_remove (failed_msg->request_headers, "Cookie");
+	soup_message_headers_append (failed_msg->request_headers,
+				     "Cookie", ctx->priv->cookie);
 	return TRUE;
 
  failed:
@@ -698,11 +662,6 @@ fba_timeout_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
 
-#ifdef E2K_DEBUG
-	if (e2k_debug_level)
-		e2k_debug_print_response (msg);
-#endif
-
 	if (e2k_context_fba (ctx, msg))
 		soup_session_requeue_message (ctx->priv->session, msg);
 	else
@@ -715,7 +674,7 @@ timestamp_handler (SoupMessage *msg, gpointer user_data)
 	E2kContext *ctx = user_data;
 	const char *date;
 
-	date = soup_message_get_header (msg->response_headers, "Date");
+	date = soup_message_headers_get (msg->response_headers, "Date");
 	if (date)
 		ctx->priv->last_timestamp = e2k_http_parse_date (date);
 }
@@ -725,52 +684,49 @@ redirect_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
 	const char *new_uri;
-	SoupUri *soup_uri;
+	SoupURI *soup_uri;
 	char *old_uri;
 
-	if (soup_message_get_flags (msg) & SOUP_MESSAGE_NO_REDIRECT)
+	if (!SOUP_STATUS_IS_REDIRECTION (msg->status_code) ||
+	    (soup_message_get_flags (msg) & SOUP_MESSAGE_NO_REDIRECT))
 		return;
 
-	new_uri = soup_message_get_header (msg->response_headers, "Location");
-	if (new_uri) {
-		soup_uri = soup_uri_copy (soup_message_get_uri (msg));
-		old_uri = soup_uri_to_string (soup_uri, FALSE);
+	new_uri = soup_message_headers_get (msg->response_headers, "Location");
+	soup_uri = soup_uri_copy (soup_message_get_uri (msg));
+	old_uri = soup_uri_to_string (soup_uri, FALSE);
 
-		g_signal_emit (ctx, signals[REDIRECT], 0,
-			       msg->status_code, old_uri, new_uri);
-		soup_uri_free (soup_uri);
-		g_free (old_uri);
-	}
+	g_signal_emit (ctx, signals[REDIRECT], 0,
+		       msg->status_code, old_uri, new_uri);
+	soup_uri_free (soup_uri);
+	g_free (old_uri);
 }
 
 static void
-setup_message (SoupMessageFilter *filter, SoupMessage *msg)
+setup_message (SoupSession *session, SoupMessage *msg,
+	       SoupSocket *socket, gpointer user_data)
 {
-	E2kContext *ctx = E2K_CONTEXT (filter);
-
+	E2kContext *ctx = user_data;
 
 	if (ctx->priv->cookie) {
-		soup_message_remove_header (msg->request_headers, "Cookie");
-		soup_message_add_header (msg->request_headers,
-					 "Cookie", ctx->priv->cookie);
+		soup_message_headers_replace (msg->request_headers,
+					      "Cookie", ctx->priv->cookie);
 	}
 
 	/* Only do this the first time through */
-	if (!soup_message_get_header (msg->request_headers, "User-Agent")) {
-		soup_message_add_handler (msg, SOUP_HANDLER_PRE_BODY,
-					  timestamp_handler, ctx);
-		soup_message_add_status_class_handler (msg, SOUP_STATUS_CLASS_REDIRECT,
-						       SOUP_HANDLER_PRE_BODY,
-						       redirect_handler, ctx);
-		soup_message_add_status_code_handler (msg, E2K_HTTP_TIMEOUT,
-						      SOUP_HANDLER_PRE_BODY,
-						      fba_timeout_handler, ctx);
-		soup_message_add_header (msg->request_headers, "User-Agent",
-					 "Evolution/" VERSION);
+	if (!soup_message_headers_get (msg->request_headers, "User-Agent")) {
+		g_signal_connect (msg, "got-headers",
+				  G_CALLBACK (timestamp_handler), ctx);
+		soup_message_add_header_handler (msg, "got-headers",
+						 "Location",
+						 G_CALLBACK (redirect_handler),
+						 ctx);
+		soup_message_add_status_code_handler (msg, "got-headers",
+						      E2K_HTTP_TIMEOUT,
+						      G_CALLBACK (fba_timeout_handler),
+						      ctx);
+		soup_message_headers_append (msg->request_headers, "User-Agent",
+					     "Evolution/" VERSION);
 
-#ifdef E2K_DEBUG
-		e2k_debug_setup (msg);
-#endif
 	}
 }
 
@@ -810,7 +766,7 @@ e2k_soup_message_new (E2kContext *ctx, const char *uri, const char *method)
  * @uri: the URI
  * @method: the HTTP method
  * @content_type: MIME Content-Type of @body
- * @owner: ownership of @body
+ * @use: use policy of @body
  * @body: request body
  * @length: length of @body
  *
@@ -822,14 +778,13 @@ e2k_soup_message_new (E2kContext *ctx, const char *uri, const char *method)
 SoupMessage *
 e2k_soup_message_new_full (E2kContext *ctx, const char *uri,
 			   const char *method, const char *content_type,
-			   SoupOwnership owner, const char *body,
-			   gulong length)
+			   SoupMemoryUse use, const char *body,
+			   gsize length)
 {
 	SoupMessage *msg;
 
 	msg = e2k_soup_message_new (ctx, uri, method);
-	soup_message_set_request (msg, content_type,
-				  owner, (char *)body, length);
+	soup_message_set_request (msg, content_type, use, body, length);
 
 	return msg;
 }
@@ -845,7 +800,7 @@ e2k_soup_message_new_full (E2kContext *ctx, const char *uri,
  **/
 void
 e2k_context_queue_message (E2kContext *ctx, SoupMessage *msg,
-			   SoupMessageCallbackFn callback,
+			   SoupSessionCallback callback,
 			   gpointer user_data)
 {
 	g_return_if_fail (E2K_IS_CONTEXT (ctx));
@@ -860,8 +815,8 @@ context_canceller (E2kOperation *op, gpointer owner, gpointer data)
 	E2kContext *ctx = owner;
 	SoupMessage *msg = data;
 
-	soup_message_set_status (msg, SOUP_STATUS_CANCELLED);
-	soup_session_cancel_message (ctx->priv->session, msg);
+	soup_session_cancel_message (ctx->priv->session, msg,
+				     SOUP_STATUS_CANCELLED);
 }
 
 /**
@@ -899,7 +854,7 @@ update_unique_uri (E2kContext *ctx, SoupMessage *msg,
 		   const char *folder_uri, const char *encoded_name, int *count,
 		   E2kContextTestCallback test_callback, gpointer user_data)
 {
-	SoupUri *suri;
+	SoupURI *suri;
 	char *uri = NULL;
 
 	do {
@@ -930,12 +885,11 @@ get_msg (E2kContext *ctx, const char *uri, gboolean owa, gboolean claim_ie)
 
 	msg = e2k_soup_message_new (ctx, uri, "GET");
 	if (!owa)
-		soup_message_add_header (msg->request_headers, "Translate", "F");
+		soup_message_headers_append (msg->request_headers, "Translate", "F");
 	if (claim_ie) {
-		soup_message_remove_header (msg->request_headers, "User-Agent");
-		soup_message_add_header (msg->request_headers, "User-Agent",
-					 "MSIE 6.0b (Windows NT 5.0; compatible; "
-					 "Evolution/" VERSION ")");
+		soup_message_headers_replace (msg->request_headers, "User-Agent",
+					      "MSIE 6.0b (Windows NT 5.0; compatible; "
+					      "Evolution/" VERSION ")");
 	}
 
 	return msg;
@@ -948,20 +902,19 @@ get_msg (E2kContext *ctx, const char *uri, gboolean owa, gboolean claim_ie)
  * @uri: URI of the object to GET
  * @content_type: if not %NULL, will contain the Content-Type of the
  * response on return.
- * @body: if not %NULL, will contain the response body on return
- * @len: if not %NULL, will contain the response body length on return
+ * @response: if not %NULL, will contain the response on return
  *
  * Performs a GET on @ctx for @uri. If successful (2xx status code),
- * the Content-Type, body and length will be returned. The body is not
- * terminated by a '\0'. If the GET is not successful, @content_type,
- * @body and @len will be untouched (even if the error response
+ * the Content-Type, and response body will be returned. The body is not
+ * terminated by a '\0'. If the GET is not successful, @content_type and
+ * @response will be untouched (even if the error response
  * included a body).
  *
  * Return value: the HTTP status
  **/
 E2kHTTPStatus
 e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
-		 char **content_type, char **body, int *len)
+		 char **content_type, SoupBuffer **response)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -975,16 +928,12 @@ e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
 		if (content_type) {
 			const char *header;
-			header = soup_message_get_header (msg->response_headers,
-							  "Content-Type");
+			header = soup_message_headers_get (msg->response_headers,
+							   "Content-Type");
 			*content_type = g_strdup (header);
 		}
-		if (body) {
-			*body = msg->response.body;
-			msg->response.owner = SOUP_BUFFER_USER_OWNED;
-		}
-		if (len)
-			*len = msg->response.length;
+		if (response)
+			*response = soup_message_body_flatten (msg->response_body);
 	}
 
 	g_object_unref (msg);
@@ -997,8 +946,7 @@ e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
  * @op: pointer to an #E2kOperation to use for cancellation
  * @uri: URI of the object to GET
  * @claim_ie: whether or not to claim to be IE
- * @body: if not %NULL, will contain the response body on return
- * @len: if not %NULL, will contain the response body length on return
+ * @response: if not %NULL, will contain the response on return
  *
  * As with e2k_context_get(), but used when you need the HTML or XML
  * data that would be returned to OWA rather than the raw object data.
@@ -1008,7 +956,7 @@ e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
 E2kHTTPStatus
 e2k_context_get_owa (E2kContext *ctx, E2kOperation *op,
 		     const char *uri, gboolean claim_ie,
-		     char **body, int *len)
+		     SoupBuffer **response)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -1020,12 +968,8 @@ e2k_context_get_owa (E2kContext *ctx, E2kOperation *op,
 	status = e2k_context_send_message (ctx, op, msg);
 
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
-		if (body) {
-			*body = msg->response.body;
-			msg->response.owner = SOUP_BUFFER_USER_OWNED;
-		}
-		if (len)
-			*len = msg->response.length;
+		if (response)
+			*response = soup_message_body_flatten (msg->response_body);
 	}
 
 	g_object_unref (msg);
@@ -1036,20 +980,20 @@ e2k_context_get_owa (E2kContext *ctx, E2kOperation *op,
 
 static SoupMessage *
 put_msg (E2kContext *ctx, const char *uri, const char *content_type,
-	 SoupOwnership buffer_type, const char *body, int length)
+	 SoupMemoryUse buffer_type, const char *body, int length)
 {
 	SoupMessage *msg;
 
 	msg = e2k_soup_message_new_full (ctx, uri, "PUT", content_type,
 					 buffer_type, body, length);
-	soup_message_add_header (msg->request_headers, "Translate", "f");
+	soup_message_headers_append (msg->request_headers, "Translate", "f");
 
 	return msg;
 }
 
 static SoupMessage *
 post_msg (E2kContext *ctx, const char *uri, const char *content_type,
-	  SoupOwnership buffer_type, const char *body, int length)
+	  SoupMemoryUse buffer_type, const char *body, int length)
 {
 	SoupMessage *msg;
 
@@ -1069,13 +1013,13 @@ extract_put_results (SoupMessage *msg, char **location, char **repl_uid)
 		return;
 
 	if (repl_uid) {
-		header = soup_message_get_header (msg->response_headers,
-						  "Repl-UID");
+		header = soup_message_headers_get (msg->response_headers,
+						   "Repl-UID");
 		*repl_uid = g_strdup (header);
 	}
 	if (location) {
-		header = soup_message_get_header (msg->response_headers,
-						  "Location");
+		header = soup_message_headers_get (msg->response_headers,
+						   "Location");
 		*location = g_strdup (header);
 	}
 }
@@ -1109,8 +1053,7 @@ e2k_context_put (E2kContext *ctx, E2kOperation *op, const char *uri,
 	g_return_val_if_fail (body != NULL, E2K_HTTP_MALFORMED);
 
 	msg = put_msg (ctx, uri, content_type,
-		       SOUP_BUFFER_USER_OWNED,
-		       body, length);
+		       SOUP_MEMORY_COPY, body, length);
 	status = e2k_context_send_message (ctx, op, msg);
 	extract_put_results (msg, NULL, repl_uid);
 
@@ -1165,8 +1108,8 @@ e2k_context_put_new (E2kContext *ctx, E2kOperation *op,
 
 	/* folder_uri is a dummy here */
 	msg = put_msg (ctx, folder_uri, content_type,
-		       SOUP_BUFFER_USER_OWNED, body, length);
-	soup_message_add_header (msg->request_headers, "If-None-Match", "*");
+		       SOUP_MEMORY_COPY, body, length);
+	soup_message_headers_append (msg->request_headers, "If-None-Match", "*");
 
 	count = 1;
 	do {
@@ -1218,8 +1161,7 @@ e2k_context_post (E2kContext *ctx, E2kOperation *op, const char *uri,
 	g_return_val_if_fail (body != NULL, E2K_HTTP_MALFORMED);
 
 	msg = post_msg (ctx, uri, content_type,
-			SOUP_BUFFER_USER_OWNED,
-			body, length);
+			SOUP_MEMORY_COPY, body, length);
 
 	status = e2k_context_send_message (ctx, op, msg);
 	extract_put_results (msg, location, repl_uid);
@@ -1423,12 +1365,12 @@ patch_msg (E2kContext *ctx, const char *uri, const char *method,
 
 	/* And build the message. */
 	msg = e2k_soup_message_new_full (ctx, uri, method,
-					 "text/xml", SOUP_BUFFER_SYSTEM_OWNED,
+					 "text/xml", SOUP_MEMORY_TAKE,
 					 propxml->str, propxml->len);
 	g_string_free (propxml, FALSE);
-	soup_message_add_header (msg->request_headers, "Brief", "t");
+	soup_message_headers_append (msg->request_headers, "Brief", "t");
 	if (!create)
-		soup_message_add_header (msg->request_headers, "If-Match", "*");
+		soup_message_headers_append (msg->request_headers, "If-Match", "*");
 
 	return msg;
 }
@@ -1515,7 +1457,7 @@ e2k_context_proppatch_new (E2kContext *ctx, E2kOperation *op,
 
 	/* folder_uri is a dummy here */
 	msg = patch_msg (ctx, folder_uri, "PROPPATCH", NULL, 0, props, TRUE);
-	soup_message_add_header (msg->request_headers, "If-None-Match", "*");
+	soup_message_headers_append (msg->request_headers, "If-None-Match", "*");
 
 	count = 1;
 	do {
@@ -1544,7 +1486,10 @@ bproppatch_fetch (E2kResultIter *iter,
 	SoupMessage *msg = user_data;
 	E2kHTTPStatus status;
 
-	if (msg->status != SOUP_MESSAGE_STATUS_IDLE)
+	/* We only want to send the BPROPPATCH once. So check if we've
+	 * already done that.
+	 */
+	if (msg->status_code != 0)
 		return E2K_HTTP_OK;
 
 	status = e2k_context_send_message (ctx, op, msg);
@@ -1642,11 +1587,11 @@ propfind_msg (E2kContext *ctx, const char *base_uri,
 
 	msg = e2k_soup_message_new_full (ctx, base_uri,
 					 hrefs ? "BPROPFIND" : "PROPFIND",
-					 "text/xml", SOUP_BUFFER_SYSTEM_OWNED,
+					 "text/xml", SOUP_MEMORY_TAKE,
 					 propxml->str, propxml->len);
 	g_string_free (propxml, FALSE);
-	soup_message_add_header (msg->request_headers, "Brief", "t");
-	soup_message_add_header (msg->request_headers, "Depth", "0");
+	soup_message_headers_append (msg->request_headers, "Brief", "t");
+	soup_message_headers_append (msg->request_headers, "Depth", "0");
 
 	return msg;
 }
@@ -1769,7 +1714,7 @@ e2k_context_bpropfind_start (E2kContext *ctx, E2kOperation *op,
 
 static SoupMessage *
 search_msg (E2kContext *ctx, const char *uri,
-	    SoupOwnership buffer_type, const char *searchxml,
+	    SoupMemoryUse buffer_type, const char *searchxml,
 	    int size, gboolean ascending, int offset)
 {
 	SoupMessage *msg;
@@ -1777,7 +1722,7 @@ search_msg (E2kContext *ctx, const char *uri,
 	msg = e2k_soup_message_new_full (ctx, uri, "SEARCH", "text/xml",
 					 buffer_type, searchxml,
 					 strlen (searchxml));
-	soup_message_add_header (msg->request_headers, "Brief", "t");
+	soup_message_headers_append (msg->request_headers, "Brief", "t");
 
 	if (size) {
 		char *range;
@@ -1788,7 +1733,7 @@ search_msg (E2kContext *ctx, const char *uri,
 			range = g_strdup_printf ("rows=%u-%u",
 						 offset, offset + size - 1);
 		}
-		soup_message_add_header (msg->request_headers, "Range", range);
+		soup_message_headers_append (msg->request_headers, "Range", range);
 		g_free (range);
 	}
 
@@ -1845,8 +1790,8 @@ search_result_get_range (SoupMessage *msg, int *first, int *total)
 {
 	const char *range, *p;
 
-	range = soup_message_get_header (msg->response_headers,
-					 "Content-Range");
+	range = soup_message_headers_get (msg->response_headers,
+					  "Content-Range");
 	if (!range)
 		return FALSE;
 	p = strstr (range, "rows ");
@@ -1888,7 +1833,7 @@ search_fetch (E2kResultIter *iter,
 		return E2K_HTTP_OK;
 
 	msg = search_msg (ctx, search_data->uri,
-			  SOUP_BUFFER_USER_OWNED, search_data->xml,
+			  SOUP_MEMORY_COPY, search_data->xml,
 			  search_data->batch_size,
 			  search_data->ascending, search_data->next);
 	status = e2k_context_send_message (ctx, op, msg);
@@ -2025,7 +1970,7 @@ bdelete_msg (E2kContext *ctx, const char *uri, const char **hrefs, int nhrefs)
 	g_string_append (xml, "</target></delete>");
 
 	msg = e2k_soup_message_new_full (ctx, uri, "BDELETE", "text/xml",
-					 SOUP_BUFFER_SYSTEM_OWNED,
+					 SOUP_MEMORY_TAKE,
 					 xml->str, xml->len);
 	g_string_free (xml, FALSE);
 
@@ -2146,8 +2091,8 @@ e2k_context_mkcol (E2kContext *ctx, E2kOperation *op,
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status) && permanent_url) {
 		const char *header;
 
-		header = soup_message_get_header (msg->response_headers,
-						  "MS-Exchange-Permanent-URL");
+		header = soup_message_headers_get (msg->response_headers,
+						   "MS-Exchange-Permanent-URL");
 		*permanent_url = g_strdup (header);
 	}
 
@@ -2181,11 +2126,11 @@ transfer_msg (E2kContext *ctx,
 	msg = e2k_soup_message_new_full (ctx, source_uri,
 					 delete_originals ? "BMOVE" : "BCOPY",
 					 "text/xml",
-					 SOUP_BUFFER_SYSTEM_OWNED,
+					 SOUP_MEMORY_TAKE,
 					 xml->str, xml->len);
-	soup_message_add_header (msg->request_headers, "Overwrite", "f");
-	soup_message_add_header (msg->request_headers, "Allow-Rename", "t");
-	soup_message_add_header (msg->request_headers, "Destination", dest_uri);
+	soup_message_headers_append (msg->request_headers, "Overwrite", "f");
+	soup_message_headers_append (msg->request_headers, "Allow-Rename", "t");
+	soup_message_headers_append (msg->request_headers, "Destination", dest_uri);
 	g_string_free (xml, FALSE);
 
 	return msg;
@@ -2311,15 +2256,15 @@ e2k_context_transfer_dir (E2kContext *ctx, E2kOperation *op,
 	g_return_val_if_fail (dest_href != NULL, E2K_HTTP_MALFORMED);
 
 	msg = e2k_soup_message_new (ctx, source_href, delete_original ? "MOVE" : "COPY");
-	soup_message_add_header (msg->request_headers, "Overwrite", "f");
-	soup_message_add_header (msg->request_headers, "Destination", dest_href);
+	soup_message_headers_append (msg->request_headers, "Overwrite", "f");
+	soup_message_headers_append (msg->request_headers, "Destination", dest_href);
 
 	status = e2k_context_send_message (ctx, op, msg);
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status) && permanent_url) {
 		const char *header;
 
-		header = soup_message_get_header (msg->response_headers,
-						  "MS-Exchange-Permanent-URL");
+		header = soup_message_headers_get (msg->response_headers,
+						   "MS-Exchange-Permanent-URL");
 		*permanent_url = g_strdup (header);
 	}
 
@@ -2377,7 +2322,7 @@ maybe_notification (E2kSubscription *sub)
 }
 
 static void
-polled (SoupMessage *msg, gpointer user_data)
+polled (SoupSession *session, SoupMessage *msg, gpointer user_data)
 {
 	E2kSubscription *sub = user_data;
 	E2kContext *ctx = sub->ctx;
@@ -2443,8 +2388,8 @@ timeout_notification (gpointer user_data)
 	}
 
 	sub->poll_msg = e2k_soup_message_new (ctx, sub->uri, "POLL");
-	soup_message_add_header (sub->poll_msg->request_headers,
-				 "Subscription-id", subscription_ids->str);
+	soup_message_headers_append (sub->poll_msg->request_headers,
+				     "Subscription-id", subscription_ids->str);
 	e2k_context_queue_message (ctx, sub->poll_msg, polled, sub);
 
 	g_string_free (subscription_ids, TRUE);
@@ -2512,7 +2457,7 @@ do_notification (GIOChannel *source, GIOCondition condition, gpointer data)
 }
 
 static void
-renew_cb (SoupMessage *msg, gpointer user_data)
+renew_cb (SoupSession *session, SoupMessage *msg, gpointer user_data)
 {
 	E2kSubscription *sub = user_data;
 
@@ -2527,8 +2472,8 @@ renew_cb (SoupMessage *msg, gpointer user_data)
 		g_hash_table_remove (sub->ctx->priv->subscriptions_by_id, sub->id);
 		g_free (sub->id);
 	}
-	sub->id = g_strdup (soup_message_get_header (msg->response_headers,
-						     "Subscription-id"));
+	sub->id = g_strdup (soup_message_headers_get (msg->response_headers,
+						      "Subscription-id"));
 	g_return_if_fail (sub->id != NULL);
 	g_hash_table_insert (sub->ctx->priv->subscriptions_by_id,
 			     sub->id, sub);
@@ -2560,18 +2505,18 @@ renew_subscription (gpointer user_data)
 
 	sub->renew_msg = e2k_soup_message_new (ctx, sub->uri, "SUBSCRIBE");
 	sprintf (ltbuf, "%d", sub->lifetime);
-	soup_message_add_header (sub->renew_msg->request_headers,
-				 "Subscription-lifetime", ltbuf);
-	soup_message_add_header (sub->renew_msg->request_headers,
-				 "Notification-type",
-				 subscription_type[sub->type]);
+	soup_message_headers_append (sub->renew_msg->request_headers,
+				     "Subscription-lifetime", ltbuf);
+	soup_message_headers_append (sub->renew_msg->request_headers,
+				     "Notification-type",
+				     subscription_type[sub->type]);
 	if (sub->min_interval > 1) {
 		sprintf (ltbuf, "%d", sub->min_interval);
-		soup_message_add_header (sub->renew_msg->request_headers,
-					 "Notification-delay", ltbuf);
+		soup_message_headers_append (sub->renew_msg->request_headers,
+					     "Notification-delay", ltbuf);
 	}
-	soup_message_add_header (sub->renew_msg->request_headers,
-				 "Call-back", ctx->priv->notification_uri);
+	soup_message_headers_append (sub->renew_msg->request_headers,
+				     "Call-back", ctx->priv->notification_uri);
 
 	e2k_context_queue_message (ctx, sub->renew_msg, renew_cb, sub);
 	sub->renew_timeout = g_timeout_add ((sub->lifetime - 60) * 1000,
@@ -2655,21 +2600,25 @@ free_subscription (E2kSubscription *sub)
 
 	if (sub->renew_timeout)
 		g_source_remove (sub->renew_timeout);
-	if (sub->renew_msg)
-		soup_session_cancel_message (session, sub->renew_msg);
+	if (sub->renew_msg) {
+		soup_session_cancel_message (session, sub->renew_msg,
+					     SOUP_STATUS_CANCELLED);
+	}
 	if (sub->poll_timeout)
 		g_source_remove (sub->poll_timeout);
 	if (sub->notification_timeout)
 		g_source_remove (sub->notification_timeout);
-	if (sub->poll_msg)
-		soup_session_cancel_message (session, sub->poll_msg);
+	if (sub->poll_msg) {
+		soup_session_cancel_message (session, sub->poll_msg,
+					     SOUP_STATUS_CANCELLED);
+	}
 	g_free (sub->uri);
 	g_free (sub->id);
 	g_free (sub);
 }
 
 static void
-unsubscribed (SoupMessage *msg, gpointer user_data)
+unsubscribed (SoupSession *session, SoupMessage *msg, gpointer user_data)
 {
 	;
 }
@@ -2698,9 +2647,9 @@ unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list)
 
 	if (subscription_ids) {
 		msg = e2k_soup_message_new (ctx, uri, "UNSUBSCRIBE");
-		soup_message_add_header (msg->request_headers,
-					 "Subscription-id",
-					 subscription_ids->str);
+		soup_message_headers_append (msg->request_headers,
+					     "Subscription-id",
+					     subscription_ids->str);
 		e2k_context_queue_message (ctx, msg, unsubscribed, NULL);
 		g_string_free (subscription_ids, TRUE);
 	}

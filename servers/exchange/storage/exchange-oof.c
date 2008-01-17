@@ -33,7 +33,7 @@
 
 /* Taken from gal/util/e-util.c */
 static char *
-find_str_case (const char *haystack, const char *needle)
+find_str_case (const char *haystack, const char *needle, const char *end)
 {
 	/* find the needle in the haystack neglecting case */
 	const char *ptr;
@@ -49,7 +49,7 @@ find_str_case (const char *haystack, const char *needle)
 	if (len == 0)
 		return (char *) haystack;
 
-	for (ptr = haystack; *(ptr + len - 1) != '\0'; ptr++)
+	for (ptr = haystack; ptr + len < end; ptr++)
 		if (!g_ascii_strncasecmp (ptr, needle, len))
 			return (char *) ptr;
 
@@ -74,8 +74,9 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 {
 	E2kContext *ctx;
 	E2kHTTPStatus status;
-	char *url, *body = NULL, *p = NULL, *checked, *ta_start, *ta_end;
-	int len;
+	char *url, *p = NULL, *checked, *ta_start, *ta_end;
+	SoupBuffer *response = NULL;
+	const char *body, *end;
 
 	ctx = exchange_account_get_context (account);
 	if (!ctx)
@@ -102,34 +103,34 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 	}
 
 	url = e2k_uri_concat (account->home_uri, "?Cmd=options");
-	status = e2k_context_get_owa (ctx, NULL, url, FALSE, &body, &len);
+	status = e2k_context_get_owa (ctx, NULL, url, FALSE, &response);
 	g_free (url);
 	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (status))
 		return FALSE;
 
-	p = find_str_case (body, "<!--End OOF Assist-->");
+	body = response->data;
+	end = body + response->length;
+	p = find_str_case (body, "<!--End OOF Assist-->", end);
 	if (p)
-		*p = '\0';
-	else
-		body[len - 1] = '\0';
+		end = p;
 
-	p = find_str_case (body, "name=\"OofState\"");
+	p = find_str_case (body, "name=\"OofState\"", end);
 	if (p)
-		p = find_str_case (body, "value=\"1\"");
+		p = find_str_case (body, "value=\"1\"", end);
 	if (!p) {
 		g_warning ("Could not find OofState in options page");
-		g_free (body);
+		soup_buffer_free (response);
 		return FALSE;
 	}
 
-	checked = find_str_case (p, "checked");
+	checked = find_str_case (p, "checked", end);
 	*oof = (checked && checked < strchr (p, '>'));
 
 	if (message) {
-		ta_end = find_str_case (p, "</textarea>");
+		ta_end = find_str_case (p, "</textarea>", end);
 		if (!ta_end) {
 			g_warning ("Could not find OOF text in options page");
-			g_free (body);
+			soup_buffer_free (response);
 			*message = g_strdup ("");
 			return TRUE;
 		}
@@ -139,7 +140,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 		}
 		if (*ta_start++ != '>') {
 			g_warning ("Could not find OOF text in options page");
-			g_free (body);
+			soup_buffer_free (response);
 			*message = g_strdup ("");
 			return TRUE;
 		}
@@ -149,6 +150,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 
 	}
 
+	soup_buffer_free (response);
 	return TRUE;
 }
 
