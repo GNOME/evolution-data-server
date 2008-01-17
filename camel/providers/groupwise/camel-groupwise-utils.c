@@ -30,8 +30,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libsoup/soup-misc.h>
-
 #include "camel/camel-address.h"
 #include "camel/camel-mime-filter-charset.h"
 #include "camel/camel-mime-message.h"

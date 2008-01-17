@@ -40,8 +40,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libsoup/soup-misc.h>
-
 #include <libedataserver/e-msgport.h>
 
 #include <e-gw-connection.h>

@@ -31,8 +31,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libsoup/soup-misc.h>
-
 #include "camel-data-wrapper.h"
 #include "camel-medium.h"
 #include "camel-mime-message.h"
