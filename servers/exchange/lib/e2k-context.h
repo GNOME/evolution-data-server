@@ -203,7 +203,7 @@ SoupMessage   *e2k_soup_message_new_full (E2kContext *ctx,
 					  const char *content_type,
 					  SoupMemoryUse use,
 					  const char *body,
-					  gulong length);
+					  gsize length);
 void           e2k_context_queue_message (E2kContext *ctx,
 					  SoupMessage *msg,
 					  SoupSessionCallback callback,
