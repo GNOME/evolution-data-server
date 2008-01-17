@@ -390,38 +390,15 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 }
 
 static void
-retrieval_done (SoupMessage *message, EWeatherSourceCCF *source)
+retrieval_done (SoupSession *session, SoupMessage *message, EWeatherSourceCCF *source)
 {
-	char *str;
-	const char *newuri;
-
-	/* Handle redirection ourselves */
-	if (SOUP_STATUS_IS_REDIRECTION (message->status_code)) {
-		newuri = soup_message_get_header (message->response_headers, "Location");
-
-		if (newuri) {
-			SoupMessage *soup_message;
-			soup_message = soup_message_new (SOUP_METHOD_GET, newuri);
-			soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
-			soup_session_queue_message (source->soup_session, soup_message, (SoupMessageCallbackFn) retrieval_done, source);
-			return;
-		} else {
-			source->done (NULL, source->finished_data);
-		}
-
-		return;
-	}
-
 	/* check status code */
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		source->done (NULL, source->finished_data);
 		return;
 	}
 
-	str = g_malloc0 (message->response.length + 1);
-	strncpy (str, message->response.body, message->response.length);
-	e_weather_source_ccf_do_parse (source, str);
-	g_free (str);
+	e_weather_source_ccf_do_parse (source, (char *)message->response_body->data);
 }
 
 static void
@@ -448,7 +425,7 @@ e_weather_source_ccf_parse (EWeatherSource *source, EWeatherSourceFinished done,
 			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
 
 			if (server && server[0]) {
-				SoupUri *suri;
+				SoupURI *suri;
 				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
 					char *user, *password;
 
@@ -478,8 +455,7 @@ e_weather_source_ccf_parse (EWeatherSource *source, EWeatherSourceFinished done,
 	}
 
 	soup_message = soup_message_new (SOUP_METHOD_GET, ccfsource->url);
-	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
-	soup_session_queue_message (ccfsource->soup_session, soup_message, (SoupMessageCallbackFn) retrieval_done, source);
+	soup_session_queue_message (ccfsource->soup_session, soup_message, (SoupSessionCallback) retrieval_done, source);
 }
 
 static void

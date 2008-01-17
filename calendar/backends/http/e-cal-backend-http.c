@@ -35,8 +35,7 @@
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
-#include <libsoup/soup-session-async.h>
-#include <libsoup/soup-uri.h>
+#include <libsoup/soup.h>
 #include "e-cal-backend-http.h"
 
 
@@ -238,13 +237,12 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
+retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	const char *newuri;
-	char *str;
 	GHashTable *old_cache;
 	GList *comps_in_cache;
 
@@ -255,8 +253,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
-		newuri = soup_message_get_header (msg->response_headers,
-						  "Location");
+		newuri = soup_message_headers_get (msg->response_headers,
+						   "Location");
 
 		d(g_message ("Redirected to %s\n", newuri));
 
@@ -285,10 +283,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	}
 
 	/* get the calendar from the response */
-	str = g_malloc0 (msg->response.length + 1);
-	strncpy (str, msg->response.body, msg->response.length);
-	icalcomp = icalparser_parse_string (str);
-	g_free (str);
+	icalcomp = icalparser_parse_string (msg->response_body->data);
 
 	if (!icalcomp) {
 		if (!priv->opened)
@@ -386,10 +381,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 static void
 soup_authenticate (SoupSession  *session,
 	           SoupMessage  *msg,
-		   const char   *auth_type,
-		   const char   *auth_realm,
-		   char        **username,
-		   char        **password,
+		   SoupAuth     *auth,
+		   gboolean      retrying,
 		   gpointer      data)
 {
 	ECalBackendHttpPrivate *priv;
@@ -398,34 +391,11 @@ soup_authenticate (SoupSession  *session,
 	cbhttp = E_CAL_BACKEND_HTTP (data);
 	priv =  cbhttp->priv;
 
-	*username = priv->username;
-	*password = priv->password;
+	soup_auth_authenticate (auth, priv->username, priv->password);
 
 	priv->username = NULL;
 	priv->password = NULL;
 
-}
-
-static void
-soup_reauthenticate (SoupSession  *session,
-		     SoupMessage  *msg,
-		     const char   *auth_type,
-		     const char   *auth_realm,
-		     char        **username,
-		     char        **password,
-		     gpointer      data)
-{
-	ECalBackendHttpPrivate *priv;
-	ECalBackendHttp        *cbhttp;
-
-	cbhttp = E_CAL_BACKEND_HTTP (data);
-	priv = cbhttp->priv;
-
-	*username = priv->username;
-	*password = priv->password;
-
-	priv->username = NULL;
-	priv->password = NULL;
 }
 
 static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
@@ -459,8 +429,6 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 		g_signal_connect (priv->soup_session, "authenticate",
 				  G_CALLBACK (soup_authenticate), cbhttp);
-		g_signal_connect (priv->soup_session, "reauthenticate",
-				  G_CALLBACK (soup_reauthenticate), cbhttp);
 
 		/* set the HTTP proxy, if configuration is set to do so */
 		conf_client = gconf_client_get_default ();
@@ -472,7 +440,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
 
 			if (server && server[0]) {
-				SoupUri *suri;
+				SoupURI *suri;
 				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
 					char *user, *password;
 
@@ -512,12 +480,12 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	/* create message to be sent to server */
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
-	soup_message_add_header (soup_message->request_headers, "User-Agent",
-				 "Evolution/" VERSION);
+	soup_message_headers_append (soup_message->request_headers, "User-Agent",
+				     "Evolution/" VERSION);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
 
 	soup_session_queue_message (priv->soup_session, soup_message,
-				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
+				    (SoupSessionCallback) retrieval_done, cbhttp);
 
 	d(g_message ("Retrieval started.\n"));
 	return FALSE;

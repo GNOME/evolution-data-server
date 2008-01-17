@@ -43,9 +43,6 @@
 
 /* LibSoup includes */
 #include <libsoup/soup.h>
-#include <libsoup/soup-headers.h>
-#include <libsoup/soup-uri.h>
-#include <libsoup/soup-soap-message.h>
 
 #include "e-cal-backend-caldav.h"
 
@@ -218,111 +215,25 @@ caldav_debug_show (const char *component)
 	return FALSE;
 }
 
-static void
-message_debug_print_header (gpointer name, gpointer value, gpointer data)
-{
-	g_debug ("%s: %s", (char *) name, (char *) value);
-}
-
 #define DEBUG_MAX_BODY_SIZE (100 * 1024 * 1024)
 
 static void
-message_response_debug_handler (SoupMessage *msg, gpointer user_data)
+caldav_debug_setup (SoupSession *session)
 {
+	SoupLogger *logger;
+	SoupLoggerLogLevel level;
 
-	g_debug ("%d %s\nMessage-Debug: %p @ %lu",
-		 msg->status_code,
-		 msg->reason_phrase,
-		 msg,
-		 time (0));
+	if (caldav_debug_show (DEBUG_MESSAGE_BODY))
+		level = SOUP_LOGGER_LOG_BODY;
+	else if (caldav_debug_show (DEBUG_MESSAGE_HEADER))
+		level = SOUP_LOGGER_LOG_HEADERS;
+	else
+		level = SOUP_LOGGER_LOG_MINIMAL;
 
-	if (caldav_debug_show (DEBUG_MESSAGE_HEADER)) {
-		/* print headers */
-		soup_message_foreach_header (msg->response_headers,
-					     message_debug_print_header,
-					     NULL);
-
-	}
-
-	if (caldav_debug_show (DEBUG_MESSAGE_BODY)) {
-
-		/* print response */
-		if (msg->response.length) {
-			char *body;
-
-		        //needed for null terminal and truncation
-			body = g_strndup (msg->response.body,
-					  MIN (msg->response.length,
-					       DEBUG_MAX_BODY_SIZE));
-
-			g_debug ("Response: \n[%s%s]%s", body,
-				 msg->response.length > DEBUG_MAX_BODY_SIZE ?
-				 " ..." : "",
-				  msg->response.length > DEBUG_MAX_BODY_SIZE ?
-				 " (trunkated)" : "");
-
-			g_free (body);
-		}
-	}
+	logger = soup_logger_new (level, DEBUG_MAX_BODY_SIZE);
+	soup_logger_attach (logger, session);
+	g_object_unref (logger);
 }
-
-static void
-message_setup_debug (SoupMessage *msg)
-{
-	const SoupUri *suri;
-
-	if (G_LIKELY (! caldav_debug_show (DEBUG_MESSAGE))) {
-		return;
-	}
-
-	suri = soup_message_get_uri (msg);
-
-	g_debug ("%s %s%s%s HTTP/1.1\nMessage-ID: %p @ %lu",
-		 SOUP_MESSAGE (msg)->method,
-		 suri->path,
-		 suri->query ? "?" : "",
-		 suri->query ? suri->query : "",
-		 msg,
-		 (unsigned long) time (0));
-
-	soup_message_add_handler (SOUP_MESSAGE (msg),
-				  SOUP_HANDLER_POST_BODY,
-				  message_response_debug_handler,
-				  NULL);
-
-	if (G_LIKELY (! caldav_debug_show (DEBUG_MESSAGE_HEADER))) {
-		return;
-	}
-
-	/* print message headers */
-	message_debug_print_header ("Host", suri->host, NULL);
-
-	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers,
-				     message_debug_print_header,
-				     NULL);
-
-	if (caldav_debug_show (DEBUG_MESSAGE_BODY)) {
-
-		/* print response */
-		if (msg->request.length) {
-			char *body;
-
-		        //needed for null terminal and truncation
-			body = g_strndup (msg->request.body,
-					  MIN (msg->request.length,
-					       DEBUG_MAX_BODY_SIZE));
-
-			g_debug ("Request: \n[%s%s]%s", body,
-				 msg->request.length > DEBUG_MAX_BODY_SIZE ?
-				 " ..." : "",
-				  msg->request.length > DEBUG_MAX_BODY_SIZE ?
-				 " (trunkated)" : "");
-
-			g_free (body);
-		}
-	}
-}
-
 
 static ECalBackendSyncClass *parent_class = NULL;
 
@@ -504,42 +415,6 @@ quote_etag (const char *etag)
 }
 
 /* ************************************************************************* */
-static char **
-sm_join_and_split_header (SoupMessage *message, const char *header)
-{
-	const GSList  *list;
-	char          *str;
-	char         **sa;
-	char          *tofree;
-
-	sa   = NULL;
-	list = soup_message_get_header_list (message->response_headers, header);
-
-	if (list == NULL || list->data == NULL) {
-		return NULL;
-	}
-
-	/* Only do string manipulation if really necessary */
-	if (list->next) {
-		GString *stmp;
-		stmp = g_string_new ((gchar *) list->data);
-
-		while ((list = list->next)) {
-			g_string_append_printf (stmp, ",%s", (gchar *) list->data);
-		}
-
-		str = tofree = g_string_free (stmp, FALSE);
-	} else {
-		str = (char *) list->data;
-		tofree = NULL;
-	}
-
-	g_assert (str != NULL);
-	sa = g_strsplit (str, ",", 20);
-	g_free (tofree);
-
-	return sa;
-}
 
 static ECalBackendSyncStatus
 status_code_to_result (guint status_code)
@@ -569,23 +444,6 @@ status_code_to_result (guint status_code)
 	}
 
 	return result;
-}
-
-static gboolean
-match_header (const char *header, const char *string)
-{
-	g_assert (string != NULL);
-
-	if (header == NULL || header[0] == '\0') {
-		return FALSE;
-	}
-
-	/* skip leading whitespaces */
-	while (g_ascii_isspace (header[0])) {
-		header++;
-	}
-
-	return !g_ascii_strncasecmp (header, string, strlen (string));
 }
 
 /* !TS, call with lock held */
@@ -818,8 +676,8 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, int *len)
 	g_return_val_if_fail (objs != NULL || len != NULL, FALSE);
 
 	res = TRUE;
-	doc = xmlReadMemory (soup_message->response.body,
-			     soup_message->response.length,
+	doc = xmlReadMemory (soup_message->response_body->data,
+			     soup_message->response_body->length,
 			     "response.xml",
 			     NULL,
 			     0);
@@ -893,10 +751,8 @@ out:
 static void
 soup_authenticate (SoupSession  *session,
 	           SoupMessage  *msg,
-		   const char   *auth_type,
-		   const char   *auth_realm,
-		   char        **username,
-		   char        **password,
+		   SoupAuth     *auth,
+		   gboolean      retrying,
 		   gpointer      data)
 {
 	ECalBackendCalDAVPrivate *priv;
@@ -905,34 +761,11 @@ soup_authenticate (SoupSession  *session,
 	cbdav = E_CAL_BACKEND_CALDAV (data);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	*username = priv->username;
-	*password = priv->password;
+	soup_auth_authenticate (auth, priv->username, priv->password);
 
 	priv->username = NULL;
 	priv->password = NULL;
 
-}
-
-static void
-soup_reauthenticate (SoupSession  *session,
-		     SoupMessage  *msg,
-		     const char   *auth_type,
-		     const char   *auth_realm,
-		     char        **username,
-		     char        **password,
-		     gpointer      data)
-{
-	ECalBackendCalDAVPrivate *priv;
-	ECalBackendCalDAV        *cbdav;
-
-	cbdav = E_CAL_BACKEND_CALDAV (data);
-	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	*username = priv->username;
-	*password = priv->password;
-
-	priv->username = NULL;
-	priv->password = NULL;
 }
 
 static gint
@@ -950,7 +783,7 @@ static void
 caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
 {
 	GConfClient *conf_client;
-	SoupUri *uri_base;
+	SoupURI *uri_base;
 
  	if (priv->session == NULL)
  		return;
@@ -973,7 +806,7 @@ caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
 			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
 
 			if (server && server[0]) {
-				SoupUri *suri;
+				SoupURI *suri;
 				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
 					char *user, *password;
 					user = gconf_client_get_string (conf_client,
@@ -1026,8 +859,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	SoupMessage               *message;
-	char                     **sa;
-	char                     **siter;
+	const char                *header;
 	gboolean                   calendar_access;
 	gboolean                   put_allowed;
 	gboolean                   delete_allowed;
@@ -1037,10 +869,9 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	/* FIXME: setup text_uri */
 
 	message = soup_message_new (SOUP_METHOD_OPTIONS, priv->uri);
-	soup_message_add_header (message->request_headers,
-				 "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
 
-	message_setup_debug (message);
 	soup_session_send_message (priv->session, message);
 
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
@@ -1051,38 +882,20 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 
 	/* parse the dav header, we are intreseted in the
 	 * calendar-access bit only at the moment */
-	sa = sm_join_and_split_header (message, "DAV");
-
-	calendar_access = FALSE;
-	for (siter = sa; siter && *siter; siter++) {
-
-		if (match_header (*siter, "calendar-access")) {
-			calendar_access = TRUE;
-			break;
-		}
-	}
-
-	g_strfreev (sa);
-
-
-	sa = sm_join_and_split_header (message, "Allow");
+	header = soup_message_headers_get (message->response_headers, "DAV");
+	if (header)
+		calendar_access = soup_header_contains (header, "calendar-access");
+	else
+		calendar_access = FALSE;
 
 	/* parse the Allow header and look for PUT, DELETE at the
 	 * moment (maybe we should check more here, for REPORT eg) */
-	put_allowed = delete_allowed = FALSE;
-	for (siter = sa; siter && *siter; siter++) {
-		if (match_header (*siter, "DELETE")) {
-			delete_allowed = TRUE;
-		} else if (match_header (*siter, "PUT")) {
-			put_allowed = TRUE;
-		}
-
-		if (put_allowed && delete_allowed) {
-			break;
-		}
-	}
-
-	g_strfreev (sa);
+	header = soup_message_headers_get (message->response_headers, "Allow");
+	if (header) {
+		put_allowed = soup_header_contains (header, "PUT");
+		delete_allowed = soup_header_contains (header, "DELETE");
+	} else
+		put_allowed = delete_allowed = FALSE;
 
 	g_object_unref (message);
 
@@ -1140,18 +953,16 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 
 	/* Prepare the soup message */
 	message = soup_message_new ("REPORT", priv->uri);
-	soup_message_add_header (message->request_headers,
-				 "User-Agent", "Evolution/" VERSION);
-	soup_message_add_header (message->request_headers,
-				 "Depth", "1");
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers,
+				     "Depth", "1");
 
 	soup_message_set_request (message,
 				  "application/xml",
-				  SOUP_BUFFER_USER_OWNED,
+				  SOUP_MEMORY_COPY,
 				  (char *) buf->buffer->content,
 				  buf->buffer->use);
-
-	message_setup_debug (message);
 
 	/* Send the request now */
 	soup_session_send_message (priv->session, message);
@@ -1192,10 +1003,8 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	message = soup_message_new (SOUP_METHOD_GET, uri);
 	g_free (uri);
 
-	soup_message_add_header (message->request_headers,
-				 "User-Agent", "Evolution/" VERSION);
-
-	message_setup_debug (message);
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
 
 	soup_session_send_message (priv->session, message);
 
@@ -1206,7 +1015,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 		return result;
 	}
 
-	hdr = soup_message_get_header (message->response_headers, "Content-Type");
+	hdr = soup_message_headers_get (message->response_headers, "Content-Type");
 
 	if (hdr == NULL || g_ascii_strcasecmp (hdr, "text/calendar")) {
 		result = GNOME_Evolution_Calendar_InvalidObject;
@@ -1215,7 +1024,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 		return result;
 	}
 
-	hdr = soup_message_get_header (message->response_headers, "ETag");
+	hdr = soup_message_headers_get (message->response_headers, "ETag");
 
 	if (hdr == NULL) {
 		g_warning ("UUHH no ETag, now that's bad!");
@@ -1224,9 +1033,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 		object->etag = quote_etag (hdr);
 	}
 
-	/* Need to NULL terminate the string, do we? */
-	object->cdata = g_malloc0 (message->response.length + 1);
-	memcpy (object->cdata, message->response.body, message->response.length);
+	object->cdata = g_strdup (message->response_body->data);
 	g_object_unref (message);
 
 	return result;
@@ -1251,29 +1058,27 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	message = soup_message_new (SOUP_METHOD_PUT, uri);
 	g_free (uri);
 
-	soup_message_add_header (message->request_headers,
-				 "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
 
 	/* For new items we use the If-None-Match so we don't
 	 * acidently override resources, for item updates we
 	 * use the If-Match header to avoid the Lost-update
 	 * problem */
 	if (object->etag == NULL) {
-		soup_message_add_header (message->request_headers,
-				         "If-None-Match", "*");
+		soup_message_headers_append (message->request_headers,
+					     "If-None-Match", "*");
 	} else {
-		soup_message_add_header (message->request_headers,
-				         "If-Match", object->etag);
+		soup_message_headers_append (message->request_headers,
+					     "If-Match", object->etag);
 	}
 
 	soup_message_set_request (message,
 			          "text/calendar",
-				  SOUP_BUFFER_USER_OWNED,
+				  SOUP_MEMORY_COPY,
 				  object->cdata,
 				  strlen (object->cdata));
 
-
-	message_setup_debug (message);
 
 	soup_session_send_message (priv->session, message);
 
@@ -1281,8 +1086,8 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	result = status_code_to_result (message->status_code);
 
 	if (result == GNOME_Evolution_Calendar_Success) {
-		hdr = soup_message_get_header (message->response_headers,
-					       "ETag");
+		hdr = soup_message_headers_get (message->response_headers,
+						"ETag");
 	}
 
 	if (hdr != NULL) {
@@ -1314,15 +1119,13 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	message = soup_message_new (SOUP_METHOD_DELETE, uri);
 	g_free (uri);
 
-	soup_message_add_header (message->request_headers,
-				 "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
 
 	if (object->etag != NULL) {
-		soup_message_add_header (message->request_headers,
-					"If-Match", object->etag);
+		soup_message_headers_append (message->request_headers,
+					     "If-Match", object->etag);
 	}
-
-	message_setup_debug (message);
 
 	soup_session_send_message (priv->session, message);
 
@@ -2781,6 +2584,9 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	priv->session = soup_session_sync_new ();
 
+	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
+		caldav_debug_setup (priv->session);
+
 	priv->disposed = FALSE;
 	priv->do_synch = FALSE;
 	priv->loaded   = FALSE;
@@ -2795,8 +2601,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	g_signal_connect (priv->session, "authenticate",
 			  G_CALLBACK (soup_authenticate), cbdav);
-	g_signal_connect (priv->session, "reauthenticate",
-			  G_CALLBACK (soup_reauthenticate), cbdav);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbdav), FALSE);
 }
