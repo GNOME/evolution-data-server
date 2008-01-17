@@ -21,6 +21,7 @@ m4_define([gconf_minimum_version], [2.0.0])             # XXX Just a Guess
 m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
+m4_define([libsoup_minimum_version], [2.3.0])
 
 dnl *************************************************************************************************
 dnl Base Version
@@ -213,7 +214,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
          gconf-2.0 >= gconf_minimum_version
          libglade-2.0 >= libglade_minimum_version
          libgnome-2.0 >= libgnome_minimum_version
-         libxml-2.0 >= libxml_minimum_version])
+         libxml-2.0 >= libxml_minimum_version
+         libsoup-2.4 >= libsoup_minimum_version])
 
 dnl **************************************************
 dnl * regex checking
@@ -1349,7 +1351,7 @@ case $CFLAGS in
 *-Wall*)
 	# Turn off the annoying "comparison between signed and unsigned"
 	# warning in gcc 3.3
-	CFLAGS="$CFLAGS -Wno-sign-compare"
+	CFLAGS="$CFLAGS -Wno-sign-compare -Wno-pointer-sign"
 	;;
 esac
 
@@ -1421,17 +1423,10 @@ AC_SUBST(E_FACTORY_CFLAGS)
 AC_SUBST(E_FACTORY_LIBS)
 
 dnl --- Groupwise flags
-PKG_CHECK_EXISTS(libsoup-2.4, have_libsoup_24=yes, have_libsoup_24=no)
-if test $have_libsoup_24 = yes; then
-    LIBSOUP_REQUIRED=2.3.0
-    LIBSOUP=libsoup-2.4
-else
-    LIBSOUP_REQUIRED=2.2.91
-    LIBSOUP=libsoup-2.2
-fi
+LIBSOUP_REQUIRED=libsoup_minimum_version
 AC_SUBST(LIBSOUP_REQUIRED)
-AC_SUBST(LIBSOUP)
-EVO_SET_COMPILE_FLAGS(SOUP, $LIBSOUP >= $LIBSOUP_REQUIRED)
+
+EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
