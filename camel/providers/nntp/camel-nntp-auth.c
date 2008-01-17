@@ -43,11 +43,12 @@ camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex)
 	if (!service->url->authmech && !service->url->passwd) {
 		gchar *prompt;
 
-		prompt = g_strdup_printf (_("Please enter the NNTP password for %s@%s"),
-					  service->url->user, service->url->host);
-		service->url->passwd =
-			camel_session_get_password (session, prompt,
-						    TRUE, service, "password", ex);
+		prompt = camel_session_build_password_prompt (
+			"NNTP", service->url->user, service->url->host);
+
+		service->url->passwd = camel_session_get_password (
+			session, prompt, TRUE, service, "password", ex);
+
 		g_free (prompt);
 
 		if (!service->url->passwd) {

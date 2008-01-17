@@ -194,10 +194,8 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 		if (!service->url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
 			char *prompt;
 
-			prompt = g_strdup_printf (_("Please enter the GroupWise "
-						    "password for %s@%s"),
-						  service->url->user,
-						  service->url->host);
+			prompt = camel_session_build_password_prompt (
+				"GroupWise", service->url->user, service->url->host);
 			service->url->passwd =
 				camel_session_get_password (session, service, "Groupwise",
 							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);

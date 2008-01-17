@@ -357,19 +357,28 @@ static void
 store_get_pass(CamelIMAPPStore *store)
 {
 	if (((CamelService *)store)->url->passwd == NULL) {
-		char *prompt;
+		char *base_prompt;
+		char *full_prompt;
 		CamelException ex;
 
 		camel_exception_init(&ex);
 
-		prompt = g_strdup_printf (_("%sPlease enter the IMAP password for %s@%s"),
-					  store->login_error?store->login_error:"",
-					  ((CamelService *)store)->url->user,
-					  ((CamelService *)store)->url->host);
-		((CamelService *)store)->url->passwd = camel_session_get_password(camel_service_get_session((CamelService *)store),
-										  (CamelService *)store, NULL,
-										  prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, &ex);
-		g_free (prompt);
+		base_prompt = camel_session_build_password_prompt (
+			"IMAP", ((CamelService *) store)->url->user,
+			((CamelService *) store)->url->host);
+
+		if (store->login_error != NULL)
+			full_prompt = g_strconcat (store->login_error, base_prompt, NULL);
+		else
+			full_prompt = g_strdup (base_prompt);
+
+		((CamelService *)store)->url->passwd = camel_session_get_password (
+			camel_service_get_session ((CamelService *) store),
+			(CamelService *) store, NULL, full_prompt, "password",
+			CAMEL_SESSION_PASSWORD_SECRET, &ex);
+
+		g_free (base_prompt);
+		g_free (full_prompt);
 		if (camel_exception_is_set(&ex))
 			camel_exception_throw_ex(&ex);
 	}

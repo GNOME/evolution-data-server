@@ -1368,18 +1368,23 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 		}
 
 		if (!service->url->passwd) {
-			char *prompt;
+			char *base_prompt;
+			char *full_prompt;
 
-			prompt = g_strdup_printf (_("%sPlease enter the IMAP "
-				"password for %s@%s"),
-				errbuf ? errbuf : "",
-				service->url->user,
-				service->url->host);
+			base_prompt = camel_session_build_password_prompt (
+				"IMAP", service->url->user, service->url->host);
 
-			service->url->passwd =
-				camel_session_get_password (session, service, auth_domain,
-					prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
-			g_free (prompt);
+			if (errbuf != NULL)
+				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
+			else
+				full_prompt = g_strdup (base_prompt);
+
+			service->url->passwd = camel_session_get_password (
+				session, service, auth_domain, full_prompt,
+				"password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+
+			g_free (base_prompt);
+			g_free (full_prompt);
 			g_free (errbuf);
 			errbuf = NULL;
 

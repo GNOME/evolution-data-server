@@ -155,6 +155,11 @@ gboolean           camel_session_alert_user         (CamelSession *session,
 						     const char *prompt,
 						     gboolean cancel);
 
+char *		   camel_session_build_password_prompt
+						    (const char *type,
+						     const char *user,
+						     const char *host);
+
 gboolean           camel_session_is_online          (CamelSession *session);
 void               camel_session_set_online         (CamelSession *session,
 						     gboolean online);

@@ -1,3 +1,8 @@
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/camel/camel-sections.txt:
+	Add camel_session_build_password_prompt.
+
 2008-01-15  Dan Winship  <danw@gnome.org>
 
 	* configure.in: Require libsoup-2.4. (Remove old "either 2.2 or

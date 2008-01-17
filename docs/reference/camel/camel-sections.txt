@@ -1531,6 +1531,7 @@ camel_session_get_storage_path
 camel_session_get_password
 camel_session_forget_password
 camel_session_alert_user
+camel_session_build_password_prompt
 camel_session_is_online
 camel_session_set_online
 camel_session_get_filter_driver

@@ -453,19 +453,26 @@ imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const char 
 
 	if ((!mech || (mech && mech->need_password)) && !service->url->passwd) {
 		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
-		char *prompt;
+		char *base_prompt;
+		char *full_prompt;
 
 		if (reprompt)
 			flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 
-		prompt = g_strdup_printf (_("%sPlease enter the IMAP password for %s on host %s"),
-					  errmsg ? errmsg : "",
-					  service->url->user,
-					  service->url->host);
+		base_prompt = camel_session_build_password_prompt (
+			"IMAP", service->url->user, service->url->host);
 
-		service->url->passwd = camel_session_get_password (session, service, NULL, prompt, "password", flags, ex);
+		if (errmsg != NULL)
+			full_prompt = g_strconcat (errmsg, base_prompt, NULL);
+		else
+			full_prompt = g_strdup (full_prompt);
 
-		g_free (prompt);
+		service->url->passwd = camel_session_get_password (
+			session, service, NULL, full_prompt,
+			"password", flags, ex);
+
+		g_free (base_prompt);
+		g_free (full_prompt);
 
 		if (!service->url->passwd)
 			return FALSE;

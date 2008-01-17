@@ -428,6 +428,49 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
 	return CS_CLASS (session)->alert_user (session, type, prompt, cancel);
 }
 
+/**
+ * camel_session_build_password_prompt:
+ * @type: account type (e.g. "IMAP")
+ * @user: user name for the account
+ * @host: host name for the account
+ *
+ * Constructs a localized password prompt from @type, @user and @host,
+ * suitable for passing to camel_session_get_password().  The resulting
+ * string contains markup tags.  Use g_free() to free it.
+ *
+ * Returns: a newly-allocated password prompt string
+ **/
+char *
+camel_session_build_password_prompt (const char *type,
+                                     const char *user,
+                                     const char *host)
+{
+	char *user_markup;
+	char *host_markup;
+	char *prompt;
+
+	g_return_val_if_fail (type != NULL, NULL);
+	g_return_val_if_fail (user != NULL, NULL);
+	g_return_val_if_fail (host != NULL, NULL);
+
+	/* Add bold tags to the "user" and "host" strings.  We use
+	 * separate strings here to avoid putting markup tags in the
+	 * translatable string below. */
+	user_markup = g_strdup_printf ("<b>%s</b>", user);
+	host_markup = g_strdup_printf ("<b>%s</b>", host);
+
+	/* Translators: The first argument is the account type
+	 * (e.g. "IMAP"), the second is the user name, and the
+	 * third is the host name. */
+	prompt = g_strdup_printf (
+		_("Please enter the %s password for %s on host %s."),
+		type, user_markup, host_markup);
+
+	g_free (user_markup);
+	g_free (host_markup);
+
+	return prompt;
+}
 
 /**
  * camel_session_is_online:
