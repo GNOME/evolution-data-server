@@ -66,7 +66,6 @@ enum {
 };
 
 static const gchar *GOOGLE_CLIENT_LOGIN = "https://www.google.com/accounts/ClientLogin";
-static const gchar *GOOGLE_CLIENT_LOGIN_MSG = "Email=%s&Passwd=%s&service=%s&source=%s&accountType=HOSTED_OR_GOOGLE";
 
 void
 gdata_google_service_set_credentials (GDataService *service, const gchar *username, const gchar *password)
@@ -105,8 +104,8 @@ service_authenticate (GDataGoogleService *service)
 	GDataGoogleServicePrivate *priv;
 	GDataGoogleServiceAuth *auth;
 	SoupMessage *msg;
+	GHashTable *request_form;
 	gchar *request_body;
-	gchar *request_body_encoded;
 	gchar *token = NULL;
 	gchar *auth_begin = NULL;
 	gchar *auth_end = NULL;
@@ -114,24 +113,25 @@ service_authenticate (GDataGoogleService *service)
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(service);
 	auth = (GDataGoogleServiceAuth *)priv->auth;
 
+	request_form = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (request_form, "Email", auth->username);
+	g_hash_table_insert (request_form, "Passwd", auth->password);
+	g_hash_table_insert (request_form, "service", priv->name);
+	g_hash_table_insert (request_form, "source", priv->agent);
+	g_hash_table_insert (request_form, "accountType", "HOSTED_OR_GOOGLE");
+	request_body = soup_form_encode_urlencoded (request_form);
+	g_hash_table_destroy (request_form);
+
 	msg = soup_message_new(SOUP_METHOD_POST, GOOGLE_CLIENT_LOGIN);
-	request_body = g_strdup_printf(GOOGLE_CLIENT_LOGIN_MSG, auth->username,
-			               auth->password,
-				       priv->name,
-				       priv->agent);
-
-	request_body_encoded = soup_uri_encode(request_body,NULL);
 	soup_message_set_http_version(msg, SOUP_HTTP_1_0);
-
 	soup_message_set_request (msg, "application/x-www-form-urlencoded",
-				  SOUP_BUFFER_USER_OWNED,
-				  request_body_encoded,
-				  strlen(request_body_encoded));
+				  SOUP_MEMORY_TAKE,
+				  request_body, strlen(request_body));
 
 	soup_session_send_message(priv->soup_session, msg);
 
-	if (msg->response.length) {
-		auth_begin = strstr(msg->response.body, "Auth=");
+	if (msg->response_body->length) {
+		auth_begin = strstr(msg->response_body->data, "Auth=");
 
 		if (!auth_begin)
 			return "FAILURE";
@@ -148,11 +148,7 @@ service_authenticate (GDataGoogleService *service)
 	if (!token)
 		return "FAILURE";
 
-	g_free(request_body);
-	g_free(request_body_encoded);
-
-	if(SOUP_IS_MESSAGE(msg))
-		g_object_unref(msg);
+	g_object_unref(msg);
 
 	return "SUCCESS";
 }
@@ -194,16 +190,16 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url)
 	msg = NULL;
 	msg = soup_message_new(SOUP_METHOD_GET, feed_url);
 
-	soup_message_add_header(msg->request_headers,
+	soup_message_headers_append(msg->request_headers,
 			"Authorization", (gchar *)g_strdup_printf("GoogleLogin auth=%s", auth->token));
 
 	soup_session_send_message(soup_session, msg);
-	if (msg->response.length) {
-		feed = gdata_feed_new_from_xml(msg->response.body, msg->response.length);
+	if (msg->response_body->length) {
+		feed = gdata_feed_new_from_xml(msg->response_body->data,
+					       msg->response_body->length);
 	}
 
-	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref(msg);
+	g_object_unref(msg);
 
 	return feed;
 }
@@ -247,35 +243,31 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 	msg = soup_message_new(SOUP_METHOD_POST, feed_url);
 	soup_message_set_http_version (msg, SOUP_HTTP_1_0);
 
-	soup_message_add_header(msg->request_headers,
-				"Authorization",
-				(gchar *)g_strdup_printf("GoogleLogin auth=%s",
-				auth->token));
+	soup_message_headers_append(msg->request_headers,
+				    "Authorization",
+				    (gchar *)g_strdup_printf("GoogleLogin auth=%s",
+				    auth->token));
 
 	soup_message_set_request (msg,
 				"application/atom+xml",
-				SOUP_BUFFER_USER_OWNED,
+				SOUP_MEMORY_TAKE,
 				entry_xml,
 				strlen(entry_xml));
 
 	soup_session_send_message(soup_session, msg);
 
-	if (!msg->response.length) {
+	if (!msg->response_body->length) {
 		g_message ("\n %s, %s, Response Length NULL when inserting entry", G_STRLOC, G_STRFUNC);
 		return NULL;
 	}
 
-	updated_entry = gdata_entry_new_from_xml (msg->response.body);
+	updated_entry = gdata_entry_new_from_xml (msg->response_body->data);
 	if (!GDATA_IS_ENTRY(entry)) {
 		g_critical ("\n %s, %s, Error During Insert Entry ", G_STRLOC, G_STRFUNC);
 		return NULL;
 	}
 
-	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref (msg);
-
-	if (entry_xml)
-		g_free (entry_xml);
+	g_object_unref (msg);
 
 	return updated_entry;
 }
@@ -315,14 +307,13 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry)
 	soup_session = 	(SoupSession *)priv->soup_session;
 
 	msg = soup_message_new (SOUP_METHOD_DELETE, entry_edit_url);
-	soup_message_add_header (msg->request_headers,
-				"Authorization",
-				(gchar *)g_strdup_printf ("GoogleLogin auth=%s",
-				auth->token));
+	soup_message_headers_append (msg->request_headers,
+				     "Authorization",
+				     (gchar *)g_strdup_printf ("GoogleLogin auth=%s",
+				     auth->token));
 	soup_session_send_message (soup_session, msg);
 
-	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref (msg);
+	g_object_unref (msg);
 }
 
 /**
@@ -367,22 +358,19 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry)
 		return;
 	}
 
-	soup_message_add_header (msg->request_headers,
-				"Authorization",
-				(gchar *)g_strdup_printf ("GoogleLogin auth=%s",
-				auth->token));
+	soup_message_headers_append (msg->request_headers,
+				     "Authorization",
+				     (gchar *)g_strdup_printf ("GoogleLogin auth=%s",
+				     auth->token));
 	soup_message_set_request (msg,
 			"application/atom+xml",
-			SOUP_BUFFER_USER_OWNED,
+			SOUP_MEMORY_TAKE,
 			entry_xml,
 			strlen(entry_xml));
 
 	soup_session_send_message (soup_session, msg);
 
-	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref (msg);
-	if (entry_xml)
-		g_free (entry_xml);
+	g_object_unref (msg);
 }
 
 
@@ -426,23 +414,20 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 		return;
 	}
 
-	soup_message_add_header (msg->request_headers,
-				"Authorization",
-				(gchar *)g_strdup_printf ("GoogleLogin auth=%s",
-				auth->token));
+	soup_message_headers_append (msg->request_headers,
+				     "Authorization",
+				     (gchar *)g_strdup_printf ("GoogleLogin auth=%s",
+				     auth->token));
 
 	soup_message_set_request (msg,
 				"application/atom+xml",
-				SOUP_BUFFER_USER_OWNED,
+				SOUP_MEMORY_TAKE,
 				entry_xml,
 				strlen(entry_xml));
 
 	soup_session_send_message (soup_session, msg);
 
-	if (SOUP_IS_MESSAGE(msg))
-		g_object_unref (msg);
-	if (entry_xml)
-		g_free (entry_xml);
+	g_object_unref (msg);
 }
 
 static void gdata_google_service_iface_init(gpointer  g_iface, gpointer iface_data)

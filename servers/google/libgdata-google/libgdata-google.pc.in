@@ -13,6 +13,6 @@ privincludedir=@privincludedir@
 Name: libgdata-google
 Description: Client library for accessing google POA through SOAP interface
 Version: @VERSION@
-Requires: @LIBSOUP@ >= @LIBSOUP_REQUIRED@ 
+Requires: libsoup-2.4 >= @LIBSOUP_REQUIRED@ 
 Libs: -L${libdir} -lgdata-google-1.2
 Cflags: -I${privincludedir}/gdata-google

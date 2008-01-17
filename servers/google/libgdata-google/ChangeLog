@@ -1,3 +1,8 @@
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* gdata-google-service.c: Update for libsoup 2.4
+	(service_authenticate): Use soup-forms methods.
+
 2008-01-05  Nyall Dawson  <nyall@zombiepigs.net>
 
 	** Fix for bug #504783
