@@ -456,8 +456,8 @@ camel_session_build_password_prompt (const char *type,
 	/* Add bold tags to the "user" and "host" strings.  We use
 	 * separate strings here to avoid putting markup tags in the
 	 * translatable string below. */
-	user_markup = g_strdup_printf ("<b>%s</b>", user);
-	host_markup = g_strdup_printf ("<b>%s</b>", host);
+	user_markup = g_markup_printf_escaped ("<b>%s</b>", user);
+	host_markup = g_markup_printf_escaped ("<b>%s</b>", host);
 
 	/* Translators: The first argument is the account type
 	 * (e.g. "IMAP"), the second is the user name, and the

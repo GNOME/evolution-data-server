@@ -1,5 +1,10 @@
 2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
 
+	* camel-session.c (camel_session_build_password_prompt):
+	Forgot to escape the user and host name strings.  (#506250)
+
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
+
 	** Fixes part of bug #506250
 
 	* camel-session.c (camel_session_build_password_prompt):
