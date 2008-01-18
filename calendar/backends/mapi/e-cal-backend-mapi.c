@@ -27,6 +27,8 @@
 
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 
+#define d(x)
+
 static ECalBackendClass *parent_class = NULL;
 
 /* Private part of the CalBackendMAPI structure */
@@ -63,6 +65,8 @@ struct _ECalBackendMAPIPrivate {
 
 #define CACHE_REFRESH_INTERVAL 600000
 
+static gboolean authenticated = FALSE;
+static GStaticMutex auth_mutex = G_STATIC_MUTEX_INIT;
 
 static ECalBackendSyncStatus
 e_cal_backend_mapi_authenticate (ECalBackend *backend)
@@ -73,14 +77,18 @@ e_cal_backend_mapi_authenticate (ECalBackend *backend)
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
 
-	if (exchange_mapi_connection_exists () || exchange_mapi_connection_new (priv->user_email, NULL))
+	g_static_mutex_lock (&auth_mutex);
+	if (authenticated || exchange_mapi_connection_exists () || exchange_mapi_connection_new (priv->user_email, NULL)) {
+		authenticated = TRUE;
+		g_static_mutex_unlock (&auth_mutex);
 		return GNOME_Evolution_Calendar_Success;
-	else { 
+	} else { 
+		authenticated = FALSE;
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Authentication failed"));
+		g_static_mutex_unlock (&auth_mutex);
 		return GNOME_Evolution_Calendar_AuthenticationFailed;
 	}
 }
-
 
 /***** OBJECT CLASS FUNCTIONS *****/
 static void 
@@ -258,24 +266,18 @@ e_cal_backend_mapi_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendMAPI *cbmapi;
 	ECalBackendMAPIPrivate *priv;
-	gboolean authenticated = FALSE, status = FALSE;
+	gboolean status = FALSE;
 
 	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
 
 	if (priv->mode == CAL_MODE_LOCAL)
 		return GNOME_Evolution_Calendar_RepositoryOffline;
-#if 0
-	if (exchange_mapi_connection_exists ())
-		authenticated = TRUE;
-	else if (exchange_mapi_connection_new (priv->user_email, NULL)) 
-		authenticated = TRUE;
-	else { 
-		authenticated = FALSE;
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Authentication failed"));
-		return GNOME_Evolution_Calendar_AuthenticationFailed;
-	}
-#endif
+
+	/* FIXME: check for return status and respond */
+	if (!authenticated)
+		e_cal_backend_mapi_authenticate (E_CAL_BACKEND (cbmapi));
+
 	status = exchange_mapi_remove_folder (priv->olFolder, priv->fid);
 	if (!status)
 		return GNOME_Evolution_Calendar_OtherError;
@@ -369,7 +371,7 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 
 			cache_comp = e_cal_backend_cache_get_component (priv->cache, (const char *) cache_comp_uid->data, NULL);
 			e_cal_component_get_last_modified (cache_comp, &cache_comp_lm);
-			if (icaltime_compare (itt, *cache_comp_lm) != 0) {
+			if (!cache_comp_lm || icaltime_compare (itt, *cache_comp_lm) != 0) {
 				ECalComponent *comp;
 				char *old_comp_str = NULL, *new_comp_str = NULL;
 
@@ -390,6 +392,7 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 				g_free (new_comp_str);
 			}
 			g_object_unref (cache_comp);
+			g_free (cache_comp_lm);
 		}
 		priv->cache_keys = g_slist_remove_link (priv->cache_keys, cache_comp_uid);
 	}
@@ -974,22 +977,15 @@ e_cal_backend_mapi_connect (ECalBackendMAPI *cbmapi)
 	ECalSourceType source_type;
 	GThread *thread;
 	GError *error = NULL;
-	gboolean authenticated = TRUE;
 
 	priv = cbmapi->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbmapi));
-#if 0
-	if (exchange_mapi_connection_exists ())
-		authenticated = TRUE;
-	else if (exchange_mapi_connection_new (priv->user_email, NULL)) 
-		authenticated = TRUE;
-	else { 
-		authenticated = FALSE;
-		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Authentication failed"));
-		return GNOME_Evolution_Calendar_AuthenticationFailed;
-	}
-#endif
+
+	/* FIXME: check status and respond */
+	if (!authenticated)
+		e_cal_backend_mapi_authenticate (E_CAL_BACKEND (cbmapi));
+
 	/* We have established a connection */
 	if (authenticated && priv->cache && priv->fid) {
 		priv->mode = CAL_MODE_REMOTE;
@@ -1051,15 +1047,6 @@ e_cal_backend_mapi_connect (ECalBackendMAPI *cbmapi)
 	return GNOME_Evolution_Calendar_Success;
 }
 
-static GMutex *auth_mutex = NULL;
-static void 
-create_auth_mutex ()
-{
-	if (auth_mutex != NULL)
-		return;
-	auth_mutex = g_mutex_new ();
-}
-
 static ECalBackendSyncStatus 
 e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password)
 {
@@ -1068,7 +1055,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
 	ESource *esource;
-	const char *source = NULL;
+	const char *source = NULL, *fid = NULL;
 	char *filename;
 	char *mangled_uri;
 	int i;
@@ -1078,7 +1065,8 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	priv = cbmapi->priv;
 
 	esource = e_cal_backend_get_source (E_CAL_BACKEND (cbmapi));
-	if (!e_source_get_property (esource, "folder-id"))
+	fid = e_source_get_property (esource, "folder-id");
+	if (!(fid && *fid))
 		return GNOME_Evolution_Calendar_OtherError;
 
 	g_mutex_lock (priv->mutex);
@@ -1136,7 +1124,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 	priv->user_email = g_strdup (e_source_get_property (esource, "profile"));
-	exchange_mapi_util_mapi_id_from_string (e_source_get_property (esource, "folder-id"), &priv->fid);
+	exchange_mapi_util_mapi_id_from_string (fid, &priv->fid);
 	priv->olFolder = olFolder;
 
 	/* Set the local attachment store*/
@@ -1153,6 +1141,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/cache/", source,
 				     mangled_uri,
+				     G_DIR_SEPARATOR_S, 
 				     NULL);
 
 	g_free (mangled_uri);
@@ -1160,7 +1149,7 @@ e_cal_backend_mapi_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		g_filename_to_uri (filename, NULL, NULL);
 	g_free (filename);
 
-	status = e_cal_backend_mapi_authenticate (backend);
+	status = e_cal_backend_mapi_authenticate (E_CAL_BACKEND (cbmapi));
 	g_mutex_unlock (priv->mutex);
 
 	if (status == GNOME_Evolution_Calendar_Success)
@@ -1752,7 +1741,7 @@ e_cal_backend_mapi_init (ECalBackendMAPI *cbmapi, ECalBackendMAPIClass *class)
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbmapi), TRUE);
 
 	e_cal_backend_mapi_tz_util_populate ();
-//	e_cal_backend_mapi_tz_util_dump ();
+	d(e_cal_backend_mapi_tz_util_dump ());
 }
 
 GType
@@ -1781,12 +1770,10 @@ e_cal_backend_mapi_get_type (void)
 
 /***** UTILITY FUNCTIONS *****/
 const char *	
-e_cal_backend_mapi_get_local_attachments_store (ECalBackend *backend)
+e_cal_backend_mapi_get_local_attachments_store (ECalBackendMAPI *cbmapi)
 {
-	ECalBackendMAPI *cbmapi;
 	ECalBackendMAPIPrivate *priv;
 
-	cbmapi = E_CAL_BACKEND_MAPI (backend);
 	priv = cbmapi->priv;
 
 	return priv->local_attachments_store;

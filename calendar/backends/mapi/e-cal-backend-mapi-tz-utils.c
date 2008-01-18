@@ -23,6 +23,8 @@
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-tz-utils.h"
 
+#define d(x) 
+
 #define MAPPING_SEPARATOR "~~~"
 
 static GStaticRecMutex mutex = G_STATIC_REC_MUTEX_INIT;
@@ -43,6 +45,8 @@ e_cal_backend_mapi_tz_util_get_mapi_equivalent (const gchar *ical_tzid)
 		g_static_rec_mutex_unlock(&mutex);
 		return NULL;
 	}
+
+	d(g_message("%s(%d): %s of '%s' ", __FILE__, __LINE__, __PRETTY_FUNCTION__, ical_tzid));
 
 	if (lru_ical_id && !g_ascii_strcasecmp (ical_tzid, lru_ical_id)) {
 		g_static_rec_mutex_unlock(&mutex);
@@ -68,6 +72,8 @@ e_cal_backend_mapi_tz_util_get_ical_equivalent (const gchar *mapi_tzid)
 		g_static_rec_mutex_unlock(&mutex);
 		return NULL;
 	}
+
+	d(g_message("%s(%d): %s of '%s' ", __FILE__, __LINE__, __PRETTY_FUNCTION__, mapi_tzid));
 
 	if (lru_mapi_id && !g_ascii_strcasecmp (mapi_tzid, lru_mapi_id)) {
 		g_static_rec_mutex_unlock(&mutex);
@@ -146,7 +152,7 @@ e_cal_backend_mapi_tz_util_populate ()
 	g_free (itom_fn);
 
 	if (!(mtoi_mf && itom_mf)) {
-		g_warning ("Could not map Exchange MAPI timezone files\n");
+		g_warning ("Could not map Exchange MAPI timezone files.");
 
 		if (mtoi_mf)
 			g_mapped_file_free (mtoi_mf);
@@ -172,7 +178,7 @@ e_cal_backend_mapi_tz_util_populate ()
 	file_contents_to_hashtable (g_mapped_file_get_contents (itom_mf), ical_to_mapi);
 
 	if (!(g_hash_table_size (mapi_to_ical) && g_hash_table_size (ical_to_mapi))) {
-		g_warning ("Exchange MAPI timezone files are not valid\n");
+		g_warning ("Exchange MAPI timezone files are not valid.");
 
 		e_cal_backend_mapi_tz_util_destroy ();
 
@@ -200,7 +206,7 @@ e_cal_backend_mapi_tz_util_dump_ical_tzs ()
 	/* Get the array of builtin timezones. */
 	zones = icaltimezone_get_builtin_timezones ();
 
-	g_print("\n%s(%d): %s: \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+	g_message("%s(%d): %s: ", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 	for (i = 0; i < zones->num_elements; i++) {
 		icaltimezone *zone;
 		char *tzid = NULL;
@@ -240,25 +246,31 @@ e_cal_backend_mapi_tz_util_dump ()
 		return;
 	}
 
-	g_print("\n%s(%d): %s: \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+	g_message("%s(%d): %s: ", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 
-	g_print ("\nDumping #table mapi_to_ical\n");
+	g_message ("Dumping #table mapi_to_ical");
 	keys = g_hash_table_get_keys (mapi_to_ical);
 	values = g_hash_table_get_values (mapi_to_ical);
 	l = g_list_first (keys);
 	m = g_list_first (values);
 	for (i=0; l && m; ++i, l=l->next, m=m->next)
-		g_print ("[%3d]\t%s\t~~~\t%s\n", (i+1), (gchar *)(l->data), (gchar *)(m->data));
+		g_print ("[%3d]\t%s\t%s\t%s\n", (i+1), (gchar *)(l->data), MAPPING_SEPARATOR, (gchar *)(m->data));
+	g_message ("Dumping differences in #tables");
+	l = g_list_first (keys);
+	m = g_list_first (values);
+	for (i=0; l && m; ++i, l=l->next, m=m->next)
+		if (g_ascii_strcasecmp ((gchar *)(l->data), (gchar *) g_hash_table_lookup (ical_to_mapi, (m->data))))
+			g_print ("[%3d] Possible mis-match for %s\n", (i+1), (gchar *)(l->data));
 	g_list_free (keys);
 	g_list_free (values);
 
-	g_print ("\nDumping #table ical_to_mapi\n");
+	g_message ("Dumping #table ical_to_mapi");
 	keys = g_hash_table_get_keys (ical_to_mapi);
 	values = g_hash_table_get_values (ical_to_mapi);
 	l = g_list_first (keys);
 	m = g_list_first (values);
 	for (i=0; l && m; ++i, l=l->next, m=m->next)
-		g_print ("[%3d]\t%s\t~~~\t%s\n", (i+1), (gchar *)(l->data), (gchar *)(m->data));
+		g_print ("[%3d]\t%s\t%s\t%s\n", (i+1), (gchar *)(l->data), MAPPING_SEPARATOR, (gchar *)(m->data));
 	g_list_free (keys);
 	g_list_free (values);
 
@@ -268,12 +280,6 @@ e_cal_backend_mapi_tz_util_dump ()
 #if 0
 const WORD TZRULE_FLAG_RECUR_CURRENT_TZREG  = 0x0001; // see dispidApptTZDefRecur
 const WORD TZRULE_FLAG_EFFECTIVE_TZREG      = 0x0002;
-
-#define TZDEFINITION_FLAG_VALID_GUID     0x0001 // the guid is valid
-#define TZDEFINITION_FLAG_VALID_KEYNAME  0x0002 // the keyname is valid
-#define TZ_MAX_RULES          1024 
-#define TZ_BIN_VERSION_MAJOR  0x02 
-#define TZ_BIN_VERSION_MINOR  0x01 
 
 // Allocates return value with new.
 // clean up with delete[].
@@ -447,28 +453,35 @@ e_cal_backend_mapi_util_mapi_tz_to_bin (const char *mapi_tzid, struct SBinary *s
 	guint16 flag16;
 	gunichar2 *buf;
 	glong items_written;
+	guint32 i;
 
 	ba = g_byte_array_new ();
 
+	/* UTF-8 length of the keyname */
 	flag16 = g_utf8_strlen (mapi_tzid, -1);
 	ba = g_byte_array_append (ba, &flag16, sizeof (guint16));
+	/* Keyname */
 	buf = g_utf8_to_utf16 (mapi_tzid, flag16, NULL, &items_written, NULL);
 	ba = g_byte_array_append (ba, buf, (sizeof (gunichar2) * items_written));
 	g_free (buf);
 
-	/* FIXME: Need to support rules */
+	/* number of rules *//* FIXME: Need to support rules */
 	flag16 = 0x0000;
 	ba = g_byte_array_append (ba, &flag16, sizeof (guint16));
 
+	/* wFlags: we know only keyname based names */
 	flag16 = TZDEFINITION_FLAG_VALID_KEYNAME;
 	ba = g_byte_array_prepend (ba, &flag16, sizeof (guint16));
 
+	/* Length in bytes until rules info */
 	flag16 = (guint16) (ba->len);
 	ba = g_byte_array_prepend (ba, &flag16, sizeof (guint16));
 
+	/* Minor version */
 	flag8 = TZ_BIN_VERSION_MINOR;
 	ba = g_byte_array_prepend (ba, &flag8, sizeof (guint8));
 
+	/* Major version */
 	flag8 = TZ_BIN_VERSION_MAJOR;
 	ba = g_byte_array_prepend (ba, &flag8, sizeof (guint8));
 
@@ -476,6 +489,10 @@ e_cal_backend_mapi_util_mapi_tz_to_bin (const char *mapi_tzid, struct SBinary *s
 
 	sb->lpb = ba->data;
 	sb->cb = ba->len;
+
+	d(g_message ("New timezone stream.. Length: %d bytes.. Hex-data follows:", ba->len));
+	d(for (i = 0; i < ba->len; i++) 
+		g_print("0x%.2X ", ba->data[i]));
 
 	g_byte_array_free (ba, FALSE);
 }
@@ -489,32 +506,32 @@ e_cal_backend_mapi_util_bin_to_mapi_tz (GByteArray *ba)
 //	guint len = ba->len;
 	gchar *buf = NULL;
 
-	g_print ("\n\n++ New timezone info:\n");
+	d(g_message ("New timezone stream.. Length: %d bytes.. Info follows:", ba->len));
 
 	/* Major version */
 	flag8 = *((guint8 *)ptr);
 	ptr += sizeof (guint8);
-	g_print ("Major version: %d\n", flag8);
+	d(g_print ("Major version: %d\n", flag8));
 	if (TZ_BIN_VERSION_MAJOR != flag8)
 		return NULL;
 
 	/* Minor version */
 	flag8 = *((guint8 *)ptr);
 	ptr += sizeof (guint8);
-	g_print ("Minor version: %d\n", flag8);
+	d(g_print ("Minor version: %d\n", flag8));
 	if (TZ_BIN_VERSION_MINOR > flag8)
 		return NULL;
 
-	/* Length in bytes until rules */
+	/* Length in bytes until rules info */
 	flag16 = *((guint16 *)ptr);
 	ptr += sizeof (guint16);
-	g_print ("Length in bytes until rules: %d\n", flag16);
+	d(g_print ("Length in bytes until rules: %d\n", flag16));
 	cbHeader = flag16;
 
 	/* wFlags: we don't yet understand GUID based names */
 	flag16 = *((guint16 *)ptr);
 	ptr += sizeof (guint16);
-	g_print ("wFlags: %d\n", flag16);
+	d(g_print ("wFlags: %d\n", flag16));
 	cbHeader -= sizeof (guint16);
 	if (TZDEFINITION_FLAG_VALID_KEYNAME != flag16)
 		return NULL;
@@ -522,24 +539,23 @@ e_cal_backend_mapi_util_bin_to_mapi_tz (GByteArray *ba)
 	/* UTF-8 length of the keyname */
 	flag16 = *((guint16 *)ptr);
 	ptr += sizeof (guint16);
-	g_print ("UTF8 length of keyname: %d\n", flag16);
+	d(g_print ("UTF8 length of keyname: %d\n", flag16));
 	cbHeader -= sizeof (guint16);
 
 	/* number of rules is at the end of the header.. we'll parse and use later */
 	cbHeader -= sizeof (guint16);
 
+	/* Keyname */
 	buf = g_utf16_to_utf8 ((const gunichar2 *)ptr, cbHeader/sizeof (gunichar2), NULL, NULL, NULL);
 	ptr += cbHeader;
-	g_print ("Keyname: %s\n", buf);
+	d(g_print ("Keyname: %s\n", buf));
 
 	/* number of rules */
 	flag16 = *((guint16 *)ptr);
 	ptr += sizeof (guint16);
-	g_print ("Number of rules: %d\n", flag16);
+	d(g_print ("Number of rules: %d\n", flag16));
 
 	/* FIXME: Need to support rules */
-
-	g_print ("++ End timezone info\n\n");
 
 	return buf;
 }

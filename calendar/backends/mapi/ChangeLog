@@ -1,3 +1,29 @@
+2008-01-18  Suman Manjunath  <msuman@novell.com>
+
+	* Makefile.am: Don't remove source files in distclean. 
+	* e-cal-backend-mapi-tz-utils.c:
+	(e_cal_backend_mapi_tz_util_get_mapi_equivalent),
+	(e_cal_backend_mapi_tz_util_get_ical_equivalent),
+	(e_cal_backend_mapi_tz_util_populate),
+	(e_cal_backend_mapi_tz_util_dump_ical_tzs),
+	(e_cal_backend_mapi_tz_util_dump),
+	(e_cal_backend_mapi_util_mapi_tz_to_bin),
+	(e_cal_backend_mapi_util_bin_to_mapi_tz): Dump lots of debugging info
+	in a developer's environment. 
+	* e-cal-backend-mapi-utils.c:
+	(e_cal_backend_mapi_util_fetch_attachments),
+	(set_attachments_to_cal_component):
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_authenticate),
+	(e_cal_backend_mapi_remove), (get_changes_cb),
+	(e_cal_backend_mapi_connect), (e_cal_backend_mapi_open),
+	(e_cal_backend_mapi_init),
+	(e_cal_backend_mapi_get_local_attachments_store): Use a common 
+	authenticate routine. 
+	** FIXME: Each calendar still asks for a password. 
+	* e-cal-backend-mapi.h: Don't include non-essential headers. 
+	* tz-ical-to-mapi: Updated timezone info. 
+	* tz-mapi-to-ical: Updated timezone info. 
+
 2008-01-11  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am:

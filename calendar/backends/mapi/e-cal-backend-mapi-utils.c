@@ -28,6 +28,10 @@
 #define O_BINARY 0
 #endif
 
+#include <glib/gstdio.h>
+
+#include <fcntl.h>
+
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-utils.h"
 #include "e-cal-backend-mapi-tz-utils.h"
@@ -116,7 +120,7 @@ e_cal_backend_mapi_util_fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponen
 	char *dest_file;
 	int fd;
 	const char *uid;
-	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi));
+	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (cbmapi);
 
 	e_cal_component_get_attachment_list (comp, &comp_attach_list);
 	e_cal_component_get_uid (comp, &uid);
@@ -176,7 +180,7 @@ set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, 
 {
 	GSList *comp_attach_list = NULL, *l;
 	const char *uid;
-	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (E_CAL_BACKEND (cbmapi));
+	const char *local_store = e_cal_backend_mapi_get_local_attachments_store (cbmapi);
 	
 	e_cal_component_get_uid (comp, &uid);
 	for (l = attach_list; l ; l = l->next) {

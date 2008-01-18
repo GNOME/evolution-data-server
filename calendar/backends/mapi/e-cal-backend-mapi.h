@@ -29,26 +29,26 @@
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-factory.h>
 #include <libecal/e-cal-component.h>
+#include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
+#include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-url.h>
+
 #include <glib.h>
-#include <glib-object.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n-lib.h>
+#include <glib/gi18n.h>
+
 #include "exchange-mapi-connection.h"
 #include "exchange-mapi-folder.h"
 #include "exchange-mapi-utils.h"
 
+#if 0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libedataserver/e-xml-hash-utils.h>
-#include <libedataserver/e-url.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -60,7 +60,6 @@ G_BEGIN_DECLS
 
 typedef struct _ECalBackendMAPI        ECalBackendMAPI;
 typedef struct _ECalBackendMAPIClass   ECalBackendMAPIClass;
-
 typedef struct _ECalBackendMAPIPrivate ECalBackendMAPIPrivate;
 
 struct _ECalBackendMAPI {
@@ -77,7 +76,7 @@ struct _ECalBackendMAPIClass {
 GType	e_cal_backend_mapi_get_type(void);
 
 const char *	
-e_cal_backend_mapi_get_local_attachments_store (ECalBackend *backend);
+e_cal_backend_mapi_get_local_attachments_store (ECalBackendMAPI *cbmapi);
 
 G_END_DECLS
 

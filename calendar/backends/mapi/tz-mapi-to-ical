@@ -3,14 +3,14 @@ Samoa Standard Time~~~/softwarestudio.org/Tzfile/Pacific/Midway
 Hawaiian Standard Time~~~/softwarestudio.org/Tzfile/Pacific/Honolulu
 Alaskan Standard Time~~~/softwarestudio.org/Tzfile/America/Anchorage
 Pacific Standard Time~~~/softwarestudio.org/Tzfile/America/Los_Angeles
-Pacific Standard Time Mexico~~~/softwarestudio.org/Tzfile/America/Tijuana
+Pacific Standard Time (Mexico)~~~/softwarestudio.org/Tzfile/America/Tijuana
 US Mountain Standard Time~~~/softwarestudio.org/Tzfile/America/Phoenix
-Mountain Standard Time Mexico~~~/softwarestudio.org/Tzfile/America/Mazatlan
+Mountain Standard Time (Mexico)~~~/softwarestudio.org/Tzfile/America/Mazatlan
 Mexico Standard Time 2~~~/softwarestudio.org/Tzfile/America/Chihuahua
 Mountain Standard Time~~~/softwarestudio.org/Tzfile/America/Denver
-Central America Standard Time~~~/softwarestudio.org/Tzfile/America/Regina
+Central America Standard Time~~~/softwarestudio.org/Tzfile/America/Costa_Rica
 Central Standard Time~~~/softwarestudio.org/Tzfile/America/Chicago
-Central Standard Time Mexico~~~/softwarestudio.org/Tzfile/America/Monterrey
+Central Standard Time (Mexico)~~~/softwarestudio.org/Tzfile/America/Monterrey
 Mexico Standard Time~~~/softwarestudio.org/Tzfile/America/Mexico_City
 Canada Central Standard Time~~~/softwarestudio.org/Tzfile/America/Regina
 SA Pacific Standard Time~~~/softwarestudio.org/Tzfile/America/Bogota
@@ -20,9 +20,9 @@ Venezuela Standard Time~~~/softwarestudio.org/Tzfile/America/Caracas
 Atlantic Standard Time~~~/softwarestudio.org/Tzfile/America/Halifax
 SA Western Standard Time~~~/softwarestudio.org/Tzfile/America/La_Paz
 Central Brazilian Standard Time~~~/softwarestudio.org/Tzfile/America/Manaus
-Pacific SA Standard Time~~~/softwarestudio.org/Tzfile/America/Santiago
+Pacific SA Standard Time~~~/softwarestudio.org/Tzfile/America/La_Paz
 Newfoundland Standard Time~~~/softwarestudio.org/Tzfile/America/St_Johns
-E. South America Standard Time~~~/softwarestudio.org/Tzfile/America/Sao_Paulo
+E. South America Standard Time~~~/softwarestudio.org/Tzfile/America/Bahia
 SA Eastern Standard Time~~~/softwarestudio.org/Tzfile/America/Argentina/Buenos_Aires
 Greenland Standard Time~~~/softwarestudio.org/Tzfile/America/Godthab
 Montevideo Standard Time~~~/softwarestudio.org/Tzfile/America/Montevideo
@@ -30,7 +30,7 @@ Mid-Atlantic Standard Time~~~/softwarestudio.org/Tzfile/Atlantic/South_Georgia
 Azores Standard Time~~~/softwarestudio.org/Tzfile/Atlantic/Azores
 Cape Verde Standard Time~~~/softwarestudio.org/Tzfile/Atlantic/Cape_Verde
 Greenwich Standard Time~~~/softwarestudio.org/Tzfile/Africa/Casablanca
-GMT Standard Time~~~
+GMT Standard Time~~~UTC
 W. Europe Standard Time~~~/softwarestudio.org/Tzfile/Europe/Berlin
 Central Europe Standard Time~~~/softwarestudio.org/Tzfile/Europe/Prague
 Romance Standard Time~~~/softwarestudio.org/Tzfile/Europe/Paris
@@ -46,7 +46,7 @@ Israel Standard Time~~~/softwarestudio.org/Tzfile/Asia/Jerusalem
 E. Europe Standard Time~~~/softwarestudio.org/Tzfile/Europe/Minsk
 Namibia Standard Time~~~/softwarestudio.org/Tzfile/Africa/Windhoek
 Arabic Standard Time~~~/softwarestudio.org/Tzfile/Asia/Baghdad
-Arab Standard Time~~~/softwarestudio.org/Tzfile/Asia/Riyadh
+Arab Standard Time~~~/softwarestudio.org/Tzfile/Asia/Qatar
 Russian Standard Time~~~/softwarestudio.org/Tzfile/Europe/Moscow
 E. Africa Standard Time~~~/softwarestudio.org/Tzfile/Africa/Nairobi
 Georgian Standard Time~~~/softwarestudio.org/Tzfile/Asia/Tbilisi

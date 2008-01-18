@@ -43,6 +43,3 @@ libecalbackendmapi_la_LDFLAGS =		\
 
 EXTRA_DIST = 	\
 	$(mapidata_DATA)
-
-DISTCLEANFILES = 	\
-	$(mapidata_DATA)
