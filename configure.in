@@ -13,10 +13,11 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
 
 # Required Package Versions
+m4_define([glib_minimum_version], [2.15.3])
 m4_define([gtk_minimum_version], [2.10.0])
 m4_define([ORBit_minimum_version], [2.9.8])
 m4_define([gnome_vfs_minimum_version], [2.4.0])
-m4_define([libbonobo_minimum_version], [2.4.2])
+m4_define([libbonobo_minimum_version], [2.20.3])
 m4_define([gconf_minimum_version], [2.0.0])             # XXX Just a Guess
 m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
