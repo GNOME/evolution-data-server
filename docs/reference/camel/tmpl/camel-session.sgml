@@ -172,6 +172,17 @@ CamelSession
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_session_build_password_prompt ##### -->
+<para>
+
+</para>
+
+@type: 
+@user: 
+@host: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_session_is_online ##### -->
 <para>
 

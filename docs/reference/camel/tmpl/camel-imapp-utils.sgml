@@ -163,19 +163,20 @@ camel-imapp-utils
 
 </para>
 
-@flags: 
-@separator: 
-@name: 
+@result: 
+@condition: 
+@permanentflags: 
+@uidvalidity: 
+@unseen: 
 
 <!-- ##### STRUCT list_info ##### -->
 <para>
 
 </para>
 
-@ie: 
-@len: 
-@start: 
-@last: 
+@flags: 
+@separator: 
+@name: 
 
 <!-- ##### FUNCTION imapp_uidset_init ##### -->
 <para>

@@ -158,6 +158,12 @@ camel-search-private
 camel-types
 
 
+<!-- ##### MACRO CAMEL_ARGV_MAX ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_GROUPWISE_FOLDER_LOCK ##### -->
 <para>
 
@@ -294,6 +300,25 @@ camel-types
 @search_lock: 
 @cache_lock: 
 
+<!-- ##### STRUCT CamelNNTPGroupList ##### -->
+<para>
+
+</para>
+
+@store: 
+@time: 
+@group_list: 
+
+<!-- ##### STRUCT CamelNNTPGroupListEntry ##### -->
+<para>
+
+</para>
+
+@group_name: 
+@low: 
+@high: 
+@flags: 
+
 <!-- ##### TYPEDEF CamelNNTPOverField ##### -->
 <para>
 
@@ -341,6 +366,50 @@ camel-types
 @recipients: 
 @recipient_type: 
 @Returns: 
+
+<!-- ##### STRUCT addrinfo ##### -->
+<para>
+
+</para>
+
+@ai_flags: 
+@ai_family: 
+@ai_socktype: 
+@ai_protocol: 
+@ai_addrlen: 
+@ai_addr: 
+@ai_canonname: 
+@ai_next: 
+
+<!-- ##### MACRO ca_double ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_int ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_object ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_ptr ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_str ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### FUNCTION camel_block_file_get_type ##### -->
 <para>

@@ -17,20 +17,6 @@ camel-net-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT addrinfo ##### -->
-<para>
-
-</para>
-
-@ai_flags: 
-@ai_family: 
-@ai_socktype: 
-@ai_protocol: 
-@ai_addrlen: 
-@ai_addr: 
-@ai_canonname: 
-@ai_next: 
-
 <!-- ##### MACRO AI_CANONNAME ##### -->
 <para>
 

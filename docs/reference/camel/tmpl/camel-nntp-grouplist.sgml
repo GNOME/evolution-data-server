@@ -17,25 +17,6 @@ camel-nntp-grouplist
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT CamelNNTPGroupListEntry ##### -->
-<para>
-
-</para>
-
-@group_name: 
-@low: 
-@high: 
-@flags: 
-
-<!-- ##### STRUCT CamelNNTPGroupList ##### -->
-<para>
-
-</para>
-
-@store: 
-@time: 
-@group_list: 
-
 <!-- ##### TYPEDEF _CamelNNTPGroupList ##### -->
 <para>
 
