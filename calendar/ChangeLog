@@ -1,3 +1,12 @@
+2008-01-21  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #510168
+
+	* backends/caldav/e-cal-backend-caldav.c: (synch_slave_loop),
+	(struct _ECalBackendCalDAVPrivate), (e_cal_backend_caldav_dispose),
+	(e_cal_backend_caldav_finalize), (e_cal_backend_caldav_init):
+	Ensure slave gone in dispose function of the backend.
+
 2008-01-15  Dan Winship  <danw@gnome.org>
 
 	* backends/caldav/e-cal-backend-caldav.c: Update for libsoup 2.4.

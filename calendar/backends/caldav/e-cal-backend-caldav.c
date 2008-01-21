@@ -81,6 +81,9 @@ struct _ECalBackendCalDAVPrivate {
 	/* cond to synch threads */
 	GCond *cond;
 
+	/* cond to know the slave gone */
+	GCond *slave_gone_cond;
+
 	/* BG synch thread */
 	GThread *synch_slave;
 	SlaveCommand slave_cmd;
@@ -1364,6 +1367,9 @@ synch_slave_loop (gpointer data)
 
 	}
 
+	/* signal we are done */
+	g_cond_signal (priv->slave_gone_cond);
+
 	/* we got killed ... */
 	g_mutex_unlock (priv->lock);
 	return NULL;
@@ -2537,10 +2543,9 @@ e_cal_backend_caldav_dispose (GObject *object)
 	/* stop the slave  */
 	priv->slave_cmd = SLAVE_SHOULD_DIE;
 	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->lock);
 
 	/* wait until the slave died */
-	g_mutex_lock (priv->lock);
+	g_cond_wait (priv->slave_gone_cond, priv->lock);
 
 	g_object_unref (priv->session);
 
@@ -2570,6 +2575,7 @@ e_cal_backend_caldav_finalize (GObject *object)
 
 	g_mutex_free (priv->lock);
 	g_cond_free (priv->cond);
+	g_cond_free (priv->slave_gone_cond);
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -2591,8 +2597,9 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv->do_synch = FALSE;
 	priv->loaded   = FALSE;
 
-	priv->cond = g_cond_new ();
 	priv->lock = g_mutex_new ();
+	priv->cond = g_cond_new ();
+	priv->slave_gone_cond = g_cond_new ();
 
 	/* Slave control ... */
 	priv->slave_cmd = SLAVE_SHOULD_SLEEP;
