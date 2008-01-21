@@ -54,20 +54,18 @@ camel_shutdown (void)
 	if (!initialised)
 		return;
 
-#if defined (HAVE_NSS) && !defined (G_OS_WIN32)
-	/* For some reason we get into trouble on Win32 if we call these.
-	 * But they shouldn't be necessary as the process is exiting anywy?
-	 */
-	NSS_Shutdown ();
-
-	PR_Cleanup ();
-#endif /* HAVE_NSS */
-
 	certdb = camel_certdb_get_default ();
 	if (certdb) {
 		camel_certdb_save (certdb);
 		camel_object_unref (certdb);
 	}
+
+	/* These next calls must come last. */
+
+#if defined (HAVE_NSS)
+	NSS_Shutdown ();
+	PR_Cleanup ();
+#endif /* HAVE_NSS */
 
 	initialised = FALSE;
 }
