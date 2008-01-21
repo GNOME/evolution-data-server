@@ -1,6 +1,6 @@
 # Norwegian translation of evolution-data-server (bokmål dialect).
 # Copyright (C) 1998-2004, 2005 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2006.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998-2008.
 # Terance Edward Sola <terance@lyse.net>, 2005.
 #
 msgid ""
