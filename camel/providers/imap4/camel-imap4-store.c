@@ -541,7 +541,7 @@ imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex)
 		camel_exception_init (&lex);
 		while (imap4_try_authenticate (engine, reprompt, errmsg, &lex)) {
 			g_free (errmsg);
-			errmsg = g_strdup (lex.desc);
+			errmsg = g_markup_escape_text (lex.desc, -1);
 			camel_exception_clear (&lex);
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;

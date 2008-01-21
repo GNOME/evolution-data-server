@@ -1162,7 +1162,8 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 		base = camel_session_build_password_prompt (
 			"NNTP", service->url->user, service->url->host);
 		if (line) {
-			char *top = g_strdup_printf(_("Cannot authenticate to server: %s"), line);
+			char *top = g_markup_printf_escaped (
+				_("Cannot authenticate to server: %s"), line);
 
 			prompt = g_strdup_printf("%s\n\n%s", top, base);
 			g_free(top);

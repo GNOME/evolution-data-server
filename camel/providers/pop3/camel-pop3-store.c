@@ -615,7 +615,7 @@ pop3_connect (CamelService *service, CamelException *ex)
 
 		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
-			errbuf = g_strdup_printf ("%s\n\n", camel_exception_get_description (ex));
+			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 			reprompt = TRUE;

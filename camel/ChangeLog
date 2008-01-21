@@ -1,5 +1,13 @@
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
+	** Fixes part of bug #510303
+
+	* camel-gpg-context.c (gpg_ctx_parse_status):
+	Escape the PIN and passphrase prompts so the markup parser
+	will parse it verbatim.
+
+2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
+
 	* camel.c (camel_shutdown):
 	Save certificates _before_ calling PR_Cleanup().  Calling fsync()
 	from camel_certdb_save() after we've called PR_Cleanup() appears to

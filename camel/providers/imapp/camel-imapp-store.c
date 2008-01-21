@@ -447,7 +447,7 @@ imap_connect (CamelService *service, CamelException *ex)
 				store->login_error = NULL;
 				switch (e->id) {
 				case CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE:
-					store->login_error = g_strdup_printf("%s\n\n", e->desc);
+					store->login_error = g_markup_printf_escaped("%s\n\n", e->desc);
 					camel_session_forget_password(service->session, service, NULL, "password", ex);
 					camel_url_set_passwd(service->url, NULL);
 					break;
