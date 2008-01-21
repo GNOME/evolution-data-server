@@ -1,3 +1,11 @@
+2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #509985
+
+	* e-passwords.c:
+	Refactor the keyring logic and emit more informative warning
+	messages when a keyring operation fails.
+
 2008-01-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #509644

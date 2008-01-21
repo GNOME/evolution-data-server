@@ -190,6 +190,177 @@ ep_key_file_save (void)
 	g_free (filename);
 }
 
+#ifdef WITH_GNOME_KEYRING
+static EUri *
+ep_keyring_uri_new (const gchar *string)
+{
+	EUri *uri;
+
+	uri = e_uri_new (string);
+	if (uri == NULL)
+		return NULL;
+
+	/* LDAP URIs do not have usernames, so use the URI as the username. */
+	if (uri->user == NULL && uri->protocol != NULL &&
+			strcmp (uri->protocol, "ldap") == 0)
+		uri->user = g_strdelimit (g_strdup (string), "/=", '_');
+
+	return uri;
+}
+
+static gboolean
+ep_keyring_validate (const gchar *user,
+                     const gchar *server,
+                     GnomeKeyringAttributeList *attributes)
+{
+	const gchar *user_value = NULL;
+	const gchar *server_value = NULL;
+	gint ii;
+
+	g_return_val_if_fail (attributes != NULL, FALSE);
+
+	/* Is there anything to validate? */
+	if (user == NULL && server == NULL)
+		return TRUE;
+
+	/* Look for "user" and "server" attributes. */
+	for (ii = 0; ii < attributes->len; ii++) {
+		GnomeKeyringAttribute *attr;
+
+		attr = &g_array_index (attributes, GnomeKeyringAttribute, ii);
+
+		/* Just assume the attribute values are strings. */
+		if (strcmp (attr->name, "user") == 0)
+			user_value = attr->value.string;
+		else if (strcmp (attr->name, "server") == 0)
+			server_value = attr->value.string;
+	}
+
+	/* Is there a "user" attribute? */
+	if (user != NULL && user_value == NULL)
+		return FALSE;
+
+	/* Does it match what we're looking for? */
+	if (user != NULL && strcmp (user, user_value) != 0)
+		return FALSE;
+
+	/* Is there a "server" attribute? */
+	if (server != NULL && server_value == NULL)
+		return FALSE;
+
+	/* Does it match what we're looking for? */
+	if (server != NULL && strcmp (server, server_value) != 0)
+		return FALSE;
+
+	return TRUE;
+}
+
+static gboolean
+ep_keyring_delete_passwords (const gchar *user,
+                             const gchar *server,
+                             GList *passwords)
+{
+	while (passwords != NULL) {
+		GnomeKeyringFound *found = passwords->data;
+		GnomeKeyringResult result;
+
+		/* Validate the item before deleting it. */
+		if (!ep_keyring_validate (user, server, found->attributes)) {
+			passwords = g_list_next (passwords);
+			continue;
+		}
+
+		result = gnome_keyring_item_delete_sync (NULL, found->item_id);
+		if (result != GNOME_KEYRING_RESULT_OK) {
+			g_warning (
+				"Unable to delete password in "
+				"keyring (Keyring reports: %s)",
+				gnome_keyring_result_to_message (result));
+			return FALSE;
+		}
+
+		passwords = g_list_next (passwords);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+ep_keyring_insert_password (const gchar *user,
+                            const gchar *server,
+                            const gchar *display_name,
+                            const gchar *password)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult result;
+	guint32 item_id;
+
+	g_return_val_if_fail (user != NULL, FALSE);
+	g_return_val_if_fail (server != NULL, FALSE);
+	g_return_val_if_fail (display_name != NULL, FALSE);
+	g_return_val_if_fail (password != NULL, FALSE);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (
+		attributes, "application", "Evolution");
+	gnome_keyring_attribute_list_append_string (
+		attributes, "user", user);
+	gnome_keyring_attribute_list_append_string (
+		attributes, "server", server);
+
+	/* XXX We don't use item_id but gnome-keyring doesn't allow
+	 *     for a NULL pointer.  In fact it doesn't even check! */
+	result = gnome_keyring_item_create_sync (
+		NULL, GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+		display_name, attributes, password, TRUE, &item_id);
+	if (result != GNOME_KEYRING_RESULT_OK) {
+		g_warning (
+			"Unable to create password in "
+			"keyring (Keyring reports: %s)",
+			gnome_keyring_result_to_message (result));
+	}
+
+	gnome_keyring_attribute_list_free (attributes);
+
+	return (result == GNOME_KEYRING_RESULT_OK);
+}
+
+static GList *
+ep_keyring_lookup_passwords (const gchar *user,
+                             const gchar *server)
+{
+	GnomeKeyringAttributeList *attributes;
+	GnomeKeyringResult result;
+	GList *passwords = NULL;
+
+	g_return_val_if_fail (user != NULL, NULL);
+	g_return_val_if_fail (server != NULL, NULL);
+
+	attributes = gnome_keyring_attribute_list_new ();
+	gnome_keyring_attribute_list_append_string (
+		attributes, "application", "Evolution");
+	if (user != NULL)
+		gnome_keyring_attribute_list_append_string (
+			attributes, "user", user);
+	if (server != NULL)
+		gnome_keyring_attribute_list_append_string (
+			attributes, "server", server);
+
+	result = gnome_keyring_find_items_sync (
+		GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &passwords);
+	if (result != GNOME_KEYRING_RESULT_OK) {
+		g_warning (
+			"Unable to find password(s) in "
+			"keyring (Keyring reports: %s)",
+			gnome_keyring_result_to_message (result));
+	}
+
+	gnome_keyring_attribute_list_free (attributes);
+
+	return passwords;
+}
+#endif
+
 static gchar *
 ep_password_encode (const gchar *password)
 {
@@ -301,39 +472,14 @@ ep_msg_send (EPassMsg *msg)
 static void
 ep_clear_passwords_keyring (EPassMsg *msg)
 {
-	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;
-	gchar *default_keyring = NULL;
+	GList *passwords;
 
-	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	if (!default_keyring) {
-	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
-			return;
-	        default_keyring = g_strdup ("default");
+	/* Find all Evolution passwords and delete them. */
+	passwords = ep_keyring_lookup_passwords (NULL, NULL);
+	if (passwords != NULL) {
+		ep_keyring_delete_passwords (NULL, NULL, passwords);
+		gnome_keyring_found_list_free (passwords);
 	}
-
-	d(g_print ("Get Default %d\n", result));
-
-	/* Not called at all */
-	attributes = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-
-	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
-	d(g_print ("Find Items %d\n", result));
-
-	gnome_keyring_attribute_list_free (attributes);
-
-	if (result) {
-		g_print ("Couldn't clear password");
-	} else {
-		for (tmp = matches; tmp; tmp = tmp->next) {
-			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-			d(g_print ("Delete Items %d\n", result));
-		}
-	}
-
-	g_free (default_keyring);
 }
 #endif
 
@@ -378,40 +524,14 @@ ep_clear_passwords (EPassMsg *msg)
 static void
 ep_forget_passwords_keyring (EPassMsg *msg)
 {
-	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;
-	gchar *default_keyring = NULL;
+	GList *passwords;
 
-	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	if (!default_keyring) {
-	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
-			return;
-	        default_keyring = g_strdup ("default");
+	/* Find all Evolution passwords and delete them. */
+	passwords = ep_keyring_lookup_passwords (NULL, NULL);
+	if (passwords != NULL) {
+		ep_keyring_delete_passwords (NULL, NULL, passwords);
+		gnome_keyring_found_list_free (passwords);
 	}
-	d(g_print ("Get Default %d\n", result));
-
-	attributes = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-
-	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
-	d(g_print ("Find Items %d\n", result));
-
-	gnome_keyring_attribute_list_free (attributes);
-
-	if (result) {
-		g_print ("Couldn't clear password");
-	} else {
-		for (tmp = matches; tmp; tmp = tmp->next) {
-			result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-			d(g_print ("Delete Items %d\n", result));
-		}
-	}
-
-	g_free (default_keyring);
-
-	/* free up the session passwords */
-	g_hash_table_remove_all (password_cache);
 }
 #endif
 
@@ -420,8 +540,6 @@ ep_forget_passwords_keyfile (EPassMsg *msg)
 {
 	gchar **groups;
 	gsize length, ii;
-
-	g_hash_table_remove_all (password_cache);
 
 	groups = g_key_file_get_groups (key_file, &length);
 	for (ii = 0; ii < length; ii++) {
@@ -436,6 +554,8 @@ ep_forget_passwords_keyfile (EPassMsg *msg)
 static void
 ep_forget_passwords (EPassMsg *msg)
 {
+	g_hash_table_remove_all (password_cache);
+
 #ifdef WITH_GNOME_KEYRING
 	if (gnome_keyring_is_available ())
 		ep_forget_passwords_keyring (msg);
@@ -453,49 +573,24 @@ ep_forget_passwords (EPassMsg *msg)
 static void
 ep_remember_password_keyring (EPassMsg *msg)
 {
-	gchar *value;
+	gchar *password;
+	EUri *uri;
 
-	value = g_hash_table_lookup (password_cache, msg->key);
-	if (value != NULL) {
-		/* add it to the on-disk cache of passwords */
-		GnomeKeyringAttributeList *attributes;
-		GnomeKeyringResult result;
-		EUri *uri = e_uri_new (msg->key);
-		guint32 item_id;
+	password = g_hash_table_lookup (password_cache, msg->key);
+	if (password == NULL) {
+		g_warning ("Password for key \"%s\" not found", msg->key);
+		return;
+	}
 
-		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
-			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
-			gchar *keycopy = g_strdup (msg->key);
-			gint i;
+	uri = ep_keyring_uri_new (msg->key);
+	g_return_if_fail (uri != NULL);
 
-			for (i = 0; i < strlen (keycopy); i ++)
-				if (keycopy[i] == '/' || keycopy[i] =='=')
-					keycopy[i] = '_';
-			uri->user = keycopy;
-		}
-
-		attributes = gnome_keyring_attribute_list_new ();
-		gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
-		gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
-		gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-
-		result = gnome_keyring_item_create_sync (NULL, /* Use default keyring */
-						         GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
-				   			 msg->key, /* name */
-				   			 attributes, /* attribute list */
-				   			 value, /* password */
-				   			 TRUE, /* Update if already exists */
-				   			 &item_id);
-
-		d(g_print ("Remember %s: %d/%d\n", msg->key, result, item_id));
-
-		gnome_keyring_attribute_list_free (attributes);
-
-		/* now remove it from our session hash */
+	/* Only remove the password from the session hash
+	 * if the keyring insertion was successful. */
+	if (ep_keyring_insert_password (uri->user, uri->host, msg->key, password))
 		g_hash_table_remove (password_cache, msg->key);
 
-		e_uri_free (uri);
-	}
+	e_uri_free (uri);
 }
 #endif
 
@@ -543,82 +638,19 @@ ep_remember_password (EPassMsg *msg)
 static void
 ep_forget_password_keyring (EPassMsg *msg)
 {
-	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;
-	gchar *default_keyring = NULL;
-	EUri *uri = e_uri_new (msg->key);
+	GList *passwords;
+	EUri *uri;
 
-	if (!strcmp (uri->protocol, "ldap") && !uri->user) {
-		/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
-		gchar *keycopy = g_strdup (msg->key);
-		gint i;
+	uri = ep_keyring_uri_new (msg->key);
+	g_return_if_fail (uri != NULL);
 
-		for (i = 0; i < strlen (keycopy); i ++)
-			if (keycopy[i] == '/' || keycopy[i] =='=')
-				keycopy[i] = '_';
-		uri->user = keycopy;
+	/* Find all Evolution passwords matching the URI and delete them. */
+	passwords = ep_keyring_lookup_passwords (uri->user, uri->host);
+	if (passwords != NULL) {
+		ep_keyring_delete_passwords (uri->user, uri->host, passwords);
+		gnome_keyring_found_list_free (passwords);
 	}
 
-	g_hash_table_remove (password_cache, msg->key);
-
-	if (!uri->host && !uri->user)
-		/* No need to remove from keyring for pass phrases */
-		goto exit;
-
-	result = gnome_keyring_get_default_keyring_sync (&default_keyring);
-	if (!default_keyring) {
-	        if (gnome_keyring_create_sync ("default", NULL) != GNOME_KEYRING_RESULT_OK)
-			goto exit;
-	        default_keyring = g_strdup ("default");
-	}
-
-	d(g_print ("Get Default %d\n", result));
-
-	attributes = gnome_keyring_attribute_list_new ();
-	gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
-	gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
-	gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-
-	result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
-	d(g_print ("Find Items %d\n", result));
-
-	gnome_keyring_attribute_list_free (attributes);
-
-	if (result) {
-		g_print ("Couldn't clear password");
-	} else {
-		for (tmp = matches; tmp; tmp = tmp->next) {
-			GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
-			gint i;
-			GnomeKeyringAttribute *attr;
-			gboolean accept = TRUE;
-			guint present = 0;
-
-			for (i =0; (i < pattr->len) && accept; i++)
-			{
-				attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
-				if (!strcmp (attr->name, "user")) {
-					present++;
-					if (strcmp (attr->value.string, uri->user))
-						accept = FALSE;
-				} else if (!strcmp (attr->name, "server")) {
-					present++;
-					if (strcmp (attr->value.string, uri->host))
-						accept = FALSE;
-				}
-			}
-				if (present == 2 && accept) {
-					result = gnome_keyring_item_delete_sync (default_keyring, ((GnomeKeyringFound *) tmp->data)->item_id);
-					d(g_print ("Delete Items %s %s %d\n", uri->host, uri->user, result));
-				}
-		}
-
-	}
-
-	g_free (default_keyring);
-
-exit:
 	e_uri_free (uri);
 }
 #endif
@@ -628,8 +660,6 @@ ep_forget_password_keyfile (EPassMsg *msg)
 {
 	gchar *group, *key;
 	GError *error = NULL;
-
-	g_hash_table_remove (password_cache, msg->key);
 
 	group = ep_key_file_get_group (msg->component);
 	key = ep_key_file_normalize_key (msg->key);
@@ -649,6 +679,8 @@ ep_forget_password_keyfile (EPassMsg *msg)
 static void
 ep_forget_password (EPassMsg *msg)
 {
+	g_hash_table_remove (password_cache, msg->key);
+
 #ifdef WITH_GNOME_KEYRING
 	if (gnome_keyring_is_available ())
 		ep_forget_password_keyring (msg);
@@ -666,77 +698,32 @@ ep_forget_password (EPassMsg *msg)
 static void
 ep_get_password_keyring (EPassMsg *msg)
 {
-	gchar *passwd;
-	GnomeKeyringAttributeList *attributes;
-	GnomeKeyringResult result;
-	GList *matches = NULL, *tmp;
+	GList *passwords;
+	EUri *uri;
 
-	passwd = g_hash_table_lookup (password_cache, msg->key);
-	if (passwd) {
-		msg->password = g_strdup (passwd);
-	} else {
-		EUri *uri = e_uri_new (msg->key);
+	uri = ep_keyring_uri_new (msg->key);
+	g_return_if_fail (uri != NULL);
 
-		if (!strcmp (uri->protocol, "ldap") && !uri->user) {
-			/* LDAP doesnt use username in url. Let the url be the user key. So safe it */
-			gchar *keycopy = g_strdup (msg->key);
-			gint i;
+	/* Find the first Evolution password that matches the URI. */
+	passwords = ep_keyring_lookup_passwords (uri->user, uri->host);
+	if (passwords != NULL) {
+		GList *iter = passwords;
 
-			for (i = 0; i < strlen (keycopy); i ++)
-				if (keycopy[i] == '/' || keycopy[i] =='=')
-					keycopy[i] = '_';
-			uri->user = keycopy;
-		}
+		while (iter != NULL) {
+			GnomeKeyringFound *found = iter->data;
 
-		if (uri->host &&  uri->user) {
-			/* We dont store passphrases.*/
-
-			attributes = gnome_keyring_attribute_list_new ();
-			gnome_keyring_attribute_list_append_string (attributes, "user", uri->user);
-			gnome_keyring_attribute_list_append_string (attributes, "server", uri->host);
-			gnome_keyring_attribute_list_append_string (attributes, "application", "Evolution");
-			d(printf ("get %s %s\n", uri->user, msg->key));
-
-			result = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &matches);
-			d(g_print ("Find Items %d\n", result));
-
-			gnome_keyring_attribute_list_free (attributes);
-
-			if (result) {
-				g_print ("Couldn't Get password %d\n", result);
-			} else {
-				/* FIXME: What to do if this returns more than one? */
-				for (tmp = matches; tmp; tmp = tmp->next) {
-					GArray *pattr = ((GnomeKeyringFound *) tmp->data)->attributes;
-					gint i;
-					GnomeKeyringAttribute *attr;
-					gboolean accept = TRUE;
-					guint present = 0;
-
-					for (i =0; (i < pattr->len) && accept; i++)
-					{
-						attr = &g_array_index (pattr, GnomeKeyringAttribute, i);
-
-						if (!strcmp (attr->name, "user") && attr->value.string) {
-							present++;
-							if (strcmp (attr->value.string, uri->user))
-								accept = FALSE;
-						} else if (!strcmp (attr->name, "server") && attr->value.string) {
-							present++;
-							if (strcmp (attr->value.string, uri->host))
-								accept = FALSE;
-						}
-					}
-					if (present == 2 && accept) {
-						msg->password = g_strdup (((GnomeKeyringFound *) tmp->data)->secret);
-						break;
-					}
-				}
+			if (ep_keyring_validate (uri->user, uri->host, found->attributes)) {
+				msg->password = g_strdup (found->secret);
+				break;
 			}
+
+			iter = g_list_next (iter);
 		}
 
-		e_uri_free (uri);
+		gnome_keyring_found_list_free (passwords);
 	}
+
+	e_uri_free (uri);
 }
 #endif
 
@@ -746,12 +733,6 @@ ep_get_password_keyfile (EPassMsg *msg)
 	gchar *group, *key, *password;
 	GError *error = NULL;
 
-	password = g_hash_table_lookup (password_cache, msg->key);
-	if (password != NULL) {
-		msg->password = g_strdup (password);
-		return;
-	}
-
 	group = ep_key_file_get_group (msg->component);
 	key = ep_key_file_normalize_key (msg->key);
 
@@ -759,11 +740,9 @@ ep_get_password_keyfile (EPassMsg *msg)
 	if (password != NULL) {
 		msg->password = ep_password_decode (password);
 		g_free (password);
-	} else {
-		if (error) {
-			g_warning ("%s", error->message);
-			g_error_free (error);
-		}
+	} else if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
 	}
 
 	g_free (group);
@@ -773,14 +752,19 @@ ep_get_password_keyfile (EPassMsg *msg)
 static void
 ep_get_password (EPassMsg *msg)
 {
+	gchar *password;
+
+	/* Check the in-memory cache first. */
+	password = g_hash_table_lookup (password_cache, msg->key);
+	if (password != NULL)
+		msg->password = g_strdup (password);
+
 #ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
+	else if (gnome_keyring_is_available ())
 		ep_get_password_keyring (msg);
+#endif
 	else
 		ep_get_password_keyfile (msg);
-#else
-	ep_get_password_keyfile (msg);
-#endif
 
 	if (!msg->noreply)
 		e_msgport_reply (&msg->msg);
