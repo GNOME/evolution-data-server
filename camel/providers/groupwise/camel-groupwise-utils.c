@@ -300,7 +300,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	if (cid)
 		attachment->contentid = camel_header_contentid_decode (cid);
 
-	if (filename) {
+	if (filename && content->buffer->data) {
 		if (camel_content_type_is (type, "application", "pgp-signature")) {
 			char *temp_str;
 			int temp_len;
@@ -315,7 +315,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->data = g_base64_encode(content->buffer->data, content->buffer->len);
 			attachment->size = strlen (attachment->data);
 		}
-	} else {
+	} else if (content->buffer->data) {
 		char *temp_str;
 		int temp_len;
 		if (!strcmp (attachment->contentType, "multipart/digest")) {
