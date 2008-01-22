@@ -1418,7 +1418,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 			if (camel_exception_get_id(ex) == CAMEL_EXCEPTION_USER_CANCEL)
 				return FALSE;
 
-			errbuf = g_markup_escaped_text (
+			errbuf = g_markup_escape_text (
 				_("Unable to authenticate "
 				"to IMAP server.\n%s\n\n"),
 				camel_exception_get_description (ex));

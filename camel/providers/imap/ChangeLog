@@ -1,3 +1,7 @@
+2008-01-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-store.c (imap_auth_loop): Fix a typo.
+
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #510303
