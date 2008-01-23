@@ -42,16 +42,16 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
+
 #ifndef G_OS_WIN32
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <sys/wait.h>
 #include <termios.h>
 #endif
-
-#include <glib.h>
-#include <glib/gi18n-lib.h>
-#include <glib/gstdio.h>
 
 #include <libedataserver/e-iconv.h>
 

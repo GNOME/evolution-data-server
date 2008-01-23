@@ -38,12 +38,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+
 #ifndef G_OS_WIN32
 #include <sys/wait.h>
 #endif
-
-#include <glib.h>
-#include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-iconv.h>
 #include <libedataserver/e-sexp.h>

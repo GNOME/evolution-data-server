@@ -31,13 +31,13 @@
 #include <sys/types.h>
 #include <time.h>
 
-#ifndef G_OS_WIN32
-#include <sys/wait.h>
-#endif
-
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
+
+#ifndef G_OS_WIN32
+#include <sys/wait.h>
+#endif
 
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-memory.h>
