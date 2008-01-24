@@ -1,3 +1,10 @@
+2008-01-24  Takao Fujiwara  <takao.fujiwara@sun.com>
+
+	** Fix for bug #511717
+
+	* camel/providers/imap/camel-imap-store.c: (imap_build_folder_info):
+	Add gettext imap folders.
+
 2008-01-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in:

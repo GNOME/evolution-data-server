@@ -1067,6 +1067,14 @@ imap_build_folder_info(CamelImapStore *imap_store, const char *folder_name)
 		name++;
 	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
 		fi->name = g_strdup (_("Inbox"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Drafts"))
+		fi->name = g_strdup (_("Drafts"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Sent"))
+		fi->name = g_strdup (_("Sent"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Templates"))
+		fi->name = g_strdup (_("Templates"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Trash"))
+		fi->name = g_strdup (_("Trash"));
 	else
 		fi->name = g_strdup (name);
 
