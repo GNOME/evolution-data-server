@@ -1352,7 +1352,12 @@ case $CFLAGS in
 *-Wall*)
 	# Turn off the annoying "comparison between signed and unsigned"
 	# warning in gcc 3.3
-	CFLAGS="$CFLAGS -Wno-sign-compare -Wno-pointer-sign"
+	if $CC --help -v 2>&1 | grep Wsign-compare >/dev/null; then
+		CFLAGS="$CFLAGS -Wno-sign-compare"
+	fi
+	if $CC --help -v 2>&1 | grep Wpointer-sign >/dev/null; then
+		CFLAGS="$CFLAGS -Wno-pointer-sign"
+	fi
 	;;
 esac
 

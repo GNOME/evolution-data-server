@@ -1,3 +1,9 @@
+2008-01-24  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Only use the -Wno-sign-compare and
+	-Wno-pointer-sign options if the gcc version used supports them. I
+	am still using gcc 3.4.2 in mingw...
+
 2008-01-24  Takao Fujiwara  <takao.fujiwara@sun.com>
 
 	** Fix for bug #511717
