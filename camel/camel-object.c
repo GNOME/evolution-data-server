@@ -1067,6 +1067,7 @@ camel_object_cast(CamelObject *o, CamelType ctype)
 {
 	CamelObjectClass *k;
 
+        g_return_val_if_fail(o != NULL, NULL);
 	g_return_val_if_fail(check_magic(o, ctype, CAMEL_OBJECT_MAGIC), NULL);
 
 	k = o->klass;
