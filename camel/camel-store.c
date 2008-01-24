@@ -251,7 +251,7 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Cannot create folder `%s': folder exists"),
 					      folder_name);
-
+                        camel_object_bag_abort (store->folders, folder_name);
 			camel_object_unref (folder);
 			return NULL;
 		}

@@ -1,3 +1,8 @@
+2008-01-24  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-store.c (camel_store_get_folder):
+	Call camel_object_bag_abort() before returning with an exception.
+
 2008-01-24  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #510779 
