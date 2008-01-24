@@ -74,6 +74,7 @@ CamelFolderSummary
 @user_flags: 
 @user_tags: 
 @content: 
+@headers: 
 
 <!-- ##### STRUCT CamelFolderMetaSummary ##### -->
 <para>
