@@ -333,7 +333,7 @@ e2k_context_new (const char *uri)
 
 static void
 session_authenticate (SoupSession *session, SoupMessage *msg,
-		      SoupAuth *auth, gpointer user_data)
+		      SoupAuth *auth, gboolean retrying, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
 
