@@ -1607,8 +1607,10 @@ handle_copyuid (CamelImapResponse *response, CamelFolder *source,
 		return;
 	}
 
-	imap_uid_array_free (src);
-	imap_uid_array_free (dest);
+	if (src)
+		imap_uid_array_free (src);
+	if (dest)
+		imap_uid_array_free (dest);
  lose:
 	g_warning ("Bad COPYUID response from server");
 }
@@ -2419,6 +2421,46 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 	messages->pdata[seq - first] = mi;
 }
 
+struct _junk_data {
+	GData *data;
+	CamelMessageInfoBase *mi;
+};
+
+static void
+construct_junk_headers (char *header, char *value, struct _junk_data *jdata)	
+{
+	char *bs, *es, *flag=NULL;
+	char *bdata = g_datalist_get_data (&(jdata->data), "BODY_PART_DATA");
+	struct _camel_header_param *node;
+
+	/* FIXME: This can be written in a much clever way.
+	 * We can create HEADERS file or carry all headers till filtering so 
+	 * that header based filtering can be much faster. But all that later. */
+	bs = camel_strstrcase (bdata ? bdata:"", header);
+	if (bs) {
+		bs += strlen(header);
+		bs = strchr (bs, ':');
+		if (bs) {
+			bs++;
+			while (*bs == ' ')
+				bs++;
+			es = strchr (bs, '\n');
+			if (es)
+				flag = g_strndup (bs, es-bs);
+			else
+				bs = NULL;
+		}
+
+	}
+	
+	if (bs) {
+		node = g_new (struct _camel_header_param, 1);
+		node->name = g_strdup (header);
+		node->value = flag;
+		node->next = jdata->mi->headers;
+		jdata->mi->headers = node;
+	}
+}
 
 #define CAMEL_MESSAGE_INFO_HEADERS "DATE FROM TO CC SUBJECT REFERENCES IN-REPLY-TO MESSAGE-ID MIME-VERSION CONTENT-TYPE "
 
@@ -2603,6 +2645,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 
 	/* Now finish up summary entries (fix UIDs, set flags and size) */
 	for (i = 0; i < fetch_data->len; i++) {
+		struct _junk_data jdata;
 		data = fetch_data->pdata[i];
 
 		seq = GPOINTER_TO_INT (g_datalist_get_data (&data, "SEQUENCE"));
@@ -2663,6 +2706,10 @@ imap_update_summary (CamelFolder *folder, int exists,
 		if (size)
 			mi->info.size = size;
 
+		/* Just do this to build the junk required headers to be built*/
+		jdata.data = data;
+		jdata.mi = (CamelMessageInfoBase *) mi;
+		g_hash_table_foreach ((GHashTable *)camel_session_get_junk_headers(((CamelService *) store)->session), (GHFunc) construct_junk_headers, &jdata);
 		g_datalist_clear (&data);
 	}
 	g_ptr_array_free (fetch_data, TRUE);
@@ -2699,12 +2746,12 @@ imap_update_summary (CamelFolder *folder, int exists,
 
 			camel_message_info_free(&info->info);
 			break;
-		}
+		} 
 
 		camel_folder_summary_add (folder->summary, (CamelMessageInfo *)mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 
-		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT))
+		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT)) 
 			camel_folder_change_info_recent_uid(changes, camel_message_info_uid (mi));
 	}
 

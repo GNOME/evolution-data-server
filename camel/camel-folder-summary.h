@@ -179,6 +179,7 @@ struct _CamelMessageInfoBase {
 
 	/* tree of content description - NULL if it is not available */
 	CamelMessageContentInfo *content;
+	struct _camel_header_param *headers;
 };
 
 /* probably do this as well, removing CamelFolderChangeInfo and interfaces

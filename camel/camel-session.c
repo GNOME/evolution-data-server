@@ -79,6 +79,7 @@ camel_session_init (CamelSession *session)
 	session->priv->thread_id = 1;
 	session->priv->thread_active = g_hash_table_new(NULL, NULL);
 	session->priv->thread_pool = NULL;
+	session->priv->junk_headers = NULL;
 }
 
 static void
@@ -99,7 +100,10 @@ camel_session_finalise (CamelObject *o)
 
 	g_mutex_free(session->priv->lock);
 	g_mutex_free(session->priv->thread_lock);
-
+	if (session->priv->junk_headers) {
+		g_hash_table_remove_all (session->priv->junk_headers);
+		g_hash_table_destroy (session->priv->junk_headers);
+	}
 	g_free(session->priv);
 }
 
@@ -428,6 +432,14 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
 	return CS_CLASS (session)->alert_user (session, type, prompt, cancel);
 }
 
+gboolean
+camel_session_lookup_addressbook (CamelSession *session, const char *name)
+{
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+	return CS_CLASS (session)->lookup_addressbook (session, name);
+}
+
 /**
  * camel_session_build_password_prompt:
  * @type: account type (e.g. "IMAP")
@@ -745,4 +757,27 @@ camel_session_set_network_state (CamelSession *session, gboolean network_state)
 	g_return_if_fail (CAMEL_IS_SESSION(session));
 
 	session->network_state = network_state;
+}
+
+void
+camel_session_set_junk_headers (CamelSession *session, const char **headers, const char **values, int len)
+{
+	int i;
+
+	if (session->priv->junk_headers) {
+		g_hash_table_remove_all (session->priv->junk_headers);
+		g_hash_table_destroy (session->priv->junk_headers);
+	}
+
+	session->priv->junk_headers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+	for (i=0; i<len; i++) {
+		g_hash_table_insert (session->priv->junk_headers, g_strdup (headers[i]), g_strdup(values[i]));
+	}
+}
+
+const GHashTable *
+camel_session_get_junk_headers (CamelSession *session)
+{
+	return session->priv->junk_headers;
 }

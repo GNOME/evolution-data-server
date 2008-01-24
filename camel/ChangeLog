@@ -1,3 +1,19 @@
+2008-01-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #510779 
+
+	* camel-filter-search.c: (junk_test): Add contact lookup and header
+	based filtering.
+	* camel-folder-summary.c: (message_info_free): Add/Free headers
+	fetched into message info.
+	* camel-folder-summary.h: Add a headers param into message info
+	* camel-private.h: Add junk_headers into the session private which
+	holds the junk headers to be extracted.
+	* camel-session.c: (camel_session_init), (camel_session_finalise),
+	(camel_session_lookup_addressbook),
+	(camel_session_set_junk_headers), (camel_session_get_junk_headers):
+	* camel-session.h:
+
 2008-01-23  Tor Lillqvist  <tml@novell.com>
 
 	* camel-net-utils.c

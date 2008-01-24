@@ -58,6 +58,7 @@
 #include "camel-session.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
+#include "camel-string-utils.h"
 #include "camel-url.h"
 
 #define d(x)
@@ -643,9 +644,35 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 {
 	ESExpResult *r;
 	gboolean retval = FALSE;
-
+	
+	d(printf("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
 	if (fms->session->junk_plugin != NULL) {
-		retval = camel_junk_plugin_check_junk (fms->session->junk_plugin, camel_filter_search_get_message (fms, f));
+		CamelMessageInfo *info = fms->info;
+		const GHashTable *ht = camel_session_get_junk_headers (fms->session);
+		struct _camel_header_param *node = ((CamelMessageInfoBase *)info)->headers;
+
+		while (node && !retval) {
+			if (node->name) {
+				char *value = (char *) g_hash_table_lookup ((GHashTable *) ht, node->name);
+				d(printf("JunkCheckMatch: %s %s %s\n", node->name, node->value, value));
+				if (value)
+					retval = camel_strstrcase(node->value, value) != NULL;
+		
+			}
+			node = node->next;
+		}
+		if (camel_debug ("junk"))
+			printf("filtered based on junk header ? %d\n", retval);
+		if (!retval) {
+			retval = camel_session_lookup_addressbook (fms->session, camel_message_info_from (info)) != TRUE;
+			if (camel_debug ("junk"))
+				printf("Sender '%s' in book? %d\n", camel_message_info_from (info), !retval);
+			
+			if (retval) /* Not in book. Could be spam. So check for it*/ {
+				d(printf("filtering message\n"));
+				retval = camel_junk_plugin_check_junk (fms->session->junk_plugin, camel_filter_search_get_message (fms, f));
+			}
+		}
 
 		if (camel_debug ("junk"))
 			printf("junk filter => %s\n", retval ? "*JUNK*" : "clean");

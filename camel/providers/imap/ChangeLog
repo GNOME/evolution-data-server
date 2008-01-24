@@ -1,3 +1,17 @@
+2008-01-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+
+	* camel-imap-folder.c: (construct_junk_headers),
+	(imap_update_summary): Extract the junk specific headers onto the
+	headers portion of the message info for fast filtering.
+
+2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #481699
+
+	* camel-imap-folder.c (handle_copyuid): Don't crash if the server
+	returns you bad COPYUID.
+
 2008-01-23  Milan Crha  <mcrha@redhat.com>
 
 	* camel-imap-store.c (imap_auth_loop): Fix another typo.

@@ -99,6 +99,8 @@ struct _CamelSessionPrivate {
 	GThreadPool *thread_pool;
 
 	GHashTable *thread_msg_op;
+	GHashTable *junk_headers;
+	
 };
 
 #define CAMEL_SESSION_LOCK(f, l) \

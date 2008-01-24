@@ -1981,6 +1981,10 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	g_free(mi->references);
 	camel_flag_list_free(&mi->user_flags);
 	camel_tag_list_free(&mi->user_tags);
+	if (mi->headers)
+		camel_header_param_list_free (mi->headers);
+	
+
 	if (s)
 		e_memchunk_free(s->message_info_chunks, mi);
 	else
