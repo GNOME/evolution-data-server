@@ -349,8 +349,10 @@ retry:
 		goto fail;
 	}
 
-	/* no frompos, its an error in the library (and we can't do anything with it) */
-	g_assert(info->frompos != -1);
+	if (info->frompos == -1) {
+		camel_message_info_free((CamelMessageInfo *)info);
+		goto fail;
+	}
 
 	frompos = info->frompos;
 	camel_message_info_free((CamelMessageInfo *)info);

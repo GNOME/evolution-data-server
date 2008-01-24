@@ -72,6 +72,7 @@ struct _CamelMaildirSummaryPrivate {
 	char *hostname;
 
 	GHashTable *load_map;
+	GMutex *summary_lock;
 };
 
 static CamelLocalSummaryClass *parent_class;
@@ -138,6 +139,7 @@ camel_maildir_summary_init (CamelMaildirSummary *o)
 	} else {
 		o->priv->hostname = g_strdup("localhost");
 	}
+	o->priv->summary_lock = g_mutex_new ();
 }
 
 static void
@@ -146,6 +148,7 @@ camel_maildir_summary_finalise(CamelObject *obj)
 	CamelMaildirSummary *o = (CamelMaildirSummary *)obj;
 
 	g_free(o->priv->hostname);
+	g_mutex_free (o->priv->summary_lock);
 	g_free(o->priv);
 }
 
@@ -547,6 +550,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 	char *uid;
 	struct _remove_data rd = { cls, changes };
 
+	g_mutex_lock (((CamelMaildirSummary *) cls)->priv->summary_lock);
+
 	new = g_strdup_printf("%s/new", cls->folder_path);
 	cur = g_strdup_printf("%s/cur", cls->folder_path);
 
@@ -564,6 +569,7 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 		g_free(cur);
 		g_free(new);
 		camel_operation_end(NULL);
+		g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 		return -1;
 	}
 
@@ -722,6 +728,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_receive_cmp);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
+	g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 
 	return 0;
 }

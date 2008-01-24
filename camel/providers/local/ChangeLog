@@ -1,3 +1,20 @@
+2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #450840
+
+	* camel-mbox-folder.c: (mbox_get_message): A corrupted summary that
+	would get fine in next sync. So lets not crash if a message is not
+	there.
+
+2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #482940
+
+	* camel-maildir-summary.c: (camel_maildir_summary_init),
+	(camel_maildir_summary_finalise), (maildir_summary_check): Make the
+	maildir summary check thread safe. May be needed for other functions
+	too.
+
 2008-01-16  Sankar P  <psankar@novell.com>
 
 	* camel-mbox-summary.c: (mbox_summary_sync_quick),
