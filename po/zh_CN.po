@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-17 21:01+0000\n"
-"PO-Revision-Date: 2008-01-24 16:14+0800\n"
+"PO-Revision-Date: 2008-01-24 16:29+0800\n"
 "Last-Translator: Yang Zhang <zyangmath@gmail.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -667,7 +667,7 @@ msgstr "地理信息"
 
 #: ../addressbook/libebook/e-contact.c:277
 msgid "Telephone"
-msgstr ""
+msgstr "电话"
 
 #: ../addressbook/libebook/e-contact.c:1494
 #: ../addressbook/libebook/e-destination.c:770
@@ -2114,9 +2114,9 @@ msgstr ""
 "%s"
 
 #: ../camel/camel-session.c:466
-#, fuzzy, c-format
+#, c-format
 msgid "Please enter the %s password for %s on host %s."
-msgstr "%s请输入 %s@%s 的 POP 密码"
+msgstr "请输入 %2$s@%3$s 的 %1$s 密码"
 
 #: ../camel/camel-smime-context.c:234
 #, c-format
@@ -2962,9 +2962,8 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "来自 IMAP 服务器意外的 OK 应答：%s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:87
-#, fuzzy
 msgid "Always check for new mail in this folder"
-msgstr "仅在收件箱中检查垃圾邮件(_B)"
+msgstr "总是检查此文件夹中的新邮件(_B)"
 
 #: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
@@ -3535,9 +3534,8 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-provider.c:48
-#, fuzzy
 msgid "_Use the `.folders' folder summary file (exmh)"
-msgstr "使用“.folders”文件夹概览文件(exmh)"
+msgstr "使用“.folders”文件夹概览文件(exmh)(_U)"
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "MH-format mail directories"
@@ -3561,9 +3559,8 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
-#, fuzzy
 msgid "_Apply filters to new messages in INBOX"
-msgstr "将过滤规则应用到收件箱中的新信件"
+msgstr "对 INBOX 中的新信件应用过滤规则(_A)"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -3574,9 +3571,8 @@ msgid "For storing local mail in maildir directories."
 msgstr "在 maildir 邮件目录中存储本地邮件。"
 
 #: ../camel/providers/local/camel-local-provider.c:108
-#, fuzzy
 msgid "_Store status headers in Elm/Pine/Mutt format"
-msgstr "以 Elm/Pine/Mutt 格式存储状态头"
+msgstr "以 Elm/Pine/Mutt 格式存储状态头(_S)"
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid "Standard Unix mbox spool file"
@@ -3904,7 +3900,7 @@ msgstr "无法存储文件夹：%s"
 #: ../camel/providers/local/camel-mbox-summary.c:1088
 #: ../camel/providers/local/camel-mbox-summary.c:1117
 msgid "Detected a corrupt mbox file or an invalid 'From' header"
-msgstr ""
+msgstr "检测到损坏的 mbox 文件或非法的‘From’头"
 
 #: ../camel/providers/local/camel-mbox-summary.c:935
 #: ../camel/providers/local/camel-spool-summary.c:326
@@ -3913,9 +3909,9 @@ msgid "Unknown error: %s"
 msgstr "未知的错误：%s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:971
-#, fuzzy, c-format
+#, c-format
 msgid "Folder %s cannot be opened: %s"
-msgstr "无法打开脱机文件“%s”：%s"
+msgstr "无法打开文件夹“%s”：%s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1182
 #: ../camel/providers/local/camel-mbox-summary.c:1208
@@ -4063,15 +4059,14 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "您无法从 NNTP 文件夹复制信件！"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-#, fuzzy
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr "以短格式显示文件夹(如 c.o.linux 而不是 comp.os.linux)"
+msgstr "以短格式显示文件夹(如 c.o.linux 而不是 comp.os.linux)(_S)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 #, fuzzy
 msgid "In the subscription _dialog, show relative folder names"
-msgstr "在订阅对话框中显示相对文件夹名称"
+msgstr "在订阅对话框中显示相对文件夹名称(_D)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "USENET news"
@@ -4227,19 +4222,17 @@ msgid "Unknown reason"
 msgstr "未知原因"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
-#, fuzzy
 msgid "_Leave messages on server"
-msgstr "在服务器上保留信件"
+msgstr "在服务器上保留信件(_L)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
-#, fuzzy, c-format
+#, c-format
 msgid "_Delete after %s day(s)"
-msgstr "%s 天之后删除"
+msgstr "%s 天之后删除(_D)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
-#, fuzzy
 msgid "Disable _support for all POP3 extensions"
-msgstr "禁用所有 POP3 扩展的支持"
+msgstr "禁用所有 POP3 扩展的支持(_S)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:55
 msgid "POP"
@@ -4853,9 +4846,8 @@ msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
 #: ../libedataserver/e-time-utils.c:1826
-#, fuzzy
 msgid "%H%M"
-msgstr "%H:%M"
+msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1830
@@ -4939,27 +4931,24 @@ msgid "*"
 msgstr "*"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:2
-#, fuzzy
 msgid "<b>Co_ntacts</b>"
-msgstr "<b>联系人(_C)</b>"
+msgstr "<b>联系人(_N)</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>显示联系人</b>"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:4
-#, fuzzy
 msgid "Address B_ook:"
-msgstr "地址簿(_B)："
+msgstr "地址簿(_O)："
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
 msgstr "地址簿"
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:7
-#, fuzzy
 msgid "Cate_gory:"
-msgstr "类别(_A)："
+msgstr "类别(_G)："
 
 #: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
