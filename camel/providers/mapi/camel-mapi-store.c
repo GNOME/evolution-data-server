@@ -594,7 +594,69 @@ mapi_delete_folder(CamelStore *store, const char *folder_name, CamelException *e
 static void 
 mapi_rename_folder(CamelStore *store, const char *old_name, const char *new_name, CamelException *ex)
 {
+	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
+	CamelMapiStorePrivate  *priv = mapi_store->priv;
+	char *oldpath, *newpath, *storepath;
+	const char *folder_id;
+	char *temp_new = NULL;
+	mapi_id_t fid;
 
+	if (mapi_is_system_folder (old_name)) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Mapi folder `%s' to `%s'"),
+				      old_name, new_name);
+		return;
+	}
+
+	CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
+	
+	if (!camel_mapi_store_connected ((CamelMapiStore *)store, ex)) {
+		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
+		return;
+	}
+	
+	folder_id = camel_mapi_store_folder_id_lookup (mapi_store, old_name);
+	if (!folder_id) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename MAPI folder `%s'. Folder doesn't exist"),
+				      old_name);
+		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
+		return;
+	}
+
+	exchange_mapi_util_mapi_id_from_string (folder_id, &fid);
+		
+	temp_new = strrchr (new_name, '/');
+	if (temp_new) 
+		temp_new++;
+	else
+		temp_new = (char *)new_name;
+	
+	if (!exchange_mapi_rename_folder (NULL, fid , temp_new))
+	{
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename MAPI folder `%s' to `%s'"),
+				      old_name, new_name);
+		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
+		return;
+	}
+
+	g_hash_table_replace (priv->id_hash, g_strdup(folder_id), g_strdup(temp_new));
+
+	g_hash_table_insert (priv->name_hash, g_strdup(new_name), g_strdup(folder_id));
+	g_hash_table_remove (priv->name_hash, old_name);
+
+	storepath = g_strdup_printf ("%s/folders", priv->storage_path);
+	oldpath = e_path_to_physical (storepath, old_name);
+	newpath = e_path_to_physical (storepath, new_name);
+	g_free (storepath);
+
+	/*XXX: make sure the summary is also renamed*/
+	if (g_rename (oldpath, newpath) == -1) {
+		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
+				oldpath, newpath, strerror (errno));
+	}
+
+	g_free (oldpath);
+	g_free (newpath);
+	CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
 }
 
 char *

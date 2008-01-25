@@ -1,3 +1,7 @@
+2008-01-25  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.[ch] (exchange_mapi_rename_folder): Added. 
+
 2008-01-11  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_create_item),

@@ -1171,6 +1171,62 @@ cleanup:
 	return result;
 }
 
+/*FixME : Why are we still having olFolder in our APIs ?? - Johnny */
+gboolean 
+exchange_mapi_rename_folder (uint32_t olFolder, mapi_id_t fid, const char *new_name)
+{
+	enum MAPISTATUS retval;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	ExchangeMAPIFolder *folder;
+	struct SPropValue *props = NULL;
+	TALLOC_CTX *mem_ctx;
+	gboolean result = FALSE;
+
+	mem_ctx = talloc_init("ExchangeMAPI_RenameFolder");
+
+	folder = exchange_mapi_folder_get_folder (fid);
+
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	LOCK ();
+
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* Open the folder to be renamed */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	props = talloc_zero(mem_ctx, struct SPropValue);
+	set_SPropValue_proptag (props, PR_DISPLAY_NAME, new_name );
+
+	retval = SetProps(&obj_folder, props, 1);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SetProps", GetLastError());
+		goto cleanup;
+	}
+
+	result = TRUE;
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	UNLOCK ();
+
+	return result;
+}
+
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 

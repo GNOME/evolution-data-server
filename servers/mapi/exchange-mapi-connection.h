@@ -91,6 +91,8 @@ mapi_id_t
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name);
 gboolean 
 exchange_mapi_remove_folder (uint32_t olFolder, mapi_id_t fid);
+gboolean 
+exchange_mapi_rename_folder (uint32_t olFolder, mapi_id_t fid, const char *new_name);
 
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
