@@ -409,7 +409,7 @@ get_deltas (gpointer handle)
 	for (; item_list != NULL; item_list = g_list_next(item_list)) {
 		EGwItem *item = NULL;
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
-		char *cache_comp_str = NULL;
+		char *cache_comp_str = NULL, *modif_comp_str;
 		const char *uid, *rid = NULL;
 		int r_key;
 
@@ -428,7 +428,9 @@ get_deltas (gpointer handle)
 		e_cal_component_commit_sequence (cache_comp);
 
 		cache_comp_str = e_cal_component_get_as_string (cache_comp);
-		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, e_cal_component_get_as_string (modified_comp));
+		modif_comp_str = e_cal_component_get_as_string (modified_comp);
+		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, modif_comp_str);
+		g_free (modif_comp_str);
 		g_free (cache_comp_str);
 		cache_comp_str = NULL;
 		e_cal_backend_cache_put_component (cache, modified_comp);
@@ -2209,8 +2211,11 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 					e_cal_backend_cache_remove_component (priv->cache, id->uid,
 							id->rid);
-					if (!id->rid || !g_str_equal (id->rid, rid))
-						e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), id, e_cal_component_get_as_string (comp), NULL);
+					if (!id->rid || !g_str_equal (id->rid, rid)) {
+						char *comp_str = e_cal_component_get_as_string (comp);
+						e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), id, comp_str, NULL);
+						g_free (comp_str);
+					}
 					e_cal_component_free_id (id);
 
 					g_object_unref (comp);
@@ -2429,12 +2434,12 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				ECalComponentId *id = e_cal_component_get_id (component);
 
 				if (e_cal_backend_cache_remove_component (priv->cache, id->uid, id->rid)) {
-
-					e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), id, e_cal_component_get_as_string (component), NULL);
-				e_cal_component_free_id (id);
-
+					char *comp_str = e_cal_component_get_as_string (component);
+					e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), id, comp_str, NULL);
+					g_free (comp_str);
 				}
 
+				e_cal_component_free_id (id);
 			} else {
 				char *comp_str = NULL;
 
@@ -2558,9 +2563,8 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 						ECalComponentId *cid = e_cal_component_get_id (component);
 						char *object = e_cal_component_get_as_string (component);
 
-						if (e_cal_backend_cache_remove_component (priv->cache, cid->uid,
-								cid->rid))
-						e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), cid, object, NULL);
+						if (e_cal_backend_cache_remove_component (priv->cache, cid->uid, cid->rid))
+							e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgw), cid, object, NULL);
 
 						e_cal_component_free_id (cid);
 						g_free (object);

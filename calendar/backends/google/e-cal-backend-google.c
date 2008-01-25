@@ -620,11 +620,16 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		ECalBackendSyncStatus status;
 		icalcomponent *icalcomp;
 		ECalComponentId *id;
+		char *comp_str;
 
 		status = e_cal_backend_google_get_object (backend, cal, uid, rid, &calobj);
 
-		if (status != GNOME_Evolution_Calendar_Success)
+		if (status != GNOME_Evolution_Calendar_Success) {
+			g_free (calobj);
+			if (entries)
+				g_slist_free (entries);
 			return status;
+		}
 
 		comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 		id = e_cal_component_get_id (comp);
@@ -633,21 +638,28 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 		if (!icalcomp) {
 			g_free (calobj);
+			if (entries)
+				g_slist_free (entries);
 			return GNOME_Evolution_Calendar_InvalidObject;
 		}
 
+		comp_str = e_cal_component_get_as_string (comp);
 		e_cal_backend_cache_remove_component (priv->cache, uid, rid);
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgo), id, e_cal_component_get_as_string (comp), NULL);
+		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgo), id, comp_str, NULL);
+		g_free (comp_str);
 
 		entry = gdata_entry_get_entry_by_id (entries, uid);
 
-		if (!entry)
+		if (!entry) {
+			g_free (calobj);
+			if (entries)
+				g_slist_free (entries);
 			return GNOME_Evolution_Calendar_InvalidObject;
+		}
 
 	        gdata_service_delete_entry (GDATA_SERVICE(priv->service), entry);
 		*object = NULL;
 		*old_object = strdup (calobj);
-
 	}
 
 	if (calobj)

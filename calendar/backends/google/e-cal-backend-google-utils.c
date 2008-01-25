@@ -113,6 +113,7 @@ e_cal_backend_google_utils_populate_cache (ECalBackendGoogle *cbgo)
 			e_cal_backend_notify_object_created (E_CAL_BACKEND(cbgo), (const char *)comp_str);
 			e_cal_backend_cache_put_component (cache, comp);
 			g_object_unref (comp);
+			g_free (comp_str);
 		}
 	}
 

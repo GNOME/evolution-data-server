@@ -1,3 +1,15 @@
+2008-01-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #510409
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_remove_object), (receive_object):
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_populate_cache):
+	* backends/google/e-cal-backend-google.c:
+	(e_cal_backend_google_remove_object):
+	Do not leak after call of e_cal_component_get_as_string.
+
 2008-01-21  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #510168
