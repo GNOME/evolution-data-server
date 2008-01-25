@@ -533,6 +533,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	GSList *slist, *sl;
 	icaltimezone *default_zone, *utc;
 	struct icaltimetype itt_utc;
+	gboolean dtstart_has_timezone;
 
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	utc = icaltimezone_get_utc_timezone ();
@@ -580,6 +581,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 				icaltime_set_timezone (dt.value, default_zone ? default_zone : utc);
 			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 			e_gw_item_set_end_date (item, icaltime_as_ical_string (itt_utc));
+			e_cal_component_free_datetime (&dt);
 		}
 
 		break;
@@ -594,28 +596,31 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 				icaltime_set_timezone (dt.value, default_zone);
 			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 			e_gw_item_set_due_date (item, icaltime_as_ical_string (itt_utc));
+			e_cal_component_free_datetime (&dt);
 		}
 
-			/* priority */
-		 priority = NULL;
-		 e_cal_component_get_priority (comp, &priority);
-		 if (priority && *priority) {
-			 if (*priority >= 7)
-				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_LOW);
-			 else if (*priority >= 5)
-				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
-			 else if (*priority >= 1)
-				 e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_HIGH);
-			 else
-				 e_gw_item_set_task_priority (item, NULL);
+		/* priority */
+		priority = NULL;
+		e_cal_component_get_priority (comp, &priority);
+		if (priority && *priority) {
+			if (*priority >= 7)
+				e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_LOW);
+			else if (*priority >= 5)
+				e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_STANDARD);
+			else if (*priority >= 1)
+				e_gw_item_set_task_priority (item, E_GW_ITEM_PRIORITY_HIGH);
+			else
+				e_gw_item_set_task_priority (item, NULL);
 
-			 e_cal_component_free_priority (priority);
-		 }
+			e_cal_component_free_priority (priority);
+		}
 
-			/* completed */
+		/* completed */
 		e_cal_component_get_completed (comp, &dt.value);
 		if (dt.value) {
 			e_gw_item_set_completed (item, TRUE);
+			e_cal_component_free_icaltimetype (dt.value);
+			dt.value = NULL;
 		} else
 			e_gw_item_set_completed (item, FALSE);
 
@@ -668,6 +673,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		itt_utc = icaltime_convert_to_zone (*dt.value, utc);
 		e_gw_item_set_start_date (item, icaltime_as_ical_string (itt_utc));
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
+		e_cal_component_free_datetime (&dt);
 		/* appointments need the start date property */
 		g_object_unref (item);
 		return NULL;
@@ -676,6 +682,9 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	/* all day event */
 	if (dt.value && dt.value->is_date && e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT)
 		e_gw_item_set_is_allday_event (item, TRUE);
+
+	dtstart_has_timezone = dt.tzid != NULL;
+	e_cal_component_free_datetime (&dt);
 
 	/* creation date */
 	e_cal_component_get_created (comp, &dt.value);
@@ -690,6 +699,9 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		e_cal_component_get_dtstamp (comp, &itt);
 		e_gw_item_set_creation_date (item, icaltime_as_ical_string (itt));
 	}
+
+	e_cal_component_free_icaltimetype (dt.value);
+	dt.value = NULL;
 
 	/* classification */
 	e_cal_component_get_classification (comp, &classif);
@@ -718,7 +730,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 
 			GSList *recur_dates = NULL;
 
-			if (dt.tzid)
+			if (dtstart_has_timezone)
 				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, (icaltimezone *) default_zone);
 			else
 				e_cal_recur_generate_instances (comp, -1, -1,get_recur_instance, &recur_dates, resolve_tzid_cb, NULL, utc);
@@ -1087,6 +1099,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		recur_id->type = E_CAL_COMPONENT_RANGE_SINGLE;
 		recur_id->datetime = dt;
 		e_cal_component_set_recurid (comp, recur_id);
+		g_free (recur_id);
 	} else {
 
 		uid = e_gw_item_get_icalid (item);

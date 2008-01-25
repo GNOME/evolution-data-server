@@ -3330,7 +3330,6 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	struct icaltimetype itt;
 	icalcomponent *icalcomp;
 	struct instances_info *instances_hold;
-	ECalComponentDateTime datetime;
 
 	instances_hold = data;
 	list = instances_hold->instances;
@@ -3338,7 +3337,6 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	ci = g_new (struct comp_instance, 1);
 
 	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
-	e_cal_component_get_dtstart (comp, &datetime);
 
 	/* add the instance to the list */
 	ci->comp = e_cal_component_new ();
@@ -3348,6 +3346,9 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 	if (e_cal_util_component_has_recurrences (icalcomp)) {
 		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
 			ECalComponentRange *range;
+			ECalComponentDateTime datetime;
+
+			e_cal_component_get_dtstart (comp, &datetime);
 
 			if (instances_hold->start_zone)
 				itt = icaltime_from_timet_with_zone (start, datetime.value->is_date, instances_hold->start_zone);

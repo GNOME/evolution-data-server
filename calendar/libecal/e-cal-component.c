@@ -4736,6 +4736,9 @@ e_cal_component_free_datetime (ECalComponentDateTime *dt)
 
 	g_free (dt->value);
 	g_free ((char*)dt->tzid);
+
+	dt->value = NULL;
+	dt->tzid = NULL;
 }
 
 /**

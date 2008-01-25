@@ -1,5 +1,15 @@
 2008-01-25  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #475781
+
+	* libecal/e-cal-component.c: (e_cal_component_free_datetime):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component):
+	* libecal/e-cal.c: (add_instance):
+	Fix memory leaks around ECalComponentDateTime.
+
+2008-01-25  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #510409
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
