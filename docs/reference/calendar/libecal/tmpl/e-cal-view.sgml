@@ -80,14 +80,20 @@ ECalView is a view of the ECal.
 
 </para>
 
-<!-- ##### FUNCTION e_cal_view_new ##### -->
+<!-- ##### FUNCTION e_cal_view_get_client ##### -->
 <para>
 
 </para>
 
-@corba_view: 
-@listener: 
-@client: 
+@view: 
 @Returns: 
+
+
+<!-- ##### FUNCTION e_cal_view_start ##### -->
+<para>
+
+</para>
+
+@view: 
 
 

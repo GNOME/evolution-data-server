@@ -46,9 +46,10 @@ EBookViewListenerPrivate
 <TITLE>EBookView</TITLE>
 EBookView
 e_book_view_new
-e_book_view_set_book
 e_book_view_start
 e_book_view_stop
+e_book_view_set_book
+e_book_view_get_book
 <SUBSECTION Standard>
 EBookViewClass
 E_BOOK_VIEW

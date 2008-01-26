@@ -147,6 +147,808 @@ camel-mime-utils
 @next: 
 @newsgroup: 
 
+<!-- ##### FUNCTION camel_header_address_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_new_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@addr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_new_group ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_ref ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+
+
+<!-- ##### FUNCTION camel_header_address_unref ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+
+
+<!-- ##### FUNCTION camel_header_address_set_name ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@name: 
+
+
+<!-- ##### FUNCTION camel_header_address_set_addr ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@addr: 
+
+
+<!-- ##### FUNCTION camel_header_address_set_members ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@group: 
+
+
+<!-- ##### FUNCTION camel_header_address_add_member ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@member: 
+
+
+<!-- ##### FUNCTION camel_header_address_list_append_list ##### -->
+<para>
+
+</para>
+
+@addrlistp: 
+@addrs: 
+
+
+<!-- ##### FUNCTION camel_header_address_list_append ##### -->
+<para>
+
+</para>
+
+@addrlistp: 
+@addr: 
+
+
+<!-- ##### FUNCTION camel_header_address_list_clear ##### -->
+<para>
+
+</para>
+
+@addrlistp: 
+
+
+<!-- ##### FUNCTION camel_header_address_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@charset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_mailbox_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@charset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_list_encode ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_list_format ##### -->
+<para>
+
+</para>
+
+@addrlist: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_param_list_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_param ##### -->
+<para>
+
+</para>
+
+@params: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_set_param ##### -->
+<para>
+
+</para>
+
+@paramsp: 
+@name: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_param_list_format_append ##### -->
+<para>
+
+</para>
+
+@out: 
+@params: 
+
+
+<!-- ##### FUNCTION camel_header_param_list_format ##### -->
+<para>
+
+</para>
+
+@params: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_param_list_free ##### -->
+<para>
+
+</para>
+
+@params: 
+
+
+<!-- ##### FUNCTION camel_content_type_new ##### -->
+<para>
+
+</para>
+
+@type: 
+@subtype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_unref ##### -->
+<para>
+
+</para>
+
+@content_type: 
+
+
+<!-- ##### FUNCTION camel_content_type_ref ##### -->
+<para>
+
+</para>
+
+@content_type: 
+
+
+<!-- ##### FUNCTION camel_content_type_param ##### -->
+<para>
+
+</para>
+
+@content_type: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_set_param ##### -->
+<para>
+
+</para>
+
+@content_type: 
+@name: 
+@value: 
+
+
+<!-- ##### FUNCTION camel_content_type_is ##### -->
+<para>
+
+</para>
+
+@content_type: 
+@type: 
+@subtype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_format ##### -->
+<para>
+
+</para>
+
+@content_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_simple ##### -->
+<para>
+
+</para>
+
+@content_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_type_dump ##### -->
+<para>
+
+</para>
+
+@content_type: 
+
+
+<!-- ##### FUNCTION camel_content_disposition_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_disposition_ref ##### -->
+<para>
+
+</para>
+
+@disposition: 
+
+
+<!-- ##### FUNCTION camel_content_disposition_unref ##### -->
+<para>
+
+</para>
+
+@disposition: 
+
+
+<!-- ##### FUNCTION camel_content_disposition_format ##### -->
+<para>
+
+</para>
+
+@disposition: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_content_transfer_encoding_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_raw_append ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@value: 
+@offset: 
+
+
+<!-- ##### FUNCTION camel_header_raw_append_parse ##### -->
+<para>
+
+</para>
+
+@list: 
+@header: 
+@offset: 
+
+
+<!-- ##### FUNCTION camel_header_raw_find ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_raw_find_next ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@offset: 
+@last: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_raw_replace ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+@value: 
+@offset: 
+
+
+<!-- ##### FUNCTION camel_header_raw_remove ##### -->
+<para>
+
+</para>
+
+@list: 
+@name: 
+
+
+<!-- ##### FUNCTION camel_header_raw_fold ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION camel_header_raw_clear ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION camel_header_raw_check_mailing_list ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_address_fold ##### -->
+<para>
+
+</para>
+
+@in: 
+@headerlen: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_fold ##### -->
+<para>
+
+</para>
+
+@in: 
+@headerlen: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_unfold ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_token_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_decode_int ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_decode_string ##### -->
+<para>
+
+</para>
+
+@in: 
+@default_charset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_encode_string ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_format_ctext ##### -->
+<para>
+
+</para>
+
+@in: 
+@default_charset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_encode_phrase ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_decode_date ##### -->
+<para>
+
+</para>
+
+@in: 
+@saveoffset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_format_date ##### -->
+<para>
+
+</para>
+
+@time: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_msgid_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_contentid_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_msgid_generate ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_references_inreplyto_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_references_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_references_list_clear ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION camel_header_references_list_append_asis ##### -->
+<para>
+
+</para>
+
+@list: 
+@ref: 
+
+
+<!-- ##### FUNCTION camel_header_references_list_size ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_references_dup ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_location_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_newsgroups_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_newsgroups_free ##### -->
+<para>
+
+</para>
+
+@ng: 
+
+
+<!-- ##### FUNCTION camel_transfer_encoding_to_string ##### -->
+<para>
+
+</para>
+
+@encoding: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_transfer_encoding_from_string ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_header_mime_decode ##### -->
+<para>
+
+</para>
+
+@in: 
+@maj: 
+@min: 
+
+
+<!-- ##### FUNCTION camel_base64_decode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_base64_encode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@break_lines: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_base64_encode_close ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@break_lines: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_uudecode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_uuencode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@uubuf: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_uuencode_close ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@uubuf: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_quoted_decode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@savestate: 
+@saveme: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_quoted_encode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_quoted_encode_close ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_base64_encode_simple ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_base64_decode_simple ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+
 <!-- ##### MACRO camel_mime_is_ctrl ##### -->
 <para>
 

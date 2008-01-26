@@ -172,3 +172,139 @@ CamelIMAP4Engine
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap4_engine_queue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_prequeue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_dequeue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_iterate ##### -->
+<para>
+
+</para>
+
+@engine: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_handle_untagged_1 ##### -->
+<para>
+
+</para>
+
+@engine: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_handle_untagged ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_next_token ##### -->
+<para>
+
+</para>
+
+@engine: 
+@token: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_line ##### -->
+<para>
+
+</para>
+
+@engine: 
+@line: 
+@len: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_literal ##### -->
+<para>
+
+</para>
+
+@engine: 
+@literal: 
+@len: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_nstring ##### -->
+<para>
+
+</para>
+
+@engine: 
+@nstring: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_eat_line ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_engine_parse_resp_code ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_resp_code_free ##### -->
+<para>
+
+</para>
+
+@rcode: 
+
+

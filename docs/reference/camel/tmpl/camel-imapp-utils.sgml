@@ -158,6 +158,31 @@ camel-imapp-utils
 
 
 
+<!-- ##### FUNCTION imap_parse_fetch ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_free_fetch ##### -->
+<para>
+
+</para>
+
+@finfo: 
+
+
+<!-- ##### FUNCTION imap_dump_fetch ##### -->
+<para>
+
+</para>
+
+@finfo: 
+
+
 <!-- ##### STRUCT status_info ##### -->
 <para>
 
@@ -169,6 +194,23 @@ camel-imapp-utils
 @uidvalidity: 
 @unseen: 
 
+<!-- ##### FUNCTION imap_parse_status ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_free_status ##### -->
+<para>
+
+</para>
+
+@sinfo: 
+
+
 <!-- ##### STRUCT list_info ##### -->
 <para>
 
@@ -177,6 +219,42 @@ camel-imapp-utils
 @flags: 
 @separator: 
 @name: 
+
+<!-- ##### FUNCTION imap_parse_list ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imapp_list_get_path ##### -->
+<para>
+
+</para>
+
+@li: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_free_list ##### -->
+<para>
+
+</para>
+
+@linfo: 
+
+
+<!-- ##### STRUCT uidset_state ##### -->
+<para>
+
+</para>
+
+@ie: 
+@len: 
+@start: 
+@last: 
 
 <!-- ##### FUNCTION imapp_uidset_init ##### -->
 <para>

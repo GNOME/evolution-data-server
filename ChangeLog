@@ -1,3 +1,7 @@
+2008-01-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference: Refresh the API docs.
+
 2008-01-24  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Only use the -Wno-sign-compare and

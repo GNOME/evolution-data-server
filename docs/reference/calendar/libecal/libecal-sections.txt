@@ -319,6 +319,9 @@ time_week_begin_with_zone
 time_day_begin_with_zone
 time_day_end_with_zone
 time_to_gdate_with_zone
+icaltimetype_to_tm
+icaltimetype_to_tm_with_zone
+tm_to_icaltimetype
 </SECTION>
 
 <SECTION>
@@ -386,7 +389,8 @@ e_cal_util_remove_instances
 <FILE>e-cal-view</FILE>
 <TITLE>ECalView</TITLE>
 ECalView
-e_cal_view_new
+e_cal_view_get_client
+e_cal_view_start
 <SUBSECTION Standard>
 E_TYPE_CAL_VIEW
 E_CAL_VIEW
@@ -397,5 +401,6 @@ ECalViewClass
 <SUBSECTION Private>
 ECalViewPrivate
 e_cal_view_get_type
+e_cal_view_new
 </SECTION>
 

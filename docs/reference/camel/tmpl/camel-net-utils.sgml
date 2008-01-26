@@ -164,3 +164,37 @@ camel-net-utils
 
 
 
+<!-- ##### FUNCTION camel_getaddrinfo ##### -->
+<para>
+
+</para>
+
+@name: 
+@service: 
+@hints: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_freeaddrinfo ##### -->
+<para>
+
+</para>
+
+@host: 
+
+
+<!-- ##### FUNCTION camel_getnameinfo ##### -->
+<para>
+
+</para>
+
+@sa: 
+@salen: 
+@host: 
+@serv: 
+@flags: 
+@ex: 
+@Returns: 
+
+

@@ -29,3 +29,40 @@ camel-nntp-grouplist
 </para>
 
 
+<!-- ##### FUNCTION camel_nntp_grouplist_fetch ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_update ##### -->
+<para>
+
+</para>
+
+@group_list: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_save ##### -->
+<para>
+
+</para>
+
+@group_list: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_free ##### -->
+<para>
+
+</para>
+
+@group_list: 
+
+

@@ -52,6 +52,59 @@ camel-imap-utils
 @namespaces: 
 
 
+<!-- ##### FUNCTION imap_parse_namespace_response ##### -->
+<para>
+
+</para>
+
+@response: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_list_response ##### -->
+<para>
+
+</para>
+
+@store: 
+@buf: 
+@flags: 
+@sep: 
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_folder_name ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_create_flag_list ##### -->
+<para>
+
+</para>
+
+@flags: 
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_flag_list ##### -->
+<para>
+
+</para>
+
+@flag_list_p: 
+@flags_out: 
+@custom_flags_out: 
+@Returns: 
+
+
 <!-- ##### FUNCTION imap_parse_string_generic ##### -->
 <para>
 

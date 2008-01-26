@@ -79,3 +79,14 @@ CamelIMAP4StoreSummary
 @fi: 
 
 
+<!-- ##### FUNCTION camel_imap4_store_summary_get_folder_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@top: 
+@flags: 
+@Returns: 
+
+

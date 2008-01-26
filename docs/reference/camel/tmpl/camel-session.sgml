@@ -288,3 +288,33 @@ CamelSession
 @network_state: 
 
 
+<!-- ##### FUNCTION camel_session_get_junk_headers ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_session_set_junk_headers ##### -->
+<para>
+
+</para>
+
+@session: 
+@headers: 
+@values: 
+@len: 
+
+
+<!-- ##### FUNCTION camel_session_lookup_addressbook ##### -->
+<para>
+
+</para>
+
+@session: 
+@name: 
+@Returns: 
+
+

@@ -90,3 +90,23 @@ CamelTcpStream
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_tcp_stream_get_local_address ##### -->
+<para>
+
+</para>
+
+@stream: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_get_remote_address ##### -->
+<para>
+
+</para>
+
+@stream: 
+@len: 
+@Returns: 
+
+

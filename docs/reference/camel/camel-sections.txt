@@ -1020,6 +1020,17 @@ camel_mime_parser_push_state
 camel_mime_parser_read
 camel_mime_parser_content_type
 camel_mime_parser_header
+camel_mime_parser_headers_raw
+camel_mime_parser_preface
+camel_mime_parser_postface
+camel_mime_parser_from_line
+camel_mime_parser_filter_add
+camel_mime_parser_filter_remove
+camel_mime_parser_tell
+camel_mime_parser_seek
+camel_mime_parser_tell_start_headers
+camel_mime_parser_tell_start_from
+camel_mime_parser_tell_start_boundary
 <SUBSECTION Standard>
 CAMEL_MIME_PARSER
 CAMEL_IS_MIME_PARSER
@@ -1054,6 +1065,7 @@ camel_mime_part_set_content_type
 camel_mime_part_get_content_type
 camel_mime_part_construct_from_parser
 camel_mime_part_set_content
+camel_mime_part_get_content_size
 <SUBSECTION Standard>
 CAMEL_MIME_PART
 CAMEL_IS_MIME_PART
@@ -1543,6 +1555,9 @@ camel_session_thread_queue
 camel_session_thread_wait
 camel_session_get_network_state
 camel_session_set_network_state
+camel_session_get_junk_headers
+camel_session_set_junk_headers
+camel_session_lookup_addressbook
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION
@@ -1882,6 +1897,8 @@ CamelSockOptData
 camel_tcp_stream_connect
 camel_tcp_stream_getsockopt
 camel_tcp_stream_setsockopt
+camel_tcp_stream_get_local_address
+camel_tcp_stream_get_remote_address
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM
 CAMEL_IS_TCP_STREAM
@@ -2072,6 +2089,7 @@ camel_offline_folder_get_type
 <TITLE>CamelOfflineStore</TITLE>
 CamelOfflineStore
 camel_offline_store_set_network_state
+camel_offline_store_prepare_for_offline
 <SUBSECTION Standard>
 CAMEL_OFFLINE_STORE
 CAMEL_IS_OFFLINE_STORE
@@ -2237,7 +2255,6 @@ camel_imap_store_get_type
 <FILE>camel-imap-summary</FILE>
 <TITLE>CamelImapSummary</TITLE>
 CAMEL_IMAP_SERVER_FLAGS
-CAMEL_IMAP_MESSAGE_RECENT
 CamelImapMessageContentInfo
 CamelImapMessageInfo
 CamelImapSummary
@@ -2257,7 +2274,6 @@ camel_imap_summary_get_type
 <FILE>camel-imap-wrapper</FILE>
 <TITLE>CamelImapWrapper</TITLE>
 CamelImapWrapper
-CamelImapWrapperPrivate
 camel_imap_wrapper_new
 <SUBSECTION Standard>
 CAMEL_IMAP_WRAPPER
@@ -2267,6 +2283,7 @@ CAMEL_IMAP_WRAPPER_CLASS
 CamelImapWrapperClass
 <SUBSECTION Private>
 camel_imap_wrapper_get_type
+CamelImapWrapperPrivate
 </SECTION>
 
 <SECTION>
@@ -2321,7 +2338,6 @@ groupwise_get_name
 camel_groupwise_store_container_id_lookup
 camel_groupwise_store_folder_lookup
 cnc_lookup
-gw_get_path
 storage_path_lookup
 groupwise_base_url_lookup
 create_junk_folder
@@ -2406,6 +2422,19 @@ camel_imap4_engine_take_stream
 camel_imap4_engine_capability
 camel_imap4_engine_namespace
 camel_imap4_engine_select_folder
+camel_imap4_engine_queue
+camel_imap4_engine_prequeue
+camel_imap4_engine_dequeue
+camel_imap4_engine_iterate
+camel_imap4_engine_handle_untagged_1
+camel_imap4_engine_handle_untagged
+camel_imap4_engine_next_token
+camel_imap4_engine_line
+camel_imap4_engine_literal
+camel_imap4_engine_nstring
+camel_imap4_engine_eat_line
+camel_imap4_engine_parse_resp_code
+camel_imap4_resp_code_free
 <SUBSECTION Standard>
 CAMEL_IMAP4_ENGINE
 CAMEL_IS_IMAP4_ENGINE
@@ -2461,6 +2490,7 @@ camel_imap4_store_summary_set_capabilities
 camel_imap4_store_summary_set_namespaces
 camel_imap4_store_summary_note_info
 camel_imap4_store_summary_unnote_info
+camel_imap4_store_summary_get_folder_info
 <SUBSECTION Standard>
 CAMEL_IMAP4_STORE_SUMMARY
 CAMEL_IS_IMAP4_STORE_SUMMARY
@@ -2570,6 +2600,10 @@ camel_imapp_driver_login
 camel_imapp_driver_select
 camel_imapp_driver_update
 camel_imapp_driver_sync
+camel_imapp_driver_fetch
+camel_imapp_driver_list
+camel_imapp_driver_get
+camel_imapp_driver_append
 <SUBSECTION Standard>
 CAMEL_IMAPP_DRIVER
 CAMEL_IS_IMAP_DRIVER
@@ -3210,12 +3244,6 @@ CamelArg
 CamelArgV
 CamelArgGet
 CamelArgGetV
-ca_object
-ca_int
-ca_double
-ca_str
-ca_ptr
-CAMEL_ARGV_MAX
 camel_argv_start
 camel_argv_end
 camel_argv_build
@@ -3419,6 +3447,89 @@ CamelContentDisposition
 camel_header_address_t
 camel_header_address
 camel_header_newsgroup
+camel_header_address_new
+camel_header_address_new_name
+camel_header_address_new_group
+camel_header_address_ref
+camel_header_address_unref
+camel_header_address_set_name
+camel_header_address_set_addr
+camel_header_address_set_members
+camel_header_address_add_member
+camel_header_address_list_append_list
+camel_header_address_list_append
+camel_header_address_list_clear
+camel_header_address_decode
+camel_header_mailbox_decode
+camel_header_address_list_encode
+camel_header_address_list_format
+camel_header_param_list_decode
+camel_header_param
+camel_header_set_param
+camel_header_param_list_format_append
+camel_header_param_list_format
+camel_header_param_list_free
+camel_content_type_new
+camel_content_type_decode
+camel_content_type_unref
+camel_content_type_ref
+camel_content_type_param
+camel_content_type_set_param
+camel_content_type_is
+camel_content_type_format
+camel_content_type_simple
+camel_content_type_dump
+camel_content_disposition_decode
+camel_content_disposition_ref
+camel_content_disposition_unref
+camel_content_disposition_format
+camel_content_transfer_encoding_decode
+camel_header_raw_append
+camel_header_raw_append_parse
+camel_header_raw_find
+camel_header_raw_find_next
+camel_header_raw_replace
+camel_header_raw_remove
+camel_header_raw_fold
+camel_header_raw_clear
+camel_header_raw_check_mailing_list
+camel_header_address_fold
+camel_header_fold
+camel_header_unfold
+camel_header_token_decode
+camel_header_decode_int
+camel_header_decode_string
+camel_header_encode_string
+camel_header_format_ctext
+camel_header_encode_phrase
+camel_header_decode_date
+camel_header_format_date
+camel_header_msgid_decode
+camel_header_contentid_decode
+camel_header_msgid_generate
+camel_header_references_inreplyto_decode
+camel_header_references_decode
+camel_header_references_list_clear
+camel_header_references_list_append_asis
+camel_header_references_list_size
+camel_header_references_dup
+camel_header_location_decode
+camel_header_newsgroups_decode
+camel_header_newsgroups_free
+camel_transfer_encoding_to_string
+camel_transfer_encoding_from_string
+camel_header_mime_decode
+camel_base64_decode_step
+camel_base64_encode_step
+camel_base64_encode_close
+camel_uudecode_step
+camel_uuencode_step
+camel_uuencode_close
+camel_quoted_decode_step
+camel_quoted_encode_step
+camel_quoted_encode_close
+camel_base64_encode_simple
+camel_base64_decode_simple
 camel_mime_is_ctrl
 camel_mime_is_lwsp
 camel_mime_is_tspecial
@@ -3455,6 +3566,13 @@ camel_operation_cancel_block
 camel_operation_cancel_unblock
 camel_operation_cancel_check
 camel_operation_cancel_fd
+camel_operation_cancel_prfd
+camel_operation_registered
+camel_operation_start
+camel_operation_start_transient
+camel_operation_progress
+camel_operation_progress_count
+camel_operation_end
 </SECTION>
 
 <SECTION>
@@ -3590,7 +3708,6 @@ camel_init
 
 <SECTION>
 <FILE>camel-net-utils</FILE>
-addrinfo
 AI_CANONNAME
 AI_NUMERICHOST
 EAI_BADFLAGS
@@ -3612,6 +3729,9 @@ NI_NUMERICSERV
 NI_NOFQDN
 NI_NAMEREQD
 NI_DGRAM
+camel_getaddrinfo
+camel_freeaddrinfo
+camel_getnameinfo
 </SECTION>
 
 <SECTION>
@@ -3634,6 +3754,11 @@ imap_next_word
 namespace
 namespaces
 imap_namespaces_destroy
+imap_parse_namespace_response
+imap_parse_list_response
+imap_parse_folder_name
+imap_create_flag_list
+imap_parse_flag_list
 imap_parse_string_generic
 imap_parse_string
 imap_parse_nstring
@@ -3716,7 +3841,15 @@ camel_imap4_flags_diff
 camel_imap4_flags_merge
 camel_imap4_merge_flags
 camel_imap4_namespace_clear
-CamelIMAP4NamespaceList
+camel_imap4_namespace_list_copy
+camel_imap4_namespace_list_free
+camel_imap4_get_path_delim
+camel_imap4_get_uid_set
+camel_imap4_utils_set_unexpected_token_error
+camel_imap4_parse_flags_list
+CAMEL_IMAP4_FOLDER_MARKED
+CAMEL_IMAP4_FOLDER_UNMARKED
+camel_imap4_list_t
 camel_imap4_untagged_list
 camel_imap4_status_attr_t
 camel_imap4_status_t
@@ -3757,8 +3890,17 @@ FETCH_FLAGS
 FETCH_DATE
 FETCH_SECTION
 FETCH_UID
+imap_parse_fetch
+imap_free_fetch
+imap_dump_fetch
 status_info
+imap_parse_status
+imap_free_status
 list_info
+imap_parse_list
+imapp_list_get_path
+imap_free_list
+uidset_state
 imapp_uidset_init
 imapp_uidset_done
 imapp_uidset_add
@@ -3771,10 +3913,12 @@ camel_nntp_auth_authenticate
 
 <SECTION>
 <FILE>camel-nntp-grouplist</FILE>
-CamelNNTPGroupListEntry
-CamelNNTPGroupList
 _CamelNNTPGroupList
 _CamelNNTPGroupListEntry
+camel_nntp_grouplist_fetch
+camel_nntp_grouplist_update
+camel_nntp_grouplist_save
+camel_nntp_grouplist_free
 </SECTION>
 
 <SECTION>
