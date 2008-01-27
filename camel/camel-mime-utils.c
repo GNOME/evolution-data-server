@@ -1394,7 +1394,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 		ic = e_iconv_open (type, "UTF-8");
 
 	while (inlen) {
-		size_t convlen, proclen;
+		ssize_t convlen, proclen;
 		int i;
 
 		/* break up words into smaller bits, what we really want is encoded + overhead < 75,
@@ -1425,13 +1425,16 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 				else
 					convlen += 3;
 			}
+			
 			if (proclen >= 0 && proclen < i && convlen < (75 - strlen("=?utf-8?q?\?=")))
 				proclen = i;
+			
 			/* well, we probably have broken utf8, just copy it anyway what the heck */
 			if (proclen == -1) {
 				w(g_warning("Appear to have truncated utf8 sequence"));
 				proclen = inlen;
 			}
+			
 			memcpy(out, inptr, proclen);
 			inptr += proclen;
 			inlen -= proclen;

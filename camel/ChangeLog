@@ -1,3 +1,9 @@
+2008-01-27  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c (rfc2047_encode_word): Use ssize_t for
+	proclen so that we can compare it against -1. Fixes a coverage
+	warning noticed by Nokia.
+
 2008-01-24  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-object.c (camel_object_cast):
