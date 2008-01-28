@@ -26,7 +26,7 @@ main (int argc, char **argv)
 	file_template = g_build_filename (g_get_tmp_dir (),
 					  "change-test-XXXXXX",
 					  NULL);
-	mktemp (file_template);
+	mkstemp (file_template);
 
 	uri = g_filename_to_uri (file_template, NULL, &error);
 	if (!uri) {

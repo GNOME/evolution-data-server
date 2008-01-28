@@ -292,6 +292,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		struct prop_info *info = NULL;
 		int i;
 		gboolean any_field;
+		gboolean saw_any = FALSE;
 
 		propname = argv[0]->value.string;
 
@@ -299,6 +300,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
+				saw_any = TRUE;
 				info = &prop_info_table[i];
 
 				if (any_field && info->field_id == E_CONTACT_UID) {
@@ -335,6 +337,24 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 			}
 		}
 
+		if (!saw_any) {
+			/* propname didn't match to any of our known "special" properties,
+			   so try to find if it isn't a real field and if so, then compare
+			   against value in this field only */
+			EContactField fid = e_contact_field_id (propname);
+
+			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
+				const char *prop = e_contact_get_const (ctx->contact, fid);
+
+				if (prop && compare (prop, argv[1]->value.string)) {
+					truth = TRUE;
+				}
+
+				if ((!prop) && compare ("", argv[1]->value.string)) {
+					truth = TRUE;
+				}
+			}
+		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
@@ -417,11 +437,13 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		char *propname;
 		struct prop_info *info = NULL;
 		int i;
+		gboolean saw_any = FALSE;
 
 		propname = argv[0]->value.string;
 
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (!strcmp (prop_info_table[i].query_prop, propname)) {
+				saw_any = TRUE;
 				info = &prop_info_table[i];
 
 				if (info->prop_type == PROP_TYPE_NORMAL) {
@@ -443,6 +465,19 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			}
 		}
 
+		if (!saw_any) {
+			/* propname didn't match to any of our known "special" properties,
+			   so try to find if it isn't a real field and if so, then check
+			   against value in this field only */
+			EContactField fid = e_contact_field_id (propname);
+
+			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
+				const char *prop = e_contact_get_const (ctx->contact, fid);
+
+				if (prop && *prop)
+					truth = TRUE;
+			}
+		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;

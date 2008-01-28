@@ -1,3 +1,11 @@
+2008-01-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #496081
+
+	* libedata-book/e-book-backend-sexp.c: (entry_compare), (func_exists):
+	Also compare/check exact field, if requested.
+	* tests/ebook/test-changes.c: (main): Compiler warning fix.
+
 2007-12-06  Sankar P  <psankar@novell.com>
 
 	** Fixes bug #501969
