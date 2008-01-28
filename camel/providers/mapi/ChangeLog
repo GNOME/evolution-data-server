@@ -1,3 +1,7 @@
+2008-01-28  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (fetch_items_cb): use PR_NORMALISED_SUBJECT.
+
 2008-01-25  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-store.c (mapi_rename_folder): Folder rename support added.

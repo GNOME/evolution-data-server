@@ -250,11 +250,7 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	item->mid = mid;
 
 	/* FixME : which on of this will fetch the subject. */
-/* 	item->header.subject = find_mapi_SPropValue_data (array, PR_CONVERSATION_TOPIC); */
-/* 	item->header.subject = find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT); */
-/* 	item->header.subject = find_mapi_SPropValue_data (array, PR_CONVERSATION_TOPIC_UNICODE); */
-/* 	item->header.subject = find_mapi_SPropValue_data (array, PR_SUBJECT); */
-	item->header.subject = find_mapi_SPropValue_data (array, PR_URL_NAME);
+	item->header.subject = find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT);
 	item->header.to = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_TO));
 	item->header.cc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_CC));
 	item->header.bcc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_BCC));
@@ -278,7 +274,7 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 /* 	printf("%s(%d):%s:subject : %s \n from : %s\nto : %s\n cc : %s\n", __FILE__, */
 /* 	       __LINE__, __PRETTY_FUNCTION__, item->header.subject, */
 /* 	       item->header.from, item->header.to, item->header.cc); */
-//	debug_mapi_property_dump (array);
+/* 	debug_mapi_property_dump (array); */
 
 	slist = g_slist_append (slist, item);
 	mapi_folder->priv->item_list = slist;
@@ -443,7 +439,7 @@ mapi_sync_summary (CamelFolder *folder, CamelException *ex)
 }
 
 static const uint32_t GetPropsList[] = {
-	PR_URL_NAME,
+	PR_NORMALIZED_SUBJECT,
 	PR_MESSAGE_SIZE,
 	PR_MESSAGE_DELIVERY_TIME,
 	PR_MESSAGE_FLAGS,
