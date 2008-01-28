@@ -40,9 +40,15 @@ static void
 vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 {
 	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)info;
+	CamelFolderSummary *real_summary = mi->real->summary;
 
 	g_free(info->uid);
 	camel_message_info_free(mi->real);
+
+	/* and unref the real summary too */
+	/* FIXME: You may not need this during CamelDBSummary */
+	if (real_summary)
+		camel_object_unref (real_summary);
 }
 
 static CamelMessageInfo *
@@ -54,8 +60,10 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	to = (CamelVeeMessageInfo *)camel_message_info_new(s);
 
 	to->real = camel_message_info_clone(from->real);
+	/* FIXME: We may not need this during CamelDBSummary */
+	camel_object_ref (to->real->summary);
 	to->info.summary = s;
-
+	
 	return (CamelMessageInfo *)to;
 }
 
@@ -218,6 +226,13 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelMessageInfo *info, const char has
 	mi = (CamelVeeMessageInfo *)camel_message_info_new(&s->summary);
 	mi->real = info;
 	camel_message_info_ref(info);
+
+	/* Ensures the owner of the message info will not die before we free the mi->real;
+	   It's obvious that the real->summary should not be changed after this call. */
+	/* FIXME: We may not need this during CamelDBSummary */
+	if (info->summary)
+		camel_object_ref (info->summary);
+
 	mi->info.uid = vuid;
 
 	camel_folder_summary_add(&s->summary, (CamelMessageInfo *)mi);
