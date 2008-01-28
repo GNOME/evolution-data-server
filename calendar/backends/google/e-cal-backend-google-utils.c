@@ -34,8 +34,10 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 
+#include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gprintf.h>
 
 #include <libgnomevfs/gnome-vfs.h>
 
@@ -383,7 +385,6 @@ e_cal_backend_google_utils_connect (ECalBackendGoogle *cbgo)
 
 }
 
-
 /*************************************************** EGoItem Functions*********************************************/
 
 /**
@@ -400,6 +401,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	ECalComponent *comp;
 	ECalComponentText text;
 	ECalComponentDateTime dt;
+	ECalComponentOrganizer *org = NULL;
 	icaltimezone *default_zone;
 	const char *description, *uid, *temp;
 	struct icaltimetype itt_utc, itt;
@@ -424,7 +426,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 		e_cal_component_set_description_list (comp, &l);
 
 	}
-
+	
 	/*Creation*/
 	temp = gdata_entry_get_start_time (item->entry);
 	temp = gd_date_to_ical (g_strdup(temp));
@@ -484,7 +486,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	/* Attendees */
 	GSList *go_attendee_list = NULL, *l = NULL, *attendee_list = NULL;
 	go_attendee_list = gdata_entry_get_attendee_list (item->entry);
-
+		
 	if (go_attendee_list != NULL) {
 
 		for (l = go_attendee_list; l != NULL; l = l->next) {
@@ -492,18 +494,38 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 			go_attendee = (Attendee *)l->data;
 
 			ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
-
-			attendee->cn = g_strdup (go_attendee->attendee_value);
-
+#if 0
+			_print_attendee ((Attendee *)l->data);
+#endif
 			attendee->value = g_strconcat ("MAILTO:", go_attendee->attendee_email, NULL);
+			attendee->cn = g_strdup (go_attendee->attendee_value);
 			attendee->role = ICAL_ROLE_OPTPARTICIPANT;
-			attendee->status = ICAL_PARTSTAT_ACCEPTED;
+			attendee->status = ICAL_PARTSTAT_NEEDSACTION;
+			attendee->cutype =  ICAL_CUTYPE_INDIVIDUAL;
 
-			attendee_list = g_slist_prepend (attendee_list, attendee);
+			/* Check for Organizer */
+			if (go_attendee->attendee_rel) {
+				gchar *val;
+				val = strstr ((const gchar *)go_attendee->attendee_rel, (const gchar *)"organizer");
+				if (val != NULL && !strcmp ("organizer", val)) {	
+					org = g_new0 (ECalComponentOrganizer, 1);	
+
+					if (go_attendee->attendee_email) 
+						org->value = g_strconcat("MAILTO:", go_attendee->attendee_email, NULL);
+					if (go_attendee->attendee_value) 
+						org->cn =  g_strdup (go_attendee->attendee_value);
+				}	
+			}
+			
+			attendee_list = g_slist_prepend (attendee_list, attendee);	
 		}
 		e_cal_component_set_attendee_list (comp, attendee_list);
 	}
-
+	
+	/* Set the organizer if any */
+	if (org)
+		e_cal_component_set_organizer (comp, org);
+	
 	/* Location */
 	e_cal_component_set_location (comp, gdata_entry_get_location (item->entry));
 
@@ -538,7 +560,14 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 			dt.tzid = icaltimezone_get_tzid (default_zone);
 		}
 	}
-
+#if 0
+	/* temp hack to see how recurrence work */
+	ECalComponentRange *recur_id;
+	recur_id = g_new0 (ECalComponentRange, 1);
+	recur_id->datetime = dt;
+	recur_id->type = E_CAL_COMPONENT_RANGE_THISFUTURE;
+	e_cal_component_set_recurid (comp, recur_id);
+#endif
 	e_cal_component_set_dtend (comp, &dt);
 
 	uid = gdata_entry_get_id (item->entry);
