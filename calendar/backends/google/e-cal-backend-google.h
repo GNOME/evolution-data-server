@@ -72,6 +72,7 @@ icaltimezone * e_cal_backend_google_get_default_zone (ECalBackendGoogle *cbgo);
 gboolean e_cal_backend_google_get_mode_changed (ECalBackendGoogle *cbgo);
 gchar * e_cal_backend_google_get_username (ECalBackendGoogle *cbgo);
 gchar * e_cal_backend_google_get_password (ECalBackendGoogle *cbgo);
+gchar * e_cal_backend_google_get_local_attachments_store (ECalBackendGoogle *cbgo);
 gint e_cal_backend_google_get_timeout_id (ECalBackendGoogle *cbgo);
 
 void e_cal_backend_google_set_entry (ECalBackendGoogle *cbgo, GDataEntry *entry);
