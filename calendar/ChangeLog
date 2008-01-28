@@ -1,5 +1,15 @@
 2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #503574
+	* backends/groupwise/e-cal-backend-groupwise.c: (delta_thread),
+	(fetch_deltas), (start_fetch_deltas),
+	(e_cal_backend_groupwise_refresh_calendar), (cache_init),
+	(connect_to_server), (e_cal_backend_groupwise_finalize),
+	(in_offline), (e_cal_backend_groupwise_init): Fetch the deltas
+	in a single thread.						      
+	
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	** Fix for bug #475781
 
 	* libecal/e-cal.c: (process_detached_instances): 

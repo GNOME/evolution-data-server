@@ -59,6 +59,12 @@
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
 
+typedef struct {
+	GCond *cond;
+	GMutex *mutex;
+	gboolean exit;
+} SyncDelta;
+
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
 	/* A mutex to control access to the private structure */
@@ -70,7 +76,6 @@ struct _ECalBackendGroupwisePrivate {
 	char *username;
 	char *password;
 	char *container_id;
-	int timeout_id;
 	CalMode mode;
 	gboolean mode_changed;
 	icaltimezone *default_zone;
@@ -86,6 +91,10 @@ struct _ECalBackendGroupwisePrivate {
 	/* fields for storing info while offline */
 	char *user_email;
 	char *local_attachments_store;
+
+	guint timeout_id;
+	GThread *dthread;
+	SyncDelta *dlock;
 };
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
@@ -639,17 +648,58 @@ get_deltas (gpointer handle)
 	return TRUE;
 }
 
-static gboolean
-get_deltas_timeout (gpointer cbgw)
+static gpointer
+delta_thread (gpointer data)
 {
-	GThread *thread;
+	ECalBackendGroupwise *cbgw = data;
+	ECalBackendGroupwisePrivate *priv = cbgw->priv;
+	GTimeVal timeout;
+
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	while (TRUE)	{
+		gboolean succeeded = get_deltas (cbgw);
+
+		g_mutex_lock (priv->dlock->mutex);
+
+		if (!succeeded || priv->dlock->exit) 
+			break;
+
+		g_get_current_time (&timeout);
+		g_time_val_add (&timeout, CACHE_REFRESH_INTERVAL * 1000);
+		g_cond_timed_wait (priv->dlock->cond, priv->dlock->mutex, &timeout);
+		
+		if (priv->dlock->exit) 
+			break;	
+		
+		g_mutex_unlock (priv->dlock->mutex);
+	}
+
+	g_mutex_unlock (priv->dlock->mutex);
+	priv->dthread = NULL;	
+	return NULL;
+}
+
+static gboolean
+fetch_deltas (ECalBackendGroupwise *cbgw)
+{
+	ECalBackendGroupwisePrivate *priv = cbgw->priv;
 	GError *error = NULL;
 
-	if (!cbgw)
+	/* If the thread is already running just return back */	
+	if (priv->dthread) 
 		return FALSE;
-
-	thread = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
-	if (!thread) {
+	
+	if (!priv->dlock) {
+		priv->dlock = g_new0 (SyncDelta, 1);
+		priv->dlock->mutex = g_mutex_new ();
+		priv->dlock->cond = g_cond_new ();
+	}
+	
+	priv->dlock->exit = FALSE;
+	priv->dthread = g_thread_create ((GThreadFunc) delta_thread, cbgw, TRUE, &error);
+	if (!priv->dthread) {
 		g_warning (G_STRLOC ": %s", error->message);
 		g_error_free (error);
 	}
@@ -657,6 +707,37 @@ get_deltas_timeout (gpointer cbgw)
 	return TRUE;
 }
 
+
+static gboolean
+start_fetch_deltas (gpointer data)
+{
+	ECalBackendGroupwise *cbgw = data;
+
+	fetch_deltas (cbgw);
+
+	cbgw->priv->timeout_id = 0;
+	return FALSE;
+}
+
+
+/* TODO call it when a user presses SEND/RECEIVE or refresh*/
+static void
+e_cal_backend_groupwise_refresh_calendar (ECalBackendGroupwise *cbgw)
+{
+	ECalBackendGroupwisePrivate *priv = cbgw->priv;
+	gboolean delta_started = FALSE;
+
+	if (priv->mode == CAL_MODE_LOCAL)
+		return;
+
+	g_mutex_lock (priv->mutex);
+	delta_started = fetch_deltas (cbgw);
+	g_mutex_unlock (priv->mutex);
+
+	/* Emit the signal if the delta is already running */
+	if (!delta_started)
+		g_cond_signal (priv->dlock->cond);
+}
 
 static char*
 form_uri (ESource *source)
@@ -692,7 +773,7 @@ form_uri (ESource *source)
 
 }
 
-static ECalBackendSyncStatus
+static gpointer 
 cache_init (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
@@ -729,6 +810,8 @@ cache_init (ECalBackendGroupwise *cbgw)
 		g_warning (G_STRLOC ": Could not get the categories from the server");
         }
 
+	priv->mode = CAL_MODE_REMOTE;
+
 	/* We poke the cache for a default timezone. Its
 	 * absence indicates that the cache file has not been
 	 * populated before. */
@@ -739,7 +822,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 		if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning (G_STRLOC ": Could not populate the cache");
 			/*FIXME  why dont we do a notify here */
-			return GNOME_Evolution_Calendar_PermissionDenied;
+			return NULL;
 		} else {
 			char *utc_str;
 
@@ -747,25 +830,17 @@ cache_init (ECalBackendGroupwise *cbgw)
 			e_cal_backend_cache_set_marker (priv->cache);
 			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
-			/*  Set up deltas only if it is a Calendar backend */
-			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
-			priv->mode = CAL_MODE_REMOTE;
+			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, start_fetch_deltas, cbgw);
 
-			return GNOME_Evolution_Calendar_Success;
-		}
-
-	} else {
-		/* get the deltas from the cache */
-		if (get_deltas (cbgw)) {
-			priv->timeout_id = g_timeout_add (time_interval, (GSourceFunc) get_deltas_timeout, (gpointer) cbgw);
-			priv->mode = CAL_MODE_REMOTE;
-			return GNOME_Evolution_Calendar_Success;
-		} else {
-			g_warning (G_STRLOC ": Could not populate the cache");
-			/*FIXME  why dont we do a notify here */
-			return GNOME_Evolution_Calendar_PermissionDenied;
+			return NULL;
 		}
 	}
+
+	g_mutex_lock (priv->mutex);
+	fetch_deltas (cbgw);
+	g_mutex_unlock (priv->mutex);
+
+	return NULL;
 }
 
 static ECalBackendSyncStatus
@@ -902,20 +977,11 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		if (priv->cache && priv->container_id) {
 			char *utc_str;
 			priv->mode = CAL_MODE_REMOTE;
-			if (priv->mode_changed && !priv->timeout_id ) {
-				GThread *thread1;
+			if (priv->mode_changed && !priv->dthread) {
 				priv->mode_changed = FALSE;
-
-				thread1 = g_thread_create ((GThreadFunc) get_deltas, cbgw, FALSE, &error);
-				if (!thread1) {
-					g_warning (G_STRLOC ": %s", error->message);
-					g_error_free (error);
-
-					e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for getting deltas"));
-					return GNOME_Evolution_Calendar_OtherError;
-				}
-				priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, (GSourceFunc) get_deltas_timeout, (gpointer)cbgw);
+				fetch_deltas (cbgw);
 			}
+
 			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
 			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
@@ -1014,6 +1080,28 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	priv = cbgw->priv;
 
 	/* Clean up */
+
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
+	}
+
+	if (priv->dlock) {
+		g_mutex_lock (priv->dlock->mutex);
+		priv->dlock->exit = TRUE;
+		g_mutex_unlock (priv->dlock->mutex);
+		
+		g_cond_signal (priv->dlock->cond);
+
+		if (priv->dthread)
+			g_thread_join (priv->dthread);
+		
+		g_mutex_free (priv->dlock->mutex);
+		g_cond_free (priv->dlock->cond);
+		g_free (priv->dlock);
+		priv->dthread = NULL;
+	}
+
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
 		priv->mutex = NULL;
@@ -1052,11 +1140,6 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->local_attachments_store) {
 		g_free (priv->local_attachments_store);
 		priv->local_attachments_store = NULL;
-	}
-
-	if (priv->timeout_id) {
-		g_source_remove (priv->timeout_id);
-		priv->timeout_id = 0;
 	}
 
 	if (priv->sendoptions_sync_timeout) {
@@ -1164,9 +1247,17 @@ in_offline (ECalBackendGroupwise *cbgw) {
 	priv= cbgw->priv;
 	priv->read_only = TRUE;
 
+	if (priv->dlock) {
+		g_mutex_lock (priv->dlock->mutex);
+		priv->dlock->exit = TRUE;
+		g_mutex_unlock (priv->dlock->mutex);
+
+		g_cond_signal (priv->dlock->cond);
+	}	
+
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
-		priv->timeout_id =0;
+		priv->timeout_id = 0;
 	}
 
 	if (priv->cnc) {
@@ -2685,7 +2776,6 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 
 	priv = g_new0 (ECalBackendGroupwisePrivate, 1);
 
-	priv->timeout_id = 0;
 	priv->cnc = NULL;
 	priv->sendoptions_sync_timeout = 0;
 
