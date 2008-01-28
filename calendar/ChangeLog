@@ -1,5 +1,12 @@
 2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	** Fix for bug #475781
+
+	* libecal/e-cal.c: (process_detached_instances): 
+	Fix memory leaks around ECalComponentDateTime.
+
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	** Fixes bug #335217
 
 	* libecal/e-cal.c: (open_async): Removed ccad->result as

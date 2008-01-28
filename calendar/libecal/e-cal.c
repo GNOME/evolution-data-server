@@ -3450,6 +3450,8 @@ process_detached_instances (GList *instances, GList *detached_instances)
 						       uid,
 						       i_rid,
 						       d_rid);
+
+						e_cal_component_free_datetime (&instance_recur_id.datetime);
 						continue;
 					}
 					cmp = icaltime_compare (*instance_recur_id.datetime.value,
@@ -3470,7 +3472,10 @@ process_detached_instances (GList *instances, GList *detached_instances)
 					}
 				}
 			}
+			e_cal_component_free_datetime (&instance_recur_id.datetime);
 		}
+
+		e_cal_component_free_datetime (&recur_id.datetime);
 
 		if (!processed)
 			unprocessed_instances = g_list_prepend (unprocessed_instances, cid);
