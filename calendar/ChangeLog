@@ -1,5 +1,12 @@
 2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes part of #511208
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_cn_from_display_name), (e_gw_item_to_cal_component): Strip
+	the email from the display name.								  
+
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #503574
 	* backends/groupwise/e-cal-backend-groupwise.c: (delta_thread),
 	(fetch_deltas), (start_fetch_deltas),

@@ -924,6 +924,23 @@ set_default_alarms (ECalComponent *comp)
 }
 
 
+static char *
+get_cn_from_display_name (char *display_name)
+{	
+	char *dn;
+	
+	/* Strip the name part alone as the display name might contain email also*/
+	dn = g_strstr_len (display_name, strlen (display_name), " <");
+
+	if (!dn)
+		return g_strdup (display_name);
+	else { 
+		dn = g_strndup (display_name, (dn - display_name));
+		dn = g_strdelimit (dn, "\"", ' ');
+		return dn;
+	}	
+}
+
 ECalComponent *
 e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 {
@@ -1134,7 +1151,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
 				ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
 
-				attendee->cn = g_strdup (recipient->display_name);
+				attendee->cn = get_cn_from_display_name (recipient->display_name);
 				attendee->value = g_strconcat("MAILTO:", recipient->email, NULL);
 				if (recipient->type == E_GW_ITEM_RECIPIENT_TO)
 					attendee->role = ICAL_ROLE_REQPARTICIPANT;
@@ -1173,7 +1190,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		ECalComponentOrganizer *cal_organizer;
 
 		cal_organizer = g_new0 (ECalComponentOrganizer, 1);
-		cal_organizer->cn = g_strdup (organizer->display_name);
+		cal_organizer->cn = get_cn_from_display_name (organizer->display_name);
 		cal_organizer->value = g_strconcat("MAILTO:", organizer->email, NULL);
 		e_cal_component_set_organizer (comp, cal_organizer);
 	}
