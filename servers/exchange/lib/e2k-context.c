@@ -615,7 +615,6 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 
 	soup_message_set_flags (post_msg, SOUP_MESSAGE_NO_REDIRECT);
 	e2k_context_send_message (ctx, NULL /* FIXME? */, post_msg);
-	g_free (form_body);
 	g_free (action);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (post_msg->status_code) &&

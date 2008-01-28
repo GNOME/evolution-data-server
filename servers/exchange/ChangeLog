@@ -1,3 +1,7 @@
+2008-01-27  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-context.c (e2k_context_fba): Fix a double free. #511301.
+
 2008-01-24  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #511235
