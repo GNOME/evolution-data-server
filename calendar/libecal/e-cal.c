@@ -1778,7 +1778,6 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 typedef struct {
 	ECal *ecal;
 	gboolean exists;
-	gboolean result;
 	ECalendarStatus status;
 	const char *auth_prompt;
 	const char *auth_key;
@@ -1804,10 +1803,10 @@ open_async (gpointer data)
 {
 	ECalAsyncData *ccad = data;
 
-	ccad->result = open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status, FALSE);
+	open_calendar (ccad->ecal, ccad->exists, NULL, &ccad->status, FALSE);
 	g_idle_add ((GSourceFunc) async_signal_idle_cb, ccad);
 
-	return GINT_TO_POINTER (ccad->result);
+	return NULL;
 }
 
 /**

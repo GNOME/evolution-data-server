@@ -1,3 +1,10 @@
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes bug #335217
+
+	* libecal/e-cal.c: (open_async): Removed ccad->result as
+	its not required.
+
 2008-01-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #475781
