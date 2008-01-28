@@ -1,5 +1,12 @@
 2008-01-28  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #386157
+
+	* libebook/e-vcard.c: (parse): Ensured we don't use freed attribute
+	and stop reading as soon as we found 'END' attribute.
+
+2008-01-28  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #496081
 
 	* libedata-book/e-book-backend-sexp.c: (entry_compare), (func_exists):
