@@ -1,3 +1,7 @@
+2008-01-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.90 release.
+
 2008-01-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* docs/reference: Refresh the API docs.
