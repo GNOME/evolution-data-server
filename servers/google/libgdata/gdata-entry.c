@@ -87,8 +87,6 @@ struct _GDataEntryPrivate {
 	gboolean is_recurrent;
 };
 
-static void gdata_entry_set_xml (GDataEntry *entry, const gchar *xml);
-
 static void destroy_authors (gpointer data, gpointer user_data)
 {
 	GDataEntryAuthor *author = (GDataEntryAuthor *)data;
@@ -386,7 +384,7 @@ xmlnode_to_category (xmlDocPtr doc, xmlNodePtr cur)
 	return category;
 }
 
-Attendee *
+static Attendee *
 xmlnode_to_attendee (xmlDocPtr doc, xmlNodePtr cur)
 {
 	Attendee *attendee;
@@ -394,45 +392,25 @@ xmlnode_to_attendee (xmlDocPtr doc, xmlNodePtr cur)
 
 	attendee = g_new0 (Attendee, 1);
 
-	while (cur != NULL) {
-		value = xmlGetProp(cur, (xmlChar *)"email");
-		if (value) {
-			attendee->attendee_email = g_strdup((gchar *)value);
-			xmlFree(value);
-		}
-
-		value = xmlGetProp(cur, (xmlChar *)"rel");
-
-		if (value) {
-			attendee->attendee_rel = g_strdup((gchar *)value);
-			xmlFree (value);
-		}
-
-		value= xmlGetProp(cur, (xmlChar *)"valueString");
-		if (value) {
-			attendee->attendee_value = g_strdup((gchar *)value);
-			xmlFree (value);
-		}
-
-		cur = cur->next;
+	value = xmlGetProp(cur, (xmlChar *)"email");
+	if (value) {
+		attendee->attendee_email = g_strdup((gchar *)value);
+		xmlFree(value);
 	}
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		attendee->attendee_rel = g_strdup((gchar *)value);
+		xmlFree (value);
+	}
+
+	value= xmlGetProp(cur, (xmlChar *)"valueString");
+	if (value) {
+		attendee->attendee_value = g_strdup((gchar *)value);
+		xmlFree (value);
+	}
+
 	return attendee;
-}
-
-static xmlNodePtr
-entry_to_xmlnode (GDataEntry *entry)
-{
-	xmlDocPtr doc;
-	xmlNodePtr cur;
-	gchar *xmlEntry;
-
-	xmlEntry = gdata_entry_generate_xml (entry);
-
-	/* FIXME 3rd argument could carry a better name */
-	doc = xmlReadMemory (xmlEntry, strlen(xmlEntry), "feeds.xml", NULL, 0);
-	cur = xmlDocGetRootElement (doc);
-
-	return cur;
 }
 
 static xmlNodePtr
@@ -799,30 +777,6 @@ gdata_entry_generate_xml (GDataEntry *entry)
 	xmlFreeDoc(doc);
 
 	return priv->entry_xml;
-}
-
-/* Builds the DOM tree for the entries stored in hash table */
-static void
-build_hash_table_entries (gchar *key, gchar *value, xmlNode **cur)
-{
-	xmlNode *ptr;
-	ptr = *cur;
-
-	/* Iterates from a node pointer , till it reaches NULL , to append other nodes */
-	while (TRUE) {
-
-		if (ptr->next == NULL) {
-			/* FIXME: Will we be needing , these nodes of entries when building them ? */
-			if (!g_ascii_strcasecmp (key, "published") || !g_ascii_strcasecmp (key, "id") || !g_ascii_strcasecmp (key, "updated"))
-				break;
-
-			ptr->next = xmlNewNode (NULL, (xmlChar *)key);
-			(value) ? xmlNodeSetContent (ptr->next, (xmlChar *)value) : xmlNodeSetContent (ptr->next, (xmlChar *)"");
-			break;
-		}
-		else
-			ptr = ptr->next;
-	}
 }
 
 /**
@@ -1341,25 +1295,6 @@ gdata_entry_set_location (GDataEntry *entry, const gchar *location)
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	priv->location = g_strdup (location);
 	priv->entry_needs_update = TRUE;
-}
-
-/**
- * gdata_entry_set_xml:
- * @entry: A GDataEntry object.
- * @location: xml tree of the entry.
- * Sets the xml tree of the entry.
- **/
-static void
-gdata_entry_set_xml (GDataEntry *entry, const gchar *xml)
-{
-	GDataEntryPrivate *priv;
-
-	g_return_if_fail(GDATA_IS_ENTRY(entry));
-
-	priv = GDATA_ENTRY_GET_PRIVATE(entry);
-	priv->entry_xml = g_strdup (xml);
-	priv->entry_needs_update = TRUE;
-
 }
 
 /**
