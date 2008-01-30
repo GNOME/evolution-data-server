@@ -1,3 +1,11 @@
+2008-01-30  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (mapi_sync): Initial support for flags upsync.
+
+2008-01-28  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (mapi_refresh_folder): re-naming variables.
+
 2008-01-28  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c (fetch_items_cb): use PR_NORMALISED_SUBJECT.

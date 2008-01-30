@@ -235,16 +235,12 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 	
 	/*store summary*/
 	path = g_alloca (strlen (priv->storage_path) + 32);
-	sprintf (path, "%s/.summary", priv->storage_path);
 
 	mapi_store->summary = camel_mapi_store_summary_new ();
 	camel_store_summary_set_filename ((CamelStoreSummary *)mapi_store->summary, path);
 
 	camel_store_summary_touch ((CamelStoreSummary *)mapi_store->summary);
 	camel_store_summary_load ((CamelStoreSummary *) mapi_store->summary);
-	printf("%s(%d):%s:summary : %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, path);
-	printf("%s(%d):%s:summary : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, 
-	       camel_store_summary_count ((CamelStoreSummary *)mapi_store->summary));	
 
 	/*user and profile*/
 	priv->user = g_strdup (url->user);

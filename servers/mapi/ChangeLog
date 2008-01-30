@@ -1,3 +1,7 @@
+2008-01-30  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_set_flags): Added.
+
 2008-01-25  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-connection.[ch] (exchange_mapi_rename_folder): Added. 

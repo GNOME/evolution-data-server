@@ -1482,6 +1482,70 @@ cleanup:
 	return result;
 }
 
+gboolean
+exchange_mapi_set_flags (uint32_t olFolder, mapi_id_t fid, GSList *mid_list, uint32_t flag)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	mapi_object_t obj_message;
+	struct SPropValue *props = NULL;
+	gint propslen = 0;
+	gboolean result = FALSE;
+	GSList *l;
+
+	LOCK ();
+
+	mem_ctx = talloc_init("ExchangeMAPI_ModifyItem");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	for (l = mid_list; l != NULL; l = g_slist_next (l)) {
+		mapi_object_init(&obj_message);
+		mapi_id_t mid = *((mapi_id_t *)l->data);
+
+		retval = OpenMessage(&obj_folder, fid, mid, &obj_message, MAPI_MODIFY);
+
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("OpenMessage", GetLastError());
+			goto cleanup;
+		}
+
+		retval = SetReadFlags(&obj_folder, &obj_message, flag);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("SetReadFlags", GetLastError());
+			goto cleanup;
+		}
+
+		mapi_object_release(&obj_message);
+	}
+
+	result = TRUE;
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	UNLOCK ();
+
+	return result;
+}
+
 /* FIXME: param olFolder is never used in the routine. Remove it and cleanup at the backends */
 gboolean
 exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
@@ -1498,7 +1562,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-	LOGALL ();
+	//	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_RemoveItems");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
@@ -1536,7 +1600,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
-	LOGNONE();
+	//	LOGNONE();
 	UNLOCK ();
 
 	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));

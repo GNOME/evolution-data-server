@@ -104,6 +104,10 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 			   BuildNameID build_name_id, gpointer ni_data, 
 			   BuildProps build_props, gpointer p_data,
 			   GSList *recipients, GSList *attachments);
+
+gboolean
+exchange_mapi_set_flags (uint32_t olFolder, mapi_id_t fid, GSList *mid_list, uint32_t flag);
+
 gboolean
 exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids);
 
