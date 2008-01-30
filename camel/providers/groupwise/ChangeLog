@@ -1,3 +1,9 @@
+2008-01-30  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #395939
+
+	* camel-groupwise-store.c: (groupwise_forget_folder): Memory leak fix.
+
 2008-01-22  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #498977

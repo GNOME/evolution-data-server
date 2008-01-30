@@ -180,6 +180,7 @@ dispose (GObject *object)
 			g_object_unref (ctx->priv->async_session);
 
 		g_free (ctx->priv->cookie);
+		g_free (ctx->priv->notification_uri);
 
 		g_free (ctx->priv);
 		ctx->priv = NULL;

@@ -480,7 +480,7 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 	name = folder_name;
 
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
-	folder_dir = g_strdup(e_path_to_physical (storage_path,folder_name));
+	folder_dir = e_path_to_physical (storage_path,folder_name);
 
 	if (g_access(folder_dir, F_OK) != 0) {
 		g_free(folder_dir);
