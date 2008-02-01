@@ -51,6 +51,8 @@ exchange_mapi_util_find_stream (GSList *stream_list, uint32_t proptag);
 void 
 exchange_mapi_util_free_attachment_list (GSList **attach_list);
 void 
+exchange_mapi_util_free_recipient_list (GSList **recip_list);
+void 
 exchange_mapi_util_free_stream_list (GSList **stream_list);
 
 #endif

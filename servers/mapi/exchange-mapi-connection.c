@@ -39,10 +39,10 @@
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK()		printf("%s(%d): %s: lock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
-#define UNLOCK()	printf("%s(%d): %s: unlock(connect_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
+#define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
+#define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
 #define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-#define LOGNONE()       lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 //#define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
 #define ENABLE_VERBOSE_LOG()
 
@@ -377,8 +377,81 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 static gboolean
 exchange_mapi_util_delete_attachments (mapi_object_t *obj_message)
 {
-	/* FIXME: write the code after API is implemented in libmapi */
+	enum MAPISTATUS		retval;
+	TALLOC_CTX 		*mem_ctx;
+	mapi_object_t 		obj_tb_attach;
+	struct SPropTagArray	*proptags;
+	struct SRowSet		rows_attach;
+	uint32_t		attach_count;
+	uint32_t		i_row_attach;
+	gboolean 		status = TRUE;
+
+	/* FIXME: remove this line once you upgrade to libmapi rev 327 or higher */
 	return TRUE;
+	/* also uncomment the line with the DeleteAttach call */
+
+	mem_ctx = talloc_init ("ExchangeMAPI_DeleteAttachments");
+
+	proptags = set_SPropTagArray(mem_ctx, 0x7, 
+				     PR_ATTACH_NUM, 
+				     PR_INSTANCE_KEY, 
+				     PR_RECORD_KEY, 
+				     PR_RENDERING_POSITION,
+				     PR_ATTACH_FILENAME, 
+				     PR_ATTACH_LONG_FILENAME,  
+				     PR_ATTACH_SIZE);
+
+	mapi_object_init(&obj_tb_attach);
+
+	/* open attachment table */
+	retval = GetAttachmentTable(obj_message, &obj_tb_attach);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetAttachmentTable", GetLastError());
+		goto cleanup;
+	}
+
+	retval = SetColumns(&obj_tb_attach, proptags);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SetColumns", GetLastError());
+		goto cleanup;
+	}
+
+	retval = GetRowCount(&obj_tb_attach, &attach_count);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetRowCount", GetLastError());
+		goto cleanup;
+	}
+
+	retval = QueryRows(&obj_tb_attach, attach_count, TBL_ADVANCE, &rows_attach);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("QueryRows", GetLastError());
+		goto cleanup;
+	}
+
+	/* foreach attachment, delete by PR_ATTACH_NUM */
+	for (i_row_attach = 0; i_row_attach < rows_attach.cRows; i_row_attach++) {
+		const uint32_t	*num_attach;
+
+		num_attach = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_NUM);
+
+//		retval = DeleteAttach(obj_message, *num_attach);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("DeleteAttach", GetLastError());
+			goto loop_cleanup;
+		}
+
+	loop_cleanup:
+		if (retval != MAPI_E_SUCCESS)
+			status = FALSE;
+	}
+
+cleanup:
+	if (retval != MAPI_E_SUCCESS)
+		status = FALSE;
+	mapi_object_release(&obj_tb_attach);
+	talloc_free (mem_ctx);
+
+	return status;
 }
 
 /* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
@@ -591,8 +664,6 @@ exchange_mapi_util_get_attachments (mapi_object_t *obj_message, GSList **attach_
 			}
 		}
 
-		/* FIXME: should we utf8tolinux (buf_data) ??*/
-
 		if (retval == MAPI_E_SUCCESS) {
 			ExchangeMAPIAttachment 	*attachment = g_new0 (ExchangeMAPIAttachment, 1);
 
@@ -619,6 +690,57 @@ cleanup:
 		status = FALSE;
 	mapi_object_release(&obj_tb_attach);
 	talloc_free (mem_ctx);
+
+	return status;
+}
+
+/* Returns TRUE if all recipients were read succcesfully, else returns FALSE */
+static gboolean
+exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_list)
+{
+	enum MAPISTATUS		retval;
+//	TALLOC_CTX 		*mem_ctx;
+	struct SPropTagArray	proptags;
+	struct SRowSet		rows_recip;
+	uint32_t		i_row_recip;
+	gboolean 		status = TRUE;
+
+	/* FIXME: remove this line once you upgrade to libmapi rev 340 or higher */
+	return TRUE;
+	/* also uncomment the line with the GetRecipientTable call */
+
+//	mem_ctx = talloc_init ("ExchangeMAPI_GetRecipients");
+
+	/* fetch recipient table */
+//	retval = GetRecipientTable(obj_message, &rows_recip, &proptags);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetRecipientTable", GetLastError());
+		goto cleanup;
+	}
+
+	for (i_row_recip = 0; i_row_recip < rows_recip.cRows; i_row_recip++) {
+		if (retval == MAPI_E_SUCCESS) {
+			ExchangeMAPIRecipient 	*recipient = g_new0 (ExchangeMAPIRecipient, 1);
+			const uint32_t *ui32;
+
+			/* FIXME: fallback on EX address type */
+			recipient->email_id = (const char *) find_SPropValue_data (&(rows_recip.aRow[i_row_recip]), PR_SMTP_ADDRESS_UNICODE);
+			recipient->email_type = "SMTP";
+			/* FIXME: fallback on other usable props */
+			recipient->name = (const char *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_DISPLAY_NAME_UNICODE);
+			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENTS_FLAGS);
+			recipient->flags = *ui32;
+			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TYPE);
+			recipient->type = *ui32;
+
+			*recip_list = g_slist_append (*recip_list, recipient);
+		}
+	}
+
+cleanup:
+	if (retval != MAPI_E_SUCCESS)
+		status = FALSE;
+//	talloc_free (mem_ctx);
 
 	return status;
 }
@@ -783,9 +905,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		if (has_attach && *has_attach)
 			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 
-		if (disclose_recipients && *disclose_recipients) {
-			//TODO : RecipientTable handling. 
-		}
+		exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
 		/* get the main body stream no matter what */
 		exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
@@ -832,8 +952,8 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		if (attach_list)
 			exchange_mapi_util_free_attachment_list (&attach_list);
 
-		if (recip_list) {
-		}
+		if (recip_list) 
+			exchange_mapi_util_free_recipient_list (&recip_list);
 
 		if (stream_list) 
 			exchange_mapi_util_free_stream_list (&stream_list);
@@ -944,8 +1064,8 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 	/* Fetch attachments */
 	exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 
-	/* TODO: RecipientTable handling */
-
+	/* Fetch recipients */
+	exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
 	/* get the main body stream no matter what */
 	exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
@@ -987,8 +1107,8 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 	if (attach_list)
 		exchange_mapi_util_free_attachment_list (&attach_list);
 
-	if (recip_list) {
-	}
+	if (recip_list) 
+		exchange_mapi_util_free_recipient_list (&recip_list);
 
 	if (stream_list) 
 		exchange_mapi_util_free_stream_list (&stream_list);
@@ -1020,7 +1140,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	d(printf("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-	LOGALL ();
+//	LOGALL ();
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_top);
 	mapi_object_init(&obj_folder);
@@ -1084,7 +1204,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_top);
 	mapi_object_release(&obj_store);
-	LOGNONE();
+//	LOGNONE();
 	UNLOCK ();
 
 	d(printf("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));

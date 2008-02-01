@@ -39,15 +39,15 @@ typedef enum {
 	MAPI_FOREIGN_FOLDER
 } ExchangeMAPIFolderCategory;
 typedef struct _ExchangeMAPIFolder {
-	char *folder_name;
-	char *parent_folder_name;
+	gchar *folder_name;
+	gchar *parent_folder_name;
 	ExchangeMAPIFolderType container_class;
 	ExchangeMAPIFolderCategory category;
-	uint64_t folder_id;
-	uint64_t parent_folder_id;
-	uint32_t child_count;
-	guint unread_count;
-	guint total;
+	guint64 folder_id;
+	guint64 parent_folder_id;
+	guint32 child_count;
+	guint32 unread_count;
+	guint32 total;
 
 	/* reserved */
 	gpointer reserved1;

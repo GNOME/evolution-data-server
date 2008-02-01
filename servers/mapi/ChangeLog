@@ -1,3 +1,18 @@
+2008-02-01  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_delete_attachments): Implemented the function. 
+	(exchange_mapi_util_get_recipients): Implemented the function. 
+	(exchange_mapi_util_get_attachments),
+	(exchange_mapi_connection_fetch_items),
+	(exchange_mapi_connection_fetch_item): RecipientTable handling. 
+	* exchange-mapi-connection.h: Initialize RecipientType enum. 
+	* exchange-mapi-folder.h: 
+	* exchange-mapi-utils.c: (exchange_mapi_util_free_attachment_list),
+	(exchange_mapi_util_free_recipient_list),
+	(exchange_mapi_util_free_stream_list): Fixed memory leaks. 
+	* exchange-mapi-utils.h: Added (exchange_mapi_util_free_recipient_list)
+
 2008-01-30  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-connection.c (exchange_mapi_set_flags): Added.
