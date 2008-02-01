@@ -590,11 +590,26 @@ do_label (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDri
 
 	d(fprintf (stderr, "setting label tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
+		/* This is a list of new labels, we should used these in case of passing in old names.
+		   This all is required only because backward compatibility. */
+		const char *new_labels[] = { "$Labelimportant", "$Labelwork", "$Labelpersonal", "$Labeltodo", "$Labellater", NULL};
+		const char *label;
+		int i;
+
+		label = argv[0]->value.string;
+
+		for (i = 0; new_labels [i]; i++) {
+			if (label && strcmp (new_labels [i] + 6, label) == 0) {
+				label = new_labels [i];
+				break;
+			}
+		}
+
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_flag (p->source, p->uid, argv[0]->value.string, TRUE);
+			camel_folder_set_message_user_flag (p->source, p->uid, label, TRUE);
 		else
-			camel_message_info_set_user_flag (p->info, argv[0]->value.string, TRUE);
-		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set label to %s", argv[0]->value.string);
+			camel_message_info_set_user_flag (p->info, label, TRUE);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set label to %s", label);
 	}
 
 	return NULL;
