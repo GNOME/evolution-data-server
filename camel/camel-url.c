@@ -302,8 +302,8 @@ camel_url_new (const char *url_string, CamelException *ex)
 {
 	CamelURL *url;
 
-	g_return_val_if_fail (url_string != NULL, NULL);
-	g_return_val_if_fail (*url_string != 0, NULL);
+	if (!url_string || !*url_string)
+		return NULL;
 
 	url = camel_url_new_with_base (NULL, url_string);
 

@@ -1,3 +1,10 @@
+2008-02-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #513389
+
+	* camel-url.c: (camel_url_new):
+	It's possible to pass empty string as url, so return safely.
+
 2008-02-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #211353
