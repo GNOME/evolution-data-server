@@ -338,8 +338,10 @@ session_authenticate (SoupSession *session, SoupMessage *msg,
 {
 	E2kContext *ctx = user_data;
 
-	soup_auth_authenticate (auth, ctx->priv->username,
-				ctx->priv->password);
+	if (!retrying) {
+		soup_auth_authenticate (auth, ctx->priv->username,
+					ctx->priv->password);
+	}
 }
 
 /**

@@ -1,3 +1,9 @@
+2008-02-04  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-context.c (session_authenticate): Only authenticate the
+	auth once; if we're called again, let it fail, since the cached
+	password must be incorrect. #513646.
+
 2008-01-30  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #395939
