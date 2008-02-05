@@ -1,3 +1,10 @@
+2008-02-01  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (mapi_folder_item_to_msg): Add attachments 
+	to messages.
+
+	* camel-mapi-folder.h (struct MapiItem): Added attachment field.
+
 2008-01-30  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c (mapi_sync): Initial support for flags upsync.

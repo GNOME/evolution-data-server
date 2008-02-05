@@ -1,3 +1,11 @@
+2008-02-01  Johnny Jacob  <jjohnny@novell.com>	
+	
+	* exchange-mapi-connection.c (exchange_mapi_connection_fetch_item): Donot free
+	the attachment list.
+
+	* exchange-mapi-connection.[ch] (struct ExchangeMAPIAttachment): Added 
+	mime_type field for attachments.
+
 2008-02-01  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c:

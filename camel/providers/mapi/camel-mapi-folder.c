@@ -34,7 +34,6 @@
 #include <string.h>
 #include <camel/camel-stream-buffer.h>
 #include <libmapi/libmapi.h>
-
 #include <pthread.h>
 
 #include "camel-mapi-private.h"
@@ -152,7 +151,7 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 			camel_store_summary_info_free ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary, si);
 		}
 		camel_folder_summary_save (folder->summary);
-		/* 		camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary); */
+		camel_store_summary_save ((CamelStoreSummary *)((CamelMapiStore *)folder->parent_store)->summary);
 	} else {
 		/* We probably could not get the messages the first time. (get_folder) failed???!
 		 * so do a get_folder again. And hope that it works
@@ -276,7 +275,6 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 		item->header.flags |= CAMEL_MESSAGE_SEEN;
 	if ((*flags & MSGFLAG_HASATTACH) != 0)
 		item->header.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-
 /* 	printf("%s(%d):%s:subject : %s \n from : %s\nto : %s\n cc : %s\n", __FILE__, */
 /* 	       __LINE__, __PRETTY_FUNCTION__, item->header.subject, */
 /* 	       item->header.from, item->header.to, item->header.cc); */
@@ -800,6 +798,7 @@ fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mi
 	item->mid = mid;
 
 	/* FixME : which on of this will fetch the subject. */
+	item->header.subject = g_strdup (find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT));
 	item->header.to = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_TO));
 	item->header.cc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_CC));
 	item->header.bcc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_BCC));
@@ -821,6 +820,10 @@ fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mi
 		item->header.flags |= CAMEL_MESSAGE_SEEN;
 	if ((*flags & MSGFLAG_HASATTACH) != 0)
 		item->header.flags |= CAMEL_MESSAGE_ATTACHMENTS;
+
+	//Fetch Attachments here.
+	printf("%s(%d):%s:Number of Attachments : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, g_slist_length (attachments));
+	item->attachments = attachments;
 
 	return item;
 }
@@ -939,11 +942,14 @@ mapi_folder_item_to_msg( CamelFolder *folder,
 	MapiItemType type;
 	CamelMultipart *multipart = NULL;
 
+	GSList *attach_list = NULL;
 	int errno;
 	char *body = NULL;
 	int body_len = 0;
 	const char *uid = NULL;
 	CamelStream *temp_stream;
+
+	attach_list = item->attachments;
 
 	msg = camel_mime_message_new ();
 
@@ -956,6 +962,35 @@ mapi_folder_item_to_msg( CamelFolder *folder,
 	/*Set recipient details*/
 	mapi_msg_set_recipient_list (msg, item);
 	mapi_populate_details_from_item (msg, item);
+
+	if (attach_list) {
+		GSList *al = attach_list;
+		for (al = attach_list; al != NULL; al = al->next) {
+			ExchangeMAPIAttachment *attach = (ExchangeMAPIAttachment *)al->data;
+			CamelMimePart *part;
+
+			printf("%s(%d):%s:Attachment --\n\tFileName : %s \n\tMIME Tag : %s\n\tLength : %d\n",
+			       __FILE__, __LINE__, __PRETTY_FUNCTION__, 
+				 attach->filename, attach->mime_type, attach->value->len );
+
+			if (attach->value->len <= 0) {
+				continue;
+			}
+			part = camel_mime_part_new ();
+
+			camel_mime_part_set_filename(part, g_strdup(attach->filename));
+			//Auto generate content-id
+			camel_mime_part_set_content_id (part, NULL);
+			camel_mime_part_set_content(part, attach->value->data, attach->value->len, attach->mime_type);
+			camel_content_type_set_param (((CamelDataWrapper *) part)->mime_type, "name", attach->filename);
+
+			camel_multipart_set_boundary(multipart, NULL);
+			camel_multipart_add_part (multipart, part);
+			camel_object_unref (part);
+			
+		}
+		exchange_mapi_util_free_attachment_list (&attach_list);
+	}
 
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 	camel_object_unref (multipart);

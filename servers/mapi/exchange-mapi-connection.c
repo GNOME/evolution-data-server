@@ -577,13 +577,14 @@ exchange_mapi_util_get_attachments (mapi_object_t *obj_message, GSList **attach_
 	mem_ctx = talloc_init ("ExchangeMAPI_GetAttachments");
 
 	/* do we need MIME tag, MIME sequence etc ? */
-	proptags = set_SPropTagArray(mem_ctx, 0x7, 
+	proptags = set_SPropTagArray(mem_ctx, 0x8, 
 				     PR_ATTACH_NUM, 
 				     PR_INSTANCE_KEY, 
 				     PR_RECORD_KEY, 
 				     PR_RENDERING_POSITION,
 				     PR_ATTACH_FILENAME, 
 				     PR_ATTACH_LONG_FILENAME,  
+				     PR_ATTACH_MIME_TAG,
 				     PR_ATTACH_SIZE);
 
 	mapi_object_init(&obj_tb_attach);
@@ -645,6 +646,7 @@ exchange_mapi_util_get_attachments (mapi_object_t *obj_message, GSList **attach_
 		/* Alloc buffer */
 		sz_data = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_SIZE);
 		buf_data = talloc_size(mem_ctx, *sz_data);
+
 		if (buf_data == 0)
 			goto loop_cleanup;
 
@@ -673,6 +675,8 @@ exchange_mapi_util_get_attachments (mapi_object_t *obj_message, GSList **attach_
 			attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_LONG_FILENAME);
 			if (!(attachment->filename && *attachment->filename))
 				attachment->filename = (const char *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_FILENAME);
+
+			attachment->mime_type = (const char *) find_SPropValue_data (&rows_attach.aRow[i_row_attach], PR_ATTACH_MIME_TAG);
 
 			*attach_list = g_slist_append (*attach_list, attachment);
 		}
@@ -902,8 +906,10 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 			goto loop_cleanup;
 		}
 
-		if (has_attach && *has_attach)
+		if (has_attach && *has_attach) {
+			printf("%s(%d):%s:Fetching Attachments \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
+		}
 
 		exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
@@ -948,9 +954,9 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 	loop_cleanup:
 		mapi_object_release(&obj_message);
 
-		/* should I ?? */
-		if (attach_list)
-			exchange_mapi_util_free_attachment_list (&attach_list);
+		/* FIXME : Should be freed by the caller */
+/* 		if (attach_list) */
+/* 			exchange_mapi_util_free_attachment_list (&attach_list); */
 
 		if (recip_list) 
 			exchange_mapi_util_free_recipient_list (&recip_list);
@@ -1104,8 +1110,8 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 //		talloc_free (properties_array.lpProps);
 
 	/* should I ?? */
-	if (attach_list)
-		exchange_mapi_util_free_attachment_list (&attach_list);
+/* 	if (attach_list) */
+/* 		exchange_mapi_util_free_attachment_list (&attach_list); */
 
 	if (recip_list) 
 		exchange_mapi_util_free_recipient_list (&recip_list);

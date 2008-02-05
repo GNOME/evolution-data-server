@@ -35,7 +35,8 @@ typedef enum {
 /* FIXME: need to accomodate rendering position */
 typedef struct {
 	GByteArray *value;
-	const char *filename;
+	const gchar *filename;
+	const gchar *mime_type;
 } ExchangeMAPIAttachment;
 
 typedef struct {

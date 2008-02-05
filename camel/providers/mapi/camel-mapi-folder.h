@@ -28,6 +28,7 @@
 #include <camel/camel-offline-folder.h>
 #include <camel/camel-offline-journal.h>
 #include <libmapi/libmapi.h>
+#include <exchange-mapi-connection.h>
 
 #define PATH_FOLDER ".evolution/mail/mapi"
 
@@ -77,6 +78,8 @@ typedef struct  {
 
 	MapiItemHeader header;
 	MapiItemMessage msg;
+
+	GSList *attachments;
 }MapiItem;
 
 
