@@ -1,3 +1,12 @@
+2008-02-05  Peteris Krisjanis <pecisk@gmail.com>
+
+	** Fix for bug #514487
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_server_get_object):
+	Fix failure to download ics file when additional
+	information is included in it's MIME 
+	(e.g. "text/calendar; charset=utf-8").
+
 2008-02-05  Hein-Pieter van Braam  <hp@syntomax.com>
 
 	** Fix for bug #514407

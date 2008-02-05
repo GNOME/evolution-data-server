@@ -1020,7 +1020,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	hdr = soup_message_headers_get (message->response_headers, "Content-Type");
 
-	if (hdr == NULL || g_ascii_strcasecmp (hdr, "text/calendar")) {
+	if (hdr == NULL || g_ascii_strncasecmp (hdr, "text/calendar", 13)) {
 		result = GNOME_Evolution_Calendar_InvalidObject;
 		g_object_unref (message);
 		g_warning ("Object to fetch not of type text/calendar");
