@@ -1,3 +1,11 @@
+2008-02-05  Hein-Pieter van Braam  <hp@syntomax.com>
+
+	** Fix for bug #514407
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_compute_changes):
+	Fix a NULL string being passed to strcmp.
+
 2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes part of #511208

@@ -1781,7 +1781,7 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char 
 	g_free (filename);
 	g_free (unescaped_uri);
 
-        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (cbgw), NULL, NULL, &list);
+        status = e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (cbgw), NULL, "#t", &list);
         if (status != GNOME_Evolution_Calendar_Success)
                 return status;
 
@@ -1789,9 +1789,11 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char 
 	for (i = list; i != NULL; i = g_list_next (i)) {
 		const char *uid;
 		char *calobj;
+		ECalComponent *comp;
 
-		e_cal_component_get_uid (i->data, &uid);
-		calobj = e_cal_component_get_as_string (i->data);
+		comp = e_cal_component_new_from_string (i->data);
+		e_cal_component_get_uid (comp, &uid);
+		calobj = i->data;
 
 		g_assert (calobj != NULL);
 
@@ -1810,7 +1812,9 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char 
 		}
 
 		g_free (calobj);
+		g_object_unref (comp);
 	}
+	g_list_free (list);
 
 	/* Calculate deletions */
 	be_data.backend = cbgw;
