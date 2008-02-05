@@ -2388,7 +2388,7 @@ msgstr "Cannot rename folder: %s: Invalid operation"
 #: ../camel/camel-store.c:795
 #: ../camel/camel-vtrash-folder.c:52
 msgid "Trash"
-msgstr "Trash"
+msgstr "Wastebasket"
 
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:798
@@ -2644,7 +2644,7 @@ msgstr "Cannot rename folder: %s: No such folder"
 
 #: ../camel/camel-vtrash-folder.c:53
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Cannot copy messages to the Trash folder"
+msgstr "Cannot copy messages to the Wastebasket folder"
 
 #: ../camel/camel-vtrash-folder.c:55
 msgid "Cannot copy messages to the Junk folder"

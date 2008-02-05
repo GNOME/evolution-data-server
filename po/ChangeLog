@@ -1,3 +1,7 @@
+2008-02-05  Bastien Nocera  <hadess@hadess.net>
+
+	* en_GB.po: Fix Wastebasket/Trash (Closes: #514555)
+
 2008-02-05  Duarte Loreto <happyguy_pt@hotmail.com>
 
 	* pt.po: Updated Portuguese translation.
