@@ -253,7 +253,7 @@ if test "x${dynamic_libdb}" = "xyes"; then
 
         msg_libdb="dynamically linked"
 else
-        DB_CFLAGS="-I\$(top_srcdir)/libdb/dist"
+        DB_CFLAGS="-I\$(top_builddir)/libdb/dist"
         DB_LIBS="\$(top_builddir)/libdb/dist/libdb-4.1.la"
         AC_MSG_NOTICE(Using local libdb)
         msg_libdb="statically linked to local copy"

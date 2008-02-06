@@ -1,3 +1,9 @@
+2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	* Makefile.am:
+	Fix a compilation error that occurs when building in a
+	remote object directory (#514682, patch by Paul Smith).
+
 2008-02-04  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #513389

@@ -1,3 +1,10 @@
+2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	* marshal.mk:
+	Fix a compilation error that occurs when building in a
+	remote object directory (#514682, patch by Paul Smith).
+
 2008-02-06  Tor Lillqvist  <tml@novell.com>
 
 	* evolution-data-server-zip.in: Look for catalogs in share/locale
