@@ -1,3 +1,9 @@
+2008-02-06  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Look for catalogs in share/locale
+	first, as that is where they will be with a properly built GNU
+	gettext.
+
 2008-01-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* configure.in: Version bump for 2.21.91 

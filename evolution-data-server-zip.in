@@ -71,7 +71,11 @@ zip -r $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
 
 zip -r $ZIP share/pixmaps/evolution-data-server-@BASE_VERSION@
 
-zip $ZIP lib/locale/*/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo
+if [ -f share/locale/de/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo ]; then
+  zip $ZIP share/locale/*/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo
+else
+  zip $ZIP lib/locale/*/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo
+fi
 
 rm $DEVZIP
 zip -r $DEVZIP -@ <<EOF
