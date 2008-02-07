@@ -364,7 +364,7 @@ typedef struct _ECalComponentAlarm ECalComponentAlarm;
 /* An alarm occurrence, i.e. a trigger instance */
 typedef struct {
 	/* UID of the alarm that triggered */
-	const char *auid;
+	char *auid;
 
 	/* Trigger time, i.e. "5 minutes before the appointment" */
 	time_t trigger;

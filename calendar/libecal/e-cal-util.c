@@ -336,7 +336,7 @@ add_trigger (struct alarm_occurrence_data *aod, const char *auid, time_t trigger
 	ECalComponentAlarmInstance *instance;
 
 	instance = g_new (ECalComponentAlarmInstance, 1);
-	instance->auid = auid;
+	instance->auid = g_strdup (auid);
 	instance->trigger = trigger;
 	instance->occur_start = occur_start;
 	instance->occur_end = occur_end;

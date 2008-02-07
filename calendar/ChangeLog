@@ -1,5 +1,16 @@
 2008-02-07  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #509776
+
+	* libecal/e-cal-component.h: (ECalComponentAlarmInstance):
+	Structure owns auid point, so do not declare it as const.
+	* libecal/e-cal-component.c: (e_cal_component_alarms_free):
+	Free instance->auid too, do not leak now.
+	* libecal/e-cal-util.c: (add_trigger):
+	Store copy of the auid into instance, it owns it now.
+
+2008-02-07  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fixes for bug #510949
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c:

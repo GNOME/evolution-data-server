@@ -5291,6 +5291,7 @@ e_cal_component_alarms_free (ECalComponentAlarms *alarms)
 
 		instance = l->data;
 		g_assert (instance != NULL);
+		g_free (instance->auid);
 		g_free (instance);
 	}
 
