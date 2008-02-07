@@ -1,3 +1,12 @@
+2008-02-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of #510949
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attachments_to_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_get_freebusy_info):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(fetch_attachments): Leak fixes.
+
 2008-02-05  Peteris Krisjanis <pecisk@gmail.com>
 
 	** Fix for bug #514487

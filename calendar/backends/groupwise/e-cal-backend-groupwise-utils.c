@@ -856,6 +856,9 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 
 	e_cal_component_set_attachment_list (comp, comp_attachment_list);
 
+	for (l = comp_attachment_list; l != NULL; l = l->next) 
+		g_free (l->data);
+	g_slist_free (comp_attachment_list);
 }
 
 static void
@@ -1181,6 +1184,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			}
 
 			e_cal_component_set_attendee_list (comp, attendee_list);
+			e_cal_component_free_attendee_list (attendee_list);
 		}
 	}
 
@@ -1193,6 +1197,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		cal_organizer->cn = get_cn_from_display_name (organizer->display_name);
 		cal_organizer->value = g_strconcat("MAILTO:", organizer->email, NULL);
 		e_cal_component_set_organizer (comp, cal_organizer);
+
+		g_free ((char *) cal_organizer->cn);
+		g_free ((char*) cal_organizer->value);
+		g_free (cal_organizer);
 	}
 
 	/* set attachments, if any */
@@ -1755,7 +1763,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		attendee_list = g_slist_append (attendee_list, &attendee);
 
 		e_cal_component_set_attendee_list (comp, attendee_list);
-
+		e_cal_component_free_attendee_list (attendee_list);
 
 		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
 		if (!param_blocks) {

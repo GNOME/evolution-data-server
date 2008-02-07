@@ -2393,6 +2393,11 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 	}
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
+
+	for (l = new_attach_list; l != NULL; l = l->next) 
+		g_free (l->data);
+	g_slist_free (new_attach_list);
+
 }
 
 static void
