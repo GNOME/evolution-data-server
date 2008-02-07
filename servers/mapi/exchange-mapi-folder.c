@@ -19,20 +19,19 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <glib.h>
-#include <libmapi/libmapi.h>
+#include "exchange-mapi-connection.h"
 #include "exchange-mapi-folder.h"
 
 static GSList *folder_list = NULL;
-static GStaticRecMutex folder_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK()		printf("%s(%d):%s: lock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&folder_lock)
-#define UNLOCK()	printf("%s(%d):%s: unlock(folder_lock) \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&folder_lock)
+/* we use a static mutex - even the same thread *may not* use the static vars concurrently */
+static GStaticMutex folder_lock = G_STATIC_MUTEX_INIT;
+
+#define LOCK() 		g_message("%s(%d): %s: lock(folder_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_mutex_lock(&folder_lock)
+#define UNLOCK() 	g_message("%s(%d): %s: unlock(folder_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_mutex_unlock(&folder_lock)
 #define d(x) x
+
 static ExchangeMAPIFolderType
 container_class_to_type (const char *type)
 {
@@ -62,7 +61,8 @@ exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_nam
 {
 	ExchangeMAPIFolder *folder;
 
-	folder = g_new (ExchangeMAPIFolder, 1);
+	folder = g_new0 (ExchangeMAPIFolder, 1);
+	folder->is_default = FALSE;
 	folder->folder_name = g_strdup (folder_name);
 	folder->parent_folder_name = parent_folder_name ? g_strdup (parent_folder_name) : NULL;
 	folder->container_class = container_class_to_type (container_class);
@@ -72,6 +72,7 @@ exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_nam
 	folder->unread_count = unread_count;
 	folder->total = total;
 	folder->category = category;
+
 	return folder;
 }
 
@@ -87,13 +88,13 @@ exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder)
 	return folder->folder_name;
 }
 
-const guint64
+guint64
 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder)
 {
 	return folder->folder_id;
 }
 
-const guint64
+guint64
 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder)
 {
 	return folder->parent_folder_id;
@@ -102,7 +103,7 @@ exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder)
 gboolean
 exchange_mapi_folder_is_root (ExchangeMAPIFolder *folder)
 {
-	return (folder->parent_folder_id == NULL);
+	return (folder->parent_folder_id == 0);
 }
 
 ExchangeMAPIFolderType
@@ -111,30 +112,26 @@ exchange_mapi_folder_get_type (ExchangeMAPIFolder *folder)
 	return folder->container_class;
 }
 
-const guint32
+guint32
 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder)
 {
 	return folder->unread_count;
 }
 
-const guint32
+guint32
 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder)
 {
 	return folder->total;
 }
 
-
 GSList *
 exchange_mapi_peek_folder_list ()
 {
-	if (folder_list) 
-		return folder_list;
-
 	LOCK ();
-	if (!exchange_mapi_get_folders_list (&folder_list))
+	if (!folder_list && !exchange_mapi_get_folders_list (&folder_list))
 		g_warning ("Get folders list call failed \n\a");
-	
 	UNLOCK ();
+
 	return folder_list;
 }
 
@@ -149,7 +146,7 @@ exchange_mapi_folder_get_folder (uint64_t fid)
 	tmp = folder_list;
 	while (tmp) {
 		ExchangeMAPIFolder * folder = tmp->data;
-		printf("%016llx %016llx\n", folder->folder_id, fid);
+		g_print ("%016llX %016llX\n", folder->folder_id, fid);
 		if (folder->folder_id == fid)
 			return folder;
 		tmp=tmp->next;
@@ -161,14 +158,19 @@ exchange_mapi_folder_get_folder (uint64_t fid)
 void
 exchange_mapi_folder_list_free ()
 {
+	GSList *tmp = folder_list;
 	LOCK ();
-	g_slist_foreach (folder_list, g_free, NULL);
+	while (tmp) {
+		ExchangeMAPIFolder *data = tmp->data;
+		g_free (data);
+		data = NULL;
+		tmp = tmp->next;
+	}
 	g_slist_free (folder_list);
-
 	folder_list = NULL;
 	UNLOCK ();
 
-	d(printf("Folder list freed\n"));
+	d(g_print("Folder list freed\n"));
 	return;
 }
 
@@ -181,7 +183,7 @@ exchange_mapi_folder_list_add (ExchangeMAPIFolder *folder)
 		ExchangeMAPIFolder *data = tmp->data;
 		if (data->folder_id == folder->parent_folder_id) {
 			/* Insert it here */
-			d(printf ("Inserted below the parent\n"));
+			d(g_print ("Inserted below the parent\n"));
 			folder_list = g_slist_insert_before (folder_list, tmp->next, folder);
 			UNLOCK ();
 			return;
@@ -192,5 +194,5 @@ exchange_mapi_folder_list_add (ExchangeMAPIFolder *folder)
 	/* Append at the end */
 	folder_list = g_slist_append (folder_list, folder);
 	UNLOCK ();
-	d(printf("Appended folder at the end\n"));
+	d(g_print("Appended folder at the end\n"));
 }

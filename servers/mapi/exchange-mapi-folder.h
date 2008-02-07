@@ -21,7 +21,6 @@
 #ifndef EXCHANGE_MAPI_FOLDER_H
 #define EXCHANGE_MAPI_FOLDER_H
 
-
 typedef enum  {
 	MAPI_FOLDER_TYPE_MAIL=1,
 	MAPI_FOLDER_TYPE_APPOINTMENT,
@@ -38,7 +37,17 @@ typedef enum {
 	MAPI_FAVOURITE_FOLDER,
 	MAPI_FOREIGN_FOLDER
 } ExchangeMAPIFolderCategory;
+
 typedef struct _ExchangeMAPIFolder {
+	/* We'll need this separation of 'owner' and 'user' when we do delegation */
+	const gchar *owner_name;
+	const gchar *owner_email;
+	const gchar *user_name;
+	const gchar *user_email;
+
+	/* Need this info - default calendars/address books/notes folders can't be deleted */
+	gboolean is_default;
+
 	gchar *folder_name;
 	gchar *parent_folder_name;
 	ExchangeMAPIFolderType container_class;
@@ -63,13 +72,16 @@ exchange_mapi_folder_new (const char *folder_name, const char *parent_folder_nam
 ExchangeMAPIFolderType exchange_mapi_container_class (char *type);
 
 const gchar* exchange_mapi_folder_get_name (ExchangeMAPIFolder *folder);
-const guint64 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder);
-const guint64 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder);
-const guint32 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder);
-const guint32 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder);
+guint64 exchange_mapi_folder_get_fid (ExchangeMAPIFolder *folder);
+guint64 exchange_mapi_folder_get_parent_id (ExchangeMAPIFolder *folder);
+ExchangeMAPIFolderType exchange_mapi_folder_get_type (ExchangeMAPIFolder *folder);
+guint32 exchange_mapi_folder_get_unread_count (ExchangeMAPIFolder *folder);
+guint32 exchange_mapi_folder_get_total_count (ExchangeMAPIFolder *folder);
 
-GSList * exchange_mapi_peek_folder_list ();
+gboolean exchange_mapi_folder_is_root (ExchangeMAPIFolder *folder);
+GSList * exchange_mapi_peek_folder_list (void);
+void exchange_mapi_folder_list_free (void);
 ExchangeMAPIFolder * exchange_mapi_folder_get_folder (uint64_t fid);
 void exchange_mapi_folder_list_add (ExchangeMAPIFolder *folder);
-void exchange_mapi_folder_list_free ();
+
 #endif
