@@ -970,7 +970,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		/* FIXME: since we don't know the previously set flags,
 		   if unset is TRUE then just unset all the flags? */
 		/* FIXME: Sankar: What about custom flags ? */
-		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info);
+		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
 
 		/* Note: to `unset' flags, use -FLAGS.SILENT (<flag list>) */
 		response = camel_imap_command (store, folder, &local_ex,
@@ -1362,7 +1362,7 @@ retry:
 
 	flags &= folder->permanent_flags;
 	if (flags)
-		flagstr = imap_create_flag_list (flags, (CamelMessageInfo *)info);
+		flagstr = imap_create_flag_list (flags, (CamelMessageInfo *)info, folder->permanent_flags);
 	else
 		flagstr = NULL;
 

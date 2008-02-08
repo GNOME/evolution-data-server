@@ -1,5 +1,14 @@
 2008-02-08  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #505806
+
+	* camel-imap-folder.c: (imap_sync_online), (do_append):
+	* camel-imap-utils.h: (imap_create_flag_list): Change of the prototype.
+	* camel-imap-utils.c: (imap_create_flag_list):
+	Store user flags on the server only when supported by the server.
+
+2008-02-08  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #324804
 
 	* camel-imap-folder.c: (imap_update_summary):

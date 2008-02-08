@@ -497,7 +497,7 @@ rename_label_flag (const char *flag, int len, gboolean server_to_evo)
 }
 
 char *
-imap_create_flag_list (guint32 flags, CamelMessageInfo *info)
+imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_flags)
 {
 	GString *gstr = g_string_new ("(");
 
@@ -511,10 +511,11 @@ imap_create_flag_list (guint32 flags, CamelMessageInfo *info)
 		g_string_append (gstr, "\\Flagged ");
 	if (flags & CAMEL_MESSAGE_SEEN)
 		g_string_append (gstr, "\\Seen ");
-	if (flags & CAMEL_MESSAGE_JUNK)
+	if ((flags & CAMEL_MESSAGE_JUNK) != 0 && (permanent_flags & CAMEL_MESSAGE_JUNK) != 0)
 		g_string_append (gstr, "Junk ");
 
-	if (info) {
+	/* send user flags to the server only when it supports it, otherwise store it locally only */
+	if (info && (permanent_flags & CAMEL_MESSAGE_USER) != 0) {
 		const CamelFlag *flag;
 		const char *name;
 

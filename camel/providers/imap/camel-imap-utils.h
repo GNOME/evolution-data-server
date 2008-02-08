@@ -52,7 +52,7 @@ gboolean imap_parse_list_response  (CamelImapStore *store, const char *buf, int 
 
 char   **imap_parse_folder_name    (CamelImapStore *store, const char *folder_name);
 
-char    *imap_create_flag_list     (guint32 flags, CamelMessageInfo *info);
+char    *imap_create_flag_list     (guint32 flags, CamelMessageInfo *info, guint32 permanent_flags);
 gboolean imap_parse_flag_list      (char **flag_list_p, guint32 *flags_out, char **custom_flags_out);
 
 enum { IMAP_STRING, IMAP_NSTRING, IMAP_ASTRING };
