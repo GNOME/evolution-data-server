@@ -1,3 +1,19 @@
+2008-02-08  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-tz-utils.c:
+	(e_cal_backend_mapi_tz_util_dump_ical_tzs):
+	* e-cal-backend-mapi-utils.c:
+	(e_cal_backend_mapi_util_fetch_attachments),
+	(ical_attendees_from_props), (e_cal_backend_mapi_props_to_comp),
+	(build_name_id), (appt_build_name_id), (task_build_name_id),
+	(note_build_name_id), (build_props):
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_finalize),
+	(e_cal_backend_mapi_get_static_capabilities), (get_changes_cb),
+	(cache_create_cb), (e_cal_backend_mapi_get_object_list):
+	Bug fixes, in preparation for initial testing. 
+	* tz-ical-to-mapi: Timezone updates
+	* tz-mapi-to-ical: Timezone updates
+
 2008-01-18  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am: Don't remove source files in distclean. 

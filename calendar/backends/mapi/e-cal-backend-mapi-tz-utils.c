@@ -226,7 +226,7 @@ e_cal_backend_mapi_tz_util_dump_ical_tzs ()
 	for (l = list_items, i = 0; l != NULL; l = l->next, ++i) 
 		g_print ("[%3d]\t%s\n", (i+1), (gchar *)(l->data));
 
-	icaltimezone_free_builtin_timezones ();
+//	icaltimezone_free_builtin_timezones ();
 
 	g_list_free (list_items);
 }

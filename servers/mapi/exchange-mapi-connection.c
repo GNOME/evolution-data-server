@@ -894,7 +894,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 		}
 
 		if (has_attach && *has_attach) {
-			printf("%s(%d):%s:Fetching Attachments \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			g_print ("%s(%d): %s: Fetching Attachments \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 		}
 

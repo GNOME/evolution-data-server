@@ -35,7 +35,9 @@
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-utils.h"
 #include "e-cal-backend-mapi-tz-utils.h"
-
+#if 0
+#include "e-cal-backend-mapi-recur-utils.h"
+#endif
 /*
  * Priority
  */
@@ -87,6 +89,10 @@
 #define	olTaskComplete 		2
 #define	olTaskWaiting 		3
 #define	olTaskDeferred 		4
+
+static void appt_build_name_id (struct mapi_nameid *nameid);
+static void task_build_name_id (struct mapi_nameid *nameid);
+static void note_build_name_id (struct mapi_nameid *nameid);
 
 static struct icaltimetype
 foo (const time_t tm, const int is_date, const icaltimezone *comp_zone)
@@ -173,6 +179,10 @@ e_cal_backend_mapi_util_fetch_attachments (ECalBackendMAPI *cbmapi, ECalComponen
 	}
 
 	e_cal_component_set_attachment_list (comp, new_attach_list);
+
+	for (l = new_attach_list; l != NULL; l = l->next)
+		g_free (l->data);
+	g_slist_free (new_attach_list);
 }
 
 static void
@@ -212,6 +222,35 @@ set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, 
 
 	e_cal_component_set_attachment_list (comp, comp_attach_list);
 }
+
+#define REQUIRED 0
+#define OPTIONAL 0
+#define RESOURCE 0
+#define MEET_ORGANIZER 0
+#define MEET_ATTENDEE 0
+
+static void 
+ical_attendees_from_props (icalcomponent *ical_comp, GSList *recipients)
+{
+/*** ALERT: INCOMPLETE ***/
+	GSList *l;
+	for (l=recipients; l; l=l->next) {
+		ExchangeMAPIRecipient *recip = (ExchangeMAPIRecipient *)(l->data);
+		icalproperty *prop;
+		icalparameter *param;
+		/* ORG / ATT */
+		if (recip->flags & MEET_ATTENDEE)
+			prop = icalproperty_new_attendee (recip->email_id);
+		else if (recip->flags & MEET_ORGANIZER)
+			prop = icalproperty_new_organizer (recip->email_id);
+		/* CN */
+		param = icalparameter_new_cn (recip->name);
+		icalproperty_add_parameter (prop, param);
+		/* PARTSTAT */
+		//param = icalparameter_new_partstat ();
+	}
+}
+
 
 ECalComponent *
 e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, struct mapi_SPropValue_array *properties, 
@@ -334,7 +373,12 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 		b = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8223));
 		if (b && *b) {
 			/* FIXME: recurrence */
-		}
+			g_warning ("Encountered a recurring event.");
+/*			stream = exchange_mapi_util_find_stream (streams, PROP_TAG(PT_BINARY, 0x8216));
+			if (stream) {
+				e_cal_backend_mapi_util_bin_to_rrule (stream->value, comp);
+			}
+*/		} 
 
 		/* FIXME: the ALARM definitely needs more work */
 		b = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8503));
@@ -406,6 +450,7 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 		b = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8126));
 		if (b && *b) {
 			/* FIXME: Evolution does not support recurring tasks */
+			g_warning ("Encountered a recurring task.");
 		}
 
 		/* FIXME: the ALARM definitely needs more work */
@@ -490,72 +535,20 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 	return comp;
 }
 
-#define APPT_NAMED_PROPS_N  14
-#define DEFAULT_APPT_REMINDER_MINS 15
-static void 
-appt_build_name_id (struct mapi_nameid *nameid)
+#define COMMON_NAMED_PROPS_N 8
+
+typedef enum 
 {
-//	mapi_nameid_lid_add(nameid, 0x8200, PSETID_Appointment); 	// PT_BOOLEAN - SendAsICAL
-	mapi_nameid_lid_add(nameid, 0x8205, PSETID_Appointment); 	// PT_LONG - BusyStatus
-	mapi_nameid_lid_add(nameid, 0x8208, PSETID_Appointment); 	// PT_STRING8 - Location
-	mapi_nameid_lid_add(nameid, 0x820D, PSETID_Appointment); 	// PT_SYSTIME - Start/ApptStartWhole
-	mapi_nameid_lid_add(nameid, 0x825E, PSETID_Appointment); 	// PT_BINARY - (timezone for dtstart)
-	mapi_nameid_lid_add(nameid, 0x820E, PSETID_Appointment); 	// PT_SYSTIME - End/ApptEndWhole
-	mapi_nameid_lid_add(nameid, 0x825F, PSETID_Appointment); 	// PT_BINARY - (timezone for dtend)
-	mapi_nameid_lid_add(nameid, 0x8213, PSETID_Appointment); 	// PT_LONG - Duration/ApptDuration
-	mapi_nameid_lid_add(nameid, 0x8215, PSETID_Appointment); 	// PT_BOOLEAN - AllDayEvent
-	mapi_nameid_lid_add(nameid, 0x8217, PSETID_Appointment); 	// PT_LONG - MeetingStatus
-//	mapi_nameid_lid_add(nameid, 0x8218, PSETID_Appointment); 	// PT_LONG - ResponseStatus
-	mapi_nameid_lid_add(nameid, 0x8223, PSETID_Appointment); 	// PT_BOOLEAN - IsRecurring/Recurring
-//	mapi_nameid_lid_add(nameid, 0x8231, PSETID_Appointment); 	// PT_LONG - RecurrenceType
-//	mapi_nameid_lid_add(nameid, 0x8232, PSETID_Appointment); 	// PT_STRING8 - RecurrencePattern
-	mapi_nameid_lid_add(nameid, 0x8235, PSETID_Appointment); 	// PT_SYSTIME - (dtstart)(for recurring events UTC 12 AM of day of start)
-	mapi_nameid_lid_add(nameid, 0x8236, PSETID_Appointment); 	// PT_SYSTIME - (dtend)(for recurring events UTC 12 AM of day of end)
-//	mapi_nameid_lid_add(nameid, 0x8238, PSETID_Appointment); 	// PT_STRING8 - AllAttendees
-//	mapi_nameid_lid_add(nameid, 0x823B, PSETID_Appointment); 	// PT_STRING8 - ToAttendeesString (dupe PR_DISPLAY_TO)
-//	mapi_nameid_lid_add(nameid, 0x823C, PSETID_Appointment); 	// PT_STRING8 - CCAttendeesString (dupe PR_DISPLAY_CC)
-	mapi_nameid_lid_add(nameid, 0x8240, PSETID_Appointment); 	// PT_BOOLEAN - IsOnlineMeeting
-	mapi_nameid_lid_add(nameid, 0x8257, PSETID_Appointment); 	// PT_BOOLEAN - ApptCounterProposal
+	I_COMMON_REMMINS = 0 , 
+	I_COMMON_REMTIME , 
+	I_COMMON_REMSET , 
+	I_COMMON_ISPRIVATE , 
+	I_COMMON_CTXMENUFLAGS , 
+	I_COMMON_START , 
+	I_COMMON_END , 
+	I_COMMON_REMNEXTTIME 
+} CommonNamedPropsIndex;
 
-	/* These probably would never be used from Evolution */
-//	mapi_nameid_lid_add(nameid, 0x8214, PSETID_Appointment); 	// PT_LONG - Label
-//	mapi_nameid_lid_add(nameid, 0x8234, PSETID_Appointment); 	// PT_STRING8 - display TimeZone
-}
-
-#define TASK_NAMED_PROPS_N 7
-#define DEFAULT_TASK_REMINDER_MINS 1080
-static void 
-task_build_name_id (struct mapi_nameid *nameid)
-{
-	mapi_nameid_lid_add(nameid, 0x8101, PSETID_Task); 	// PT_LONG - Status
-	mapi_nameid_lid_add(nameid, 0x8102, PSETID_Task); 	// PT_DOUBLE - PercentComplete
-//	mapi_nameid_lid_add(nameid, 0x8103, PSETID_Task); 	// PT_BOOLEAN - TeamTask
-	mapi_nameid_lid_add(nameid, 0x8104, PSETID_Task); 	// PT_SYSTIME - StartDate/TaskStartDate
-	mapi_nameid_lid_add(nameid, 0x8105, PSETID_Task); 	// PT_SYSTIME - DueDate/TaskDueDate
-	mapi_nameid_lid_add(nameid, 0x810F, PSETID_Task); 	// PT_SYSTIME - DateCompleted
-	mapi_nameid_lid_add(nameid, 0x811C, PSETID_Task); 	// PT_BOOLEAN - Complete
-//	mapi_nameid_lid_add(nameid, 0x811F, PSETID_Task); 	// PT_STRING8 - Owner
-//	mapi_nameid_lid_add(nameid, 0x8121, PSETID_Task); 	// PT_STRING8 - Delegator
-	mapi_nameid_lid_add(nameid, 0x8126, PSETID_Task); 	// PT_BOOLEAN - IsRecurring/TaskFRecur
-//	mapi_nameid_lid_add(nameid, 0x8127, PSETID_Task); 	// PT_STRING8 - Role
-//	mapi_nameid_lid_add(nameid, 0x8129, PSETID_Task); 	// PT_LONG - Ownership
-//	mapi_nameid_lid_add(nameid, 0x812A, PSETID_Task); 	// PT_LONG - DelegationState
-
-	/* These probably would never be used from Evolution */
-//	mapi_nameid_lid_add(nameid, 0x8110, PSETID_Task); 	// PT_LONG - ActualWork/TaskActualEffort
-//	mapi_nameid_lid_add(nameid, 0x8111, PSETID_Task); 	// PT_LONG - TotalWork/TaskEstimatedEffort
-}
-
-#define NOTE_NAMED_PROPS_N 0
-static void 
-note_build_name_id (struct mapi_nameid *nameid)
-{
-
-	/* These probably would never be used from Evolution */
-//	mapi_nameid_lid_add(nameid, 0x8B00, PSETID_Note); 	// PT_LONG - Color
-}
-
-#define COMMON_NAMED_PROPS_N 7
 gboolean
 build_name_id (struct mapi_nameid *nameid, gpointer data)
 {
@@ -571,6 +564,7 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 	mapi_nameid_lid_add(nameid, 0x8502, PSETID_Common); 	// PT_SYSTIME - ReminderTime
 	mapi_nameid_lid_add(nameid, 0x8503, PSETID_Common); 	// PT_BOOLEAN - ReminderSet
 	mapi_nameid_lid_add(nameid, 0x8506, PSETID_Common); 	// PT_BOOLEAN - Private
+	mapi_nameid_lid_add(nameid, 0x8510, PSETID_Common); 	// PT_LONG - (context menu flags)
 	mapi_nameid_lid_add(nameid, 0x8516, PSETID_Common); 	// PT_SYSTIME - CommonStart
 	mapi_nameid_lid_add(nameid, 0x8517, PSETID_Common); 	// PT_SYSTIME - CommonEnd
 	mapi_nameid_lid_add(nameid, 0x8560, PSETID_Common); 	// PT_SYSTIME - ReminderNextTime
@@ -585,11 +579,166 @@ build_name_id (struct mapi_nameid *nameid, gpointer data)
 	return TRUE;
 }
 
+/**
+ * NOTE: The enumerations '(Appt/Task/Note)NamedPropsIndex' have been defined 
+ * only to make life a little easier for developers. Here's the logic 
+ * behind the definition:
+     1) The first element is initialized with 'COMMON_NAMED_PROPS_N' : When 
+	adding named props, we add the common named props first and then the 
+	specific named props. So.. the index of the first specific 
+	named property = COMMON_NAMED_PROPS_N
+     2) The order in the enumeration 'must' be the same as that in the routine 
+	which adds the specific named props - (appt/task/note)_build_name_id
+     3) If a specific named prop is added/deleted, an index needs to
+	be created/deleted at the correct position. [Don't forget to update 
+	(APPT/TASK/NOTE)_NAMED_PROPS_N]. 
+
+ * To summarize the pros: 
+     1) Addition/deletion of a common-named-prop would not affect the indexes 
+	of the specific named props once COMMON_NAMED_PROPS_N is updated. 
+     2) Values of named props can be added in any order. 
+ */
+
+
+#define APPT_NAMED_PROPS_N  18
+#define DEFAULT_APPT_REMINDER_MINS 15
+
+typedef enum 
+{
+//	I_SENDASICAL = COMMON_NAMED_PROPS_N , 
+	I_APPT_BUSYSTATUS = COMMON_NAMED_PROPS_N , 
+	I_APPT_LOCATION , 
+	I_APPT_START , 
+	I_APPT_END , 
+	I_APPT_DURATION , 
+	I_APPT_ALLDAY , 
+	I_APPT_RECURBLOB , 
+	I_APPT_MEETINGSTATUS , 
+//	I_APPT_RESPONSESTATUS , 
+	I_APPT_ISRECURRING , 
+	I_APPT_RECURBASE , 
+	I_APPT_RECURTYPE , 
+	I_APPT_RECURPATTERN , 
+	I_APPT_RECURSTART , 
+	I_APPT_RECUREND , 
+//	I_APPT_ALLATTENDEES , 
+//	I_APPT_TOATTENDEES , 
+//	I_APPT_CCATTENDEES , 
+	I_APPT_ISONLINEMEET , 
+	I_APPT_COUNTERPROPOSAL , 
+	I_APPT_STARTTZBLOB , 
+	I_APPT_ENDTZBLOB 
+//	I_APPT_LABEL , 
+//	I_APPT_DISPTZ 
+} ApptNamedPropsIndex;
+
+static void 
+appt_build_name_id (struct mapi_nameid *nameid)
+{
+//	mapi_nameid_lid_add(nameid, 0x8200, PSETID_Appointment); 	// PT_BOOLEAN - SendAsICAL
+	mapi_nameid_lid_add(nameid, 0x8205, PSETID_Appointment); 	// PT_LONG - BusyStatus
+	mapi_nameid_lid_add(nameid, 0x8208, PSETID_Appointment); 	// PT_STRING8 - Location
+	mapi_nameid_lid_add(nameid, 0x820D, PSETID_Appointment); 	// PT_SYSTIME - Start/ApptStartWhole
+	mapi_nameid_lid_add(nameid, 0x820E, PSETID_Appointment); 	// PT_SYSTIME - End/ApptEndWhole
+	mapi_nameid_lid_add(nameid, 0x8213, PSETID_Appointment); 	// PT_LONG - Duration/ApptDuration
+	mapi_nameid_lid_add(nameid, 0x8215, PSETID_Appointment); 	// PT_BOOLEAN - AllDayEvent
+	mapi_nameid_lid_add(nameid, 0x8216, PSETID_Appointment); 	// PT_BINARY - (recurrence blob)
+	mapi_nameid_lid_add(nameid, 0x8217, PSETID_Appointment); 	// PT_LONG - MeetingStatus
+//	mapi_nameid_lid_add(nameid, 0x8218, PSETID_Appointment); 	// PT_LONG - ResponseStatus
+	mapi_nameid_lid_add(nameid, 0x8223, PSETID_Appointment); 	// PT_BOOLEAN - IsRecurring/Recurring
+	mapi_nameid_lid_add(nameid, 0x8228, PSETID_Appointment); 	// PT_SYSTIME - RecurrenceBase
+	mapi_nameid_lid_add(nameid, 0x8231, PSETID_Appointment); 	// PT_LONG - RecurrenceType
+	mapi_nameid_lid_add(nameid, 0x8232, PSETID_Appointment); 	// PT_STRING8 - RecurrencePattern
+	mapi_nameid_lid_add(nameid, 0x8235, PSETID_Appointment); 	// PT_SYSTIME - (dtstart)(for recurring events UTC 12 AM of day of start)
+	mapi_nameid_lid_add(nameid, 0x8236, PSETID_Appointment); 	// PT_SYSTIME - (dtend)(for recurring events UTC 12 AM of day of end)
+//	mapi_nameid_lid_add(nameid, 0x8238, PSETID_Appointment); 	// PT_STRING8 - AllAttendees
+//	mapi_nameid_lid_add(nameid, 0x823B, PSETID_Appointment); 	// PT_STRING8 - ToAttendeesString (dupe PR_DISPLAY_TO)
+//	mapi_nameid_lid_add(nameid, 0x823C, PSETID_Appointment); 	// PT_STRING8 - CCAttendeesString (dupe PR_DISPLAY_CC)
+	mapi_nameid_lid_add(nameid, 0x8240, PSETID_Appointment); 	// PT_BOOLEAN - IsOnlineMeeting
+	mapi_nameid_lid_add(nameid, 0x8257, PSETID_Appointment); 	// PT_BOOLEAN - ApptCounterProposal
+	mapi_nameid_lid_add(nameid, 0x825E, PSETID_Appointment); 	// PT_BINARY - (timezone for dtstart)
+	mapi_nameid_lid_add(nameid, 0x825F, PSETID_Appointment); 	// PT_BINARY - (timezone for dtend)
+
+	/* These probably would never be used from Evolution */
+//	mapi_nameid_lid_add(nameid, 0x8214, PSETID_Appointment); 	// PT_LONG - Label
+//	mapi_nameid_lid_add(nameid, 0x8234, PSETID_Appointment); 	// PT_STRING8 - display TimeZone
+}
+
+
+#define TASK_NAMED_PROPS_N 7
+#define DEFAULT_TASK_REMINDER_MINS 1080
+
+typedef enum 
+{
+	I_TASK_STATUS = COMMON_NAMED_PROPS_N , 
+	I_TASK_PERCENT , 
+//	I_TASK_ISTEAMTASK , 
+	I_TASK_START , 
+	I_TASK_DUE , 
+	I_TASK_COMPLETED , 
+//	I_TASK_RECURBLOB , 
+	I_TASK_ISCOMPLETE , 
+//	I_TASK_OWNER , 
+//	I_TASK_DELEGATOR , 
+	I_TASK_ISRECURRING , 
+//	I_TASK_ROLE , 
+//	I_TASK_OWNERSHIP , 
+//	I_TASK_DELEGATIONSTATE , 
+//	I_TASK_ACTUALWORK , 
+//	I_TASK_TOTALWORK 
+} TaskNamedPropsIndex;
+
+static void 
+task_build_name_id (struct mapi_nameid *nameid)
+{
+	mapi_nameid_lid_add(nameid, 0x8101, PSETID_Task); 	// PT_LONG - Status
+	mapi_nameid_lid_add(nameid, 0x8102, PSETID_Task); 	// PT_DOUBLE - PercentComplete
+//	mapi_nameid_lid_add(nameid, 0x8103, PSETID_Task); 	// PT_BOOLEAN - TeamTask
+	mapi_nameid_lid_add(nameid, 0x8104, PSETID_Task); 	// PT_SYSTIME - StartDate/TaskStartDate
+	mapi_nameid_lid_add(nameid, 0x8105, PSETID_Task); 	// PT_SYSTIME - DueDate/TaskDueDate
+	mapi_nameid_lid_add(nameid, 0x810F, PSETID_Task); 	// PT_SYSTIME - DateCompleted
+//	mapi_nameid_lid_add(nameid, 0x8116, PSETID_Task); 	// PT_BINARY - (recurrence blob)
+	mapi_nameid_lid_add(nameid, 0x811C, PSETID_Task); 	// PT_BOOLEAN - Complete
+//	mapi_nameid_lid_add(nameid, 0x811F, PSETID_Task); 	// PT_STRING8 - Owner
+//	mapi_nameid_lid_add(nameid, 0x8121, PSETID_Task); 	// PT_STRING8 - Delegator
+	mapi_nameid_lid_add(nameid, 0x8126, PSETID_Task); 	// PT_BOOLEAN - IsRecurring/TaskFRecur
+//	mapi_nameid_lid_add(nameid, 0x8127, PSETID_Task); 	// PT_STRING8 - Role
+//	mapi_nameid_lid_add(nameid, 0x8129, PSETID_Task); 	// PT_LONG - Ownership
+//	mapi_nameid_lid_add(nameid, 0x812A, PSETID_Task); 	// PT_LONG - DelegationState
+
+	/* These probably would never be used from Evolution */
+//	mapi_nameid_lid_add(nameid, 0x8110, PSETID_Task); 	// PT_LONG - ActualWork/TaskActualEffort
+//	mapi_nameid_lid_add(nameid, 0x8111, PSETID_Task); 	// PT_LONG - TotalWork/TaskEstimatedEffort
+}
+
+
+#define NOTE_NAMED_PROPS_N 0
+
+/*
+typedef enum 
+{
+//	I_NOTE_COLOR 
+} NoteNamedPropsIndex;
+*/
+
+static void 
+note_build_name_id (struct mapi_nameid *nameid)
+{
+	/* These probably would never be used from Evolution */
+//	mapi_nameid_lid_add(nameid, 0x8B00, PSETID_Note); 	// PT_LONG - Color
+}
+
+
 #define MINUTES_IN_HOUR 60
 #define SECS_IN_MINUTE 60
 
 /* regular props count includes common named props */
 #define REGULAR_PROPS_N    COMMON_NAMED_PROPS_N + 11
+
+/** 
+ * NOTE: When a new regular property (PR_***) is added, 'REGULAR_PROPS_N' 
+ * should be updated. 
+ */
 int
 build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data)
 {
@@ -704,13 +853,13 @@ PR_SENDER_EMAIL_ADDRESS
 		t.tv_sec = icaltime_as_timet (utc_dtstart) - (flag32 * SECS_IN_MINUTE);
 		t.tv_usec = 0;
 	}
-	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[0], (const void *) &flag32);
-	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[1], &t);
-	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[2], (const void *) &b);
+	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_REMMINS], (const void *) &flag32);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_COMMON_REMTIME], &t);
+	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_REMSET], (const void *) &b);
 												/* prop count: 8 (no regular props added) */
 
 	/* ReminderNextTime: FIXME for recurrence */
-	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[6], &t);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_COMMON_REMNEXTTIME], &t);
 
 	/* Sensitivity, Private */
 	flag32 = SENSITIVITY_NORMAL; 	/* default */
@@ -731,23 +880,25 @@ PR_SENDER_EMAIL_ADDRESS
 				break;
 		}
 	set_SPropValue_proptag(&props[i++], PR_SENSITIVITY, (const void *) &flag32); 		/* prop count: 9 */
-	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[3], (const void *) &b);
+	set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_ISPRIVATE], (const void *) &b);
 
 	t.tv_sec = icaltime_as_timet (utc_dtstart);
 	t.tv_usec = 0;
-	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[4], &t);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_COMMON_START], &t);
 	set_SPropValue_proptag_date_timeval(&props[i++], PR_START_DATE, &t); 			/* prop count: 10 */
 
 	t.tv_sec = icaltime_as_timet (utc_dtend);
 	t.tv_usec = 0;
-	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[5], &t);
+	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_COMMON_END], &t);
 	set_SPropValue_proptag_date_timeval(&props[i++], PR_END_DATE, &t); 			/* prop count: 11 */
-
-	/* INFO: Index of last added named prop: 6 */
 
 	if (kind == ICAL_VEVENT_COMPONENT) {
 		const char *mapi_tzid;
 		struct SBinary start_tz, end_tz; 
+
+		/* Context menu flags */
+		flag32 = 369; 
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_CTXMENUFLAGS], (const void *) &flag32);
 
 		/* Busy Status */
 		flag32 = BUSY_STATUS_BUSY; 	/* default */
@@ -766,66 +917,66 @@ PR_SENDER_EMAIL_ADDRESS
 				default:
 					break;
 			}
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[7], (const void *) &flag32);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_BUSYSTATUS], (const void *) &flag32);
 
 		/* Location */
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[8], (const void *) icalcomponent_get_location (ical_comp));
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_LOCATION], (const void *) icalcomponent_get_location (ical_comp));
 
 		/* Start */
 		t.tv_sec = icaltime_as_timet (utc_dtstart);
 		t.tv_usec = 0;
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[9], &t);
-		/* FIXME for recurrence */
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[17], &t);
+		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_APPT_START], &t);
 
 		/* Start TZ */
 		mapi_tzid = e_cal_backend_mapi_tz_util_get_mapi_equivalent ((dtstart_tzid && *dtstart_tzid) ? dtstart_tzid : "UTC");
 		if (mapi_tzid && *mapi_tzid) {
 			e_cal_backend_mapi_util_mapi_tz_to_bin (mapi_tzid, &start_tz);
-			set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[10], (const void *) &start_tz);
+			set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_STARTTZBLOB], (const void *) &start_tz);
 		}
 
 		/* End */
 		t.tv_sec = icaltime_as_timet (utc_dtend);
 		t.tv_usec = 0;
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[11], &t);
-		/* FIXME for recurrence */
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[18], &t);
+		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_APPT_END], &t);
 
 		/* End TZ */
 		mapi_tzid = e_cal_backend_mapi_tz_util_get_mapi_equivalent ((dtend_tzid && *dtend_tzid) ? dtend_tzid : "UTC");
 		if (mapi_tzid && *mapi_tzid) {
 			e_cal_backend_mapi_util_mapi_tz_to_bin (mapi_tzid, &end_tz);
-			set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[12], (const void *) &end_tz);
+			set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_ENDTZBLOB], (const void *) &end_tz);
 		}
 
 		/* Duration */
 		flag32 = icaldurationtype_as_int (icaltime_subtract (dtend, dtstart));
 		flag32 /= MINUTES_IN_HOUR;
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[13], (const void *) &flag32);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_DURATION], (const void *) &flag32);
 
 		/* All-day event */
 		b = (icaltime_is_date (dtstart) && icaltime_is_date (dtend));
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[14], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_ALLDAY], (const void *) &b);
 
 		/* Meeting status */
 		flag32 = e_cal_component_has_attendees (comp);
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[15], (const void *) &flag32);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_MEETINGSTATUS], (const void *) &flag32);
 
 		/* Recurring */
 		b = e_cal_component_has_recurrences (comp);
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[16], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_ISRECURRING], (const void *) &b);
 
 		/* Online Meeting : we probably would never support this */
 		b = 0;
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[19], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_ISONLINEMEET], (const void *) &b);
 
 		/* Counter Proposal for appointments : not supported as of now */
 		b = 0;
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[20], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_COUNTERPROPOSAL], (const void *) &b);
 
 	} else if (kind == ICAL_VTODO_COMPONENT) {
 		double d;
+
+		/* Context menu flags */ /* FIXME: for assigned tasks */
+		flag32 = 272; 
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_CTXMENUFLAGS], (const void *) &flag32);
 
 		/* Status, Percent complete, IsComplete */
 		flag32 = olTaskNotStarted; 	/* default */
@@ -852,9 +1003,9 @@ PR_SENDER_EMAIL_ADDRESS
 				break;
 		}
 
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[7], (const void *) &flag32);
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[8], (const void *) &d);
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[12], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_TASK_STATUS], (const void *) &flag32);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_TASK_PERCENT], (const void *) &d);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_TASK_ISCOMPLETE], (const void *) &b);
 
 		/* Date completed */
 		if (b) {
@@ -864,24 +1015,28 @@ PR_SENDER_EMAIL_ADDRESS
 
 			t.tv_sec = icaltime_as_timet (completed);
 			t.tv_usec = 0;
-			set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[11], &t);
+			set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_TASK_COMPLETED], &t);
 		}
 
 		/* Start */
 		t.tv_sec = icaltime_as_timet (dtstart);
 		t.tv_usec = 0;
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[9], &t);
+		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_TASK_START], &t);
 
 		/* Due */
 		t.tv_sec = icaltime_as_timet (dtend);
 		t.tv_usec = 0;
-		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[10], &t);
+		set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_TASK_DUE], &t);
 
 		/* FIXME: Evolution does not support recurring tasks */
 		b = 0;
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[13], (const void *) &b);
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_TASK_ISRECURRING], (const void *) &b);
 
 	} else if (kind == ICAL_VJOURNAL_COMPONENT) {
+		/* Context menu flags */
+		flag32 = 272; 
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_CTXMENUFLAGS], (const void *) &flag32);
+
 	}
 
 	*value = props;

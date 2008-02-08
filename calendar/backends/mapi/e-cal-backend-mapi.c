@@ -27,7 +27,7 @@
 
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 
-#define d(x)
+#define d(x) x
 
 static ECalBackendClass *parent_class = NULL;
 
@@ -35,6 +35,10 @@ static ECalBackendClass *parent_class = NULL;
 struct _ECalBackendMAPIPrivate {
 	mapi_id_t 		fid;
 	uint32_t 		olFolder;
+	char 			*owner_name;
+	char 			*owner_email;	
+	char			*user_name;
+	char			*user_email;
 
 	/* A mutex to control access to the private structure */
 	GMutex			*mutex;
@@ -56,7 +60,6 @@ struct _ECalBackendMAPIPrivate {
 	/* timeout handler for syncing sendoptions */
 	guint			sendoptions_sync_timeout;
 	
-	char			*user_email;
 	char			*local_attachments_store;
 
 	/* used exclusively for delta fetching */
@@ -170,7 +173,7 @@ e_cal_backend_mapi_finalize (GObject *object)
 	g_free (priv);
 	cbmapi->priv = NULL;
 
-	e_cal_backend_mapi_tz_util_destroy ();
+//	e_cal_backend_mapi_tz_util_destroy ();
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -232,19 +235,21 @@ e_cal_backend_mapi_get_static_capabilities (ECalBackendSync *backend, EDataCal *
 	/* FIXME: what else ? */
 
 	*capabilities = g_strdup (
-//				CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT ","
+				CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT ","
 				CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS ","
 //				CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS ","
 				CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 				CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS ","
+				CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ","
+				CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","
+
+//				CAL_STATIC_CAPABILITY_NO_SHARED_MEMOS ","
 //				CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT ","
 				CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 				CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
 //				CAL_STATIC_CAPABILITY_NO_TRANSPARENCY ","
-//				CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ","
 				CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND ","
 //				CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS ","
-//				CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","
 //				CAL_STATIC_CAPABILITY_SAVE_SCHEDULES ","
 				CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK ","
 				CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR ","
@@ -255,13 +260,13 @@ e_cal_backend_mapi_get_static_capabilities (ECalBackendSync *backend, EDataCal *
 //				CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
 //				CAL_STATIC_CAPABILITY_NO_ORGANIZER ","
 //				CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY ","
-				CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING
+//				CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING
 				  );
 
 	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus 
+static ECalBackendSyncStatus 	
 e_cal_backend_mapi_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendMAPI *cbmapi;
@@ -313,6 +318,25 @@ static const uint32_t GetPropsList[] = {
 	PR_SENSITIVITY, 
 	PR_START_DATE, 
 	PR_END_DATE
+/*
+	PR_SENT_REPRESENTING_NAME, 
+	PR_SENT_REPRESENTING_NAME_UNICODE, 
+	PR_SENT_REPRESENTING_ADDRTYPE, 
+	PR_SENT_REPRESENTING_ADDRTYPE_UNICODE, 
+	PR_SENT_REPRESENTING_EMAIL_ADDRESS, 
+	PR_SENT_REPRESENTING_EMAIL_ADDRESS_UNICODE, 
+
+	PR_SENDER_NAME, 
+	PR_SENDER_ADDRTYPE, 
+	PR_SENDER_EMAIL_ADDRESS, 
+
+	PR_RCVD_REPRESENTING_NAME, 
+	PR_RCVD_REPRESENTING_NAME_UNICODE, 
+	PR_RCVD_REPRESENTING_ADDRTYPE, 
+	PR_RCVD_REPRESENTING_ADDRTYPE_UNICODE, 
+	PR_RCVD_REPRESENTING_EMAIL_ADDRESS, 
+	PR_RCVD_REPRESENTING_EMAIL_ADDRESS_UNICODE
+*/
 };
 static const uint16_t n_GetPropsList = G_N_ELEMENTS (GetPropsList);
 
@@ -327,20 +351,26 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	const bool *recurring;
 
 	/* FIXME: Provide support for meetings/assigned tasks */
-	if (recipients != NULL)
+	if (recipients != NULL) {
+		g_warning ("Calendar backend failed to parse a meeting");
 		return TRUE;
+	}
 
 	recurring = NULL;
 	/* FIXME: Provide backend support for recurrence for appointments/meetings */
 	recurring = (const bool *)find_mapi_SPropValue_data(array, PROP_TAG(PT_BOOLEAN, 0x8223));
-	if (recurring && *recurring)
+	if (recurring && *recurring) {
+		g_warning ("Encountered a recurring event.");
 		return TRUE;
+	}
 
 	recurring = NULL;
 	/* FIXME: Evolution does not support recurring tasks */
 	recurring = (const bool *)find_mapi_SPropValue_data(array, PROP_TAG(PT_BOOLEAN, 0x8126));
-	if (recurring && *recurring)
+	if (recurring && *recurring) {
+		g_warning ("Encountered a recurring task.");
 		return TRUE;
+	}
 
 	tmp = exchange_mapi_util_mapi_id_to_string (mid);
 	cache_comp_uid = g_slist_find_custom (priv->cache_keys, tmp, (GCompareFunc) (g_ascii_strcasecmp));
@@ -590,21 +620,27 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 	const bool *recurring = NULL;
 
 	/* FIXME: Provide support for meetings/assigned tasks */
-	if (recipients != NULL)
+	if (recipients != NULL) {
+		g_warning ("Calendar backend failed to parse a meeting");
 		return TRUE;
+	}
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi))) {
 		case ICAL_VEVENT_COMPONENT:
 			/* FIXME: Provide backend support for recurrence */
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8223));
-			if (recurring && *recurring)
+			if (recurring && *recurring) {
+				g_warning ("Encountered a recurring event.");
 				return TRUE;
+			}
 			break;
 		case ICAL_VTODO_COMPONENT:
 			/* FIXME: Evolution does not support recurring tasks */
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8126));
-			if (recurring && *recurring)
+			if (recurring && *recurring) {
+				g_warning ("Encountered a recurring task.");
 				return TRUE;
+			}
 			break;
 		case ICAL_VJOURNAL_COMPONENT:
 			break;
@@ -710,8 +746,11 @@ e_cal_backend_mapi_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 
 	g_mutex_lock (priv->mutex);
 
-	/* do I have to check the incoming sexp ? */
-	search_needed = FALSE;
+//	d(g_message (G_STRLOC ": Getting object list (%s)", sexp));
+
+	if (!strcmp (sexp, "#t"))
+		search_needed = FALSE;
+
 	cbsexp = e_cal_backend_sexp_new (sexp);
 
 	if (!cbsexp) {
