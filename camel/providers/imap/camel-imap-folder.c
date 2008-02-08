@@ -2751,8 +2751,10 @@ imap_update_summary (CamelFolder *folder, int exists,
 		camel_folder_summary_add (folder->summary, (CamelMessageInfo *)mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 
-		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT)) 
-			camel_folder_change_info_recent_uid(changes, camel_message_info_uid (mi));
+		/* report all new messages as recent, even without that flag, thus new
+		   messages will be filtered even after saw by other software earlier */
+		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT) != 0 || getenv ("FILTER_RECENT") == NULL)
+			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
 	}
 
 	for ( ; i < messages->len; i++) {
