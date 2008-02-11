@@ -1,3 +1,14 @@
+2008-02-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #515054
+
+	* camel-folder-summary.h: (CamelMessageFlags):
+	New flag CAMEL_MESSAGE_NOTJUNK.
+	* camel-folder-summary.c: (flag_names):
+	New flag is system flag and check for changes on it.
+	* camel-filter-search.c: (junk_test):
+	Skip testing messages with this or CAMEL_MESSAGE_JUNK flag set.
+
 2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	* Makefile.am:

@@ -1,3 +1,10 @@
+2008-02-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #515054
+
+	* camel-imap-utils.c: (imap_parse_flag_list), (imap_create_flag_list):
+	Read/write CAMEL_MESSAGE_NOTJUNK flags from/to server if supported.
+
 2008-02-08  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #505806

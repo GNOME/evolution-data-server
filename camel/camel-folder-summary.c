@@ -2670,6 +2670,7 @@ static struct flag_names_t {
 	{ "seen", CAMEL_MESSAGE_SEEN },
 	{ "attachments", CAMEL_MESSAGE_ATTACHMENTS },
 	{ "junk", CAMEL_MESSAGE_JUNK },
+	{ "notjunk", CAMEL_MESSAGE_NOTJUNK },
 	{ "secure", CAMEL_MESSAGE_SECURE },
 	{ NULL, 0 }
 };

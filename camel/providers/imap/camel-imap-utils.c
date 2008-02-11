@@ -513,6 +513,8 @@ imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_
 		g_string_append (gstr, "\\Seen ");
 	if ((flags & CAMEL_MESSAGE_JUNK) != 0 && (permanent_flags & CAMEL_MESSAGE_JUNK) != 0)
 		g_string_append (gstr, "Junk ");
+	if ((flags & CAMEL_MESSAGE_NOTJUNK) != 0 && (permanent_flags & CAMEL_MESSAGE_NOTJUNK) != 0)
+		g_string_append (gstr, "NotJunk ");
 
 	/* send user flags to the server only when it supports it, otherwise store it locally only */
 	if (info && (permanent_flags & CAMEL_MESSAGE_USER) != 0) {
@@ -579,9 +581,11 @@ imap_parse_flag_list (char **flag_list_p, guint32 *flags_out, char **custom_flag
 		else if (!g_ascii_strncasecmp (flag_list, "\\Recent", len))
 			flags |= CAMEL_IMAP_MESSAGE_RECENT;
 		else if (!g_ascii_strncasecmp(flag_list, "\\*", len))
-			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK;
+			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_NOTJUNK;
 		else if (!g_ascii_strncasecmp(flag_list, "Junk", len))
 			flags |= CAMEL_MESSAGE_JUNK;
+		else if (!g_ascii_strncasecmp(flag_list, "NotJunk", len))
+			flags |= CAMEL_MESSAGE_NOTJUNK;
 		else if (!g_ascii_strncasecmp(flag_list, "$Label1", len) ||
 			 !g_ascii_strncasecmp(flag_list, "$Label2", len) ||
 			 !g_ascii_strncasecmp(flag_list, "$Label3", len) ||

@@ -644,10 +644,10 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 {
 	ESExpResult *r;
 	gboolean retval = FALSE;
+	CamelMessageInfo *info = fms->info;
 	
 	d(printf("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
-	if (fms->session->junk_plugin != NULL) {
-		CamelMessageInfo *info = fms->info;
+	if (fms->session->junk_plugin != NULL && (camel_message_info_flags (info) & (CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK)) == 0) {
 		const GHashTable *ht = camel_session_get_junk_headers (fms->session);
 		struct _camel_header_param *node = ((CamelMessageInfoBase *)info)->headers;
 
@@ -667,7 +667,7 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 			retval = camel_session_lookup_addressbook (fms->session, camel_message_info_from (info)) != TRUE;
 			if (camel_debug ("junk"))
 				printf("Sender '%s' in book? %d\n", camel_message_info_from (info), !retval);
-			
+
 			if (retval) /* Not in book. Could be spam. So check for it*/ {
 				d(printf("filtering message\n"));
 				retval = camel_junk_plugin_check_junk (fms->session->junk_plugin, camel_filter_search_get_message (fms, f));
@@ -676,6 +676,11 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 
 		if (camel_debug ("junk"))
 			printf("junk filter => %s\n", retval ? "*JUNK*" : "clean");
+	} else if (fms->session->junk_plugin != NULL && camel_debug ("junk")) {
+		if (camel_message_info_flags (info) & CAMEL_MESSAGE_JUNK)
+			printf ("Message has a Junk flag set already, skipping junk test...\n");
+		else if (camel_message_info_flags (info) & CAMEL_MESSAGE_NOTJUNK)
+			printf ("Message has a NotJunk flag set already, skipping junk test...\n");
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
