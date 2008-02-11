@@ -1764,7 +1764,9 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		attendee_list = g_slist_append (attendee_list, &attendee);
 
 		e_cal_component_set_attendee_list (comp, attendee_list);
-		e_cal_component_free_attendee_list (attendee_list);
+		g_slist_free (attendee_list);
+		g_free ((char *) name);
+		g_free ((char *) email);
 
 		param_blocks = soup_soap_parameter_get_first_child_by_name (subparam, "blocks");
 		if (!param_blocks) {
