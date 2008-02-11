@@ -1,3 +1,10 @@
+2008-02-11  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.h (struct MapiItemAttachment): Added.
+
+	* camel-mapi-transport.c (mapi_item_add_attach, mapi_do_multipart, 
+	mapi_send_to): Send Attachments support.
+
 2008-02-01  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-folder.c (mapi_folder_item_to_msg): Add attachments 

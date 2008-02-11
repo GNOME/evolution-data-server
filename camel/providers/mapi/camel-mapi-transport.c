@@ -61,7 +61,7 @@
 
 #include <camel/camel-seekable-stream.h>
 
-#define STREAM_SIZE 1000
+#define STREAM_SIZE 4000
 
 CamelStore *get_store(void);
 
@@ -69,6 +69,8 @@ void	set_store(CamelStore *);
 
 static void
 mapi_item_add_recipient (const char *recipients, ExchangeMAPIRecipientType type, GSList **recipient_list);
+static int
+mapi_message_item_send (MapiItem *item, GSList *attachments, GSList *recipients);
 
 
 static void
@@ -279,21 +281,98 @@ mapi_collapse_recipients(TALLOC_CTX *mem_ctx, char **mapi_to, char **mapi_cc, ch
 }
 
 static gboolean
+mapi_item_add_attach(MapiItem *item, const gchar *filename, const char *description, 
+		     CamelStream *content_stream, int content_size)
+{
+	guint8 *buf = g_new0 (guint8 , STREAM_SIZE);
+	guint32	read_size;
+	ExchangeMAPIAttachment *item_attach;
+	item_attach = g_new0 (ExchangeMAPIAttachment, 1);
+
+	//?? :	attach->id = contents->n_attach;
+	if (filename) {
+		item_attach->filename = g_strdup(filename);
+	}
+
+	item_attach->value = g_byte_array_new ();
+
+	camel_seekable_stream_seek((CamelSeekableStream *)content_stream, 0, CAMEL_STREAM_SET);
+	while((read_size = camel_stream_read(content_stream, (char *)buf, STREAM_SIZE))){
+		item_attach->value = g_byte_array_append (item_attach->value, buf, read_size);
+	}
+
+	item->attachments = g_list_append(item->attachments, item_attach);
+
+	return TRUE;
+}
+
+static gboolean 
+mapi_do_multipart(CamelMultipart *mp, MapiItem *item)
+{
+	CamelDataWrapper *dw;
+	CamelStream *content_stream;
+	CamelContentType *type;
+	CamelMimePart *part;
+	gint n_part, i_part;
+	const gchar *filename;
+	const gchar *description;
+	const gchar *content_id;
+	gint content_size;
+
+	n_part = camel_multipart_get_number(mp);
+	for (i_part = 0; i_part < n_part; i_part++) {
+		/* getting part */
+		part = camel_multipart_get_part(mp, i_part);
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		if (CAMEL_IS_MULTIPART(dw)) {
+			/* recursive */
+			if (!mapi_do_multipart(CAMEL_MULTIPART(dw), item))
+				return FALSE;
+			continue ;
+		}
+		/* filename */
+		filename = camel_mime_part_get_filename(part);
+
+		dw = camel_medium_get_content_object(CAMEL_MEDIUM(part));
+		content_stream = camel_stream_mem_new();
+		content_size = camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content_stream);
+		camel_seekable_stream_seek((CamelSeekableStream *)content_stream, 0, CAMEL_STREAM_SET);
+
+		description = camel_mime_part_get_description(part);
+		content_id = camel_mime_part_get_content_id(part);
+		
+		type = camel_mime_part_get_content_type(part);
+		if (i_part == 0 && camel_content_type_is (type, "text", "plain")) {
+			mapi_item_set_body_stream (item, content_stream);
+		} else {
+			mapi_item_add_attach(item, filename, description, 
+					     content_stream, content_size);
+		}
+	}
+
+	return TRUE;
+}
+
+
+static gboolean
 mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	      CamelAddress *from, CamelAddress *recipients, CamelException *ex)
 {
 	CamelDataWrapper *dw;
 	CamelContentType *type;
 	CamelStream *content_stream;
+	CamelMultipart *multipart;
+	CamelMimePart *part;
 	const CamelInternetAddress *to, *cc, *bcc;
 	MapiItem *item = g_new0 (MapiItem, 1);
 	const char *namep;
 	const char *addressp;
 	const char *content_type;		
-	int i;
-	int st;
-	ssize_t	sz;
+	gint i, n_parts, i_part;
+	gint st;
+	ssize_t	content_size;
 	GSList *recipient_list = NULL;
+	GSList *attach_list = NULL;
 	/* headers */
 
 	if (!camel_internet_address_get((const CamelInternetAddress *)from, 0, &namep, &addressp)) {
@@ -324,23 +403,22 @@ mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	mapi_item_debug_dump (item);
 
 	/* contents body */
-	dw = camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	multipart = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
 
-	if (CAMEL_IS_MULTIPART(dw)) {
-/* 		if (do_multipart(CAMEL_MULTIPART(dw), &headers, &contents) == FALSE) { */
-/* 			printf("camel message multi part error\n"); */
-/* 		} */
+	if (CAMEL_IS_MULTIPART(multipart)) {
+		if (mapi_do_multipart(CAMEL_MULTIPART(multipart), item))
+			printf("camel message multi part error\n");
 	} else {
 		content_stream = (CamelStream *)camel_stream_mem_new();
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
 		content_type = camel_content_type_simple (type);
-		sz = camel_data_wrapper_write_to_stream(dw, (CamelStream *)content_stream);
+		content_size = camel_data_wrapper_write_to_stream(dw, (CamelStream *)content_stream);
 		mapi_item_set_body_stream (item, content_stream);
 	}
 	
 	
 	/* send */
-	st = mapi_message_item_send(item, recipient_list);
+	st = mapi_message_item_send(item, attach_list, recipient_list);
 
 	if (st == -1) {
 		printf("[!] cannot send(%s)\n", item->header.to);
@@ -442,14 +520,12 @@ mapi_item_add_recipient (const char *recipients, ExchangeMAPIRecipientType type,
 	*recipient_list = g_slist_append (*recipient_list, recipient);
 }
 
-int
-mapi_message_item_send (MapiItem *item, GSList *recipients)
+static int
+mapi_message_item_send (MapiItem *item, GSList *attachments, GSList *recipients)
 {
 	guint64 fid = 0;
 
-	//Process the reciepient table.
-	//Process Body Stream.
-	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, NULL);
+	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, item->attachments);
 
 	return 0;
 }

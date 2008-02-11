@@ -71,6 +71,11 @@ typedef struct {
 	CamelStream *body_stream;
 } MapiItemMessage;
 
+typedef struct {
+	gchar *filename;
+	gchar *description;
+	GByteArray *attach;
+} MapiItemAttachment;
 
 typedef struct  {
 	mapi_id_t fid;
