@@ -960,7 +960,7 @@ nntp_rename_folder (CamelStore *store, const char *old_name, const char *new_nam
 static void
 nntp_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
 {
-	nntp_store_subscribe_folder (store, folder_name, ex);
+	nntp_store_unsubscribe_folder (store, folder_name, ex);
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 	          _("You cannot remove a folder in a News store: unsubscribe instead."));
 	return;

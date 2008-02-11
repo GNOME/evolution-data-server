@@ -1,3 +1,10 @@
+2008-02-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #455248
+
+	* camel-nntp-store.c: (nntp_delete_folder):
+	Call unsubscribe instead of subscribe function.
+
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #510303
