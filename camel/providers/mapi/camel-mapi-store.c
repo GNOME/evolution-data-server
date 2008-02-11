@@ -947,13 +947,6 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	si->info.unread = fi->unread;
 	si->info.flags = 0;
 
-	/*Refresh info*/
-	//FIXME : Disable for now . later fix this
-/* 	if (store->current_folder  */
-/* 	    && !strcmp (store->current_folder->full_name, fi->full_name) */
-/* 	    && type != E_GW_CONTAINER_TYPE_INBOX) { */
-/* 		CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS (store->current_folder))->refresh_info(store->current_folder, ex); */
-/* 	} */
 	return fi;
 }
 
@@ -1057,7 +1050,7 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 	}
 	
 	g_free ((char *)url);
-	//	e_gw_connection_free_container_list (list);
+
 	count = camel_store_summary_count ((CamelStoreSummary *)store->summary);
 	for (i=0;i<count;i++) {
 		si = camel_store_summary_index ((CamelStoreSummary *)store->summary, i);

@@ -1,5 +1,10 @@
 2008-02-11  Johnny Jacob  <jjohnny@novell.com>
 
+	* camel-mapi-summary.c, camel-mapi-folder.c,
+	camel-mapi-store.c: Cleanups.
+
+2008-02-11  Johnny Jacob  <jjohnny@novell.com>
+
 	* camel-mapi-folder.h (struct MapiItemAttachment): Added.
 
 	* camel-mapi-transport.c (mapi_item_add_attach, mapi_do_multipart, 

@@ -157,7 +157,6 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 		 * so do a get_folder again. And hope that it works
 		 */
 		g_print("Reloading folder...something wrong with the summary....\n");
-		//		gw_store_reload_folder (gw_store, folder, 0, ex);
 	}
 	//#endif
 
@@ -369,21 +368,8 @@ mapi_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolea
 			}
 		}
 		
-		/*all items in the Junk Mail folder should have this flag set*/
-/* 		if (is_junk) */
-/* 			mi->info.flags |= CAMEL_GW_MESSAGE_JUNK; */
 
 		mi->info.flags = item->header.flags;
-
-/* 		if (item_status & E_GW_ITEM_STAT_REPLIED) */
-/* 			status_flags |= CAMEL_MESSAGE_ANSWERED; */
-/* 		if (exists)  */
-/* 			mi->info.flags |= status_flags; */
-/* 		else  */
-/* 			mi->info.flags = status_flags; */
-
-/* 		if (mapi_item_has_attachment (item)) */
-/* 			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS; */
 
 		if (!exists) {
 			mi->info.uid = g_strdup (exchange_mapi_util_mapi_ids_to_uid(item->fid, item->mid));
@@ -414,8 +400,6 @@ mapi_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolea
 			camel_object_unref (t_cache_stream);
 
 			mail_msg = mapi_folder_item_to_msg (folder, item, ex);
-/* 			if (mail_msg) */
-/* 				camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv)); */
 
 			CAMEL_MAPI_FOLDER_REC_LOCK (folder, cache_lock);
 			if ((cache_stream = camel_data_cache_add (mapi_folder->cache, "cache", msg_uid, NULL))) {
@@ -649,17 +633,10 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (!camel_mapi_store_connected (mapi_store, ex))
 		goto end1;
 
-		       //	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
-		       //	t_str = g_strdup (time_string); 
-
 	/*Get the New Items*/
 	if (!is_proxy) {
 		char *source;
-/* 		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) { */
-/* 			source = NULL; */
-/* 		} else { */
-/* 			source = "sent received"; */
-/* 		} */
+
 		mapi_id_t temp_folder_id;
 		exchange_mapi_util_mapi_id_from_string (folder_id, &temp_folder_id);
 
@@ -679,66 +656,8 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 			goto end2;
 		}
 
-		/*
-		 * The value in t_str is the one that has to be used for the next set of calls. 
-		 * so store this value in the summary.
-		 */
-/* 		if (summary->time_string) */
-/* 			g_free (summary->time_string); */
-
-
-		/* summary->time_string = g_strdup (t_str); */
-/* 		((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (t_str); */
 		camel_folder_summary_touch (folder->summary);
 		mapi_sync_summary (folder, ex);
-/* 		g_free (t_str);	 */
-/* 		t_str = NULL; */
-
-		/*
-		   for ( sl = slist ; sl != NULL; sl = sl->next) 
-		   list = g_list_append (list, sl->data);*/
-
-/* 		if (slist && g_slist_length(slist) != 0) */
-/* 			check_all = TRUE; */
-
-/* 		g_slist_free (slist); */
-/* 		slist = NULL; */
-
-/* 		t_str = g_strdup (time_string); */
-
-/* 		/\*Get those items which have been modifed*\/ */
-
-/* 		status = e_gw_connection_get_quick_messages (cnc, container_id, */
-/* 				"peek id", */
-/* 				&t_str, "Modified", NULL, source, -1, &slist); */
-
-/* 		if (status != E_GW_CONNECTION_STATUS_OK) { */
-/* 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed")); */
-/* 			goto end3; */
-/* 		} */
-
-		/* The storing of time-stamp to summary code below should be commented if the 
-		   above commented code is uncommented */
-
-		/*n	if (summary->time_string)
-			g_free (summary->time_string);
-
-			summary->time_string = g_strdup (t_str);
-
-			g_free (t_str), t_str = NULL;*/
-
-/* 		for ( sl = slist ; sl != NULL; sl = sl->next)  */
-/* 			list = g_list_prepend (list, sl->data); */
-
-/* 		if (!check_all && slist && g_slist_length(slist) != 0) */
-/* 			check_all = TRUE; */
-
-/* 		g_slist_free (slist); */
-/* 		slist = NULL; */
-
-/* 		if (gw_store->current_folder != folder) { */
-/* 			gw_store->current_folder = folder; */
-/* 		} */
 
 		if (mapi_folder->priv->item_list) {
 			mapi_update_cache (folder, mapi_folder->priv->item_list, ex, FALSE);
@@ -749,33 +668,11 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
 	is_locked = FALSE;
 
-	/*
-	 * The New and Modified items in the server have been updated in the summary. 
-	 * Now we have to make sure that all the delted items in the server are deleted
-	 * from Evolution as well. So we get the id's of all the items on the sever in 
-	 * this folder, and update the summary.
-	 */
-	/*create a new session thread for the update all operation*/
-/* 	if (check_all || is_proxy) { */
-/* 		msg = camel_session_thread_msg_new (session, &update_ops, sizeof(*msg)); */
-/* 		msg->cnc = cnc; */
-/* 		msg->t_str = g_strdup (time_string); */
-/* 		msg->container_id = g_strdup (container_id); */
-/* 		msg->folder = folder; */
-/* 		camel_object_ref (folder); */
-/* 		camel_folder_freeze (folder); */
-/* 		camel_session_thread_queue (session, &msg->msg, 0); */
-/* 		/\*thread creation and queueing done*\/ */
-/* 	} */
 
 end3: 
-	//	g_list_foreach (list, (GFunc) g_object_unref, NULL);
-	//	g_list_free (list);
 	list = NULL;
 end2:
-/* 	g_free (t_str); */
-/* 	g_free (time_string); */
-//	g_free (container_id);
+	//TODO:
 end1:
 	if (is_locked)
 		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
@@ -1181,9 +1078,6 @@ camel_mapi_folder_finalize (CamelObject *object)
 		g_free(mapi_folder->priv);
 	if (mapi_folder->cache)
 		camel_object_unref (mapi_folder->cache);
-/* 	if (gw_folder->search) */
-/* 		camel_object_unref (gw_folder->search); */
-
 }
 
 static void

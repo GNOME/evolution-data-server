@@ -35,8 +35,6 @@
 #include "camel-mapi-folder.h"
 #include "camel-mapi-summary.h"
 
-#define CAMEL_GW_SUMMARY_VERSION (1)
-
 /*Prototypes*/
 static int mapi_summary_header_load (CamelFolderSummary *, FILE *);
 static int mapi_summary_header_save (CamelFolderSummary *, FILE *);
@@ -98,15 +96,6 @@ camel_mapi_summary_class_init (CamelMapiSummaryClass *klass)
 	CamelFolderSummaryClass *cfs_class = (CamelFolderSummaryClass *) klass;
 
 	camel_mapi_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_mapi_folder_get_type()));
-
-/* 	cfs_class->message_info_clone = gw_message_info_clone ; */
-/* 	cfs_class->summary_header_load = gw_summary_header_load; */
-/* 	cfs_class->summary_header_save = gw_summary_header_save; */
-/* 	cfs_class->message_info_load = gw_message_info_load; */
-/* 	cfs_class->message_info_save = gw_message_info_save; */
-/* 	cfs_class->content_info_load = gw_content_info_load; */
-/* 	cfs_class->content_info_save = gw_content_info_save; */
-/* 	cfs_class->info_set_flags = gw_info_set_flags; */
 }
 
 
@@ -128,10 +117,10 @@ camel_mapi_summary_init (CamelMapiSummary *obj)
  * camel_mapi_summary_new:
  * @filename: the file to store the summary in.
  *
- * This will create a new CamelGroupwiseSummary object and read in the
+ * This will create a new CamelMapiSummary object and read in the
  * summary data from disk, if it exists.
  *
- * Return value: A new CamelGroupwiseSummary object.
+ * Return value: A new CamelMapiSummary object.
  **/
 CamelFolderSummary *
 camel_mapi_summary_new (struct _CamelFolder *folder, const char *filename)
