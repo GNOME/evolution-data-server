@@ -91,6 +91,7 @@ camel-imap-utils
 
 @flags: 
 @info: 
+@permanent_flags: 
 @Returns: 
 
 
