@@ -1886,7 +1886,7 @@ add_folder (gpointer key, gpointer value, gpointer folders)
 {
 	EFolder *folder = value;
 
-	d(g_print ("%s(%d):%s: key=[%s]\t folder-path=[%s]\n", __FILE__, __LINE__, G_GNUC_PRETTY_FUNCTION,
+	d(g_print ("%s:%s: key=[%s]\t folder-path=[%s]\n", G_STRLOC, G_STRFUNC,
 		   key, e_folder_exchange_get_path (folder)));
 
 	/* Each folder appears under three different keys, but

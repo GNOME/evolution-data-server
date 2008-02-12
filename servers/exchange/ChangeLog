@@ -1,3 +1,8 @@
+2008-02-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	* storage/exchange-account.c:
+	Fix another G_GNUC_PRETTY_FUNCTION straggler.
+
 2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #514682
