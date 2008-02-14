@@ -878,6 +878,14 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], have_addrinfo,
 		#include <stddef.h>
 
 	],[
+		#ifndef NI_MAXHOST
+		#define NI_MAXHOST	1025
+		#endif
+
+		#ifndef NI_MAXSERV
+		#define NI_MAXSERV	32
+		#endif
+
 		struct addrinfo hints, *res;
 		struct sockaddr_in6 sin6;
 		int af = AF_INET6;

@@ -44,6 +44,14 @@
 
 #define d(x)
 
+/* These are GNU extensions */
+#ifndef NI_MAXHOST
+#define NI_MAXHOST	1025
+#endif
+#ifndef NI_MAXSERV
+#define NI_MAXSERV	32
+#endif
+
 #ifdef G_OS_WIN32
 
 typedef short in_port_t;

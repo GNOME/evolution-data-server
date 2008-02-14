@@ -1,3 +1,10 @@
+2008-02-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #516074
+
+	* configure.in: Don't assume NI_MAXHOST and NI_MAXSERV are
+	defined in <netdb.h> since these are GNU extensions.
+
 2008-02-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* configure.in: Version bump for 2.21.92
