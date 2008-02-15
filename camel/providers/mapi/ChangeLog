@@ -1,3 +1,8 @@
+2008-02-14  Johnny Jacob  <jjohnny@novell.com>
+
+	* camel-mapi-folder.c (mapi_refresh_folder): Fix for fetch_items 
+	api changes.
+
 2008-02-11  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-summary.c, camel-mapi-folder.c,

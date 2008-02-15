@@ -747,7 +747,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 					BuildNameID build_name_id, 
 					struct mapi_SRestriction *res,
 					FetchItemsCallback cb, 
-					gpointer data)
+					gpointer data, guint32 options)
 {
 	enum MAPISTATUS retval;
 	TALLOC_CTX *mem_ctx;
@@ -790,6 +790,8 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 
 	GetPropsTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
 	GetPropsTagArray->cValues = 0;
+
+	// FIXME : Why are we fetching all these props ?
 
 	SPropTagArray = set_SPropTagArray(mem_ctx, 0xA,
 					  PR_FID,
@@ -893,15 +895,17 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 			goto loop_cleanup;
 		}
 
-		if (has_attach && *has_attach) {
+		if (has_attach && *has_attach && (MAPI_OPTIONS_FETCH_ATTACHMENTS & options)) {
 			g_print ("%s(%d): %s: Fetching Attachments \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 		}
 
-		exchange_mapi_util_get_recipients (&obj_message, &recip_list);
+		if ( options & MAPI_OPTIONS_FETCH_RECIPIENTS) 
+			exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
 		/* get the main body stream no matter what */
-		exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
+		if (options & MAPI_OPTIONS_FETCH_BODY_STREAM)
+			exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
 
 		if (GetPropsTagArray->cValues) {
 			struct SPropValue *lpProps;
@@ -924,9 +928,11 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 			uint32_t z;
 
 			/* just to get all the other streams */
-			for (z=0; z < properties_array.cValues; z++)
-				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY) 
+			for (z=0; z < properties_array.cValues; z++) {
+				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY && (options & MAPI_OPTIONS_FETCH_GENERIC_STREAMS)) 
 					exchange_mapi_util_read_generic_stream (&obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
+			}
+			
 
 			mapi_SPropValue_array_named(&obj_message, &properties_array);
 
@@ -969,9 +975,8 @@ cleanup:
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
 				     const uint32_t *GetPropsList, const uint16_t cn_props, 
-				     BuildNameID build_name_id, 
-				     FetchItemCallback cb, 
-				     gpointer data)
+				     BuildNameID build_name_id, FetchItemCallback cb, 
+				     gpointer data, guint32 options)
 {
 	enum MAPISTATUS retval;
 	TALLOC_CTX *mem_ctx;
@@ -1055,13 +1060,16 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 	}
 
 	/* Fetch attachments */
-	exchange_mapi_util_get_attachments (&obj_message, &attach_list);
+	if (options & MAPI_OPTIONS_FETCH_ATTACHMENTS) 
+		exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 
 	/* Fetch recipients */
-	exchange_mapi_util_get_recipients (&obj_message, &recip_list);
+	if (options & MAPI_OPTIONS_FETCH_RECIPIENTS) 
+		exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
 	/* get the main body stream no matter what */
-	exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
+	if (options & MAPI_OPTIONS_FETCH_BODY_STREAM)
+		exchange_mapi_util_read_body_stream (&obj_message, &stream_list);
 
 	if (GetPropsTagArray->cValues) {
 		struct SPropValue *lpProps;
@@ -1085,7 +1093,7 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 
 		/* just to get all the other streams */
 		for (z=0; z < properties_array.cValues; z++)
-			if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY)
+			if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY && (options & MAPI_OPTIONS_FETCH_GENERIC_STREAMS))
 				exchange_mapi_util_read_generic_stream (&obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
 
 		mapi_SPropValue_array_named(&obj_message, &properties_array);

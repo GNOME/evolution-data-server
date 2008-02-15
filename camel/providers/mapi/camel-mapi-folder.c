@@ -274,10 +274,6 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 		item->header.flags |= CAMEL_MESSAGE_SEEN;
 	if ((*flags & MSGFLAG_HASATTACH) != 0)
 		item->header.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-/* 	printf("%s(%d):%s:subject : %s \n from : %s\nto : %s\n cc : %s\n", __FILE__, */
-/* 	       __LINE__, __PRETTY_FUNCTION__, item->header.subject, */
-/* 	       item->header.from, item->header.to, item->header.cc); */
-/* 	debug_mapi_property_dump (array); */
 
 	slist = g_slist_append (slist, item);
 	mapi_folder->priv->item_list = slist;
@@ -649,7 +645,7 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 		status = exchange_mapi_connection_fetch_items (temp_folder_id, summary_prop_list, 
 							       G_N_ELEMENTS (summary_prop_list), NULL, NULL, 
-							       fetch_items_cb, folder);
+							       fetch_items_cb, folder, 0);
 
 		if (!status) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Fetch items failed"));
@@ -973,7 +969,9 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	exchange_mapi_util_mapi_ids_from_uid (uid, &id_folder, &id_message);
 
 	folder_id =  g_strdup (camel_mapi_store_folder_id_lookup (mapi_store, folder->full_name)) ;
-	item = exchange_mapi_connection_fetch_item (id_folder, id_message, NULL, 0, NULL, fetch_item_cb, NULL);
+	item = exchange_mapi_connection_fetch_item (id_folder, id_message, NULL, 0, 
+						    NULL, fetch_item_cb, NULL, 
+						    MAPI_OPTIONS_FETCH_ATTACHMENTS | MAPI_OPTIONS_FETCH_BODY_STREAM | MAPI_OPTIONS_FETCH_BODY_STREAM);
 
 	if (item == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));

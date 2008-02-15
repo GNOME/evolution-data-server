@@ -748,7 +748,7 @@ e_book_backend_mapi_get_contact (EBookBackend *backend,
 			mapi_id_t fid, mid;
 			
 			exchange_mapi_util_mapi_ids_from_uid (id, &fid, &mid);
-			contact = exchange_mapi_connection_fetch_item (priv->fid, mid, NULL, 0, NULL, create_contact_item, NULL);
+			contact = exchange_mapi_connection_fetch_item (priv->fid, mid, NULL, 0, NULL, create_contact_item, NULL, MAPI_OPTIONS_FETCH_ALL);
 
 			if (contact) {
 				e_contact_set (contact, E_CONTACT_BOOK_URI, priv->uri);
@@ -898,7 +898,7 @@ e_book_backend_mapi_get_contact_list (EBookBackend *backend,
 
 			if (!exchange_mapi_connection_fetch_items (priv->fid, 
 								GetPropsList, n_GetPropsList, build_name_id_for_getprops, 
-								&res, create_contact_list_cb, &vcard_str)) {
+								   &res, create_contact_list_cb, &vcard_str, MAPI_OPTIONS_FETCH_ALL)) {
 				e_data_book_respond_get_contact_list (book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 				return ;
 			}
@@ -1285,7 +1285,7 @@ book_view_thread (gpointer data)
 
 		//FIXME: We need to fetch only the query from the server live and not everything.
 		/* execute the query */
-		if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, create_contact_cb, book_view)) {
+		if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, create_contact_cb, book_view, MAPI_OPTIONS_FETCH_ALL)) {
 			if (e_flag_is_set (closure->running))
 				e_data_book_view_notify_complete (book_view, 
 								  GNOME_Evolution_Addressbook_OtherError);	
@@ -1388,7 +1388,7 @@ build_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, cache_contact_cb, ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, NULL, 0, NULL, NULL, cache_contact_cb, ebmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;
@@ -1430,7 +1430,7 @@ update_cache (EBookBackendMAPI *ebmapi)
 	
 	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 	
-	if (!exchange_mapi_connection_fetch_items ( priv->fid, NULL, 0, NULL, &res, cache_contact_cb,ebmapi)) {
+	if (!exchange_mapi_connection_fetch_items ( priv->fid, NULL, 0, NULL, &res, cache_contact_cb,ebmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		printf("Error during caching addressbook\n");
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		return NULL;

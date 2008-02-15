@@ -32,6 +32,18 @@ typedef enum {
 	RECIPIENT_BCC  = 0x3
 } ExchangeMAPIRecipientType;
 
+typedef enum _ExchangeMapiOptions {
+	MAPI_OPTIONS_FETCH_ATTACHMENTS = 1<<0,
+	MAPI_OPTIONS_FETCH_RECIPIENTS = 1<<1,
+	MAPI_OPTIONS_FETCH_BODY_STREAM = 1<<2,
+	MAPI_OPTIONS_FETCH_GENERIC_STREAMS = 1<<3
+} ExchangeMapiOptions;
+
+#define MAPI_OPTIONS_FETCH_ALL MAPI_OPTIONS_FETCH_ATTACHMENTS | \
+	                       MAPI_OPTIONS_FETCH_RECIPIENTS | \
+	                       MAPI_OPTIONS_FETCH_BODY_STREAM | \
+	                       MAPI_OPTIONS_FETCH_GENERIC_STREAMS
+
 /* FIXME: need to accomodate rendering position */
 typedef struct {
 	GByteArray *value;
@@ -81,14 +93,13 @@ exchange_mapi_connection_exists (void);
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
 				     const uint32_t *GetPropsList, const uint16_t cn_props, 
-				     BuildNameID build_name_id, 
-				     FetchItemCallback cb, 
-				     gpointer data);
+				     BuildNameID build_name_id, FetchItemCallback cb, 
+				     gpointer data, guint32 options);
 gboolean
 exchange_mapi_connection_fetch_items (mapi_id_t fid, 
 				      const uint32_t *GetPropsList, const uint16_t cn_props, BuildNameID build_name_id,  
 				      struct mapi_SRestriction *res, 
-				      FetchItemsCallback cb, gpointer data);
+				      FetchItemsCallback cb, gpointer data, guint32 options);
 
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name);
