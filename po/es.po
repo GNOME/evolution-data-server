@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-24 08:30+0000\n"
-"PO-Revision-Date: 2008-01-26 14:14+0100\n"
+"POT-Creation-Date: 2008-02-18 09:10+0000\n"
+"PO-Revision-Date: 2008-02-18 12:16+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -695,60 +695,63 @@ msgstr "Cumpleaños: %s"
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:202
+#: ../calendar/backends/file/e-cal-backend-file.c:204
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "No se pueden guardar los datos del calendario: URI malformado."
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:332
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:912
+#: ../calendar/backends/file/e-cal-backend-file.c:209
+msgid "Can't save calendar data: "
+msgstr "No se pueden guardar los datos del calendario: "
+
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
 msgid "Could not create thread for getting deltas"
 msgstr "No se pudo crear el hilo para obtener deltas"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:364
-#: ../calendar/backends/google/e-cal-backend-google.c:799
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:959
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1233
-#: ../calendar/backends/http/e-cal-backend-http.c:564
-#: ../calendar/backends/weather/e-cal-backend-weather.c:460
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
+#: ../calendar/backends/google/e-cal-backend-google.c:1175
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1030
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1329
+#: ../calendar/backends/http/e-cal-backend-http.c:569
+#: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:377
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1042
 msgid "Could not create thread for populating cache"
 msgstr "No se pudo crear el hilo para la llenar la caché"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:982
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1028
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1767
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:987
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1769
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1033
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1772
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:266
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
 #, c-format
 msgid "Loading %s items"
 msgstr "Cargando %s elementos"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:786
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:924
 msgid "Invalid server URI"
 msgstr "URI del servidor inválido"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:977
-#: ../calendar/libecal/e-cal.c:5006
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1081
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1119
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:952
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1048
+#: ../calendar/libecal/e-cal.c:5031
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1052
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1084
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1122
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -772,320 +775,320 @@ msgstr "No es un calendario."
 msgid "Could not retrieve weather data"
 msgstr "No se pudieron obtener los datos meteorológicos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Fair"
 msgstr "Buen tiempo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Snow showers"
 msgstr "Chubascos de nieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Snow"
 msgstr "Nieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Partly cloudy"
 msgstr "Parcialmente nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Smoke"
 msgstr "Humo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Thunderstorms"
 msgstr "Tormentas"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Cloudy"
 msgstr "Nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Drizzle"
 msgstr "Llovizna"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Sunny"
 msgstr "Soleado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
+#: ../calendar/backends/weather/e-cal-backend-weather.c:225
 msgid "Dust"
 msgstr "Polvo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
+#: ../calendar/backends/weather/e-cal-backend-weather.c:226
 msgid "Clear"
 msgstr "Despejado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
+#: ../calendar/backends/weather/e-cal-backend-weather.c:227
 msgid "Mostly cloudy"
 msgstr "Mayormente nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
+#: ../calendar/backends/weather/e-cal-backend-weather.c:228
 msgid "Windy"
 msgstr "Ventoso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#: ../calendar/backends/weather/e-cal-backend-weather.c:229
 msgid "Rain showers"
 msgstr "Chaparrones"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
+#: ../calendar/backends/weather/e-cal-backend-weather.c:230
 msgid "Foggy"
 msgstr "Nieblina"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:225
+#: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Rain/snow mixed"
 msgstr "Lluvia/nieve mezclados"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:226
+#: ../calendar/backends/weather/e-cal-backend-weather.c:232
 msgid "Sleet"
 msgstr "Aguanieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:227
+#: ../calendar/backends/weather/e-cal-backend-weather.c:233
 msgid "Very hot/humid"
 msgstr "Muy caliente/húmedo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:228
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
 msgid "Blizzard"
 msgstr "Ventisca"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:229
+#: ../calendar/backends/weather/e-cal-backend-weather.c:235
 msgid "Freezing rain"
 msgstr "Lluvia helada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:230
+#: ../calendar/backends/weather/e-cal-backend-weather.c:236
 msgid "Haze"
 msgstr "Bruma"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:231
+#: ../calendar/backends/weather/e-cal-backend-weather.c:237
 msgid "Blowing snow"
 msgstr "Nieve y viento"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:232
+#: ../calendar/backends/weather/e-cal-backend-weather.c:238
 msgid "Freezing drizzle"
 msgstr "Lloviznas congeladas"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:233
+#: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Very cold/wind chill"
 msgstr "Muy frío/viento aullante"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:234
+#: ../calendar/backends/weather/e-cal-backend-weather.c:240
 msgid "Rain"
 msgstr "Lluvia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:244
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
-#: ../calendar/backends/weather/e-cal-backend-weather.c:261
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:267
 msgid "Weather: Sunny"
 msgstr "Meteorología: Soleado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
-#: ../calendar/backends/weather/e-cal-backend-weather.c:246
-#: ../calendar/backends/weather/e-cal-backend-weather.c:262
-#: ../calendar/backends/weather/e-cal-backend-weather.c:265
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:268
+#: ../calendar/backends/weather/e-cal-backend-weather.c:271
 msgid "Weather: Snow"
 msgstr "Meteorología: Nieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
 msgid "Weather: Partly Cloudy"
 msgstr "Meteorología: Parcialmente nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:248
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:259
 #: ../calendar/backends/weather/e-cal-backend-weather.c:264
+#: ../calendar/backends/weather/e-cal-backend-weather.c:270
 msgid "Weather: Fog"
 msgstr "Meteorología: Niebla"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Thunderstorms"
 msgstr "Meteorología: Tormenta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:261
 msgid "Weather: Cloudy"
 msgstr "Meteorología: Nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
 #: ../calendar/backends/weather/e-cal-backend-weather.c:257
-#: ../calendar/backends/weather/e-cal-backend-weather.c:259
-#: ../calendar/backends/weather/e-cal-backend-weather.c:260
 #: ../calendar/backends/weather/e-cal-backend-weather.c:263
+#: ../calendar/backends/weather/e-cal-backend-weather.c:265
 #: ../calendar/backends/weather/e-cal-backend-weather.c:266
-#: ../calendar/backends/weather/e-cal-backend-weather.c:268
+#: ../calendar/backends/weather/e-cal-backend-weather.c:269
+#: ../calendar/backends/weather/e-cal-backend-weather.c:272
+#: ../calendar/backends/weather/e-cal-backend-weather.c:274
 msgid "Weather: Rain"
 msgstr "Meteorología: Lluvia"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:343
+#: ../calendar/backends/weather/e-cal-backend-weather.c:349
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:345
+#: ../calendar/backends/weather/e-cal-backend-weather.c:351
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:348
+#: ../calendar/backends/weather/e-cal-backend-weather.c:354
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:350
+#: ../calendar/backends/weather/e-cal-backend-weather.c:356
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:356
+#: ../calendar/backends/weather/e-cal-backend-weather.c:362
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "%d%% probabilidad de precipitación\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:363
+#: ../calendar/backends/weather/e-cal-backend-weather.c:369
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "%.1fcm nieve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:365
+#: ../calendar/backends/weather/e-cal-backend-weather.c:371
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "%.1fpl nieve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:368
+#: ../calendar/backends/weather/e-cal-backend-weather.c:374
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "%.1f-%.1fcm nieve\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:370
+#: ../calendar/backends/weather/e-cal-backend-weather.c:376
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fpl nieve\n"
 
-#: ../calendar/libecal/e-cal-component.c:1322
+#: ../calendar/libecal/e-cal-component.c:1315
 msgid "Untitled appointment"
 msgstr "Cita sin título"
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "1st"
 msgstr "1"
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "2nd"
 msgstr "2"
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "3rd"
 msgstr "3"
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "4th"
 msgstr "4"
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "5th"
 msgstr "5"
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "6th"
 msgstr "6"
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "7th"
 msgstr "7"
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "8th"
 msgstr "8"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "9th"
 msgstr "9"
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "10th"
 msgstr "10"
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "11th"
 msgstr "11"
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "12th"
 msgstr "12"
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "13th"
 msgstr "13"
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "14th"
 msgstr "14"
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "15th"
 msgstr "15"
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "16th"
 msgstr "16"
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "17th"
 msgstr "17"
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "18th"
 msgstr "18"
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "19th"
 msgstr "19"
 
-#: ../calendar/libecal/e-cal-recur.c:4057
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "20th"
 msgstr "20"
 
-#: ../calendar/libecal/e-cal-recur.c:4058
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "21st"
 msgstr "21"
 
-#: ../calendar/libecal/e-cal-recur.c:4059
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "22nd"
 msgstr "22"
 
-#: ../calendar/libecal/e-cal-recur.c:4060
+#: ../calendar/libecal/e-cal-recur.c:4063
 msgid "23rd"
 msgstr "23"
 
-#: ../calendar/libecal/e-cal-recur.c:4061
+#: ../calendar/libecal/e-cal-recur.c:4064
 msgid "24th"
 msgstr "24"
 
-#: ../calendar/libecal/e-cal-recur.c:4062
+#: ../calendar/libecal/e-cal-recur.c:4065
 msgid "25th"
 msgstr "25"
 
-#: ../calendar/libecal/e-cal-recur.c:4063
+#: ../calendar/libecal/e-cal-recur.c:4066
 msgid "26th"
 msgstr "26"
 
-#: ../calendar/libecal/e-cal-recur.c:4064
+#: ../calendar/libecal/e-cal-recur.c:4067
 msgid "27th"
 msgstr "27"
 
-#: ../calendar/libecal/e-cal-recur.c:4065
+#: ../calendar/libecal/e-cal-recur.c:4068
 msgid "28th"
 msgstr "28"
 
-#: ../calendar/libecal/e-cal-recur.c:4066
+#: ../calendar/libecal/e-cal-recur.c:4069
 msgid "29th"
 msgstr "29"
 
-#: ../calendar/libecal/e-cal-recur.c:4067
+#: ../calendar/libecal/e-cal-recur.c:4070
 msgid "30th"
 msgstr "30"
 
-#: ../calendar/libecal/e-cal-recur.c:4068
+#: ../calendar/libecal/e-cal-recur.c:4071
 msgid "31st"
 msgstr "31"
 
@@ -1120,73 +1123,73 @@ msgstr "Introduzca la contraseña para %s (usuario %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Introduzca la contraseña de %s para activar el proxy para el usuario %s"
 
-#: ../calendar/libecal/e-cal.c:4978
+#: ../calendar/libecal/e-cal.c:5003
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: ../calendar/libecal/e-cal.c:4980
+#: ../calendar/libecal/e-cal.c:5005
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
 
-#: ../calendar/libecal/e-cal.c:4982
+#: ../calendar/libecal/e-cal.c:5007
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:4984
+#: ../calendar/libecal/e-cal.c:5009
 msgid "No such calendar"
 msgstr "No existe el calendario"
 
-#: ../calendar/libecal/e-cal.c:4986 ../servers/groupwise/e-gw-connection.c:199
+#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:199
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: ../calendar/libecal/e-cal.c:4988 ../servers/groupwise/e-gw-connection.c:193
+#: ../calendar/libecal/e-cal.c:5013 ../servers/groupwise/e-gw-connection.c:193
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:4990
+#: ../calendar/libecal/e-cal.c:5015
 msgid "URI not loaded"
 msgstr "URI no cargado"
 
-#: ../calendar/libecal/e-cal.c:4992
+#: ../calendar/libecal/e-cal.c:5017
 msgid "URI already loaded"
 msgstr "URI ya cargado"
 
-#: ../calendar/libecal/e-cal.c:4994
+#: ../calendar/libecal/e-cal.c:5019
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../calendar/libecal/e-cal.c:4996 ../servers/groupwise/e-gw-connection.c:201
+#: ../calendar/libecal/e-cal.c:5021 ../servers/groupwise/e-gw-connection.c:201
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
-#: ../calendar/libecal/e-cal.c:4998
+#: ../calendar/libecal/e-cal.c:5023
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: ../calendar/libecal/e-cal.c:5000
+#: ../calendar/libecal/e-cal.c:5025
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: ../calendar/libecal/e-cal.c:5002
+#: ../calendar/libecal/e-cal.c:5027
 msgid "Operation has been canceled"
 msgstr "La operación ha sido cancelada"
 
-#: ../calendar/libecal/e-cal.c:5004
+#: ../calendar/libecal/e-cal.c:5029
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: ../calendar/libecal/e-cal.c:5008
+#: ../calendar/libecal/e-cal.c:5033
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: ../calendar/libecal/e-cal.c:5010
+#: ../calendar/libecal/e-cal.c:5035
 msgid "A CORBA exception has occurred"
 msgstr "Ha ocurrido una excepción CORBA"
 
-#: ../calendar/libecal/e-cal.c:5012
+#: ../calendar/libecal/e-cal.c:5037
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1200,7 +1203,7 @@ msgstr "Ha ocurrido una excepción CORBA"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: ../calendar/libecal/e-cal.c:5014
+#: ../calendar/libecal/e-cal.c:5039
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Sin errores"
@@ -1398,66 +1401,66 @@ msgstr "Para completar esta operación debe estar trabajando conectado a la red"
 msgid "No description available"
 msgstr "Sin descripción disponible"
 
-#: ../camel/camel-filter-driver.c:771
+#: ../camel/camel-filter-driver.c:786
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
-#: ../camel/camel-filter-driver.c:813
+#: ../camel/camel-filter-driver.c:828
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Flujo de mensaje inválido recibido desde %s: %s"
 
-#: ../camel/camel-filter-driver.c:1002 ../camel/camel-filter-driver.c:1011
+#: ../camel/camel-filter-driver.c:1017 ../camel/camel-filter-driver.c:1026
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../camel/camel-filter-driver.c:1100 ../camel/camel-filter-driver.c:1480
+#: ../camel/camel-filter-driver.c:1115 ../camel/camel-filter-driver.c:1495
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1109 ../camel/camel-filter-driver.c:1489
+#: ../camel/camel-filter-driver.c:1124 ../camel/camel-filter-driver.c:1504
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1177
+#: ../camel/camel-filter-driver.c:1192
 msgid "Unable to open spool folder"
 msgstr "No se pudo abrir la carpeta «spool»"
 
-#: ../camel/camel-filter-driver.c:1186
+#: ../camel/camel-filter-driver.c:1201
 msgid "Unable to process spool folder"
 msgstr "No se pudo procesar la carpeta temporal"
 
-#: ../camel/camel-filter-driver.c:1201
+#: ../camel/camel-filter-driver.c:1216
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Obteniendo mensaje %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1205
+#: ../camel/camel-filter-driver.c:1220
 msgid "Cannot open message"
 msgstr "No se pudo abrir el mensaje"
 
-#: ../camel/camel-filter-driver.c:1206 ../camel/camel-filter-driver.c:1219
+#: ../camel/camel-filter-driver.c:1221 ../camel/camel-filter-driver.c:1234
 #, c-format
 msgid "Failed on message %d"
 msgstr "Error en el mensaje %d"
 
-#: ../camel/camel-filter-driver.c:1233 ../camel/camel-filter-driver.c:1324
+#: ../camel/camel-filter-driver.c:1248 ../camel/camel-filter-driver.c:1339
 msgid "Syncing folder"
 msgstr "Sincronizando carpeta"
 
-#: ../camel/camel-filter-driver.c:1237 ../camel/camel-filter-driver.c:1329
+#: ../camel/camel-filter-driver.c:1252 ../camel/camel-filter-driver.c:1344
 msgid "Complete"
 msgstr "Completo"
 
-#: ../camel/camel-filter-driver.c:1294
+#: ../camel/camel-filter-driver.c:1309
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Obteniendo mensaje %d de %d"
 
-#: ../camel/camel-filter-driver.c:1309
+#: ../camel/camel-filter-driver.c:1324
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falló en el mensaje %d de %d"
@@ -1480,7 +1483,7 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:732 ../camel/camel-filter-search.c:740
+#: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
@@ -1805,40 +1808,40 @@ msgstr "Error copiando el correo al archivo temporal: %s"
 msgid "parse error"
 msgstr "error de análisis sintáctico"
 
-#: ../camel/camel-net-utils.c:498 ../camel/camel-net-utils.c:660
-#: ../camel/camel-net-utils.c:792
+#: ../camel/camel-net-utils.c:506 ../camel/camel-net-utils.c:668
+#: ../camel/camel-net-utils.c:800
 #: ../camel/providers/pop3/camel-pop3-store.c:449
 #: ../camel/providers/pop3/camel-pop3-store.c:553
 msgid "Canceled"
 msgstr "Cancelado"
 
-#: ../camel/camel-net-utils.c:517
+#: ../camel/camel-net-utils.c:525
 msgid "cannot create thread"
 msgstr "no se puede crear el hilo"
 
-#: ../camel/camel-net-utils.c:664
+#: ../camel/camel-net-utils.c:672
 #, c-format
 msgid "Resolving: %s"
 msgstr "Resolviendo: %s"
 
-#: ../camel/camel-net-utils.c:686
+#: ../camel/camel-net-utils.c:694
 msgid "Host lookup failed"
 msgstr "No es posible resolver el equipo remoto"
 
-#: ../camel/camel-net-utils.c:688
+#: ../camel/camel-net-utils.c:696
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "No es posible resolver el equipo remoto: %s: %s"
 
-#: ../camel/camel-net-utils.c:796
+#: ../camel/camel-net-utils.c:804
 msgid "Resolving address"
 msgstr "Resolviendo dirección"
 
-#: ../camel/camel-net-utils.c:816
+#: ../camel/camel-net-utils.c:824
 msgid "Name lookup failed"
 msgstr "No es posible resolver el nombre"
 
-#: ../camel/camel-net-utils.c:819
+#: ../camel/camel-net-utils.c:827
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "No es posible resolver el nombre: %s"
@@ -2647,7 +2650,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "No se pueden copiar mensajes a la carpeta Spam"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2163
+#: ../camel/providers/imap/camel-imap-folder.c:2167
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2657,7 +2660,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2163
+#: ../camel/providers/imap/camel-imap-folder.c:2167
 #: ../camel/providers/local/camel-maildir-folder.c:251
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2692,15 +2695,15 @@ msgstr "No se puede obtener el mensaje %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2121
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2124
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Este mensaje no está disponible en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:173
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1670
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1673
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1720
 msgid "Could not get message"
 msgstr "No se puede obtener el mensaje"
 
@@ -2710,26 +2713,26 @@ msgstr "No se puede obtener el mensaje"
 msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1045
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1048
 msgid "Trash Folder Full. Please Empty."
 msgstr "La papelera está llena. Por favor vacíela."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1222
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1225
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2534
-#: ../camel/providers/imap/camel-imap-folder.c:2604
+#: ../camel/providers/imap/camel-imap-folder.c:2538
+#: ../camel/providers/imap/camel-imap-folder.c:2608
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1988
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1991
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2033
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No se pudo agregar el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2018
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2021
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
@@ -3015,44 +3018,44 @@ msgid "Folder was destroyed and recreated on server."
 msgstr "La carpeta fue destruida y recreada en el servidor."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:678
+#: ../camel/providers/imap/camel-imap-folder.c:682
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2123
+#: ../camel/providers/imap/camel-imap-folder.c:2127
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "No se pudo descargar el mensaje: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2202
-#: ../camel/providers/imap/camel-imap-folder.c:2885
+#: ../camel/providers/imap/camel-imap-folder.c:2206
+#: ../camel/providers/imap/camel-imap-folder.c:2892
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "Este mensaje no está disponible actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2723
+#: ../camel/providers/imap/camel-imap-folder.c:2727
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Respuesta del servidor incompleta: no hay información proporcionada para el "
 "mensaje %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2731
+#: ../camel/providers/imap/camel-imap-folder.c:2735
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje %"
 "d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2744
+#: ../camel/providers/imap/camel-imap-folder.c:2748
 #, c-format
 msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
 "Respuesta inesperada del servidor: Se proporcionaron UIDs idénticos para los "
 "mensajes %d y %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2923
+#: ../camel/providers/imap/camel-imap-folder.c:2930
 msgid "Could not find message body in FETCH response."
 msgstr "No se pudo encontrar el cuerpo del mensaje en la respuesta de FETCH."
 
