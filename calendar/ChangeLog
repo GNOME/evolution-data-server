@@ -1,5 +1,17 @@
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/file/e-cal-backend-file.c (save_file_when_idle): Reverted
+	the string marked for translation as we are in string freeze mode now.								    
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* backends/contacts/e-cal-backend-contacts.c (cdate_to_icaltime):
+	* backends/groupwise/e-cal-backend-groupwise-utils.h:
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #163982 (bnc)
 	* backends/file/e-cal-backend-file.c (save_file_when_idle),
 	(add_component): Do not keep popuping up error dialogs in case
