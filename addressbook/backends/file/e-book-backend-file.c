@@ -666,6 +666,9 @@ e_book_backend_file_stop_book_view (EBookBackend  *backend,
 	FileBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
 
+	if (!closure)
+		return;
+
 	d(printf ("stopping query\n"));
 	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
