@@ -206,10 +206,9 @@ save_file_when_idle (gpointer user_data)
 
  error:
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-    /* error = g_strconcat (_("Can't save calendar data: "), gnome_vfs_result_to_string (result), NULL);
-    e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), error);
-    g_free (error);  */
-    e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result)); 
+   	error = g_strconcat (_("Can't save calendar data: "), gnome_vfs_result_to_string (result), NULL);
+	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), error);
+	g_free (error);  
 	return FALSE;
 }
 
