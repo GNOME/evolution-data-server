@@ -1,3 +1,8 @@
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-name-selector-dialog.c: Include the required
+	header files. Fix from downstream opensuse.
+
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #509985

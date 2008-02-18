@@ -31,6 +31,8 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <glib/gstrfuncs.h>
 #include <glib/gi18n-lib.h>
 #include <libedataserverui/e-source-combo-box.h>
 #include <libedataserverui/e-destination-store.h>
