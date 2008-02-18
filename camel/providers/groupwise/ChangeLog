@@ -1,3 +1,10 @@
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #183819 (bnc)
+	* camel-groupwise-folder.c (update_update): Fixes a crash
+	while closing evolution in offline mode. Patch from downstream
+	opensuse.		  						      
+
 2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bnc #167638

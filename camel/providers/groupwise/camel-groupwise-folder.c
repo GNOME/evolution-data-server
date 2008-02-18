@@ -871,16 +871,27 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
 	CamelException *ex = NULL;
+	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (m->folder->parent_store);
 
 	GList *item_list, *items_full_list = NULL, *last_element=NULL;
 	int cursor = 0;
 	const char *position = E_GW_CURSOR_POSITION_END;
 	gboolean done;
 
+	/* Hold the connect_lock.
+	   In case if user went offline, don't do anything.
+	   m->cnc would have become invalid, as the store disconnect unrefs it.
+	 */
+	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
+			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
+		goto end1;
+	}
+
 	status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("ERROR update update\n");
-		return ;
+		goto end1;
 	}
 
 	done = FALSE;
@@ -892,7 +903,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning ("ERROR update update\n");
 			e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
-			return;
+			goto end1;
 		}
 
 		if (!item_list  || g_list_length (item_list) == 0)
@@ -915,6 +926,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 	e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
 
+	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	/* Take out only the first part in the list until the @ since it is guaranteed
 	   to be unique only until that symbol */
 
@@ -936,6 +948,11 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
 	gw_update_all_items (m->folder, items_full_list, ex);
+
+	return;
+ end1:
+	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	return;
 }
 
 static void
