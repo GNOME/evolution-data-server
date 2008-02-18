@@ -1,3 +1,10 @@
+2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bnc #167638
+
+	* camel.c: Upstreamed OpenSUSE patch. Patch by Fejj to quit evolution
+	faster. (Dont try downloading while exitting).
+
 2008-02-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #516074

@@ -64,7 +64,7 @@
 #define ADD_JUNK_ENTRY 1
 #define REMOVE_JUNK_ENTRY -1
 #define JUNK_FOLDER "Junk Mail"
-#define READ_CURSOR_MAX_IDS 500
+#define READ_CURSOR_MAX_IDS 50
 #define MAX_ATTACHMENT_SIZE 1*1024*1024   /*In bytes*/
 #define GROUPWISE_BULK_DELETE_LIMIT 100
 
@@ -865,6 +865,9 @@ struct _folder_update_msg {
 static void
 update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 {
+
+	extern int camel_application_is_exiting;
+	
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
 	CamelException *ex = NULL;
@@ -883,7 +886,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	done = FALSE;
 	m->slist = NULL;
 
-	while (!done) {
+	while (!done && !camel_application_is_exiting) {
 		item_list = NULL;
 		status = e_gw_connection_get_all_mail_uids (m->cnc, m->container_id, cursor, FALSE, READ_CURSOR_MAX_IDS, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {

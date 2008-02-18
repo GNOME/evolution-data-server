@@ -1,3 +1,11 @@
+2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bnc #167638
+
+	* camel-imap-folder.c: (imap_rescan), (camel_imap_folder_changed): Upstreamed 
+	OpenSUSE patch. Patch by Fejj to quit evolution faster. 
+	(Dont try downloading while exitting).
+
 2008-02-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #515054

@@ -652,6 +652,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapStore *store = CAMEL_IMAP_STORE (folder->parent_store);
+	extern int camel_application_is_exiting;
 	struct {
 		char *uid;
 		guint32 flags;
@@ -665,6 +666,9 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	gboolean ok;
 	CamelFolderChangeInfo *changes = NULL;
 
+ 	if (camel_application_is_exiting)
+ 		return;
+ 	
 	imap_folder->need_rescan = FALSE;
 
 	summary_len = camel_folder_summary_count (folder->summary);
@@ -2789,6 +2793,7 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 			   GArray *expunged, CamelException *ex)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+	extern int camel_application_is_exiting;
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
 	int len;
@@ -2816,7 +2821,7 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 	}
 
 	len = camel_folder_summary_count (folder->summary);
-	if (exists > len)
+	if (exists > len && !camel_application_is_exiting)
 		imap_update_summary (folder, exists, changes, ex);
 
 	if (camel_folder_change_info_changed (changes))

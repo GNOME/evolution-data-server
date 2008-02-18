@@ -46,6 +46,8 @@
 
 static int initialised = FALSE;
 
+int camel_application_is_exiting = FALSE;
+
 static void
 camel_shutdown (void)
 {

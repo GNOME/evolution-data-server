@@ -1,3 +1,10 @@
+2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bnc #167638
+
+	* camel-groupwise-folder.c: (update_update): Upstreamed OpenSUSE patch
+	by Sankar. Quit GW download after Quit requested.
+
 2008-01-30  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #395939
