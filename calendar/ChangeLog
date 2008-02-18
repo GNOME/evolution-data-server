@@ -1,3 +1,10 @@
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #163982 (bnc)
+	* backends/file/e-cal-backend-file.c (save_file_when_idle),
+	(add_component): Do not keep popuping up error dialogs in case
+	of failure. Fix from opensuse downstream.
+
 2008-02-14  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #516408

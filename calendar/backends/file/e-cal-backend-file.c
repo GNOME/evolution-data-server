@@ -128,6 +128,7 @@ save_file_when_idle (gpointer user_data)
 	GnomeVFSFileSize out;
 	gchar *tmp, *backup_uristr;
 	char *buf;
+	char *error = NULL;
 	ECalBackendFile *cbfile = user_data;
 
 	priv = cbfile->priv;
@@ -201,12 +202,15 @@ save_file_when_idle (gpointer user_data)
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
 				  _("Cannot save calendar data: Malformed URI."));
-	return TRUE;
+	return FALSE;
 
  error:
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result));
-	return TRUE;
+    /* error = g_strconcat (_("Can't save calendar data: "), gnome_vfs_result_to_string (result), NULL);
+    e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), error);
+    g_free (error);  */
+    e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result)); 
+	return FALSE;
 }
 
 static void
@@ -521,8 +525,6 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		g_assert (icalcomp != NULL);
 
 		icalcomponent_add_component (priv->icalcomp, icalcomp);
-
-		save (cbfile);
 	}
 }
 
