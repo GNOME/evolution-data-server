@@ -2090,7 +2090,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(source->parent_store);
 	CamelOfflineStore *offline = (CamelOfflineStore *) destination->parent_store;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
-	EGwConnectionStatus status;
+	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_OK;
 	EGwConnection *cnc;
 	CamelFolderChangeInfo *changes = NULL;
 

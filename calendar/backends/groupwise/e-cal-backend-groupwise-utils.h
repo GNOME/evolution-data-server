@@ -44,6 +44,7 @@ G_BEGIN_DECLS
  * Items management
  */
 EGwItem       *e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp);
+EGwItem  *e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp);
 ECalComponent *e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw);
 void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
 

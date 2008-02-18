@@ -1,5 +1,10 @@
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* camel-groupwise-folder.c (groupwise_transfer_messages_to): Fixes
+	some warnings. Fix from downstream opensuse.								     
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #183819 (bnc)
 	* camel-groupwise-folder.c (update_update): Fixes a crash
 	while closing evolution in offline mode. Patch from downstream

@@ -389,7 +389,7 @@ contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer us
 static struct icaltimetype
 cdate_to_icaltime (EContactDate *cdate)
 {
-	struct icaltimetype ret;
+	struct icaltimetype ret = icaltime_null_time();
 
 	ret.year = cdate->year;
 	ret.month = cdate->month;

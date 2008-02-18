@@ -702,6 +702,9 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	}
 
 #ifdef HAVE_SSL
+	/* as soon as we send a STARTTLS command, all hope is lost of a clean QUIT if problems arise */
+	clean_quit = FALSE;
+	
 	if (!(store->capabilities & IMAP_CAPABILITY_STARTTLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
@@ -709,9 +712,6 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 
 		goto exception;
 	}
-
-	/* as soon as we send a STARTTLS command, all hope is lost of a clean QUIT if problems arise */
-	clean_quit = FALSE;
 
 	response = camel_imap_command (store, NULL, ex, "STARTTLS");
 	if (!response) {

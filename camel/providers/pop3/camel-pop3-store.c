@@ -219,15 +219,15 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	}
 
 #ifdef HAVE_SSL
+	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
+	clean_quit = FALSE;
+
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to connect to POP server %s in secure mode: %s"),
 			service->url->host, _("STLS not supported by server"));
 		goto stls_exception;
 	}
-
-	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
-	clean_quit = FALSE;
 
 	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, "STLS\r\n");
 	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
