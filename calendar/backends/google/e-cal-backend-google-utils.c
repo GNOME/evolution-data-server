@@ -617,14 +617,14 @@ e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp)
 	e_cal_component_get_dtstart (comp, &dt);
 	itt = icaltime_convert_to_zone (*dt.value, default_zone);
 	dt.value = &itt;
-	temp = g_strdup (get_date (dt));
+	temp = get_date (dt);
 	gdata_entry_set_start_time (entry, temp);
 
 	/* End Time */
 	e_cal_component_get_dtend (comp, &dt);
 	itt = icaltime_convert_to_zone (*dt.value, default_zone);
 	dt.value = &itt;
-	temp = g_strdup (get_date (dt));
+	temp = get_date (dt);
 	gdata_entry_set_end_time (entry, temp);
 
 	/* Content / Description */
@@ -815,7 +815,7 @@ utils_update_deletion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, GSList 
 gchar *
 get_date (ECalComponentDateTime dt)
 {
-	const char *temp;
+	char *temp;
 	struct icaltimetype itt;
 	struct icaltimetype *itt_u;
 	gchar *month;
@@ -833,8 +833,6 @@ get_date (ECalComponentDateTime dt)
 	itt.is_daylight = itt_u->is_daylight;
 	itt.zone = itt_u->zone;
 
-	temp = icaltime_as_ical_string(itt);
-
 	month = (itt.month<10) ? g_strdup_printf("0%d", itt.month):g_strdup_printf ("%d", itt.month);
 	day = (itt.day < 10) ? g_strdup_printf("0%d", itt.day):g_strdup_printf ("%d", itt.day);
 
@@ -842,9 +840,15 @@ get_date (ECalComponentDateTime dt)
 	minute = (itt.minute<10) ? g_strdup_printf("0%d", itt.minute):g_strdup_printf ("%d", itt.minute);
 	second = (itt.second<10) ? g_strdup_printf ("0%d", itt.second):g_strdup_printf ("%d", itt.second);
 
+	/* FIXME not the best way to do this */
 	temp =  g_strdup_printf ("%d-%s-%sT%s:%s:%s.000", itt.year, month, day, hour, minute, second);
+	g_free (month);
+	g_free (day);
+	g_free (hour);
+	g_free (minute);
+	g_free (second);
 
-	return g_strdup(temp);
+	return temp;
 }
 
 static gboolean

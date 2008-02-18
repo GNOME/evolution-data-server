@@ -116,9 +116,11 @@ list_uids (ECal *client)
 		printf ("\n");
 
 		for (l = objects; l; l = l->next) {
+			char *obj = icalcomponent_as_ical_string (l->data);
 			printf ("------------------------------\n");
-			printf ("%s", icalcomponent_as_ical_string (l->data));
+			printf ("%s", obj);
 			printf ("------------------------------\n");
+			free (obj);
 		}
 	}
 

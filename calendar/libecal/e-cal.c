@@ -4093,7 +4093,7 @@ foreach_tzid_callback (icalparameter *param, void *cbdata)
 	vtimezone_as_string = icalcomponent_as_ical_string (vtimezone_comp);
 
 	g_hash_table_insert (data->timezone_hash, (char*) tzid,
-			     g_strdup (vtimezone_as_string));
+			     vtimezone_as_string);
 }
 
 /* This appends the value string to the GString given in data. */
@@ -4171,7 +4171,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 			      vcal_string);
 
 	/* Get the string for the VEVENT/VTODO. */
-	obj_string = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	obj_string = icalcomponent_as_ical_string (icalcomp);
 
 	/* If there were any timezones to send, create a complete VCALENDAR,
 	   else just send the VEVENT/VTODO string. */
@@ -4228,6 +4228,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
+	char *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4251,10 +4252,12 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_createObject (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
+	obj = icalcomponent_as_ical_string (icalcomp);
+	GNOME_Evolution_Calendar_Cal_createObject (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (obj);
 
 		CORBA_exception_free (&ev);
 
@@ -4263,6 +4266,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (obj);
 	CORBA_exception_free (&ev);
 
         e_flag_wait (our_op->done);
@@ -4304,6 +4308,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
+	char *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4328,10 +4333,12 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_modifyObject (priv->cal, icalcomponent_as_ical_string (icalcomp), mod, &ev);
+	obj = icalcomponent_as_ical_string (icalcomp);
+	GNOME_Evolution_Calendar_Cal_modifyObject (priv->cal, obj, mod, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (obj);
 
 		CORBA_exception_free (&ev);
 
@@ -4340,6 +4347,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (obj);
 	CORBA_exception_free (&ev);
 
 	e_flag_wait (our_op->done);
@@ -4468,6 +4476,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
+	char *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4491,10 +4500,12 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_receiveObjects (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
+	obj = icalcomponent_as_ical_string (icalcomp);
+	GNOME_Evolution_Calendar_Cal_receiveObjects (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (obj);
 
 		CORBA_exception_free (&ev);
 
@@ -4503,6 +4514,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (obj);
 	CORBA_exception_free (&ev);
 
 	e_flag_wait (our_op->done);
@@ -4536,6 +4548,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
+	char *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4559,10 +4572,12 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_sendObjects (priv->cal, icalcomponent_as_ical_string (icalcomp), &ev);
+	obj = icalcomponent_as_ical_string (icalcomp);
+	GNOME_Evolution_Calendar_Cal_sendObjects (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (obj);
 
 		CORBA_exception_free (&ev);
 
@@ -4571,6 +4586,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (obj);
 	CORBA_exception_free (&ev);
 
 	e_flag_wait (our_op->done);
@@ -4740,7 +4756,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	const char *tzobj;
+	char *tzobj;
 	icalcomponent *icalcomp;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -4791,6 +4807,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (tzobj);
 
 		CORBA_exception_free (&ev);
 
@@ -4799,6 +4816,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (tzobj);
 	CORBA_exception_free (&ev);
 
 	e_flag_wait (our_op->done);
@@ -4940,6 +4958,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
 		e_calendar_free_op (our_op);
+		g_free (tzobj);
 
 		CORBA_exception_free (&ev);
 
@@ -4948,6 +4967,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
+	g_free (tzobj);
 	CORBA_exception_free (&ev);
 
 	e_flag_wait (our_op->done);

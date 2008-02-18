@@ -174,6 +174,7 @@ save_file_when_idle (gpointer user_data)
 
 	buf = icalcomponent_as_ical_string (priv->icalcomp);
 	result = gnome_vfs_write (handle, buf, strlen (buf) * sizeof (char), &out);
+	g_free (buf);
 	gnome_vfs_close (handle);
 	if (result != GNOME_VFS_OK) {
 		gnome_vfs_uri_unref (uri);
@@ -735,6 +736,7 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 		e_cal_backend_notify_object_removed (context->backend, id, old_obj_str, NULL);
 
 		e_cal_component_free_id (id);
+		g_free (old_obj_str);
 		g_object_unref (comp);
 	}
 }
@@ -763,6 +765,7 @@ notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
 			return;
 
 		e_cal_backend_notify_object_created (context->backend, new_obj_str);
+		g_free (new_obj_str);
 	} else {
 		old_icomp = e_cal_component_get_icalcomponent (old_obj_data->full_object);
 		new_icomp = e_cal_component_get_icalcomponent (new_obj_data->full_object);
@@ -779,6 +782,8 @@ notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
 
 			e_cal_backend_notify_object_modified (context->backend, old_obj_str, new_obj_str);
 		}
+		g_free (old_obj_str);
+		g_free (new_obj_str);
 	}
 }
 
@@ -1122,7 +1127,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 				return GNOME_Evolution_Calendar_ObjectNotFound;
                         }
 
-			*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+			*object = icalcomponent_as_ical_string (icalcomp);
 
 			icalcomponent_free (icalcomp);
 		}
@@ -1139,7 +1144,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			/* add all detached recurrences */
 			g_hash_table_foreach (obj_data->recurrences, (GHFunc) add_detached_recur_to_vcalendar, icalcomp);
 
-			*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+			*object = icalcomponent_as_ical_string (icalcomp);
 
 			icalcomponent_free (icalcomp);
 		} else
@@ -1186,7 +1191,7 @@ e_cal_backend_file_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
@@ -1534,7 +1539,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 		if (e_cal_backend_mail_account_get_default (&address, &name)) {
 			vfb = create_user_free_busy (cbfile, address, name, start, end);
 			calobj = icalcomponent_as_ical_string (vfb);
-			*freebusy = g_list_append (*freebusy, g_strdup (calobj));
+			*freebusy = g_list_append (*freebusy, calobj);
 			icalcomponent_free (vfb);
 			g_free (address);
 			g_free (name);
@@ -1545,7 +1550,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 			if (e_cal_backend_mail_account_is_valid (address, &name)) {
 				vfb = create_user_free_busy (cbfile, address, name, start, end);
 				calobj = icalcomponent_as_ical_string (vfb);
-				*freebusy = g_list_append (*freebusy, g_strdup (calobj));
+				*freebusy = g_list_append (*freebusy, calobj);
 				icalcomponent_free (vfb);
 				g_free (name);
 			}
@@ -2552,7 +2557,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_CANCEL:
 			if (cancel_received_object (cbfile, subcomp)) {
 				ECalComponentId *id;
-				object = (char *) icalcomponent_as_ical_string (subcomp);
+				object =  icalcomponent_as_ical_string (subcomp);
 				obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 				if (obj_data)
 					old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -2569,6 +2574,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				e_cal_component_free_id (id);
 
 				g_free (old_object);
+				g_free (object);
 			}
 			break;
 		default:

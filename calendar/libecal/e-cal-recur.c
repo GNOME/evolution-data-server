@@ -3997,7 +3997,8 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	icalvalue *value;
 	icaltimezone *utc_zone;
 	struct icaltimetype icaltime;
-	const char *end_date_string, *xname;
+	const char *xname;
+	char *end_date_string;
 
 	/* We save the value as a UTC DATE-TIME. */
 	utc_zone = icaltimezone_get_utc_timezone ();
@@ -4022,6 +4023,8 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	param = icalparameter_new_x (end_date_string);
 	icalparameter_set_xname (param, EVOLUTION_END_DATE_PARAMETER);
 	icalproperty_add_parameter (prop, param);
+
+	g_free (end_date_string);	
 }
 
 #ifdef G_OS_WIN32

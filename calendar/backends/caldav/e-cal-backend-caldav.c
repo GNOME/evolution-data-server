@@ -272,7 +272,7 @@ icomp_x_prop_set (icalcomponent *comp, const char *key, const char *value)
 }
 
 
-static const char *
+static char *
 icomp_x_prop_get (icalcomponent *comp, const char *key)
 {
 	icalproperty *xprop;
@@ -308,7 +308,7 @@ e_cal_component_set_href (ECalComponent *comp, const char *href)
 	icomp_x_prop_set (icomp, X_E_CALDAV "HREF", href);
 }
 
-static const char *
+static char *
 e_cal_component_get_href (ECalComponent *comp)
 {
 	icalcomponent *icomp;
@@ -317,7 +317,7 @@ e_cal_component_get_href (ECalComponent *comp)
 	str = NULL;
 	icomp = e_cal_component_get_icalcomponent (comp);
 
-	str = (char *) icomp_x_prop_get (icomp, X_E_CALDAV "HREF");
+	str =  icomp_x_prop_get (icomp, X_E_CALDAV "HREF");
 
 	return str;
 }
@@ -335,7 +335,7 @@ e_cal_component_set_etag (ECalComponent *comp, const char *etag)
 
 }
 
-static const char *
+static char *
 e_cal_component_get_etag (ECalComponent *comp)
 {
 	icalcomponent *icomp;
@@ -344,7 +344,7 @@ e_cal_component_get_etag (ECalComponent *comp)
 	str = NULL;
 	icomp = e_cal_component_get_icalcomponent (comp);
 
-	str = (char *) icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
+	str =  icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
 
 	return str;
 }
@@ -1255,13 +1255,13 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		return;
 	}
 
-	hindex = g_hash_table_new (g_str_hash, g_str_equal);
+	hindex = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	cobjs = e_cal_backend_cache_get_components (bcache);
 
 	/* build up a index for the href entry */
 	for (citer = cobjs; citer; citer = g_list_next (citer)) {
 		ECalComponent *ccomp = E_CAL_COMPONENT (citer->data);
-		const char *href;
+		char *href;
 
 		href = e_cal_component_get_href (ccomp);
 
@@ -1276,7 +1276,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 	/* see if we have to upate or add some objects */
 	for (i = 0, object = sobjs; i < len; i++, object++) {
 		ECalComponent *ccomp;
-		const char *etag = NULL;
+		char *etag = NULL;
 
 		if (object->status != 200) {
 			/* just continue here, so that the object
@@ -1301,6 +1301,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		}
 
 		caldav_object_free (object, FALSE);
+		g_free (etag);
 	}
 
 	/* remove old (not on server anymore) items from cache */
@@ -1654,7 +1655,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, ECalComponent *ecomp)
 
 	g_assert (objstr);
 
-	return g_strdup (objstr);
+	return objstr;
 
 }
 
@@ -1773,8 +1774,8 @@ caldav_modify_object (ECalBackendSync  *backend,
 	if (online) {
 		CalDAVObject object;
 
-		object.href  = g_strdup (e_cal_component_get_href (cache_comp));
-		object.etag  = g_strdup (e_cal_component_get_etag (cache_comp));
+		object.href  = e_cal_component_get_href (cache_comp);
+		object.etag  = e_cal_component_get_etag (cache_comp);
 		object.cdata = pack_cobj (cbdav, comp);
 
 		status = caldav_server_put_object (cbdav, &object);
@@ -1841,8 +1842,8 @@ caldav_remove_object (ECalBackendSync  *backend,
 	if (online) {
 		CalDAVObject caldav_object;
 
-		caldav_object.href  = g_strdup (e_cal_component_get_href (cache_comp));
-		caldav_object.etag  = g_strdup (e_cal_component_get_etag (cache_comp));
+		caldav_object.href  = e_cal_component_get_href (cache_comp);
+		caldav_object.etag  = e_cal_component_get_etag (cache_comp);
 		caldav_object.cdata = NULL;
 
 		status = caldav_server_delete_object (cbdav, &caldav_object);
@@ -1973,14 +1974,14 @@ process_object (ECalBackendCalDAV   *cbdav,
 			CalDAVObject object = { NULL, };
 
 			if (ccomp) {
-				const char *href;
-				const char *etag;
+				char *href;
+				char *etag;
 
 				href = e_cal_component_get_href (ccomp);
 				etag = e_cal_component_get_etag (ccomp);
 
-				object.href  = g_strdup (href);
-				object.etag  = g_strdup (etag);
+				object.href  = href;
+				object.etag  = etag;
 
 			} else {
 				object.href = e_cal_component_gen_href (ecomp);
@@ -2035,14 +2036,14 @@ process_object (ECalBackendCalDAV   *cbdav,
 			 * of recurring appointments - yet - */
 			if (online) {
 				CalDAVObject object;
-				const char *href;
-				const char *etag;
+				char *href;
+				char *etag;
 
 				href = e_cal_component_get_href (ccomp);
 				etag = e_cal_component_get_etag (ccomp);
 
-				object.href  = g_strdup (href);
-				object.etag  = g_strdup (etag);
+				object.href  = href;
+				object.etag  = etag;
 				object.cdata = NULL;
 
 				status = caldav_server_delete_object (cbdav,
@@ -2268,7 +2269,7 @@ caldav_get_timezone (ECalBackendSync  *backend,
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

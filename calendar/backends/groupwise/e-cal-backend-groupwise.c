@@ -540,14 +540,17 @@ get_deltas (gpointer handle)
 
 		if (calid->recur_key && calid->ical_id) {
 			const char *rid = NULL;
+			char *temp;
 			icaltimetype tt = icaltime_from_string (calid->ical_id);
 			if (!tt.is_date) {
 				tt = icaltime_convert_to_zone (tt, priv->default_zone);
 				icaltime_set_timezone (&tt, priv->default_zone);
 				rid = icaltime_as_ical_string (tt);
+				temp = rid;
 			} else
 				rid = calid->ical_id;
 			real_key = g_strconcat (calid->recur_key, "@", rid, NULL);
+			g_free (temp);
 		}
 
 		if (!calid->recur_key || real_key) {
@@ -1545,7 +1548,7 @@ e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, c
         if (!icalcomp)
                 return GNOME_Evolution_Calendar_InvalidObject;
 
-        *object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+        *object = icalcomponent_as_ical_string (icalcomp);
 
         return GNOME_Evolution_Calendar_Success;
 }

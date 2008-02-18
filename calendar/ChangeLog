@@ -1,3 +1,52 @@
+2008-02-14  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #516408
+	* backends/caldav/e-cal-backend-caldav.c
+	(e_cal_component_get_href), (e_cal_component_get_etag),
+	(synchronize_cache), (pack_cobj), (caldav_modify_object),
+	(caldav_remove_object), (process_object), (caldav_get_timezone):
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_get_free_busy),
+	(e_cal_backend_contacts_get_timezone):
+	* backends/file/e-cal-backend-file.c (save_file_when_idle),
+	(notify_removals_cb), (notify_adds_modifies_cb),
+	(e_cal_backend_file_get_object), (e_cal_backend_file_get_timezone),
+	(e_cal_backend_file_get_free_busy),
+	(e_cal_backend_file_receive_objects):
+	* backends/google/e-cal-backend-google-utils.c
+	(e_go_item_from_cal_component), (get_date):
+	* backends/google/e-cal-backend-google.c
+	(e_cal_backend_google_get_timezone):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(add_send_options_data_to_item), (set_rrule_from_comp),
+	(set_properties_from_cal_component), (start_freebusy_session),
+	(e_cal_backend_groupwise_store_settings):
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas),
+	(e_cal_backend_groupwise_get_timezone):
+	* backends/http/e-cal-backend-http.c (retrieval_done),
+	(e_cal_backend_http_get_default_object),
+	(e_cal_backend_http_get_timezone),
+	(e_cal_backend_http_get_free_busy):
+	* backends/weather/e-cal-backend-weather.c (finished_retrieval_cb),
+	(e_cal_backend_weather_get_timezone),
+	(e_cal_backend_weather_get_free_busy):
+	* libecal/e-cal-component.c (e_cal_component_get_as_string),
+	(e_cal_component_get_recurid_as_string):
+	* libecal/e-cal-component.h:
+	* libecal/e-cal-recur.c (e_cal_recur_set_rule_end_date):
+	* libecal/e-cal.c (foreach_tzid_callback),
+	(e_cal_get_component_as_string_internal), (e_cal_create_object),
+	(e_cal_modify_object), (e_cal_receive_objects),
+	(e_cal_send_objects), (e_cal_add_timezone),
+	(e_cal_set_default_timezone):
+	* libedata-cal/e-cal-backend-cache.c
+	(e_cal_backend_cache_put_component),
+	(e_cal_backend_cache_put_timezone),
+	(e_cal_backend_cache_put_default_timezone):
+	* libedata-cal/e-data-cal-view.c (add_object_to_cache):
+	* tests/ecal/test-ecal.c (list_uids): Remove the duping of memory
+	which is returned from libical and free the returned by libical.					      
+
 2008-02-11  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #515696

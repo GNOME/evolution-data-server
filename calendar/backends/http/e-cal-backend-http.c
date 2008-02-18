@@ -333,19 +333,24 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
 				const char *uid, *orig_key, *orig_value;
+				char *obj;
 
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
 				e_cal_component_get_uid (comp, &uid);
 				/* middle (void*) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
 				if (g_hash_table_lookup_extended (old_cache, uid, (void **)(void*)&orig_key, (void **)(void*)&orig_value)) {
+					obj = icalcomponent_as_ical_string (subcomp);
 					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
 									      orig_value,
-									      icalcomponent_as_ical_string (subcomp));
+									      obj);
+					g_free (obj);
 					g_hash_table_remove (old_cache, uid);
 				} else {
+					obj = icalcomponent_as_ical_string (subcomp);
 					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
-									     icalcomponent_as_ical_string (subcomp));
+									     obj);
+					g_free (obj);
 				}
 			}
 
@@ -688,7 +693,7 @@ e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 	icalcomp = e_cal_util_new_component (kind);
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 	icalcomponent_free (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -746,7 +751,7 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1048,7 +1053,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 		if (e_cal_backend_mail_account_get_default (&address, &name)) {
                         vfb = create_user_free_busy (cbhttp, address, name, start, end);
                         calobj = icalcomponent_as_ical_string (vfb);
-                        *freebusy = g_list_append (*freebusy, g_strdup (calobj));
+                        *freebusy = g_list_append (*freebusy, calobj);
                         icalcomponent_free (vfb);
                         g_free (address);
                         g_free (name);
@@ -1060,7 +1065,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
                         if (e_cal_backend_mail_account_is_valid (address, &name)) {
                                 vfb = create_user_free_busy (cbhttp, address, name, start, end);
                                 calobj = icalcomponent_as_ical_string (vfb);
-                                *freebusy = g_list_append (*freebusy, g_strdup (calobj));
+                                *freebusy = g_list_append (*freebusy, calobj);
                                 icalcomponent_free (vfb);
                                 g_free (name);
                         }

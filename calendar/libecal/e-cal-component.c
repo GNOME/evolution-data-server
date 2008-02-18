@@ -1245,7 +1245,7 @@ char *
 e_cal_component_get_as_string (ECalComponent *comp)
 {
 	ECalComponentPrivate *priv;
-	char *str, *buf;
+	char *str;
 
 	g_return_val_if_fail (comp != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
@@ -1256,16 +1256,9 @@ e_cal_component_get_as_string (ECalComponent *comp)
 	/* Ensure that the user has committed the new SEQUENCE */
 	g_return_val_if_fail (priv->need_sequence_inc == FALSE, NULL);
 
-	/* We dup the string; libical owns that memory */
-
 	str = icalcomponent_as_ical_string (priv->icalcomp);
 
-	if (str)
-		buf = g_strdup (str);
-	else
-		buf = NULL;
-
-	return buf;
+	return str;
 }
 
 /* Used from g_hash_table_foreach(); ensures that an alarm subcomponent
@@ -3568,7 +3561,7 @@ e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
  *
  * Return value: the recurrence ID as a string.
  */
-const char *
+char *
 e_cal_component_get_recurid_as_string (ECalComponent *comp)
 {
         ECalComponentRange range;
@@ -3584,7 +3577,7 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
         e_cal_component_free_range (&range);
 
         return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
-                icaltime_as_ical_string (tt) : "0";
+                icaltime_as_ical_string (tt) : g_strdup ("0");
 }
 
 /**

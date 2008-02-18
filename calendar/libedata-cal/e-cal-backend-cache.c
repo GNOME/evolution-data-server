@@ -377,7 +377,7 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 				   ECalComponent *comp)
 {
 	char *real_key, *uid, *comp_str;
-	const char *rid;
+	char *rid;
 	gboolean retval;
 	ECalBackendCachePrivate *priv;
 
@@ -402,6 +402,7 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 
 	g_free (real_key);
 	g_free (comp_str);
+	g_free (rid);
 
 	return retval;
 }
@@ -605,6 +606,7 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	icaltimezone *new_zone;
 	icalcomponent *icalcomp;
 	gboolean retval;
+	char *obj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -616,15 +618,17 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	if (!icalcomp)
 		return FALSE;
 
+	obj = icalcomponent_as_ical_string (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *)zone))) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache),
 						      icaltimezone_get_tzid ((icaltimezone *)zone),
-						      icalcomponent_as_ical_string (icalcomp));
+						      obj);
 	} else {
 		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
 						  icaltimezone_get_tzid ((icaltimezone *)zone),
-						  icalcomponent_as_ical_string (icalcomp));
+						  obj);
 	}
+	g_free (obj);
 
 	if (!retval)
 		return FALSE;
@@ -652,6 +656,7 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
 	ECalBackendCachePrivate *priv;
 	icalcomponent *icalcomp;
 	gboolean retval;
+	char *obj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
@@ -662,14 +667,16 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
 	if (!icalcomp)
 		return FALSE;
 
+	obj = icalcomponent_as_ical_string (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone")) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), "default_zone",
-						      icalcomponent_as_ical_string (icalcomp));
+						      obj);
 	} else {
 		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
 						 "default_zone",
-						  icalcomponent_as_ical_string (icalcomp));
+						  obj);
 	}
+	g_free (obj);
 
 	if (!retval)
 		return FALSE;

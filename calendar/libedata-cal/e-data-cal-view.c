@@ -102,9 +102,12 @@ add_object_to_cache (EDataCalView *query, const char *calobj)
 		return;
 	}
 
-	if (e_cal_component_is_instance (comp))
-		real_uid = g_strdup_printf ("%s@%s", uid, e_cal_component_get_recurid_as_string (comp));
-	else
+	if (e_cal_component_is_instance (comp)) {
+		char *str;
+		str = e_cal_component_get_recurid_as_string (comp)	;
+		real_uid = g_strdup_printf ("%s@%s", uid, str);
+		g_free (str);
+	} else
 		real_uid = g_strdup (uid);
 
 	if (g_hash_table_lookup (priv->matched_objects, real_uid))
