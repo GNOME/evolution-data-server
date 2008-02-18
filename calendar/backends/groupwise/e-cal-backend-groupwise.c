@@ -114,6 +114,8 @@ static ECalBackendClass *parent_class = NULL;
 #define CURSOR_ITEM_LIMIT 100
 #define CURSOR_ICALID_LIMIT 500
 
+static guint get_cache_refresh_interval (void);
+
 EGwConnection *
 e_cal_backend_groupwise_get_connection (ECalBackendGroupwise *cbgw) {
 
@@ -325,7 +327,6 @@ get_deltas (gpointer handle)
 	char t_str [26];
 	const char *serv_time;
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
-	const char *time_interval_string;
 	const char *key = "attempts";
 	const char *attempts;
 	const char *position ;
@@ -453,11 +454,8 @@ get_deltas (gpointer handle)
 	current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
 	gmtime_r (&current_time, &tm);
 
-	time_interval = (CACHE_REFRESH_INTERVAL / 60000);
-	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
-	if (time_interval_string) {
-		time_interval = g_ascii_strtod (time_interval_string, NULL);
-	}
+	time_interval = get_cache_refresh_interval () / 60000;
+	
 	if (attempts) {
 		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
 		e_cal_backend_cache_put_key_value (cache, key, NULL);
@@ -651,6 +649,22 @@ get_deltas (gpointer handle)
 	return TRUE;
 }
 
+static guint
+get_cache_refresh_interval (void)
+{
+	guint time_interval;
+	const char *time_interval_string = NULL;
+	
+	time_interval = CACHE_REFRESH_INTERVAL;
+	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
+	if (time_interval_string) {
+		time_interval = g_ascii_strtod (time_interval_string, NULL);
+		time_interval *= (60*1000);
+	}
+		
+	return time_interval;
+}
+
 static gpointer
 delta_thread (gpointer data)
 {
@@ -670,7 +684,7 @@ delta_thread (gpointer data)
 			break;
 
 		g_get_current_time (&timeout);
-		g_time_val_add (&timeout, CACHE_REFRESH_INTERVAL * 1000);
+		g_time_val_add (&timeout, get_cache_refresh_interval () * 1000);
 		g_cond_timed_wait (priv->dlock->cond, priv->dlock->mutex, &timeout);
 		
 		if (priv->dlock->exit) 
@@ -783,17 +797,9 @@ cache_init (ECalBackendGroupwise *cbgw)
 	EGwConnectionStatus cnc_status;
 	icalcomponent_kind kind;
 	EGwSendOptions *opts;
-	const char *time_interval_string;
-	int time_interval;
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-	time_interval = CACHE_REFRESH_INTERVAL;
-	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
-	if (time_interval_string) {
-		time_interval = g_ascii_strtod (time_interval_string, NULL);
-		time_interval *= (60*1000);
 
-	}
 	cnc_status = e_gw_connection_get_settings (priv->cnc, &opts);
 	if (cnc_status == E_GW_CONNECTION_STATUS_OK) {
 		GwSettings *hold = g_new0 (GwSettings, 1);
@@ -827,13 +833,15 @@ cache_init (ECalBackendGroupwise *cbgw)
 			/*FIXME  why dont we do a notify here */
 			return NULL;
 		} else {
+			int time_interval;
 			char *utc_str;
 
+			time_interval = get_cache_refresh_interval ();
 			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
 			e_cal_backend_cache_set_marker (priv->cache);
 			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
-			priv->timeout_id = g_timeout_add (CACHE_REFRESH_INTERVAL, start_fetch_deltas, cbgw);
+			priv->timeout_id = g_timeout_add (time_interval, start_fetch_deltas, cbgw);
 
 			return NULL;
 		}

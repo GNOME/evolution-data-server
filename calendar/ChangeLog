@@ -1,5 +1,11 @@
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(get_cache_refresh_interval), (delta_thread), (cache_init): Respect
+	the refresh interval set in environment variable always.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	* backends/file/e-cal-backend-file.c (save_file_when_idle): Reverted
 	the string marked for translation as we are in string freeze mode now.								    
 
