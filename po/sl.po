@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-18 11:03+0000\n"
-"PO-Revision-Date: 2008-02-19 13:18+0100\n"
+"PO-Revision-Date: 2008-02-19 14:57+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -731,15 +731,15 @@ msgstr "Ni mogoče ustvariti niti za pridobivanje delt"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:367
 #: ../calendar/backends/google/e-cal-backend-google.c:1175
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1030
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1329
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1038
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1337
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke s predpomnilnikom"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1042
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1050
 msgid "Could not create thread for populating cache"
 msgstr "Ni mogoče ustvariti niti za naselitev predpomnilnika"
 
@@ -753,23 +753,23 @@ msgstr "Zahtevan odgovor: s strani"
 msgid "Reply Requested: When convenient"
 msgstr "Zahtevan odgovor: ko ustreza"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #, c-format
 msgid "Loading %s items"
 msgstr "Nalaganje %s predmetov"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:866
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:874
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Koledar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:924
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:932
 msgid "Invalid server URI"
 msgstr "Neveljaven URI strežnika"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:952
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1048
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:951
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:960
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1056
 #: ../calendar/libecal/e-cal.c:5031
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1069
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1101
@@ -3159,7 +3159,7 @@ msgstr "SSL ni na voljo"
 msgid "Connection cancelled"
 msgstr "Povezava prekinjena"
 
-#: ../camel/providers/imap/camel-imap-store.c:707
+#: ../camel/providers/imap/camel-imap-store.c:710
 #: ../camel/providers/imap/camel-imap-store.c:729
 #: ../camel/providers/imap/camel-imap-store.c:735
 #: ../camel/providers/imap/camel-imap-store.c:761
@@ -3170,7 +3170,7 @@ msgstr "Povezava prekinjena"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu ni uspela: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:708
+#: ../camel/providers/imap/camel-imap-store.c:711
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
@@ -3962,7 +3962,7 @@ msgstr "Ni mogoče shraniti mape: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1088
 #: ../camel/providers/local/camel-mbox-summary.c:1117
 msgid "Detected a corrupt mbox file or an invalid 'From' header"
-msgstr ""
+msgstr "Zaznana pokvarjena mbox datoteka ali pa je neveljavna glava 'od'"
 
 #: ../camel/providers/local/camel-mbox-summary.c:935
 #: ../camel/providers/local/camel-spool-summary.c:326
@@ -4313,7 +4313,7 @@ msgstr "Ta možnost bo vzpostavila povezavo s strežnikom POP z uporabo šifrira
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Branje veljavnega pozdrava strežnika POP %s ni uspelo"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:224
+#: ../camel/providers/pop3/camel-pop3-store.c:227
 #: ../camel/providers/pop3/camel-pop3-store.c:241
 #: ../camel/providers/pop3/camel-pop3-store.c:251
 #: ../camel/providers/pop3/camel-pop3-store.c:257
@@ -4321,7 +4321,7 @@ msgstr "Branje veljavnega pozdrava strežnika POP %s ni uspelo"
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Nisem se mogel povezati s strežnikom POP %s v varnem načinu: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:225
+#: ../camel/providers/pop3/camel-pop3-store.c:228
 msgid "STLS not supported by server"
 msgstr "Strežnik ne podpira STLS"
 
@@ -4958,19 +4958,19 @@ msgstr "_Uredi"
 msgid "categories"
 msgstr "kategorije"
 
-#: ../libedataserverui/e-name-selector-dialog.c:273
+#: ../libedataserverui/e-name-selector-dialog.c:275
 msgid "Select Contacts from Address Book"
 msgstr "Izberi stike iz adresarja"
 
-#: ../libedataserverui/e-name-selector-dialog.c:553
+#: ../libedataserverui/e-name-selector-dialog.c:555
 msgid "_Add"
 msgstr "_Dodaj"
 
-#: ../libedataserverui/e-name-selector-dialog.c:578
+#: ../libedataserverui/e-name-selector-dialog.c:580
 msgid "_Remove"
 msgstr "_Odstrani"
 
-#: ../libedataserverui/e-name-selector-dialog.c:751
+#: ../libedataserverui/e-name-selector-dialog.c:753
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "katerakoli kategorija"
@@ -5269,17 +5269,4 @@ msgstr "Podrobnosti barve"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "Oblikovanje barve"
-
-#~ msgid "Please enter the GroupWise password for %s@%s"
-#~ msgstr "Vnesite geslo GroupWise za %s@%s"
-#~ msgid "%sPlease enter the IMAP password for %s@%s"
-#~ msgstr "%sProsim vpišite geslo IMAP za %s@%s"
-#~ msgid "%sPlease enter the IMAP password for %s on host %s"
-#~ msgstr "%sVnesite geslo IMAP za %s na gostitelju %s"
-#~ msgid "Summary and folder mismatch, even after a sync"
-#~ msgstr "Povzetek se ne ujema z mapo, celo po uskladitvi"
-#~ msgid "Please enter the NNTP password for %s@%s"
-#~ msgstr "Prosim vpišite geslo NNTP za %s@%s"
-#~ msgid "%sPlease enter the SMTP password for %s on host %s"
-#~ msgstr "%sProsim vnesite geslo SMTP za %s na gostitelju %s"
 
