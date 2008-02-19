@@ -1,3 +1,7 @@
+2008-02-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* configure.in: set HANDLE_LIBICAL_MEMORY to 1.
+
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* libdb/dbm/dbm.c (__db_dbm_firstkey): Fix for some

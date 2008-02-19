@@ -948,6 +948,7 @@ AC_ARG_ENABLE(calendar,
 
 if test "x${enable_calendar}" != "xno"; then
         AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
+	AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 fi
 AM_CONDITIONAL(ENABLE_CALENDAR, test x$enable_calendar = xyes)
 AC_MSG_RESULT($enable_calendar)
