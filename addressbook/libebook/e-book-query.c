@@ -33,7 +33,7 @@ struct EBookQuery {
 
 		struct {
 			EBookQueryTest test;
-			EContactField  field;
+			char          *field_name;
 			char          *value;
 		} field_test;
 
@@ -195,7 +195,32 @@ e_book_query_field_test (EContactField field,
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
 	ret->type = E_BOOK_QUERY_TYPE_FIELD_TEST;
-	ret->query.field_test.field = field;
+	ret->query.field_test.field_name = g_strdup (e_contact_field_name (field));
+	ret->query.field_test.test = test;
+	ret->query.field_test.value = g_strdup (value);
+
+	return ret;
+}
+
+/**
+ * e_book_query_vcard_field_test:
+ * @field: a EVCard field name to test
+ * @test: the test to apply
+ * @value: the value to test for
+ *
+ * Creates a new #EBookQuery which tests @field for @value using the test @test.
+ *
+ * Return value: the new #EBookQuery
+ **/
+EBookQuery *
+e_book_query_vcard_field_test (const char     *field,
+			       EBookQueryTest  test,
+			       const char     *value)
+{
+	EBookQuery *ret = g_new0 (EBookQuery, 1);
+
+	ret->type = E_BOOK_QUERY_TYPE_FIELD_TEST;
+	ret->query.field_test.field_name = g_strdup (field);
 	ret->query.field_test.test = test;
 	ret->query.field_test.value = g_strdup (value);
 
@@ -288,6 +313,7 @@ e_book_query_unref (EBookQuery *q)
 		break;
 
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
+		g_free (q->query.field_test.field_name);
 		g_free (q->query.field_test.value);
 		break;
 
@@ -424,6 +450,10 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 				*list = g_list_prepend (*list, e_book_query_field_test (field,
 											E_BOOK_QUERY_CONTAINS,
 											str));
+			else
+				*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
+											E_BOOK_QUERY_CONTAINS,
+											str));
 		}
 	}
 
@@ -448,6 +478,10 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 		if (field)
 			*list = g_list_prepend (*list, e_book_query_field_test (field,
+										E_BOOK_QUERY_IS,
+										str));
+		else
+			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
 										E_BOOK_QUERY_IS,
 										str));
 	}
@@ -475,6 +509,10 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 			*list = g_list_prepend (*list, e_book_query_field_test (field,
 										E_BOOK_QUERY_BEGINS_WITH,
 										str));
+		else
+			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
+										E_BOOK_QUERY_BEGINS_WITH,
+										str));
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -500,6 +538,10 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 			*list = g_list_prepend (*list, e_book_query_field_test (field,
 										E_BOOK_QUERY_ENDS_WITH,
 										str));
+		else
+			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
+										E_BOOK_QUERY_ENDS_WITH,
+										str));
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -521,6 +563,8 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 		if (field)
 			*list = g_list_prepend (*list, e_book_query_field_exists (field));
+		else
+			*list = g_list_prepend (*list, e_book_query_vcard_field_exists (propname));
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
@@ -665,7 +709,7 @@ e_book_query_to_string    (EBookQuery *q)
 
 		g_string_append_printf (str, "%s \"%s\" %s",
 					s,
-					e_contact_field_name (q->query.field_test.field),
+					q->query.field_test.field_name,
 					encoded->str);
 		break;
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:

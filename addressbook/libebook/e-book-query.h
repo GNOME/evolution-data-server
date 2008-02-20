@@ -45,6 +45,9 @@ EBookQuery* e_book_query_vcard_field_exists (const char *field);
 EBookQuery* e_book_query_field_test   (EContactField   field,
 				       EBookQueryTest     test,
 				       const char        *value);
+EBookQuery* e_book_query_vcard_field_test (const char    *field,
+				       EBookQueryTest     test,
+				       const char        *value);
 
 /* a special any field contains query */
 EBookQuery* e_book_query_any_field_contains (const char  *value);

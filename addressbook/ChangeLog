@@ -1,3 +1,16 @@
+2008-02-20  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #516474
+
+	* libebook/e-book-query.h: (e_book_query_vcard_field_test):
+	* libebook/e-book-query.c: (struct EBookQuery::field_test),
+	(e_book_query_field_test), (e_book_query_vcard_field_test),
+	(e_book_query_unref), (func_contains), (func_is), (func_beginswith),
+	(func_endswith), (func_exists), (e_book_query_to_string):
+	* libedata-book/e-book-backend-sexp.c: (entry_compare), (func_exists):
+	Fallback to EVCard attributes in query if field name doesn't correspond
+	to any known EContactField.
+
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #164140 (bnc)

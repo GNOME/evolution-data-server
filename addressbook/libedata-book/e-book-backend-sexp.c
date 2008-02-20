@@ -353,6 +353,21 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 				if ((!prop) && compare ("", argv[1]->value.string)) {
 					truth = TRUE;
 				}
+			} else {
+				/* it is not direct EContact known field, so try to find
+				   it in EVCard attributes */
+				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
+				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+
+				for (l = values; l && !truth; l = l->next) {
+					const char *value = l->data;
+
+					if (value && compare (value, argv[1]->value.string)) {
+						truth = TRUE;
+					} else if ((!value) && compare ("", argv[1]->value.string)) {
+						truth = TRUE;
+					}
+				}
 			}
 		}
 	}
@@ -476,6 +491,17 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 				if (prop && *prop)
 					truth = TRUE;
+			} else {
+				/* is is not a known EContact field, try with EVCard attributes */
+				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
+				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+
+				for (l = values; l && !truth; l = l->next) {
+					const char *value = l->data;
+
+					if (value && *value)
+						truth = TRUE;
+				}
 			}
 		}
 	}
