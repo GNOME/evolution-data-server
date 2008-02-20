@@ -1,3 +1,11 @@
+2008-02-20  Jeff Cai<jeff.cai@sun.com>
+
+	** Fix for bug #517190
+
+	* camel-mime-utils.c: (decode_8bit):
+	Make sure the parameter is valid before being passed to
+	g_ascii_strcasecmp
+
 2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bnc #167638

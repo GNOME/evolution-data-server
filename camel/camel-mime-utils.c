@@ -920,7 +920,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 		charsets[i++] = default_charset;
 	
 	locale_charset = e_iconv_locale_charset ();
-	if (g_ascii_strcasecmp (locale_charset, "UTF-8") != 0)
+	if (locale_charset && g_ascii_strcasecmp (locale_charset, "UTF-8") != 0)
 		charsets[i++] = locale_charset;
 	
 	min = len;
