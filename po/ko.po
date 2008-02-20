@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-16 02:39+0900\n"
-"PO-Revision-Date: 2008-02-16 02:45+0900\n"
+"PO-Revision-Date: 2008-02-21 00:07+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1557,7 +1557,7 @@ msgstr "정크가 아닌 메일을 학습하는 중입니다"
 
 #: ../camel/camel-folder.c:1687
 msgid "Filtering new message(s)"
-msgstr "새 메세지 거르는 중입니다"
+msgstr "새 메세지 필터링하는 중입니다"
 
 #: ../camel/camel-gpg-context.c:754
 #, c-format
