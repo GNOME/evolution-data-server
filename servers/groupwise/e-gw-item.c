@@ -618,7 +618,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 
                 subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
                 if (subparam) {
-                        const char *dist_type;
+                        char *dist_type;
                         dist_type = soup_soap_parameter_get_string_value (subparam);
                         if (!strcmp (dist_type, "TO"))
                                 recipient->type = E_GW_ITEM_RECIPIENT_TO;
@@ -628,6 +628,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				recipient->type = E_GW_ITEM_RECIPIENT_BC;
                         else
 				recipient->type = E_GW_ITEM_RECIPIENT_NONE;
+			g_free (dist_type);
                 }
 		/*FIXME  gw recipientTypes need to be added after the server is fixed. */
 

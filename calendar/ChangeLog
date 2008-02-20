@@ -1,3 +1,11 @@
+2008-02-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of bug #510949
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component):
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Leak fixes.
+
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* backends/contacts/e-cal-backend-contacts.c (cdate_to_icaltime):

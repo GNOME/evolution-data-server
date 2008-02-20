@@ -1198,7 +1198,14 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			}
 
 			e_cal_component_set_attendee_list (comp, attendee_list);
-			e_cal_component_free_attendee_list (attendee_list);
+
+			for (rl = attendee_list; rl != NULL; rl = rl->next) {
+				ECalComponentAttendee *att = rl->data;
+				g_free ((char *) att->cn);
+				g_free ((char *) att->value);
+				g_free (att);
+			}
+			g_slist_free (attendee_list);
 		}
 	}
 

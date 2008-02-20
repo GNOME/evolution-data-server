@@ -1,3 +1,8 @@
+2008-02-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of bug#510949
+	* e-gw-item.c: (set_recipient_list_from_soap_parameter): leak fix.
+
 2008-01-15  Dan Winship  <danw@gnome.org>
 
 	* e-gw-message.c: Update for libsoup 2.4

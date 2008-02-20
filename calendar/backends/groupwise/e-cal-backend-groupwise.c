@@ -447,6 +447,7 @@ get_deltas (gpointer handle)
 
 		g_object_unref (item);
 		g_object_unref (modified_comp);
+		g_object_unref (cache_comp);
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
