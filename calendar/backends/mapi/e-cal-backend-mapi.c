@@ -491,7 +491,7 @@ get_deltas (gpointer handle)
 	priv->cache_keys = e_cal_backend_cache_get_keys (cache);
 
 //	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
-	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, build_name_id, NULL, get_changes_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, NULL, get_changes_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 		priv->cache_keys = NULL;
@@ -924,7 +924,7 @@ populate_cache (ECalBackendMAPI *cbmapi)
 	e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbmapi), progress_string, 99);
 
 //	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
-	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, build_name_id, NULL, cache_create_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, NULL, cache_create_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		g_free (progress_string);
@@ -1250,7 +1250,7 @@ e_cal_backend_mapi_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		case CAL_MODE_ANY:
 		case CAL_MODE_REMOTE:
 			/* Create an appointment */
-			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, build_name_id, cbmapi, build_props, comp, NULL, attachments);
+			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, mapi_cal_build_name_id, cbmapi, mapi_cal_build_props, comp, NULL, attachments);
 			if (!mid) {
 				g_object_unref (comp);
 				exchange_mapi_util_free_attachment_list (&attachments);
@@ -1339,7 +1339,7 @@ e_cal_backend_mapi_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 		exchange_mapi_util_mapi_id_from_string (uid, &mid);
-		status = exchange_mapi_modify_item (priv->olFolder, priv->fid, mid, build_name_id, cbmapi, build_props, comp, NULL, NULL);
+		status = exchange_mapi_modify_item (priv->olFolder, priv->fid, mid, mapi_cal_build_name_id, cbmapi, mapi_cal_build_props, comp, NULL, NULL);
 		if (!status) {
 			g_object_unref (comp);
 			g_object_unref (cache_comp);

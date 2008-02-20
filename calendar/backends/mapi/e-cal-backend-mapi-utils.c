@@ -550,7 +550,7 @@ typedef enum
 } CommonNamedPropsIndex;
 
 gboolean
-build_name_id (struct mapi_nameid *nameid, gpointer data)
+mapi_cal_build_name_id (struct mapi_nameid *nameid, gpointer data)
 {
 	ECalBackendMAPI *cbmapi	= E_CAL_BACKEND_MAPI (data);
 	icalcomponent_kind kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi));
@@ -740,7 +740,7 @@ note_build_name_id (struct mapi_nameid *nameid)
  * should be updated. 
  */
 int
-build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data)
+mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data)
 {
 	ECalComponent *comp = E_CAL_COMPONENT (data);
 	icalcomponent *ical_comp = e_cal_component_get_icalcomponent (comp);

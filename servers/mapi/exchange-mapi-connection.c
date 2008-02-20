@@ -306,8 +306,9 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_UNICODE)) != NULL)
 				proptag = PR_BODY_UNICODE;
 			if (data) {
-				body.data = talloc_memdup(mem_ctx, data, strlen(data));
-				body.length = strlen(data);
+				size_t size = strlen(data)+1;
+				body.data = talloc_memdup(mem_ctx, data, size);
+				body.length = size;
 				retval = MAPI_E_SUCCESS;
 			} 
 			break;
@@ -317,8 +318,9 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_HTML_UNICODE)) != NULL)
 				proptag = PR_BODY_HTML_UNICODE;
 			if (data) {
-				body.data = talloc_memdup(mem_ctx, data, strlen(data));
-				body.length = strlen(data);
+				size_t size = strlen(data)+1;
+				body.data = talloc_memdup(mem_ctx, data, size);
+				body.length = size;
 				retval = MAPI_E_SUCCESS;
 			} else if (exchange_mapi_util_read_generic_stream (obj_message, PR_HTML, stream_list)) {
 				retval = MAPI_E_SUCCESS;
@@ -727,6 +729,8 @@ exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_li
 			recipient->flags = *ui32;
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TYPE);
 			recipient->type = *ui32;
+			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TRACKSTATUS);
+			recipient->trackstatus = *ui32;
 
 			*recip_list = g_slist_append (*recip_list, recipient);
 		}
@@ -900,7 +904,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 			exchange_mapi_util_get_attachments (&obj_message, &attach_list);
 		}
 
-		if ( options & MAPI_OPTIONS_FETCH_RECIPIENTS) 
+		if (options & MAPI_OPTIONS_FETCH_RECIPIENTS) 
 			exchange_mapi_util_get_recipients (&obj_message, &recip_list);
 
 		/* get the main body stream no matter what */
@@ -936,6 +940,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 
 			mapi_SPropValue_array_named(&obj_message, &properties_array);
 
+			/* NOTE: stream_list, recipient_list and attach_list should be freed by the callback */
 			if (!cb (&properties_array, *pfid, *pmid, stream_list, recip_list, attach_list, data)) {
 				g_warning ("%s(%d): %s: Callback failed for message-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, *pmid);
 			}
@@ -946,16 +951,6 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 
 	loop_cleanup:
 		mapi_object_release(&obj_message);
-
-		/* FIXME : Should be freed by the caller */
-/* 		if (attach_list) */
-/* 			exchange_mapi_util_free_attachment_list (&attach_list); */
-
-		if (recip_list) 
-			exchange_mapi_util_free_recipient_list (&recip_list);
-
-		if (stream_list) 
-			exchange_mapi_util_free_stream_list (&stream_list);
 	}
 
 	result = TRUE;
@@ -1098,21 +1093,12 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 
 		mapi_SPropValue_array_named(&obj_message, &properties_array);
 
+		/* NOTE: stream_list, recipient_list and attach_list should be freed by the callback */
 		retobj = cb (&properties_array, fid, mid, stream_list, recip_list, attach_list);
 	}
 
 //	if (GetPropsTagArray->cValues) 
 //		talloc_free (properties_array.lpProps);
-
-	/* should I ?? */
-/* 	if (attach_list) */
-/* 		exchange_mapi_util_free_attachment_list (&attach_list); */
-
-	if (recip_list) 
-		exchange_mapi_util_free_recipient_list (&recip_list);
-
-	if (stream_list) 
-		exchange_mapi_util_free_stream_list (&stream_list);
 
 cleanup:
 	mapi_object_release(&obj_message);

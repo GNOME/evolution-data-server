@@ -1,3 +1,11 @@
+2008-02-20  Suman Manjunath  <msuman@novell.com>
+
+	* e-book-backend-mapi.c: (mapi_book_build_name_id),
+	(mapi_book_build_props), (e_book_backend_mapi_create_contact),
+	(e_book_backend_mapi_modify_contact),
+	(mapi_book_build_name_id_for_getprops),
+	(e_book_backend_mapi_get_contact_list):
+
 2008-02-14  Johnny Jacob  <jjohnny@novell.com>
 
 	* e-book-backend-mapi.c (build_cache): Fix for fetch_item(s) API change.

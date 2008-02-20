@@ -66,6 +66,7 @@ typedef struct {
 	const char *email_id;
 	const char *email_type;
 	const char *name;
+	uint32_t trackstatus;
 	guint32 flags;
 	ExchangeMAPIRecipientType type;
 } ExchangeMAPIRecipient;

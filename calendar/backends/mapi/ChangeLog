@@ -1,3 +1,12 @@
+2008-02-20  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-utils.c: (mapi_cal_build_name_id),
+	(mapi_cal_build_props):
+	* e-cal-backend-mapi-utils.h:
+	* e-cal-backend-mapi.c: (get_deltas), (populate_cache),
+	(e_cal_backend_mapi_create_object),
+	(e_cal_backend_mapi_modify_object):
+
 2008-02-14  Johnny Jacob  <jjohnny@novell.com>
 
 	* e-cal-backend-mapi.c (populate_cache): Fix for fetch_items API change.

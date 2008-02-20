@@ -37,10 +37,10 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 				  GSList *streams, GSList *recipients, GSList *attachments, const icaltimezone *default_zone);
 
 gboolean
-build_name_id (struct mapi_nameid *nameid, gpointer data);
+mapi_cal_build_name_id (struct mapi_nameid *nameid, gpointer data);
 
 int
-build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data);
+mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data);
 
 void
 e_cal_backend_mapi_util_dump_properties (struct mapi_SPropValue_array *properties);
