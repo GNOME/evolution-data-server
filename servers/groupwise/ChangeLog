@@ -1,3 +1,12 @@
+2008-02-20  Milan Crha  <mcrha@redhat.com>
+
+	** Fixes part of bug #510949
+
+	* e-gw-sendoptions.c:
+	* e-gw-proxy.c:
+	* e-gw-item.c:
+	* e-gw-connection.c: Memory leak fixes.
+
 2008-02-20  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes part of bug#510949

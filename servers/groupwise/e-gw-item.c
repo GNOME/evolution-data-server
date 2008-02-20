@@ -746,6 +746,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			value = soup_soap_parameter_get_string_value (child);
 			if (value && !g_ascii_strcasecmp (value, "1"))
 				priv->reply_request_set = TRUE;
+			g_free (value), value = NULL;
 		}
 
 		if (!priv->reply_request_set) {
@@ -1169,7 +1170,6 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				const char *key = NULL;
 
 				type =  soup_soap_parameter_get_property (temp, "type");
-				value = soup_soap_parameter_get_string_value (temp);
 				switch (*type) {
 					case 'O' :
 						key = "phone_Office";
@@ -1193,6 +1193,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				};
 
 				if (type) {
+					value = soup_soap_parameter_get_string_value (temp);
 					g_hash_table_insert (item->priv->simple_fields, (char*)key, value);
 					g_free (type);
 				}
@@ -1306,9 +1307,10 @@ set_group_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "name");
 				member->name =  soup_soap_parameter_get_string_value (second_level_child);
 				item->priv->member_list = g_list_append (item->priv->member_list, member);
+			} else {
+				g_free (id);
+				g_free (email);
 			}
-
-
 		}
 	}
 
@@ -2027,8 +2029,8 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				/* convert it into integer */
 				item->priv->trigger = atoi (value);
 				g_free (value);
-				g_free (enabled);
 			}
+			g_free (enabled);
 		}
 
 	}

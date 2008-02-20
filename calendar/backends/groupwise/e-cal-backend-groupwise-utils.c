@@ -1678,7 +1678,8 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam, *param_outstanding;
-        const char *session, *outstanding = NULL;
+        const char *session;
+	char *outstanding = NULL;
 	gboolean resend_request = TRUE;
 	int request_iteration = 0;
 
@@ -1732,8 +1733,10 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		g_object_unref (msg);
 		g_object_unref (response);
 		g_usleep (10000000);
+		g_free (outstanding); outstanding = NULL;
 		goto resend;
 	}
+	g_free (outstanding); outstanding = NULL;
 
         /* FIXME  the FreeBusyStats are not used currently.  */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyInfo");
@@ -1749,7 +1752,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	     subparam != NULL;
 	     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "user")) {
 		SoupSoapParameter *param_blocks, *subparam_block, *tmp;
-		const char *uuid = NULL, *email = NULL, *name = NULL;
+		char *uuid = NULL, *email = NULL, *name = NULL;
 		ECalComponent *comp;
 		ECalComponentAttendee attendee;
 		GSList *attendee_list = NULL;
@@ -1782,6 +1785,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 
 		/* XXX the uuid is not currently used. hence it is
 		 * discarded */
+		g_free (uuid); uuid = NULL;
 
 		attendee_list = g_slist_append (attendee_list, &attendee);
 
@@ -1807,7 +1811,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			icalproperty *icalprop;
 			icaltimetype itt;
 			time_t t;
-			const char *start, *end, *accept_level;
+			char *start, *end, *accept_level;
 
 			memset (&ipt, 0, sizeof (struct icalperiodtype));
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "startDate");
@@ -1816,6 +1820,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 				t = e_gw_connection_get_date_from_string (start);
 				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
 				ipt.start = itt;
+				g_free (start);
 			}
 
 			tmp = soup_soap_parameter_get_first_child_by_name (subparam_block, "endDate");
@@ -1824,6 +1829,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 				t = e_gw_connection_get_date_from_string (end);
 				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
 				ipt.end = itt;
+				g_free (end);
 			}
 			icalprop = icalproperty_new_freebusy (ipt);
 
@@ -1838,9 +1844,9 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSYUNAVAILABLE");
 				else if (!strcmp (accept_level, "Free"))
 					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
-							}
+				g_free (accept_level);
+			}
 			icalcomponent_add_property(icalcomp, icalprop);
-
 		}
 
 		e_cal_component_commit_sequence (comp);

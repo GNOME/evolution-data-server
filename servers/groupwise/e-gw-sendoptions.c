@@ -391,6 +391,9 @@ parse_advanced_settings (SoupSoapParameter *group_param, EGwSendOptionsGeneral *
 			} else
 				gopts->delay_enabled = FALSE;
 		}
+
+		g_free (field);
+		g_free (val);
 	}
 }
 

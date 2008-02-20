@@ -50,20 +50,20 @@ e_gw_proxy_construct_proxy_access_list (SoupSoapParameter *param, GList **proxy_
 		value = NULL;
 		if (type_param)	{
 			value = soup_soap_parameter_get_string_value (type_param);
-			aclInstance->proxy_email = g_strdup_printf("%s", value);
+			aclInstance->proxy_email = value;
 		}
 
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "displayName");
 		value = NULL;
 		if (type_param)	{
 			value = soup_soap_parameter_get_string_value (type_param);
-			aclInstance->proxy_name = g_strdup_printf ("%s", value);
+			aclInstance->proxy_name = value;
 		}
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "id");
 		value = NULL;
 		if (type_param)	{
 			value = soup_soap_parameter_get_string_value (type_param);
-			aclInstance->uniqueid = g_strdup_printf ("%s", value);
+			aclInstance->uniqueid = value;
 		} else
 			aclInstance->uniqueid = NULL;
 
@@ -72,97 +72,69 @@ e_gw_proxy_construct_proxy_access_list (SoupSoapParameter *param, GList **proxy_
 		if (type_param)	{
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"read");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_MAIL_READ;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"write");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_MAIL_WRITE;
 			}
 		}
 
-		if (value)
-			g_free (value);
-
-		value = NULL;
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "appointment");
 		if (type_param) {
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"read");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_APPOINTMENT_READ;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"write");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_APPOINTMENT_WRITE;
 			}
 		}
-		if (value)
-			g_free (value);
 
-		value = NULL;
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "task");
 		if (type_param)	{
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"read");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_TASK_READ;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"write");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_TASK_WRITE;
 			}
 		}
-		if (value)
-			g_free (value);
 
-		value = NULL;
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "note");
 		if (type_param)	{
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"read");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_NOTES_READ;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"write");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_NOTES_WRITE;
 			}
 		}
-		if (value)
-			g_free (value);
-
 
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "misc");
-		value = NULL;
 		if (type_param)	{
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"alarms");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_GET_ALARMS;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"notify");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_GET_NOTIFICATIONS;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"setup");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_MODIFY_FOLDERS;
 			}
 			individual_rights= soup_soap_parameter_get_first_child_by_name (type_param,"readHidden");
 			if (individual_rights) {
-				value = soup_soap_parameter_get_string_value (individual_rights);
 				aclInstance->permissions |= E_GW_PROXY_READ_PRIVATE;
 			}
 		}
-		if (value)
-			g_free(value);
 
 		*proxy_list = g_list_append(*proxy_list, aclInstance);
 	}
@@ -337,104 +309,74 @@ void
 e_gw_proxy_parse_proxy_login_response (SoupSoapParameter *param, int *permissions)
 {
 	SoupSoapParameter *subparam;
-	char *value;
 	SoupSoapParameter *individual_rights;
 
 	*permissions = 0;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "mail");
-	value = NULL;
 	if (subparam) {
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"read");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_MAIL_READ;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"write");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_MAIL_WRITE;
 		}
 	}
 
-	if (value)
-		g_free (value);
-
-	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "appointment");
 	if (subparam) {
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"read");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_APPOINTMENT_READ;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"write");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_APPOINTMENT_WRITE;
 		}
 	}
-	if (value)
-		g_free (value);
 
-	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "task");
 	if (subparam)	{
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"read");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_TASK_READ;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"write");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_TASK_WRITE;
 		}
 	}
-	if (value)
-		g_free (value);
 
-	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "note");
 	if (subparam)	{
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"read");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_NOTES_READ;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"write");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_NOTES_WRITE;
 		}
 	}
-	if (value)
-		g_free (value);
-
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "misc");
-	value = NULL;
 	if (subparam)	{
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"alarms");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_GET_ALARMS;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"notify");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_GET_NOTIFICATIONS;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"setup");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_MODIFY_FOLDERS;
 		}
 		individual_rights= soup_soap_parameter_get_first_child_by_name (subparam,"readHidden");
 		if (individual_rights) {
-			value = soup_soap_parameter_get_string_value (individual_rights);
 			*permissions |= E_GW_PROXY_READ_PRIVATE;
 		}
 	}
-	if (value)
-		g_free(value);
 }

@@ -524,10 +524,10 @@ e_gw_connection_new_with_error_handler (const char *uri, const char *username, c
 			response = e_gw_connection_send_message (cnc, msg);
 			status = e_gw_connection_parse_response_status (response);
 			g_strfreev (tokens);
-			g_free (host);
-			g_free (port);
 		}
 
+		g_free (host);
+		g_free (port);
 	}
 	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {
@@ -1053,6 +1053,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam;
+	char *tmp;
 
  	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -1094,11 +1095,15 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
          }
 
-         if (!g_ascii_strcasecmp ( soup_soap_parameter_get_string_value (param), "0")) {
+	tmp = soup_soap_parameter_get_string_value (param);
+	if (!g_ascii_strcasecmp (tmp, "0")) {
+		g_free (tmp);
                  g_message ("No deltas");
 		 // g_object_unref (cnc);
                  return E_GW_CONNECTION_STATUS_OK;
-         }
+        }
+
+	g_free (tmp);
 
          param = soup_soap_response_get_first_parameter_by_name (response, "deltas");
          if (!param) {
@@ -1270,7 +1275,7 @@ e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, char** id)
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		param = soup_soap_response_get_first_parameter_by_name (response, "id");
 		if (param != NULL)
-			*id = g_strdup (soup_soap_parameter_get_string_value (param));
+			*id = soup_soap_parameter_get_string_value (param);
 	} else if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 
@@ -2132,9 +2137,10 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_i
 			if (categories_by_name)
 				g_hash_table_insert (priv->categories_by_name, g_strdup (name), g_strdup (id));
 			g_strfreev (components);
-			g_free (name);
+			id = NULL;
 		}
-
+		g_free (id);
+		g_free (name);
         }
 
 	/* free memory */
@@ -3259,23 +3265,20 @@ parse_junk_settings (SoupSoapParameter *param, int *use_junk, int *use_block, in
 				if (val_param)
 					val = soup_soap_parameter_get_int_value (val_param);
 				*use_junk = val;
-				g_free (field);
 			} else	if (!g_ascii_strcasecmp (field, "useBlockList")) {
 				if (val_param)
 					val = soup_soap_parameter_get_int_value (val_param);
 				*use_block = val;
-				g_free (field);
 			} else if (!g_ascii_strcasecmp (field, "usePAB")) {
 				if (val_param)
 					val = soup_soap_parameter_get_int_value (val_param);
 				*use_pab = val;
-				g_free (field);
 			} else if (!g_ascii_strcasecmp (field, "persistence")) {
 				if (val_param)
 					val = soup_soap_parameter_get_int_value (val_param);
 				*persistence = val;
-				g_free (field);
 			}
+			g_free (field);
 		}
 	}
 }
