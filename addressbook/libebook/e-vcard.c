@@ -288,7 +288,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 			lp = g_utf8_next_char(lp);
 		}
 		else if ((*lp == ';') ||
-			 (*lp == ',' && !strcmp (attr->name, "CATEGORIES"))) {
+			 (*lp == ',' && !g_ascii_strcasecmp (attr->name, "CATEGORIES"))) {
 			e_vcard_attribute_add_value (attr, str->str);
 			g_string_assign (str, "");
 			lp = g_utf8_next_char(lp);
@@ -874,7 +874,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 				/* XXX toshok - i hate you, rfc 2426.
 				   why doesn't CATEGORIES use a ; like
 				   a normal list attribute? */
-				if (!strcmp (attr->name, "CATEGORIES"))
+				if (!g_ascii_strcasecmp (attr->name, "CATEGORIES"))
 					g_string_append_c (attr_str, ',');
 				else
 					g_string_append_c (attr_str, ';');
@@ -1703,7 +1703,7 @@ e_vcard_get_attribute (EVCard     *evc,
                 EVCardAttribute *attr;
 
                 attr = (EVCardAttribute *) l->data;
-                if (strcmp (attr->name, name) == 0)
+                if (g_ascii_strcasecmp (attr->name, name) == 0)
                         return attr;
         }
 

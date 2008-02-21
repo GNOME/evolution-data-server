@@ -1,3 +1,13 @@
+2008-02-21  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #517885
+	
+	* libebook/e-contact.c: (e_contact_set_property), (e_contact_field_id),
+	(e_contact_get), (e_contact_get):
+	* libebook/e-vcard.c: (read_attribute_value),
+	(e_vcard_to_string_vcard_30), (e_vcard_get_attribute):
+	Do not compare value/parameter names case sensitively.
+
 2008-02-20  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #516474

@@ -801,7 +801,7 @@ e_contact_set_property (GObject *object,
 				else {
 					/* we didn't find it - add a new attribute */
 					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-					if (!strcmp(info->vcard_field_name, "EMAIL") &&
+					if (!g_ascii_strcasecmp (info->vcard_field_name, "EMAIL") &&
 					    !info->attr_type1 &&
 					    !info->attr_type2) {
 						/* Add default type */
@@ -1358,7 +1358,7 @@ e_contact_field_id (const char *field_name)
 {
 	int i;
 	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i ++) {
-		if (!strcmp (field_info[i].field_name, field_name))
+		if (!g_ascii_strcasecmp (field_info[i].field_name, field_name))
 			return field_info[i].field_id;
 	}
 
@@ -1433,7 +1433,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 				name = e_vcard_attribute_get_name (attr);
 
-				if (!strcmp (name, info->vcard_field_name)) {
+				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 					if (num_left-- == 0) {
 						GList *v = e_vcard_attribute_get_values (attr);
 
@@ -1534,7 +1534,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 			name = e_vcard_attribute_get_name (attr);
 
-			if (!strcmp (name, info->vcard_field_name)) {
+			if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
 				GList *v;
 				v = e_vcard_attribute_get_values (attr);
 
