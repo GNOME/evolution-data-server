@@ -850,11 +850,24 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 						}
 						pval = g_utf8_next_char (pval);
 					}
-					if (quotes)
+
+					if (quotes) {
+						int i;
+
 						g_string_append_c (attr_str, '"');
-					g_string_append (attr_str, value);
-					if (quotes)
+
+						for (i = 0; value [i]; i++) {
+							/* skip quotes in quoted string; it is not allowed */
+							if (value [i] == '\"')
+								continue;
+
+							g_string_append_c (attr_str, value [i]);
+						}
+
 						g_string_append_c (attr_str, '"');
+					} else
+						g_string_append (attr_str, value);
+
 					if (v->next)
 						g_string_append_c (attr_str, ',');
 				}

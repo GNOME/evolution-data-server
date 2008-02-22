@@ -1,3 +1,10 @@
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #489043
+
+	* libebook/e-vcard.c: (e_vcard_to_string_vcard_30):
+	Do not store quotes in param values when quoting, it is not allowed.
+
 2008-02-21  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #517885
