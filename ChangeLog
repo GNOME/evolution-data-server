@@ -1,3 +1,11 @@
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #469119
+
+	* libedataserver/e-time-utils.c: (has_correct_date),
+	(e_time_parse_date_and_time_ex), (e_time_parse_date_ex):
+	Check also for correct date values if parse is OK.
+
 2008-02-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* configure.in: set HANDLE_LIBICAL_MEMORY to 1.

@@ -1569,6 +1569,22 @@ locale_supports_12_hour_format (void)
 	return s[0] != '\0';
 }
 
+static gboolean
+has_correct_date (const struct tm *value)
+{
+	const int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	int days, year;
+
+	g_return_val_if_fail (value != NULL, FALSE);
+	g_return_val_if_fail (value->tm_mon >= 0 && value->tm_mon < 12, FALSE);
+
+	year = value->tm_year  + 1900;
+	days = days_in_month[value->tm_mon];
+	if (value->tm_mon == 1 && ((year <= 1752) ? (!(year % 4)) : ((!(year % 4) && (year % 100)) || !(year % 400))))
+		days++;
+
+	return value->tm_mday >= 1 && value->tm_mday <= days;
+}
 
 /**
  * e_time_parse_date_and_time_ex:
@@ -1694,6 +1710,10 @@ e_time_parse_date_and_time_ex		(const char	*value,
 		*two_digit_year = FALSE;
 	
 	status = parse_with_strptime (value, result, format, num_formats);
+
+	if (status == E_TIME_PARSE_OK && !has_correct_date (result))
+		status = E_TIME_PARSE_INVALID;
+
 	/* Note that we checked if it was empty already, so it is either OK
 	   or INVALID here. */
 	if (status == E_TIME_PARSE_OK) {
@@ -1766,6 +1786,10 @@ e_time_parse_date_ex (const char *value, struct tm *result, gboolean *two_digit_
 	}
 
 	status = parse_with_strptime (value, result, format, sizeof (format)/sizeof (format [0]));
+
+	if (status == E_TIME_PARSE_OK && !has_correct_date (result))
+		status = E_TIME_PARSE_INVALID;
+
 	if (status == E_TIME_PARSE_OK) {
 		correct_two_digit_year (result, two_digit_year);
 	}
