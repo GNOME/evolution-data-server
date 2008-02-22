@@ -1,5 +1,18 @@
 2008-02-22  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #514836
+
+	* libebook/e-vcard.h:
+	* libebook/e-destination.c: (e_destination_set_contact),
+	(e_destination_export_to_vcard_attribute):
+	Obsoleting EVC_X_DEST_EMAIL and EVC_X_DEST_NAME.
+	* backends/ldap/e-book-backend-ldap.c: (member_populate):
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(populate_contact_members): Obsoleting EVC_X_DEST_EMAIL and
+	EVC_X_DEST_NAME and one leak fix.
+
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #489043
 
 	* libebook/e-vcard.c: (e_vcard_to_string_vcard_30):

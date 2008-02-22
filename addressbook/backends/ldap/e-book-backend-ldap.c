@@ -2569,12 +2569,25 @@ member_populate (EContact *contact, char **values)
 		member_info = g_strsplit (values [i], ";", -1);
 
 		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
-		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_EMAIL), member_info [0]);
 		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID), member_info [1]);
-		if (member_info [2])
-			e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_NAME), member_info [2]);
-		e_vcard_attribute_add_value (attr, member_info [0]);
+
+		if (member_info [2]) {
+			int len = strlen (member_info [2]);
+			char *value;
+
+			if (member_info [2][0] == '\"' && member_info [2][len - 1] == '\"')
+				value = g_strdup_printf ("%s %s", member_info [2], member_info [0]);
+			else
+				value = g_strdup_printf ("\"%s\" %s", member_info [2], member_info [0]);
+
+			e_vcard_attribute_add_value (attr, value);
+			g_free (value);
+		} else {
+			e_vcard_attribute_add_value (attr, member_info [0]);
+		}
+
 		e_vcard_add_attribute (E_VCARD (contact), attr);
+		g_strfreev (member_info);
 	}
 }
 

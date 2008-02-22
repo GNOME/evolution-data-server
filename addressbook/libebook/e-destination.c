@@ -404,8 +404,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 					GList *p;
 					EDestination *list_dest = e_destination_new ();
 					char *contact_uid = NULL;
-					char *email_addr = NULL;
-					char *name = NULL;
+					char *value;
 					int email_num = -1;
 					gboolean html_pref = FALSE;
 
@@ -423,16 +422,6 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 							email_num = v ? atoi (v->data) : -1;
 						}
 						else if (!g_ascii_strcasecmp (param_name,
-									      EVC_X_DEST_NAME)) {
-							GList *v = e_vcard_attribute_param_get_values (param);
-							name = v ? v->data : NULL;
-						}
-						else if (!g_ascii_strcasecmp (param_name,
-									      EVC_X_DEST_EMAIL)) {
-							GList *v = e_vcard_attribute_param_get_values (param);
-							email_addr = v ? v->data : NULL;
-						}
-						else if (!g_ascii_strcasecmp (param_name,
 									      EVC_X_DEST_HTML_MAIL)) {
 							GList *v = e_vcard_attribute_param_get_values (param);
 							html_pref = v ? !g_ascii_strcasecmp (v->data, "true") : FALSE;
@@ -440,10 +429,12 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 					}
 
 					if (contact_uid) e_destination_set_contact_uid (list_dest, contact_uid, email_num);
-					if (name) e_destination_set_name (list_dest, name);
-					if (email_addr) e_destination_set_email (list_dest, email_addr);
 					e_destination_set_html_mail_pref (list_dest, html_pref);
 					list_dest->priv->ignored = FALSE;
+					value = e_vcard_attribute_get_value (attr);
+					if (value)
+						e_destination_set_raw (list_dest, value);
+					g_free (value);
 
 					dest->priv->list_dests = g_list_append (dest->priv->list_dests, list_dest);
 				}
@@ -1625,14 +1616,6 @@ e_destination_export_to_vcard_attribute (EDestination *dest, EVCardAttribute *at
 							e_vcard_attribute_param_new (EVC_X_DEST_EMAIL_NUM),
 							buf);
 	}
-	if (e_destination_get_name (dest))
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_X_DEST_NAME),
-							e_destination_get_name (dest));
-	if (e_destination_get_email (dest))
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_X_DEST_EMAIL),
-							e_destination_get_email (dest));
 	e_vcard_attribute_add_param_with_value (attr,
 						e_vcard_attribute_param_new (EVC_X_DEST_HTML_MAIL),
 						e_destination_get_html_mail_pref (dest) ? "TRUE" : "FALSE");

@@ -765,14 +765,21 @@ populate_contact_members (EContact *contact, gpointer data)
 		e_vcard_attribute_add_param_with_value (attr,
                                                         e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
 							member->id);
-		e_vcard_attribute_add_param_with_value (attr,
-                                                        e_vcard_attribute_param_new (EVC_X_DEST_EMAIL),
-							member->email);
-		if (member->name)
-			e_vcard_attribute_add_param_with_value (attr,
-                                                        e_vcard_attribute_param_new (EVC_X_DEST_NAME),
-							member->name);
-		e_vcard_attribute_add_value (attr, member->email);
+		if (member->name) {
+			int len = strlen (member->name);
+			char *value;
+
+			if (member->name [0] == '\"' && member->name [len - 1] == '\"')
+				value = g_strdup_printf ("%s %s", member->name, member->email);
+			else
+				value = g_strdup_printf ("\"%s\" %s", member->name, member->email);
+
+			e_vcard_attribute_add_value (attr, value);
+			g_free (value);
+		} else {
+			e_vcard_attribute_add_value (attr, member->email);
+		}
+
 		e_vcard_add_attribute (E_VCARD (contact), attr);
 	}
 }
