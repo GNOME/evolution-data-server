@@ -770,9 +770,9 @@ populate_contact_members (EContact *contact, gpointer data)
 			char *value;
 
 			if (member->name [0] == '\"' && member->name [len - 1] == '\"')
-				value = g_strdup_printf ("%s %s", member->name, member->email);
+				value = g_strdup_printf ("%s <%s>", member->name, member->email);
 			else
-				value = g_strdup_printf ("\"%s\" %s", member->name, member->email);
+				value = g_strdup_printf ("\"%s\" <%s>", member->name, member->email);
 
 			e_vcard_attribute_add_value (attr, value);
 			g_free (value);

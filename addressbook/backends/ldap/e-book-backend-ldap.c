@@ -2576,9 +2576,9 @@ member_populate (EContact *contact, char **values)
 			char *value;
 
 			if (member_info [2][0] == '\"' && member_info [2][len - 1] == '\"')
-				value = g_strdup_printf ("%s %s", member_info [2], member_info [0]);
+				value = g_strdup_printf ("%s <%s>", member_info [2], member_info [0]);
 			else
-				value = g_strdup_printf ("\"%s\" %s", member_info [2], member_info [0]);
+				value = g_strdup_printf ("\"%s\" <%s>", member_info [2], member_info [0]);
 
 			e_vcard_attribute_add_value (attr, value);
 			g_free (value);

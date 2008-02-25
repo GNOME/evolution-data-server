@@ -1,3 +1,12 @@
+2008-02-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #518569
+
+	* backends/ldap/e-book-backend-ldap.c: (member_populate):
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(populate_contact_members):
+	Properly format name and address with "<>" characters.
+
 2008-02-25  Tor Lillqvist  <tml@novell.com>
 
 	* tests/ebook/test-changes.c (main): Use g_mkstemp() for portability.
