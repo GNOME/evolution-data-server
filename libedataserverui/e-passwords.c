@@ -202,7 +202,7 @@ ep_keyring_uri_new (const gchar *string)
 
 	/* LDAP URIs do not have usernames, so use the URI as the username. */
 	if (uri->user == NULL && uri->protocol != NULL &&
-			strcmp (uri->protocol, "ldap") == 0)
+			(strcmp (uri->protocol, "ldap") == 0|| strcmp (uri->protocol, "google") == 0))
 		uri->user = g_strdelimit (g_strdup (string), "/=", '_');
 
 	return uri;

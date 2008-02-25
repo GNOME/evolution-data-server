@@ -1,3 +1,10 @@
+2008-02-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #489810
+
+	* e-passwords.c: (ep_keyring_uri_new): Google calendar's usernames
+	don't have user name in url.
+
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* e-name-selector-dialog.c: Include the required
