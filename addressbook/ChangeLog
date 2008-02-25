@@ -1,3 +1,7 @@
+2008-02-25  Tor Lillqvist  <tml@novell.com>
+
+	* tests/ebook/test-changes.c (main): Use g_mkstemp() for portability.
+
 2008-02-22  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #514836
