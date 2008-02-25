@@ -1,3 +1,13 @@
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Partial fix for bug #459468
+
+	* e-gw-connection.c: (e_gw_connection_get_item),
+	(e_gw_connection_reply_item), (e_gw_connection_forward_item):
+	Do not report STATUS_OK when creation of new item failed.
+	* e-gw-connection.c: (e_gw_connection_get_date_from_string): Check
+	for NULL parameter and return with warning on console it that case.
+
 2008-02-20  Milan Crha  <mcrha@redhat.com>
 
 	** Fixes part of bug #510949

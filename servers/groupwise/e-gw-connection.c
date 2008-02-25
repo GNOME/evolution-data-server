@@ -1379,10 +1379,12 @@ e_gw_connection_get_item (EGwConnection *cnc, const char *container, const char 
 
        	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, param);
 
-
 	/* free memory */
         g_object_unref (response);
 	g_object_unref (msg);
+
+	if (!*item)
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
         return E_GW_CONNECTION_STATUS_OK;
 }
@@ -1747,9 +1749,12 @@ time_t
 e_gw_connection_get_date_from_string (const char *dtstring)
 {
         char *str2;
-        int i, j, len = strlen (dtstring);
+	int i, j, len;
 	time_t t;
 
+	g_return_val_if_fail (dtstring != NULL, 0);
+
+	len = strlen (dtstring);
         str2 = g_malloc0 (len+1);
         for (i = 0,j = 0; i < len; i++) {
                 if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
@@ -3121,10 +3126,12 @@ e_gw_connection_reply_item (EGwConnection *cnc, const char *id, const char *view
 
 	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "", param);
 
-
 	/* free memory */
         g_object_unref (response);
 	g_object_unref (msg);
+
+	if (!*item)
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
         return E_GW_CONNECTION_STATUS_OK;
 }
@@ -3181,10 +3188,12 @@ e_gw_connection_forward_item (EGwConnection *cnc, const char *id, const char *vi
 
 	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "", param);
 
-
 	/* free memory */
 	g_object_unref (response);
 	g_object_unref (msg);
+
+	if (!*item)
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
 	return E_GW_CONNECTION_STATUS_OK;
 }
