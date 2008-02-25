@@ -1,3 +1,8 @@
+2008-02-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-kerberos.c (get_init_cred):
+	Fix a couple discarded const warnings.
+
 2008-02-12  Matthew Barnes  <mbarnes@redhat.com>
 
 	* storage/exchange-account.c:
