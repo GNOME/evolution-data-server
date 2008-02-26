@@ -1,3 +1,7 @@
+2008-02-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/Makefile.am: Add E_DATA_SERVER_CFLAGS/LIBS to make it build.
+
 2008-02-22  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #469119
