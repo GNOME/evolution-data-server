@@ -491,14 +491,19 @@ ep_clear_passwords_keyfile (EPassMsg *msg)
 
 	group = ep_key_file_get_group (msg->component);
 
-	g_key_file_remove_group (key_file, group, &error);
-	if (error == NULL)
+	if (g_key_file_remove_group (key_file, group, &error))
 		ep_key_file_save ();
-	else {
-		if (error) {
-			g_warning ("%s", error->message);
-			g_error_free (error);
-		}
+
+	/* Not finding the requested group is acceptable, but we still
+	 * want to leave an informational message on the terminal. */
+        else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
+                g_message ("%s", error->message);
+                g_error_free (error);
+
+	/* Issue a warning if anything else goes wrong. */
+	} else if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
 	}
 
 	g_free (group);
@@ -543,9 +548,24 @@ ep_forget_passwords_keyfile (EPassMsg *msg)
 
 	groups = g_key_file_get_groups (key_file, &length);
 	for (ii = 0; ii < length; ii++) {
+		GError *error = NULL;
+
 		if (!g_str_has_prefix (groups[ii], KEY_FILE_GROUP_PREFIX))
 			continue;
-		g_key_file_remove_group (key_file, groups[ii], NULL);
+
+		g_key_file_remove_group (key_file, groups[ii], &error);
+
+		/* Not finding the requested group is acceptable, but we still
+		 * want to leave an informational message on the terminal. */
+		if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
+			g_message ("%s", error->message);
+			g_error_free (error);
+
+		/* Issue a warning if anything else goes wrong. */
+		} else if (error != NULL) {
+			g_warning ("%s", error->message);
+			g_error_free (error);
+		}
 	}
 	ep_key_file_save ();
 	g_strfreev (groups);
@@ -664,10 +684,22 @@ ep_forget_password_keyfile (EPassMsg *msg)
 	group = ep_key_file_get_group (msg->component);
 	key = ep_key_file_normalize_key (msg->key);
 
-	g_key_file_remove_key (key_file, group, key, &error);
-	if (error == NULL)
+	if (g_key_file_remove_key (key_file, group, key, &error))
 		ep_key_file_save ();
-	else {
+
+	/* Not finding the requested key is acceptable, but we still
+	 * want to leave an informational message on the terminal. */
+	else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+		g_message ("%s", error->message);
+		g_error_free (error);
+
+        /* Not finding the requested group is also acceptable. */
+        } else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
+                g_message ("%s", error->message);
+                g_error_free (error);
+
+	/* Issue a warning if anything else goes wrong. */
+	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
@@ -740,6 +772,19 @@ ep_get_password_keyfile (EPassMsg *msg)
 	if (password != NULL) {
 		msg->password = ep_password_decode (password);
 		g_free (password);
+
+	/* Not finding the requested key is acceptable, but we still
+	 * want to leave an informational message on the terminal. */
+	} else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+		g_message ("%s", error->message);
+		g_error_free (error);
+
+        /* Not finding the requested group is also acceptable. */
+        } else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
+                g_message ("%s", error->message);
+                g_error_free (error);
+
+	/* Issue a warning if anything else goes wrong. */
 	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);

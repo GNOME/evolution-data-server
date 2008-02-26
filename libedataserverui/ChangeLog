@@ -1,3 +1,17 @@
+2008-02-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #513870
+
+	* e-passwords.c (ep_clear_passwords_keyfile),
+	(ep_forget_passwords_keyfile), (ep_forget_password_keyfile),
+	(ep_get_password_keyfile):
+	Issue an informational message instead of a warning if the requested
+	group or key is not found in the key file.  These are non-critical
+	events and should not halt the program when running with fatal
+	warnings, but it's still useful to leave a breadcrumb on the
+	terminal since our current password API leaves no way to report
+	status back to the caller.
+
 2008-02-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #489810
