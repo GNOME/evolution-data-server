@@ -12,6 +12,7 @@ INCLUDES = -I.. \
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
         $(SOUP_CFLAGS)                          \
+	$(E_DATA_SERVER_CFLAGS)			\
 	-DG_LOG_DOMAIN=\"camel-groupwise-provider\"
 
 libcamelgroupwise_la_SOURCES = 			\
@@ -42,6 +43,7 @@ libcamelgroupwise_la_LIBADD =                                            \
 	$(top_builddir)/camel/libcamel-provider-1.2.la	                 \
 	$(top_builddir)/camel/libcamel-1.2.la		                 \
 	$(CAMEL_LIBS)                                                    \
-        $(SOUP_LIBS)
+        $(SOUP_LIBS)							 \
+	$(E_DATA_SERVER_LIBS)
 
 EXTRA_DIST = libcamelgroupwise.urls
