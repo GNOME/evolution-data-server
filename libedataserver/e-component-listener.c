@@ -24,6 +24,7 @@ struct _EComponentListenerPrivate {
 static void e_component_listener_finalize   (GObject *object);
 
 static GList *watched_connections = NULL;
+static GStaticMutex watched_lock = G_STATIC_MUTEX_INIT;
 
 enum {
 	COMPONENT_DIED,
@@ -38,6 +39,8 @@ connection_listen_cb (gpointer object, gpointer user_data)
 	GList *l, *next = NULL;
 	EComponentListener *cl;
 
+	g_static_mutex_lock (&watched_lock);
+
 	for (l = watched_connections; l != NULL; l = next) {
 		next = l->next;
 		cl = l->data;
@@ -49,12 +52,17 @@ connection_listen_cb (gpointer object, gpointer user_data)
 			g_object_ref (cl);
 			g_signal_emit (cl, comp_listener_signals[COMPONENT_DIED], 0);
 			cl->priv->component = CORBA_OBJECT_NIL;
+			/* because the finalize method uses the lock too */
+			g_static_mutex_unlock (&watched_lock);
 			g_object_unref (cl);
+			g_static_mutex_lock (&watched_lock);
 			break;
 		default :
 			break;
 		}
 	}
+
+	g_static_mutex_unlock (&watched_lock);
 }
 
 G_DEFINE_TYPE (EComponentListener, e_component_listener, G_TYPE_OBJECT);
@@ -92,7 +100,9 @@ e_component_listener_finalize (GObject *object)
 
 	g_return_if_fail (E_IS_COMPONENT_LISTENER (cl));
 
+	g_static_mutex_lock (&watched_lock);
 	watched_connections = g_list_remove (watched_connections, cl);
+	g_static_mutex_unlock (&watched_lock);
 
 	if (cl->priv->component != CORBA_OBJECT_NIL)
 		cl->priv->component = CORBA_OBJECT_NIL;
@@ -121,12 +131,16 @@ e_component_listener_new (Bonobo_Unknown comp)
 
 	g_return_val_if_fail (comp != NULL, NULL);
 
+	g_static_mutex_lock (&watched_lock);
+
 	cl = g_object_new (E_COMPONENT_LISTENER_TYPE, NULL);
 	cl->priv->component = comp;
 
 	/* watch the connection */
 	ORBit_small_listen_for_broken (comp, G_CALLBACK (connection_listen_cb), cl);
 	watched_connections = g_list_prepend (watched_connections, cl);
+
+	g_static_mutex_unlock (&watched_lock);
 
 	return cl;
 }

@@ -1,3 +1,11 @@
+2008-02-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #475616
+
+	* libedataserver/e-component-listener.c: (connection_listen_cb),
+	(e_component_listener_finalize), (e_component_listener_new):
+	Guard global static variable with mutex lock.
+
 2008-02-26  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/Makefile.am: Add E_DATA_SERVER_CFLAGS/LIBS to make it build.
