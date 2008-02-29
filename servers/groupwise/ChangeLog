@@ -1,3 +1,10 @@
+2008-02-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #359944
+
+	* e-gw-connection.c: (e_gw_connection_get_attachment_base64): Incase
+	the input string is null, handle it safe. Reviewed by Sankar.
+
 2008-02-22  Milan Crha  <mcrha@redhat.com>
 
 	** Partial fix for bug #459468

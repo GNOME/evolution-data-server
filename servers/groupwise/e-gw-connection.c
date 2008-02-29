@@ -2716,7 +2716,10 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const char *id, int o
 		int len = atoi (buf_length) ;
 		*attachment = g_strdup (buffer);
 		*attach_length = len;
-		*offset_r = atoi (o_return);
+		if (len && o_return) 
+			*offset_r = atoi (o_return);
+		else 
+			*offset_r = 0;
 	}
 
 	/* free memory */
