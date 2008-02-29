@@ -1,3 +1,10 @@
+2008-02-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for BNC bug #359950 
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg): If nothing
+	to decode, handle it well. Reviewed by Sankar.
+
 2008-02-26  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* Makefile.am: Add E_DATA_SERVER_CFLAGS/LIBS to make it build.

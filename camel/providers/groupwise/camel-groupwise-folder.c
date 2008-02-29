@@ -1712,7 +1712,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						status = e_gw_connection_get_attachment_base64 (cnc,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
-						if (status == E_GW_CONNECTION_STATUS_OK) {
+						if (status == E_GW_CONNECTION_STATUS_OK && t_len) {
 							gsize len_iter = 0;
 							char *temp = NULL;
 
@@ -1850,7 +1850,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						status = e_gw_connection_get_attachment_base64 (cnc,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
-						if (status == E_GW_CONNECTION_STATUS_OK) {
+						if (status == E_GW_CONNECTION_STATUS_OK && t_len) {
 							gsize len_iter = 0;
 							char *temp = NULL;
 
