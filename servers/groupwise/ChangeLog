@@ -1,6 +1,6 @@
 2008-02-29  Srinivasa Ragavan  <sragavan@novell.com>
 
-	** Fix for bug #359944
+	** Fix for BNC bug #359944
 
 	* e-gw-connection.c: (e_gw_connection_get_attachment_base64): Incase
 	the input string is null, handle it safe. Reviewed by Sankar.
