@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-18 09:10+0000\n"
-"PO-Revision-Date: 2008-02-18 12:16+0100\n"
+"POT-Creation-Date: 2008-02-18 11:43+0000\n"
+"PO-Revision-Date: 2008-03-01 21:16+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -695,13 +695,9 @@ msgstr "Cumpleaños: %s"
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:204
+#: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "No se pueden guardar los datos del calendario: URI malformado."
-
-#: ../calendar/backends/file/e-cal-backend-file.c:209
-msgid "Can't save calendar data: "
-msgstr "No se pueden guardar los datos del calendario: "
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:335
 msgid "Could not create thread for getting deltas"
@@ -722,12 +718,12 @@ msgid "Could not create thread for populating cache"
 msgstr "No se pudo crear el hilo para la llenar la caché"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1028
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1767
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1784
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1033
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1772
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1789
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
@@ -749,9 +745,9 @@ msgstr "URI del servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:952
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1048
 #: ../calendar/libecal/e-cal.c:5031
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1052
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1084
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1122
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1069
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1101
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1139
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -833,7 +829,7 @@ msgstr "Chaparrones"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:230
 msgid "Foggy"
-msgstr "Nieblina"
+msgstr "Niebla"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Rain/snow mixed"
@@ -1326,7 +1322,7 @@ msgstr "Este método de cifrado no soporta cifrado"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
-msgstr "Encriptando mensaje"
+msgstr "Cifrando mensaje"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
@@ -1334,7 +1330,7 @@ msgstr "El descifrado no está soportado por este método de cifrado"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
-msgstr "Desencriptando mensaje"
+msgstr "Descifrando mensaje"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
@@ -1561,11 +1557,11 @@ msgstr "Copiando mensajes"
 
 #: ../camel/camel-folder.c:1651
 msgid "Learning junk"
-msgstr "Aprendiendo spam"
+msgstr "Aprendiendo SPAM"
 
 #: ../camel/camel-folder.c:1668
 msgid "Learning non-junk"
-msgstr "Aprendiendo no spam"
+msgstr "Aprendiendo no SPAM"
 
 #: ../camel/camel-folder.c:1687
 msgid "Filtering new message(s)"
@@ -2188,7 +2184,7 @@ msgstr "No se puede añadir la hora de firma CMS"
 #: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr "No existe el certificado de encriptado para «%s»"
+msgstr "No existe el certificado de cifrado para «%s»"
 
 #: ../camel/camel-smime-context.c:317
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -2306,12 +2302,12 @@ msgstr "No se puede encontrar el certificado para «%s»"
 
 #: ../camel/camel-smime-context.c:785
 msgid "Cannot find common bulk encryption algorithm"
-msgstr "No se puede encontrar un algoritmo de encriptación común"
+msgstr "No se puede encontrar un algoritmo de cifrado común"
 
 #. PORT_GetError(); ??
 #: ../camel/camel-smime-context.c:794
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "No se puede reservar un slot para la clave de encriptación"
+msgstr "No se puede reservar una ranura para la clave de cifrado"
 
 #: ../camel/camel-smime-context.c:805
 msgid "Cannot create CMS Message"
@@ -2348,7 +2344,7 @@ msgstr "El decodificador ha fallado, error %d"
 
 #: ../camel/camel-smime-context.c:956
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr "Desencriptación S/MIME: No se ha encontrado contenido encriptado"
+msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
 #: ../camel/camel-smime-context.c:983
 msgid "import keys: unimplemented"
@@ -2398,7 +2394,7 @@ msgstr "Papelera"
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:802 ../camel/camel-vtrash-folder.c:54
 msgid "Junk"
-msgstr "Spam"
+msgstr "SPAM"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to get issuer's certificate"
@@ -2695,15 +2691,15 @@ msgstr "No se puede obtener el mensaje %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2124
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2141
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Este mensaje no está disponible en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:173
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1673
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1720
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1690
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1737
 msgid "Could not get message"
 msgstr "No se puede obtener el mensaje"
 
@@ -2713,11 +2709,11 @@ msgstr "No se puede obtener el mensaje"
 msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1048
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
 msgid "Trash Folder Full. Please Empty."
 msgstr "La papelera está llena. Por favor vacíela."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1225
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1242
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
 #: ../camel/providers/imap/camel-imap-folder.c:2538
@@ -2726,13 +2722,13 @@ msgstr "La papelera está llena. Por favor vacíela."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1991
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2033
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2008
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2050
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No se pudo agregar el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2021
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2038
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
@@ -4014,7 +4010,7 @@ msgstr "Anexión MH del mensaje cancelada"
 #: ../camel/providers/local/camel-mh-folder.c:179
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr "No se pudo añexar el mensaje a la carpeta MH: %s: %s"
+msgstr "No se pudo anexar el mensaje a la carpeta MH: %s: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:232
 #, c-format
@@ -5224,7 +5220,7 @@ msgstr "Carpetas de %s"
 
 #: ../servers/exchange/storage/exchange-account.c:1245
 msgid "Personal Folders"
-msgstr "Carpetas pesonales"
+msgstr "Carpetas personales"
 
 #: ../servers/exchange/storage/exchange-account.c:1260
 msgid "Favorite Public Folders"
