@@ -1,3 +1,11 @@
+2008-02-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #519214
+
+	* libebook/e-book.c: (do_remove_contacts), (do_get_book_view):
+	Book's private mutex should be locked when calling e_book_clear_op
+	so honor this rule in these function too.
+
 2008-02-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #518569

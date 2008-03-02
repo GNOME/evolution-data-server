@@ -1628,7 +1628,9 @@ do_remove_contacts (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1653,7 +1655,9 @@ do_remove_contacts (gboolean sync,
 
 		status = our_op->status;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -1880,7 +1884,9 @@ do_get_book_view (gboolean sync,
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -1907,7 +1913,9 @@ do_get_book_view (gboolean sync,
 		status = our_op->status;
 		*book_view = our_op->view;
 
+		g_mutex_lock (book->priv->mutex);
 		e_book_clear_op (book, our_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		E_BOOK_CHECK_STATUS (status, error);
 	}
@@ -2522,7 +2530,7 @@ e_book_response_generic (EBook       *book,
 			 EBookStatus  status)
 {
 	EBookOp *op;
-
+	d(printf("e_book_response_generic\n"));
 	g_mutex_lock (book->priv->mutex);
 
 	op = e_book_get_op (book, opid);
