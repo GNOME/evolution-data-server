@@ -8,63 +8,62 @@
 ZIP=/tmp/evolution-data-server-@VERSION@.zip
 DEVZIP=/tmp/evolution-data-server-dev-@VERSION@.zip
 
+LIBCAMEL_CURRENT_MINUS_AGE=`expr @LIBCAMEL_CURRENT@ - @LIBCAMEL_AGE@`
+LIBEBOOK_CURRENT_MINUS_AGE=`expr @LIBEBOOK_CURRENT@ - @LIBEBOOK_AGE@`
+LIBECAL_CURRENT_MINUS_AGE=`expr @LIBECAL_CURRENT@ - @LIBECAL_AGE@`
+LIBEDATABOOK_CURRENT_MINUS_AGE=`expr @LIBEDATABOOK_CURRENT@ - @LIBEDATABOOK_AGE@`
+LIBEDATACAL_CURRENT_MINUS_AGE=`expr @LIBEDATACAL_CURRENT@ - @LIBEDATACAL_AGE@`
+LIBEDATASERVERUI_CURRENT_MINUS_AGE=`expr @LIBEDATASERVERUI_CURRENT@ - @LIBEDATASERVERUI_AGE@`
 LIBEDATASERVER_CURRENT_MINUS_AGE=`expr @LIBEDATASERVER_CURRENT@ - @LIBEDATASERVER_AGE@`
 LIBEGROUPWISE_CURRENT_MINUS_AGE=`expr @LIBEGROUPWISE_CURRENT@ - @LIBEGROUPWISE_AGE@`
 LIBEXCHANGE_STORAGE_CURRENT_MINUS_AGE=`expr @LIBEXCHANGE_STORAGE_CURRENT@ - @LIBEXCHANGE_STORAGE_AGE@`
-LIBCAMEL_CURRENT_MINUS_AGE=`expr @LIBCAMEL_CURRENT@ - @LIBCAMEL_AGE@`
-LIBEDATASERVERUI_CURRENT_MINUS_AGE=`expr @LIBEDATASERVERUI_CURRENT@ - @LIBEDATASERVERUI_AGE@`
-LIBEBOOK_CURRENT_MINUS_AGE=`expr @LIBEBOOK_CURRENT@ - @LIBEBOOK_AGE@`
-LIBEDATABOOK_CURRENT_MINUS_AGE=`expr @LIBEDATABOOK_CURRENT@ - @LIBEDATABOOK_AGE@`
-LIBECAL_CURRENT_MINUS_AGE=`expr @LIBECAL_CURRENT@ - @LIBECAL_AGE@`
-LIBEDATACAL_CURRENT_MINUS_AGE=`expr @LIBEDATACAL_CURRENT@ - @LIBEDATACAL_AGE@`
-LIBEDATASERVERUI_CURRENT_MINUS_AGE=`expr @LIBEDATASERVERUI_CURRENT@ - @LIBEDATASERVERUI_AGE@`
 LIBGDATA_CURRENT_MINUS_AGE=`expr @LIBGDATA_CURRENT@ - @LIBGDATA_AGE@`
 LIBGDATA_GOOGLE_CURRENT_MINUS_AGE=`expr @LIBGDATA_GOOGLE_CURRENT@ - @LIBGDATA_GOOGLE_AGE@`
 
 cd @prefix@
 rm $ZIP
 zip $ZIP -@ <<EOF
-bin/libedataserver-1.2-$LIBEDATASERVER_CURRENT_MINUS_AGE.dll
-bin/libegroupwise-1.2-$LIBEGROUPWISE_CURRENT_MINUS_AGE.dll
-bin/libexchange-storage-1.2-$LIBEXCHANGE_STORAGE_CURRENT_MINUS_AGE.dll
-bin/libcamel-1.2-0.dll
+bin/libcamel-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
 bin/libcamel-provider-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
 bin/libebook-1.2-$LIBEBOOK_CURRENT_MINUS_AGE.dll
-bin/libedata-book-1.2-$LIBEDATABOOK_CURRENT_MINUS_AGE.dll
 bin/libecal-1.2-$LIBECAL_CURRENT_MINUS_AGE.dll
+bin/libedata-book-1.2-$LIBEDATABOOK_CURRENT_MINUS_AGE.dll
 bin/libedata-cal-1.2-$LIBEDATACAL_CURRENT_MINUS_AGE.dll
+bin/libedataserver-1.2-$LIBEDATASERVER_CURRENT_MINUS_AGE.dll
 bin/libedataserverui-1.2-$LIBEDATASERVERUI_CURRENT_MINUS_AGE.dll
+bin/libegroupwise-1.2-$LIBEGROUPWISE_CURRENT_MINUS_AGE.dll
+bin/libexchange-storage-1.2-$LIBEXCHANGE_STORAGE_CURRENT_MINUS_AGE.dll
 bin/libgdata-1.2-$LIBGDATA_CURRENT_MINUS_AGE.dll
 bin/libgdata-google-1.2-$LIBGDATA_GOOGLE_CURRENT_MINUS_AGE.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelpop3.urls
-lib/evolution-data-server-1.2/camel-providers/libcamelpop3.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelsmtp.urls
-lib/evolution-data-server-1.2/camel-providers/libcamelsmtp.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelimap.urls
-lib/evolution-data-server-1.2/camel-providers/libcamelimap.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelnntp.urls
-lib/evolution-data-server-1.2/camel-providers/libcamelnntp.dll
-lib/evolution-data-server-1.2/camel-providers/libcamellocal.urls
-lib/evolution-data-server-1.2/camel-providers/libcamellocal.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelgroupwise.urls
+lib/bonobo/servers/GNOME_Evolution_DataServer_1.2.server
 lib/evolution-data-server-1.2/camel-providers/libcamelgroupwise.dll
-lib/evolution-data-server-1.2/camel-providers/libcamelhula.urls
+lib/evolution-data-server-1.2/camel-providers/libcamelgroupwise.urls
 lib/evolution-data-server-1.2/camel-providers/libcamelhula.dll
+lib/evolution-data-server-1.2/camel-providers/libcamelhula.urls
+lib/evolution-data-server-1.2/camel-providers/libcamelimap.dll
+lib/evolution-data-server-1.2/camel-providers/libcamelimap.urls
+lib/evolution-data-server-1.2/camel-providers/libcamellocal.dll
+lib/evolution-data-server-1.2/camel-providers/libcamellocal.urls
+lib/evolution-data-server-1.2/camel-providers/libcamelnntp.dll
+lib/evolution-data-server-1.2/camel-providers/libcamelnntp.urls
+lib/evolution-data-server-1.2/camel-providers/libcamelpop3.dll
+lib/evolution-data-server-1.2/camel-providers/libcamelpop3.urls
+lib/evolution-data-server-1.2/camel-providers/libcamelsmtp.dll
+lib/evolution-data-server-1.2/camel-providers/libcamelsmtp.urls
 lib/evolution-data-server-1.2/extensions/libebookbackendfile.dll
-lib/evolution-data-server-1.2/extensions/libebookbackendvcf.dll
-lib/evolution-data-server-1.2/extensions/libebookbackendldap.dll
 lib/evolution-data-server-1.2/extensions/libebookbackendgroupwise.dll
+lib/evolution-data-server-1.2/extensions/libebookbackendldap.dll
+lib/evolution-data-server-1.2/extensions/libebookbackendvcf.dll
+lib/evolution-data-server-1.2/extensions/libecalbackendcontacts.dll
 lib/evolution-data-server-1.2/extensions/libecalbackendfile.dll
+lib/evolution-data-server-1.2/extensions/libecalbackendgoogle.dll
 lib/evolution-data-server-1.2/extensions/libecalbackendgroupwise.dll
 lib/evolution-data-server-1.2/extensions/libecalbackendhttp.dll
-lib/evolution-data-server-1.2/extensions/libecalbackendcontacts.dll
 lib/evolution-data-server-1.2/extensions/libecalbackendweather.dll
-lib/evolution-data-server-1.2/extensions/libecalbackendgoogle.dll
-lib/bonobo/servers/GNOME_Evolution_DataServer_1.2.server
 libexec/evolution-data-server-@BASE_VERSION@.exe
-share/evolution-data-server-@BASE_VERSION@/weather/Locations.xml
 share/evolution-data-server-@BASE_VERSION@/glade/e-categories-dialog.glade
 share/evolution-data-server-@BASE_VERSION@/glade/e-name-selector-dialog.glade
+share/evolution-data-server-@BASE_VERSION@/weather/Locations.xml
 EOF
 
 zip -r $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
@@ -79,47 +78,47 @@ fi
 
 rm $DEVZIP
 zip -r $DEVZIP -@ <<EOF
-lib/libedataserver-1.2.dll.a
-lib/libegroupwise-1.2.dll.a
-lib/libexchange-storage-1.2.dll.a
 lib/libcamel-1.2.dll.a
 lib/libcamel-provider-1.2.dll.a
 lib/libebook-1.2.dll.a
-lib/libedata-book-1.2.dll.a
 lib/libecal-1.2.dll.a
+lib/libedata-book-1.2.dll.a
 lib/libedata-cal-1.2.dll.a
+lib/libedataserver-1.2.dll.a
 lib/libedataserverui-1.2.dll.a
+lib/libegroupwise-1.2.dll.a
+lib/libexchange-storage-1.2.dll.a
 lib/libgdata-1.2.dll.a
 lib/libgdata-google-1.2.dll.a
-lib/pkgconfig/libedataserver-1.2.pc
-lib/pkgconfig/libegroupwise-1.2.pc
-lib/pkgconfig/libexchange-storage-1.2.pc
 lib/pkgconfig/camel-1.2.pc
 lib/pkgconfig/camel-provider-1.2.pc
-lib/pkgconfig/libebook-1.2.pc
-lib/pkgconfig/libedata-book-1.2.pc
-lib/pkgconfig/libecal-1.2.pc
-lib/pkgconfig/libedata-cal-1.2.pc
-lib/pkgconfig/libedataserverui-1.2.pc
 lib/pkgconfig/evolution-data-server-1.2.pc
+lib/pkgconfig/libebook-1.2.pc
+lib/pkgconfig/libecal-1.2.pc
+lib/pkgconfig/libedata-book-1.2.pc
+lib/pkgconfig/libedata-cal-1.2.pc
+lib/pkgconfig/libedataserver-1.2.pc
+lib/pkgconfig/libedataserverui-1.2.pc
+lib/pkgconfig/libegroupwise-1.2.pc
+lib/pkgconfig/libexchange-storage-1.2.pc
 lib/pkgconfig/libgdata-1.2.pc
 lib/pkgconfig/libgdata-google-1.2.pc
-include/evolution-data-server-@BASE_VERSION@/libedataserver
-include/evolution-data-server-@BASE_VERSION@/groupwise
-include/evolution-data-server-@BASE_VERSION@/exchange
 include/evolution-data-server-@BASE_VERSION@/camel
-include/evolution-data-server-@BASE_VERSION@/libebook
-include/evolution-data-server-@BASE_VERSION@/libedata-book
-include/evolution-data-server-@BASE_VERSION@/libical
-include/evolution-data-server-@BASE_VERSION@/libecal
-include/evolution-data-server-@BASE_VERSION@/libedata-cal
-include/evolution-data-server-@BASE_VERSION@/libedataserverui
+include/evolution-data-server-@BASE_VERSION@/exchange
 include/evolution-data-server-@BASE_VERSION@/google
-share/idl/evolution-data-server-1.2/Evolution-DataServer-Addressbook.idl
-share/idl/evolution-data-server-1.2/Evolution-DataServer-Calendar.idl
-share/idl/evolution-data-server-1.2/Evolution-DataServer.idl
+include/evolution-data-server-@BASE_VERSION@/groupwise
+include/evolution-data-server-@BASE_VERSION@/libebook
+include/evolution-data-server-@BASE_VERSION@/libecal
+include/evolution-data-server-@BASE_VERSION@/libedata-book
+include/evolution-data-server-@BASE_VERSION@/libedata-cal
+include/evolution-data-server-@BASE_VERSION@/libedataserver
+include/evolution-data-server-@BASE_VERSION@/libedataserverui
+include/evolution-data-server-@BASE_VERSION@/libical
 share/gtk-doc/html/libebook
 share/gtk-doc/html/libecal
 share/gtk-doc/html/libedata-cal
 share/gtk-doc/html/libedataserver
+share/idl/evolution-data-server-1.2/Evolution-DataServer-Addressbook.idl
+share/idl/evolution-data-server-1.2/Evolution-DataServer-Calendar.idl
+share/idl/evolution-data-server-1.2/Evolution-DataServer.idl
 EOF

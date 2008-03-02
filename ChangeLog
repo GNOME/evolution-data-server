@@ -1,3 +1,9 @@
+2008-03-03  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Drop duplicated line. Use
+	LIBCAMEL_CURRENT_MINUS_AGE for the libcamel DLL. Sort sections for
+	clarity.
+
 2008-03-03  Srinivasa Ragavan <sragavan@novell.com>
 
 	* configure.in: Bump libecal version for libical changes.
