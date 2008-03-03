@@ -1,3 +1,7 @@
+2008-03-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Revisit libecal version.
+
 2008-03-02  Matthew Barnes  <mbarnes@redhat.com>
 
 	* docs/reference: Minor API documentation updates.
