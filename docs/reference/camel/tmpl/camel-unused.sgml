@@ -357,6 +357,18 @@ camel-types
 </para>
 
 
+<!-- ##### MACRO NI_MAXHOST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO NI_MAXSERV ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION add_recipients ##### -->
 <para>
 

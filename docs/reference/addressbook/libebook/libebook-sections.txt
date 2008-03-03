@@ -339,6 +339,7 @@ e_book_query_not
 e_book_query_field_exists
 e_book_query_vcard_field_exists
 e_book_query_field_test
+e_book_query_vcard_field_test
 e_book_query_any_field_contains
 e_book_query_copy
 <SUBSECTION Standard>

@@ -1,3 +1,7 @@
+2008-03-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference: Minor API documentation updates.
+
 2008-03-03  Tor Lillqvist  <tml@novell.com>
 
 	* evolution-data-server-zip.in: Drop duplicated line. Use
