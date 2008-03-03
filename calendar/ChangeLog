@@ -1,3 +1,13 @@
+2008-03-02  Matthew Bares  <mbarnes@redhat.com>
+
+	** Fixes bug #518728
+
+	* backends/caldav/Makefile.am:
+	* libecal/Makefile.am:
+	* libedata-cal/Makefile.am:
+	Fix linking order of libecal-1.2 and libedata-cal-1.2.
+	Patch by Patrick Ohly.
+
 2008-02-20  Milan Crha  <mcrha@redhat.com>
 
 	** Fixes part of bug #510949

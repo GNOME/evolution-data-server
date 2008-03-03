@@ -19,11 +19,12 @@ libecalbackendcaldav_la_SOURCES =	\
 	e-cal-backend-caldav.h		
 
 libecalbackendcaldav_la_LIBADD =						\
-	$(EVOLUTION_CALENDAR_LIBS)      \
-	$(SOUP_LIBS) \
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la \
-	$(top_builddir)/libedataserver/libedataserver-1.2.la
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(SOUP_LIBS)
+
 
 libecalbackendcaldav_la_LDFLAGS =		\
 	-module -avoid-version
