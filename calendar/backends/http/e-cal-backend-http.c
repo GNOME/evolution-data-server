@@ -1213,6 +1213,9 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const char *tzid
 	        zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	return zone;

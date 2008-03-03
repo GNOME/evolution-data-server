@@ -1,3 +1,25 @@
+2008-03-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #327851
+
+	* libedata-cal/e-cal-backend-sync.c: (_e_cal_backend_get_timezone),
+	(_e_cal_backend_internal_get_timezone),
+	(e_cal_backend_sync_class_init): Try find timezone if entered only
+	as a location name.
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_internal_get_timezone):
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_internal_get_timezone):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_internal_get_timezone):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_internal_get_timezone):
+	* backends/caldav/e-cal-backend-caldav.c:
+	(caldav_internal_get_timezone):
+	* backends/google/e-cal-backend-google.c:
+	(e_cal_backend_google_internal_get_timezone):
+	Ask parent class for internal time zone resolve, if we do not know.
+
 2008-03-02  Matthew Bares  <mbarnes@redhat.com>
 
 	** Fixes bug #518728

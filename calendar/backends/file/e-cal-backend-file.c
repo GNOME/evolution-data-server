@@ -1723,6 +1723,9 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid
 		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
 		if (!zone)
 			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);

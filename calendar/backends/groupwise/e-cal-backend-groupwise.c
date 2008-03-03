@@ -1879,6 +1879,10 @@ e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const char 
 	icaltimezone *zone;
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+
 	if (!zone)
 		return icaltimezone_get_utc_timezone();
 

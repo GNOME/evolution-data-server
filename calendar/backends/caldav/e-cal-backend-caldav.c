@@ -2513,6 +2513,9 @@ caldav_internal_get_timezone (ECalBackend *backend,
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
+	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+
 	if (!zone) {
 		zone = icaltimezone_get_utc_timezone ();
 	}

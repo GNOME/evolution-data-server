@@ -882,6 +882,42 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 
 	status = e_cal_backend_sync_get_timezone (E_CAL_BACKEND_SYNC (backend), cal, tzid, &object);
 
+	if (!object && tzid) {
+		/* fallback if tzid contains only the location of timezone */
+		int i, slashes = 0;
+
+		for (i = 0; tzid [i]; i++) {
+			if (tzid [i] == '/')
+				slashes++;
+		}
+
+		if (slashes == 1) {
+			icaltimezone *zone = icaltimezone_get_builtin_timezone (tzid);
+
+			if (zone) {
+				icalcomponent *icalcomp = icaltimezone_get_component (zone);
+
+				if (icalcomp) {
+					icalcomponent *clone = icalcomponent_new_clone (icalcomp);
+					icalproperty *prop;
+
+					prop = icalcomponent_get_first_property (clone, ICAL_TZID_PROPERTY);
+					if (prop) {
+						/* change tzid to our, because the component has the buildin tzid */
+						icalproperty_set_tzid (prop, tzid);
+
+						object = icalcomponent_as_ical_string (clone);
+					}
+					icalcomponent_free (clone);
+				}
+			}
+		}
+
+		/* also cache this timezone to backend */
+		if (object)
+			e_cal_backend_sync_add_timezone (E_CAL_BACKEND_SYNC (backend), cal, object);
+	}
+
 	e_data_cal_notify_timezone_requested (cal, status, object);
 
 	g_free (object);
@@ -895,6 +931,23 @@ _e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 	status = e_cal_backend_sync_add_timezone (E_CAL_BACKEND_SYNC (backend), cal, tzobj);
 
 	e_data_cal_notify_timezone_added (cal, status, tzobj);
+}
+
+static icaltimezone *
+_e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
+{
+	int i, slashes = 0;
+
+	if (!tzid || !*tzid)
+		return NULL;
+
+	for (i = 0; tzid [i]; i++) {
+		if (tzid [i] == '/')
+			slashes++;
+	}
+
+	/* try if it contains only location of the timezone */
+	return slashes == 1 ? icaltimezone_get_builtin_timezone (tzid) : NULL;
 }
 
 static void
@@ -1017,6 +1070,7 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->set_default_zone = _e_cal_backend_set_default_zone;
  	backend_class->get_changes = _e_cal_backend_get_changes;
  	backend_class->get_free_busy = _e_cal_backend_get_free_busy;
+ 	backend_class->internal_get_timezone = _e_cal_backend_internal_get_timezone;
 
 	object_class->dispose = e_cal_backend_sync_dispose;
 }
