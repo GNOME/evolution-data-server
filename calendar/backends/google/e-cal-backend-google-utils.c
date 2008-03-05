@@ -151,8 +151,10 @@ e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
 
 	if (refresh_interval)
 		x = atoi (refresh_interval);
+	else
+		x = 30;
 
-	timeout_id = g_timeout_add ((refresh_interval ? x : 30) * 60000,
+	timeout_id = g_timeout_add (x * 60000,
 				  (GSourceFunc) get_deltas_timeout,
 				  (gpointer)cbgo);
 	e_cal_backend_google_set_timeout_id (cbgo, timeout_id);
@@ -406,6 +408,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	const char *description, *uid, *temp;
 	struct icaltimetype itt_utc, itt;
 	GSList *category_ids;
+	GSList *go_attendee_list = NULL, *l = NULL, *attendee_list = NULL;
 
 	comp = e_cal_component_new ();
 	default_zone = e_cal_backend_google_get_default_zone (cbgo);
@@ -484,16 +487,17 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
 
 	/* Attendees */
-	GSList *go_attendee_list = NULL, *l = NULL, *attendee_list = NULL;
 	go_attendee_list = gdata_entry_get_attendee_list (item->entry);
 		
 	if (go_attendee_list != NULL) {
 
 		for (l = go_attendee_list; l != NULL; l = l->next) {
 			Attendee *go_attendee;
+			ECalComponentAttendee *attendee;
+
 			go_attendee = (Attendee *)l->data;
 
-			ECalComponentAttendee *attendee = g_new0 (ECalComponentAttendee, 1);
+			attendee = g_new0 (ECalComponentAttendee, 1);
 #if 0
 			_print_attendee ((Attendee *)l->data);
 #endif
@@ -598,10 +602,12 @@ e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp)
 	icaltimetype itt;
 	const char *uid;
 	const char *location;
-
-	priv = cbgo->priv;
 	GSList *list = NULL;
 	GDataEntry *entry;
+	ECalComponentText *t;
+	GSList *attendee_list = NULL, *l = NULL;
+
+	priv = cbgo->priv;
 
 	item = g_new0 (EGoItem, 1);
 	entry = gdata_entry_new ();
@@ -629,7 +635,6 @@ e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp)
 
 	/* Content / Description */
 	e_cal_component_get_description_list (comp, &list);
-	ECalComponentText *t;
 	if (list != NULL) {
 		t = (ECalComponentText *)list->data;
 		gdata_entry_set_content (entry, t->value);
@@ -652,7 +657,6 @@ e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp)
 			"label",
 			term);
 	/* Attendee */
-	GSList *attendee_list = NULL, *l = NULL;
 	e_cal_component_get_attendee_list (comp, &attendee_list);
 
 	for (l = attendee_list; l!=NULL; l=l->next) {
@@ -880,9 +884,10 @@ static gchar *
 gd_date_to_ical (gchar *string)
 {
 	gchar *s, *str;
+	int count = 0;
+
 	s = g_strdup (string);
 	str = string;
-	int count = 0;
 
 	g_return_val_if_fail (string != NULL, "");
 

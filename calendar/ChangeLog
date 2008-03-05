@@ -1,3 +1,16 @@
+2008-03-05  Jens Granseuer  <jensgr@gmx.net>
+
+	** Fixes bug #520362
+
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_create_cache),
+	(e_go_item_to_cal_component), (e_go_item_from_cal_component),
+	(gd_date_to_ical):
+	* backends/google/e-cal-backend-google.c: (receive_object),
+	(e_cal_backend_google_modify_object),
+	(e_cal_backend_google_create_object): put all declarations at the
+	beginnings of code blocks to make older compilers happy
+
 2008-03-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #327851

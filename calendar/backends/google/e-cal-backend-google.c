@@ -544,7 +544,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	GSList *comps = NULL, *l = NULL;
 	icalproperty_method method;
 	icalproperty *icalprop;
-	gboolean instances = TRUE, found;
+	gboolean instances = TRUE, found = FALSE;
 	icalparameter_partstat pstatus = 0;
 
 	priv = cbgo->priv;
@@ -889,6 +889,7 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 	const char *uid=NULL, *rid=NULL;
 	GDataEntry *entry, *entry_from_server=NULL;
 	gchar *edit_link;
+	GSList *l;
 
 	*old_object = NULL;
 	cbgo = E_CAL_BACKEND_GOOGLE (backend);
@@ -911,7 +912,6 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 	e_cal_component_get_uid (comp, &uid);
 
 	/* Check if object exists */
-	GSList *l;
 	switch (priv->mode) {
 		case CAL_MODE_ANY:
 		case CAL_MODE_REMOTE:
@@ -1075,13 +1075,13 @@ e_cal_backend_google_create_object (ECalBackendSync *backend, EDataCal *cal, cha
 	switch (priv->mode) {
 
 		case CAL_MODE_ANY:
-		case CAL_MODE_REMOTE:
+		case CAL_MODE_REMOTE: {
 			/* Create an appointment */
+			GDataEntry *updated_entry;
 
 			item = e_go_item_from_cal_component (cbgo, comp);
 			entry = e_go_item_get_entry (item);
 
-			GDataEntry *updated_entry;
 			updated_entry = gdata_service_insert_entry (GDATA_SERVICE(priv->service), priv->uri, entry);
 			if (!GDATA_IS_ENTRY (updated_entry)) {
 				g_message ("\n Entry Insertion Failed %s \n", G_STRLOC);
@@ -1090,7 +1090,7 @@ e_cal_backend_google_create_object (ECalBackendSync *backend, EDataCal *cal, cha
 			id = gdata_entry_get_id (updated_entry);
 			e_cal_component_set_uid (comp, id);
 
-			break;
+			break; }
 		default:
 			break;
 	}
