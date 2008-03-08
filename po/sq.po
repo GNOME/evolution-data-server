@@ -1,13 +1,13 @@
 # Përkthimi i mesazheve të evolution-data-server në shqip
 # This file is distributed under the same license as the evolution package.
 #
-# Laurent Dhima <laurenti@alblinux.net>, 2004, 2005, 2006, 2007.
+# Laurent Dhima <laurenti@alblinux.net>, 2004, 2005, 2006, 2007, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-13 15:41+0200\n"
-"PO-Revision-Date: 2007-09-13 15:40+0200\n"
+"POT-Creation-Date: 2008-03-07 21:38+0100\n"
+"PO-Revision-Date: 2008-03-08 11:37+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -79,92 +79,92 @@ msgstr "Gabim gjatë kryerjes së kërkimit"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:257 ../addressbook/libebook/e-book.c:261
-#: ../addressbook/libebook/e-book.c:473 ../addressbook/libebook/e-book.c:477
-#: ../addressbook/libebook/e-book.c:618 ../addressbook/libebook/e-book.c:622
-#: ../addressbook/libebook/e-book.c:711 ../addressbook/libebook/e-book.c:715
-#: ../addressbook/libebook/e-book.c:1029 ../addressbook/libebook/e-book.c:1034
-#: ../addressbook/libebook/e-book.c:1221 ../addressbook/libebook/e-book.c:1225
-#: ../addressbook/libebook/e-book.c:1382 ../addressbook/libebook/e-book.c:1386
-#: ../addressbook/libebook/e-book.c:1595 ../addressbook/libebook/e-book.c:1599
-#: ../addressbook/libebook/e-book.c:1836 ../addressbook/libebook/e-book.c:1840
-#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2293 ../addressbook/libebook/e-book.c:2297
-#: ../addressbook/libebook/e-book.c:3431
+#: ../addressbook/libebook/e-book.c:254 ../addressbook/libebook/e-book.c:258
+#: ../addressbook/libebook/e-book.c:470 ../addressbook/libebook/e-book.c:474
+#: ../addressbook/libebook/e-book.c:615 ../addressbook/libebook/e-book.c:619
+#: ../addressbook/libebook/e-book.c:708 ../addressbook/libebook/e-book.c:712
+#: ../addressbook/libebook/e-book.c:1026 ../addressbook/libebook/e-book.c:1031
+#: ../addressbook/libebook/e-book.c:1218 ../addressbook/libebook/e-book.c:1222
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1383
+#: ../addressbook/libebook/e-book.c:1592 ../addressbook/libebook/e-book.c:1596
+#: ../addressbook/libebook/e-book.c:1833 ../addressbook/libebook/e-book.c:1837
+#: ../addressbook/libebook/e-book.c:2074 ../addressbook/libebook/e-book.c:2078
+#: ../addressbook/libebook/e-book.c:2290 ../addressbook/libebook/e-book.c:2294
+#: ../addressbook/libebook/e-book.c:3429
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" në rubrikë para \"%s\""
 
-#: ../addressbook/libebook/e-book.c:270 ../addressbook/libebook/e-book.c:486
-#: ../addressbook/libebook/e-book.c:631 ../addressbook/libebook/e-book.c:724
-#: ../addressbook/libebook/e-book.c:1044 ../addressbook/libebook/e-book.c:1235
-#: ../addressbook/libebook/e-book.c:1396 ../addressbook/libebook/e-book.c:1608
-#: ../addressbook/libebook/e-book.c:1849 ../addressbook/libebook/e-book.c:2091
-#: ../addressbook/libebook/e-book.c:2306 ../addressbook/libebook/e-book.c:2672
-#: ../addressbook/libebook/e-book.c:2878
+#: ../addressbook/libebook/e-book.c:267 ../addressbook/libebook/e-book.c:483
+#: ../addressbook/libebook/e-book.c:628 ../addressbook/libebook/e-book.c:721
+#: ../addressbook/libebook/e-book.c:1041 ../addressbook/libebook/e-book.c:1232
+#: ../addressbook/libebook/e-book.c:1393 ../addressbook/libebook/e-book.c:1605
+#: ../addressbook/libebook/e-book.c:1846 ../addressbook/libebook/e-book.c:2088
+#: ../addressbook/libebook/e-book.c:2303 ../addressbook/libebook/e-book.c:2669
+#: ../addressbook/libebook/e-book.c:2875
 #, c-format
 msgid "book busy"
 msgstr "rubrika jo në dispozicion për momentin"
 
-#: ../addressbook/libebook/e-book.c:303 ../addressbook/libebook/e-book.c:307
-#: ../addressbook/libebook/e-book.c:519 ../addressbook/libebook/e-book.c:523
-#: ../addressbook/libebook/e-book.c:660 ../addressbook/libebook/e-book.c:664
-#: ../addressbook/libebook/e-book.c:753 ../addressbook/libebook/e-book.c:757
-#: ../addressbook/libebook/e-book.c:1073 ../addressbook/libebook/e-book.c:1076
-#: ../addressbook/libebook/e-book.c:1267 ../addressbook/libebook/e-book.c:1270
-#: ../addressbook/libebook/e-book.c:1425 ../addressbook/libebook/e-book.c:1429
-#: ../addressbook/libebook/e-book.c:1644 ../addressbook/libebook/e-book.c:1648
-#: ../addressbook/libebook/e-book.c:1896 ../addressbook/libebook/e-book.c:1900
-#: ../addressbook/libebook/e-book.c:2123 ../addressbook/libebook/e-book.c:2127
-#: ../addressbook/libebook/e-book.c:2334 ../addressbook/libebook/e-book.c:2338
-#: ../addressbook/libebook/e-book.c:2613 ../addressbook/libebook/e-book.c:2700
-#: ../addressbook/libebook/e-book.c:2704 ../addressbook/libebook/e-book.c:2906
-#: ../addressbook/libebook/e-book.c:2910 ../addressbook/libebook/e-book.c:3440
+#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:304
+#: ../addressbook/libebook/e-book.c:516 ../addressbook/libebook/e-book.c:520
+#: ../addressbook/libebook/e-book.c:657 ../addressbook/libebook/e-book.c:661
+#: ../addressbook/libebook/e-book.c:750 ../addressbook/libebook/e-book.c:754
+#: ../addressbook/libebook/e-book.c:1070 ../addressbook/libebook/e-book.c:1073
+#: ../addressbook/libebook/e-book.c:1264 ../addressbook/libebook/e-book.c:1267
+#: ../addressbook/libebook/e-book.c:1422 ../addressbook/libebook/e-book.c:1426
+#: ../addressbook/libebook/e-book.c:1641 ../addressbook/libebook/e-book.c:1645
+#: ../addressbook/libebook/e-book.c:1893 ../addressbook/libebook/e-book.c:1897
+#: ../addressbook/libebook/e-book.c:2120 ../addressbook/libebook/e-book.c:2124
+#: ../addressbook/libebook/e-book.c:2331 ../addressbook/libebook/e-book.c:2335
+#: ../addressbook/libebook/e-book.c:2610 ../addressbook/libebook/e-book.c:2697
+#: ../addressbook/libebook/e-book.c:2701 ../addressbook/libebook/e-book.c:2903
+#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3438
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "Përjashtim Corba gjatë thirrjes \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2594
+#: ../addressbook/libebook/e-book.c:2591
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: aktualisht nuk ka asnjë operacion"
 
-#: ../addressbook/libebook/e-book.c:2629
+#: ../addressbook/libebook/e-book.c:2626
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: e pamundur fshirja"
 
-#: ../addressbook/libebook/e-book.c:2658 ../addressbook/libebook/e-book.c:2662
+#: ../addressbook/libebook/e-book.c:2655 ../addressbook/libebook/e-book.c:2659
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" në rubrikë mbas \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2728
+#: ../addressbook/libebook/e-book.c:2725
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: u fshi"
 
-#: ../addressbook/libebook/e-book.c:3295
+#: ../addressbook/libebook/e-book.c:3293
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: Burim i pavlefshëm."
 
-#: ../addressbook/libebook/e-book.c:3303 ../addressbook/libebook/e-book.c:3369
+#: ../addressbook/libebook/e-book.c:3301 ../addressbook/libebook/e-book.c:3367
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: asnjë fabrikë në dispozicion për URI `%s'"
 
-#: ../addressbook/libebook/e-book.c:3315
+#: ../addressbook/libebook/e-book.c:3313
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: I pamundur krijimi i EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3580
+#: ../addressbook/libebook/e-book.c:3578
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: nuk ekziston një UID kontakti personal regjistruar në gconf"
 
-#: ../addressbook/libebook/e-book.c:3713
+#: ../addressbook/libebook/e-book.c:3711
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: asnjë burim për uid `%s' e regjistruar në gconf."
@@ -620,7 +620,7 @@ msgid "Birth Date"
 msgstr "Data e lindjes"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:460
 #: ../libedataserver/e-categories.c:41
 msgid "Anniversary"
 msgstr "Përvjetori"
@@ -668,17 +668,17 @@ msgstr "Informacione gjeografike"
 msgid "Unnamed List"
 msgstr "Listë pa emër"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:465
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
 #: ../libedataserver/e-categories.c:42
 msgid "Birthday"
 msgstr "Ditëlindja"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:491
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:488
 #, c-format
 msgid "Birthday: %s"
 msgstr "Ditëlindja: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:515
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:512
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Përvjetori: %s"
@@ -688,12 +688,12 @@ msgid "Cannot save calendar data: Malformed URI."
 msgstr "E pamundur ruajtja e të dhënave të kalendarit: URl e pasaktë."
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:981
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1765
 msgid "Reply Requested: by "
 msgstr "Kërkohet përgjigja: nga "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:986
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1769
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1770
 msgid "Reply Requested: When convenient"
 msgstr "Kërkohet përgjigja: Kur dëshiron"
 
@@ -702,22 +702,22 @@ msgstr "Kërkohet përgjigja: Kur dëshiron"
 msgid "Loading %s items"
 msgstr "Duke ngarkuar %s elementë"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:786
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:787
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Kalendari"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:844
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:845
 msgid "Invalid server URI"
 msgstr "URI serveri e pasaktë"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:872
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:864
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:873
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:973
 #: ../calendar/libecal/e-cal.c:5001
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1050
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1082
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1120
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1051
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1083
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1121
 #: ../camel/providers/groupwise/camel-groupwise-store.c:586
 #: ../camel/providers/groupwise/camel-groupwise-store.c:601
 #: ../camel/providers/groupwise/camel-groupwise-store.c:712
@@ -728,18 +728,18 @@ msgstr "URI serveri e pasaktë"
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:914
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:915
 msgid "Could not create thread for getting deltas"
 msgstr "I pamundur krijimi i temës për marrjen e deltas"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:954
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1228
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:955
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1229
 #: ../calendar/backends/http/e-cal-backend-http.c:597
 #: ../calendar/backends/weather/e-cal-backend-weather.c:460
 msgid "Could not create cache file"
 msgstr "I pamundur krijimi i file cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:967
 msgid "Could not create thread for populating cache"
 msgstr "I pamundur krijimi i temës për popullimin e cache"
 
@@ -1222,8 +1222,7 @@ msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
+msgstr "\"%s\" parashikon që argumenti i parë të jetë një stringë data/ora ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
@@ -1378,8 +1377,7 @@ msgstr "Duke përgatitur kartelën '%s' për modalitetin jashtë linje"
 #: ../camel/camel-disco-store.c:403
 #: ../camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
-msgstr ""
-"Duhet të punoni në modalitetin në linjë për të plotësuar këtë operacion"
+msgstr "Duhet të punoni në modalitetin në linjë për të plotësuar këtë operacion"
 
 #: ../camel/camel-exception.c:304
 msgid "No description available"
@@ -1604,8 +1602,7 @@ msgstr "Anulluar."
 
 #: ../camel/camel-gpg-context.c:873
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
-"Zbllokimi i kyçit sekret nuk pati sukses: u dhanë 3 passphrases të gabuara."
+msgstr "Zbllokimi i kyçit sekret nuk pati sukses: u dhanë 3 passphrases të gabuara."
 
 #: ../camel/camel-gpg-context.c:881
 #, c-format
@@ -1644,8 +1641,7 @@ msgstr "Kjo pjesë e mesazhit është e firmosur"
 #: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
 #: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr ""
-"I pamundur verifikimi i firmës së mesazhit: Format i pavlefshëm mesazhi"
+msgstr "I pamundur verifikimi i firmës së mesazhit: Format i pavlefshëm mesazhi"
 
 #: ../camel/camel-gpg-context.c:1514
 #, c-format
@@ -1853,8 +1849,7 @@ msgstr "Për të lexuar postën si një kërkim i të përbashkët tjetër karte
 #: ../camel/camel-provider.c:187
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
-"I pamundur ngarkimi i %s: ky sistem nuk suporton ngarkimin e një moduli."
+msgstr "I pamundur ngarkimi i %s: ky sistem nuk suporton ngarkimin e një moduli."
 
 #: ../camel/camel-provider.c:196
 #, c-format
@@ -1944,8 +1939,7 @@ msgstr "Server challenge i pavlefshëm\n"
 
 #: ../camel/camel-sasl-digest-md5.c:835
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
-"Server challenge përmbante një token \"Quality of Protection\" të pavlefshëm"
+msgstr "Server challenge përmbante një token \"Quality of Protection\" të pavlefshëm"
 
 #: ../camel/camel-sasl-digest-md5.c:865
 msgid "Server response did not contain authorization data"
@@ -1965,8 +1959,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:66
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
-"Me këtë opcion lidheni në server duke përdorur autentifikimin Kerberos 5."
+msgstr "Me këtë opcion lidheni në server duke përdorur autentifikimin Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:164
 msgid ""
@@ -2014,8 +2007,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
-"Handle e përmbajtjes së dhënë nuk i referohet një konteksti të vlefshëm."
+msgstr "Handle e përmbajtjes së dhënë nuk i referohet një konteksti të vlefshëm."
 
 #: ../camel/camel-sasl-gssapi.c:193
 msgid "The consistency checks performed on the input_token failed."
@@ -2065,8 +2057,7 @@ msgstr "Futu"
 
 #: ../camel/camel-sasl-login.c:38 ../camel/camel-sasl-plain.c:38
 msgid "This option will connect to the server using a simple password."
-msgstr ""
-"Me këtë opcion lidheni me serverin duke përdorur një fjalëkalim të thjeshtë."
+msgstr "Me këtë opcion lidheni me serverin duke përdorur një fjalëkalim të thjeshtë."
 
 #: ../camel/camel-sasl-login.c:135
 msgid "Unknown authentication state."
@@ -2594,7 +2585,7 @@ msgstr ""
 "Lista me çertifikatat e anulluara ka skaduar: %s\n"
 "Dërguesi: %s"
 
-#: ../camel/camel-url.c:310
+#: ../camel/camel-url.c:312
 #, c-format
 msgid "Could not parse URL `%s'"
 msgstr "I pamundur interpretimi i URL `%s'"
@@ -2681,30 +2672,29 @@ msgstr "E pamundur marrja e mesazhit %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:164
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2121
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2122
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
-msgstr ""
-"Ky mesazh nuk ndodhet aktualisht në dispozicion në modalitetin jashtë linje."
+msgstr "Ky mesazh nuk ndodhet aktualisht në dispozicion në modalitetin jashtë linje."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1671
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1672
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1718
 msgid "Could not get message"
 msgstr "E pamundur marrja e mesazhit"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:817
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:253
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "I pamundur leximi i përmbledhjes për %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1046
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1047
 msgid "Trash Folder Full. Please Empty."
 msgstr "Kartela e koshit është plot. Të lutem zbraze."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1223
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1224
 #: ../camel/providers/groupwise/camel-groupwise-store.c:630
 #: ../camel/providers/groupwise/camel-groupwise-store.c:744
 #: ../camel/providers/imap/camel-imap-folder.c:2394
@@ -2713,13 +2703,13 @@ msgstr "Kartela e koshit është plot. Të lutem zbraze."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Duke marrë përmbledhjen e informacionit për mesazhe të rinj tek %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1988
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1989
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2031
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "I pamundur shtimi i mesazhit në kartelë: `%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2018
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2019
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "I pamundur krijimi i mesazhit: %s"
@@ -2807,8 +2797,7 @@ msgid "Password"
 msgstr "Fjalëkalimi"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:108
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "Me këtë opcion do të lidheni me serverin GroupWise duke përdorur një "
 "fjalëkalim në tekst të thjeshtë."
@@ -2847,8 +2836,7 @@ msgstr "Kartela %s nuk ekziston"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1225
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr ""
-"Nuk është i mundur krijimi kartelave GroupWise në modalitetin jashtë linje."
+msgstr "Nuk është i mundur krijimi kartelave GroupWise në modalitetin jashtë linje."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1239
 #: ../camel/providers/imap/camel-imap-store.c:1968
@@ -3043,8 +3031,7 @@ msgstr "Përgjigje e paplotë nga serveri: nuk është dhënë UID për mesazhin
 
 #: ../camel/providers/imap/camel-imap-folder.c:2594
 #, c-format
-msgid ""
-"Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
 "Përgjigje e papritur nga serveri: Është dhënë UID identike për mesazhet %d "
 "dhe %d"
@@ -3222,8 +3209,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2275
 #: ../camel/providers/imap4/camel-imap4-store.c:949
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "Emri i kartelës \"%s\" është i pavlefshëm pasi nuk mund të përmbajë simbolin "
 "\"%c\""
@@ -3276,8 +3262,7 @@ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "Serveri IMAP4 %s u shkëput në menyrë të papritur: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
-msgid ""
-"Enable Mailing-List detection required for some filter and vFolder rules"
+msgid "Enable Mailing-List detection required for some filter and vFolder rules"
 msgstr ""
 "Aktivimi i zbulimit të Mailing-List kërkohet për disa filtra dhe rregulla të "
 "Kartelës virtuale"
@@ -3320,8 +3305,7 @@ msgstr "E pamundur marrja e mesazhit %s nga kartela `%s': Komandë e gabuar"
 #: ../camel/providers/imap4/camel-imap4-folder.c:917
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
-msgstr ""
-"I pamundur shtimi i mesazhit tek kartela `%s':Kartela është vetëm në lexim"
+msgstr "I pamundur shtimi i mesazhit tek kartela `%s':Kartela është vetëm në lexim"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1010
 #, c-format
@@ -3336,14 +3320,12 @@ msgstr "I pamundur shtimi i mesazhit tek kartela `%s': Komandë e pavlefshme"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1160
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
-"E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
+msgstr "E pamundur lëvizja e mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1164
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
-msgstr ""
-"I pamundur kopjimi i mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
+msgstr "I pamundur kopjimi i mesazheve nga kartela `%s' tek kartela `%s': nuk njihet"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1172
 #, c-format
@@ -3376,8 +3358,7 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "Për të lexuar dhe arkivuar postën në serverët IMAPv4rev1."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:85
-msgid ""
-"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 "Ky opcion do t'ju lidhë me serverin IMAPv4rev1 duke përdorur një fjalëkalim "
 "në tekst të thjeshtë."
@@ -3407,8 +3388,7 @@ msgstr "Trajtimi TLS dështoi"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:412
 #, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
 "I apmundur autentifikimi në server-in IMAP %s duke përdorur mekanizmin e "
 "autentifikimit %s"
@@ -3426,8 +3406,7 @@ msgstr "Autentifikimi në serverin IMAP %s duke përdorur %s dështoi"
 #: ../camel/providers/imap4/camel-imap4-store.c:691
 #: ../camel/providers/imap4/camel-imap4-store.c:959
 msgid "Cannot create IMAP folders in offline mode."
-msgstr ""
-"Nuk është i mundur krijimi i kartelave IMAP në modalitetin jashtë linje."
+msgstr "Nuk është i mundur krijimi i kartelave IMAP në modalitetin jashtë linje."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:730
 #, c-format
@@ -3437,8 +3416,7 @@ msgstr "E pamundur hapja e kartelës `%s' tek serveri IMAP %s: nuk njihet"
 #: ../camel/providers/imap4/camel-imap4-store.c:811
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
-msgstr ""
-"E pamundur marrja e informacionit LIST për `%s' nò serverin IMAP %s: %s"
+msgstr "E pamundur marrja e informacionit LIST për `%s' nò serverin IMAP %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:813
 #: ../camel/providers/imap4/camel-imap4-store.c:1488
@@ -3462,8 +3440,7 @@ msgstr "E pamundur fshirja e kartelës `%s': Kartelë speciale"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1010
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr ""
-"Nuk është e mundur fshirja e kartelave IMAP në modalitetin jashtë linje."
+msgstr "Nuk është e mundur fshirja e kartelave IMAP në modalitetin jashtë linje."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1069
 #, c-format
@@ -3478,13 +3455,11 @@ msgstr "E pamundur fshirja e kartelës `%s': Komandë e pavlefshme"
 #: ../camel/providers/imap4/camel-imap4-store.c:1094
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
-msgstr ""
-"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Kartelë speciale"
+msgstr "I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Kartelë speciale"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1101
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr ""
-"Nuk është i mundur riemërtimi i kartelave IMAP në modalitetin jashtë linje."
+msgstr "Nuk është i mundur riemërtimi i kartelave IMAP në modalitetin jashtë linje."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1132
 #, c-format
@@ -3496,8 +3471,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:1137
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
-msgstr ""
-"I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Komandë e pavlefshme"
+msgstr "I pamundur ndryshimi i emrit të kartelës `%s' në `%s': Komandë e pavlefshme"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1486
 #, c-format
@@ -3508,8 +3482,7 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1526
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr ""
-"Nuk është i mundur regjistrimi tek kartelat IMAP në modalitetin jashtë linje."
+msgstr "Nuk është i mundur regjistrimi tek kartelat IMAP në modalitetin jashtë linje."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1571
 #, c-format
@@ -3939,8 +3912,7 @@ msgstr "E pamundur hapja e kartelës: %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr ""
-"Gabim fatal i shpërndarjes së postës afër pozicionit %ld në kartelën %s"
+msgstr "Gabim fatal i shpërndarjes së postës afër pozicionit %ld në kartelën %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
@@ -4141,16 +4113,14 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Nuk mund të kopjoni mesazhe nga një kartelë NNTP!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid ""
-"Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid "Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 "Shfaq kartelat në formën e shkurtër (d.m.th. c.o.linux në vend të comp.os."
 "linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription dialog, show relative folder names"
-msgstr ""
-"Tek dritarja e dialogut të regjistrimit, shfaq emrat e kartelave relative"
+msgstr "Tek dritarja e dialogut të regjistrimit, shfaq emrat e kartelave relative"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "USENET news"
@@ -4158,8 +4128,7 @@ msgstr "USENET news"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:57
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
-"Ky është një furnizues për të lexuar dhe postuar tek newsgroups USENET."
+msgstr "Ky është një furnizues për të lexuar dhe postuar tek newsgroups USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:76
 msgid ""
@@ -4465,8 +4434,7 @@ msgstr "E pamundur lëvizja e listës së marrësve"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:146
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr ""
-"I pamundur krijimi i ridrejtimit drejt sendmail: %s: posta nuk u dërgua"
+msgstr "I pamundur krijimi i ridrejtimit drejt sendmail: %s: posta nuk u dërgua"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:167
 #, c-format
@@ -4502,8 +4470,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
-"Për të dorëzuar postën duke u lidhur me një mailhub remot duke përdorur SMTP."
+msgstr "Për të dorëzuar postën duke u lidhur me një mailhub remot duke përdorur SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Syntax error, command unrecognized"
@@ -4571,8 +4538,7 @@ msgstr "Veprimi i kërkuar nuk u krye: hapësirë e pamjaftueshme"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:198
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
-"Operacioni i kërkuar për postën nuk u plotësua: hapësirë e pamjaftueshme"
+msgstr "Operacioni i kërkuar për postën nuk u plotësua: hapësirë e pamjaftueshme"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Requested action not taken: mailbox name not allowed"
@@ -5077,26 +5043,27 @@ msgstr "Kërko"
 msgid "_Search:"
 msgstr "_Kërko:"
 
+# (pofilter) accelerators: accelerator _ is missing from translation
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2241
+#: ../libedataserverui/e-name-selector-entry.c:2249
 #, c-format
 msgid "E_xpand %s Inline"
-msgstr "Shpalos %s në linjë"
+msgstr "Sh_palos %s në linjë"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2256
+#: ../libedataserverui/e-name-selector-entry.c:2264
 #, c-format
 msgid "Cop_y %s"
 msgstr "Kop_jo %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2266
+#: ../libedataserverui/e-name-selector-entry.c:2274
 #, c-format
 msgid "C_ut %s"
 msgstr "P_reje %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2283
+#: ../libedataserverui/e-name-selector-entry.c:2291
 #, c-format
 msgid "_Edit %s"
 msgstr "_Ndrysho %s"
@@ -5340,3 +5307,4 @@ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
 "U verifikuan gabime shumëfishe segmentimi; e pamundur shfaqja e\n"
 "dritares së dialogut të gabimeve\n"
+
