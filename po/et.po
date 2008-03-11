@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server HEAD\n"
+"Project-Id-Version: Evolution-data-server 2.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-24 08:30+0000\n"
 "PO-Revision-Date: 2008-01-25 17:53+0200\n"
@@ -5296,21 +5296,3 @@ msgstr "Värvuse andmed"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "Renderdatav värvus"
-
-#~ msgid "Please enter the GroupWise password for %s@%s"
-#~ msgstr "Palun sisesta GroupWise parool %s@%s jaoks"
-
-#~ msgid "%sPlease enter the IMAP password for %s@%s"
-#~ msgstr "%sPalun sisesta IMAP parool %s@%s jaoks"
-
-#~ msgid "%sPlease enter the IMAP password for %s on host %s"
-#~ msgstr "%sPalun sisesta %s jaoks IMAP parool hostile %s"
-
-#~ msgid "Summary and folder mismatch, even after a sync"
-#~ msgstr "Kokkuvõtte ja kausta ebavõrdlus, isegi pärast sünkroniseerimist"
-
-#~ msgid "Please enter the NNTP password for %s@%s"
-#~ msgstr "Palun sisesta NNTP parool %s@%s jaoks"
-
-#~ msgid "%sPlease enter the SMTP password for %s on host %s"
-#~ msgstr "%sPalun sisesta SMTP parool %s jaoks hostil %s"
