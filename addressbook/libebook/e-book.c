@@ -15,6 +15,7 @@
 #include <gconf/gconf-client.h>
 
 #include <glib/gi18n-lib.h>
+#include "libedataserver/e-flag.h"
 #include "libedataserver/e-component-listener.h"
 
 #include "e-book-listener.h"
@@ -88,8 +89,7 @@ typedef struct {
 	gint32 opid;
 	gint idle_id;
 	gboolean synchronous;
-	GMutex *mutex;
-	GCond *cond;
+	EFlag *flag;
 	EBook *book;
 	EBookStatus status;
 	char *id;
@@ -173,8 +173,7 @@ e_book_new_op (EBook *book, gboolean sync)
 {
 	EBookOp *op = g_new0 (EBookOp, 1);
 
-	op->mutex = g_mutex_new ();
-	op->cond = g_cond_new ();
+	op->flag = e_flag_new ();
 
 	op->synchronous = sync;
 	op->opid = book->priv->current_op_id++;
@@ -203,8 +202,7 @@ e_book_get_current_sync_op (EBook *book)
 static void
 e_book_op_free (EBookOp *op)
 {
-	g_cond_free (op->cond);
-	g_mutex_free (op->mutex);
+	e_flag_free (op->flag);
 	g_free (op);
 }
 
@@ -221,7 +219,7 @@ e_book_clear_op (EBook *book,
 		 EBookOp *op)
 {
 	e_book_op_remove (book, op);
-	g_mutex_unlock (op->mutex);
+	e_flag_clear (op->flag);
 	e_book_op_free (op);
 }
 
@@ -270,8 +268,6 @@ do_add_contact (gboolean          sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -312,7 +308,7 @@ do_add_contact (gboolean          sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		e_contact_set (contact, E_CONTACT_UID, our_op->id);
@@ -428,13 +424,8 @@ e_book_response_add_contact (EBook       *book,
 	op->id = g_strdup (id);
 	op->status = status;
 
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 
@@ -488,8 +479,6 @@ do_commit_contact (gboolean        sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -528,7 +517,7 @@ do_commit_contact (gboolean        sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		g_free (our_op->id);
@@ -631,8 +620,6 @@ do_get_required_fields (gboolean             sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -671,7 +658,7 @@ do_get_required_fields (gboolean             sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notify us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*fields = our_op->list;
@@ -724,8 +711,6 @@ do_get_supported_fields (gboolean             sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -764,7 +749,7 @@ do_get_supported_fields (gboolean             sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notify us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*fields = our_op->list;
@@ -924,15 +909,9 @@ e_book_response_get_required_fields (EBook       *book,
 
 	op->status = status;
 	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
 		op->list = fields;
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
-	else {
+		e_flag_set (op->flag);
+	} else {
 		GList *l;
 		EList *efields = e_list_new ((EListCopyFunc) g_strdup,
 					     (EListFreeFunc) g_free,
@@ -972,15 +951,9 @@ e_book_response_get_supported_fields (EBook       *book,
 
 	op->status = status;
 	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
 		op->list = fields;
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
-	else {
+		e_flag_set (op->flag);
+	} else {
 		GList *l;
 		EList *efields = e_list_new ((EListCopyFunc) g_strdup,
 					     (EListFreeFunc) g_free,
@@ -1040,8 +1013,6 @@ do_get_supported_auth_methods (gboolean             sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -1077,7 +1048,7 @@ do_get_supported_auth_methods (gboolean             sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*auth_methods = our_op->list;
@@ -1161,15 +1132,9 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 
 	op->status = status;
 	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
 		op->list = auth_methods;
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
-	else {
+		e_flag_set (op->flag);
+	} else {
 		GList *l;
 		EList *emethods = e_list_new ((EListCopyFunc) g_strdup,
 					      (EListFreeFunc) g_free,
@@ -1231,8 +1196,6 @@ do_authenticate_user (gboolean        sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -1271,7 +1234,7 @@ do_authenticate_user (gboolean        sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 
@@ -1392,8 +1355,6 @@ do_get_contact (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -1430,7 +1391,7 @@ do_get_contact (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*contact = our_op->contact;
@@ -1545,13 +1506,8 @@ e_book_response_get_contact (EBook       *book,
 	op->status = status;
 	op->contact = contact;
 
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 
@@ -1604,8 +1560,6 @@ do_remove_contacts (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -1651,7 +1605,7 @@ do_remove_contacts (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 
@@ -1849,8 +1803,6 @@ do_get_book_view (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -1908,7 +1860,7 @@ do_get_book_view (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*book_view = our_op->view;
@@ -2037,13 +1989,8 @@ e_book_response_get_book_view (EBook       *book,
 
 	bonobo_object_unref(BONOBO_OBJECT(op->listener));
 
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 
@@ -2095,8 +2042,6 @@ do_get_contacts (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -2137,7 +2082,7 @@ do_get_contacts (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*contacts = our_op->list;
@@ -2254,13 +2199,8 @@ e_book_response_get_contacts (EBook       *book,
 	g_list_foreach (op->list, (GFunc)g_object_ref, NULL);
 	op->status = status;
 
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_get_contacts_response, op);
@@ -2310,8 +2250,6 @@ do_get_changes (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -2348,7 +2286,7 @@ do_get_changes (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 		*changes = our_op->list;
@@ -2463,13 +2401,8 @@ e_book_response_get_changes (EBook       *book,
 	op->status = status;
 	op->list = change_list;
 
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_get_changes_response, op);
@@ -2542,13 +2475,8 @@ e_book_response_generic (EBook       *book,
 	}
 
 	op->status = status;
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_generic_response, op);
@@ -2598,15 +2526,11 @@ e_book_cancel (EBook   *book,
 
 	op = e_book_get_current_sync_op (book);
 
-	g_mutex_lock (op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	status = GNOME_Evolution_Addressbook_Book_cancelOperation(book->priv->corba_book, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-
-		g_mutex_unlock (op->mutex);
 
 		CORBA_exception_free (&ev);
 
@@ -2620,9 +2544,7 @@ e_book_cancel (EBook   *book,
 
 	if (status == E_BOOK_ERROR_OK) {
 		op->status = E_BOOK_ERROR_CANCELLED;
-
-		g_cond_signal (op->cond);
-
+		e_flag_set (op->flag);
 		rv = TRUE;
 	}
 	else {
@@ -2630,8 +2552,6 @@ e_book_cancel (EBook   *book,
 			     _("%s: could not cancel"), "e_book_cancel");
 		rv = FALSE;
 	}
-
-	g_mutex_unlock (op->mutex);
 
 	return rv;
 }
@@ -2676,8 +2596,6 @@ do_open (gboolean sync,
 
 	our_op = e_book_new_op (book, sync);
 
-	g_mutex_lock (our_op->mutex);
-
 	g_mutex_unlock (book->priv->mutex);
 
 	CORBA_exception_init (&ev);
@@ -2714,7 +2632,7 @@ do_open (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 
@@ -2842,13 +2760,8 @@ e_book_response_open (EBook       *book,
 	}
 
 	op->status = status;
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_open_response, op);
@@ -2881,8 +2794,6 @@ do_remove (gboolean sync,
 	}
 
 	our_op = e_book_new_op (book, sync);
-
-	g_mutex_lock (our_op->mutex);
 
 	g_mutex_unlock (book->priv->mutex);
 
@@ -2920,7 +2831,7 @@ do_remove (gboolean sync,
 	if (sync) {
 		/* wait for something to happen (both cancellation and a
 		   successful response will notity us via our cv */
-		g_cond_wait (our_op->cond, our_op->mutex);
+		e_flag_wait (our_op->flag);
 
 		status = our_op->status;
 
@@ -3001,13 +2912,8 @@ e_book_response_remove (EBook       *book,
 	}
 
 	op->status = status;
-	if (op->synchronous) {
-		g_mutex_lock (op->mutex);
-
-		g_cond_signal (op->cond);
-
-		g_mutex_unlock (op->mutex);
-	}
+	if (op->synchronous)
+		e_flag_set (op->flag);
 	else {
 		op->book = g_object_ref (book);
 		op->idle_id = g_idle_add (emit_async_generic_response, op);

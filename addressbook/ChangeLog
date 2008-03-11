@@ -1,3 +1,11 @@
+2008-03-10  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #516608
+
+	* libebook/e-book.c: Use an EFlag in EBookOp instead of a
+	GMutex/GCond pair (which is missing a boolean to store the
+	actual condition value, anyway).  Makes the code simpler.
+
 2008-02-28  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #519214
