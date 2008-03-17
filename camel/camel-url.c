@@ -352,7 +352,7 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 		g_string_append (str, "//");
 		if (url->user) {
 			append_url_encoded (str, url->user, ":;@/");
-			if (url->authmech && *url->authmech) {
+			if (url->authmech && *url->authmech && !(flags & CAMEL_URL_HIDE_AUTH)) {
 				g_string_append (str, ";auth=");
 				append_url_encoded (str, url->authmech, ":@/");
 			}

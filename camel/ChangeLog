@@ -1,3 +1,10 @@
+2008-03-17  Christian Kellner  <gicmo@gnome.org>
+
+	** Fix for bug #341004
+
+	* camel-url.c: (camel_url_to_string): Hide the auth mech when
+	CAMEL_URL_HIDE_AUTH is specified.
+
 2008-02-20  Jeff Cai<jeff.cai@sun.com>
 
 	** Fix for bug #517190
