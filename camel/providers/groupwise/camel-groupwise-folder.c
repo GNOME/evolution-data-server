@@ -167,7 +167,8 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
 
 	cnc = cnc_lookup (priv);
-	status = e_gw_connection_get_item (cnc, container_id, uid, "peek default distribution recipient message attachments subject notification created recipientStatus status", &item);
+	
+	status = e_gw_connection_get_item (cnc, container_id, uid, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size recurrenceKey", &item);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_free (container_id);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
