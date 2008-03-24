@@ -1,3 +1,10 @@
+2008-03-24  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #523023
+
+	* storage/exchange-hierarchy-webdav.c (scan_subtree):
+	Fix a severe EFolder reference count leak.
+
 2008-02-25  Matthew Barnes  <mbarnes@redhat.com>
 
 	* lib/e2k-kerberos.c (get_init_cred):

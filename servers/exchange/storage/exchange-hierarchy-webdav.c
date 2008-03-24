@@ -756,10 +756,10 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 		if (hwd->priv->deep_searchable &&
 		    e_folder_exchange_get_has_subfolders (folder)) {
 			e_folder_exchange_set_has_subfolders (folder, FALSE);
-			subtrees = g_slist_prepend (subtrees, folder);
+			subtrees = g_slist_prepend (subtrees, g_object_ref (folder));
 		}
 		exchange_hierarchy_new_folder (hier, folder);
-		//g_object_unref (folder);
+		g_object_unref (folder);
 
 		/* Check the folder size here */
 		if (hier->type != EXCHANGE_HIERARCHY_PUBLIC) {
@@ -788,11 +788,16 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, int mode)
 	while (subtrees) {
 		folder = subtrees->data;
 		subtrees = g_slist_remove (subtrees, folder);
+
 		/* Dont scan the subtree for deleteditems folder */
 		int_uri = e_folder_exchange_get_internal_uri (folder);
-		if (int_uri && deleted_items_uri && !strcmp (int_uri, deleted_items_uri))
+		if (int_uri && deleted_items_uri && !strcmp (int_uri, deleted_items_uri)) {
+			g_object_unref (folder);
 			continue;
+		}
+
 		scan_subtree (hier, folder, mode);
+		g_object_unref (folder);
 	}
 
 	e_folder_exchange_set_rescan_tree (parent, FALSE);
