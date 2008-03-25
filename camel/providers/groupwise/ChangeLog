@@ -1,3 +1,12 @@
+2008-03-25  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-store.c: (groupwise_get_folder),
+	(store_refresh_refresh), (groupwise_get_folder_info),
+	(groupwise_delete_folder), (groupwise_rename_folder),
+	(groupwise_get_trash):
+	Avoid erroneous casting and use properly cast variables.
+	Code cleanup.
+
 2008-03-20  Sankar P  <psankar@novell.com>
 
 	** Fix for bug #523528 and bnc #372383
