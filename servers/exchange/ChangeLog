@@ -1,3 +1,10 @@
+2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Added configurable Proxy settings for Evolution.
+
+	* lib/e2k-context.c: (proxy_settings_changed), (init), (dispose),
+	(e2k_context_set_auth):
+
 2008-03-24  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #523023

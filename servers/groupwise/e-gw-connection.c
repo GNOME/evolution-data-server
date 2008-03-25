@@ -27,6 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <glib/gi18n-lib.h>
+#include <libedataserver/e-proxy.h>
 #include <libsoup/soup.h>
 #include "soup-soap-message.h"
 #include "e-gw-connection.h"
@@ -36,6 +37,9 @@
 
 /* For soup sync session timeout */
 #define GW_SOUP_SESSION_TIMEOUT 30
+
+/* Soup session proxy-uri property */
+#define SOUP_SESSION_PROXY_URI "proxy-uri"
 
 static GObjectClass *parent_class = NULL;
 static GHashTable *loaded_connections_permissions = NULL;
@@ -57,7 +61,36 @@ struct _EGwConnectionPrivate {
 	GList *book_list;
 	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
+	EProxy *proxy;
 };
+
+static void
+update_soup_session_proxy_settings (EProxy *proxy, SoupSession* session, 
+				    const char* uri)
+{
+	SoupURI *proxy_uri = NULL;
+	
+	if (!session || !uri || !proxy)
+		return;
+	
+	if (e_proxy_require_proxy_for_uri (proxy, uri))
+		proxy_uri = e_proxy_peek_uri (proxy);
+
+	g_object_set (session, SOUP_SESSION_PROXY_URI,
+		      proxy_uri, NULL);	
+}
+
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	EGwConnection* conn = (EGwConnection *)user_data;
+	if (!conn || !conn->priv || !conn->priv->soup_session)
+		return;
+
+	update_soup_session_proxy_settings (proxy, 
+					    conn->priv->soup_session,
+					    conn->priv->uri);
+}
 
 static EGwConnectionStatus
 reauthenticate (EGwConnection *cnc)
@@ -342,6 +375,11 @@ e_gw_connection_dispose (GObject *object)
 			g_free (priv->server_time) ;
 			priv->server_time = NULL ;
 		}
+
+		if (priv->proxy) {
+			g_object_unref (priv->proxy);
+			priv->proxy = NULL;
+		}
 	}
 
 	if (parent_class->dispose)
@@ -392,6 +430,11 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	*/
 	if (g_getenv ("SOUP_SESSION_TIMEOUT"))
 		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
+
+        /* Initialize proxy settings */
+        priv->proxy = e_proxy_new ();
+        e_proxy_setup_proxy (priv->proxy);
+        g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), cnc);
 
 	/* create the SoupSession for this connection */
 	priv->soup_session = soup_session_sync_new_with_options (SOUP_SESSION_TIMEOUT, timeout, NULL);
@@ -490,6 +533,12 @@ e_gw_connection_new_with_error_handler (const char *uri, const char *username, c
 
 	/* not found, so create a new connection */
 	cnc = g_object_new (E_TYPE_GW_CONNECTION, NULL);
+
+	/* Set proxy details for the Soup session before any 
+	   communication. */
+	update_soup_session_proxy_settings (cnc->priv->proxy, 
+					    cnc->priv->soup_session,
+					    uri);
 
 	msg = form_login_request (uri, username, password);
 

@@ -7,7 +7,8 @@ INCLUDES =								\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
 	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
-	$(E_DATA_SERVER_CFLAGS)
+	$(E_DATA_SERVER_CFLAGS)						\
+	$(SOUP_CFLAGS)
 
 lib_LTLIBRARIES = libedataserver-1.2.la
 noinst_PROGRAMS = test-source-list
@@ -28,6 +29,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-list-iterator.c		\
 	e-memory.c			\
 	e-msgport.c			\
+	e-proxy.c			\
 	e-sexp.c			\
 	e-source-group.c		\
 	e-source-list.c			\
@@ -46,7 +48,8 @@ libedataserver_1_2_la_LIBADD = 				\
 	$(E_DATA_SERVER_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(DB_LIBS)					\
-	$(SOCKET_LIBS)
+	$(SOCKET_LIBS)					\
+	$(SOUP_LIBS)
 
 libedataserver_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED)
@@ -69,6 +72,7 @@ libedataserverinclude_HEADERS =		\
 	e-list-iterator.h		\
 	e-memory.h			\
 	e-msgport.h			\
+	e-proxy.h			\
 	e-sexp.h			\
 	e-source-group.h		\
 	e-source-list.h			\

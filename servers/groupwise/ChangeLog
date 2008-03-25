@@ -1,3 +1,12 @@
+2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Added configurable Proxy settings for Evolution.
+
+	* Makefile.am:
+	* e-gw-connection.c: (update_soup_session_proxy_settings),
+	(proxy_settings_changed), (e_gw_connection_dispose),
+	(e_gw_connection_init), (e_gw_connection_new_with_error_handler):
+
 2008-02-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for BNC bug #359944

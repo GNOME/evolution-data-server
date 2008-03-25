@@ -48,6 +48,7 @@
 #include "e2k-utils.h"
 #include "e2k-xml-utils.h"
 
+#include <libedataserver/e-proxy.h>
 #include <libsoup/soup.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -98,6 +99,7 @@ struct _E2kContextPrivate {
 	/* Forms-based authentication */
 	char *cookie;
 	gboolean cookie_verified;
+	EProxy* proxy;
 };
 
 /* For operations with progress */
@@ -106,6 +108,9 @@ struct _E2kContextPrivate {
 
 /* For soup sync session timeout */
 #define E2K_SOUP_SESSION_TIMEOUT 30
+
+/* Soup session proxy-uri property */
+#define SOUP_SESSION_PROXY_URI "proxy-uri"
 
 #ifdef E2K_DEBUG
 char *e2k_debug;
@@ -124,7 +129,32 @@ static void unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_l
 static gboolean do_notification (GIOChannel *source, GIOCondition condition, gpointer data);
 
 static void setup_message (SoupSession *session, SoupMessage *msg, SoupSocket *socket, gpointer user_data);
+static void proxy_settings_changed (EProxy *proxy, gpointer user_data);
 
+
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+	E2kContext* ctx = (E2kContext *)user_data;
+	if (!ctx || !ctx->priv || 
+	    (!ctx->priv->session && !ctx->priv->async_session) ||
+	    (!ctx->priv->owa_uri))
+		return;
+
+	if (!e_proxy_require_proxy_for_uri (proxy, ctx->priv->owa_uri))
+		proxy_uri = NULL;
+	else
+		proxy_uri = e_proxy_peek_uri (proxy);
+
+	if (ctx->priv->session)
+		g_object_set (ctx->priv->session, SOUP_SESSION_PROXY_URI,
+			      proxy_uri, NULL);
+	if (ctx->priv->async_session)
+		g_object_set (ctx->priv->async_session, SOUP_SESSION_PROXY_URI,
+			      proxy_uri, NULL);
+}
+ 
 static void
 init (GObject *object)
 {
@@ -135,6 +165,9 @@ init (GObject *object)
 		g_hash_table_new (g_str_hash, g_str_equal);
 	ctx->priv->subscriptions_by_uri =
 		g_hash_table_new (g_str_hash, g_str_equal);
+	ctx->priv->proxy = e_proxy_new ();
+	e_proxy_setup_proxy (ctx->priv->proxy);
+	g_signal_connect (ctx->priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), ctx);
 }
 
 static void
@@ -182,8 +215,13 @@ dispose (GObject *object)
 		g_free (ctx->priv->cookie);
 		g_free (ctx->priv->notification_uri);
 
+		if (ctx->priv->proxy) {
+			g_object_unref (ctx->priv->proxy);
+			ctx->priv->proxy = NULL;
+		}
 		g_free (ctx->priv);
 		ctx->priv = NULL;
+		
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -361,6 +399,7 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		      const char *password)
 {
 	guint timeout = E2K_SOUP_SESSION_TIMEOUT;
+	SoupURI* uri = NULL;
 #ifdef E2K_DEBUG
 	SoupLogger *logger;
 	SoupLoggerLogLevel level;
@@ -395,9 +434,14 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 	if (g_getenv ("SOUP_SESSION_TIMEOUT"))
 		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
 
+	/* Check do we need a proxy to contact the server? */
+        if (e_proxy_require_proxy_for_uri (ctx->priv->proxy, ctx->priv->owa_uri))
+                uri = e_proxy_peek_uri (ctx->priv->proxy);
+
 	ctx->priv->session = soup_session_sync_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),
 		SOUP_SESSION_TIMEOUT, timeout,
+		SOUP_SESSION_PROXY_URI, uri,
 		NULL);
 	g_signal_connect (ctx->priv->session, "authenticate",
 			  G_CALLBACK (session_authenticate), ctx);
@@ -406,7 +450,7 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 
 	ctx->priv->async_session = soup_session_async_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),
-		NULL);
+		SOUP_SESSION_PROXY_URI, uri, NULL);
 	g_signal_connect (ctx->priv->async_session, "authenticate",
 			  G_CALLBACK (session_authenticate), ctx);
 	g_signal_connect (ctx->priv->async_session, "request_started",

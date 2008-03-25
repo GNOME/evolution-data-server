@@ -15,9 +15,10 @@ create_account_LDADD = 						\
 	$(E_DATA_SERVER_LIBS)
 
 soap_test_SOURCES = soap-test.c
-soap_test_LDADD = 					\
-	$(SOUP_LIBS)					\
-	libegroupwise-1.2.la				\
+soap_test_LDADD = 						\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(SOUP_LIBS)						\
+	libegroupwise-1.2.la					\
 	$(E_DATA_SERVER_LIBS) 
 
 build-timestamp.h : $(top_builddir)/config.h

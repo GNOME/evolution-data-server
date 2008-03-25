@@ -1,3 +1,17 @@
+2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Added configurable Proxy settings for Evolution.
+
+	* libedataserver/Makefile.am:
+	* libedataserver/e-proxy.c: (ep_free_proxy_host_addr),
+	(e_proxy_class_init), (e_proxy_init), (e_proxy_dispose),
+	(e_proxy_get_type), (ep_need_proxy), (ep_manipulate_ipv4),
+	(ipv6_network_addr), (ep_manipulate_ipv6), (ep_parse_ignore_host),
+	(ep_set_proxy), (ep_setting_changed), (e_proxy_new),
+	(e_proxy_setup_proxy), (e_proxy_peek_uri),
+	(e_proxy_require_proxy_for_uri):
+	* libedataserver/e-proxy.h:
+
 2008-03-10  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.22.0 release.
