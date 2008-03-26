@@ -1,3 +1,10 @@
+2008-03-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	** Fix for bug #522389
+
+	* e-gw-connection.c: Use correct type for g_base64_decode to fix
+	stack corruption on x86_64.
+
 2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Added configurable Proxy settings for Evolution.
