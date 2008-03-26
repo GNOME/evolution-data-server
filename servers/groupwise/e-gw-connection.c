@@ -2645,7 +2645,7 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
 	}
 
 	if (buffer && buf_length) {
-		int len = atoi (buf_length) ;
+		gsize len = atoi (buf_length) ;
 		*attachment = g_base64_decode (buffer,&len) ;
 		*attach_length = len ;
 	}
