@@ -3572,7 +3572,7 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
 
         e_cal_component_get_recurid (comp, &range);
         if (!range.datetime.value)
-                return "0";
+                return g_strdup ("0");
         tt = *range.datetime.value;
         e_cal_component_free_range (&range);
 

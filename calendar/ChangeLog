@@ -1,5 +1,12 @@
 2008-03-27  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #523533
+
+	* libecal/e-cal-component.c: (e_cal_component_get_recurid_as_string):
+	Always return NULL or new allocated string.
+
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #523541
 
 	* libedata-cal/e-data-cal-view.c: (uncache_with_id_cb):
