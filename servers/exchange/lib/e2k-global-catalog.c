@@ -307,17 +307,19 @@ static int
 connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 {
 	int ldap_error;
-#ifndef HAVE_LDAP_NTLM_BIND
 	char *nt_name;
 #ifdef G_OS_WIN32
 	SEC_WINNT_AUTH_IDENTITY_W auth;
 #endif
-#endif
 
 	/* authenticate */
 #ifdef HAVE_LDAP_NTLM_BIND
-	ldap_error = ntlm_bind (gc, op, ldap);
-#else
+	if (ntlm_bind (gc, op, ldap) == LDAP_SUCCESS) {
+		E2K_GC_DEBUG_MSG(("GC: connected via NTLM\n\n"));
+		return LDAP_SUCCESS;
+	}
+#endif
+
 	nt_name = gc->priv->nt_domain ?
 		g_strdup_printf ("%s\\%s", gc->priv->nt_domain, gc->priv->user) :
 		g_strdup (gc->priv->user);
@@ -339,7 +341,7 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	g_free (auth.User);
 #endif
 	g_free (nt_name);
-#endif
+
 	if (ldap_error != LDAP_SUCCESS)
 		g_warning ("LDAP authentication failed (0x%02x)", ldap_error);
 	else
