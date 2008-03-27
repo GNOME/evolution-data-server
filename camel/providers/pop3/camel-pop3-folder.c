@@ -356,6 +356,49 @@ pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	camel_pop3_store_expunge (pop3_store, ex);
 }
 
+static gboolean
+pop3_get_message_time_from_cache (CamelFolder *folder, const char *uid, time_t *message_time)
+{
+	CamelPOP3Store *pop3_store;
+	CamelStream *stream = NULL;
+	char buffer[1];
+	gboolean res = FALSE;
+
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (message_time != NULL, FALSE);
+
+	pop3_store = CAMEL_POP3_STORE (folder->parent_store);
+
+	g_return_val_if_fail (pop3_store->cache != NULL, FALSE);
+
+	if ((stream = camel_data_cache_get (pop3_store->cache, "cache", uid, NULL)) != NULL
+	    && camel_stream_read (stream, buffer, 1) == 1
+	    && buffer[0] == '#') {
+		CamelMimeMessage *message;
+
+		camel_object_ref ((CamelObject *)stream);
+
+		message = camel_mime_message_new ();
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream) == -1) {
+			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
+			camel_object_unref ((CamelObject *)message);
+			message = NULL;
+		}
+
+		if (message) {
+			res = TRUE;
+			*message_time = message->date + message->date_offset;
+
+			camel_object_unref ((CamelObject *)message);
+		}
+
+		camel_object_unref ((CamelObject *)stream);
+	}
+
+	return res;
+}
+
 int
 camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *ex)
 {
@@ -363,8 +406,7 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	CamelPOP3FolderInfo *fi;
 	int i;
 	CamelPOP3Store *pop3_store;
-	time_t temp;
-	CamelMessageInfo *minfo;
+	time_t temp, message_time;
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);
@@ -374,10 +416,8 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		fi = pop3_folder->uids->pdata[i];
 
-		minfo = camel_folder_get_message_info (folder, fi->uid);
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
-		if(minfo) {
-			time_t message_time = ((CamelMessageInfoBase *)minfo)->date_received;
+		if (pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
 			double time_diff = difftime(temp,message_time);
 			int day_lag = time_diff/(60*60*24);
 
@@ -407,8 +447,6 @@ camel_pop3_delete_old(CamelFolder *folder, int days_to_delete,	CamelException *e
 					camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
 				}
 			}
-			/* free message - not used anymore */
-			camel_folder_free_message_info (folder, minfo);
 		}
 	}
 
