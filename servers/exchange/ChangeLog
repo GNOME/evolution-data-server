@@ -1,3 +1,11 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #500389
+
+	* lib/e2k-global-catalog.c (connect_ldap):
+	Fall back to simple binds if the global catalog server
+	does not support NTLM binds.
+
 2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Added configurable Proxy settings for Evolution.
