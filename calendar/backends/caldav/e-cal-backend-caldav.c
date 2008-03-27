@@ -1937,7 +1937,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 	struct icaltimetype       now;
 	ECalComponentId          *id;
 	const char               *uid;
-	const char               *rid;
+	char                     *rid;
 	char                     *ostr;
 	char                     *oostr;
 
@@ -2083,6 +2083,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 	g_object_unref (ecomp);
 	g_free (ostr);
 	g_free (oostr);
+	g_free (rid);
 
 	if (ccomp) {
 		g_object_unref (ccomp);

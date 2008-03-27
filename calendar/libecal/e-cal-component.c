@@ -1433,7 +1433,7 @@ e_cal_component_get_id (ECalComponent *comp)
 
 	id = g_new0 (ECalComponentId, 1);
 	id->uid = g_strdup (icalproperty_get_uid (priv->uid));
-	id->rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+	id->rid = e_cal_component_get_recurid_as_string (comp);
 
 	return id;
 }

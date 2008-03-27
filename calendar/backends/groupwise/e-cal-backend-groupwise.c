@@ -419,8 +419,8 @@ get_deltas (gpointer handle)
 	for (; item_list != NULL; item_list = g_list_next(item_list)) {
 		EGwItem *item = NULL;
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
-		char *cache_comp_str = NULL, *modif_comp_str;
-		const char *uid, *rid = NULL;
+		char *cache_comp_str = NULL, *modif_comp_str, *rid = NULL;
+		const char *uid;
 		int r_key;
 
 		item = E_GW_ITEM(item_list->data);
@@ -442,6 +442,7 @@ get_deltas (gpointer handle)
 		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, modif_comp_str);
 		g_free (modif_comp_str);
 		g_free (cache_comp_str);
+		g_free (rid);
 		cache_comp_str = NULL;
 		e_cal_backend_cache_put_component (cache, modified_comp);
 
@@ -2092,7 +2093,8 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	ECalComponent *comp, *cache_comp = NULL;
 	EGwConnectionStatus status;
 	EGwItem *item, *cache_item;
-	const char *uid = NULL, *rid = NULL;
+	const char *uid = NULL;
+	char *rid = NULL;
 
 	*old_object = NULL;
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
@@ -2123,6 +2125,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
 		if (!cache_comp) {
 			g_message ("CRITICAL : Could not find the object in cache");
+			g_free (rid);
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
@@ -2144,6 +2147,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_object_unref (comp);
 				g_object_unref (cache_comp);
+				g_free (rid);
 				return GNOME_Evolution_Calendar_OtherError;
 			}
 
@@ -2169,6 +2173,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_object_unref (comp);
 					g_object_unref (cache_comp);
+					g_free (rid);
 					return GNOME_Evolution_Calendar_OtherError;
 				}
 				e_cal_backend_cache_put_component (priv->cache, comp);
@@ -2187,6 +2192,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_object_unref (comp);
 			g_object_unref (cache_comp);
+			g_free (rid);
 			return GNOME_Evolution_Calendar_OtherError;
 		}
 		/* if successful, update the cache */
@@ -2203,6 +2209,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 	*old_object = e_cal_component_get_as_string (cache_comp);
 	g_object_unref (cache_comp);
 	g_object_unref (comp);
+	g_free (rid);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2637,7 +2644,8 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 	ECalComponent *comp, *found_comp = NULL;
 	ECalBackendGroupwisePrivate *priv;
 	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_OtherError;
-	const char *uid = NULL, *rid = NULL;
+	const char *uid = NULL;
+	char *rid = NULL;
 
 	priv = cbgw->priv;
 
@@ -2647,6 +2655,8 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 
 	e_cal_component_get_uid (comp, (const char **) &uid);
 	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	g_free (rid);
+	rid = NULL;
 
 	if (!found_comp) {
 		g_object_unref (comp);

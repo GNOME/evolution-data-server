@@ -1,5 +1,23 @@
 2008-03-27  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #523541
+
+	* libedata-cal/e-data-cal-view.c: (uncache_with_id_cb):
+	* backends/file/e-cal-backend-file.c: (add_component),
+	(e_cal_backend_file_modify_object),
+	(e_cal_backend_file_receive_objects):
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_modify_object), (send_object):
+	* backends/caldav/e-cal-backend-caldav.c: (process_object):
+	* libecal/e-cal.c: (process_detached_instances),
+	(e_cal_generate_instances_for_object):
+	* libecal/e-cal-component.c: (e_cal_component_get_id):
+	Do not leak memory returned by e_cal_component_get_recurid_as_string.
+	* backends/google/e-cal-backend-google.c: (send_object):
+	Do not ask for rid when not using it.
+
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #523126
 
 	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):

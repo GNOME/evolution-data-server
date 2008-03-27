@@ -136,10 +136,12 @@ uncache_with_id_cb (gpointer key, gpointer value, gpointer user_data)
 		e_cal_component_get_uid (comp, &this_uid);
 		if (this_uid && !strcmp (id->uid, this_uid)) {
 			if (id->rid && *id->rid) {
-				const char *rid = e_cal_component_get_recurid_as_string (comp);
+				char *rid = e_cal_component_get_recurid_as_string (comp);
 
 				if (rid && !strcmp (id->rid, rid))
 					remove = TRUE;
+
+				g_free (rid);
 			} else
 				remove = TRUE;
 		}

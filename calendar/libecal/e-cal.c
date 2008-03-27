@@ -3424,7 +3424,7 @@ process_detached_instances (GList *instances, GList *detached_instances)
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 			if (strcmp (uid, instance_uid) == 0) {
-				const char *i_rid = NULL, *d_rid = NULL;
+				char *i_rid = NULL, *d_rid = NULL;
 
 				i_rid = e_cal_component_get_recurid_as_string (ci->comp);
 				d_rid = e_cal_component_get_recurid_as_string (cid->comp);
@@ -3452,6 +3452,8 @@ process_detached_instances (GList *instances, GList *detached_instances)
 						       d_rid);
 
 						e_cal_component_free_datetime (&instance_recur_id.datetime);
+						g_free (i_rid);
+						g_free (d_rid);
 						continue;
 					}
 					cmp = icaltime_compare (*instance_recur_id.datetime.value,
@@ -3471,6 +3473,8 @@ process_detached_instances (GList *instances, GList *detached_instances)
 						ci->comp = comp;
 					}
 				}
+				g_free (i_rid);
+				g_free (d_rid);
 			}
 			e_cal_component_free_datetime (&instance_recur_id.datetime);
 		}
@@ -3748,8 +3752,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	}
 
 	e_cal_component_get_uid (comp, &uid);
-	/* string might be freed at any time, keep a copy */
-	rid = g_strdup (e_cal_component_get_recurid_as_string (comp));
+	rid = e_cal_component_get_recurid_as_string (comp);
 
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
@@ -3768,7 +3771,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	result = TRUE;
 	while (instances != NULL) {
 		struct comp_instance *ci;
-		const char *instance_rid;
+		char *instance_rid = NULL;
 
 		ci = instances->data;
 
@@ -3786,6 +3789,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 		instances = g_list_remove (instances, ci);
 		g_object_unref (ci->comp);
 		g_free (ci);
+		g_free (instance_rid);
 	}
 
 	/* clean up */

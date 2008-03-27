@@ -697,12 +697,11 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 	ECalComponent *comp, *found_comp = NULL;
 	ECalBackendGooglePrivate *priv;
 	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_OtherError;
-	const char *uid, *rid;
+	const char *uid;
 
 	priv = cbgo->priv;
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));	
-	rid = e_cal_component_get_recurid_as_string (comp);	
 
 	e_cal_component_get_uid (comp, (const char **)&uid);
 	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
