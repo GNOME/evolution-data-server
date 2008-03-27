@@ -1,3 +1,11 @@
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #520526
+
+	* camel-imap-folder.c: (imap_refresh_info), (imap_rescan),
+	(imap_update_summary):
+	Stop work as soon as we know application is going to exit.
+
 2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-imap-store.c (connect_to_server): Fix for some
