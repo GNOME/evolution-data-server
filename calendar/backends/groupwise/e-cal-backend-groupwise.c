@@ -539,7 +539,7 @@ get_deltas (gpointer handle)
 
 		if (calid->recur_key && calid->ical_id) {
 			const char *rid = NULL;
-			char *temp;
+			char *temp = NULL;
 			icaltimetype tt = icaltime_from_string (calid->ical_id);
 			if (!tt.is_date) {
 				tt = icaltime_convert_to_zone (tt, priv->default_zone);
