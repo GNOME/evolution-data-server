@@ -46,38 +46,23 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-passwords.h"
-#include "libedataserver/e-msgport.h"
+#include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
 
 #ifdef WITH_GNOME_KEYRING
 #include <gnome-keyring.h>
 #endif
 
-#ifndef ENABLE_THREADS
-#define ENABLE_THREADS (1)
-#endif
-
-#ifdef ENABLE_THREADS
-#include <pthread.h>
-
-static pthread_t main_thread;
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-#define LOCK() pthread_mutex_lock (&lock)
-#define UNLOCK() pthread_mutex_unlock (&lock)
-#else
-#define LOCK()
-#define UNLOCK()
-#endif
-
 #define d(x)
 
-struct _EPassMsg {
-	EMsg msg;
+typedef struct _EPassMsg EPassMsg;
 
-	void (*dispatch) (struct _EPassMsg *);
+struct _EPassMsg {
+	void (*dispatch) (EPassMsg *);
+	EFlag *done;
 
 	/* input */
-	struct _GtkWindow *parent;
+	GtkWindow *parent;
 	const gchar *component;
 	const gchar *key;
 	const gchar *title;
@@ -97,11 +82,11 @@ struct _EPassMsg {
 				 * dispatch functions from others */
 };
 
-typedef struct _EPassMsg EPassMsg;
-
+G_LOCK_DEFINE_STATIC (passwords);
+static GThread *main_thread = NULL;
 static GHashTable *password_cache = NULL;
 static GtkDialog *password_dialog = NULL;
-static EDList request_list = E_DLIST_INITIALISER (request_list);
+static GQueue message_queue = G_QUEUE_INIT;
 static gint idle_id;
 static gint ep_online_state = TRUE;
 
@@ -397,17 +382,17 @@ ep_idle_dispatch (void *data)
 
 	/* As soon as a password window is up we stop; it will
 	   re-invoke us when it has been closed down */
-	LOCK ();
-	while (password_dialog == NULL && (msg = (EPassMsg *) e_dlist_remhead (&request_list))) {
-		UNLOCK ();
+	G_LOCK (passwords);
+	while (password_dialog == NULL && (msg = g_queue_pop_head (&message_queue)) != NULL) {
+		G_UNLOCK (passwords);
 
 		msg->dispatch (msg);
 
-		LOCK ();
+		G_LOCK (passwords);
 	}
 
 	idle_id = 0;
-	UNLOCK ();
+	G_UNLOCK (passwords);
 
 	return FALSE;
 }
@@ -421,19 +406,16 @@ ep_msg_new (void (*dispatch) (EPassMsg *))
 
 	msg = g_malloc0 (sizeof (*msg));
 	msg->dispatch = dispatch;
-	msg->msg.reply_port = e_msgport_new ();
-#ifdef ENABLE_THREADS
-	msg->ismain = pthread_equal (pthread_self (), main_thread);
-#else
-	msg->ismain = TRUE;
-#endif
+	msg->done = e_flag_new ();
+	msg->ismain = (g_thread_self () == main_thread);
+
 	return msg;
 }
 
 static void
 ep_msg_free (EPassMsg *msg)
 {
-	e_msgport_destroy (msg->msg.reply_port);
+	e_flag_free (msg->done);
 	g_free (msg->password);
 	g_free (msg);
 }
@@ -443,28 +425,23 @@ ep_msg_send (EPassMsg *msg)
 {
 	gint needidle = 0;
 
-	LOCK ();
-	e_dlist_addtail (&request_list, (EDListNode *) &msg->msg);
+	G_LOCK (passwords);
+	g_queue_push_tail (&message_queue, msg);
 	if (!idle_id) {
 		if (!msg->ismain)
 			idle_id = g_idle_add (ep_idle_dispatch, NULL);
 		else
 			needidle = 1;
 	}
-	UNLOCK ();
+	G_UNLOCK (passwords);
 
 	if (msg->ismain) {
-		EPassMsg *m;
-
 		if (needidle)
 			ep_idle_dispatch (NULL);
-		while ((m = (EPassMsg *) e_msgport_get (msg->msg.reply_port)) == NULL)
+		while (!e_flag_is_set (msg->done))
 			g_main_context_iteration (NULL, TRUE);
-		g_assert (m == msg);
-	} else {
-		EMsg *reply_msg = e_msgport_wait (msg->msg.reply_port);
-		g_assert (reply_msg == &msg->msg);
-	}
+	} else
+		e_flag_wait (msg->done);
 }
 
 /* the functions that actually do the work */
@@ -522,7 +499,7 @@ ep_clear_passwords (EPassMsg *msg)
 #endif
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -586,7 +563,7 @@ ep_forget_passwords (EPassMsg *msg)
 #endif
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -651,7 +628,7 @@ ep_remember_password (EPassMsg *msg)
 #endif
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -723,7 +700,7 @@ ep_forget_password (EPassMsg *msg)
 #endif
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 #ifdef WITH_GNOME_KEYRING
@@ -812,7 +789,7 @@ ep_get_password (EPassMsg *msg)
 		ep_get_password_keyfile (msg);
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 static void
@@ -823,7 +800,7 @@ ep_add_password (EPassMsg *msg)
 		g_strdup (msg->oldpass));
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 }
 
 static void ep_ask_password (EPassMsg *msg);
@@ -833,8 +810,7 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 {
 	EPassMsg *msg = data;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
-	EDList pending = E_DLIST_INITIALISER (pending);
-	EPassMsg *mw, *mn;
+	GList *iter, *trash = NULL;
 
 	if (response == GTK_RESPONSE_OK) {
 		msg->password = g_strdup (gtk_entry_get_text ((GtkEntry *)msg->entry));
@@ -864,26 +840,34 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 	 * operations on this specific password, and return the same
 	 * result or ignore other operations */
 
-	LOCK ();
-	mw = (EPassMsg *)request_list.head;
-	mn = (EPassMsg *)mw->msg.ln.next;
-	while (mn) {
-		if ((mw->dispatch == ep_forget_password
-		     || mw->dispatch == ep_get_password
-		     || mw->dispatch == ep_ask_password)
-		    && (strcmp (mw->component, msg->component) == 0
-			&& strcmp (mw->key, msg->key) == 0)) {
-			e_dlist_remove ((EDListNode *)mw);
-			mw->password = g_strdup (msg->password);
-			e_msgport_reply (&mw->msg);
+	G_LOCK (passwords);
+	for (iter = g_queue_peek_head (&message_queue); iter != NULL; iter = iter->next) {
+		EPassMsg *pending = iter->data;
+
+		if ((pending->dispatch == ep_forget_password
+		     || pending->dispatch == ep_get_password
+		     || pending->dispatch == ep_ask_password)
+		    && (strcmp (pending->component, msg->component) == 0
+			&& strcmp (pending->key, msg->key) == 0)) {
+
+			/* Satisfy the pending operation. */
+			pending->password = g_strdup (msg->password);
+			e_flag_set (pending->done);
+
+			/* Mark the queue node for deletion. */
+			trash = g_list_prepend (trash, iter);
 		}
-		mw = mn;
-		mn = (EPassMsg *)mn->msg.ln.next;
 	}
-	UNLOCK ();
+
+	/* Expunge the message queue. */
+	for (iter = trash; iter != NULL; iter = iter->next)
+		g_queue_delete_link (&message_queue, iter->data);
+	g_list_free (trash);
+
+	G_UNLOCK (passwords);
 
 	if (!msg->noreply)
-		e_msgport_reply (&msg->msg);
+		e_flag_set (msg->done);
 
 	ep_idle_dispatch (NULL);
 }
@@ -1026,16 +1010,14 @@ ep_ask_password (EPassMsg *msg)
 void
 e_passwords_init (void)
 {
-	LOCK ();
+	G_LOCK (passwords);
 
 	if (password_cache == NULL) {
 		password_cache = g_hash_table_new_full (
 			g_str_hash, g_str_equal,
 			(GDestroyNotify) g_free,
 			(GDestroyNotify) g_free);
-#ifdef ENABLE_THREADS
-		main_thread = pthread_self ();
-#endif
+		main_thread = g_thread_self ();
 
 #ifdef WITH_GNOME_KEYRING
 		if (!gnome_keyring_is_available ()) {
@@ -1048,7 +1030,7 @@ e_passwords_init (void)
 #endif
 	}
 
-	UNLOCK ();
+	G_UNLOCK (passwords);
 }
 
 /**
@@ -1062,10 +1044,10 @@ e_passwords_cancel (void)
 {
 	EPassMsg *msg;
 
-	LOCK ();
-	while ((msg = (EPassMsg *)e_dlist_remhead (&request_list)))
-		e_msgport_reply (&msg->msg);
-	UNLOCK ();
+	G_LOCK (passwords);
+	while ((msg = g_queue_pop_head (&message_queue)) != NULL)
+		e_flag_set (msg->done);
+	G_UNLOCK (passwords);
 
 	if (password_dialog)
 		gtk_dialog_response (password_dialog,GTK_RESPONSE_CANCEL);
