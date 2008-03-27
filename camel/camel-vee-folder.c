@@ -29,8 +29,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #if defined (DOEPOOLV) || defined (DOESTRV)
 #include <libedataserver/e-memory.h>
 #endif
@@ -377,21 +375,27 @@ camel_vee_folder_set_folders(CamelVeeFolder *vf, GList *folders)
 void
 camel_vee_folder_hash_folder(CamelFolder *folder, char buffer[8])
 {
-	MD5Context ctx;
-	unsigned char digest[16];
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
 	int state = 0, save = 0;
 	char *tmp;
 	int i;
 
-	md5_init(&ctx);
-	tmp = camel_service_get_url((CamelService *)folder->parent_store);
-	md5_update(&ctx, (unsigned char*) tmp, strlen(tmp));
-	g_free(tmp);
-	md5_update(&ctx, (unsigned char*)folder->full_name, strlen(folder->full_name));
-	md5_final(&ctx, digest);
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
-	g_base64_encode_step(digest, 6, FALSE, buffer, &state, &save);
-	g_base64_encode_close(FALSE, buffer, &state, &save);
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	tmp = camel_service_get_url((CamelService *)folder->parent_store);
+	g_checksum_update (checksum, (guchar *) tmp, -1);
+	g_free (tmp);
+	tmp = folder->full_name;
+	g_checksum_update (checksum, (guchar *) tmp, -1);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	g_base64_encode_step (digest, 6, FALSE, buffer, &state, &save);
+	g_base64_encode_close (FALSE, buffer, &state, &save);
 
 	for (i=0;i<8;i++) {
 		if (buffer[i] == '+')

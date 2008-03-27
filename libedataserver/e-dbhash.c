@@ -13,7 +13,6 @@
 #include <string.h>
 #include <fcntl.h>
 #include "db.h"
-#include "md5-utils.h"
 
 struct _EDbHashPrivate
 {
@@ -59,7 +58,7 @@ string_to_dbt(const char *str, DBT *dbt)
 }
 
 static void
-md5_to_dbt(const guchar str[16], DBT *dbt)
+md5_to_dbt(const guint8 str[16], DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (void*)str;
@@ -72,7 +71,9 @@ e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data)
 	DB *db;
 	DBT dkey;
 	DBT ddata;
-	guchar local_hash[16];
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
 
 	g_return_if_fail (edbh != NULL);
 	g_return_if_fail (edbh->priv != NULL);
@@ -80,14 +81,22 @@ e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data)
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (data != NULL);
 
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
 	db = edbh->priv->db;
 
 	/* Key dbt */
 	string_to_dbt (key, &dkey);
 
+	/* Compute MD5 checksum */
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (guchar *) data, -1);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
 	/* Data dbt */
-	md5_get_digest (data, strlen (data), local_hash);
-	md5_to_dbt (local_hash, &ddata);
+	md5_to_dbt (digest, &ddata);
 
 	/* Add to database */
 	db->put (db, NULL, &dkey, &ddata, 0);
@@ -151,7 +160,8 @@ e_dbhash_compare (EDbHash *edbh, const char *key, const char *compare_data)
 	DB *db;
 	DBT dkey;
 	DBT ddata;
-	guchar compare_hash[16];
+	guint8 compare_hash[16];
+	gsize length = sizeof (compare_hash);
 
 	g_return_val_if_fail (edbh != NULL, FALSE);
 	g_return_val_if_fail (edbh->priv != NULL, FALSE);
@@ -169,7 +179,12 @@ e_dbhash_compare (EDbHash *edbh, const char *key, const char *compare_data)
 
 	/* Compare */
 	if (ddata.data) {
-		md5_get_digest (compare_data, strlen (compare_data), compare_hash);
+		GChecksum *checksum;
+
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (guchar *) compare_data, -1);
+		g_checksum_get_digest (checksum, compare_hash, &length);
+		g_checksum_free (checksum);
 
 		if (memcmp (ddata.data, compare_hash, sizeof (guchar) * 16))
 			return E_DBHASH_STATUS_DIFFERENT;

@@ -1,3 +1,10 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-groupwise-store-summary.c:
+	Remove unneeded inclusion of <libedataserver/md5-utils.h>.
+
 2008-03-25  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-store.c: (groupwise_get_folder),

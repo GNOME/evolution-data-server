@@ -1,4 +1,12 @@
-2007-01-21  Matthew Barnes  <mbarnes@redhat.com>
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-imap4-summary.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
+2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #510303
 
@@ -6,7 +14,7 @@
 	Escape the authentication error message so the markup parser
 	will parse it verbatim.
 
-2007-01-17  Matthew Barnes  <mbarnes@redhat.com>
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap4-store.c (imap4_try_authenticate):
 	Use a consistently worded password prompt message by calling

@@ -1,3 +1,12 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-pop3-folder.c:
+	* camel-pop3-store.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
 2008-03-27  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #514827

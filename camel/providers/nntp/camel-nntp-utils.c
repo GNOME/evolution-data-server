@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-folder-summary.h"
 #include "camel-stream-mem.h"
 #include "camel-exception.h"
@@ -41,7 +39,11 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 {
 	int status;
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	char digest[16];
+	guint8 *digest;
+	gsize length;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	status = camel_nntp_command (nntp_store, ex, NULL,
 				     "XOVER %d-%d",
@@ -65,6 +67,7 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 			}
 			else {
 				CamelMessageInfo *new_info = camel_folder_summary_info_new(folder->summary);
+				GChecksum *checksum;
 				char **split_line = g_strsplit (line, "\t", 7);
 				char *subject, *from, *date, *message_id, *bytes;
 				char *uid;
@@ -101,7 +104,10 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				new_info->headers.date_received = g_strdup(date);
 #endif
 				new_info->size = atoi(bytes);
-				md5_get_digest(message_id, strlen(message_id), digest);
+				checksum = g_checksum_new (G_CHECKSUM_MD5);
+				g_checksum_update (checksum, (guchar *) message_id, -1);
+				g_checksum_get_digest (checksum, digest, &length);
+				g_checksum_free (checksum);
 				memcpy(new_info->message_id.id.hash, digest, sizeof(new_info->message_id.id.hash));
 
 				if (camel_nntp_newsrc_article_is_read (nntp_store->newsrc,

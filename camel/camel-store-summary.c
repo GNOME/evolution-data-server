@@ -36,7 +36,6 @@
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-memory.h>
-#include <libedataserver/md5-utils.h>
 
 #include "camel-file-utils.h"
 #include "camel-private.h"

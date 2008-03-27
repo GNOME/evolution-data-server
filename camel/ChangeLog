@@ -1,3 +1,20 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-folder-summary.c:
+	* camel-multipart.c:
+	* camel-sasl-cram-md5.c:
+	* camel-sasl-digest-md5.c:
+	* camel-tcp-stream-ssl.c:
+	* camel-vee-folder.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
+	* camel-multipart-signed.c:
+	* camel-store-summary.c:
+	Remove unneeded inclusion of <libedataserver/md5-utils.h>.
+
 2008-03-17  Christian Kellner  <gicmo@gnome.org>
 
 	** Fix for bug #341004

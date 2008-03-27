@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libedataserver/md5-utils.h>
 #include <libedataserver/e-data-server-util.h>
 
 #include "camel-data-cache.h"

@@ -30,8 +30,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-mime-utils.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"
@@ -90,12 +88,14 @@ camel_sasl_cram_md5_get_type (void)
 static GByteArray *
 cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
 	char *passwd;
-	guchar digest[16], md5asc[33], *s, *p;
+	const gchar *hex;
 	GByteArray *ret = NULL;
 	guchar ipad[64];
 	guchar opad[64];
-	MD5Context ctx;
 	int i, pw_len;
 
 	/* Need to wait for the server */
@@ -103,6 +103,9 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		return NULL;
 
 	g_return_val_if_fail (sasl->service->url->passwd != NULL, NULL);
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	memset (ipad, 0, sizeof (ipad));
 	memset (opad, 0, sizeof (opad));
@@ -113,8 +116,13 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		memcpy (ipad, passwd, pw_len);
 		memcpy (opad, passwd, pw_len);
 	} else {
-		md5_get_digest (passwd, pw_len, ipad);
-		memcpy (opad, ipad, 16);
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (guchar *) passwd, pw_len);
+		g_checksum_get_digest (checksum, digest, &length);
+		g_checksum_free (checksum);
+
+		memcpy (ipad, digest, length);
+		memcpy (opad, digest, length);
 	}
 
 	for (i = 0; i < 64; i++) {
@@ -122,24 +130,25 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		opad[i] ^= 0x5c;
 	}
 
-	md5_init (&ctx);
-	md5_update (&ctx, ipad, 64);
-	md5_update (&ctx, token->data, token->len);
-	md5_final (&ctx, digest);
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (guchar *) ipad, sizeof (ipad));
+	g_checksum_update (checksum, (guchar *) token->data, token->len);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
 
-	md5_init (&ctx);
-	md5_update (&ctx, opad, 64);
-	md5_update (&ctx, digest, 16);
-	md5_final (&ctx, digest);
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (guchar *) opad, sizeof (opad));
+	g_checksum_update (checksum, (guchar *) digest, length);
 
-	/* lowercase hexify that bad-boy... */
-	for (s = digest, p = md5asc; p < md5asc + 32; s++, p += 2)
-		sprintf ((char *) p, "%.2x", *s);
+	/* String is owned by the checksum. */
+	hex = g_checksum_get_string (checksum);
 
 	ret = g_byte_array_new ();
 	g_byte_array_append (ret, (guint8 *) sasl->service->url->user, strlen (sasl->service->url->user));
 	g_byte_array_append (ret, (guint8 *) " ", 1);
-	g_byte_array_append (ret, (guint8 *) md5asc, 32);
+	g_byte_array_append (ret, (guint8 *) hex, strlen (hex));
+
+	g_checksum_free (checksum);
 
 	sasl->authenticated = TRUE;
 

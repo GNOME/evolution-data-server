@@ -37,8 +37,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-exception.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-filter-crlf.h"

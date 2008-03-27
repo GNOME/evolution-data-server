@@ -1,3 +1,19 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* configure.in:
+	Bump GLib requirement to 2.16.1.
+
+	* libedataserver/e-dbhash.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
+	* libedataserver/md5-utils.c:
+	* libedataserver/md5-utils.h:
+	Deprecate these functions and reimplement them to be wrappers
+	for GLib's new MD5 Checksum API.
+
 2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
 
 	** Added configurable Proxy settings for Evolution.

@@ -30,7 +30,6 @@
 
 #include <string.h>
 
-#include <libedataserver/md5-utils.h>	/* md5 hash building */
 #include <libedataserver/e-sexp.h>
 
 #include "camel-mime-utils.h"	/* base64 encoding */
@@ -178,20 +177,26 @@ camel_imap_search_new (const char *cachedir)
 static void
 hash_match(char hash[17], int argc, struct _ESExpResult **argv)
 {
-	MD5Context ctx;
-	unsigned char digest[16];
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
 	int state = 0, save = 0;
 	int i;
 
-	md5_init(&ctx);
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	for (i=0;i<argc;i++) {
 		if (argv[i]->type == ESEXP_RES_STRING)
-			md5_update(&ctx, (const guchar *) argv[i]->value.string, strlen(argv[i]->value.string));
+			g_checksum_update (
+				checksum, (guchar *) argv[i]->value.string, -1);
 	}
-	md5_final(&ctx, digest);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
 
-	g_base64_encode_step(digest, 12, FALSE, hash, &state, &save);
-	g_base64_encode_close(FALSE, hash, &state, &save);
+	g_base64_encode_step ((guchar *) digest, 12, FALSE, hash, &state, &save);
+	g_base64_encode_close (FALSE, hash, &state, &save);
 
 	for (i=0;i<16;i++) {
 		if (hash[i] == '+')

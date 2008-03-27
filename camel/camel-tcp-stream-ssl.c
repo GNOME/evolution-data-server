@@ -56,8 +56,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
 #include "camel-operation.h"
@@ -657,13 +655,23 @@ void camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertif
 static char *
 cert_fingerprint(CERTCertificate *cert)
 {
-	unsigned char md5sum[16], fingerprint[50], *f;
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
+	unsigned char fingerprint[50], *f;
 	int i;
 	const char tohex[16] = "0123456789abcdef";
 
-	md5_get_digest ((const char *) cert->derCert.data, cert->derCert.len, md5sum);
-	for (i=0,f = fingerprint; i<16; i++) {
-		unsigned int c = md5sum[i];
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, cert->derCert.data, cert->derCert.len);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	for (i=0,f = fingerprint; i < length; i++) {
+		unsigned int c = digest[i];
 
 		*f++ = tohex[(c >> 4) & 0xf];
 		*f++ = tohex[c & 0xf];

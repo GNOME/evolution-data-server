@@ -37,8 +37,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-data-cache.h"
 #include "camel-exception.h"
 #include "camel-net-utils.h"
@@ -499,8 +497,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 		pcu = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "USER %s\r\n", service->url->user);
 		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "PASS %s\r\n", service->url->passwd);
 	} else if (strcmp(service->url->authmech, "+APOP") == 0 && store->engine->apop) {
-		char *secret, md5asc[33], *d;
-		unsigned char md5sum[16], *s;
+		char *secret, *md5asc, *d;
 
 		d = store->engine->apop;
 
@@ -519,13 +516,10 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 
 		secret = g_alloca(strlen(store->engine->apop)+strlen(service->url->passwd)+1);
 		sprintf(secret, "%s%s",  store->engine->apop, service->url->passwd);
-		md5_get_digest(secret, strlen (secret), md5sum);
-
-		for (s = md5sum, d = md5asc; d < md5asc + 32; s++, d += 2)
-			sprintf (d, "%.2x", *s);
-
+		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
 		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "APOP %s %s\r\n",
 						    service->url->user, md5asc);
+		g_free (md5asc);
 	} else {
 		CamelServiceAuthType *auth;
 		GList *l;

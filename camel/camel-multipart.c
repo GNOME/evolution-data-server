@@ -31,8 +31,6 @@
 #include <time.h>   /* for time */
 #include <unistd.h> /* for getpid */
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-exception.h"
 #include "camel-mime-part.h"
 #include "camel-multipart.h"
@@ -350,22 +348,35 @@ static void
 set_boundary (CamelMultipart *multipart, const char *boundary)
 {
 	CamelDataWrapper *cdw = CAMEL_DATA_WRAPPER (multipart);
-	char *bgen, digest[16], bbuf[27], *p;
+	char *bgen, bbuf[27], *p;
+	guint8 *digest;
+	gsize length;
 	int state, save;
 
 	g_return_if_fail (cdw->mime_type != NULL);
 
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
 	if (!boundary) {
+		GChecksum *checksum;
+
 		/* Generate a fairly random boundary string. */
 		bgen = g_strdup_printf ("%p:%lu:%lu", (void *) multipart,
 					(unsigned long) getpid(),
 					(unsigned long) time(NULL));
-		md5_get_digest (bgen, strlen (bgen), (unsigned char *) digest);
+
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (guchar *) bgen, -1);
+		g_checksum_get_digest (checksum, digest, &length);
+		g_checksum_free (checksum);
+
 		g_free (bgen);
 		strcpy (bbuf, "=-");
 		p = bbuf + 2;
 		state = save = 0;
-		p += g_base64_encode_step ((guchar *) digest, 16, FALSE, p, &state, &save);
+		p += g_base64_encode_step (
+			(guchar *) digest, length, FALSE, p, &state, &save);
 		*p = '\0';
 
 		boundary = bbuf;

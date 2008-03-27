@@ -37,8 +37,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-file-utils.h"
 #include "camel-string-utils.h"
 #include "camel-offline-journal.h"
@@ -434,8 +432,12 @@ decode_references (const char *refstr, const char *irtstr)
 {
 	struct _camel_header_references *refs, *irt, *r;
 	CamelSummaryReferences *references;
-	unsigned char md5sum[16];
+	guint8 *digest;
+	gsize length;
 	guint32 i, n;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	refs = camel_header_references_decode (refstr);
 	irt = camel_header_references_inreplyto_decode (irtstr);
@@ -463,8 +465,14 @@ decode_references (const char *refstr, const char *irtstr)
 	references->size = n;
 
 	for (i = 0, r = refs; r != NULL; i++, r = r->next) {
-		md5_get_digest (r->id, strlen (r->id), md5sum);
-		memcpy (references->references[i].id.hash, md5sum, sizeof (CamelSummaryMessageID));
+		GChecksum *checksum;
+
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (guchar *) r->id, -1);
+		g_checksum_get_digest (checksum, digest, &length);
+		g_checksum_free (checksum);
+
+		memcpy (references->references[i].id.hash, digest, sizeof (CamelSummaryMessageID));
 	}
 
 	camel_header_references_list_clear (&refs);
@@ -476,8 +484,12 @@ static int
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
-	unsigned char md5sum[16];
+	guint8 *digest;
+	gsize length;
 	char *nstring, *msgid;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 		return -1;
@@ -546,8 +558,14 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 
 	if (nstring != NULL) {
 		if ((msgid = camel_header_msgid_decode (nstring))) {
-			md5_get_digest (msgid, strlen (msgid), md5sum);
-			memcpy (iinfo->info.message_id.id.hash, md5sum, sizeof (CamelSummaryMessageID));
+			GChecksum *checksum;
+
+			checksum = g_checksum_new (G_CHECKSUM_MD5);
+			g_checksum_update (checksum, (guchar *) msgid, -1);
+			g_checksum_get_digest (checksum, digest, &length);
+			g_checksum_free (checksum);
+
+			memcpy (iinfo->info.message_id.id.hash, digest, sizeof (CamelSummaryMessageID));
 			g_free (msgid);
 		}
 		g_free (nstring);

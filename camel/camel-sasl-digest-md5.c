@@ -33,7 +33,6 @@
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-iconv.h>
-#include <libedataserver/md5-utils.h>
 
 #include "camel-charset-map.h"
 #include "camel-mime-utils.h"
@@ -539,16 +538,6 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 	return challenge;
 }
 
-static void
-digest_hex (guchar *digest, guchar hex[33])
-{
-	guchar *s, *p;
-
-	/* lowercase hexify that bad-boy... */
-	for (s = digest, p = hex; p < hex + 32; s++, p += 2)
-		sprintf ((char *) p, "%.2x", *s);
-}
-
 static char *
 digest_uri_to_string (struct _DigestURI *uri)
 {
@@ -561,72 +550,99 @@ digest_uri_to_string (struct _DigestURI *uri)
 static void
 compute_response (struct _DigestResponse *resp, const char *passwd, gboolean client, guchar out[33])
 {
-	guchar hex_a1[33], hex_a2[33];
-	guchar digest[16];
-	MD5Context ctx;
-	char *buf;
+	GString *buffer;
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
+	gchar *hex_a1;
+	gchar *hex_a2;
+	gchar *hex_kd;
+	gchar *uri;
 
-	/* compute A1 */
-	md5_init (&ctx);
-	md5_update (&ctx, (const guchar *) resp->username, strlen (resp->username));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->realm, strlen (resp->realm));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) passwd, strlen (passwd));
-	md5_final (&ctx, digest);
+	buffer = g_string_sized_new (256);
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
-	md5_init (&ctx);
-	md5_update (&ctx, digest, 16);
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->nonce, strlen (resp->nonce));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->cnonce, strlen (resp->cnonce));
-	if (resp->authzid) {
-		md5_update (&ctx, (const guchar *) ":", 1);
-		md5_update (&ctx, (const guchar *) resp->authzid, strlen (resp->authzid));
+	/* Compute A1. */
+
+	g_string_append (buffer, resp->username);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, resp->realm);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, passwd);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (
+		checksum, (const guchar *) buffer->str, buffer->len);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	/* Clear the buffer. */
+	g_string_truncate (buffer, 0);
+
+	g_string_append_len (buffer, (gchar *) digest, length);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, resp->nonce);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, resp->cnonce);
+	if (resp->authzid != NULL) {
+		g_string_append_c (buffer, ':');
+		g_string_append (buffer, resp->authzid);
 	}
 
-	/* hexify A1 */
-	md5_final (&ctx, digest);
-	digest_hex (digest, hex_a1);
+	hex_a1 = g_compute_checksum_for_string (
+		G_CHECKSUM_MD5, buffer->str, buffer->len);
 
-	/* compute A2 */
-	md5_init (&ctx);
+	/* Clear the buffer. */
+	g_string_truncate (buffer, 0);
+
+	/* Compute A2. */
+
 	if (client) {
-		/* we are calculating the client response */
-		md5_update (&ctx, (const guchar *) "AUTHENTICATE:", strlen ("AUTHENTICATE:"));
+		/* We are calculating the client response. */
+		g_string_append (buffer, "AUTHENTICATE:");
 	} else {
-		/* we are calculating the server rspauth */
-		md5_update (&ctx, (const guchar *) ":", 1);
+		/* We are calculating the server rspauth. */
+		g_string_append_c (buffer, ':');
 	}
 
-	buf = digest_uri_to_string (resp->uri);
-	md5_update (&ctx, (const guchar *) buf, strlen (buf));
-	g_free (buf);
+	uri = digest_uri_to_string (resp->uri);
+	g_string_append (buffer, uri);
+	g_free (uri);
 
 	if (resp->qop == QOP_AUTH_INT || resp->qop == QOP_AUTH_CONF)
-		md5_update (&ctx, (const guchar *) ":00000000000000000000000000000000", 33);
+		g_string_append (buffer, ":00000000000000000000000000000000");
 
-	/* now hexify A2 */
-	md5_final (&ctx, digest);
-	digest_hex (digest, hex_a2);
+	hex_a2 = g_compute_checksum_for_string (
+		G_CHECKSUM_MD5, buffer->str, buffer->len);
 
-	/* compute KD */
-	md5_init (&ctx);
-	md5_update (&ctx, (const guchar *) hex_a1, 32);
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->nonce, strlen (resp->nonce));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->nc, 8);
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) resp->cnonce, strlen (resp->cnonce));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) qop_to_string (resp->qop), strlen (qop_to_string (resp->qop)));
-	md5_update (&ctx, (const guchar *) ":", 1);
-	md5_update (&ctx, (const guchar *) hex_a2, 32);
-	md5_final (&ctx, digest);
+	/* Clear the buffer. */
+	g_string_truncate (buffer, 0);
 
-	digest_hex (digest, out);
+	/* Compute KD. */
+
+	g_string_append (buffer, hex_a1);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, resp->nonce);
+	g_string_append_c (buffer, ':');
+	g_string_append_len (buffer, resp->nc, 8);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, resp->cnonce);
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, qop_to_string (resp->qop));
+	g_string_append_c (buffer, ':');
+	g_string_append (buffer, hex_a2);
+
+	hex_kd = g_compute_checksum_for_string (
+		G_CHECKSUM_MD5, buffer->str, buffer->len);
+
+	g_strlcpy ((gchar *) out, hex_kd, 33);
+
+	g_free (hex_a1);
+	g_free (hex_a2);
+	g_free (hex_kd);
+
+	g_string_free (buffer, TRUE);
 }
 
 static struct _DigestResponse *
@@ -635,7 +651,13 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 {
 	struct _DigestResponse *resp;
 	struct _DigestURI *uri;
-	char *bgen, digest[16];
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
+	gchar *bgen;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	resp = g_new0 (struct _DigestResponse, 1);
 	resp->username = g_strdup (user);
@@ -651,8 +673,12 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 	bgen = g_strdup_printf ("%p:%lu:%lu", (void *) resp,
 				(unsigned long) getpid (),
 				(unsigned long) time (NULL));
-	md5_get_digest (bgen, strlen (bgen), (guchar *) digest);
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (guchar *) bgen, -1);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
 	g_free (bgen);
+
 	/* take our recommended 64 bits of entropy */
 	resp->cnonce = g_base64_encode ((guchar *) digest, 8);
 

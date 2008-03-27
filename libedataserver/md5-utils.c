@@ -312,12 +312,22 @@ md5_transform (guint32 buf[4], const guint32 in[16])
 void
 md5_get_digest (const gchar *buffer, gint buffer_size, guchar digest[16])
 {
-	MD5Context ctx;
+	GChecksum *checksum;
+	guint8 *local_digest;
+	gsize length;
 
-	md5_init (&ctx);
-	md5_update (&ctx, (guchar*)buffer, buffer_size);
-	md5_final (&ctx, digest);
+	g_return_if_fail (buffer_size > 1);
+	g_return_if_fail (digest != NULL);
 
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	local_digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, (const guchar *) buffer, buffer_size);
+	g_checksum_get_digest (checksum, local_digest, &length);
+	g_checksum_free (checksum);
+
+	memcpy (digest, local_digest, length);
 }
 
 
@@ -332,25 +342,25 @@ md5_get_digest (const gchar *buffer, gint buffer_size, guchar digest[16])
 void
 md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 {
-	MD5Context ctx;
-	guchar tmp_buf[1024];
-	gint nb_bytes_read;
-	FILE *fp;
+	GMappedFile *mapped_file;
+	const gchar *contents;
+	gsize length;
+	GError *error = NULL;
 
-	md5_init (&ctx);
-	fp = g_fopen(filename, "rb");
-	if (!fp) {
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (digest != NULL);
+
+	mapped_file = g_mapped_file_new (filename, FALSE, &error);
+	if (mapped_file == NULL) {
+		/* XXX No way to report errors with this API. */
+		g_warning ("%s", error->message);
 		return;
 	}
 
-	while ((nb_bytes_read = fread (tmp_buf, 1, sizeof (tmp_buf), fp)) > 0)
-		md5_update (&ctx, tmp_buf, nb_bytes_read);
+	contents = g_mapped_file_get_contents (mapped_file);
+	length = g_mapped_file_get_length (mapped_file);
 
-	if (ferror(fp)) {
-		fclose(fp);
-		return;
-	}
-	fclose(fp);
+	md5_get_digest (contents, length, digest);
 
-	md5_final (&ctx, digest);
+	g_mapped_file_free (mapped_file);
 }

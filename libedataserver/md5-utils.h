@@ -26,6 +26,10 @@
 #ifndef MD5_UTILS_H
 #define MD5_UTILS_H
 
+/* This API is deprecated.  Use GLib's GChecksum instead. */
+
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -55,5 +59,7 @@ void md5_update (MD5Context *ctx, const guchar *buf, guint32 len);
 void md5_final (MD5Context *ctx, guchar digest[16]);
 
 G_END_DECLS
+
+#endif  /* EDS_DISABLE_DEPRECATED */
 
 #endif	/* MD5_UTILS_H */

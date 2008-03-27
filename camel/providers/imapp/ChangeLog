@@ -1,3 +1,11 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-imapp-folder.c:
+	* camel-imapp-store-summary.c:
+	Remove unneeded inclusion of <libedataserver/md5-utils.h>.
+
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #510303

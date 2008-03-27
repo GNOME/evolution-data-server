@@ -33,8 +33,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-data-cache.h"
 #include "camel-exception.h"
 #include "camel-mime-message.h"
@@ -143,17 +141,21 @@ camel_pop3_folder_new (CamelStore *parent, CamelException *ex)
 static void
 cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 {
+	GChecksum *checksum;
 	CamelPOP3FolderInfo *fi = data;
-	MD5Context md5;
-	unsigned char digest[16];
 	struct _camel_header_raw *h;
 	CamelMimeParser *mp;
+	guint8 *digest;
+	gsize length;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	/* TODO; somehow work out the limit and use that for proper progress reporting
 	   We need a pointer to the folder perhaps? */
 	camel_operation_progress_count(NULL, fi->id);
 
-	md5_init(&md5);
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	mp = camel_mime_parser_new();
 	camel_mime_parser_init_with_stream(mp, (CamelStream *)stream);
 	switch (camel_mime_parser_step(mp, NULL, NULL)) {
@@ -164,8 +166,8 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 		while (h) {
 			if (g_ascii_strcasecmp(h->name, "status") != 0
 			    && g_ascii_strcasecmp(h->name, "x-status") != 0) {
-				md5_update(&md5, (const guchar *) h->name, strlen(h->name));
-				md5_update(&md5, (const guchar *) h->value, strlen(h->value));
+				g_checksum_update (checksum, (guchar *) h->name, -1);
+				g_checksum_update (checksum, (guchar *) h->value, -1);
 			}
 			h = h->next;
 		}
@@ -173,8 +175,10 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 		break;
 	}
 	camel_object_unref(mp);
-	md5_final(&md5, digest);
-	fi->uid = g_base64_encode(digest, 16);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	fi->uid = g_base64_encode ((guchar *) digest, length);
 
 	d(printf("building uid for id '%d' = '%s'\n", fi->id, fi->uid));
 }

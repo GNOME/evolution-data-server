@@ -38,7 +38,6 @@
 
 #include <libedataserver/e-iconv.h>
 #include <libedataserver/e-memory.h>
-#include <libedataserver/md5-utils.h>
 
 #include "camel-file-utils.h"
 #include "camel-folder-summary.h"
@@ -1730,13 +1729,17 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 {
 	CamelMessageInfoBase *mi;
 	const char *received;
-	guchar digest[16];
+	guint8 *digest;
+	gsize length;
 	struct _camel_header_references *refs, *irt, *scan;
 	char *msgid;
 	int count;
 	char *subject, *from, *to, *cc, *mlist;
 	CamelContentType *ct = NULL;
 	const char *content, *charset = NULL;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	mi = (CamelMessageInfoBase *)camel_message_info_new(s);
 
@@ -1776,7 +1779,13 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 	msgid = camel_header_msgid_decode(camel_header_raw_find(&h, "message-id", NULL));
 	if (msgid) {
-		md5_get_digest(msgid, strlen(msgid), digest);
+		GChecksum *checksum;
+
+		checksum = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (checksum, (guchar *) msgid, -1);
+		g_checksum_get_digest (checksum, digest, &length);
+		g_checksum_free (checksum);
+
 		memcpy(mi->message_id.id.hash, digest, sizeof(mi->message_id.id.hash));
 		g_free(msgid);
 	}
@@ -1801,7 +1810,13 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 		count = 0;
 		scan = refs;
 		while (scan) {
-			md5_get_digest(scan->id, strlen(scan->id), digest);
+			GChecksum *checksum;
+
+			checksum = g_checksum_new (G_CHECKSUM_MD5);
+			g_checksum_update (checksum, (guchar *) scan->id, -1);
+			g_checksum_get_digest (checksum, digest, &length);
+			g_checksum_free (checksum);
+
 			memcpy(mi->references->references[count].id.hash, digest, sizeof(mi->message_id.id.hash));
 			count++;
 			scan = scan->next;
