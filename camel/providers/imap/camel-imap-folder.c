@@ -565,6 +565,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapResponse *response;
 	CamelStoreInfo *si;
+	extern int camel_application_is_exiting;
 
 	if (camel_disco_store_status (CAMEL_DISCO_STORE (imap_store)) == CAMEL_DISCO_STORE_OFFLINE)
 		return;
@@ -581,7 +582,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	 * should do it.  */
 	CAMEL_SERVICE_REC_LOCK (imap_store, connect_lock);
 
-	if (!camel_imap_store_connected(imap_store, ex))
+	if (camel_application_is_exiting  || !camel_imap_store_connected(imap_store, ex))
 		goto done;
 
 	if (imap_store->current_folder != folder
@@ -692,7 +693,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 
 	new = g_malloc0 (summary_len * sizeof (*new));
 	summary_got = 0;
-	while ((type = camel_imap_command_response (store, &resp, ex)) == CAMEL_IMAP_RESPONSE_UNTAGGED) {
+	while ((type = camel_imap_command_response (store, &resp, ex)) == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 		GData *data;
 		char *uid;
 		guint32 flags;
@@ -718,10 +719,14 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	}
 
 	camel_operation_end (NULL);
-	if (type == CAMEL_IMAP_RESPONSE_ERROR) {
+	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 		for (i = 0; i < summary_len && new[i].uid; i++)
 			g_free (new[i].uid);
 		g_free (new);
+
+		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
+			CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
+
 		return;
 	}
 
@@ -2489,6 +2494,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	CamelStream *stream;
 	char *uid, *resp;
 	GData *data;
+	extern int camel_application_is_exiting;
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 		if (store->headers == IMAP_FETCH_ALL_HEADERS)
@@ -2544,7 +2550,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	fetch_data = g_ptr_array_new ();
 	messages = g_ptr_array_new ();
 	while ((type = camel_imap_command_response (store, &resp, ex)) ==
-	       CAMEL_IMAP_RESPONSE_UNTAGGED) {
+	       CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 		data = parse_fetch_response (imap_folder, resp);
 		g_free (resp);
 		if (!data)
@@ -2576,8 +2582,12 @@ imap_update_summary (CamelFolder *folder, int exists,
 	}
 	camel_operation_end (NULL);
 
-	if (type == CAMEL_IMAP_RESPONSE_ERROR)
+	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
+		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
+			CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
+
 		goto lose;
+	}
 
 	/* Free the final tagged response */
 	g_free (resp);
@@ -2607,7 +2617,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 
 		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
-		while (uid < needheaders->len) {
+		while (uid < needheaders->len && !camel_application_is_exiting) {
 			uidset = imap_uid_array_to_set (folder->summary, needheaders, uid, UID_SET_LIMIT, &uid);
 			if (!camel_imap_command_start (store, folder, ex,
 						       "UID FETCH %s BODY.PEEK[%s]",
@@ -2621,7 +2631,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 			g_free (uidset);
 
 			while ((type = camel_imap_command_response (store, &resp, ex))
-			       == CAMEL_IMAP_RESPONSE_UNTAGGED) {
+			       == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 				data = parse_fetch_response (imap_folder, resp);
 				g_free (resp);
 				if (!data)
@@ -2636,9 +2646,13 @@ imap_update_summary (CamelFolder *folder, int exists,
 				g_datalist_clear (&data);
 			}
 
-			if (type == CAMEL_IMAP_RESPONSE_ERROR) {
+			if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 				g_ptr_array_free (needheaders, TRUE);
 				camel_operation_end (NULL);
+
+				if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
+					CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
+
 				goto lose;
 			}
 		}
@@ -2717,6 +2731,12 @@ imap_update_summary (CamelFolder *folder, int exists,
 		g_datalist_clear (&data);
 	}
 	g_ptr_array_free (fetch_data, TRUE);
+
+	if (camel_application_is_exiting) {
+		/* it will hopefully update summary next time */
+		fetch_data = NULL;
+		goto lose;
+	}
 
 	/* And add the entries to the summary, etc. */
 	for (i = 0; i < messages->len; i++) {
