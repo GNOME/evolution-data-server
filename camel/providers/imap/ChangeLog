@@ -1,3 +1,10 @@
+2008-03-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #521015
+
+	* camel-imap-folder.c: (merge_custom_flags), (imap_rescan):
+	Also check for changes in custom flags and store them, if any.
+
 2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #518710

@@ -647,6 +647,63 @@ fillup_custom_flags (CamelMessageInfo *mi, char *custom_flags)
 	g_strfreev (array_str);
 }
 
+/* This will merge custom flags with those in message info. Returns whether was some change. */
+static gboolean
+merge_custom_flags (CamelMessageInfo *mi, const char *custom_flags)
+{
+	GSList *list, *p;
+	GHashTable *server;
+	gchar **cflags;
+	int i;
+	const CamelFlag *flag;
+	gboolean changed = FALSE;
+
+	g_return_val_if_fail (mi != NULL, FALSE);
+
+	if (!custom_flags)
+		custom_flags = "";
+
+	list = NULL;
+	server = g_hash_table_new (g_str_hash, g_str_equal);
+
+	cflags = g_strsplit (custom_flags, " ", -1);
+	for (i = 0; cflags [i]; i++) {
+		char *name = cflags [i];
+
+		if (name && *name) {
+			g_hash_table_insert (server, name, name);
+			list = g_slist_prepend (list, name);
+		}
+	}
+
+	for (flag = camel_message_info_user_flags (mi); flag; flag = flag->next) {
+		char *name = (char *)flag->name;
+
+		if (name && *name)
+			list = g_slist_prepend (list, name);
+	}
+
+	list = g_slist_sort (list, (GCompareFunc) strcmp);
+	for (p = list; p; p = p->next) {
+		if (p->next && strcmp (p->data, p->next->data) == 0) {
+			/* This flag is there twice, which means it was on the server and
+			   in our local summary too; thus skip these two elements. */
+			p = p->next;
+		} else {
+			/* If this value came from the server, then add it to our local summary,
+			   otherwise it was in local summary, but isn't on the server, thus remove it. */
+			changed = TRUE;
+			camel_message_info_set_user_flag (mi, p->data, g_hash_table_lookup (server, p->data) != NULL);
+		}
+	}
+
+	g_slist_free (list);
+	g_hash_table_destroy (server);
+	g_strfreev (cflags);
+
+	return changed;
+}
+
 /* Called with the store's connect_lock locked */
 static void
 imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
@@ -657,6 +714,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	struct {
 		char *uid;
 		guint32 flags;
+		char *custom_flags;
 	} *new;
 	char *resp;
 	CamelImapResponseType type;
@@ -715,13 +773,16 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 		camel_operation_progress (NULL, ++summary_got * 100 / summary_len);
 		new[seq - 1].uid = g_strdup (uid);
 		new[seq - 1].flags = flags;
+		new[seq - 1].custom_flags = g_strdup (g_datalist_get_data (&data, "CUSTOM.FLAGS"));
 		g_datalist_clear (&data);
 	}
 
 	camel_operation_end (NULL);
 	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
-		for (i = 0; i < summary_len && new[i].uid; i++)
+		for (i = 0; i < summary_len && new[i].uid; i++) {
 			g_free (new[i].uid);
+			g_free (new[i].custom_flags);
+		}
 		g_free (new);
 
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
@@ -742,6 +803,8 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	 */
 	removed = g_array_new (FALSE, FALSE, sizeof (int));
 	for (i = 0; i < summary_len && new[i].uid; i++) {
+		gboolean changed = FALSE;
+
 		info = camel_folder_summary_index (folder->summary, i);
 		iinfo = (CamelImapMessageInfo *)info;
 
@@ -764,6 +827,17 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 			iinfo->info.flags = (iinfo->info.flags | server_set) & ~server_cleared;
 			iinfo->server_flags = new[i].flags;
 
+			changed = TRUE;
+		}
+
+		/* Do not merge custom flags when server doesn't support it.
+		   Because server always reports NULL, which means none, which
+		   will remove user's flags from local machine, which is bad.
+		*/
+		if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && merge_custom_flags (info, new[i].custom_flags))
+			changed = TRUE;
+
+		if (changed) {
 			if (changes == NULL)
 				changes = camel_folder_change_info_new();
 			camel_folder_change_info_change_uid(changes, new[i].uid);
@@ -771,6 +845,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 
 		camel_message_info_free(info);
 		g_free (new[i].uid);
+		g_free (new[i].custom_flags);
 	}
 
 	if (changes) {
@@ -781,8 +856,11 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	seq = i + 1;
 
 	/* Free remaining memory. */
-	while (i < summary_len && new[i].uid)
-		g_free (new[i++].uid);
+	while (i < summary_len && new[i].uid) {
+		g_free (new[i].uid);
+		g_free (new[i].custom_flags);
+		i++;
+	}
 	g_free (new);
 
 	/* Remove any leftover cached summary messages. (Yes, we
