@@ -384,7 +384,8 @@ listener_died_cb (gpointer cnx, gpointer data)
 {
 	EDataCal *cal = E_DATA_CAL (data);
 
-	e_cal_backend_remove_client (e_data_cal_get_backend (cal), cal);
+	if (ORBit_small_get_connection_status (e_data_cal_get_listener(cal)) == ORBIT_CONNECTION_DISCONNECTED)
+		e_cal_backend_remove_client (e_data_cal_get_backend (cal), cal);
 }
 
 static void

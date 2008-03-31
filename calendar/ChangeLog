@@ -1,3 +1,14 @@
+2008-03-31  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494311
+
+	* libedata-cal/e-cal-backend.c: (listener_died_cb):
+	Don't terminate connection after sucessful reconnect by ORBit. See
+	the comment in link_connection_state_changed_T_R ORBit function which states
+	that connection could have already been re-established at the time
+	listener_died_cb gets called. We need to check current connection status
+	in the callback.
+
 2008-03-27  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #523126
