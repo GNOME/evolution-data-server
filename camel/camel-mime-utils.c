@@ -741,10 +741,6 @@ quoted_decode(const unsigned char *in, size_t len, unsigned char *out)
 			}
 		} else if (c=='_') {
 			*outptr++ = 0x20;
-		} else if (c==' ' || c==0x09) {
-			/* FIXME: this is an error! ignore for now ... */
-			ret = -1;
-			break;
 		} else {
 			*outptr++ = c;
 		}
@@ -1084,7 +1080,11 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 		d(fprintf (stderr, "unknown encoding\n"));
 		return NULL;
 	}
-	
+
+	/* never return empty string, return rather NULL */
+	if (!declen)
+		return NULL;
+
 	len = (inptr - 3) - (instart + 2);
 	charenc = g_alloca (len + 1);
 	memcpy (charenc, in + 2, len);
@@ -1101,7 +1101,7 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 	/* trim off the 'language' part if it's there... */
 	if ((p = strchr (charset, '*')))
 		*p = '\0';
-	
+
 	/* slight optimization? */
 	if (!g_ascii_strcasecmp (charset, "UTF-8")) {
 		p = (char *) decoded;
@@ -1248,7 +1248,7 @@ header_decode_text (const char *in, int ctext, const char *default_charset)
 				}
 				
 				/* sanity check encoding type */
-				if (inptr[0] != '?' || !strchr ("BbQq", inptr[1]) || inptr[2] != '?')
+				if (inptr[0] != '?' || !strchr ("BbQq", inptr[1]) || !inptr[1] || inptr[2] != '?')
 					goto non_rfc2047;
 				
 				inptr += 3;

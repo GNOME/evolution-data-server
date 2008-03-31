@@ -1,3 +1,14 @@
+2008-03-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #524704
+
+	* camel-mime-utils.c: (quoted_decode):
+	Allow direct spaces in a string.
+	* camel-mime-utils.c: (rfc2047_decode_word):
+	Do not return empty string in case of malformed text.
+	* camel-mime-utils.c: (header_decode_text):
+	Be sure we access only allocated memory.
+
 2008-02-20  Jeff Cai<jeff.cai@sun.com>
 
 	** Fix for bug #517190
