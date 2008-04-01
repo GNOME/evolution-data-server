@@ -1713,19 +1713,22 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						status = e_gw_connection_get_attachment_base64 (cnc,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
-						if (status == E_GW_CONNECTION_STATUS_OK && t_len) {
-							gsize len_iter = 0;
-							char *temp = NULL;
+						if (status == E_GW_CONNECTION_STATUS_OK) {
 
-							temp = g_base64_decode(t_attach, &len_iter);
-							gstr = g_string_append_len (gstr, temp, len_iter);
-							g_free (temp);
-							len += len_iter;
+							if (t_len) {
+								gsize len_iter = 0;
+								char *temp = NULL;
+
+								temp = g_base64_decode(t_attach, &len_iter);
+								gstr = g_string_append_len (gstr, temp, len_iter);
+								g_free (temp);
+								len += len_iter;
+								g_free (t_attach);
+								t_attach = NULL;
+							}
 							t_offset = offset;
-							g_free (t_attach);
-							t_attach = NULL;
 						}
-					} while (offset);
+					} while (t_offset);
 					body = gstr->str;
 					body_len = len;
 					g_string_free (gstr, FALSE);
@@ -1851,18 +1854,21 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						status = e_gw_connection_get_attachment_base64 (cnc,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
 								(const char **)&t_attach, &t_len, &offset);
-						if (status == E_GW_CONNECTION_STATUS_OK && t_len) {
-							gsize len_iter = 0;
-							char *temp = NULL;
+						if (status == E_GW_CONNECTION_STATUS_OK) {
 
-							temp = g_base64_decode(t_attach, &len_iter);
-							gstr = g_string_append_len (gstr, temp, len_iter);
-							g_free (temp);
-							len += len_iter;
+							if (t_len) {
+								gsize len_iter = 0;
+								char *temp = NULL;
+
+								temp = g_base64_decode(t_attach, &len_iter);
+								gstr = g_string_append_len (gstr, temp, len_iter);
+								g_free (temp);
+								len += len_iter;
+								g_free (t_attach);
+								t_attach = NULL;
+								t_len = 0;
+							}
 							t_offset = offset;
-							g_free (t_attach);
-							t_attach = NULL;
-							t_len = 0;
 						}
 					} while (t_offset);
 					attachment =  gstr->str;

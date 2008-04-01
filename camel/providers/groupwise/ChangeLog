@@ -1,3 +1,10 @@
+2008-04-01  Sankar P  <psankar@novell.com>
+
+	** Fix for bug #525485
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Removed some infinite loops and corrected the conditional statement.
+
 2008-03-25  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-store.c: (groupwise_get_folder),
