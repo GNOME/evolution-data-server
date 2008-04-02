@@ -1,5 +1,13 @@
 2008-04-02  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #369512
+
+	* camel-imap-folder.c: (imap_sync_offline):
+	Store to folder's and store's summary actual numbers
+	of unread/total/deleted/junked mails, not the old one.
+
+2008-04-02  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #257361
 
 	* camel-imap-folder.c: (get_folder_status), (imap_refresh_info):
