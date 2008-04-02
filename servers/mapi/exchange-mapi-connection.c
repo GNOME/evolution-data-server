@@ -1146,10 +1146,8 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	}
 	
 	/* Attempt to create the folder */
-/* libmapi revision 317 */
-//	retval = CreateFolder(&obj_top, FOLDER_GENERIC, name, "Created using Evolution/libmapi", OPEN_IF_EXISTS, &obj_folder);
-/* libmapi 0.6 */
-	retval = CreateFolder(&obj_top, name, "Created using Evolution/libmapi", &obj_folder);
+	retval = CreateFolder(&obj_top, FOLDER_GENERIC, name, "Created using Evolution/libmapi", OPEN_IF_EXISTS, &obj_folder);
+
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("CreateFolder", GetLastError());
 		goto cleanup;
