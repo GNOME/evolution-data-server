@@ -1175,6 +1175,84 @@ list_remove_duplicates (GPtrArray *array)
 	}
 }
 
+static char *
+list_parent (camel_imap4_list_t *mbox)
+{
+	const char *d;
+	
+	if (!(d = strrchr (mbox->name, mbox->delim)))
+		return NULL;
+	
+	return g_strndup (mbox->name, d - mbox->name);
+}
+
+/* bloody glib... GPtrArray doesn't have an insert method */
+static void
+array_insert (GPtrArray *array, int index, void *data)
+{
+	int i;
+	
+	if ((index + 1) == array->len) {
+		/* special case, adding to the end of the array */
+		g_ptr_array_add (array, data);
+		return;
+	}
+	
+	if (index >= array->len) {
+		/* special case, adding past the end of the array */
+		g_ptr_array_set_size (array, index + 1);
+		array->pdata[index] = data;
+		return;
+	}
+	
+	g_ptr_array_set_size (array, array->len + 1);
+	
+	/* shift all elements starting at @index 1 position to the right */
+	for (i = array->len - 2; i >= index; i--)
+		array->pdata[i + 1] = array->pdata[i];
+	
+	array->pdata[index] = data;
+}
+
+static void
+list_add_ghosts (GPtrArray *array)
+{
+	camel_imap4_list_t *mbox;
+	GHashTable *list_hash;
+	char delim, *parent;
+	int i = 0;
+	
+	list_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	
+	while (i < array->len) {
+		mbox = array->pdata[i];
+		if ((parent = list_parent (mbox))) {
+			if (!g_hash_table_lookup (list_hash, parent)) {
+				/* ghost folder, insert a fake LIST info w/ a \NoSelect flag */
+				delim = mbox->delim;
+				mbox = g_new (camel_imap4_list_t, 1);
+				mbox->flags = CAMEL_FOLDER_NOSELECT;
+				mbox->name = parent;
+				mbox->delim = delim;
+				
+				g_hash_table_insert (list_hash, parent, mbox);
+				
+				array_insert (array, i, mbox);
+				continue;
+			} else {
+				/* already exists */
+				g_free (parent);
+			}
+		}
+		
+		g_hash_table_insert (list_hash, mbox->name, mbox);
+		
+		i++;
+	}
+	
+	g_hash_table_destroy (list_hash);
+}
+
 static void
 imap4_status (CamelStore *store, CamelFolderInfo *fi)
 {
@@ -1275,7 +1353,8 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 	g_ptr_array_sort (array, (GCompareFunc) list_sort);
 
 	list_remove_duplicates (array);
-
+	list_add_ghosts (array);
+	
 	url = camel_url_copy (engine->url);
 
 	if (!strcmp (top, "") && (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)) {

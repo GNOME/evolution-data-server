@@ -34,6 +34,10 @@
 
 2007-05-31  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-imap4-store.c (imap4_build_folder_info): Add "ghost"
+	folder info's if needed in order to make sure the folder-info tree
+	is complete.
+
 	* camel-imap4-utils.c (camel_imap4_parse_flags_list): Handle
 	Junk/NonJunk flags.
 
