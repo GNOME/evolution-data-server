@@ -1,3 +1,11 @@
+2008-04-02  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #271863
+
+	* camel-folder.h: New CAMEL_FOLDER_JUNKED_NOT_DELETED property.
+	* camel-folder.c: (folder_getv):
+	Count junk messages which are not marked as deleted separately.
+
 2008-03-31  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #524704

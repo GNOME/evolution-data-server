@@ -307,7 +307,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	CamelFolder *folder = (CamelFolder *)object;
 	int i;
 	guint32 tag;
-	int unread = -1, deleted = 0, junked = 0, visible = 0, count = -1;
+	int unread = -1, deleted = 0, junked = 0, junked_not_deleted = 0, visible = 0, count = -1;
 
 	for (i = 0; i < args->argc; i++) {
 		CamelArgGet *arg = &args->argv[i];
@@ -341,6 +341,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_UNREAD:
 		case CAMEL_FOLDER_ARG_DELETED:
 		case CAMEL_FOLDER_ARG_JUNKED:
+		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
 		case CAMEL_FOLDER_ARG_VISIBLE:
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
@@ -358,8 +359,11 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 							unread++;
 						if (flags & CAMEL_MESSAGE_DELETED)
 							deleted++;
-						if (flags & CAMEL_MESSAGE_JUNK)
+						if (flags & CAMEL_MESSAGE_JUNK) {
 							junked++;
+							if (! (flags & CAMEL_MESSAGE_DELETED))
+								junked_not_deleted++;
+						}
 						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
 							visible++;
 						camel_message_info_free(info);
@@ -376,6 +380,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				break;
 			case CAMEL_FOLDER_ARG_JUNKED:
 				count = junked;
+				break;
+			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
+				count = junked_not_deleted;
 				break;
 			case CAMEL_FOLDER_ARG_VISIBLE:
 				count = visible;
