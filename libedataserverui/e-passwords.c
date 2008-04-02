@@ -318,9 +318,6 @@ ep_keyring_lookup_passwords (const gchar *user,
 	GnomeKeyringResult result;
 	GList *passwords = NULL;
 
-	g_return_val_if_fail (user != NULL, NULL);
-	g_return_val_if_fail (server != NULL, NULL);
-
 	attributes = gnome_keyring_attribute_list_new ();
 	gnome_keyring_attribute_list_append_string (
 		attributes, "application", "Evolution");
