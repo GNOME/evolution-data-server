@@ -1,3 +1,8 @@
+2008-04-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (ep_keyring_lookup_passwords):
+	Remove NULL argument checks.  Passing NULL is valid.
+
 2008-02-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #513870
