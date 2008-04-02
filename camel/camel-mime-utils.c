@@ -4481,12 +4481,13 @@ camel_header_address_fold (const char *in, size_t headerlen)
 char *
 camel_header_fold(const char *in, size_t headerlen)
 {
-	size_t len, outlen, i;
+	size_t len, outlen, tmplen;
 	const char *inptr = in, *space, *p, *n;
 	GString *out;
 	char *ret;
 	int needunfold = FALSE;
-
+	char spc;
+	
 	if (in == NULL)
 		return NULL;
 
@@ -4518,34 +4519,43 @@ camel_header_fold(const char *in, size_t headerlen)
 	out = g_string_new("");
 	outlen = headerlen+2;
 	while (*inptr) {
-		space = strchr(inptr, ' ');
-		if (space) {
-			len = space-inptr+1;
-		} else {
-			len = strlen(inptr);
-		}
+		space = inptr;
+		while (*space && *space != ' ' && *space != '\t')
+			space++;
+		
+		if (*space)
+			len = space - inptr + 1;
+		else
+			len = space - inptr;
+		
 		d(printf("next word '%.*s'\n", len, inptr));
 		if (outlen + len > CAMEL_FOLD_SIZE) {
 			d(printf("outlen = %d wordlen = %d\n", outlen, len));
 			/* strip trailing space */
-			if (out->len > 0 && out->str[out->len-1] == ' ')
-				g_string_truncate(out, out->len-1);
-			g_string_append(out, "\n\t");
+			if (out->len > 0 && (out->str[out->len - 1] == ' ' || out->str[out->len - 1] == '\t')) {
+				spc = out->str[out->len - 1];
+				g_string_truncate (out, out->len - 1);
+				g_string_append_c (out, '\n');
+				g_string_append_c (out, spc);
+			} else {
+				g_string_append (out, "\n\t");
+			}
+			
 			outlen = 1;
+			
 			/* check for very long words, just cut them up */
-			while (outlen+len > CAMEL_FOLD_MAX_SIZE) {
-				for (i=0;i<CAMEL_FOLD_MAX_SIZE-outlen;i++)
-					g_string_append_c(out, inptr[i]);
-				inptr += CAMEL_FOLD_MAX_SIZE-outlen;
-				len -= CAMEL_FOLD_MAX_SIZE-outlen;
-				g_string_append(out, "\n\t");
+			while (outlen + len > CAMEL_FOLD_MAX_SIZE) {
+				tmplen = CAMEL_FOLD_MAX_SIZE - outlen;
+				g_string_append_len (out, inptr, tmplen);
+				g_string_append (out, "\n\t");
+				inptr += tmplen;
+				len -= tmplen;
 				outlen = 1;
 			}
 		}
+		
+		g_string_append_len (out, inptr, len);
 		outlen += len;
-		for (i=0;i<len;i++) {
-			g_string_append_c(out, inptr[i]);
-		}
 		inptr += len;
 	}
 	ret = out->str;
