@@ -558,6 +558,78 @@ imap_rename (CamelFolder *folder, const char *new)
 	((CamelFolderClass *)disco_folder_class)->rename(folder, new);
 }
 
+/* called with connect_lock locked */
+static gboolean
+get_folder_status (CamelFolder *folder, guint32 *total, guint32 *unread, CamelException *ex)
+{
+	CamelImapStore *imap_store = CAMEL_IMAP_STORE (folder->parent_store);
+	CamelImapResponse *response;
+	gboolean res = FALSE;
+
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	response = camel_imap_command (imap_store, folder, ex, "STATUS %F (MESSAGES UNSEEN)", folder->full_name);
+
+	if (response) {
+		int i;
+
+		for (i = 0; i < response->untagged->len; i++) {
+			const char *resp = response->untagged->pdata[i];
+
+			if (resp && g_str_has_prefix (resp, "* STATUS ")) {
+				const char *p = NULL;
+
+				while (*resp) {
+					if (*resp == '(')
+						p = resp;
+					resp++;
+				}
+
+				if (p && *(resp - 1) == ')') {
+					const char *msgs = NULL, *unseen = NULL;
+
+					p++;
+
+					while (p && (!msgs || !unseen)) {
+						const char **dest = NULL;
+
+						if (g_str_has_prefix (p, "MESSAGES "))
+							dest = &msgs;
+						else if (g_str_has_prefix (p, "UNSEEN "))
+							dest = &unseen;
+
+						if (dest) {
+							*dest = imap_next_word (p);
+
+							if (!*dest)
+								break;
+
+							p = imap_next_word (*dest);
+						} else {
+							p = imap_next_word (p);
+							if (p)
+								p = imap_next_word (p);
+						}
+					}
+
+					if (msgs && unseen) {
+						res = TRUE;
+
+						if (total) 
+							*total = strtoul (msgs, NULL, 10);
+
+						if (unread)
+							*unread = strtoul (unseen, NULL, 10);
+					}
+				}
+			}
+		}
+		camel_imap_response_free (imap_store, response);
+	}
+
+	return res;
+}
+
 static void
 imap_refresh_info (CamelFolder *folder, CamelException *ex)
 {
@@ -565,6 +637,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapResponse *response;
 	CamelStoreInfo *si;
+	int check_rescan = -1;
 	extern int camel_application_is_exiting;
 
 	if (camel_disco_store_status (CAMEL_DISCO_STORE (imap_store)) == CAMEL_DISCO_STORE_OFFLINE)
@@ -598,6 +671,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 		 * messages.
 		 */
 		imap_rescan (folder, camel_folder_summary_count (folder->summary), ex);
+		check_rescan = 0;
 	} else {
 #if 0
 		/* on some servers need to CHECKpoint INBOX to recieve new messages?? */
@@ -621,8 +695,29 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 			si->total = total;
 			si->unread = unread;
 			camel_store_summary_touch((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
+			check_rescan = 0;
 		}
 		camel_store_summary_info_free((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary, si);
+	}
+
+	if (check_rescan && !camel_application_is_exiting && !camel_exception_is_set (ex)) {
+		if (check_rescan == -1) {
+			guint32 total, unread, server_total, server_unread;
+
+			check_rescan = 0;
+			
+			/* Check whether there are changes in total/unread messages in the folders
+			   and if so, then rescan whole summary */
+			if (get_folder_status (folder, &server_total, &server_unread, ex)) {
+				camel_object_get (folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+
+				if (total != server_total || unread != server_unread)
+					check_rescan = 1;
+			}
+		}
+
+		if (check_rescan)
+			imap_rescan (folder, camel_folder_summary_count (folder->summary), ex);
 	}
 done:
 	CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);

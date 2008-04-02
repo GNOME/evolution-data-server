@@ -1,3 +1,11 @@
+2008-04-02  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #257361
+
+	* camel-imap-folder.c: (get_folder_status), (imap_refresh_info):
+	Ask for folder status on the server and rescan it in case different
+	number of total or unseen messages than in the summary.
+
 2008-03-31  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #521015
