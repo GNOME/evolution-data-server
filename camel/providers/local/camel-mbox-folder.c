@@ -150,7 +150,7 @@ static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *e
 	/* make sure we have matching unlocks for locks, camel-local-folder class should enforce this */
 	g_assert(mf->lockfd == -1);
 
-	mf->lockfd = open(lf->folder_path, O_RDWR, 0);
+	mf->lockfd = open(lf->folder_path, O_RDWR|O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot create folder lock on %s: %s"),

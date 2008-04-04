@@ -139,7 +139,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 
 	camel_operation_start(NULL, _("Storing folder"));
 
-	fd = open(((CamelLocalSummary *)cls)->folder_path, O_RDWR);
+	fd = open(((CamelLocalSummary *)cls)->folder_path, O_RDWR|O_LARGEFILE);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open file: %s: %s"),

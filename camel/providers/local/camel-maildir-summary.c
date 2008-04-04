@@ -478,7 +478,7 @@ camel_maildir_summary_add (CamelLocalSummary *cls, const char *name, int forcein
 
 	d(printf("summarising: %s\n", name));
 
-	fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY|O_LARGEFILE);
 	if (fd == -1) {
 		g_warning ("Cannot summarise/index: %s: %s", filename, strerror (errno));
 		g_free(filename);

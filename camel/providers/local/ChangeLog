@@ -1,3 +1,14 @@
+2008-04-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #522433
+
+	* camel-spool-summary.c: (spool_summary_sync_full):
+	* camel-mh-summary.c: (mh_summary_next_uid_string),
+	(camel_mh_summary_add):
+	* camel-maildir-summary.c: (camel_maildir_summary_add):
+	* camel-mbox-folder.c: (mbox_lock):
+	* camel-spool-folder.c: (spool_lock): Open files with O_LARGEFILE flag.
+
 2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #450840

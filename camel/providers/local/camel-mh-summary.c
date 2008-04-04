@@ -152,7 +152,7 @@ static char *mh_summary_next_uid_string(CamelFolderSummary *s)
 			uid = camel_folder_summary_next_uid(s);
 			name = g_strdup_printf("%s/%u", cls->folder_path, uid);
 			/* O_EXCL isn't guaranteed, sigh.  Oh well, bad luck, mh has problems anyway */
-			fd = open(name, O_WRONLY|O_CREAT|O_EXCL, 0600);
+			fd = open(name, O_WRONLY|O_CREAT|O_EXCL|O_LARGEFILE, 0600);
 			g_free(name);
 		} while (fd == -1 && errno == EEXIST);
 
@@ -174,7 +174,7 @@ static int camel_mh_summary_add(CamelLocalSummary *cls, const char *name, int fo
 
 	d(printf("summarising: %s\n", name));
 
-	fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY|O_LARGEFILE);
 	if (fd == -1) {
 		g_warning ("Cannot summarise/index: %s: %s", filename, strerror (errno));
 		g_free(filename);
