@@ -1225,11 +1225,8 @@ folder_scan_header(struct _header_scan_state *s, int *lastone)
 					h(printf("got line part: '%.*s'\n", inptr-1-start, start));
 					/* got a line, strip and add it, process it */
 					s->midline = FALSE;
-#ifdef PRESERVE_HEADERS
-					header_append(s, start, inptr);
-#else
 					header_append(s, start, inptr-1);
-#endif
+
 					/* check for end of headers */
 					if (s->outbuf == s->outptr)
 						goto header_done;
@@ -1237,6 +1234,13 @@ folder_scan_header(struct _header_scan_state *s, int *lastone)
 					/* check for continuation/compress headers, we have atleast 1 char here to work with */
 					if (inptr[0] ==  ' ' || inptr[0] == '\t') {
 						h(printf("continuation\n"));
+
+#ifdef PRESERVE_HEADERS
+						if (inptr-1 >= start) {
+							start=inptr-1;
+							header_append(s, start, inptr);
+						}
+#endif
 #ifndef PRESERVE_HEADERS
 						/* TODO: this wont catch multiple space continuation across a read boundary, but
 						   that is assumed rare, and not fatal anyway */
@@ -1248,11 +1252,6 @@ folder_scan_header(struct _header_scan_state *s, int *lastone)
 #endif
 					} else {
 						/* otherwise, complete header, add it */
-#ifdef PRESERVE_HEADERS
-						s->outptr--;
-						if (s->outptr[-1] == '\r')
-							s->outptr--;
-#endif
 						s->outptr[0] = 0;
 
 						h(printf("header '%s' at %d\n", s->outbuf, (int)s->header_start));

@@ -1,3 +1,9 @@
+2008-04-04  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-parser.c (folder_scan_header): Applied patch by Craig
+	Shelly to fix the PRESERVE_HEADERS logic. First step in fixing bug
+	#235681.
+
 2008-04-02  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-utils.c (camel_header_fold): Fixed bug #417000.
