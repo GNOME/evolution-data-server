@@ -1,3 +1,9 @@
+2008-04-04  Suman Manjunath  <msuman@novell.com>
+
+	* libedataserver/e-data-server-util.c: (e_util_utf8_strstrcase),
+	(e_util_utf8_strstrcasedecomp): 
+	Fixed a few compiler warnings (bug #473880)
+
 2008-04-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in: Version bump for 2.23.1.

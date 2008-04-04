@@ -115,8 +115,7 @@ e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
 const gchar *
 e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 {
-        gunichar *nuni;
-        gunichar unival;
+        gunichar *nuni, unival;
         gint nlen;
         const gchar *o, *p;
 
@@ -136,7 +135,7 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 
 	o = haystack;
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = g_unichar_tolower (unival);
                 /* We have valid stripped char */
                 if (sc == nuni[0]) {
@@ -221,7 +220,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
 
         nlen = 0;
         for (p = e_util_unicode_get_utf8 (needle, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = stripped_char (unival);
                 if (sc) {
                        nuni[nlen++] = sc;
@@ -234,7 +233,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
 
         o = haystack;
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = stripped_char (unival);
                 if (sc) {
                         /* We have valid stripped char */
