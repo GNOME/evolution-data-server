@@ -1669,34 +1669,43 @@ static char *
 summary_format_address(struct _camel_header_raw *h, const char *name, const char *charset)
 {
 	struct _camel_header_address *addr;
-	const char *text;
-	char *ret;
-
-	text = camel_header_raw_find (&h, name, NULL);
-	addr = camel_header_address_decode (text, charset);
-	if (addr) {
-		ret = camel_header_address_list_format (addr);
+	char *text, *str;
+	
+	if (!(text = (char *) camel_header_raw_find (&h, name, NULL)))
+		return NULL;
+	
+	while (isspace ((unsigned) *text))
+		text++;
+	
+	text = camel_header_unfold (text);
+	
+	if ((addr = camel_header_address_decode (text, charset))) {
+		str = camel_header_address_list_format (addr);
 		camel_header_address_list_clear (&addr);
+		g_free (text);
 	} else {
-		ret = g_strdup (text);
+		str = text;
 	}
-
-	return ret;
+	
+	return str;
 }
 
 static char *
 summary_format_string (struct _camel_header_raw *h, const char *name, const char *charset)
 {
-	const char *text;
-
-	text = camel_header_raw_find (&h, name, NULL);
-	if (text) {
-		while (isspace ((unsigned) *text))
-			text++;
-		return camel_header_decode_string (text, charset);
-	} else {
+	char *text, *str;
+	
+	if (!(text = (char *) camel_header_raw_find (&h, name, NULL)))
 		return NULL;
-	}
+	
+	while (isspace ((unsigned) *text))
+		text++;
+	
+	text = camel_header_unfold (text);
+	str = camel_header_decode_string (text, charset);
+	g_free (text);
+	
+	return str;
 }
 
 

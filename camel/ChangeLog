@@ -1,5 +1,11 @@
 2008-04-04  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-folder-summary.c (summary_format_address): Unfold the
+	header before decoding it.
+	(summary_format_string): Same.
+
+	* camel-mime-message.c (process_header): Unfold certain headers.
+
 	* camel-mime-parser.c (folder_scan_header): Applied patch by Craig
 	Shelly to fix the PRESERVE_HEADERS logic. First step in fixing bug
 	#235681.

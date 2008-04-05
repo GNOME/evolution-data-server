@@ -602,7 +602,9 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 	/* ... then clean up the follow-on state */
 	state = camel_mime_parser_step (mp, &buf, &len);
 	switch (state) {
-	case CAMEL_MIME_PARSER_STATE_EOF: case CAMEL_MIME_PARSER_STATE_FROM_END: /* these doesn't belong to us */
+	case CAMEL_MIME_PARSER_STATE_EOF:
+	case CAMEL_MIME_PARSER_STATE_FROM_END:
+		/* these doesn't belong to us */
 		camel_mime_parser_unstep (mp);
 	case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
 		break;
@@ -658,28 +660,33 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (medium);
 	CamelInternetAddress *addr;
 	const char *charset;
-
+	char *unfolded;
+	
 	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
 	switch (header_type) {
 	case HEADER_FROM:
 		addr = camel_internet_address_new();
-		if (camel_address_decode((CamelAddress *)addr, value) <= 0) {
+		unfolded = camel_header_unfold (value);
+		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			camel_object_unref(addr);
 		} else {
 			if (message->from)
 				camel_object_unref(message->from);
 			message->from = addr;
 		}
+		g_free (unfolded);
 		break;
 	case HEADER_REPLY_TO:
 		addr = camel_internet_address_new();
-		if (camel_address_decode((CamelAddress *)addr, value) <= 0) {
+		unfolded = camel_header_unfold (value);
+		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			camel_object_unref(addr);
 		} else {
 			if (message->reply_to)
 				camel_object_unref(message->reply_to);
 			message->reply_to = addr;
 		}
+		g_free (unfolded);
 		break;
 	case HEADER_SUBJECT:
 		g_free (message->subject);
@@ -688,7 +695,10 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 			charset = e_iconv_charset_name (charset);
 		} else
 			charset = NULL;
-		message->subject = g_strstrip (camel_header_decode_string (value, charset));
+		
+		unfolded = camel_header_unfold (value);
+		message->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
+		g_free (unfolded);
 		break;
 	case HEADER_TO:
 	case HEADER_CC:
@@ -697,10 +707,13 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 	case HEADER_RESENT_CC:
 	case HEADER_RESENT_BCC:
 		addr = g_hash_table_lookup (message->recipients, name);
-		if (value)
-			camel_address_decode (CAMEL_ADDRESS (addr), value);
-		else
+		if (value) {
+			unfolded = camel_header_unfold (value);
+			camel_address_decode (CAMEL_ADDRESS (addr), unfolded);
+			g_free (unfolded);
+		} else {
 			camel_address_remove (CAMEL_ADDRESS (addr), -1);
+		}
 		return FALSE;
 	case HEADER_DATE:
 		if (value) {
