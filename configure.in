@@ -1510,8 +1510,10 @@ if test "x$enable_largefile" != "xno"; then
         enable_largefile="yes"
     fi
 else
+    AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
     LARGEFILE_CFLAGS=""
 fi
+
 AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
 
 EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gnome-vfs-2.0, 
