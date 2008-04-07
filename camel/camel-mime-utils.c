@@ -4570,9 +4570,13 @@ camel_header_fold(const char *in, size_t headerlen)
 char *
 camel_header_unfold(const char *in)
 {
-	char *out = g_malloc(strlen(in)+1);
 	const char *inptr = in;
-	char c, *o = out;
+	char c, *o, *out;
+
+	if (in == NULL)
+		return NULL;
+
+	out = g_malloc(strlen(in)+1);
 
 	o = out;
 	while ((c = *inptr++)) {

@@ -1,3 +1,10 @@
+2008-04-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #526138
+
+	* camel-mime-utils.c (camel_header_unfold):
+	Return NULL if the input string is NULL.
+
 2008-04-04  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-folder-summary.c (summary_format_address): Unfold the
