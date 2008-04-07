@@ -208,7 +208,8 @@ AC_CHECK_HEADERS(alloca.h)
 
 # Check for base dependencies early.
 PKG_CHECK_MODULES(GNOME_PLATFORM,
-        [gtk+-2.0 >= gtk_minimum_version
+        [glib-2.0 >= glib_minimum_version
+         gtk+-2.0 >= gtk_minimum_version
          ORBit-2.0 >= ORBit_minimum_version
          gnome-vfs-2.0 >= gnome_vfs_minimum_version
          libbonobo-2.0 >= libbonobo_minimum_version
