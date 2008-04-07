@@ -1456,25 +1456,63 @@ if test "x$zlib_found" = "xfalse"; then
     AC_MSG_ERROR([*** zlib is required])
 fi
 
-dnl Large file support
-LARGEFILE_CFLAGS=""
-AC_CACHE_CHECK([if large files (>2 GB) are supported], largefile_support,
-[
+dnl *************************************
+dnl *** Checks for large file support ***
+dnl *************************************
+AC_ARG_ENABLE(largefile,
+	      AC_HELP_STRING([--enable-largefile],
+	      [enable support for large files [[default=no]]]),,
+	      enable_largefile="no")
+if test "x$enable_largefile" != "xno"; then
+    AC_SYS_LARGEFILE
+    AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], largefile64_source,
+    [
 	AC_TRY_COMPILE([
-		#define _LARGEFILE64_SOURCE
 		#include <sys/types.h>
 		#include <sys/stat.h>
 		#include <fcntl.h>
 	],[
-		int fd = open ("filename", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
+		int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
 	],[
-		largefile_support="yes"
-		LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
+		largefile64_source="no"
 	],[
-		largefile_support="no"
-		AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
+		AC_TRY_COMPILE([
+			#define _LARGEFILE64_SOURCE
+			#include <sys/types.h>
+			#include <sys/stat.h>
+			#include <fcntl.h>
+		],[
+			int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
+		],[
+			largefile64_source="yes"
+		],[
+			largefile64_source="unknown"
+		])
 	])
-])
+    ])
+    
+    enable_largefile="no"
+    
+    if test "x$largefile64_source" = "xyes"; then
+        LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
+        enable_largefile="yes"
+    elif test "x$largefile64_source" = "xunknown"; then
+        AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
+    fi
+    
+    if test -n "$ac_cv_sys_large_files" -a "x$ac_cv_sys_large_files" != "xno"; then
+        LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGE_FILES"
+        enable_largefile="yes"
+    fi
+    
+    if test "x$ac_cv_sys_file_offset_bits" != "xno"; then
+        LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+        enable_largefile="yes"
+    fi
+else
+    LARGEFILE_CFLAGS=""
+fi
+AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
 
 EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gnome-vfs-2.0, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
