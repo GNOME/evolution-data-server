@@ -1,3 +1,7 @@
+2008-04-07  Srinivasa Ragavan <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.22.1
+
 2008-04-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* configure.in: Enforce the minimum GLib version (#525242).

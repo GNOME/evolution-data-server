@@ -1,4 +1,29 @@
-Evolution-Data-Server 2.21.93 2008-03-10
+Evolution-Data-Server 2.22.1 2008-04-07
+---------------------------------------
+
+Bug Fixes:
+	#524704: Better support for non RFC 2047 subject line with encoded words (Milan Crha)
+	#521015: IMAP custom/user flags are now synced in summary between two Evolutions (Milan Crha)
+	#520526: Stop work as soon as we know application is going to exit (Milan Crha)
+	#522433: Open files with O_LARGEFILE flag (Milan Crha)
+	#525485: Removed some infinite loops and corrected the conditional statement (Sankar P)
+	#523528,372383: (Novell Bugzilla) Some mails with attachments do not have an attachment icon. Mail size is not shown for some mails and not all related recurring appointments are deleted as well (Sankar P)
+	#522389: Use correct type for g_base64_decode to fix stack corruption on x86_64. (Stanislav Brabec)
+	#500389: Fall back to simple binds if the global catalog server does not support NTLM binds. (Matthew Barnes)
+	#523023: Fix a severe memory leak when using exchange (Matthew Barnes)
+	#494311: Don't terminate connection after sucessful reconnect by ORBit. (Ondrej Jirman)
+	#523126: Initialize variable to NULL, so do not free random memory (Milan Crha)
+	#303067: Random crash looking up addresses in new email (Milan Crha)
+
+Updated Translations:
+	Yuriy Penkin (ru)
+	Philip Withnall (en_GB)
+	Jorge Gonzalez (es)
+	Krishna Babu K (te)
+	Ivar Smolin (et)
+	Yavor Doganov (bg)
+
+Evolution-Data-Server 2.22.0 2008-03-10
 ----------------------------------------
 
 Bug Fixes:
