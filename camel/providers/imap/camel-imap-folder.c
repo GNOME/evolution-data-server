@@ -1822,6 +1822,80 @@ handle_copyuid (CamelImapResponse *response, CamelFolder *source,
 }
 
 static void
+handle_copyuid_copy_user_tags (CamelImapResponse *response, CamelFolder *source, CamelFolder *destination)
+{
+	char *validity, *srcset, *destset;
+	GPtrArray *src, *dest;
+	int i;
+	CamelException ex;
+
+	validity = camel_strstrcase (response->status, "[COPYUID ");
+	if (!validity)
+		return;
+	validity += 9;
+	if (strtoul (validity, NULL, 10) !=
+	    CAMEL_IMAP_SUMMARY (destination->summary)->validity)
+		return;
+
+	srcset = strchr (validity, ' ');
+	if (!srcset++)
+		goto lose;
+	destset = strchr (srcset, ' ');
+	if (!destset++)
+		goto lose;
+
+	camel_exception_init (&ex);
+	/* refresh folder's summary first, we copied messages there on the server,
+	   but do not know about it in a local summary */
+	camel_folder_refresh_info (destination, &ex);
+	if (camel_exception_is_set (&ex)) {
+		g_warning ("destination folder refresh failed, error: %s", ex.desc);
+		camel_exception_clear (&ex);
+		goto lose;
+	}
+	camel_exception_clear (&ex);
+
+	src = imap_uid_set_to_array (source->summary, srcset);
+	dest = imap_uid_set_to_array (destination->summary, destset);
+
+	if (src && dest && src->len == dest->len) {
+		/* We don't have to worry about deadlocking on the
+		 * cache locks here, because we've got the store's
+		 * command lock too, so no one else could be here.
+		 */
+		CAMEL_IMAP_FOLDER_REC_LOCK (source, cache_lock);
+		CAMEL_IMAP_FOLDER_REC_LOCK (destination, cache_lock);
+		for (i = 0; i < src->len; i++) {
+			CamelMessageInfo *mi = camel_folder_get_message_info (source, src->pdata[i]);
+
+			if (mi) {
+				const CamelTag *tag = camel_message_info_user_tags (mi);
+
+				while (tag) {
+					camel_folder_set_message_user_tag (destination, dest->pdata[i], tag->name, tag->value);
+					tag = tag->next;
+				}
+
+				camel_folder_free_message_info (source, mi);
+			}
+		}
+		CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
+		CAMEL_IMAP_FOLDER_REC_UNLOCK (destination, cache_lock);
+
+		imap_uid_array_free (src);
+		imap_uid_array_free (dest);
+		return;
+	}
+
+	if (src)
+		imap_uid_array_free (src);
+	if (dest)
+		imap_uid_array_free (dest);
+ lose:
+	g_warning ("Bad COPYUID response from server");
+}
+
+static void
 do_copy (CamelFolder *source, GPtrArray *uids,
 	 CamelFolder *destination, int delete_originals, CamelException *ex)
 {
@@ -1841,6 +1915,8 @@ do_copy (CamelFolder *source, GPtrArray *uids,
 			response = camel_imap_command (store, source, ex, "UID COPY %s %F", uidset, destination->full_name);
 			if (response && (store->capabilities & IMAP_CAPABILITY_UIDPLUS))
 				handle_copyuid (response, source, destination);
+			if (response)
+				handle_copyuid_copy_user_tags (response, source, destination);
 			camel_imap_response_free (store, response);
 
 			if (!camel_exception_is_set(ex) && delete_originals) {
