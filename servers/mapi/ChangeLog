@@ -1,3 +1,18 @@
+2008-04-14  Suman Manjunath  <msuman@novell.com>
+
+	** Unblocking all code which can now be used, since the switch to 
+	libmapi-0.7 
+
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_delete_attachments),
+	(exchange_mapi_util_get_recipients):
+	NOTE: Redefined LOGALL() and LOGNONE() since they SEGFAULT on use. 
+	Probably due to the update to newer Samba revisions. 
+	TODO: Fix this issue (minor).
+	* exchange-mapi-utils.c: (exchange_mapi_util_ex_to_smtp):
+	* exchange-mapi-utils.h: New API to convert from 'EX' email 
+	address-type to 'SMTP' email address-type. 
+
 2008-04-02  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-connection.c (exchange_mapi_create_folder): CreateFolder. 

@@ -41,8 +41,10 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+//#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+//#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+#define LOGALL()
+#define LOGNONE()
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
 
 /* Specifies READ/WRITE sizes to be used while handling attachment streams */
@@ -379,10 +381,6 @@ exchange_mapi_util_delete_attachments (mapi_object_t *obj_message)
 	uint32_t		i_row_attach;
 	gboolean 		status = TRUE;
 
-	/* FIXME: remove this line once you upgrade to libmapi rev 327 or higher */
-	return TRUE;
-	/* also uncomment the line with the DeleteAttach call */
-
 	mem_ctx = talloc_init ("ExchangeMAPI_DeleteAttachments");
 
 	proptags = set_SPropTagArray(mem_ctx, 0x7, 
@@ -427,7 +425,7 @@ exchange_mapi_util_delete_attachments (mapi_object_t *obj_message)
 
 		num_attach = (const uint32_t *) get_SPropValue_SRow_data(&rows_attach.aRow[i_row_attach], PR_ATTACH_NUM);
 
-//		retval = DeleteAttach(obj_message, *num_attach);
+		retval = DeleteAttach(obj_message, *num_attach);
 		if (retval != MAPI_E_SUCCESS) {
 			mapi_errstr("DeleteAttach", GetLastError());
 			goto loop_cleanup;
@@ -702,14 +700,10 @@ exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_li
 	uint32_t		i_row_recip;
 	gboolean 		status = TRUE;
 
-	/* FIXME: remove this line once you upgrade to libmapi rev 340 or higher */
-	return TRUE;
-	/* also uncomment the line with the GetRecipientTable call */
-
 //	mem_ctx = talloc_init ("ExchangeMAPI_GetRecipients");
 
 	/* fetch recipient table */
-//	retval = GetRecipientTable(obj_message, &rows_recip, &proptags);
+	retval = GetRecipientTable(obj_message, &rows_recip, &proptags);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("GetRecipientTable", GetLastError());
 		goto cleanup;
@@ -720,11 +714,12 @@ exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_li
 			ExchangeMAPIRecipient 	*recipient = g_new0 (ExchangeMAPIRecipient, 1);
 			const uint32_t *ui32;
 
+			recipient->email_id = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_SMTP_ADDRESS);
+//			recipient->email_type = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_RECIPIENT_);
 			/* FIXME: fallback on EX address type */
-			recipient->email_id = (const char *) find_SPropValue_data (&(rows_recip.aRow[i_row_recip]), PR_SMTP_ADDRESS_UNICODE);
 			recipient->email_type = "SMTP";
 			/* FIXME: fallback on other usable props */
-			recipient->name = (const char *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_DISPLAY_NAME_UNICODE);
+			recipient->name = (const char *) exchange_mapi_util_find_row_propval(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_DISPLAY_NAME);
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENTS_FLAGS);
 			recipient->flags = *ui32;
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TYPE);

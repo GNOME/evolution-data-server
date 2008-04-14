@@ -229,3 +229,39 @@ exchange_mapi_util_free_stream_list (GSList **stream_list)
 	l = NULL;
 }
 
+const gchar *
+exchange_mapi_util_ex_to_smtp (const gchar *ex_address)
+{
+	enum MAPISTATUS 	retval;
+	TALLOC_CTX 		*mem_ctx;
+	struct SPropTagArray	*SPropTagArray;
+	struct SRowSet 		*SRowSet = NULL;
+	struct FlagList		*flaglist = NULL;
+	const gchar 		*str_array[2];
+	const gchar 		*smtp_addr = NULL;
+
+	g_return_val_if_fail (ex_address != NULL, NULL);
+
+	str_array[0] = ex_address;
+	str_array[1] = NULL;
+
+	mem_ctx = talloc_init("ExchangeMAPI_EXtoSMTP");
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x2,
+					  PR_SMTP_ADDRESS,
+					  PR_SMTP_ADDRESS_UNICODE);
+
+	retval = ResolveNames((const char **)str_array, SPropTagArray, &SRowSet, &flaglist, 0);
+	if (retval != MAPI_E_SUCCESS)
+		retval = ResolveNames((const char **)str_array, SPropTagArray, &SRowSet, &flaglist, MAPI_UNICODE);
+
+	if (retval == MAPI_E_SUCCESS && SRowSet && SRowSet->cRows == 1) {
+		smtp_addr = (const char *) find_SPropValue_data(SRowSet->aRow, PR_SMTP_ADDRESS);
+		if (!smtp_addr)
+			smtp_addr = (const char *) find_SPropValue_data(SRowSet->aRow, PR_SMTP_ADDRESS_UNICODE);
+	}
+
+	talloc_free (mem_ctx);
+
+	return smtp_addr;
+}
