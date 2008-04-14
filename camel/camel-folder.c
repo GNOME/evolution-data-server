@@ -115,6 +115,8 @@ static gboolean        is_frozen             (CamelFolder *folder);
 static gboolean        folder_changed        (CamelObject *object,
 					      gpointer event_data);
 
+static CamelFolderQuotaInfo *get_quota_info  (CamelFolder *folder);
+
 static void
 camel_folder_class_init (CamelFolderClass *camel_folder_class)
 {
@@ -155,6 +157,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->freeze = freeze;
 	camel_folder_class->thaw = thaw;
 	camel_folder_class->is_frozen = is_frozen;
+	camel_folder_class->get_quota_info = get_quota_info;
 
 	/* virtual method overload */
 	camel_object_class->getv = folder_getv;
@@ -1630,6 +1633,95 @@ camel_folder_is_frozen (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	return CF_CLASS (folder)->is_frozen (folder);
+}
+
+static CamelFolderQuotaInfo *
+get_quota_info (CamelFolder *folder)
+{
+	return NULL;
+}
+
+/**
+ * camel_folder_get_quota_info:
+ * @folder: a #CamelFolder object
+ *
+ * Returns list of known quota(s) for the folder.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_get_quota_info (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	return CF_CLASS (folder)->get_quota_info (folder);
+}
+
+/**
+ * camel_folder_quota_info_new:
+ * @name: Name of the quota.
+ * @used: Current usage of the quota.
+ * @total: Total available size of the quota.
+ *
+ * Returns newly allocated #CamelFolderQuotaInfo structure with initialized values
+ * based on the parameters, with next member set to NULL.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_quota_info_new (const char *name, guint64 used, guint64 total)
+{
+	CamelFolderQuotaInfo *info;
+
+	info = g_malloc0 (sizeof (CamelFolderQuotaInfo));
+	info->name = g_strdup (name);
+	info->used = used;
+	info->total = total;
+	info->next = NULL;
+
+	return info;
+}
+
+/**
+ * camel_folder_quota_info_clone:
+ * @info: a #CamelFolderQuotaInfo object to clone.
+ *
+ * Makes a copy of the given info and all next-s.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_quota_info_clone (const CamelFolderQuotaInfo *info)
+{
+	CamelFolderQuotaInfo *clone = NULL, *last = NULL;
+	const CamelFolderQuotaInfo *iter;
+
+	for (iter = info; iter != NULL; iter = iter->next) {
+		CamelFolderQuotaInfo *n = camel_folder_quota_info_new (iter->name, iter->used, iter->total);
+
+		if (last)
+			last->next = n;
+		else
+			clone = n;
+
+		last = n;
+	}
+
+	return clone;
+}
+
+/**
+ * camel_folder_quota_info_free:
+ * @info: a #CamelFolderQuotaInfo object to free.
+ *
+ * Frees this and all next objects.
+ **/
+void
+camel_folder_quota_info_free (CamelFolderQuotaInfo *info)
+{
+	CamelFolderQuotaInfo *next = info;
+
+	while (next) {
+		info = next;
+		next = next->next;
+
+		g_free (info->name);
+		g_free (info);
+	}
 }
 
 struct _folder_filter_msg {

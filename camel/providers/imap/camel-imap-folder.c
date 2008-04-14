@@ -67,6 +67,7 @@
 #include "camel-imap-private.h"
 #include "camel-imap-search.h"
 #include "camel-imap-store.h"
+#include "camel-imap-store-summary.h"
 #include "camel-imap-summary.h"
 #include "camel-imap-utils.h"
 #include "camel-imap-wrapper.h"
@@ -133,6 +134,7 @@ static GPtrArray *imap_search_by_uids	    (CamelFolder *folder, const char *expr
 static void       imap_search_free          (CamelFolder *folder, GPtrArray *uids);
 
 static void imap_thaw (CamelFolder *folder);
+static CamelFolderQuotaInfo *imap_get_quota_info (CamelFolder *folder);
 
 static CamelObjectClass *parent_class;
 
@@ -164,6 +166,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 	camel_folder_class->search_by_uids = imap_search_by_uids;
 	camel_folder_class->search_free = imap_search_free;
 	camel_folder_class->thaw = imap_thaw;
+	camel_folder_class->get_quota_info = imap_get_quota_info;
 
 	camel_disco_folder_class->refresh_info_online = imap_refresh_info;
 	camel_disco_folder_class->sync_online = imap_sync_online;
@@ -3379,3 +3382,85 @@ parse_fetch_response (CamelImapFolder *imap_folder, char *response)
 	return data;
 }
 
+/* it uses connect_lock, thus be sure it doesn't run in main thread */
+static CamelFolderQuotaInfo *
+imap_get_quota_info (CamelFolder *folder)
+{
+	CamelImapStore *imap_store = CAMEL_IMAP_STORE (folder->parent_store);
+	CamelImapResponse *response;
+	CamelFolderQuotaInfo *res = NULL, *last = NULL;
+
+	if (camel_disco_store_status (CAMEL_DISCO_STORE (imap_store)) == CAMEL_DISCO_STORE_OFFLINE)
+		return NULL;
+
+	CAMEL_SERVICE_REC_LOCK (imap_store, connect_lock);
+
+	if (!camel_imap_store_connected (imap_store, NULL))
+		goto done;
+
+	if (imap_store->capabilities & IMAP_CAPABILITY_QUOTA) {
+		char *folder_name = camel_imap_store_summary_path_to_full (imap_store->summary, camel_folder_get_full_name (folder), imap_store->dir_sep);
+
+		response = camel_imap_command (imap_store, NULL, NULL, "GETQUOTAROOT \"%s\"", folder_name);
+
+		if (response) {
+			int i;
+
+			for (i = 0; i < response->untagged->len; i++) {
+				const char *resp = response->untagged->pdata[i];
+
+				if (resp && g_str_has_prefix (resp, "* QUOTA ")) {
+					size_t sz;
+					char *astr;
+
+					resp = resp + 8;
+					astr = imap_parse_astring (&resp, &sz);
+					g_free (astr);
+
+					while (resp && *resp && *resp != '(')
+						resp++;
+
+					if (resp && *resp == '(') {
+						char *name;
+						const char *used, *total;
+
+						resp++;
+						name = imap_parse_astring (&resp, &sz);
+
+						used = imap_next_word (resp);
+						total = imap_next_word (used);
+
+						while (resp && *resp && *resp != ')')
+							resp++;
+
+						if (resp && *resp == ')' && used && total) {
+							guint64 u, t;
+
+							u = strtoull (used, NULL, 10);
+							t = strtoull (total, NULL, 10);
+
+							if (u >= 0 && t > 0) {
+								CamelFolderQuotaInfo *info = camel_folder_quota_info_new (name, u, t);
+
+								if (last)
+									last->next = info;
+								else
+									res = info;
+
+								last = info;
+							}
+						}
+
+						g_free (name);
+					}
+				}
+			}
+			camel_imap_response_free (imap_store, response);
+		}
+
+		g_free (folder_name);
+	}
+done:
+	CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);
+	return res;
+}

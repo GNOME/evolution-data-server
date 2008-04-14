@@ -84,6 +84,16 @@ struct _CamelFolderChangeInfo {
 	struct _CamelFolderChangeInfoPrivate *priv;
 };
 
+typedef struct _CamelFolderQuotaInfo CamelFolderQuotaInfo;
+
+struct _CamelFolderQuotaInfo {
+	char *name;
+	guint64 used;
+	guint64 total;
+
+	struct _CamelFolderQuotaInfo *next;
+};
+
 struct _CamelFolder {
 	CamelObject parent_object;
 
@@ -193,6 +203,8 @@ typedef struct {
 	void     (*freeze)    (CamelFolder *folder);
 	void     (*thaw)      (CamelFolder *folder);
 	gboolean (*is_frozen) (CamelFolder *folder);
+
+	CamelFolderQuotaInfo * (*get_quota_info) (CamelFolder *folder);
 } CamelFolderClass;
 
 /* Standard Camel function */
@@ -319,6 +331,13 @@ void               camel_folder_rename                 (CamelFolder *folder, con
 void               camel_folder_freeze                (CamelFolder *folder);
 void               camel_folder_thaw                  (CamelFolder *folder);
 gboolean           camel_folder_is_frozen             (CamelFolder *folder);
+
+/* quota support */
+CamelFolderQuotaInfo *camel_folder_get_quota_info   (CamelFolder *folder);
+
+CamelFolderQuotaInfo *camel_folder_quota_info_new   (const char *name, guint64 used, guint64 total);
+CamelFolderQuotaInfo *camel_folder_quota_info_clone (const CamelFolderQuotaInfo *info);
+void                  camel_folder_quota_info_free  (CamelFolderQuotaInfo *info);
 
 /* For use by subclasses (for free_{uids,summary,subfolder_names}) */
 void camel_folder_free_nop     (CamelFolder *folder, GPtrArray *array);

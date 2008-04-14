@@ -1,3 +1,14 @@
+2008-04-14  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #270406
+
+	* camel-folder.h: (CamelFolderClass):
+	* camel-folder.c: (camel_folder_class_init), (get_quota_info),
+	(camel_folder_get_quota_info), (camel_folder_quota_info_new),
+	(camel_folder_quota_info_clone), (camel_folder_quota_info_free):
+	Add virtual function get_quota_info on a folder. Also add functions
+	to work with CamelFolderQuotaInfo structure.
+
 2008-04-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #526138

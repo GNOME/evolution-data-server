@@ -1,5 +1,15 @@
 2008-04-14  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #270406
+
+	* camel-imap-store.h:
+	* camel-imap-store.c: (struct capabilities[]):
+	Add new check for IMAP_CAPABILITY_QUOTA.
+	* camel-imap-folder.c: (camel_imap_folder_class_init),
+	(imap_get_quota_info): Implement get_quota_info on a folder.
+
+2008-04-14  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #274316
 
 	* camel-imap-folder.c: (handle_copyuid_copy_user_tags), (do_copy):
