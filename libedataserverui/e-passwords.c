@@ -838,7 +838,7 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 	 * result or ignore other operations */
 
 	G_LOCK (passwords);
-	for (iter = g_queue_peek_head (&message_queue); iter != NULL; iter = iter->next) {
+	for (iter = g_queue_peek_head_link (&message_queue); iter != NULL; iter = iter->next) {
 		EPassMsg *pending = iter->data;
 
 		if ((pending->dispatch == ep_forget_password
