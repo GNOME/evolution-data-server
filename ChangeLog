@@ -1,3 +1,11 @@
+2008-04-15  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #475616
+
+	* libedataserver/e-component-listener.c: (watched_lock),
+	(connection_listen_cb), (e_component_listener_finalize),
+	(e_component_listener_new): Use rather rec mutex here.
+
 2008-04-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* configure.in: Do proper checks for largefile support and
