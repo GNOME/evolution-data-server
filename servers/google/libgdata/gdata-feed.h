@@ -68,4 +68,6 @@ GDataFeed * gdata_feed_new_from_xml(const gchar *feedXML, const gint length);
 
 gchar * gdata_feed_generate_xml(GDataFeed *feed);
 
+gchar * gdata_feed_get_updated (GDataFeed *feed);
+
 GSList * gdata_feed_get_entries (GDataFeed *feed);
