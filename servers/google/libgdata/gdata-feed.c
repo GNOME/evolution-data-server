@@ -240,6 +240,8 @@ gdata_feed_finalize(GObject *obj)
 		g_slist_free(priv->categories);
 	}
 
+	g_free (priv->updated);
+
 	if (priv->field_table != NULL)
 		g_hash_table_destroy(priv->field_table);
 
@@ -572,6 +574,11 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"category")) {
 			priv->categories = g_slist_prepend(priv->categories, xmlnode_to_category(doc, cur));
 		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"updated")) {
+			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			priv->updated = g_strdup ((gchar*)value);
+			xmlFree(value);
+		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"entry")) {
 			priv->entries = g_slist_prepend(priv->entries, gdata_entry_new_from_xmlptr(doc,cur));
 		}
@@ -661,6 +668,17 @@ gdata_feed_generate_xml(GDataFeed *feed)
 	else {
 		return priv->feedXML;
 	}
+}
+
+gchar * gdata_feed_get_updated (GDataFeed *feed)
+{
+	GDataFeedPrivate *priv;
+	priv = GDATA_FEED_GET_PRIVATE (feed);
+
+	g_return_val_if_fail (feed !=NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_FEED(feed), NULL);
+
+	return priv->updated;
 }
 
 GSList *
