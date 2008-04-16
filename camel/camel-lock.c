@@ -4,8 +4,8 @@
  *
  * Copyright (C) 1999 Ximian (www.ximian.com/).
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -64,12 +64,12 @@
 
 /**
  * camel_lock_dot:
- * @path: 
- * @ex: 
- * 
+ * @path:
+ * @ex:
+ *
  * Create an exclusive lock using .lock semantics.
  * All locks are equivalent to write locks (exclusive).
- * 
+ *
  * Return value: -1 on error, sets @ex appropriately.
  **/
 int
@@ -150,8 +150,8 @@ camel_lock_dot(const char *path, CamelException *ex)
 
 /**
  * camel_unlock_dot:
- * @path: 
- * 
+ * @path:
+ *
  * Attempt to unlock a .lock lock.
  **/
 void
@@ -169,15 +169,15 @@ camel_unlock_dot(const char *path)
 
 /**
  * camel_lock_fcntl:
- * @fd: 
- * @type: 
- * @ex: 
- * 
+ * @fd:
+ * @type:
+ * @ex:
+ *
  * Create a lock using fcntl(2).
  *
  * @type is CAMEL_LOCK_WRITE or CAMEL_LOCK_READ,
  * to create exclusive or shared read locks
- * 
+ *
  * Return value: -1 on error.
  **/
 int
@@ -213,8 +213,8 @@ camel_lock_fcntl(int fd, CamelLockType type, CamelException *ex)
 
 /**
  * camel_unlock_fcntl:
- * @fd: 
- * 
+ * @fd:
+ *
  * Unlock an fcntl lock.
  **/
 void
@@ -233,12 +233,12 @@ camel_unlock_fcntl(int fd)
 
 /**
  * camel_lock_flock:
- * @fd: 
- * @type: 
- * @ex: 
- * 
+ * @fd:
+ * @type:
+ * @ex:
+ *
  * Create a lock using flock(2).
- * 
+ *
  * @type is CAMEL_LOCK_WRITE or CAMEL_LOCK_READ,
  * to create exclusive or shared read locks
  *
@@ -269,8 +269,8 @@ camel_lock_flock(int fd, CamelLockType type, CamelException *ex)
 
 /**
  * camel_unlock_flock:
- * @fd: 
- * 
+ * @fd:
+ *
  * Unlock an flock lock.
  **/
 void
@@ -288,11 +288,11 @@ camel_unlock_flock(int fd)
  * @path: Path to the file to lock (used for .locking only).
  * @fd: Open file descriptor of the right type to lock.
  * @type: Type of lock, CAMEL_LOCK_READ or CAMEL_LOCK_WRITE.
- * @ex: 
- * 
+ * @ex:
+ *
  * Attempt to lock a folder, multiple attempts will be made using all
  * locking strategies available.
- * 
+ *
  * Return value: -1 on error, @ex will describe the locking system that failed.
  **/
 int
@@ -322,7 +322,7 @@ camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *
  * camel_unlock_folder:
  * @path: Filename of folder.
  * @fd: Open descrptor on which locks were placed.
- * 
+ *
  * Free a lock on a folder.
  **/
 void
@@ -362,7 +362,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	fd2 = open("mylock", O_RDWR);
-	if (fd2 == -1) {		
+	if (fd2 == -1) {
 		printf("Could not open lock file (mylock): %s", g_strerror (errno));
 		close (fd1);
 		return 1;

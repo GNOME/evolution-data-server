@@ -1,3 +1,95 @@
+2008-04-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #522433
+
+	* camel-spool-summary.c: (spool_summary_sync_full):
+	* camel-mh-summary.c: (mh_summary_next_uid_string),
+	(camel_mh_summary_add):
+	* camel-maildir-summary.c: (camel_maildir_summary_add):
+	* camel-mbox-folder.c: (mbox_lock):
+	* camel-spool-folder.c: (spool_lock): Open files with O_LARGEFILE flag.
+
+2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #450840
+
+	* camel-mbox-folder.c: (mbox_get_message): A corrupted summary that
+	would get fine in next sync. So lets not crash if a message is not
+	there.
+
+2008-01-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #482940
+
+	* camel-maildir-summary.c: (camel_maildir_summary_init),
+	(camel_maildir_summary_finalise), (maildir_summary_check): Make the
+	maildir summary check thread safe. May be needed for other functions
+	too.
+
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(camel_mbox_summary_sync_mbox):
+	Changed error message to a better string as suggested by
+
+	Wouter Bolsterlee <uws+gnome@xs4all.nl>
+
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
+	Avoids the infinite loop that might be caused in case
+	of broken mbox files or null From addresses.
+
+	** Part of fix for #213072
+
+2008-01-16  Sankar P  <psankar@novell.com>
+
+	* camel-mbox-summary.c: (mbox_summary_sync_quick),
+	(fix_summary_mismatch), (camel_mbox_summary_sync_mbox):
+	Remove the error condition that inits and persists 
+	the infamous "folder summary mismatch" bug.
+
+	** Fix for bug #213072
+
+	** Let there be light at the end of the tunnel :)
+
+2008-01-14  Philip Van Hoof  <pvanhoof@gnome.org>
+
+	* camel-maildir-folder.c: Memory leak fix
+
+2007-12-11  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #336074
+
+	* camel-local-store.c: (local_can_refresh_folder),
+	(camel_local_store_class_init): Implements its own CamelStore's
+	can_refresh_folder function - any folder can be refreshed here.
+
+2007-12-04  David Turner  <cillian64@googlemail.com>
+
+	** Fix for bug #466499
+
+	* camel-local-provider.c: Added mnemonics to configuration options
+
+2007-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #500018
+
+	* camel-local-provider.c: (CamelProvider mbox_provider):
+	Allow choose files, instead of directories, for mbox.
+
+2007-11-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-spool-store.c (free_folder_info):
+	Missed that CamelSpoolStore has its own free_folder_info()
+	implementation (why?).  Change it to use g_slice_free().
+
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-09-07  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-maildir-summary.c: (maildir_summary_next_uid_string),

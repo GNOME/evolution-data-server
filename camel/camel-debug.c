@@ -4,8 +4,8 @@
  *
  * Copyright 2004 Novell Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -34,8 +34,8 @@ static GHashTable *debug_table = NULL;
 
 /**
  * camel_debug_init:
- * @void: 
- * 
+ * @void:
+ *
  * Init camel debug.  Maintain legacy CAMEL_VERBOSE_DEBUG as well as the
  * new CAMEL_DEBUG based environment variable interfaces.
  *
@@ -77,14 +77,14 @@ void camel_debug_init(void)
 
 /**
  * camel_debug:
- * @mode: 
- * 
+ * @mode:
+ *
  * Check to see if a debug mode is activated.  @mode takes one of two forms,
  * a fully qualified 'module:target', or a wildcard 'module' name.  It
  * returns a boolean to indicate if the module or module and target is
  * currently activated for debug output.
- * 
- * Return value: 
+ *
+ * Return value:
  **/
 gboolean camel_debug(const char *mode)
 {
@@ -111,7 +111,7 @@ gboolean camel_debug(const char *mode)
 			/* Now check ':subsystem' */
 			*colon = ':';
 			if (g_hash_table_lookup(debug_table, colon))
-				return TRUE;		
+				return TRUE;
 		}
 	}
 
@@ -122,7 +122,7 @@ static pthread_mutex_t debug_lock = PTHREAD_MUTEX_INITIALIZER;
 /**
  * camel_debug_start:
  * @mode:
- * 
+ *
  * Start debug output for a given mode, used to make sure debug output
  * is output atomically and not interspersed with unrelated stuff.
  *
@@ -143,7 +143,7 @@ camel_debug_start(const char *mode)
 
 /**
  * camel_debug_end:
- * 
+ *
  * Call this when you're done with your debug output.  If and only if
  * you called camel_debug_start, and if it returns TRUE.
  **/

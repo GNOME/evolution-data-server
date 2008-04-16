@@ -46,11 +46,11 @@ static ECalBackendFileClass *parent_class;
 
 /**
  * e_cal_backend_file_todos_get_type:
- * @void: 
- * 
+ * @void:
+ *
  * Registers the #ECalBackendFileTodos class if necessary, and returns the type ID
  * associated to it.
- * 
+ *
  * Return value: The type ID of the #ECalBackendFileTodos class.
  **/
 GType

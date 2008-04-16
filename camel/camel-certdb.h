@@ -38,14 +38,14 @@ typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
 
 enum {
-	CAMEL_CERTDB_DIRTY  = (1 << 0),
+	CAMEL_CERTDB_DIRTY  = (1 << 0)
 };
 
 enum {
 	CAMEL_CERT_STRING_ISSUER,
 	CAMEL_CERT_STRING_SUBJECT,
 	CAMEL_CERT_STRING_HOSTNAME,
-	CAMEL_CERT_STRING_FINGERPRINT,
+	CAMEL_CERT_STRING_FINGERPRINT
 };
 
 typedef enum {
@@ -53,17 +53,17 @@ typedef enum {
 	CAMEL_CERT_TRUST_NEVER,
 	CAMEL_CERT_TRUST_MARGINAL,
 	CAMEL_CERT_TRUST_FULLY,
-	CAMEL_CERT_TRUST_ULTIMATE,
+	CAMEL_CERT_TRUST_ULTIMATE
 } CamelCertTrust;
 
 typedef struct {
 	guint32 refcount;
-	
+
 	char *issuer;
 	char *subject;
 	char *hostname;
 	char *fingerprint;
-	
+
 	CamelCertTrust trust;
 	GByteArray *rawcert;
 } CamelCert;
@@ -71,32 +71,32 @@ typedef struct {
 struct _CamelCertDB {
 	CamelObject parent_object;
 	struct _CamelCertDBPrivate *priv;
-	
+
 	char *filename;
 	guint32 version;
 	guint32 saved_certs;
 	guint32 flags;
-	
+
 	guint32 cert_size;
-	
+
 	struct _EMemChunk *cert_chunks;
-	
+
 	GPtrArray *certs;
 	GHashTable *cert_hash;
 };
 
 struct _CamelCertDBClass {
 	CamelObjectClass parent_class;
-	
+
 	int (*header_load) (CamelCertDB *certdb, FILE *istream);
 	int (*header_save) (CamelCertDB *certdb, FILE *ostream);
-	
+
 	CamelCert * (*cert_load) (CamelCertDB *certdb, FILE *istream);
 	int (*cert_save) (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
-	
+
 	CamelCert *  (*cert_new) (CamelCertDB *certdb);
 	void        (*cert_free) (CamelCertDB *certdb, CamelCert *cert);
-	
+
 	const char * (*cert_get_string) (CamelCertDB *certdb, CamelCert *cert, int string);
 	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, int string, const char *value);
 };

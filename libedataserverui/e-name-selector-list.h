@@ -62,7 +62,7 @@ struct _ENameSelectorList {
 
 GType               	 e_name_selector_list_get_type (void);
 ENameSelectorList 	*e_name_selector_list_new (void);
-void                    e_name_selector_list_expand_clicked (ENameSelectorList *list); 
+void                    e_name_selector_list_expand_clicked (ENameSelectorList *list);
 
 G_END_DECLS
 #endif

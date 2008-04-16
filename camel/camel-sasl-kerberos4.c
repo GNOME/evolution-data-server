@@ -66,10 +66,10 @@ static GByteArray *krb4_challenge (CamelSasl *sasl, GByteArray *token, CamelExce
 
 struct _CamelSaslKerberos4Private {
 	int state;
-	
+
 	guint32 nonce_n;
 	guint32 nonce_h;
-	
+
 	des_cblock session;
 	des_key_schedule schedule;
 };
@@ -78,9 +78,9 @@ static void
 camel_sasl_kerberos4_class_init (CamelSaslKerberos4Class *camel_sasl_kerberos4_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_kerberos4_class);
-	
+
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-	
+
 	/* virtual method overload */
 	camel_sasl_class->challenge = krb4_challenge;
 }
@@ -89,7 +89,7 @@ static void
 camel_sasl_kerberos4_init (gpointer object, gpointer klass)
 {
 	CamelSaslKerberos4 *sasl_krb4 = CAMEL_SASL_KERBEROS4 (object);
-	
+
 	sasl_krb4->priv = g_new0 (struct _CamelSaslKerberos4Private, 1);
 }
 
@@ -109,7 +109,7 @@ CamelType
 camel_sasl_kerberos4_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslKerberos4",
@@ -120,7 +120,7 @@ camel_sasl_kerberos4_get_type (void)
 					    (CamelObjectInitFunc) camel_sasl_kerberos4_init,
 					    (CamelObjectFinalizeFunc) camel_sasl_kerberos4_finalize);
 	}
-	
+
 	return type;
 }
 

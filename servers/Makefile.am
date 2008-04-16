@@ -10,4 +10,4 @@ else
 MAPI =
 endif
 
-SUBDIRS = groupwise $(EXCHANGE) $(MAPI)
+SUBDIRS = groupwise $(EXCHANGE) google $(MAPI)

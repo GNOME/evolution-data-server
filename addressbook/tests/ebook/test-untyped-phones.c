@@ -38,6 +38,6 @@ main (int argc, char **argv)
 	phone = e_contact_get_const (contact, E_CONTACT_PHONE_OTHER_FAX);
 	if (phone) printf ("other fax: %s\n", phone);
 	check (phone && !strcmp ("321-321-4321", phone), "other fax");
-	
+
 	return 0;
 }

@@ -1,3 +1,120 @@
+2008-04-01  Sankar P  <psankar@novell.com>
+
+	** Fix for bug #525485
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Removed some infinite loops and corrected the conditional statement.
+
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-groupwise-store-summary.c:
+	Remove unneeded inclusion of <libedataserver/md5-utils.h>.
+
+2008-03-25  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-store.c: (groupwise_get_folder),
+	(store_refresh_refresh), (groupwise_get_folder_info),
+	(groupwise_delete_folder), (groupwise_rename_folder),
+	(groupwise_get_trash):
+	Avoid erroneous casting and use already cast variables.
+	Code cleanup.
+
+2008-03-20  Sankar P  <psankar@novell.com>
+
+	** Fix for bug #523528 and bnc #372383
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message):
+	Some mails with attachments does not have an attachment icon in the mail list. 
+	Related problems: Mail size is not shown for some mails.
+	And not all related recurring appointments are deleted as well.
+
+2008-02-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for BNC bug #359950 
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg): If nothing
+	to decode, handle it well. Reviewed by Sankar.
+
+2008-02-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Add E_DATA_SERVER_CFLAGS/LIBS to make it build.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-groupwise-folder.c (groupwise_transfer_messages_to): Fixes
+	some warnings. Fix from downstream opensuse.								     
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #183819 (bnc)
+	* camel-groupwise-folder.c (update_update): Fixes a crash
+	while closing evolution in offline mode. Patch from downstream
+	opensuse.		  						      
+
+2008-02-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bnc #167638
+
+	* camel-groupwise-folder.c: (update_update): Upstreamed OpenSUSE patch
+	by Sankar. Quit GW download after Quit requested.
+
+2008-01-30  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #395939
+
+	* camel-groupwise-store.c: (groupwise_forget_folder): Memory leak fix.
+
+2008-01-22  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #498977
+
+	* camel-groupwise-utils.c: (send_as_attachment):
+	Prevent encoding to base64 of no data in the content buffer.
+
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-groupwise-store.c (groupwise_auth_loop):
+	Use a consistently worded password prompt message by calling
+	camel_session_build_password_prompt().
+
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* camel-groupwise-folder.c:
+	* camel-groupwise-transport.c:
+	* camel-groupwise-utils.c: Remove unused libsoup includes
+
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* camel-groupwise-store.c: (groupwise_store_construct),
+	(groupwise_auth_loop), (groupwise_get_folder),
+	(gw_store_reload_folder), (groupwise_create_folder):
+	Passwords should not be forgotten on all errors.
+
+2007-11-16  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #481093
+
+	* camel-groupwise-folder.c: (groupwise_sync_summary),
+	(groupwise_transfer_messages_to):
+	Move mail to/from sent-items case missed while porting.
+	Solves (un)read count issues as well
+
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* camel-groupwise-folder.c (groupwise_folder_item_to_msg):
+	Always initialize 'len_iter' before calling g_base64_decode().
+
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-09-29  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary),

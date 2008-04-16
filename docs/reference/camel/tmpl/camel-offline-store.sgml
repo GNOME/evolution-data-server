@@ -35,3 +35,12 @@ CamelOfflineStore
 @ex: 
 
 
+<!-- ##### FUNCTION camel_offline_store_prepare_for_offline ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+
+

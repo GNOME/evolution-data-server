@@ -30,7 +30,6 @@
 
 #include <string.h>
 
-#include <libedataserver/md5-utils.h>	/* md5 hash building */
 #include <libedataserver/e-sexp.h>
 
 #include "camel-mime-utils.h"	/* base64 encoding */
@@ -108,7 +107,7 @@ camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
 		CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_class);
 
 	imap_search_parent_class = (CamelFolderSearchClass *)camel_type_get_global_classfuncs (camel_folder_search_get_type ());
-	
+
 	/* virtual method overload */
 	camel_folder_search_class->body_contains = imap_body_contains;
 }
@@ -138,7 +137,7 @@ CamelType
 camel_imap_search_get_type (void)
 {
 	static CamelType camel_imap_search_type = CAMEL_INVALID_TYPE;
-	
+
 	if (camel_imap_search_type == CAMEL_INVALID_TYPE) {
 		camel_imap_search_type = camel_type_register (
 			CAMEL_FOLDER_SEARCH_TYPE, "CamelImapSearch",
@@ -178,20 +177,26 @@ camel_imap_search_new (const char *cachedir)
 static void
 hash_match(char hash[17], int argc, struct _ESExpResult **argv)
 {
-	MD5Context ctx;
-	unsigned char digest[16];
-	unsigned int state = 0, save = 0;
+	GChecksum *checksum;
+	guint8 *digest;
+	gsize length;
+	int state = 0, save = 0;
 	int i;
 
-	md5_init(&ctx);
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	for (i=0;i<argc;i++) {
 		if (argv[i]->type == ESEXP_RES_STRING)
-			md5_update(&ctx, argv[i]->value.string, strlen(argv[i]->value.string));
+			g_checksum_update (
+				checksum, (guchar *) argv[i]->value.string, -1);
 	}
-	md5_final(&ctx, digest);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
 
-	g_base64_encode_step(digest, 12, FALSE, hash, &state, &save);
-	g_base64_encode_close(FALSE, hash, &state, &save);
+	g_base64_encode_step ((guchar *) digest, 12, FALSE, hash, &state, &save);
+	g_base64_encode_close (FALSE, hash, &state, &save);
 
 	for (i=0;i<16;i++) {
 		if (hash[i] == '+')
@@ -221,7 +226,7 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 		return -1;
 
 	d(printf("Saving search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
-	
+
 	/* we write the whole thing, then re-write the header magic, saves fancy sync code */
 	memcpy(&header.mark, "    ", 4);
 	header.termcount = 0;
@@ -321,21 +326,21 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	struct _camel_search_words *words;
 	GString *search;
 	int i;
-	
+
 	if (mr->lastuid >= is->lastuid && mr->validity == is->validity)
 		return 0;
-	
+
 	d(printf ("updating match record for uid's %d:%d\n", mr->lastuid+1, is->lastuid));
-	
+
 	/* TODO: Handle multiple search terms */
-	
+
 	/* This handles multiple search words within a single term */
-	words = camel_search_words_split (mr->terms[0]);
+	words = camel_search_words_split ((const unsigned char *) mr->terms[0]);
 	search = g_string_new ("");
 	g_string_append_printf (search, "UID %d:%d", mr->lastuid + 1, is->lastuid);
 	for (i = 0; i < words->len; i++) {
 		char *w = words->words[i]->word, c;
-		
+
 		g_string_append_printf (search, " BODY \"");
 		while ((c = *w++)) {
 			if (c == '\\' || c == '"')
@@ -345,7 +350,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 		g_string_append_c (search, '"');
 	}
 	camel_search_words_free (words);
-	
+
 	/* We only try search using utf8 if its non us-ascii text? */
 	if ((words->type & CAMEL_SEARCH_WORD_8BIT) &&  (store->capabilities & IMAP_CAPABILITY_utf8_search)) {
 		response = camel_imap_command (store, folder, NULL,
@@ -364,7 +369,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	result = camel_imap_response_extract (store, response, "SEARCH", NULL);
 	if (!result)
 		return -1;
-	
+
 	p = result + sizeof ("* SEARCH");
 	for (p = strtok_r (p, " ", &lasts); p; p = strtok_r (NULL, " ", &lasts)) {
 		uid = strtoul(p, NULL, 10);
@@ -423,7 +428,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 	CamelImapSearch *is = (CamelImapSearch *)s;
 	char *uid;
 	ESExpResult *r;
-	CamelMessageInfo *info;	
+	CamelMessageInfo *info;
 	GHashTable *uid_hash = NULL;
 	GPtrArray *array;
 	int i, j;

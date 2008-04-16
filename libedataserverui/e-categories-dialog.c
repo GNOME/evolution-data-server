@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2005 Novell, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -69,7 +69,6 @@ typedef struct {
 	GladeXML *gui;
 	GtkWidget *the_dialog;
 	GtkWidget *category_name;
-	GtkWidget *category_color;
 	GtkWidget *category_icon;
 } CategoryPropertiesDialog;
 
@@ -98,7 +97,6 @@ load_properties_dialog (ECategoriesDialog *parent)
 	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
 
 	prop_dialog->category_name = glade_xml_get_widget (prop_dialog->gui, "category-name");
-	prop_dialog->category_color = glade_xml_get_widget (prop_dialog->gui, "category-color");
 	prop_dialog->category_icon = glade_xml_get_widget (prop_dialog->gui, "category-icon");
 
 	return prop_dialog;
@@ -284,12 +282,12 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 				GdkPixbuf *icon = NULL;
 				GtkListStore *list_store = GTK_LIST_STORE (
 								gtk_tree_view_get_model (GTK_TREE_VIEW (prop_dialog->parent->priv->categories_list)));
-				/* FIXME: get color */
+
 				category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 				if (category_icon)
 					icon = gdk_pixbuf_new_from_file (category_icon, NULL);
 
-				e_categories_add (correct_category_name, NULL, category_icon ? category_icon : NULL, TRUE);
+				e_categories_add (correct_category_name, NULL, category_icon, TRUE);
 
 				gtk_list_store_append (list_store, &iter);
 				gtk_list_store_set (list_store, &iter,
@@ -322,6 +320,7 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	char *category_name;
+	const char *icon_file;
 
 	dialog = user_data;
 	priv = dialog->priv;
@@ -341,13 +340,14 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
 	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
 	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
-	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon), 
-				       e_categories_get_icon_file_for (category_name));
+
+	icon_file = e_categories_get_icon_file_for (category_name);
+	if (icon_file)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon), icon_file);
 
 	if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
 		gchar *category_icon;
 
-		/* FIXME: get color */
 		category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 
 		if (category_icon) {
@@ -452,7 +452,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 			if (icon_file)
 				icon = gdk_pixbuf_new_from_file (icon_file, NULL);
 			gtk_list_store_append (model, &iter);
-			gtk_list_store_set (model, &iter, 
+			gtk_list_store_set (model, &iter,
 					    COLUMN_ACTIVE, FALSE,
 					    COLUMN_ICON,   icon,
 					    COLUMN_CATEGORY,  cat_list->data,
@@ -502,7 +502,7 @@ e_categories_dialog_new (const char *initial_category_list)
 	if (initial_category_list)
 		e_categories_dialog_set_categories (dialog, initial_category_list);
 
-	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed", 
+	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed",
 			  G_CALLBACK (entry_changed_cb), dialog);
 
 	return GTK_WIDGET (dialog);

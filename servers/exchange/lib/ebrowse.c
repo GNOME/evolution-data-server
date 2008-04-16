@@ -251,7 +251,7 @@ print_properties (E2kResult *results, int nresults)
 	printf ("%s\n", results[0].href);
 	props = g_ptr_array_new ();
 	e2k_properties_foreach (results[0].props, add_prop, props);
-	qsort (props->pdata, props->len, sizeof (gpointer), prop_compar); 
+	qsort (props->pdata, props->len, sizeof (gpointer), prop_compar);
 
 	for (i = 0; i < props->len; i++)
 		print_prop (props->pdata[i]);
@@ -333,7 +333,7 @@ get_fav_properties(E2kContext *ctx, char *uri)
 	int status;
 	char *eml_str, *top = uri, fav_uri[1024];
 
-	
+
 	/* list the contents and search for the favorite properties */
 	e2k_operation_init (&op);
 	prop = E2K_PR_DAV_DISPLAY_NAME;

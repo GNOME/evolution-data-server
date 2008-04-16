@@ -15,7 +15,7 @@ noinst_LTLIBRARIES =						\
 
 PROP_GENERATED = e2k-propnames.h e2k-propnames.c e2k-proptags.h
 
-mapi_properties    = mapi-properties
+mapi_properties    = $(srcdir)/mapi-properties
 e2k_propnames_h_in = $(srcdir)/e2k-propnames.h.in 
 e2k_propnames_c_in = $(srcdir)/e2k-propnames.c.in 
 e2k_proptags_h_in  = $(srcdir)/e2k-proptags.h.in 

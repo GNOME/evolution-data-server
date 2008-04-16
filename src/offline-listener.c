@@ -39,7 +39,7 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-struct _OfflineListenerPrivate 
+struct _OfflineListenerPrivate
 {
 	GConfClient *default_client;
 
@@ -51,11 +51,11 @@ struct _OfflineListenerPrivate
 };
 
 
-static void 
+static void
 set_online_status (OfflineListener *offline_listener, gboolean is_offline)
 {
 	OfflineListenerPrivate *priv;
-	
+
 	priv = offline_listener->priv;
 
 #if ENABLE_CALENDAR
@@ -66,7 +66,7 @@ set_online_status (OfflineListener *offline_listener, gboolean is_offline)
 		(priv->book_factory, is_offline ? OFFLINE_MODE : ONLINE_MODE);
 }
 
-static void 
+static void
 online_status_changed (GConfClient *client, int cnxn_id, GConfEntry *entry, gpointer data)
 {
 	GConfValue *value;
@@ -84,20 +84,20 @@ online_status_changed (GConfClient *client, int cnxn_id, GConfEntry *entry, gpoi
 		priv->is_offline_now = offline;
 		set_online_status (offline_listener ,offline);
 	}
-	
+
 }
 
 
-static void 
+static void
 setup_offline_listener (OfflineListener *offline_listener)
 {
 	OfflineListenerPrivate *priv = offline_listener->priv;
-	
+
 	priv->default_client = gconf_client_get_default ();
 	gconf_client_add_dir (priv->default_client, "/apps/evolution/shell", GCONF_CLIENT_PRELOAD_RECURSIVE,NULL);
 	gconf_client_notify_add (priv->default_client, "/apps/evolution/shell/start_offline", (GConfClientNotifyFunc)online_status_changed, offline_listener, NULL, NULL);
 	priv->is_offline_now = gconf_client_get_bool (priv->default_client, "/apps/evolution/shell/start_offline", NULL);
-	set_online_status (offline_listener, priv->is_offline_now); 
+	set_online_status (offline_listener, priv->is_offline_now);
 }
 
 #if ENABLE_CALENDAR
@@ -110,7 +110,7 @@ offline_listener_new (EDataBookFactory *book_factory)
 {
 	OfflineListener *offline_listener = g_object_new (OFFLINE_TYPE_LISTENER, NULL);
 	OfflineListenerPrivate *priv = offline_listener->priv;
-	
+
 	priv->book_factory = book_factory;
 #if ENABLE_CALENDAR
 	priv->cal_factory = cal_factory;
@@ -140,10 +140,10 @@ offline_listener_finalize (GObject *object)
 
 	offline_listener = OFFLINE_LISTENER (object);
 	priv = offline_listener->priv;
-	
+
 	g_free (priv);
 	offline_listener->priv = NULL;
-	
+
 	parent_class->finalize (object);
 }
 
@@ -151,10 +151,10 @@ static void
 offline_listener_init (OfflineListener *listener)
 {
 	OfflineListenerPrivate *priv;
-	
+
 	priv =g_new0 (OfflineListenerPrivate, 1);
 	listener->priv = priv;
-	
+
 }
 
 
@@ -169,8 +169,8 @@ offline_listener_class_init (OfflineListener *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = offline_listener_dispose;
 	object_class->finalize = offline_listener_finalize;
-	
-	
+
+
 
 }
 

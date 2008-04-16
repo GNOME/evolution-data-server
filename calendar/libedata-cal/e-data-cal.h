@@ -80,9 +80,9 @@ void e_data_cal_notify_remove (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 
 void e_data_cal_notify_object_created  (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 					const char *uid, const char *object);
-void e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
+void e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 					const char *old_object, const char *object);
-void e_data_cal_notify_object_removed  (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
+void e_data_cal_notify_object_removed  (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 					const ECalComponentId *id, const char *old_object, const char *object);
 void e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status);
 
@@ -111,8 +111,8 @@ void e_data_cal_notify_changes   (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 void e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 				  GList *freebusy);
 
-void e_data_cal_notify_mode  (EDataCal *cal, 
-			      GNOME_Evolution_Calendar_CalListener_SetModeStatus status, 
+void e_data_cal_notify_mode  (EDataCal *cal,
+			      GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
 			      GNOME_Evolution_Calendar_CalMode mode);
 
 void e_data_cal_notify_auth_required (EDataCal *cal);

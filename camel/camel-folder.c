@@ -85,7 +85,6 @@ static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 			    const CamelMessageInfo *info, char **appended_uid,
 			    CamelException *ex);
 
-
 static GPtrArray        *get_uids            (CamelFolder *folder);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
@@ -115,6 +114,8 @@ static gboolean        is_frozen             (CamelFolder *folder);
 
 static gboolean        folder_changed        (CamelObject *object,
 					      gpointer event_data);
+
+static CamelFolderQuotaInfo *get_quota_info  (CamelFolder *folder);
 
 static void
 camel_folder_class_init (CamelFolderClass *camel_folder_class)
@@ -156,6 +157,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->freeze = freeze;
 	camel_folder_class->thaw = thaw;
 	camel_folder_class->is_frozen = is_frozen;
+	camel_folder_class->get_quota_info = get_quota_info;
 
 	/* virtual method overload */
 	camel_object_class->getv = folder_getv;
@@ -196,10 +198,10 @@ camel_folder_finalize (CamelObject *object)
 		camel_object_unref (camel_folder->summary);
 
 	camel_folder_change_info_free(p->changed_frozen);
-	
+
 	g_static_rec_mutex_free(&p->lock);
 	g_static_mutex_free(&p->change_lock);
-	
+
 	g_free(p);
 }
 
@@ -272,10 +274,10 @@ camel_folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	CAMEL_FOLDER_REC_LOCK(folder, lock);
-	
+
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
 		CF_CLASS (folder)->sync (folder, expunge, ex);
-	
+
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
@@ -308,9 +310,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	CamelFolder *folder = (CamelFolder *)object;
 	int i;
 	guint32 tag;
-	int unread = -1, deleted = 0, junked = 0, visible = 0, count = -1;
+	int unread = -1, deleted = 0, junked = 0, junked_not_deleted = 0, visible = 0, count = -1;
 
-	for (i=0;i<args->argc;i++) {
+	for (i = 0; i < args->argc; i++) {
 		CamelArgGet *arg = &args->argv[i];
 
 		tag = arg->tag;
@@ -342,6 +344,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_UNREAD:
 		case CAMEL_FOLDER_ARG_DELETED:
 		case CAMEL_FOLDER_ARG_JUNKED:
+		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
 		case CAMEL_FOLDER_ARG_VISIBLE:
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
@@ -350,17 +353,20 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 				/* TODO: Locking? */
 				unread = 0;
-				count = camel_folder_summary_count(folder->summary);
-				for (j=0; j<count; j++) {
-					if ((info = camel_folder_summary_index(folder->summary, j))) {
+				count = camel_folder_summary_count (folder->summary);
+				for (j = 0; j < count; j++) {
+					if ((info = camel_folder_summary_index (folder->summary, j))) {
 						guint32 flags = camel_message_info_flags(info);
 
 						if ((flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
 							unread++;
 						if (flags & CAMEL_MESSAGE_DELETED)
 							deleted++;
-						if (flags & CAMEL_MESSAGE_JUNK)
+						if (flags & CAMEL_MESSAGE_JUNK) {
 							junked++;
+							if (! (flags & CAMEL_MESSAGE_DELETED))
+								junked_not_deleted++;
+						}
 						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
 							visible++;
 						camel_message_info_free(info);
@@ -377,6 +383,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				break;
 			case CAMEL_FOLDER_ARG_JUNKED:
 				count = junked;
+				break;
+			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
+				count = junked_not_deleted;
 				break;
 			case CAMEL_FOLDER_ARG_VISIBLE:
 				count = visible;
@@ -532,12 +541,12 @@ void
 camel_folder_expunge (CamelFolder *folder, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	
+
 	CAMEL_FOLDER_REC_LOCK(folder, lock);
-	
+
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
 		CF_CLASS (folder)->expunge (folder, ex);
-	
+
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
@@ -584,7 +593,7 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 	int count = -1;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
-	
+
 	camel_object_get(folder, NULL, CAMEL_FOLDER_UNREAD, &count, 0);
 
 	return count;
@@ -618,10 +627,10 @@ append_message (CamelFolder *folder, CamelMimeMessage *message,
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 			      _("Unsupported operation: append message: for %s"),
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
-	
+
 	w(g_warning ("CamelFolder::append_message not implemented for `%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
-	
+
 	return;
 
 }
@@ -980,7 +989,7 @@ free_message_info (CamelFolder *folder, CamelMessageInfo *info)
  * camel_folder_free_message_info:
  * @folder: a #CamelFolder object
  * @info: a #CamelMessageInfo
- * 
+ *
  * Free (unref) a #CamelMessageInfo, previously obtained with
  * #camel_folder_get_message_info.
  **/
@@ -1006,7 +1015,7 @@ ref_message_info (CamelFolder *folder, CamelMessageInfo *info)
  * camel_folder_ref_message_info:
  * @folder: a #CamelFolder object
  * @info: a #CamelMessageInfo
- * 
+ *
  * DEPRECATED: Use #camel_message_info_ref directly.
  *
  * Ref a #CamelMessageInfo, previously obtained with
@@ -1047,7 +1056,7 @@ get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
 	w(g_warning ("CamelFolder::get_message not implemented for `%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
-	
+
 	return NULL;
 }
 
@@ -1098,15 +1107,15 @@ get_uids(CamelFolder *folder)
 	g_ptr_array_set_size(array, count);
 	for (i = 0, j = 0; i < count; i++) {
 		CamelMessageInfo *info = camel_folder_summary_index(folder->summary, i);
-		
+
 		if (info) {
 			array->pdata[j++] = g_strdup (camel_message_info_uid (info));
 			camel_message_info_free(info);
 		}
 	}
-	
+
 	g_ptr_array_set_size (array, j);
-	
+
 	return array;
 }
 
@@ -1240,10 +1249,10 @@ search_by_expression (CamelFolder *folder, const char *expression,
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 			      _("Unsupported operation: search by expression: for %s"),
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
-	
+
 	w(g_warning ("CamelFolder::search_by_expression not implemented for "
 		     "`%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
-	
+
 	return NULL;
 }
 
@@ -1281,10 +1290,10 @@ search_by_uids(CamelFolder *folder, const char *exp, GPtrArray *uids, CamelExcep
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 			      _("Unsupported operation: search by UIDs: for %s"),
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
-	
+
 	w(g_warning ("CamelFolder::search_by_expression not implemented for "
 		     "`%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
-	
+
 	return NULL;
 }
 
@@ -1331,11 +1340,11 @@ search_free (CamelFolder *folder, GPtrArray *result)
  * camel_folder_search_free:
  * @folder: a #CamelFolder object
  * @result: search results to free
- * 
+ *
  * Free the result of a search as gotten by #camel_folder_search or
  * #camel_folder_search_by_uids.
  **/
-void 
+void
 camel_folder_search_free (CamelFolder *folder, GPtrArray *result)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
@@ -1352,9 +1361,9 @@ transfer_message_to (CamelFolder *source, const char *uid, CamelFolder *dest,
 {
 	CamelMimeMessage *msg;
 	CamelMessageInfo *minfo, *info;
-	
+
 	/* Default implementation. */
-	
+
 	msg = camel_folder_get_message(source, uid, ex);
 	if (!msg)
 		return;
@@ -1366,16 +1375,16 @@ transfer_message_to (CamelFolder *source, const char *uid, CamelFolder *dest,
 		camel_folder_free_message_info(source, minfo);
 	} else
 		info = camel_message_info_new_from_header(NULL, ((CamelMimePart *)msg)->headers);
-	
+
 	/* we don't want to retain the deleted flag */
 	camel_message_info_set_flags(info, CAMEL_MESSAGE_DELETED, 0);
-	
+
 	camel_folder_append_message (dest, msg, info, transferred_uid, ex);
 	camel_object_unref (msg);
-	
+
 	if (delete_original && !camel_exception_is_set (ex))
 		camel_folder_set_message_flags (source, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
-	
+
 	camel_message_info_free (info);
 }
 
@@ -1441,12 +1450,12 @@ camel_folder_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	g_return_if_fail (CAMEL_IS_FOLDER (source));
 	g_return_if_fail (CAMEL_IS_FOLDER (dest));
 	g_return_if_fail (uids != NULL);
-	
+
 	if (source == dest || uids->len == 0) {
 		/* source and destination folders are the same, or no work to do, do nothing. */
 		return;
 	}
-	
+
 	if (source->parent_store == dest->parent_store) {
 		/* If either folder is a vtrash, we need to use the
 		 * vtrash transfer method.
@@ -1477,15 +1486,15 @@ void
 camel_folder_delete (CamelFolder *folder)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	
+
 	CAMEL_FOLDER_REC_LOCK (folder, lock);
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED) {
 		CAMEL_FOLDER_REC_UNLOCK (folder, lock);
 		return;
 	}
-	
+
 	folder->folder_flags |= CAMEL_FOLDER_HAS_BEEN_DELETED;
-	
+
 	CF_CLASS (folder)->delete (folder);
 
 	CAMEL_FOLDER_REC_UNLOCK (folder, lock);
@@ -1512,7 +1521,7 @@ folder_rename (CamelFolder *folder, const char *new)
  * camel_folder_rename:
  * @folder: a #CamelFolder object
  * @new: new name for the folder
- * 
+ *
  * Mark an active folder object as renamed.
  *
  * NOTE: This is an internal function used by camel stores, no locking
@@ -1580,7 +1589,7 @@ thaw (CamelFolder * folder)
 		info = folder->priv->changed_frozen;
 		folder->priv->changed_frozen = camel_folder_change_info_new();
 	}
-	
+
 	CAMEL_FOLDER_UNLOCK(folder, change_lock);
 
 	if (info) {
@@ -1626,6 +1635,95 @@ camel_folder_is_frozen (CamelFolder *folder)
 	return CF_CLASS (folder)->is_frozen (folder);
 }
 
+static CamelFolderQuotaInfo *
+get_quota_info (CamelFolder *folder)
+{
+	return NULL;
+}
+
+/**
+ * camel_folder_get_quota_info:
+ * @folder: a #CamelFolder object
+ *
+ * Returns list of known quota(s) for the folder.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_get_quota_info (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	return CF_CLASS (folder)->get_quota_info (folder);
+}
+
+/**
+ * camel_folder_quota_info_new:
+ * @name: Name of the quota.
+ * @used: Current usage of the quota.
+ * @total: Total available size of the quota.
+ *
+ * Returns newly allocated #CamelFolderQuotaInfo structure with initialized values
+ * based on the parameters, with next member set to NULL.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_quota_info_new (const char *name, guint64 used, guint64 total)
+{
+	CamelFolderQuotaInfo *info;
+
+	info = g_malloc0 (sizeof (CamelFolderQuotaInfo));
+	info->name = g_strdup (name);
+	info->used = used;
+	info->total = total;
+	info->next = NULL;
+
+	return info;
+}
+
+/**
+ * camel_folder_quota_info_clone:
+ * @info: a #CamelFolderQuotaInfo object to clone.
+ *
+ * Makes a copy of the given info and all next-s.
+ **/
+CamelFolderQuotaInfo *
+camel_folder_quota_info_clone (const CamelFolderQuotaInfo *info)
+{
+	CamelFolderQuotaInfo *clone = NULL, *last = NULL;
+	const CamelFolderQuotaInfo *iter;
+
+	for (iter = info; iter != NULL; iter = iter->next) {
+		CamelFolderQuotaInfo *n = camel_folder_quota_info_new (iter->name, iter->used, iter->total);
+
+		if (last)
+			last->next = n;
+		else
+			clone = n;
+
+		last = n;
+	}
+
+	return clone;
+}
+
+/**
+ * camel_folder_quota_info_free:
+ * @info: a #CamelFolderQuotaInfo object to free.
+ *
+ * Frees this and all next objects.
+ **/
+void
+camel_folder_quota_info_free (CamelFolderQuotaInfo *info)
+{
+	CamelFolderQuotaInfo *next = info;
+
+	while (next) {
+		info = next;
+		next = next->next;
+
+		g_free (info->name);
+		g_free (info);
+	}
+}
+
 struct _folder_filter_msg {
 	CamelSessionThreadMsg msg;
 
@@ -1654,7 +1752,7 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 		for (i = 0; i < m->junk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->junk->pdata[i], NULL);
 			int pc = 100 * i / m->junk->len;
-			
+
 			camel_operation_progress(NULL, pc);
 
 			if (msg) {
@@ -1748,7 +1846,7 @@ filter_free(CamelSession *session, CamelSessionThreadMsg *msg)
 
 static CamelSessionThreadOps filter_ops = {
 	filter_filter,
-	filter_free,
+	filter_free
 };
 
 struct _CamelFolderChangeInfoPrivate {
@@ -1809,7 +1907,7 @@ folder_changed (CamelObject *obj, gpointer event_data)
 						notjunk = g_ptr_array_new();
 					g_ptr_array_add (notjunk, g_strdup (changed->uid_changed->pdata [i]));
 				}
-				/* reset junk learn flag so that we don't process it again*/ 
+				/* reset junk learn flag so that we don't process it again*/
 				camel_folder_set_message_flags (folder, changed->uid_changed->pdata [i], CAMEL_MESSAGE_JUNK_LEARN, 0);
 			}
 		}
@@ -1818,17 +1916,17 @@ folder_changed (CamelObject *obj, gpointer event_data)
 	if ((folder->folder_flags & (CAMEL_FOLDER_FILTER_RECENT|CAMEL_FOLDER_FILTER_JUNK))
 	    && p->uid_filter->len > 0)
 		driver = camel_session_get_filter_driver(session,
-							 (folder->folder_flags & CAMEL_FOLDER_FILTER_RECENT) 
+							 (folder->folder_flags & CAMEL_FOLDER_FILTER_RECENT)
 							 ? "incoming":"junktest", NULL);
-		
+
 	if (driver) {
 		recents = g_ptr_array_new();
 		for (i = 0; i < p->uid_filter->len; i++)
 			g_ptr_array_add (recents, g_strdup (p->uid_filter->pdata[i]));
-		
+
 		g_ptr_array_set_size (p->uid_filter, 0);
 	}
-	
+
 	if (driver || junk || notjunk) {
 		struct _folder_filter_msg *msg;
 
@@ -1912,7 +2010,7 @@ camel_folder_free_deep (CamelFolder *folder, GPtrArray *array)
 
 /**
  * camel_folder_change_info_new:
- * 
+ *
  * Create a new folder change info structure.
  *
  * Change info structures are not MT-SAFE and must be
@@ -1925,12 +2023,12 @@ camel_folder_change_info_new(void)
 {
 	CamelFolderChangeInfo *info;
 
-	info = g_malloc(sizeof(*info));
+	info = g_slice_new (CamelFolderChangeInfo);
 	info->uid_added = g_ptr_array_new();
 	info->uid_removed = g_ptr_array_new();
 	info->uid_changed = g_ptr_array_new();
 	info->uid_recent = g_ptr_array_new();
-	info->priv = g_malloc0(sizeof(*info->priv));
+	info->priv = g_slice_new (struct _CamelFolderChangeInfoPrivate);
 	info->priv->uid_stored = g_hash_table_new(g_str_hash, g_str_equal);
 	info->priv->uid_source = NULL;
 	info->priv->uid_filter = g_ptr_array_new();
@@ -1944,18 +2042,18 @@ camel_folder_change_info_new(void)
  * camel_folder_change_info_add_source:
  * @info: a #CamelFolderChangeInfo
  * @uid: a uid
- * 
+ *
  * Add a source uid for generating a changeset.
  **/
 void
 camel_folder_change_info_add_source(CamelFolderChangeInfo *info, const char *uid)
 {
 	struct _CamelFolderChangeInfoPrivate *p;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (p->uid_source == NULL)
 		p->uid_source = g_hash_table_new(g_str_hash, g_str_equal);
 
@@ -1968,7 +2066,7 @@ camel_folder_change_info_add_source(CamelFolderChangeInfo *info, const char *uid
  * camel_folder_change_info_add_source_list:
  * @info: a #CamelFolderChangeInfo
  * @list: a list of uids
- * 
+ *
  * Add a list of source uid's for generating a changeset.
  **/
 void
@@ -1976,10 +2074,10 @@ camel_folder_change_info_add_source_list(CamelFolderChangeInfo *info, const GPtr
 {
 	struct _CamelFolderChangeInfoPrivate *p;
 	int i;
-	
+
 	g_assert(info != NULL);
 	g_assert(list != NULL);
-	
+
 	p = info->priv;
 
 	if (p->uid_source == NULL)
@@ -1998,7 +2096,7 @@ camel_folder_change_info_add_source_list(CamelFolderChangeInfo *info, const GPtr
  * camel_folder_change_info_add_update:
  * @info: a #CamelFolderChangeInfo
  * @uid: a uid
- * 
+ *
  * Add a uid from the updated list, used to generate a changeset diff.
  **/
 void
@@ -2007,11 +2105,11 @@ camel_folder_change_info_add_update(CamelFolderChangeInfo *info, const char *uid
 	struct _CamelFolderChangeInfoPrivate *p;
 	char *key;
 	int value;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (p->uid_source == NULL) {
 		camel_folder_change_info_add_uid(info, uid);
 		return;
@@ -2029,17 +2127,17 @@ camel_folder_change_info_add_update(CamelFolderChangeInfo *info, const char *uid
  * camel_folder_change_info_add_update_list:
  * @info: a #CamelFolderChangeInfo
  * @list: a list of uids
- * 
+ *
  * Add a list of uid's from the updated list.
  **/
 void
 camel_folder_change_info_add_update_list(CamelFolderChangeInfo *info, const GPtrArray *list)
 {
 	int i;
-	
+
 	g_assert(info != NULL);
 	g_assert(list != NULL);
-	
+
 	for (i=0;i<list->len;i++)
 		camel_folder_change_info_add_update(info, list->pdata[i]);
 }
@@ -2070,7 +2168,7 @@ change_info_remove(char *key, void *value, CamelFolderChangeInfo *info)
 /**
  * camel_folder_change_info_build_diff:
  * @info: a #CamelFolderChangeInfo
- * 
+ *
  * Compare the source uid set to the updated uid set and generate the
  * differences into the added and removed lists.
  **/
@@ -2078,11 +2176,11 @@ void
 camel_folder_change_info_build_diff(CamelFolderChangeInfo *info)
 {
 	struct _CamelFolderChangeInfoPrivate *p;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (p->uid_source) {
 		g_hash_table_foreach(p->uid_source, (GHFunc)change_info_remove, info);
 		g_hash_table_destroy(p->uid_source);
@@ -2096,10 +2194,10 @@ change_info_recent_uid(CamelFolderChangeInfo *info, const char *uid)
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
 	char *olduid;
-	
+
 	p = info->priv;
 
-	/* always add to recent, but dont let anyone else know */	
+	/* always add to recent, but dont let anyone else know */
 	if (!g_hash_table_lookup_extended(p->uid_stored, uid, (void **)&olduid, (void **)&olduids)) {
 		olduid = e_mempool_strdup(p->uid_pool, uid);
 	}
@@ -2112,10 +2210,10 @@ change_info_filter_uid(CamelFolderChangeInfo *info, const char *uid)
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
 	char *olduid;
-	
+
 	p = info->priv;
 
-	/* always add to filter, but dont let anyone else know */	
+	/* always add to filter, but dont let anyone else know */
 	if (!g_hash_table_lookup_extended(p->uid_stored, uid, (void **)&olduid, (void **)&olduids)) {
 		olduid = e_mempool_strdup(p->uid_pool, uid);
 	}
@@ -2136,7 +2234,7 @@ change_info_cat(CamelFolderChangeInfo *info, GPtrArray *source, void (*add)(Came
  * camel_folder_change_info_cat:
  * @info: a #CamelFolderChangeInfo to append to
  * @src: a #CamelFolderChangeInfo to append from
- * 
+ *
  * Concatenate one change info onto antoher.  Can be used to copy them
  * too.
  **/
@@ -2145,7 +2243,7 @@ camel_folder_change_info_cat(CamelFolderChangeInfo *info, CamelFolderChangeInfo 
 {
 	g_assert(info != NULL);
 	g_assert(source != NULL);
-	
+
 	change_info_cat(info, source->uid_added, camel_folder_change_info_add_uid);
 	change_info_cat(info, source->uid_removed, camel_folder_change_info_remove_uid);
 	change_info_cat(info, source->uid_changed, camel_folder_change_info_change_uid);
@@ -2157,7 +2255,7 @@ camel_folder_change_info_cat(CamelFolderChangeInfo *info, CamelFolderChangeInfo 
  * camel_folder_change_info_add_uid:
  * @info: a #CamelFolderChangeInfo
  * @uid: a uid
- * 
+ *
  * Add a new uid to the changeinfo.
  **/
 void
@@ -2166,11 +2264,11 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const char *uid)
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
 	char *olduid;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was removed then added, promote it to a changed */
 		/* if it was changed then added, leave as changed */
@@ -2192,7 +2290,7 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const char *uid)
  * camel_folder_change_info_remove_uid:
  * @info: a #CamelFolderChangeInfo
  * @uid: a uid
- * 
+ *
  * Add a uid to the removed uid list.
  **/
 void
@@ -2201,11 +2299,11 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const char *uid
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
 	char *olduid;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was added/changed them removed, then remove it */
 		if (olduids != info->uid_removed) {
@@ -2226,7 +2324,7 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const char *uid
  * camel_folder_change_info_change_uid:
  * @info: a #CamelFolderChangeInfo
  * @uid: a uid
- * 
+ *
  * Add a uid to the changed uid list.
  **/
 void
@@ -2235,11 +2333,11 @@ camel_folder_change_info_change_uid(CamelFolderChangeInfo *info, const char *uid
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
 	char *olduid;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if we have it already, leave it as that */
 		return;
@@ -2264,7 +2362,7 @@ void
 camel_folder_change_info_recent_uid(CamelFolderChangeInfo *info, const char *uid)
 {
 	g_assert(info != NULL);
-	
+
 	change_info_recent_uid(info, uid);
 	change_info_filter_uid(info, uid);
 }
@@ -2282,7 +2380,7 @@ gboolean
 camel_folder_change_info_changed(CamelFolderChangeInfo *info)
 {
 	g_assert(info != NULL);
-	
+
 	return (info->uid_added->len || info->uid_removed->len || info->uid_changed->len || info->uid_recent->len);
 }
 
@@ -2290,7 +2388,7 @@ camel_folder_change_info_changed(CamelFolderChangeInfo *info)
 /**
  * camel_folder_change_info_clear:
  * @info: a #CamelFolderChangeInfo
- * 
+ *
  * Empty out the change info; called after changes have been
  * processed.
  **/
@@ -2298,11 +2396,11 @@ void
 camel_folder_change_info_clear(CamelFolderChangeInfo *info)
 {
 	struct _CamelFolderChangeInfoPrivate *p;
-	
+
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	g_ptr_array_set_size(info->uid_added, 0);
 	g_ptr_array_set_size(info->uid_removed, 0);
 	g_ptr_array_set_size(info->uid_changed, 0);
@@ -2321,7 +2419,7 @@ camel_folder_change_info_clear(CamelFolderChangeInfo *info)
 /**
  * camel_folder_change_info_free:
  * @info: a #CamelFolderChangeInfo
- * 
+ *
  * Free memory associated with the folder change info lists.
  **/
 void
@@ -2330,20 +2428,20 @@ camel_folder_change_info_free(CamelFolderChangeInfo *info)
 	struct _CamelFolderChangeInfoPrivate *p;
 
 	g_assert(info != NULL);
-	
+
 	p = info->priv;
-	
+
 	if (p->uid_source)
 		g_hash_table_destroy(p->uid_source);
 
 	g_hash_table_destroy(p->uid_stored);
 	g_ptr_array_free(p->uid_filter, TRUE);
 	e_mempool_destroy(p->uid_pool);
-	g_free(p);
+	g_slice_free (struct _CamelFolderChangeInfoPrivate, p);
 
 	g_ptr_array_free(info->uid_added, TRUE);
 	g_ptr_array_free(info->uid_removed, TRUE);
 	g_ptr_array_free(info->uid_changed, TRUE);
 	g_ptr_array_free(info->uid_recent, TRUE);
-	g_free(info);
+	g_slice_free (CamelFolderChangeInfo, info);
 }

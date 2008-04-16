@@ -39,22 +39,22 @@ typedef struct _CamelMultipartEncryptedClass CamelMultipartEncryptedClass;
 /* 'handy' enums for getting the internal parts of the multipart */
 enum {
 	CAMEL_MULTIPART_ENCRYPTED_VERSION,
-	CAMEL_MULTIPART_ENCRYPTED_CONTENT,
+	CAMEL_MULTIPART_ENCRYPTED_CONTENT
 };
 
 struct _CamelMultipartEncrypted {
 	CamelMultipart parent_object;
-	
+
 	CamelMimePart *version;
 	CamelMimePart *content;
 	CamelMimePart *decrypted;
-	
+
 	char *protocol;
 };
 
 struct _CamelMultipartEncryptedClass {
 	CamelMultipartClass parent_class;
-	
+
 };
 
 CamelType camel_multipart_encrypted_get_type (void);

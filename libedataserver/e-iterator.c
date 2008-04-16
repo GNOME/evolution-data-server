@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Authors: 
+ * Authors:
  *   Christopher James Lahey <clahey@umich.edu>
  *
  * Copyright (C) 2000 Ximian, Inc.
@@ -59,7 +59,7 @@ e_iterator_init (EIterator *card)
 }
 
 /*
- * Virtual functions: 
+ * Virtual functions:
  */
 const void *
 e_iterator_get      (EIterator *iterator)

@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -25,7 +25,7 @@
 #define E_GW_CONNECTION_H
 
 #include <glib-object.h>
-#include <libsoup/soup-soap-message.h>
+#include "soup-soap-message.h"
 #include "e-gw-proxy.h"
 #include "e-gw-container.h"
 #include "e-gw-item.h"
@@ -44,6 +44,11 @@ G_BEGIN_DECLS
 typedef struct _EGwConnection        EGwConnection;
 typedef struct _EGwConnectionClass   EGwConnectionClass;
 typedef struct _EGwConnectionPrivate EGwConnectionPrivate;
+
+typedef struct {
+	int status;
+	char *description;
+}EGwConnectionErrors;
 
 struct _EGwConnection {
 	GObject parent;
@@ -67,6 +72,8 @@ typedef struct {
 GType          e_gw_connection_get_type (void);
 EGwConnection *e_gw_connection_new (const char *uri, const char *username, const char *password);
 
+EGwConnection * e_gw_connection_new_with_error_handler (const char *uri, const char *username, const char *password, EGwConnectionErrors *errors);
+
 typedef enum {
 	E_GW_CONNECTION_STATUS_OK,
 	E_GW_CONNECTION_STATUS_INVALID_CONNECTION,
@@ -79,7 +86,8 @@ typedef enum {
 	E_GW_CONNECTION_STATUS_ITEM_ALREADY_ACCEPTED,
 	E_GW_CONNECTION_STATUS_REDIRECT,
 	E_GW_CONNECTION_STATUS_OTHER,
-	E_GW_CONNECTION_STATUS_UNKNOWN
+	E_GW_CONNECTION_STATUS_UNKNOWN,
+	E_GW_CONNECTION_STATUS_INVALID_PASSWORD = 53273
 } EGwConnectionStatus;
 
 #define E_GW_CURSOR_POSITION_CURRENT "current"
@@ -153,7 +161,7 @@ EGwConnectionStatus e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOpt
 EGwConnectionStatus e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts);
 EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const char *container, GList *item_ids) ;
 EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const char *id ,const char *new_name) ;
-EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag); 
+EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const char *sub, const char *mesg ,int flag);
 EGwConnectionStatus e_gw_connection_accept_shared_folder (EGwConnection *cnc, gchar *folder_name, gchar *container_id, gchar *item_id, gchar *desc);
 EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_purge_selected_items (EGwConnection *cnc, GList *item_ids);

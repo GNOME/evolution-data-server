@@ -4,8 +4,8 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -351,7 +351,7 @@ static guint scan_hash(const void *d)
 static gboolean scan_equal(const void *a, const void *b)
 {
 	const struct _scan_node *v1 = a, *v2 = b;
-	
+
 	return v1->inode == v2->inode && v1->dnode == v2->dnode;
 }
 
@@ -366,13 +366,15 @@ static CamelFolderInfo *scan_fi(CamelStore *store, guint32 flags, CamelURL *url,
 	char *tmp, *cur, *new;
 	struct stat st;
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 	fi->full_name = g_strdup(full);
 	fi->name = g_strdup(name);
 	camel_url_set_fragment(url, fi->full_name);
 	fi->uri = camel_url_to_string(url, 0);
+
 	fi->unread = -1;
 	fi->total = -1;
+
 	/* we only calculate nochildren properly if we're recursive */
 	if (((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) != 0))
 		fi->flags = CAMEL_FOLDER_NOCHILDREN;

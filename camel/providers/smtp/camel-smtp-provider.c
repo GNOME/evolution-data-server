@@ -59,7 +59,7 @@ camel_provider_module_init(void)
 	smtp_provider.url_hash = camel_url_hash;
 	smtp_provider.url_equal = camel_url_equal;
 	smtp_provider.translation_domain = GETTEXT_PACKAGE;
-	
+
 	camel_provider_register(&smtp_provider);
 }
 

@@ -39,7 +39,7 @@ typedef enum {
 	E_CAL_CHANGE_DELETED = 1 << 2
 } ECalChangeType;
 
-typedef struct 
+typedef struct
 {
 	ECalComponent *comp;
 	ECalChangeType type;

@@ -589,7 +589,7 @@ stringify_entryid (guint8 *data, int len)
 	ret = string->str;
 	g_string_free (string, FALSE);
 	return ret;
-}	
+}
 
 static gboolean
 action_to_xml (E2kAction *act, xmlNode *actionset)
@@ -712,7 +712,7 @@ rule_to_xml (E2kRule *rule, xmlNode *ruleset)
 
 	top = xmlNewChild (ruleset, NULL, "rule", NULL);
 
-	xmlSetProp (top, "source", 
+	xmlSetProp (top, "source",
 		    (rule->state & E2K_RULE_STATE_ONLY_WHEN_OOF) ?
 		    "oof" : "incoming");
 	xmlSetProp (top, "enabled", (rule->state & E2K_RULE_STATE_ENABLED) ? "1" : "0");

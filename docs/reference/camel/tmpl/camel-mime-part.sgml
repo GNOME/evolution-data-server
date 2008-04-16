@@ -223,3 +223,12 @@ CamelMimePart
 @type: 
 
 
+<!-- ##### FUNCTION camel_mime_part_get_content_size ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@Returns: 
+
+

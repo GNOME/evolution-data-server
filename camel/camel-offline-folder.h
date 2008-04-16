@@ -42,18 +42,18 @@ enum {
 };
 
 enum {
-	CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE = CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE | CAMEL_ARG_BOO,
+	CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE = CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE | CAMEL_ARG_BOO
 };
 
 struct _CamelOfflineFolder {
 	CamelFolder parent_object;
-	
+
 	unsigned int sync_offline:1;
 };
 
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
-	
+
 	void (* downsync) (CamelOfflineFolder *folder, const char *expression, CamelException *ex);
 };
 

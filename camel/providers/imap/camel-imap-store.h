@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-store.h : class for an imap store */
 
-/* 
+/*
  * Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
  * Copyright (C) 2000 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -66,7 +66,7 @@ enum {
 	CAMEL_IMAP_STORE_ARG_CHECK_ALL,
 	CAMEL_IMAP_STORE_ARG_FILTER_INBOX,
 	CAMEL_IMAP_STORE_ARG_FILTER_JUNK,
-	CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX,
+	CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX
 };
 
 #define CAMEL_IMAP_STORE_NAMESPACE           (CAMEL_IMAP_STORE_ARG_NAMESPACE | CAMEL_ARG_STR)
@@ -98,6 +98,7 @@ typedef enum {
 #define IMAP_CAPABILITY_XGWEXTENSIONS		(1 << 9)
 #define IMAP_CAPABILITY_XGWMOVE			(1 << 10)
 #define IMAP_CAPABILITY_LOGINDISABLED		(1 << 11)
+#define IMAP_CAPABILITY_QUOTA			(1 << 12)
 
 #define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
 #define IMAP_PARAM_CHECK_ALL			(1 << 1)
@@ -111,13 +112,13 @@ typedef enum {
 #define IMAP_FETCH_MINIMAL_HEADERS 3
 
 struct _CamelImapStore {
-	CamelDiscoStore parent_object;	
-	
+	CamelDiscoStore parent_object;
+
 	CamelStream *istream;
 	CamelStream *ostream;
 
 	struct _CamelImapStoreSummary *summary;
-	
+
 	/* Information about the command channel / connection status */
 	guint connected:1;
 	guint preauthed:1;
@@ -131,14 +132,14 @@ struct _CamelImapStore {
 	char tag_prefix;
 	guint32 command;
 	CamelFolder *current_folder;
-	
+
 	/* Information about the server */
 	CamelImapServerLevel server_level;
 	guint32 capabilities, parameters;
 	/* NB: namespace should be handled by summary->namespace */
 	char *namespace, dir_sep, *base_url, *storage_path;
 	GHashTable *authtypes;
-	
+
 	time_t refresh_stamp;
 
 	guint32 headers;

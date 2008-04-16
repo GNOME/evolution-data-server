@@ -134,7 +134,7 @@ typedef enum {
 
 typedef struct {
 	ECalComponentRangeType type;
-	
+
 	ECalComponentDateTime datetime;
 } ECalComponentRange;
 
@@ -155,23 +155,23 @@ typedef enum {
 	E_CAL_COMPONENT_TRANSP_UNKNOWN
 } ECalComponentTransparency;
 
-/* Organizer & Attendee */	
+/* Organizer & Attendee */
 typedef struct {
 	const char *value;
-	
+
 	const char *member;
 	icalparameter_cutype cutype;
 	icalparameter_role role;
 	icalparameter_partstat status;
 	gboolean rsvp;
-	
+
 	const char *delto;
 	const char *delfrom;
 	const char *sentby;
 	const char *cn;
 	const char *language;
 } ECalComponentAttendee;
-	
+
 typedef struct {
 	const char *value;
 	const char *sentby;
@@ -292,7 +292,7 @@ void e_cal_component_get_priority (ECalComponent *comp, int **priority);
 void e_cal_component_set_priority (ECalComponent *comp, int *priority);
 
 void e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id);
-const char *e_cal_component_get_recurid_as_string (ECalComponent *comp);
+char *e_cal_component_get_recurid_as_string (ECalComponent *comp);
 void e_cal_component_set_recurid (ECalComponent *comp, ECalComponentRange *recur_id);
 
 void e_cal_component_get_rdate_list (ECalComponent *comp, GSList **period_list);
@@ -364,7 +364,7 @@ typedef struct _ECalComponentAlarm ECalComponentAlarm;
 /* An alarm occurrence, i.e. a trigger instance */
 typedef struct {
 	/* UID of the alarm that triggered */
-	const char *auid;
+	char *auid;
 
 	/* Trigger time, i.e. "5 minutes before the appointment" */
 	time_t trigger;

@@ -113,11 +113,11 @@ struct _ESExp {
 #endif
 	GScanner *scanner;	/* for parsing text version */
 	ESExpTerm *tree;	/* root of expression tree */
-	
+
 	/* private stuff */
 	jmp_buf failenv;
 	char *error;
-	
+
 	/* TODO: may also need a pool allocator for term strings, so we dont lose them
 	   in error conditions? */
 	struct _EMemChunk *term_chunks;

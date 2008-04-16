@@ -189,7 +189,7 @@ __db_win32_mutex_unlock(dbenv, mutexp)
 	MUTEX_UNSET(&mutexp->tas);
 
 	ret = 0;
-	
+
 	if (mutexp->nwaiters > 0) {
 		GET_HANDLE(mutexp, event);
 

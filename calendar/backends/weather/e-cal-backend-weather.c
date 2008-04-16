@@ -34,7 +34,7 @@ static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
 static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherForecast *report);
 static ECalBackendSyncStatus
 e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
-	
+
 /* Private part of the ECalBackendWeather structure */
 struct _ECalBackendWeatherPrivate {
 	/* URI to get remote weather data from */
@@ -149,26 +149,32 @@ finished_retrieval_cb (GList *forecasts, ECalBackendWeather *cbw)
 	l = e_cal_backend_cache_get_components (priv->cache);
 	for (; l != NULL; l = g_list_next (l)) {
 		ECalComponentId *id;
+		char *obj;
 
 		icomp = e_cal_component_get_icalcomponent (E_CAL_COMPONENT (l->data));
 		id = e_cal_component_get_id (E_CAL_COMPONENT (l->data));
 
+		obj = icalcomponent_as_ical_string (icomp);
 		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbw),
 			id,
-			icalcomponent_as_ical_string (icomp),
+			obj,
 			NULL);
 
 		e_cal_component_free_id (id);
+		g_free (obj);
 		g_object_unref (G_OBJECT (l->data));
 	}
 	g_list_free (l);
 	e_file_cache_clean (E_FILE_CACHE (priv->cache));
 
 	for (l = forecasts; l != NULL; l = g_list_next (l)) {
+		char *obj;
 		comp = create_weather (cbw, l->data);
 		e_cal_backend_cache_put_component (priv->cache, comp);
 		icomp = e_cal_component_get_icalcomponent (comp);
-		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), icalcomponent_as_ical_string (icomp));
+		obj = icalcomponent_as_ical_string (icomp);
+		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
+		g_free (obj);
 	}
 
 	priv->is_loading = FALSE;
@@ -190,7 +196,7 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 
 	source = g_main_current_source ();
 
-	if (priv->begin_retrival_id == g_source_get_id (source)) 
+	if (priv->begin_retrival_id == g_source_get_id (source))
 		priv->begin_retrival_id = 0;
 
 	if (priv->is_loading)
@@ -452,7 +458,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 	if (priv->city)
 		g_free (priv->city);
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
-	
+
 	if (!priv->cache) {
 		priv->cache = e_cal_backend_cache_new (uri, E_CAL_SOURCE_TYPE_EVENT);
 
@@ -579,7 +585,7 @@ e_cal_backend_weather_get_timezone (ECalBackendSync *backend, EDataCal *cal, con
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -662,7 +668,7 @@ e_cal_backend_weather_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GL
 	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
 
 	calobj = icalcomponent_as_ical_string (vfb);
-	*freebusy = g_list_append (NULL, g_strdup (calobj));
+	*freebusy = g_list_append (NULL, calobj);
 	icalcomponent_free (vfb);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -803,6 +809,10 @@ e_cal_backend_weather_internal_get_timezone (ECalBackend *backend, const char *t
 		zone = icaltimezone_get_utc_timezone ();
 	else
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+
 	return zone;
 }
 
@@ -927,7 +937,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 /**
  * e_cal_backend_weather_get_type:
- * @void: 
+ * @void:
  *
  * Registers the #ECalBackendWeather class if necessary, and returns
  * the type ID associated to it.

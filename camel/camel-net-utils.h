@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- * 
+ *
  * Authors: Michael Zucchi <notzed@ximian.com>
  * 	    Jeffrey Stedfast <fejj@ximian.com>
  *
  * Copyright (C) 2004 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -76,9 +76,6 @@ struct addrinfo {
 #define EAI_MEMORY	  -10	/* Memory allocation failure.  */
 #define EAI_SYSTEM	  -11	/* System error returned in `errno'.  */
 #define EAI_OVERFLOW	  -12	/* Argument buffer overflow.  */
-
-#define NI_MAXHOST      1025
-#define NI_MAXSERV      32
 
 #define NI_NUMERICHOST	1	/* Don't try to look up hostname.  */
 #define NI_NUMERICSERV	2	/* Don't convert port number to name.  */

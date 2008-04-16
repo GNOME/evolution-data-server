@@ -39,7 +39,7 @@ typedef struct _CamelImapStoreInfo CamelImapStoreInfo;
 
 enum {
 	CAMEL_IMAP_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
-	CAMEL_IMAP_STORE_INFO_LAST,
+	CAMEL_IMAP_STORE_INFO_LAST
 };
 
 struct _CamelImapStoreInfo {

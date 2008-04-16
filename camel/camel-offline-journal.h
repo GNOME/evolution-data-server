@@ -49,7 +49,7 @@ struct _CamelFolder;
 
 struct _CamelOfflineJournal {
 	CamelObject parent_object;
-	
+
 	struct _CamelFolder *folder;
 	char *filename;
 	EDList queue;
@@ -57,10 +57,10 @@ struct _CamelOfflineJournal {
 
 struct _CamelOfflineJournalClass {
 	CamelObjectClass parent_class;
-	
+
 	/* entry methods */
 	void (* entry_free) (CamelOfflineJournal *journal, EDListNode *entry);
-	
+
 	EDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
 	int (* entry_write) (CamelOfflineJournal *journal, EDListNode *entry, FILE *out);
 	int (* entry_play) (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex);

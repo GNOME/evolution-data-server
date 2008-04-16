@@ -120,9 +120,9 @@ out_of_proc_check (gpointer key, gpointer value, gpointer data)
 /**
  * e_data_book_factory_get_n_backends:
  * @factory: An addressbook factory.
- * 
+ *
  * Queries the number of running addressbook backends in an addressbook factory.
- * 
+ *
  * Return value: Number of running backends.
  **/
 int
@@ -130,7 +130,7 @@ e_data_book_factory_get_n_backends (EDataBookFactory *factory)
 {
 	int n_backends;
 	gboolean out_of_proc = FALSE;
-	
+
 	g_return_val_if_fail (factory != NULL, -1);
 	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), -1);
 
@@ -257,7 +257,7 @@ e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
 
 	backend_factory = g_hash_table_lookup (factory->priv->backends, proto);
 
-	g_free (proto); 
+	g_free (proto);
 	g_free (canonical_uri);
 
 	return backend_factory;
@@ -328,7 +328,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 		EBookBackendFactory*  backend_factory;
 
 		backend_factory = e_data_book_factory_lookup_backend_factory (factory, uri);
-	
+
 		if (backend_factory == NULL) {
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 					     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
@@ -396,7 +396,7 @@ e_data_book_factory_new (void)
 	g_static_mutex_unlock (&mutex);
 
 	factory = g_object_new (E_TYPE_DATA_BOOK_FACTORY, "poa", poa, NULL);
-	
+
 	e_data_book_factory_construct (factory);
 
 	return factory;
@@ -457,7 +457,7 @@ static void
 set_backend_online_status (gpointer key, gpointer value, gpointer data)
 {
 	EBookBackend *backend;
-	
+
 	backend = E_BOOK_BACKEND (value);
 	e_book_backend_set_mode (backend, GPOINTER_TO_INT (data));
 }
@@ -475,8 +475,8 @@ void
 e_data_book_factory_set_backend_mode (EDataBookFactory *factory, int mode)
 {
 	EDataBookFactoryPrivate *priv = factory->priv;
-	
-	
+
+
 	g_mutex_lock (priv->map_mutex);
 	priv->mode = mode;
 	g_hash_table_foreach (priv->active_server_map, set_backend_online_status, GINT_TO_POINTER (priv->mode));

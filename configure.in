@@ -1,7 +1,7 @@
-Process this file with autoconf to produce a configure script.
+ Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 1.12.0)
+AC_INIT(evolution-data-server, 2.23.1)
 AC_CONFIG_SRCDIR(README)
 
 # Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
@@ -13,14 +13,16 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
 
 # Required Package Versions
+m4_define([glib_minimum_version], [2.16.1])
 m4_define([gtk_minimum_version], [2.10.0])
 m4_define([ORBit_minimum_version], [2.9.8])
 m4_define([gnome_vfs_minimum_version], [2.4.0])
-m4_define([libbonobo_minimum_version], [2.4.2])
+m4_define([libbonobo_minimum_version], [2.20.3])
 m4_define([gconf_minimum_version], [2.0.0])             # XXX Just a Guess
 m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
+m4_define([libsoup_minimum_version], [2.3.0])
 
 dnl *************************************************************************************************
 dnl Base Version
@@ -29,7 +31,7 @@ dnl This is for api/versioning tracking for things like bonobo .server files
 dnl
 dnl This should always be the major/minor of the stable version or stable version to be
 dnl *************************************************************************************************
-BASE_VERSION=1.12
+BASE_VERSION=2.24
 API_VERSION=1.2
 AC_SUBST(BASE_VERSION)
 AC_SUBST(API_VERSION)
@@ -41,13 +43,13 @@ LIBEDATASERVER_CURRENT=10
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=1
 
-LIBEDATASERVERUI_CURRENT=8
-LIBEDATASERVERUI_REVISION=2
-LIBEDATASERVERUI_AGE=0
+LIBEDATASERVERUI_CURRENT=9
+LIBEDATASERVERUI_REVISION=0
+LIBEDATASERVERUI_AGE=1
 
-LIBECAL_CURRENT=7
-LIBECAL_REVISION=2
-LIBECAL_AGE=0
+LIBECAL_CURRENT=8
+LIBECAL_REVISION=0
+LIBECAL_AGE=1
 
 LIBEDATACAL_CURRENT=6
 LIBEDATACAL_REVISION=2
@@ -58,20 +60,28 @@ LIBEDATABOOK_REVISION=1
 LIBEDATABOOK_AGE=4
 
 LIBEBOOK_CURRENT=10
-LIBEBOOK_REVISION=0
+LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=1
 
 LIBEGROUPWISE_CURRENT=13
 LIBEGROUPWISE_REVISION=1
 LIBEGROUPWISE_AGE=0
 
-LIBCAMEL_CURRENT=10
-LIBCAMEL_REVISION=1
+LIBCAMEL_CURRENT=11
+LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
 LIBEXCHANGE_STORAGE_CURRENT=3
 LIBEXCHANGE_STORAGE_REVISION=0
 LIBEXCHANGE_STORAGE_AGE=0
+
+LIBGDATA_CURRENT=1
+LIBGDATA_REVISION=0
+LIBGDATA_AGE=0
+
+LIBGDATA_GOOGLE_CURRENT=1
+LIBGDATA_GOOGLE_REVISION=0
+LIBGDATA_GOOGLE_AGE=0
 
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
@@ -100,6 +110,12 @@ AC_SUBST(LIBCAMEL_AGE)
 AC_SUBST(LIBEXCHANGE_STORAGE_CURRENT)
 AC_SUBST(LIBEXCHANGE_STORAGE_REVISION)
 AC_SUBST(LIBEXCHANGE_STORAGE_AGE)
+AC_SUBST(LIBGDATA_CURRENT)
+AC_SUBST(LIBGDATA_REVISION)
+AC_SUBST(LIBGDATA_AGE)
+AC_SUBST(LIBGDATA_GOOGLE_CURRENT)
+AC_SUBST(LIBGDATA_GOOGLE_REVISION)
+AC_SUBST(LIBGDATA_GOOGLE_AGE)
 
 dnl Put the ACLOCAL flags in the Makefile
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -192,14 +208,16 @@ AC_CHECK_HEADERS(alloca.h)
 
 # Check for base dependencies early.
 PKG_CHECK_MODULES(GNOME_PLATFORM,
-        [gtk+-2.0 >= gtk_minimum_version
+        [glib-2.0 >= glib_minimum_version
+         gtk+-2.0 >= gtk_minimum_version
          ORBit-2.0 >= ORBit_minimum_version
          gnome-vfs-2.0 >= gnome_vfs_minimum_version
          libbonobo-2.0 >= libbonobo_minimum_version
          gconf-2.0 >= gconf_minimum_version
          libglade-2.0 >= libglade_minimum_version
          libgnome-2.0 >= libgnome_minimum_version
-         libxml-2.0 >= libxml_minimum_version])
+         libxml-2.0 >= libxml_minimum_version
+         libsoup-2.4 >= libsoup_minimum_version])
 
 dnl **************************************************
 dnl * regex checking
@@ -236,7 +254,7 @@ if test "x${dynamic_libdb}" = "xyes"; then
 
         msg_libdb="dynamically linked"
 else
-        DB_CFLAGS="-I\$(top_srcdir)/libdb/dist"
+        DB_CFLAGS="-I\$(top_builddir)/libdb/dist"
         DB_LIBS="\$(top_builddir)/libdb/dist/libdb-4.1.la"
         AC_MSG_NOTICE(Using local libdb)
         msg_libdb="statically linked to local copy"
@@ -861,6 +879,14 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], have_addrinfo,
 		#include <stddef.h>
 
 	],[
+		#ifndef NI_MAXHOST
+		#define NI_MAXHOST	1025
+		#endif
+
+		#ifndef NI_MAXSERV
+		#define NI_MAXSERV	32
+		#endif
+
 		struct addrinfo hints, *res;
 		struct sockaddr_in6 sin6;
 		int af = AF_INET6;
@@ -923,6 +949,7 @@ AC_ARG_ENABLE(calendar,
 
 if test "x${enable_calendar}" != "xno"; then
         AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
+	AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 fi
 AM_CONDITIONAL(ENABLE_CALENDAR, test x$enable_calendar = xyes)
 AC_MSG_RESULT($enable_calendar)
@@ -1368,7 +1395,12 @@ case $CFLAGS in
 *-Wall*)
 	# Turn off the annoying "comparison between signed and unsigned"
 	# warning in gcc 3.3
-	CFLAGS="$CFLAGS -Wno-sign-compare"
+	if $CC --help -v 2>&1 | grep Wsign-compare >/dev/null; then
+		CFLAGS="$CFLAGS -Wno-sign-compare"
+	fi
+	if $CC --help -v 2>&1 | grep Wpointer-sign >/dev/null; then
+		CFLAGS="$CFLAGS -Wno-pointer-sign"
+	fi
 	;;
 esac
 
@@ -1440,17 +1472,10 @@ AC_SUBST(E_FACTORY_CFLAGS)
 AC_SUBST(E_FACTORY_LIBS)
 
 dnl --- Groupwise flags
-PKG_CHECK_EXISTS(libsoup-2.4, have_libsoup_24=yes, have_libsoup_24=no)
-if test $have_libsoup_24 = yes; then
-    LIBSOUP_REQUIRED=2.3.0
-    LIBSOUP=libsoup-2.4
-else
-    LIBSOUP_REQUIRED=2.2.91
-    LIBSOUP=libsoup-2.2
-fi
+LIBSOUP_REQUIRED=libsoup_minimum_version
 AC_SUBST(LIBSOUP_REQUIRED)
-AC_SUBST(LIBSOUP)
-EVO_SET_COMPILE_FLAGS(SOUP, $LIBSOUP >= $LIBSOUP_REQUIRED)
+
+EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
@@ -1464,25 +1489,65 @@ if test "x$zlib_found" = "xfalse"; then
     AC_MSG_ERROR([*** zlib is required])
 fi
 
-dnl Large file support
-LARGEFILE_CFLAGS=""
-AC_CACHE_CHECK([if large files (>2 GB) are supported], largefile_support,
-[
+dnl *************************************
+dnl *** Checks for large file support ***
+dnl *************************************
+AC_ARG_ENABLE(largefile,
+	      AC_HELP_STRING([--enable-largefile],
+	      [enable support for large files [[default=no]]]),,
+	      enable_largefile="no")
+if test "x$enable_largefile" != "xno"; then
+    AC_SYS_LARGEFILE
+    AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], largefile64_source,
+    [
 	AC_TRY_COMPILE([
-		#define _LARGEFILE64_SOURCE
 		#include <sys/types.h>
 		#include <sys/stat.h>
 		#include <fcntl.h>
 	],[
-		int fd = open ("filename", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
+		int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
 	],[
-		largefile_support="yes"
-		LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
+		largefile64_source="no"
 	],[
-		largefile_support="no"
-		AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
+		AC_TRY_COMPILE([
+			#define _LARGEFILE64_SOURCE
+			#include <sys/types.h>
+			#include <sys/stat.h>
+			#include <fcntl.h>
+		],[
+			int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
+		],[
+			largefile64_source="yes"
+		],[
+			largefile64_source="unknown"
+		])
 	])
-])
+    ])
+    
+    enable_largefile="no"
+    
+    if test "x$largefile64_source" = "xyes"; then
+        LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
+        enable_largefile="yes"
+    elif test "x$largefile64_source" = "xunknown"; then
+        AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
+    fi
+    
+    if test -n "$ac_cv_sys_large_files" -a "x$ac_cv_sys_large_files" != "xno"; then
+        LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGE_FILES"
+        enable_largefile="yes"
+    fi
+    
+    if test "x$ac_cv_sys_file_offset_bits" != "xno"; then
+        LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+        enable_largefile="yes"
+    fi
+else
+    AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
+    LARGEFILE_CFLAGS=""
+fi
+
+AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
 
 EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gnome-vfs-2.0, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
@@ -1556,7 +1621,7 @@ AM_GCONF_SOURCE_2
 dnl *************
 dnl Gtk Doc stuff
 dnl *************
-GTK_DOC_CHECK(1.0)
+GTK_DOC_CHECK(1.9)
 
 dnl ******************************
 dnl Makefiles
@@ -1606,6 +1671,7 @@ calendar/backends/groupwise/Makefile
 calendar/backends/http/Makefile
 calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
+calendar/backends/google/Makefile
 calendar/backends/mapi/Makefile
 calendar/tests/Makefile
 calendar/tests/ecal/Makefile
@@ -1644,7 +1710,12 @@ servers/exchange/Makefile
 servers/exchange/xntlm/Makefile
 servers/exchange/lib/Makefile
 servers/exchange/storage/Makefile
-servers/exchange/storage/libexchange-storage.pc 
+servers/exchange/storage/libexchange-storage.pc
+servers/google/Makefile
+servers/google/libgdata/Makefile
+servers/google/libgdata/libgdata.pc
+servers/google/libgdata-google/Makefile 
+servers/google/libgdata-google/libgdata-google.pc
 servers/mapi/Makefile
 servers/mapi/libexchangemapi.pc
 src/Makefile

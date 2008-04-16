@@ -35,7 +35,7 @@ struct _EIteratorClass {
 
 	/* Signals */
 	void         (*invalidate) (EIterator  *iterator);
-	
+
 	/* Virtual functions */
 	const void * (*get)        (EIterator  *iterator);
 	void         (*reset)      (EIterator  *iterator);
@@ -60,7 +60,7 @@ void           e_iterator_delete     (EIterator  *iterator);
 void           e_iterator_insert     (EIterator  *iterator,
 				      const void *object,
 				      gboolean    before);
-void           e_iterator_set        (EIterator  *iterator, 
+void           e_iterator_set        (EIterator  *iterator,
 				      const void *object);
 gboolean       e_iterator_is_valid   (EIterator  *iterator);
 

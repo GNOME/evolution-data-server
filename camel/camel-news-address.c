@@ -36,7 +36,7 @@ CamelType
 camel_news_address_get_type (void)
 {
 	static guint type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_address_get_type (), "CamelNewsAddress",
 					    sizeof (CamelNewsAddress),
@@ -46,7 +46,7 @@ camel_news_address_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -54,7 +54,7 @@ camel_news_address_get_type (void)
  * camel_news_address_new:
  *
  * Create a new CamelNewsAddress object.
- * 
+ *
  * Return value: A new CamelNewsAddress widget.
  **/
 CamelNewsAddress *

@@ -1,3 +1,402 @@
+2008-03-31  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494311
+
+	* libedata-cal/e-cal-backend.c: (listener_died_cb):
+	Don't terminate connection after sucessful reconnect by ORBit. See
+	the comment in link_connection_state_changed_T_R ORBit function which states
+	that connection could have already been re-established at the time
+	listener_died_cb gets called. We need to check current connection status
+	in the callback.
+
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #523533
+
+	* libecal/e-cal-component.c: (e_cal_component_get_recurid_as_string):
+	Always return NULL or new allocated string.
+
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #523541
+
+	* libedata-cal/e-data-cal-view.c: (uncache_with_id_cb):
+	* backends/file/e-cal-backend-file.c: (add_component),
+	(e_cal_backend_file_modify_object),
+	(e_cal_backend_file_receive_objects):
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_modify_object), (send_object):
+	* backends/caldav/e-cal-backend-caldav.c: (process_object):
+	* libecal/e-cal.c: (process_detached_instances),
+	(e_cal_generate_instances_for_object):
+	* libecal/e-cal-component.c: (e_cal_component_get_id):
+	Do not leak memory returned by e_cal_component_get_recurid_as_string.
+	* backends/google/e-cal-backend-google.c: (send_object):
+	Do not ask for rid when not using it.
+
+2008-03-27  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #523126
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Initialize variable to NULL, so do not free random memory.
+
+2008-03-05  Jens Granseuer  <jensgr@gmx.net>
+
+	** Fixes bug #520362
+
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_create_cache),
+	(e_go_item_to_cal_component), (e_go_item_from_cal_component),
+	(gd_date_to_ical):
+	* backends/google/e-cal-backend-google.c: (receive_object),
+	(e_cal_backend_google_modify_object),
+	(e_cal_backend_google_create_object): put all declarations at the
+	beginnings of code blocks to make older compilers happy
+
+2008-03-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #327851
+
+	* libedata-cal/e-cal-backend-sync.c: (_e_cal_backend_get_timezone),
+	(_e_cal_backend_internal_get_timezone),
+	(e_cal_backend_sync_class_init): Try find timezone if entered only
+	as a location name.
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_internal_get_timezone):
+	* backends/http/e-cal-backend-http.c:
+	(e_cal_backend_http_internal_get_timezone):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_internal_get_timezone):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_internal_get_timezone):
+	* backends/caldav/e-cal-backend-caldav.c:
+	(caldav_internal_get_timezone):
+	* backends/google/e-cal-backend-google.c:
+	(e_cal_backend_google_internal_get_timezone):
+	Ask parent class for internal time zone resolve, if we do not know.
+
+2008-03-02  Matthew Bares  <mbarnes@redhat.com>
+
+	** Fixes bug #518728
+
+	* backends/caldav/Makefile.am:
+	* libecal/Makefile.am:
+	* libedata-cal/Makefile.am:
+	Fix linking order of libecal-1.2 and libedata-cal-1.2.
+	Patch by Patrick Ohly.
+
+2008-02-20  Milan Crha  <mcrha@redhat.com>
+
+	** Fixes part of bug #510949
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	Memory leak fixes.
+
+2008-02-20  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of bug #510949
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component):
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas):
+	Leak fixes.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/contacts/e-cal-backend-contacts.c (cdate_to_icaltime):
+	* backends/groupwise/e-cal-backend-groupwise-utils.h: Fix for some
+	warnings. Fix from opensuse downstream.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(get_cache_refresh_interval), (delta_thread), (cache_init): Respect
+	the refresh interval set in environment variable always.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* backends/file/e-cal-backend-file.c (save_file_when_idle): Reverted
+	the string marked for translation as we are in string freeze mode now.								    
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #163982 (bnc)
+	* backends/file/e-cal-backend-file.c (save_file_when_idle),
+	(add_component): Do not keep popuping up error dialogs in case
+	of failure. Fix from opensuse downstream.
+
+2008-02-14  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #516408
+	* backends/caldav/e-cal-backend-caldav.c
+	(e_cal_component_get_href), (e_cal_component_get_etag),
+	(synchronize_cache), (pack_cobj), (caldav_modify_object),
+	(caldav_remove_object), (process_object), (caldav_get_timezone):
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_get_free_busy),
+	(e_cal_backend_contacts_get_timezone):
+	* backends/file/e-cal-backend-file.c (save_file_when_idle),
+	(notify_removals_cb), (notify_adds_modifies_cb),
+	(e_cal_backend_file_get_object), (e_cal_backend_file_get_timezone),
+	(e_cal_backend_file_get_free_busy),
+	(e_cal_backend_file_receive_objects):
+	* backends/google/e-cal-backend-google-utils.c
+	(e_go_item_from_cal_component), (get_date):
+	* backends/google/e-cal-backend-google.c
+	(e_cal_backend_google_get_timezone):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(add_send_options_data_to_item), (set_rrule_from_comp),
+	(set_properties_from_cal_component), (start_freebusy_session),
+	(e_cal_backend_groupwise_store_settings):
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas),
+	(e_cal_backend_groupwise_get_timezone):
+	* backends/http/e-cal-backend-http.c (retrieval_done),
+	(e_cal_backend_http_get_default_object),
+	(e_cal_backend_http_get_timezone),
+	(e_cal_backend_http_get_free_busy):
+	* backends/weather/e-cal-backend-weather.c (finished_retrieval_cb),
+	(e_cal_backend_weather_get_timezone),
+	(e_cal_backend_weather_get_free_busy):
+	* libecal/e-cal-component.c (e_cal_component_get_as_string),
+	(e_cal_component_get_recurid_as_string):
+	* libecal/e-cal-component.h:
+	* libecal/e-cal-recur.c (e_cal_recur_set_rule_end_date):
+	* libecal/e-cal.c (foreach_tzid_callback),
+	(e_cal_get_component_as_string_internal), (e_cal_create_object),
+	(e_cal_modify_object), (e_cal_receive_objects),
+	(e_cal_send_objects), (e_cal_add_timezone),
+	(e_cal_set_default_timezone):
+	* libedata-cal/e-cal-backend-cache.c
+	(e_cal_backend_cache_put_component),
+	(e_cal_backend_cache_put_timezone),
+	(e_cal_backend_cache_put_default_timezone):
+	* libedata-cal/e-data-cal-view.c (add_object_to_cache):
+	* tests/ecal/test-ecal.c (list_uids): Remove the duping of memory
+	which is returned from libical and free the returned by libical.					      
+
+2008-02-11  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #515696
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_connection_get_freebusy_info): Do not free use
+	free_attendee_list, just free the gslist alone.					     
+
+2008-02-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #509776
+
+	* libecal/e-cal-component.h: (ECalComponentAlarmInstance):
+	Structure owns auid point, so do not declare it as const.
+	* libecal/e-cal-component.c: (e_cal_component_alarms_free):
+	Free instance->auid too, do not leak now.
+	* libecal/e-cal-util.c: (add_trigger):
+	Store copy of the auid into instance, it owns it now.
+
+2008-02-07  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fixes for bug #510949
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component): Free alarm properly.
+
+2008-02-07  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of #510949
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_attachments_to_cal_component), (e_gw_item_to_cal_component),
+	(e_gw_connection_get_freebusy_info):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(fetch_attachments): Leak fixes.
+
+2008-02-05  Peteris Krisjanis <pecisk@gmail.com>
+
+	** Fix for bug #514487
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_server_get_object):
+	Fix failure to download ics file when additional
+	information is included in it's MIME 
+	(e.g. "text/calendar; charset=utf-8").
+
+2008-02-05  Hein-Pieter van Braam  <hp@syntomax.com>
+
+	** Fix for bug #514407
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_compute_changes):
+	Fix a NULL string being passed to strcmp.
+
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of #511208
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_cn_from_display_name), (e_gw_item_to_cal_component): Strip
+	the email from the display name.								  
+
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #503574
+	* backends/groupwise/e-cal-backend-groupwise.c: (delta_thread),
+	(fetch_deltas), (start_fetch_deltas),
+	(e_cal_backend_groupwise_refresh_calendar), (cache_init),
+	(connect_to_server), (e_cal_backend_groupwise_finalize),
+	(in_offline), (e_cal_backend_groupwise_init): Fetch the deltas
+	in a single thread.						      
+	
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fix for bug #475781
+
+	* libecal/e-cal.c: (process_detached_instances): 
+	Fix memory leaks around ECalComponentDateTime.
+
+2008-01-28  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes bug #335217
+
+	* libecal/e-cal.c: (open_async): Removed ccad->result as
+	its not required.
+
+2008-01-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #475781
+
+	* libecal/e-cal-component.c: (e_cal_component_free_datetime):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component), (e_gw_item_to_cal_component):
+	* libecal/e-cal.c: (add_instance):
+	Fix memory leaks around ECalComponentDateTime.
+
+2008-01-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #510409
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_remove_object), (receive_object):
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_populate_cache):
+	* backends/google/e-cal-backend-google.c:
+	(e_cal_backend_google_remove_object):
+	Do not leak after call of e_cal_component_get_as_string.
+
+2008-01-21  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #510168
+
+	* backends/caldav/e-cal-backend-caldav.c: (synch_slave_loop),
+	(struct _ECalBackendCalDAVPrivate), (e_cal_backend_caldav_dispose),
+	(e_cal_backend_caldav_finalize), (e_cal_backend_caldav_init):
+	Ensure slave gone in dispose function of the backend.
+
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* backends/caldav/e-cal-backend-caldav.c: Update for libsoup 2.4.
+
+	* backends/http/e-cal-backend-http.c: Update for libsoup 2.4
+
+	* backends/weather/e-weather-source-ccf.c: Update for libsoup 2.4.
+	Remove the manual redirection handling that was copied from
+	e-cal-backend-http, since we can let libsoup do it here. (The http
+	backend needs to worry about "webcal:" URIs; weather doesn't.)
+
+2008-01-07  P Chenthill <pchenthill@novell.com>
+
+	Reverting the fix for bug #503574.
+
+2008-01-04  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #506457
+
+	* libedata-cal/e-data-cal-factory.c: Serialize access to the 
+	priv->backends hash table using mutex. This prevents a race while
+	adding backends to the table.
+
+2007-12-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #502866
+
+	* libecal/e-cal.c: (e_cal_get_objects_for_uid):
+	Allow get the VJOURNAL component at once same as other components.
+
+2007-12-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #501548
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(set_properties_from_cal_component):
+	* libecal/e-cal-util.c: (e_cal_util_generate_alarms_for_comp):
+	Free memory returned by e_cal_component_get_alarm_uids properly.
+
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(connect_to_server):
+	Passwords should not be forgotten on all errors.
+
+2007-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #456565
+
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_open):
+	Create cache of the right kind for each backend kind.
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_remove):
+	Allow delete calendar from UI even if it doesn't have a cache yet.
+
+2007-11-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #415817
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_modify_object): Update start/end time for
+	recurrence instances even when only end time has been changed.
+
+2007-11-26  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494314
+
+	* libedata-cal/e-data-cal-factory.c: (impl_CalFactory_getCal):
+	Don't leak Cal object reference.
+
+2007-11-16  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #300584 by Peter Lord
+
+	* backends/contacts/e-cal-backend-contacts.c: (cdate_to_icaltime):
+	Use correct year when filling structure, not only years 1970+.
+
+2007-11-13  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494303
+
+	* libedata-cal/e-cal-backend-cache.c: (e_cal_backend_cache_get_timezone)
+	Return NULL pointer after freeing timezone structure.
+
+2007-11-11  Ross Burton  <ross@openedhand.com>
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	Fix leak (#494304, Ondrej Jirman)
+
+2007-11-05  Milan Crha  <mcrha@redhat.com>
+
+	* libedata-cal/e-cal-backend-sexp.c: (func_has_start),
+	(struct symbols): Added new function 'has-start?' as part
+	of fix for bug #359267. This will check if the component
+	has filled start date or not.
+
+2007-10-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libecal/e-cal.c
+	* backends/Makefile.am
+	* backends/google/e-cal-backend-google.c
+	* backends/google/e-cal-backend-google.h
+	* backends/google/e-cal-backend-google-utils.c
+	* backends/google/e-cal-backend-goole-utils.h
+	* backends/google/e-cal-backend-google-factory.c
+	* backends/google/e-cal-backend-google-factory.h
+	* backends/google/Makefile.am: Initial commit for the Google Calendar.
+
+	Committing on behalf of Ebby Wiselyn <ebbywiselyn@gmail.com>
+
 2007-10-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #420167

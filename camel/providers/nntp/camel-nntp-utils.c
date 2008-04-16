@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-utils.c : utilities used by the nntp code. */
 
-/* 
- * Author : Chris Toshok <toshok@ximian.com> 
+/*
+ * Author : Chris Toshok <toshok@ximian.com>
  *
  * Copyright (C) 2000 Ximian .
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libedataserver/md5-utils.h>
-
 #include "camel-folder-summary.h"
 #include "camel-stream-mem.h"
 #include "camel-exception.h"
@@ -41,7 +39,11 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 {
 	int status;
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	char digest[16];
+	guint8 *digest;
+	gsize length;
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
 
 	status = camel_nntp_command (nntp_store, ex, NULL,
 				     "XOVER %d-%d",
@@ -65,6 +67,7 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 			}
 			else {
 				CamelMessageInfo *new_info = camel_folder_summary_info_new(folder->summary);
+				GChecksum *checksum;
 				char **split_line = g_strsplit (line, "\t", 7);
 				char *subject, *from, *date, *message_id, *bytes;
 				char *uid;
@@ -74,7 +77,7 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				date = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_DATE].index];
 				message_id = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_MESSAGE_ID].index];
 				bytes = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_BYTES].index];
-				
+
 				/* if the overview format flagged this
                                    field as "full", skip over the
                                    preceding field name and colon */
@@ -101,7 +104,10 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				new_info->headers.date_received = g_strdup(date);
 #endif
 				new_info->size = atoi(bytes);
-				md5_get_digest(message_id, strlen(message_id), digest);
+				checksum = g_checksum_new (G_CHECKSUM_MD5);
+				g_checksum_update (checksum, (guchar *) message_id, -1);
+				g_checksum_get_digest (checksum, digest, &length);
+				g_checksum_free (checksum);
 				memcpy(new_info->message_id.id.hash, digest, sizeof(new_info->message_id.id.hash));
 
 				if (camel_nntp_newsrc_article_is_read (nntp_store->newsrc,
@@ -157,7 +163,7 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				char *line;
 				int line_length;
 
-				line = camel_stream_buffer_read_line ( 
+				line = camel_stream_buffer_read_line (
 						      CAMEL_STREAM_BUFFER ( nntp_istream ));
 				line_length = strlen ( line );
 
@@ -223,23 +229,23 @@ uid_num (CamelFolderSummary *summary, int index)
 	char *brk;
 	CamelMessageInfo *minfo;
 	int ret;
-	
+
 	minfo = camel_folder_summary_index(summary, index);
 	if(minfo == NULL)
 		return 0;
 
 	tmp = g_strdup(camel_message_info_uid(minfo));
 	camel_message_info_free(minfo);
-	
+
 	if((brk = strchr(tmp, ',')) == NULL)
 		ret = 0;
 	else {
 		*brk = 0;
 		ret = atoi(tmp);
 	}
-	
+
 	g_free(tmp);
-	
+
 	return ret;
 }
 
@@ -267,19 +273,19 @@ camel_nntp_get_headers (CamelStore *store,
 		if(last_summary < first_message)
 			camel_folder_summary_clear(folder->summary);
 		else {
-			while(uid_num(folder->summary, 0) < first_message) 
+			while(uid_num(folder->summary, 0) < first_message)
 				camel_folder_summary_remove_index(folder->summary, 0);
-			
+
 			if(last_summary >= last_message)
 				return;
-			
+
 			first_message = last_summary;
 		}
 	}
-			
+
 	if (status == NNTP_NO_SUCH_GROUP) {
 		/* XXX throw invalid group exception */
-		camel_exception_setv (ex, 
+		camel_exception_setv (ex,
 				      CAMEL_EXCEPTION_FOLDER_INVALID,
 				      "group %s not found on server",
 				      folder->name);
@@ -295,6 +301,6 @@ camel_nntp_get_headers (CamelStore *store,
 #if 0
 		get_HEAD_headers (nntp_store, folder, first_message, last_message, ex);
 #endif
-	}		
+	}
 
 }

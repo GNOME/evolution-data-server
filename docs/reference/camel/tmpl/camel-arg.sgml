@@ -29,16 +29,12 @@ camel-arg
 
 </para>
 
-@ap: 
-@argc: 
-@argv: 
 
 <!-- ##### STRUCT CamelArgGet ##### -->
 <para>
 
 </para>
 
-@tag: 
 
 <!-- ##### STRUCT CamelArgGetV ##### -->
 <para>
@@ -48,48 +44,6 @@ camel-arg
 @ap: 
 @argc: 
 @argv: 
-
-<!-- ##### MACRO ca_object ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO ca_int ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO ca_double ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO ca_str ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO ca_ptr ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_ARGV_MAX ##### -->
-<para>
-
-</para>
-
-
 
 <!-- ##### MACRO camel_argv_start ##### -->
 <para>

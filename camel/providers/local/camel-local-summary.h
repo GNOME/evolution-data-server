@@ -39,7 +39,7 @@ typedef struct _CamelLocalSummaryClass CamelLocalSummaryClass;
 enum {
 	CAMEL_MESSAGE_FOLDER_NOXEV = 1<<17,
 	CAMEL_MESSAGE_FOLDER_XEVCHANGE = 1<<18,
-	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1<<19, /* have we seen this in processing this loop? */
+	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1<<19 /* have we seen this in processing this loop? */
 };
 
 typedef struct _CamelLocalMessageInfo CamelLocalMessageInfo;
@@ -54,7 +54,7 @@ struct _CamelLocalSummary {
 	guint32 version;	/* file version being loaded */
 
 	char *folder_path;	/* name of matching folder */
-	
+
 	CamelIndex *index;
 	unsigned int index_force:1; /* do we force index during creation? */
 	unsigned int check_force:1; /* does a check force a full check? */

@@ -75,7 +75,7 @@ main (int argc, char **argv)
 	gboolean status;
 
 	g_type_init ();
-	
+
 	/*
 	** the actual ebook foo
 	*/

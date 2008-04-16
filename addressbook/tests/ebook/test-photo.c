@@ -28,30 +28,34 @@ main (int argc, char **argv)
 {
 	EContact *contact;
 	EContactPhoto *photo, *new_photo;
+	guchar *data;
+	gsize length = 0;
 
 	g_type_init ();
 
 	contact = e_contact_new ();
+	data = g_base64_decode (photo_data, &length);
 
 	photo = g_new (EContactPhoto, 1);
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 	photo->data.inlined.mime_type = NULL;
-	photo->data.inlined.data = g_base64_decode (photo_data, &photo->data.inlined.length);
+	photo->data.inlined.data = data;
+	photo->data.inlined.length = length;
 
 	/* set the photo */
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
 
 	/* then get the photo */
 	new_photo = e_contact_get (contact, E_CONTACT_PHOTO);
-	
+
 	/* and compare */
 	if (new_photo->data.inlined.length != photo->data.inlined.length)
 	  g_error ("photo lengths differ");
-	 
+
 	if (memcmp (new_photo->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length))
 	  g_error ("photo data differs");
 
 	printf ("photo test passed\n");
-	
+
 	return 0;
 }

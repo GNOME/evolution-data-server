@@ -17,20 +17,6 @@ camel-net-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT addrinfo ##### -->
-<para>
-
-</para>
-
-@ai_flags: 
-@ai_family: 
-@ai_socktype: 
-@ai_protocol: 
-@ai_addrlen: 
-@ai_addr: 
-@ai_canonname: 
-@ai_next: 
-
 <!-- ##### MACRO AI_CANONNAME ##### -->
 <para>
 
@@ -129,20 +115,6 @@ camel-net-utils
 
 
 
-<!-- ##### MACRO NI_MAXHOST ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO NI_MAXSERV ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO NI_NUMERICHOST ##### -->
 <para>
 
@@ -176,5 +148,39 @@ camel-net-utils
 
 </para>
 
+
+
+<!-- ##### FUNCTION camel_getaddrinfo ##### -->
+<para>
+
+</para>
+
+@name: 
+@service: 
+@hints: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_freeaddrinfo ##### -->
+<para>
+
+</para>
+
+@host: 
+
+
+<!-- ##### FUNCTION camel_getnameinfo ##### -->
+<para>
+
+</para>
+
+@sa: 
+@salen: 
+@host: 
+@serv: 
+@flags: 
+@ex: 
+@Returns: 
 
 

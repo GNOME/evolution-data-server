@@ -4652,7 +4652,7 @@ msgstr "%a %m/%d/%Y %H"
 #: ../libedataserver/e-time-utils.c:1629 ../libedataserver/e-time-utils.c:1725
 #: ../libedataserver/e-time-utils.c:1830
 msgid "%a %m/%d/%Y"
-msgstr "%a %m/%d/%Y"
+msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1637

@@ -83,14 +83,14 @@ e_util_strstrcase (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
-/** 
+/**
  * e_util_unicode_get_utf8:
  * @text: The string to take the UTF-8 character from.
  * @out: The location to store the UTF-8 character in.
- * 
+ *
  * Get a UTF-8 character from the beginning of @text.
  *
- * Returns: A pointer to the next character in @text after @out. 
+ * Returns: A pointer to the next character in @text after @out.
  **/
 gchar *
 e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
@@ -99,11 +99,11 @@ e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
         return (*out == (gunichar)-1) ? NULL : g_utf8_next_char (text);
 }
 
-/** 
+/**
  * e_util_utf8_strstrcase:
  * @haystack: The string to search in.
  * @needle: The string to search for.
- * 
+ *
  * Find the first instance of @needle in @haystack, ignoring case. (No
  * proper case folding or decomposing is done.) Both @needle and
  * @haystack are UTF-8 strings.
@@ -115,8 +115,7 @@ e_util_unicode_get_utf8 (const gchar *text, gunichar *out)
 const gchar *
 e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 {
-        gunichar *nuni;
-        gunichar unival;
+        gunichar *nuni, unival;
         gint nlen;
         const gchar *o, *p;
 
@@ -136,7 +135,7 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 
 	o = haystack;
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = g_unichar_tolower (unival);
                 /* We have valid stripped char */
                 if (sc == nuni[0]) {
@@ -192,11 +191,11 @@ stripped_char (gunichar ch)
         return 0;
 }
 
-/** 
+/**
  * e_util_utf8_strstrcasedecomp:
  * @haystack: The string to search in.
  * @needle: The string to search for.
- * 
+ *
  * Find the first instance of @needle in @haystack, where both @needle
  * and @haystack are UTF-8 strings. Both strings are stripped and
  * decomposed for comparison, and case is ignored.
@@ -221,7 +220,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
 
         nlen = 0;
         for (p = e_util_unicode_get_utf8 (needle, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = stripped_char (unival);
                 if (sc) {
                        nuni[nlen++] = sc;
@@ -234,7 +233,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
 
         o = haystack;
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
-                gint sc;
+                gunichar sc;
                 sc = stripped_char (unival);
                 if (sc) {
                         /* We have valid stripped char */
@@ -266,7 +265,7 @@ e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
 	int retval;
 
 	g_return_val_if_fail (s1 != NULL && s2 != NULL, -1);
-	
+
 	if (strcmp (s1, s2) == 0)
 		return 0;
 
@@ -281,7 +280,7 @@ e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
 	return retval;
 }
 
-/** 
+/**
  * e_strftime:
  * @s: The string array to store the result in.
  * @max: The size of array @s.
@@ -331,7 +330,7 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 	return ret;
 }
 
-/** 
+/**
  * e_utf8_strftime:
  * @s: The string array to store the result in.
  * @max: The size of array @s.
@@ -342,7 +341,7 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
  *
  * Returns: The number of characters placed in @s.
  **/
-size_t 
+size_t
 e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 {
 	size_t sz, ret;
@@ -458,8 +457,8 @@ e_filename_make_safe (gchar *string)
 	const char *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?#";
 #else
 	const char *unsafe_chars = " /'\"`&();|<>$%{}!#";
-#endif	
-	
+#endif
+
 	g_return_if_fail (string != NULL);
 	p = string;
 
@@ -472,7 +471,7 @@ e_filename_make_safe (gchar *string)
 		 * written?
 		 */
 		if (!g_unichar_isprint(c) || ( c < 0xff && strchr (unsafe_chars, c&0xff ))) {
-			while (ts<p) 	
+			while (ts<p)
 				*ts++ = '_';
 		}
 	}
@@ -556,7 +555,7 @@ get_prefixes (gpointer  hmodule,
                 gchar *p = strrchr (*full_prefix, '\\');
                 if (p != NULL)
                         *p = '\0';
-      
+
                 p = strrchr (*full_prefix, '\\');
                 if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0))
                         *p = '\0';
@@ -567,7 +566,7 @@ get_prefixes (gpointer  hmodule,
                 gchar *p = _mbsrchr (*cp_prefix, '\\');
                 if (p != NULL)
                         *p = '\0';
-      
+
                 p = _mbsrchr (*cp_prefix, '\\');
                 if (p && (g_ascii_strcasecmp (p + 1, "bin") == 0))
                         *p = '\0';
@@ -638,8 +637,8 @@ replace_prefix (const char *runtime_prefix,
 static void
 setup (void)
 {
-	char *full_pfx;  
-	char *cp_pfx; 
+	char *full_pfx;
+	char *cp_pfx;
 
         G_LOCK (mutex);
         if (prefix != NULL) {

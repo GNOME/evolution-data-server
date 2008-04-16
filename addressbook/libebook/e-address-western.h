@@ -4,7 +4,7 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	
+
 	/* Public */
 	char *po_box;
 	char *extended;  /* I'm not sure what this is. */

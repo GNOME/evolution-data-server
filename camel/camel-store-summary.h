@@ -67,7 +67,7 @@ enum {
 	CAMEL_STORE_INFO_PATH = 0,
 	CAMEL_STORE_INFO_NAME,
 	CAMEL_STORE_INFO_URI,
-	CAMEL_STORE_INFO_LAST,
+	CAMEL_STORE_INFO_LAST
 };
 
 struct _CamelStoreInfo {
@@ -81,7 +81,7 @@ struct _CamelStoreInfo {
 
 typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_DIRTY = 1<<0,
-	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1, /* path name is stored in fragment rather than path */
+	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1 /* path name is stored in fragment rather than path */
 } CamelStoreSummaryFlags;
 
 struct _CamelStoreSummary {

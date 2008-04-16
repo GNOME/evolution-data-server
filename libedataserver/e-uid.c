@@ -30,9 +30,9 @@
 
 /**
  * e_uid_new:
- * 
+ *
  * Generate a new unique string for use e.g. in account lists.
- * 
+ *
  * Return value: The newly generated UID.  The caller should free the string
  * when it's done with it.
  **/

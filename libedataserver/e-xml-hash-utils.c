@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2001-2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@
 
 /**
  * e_xml_to_hash:
- * @doc: The #xmlDoc to store in a hash table. 
+ * @doc: The #xmlDoc to store in a hash table.
  * @type: The value type to use as a key in the hash table.
  *
  * Creates a #GHashTable representation of the #xmlDoc @doc.
@@ -198,7 +198,7 @@ e_xmlhash_new (const char *filename)
 		doc = e_xml_parse_file (filename);
 		if (!doc) {
 			e_xmlhash_destroy (hash);
-			
+
 			return NULL;
 		}
 		hash->objects = e_xml_to_hash (doc, E_XML_HASH_TYPE_OBJECT_UID);
@@ -206,7 +206,7 @@ e_xmlhash_new (const char *filename)
 	} else {
 		hash->objects = g_hash_table_new (g_str_hash, g_str_equal);
 	}
-	
+
 	return hash;
 }
 
@@ -263,7 +263,7 @@ e_xmlhash_remove (EXmlHash *hash, const char *key)
  *
  * Returns: E_XMLHASH_STATUS_SAME if the value and @compare_data are
  *          equal,E_XMLHASH_STATUS_DIFFERENT if they are different, or
- *          E_XMLHASH_STATUS_NOT_FOUND if there is no entry in @hash with 
+ *          E_XMLHASH_STATUS_NOT_FOUND if there is no entry in @hash with
  *          its key equal to @key.
  **/
 EXmlHashStatus

@@ -436,7 +436,7 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 		/* Add the esources */
 		folder_type = e_folder_get_type_string (*folder);
 		physical_uri = e_folder_get_physical_uri (*folder);
-		new_folder_name = g_strdup_printf("%s's %s", 
+		new_folder_name = g_strdup_printf("%s's %s",
 					hier->owner_name, folder_name);
 
 		if (!(strcmp (folder_type, "calendar")) ||
@@ -527,7 +527,7 @@ exchange_hierarchy_foreign_new (ExchangeAccount *account,
 	xmlDoc *doc;
 
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-	
+
 	hier = hierarchy_foreign_new (account, hierarchy_name,
 				      physical_uri_prefix,
 				      internal_uri_prefix,

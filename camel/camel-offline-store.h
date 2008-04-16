@@ -39,23 +39,23 @@ typedef struct _CamelOfflineStore CamelOfflineStore;
 typedef struct _CamelOfflineStoreClass CamelOfflineStoreClass;
 
 enum {
-	CAMEL_OFFLINE_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100,
+	CAMEL_OFFLINE_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100
 };
 
 enum {
 	CAMEL_OFFLINE_STORE_NETWORK_AVAIL,
-	CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL,
+	CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
 };
 
 struct _CamelOfflineStore {
 	CamelStore parent_object;
-	
+
 	int state;
 };
 
 struct _CamelOfflineStoreClass {
 	CamelStoreClass parent_class;
-	
+
 	void (* set_network_state) (CamelOfflineStore *store, int state, CamelException *ex);
 };
 
@@ -64,6 +64,8 @@ CamelType camel_offline_store_get_type (void);
 
 
 void camel_offline_store_set_network_state (CamelOfflineStore *store, int state, CamelException *ex);
+
+void camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex);
 
 G_END_DECLS
 

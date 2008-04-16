@@ -60,14 +60,14 @@ static GStaticRecMutex provider_lock = G_STATIC_REC_MUTEX_INIT;
 static CamelProvider vee_provider = {
 	"vfolder",
 	N_("Virtual folder email provider"),
-	
+
 	N_("For reading mail as a query of another set of folders"),
-	
+
 	"vfolder",
-	
+
 	CAMEL_PROVIDER_IS_STORAGE,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	
+
 	/* ... */
 };
 
@@ -121,14 +121,14 @@ camel_provider_init (void)
 			  CAMEL_PROVIDERDIR, g_strerror (errno));
 		return;
 	}
-	
+
 	while ((entry = g_dir_read_name (dir))) {
 		FILE *fp;
-		
+
 		p = strrchr (entry, '.');
 		if (!p || strcmp (p, ".urls") != 0)
 			continue;
-		
+
 		name = g_strdup_printf ("%s/%s", CAMEL_PROVIDERDIR, entry);
 		fp = g_fopen (name, "r");
 		if (!fp) {
@@ -137,7 +137,7 @@ camel_provider_init (void)
 			g_free (name);
 			continue;
 		}
-		
+
 		p = strrchr (name, '.');
 		strcpy (p, "." G_MODULE_SUFFIX);
 
@@ -149,7 +149,7 @@ camel_provider_init (void)
 			p = strchr (buf, '\n');
 			if (p)
 				*p = '\0';
-			
+
 			if (*buf) {
 				char *protocol = g_strdup(buf);
 
@@ -173,7 +173,7 @@ camel_provider_init (void)
  * Loads the provider at @path, and calls its initialization function,
  * passing @session as an argument. The provider should then register
  * itself with @session.
- **/ 
+ **/
 void
 camel_provider_load(const char *path, CamelException *ex)
 {
@@ -234,7 +234,7 @@ camel_provider_register(CamelProvider *provider)
 		UNLOCK();
 		return;
 	}
-	
+
 	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
 		if (provider->object_types[i])
 			provider->service_cache[i] = camel_object_bag_new (provider->url_hash, provider->url_equal,

@@ -1,3 +1,142 @@
+2008-03-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #303067
+
+	* backends/ldap/e-book-backend-ldap.c:
+	Guard access to priv->ldap with global rec mutex.
+	Also do not use local copy of priv->ldap when reconnect can change it.
+
+2008-03-10  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #516608
+
+	* libebook/e-book.c: Use an EFlag in EBookOp instead of a
+	GMutex/GCond pair (which is missing a boolean to store the
+	actual condition value, anyway).  Makes the code simpler.
+
+2008-02-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #519214
+
+	* libebook/e-book.c: (do_remove_contacts), (do_get_book_view):
+	Book's private mutex should be locked when calling e_book_clear_op
+	so honor this rule in these function too.
+
+2008-02-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #518569
+
+	* backends/ldap/e-book-backend-ldap.c: (member_populate):
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(populate_contact_members):
+	Properly format name and address with "<>" characters.
+
+2008-02-25  Tor Lillqvist  <tml@novell.com>
+
+	* tests/ebook/test-changes.c (main): Use g_mkstemp() for portability.
+
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #514836
+
+	* libebook/e-vcard.h:
+	* libebook/e-destination.c: (e_destination_set_contact),
+	(e_destination_export_to_vcard_attribute):
+	Obsoleting EVC_X_DEST_EMAIL and EVC_X_DEST_NAME.
+	* backends/ldap/e-book-backend-ldap.c: (member_populate):
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(populate_contact_members): Obsoleting EVC_X_DEST_EMAIL and
+	EVC_X_DEST_NAME and one leak fix.
+
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #489043
+
+	* libebook/e-vcard.c: (e_vcard_to_string_vcard_30):
+	Do not store quotes in param values when quoting, it is not allowed.
+
+2008-02-21  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #517885
+	
+	* libebook/e-contact.c: (e_contact_set_property), (e_contact_field_id),
+	(e_contact_get), (e_contact_get):
+	* libebook/e-vcard.c: (read_attribute_value),
+	(e_vcard_to_string_vcard_30), (e_vcard_get_attribute):
+	Do not compare value/parameter names case sensitively.
+
+2008-02-20  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #516474
+
+	* libebook/e-book-query.h: (e_book_query_vcard_field_test):
+	* libebook/e-book-query.c: (struct EBookQuery::field_test),
+	(e_book_query_field_test), (e_book_query_vcard_field_test),
+	(e_book_query_unref), (func_contains), (func_is), (func_beginswith),
+	(func_endswith), (func_exists), (e_book_query_to_string):
+	* libedata-book/e-book-backend-sexp.c: (entry_compare), (func_exists):
+	Fallback to EVCard attributes in query if field name doesn't correspond
+	to any known EContactField.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #164140 (bnc)
+	* backends/file/e-book-backend-file.c
+	(e_book_backend_file_stop_book_view): Fixes a crash.
+	Patch from downstream opensuse.					      
+
+2008-02-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libebook/e-book.c:
+	Fix another G_GNUC_PRETTY_FUNCTION straggler.
+
+2008-01-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #386157
+
+	* libebook/e-vcard.c: (parse): Ensured we don't use freed attribute
+	and stop reading as soon as we found 'END' attribute.
+
+2008-01-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #496081
+
+	* libedata-book/e-book-backend-sexp.c: (entry_compare), (func_exists):
+	Also compare/check exact field, if requested.
+	* tests/ebook/test-changes.c: (main): Compiler warning fix.
+
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_authenticate_user):
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_connect):
+	Passwords should not be forgotten all errors.
+
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* tests/ebook/test-photo.c (main):
+	* libebook/e-vcard.c (e_vcard_attribute_get_values_decoded):
+	Initialize 'length' before calling g_base64_decode().
+
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libebook/e-contact.c: Fix a syntax error.
+
+2007-11-13  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-contact.[ch]:
+	Add E_CONTACT_TEL to get a list of phone numbers (#495287).
+
+2007-11-11  Ross Burton  <ross@openedhand.com>
+
+	* libebook/e-book.c:
+	Fix some memory leaks (#494304, thanks Ondrej Jirman)
+
 2007-11-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Added GAL using LDAP.
@@ -34,6 +173,21 @@
 	* libedata-book/e-book-backend-db-cache.c:
 	(e_book_backend_db_cache_set_time),
 	(e_book_backend_db_cache_get_time):
+
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* backends/file/e-book-backend-file.c: (book_view_thread): Fix the crash 
+	introduced by the previous commit.
+
+2007-10-22  Akhil Laddha  <lakhil@novell.com>
+
+	** Fix for bug #486873
+
+	* backends/file/e-book-backend-file.c: (book_view_thread):
+	* libedata-book/e-data-book-view.c:
+	(e_data_book_view_notify_update_vcard),
+	(e_data_book_view_notify_update_prefiltered_vcard): Avoid a double free and 
+	make sure that the view_ functions free at all cases.
 
 2007-10-19  Matthew Barnes  <mbarnes@redhat.com>
 

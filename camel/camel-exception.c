@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  *
- * Author : 
+ * Author :
  *  Bertrand Guiheneuf <bertrand@helixcode.com>
  *
  * Copyright 1999-2003 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -39,22 +39,12 @@
 /* dont turn this off */
 #define w(x) x
 
-/* i dont know why gthread_mutex stuff even exists, this is easier */
-
-/* also, i'm not convinced mutexes are needed here.  But it
-   doesn't really hurt either */
-static pthread_mutex_t exception_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-#define CAMEL_EXCEPTION_LOCK(e) (pthread_mutex_lock(&exception_mutex))
-#define CAMEL_EXCEPTION_UNLOCK(e) (pthread_mutex_unlock(&exception_mutex))
-
-static EMemChunk *exception_chunks = NULL;
 
 /**
- * camel_exception_new: allocate a new exception object. 
- * 
+ * camel_exception_new: allocate a new exception object.
+ *
  * Create and returns a new exception object.
- * 
+ *
  * Returns the newly allocated exception object
  **/
 CamelException *
@@ -62,18 +52,11 @@ camel_exception_new (void)
 {
 	CamelException *ex;
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
-	if (exception_chunks == NULL)
-		exception_chunks = e_memchunk_new(16, sizeof(CamelException));
-
-	ex = e_memchunk_alloc(exception_chunks);
+	ex = g_slice_new (CamelException);
 	ex->desc = NULL;
 
 	/* set the Exception Id to NULL */
 	ex->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 
 	return ex;
 }
@@ -81,7 +64,7 @@ camel_exception_new (void)
 /**
  * camel_exception_init:
  * @ex: a #CamelException
- * 
+ *
  * Init an exception. This routine is mainly useful when using a
  * statically allocated exception.
  **/
@@ -98,59 +81,51 @@ camel_exception_init (CamelException *ex)
 /**
  * camel_exception_clear:
  * @ex: a #CamelException
- * 
+ *
  * Clear an exception, that is, set the exception ID to
  * #CAMEL_EXCEPTION_NONE and free the description text.  If the
  * exception is %NULL, this funtion just returns.
  **/
-void 
+void
 camel_exception_clear (CamelException *exception)
 {
 	if (!exception)
 		return;
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	if (exception->desc)
 		g_free (exception->desc);
 	exception->desc = NULL;
 	exception->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
  * camel_exception_free:
  * @ex: a #CamelException
- * 
+ *
  * Free an exception object. If the exception is %NULL, nothing is
  * done, the routine simply returns.
  **/
-void 
+void
 camel_exception_free (CamelException *exception)
 {
 	if (!exception)
 		return;
-	
+
 	if (exception->desc)
 		g_free (exception->desc);
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
-	e_memchunk_free(exception_chunks, exception);
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
+	g_slice_free (CamelException, exception);
 }
 
 /**
- * camel_exception_set: set an exception 
+ * camel_exception_set: set an exception
  * @ex: a #CamelException
- * @id: exception id 
+ * @id: exception id
  * @desc: textual description of the exception
- * 
- * Set the value of an exception. The exception id is 
- * a unique number representing the exception. The 
- * textual description is a small text explaining 
+ *
+ * Set the value of an exception. The exception id is
+ * a unique number representing the exception. The
+ * textual description is a small text explaining
  * what happened and provoked the exception.
  *
  * When @ex is %NULL, nothing is done, this routine
@@ -160,35 +135,28 @@ void
 camel_exception_set (CamelException *ex, ExceptionId id, const char *desc)
 {
 	if (camel_debug("exception"))
-		printf("CamelException.set(%p, %u, '%s')\n", ex, id, desc);
-
+		printf("CamelException.set(%p, %u, '%s')\n", (void *) ex, id, desc);
 	if (!ex)
 		return;
-
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	ex->id = id;
-
 	if (desc != ex->desc) {
 		g_free (ex->desc);
 		ex->desc = g_strdup (desc);
 	}
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
- * camel_exception_setv: set an exception 
+ * camel_exception_setv: set an exception
  * @ex: a #CamelException
- * @id: exception id 
+ * @id: exception id
  * @format: format of the description string. The format string is
  * used as in printf().
- * 
- * Set the value of an exception. The exception id is 
- * a unique number representing the exception. The 
- * textual description is a small text explaining 
- * what happened and provoked the exception. 
- * In this version, the string is created from the format 
+ *
+ * Set the value of an exception. The exception id is
+ * a unique number representing the exception. The
+ * textual description is a small text explaining
+ * what happened and provoked the exception.
+ * In this version, the string is created from the format
  * string and the variable argument list.
  *
  * It is safe to say:
@@ -208,32 +176,28 @@ camel_exception_setv (CamelException *ex, ExceptionId id, const char *format, ..
 	va_end (args);
 
 	if (camel_debug("exception"))
-		printf("CamelException.setv(%p, %u, '%s')\n", ex, id, desc);
-	
+		printf("CamelException.setv(%p, %u, '%s')\n", (void *) ex, id, desc);
+
 	if (!ex) {
 		g_free(desc);
 		return;
 	}
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	g_free(ex->desc);
 	ex->desc = desc;
 	ex->id = id;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
  * camel_exception_xfer:
- * @ex_dst: Destination exception object 
+ * @ex_dst: Destination exception object
  * @ex_src: Source exception object
- * 
+ *
  * Transfer the content of an exception from an exception object to
  * another.  The destination exception receives the id and the
  * description text of the source exception.
  **/
-void 
+void
 camel_exception_xfer (CamelException *ex_dst,
 		      CamelException *ex_src)
 {
@@ -248,8 +212,6 @@ camel_exception_xfer (CamelException *ex_dst,
 		return;
 	}
 
-	CAMEL_EXCEPTION_LOCK(exception);
-
 	if (ex_dst->desc)
 		g_free (ex_dst->desc);
 
@@ -258,16 +220,14 @@ camel_exception_xfer (CamelException *ex_dst,
 
 	ex_src->desc = NULL;
 	ex_src->id = CAMEL_EXCEPTION_NONE;
-
-	CAMEL_EXCEPTION_UNLOCK(exception);
 }
 
 /**
  * camel_exception_get_id:
  * @ex: a #CamelException
- * 
+ *
  * Get the id of an exception.
- * 
+ *
  * Returns the exception id (#CAMEL_EXCEPTION_NONE will be returned if
  * @ex is %NULL or unset)
  **/
@@ -276,18 +236,18 @@ camel_exception_get_id (CamelException *ex)
 {
 	if (ex)
 		return ex->id;
-	
+
 	w(g_warning ("camel_exception_get_id called with NULL parameter."));
-	
+
 	return CAMEL_EXCEPTION_NONE;
 }
 
 /**
  * camel_exception_get_description:
  * @ex: a #CamelException
- * 
+ *
  * Get the exception description text.
- * 
+ *
  * Returns the exception description text (%NULL will be returned if
  * @ex is %NULL or unset)
  **/

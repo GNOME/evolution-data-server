@@ -4,8 +4,8 @@
  *
  * Copyright (C) 2001 Ximian Inc (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -34,11 +34,11 @@ G_BEGIN_DECLS
 
 typedef enum _camel_spool_store_t {
 	CAMEL_SPOOL_STORE_MBOX,	/* a single mbox */
-	CAMEL_SPOOL_STORE_ELM,	/* elm/pine/etc tree of mbox files in folders */
+	CAMEL_SPOOL_STORE_ELM	/* elm/pine/etc tree of mbox files in folders */
 } camel_spool_store_t;
 
 typedef struct {
-	CamelMboxStore parent_object;	
+	CamelMboxStore parent_object;
 
 	camel_spool_store_t type;
 } CamelSpoolStore;

@@ -59,7 +59,7 @@ CamelType
 camel_offline_journal_get_type (void)
 {
 	static CamelType type = NULL;
-	
+
 	if (!type) {
 		type = camel_type_register (camel_object_get_type (),
 					    "CamelOfflineJournal",
@@ -70,7 +70,7 @@ camel_offline_journal_get_type (void)
 					    (CamelObjectInitFunc) camel_offline_journal_init,
 					    (CamelObjectFinalizeFunc) camel_offline_journal_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -93,9 +93,9 @@ camel_offline_journal_finalize (CamelObject *object)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) object;
 	EDListNode *entry;
-	
+
 	g_free (journal->filename);
-	
+
 	while ((entry = e_dlist_remhead (&journal->queue)))
 		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 }
@@ -113,14 +113,14 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 {
 	EDListNode *entry;
 	FILE *fp;
-	
+
 	journal->filename = g_strdup (filename);
 	journal->folder = folder;
-	
+
 	if ((fp = g_fopen (filename, "rb"))) {
 		while ((entry = CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_load (journal, fp)))
 			e_dlist_addtail (&journal->queue, entry);
-		
+
 		fclose (fp);
 	}
 }
@@ -137,7 +137,7 @@ void
 camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *filename)
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_JOURNAL (journal));
-	
+
 	g_free (journal->filename);
 	journal->filename = g_strdup (filename);
 }
@@ -158,14 +158,14 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 	EDListNode *entry;
 	FILE *fp;
 	int fd;
-	
+
 	if ((fd = g_open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot write offline journal for folder `%s': %s"),
 				      journal->folder->full_name, g_strerror (errno));
 		return -1;
 	}
-	
+
 	fp = fdopen (fd, "w");
 	entry = journal->queue.head;
 	while (entry->next) {
@@ -173,22 +173,22 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 			goto exception;
 		entry = entry->next;
 	}
-	
+
 	if (fsync (fd) == -1)
 		goto exception;
-	
+
 	fclose (fp);
-	
+
 	return 0;
-	
+
  exception:
-	
+
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 			      _("Cannot write offline journal for folder `%s': %s"),
 			      journal->folder->full_name, g_strerror (errno));
-	
+
 	fclose (fp);
-	
+
 	return -1;
 }
 
@@ -208,9 +208,9 @@ camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 	EDListNode *entry, *next;
 	CamelException lex;
 	int failed = 0;
-	
+
 	camel_exception_init (&lex);
-	
+
 	entry = journal->queue.head;
 	while (entry->next) {
 		next = entry->next;
@@ -224,9 +224,9 @@ camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 		}
 		entry = next;
 	}
-	
+
 	if (failed > 0)
 		return -1;
-	
+
 	return 0;
 }

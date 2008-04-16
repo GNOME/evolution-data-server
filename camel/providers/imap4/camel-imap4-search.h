@@ -43,14 +43,14 @@ struct _CamelIMAP4Engine;
 
 struct _CamelIMAP4Search {
 	CamelFolderSearch parent_object;
-	
+
 	struct _CamelIMAP4Engine *engine;
-	
+
 	guint32 lastuid;	/* current 'last uid' for the folder */
 	guint32 validity;	/* validity of the current folder */
-	
+
 	CamelDataCache *cache;	/* disk-cache for searches */
-	
+
 	/* cache of body search matches */
 	EDList matches;
 	GHashTable *matches_hash;
@@ -59,7 +59,7 @@ struct _CamelIMAP4Search {
 
 struct _CamelIMAP4SearchClass {
 	CamelFolderSearchClass parent_class;
-	
+
 };
 
 

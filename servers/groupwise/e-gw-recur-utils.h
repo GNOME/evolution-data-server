@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Authors :
  *	Harish Krishnaswamy <kharish@novell.com>
- *   
+ *
  * Copyright 2005, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -30,10 +30,10 @@
 #define E_GW_ITEM_RECURRENCE_FREQUENCY_YEARLY "Yearly"
 
 
-#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FIRST  "First" 
-#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_SECOND "Second" 
-#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_THIRD  "Third" 
-#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FOURTH "Fourth" 
+#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FIRST  "First"
+#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_SECOND "Second"
+#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_THIRD  "Third"
+#define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FOURTH "Fourth"
 #define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FIFTH  "Fifth"
 #define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_LAST   "Last"
 
@@ -68,5 +68,5 @@ typedef struct {
 
 
 const char *e_gw_recur_get_day_of_week (short day);
- 
+
 #endif

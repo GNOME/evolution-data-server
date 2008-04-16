@@ -43,11 +43,11 @@ struct _EListClass {
 	GObjectClass parent_class;
 };
 
-EList     *e_list_new                  (EListCopyFunc  copy, 
+EList     *e_list_new                  (EListCopyFunc  copy,
 					EListFreeFunc  free,
 					void          *closure);
 void       e_list_construct            (EList         *list,
-					EListCopyFunc  copy, 
+					EListCopyFunc  copy,
 					EListFreeFunc  free,
 					void          *closure);
 EList     *e_list_duplicate            (EList *list);
@@ -59,7 +59,7 @@ void       e_list_remove               (EList         *list,
 int        e_list_length               (EList         *list);
 
 /* For iterators to call. */
-void       e_list_remove_link          (EList         *list, 
+void       e_list_remove_link          (EList         *list,
 					GList         *link);
 void       e_list_remove_iterator      (EList         *list,
 					EIterator     *iterator);

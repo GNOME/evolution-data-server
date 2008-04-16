@@ -4,8 +4,8 @@
  *
  * Copyright (C) 1999 Ximian (www.ximian.com/).
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 
 typedef enum {
 	CAMEL_LOCK_READ,
-	CAMEL_LOCK_WRITE,
+	CAMEL_LOCK_WRITE
 } CamelLockType;
 
 /* specific locking strategies */

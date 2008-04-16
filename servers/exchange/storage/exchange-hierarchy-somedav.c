@@ -133,7 +133,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 	EFolder *iter_folder = NULL;
 
 	/* FIXME : Temporarily allow a rescan of the hierarchy. The proper fix
-	is to handle the folder list either in ExchangeAccount or in the 
+	is to handle the folder list either in ExchangeAccount or in the
 	plugins/exchange backend separately by listening to signals.
 	if (hsd->priv->scanned || folder != hier->toplevel) */
 	if (folder != hier->toplevel)
@@ -229,7 +229,7 @@ exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 	g_return_val_if_fail (uri != NULL,
 				EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
-	 
+
 	hwd = EXCHANGE_HIERARCHY_WEBDAV (hsd);
 	hier = EXCHANGE_HIERARCHY (hsd);
 	ctx = exchange_account_get_context (hier->account);

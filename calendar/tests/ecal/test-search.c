@@ -32,7 +32,7 @@ main (int argc, char **argv)
 	for (l = objects; l; l = l->next) {
 		ECalComponent *comp = E_CAL_COMPONENT (l->data);
 		char *str;
-		
+
 		str = e_cal_component_get_as_string (comp);
 		printf ("%s\n", str);
 

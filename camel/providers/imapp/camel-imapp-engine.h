@@ -75,7 +75,7 @@ struct _CamelIMAPPSelectResponse {
 	guint32 recent;
 	guint32 uidvalidity;
 	guint32 unseen;
-	guint32 permanentflags;	
+	guint32 permanentflags;
 };
 
 enum {

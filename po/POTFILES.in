@@ -10,6 +10,8 @@ addressbook/libebook/e-contact.c
 addressbook/libebook/e-destination.c
 calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/file/e-cal-backend-file.c
+calendar/backends/google/e-cal-backend-google-utils.c
+calendar/backends/google/e-cal-backend-google.c
 calendar/backends/groupwise/e-cal-backend-groupwise-utils.c
 calendar/backends/groupwise/e-cal-backend-groupwise.c
 calendar/backends/http/e-cal-backend-http.c
@@ -207,10 +209,10 @@ libedataserverui/e-source-selector-dialog.c
 servers/exchange/lib/e2k-autoconfig.c
 servers/exchange/lib/e2k-security-descriptor.c
 servers/exchange/lib/e2k-sid.c
-servers/exchange/lib/e2k-user-dialog.c
 servers/exchange/storage/e-storage.c
 servers/exchange/storage/exchange-account.c
 servers/exchange/storage/exchange-hierarchy-foreign.c
 servers/groupwise/e-gw-connection.c
 src/GNOME_Evolution_DataServer.server.in.in
 src/server.c
+libedataserverui/e-cell-renderer-color.c

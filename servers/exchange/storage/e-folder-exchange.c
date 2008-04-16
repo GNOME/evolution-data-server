@@ -131,10 +131,10 @@ sanitize_path (const char *path)
 		new_path = g_strdup (comps[0]);
 
 	g_strfreev (comps);
-	return new_path;	
+	return new_path;
 }
 
-#define d(x) 
+#define d(x)
 
 /**
  * e_folder_exchange_new:
@@ -162,7 +162,7 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 	g_return_val_if_fail (physical_uri != NULL, NULL);
 	g_return_val_if_fail (internal_uri != NULL, NULL);
 
-	d(g_print ("e_folder_exchange_new: name=[%s], type=[%s], internal_uri=[%s], physical_uri=[%s]\n", 
+	d(g_print ("e_folder_exchange_new: name=[%s], type=[%s], internal_uri=[%s], physical_uri=[%s]\n",
 		   name, type, internal_uri, physical_uri));
 
 	efe = g_object_new (E_TYPE_FOLDER_EXCHANGE, NULL);
@@ -184,28 +184,28 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 	efe->priv->outlook_class = g_strdup (outlook_class);
 
 	/* Add ESources */
-	if (hier->type == EXCHANGE_HIERARCHY_PERSONAL || 
+	if (hier->type == EXCHANGE_HIERARCHY_PERSONAL ||
 	    hier->type == EXCHANGE_HIERARCHY_FAVORITES) {
-		
+
 		if ((strcmp (type, "calendar") == 0) ||
 		    (strcmp (type, "calendar/public") == 0)) {
-			add_folder_esource (hier->account, 
-				     	    EXCHANGE_CALENDAR_FOLDER, 
-				     	    name, 
+			add_folder_esource (hier->account,
+				     	    EXCHANGE_CALENDAR_FOLDER,
+				     	    name,
 				     	    physical_uri);
 		}
 		else if ((strcmp (type, "tasks") == 0) ||
 			 (strcmp (type, "tasks/public") == 0)) {
-			add_folder_esource (hier->account, 
-				     	    EXCHANGE_TASKS_FOLDER, 
-				     	    name, 
+			add_folder_esource (hier->account,
+				     	    EXCHANGE_TASKS_FOLDER,
+				     	    name,
 				     	    physical_uri);
 		}
 		else if ((strcmp (type, "contacts") == 0) ||
 			 (strcmp (type, "contacts/public") == 0)) {
-			add_folder_esource (hier->account, 
-				     	    EXCHANGE_CONTACTS_FOLDER, 
-				     	    name, 
+			add_folder_esource (hier->account,
+				     	    EXCHANGE_CONTACTS_FOLDER,
+				     	    name,
 				     	    physical_uri);
 		}
 	}
@@ -426,7 +426,7 @@ e_folder_exchange_get_hierarchy (EFolder *folder)
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
 
 	return E_FOLDER_EXCHANGE (folder)->priv->hier;
-}	
+}
 
 /**
  * e_folder_exchange_get_storage_file:
@@ -811,7 +811,7 @@ e_folder_exchange_transfer_start (EFolder *source, E2kOperation *op,
 E2kHTTPStatus
 e_folder_exchange_put_new (EFolder *folder,
 			   E2kOperation *op,
-			   const char *object_name, 
+			   const char *object_name,
 			   E2kContextTestCallback test_callback,
 			   gpointer user_data,
 			   const char *content_type,
@@ -958,7 +958,7 @@ e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 	/* remove ESources */
-	hier = e_folder_exchange_get_hierarchy (folder); 
+	hier = e_folder_exchange_get_hierarchy (folder);
 
 	if (hier->type == EXCHANGE_HIERARCHY_PERSONAL ||
 	    hier->type == EXCHANGE_HIERARCHY_FAVORITES) {
@@ -967,7 +967,7 @@ e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 
 		if ((strcmp (folder_type, "calendar") == 0) ||
 		    (strcmp (folder_type, "calendar/public") == 0)) {
-			remove_folder_esource (hier->account, 
+			remove_folder_esource (hier->account,
 					       EXCHANGE_CALENDAR_FOLDER,
 					       physical_uri);
 		}
@@ -978,7 +978,7 @@ e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 					       physical_uri);
 		}
 		else if ((strcmp (folder_type, "contacts") == 0) ||
-			 (strcmp (folder_type, "contacts/public") == 0)) { 
+			 (strcmp (folder_type, "contacts/public") == 0)) {
 			remove_folder_esource (hier->account,
 					       EXCHANGE_CONTACTS_FOLDER,
 					       physical_uri);

@@ -16,22 +16,22 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 	ESource *source;
 	char *group_name;
 	char *ruri;
-	
+
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
 
 	group = e_source_list_peek_group_by_name (source_list, "CalDAV");
-	
+
 	if (group == NULL) {
 		group = e_source_group_new ("CalDAV", "caldav://");
-		e_source_list_add_group (source_list, group, -1);	
+		e_source_list_add_group (source_list, group, -1);
 	}
-	
+
 	ruri = g_strdup_printf ("%s/%s", hostname, arg_path);
 	source = e_source_new (arg_path, ruri);
 	e_source_set_property (source, "auth", "1");
 	e_source_set_property (source, "username", username);
 	e_source_group_add_source (group, source, -1);
-	
+
 	e_source_list_sync (source_list, NULL);
 
 	g_object_unref (source);

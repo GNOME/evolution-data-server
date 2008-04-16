@@ -21,7 +21,7 @@ struct _EBookViewPrivate {
 	GNOME_Evolution_Addressbook_BookView     corba_book_view;
 
 	EBook                 *book;
-	
+
 	EBookViewListener     *listener;
 
 	int                    response_id;

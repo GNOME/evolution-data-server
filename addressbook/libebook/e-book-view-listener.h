@@ -80,7 +80,7 @@ struct _EBookViewListenerResponse {
 
 	/* For StatusMessageEvent */
 	char                   *message;
-	
+
 };
 
 EBookViewListener         *e_book_view_listener_new            (void);

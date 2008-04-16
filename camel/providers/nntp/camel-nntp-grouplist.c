@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-grouplist.c : getting/updating the list of newsgroups on the server. */
 
-/* 
- * Author : Chris Toshok <toshok@ximian.com> 
+/*
+ * Author : Chris Toshok <toshok@ximian.com>
  *
  * Copyright (C) 2000 Ximian .
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -75,7 +75,7 @@ camel_nntp_get_grouplist_from_server (CamelNNTPStore *store, CamelException *ex)
 			entry->low = atoi (split_line[2]);
 
 			g_strfreev (split_line);
-			
+
 			list->group_list = g_list_prepend (list->group_list, entry);
 		}
 	}

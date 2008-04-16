@@ -77,28 +77,28 @@ struct _CamelFolderSearchClass {
 
 	/* (header-contains "headername" "string1" ...) List of matches, or true if in single-message mode */
 	ESExpResult * (*header_contains)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (header-matches "headername" "string") */
 	ESExpResult * (*header_matches)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (header-starts-with "headername" "string") */
 	ESExpResult * (*header_starts_with)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (header-ends-with "headername" "string") */
 	ESExpResult * (*header_ends_with)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (header-exists "headername") */
 	ESExpResult * (*header_exists)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (user-flag "flagname" "flagname" ...) If one of user-flag set */
 	ESExpResult * (*user_flag)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
 	/* (user-tag "flagname") Returns the value of a user tag.  Can only be used in match-all */
 	ESExpResult * (*user_tag)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (system-flag "flagname") Returns the value of a system flag.  Can only be used in match-all */
 	ESExpResult * (*system_flag)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	
+
 	/* (get-sent-date) Retrieve the date that the message was sent on as a time_t */
 	ESExpResult * (*get_sent_date)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 

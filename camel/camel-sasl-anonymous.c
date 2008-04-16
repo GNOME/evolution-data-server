@@ -35,9 +35,9 @@
 
 CamelServiceAuthType camel_sasl_anonymous_authtype = {
 	N_("Anonymous"),
-	
+
 	N_("This option will connect to the server using an anonymous login."),
-	
+
 	"ANONYMOUS",
 	FALSE
 };
@@ -53,9 +53,9 @@ static void
 camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *camel_sasl_anonymous_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_anonymous_class);
-	
+
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-	
+
 	/* virtual method overload */
 	camel_sasl_class->challenge = anon_challenge;
 }
@@ -64,7 +64,7 @@ static void
 camel_sasl_anonymous_finalize (CamelObject *object)
 {
 	CamelSaslAnonymous *sasl = CAMEL_SASL_ANONYMOUS (object);
-	
+
 	g_free (sasl->trace_info);
 }
 
@@ -73,7 +73,7 @@ CamelType
 camel_sasl_anonymous_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslAnonymous",
@@ -84,7 +84,7 @@ camel_sasl_anonymous_get_type (void)
 					    NULL,
 					    (CamelObjectFinalizeFunc) camel_sasl_anonymous_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -102,13 +102,13 @@ CamelSasl *
 camel_sasl_anonymous_new (CamelSaslAnonTraceType type, const char *trace_info)
 {
 	CamelSaslAnonymous *sasl_anon;
-	
+
 	if (!trace_info && type != CAMEL_SASL_ANON_TRACE_EMPTY) return NULL;
-	
+
 	sasl_anon = CAMEL_SASL_ANONYMOUS (camel_object_new (camel_sasl_anonymous_get_type ()));
 	sasl_anon->trace_info = g_strdup (trace_info);
 	sasl_anon->type = type;
-	
+
 	return CAMEL_SASL (sasl_anon);
 }
 
@@ -137,7 +137,7 @@ anon_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		}
 		camel_object_unref (cia);
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_OPAQUE:
 		if (strchr (sasl_anon->trace_info, '@')) {
@@ -147,7 +147,7 @@ anon_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			return NULL;
 		}
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_EMPTY:
 		ret = g_byte_array_new ();

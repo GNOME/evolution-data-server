@@ -38,7 +38,7 @@ typedef struct _CamelSaslNTLM {
 
 typedef struct _CamelSaslNTLMClass {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslNTLMClass;
 
 

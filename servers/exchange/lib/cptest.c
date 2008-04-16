@@ -66,7 +66,7 @@ krb_error (E2kKerberosResult result, const char *failed)
 			fprintf (stderr, "%s\n", failed);
 			exit (1);
 		}
-		/* else fall through */			
+		/* else fall through */
 
 	default:
 		fprintf (stderr, "Unknown error.\n");

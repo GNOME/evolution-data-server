@@ -122,7 +122,7 @@ camel_stream_vfs_new_with_handle (GnomeVFSHandle *handle)
 {
 	CamelStreamVFS *stream_vfs;
 	off_t offset;
-	
+
 	if (!handle)
 		return NULL;
 
@@ -152,19 +152,19 @@ camel_stream_vfs_new_with_uri (const char *name, int flags, mode_t mode)
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle;
 	int vfs_flag = 0;
-	
+
 	if (flags & O_WRONLY)
 		vfs_flag = vfs_flag | GNOME_VFS_OPEN_WRITE;
 	if (flags & O_RDONLY)
 		vfs_flag = vfs_flag | GNOME_VFS_OPEN_READ;
 	if (flags & O_RDWR)
 		vfs_flag = vfs_flag | GNOME_VFS_OPEN_READ |GNOME_VFS_OPEN_WRITE;
-	
+
 	if (flags & O_CREAT)
 		result = gnome_vfs_create (&handle, name, vfs_flag, FALSE, mode);
 	else
 		result = gnome_vfs_open (&handle, name, vfs_flag);
-	
+
 	if (result != GNOME_VFS_OK) {
 		return NULL;
 	}
@@ -179,17 +179,17 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	GnomeVFSFileSize nread = 0;
 	GnomeVFSResult result;
-	
+
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
 	result = gnome_vfs_read (stream_vfs->handle, buffer, n, &nread);
-	
+
 	if (nread > 0 && result == GNOME_VFS_OK)
 		seekable->position += nread;
 	else if (nread == 0)
 		stream->eos = TRUE;
-	
+
 	return nread;
 }
 
@@ -200,15 +200,15 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	GnomeVFSFileSize nwritten = 0;
 	GnomeVFSResult result;
-	
+
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
 	result = gnome_vfs_write (stream_vfs->handle, buffer, n, &nwritten);
-	
+
 	if (nwritten > 0 && result == GNOME_VFS_OK)
 		seekable->position += nwritten;
-	
+
 	return nwritten;
 }
 
@@ -224,10 +224,10 @@ stream_close (CamelStream *stream)
 	GnomeVFSResult result;
 
 	result = gnome_vfs_close(((CamelStreamVFS *)stream)->handle);
-	
+
 	if (result != GNOME_VFS_OK)
 		return -1;
-	
+
 	((CamelStreamVFS *)stream)->handle = NULL;
 	return 0;
 }
@@ -239,7 +239,7 @@ stream_seek (CamelSeekableStream *stream, off_t offset, CamelStreamSeekPolicy po
 	GnomeVFSFileSize real = 0;
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle = stream_vfs->handle;
-	
+
 	switch (policy) {
 	case CAMEL_STREAM_SET:
 		real = offset;

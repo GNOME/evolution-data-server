@@ -74,7 +74,7 @@ impl_Cal_open (PortableServer_Servant servant,
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
-	
+
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
@@ -87,7 +87,7 @@ impl_Cal_remove (PortableServer_Servant servant,
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
-	
+
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
@@ -107,7 +107,7 @@ impl_Cal_isReadOnly (PortableServer_Servant servant,
 
 	e_cal_backend_is_read_only (priv->backend, cal);
 }
-		       
+
 /* Cal::getEmailAddress method */
 static void
 impl_Cal_getCalAddress (PortableServer_Servant servant,
@@ -121,7 +121,7 @@ impl_Cal_getCalAddress (PortableServer_Servant servant,
 
 	e_cal_backend_get_cal_address (priv->backend, cal);
 }
-		       
+
 /* Cal::get_alarm_email_address method */
 static void
 impl_Cal_getAlarmEmailAddress (PortableServer_Servant servant,
@@ -135,7 +135,7 @@ impl_Cal_getAlarmEmailAddress (PortableServer_Servant servant,
 
 	e_cal_backend_get_alarm_email_address (priv->backend, cal);
 }
-		       
+
 /* Cal::get_ldap_attribute method */
 static void
 impl_Cal_getLdapAttribute (PortableServer_Servant servant,
@@ -172,7 +172,7 @@ impl_Cal_setMode (PortableServer_Servant servant,
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
-	
+
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
@@ -185,10 +185,10 @@ impl_Cal_getDefaultObject (PortableServer_Servant servant,
 {
  	EDataCal *cal;
  	EDataCalPrivate *priv;
- 
+
  	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
  	priv = cal->priv;
- 
+
  	e_cal_backend_get_default_object (priv->backend, cal);
 }
 
@@ -217,7 +217,7 @@ impl_Cal_getObjectList (PortableServer_Servant servant,
 	EDataCal *cal;
 	EDataCalPrivate *priv;
 	EDataCalView *query;
-	
+
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
@@ -396,7 +396,7 @@ impl_Cal_getQuery (PortableServer_Servant servant,
 	EDataCalPrivate *priv;
 	EDataCalView *query;
 	ECalBackendSExp *obj_sexp;
-	
+
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
@@ -518,7 +518,7 @@ e_data_cal_construct (EDataCal *cal,
 	CORBA_exception_free (&ev);
 
 	priv->backend = backend;
-	
+
 	return cal;
 }
 
@@ -542,7 +542,7 @@ e_data_cal_new (ECalBackend *backend, GNOME_Evolution_Calendar_CalListener liste
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	cal = E_DATA_CAL (g_object_new (E_TYPE_DATA_CAL, 
+	cal = E_DATA_CAL (g_object_new (E_TYPE_DATA_CAL,
 				 "poa", bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL),
 				 NULL));
 
@@ -605,7 +605,7 @@ e_data_cal_finalize (GObject *object)
 	priv = cal->priv;
 
 	priv->backend = NULL;
-	
+
 	CORBA_exception_init (&ev);
 	bonobo_object_release_unref (priv->listener, &ev);
 	if (BONOBO_EX (&ev))
@@ -691,7 +691,7 @@ BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_da
  *
  * Notifies listeners of the completion of the is_read_only method call.
  */
-void 
+void
 e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, gboolean read_only)
 {
 	EDataCalPrivate *priv;
@@ -709,7 +709,7 @@ e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of read only");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 }
 
 /**
@@ -720,7 +720,7 @@ e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
  *
  * Notifies listeners of the completion of the get_cal_address method call.
  */
-void 
+void
 e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *address)
 {
 	EDataCalPrivate *priv;
@@ -738,7 +738,7 @@ e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of cal address");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 }
 
 /**
@@ -836,7 +836,7 @@ e_data_cal_notify_static_capabilities (EDataCal *cal, GNOME_Evolution_Calendar_C
  *
  * Notifies listeners of the completion of the open method call.
  */
-void 
+void
 e_data_cal_notify_open (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status)
 {
 	EDataCalPrivate *priv;
@@ -931,7 +931,7 @@ e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
  * Notifies listeners of the completion of the modify_object method call.
  */
 void
-e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
+e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 				   const char *old_object, const char *object)
 {
 	EDataCalPrivate *priv;
@@ -967,7 +967,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallS
  * Notifies listeners of the completion of the remove_object method call.
  */
 void
-e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
+e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 				  const ECalComponentId *id, const char *old_object, const char *object)
 {
 	EDataCalPrivate *priv;
@@ -1044,7 +1044,7 @@ e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of alarm discarded");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 }
 
 /**
@@ -1104,7 +1104,7 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
-	
+
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1113,7 +1113,7 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_CalListener_notifyDefaultObjectRequested (priv->listener, status, 
+	GNOME_Evolution_Calendar_CalListener_notifyDefaultObjectRequested (priv->listener, status,
 									   object ? object : "", &ev);
 
 	if (BONOBO_EX (&ev))
@@ -1135,7 +1135,7 @@ e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
-	
+
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1169,7 +1169,7 @@ e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	GNOME_Evolution_Calendar_stringlist seq;
 	GList *l;
 	int i;
-	
+
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1213,7 +1213,7 @@ e_data_cal_notify_attachment_list (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 	GNOME_Evolution_Calendar_stringlist seq;
 	GSList *l;
 	int i;
-	
+
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1267,7 +1267,7 @@ e_data_cal_notify_query (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus stat
 	if (BONOBO_EX (&ev))
 		g_message (G_STRLOC ": could not notify the listener of query");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 }
 
 /**
@@ -1364,13 +1364,13 @@ e_data_cal_notify_default_timezone_set (EDataCal *cal, GNOME_Evolution_Calendar_
  * Notifies listeners of the completion of the get_changes method call.
  */
 void
-e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, 
+e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
 			   GList *adds, GList *modifies, GList *deletes)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
 	GNOME_Evolution_Calendar_CalObjChangeSeq seq;
-	GList *l;	
+	GList *l;
 	int n, i;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
@@ -1386,7 +1386,7 @@ e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus st
 	i = 0;
 	for (l = adds; l; i++, l = l->next) {
 		GNOME_Evolution_Calendar_CalObjChange *change = &seq._buffer[i];
-		
+
 		change->calobj = CORBA_string_dup (l->data);
 		change->type = GNOME_Evolution_Calendar_ADDED;
 	}
@@ -1404,7 +1404,7 @@ e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus st
 		change->calobj = CORBA_string_dup (l->data);
 		change->type = GNOME_Evolution_Calendar_DELETED;
 	}
-	
+
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_Calendar_CalListener_notifyChanges (priv->listener, status, &seq, &ev);
 
@@ -1432,7 +1432,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
 	GNOME_Evolution_Calendar_CalObjSeq seq;
 	GList *l;
 	int n, i;
-	
+
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	priv = cal->priv;
@@ -1445,7 +1445,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
 
 	for (i = 0, l = freebusy; l; i++, l = l->next)
 		seq._buffer[i] = CORBA_string_dup (l->data);
-	
+
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_Calendar_CalListener_notifyFreeBusy (priv->listener, status, &seq, &ev);
 
@@ -1462,7 +1462,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
  * @cal: A calendar client interface.
  * @status: Status of the mode set.
  * @mode: The current mode.
- * 
+ *
  * Notifies the listener of the results of a set_mode call.
  **/
 void
@@ -1486,7 +1486,7 @@ e_data_cal_notify_mode (EDataCal *cal,
 		g_message ("e_data_cal_notify_mode(): could not notify the listener "
 			   "about a mode change");
 
-	CORBA_exception_free (&ev);	
+	CORBA_exception_free (&ev);
 }
 
 /**
@@ -1495,18 +1495,18 @@ e_data_cal_notify_mode (EDataCal *cal,
  *
  * Notifies listeners that authorization is required to open the calendar.
  */
-void 
+void
 e_data_cal_notify_auth_required (EDataCal *cal)
 {
        EDataCalPrivate *priv;
        CORBA_Environment ev;
-       
+
        g_return_if_fail (cal != NULL);
        g_return_if_fail (E_IS_DATA_CAL (cal));
-       
+
        priv = cal->priv;
        g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
-       
+
        CORBA_exception_init (&ev);
        GNOME_Evolution_Calendar_CalListener_notifyAuthRequired (priv->listener,  &ev);
        if (BONOBO_EX (&ev))

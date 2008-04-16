@@ -65,7 +65,7 @@ CamelType
 camel_mh_summary_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_local_summary_get_type (), "CamelMhSummary",
 					   sizeof(CamelMhSummary),
@@ -75,7 +75,7 @@ camel_mh_summary_get_type (void)
 					   (CamelObjectInitFunc)camel_mh_summary_init,
 					   (CamelObjectFinalizeFunc)camel_mh_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -117,7 +117,7 @@ camel_mh_summary_finalise(CamelObject *obj)
  * camel_mh_summary_new:
  *
  * Create a new CamelMhSummary object.
- * 
+ *
  * Return value: A new #CamelMhSummary object.
  **/
 CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *folder, const char *filename, const char *mhdir, CamelIndex *index)
@@ -152,7 +152,7 @@ static char *mh_summary_next_uid_string(CamelFolderSummary *s)
 			uid = camel_folder_summary_next_uid(s);
 			name = g_strdup_printf("%s/%u", cls->folder_path, uid);
 			/* O_EXCL isn't guaranteed, sigh.  Oh well, bad luck, mh has problems anyway */
-			fd = open(name, O_WRONLY|O_CREAT|O_EXCL, 0600);
+			fd = open(name, O_WRONLY|O_CREAT|O_EXCL|O_LARGEFILE, 0600);
 			g_free(name);
 		} while (fd == -1 && errno == EEXIST);
 
@@ -174,7 +174,7 @@ static int camel_mh_summary_add(CamelLocalSummary *cls, const char *name, int fo
 
 	d(printf("summarising: %s\n", name));
 
-	fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY|O_LARGEFILE);
 	if (fd == -1) {
 		g_warning ("Cannot summarise/index: %s: %s", filename, strerror (errno));
 		g_free(filename);
@@ -331,7 +331,7 @@ mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
 					camel_index_delete_name(cls->index, (char *)uid);
-				
+
 				camel_folder_change_info_remove_uid(changes, uid);
 				camel_folder_summary_remove((CamelFolderSummary *)cls, (CamelMessageInfo *)info);
 			}

@@ -39,7 +39,7 @@ G_BEGIN_DECLS
 typedef enum {
 	/*CAMEL_HTTP_METHOD_OPTIONS,*/
 	CAMEL_HTTP_METHOD_GET,
-	CAMEL_HTTP_METHOD_HEAD,
+	CAMEL_HTTP_METHOD_HEAD
 	/*CAMEL_HTTP_METHOD_POST,*/
 	/*CAMEL_HTTP_METHOD_PUT,*/
 	/*CAMEL_HTTP_METHOD_DELETE,*/
@@ -52,32 +52,32 @@ typedef struct _CamelHttpStreamClass CamelHttpStreamClass;
 
 struct _CamelHttpStream {
 	CamelStream parent_object;
-	
+
 	CamelMimeParser *parser;
-	
+
 	CamelContentType *content_type;
 	struct _camel_header_raw *headers;
-	
+
 	CamelHttpMethod method;
 	struct _CamelSession *session;
 	CamelURL *url;
-	
+
 	char *user_agent;
-	
+
 	/* proxy info */
 	CamelURL *proxy;
 	char *authrealm;
 	char *authpass;
-	
+
 	int statuscode;
-	
+
 	CamelStream *raw;
 	CamelStream *read;
 };
 
 struct _CamelHttpStreamClass {
 	CamelStreamClass parent_class;
-	
+
 	/* Virtual methods */
 };
 

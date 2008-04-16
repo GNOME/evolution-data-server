@@ -54,22 +54,22 @@ enum {
 
 struct _CamelIMAP4Folder {
 	CamelOfflineFolder parent_object;
-	
+
 	CamelFolderSearch *search;
-	
+
 	CamelOfflineJournal *journal;
 	CamelDataCache *cache;
-	
+
 	char *cachedir;
 	char *utf7_name;
-	
+
 	unsigned int read_only:1;
 	unsigned int enable_mlist:1;
 };
 
 struct _CamelIMAP4FolderClass {
 	CamelOfflineFolderClass parent_class;
-	
+
 };
 
 

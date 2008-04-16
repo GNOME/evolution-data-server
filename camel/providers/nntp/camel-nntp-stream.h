@@ -35,7 +35,7 @@ typedef struct _CamelNNTPStream CamelNNTPStream;
 typedef enum {
 	CAMEL_NNTP_STREAM_LINE,
 	CAMEL_NNTP_STREAM_DATA,
-	CAMEL_NNTP_STREAM_EOD,	/* end of data, acts as if end of stream */
+	CAMEL_NNTP_STREAM_EOD	/* end of data, acts as if end of stream */
 } camel_nntp_stream_mode_t;
 
 struct _CamelNNTPStream {

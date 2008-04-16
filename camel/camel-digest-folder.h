@@ -38,13 +38,13 @@ typedef struct _CamelDigestFolderClass CamelDigestFolderClass;
 
 struct _CamelDigestFolder {
 	CamelFolder parent;
-	
+
 	struct _CamelDigestFolderPrivate *priv;
 };
 
 struct _CamelDigestFolderClass {
 	CamelFolderClass parent_class;
-	
+
 };
 
 CamelType    camel_digest_folder_get_type (void);

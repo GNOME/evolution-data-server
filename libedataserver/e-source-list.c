@@ -171,7 +171,7 @@ load_from_gconf (ESourceList *list)
 
 	/* FIXME if the order changes, the function doesn't notice.  */
 
-	if (changed) 
+	if (changed)
 		g_signal_emit (list, signals[CHANGED], 0);
 }
 
@@ -240,7 +240,7 @@ impl_dispose (GObject *object)
 
 		g_source_remove (priv->sync_idle_id);
 		priv->sync_idle_id = 0;
-		
+
 		if (! e_source_list_sync (E_SOURCE_LIST (object), &error))
 			g_warning ("Could not update \"%s\": %s",
 				   priv->gconf_path, error->message);
@@ -300,7 +300,7 @@ e_source_list_class_init (ESourceListClass *class)
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
 
-	signals[CHANGED] = 
+	signals[CHANGED] =
 		g_signal_new ("changed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -309,7 +309,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	signals[GROUP_REMOVED] = 
+	signals[GROUP_REMOVED] =
 		g_signal_new ("group_removed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -319,7 +319,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      G_TYPE_NONE, 1,
 			      G_TYPE_POINTER);
 
-	signals[GROUP_ADDED] = 
+	signals[GROUP_ADDED] =
 		g_signal_new ("group_added",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -342,10 +342,10 @@ e_source_list_init (ESourceList *source_list)
 
 /* returns the type */
 static GType
-get_source_list_type (void) 
+get_source_list_type (void)
 {
 	static GType type = 0;
-	
+
 	if (!type) {
 		if (!(type = g_type_from_name ("ESourceList")))
 			type = e_source_list_get_type ();
@@ -392,7 +392,7 @@ e_source_list_new_for_gconf (GConfClient *client,
 
 ESourceList *
 e_source_list_new_for_gconf_default (const char  *path)
-{	
+{
 	ESourceList *list;
 
 	g_return_val_if_fail (path != NULL, NULL);
@@ -471,7 +471,7 @@ e_source_list_peek_source_by_uid (ESourceList *list,
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
 		ESource *source;
-		
+
 		source = e_source_group_peek_source_by_uid (group, uid);
 		if (source)
 			return source;
@@ -490,7 +490,7 @@ e_source_list_peek_source_any (ESourceList *list)
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
 		GSList *sources;
-		
+
 		sources = e_source_group_peek_sources (group);
 		if (sources && sources->data)
 			return E_SOURCE (sources->data);
@@ -540,7 +540,7 @@ e_source_list_remove_group_by_uid (ESourceList *list,
 				    const char *uid)
 {
 	ESourceGroup *group;
-	
+
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -557,14 +557,14 @@ e_source_list_remove_source_by_uid (ESourceList *list,
 				     const char *uid)
 {
 	GSList *p;
-	
+
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
 		ESource *source;
-		
+
 		source = e_source_group_peek_source_by_uid (group, uid);
 		if (source)
 			return e_source_group_remove_source_by_uid (group, uid);
@@ -613,9 +613,9 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	GSList *conf_list = NULL, *temp = NULL, *p = NULL;
 	xmlDocPtr xmldoc;
 	ESourceGroup *group = NULL;
-	GSList *groups = NULL;	
+	GSList *groups = NULL;
 	gboolean conf_to_list = TRUE, list_to_conf = TRUE;
-	
+
 	g_return_val_if_fail (list != NULL, FALSE);
 
 	conf_list = gconf_client_get_list (list->priv->gconf_client,
@@ -645,7 +645,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 				break;
 			}
 		} else {
-			conf_to_list = FALSE;	
+			conf_to_list = FALSE;
 			break;
 		}
 	}
@@ -660,10 +660,10 @@ e_source_list_is_gconf_updated (ESourceList *list)
 		g_slist_free (conf_list);
 		return FALSE;
 	}
-	
+
 	groups = e_source_list_peek_groups (list);
-	
-	/* From list to conf */	
+
+	/* From list to conf */
 
 	for (p = groups ; p != NULL; p = p->next) {
 		group = E_SOURCE_GROUP (p->data);
@@ -674,7 +674,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 			if (strcmp (gconf_xml, source_group_xml))
 				continue;
 			else
-				break; 
+				break;
 		}
 		g_free (source_group_xml);
 
@@ -694,6 +694,6 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	/* If there is mismatch return FALSE */
 	if (!list_to_conf)
 		return FALSE;
-	
+
 	return TRUE;
 }

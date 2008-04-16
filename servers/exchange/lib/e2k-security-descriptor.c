@@ -824,7 +824,7 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 		ace.Mask = object_denied;
 		set_ace (sd, &ace);
 	}
-	
+
 	ace.Header.AceType  = E2K_ACCESS_ALLOWED_ACE_TYPE;
 	ace.Header.AceFlags = E2K_CONTAINER_INHERIT_ACE;
 	ace.Mask = container_allowed;

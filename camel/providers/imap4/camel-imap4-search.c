@@ -50,7 +50,7 @@ CamelType
 camel_imap4_search_get_type (void)
 {
 	static CamelType type = 0;
-	
+
 	if (!type) {
 		type = camel_type_register (camel_folder_search_get_type (),
 					    "CamelIMAP4Search",
@@ -61,7 +61,7 @@ camel_imap4_search_get_type (void)
 					    (CamelObjectInitFunc) camel_imap4_search_init,
 					    (CamelObjectFinalizeFunc) camel_imap4_search_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -69,9 +69,9 @@ static void
 camel_imap4_search_class_init (CamelIMAP4SearchClass *klass)
 {
 	CamelFolderSearchClass *search_class = (CamelFolderSearchClass *) klass;
-	
+
 	parent_class = (CamelFolderSearchClass *) camel_type_get_global_classfuncs (CAMEL_FOLDER_SEARCH_TYPE);
-	
+
 	search_class->body_contains = imap4_body_contains;
 }
 
@@ -92,11 +92,11 @@ CamelFolderSearch *
 camel_imap4_search_new (CamelIMAP4Engine *engine, const char *cachedir)
 {
 	CamelIMAP4Search *search;
-	
+
 	search = (CamelIMAP4Search *) camel_object_new (camel_imap4_search_get_type ());
 	camel_folder_search_construct ((CamelFolderSearch *) search);
 	search->engine = engine;
-	
+
 	return (CamelFolderSearch *) search;
 }
 
@@ -108,30 +108,30 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 	GPtrArray *matches = ic->user_data;
 	CamelMessageInfo *info;
 	char uid[12];
-	
+
 	while (1) {
 		if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 			return -1;
-		
+
 		if (token->token == '\n')
 			break;
-		
+
 		if (token->token != CAMEL_IMAP4_TOKEN_NUMBER || token->v.number == 0)
 			goto unexpected;
-		
+
 		sprintf (uid, "%lu", token->v.number);
 		if ((info = camel_folder_summary_uid (summary, uid))) {
 			g_ptr_array_add (matches, (char *) camel_message_info_uid (info));
 			camel_message_info_free (info);
 		}
 	}
-	
+
 	return 0;
-	
+
  unexpected:
-	
+
 	camel_imap4_utils_set_unexpected_token_error (ex, engine, token);
-	
+
 	return -1;
 }
 
@@ -151,12 +151,12 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 	int id, i, n;
 	size_t used;
 	char *set;
-	
+
 	if (((CamelOfflineStore *) engine->service)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return parent_class->body_contains (f, argc, argv, search);
-	
+
 	summary_set = search->summary_set ? search->summary_set : search->summary;
-	
+
 	/* check the simple cases */
 	if (argc == 0 || summary_set->len == 0) {
 		/* match nothing */
@@ -167,7 +167,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 		}
-		
+
 		return r;
 	} else if (argc == 1 && argv[0]->type == ESEXP_RES_STRING && argv[0]->value.string[0] == '\0') {
 		/* match everything */
@@ -184,10 +184,10 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 				r->value.ptrarray->pdata[i] = (char *) camel_message_info_uid (info);
 			}
 		}
-		
+
 		return r;
 	}
-	
+
 	strings = g_ptr_array_new ();
 	for (i = 0; i < argc; i++) {
 		if (argv[i]->type == ESEXP_RES_STRING && argv[i]->value.string[0] != '\0') {
@@ -199,17 +199,17 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 						utf8_search = TRUE;
 						break;
 					}
-					
+
 					inptr++;
 				}
 			}
 		}
 	}
-	
+
 	if (strings->len == 0) {
 		/* match everything */
 		g_ptr_array_free (strings, TRUE);
-		
+
 		if (search->current) {
 			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.bool = TRUE;
@@ -223,14 +223,14 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 				r->value.ptrarray->pdata[i] = (char *) camel_message_info_uid (info);
 			}
 		}
-		
+
 		return r;
 	}
-	
+
 	g_ptr_array_add (strings, NULL);
 	matches = g_ptr_array_new ();
 	infos = g_ptr_array_new ();
-	
+
 	if (search->current) {
 		g_ptr_array_add (infos, search->current);
 	} else {
@@ -239,39 +239,39 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 		for (i = 0; i < summary_set->len; i++)
 			infos->pdata[i] = summary_set->pdata[i];
 	}
-	
+
  retry:
 	if (utf8_search && (engine->capa & CAMEL_IMAP4_CAPABILITY_utf8_search))
 		expr = "UID SEARCH CHARSET UTF-8 UID %s BODY %V\r\n";
 	else
 		expr = "UID SEARCH UID %s BODY %V\r\n";
-	
+
 	used = strlen (expr) + (5 * (strings->len - 2));
-	
+
 	for (i = 0; i < infos->len; i += n) {
 		n = camel_imap4_get_uid_set (engine, search->folder->summary, infos, i, used, &set);
-		
+
 		ic = camel_imap4_engine_queue (engine, search->folder, expr, set, strings->pdata);
 		camel_imap4_command_register_untagged (ic, "SEARCH", untagged_search);
 		ic->user_data = matches;
 		g_free (set);
-		
+
 		while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
 			;
-		
+
 		if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
 			camel_imap4_command_unref (ic);
 			goto done;
 		}
-		
-		
+
+
 		if (ic->result == CAMEL_IMAP4_RESULT_NO && utf8_search && (engine->capa & CAMEL_IMAP4_CAPABILITY_utf8_search)) {
 			int j;
-			
+
 			/* might be because the server is lame and doesn't support UTF-8 */
 			for (j = 0; j < ic->resp_codes->len; j++) {
 				CamelIMAP4RespCode *resp = ic->resp_codes->pdata[j];
-				
+
 				if (resp->code == CAMEL_IMAP4_RESP_CODE_BADCHARSET) {
 					engine->capa &= ~CAMEL_IMAP4_CAPABILITY_utf8_search;
 					camel_imap4_command_unref (ic);
@@ -279,23 +279,23 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 				}
 			}
 		}
-		
+
 		if (ic->result != CAMEL_IMAP4_RESULT_OK) {
 			camel_imap4_command_unref (ic);
 			break;
 		}
-		
+
 		camel_imap4_command_unref (ic);
 	}
-	
+
  done:
-	
+
 	g_ptr_array_free (strings, TRUE);
 	g_ptr_array_free (infos, TRUE);
-	
+
 	if (search->current) {
 		const char *uid;
-		
+
 		uid = camel_message_info_uid (search->current);
 		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.bool = FALSE;
@@ -305,12 +305,12 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 				break;
 			}
 		}
-		
+
 		g_ptr_array_free (matches, TRUE);
 	} else {
 		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = matches;
 	}
-	
+
 	return r;
 }

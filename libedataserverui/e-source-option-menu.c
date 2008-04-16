@@ -251,7 +251,7 @@ e_source_option_menu_class_init (ESourceOptionMenuClass *class)
 	object_class->dispose  = e_source_option_menu_dispose;
 	object_class->finalize = e_source_option_menu_finalize;
 
-	signals[SOURCE_SELECTED] = 
+	signals[SOURCE_SELECTED] =
 		g_signal_new ("source_selected",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,

@@ -175,7 +175,7 @@ void
 xntlm_des(XNTLM_DES_KS ks, unsigned char block[8])
 {
 	guint32 left,right,work;
-	
+
 	/* Read input block and place in left/right in big-endian order */
 	left = ((guint32)block[0] << 24)
 	 | ((guint32)block[1] << 16)
@@ -187,7 +187,7 @@ xntlm_des(XNTLM_DES_KS ks, unsigned char block[8])
 	 | (guint32)block[7];
 
 	/* Hoey's clever initial permutation algorithm, from Outerbridge
-	 * (see Schneier p 478)	
+	 * (see Schneier p 478)
 	 *
 	 * The convention here is the same as Outerbridge: rotate each
 	 * register left by 1 bit, i.e., so that "left" contains permuted

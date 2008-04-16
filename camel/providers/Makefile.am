@@ -22,7 +22,7 @@ MAPI_SUBDIR = mapi
 else
 MAPI_SUBDIR =
 endif
-
+ 
 SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAP4_DIR) $(NNTP_DIR) local $(IMAPP_DIR) groupwise hula $(MAPI_SUBDIR)
 
 

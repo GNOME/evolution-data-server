@@ -194,7 +194,7 @@ e2k_uri_free (E2kUri *uri)
 		g_datalist_clear (&uri->params);
 		g_free (uri->query);
 		g_free (uri->fragment);
-		
+
 		g_free (uri);
 	}
 }

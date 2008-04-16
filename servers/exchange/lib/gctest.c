@@ -43,7 +43,7 @@ do_lookup (E2kGlobalCatalog *gc, const char *user)
 	E2kGlobalCatalogEntry *entry;
 	E2kGlobalCatalogLookupType type;
 	guint32 flags;
-	int i, pwd_exp_days; 
+	int i, pwd_exp_days;
 	double maxAge;
 
 	if (*user == '/')
@@ -109,7 +109,7 @@ do_lookup (E2kGlobalCatalog *gc, const char *user)
 
 	if (entry->quota_warn || entry->quota_nosend || entry->quota_norecv )
 		printf ("  Mail Quota Info:\n");
-	if (entry->quota_warn)	
+	if (entry->quota_warn)
 		printf ("    Issue Quota warning at : %d\n", entry->quota_warn);
 	if (entry->quota_nosend)
 		printf ("    Stop sending mails at  : %d\n", entry->quota_nosend);
@@ -117,7 +117,7 @@ do_lookup (E2kGlobalCatalog *gc, const char *user)
 		printf ("    Stop sending and recieving mails at : %d\n", entry->quota_norecv);
 	if (entry->user_account_control)
 		printf ("    user_account_control : %d\n", entry->user_account_control);
-	
+
 
 	maxAge = lookup_passwd_max_age (gc, &op);
 	printf("Password max age is %f \n", maxAge);

@@ -174,14 +174,6 @@
 @data: 
 @Returns: 
 
-<!-- ##### FUNCTION e_cal_view_get_client ##### -->
-<para>
-
-</para>
-
-@view: 
-@Returns: 
-
 <!-- ##### FUNCTION e_cal_view_get_type ##### -->
 <para>
 
@@ -189,10 +181,13 @@
 
 @Returns: 
 
-<!-- ##### FUNCTION e_cal_view_start ##### -->
+<!-- ##### FUNCTION e_cal_view_new ##### -->
 <para>
 
 </para>
 
-@view: 
+@corba_view: 
+@listener: 
+@client: 
+@Returns: 
 

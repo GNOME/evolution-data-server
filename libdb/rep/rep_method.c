@@ -154,7 +154,7 @@ __rep_start(dbenv, dbt, flags)
     "DB_ENV->set_rep_transport must be called before DB_ENV->rep_start");
 		return (EINVAL);
 	}
-	
+
 	/* We'd better not have any logged files open if we are a client. */
 	if (LF_ISSET(DB_REP_CLIENT) && (ret = __dbreg_nofiles(dbenv)) != 0) {
 		__db_err(dbenv, "DB_ENV->rep_start called with open files");

@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
- * Sivaiah Nallagatla <snallagatla@novell.com> 
- * 
+/*
+ * Authors :
+ * Sivaiah Nallagatla <snallagatla@novell.com>
+ *
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -42,7 +42,7 @@ typedef struct _FilterComponent  FilterComponent;
 struct _EGwFilterPrivate {
 	GSList *component_list;
 	int  filter_group_type; /* stores, whether all condtions are to be met or any one of them*/
-  
+
 };
 
 
@@ -51,11 +51,11 @@ void
 e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, const char *field_name, const char *field_value)
 {
 	FilterComponent *component;
-  
+
 	g_return_if_fail (E_IS_GW_FILTER (filter));
 	g_return_if_fail (field_name != NULL);
 	g_return_if_fail (field_value != NULL);
-  
+
 	component = g_new0 (FilterComponent, 1);
 	component->operation = operation;
 	component->field_name = g_strdup (field_name);
@@ -64,11 +64,11 @@ e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, 
 
 }
 
-void 
+void
 e_gw_filter_group_conditions (EGwFilter *filter, EGwFilterOpType operation, int num_of_condtions)
 {
 	FilterComponent *component;
-  
+
 	g_return_if_fail (E_IS_GW_FILTER (filter));
 	g_return_if_fail ( operation == E_GW_FILTER_OP_AND || operation == E_GW_FILTER_OP_OR ||
 			  operation == E_GW_FILTER_OP_NOT);
@@ -78,7 +78,7 @@ e_gw_filter_group_conditions (EGwFilter *filter, EGwFilterOpType operation, int 
 	filter->priv->component_list = g_slist_prepend (filter->priv->component_list, component);
 }
 
-static void 
+static void
 append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 {
 
@@ -87,9 +87,9 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	soup_soap_message_start_element (msg, "element", NULL, NULL);
 	operation_name = NULL;
-  
+
 	switch (filter_component->operation) {
-    
+
 	        case E_GW_FILTER_OP_EQUAL :
 			operation_name = "eq";
 			break;
@@ -123,12 +123,12 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 		case E_GW_FILTER_OP_NOTEXISTS :
 			operation_name = "notExist";
 			break;
-				 
+
 	}
-	
-		
+
+
 	if (operation_name != NULL) {
-		
+
 			e_gw_message_write_string_parameter (msg, "op", NULL, operation_name);
 			e_gw_message_write_string_parameter (msg, "field", NULL, filter_component->field_name);
 			e_gw_message_write_string_parameter (msg, "value", NULL, filter_component->field_value);
@@ -139,7 +139,7 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 
 
 
-static GSList* 
+static GSList*
 append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 {
 	FilterComponent *filter_component;
@@ -149,11 +149,11 @@ append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 	filter_component = (FilterComponent* )component_list->data;
 	if (filter_component->operation == E_GW_FILTER_OP_AND || filter_component->operation == E_GW_FILTER_OP_OR
 	    ||  filter_component->operation == E_GW_FILTER_OP_NOT ) {
-		
+
 		soup_soap_message_start_element (msg, "group", NULL, NULL);
 		if (filter_component->operation == E_GW_FILTER_OP_AND)
 			e_gw_message_write_string_parameter (msg, "op", NULL, "and");
-		else if (filter_component->operation == E_GW_FILTER_OP_OR) 
+		else if (filter_component->operation == E_GW_FILTER_OP_OR)
 			e_gw_message_write_string_parameter (msg, "op", NULL, "or");
 		else
 			e_gw_message_write_string_parameter (msg, "op", NULL, "not");
@@ -166,9 +166,9 @@ append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 		    || filter_component->operation == E_GW_FILTER_OP_NOT ) {
 			component_list = append_complex_component (component_list, msg);
 		}
-		else 
+		else
 			append_child_component (filter_component, msg);
-		
+
 
 	}
 	soup_soap_message_end_element (msg);
@@ -176,7 +176,7 @@ append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 	return component_list;
 }
 
-void 
+void
 e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg)
 {
 	EGwFilterPrivate *priv;
@@ -185,7 +185,7 @@ e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg)
 
 	g_return_if_fail (E_IS_GW_FILTER (filter));
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
- 
+
 	priv = filter->priv;
 	component_list = priv->component_list;
 
@@ -196,10 +196,10 @@ e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg)
 		    || filter_component->operation == E_GW_FILTER_OP_NOT) {
 			component_list = append_complex_component (component_list, msg);
 		}
-		else 
+		else
 			append_child_component (filter_component, msg);
 	soup_soap_message_end_element (msg); //end filter
-    
+
 	}
 }
 
@@ -228,10 +228,10 @@ e_gw_filter_finalize (GObject *object)
 		(* parent_class->finalize) (object);
 }
 
-static void 
+static void
 e_gw_filter_dispose (GObject *object)
 {
-  
+
 	if (parent_class->dispose)
 		(* parent_class->dispose) (object);
 
@@ -253,7 +253,7 @@ static void
 e_gw_filter_class_init (EGwFilterClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  
+
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->dispose = e_gw_filter_dispose;
 	object_class->finalize = e_gw_filter_finalize;
@@ -263,7 +263,7 @@ GType
 e_gw_filter_get_type (void)
 {
 	static GType type = 0;
-  
+
 	if (!type) {
 		static GTypeInfo info = {
 			sizeof (EGwFilterClass),

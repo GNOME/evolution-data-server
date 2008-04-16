@@ -128,7 +128,8 @@ __db_dbm_fetch(key)
 
 	if (__cur_db == NULL) {
 		__db_no_open();
-		item.dptr = 0;
+		item.dptr = NULL;
+		item.dsize = 0;
 		return (item);
 	}
 	return (dbm_fetch(__cur_db, key));
@@ -141,7 +142,8 @@ __db_dbm_firstkey()
 
 	if (__cur_db == NULL) {
 		__db_no_open();
-		item.dptr = 0;
+		item.dptr = NULL;
+		item.dsize = 0;
 		return (item);
 	}
 	return (dbm_firstkey(__cur_db));
@@ -157,7 +159,8 @@ __db_dbm_nextkey(key)
 
 	if (__cur_db == NULL) {
 		__db_no_open();
-		item.dptr = 0;
+		item.dptr = NULL;
+		item.dsize = 0;
 		return (item);
 	}
 	return (dbm_nextkey(__cur_db));

@@ -143,3 +143,66 @@ camel-operation
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_operation_cancel_prfd ##### -->
+<para>
+
+</para>
+
+@cc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_operation_registered ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_operation_start ##### -->
+<para>
+
+</para>
+
+@cc: 
+@what: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION camel_operation_start_transient ##### -->
+<para>
+
+</para>
+
+@cc: 
+@what: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION camel_operation_progress ##### -->
+<para>
+
+</para>
+
+@cc: 
+@pc: 
+
+
+<!-- ##### FUNCTION camel_operation_progress_count ##### -->
+<para>
+
+</para>
+
+@cc: 
+@sofar: 
+
+
+<!-- ##### FUNCTION camel_operation_end ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+

@@ -264,7 +264,7 @@ enum {
 	CAMEL_MIME_IS_QPSAFE	= 1<<6,
 	CAMEL_MIME_IS_ESAFE	= 1<<7,	/* encoded word safe */
 	CAMEL_MIME_IS_PSAFE	= 1<<8,	/* encoded word in phrase safe */
-	CAMEL_MIME_IS_ATTRCHAR  = 1<<9,	/* attribute-char safe (rfc2184) */
+	CAMEL_MIME_IS_ATTRCHAR  = 1<<9	/* attribute-char safe (rfc2184) */
 };
 
 extern unsigned short camel_mime_special_table[256];

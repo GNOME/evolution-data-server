@@ -406,7 +406,7 @@ on_idle_do_stuff (void *unused_data)
 				fprintf (stderr, "No such group \"%s\".\n", group_arg);
 				exit (1);
 			}
-		} 
+		}
 
 		e_source_list_sync (list, NULL);
 	}
@@ -416,7 +416,7 @@ on_idle_do_stuff (void *unused_data)
 
 		if (source_arg == NULL) {
 			fprintf (stderr,
-				 "When using --set-relative-uri, you need to specify a source using " 
+				 "When using --set-relative-uri, you need to specify a source using "
 				 "--source.\n");
 			exit (1);
 		}
@@ -449,7 +449,7 @@ on_idle_do_stuff (void *unused_data)
 
 		if (add_source_arg == NULL && source_arg == NULL) {
 			fprintf (stderr,
-				 "When using --unset-color, you need to specify a source using --source\n");			
+				 "When using --unset-color, you need to specify a source using --source\n");
 			exit (1);
 		}
 

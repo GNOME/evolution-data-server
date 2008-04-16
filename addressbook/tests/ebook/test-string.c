@@ -19,6 +19,6 @@ main (int argc, char **argv)
 	  printf ("passed\n");
 	else
 	  printf ("failed\n");
-	
+
 	return 0;
 }

@@ -23,6 +23,8 @@
 #ifndef _E_SOURCE_OPTION_MENU_H_
 #define _E_SOURCE_OPTION_MENU_H_
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include "libedataserver/e-source-list.h"
 
 #include <gtk/gtkoptionmenu.h>
@@ -60,5 +62,6 @@ ESource *e_source_option_menu_peek_selected  (ESourceOptionMenu *menu);
 void     e_source_option_menu_select         (ESourceOptionMenu *menu,
 					      ESource           *source);
 
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* _E_SOURCE_OPTION_MENU_H_ */

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * e-iconv.c
  * Copyright 2000, 2001, Ximian, Inc.
  *
@@ -42,7 +42,7 @@
 
 #include "iconv-detect.h"
 
-#define cd(x) 
+#define cd(x)
 
 #ifdef G_THREADS_ENABLED
 static GStaticMutex lock = G_STATIC_MUTEX_INIT;
@@ -100,59 +100,56 @@ static const struct {
 	char *charset;
 	char *iconv_name;
 } known_iconv_charsets[] = {
-#if 0
-	/* charset name, iconv-friendly charset name */
-	{ "iso-8859-1",     "iso-8859-1" },
-	{ "iso8859-1",      "iso-8859-1" },
-	/* the above mostly serves as an example for iso-style charsets,
-	   but we have code that will populate the iso-*'s if/when they
-	   show up in e_iconv_charset_name() so I'm
-	   not going to bother putting them all in here... */
-	{ "windows-cp1251", "cp1251"     },
-	{ "windows-1251",   "cp1251"     },
-	{ "cp1251",         "cp1251"     },
-	/* the above mostly serves as an example for windows-style
-	   charsets, but we have code that will parse and convert them
-	   to their cp#### equivalents if/when they show up in
-	   e_iconv_charset_name() so I'm not going to bother
-	   putting them all in here either... */
-#endif
 	/* charset name (lowercase!), iconv-friendly name (sometimes case sensitive) */
-	{ "utf-8",          "UTF-8"      },
+	{ "utf-8",           "UTF-8"      },
 
 	/* 10646 is a special case, its usually UCS-2 big endian */
 	/* This might need some checking but should be ok for solaris/linux */
-	{ "iso-10646-1",    "UCS-2BE"    },
-	{ "iso_10646-1",    "UCS-2BE"    },
-	{ "iso10646-1",     "UCS-2BE"    },
-	{ "iso-10646",      "UCS-2BE"    },
-	{ "iso_10646",      "UCS-2BE"    },
-	{ "iso10646",       "UCS-2BE"    },
-
-	{ "ks_c_5601-1987", "EUC-KR"     },
-
-	/* FIXME: Japanese/Korean/Chinese stuff needs checking */
-	{ "euckr-0",        "EUC-KR"     },
-	{ "5601",           "EUC-KR"     },
-	{ "zh_TW-euc",      "EUC-TW"     },
-	{ "zh_CN.euc",      "gb2312"     },
-	{ "zh_TW-big5",     "BIG5"       },
-	{ "euc-cn",         "gb2312"     },
-	{ "big5-0",         "BIG5"       },
-	{ "big5.eten-0",    "BIG5"       },
-	{ "big5hkscs-0",    "BIG5HKSCS"  },
-	{ "gb2312-0",       "gb2312"     },
-	{ "gb2312.1980-0",  "gb2312"     },
-	{ "gb-2312",        "gb2312"     },
-	{ "gb18030-0",      "gb18030"    },
-	{ "gbk-0",          "GBK"        },
-
-	{ "eucjp-0",        "eucJP"  	 },
-	{ "ujis-0",         "ujis"  	 },
-	{ "jisx0208.1983-0","SJIS"       },
-	{ "jisx0212.1990-0","SJIS"       },
-	{ "pck",	    "SJIS"       },
-	{ NULL,             NULL         }
+	{ "iso-10646-1",     "UCS-2BE"    },
+	{ "iso_10646-1",     "UCS-2BE"    },
+	{ "iso10646-1",      "UCS-2BE"    },
+	{ "iso-10646",       "UCS-2BE"    },
+	{ "iso_10646",       "UCS-2BE"    },
+	{ "iso10646",        "UCS-2BE"    },
+	
+	/* Korean charsets */
+	/* Note: according to http://www.iana.org/assignments/character-sets,
+	 * ks_c_5601-1987 should really map to ISO-2022-KR, but the EUC-KR
+	 * mapping was given to me via a native Korean user, so I'm not sure
+	 * if I should change this... perhaps they are compatable? */
+	{ "ks_c_5601-1987",  "EUC-KR"     },
+	{ "5601",            "EUC-KR"     },
+	{ "ksc-5601",        "EUC-KR"     },
+	{ "ksc-5601-1987",   "EUC-KR"     },
+	{ "ksc-5601_1987",   "EUC-KR"     },
+	{ "ks_c_5861-1992",  "EUC-KR"     },
+	{ "euckr-0",         "EUC-KR"     },
+	
+	/* Chinese charsets */
+	{ "big5-0",          "BIG5"       },
+	{ "big5.eten-0",     "BIG5"       },
+	{ "big5hkscs-0",     "BIG5HKSCS"  },
+	/* Note: GBK is a superset of gb2312 (see
+	 * http://en.wikipedia.org/wiki/GBK for details), so 'upgrade'
+	 * gb2312 to GBK so that we can completely convert GBK text
+	 * that is incorrectly tagged as gb2312 to UTF-8. */
+	{ "gb2312",          "GBK"        },
+	{ "gb-2312",         "GBK"        },
+	{ "gb2312-0",        "GBK"        },
+	{ "gb2312-80",       "GBK"        },
+	{ "gb2312.1980-0",   "GBK"        },
+	/* euc-cn is an alias for gb2312 */
+	{ "euc-cn",          "GBK"        },
+	{ "gb18030-0",       "gb18030"    },
+	{ "gbk-0",           "GBK"        },
+	
+	/* Japanese charsets */
+	{ "eucjp-0",         "eucJP"  	  },  /* should this map to "EUC-JP" instead? */
+	{ "ujis-0",          "ujis"  	  },  /* we might want to map this to EUC-JP */
+	{ "jisx0208.1983-0", "SJIS"       },
+	{ "jisx0212.1990-0", "SJIS"       },
+	{ "pck",	     "SJIS"       },
+	{ NULL,              NULL         }
 };
 
 
@@ -198,13 +195,13 @@ static const char *
 e_strdown (char *str)
 {
 	register char *s = str;
-	
+
 	while (*s) {
 		if (*s >= 'A' && *s <= 'Z')
 			*s += 0x20;
 		s++;
 	}
-	
+
 	return str;
 }
 
@@ -212,13 +209,13 @@ static const char *
 e_strup (char *str)
 {
 	register char *s = str;
-	
+
 	while (*s) {
 		if (*s >= 'a' && *s <= 'z')
 			*s -= 0x20;
 		s++;
 	}
-	
+
 	return str;
 }
 
@@ -227,18 +224,18 @@ static void
 locale_parse_lang (const char *locale)
 {
 	char *codeset, *lang;
-	
+
 	if ((codeset = strchr (locale, '.')))
 		lang = g_strndup (locale, codeset - locale);
 	else
 		lang = g_strdup (locale);
-	
+
 	/* validate the language */
 	if (strlen (lang) >= 2) {
 		if (lang[2] == '-' || lang[2] == '_') {
 			/* canonicalise the lang */
 			e_strdown (lang);
-			
+
 			/* validate the country code */
 			if (strlen (lang + 3) > 2) {
 				/* invalid country code */
@@ -252,7 +249,7 @@ locale_parse_lang (const char *locale)
 			g_free (lang);
 			lang = NULL;
 		}
-		
+
 		locale_lang = lang;
 	} else {
 		/* invalid language */
@@ -277,7 +274,7 @@ e_iconv_init(int keep)
 	}
 
 	iconv_charsets = g_hash_table_new(g_str_hash, g_str_equal);
-	
+
 	for (i = 0; known_iconv_charsets[i].charset != NULL; i++) {
 		from = g_strdup(known_iconv_charsets[i].charset);
 		to = g_strdup(known_iconv_charsets[i].iconv_name);
@@ -288,19 +285,19 @@ e_iconv_init(int keep)
 	e_dlist_init(&iconv_cache_list);
 	iconv_cache = g_hash_table_new(g_str_hash, g_str_equal);
 	iconv_cache_open = g_hash_table_new(NULL, NULL);
-	
+
 #ifndef G_OS_WIN32
 	locale = setlocale (LC_ALL, NULL);
 #else
 	locale = g_win32_getlocale ();
 #endif
-	
+
 	if (!locale || !strcmp (locale, "C") || !strcmp (locale, "POSIX")) {
 		/* The locale "C"  or  "POSIX"  is  a  portable  locale;  its
 		 * LC_CTYPE  part  corresponds  to  the 7-bit ASCII character
 		 * set.
 		 */
-		
+
 		locale_charset = NULL;
 		locale_lang = NULL;
 	} else {
@@ -320,11 +317,11 @@ e_iconv_init(int keep)
 		 * ISO-8859-1 or UTF-8.
 		 */
 		char *codeset, *p;
-		
+
 		codeset = strchr (locale, '.');
 		if (codeset) {
 			codeset++;
-			
+
 			/* ; is a hack for debian systems and / is a hack for Solaris systems */
 			for (p = codeset; *p && !strchr ("@;/", *p); p++);
 			locale_charset = g_strndup (codeset, p - codeset);
@@ -333,9 +330,9 @@ e_iconv_init(int keep)
 			/* charset unknown */
 			locale_charset = NULL;
 		}
-#endif		
+#endif
 #endif	/* !G_OS_WIN32 */
-		
+
 		/* parse the locale lang */
 		locale_parse_lang (locale);
 
@@ -358,7 +355,7 @@ const char *e_iconv_charset_name(const char *charset)
 	name = g_alloca (strlen (charset) + 1);
 	strcpy (name, charset);
 	e_strdown (name);
-	
+
 	e_iconv_init(TRUE);
 	ret = g_hash_table_lookup(iconv_charsets, name);
 	if (ret != NULL) {
@@ -371,13 +368,13 @@ const char *e_iconv_charset_name(const char *charset)
 		/* Convert iso-nnnn-n or isonnnn-n or iso_nnnn-n to iso-nnnn-n or isonnnn-n */
 		int iso, codepage;
 		char *p;
-		
+
 		tmp = name + 3;
 		if (*tmp == '-' || *tmp == '_')
 			tmp++;
-		
+
 		iso = strtoul (tmp, &p, 10);
-		
+
 		if (iso == 10646) {
 			/* they all become ICONV_10646 */
 			ret = g_strdup (ICONV_10646);
@@ -385,9 +382,9 @@ const char *e_iconv_charset_name(const char *charset)
 			tmp = p;
 			if (*tmp == '-' || *tmp == '_')
 				tmp++;
-			
+
 			codepage = strtoul (tmp, &p, 10);
-			
+
 			if (p > tmp) {
 				/* codepage is numeric */
 #ifdef __aix__
@@ -412,7 +409,7 @@ const char *e_iconv_charset_name(const char *charset)
 		tmp = name+10;
 		if (!strncmp(tmp, "cp", 2))
 			tmp+=2;
-		ret = g_strdup_printf("CP%s", tmp);	
+		ret = g_strdup_printf("CP%s", tmp);
 	} else {
 		/* Just assume its ok enough as is, case and all */
 		ret = g_strdup(charset);
@@ -458,7 +455,7 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 		errno = EINVAL;
 		return (iconv_t) -1;
 	}
-	
+
 	to = e_iconv_charset_name (oto);
 	from = e_iconv_charset_name (ofrom);
 	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
@@ -488,7 +485,7 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 		}
 
 		iconv_cache_size++;
-		
+
 		ic = g_malloc(sizeof(*ic));
 		e_dlist_init(&ic->open);
 		ic->conv = g_strdup(tofrom);
@@ -504,8 +501,8 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 		cd(printf("using existing iconv converter '%s'\n", ic->conv));
 		ip = in->ip;
 		if (ip != (iconv_t)-1) {
-			/* work around some broken iconv implementations 
-			 * that die if the length arguments are NULL 
+			/* work around some broken iconv implementations
+			 * that die if the length arguments are NULL
 			 */
 			size_t buggy_iconv_len = 0;
 			char *buggy_iconv_buf = NULL;
@@ -579,7 +576,7 @@ const char *
 e_iconv_locale_language (void)
 {
 	e_iconv_init (FALSE);
-	
+
 	return locale_lang;
 }
 
@@ -613,15 +610,15 @@ const char *
 e_iconv_charset_language (const char *charset)
 {
 	int i;
-	
+
 	if (!charset)
 		return NULL;
-	
+
 	charset = e_iconv_charset_name (charset);
 	for (i = 0; i < NUM_CJKR_LANGS; i++) {
 		if (!g_ascii_strcasecmp (cjkr_lang_map[i].charset, charset))
 			return cjkr_lang_map[i].lang;
 	}
-	
+
 	return NULL;
 }

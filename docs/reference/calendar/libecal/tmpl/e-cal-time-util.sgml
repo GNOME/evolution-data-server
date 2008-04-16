@@ -217,3 +217,33 @@ Time management utility functions.
 @zone: 
 
 
+<!-- ##### FUNCTION icaltimetype_to_tm ##### -->
+<para>
+
+</para>
+
+@itt: 
+@Returns: 
+
+
+<!-- ##### FUNCTION icaltimetype_to_tm_with_zone ##### -->
+<para>
+
+</para>
+
+@itt: 
+@from_zone: 
+@to_zone: 
+@Returns: 
+
+
+<!-- ##### FUNCTION tm_to_icaltimetype ##### -->
+<para>
+
+</para>
+
+@tm: 
+@is_date: 
+@Returns: 
+
+

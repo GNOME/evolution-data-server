@@ -17,25 +17,6 @@ camel-nntp-grouplist
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT CamelNNTPGroupListEntry ##### -->
-<para>
-
-</para>
-
-@group_name: 
-@low: 
-@high: 
-@flags: 
-
-<!-- ##### STRUCT CamelNNTPGroupList ##### -->
-<para>
-
-</para>
-
-@store: 
-@time: 
-@group_list: 
-
 <!-- ##### TYPEDEF _CamelNNTPGroupList ##### -->
 <para>
 
@@ -46,5 +27,42 @@ camel-nntp-grouplist
 <para>
 
 </para>
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_fetch ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_update ##### -->
+<para>
+
+</para>
+
+@group_list: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_save ##### -->
+<para>
+
+</para>
+
+@group_list: 
+@ex: 
+
+
+<!-- ##### FUNCTION camel_nntp_grouplist_free ##### -->
+<para>
+
+</para>
+
+@group_list: 
 
 

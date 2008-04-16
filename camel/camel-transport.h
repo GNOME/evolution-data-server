@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-transport.h : Abstract class for an email transport */
 
-/* 
+/*
  *
- * Author : 
+ * Author :
  *  Dan Winship <danw@ximian.com>
  *
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -38,13 +38,13 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
+	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
 struct _CamelTransport
 {
 	CamelService parent_object;
-	
+
 	struct _CamelTransportPrivate *priv;
 };
 

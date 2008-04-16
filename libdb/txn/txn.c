@@ -568,7 +568,7 @@ err:	/*
 	 */
 	if (td->status == TXN_PREPARED)
 		return (__db_panic(dbenv, ret));
-		
+
 	if ((t_ret = txnp->abort(txnp)) != 0)
 		ret = t_ret;
 	return (ret);

@@ -4,8 +4,8 @@
  *
  * Copyright (C) 1999 Ximian (www.ximian.com/).
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -47,13 +47,13 @@ enum {
 	CAMEL_LOCK_HELPER_STATUS_PROTOCOL,
 	CAMEL_LOCK_HELPER_STATUS_NOMEM,
 	CAMEL_LOCK_HELPER_STATUS_SYSTEM,
-	CAMEL_LOCK_HELPER_STATUS_INVALID, /* not allowed to lock/doesn't exist etc */
+	CAMEL_LOCK_HELPER_STATUS_INVALID /* not allowed to lock/doesn't exist etc */
 };
 
 /* commands */
 enum {
 	CAMEL_LOCK_HELPER_LOCK = 0xf0f,
-	CAMEL_LOCK_HELPER_UNLOCK = 0xf0f0,
+	CAMEL_LOCK_HELPER_UNLOCK = 0xf0f0
 };
 
 /* seconds between lock refreshes */

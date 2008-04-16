@@ -55,7 +55,7 @@ CamelType
 camel_vee_store_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_store_get_type (), "CamelVeeStore",
 					    sizeof (CamelVeeStore),
@@ -65,7 +65,7 @@ camel_vee_store_get_type (void)
 					    (CamelObjectInitFunc) camel_vee_store_init,
 					    (CamelObjectFinalizeFunc) camel_vee_store_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -73,7 +73,7 @@ static void
 camel_vee_store_class_init (CamelVeeStoreClass *klass)
 {
 	CamelStoreClass *store_class = (CamelStoreClass *) klass;
-	
+
 	camel_vee_store_parent = (CamelStoreClass *)camel_store_get_type();
 
 	/* virtual method overload */
@@ -94,7 +94,7 @@ camel_vee_store_init (CamelVeeStore *obj)
 	CamelStore *store = (CamelStore *)obj;
 
 	/* we dont want a vtrash/vjunk on this one */
-	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK);	
+	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK);
 
 	/* Set up unmatched folder */
 	obj->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
@@ -122,7 +122,7 @@ camel_vee_store_finalise (CamelObject *obj)
  * camel_vee_store_new:
  *
  * Create a new #CamelVeeStore object.
- * 
+ *
  * Returns new #CamelVeeStore object
  **/
 CamelVeeStore *
@@ -147,7 +147,7 @@ change_folder(CamelStore *store, const char *name, guint32 flags, int count)
 	const char *tmp;
 	CamelURL *url;
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup(name);
 	tmp = strrchr(name, '/');
 	if (tmp == NULL)
@@ -276,7 +276,7 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 				camel_folder_refresh_info((CamelFolder *)folder, NULL);
 
-			info = g_malloc0(sizeof(*info));
+			info = camel_folder_info_new();
 			url = camel_url_new("vfolder:", NULL);
 			camel_url_set_path(url, ((CamelService *)((CamelFolder *)folder)->parent_store)->url->path);
 			camel_url_set_fragment(url, ((CamelFolder *)folder)->full_name);
@@ -334,7 +334,7 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 
 	/* and always add UNMATCHED, if scanning from top/etc */
 	if (top == NULL || top[0] == 0 || strncmp(top, CAMEL_UNMATCHED_NAME, strlen(CAMEL_UNMATCHED_NAME)) == 0) {
-		info = g_malloc0(sizeof(*info));
+		info = camel_folder_info_new ();
 		url = camel_url_new("vfolder:", NULL);
 		camel_url_set_path(url, ((CamelService *)store)->url->path);
 		camel_url_set_fragment(url, CAMEL_UNMATCHED_NAME);

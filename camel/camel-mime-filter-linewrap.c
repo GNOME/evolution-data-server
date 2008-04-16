@@ -42,7 +42,7 @@ camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *klass)
 {
 	CamelMimeFilterClass *mime_filter_class =
 		(CamelMimeFilterClass *) klass;
-	
+
 	mime_filter_class->filter = filter;
 	mime_filter_class->complete = complete;
 	mime_filter_class->reset = reset;
@@ -52,7 +52,7 @@ CamelType
 camel_mime_filter_linewrap_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterLinewrap",
 					    sizeof (CamelMimeFilterLinewrap),
@@ -62,7 +62,7 @@ camel_mime_filter_linewrap_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -73,14 +73,14 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	CamelMimeFilterLinewrap *linewrap = (CamelMimeFilterLinewrap *)f;
 	char *inend, *p, *q;
 	int nchars = linewrap->nchars;
-	
+
 	/* we'll be adding chars here so we need a bigger buffer */
 	camel_mime_filter_set_size (f, 3 * len, FALSE);
-	
+
 	p = in;
 	q = f->outbuf;
 	inend = in + len;
-	
+
 	while (p < inend) {
 		if (*p == '\n') {
 			*q++ = *p++;
@@ -97,7 +97,7 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 			*q++ = *p++;
 			nchars++;
 		}
-		
+
 		/* line is getting way too long, we must force a wrap here */
 		if (nchars >= (linewrap->max_len - 1) && *p != '\n') {
 			*q++ = '\n';
@@ -105,15 +105,15 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 			nchars = 0;
 		}
 	}
-	
+
 	linewrap->nchars = nchars;
-	
+
 	*out = f->outbuf;
 	*outlen = q - f->outbuf;
 	*outprespace = f->outpre;
 }
 
-static void 
+static void
 complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 	  char **out, size_t *outlen, size_t *outprespace)
 {
@@ -125,7 +125,7 @@ static void
 reset (CamelMimeFilter *f)
 {
 	CamelMimeFilterLinewrap *linewrap = (CamelMimeFilterLinewrap *)f;
-	
+
 	linewrap->nchars = 0;
 }
 
@@ -134,11 +134,11 @@ camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, char indent_
 {
 	CamelMimeFilterLinewrap *linewrap =
 		CAMEL_MIME_FILTER_LINEWRAP (camel_object_new (CAMEL_MIME_FILTER_LINEWRAP_TYPE));
-	
+
 	linewrap->indent = indent_char;
 	linewrap->wrap_len = preferred_len;
 	linewrap->max_len = max_len;
 	linewrap->nchars = 0;
-	
+
 	return (CamelMimeFilter *) linewrap;
 }

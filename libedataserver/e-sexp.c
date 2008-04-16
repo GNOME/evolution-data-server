@@ -1,13 +1,13 @@
-/* 
+/*
  * Copyright 2000 Ximian (www.ximian.com).
  *
  * A simple, extensible s-exp evaluation engine.
  *
- * Author : 
+ * Author :
  *  Michael Zucchi <notzed@ximian.com>
 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -121,9 +121,9 @@ static const GScannerConfig scanner_config =
 	  G_CSET_LATINS
 	  G_CSET_LATINC	)	/* cset_identifier_nth */,
 	( ";\n" )		/* cpair_comment_single */,
-  
+
 	FALSE			/* case_sensitive */,
-  
+
 	TRUE			/* skip_comment_multi */,
 	TRUE			/* skip_comment_single */,
 	TRUE			/* scan_comment_multi */,
@@ -154,7 +154,7 @@ e_sexp_fatal_error(struct _ESExp *f, char *why, ...)
 
 	if (f->error)
 		g_free(f->error);
-	
+
 	va_start(args, why);
 	f->error = g_strdup_vprintf(why, args);
 	va_end(args);
@@ -246,11 +246,11 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type=-1;
 	int bool = TRUE;
 	int i;
-	
+
 	r(printf("( and\n"));
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	
+
 	for (i=0;bool && i<argc;i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 		if (type == -1)
@@ -263,7 +263,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
 			char **a1;
 			int l1, j;
-			
+
 			a1 = (char **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
@@ -278,7 +278,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		}
 		e_sexp_result_free(f, r1);
 	}
-	
+
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new();
@@ -289,9 +289,9 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		r->type = ESEXP_RES_BOOL;
 		r->value.bool = bool;
 	}
-	
+
 	g_hash_table_destroy(ht);
-	
+
 	return r;
 }
 
@@ -304,11 +304,11 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type = -1;
 	int bool = FALSE;
 	int i;
-	
+
 	r(printf("(or \n"));
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	
+
 	for (i=0;!bool && i<argc;i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 		if (type == -1)
@@ -321,18 +321,18 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
 			char **a1;
 			int l1, j;
-			
+
 			a1 = (char **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
 				g_hash_table_insert(ht, a1[j], (void *)1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			bool |= r1->value.bool;				
+			bool |= r1->value.bool;
 		}
 		e_sexp_result_free(f, r1);
 	}
-	
+
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new();
@@ -344,7 +344,7 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		r->value.bool = bool;
 	}
 	g_hash_table_destroy(ht);
-	
+
 	return r;
 }
 
@@ -371,7 +371,7 @@ term_eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	struct _ESExpResult *r, *r1, *r2;
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	
+
 	if (argc == 2) {
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
@@ -403,7 +403,7 @@ term_eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	struct _ESExpResult *r, *r1, *r2;
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
-	
+
 	if (argc == 2) {
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
@@ -435,7 +435,7 @@ term_eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	struct _ESExpResult *r, *r1, *r2;
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	
+
 	if (argc == 2) {
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
@@ -726,7 +726,7 @@ static void
 eval_dump_result(ESExpResult *r, int depth)
 {
 	int i;
-	
+
 	if (r==NULL) {
 		printf("null result???\n");
 		return;
@@ -771,7 +771,7 @@ parse_dump_term(struct _ESExpTerm *t, int depth)
 
 	for (i=0;i<depth;i++)
 		printf("   ");
-	
+
 	switch (t->type) {
 	case ESEXP_TERM_STRING:
 		printf(" \"%s\"", t->value.string);
@@ -826,7 +826,7 @@ parse_term_free(struct _ESExp *f, struct _ESExpTerm *t)
 	if (t==NULL) {
 		return;
 	}
-	
+
 	switch (t->type) {
 	case ESEXP_TERM_INT:
 	case ESEXP_TERM_BOOL:
@@ -882,7 +882,7 @@ parse_values(ESExp *f, int *len)
 
 	p(printf("found %d subterms\n", size));
 	*len = size;
-	
+
 	p(printf("done parsing values\n"));
 	return terms;
 }
@@ -894,9 +894,9 @@ parse_value(ESExp *f)
 	struct _ESExpTerm *t = NULL;
 	GScanner *gs = f->scanner;
 	struct _ESExpSymbol *s;
-	
+
 	p(printf("parsing value\n"));
-	
+
 	token = g_scanner_get_next_token(gs);
 	switch(token) {
 	case G_TOKEN_EOF:
@@ -916,7 +916,7 @@ parse_value(ESExp *f)
 			e_sexp_fatal_error (f, "Invalid format for a integer value");
 			return NULL;
 		}
-		
+
 		negative = TRUE;
 		/* fall through... */
 	case G_TOKEN_INT:
@@ -928,22 +928,22 @@ parse_value(ESExp *f)
 		break;
 	case '#': {
 		char *str;
-		
+
 		p(printf("got bool?\n"));
 		token = g_scanner_get_next_token(gs);
 		if (token != G_TOKEN_IDENTIFIER) {
 			e_sexp_fatal_error (f, "Invalid format for a boolean value");
 			return NULL;
 		}
-		
+
 		str = g_scanner_cur_value (gs).v_identifier;
-		
+
 		g_assert (str != NULL);
 		if (!(strlen (str) == 1 && (str[0] == 't' || str[0] == 'f'))) {
 			e_sexp_fatal_error (f, "Invalid format for a boolean value");
 			return NULL;
 		}
-		
+
 		t = parse_term_new(f, ESEXP_TERM_BOOL);
 		t->value.bool = (str[0] == 't');
 		break; }
@@ -1125,7 +1125,7 @@ GType
 e_sexp_get_type (void)
 {
 	static GType type = 0;
-	
+
 	if (!type) {
 		static const GTypeInfo info = {
 			sizeof (ESExpClass),
@@ -1138,10 +1138,10 @@ e_sexp_get_type (void)
 			0,    /* n_preallocs */
 			(GInstanceInitFunc) e_sexp_init,
 		};
-		
+
 		type = g_type_register_static (G_TYPE_OBJECT, "ESExp", &info, 0);
 	}
-	
+
 	return type;
 }
 #endif
@@ -1155,7 +1155,7 @@ e_sexp_new (void)
 	ESExp *f = g_malloc0 (sizeof (ESExp));
 	e_sexp_init (f);
 #endif
-	
+
 	return f;
 }
 
@@ -1308,9 +1308,9 @@ e_sexp_eval(ESExp *f)
 
 /**
  * e_sexp_encode_bool:
- * @s: 
- * @state: 
- * 
+ * @s:
+ * @state:
+ *
  * Encode a bool into an s-expression @s.  Bools are
  * encoded using #t #f syntax.
  **/
@@ -1327,7 +1327,7 @@ e_sexp_encode_bool(GString *s, gboolean state)
  * e_sexp_encode_string:
  * @s: Destination string.
  * @string: String expression.
- * 
+ *
  * Add a c string @string to the s-expression stored in
  * the gstring @s.  Quotes are added, and special characters
  * are escaped appropriately.

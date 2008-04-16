@@ -14,7 +14,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <glib.h>
- 
+
 #include "e-name-western.h"
 #include "e-name-western-tables.h"
 
@@ -107,7 +107,7 @@ e_name_western_get_words_at_idx (char *str, int idx, int num_words)
 
 /*
  * What the fuck is wrong with glib's MAX macro.
- */ 
+ */
 static int
 e_name_western_max (const int a, const int b)
 {
@@ -173,7 +173,7 @@ e_name_western_get_one_prefix_at_str (char *str)
 	 */
 	word = e_name_western_get_words_at_idx (str, 0, 1);
 
-	if (g_utf8_strlen (word, -1) > 2 && 
+	if (g_utf8_strlen (word, -1) > 2 &&
 	    g_unichar_isalpha (g_utf8_get_char (word)) &&
 	    g_unichar_isalpha (g_utf8_get_char (g_utf8_next_char (word))) &&
 	    word [strlen (word) - 1] == '.')
@@ -318,14 +318,14 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 	middle = g_utf8_next_char (middle);
 	if (*middle == '\0')
 		return;
-	
+
 	/*
 	 * Search for the first space (or the terminating \0)
 	 */
 	while (g_unichar_isspace (g_utf8_get_char (middle)) &&
 	       *middle != '\0')
 		middle = g_utf8_next_char (middle);
-		
+
 	if (*middle == '\0')
 		return;
 
@@ -338,7 +338,7 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 
 		middle = name->full + idxs->nick_idx + strlen (name->nick);
 		middle = g_utf8_next_char (middle);
-		
+
 		while (g_unichar_isspace (g_utf8_get_char (middle)) &&
 		       *middle != '\0')
 			middle = g_utf8_next_char (middle);
@@ -372,7 +372,7 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 		g_free (word);
 		return;
 	}
-	
+
 	idxs->middle_idx = middle - name->full;
 	name->middle = word;
 }
@@ -556,7 +556,7 @@ e_name_western_get_suffix_at_str_end (char *str)
 			break;
 		}
 		nextp = g_utf8_prev_char (nextp);
-		
+
 		e_name_western_cleanup_string (& word);
 
 		if (e_name_western_word_is_suffix (word)) {
@@ -642,7 +642,7 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 	 * to
 	 *    <Prefix> <First name> <Middle[+nick] name> <Last name> <Suffix>
 	 */
-	
+
 	/*
 	 * Grab the prefix from the beginning.
 	 */
@@ -660,11 +660,11 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 
 	while (g_unichar_isspace (g_utf8_get_char (p)) && *p != '\0')
 		p = g_utf8_next_char (p);
-	
-	/* 
+
+	/*
 	   Consider this case, "Br.Gate,Br. Gate,W". I know this is a damn
 	   random name, but, I got this from the bug report of 317411.
-	   
+
 	   comma = ",Br.Gate,W"
 	   prefix = "Br.Gate,Br."
 	   p = " Gate,W"
@@ -677,7 +677,7 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 		g_free (prefix);
 		return;
 	}
-	
+
 	last = g_malloc0 (comma - p + 1);
 	strncpy (last, p, comma - p);
 
@@ -1007,7 +1007,7 @@ e_name_western_free (ENameWestern *w)
 	g_free (w->nick);
 	g_free (w->last);
 	g_free (w->suffix);
-	
+
 	g_free (w->full);
 
 	g_free (w);

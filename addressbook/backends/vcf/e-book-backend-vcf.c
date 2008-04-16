@@ -44,7 +44,7 @@
 #include "libedataserver/e-flag.h"
 
 #include "libebook/e-contact.h"
- 
+
 #include "libedata-book/e-data-book.h"
 #include "libedata-book/e-data-book-view.h"
 #include "libedata-book/e-book-backend-sexp.h"
@@ -576,7 +576,7 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 	/* XXX we need a way to say "we support everything", since the
 	   vcf backend does */
 	for (i = 0; i < E_CONTACT_FIELD_LAST; i ++)
-		fields = g_list_append (fields, (char*)e_contact_field_name (i));		
+		fields = g_list_append (fields, (char*)e_contact_field_name (i));
 
 	*fields_out = fields;
 	return GNOME_Evolution_Addressbook_Success;
@@ -674,7 +674,7 @@ e_book_backend_vcf_cancel_operation (EBookBackend *backend, EDataBook *book)
 	return GNOME_Evolution_Addressbook_CouldNotCancel;
 }
 
-static void 
+static void
 e_book_backend_vcf_set_mode (EBookBackend *backend, int mode)
 {
 	if (e_book_backend_is_loaded (backend)) {
@@ -747,7 +747,7 @@ e_book_backend_vcf_dispose (GObject *object)
 		bvcf->priv = NULL;
 	}
 
-	G_OBJECT_CLASS (e_book_backend_vcf_parent_class)->dispose (object);	
+	G_OBJECT_CLASS (e_book_backend_vcf_parent_class)->dispose (object);
 }
 
 static void

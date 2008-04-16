@@ -1,11 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- * 
+ *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2000 Ximian (www.ximian.com).
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -45,7 +45,7 @@ static CamelProviderConfEntry mh_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "dotfolders", NULL,
-	  N_("Use the `.folders' folder summary file (exmh)"), "0" },
+	  N_("_Use the `.folders' folder summary file (exmh)"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -74,7 +74,7 @@ static CamelProvider mbox_provider = {
 	N_("For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR |CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	mbox_conf_entries,
 	/* ... */
 };
@@ -85,7 +85,7 @@ static CamelProviderConfEntry maildir_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
-	  N_("Apply filters to new messages in INBOX"), "0" },
+	  N_("_Apply filters to new messages in INBOX"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -104,8 +104,8 @@ static CamelProvider maildir_provider = {
 static CamelProviderConfEntry spool_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL, N_("Apply filters to new messages in INBOX"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "xstatus", NULL, N_("Store status headers in Elm/Pine/Mutt format"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL, N_("_Apply filters to new messages in INBOX"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "xstatus", NULL, N_("_Store status headers in Elm/Pine/Mutt format"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -167,9 +167,9 @@ local_url_hash (const void *v)
 {
 	const CamelURL *u = v;
 	guint hash = 0;
-	
+
 #define ADD_HASH(s) if (s) hash ^= g_str_hash (s);
-	
+
 	ADD_HASH (u->protocol);
 	ADD_HASH (u->user);
 	ADD_HASH (u->authmech);
@@ -179,7 +179,7 @@ local_url_hash (const void *v)
 	ADD_HASH (u->path);
 	ADD_HASH (u->query);
 	hash ^= u->port;
-	
+
 	return hash;
 }
 
@@ -192,7 +192,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-	
+
 	if (s2 == NULL)
 		return FALSE;
 

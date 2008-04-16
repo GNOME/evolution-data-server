@@ -93,9 +93,10 @@ get_init_cred (krb5_context ctx, const char *usr_name, const char *passwd,
 	krb5_get_init_creds_opt_set_forwardable (&opt, 0);
 	krb5_get_init_creds_opt_set_proxiable (&opt, 0);
 
-	result = krb5_get_init_creds_password (ctx, cred, principal, passwd,
+	result = krb5_get_init_creds_password (ctx, cred, principal,
+					       (char *) passwd,
 					       NULL, NULL, 0,
-					       in_tkt_service, &opt);
+					       (char *) in_tkt_service, &opt);
 	krb5_free_principal (ctx, principal);
 
 	return krb5_result_to_e2k_kerberos_result (result);

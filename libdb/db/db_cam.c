@@ -818,7 +818,7 @@ done:	/*
 			 * has an open OPD cursor whose state might need to
 			 * be preserved.
 			 */
-			if ((!(multi & DB_MULTIPLE_KEY) && 
+			if ((!(multi & DB_MULTIPLE_KEY) &&
 			    dbc_arg->internal->opd == NULL) ||
 			    F_ISSET(dbc_arg, DBC_TRANSIENT))
 				dbc_n = dbc_arg;

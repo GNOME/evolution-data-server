@@ -41,7 +41,7 @@ typedef struct _CamelNNTPStoreInfo CamelNNTPStoreInfo;
 
 enum {
 	CAMEL_NNTP_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
-	CAMEL_NNTP_STORE_INFO_LAST,
+	CAMEL_NNTP_STORE_INFO_LAST
 };
 
 struct _CamelNNTPStoreInfo {

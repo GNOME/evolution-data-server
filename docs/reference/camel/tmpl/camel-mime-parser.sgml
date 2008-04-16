@@ -207,3 +207,105 @@ CamelMimeParser
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_mime_parser_headers_raw ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_preface ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_postface ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_from_line ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_filter_add ##### -->
+<para>
+
+</para>
+
+@parser: 
+@filter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_filter_remove ##### -->
+<para>
+
+</para>
+
+@parser: 
+@id: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_tell ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_seek ##### -->
+<para>
+
+</para>
+
+@parser: 
+@offset: 
+@whence: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_tell_start_headers ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_tell_start_from ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_mime_parser_tell_start_boundary ##### -->
+<para>
+
+</para>
+
+@parser: 
+@Returns: 
+
+

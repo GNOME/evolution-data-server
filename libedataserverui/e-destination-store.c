@@ -354,7 +354,7 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
 		EDestination *destination = g_ptr_array_index (destination_store->destinations, i);
 		destination_list = g_list_prepend (destination_list, destination);
 	}
-	
+
 	destination_list = g_list_reverse(destination_list);
 
 	return destination_list;
@@ -456,7 +456,7 @@ void
 e_destination_store_remove_destination_nth (EDestinationStore *destination_store, int n)
 {
 	EDestination *destination;
-	
+
 	g_return_if_fail ( n >= 0);
 
 	destination = g_ptr_array_index(destination_store->destinations, n);

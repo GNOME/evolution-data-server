@@ -112,7 +112,7 @@ impl_GNOME_Evolution_Addressbook_Book_removeContacts (PortableServer_Servant ser
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 	int i;
 	GList *id_list = NULL;
-	
+
 	for (i = 0; i < ids->_length; i ++)
 		id_list = g_list_append (id_list, ids->_buffer[i]);
 
@@ -168,7 +168,7 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 	}
 
 	e_book_backend_add_book_view (backend, view);
-	
+
 	e_data_book_respond_get_book_view (book, opid, GNOME_Evolution_Addressbook_Success, view);
 }
 
@@ -209,7 +209,7 @@ impl_GNOME_Evolution_Addressbook_Book_getRequiredFields (PortableServer_Servant 
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
 	e_book_backend_get_required_fields (e_data_book_get_backend (book), book, opid);
-	
+
 }
 
 static void
@@ -838,7 +838,7 @@ e_data_book_report_writable (EDataBook                           *book,
  * Notify listeners that @book's online status has changed
  * to @is_online.
  **/
-void 
+void
 e_data_book_report_connection_status (EDataBook   *book,
 				      gboolean    is_online)
 {
@@ -848,7 +848,7 @@ e_data_book_report_connection_status (EDataBook   *book,
 
 	GNOME_Evolution_Addressbook_BookListener_notifyConnectionStatus (
 		book->priv->listener, (CORBA_boolean) is_online, &ev);
-	
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_report_connection_status: Exception "
 			   "responding to BookListener!\n");
@@ -864,17 +864,17 @@ e_data_book_report_connection_status (EDataBook   *book,
  *
  * Notify listeners that @book requires authentication.
  **/
-void 
+void
 e_data_book_report_auth_required (EDataBook *book)
 {
 
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
-	
+
 	GNOME_Evolution_Addressbook_BookListener_notifyAuthRequired (
 			 book->priv->listener,  &ev);
-	
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_data_book_report_auth_required: Exception "
 			   "responding to BookListener!\n");
@@ -883,7 +883,7 @@ e_data_book_report_auth_required (EDataBook *book)
 	CORBA_exception_free (&ev);
 
 }
-				      
+
 static void
 e_data_book_construct (EDataBook                *book,
 		       EBookBackend             *backend,
@@ -1000,7 +1000,7 @@ e_data_book_class_init (EDataBookClass *klass)
 	epv->getBookView             = impl_GNOME_Evolution_Addressbook_Book_getBookView;
 	epv->getChanges              = impl_GNOME_Evolution_Addressbook_Book_getChanges;
 	epv->cancelOperation         = impl_GNOME_Evolution_Addressbook_Book_cancelOperation;
-	
+
 }
 
 static void

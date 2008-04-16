@@ -30,8 +30,8 @@
 
 /**
  * camel_dlist_init:
- * @v: 
- * 
+ * @v:
+ *
  * Initialise a double-linked list header.  All list headers must be
  * initialised before use.
  **/
@@ -46,9 +46,9 @@ void camel_dlist_init(CamelDList *v)
  * camel_dlist_addhead:
  * @l: An initialised list header.
  * @n: A node, the next and prev pointers will be overwritten.
- * 
+ *
  * Add the list node @n to the head (start) of the list @l.
- * 
+ *
  * Return value: @n.
  **/
 CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n)
@@ -64,9 +64,9 @@ CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n)
  * camel_dlist_addtail:
  * @l: An intialised list header.
  * @n: A node, the next and prev pointers will be overwritten.
- * 
+ *
  * Add the list onde @n to the tail (end) of the list @l.
- * 
+ *
  * Return value: @n.
  **/
 CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n)
@@ -81,9 +81,9 @@ CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n)
 /**
  * camel_dlist_remove:
  * @n: A node which is part of a list.
- * 
+ *
  * Remove @n from the list it's in.  @n must belong to a list.
- * 
+ *
  * Return value: @n.
  **/
 CamelDListNode *camel_dlist_remove(CamelDListNode *n)
@@ -96,9 +96,9 @@ CamelDListNode *camel_dlist_remove(CamelDListNode *n)
 /**
  * camel_dlist_remhead:
  * @l: An initialised list, maybe containing items.
- * 
+ *
  * Remove the head node (start) of the list.
- * 
+ *
  * xReturn value: The previously first-node in the list, or NULLif @l
  * is an empty list.
  **/
@@ -119,9 +119,9 @@ CamelDListNode *camel_dlist_remhead(CamelDList *l)
 /**
  * camel_dlist_remtail:
  * @l: An initialised list, maybe containing items.
- * 
+ *
  * Remove the last node in the list.
- * 
+ *
  * Return value: The previously last-node in the list, or NULL if @l
  * is an empty list.
  **/
@@ -142,9 +142,9 @@ CamelDListNode *camel_dlist_remtail(CamelDList *l)
 /**
  * camel_dlist_empty:
  * @l: An initialised list header.
- * 
+ *
  * Returns %TRUE if @l is an empty list.
- * 
+ *
  * Return value: %TRUE if @l is an empty list, %FALSE otherwise.
  **/
 int camel_dlist_empty(CamelDList *l)
@@ -155,9 +155,9 @@ int camel_dlist_empty(CamelDList *l)
 /**
  * camel_dlist_length:
  * @l: An initialised list header.
- * 
+ *
  * Returns the number of nodes in the list @l.
- * 
+ *
  * Return value: The number of nodes.
  **/
 int camel_dlist_length(CamelDList *l)

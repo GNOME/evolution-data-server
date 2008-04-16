@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -44,6 +44,7 @@ G_BEGIN_DECLS
  * Items management
  */
 EGwItem       *e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp);
+EGwItem  *e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp);
 ECalComponent *e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw);
 void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
 
@@ -61,7 +62,7 @@ gboolean e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, cons
 /*
  * Component related utility functions
  */
-  
+
 const char *e_cal_component_get_gw_id (ECalComponent *comp);
 G_END_DECLS
 

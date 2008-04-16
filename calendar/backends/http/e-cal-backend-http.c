@@ -35,8 +35,7 @@
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
-#include <libsoup/soup-session-async.h>
-#include <libsoup/soup-uri.h>
+#include <libsoup/soup.h>
 #include "e-cal-backend-http.h"
 
 
@@ -133,7 +132,7 @@ e_cal_backend_http_finalize (GObject *object)
 		icaltimezone_free (priv->default_zone, 1);
 		priv->default_zone = NULL;
 	}
-	
+
 
 	if (priv->soup_session) {
 		soup_session_abort (priv->soup_session);
@@ -162,7 +161,7 @@ static ECalBackendSyncStatus
 e_cal_backend_http_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
 {
 	*read_only = TRUE;
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -182,7 +181,7 @@ static ECalBackendSyncStatus
 e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, char **attribute)
 {
 	*attribute = NULL;
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -193,7 +192,7 @@ e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *
  	 * with it (although that would be a useful feature some day).
  	 */
 	*address = NULL;
-	
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -238,13 +237,12 @@ notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
+retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	const char *newuri;
-	char *str;
 	GHashTable *old_cache;
 	GList *comps_in_cache;
 
@@ -255,8 +253,8 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
-		newuri = soup_message_get_header (msg->response_headers,
-						  "Location");
+		newuri = soup_message_headers_get (msg->response_headers,
+						   "Location");
 
 		d(g_message ("Redirected to %s\n", newuri));
 
@@ -285,10 +283,7 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 	}
 
 	/* get the calendar from the response */
-	str = g_malloc0 (msg->response.length + 1);
-	strncpy (str, msg->response.body, msg->response.length);
-	icalcomp = icalparser_parse_string (str);
-	g_free (str);
+	icalcomp = icalparser_parse_string (msg->response_body->data);
 
 	if (!icalcomp) {
 		if (!priv->opened)
@@ -338,19 +333,24 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
 				const char *uid, *orig_key, *orig_value;
+				char *obj;
 
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
 				e_cal_component_get_uid (comp, &uid);
 				/* middle (void*) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
 				if (g_hash_table_lookup_extended (old_cache, uid, (void **)(void*)&orig_key, (void **)(void*)&orig_value)) {
+					obj = icalcomponent_as_ical_string (subcomp);
 					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
 									      orig_value,
-									      icalcomponent_as_ical_string (subcomp));
+									      obj);
+					g_free (obj);
 					g_hash_table_remove (old_cache, uid);
 				} else {
+					obj = icalcomponent_as_ical_string (subcomp);
 					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
-									     icalcomponent_as_ical_string (subcomp));
+									     obj);
+					g_free (obj);
 				}
 			}
 
@@ -384,48 +384,23 @@ retrieval_done (SoupMessage *msg, ECalBackendHttp *cbhttp)
 /* Authentication helpers for libsoup */
 
 static void
-soup_authenticate (SoupSession  *session, 
+soup_authenticate (SoupSession  *session,
 	           SoupMessage  *msg,
-		   const char   *auth_type, 
-		   const char   *auth_realm,
-		   char        **username, 
-		   char        **password, 
+		   SoupAuth     *auth,
+		   gboolean      retrying,
 		   gpointer      data)
 {
 	ECalBackendHttpPrivate *priv;
 	ECalBackendHttp        *cbhttp;
-	
-	cbhttp = E_CAL_BACKEND_HTTP (data);	
+
+	cbhttp = E_CAL_BACKEND_HTTP (data);
 	priv =  cbhttp->priv;
 
-	*username = priv->username;
-	*password = priv->password;
-	
+	soup_auth_authenticate (auth, priv->username, priv->password);
+
 	priv->username = NULL;
 	priv->password = NULL;
 
-}
-
-static void
-soup_reauthenticate (SoupSession  *session, 
-		     SoupMessage  *msg,
-		     const char   *auth_type, 
-		     const char   *auth_realm,
-		     char        **username, 
-		     char        **password, 
-		     gpointer      data)
-{
-	ECalBackendHttpPrivate *priv;
-	ECalBackendHttp        *cbhttp;
-	
-	cbhttp = E_CAL_BACKEND_HTTP (data);	
-	priv = cbhttp->priv;
-
-	*username = priv->username;
-	*password = priv->password;
-	
-	priv->username = NULL;
-	priv->password = NULL;
 }
 
 static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
@@ -459,9 +434,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 		g_signal_connect (priv->soup_session, "authenticate",
 				  G_CALLBACK (soup_authenticate), cbhttp);
-		g_signal_connect (priv->soup_session, "reauthenticate",
-				  G_CALLBACK (soup_reauthenticate), cbhttp);
-	
+
 		/* set the HTTP proxy, if configuration is set to do so */
 		conf_client = gconf_client_get_default ();
 		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
@@ -472,7 +445,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
 
 			if (server && server[0]) {
-				SoupUri *suri;
+				SoupURI *suri;
 				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
 					char *user, *password;
 
@@ -505,19 +478,19 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	if (priv->uri == NULL) {
 		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
 		const char *secure_prop = e_source_get_property (source, "use_ssl");
-		
+
 		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
 		                                   (secure_prop && g_str_equal(secure_prop, "1")));
 	}
 
 	/* create message to be sent to server */
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
-	soup_message_add_header (soup_message->request_headers, "User-Agent",
-				 "Evolution/" VERSION);
+	soup_message_headers_append (soup_message->request_headers, "User-Agent",
+				     "Evolution/" VERSION);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
 
 	soup_session_queue_message (priv->soup_session, soup_message,
-				    (SoupMessageCallbackFn) retrieval_done, cbhttp);
+				    (SoupSessionCallback) retrieval_done, cbhttp);
 
 	d(g_message ("Retrieval started.\n"));
 	return FALSE;
@@ -575,11 +548,11 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
-	
+
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
-	
+
 	if (e_source_get_property (source, "auth") != NULL) {
 		if ((username == NULL || password == NULL)) {
 			return GNOME_Evolution_Calendar_AuthenticationRequired;
@@ -590,21 +563,20 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), E_CAL_SOURCE_TYPE_EVENT );
-
+		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
 
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND(cbhttp), _("Could not create cache file"));
-			return GNOME_Evolution_Calendar_OtherError;	
+			return GNOME_Evolution_Calendar_OtherError;
 		}
-		
+
 		if (priv->default_zone) {
 			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
 		}
 
-		if (priv->mode == CAL_MODE_LOCAL) 
+		if (priv->mode == CAL_MODE_LOCAL)
 			return GNOME_Evolution_Calendar_Success;
-		
+
 
 		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
@@ -617,12 +589,12 @@ e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
-	
+
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
 	if (!priv->cache)
-		return GNOME_Evolution_Calendar_OtherError;
+		return GNOME_Evolution_Calendar_Success;
 
 	e_file_cache_remove (E_FILE_CACHE (priv->cache));
 	return GNOME_Evolution_Calendar_Success;
@@ -669,7 +641,7 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 	priv = cbhttp->priv;
 
 	loaded = e_cal_backend_http_is_loaded (backend);
-				
+
 	switch (mode) {
 		case CAL_MODE_LOCAL:
 			priv->mode = mode;
@@ -680,13 +652,13 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 			}
 			break;
 		case CAL_MODE_REMOTE:
-		case CAL_MODE_ANY:	
+		case CAL_MODE_ANY:
 			priv->mode = mode;
 			set_mode = cal_mode_to_corba (mode);
-			if (loaded) 
+			if (loaded)
 				g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
 			break;
-		
+
 			priv->mode = CAL_MODE_REMOTE;
 			set_mode = GNOME_Evolution_Calendar_MODE_REMOTE;
 			break;
@@ -696,7 +668,7 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 	}
 
 	if (loaded) {
-		
+
 		if (set_mode == GNOME_Evolution_Calendar_MODE_ANY)
 			e_cal_backend_notify_mode (backend,
 						   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
@@ -721,7 +693,7 @@ e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 	icalcomp = e_cal_util_new_component (kind);
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 	icalcomponent_free (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -779,7 +751,7 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = g_strdup (icalcomponent_as_ical_string (icalcomp));
+	*object = icalcomponent_as_ical_string (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -978,7 +950,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const char *address, const char 
         ECalBackendHttpPrivate *priv;
         ECalBackendCache *cache;
         char *query, *iso_start, *iso_end;
-	
+
         priv = cbhttp->priv;
         cache = priv->cache;
 
@@ -1066,7 +1038,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	gchar *address, *name;
 	icalcomponent *vfb;
 	char *calobj;
-	
+
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -1081,8 +1053,8 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 		if (e_cal_backend_mail_account_get_default (&address, &name)) {
                         vfb = create_user_free_busy (cbhttp, address, name, start, end);
                         calobj = icalcomponent_as_ical_string (vfb);
-                        *freebusy = g_list_append (*freebusy, g_strdup (calobj));
-                        icalcomponent_free (vfb);	
+                        *freebusy = g_list_append (*freebusy, calobj);
+                        icalcomponent_free (vfb);
                         g_free (address);
                         g_free (name);
 		}
@@ -1093,7 +1065,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
                         if (e_cal_backend_mail_account_is_valid (address, &name)) {
                                 vfb = create_user_free_busy (cbhttp, address, name, start, end);
                                 calobj = icalcomponent_as_ical_string (vfb);
-                                *freebusy = g_list_append (*freebusy, g_strdup (calobj));
+                                *freebusy = g_list_append (*freebusy, calobj);
                                 icalcomponent_free (vfb);
                                 g_free (name);
                         }
@@ -1139,7 +1111,7 @@ e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
-	
+
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
@@ -1147,7 +1119,7 @@ e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, 
+e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj,
 				CalObjModType mod, char **old_object, char **new_object)
 {
 	ECalBackendHttp *cbhttp;
@@ -1241,6 +1213,9 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const char *tzid
 	        zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	return zone;
@@ -1313,11 +1288,11 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 
 /**
  * e_cal_backend_http_get_type:
- * @void: 
- * 
+ * @void:
+ *
  * Registers the #ECalBackendHttp class if necessary, and returns the type ID
  * associated to it.
- * 
+ *
  * Return value: The type ID of the #ECalBackendHttp class.
  **/
 GType

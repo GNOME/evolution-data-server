@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * cal-backend-card-sexp.c
  * Copyright 1999, 2000, 2001, Ximian, Inc.
  *
@@ -177,7 +177,7 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp, int argc, ESExpResult **argv
 		return NULL;
 	}
 	n = argv[1]->value.number;
-	
+
 	result = e_sexp_result_new (esexp, ESEXP_RES_TIME);
 	result->value.time = time_add_day (t, n);
 
@@ -297,7 +297,7 @@ func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		return NULL;
 	}
 
-	arg_uid = argv[0]->value.string;	
+	arg_uid = argv[0]->value.string;
 	e_cal_component_get_uid (ctx->comp, &uid);
 
 	if (!arg_uid && !uid)
@@ -308,7 +308,7 @@ func_uid (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 		equal = TRUE;
 	else
 		equal = FALSE;
-	
+
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = equal;
 
@@ -330,12 +330,12 @@ static icaltimezone *
 resolve_tzid (const char *tzid, gpointer user_data)
 {
 	SearchContext *ctx = user_data;
-                                                                                
+
         if (!tzid || !tzid[0])
                 return NULL;
         else if (!strcmp (tzid, "UTC"))
                 return icaltimezone_get_utc_timezone ();
-                                                                                
+
         return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
 }
 
@@ -441,18 +441,18 @@ func_due_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 			due_t = icaltime_as_timet_with_zone(*dt.value,zone);
 		else
 			due_t = icaltime_as_timet(*dt.value);
-	} 	
+	}
 
 	if(dt.value != NULL && (due_t <= end && due_t >= start))
 		retval = TRUE;
-	else 
-		retval = FALSE; 
+	else
+		retval = FALSE;
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = retval;
 
 	e_cal_component_free_datetime (&dt);
-	
+
 	return result;
 }
 
@@ -542,7 +542,7 @@ matches_organizer (ECalComponent *comp, const char *str)
 	if (str && !*str)
 		return TRUE;
 
-	if ((org.value && e_util_strstrcase (org.value, str)) || 
+	if ((org.value && e_util_strstrcase (org.value, str)) ||
 			(org.cn && e_util_strstrcase (org.cn, str)))
 		return TRUE;
 
@@ -557,14 +557,14 @@ matches_classification (ECalComponent *comp, const char *str)
 
 	if (!*str)
 		return FALSE;
-	
+
 	if(g_str_equal (str, "Public"))
 		classification1 = E_CAL_COMPONENT_CLASS_PUBLIC;
 	else if(g_str_equal (str, "Private"))
 		classification1 = E_CAL_COMPONENT_CLASS_PRIVATE;
 	else if(g_str_equal (str, "Confidential"))
 		classification1 = E_CAL_COMPONENT_CLASS_CONFIDENTIAL;
-	else 	
+	else
 		classification1 = E_CAL_COMPONENT_CLASS_UNKNOWN;
 
 	e_cal_component_get_classification(comp, &classification);
@@ -630,7 +630,7 @@ matches_priority (ECalComponent *comp ,const char *pr)
 	if (!priority || !*priority)
 		return FALSE;
 
-	if (g_str_equal (pr, "HIGH") && *priority <= 4) 
+	if (g_str_equal (pr, "HIGH") && *priority <= 4)
 		return TRUE;
 	else if (g_str_equal (pr, "NORMAL") && *priority == 5)
 		return TRUE;
@@ -654,9 +654,9 @@ matches_status (ECalComponent *comp ,const char *str)
 
 	if (g_str_equal (str, "NOT STARTED") && status == ICAL_STATUS_NONE)
 			return TRUE;
-	else if (g_str_equal (str, "COMPLETED") && status == ICAL_STATUS_COMPLETED) 
+	else if (g_str_equal (str, "COMPLETED") && status == ICAL_STATUS_COMPLETED)
 			return TRUE;
-	else if(g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)  
+	else if(g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)
 			return TRUE;
 	else if(g_str_equal (str, "IN PROGRESS")  && status == ICAL_STATUS_INPROCESS)
 			return TRUE;
@@ -697,11 +697,11 @@ func_percent_complete (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 
 	e_cal_component_get_percent (ctx->comp, &percent);
 
-	if (percent && *percent) {	
+	if (percent && *percent) {
 		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 		result->value.number = *percent;
 
-	}  
+	}
 
 	return result;
 }
@@ -779,6 +779,35 @@ func_contains (ESExp *esexp, int argc, ESExpResult **argv, void *data)
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = matches;
+
+	return result;
+}
+
+/* (has-start?)
+ *
+ * A boolean value for components that have/don't have filled start date/time.
+ *
+ * Returns: a boolean indicating whether the component has start date/time filled or not.
+ */
+static ESExpResult *
+func_has_start (ESExp *esexp, int argc, ESExpResult **argv, void *data)
+{
+	SearchContext *ctx = data;
+	ESExpResult *result;
+	ECalComponentDateTime dt;
+
+	/* Check argument types */
+
+	if (argc != 0) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+				    "has-start");
+		return NULL;
+	}
+
+	e_cal_component_get_dtstart (ctx->comp, &dt);
+	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
+	result->value.bool = dt.value != NULL;
+	e_cal_component_free_datetime (&dt);
 
 	return result;
 }
@@ -1163,12 +1192,12 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];
-				
+
 				if (info->prop_type == PROP_TYPE_NORMAL) {
 					char *prop = NULL;
 					/* searches where the query's property
 					   maps directly to an ecard property */
-					
+
 					prop = e_card_simple_get (ctx->card, info->field_id);
 
 					if (prop && compare(prop, argv[1]->value.string)) {
@@ -1185,7 +1214,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 					const char *prop = NULL;
 					/* searches where the query's property
 					   maps directly to an ecard property */
-					
+
 					prop = e_card_get_id (ctx->card->card);
 
 					if (prop && compare(prop, argv[1]->value.string)) {
@@ -1204,7 +1233,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 					break;
 			}
 		}
-		
+
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
@@ -1231,6 +1260,7 @@ static struct {
 	{ "occur-in-time-range?", func_occur_in_time_range, 0 },
 	{ "due-in-time-range?", func_due_in_time_range, 0 },
 	{ "contains?", func_contains, 0 },
+	{ "has-start?", func_has_start, 0 },
 	{ "has-alarms?", func_has_alarms, 0 },
 	{ "has-alarms-in-range?", func_has_alarms_in_range, 0 },
 	{ "has-recurrences?", func_has_recurrences, 0 },
@@ -1304,7 +1334,7 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const char *object, ECal
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
-	
+
 	retval = e_cal_backend_sexp_match_comp (sexp, comp, backend);
 
 	g_object_unref (comp);
@@ -1365,7 +1395,7 @@ const char *
 e_cal_backend_sexp_text (ECalBackendSExp *sexp)
 {
 	ECalBackendSExpPrivate *priv;
-	
+
 	g_return_val_if_fail (sexp != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), NULL);
 

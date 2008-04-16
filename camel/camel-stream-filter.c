@@ -29,7 +29,7 @@
 
 #include "camel-stream-filter.h"
 
-#define d(x) 
+#define d(x)
 
 /* use my malloc debugger? */
 /*extern void g_check(void *mp);*/
@@ -44,7 +44,7 @@ struct _filter {
 struct _CamelStreamFilterPrivate {
 	struct _filter *filters;
 	int filterid;		/* next filter id */
-	
+
 	char *realbuffer;	/* buffer - READ_PAD */
 	char *buffer;		/* READ_SIZE bytes */
 
@@ -83,7 +83,7 @@ camel_stream_filter_class_init (CamelStreamFilterClass *klass)
 	camel_stream_class->write = do_write;
 	camel_stream_class->flush = do_flush;
 	camel_stream_class->close = do_close;
-	camel_stream_class->eos = do_eos; 
+	camel_stream_class->eos = do_eos;
 	camel_stream_class->reset = do_reset;
 
 }
@@ -92,7 +92,7 @@ static void
 camel_stream_filter_init (CamelStreamFilter *obj)
 {
 	struct _CamelStreamFilterPrivate *p;
-	
+
 	_PRIVATE(obj) = p = g_malloc0(sizeof(*p));
 	p->realbuffer = g_malloc(READ_SIZE + READ_PAD);
 	p->buffer = p->realbuffer + READ_PAD;
@@ -123,7 +123,7 @@ CamelType
 camel_stream_filter_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (CAMEL_STREAM_TYPE, "CamelStreamFilter",
 					    sizeof (CamelStreamFilter),
@@ -133,7 +133,7 @@ camel_stream_filter_get_type (void)
 					    (CamelObjectInitFunc) camel_stream_filter_init,
 					    (CamelObjectFinalizeFunc) camel_stream_filter_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -141,7 +141,7 @@ camel_stream_filter_get_type (void)
  * camel_stream_filter_new:
  *
  * Create a new #CamelStreamFilter object.
- * 
+ *
  * Returns a new #CamelStreamFilter object.
  **/
 CamelStreamFilter *
@@ -159,13 +159,13 @@ camel_stream_filter_new_with_stream(CamelStream *stream)
  * camel_stream_filter_add:
  * @stream: a #CamelStreamFilter object
  * @filter: a #CamelMimeFilter object
- * 
+ *
  * Add a new #CamelMimeFilter to execute during the processing of this
  * stream.  Each filter added is processed after the previous one.
  *
  * Note that a filter should only be added to a single stream
  * at a time, otherwise unpredictable results may occur.
- * 
+ *
  * Returns a filter id for the added @filter.
  **/
 int
@@ -192,7 +192,7 @@ camel_stream_filter_add (CamelStreamFilter *stream, CamelMimeFilter *filter)
  * camel_stream_filter_remove:
  * @stream: a #CamelStreamFilter object
  * @id: Filter id, as returned from #camel_stream_filter_add
- * 
+ *
  * Remove a processing filter from the stream by id.
  **/
 void
@@ -339,15 +339,15 @@ do_flush (CamelStream *stream)
 	char *buffer;
 	size_t presize;
 	size_t len;
-	
+
 	if (p->last_was_read)
 		return 0;
-	
+
 	buffer = "";
 	len = 0;
 	presize = 0;
 	f = p->filters;
-	
+
 	d(printf ("\n\nFlushing: Original content (%s): '", ((CamelObject *)filter->source)->klass->name));
 	d(fwrite(buffer, sizeof(char), len, stdout));
 	d(printf("'\n"));
@@ -383,13 +383,13 @@ do_eos (CamelStream *stream)
 {
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
-	
+
 	if (p->filteredlen > 0)
 		return FALSE;
-	
+
 	if (!p->flushed)
 		return FALSE;
-	
+
 	return camel_stream_eos(filter->source);
 }
 
@@ -402,7 +402,7 @@ do_reset (CamelStream *stream)
 
 	p->filteredlen = 0;
 	p->flushed = FALSE;
-	
+
 	/* and reset filters */
 	f = p->filters;
 	while (f) {

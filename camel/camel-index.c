@@ -80,7 +80,7 @@ CamelType
 camel_index_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelIndex",
 					   sizeof (CamelIndex),
@@ -90,7 +90,7 @@ camel_index_get_type(void)
 					   (CamelObjectInitFunc) camel_index_init,
 					   (CamelObjectFinalizeFunc) camel_index_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -116,7 +116,7 @@ int
 camel_index_rename(CamelIndex *idx, const char *path)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->rename(idx, path);
 	else {
@@ -129,7 +129,7 @@ void
 camel_index_set_normalise(CamelIndex *idx, CamelIndexNorm func, void *data)
 {
 	g_return_if_fail (CAMEL_IS_INDEX (idx));
-	
+
 	idx->normalise = func;
 	idx->normalise_data = data;
 }
@@ -138,7 +138,7 @@ int
 camel_index_sync(CamelIndex *idx)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->sync(idx);
 	else {
@@ -151,7 +151,7 @@ int
 camel_index_compress(CamelIndex *idx)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->compress(idx);
 	else {
@@ -166,7 +166,7 @@ camel_index_delete(CamelIndex *idx)
 	int ret;
 
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0) {
 		ret = CI_CLASS(idx)->delete(idx);
 		idx->state |= CAMEL_INDEX_DELETED;
@@ -182,7 +182,7 @@ int
 camel_index_has_name(CamelIndex *idx, const char *name)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), FALSE);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->has_name(idx, name);
 	else
@@ -193,7 +193,7 @@ CamelIndexName *
 camel_index_add_name(CamelIndex *idx, const char *name)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->add_name(idx, name);
 	else
@@ -204,7 +204,7 @@ int
 camel_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->write_name(idx, idn);
 	else {
@@ -217,7 +217,7 @@ CamelIndexCursor *
 camel_index_find_name(CamelIndex *idx, const char *name)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->find_name(idx, name);
 	else
@@ -228,7 +228,7 @@ void
 camel_index_delete_name(CamelIndex *idx, const char *name)
 {
 	g_return_if_fail (CAMEL_IS_INDEX (idx));
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		CI_CLASS(idx)->delete_name(idx, name);
 }
@@ -240,7 +240,7 @@ camel_index_find(CamelIndex *idx, const char *word)
 	CamelIndexCursor *ret;
 
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) != 0)
 		return NULL;
 
@@ -259,7 +259,7 @@ CamelIndexCursor *
 camel_index_words(CamelIndex *idx)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->words(idx);
 	else
@@ -270,7 +270,7 @@ CamelIndexCursor *
 camel_index_names(CamelIndex *idx)
 {
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-	
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
 		return CI_CLASS(idx)->names(idx);
 	else
@@ -307,7 +307,7 @@ CamelType
 camel_index_name_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelIndexName",
 					   sizeof (CamelIndexName),
@@ -317,7 +317,7 @@ camel_index_name_get_type(void)
 					   (CamelObjectInitFunc) camel_index_name_init,
 					   (CamelObjectFinalizeFunc) camel_index_name_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -382,7 +382,7 @@ CamelType
 camel_index_cursor_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelIndexCursor",
 					   sizeof (CamelIndexCursor),
@@ -392,7 +392,7 @@ camel_index_cursor_get_type(void)
 					   (CamelObjectInitFunc) camel_index_cursor_init,
 					   (CamelObjectFinalizeFunc) camel_index_cursor_finalise);
 	}
-	
+
 	return type;
 }
 

@@ -51,9 +51,9 @@ enum {
 
 struct _CamelIMAP4JournalEntry {
 	EDListNode node;
-	
+
 	int type;
-	
+
 	union {
 		char *append_uid;
 	} v;
@@ -61,13 +61,13 @@ struct _CamelIMAP4JournalEntry {
 
 struct _CamelIMAP4Journal {
 	CamelOfflineJournal parent_object;
-	
+
 	GPtrArray *failed;
 };
 
 struct _CamelIMAP4JournalClass {
 	CamelOfflineJournalClass parent_class;
-	
+
 };
 
 

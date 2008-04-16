@@ -10,5 +10,6 @@ privincludedir=@privincludedir@
 Name: camel-provider
 Description: The Evolution mail access library
 Version: @VERSION@
-Libs: -L${libdir} -lcamel-1.2 -lcamel-provider-1.2 -ledataserver-1.2
+Requires: camel-@API_VERSION@
+Libs: -L${libdir} -lcamel-provider-@API_VERSION@
 Cflags: -I${privincludedir}

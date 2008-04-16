@@ -150,3 +150,47 @@ CamelIMAPPDriver
 @folder: 
 
 
+<!-- ##### FUNCTION camel_imapp_driver_fetch ##### -->
+<para>
+
+</para>
+
+@id: 
+@folder: 
+@uid: 
+@body: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_list ##### -->
+<para>
+
+</para>
+
+@id: 
+@name: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_get ##### -->
+<para>
+
+</para>
+
+@id: 
+@folder: 
+@uid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imapp_driver_append ##### -->
+<para>
+
+</para>
+
+@id: 
+@folder: 
+@Param3: 
+
+

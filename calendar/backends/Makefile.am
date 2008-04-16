@@ -4,4 +4,4 @@ else
 MAPI_SUBDIR =
 endif
 
-SUBDIRS = file groupwise http contacts weather caldav $(MAPI_SUBDIR)
+SUBDIRS = file groupwise http contacts weather caldav google $(MAPI_SUBDIR)

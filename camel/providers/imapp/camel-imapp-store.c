@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-store.c : class for a imap store */
 
-/* 
+/*
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2000-2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -93,7 +93,7 @@ camel_imapp_store_class_init (CamelIMAPPStoreClass *camel_imapp_store_class)
 	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS(camel_imapp_store_class);
 
 	parent_class = CAMEL_STORE_CLASS(camel_type_get_global_classfuncs(camel_store_get_type()));
-	
+
 	/* virtual method overload */
 	camel_service_class->construct = imap_construct;
 	/*camel_service_class->get_name = imap_get_name;*/
@@ -160,7 +160,7 @@ static void imap_construct(CamelService *service, CamelSession *session, CamelPr
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
 	if (camel_exception_is_set(ex))
 		return;
-	
+
 	CAMEL_TRY {
 		store->summary = camel_imapp_store_summary_new();
 		root = camel_session_get_storage_path(service->session, service, ex);
@@ -214,7 +214,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 			port = "143";
 		}
 
-#ifdef HAVE_SSL	
+#ifdef HAVE_SSL
 		if (camel_url_get_param (service->url, "use_ssl")) {
 			if (try_starttls)
 				tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
@@ -228,7 +228,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 		} else {
 			tcp_stream = camel_tcp_stream_raw_new ();
 		}
-#else	
+#else
 		tcp_stream = camel_tcp_stream_raw_new ();
 #endif /* HAVE_SSL */
 
@@ -241,7 +241,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 
 		if (ex->id)
 			camel_exception_throw_ex(ex);
-	
+
 		ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
 		camel_freeaddrinfo(ai);
 		if (ret == -1) {
@@ -291,7 +291,7 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 #ifdef HAVE_SSL
 	const char *use_ssl;
 	int i, ssl_mode;
-	
+
 	use_ssl = camel_url_get_param (service->url, "use_ssl");
 	if (use_ssl) {
 		for (i = 0; ssl_options[i].value; i++)
@@ -300,7 +300,7 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 		ssl_mode = ssl_options[i].mode;
 	} else
 		ssl_mode = USE_SSL_NEVER;
-	
+
 	if (ssl_mode == USE_SSL_ALWAYS) {
 		/* First try the ssl port */
 		if (!connect_to_server (service, ssl_mode, FALSE, ex)) {
@@ -312,7 +312,7 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 				return FALSE;
 			}
 		}
-		
+
 		return TRUE;
 	} else if (ssl_mode == USE_SSL_WHEN_POSSIBLE) {
 		/* If the server supports STARTTLS, use it */
@@ -357,19 +357,28 @@ static void
 store_get_pass(CamelIMAPPStore *store)
 {
 	if (((CamelService *)store)->url->passwd == NULL) {
-		char *prompt;
+		char *base_prompt;
+		char *full_prompt;
 		CamelException ex;
 
 		camel_exception_init(&ex);
-		
-		prompt = g_strdup_printf (_("%sPlease enter the IMAP password for %s@%s"),
-					  store->login_error?store->login_error:"",
-					  ((CamelService *)store)->url->user,
-					  ((CamelService *)store)->url->host);
-		((CamelService *)store)->url->passwd = camel_session_get_password(camel_service_get_session((CamelService *)store),
-										  (CamelService *)store, NULL,
-										  prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, &ex);
-		g_free (prompt);
+
+		base_prompt = camel_session_build_password_prompt (
+			"IMAP", ((CamelService *) store)->url->user,
+			((CamelService *) store)->url->host);
+
+		if (store->login_error != NULL)
+			full_prompt = g_strconcat (store->login_error, base_prompt, NULL);
+		else
+			full_prompt = g_strdup (base_prompt);
+
+		((CamelService *)store)->url->passwd = camel_session_get_password (
+			camel_service_get_session ((CamelService *) store),
+			(CamelService *) store, NULL, full_prompt, "password",
+			CAMEL_SESSION_PASSWORD_SECRET, &ex);
+
+		g_free (base_prompt);
+		g_free (full_prompt);
 		if (camel_exception_is_set(&ex))
 			camel_exception_throw_ex(&ex);
 	}
@@ -390,7 +399,7 @@ static void
 store_get_login(struct _CamelIMAPPDriver *driver, char **login, char **pass, CamelIMAPPStore *store)
 {
 	store_get_pass(store);
-	
+
 	*login = g_strdup(((CamelService *)store)->url->user);
 	*pass = g_strdup(((CamelService *)store)->url->passwd);
 }
@@ -406,7 +415,7 @@ imap_connect (CamelService *service, CamelException *ex)
 
 		if (store->cache == NULL) {
 			char *root;
-			
+
 			root = camel_session_get_storage_path(service->session, service, ex);
 			if (root) {
 				store->cache = camel_data_cache_new(root, 0, ex);
@@ -438,7 +447,7 @@ imap_connect (CamelService *service, CamelException *ex)
 				store->login_error = NULL;
 				switch (e->id) {
 				case CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE:
-					store->login_error = g_strdup_printf("%s\n\n", e->desc);
+					store->login_error = g_markup_printf_escaped("%s\n\n", e->desc);
 					camel_session_forget_password(service->session, service, NULL, "password", ex);
 					camel_url_set_passwd(service->url, NULL);
 					break;
@@ -466,7 +475,7 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	CamelIMAPPStore *store = CAMEL_IMAPP_STORE (service);
 
 	/* FIXME: logout */
-	
+
 	if (!CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex))
 		return FALSE;
 
@@ -475,7 +484,7 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 		camel_object_unref(store->driver);
 		store->driver = NULL;
 	}
-	
+
 	return TRUE;
 }
 
@@ -560,7 +569,7 @@ folders_build_info(CamelURL *base, struct _list_info *li)
 	sprintf(path, "/%s", full_name);
 	camel_url_set_path(base, path);
 
-	fi = g_malloc0(sizeof(*fi));
+	fi = camel_folder_info_new();
 	fi->uri = camel_url_to_string(base, CAMEL_URL_HIDE_ALL);
 	fi->name = g_strdup(name);
 	fi->full_name = full_name;
@@ -667,7 +676,7 @@ folder_info_dump(CamelFolderInfo *fi, int depth)
 			folder_info_dump(fi->child, depth+2);
 		fi = fi->next;
 	}
-	
+
 }
 
 static CamelFolderInfo *
@@ -721,7 +730,7 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		CamelURL *uri = camel_url_copy(((CamelService *)store)->url);
 
 		camel_url_set_path(uri, "/INBOX");
-		fi = g_malloc0(sizeof(*fi));
+		fi = camel_folder_info_new();
 		fi->url = camel_url_to_string(uri, CAMEL_URL_HIDE_ALL);
 		camel_url_free(uri);
 		fi->name = g_strdup("INBOX");
@@ -757,7 +766,7 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 	} CAMEL_CATCH (e) {
 		camel_exception_xfer(ex, e);
 	} CAMEL_DONE;
-	
+
 	camel_imapp_engine_command_free(istore->driver->engine, ic);
 
 	printf("got folder list:\n");

@@ -1,3 +1,217 @@
+2008-04-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (pass_response):
+	Use g_queue_peek_head_link() to obtain a GQueue list node (#453109).
+
+2008-04-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (ep_keyring_lookup_paswords):
+	Remove NULL argument checks.  Passing NULL is valid.
+
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #518886
+
+	* e-passwords.c:
+	More cleanup work:
+	- Use EFlag instead of EMsgPort.
+	- Use GQueue instead of EDList.
+	- Use GStatusMutex instead of pthread_mutex_t.
+	- Use GThread instead of pthread_t.
+
+2008-02-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #513870
+
+	* e-passwords.c (ep_clear_passwords_keyfile),
+	(ep_forget_passwords_keyfile), (ep_forget_password_keyfile),
+	(ep_get_password_keyfile):
+	Issue an informational message instead of a warning if the requested
+	group or key is not found in the key file.  These are non-critical
+	events and should not halt the program when running with fatal
+	warnings, but it's still useful to leave a breadcrumb on the
+	terminal since our current password API leaves no way to report
+	status back to the caller.
+
+2008-02-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #489810
+
+	* e-passwords.c: (ep_keyring_uri_new): Google calendar's usernames
+	don't have user name in url.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* e-name-selector-dialog.c: Include the required
+	header files. Fix from downstream opensuse.
+
+2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #509985
+
+	* e-passwords.c:
+	Refactor the keyring logic and emit more informative warning
+	messages when a keyring operation fails.
+
+2008-01-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #509644
+
+	* e-passwords.c (ep_ask_password):
+	Use the correct response codes for the dialog buttons.
+	Fixes some severe password breakage that slipped into 2.21.5.
+
+2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fix for bug #503400
+
+	* e-passwords.c: (ep_ask_password): Remove excessive whitespace on 
+	password dialogs.
+
+2008-01-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #508438
+
+	* e-passwords.c: (ep_get_password_keyfile): (ep_get_password_keyfile):
+	Extract error only if it is there.
+
+2007-12-23  Ted Percival  <ted@midg3t.net>
+
+	** Partial fix for bug #503400
+
+	* e-passwords.c: (ep_ask_password): Remove excessive whitespace on 
+	password dialogs.
+
+2007-12-06  Sankar P  <psankar@novell.com>
+
+	** Fixes bug #501969
+
+	* e-book-auth-util.c: (load_source_auth_cb):
+	Passwords should not be forgotten on all errors.
+
+2007-12-04  Alex Kloss  <alexkloss@att.net>
+
+	** Fix for bug #322917
+
+	* e-name-selector-dialog.glade:
+	Change mnemonics for Contacts, Address Book labels
+	Add mnemonic for Category label
+
+2007-11-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #308815
+
+	* e-categories-dialog.glade:
+	* e-categories-dialog.c: Dropped colors for categories. (deprecated)
+
+	* e-categories-dialog.c: (edit_button_clicked_cb): Fixed runtime
+	critical warning for file chooser and category without icon.
+
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #474000
+
+	* e-passwords.c (ep_password_decode):
+	Initialize 'length' before calling g_base64_decode().
+
+2007-11-05  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #318842
+
+	* Sort sources within group alphabetically
+	in ESourceSelector and ESourceComboBox.
+	* e-source-selector.c: (compare_source_names), (get_sorted_sources):
+	* e-source-combo-box.c: (compare_source_names), (get_sorted_sources):
+	New helper functions to sort sources in a group.
+	* e-source-selector.c: (rebuild_model): Always sort sources and place
+	them on their right position, if not in a tree yet.
+	* e-source-combo-box.c: (source_list_changed_cb):
+	Add sources in sorted order within group.
+
+2007-11-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #460649
+
+	* Makefile.am:
+	Add e-cell-renderer-color.[ch].
+
+	* e-cell-renderer-color.c:
+	* e-cell-renderer-color.h:
+	New GtkCellRenderer subclass by Milan Crha renders a solid color.
+
+	* e-source-combo-box.c:
+	Display the ESource's color next to its name.
+	Patch by Milan Crha and myself.
+
+2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #488156
+
+	* e-passwords.c:
+	Minimize use of the WITH_GNOME_KEYRING macro.
+
+2007-11-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #487229
+
+	* e-passwords.c:
+	Use GKeyFile instead of gnome-config to access stored passwords.
+
+2007-11-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #492130
+
+	* e-source-selector.c: (find_source): New helper function to find our
+	own instance of ESource, rather than use one with unknown origin.
+	* e-source-selector.c: (e_source_selector_select_source),
+	(e_source_selector_unselect_source),
+	(e_source_selector_source_is_selected),
+	(e_source_selector_set_primary_selection): Use new helper function.
+
+2007-10-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #271777
+
+	* e-name-selector-entry.c: (type_ahead_complete):
+	Keep character's case as user types.
+
+2007-10-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #417999
+
+	* Makefile.am:
+	Add e-source-combo-box.[ch].
+	Rename test-source-option-menu to test-source-combo-box.
+
+	* e-source-combo-box.c:
+	* e-source-combo-box.h:
+	New widget replaces ESourceOptionMenu.  Same functionality, but
+	ESourceComboBox is a subclass of GtkComboBox, which itself replaces
+	GtkOptionMenu (deprecated).
+
+	* e-source-option-menu.h:
+	Deprecate ESourceOptionMenu.
+
+	* e-name-selector-dialog.glade:
+	List categories in a GtkComboBox instead of a GtkOptionMenu.
+
+	* e-name-selector-dialog.h:
+	Replace the ESourceList member pointer with a placeholder,
+	to maintain ABI compatibility.
+
+	* e-name-selector-dialog.c:
+	Use ESourceComboBox instead of ESourceOptionMenu.
+	Refactor some messy bits.
+
+	* e-name-selector-entry.c (populate_popup):
+	* e-name-selector-list.c (enl_tree_button_press_event):
+	Use gtk_radio_menu_item_get_group() instead of
+	gtk_radio_menu_item_group() (deprecated).
+
+	* test-source-option-menu.c:
+	Test ESourceComboBox instead of ESourceOptionMenu.
+	Rename the file appropriately.
+
 2007-10-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #478404

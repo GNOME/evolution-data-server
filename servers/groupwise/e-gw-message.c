@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
- * Authors : 
+/*
+ * Authors :
  *  JP Rosevear <jpr@ximian.com>
  *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2003, Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -26,49 +26,6 @@
 #include <libsoup/soup-uri.h>
 #include "e-gw-message.h"
 
-static void
-print_header (gpointer name, gpointer value, gpointer data)
-{
-	g_print ("%s: %s\n", (char *) name, (char *) value);
-}
-
-static void
-debug_handler (SoupMessage *msg, gpointer user_data)
-{
-	g_print ("%d %s\nSOAP-Debug: %p @ %lu\n",
-                msg->status_code, msg->reason_phrase,
-                msg, time (NULL));
-
-	/* print headers */
-	soup_message_foreach_header (msg->response_headers, print_header, NULL);
-
-	/* print response */
-	if (msg->response.length) {
-		fputc ('\n', stdout);
-		fwrite (msg->response.body, 1, msg->response.length, stdout);
-		fputc ('\n', stdout);
-	}
-}
-
-static void
-setup_debug (SoupSoapMessage *msg)
-{
-	const SoupUri *suri;
-
-	suri = soup_message_get_uri (SOUP_MESSAGE (msg));
-	g_print ("%s %s%s%s HTTP/1.1\nSOAP-Debug: %p @ %lu\n",
-		 SOUP_MESSAGE (msg)->method, suri->path,
-		 suri->query ? "?" : "",
-		 suri->query ? suri->query : "",
-		 msg, (unsigned long) time (NULL));
-
-	/* print message headers */
-	print_header ("Host", suri->host, NULL);
-	soup_message_foreach_header (SOUP_MESSAGE (msg)->request_headers, print_header, NULL);
-
-	soup_message_add_handler (SOUP_MESSAGE (msg), SOUP_HANDLER_POST_BODY, debug_handler, NULL);
-}
-
 SoupSoapMessage *
 e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name)
 {
@@ -80,16 +37,11 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 		return NULL;
 	}
 
-	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "Content-Type", "text/xml");
-	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
-				 "Evolution/" VERSION);
-	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers,"Connection",  "Keep-Alive");
-	soup_message_add_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
-
-	if (g_getenv ("GROUPWISE_DEBUG")) {
-		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1)
-			setup_debug (msg);
-	}
+	soup_message_headers_append (SOUP_MESSAGE (msg)->request_headers, "Content-Type", "text/xml");
+	soup_message_headers_append (SOUP_MESSAGE (msg)->request_headers, "User-Agent",
+				     "Evolution/" VERSION);
+	soup_message_headers_append (SOUP_MESSAGE (msg)->request_headers,"Connection",  "Keep-Alive");
+	soup_message_headers_append (SOUP_MESSAGE (msg)->request_headers, "SOAPAction", method_name);
 
 	soup_soap_message_start_envelope (msg);
 	if (session_id && *session_id) {
@@ -118,11 +70,11 @@ e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, con
 	soup_soap_message_end_element (msg);
 }
 
-void 
+void
 e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
 						    const char *name,
 						    const char *prefix,
-						    const char *value, 
+						    const char *value,
 						    const char *attribute_name,
 						    const char *attribute_value)
 {
@@ -158,33 +110,35 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 	soup_soap_message_persist (msg);
 
 	if (g_getenv ("GROUPWISE_DEBUG") && (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1)) {
-		const char *header = soup_message_get_header (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
+		const char *header = soup_message_headers_get (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
+
+		soup_buffer_free (soup_message_body_flatten (SOUP_MESSAGE (msg)->request_body));
 		if (header && g_str_equal (header, "loginRequest")) {
 			gchar *body;
 			gchar *begin = NULL;
 			gchar *end = NULL;
-			
-			body = g_strndup (SOUP_MESSAGE (msg)->request.body, SOUP_MESSAGE (msg)->request.length);
+
+			body = g_strdup (SOUP_MESSAGE (msg)->request_body->data);
 			begin = g_strrstr (body, "<types:password>");
-			if (begin) 
+			if (begin)
 				begin = begin + strlen ("<types:password>");
 			end = g_strrstr (body , "</types:password>");
 			if (begin && end) {
 				gchar *tmp;
 				for (tmp = begin; tmp < end; tmp++)
 					*tmp='X';
-				
+
 			}
 			fputc ('\n', stdout);
-			fwrite (body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
-			fputc ('\n', stdout);	
+			fputs (body, stdout);
+			fputc ('\n', stdout);
 			g_free (body);
 		}
-		else {		
-	
+		else {
+
 			/* print request's body */
 			fputc ('\n', stdout);
-			fwrite (SOUP_MESSAGE (msg)->request.body, 1, SOUP_MESSAGE (msg)->request.length, stdout);
+			fputs (SOUP_MESSAGE (msg)->request_body->data, stdout);
 			fputc ('\n', stdout);
 		}
 	}

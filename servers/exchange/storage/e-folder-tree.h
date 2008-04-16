@@ -32,9 +32,9 @@ typedef void (* EFolderTreeForeachFunc) (EFolderTree *tree, const char *path, vo
 
 EFolderTree *e_folder_tree_new               (EFolderDestroyNotify    folder_destroy_notify,
 					      void                   *closure);
-					    
+
 void        e_folder_tree_destroy            (EFolderTree            *folder_tree);
-					    
+
 gboolean    e_folder_tree_add                (EFolderTree            *folder_tree,
 					      const char             *path,
 					      void                   *data);
@@ -47,7 +47,7 @@ void       *e_folder_tree_get_folder         (EFolderTree            *folder_tre
 					      const char             *path);
 GList      *e_folder_tree_get_subfolders     (EFolderTree            *folder_tree,
 					      const char             *path);
-					    
+
 void        e_folder_tree_foreach            (EFolderTree            *folder_tree,
 					      EFolderTreeForeachFunc  foreach_func,
 					      void                   *data);

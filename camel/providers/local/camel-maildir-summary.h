@@ -41,7 +41,7 @@ typedef struct _CamelMaildirMessageContentInfo {
 
 enum {
 	CAMEL_MAILDIR_INFO_FILENAME = CAMEL_MESSAGE_INFO_LAST,
-	CAMEL_MAILDIR_INFO_LAST,
+	CAMEL_MAILDIR_INFO_LAST
 };
 
 typedef struct _CamelMaildirMessageInfo {

@@ -1,3 +1,55 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* camel-nntp-store-summary.c:
+	* camel-nntp-utils.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
+2008-02-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #455248
+
+	* camel-nntp-store.c: (nntp_delete_folder):
+	Call unsubscribe instead of subscribe function.
+
+2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #510303
+
+	* camel-nntp-store.c (camel_nntp_try_authenticate):
+	Escape the authentication error message so the markup parser
+	will parse it verbatim.
+
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #506250
+
+	* camel-nntp-auth.c (camel_nntp_auth_authenticate):
+	* camel-nntp-store.c (camel_nntp_try_authenticate):
+	Use a consistently worded password prompt message by calling
+	camel_session_build_password_prompt().
+
+2007-12-11  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #336074
+
+	* camel-nntp-store.c: (nntp_can_refresh_folder),
+	(nntp_store_class_init): Implements its own CamelStore's
+	can_refresh_folder function - any folder can be refreshed here.
+
+2007-12-04 David Turner <cillian64@googlemail.com>
+
+	** Fix for bug #466499
+
+	* camel-nntp-provider.c: Added mnemonics to configuration options
+
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Merge a bunch of compiler warning fixes and cosmetic
+	   cleanups from camel-lite.
+
 2007-05-14  Jules Colding  <colding@omesc.com>
 
 	* camel-nntp-newsrc.c (camel_nntp_newsrc_read_for_server): Fix file descriptor leak

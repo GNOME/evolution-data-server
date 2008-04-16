@@ -50,25 +50,25 @@ G_DEFINE_TYPE (EAccount, e_account, G_TYPE_OBJECT);
 lock mail accounts	Relatively difficult -- involves redesign of the XML blobs which describe accounts
 disable adding mail accounts	Simple -- can be done with just a Gconf key and some UI work to make assoc. widgets unavailable
 disable editing mail accounts	Relatively difficult -- involves redesign of the XML blobs which describe accounts
-disable removing mail accounts	
+disable removing mail accounts
 lock default character encoding	Simple -- Gconf key + a little UI work to desensitize widgets, etc
-disable free busy publishing	
+disable free busy publishing
 disable specific mime types (from being viewed)	90% done already (Unknown MIME types still pose a problem)
-lock image loading preference	
-lock junk mail filtering settings	
+lock image loading preference
+lock junk mail filtering settings
 **  junk mail per account
-lock work week	
-lock first day of work week	
-lock working hours	
-disable forward as icalendar	
-lock color options for tasks	
-lock default contact filing format	
+lock work week
+lock first day of work week
+lock working hours
+disable forward as icalendar
+lock color options for tasks
+lock default contact filing format
 * forbid signatures	Simple -- can be done with just a Gconf key and some UI work to make assoc. widgets unavailable
 * lock user to having 1 specific signature	Simple -- can be done with just a Gconf key and some UI work to make assoc. widgets unavailable
 * forbid adding/removing signatures	Simple -- can be done with just a Gconf key and some UI work to make assoc. widgets unavailable
-* lock each account to a certain signature	Relatively difficult -- involved redesign of the XML blobs which describe accounts 
-* set default folders	
-set trash emptying frequency	
+* lock each account to a certain signature	Relatively difficult -- involved redesign of the XML blobs which describe accounts
+* set default folders
+set trash emptying frequency
 * lock displayed mail headers	Simple -- can be done with just a Gconf key and some UI work to make assoc. widgets unavailable
 * lock authentication type (for incoming mail)	Relatively difficult -- involves redesign of the XML blobs which describe accounts
 * lock authentication type (for outgoing mail)	Relatively difficult -- involves redesign of the XML blobs which describe accounts
@@ -108,7 +108,7 @@ e_account_init (EAccount *account)
 	account->transport = g_new0 (EAccountService, 1);
 
 	account->parent_uid = NULL;
-	
+
 	account->source->auto_check = FALSE;
 	account->source->auto_check_time = 10;
 }
@@ -283,7 +283,7 @@ static xmlChar*
 receipt_policy_to_str (EAccountReceiptPolicy val)
 {
 	char *ret = NULL;
-	
+
 	switch (val) {
 	case E_ACCOUNT_RECEIPT_NEVER:
 		ret = "never";
@@ -366,10 +366,10 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 				/* set a fake sig uid so the migrate code can handle this */
 				gboolean autogen = FALSE;
 				int sig_id = 0;
-				
+
 				xml_set_bool (node, "auto", &autogen);
 				xml_set_int (node, "default", &sig_id);
-				
+
 				if (autogen) {
 					id->sig_uid = g_strdup ("::0");
 					changed = TRUE;
@@ -521,9 +521,9 @@ e_account_import (EAccount *dest, EAccount *src)
 {
 	g_free (dest->name);
 	dest->name = g_strdup (src->name);
-	
+
 	dest->enabled = src->enabled;
-	
+
 	g_free (dest->id->name);
 	dest->id->name = g_strdup (src->id->name);
 	g_free (dest->id->address);
@@ -533,41 +533,41 @@ e_account_import (EAccount *dest, EAccount *src)
 	g_free (dest->id->organization);
 	dest->id->organization = g_strdup (src->id->organization);
 	dest->id->sig_uid = g_strdup (src->id->sig_uid);
-	
+
 	g_free (dest->source->url);
 	dest->source->url = g_strdup (src->source->url);
 	dest->source->keep_on_server = src->source->keep_on_server;
 	dest->source->auto_check = src->source->auto_check;
 	dest->source->auto_check_time = src->source->auto_check_time;
 	dest->source->save_passwd = src->source->save_passwd;
-	
+
 	g_free (dest->transport->url);
 	dest->transport->url = g_strdup (src->transport->url);
 	dest->transport->save_passwd = src->transport->save_passwd;
-	
+
 	g_free (dest->drafts_folder_uri);
 	dest->drafts_folder_uri = g_strdup (src->drafts_folder_uri);
-	
+
 	g_free (dest->sent_folder_uri);
 	dest->sent_folder_uri = g_strdup (src->sent_folder_uri);
-	
+
 	dest->always_cc = src->always_cc;
 	g_free (dest->cc_addrs);
 	dest->cc_addrs = g_strdup (src->cc_addrs);
-	
+
 	dest->always_bcc = src->always_bcc;
 	g_free (dest->bcc_addrs);
 	dest->bcc_addrs = g_strdup (src->bcc_addrs);
-	
+
 	dest->receipt_policy = src->receipt_policy;
-	
+
 	g_free (dest->pgp_key);
 	dest->pgp_key = g_strdup (src->pgp_key);
 	dest->pgp_encrypt_to_self = src->pgp_encrypt_to_self;
 	dest->pgp_always_sign = src->pgp_always_sign;
 	dest->pgp_no_imip_sign = src->pgp_no_imip_sign;
 	dest->pgp_always_trust = src->pgp_always_trust;
-	
+
 	dest->smime_sign_default = src->smime_sign_default;
 	g_free (dest->smime_sign_key);
 	dest->smime_sign_key = g_strdup (src->smime_sign_key);
@@ -576,7 +576,7 @@ e_account_import (EAccount *dest, EAccount *src)
 	dest->smime_encrypt_to_self = src->smime_encrypt_to_self;
 	g_free (dest->smime_encrypt_key);
 	dest->smime_encrypt_key = g_strdup (src->smime_encrypt_key);
-	
+
 	g_signal_emit(dest, signals[CHANGED], 0, -1);
 }
 
@@ -648,7 +648,7 @@ e_account_to_xml (EAccount *account)
 
 	node = xmlNewChild (root, NULL, (xmlChar*)"receipt-policy", NULL);
 	xmlSetProp (node, (xmlChar*)"policy", receipt_policy_to_str (account->receipt_policy));
-	
+
 	node = xmlNewChild (root, NULL, (xmlChar*)"pgp", NULL);
 	xmlSetProp (node, (xmlChar*)"encrypt-to-self", (xmlChar*)(account->pgp_encrypt_to_self ? "true" : "false"));
 	xmlSetProp (node, (xmlChar*)"always-trust", (xmlChar*)(account->pgp_always_trust ? "true" : "false"));
@@ -669,7 +669,7 @@ e_account_to_xml (EAccount *account)
 	if (account->parent_uid) {
 		node = xmlNewChild (root, NULL, (xmlChar*)"proxy", NULL);
 		xmlNewTextChild (node, NULL, (xmlChar*)"parent-uid", (xmlChar*)account->parent_uid);
-	}	
+	}
 
 	xmlDocDumpMemory (doc, &xmlbuf, &n);
 	xmlFreeDoc (doc);
@@ -786,7 +786,7 @@ static struct _account_info {
 	{ /* E_ACCOUNT_BCC_ADDRS */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, bcc_addrs) },
 
 	{ /* E_ACCOUNT_RECEIPT_POLICY */ 0, TYPE_INT, G_STRUCT_OFFSET(EAccount, receipt_policy) },
-	
+
 	{ /* E_ACCOUNT_PGP_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, pgp_key) },
 	{ /* E_ACCOUNT_PGP_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_encrypt_to_self) },
 	{ /* E_ACCOUNT_PGP_ALWAYS_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_always_sign) },
@@ -829,10 +829,10 @@ ea_setting_notify(GConfClient *gconf, guint cnxn_id, GConfEntry *entry, void *cr
 	struct _system_info *info;
 
 	g_return_if_fail (gconf_entry_get_key (entry) != NULL);
-	
+
 	if (!(value = gconf_entry_get_value (entry)))
 		return;
-	
+
 	tkey = strrchr(entry->key, '/');
 	g_return_if_fail (tkey != NULL);
 
@@ -887,7 +887,7 @@ ea_setting_setup(void)
 	((account_info[type].type & TYPE_STRUCT)? \
 	(((char **)(((char *)ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
 	(((char *)ea)+account_info[type].offset))
-	
+
 const char *e_account_get_string(EAccount *ea, e_account_item_t type)
 {
 	return *((const char **)addr(ea, type));

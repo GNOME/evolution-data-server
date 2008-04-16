@@ -41,7 +41,7 @@ struct _CamelIMAP4Engine;
 
 struct _CamelIMAP4Store {
 	CamelOfflineStore parent_object;
-	
+
 	struct _CamelIMAP4StoreSummary *summary;
 	struct _CamelIMAP4Engine *engine;
 	char *storage_path;
@@ -49,7 +49,7 @@ struct _CamelIMAP4Store {
 
 struct _CamelIMAP4StoreClass {
 	CamelOfflineStoreClass parent_class;
-	
+
 };
 
 

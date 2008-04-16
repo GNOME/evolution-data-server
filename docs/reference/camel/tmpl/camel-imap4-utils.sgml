@@ -64,14 +64,90 @@ camel-imap4-utils
 @ns: 
 
 
-<!-- ##### STRUCT CamelIMAP4NamespaceList ##### -->
+<!-- ##### FUNCTION camel_imap4_namespace_list_copy ##### -->
 <para>
 
 </para>
 
-@personal: 
-@other: 
-@shared: 
+@nsl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_namespace_list_free ##### -->
+<para>
+
+</para>
+
+@nsl: 
+
+
+<!-- ##### FUNCTION camel_imap4_get_path_delim ##### -->
+<para>
+
+</para>
+
+@s: 
+@full_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_get_uid_set ##### -->
+<para>
+
+</para>
+
+@engine: 
+@summary: 
+@infos: 
+@cur: 
+@linelen: 
+@set: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap4_utils_set_unexpected_token_error ##### -->
+<para>
+
+</para>
+
+@ex: 
+@engine: 
+@token: 
+
+
+<!-- ##### FUNCTION camel_imap4_parse_flags_list ##### -->
+<para>
+
+</para>
+
+@engine: 
+@flags: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### MACRO CAMEL_IMAP4_FOLDER_MARKED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_IMAP4_FOLDER_UNMARKED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT camel_imap4_list_t ##### -->
+<para>
+
+</para>
+
+@flags: 
+@delim: 
+@name: 
 
 <!-- ##### FUNCTION camel_imap4_untagged_list ##### -->
 <para>

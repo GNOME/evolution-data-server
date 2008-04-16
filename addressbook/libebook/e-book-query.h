@@ -17,7 +17,7 @@ typedef enum {
   E_BOOK_QUERY_ENDS_WITH,
 
   /*
-    Consider these "coming soon". 
+    Consider these "coming soon".
 
     E_BOOK_QUERY_LT,
     E_BOOK_QUERY_LE,
@@ -43,6 +43,9 @@ EBookQuery* e_book_query_not          (EBookQuery *q, gboolean unref);
 EBookQuery* e_book_query_field_exists (EContactField   field);
 EBookQuery* e_book_query_vcard_field_exists (const char *field);
 EBookQuery* e_book_query_field_test   (EContactField   field,
+				       EBookQueryTest     test,
+				       const char        *value);
+EBookQuery* e_book_query_vcard_field_test (const char    *field,
 				       EBookQueryTest     test,
 				       const char        *value);
 

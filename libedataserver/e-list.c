@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Authors: 
+ * Authors:
  *   Christopher James Lahey <clahey@umich.edu>
  *
  * Copyright (C) 2000 Ximian, Inc.
@@ -142,8 +142,8 @@ e_list_remove_iterator (EList *list, EIterator *iterator)
 	list->iterators = g_list_remove(list->iterators, iterator);
 }
 
-/* 
- * Virtual functions 
+/*
+ * Virtual functions
  */
 static void
 e_list_dispose (GObject *object)

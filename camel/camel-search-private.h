@@ -36,7 +36,7 @@ typedef enum {
 	CAMEL_SEARCH_MATCH_END = 1<<1,
 	CAMEL_SEARCH_MATCH_REGEX = 1<<2, /* disables the first 2 */
 	CAMEL_SEARCH_MATCH_ICASE = 1<<3,
-	CAMEL_SEARCH_MATCH_NEWLINE = 1<<4,
+	CAMEL_SEARCH_MATCH_NEWLINE = 1<<4
 } camel_search_flags_t;
 
 typedef enum {
@@ -44,7 +44,7 @@ typedef enum {
 	CAMEL_SEARCH_MATCH_CONTAINS,
 	CAMEL_SEARCH_MATCH_STARTS,
 	CAMEL_SEARCH_MATCH_ENDS,
-	CAMEL_SEARCH_MATCH_SOUNDEX,
+	CAMEL_SEARCH_MATCH_SOUNDEX
 } camel_search_match_t;
 
 typedef enum {
@@ -52,7 +52,7 @@ typedef enum {
 	CAMEL_SEARCH_TYPE_ENCODED,
 	CAMEL_SEARCH_TYPE_ADDRESS,
 	CAMEL_SEARCH_TYPE_ADDRESS_ENCODED,
-	CAMEL_SEARCH_TYPE_MLIST, /* its a mailing list pseudo-header */
+	CAMEL_SEARCH_TYPE_MLIST /* its a mailing list pseudo-header */
 } camel_search_t;
 
 /* builds a regex that represents a string search */
@@ -69,7 +69,7 @@ const char *camel_ustrstrcase(const char *haystack, const char *needle);
 typedef enum _camel_search_word_t {
 	CAMEL_SEARCH_WORD_SIMPLE = 1,
 	CAMEL_SEARCH_WORD_COMPLEX = 2,
-	CAMEL_SEARCH_WORD_8BIT = 4,
+	CAMEL_SEARCH_WORD_8BIT = 4
 } camel_search_word_t;
 
 struct _camel_search_word {

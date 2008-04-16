@@ -49,10 +49,10 @@ typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
 	struct _CamelMessageContentInfo *next;
-	
+
 	struct _CamelMessageContentInfo *childs;
 	struct _CamelMessageContentInfo *parent;
-	
+
 	CamelContentType *type;
 	char *id;
 	char *description;
@@ -67,7 +67,7 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_DRAFT = 1<<2,
 	CAMEL_MESSAGE_FLAGGED = 1<<3,
 	CAMEL_MESSAGE_SEEN = 1<<4,
-	
+
 	/* these aren't really system flag bits, but are convenience flags */
 	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
 	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
@@ -75,7 +75,8 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_SECURE = 1<<8,
 	CAMEL_MESSAGE_USER_NOT_DELETABLE = 1<<9,
 	CAMEL_MESSAGE_HIDDEN = 1<<10,
-	
+	CAMEL_MESSAGE_NOTJUNK = 1<<11,
+
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
 
@@ -179,9 +180,10 @@ struct _CamelMessageInfoBase {
 
 	/* tree of content description - NULL if it is not available */
 	CamelMessageContentInfo *content;
+	struct _camel_header_param *headers;
 };
 
-/* probably do this as well, removing CamelFolderChangeInfo and interfaces 
+/* probably do this as well, removing CamelFolderChangeInfo and interfaces
 typedef struct _CamelChangeInfo CamelChangeInfo;
 struct _CamelChangeInfo {
 	GPtrArray *added;
@@ -192,7 +194,7 @@ struct _CamelChangeInfo {
 */
 
 typedef enum _CamelFolderSummaryFlags {
-	CAMEL_SUMMARY_DIRTY = 1<<0,
+	CAMEL_SUMMARY_DIRTY = 1<<0
 } CamelFolderSummaryFlags;
 
 struct _CamelFolderSummary {

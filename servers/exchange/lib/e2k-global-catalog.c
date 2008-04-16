@@ -307,17 +307,19 @@ static int
 connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 {
 	int ldap_error;
-#ifndef HAVE_LDAP_NTLM_BIND
 	char *nt_name;
 #ifdef G_OS_WIN32
 	SEC_WINNT_AUTH_IDENTITY_W auth;
 #endif
-#endif
 
 	/* authenticate */
 #ifdef HAVE_LDAP_NTLM_BIND
-	ldap_error = ntlm_bind (gc, op, ldap);
-#else
+	if (ntlm_bind (gc, op, ldap) == LDAP_SUCCESS) {
+		E2K_GC_DEBUG_MSG(("GC: connected via NTLM\n\n"));
+		return LDAP_SUCCESS;
+	}
+#endif
+
 	nt_name = gc->priv->nt_domain ?
 		g_strdup_printf ("%s\\%s", gc->priv->nt_domain, gc->priv->user) :
 		g_strdup (gc->priv->user);
@@ -339,7 +341,7 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	g_free (auth.User);
 #endif
 	g_free (nt_name);
-#endif
+
 	if (ldap_error != LDAP_SUCCESS)
 		g_warning ("LDAP authentication failed (0x%02x)", ldap_error);
 	else
@@ -454,8 +456,8 @@ e2k_global_catalog_new (const char *server, int response_limit,
 void
 e2k_global_catalog_set_password (E2kGlobalCatalog *gc, const char *password)
 {
-	g_free (gc->priv->password);
-	gc->priv->password = g_strdup (password);
+       g_free (gc->priv->password);
+       gc->priv->password = g_strdup (password);
 }
 
 static const char *
@@ -653,31 +655,31 @@ get_quota_values (E2kGlobalCatalog *gc, E2kOperation *op,
 		E2K_GC_DEBUG_MSG(("GC: Using global mailbox store limits\n"));
 	}
 	ldap_value_free (quota_setting_values);
-	
+
 	quota_limit_values = ldap_get_values (gc->priv->ldap, msg, "mDBStorageQuota");
 	if (quota_limit_values) {
 		entry->quota_warn = atoi(quota_limit_values[0]);
 		E2K_GC_DEBUG_MSG(("GC: mDBStorageQuota %s\n", quota_limit_values[0]));
-		ldap_value_free (quota_limit_values);	
+		ldap_value_free (quota_limit_values);
 	}
 
 	quota_limit_values = ldap_get_values (gc->priv->ldap, msg, "mDBOverQuotaLimit");
 	if (quota_limit_values) {
 		entry->quota_nosend = atoi(quota_limit_values[0]);
 		E2K_GC_DEBUG_MSG(("GC: mDBOverQuotaLimit %s\n", quota_limit_values[0]));
-		ldap_value_free (quota_limit_values);	
+		ldap_value_free (quota_limit_values);
 	}
 
 	quota_limit_values = ldap_get_values (gc->priv->ldap, msg, "mDBOverHardQuotaLimit");
 	if (quota_limit_values) {
 		entry->quota_norecv = atoi(quota_limit_values[0]);
 		E2K_GC_DEBUG_MSG(("GC: mDBHardQuotaLimit %s\n", quota_limit_values[0]));
-		ldap_value_free (quota_limit_values);	
+		ldap_value_free (quota_limit_values);
 	}
 }
 
 static void
-get_account_control_values (E2kGlobalCatalog *gc, E2kOperation *op, 
+get_account_control_values (E2kGlobalCatalog *gc, E2kOperation *op,
 			    LDAPMessage *msg, E2kGlobalCatalogEntry *entry)
 {
 	char **values;
@@ -689,7 +691,7 @@ get_account_control_values (E2kGlobalCatalog *gc, E2kOperation *op,
 		entry->mask |= E2K_GLOBAL_CATALOG_LOOKUP_ACCOUNT_CONTROL;
 		ldap_value_free (values);
 	}
-	
+
 }
 
 /**
@@ -1032,13 +1034,13 @@ find_domain_dn (char *domain)
 	}
 	if (dn_value->str[0])
 		dn = g_strndup (dn_value->str, strlen(dn_value->str) - 1);
-	else 
+	else
 		dn = NULL;
 	g_string_free (dn_value, TRUE);
 	return dn;
 }
 
-double 
+double
 lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 {
 	char **values = NULL, *filter = NULL, *val=NULL;
@@ -1048,7 +1050,7 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 	int ldap_error, msgid;
 	double maxAge=0;
 	gchar *dn=NULL;
-	
+
 	attrs[0] = "maxPwdAge";
 	attrs[1] = NULL;
 
@@ -1058,12 +1060,12 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 
 	ldap_error = get_ldap_connection (gc, op, gc->priv->server, LDAP_PORT, &ldap);
 	if (ldap_error != LDAP_SUCCESS) {
-		E2K_GC_DEBUG_MSG(("GC: Establishing ldap connection failed : 0x%02x\n\n", 
+		E2K_GC_DEBUG_MSG(("GC: Establishing ldap connection failed : 0x%02x\n\n",
 									ldap_error));
-		return -1; 
+		return -1;
 	}
 
-	ldap_error = ldap_search_ext (ldap, dn, LDAP_SCOPE_BASE, filter, (char **)attrs, 
+	ldap_error = ldap_search_ext (ldap, dn, LDAP_SCOPE_BASE, filter, (char **)attrs,
 				      FALSE, NULL, NULL, NULL, 0, &msgid);
 	if (!ldap_error) {
 		ldap_error = gc_ldap_result (ldap, op, msgid, &msg);
@@ -1079,14 +1081,14 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 
 	values = ldap_get_values (ldap, msg, "maxPwdAge");
 	if (!values) {
-		E2K_GC_DEBUG_MSG(("GC: couldn't retrieve maxPwdAge\n")); 
+		E2K_GC_DEBUG_MSG(("GC: couldn't retrieve maxPwdAge\n"));
 		return -1;
 	}
 
 	if (values[0]) {
 		val = values[0];
 		if (*val == '-')
-			++val; 
+			++val;
 		maxAge = strtod (val, NULL);
 	}
 

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * Copyright (C) 2005 Novell, Inc.
  *
  * This program is free software; you can redistribute it and/or
@@ -72,13 +72,13 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 	filesave = g_build_filename (dirname, savebasename, NULL);
 	g_free (savebasename);
 	g_free (dirname);
-	
+
 	fd = g_open (filesave, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
 		g_free (filesave);
 		return -1;
 	}
-	
+
 	xmlDocDumpFormatMemory (doc, &xmlbuf, &size, TRUE);
 	if (size <= 0) {
 		close (fd);
@@ -87,19 +87,19 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 		errno = ENOMEM;
 		return -1;
 	}
-	
+
 	n = (size_t) size;
 	do {
 		do {
 			w = write (fd, xmlbuf + written, n - written);
 		} while (w == -1 && errno == EINTR);
-		
+
 		if (w > 0)
 			written += w;
 	} while (w != -1 && written < n);
-	
+
 	xmlFree (xmlbuf);
-	
+
 	if (written < n || fsync (fd) == -1) {
 		errnosave = errno;
 		close (fd);
@@ -111,12 +111,12 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 
 	while ((ret = close (fd)) == -1 && errno == EINTR)
 		;
-	
+
 	if (ret == -1) {
 		g_free (filesave);
 		return -1;
 	}
-	
+
 	if (g_rename (filesave, filename) == -1) {
 		errnosave = errno;
 		g_unlink (filesave);
@@ -125,7 +125,7 @@ e_xml_save_file (const char *filename, xmlDocPtr doc)
 		return -1;
 	}
 	g_free (filesave);
-	
+
 	return 0;
 }
 
@@ -136,7 +136,7 @@ e_xml_get_child_by_name (const xmlNode *parent, const xmlChar *child_name)
 
 	g_return_val_if_fail (parent != NULL, NULL);
 	g_return_val_if_fail (child_name != NULL, NULL);
-	
+
 	for (child = parent->xmlChildrenNode; child != NULL; child = child->next) {
 		if (xmlStrcmp (child->name, child_name) == 0) {
 			return child;

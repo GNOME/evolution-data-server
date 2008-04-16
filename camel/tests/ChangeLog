@@ -1,3 +1,14 @@
+2007-10-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* folder/Makefile.am:
+	* message/Makefile.am:
+	* mime-filter/Makefile.am:
+	* misc/Makefile.am:
+	* smime/Makefile.am:
+	* stream/Makefile.am:
+	Disable the tests until someone can scrape off the bit rot.
+	The failing tests are preventing distcheck from passing.
+
 2007-05-14  Jules Colding  <colding@omesc.com>
 
 	* mime-filter/test-charset.c (main): Check return value

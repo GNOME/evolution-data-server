@@ -348,7 +348,7 @@ find_section_by_name (ENameSelectorModel *name_selector_model, const gchar *name
 /**
  * e_name_selector_model_peek_contact_store:
  * @name_selector_model: an #ENameSelectorModel
- * 
+ *
  * Gets the #EContactStore associated with @name_selector_model.
  *
  * Return value: An #EContactStore.

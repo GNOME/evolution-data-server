@@ -1,0 +1,17 @@
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* gdata-google-service.c: Update for libsoup 2.4
+	(service_authenticate): Use soup-forms methods.
+
+2008-01-05  Nyall Dawson  <nyall@zombiepigs.net>
+
+	** Fix for bug #504783
+
+	* gdata-google-service.c: add accountType=HOSTED_OR_GOOGLE to 
+	GOOGLE_CLIENT_LOGIN_MSG string to allow google apps support. 
+
+2008-01-05  Suman Manjunath  <msuman@novell.com>
+
+	** Created a ChangeLog
+
+

@@ -1,7 +1,310 @@
+2008-04-15  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #475616
+
+	* libedataserver/e-component-listener.c: (watched_lock),
+	(connection_listen_cb), (e_component_listener_finalize),
+	(e_component_listener_new): Use rather rec mutex here.
+
+2008-04-07  Jeffrey Stedfast  <fejj@novell.com>
+
+	* configure.in: Do proper checks for largefile support and
+	properly setup proper CFLAGS to support it.
+
+2008-04-04  Suman Manjunath  <msuman@novell.com>
+
+	* libedataserver/e-data-server-util.c: (e_util_utf8_strstrcase),
+	(e_util_utf8_strstrcasedecomp): 
+	Fixed a few compiler warnings (bug #473880)
+
+2008-04-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in: Version bump for 2.23.1.
+
+2008-03-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in: Enforce the minimum GLib version (#525242).
+
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #518710
+
+	* configure.in:
+	Bump GLib requirement to 2.16.1.
+
+	* libedataserver/e-dbhash.c:
+	Use GLib's new MD5 Checksum API.  The MD5 utilities in
+	libedataserver are now deprecated.
+
+	* libedataserver/md5-utils.c:
+	* libedataserver/md5-utils.h:
+	Deprecate these functions and reimplement them to be wrappers
+	for GLib's new MD5 Checksum API.
+
+2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Added configurable Proxy settings for Evolution.
+
+	* libedataserver/Makefile.am:
+	* libedataserver/e-proxy.c: (ep_free_proxy_host_addr),
+	(e_proxy_class_init), (e_proxy_init), (e_proxy_dispose),
+	(e_proxy_get_type), (ep_need_proxy), (ep_manipulate_ipv4),
+	(ipv6_network_addr), (ep_manipulate_ipv6), (ep_parse_ignore_host),
+	(ep_set_proxy), (ep_setting_changed), (e_proxy_new),
+	(e_proxy_setup_proxy), (e_proxy_peek_uri),
+	(e_proxy_require_proxy_for_uri):
+	* libedataserver/e-proxy.h:
+
+2008-03-10  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.22.0 release.
+
+2008-03-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Revisit libecal version.
+
+2008-03-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference: Minor API documentation updates.
+
+2008-03-03  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Drop duplicated line. Use
+	LIBCAMEL_CURRENT_MINUS_AGE for the libcamel DLL. Sort sections for
+	clarity.
+
+2008-03-03  Srinivasa Ragavan <sragavan@novell.com>
+
+	* configure.in: Bump libecal version for libical changes.
+
+2008-02-25  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS: Evolution Data Server 2.21.92 release.
+
+2008-02-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #475616
+
+	* libedataserver/e-component-listener.c: (connection_listen_cb),
+	(e_component_listener_finalize), (e_component_listener_new):
+	Guard global static variable with mutex lock.
+
+2008-02-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/Makefile.am: Add E_DATA_SERVER_CFLAGS/LIBS to make it build.
+
+2008-02-22  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #469119
+
+	* libedataserver/e-time-utils.c: (has_correct_date),
+	(e_time_parse_date_and_time_ex), (e_time_parse_date_ex):
+	Check also for correct date values if parse is OK.
+
+2008-02-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* configure.in: set HANDLE_LIBICAL_MEMORY to 1.
+
+2008-02-18  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libdb/dbm/dbm.c (__db_dbm_firstkey): Fix for some
+	warnings. Fix from opensuse downstream.
+
+2008-02-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #516074
+
+	* configure.in: Don't assume NI_MAXHOST and NI_MAXSERV are
+	defined in <netdb.h> since these are GNU extensions.
+
+2008-02-13  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Version bump for 2.21.92
+
+2008-02-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS: Evolution-Data-Server 2.21.91 release.
+
+2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	* marshal.mk:
+	Fix a compilation error that occurs when building in a
+	remote object directory (#514682, patch by Paul Smith).
+
+2008-02-06  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Look for catalogs in share/locale
+	first, as that is where they will be with a properly built GNU
+	gettext.
+
+2008-01-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Version bump for 2.21.91 
+
+2008-01-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.90 release.
+
+2008-01-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference: Refresh the API docs.
+
+2008-01-24  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Only use the -Wno-sign-compare and
+	-Wno-pointer-sign options if the gcc version used supports them. I
+	am still using gcc 3.4.2 in mingw...
+
+2008-01-24  Takao Fujiwara  <takao.fujiwara@sun.com>
+
+	** Fix for bug #511717
+
+	* camel/providers/imap/camel-imap-store.c: (imap_build_folder_info):
+	Add gettext imap folders.
+
+2008-01-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Bump some additional package requirements for libsoup-2.4:
+		libbonobo-2.0 >= 2.20.3
+		glib-2.0 >= 2.15.3
+
+2008-01-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/camel/camel-sections.txt:
+	Add camel_session_build_password_prompt.
+
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* configure.in: Require libsoup-2.4. (Remove old "either 2.2 or
+	2.4" support, which only ever worked because there was an old CVS
+	version of libsoup that claimed to be 2.4 but still had the 2.2
+	API.)
+
+2008-01-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Version bump to 2.21.90
+
+2008-01-14  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS: Evolution Data Server 2.21.5 release.
+
+2008-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/camel/camel.types:
+	Add an empty camel.types file so Gtk-Doc 1.9 doesn't choke on its
+	absence when running "make dist".  See bug #509539 for more info.
+
 2008-01-11  Suman Manjunath  <msuman@novell.com>
 
 	* configure.in: Added a data-directory variable for the 
 	Exchange MAPI plugin. 
+
+2008-01-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #339813
+
+	* libedataserver/e-time-utils.h: (e_time_parse_date_and_time_ex),
+	(e_time_parse_date_ex), (e_time_get_d_fmt_with_4digit_year):
+	New API functions, returns is parsed string had two-digit year and
+	last one changes "%x" on format of strftime with forced 4-digit year.
+	* libedataserver/e-time-utils.c: (parse_with_strptime):
+	Fix issue when read all text but actual date isn't correct to this format.
+	* libedataserver/e-time-utils.c: (correct_two_digit_year):
+	New helper function.
+	* libedataserver/e-time-utils.c: (e_time_parse_date_and_time_ex),
+	(e_time_parse_date_ex), (e_time_get_d_fmt_with_4digit_year):
+	Implementing new API functions.
+
+2007-12-25  Jeffrey Stedfast  <fejj@novell.com>
+
+	* libedataserver/e-iconv.c: Map gb2312-compat charsets to GBK
+	instead of gb2312 since GBK is a superset of gb2312.
+
+2007-12-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* configure.in: Version bump to 2.21.5.
+
+2007-12-17  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.4 release.
+
+2007-12-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Bump gtk-doc requirement to 1.9 for gtkdoc-rebase.
+
+2007-12-07  James "Doc" Livingston  <doclivingston@gmail.com>
+
+	** Fix for bug #339510
+
+	* libedataserver/e-time-utils.c: (e_time_parse_time): Accept time
+	inputs with 4 figures (e.g. '1830' would be converted to '18:30')
+
+2007-12-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.3 release.
+
+2007-11-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #308815
+
+	* libedataserver/e-categories.h:
+	* libedataserver/e-categories.c: Dropped colors for categories,
+	so marking those functions as deprecated, and making deprecated
+	parameter 'color' of 'e_categories_add' together with its rename
+	to 'unused'.
+
+2007-11-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.2 release.
+
+2007-11-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Remove trailing whitespace from source code.
+
+2007-11-13  Ondrej Jirman  <megous@megous.com>
+
+	** Fix for bug #494299
+
+	* libedataserver/e-file-cache.c: (add_key_to_slist),
+	(add_object_to_slist): Rename helper functions.
+	* libedataserver/e-file-cache.c: (e_file_cache_get_keys):
+	Fix memory corruption.
+
+2007-10-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.21.1 release.
+
+2007-10-29  Matthew Barnes  <mbarnes@redhat.com>
+
+	* servers/google/libgdata/gdata-entry.c:
+	* servers/googgle/libgdata-google/gdata-google-service.c:
+	Fix implicit function declarations.
+	Use g_ascii_strcasecmp() instead of g_strcasecmp() (deprecated).
+
+2007-10-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* docs/reference/calendar/libecal/libecal-sections.txt:
+	* docs/reference/libedataserverui/libedataserverui-sections.txt:
+	Remove non-existent symbols.
+
+2007-10-23  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* configure.in:
+	* evolution-data-server-zip.in:
+	* servers/Makefile.am: Initial commit for the google
+	calendar.
+
+	Committing on behalf of Ebby Wiselyn <ebbywiselyn@gmail.com>
+
+2007-10-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	* Fixes part of bug #417999
+
+	* docs/reference/libedataserverui:
+	Add documentation for ESourceComboBox widget.
 
 2007-10-09  Matthew Barnes  <mbarnes@redhat.com>
 

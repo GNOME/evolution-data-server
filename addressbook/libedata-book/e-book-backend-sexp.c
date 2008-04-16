@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * pas-backend-card-sexp.c
  * Copyright 1999, 2000, 2001, Ximian, Inc.
  *
@@ -54,7 +54,7 @@ compare_im (EContact *contact, const char *str,
 			break;
 		}
 	}
-	
+
 	g_list_foreach (aims, (GFunc)g_free, NULL);
 	g_list_free (aims);
 
@@ -160,7 +160,7 @@ compare_name (EContact *contact, const char *str,
 	name = e_contact_get_const (contact, E_CONTACT_FAMILY_NAME);
 	if (name && compare (name, str))
 		return TRUE;
-	
+
 	name = e_contact_get_const (contact, E_CONTACT_GIVEN_NAME);
 	if (name && compare (name, str))
 		return TRUE;
@@ -176,7 +176,7 @@ static gboolean
 compare_address (EContact *contact, const char *str,
 		 char *(*compare)(const char*, const char*))
 {
-	
+
 	int i;
 	gboolean rv = FALSE;
 
@@ -187,19 +187,19 @@ compare_address (EContact *contact, const char *str,
 				(address->street && compare(address->street, str)) ||
 				(address->ext && compare(address->ext, str)) ||
 				(address->locality && compare(address->locality, str)) ||
-				(address->region && compare(address->region, str)) || 
+				(address->region && compare(address->region, str)) ||
 				(address->code && compare(address->code, str)) ||
 				(address->country && compare(address->country, str));
-			
+
 			e_contact_address_free (address);
-		
+
 			if (rv)
 				break;
 		}
 	}
 
 	return rv;
-	
+
 }
 
 static gboolean
@@ -292,6 +292,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		struct prop_info *info = NULL;
 		int i;
 		gboolean any_field;
+		gboolean saw_any = FALSE;
 
 		propname = argv[0]->value.string;
 
@@ -299,11 +300,12 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
+				saw_any = TRUE;
 				info = &prop_info_table[i];
-		
+
 				if (any_field && info->field_id == E_CONTACT_UID) {
 					/* We need to skip UID from any field contains search
-					 * any-field search should be supported for the 
+					 * any-field search should be supported for the
 					 * visible fields only.
 					 */
 					truth = FALSE;
@@ -311,7 +313,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 				else if (info->prop_type == PROP_TYPE_NORMAL) {
 					const char *prop = NULL;
 					/* straight string property matches */
-					
+
 					prop = e_contact_get_const (ctx->contact, info->field_id);
 
 					if (prop && compare(prop, argv[1]->value.string)) {
@@ -334,7 +336,40 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 					break;
 			}
 		}
-		
+
+		if (!saw_any) {
+			/* propname didn't match to any of our known "special" properties,
+			   so try to find if it isn't a real field and if so, then compare
+			   against value in this field only */
+			EContactField fid = e_contact_field_id (propname);
+
+			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
+				const char *prop = e_contact_get_const (ctx->contact, fid);
+
+				if (prop && compare (prop, argv[1]->value.string)) {
+					truth = TRUE;
+				}
+
+				if ((!prop) && compare ("", argv[1]->value.string)) {
+					truth = TRUE;
+				}
+			} else {
+				/* it is not direct EContact known field, so try to find
+				   it in EVCard attributes */
+				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
+				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+
+				for (l = values; l && !truth; l = l->next) {
+					const char *value = l->data;
+
+					if (value && compare (value, argv[1]->value.string)) {
+						truth = TRUE;
+					} else if ((!value) && compare ("", argv[1]->value.string)) {
+						truth = TRUE;
+					}
+				}
+			}
+		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
@@ -417,18 +452,20 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		char *propname;
 		struct prop_info *info = NULL;
 		int i;
+		gboolean saw_any = FALSE;
 
 		propname = argv[0]->value.string;
 
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (!strcmp (prop_info_table[i].query_prop, propname)) {
+				saw_any = TRUE;
 				info = &prop_info_table[i];
-				
+
 				if (info->prop_type == PROP_TYPE_NORMAL) {
 					const char *prop = NULL;
 					/* searches where the query's property
 					   maps directly to an ecard property */
-					
+
 					prop = e_contact_get_const (ctx->contact, info->field_id);
 
 					if (prop && *prop)
@@ -442,7 +479,31 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				break;
 			}
 		}
-		
+
+		if (!saw_any) {
+			/* propname didn't match to any of our known "special" properties,
+			   so try to find if it isn't a real field and if so, then check
+			   against value in this field only */
+			EContactField fid = e_contact_field_id (propname);
+
+			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
+				const char *prop = e_contact_get_const (ctx->contact, fid);
+
+				if (prop && *prop)
+					truth = TRUE;
+			} else {
+				/* is is not a known EContact field, try with EVCard attributes */
+				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
+				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+
+				for (l = values; l && !truth; l = l->next) {
+					const char *value = l->data;
+
+					if (value && *value)
+						truth = TRUE;
+				}
+			}
+		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
@@ -475,7 +536,7 @@ func_exists_vcard(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 			}
 		}
 	}
-	
+
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	r->value.bool = truth;
 

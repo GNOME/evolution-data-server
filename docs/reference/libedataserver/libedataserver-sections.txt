@@ -426,10 +426,13 @@ EMsg
 e_msgport_new
 e_msgport_destroy
 e_msgport_fd
+e_msgport_prfd
 e_msgport_put
 e_msgport_wait
 e_msgport_get
 e_msgport_reply
+EThread
+e_thread_t
 EThreadFunc
 e_thread_new
 e_thread_destroy
@@ -457,7 +460,6 @@ ESExp
 ESExpSymbol
 ESExpResult
 ESExpTerm
-ESExpTermType
 e_sexp_new
 e_sexp_ref
 e_sexp_unref
@@ -495,11 +497,14 @@ e_sexp_get_type
 ETimeParseStatus
 e_time_parse_date_and_time
 e_time_parse_date
+e_time_parse_date_and_time_ex
+e_time_parse_date_ex
 e_time_parse_time
 e_time_format_date_and_time
 e_time_format_time
 e_mktime_utc
 e_localtime_with_offset
+e_time_get_d_fmt_with_4digit_year
 </SECTION>
 
 <SECTION>

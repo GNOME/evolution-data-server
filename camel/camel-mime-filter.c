@@ -41,8 +41,8 @@ struct _CamelMimeFilterPrivate {
 
 static CamelObjectClass *camel_mime_filter_parent;
 
-static void complete (CamelMimeFilter *mf, char *in, size_t len, 
-		      size_t prespace, char **out, size_t *outlen, 
+static void complete (CamelMimeFilter *mf, char *in, size_t len,
+		      size_t prespace, char **out, size_t *outlen,
 		      size_t *outprespace);
 
 static void
@@ -83,7 +83,7 @@ CamelType
 camel_mime_filter_get_type (void)
 {
 	static CamelType camel_mime_filter_type = CAMEL_INVALID_TYPE;
-	
+
 	if (camel_mime_filter_type == CAMEL_INVALID_TYPE) {
 		camel_mime_filter_type = camel_type_register (CAMEL_OBJECT_TYPE, "CamelMimeFilter",
 							      sizeof (CamelMimeFilter),
@@ -93,7 +93,7 @@ camel_mime_filter_get_type (void)
 							      (CamelObjectInitFunc) camel_mime_filter_init,
 							      (CamelObjectFinalizeFunc) camel_mime_filter_finalize);
 	}
-	
+
 	return camel_mime_filter_type;
 }
 
@@ -108,7 +108,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
  * camel_mime_filter_new:
  *
  * Create a new #CamelMimeFilter object.
- * 
+ *
  * Returns a new #CamelMimeFilter
  **/
 CamelMimeFilter *
@@ -185,7 +185,7 @@ static void filter_run(CamelMimeFilter *f,
 		prespace -= f->backlen;
 		f->backlen = 0;
 	}
-	
+
 	filterfunc(f, in, len, prespace, out, outlen, outprespace);
 
 #ifdef MALLOC_CHECK
@@ -313,7 +313,7 @@ camel_mime_filter_set_size(CamelMimeFilter *filter, size_t size, int keep)
 		filter->outptr = filter->outreal + offset;
 		filter->outbuf = filter->outreal + PRE_HEAD*4;
 		filter->outsize = size;
-		/* this could be offset from the end of the structure, but 
+		/* this could be offset from the end of the structure, but
 		   this should be good enough */
 		filter->outpre = PRE_HEAD*4;
 	}

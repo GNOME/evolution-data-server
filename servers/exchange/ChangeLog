@@ -1,8 +1,136 @@
+2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #500389
+
+	* lib/e2k-global-catalog.c (connect_ldap):
+	Fall back to simple binds if the global catalog server
+	does not support NTLM binds.
+
+2008-03-25  Veerapuram Varadhan  <vvaradhan@novell.com>
+
+	** Added configurable Proxy settings for Evolution.
+
+	* lib/e2k-context.c: (proxy_settings_changed), (init), (dispose),
+	(e2k_context_set_auth):
+
+2008-03-24  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #523023
+
+	* storage/exchange-hierarchy-webdav.c (scan_subtree):
+	Fix a severe EFolder reference count leak.
+
+2008-02-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-kerberos.c (get_init_cred):
+	Fix a couple discarded const warnings.
+
+2008-02-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	* storage/exchange-account.c:
+	Fix another G_GNUC_PRETTY_FUNCTION straggler.
+
+2008-02-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #514682
+
+	* lib/Makefile.am:
+	* storage/Makefile.am:
+	Fix a compilation error that occurs when building in a
+	remote object directory (#514682, patch by Paul Smith).
+
+2008-02-04  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-context.c (session_authenticate): Only authenticate the
+	auth once; if we're called again, let it fail, since the cached
+	password must be incorrect. #513646.
+
+2008-01-30  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #395939
+
+	* lib/e2k-context.c: (dispose): Memory leak fix.
+
+2008-01-27  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-context.c (e2k_context_fba): Fix a double free. #511301.
+
+2008-01-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #511235
+
+	* lib/e2k-context.c: (session_authenticate):
+	Changed prototype to reflect actual libsoup.
+	Thanks to Dan Winship for pointing this out.
+
+2008-01-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* lib/e2k-context.h: Correct the function signature of
+	e2k_soup_message_new_full() so things build.
+
+2008-01-15  Dan Winship  <danw@gnome.org>
+
+	* lib/e2k-autoconfig.c: Update for libsoup 2.4
+
+	* lib/e2k-context.c: Update for libsoup 2.4
+	(e2k_context_fba): Use soup-forms methods.
+	(setup_message): Rewrite the old SoupMessageFilter-based stuff to
+	use SoupSession::request-started instead.
+	(e2k_context_get, e2k_context_get_owa): Return a SoupBuffer
+	directly rather than returning a char * and length.
+
+	* lib/e2k-http-utils.c (e2k_http_get_headers): kludge to get
+	around the auto-header-merging behavior of SoupMessageHeaders,
+	which makes it hard to parse WWW-Authenticate and Set-Cookie.
+
+	* storage/exchange-oof.c (find_str_case, exchange_oof_get):
+	Update for e2k_context_get_owa() change. Rewrite to not modify the
+	response body, to avoid needing an extra strdup.
+
+2008-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #361972
+
+	* lib/e2k-context.c: (e2k_context_fba): No point crashing if the
+	action is not recognised by soup. So if the message is null return.
+
+2007-12-31  Sushma Rai  <rsushma@novell.com>
+
+	** Fixes bug #327965
+
+	* storage/exchange-account.[ch] (exchange_account_get_windows_domain):
+	Added new, to return the windows domain value.
+
+	* storage/exchange-esource.c (add_folder_esource): Setting the e-source
+	property username with the domain, if the domain is specified. 
+	
+2007-12-06  Tobias Mueller <tobiasmue@svn.gnome.org>
+	Patch by Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #462593
+
+	* lib/e2k-context.c: (e2k_soup_message_new): Print message on console
+	if invalid uri has been passed to soup_message_new.
+	* lib/e2k-autoconfig.c: (e2k_autoconfig_get_context):
+	Prevent from crash on invalid uri.
+
+2007-11-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-autoconfig.c (get_ctx_auth_handler):
+	* lib/e2k-result.c (prop_get_binary_array), (prop_get_binary):
+	Initialize 'length' before calling g_base64_decode().
+
 2007-11-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* lib/e2k-global-catalog.c: (e2k_global_catalog_set_password): Added a
 	new api to set password into gc.
 	* lib/e2k-global-catalog.h:
+
+2007-10-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	* lib/e2k-user-dialog.c:
+	* lib/e2k-user-dialog.h:
+	Remove these dead files from SCM.
 
 2007-10-03  Srinivasa Ragavan  <sragavan@novell.com>
 

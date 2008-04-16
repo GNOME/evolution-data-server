@@ -39,7 +39,7 @@ contacts_removed (EBookView *book_view, const GList *ids)
 
   for (l = (GList*)ids; l; l = l->next) {
     printf ("Removed contact: %s\n", (char*)l->data);
-  }  
+  }
 }
 
 static void

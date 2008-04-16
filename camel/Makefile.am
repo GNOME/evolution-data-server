@@ -311,8 +311,8 @@ camel_index_control_1_2_LDADD =			\
 	libcamel-1.2.la				\
 	$(libcamel_1_2_la_LIBADD)
 
-camel-mime-tables.c: gentables.pl
-	perl gentables.pl > $@
+camel-mime-tables.c: $(srcdir)/gentables.pl
+	perl $(srcdir)/gentables.pl > $@
 
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \

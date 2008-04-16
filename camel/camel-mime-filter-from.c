@@ -39,7 +39,7 @@ CamelType
 camel_mime_filter_from_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterFrom",
 					    sizeof (CamelMimeFilterFrom),
@@ -49,7 +49,7 @@ camel_mime_filter_from_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_from_init,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -147,7 +147,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		*out = in;
 		*outlen = inend - in;
 		*outprespace = prespace;
-		
+
 		d(printf("Filtered '%.*s'\n", *outlen, *out));
 	}
 }
@@ -156,7 +156,7 @@ static void
 camel_mime_filter_from_class_init (CamelMimeFilterFromClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	camel_mime_filter_from_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
 	filter_class->filter = filter;
@@ -174,7 +174,7 @@ camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
  * camel_mime_filter_from_new:
  *
  * Create a new #CamelMimeFilterFrom object.
- * 
+ *
  * Returns a new #CamelMimeFilterFrom object
  **/
 CamelMimeFilterFrom *
@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 	prespace = 0;
 	camel_mime_filter_complete(f, buffer, len, prespace, &buffer, &len, &prespace);
 	printf("complete = '%.*s'\n", len, buffer);
-	
+
 
 	return 0;
 }

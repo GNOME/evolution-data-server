@@ -1003,7 +1003,7 @@ __db_backup_name(dbenv, name, txn, backup)
 	 * use the entire filename for the backup name.
 	 */
 	len = strlen(name) + strlen(BACKUP_PREFIX) + MAX_LSN_TO_TEXT;
-	    
+
 	if ((ret = __os_malloc(dbenv, len, &retp)) != 0)
 		return (ret);
 

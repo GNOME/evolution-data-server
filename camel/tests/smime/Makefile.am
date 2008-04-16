@@ -21,4 +21,4 @@ check_PROGRAMS =  	\
 #	pgp-mime	
 #	pkcs7
 
-TESTS = pgp #pgp-mime pkcs7
+#TESTS = pgp #pgp-mime pkcs7

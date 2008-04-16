@@ -100,7 +100,7 @@ folder_changed_cb (EFolder *folder,
 		p = strrchr (path, '/');
 		if (p && p != path) {
 			char *name;
-			
+
 			name = g_strndup (path, p - path);
 			folder = e_folder_tree_get_folder (priv->folder_tree, name);
 			g_free (name);
@@ -623,9 +623,9 @@ get_path_for_physical_uri_foreach (EFolderTree *folder_tree,
  * e_storage_get_path_for_physical_uri:
  * @storage: A storage
  * @physical_uri: A physical URI
- * 
+ *
  * Look for the folder having the specified @physical_uri.
- * 
+ *
  * Return value: The path of the folder having the specified @physical_uri in
  * @storage.  If such a folder does not exist, just return NULL.  The return
  * value must be freed by the caller.

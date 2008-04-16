@@ -30,7 +30,7 @@ CamelType
 camel_mime_filter_index_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterIndex",
 					    sizeof (CamelMimeFilterIndex),
@@ -40,7 +40,7 @@ camel_mime_filter_index_get_type (void)
 					    NULL,
 					    (CamelObjectFinalizeFunc) camel_mime_filter_index_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -93,7 +93,7 @@ static void
 camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	camel_mime_filter_index_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
 	/*filter_class->reset = reset;*/
@@ -105,7 +105,7 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass)
  * camel_mime_filter_index_new:
  *
  * Create a new #CamelMimeFilterIndex object
- * 
+ *
  * Returns a new #CamelMimeFilterIndex object
  **/
 CamelMimeFilterIndex *

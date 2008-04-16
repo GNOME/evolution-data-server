@@ -52,12 +52,12 @@ struct _CamelIMAP4StoreInfo {
 
 struct _CamelIMAP4StoreSummary {
 	CamelStoreSummary summary;
-	
+
 	struct _CamelIMAP4StoreSummaryPrivate *priv;
-	
+
 	/* header info */
 	guint32 version;
-	
+
 	CamelIMAP4NamespaceList *namespaces;
 	guint32 capa;
 };

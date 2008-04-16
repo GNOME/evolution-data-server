@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-pop3-provider.c: pop3 provider registration code */
 
-/* 
+/*
  * Authors :
  *   Dan Winship <danw@ximian.com>
  *   Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -40,31 +40,31 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
 	  N_("Message storage") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep_on_server", NULL,
-	  N_("Leave messages on server"), "0" },
+	  N_("_Leave messages on server"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete_after", NULL,
-	  N_("Delete after %s day(s)"), "0:1:7:365" },
+	  N_("_Delete after %s day(s)"), "0:1:7:365" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable_extensions", NULL,
-	  N_("Disable support for all POP3 extensions"), "0" },
+	  N_("Disable _support for all POP3 extensions"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
 static CamelProvider pop3_provider = {
 	"pop",
-	
+
 	N_("POP"),
-	
+
 	N_("For connecting to and downloading mail from POP servers."),
-	
+
 	"mail",
-	
+
 	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_SUPPORTS_SSL,
-	
+
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
-	
+
 	pop3_conf_entries,
-	
+
 	/* ... */
 };
 

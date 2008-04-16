@@ -124,7 +124,7 @@ e_source_group_class_init (ESourceGroupClass *class)
 	object_class->dispose  = impl_dispose;
 	object_class->finalize = impl_finalize;
 
-	signals[CHANGED] = 
+	signals[CHANGED] =
 		g_signal_new ("changed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -133,7 +133,7 @@ e_source_group_class_init (ESourceGroupClass *class)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	signals[SOURCE_ADDED] = 
+	signals[SOURCE_ADDED] =
 		g_signal_new ("source_added",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -142,7 +142,7 @@ e_source_group_class_init (ESourceGroupClass *class)
 			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
 			      G_TYPE_OBJECT);
-	signals[SOURCE_REMOVED] = 
+	signals[SOURCE_REMOVED] =
 		g_signal_new ("source_removed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -299,7 +299,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 
 	e_source_group_set_name (new, GC name);
 	e_source_group_set_base_uri (new, GC base_uri);
-	
+
 	for (p = root->children; p != NULL; p = p->next) {
 		ESource *new_source;
 
@@ -344,7 +344,7 @@ e_source_group_update_from_xml (ESourceGroup *group,
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 	g_return_val_if_fail (xml != NULL, FALSE);
 
-	
+
 	xmldoc = xmlParseDoc (XC xml);
 
 	success = e_source_group_update_from_xmldoc (group, xmldoc, changed_return);
@@ -414,7 +414,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 								  g_free, g_free);
 		changed = TRUE;
 	}
-	
+
 	new_sources_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (nodep = root->children; nodep != NULL; nodep = nodep->next) {
@@ -524,12 +524,12 @@ e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 	xmlNodePtr root = doc->children;
 	xmlChar *name;
 	char *retval;
-	
+
 	if (root && root->name) {
 		if (strcmp (GC root->name, "group") != 0)
 			return NULL;
 	}
-	else 
+	else
 		return NULL;
 
 	name = xmlGetProp (root, XC "uid");
@@ -550,7 +550,7 @@ e_source_group_set_name (ESourceGroup *group,
 
 	if (group->priv->readonly)
 		return;
-	
+
 	if (group->priv->name != NULL &&
 	    strcmp (group->priv->name, name) == 0)
 		return;
@@ -566,10 +566,10 @@ void e_source_group_set_base_uri (ESourceGroup *group,
 {
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (base_uri != NULL);
-	
+
 	if (group->priv->readonly)
 		return;
-	
+
 	if (group->priv->base_uri == base_uri)
 		return;
 
@@ -583,18 +583,18 @@ void e_source_group_set_readonly (ESourceGroup *group,
 				  gboolean      readonly)
 {
 	GSList *i;
-	
+
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
-	
+
 	if (group->priv->readonly)
 		return;
-	
+
 	if (group->priv->readonly == readonly)
 		return;
 
 	group->priv->readonly = readonly;
 	for (i = group->priv->sources; i != NULL; i = i->next)
-		e_source_set_readonly (E_SOURCE (i->data), readonly);	
+		e_source_set_readonly (E_SOURCE (i->data), readonly);
 
 	g_signal_emit (group, signals[CHANGED], 0);
 }
@@ -676,7 +676,7 @@ e_source_group_add_source (ESourceGroup *group,
 
 	if (group->priv->readonly)
 		return FALSE;
-	
+
 	if (e_source_group_peek_source_by_uid (group, e_source_peek_uid (source)) != NULL)
 		return FALSE;
 
@@ -731,7 +731,7 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 
 	if (group->priv->readonly)
 		return FALSE;
-	
+
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		ESource *source = E_SOURCE (p->data);
 
@@ -774,7 +774,7 @@ e_source_group_to_xml (ESourceGroup *group)
 		properties_node = xmlNewChild (root, NULL, XC "properties", NULL);
 		g_hash_table_foreach (group->priv->properties, (GHFunc) property_dump_cb, properties_node);
 	}
-	
+
 	xmlDocSetRootElement (doc, root);
 
 	for (p = group->priv->sources; p != NULL; p = p->next)
