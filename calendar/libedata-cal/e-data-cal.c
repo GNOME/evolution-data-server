@@ -384,6 +384,26 @@ impl_Cal_sendObjects (PortableServer_Servant servant,
 	e_cal_backend_send_objects (priv->backend, cal, calobj);
 }
 
+static void
+disconnect_query (gpointer key, EDataCalView *query, EDataCal *cal)
+{
+	g_signal_handlers_disconnect_matched (query, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, cal);
+	e_cal_backend_remove_query (cal->priv->backend, query);
+}
+
+static void
+query_last_listener_gone_cb (EDataCalView *query, EDataCal *cal)
+{
+	EDataCalPrivate *priv;
+
+	g_return_if_fail (cal != NULL);
+
+	priv = cal->priv;
+
+	disconnect_query (NULL, query, cal);
+	g_hash_table_remove (priv->live_queries, e_data_cal_view_get_text (query));
+}
+
 /* Cal::getQuery implementation */
 static void
 impl_Cal_getQuery (PortableServer_Servant servant,
@@ -426,6 +446,8 @@ impl_Cal_getQuery (PortableServer_Servant servant,
 
 		return;
 	}
+
+	g_signal_connect (query, "last_listener_gone", G_CALLBACK (query_last_listener_gone_cb), cal);
 
 	g_hash_table_insert (priv->live_queries, g_strdup (sexp), query);
 	e_cal_backend_add_query (priv->backend, query);
@@ -614,6 +636,7 @@ e_data_cal_finalize (GObject *object)
 	priv->listener = NULL;
 	CORBA_exception_free (&ev);
 
+	g_hash_table_foreach (priv->live_queries, (GHFunc) disconnect_query, cal);
 	g_hash_table_destroy (priv->live_queries);
 	priv->live_queries = NULL;
 
@@ -665,7 +688,6 @@ e_data_cal_class_init (EDataCalClass *klass)
 	epv->getQuery = impl_Cal_getQuery;
 }
 
-
 /* Object initialization function for the calendar */
 static void
 e_data_cal_init (EDataCal *cal, EDataCalClass *klass)
@@ -678,7 +700,7 @@ e_data_cal_init (EDataCal *cal, EDataCalClass *klass)
 	priv->listener = CORBA_OBJECT_NIL;
 	priv->live_queries = g_hash_table_new_full (g_str_hash, g_str_equal,
 						    (GDestroyNotify) g_free,
-						    (GDestroyNotify) g_object_unref);
+						    (GDestroyNotify) bonobo_object_unref);
 }
 
 BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_data_cal);

@@ -81,6 +81,13 @@ enum props {
 	PROP_SEXP
 };
 
+/* Signal IDs */
+enum {
+	LAST_LISTENER_GONE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 static void
 add_object_to_cache (EDataCalView *query, const char *calobj)
@@ -184,6 +191,10 @@ listener_died_cb (EComponentListener *cl, gpointer data)
 			priv->listeners = g_list_remove_link (priv->listeners, l);
 			g_list_free (l);
 			g_free (ld);
+
+			if (priv->listeners == NULL)
+				g_signal_emit (query, signals[LAST_LISTENER_GONE], 0);
+
 			break;
 		}
 	}
@@ -277,7 +288,7 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 
 	switch (property_id) {
 	case PROP_BACKEND:
-		priv->backend = E_CAL_BACKEND (g_value_get_object (value));
+		priv->backend = g_object_ref (E_CAL_BACKEND (g_value_get_object (value)));
 		break;
 	case PROP_LISTENER:
 		e_data_cal_view_add_listener (query, g_value_get_pointer (value));
@@ -348,6 +359,17 @@ e_data_cal_view_class_init (EDataCalViewClass *klass)
 	param =  g_param_spec_object ("sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_SEXP, param);
+
+	signals[LAST_LISTENER_GONE] =
+		g_signal_new ("last_listener_gone",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EDataCalViewClass, last_listener_gone),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
+	klass->last_listener_gone = NULL;
 }
 
 /* Object initialization function for the live search query */

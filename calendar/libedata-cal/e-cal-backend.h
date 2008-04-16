@@ -123,6 +123,7 @@ void e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal);
 
 void e_cal_backend_add_query (ECalBackend *backend, EDataCalView *query);
 EList *e_cal_backend_get_queries (ECalBackend *backend);
+void e_cal_backend_remove_query (ECalBackend *backend, EDataCalView *query);
 
 void e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal);
 void e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal);

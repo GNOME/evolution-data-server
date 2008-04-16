@@ -1,3 +1,27 @@
+2008-04-16  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #524324
+
+	* libedata-cal/e-data-cal-view.h: (struct _EDataCalViewClass):
+	* libedata-cal/e-data-cal-view.c: (e_data_cal_view_class_init): 
+	New signal "last_listener_gone" to indicate noone is using the query.
+	* libedata-cal/e-data-cal-view.c: (listener_died_cb): Emit the signal.
+	* libedata-cal/e-data-cal-view.c: (e_data_cal_view_set_property):
+	Increase the reference counter for the backend property.
+	* libedata-cal/e-cal-backend.h: (e_cal_backend_remove_query):
+	* libedata-cal/e-cal-backend.c: (e_cal_backend_remove_query):
+	Pair function to e_cal_backend_add_query.
+	* libedata-cal/e-data-cal.c: (disconnect_query),
+	(query_last_listener_gone_cb): New helper functions to properly
+	disconnect/remove queries without listeners.
+	* libedata-cal/e-data-cal.c: (impl_Cal_getQuery):
+	Listen to "last_listener_gone" signal on new query.
+	* libedata-cal/e-data-cal.c: (e_data_cal_finalize):
+	Disconnect queries properly, before destroying the hash table.
+	* libedata-cal/e-cal-backend.c: (e_cal_backend_init):
+	* libedata-cal/e-data-cal.c: (e_data_cal_init):
+	Use bonobo_object_ref/unref for EDataCalView objects.
+
 2008-03-31  Ondrej Jirman  <megous@megous.com>
 
 	** Fix for bug #494311
