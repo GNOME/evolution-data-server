@@ -1,3 +1,20 @@
+2008-04-16  Ebby Wiselyn <ebbyw@gnome.org>
+	** Fix for bug #523630, #518656
+
+	* gdata-google-service.c: Added Error Handling Support
+
+	(gdata_google_error_quark), 
+	(gdata_google_service_update_entry),
+	(gdata_google_service_delete_entry),
+	(gdata_google_service_insert_entry),
+	(gdata_google_service_get_feed),
+	(gdata_google_service_set_credentials),
+	(gdata_google_service_insert_entry): 
+
+	* gdata-google-service.h: Added Error Handling Support
+
+	Committing on behalf of Jörgen Scheibengruber
+		  
 2008-01-15  Dan Winship  <danw@gnome.org>
 
 	* gdata-google-service.c: Update for libsoup 2.4
