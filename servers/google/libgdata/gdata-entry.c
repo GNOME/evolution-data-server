@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Authors :
- *  Ebby Wiselyn <ebbywiselyn@gmail.com>
+ *  Ebby Wiselyn <ebbyw@gnome.org>
  *  Jason Willis <zenbrother@gmail.com>
  *
  * Copyright 2007, Novell, Inc.
@@ -36,31 +36,6 @@
 
 #define GDATA_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_ENTRY, GDataEntryPrivate))
 
-struct _GDataEntryAuthor {
-	gchar *email;
-	gchar *name;
-	gchar *uri;
-};
-typedef struct _GDataEntryAuthor GDataEntryAuthor;
-
-struct _GDataEntryCategory {
-	gchar *label;
-	gchar *scheme;
-	gchar *scheme_prefix;
-	gchar *scheme_suffix;
-	gchar *term;
-};
-typedef struct _GDataEntryCategory GDataEntryCategory;
-
-struct _GDataEntryLink {
-	gchar *href;
-	gint  length;
-	gchar *rel;
-	gchar *title;
-	gchar *type;
-};
-typedef struct _GDataEntryLink GDataEntryLink;
-
 struct _GDataEntryPrivate {
 	GSList *authors;
 	GSList *categories;
@@ -69,7 +44,7 @@ struct _GDataEntryPrivate {
 	GSList *attendees;
 	gchar *location;
 	gchar *content;
-        gchar *title;
+    	gchar *title;
 	gchar *reminder;
 	gchar *status;
 	gchar *visibility;
@@ -85,6 +60,15 @@ struct _GDataEntryPrivate {
 
 	gboolean dispose_has_run;
 	gboolean is_recurrent;
+
+	/* Contacts Data */
+
+	GSList *email_addresses;
+	GSList *im_addresses;
+	GSList *organizations;
+	GSList *phone_numbers;
+	GSList *postal_addresses;
+	gboolean is_deleted;
 };
 
 static void destroy_authors (gpointer data, gpointer user_data)
@@ -141,6 +125,55 @@ static void destroy_links (gpointer data, gpointer user_data)
 	g_free(link);
 }
 
+static void destroy_email_address (gpointer data, gpointer user_data)
+{
+	GDataEntryEmailAddress *email = data;
+	g_free (email->address);
+	g_free (email->label);
+	g_free (email->rel);
+	g_free (email);
+}
+
+static void destroy_im_address (gpointer data, gpointer user_data)
+{
+	GDataEntryIMAddress *im = data;
+	g_free (im->address);
+	g_free (im->protocol);
+	g_free (im->label);
+	g_free (im->rel);
+	g_free (im);
+}
+
+static void destroy_organization (gpointer data, gpointer user_data)
+{
+	GDataEntryOrganization *org = data;
+	g_free (org->name);
+	g_free (org->title);
+	g_free (org->label);
+	g_free (org->rel);
+	g_free (org);
+}
+
+static void destroy_phone_number (gpointer data, gpointer user_data)
+{
+	GDataEntryPhoneNumber *phone = data;
+	g_free (phone->number);
+	g_free (phone->uri);
+	g_free (phone->label);
+	g_free (phone->rel);
+	g_free (phone);
+}
+
+static void destroy_postal_address (gpointer data, gpointer user_data)
+{
+	GDataEntryPostalAddress *address = data;
+	g_free (address->address);
+	g_free (address->label);
+	g_free (address->rel);
+	g_free (address);
+}
+
+
 enum {
 	PROP_0,
 };
@@ -195,7 +228,6 @@ static void gdata_entry_finalize (GObject *obj)
 		g_slist_foreach(priv->authors, (GFunc) destroy_authors, NULL);
 		g_slist_free(priv->authors);
 	}
-
 	if (priv->links != NULL) {
 		g_slist_foreach(priv->links, (GFunc) destroy_links, NULL);
 		g_slist_free(priv->links);
@@ -204,6 +236,31 @@ static void gdata_entry_finalize (GObject *obj)
 	if (priv->categories != NULL) {
 		g_slist_foreach(priv->categories, (GFunc) destroy_categories, NULL);
 		g_slist_free(priv->categories);
+	}
+
+	if (priv->email_addresses != NULL) {
+		g_slist_foreach(priv->email_addresses, (GFunc) destroy_email_address, NULL);
+		g_slist_free(priv->email_addresses);
+	}
+
+	if (priv->im_addresses != NULL) {
+		g_slist_foreach(priv->im_addresses, (GFunc) destroy_im_address, NULL);
+		g_slist_free(priv->im_addresses);
+	}
+
+	if (priv->organizations != NULL) {
+		g_slist_foreach(priv->organizations, (GFunc) destroy_organization, NULL);
+		g_slist_free(priv->organizations);
+	}
+
+	if (priv->phone_numbers != NULL) {
+		g_slist_foreach(priv->phone_numbers, (GFunc) destroy_phone_number, NULL);
+		g_slist_free(priv->phone_numbers);
+	}
+
+	if (priv->postal_addresses != NULL) {
+		g_slist_foreach(priv->postal_addresses, (GFunc) destroy_postal_address, NULL);
+		g_slist_free(priv->postal_addresses);
 	}
 
 	if (priv->field_table != NULL)
@@ -413,6 +470,200 @@ xmlnode_to_attendee (xmlDocPtr doc, xmlNodePtr cur)
 	return attendee;
 }
 
+static GDataEntryEmailAddress *
+xmlnode_to_email_address (xmlDocPtr doc, xmlNodePtr cur)
+{
+	GDataEntryEmailAddress *email;
+	xmlChar *value;
+
+	email = g_new0(GDataEntryEmailAddress, 1);
+
+	value = xmlGetProp(cur, (xmlChar *)"address");
+	if (value) {
+		email->address = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		email->rel = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"label");
+	if (value) {
+		email->label = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"primary");
+	if (value) {
+		email->primary = TRUE;
+		xmlFree(value);
+	}
+
+	return email;
+}
+
+static GDataEntryIMAddress *
+xmlnode_to_im_address (xmlDocPtr doc, xmlNodePtr cur)
+{
+	GDataEntryIMAddress *im;
+	xmlChar *value;
+
+	im = g_new0(GDataEntryIMAddress, 1);
+
+	value = xmlGetProp(cur, (xmlChar *)"address");
+	if (value) {
+		im->address = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"protocol");
+	if (value) {
+		im->protocol = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		im->rel = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"label");
+	if (value) {
+		im->label = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"primary");
+	if (value) {
+		im->primary = TRUE;
+		xmlFree(value);
+	}
+
+	return im;
+}
+
+static GDataEntryOrganization *
+xmlnode_to_organization (xmlDocPtr doc, xmlNodePtr cur)
+{
+	GDataEntryOrganization *org;
+	xmlChar *value;
+
+	org = g_new0(GDataEntryOrganization, 1);
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		org->rel = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"label");
+	if (value) {
+		org->label = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"primary");
+	if (value) {
+		org->primary = TRUE;
+		xmlFree(value);
+	}
+
+	cur = cur->xmlChildrenNode;
+	while (cur != NULL) {
+		if (!xmlStrcmp(cur->name, (xmlChar *)"orgName")) {
+			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			org->name = g_strdup((gchar *)value);
+			xmlFree(value);
+		}
+
+		if (!xmlStrcmp(cur->name, (xmlChar *)"orgTitle")) {
+			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			org->title = g_strdup((gchar *)value);
+			xmlFree(value);
+		}
+
+		cur = cur->next;
+	}
+
+	return org;
+}
+
+static GDataEntryPhoneNumber *
+xmlnode_to_phone_number (xmlDocPtr doc, xmlNodePtr cur)
+{
+	GDataEntryPhoneNumber *phone;
+	xmlChar *value;
+
+	phone = g_new0(GDataEntryPhoneNumber, 1);
+
+	value = xmlGetProp(cur, (xmlChar *)"uri");
+	if (value) {
+		phone->uri = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		phone->rel = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"label");
+	if (value) {
+		phone->label = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"primary");
+	if (value) {
+		phone->primary = TRUE;
+		xmlFree(value);
+	}
+
+	value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+	phone->number = g_strdup((gchar *)value);
+	xmlFree(value);
+
+	return phone;
+}
+
+static GDataEntryPostalAddress *
+xmlnode_to_postal_address (xmlDocPtr doc, xmlNodePtr cur)
+{
+	GDataEntryPostalAddress *address;
+	xmlChar *value;
+
+	address = g_new0(GDataEntryPostalAddress, 1);
+
+	value = xmlGetProp(cur, (xmlChar *)"rel");
+	if (value) {
+		address->rel = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"label");
+	if (value) {
+		address->label = g_strdup((gchar *)value);
+		xmlFree(value);
+	}
+
+	value = xmlGetProp(cur, (xmlChar *)"primary");
+	if (value) {
+		address->primary = TRUE;
+		xmlFree(value);
+	}
+
+	value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+	address->address = g_strdup((gchar *)value);
+	xmlFree(value);
+
+	return address;
+}
+
 static xmlNodePtr
 author_to_xmlnode (GDataEntryAuthor *author)
 {
@@ -474,6 +725,131 @@ category_to_xmlnode (GDataEntryCategory *category)
 
 	return category_node;
 }
+
+static xmlNodePtr
+email_address_to_xmlnode (GDataEntryEmailAddress *email)
+{
+
+	xmlNodePtr email_node;
+
+	email_node = xmlNewNode(NULL, (xmlChar *)"email");
+	xmlSetNs (email_node, xmlNewNs (email_node, NULL, (xmlChar *)"gd"));
+	if (email->address)
+		xmlSetProp (email_node, (xmlChar *)"address", (xmlChar *)email->address);
+
+	if (email->rel)
+		xmlSetProp (email_node, (xmlChar *)"rel", (xmlChar *)email->rel);
+
+	if (email->label)
+		xmlSetProp (email_node, (xmlChar *)"label", (xmlChar *)email->label);
+	
+	if (email->primary)
+		xmlSetProp (email_node, (xmlChar *)"primary", (xmlChar *)"true");
+
+	return email_node;
+}
+
+static xmlNodePtr
+im_address_to_xmlnode (GDataEntryIMAddress *im)
+{
+
+	xmlNodePtr im_node;
+
+	im_node = xmlNewNode(NULL, (xmlChar *)"im");
+	xmlSetNs (im_node, xmlNewNs (im_node, NULL, (xmlChar *)"gd"));
+	if (im->address)
+		xmlSetProp (im_node, (xmlChar *)"address", (xmlChar *)im->address);
+
+	if (im->protocol)
+		xmlSetProp (im_node, (xmlChar *)"protocol", (xmlChar *)im->protocol);
+
+	if (im->rel)
+		xmlSetProp (im_node, (xmlChar *)"rel", (xmlChar *)im->rel);
+
+	if (im->label)
+		xmlSetProp (im_node, (xmlChar *)"label", (xmlChar *)im->label);
+	
+	if (im->primary)
+		xmlSetProp (im_node, (xmlChar *)"primary", (xmlChar *)"true");
+
+	return im_node;
+}
+
+static xmlNodePtr
+organization_to_xmlnode (GDataEntryOrganization *organization)
+{
+
+	xmlNodePtr organization_node;
+
+	organization_node = xmlNewNode(NULL, (xmlChar *)"organization");
+	xmlSetNs (organization_node, xmlNewNs (organization_node, NULL, (xmlChar *)"gd"));
+	if (organization->rel)
+		xmlSetProp (organization_node, (xmlChar *)"rel", (xmlChar *)organization->rel);
+
+	if (organization->label)
+		xmlSetProp (organization_node, (xmlChar *)"label", (xmlChar *)organization->label);
+	
+	if (organization->primary)
+		xmlSetProp (organization_node, (xmlChar *)"primary", (xmlChar *)"true");
+
+	if (organization->name)
+		xmlNewTextChild (organization_node, NULL, (xmlChar *)"orgName", (xmlChar *)organization->name);
+
+	if (organization->title)
+		xmlNewTextChild (organization_node, NULL, (xmlChar *)"orgTitle", (xmlChar *)organization->title);
+
+	return organization_node;
+}
+
+static xmlNodePtr
+phone_number_to_xmlnode (GDataEntryPhoneNumber *number)
+{
+
+	xmlNodePtr number_node;
+
+	number_node = xmlNewNode(NULL, (xmlChar *)"phoneNumber");
+	xmlSetNs (number_node, xmlNewNs (number_node, NULL, (xmlChar *)"gd"));
+	if (number->uri)
+		xmlSetProp (number_node, (xmlChar *)"uri", (xmlChar *)number->uri);
+
+	if (number->rel)
+		xmlSetProp (number_node, (xmlChar *)"rel", (xmlChar *)number->rel);
+
+	if (number->label)
+		xmlSetProp (number_node, (xmlChar *)"label", (xmlChar *)number->label);
+	
+	if (number->primary)
+		xmlSetProp (number_node, (xmlChar *)"primary", (xmlChar *)"true");
+
+	if (number->number)
+		xmlNodeAddContent(number_node, (xmlChar *)number->number);
+
+	return number_node;
+}
+
+static xmlNodePtr
+postal_address_to_xmlnode (GDataEntryPostalAddress *address)
+{
+
+	xmlNodePtr address_node;
+
+	address_node = xmlNewNode(NULL, (xmlChar *)"postalAddress");
+	xmlSetNs (address_node, xmlNewNs (address_node, NULL, (xmlChar *)"gd"));
+	if (address->rel)
+		xmlSetProp (address_node, (xmlChar *)"rel", (xmlChar *)address->rel);
+
+	if (address->label)
+		xmlSetProp (address_node, (xmlChar *)"label", (xmlChar *)address->label);
+	
+	if (address->primary)
+		xmlSetProp (address_node, (xmlChar *)"primary", (xmlChar *)"true");
+
+	if (address->address)
+		xmlNodeAddContent(address_node, (xmlChar *)address->address);
+
+	return address_node;
+}
+
 
 /**
  * gdata_entry_new:
@@ -577,6 +953,24 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 		else if (!xmlStrcmp (cur->name, (xmlChar *)"comments")) {
 			/*FIXME Call _comment_to_xml_node */
 		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"email")) {
+			priv->email_addresses = g_slist_prepend(priv->email_addresses, xmlnode_to_email_address(doc, cur));
+		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"im")) {
+			priv->im_addresses = g_slist_prepend(priv->im_addresses, xmlnode_to_im_address(doc, cur));
+		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"organization")) {
+			priv->organizations = g_slist_prepend(priv->organizations, xmlnode_to_organization(doc, cur));
+		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"phoneNumber")) {
+			priv->phone_numbers = g_slist_prepend(priv->phone_numbers, xmlnode_to_phone_number(doc, cur));
+		}
+		else if (!xmlStrcmp(cur->name, (xmlChar *)"postalAddress")) {
+			priv->postal_addresses = g_slist_prepend(priv->postal_addresses, xmlnode_to_postal_address(doc, cur));
+		}
+		else if (!xmlStrcmp (cur->name, (xmlChar *)"deleted")) {
+			priv->is_deleted = TRUE;
+		}
 
 		else {
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
@@ -587,7 +981,6 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 		cur = cur->next;
 	}
 
-	xmlFree(value);
 	return entry;
 }
 
@@ -720,7 +1113,7 @@ gdata_entry_generate_xml (GDataEntry *entry)
 		xmlAddChild(root, cur_child);
 		list = g_slist_next(list);
 	}
-
+	
 	list = priv->links;
 	while (list) {
 		cur_child = link_to_xmlnode(list->data);
@@ -764,6 +1157,41 @@ gdata_entry_generate_xml (GDataEntry *entry)
 		xmlSetProp (cur_child, (xmlChar *)"type", (xmlChar *)"text");
 	}
 
+	list = priv->email_addresses;
+	while (list) {
+		cur_child = email_address_to_xmlnode(list->data);
+		xmlAddChild(root, cur_child);
+		list = g_slist_next(list);
+	}
+
+	list = priv->im_addresses;
+	while (list) {
+		cur_child = im_address_to_xmlnode(list->data);
+		xmlAddChild(root, cur_child);
+		list = g_slist_next(list);
+	}
+
+	list = priv->organizations;
+	while (list) {
+		cur_child = organization_to_xmlnode(list->data);
+		xmlAddChild(root, cur_child);
+		list = g_slist_next(list);
+	}
+
+	list = priv->phone_numbers;
+	while (list) {
+		cur_child = phone_number_to_xmlnode(list->data);
+		xmlAddChild(root, cur_child);
+		list = g_slist_next(list);
+	}
+
+	list = priv->postal_addresses;
+	while (list) {
+		cur_child = postal_address_to_xmlnode(list->data);
+		xmlAddChild(root, cur_child);
+		list = g_slist_next(list);
+	}
+
 	/*
 	   if (priv->field_table) {
 	   g_hash_table_foreach (priv->field_table,(GHFunc) _build_hash_table_entries, &root);
@@ -771,6 +1199,7 @@ gdata_entry_generate_xml (GDataEntry *entry)
 	 */
 
 	xmlDocDumpMemory(doc, &xmlString, &xml_buffer_size);
+    g_free (priv->entry_xml);
 	priv->entry_xml = g_strdup((gchar *)xmlString);
 
 	xmlFree(xmlString);
@@ -1046,6 +1475,240 @@ gdata_entry_get_edit_link (GDataEntry *entry)
 }
 
 /**
+ * gdata_entry_get_email_addresses:
+ * @entry: A #GDataEntry object.
+ * Returns the list of emails of entry.
+ **/
+GSList *
+gdata_entry_get_email_addresses (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return priv->email_addresses;
+}
+
+/**
+ * gdata_entry_get_primary_email_address:
+ * @entry: A #GDataEntry object.
+ * Returns the the primary email address.
+ **/
+GDataEntryEmailAddress *
+gdata_entry_get_primary_email_address (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+	GSList *itr;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+
+	itr = priv->email_addresses;
+	while (itr) {
+		GDataEntryEmailAddress *email = itr->data;
+		if (email->primary)
+			return email;
+		itr = itr->next;
+	}
+	return NULL;
+}
+
+/**
+ * gdata_entry_get_im_addresses:
+ * @entry: A #GDataEntry object.
+ * Returns the list of im addresses of entry.
+ **/
+GSList *
+gdata_entry_get_im_addresses (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return priv->im_addresses;
+}
+
+/**
+ * gdata_entry_get_primary_im_address:
+ * @entry: A #GDataEntry object.
+ * Returns the the primary im address.
+ **/
+GDataEntryIMAddress *
+gdata_entry_get_primary_im_address (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+	GSList *itr;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+
+	itr = priv->im_addresses;
+	while (itr) {
+		GDataEntryIMAddress *im = itr->data;
+		if (im->primary)
+			return im;
+		itr = itr->next;
+	}
+	return NULL;
+}
+
+/**
+ * gdata_entry_get_organizations:
+ * @entry: A #GDataEntry object.
+ * Returns the list of organizations of entry.
+ **/
+GSList *
+gdata_entry_get_organizations (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return priv->organizations;
+}
+
+/**
+ * gdata_entry_get_primary_organization:
+ * @entry: A #GDataEntry object.
+ * Returns the the primary organization.
+ **/
+GDataEntryOrganization *
+gdata_entry_get_primary_organization (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+	GSList *itr;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+
+	itr = priv->organizations;
+	while (itr) {
+		GDataEntryOrganization *org = itr->data;
+		if (org->primary) {
+			g_slist_free (itr);
+			return org;	
+		}
+		itr = itr->next;
+	}
+	return NULL;
+}
+
+/**
+ * gdata_entry_get_phone_numbers:
+ * @entry: A #GDataEntry object.
+ * Returns the list of phone numbers of entry.
+ **/
+GSList *
+gdata_entry_get_phone_numbers (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return priv->phone_numbers;
+}
+
+/**
+ * gdata_entry_get_primary_phone_number:
+ * @entry: A #GDataEntry object.
+ * Returns the the primary phone number.
+ **/
+GDataEntryPhoneNumber *
+gdata_entry_get_primary_phone_number (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+	GSList *itr;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+
+	itr = priv->phone_numbers;
+	while (itr) {
+		GDataEntryPhoneNumber *number = itr->data;
+		if (number->primary)
+			return number;
+		itr = itr->next;
+	}
+	return NULL;
+}
+
+/**
+ * gdata_entry_get_postal_addresses:
+ * @entry: A #GDataEntry object.
+ * Returns the list of postal addresses of entry.
+ **/
+GSList *
+gdata_entry_get_postal_addresses (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return priv->postal_addresses;
+}
+
+/**
+ * gdata_entry_get_primary_postal_address:
+ * @entry: A #GDataEntry object.
+ * Returns the the primary postal address.
+ **/
+GDataEntryPostalAddress *
+gdata_entry_get_primary_postal_address (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+	GSList *itr;
+
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+
+	itr = priv->postal_addresses;
+	while (itr) {
+		GDataEntryPostalAddress *address = itr->data;
+		if (address->primary)
+			return address;
+		itr = itr->next;
+	}
+	return NULL;
+}
+
+/**
+ * gdata_entry_is_deleted:
+ * @entry: A #GDataEntry object.
+ * Returns whether this entry is marked (remotely) as deleted.
+ **/
+gboolean
+gdata_entry_is_deleted (GDataEntry *entry)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_val_if_fail(entry !=NULL, TRUE);
+	g_return_val_if_fail(GDATA_IS_ENTRY (entry), TRUE);
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	return priv->is_deleted;
+}
+
+/**
  * gdata_entry_set_author:
  * @entry: A #GDataEntry object.
  * @author: A list of authors.
@@ -1082,9 +1745,6 @@ gdata_entry_set_id (GDataEntry *entry, gchar *id)
 	priv->id = g_strdup(id);
 	priv->entry_needs_update = TRUE;
 }
-
-
-
 
 /**
  * gdata_entry_set_categories:
@@ -1394,3 +2054,95 @@ gdata_entry_set_attendee_list (GDataEntry *entry, GSList *attendees)
 	priv->attendees = attendees;
 	priv->has_attendees = TRUE;
 }
+
+/**
+ * gdata_entry_set_email_addresses:
+ * @entry: A #GDataEntry object.
+ * @emails: A list of emails.
+ * Sets the list of emails.
+ **/
+void
+gdata_entry_set_email_addresses (GDataEntry *entry, GSList *emails)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_ENTRY(entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	priv->email_addresses = emails;
+	priv->entry_needs_update = TRUE;
+}
+
+/**
+ * gdata_entry_set_im_addresses:
+ * @entry: A #GDataEntry object.
+ * @ims: A list of im addresses.
+ * Sets the list of im addresses.
+ **/
+void
+gdata_entry_set_im_addresses (GDataEntry *entry, GSList *ims)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_ENTRY(entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	priv->im_addresses = ims;
+	priv->entry_needs_update = TRUE;
+}
+
+/**
+ * gdata_entry_set_organizations:
+ * @entry: A #GDataEntry object.
+ * @orgs: A list of organizations.
+ * Sets the list of organizations.
+ **/
+void
+gdata_entry_set_organizations (GDataEntry *entry, GSList *orgs)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_ENTRY(entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	priv->organizations = orgs;
+	priv->entry_needs_update = TRUE;
+}
+
+/**
+ * gdata_entry_set_phone_numbers:
+ * @entry: A #GDataEntry object.
+ * @numbers: A list of phone numbers.
+ * Sets the list of phone numbers.
+ **/
+void
+gdata_entry_set_phone_numbers (GDataEntry *entry, GSList *numbers)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_ENTRY(entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	priv->phone_numbers = numbers;
+	priv->entry_needs_update = TRUE;
+}
+
+/**
+ * gdata_entry_set_postal_addresses:
+ * @entry: A #GDataEntry object.
+ * @addresses: A list of postal addresses.
+ * Sets the list of postal addresses.
+ **/
+void
+gdata_entry_set_postal_addresses (GDataEntry *entry, GSList *addresses)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (GDATA_IS_ENTRY(entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE(entry);
+	priv->postal_addresses = addresses;
+	priv->entry_needs_update = TRUE;
+}
+
+
