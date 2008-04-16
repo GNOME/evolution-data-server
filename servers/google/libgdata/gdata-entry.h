@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Authors :
- *  Ebby Wiselyn <ebbywiselyn@gmail.com>
+ *  Ebby Wiselyn <ebbyw@gnome.org>
  *  Jason Willis <zenbrother@gmail.com>
  *
  * Copyright 2007, Novell, Inc.
@@ -76,6 +76,75 @@ struct _Attendee {
 	gchar *attendee_type;
 };
 
+typedef struct _GDataEntryAuthor GDataEntryAuthor;
+struct _GDataEntryAuthor {
+	gchar *email;
+	gchar *name;
+	gchar *uri;
+};
+
+typedef struct _GDataEntryCategory GDataEntryCategory;
+struct _GDataEntryCategory {
+	gchar *label;
+	gchar *scheme;
+	gchar *scheme_prefix;
+	gchar *scheme_suffix;
+	gchar *term;
+};
+
+typedef struct _GDataEntryLink GDataEntryLink;
+struct _GDataEntryLink {
+	gchar *href;
+	gint  length;
+	gchar *rel;
+	gchar *title;
+	gchar *type;
+};
+
+typedef struct _GDataEntryEmailAddress GDataEntryEmailAddress;
+struct _GDataEntryEmailAddress {
+	gchar *address;
+	gchar *label;
+	gchar *rel;
+	gboolean primary;
+};
+
+typedef struct _GDataEntryIMAddress GDataEntryIMAddress;
+struct _GDataEntryIMAddress {
+	gchar *address;
+	gchar *label;
+	gchar *rel;
+	gchar *protocol;
+	gboolean primary;
+};
+
+typedef struct _GDataEntryOrganization GDataEntryOrganization;
+struct _GDataEntryOrganization {
+	gchar *name;
+	gchar *title;
+	gchar *label;
+	gchar *rel;
+	gboolean primary;
+};
+
+typedef struct _GDataEntryPhoneNumber GDataEntryPhoneNumber;
+struct _GDataEntryPhoneNumber {
+	gchar *number;
+	gchar *uri;
+	gchar *label;
+	gchar *rel;
+	gboolean primary;
+};
+
+typedef struct _GDataEntryPostalAddress GDataEntryPostalAddress;
+struct _GDataEntryPostalAddress {
+	char *address;
+	char *label;
+	char *rel;
+	gboolean primary;
+};
+
+
 GType gdata_entry_get_type(void);
 
 
@@ -121,16 +190,19 @@ gchar * gdata_entry_get_start_date (GDataEntry *entry);
 
 gchar * gdata_entry_get_end_date (GDataEntry *entry);
 
-gchar *
-gdata_entry_get_visibility (GDataEntry *entry);
+gchar * gdata_entry_get_visibility (GDataEntry *entry);
 
-gchar *
-gdata_entry_get_transparency (GDataEntry *entry);
+gchar * gdata_entry_get_transparency (GDataEntry *entry);
 
-GSList *
-gdata_entry_get_attendee_list (GDataEntry *entry);
+GSList * gdata_entry_get_attendee_list (GDataEntry *entry);
+
+GSList * gdata_entries_new_from_xml (const gchar *feedXML, const gint length);
+
+gboolean gdata_entry_is_recurrent (GDataEntry *entry);
 
 void gdata_entry_set_author (GDataEntry *entry, GSList *author);
+
+void gdata_entry_set_phone_numbers (GDataEntry *entry, GSList *phone_numbers);
 
 void gdata_entry_set_categories (GDataEntry *entry, GSList *categories);
 
@@ -158,18 +230,43 @@ void gdata_entry_create_authors (GDataEntry *entry,const gchar *name, const gcha
 
 void gdata_entry_create_categories (GDataEntry *entry, const gchar *scheme, const gchar *label , const gchar *term);
 
-GSList * gdata_entries_new_from_xml (const gchar *feedXML, const gint length);
+void gdata_entry_set_id (GDataEntry *entry, gchar *id);
 
-void
-gdata_entry_set_id (GDataEntry *entry, gchar *id);
+void  gdata_entry_set_email_addresses (GDataEntry *entry, GSList *emails);
 
-gboolean gdata_entry_is_recurrent (GDataEntry *entry);
+void  gdata_entry_set_im_addresses (GDataEntry *entry, GSList *ims);
 
-void
-gdata_entry_set_attendee_list (GDataEntry *entry, GSList *attendee);
+void  gdata_entry_set_organizations (GDataEntry *entry, GSList *orgs);
+
+void  gdata_entry_set_phone_numbers (GDataEntry *entry, GSList *numbers);
+
+void  gdata_entry_set_postal_addresses (GDataEntry *entry, GSList *pas);
+
+void gdata_entry_set_attendee_list (GDataEntry *entry, GSList *attendee);
+
+gboolean gdata_entry_is_deleted (GDataEntry *entry);
+
+GSList * gdata_entry_get_email_addresses (GDataEntry *entry);
+
+GSList * gdata_entry_get_im_addresses (GDataEntry *entry);
+
+GSList * gdata_entry_get_organizations (GDataEntry *entry);
+
+GSList * gdata_entry_get_phone_numbers (GDataEntry *entry);
+
+GSList * gdata_entry_get_postal_addresses (GDataEntry *entry);
+
+gboolean gdata_entry_is_deleted (GDataEntry *entry);
+
+GDataEntryEmailAddress * gdata_entry_get_primary_email_address (GDataEntry *entry);
+
+GDataEntryIMAddress * gdata_entry_get_primary_im_address (GDataEntry *entry);
+
+GDataEntryOrganization * gdata_entry_get_primary_organization (GDataEntry *entry);
+
+GDataEntryPhoneNumber * gdata_entry_get_primary_phone_number (GDataEntry *entry);
+
+GDataEntryPostalAddress * gdata_entry_get_primary_postal_address (GDataEntry *entry);
+
 #endif
-
-
-
-
 
