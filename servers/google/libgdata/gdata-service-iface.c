@@ -29,46 +29,42 @@ void
 gdata_service_set_credentials (GDataService *self, const char *username, const gchar *password)
 {
 	GDATA_SERVICE_GET_IFACE(self)->set_credentials(self, username, password);
-	return;
 }
 
 GDataFeed*
-gdata_service_get_feed (GDataService *self, const char* feedURL)
+gdata_service_get_feed (GDataService *self, const char* feedURL, GError **error)
 {
-	return GDATA_SERVICE_GET_IFACE(self)->get_feed(self, feedURL);
+	return GDATA_SERVICE_GET_IFACE(self)->get_feed(self, feedURL, error);
 }
 
 GDataEntry*
-gdata_service_insert_entry (GDataService *self, const gchar *feed_postURL, GDataEntry *entry)
+gdata_service_insert_entry (GDataService *self, const gchar *feed_postURL, GDataEntry *entry, GError **error)
 {
-	return GDATA_SERVICE_GET_IFACE(self)->insert_entry(self, g_strdup(feed_postURL), entry);
+	return GDATA_SERVICE_GET_IFACE(self)->insert_entry(self, feed_postURL, entry, error);
 }
 
 GDataEntry*
-gdata_service_get_entry (GDataService *self, const gchar *entry_getURL)
+gdata_service_get_entry (GDataService *self, const gchar *entry_getURL, GError **error)
 {
-	return	GDATA_SERVICE_GET_IFACE(self)->get_entry(self, entry_getURL);
+	return	GDATA_SERVICE_GET_IFACE(self)->get_entry(self, entry_getURL, error);
 }
 
 GDataEntry*
-gdata_service_update_entry (GDataService *self, GDataEntry *entry)
+gdata_service_update_entry (GDataService *self, GDataEntry *entry, GError **error)
 {
-	GDATA_SERVICE_GET_IFACE(self)->update_entry(self, entry);
-	return NULL;
+	return GDATA_SERVICE_GET_IFACE(self)->update_entry(self, entry, error);
 }
 
 GDataEntry*
-gdata_service_update_entry_with_link (GDataService *self, GDataEntry *entry, gchar *link)
+gdata_service_update_entry_with_link (GDataService *self, GDataEntry *entry, gchar *link, GError **error)
 {
-	GDATA_SERVICE_GET_IFACE(self)->update_entry_with_link(self, entry, link);
-	return NULL;
+	return GDATA_SERVICE_GET_IFACE(self)->update_entry_with_link(self, entry, link, error);
 }
 
-void
-gdata_service_delete_entry (GDataService *self, GDataEntry *entry)
+gboolean
+gdata_service_delete_entry (GDataService *self, GDataEntry *entry, GError **error)
 {
-	GDATA_SERVICE_GET_IFACE(self)->delete_entry (self, entry);
-	return;
+	return GDATA_SERVICE_GET_IFACE(self)->delete_entry (self, entry, error);
 }
 
 static void
