@@ -1,3 +1,12 @@
+2008-04-16  Christian Kellner  <gicmo@gnome.org>
+
+	** Fixes bug #514300
+
+	* providers/imap/camel-imap-store.c:
+	Make sure we do the Inbox -> INBOX translation at the right place,
+	i.e. *after* we asked the camel_store_summary_path with the correct
+	folder_name that we got from the server.
+
 2008-04-14  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #270406

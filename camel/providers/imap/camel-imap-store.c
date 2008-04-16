@@ -2085,13 +2085,20 @@ get_folder_offline (CamelStore *store, const char *folder_name,
 	CamelFolder *new_folder = NULL;
 	CamelStoreInfo *si;
 
-	if (!g_ascii_strcasecmp (folder_name, "INBOX"))
-		folder_name = "INBOX";
-
 	si = camel_store_summary_path((CamelStoreSummary *)imap_store->summary, folder_name);
 	if (si) {
 		char *folder_dir, *storage_path;
 
+		/* Note: Although the INBOX is defined to be case-insensitive in the IMAP RFC
+		 * it is still up to the server how to acutally name it in a LIST response. Since
+		 * we stored the name as the server provided it us in the summary we take that name
+		 * to look up the folder. 
+		 * But for the on-disk cache we do always capitalize the Inbox no matter what the
+		 * server provided.
+		 */
+		if (!g_ascii_strcasecmp (folder_name, "INBOX"))
+			folder_name = "INBOX";
+	
 		storage_path = g_strdup_printf("%s/folders", imap_store->storage_path);
 		folder_dir = imap_path_to_physical (storage_path, folder_name);
 		g_free(storage_path);
