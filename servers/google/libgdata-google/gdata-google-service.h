@@ -40,6 +40,8 @@ G_BEGIN_DECLS
 #define GDATA_IS_GOOGLE_SERVICE_CLASS(klass)(G_TYPE_CHECK_CLASS_TYPE((klass), GDATA_TYPE_GOOGLE_SERVICE))
 #define GDATA_GOOGLE_SERVICE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_INTERFACE((obj), GDATA_TYPE_GOOGLE_SERVICE, GDataGoogleServiceClass))
 
+#define GDATA_GOOGLE_ERROR gdata_google_error_quark ()
+
 typedef struct _GDataGoogleService GDataGoogleService;
 typedef struct _GDataGoogleServiceClass GDataGoogleServiceClass;
 typedef struct _GDataGoogleServicePrivate GDataGoogleServicePrivate;
@@ -57,16 +59,14 @@ struct _GDataGoogleServiceClass {
   /* Public Methods - Inherited from GDATA_SERVICE_IFACE */
 };
 
-GType gdata_google_service_get_type(void);
+GType  gdata_google_service_get_type(void);
+GQuark gdata_google_error_quark(void);
 
 /**API******/
 
 GDataGoogleService * gdata_google_service_new(const gchar *serviceName, const gchar *agent);
+
 G_END_DECLS
 
 #endif
-
-
-
-
 
