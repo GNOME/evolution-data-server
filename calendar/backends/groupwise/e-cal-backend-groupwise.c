@@ -33,8 +33,6 @@
 #include <unistd.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include "libedataserver/e-xml-hash-utils.h"
 #include "libedataserver/e-url.h"
 #include <libedata-cal/e-cal-backend-cache.h>
@@ -1788,7 +1786,7 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char 
 	cache = cbgw->priv->cache;
 
 	/* FIXME Will this always work? */
-	unescaped_uri = gnome_vfs_unescape_string (cbgw->priv->uri, "");
+	unescaped_uri = g_uri_unescape_string (cbgw->priv->uri, "");
 	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
 	ehash = e_xmlhash_new (filename);
 	g_free (filename);

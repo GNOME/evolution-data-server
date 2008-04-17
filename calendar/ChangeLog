@@ -1,3 +1,21 @@
+2008-04-17  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #526741
+
+	* libedata-cal/libedata-cal.pc.in: Do not require gnomve-vfs,
+	require gio-2.0 instead.
+	* backends/file/e-cal-backend-file.c: (struct _ECalBackendFilePrivate),
+	(save_file_when_idle), (uri_to_path), (open_cal), (reload_cal),
+	(create_cal), (get_uri_string), (e_cal_backend_file_open),
+	(e_cal_backend_file_compute_changes), (e_cal_backend_file_init):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(get_mime_type), (e_cal_backend_groupwise_set_attachments_from_comp):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_compute_changes):
+	Do not use gnome-vfs, use gio/gvfs instead.
+	* backends/google/e-cal-backend-google-utils.c:
+	* backends/google/e-cal-backend-google.c: Do not include gnome-vfs.
+
 2008-04-16  Ebby wiselyn <ebbyw@gnome.org>
 	** Fix for bug #523630
 	

@@ -27,47 +27,38 @@
 
 #include <errno.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include <glib.h>
-#include <glib/gstdio.h>
+#include <gio/gio.h>
 
 #include "camel-file-utils.h"
 #include "camel-operation.h"
 #include "camel-private.h"
 #include "camel-stream-vfs.h"
 
-static CamelSeekableStreamClass *parent_class = NULL;
+static CamelStreamClass *parent_class = NULL;
 
 /* Returns the class for a CamelStreamVFS */
 #define CSVFS_CLASS(so) CAMEL_STREAM_VFS_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static ssize_t stream_read   (CamelStream *stream, char *buffer, size_t n);
 static ssize_t stream_write  (CamelStream *stream, const char *buffer, size_t n);
-/* static int stream_flush  (CamelStream *stream); */
+static int stream_flush  (CamelStream *stream);
 static int stream_close  (CamelStream *stream);
-static off_t stream_seek (CamelSeekableStream *stream, off_t offset,
-			  CamelStreamSeekPolicy policy);
 
 static void
 camel_stream_vfs_class_init (CamelStreamVFSClass *camel_stream_vfs_class)
 {
-	CamelSeekableStreamClass *camel_seekable_stream_class =
-		CAMEL_SEEKABLE_STREAM_CLASS (camel_stream_vfs_class);
 	CamelStreamClass *camel_stream_class =
 		CAMEL_STREAM_CLASS (camel_stream_vfs_class);
 
-	parent_class = CAMEL_SEEKABLE_STREAM_CLASS (camel_type_get_global_classfuncs (camel_seekable_stream_get_type ()));
+	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
 
 	/* virtual method overload */
 	camel_stream_class->read = stream_read;
 	camel_stream_class->write = stream_write;
-/* 	camel_stream_class->flush = stream_flush; */
+	camel_stream_class->flush = stream_flush;
 	camel_stream_class->close = stream_close;
-
-	camel_seekable_stream_class->seek = stream_seek;
 }
 
 static void
@@ -75,8 +66,7 @@ camel_stream_vfs_init (gpointer object, gpointer klass)
 {
 	CamelStreamVFS *stream = CAMEL_STREAM_VFS (object);
 
-	stream->handle = GINT_TO_POINTER (-1);
-	((CamelSeekableStream *)stream)->bound_end = CAMEL_STREAM_UNBOUND;
+	stream->stream = NULL;
 }
 
 static void
@@ -84,8 +74,8 @@ camel_stream_vfs_finalize (CamelObject *object)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (object);
 
-	if (stream_vfs->handle != GINT_TO_POINTER (-1))
-		gnome_vfs_close (stream_vfs->handle);
+	if (stream_vfs->stream)
+		g_object_unref (stream_vfs->stream);
 }
 
 
@@ -95,7 +85,7 @@ camel_stream_vfs_get_type (void)
 	static CamelType camel_stream_vfs_type = CAMEL_INVALID_TYPE;
 
 	if (camel_stream_vfs_type == CAMEL_INVALID_TYPE) {
-		camel_stream_vfs_type = camel_type_register (camel_seekable_stream_get_type (), "CamelStreamVFS",
+		camel_stream_vfs_type = camel_type_register (camel_stream_get_type (), "CamelStreamVFS",
 							    sizeof (CamelStreamVFS),
 							    sizeof (CamelStreamVFSClass),
 							    (CamelObjectClassInitFunc) camel_stream_vfs_class_init,
@@ -108,87 +98,112 @@ camel_stream_vfs_get_type (void)
 }
 
 /**
- * camel_stream_vfs_new_with_handle:
- * @handle: a GnomeVFS handle
+ * camel_stream_vfs_new_with_stream:
+ * @stream: a GInputStream or GOutputStream instance
  *
- * Creates a new fs stream using the given GnomeVFS handle @handle as the
+ * Creates a new fs stream using the given gio stream @stream as the
  * backing store. When the stream is destroyed, the file descriptor
- * will be closed.
+ * will be closed. This will not increase reference counter on the stream.
  *
  * Returns a new #CamelStreamVFS
  **/
 CamelStream *
-camel_stream_vfs_new_with_handle (GnomeVFSHandle *handle)
+camel_stream_vfs_new_with_stream (GObject *stream)
 {
 	CamelStreamVFS *stream_vfs;
-	off_t offset;
 
-	if (!handle)
+	errno = EINVAL;
+
+	if (!stream)
 		return NULL;
 
+	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream) || G_IS_INPUT_STREAM (stream), NULL);
+
+	errno = 0;
 	stream_vfs = CAMEL_STREAM_VFS (camel_object_new (camel_stream_vfs_get_type ()));
-	stream_vfs->handle = handle;
-	gnome_vfs_seek (handle, GNOME_VFS_SEEK_CURRENT, 0);
-	offset = 0;
-	CAMEL_SEEKABLE_STREAM (stream_vfs)->position = offset;
+	stream_vfs->stream = stream;
 
 	return CAMEL_STREAM (stream_vfs);
 }
 
 /**
  * camel_stream_vfs_new_with_uri:
- * @name: a file uri
- * @flags: flags as in open(2)
- * @mode: a file mode
+ * @uri: a file uri
+ * @mode: opening mode for the uri file
  *
- * Creates a new #CamelStreamVFS corresponding to the named file, flags,
- * and mode.
+ * Creates a new #CamelStreamVFS corresponding to the named file and mode.
  *
  * Returns the new stream, or %NULL on error.
  **/
 CamelStream *
-camel_stream_vfs_new_with_uri (const char *name, int flags, mode_t mode)
+camel_stream_vfs_new_with_uri (const char *uri, CamelStreamVFSOpenMethod mode)
 {
-	GnomeVFSResult result;
-	GnomeVFSHandle *handle;
-	int vfs_flag = 0;
+	GFile *file;
+	GObject *stream;
+	GError *error = NULL;
 
-	if (flags & O_WRONLY)
-		vfs_flag = vfs_flag | GNOME_VFS_OPEN_WRITE;
-	if (flags & O_RDONLY)
-		vfs_flag = vfs_flag | GNOME_VFS_OPEN_READ;
-	if (flags & O_RDWR)
-		vfs_flag = vfs_flag | GNOME_VFS_OPEN_READ |GNOME_VFS_OPEN_WRITE;
+	file = g_file_new_for_uri (uri);
 
-	if (flags & O_CREAT)
-		result = gnome_vfs_create (&handle, name, vfs_flag, FALSE, mode);
-	else
-		result = gnome_vfs_open (&handle, name, vfs_flag);
+	switch (mode) {
+		case CAMEL_STREAM_VFS_CREATE:
+			stream = G_OBJECT (g_file_replace (file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &error));
+			break;
+		case CAMEL_STREAM_VFS_APPEND:
+			stream = G_OBJECT (g_file_append_to (file, G_FILE_CREATE_NONE, NULL, &error));
+			break;
+		case CAMEL_STREAM_VFS_READ:
+			stream = G_OBJECT (g_file_read (file, NULL, &error));
+			break;
+		default:
+			errno = EINVAL;
+			g_return_val_if_reached (NULL);
+	}
 
-	if (result != GNOME_VFS_OK) {
+	g_object_unref (file);
+
+	if (error) {
+		errno = error->code;
+		g_warning ("%s", error->message);
+		g_error_free (error);
 		return NULL;
 	}
 
-	return camel_stream_vfs_new_with_handle (handle);
+	return camel_stream_vfs_new_with_stream (stream);
+}
+
+/**
+ * camel_stream_vfs_is_writable:
+ * @stream_vfs: a #CamelStreamVFS instance
+ *
+ * Returns whether is the underlying stream writable or not.
+ **/
+gboolean
+camel_stream_vfs_is_writable (CamelStreamVFS *stream_vfs)
+{
+	g_return_val_if_fail (stream_vfs != NULL, FALSE);
+	g_return_val_if_fail (stream_vfs->stream != NULL, FALSE);
+
+	return G_IS_OUTPUT_STREAM (stream_vfs->stream);
 }
 
 static ssize_t
 stream_read (CamelStream *stream, char *buffer, size_t n)
 {
+	gssize nread;
+	GError *error = NULL;
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
-	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	GnomeVFSFileSize nread = 0;
-	GnomeVFSResult result;
 
-	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		n = MIN (seekable->bound_end - seekable->position, n);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (stream_vfs->stream), 0);
+	
+	nread = g_input_stream_read (G_INPUT_STREAM (stream_vfs->stream), buffer, n, NULL, &error);
 
-	result = gnome_vfs_read (stream_vfs->handle, buffer, n, &nread);
-
-	if (nread > 0 && result == GNOME_VFS_OK)
-		seekable->position += nread;
-	else if (nread == 0)
+	if (nread == 0 || error)
 		stream->eos = TRUE;
+
+	if (error) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
 
 	return nread;
 }
@@ -196,86 +211,66 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 static ssize_t
 stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
+	gssize nwritten;
+	GError *error = NULL;
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
-	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	GnomeVFSFileSize nwritten = 0;
-	GnomeVFSResult result;
 
-	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		n = MIN (seekable->bound_end - seekable->position, n);
+	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream_vfs->stream), 0);
 
-	result = gnome_vfs_write (stream_vfs->handle, buffer, n, &nwritten);
+	nwritten = g_output_stream_write (G_OUTPUT_STREAM (stream_vfs->stream), buffer, n, NULL, &error);
 
-	if (nwritten > 0 && result == GNOME_VFS_OK)
-		seekable->position += nwritten;
+	if (error) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
 
 	return nwritten;
 }
 
-/* static int */
-/* stream_flush (CamelStream *stream) */
-/* { */
-/* 	return fsync(((CamelStreamVFS *)stream)->handle); */
-/* } */
+static int
+stream_flush (CamelStream *stream)
+{
+	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
+	GError *error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_STREAM_VFS (stream) && stream_vfs != NULL, -1);
+	g_return_val_if_fail (stream_vfs->stream != NULL, -1);
+	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream_vfs->stream), -1);
+
+	g_output_stream_flush (G_OUTPUT_STREAM (stream_vfs->stream), NULL, &error);
+
+	if (error) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+		return -1;
+	}
+
+	return 0;
+}
 
 static int
 stream_close (CamelStream *stream)
 {
-	GnomeVFSResult result;
-
-	result = gnome_vfs_close(((CamelStreamVFS *)stream)->handle);
-
-	if (result != GNOME_VFS_OK)
-		return -1;
-
-	((CamelStreamVFS *)stream)->handle = NULL;
-	return 0;
-}
-
-static off_t
-stream_seek (CamelSeekableStream *stream, off_t offset, CamelStreamSeekPolicy policy)
-{
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
-	GnomeVFSFileSize real = 0;
-	GnomeVFSResult result;
-	GnomeVFSHandle *handle = stream_vfs->handle;
+	GError *error = NULL;
 
-	switch (policy) {
-	case CAMEL_STREAM_SET:
-		real = offset;
-		break;
-	case CAMEL_STREAM_CUR:
-		real = stream->position + offset;
-		break;
-	case CAMEL_STREAM_END:
-		if (stream->bound_end == CAMEL_STREAM_UNBOUND) {
-			result = gnome_vfs_seek (handle, GNOME_VFS_SEEK_END, offset);
-			if (result != GNOME_VFS_OK)
-				return -1;
-			gnome_vfs_tell (handle, &real);
-			if (real != -1) {
-				if (real<stream->bound_start)
-					real = stream->bound_start;
-				stream->position = real;
-			}
-			return real;
-		}
-		real = stream->bound_end + offset;
-		break;
+	g_return_val_if_fail (CAMEL_IS_STREAM_VFS (stream) && stream_vfs != NULL, -1);
+	g_return_val_if_fail (stream_vfs->stream != NULL, -1);
+	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream_vfs->stream) || G_IS_INPUT_STREAM (stream_vfs->stream), -1);
+
+	if (G_IS_OUTPUT_STREAM (stream_vfs->stream))
+		g_output_stream_close (G_OUTPUT_STREAM (stream_vfs->stream), NULL, &error);
+	else
+		g_input_stream_close (G_INPUT_STREAM (stream_vfs->stream), NULL, &error);
+
+	if (error) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+		return -1;
 	}
 
-	if (stream->bound_end != CAMEL_STREAM_UNBOUND)
-		real = MIN (real, stream->bound_end);
-	real = MAX (real, stream->bound_start);
+	g_object_unref (stream_vfs->stream);
+	stream_vfs->stream = NULL;
 
-	result = gnome_vfs_seek (handle, GNOME_VFS_SEEK_START, real);
-	if (result != GNOME_VFS_OK)
-		return -1;
-
-	if (real != stream->position && ((CamelStream *)stream)->eos)
-		((CamelStream *)stream)->eos = FALSE;
-
-	stream->position = real;
-
-	return real;
+	return 0;
 }

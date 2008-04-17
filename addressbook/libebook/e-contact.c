@@ -29,7 +29,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include "e-contact.h"
 #include "e-book.h"
 #include "e-name-western.h"

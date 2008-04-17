@@ -32,7 +32,7 @@
 #include <bonobo/bonobo-moniker-util.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <gio/gio.h>
 #include "libedataserver/e-data-server-util.h"
 #include "libedataserver/e-xml-hash-utils.h"
 #include <libecal/e-cal-recur.h>
@@ -55,8 +55,8 @@ typedef struct {
 
 /* Private part of the ECalBackendFile structure */
 struct _ECalBackendFilePrivate {
-	/* URI where the calendar data is stored */
-	char *uri;
+	/* path where the calendar data is stored */
+	char *path;
 
 	/* Filename in the dir */
 	char *file_name;
@@ -122,16 +122,15 @@ static gboolean
 save_file_when_idle (gpointer user_data)
 {
 	ECalBackendFilePrivate *priv;
-	GnomeVFSURI *uri, *backup_uri;
-	GnomeVFSHandle *handle = NULL;
-	GnomeVFSResult result = GNOME_VFS_ERROR_BAD_FILE;
-	GnomeVFSFileSize out;
+	GError *e = NULL;
+	GFile *file, *backup_file;
+	GFileOutputStream *stream;
 	gchar *tmp, *backup_uristr;
 	char *buf;
 	ECalBackendFile *cbfile = user_data;
 
 	priv = cbfile->priv;
-	g_assert (priv->uri != NULL);
+	g_assert (priv->path != NULL);
 	g_assert (priv->icalcomp != NULL);
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -141,53 +140,64 @@ save_file_when_idle (gpointer user_data)
 		return FALSE;
 	}
 
-	uri = gnome_vfs_uri_new (priv->uri);
-	if (!uri)
+	file = g_file_new_for_path (priv->path);
+	if (!file)
 		goto error_malformed_uri;
 
 	/* save calendar to backup file */
-	tmp = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+	tmp = g_file_get_uri (file);
 	if (!tmp) {
-		gnome_vfs_uri_unref (uri);
+		g_object_unref (file);
 		goto error_malformed_uri;
 	}
 
 	backup_uristr = g_strconcat (tmp, "~", NULL);
-	backup_uri = gnome_vfs_uri_new (backup_uristr);
+	backup_file = g_file_new_for_uri (backup_uristr);
 
 	g_free (tmp);
 	g_free (backup_uristr);
 
-	if (!backup_uri) {
-		gnome_vfs_uri_unref (uri);
+	if (!backup_file) {
+		g_object_unref (file);
 		goto error_malformed_uri;
 	}
 
-	result = gnome_vfs_create_uri (&handle, backup_uri,
-                                       GNOME_VFS_OPEN_WRITE,
-                                       FALSE, 0666);
-	if (result != GNOME_VFS_OK) {
-		gnome_vfs_uri_unref (uri);
-		gnome_vfs_uri_unref (backup_uri);
+	stream = g_file_replace (backup_file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &e);
+	if (!stream || e) {
+		if (stream)
+			g_object_unref (stream);
+
+		g_object_unref (file);
+		g_object_unref (backup_file);
 		goto error;
 	}
 
 	buf = icalcomponent_as_ical_string (priv->icalcomp);
-	result = gnome_vfs_write (handle, buf, strlen (buf) * sizeof (char), &out);
+	g_output_stream_write (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (char), NULL, &e);
 	g_free (buf);
-	gnome_vfs_close (handle);
-	if (result != GNOME_VFS_OK) {
-		gnome_vfs_uri_unref (uri);
-		gnome_vfs_uri_unref (backup_uri);
+
+	if (e) {
+		g_object_unref (stream);
+		g_object_unref (file);
+		g_object_unref (backup_file);
+		goto error;
+	}
+
+	g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &e);
+	g_object_unref (stream);
+
+	if (e) {
+		g_object_unref (file);
+		g_object_unref (backup_file);
 		goto error;
 	}
 
 	/* now copy the temporary file to the real file */
-	result = gnome_vfs_move_uri (backup_uri, uri, TRUE);
+	g_file_move (backup_file, file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &e);
 
-	gnome_vfs_uri_unref (uri);
-	gnome_vfs_uri_unref (backup_uri);
-	if (result != GNOME_VFS_OK)
+	g_object_unref (file);
+	g_object_unref (backup_file);
+	if (e)
 		goto error;
 
 	priv->is_dirty = FALSE;
@@ -205,9 +215,16 @@ save_file_when_idle (gpointer user_data)
 
  error:
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	/* TODO Add concat the message "Cannot save calendar data" to the error string later.Not
-	   doing it now as we have string freeze. */
-	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), gnome_vfs_result_to_string (result));
+
+	if (e) {
+		char *msg = g_strdup_printf ("%s: %s", _("Cannot save calendar data"), e->message);
+
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), msg);
+		g_free (msg);
+		g_error_free (e);
+	} else
+		e_cal_backend_notify_error (E_CAL_BACKEND (cbfile), _("Cannot save calendar data"));
+
 	return FALSE;
 }
 
@@ -294,9 +311,9 @@ e_cal_backend_file_finalize (GObject *object)
 
 	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
-	if (priv->uri) {
-	        g_free (priv->uri);
-		priv->uri = NULL;
+	if (priv->path) {
+	        g_free (priv->path);
+		priv->path = NULL;
 	}
 
 	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
@@ -623,13 +640,13 @@ scan_vcalendar (ECalBackendFile *cbfile)
 }
 
 static char *
-get_uri_string_for_gnome_vfs (ECalBackend *backend)
+uri_to_path (ECalBackend *backend)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	const char *master_uri;
 	char *full_uri, *str_uri;
-	GnomeVFSURI *uri;
+	GFile *file;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -644,21 +661,17 @@ get_uri_string_for_gnome_vfs (ECalBackend *backend)
 	}
 
 	full_uri = g_strdup_printf ("%s/%s", master_uri, priv->file_name);
-	uri = gnome_vfs_uri_new (full_uri);
+	file = g_file_new_for_uri (full_uri);
 	g_free (full_uri);
 
-	if (!uri)
+	if (!file)
 		return NULL;
 
-	str_uri = gnome_vfs_uri_to_string (uri,
-					   (GNOME_VFS_URI_HIDE_USER_NAME
-					    | GNOME_VFS_URI_HIDE_PASSWORD
-					    | GNOME_VFS_URI_HIDE_HOST_NAME
-					    | GNOME_VFS_URI_HIDE_HOST_PORT
-					    | GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD));
-	gnome_vfs_uri_unref (uri);
+	str_uri = g_file_get_path (file);
 
-	if (!str_uri || !strlen (str_uri)) {
+	g_object_unref (file);
+
+	if (!str_uri || !*str_uri) {
 		g_free (str_uri);
 
 		return NULL;
@@ -691,7 +704,7 @@ open_cal (ECalBackendFile *cbfile, const char *uristr)
 	}
 
 	priv->icalcomp = icalcomp;
-	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	scan_vcalendar (cbfile);
@@ -841,7 +854,7 @@ reload_cal (ECalBackendFile *cbfile, const char *uristr)
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	scan_vcalendar (cbfile);
 
-	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
 	/* Compare old and new versions of calendar */
 
@@ -876,7 +889,7 @@ create_cal (ECalBackendFile *cbfile, const char *uristr)
 	/* Create our internal data */
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 
-	priv->uri = get_uri_string_for_gnome_vfs (E_CAL_BACKEND (cbfile));
+	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
 	save (cbfile);
 
@@ -888,8 +901,8 @@ get_uri_string (ECalBackend *backend)
 {
 	gchar *str_uri, *full_uri;
 
-	str_uri = get_uri_string_for_gnome_vfs (backend);
-	full_uri = gnome_vfs_unescape_string (str_uri, "");
+	str_uri = uri_to_path (backend);
+	full_uri = g_uri_unescape_string (str_uri, "");
 	g_free (str_uri);
 
 	return full_uri;
@@ -910,7 +923,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
         g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* Claim a succesful open if we are already open */
-	if (priv->uri && priv->comp_uid_hash) {
+	if (priv->path && priv->comp_uid_hash) {
         	status = GNOME_Evolution_Calendar_Success;
 		goto done;
         }
@@ -1609,7 +1622,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 
 
 	/* FIXME Will this always work? */
-	unescaped_uri = gnome_vfs_unescape_string (priv->uri, "");
+	unescaped_uri = g_uri_unescape_string (priv->path, "");
 	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
 	g_free (unescaped_uri);
 	if (!(ehash = e_xmlhash_new (filename))) {
@@ -2644,7 +2657,7 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	priv = g_new0 (ECalBackendFilePrivate, 1);
 	cbfile->priv = priv;
 
-	priv->uri = NULL;
+	priv->path = NULL;
 	priv->file_name = g_strdup ("calendar.ics");
 	priv->read_only = FALSE;
 	priv->is_dirty = FALSE;

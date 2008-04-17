@@ -36,8 +36,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gio/gio.h>
 
-#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <e-gw-connection.h>
 #include <e-gw-message.h>
 #include <libecal/e-cal-recur.h>
@@ -262,6 +262,33 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 
 }
 
+static char *
+get_mime_type (const char *uri)
+{
+	GFile *file;
+	GFileInfo *fi;
+	char *mime_type;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	file = g_file_new_for_uri (uri);
+	if (!file)
+		return NULL;
+
+	fi = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	if (!fi) {
+		g_object_unref (file);
+		return NULL;
+	}
+
+	mime_type = g_content_type_get_mime_type (g_file_info_get_content_type (fi));
+
+	g_object_unref (fi);
+	g_object_unref (file);
+
+	return mime_type;
+}
+
 static void
 e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		EGwItem *item)
@@ -299,11 +326,12 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 			continue;
 		}
 
+		g_free (attach_filename_full);
+
 		attach_item = g_new0 (EGwItemAttachment, 1);
 		/* FIXME the member does not follow the naming convention.
 		 * Should be fixed in e-gw-item*/
-		attach_item->contentType = g_strdup (gnome_vfs_get_mime_type (attach_filename_full));
-		g_free (attach_filename_full);
+		attach_item->contentType = get_mime_type ((char *)l->data);
 
 		attach_item->name = g_strdup (filename + strlen(uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap

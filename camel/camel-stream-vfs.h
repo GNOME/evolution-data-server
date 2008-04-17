@@ -26,13 +26,10 @@
 #ifndef CAMEL_STREAM_VFS_H
 #define CAMEL_STREAM_VFS_H 1
 
-/* for open flags */
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <glib.h>
+#include <glib-object.h>
 
-#include <camel/camel-seekable-stream.h>
+#include <camel/camel-stream.h>
 
 #define CAMEL_STREAM_VFS_TYPE     (camel_stream_vfs_get_type ())
 #define CAMEL_STREAM_VFS(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_VFS_TYPE, CamelStreamVFS))
@@ -44,22 +41,30 @@ G_BEGIN_DECLS
 typedef struct _CamelStreamVFS CamelStreamVFS;
 
 struct _CamelStreamVFS {
-	CamelSeekableStream parent_object;
+	CamelStream parent_object;
 
-	GnomeVFSHandle *handle;
+	GObject *stream;
 };
 
 typedef struct {
-	CamelSeekableStreamClass parent_class;
+	CamelStreamClass parent_class;
 
 } CamelStreamVFSClass;
 
 /* Standard Camel function */
 CamelType camel_stream_vfs_get_type (void);
 
+typedef enum {
+	CAMEL_STREAM_VFS_CREATE,	/* writable, creates new file or replaces old file */
+	CAMEL_STREAM_VFS_APPEND,	/* writable, creates new file or appends at the end of the old file */
+	CAMEL_STREAM_VFS_READ		/* readable, opens existing file for reading */
+} CamelStreamVFSOpenMethod;
+
 /* public methods */
-CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, int flags, mode_t mode);
-CamelStream * camel_stream_vfs_new_with_handle         (GnomeVFSHandle *handle);
+CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, CamelStreamVFSOpenMethod method);
+CamelStream * camel_stream_vfs_new_with_stream         (GObject *stream);
+
+gboolean      camel_stream_vfs_is_writable             (CamelStreamVFS *stream_vfs);
 
 G_END_DECLS
 

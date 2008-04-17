@@ -1,3 +1,14 @@
+2008-04-17  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #526741
+
+	* camel-stream-vfs.h:
+	* camel-stream-vfs.c: Do not depend on gnomve-vfs, but use gio/gvfs
+	instead. Dropped camel_stream_vfs_new_with_handle, new function for
+	this is camel_stream_vfs_new_with_stream, also prototype for
+	camel_stream_vfs_new_with_uri has been changed. 
+	CamelStreamVFS is not seekable anymore.
+
 2008-04-16  Christian Kellner  <gicmo@gnome.org>
 
 	** Fixes bug #514300
