@@ -953,6 +953,10 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	return;
  end1:
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	if (items_full_list) {
+		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
+		g_list_free (items_full_list);
+	}
 	return;
 }
 
