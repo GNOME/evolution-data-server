@@ -1,3 +1,10 @@
+2008-04-17  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-filter-pgp.c (filter_run): Properly handle CRLF
+	line-endings and fixed the logic so that we could never read
+	beyond the end of the buffer. Also fixed the "blank line end of
+	headers" case which only allowed a single whitespace character.
+
 2008-04-17  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #526741
