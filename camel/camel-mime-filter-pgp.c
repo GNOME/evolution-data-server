@@ -84,17 +84,17 @@ camel_mime_filter_pgp_get_type (void)
 #define END_PGP_SIGNATURE_LEN        (sizeof (END_PGP_SIGNATURE) - 1)
 
 static void
-filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace, int last)
+filter_run(CamelMimeFilter *f, char *in, size_t length, size_t prespace, char **out, size_t *outlen, size_t *outprespace, int last)
 {
 	CamelMimeFilterPgp *pgp = (CamelMimeFilterPgp *) f;
-	const char *start, *inend = in + len;
+	const char *start, *inend = in + length;
 	register const char *inptr = in;
 	register char *o;
 	gboolean blank;
 	size_t len;
 	
 	/* only need as much space as the input, we're stripping chars */
-	camel_mime_filter_set_size (f, len, FALSE);
+	camel_mime_filter_set_size (f, length, FALSE);
 	
 	o = f->outbuf;
 	
