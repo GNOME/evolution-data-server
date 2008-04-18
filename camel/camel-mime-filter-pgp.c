@@ -94,7 +94,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t inlen, size_t prespace, char **o
 	size_t len;
 	
 	/* only need as much space as the input, we're stripping chars */
-	camel_mime_filter_set_size (f, length, FALSE);
+	camel_mime_filter_set_size (f, inlen, FALSE);
 	
 	o = f->outbuf;
 	
