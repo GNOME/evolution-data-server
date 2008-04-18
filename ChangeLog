@@ -1,3 +1,7 @@
+2008-04-18  Srinivasa Ragavan <sragavan@novell.com>
+
+	* MAINTAINERS: Updating the Camel guards.
+
 2008-04-15  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #475616
