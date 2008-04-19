@@ -192,6 +192,26 @@ e_list_iterator_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-proxy</FILE>
+<TITLE>EProxy</TITLE>
+EProxy
+e_proxy_new
+e_proxy_peek_uri
+e_proxy_require_proxy_for_uri
+e_proxy_setup_proxy
+<SUBSECTION Standard>
+E_TYPE_PROXY
+E_PROXY
+E_PROXY_CLASS
+E_IS_PROXY
+E_IS_PROXY_CLASS
+EProxyClass
+<SUBSECTION Private>
+EProxyPrivate
+e_proxy_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-group</FILE>
 <TITLE>ESourceGroup</TITLE>
 ESourceGroup

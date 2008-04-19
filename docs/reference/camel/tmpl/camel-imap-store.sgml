@@ -224,6 +224,13 @@ CamelImapStore
 
 
 
+<!-- ##### MACRO IMAP_CAPABILITY_QUOTA ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO IMAP_PARAM_OVERRIDE_NAMESPACE ##### -->
 <para>
 

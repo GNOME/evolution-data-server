@@ -80,6 +80,15 @@ Base class for calendar/tasks backend implementations.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_remove_query ##### -->
+<para>
+
+</para>
+
+@backend: 
+@query: 
+
+
 <!-- ##### FUNCTION e_cal_backend_is_read_only ##### -->
 <para>
 

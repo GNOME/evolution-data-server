@@ -23,6 +23,7 @@
     <xi:include href="xml/e-list-iterator.xml"/>
     <xi:include href="xml/e-memory.xml"/>
     <xi:include href="xml/e-msgport.xml"/>
+    <xi:include href="xml/e-proxy.xml"/>
     <xi:include href="xml/e-sexp.xml"/>
     <xi:include href="xml/e-source.xml"/>
     <xi:include href="xml/e-source-group.xml"/>

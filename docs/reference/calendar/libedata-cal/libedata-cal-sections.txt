@@ -129,6 +129,7 @@ e_cal_backend_add_client
 e_cal_backend_remove_client
 e_cal_backend_add_query
 e_cal_backend_get_queries
+e_cal_backend_remove_query
 e_cal_backend_is_read_only
 e_cal_backend_get_cal_address
 e_cal_backend_get_alarm_email_address

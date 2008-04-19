@@ -1,0 +1,62 @@
+<!-- ##### SECTION Title ##### -->
+EProxy
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EProxy ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### FUNCTION e_proxy_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_proxy_peek_uri ##### -->
+<para>
+
+</para>
+
+@proxy: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_proxy_require_proxy_for_uri ##### -->
+<para>
+
+</para>
+
+@proxy: 
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_proxy_setup_proxy ##### -->
+<para>
+
+</para>
+
+@proxy: 
+
+

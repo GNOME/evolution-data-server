@@ -122,6 +122,13 @@ e-data-cal-common
 </para>
 
 
+<!-- ##### SIGNAL EDataCalView::last-listener-gone ##### -->
+<para>
+
+</para>
+
+@edatacalview: the object which received the signal.
+
 <!-- ##### ARG EDataCalView:backend ##### -->
 <para>
 
@@ -144,6 +151,7 @@ e-data-cal-common
 
 @parent_class: 
 @epv: 
+@last_listener_gone: 
 
 <!-- ##### STRUCT ECalBackendSExp ##### -->
 <para>

@@ -566,6 +566,14 @@ camel-types
 @type: 
 @words: 
 
+<!-- ##### FUNCTION camel_stream_vfs_new_with_handle ##### -->
+<para>
+
+</para>
+
+@handle: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_text_index_get_type ##### -->
 <para>
 

@@ -292,6 +292,7 @@ camel_filter_driver_filter_mbox
 camel_filter_driver_filter_folder
 camel_filter_driver_expand_option
 camel_filter_driver_rule_count
+camel_filter_driver_rule_get
 <SUBSECTION Standard>
 CAMEL_FILTER_DRIVER
 CAMEL_IS_FILTER_DRIVER
@@ -307,6 +308,7 @@ camel_filter_driver_get_type
 <TITLE>CamelFolder</TITLE>
 CamelFolder
 CamelFolderChangeInfo
+CamelFolderQuotaInfo
 CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY
 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY
 CAMEL_FOLDER_FILTER_RECENT
@@ -352,6 +354,10 @@ camel_folder_rename
 camel_folder_freeze
 camel_folder_thaw
 camel_folder_is_frozen
+camel_folder_get_quota_info
+camel_folder_quota_info_new
+camel_folder_quota_info_clone
+camel_folder_quota_info_free
 camel_folder_free_nop
 camel_folder_free_shallow
 camel_folder_free_deep
@@ -1840,8 +1846,10 @@ camel_stream_process_get_type
 <FILE>camel-stream-vfs</FILE>
 <TITLE>CamelStreamVFS</TITLE>
 CamelStreamVFS
+CamelStreamVFSOpenMethod
 camel_stream_vfs_new_with_uri
-camel_stream_vfs_new_with_handle
+camel_stream_vfs_new_with_stream
+camel_stream_vfs_is_writable
 <SUBSECTION Standard>
 CAMEL_STREAM_VFS_TYPE
 CAMEL_STREAM_VFS
@@ -2230,6 +2238,7 @@ IMAP_CAPABILITY_utf8_search
 IMAP_CAPABILITY_XGWEXTENSIONS
 IMAP_CAPABILITY_XGWMOVE
 IMAP_CAPABILITY_LOGINDISABLED
+IMAP_CAPABILITY_QUOTA
 IMAP_PARAM_OVERRIDE_NAMESPACE
 IMAP_PARAM_CHECK_ALL
 IMAP_PARAM_FILTER_INBOX

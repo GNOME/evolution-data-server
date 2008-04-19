@@ -43,6 +43,16 @@ CamelFolder
 @uid_recent: 
 @priv: 
 
+<!-- ##### STRUCT CamelFolderQuotaInfo ##### -->
+<para>
+
+</para>
+
+@name: 
+@used: 
+@total: 
+@next: 
+
 <!-- ##### MACRO CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY ##### -->
 <para>
 
@@ -459,6 +469,43 @@ CamelFolder
 
 @folder: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_quota_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_quota_info_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@used: 
+@total: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_quota_info_clone ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_quota_info_free ##### -->
+<para>
+
+</para>
+
+@info: 
 
 
 <!-- ##### FUNCTION camel_folder_free_nop ##### -->
