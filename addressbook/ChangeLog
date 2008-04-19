@@ -1,3 +1,11 @@
+2008-04-19  Jaap A. Haitsma  <jaap@haitsma.org>
+
+	reviewed by: Ross Burton
+
+	* libebook/e-address-western.h:
+	* libebook/e-name-western.h:
+	include glib.h in above files. Fixes bug #528922
+
 2008-04-17  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #526741
