@@ -187,19 +187,24 @@ camel_mapi_store_get_type(void)
 */
 static void camel_mapi_store_init(CamelMapiStore *store, CamelMapiStoreClass *klass)
 {
+	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
 	CamelMapiStorePrivate *priv = g_new0 (CamelMapiStorePrivate, 1);
 
-	store->summary = NULL;
+	mapi_store->summary = NULL;
 
 	priv->storage_path = NULL;
 	priv->base_url = NULL;
+
+	((CamelStore *)mapi_store)->flags |= CAMEL_STORE_SUBSCRIPTIONS;
+
+	mapi_store->priv = priv;
+
 /* 	store->camel_url = NULL; */
 /* 	store->fi = NULL; */
 /* 	store->trash_name = NULL; */
 /* 	store->folders = NULL; */
 /* 	store->folders_lock = NULL; */
 /* 	store->connect_lock = NULL; */
-	store->priv = priv;
 }
 
 static void camel_mapi_store_finalize(CamelObject *object)
@@ -1088,7 +1093,7 @@ mapi_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		top_folder = g_hash_table_lookup (priv->name_hash, top);
 		/* 'top' is a valid path, but doesnt have a container id
 		 *  return NULL */
-/*		if (!top_folder) {
+		/*if (!top_folder) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					_("You must be working online to complete this operation"));
 			return NULL;

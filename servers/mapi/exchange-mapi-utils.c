@@ -37,6 +37,8 @@ utf8tolinux (const char *wstring)
 	TALLOC_CTX 	*mem_ctx;
 	gchar		*newstr, *retval = NULL;
 
+	g_return_val_if_fail (wstring != NULL, NULL);
+
 	mem_ctx = talloc_init ("ExchangeMAPI_utf8tolinux");
 
 	newstr = windows_to_utf8(mem_ctx, wstring);

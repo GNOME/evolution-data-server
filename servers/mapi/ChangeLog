@@ -1,3 +1,10 @@
+2008-04-21  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_get_pf_folders_list): Added.
+	(get_child_folders_pf): Added. Initial Impl. 
+
+	* exchange-mapi-utils.c: Inserted NULL check.
+
 2008-04-14  Suman Manjunath  <msuman@novell.com>
 
 	** Unblocking all code which can now be used, since the switch to 

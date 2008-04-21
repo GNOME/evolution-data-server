@@ -1708,6 +1708,94 @@ cleanup:
 	return result;
 }
 
+static gboolean
+get_child_folders_pf(TALLOC_CTX *mem_ctx, mapi_object_t *parent, mapi_id_t folder_id, GSList **mapi_folders)
+{
+	enum MAPISTATUS		retval;
+	bool			ret;
+	mapi_object_t		obj_folder;
+	mapi_object_t		obj_htable;
+	struct SPropTagArray	*SPropTagArray;
+	struct SRowSet		rowset;
+	const char	       	*name;
+	char			*newname;
+	const uint32_t		*child;
+	uint32_t		index;
+	const uint64_t		*fid;
+	int			i;
+	gboolean 		result = FALSE;
+
+	/* sanity check */
+	g_return_val_if_fail (mem_ctx != NULL, FALSE);
+	g_return_val_if_fail (parent != NULL, FALSE);
+
+	mapi_object_init(&obj_folder);
+	mapi_object_init(&obj_htable);
+
+	retval = OpenFolder(parent, folder_id, &obj_folder);
+	if (retval != MAPI_E_SUCCESS)  {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	retval = GetHierarchyTable(&obj_folder, &obj_htable);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetHierarchyTable", GetLastError());
+		goto cleanup;
+	}
+
+	SPropTagArray = set_SPropTagArray(mem_ctx, 0x4,
+					  PR_DISPLAY_NAME,
+					  PR_FID,
+					  PR_CONTAINER_CLASS,
+					  PR_FOLDER_CHILD_COUNT);
+
+	retval = SetColumns(&obj_htable, SPropTagArray);
+	MAPIFreeBuffer (SPropTagArray);
+
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("SetColumns", GetLastError());
+		goto cleanup;
+	}
+
+	while ((retval = QueryRows(&obj_htable, 0x32, TBL_ADVANCE, &rowset) != MAPI_E_NOT_FOUND) && rowset.cRows) {
+		for (index = 0; index < rowset.cRows; index++) {
+			ExchangeMAPIFolder *folder = NULL;
+			gchar *newname = NULL;
+
+			const uint64_t *fid = (const uint64_t *)find_SPropValue_data(&rowset.aRow[index], PR_FID);
+			const char *class = (const char *)find_SPropValue_data(&rowset.aRow[index], PR_CONTAINER_CLASS);
+			const char *name = (const char *)find_SPropValue_data(&rowset.aRow[index], PR_DISPLAY_NAME);
+			const uint32_t *child = (const uint32_t *)find_SPropValue_data(&rowset.aRow[index], PR_FOLDER_CHILD_COUNT);
+
+			// HACK : We should ignore this if we are not able identify ? Learn more.
+			if (!class)
+				class = IPF_NOTE;
+
+			newname = utf8tolinux(name);
+
+			d(printf("|---+ %-15s - %s \n ", newname, class);)
+
+			//Fixme :
+			folder = exchange_mapi_folder_new (newname, NULL, class, MAPI_FAVOURITE_FOLDER, 
+							   *fid, folder_id, 0, 0, 0);
+			g_free (newname);
+
+			*mapi_folders = g_slist_prepend (*mapi_folders, folder);
+
+			if (child && *child) {
+				result = get_child_folders_pf(mem_ctx, &obj_folder, *fid, mapi_folders);
+			}
+			
+		}
+	}
+cleanup:
+	mapi_object_release (&obj_folder);
+	mapi_object_release (&obj_htable);
+
+	return result;
+}
+
 /* why on earth does ExchangeMAPIFolder store parent_name? */
 /* recursive call - so better pass TALLOC_CTX */
 static gboolean
@@ -1869,7 +1957,6 @@ exchange_mapi_get_folders_list (GSList **mapi_folders)
 	const char 		*mailbox_user_name = NULL;
 
 	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
-
 	LOCK ();
 	mem_ctx = talloc_init("ExchangeMAPI_GetFoldersList");
 	mapi_object_init(&obj_store);
@@ -1938,6 +2025,47 @@ cleanup:
 	UNLOCK ();
 
 	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return result;
+}
+
+gboolean 
+exchange_mapi_get_pf_folders_list (GSList **mapi_folders)
+{
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	enum MAPISTATUS retval;
+	mapi_id_t id_mailbox;
+	gboolean result = FALSE;
+
+	LOCK ();
+
+	mem_ctx = talloc_init("ExchangeMAPI_PF_GetFoldersList");
+	mapi_object_init(&obj_store);
+
+	retval = OpenPublicFolder(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenPublicFolder", GetLastError());
+		UNLOCK ();
+		goto cleanup;
+	}
+
+	/* IPM_SUBTREE is what we want.  */
+	retval = GetDefaultPublicFolder(&obj_store, &id_mailbox, olFolderPublicIPMSubtree);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
+		UNLOCK ();
+		goto cleanup;
+	}
+
+	get_child_folders_pf(mem_ctx, &obj_store, id_mailbox, mapi_folders);
+
+	result = TRUE;
+
+cleanup:
+	mapi_object_release(&obj_store);
+	talloc_free (mem_ctx);
+	UNLOCK ();
 
 	return result;
 }

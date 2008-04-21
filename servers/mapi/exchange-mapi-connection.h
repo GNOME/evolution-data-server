@@ -127,5 +127,6 @@ gboolean
 exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids);
 
 gboolean exchange_mapi_get_folders_list (GSList **mapi_folders); 
+gboolean exchange_mapi_get_pf_folders_list (GSList **mapi_folders); 
 
 #endif
