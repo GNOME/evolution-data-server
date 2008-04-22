@@ -1,3 +1,10 @@
+2008-04-22  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #529339
+
+	* camel-folder-summary.c: (camel_system_flag):
+	Do not access NULL pointer, aka recognize sentinel properly.
+
 2008-04-18  Sankar P  <psankar@novell.com>
 
 	* camel-mime-filter-pgp.c: (filter_run):

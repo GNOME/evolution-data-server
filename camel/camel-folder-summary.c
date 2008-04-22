@@ -2713,7 +2713,7 @@ camel_system_flag (const char *name)
 
 	g_return_val_if_fail (name != NULL, 0);
 
-	for (flag = flag_names; *flag->name; flag++)
+	for (flag = flag_names; flag->name; flag++)
 		if (!g_ascii_strcasecmp (name, flag->name))
 			return flag->value;
 
