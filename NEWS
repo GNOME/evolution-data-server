@@ -1,3 +1,58 @@
+Evolution-Data-Server 2.23.1 2008-04-21
+----------------------------------------
+
+New in 2.23.1:
+	Configurable Proxy settings for Evolution. (Veerapuram Varadhan)
+	Quota Support for IMAP (Milan Crha)
+	Google contact API support in libgdata-google (Jörgen Scheibengruber)
+
+Bug Fixes:
+	#235681: First step in fixing header folding and prerving headers (Jeffrey Stedfast, Craig Shelly)
+	#257361: Ask for folder status on the server and rescan it in case different number of total or unseen messages than in the summary. (Milan Crha)
+	#270406: Added quota support to IMAP/POP accounts (Milan Crha)
+	#271863: Count junk messages which are not marked as deleted separately (Milan Crha)
+	#274316: Also copy user tags when copying messages between folders. (Milan Crha)
+	#303067: Random crash looking up addresses in new email (Milan Crha)
+	#341004: Hide the auth mech when CAMEL_URL_HIDE_AUTH is specified (Christian Kellner)
+	#369512: Store to folder's and store's summary actual numbers of unread/total/deleted/junked mails, not the old one. (Milan Crha)
+	#372383: (Novell Bugzilla) Mail size is not shown for some mails and not all related recurring appointments are deleted as well (Sankar P)
+	#417000: Fixed problem with display of subject containing accented characters in Microsoft Outlook (Jeffrey Stedfast)
+	#453109: Fixed a crash after entering password and clicking ok (Matthew Barnes)
+	#473880: Fixed a few compiler warnings (Suman Manjunath)
+	#475616: Use rather recursive mutex here. (Milan Crha)
+	#494311: Backend connection often dies on dual core processor (Ondrej Jirman)
+	#500389: Fall back to simple binds if the global catalog server does not support NTLM binds (Matthew Barnes)
+	#514300: Make sure we do the Inbox -> INBOX translation at the right place (Christian Kellner)
+	#514827: POP3 folder doesn't have a summary, it has its own cache, so read message time from it. (Milan Crha)
+	#516608: Use an EFlag in EBookOp instead of a GMutex/GCond pair. Makes the code simpler. (Matthew Barnes)
+	#518710: Use GLib's new MD5 Checksum API. (Matthew Barnes)
+	#518886: More code cleanups (Matthew Barnes)
+	#520526: Stop work as soon as we know application is going to exit. (Milan Crha)
+	#521015: Also check for changes in custom flags and store them, if any. (Milan Crha)
+	#522389: Use correct base64 decoding to fix stack corruption on x86_64 (Stanislav Brabec)
+	#522433: Open files with O_LARGEFILE flag. (Milan Crha)
+	#523023: Fix a severe reference count leak. (Matthew Barnes)
+	#523126: Initialize variable to NULL, so do not free random memory. (Milan Crha)
+	#523528: Some mails with attachments does not have an attachment icon in the mail list. (Sankar P)
+	#523533: Always return NULL or new allocated string. (Milan Crha)
+	#523541: Fix memory leaks (Milan Crha)
+	#523630,518656: Updated google service API's for error handling (Jörgen Scheibengruber)
+	#524324: Fix a critical runtime warning (Milan Crha)
+	#524704: Better parsing of non rfc2047 subject line (Milan Crha)
+	#525242: Enforce the minimum GLib version (Matthew Barnes)
+	#525485: Fetching Groupwise mails with attachments gets Evolution into an infinite loop (Sankar P)
+	#526138: Return NULL if the input string is NULL (Matthew Barnes)
+	#526741: Do not depend on gnomve-vfs, but use gio/gvfsinstead. (Milan Crha)
+
+Updated Translations:
+	Jorge Gonzalez (es)
+	Kjartan Maraas (nb)
+	Yuriy Penkin (ru)
+	Philip Withnall (en_GB)
+	Krishna Babu K (te)
+	Yavor Doganov (bg)
+	Ivar Smolin (et)
+
 Evolution-Data-Server 2.21.93 2008-03-10
 ----------------------------------------
 
