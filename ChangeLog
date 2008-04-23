@@ -1,3 +1,7 @@
+2008-04-23  Matthew Barnes  <mbarnes@redhat.com>
+
+	* README: Put it back.  Apparently Automake insists on it.
+
 2008-04-23  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	* configure.in: Version bump to 2.23.1

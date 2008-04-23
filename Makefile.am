@@ -24,6 +24,7 @@ pkgconfig_DATA = evolution-data-server-$(API_VERSION).pc
 EXTRA_DIST = 						\
 	AUTHORS						\
 	$(changelogs)					\
+	README						\
 	HACKING						\
 	MAINTAINERS					\
 	TODO						\
