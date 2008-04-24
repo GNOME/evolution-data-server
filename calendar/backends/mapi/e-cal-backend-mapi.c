@@ -24,8 +24,6 @@
 
 #include "e-cal-backend-mapi.h"
 #include "e-cal-backend-mapi-utils.h"
-#include "e-cal-backend-mapi-tz-utils.h"
-
 #define d(x) x
 
 #ifdef G_OS_WIN32
@@ -214,8 +212,6 @@ e_cal_backend_mapi_finalize (GObject *object)
 	g_free (priv);
 	cbmapi->priv = NULL;
 
-//	e_cal_backend_mapi_tz_util_destroy ();
-
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
@@ -373,8 +369,11 @@ static const uint32_t GetPropsList[] = {
 	PR_SENT_REPRESENTING_EMAIL_ADDRESS_UNICODE, 
 
 	PR_SENDER_NAME, 
+	PR_SENDER_NAME_UNICODE, 
 	PR_SENDER_ADDRTYPE, 
+	PR_SENDER_ADDRTYPE_UNICODE, 
 	PR_SENDER_EMAIL_ADDRESS, 
+	PR_SENDER_EMAIL_ADDRESS_UNICODE, 
 
 	PR_RCVD_REPRESENTING_NAME, 
 	PR_RCVD_REPRESENTING_NAME_UNICODE, 
@@ -405,6 +404,9 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	/* FIXME: Provide support for meetings/assigned tasks */
 	if (recipients != NULL) {
 		g_warning ("Calendar backend failed to parse a meeting");
+		exchange_mapi_util_free_stream_list (&streams);
+		exchange_mapi_util_free_recipient_list (&recipients);
+		exchange_mapi_util_free_attachment_list (&attachments);
 		return TRUE;
 	}
 
@@ -413,6 +415,9 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	recurring = (const bool *)find_mapi_SPropValue_data(array, PROP_TAG(PT_BOOLEAN, 0x8223));
 	if (recurring && *recurring) {
 		g_warning ("Encountered a recurring event.");
+		exchange_mapi_util_free_stream_list (&streams);
+		exchange_mapi_util_free_recipient_list (&recipients);
+		exchange_mapi_util_free_attachment_list (&attachments);
 		return TRUE;
 	}
 
@@ -421,6 +426,9 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	recurring = (const bool *)find_mapi_SPropValue_data(array, PROP_TAG(PT_BOOLEAN, 0x8126));
 	if (recurring && *recurring) {
 		g_warning ("Encountered a recurring task.");
+		exchange_mapi_util_free_stream_list (&streams);
+		exchange_mapi_util_free_recipient_list (&recipients);
+		exchange_mapi_util_free_attachment_list (&attachments);
 		return TRUE;
 	}
 
@@ -478,6 +486,9 @@ get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	}
 
 	g_free (tmp);
+	exchange_mapi_util_free_stream_list (&streams);
+	exchange_mapi_util_free_recipient_list (&recipients);
+	exchange_mapi_util_free_attachment_list (&attachments);
 	return TRUE;
 }
 
@@ -846,6 +857,9 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 	/* FIXME: Provide support for meetings/assigned tasks */
 	if (recipients != NULL) {
 		g_warning ("Calendar backend failed to parse a meeting");
+		exchange_mapi_util_free_stream_list (&streams);
+		exchange_mapi_util_free_recipient_list (&recipients);
+		exchange_mapi_util_free_attachment_list (&attachments);
 		return TRUE;
 	}
 
@@ -855,6 +869,9 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8223));
 			if (recurring && *recurring) {
 				g_warning ("Encountered a recurring event.");
+				exchange_mapi_util_free_stream_list (&streams);
+				exchange_mapi_util_free_recipient_list (&recipients);
+				exchange_mapi_util_free_attachment_list (&attachments);
 				return TRUE;
 			}
 			break;
@@ -863,6 +880,9 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 			recurring = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8126));
 			if (recurring && *recurring) {
 				g_warning ("Encountered a recurring task.");
+				exchange_mapi_util_free_stream_list (&streams);
+				exchange_mapi_util_free_recipient_list (&recipients);
+				exchange_mapi_util_free_attachment_list (&attachments);
 				return TRUE;
 			}
 			break;
@@ -886,6 +906,9 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 		g_object_unref (comp);
 	}
 
+	exchange_mapi_util_free_stream_list (&streams);
+	exchange_mapi_util_free_recipient_list (&recipients);
+	exchange_mapi_util_free_attachment_list (&attachments);
 	return TRUE;
 }
 
@@ -1845,9 +1868,6 @@ e_cal_backend_mapi_init (ECalBackendMAPI *cbmapi, ECalBackendMAPIClass *class)
 	cbmapi->priv = priv;
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbmapi), TRUE);
-
-	e_cal_backend_mapi_tz_util_populate ();
-	d(e_cal_backend_mapi_tz_util_dump ());
 }
 
 GType

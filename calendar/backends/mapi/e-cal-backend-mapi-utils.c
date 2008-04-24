@@ -33,6 +33,7 @@
 #include <fcntl.h>
 
 #include "e-cal-backend-mapi.h"
+#include "e-cal-backend-mapi-constants.h"
 #include "e-cal-backend-mapi-utils.h"
 #include "e-cal-backend-mapi-tz-utils.h"
 #if 0
@@ -45,50 +46,6 @@
 #define	PRIORITY_LOW 	-1
 #define	PRIORITY_NORMAL 0
 #define	PRIORITY_HIGH 	1
-
-/*
- * Importance
- */
-
-#define	IMPORTANCE_LOW 		0
-#define	IMPORTANCE_NORMAL 	1
-#define	IMPORTANCE_HIGH		2
-
-/*
- * Sensitivity
- */
-
-#define	SENSITIVITY_NORMAL 		0
-#define	SENSITIVITY_PERSONAL 		1
-#define	SENSITIVITY_PRIVATE 		2
-#define SENSITIVITY_CONFIDENTIAL 	3
-
-/*
- * Appointment flags with PR_APPOINTMENT_BUSY_STATUS
- */
-
-#define	BUSY_STATUS_FREE 	0
-#define	BUSY_STATUS_TENTATIVE 	1
-#define	BUSY_STATUS_BUSY 	2
-#define	BUSY_STATUS_OUTOFOFFICE 3
-
-/*
- * Task OwnerShip
- */
-
-#define	olNewTask 	0
-#define	olDelegatedTask 1
-#define	olOwnTask 	2
-
-/*
- * Task status
- */
-
-#define	olTaskNotStarted 	0
-#define	olTaskInProgress 	1
-#define	olTaskComplete 		2
-#define	olTaskWaiting 		3
-#define	olTaskDeferred 		4
 
 static void appt_build_name_id (struct mapi_nameid *nameid);
 static void task_build_name_id (struct mapi_nameid *nameid);
@@ -223,34 +180,80 @@ set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, 
 	e_cal_component_set_attachment_list (comp, comp_attach_list);
 }
 
-#define REQUIRED 0
-#define OPTIONAL 0
-#define RESOURCE 0
-#define MEET_ORGANIZER 0
-#define MEET_ATTENDEE 0
+#define PARTICIPANT 	0x2
+#define MEET_ORGANIZER 	PARTICIPANT << 0x0
+#define MEET_ATTENDEE  	PARTICIPANT << 0x8
+
+static icalparameter_role
+get_role_from_type (ExchangeMAPIRecipientType type)
+{
+	switch (type) {
+		case RECIPIENT_ORIG : 
+		case RECIPIENT_TO   : 
+		case RECIPIENT_BCC  : return ICAL_ROLE_REQPARTICIPANT;
+		case RECIPIENT_CC   : return ICAL_ROLE_OPTPARTICIPANT;
+		default 	    : return ICAL_ROLE_REQPARTICIPANT;
+	}
+}
+
+static icalparameter_partstat
+get_partstat_from_trackstatus (uint32_t trackstatus)
+{
+	switch (trackstatus) {
+		case olMeetingTentative : return ICAL_PARTSTAT_TENTATIVE;
+		case olMeetingAccepted  : return ICAL_PARTSTAT_ACCEPTED;
+		case olMeetingDeclined  : return ICAL_PARTSTAT_DECLINED;
+		default 		: return ICAL_PARTSTAT_NEEDSACTION;
+	}
+}
 
 static void 
 ical_attendees_from_props (icalcomponent *ical_comp, GSList *recipients)
 {
-/*** ALERT: INCOMPLETE ***/
 	GSList *l;
 	for (l=recipients; l; l=l->next) {
 		ExchangeMAPIRecipient *recip = (ExchangeMAPIRecipient *)(l->data);
-		icalproperty *prop;
+		icalproperty *prop = NULL;
 		icalparameter *param;
-		/* ORG / ATT */
-		if (recip->flags & MEET_ATTENDEE)
-			prop = icalproperty_new_attendee (recip->email_id);
-		else if (recip->flags & MEET_ORGANIZER)
-			prop = icalproperty_new_organizer (recip->email_id);
-		/* CN */
-		param = icalparameter_new_cn (recip->name);
-		icalproperty_add_parameter (prop, param);
-		/* PARTSTAT */
-		//param = icalparameter_new_partstat ();
+		gchar *val;
+
+		if (recip->email_id)
+			val = g_strdup_printf ("MAILTO:%s", recip->email_id);
+		else 
+			continue;
+
+		if (recip->flags & MEET_ORGANIZER) {
+			prop = icalproperty_new_organizer (val);
+			/* CN */
+			param = icalparameter_new_cn (recip->name);
+			icalproperty_add_parameter (prop, param);
+		} else /* if (recip->flags & MEET_ATTENDEE) */ {
+			prop = icalproperty_new_attendee (val);
+			/* CN */
+			param = icalparameter_new_cn (recip->name);
+			icalproperty_add_parameter (prop, param);
+			/* RSVP */
+			param = icalparameter_new_rsvp (ICAL_RSVP_TRUE);
+			icalproperty_add_parameter (prop, param);
+			/* PARTSTAT */
+			param = icalparameter_new_partstat (get_partstat_from_trackstatus (recip->trackstatus));
+			icalproperty_add_parameter (prop, param);
+			/* ROLE */
+			param = icalparameter_new_role (get_role_from_type (recip->type));
+			icalproperty_add_parameter (prop, param);
+#if 0
+			/* CALENDAR USER TYPE */
+			param = icalparameter_new_cutype ();
+			icalproperty_add_parameter (prop, param);
+#endif
+		}
+
+		if (prop)
+			icalcomponent_add_property (ical_comp, prop);
+
+		g_free (val);
 	}
 }
-
 
 ECalComponent *
 e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, struct mapi_SPropValue_array *properties, 
@@ -263,6 +266,7 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 	const bool *b;
 	icalcomponent *ical_comp;
 	icalproperty *prop = NULL;
+	icalparameter *param = NULL;
 	ExchangeMAPIStream *body;
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbmapi))) {
@@ -353,13 +357,13 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 			icalproperty_transp ical_transp;
 			switch (*ui32) {
 				/* FIXME: is this mapping correct ? */
-				case BUSY_STATUS_TENTATIVE:
-				case BUSY_STATUS_FREE:
+				case olFree:
+				case olTentative:
 					ical_transp = ICAL_TRANSP_TRANSPARENT;
 					break;
 				/* FIXME: is this mapping correct ? */
-				case BUSY_STATUS_OUTOFOFFICE:
-				case BUSY_STATUS_BUSY:
+				case olBusy:
+				case olOutOfOffice:
 					ical_transp = ICAL_TRANSP_OPAQUE;
 					break;
 				default:
@@ -379,6 +383,41 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 				e_cal_backend_mapi_util_bin_to_rrule (stream->value, comp);
 			}
 */		} 
+
+		if (recipients) {
+			g_print ("\n\nFound a group event...\n");
+			ical_attendees_from_props (ical_comp, recipients);
+			if (icalcomponent_get_first_property (ical_comp, ICAL_ORGANIZER_PROPERTY) == NULL) {
+				gchar *val;
+//				const char *sender_name = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENDER_NAME);
+				const char *sender_email_type = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENDER_ADDRTYPE);
+				const char *sender_email = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENDER_EMAIL_ADDRESS);
+				const char *sent_name = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENT_REPRESENTING_NAME);
+				const char *sent_email_type = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENT_REPRESENTING_ADDRTYPE);
+				const char *sent_email = (const char *) exchange_mapi_util_find_array_propval (properties, PR_SENT_REPRESENTING_EMAIL_ADDRESS);
+
+				if (!g_utf8_collate (sender_email_type, "EX"))
+					sender_email = exchange_mapi_util_ex_to_smtp (sender_email);
+				if (!g_utf8_collate (sent_email_type, "EX"))
+					sent_email = exchange_mapi_util_ex_to_smtp (sent_email);
+
+				val = g_strdup_printf ("MAILTO:%s", sent_email);
+				prop = icalproperty_new_organizer (val);
+				g_free (val);
+				/* CN */
+				param = icalparameter_new_cn (sent_name);
+				icalproperty_add_parameter (prop, param);
+				/* SENTBY */
+				if (g_utf8_collate (sent_email, sender_email)) {
+					val = g_strdup_printf ("MAILTO:%s", sender_email);
+					param = icalparameter_new_sentby (val);
+					icalproperty_add_parameter (prop, param);
+					g_free (val);
+				}
+
+				icalcomponent_add_property (ical_comp, prop);
+			}
+		}
 
 		/* FIXME: the ALARM definitely needs more work */
 		b = (const bool *)find_mapi_SPropValue_data(properties, PROP_TAG(PT_BOOLEAN, 0x8503));
@@ -507,15 +546,15 @@ e_cal_backend_mapi_props_to_comp (ECalBackendMAPI *cbmapi, const gchar *mid, str
 	if (ui32) {
 		icalproperty_class ical_class = ICAL_CLASS_NONE;
 		switch (*ui32) {
-			case SENSITIVITY_NORMAL:
+			case olNormal:
 				ical_class = ICAL_CLASS_PUBLIC;
 				break;
 			/* FIXME: is this mapping correct ? */
-			case SENSITIVITY_PERSONAL:
-			case SENSITIVITY_PRIVATE:
+			case olPersonal:
+			case olPrivate:
 				ical_class = ICAL_CLASS_PRIVATE;
 				break;
-			case SENSITIVITY_CONFIDENTIAL:
+			case olConfidential:
 				ical_class = ICAL_CLASS_CONFIDENTIAL;
 				break;
 			default: 
@@ -600,12 +639,11 @@ mapi_cal_build_name_id (struct mapi_nameid *nameid, gpointer data)
  */
 
 
-#define APPT_NAMED_PROPS_N  18
+#define APPT_NAMED_PROPS_N  19
 #define DEFAULT_APPT_REMINDER_MINS 15
 
 typedef enum 
 {
-//	I_SENDASICAL = COMMON_NAMED_PROPS_N , 
 	I_APPT_BUSYSTATUS = COMMON_NAMED_PROPS_N , 
 	I_APPT_LOCATION , 
 	I_APPT_START , 
@@ -614,7 +652,7 @@ typedef enum
 	I_APPT_ALLDAY , 
 	I_APPT_RECURBLOB , 
 	I_APPT_MEETINGSTATUS , 
-//	I_APPT_RESPONSESTATUS , 
+	I_APPT_RESPONSESTATUS , 
 	I_APPT_ISRECURRING , 
 	I_APPT_RECURBASE , 
 	I_APPT_RECURTYPE , 
@@ -628,6 +666,7 @@ typedef enum
 	I_APPT_COUNTERPROPOSAL , 
 	I_APPT_STARTTZBLOB , 
 	I_APPT_ENDTZBLOB 
+//	I_SENDASICAL , 
 //	I_APPT_LABEL , 
 //	I_APPT_DISPTZ 
 } ApptNamedPropsIndex;
@@ -635,7 +674,6 @@ typedef enum
 static void 
 appt_build_name_id (struct mapi_nameid *nameid)
 {
-//	mapi_nameid_lid_add(nameid, 0x8200, PSETID_Appointment); 	// PT_BOOLEAN - SendAsICAL
 	mapi_nameid_lid_add(nameid, 0x8205, PSETID_Appointment); 	// PT_LONG - BusyStatus
 	mapi_nameid_lid_add(nameid, 0x8208, PSETID_Appointment); 	// PT_STRING8 - Location
 	mapi_nameid_lid_add(nameid, 0x820D, PSETID_Appointment); 	// PT_SYSTIME - Start/ApptStartWhole
@@ -644,7 +682,7 @@ appt_build_name_id (struct mapi_nameid *nameid)
 	mapi_nameid_lid_add(nameid, 0x8215, PSETID_Appointment); 	// PT_BOOLEAN - AllDayEvent
 	mapi_nameid_lid_add(nameid, 0x8216, PSETID_Appointment); 	// PT_BINARY - (recurrence blob)
 	mapi_nameid_lid_add(nameid, 0x8217, PSETID_Appointment); 	// PT_LONG - MeetingStatus
-//	mapi_nameid_lid_add(nameid, 0x8218, PSETID_Appointment); 	// PT_LONG - ResponseStatus
+	mapi_nameid_lid_add(nameid, 0x8218, PSETID_Appointment); 	// PT_LONG - ResponseStatus
 	mapi_nameid_lid_add(nameid, 0x8223, PSETID_Appointment); 	// PT_BOOLEAN - IsRecurring/Recurring
 	mapi_nameid_lid_add(nameid, 0x8228, PSETID_Appointment); 	// PT_SYSTIME - RecurrenceBase
 	mapi_nameid_lid_add(nameid, 0x8231, PSETID_Appointment); 	// PT_LONG - RecurrenceType
@@ -660,30 +698,31 @@ appt_build_name_id (struct mapi_nameid *nameid)
 	mapi_nameid_lid_add(nameid, 0x825F, PSETID_Appointment); 	// PT_BINARY - (timezone for dtend)
 
 	/* These probably would never be used from Evolution */
+//	mapi_nameid_lid_add(nameid, 0x8200, PSETID_Appointment); 	// PT_BOOLEAN - SendAsICAL
 //	mapi_nameid_lid_add(nameid, 0x8214, PSETID_Appointment); 	// PT_LONG - Label
 //	mapi_nameid_lid_add(nameid, 0x8234, PSETID_Appointment); 	// PT_STRING8 - display TimeZone
 }
 
 
-#define TASK_NAMED_PROPS_N 7
+#define TASK_NAMED_PROPS_N 13
 #define DEFAULT_TASK_REMINDER_MINS 1080
 
 typedef enum 
 {
 	I_TASK_STATUS = COMMON_NAMED_PROPS_N , 
 	I_TASK_PERCENT , 
-//	I_TASK_ISTEAMTASK , 
+	I_TASK_ISTEAMTASK , 
 	I_TASK_START , 
 	I_TASK_DUE , 
 	I_TASK_COMPLETED , 
 //	I_TASK_RECURBLOB , 
 	I_TASK_ISCOMPLETE , 
-//	I_TASK_OWNER , 
-//	I_TASK_DELEGATOR , 
+	I_TASK_OWNER , 
+	I_TASK_DELEGATOR , 
 	I_TASK_ISRECURRING , 
-//	I_TASK_ROLE , 
-//	I_TASK_OWNERSHIP , 
-//	I_TASK_DELEGATIONSTATE , 
+	I_TASK_ROLE , 
+	I_TASK_OWNERSHIP , 
+	I_TASK_DELEGATIONSTATE , 
 //	I_TASK_ACTUALWORK , 
 //	I_TASK_TOTALWORK 
 } TaskNamedPropsIndex;
@@ -693,18 +732,18 @@ task_build_name_id (struct mapi_nameid *nameid)
 {
 	mapi_nameid_lid_add(nameid, 0x8101, PSETID_Task); 	// PT_LONG - Status
 	mapi_nameid_lid_add(nameid, 0x8102, PSETID_Task); 	// PT_DOUBLE - PercentComplete
-//	mapi_nameid_lid_add(nameid, 0x8103, PSETID_Task); 	// PT_BOOLEAN - TeamTask
+	mapi_nameid_lid_add(nameid, 0x8103, PSETID_Task); 	// PT_BOOLEAN - TeamTask
 	mapi_nameid_lid_add(nameid, 0x8104, PSETID_Task); 	// PT_SYSTIME - StartDate/TaskStartDate
 	mapi_nameid_lid_add(nameid, 0x8105, PSETID_Task); 	// PT_SYSTIME - DueDate/TaskDueDate
 	mapi_nameid_lid_add(nameid, 0x810F, PSETID_Task); 	// PT_SYSTIME - DateCompleted
 //	mapi_nameid_lid_add(nameid, 0x8116, PSETID_Task); 	// PT_BINARY - (recurrence blob)
 	mapi_nameid_lid_add(nameid, 0x811C, PSETID_Task); 	// PT_BOOLEAN - Complete
-//	mapi_nameid_lid_add(nameid, 0x811F, PSETID_Task); 	// PT_STRING8 - Owner
-//	mapi_nameid_lid_add(nameid, 0x8121, PSETID_Task); 	// PT_STRING8 - Delegator
+	mapi_nameid_lid_add(nameid, 0x811F, PSETID_Task); 	// PT_STRING8 - Owner
+	mapi_nameid_lid_add(nameid, 0x8121, PSETID_Task); 	// PT_STRING8 - Delegator
 	mapi_nameid_lid_add(nameid, 0x8126, PSETID_Task); 	// PT_BOOLEAN - IsRecurring/TaskFRecur
-//	mapi_nameid_lid_add(nameid, 0x8127, PSETID_Task); 	// PT_STRING8 - Role
-//	mapi_nameid_lid_add(nameid, 0x8129, PSETID_Task); 	// PT_LONG - Ownership
-//	mapi_nameid_lid_add(nameid, 0x812A, PSETID_Task); 	// PT_LONG - DelegationState
+	mapi_nameid_lid_add(nameid, 0x8127, PSETID_Task); 	// PT_STRING8 - Role
+	mapi_nameid_lid_add(nameid, 0x8129, PSETID_Task); 	// PT_LONG - Ownership
+	mapi_nameid_lid_add(nameid, 0x812A, PSETID_Task); 	// PT_LONG - DelegationState
 
 	/* These probably would never be used from Evolution */
 //	mapi_nameid_lid_add(nameid, 0x8110, PSETID_Task); 	// PT_LONG - ActualWork/TaskActualEffort
@@ -866,18 +905,18 @@ PR_SENDER_EMAIL_ADDRESS
 	set_SPropValue_proptag_date_timeval(&props[i++], proptag_array->aulPropTag[I_COMMON_REMNEXTTIME], &t);
 
 	/* Sensitivity, Private */
-	flag32 = SENSITIVITY_NORMAL; 	/* default */
+	flag32 = olNormal; 	/* default */
 	b = 0; 				/* default */
 	prop = icalcomponent_get_first_property (ical_comp, ICAL_CLASS_PROPERTY);
 	if (prop) 
 		switch (icalproperty_get_class (prop)) {
 			/* FIXME: is this mapping correct ? */
 			case ICAL_CLASS_PRIVATE:
-				flag32 = SENSITIVITY_PRIVATE;
+				flag32 = olPrivate;
 				b = 1;
 				break;
 			case ICAL_CLASS_CONFIDENTIAL:
-				flag32 = SENSITIVITY_CONFIDENTIAL;
+				flag32 = olConfidential;
 				b = 1;
 				break;
 			default: 
@@ -905,18 +944,18 @@ PR_SENDER_EMAIL_ADDRESS
 		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_COMMON_CTXMENUFLAGS], (const void *) &flag32);
 
 		/* Busy Status */
-		flag32 = BUSY_STATUS_BUSY; 	/* default */
+		flag32 = olBusy; 	/* default */
 		prop = icalcomponent_get_first_property (ical_comp, ICAL_TRANSP_PROPERTY);
 		if (prop)
 			switch (icalproperty_get_transp (prop)) {
 				/* FIXME: is this mapping correct ? */
 				case ICAL_TRANSP_TRANSPARENT:
 				case ICAL_TRANSP_TRANSPARENTNOCONFLICT:
-					flag32 = BUSY_STATUS_FREE;
+					flag32 = olFree;
 					break;
 				case ICAL_TRANSP_OPAQUE:
 				case ICAL_TRANSP_OPAQUENOCONFLICT:
-					flag32 = BUSY_STATUS_BUSY;
+					flag32 = olBusy;
 					break;
 				default:
 					break;

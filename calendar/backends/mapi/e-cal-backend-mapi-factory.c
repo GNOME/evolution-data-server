@@ -26,6 +26,8 @@
 
 #include "e-cal-backend-mapi-factory.h"
 #include "e-cal-backend-mapi.h"
+#include "e-cal-backend-mapi-tz-utils.h"
+#define d(x) 
 
 typedef struct {
 	ECalBackendFactory            parent_object;
@@ -199,11 +201,15 @@ eds_module_initialize (GTypeModule *module)
 	mapi_types[0] = todos_backend_factory_get_type (module);
 	mapi_types[1] = events_backend_factory_get_type (module);
 	mapi_types[2] = journal_backend_factory_get_type (module);
+
+	e_cal_backend_mapi_tz_util_populate ();
+	d(e_cal_backend_mapi_tz_util_dump ());
 }
 
 void
 eds_module_shutdown   (void)
 {
+	e_cal_backend_mapi_tz_util_destroy ();
 }
 
 void

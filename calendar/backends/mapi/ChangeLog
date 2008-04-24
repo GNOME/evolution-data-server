@@ -1,5 +1,21 @@
 2008-04-24  Suman Manjunath  <msuman@novell.com>
 
+	* e-cal-backend-mapi-constants.h: New file added to hold all constants. 
+	* e-cal-backend-mapi-factory.c: (eds_module_initialize),
+	(eds_module_shutdown): Initialize and destroy the hashtables which hold
+	the timezone information. 
+	* e-cal-backend-mapi-tz-utils.c: Add the new header file above. 
+	* e-cal-backend-mapi-utils.c: (get_role_from_type),
+	(get_partstat_from_trackstatus), (ical_attendees_from_props),
+	(e_cal_backend_mapi_props_to_comp), (appt_build_name_id),
+	(task_build_name_id), (mapi_cal_build_props): Initial work towards
+	support of meetings/assigned tasks. 
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_finalize),
+	(get_changes_cb), (cache_create_cb), (e_cal_backend_mapi_init): Memory
+	leaks fixed. 
+
+2008-04-24  Suman Manjunath  <msuman@novell.com>
+
 	* e-cal-backend-mapi-utils.c: (mapi_cal_build_props): Input validation. 
 	* e-cal-backend-mapi.c: (e_cal_backend_mapi_authenticate),
 	(e_cal_backend_mapi_finalize),
