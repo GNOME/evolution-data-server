@@ -752,7 +752,7 @@ mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_a
 	icalproperty *prop;
 	struct icaltimetype dtstart, dtend, utc_dtstart, utc_dtend;
 	const icaltimezone *utc_zone;
-	const char *dtstart_tzid, *dtend_tzid;
+	const char *dtstart_tzid, *dtend_tzid, *text = NULL;
 	struct timeval t;
 
 	switch (kind) {
@@ -792,24 +792,28 @@ mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_a
 	utc_dtend = icaltime_convert_to_zone (dtend, utc_zone);
 
 	/* FIXME: convert to unicode */
+	text = icalcomponent_get_summary (ical_comp);
+	if (!(text && *text)) 
+		text = "";
 	set_SPropValue_proptag(&props[i++], PR_SUBJECT, 					/* prop count: 2 */ 
-					(const void *) icalcomponent_get_summary (ical_comp));
-
-	/* FIXME: convert to unicode */
+					(const void *) text);
 	set_SPropValue_proptag(&props[i++], PR_NORMALIZED_SUBJECT, 				/* prop count: 3 */ 
-					(const void *) icalcomponent_get_summary (ical_comp));
-
-	/* FIXME: convert to unicode AND do we need this property ?? */
+					(const void *) text);
 	set_SPropValue_proptag(&props[i++], PR_CONVERSATION_TOPIC, 				/* prop count: 4 */
-					(const void *) icalcomponent_get_summary (ical_comp));
+					(const void *) text);
+	text = NULL;
 
 	/* we don't support HTML event/task/memo editor */
 	flag32 = EDITOR_FORMAT_PLAINTEXT;
 	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, &flag32); 			/* prop count: 5 */
 
 	/* it'd be better to convert, then set it in unicode */
+	text = icalcomponent_get_description (ical_comp);
+	if (!(text && *text)) 
+		text = "";
 	set_SPropValue_proptag(&props[i++], PR_BODY, 						/* prop count: 6 */
-					(const void *) icalcomponent_get_description (ical_comp));
+					(const void *) text);
+	text = NULL;
 
 	/* Priority */
 	flag32 = PRIORITY_NORMAL; 	/* default */
@@ -920,7 +924,11 @@ PR_SENDER_EMAIL_ADDRESS
 		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_BUSYSTATUS], (const void *) &flag32);
 
 		/* Location */
-		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_LOCATION], (const void *) icalcomponent_get_location (ical_comp));
+		text = icalcomponent_get_location (ical_comp);
+		if (!(text && *text)) 
+			text = "";
+		set_SPropValue_proptag(&props[i++], proptag_array->aulPropTag[I_APPT_LOCATION], (const void *) text);
+		text = NULL;
 
 		/* Start */
 		t.tv_sec = icaltime_as_timet (utc_dtstart);

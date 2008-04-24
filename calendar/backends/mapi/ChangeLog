@@ -1,11 +1,34 @@
+2008-04-24  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-utils.c: (mapi_cal_build_props): Input validation. 
+	* e-cal-backend-mapi.c: (e_cal_backend_mapi_authenticate),
+	(e_cal_backend_mapi_finalize),
+	(e_cal_backend_mapi_get_alarm_email_address),
+	(e_cal_backend_mapi_remove), (get_changes_cb),
+	(handle_deleted_items_cb), (get_deltas),
+	(e_cal_backend_mapi_get_object), (get_cache_refresh_interval),
+	(delta_thread), (fetch_deltas), (start_fetch_deltas),
+	(cache_create_cb), (populate_cache), (cache_init),
+	(e_cal_backend_mapi_connect), (e_cal_backend_mapi_open),
+	(e_cal_backend_mapi_get_timezone),
+	(e_cal_backend_mapi_compute_changes_foreach_key),
+	(e_cal_backend_mapi_compute_changes),
+	(e_cal_backend_mapi_get_changes),
+	(e_cal_backend_mapi_internal_get_timezone): 
+	Incorporate the new delta_fetch style from the GW backend, limiting
+	the number of delta-threads running to 1. Fix up a few class funtions 
+	which were incomplete. 
+
 2008-02-20  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi-utils.c: (mapi_cal_build_name_id),
-	(mapi_cal_build_props):
+	(mapi_cal_build_props): Renamed these two functions so that they don't 
+	incorrectly link to other exposed functions. 
 	* e-cal-backend-mapi-utils.h:
 	* e-cal-backend-mapi.c: (get_deltas), (populate_cache),
 	(e_cal_backend_mapi_create_object),
 	(e_cal_backend_mapi_modify_object):
+	Related changes. 
 
 2008-02-14  Johnny Jacob  <jjohnny@novell.com>
 
