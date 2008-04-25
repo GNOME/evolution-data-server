@@ -869,10 +869,25 @@ pass_response (GtkDialog *dialog, gint response, void *data)
 	ep_idle_dispatch (NULL);
 }
 
+static gboolean
+update_capslock_state (gpointer widget, gpointer event, GtkWidget *label)
+{
+	GdkModifierType mask = 0;
+
+	gdk_window_get_pointer (NULL, NULL, NULL, &mask);
+
+	if (mask & GDK_LOCK_MASK)
+		gtk_widget_show (label);
+	else
+		gtk_widget_hide (label);
+
+	return FALSE;
+}
+
 static void
 ep_ask_password (EPassMsg *msg)
 {
-	GtkWidget *widget;
+	GtkWidget *widget, *capslock_box;
 	GtkWidget *container;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
 	guint noreply = msg->noreply;
@@ -958,6 +973,19 @@ ep_ask_password (EPassMsg *msg)
 		GTK_TABLE (container), widget,
 		1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
+	capslock_box = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (capslock_box), gtk_label_new (""), FALSE, FALSE, 0);
+	widget = gtk_label_new (_("You have the Caps Lock key on."));
+	gtk_box_pack_start (GTK_BOX (capslock_box), widget, TRUE, TRUE, 0);
+	gtk_widget_show_all (capslock_box);
+	gtk_table_attach (
+		GTK_TABLE (container), capslock_box,
+		1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
+	g_signal_connect (password_dialog, "key-release-event", G_CALLBACK (update_capslock_state), widget);
+	g_signal_connect (password_dialog, "focus-in-event", G_CALLBACK (update_capslock_state), widget);
+	update_capslock_state (NULL, NULL, widget);
+
 	/* static password, shouldn't be remembered between sessions,
 	   but will be remembered within the session beyond our control */
 	if (type != E_PASSWORDS_REMEMBER_NEVER) {
@@ -984,7 +1012,7 @@ ep_ask_password (EPassMsg *msg)
 
 		gtk_table_attach (
 			GTK_TABLE (container), widget,
-			1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+			1, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	}
 
 	msg->noreply = noreply;

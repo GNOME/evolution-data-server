@@ -1,3 +1,10 @@
+2008-04-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #301980
+
+	* e-passwords.c: (update_capslock_state), (ep_ask_password):
+	Warn user when Caps Lock is on.
+
 2008-04-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-passwords.c (pass_response):
