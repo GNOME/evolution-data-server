@@ -2241,13 +2241,16 @@ book_view_thread (gpointer data)
 			g_free (search_string);
 		}
 
-		if (!gwb->priv->is_writable && !filter) {
-			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
-			bonobo_object_unref (book_view);
-			return NULL;
-		}
-		else
-			status =  E_GW_CONNECTION_STATUS_OK;
+		if (!gwb->priv->is_writable && !filter && (g_getenv ("GW_HIDE_SYSBOOK") || (!gwb->priv->is_cache_ready))) {
+
+				e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
+				bonobo_object_unref (book_view);
+				if (filter)
+					g_object_unref (filter);
+				return NULL; 
+ 		}
+ 		else 
+ 			status =  E_GW_CONNECTION_STATUS_OK;
 
 		/* Check if the data is found on summary */
 		if (gwb->priv->is_summary_ready &&
@@ -2307,6 +2310,27 @@ book_view_thread (gpointer data)
 			g_ptr_array_free (ids, TRUE);
 		}
 		else {
+			if (gwb->priv->is_cache_ready) {
+				contacts = e_book_backend_db_cache_get_contacts (gwb->priv->file_db, query);
+				temp_list = contacts;
+				for (; contacts != NULL; contacts = g_list_next(contacts)) {
+					if (!e_flag_is_set (closure->running)) {
+						for (;contacts != NULL; contacts = g_list_next (contacts))
+							g_object_unref (contacts->data);
+						break;
+					}
+					e_data_book_view_notify_update (book_view, E_CONTACT(contacts->data));
+					g_object_unref (contacts->data);
+				}
+				if (e_flag_is_set (closure->running))
+					e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
+				if (temp_list)
+					g_list_free (temp_list);
+				bonobo_object_unref (book_view);
+	
+				return NULL;
+			}
+		
 			/* no summary information found, read from server */
 			if (enable_debug)
 				printf ("summary not found, reading the contacts from server\n");
@@ -2847,7 +2871,6 @@ update_cache (EBookBackendGroupwise *ebgw)
 		g_object_unref(contact);
 		g_object_unref (gw_items->data);
 	}
-
 	ebgw->priv->is_cache_ready = TRUE;
 	ebgw->priv->is_summary_ready = TRUE;
 
@@ -3581,6 +3604,8 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	}
 
 	e_book_backend_db_cache_set_filename (ebgw->priv->file_db, filename);
+	if (priv->marked_for_offline)
+		ebgw->priv->is_cache_ready = TRUE;
 	g_free(filename);
 	g_free(dirname);
 	g_free (uri);

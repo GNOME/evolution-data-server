@@ -1,3 +1,8 @@
+2008-04-25  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* addressbook/backends/groupwise/e-book-backend-groupwise.c: Load
+	addressbook conditionally.
+
 2008-04-19  Jaap A. Haitsma  <jaap@haitsma.org>
 
 	reviewed by: Ross Burton
