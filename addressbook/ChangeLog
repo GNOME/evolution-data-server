@@ -1,3 +1,8 @@
+2008-04-25  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* addressbook/backends/groupwise/e-book-backend-groupwise.c: Load
+	addressbook conditionally.
+
 2008-03-13  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #303067
