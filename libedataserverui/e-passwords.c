@@ -927,10 +927,9 @@ ep_ask_password (EPassMsg *msg)
 		GTK_BOX (password_dialog->vbox),
 		container, FALSE, TRUE, 0);
 
-	/* Question Image */
-	widget = gtk_image_new_from_stock (
-		GTK_STOCK_DIALOG_QUESTION,
-		GTK_ICON_SIZE_DIALOG);
+	/* Password Image */
+	widget = gtk_image_new_from_icon_name (
+		"dialog-password", GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.0);
 	gtk_widget_show (widget);
 

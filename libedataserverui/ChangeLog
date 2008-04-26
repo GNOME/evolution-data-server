@@ -1,3 +1,9 @@
+2008-04-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c (ep_ask_password):
+	Use "dialog-password" icon instead of "dialog-question" in the
+	password dialog (HIG compliance).
+
 2008-04-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #301980
