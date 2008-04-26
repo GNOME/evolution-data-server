@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-17 17:47+0100\n"
-"PO-Revision-Date: 2008-04-19 10:42+0200\n"
+"POT-Creation-Date: 2008-04-25 14:54+0000\n"
+"PO-Revision-Date: 2008-04-26 12:52+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,29 +25,29 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:554
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2317
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2341
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "Cargando…"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:557
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2276
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2296
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2279
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2299
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2339
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2677
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2701
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2832
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3023
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3067
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2856
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3046
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3090
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando caché de contactos (%d)…"
@@ -5086,19 +5086,23 @@ msgstr "_Editar %s"
 msgid "_Delete %s"
 msgstr "_Borrar %s"
 
-#: ../libedataserverui/e-passwords.c:967
+#: ../libedataserverui/e-passwords.c:978
+msgid "You have the Caps Lock key on."
+msgstr "Tiene activada la tecla Bloq. Mayús."
+
+#: ../libedataserverui/e-passwords.c:995
 msgid "_Remember this passphrase"
 msgstr "_Recordar esta frase de paso"
 
-#: ../libedataserverui/e-passwords.c:968
+#: ../libedataserverui/e-passwords.c:996
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Recordar esta frase de paso durante el resto de esta sesión"
 
-#: ../libedataserverui/e-passwords.c:973
+#: ../libedataserverui/e-passwords.c:1001
 msgid "_Remember this password"
 msgstr "_Recordar esta contraseña"
 
-#: ../libedataserverui/e-passwords.c:974
+#: ../libedataserverui/e-passwords.c:1002
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Recordar esta contraseña durante el resto de esta sesión"
 
