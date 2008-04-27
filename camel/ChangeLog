@@ -1,3 +1,9 @@
+2008-04-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #530139
+
+	* tests/Makefile.am: Do not ship .svn files.
+
 2008-04-22  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #529339
