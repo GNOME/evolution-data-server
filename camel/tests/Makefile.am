@@ -5,5 +5,4 @@ SUBDIRS = lib \
 EXTRA_DIST = data
 
 dist-hook:
-	rm -rf `find $(distdir)/data -name CVS`
-	rm -rf `find $(distdir)/data -name .cvsignore`
+	rm -rf `find $(distdir)/data -name .svn`
