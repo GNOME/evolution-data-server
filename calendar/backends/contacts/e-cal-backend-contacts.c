@@ -102,7 +102,6 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         query = e_book_query_any_field_contains ("");
 
         if (!e_book_get_book_view (book, query, fields, -1, &book_view, NULL)) {
-		g_list_free (fields);
                 e_book_query_unref (query);
                 g_object_unref (book);
                 g_list_free (fields);
