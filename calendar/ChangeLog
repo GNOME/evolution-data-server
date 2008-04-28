@@ -1,3 +1,8 @@
+2008-04-28  Sebastien Bacher  <seb128@ubuntu.com>
+
+	* backends/contacts/e-cal-backend-contacts.c: (book_record_new):
+	- don't free the same variable twice (#530323)
+
 2008-04-17  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #526741
