@@ -1,3 +1,16 @@
+2008-04-28  Ashish Shrivastava  <shashish@novell.com>
+
+	** Fix for bug #381307 (bugzilla.novell.com)
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(address_book_deltas_thread), (fetch_address_book_deltas),
+	(update_address_book_cache), (e_book_backend_groupwise_dispose),
+	(e_book_backend_groupwise_init):
+	Run a single delta-thread to fetch changes from the server, instead of 
+	spawning multiple threads when the server fails to respond or the 
+	response takes too much time. 
+	NOTE: Chenthill fixed the same issues in GW calendar earlier. 
+
 2008-04-25  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* addressbook/backends/groupwise/e-book-backend-groupwise.c: Load
