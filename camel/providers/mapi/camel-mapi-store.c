@@ -48,6 +48,9 @@
 //#include <mapi/exchange-mapi-folder.h>
 //#define d(x) x
 
+/* This definition should be in-sync with those in exchange-mapi-account-setup.c and exchange-account-listener.c */
+#define E_PASSWORD_COMPONENT "ExchangeMAPI"
+
 #include <sys/types.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -302,7 +305,7 @@ mapi_auth_loop (CamelService *service, CamelException *ex)
 	while (!authenticated) {
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
-			camel_session_forget_password (session, service, "Mapi", "password", ex);
+			camel_session_forget_password (session, service, E_PASSWORD_COMPONENT, "password", ex);
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 		}
@@ -316,7 +319,7 @@ mapi_auth_loop (CamelService *service, CamelException *ex)
 						  service->url->user,
 						  service->url->host);
 			service->url->passwd =
-				camel_session_get_password (session, service, "Mapi",
+				camel_session_get_password (session, service, E_PASSWORD_COMPONENT,
 							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
 			g_free (prompt);
 			g_free (errbuf);

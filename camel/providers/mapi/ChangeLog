@@ -1,3 +1,8 @@
+2008-04-28  Suman Manjunath  <msuman@novell.com>
+
+	* camel-mapi-store.c: (mapi_auth_loop): Use a common password component
+	across e-d-s, Camel and Evolution. 
+
 2008-04-17  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-store.c (camel_mapi_store_init): Mark store for 
