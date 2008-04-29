@@ -1,3 +1,12 @@
+2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #358644 (bnc) 
+	Retracted groupwise appointments should disappear as soon as they are 
+	retracted.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(get_cache_refresh_interval), (delta_thread), (cache_init):
+
 2008-04-28  Sebastien Bacher  <seb128@ubuntu.com>
 
 	* backends/contacts/e-cal-backend-contacts.c: (book_record_new):
