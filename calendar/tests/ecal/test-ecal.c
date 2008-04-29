@@ -137,8 +137,6 @@ client_destroy_cb (gpointer data, GObject *object)
 		client1 = NULL;
 	else if (E_CAL (object) == client2)
 		client2 = NULL;
-	else
-		g_assert_not_reached ();
 
 	if (!client1 && !client2)
 		g_main_loop_quit (loop);

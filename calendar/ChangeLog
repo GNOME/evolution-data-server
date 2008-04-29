@@ -1,3 +1,7 @@
+2008-04-29  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* calendar/tests/ecal/test-ecal.c: Remote g_asserts.
+
 2008-04-28  Sebastien Bacher  <seb128@ubuntu.com>
 
 	* backends/contacts/e-cal-backend-contacts.c: (book_record_new):
