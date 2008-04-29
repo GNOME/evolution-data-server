@@ -1834,10 +1834,21 @@ caldav_remove_object (ECalBackendSync  *backend,
 	}
 
 	cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+
+	if (cache_comp == NULL && rid && *rid) {
+		/* we do not have this instance in cache directly, thus try to get master object */
+		cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, "");
+	}
+
 	if (cache_comp == NULL) {
 		g_mutex_unlock (priv->lock);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
+
+	*old_object = e_cal_component_get_as_string (cache_comp);
+
+	if (mod == CALOBJ_MOD_THIS)
+		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (cache_comp), icaltime_from_string (rid), mod);
 
 	if (online) {
 		CalDAVObject caldav_object;
@@ -1846,14 +1857,20 @@ caldav_remove_object (ECalBackendSync  *backend,
 		caldav_object.etag  = e_cal_component_get_etag (cache_comp);
 		caldav_object.cdata = NULL;
 
-		status = caldav_server_delete_object (cbdav, &caldav_object);
+		if (mod == CALOBJ_MOD_THIS) {
+			caldav_object.cdata = pack_cobj (cbdav, cache_comp);
+
+			status = caldav_server_put_object (cbdav, &caldav_object);
+		} else
+			status = caldav_server_delete_object (cbdav, &caldav_object);
 
 		caldav_object_free (&caldav_object, FALSE);
-
 	} else {
 		/* mark component as out of synch */
-		e_cal_component_set_synch_state (cache_comp,
-				E_CAL_COMPONENT_LOCALLY_DELETED);
+		if (mod == CALOBJ_MOD_THIS)
+			e_cal_component_set_synch_state (cache_comp, E_CAL_COMPONENT_LOCALLY_MODIFIED);
+		else
+			e_cal_component_set_synch_state (cache_comp, E_CAL_COMPONENT_LOCALLY_DELETED);
 	}
 
 	if (status != GNOME_Evolution_Calendar_Success) {
@@ -1861,13 +1878,13 @@ caldav_remove_object (ECalBackendSync  *backend,
 		return status;
 	}
 
-	*old_object = e_cal_component_get_as_string (cache_comp);
-
 	/* We should prolly check for cache errors
 	 * but when that happens we are kinda hosed anyway */
-	e_cal_backend_cache_remove_component (priv->cache, uid, rid);
-
-	/* FIXME: set new_object when removing instances of a recurring appointment */
+	if (mod == CALOBJ_MOD_THIS) {
+		e_cal_backend_cache_put_component (priv->cache, cache_comp);
+		*object = e_cal_component_get_as_string (cache_comp);
+	} else
+		e_cal_backend_cache_remove_component (priv->cache, uid, rid);
 
 	g_mutex_unlock (priv->lock);
 

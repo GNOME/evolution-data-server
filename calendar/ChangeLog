@@ -1,3 +1,10 @@
+2008-04-29  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #330990
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_remove_object):
+	Allow remove only one instance of the recurring event.
+
 2008-04-29  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	* calendar/tests/ecal/test-ecal.c: Remote g_asserts.
