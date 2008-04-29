@@ -1,3 +1,15 @@
+2008-04-29  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #502899
+
+	* storage/exchange-account.c: (struct _ExchangeAccountPrivate), (init),
+	(dispose), (finalize), (exchange_account_rescan_tree), (get_folder),
+	(hierarchy_new_folder), (hierarchy_removed_folder), (context_redirect),
+	(get_parent_and_name), (exchange_account_get_folder),
+	(exchange_account_get_folders), (exchange_account_get_folder_tree):
+	Guard private folder's hash tables with a lock to prevent access to
+	them from different threads in same the time.
+
 2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #500389
