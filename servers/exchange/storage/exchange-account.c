@@ -71,6 +71,7 @@ struct _ExchangeAccountPrivate {
 	GHashTable *hierarchies_by_folder, *foreign_hierarchies;
 	ExchangeHierarchy *favorites_hierarchy;
 	GHashTable *folders, *fresh_folders;
+	GStaticRecMutex folders_lock;
 	char *uri_authority, *http_uri_schema;
 	gboolean uris_use_email, offline_sync;
 
@@ -154,6 +155,7 @@ init (GObject *object)
 	account->priv->foreign_hierarchies = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->fresh_folders = NULL;
+	g_static_rec_mutex_init (&account->priv->folders_lock);
 	account->priv->discover_data_lock = g_mutex_new ();
 	account->priv->account_online = UNSUPPORTED_MODE;
 	account->priv->nt_domain = NULL;
@@ -205,15 +207,17 @@ dispose (GObject *object)
 		account->priv->hierarchies = NULL;
 	}
 
-	if (account->priv->hierarchies_by_folder) {
-		g_hash_table_destroy (account->priv->hierarchies_by_folder);
-		account->priv->hierarchies_by_folder = NULL;
-	}
-
 	if (account->priv->foreign_hierarchies) {
 		g_hash_table_foreach (account->priv->foreign_hierarchies, free_name, NULL);
 		g_hash_table_destroy (account->priv->foreign_hierarchies);
 		account->priv->foreign_hierarchies = NULL;
+	}
+
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
+
+	if (account->priv->hierarchies_by_folder) {
+		g_hash_table_destroy (account->priv->hierarchies_by_folder);
+		account->priv->hierarchies_by_folder = NULL;
 	}
 
 	if (account->priv->folders) {
@@ -227,6 +231,8 @@ dispose (GObject *object)
 		g_hash_table_destroy (account->priv->fresh_folders);
 		account->priv->fresh_folders = NULL;
 	}
+
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -303,6 +309,8 @@ finalize (GObject *object)
 	if (account->priv->discover_data_lock)
 		g_mutex_free (account->priv->discover_data_lock);
 
+	g_static_rec_mutex_free (&account->priv->folders_lock);
+
 	g_free (account->priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -320,6 +328,7 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
 
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	if (account->priv->fresh_folders) {
 		g_hash_table_foreach (account->priv->fresh_folders, free_folder, NULL);
 		g_hash_table_destroy (account->priv->fresh_folders);
@@ -339,6 +348,7 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 						toplevel, account->priv->account_online);
 		exchange_hierarchy_rescan (account->priv->hierarchies->pdata[i]);
 	}
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 }
 
 /*
@@ -353,6 +363,8 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	const char *permanent_uri =
 		e_folder_exchange_get_permanent_uri (folder);
 	char *key;
+
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 
 	/* This makes the cleanup easier. We just unref it each time
 	 * we find it in account->priv->folders.
@@ -411,8 +423,11 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 	{
 		g_hash_table_insert (account->priv->hierarchies_by_folder,
 					folder, hier);
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
 		g_signal_emit (account, signals[NEW_FOLDER], 0, folder);
+	} else {
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 	}
 }
 
@@ -420,9 +435,12 @@ static void
 hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 			  ExchangeAccount *account)
 {
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	if (!g_hash_table_lookup (account->priv->folders,
-					e_folder_exchange_get_path (folder)))
+					e_folder_exchange_get_path (folder))) {
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 		return;
+	}
 
 	g_hash_table_remove (account->priv->folders,
 					e_folder_exchange_get_path (folder));
@@ -435,6 +453,7 @@ hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 					e_folder_exchange_get_internal_uri (folder));
 	}
 	g_hash_table_remove (account->priv->hierarchies_by_folder, folder);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 	g_signal_emit (account, signals[REMOVED_FOLDER], 0, folder);
 
 	if (folder == hier->toplevel)
@@ -451,11 +470,15 @@ static gboolean
 get_folder (ExchangeAccount *account, const char *path,
 	    EFolder **folder, ExchangeHierarchy **hier)
 {
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	*folder = g_hash_table_lookup (account->priv->folders, path);
-	if (!*folder)
+	if (!*folder) {
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 		return FALSE;
+	}
 	*hier = g_hash_table_lookup (account->priv->hierarchies_by_folder,
 				     *folder);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 	if (!*hier)
 		return FALSE;
 	return TRUE;
@@ -471,15 +494,19 @@ get_parent_and_name (ExchangeAccount *account, const char **path,
 	if (!name)
 		return FALSE;
 
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	parent_path = g_strndup (*path, name - *path);
 	*parent = g_hash_table_lookup (account->priv->folders, parent_path);
 	g_free (parent_path);
 
-	if (!*parent)
+	if (!*parent) {
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 		return FALSE;
+	}
 
 	*hier = g_hash_table_lookup (account->priv->hierarchies_by_folder,
 				     *parent);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 	if (!*hier)
 		return FALSE;
 
@@ -845,15 +872,20 @@ context_redirect (E2kContext *ctx, E2kHTTPStatus status,
 {
 	EFolder *folder;
 
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	folder = g_hash_table_lookup (account->priv->folders, old_uri);
-	if (!folder)
+	if (!folder) {
+		g_static_rec_mutex_unlock (&account->priv->folders_lock);
 		return;
+	}
 
 	g_hash_table_remove (account->priv->folders, old_uri);
 	e_folder_exchange_set_internal_uri (folder, new_uri);
 	g_hash_table_insert (account->priv->folders,
 			     (char *)e_folder_exchange_get_internal_uri (folder),
 			     folder);
+
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 }
 
 static void
@@ -1858,11 +1890,17 @@ EFolder *
 exchange_account_get_folder (ExchangeAccount *account,
 			     const char *path_or_uri)
 {
+	EFolder *folder;
+
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	if (!path_or_uri)
 		return NULL;
-	return g_hash_table_lookup (account->priv->folders, path_or_uri);
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
+	folder = g_hash_table_lookup (account->priv->folders, path_or_uri);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
+
+	return folder;
 }
 
 static int
@@ -1930,11 +1968,13 @@ exchange_account_get_folders (ExchangeAccount *account)
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
 
 	folders = g_ptr_array_new ();
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	/*	if (account->priv->fresh_folders)
 		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
 	else
 	*/
 		g_hash_table_foreach (account->priv->folders, add_folder, folders);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
 	qsort (folders->pdata, folders->len,
 	       sizeof (EFolder *), folder_comparator);
@@ -1975,11 +2015,13 @@ exchange_account_get_folder_tree (ExchangeAccount *account, char* path)
 	fld_tree->path = path;
 	fld_tree->folders = folders;
 
+	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	/*	if (account->priv->fresh_folders)
 		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
 	else
 	*/
 	g_hash_table_foreach (account->priv->folders, add_folder_tree, fld_tree);
+	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
 	qsort (folders->pdata, folders->len,
 	       sizeof (EFolder *), folder_comparator);
