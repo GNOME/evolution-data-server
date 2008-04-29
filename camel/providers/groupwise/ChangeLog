@@ -1,3 +1,10 @@
+2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #338330 (bnc)
+	Internet Based Calendar Events Are Declined By Evolution/GroupWise
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+
 2008-04-17  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (update_update):

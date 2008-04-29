@@ -130,6 +130,7 @@ typedef struct {
 	int size ;
 	char *date ;
 	char *data ;
+	gboolean hidden;
 } EGwItemAttachment ;
 
 typedef enum {
@@ -300,6 +301,8 @@ int e_gw_item_get_trigger (EGwItem *item);
 void e_gw_item_set_trigger (EGwItem *item, int trigger);
 
 gboolean e_gw_item_has_attachment (EGwItem *item);
+
+gboolean e_gw_item_is_from_internet (EGwItem *item);
 
 typedef struct {
 	char *email;
