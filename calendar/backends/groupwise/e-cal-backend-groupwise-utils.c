@@ -1071,7 +1071,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			e_cal_component_set_dtstamp (comp, &itt_utc);
 		}
 	}
-	g_free (t);
 
 	/* categories */
 	category_ids = e_gw_item_get_categories (item);
@@ -1092,7 +1091,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	is_allday = e_gw_item_get_is_allday_event (item);
 
 	/* start date */
-	/* should i duplicate here ? */
 	t = e_gw_item_get_start_date (item);
 	if (t) {
 		itt_utc = icaltime_from_string (t);
@@ -1144,8 +1142,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			return NULL;
 		}
 	}
-
-	g_free (t);
 
 	/* classification */
 	description = e_gw_item_get_classification (item);
@@ -1282,6 +1278,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			trigger.u.rel_duration = icaldurationtype_from_int (alarm_duration);
 			e_cal_component_alarm_set_trigger (alarm, trigger);
 			e_cal_component_add_alarm (comp, alarm);
+			e_cal_component_alarm_free (alarm);
 
 		} else
 			set_default_alarms (comp);
@@ -1678,7 +1675,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam, *param_outstanding;
-        const char *session;
+        char *session;
 	char *outstanding = NULL;
 	gboolean resend_request = TRUE;
 	int request_iteration = 0;
@@ -1706,6 +1703,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	response = e_gw_connection_send_message (cnc, msg);
 	if (!response) {
 		g_object_unref (msg);
+		g_free (session);
 		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
 	}
 
@@ -1713,6 +1711,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         if (status != E_GW_CONNECTION_STATUS_OK) {
                 g_object_unref (msg);
                 g_object_unref (response);
+		g_free (session);
                 return status;
         }
 
@@ -1720,6 +1719,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
         if (!param) {
                 g_object_unref (response);
                 g_object_unref (msg);
+		g_free (session);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
 
@@ -1860,7 +1860,10 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	} /* end of while loop */
 
         /* closeFreeBusySession*/
-        return close_freebusy_session (cnc, session);
+	status = close_freebusy_session (cnc, session);
+	g_free (session);
+
+        return status;
 }
 
 #define SET_DELTA(fieldname) G_STMT_START{                                                                \

@@ -1377,6 +1377,9 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 				     mangled_uri,
 				     NULL);
 	g_free (mangled_uri);
+	if (priv->local_attachments_store)
+		g_free (priv->local_attachments_store);
+
 	priv->local_attachments_store =
 		g_filename_to_uri (filename, NULL, NULL);
 	g_free (filename);

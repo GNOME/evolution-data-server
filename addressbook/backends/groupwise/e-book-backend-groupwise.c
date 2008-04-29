@@ -2241,6 +2241,9 @@ book_view_thread (gpointer data)
 			view = "name email";
 
 		if (search_string) {
+			if (filter)
+				g_object_unref (filter);
+
 			/* groupwise server supports only name, rebuild the filter */
 			filter = e_gw_filter_new ();
 			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_BEGINS,
@@ -2297,6 +2300,8 @@ book_view_thread (gpointer data)
 					printf("reading contacts from cache took %ld.%03ld seconds\n",
 						diff/1000,diff%1000);
 				}
+				if (filter)
+					g_object_unref (filter);
 				return NULL;
 			}
 			else {
@@ -2337,9 +2342,12 @@ book_view_thread (gpointer data)
 				if (temp_list)
 					g_list_free (temp_list);
 				bonobo_object_unref (book_view);
-	
+				
+				if (filter)	
+					g_object_unref (filter);
+
 				return NULL;
-			}
+			} 
 		
 			/* no summary information found, read from server */
 			if (enable_debug)
@@ -2362,6 +2370,8 @@ book_view_thread (gpointer data)
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);
 			bonobo_object_unref (book_view);
+			if (filter)
+				g_object_unref (filter);
 			return NULL;
 		}
 

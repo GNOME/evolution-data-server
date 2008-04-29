@@ -287,6 +287,8 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	db_error = db->cursor (db, NULL, &dbc, 0);
 	if (db_error != 0) {
 		g_warning ("db->cursor failed with %d", db_error);
+		if (sexp)
+			g_object_unref (sexp);
 		return NULL;
 	}
 
