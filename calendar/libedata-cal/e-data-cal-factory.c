@@ -25,7 +25,7 @@
 #include <bonobo/bonobo-main.h>
 #include "libedataserver/e-url.h"
 #include "libedataserver/e-source.h"
-#include "libedataserver/e-data-server-module.h"
+#include "libebackend/e-data-server-module.h"
 #include "e-cal-backend.h"
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"

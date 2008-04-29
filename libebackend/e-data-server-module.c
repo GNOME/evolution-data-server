@@ -28,7 +28,7 @@
 
 #include <gmodule.h>
 
-#include "libedataserver-private.h"
+#include "libedataserver/libedataserver-private.h"
 
 #define E_DATA_SERVER_TYPE_MODULE    	        (e_data_server_module_get_type ())
 #define E_DATA_SERVER_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
@@ -263,7 +263,7 @@ e_data_server_module_add_type (GType type)
 	module_objects = g_list_prepend (module_objects, object);
 }
 
-/**
+/*
  * Unref all loaded modules, so that unused modules are unloaded from the
  * system.
  */

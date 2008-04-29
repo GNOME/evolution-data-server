@@ -1,7 +1,6 @@
 #include <libedataserver/e-account.h>
 #include <libedataserver/e-account-list.h>
 #include <libedataserver/e-component-listener.h>
-#include <libedataserver/e-file-cache.h>
 #include <libedataserver/e-iterator.h>
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-list-iterator.h>
@@ -12,7 +11,6 @@
 e_account_get_type
 e_account_list_get_type
 e_component_listener_get_type
-e_file_cache_get_type
 e_iterator_get_type
 e_list_get_type
 e_list_iterator_get_type

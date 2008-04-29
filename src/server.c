@@ -42,7 +42,7 @@
 #include <bonobo/bonobo-generic-factory.h>
 #include <gconf/gconf-client.h>
 
-#include <libedataserver/e-data-server-module.h>
+#include <libebackend/e-data-server-module.h>
 #include <libedata-book/e-data-book-factory.h>
 #if ENABLE_CALENDAR
 #include <libedata-cal/e-data-cal-factory.h>

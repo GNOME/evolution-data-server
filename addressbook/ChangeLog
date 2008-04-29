@@ -1,3 +1,21 @@
+2008-04-23  Rob Bradford  <rob@openedhand.com>
+
+	* backends/file/Makefile.am:
+	* backends/groupwise/Makefile.am:
+	* backends/vcf/Makefile.am:
+	* libedata-book/Makefile.am:
+	Link against the new libebackend library.
+
+	* backends/file/e-book-backend-file-factory.c:
+	* backends/file/e-book-backend-file.c:
+	* backends/groupwise/e-book-backend-groupwise-factory.c:
+	* backends/groupwise/e-book-backend-groupwise.c:
+	* backends/ldap/e-book-backend-ldap-factory.c:
+	* backends/vcf/e-book-backend-vcf-factory.c:
+	* libedata-book/e-book-backend-cache.h:
+	* libedata-book/e-data-book-factory.c:
+	Use new paths for header files that have been moved to libebackend.
+
 2008-04-28  Ashish Shrivastava  <shashish@novell.com>
 
 	** Fix for bug #381307 (bugzilla.novell.com)

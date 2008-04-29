@@ -1,38 +1,29 @@
 ## Process this file with automake to produce Makefile.in
 # The name of the module.
-DOC_MODULE = libedata-cal
+DOC_MODULE = libebackend
 
 content_files=
 HTML_IMAGES=
 
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = libedata-cal-docs.sgml
+DOC_MAIN_SGML_FILE = libebackend-docs.xml
 
 #SCANGOBJ_OPTIONS =
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 
-DOC_SOURCE_DIR = $(top_srcdir)/calendar/libedata-cal
-HFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.h
-CFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.c
+DOC_SOURCE_DIR = $(top_srcdir)/libebackend
+HFILE_GLOB = $(top_srcdir)/libebackend/*.h
+CFILE_GLOB = $(top_srcdir)/libebackend/*.c
+IGNORE_HFILES = 
 
-IGNORE_HFILES = \
-	Evolution-DataServer-Calendar.h	
-
-GTKDOC_CFLAGS = \
+GTKDOC_CFLAGS  =					\
+	-I$(top_srcdir)/libebackend			\
 	-I$(top_srcdir) 				\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar/libical/src		\
-	-I$(top_srcdir)/calendar/libical/src/libical	\
 	-I$(top_builddir)				\
-	-I$(top_builddir)/calendar			\
-	-I$(top_builddir)/calendar/libical/src		\
-	-I$(top_builddir)/calendar/libical/src/libical	\
-	$(EVOLUTION_CALENDAR_CFLAGS)
-
-GTKDOC_LIBS = \
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
-	$(top_builddir)/libebackend/libebackend-1.2.la			\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(E_BACKEND_CFLAGS)
+GTKDOC_LIBS = $(top_builddir)/libebackend/libebackend-1.2.la \
+	      $(top_builddir)/libedataserver/libedataserver-1.2.la \
+	      $(E_BACKEND_LIBS)
 
 ####################################
 # Everything below here is generic #

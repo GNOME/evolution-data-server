@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include "libedataserver/e-data-server-module.h"
+#include "libebackend/e-data-server-module.h"
 #include "libedata-book/e-book-backend-factory.h"
 #include "e-book-backend-ldap.h"
 

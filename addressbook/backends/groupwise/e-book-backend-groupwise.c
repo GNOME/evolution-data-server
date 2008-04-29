@@ -37,9 +37,10 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "libebackend/e-db3-utils.h"
+
 #include "libedataserver/e-sexp.h"
 #include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-db3-utils.h"
 #include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
 #include "libebook/e-contact.h"

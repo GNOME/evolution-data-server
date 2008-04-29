@@ -18,6 +18,7 @@ libebookbackendfile_la_LIBADD =						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(DB_LIBS)				\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 

@@ -16,7 +16,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-arg.h>
-#include "libedataserver/e-data-server-module.h"
+#include "libebackend/e-data-server-module.h"
 #include "e-data-book-factory.h"
 
 #include <backends/groupwise/e-book-backend-groupwise.h>

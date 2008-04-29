@@ -1,0 +1,3 @@
+#include <libebackend/e-file-cache.h>
+
+e_file_cache_get_type

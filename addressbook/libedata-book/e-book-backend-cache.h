@@ -23,7 +23,7 @@
 #ifndef E_BOOK_BACKEND_CACHE_H
 #define E_BOOK_BACKEND_CACHE_H
 
-#include "libedataserver/e-file-cache.h"
+#include "libebackend/e-file-cache.h"
 #include <libebook/e-contact.h>
 
 G_BEGIN_DECLS

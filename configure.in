@@ -38,9 +38,9 @@ AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, "$API_VERSION", [Api version (Major.Minor)])
 
 # Libtool versioning
-LIBEDATASERVER_CURRENT=10
+LIBEDATASERVER_CURRENT=11
 LIBEDATASERVER_REVISION=0
-LIBEDATASERVER_AGE=1
+LIBEDATASERVER_AGE=0
 
 LIBEDATASERVERUI_CURRENT=9
 LIBEDATASERVERUI_REVISION=0
@@ -82,6 +82,10 @@ LIBGDATA_GOOGLE_CURRENT=1
 LIBGDATA_GOOGLE_REVISION=0
 LIBGDATA_GOOGLE_AGE=0
 
+LIBEBACKEND_CURRENT=0
+LIBEBACKEND_REVISION=0
+LIBEBACKEND_AGE=0
+
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
 AC_SUBST(LIBEDATASERVER_AGE)
@@ -115,6 +119,9 @@ AC_SUBST(LIBGDATA_AGE)
 AC_SUBST(LIBGDATA_GOOGLE_CURRENT)
 AC_SUBST(LIBGDATA_GOOGLE_REVISION)
 AC_SUBST(LIBGDATA_GOOGLE_AGE)
+AC_SUBST(LIBEBACKEND_CURRENT)
+AC_SUBST(LIBEBACKEND_REVISION)
+AC_SUBST(LIBEBACKEND_AGE)
 
 dnl Put the ACLOCAL flags in the Makefile
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
@@ -1397,7 +1404,7 @@ dnl ****************************************
 dnl Flags for the various libraries we build
 dnl ****************************************
 
-dnl --- libedataserver and libedataserverui flags
+dnl --- libedataserver, libedataserverui, libebackend flags
 
 E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 gconf-2.0 $mozilla_nspr"
 
@@ -1410,6 +1417,12 @@ E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 libgnome-2.0 gobject-2.0 gthread-2.
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
 AC_SUBST(E_DATA_SERVER_UI_LIBS)
+
+E_BACKEND_DEPS="gobject-2.0 libxml-2.0"
+
+EVO_SET_COMPILE_FLAGS(E_BACKEND, $E_BACKEND_DEPS)
+AC_SUBST(E_BACKEND_CFLAGS)
+AC_SUBST(E_BACKEND_LIBS)
 
 dnl --- evolution-addressbook flags
 
@@ -1657,6 +1670,8 @@ camel/tests/stream/Makefile
 camel/camel.pc
 camel/camel-provider.pc
 libdb/Makefile
+libebackend/Makefile
+libebackend/libebackend.pc
 libedataserver/Makefile
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
@@ -1687,6 +1702,7 @@ docs/reference/calendar/libedata-cal/Makefile
 docs/reference/camel/Makefile
 docs/reference/libedataserver/Makefile
 docs/reference/libedataserverui/Makefile
+docs/reference/libebackend/Makefile
 po/Makefile.in
 ])
 

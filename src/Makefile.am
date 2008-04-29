@@ -57,6 +57,7 @@ E_DATA_CAL_LIBS=$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la
 endif
 
 evolution_data_server_LDADD =                     			\
+        $(top_builddir)/libebackend/libebackend-1.2.la			\
         $(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la  \
         $(E_DATA_CAL_LIBS)                                      	\
         $(E_FACTORY_LIBS)						\

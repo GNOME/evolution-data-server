@@ -22,7 +22,7 @@
 #ifndef E_CAL_BACKEND_CACHE_H
 #define E_CAL_BACKEND_CACHE_H
 
-#include "libedataserver/e-file-cache.h"
+#include "libebackend/e-file-cache.h"
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal.h>
 

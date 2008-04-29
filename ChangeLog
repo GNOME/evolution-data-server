@@ -1,3 +1,37 @@
+2008-04-23  Rob Bradford  <rob@openedhand.com>
+
+	* Makefile.am:
+	* configure.in:
+	* libebackend/Makefile.am:
+	* libebackend/libebackend.pc.in:
+	Build framework for new libebackend library.
+
+	* libedataserver/Makefile.am:
+	Remove files that have moved to libebackend.
+
+	* libedataserver/e-data-server-module.[ch]:
+	* libedataserver/e-db3-utils.[ch]:
+	* libedataserver/e-dbhash.[ch]:
+	* libedataserer/e-file-cache.[ch]:
+	Moved to libebackend.
+
+	* src/Makefile.am:
+	* src/server.c:
+	Use libebackend headers and link to the library.
+
+	* docs/reference/Makefile.am:
+	* docs/reference/libebackend/Makefile.am:
+	* docs/reference/libebackend/libebackend-docs.xml:
+	* docs/reference/libebackend/libebackend-sections.txt:
+	* docs/reference/libebackend/libebackend.types:
+	Add documentation for new libebackend library.
+
+	* docs/reference/libedataserver/libedataserver.types:
+	Remove types that have been moved to libebackend.
+
+	* docs/reference/calendar/libedata-cal/Makefile.am:
+	Add libebackend to the gtk-doc scanner libraries.
+
 2008-04-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	* README: Put it back.  Apparently Automake insists on it.

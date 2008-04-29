@@ -1,3 +1,9 @@
+2008-04-23  Rob Bradford  <rob@openedhand.com>
+
+	* libedata-cal/e-cal-backend-cache.h:
+	* libedata-cal/e-data-cal-factory.c:
+	Use new paths for header files that have been moved to libebackend.
+
 2008-04-29  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #330990

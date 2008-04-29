@@ -47,6 +47,7 @@ libedata_book_1_2_la_LIBADD =					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(top_builddir)/libebackend/libebackend-1.2.la	\
 	$(DB_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
