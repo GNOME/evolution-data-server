@@ -1,5 +1,12 @@
 2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
+        ** Fixes #358584 (bnc)
+           Display of web calendars ignores timezones
+
+	* backends/http/e-cal-backend-http.c: (retrieval_done):
+
+2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	** Fixes #358650 (bnc)
 	International clock applet is crashing
 
