@@ -297,7 +297,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 		e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
 		g_object_unref (filter[i]);
 	}
-	e_cal_backend_notify_view_done (E_CAL_BACKEND (cbgw), GNOME_Evolution_Calendar_Success);
+	e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), "", 100);
 
 	g_mutex_unlock (mutex);
 	return E_GW_CONNECTION_STATUS_OK;
