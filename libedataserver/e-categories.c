@@ -66,10 +66,55 @@ static CategoryInfo default_categories[] = {
 	{ NULL }
 };
 
+/* ------------------------------------------------------------------------- */
+
+typedef struct {
+	GObject object;
+} EChangedListener;
+
+typedef struct {
+	GObjectClass parent_class;
+
+	void (* changed) (void);
+} EChangedListenerClass;
+
+static GType e_changed_listener_get_type (void);
+
+enum {
+	CHANGED,
+	LAST_SIGNAL
+};
+
+static guint changed_listener_signals[LAST_SIGNAL];
+
+static void
+e_changed_listener_class_init (EChangedListenerClass *klass)
+{
+	changed_listener_signals[CHANGED] =
+		g_signal_new ("changed",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EChangedListenerClass, changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+}
+
+static void
+e_changed_listener_init (EChangedListener *changed)
+{
+}
+
+G_DEFINE_TYPE (EChangedListener, e_changed_listener, G_TYPE_OBJECT);
+
+/* ------------------------------------------------------------------------- */
+
 static gboolean initialized = FALSE;
 static GHashTable *categories_table = NULL;
 static gboolean save_is_pending = FALSE;
 static guint idle_id = 0;
+static EChangedListener *listeners = NULL;
+static gboolean changed = FALSE;
 
 static gchar *
 build_categories_filename (void)
@@ -179,6 +224,10 @@ idle_saver_cb (gpointer user_data)
 	g_free (filename);
 	save_is_pending = FALSE;
 
+	if (changed)
+		g_signal_emit_by_name (listeners, "changed");
+
+	changed = FALSE;
 exit:
 	idle_id = 0;
 	return FALSE;
@@ -380,6 +429,11 @@ finalize_categories (void)
 		categories_table = NULL;
 	}
 
+	if (listeners != NULL) {
+		g_object_unref (listeners);
+		listeners = NULL;
+	}
+
 	initialized = FALSE;
 }
 
@@ -396,6 +450,8 @@ initialize_categories (void)
 	categories_table = g_hash_table_new_full (
 		g_str_hash, g_str_equal, g_free,
 		(GDestroyNotify) free_category_info);
+
+	listeners = g_object_new (e_changed_listener_get_type (), NULL);
 
 	g_atexit (finalize_categories);
 
@@ -479,6 +535,7 @@ e_categories_add (const char *category, const char *unused, const char *icon_fil
 
 	g_hash_table_insert (categories_table, g_strdup (category), cat_info);
 
+	changed = TRUE;
 	save_categories ();
 }
 
@@ -496,8 +553,10 @@ e_categories_remove (const char *category)
 	if (!initialized)
 		initialize_categories ();
 
-	if (g_hash_table_remove (categories_table, category))
+	if (g_hash_table_remove (categories_table, category)) {
+		changed = TRUE;
 		save_categories ();
+	}
 }
 
 /**
@@ -571,6 +630,7 @@ e_categories_set_color_for (const char *category, const char *color)
 
 	g_free (cat_info->color);
 	cat_info->color = g_strdup (color);
+	changed = TRUE;
 	save_categories ();
 }
 #endif /* EDS_DISABLE_DEPRECATED */
@@ -622,6 +682,7 @@ e_categories_set_icon_file_for (const char *category, const char *icon_file)
 
 	g_free (cat_info->icon_file);
 	cat_info->icon_file = g_strdup (icon_file);
+	changed = TRUE;
 	save_categories ();
 }
 
@@ -648,4 +709,37 @@ e_categories_is_searchable (const char *category)
 		return FALSE;
 
 	return cat_info->searchable;
+}
+
+/**
+ * e_categories_register_change_listener:
+ * @listener: the callback to be called on any category change.
+ * @user_data: used data passed to the @listener when called.
+ *
+ * Registers callback to be called on change of any category.
+ * Pair listener and user_data is used to distinguish between listeners.
+ * Listeners can be unregistered with @e_categories_unregister_change_listener.
+ **/
+void
+e_categories_register_change_listener (GCallback listener, gpointer user_data)
+{
+	if (!initialized)
+		initialize_categories ();
+
+	g_signal_connect (listeners, "changed", listener, user_data);
+}
+
+/**
+ * e_categories_unregister_change_listener:
+ * @listener: Callback to be removed.
+ * @user_data: User data as passed with call to @e_categories_register_change_listener.
+ *
+ * Removes previously registered callback from the list of listeners on changes.
+ * If it was not registered, then does nothing.
+ **/
+void
+e_categories_unregister_change_listener (GCallback listener, gpointer user_data)
+{
+	if (initialized)
+		g_signal_handlers_disconnect_by_func (listeners, listener, user_data);
 }

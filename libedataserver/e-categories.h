@@ -20,6 +20,7 @@
 #ifndef __E_CATEGORIES__
 #define __E_CATEGORIES__
 
+#include <glib-object.h>
 #include <glib/glist.h>
 #include <glib/gmacros.h>
 
@@ -40,6 +41,9 @@ void        e_categories_set_color_for (const char *category, const char *color)
 const char *e_categories_get_icon_file_for (const char *category);
 void        e_categories_set_icon_file_for (const char *category, const char *icon_file);
 gboolean    e_categories_is_searchable (const char *category);
+
+void e_categories_register_change_listener   (GCallback listener, gpointer user_data);
+void e_categories_unregister_change_listener (GCallback listener, gpointer user_data);
 
 G_END_DECLS
 

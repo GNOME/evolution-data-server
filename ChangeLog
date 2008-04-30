@@ -1,3 +1,17 @@
+2008-04-30  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #316390
+
+	* libedataserver/e-categories.h:
+	(e_categories_register_change_listener),
+	(e_categories_unregister_change_listener):
+	* libedataserver/e-categories.c: (EChangedListener),
+	(idle_saver_cb), (finalize_categories), (initialize_categories),
+	(e_categories_set_color_for), (e_categories_set_icon_file_for),
+	(e_categories_register_change_listener), (e_categories_add),
+	(e_categories_unregister_change_listener), (e_categories_remove):
+	New API to support listening for changes in categories.
+
 2008-04-23  Rob Bradford  <rob@openedhand.com>
 
 	* Makefile.am:
