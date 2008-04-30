@@ -1847,6 +1847,10 @@ handle_copyuid_copy_user_tags (CamelImapResponse *response, CamelFolder *source,
 	if (!destset++)
 		goto lose;
 
+	/* first do NOOP on the destination folder, so server has enough time to propagate our copy command there */
+	camel_imap_response_free (CAMEL_IMAP_STORE (destination->parent_store),
+				  camel_imap_command (CAMEL_IMAP_STORE (destination->parent_store), destination, NULL, "NOOP"));
+
 	camel_exception_init (&ex);
 	/* refresh folder's summary first, we copied messages there on the server,
 	   but do not know about it in a local summary */
@@ -1898,6 +1902,39 @@ handle_copyuid_copy_user_tags (CamelImapResponse *response, CamelFolder *source,
 	g_warning ("Bad COPYUID response from server");
 }
 
+/* returns whether any of messages from uidset has set any user tag or not */
+static gboolean
+any_has_user_tag (CamelFolder *source, char *uidset)
+{
+	GPtrArray *src;
+
+	g_return_val_if_fail (source != NULL && uidset != NULL, FALSE);
+
+	src = imap_uid_set_to_array (source->summary, uidset);
+	if (src) {
+		gboolean have = FALSE;
+		int i;
+
+		CAMEL_IMAP_FOLDER_REC_LOCK (source, cache_lock);
+		for (i = 0; i < src->len && !have; i++) {
+			CamelMessageInfo *mi = camel_folder_get_message_info (source, src->pdata[i]);
+
+			if (mi) {
+				have = camel_message_info_user_tags (mi) != NULL;
+
+				camel_folder_free_message_info (source, mi);
+			}
+		}
+		CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
+
+		imap_uid_array_free (src);
+
+		return have;
+	}
+
+	return FALSE;
+}
+
 static void
 do_copy (CamelFolder *source, GPtrArray *uids,
 	 CamelFolder *destination, int delete_originals, CamelException *ex)
@@ -1910,9 +1947,10 @@ do_copy (CamelFolder *source, GPtrArray *uids,
 	while (uid < uids->len && !camel_exception_is_set (ex)) {
 		uidset = imap_uid_array_to_set (source->summary, uids, uid, UID_SET_LIMIT, &uid);
 
-		if ((store->capabilities & IMAP_CAPABILITY_XGWMOVE) && delete_originals) {
+		/* use XGWMOVE only when none of the moving messages has set any user tag */
+		if ((store->capabilities & IMAP_CAPABILITY_XGWMOVE) != 0 && delete_originals && !any_has_user_tag (source, uidset)) {
 			response = camel_imap_command (store, source, ex, "UID XGWMOVE %s %F", uidset, destination->full_name);
-			/* TODO: EXPUNGE returns??? */
+			/* returns only 'A00012 OK UID XGWMOVE completed' '* 2 XGWMOVE' so nothing useful */
 			camel_imap_response_free (store, response);
 		} else {
 			response = camel_imap_command (store, source, ex, "UID COPY %s %F", uidset, destination->full_name);

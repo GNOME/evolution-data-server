@@ -1,3 +1,13 @@
+2008-04-30  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #274316
+
+	* camel-imap-folder.c: (any_has_user_tag), (do_copy):
+	Use XGWMOVE only when none of the messages has set any user tag.
+	* camel-imap-folder.c: (handle_copyuid_copy_user_tags):
+	Do NOOP on the destination folder before refreshing info so
+	server has enough time to propagate our last copy command there.
+
 2008-04-14  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #270406
