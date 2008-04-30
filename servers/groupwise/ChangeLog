@@ -1,5 +1,14 @@
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	** Fixes #338330 (bnc)
+	Internet Based Calendar Events Are Declined By Evolution/GroupWise
+
+	* e-gw-item.c: (e_gw_item_init),
+	(e_gw_item_new_from_soap_parameter), (e_gw_item_is_from_internet):
+	* e-gw-item.h:
+
+2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	** Fixes part of #350143 (bnc)
 	Severe memory leak in evolution-data-server
 

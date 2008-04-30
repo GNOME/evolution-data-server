@@ -124,6 +124,9 @@ struct _EGwItemPrivate {
 	GHashTable *additions;
 	GHashTable *updates;
 	GHashTable *deletions;
+
+	gboolean internet;
+
 	/*padding*/
 	unsigned int padding[10];
 };
@@ -548,6 +551,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->link_info = NULL;
 	priv->msg_body_id = NULL;
 	priv->has_attachment = FALSE;
+	priv->internet = FALSE;
 	item->priv = priv;
 
 
@@ -1672,7 +1676,7 @@ EGwItem *
 e_gw_item_new_from_soap_parameter (const char *email, const char *container, SoupSoapParameter *param)
 {
 	EGwItem *item;
-        char *item_type;
+        char *item_type, *internet_prop;
 	SoupSoapParameter *subparameter, *child, *category_param, *attachment_param;
 	gboolean is_group_item = TRUE;
 	GList *user_email = NULL;
@@ -1686,6 +1690,13 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 	item = g_object_new (E_TYPE_GW_ITEM, NULL);
 	item_type = soup_soap_parameter_get_property (param, "type");
+
+	internet_prop = soup_soap_parameter_get_property (param, "internet");
+
+	if (internet_prop && !g_ascii_strcasecmp (internet_prop, "1"))
+		item->priv->internet = TRUE;
+	g_free (internet_prop);
+
 	if (!g_ascii_strcasecmp (item_type, "Mail"))
 		item->priv->item_type = E_GW_ITEM_TYPE_MAIL ;
 	else if (!g_ascii_strcasecmp (item_type, "Appointment"))
@@ -1988,6 +1999,10 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 				if (temp)
 					attach->date = soup_soap_parameter_get_string_value (temp) ;
 
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "hidden") ;
+				if (temp) 
+					if (soup_soap_parameter_get_int_value (temp) == 1)
+						attach->hidden = TRUE;
 
 				item->priv->attach_list = g_slist_append (item->priv->attach_list, attach) ;
 			}
@@ -2140,6 +2155,14 @@ e_gw_item_has_attachment (EGwItem *item)
 	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
 
 	return item->priv->has_attachment;
+}
+
+gboolean
+e_gw_item_is_from_internet (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), 0);
+
+	return item->priv->internet;
 }
 
 char *

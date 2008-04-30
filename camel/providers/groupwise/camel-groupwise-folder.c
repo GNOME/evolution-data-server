@@ -1667,7 +1667,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	int body_len = 0;
 	const char *uid = NULL;
 	gboolean is_text_html = FALSE;
-	gboolean has_mime_822 = FALSE;
+	gboolean has_mime_822 = FALSE, ignore_mime_822 = FALSE;
 	gboolean is_text_html_embed = FALSE;
 	gboolean is_base64_encoded = FALSE;
 	CamelStream *temp_stream;
@@ -1675,6 +1675,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	uid = e_gw_item_get_id(item);
 	cnc = cnc_lookup (priv);
 	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
+
+	/* The item is already in calendar. We need to ignore the mime 822 since it would not have the item id of the appointmnet
+	   in calendar */
+	if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT && e_gw_item_is_from_internet (item))
+		ignore_mime_822 = TRUE;
 
 	attach_list = e_gw_item_get_attach_id_list (item);
 	if (attach_list) {
@@ -1704,52 +1709,54 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			}//if attachment and len
 		} // if Mime.822 or TEXT.htm
 
-		for (al = attach_list ; al != NULL ; al = al->next) {
-			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-			if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
-				if (attach->size > MAX_ATTACHMENT_SIZE) {
-					int t_len , offset = 0, t_offset = 0;
-					char *t_attach = NULL;
-					GString *gstr = g_string_new (NULL);
+		if (!ignore_mime_822) {
+			for (al = attach_list ; al != NULL ; al = al->next) {
+				EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
+				if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
+					if (attach->size > MAX_ATTACHMENT_SIZE) {
+						int t_len , offset = 0, t_offset = 0;
+						char *t_attach = NULL;
+						GString *gstr = g_string_new (NULL);
 
-					len = 0;
-					do {
-						status = e_gw_connection_get_attachment_base64 (cnc,
-								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
-								(const char **)&t_attach, &t_len, &offset);
-						if (status == E_GW_CONNECTION_STATUS_OK) {
-
-							if (t_len) {
-								gsize len_iter = 0;
-								char *temp = NULL;
-
-								temp = g_base64_decode(t_attach, &len_iter);
-								gstr = g_string_append_len (gstr, temp, len_iter);
-								g_free (temp);
-								len += len_iter;
-								g_free (t_attach);
-								t_attach = NULL;
+						len = 0;
+						do {
+							status = e_gw_connection_get_attachment_base64 (cnc,
+									attach->id, t_offset, MAX_ATTACHMENT_SIZE,
+									(const char **)&t_attach, &t_len, &offset);
+							if (status == E_GW_CONNECTION_STATUS_OK) {
+	
+								if (t_len) {
+									gsize len_iter = 0;
+									char *temp = NULL;
+	
+									temp = g_base64_decode(t_attach, &len_iter);
+									gstr = g_string_append_len (gstr, temp, len_iter);
+									g_free (temp);
+									len += len_iter;
+									g_free (t_attach);
+									t_attach = NULL;
+								}
+								t_offset = offset;
 							}
-							t_offset = offset;
+						} while (t_offset);
+						body = gstr->str;
+						body_len = len;
+						g_string_free (gstr, FALSE);
+					} else {
+						status = e_gw_connection_get_attachment (cnc,
+								attach->id, 0, -1,
+								(const char **)&attachment, &len);
+						if (status != E_GW_CONNECTION_STATUS_OK) {
+							g_warning ("Could not get attachment\n");
+							camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
+							return NULL;
 						}
-					} while (t_offset);
-					body = gstr->str;
-					body_len = len;
-					g_string_free (gstr, FALSE);
-				} else {
-					status = e_gw_connection_get_attachment (cnc,
-							attach->id, 0, -1,
-							(const char **)&attachment, &len);
-					if (status != E_GW_CONNECTION_STATUS_OK) {
-						g_warning ("Could not get attachment\n");
-						camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
-						return NULL;
+						body = g_strdup (attachment);
+						body_len = len;
+						g_free (attachment);
 					}
-					body = g_strdup (attachment);
-					body_len = len;
-					g_free (attachment);
+					has_mime_822 = TRUE;
 				}
-				has_mime_822 = TRUE;
 			}
 		}
 
@@ -1822,9 +1829,11 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 			if (attach->contentid && (is_text_html_embed != TRUE))
 				is_text_html_embed = TRUE;
-			if ( !g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
+
+			if ( (!g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
 			     !g_ascii_strcasecmp (attach->name, "Mime.822") ||
-			     !g_ascii_strcasecmp (attach->name, "Header"))
+			     !g_ascii_strcasecmp (attach->name, "Header") ||
+			     !g_ascii_strcasecmp (attach->name, "meeting.ics")) && (attach->hidden == TRUE))
 				continue;
 
 			if ( (attach->item_reference) && (!g_ascii_strcasecmp (attach->item_reference, "1")) ) {
