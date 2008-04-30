@@ -1,3 +1,26 @@
+2008-04-30  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #520532
+
+	* e-passwords.c (ep_keyring_migrate_from_keyfile):
+	Implement a migration path from the ~/.gnome2_private/Evolution
+	password file to gnome-keyring.  If the keyring is available and
+	a get_password() operation fails to find a password in the keyring,
+	it will look for the password in the password file.  If found, it
+	will copy the password to the keyring and (if the copy is successful)
+	remove the password from the password file.
+
+	* e-passwords.c (EPassMsg):
+	Add a GError to the message structure.  Instead of logging a warning
+	to stderr themselves, operations will propagate errors to the message
+	structure.  This is enough for the migration code to detect errors.
+	As far as how we handle the error, for now we simply dump it to stderr
+	as a warning when the message structure is destroyed.  But ultimately
+	I want to propagate the error back to the caller of the password
+	operation, which will require an API break.  The current API provides
+	no feedback about whether a password operation was successful, so
+	callers can only assume it was.
+
 2008-04-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-passwords.c (ep_ask_password):

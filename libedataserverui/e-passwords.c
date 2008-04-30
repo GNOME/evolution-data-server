@@ -73,6 +73,7 @@ struct _EPassMsg {
 	/* output */
 	gboolean *remember;
 	gchar *password;
+	GError *error;
 
 	/* work variables */
 	GtkWidget *entry;
@@ -176,6 +177,21 @@ ep_key_file_save (void)
 }
 
 #ifdef WITH_GNOME_KEYRING
+
+/* XXX Unfortunately, gnome-keyring doesn't use GErrors. */
+#define EP_KEYRING_ERROR	(ep_keyring_error_domain ())
+
+static GQuark
+ep_keyring_error_domain (void)
+{
+	static GQuark quark = 0;
+
+	if (G_UNLIKELY (quark == 0))
+		quark = g_quark_from_static_string ("ep-keyring-error-quark");
+
+	return quark;
+}
+
 static EUri *
 ep_keyring_uri_new (const gchar *string)
 {
@@ -243,7 +259,8 @@ ep_keyring_validate (const gchar *user,
 static gboolean
 ep_keyring_delete_passwords (const gchar *user,
                              const gchar *server,
-                             GList *passwords)
+                             GList *passwords,
+                             GError **error)
 {
 	while (passwords != NULL) {
 		GnomeKeyringFound *found = passwords->data;
@@ -257,7 +274,8 @@ ep_keyring_delete_passwords (const gchar *user,
 
 		result = gnome_keyring_item_delete_sync (NULL, found->item_id);
 		if (result != GNOME_KEYRING_RESULT_OK) {
-			g_warning (
+			g_set_error (
+				error, EP_KEYRING_ERROR, result,
 				"Unable to delete password in "
 				"keyring (Keyring reports: %s)",
 				gnome_keyring_result_to_message (result));
@@ -274,7 +292,8 @@ static gboolean
 ep_keyring_insert_password (const gchar *user,
                             const gchar *server,
                             const gchar *display_name,
-                            const gchar *password)
+                            const gchar *password,
+                            GError **error)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
@@ -299,7 +318,8 @@ ep_keyring_insert_password (const gchar *user,
 		NULL, GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
 		display_name, attributes, password, TRUE, &item_id);
 	if (result != GNOME_KEYRING_RESULT_OK) {
-		g_warning (
+		g_set_error (
+			error, EP_KEYRING_ERROR, result,
 			"Unable to create password in "
 			"keyring (Keyring reports: %s)",
 			gnome_keyring_result_to_message (result));
@@ -312,7 +332,8 @@ ep_keyring_insert_password (const gchar *user,
 
 static GList *
 ep_keyring_lookup_passwords (const gchar *user,
-                             const gchar *server)
+                             const gchar *server,
+                             GError **error)
 {
 	GnomeKeyringAttributeList *attributes;
 	GnomeKeyringResult result;
@@ -331,7 +352,8 @@ ep_keyring_lookup_passwords (const gchar *user,
 	result = gnome_keyring_find_items_sync (
 		GNOME_KEYRING_ITEM_NETWORK_PASSWORD, attributes, &passwords);
 	if (result != GNOME_KEYRING_RESULT_OK) {
-		g_warning (
+		g_set_error (
+			error, EP_KEYRING_ERROR, result,
 			"Unable to find password(s) in "
 			"keyring (Keyring reports: %s)",
 			gnome_keyring_result_to_message (result));
@@ -412,6 +434,13 @@ ep_msg_new (void (*dispatch) (EPassMsg *))
 static void
 ep_msg_free (EPassMsg *msg)
 {
+	/* XXX We really should be passing this back to the caller, but
+	 *     doing so will require breaking the password API. */
+	if (msg->error != NULL) {
+		g_warning ("%s", msg->error->message);
+		g_error_free (msg->error);
+	}
+
 	e_flag_free (msg->done);
 	g_free (msg->password);
 	g_free (msg);
@@ -447,13 +476,23 @@ static void
 ep_clear_passwords_keyring (EPassMsg *msg)
 {
 	GList *passwords;
+	GError *error = NULL;
 
 	/* Find all Evolution passwords and delete them. */
-	passwords = ep_keyring_lookup_passwords (NULL, NULL);
+	passwords = ep_keyring_lookup_passwords (NULL, NULL, &error);
 	if (passwords != NULL) {
-		ep_keyring_delete_passwords (NULL, NULL, passwords);
+		ep_keyring_delete_passwords (NULL, NULL, passwords, &error);
 		gnome_keyring_found_list_free (passwords);
 	}
+
+	/* Not finding the requested key is acceptable, but we still
+	 * want to leave an informational message on the terminal. */
+	if (g_error_matches (error, EP_KEYRING_ERROR, GNOME_KEYRING_RESULT_NO_MATCH)) {
+		g_message ("%s", error->message);
+		g_error_free (error);
+
+	} else if (error != NULL)
+		g_propagate_error (&msg->error, error);
 }
 #endif
 
@@ -474,11 +513,8 @@ ep_clear_passwords_keyfile (EPassMsg *msg)
                 g_message ("%s", error->message);
                 g_error_free (error);
 
-	/* Issue a warning if anything else goes wrong. */
-	} else if (error != NULL) {
-		g_warning ("%s", error->message);
-		g_error_free (error);
-	}
+	} else if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	g_free (group);
 }
@@ -504,13 +540,18 @@ static void
 ep_forget_passwords_keyring (EPassMsg *msg)
 {
 	GList *passwords;
+	GError *error = NULL;
 
 	/* Find all Evolution passwords and delete them. */
-	passwords = ep_keyring_lookup_passwords (NULL, NULL);
+	passwords = ep_keyring_lookup_passwords (NULL, NULL, &error);
 	if (passwords != NULL) {
-		ep_keyring_delete_passwords (NULL, NULL, passwords);
+		ep_keyring_delete_passwords (NULL, NULL, passwords, &error);
 		gnome_keyring_found_list_free (passwords);
+
 	}
+
+	if (error != NULL)
+		g_propagate_error (&msg->error, error);
 }
 #endif
 
@@ -569,6 +610,7 @@ ep_remember_password_keyring (EPassMsg *msg)
 {
 	gchar *password;
 	EUri *uri;
+	GError *error = NULL;
 
 	password = g_hash_table_lookup (password_cache, msg->key);
 	if (password == NULL) {
@@ -581,8 +623,11 @@ ep_remember_password_keyring (EPassMsg *msg)
 
 	/* Only remove the password from the session hash
 	 * if the keyring insertion was successful. */
-	if (ep_keyring_insert_password (uri->user, uri->host, msg->key, password))
+	if (ep_keyring_insert_password (uri->user, uri->host, msg->key, password, &error))
 		g_hash_table_remove (password_cache, msg->key);
+
+	if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
 }
@@ -634,16 +679,20 @@ ep_forget_password_keyring (EPassMsg *msg)
 {
 	GList *passwords;
 	EUri *uri;
+	GError *error = NULL;
 
 	uri = ep_keyring_uri_new (msg->key);
 	g_return_if_fail (uri != NULL);
 
 	/* Find all Evolution passwords matching the URI and delete them. */
-	passwords = ep_keyring_lookup_passwords (uri->user, uri->host);
+	passwords = ep_keyring_lookup_passwords (uri->user, uri->host, &error);
 	if (passwords != NULL) {
-		ep_keyring_delete_passwords (uri->user, uri->host, passwords);
+		ep_keyring_delete_passwords (uri->user, uri->host, passwords, &error);
 		gnome_keyring_found_list_free (passwords);
 	}
+
+	if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
 }
@@ -672,11 +721,8 @@ ep_forget_password_keyfile (EPassMsg *msg)
                 g_message ("%s", error->message);
                 g_error_free (error);
 
-	/* Issue a warning if anything else goes wrong. */
-	} else if (error != NULL) {
-		g_warning ("%s", error->message);
-		g_error_free (error);
-	}
+	} else if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	g_free (group);
 	g_free (key);
@@ -706,12 +752,13 @@ ep_get_password_keyring (EPassMsg *msg)
 {
 	GList *passwords;
 	EUri *uri;
+	GError *error = NULL;
 
 	uri = ep_keyring_uri_new (msg->key);
 	g_return_if_fail (uri != NULL);
 
 	/* Find the first Evolution password that matches the URI. */
-	passwords = ep_keyring_lookup_passwords (uri->user, uri->host);
+	passwords = ep_keyring_lookup_passwords (uri->user, uri->host, &error);
 	if (passwords != NULL) {
 		GList *iter = passwords;
 
@@ -728,6 +775,15 @@ ep_get_password_keyring (EPassMsg *msg)
 
 		gnome_keyring_found_list_free (passwords);
 	}
+
+	/* Not finding the requested key is acceptable, but we still
+	 * want to leave an informational message on the terminal. */
+	if (g_error_matches (error, EP_KEYRING_ERROR, GNOME_KEYRING_RESULT_NO_MATCH)) {
+		g_message ("%s", error->message);
+		g_error_free (error);
+
+	} else if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
 }
@@ -758,15 +814,39 @@ ep_get_password_keyfile (EPassMsg *msg)
                 g_message ("%s", error->message);
                 g_error_free (error);
 
-	/* Issue a warning if anything else goes wrong. */
-	} else if (error != NULL) {
-		g_warning ("%s", error->message);
-		g_error_free (error);
-	}
+	} else if (error != NULL)
+		g_propagate_error (&msg->error, error);
 
 	g_free (group);
 	g_free (key);
 }
+
+#ifdef WITH_GNOME_KEYRING
+static void
+ep_keyring_migrate_from_keyfile (EPassMsg *msg)
+{
+	/* Fetch the password from the keyfile. */
+	ep_get_password_keyfile (msg);
+	if (msg->password == NULL)
+		return;
+
+	/* Add it to the in-memory cache. */
+	g_hash_table_insert (
+		password_cache, g_strdup (msg->key),
+		g_strdup (msg->password));
+
+	/* Remember it in the keyring. */
+	ep_remember_password_keyring (msg);
+
+	/* Remove it from the in-memory cache. */
+	g_hash_table_remove (password_cache, msg->key);
+
+	/* Remove it from the keyfile only if the keyring
+	 * insertion was successful. */
+	if (msg->error == NULL)
+		ep_forget_password_keyfile (msg);
+}
+#endif
 
 static void
 ep_get_password (EPassMsg *msg)
@@ -775,14 +855,19 @@ ep_get_password (EPassMsg *msg)
 
 	/* Check the in-memory cache first. */
 	password = g_hash_table_lookup (password_cache, msg->key);
-	if (password != NULL)
+	if (password != NULL) {
 		msg->password = g_strdup (password);
 
 #ifdef WITH_GNOME_KEYRING
-	else if (gnome_keyring_is_available ())
+	} else if (gnome_keyring_is_available ()) {
 		ep_get_password_keyring (msg);
+
+		/* Try looking for the password in the keyfile.
+		 * If we find it, migrate it to the keyring. */
+		if (msg->password == NULL && msg->error == NULL)
+			ep_keyring_migrate_from_keyfile (msg);
 #endif
-	else
+	} else
 		ep_get_password_keyfile (msg);
 
 	if (!msg->noreply)
@@ -1043,15 +1128,10 @@ e_passwords_init (void)
 			(GDestroyNotify) g_free);
 		main_thread = g_thread_self ();
 
-#ifdef WITH_GNOME_KEYRING
-		if (!gnome_keyring_is_available ()) {
-			key_file = g_key_file_new ();
-			ep_key_file_load ();
-		}
-#else
+		/* Load the keyfile even if we're using the keyring.
+		 * We might be able to extract passwords from it. */
 		key_file = g_key_file_new ();
 		ep_key_file_load ();
-#endif
 	}
 
 	G_UNLOCK (passwords);
