@@ -536,11 +536,12 @@ cs_thread_status(CamelOperation *op, const char *what, int pc, void *data)
 	CS_CLASS(m->session)->thread_status(m->session, m, what, pc);
 }
 
-static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size)
+static void *
+session_thread_msg_new (CamelSession *session,
+                        CamelSessionThreadOps *ops,
+                        unsigned int size)
 {
 	CamelSessionThreadMsg *m;
-
-	g_assert(size >= sizeof(*m));
 
 	m = g_malloc0(size);
 	m->ops = ops;
@@ -556,9 +557,12 @@ static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps
 	return m;
 }
 
-static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg)
+static void
+session_thread_msg_free (CamelSession *session,
+                         CamelSessionThreadMsg *msg)
 {
-	g_assert(msg->ops != NULL);
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (msg != NULL && msg->ops != NULL);
 
 	d(printf("free message %p session %p\n", msg, session));
 
@@ -578,7 +582,8 @@ static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg
 }
 
 static void
-session_thread_proxy(CamelSessionThreadMsg *msg, CamelSession *session)
+session_thread_proxy (CamelSessionThreadMsg *msg,
+                      CamelSession *session)
 {
 	if (msg->ops->receive) {
 		CamelOperation *oldop;
@@ -591,7 +596,10 @@ session_thread_proxy(CamelSessionThreadMsg *msg, CamelSession *session)
 	camel_session_thread_msg_free(session, msg);
 }
 
-static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
+static int
+session_thread_queue (CamelSession *session,
+                      CamelSessionThreadMsg *msg,
+                      int flags)
 {
 	GThreadPool *thread_pool;
 	int id;
@@ -612,7 +620,9 @@ static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *ms
 	return id;
 }
 
-static void session_thread_wait(CamelSession *session, int id)
+static void
+session_thread_wait (CamelSession *session,
+                     int id)
 {
 	int wait;
 
@@ -627,7 +637,11 @@ static void session_thread_wait(CamelSession *session, int id)
 	} while (wait);
 }
 
-static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const char *text, int pc)
+static void
+session_thread_status (CamelSession *session,
+                       CamelSessionThreadMsg *msg,
+                       const char *text,
+                       int pc)
 {
 }
 
@@ -646,13 +660,15 @@ static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *
  * Returns a new #CamelSessionThreadMsg
  **/
 void *
-camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size)
+camel_session_thread_msg_new (CamelSession *session,
+                              CamelSessionThreadOps *ops,
+                              unsigned int size)
 {
-	g_assert(CAMEL_IS_SESSION(session));
-	g_assert(ops != NULL);
-	g_assert(size >= sizeof(CamelSessionThreadMsg));
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (ops != NULL, NULL);
+	g_return_val_if_fail (size >= sizeof (CamelSessionThreadMsg), NULL);
 
-	return CS_CLASS (session)->thread_msg_new(session, ops, size);
+	return CS_CLASS (session)->thread_msg_new (session, ops, size);
 }
 
 /**
@@ -664,13 +680,13 @@ camel_session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, 
  * msg_new, and must nto have been submitted to any queue function.
  **/
 void
-camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg)
+camel_session_thread_msg_free (CamelSession *session,
+                               CamelSessionThreadMsg *msg)
 {
-	g_assert(CAMEL_IS_SESSION(session));
-	g_assert(msg != NULL);
-	g_assert(msg->ops != NULL);
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (msg != NULL && msg->ops != NULL);
 
-	CS_CLASS (session)->thread_msg_free(session, msg);
+	CS_CLASS (session)->thread_msg_free (session, msg);
 }
 
 /**
@@ -686,12 +702,14 @@ camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg)
  * Returns the id of the operation queued
  **/
 int
-camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags)
+camel_session_thread_queue (CamelSession *session,
+                            CamelSessionThreadMsg *msg,
+                            int flags)
 {
-	g_assert(CAMEL_IS_SESSION(session));
-	g_assert(msg != NULL);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
+	g_return_val_if_fail (msg != NULL, -1);
 
-	return CS_CLASS (session)->thread_queue(session, msg, flags);
+	return CS_CLASS (session)->thread_queue (session, msg, flags);
 }
 
 /**
@@ -702,14 +720,15 @@ camel_session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, in
  * Wait on an operation to complete (by id).
  **/
 void
-camel_session_thread_wait(CamelSession *session, int id)
+camel_session_thread_wait (CamelSession *session,
+                           int id)
 {
-	g_assert(CAMEL_IS_SESSION(session));
+	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	if (id == -1)
 		return;
 
-	CS_CLASS (session)->thread_wait(session, id);
+	CS_CLASS (session)->thread_wait (session, id);
 }
 
 /**
@@ -723,7 +742,7 @@ camel_session_thread_wait(CamelSession *session, int id)
 gboolean
 camel_session_check_junk (CamelSession *session)
 {
-	g_assert(CAMEL_IS_SESSION(session));
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
 	return session->check_junk;
 }
@@ -736,9 +755,10 @@ camel_session_check_junk (CamelSession *session)
  * Set check_junk flag, if set, incoming mail will be checked for being junk.
  **/
 void
-camel_session_set_check_junk (CamelSession *session, gboolean check_junk)
+camel_session_set_check_junk (CamelSession *session,
+                              gboolean check_junk)
 {
-	g_assert(CAMEL_IS_SESSION(session));
+	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	session->check_junk = check_junk;
 }
@@ -746,23 +766,29 @@ camel_session_set_check_junk (CamelSession *session, gboolean check_junk)
 gboolean
 camel_session_get_network_state (CamelSession *session)
 {
-	g_return_val_if_fail (CAMEL_IS_SESSION(session), FALSE);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
 	return session->network_state;
 }
 
 void
-camel_session_set_network_state (CamelSession *session, gboolean network_state)
+camel_session_set_network_state (CamelSession *session,
+                                 gboolean network_state)
 {
-	g_return_if_fail (CAMEL_IS_SESSION(session));
+	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	session->network_state = network_state;
 }
 
 void
-camel_session_set_junk_headers (CamelSession *session, const char **headers, const char **values, int len)
+camel_session_set_junk_headers (CamelSession *session,
+                                const char **headers,
+                                const char **values,
+                                int len)
 {
 	int i;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	if (session->priv->junk_headers) {
 		g_hash_table_remove_all (session->priv->junk_headers);
@@ -779,5 +805,7 @@ camel_session_set_junk_headers (CamelSession *session, const char **headers, con
 const GHashTable *
 camel_session_get_junk_headers (CamelSession *session)
 {
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
 	return session->priv->junk_headers;
 }
