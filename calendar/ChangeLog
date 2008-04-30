@@ -1,5 +1,14 @@
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	** Fixes #358644 (bnc) 
+	Retracted groupwise appointments should disappear as soon as they are 
+	retracted.
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(get_cache_refresh_interval), (delta_thread), (cache_init):
+
+2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	** Fixes part of #350143 (bnc)
 	Severe memory leak in evolution-data-server
 
