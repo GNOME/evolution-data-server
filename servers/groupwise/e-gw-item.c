@@ -2304,6 +2304,14 @@ e_gw_item_set_classification (EGwItem *item, const char *new_class)
 	item->priv->classification = g_strdup (new_class);
 }
 
+const char *
+e_gw_item_get_security (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return (const char *) item->priv->security;
+}
+
 void
 e_gw_item_set_security (EGwItem *item, const char *new_class)
 {

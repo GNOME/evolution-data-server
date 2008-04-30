@@ -1934,6 +1934,12 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	}/* if attach_list */
 	/********************/
 
+	if (e_gw_item_get_priority (item))
+		camel_medium_add_header ( CAMEL_MEDIUM (msg), "Priority", e_gw_item_get_priority(item));
+
+	if (e_gw_item_get_security (item))
+		camel_medium_add_header ( CAMEL_MEDIUM (msg), "Security", e_gw_item_get_security(item));
+
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 	camel_object_unref (multipart);
 

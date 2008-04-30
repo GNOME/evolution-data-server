@@ -1,3 +1,10 @@
+2008-04-30  Sankar P  <psankar@novell.com>
+
+	** Fixes #182380 (bnc)
+	Message classification and security cannot be viewed
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+
 2008-04-16  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c: (update_update):
