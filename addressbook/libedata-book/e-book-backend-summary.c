@@ -771,6 +771,10 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 		return;
 	}
 
+	/* Ensure the duplicate contacts are not added */
+	if (e_book_backend_summary_check_contact (summary, id))
+		e_book_backend_summary_remove_contact (summary, id);
+
 	new_item = g_new0 (EBookBackendSummaryItem, 1);
 
 	new_item->id         = id;

@@ -1,3 +1,14 @@
+2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+        ** Fixes part of #350143 (bnc)
+           Severe memory leak in evolution-data-server
+
+	* backends/groupwise/e-book-backend-groupwise.c: (build_cache),
+	(update_cache), (update_address_book_deltas),
+	(e_book_backend_groupwise_authenticate_user):
+	* libedata-book/e-book-backend-summary.c:
+	(e_book_backend_summary_add_contact):
+
 2008-04-23  Rob Bradford  <rob@openedhand.com>
 
 	* backends/file/Makefile.am:
