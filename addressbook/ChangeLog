@@ -1,5 +1,15 @@
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	** Fixes part of #350143 (bnc)
+	Severe memory leak in evolution-data-server
+
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(book_view_thread):
+	* libedata-book/e-book-backend-db-cache.c:
+	(e_book_backend_db_cache_get_contacts):
+
+2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
         ** Fixes part of #350143 (bnc)
            Severe memory leak in evolution-data-server
 

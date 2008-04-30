@@ -453,6 +453,21 @@ e_gw_item_dispose (GObject *object)
 			priv->end_date = NULL;
 		}
 
+		if (priv->delivered_date) {
+			g_free (priv->delivered_date);
+			priv->delivered_date = NULL;
+		}
+
+		if (priv->start_date) {
+			g_free (priv->start_date);
+			priv->start_date = NULL;
+		}
+
+		if (priv->creation_date) {
+			g_free (priv->creation_date);
+			priv->creation_date = NULL;
+                }
+
 		free_changes (priv->additions);
 		free_changes (priv->deletions);
 		free_changes (priv->updates);
@@ -525,7 +540,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->attach_list = NULL ;
 	priv->simple_fields = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 	priv->full_name = g_new0(FullName, 1);
-	priv->addresses = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_postal_address);
+	priv->addresses = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_postal_address);
 	priv->additions = g_hash_table_new(g_str_hash, g_str_equal);
 	priv->updates =   g_hash_table_new (g_str_hash, g_str_equal);
 	priv->deletions = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1392,7 +1407,7 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	if (subparam) {
 		address = g_new0 (PostalAddress, 1);
 		set_postal_address_from_soap_parameter (address, subparam);
-		g_hash_table_insert (item->priv->addresses, "Office", address);
+		g_hash_table_insert (item->priv->addresses, g_strdup ("Office"), address);
 
 	}
 
@@ -1963,8 +1978,11 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 					attach->contentType = soup_soap_parameter_get_string_value (temp) ;
 
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "size") ;
-				if (temp)
-					attach->size = atoi (soup_soap_parameter_get_string_value (temp)) ;
+				if (temp) {
+					value = soup_soap_parameter_get_string_value (temp);
+					attach->size = atoi (value);
+					g_free (value);
+				}
 
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "date") ;
 				if (temp)

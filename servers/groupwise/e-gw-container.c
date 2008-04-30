@@ -60,7 +60,7 @@ free_node(EShUsers *user)
 {
 	if(user){
 		g_free(user->email);
-		user->email = NULL;
+		g_free (user);
 	}
 	g_free (user);
 	return ;

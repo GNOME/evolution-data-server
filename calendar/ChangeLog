@@ -1,3 +1,14 @@
+2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes part of #350143 (bnc)
+	Severe memory leak in evolution-data-server
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component), (e_gw_connection_get_freebusy_info):
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	(e_cal_backend_groupwise_open):
+	* libecal/e-cal-component.c: (set_attachment_list):
+
 2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
         ** Fixes #358584 (bnc)
