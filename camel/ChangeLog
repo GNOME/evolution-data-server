@@ -1,3 +1,9 @@
+2008-05-01  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-folder-summary.c: Don't limit references while loading the
+	summary, etc to 500 entries - especially since we don't force the
+	limit when outputting the summary. Fixes bug #347061.
+
 2008-04-30  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-session.c:

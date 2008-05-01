@@ -527,7 +527,7 @@ perform_content_info_load(CamelFolderSummary *s, FILE *in)
 	if (ci == NULL)
 		return NULL;
 
-	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500) {
+	if (camel_file_util_decode_uint32(in, &count) == -1) {
 		camel_folder_summary_content_info_free (s, ci);
 		return NULL;
 	}
@@ -1872,7 +1872,7 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 	camel_file_util_decode_fixed_int32(in, &mi->message_id.id.part.hi);
 	camel_file_util_decode_fixed_int32(in, &mi->message_id.id.part.lo);
 
-	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500)
+	if (camel_file_util_decode_uint32(in, &count) == -1)
 		goto error;
 
 	if (count > 0) {
@@ -1884,7 +1884,7 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 		}
 	}
 
-	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500)
+	if (camel_file_util_decode_uint32(in, &count) == -1)
 		goto error;
 
 	for (i=0;i<count;i++) {
@@ -1895,7 +1895,7 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 		g_free(name);
 	}
 
-	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500)
+	if (camel_file_util_decode_uint32(in, &count) == -1)
 		goto error;
 
 	for (i=0;i<count;i++) {
@@ -2049,7 +2049,8 @@ content_info_load(CamelFolderSummary *s, FILE *in)
 	ct = camel_content_type_new(type, subtype);
 	g_free(type);		/* can this be removed? */
 	g_free(subtype);
-	if (camel_file_util_decode_uint32(in, &count) == -1 || count > 500)
+	
+	if (camel_file_util_decode_uint32(in, &count) == -1)
 		goto error;
 
 	for (i = 0; i < count; i++) {
