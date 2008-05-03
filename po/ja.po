@@ -8,10 +8,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server trunk\n"
+"Project-Id-Version: evolution-data-server gnome-2-22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-03 12:31+0900\n"
-"PO-Revision-Date: 2008-02-03 11:26+0900\n"
+"POT-Creation-Date: 2008-05-03 16:56+0900\n"
+"PO-Revision-Date: 2008-05-03 16:55+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -19,29 +19,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:554
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2310
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2359
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "読み込み中..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:557
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2269
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2289
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2308
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4156
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2292
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2314
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2357
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "検索中..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2670
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4315
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2724
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "連絡先 (%d個) のダウンロード中..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2825
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3016
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3060
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2873
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3058
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3102
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "連絡先のキャッシュ情報 (%d個) の更新中..."
@@ -54,7 +54,7 @@ msgstr "識別名 (DN) を使用する"
 msgid "Using Email Address"
 msgstr "E-メール・アドレスを使用する"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1002
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1005
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP サーバへ再接続中..."
 
@@ -62,19 +62,19 @@ msgstr "LDAP サーバへ再接続中..."
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP サーバへ連絡先の追加中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1726
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1732
 msgid "Removing contact from LDAP server..."
 msgstr "LDP サーバから連絡先の削除中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2031
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2043
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP サーバにある連絡先の修正中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4027
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4087
 msgid "Receiving LDAP search results..."
 msgstr "LDAP サーバ検索結果の取得中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4176
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
 msgid "Error performing search"
 msgstr "検索中にエラーが発生しました"
 
@@ -90,10 +90,10 @@ msgstr "検索中にエラーが発生しました"
 #: ../addressbook/libebook/e-book.c:1214 ../addressbook/libebook/e-book.c:1218
 #: ../addressbook/libebook/e-book.c:1375 ../addressbook/libebook/e-book.c:1379
 #: ../addressbook/libebook/e-book.c:1588 ../addressbook/libebook/e-book.c:1592
-#: ../addressbook/libebook/e-book.c:1829 ../addressbook/libebook/e-book.c:1833
-#: ../addressbook/libebook/e-book.c:2070 ../addressbook/libebook/e-book.c:2074
-#: ../addressbook/libebook/e-book.c:2286 ../addressbook/libebook/e-book.c:2290
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:1833 ../addressbook/libebook/e-book.c:1837
+#: ../addressbook/libebook/e-book.c:2078 ../addressbook/libebook/e-book.c:2082
+#: ../addressbook/libebook/e-book.c:2294 ../addressbook/libebook/e-book.c:2298
+#: ../addressbook/libebook/e-book.c:3433
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%2$s\" の前にあるブックの \"%1$s\""
@@ -102,9 +102,9 @@ msgstr "\"%2$s\" の前にあるブックの \"%1$s\""
 #: ../addressbook/libebook/e-book.c:628 ../addressbook/libebook/e-book.c:721
 #: ../addressbook/libebook/e-book.c:1037 ../addressbook/libebook/e-book.c:1228
 #: ../addressbook/libebook/e-book.c:1389 ../addressbook/libebook/e-book.c:1601
-#: ../addressbook/libebook/e-book.c:1842 ../addressbook/libebook/e-book.c:2084
-#: ../addressbook/libebook/e-book.c:2299 ../addressbook/libebook/e-book.c:2665
-#: ../addressbook/libebook/e-book.c:2871
+#: ../addressbook/libebook/e-book.c:1846 ../addressbook/libebook/e-book.c:2092
+#: ../addressbook/libebook/e-book.c:2307 ../addressbook/libebook/e-book.c:2673
+#: ../addressbook/libebook/e-book.c:2879
 #, c-format
 msgid "book busy"
 msgstr "ブックは処理中です"
@@ -116,58 +116,58 @@ msgstr "ブックは処理中です"
 #: ../addressbook/libebook/e-book.c:1066 ../addressbook/libebook/e-book.c:1069
 #: ../addressbook/libebook/e-book.c:1260 ../addressbook/libebook/e-book.c:1263
 #: ../addressbook/libebook/e-book.c:1418 ../addressbook/libebook/e-book.c:1422
-#: ../addressbook/libebook/e-book.c:1637 ../addressbook/libebook/e-book.c:1641
-#: ../addressbook/libebook/e-book.c:1889 ../addressbook/libebook/e-book.c:1893
-#: ../addressbook/libebook/e-book.c:2116 ../addressbook/libebook/e-book.c:2120
-#: ../addressbook/libebook/e-book.c:2327 ../addressbook/libebook/e-book.c:2331
-#: ../addressbook/libebook/e-book.c:2606 ../addressbook/libebook/e-book.c:2693
-#: ../addressbook/libebook/e-book.c:2697 ../addressbook/libebook/e-book.c:2899
-#: ../addressbook/libebook/e-book.c:2903 ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:1639 ../addressbook/libebook/e-book.c:1643
+#: ../addressbook/libebook/e-book.c:1895 ../addressbook/libebook/e-book.c:1899
+#: ../addressbook/libebook/e-book.c:2124 ../addressbook/libebook/e-book.c:2128
+#: ../addressbook/libebook/e-book.c:2335 ../addressbook/libebook/e-book.c:2339
+#: ../addressbook/libebook/e-book.c:2614 ../addressbook/libebook/e-book.c:2701
+#: ../addressbook/libebook/e-book.c:2705 ../addressbook/libebook/e-book.c:2907
+#: ../addressbook/libebook/e-book.c:2911 ../addressbook/libebook/e-book.c:3442
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "\"%s\" 呼び出しを行う際に CORBA 例外が発生しました"
 
-#: ../addressbook/libebook/e-book.c:2587
+#: ../addressbook/libebook/e-book.c:2595
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: 現在実行中の操作はありません"
 
-#: ../addressbook/libebook/e-book.c:2622
+#: ../addressbook/libebook/e-book.c:2630
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: キャンセルできませんでした"
 
-#: ../addressbook/libebook/e-book.c:2651 ../addressbook/libebook/e-book.c:2655
+#: ../addressbook/libebook/e-book.c:2659 ../addressbook/libebook/e-book.c:2663
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%2$s\" の次にあるブックの \"%1$s\""
 
-#: ../addressbook/libebook/e-book.c:2721
+#: ../addressbook/libebook/e-book.c:2729
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: キャンセルしました"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3297
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: ソースが正しくありません"
 
-#: ../addressbook/libebook/e-book.c:3297 ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3305 ../addressbook/libebook/e-book.c:3371
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: URI '%s' に対するファクトリを利用できません"
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3317
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener を生成できませんでした"
 
-#: ../addressbook/libebook/e-book.c:3576
+#: ../addressbook/libebook/e-book.c:3584
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: GConf にセルフ連絡先 UID がありませんでした"
 
-#: ../addressbook/libebook/e-book.c:3709
+#: ../addressbook/libebook/e-book.c:3717
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: GConf に UID '%s' のソースがありません。"
@@ -623,7 +623,7 @@ msgid "Birth Date"
 msgstr "誕生日"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
 #: ../libedataserver/e-categories.c:43
 msgid "Anniversary"
 msgstr "記念日"
@@ -671,78 +671,78 @@ msgid "Telephone"
 msgstr "電話"
 
 #: ../addressbook/libebook/e-contact.c:1494
-#: ../addressbook/libebook/e-destination.c:770
+#: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
 msgstr "誕生日"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:490
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
 #, c-format
 msgid "Birthday: %s"
 msgstr "誕生日: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:514
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
 #, c-format
 msgid "Anniversary: %s"
 msgstr "記念日: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:202
+#: ../calendar/backends/file/e-cal-backend-file.c:203
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "カレンダのデータを保存できません: URI が間違っています。"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:337
 msgid "Could not create thread for getting deltas"
 msgstr "差分を取得するためのスレッドを生成できませんでした"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1175
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1027
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1326
-#: ../calendar/backends/http/e-cal-backend-http.c:564
-#: ../calendar/backends/weather/e-cal-backend-weather.c:460
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:369
+#: ../calendar/backends/google/e-cal-backend-google.c:1179
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1050
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1349
+#: ../calendar/backends/http/e-cal-backend-http.c:569
+#: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1039
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:382
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1062
 msgid "Could not create thread for populating cache"
 msgstr "キャッシュを生成するためのスレッドを生成できませんでした"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1011
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1028
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1799
 msgid "Reply Requested: by "
 msgstr "返信要求: by "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1016
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1769
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1033
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1804
 msgid "Reply Requested: When convenient"
 msgstr "返信要求: When convenient"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #, c-format
 msgid "Loading %s items"
 msgstr "\"%s\" アイテムの読み込み"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:863
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:886
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "カレンダ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:921
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:944
 msgid "Invalid server URI"
 msgstr "サーバ URI が不正です"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:940
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:949
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1045
-#: ../calendar/libecal/e-cal.c:5011
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1049
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1081
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1119
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:963
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:972
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1068
+#: ../calendar/libecal/e-cal.c:5031
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1074
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1106
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -766,320 +766,320 @@ msgstr "カレンダではありません。"
 msgid "Could not retrieve weather data"
 msgstr "天気のデータを取得できませんでした"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:210
+#: ../calendar/backends/weather/e-cal-backend-weather.c:216
 msgid "Fair"
 msgstr "晴れ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:211
+#: ../calendar/backends/weather/e-cal-backend-weather.c:217
 msgid "Snow showers"
 msgstr "吹雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:212
+#: ../calendar/backends/weather/e-cal-backend-weather.c:218
 msgid "Snow"
 msgstr "雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:213
+#: ../calendar/backends/weather/e-cal-backend-weather.c:219
 msgid "Partly cloudy"
 msgstr "ところにより曇り"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:214
+#: ../calendar/backends/weather/e-cal-backend-weather.c:220
 msgid "Smoke"
 msgstr "煙"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:215
+#: ../calendar/backends/weather/e-cal-backend-weather.c:221
 msgid "Thunderstorms"
 msgstr "雷雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
+#: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Cloudy"
 msgstr "曇り"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
+#: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Drizzle"
 msgstr "霧雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
+#: ../calendar/backends/weather/e-cal-backend-weather.c:224
 msgid "Sunny"
 msgstr "暖かい快晴"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
+#: ../calendar/backends/weather/e-cal-backend-weather.c:225
 msgid "Dust"
 msgstr "塵 (じん)"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
+#: ../calendar/backends/weather/e-cal-backend-weather.c:226
 msgid "Clear"
 msgstr "快晴"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
+#: ../calendar/backends/weather/e-cal-backend-weather.c:227
 msgid "Mostly cloudy"
 msgstr "ほとんど曇り"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
+#: ../calendar/backends/weather/e-cal-backend-weather.c:228
 msgid "Windy"
 msgstr "風"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
+#: ../calendar/backends/weather/e-cal-backend-weather.c:229
 msgid "Rain showers"
 msgstr "打ちつけるような雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
+#: ../calendar/backends/weather/e-cal-backend-weather.c:230
 msgid "Foggy"
 msgstr "霧"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:225
+#: ../calendar/backends/weather/e-cal-backend-weather.c:231
 msgid "Rain/snow mixed"
 msgstr "雨混じりの雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:226
+#: ../calendar/backends/weather/e-cal-backend-weather.c:232
 msgid "Sleet"
 msgstr "霙 (みぞれ)"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:227
+#: ../calendar/backends/weather/e-cal-backend-weather.c:233
 msgid "Very hot/humid"
 msgstr "とても暑い/湿気のある"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:228
+#: ../calendar/backends/weather/e-cal-backend-weather.c:234
 msgid "Blizzard"
 msgstr "猛吹雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:229
+#: ../calendar/backends/weather/e-cal-backend-weather.c:235
 msgid "Freezing rain"
 msgstr "氷晶雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:230
+#: ../calendar/backends/weather/e-cal-backend-weather.c:236
 msgid "Haze"
 msgstr "もや"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:231
+#: ../calendar/backends/weather/e-cal-backend-weather.c:237
 msgid "Blowing snow"
 msgstr "吹雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:232
+#: ../calendar/backends/weather/e-cal-backend-weather.c:238
 msgid "Freezing drizzle"
 msgstr "凍った霧雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:233
+#: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Very cold/wind chill"
 msgstr "とても寒い/風冷え"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:234
+#: ../calendar/backends/weather/e-cal-backend-weather.c:240
 msgid "Rain"
 msgstr "雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:244
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
-#: ../calendar/backends/weather/e-cal-backend-weather.c:261
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:267
 msgid "Weather: Sunny"
 msgstr "天気: 暖かい快晴"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:245
-#: ../calendar/backends/weather/e-cal-backend-weather.c:246
-#: ../calendar/backends/weather/e-cal-backend-weather.c:262
-#: ../calendar/backends/weather/e-cal-backend-weather.c:265
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:268
+#: ../calendar/backends/weather/e-cal-backend-weather.c:271
 msgid "Weather: Snow"
 msgstr "天気: 雪"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
 msgid "Weather: Partly Cloudy"
 msgstr "天気: ところにより曇り"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:248
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:259
 #: ../calendar/backends/weather/e-cal-backend-weather.c:264
+#: ../calendar/backends/weather/e-cal-backend-weather.c:270
 msgid "Weather: Fog"
 msgstr "天気: 霧"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Thunderstorms"
 msgstr "天気: 雷雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:261
 msgid "Weather: Cloudy"
 msgstr "天気: 曇り"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
 #: ../calendar/backends/weather/e-cal-backend-weather.c:257
-#: ../calendar/backends/weather/e-cal-backend-weather.c:259
-#: ../calendar/backends/weather/e-cal-backend-weather.c:260
 #: ../calendar/backends/weather/e-cal-backend-weather.c:263
+#: ../calendar/backends/weather/e-cal-backend-weather.c:265
 #: ../calendar/backends/weather/e-cal-backend-weather.c:266
-#: ../calendar/backends/weather/e-cal-backend-weather.c:268
+#: ../calendar/backends/weather/e-cal-backend-weather.c:269
+#: ../calendar/backends/weather/e-cal-backend-weather.c:272
+#: ../calendar/backends/weather/e-cal-backend-weather.c:274
 msgid "Weather: Rain"
 msgstr "天気: 雨"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:343
+#: ../calendar/backends/weather/e-cal-backend-weather.c:349
 #, c-format
 msgid "%.1f°C - %s"
 msgstr "%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:345
+#: ../calendar/backends/weather/e-cal-backend-weather.c:351
 #, c-format
 msgid "%.1f°F - %s"
 msgstr "%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:348
+#: ../calendar/backends/weather/e-cal-backend-weather.c:354
 #, c-format
 msgid "%.1f/%.1f°C - %s"
 msgstr "%.1f/%.1f°C - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:350
+#: ../calendar/backends/weather/e-cal-backend-weather.c:356
 #, c-format
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:356
+#: ../calendar/backends/weather/e-cal-backend-weather.c:362
 #, c-format
 msgid "%d%% chance of precipitation\n"
 msgstr "降水確率 %d%%\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:363
+#: ../calendar/backends/weather/e-cal-backend-weather.c:369
 #, c-format
 msgid "%.1fcm snow\n"
 msgstr "積雪 %.1f センチ\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:365
+#: ../calendar/backends/weather/e-cal-backend-weather.c:371
 #, c-format
 msgid "%.1fin snow\n"
 msgstr "積雪 %.1f インチ\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:368
+#: ../calendar/backends/weather/e-cal-backend-weather.c:374
 #, c-format
 msgid "%.1f-%.1fcm snow\n"
 msgstr "積雪 %.1f-%.1f センチ\n"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:370
+#: ../calendar/backends/weather/e-cal-backend-weather.c:376
 #, c-format
 msgid "%.1f-%.1fin snow\n"
 msgstr "積雪 %.1f-%.1f インチ\n"
 
-#: ../calendar/libecal/e-cal-component.c:1322
+#: ../calendar/libecal/e-cal-component.c:1315
 msgid "Untitled appointment"
 msgstr "タイトルなしの予定"
 
-#: ../calendar/libecal/e-cal-recur.c:4038
+#: ../calendar/libecal/e-cal-recur.c:4041
 msgid "1st"
 msgstr "1日"
 
-#: ../calendar/libecal/e-cal-recur.c:4039
+#: ../calendar/libecal/e-cal-recur.c:4042
 msgid "2nd"
 msgstr "2日"
 
-#: ../calendar/libecal/e-cal-recur.c:4040
+#: ../calendar/libecal/e-cal-recur.c:4043
 msgid "3rd"
 msgstr "3日"
 
-#: ../calendar/libecal/e-cal-recur.c:4041
+#: ../calendar/libecal/e-cal-recur.c:4044
 msgid "4th"
 msgstr "4日"
 
-#: ../calendar/libecal/e-cal-recur.c:4042
+#: ../calendar/libecal/e-cal-recur.c:4045
 msgid "5th"
 msgstr "5日"
 
-#: ../calendar/libecal/e-cal-recur.c:4043
+#: ../calendar/libecal/e-cal-recur.c:4046
 msgid "6th"
 msgstr "6日"
 
-#: ../calendar/libecal/e-cal-recur.c:4044
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "7th"
 msgstr "7日"
 
-#: ../calendar/libecal/e-cal-recur.c:4045
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "8th"
 msgstr "8日"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "9th"
 msgstr "9日"
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "10th"
 msgstr "10日"
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "11th"
 msgstr "11日"
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "12th"
 msgstr "12日"
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "13th"
 msgstr "13日"
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "14th"
 msgstr "14日"
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "15th"
 msgstr "15日"
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "16th"
 msgstr "16日"
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "17th"
 msgstr "17日"
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "18th"
 msgstr "18日"
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "19th"
 msgstr "19日"
 
-#: ../calendar/libecal/e-cal-recur.c:4057
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "20th"
 msgstr "20日"
 
-#: ../calendar/libecal/e-cal-recur.c:4058
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "21st"
 msgstr "21日"
 
-#: ../calendar/libecal/e-cal-recur.c:4059
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "22nd"
 msgstr "22日"
 
-#: ../calendar/libecal/e-cal-recur.c:4060
+#: ../calendar/libecal/e-cal-recur.c:4063
 msgid "23rd"
 msgstr "23日"
 
-#: ../calendar/libecal/e-cal-recur.c:4061
+#: ../calendar/libecal/e-cal-recur.c:4064
 msgid "24th"
 msgstr "24日"
 
-#: ../calendar/libecal/e-cal-recur.c:4062
+#: ../calendar/libecal/e-cal-recur.c:4065
 msgid "25th"
 msgstr "25日"
 
-#: ../calendar/libecal/e-cal-recur.c:4063
+#: ../calendar/libecal/e-cal-recur.c:4066
 msgid "26th"
 msgstr "26日"
 
-#: ../calendar/libecal/e-cal-recur.c:4064
+#: ../calendar/libecal/e-cal-recur.c:4067
 msgid "27th"
 msgstr "27日"
 
-#: ../calendar/libecal/e-cal-recur.c:4065
+#: ../calendar/libecal/e-cal-recur.c:4068
 msgid "28th"
 msgstr "28日"
 
-#: ../calendar/libecal/e-cal-recur.c:4066
+#: ../calendar/libecal/e-cal-recur.c:4069
 msgid "29th"
 msgstr "29日"
 
-#: ../calendar/libecal/e-cal-recur.c:4067
+#: ../calendar/libecal/e-cal-recur.c:4070
 msgid "30th"
 msgstr "30日"
 
-#: ../calendar/libecal/e-cal-recur.c:4068
+#: ../calendar/libecal/e-cal-recur.c:4071
 msgid "31st"
 msgstr "31日"
 
@@ -1114,73 +1114,73 @@ msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s のパスワードを入力して、ユーザ %s のプロキシを有効にして下さい"
 
-#: ../calendar/libecal/e-cal.c:4983
+#: ../calendar/libecal/e-cal.c:5003
 msgid "Invalid argument"
 msgstr "不正な引数"
 
-#: ../calendar/libecal/e-cal.c:4985
+#: ../calendar/libecal/e-cal.c:5005
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: ../calendar/libecal/e-cal.c:4987
+#: ../calendar/libecal/e-cal.c:5007
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: ../calendar/libecal/e-cal.c:4989
+#: ../calendar/libecal/e-cal.c:5009
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: ../calendar/libecal/e-cal.c:4991 ../servers/groupwise/e-gw-connection.c:199
+#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:199
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: ../calendar/libecal/e-cal.c:4993 ../servers/groupwise/e-gw-connection.c:193
+#: ../calendar/libecal/e-cal.c:5013 ../servers/groupwise/e-gw-connection.c:193
 msgid "Invalid object"
 msgstr "オブジェクトが不正です"
 
-#: ../calendar/libecal/e-cal.c:4995
+#: ../calendar/libecal/e-cal.c:5015
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: ../calendar/libecal/e-cal.c:4997
+#: ../calendar/libecal/e-cal.c:5017
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: ../calendar/libecal/e-cal.c:4999
+#: ../calendar/libecal/e-cal.c:5019
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: ../calendar/libecal/e-cal.c:5001 ../servers/groupwise/e-gw-connection.c:201
+#: ../calendar/libecal/e-cal.c:5021 ../servers/groupwise/e-gw-connection.c:201
 msgid "Unknown User"
 msgstr "ユーザを特定できません"
 
-#: ../calendar/libecal/e-cal.c:5003
+#: ../calendar/libecal/e-cal.c:5023
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: ../calendar/libecal/e-cal.c:5005
+#: ../calendar/libecal/e-cal.c:5025
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: ../calendar/libecal/e-cal.c:5007
+#: ../calendar/libecal/e-cal.c:5027
 msgid "Operation has been canceled"
 msgstr "操作をキャンセルしました"
 
-#: ../calendar/libecal/e-cal.c:5009
+#: ../calendar/libecal/e-cal.c:5029
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: ../calendar/libecal/e-cal.c:5013
+#: ../calendar/libecal/e-cal.c:5033
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: ../calendar/libecal/e-cal.c:5015
+#: ../calendar/libecal/e-cal.c:5035
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: ../calendar/libecal/e-cal.c:5017
+#: ../calendar/libecal/e-cal.c:5037
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1194,7 +1194,7 @@ msgstr "CORBA 例外が発生しました"
 msgid "Unknown error"
 msgstr "エラーを特定できません"
 
-#: ../calendar/libecal/e-cal.c:5019
+#: ../calendar/libecal/e-cal.c:5039
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "エラーはありません"
@@ -1383,7 +1383,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "オフラインに切り替える準備中: %s"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:3018
+#: ../camel/providers/imap/camel-imap-store.c:3025
 msgid "You must be working online to complete this operation"
 msgstr "この動作を完了するためにオンラインで作業して下さい"
 
@@ -1473,7 +1473,7 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "子プロセス '%s' の生成に失敗しました: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:732 ../camel/camel-filter-search.c:740
+#: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "フィルタ検索実行中にエラー: %s: %s"
@@ -1799,40 +1799,40 @@ msgstr "メール作業ファイルのコピー中にエラー: %s"
 msgid "parse error"
 msgstr "解析エラー"
 
-#: ../camel/camel-net-utils.c:498 ../camel/camel-net-utils.c:660
-#: ../camel/camel-net-utils.c:792
+#: ../camel/camel-net-utils.c:506 ../camel/camel-net-utils.c:668
+#: ../camel/camel-net-utils.c:800
 #: ../camel/providers/pop3/camel-pop3-store.c:449
 #: ../camel/providers/pop3/camel-pop3-store.c:553
 msgid "Canceled"
 msgstr "キャンセル済み"
 
-#: ../camel/camel-net-utils.c:517
+#: ../camel/camel-net-utils.c:525
 msgid "cannot create thread"
 msgstr "スレッドを生成できません"
 
-#: ../camel/camel-net-utils.c:664
+#: ../camel/camel-net-utils.c:672
 #, c-format
 msgid "Resolving: %s"
 msgstr "解決中: %s"
 
-#: ../camel/camel-net-utils.c:686
+#: ../camel/camel-net-utils.c:694
 msgid "Host lookup failed"
 msgstr "ホストの検索に失敗しました"
 
-#: ../camel/camel-net-utils.c:688
+#: ../camel/camel-net-utils.c:696
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "ホストの検索に失敗しました: %s: %s"
 
-#: ../camel/camel-net-utils.c:796
+#: ../camel/camel-net-utils.c:804
 msgid "Resolving address"
 msgstr "アドレスの解決中"
 
-#: ../camel/camel-net-utils.c:816
+#: ../camel/camel-net-utils.c:824
 msgid "Name lookup failed"
 msgstr "名前の検索に失敗しました"
 
-#: ../camel/camel-net-utils.c:819
+#: ../camel/camel-net-utils.c:827
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "名前の検索に失敗しました: %s"
@@ -2642,7 +2642,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "ジャンク・フォルダへメッセージをコピーできません"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2163
+#: ../camel/providers/imap/camel-imap-folder.c:2326
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2652,7 +2652,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2163
+#: ../camel/providers/imap/camel-imap-folder.c:2326
 #: ../camel/providers/local/camel-maildir-folder.c:251
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2687,44 +2687,44 @@ msgstr "メッセージ %s を取得できません: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2121
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2161
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "このメッセージはオフライン・モードでは利用できません。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1670
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1717
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1751
 msgid "Could not get message"
 msgstr "メッセージを取得できませんでした"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:817
 #: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s のサマリをロードできませんでした"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1045
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
 msgid "Trash Folder Full. Please Empty."
 msgstr "ゴミ箱フォルダが満杯です。空にして下さい。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1222
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1247
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2534
-#: ../camel/providers/imap/camel-imap-folder.c:2604
+#: ../camel/providers/imap/camel-imap-folder.c:2698
+#: ../camel/providers/imap/camel-imap-folder.c:2772
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s にある新着メッセージのサマリ情報の同期中"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1988
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2028
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2070
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "フォルダ '%s' へメッセージを追加できません: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2018
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2058
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "メッセージを作成できません: %s"
@@ -2778,7 +2778,7 @@ msgstr "新着メールがスパムかどうかチェックする(_U)"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 #: ../camel/providers/imap/camel-imap-provider.c:72
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "INBOX フォルダにあるメールのみスパムかどうかチェックする(_B)"
+msgstr "受信箱にあるメールだけスパムかどうかチェックする(_B)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
 msgid "Automatically synchroni_ze account locally"
@@ -2834,7 +2834,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:532
 #: ../camel/providers/imap/camel-imap-store.c:1912
-#: ../camel/providers/imap/camel-imap-store.c:2103
+#: ../camel/providers/imap/camel-imap-store.c:2110
 #, c-format
 msgid "No such folder %s"
 msgstr "そのようなフォルダ %s はありません"
@@ -2845,7 +2845,7 @@ msgstr "オフライン・モードでは GroupWise フォルダを生成でき�
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1231
 #: ../camel/providers/imap/camel-imap-store.c:1987
-#: ../camel/providers/imap/camel-imap-store.c:2356
+#: ../camel/providers/imap/camel-imap-store.c:2363
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "親フォルダには複数のサブフォルダを含めることはできません"
 
@@ -2951,12 +2951,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3058
+#: ../camel/providers/imap/camel-imap-store.c:3065
 msgid "Operation cancelled"
 msgstr "処理がキャンセルされました"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3061
+#: ../camel/providers/imap/camel-imap-store.c:3068
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "突然サーバが接続を切りました: %s"
@@ -3010,40 +3010,40 @@ msgid "Folder was destroyed and recreated on server."
 msgstr "フォルダは破壊され再作成されました"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:678
+#: ../camel/providers/imap/camel-imap-folder.c:741
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s にあるメッセージの解析中"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2123
+#: ../camel/providers/imap/camel-imap-folder.c:2286
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "メッセージを取得できません: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2202
-#: ../camel/providers/imap/camel-imap-folder.c:2885
+#: ../camel/providers/imap/camel-imap-folder.c:2365
+#: ../camel/providers/imap/camel-imap-folder.c:3066
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "現在このメッセージは有効ではありません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2723
+#: ../camel/providers/imap/camel-imap-folder.c:2901
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の情報が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2731
+#: ../camel/providers/imap/camel-imap-folder.c:2909
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の UID が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2744
+#: ../camel/providers/imap/camel-imap-folder.c:2922
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr ""
 "サーバから想定外の応答: メッセージ %d と %d に対して同じ UID が提供されました"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2923
+#: ../camel/providers/imap/camel-imap-folder.c:3104
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH 応答にメッセージ本体がありませんでした。"
 
@@ -3058,12 +3058,12 @@ msgstr "キャッシュ・フォルダを開けませんでした: %s"
 #: ../camel/providers/imap/camel-imap-message-cache.c:387
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr "メッセージ %s のキャッシュに失敗しました: %s"
+msgstr "%s というメッセージをキャッシュできませんでした: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:438
 #, c-format
 msgid "Failed to cache %s: %s"
-msgstr "%s のキャッシュに失敗しました: %s"
+msgstr "%s をキャッシュできませんでした: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imap4/camel-imap4-provider.c:49
@@ -3073,7 +3073,7 @@ msgstr "名前空間:"
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "このサーバ上の INBOX 内にある新規メッセージへフィルタを適用する(_A)"
+msgstr "このサーバの受信箱にある新着メールにフィルタを適用する(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 msgid "Check new messages for Jun_k contents"
@@ -3138,7 +3138,7 @@ msgstr "SSL は無効です"
 msgid "Connection cancelled"
 msgstr "接続をキャンセルしました"
 
-#: ../camel/providers/imap/camel-imap-store.c:707
+#: ../camel/providers/imap/camel-imap-store.c:710
 #: ../camel/providers/imap/camel-imap-store.c:729
 #: ../camel/providers/imap/camel-imap-store.c:735
 #: ../camel/providers/imap/camel-imap-store.c:761
@@ -3150,7 +3150,7 @@ msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "セキュリティ保護されたモードで IMAP サーバ %s への接続に失敗しました: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:708
+#: ../camel/providers/imap/camel-imap-store.c:711
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
 msgid "STARTTLS not supported"
 msgstr "STARTTLS 拡張はサポートしていません。"
@@ -3172,7 +3172,7 @@ msgstr "コマンド \"%s\" で接続できませんでした: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1069
-#: ../camel/providers/imap/camel-imap-store.c:2452
+#: ../camel/providers/imap/camel-imap-store.c:2459
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:367
 #: ../camel/providers/imap4/camel-imap4-store.c:1326
 #: ../camel/providers/local/camel-maildir-folder.c:77
@@ -3221,12 +3221,12 @@ msgstr ""
 "\n"
 
 #: ../camel/providers/imap/camel-imap-store.c:1924
-#: ../camel/providers/imap/camel-imap-store.c:2294
+#: ../camel/providers/imap/camel-imap-store.c:2301
 #: ../camel/providers/imap4/camel-imap4-store.c:956
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "フォルダ名 \"%s\" に文字 \"%c\"を含めることはできません"
+msgstr "\"%s\" というフォルダ名に \"%c\" という文字を含めることはできません"
 
 #: ../camel/providers/imap/camel-imap-store.c:2041
 #: ../camel/providers/local/camel-maildir-store.c:191
@@ -3234,9 +3234,9 @@ msgstr "フォルダ名 \"%s\" に文字 \"%c\"を含めることはできませ
 #: ../camel/providers/local/camel-mh-store.c:249
 #, c-format
 msgid "Cannot create folder `%s': folder exists."
-msgstr "フォルダ '%s' を作成できません: フォルダが存在します"
+msgstr "'%s' というフォルダを作成できません: 既に存在しています"
 
-#: ../camel/providers/imap/camel-imap-store.c:2305
+#: ../camel/providers/imap/camel-imap-store.c:2312
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "親フォルダを特定できません: %s"
@@ -3367,7 +3367,7 @@ msgstr "新着メールにスパムが含まれているかチェックする(_J
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr "INBOX フォルダにあるメールのみスパムかどうかチェックする(_G)"
+msgstr "受信箱にあるメールだけスパムかどうかチェックする(_G)"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "IMAP4rev1"
@@ -3629,7 +3629,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "_Apply filters to new messages in INBOX"
-msgstr "INBOX 内の新着メールにフィルタを適用する(_A)"
+msgstr "受信箱にある新着メールにフィルタを適用する(_A)"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -4063,7 +4063,7 @@ msgstr "'%s' はメールボックス・ファイルではありません。"
 
 #: ../camel/providers/local/camel-spool-store.c:210
 msgid "Store does not support an INBOX"
-msgstr "INBOX 格納をサポートしていません"
+msgstr "受信箱への格納をサポートしていません"
 
 #: ../camel/providers/local/camel-spool-store.c:222
 #, c-format
@@ -4339,7 +4339,7 @@ msgstr ""
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "POP サーバ %s から妥当な挨拶の読み込みが失敗しました"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:224
+#: ../camel/providers/pop3/camel-pop3-store.c:227
 #: ../camel/providers/pop3/camel-pop3-store.c:241
 #: ../camel/providers/pop3/camel-pop3-store.c:251
 #: ../camel/providers/pop3/camel-pop3-store.c:257
@@ -4348,7 +4348,7 @@ msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr ""
 "セキュリティ保護されたモードで POP サーバ %s への接続に失敗しました: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:225
+#: ../camel/providers/pop3/camel-pop3-store.c:228
 msgid "STLS not supported by server"
 msgstr "サーバは STLS 拡張をサポートしていません"
 
@@ -4809,7 +4809,7 @@ msgstr "給仕"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1628 ../libedataserver/e-time-utils.c:1887
+#: ../libedataserver/e-time-utils.c:1644 ../libedataserver/e-time-utils.c:1911
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%Y/%m/%d (%a) %p%l:%M:%S"
 
@@ -4817,7 +4817,7 @@ msgstr "%Y/%m/%d (%a) %p%l:%M:%S"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1633 ../libedataserver/e-time-utils.c:1878
+#: ../libedataserver/e-time-utils.c:1649 ../libedataserver/e-time-utils.c:1902
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%Y/%m/%d (%a) %k:%M:%S"
 
@@ -4825,7 +4825,7 @@ msgstr "%Y/%m/%d (%a) %k:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1638 ../libedataserver/e-time-utils.c:1883
+#: ../libedataserver/e-time-utils.c:1654 ../libedataserver/e-time-utils.c:1907
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%Y/%m/%d (%a) %p%l:%M"
 
@@ -4833,78 +4833,78 @@ msgstr "%Y/%m/%d (%a) %p%l:%M"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1643 ../libedataserver/e-time-utils.c:1874
+#: ../libedataserver/e-time-utils.c:1659 ../libedataserver/e-time-utils.c:1898
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%Y/%m/%d (%a) %k:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1648
+#: ../libedataserver/e-time-utils.c:1664
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%Y/%m/%d (%a) %p%l時"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1653
+#: ../libedataserver/e-time-utils.c:1669
 msgid "%a %m/%d/%Y %H"
 msgstr "%Y/%m/%d (%a) %k時"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1656 ../libedataserver/e-time-utils.c:1753
-#: ../libedataserver/e-time-utils.c:1869
+#: ../libedataserver/e-time-utils.c:1672 ../libedataserver/e-time-utils.c:1773
+#: ../libedataserver/e-time-utils.c:1893
 msgid "%a %m/%d/%Y"
 msgstr "%Y/%m/%d (%a)"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1664
+#: ../libedataserver/e-time-utils.c:1680
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Y/%m/%d %p%l:%M:%S"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1668
+#: ../libedataserver/e-time-utils.c:1684
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Y/%m/%d %k:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1673
+#: ../libedataserver/e-time-utils.c:1689
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Y/%m/%d %p%l:%M"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1678
+#: ../libedataserver/e-time-utils.c:1694
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Y/%m/%d %k:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1683
+#: ../libedataserver/e-time-utils.c:1699
 msgid "%m/%d/%Y %I %p"
 msgstr "%Y/%m/%d %p%l時"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1688
+#: ../libedataserver/e-time-utils.c:1704
 msgid "%m/%d/%Y %H"
 msgstr "%Y/%m/%d %k時"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1691 ../libedataserver/e-time-utils.c:1756
+#: ../libedataserver/e-time-utils.c:1707 ../libedataserver/e-time-utils.c:1776
 msgid "%m/%d/%Y"
 msgstr "%Y/%m/%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1810 ../libedataserver/e-time-utils.c:1932
+#: ../libedataserver/e-time-utils.c:1834 ../libedataserver/e-time-utils.c:1956
 msgid "%I:%M:%S %p"
 msgstr "%p%l:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1814 ../libedataserver/e-time-utils.c:1924
+#: ../libedataserver/e-time-utils.c:1838 ../libedataserver/e-time-utils.c:1948
 msgid "%H:%M:%S"
 msgstr "%k:%M:%S"
 
@@ -4912,24 +4912,24 @@ msgstr "%k:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1819 ../libedataserver/e-time-utils.c:1929
+#: ../libedataserver/e-time-utils.c:1843 ../libedataserver/e-time-utils.c:1953
 msgid "%I:%M %p"
 msgstr "%p%l:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1823 ../libedataserver/e-time-utils.c:1921
+#: ../libedataserver/e-time-utils.c:1847 ../libedataserver/e-time-utils.c:1945
 msgid "%H:%M"
 msgstr "%k:%M"
 
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
-#: ../libedataserver/e-time-utils.c:1826
+#: ../libedataserver/e-time-utils.c:1850
 msgid "%H%M"
 msgstr "%k%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1830
+#: ../libedataserver/e-time-utils.c:1854
 msgid "%I %p"
 msgstr "%p%l時"
 
@@ -4988,19 +4988,19 @@ msgstr "編集(_E)"
 msgid "categories"
 msgstr "カテゴリ"
 
-#: ../libedataserverui/e-name-selector-dialog.c:273
+#: ../libedataserverui/e-name-selector-dialog.c:275
 msgid "Select Contacts from Address Book"
 msgstr "アドレス帳から連絡先の選択"
 
-#: ../libedataserverui/e-name-selector-dialog.c:553
+#: ../libedataserverui/e-name-selector-dialog.c:555
 msgid "_Add"
 msgstr "追加(_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:578
+#: ../libedataserverui/e-name-selector-dialog.c:580
 msgid "_Remove"
 msgstr "削除(_R)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:751
+#: ../libedataserverui/e-name-selector-dialog.c:753
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "任意のカテゴリ"
@@ -5071,19 +5071,19 @@ msgstr "%s の編集(_E)"
 msgid "_Delete %s"
 msgstr "%s の削除(_D)"
 
-#: ../libedataserverui/e-passwords.c:941
+#: ../libedataserverui/e-passwords.c:1068
 msgid "_Remember this passphrase"
 msgstr "このパスフレーズを記憶する(_R)"
 
-#: ../libedataserverui/e-passwords.c:942
+#: ../libedataserverui/e-passwords.c:1069
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "このパスフレーズをこのセッション用に保存する(_R)"
 
-#: ../libedataserverui/e-passwords.c:947
+#: ../libedataserverui/e-passwords.c:1074
 msgid "_Remember this password"
 msgstr "このパスワードを記憶する(_R)"
 
-#: ../libedataserverui/e-passwords.c:948
+#: ../libedataserverui/e-passwords.c:1075
 msgid "_Remember this password for the remainder of this session"
 msgstr "このパスワードをこのセッション用に保存する(_R)"
 
@@ -5097,13 +5097,13 @@ msgid "_Destination"
 msgstr "転送先(_D)"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1660
-#: ../servers/exchange/storage/exchange-account.c:939
+#: ../servers/exchange/storage/exchange-account.c:971
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s のパスワードを入力して下さい"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1661
-#: ../servers/exchange/storage/exchange-account.c:944
+#: ../servers/exchange/storage/exchange-account.c:976
 msgid "Enter password"
 msgstr "パスワードの入力"
 
@@ -5207,26 +5207,26 @@ msgstr "この操作はオフライン・モードでは利用できません。
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:635
+#: ../servers/exchange/storage/exchange-account.c:662
 #, c-format
 msgid "%s's Folders"
 msgstr "%s のフォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1245
+#: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Personal Folders"
 msgstr "個人フォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1260
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Favorite Public Folders"
 msgstr "お気に入りのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1309
 msgid "All Public Folders"
 msgstr "全てのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1323
 msgid "Global Address List"
 msgstr "グローバルな住所の一覧"
 
