@@ -1,3 +1,8 @@
+2008-05-04  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in: If --enable-gnome-keyring is given, require version
+	2.20.1 or later to pick up the GNOME_KEYRING_RESULT_NO_MATCH symbol.
+
 2008-04-30  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #316390

@@ -22,6 +22,7 @@ m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
+m4_define([gnome_keyring_minimum_version], [2.20.1])
 
 dnl *************************************************************************************************
 dnl Base Version
@@ -453,7 +454,7 @@ AC_ARG_WITH(nss-libs,
   with_nss_libs="$withval")
 
 if test "x${enable_gnome_keyring}" = "xyes"; then
-	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1, with_gnome_keyring="yes", with_gnome_keyring="no");
+	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1 >= gnome_keyring_minimum_version, with_gnome_keyring="yes", with_gnome_keyring="no");
 	if test "x$with_gnome_keyring" = "xyes"; then
 		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])	
 		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
