@@ -1,5 +1,7 @@
 2008-05-05  Johnny Jacob  <jjohnny@novell.com>	
 
+	* camel-mapi-transport.c (mapi_item_add_attach): Using slist.
+
 	* camel-mapi-folder.c (get_content): Removed.
 	(mapi_update_cache): Cleanup warnings.
 	(mapi_sync): Using GSList.

@@ -83,7 +83,7 @@ mapi_item_debug_dump (MapiItem *item)
 	printf("item->header.cc : %s\n",item->header.cc);
 	printf("item->header.bcc : %s\n",item->header.bcc);
 	printf("item->header.subject : %s\n",item->header.subject);
-	printf("item->msg.body_stream : %s\n",item->msg.body_stream);
+	//printf("item->msg.body_stream : %s\n",item->msg.body_stream);
 	printf("-----------------\n\n");
 }
 
@@ -94,73 +94,6 @@ mapi_item_set_from(MapiItem *item, const char *from)
 		free(item->header.from);
 	}
 	item->header.from = strdup(from);
-}
-
-static void
-mapi_item_add_recipient_bcc(MapiItem *item, const char *bcc)
-{
-	int len = 0;
-
-	if (!bcc)
-		return ;
-	if (item->header.bcc)
-		len = strlen(item->header.bcc);
-	item->header.bcc = realloc(item->header.bcc, len + strlen(bcc) + 2);
-	if (len){
-		item->header.bcc[len] = ',';
-		memcpy(item->header.bcc + len + 1, bcc, strlen(bcc));
-		item->header.bcc[len + 1 + strlen(bcc)] = 0;
-	}
-	else{
-		memcpy(item->header.bcc + len, bcc, strlen(bcc));
-		item->header.bcc[len + strlen(bcc)] = 0;
-	}
-	
-}
-
-static void
-mapi_item_add_recipient_cc(MapiItem *item, const char *cc)
-{
-	int len = 0;
-
-	if (!cc)
-		return ;
-	if (item->header.cc)
-		len = strlen(item->header.cc);
-	item->header.cc = realloc(item->header.cc, len + strlen(cc) + 2);
-	if (len){
-		item->header.cc[len] = ',';
-		memcpy(item->header.cc + len + 1, cc, strlen(cc));
-		item->header.cc[len + 1 + strlen(cc)] = 0;
-	}
-	else{
-		memcpy(item->header.cc + len, cc, strlen(cc));
-		item->header.cc[len + strlen(cc)] = 0;
-	}
-	
-}
-
-
-static void 
-mapi_item_add_recipient_to(MapiItem *item, const char *to)
-{
-	int len = 0;
-
-	if (!to) return ;
-
-	if (item->header.to)
-		len = strlen(item->header.to);
-
-	item->header.to = realloc(item->header.to, len + strlen(to) + 2);
-	if (len){
-		item->header.to[len] = ',';
-		memcpy(item->header.to + len + 1, to, strlen(to));
-		item->header.to[len + 1 + strlen(to)] = 0;
-	}
-	else{
-		memcpy(item->header.to + len, to, strlen(to));
-		item->header.to[len + strlen(to)] = 0;
-	}
 }
 
 static void
@@ -181,103 +114,16 @@ mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
 
 	camel_seekable_stream_seek((CamelSeekableStream *)body, 0, CAMEL_STREAM_SET);
 	while((read_size = camel_stream_read(body, (char *)buf, STREAM_SIZE))){
-		if (read_size == -1)
-			return (-1);
+		if (read_size == -1) {
+			item->msg.body_stream = NULL;
+			return;
+		}
 		
 		if (item->msg.body_stream)// && (*(item->msg.body_stream)))
 			item->msg.body_stream = g_strconcat (item->msg.body_stream, (char *) buf, NULL);
 		else
 			item->msg.body_stream = g_strdup ((char *) buf);
 	}
-}
-
-
-static char**
-mapi_get_cmdline_recipients(TALLOC_CTX *mem_ctx, const char *recipients)
-{
-	char		**usernames;
-	char		*tmp = NULL;
-	uint32_t	j = 0;
-
-	/* no recipients */
-	if (!recipients) {
-		return NULL;
-	}
-
-	if ((tmp = strtok((char *)recipients, ",")) == NULL) {
-		DEBUG(2, ("Invalid recipient string format\n"));
-		return NULL;
-	}
-	
-	usernames = talloc_array(mem_ctx, char *, 2);
-	usernames[0] = talloc_strdup(mem_ctx, tmp);
-	
-	for (j = 1; (tmp = strtok(NULL, ",")) != NULL; j++) {
-		usernames = talloc_realloc(mem_ctx, usernames, char *, j+2);
-		usernames[j] = talloc_strdup(mem_ctx, tmp);
-	}
-	usernames[j] = 0;
-
-	return (usernames);
-}
-
-static gboolean
-mapi_set_usernames_RecipientType(uint32_t *index, struct SRowSet *rowset, char **usernames, struct FlagList *flaglist,
-					enum ulRecipClass RecipClass)
-{
-	uint32_t	i;
-	uint32_t	count = *index;
-	static uint32_t	counter = 0;
-
-	if (count == 0) counter = 0;
-	if (!usernames) return FALSE;
-
-	for (i = 0; usernames[i]; i++) {
-		if (flaglist->ulFlags[count] == MAPI_RESOLVED) {
-			SetRecipientType(&(rowset->aRow[counter]), RecipClass);
-			counter++;
-		}
-		count++;
-	}
-	
-	*index = count;
-	
-	return TRUE;
-}
-
-static char**
-mapi_collapse_recipients(TALLOC_CTX *mem_ctx, char **mapi_to, char **mapi_cc, char **mapi_bcc)
-{
-	uint32_t	count;
-	uint32_t       	i;
-	char		**usernames;
-
-	if (!mapi_to && !mapi_cc && !mapi_bcc) return NULL;
-
-	count = 0;
-	for (i = 0; mapi_to  && mapi_to[i];  i++,  count++);
-	for (i = 0; mapi_cc  && mapi_cc[i];  i++,  count++);
-	for (i = 0; mapi_bcc && mapi_bcc[i]; i++, count++);
-
-	usernames = talloc_array(mem_ctx, char *, count + 1);
-	count = 0;
-
-	for (i = 0; mapi_to && mapi_to[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_to[i]);
-		printf("%s(%d):%s:username[%d]=%s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, count , usernames[count]);
-	}
-
-	for (i = 0; mapi_cc && mapi_cc[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_cc[i]);
-	}
-
-	for (i = 0; mapi_bcc && mapi_bcc[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_bcc[i]);
-	}
-
-	usernames[count++] = 0;
-
-	return usernames;
 }
 
 static gboolean
@@ -301,7 +147,7 @@ mapi_item_add_attach(MapiItem *item, const gchar *filename, const char *descript
 		item_attach->value = g_byte_array_append (item_attach->value, buf, read_size);
 	}
 
-	item->attachments = g_list_append(item->attachments, item_attach);
+	item->attachments = g_slist_append(item->attachments, item_attach);
 
 	return TRUE;
 }
@@ -358,21 +204,20 @@ static gboolean
 mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	      CamelAddress *from, CamelAddress *recipients, CamelException *ex)
 {
-	CamelDataWrapper *dw;
+	CamelDataWrapper *dw = NULL;
 	CamelContentType *type;
 	CamelStream *content_stream;
 	CamelMultipart *multipart;
-	CamelMimePart *part;
 	const CamelInternetAddress *to, *cc, *bcc;
 	MapiItem *item = g_new0 (MapiItem, 1);
 	const char *namep;
 	const char *addressp;
 	const char *content_type;		
-	gint i, n_parts, i_part;
 	gint st;
 	ssize_t	content_size;
 	GSList *recipient_list = NULL;
 	GSList *attach_list = NULL;
+	gint i = 0;
 	/* headers */
 
 	if (!camel_internet_address_get((const CamelInternetAddress *)from, 0, &namep, &addressp)) {
@@ -496,6 +341,7 @@ mail_build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray
 	set_SPropValue_proptag(&props[i++], PR_NORMALIZED_SUBJECT, g_strdup (item->header.subject));
 
 	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, (const void *)&editor);
+	//Fixme : 
 	set_SPropValue_proptag(&props[i++], PR_BODY, g_strdup (item->msg.body_stream));
 
 	msgflag = MSGFLAG_UNSENT;
@@ -508,10 +354,9 @@ mail_build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray
 static void
 mapi_item_add_recipient (const char *recipients, ExchangeMAPIRecipientType type, GSList **recipient_list)
 {
-	int len = 0;
-
 	if (!recipients)
 		return ;
+
 	ExchangeMAPIRecipient *recipient = g_new0 (ExchangeMAPIRecipient, 1);
 
 	recipient->email_id = recipients;
