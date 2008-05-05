@@ -18,11 +18,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "camel-mapi-folder.h"
-#include <camel/camel-offline-folder.h>
-#include <camel/camel-folder.h>
-#include "camel-mapi-store.h"
+#include <pthread.h>
+#include <string.h>
 #include <time.h>
+
+#include <camel/camel-folder-search.h>
 #include <camel/camel-mime-part.h>
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-string-utils.h>
@@ -31,11 +31,14 @@
 #include <camel/camel-data-wrapper.h>
 #include <camel/camel-multipart.h>
 #include <camel/camel-private.h>
-#include <string.h>
 #include <camel/camel-stream-buffer.h>
-#include <libmapi/libmapi.h>
-#include <pthread.h>
+#include <camel/camel-stream-mem.h>
 
+#include <libmapi/libmapi.h>
+#include <exchange-mapi-utils.h>
+
+#include "camel-mapi-store.h"
+#include "camel-mapi-folder.h"
 #include "camel-mapi-private.h"
 #include "camel-mapi-summary.h"
 
@@ -61,13 +64,6 @@ typedef struct {
 } flags_diff_t;
 
 static CamelMimeMessage *mapi_folder_item_to_msg( CamelFolder *folder, MapiItem *item, CamelException *ex );
-
-
-CamelMessageContentInfo *get_content(CamelMessageInfoBase *mi)
-{
-	return (NULL);
-}
-
 
 static GPtrArray *
 mapi_folder_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
@@ -127,9 +123,7 @@ mapi_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 static void
 mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 {
-	CamelMapiSummary *summary = (CamelMapiSummary *) folder->summary;
 	CamelStoreInfo *si;
-	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (folder->parent_store);
 	/*
 	 * Checking for the summary->time_string here since the first the a
 	 * user views a folder, the read cursor is in progress, and the getQM
@@ -162,82 +156,6 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 
 }
 
-static MapiItemType
-mapi_item_class_to_type (const char *type)
-{
-	MapiItemType item_type = MAPI_FOLDER_TYPE_MAIL;
-
-	if (!strcmp (type, IPF_APPOINTMENT)) 
-		item_type = MAPI_FOLDER_TYPE_APPOINTMENT;
-	else if (!strcmp (type, IPF_CONTACT))
-		item_type = MAPI_FOLDER_TYPE_CONTACT;
-	else if (!strcmp (type, IPF_STICKYNOTE))
-		item_type = MAPI_FOLDER_TYPE_MEMO;
-	else if (!strcmp (type, IPF_TASK))
-		item_type = MAPI_FOLDER_TYPE_TASK;
-
-	/* Else it has to be a mail folder only. It is assumed in MAPI code as well. */
-
-	return item_type;
-}
-
-
-static void
-debug_mapi_property_dump (struct mapi_SPropValue_array *properties)
-{
-	gint i = 0;
-
-	for (i = 0; i < properties->cValues; i++) { 
-		for (i = 0; i < properties->cValues; i++) {
-			struct mapi_SPropValue *lpProp = &properties->lpProps[i];
-			const char *tmp =  get_proptag_name (lpProp->ulPropTag);
-			struct timeval t;
-			if (tmp && *tmp)
-				printf("\n%s \t",tmp);
-			else
-				printf("\n%x \t", lpProp->ulPropTag);
-			switch(lpProp->ulPropTag & 0xFFFF) {
-			case PT_BOOLEAN:
-				printf(" (bool) - %d", lpProp->value.b);
-				break;
-			case PT_I2:
-				printf(" (uint16_t) - %d", lpProp->value.i);
-				break;
-			case PT_LONG:
-				printf(" (long) - %ld", lpProp->value.l);
-				break;
-			case PT_DOUBLE:
-				printf (" (double) -  %lf", lpProp->value.dbl);
-				break;
-			case PT_I8:
-				printf (" (int) - %d", lpProp->value.d);
-				break;
-			case PT_SYSTIME:
-/* 				get_mapi_SPropValue_array_date_timeval (&t, properties, lpProp->ulPropTag); */
-/* 				printf (" (struct FILETIME *) - %p\t[%s]\t", &lpProp->value.ft, icaltime_as_ical_string (icaltime_from_timet_with_zone (t.tv_sec, 0, utc_zone))); */
-				break;
-			case PT_ERROR:
-				printf (" (error) - %p", lpProp->value.err);
-				break;
-			case PT_STRING8:
-				printf(" (string) - %s", lpProp->value.lpszA ? lpProp->value.lpszA : "null" );
-				break;
-			case PT_UNICODE:
-				printf(" (unicodestring) - %s", lpProp->value.lpszW ? lpProp->value.lpszW : "null");
-				break;
-			case PT_BINARY:
-//				printf(" (struct SBinary_short *) - %p", &lpProp->value.bin);
-				break;
-			case PT_MV_STRING8:
- 				printf(" (struct mapi_SLPSTRArray *) - %p", &lpProp->value.MVszA);
-				break;
-			default:
-				printf(" - NONE NULL");
-			}
-		}
-	}
-}
-
 static gboolean
 fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
 		GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
@@ -254,7 +172,7 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 	item->mid = mid;
 
 	/* FixME : which on of this will fetch the subject. */
-	item->header.subject = find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT);
+	item->header.subject = g_strdup (find_mapi_SPropValue_data (array, PR_NORMALIZED_SUBJECT));
 	item->header.to = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_TO));
 	item->header.cc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_CC));
 	item->header.bcc = g_strdup (find_mapi_SPropValue_data (array, PR_DISPLAY_BCC));
@@ -277,29 +195,25 @@ fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const 
 
 	slist = g_slist_append (slist, item);
 	mapi_folder->priv->item_list = slist;
+
+	return TRUE;
 }
 
 static void
-mapi_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean uid_flag) 
+mapi_update_cache (CamelFolder *folder, GSList *list, CamelException *ex, gboolean uid_flag) 
 {
 	CamelMapiMessageInfo *mi = NULL;
 	CamelMessageInfo *pmi = NULL;
 	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (folder->parent_store);
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(folder);
-	CamelMapiStorePrivate *priv = mapi_store->priv;
 
-	guint32 item_status, status_flags = 0;
+	guint32 status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
 	GString *str = g_string_new (NULL);
-	const char *priority = NULL;
-	gchar *folder_id = NULL;
-	gboolean is_junk = FALSE;
-	gboolean status;
-	GList *item_list = list;
-	int total_items = g_list_length (item_list), i=0;
-
-	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_WRITE;
+	const gchar *folder_id = NULL;
+	GSList *item_list = list;
+	int total_items = g_slist_length (item_list), i=0;
 
 	changes = camel_folder_change_info_new ();
 	folder_id = camel_mapi_store_folder_id_lookup (mapi_store, folder->full_name);
@@ -310,22 +224,14 @@ mapi_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolea
 		return;
 	}
 
-/* 	if (!strcmp (folder->full_name, JUNK_FOLDER)) { */
-/* 		is_junk = TRUE; */
-/* 	} */
-
 	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
-	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
+	for ( ; item_list != NULL ; item_list = g_slist_next (item_list) ) {
 		MapiItem *temp_item ;
 		MapiItem *item;
-		char *temp_date = NULL;
 		guint64 id;
-		GSList *recp_list = NULL;
 		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
-		const char *recurrence_key = NULL;
-		int rk;
 
 		exists = FALSE;
 		status_flags = 0;
@@ -440,18 +346,16 @@ mapi_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (folder->parent_store);
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (folder);
-	CamelMapiStorePrivate *priv = mapi_store->priv;
 	CamelMessageInfo *info = NULL;
 	CamelMapiMessageInfo *mapi_info = NULL;
-	GList *read_items = NULL, *deleted_read_items = NULL, *unread_items = NULL;
+
+	GSList *read_items = NULL, *unread_items = NULL;
 	flags_diff_t diff, unset_flags;
 	const char *folder_id;
 	mapi_id_t fid;
 	int count, i;
-	gboolean status = FALSE;
-	
 
-	GList *deleted_items, *deleted_head;
+	GSList *deleted_items, *deleted_head;
 	deleted_items = deleted_head = NULL;
 
 	if (((CamelOfflineStore *) mapi_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL || 
@@ -499,13 +403,13 @@ mapi_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			} else {
 				if (diff.bits & CAMEL_MESSAGE_DELETED) {
 					if (diff.bits & CAMEL_MESSAGE_SEEN) 
-						read_items = g_list_prepend (read_items, mid);
+						read_items = g_slist_prepend (read_items, mid);
 					if (deleted_items)
-						deleted_items = g_list_prepend (deleted_items, mid);
+						deleted_items = g_slist_prepend (deleted_items, mid);
 					else {
-						g_list_free (deleted_head);
+						g_slist_free (deleted_head);
 						deleted_head = NULL;
-						deleted_head = deleted_items = g_list_prepend (deleted_items, mid);
+						deleted_head = deleted_items = g_slist_prepend (deleted_items, mid);
 					}
 
 					CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
@@ -514,9 +418,9 @@ mapi_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				}
 				
 				if (diff.bits & CAMEL_MESSAGE_SEEN) {
-					read_items = g_list_prepend (read_items, mid);
+					read_items = g_slist_prepend (read_items, mid);
 				} else if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
-					unread_items = g_list_prepend (unread_items, mid);
+					unread_items = g_slist_prepend (unread_items, mid);
 				}
 		}
 		camel_message_info_free (info);
@@ -532,25 +436,26 @@ mapi_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	if (read_items) {
 		CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
-		exchange_mapi_set_flags (NULL, fid, read_items, 0);
+		exchange_mapi_set_flags (0, fid, read_items, 0);
 		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
-		g_list_free (read_items);
+		g_slist_free (read_items);
 	}
 
 	if (deleted_items) {
 		CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
-		exchange_mapi_remove_items(NULL, fid, deleted_items);
+		exchange_mapi_remove_items(0, fid, deleted_items);
 		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
 	}
 	/*Remove them from cache*/
 	while (deleted_items) {
-		char* deleted_msg_uid = NULL;
-		deleted_msg_uid = exchange_mapi_util_mapi_ids_to_uid (fid, deleted_items->data);
+		char* deleted_msg_uid = g_strdup_printf ("%016llX%016llX", fid, *(mapi_id_t *)deleted_items->data);
+
 		CAMEL_MAPI_FOLDER_REC_LOCK (folder, cache_lock);
 		camel_folder_summary_remove_uid (folder->summary, deleted_msg_uid);
 		camel_data_cache_remove(mapi_folder->cache, "cache", deleted_msg_uid, NULL);
 		CAMEL_MAPI_FOLDER_REC_UNLOCK (folder, cache_lock);
-		deleted_items = g_list_next (deleted_items);
+
+		deleted_items = g_slist_next (deleted_items);
 	}
 
 
@@ -558,7 +463,7 @@ mapi_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		CAMEL_SERVICE_REC_LOCK (mapi_store, connect_lock);
 		/* TODO */
 		CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
-		g_list_free (unread_items);
+		g_slist_free (unread_items);
 	}
 
 	if (expunge) {
@@ -579,18 +484,12 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (folder->parent_store);
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (folder);
-	CamelMapiStorePrivate *priv = mapi_store->priv;
-	CamelMapiSummary *summary = (CamelMapiSummary *)folder->summary;
-	CamelSession *session = ((CamelService *)folder->parent_store)->session;
+
 	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_PROXY;
 	gboolean is_locked = TRUE;
 	gboolean status;
 	GList *list = NULL;
-	GSList *slist = NULL, *sl;
-	gchar *folder_id = NULL;
-	char *time_string = NULL, *t_str = NULL;
-	struct _folder_update_msg *msg;
-	gboolean check_all = FALSE;
+	const gchar *folder_id = NULL;
 
 	const guint32 summary_prop_list[] = {
 		PR_NORMALIZED_SUBJECT,
@@ -631,8 +530,6 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/*Get the New Items*/
 	if (!is_proxy) {
-		char *source;
-
 		mapi_id_t temp_folder_id;
 		exchange_mapi_util_mapi_id_from_string (folder_id, &temp_folder_id);
 
@@ -664,8 +561,6 @@ mapi_refresh_folder(CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
 	is_locked = FALSE;
 
-
-end3: 
 	list = NULL;
 end2:
 	//TODO:
@@ -680,7 +575,7 @@ static gpointer
 fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, 
 		GSList *streams, GSList *recipients, GSList *attachments)
 {
-	debug_mapi_property_dump (array);
+	exchange_mapi_debug_property_dump (array);
 	long *flags;
 	struct FILETIME *delivery_date;
 	NTTIME ntdate;
@@ -771,7 +666,6 @@ mapi_msg_set_recipient_list (CamelMimeMessage *msg, MapiItem *item)
 static void
 mapi_populate_details_from_item (CamelMimeMessage *msg, MapiItem *item)
 {
-	char *dtstring = NULL;
 	char *temp_str = NULL;
 	time_t recieved_time;
 	CamelInternetAddress *addr = NULL;
@@ -804,7 +698,6 @@ static void
 mapi_populate_msg_body_from_item (CamelMultipart *multipart, MapiItem *item, char *body)
 {
 	CamelMimePart *part;
-	const char *temp_body = NULL;
 
 	part = camel_mime_part_new ();
 	camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
@@ -828,19 +721,12 @@ mapi_folder_item_to_msg( CamelFolder *folder,
 		CamelException *ex )
 {
 	CamelMimeMessage *msg = NULL;
-	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE(folder->parent_store);
-	CamelMapiStorePrivate  *priv = mapi_store->priv;
-	const char *container_id = NULL;
-
-	MapiItemType type;
 	CamelMultipart *multipart = NULL;
 
 	GSList *attach_list = NULL;
 	int errno;
 	char *body = NULL;
-	int body_len = 0;
 	const char *uid = NULL;
-	CamelStream *temp_stream;
 
 	attach_list = item->attachments;
 
@@ -888,7 +774,6 @@ mapi_folder_item_to_msg( CamelFolder *folder,
 	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 	camel_object_unref (multipart);
 
-end:
 	if (body)
 		g_free (body);
 
@@ -902,8 +787,8 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	CamelMimeMessage *msg = NULL;
 	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(folder);
 	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE(folder->parent_store);
-	CamelMapiStorePrivate  *priv = mapi_store->priv;
 	CamelMapiMessageInfo *mi = NULL;
+
 	char *folder_id;
 	CamelStream *stream, *cache_stream;
 	int errno;
@@ -1007,8 +892,34 @@ mapi_folder_get_message( CamelFolder *folder, const char *uid, CamelException *e
 	return msg;
 }
 
+static void
+mapi_folder_search_free (CamelFolder *folder, GPtrArray *uids)
+{
+	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(folder);
 
-CamelMessageInfo*
+	g_return_if_fail (mapi_folder->search);
+
+	CAMEL_MAPI_FOLDER_LOCK(mapi_folder, search_lock);
+
+	camel_folder_search_free_result (mapi_folder->search, uids);
+
+	CAMEL_MAPI_FOLDER_UNLOCK(mapi_folder, search_lock);
+
+}
+
+static void
+camel_mapi_folder_finalize (CamelObject *object)
+{
+	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (object);
+
+	if (mapi_folder->priv)
+		g_free(mapi_folder->priv);
+	if (mapi_folder->cache)
+		camel_object_unref (mapi_folder->cache);
+}
+
+
+static CamelMessageInfo*
 mapi_get_message_info(CamelFolder *folder, const char *uid)
 { 
 #if 0
@@ -1050,32 +961,6 @@ mapi_get_message_info(CamelFolder *folder, const char *uid)
 	return (msg);
 #endif
 	return NULL;
-}
-
-static void
-mapi_folder_search_free (CamelFolder *folder, GPtrArray *uids)
-{
-	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(folder);
-
-	g_return_if_fail (mapi_folder->search);
-
-	CAMEL_MAPI_FOLDER_LOCK(mapi_folder, search_lock);
-
-	camel_folder_search_free_result (mapi_folder->search, uids);
-
-	CAMEL_MAPI_FOLDER_UNLOCK(mapi_folder, search_lock);
-
-}
-
-static void
-camel_mapi_folder_finalize (CamelObject *object)
-{
-	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER (object);
-
-	if (mapi_folder->priv)
-		g_free(mapi_folder->priv);
-	if (mapi_folder->cache)
-		camel_object_unref (mapi_folder->cache);
 }
 
 static void
@@ -1149,7 +1034,7 @@ camel_mapi_folder_new(CamelStore *store, const char *folder_name, const char *fo
 
 	CamelFolder	*folder = NULL;
 	CamelMapiFolder *mapi_folder;
-	char *summary_file, *state_file, *journal_file;
+	char *summary_file, *state_file;
 	char *short_name;
 
 

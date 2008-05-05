@@ -1,5 +1,12 @@
 2008-05-05  Johnny Jacob  <jjohnny@novell.com>
 
+	* exchange-mapi-utils.h: exchange_mapi_debug_property_dump 
+	prototype added.
+
+	* exchange-mapi-utils.c (exchange_mapi_debug_property_dump): Added.
+
+2008-05-05  Johnny Jacob  <jjohnny@novell.com>
+
 	* exchange-mapi-connection.c (exchange_mapi_rename_folder): 
 	Removed uint32_t olFolder.
 

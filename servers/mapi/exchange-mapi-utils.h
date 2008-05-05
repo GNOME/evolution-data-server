@@ -58,4 +58,7 @@ exchange_mapi_util_free_stream_list (GSList **stream_list);
 const gchar *
 exchange_mapi_util_ex_to_smtp (const gchar *ex_address);
 
+void
+exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties);
+
 #endif

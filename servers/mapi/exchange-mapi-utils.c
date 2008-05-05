@@ -267,3 +267,59 @@ exchange_mapi_util_ex_to_smtp (const gchar *ex_address)
 
 	return smtp_addr;
 }
+
+void
+exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties)
+{
+	gint i = 0;
+
+	for (i = 0; i < properties->cValues; i++) { 
+		for (i = 0; i < properties->cValues; i++) {
+			struct mapi_SPropValue *lpProp = &properties->lpProps[i];
+			const char *tmp =  get_proptag_name (lpProp->ulPropTag);
+			struct timeval t;
+			if (tmp && *tmp)
+				printf("\n%s \t",tmp);
+			else
+				printf("\n%x \t", lpProp->ulPropTag);
+			switch(lpProp->ulPropTag & 0xFFFF) {
+			case PT_BOOLEAN:
+				printf(" (bool) - %d", lpProp->value.b);
+				break;
+			case PT_I2:
+				printf(" (uint16_t) - %d", lpProp->value.i);
+				break;
+			case PT_LONG:
+				printf(" (long) - %ld", lpProp->value.l);
+				break;
+			case PT_DOUBLE:
+				printf (" (double) -  %lf", lpProp->value.dbl);
+				break;
+			case PT_I8:
+				printf (" (int) - %d", lpProp->value.d);
+				break;
+			case PT_SYSTIME:
+/* 				get_mapi_SPropValue_array_date_timeval (&t, properties, lpProp->ulPropTag); */
+/* 				printf (" (struct FILETIME *) - %p\t[%s]\t", &lpProp->value.ft, icaltime_as_ical_string (icaltime_from_timet_with_zone (t.tv_sec, 0, utc_zone))); */
+				break;
+			case PT_ERROR:
+				printf (" (error) - %p", lpProp->value.err);
+				break;
+			case PT_STRING8:
+				printf(" (string) - %s", lpProp->value.lpszA ? lpProp->value.lpszA : "null" );
+				break;
+			case PT_UNICODE:
+				printf(" (unicodestring) - %s", lpProp->value.lpszW ? lpProp->value.lpszW : "null");
+				break;
+			case PT_BINARY:
+//				printf(" (struct SBinary_short *) - %p", &lpProp->value.bin);
+				break;
+			case PT_MV_STRING8:
+ 				printf(" (struct mapi_SLPSTRArray *) - %p", &lpProp->value.MVszA);
+				break;
+			default:
+				printf(" - NONE NULL");
+			}
+		}
+	}
+}

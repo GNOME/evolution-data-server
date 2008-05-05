@@ -1,5 +1,13 @@
 2008-05-05  Johnny Jacob  <jjohnny@novell.com>	
 
+	* camel-mapi-folder.c (get_content): Removed.
+	(mapi_update_cache): Cleanup warnings.
+	(mapi_sync): Using GSList.
+	(mapi_refresh_folder): Cleanup warnings.
+	(mapi_refresh_folder): Cleanup warnings.
+
+2008-05-05  Johnny Jacob  <jjohnny@novell.com>	
+
 	* camel-mapi-store.c (mapi_rename_folder): exchange_mapi_rename_folder API
 	change fix.
 
