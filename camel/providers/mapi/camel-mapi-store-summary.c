@@ -38,8 +38,6 @@
 
 #define d(x) 
 
-static void namespace_clear(CamelStoreSummary *s);
-
 static int summary_header_load(CamelStoreSummary *, FILE *);
 static int summary_header_save(CamelStoreSummary *, FILE *);
 
@@ -123,20 +121,14 @@ static int
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
 	CamelMapiStoreSummary *summary = (CamelMapiStoreSummary *)s ;
-	 gint32 version, capabilities, count ;
+	gint32 version;
 
 	if (camel_mapi_store_summary_parent->summary_header_load ((CamelStoreSummary *)s, in) == -1
 			|| camel_file_util_decode_fixed_int32(in, &version) == -1)
 		return -1 ;
 
 	summary->version = version ;
-/* FIXME */
-/* 	if (camel_file_util_decode_fixed_int32(in, &capabilities) == -1 */
-/* 			|| camel_file_util_decode_fixed_int32(in, &count) == -1 */
-/* 			|| count > 1) */
-/* 		return -1; */
 
-/* 	summary->capabilities = capabilities ; */
 	return 0 ;
 }
 
@@ -144,12 +136,8 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 static int
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
-	CamelMapiStoreSummary *summary = (CamelMapiStoreSummary *) s ;
 
 	if (camel_mapi_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1)
-/* FIXME */
-/* 			|| camel_file_util_encode_fixed_int32(out, 0) == -1 */
-/* 	                || camel_file_util_encode_fixed_int32(out, summary->capabilities) == -1) */
 		return -1;
 
 	return 0 ;
@@ -284,7 +272,7 @@ CamelMapiStoreInfo *
 camel_mapi_store_summary_add_from_full(CamelMapiStoreSummary *s, const char *full, char dir_sep)
 {
 	CamelMapiStoreInfo *info;
-	char *pathu8, *prefix;
+	char *pathu8;
 	int len;
 	char *full_name;
 
@@ -302,7 +290,7 @@ camel_mapi_store_summary_add_from_full(CamelMapiStoreSummary *s, const char *ful
 		d(printf("  already there\n"));
 		return info;
 	}
-	pathu8 = camel_mapi_store_summary_full_to_path(s, full_name, NULL);
+	pathu8 = camel_mapi_store_summary_full_to_path(s, full_name, '/');
 	info = (CamelMapiStoreInfo *)camel_store_summary_add_from_path((CamelStoreSummary *)s, pathu8);
 	if (info) 
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_STORE_INFO_LAST, full_name);
