@@ -232,20 +232,20 @@ ep_need_proxy (EProxy* proxy, const char* host)
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
-		struct sockaddr* s_addr = NULL;
+		struct sockaddr* so_addr = NULL;
 		
-		s_addr = soup_address_get_sockaddr (addr, &addr_len);
+		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
 		   soup_address_resolve_sync().
 		*/
-		if (!s_addr)
+		if (!so_addr)
 			return TRUE;
 
-		if (s_addr->sa_family == AF_INET) {
+		if (so_addr->sa_family == AF_INET) {
 			struct in_addr in, *mask, *addr_in;
 			
-			in = ((struct sockaddr_in *)s_addr)->sin_addr;
+			in = ((struct sockaddr_in *)so_addr)->sin_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
 				p_addr = (ProxyHostAddr *)l->data;
 				if (p_addr->type == PROXY_IPV4) {
@@ -263,7 +263,7 @@ ep_need_proxy (EProxy* proxy, const char* host)
 			struct in6_addr in6, net6;
 			struct in_addr *addr_in, *mask;
 			
-			in6 = ((struct sockaddr_in6 *)s_addr)->sin6_addr;
+			in6 = ((struct sockaddr_in6 *)so_addr)->sin6_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
 				p_addr = (ProxyHostAddr *)l->data;
 				ipv6_network_addr (&in6, (struct in6_addr *)p_addr->mask, &net6);
@@ -436,25 +436,25 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
-		struct sockaddr* s_addr = NULL;
+		struct sockaddr* so_addr = NULL;
 		
 		host_addr = g_new0 (ProxyHostAddr, 1);
 		
-		s_addr = soup_address_get_sockaddr (addr, &addr_len);
+		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
 		   soup_address_resolve_sync().
 		*/
-		if (!s_addr)
+		if (!so_addr)
 			goto error;
 
-		if (s_addr->sa_family == AF_INET)
+		if (so_addr->sa_family == AF_INET)
 			has_error = ep_manipulate_ipv4 (host_addr, 
-							&((struct sockaddr_in *)s_addr)->sin_addr, 
+							&((struct sockaddr_in *)so_addr)->sin_addr, 
 							netmask);
 		else	
 			has_error = ep_manipulate_ipv6 (host_addr, 
-							&((struct sockaddr_in6 *)s_addr)->sin6_addr, 
+							&((struct sockaddr_in6 *)so_addr)->sin6_addr, 
 							netmask);
 		
 		if (!has_error)
