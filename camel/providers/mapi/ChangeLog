@@ -1,5 +1,13 @@
 2008-05-05  Johnny Jacob  <jjohnny@novell.com>	
 
+	* camel-mapi-summary.c (mapi_summary_header_load)
+	(mapi_summary_header_save, mapi_message_info_load)
+	(mapi_message_info_save, mapi_content_info_load)
+	(mapi_content_info_save, mapi_info_set_flags): Placeholder Added.
+	(camel_mapi_summary_class_init): Populated class members.
+
+2008-05-05  Johnny Jacob  <jjohnny@novell.com>	
+
 	* camel-mapi-transport.c (mapi_item_add_attach): Using slist.
 
 	* camel-mapi-folder.c (get_content): Removed.

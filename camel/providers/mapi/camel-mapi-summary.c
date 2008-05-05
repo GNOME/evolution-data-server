@@ -96,6 +96,16 @@ camel_mapi_summary_class_init (CamelMapiSummaryClass *klass)
 	CamelFolderSummaryClass *cfs_class = (CamelFolderSummaryClass *) klass;
 
 	camel_mapi_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_mapi_folder_get_type()));
+
+	cfs_class->message_info_clone = mapi_message_info_clone ;
+	cfs_class->summary_header_load = mapi_summary_header_load;
+	cfs_class->summary_header_save = mapi_summary_header_save;
+	cfs_class->message_info_load = mapi_message_info_load;
+	cfs_class->message_info_save = mapi_message_info_save;
+	cfs_class->content_info_load = mapi_content_info_load;
+	cfs_class->content_info_save = mapi_content_info_save;
+	cfs_class->info_set_flags = mapi_info_set_flags;
+
 }
 
 
@@ -138,5 +148,53 @@ camel_mapi_summary_new (struct _CamelFolder *folder, const char *filename)
 	}
 
 	return summary;
+}
+
+static int
+mapi_summary_header_load (CamelFolderSummary *summary, FILE *out) 
+{
+	//TODO 
+	return 0;
+}
+static int 
+mapi_summary_header_save (CamelFolderSummary *summary, FILE *out) 
+{
+	//TODO
+	return 0;
+}
+
+static CamelMessageInfo*
+mapi_message_info_load (CamelFolderSummary *s, FILE *in) 
+{
+	//TODO
+	return NULL;
+}
+
+static int 
+mapi_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) 
+{
+	//TODO
+	return 0;
+}
+
+static CamelMessageContentInfo* 
+mapi_content_info_load (CamelFolderSummary *s, FILE *in) 
+{
+	//TODO
+	return NULL;
+}
+
+static int
+mapi_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info)
+{
+	//TODO
+	return 0;
+}
+
+static gboolean
+mapi_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
+{
+	//TODO
+	return TRUE;
 }
 
