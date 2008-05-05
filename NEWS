@@ -1,3 +1,26 @@
+Evolution-Data-Server 2.22.1.1 2008-05-02
+-----------------------------------------
+
+Bug Fixes:
+	#274316: Also copy user tags when copying messages between folders (Milan Crha)
+	#338330: (Novell Bugzilla) Internet Based Calendar Events Are Declined By Evolution/GroupWise (Chenthill Palanisamy)
+	#350143: (Novell Bugzilla) Fix a severe memory leak in evolution-data-server (Chenthill Palanisamy)
+	#358584: (Novell Bugzilla) Display of web calendars ignores timezones (Chenthill Palanisamy)
+	#358644: (Novell Bugzilla) Retracted groupwise appointments should disappear as soon as they are retracted. (Chenthill Palanisamy)
+	#358650: (Novell Bugzilla) International clock applet is crashing (Chenthill Palanisamy)
+	#381307: Run a single delta-thread to fetch changes from the server, instead of spawning multiple threads (Ashish Shrivastava)
+	#473880: Fixed a few compiler warnings (Suman Manjunath)
+	#475616: Use recursive mutex (Milan Crha)
+	#502899: Fix a crash (Milan Crha)
+	#514300: Make sure we do the Inbox -> INBOX translation at the right place (Christian Kellner)
+	#520532: Support migration from password file to keyring (Matthew Barnes)
+	#529339: Fixed a crash when searching with an expression (Milan Crha)
+	#530139: Do not ship .svn files (Matthew Barnes)
+	#530323: Don't free the same variable twice (Sebastien Bacher)
+
+Other Contributors:
+	Load addressbook conditionally (Srinivasa Ragavan)
+
 Evolution-Data-Server 2.22.1 2008-04-07
 ---------------------------------------
 
