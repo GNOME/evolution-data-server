@@ -1,3 +1,10 @@
+2008-05-05  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #517244
+
+	* configure.in:
+	Add test for nl_langinfo(CODESET).  Defines HAVE_CODESET.
+
 2008-05-02  Johnny Jacob <jjohnny@novell.com>
 
  	* NEWS, configure.in: Evolution Data Server 2.22.1.1
