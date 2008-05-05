@@ -375,6 +375,17 @@ AC_TRY_RUN([
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+dnl Check for nl_langinfo and CODESET
+AC_MSG_CHECKING([for nl_langinfo (CODESET)])
+AC_TRY_COMPILE([#include <langinfo.h>],
+	[char *codeset = nl_langinfo (CODESET);],
+	[ac_cv_langinfo_codeset=yes],
+	[ac_cv_langinfo_codeset=no])
+if test x$ac_cv_langinfo_codeset = xyes; then
+	AC_DEFINE(HAVE_CODESET, 1, [Have nl_langinfo (CODESET)])
+fi
+AC_MSG_RESULT($ac_cv_langinfo_codeset)
+
 dnl Check to see if strftime supports the use of %l and %k
 
 AC_MSG_CHECKING(for %l and %k support in strftime)

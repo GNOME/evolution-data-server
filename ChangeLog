@@ -1,3 +1,10 @@
+2008-05-05  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #517244
+
+	* configure.in:
+	Add test for nl_langinfo(CODESET).  Defines HAVE_CODESET.
+
 2008-05-05  Wang Xin  <jedy.wang@sun.com>
 
 	* libedataserver/e-proxy.c: Fixes #530688.
