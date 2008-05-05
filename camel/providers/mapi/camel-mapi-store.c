@@ -27,6 +27,8 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include <glib/gstdio.h>
+
 #include <camel/camel-sasl.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-tcp-stream-raw.h>
@@ -36,20 +38,24 @@
 #endif
 
 #include <camel/camel-private.h>
-#include <camel/camel-i18n.h>
-#include <camel/camel-net-utils.h>
-#include "camel-mapi-store.h"
-#include "camel-mapi-folder.h"
-#include "camel-mapi-store-summary.h"
 #include <camel/camel-session.h>
 #include <camel/camel-service.h>
 #include <camel/camel-store-summary.h>
+#include <camel/camel-i18n.h>
+#include <camel/camel-net-utils.h>
 
-//#include <mapi/exchange-mapi-folder.h>
+#include "camel-mapi-store.h"
+#include "camel-mapi-folder.h"
+#include "camel-mapi-store-summary.h"
+#include "camel-mapi-summary.h"
+
+#include <exchange-mapi-utils.h>
 //#define d(x) x
 
 /* This definition should be in-sync with those in exchange-mapi-account-setup.c and exchange-account-listener.c */
 #define E_PASSWORD_COMPONENT "ExchangeMAPI"
+#define SUBFOLDER_DIR_NAME     "subfolders"
+#define SUBFOLDER_DIR_NAME_LEN 10
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -64,17 +70,15 @@
 #define d(x) printf("%s(%d):%s:%s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, x)
 
 struct _CamelMapiStorePrivate {
-	gchar *user;
-	gchar *profile;
-	gchar *base_url;
-	gchar *storage_path;
+	char *user;
+	char *profile;
+	char *base_url;
+	char *storage_path;
 
 	GHashTable *id_hash; /*get names from ids*/
 	GHashTable *name_hash;/*get ids from names*/
 	GHashTable *parent_hash;
 };
-
-static CamelStore *gl_store = NULL;
 
 static CamelOfflineStoreClass *parent_class = NULL;
 
@@ -105,27 +109,13 @@ static CamelFolderInfo * mapi_build_folder_info(CamelMapiStore *mapi_store, cons
 static void mapi_folders_sync (CamelMapiStore *store, CamelException *ex);
 static gboolean mapi_is_system_folder (const char *folder_name);
 
-CamelStore
-*get_store(void)
-{
-	return (gl_store);
-}
-
-void
-set_store(CamelStore *store)
-{
-	gl_store = store;
-}
-
-
-
 static guint
 mapi_hash_folder_name(gconstpointer key)
 {
 	return g_str_hash(key);
 }
 
-static guint
+static gint
 mapi_compare_folder_name(gconstpointer a, gconstpointer b)
 {
 	gconstpointer	aname = a; 
@@ -140,7 +130,6 @@ camel_mapi_store_class_init(CamelMapiStoreClass *klass)
 	CamelServiceClass	*service_class = 
 		CAMEL_SERVICE_CLASS (klass);
 	CamelStoreClass		*store_class = (CamelStoreClass *) klass;
-		CAMEL_STORE_CLASS (klass);
 
 	parent_class = (CamelOfflineStoreClass *) camel_type_get_global_classfuncs(CAMEL_TYPE_OFFLINE_STORE);
 
@@ -167,20 +156,20 @@ CamelType
 camel_mapi_store_get_type(void)
 {
 	REACHED;
-	static CamelType type = 0;
+	static CamelType camel_mapi_store_type = CAMEL_INVALID_TYPE;
   
-	if (!type) {
-		type = camel_type_register(camel_offline_store_get_type (),
-				     "CamelMapiStores",
-				     sizeof (CamelMapiStore),
-				     sizeof (CamelMapiStoreClass),
-				     (CamelObjectClassInitFunc) camel_mapi_store_class_init,
-				     NULL,
-				     (CamelObjectInitFunc) camel_mapi_store_init,
-				     (CamelObjectFinalizeFunc) camel_mapi_store_finalize);
+	if (camel_mapi_store_type == CAMEL_INVALID_TYPE) {
+		camel_mapi_store_type = camel_type_register(camel_offline_store_get_type (),
+							    "CamelMapiStores",
+							    sizeof (CamelMapiStore),
+							    sizeof (CamelMapiStoreClass),
+							    (CamelObjectClassInitFunc) camel_mapi_store_class_init,
+							    NULL,
+							    (CamelObjectInitFunc) camel_mapi_store_init,
+							    (CamelObjectFinalizeFunc) camel_mapi_store_finalize);
 	}
 
-	return type;
+	return camel_mapi_store_type;
 }
 
 /*
@@ -202,12 +191,6 @@ static void camel_mapi_store_init(CamelMapiStore *store, CamelMapiStoreClass *kl
 
 	mapi_store->priv = priv;
 
-/* 	store->camel_url = NULL; */
-/* 	store->fi = NULL; */
-/* 	store->trash_name = NULL; */
-/* 	store->folders = NULL; */
-/* 	store->folders_lock = NULL; */
-/* 	store->connect_lock = NULL; */
 }
 
 static void camel_mapi_store_finalize(CamelObject *object)
@@ -219,10 +202,8 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 				 CamelProvider *provider, CamelURL *url,
 				 CamelException *ex)
 {
-	CAMEL_SERVICE (service);
 	CamelMapiStore	*mapi_store = CAMEL_MAPI_STORE (service);
 	CamelStore *store = CAMEL_STORE (service);
-	const char *property_value;
 	CamelMapiStorePrivate *priv = mapi_store->priv;
 	char *path = NULL;
 	
@@ -252,7 +233,7 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 
 	/*user and profile*/
 	priv->user = g_strdup (url->user);
-	priv->profile = camel_url_get_param(url, "profile");
+	priv->profile = g_strdup (camel_url_get_param(url, "profile"));
 
 	/*base url*/
 	priv->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
@@ -291,14 +272,9 @@ static gboolean
 mapi_auth_loop (CamelService *service, CamelException *ex)
 {
 	CamelSession *session = camel_service_get_session (service);
-	CamelStore *store = CAMEL_STORE (service);
-	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
-	CamelMapiStorePrivate *priv = mapi_store->priv;
 
 	char *errbuf = NULL;
 	gboolean authenticated = FALSE;
-	char *uri;
-/* 	char *profile_name = NULL; */
 
 	service->url->passwd = NULL;
 
@@ -332,9 +308,6 @@ mapi_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 		
-/* 		profile_name = camel_url_get_param (service->url, "profile"); */
-/* 		printf("%s(%d):%s:url->profile \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, profile_name);		 */
-
 		exchange_mapi_connection_new (NULL,service->url->passwd);
 
 		if (!exchange_mapi_connection_exists ()) {
@@ -356,7 +329,6 @@ mapi_connect(CamelService *service, CamelException *ex)
 	REACHED;
 	CamelMapiStore *store = CAMEL_MAPI_STORE (service);
 	CamelMapiStorePrivate *priv = store->priv;
-	CamelSession *session = service->session;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL ||
 	    (service->status == CAMEL_SERVICE_DISCONNECTED)) {
@@ -432,13 +404,9 @@ mapi_get_folder(CamelStore *store, const char *folder_name, guint32 flags, Camel
 	CamelMapiStore *mapi_store = CAMEL_MAPI_STORE (store);
 	CamelMapiStorePrivate *priv = mapi_store->priv;
 	char *storage_path = NULL;
-	char *folder_dir = NULL;
 
 	storage_path = g_strdup_printf("%s/folders", priv->storage_path);
-	//	folder_dir = e_path_to_physical (storage_path, folder_name);
-	//	g_free(storage_path);
 
-	//	return camel_mapi_folder_new(store, folder_name, folder_dir, flags, ex);
 	return camel_mapi_folder_new(store, folder_name, storage_path, flags, ex);
 }
 
@@ -450,7 +418,6 @@ mapi_create_folder(CamelStore *store, const char *parent_name, const char *folde
 	CamelFolderInfo *root = NULL;
 	char *parent_id;
 	mapi_id_t parent_fid, new_folder_id;
-	int status;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create MAPI folders in offline mode."));
@@ -484,9 +451,9 @@ mapi_create_folder(CamelStore *store, const char *parent_name, const char *folde
 		root = mapi_build_folder_info(mapi_store, parent_name, folder_name);
 		camel_store_summary_save((CamelStoreSummary *)mapi_store->summary);
 
-		g_hash_table_insert (priv->id_hash, exchange_mapi_util_mapi_id_to_string (new_folder_id), g_strdup(folder_name));
-		g_hash_table_insert (priv->name_hash, g_strdup(root->full_name), exchange_mapi_util_mapi_id_to_string (new_folder_id));
-		g_hash_table_insert (priv->parent_hash, exchange_mapi_util_mapi_id_to_string (new_folder_id), g_strdup(parent_id));
+		g_hash_table_insert (priv->id_hash, g_strdup_printf ("%016llX", new_folder_id), g_strdup(folder_name));
+		g_hash_table_insert (priv->name_hash, g_strdup(root->full_name), g_strdup_printf ("%016llX", new_folder_id));
+		g_hash_table_insert (priv->parent_hash, g_strdup_printf ("%016llX", new_folder_id), g_strdup(parent_id));
 
 		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
 	}
@@ -494,19 +461,6 @@ mapi_create_folder(CamelStore *store, const char *parent_name, const char *folde
 	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 	return root;
 
-}
-
-/* FIXME: testing */
-static CamelFolderInfo 
-*create_exchange_folder(CamelStore *store, const char *folder_name)
-{
-	return NULL;
-}
-/* FIXME */
-static CamelFolderInfo 
-*create_exchange_subfolder(CamelStore *store, const char *parent_name, const char *folder_name)
-{
-	return NULL;
 }
 
 static void
@@ -595,6 +549,83 @@ mapi_delete_folder(CamelStore *store, const char *folder_name, CamelException *e
 
 }
 
+//FIXME : Moves this function to toplevel camel. same is used in GW.
+
+static char *
+mapi_path_to_physical (const char *prefix, const char *vpath)
+{
+	const char *p, *newp;
+	char *dp;
+	char *ppath;
+	int ppath_len;
+	int prefix_len;
+
+	while (*vpath == '/')
+		vpath++;
+	if (!prefix)
+		prefix = "";
+
+	/* Calculate the length of the real path. */
+	ppath_len = strlen (vpath);
+	ppath_len++;	/* For the ending zero.  */
+
+	prefix_len = strlen (prefix);
+	ppath_len += prefix_len;
+	ppath_len++;	/* For the separating slash.  */
+
+	/* Take account of the fact that we need to translate every
+	 * separator into `subfolders/'.
+	 */
+	p = vpath;
+	while (1) {
+		newp = strchr (p, '/');
+		if (newp == NULL)
+			break;
+
+		ppath_len += SUBFOLDER_DIR_NAME_LEN;
+		ppath_len++; /* For the separating slash.  */
+
+		/* Skip consecutive slashes.  */
+		while (*newp == '/')
+			newp++;
+
+		p = newp;
+	};
+
+	ppath = g_malloc (ppath_len);
+	dp = ppath;
+
+	memcpy (dp, prefix, prefix_len);
+	dp += prefix_len;
+	*(dp++) = '/';
+
+	/* Copy the mangled path.  */
+	p = vpath;
+ 	while (1) {
+		newp = strchr (p, '/');
+		if (newp == NULL) {
+			strcpy (dp, p);
+			break;
+		}
+
+		memcpy (dp, p, newp - p + 1); /* `+ 1' to copy the slash too.  */
+		dp += newp - p + 1;
+
+		memcpy (dp, SUBFOLDER_DIR_NAME, SUBFOLDER_DIR_NAME_LEN);
+		dp += SUBFOLDER_DIR_NAME_LEN;
+
+		*(dp++) = '/';
+
+		/* Skip consecutive slashes.  */
+		while (*newp == '/')
+			newp++;
+
+		p = newp;
+	}
+
+	return ppath;
+}
+
 static void 
 mapi_rename_folder(CamelStore *store, const char *old_name, const char *new_name, CamelException *ex)
 {
@@ -634,7 +665,7 @@ mapi_rename_folder(CamelStore *store, const char *old_name, const char *new_name
 	else
 		temp_new = (char *)new_name;
 	
-	if (!exchange_mapi_rename_folder (NULL, fid , temp_new))
+	if (!exchange_mapi_rename_folder (fid , temp_new))
 	{
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename MAPI folder `%s' to `%s'"),
 				      old_name, new_name);
@@ -648,8 +679,8 @@ mapi_rename_folder(CamelStore *store, const char *old_name, const char *new_name
 	g_hash_table_remove (priv->name_hash, old_name);
 
 	storepath = g_strdup_printf ("%s/folders", priv->storage_path);
-	oldpath = e_path_to_physical (storepath, old_name);
-	newpath = e_path_to_physical (storepath, new_name);
+	oldpath = mapi_path_to_physical (storepath, old_name);
+	newpath = mapi_path_to_physical (storepath, new_name);
 	g_free (storepath);
 
 	/*XXX: make sure the summary is also renamed*/
@@ -661,6 +692,16 @@ mapi_rename_folder(CamelStore *store, const char *old_name, const char *new_name
 	g_free (oldpath);
 	g_free (newpath);
 	CAMEL_SERVICE_REC_UNLOCK (mapi_store, connect_lock);
+}
+
+static guint32 hexnib(guint32 c)
+{
+	if (c >= '0' && c <= '9')
+		return c-'0';
+	else if (c>='A' && c <= 'Z')
+		return c-'A'+10;
+	else
+		return 0;
 }
 
 char *
@@ -762,7 +803,7 @@ match_path(const char *path, const char *name)
 	return n == 0 && (p == '%' || p == 0);
 }
 
-char *
+static char *
 mapi_concat ( const char *prefix, const char *suffix)
 {
 	size_t len;
@@ -880,15 +921,13 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	mapi_id_t mapi_id_folder;
 
 	char *par_name = NULL;
-	char *folder_name = NULL;
 	CamelFolderInfo *fi;
 	CamelMapiStoreInfo *si = NULL;
 	CamelMapiStorePrivate *priv = store->priv;
-	ExchangeMAPIFolderType type;
 
 	name = exchange_mapi_folder_get_name (folder);
 
-	id = exchange_mapi_util_mapi_id_to_string (exchange_mapi_folder_get_fid (folder));
+	id = g_strdup_printf ("%016llX", exchange_mapi_folder_get_fid (folder));
 		
 	fi = g_new0 (CamelFolderInfo, 1);
 
@@ -908,7 +947,7 @@ convert_to_folder_info (CamelMapiStore *store, ExchangeMAPIFolder *folder, const
 	 */
 
 	mapi_id_folder = exchange_mapi_folder_get_parent_id (folder);
-	parent = exchange_mapi_util_mapi_id_to_string (mapi_id_folder);
+	parent = g_strdup_printf ("%016llX", mapi_id_folder);
 	par_name = g_hash_table_lookup (priv->id_hash, parent);
 
 	if (par_name != NULL) {
@@ -1021,8 +1060,8 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 		gchar *fid = NULL, *parent_id = NULL;
 
 		name = exchange_mapi_folder_get_name ((ExchangeMAPIFolder *)(temp_list->data));
-		fid = exchange_mapi_util_mapi_id_to_string (exchange_mapi_folder_get_fid((ExchangeMAPIFolder *)(temp_list->data)));
-		parent_id = exchange_mapi_util_mapi_id_to_string (exchange_mapi_folder_get_parent_id ((ExchangeMAPIFolder *)(temp_list->data)));
+		fid = g_strdup_printf ("%016llX", exchange_mapi_folder_get_fid((ExchangeMAPIFolder *)(temp_list->data)));
+		parent_id = g_strdup_printf ("%016llX", exchange_mapi_folder_get_parent_id ((ExchangeMAPIFolder *)(temp_list->data)));
 
 		if (exchange_mapi_folder_is_root ((ExchangeMAPIFolder *)(temp_list->data)))
 			continue;
@@ -1036,7 +1075,7 @@ mapi_folders_sync (CamelMapiStore *store, CamelException *ex)
 
 	present = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for (;folder_list != NULL; folder_list = g_list_next (folder_list)) {
+	for (;folder_list != NULL; folder_list = g_slist_next (folder_list)) {
 		ExchangeMAPIFolder *folder = (ExchangeMAPIFolder *) folder_list->data;
 		
 		if (exchange_mapi_folder_is_root ((ExchangeMAPIFolder *)(folder)))
@@ -1151,7 +1190,7 @@ end_r:
 	return info;
 }
 
-const char *
+const gchar *
 camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folder_name)
 {
 	CamelMapiStorePrivate *priv = mapi_store->priv;
@@ -1159,7 +1198,7 @@ camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folde
 	return g_hash_table_lookup (priv->name_hash, folder_name);
 }
 
-const char *
+const gchar *
 camel_mapi_store_folder_lookup (CamelMapiStore *mapi_store, const char *folder_id)
 {
 	CamelMapiStorePrivate *priv = mapi_store->priv;

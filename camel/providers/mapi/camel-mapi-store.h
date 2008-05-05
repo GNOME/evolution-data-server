@@ -18,9 +18,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* camel-mapi-store.h: class for a openchange store */
-
-
 #ifndef __CAMEL_MAPI_STORE_H__
 #define __CAMEL_MAPI_STORE_H__
 
@@ -86,6 +83,7 @@ CamelType camel_mapi_store_get_type(void);
 gboolean camel_mapi_store_connected(CamelMapiStore *, CamelException *);
 
 const gchar* camel_mapi_store_folder_id_lookup (CamelMapiStore *mapi_store, const char *folder_name);
+const gchar* camel_mapi_store_folder_lookup (CamelMapiStore *mapi_store, const char *folder_id);
 
 __END_DECLS
 

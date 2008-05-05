@@ -41,10 +41,11 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-//#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-//#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
-#define LOGALL()
-#define LOGNONE()
+//global_mapi_ctx->lp_ctx
+#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+/* #define LOGALL() */
+/* #define LOGNONE() */
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
 
 /* Specifies READ/WRITE sizes to be used while handling attachment streams */
@@ -1122,7 +1123,7 @@ exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name
 	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-//	LOGALL ();
+	LOGALL ();
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_top);
 	mapi_object_init(&obj_folder);
@@ -1184,7 +1185,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_top);
 	mapi_object_release(&obj_store);
-//	LOGNONE();
+	LOGNONE();
 	UNLOCK ();
 
 	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
@@ -1271,9 +1272,8 @@ cleanup:
 	return result;
 }
 
-/*FixME : Why are we still having olFolder in our APIs ?? - Johnny */
 gboolean 
-exchange_mapi_rename_folder (uint32_t olFolder, mapi_id_t fid, const char *new_name)
+exchange_mapi_rename_folder (mapi_id_t fid, const char *new_name)
 {
 	enum MAPISTATUS retval;
 	mapi_object_t obj_store;
@@ -1347,7 +1347,7 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-//	LOGALL ();
+	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_CreateItem");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
@@ -1451,7 +1451,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
-//	LOGNONE ();
+	LOGNONE ();
 	UNLOCK ();
 
 	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
@@ -1662,7 +1662,7 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids)
 	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 
 	LOCK ();
-//	LOGALL ();
+	LOGALL ();
 	mem_ctx = talloc_init("ExchangeMAPI_RemoveItems");
 	mapi_object_init(&obj_store);
 	mapi_object_init(&obj_folder);
@@ -1700,7 +1700,7 @@ cleanup:
 	mapi_object_release(&obj_folder);
 	mapi_object_release(&obj_store);
 	talloc_free(mem_ctx);
-//	LOGNONE();
+	LOGNONE();
 	UNLOCK ();
 
 	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
