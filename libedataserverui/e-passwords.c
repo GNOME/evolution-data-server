@@ -990,6 +990,8 @@ ep_ask_password (EPassMsg *msg)
 	gtk_dialog_set_default_response (
 		GTK_DIALOG (widget), GTK_RESPONSE_OK);
         gtk_window_set_resizable (GTK_WINDOW (widget), FALSE);
+	gtk_window_set_transient_for (GTK_WINDOW (widget), msg->parent);
+	gtk_window_set_position (GTK_WINDOW (widget), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
 	password_dialog = GTK_DIALOG (widget);
 
