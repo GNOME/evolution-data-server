@@ -6,7 +6,8 @@
 #include <sqlite3.h>
 #include <glib.h>
 
-#define CAMEL_DB_FILE "folders.db"
+#define CAMEL_SUMMARY_EXTENSION  ".ev-summary"
+#define CAMEL_STORE_SUMMARY_FILE_NAME "folders.ev-summary"
 
 struct _CamelDB {
 	sqlite3 *db;

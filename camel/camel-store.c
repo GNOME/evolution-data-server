@@ -220,22 +220,25 @@ construct (CamelService *service, CamelSession *session,
 	service_path = camel_service_get_path (service);
 	summary_path = g_strsplit (service_path, "/", 2);
 
-	path = g_strdup_printf ("%s/%s", summary_path[1], CAMEL_DB_FILE);
+	path = g_strdup_printf ("/%s/%s", summary_path[1], CAMEL_STORE_SUMMARY_FILE_NAME);
 
-	d(printf ("\n\aDatabase path to be opened is : [%s] \n\a", path));
+	d(printf ("Database path to be opened is : [%s] \n", path));
 
 	store->cdb = camel_db_open (path);
 	if (store->cdb) {
 		d(printf ("Store's database opened \n"));
-		/* If the tables aren't already there create atleast the store's table*/
+		/* If the tables aren't already there, create atleast the store's table*/
 		if (!camel_db_command (store->cdb, "select folder from folders")) {
 			if (!camel_db_command (store->cdb, CREATE_STORE_TABLE_QRY))
 				g_warning ("Unable to create store structing db");
-			else
+			else {
+				printf ("README: All these changes needs to be logged \n");
 				d(printf ("folders table created in the store's database.\n"));
+			}
 		}
 	} else {
 		d(printf ("Store's database cannot be opened \n"));
+		printf ("FIXME: This has to be passed via a CamelException \n");
 	}
 	g_free (service_path);
 	g_free (path);
