@@ -4,7 +4,7 @@
 #include <sqlite3.h>
 #include "camel-db.h"
 
-#define d(x)
+#define d(x) (x)
 static gboolean
 cdb_sql_exec (sqlite3 *db, const char* stmt) {
   	char *errmsg;

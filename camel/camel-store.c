@@ -204,9 +204,9 @@ construct (CamelService *service, CamelSession *session,
 	   CamelException *ex)
 {
 	CamelStore *store = CAMEL_STORE(service);
-	char *path, *tmp;
+	char *path, *service_path, **summary_path;
 
-	char *CREATE_STORE_TABLE_QRY = "CREATE TABLE folders (folder TEXT PRIMARY KEY, version INTEGER, lflags INTEGER, nextuid INTEGER, time INTEGER, savedcount INTEGER, unread INTEGER, deleted INTEGER, junk INTEGER, bdata TEXT)";
+	const char *CREATE_STORE_TABLE_QRY = "CREATE TABLE folders (folder TEXT PRIMARY KEY, version INTEGER, lflags INTEGER, nextuid INTEGER, time INTEGER, savedcount INTEGER, unread INTEGER, deleted INTEGER, junk INTEGER, bdata TEXT)";
 
 	parent_class->construct(service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -215,25 +215,31 @@ construct (CamelService *service, CamelSession *session,
 	if (camel_url_get_param(url, "filter"))
 		store->flags |= CAMEL_STORE_FILTER_INBOX;
 
-	d(printf ("\n\astore's construct function is called \n\a"));
-	tmp = camel_session_get_storage_path (session, service, ex);
-	path = g_strdup_printf ("%s/%s", tmp, CAMEL_DB_FILE);
+	d(printf ("store's construct function is called \n"));
+	//tmp = camel_session_get_storage_path (session, service, ex);
+	service_path = camel_service_get_path (service);
+	summary_path = g_strsplit (service_path, "/", 2);
+
+	path = g_strdup_printf ("%s/%s", summary_path[1], CAMEL_DB_FILE);
+
+	d(printf ("\n\aDatabase path to be opened is : [%s] \n\a", path));
+
 	store->cdb = camel_db_open (path);
 	if (store->cdb) {
-		d(printf ("\n\aDATABASE Opened \n\a"));
+		d(printf ("Store's database opened \n"));
 		/* If the tables aren't already there create atleast the store's table*/
 		if (!camel_db_command (store->cdb, "select folder from folders")) {
 			if (!camel_db_command (store->cdb, CREATE_STORE_TABLE_QRY))
 				g_warning ("Unable to create store structing db");
 			else
-				d(printf ("\n\aTABLE CREATED \n\a"));
+				d(printf ("folders table created in the store's database.\n"));
 		}
 	} else {
-		d(printf ("\n\aDATABASE cannot be opened \n\a"));
+		d(printf ("Store's database cannot be opened \n"));
 	}
-	g_free (tmp);
+	g_free (service_path);
 	g_free (path);
-
+	g_strfreev (summary_path);
 }
 
 static CamelFolder *
