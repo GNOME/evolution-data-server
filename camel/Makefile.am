@@ -157,7 +157,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-charset-map.c			\
 	camel-data-cache.c			\
 	camel-data-wrapper.c			\
-	camel-db.c				\
 	camel-debug.c				\
 	camel-exception.c			\
 	camel-file-utils.c			\
@@ -225,7 +224,6 @@ libcamelinclude_HEADERS =			\
 	camel-charset-map.h			\
 	camel-data-cache.h			\
 	camel-data-wrapper.h			\
-	camel-db.h				\
 	camel-debug.h				\
 	camel-exception-list.def		\
 	camel-exception.h			\
@@ -293,8 +291,7 @@ libcamel_1_2_la_LIBADD =				\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(CAMEL_LIBS)							\
 	$(SOCKET_LIBS)							\
-	$(REGEX_LIBS)							\
-	-lsqlite3
+	$(REGEX_LIBS)
 
 
 camel_lock_helper_1_2_SOURCES = 		\

@@ -42,7 +42,7 @@
 #include "camel-store.h"
 #include "camel-vtrash-folder.h"
 
-#define d(x) (x)
+#define d(x)
 #define w(x)
 
 static CamelServiceClass *parent_class = NULL;
@@ -145,7 +145,6 @@ camel_store_init (void *o)
 	store->mode = CAMEL_STORE_READ|CAMEL_STORE_WRITE;
 
 	store->priv = g_malloc0 (sizeof (*store->priv));
-	store->cdb = NULL;
 	g_static_rec_mutex_init (&store->priv->folder_lock);
 }
 
@@ -156,9 +155,6 @@ camel_store_finalize (CamelObject *object)
 
 	if (store->folders)
 		camel_object_bag_destroy(store->folders);
-
-	if (store->cdb)
-		camel_db_close (store->cdb);
 
 	g_static_rec_mutex_free (&store->priv->folder_lock);
 
@@ -204,9 +200,6 @@ construct (CamelService *service, CamelSession *session,
 	   CamelException *ex)
 {
 	CamelStore *store = CAMEL_STORE(service);
-	char *path, *service_path, **summary_path;
-
-	const char *CREATE_STORE_TABLE_QRY = "CREATE TABLE folders (folder TEXT PRIMARY KEY, version INTEGER, lflags INTEGER, nextuid INTEGER, time INTEGER, savedcount INTEGER, unread INTEGER, deleted INTEGER, junk INTEGER, bdata TEXT)";
 
 	parent_class->construct(service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -214,35 +207,6 @@ construct (CamelService *service, CamelSession *session,
 
 	if (camel_url_get_param(url, "filter"))
 		store->flags |= CAMEL_STORE_FILTER_INBOX;
-
-	d(printf ("store's construct function is called \n"));
-	//tmp = camel_session_get_storage_path (session, service, ex);
-	service_path = camel_service_get_path (service);
-	summary_path = g_strsplit (service_path, "/", 2);
-
-	path = g_strdup_printf ("/%s/%s", summary_path[1], CAMEL_STORE_SUMMARY_FILE_NAME);
-
-	d(printf ("Database path to be opened is : [%s] \n", path));
-
-	store->cdb = camel_db_open (path);
-	if (store->cdb) {
-		d(printf ("Store's database opened \n"));
-		/* If the tables aren't already there, create atleast the store's table*/
-		if (!camel_db_command (store->cdb, "select folder from folders")) {
-			if (!camel_db_command (store->cdb, CREATE_STORE_TABLE_QRY))
-				g_warning ("Unable to create store structing db");
-			else {
-				printf ("README: All these changes needs to be logged \n");
-				d(printf ("folders table created in the store's database.\n"));
-			}
-		}
-	} else {
-		d(printf ("Store's database cannot be opened \n"));
-		printf ("FIXME: This has to be passed via a CamelException \n");
-	}
-	g_free (service_path);
-	g_free (path);
-	g_strfreev (summary_path);
 }
 
 static CamelFolder *

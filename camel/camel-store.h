@@ -33,8 +33,6 @@
 #include <camel/camel-object.h>
 #include <camel/camel-service.h>
 
-#include <camel/camel-db.h>
-
 G_BEGIN_DECLS
 
 enum {
@@ -126,8 +124,6 @@ struct _CamelStore {
 
 	guint32 flags;
 	guint32 mode;
-
-	CamelDB *cdb;
 };
 
 /* open mode for folder */

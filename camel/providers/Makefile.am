@@ -17,8 +17,6 @@ else
 SENDMAIL_DIR=sendmail
 endif
 
-## SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAP4_DIR) $(NNTP_DIR) local $(IMAPP_DIR) groupwise hula
-
-SUBDIRS = imap local
+SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAP4_DIR) $(NNTP_DIR) local $(IMAPP_DIR) groupwise hula
 
 
