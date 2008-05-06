@@ -91,8 +91,10 @@ int main(int argc, char **argv) {
 
 	sqlite3_create_collation(db, "uidcmp", SQLITE_UTF8,  NULL, sort_cmp);
 	sqlite3_create_collation(db, "uidsort", SQLITE_UTF8,  NULL, sort_uid);
+
+	char *subject_san = "San?%*()-234@#$!@#$@#$%32424kar's Subject";
 	create_table ("table1");
-	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('5120', 100, 123, 'nice subject', 'mlistbinary')");
+	sql_stmt (sqlite3_mprintf("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('5120', 100, 123, '%q', 'mlistbinary')", subject_san));
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('6103', 100, 123, 'nice subject', 'mlistbinary')");
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('3194', 100, 123, 'nice subject', 'mlistbinary')");
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('8130', 100, 123, 'nice subject', 'mlistbinary')");
@@ -104,6 +106,7 @@ int main(int argc, char **argv) {
 	
 //	select_stmt ("select * from table1 where uid collate uidsort order by uid collate uidsort");
 	select_stmt ("select * from table1 where uid == 5120 collate uidcmp");
+	printf ("\n\aFrom teh C File: [%s] \n\a", subject_san);
 
 	printf("------\n");
 	select_stmt ("select count(isize) from table1");
