@@ -157,6 +157,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-charset-map.c			\
 	camel-data-cache.c			\
 	camel-data-wrapper.c			\
+	camel-db.c				\
 	camel-debug.c				\
 	camel-exception.c			\
 	camel-file-utils.c			\
@@ -224,6 +225,7 @@ libcamelinclude_HEADERS =			\
 	camel-charset-map.h			\
 	camel-data-cache.h			\
 	camel-data-wrapper.h			\
+	camel-db.h				\
 	camel-debug.h				\
 	camel-exception-list.def		\
 	camel-exception.h			\
