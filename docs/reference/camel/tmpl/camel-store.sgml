@@ -27,6 +27,7 @@ CamelStore
 @folders: 
 @flags: 
 @mode: 
+@cdb: 
 
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
