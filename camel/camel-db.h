@@ -2,9 +2,12 @@
 
 #ifndef __CAMEL_DB_H
 #define __CAMEL_DB_H
+
 #include <sqlite3.h>
 #include <glib.h>
+
 #define CAMEL_DB_FILE "folders.db"
+
 struct _CamelDB {
 	sqlite3 *db;
 	GMutex *lock;

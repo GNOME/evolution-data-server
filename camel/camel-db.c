@@ -1,6 +1,7 @@
 /* Srinivasa Ragavan - <sragavan@novell.com> - GPL v2 or later */
 
 #include <glib.h>
+#include <sqlite3.h>
 #include "camel-db.h"
 
 #define d(x)
