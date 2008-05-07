@@ -458,7 +458,10 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 						g_warning ("illegal token following literal identifier: %s", inptr);
 						
 						/* skip ahead to the eoln */
-						inptr = strchr (inptr, '\n');
+						if (!(inptr = strchr (inptr, '\n'))) {
+							stream->inptr = start;
+							goto refill;
+						}
 					}
 					
 					/* skip over '\n' */
