@@ -158,14 +158,14 @@ imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **t
 	case IMAP4_STRING_LITERAL:
 		if (engine->capa & CAMEL_IMAP4_CAPABILITY_LITERALPLUS) {
 			/* we have to send a literal, but the server supports LITERAL+ so use that */
-			g_string_append_printf (str, "{%lu+}\r\n%s", strlen (string), string);
+			g_string_append_printf (str, "{%u+}\r\n%s", strlen (string), string);
 		} else {
 			/* we have to make it a literal */
 			literal = g_new (CamelIMAP4Literal, 1);
 			literal->type = CAMEL_IMAP4_LITERAL_STRING;
 			literal->literal.string = g_strdup (string);
 			
-			g_string_append_printf (str, "{%lu}\r\n", strlen (string));
+			g_string_append_printf (str, "{%u}\r\n", strlen (string));
 			
 			(*tail)->buffer = g_strdup (str->str);
 			(*tail)->buflen = str->len;
@@ -227,7 +227,7 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 			case 'u':
 				/* unsigned integer */
 				u = va_arg (args, unsigned int);
-				g_string_append_printf (str, "%lu", u);
+				g_string_append_printf (str, "%u", u);
 				break;
 			case 'F':
 				/* CamelIMAP4Folder */
@@ -254,7 +254,7 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 				
 				/* FIXME: take advantage of LITERAL+? */
 				len = camel_imap4_literal_length (literal);
-				g_string_append_printf (str, "{%lu}\r\n", len);
+				g_string_append_printf (str, "{%u}\r\n", len);
 				
 				tail->buffer = g_strdup (str->str);
 				tail->buflen = str->len;
@@ -499,7 +499,7 @@ unexpected_token (camel_imap4_token_t *token)
 	        fprintf (stderr, "\"%s\"", token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
-		fprintf (stderr, "{%lu}", token->v.literal);
+		fprintf (stderr, "{%u}", token->v.literal);
 		break;
 	default:
 		fprintf (stderr, "%c", (unsigned char) (token->token & 0xff));

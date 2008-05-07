@@ -764,7 +764,7 @@ courier_imap_is_a_piece_of_shit (CamelFolderSummary *summary, guint32 msg)
 	char *warning;
 	
 	warning = g_strdup_printf ("IMAP server did not respond with an untagged FETCH response "
-				   "for message #%lu. This is illegal according to rfc3501 (and "
+				   "for message #%u. This is illegal according to rfc3501 (and "
 				   "the older rfc2060). You will need to contact your\n"
 				   "Administrator(s) (or ISP) and have them resolve this issue.\n\n"
 				   "Hint: If your IMAP server is Courier-IMAP, it is likely that this "
@@ -942,7 +942,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 	}
 	
 	if (!(envelope = added->pdata[index - fetch->first])) {
-		info = camel_folder_summary_info_new (summary);
+		info = camel_message_info_new (summary);
 		iinfo = (CamelIMAP4MessageInfo *) info;
 		envelope = g_new (struct imap4_envelope_t, 1);
 		added->pdata[index - fetch->first] = envelope;
@@ -982,7 +982,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				CamelMessageInfo *tmp;
 				int rv;
 				
-				g_warning ("Hmmm, server is sending us ENVELOPE data for a message we didn't ask for (message %lu)\n",
+				g_warning ("Hmmm, server is sending us ENVELOPE data for a message we didn't ask for (message %u)\n",
 					   index);
 				tmp = camel_message_info_new (summary);
 				rv = decode_envelope (engine, tmp, token, ex);
@@ -1029,17 +1029,19 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			
 			changed |= IMAP4_FETCH_RFC822SIZE;
 		} else if (!strcmp (token->v.atom, "UID")) {
+			const char *iuid;
+			
 			if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 				goto exception;
 			
 			if (token->token != CAMEL_IMAP4_TOKEN_NUMBER || token->v.number == 0)
 				goto unexpected;
 			
-			sprintf (uid, "%lu", token->v.number);
+			sprintf (uid, "%u", token->v.number);
 			iuid = camel_message_info_uid (info);
 			if (iuid != NULL && iuid[0] != '\0') {
 				if (strcmp (iuid, uid) != 0) {
-					d(fprintf (stderr, "Hmmm, UID mismatch for message %lu\n", index));
+					d(fprintf (stderr, "Hmmm, UID mismatch for message %u\n", index));
 					g_assert_not_reached ();
 				}
 			} else {
@@ -1189,10 +1191,10 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 static void
 imap4_fetch_all_reset (CamelIMAP4Command *ic, struct imap4_fetch_all_t *fetch)
 {
-	CamelIMAP4Summary *imap_summary = (CamelIMAP4Summary *) fetch->summary;
+	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) fetch->summary;
 	CamelFolder *folder = fetch->summary->folder;
-	struct imap_envelope_t *envelope;
-	SpruceMessageInfo *info;
+	struct imap4_envelope_t *envelope;
+	CamelMessageInfo *info;
 	guint32 seqid, iuid;
 	const char *query;
 	char uid[32];
@@ -1226,7 +1228,7 @@ imap4_fetch_all_reset (CamelIMAP4Command *ic, struct imap4_fetch_all_t *fetch)
 		camel_message_info_free (info);
 		sprintf (uid, "%u", iuid + 1);
 		
-		fetch->total = imap_summary->exists - scount;
+		fetch->total = imap4_summary->exists - scount;
 		g_ptr_array_set_size (fetch->added, fetch->total);
 		fetch->first = seqid;
 		
@@ -1292,6 +1294,7 @@ imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 seqid, const char 
 static CamelIMAP4Command *
 imap4_summary_fetch_flags (CamelFolderSummary *summary)
 {
+	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelFolder *folder = summary->folder;
 	struct imap4_fetch_all_t *fetch;
 	CamelMessageInfo *info[2];
@@ -1625,7 +1628,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		}
 	} else {
 		/* need to fetch new envelopes */
-		first = scount + 1;
+		seqid = scount + 1;
 	}
 	
 	if (seqid != 0 && seqid <= imap4_summary->exists) {
@@ -1633,7 +1636,7 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 			info = camel_folder_summary_index (summary, scount - 1);
 			iuid = strtoul (camel_message_info_uid (info), NULL, 10);
 			camel_message_info_free (info);
-			sprintf (uid, "%lu", iuid + 1);
+			sprintf (uid, "%u", iuid + 1);
 		} else {
 			strcpy (uid, "1");
 		}

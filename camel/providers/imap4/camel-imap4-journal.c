@@ -321,7 +321,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	}
 	
 	nextuid = camel_folder_summary_next_uid (folder->summary);
-	uid = g_strdup_printf ("-%lu", nextuid);
+	uid = g_strdup_printf ("-%u", nextuid);
 	
 	if (!(cache = camel_data_cache_add (imap4_folder->cache, "cache", uid, ex))) {
 		folder->summary->nextuid--;

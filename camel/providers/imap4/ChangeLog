@@ -1,5 +1,8 @@
 2008-05-06  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-imap4-store.c (imap4_try_authenticate): Fixed a mis-use of
+	full_prompt.
+
 	* camel-imap4-command.c (camel_imap4_command_reset): Reset the
 	user_data using the user-specified reset function.
 

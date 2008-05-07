@@ -298,7 +298,7 @@ uidset_add (struct _uidset *uidset, CamelMessageInfo *info)
 		return -1;
 	}
 	
-	d(fprintf (stderr, "added uid %s to uidset (summary index = %lu)\n", iuid, index));
+	d(fprintf (stderr, "added uid %s to uidset (summary index = %u)\n", iuid, index));
 	
 	if (uidset->setlen < uidset->maxlen)
 		return 0;
@@ -384,10 +384,10 @@ camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engi
 		g_string_append (errmsg, token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
-		g_string_append_printf (errmsg, "{%lu}", token->v.literal);
+		g_string_append_printf (errmsg, "{%u}", token->v.literal);
 		break;
 	case CAMEL_IMAP4_TOKEN_NUMBER:
-		g_string_append_printf (errmsg, "%lu", token->v.number);
+		g_string_append_printf (errmsg, "%u", token->v.number);
 		break;
 	case CAMEL_IMAP4_TOKEN_NO_DATA:
 		g_string_append (errmsg, _("No data"));
@@ -615,6 +615,7 @@ camel_imap4_untagged_status (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, gu
 	camel_imap4_status_attr_t *attr, *tail, *list = NULL;
 	GPtrArray *array = ic->user_data;
 	camel_imap4_status_t *status;
+	unsigned char *literal;
 	char *mailbox;
 	size_t len;
 	int type;
@@ -631,8 +632,10 @@ camel_imap4_untagged_status (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, gu
 		mailbox = g_strdup (token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
-		if (camel_imap4_engine_literal (engine, (unsigned char **) &mailbox, &len, ex) == -1)
+		if (camel_imap4_engine_literal (engine, &literal, &len, ex) == -1)
 			return -1;
+		
+		mailbox = (char *) literal;
 		break;
 	default:
 		fprintf (stderr, "Unexpected token in IMAP4 untagged STATUS response: %s%c\n",

@@ -447,40 +447,40 @@ imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const char 
 	CamelSasl *sasl = NULL;
 	CamelIMAP4Command *ic;
 	int id;
-
+	
 	if (service->url->authmech)
 		mech = g_hash_table_lookup (engine->authtypes, service->url->authmech);
-
+	
 	if ((!mech || (mech && mech->need_password)) && !service->url->passwd) {
 		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
 		char *base_prompt;
 		char *full_prompt;
-
+		
 		if (reprompt)
 			flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-
+		
 		base_prompt = camel_session_build_password_prompt (
 			"IMAP", service->url->user, service->url->host);
-
+		
 		if (errmsg != NULL)
 			full_prompt = g_strconcat (errmsg, base_prompt, NULL);
 		else
-			full_prompt = g_strdup (full_prompt);
-
+			full_prompt = g_strdup (base_prompt);
+		
 		service->url->passwd = camel_session_get_password (
 			session, service, NULL, full_prompt,
 			"password", flags, ex);
-
+		
 		g_free (base_prompt);
 		g_free (full_prompt);
-
+		
 		if (!service->url->passwd)
 			return FALSE;
 	}
-
+	
 	if (service->url->authmech) {
 		sasl = camel_sasl_new ("imap", mech->authproto, service);
-
+		
 		ic = camel_imap4_engine_prequeue (engine, NULL, "AUTHENTICATE %s\r\n", service->url->authmech);
 		ic->plus = sasl_auth;
 		ic->user_data = sasl;
