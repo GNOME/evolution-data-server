@@ -52,3 +52,48 @@ received, the sender address, .....)
 ...
 
 
+#include Ordering:
+------------------
+
+Not all Unix system header files #include the headers that they
+themselves reference, so in order to maintain portability it is often
+important to #include headers in the proper order.
+
+This information can often be deduced from reading the man pages
+involving the functions you are using.
+
+For example, `man 2 open` informs us that the following headers are
+necessary and lists them in the following order:
+
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
+Another common header that is often needed for low-level I/O is
+unistd.h which is required by functions such as read() and
+write(). The Linux man pages don't seem to specify what its
+dependencies are, but often it depends on sys/types.h.
+
+If you are going to be doing any socket I/O you'll be needing
+sys/socket.h which often depends on sys/types.h.
+
+A tried and true #include ordering scheme for source files doing I/O
+is this:
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+
+Feel free to cut out any headers your code doesn't actually need in
+the list.
