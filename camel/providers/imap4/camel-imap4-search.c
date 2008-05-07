@@ -25,8 +25,8 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "camel-offline-store.h"
 

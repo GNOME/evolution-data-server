@@ -24,9 +24,9 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <ctype.h>
 #include <errno.h>
-#include <string.h>
 
 #include <glib/gi18n-lib.h>
 
