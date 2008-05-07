@@ -1332,24 +1332,27 @@ engine_state_change (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
  *
  * Processes the first command in the queue.
  *
- * Returns the id of the processed command, 0 if there were no
- * commands to process, or -1 on error.
+ * Returns the id of the processed command, %0 if there were no
+ * commands to process, or %-1 on error.
  *
  * Note: more details on the error will be held on the
- * CamelIMAP4Command that failed.
+ * #CamelIMAP4Command that failed.
  **/
 int
 camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 {
 	CamelIMAP4Command *ic, *nic;
 	GPtrArray *resp_codes;
-	int retval = -1;
+	int retries = 0;
+	int retval;
 	
 	if (e_dlist_empty (&engine->queue))
 		return 0;
 	
-	/* This sucks... it would be nicer if we didn't have to check the stream's disconnected status */
-	if ((engine->state == CAMEL_IMAP4_ENGINE_DISCONNECTED || engine->istream->disconnected) && !engine->reconnecting) {
+ retry:
+	/* FIXME: it would be nicer if we didn't have to check the stream's disconnected status */
+	if ((engine->state == CAMEL_IMAP4_ENGINE_DISCONNECTED || engine->istream->disconnected)
+	    && !engine->reconnecting) {
 		CamelException rex;
 		gboolean connected;
 		
@@ -1364,17 +1367,6 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 			ic->status = CAMEL_IMAP4_COMMAND_ERROR;
 			camel_exception_xfer (&ic->ex, &rex);
 			camel_imap4_command_unref (ic);
-			
-			/* FIXME: in a perfect world, if the connect failure was due to the user cancelling the
-			 * passwd dialog, we'd either send a LOGOUT command here -or- we'd leave the connection
-			 * open but in the PREAUTH state that we'd later be able to handle if the user queued
-			 * more commands on the engine. */
-			engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
-			camel_object_unref (engine->istream);
-			engine->istream = NULL;
-			camel_object_unref (engine->ostream);
-			engine->ostream = NULL;
-			
 			return -1;
 		}
 	}
@@ -1385,7 +1377,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 	engine->current = ic = (CamelIMAP4Command *) e_dlist_remhead (&engine->queue);
 	ic->status = CAMEL_IMAP4_COMMAND_ACTIVE;
 	
-	if (imap4_process_command (engine, ic) != -1) {
+	if ((retval = imap4_process_command (engine, ic)) != -1) {
 		if (engine_state_change (engine, ic) == -1) {
 			/* This can ONLY happen if @ic was the pre-queued SELECT command
 			 * and it got a NO or BAD response.
@@ -1411,6 +1403,17 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 		}
 		
 		retval = ic->id;
+	} else if (!engine->reconnecting && retries < 3) {
+		/* put @ic back in the queue and retry */
+		e_dlist_addhead (&engine->queue, (EDListNode *) ic);
+		camel_imap4_command_reset (ic);
+		retries++;
+		goto retry;
+	} else {
+		camel_exception_setv (&ic->ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				      _("Failed to send command to IMAP server %s: %s"),
+				      engine->url->host, errno ? g_strerror (errno) :
+				      _("service unavailable"));
 	}
 	
 	camel_imap4_command_unref (ic);

@@ -1,3 +1,11 @@
+2008-05-07  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-engine.c (camel_imap4_engine_iterate): Implemented
+	multiple reconnect retries logic.
+	(camel_imap4_engine_iterate): If a command fails due to a dropped
+	connection, reset the command and attempt to reconnect and
+	continue where we left off.
+
 2008-05-06  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-stream.c (camel_imap4_stream_next_token): Keep track
