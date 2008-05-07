@@ -36,6 +36,7 @@ camel-imap4-command
 @part: 
 @untagged: 
 @plus: 
+@reset: 
 @user_data: 
 
 <!-- ##### STRUCT CamelIMAP4Literal ##### -->

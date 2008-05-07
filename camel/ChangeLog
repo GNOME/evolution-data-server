@@ -1,3 +1,9 @@
+2008-05-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-operation.c (camel_operation_unref):
+	A typo broke the mailer.  Use camel_msgport_try_pop() (non-blocking)
+	instead of camel_msgport_pop() (blocking).
+
 2008-05-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #424744

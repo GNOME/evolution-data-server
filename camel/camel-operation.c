@@ -212,7 +212,7 @@ camel_operation_unref (CamelOperation *cc)
 		
 		e_dlist_remove((EDListNode *)cc);
 
-		while ((msg = (CamelOperationMsg *)camel_msgport_pop(cc->cancel_port)))
+		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)))
 			g_free(msg);
 
 		camel_msgport_destroy(cc->cancel_port);
