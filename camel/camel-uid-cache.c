@@ -169,7 +169,7 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	cache->expired = 0;
 	g_hash_table_foreach (cache->uids, maybe_write_uid, cache);
 	
-	if (fsync (fd) == -1)
+	if (cache->fd == -1 || fsync (fd) == -1)
 		goto exception;
 	
 	close (fd);
@@ -207,13 +207,19 @@ camel_uid_cache_save (CamelUIDCache *cache)
 		if (g_stat (cache->filename, &st) == 0 &&
 		    (cache->size > st.st_size || cache->size + cache->expired > st.st_size)) {
 			if (ftruncate (fd, (off_t) cache->size) != -1) {
-				cache->size = 0;
+				close (fd);
+				g_rename (filename, cache->filename);
+				g_free (filename);
 				cache->expired = 0;
-				goto overwrite; /* FIXME: no such label */
+				cache->size = 0;
+				cache->fd = -1;
+				
+				return TRUE;
 			}
 		}		
 	}
 #endif
+	
 	if (fd != -1) {
 		close (fd);
 		cache->fd = -1;

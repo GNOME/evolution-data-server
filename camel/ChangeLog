@@ -1,3 +1,10 @@
+2008-05-07  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-uid-cache.c (camel_uid_cache_save): Check cache->fd after
+	we finish looping thru all of our uids; if cache->fd is -1, then
+	it means we failed somewhere along the lines and need to goto
+	exception.
+
 2008-05-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-operation.c (camel_operation_unref):
