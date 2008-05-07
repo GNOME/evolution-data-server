@@ -34,9 +34,9 @@
 
 /**
  * camel_utf8_putc:
- * @ptr:
- * @c:
- *
+ * @ptr: 
+ * @c: 
+ * 
  * Output a 32 bit unicode character as utf8 octets.  At most 4 octets will
  * be written to @ptr.  @ptr will be advanced to the next character position.
  **/
@@ -67,12 +67,12 @@ camel_utf8_putc(unsigned char **ptr, guint32 c)
 
 /**
  * camel_utf8_getc:
- * @ptr:
- *
+ * @ptr: 
+ * 
  * Get a Unicode character from a utf8 stream.  @ptr will be advanced
  * to the next character position.  Invalid utf8 characters will be
  * silently skipped.  @ptr should point to a NUL terminated array.
- *
+ * 
  * Return value: The next Unicode character.  @ptr will be advanced to
  * the next character always.
  **/
@@ -102,7 +102,7 @@ loop:
 			r<<=1;
 			m<<=5;
 		} while (r & 0x40);
-
+		
 		*ptr = p;
 
 		v &= ~m;
@@ -115,15 +115,15 @@ loop:
 
 /**
  * camel_utf8_getc_limit:
- * @ptr:
+ * @ptr: 
  * @end: must not be NULL.
- *
+ * 
  * Get the next utf8 char at @ptr, and return it, advancing @ptr to
  * the next character.  If @end is reached before a full utf8
  * character can be read, then the invalid Unicode char 0xffff is
  * returned as a sentinel (Unicode 3.1, section 2.7), and @ptr is not
  * advanced.
- *
+ * 
  * Return value: The next utf8 char, or 0xffff.
  **/
 guint32
@@ -146,7 +146,7 @@ loop:
 			do {
 				if (p >= end)
 					return 0xffff;
-
+				
 				c = *p++;
 				if ((c & 0xc0) != 0x80) {
 					r = c;
@@ -156,9 +156,9 @@ loop:
 				r<<=1;
 				m<<=5;
 			} while (r & 0x40);
-
+			
 			*ptr = p;
-
+			
 			v &= ~m;
 			return v;
 		} else {
@@ -204,11 +204,11 @@ static const unsigned char utf7_rank[256] = {
 
 /**
  * camel_utf7_utf8:
- * @ptr:
- *
+ * @ptr: 
+ * 
  * Convert a modified utf7 string to utf8.  If the utf7 string
  * contains 8 bit characters, they are treated as iso-8859-1.
- *
+ * 
  * The IMAP rules [rfc2060] are used in the utf7 encoding.
  *
  * Return value: The converted string.
@@ -286,13 +286,13 @@ static void utf7_closeb64(GString *out, guint32 v, guint32 i)
 
 /**
  * camel_utf8_utf7:
- * @ptr:
- *
+ * @ptr: 
+ * 
  * Convert a utf8 string to a modified utf7 format.
  *
  * The IMAP rules [rfc2060] are used in the utf7 encoding.
- *
- * Return value:
+ * 
+ * Return value: 
  **/
 char *
 camel_utf8_utf7(const char *ptr)
@@ -344,12 +344,12 @@ camel_utf8_utf7(const char *ptr)
 
 /**
  * camel_utf8_ucs2:
- * @ptr:
- *
+ * @ptr: 
+ * 
  * Convert a utf8 string into a ucs2 one.  The ucs string will be in
  * network byte order, and terminated with a 16 bit NULL.
- *
- * Return value:
+ * 
+ * Return value: 
  **/
 char *
 camel_utf8_ucs2(const char *pptr)
@@ -377,12 +377,12 @@ camel_utf8_ucs2(const char *pptr)
 
 /**
  * camel_ucs2_utf8:
- * @ptr:
- *
+ * @ptr: 
+ * 
  * Convert a ucs2 string into a utf8 one.  The ucs2 string is treated
  * as network byte ordered, and terminated with a 16 bit NUL.
- *
- * Return value:
+ * 
+ * Return value: 
  **/
 char *camel_ucs2_utf8(const char *ptr)
 {

@@ -34,10 +34,10 @@
 
 CamelServiceAuthType camel_sasl_login_authtype = {
 	N_("Login"),
-
+	
 	N_("This option will connect to the server using a "
 	   "simple password."),
-
+	
 	"LOGIN",
 	TRUE
 };
@@ -62,9 +62,9 @@ static void
 camel_sasl_login_class_init (CamelSaslLoginClass *camel_sasl_login_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_login_class);
-
+	
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-
+	
 	/* virtual method overload */
 	camel_sasl_class->challenge = login_challenge;
 }
@@ -73,7 +73,7 @@ static void
 camel_sasl_login_init (gpointer object, gpointer klass)
 {
 	CamelSaslLogin *sasl_login = CAMEL_SASL_LOGIN (object);
-
+	
 	sasl_login->priv = g_new0 (struct _CamelSaslLoginPrivate, 1);
 }
 
@@ -81,7 +81,7 @@ static void
 camel_sasl_login_finalize (CamelObject *object)
 {
 	CamelSaslLogin *sasl = CAMEL_SASL_LOGIN (object);
-
+	
 	g_free (sasl->priv);
 }
 
@@ -90,7 +90,7 @@ CamelType
 camel_sasl_login_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslLogin",
@@ -101,7 +101,7 @@ camel_sasl_login_get_type (void)
 					    (CamelObjectInitFunc) camel_sasl_login_init,
 					    (CamelObjectFinalizeFunc) camel_sasl_login_finalize);
 	}
-
+	
 	return type;
 }
 
@@ -111,13 +111,13 @@ login_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	struct _CamelSaslLoginPrivate *priv = CAMEL_SASL_LOGIN (sasl)->priv;
 	GByteArray *buf = NULL;
 	CamelURL *url = sasl->service->url;
-
+	
 	g_return_val_if_fail (url->passwd != NULL, NULL);
 
 	/* Need to wait for the server */
 	if (!token)
 		return NULL;
-
+	
 	switch (priv->state) {
 	case LOGIN_USER:
 		buf = g_byte_array_new ();
@@ -135,8 +135,8 @@ login_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 					     _("Unknown authentication state."));
 		}
 	}
-
+	
 	priv->state++;
-
+	
 	return buf;
 }

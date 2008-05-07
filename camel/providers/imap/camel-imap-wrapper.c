@@ -78,9 +78,9 @@ camel_imap_wrapper_finalize (CamelObject *object)
 		g_free (imap_wrapper->uid);
 	if (imap_wrapper->part)
 		g_free (imap_wrapper->part_spec);
-
+	
 	g_mutex_free (imap_wrapper->priv->lock);
-
+	
 	g_free (imap_wrapper->priv);
 }
 
@@ -118,11 +118,11 @@ static void
 imap_wrapper_hydrate (CamelImapWrapper *imap_wrapper, CamelStream *stream)
 {
 	CamelDataWrapper *data_wrapper = (CamelDataWrapper *) imap_wrapper;
-
+	
 	camel_object_ref (stream);
 	data_wrapper->stream = stream;
 	data_wrapper->offline = FALSE;
-
+	
 	camel_object_unref (imap_wrapper->folder);
 	imap_wrapper->folder = NULL;
 	g_free (imap_wrapper->uid);
@@ -136,11 +136,11 @@ static ssize_t
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (data_wrapper);
-
+	
 	CAMEL_IMAP_WRAPPER_LOCK (imap_wrapper, lock);
 	if (data_wrapper->offline) {
 		CamelStream *datastream;
-
+		
 		datastream = camel_imap_folder_fetch_data (
 			imap_wrapper->folder, imap_wrapper->uid,
 			imap_wrapper->part_spec, FALSE, NULL);
@@ -154,12 +154,12 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 #endif
 			return -1;
 		}
-
+		
 		imap_wrapper_hydrate (imap_wrapper, datastream);
 		camel_object_unref (datastream);
 	}
 	CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
-
+	
 	return parent_class->write_to_stream (data_wrapper, stream);
 }
 

@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-folder.c : class for a imap folder */
 
-/*
+/* 
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -59,13 +59,13 @@ static void
 imap_folder_class_init (CamelIMAPPFolderClass *camel_imapp_folder_class)
 {
 	CamelFolderClass *camel_folder_class = CAMEL_FOLDER_CLASS(camel_imapp_folder_class);
-
+	
 	parent_class = CAMEL_FOLDER_CLASS(camel_folder_get_type());
-
+	
 	/* virtual method overload */
 	camel_folder_class->refresh_info = imap_refresh_info;
 	camel_folder_class->sync = imap_sync;
-
+	
 	camel_folder_class->get_message = imap_get_message;
 }
 
@@ -77,7 +77,7 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
-
+	
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
 		CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_USER;
@@ -91,7 +91,7 @@ CamelType
 camel_imapp_folder_get_type (void)
 {
 	static CamelType camel_imapp_folder_type = CAMEL_INVALID_TYPE;
-
+	
 	if (!camel_imapp_folder_type) {
 		camel_imapp_folder_type = camel_type_register (CAMEL_FOLDER_TYPE, "CamelIMAPPFolder",
 							      sizeof (CamelIMAPPFolder),
@@ -101,7 +101,7 @@ camel_imapp_folder_get_type (void)
 							      imap_folder_init,
 							      (CamelObjectFinalizeFunc) imap_finalize);
 	}
-
+	
 	return camel_imapp_folder_type;
 }
 
@@ -120,7 +120,7 @@ camel_imapp_folder_new(CamelStore *store, const char *path)
 	char *root;
 
 	d(printf("opening imap folder '%s'\n", path));
-
+	
 	folder = CAMEL_FOLDER (camel_object_new (CAMEL_IMAPP_FOLDER_TYPE));
 	camel_folder_construct(folder, store, path, path);
 
@@ -170,7 +170,7 @@ camel_imapp_folder_close(CamelIMAPPFolder *folder, CamelException *ex)
 }
 #endif
 
-static void
+static void 
 imap_refresh_info (CamelFolder *folder, CamelException *ex)
 {
 	printf("imapp refresh info?\n");

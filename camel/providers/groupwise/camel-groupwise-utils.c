@@ -268,7 +268,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_t
 {
 	int total_add,i;
 	EGwItemRecipient *recipient;
-
+	
 	total_add = camel_address_length (recipients);
 	for (i=0 ; i<total_add ; i++) {
 		const char *name = NULL, *addr = NULL;
@@ -330,7 +330,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			temp_len = 0;
 		}
 	}
-
+	
 	if (camel_content_type_is (type, "text", "html") || camel_content_type_is (type, "multipart", "alternative")) {
 		if (!filename)
 			filename = "text.htm";
@@ -346,7 +346,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		const char *message_id;
 		char *msgid;
 		int len;
-
+		
 		message_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "Message-Id");
 		/*
 		 * XXX: The following code piece is a screwed up way of doing stuff.
@@ -354,7 +354,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		 * since it removes the container id portion from the id and which the
 		 * groupwise server needs.
 		 */
-
+		
 		len = strlen (message_id);
 		msgid = (char *)g_malloc0 (len-1);
 		msgid = memcpy(msgid, message_id+2, len-3);
@@ -362,7 +362,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 		status = e_gw_connection_forward_item (cnc, msgid, NULL, TRUE, &temp_item);
 		g_free (msgid);
-
+		
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning ("Could not send a forwardRequest...continuing without!!\n");
 		} else {
@@ -374,7 +374,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->name = g_strdup (temp_attach->name);
 			g_free (attachment->contentType);
 			attachment->contentType = g_strdup ("Mail");
-			g_free (attachment->data);
+			g_free (attachment->data); 
 			attachment->data = NULL;
 			attachment->size = 0;
 			info = e_gw_item_get_link_info (temp_item);
@@ -398,18 +398,18 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	/*Egroupwise item*/
 	item = e_gw_item_new_empty ();
-
+	
 	/*populate recipient list*/
 	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO));
 	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
-
+	
 	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC));
 	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
-
+	
 	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC));
 	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
 	recipient_list = g_slist_reverse (recipient_list);
-
+	
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
 	if(!mp) {
@@ -426,20 +426,20 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
 		CamelDataWrapper *dw = NULL;
 		CamelContentType *type;
-
+		
 		dw = camel_medium_get_content_object (CAMEL_MEDIUM (message));
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
-
+		
 		if (camel_content_type_is (type, "text", "plain")) {
 			CamelStream *filtered_stream;
 			CamelMimeFilter *filter;
 			const char *charset;
 			char *content_type;
-
+			
 			content_type = camel_content_type_simple (type);
 			e_gw_item_set_content_type (item, content_type);
 			g_free (content_type);
-
+			
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
 				filter = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8");
@@ -451,18 +451,18 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				filtered_stream = (CamelStream *) content;
 				camel_object_ref (content);
 			}
-
+			
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
 			camel_stream_flush (filtered_stream);
 			camel_object_unref (filtered_stream);
-
+			
 			camel_stream_write ((CamelStream *) content, "", 1);
 			e_gw_item_set_message (item, (const char *)content->buffer->data);
 		} else {
 			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
-			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
+			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);	
 		}
-
+		
 		camel_object_unref (content);
 	}
 	/*Populate EGwItem*/
@@ -479,15 +479,15 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	e_gw_item_set_subject (item, camel_mime_message_get_subject(message));
 	/*attachmets*/
 	e_gw_item_set_attach_id_list (item, attach_list);
-
+	
 	/*send options*/
 	e_gw_item_set_sendoptions (item, TRUE);
 
-	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT))
+	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT)) 
 		e_gw_item_set_reply_request (item, TRUE);
-
+	
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN);
-	if (send_options) {
+	if (send_options) { 
 		e_gw_item_set_reply_request (item, TRUE);
 		e_gw_item_set_reply_within (item, send_options);
 	}
@@ -501,7 +501,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN);
 
-	/*we check if user has modified the status tracking options, if no then we anyway
+	/*we check if user has modified the status tracking options, if no then we anyway 
 	 * set status tracking all*/
 	if (send_options) {
 		switch (atoi(send_options)) {
@@ -535,8 +535,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				break;
 			case 1: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_MAIL);
 		}
-	}
-
+	}	
+	
 	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_PRIORITY);
 	if (send_options) {
 		switch (atoi(send_options)) {
@@ -565,7 +565,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			case E_GW_SECURITY_FOR_YOUR_EYES_ONLY : e_gw_item_set_security(item, "ForYourEyesOnly");
 								break;
 		}
-	}
+	} 
 	return item;
 }
 
@@ -593,7 +593,7 @@ strip_lt_gt (char **string, int s_offset, int e_offset)
 {
 	char *temp = NULL;
 	int len;
-
+	
 	temp = g_strdup (*string);
 	len = strlen (*string);
 
@@ -630,19 +630,19 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 
 		type = camel_mime_part_get_content_type(part);
 		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
-
+		
 		if (CAMEL_IS_MULTIPART (dw)) {
 			do_multipart (cnc, item, (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) part), attach_list);
 			continue;
 		}
-
+		
 		if (type->subtype && !strcmp (type->subtype, "alternative")) {
 			/* eh... I don't think this code will ever get hit? */
 			CamelMimePart *temp_part;
 			const char *cid = NULL;
 			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
 			CamelDataWrapper *temp_dw = NULL;
-
+			
 			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			if (temp_part) {
 				is_alternative = TRUE;
@@ -655,18 +655,18 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			}
 			camel_object_unref (temp_content);
 			continue;
-		}
-
+		} 
+		
 		if (i == 0 && camel_content_type_is (type, "text", "plain")) {
 			CamelStream *filtered_stream;
 			CamelMimeFilter *filter;
 			const char *charset;
 			char *content_type;
-
+			
 			content_type = camel_content_type_simple (type);
 			e_gw_item_set_content_type (item, content_type);
 			g_free (content_type);
-
+			
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
 				filter = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8");
@@ -678,22 +678,22 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				filtered_stream = (CamelStream *) content;
 				camel_object_ref (content);
 			}
-
+			
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
 			camel_stream_flush (filtered_stream);
 			camel_object_unref (filtered_stream);
-
+			
 			camel_stream_write ((CamelStream *) content, "", 1);
 			e_gw_item_set_message (item, (const char *)content->buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);
 			content_id = camel_mime_part_get_content_id (part);
-
+			
 			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
 			send_as_attachment (cnc, item, content, type, dw, filename, content_id, attach_list);
 		}
-
+		
 		camel_object_unref (content);
 	} /*end of for*/
 }

@@ -2,7 +2,7 @@
 /*
  * Copyright (C) 2002 Ximian Inc.
  *
- * Authors: Parthasarathi Susarla <sparthasarathi@novell.com>
+ * Authors: Parthasarathi Susarla <sparthasarathi@novell.com>  
  *
  * Description: Based on the imap implementaion of camelstoresummary
  *
@@ -71,7 +71,7 @@ camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass
 
 	ssklass->summary_header_load = summary_header_load;
 	ssklass->summary_header_save = summary_header_save;
-
+	
 	ssklass->store_info_load = store_info_load;
 	ssklass->store_info_save = store_info_save;
 	ssklass->store_info_free = store_info_free;
@@ -428,7 +428,7 @@ camel_groupwise_store_summary_namespace_new(CamelGroupwiseStoreSummary *s, const
 	return ns;
 }
 
-void
+void 
 camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, CamelGroupwiseStoreNamespace *ns)
 {
 	d(printf("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path));
@@ -467,7 +467,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 	 gint32 version, capabilities, count ;
 
 	namespace_clear (s) ;
-
+	
 	if (camel_groupwise_store_summary_parent->summary_header_load ((CamelStoreSummary *)s, in) == -1
 			|| camel_file_util_decode_fixed_int32(in, &version) == -1)
 		return -1 ;
@@ -481,7 +481,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 
 	summary->capabilities = capabilities ;
 	if (count == 1) {
-		if ((summary->namespace = namespace_load (s, in)) == NULL)
+		if ((summary->namespace = namespace_load (s, in)) == NULL)	
 			return -1 ;
 	}
 	return 0 ;

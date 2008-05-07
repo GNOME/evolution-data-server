@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 		mailboxes[i].folder = folder = camel_store_get_folder(store, mailboxes[i].name, CAMEL_STORE_FOLDER_CREATE, ex);
 		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 		check(folder != NULL);
-
+		
 		/* we need an empty folder for this to work */
 		test_folder_counts(folder, 0, 0);
 		pull();
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 	mbox = camel_stream_fs_new_with_name("/tmp/camel-test/inbox", O_WRONLY|O_CREAT|O_EXCL, 0600);
 	for (j=0;j<100;j++) {
 		char *content, *subject;
-
+			
 		push("creating test message");
 		msg = test_message_create_simple();
 		content = g_strdup_printf("data%d content\n", j);
@@ -148,20 +148,20 @@ int main(int argc, char **argv)
 		test_free(content);
 		subject = g_strdup_printf("Test%d message%d subject", j, 100-j);
 		camel_mime_message_set_subject(msg, subject);
-
+		
 		camel_mime_message_set_date(msg, j*60*24, 0);
 		pull();
-
+		
 		camel_stream_printf(mbox, "From \n");
 		check(camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, mbox) != -1);
-#if 0
+#if 0		
 		push("appending simple message %d", j);
 		camel_folder_append_message(folder, msg, NULL, ex);
 		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 		pull();
-#endif
+#endif				
 		test_free(subject);
-
+		
 		check_unref(msg, 1);
 	}
 	check(camel_stream_close(mbox) != -1);

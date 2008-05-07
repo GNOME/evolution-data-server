@@ -15,7 +15,7 @@
 #define MAX_LOOP (10000)
 #define MAX_THREADS (5)
 
-#define d(x)
+#define d(x) 
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 

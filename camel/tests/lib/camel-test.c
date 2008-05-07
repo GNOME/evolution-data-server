@@ -48,9 +48,9 @@ static void
 dump_action(int id, struct _state *s, void *d)
 {
 	struct _stack *node;
-
+	
 	printf("\nThread %d:\n", id);
-
+	
 	node = s->state;
 	if (node) {
 		printf("Current action:\n");
@@ -70,7 +70,7 @@ static void die(int sig)
 		indie = 1;
 		printf("\n\nReceived fatal signal %d\n", sig);
 		g_hash_table_foreach(info_table, (GHFunc)dump_action, 0);
-
+		
 		if (camel_test_verbose > 2) {
 			printf("Attach debugger to pid %d to debug\n", getpid());
 			sleep(1000);
@@ -95,36 +95,36 @@ current_state(void)
 	}
 	return info;
 }
-
+	
 
 void camel_test_init(int argc, char **argv)
 {
 	struct stat st;
 	char *path;
 	int i;
-
+	
 	setup = 1;
-
+	
 	/* yeah, we do need ot thread init, even though camel isn't compiled with enable threads */
 	g_thread_init (NULL);
-
+	
 	path = g_strdup_printf ("/tmp/camel-test");
 	if (mkdir (path, 0700) == -1 && errno != EEXIST)
 		abort ();
-
+	
 	if (stat (path, &st) == -1)
 		abort ();
-
+	
 	if (!S_ISDIR (st.st_mode) || access (path, R_OK | W_OK | X_OK) == -1)
 		abort ();
-
+	
 	camel_init (path, FALSE);
 	g_free (path);
-
+	
 	camel_type_init ();
-
+	
 	info_table = g_hash_table_new(0, 0);
-
+	
 	signal(SIGSEGV, die);
 	signal(SIGABRT, die);
 

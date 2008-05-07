@@ -45,9 +45,9 @@ static void
 camel_tcp_stream_class_init (CamelTcpStreamClass *camel_tcp_stream_class)
 {
 	/*CamelStreamClass *camel_stream_class = CAMEL_STREAM_CLASS (camel_tcp_stream_class);*/
-
+	
 	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (CAMEL_STREAM_TYPE));
-
+	
 	/* tcp stream methods */
 	camel_tcp_stream_class->connect            = tcp_connect;
 	camel_tcp_stream_class->getsockopt         = tcp_getsockopt;
@@ -66,7 +66,7 @@ CamelType
 camel_tcp_stream_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (CAMEL_STREAM_TYPE,
 					    "CamelTcpStream",
@@ -103,7 +103,7 @@ int
 camel_tcp_stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
-
+	
 	return CTS_CLASS (stream)->connect (stream, host);
 }
 
@@ -127,7 +127,7 @@ int
 camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
-
+	
 	return CTS_CLASS (stream)->getsockopt (stream, data);
 }
 
@@ -151,7 +151,7 @@ int
 camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
-
+	
 	return CTS_CLASS (stream)->setsockopt (stream, data);
 }
 
@@ -177,7 +177,7 @@ camel_tcp_stream_get_local_address (CamelTcpStream *stream, socklen_t *len)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), NULL);
 	g_return_val_if_fail(len != NULL, NULL);
-
+	
 	return CTS_CLASS (stream)->get_local_address (stream, len);
 }
 

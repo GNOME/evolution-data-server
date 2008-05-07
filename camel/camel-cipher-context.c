@@ -66,14 +66,14 @@ CamelCipherContext *
 camel_cipher_context_new (CamelSession *session)
 {
 	CamelCipherContext *context;
-
+	
 	g_return_val_if_fail (session != NULL, NULL);
-
+	
 	context = CAMEL_CIPHER_CONTEXT (camel_object_new (CAMEL_CIPHER_CONTEXT_TYPE));
-
+	
 	camel_object_ref (session);
 	context->session = session;
-
+	
 	return context;
 }
 
@@ -89,7 +89,7 @@ camel_cipher_context_construct (CamelCipherContext *context, CamelSession *sessi
 {
 	g_return_if_fail (CAMEL_IS_CIPHER_CONTEXT (context));
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-
+	
 	camel_object_ref (session);
 	context->session = session;
 }
@@ -122,15 +122,15 @@ camel_cipher_sign (CamelCipherContext *context, const char *userid, CamelCipherH
 		   struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	int retval;
-
+	
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 
 	camel_operation_start(NULL, _("Signing message"));
 
 	CIPHER_LOCK(context);
-
+	
 	retval = CCC_CLASS (context)->sign (context, userid, hash, ipart, opart, ex);
-
+	
 	CIPHER_UNLOCK(context);
 
 	camel_operation_end(NULL);
@@ -165,19 +165,19 @@ CamelCipherValidity *
 camel_cipher_verify (CamelCipherContext *context, struct _CamelMimePart *ipart, CamelException *ex)
 {
 	CamelCipherValidity *valid;
-
+	
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
-
+	
 	camel_operation_start(NULL, _("Verifying message"));
 
 	CIPHER_LOCK(context);
-
+	
 	valid = CCC_CLASS (context)->verify (context, ipart, ex);
-
+	
 	CIPHER_UNLOCK(context);
 
 	camel_operation_end(NULL);
-
+	
 	return valid;
 }
 
@@ -209,19 +209,19 @@ camel_cipher_encrypt (CamelCipherContext *context, const char *userid, GPtrArray
 		      struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	int retval;
-
+	
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 
 	camel_operation_start(NULL, _("Encrypting message"));
-
+	
 	CIPHER_LOCK(context);
-
+	
 	retval = CCC_CLASS (context)->encrypt (context, userid, recipients, ipart, opart, ex);
-
+	
 	CIPHER_UNLOCK(context);
 
 	camel_operation_end(NULL);
-
+	
 	return retval;
 }
 
@@ -235,13 +235,13 @@ cipher_decrypt(CamelCipherContext *context, struct _CamelMimePart *ipart, struct
 
 /**
  * camel_cipher_decrypt:
- * @context:
- * @ipart:
- * @opart:
- * @ex:
- *
+ * @context: 
+ * @ipart: 
+ * @opart: 
+ * @ex: 
+ * 
  * Decrypts @ipart into @opart.
- *
+ * 
  * Return value: A validity/encryption status.
  **/
 CamelCipherValidity *
@@ -252,15 +252,15 @@ camel_cipher_decrypt(CamelCipherContext *context, struct _CamelMimePart *ipart, 
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
 
 	camel_operation_start(NULL, _("Decrypting message"));
-
+	
 	CIPHER_LOCK(context);
-
+	
 	valid = CCC_CLASS (context)->decrypt (context, ipart, opart, ex);
-
+	
 	CIPHER_UNLOCK(context);
 
 	camel_operation_end(NULL);
-
+	
 	return valid;
 }
 
@@ -269,7 +269,7 @@ cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, C
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 			     _("You may not import keys with this cipher"));
-
+	
 	return -1;
 }
 
@@ -289,7 +289,7 @@ camel_cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istr
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (istream), -1);
-
+	
 	return CCC_CLASS (context)->import_keys (context, istream, ex);
 }
 
@@ -299,7 +299,7 @@ cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 			     _("You may not export keys with this cipher"));
-
+	
 	return -1;
 }
 
@@ -322,7 +322,7 @@ camel_cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (ostream), -1);
 	g_return_val_if_fail (keys != NULL, -1);
-
+	
 	return CCC_CLASS (context)->export_keys (context, keys, ostream, ex);
 }
 
@@ -337,7 +337,7 @@ CamelCipherHash
 camel_cipher_id_to_hash(CamelCipherContext *context, const char *id)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), CAMEL_CIPHER_HASH_DEFAULT);
-
+	
 	return CCC_CLASS (context)->id_to_hash (context, id);
 }
 
@@ -351,7 +351,7 @@ const char *
 camel_cipher_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
-
+	
 	return CCC_CLASS (context)->hash_to_id (context, hash);
 }
 
@@ -368,7 +368,7 @@ CamelCipherValidity *
 camel_cipher_validity_new (void)
 {
 	CamelCipherValidity *validity;
-
+	
 	validity = g_malloc(sizeof(*validity));
 	camel_cipher_validity_init(validity);
 
@@ -397,7 +397,7 @@ void
 camel_cipher_validity_set_valid (CamelCipherValidity *validity, gboolean valid)
 {
 	g_assert (validity != NULL);
-
+	
 	validity->sign.status = valid?CAMEL_CIPHER_VALIDITY_SIGN_GOOD:CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 }
 
@@ -406,7 +406,7 @@ camel_cipher_validity_get_description (CamelCipherValidity *validity)
 {
 	if (validity == NULL)
 		return NULL;
-
+	
 	return validity->sign.description;
 }
 
@@ -414,7 +414,7 @@ void
 camel_cipher_validity_set_description (CamelCipherValidity *validity, const gchar *description)
 {
 	g_assert (validity != NULL);
-
+	
 	g_free(validity->sign.description);
 	validity->sign.description = g_strdup(description);
 }
@@ -459,11 +459,11 @@ camel_cipher_validity_clone(CamelCipherValidity *vin)
 
 /**
  * camel_cipher_validity_add_certinfo:
- * @vin:
- * @mode:
- * @name:
- * @email:
- *
+ * @vin: 
+ * @mode: 
+ * @name: 
+ * @email: 
+ * 
  * Add a cert info to the signer or encrypter info.
  **/
 void
@@ -486,7 +486,7 @@ camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_
  * camel_cipher_validity_envelope:
  * @parent:
  * @valid:
- *
+ * 
  * Calculate a conglomerate validity based on wrapping one secure part inside
  * another one.
  **/
@@ -558,11 +558,11 @@ static void
 camel_cipher_context_finalise (CamelObject *o)
 {
 	CamelCipherContext *context = (CamelCipherContext *)o;
-
+	
 	camel_object_unref (CAMEL_OBJECT (context->session));
-
+	
 	g_mutex_free (context->priv->lock);
-
+	
 	g_free (context->priv);
 }
 
@@ -570,7 +570,7 @@ static void
 camel_cipher_context_class_init (CamelCipherContextClass *camel_cipher_context_class)
 {
 	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
-
+	
 	camel_cipher_context_class->hash_to_id = cipher_hash_to_id;
 	camel_cipher_context_class->id_to_hash = cipher_id_to_hash;
 	camel_cipher_context_class->sign = cipher_sign;
@@ -585,7 +585,7 @@ CamelType
 camel_cipher_context_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_object_get_type (),
 					    "CamelCipherContext",
@@ -596,7 +596,7 @@ camel_cipher_context_get_type (void)
 					    (CamelObjectInitFunc) camel_cipher_context_init,
 					    (CamelObjectFinalizeFunc) camel_cipher_context_finalise);
 	}
-
+	
 	return type;
 }
 
@@ -610,11 +610,11 @@ cc_prepare_sign(CamelMimePart *part)
 	CamelDataWrapper *dw;
 	CamelTransferEncoding encoding;
 	int parts, i;
-
+	
 	dw = camel_medium_get_content_object((CamelMedium *)part);
 	if (!dw)
 		return;
-
+	
 	if (CAMEL_IS_MULTIPART (dw)) {
 		parts = camel_multipart_get_number((CamelMultipart *)dw);
 		for (i = 0; i < parts; i++)
@@ -636,11 +636,11 @@ cc_prepare_sign(CamelMimePart *part)
  * @part: Part to write.
  * @flags: flags for the canonicalisation filter (CamelMimeFilterCanon)
  * @ostream: stream to write canonicalised output to.
- *
+ * 
  * Writes a part to a stream in a canonicalised format, suitable for signing/encrypting.
  *
  * The transfer encoding paramaters for the part may be changed by this function.
- *
+ * 
  * Return value: -1 on error;
  **/
 int

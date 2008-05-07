@@ -16,7 +16,7 @@
 #define MAX_LOOP (10000)
 #define MAX_THREADS (5)
 
-#define d(x)
+#define d(x) 
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
@@ -84,13 +84,13 @@ int main(int argc, char **argv)
 
 			camel_test_push("provider %s", local_providers[j]);
 			path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
-
+		
 			for (i=0;i<MAX_THREADS;i++)
 				pthread_create(&threads[i], 0, worker, NULL);
-
-			for (i=0;i<MAX_THREADS;i++)
+			
+			for (i=0;i<MAX_THREADS;i++) 
 				pthread_join(threads[i], NULL);
-
+			
 			test_free(path);
 
 			camel_test_pull();

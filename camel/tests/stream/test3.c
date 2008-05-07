@@ -52,14 +52,14 @@ int main(int argc, char **argv)
 			push("stream subrange %d-%d", ranges[i].lower, ranges[i].upper);
 			sus = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
 			check(sus != NULL);
-
+			
 			test_seekable_substream_writepart((CamelStream *)sus, j);
 			test_seekable_substream_readpart((CamelStream *)sus);
-
+			
 			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
 			check(sus2 != NULL);
 			test_seekable_substream_readpart((CamelStream *)sus2);
-
+			
 			check_unref(sus, 1);
 			check_unref(sus2, 1);
 			pull();
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
 			check(sus2 != NULL);
 			test_seekable_substream_readpart((CamelStream *)sus2);
-
+			
 			check_unref(sus, 1);
 			check_unref(sus2, 1);
 			pull();

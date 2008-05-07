@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; -*- */
-/*
+/* 
  * Authors:
  *   Michael Zucchi <notzed@ximian.com>
  *   Jeffrey Stedfast <fejj@ximian.com>
@@ -7,8 +7,8 @@
  *
  * Copyright 2000-2003 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -322,15 +322,15 @@ camel_charset_step (CamelCharset *cc, const char *in, int len)
 	register unsigned int mask;
 	register int level;
 	register guint32 c;
-
+	
 	mask = cc->mask;
 	level = cc->level;
-
+	
 	/* check what charset a given string will fit in */
 	while ((c = camel_utf8_getc_limit(&inptr, inend)) != 0xffff) {
 		if (c < 0xffff) {
 			mask &= charset_mask(c);
-
+			
 			if (c>=128 && c<256)
 				level = MAX(level, 1);
 			else if (c>=256)
@@ -341,7 +341,7 @@ camel_charset_step (CamelCharset *cc, const char *in, int len)
 			break;
 		}
 	}
-
+	
 	cc->mask = mask;
 	cc->level = level;
 }
@@ -352,17 +352,17 @@ camel_charset_best_mask(unsigned int mask)
 {
 	const char *locale_lang, *lang;
 	int i;
-
+	
 	locale_lang = e_iconv_locale_language ();
 	for (i = 0; i < G_N_ELEMENTS (camel_charinfo); i++) {
 		if (camel_charinfo[i].bit & mask) {
 			lang = e_iconv_charset_language (camel_charinfo[i].name);
-
+			
 			if (!locale_lang || (lang && !strncmp (locale_lang, lang, 2)))
 				return camel_charinfo[i].name;
 		}
 	}
-
+	
 	return "UTF-8";
 }
 
@@ -421,7 +421,7 @@ camel_charset_iso_to_windows (const char *isocharset)
 	 *    iso-8859-13 are Baltic that it also maps to
 	 *    windows-cp1257.
 	 */
-
+	
 	if (!g_ascii_strcasecmp (isocharset, "iso-8859-1") || !g_ascii_strcasecmp (isocharset, "us-ascii"))
 		return "windows-cp1252";
 	else if (!g_ascii_strcasecmp (isocharset, "iso-8859-2"))
@@ -440,7 +440,7 @@ camel_charset_iso_to_windows (const char *isocharset)
 		return "windows-cp1254";
 	else if (!g_ascii_strcasecmp (isocharset, "iso-8859-13"))
 		return "windows-cp1257";
-
+	
 	return isocharset;
 }
 

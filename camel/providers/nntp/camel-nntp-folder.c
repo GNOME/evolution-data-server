@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-folder.c : Class for a news folder
  *
- * Authors : Chris Toshok <toshok@ximian.com>
+ * Authors : Chris Toshok <toshok@ximian.com> 
  *           Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2001-2003 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -83,7 +83,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 
 	nntp_store = (CamelNNTPStore *) folder->parent_store;
 	nntp_folder = (CamelNNTPFolder *) folder;
-
+	
 	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 
 	camel_nntp_command(nntp_store, ex, nntp_folder, &line, NULL);
@@ -92,9 +92,9 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 		changes = nntp_folder->changes;
 		nntp_folder->changes = camel_folder_change_info_new();
 	}
-
+	
 	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
-
+	
 	if (changes) {
 		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
 		camel_folder_change_info_free (changes);
@@ -148,15 +148,15 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const char *id, cons
 	} else if (ret != -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), msgid, line);
 	}
-
+	
 	return stream;
-
+	
  fail:
 	if (errno == EINTR)
 		camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 	else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), msgid, g_strerror (errno));
-
+	
 	return NULL;
 }
 
@@ -177,9 +177,9 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const char *uid, Came
 		return;
 	}
 	*msgid++ = 0;
-
+	
 	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
-
+	
 	stream = nntp_folder_download_message ((CamelNNTPFolder *) disco_folder, article, msgid, ex);
 	if (stream)
 		camel_object_unref (stream);
@@ -199,7 +199,7 @@ nntp_folder_get_message (CamelFolder *folder, const char *uid, CamelException *e
 
 	nntp_store = (CamelNNTPStore *) folder->parent_store;
 	nntp_folder = (CamelNNTPFolder *) folder;
-
+	
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
 	msgid = strchr (article, ',');
@@ -211,7 +211,7 @@ nntp_folder_get_message (CamelFolder *folder, const char *uid, CamelException *e
 	*msgid++ = 0;
 
 	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
-
+	
 	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
 	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
 	if (stream == NULL) {
@@ -225,7 +225,7 @@ nntp_folder_get_message (CamelFolder *folder, const char *uid, CamelException *e
 		if (stream == NULL)
 			goto fail;
 	}
-
+	
 	message = camel_mime_message_new ();
 	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
 		if (errno == EINTR)
@@ -244,14 +244,14 @@ fail:
 	} else {
 		changes = NULL;
 	}
-
+	
 	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
-
+	
 	if (changes) {
 		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
 		camel_folder_change_info_free (changes);
 	}
-
+		
 	return message;
 }
 
@@ -260,17 +260,17 @@ nntp_folder_search_by_expression (CamelFolder *folder, const char *expression, C
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	GPtrArray *matches;
-
+	
 	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
-
+	
 	if (nntp_folder->search == NULL)
 		nntp_folder->search = camel_folder_search_new ();
-
+	
 	camel_folder_search_set_folder (nntp_folder->search, folder);
 	matches = camel_folder_search_search(nntp_folder->search, expression, NULL, ex);
-
+	
 	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
-
+	
 	return matches;
 }
 
@@ -282,17 +282,17 @@ nntp_folder_search_by_uids (CamelFolder *folder, const char *expression, GPtrArr
 
 	if (uids->len == 0)
 		return g_ptr_array_new();
-
+	
 	CAMEL_NNTP_FOLDER_LOCK(folder, search_lock);
-
+	
 	if (nntp_folder->search == NULL)
 		nntp_folder->search = camel_folder_search_new ();
-
+	
 	camel_folder_search_set_folder (nntp_folder->search, folder);
 	matches = camel_folder_search_search(nntp_folder->search, expression, uids, ex);
-
+	
 	CAMEL_NNTP_FOLDER_UNLOCK(folder, search_lock);
-
+	
 	return matches;
 }
 
@@ -300,11 +300,11 @@ static void
 nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-
+	
 	camel_folder_search_free_result (nntp_folder->search, result);
 }
 
-static void
+static void           
 nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_message,
 				   const CamelMessageInfo *info, char **appended_uid,
 				   CamelException *ex)
@@ -317,9 +317,9 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	unsigned int u;
 	struct _camel_header_raw *header, *savedhdrs, *n, *tail;
 	char *group, *line;
-
+	
 	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
-
+	
 	/* send 'POST' command */
 	ret = camel_nntp_command (nntp_store, ex, NULL, &line, "post");
 	if (ret != 340) {
@@ -332,20 +332,20 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 		CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
 		return;
 	}
-
+	
 	/* the 'Newsgroups: ' header */
 	group = g_strdup_printf ("Newsgroups: %s\r\n", folder->full_name);
-
+	
 	/* setup stream filtering */
 	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
 	filtered_stream = camel_stream_filter_new_with_stream (stream);
 	camel_stream_filter_add (filtered_stream, crlffilter);
 	camel_object_unref (crlffilter);
-
+	
 	/* remove mail 'To', 'CC', and 'BCC' headers */
 	savedhdrs = NULL;
 	tail = (struct _camel_header_raw *) &savedhdrs;
-
+	
 	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (mime_message)->headers;
 	n = header->next;
 	while (n != NULL) {
@@ -357,10 +357,10 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 		} else {
 			header = n;
 		}
-
+		
 		n = header->next;
 	}
-
+	
 	/* write the message */
 	if (camel_stream_write(stream, group, strlen(group)) == -1
 	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), CAMEL_STREAM (filtered_stream)) == -1
@@ -380,7 +380,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	header->next = savedhdrs;
 
 	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
-
+	
 	return;
 }
 
@@ -390,7 +390,7 @@ nntp_folder_append_message_offline (CamelFolder *folder, CamelMimeMessage *mime_
 				    CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-	                      _("You cannot post NNTP messages while working offline!"));
+	                      _("You cannot post NNTP messages while working offline!"));	
 }
 
 /* I do not know what to do this exactly. Looking at the IMAP implementation for this, it
@@ -404,24 +404,24 @@ nntp_folder_transfer_message (CamelFolder *source, GPtrArray *uids, CamelFolder 
 	                      _("You cannot copy messages from a NNTP folder!"));
 }
 
-static void
+static void           
 nntp_folder_init (CamelNNTPFolder *nntp_folder, CamelNNTPFolderClass *klass)
 {
 	struct _CamelNNTPFolderPrivate *p;
-
+	
 	nntp_folder->changes = camel_folder_change_info_new ();
 	p = nntp_folder->priv = g_malloc0 (sizeof (*nntp_folder->priv));
 	p->search_lock = g_mutex_new ();
 	p->cache_lock = g_mutex_new ();
 }
 
-static void
+static void           
 nntp_folder_finalise (CamelNNTPFolder *nntp_folder)
 {
 	struct _CamelNNTPFolderPrivate *p;
-
+	
 	camel_folder_summary_save (((CamelFolder*) nntp_folder)->summary);
-
+	
 	p = nntp_folder->priv;
 	g_mutex_free (p->search_lock);
 	g_mutex_free (p->cache_lock);
@@ -433,16 +433,16 @@ nntp_folder_class_init (CamelNNTPFolderClass *camel_nntp_folder_class)
 {
 	CamelDiscoFolderClass *camel_disco_folder_class = CAMEL_DISCO_FOLDER_CLASS (camel_nntp_folder_class);
 	CamelFolderClass *camel_folder_class = CAMEL_FOLDER_CLASS (camel_nntp_folder_class);
-
+	
 	parent_class = CAMEL_DISCO_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_disco_folder_get_type ()));
 	folder_class = CAMEL_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_folder_get_type ()));
-
+	
 	/* virtual method definition */
-
+	
 	/* virtual method overload */
 	camel_disco_folder_class->sync_online = nntp_folder_sync_online;
 	camel_disco_folder_class->sync_resyncing = nntp_folder_sync_offline;
-	camel_disco_folder_class->sync_offline = nntp_folder_sync_offline;
+	camel_disco_folder_class->sync_offline = nntp_folder_sync_offline;        
 	camel_disco_folder_class->cache_message = nntp_folder_cache_message;
 	camel_disco_folder_class->append_online = nntp_folder_append_message_online;
 	camel_disco_folder_class->append_resyncing = nntp_folder_append_message_online;
@@ -451,7 +451,7 @@ nntp_folder_class_init (CamelNNTPFolderClass *camel_nntp_folder_class)
 	camel_disco_folder_class->transfer_resyncing = nntp_folder_transfer_message;
 	camel_disco_folder_class->transfer_offline = nntp_folder_transfer_message;
 	camel_disco_folder_class->refresh_info_online = nntp_folder_refresh_info_online;
-
+	
 	camel_folder_class->set_message_flags = nntp_folder_set_message_flags;
 	camel_folder_class->get_message = nntp_folder_get_message;
 	camel_folder_class->search_by_expression = nntp_folder_search_by_expression;
@@ -463,7 +463,7 @@ CamelType
 camel_nntp_folder_get_type (void)
 {
 	static CamelType camel_nntp_folder_type = CAMEL_INVALID_TYPE;
-
+	
 	if (camel_nntp_folder_type == CAMEL_INVALID_TYPE)	{
 		camel_nntp_folder_type = camel_type_register (CAMEL_DISCO_FOLDER_TYPE, "CamelNNTPFolder",
 							      sizeof (CamelNNTPFolder),
@@ -473,7 +473,7 @@ camel_nntp_folder_get_type (void)
 							      (CamelObjectInitFunc) nntp_folder_init,
 							      (CamelObjectFinalizeFunc) nntp_folder_finalise);
 	}
-
+	
 	return camel_nntp_folder_type;
 }
 
@@ -486,24 +486,24 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 	CamelService *service;
 	CamelStoreInfo *si;
 	gboolean subscribed = TRUE;
-
+	
 	service = (CamelService *) parent;
 	root = camel_session_get_storage_path (service->session, service, ex);
 	if (root == NULL)
 		return NULL;
-
+	
 	/* If this doesn't work, stuff wont save, but let it continue anyway */
 	g_mkdir_with_parents (root, 0777);
-
+	
 	folder = (CamelFolder *) camel_object_new (CAMEL_NNTP_FOLDER_TYPE);
 	nntp_folder = (CamelNNTPFolder *)folder;
-
+	
 	camel_folder_construct (folder, parent, folder_name, folder_name);
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY|CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
-
+	
 	nntp_folder->storage_path = g_build_filename (root, folder->full_name, NULL);
 	g_free (root);
-
+	
 	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
 	camel_object_set(nntp_folder, NULL, CAMEL_OBJECT_STATE_FILE, root, NULL);
 	camel_object_state_read(nntp_folder);
@@ -513,13 +513,13 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder, root);
 	g_free(root);
 	camel_folder_summary_load (folder->summary);
-
+	
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, folder_name);
 	if (si) {
 		subscribed = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
 		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, si);
 	}
-
+	
 	if (subscribed) {
 		camel_folder_refresh_info(folder, ex);
 		if (camel_exception_is_set(ex)) {
@@ -527,6 +527,6 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 			folder = NULL;
 		}
         }
-
+	
 	return folder;
 }

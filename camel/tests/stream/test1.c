@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 		check_unref(ss, 1);
 		check(close(fd) == -1);
 		pull();
-
+		
 		(void)unlink("stream.txt");
 	}
 

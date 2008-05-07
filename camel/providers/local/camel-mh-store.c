@@ -4,8 +4,8 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -121,7 +121,7 @@ folders_update(const char *root, int mode, const char *folder, const char *new)
 
 	tmpnew = g_alloca (strlen (root) + 16);
 	sprintf (tmpnew, "%s.folders~", root);
-
+	
 	out = camel_stream_fs_new_with_name(tmpnew, O_WRONLY|O_CREAT|O_TRUNC, 0666);
 	if (out == NULL)
 		goto fail;
@@ -250,7 +250,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		g_free (name);
 		return NULL;
 	}
-
+	
 	g_free(name);
 
 	return camel_mh_folder_new(store, folder_name, flags, ex);
@@ -354,9 +354,9 @@ folder_info_new (CamelStore *store, CamelURL *url, const char *root, const char 
 	char *base;
 
 	base = strrchr(path, '/');
-
+	
 	camel_url_set_fragment (url, path);
-
+	
 	/* Build the folder info structure. */
 	fi = camel_folder_info_new();
 	fi->uri = camel_url_to_string (url, 0);
@@ -392,7 +392,7 @@ recursive_scan (CamelStore *store, CamelURL *url, CamelFolderInfo **fip, CamelFo
 	if (path[0]) {
 		fullpath = alloca (strlen (root) + strlen (path) + 2);
 		sprintf (fullpath, "%s/%s", root, path);
-	} else
+	} else 
 		fullpath = (char *)root;
 
 	if (stat(fullpath, &st) == -1 || !S_ISDIR(st.st_mode))
@@ -497,7 +497,7 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 			if (strncmp(top, line, toplen) != 0
 			    || (line[toplen] != 0 && line[toplen] != '/'))
 				continue;
-
+		
 			/* check is not sub-subdir if not recursive */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) == 0
 			    && (tmp = strrchr(line, '/'))
@@ -540,7 +540,7 @@ static guint inode_hash(const void *d)
 static gboolean inode_equal(const void *a, const void *b)
 {
 	const struct _inode *v1 = a, *v2 = b;
-
+	
 	return v1->inode == v2->inode && v1->dnode == v2->dnode;
 }
 
@@ -555,11 +555,11 @@ get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelExcepti
 	CamelFolderInfo *fi = NULL;
 	CamelURL *url;
 	char *root;
-
+	
 	root = ((CamelService *)store)->url->path;
-
+	
 	url = camel_url_copy (((CamelService *) store)->url);
-
+	
 	/* use .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
 		folders_scan(store, url, root, top, &fi, flags);
@@ -584,8 +584,8 @@ get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelExcepti
 		g_hash_table_foreach(visited, inode_free, NULL);
 		g_hash_table_destroy(visited);
 	}
-
+	
 	camel_url_free (url);
-
+	
 	return fi;
 }

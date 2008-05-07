@@ -7,12 +7,12 @@
 
 typedef struct _CamelTestSession {
 	CamelSession parent_object;
-
+	
 } CamelTestSession;
 
 typedef struct _CamelTestSessionClass {
 	CamelSessionClass parent_class;
-
+	
 } CamelTestSessionClass;
 
 CamelType camel_test_session_get_type (void);

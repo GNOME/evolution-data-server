@@ -77,8 +77,8 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 
 	{ CAMEL_PROVIDER_CONF_HIDDEN, "auth-domain", NULL,
 	  NULL, "Groupwise" },
-
-	{ CAMEL_PROVIDER_CONF_SECTION_END },
+	 	
+	{ CAMEL_PROVIDER_CONF_SECTION_END }, 
 
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -104,10 +104,10 @@ static CamelProvider groupwise_provider = {
 
 CamelServiceAuthType camel_groupwise_password_authtype = {
 	N_("Password"),
-
+	
 	N_("This option will connect to the GroupWise server using a "
 	   "plaintext password."),
-
+	
 	"",
 	TRUE
 };
@@ -139,14 +139,14 @@ camel_provider_module_init(void)
 	groupwise_provider.auto_detect = groupwise_auto_detect_cb;
 	groupwise_provider.authtypes = g_list_prepend (groupwise_provider.authtypes, &camel_groupwise_password_authtype);
 	groupwise_provider.translation_domain = GETTEXT_PACKAGE;
-
+	
 	if (use_imap)
 		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
 	else 	{
 		groupwise_provider.object_types[CAMEL_PROVIDER_STORE] =  camel_groupwise_store_get_type();
 		groupwise_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_groupwise_transport_get_type();
-	}
-
+	} 
+	
 	camel_provider_register (&groupwise_provider);
 }
 
@@ -168,7 +168,7 @@ groupwise_url_hash (gconstpointer key)
 	add_hash (&hash, u->authmech);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-
+	
 	return hash;
 }
 
@@ -181,7 +181,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-
+	
 	if (s2 == NULL)
 		return FALSE;
 
@@ -192,7 +192,7 @@ static gint
 groupwise_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-
+	
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->authmech, u2->authmech)

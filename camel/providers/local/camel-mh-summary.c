@@ -65,7 +65,7 @@ CamelType
 camel_mh_summary_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_local_summary_get_type (), "CamelMhSummary",
 					   sizeof(CamelMhSummary),
@@ -75,7 +75,7 @@ camel_mh_summary_get_type (void)
 					   (CamelObjectInitFunc)camel_mh_summary_init,
 					   (CamelObjectFinalizeFunc)camel_mh_summary_finalise);
 	}
-
+	
 	return type;
 }
 
@@ -117,7 +117,7 @@ camel_mh_summary_finalise(CamelObject *obj)
  * camel_mh_summary_new:
  *
  * Create a new CamelMhSummary object.
- *
+ * 
  * Return value: A new #CamelMhSummary object.
  **/
 CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *folder, const char *filename, const char *mhdir, CamelIndex *index)
@@ -331,7 +331,7 @@ mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
 					camel_index_delete_name(cls->index, (char *)uid);
-
+				
 				camel_folder_change_info_remove_uid(changes, uid);
 				camel_folder_summary_remove((CamelFolderSummary *)cls, (CamelMessageInfo *)info);
 			}

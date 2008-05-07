@@ -52,7 +52,7 @@ struct _CamelGroupwiseMessageInfo {
 
 struct _CamelGroupwiseMessageContentInfo {
 	CamelMessageContentInfo info ;
-} ;
+} ; 
 
 
 struct _CamelGroupwiseSummary {

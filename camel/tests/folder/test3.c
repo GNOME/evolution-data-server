@@ -70,7 +70,7 @@ static struct {
 	char *expr;
 } searches[] = {
 	{ { 1, 1, 0 }, "(header-matches \"subject\" \"Test1 message99 subject\")" },
-
+	
 	{ { 100, 50, 0 }, "(header-contains \"subject\" \"subject\")" },
 	{ { 100, 50, 0 }, "(header-contains \"subject\" \"Subject\")" },
 
@@ -81,35 +81,35 @@ static struct {
 	{ { 100/13+1, 50/13+1, 0 }, "(user-flag \"every13\")" },
 	{ { 1, 1, 0 }, "(= \"7tag1\" (user-tag \"every7\"))" },
 	{ { 100/11+1, 50/11+1, 0 }, "(= \"11tag\" (user-tag \"every11\"))" },
-
+	
 	{ { 100/13 + 100/17 + 1, 50/13 + 50/17 + 2, 0 }, "(user-flag \"every13\" \"every17\")" },
 	{ { 100/13 + 100/17 + 1, 50/13 + 50/17 + 2, 0 }, "(or (user-flag \"every13\") (user-flag \"every17\"))" },
 	{ { 1, 0, 0 }, "(and (user-flag \"every13\") (user-flag \"every17\"))" },
-
+	
 	{ { 0, 0, 0 }, "(and (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"Test2\"))" },
 	/* we get 11 here as the header-contains is a substring match */
 	{ { 11, 6, 0 }, "(and (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"subject\"))" },
 	{ { 1, 1, 0 }, "(and (header-contains \"subject\" \"Test19\") (header-contains \"subject\" \"subject\"))" },
 	{ { 0, 0, 0 }, "(and (header-contains \"subject\" \"Test191\") (header-contains \"subject\" \"subject\"))" },
 	{ { 1, 1, 0 }, "(and (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"message99\"))" },
-
+	
 	{ { 22, 11, 0 }, "(or (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"Test2\"))" },
 	{ { 2, 1, 0 }, "(or (header-contains \"subject\" \"Test16\") (header-contains \"subject\" \"Test99\"))" },
 	{ { 1, 1, 0 }, "(or (header-contains \"subject\" \"Test123\") (header-contains \"subject\" \"Test99\"))" },
 	{ { 100, 50, 0 }, "(or (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"subject\"))" },
 	{ { 11, 6, 0 }, "(or (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"message99\"))" },
-
+	
 	/* 72000 is 24*60*100 == half the 'sent date' of the messages */
 	{ { 100/2, 50/2, 0 }, "(> 72000 (get-sent-date))" },
 	{ { 100/2-1, 50/2, 0 }, "(< 72000 (get-sent-date))" },
 	{ { 1, 0, 0 }, "(= 72000 (get-sent-date))" },
 	{ { 0, 0, 0 }, "(= 72001 (get-sent-date))" },
-
+	
  	{ { (100/2-1)/17+1, (50/2-1)/17+1, 0 }, "(and (user-flag \"every17\") (< 72000 (get-sent-date)))" },
 	{ { (100/2-1)/17+1, (50/2-1)/17, 0 }, "(and (user-flag \"every17\") (> 72000 (get-sent-date)))" },
 	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (< 72000 (get-sent-date)))" },
 	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (> 72000 (get-sent-date)))" },
-
+	
 	{ { 100/2+100/2/17, 50/2+50/2/17, 0 }, "(or (user-flag \"every17\") (< 72000 (get-sent-date)))" },
 	{ { 100/2+100/2/17+1, 50/2+50/2/17+1, 0 }, "(or (user-flag \"every17\") (> 72000 (get-sent-date)))" },
 	{ { 100/2+100/2/13, 50/2+50/2/13+1, 0 }, "(or (user-flag \"every13\") (< 72000 (get-sent-date)))" },

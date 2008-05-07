@@ -17,12 +17,12 @@
 
 typedef struct _CamelTestSession {
 	CamelSession parent_object;
-
+	
 } CamelTestSession;
 
 typedef struct _CamelTestSessionClass {
 	CamelSessionClass parent_class;
-
+	
 } CamelTestSessionClass;
 
 
@@ -41,7 +41,7 @@ class_init (CamelTestSessionClass *camel_test_session_class)
 {
 	CamelSessionClass *camel_session_class =
 		CAMEL_SESSION_CLASS (camel_test_session_class);
-
+	
 	/* virtual method override */
 	camel_session_class->get_password = get_password;
 }
@@ -50,7 +50,7 @@ static CamelType
 camel_test_session_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (
 			camel_test_session_get_type (),
@@ -62,7 +62,7 @@ camel_test_session_get_type (void)
 			(CamelObjectInitFunc) init,
 			NULL);
 	}
-
+	
 	return type;
 }
 
@@ -77,11 +77,11 @@ static CamelSession *
 camel_test_session_new (const char *path)
 {
 	CamelSession *session;
-
+	
 	session = CAMEL_SESSION (camel_object_new (CAMEL_TEST_SESSION_TYPE));
-
+	
 	camel_session_construct (session, path);
-
+	
 	return session;
 }
 
@@ -96,34 +96,34 @@ int main (int argc, char **argv)
 	GPtrArray *recipients;
 	GByteArray *buf;
 	char *before, *after;
-
+	
 	camel_test_init (argc, argv);
-
+	
 	ex = camel_exception_new ();
-
+	
 	/* clear out any camel-test data */
 	system ("/bin/rm -rf /tmp/camel-test");
-
+	
 	session = camel_test_session_new ("/tmp/camel-test");
-
+	
 	ctx = camel_smime_context_new (session);
-
+	
 	camel_test_start ("Test of S/MIME PKCS7 functions");
-
+	
 	stream1 = camel_stream_mem_new ();
 	camel_stream_write (stream1, "Hello, I am a test stream.", 25);
 	camel_stream_reset (stream1);
-
+	
 	stream2 = camel_stream_mem_new ();
-
+	
 	camel_test_push ("PKCS7 signing");
 	camel_smime_sign (ctx, "smime@xtorshun.org", CAMEL_CIPHER_HASH_SHA1,
 			  stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	camel_test_pull ();
-
+	
 	camel_exception_clear (ex);
-
+	
 	camel_test_push ("PKCS7 verify");
 	camel_stream_reset (stream1);
 	camel_stream_reset (stream2);
@@ -132,19 +132,19 @@ int main (int argc, char **argv)
 	check_msg (camel_cipher_validity_get_valid (valid), "%s", camel_cipher_validity_get_description (valid));
 	camel_cipher_validity_free (valid);
 	camel_test_pull ();
-
+	
 	camel_object_unref (CAMEL_OBJECT (stream1));
 	camel_object_unref (CAMEL_OBJECT (stream2));
-
+	
 	stream1 = camel_stream_mem_new ();
 	stream2 = camel_stream_mem_new ();
 	stream3 = camel_stream_mem_new ();
-
+	
 	camel_stream_write (stream1, "Hello, I am a test of encryption/decryption.", 44);
 	camel_stream_reset (stream1);
-
+	
 	camel_exception_clear (ex);
-
+	
 	camel_test_push ("PKCS7 encrypt");
 	recipients = g_ptr_array_new ();
 	g_ptr_array_add (recipients, "smime@xtorshun.org");
@@ -153,10 +153,10 @@ int main (int argc, char **argv)
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	g_ptr_array_free (recipients, TRUE);
 	camel_test_pull ();
-
+	
 	camel_stream_reset (stream2);
 	camel_exception_clear (ex);
-
+	
 	camel_test_push ("PKCS7 decrypt");
 	camel_smime_decrypt (ctx, stream2, stream3, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
@@ -168,11 +168,11 @@ int main (int argc, char **argv)
 	g_free (before);
 	g_free (after);
 	camel_test_pull ();
-
+	
 	camel_object_unref (CAMEL_OBJECT (ctx));
 	camel_object_unref (CAMEL_OBJECT (session));
-
+	
 	camel_test_end ();
-
+	
 	return 0;
 }

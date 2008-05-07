@@ -164,25 +164,25 @@ decode_int (const unsigned char *in, unsigned int inlen)
 	register const unsigned char *inptr;
 	const unsigned char *inend;
 	int sign = 1, val = 0;
-
+	
 	inptr = in;
 	inend = in + inlen;
-
+	
 	if (*inptr == '-') {
 		sign = -1;
 		inptr++;
 	} else if (*inptr == '+')
 		inptr++;
-
+	
 	for ( ; inptr < inend; inptr++) {
 		if (!isdigit ((int) *inptr))
 			return  -1;
 		else
 			val = (val * 10) + (*inptr - '0');
 	}
-
+	
 	val *= sign;
-
+	
 	return val;
 }
 
@@ -205,12 +205,12 @@ static int
 get_mday (const unsigned char *in, unsigned int inlen)
 {
 	int mday;
-
+	
 	mday = decode_int (in, inlen);
-
+	
 	if (mday < 0 || mday > 31)
 		mday = -1;
-
+	
 	return mday;
 }
 
@@ -233,17 +233,17 @@ static int
 get_year (const unsigned char *in, unsigned int inlen)
 {
 	int year;
-
+	
 	year = decode_int (in, inlen);
 	if (year == -1)
 		return -1;
-
+	
 	if (year < 100)
 		year += (year < 70) ? 2000 : 1900;
-
+	
 	if (year < 1969)
 		return -1;
-
+	
 	return year;
 }
 
@@ -253,9 +253,9 @@ get_time (const unsigned char *in, unsigned int inlen, int *hour, int *min, int 
 	register const unsigned char *inptr;
 	const unsigned char *inend;
 	int *val, colons = 0;
-
+	
 	*hour = *min = *sec = 0;
-
+	
 	inend = in + inlen;
 	val = hour;
 	for (inptr = in; inptr < inend; inptr++) {
@@ -276,7 +276,7 @@ get_time (const unsigned char *in, unsigned int inlen, int *hour, int *min, int 
 		else
 			*val = (*val * 10) + (*inptr - '0');
 	}
-
+	
 	return TRUE;
 }
 
@@ -286,17 +286,17 @@ get_tzone (struct _date_token **token)
 	const unsigned char *inptr, *inend;
 	unsigned int inlen;
 	int i, t;
-
+	
 	for (i = 0; *token && i < 2; *token = (*token)->next, i++) {
 		inptr = (*token)->start;
 		inlen = (*token)->len;
 		inend = inptr + inlen;
-
+		
 		if (*inptr == '+' || *inptr == '-') {
 			t = decode_int (inptr, inlen);
 			if (t < -1200 || t > 1400)
 				return -1;
-
+			
 			return t;
 		} else {
 			if (*inptr == '(') {
@@ -341,11 +341,11 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 	struct _date_token *token;
 	struct tm tm;
 	time_t time;
-
+	
 	memset ((void *) &tm, 0, sizeof (struct tm));
 	got_wday = got_month = got_tzone = FALSE;
 	offset = 0;
-
+	
 	token = tokens;
 	while (token) {
 		if (is_weekday (token) && !got_wday) {
@@ -356,7 +356,7 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 				goto next_token;
 			}
 		}
-
+		
 		if (is_month (token) && !got_month) {
 			if ((n = get_month (token->start, token->len)) != -1) {
 				d(printf ("month; "));
@@ -365,7 +365,7 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 				goto next_token;
 			}
 		}
-
+		
 		if (is_time (token) && !tm.tm_hour && !tm.tm_min && !tm.tm_sec) {
 			if (get_time (token->start, token->len, &hour, &min, &sec)) {
 				d(printf ("time; "));
@@ -375,10 +375,10 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 				goto next_token;
 			}
 		}
-
+		
 		if (is_tzone (token) && !got_tzone) {
 			struct _date_token *t = token;
-
+			
 			if ((n = get_tzone (&t)) != -1) {
 				d(printf ("tzone; "));
 				got_tzone = TRUE;
@@ -386,7 +386,7 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 				goto next_token;
 			}
 		}
-
+		
 		if (is_numeric (token)) {
 			if (token->len == 4 && !tm.tm_year) {
 				if ((n = get_year (token->start, token->len)) != -1) {
@@ -413,26 +413,26 @@ decode_broken_date (struct _date_token *tokens, int *tzone)
 				}
 			}
 		}
-
+		
 		d(printf ("???; "));
-
+		
 	next_token:
-
+		
 		token = token->next;
 	}
-
+	
 	d(printf ("\n"));
-
+	
 	time = e_mktime_utc (&tm);
-
+	
 	/* time is now GMT of the time we want, but not offset by the timezone ... */
-
+	
 	/* this should convert the time to the GMT equiv time */
 	time -= ((offset / 100) * 60 * 60) + (offset % 100) * 60;
-
+	
 	if (tzone)
 		*tzone = offset;
-
+	
 	return time;
 }
 
@@ -454,18 +454,18 @@ parse_broken_date (const char *datestr, int *saveoffset)
 {
 	struct _date_token *token, *tokens;
 	time_t date;
-
+	
 	tokens = datetok (datestr);
-
+	
 	date = decode_broken_date (tokens, saveoffset);
-
+	
 	/* cleanup */
 	while (tokens) {
 		token = tokens;
 		tokens = tokens->next;
 		g_free (token);
 	}
-
+	
 	return date;
 }
 
@@ -479,35 +479,35 @@ static void
 table_init ()
 {
 	int i;
-
+	
 	memset (datetok_table, 0, sizeof (datetok_table));
-
+	
 	for (i = 0; i < 256; i++) {
 		if (!strchr (NUMERIC_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_NUMERIC;
-
+		
 		if (!strchr (WEEKDAY_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_WEEKDAY;
-
+		
 		if (!strchr (MONTH_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_MONTH;
-
+		
 		if (!strchr (TIME_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_TIME;
-
+		
 		if (!strchr (TIMEZONE_ALPHA_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_TIMEZONE_ALPHA;
-
+		
 		if (!strchr (TIMEZONE_NUMERIC_CHARS, i))
 			datetok_table[i] |= DATE_TOKEN_NON_TIMEZONE_NUMERIC;
-
+		
 		if (((char) i) == ':')
 			datetok_table[i] |= DATE_TOKEN_HAS_COLON;
-
+		
 		if (strchr ("+-", i))
 			datetok_table[i] |= DATE_TOKEN_HAS_SIGN;
 	}
-
+	
 	printf ("static const unsigned int datetok_table[256] = {");
 	for (i = 0; i < 256; i++) {
 		if (i % 16 == 0)
@@ -522,12 +522,12 @@ int main (int argc, char **argv)
 {
 	time_t date;
 	int offset;
-
+	
 	/*table_init ();*/
-
+	
 	date = parse_broken_date (argv[1], &offset);
 	printf ("%d; %d\n", date, offset);
-
+	
 	return 0;
 }
 

@@ -132,7 +132,7 @@ set_vbuf(CamelStreamBuffer *sbf, char *buf, CamelStreamBufferMode mode, int size
 		sbf->buf = g_malloc(size);
 		sbf->flags &= ~BUF_USER;
 	}
-
+	
 	sbf->ptr = sbf->buf;
 	sbf->end = sbf->buf;
 	sbf->size = size;

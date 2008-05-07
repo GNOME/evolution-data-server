@@ -16,7 +16,7 @@
 #define MAX_MESSAGES (100)
 #define MAX_THREADS (10)
 
-#define d(x)
+#define d(x) 
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 			store = camel_session_get_store(session, path, ex);
 			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 			test_free(path);
-
+			
 			if (index == 0)
 				folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
 			else

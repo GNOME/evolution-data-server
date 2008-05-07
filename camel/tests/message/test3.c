@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 	unlink("test3.msg");
 	test_message_write_file(msg, "test3.msg");
 	pull();
-
+	
 	push("read from test3.msg");
 	msg2 = test_message_read_file("test3.msg");
 	pull();

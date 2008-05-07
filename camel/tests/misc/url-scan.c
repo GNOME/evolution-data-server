@@ -90,28 +90,28 @@ int main (int argc, char **argv)
 	char *html, *url, *p;
 	int i, errors = 0;
 	guint32 flags;
-
+	
 	camel_test_init (argc, argv);
-
+	
 	camel_test_start ("URL scanning");
-
+	
 	flags = CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES;
 	for (i = 0; i < num_url_tests; i++) {
 		camel_test_push ("'%s' => '%s'", url_tests[i].text, url_tests[i].url ? url_tests[i].url : "None");
-
+		
 		html = camel_text_to_html (url_tests[i].text, flags, 0);
-
+		
 		url = strstr (html, "href=\"");
 		if (url) {
 			url += 6;
 			p = strchr (url, '"');
 			if (p)
 				*p = '\0';
-
+			
 			while ((p = strstr (url, "&amp;")))
 				memmove (p + 1, p + 5, strlen (p + 5) + 1);
 		}
-
+		
 		if ((url && (!url_tests[i].url || strcmp (url, url_tests[i].url) != 0)) ||
 		    (!url && url_tests[i].url)) {
 			printf ("FAILED on \"%s\" -> %s\n  (got %s)\n\n",
@@ -120,13 +120,13 @@ int main (int argc, char **argv)
 				url ? url : "(nothing)");
 			errors++;
 		}
-
+		
 		g_free (html);
 	}
-
+	
 	printf ("\n%d errors\n", errors);
-
+	
 	camel_test_end ();
-
+	
 	return errors;
 }

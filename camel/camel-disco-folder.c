@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-disco-folder.c: abstract class for a disconnectable folder */
 
-/*
+/* 
  * Authors: Dan Winship <danw@ximian.com>
  *
  * Copyright (C) 2001 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -505,7 +505,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
  * the bodies of all messages described by @expression (using the
  * same syntax as camel_folder_search_by_expression() ).
  **/
-void
+void 
 camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
 					const char *expression,
 					CamelException *ex)

@@ -52,7 +52,7 @@ test_filter(CamelMimeFilter *f, const char *inname, const char *outname)
 	check_count(indisk, 2);
 	id = camel_stream_filter_add((CamelStreamFilter *)filter, f);
 	check_count(f, 2);
-
+		
 	check(camel_stream_write_to_stream(filter, (CamelStream *)in) > 0);
 	check_msg(in->buffer->len == out->buffer->len
 		  && memcmp(in->buffer->data, out->buffer->data, in->buffer->len) == 0,
@@ -99,13 +99,13 @@ test_filter(CamelMimeFilter *f, const char *inname, const char *outname)
 	camel_test_pull();
 }
 
-int
+int 
 main (int argc, char **argv)
 {
 	int i;
 
 	camel_test_init(argc, argv);
-
+	
 	camel_test_start("HTML Stream filtering");
 
 	for (i=0;i<100;i++) {

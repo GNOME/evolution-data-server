@@ -107,7 +107,7 @@ camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
 		CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_class);
 
 	imap_search_parent_class = (CamelFolderSearchClass *)camel_type_get_global_classfuncs (camel_folder_search_get_type ());
-
+	
 	/* virtual method overload */
 	camel_folder_search_class->body_contains = imap_body_contains;
 }
@@ -137,7 +137,7 @@ CamelType
 camel_imap_search_get_type (void)
 {
 	static CamelType camel_imap_search_type = CAMEL_INVALID_TYPE;
-
+	
 	if (camel_imap_search_type == CAMEL_INVALID_TYPE) {
 		camel_imap_search_type = camel_type_register (
 			CAMEL_FOLDER_SEARCH_TYPE, "CamelImapSearch",
@@ -226,7 +226,7 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 		return -1;
 
 	d(printf("Saving search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
-
+	
 	/* we write the whole thing, then re-write the header magic, saves fancy sync code */
 	memcpy(&header.mark, "    ", 4);
 	header.termcount = 0;
@@ -350,7 +350,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 		g_string_append_c (search, '"');
 	}
 	camel_search_words_free (words);
-
+	
 	/* We only try search using utf8 if its non us-ascii text? */
 	if ((words->type & CAMEL_SEARCH_WORD_8BIT) &&  (store->capabilities & IMAP_CAPABILITY_utf8_search)) {
 		response = camel_imap_command (store, folder, NULL,
@@ -369,7 +369,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	result = camel_imap_response_extract (store, response, "SEARCH", NULL);
 	if (!result)
 		return -1;
-
+	
 	p = result + sizeof ("* SEARCH");
 	for (p = strtok_r (p, " ", &lasts); p; p = strtok_r (NULL, " ", &lasts)) {
 		uid = strtoul(p, NULL, 10);
@@ -428,7 +428,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 	CamelImapSearch *is = (CamelImapSearch *)s;
 	char *uid;
 	ESExpResult *r;
-	CamelMessageInfo *info;
+	CamelMessageInfo *info;	
 	GHashTable *uid_hash = NULL;
 	GPtrArray *array;
 	int i, j;

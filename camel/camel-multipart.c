@@ -455,10 +455,10 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 
 	/* get the bundary text */
 	boundary = camel_multipart_get_boundary (multipart);
-
+	
 	/* we cannot write a multipart without a boundary string */
 	g_return_val_if_fail (boundary, -1);
-
+	
 	/*
 	 * write the preface text (usually something like
 	 *   "This is a mime message, if you see this, then
@@ -510,7 +510,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * camel_multipart_set_preface:
  * @multipart: a #CamelMultipart object
  * @preface: the multipart preface
- *
+ * 
  * Set the preface text for this multipart.  Will be written out infront
  * of the multipart.  This text should only include US-ASCII strings, and
  * be relatively short, and will be ignored by any MIME mail client.
@@ -531,7 +531,7 @@ camel_multipart_set_preface(CamelMultipart *multipart, const char *preface)
  * camel_multipart_set_postface:
  * @multipart: a #CamelMultipart object
  * @postface: multipat postface
- *
+ * 
  * Set the postfix text for this multipart.  Will be written out after
  * the last boundary of the multipart, and ignored by any MIME mail
  * client.
@@ -558,16 +558,16 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 	CamelMimePart *bodypart;
 	char *buf;
 	size_t len;
-
+	
 	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
-
+	
 	/* FIXME: we should use a came-mime-mutlipart, not jsut a camel-multipart, but who cares */
 	d(printf("Creating multi-part\n"));
-
+		
 	content_type = camel_mime_parser_content_type(mp);
 	camel_multipart_set_boundary(multipart,
 				     camel_content_type_param(content_type, "boundary"));
-
+	
 	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep(mp);
 		bodypart = camel_mime_part_new();
@@ -575,11 +575,11 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 		camel_multipart_add_part(multipart, bodypart);
 		camel_object_unref((CamelObject *)bodypart);
 	}
-
+	
 	/* these are only return valid data in the MULTIPART_END state */
 	camel_multipart_set_preface(multipart, camel_mime_parser_preface (mp));
 	camel_multipart_set_postface(multipart, camel_mime_parser_postface (mp));
-
+	
 	err = camel_mime_parser_errno(mp);
 	if (err != 0) {
 		errno = err;

@@ -53,9 +53,9 @@ static void
 camel_sasl_plain_class_init (CamelSaslPlainClass *camel_sasl_plain_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_plain_class);
-
+	
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-
+	
 	/* virtual method overload */
 	camel_sasl_class->challenge = plain_challenge;
 }
@@ -64,7 +64,7 @@ CamelType
 camel_sasl_plain_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslPlain",
@@ -75,7 +75,7 @@ camel_sasl_plain_get_type (void)
 					    NULL,
 					    NULL);
 	}
-
+	
 	return type;
 }
 

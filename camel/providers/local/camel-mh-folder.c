@@ -4,8 +4,8 @@
  *
  * Copyright (C) 1999, 2003 Ximian Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -138,39 +138,39 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
 		return;
-
+	
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
-
+	
 	/* write it out, use the uid we got from the summary */
 	name = g_strdup_printf("%s/%s", lf->folder_path, camel_message_info_uid(mi));
 	output_stream = camel_stream_fs_new_with_name(name, O_WRONLY|O_CREAT, 0600);
 	if (output_stream == NULL)
 		goto fail_write;
-
+	
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)message, output_stream) == -1
 	    || camel_stream_close (output_stream) == -1)
 		goto fail_write;
-
+	
 	/* close this? */
 	camel_object_unref (CAMEL_OBJECT (output_stream));
 
 	g_free(name);
-
+	
 	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed",
 				    ((CamelLocalFolder *)mh_folder)->changes);
 	camel_folder_change_info_clear (((CamelLocalFolder *)mh_folder)->changes);
-
+	
 	if (appended_uid)
 		*appended_uid = g_strdup(camel_message_info_uid(mi));
 
 	return;
-
+	
  fail_write:
-
+	
 	/* remove the summary info so we are not out-of-sync with the mh folder */
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (folder->summary),
 					 camel_message_info_uid (mi));
-
+	
 	if (errno == EINTR)
 		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 				     _("MH append message canceled"));
@@ -178,12 +178,12 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to mh folder: %s: %s"),
 				      name, g_strerror (errno));
-
+	
 	if (output_stream) {
 		camel_object_unref (CAMEL_OBJECT (output_stream));
 		unlink (name);
 	}
-
+	
 	g_free (name);
 }
 

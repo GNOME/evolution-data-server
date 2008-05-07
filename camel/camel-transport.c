@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-transport.c : Abstract class for an email transport */
 
-/*
+/* 
  *
- * Author :
+ * Author : 
  *  Dan Winship <danw@ximian.com>
  *
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -45,9 +45,9 @@ static void
 camel_transport_class_init (CamelTransportClass *camel_transport_class)
 {
 	CamelObjectClass *camel_object_class = CAMEL_OBJECT_CLASS (camel_transport_class);
-
+	
 	parent_class = CAMEL_SERVICE_CLASS (camel_type_get_global_classfuncs (camel_service_get_type ()));
-
+	
 	/* virtual method overload */
 	camel_object_class->setv = transport_setv;
 	camel_object_class->getv = transport_getv;
@@ -57,7 +57,7 @@ static void
 camel_transport_init (gpointer object, gpointer klass)
 {
 	CamelTransport *xport = object;
-
+	
 	xport->priv = g_malloc0 (sizeof (struct _CamelTransportPrivate));
 	xport->priv->send_lock = g_mutex_new ();
 }
@@ -66,7 +66,7 @@ static void
 camel_transport_finalize (CamelObject *object)
 {
 	CamelTransport *xport = CAMEL_TRANSPORT (object);
-
+	
 	g_mutex_free (xport->priv->send_lock);
 	g_free (xport->priv);
 }
@@ -75,7 +75,7 @@ CamelType
 camel_transport_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (CAMEL_SERVICE_TYPE,
 					    "CamelTransport",
@@ -86,7 +86,7 @@ camel_transport_get_type (void)
 					    (CamelObjectInitFunc) camel_transport_init,
 					    (CamelObjectFinalizeFunc) camel_transport_finalize);
 	}
-
+	
 	return type;
 }
 
@@ -126,16 +126,16 @@ camel_transport_send_to (CamelTransport *transport, CamelMimeMessage *message,
 			 CamelException *ex)
 {
 	gboolean sent;
-
+	
 	g_return_val_if_fail (CAMEL_IS_TRANSPORT (transport), FALSE);
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (from), FALSE);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (recipients), FALSE);
-
+	
 	CAMEL_TRANSPORT_LOCK (transport, send_lock);
 	sent = CT_CLASS (transport)->send_to (transport, message,
 					      from, recipients, ex);
 	CAMEL_TRANSPORT_UNLOCK (transport, send_lock);
-
+	
 	return sent;
 }

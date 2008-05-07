@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 			test_message_write_file(msg, "test1.msg");
 			check_unref(msg, 1);
 			pull();
-
+	
 			push("read from test1.msg");
 			msg2 = test_message_read_file("test1.msg");
 			pull();
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 		text = texts[j].text;
 		len = texts[j].len;
 		for (i=0;i<CAMEL_TRANSFER_NUM_ENCODINGS;i++) {
-
+			
 			push("test simple message, encoding %s", camel_transfer_encoding_to_string(i));
 			msg = test_message_create_simple();
 
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 			test_message_write_file(msg, "test1.msg");
 			check_unref(msg, 1);
 			pull();
-
+	
 			push("read from test1.msg");
 			msg2 = test_message_read_file("test1.msg");
 			pull();

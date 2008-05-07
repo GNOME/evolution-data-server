@@ -45,7 +45,7 @@ struct {
 	{ "=?iso-8859-1?q?th?= =?iso-8859-1?q?is?= is some text", "this is some text", 0 },
 	{ "=?ISO-8859-1?B?SWYgeW91IGNhbiByZWFkIHRoaXMgeW8=?=  =?ISO-8859-2?B?dSB1bmRlcnN0YW5kIHRoZSBleGFtcGxlLg==?=",
 	  "If you can read this you understand the example.", 0 },
-#if 0
+#if 0	
 	/* And oddly enough, camel fails on these, removed for now */
 
 	/* second half: brokenly encoded rfc2047 words */
@@ -79,11 +79,11 @@ int main (int argc, char ** argv)
 {
 	char *decoded;
 	int i;
-
+	
 	camel_test_init (argc, argv);
-
+	
 	camel_test_start ("rfc2047 decoding");
-
+	
 	for (i = 0; i < G_N_ELEMENTS (test1); i++) {
 		camel_test_push ("rfc2047 decoding[%d] '%s'", i, test1[i].encoded);
 		decoded = camel_header_decode_string (test1[i].encoded, "iso-8859-1");
@@ -91,11 +91,11 @@ int main (int argc, char ** argv)
 		g_free (decoded);
 		camel_test_pull ();
 	}
-
+	
 	camel_test_end ();
-
+	
 	camel_test_start ("rfc2047 ctext decoding");
-
+	
 	for (i = 0; i < G_N_ELEMENTS (test2); i++) {
 		camel_test_push ("rfc2047 ctext decoding[%d] '%s'", i, test2[i].encoded);
 		decoded = camel_header_format_ctext (test2[i].encoded, "iso-8859-1");
@@ -103,8 +103,8 @@ int main (int argc, char ** argv)
 		g_free (decoded);
 		camel_test_pull ();
 	}
-
+	
 	camel_test_end ();
-
+	
 	return 0;
 }

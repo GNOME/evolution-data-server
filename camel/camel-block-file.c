@@ -51,11 +51,11 @@ struct _CamelBlockFilePrivate {
 	struct _CamelBlockFilePrivate *prev;
 
 	struct _CamelBlockFile *base;
-
+	
 	pthread_mutex_t root_lock; /* for modifying the root block */
 	pthread_mutex_t cache_lock; /* for refcounting, flag manip, cache manip */
 	pthread_mutex_t io_lock; /* for all io ops */
-
+	
 	unsigned int deleted:1;
 };
 
@@ -87,11 +87,11 @@ block_file_validate_root(CamelBlockFile *bs)
 	CamelBlockRoot *br;
 	struct stat st;
 	int retval;
-
+	
 	br = bs->root;
-
+	
 	retval = fstat (bs->fd, &st);
-
+	
 	d(printf("Validate root: '%s'\n", bs->path));
 	d(printf("version: %.8s (%.8s)\n", bs->root->version, bs->version));
 	d(printf("block size: %d (%d)%s\n", br->block_size, bs->block_size,
@@ -173,11 +173,11 @@ camel_block_file_init(CamelBlockFile *bs)
 
 	p = bs->priv = g_malloc0(sizeof(*bs->priv));
 	p->base = bs;
-
+	
 	pthread_mutex_init(&p->root_lock, NULL);
 	pthread_mutex_init(&p->cache_lock, NULL);
 	pthread_mutex_init(&p->io_lock, NULL);
-
+	
 	/* link into lru list */
 	LOCK(block_file_lock);
 	e_dlist_addhead(&block_file_list, (EDListNode *)p);
@@ -224,19 +224,19 @@ camel_block_file_finalise(CamelBlockFile *bs)
 		bl = bn;
 		bn = bn->next;
 	}
-
+	
 	g_hash_table_destroy (bs->blocks);
-
+	
 	if (bs->root_block)
 		camel_block_file_unref_block(bs, bs->root_block);
 	g_free(bs->path);
 	if (bs->fd != -1)
 		close(bs->fd);
-
+	
 	pthread_mutex_destroy(&p->io_lock);
 	pthread_mutex_destroy(&p->cache_lock);
 	pthread_mutex_destroy(&p->root_lock);
-
+	
 	g_free(p);
 }
 
@@ -244,7 +244,7 @@ CamelType
 camel_block_file_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelBlockFile",
 					   sizeof (CamelBlockFile),
@@ -254,7 +254,7 @@ camel_block_file_get_type(void)
 					   (CamelObjectInitFunc) camel_block_file_init,
 					   (CamelObjectFinalizeFunc) camel_block_file_finalise);
 	}
-
+	
 	return type;
 }
 
@@ -351,14 +351,14 @@ camel_cache_remove(c, key);
 
 /**
  * camel_block_file_new:
- * @path:
- * @:
- * @block_size:
- *
+ * @path: 
+ * @: 
+ * @block_size: 
+ * 
  * Allocate a new block file, stored at @path.  @version contains an 8 character
  * version string which must match the head of the file, or the file will be
  * intitialised.
- *
+ * 
  * @block_size is currently ignored and is set to CAMEL_BLOCK_SIZE.
  *
  * Return value: The new block file, or NULL if it could not be created.
@@ -457,16 +457,16 @@ camel_block_file_delete(CamelBlockFile *bs)
 	CAMEL_BLOCK_FILE_UNLOCK(bs, io_lock);
 
 	return ret;
-
+	
 }
 
 /**
  * camel_block_file_new_block:
- * @bs:
- *
+ * @bs: 
+ * 
  * Allocate a new block, return a pointer to it.  Old blocks
  * may be flushed to disk during this call.
- *
+ * 
  * Return value: The block, or NULL if an error occured.
  **/
 CamelBlock *camel_block_file_new_block(CamelBlockFile *bs)
@@ -499,10 +499,10 @@ fail:
 
 /**
  * camel_block_file_free_block:
- * @bs:
- * @id:
- *
- *
+ * @bs: 
+ * @id: 
+ * 
+ * 
  **/
 int camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id)
 {
@@ -527,11 +527,11 @@ int camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id)
 
 /**
  * camel_block_file_get_block:
- * @bs:
- * @id:
- *
+ * @bs: 
+ * @id: 
+ * 
  * Retreive a block @id.
- *
+ * 
  * Return value: The block, or NULL if blockid is invalid or a file error
  * occured.
  **/
@@ -607,9 +607,9 @@ CamelBlock *camel_block_file_get_block(CamelBlockFile *bs, camel_block_t id)
 
 /**
  * camel_block_file_detach_block:
- * @bs:
- * @bl:
- *
+ * @bs: 
+ * @bl: 
+ * 
  * Detatch a block from the block file's cache.  The block should
  * be unref'd or attached when finished with.  The block file will
  * perform no writes of this block or flushing of it if the cache
@@ -628,9 +628,9 @@ void camel_block_file_detach_block(CamelBlockFile *bs, CamelBlock *bl)
 
 /**
  * camel_block_file_attach_block:
- * @bs:
- * @bl:
- *
+ * @bs: 
+ * @bl: 
+ * 
  * Reattach a block that has been detached.
  **/
 void camel_block_file_attach_block(CamelBlockFile *bs, CamelBlock *bl)
@@ -646,9 +646,9 @@ void camel_block_file_attach_block(CamelBlockFile *bs, CamelBlock *bl)
 
 /**
  * camel_block_file_touch_block:
- * @bs:
- * @bl:
- *
+ * @bs: 
+ * @bl: 
+ * 
  * Mark a block as dirty.  The block will be written to disk if
  * it ever expires from the cache.
  **/
@@ -672,9 +672,9 @@ void camel_block_file_touch_block(CamelBlockFile *bs, CamelBlock *bl)
 
 /**
  * camel_block_file_unref_block:
- * @bs:
- * @bl:
- *
+ * @bs: 
+ * @bl: 
+ * 
  * Mark a block as unused.  If a block is used it will not be
  * written to disk, or flushed from memory.
  *
@@ -742,12 +742,12 @@ sync_nolock(CamelBlockFile *bs)
 
 /**
  * camel_block_file_sync_block:
- * @bs:
- * @bl:
- *
+ * @bs: 
+ * @bl: 
+ * 
  * Flush a block to disk immediately.  The block will only
  * be flushed to disk if it is marked as dirty (touched).
- *
+ * 
  * Return value: -1 on io error.
  **/
 int camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl)
@@ -767,10 +767,10 @@ int camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl)
 
 /**
  * camel_block_file_sync:
- * @bs:
- *
+ * @bs: 
+ * 
  * Sync all dirty blocks to disk, including the root block.
- *
+ * 
  * Return value: -1 on io error.
  **/
 int camel_block_file_sync(CamelBlockFile *bs)
@@ -829,9 +829,9 @@ camel_key_file_init(CamelKeyFile *bs)
 
 	p = bs->priv = g_malloc0(sizeof(*bs->priv));
 	p->base = bs;
-
+	
 	pthread_mutex_init(&p->lock, NULL);
-
+	
 	LOCK(key_file_lock);
 	e_dlist_addhead(&key_file_list, (EDListNode *)p);
 	UNLOCK(key_file_lock);
@@ -853,9 +853,9 @@ camel_key_file_finalise(CamelKeyFile *bs)
 	UNLOCK(key_file_lock);
 
 	g_free(bs->path);
-
+	
 	pthread_mutex_destroy(&p->lock);
-
+	
 	g_free(p);
 }
 
@@ -863,7 +863,7 @@ CamelType
 camel_key_file_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelKeyFile",
 					   sizeof (CamelKeyFile),
@@ -873,7 +873,7 @@ camel_key_file_get_type(void)
 					   (CamelObjectInitFunc) camel_key_file_init,
 					   (CamelObjectFinalizeFunc) camel_key_file_finalise);
 	}
-
+	
 	return type;
 }
 
@@ -967,13 +967,13 @@ key_file_unuse(CamelKeyFile *bs)
 
 /**
  * camel_key_file_new:
- * @path:
+ * @path: 
  * @flags: open flags
  * @version: Version string (header) of file.  Currently
  * written but not checked.
- *
+ * 
  * Create a new key file.  A linked list of record blocks.
- *
+ * 
  * Return value: A new key file, or NULL if the file could not
  * be opened/created/initialised.
  **/
@@ -1071,18 +1071,18 @@ camel_key_file_delete(CamelKeyFile *kf)
 	CAMEL_KEY_FILE_UNLOCK(kf, lock);
 
 	return ret;
-
+	
 }
 
 /**
  * camel_key_file_write:
- * @kf:
- * @parent:
- * @len:
- * @records:
- *
+ * @kf: 
+ * @parent: 
+ * @len: 
+ * @records: 
+ * 
  * Write a new list of records to the key file.
- *
+ * 
  * Return value: -1 on io error.  The key file will remain unchanged.
  **/
 int
@@ -1130,14 +1130,14 @@ camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_
 
 /**
  * camel_key_file_read:
- * @kf:
+ * @kf: 
  * @start: The record pointer.  This will be set to the next record pointer on success.
  * @len: Number of records read, if != NULL.
  * @records: Records, allocated, must be freed with g_free, if != NULL.
- *
+ * 
  * Read the next block of data from the key file.  Returns the number of
  * records.
- *
+ * 
  * Return value: -1 on io error.
  **/
 int

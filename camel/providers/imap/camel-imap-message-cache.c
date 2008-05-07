@@ -1,14 +1,14 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-message-cache.c: Class for an IMAP message cache */
 
-/*
- * Author:
+/* 
+ * Author: 
  *   Dan Winship <danw@ximian.com>
  *
  * Copyright (C) 2001 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -50,7 +50,7 @@ CamelType
 camel_imap_message_cache_get_type (void)
 {
 	static CamelType camel_imap_message_cache_type = CAMEL_INVALID_TYPE;
-
+	
 	if (camel_imap_message_cache_type == CAMEL_INVALID_TYPE) {
 		camel_imap_message_cache_type = camel_type_register (
 			CAMEL_OBJECT_TYPE, "CamelImapMessageCache",
@@ -213,9 +213,9 @@ camel_imap_message_cache_max_uid (CamelImapMessageCache *cache)
 
 /**
  * camel_imap_message_cache_set_path:
- * @cache:
- * @path:
- *
+ * @cache: 
+ * @path: 
+ * 
  * Set the path used for the message cache.
  **/
 void
@@ -245,7 +245,7 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 {
 	CamelStream *stream;
 	int fd;
-
+	
 #ifdef G_OS_WIN32
 	/* Trailing periods in file names are silently dropped on
 	 * Win32, argh. The code in this file requires the period to
@@ -260,7 +260,7 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 	stream = g_hash_table_lookup (cache->parts, *key);
 	if (stream)
 		camel_object_unref (CAMEL_OBJECT (stream));
-
+	
 	fd = g_open (*path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -269,7 +269,7 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 		g_free (*path);
 		return NULL;
 	}
-
+	
 	return camel_stream_fs_new_with_fd (fd);
 }
 
@@ -314,18 +314,18 @@ camel_imap_message_cache_insert (CamelImapMessageCache *cache, const char *uid,
 {
 	char *path, *key;
 	CamelStream *stream;
-
+	
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
 	if (!stream)
 		return NULL;
-
+	
 	if (camel_stream_write (stream, data, len) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to cache message %s: %s"),
 				      uid, g_strerror (errno));
 		return insert_abort (path, stream);
 	}
-
+	
 	return insert_finish (cache, uid, path, key, stream);
 }
 
@@ -345,11 +345,11 @@ camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
 {
 	char *path, *key;
 	CamelStream *stream;
-
+	
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
 	if (!stream)
 		return;
-
+	
 	if (camel_stream_write_to_stream (data_stream, stream) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to cache message %s: %s"),
@@ -381,7 +381,7 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
 	if (!stream)
 		return;
-
+	
 	if (camel_data_wrapper_write_to_stream (wrapper, stream) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to cache message %s: %s"),
@@ -410,10 +410,10 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
 {
 	CamelStream *stream;
 	char *path, *key;
-
+	
 	if (uid[0] == 0)
 		return NULL;
-
+	
 #ifdef G_OS_WIN32
 	/* See comment in insert_setup() */
 	if (!*part_spec)
@@ -429,7 +429,7 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
 		g_free (path);
 		return stream;
 	}
-
+	
 	stream = camel_stream_fs_new_with_name (path, O_RDONLY, 0);
 	if (stream) {
 		cache_put (cache, uid, key, stream);
@@ -438,9 +438,9 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
 				      _("Failed to cache %s: %s"),
 				      part_spec, g_strerror (errno));
 	}
-
+	
 	g_free (path);
-
+	
 	return stream;
 }
 
@@ -530,11 +530,11 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 	CamelStream *stream;
 	char *part;
 	int i;
-
+	
 	subparts = g_hash_table_lookup (source->parts, source_uid);
 	if (!subparts || !subparts->len)
 		return;
-
+	
 	for (i = 0; i < subparts->len; i++) {
 		part = strchr (subparts->pdata[i], '.');
 		if (!part++)

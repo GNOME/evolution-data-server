@@ -52,32 +52,32 @@ typedef struct _CamelHttpStreamClass CamelHttpStreamClass;
 
 struct _CamelHttpStream {
 	CamelStream parent_object;
-
+	
 	CamelMimeParser *parser;
-
+	
 	CamelContentType *content_type;
 	struct _camel_header_raw *headers;
-
+	
 	CamelHttpMethod method;
 	struct _CamelSession *session;
 	CamelURL *url;
-
+	
 	char *user_agent;
-
+	
 	/* proxy info */
 	CamelURL *proxy;
 	char *authrealm;
 	char *authpass;
-
+	
 	int statuscode;
-
+	
 	CamelStream *raw;
 	CamelStream *read;
 };
 
 struct _CamelHttpStreamClass {
 	CamelStreamClass parent_class;
-
+	
 	/* Virtual methods */
 };
 

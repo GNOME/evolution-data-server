@@ -1,14 +1,14 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-groupwise-transport.c : class for an groupwise transport */
 
-/*
+/* 
  * Authors: Sivaiah Nallagatla <snallagatla@novell.com>
  *	    Parthasarathi Susarla <sparthasarathi@novell.com>
  *
  * Copyright (C) 2004 Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -36,7 +36,7 @@
 #include "camel-mime-message.h"
 #include "camel-mime-utils.h"
 #include "camel-multipart.h"
-#include "camel-session.h"
+#include "camel-session.h" 
 #include "camel-stream-mem.h"
 #include "camel-stream.h"
 
@@ -68,13 +68,13 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *camel_groupw
 
 	CamelServiceClass *camel_service_class =
 		CAMEL_SERVICE_CLASS (camel_groupwise_transport_class);
-
+	
 	parent_class = CAMEL_TRANSPORT_CLASS (camel_type_get_global_classfuncs (camel_transport_get_type ()));
-
+	
 	camel_service_class->connect = groupwise_transport_connect;
 	camel_service_class->get_name = groupwise_transport_get_name;
 	camel_service_class->construct = groupwise_transport_construct;
-
+	
 	/* virtual method overload */
 	camel_transport_class->send_to = groupwise_send_to;
 }
@@ -135,9 +135,9 @@ groupwise_transport_connect (CamelService *service, CamelException *ex)
 
 
 static gboolean
-groupwise_send_to (CamelTransport *transport,
+groupwise_send_to (CamelTransport *transport, 
 		   CamelMimeMessage *message,
-		   CamelAddress *from,
+		   CamelAddress *from, 
 		   CamelAddress *recipients,
 		   CamelException *ex)
 {
@@ -184,9 +184,9 @@ groupwise_send_to (CamelTransport *transport,
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, _("Authentication failed"));
 		return FALSE;
 	}
-
+	
 	item = camel_groupwise_util_item_from_message (cnc, message, from);
-
+	
 	reply_request = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
 	if (reply_request) {
 		char *id;
@@ -195,7 +195,7 @@ groupwise_send_to (CamelTransport *transport,
 		id = (char *)g_malloc0 (len-1);
 		id = memcpy(id, reply_request+2, len-3);
 		status = e_gw_connection_reply_item (cnc, id, NULL, &temp_item);
-		if (status != E_GW_CONNECTION_STATUS_OK)
+		if (status != E_GW_CONNECTION_STATUS_OK) 
 			g_warning ("Could not send a replyRequest...continuing without!!\n");
 		else {
 			info = e_gw_item_get_link_info (temp_item);
@@ -204,8 +204,8 @@ groupwise_send_to (CamelTransport *transport,
 
 		g_free (id);
 	}
-
-
+	
+	
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {

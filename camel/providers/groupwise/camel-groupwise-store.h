@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-groupwise-store.h : class for an groupwise store */
 
-/*
+/* 
  * Authors: Sivaiah Nallagatla <snallagatla@novell.com>
  *
  * Copyright (C) 2004 Novell, Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -53,7 +53,7 @@ struct _CamelGroupwiseStore {
 	char *root_container;
 	CamelGroupwiseStorePrivate *priv;
 	CamelFolder *current_folder;
-
+	
 	/* the parameters field is not to be included not. probably for 2.6*/
 	/*guint32 parameters;*/
 	time_t refresh_stamp;

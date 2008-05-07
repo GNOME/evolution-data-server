@@ -5,8 +5,8 @@
  *
  * Copyright (C) 1999, 2003 Ximian Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -241,24 +241,24 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	filter_from = (CamelMimeFilter *) camel_mime_filter_from_new();
 	camel_stream_filter_add((CamelStreamFilter *) filter_stream, filter_from);
 	camel_object_unref (filter_from);
-
+	
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) message, filter_stream) == -1 ||
 	    camel_stream_write (filter_stream, "\n", 1) == -1 ||
 	    camel_stream_flush (filter_stream) == -1)
 		goto fail_write;
-
+	
 	/* filter stream ref's the output stream itself, so we need to unref it too */
 	camel_object_unref (filter_stream);
 	camel_object_unref (output_stream);
 	g_free(fromline);
-
+	
 	/* now we 'fudge' the summary  to tell it its uptodate, because its idea of uptodate has just changed */
 	/* the stat really shouldn't fail, we just wrote to it */
 	if (g_stat (lf->folder_path, &st) == 0) {
 		((CamelFolderSummary *) mbs)->time = st.st_mtime;
 		mbs->folder_size = st.st_size;
 	}
-
+	
 	/* unlock as soon as we can */
 	camel_local_folder_unlock(lf);
 
@@ -280,30 +280,30 @@ fail_write:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to mbox file: %s: %s"),
 				      lf->folder_path, g_strerror (errno));
-
+	
 	if (output_stream) {
 		/* reset the file to original size */
 		do {
 			retval = ftruncate (((CamelStreamFs *) output_stream)->fd, mbs->folder_size);
 		} while (retval == -1 && errno == EINTR);
-
+		
 		camel_object_unref (output_stream);
 	}
-
+	
 	if (filter_stream)
 		camel_object_unref (filter_stream);
-
+	
 	g_free(fromline);
-
+	
 	/* remove the summary info so we are not out-of-sync with the mbox */
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (mbs), camel_message_info_uid (mi));
-
+	
 	/* and tell the summary it's up-to-date */
 	if (g_stat (lf->folder_path, &st) == 0) {
 		((CamelFolderSummary *) mbs)->time = st.st_mtime;
 		mbs->folder_size = st.st_size;
 	}
-
+	
 fail:
 	/* make sure we unlock the folder - before we start triggering events into appland */
 	camel_local_folder_unlock(lf);
@@ -337,7 +337,7 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex)
 		camel_local_folder_unlock(lf);
 		return NULL;
 	}
-
+	
 retry:
 	/* get the message summary info */
 	info = (CamelMboxMessageInfo *) camel_folder_summary_uid(folder->summary, uid);
@@ -356,7 +356,7 @@ retry:
 
 	frompos = info->frompos;
 	camel_message_info_free((CamelMessageInfo *)info);
-
+	
 	/* we use an fd instead of a normal stream here - the reason is subtle, camel_mime_part will cache
 	   the whole message in memory if the stream is non-seekable (which it is when built from a parser
 	   with no stream).  This means we dont have to lock the mbox for the life of the message, but only
@@ -400,7 +400,7 @@ retry:
 				     _("The folder appears to be irrecoverably corrupted."));
 		goto fail;
 	}
-
+	
 	message = camel_mime_message_new();
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
 		camel_exception_setv(ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
@@ -418,12 +418,12 @@ fail:
 
 	if (parser)
 		camel_object_unref((CamelObject *)parser);
-
+	
 	/* use the opportunity to notify of changes (particularly if we had a rebuild) */
 	if (camel_folder_change_info_changed(lf->changes)) {
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
-
+	
 	return message;
 }

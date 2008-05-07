@@ -25,11 +25,11 @@
 #include "camel-mime-utils.h"
 
 static void reset(CamelMimeFilter *mf);
-static void complete(CamelMimeFilter *mf, char *in, size_t len,
-		     size_t prespace, char **out,
+static void complete(CamelMimeFilter *mf, char *in, size_t len, 
+		     size_t prespace, char **out, 
 		     size_t *outlen, size_t *outprespace);
-static void filter(CamelMimeFilter *mf, char *in, size_t len,
-		   size_t prespace, char **out,
+static void filter(CamelMimeFilter *mf, char *in, size_t len, 
+		   size_t prespace, char **out, 
 		   size_t *outlen, size_t *outprespace);
 
 static void camel_mime_filter_basic_class_init (CamelMimeFilterBasicClass *klass);
@@ -41,7 +41,7 @@ static void
 camel_mime_filter_basic_class_init (CamelMimeFilterBasicClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-
+	
 	camel_mime_filter_basic_parent = CAMEL_MIME_FILTER_CLASS(camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
 	filter_class->reset = reset;
@@ -61,7 +61,7 @@ CamelType
 camel_mime_filter_basic_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBasic",
 					    sizeof (CamelMimeFilterBasic),
@@ -71,7 +71,7 @@ camel_mime_filter_basic_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_basic_init,
 					    NULL);
 	}
-
+	
 	return type;
 }
 
@@ -80,7 +80,7 @@ static void
 reset(CamelMimeFilter *mf)
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
-
+	
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		f->state = -1;
@@ -96,7 +96,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
 	size_t newlen = 0;
-
+	
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
@@ -161,7 +161,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
 	size_t newlen;
-
+	
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
@@ -197,10 +197,10 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		if (!(f->state & CAMEL_UUDECODE_STATE_BEGIN)) {
 			register char *inptr, *inend;
 			size_t left;
-
+			
 			inptr = in;
 			inend = inptr + len;
-
+			
 			while (inptr < inend) {
 				left = inend - inptr;
 				if (left < 6) {
@@ -220,15 +220,15 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 					}
 					break;
 				}
-
+				
 				/* go to the next line */
 				for ( ; inptr < inend && *inptr != '\n'; inptr++);
-
+				
 				if (inptr < inend)
 					inptr++;
 			}
 		}
-
+		
 		if ((f->state & CAMEL_UUDECODE_STATE_BEGIN) && !(f->state & CAMEL_UUDECODE_STATE_END)) {
 			/* "begin <mode> <filename>\n" has been found, so we can now start decoding */
 			camel_mime_filter_set_size (mf, len + 3, FALSE);
@@ -258,7 +258,7 @@ donothing:
  * camel_mime_filter_basic_new:
  *
  * Create a new #CamelMimeFilterBasic object.
- *
+ * 
  * Returns a new #CamelMimeFilterBasic object
  **/
 CamelMimeFilterBasic *
@@ -274,7 +274,7 @@ camel_mime_filter_basic_new (void)
  * @type: a #CamelMimeFilterBasicType type
  *
  * Create a new #CamelMimeFilterBasic object of type @type.
- *
+ * 
  * Returns a new #CamelMimeFilterBasic object
  **/
 CamelMimeFilterBasic *

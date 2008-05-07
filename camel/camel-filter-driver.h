@@ -39,7 +39,7 @@ typedef struct _CamelFilterDriverClass CamelFilterDriverClass;
 
 struct _CamelFilterDriver {
 	CamelObject parent;
-
+	
 	struct _CamelFilterDriverPrivate *priv;
 };
 

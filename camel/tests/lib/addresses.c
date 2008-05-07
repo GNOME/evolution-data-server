@@ -14,7 +14,7 @@ test_address_compare(CamelInternetAddress *addr, CamelInternetAddress *addr2)
 
 	check(camel_address_length(CAMEL_ADDRESS(addr)) == camel_address_length(CAMEL_ADDRESS(addr2)));
 	for (j=0;j<camel_address_length(CAMEL_ADDRESS(addr));j++) {
-
+		
 		check(camel_internet_address_get(addr, j, &r1, &a1) == TRUE);
 		check(camel_internet_address_get(addr2, j, &r2, &a2) == TRUE);
 

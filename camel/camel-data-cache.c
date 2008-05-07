@@ -5,8 +5,8 @@
  *
  * Copyright (C) 2001 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -93,7 +93,7 @@ static void data_cache_finalise(CamelDataCache *cdc)
 	p = cdc->priv;
 	camel_object_bag_destroy(p->busy_bag);
 	g_free(p);
-
+	
 	g_free (cdc->path);
 }
 
@@ -101,7 +101,7 @@ CamelType
 camel_data_cache_get_type(void)
 {
 	static CamelType camel_data_cache_type = CAMEL_INVALID_TYPE;
-
+	
 	if (camel_data_cache_type == CAMEL_INVALID_TYPE) {
 		camel_data_cache_type = camel_type_register(
 			CAMEL_OBJECT_TYPE, "CamelDataCache",
@@ -120,10 +120,10 @@ camel_data_cache_get_type(void)
  * camel_data_cache_new:
  * @path: Base path of cache, subdirectories will be created here.
  * @flags: Open flags, none defined.
- * @ex:
- *
+ * @ex: 
+ * 
  * Create a new data cache.
- *
+ * 
  * Return value: A new cache object, or NULL if the base path cannot
  * be written to.
  **/
@@ -152,9 +152,9 @@ camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
  * camel_data_cache_set_expire_age:
  * @cdc: A #CamelDataCache
  * @when: Timeout for age expiry, or -1 to disable.
- *
+ * 
  * Set the cache expiration policy for aged entries.
- *
+ * 
  * Items in the cache older than @when seconds may be
  * flushed at any time.  Items are expired in a lazy
  * manner, so it is indeterminate when the items will
@@ -173,7 +173,7 @@ camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
  * camel_data_cache_set_expire_access:
  * @cdc: A #CamelDataCache
  * @when: Timeout for access, or -1 to disable access expiry.
- *
+ * 
  * Set the cache expiration policy for access times.
  *
  * Items in the cache which haven't been accessed for @when
@@ -207,7 +207,7 @@ data_cache_expire(CamelDataCache *cdc, const char *path, const char *keep, time_
 	while ( (dname = g_dir_read_name(dir)) ) {
 		if (strcmp(dname, keep) == 0)
 			continue;
-
+		
 		g_string_printf (s, "%s/%s", path, dname);
 		dd(printf("Checking '%s' for expiry\n", s->str));
 		if (g_stat(s->str, &st) == 0
@@ -241,8 +241,8 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
 	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
 	dir = alloca(strlen(cdc->path) + strlen(path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->path, path, hash);
-
-#ifdef G_OS_WIN32
+	
+#ifdef G_OS_WIN32 
 	if (g_access(dir, F_OK) == -1) {
 #else
 	if (access (dir, F_OK) == -1) {
@@ -276,13 +276,13 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
  * @cdc: A #CamelDataCache
  * @path: Relative path of item to add.
  * @key: Key of item to add.
- * @ex:
- *
+ * @ex: 
+ * 
  * Add a new item to the cache.
  *
  * The key and the path combine to form a unique key used to store
  * the item.
- *
+ * 
  * Potentially, expiry processing will be performed while this call
  * is executing.
  *
@@ -324,13 +324,13 @@ camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, Cam
  * @cdc: A #CamelDataCache
  * @path: Path to the (sub) cache the item exists in.
  * @key: Key for the cache item.
- * @ex:
- *
+ * @ex: 
+ * 
  * Lookup an item in the cache.  If the item exists, a stream
  * is returned for the item.  The stream may be shared by
  * multiple callers, so ensure the stream is in a valid state
  * through external locking.
- *
+ * 
  * Return value: A cache item, or NULL if the cache item does not exist.
  **/
 CamelStream *
@@ -356,13 +356,13 @@ camel_data_cache_get(CamelDataCache *cdc, const char *path, const char *key, Cam
 /**
  * camel_data_cache_remove:
  * @cdc: A #CamelDataCache
- * @path:
- * @key:
- * @ex:
- *
+ * @path: 
+ * @key: 
+ * @ex: 
+ * 
  * Remove/expire a cache item.
- *
- * Return value:
+ * 
+ * Return value: 
  **/
 int
 camel_data_cache_remove(CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
@@ -395,16 +395,16 @@ camel_data_cache_remove(CamelDataCache *cdc, const char *path, const char *key, 
 
 /**
  * camel_data_cache_rename:
- * @cache:
- * @old:
- * @new:
- * @ex:
- *
+ * @cache: 
+ * @old: 
+ * @new: 
+ * @ex: 
+ * 
  * Rename a cache path.  All cache items accessed from the old path
  * are accessible using the new path.
  *
  * CURRENTLY UNIMPLEMENTED
- *
+ * 
  * Return value: -1 on error.
  **/
 int camel_data_cache_rename(CamelDataCache *cache,
@@ -416,13 +416,13 @@ int camel_data_cache_rename(CamelDataCache *cache,
 
 /**
  * camel_data_cache_clear:
- * @cache:
+ * @cache: 
  * @path: Path to clear, or NULL to clear all items in
  * all paths.
- * @ex:
- *
+ * @ex: 
+ * 
  * Clear all items in a given cache path or all items in the cache.
- *
+ * 
  * CURRENTLY_UNIMPLEMENTED
  *
  * Return value: -1 on error.

@@ -135,7 +135,7 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 	}
 
 	return 0;
-}
+}	
 
 static int
 summary_header_save(CamelFolderSummary *s, FILE *out)

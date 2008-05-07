@@ -66,7 +66,7 @@ static CamelProviderConfEntry hula_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
 	  N_("Namespace") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
-
+	
 	{ CAMEL_PROVIDER_CONF_END }
 	/* revisit each options in other providers (incl. authdomain) for
 	 * relevancy - harish*/
@@ -93,10 +93,10 @@ static CamelProvider hula_provider = {
 
 static CamelServiceAuthType camel_hula_password_authtype = {
 	N_("Password"),
-
+	
 	N_("This option will connect to the Hula server using a "
 	   "plaintext password."),
-
+	
 	"",
 	TRUE
 };
@@ -126,10 +126,10 @@ camel_provider_module_init(void)
 	hula_provider.auto_detect = hula_auto_detect_cb;
 	hula_provider.authtypes = g_list_prepend (hula_provider.authtypes, &camel_hula_password_authtype);
 	hula_provider.translation_domain = GETTEXT_PACKAGE;
-
+	
 	hula_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
-
-
+	 
+	
 	camel_provider_register (&hula_provider);
 }
 
@@ -151,7 +151,7 @@ hula_url_hash (gconstpointer key)
 	add_hash (&hash, u->authmech);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-
+	
 	return hash;
 }
 
@@ -164,7 +164,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-
+	
 	if (s2 == NULL)
 		return FALSE;
 
@@ -175,7 +175,7 @@ static gint
 hula_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-
+	
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->authmech, u2->authmech)

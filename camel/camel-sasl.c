@@ -53,7 +53,7 @@ static void
 camel_sasl_class_init (CamelSaslClass *camel_sasl_class)
 {
 	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
-
+	
 	/* virtual method definition */
 	camel_sasl_class->challenge = sasl_challenge;
 }
@@ -70,7 +70,7 @@ CamelType
 camel_sasl_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (CAMEL_OBJECT_TYPE,
 					    "CamelSasl",
@@ -81,7 +81,7 @@ camel_sasl_get_type (void)
 					    NULL,
 					    (CamelObjectFinalizeFunc) camel_sasl_finalize);
 	}
-
+	
 	return type;
 }
 
@@ -111,7 +111,7 @@ GByteArray *
 camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
-
+	
 	return CS_CLASS (sasl)->challenge (sasl, token, ex);
 }
 
@@ -190,13 +190,13 @@ CamelSasl *
 camel_sasl_new (const char *service_name, const char *mechanism, CamelService *service)
 {
 	CamelSasl *sasl;
-
+	
 	g_return_val_if_fail (service_name != NULL, NULL);
 	g_return_val_if_fail (mechanism != NULL, NULL);
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
+	
 	/* We don't do ANONYMOUS here, because it's a little bit weird. */
-
+	
 	if (!strcmp (mechanism, "CRAM-MD5"))
 		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_CRAM_MD5_TYPE);
 	else if (!strcmp (mechanism, "DIGEST-MD5"))
@@ -224,7 +224,7 @@ camel_sasl_new (const char *service_name, const char *mechanism, CamelService *s
 	sasl->service_name = g_strdup (service_name);
 	sasl->service = service;
 	camel_object_ref (service);
-
+	
 	return sasl;
 }
 
@@ -239,7 +239,7 @@ GList *
 camel_sasl_authtype_list (gboolean include_plain)
 {
 	GList *types = NULL;
-
+	
 	types = g_list_prepend (types, &camel_sasl_cram_md5_authtype);
 	types = g_list_prepend (types, &camel_sasl_digest_md5_authtype);
 #ifdef HAVE_KRB5
@@ -251,7 +251,7 @@ camel_sasl_authtype_list (gboolean include_plain)
 	types = g_list_prepend (types, &camel_sasl_ntlm_authtype);
 	if (include_plain)
 		types = g_list_prepend (types, &camel_sasl_plain_authtype);
-
+	
 	return types;
 }
 

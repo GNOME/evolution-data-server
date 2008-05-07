@@ -305,7 +305,7 @@ int main(int argc, char **argv)
 		check(strcmp(format, test_address[i].utf8) == 0);
 		test_free(format);
 		pull();
-
+		
 		push("Comparing re-encoded output");
 		addr2 = CAMEL_INTERNET_ADDRESS(camel_internet_address_new());
 		enc = camel_address_encode(CAMEL_ADDRESS(addr));

@@ -15,7 +15,7 @@ CamelType
 camel_test_session_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (
 			camel_session_get_type (),
@@ -27,7 +27,7 @@ camel_test_session_get_type (void)
 			NULL,
 			NULL);
 	}
-
+	
 	return type;
 }
 
@@ -35,10 +35,10 @@ CamelSession *
 camel_test_session_new (const char *path)
 {
 	CamelSession *session;
-
+	
 	session = CAMEL_SESSION (camel_object_new (CAMEL_TEST_SESSION_TYPE));
-
+	
 	camel_session_construct (session, path);
-
+	
 	return session;
 }

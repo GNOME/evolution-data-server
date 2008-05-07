@@ -39,8 +39,8 @@
 
 #include "camel-folder-thread.h"
 
-#define d(x)
-#define m(x)
+#define d(x) 
+#define m(x) 
 
 /*#define TIMEIT*/
 
@@ -159,7 +159,7 @@ get_root_subject(CamelFolderThreadNode *c)
 {
 	char *s, *p;
 	CamelFolderThreadNode *scan;
-
+	
 	s = NULL;
 	c->re = FALSE;
 	if (c->message)
@@ -234,7 +234,7 @@ group_root_set(CamelFolderThread *thread, CamelFolderThreadNode **cp)
 	GHashTable *subject_table = g_hash_table_new(g_str_hash, g_str_equal);
 	CamelFolderThreadNode *c, *clast, *scan, *container;
 
-	/* gather subject lines */
+	/* gather subject lines */ 
 	d(printf("gathering subject lines\n"));
 	clast = (CamelFolderThreadNode *)cp;
 	c = clast->next;
@@ -366,7 +366,7 @@ sort_node(const void *a, const void *b)
 	const CamelFolderThreadNode *a1 = ((CamelFolderThreadNode **)a)[0];
 	const CamelFolderThreadNode *b1 = ((CamelFolderThreadNode **)b)[0];
 
-	/* if we have no message, it must be a dummy node, which
+	/* if we have no message, it must be a dummy node, which 
 	   also means it must have a child, just use that as the
 	   sort data (close enough?) */
 	if (a1->message == NULL)
@@ -508,7 +508,7 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 
 	/* remove empty parent nodes */
 	prune_empty(thread, &head);
-
+	
 	/* find any siblings which missed out - but only if we are allowing threading by subject */
 	if (thread->subject)
 		group_root_set (thread, &head);
@@ -577,18 +577,18 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 
 /**
  * camel_folder_thread_messages_new:
- * @folder:
+ * @folder: 
  * @uids: The subset of uid's to thread.  If NULL. then thread all
  * uid's in @folder.
  * @thread_subject: thread based on subject also
- *
+ * 
  * Thread a (subset) of the messages in a folder.  And sort the result
  * in summary order.
  *
  * If @thread_subject is %TRUE, messages with
  * related subjects will also be threaded. The default behaviour is to
  * only thread based on message-id.
- *
+ * 
  * This function is probably to be removed soon.
  *
  * Return value: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
@@ -699,8 +699,8 @@ camel_folder_thread_messages_ref(CamelFolderThread *thread)
 
 /**
  * camel_folder_thread_messages_unref:
- * @thread:
- *
+ * @thread: 
+ * 
  * Free all memory associated with the thread descriptor @thread.
  **/
 void
@@ -727,11 +727,11 @@ camel_folder_thread_messages_unref(CamelFolderThread *thread)
 /**
  * camel_folder_thread_messages_new_summary:
  * @summary: Array of CamelMessageInfo's to thread.
- *
+ * 
  * Thread a list of MessageInfo's.  The summary must remain valid for the
  * life of the CamelFolderThread created by this function, and it is upto the
  * caller to ensure this.
- *
+ * 
  * Return value: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
  * which represent the threaded structure of the messages.
  **/

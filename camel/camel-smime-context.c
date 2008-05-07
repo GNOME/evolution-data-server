@@ -4,7 +4,7 @@
  *           Michael Zucchi <notzed@ximian.com>
  *
  *  The Initial Developer of the Original Code is Netscape
- *  Communications Corporation.  Portions created by Netscape are
+ *  Communications Corporation.  Portions created by Netscape are 
  *  Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  *  Rights Reserved.
  *
@@ -99,15 +99,15 @@ camel_smime_context_new(CamelSession *session)
 {
 	CamelCipherContext *cipher;
 	CamelSMIMEContext *ctx;
-
+	
 	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
-
+	
 	ctx =(CamelSMIMEContext *) camel_object_new(camel_smime_context_get_type());
-
+	
 	cipher =(CamelCipherContext *) ctx;
 	cipher->session = session;
 	camel_object_ref(session);
-
+	
 	return cipher;
 }
 
@@ -212,7 +212,7 @@ sm_id_to_hash(CamelCipherContext *context, const char *id)
 		else if (!strcmp(id, "sha1"))
 			return CAMEL_CIPHER_HASH_SHA1;
 	}
-
+	
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
@@ -393,7 +393,7 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		goto fail;
 	}
 
-	enc = NSS_CMSEncoder_Start(cmsg,
+	enc = NSS_CMSEncoder_Start(cmsg, 
 				   sm_write_stream, ostream, /* DER output callback  */
 				   NULL, NULL,     /* destination storage  */
 				   NULL, NULL,	   /* password callback    */
@@ -450,7 +450,7 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		mps->contentraw = istream;
 		camel_stream_reset(istream);
 		camel_object_ref(istream);
-
+		
 		camel_medium_set_content_object((CamelMedium *)opart, (CamelDataWrapper *)mps);
 	} else {
 		ct = camel_content_type_new("application", "x-pkcs7-mime");
@@ -458,7 +458,7 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		camel_content_type_set_param(ct, "smime-type", "signed-data");
 		camel_data_wrapper_set_mime_type_field(dw, ct);
 		camel_content_type_unref(ct);
-
+		
 		camel_medium_set_content_object((CamelMedium *)opart, dw);
 
 		camel_mime_part_set_filename(opart, "smime.p7m");
@@ -466,9 +466,9 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		camel_mime_part_set_disposition(opart, "attachment");
 		camel_mime_part_set_encoding(opart, CAMEL_TRANSFER_ENCODING_BASE64);
 	}
-
+	
 	camel_object_unref(dw);
-fail:
+fail:	
 	camel_object_unref(ostream);
 	camel_object_unref(istream);
 
@@ -556,7 +556,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				}
 
 				digestalgs = NSS_CMSSignedData_GetDigestAlgs(sigd);
-
+				
 				digcx = NSS_CMSDigestContext_StartMultiple(digestalgs);
 				if (digcx == NULL) {
 					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot calculate digests"));
@@ -596,7 +596,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 			/* check for certs-only message */
 			nsigners = NSS_CMSSignedData_SignerInfoCount(sigd);
 			if (nsigners == 0) {
-
+                                                          
 				/* already imported certs above, not sure what usage we should use here or if this isn't handled above */
 				if (NSS_CMSSignedData_VerifyCertsOnly(sigd, p->certdb, certUsageEmailSigner) != SECSuccess) {
 					g_string_printf(description, _("Certificate is the only message, cannot verify certificates"));
@@ -613,26 +613,26 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				for (j = 0; j < nsigners; j++) {
 					NSSCMSSignerInfo *si;
 					char *cn, *em;
-
+					
 					si = NSS_CMSSignedData_GetSignerInfo(sigd, j);
 					NSS_CMSSignedData_VerifySignerInfo(sigd, j, p->certdb, certUsageEmailSigner);
-
+					
 					status = NSS_CMSSignerInfo_GetVerificationStatus(si);
-
+					
 					cn = NSS_CMSSignerInfo_GetSignerCommonName(si);
 					em = NSS_CMSSignerInfo_GetSignerEmailAddress(si);
-
+					
 					g_string_append_printf(description, _("Signer: %s <%s>: %s\n"),
 							       cn?cn:"<unknown>", em?em:"<unknown>",
 							       sm_status_description(status));
-
+					
 					camel_cipher_validity_add_certinfo(valid, CAMEL_CIPHER_VALIDITY_SIGN, cn, em);
 
 					if (cn)
 						PORT_Free(cn);
 					if (em)
 						PORT_Free(em);
-
+					
 					if (status != NSSCMSVS_GoodSignature)
 						camel_cipher_validity_set_valid(valid, FALSE);
 				}
@@ -682,7 +682,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 
 	/* FIXME: we should stream this to the decoder */
 	mem = (CamelStreamMem *)camel_stream_mem_new();
-
+	
 	if (camel_content_type_is(ct, "multipart", "signed")) {
 		CamelMultipart *mps = (CamelMultipart *)dw;
 
@@ -714,7 +714,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 		goto fail;
 	}
 
-	dec = NSS_CMSDecoder_Start(NULL,
+	dec = NSS_CMSDecoder_Start(NULL, 
 				   NULL, NULL, /* content callback     */
 				   NULL, NULL, 	/* password callback    */
 				   NULL, NULL); /* decrypt key callback */
@@ -726,9 +726,9 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Decoder failed"));
 		goto fail;
 	}
-
+	
 	valid = sm_verify_cmsg(context, cmsg, constream, ex);
-
+	
 	NSS_CMSMessage_Destroy(cmsg);
 fail:
 	camel_object_unref(mem);
@@ -874,7 +874,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	for (i=0;recipient_certs[i];i++)
 		CERT_DestroyCertificate(recipient_certs[i]);
 	PORT_FreeArena(poolp, PR_FALSE);
-
+	
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_construct_from_stream(dw, ostream);
 	camel_object_unref(ostream);
@@ -934,7 +934,7 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)ipart), (CamelStream *)istream);
 	camel_stream_reset((CamelStream *)istream);
 
-	dec = NSS_CMSDecoder_Start(NULL,
+	dec = NSS_CMSDecoder_Start(NULL, 
 				   sm_write_stream, ostream, /* content callback     */
 				   NULL, NULL,
 				   NULL, NULL); /* decrypt key callback */
@@ -981,7 +981,7 @@ static int
 sm_import_keys(CamelCipherContext *context, CamelStream *istream, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("import keys: unimplemented"));
-
+	
 	return -1;
 }
 
@@ -989,7 +989,7 @@ static int
 sm_export_keys(CamelCipherContext *context, GPtrArray *keys, CamelStream *ostream, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("export keys: unimplemented"));
-
+	
 	return -1;
 }
 
@@ -999,9 +999,9 @@ static void
 camel_smime_context_class_init(CamelSMIMEContextClass *klass)
 {
 	CamelCipherContextClass *cipher_class = CAMEL_CIPHER_CONTEXT_CLASS(klass);
-
+	
 	parent_class = CAMEL_CIPHER_CONTEXT_CLASS(camel_type_get_global_classfuncs(camel_cipher_context_get_type()));
-
+	
 	cipher_class->hash_to_id = sm_hash_to_id;
 	cipher_class->id_to_hash = sm_id_to_hash;
 	cipher_class->sign = sm_sign;
@@ -1016,7 +1016,7 @@ static void
 camel_smime_context_init(CamelSMIMEContext *context)
 {
 	CamelCipherContext *cipher =(CamelCipherContext *) context;
-
+	
 	cipher->sign_protocol = "application/x-pkcs7-signature";
 	cipher->encrypt_protocol = "application/x-pkcs7-mime";
 	cipher->key_protocol = "application/x-pkcs7-signature";
@@ -1041,7 +1041,7 @@ CamelType
 camel_smime_context_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_cipher_context_get_type(),
 					   "CamelSMIMEContext",
@@ -1052,7 +1052,7 @@ camel_smime_context_get_type(void)
 					   (CamelObjectInitFunc) camel_smime_context_init,
 					   (CamelObjectFinalizeFunc) camel_smime_context_finalise);
 	}
-
+	
 	return type;
 }
 

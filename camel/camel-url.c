@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-url.c : utility functions to parse URLs */
 
-/*
+/* 
  * Authors:
  *  Dan Winship <danw@ximian.com>
  *  Jeffrey Stedfast <fejj@ximian.com>
  *
  * Copyright 1999-2001 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -368,7 +368,7 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 		if (!url->path && (url->params || url->query || url->fragment))
 			g_string_append_c (str, '/');
 	}
-
+	
 	if (url->path)
 		append_url_encoded (str, url->path, ";?");
 	if (url->params && !(flags & CAMEL_URL_HIDE_PARAMS))
@@ -381,10 +381,10 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 		g_string_append_c (str, '#');
 		append_url_encoded (str, url->fragment, NULL);
 	}
-
+	
 	return_result = str->str;
 	g_string_free (str, FALSE);
-
+	
 	return return_result;
 }
 
@@ -426,7 +426,7 @@ camel_url_free (CamelURL *url)
 		g_datalist_clear (&url->params);
 		g_free (url->query);
 		g_free (url->fragment);
-
+		
 		g_free (url);
 	}
 }
@@ -680,7 +680,7 @@ camel_url_hash (const void *v)
 	ADD_HASH (u->path);
 	ADD_HASH (u->query);
 	hash ^= u->port;
-
+	
 	return hash;
 }
 
@@ -693,7 +693,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-
+	
 	if (s2 == NULL)
 		return FALSE;
 

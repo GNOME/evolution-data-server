@@ -4,8 +4,8 @@
  *
  * Copyright (C) 1999, 2003 Ximian Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -130,7 +130,7 @@ CamelType camel_maildir_folder_get_type(void)
 							   (CamelObjectInitFunc) maildir_init,
 							   (CamelObjectFinalizeFunc) maildir_finalize);
 	}
-
+ 
 	return camel_maildir_folder_type;
 }
 
@@ -167,14 +167,14 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	CamelMessageInfo *mi;
 	CamelMaildirMessageInfo *mdi;
 	char *name, *dest = NULL;
-
+	
 	d(printf("Appending message\n"));
 
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
 		return;
-
+	
 	mdi = (CamelMaildirMessageInfo *)mi;
 
 	d(printf("Appending message: uid is %s filename is %s\n", camel_message_info_uid(mi), mdi->filename));
@@ -184,11 +184,11 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	output_stream = camel_stream_fs_new_with_name (name, O_WRONLY|O_CREAT, 0600);
 	if (output_stream == NULL)
 		goto fail_write;
-
+	
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)message, output_stream) == -1
 	    || camel_stream_close (output_stream) == -1)
 		goto fail_write;
-
+	
 	/* now move from tmp to cur (bypass new, does it matter?) */
 	dest = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 	if (rename (name, dest) == -1)
@@ -222,12 +222,12 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot append message to maildir folder: %s: %s"),
 				      name, g_strerror (errno));
-
+	
 	if (output_stream) {
 		camel_object_unref (CAMEL_OBJECT (output_stream));
 		unlink (name);
 	}
-
+	
 	g_free (name);
 	g_free (dest);
 }

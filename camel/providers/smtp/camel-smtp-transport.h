@@ -1,14 +1,14 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-smtp-transport.h : class for an smtp transfer */
 
-/*
+/* 
  * Authors:
  *   Jeffrey Stedfast <fejj@stampede.org>
  *
  * Copyright (C) 2000 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -44,15 +44,15 @@ G_BEGIN_DECLS
 
 typedef struct {
 	CamelTransport parent_object;
-
+	
 	CamelStream *istream, *ostream;
-
+	
 	guint32 flags;
-
+	
 	gboolean connected;
 	struct sockaddr *localaddr;
 	socklen_t localaddrlen;
-
+	
 	GHashTable *authtypes;
 } CamelSmtpTransport;
 

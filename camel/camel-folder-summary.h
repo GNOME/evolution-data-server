@@ -49,10 +49,10 @@ typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
 	struct _CamelMessageContentInfo *next;
-
+	
 	struct _CamelMessageContentInfo *childs;
 	struct _CamelMessageContentInfo *parent;
-
+	
 	CamelContentType *type;
 	char *id;
 	char *description;
@@ -67,7 +67,7 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_DRAFT = 1<<2,
 	CAMEL_MESSAGE_FLAGGED = 1<<3,
 	CAMEL_MESSAGE_SEEN = 1<<4,
-
+	
 	/* these aren't really system flag bits, but are convenience flags */
 	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
 	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
@@ -183,7 +183,7 @@ struct _CamelMessageInfoBase {
 	struct _camel_header_param *headers;
 };
 
-/* probably do this as well, removing CamelFolderChangeInfo and interfaces
+/* probably do this as well, removing CamelFolderChangeInfo and interfaces 
 typedef struct _CamelChangeInfo CamelChangeInfo;
 struct _CamelChangeInfo {
 	GPtrArray *added;

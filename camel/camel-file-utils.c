@@ -7,8 +7,8 @@
  *
  * Copyright (C) 2000, 2003 Ximian, Inc.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of version 2 of the GNU Lesser General Public 
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -53,9 +53,9 @@
  * camel_file_util_encode_uint32:
  * @out: file to output to
  * @value: value to output
- *
+ * 
  * Utility function to save an uint32 to a file.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -78,9 +78,9 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
  * camel_file_util_decode_uint32:
  * @in: file to read from
  * @dest: pointer to a variable to store the value in
- *
+ * 
  * Retrieve an encoded uint32 from a file.
- *
+ * 
  * Return value: 0 on success, -1 on error.  @*dest will contain the
  * decoded value.
  **/
@@ -109,10 +109,10 @@ camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
  * camel_file_util_encode_fixed_int32:
  * @out: file to output to
  * @value: value to output
- *
+ * 
  * Encode a gint32, performing no compression, but converting
  * to network order.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -131,9 +131,9 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
  * camel_file_util_decode_fixed_int32:
  * @in: file to read from
  * @dest: pointer to a variable to store the value in
- *
+ * 
  * Retrieve a gint32.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -185,9 +185,9 @@ camel_file_util_decode_##type(FILE *in, type *dest)	\
  * camel_file_util_encode_time_t:
  * @out: file to output to
  * @value: value to output
- *
+ * 
  * Encode a time_t value to the file.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 CFU_ENCODE_T(time_t)
@@ -196,9 +196,9 @@ CFU_ENCODE_T(time_t)
  * camel_file_util_decode_time_t:
  * @in: file to read from
  * @dest: pointer to a variable to store the value in
- *
+ * 
  * Decode a time_t value.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 CFU_DECODE_T(time_t)
@@ -207,9 +207,9 @@ CFU_DECODE_T(time_t)
  * camel_file_util_encode_off_t:
  * @out: file to output to
  * @value: value to output
- *
+ * 
  * Encode an off_t type.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 CFU_ENCODE_T(off_t)
@@ -219,9 +219,9 @@ CFU_ENCODE_T(off_t)
  * camel_file_util_decode_off_t:
  * @in: file to read from
  * @dest: pointer to a variable to put the value in
- *
+ * 
  * Decode an off_t type.
- *
+ * 
  * Return value: 0 on success, -1 on failure.
  **/
 CFU_DECODE_T(off_t)
@@ -230,9 +230,9 @@ CFU_DECODE_T(off_t)
  * camel_file_util_encode_size_t:
  * @out: file to output to
  * @value: value to output
- *
+ * 
  * Encode an size_t type.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 CFU_ENCODE_T(size_t)
@@ -242,9 +242,9 @@ CFU_ENCODE_T(size_t)
  * camel_file_util_decode_size_t:
  * @in: file to read from
  * @dest: pointer to a variable to put the value in
- *
+ * 
  * Decode an size_t type.
- *
+ * 
  * Return value: 0 on success, -1 on failure.
  **/
 CFU_DECODE_T(size_t)
@@ -254,9 +254,9 @@ CFU_DECODE_T(size_t)
  * camel_file_util_encode_string:
  * @out: file to output to
  * @str: value to output
- *
+ * 
  * Encode a normal string and save it in the output file.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -266,10 +266,10 @@ camel_file_util_encode_string (FILE *out, const char *str)
 
 	if (str == NULL)
 		return camel_file_util_encode_uint32 (out, 1);
-
+	
 	if ((len = strlen (str)) > 65536)
 		len = 65536;
-
+	
 	if (camel_file_util_encode_uint32 (out, len+1) == -1)
 		return -1;
 	if (len == 0 || fwrite (str, len, 1, out) == 1)
@@ -282,9 +282,9 @@ camel_file_util_encode_string (FILE *out, const char *str)
  * camel_file_util_decode_string:
  * @in: file to read from
  * @str: pointer to a variable to store the value in
- *
+ * 
  * Decode a normal string from the input file.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -321,11 +321,11 @@ camel_file_util_decode_string (FILE *in, char **str)
  * @out: file to output to
  * @str: value to output
  * @len: total-len of str to store
- *
+ * 
  * Encode a normal string and save it in the output file.
  * Unlike @camel_file_util_encode_string, it pads the
  * @str with "NULL" bytes, if @len is > strlen(str)
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -340,7 +340,7 @@ camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
 	/* Max size is 64K */
 	if (len > 65536)
 		len = 65536;
-
+		
 	memset(buf, 0x00, len);
 	g_strlcpy(buf, str, len);
 
@@ -355,10 +355,10 @@ camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
  * camel_file_util_decode_fixed_string:
  * @in: file to read from
  * @str: pointer to a variable to store the value in
- * @len: total-len to decode.
- *
+ * @len: total-len to decode.  
+ * 
  * Decode a normal string from the input file.
- *
+ * 
  * Return value: 0 on success, -1 on error.
  **/
 int
@@ -403,7 +403,7 @@ camel_file_util_safe_filename (const char *name)
 
 	if (name == NULL)
 		return NULL;
-
+	
 	return camel_url_encode(name, unsafe_chars);
 }
 
@@ -429,7 +429,7 @@ camel_read (int fd, char *buf, size_t n)
 {
 	ssize_t nread;
 	int cancel_fd;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return -1;
@@ -447,10 +447,10 @@ camel_read (int fd, char *buf, size_t n)
 #ifndef G_OS_WIN32
 		int errnosav, flags, fdmax;
 		fd_set rdset;
-
+		
 		flags = fcntl (fd, F_GETFL);
 		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
-
+		
 		do {
 			struct timeval tv;
 			int res;
@@ -471,7 +471,7 @@ camel_read (int fd, char *buf, size_t n)
 			else if (FD_ISSET (cancel_fd, &rdset)) {
 				errno = EINTR;
 				goto failed;
-			} else {
+			} else {				
 				do {
 					nread = read (fd, buf, n);
 				} while (nread == -1 && errno == EINTR);
@@ -483,7 +483,7 @@ camel_read (int fd, char *buf, size_t n)
 		errno = errnosav;
 #endif
 	}
-
+	
 	return nread;
 }
 
@@ -507,7 +507,7 @@ camel_write (int fd, const char *buf, size_t n)
 {
 	ssize_t w, written = 0;
 	int cancel_fd;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return -1;
@@ -529,10 +529,10 @@ camel_write (int fd, const char *buf, size_t n)
 #ifndef G_OS_WIN32
 		int errnosav, flags, fdmax;
 		fd_set rdset, wrset;
-
+		
 		flags = fcntl (fd, F_GETFL);
 		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
-
+		
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
 			struct timeval tv;
@@ -543,7 +543,7 @@ camel_write (int fd, const char *buf, size_t n)
 			FD_SET (fd, &wrset);
 			FD_SET (cancel_fd, &rdset);
 			tv.tv_sec = IO_TIMEOUT;
-			tv.tv_usec = 0;
+			tv.tv_usec = 0;			
 			w = -1;
 
 			res = select (fdmax, &rdset, &wrset, 0, &tv);
@@ -558,7 +558,7 @@ camel_write (int fd, const char *buf, size_t n)
 				do {
 					w = write (fd, buf + written, n - written);
 				} while (w == -1 && errno == EINTR);
-
+				
 				if (w == -1) {
 					if (errno == EAGAIN || errno == EWOULDBLOCK)
 						w = 0;
@@ -566,16 +566,16 @@ camel_write (int fd, const char *buf, size_t n)
 					written += w;
 			}
 		} while (w != -1 && written < n);
-
+		
 		errnosav = errno;
 		fcntl (fd, F_SETFL, flags);
 		errno = errnosav;
 #endif
 	}
-
+	
 	if (w == -1)
 		return -1;
-
+	
 	return written;
 }
 
@@ -601,7 +601,7 @@ camel_read_socket (int fd, char *buf, size_t n)
 #else
 	ssize_t nread;
 	int cancel_fd;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return -1;
@@ -638,14 +638,14 @@ camel_read_socket (int fd, char *buf, size_t n)
 			else if (FD_ISSET (cancel_fd, &rdset)) {
 				errno = EINTR;
 				goto failed;
-			} else {
+			} else {				
 				nread = recv (fd, buf, n, 0);
 			}
 		} while (nread == -1 && WSAGetLastError () == WSAEWOULDBLOCK);
 	failed:
 		;
 	}
-
+	
 	return nread;
 #endif
 }
@@ -671,7 +671,7 @@ camel_write_socket (int fd, const char *buf, size_t n)
 #else
 	ssize_t w, written = 0;
 	int cancel_fd;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return -1;
@@ -702,7 +702,7 @@ camel_write_socket (int fd, const char *buf, size_t n)
 			FD_SET (fd, &wrset);
 			FD_SET (cancel_fd, &rdset);
 			tv.tv_sec = IO_TIMEOUT;
-			tv.tv_usec = 0;
+			tv.tv_usec = 0;			
 			w = -1;
 
 			res = select (fdmax, &rdset, &wrset, 0, &tv);
@@ -724,10 +724,10 @@ camel_write_socket (int fd, const char *buf, size_t n)
 		arg = 0;
 		ioctlsocket (fd, FIONBIO, &arg);
 	}
-
+	
 	if (w == -1)
 		return -1;
-
+	
 	return written;
 #endif
 }
@@ -736,11 +736,11 @@ camel_write_socket (int fd, const char *buf, size_t n)
 /**
  * camel_file_util_savename:
  * @filename: a pathname
- *
+ * 
  * Builds a pathname where the basename is of the form ".#" + the
  * basename of @filename, for instance used in a two-stage commit file
  * write.
- *
+ * 
  * Return value: The new pathname.  It must be free'd with g_free().
  **/
 char *

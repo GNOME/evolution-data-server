@@ -46,7 +46,7 @@ CamelType
 camel_mime_filter_yenc_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (),
 					    "CamelMimeFilterYenc",
@@ -57,7 +57,7 @@ camel_mime_filter_yenc_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_yenc_init,
 					    NULL);
 	}
-
+	
 	return type;
 }
 
@@ -66,9 +66,9 @@ static void
 camel_mime_filter_yenc_class_init (CamelMimeFilterYencClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-
+	
 	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
-
+	
 	filter_class->reset = filter_reset;
 	filter_class->filter = filter_filter;
 	filter_class->complete = filter_complete;
@@ -90,7 +90,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 {
 	CamelMimeFilterYenc *yenc = (CamelMimeFilterYenc *) filter;
 	size_t newlen = 0;
-
+	
 	switch (yenc->direction) {
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
@@ -103,10 +103,10 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		if (!(yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE)) {
 			register char *inptr, *inend;
 			size_t left;
-
+			
 			inptr = in;
 			inend = inptr + len;
-
+			
 			/* we cannot start decoding until we have found an =ybegin line */
 			if (!(yenc->state & CAMEL_MIME_YDECODE_STATE_BEGIN)) {
 				while (inptr < inend) {
@@ -130,16 +130,16 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 						}
 						break;
 					}
-
+					
 					/* go to the next line */
 					while (inptr < inend && *inptr != '\n')
 						inptr++;
-
+					
 					if (inptr < inend)
 						inptr++;
 				}
 			}
-
+			
 			left = inend - inptr;
 			if ((yenc->state & CAMEL_MIME_YDECODE_STATE_BEGIN) && left > 0) {
 				/* we have found an '=ybegin' line but we may yet have an "=ypart" line to
@@ -162,7 +162,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 				}
 			}
 		}
-
+		
 		if ((yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE) && !(yenc->state & CAMEL_MIME_YDECODE_STATE_END)) {
 			/* all yEnc headers have been found so we can now start decoding */
 			camel_mime_filter_set_size (filter, len + 3, FALSE);
@@ -173,7 +173,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		}
 		break;
 	}
-
+	
 	*out = filter->outbuf;
 	*outlen = newlen;
 	*outprespace = filter->outpre;
@@ -185,7 +185,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 {
 	CamelMimeFilterYenc *yenc = (CamelMimeFilterYenc *) filter;
 	size_t newlen = 0;
-
+	
 	switch (yenc->direction) {
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
@@ -206,7 +206,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		}
 		break;
 	}
-
+	
 	*out = filter->outbuf;
 	*outlen = newlen;
 	*outprespace = filter->outpre;
@@ -217,7 +217,7 @@ static void
 filter_reset (CamelMimeFilter *filter)
 {
 	CamelMimeFilterYenc *yenc = (CamelMimeFilterYenc *) filter;
-
+	
 	switch (yenc->direction) {
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		yenc->state = CAMEL_MIME_YENCODE_STATE_INIT;
@@ -243,10 +243,10 @@ CamelMimeFilter *
 camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 {
 	CamelMimeFilterYenc *new;
-
+	
 	new = (CamelMimeFilterYenc *) camel_object_new (CAMEL_TYPE_MIME_FILTER_YENC);
 	new->direction = direction;
-
+	
 	switch (direction) {
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		new->state = CAMEL_MIME_YENCODE_STATE_INIT;
@@ -257,7 +257,7 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 	default:
 		g_assert_not_reached ();
 	}
-
+	
 	return (CamelMimeFilter *) new;
 }
 
@@ -273,7 +273,7 @@ void
 camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, int state)
 {
 	g_return_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc));
-
+	
 	yenc->state = state;
 }
 
@@ -289,7 +289,7 @@ void
 camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
 {
 	g_return_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc));
-
+	
 	yenc->crc = crc;
 }
 
@@ -309,10 +309,10 @@ int
 camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc), -1);
-
+	
 	if (yenc->state & CAMEL_MIME_YDECODE_STATE_PART)
 		return yenc->part;
-
+	
 	return -1;
 }
 #endif
@@ -329,7 +329,7 @@ guint32
 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc), -1);
-
+	
 	return CAMEL_MIME_YENCODE_CRC_FINAL (yenc->pcrc);
 }
 
@@ -346,7 +346,7 @@ guint32
 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc), -1);
-
+	
 	return CAMEL_MIME_YENCODE_CRC_FINAL (yenc->crc);
 }
 
@@ -421,34 +421,34 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 	const unsigned char *inend;
 	unsigned char ch;
 	int ystate;
-
+	
 	if (*state & CAMEL_MIME_YDECODE_STATE_END)
 		return 0;
-
+	
 	ystate = *state;
-
+	
 	inend = in + inlen;
 	outptr = out;
-
+	
 	inptr = in;
 	while (inptr < inend) {
 		ch = *inptr++;
-
+		
 		if ((ystate & YENC_NEWLINE_ESCAPE) == YENC_NEWLINE_ESCAPE) {
 			ystate &= ~CAMEL_MIME_YDECODE_STATE_EOLN;
-
+			
 			if (ch == 'y') {
 				/* we probably have a =yend here */
 				ystate |= CAMEL_MIME_YDECODE_STATE_END;
 				break;
 			}
 		}
-
+		
 		if (ch == '\n') {
 			ystate |= CAMEL_MIME_YDECODE_STATE_EOLN;
 			continue;
 		}
-
+		
 		if (ystate & CAMEL_MIME_YDECODE_STATE_ESCAPE) {
 			ystate &= ~CAMEL_MIME_YDECODE_STATE_ESCAPE;
 			ch -= 64;
@@ -456,17 +456,17 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 			ystate |= CAMEL_MIME_YDECODE_STATE_ESCAPE;
 			continue;
 		}
-
+		
 		ystate &= ~CAMEL_MIME_YDECODE_STATE_EOLN;
-
+		
 		*outptr++ = ch -= 42;
-
+		
 		*pcrc = yenc_crc_add (*pcrc, ch);
 		*crc = yenc_crc_add (*crc, ch);
 	}
-
+	
 	*state = ystate;
-
+	
 	return outptr - out;
 }
 
@@ -501,21 +501,21 @@ camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 	const unsigned char *inend;
 	register int already;
 	unsigned char ch;
-
+	
 	inend = in + inlen;
 	outptr = out;
-
+	
 	already = *state;
-
+	
 	inptr = in;
 	while (inptr < inend) {
 		ch = (*inptr++);
-
+		
 		*pcrc = yenc_crc_add (*pcrc, ch);
 		*crc = yenc_crc_add (*crc, ch);
-
+		
 		ch += 42;
-
+		
 		if (ch == '\0' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '=') {
 			*outptr++ = '=';
 			*outptr++ = ch + 64;
@@ -524,15 +524,15 @@ camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
 			*outptr++ = ch;
 			already++;
 		}
-
+		
 		if (already >= 128) {
 			*outptr++ = '\n';
 			already = 0;
 		}
 	}
-
+	
 	*state = already;
-
+	
 	return outptr - out;
 }
 
@@ -562,16 +562,16 @@ camel_yencode_close (const unsigned char *in, size_t inlen, unsigned char *out,
 		     int *state, guint32 *pcrc, guint32 *crc)
 {
 	register unsigned char *outptr;
-
+	
 	outptr = out;
-
+	
 	if (inlen)
 		outptr += camel_yencode_step (in, inlen, out, state, pcrc, crc);
-
+	
 	if (*state)
 		*outptr++ = '\n';
-
+	
 	*state = CAMEL_MIME_YENCODE_STATE_INIT;
-
+	
 	return outptr - out;
 }

@@ -149,7 +149,7 @@ static int
 summary_header_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
-
+	
 	if (camel_imap_summary_parent->summary_header_load (s, in) == -1)
 		return -1;
 
@@ -160,18 +160,18 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 	/* Version 1 */
 	if (camel_file_util_decode_fixed_int32(in, &ims->version) == -1)
 		return -1;
-
+	
 	if (ims->version == 2) {
 		/* Version 2: for compat with version 2 of the imap4 summary files */
 		int have_mlist;
-
+		
 		if (camel_file_util_decode_fixed_int32 (in, &have_mlist) == -1)
 			return -1;
 	}
-
+	
 	if (camel_file_util_decode_fixed_int32(in, &ims->validity) == -1)
 		return -1;
-
+	
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
 		g_warning("Unkown summary version\n");
 		errno = EINVAL;

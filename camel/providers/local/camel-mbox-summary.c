@@ -91,7 +91,7 @@ CamelType
 camel_mbox_summary_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_local_summary_get_type(), "CamelMboxSummary",
 					   sizeof (CamelMboxSummary),
@@ -101,7 +101,7 @@ camel_mbox_summary_get_type(void)
 					   (CamelObjectInitFunc) camel_mbox_summary_init,
 					   (CamelObjectFinalizeFunc) camel_mbox_summary_finalise);
 	}
-
+	
 	return type;
 }
 static gboolean
@@ -148,7 +148,7 @@ camel_mbox_summary_class_init(CamelMboxSummaryClass *klass)
 {
 	CamelFolderSummaryClass *sklass = (CamelFolderSummaryClass *)klass;
 	CamelLocalSummaryClass *lklass = (CamelLocalSummaryClass *)klass;
-
+	
 	camel_mbox_summary_parent = (CamelLocalSummaryClass *)camel_type_get_global_classfuncs(camel_local_summary_get_type());
 
 	sklass->summary_header_load = summary_header_load;
@@ -166,7 +166,7 @@ camel_mbox_summary_class_init(CamelMboxSummaryClass *klass)
 #ifdef STATUS_PINE
 	sklass->info_set_flags = mbox_info_set_flags;
 #endif
-
+	
 	lklass->encode_x_evolution = mbox_summary_encode_x_evolution;
 	lklass->check = mbox_summary_check;
 	lklass->sync = mbox_summary_sync;
@@ -182,7 +182,7 @@ static void
 camel_mbox_summary_init(CamelMboxSummary *obj)
 {
 	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
+	
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof(CamelMboxMessageInfo);
 	s->content_info_size = sizeof(CamelMboxMessageContentInfo);
@@ -201,7 +201,7 @@ camel_mbox_summary_finalise(CamelObject *obj)
  * camel_mbox_summary_new:
  *
  * Create a new CamelMboxSummary object.
- *
+ * 
  * Return value: A new CamelMboxSummary widget.
  **/
 CamelMboxSummary *
@@ -230,7 +230,7 @@ mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessage
 	p = uidstr = camel_message_info_uid(mi);
 	while (*p && isdigit(*p))
 		p++;
-
+	
 	if (*p == 0 && sscanf(uidstr, "%u", &uid) == 1) {
 		return g_strdup_printf("%08x-%04x", uid, mi->info.flags & 0xffff);
 	} else {
@@ -347,7 +347,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 		mi->frompos = -1;
 	}
-
+	
 	return (CamelMessageInfo *)mi;
 }
 
@@ -362,7 +362,7 @@ message_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
 
 		mbi->frompos = camel_mime_parser_tell_start_from(mp);
 	}
-
+	
 	return mi;
 }
 
@@ -376,11 +376,11 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 	mi = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->message_info_load(s, in);
 	if (mi) {
 		CamelMboxMessageInfo *mbi = (CamelMboxMessageInfo *)mi;
-
+		
 		if (camel_file_util_decode_off_t(in, &mbi->frompos) == -1)
 			goto error;
 	}
-
+	
 	return mi;
 error:
 	camel_message_info_free(mi);
@@ -444,7 +444,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 		camel_operation_end(NULL);
 		return -1;
 	}
-
+	
 	if (fstat(fd, &st) == 0)
 		size = st.st_size;
 
@@ -482,7 +482,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	while (camel_mime_parser_step(mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;
 		off_t pc = camel_mime_parser_tell_start_from (mp) + 1;
-
+		
 		camel_operation_progress (NULL, (int) (((float) pc / size) * 100));
 
 		info = camel_folder_summary_add_from_parser(s, mp);
@@ -513,7 +513,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 		camel_message_info_free(mi);
 	}
 	mbs->changes = NULL;
-
+	
 	/* update the file size/mtime in the summary */
 	if (ok != -1) {
 		if (g_stat(cls->folder_path, &st) == 0) {
@@ -667,15 +667,15 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	tmpname = NULL;
 
 	camel_operation_end(NULL);
-
+		
 	return 0;
  error:
 	if (fd != -1)
 		close(fd);
-
+	
 	if (fdout != -1)
 		close(fdout);
-
+	
 	if (tmpname)
 		g_unlink(tmpname);
 
@@ -865,7 +865,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	camel_object_unref((CamelObject *)mp);
 
 	camel_operation_end(NULL);
-
+	
 	return 0;
  error:
 	if (fd != -1)
@@ -1239,11 +1239,11 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			camel_message_info_free((CamelMessageInfo *)info);
 		}
 	}
-
+		
 	return 0;
  error:
 	g_free(xevnew);
-
+	
 	if (mp)
 		camel_object_unref((CamelObject *)mp);
 	if (info)
@@ -1287,7 +1287,7 @@ encode_status(guint32 flags, char status[8])
 {
 	size_t i;
 	char *p;
-
+	
 	p = status;
 	for (i = 0; i < G_N_ELEMENTS (status_flags); i++)
 		if (status_flags[i].flag & flags)
@@ -1303,14 +1303,14 @@ decode_status(const char *status)
 	guint32 flags = 0;
 	size_t i;
 	char c;
-
+	
 	p = status;
 	while ((c = *p++)) {
 		for (i = 0; i < G_N_ELEMENTS (status_flags); i++)
 			if (status_flags[i].tag == c)
 				flags |= status_flags[i].flag;
 	}
-
+	
 	return flags;
 }
 

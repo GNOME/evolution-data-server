@@ -53,13 +53,13 @@ struct {
 	  "Tasmiania with fur\r\n=46rom here or there ?\r\n" },
 };
 
-int
+int 
 main (int argc, char **argv)
 {
 	CamelStreamFilter *filter;
 	CamelMimeFilter *sh;
 	int i;
-
+	
 	camel_test_init(argc, argv);
 
 	camel_test_start("canonicalisation filter tests");
@@ -103,6 +103,6 @@ main (int argc, char **argv)
 	}
 
 	camel_test_end();
-
+	
 	return 0;
 }

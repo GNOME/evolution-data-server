@@ -94,7 +94,7 @@ camel_stream_read (CamelStream *stream, char *buffer, size_t n)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
-
+	
 	return (CS_CLASS (stream)->read) (stream, buffer, n);
 }
 
@@ -141,16 +141,16 @@ camel_stream_flush (CamelStream *stream)
 /**
  * camel_stream_close:
  * @stream: a #CamelStream object
- *
+ * 
  * Closes the stream.
- *
+ * 
  * Returns %0 on success or %-1 on error.
  **/
 int
 camel_stream_close (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
+	
 	return CS_CLASS (stream)->close (stream);
 }
 
@@ -167,7 +167,7 @@ gboolean
 camel_stream_eos (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), TRUE);
-
+	
 	return CS_CLASS (stream)->eos (stream);
 }
 
@@ -186,7 +186,7 @@ int
 camel_stream_reset (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
+	
 	return CS_CLASS (stream)->reset (stream);
 }
 
@@ -223,16 +223,16 @@ camel_stream_printf (CamelStream *stream, const char *fmt, ... )
 	va_list args;
 	char *string;
 	ssize_t ret;
-
+	
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
+	
 	va_start (args, fmt);
 	string = g_strdup_vprintf (fmt, args);
 	va_end (args);
-
+	
 	if (!string)
 		return -1;
-
+	
 	ret = camel_stream_write (stream, string, strlen (string));
 	g_free (string);
 	return ret;

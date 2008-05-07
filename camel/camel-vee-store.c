@@ -55,7 +55,7 @@ CamelType
 camel_vee_store_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-
+	
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_store_get_type (), "CamelVeeStore",
 					    sizeof (CamelVeeStore),
@@ -65,7 +65,7 @@ camel_vee_store_get_type (void)
 					    (CamelObjectInitFunc) camel_vee_store_init,
 					    (CamelObjectFinalizeFunc) camel_vee_store_finalise);
 	}
-
+	
 	return type;
 }
 
@@ -73,7 +73,7 @@ static void
 camel_vee_store_class_init (CamelVeeStoreClass *klass)
 {
 	CamelStoreClass *store_class = (CamelStoreClass *) klass;
-
+	
 	camel_vee_store_parent = (CamelStoreClass *)camel_store_get_type();
 
 	/* virtual method overload */
@@ -94,7 +94,7 @@ camel_vee_store_init (CamelVeeStore *obj)
 	CamelStore *store = (CamelStore *)obj;
 
 	/* we dont want a vtrash/vjunk on this one */
-	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK);
+	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK);	
 
 	/* Set up unmatched folder */
 	obj->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
@@ -122,7 +122,7 @@ camel_vee_store_finalise (CamelObject *obj)
  * camel_vee_store_new:
  *
  * Create a new #CamelVeeStore object.
- *
+ * 
  * Returns new #CamelVeeStore object
  **/
 CamelVeeStore *
