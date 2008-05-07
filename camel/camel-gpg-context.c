@@ -502,6 +502,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, int status_fd, char **sfd, int passwd_fd,
 	g_ptr_array_add (argv, "--no-secmem-warning");
 	g_ptr_array_add (argv, "--no-greeting");
 	g_ptr_array_add (argv, "--no-tty");
+	
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
                    interactive --command-fd option */
@@ -654,6 +655,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg)
 	close (fds[5]);
 	gpg->status_fd = fds[6];
 	close (fds[7]);
+	
 	if (gpg->need_passwd) {
 		close (fds[8]);
 		gpg->passwd_fd = fds[9];
@@ -728,24 +730,24 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	const unsigned char *status;
 	size_t nread, nwritten;
 	int len;
-
+	
  parse:
-
+	
 	inptr = gpg->statusbuf;
 	while (inptr < gpg->statusptr && *inptr != '\n')
 		inptr++;
-
+	
 	if (*inptr != '\n') {
 		/* we don't have enough data buffered to parse this status line */
 		return 0;
 	}
-
+	
 	*inptr++ = '\0';
 	status = gpg->statusbuf;
-
+	
 	if (camel_debug("gpg:status"))
 		printf ("status: %s\n", status);
-
+	
 	if (strncmp ((const char *) status, "[GNUPG:] ", 9) != 0) {
 		char *message;
 		message = g_locale_to_utf8((const gchar *) status, -1, NULL, NULL, NULL);
@@ -1005,6 +1007,7 @@ gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 	kill (gpg->pid, SIGTERM);
 	sleep (1);
 	retval = waitpid (gpg->pid, &status, WNOHANG);
+	
 	if (retval == (pid_t) 0) {
 		/* no more mr nice guy... */
 		kill (gpg->pid, SIGKILL);
@@ -1021,27 +1024,27 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 #ifndef G_OS_WIN32
 	struct pollfd polls[6];
 	int status, i, cancel_fd;
-
+	
 	for (i=0;i<6;i++) {
 		polls[i].fd = -1;
 		polls[i].events = 0;
 	}
-
+	
 	if (!gpg->seen_eof1) {
 		polls[0].fd = gpg->stdout_fd;
 		polls[0].events = POLLIN;
 	}
-
+	
 	if (!gpg->seen_eof2) {
 		polls[1].fd = gpg->stderr_fd;
 		polls[1].events = POLLIN;
 	}
-
+	
 	if (!gpg->complete) {
 		polls[2].fd = gpg->status_fd;
 		polls[2].events = POLLIN;
 	}
-
+	
 	polls[3].fd = gpg->stdin_fd;
 	polls[3].events = POLLOUT;
 	polls[4].fd = gpg->passwd_fd;
@@ -1049,24 +1052,24 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	cancel_fd = camel_operation_cancel_fd(NULL);
 	polls[5].fd = cancel_fd;
 	polls[5].events = POLLIN;
-
+	
 	do {
 		for (i=0;i<6;i++)
 			polls[i].revents = 0;
 		status = poll(polls, 6, 30*1000);
 	} while (status == -1 && errno == EINTR);
-
+	
 	if (status == 0)
 		return 0;	/* timed out */
 	else if (status == -1)
 		goto exception;
-
+	
 	if ((polls[5].revents & POLLIN) && camel_operation_cancel_check(NULL)) {
 		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
 		gpg_ctx_op_cancel(gpg);
 		return -1;
 	}
-
+	
 	/* Test each and every file descriptor to see if it's 'ready',
 	   and if so - do what we can with it and then drop through to
 	   the next file descriptor and so on until we've done what we
@@ -1299,12 +1302,12 @@ gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 				     _("Could not generate signing data: %s"), g_strerror(errno));
 		goto fail;
 	}
-
+	
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
 		char *name;
 		CamelStream *out;
-
+		
 		name = g_strdup_printf("camel-gpg.%d.sign-data", logid++);
 		out = camel_stream_fs_new_with_name(name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
 		if (out) {
@@ -1346,24 +1349,24 @@ gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 				     _("Failed to execute gpg."));
 		goto fail;
 	}
-
+	
 	res = 0;
-
+	
 	dw = camel_data_wrapper_new();
 	camel_stream_reset(ostream);
 	camel_data_wrapper_construct_from_stream(dw, ostream);
-
+	
 	sigpart = camel_mime_part_new();
 	ct = camel_content_type_new("application", "pgp-signature");
 	camel_content_type_set_param(ct, "name", "signature.asc");
 	camel_data_wrapper_set_mime_type_field(dw, ct);
 	camel_content_type_unref(ct);
-
+	
 	camel_medium_set_content_object((CamelMedium *)sigpart, dw);
 	camel_object_unref(dw);
-
+	
 	camel_mime_part_set_description(sigpart, _("This is a digitally signed message part"));
-
+	
 	mps = camel_multipart_signed_new();
 	ct = camel_content_type_new("multipart", "signed");
 	camel_content_type_set_param(ct, "micalg", camel_cipher_hash_to_id(context, hash));
@@ -1371,12 +1374,12 @@ gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 	camel_data_wrapper_set_mime_type_field((CamelDataWrapper *)mps, ct);
 	camel_content_type_unref(ct);
 	camel_multipart_set_boundary((CamelMultipart *)mps, NULL);
-
+	
 	mps->signature = sigpart;
 	mps->contentraw = istream;
 	camel_stream_reset(istream);
 	camel_object_ref(istream);
-
+	
 	camel_medium_set_content_object((CamelMedium *)opart, (CamelDataWrapper *)mps);
 fail:
 	camel_object_unref(ostream);
@@ -1433,7 +1436,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	CamelMimePart *sigpart;
 	CamelStream *istream = NULL;
 	CamelMultipart *mps;
-
+	
 	mps = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)ipart);
 	ct = ((CamelDataWrapper *)mps)->mime_type;
 	
@@ -1441,7 +1444,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	if (camel_content_type_is(ct, "multipart", "signed")) {
 		/* PGP/Mime Signature */
 		const char *tmp;
-
+		
 		tmp = camel_content_type_param(ct, "protocol");
 		if (!CAMEL_IS_MULTIPART_SIGNED(mps)
 		    || tmp == NULL  
@@ -1450,20 +1453,19 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 				      _("Cannot verify message signature: Incorrect message format"));
 			return NULL;
 		}
-	
+		
 		if (!(istream = camel_multipart_signed_get_content_stream ((CamelMultipartSigned *) mps, NULL))) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot verify message signature: Incorrect message format"));
 			return NULL;
 		}
-	
+		
 		if (!(sigpart = camel_multipart_get_part (mps, CAMEL_MULTIPART_SIGNED_SIGNATURE))) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot verify message signature: Incorrect message format"));
 			camel_object_unref (istream);
 			return NULL;
 		}
-
 	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-signed")) {
 		/* Inline Signed */
 		CamelDataWrapper *content;
@@ -1484,7 +1486,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	if (camel_debug_start("gpg:sign")) {
 		char *name;
 		CamelStream *out;
-
+		
 		name = g_strdup_printf("camel-gpg.%d.verify.data", logid);
 		out = camel_stream_fs_new_with_name(name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
 		if (out) {
@@ -1493,7 +1495,9 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 			camel_stream_reset(istream);
 			camel_object_unref(out);
 		}
+		
 		g_free(name);
+		
 		if (sigpart) {
 			name = g_strdup_printf("camel-gpg.%d.verify.signature", logid++);
 			out = camel_stream_fs_new_with_name(name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
@@ -1507,7 +1511,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		camel_debug_end();
 	}
 #endif
-
+	
 	if (sigpart) {
 		sigfile = swrite (sigpart);
 		if (sigfile == NULL) {
@@ -1590,7 +1594,7 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
 	CamelMultipartEncrypted *mpe;
-
+	
 	ostream = camel_stream_mem_new();
 	istream = camel_stream_mem_new();
 	if (camel_cipher_canonical_to_stream(ipart, CAMEL_MIME_FILTER_CANON_CRLF, istream) == -1) {
@@ -1598,7 +1602,7 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 				     _("Could not generate encrypting data: %s"), g_strerror(errno));
 		goto fail1;
 	}
-
+	
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_ENCRYPT);
 	gpg_ctx_set_armor (gpg, TRUE);
@@ -1606,7 +1610,7 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
 	gpg_ctx_set_always_trust (gpg, ctx->always_trust);
-
+	
 	for (i = 0; i < recipients->len; i++) {
 		gpg_ctx_add_recipient (gpg, recipients->pdata[i]);
 	}
@@ -1615,7 +1619,7 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to execute gpg."));
 		goto fail;
 	}
-
+	
 	/* FIXME: move tihs to a common routine */
 	while (!gpg_ctx_op_complete(gpg)) {
 		if (gpg_ctx_op_step (gpg, ex) == -1)
@@ -1630,27 +1634,27 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 				     diagnostics && *diagnostics ? diagnostics : _("Failed to execute gpg."));
 		goto fail;
 	}
-
+	
 	res = 0;
-
+	
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_construct_from_stream(dw, ostream);
-
+	
 	encpart = camel_mime_part_new();
 	ct = camel_content_type_new("application", "octet-stream");
 	camel_content_type_set_param(ct, "name", "encrypted.asc");
 	camel_data_wrapper_set_mime_type_field(dw, ct);
 	camel_content_type_unref(ct);
-
+	
 	camel_medium_set_content_object((CamelMedium *)encpart, dw);
 	camel_object_unref(dw);
-
+	
 	camel_mime_part_set_description(encpart, _("This is a digitally encrypted message part"));
-
+	
 	vstream = camel_stream_mem_new();
 	camel_stream_write(vstream, "Version: 1\n", strlen("Version: 1\n"));
 	camel_stream_reset(vstream);
-
+	
 	verpart = camel_mime_part_new();
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_set_mime_type(dw, context->encrypt_protocol);
@@ -1658,22 +1662,22 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 	camel_object_unref(vstream);
 	camel_medium_set_content_object((CamelMedium *)verpart, dw);
 	camel_object_unref(dw);
-
+	
 	mpe = camel_multipart_encrypted_new();
 	ct = camel_content_type_new("multipart", "encrypted");
 	camel_content_type_set_param(ct, "protocol", context->encrypt_protocol);
 	camel_data_wrapper_set_mime_type_field((CamelDataWrapper *)mpe, ct);
 	camel_content_type_unref(ct);
 	camel_multipart_set_boundary((CamelMultipart *)mpe, NULL);
-
+	
 	mpe->decrypted = ipart;
 	camel_object_ref(ipart);
-
+	
 	camel_multipart_add_part((CamelMultipart *)mpe, verpart);
 	camel_object_unref(verpart);
 	camel_multipart_add_part((CamelMultipart *)mpe, encpart);
 	camel_object_unref(encpart);
-
+	
 	camel_medium_set_content_object((CamelMedium *)opart, (CamelDataWrapper *)mpe);
 fail:
 	gpg_ctx_free(gpg);
@@ -1695,21 +1699,21 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	CamelMultipart *mp;
 	CamelContentType *ct;
 	int rv;
-
+	
 	if (!ipart) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot decrypt message: Incorrect message format"));
 		return NULL;
 	}
-
+	
 	content = camel_medium_get_content_object((CamelMedium *)ipart);
-
+	
 	if (!content) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot decrypt message: Incorrect message format"));
 		return NULL;
 	}
-
+	
 	ct = camel_mime_part_get_content_type((CamelMimePart *)content);
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {	
@@ -1718,11 +1722,10 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to decrypt MIME part: protocol error"));
 			return NULL;
 		}
-
+		
 		content = camel_medium_get_content_object ((CamelMedium *) encrypted);
 	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-encrypted")) {
 		content = camel_medium_get_content_object ((CamelMedium *) ipart);
-
 	} else {
 		/* Invalid Mimetype */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1736,7 +1739,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	
 	ostream = camel_stream_mem_new();
 	camel_stream_mem_set_secure((CamelStreamMem *)ostream);
-
+	
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_DECRYPT);
 	gpg_ctx_set_istream (gpg, istream);
@@ -1778,6 +1781,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 		/* Set mime/type of this new part to application/octet-stream to force type snooping */
 		camel_mime_part_set_content_type(opart, "application/octet-stream");
 	}
+	
 	if (rv != -1) {	
 		valid = camel_cipher_validity_new();
 		valid->encrypt.description = g_strdup(_("Encrypted content"));
@@ -1806,7 +1810,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	camel_object_unref(ostream);
 	camel_object_unref(istream);
 	gpg_ctx_free (gpg);
-
+	
 	return valid;
 }
 
@@ -1815,7 +1819,7 @@ gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelExcepti
 {
 	struct _GpgCtx *gpg;
 	int res = -1;
-
+	
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_IMPORT);
 	gpg_ctx_set_istream (gpg, istream);
@@ -1841,7 +1845,7 @@ gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelExcepti
 				     _("Failed to execute gpg."));
 		goto fail;
 	}
-
+	
 	res = 0;
 fail:
 	gpg_ctx_free (gpg);
@@ -1855,7 +1859,7 @@ gpg_export_keys (CamelCipherContext *context, GPtrArray *keys, CamelStream *ostr
 	struct _GpgCtx *gpg;
 	int i;
 	int res = -1;
-
+	
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_EXPORT);
 	gpg_ctx_set_armor (gpg, TRUE);
@@ -1949,5 +1953,3 @@ camel_gpg_context_get_type (void)
 	
 	return type;
 }
-
-
