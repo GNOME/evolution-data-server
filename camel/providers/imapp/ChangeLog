@@ -1,3 +1,11 @@
+2008-05-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #424744
+
+	* camel-imapp-driver.c:
+	* camel-imapp-engine.c:
+	Use CamelMsgPort instead of EMsgPort.
+
 2008-03-27  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #518710

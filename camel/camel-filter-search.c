@@ -45,12 +45,12 @@
 #include <sys/wait.h>
 #endif
 
-#include <libedataserver/e-iconv.h>
 #include <libedataserver/e-sexp.h>
 
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-filter-search.h"
+#include "camel-iconv.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-provider.h"
@@ -180,7 +180,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 				ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
 				if (ct) {
 					charset = camel_content_type_param (ct, "charset");
-					charset = e_iconv_charset_name (charset);
+					charset = camel_iconv_charset_name (charset);
 				}
 			}
 

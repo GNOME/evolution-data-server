@@ -340,6 +340,8 @@ e_categories_set_color_for
 e_categories_get_icon_file_for
 e_categories_set_icon_file_for
 e_categories_is_searchable
+e_categories_register_change_listener
+e_categories_unregister_change_listener
 </SECTION>
 
 <SECTION>

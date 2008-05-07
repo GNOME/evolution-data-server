@@ -39,6 +39,8 @@
 #include <iconv.h>
 #include <errno.h>
 
+#include "camel-iconv.h"
+
 /*
   if you want to build the charset map, compile this with something like:
     gcc -DBUILD_MAP camel-charset-map.c `pkg-config --cflags --libs glib-2.0`
@@ -305,8 +307,6 @@ int main (int argc, char **argv)
 #include "camel-charset-map-private.h"
 #include "camel-utf8.h"
 
-#include <libedataserver/e-iconv.h>
-
 void
 camel_charset_init (CamelCharset *c)
 {
@@ -353,10 +353,10 @@ camel_charset_best_mask(unsigned int mask)
 	const char *locale_lang, *lang;
 	int i;
 	
-	locale_lang = e_iconv_locale_language ();
+	locale_lang = camel_iconv_locale_language ();
 	for (i = 0; i < G_N_ELEMENTS (camel_charinfo); i++) {
 		if (camel_charinfo[i].bit & mask) {
-			lang = e_iconv_charset_language (camel_charinfo[i].name);
+			lang = camel_iconv_charset_language (camel_charinfo[i].name);
 			
 			if (!locale_lang || (lang && !strncmp (locale_lang, lang, 2)))
 				return camel_charinfo[i].name;

@@ -22,8 +22,12 @@
  * 02110-1301, USA.
  */
 
+/* This API has been moved to Camel. */
+
 #ifndef _E_ICONV_H_
 #define _E_ICONV_H_
+
+#ifndef EDS_DISABLE_DEPRECATED
 
 #include <iconv.h>
 
@@ -45,5 +49,7 @@ const char *e_iconv_charset_language (const char *charset);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* !_E_ICONV_H_ */

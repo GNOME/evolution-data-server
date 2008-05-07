@@ -1,8 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Authors: Jeffrey Stedfast <fejj@ximian.com>
- *
- *  Copyright 2002 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2007 Novell, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -16,37 +14,29 @@
  *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
  */
 
-/* This API has been moved to Camel. */
-
-#ifndef __E_TRIE_H__
-#define __E_TRIE_H__
-
-#ifndef EDS_DISABLE_DEPRECATED
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+#ifndef CAMEL_TRIE_H
+#define CAMEL_TRIE_H
 
 #include <glib.h>
 
-typedef struct _ETrie ETrie;
+G_BEGIN_DECLS
 
-ETrie *e_trie_new (gboolean icase);
-void e_trie_free (ETrie *trie);
+typedef struct _CamelTrie CamelTrie;
 
-void e_trie_add (ETrie *trie, const char *pattern, int pattern_id);
+CamelTrie *	camel_trie_new			(gboolean icase);
+void		camel_trie_free			(CamelTrie *trie);
+void		camel_trie_add			(CamelTrie *trie,
+						 const gchar *pattern,
+						 gint pattern_id);
+const gchar *	camel_trie_search		(CamelTrie *trie,
+						 const gchar *buffer,
+						 gsize buflen,
+						 gint *matched_id);
 
-const char *e_trie_search (ETrie *trie, const char *buffer, size_t buflen, int *matched_id);
+G_END_DECLS
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-#endif /* EDS_DISABLE_DEPRECATED */
-
-#endif /* __E_TRIE_H__ */
+#endif /* CAMEL_TRIE_H */

@@ -82,6 +82,7 @@
 #include <camel/camel-mime-part-utils.h>
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-movemail.h>
+#include <camel/camel-msgport.h>
 #include <camel/camel-multipart.h>
 #include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-multipart-signed.h>
@@ -127,6 +128,7 @@
 #include <camel/camel-tcp-stream-ssl.h>
 #include <camel/camel-text-index.h>
 #include <camel/camel-transport.h>
+#include <camel/camel-trie.h>
 #include <camel/camel-types.h>
 #include <camel/camel-uid-cache.h>
 #include <camel/camel-url.h>

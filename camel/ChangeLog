@@ -1,3 +1,38 @@
+2008-05-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #424744
+
+	* Makefile.am:
+	* camel-iconv.[ch]:
+	* camel-msgport.[ch]:
+	* camel-trie.[ch]:
+	Add camel-iconv.[ch], camel-msgport.[ch], camel-trie.[ch].
+	Essentially they're just renamed versions of equivalent but now
+	deprecated API in libedataserver.
+
+	* camel.h:
+	#include <camel/camel-msgport.h>
+	#include <camel/camel-trie.h>
+
+	* camel-charset-map.c:
+	* camel-filter-search.c:
+	* camel-mime-utils.c:
+	* camel-mime-part.c:
+	* camel-sasl-digest-md5.c:
+	* camel-mime-message.c:
+	* camel-gpg-context.c:
+	* camel-mime-filter-charset.c:
+	* camel-folder-summary.c:
+	Use camel-iconv.h instead of e-iconv.h.
+
+	* camel-net-utils.c:
+	* camel-operation.c:
+	* camel-session.h:
+	Use camel-msgport.h instead of e-msgport.h.
+
+	* camel-url-scanner.c:
+	Use camel-trie.h instead of e-trie.h.
+
 2008-05-06  Sankar P  <psankar@novell.com>
 
 	* Bad git-svn usage. Reverted.

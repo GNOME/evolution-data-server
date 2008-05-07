@@ -35,9 +35,10 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-msgport.h>
+#include <libedataserver/e-msgport.h>  /* for EDList */
 
 #include "camel-operation.h"
+#include "camel-msgport.h"
 
 #define d(x)
 
@@ -67,7 +68,7 @@ struct _CamelOperation {
 	GSList *status_stack;
 	struct _status_stack *lastreport;
 
-	EMsgPort *cancel_port;
+	CamelMsgPort *cancel_port;
 	int cancel_fd;
 #ifdef HAVE_NSS
 	PRFileDesc *cancel_prfd;
@@ -91,7 +92,7 @@ static pthread_key_t operation_key;
 static pthread_once_t operation_once = PTHREAD_ONCE_INIT;
 
 typedef struct _CamelOperationMsg {
-	EMsg msg;
+	CamelMsg msg;
 } CamelOperationMsg ;
 
 static void
@@ -134,7 +135,7 @@ camel_operation_new (CamelOperationStatusFunc status, void *status_data)
 	cc->refcount = 1;
 	cc->status = status;
 	cc->status_data = status_data;
-	cc->cancel_port = e_msgport_new();
+	cc->cancel_port = camel_msgport_new();
 	cc->cancel_fd = -1;
 
 	LOCK();
@@ -211,10 +212,10 @@ camel_operation_unref (CamelOperation *cc)
 		
 		e_dlist_remove((EDListNode *)cc);
 
-		while ((msg = (CamelOperationMsg *)e_msgport_get(cc->cancel_port)))
+		while ((msg = (CamelOperationMsg *)camel_msgport_pop(cc->cancel_port)))
 			g_free(msg);
 
-		e_msgport_destroy(cc->cancel_port);
+		camel_msgport_destroy(cc->cancel_port);
 		
 		n = cc->status_stack;
 		while (n) {
@@ -294,7 +295,7 @@ camel_operation_cancel (CamelOperation *cc)
 		while (cn) {
 			cc->flags |= CAMEL_OPERATION_CANCELLED;
 			msg = g_malloc0(sizeof(*msg));
-			e_msgport_put(cc->cancel_port, (EMsg *)msg);
+			camel_msgport_push(cc->cancel_port, (CamelMsg *)msg);
 			cc = cn;
 			cn = cn->next;
 		}
@@ -303,7 +304,7 @@ camel_operation_cancel (CamelOperation *cc)
 
 		cc->flags |= CAMEL_OPERATION_CANCELLED;
 		msg = g_malloc0(sizeof(*msg));
-		e_msgport_put(cc->cancel_port, (EMsg *)msg);
+		camel_msgport_push(cc->cancel_port, (CamelMsg *)msg);
 	}
 
 	UNLOCK();
@@ -330,7 +331,7 @@ camel_operation_uncancel(CamelOperation *cc)
 		CamelOperationMsg *msg;
 
 		LOCK();
-		while ((msg = (CamelOperationMsg *)e_msgport_get(cc->cancel_port)))
+		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)))
 			g_free(msg);
 
 		cc->flags &= ~CAMEL_OPERATION_CANCELLED;
@@ -403,11 +404,11 @@ camel_operation_cancel_check (CamelOperation *cc)
 	} else if (cc->flags & CAMEL_OPERATION_CANCELLED) {
 		d(printf("previously cancelled\n"));
 		cancelled = TRUE;
-	} else if ((msg = (CamelOperationMsg *)e_msgport_get(cc->cancel_port))) {
+	} else if ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port))) {
 		d(printf("Got cancellation message\n"));
 		do {
 			g_free(msg);
-		} while ((msg = (CamelOperationMsg *)e_msgport_get(cc->cancel_port)));
+		} while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)));
 		cc->flags |= CAMEL_OPERATION_CANCELLED;
 		cancelled = TRUE;
 	} else
@@ -440,7 +441,7 @@ camel_operation_cancel_fd (CamelOperation *cc)
 	LOCK();
 
 	if (cc->cancel_fd == -1)
-		cc->cancel_fd = e_msgport_fd(cc->cancel_port);
+		cc->cancel_fd = camel_msgport_fd(cc->cancel_port);
 
 	UNLOCK();
 
@@ -470,7 +471,7 @@ camel_operation_cancel_prfd (CamelOperation *cc)
 	LOCK();
 
 	if (cc->cancel_prfd == NULL)
-		cc->cancel_prfd = e_msgport_prfd(cc->cancel_port);
+		cc->cancel_prfd = camel_msgport_prfd(cc->cancel_port);
 
 	UNLOCK();
 

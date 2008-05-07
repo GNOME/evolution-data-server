@@ -44,7 +44,7 @@ object_init(CamelIMAPPEngine *ie, CamelIMAPPEngineClass *ieclass)
 	e_dlist_init(&ie->active);
 	e_dlist_init(&ie->done);
 
-	ie->port = e_msgport_new();
+	ie->port = camel_msgport_new();
 
 	ie->tagprefix = ieclass->tagprefix;
 	ieclass->tagprefix++;
@@ -688,7 +688,7 @@ camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 	if (ic->mem)
 		imap_engine_command_complete(imap, ic);
 
-	e_msgport_put(imap->port, (EMsg *)ic);
+	camel_msgport_push(imap->port, (EMsg *)ic);
 }
 
 CamelIMAPPCommand *

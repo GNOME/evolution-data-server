@@ -286,6 +286,12 @@ camel-types
 
 @search_lock: 
 
+<!-- ##### STRUCT CamelMD5Context ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelMimeFilterChomp ##### -->
 <para>
 
@@ -457,6 +463,47 @@ camel-types
 </para>
 
 @Returns: 
+
+<!-- ##### FUNCTION camel_md5_final ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@digest: 
+
+<!-- ##### FUNCTION camel_md5_get_digest ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@buffer_size: 
+@digest: 
+
+<!-- ##### FUNCTION camel_md5_get_digest_from_file ##### -->
+<para>
+
+</para>
+
+@filename: 
+@digest: 
+
+<!-- ##### FUNCTION camel_md5_init ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+<!-- ##### FUNCTION camel_md5_update ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@buf: 
+@len: 
 
 <!-- ##### FUNCTION camel_partition_table_get_type ##### -->
 <para>

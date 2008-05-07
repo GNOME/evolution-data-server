@@ -53,10 +53,9 @@
 #include <termios.h>
 #endif
 
-#include <libedataserver/e-iconv.h>
-
 #include "camel-debug.h"
 #include "camel-gpg-context.h"
+#include "camel-iconv.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-part.h"
@@ -298,7 +297,7 @@ gpg_ctx_new (CamelSession *session)
 	gpg->diagbuf = CAMEL_STREAM_MEM (stream)->buffer;
 	gpg->diagflushed = FALSE;
 	
-	if ((charset = e_iconv_locale_charset ()) && g_ascii_strcasecmp (charset, "UTF-8") != 0) {
+	if ((charset = camel_iconv_locale_charset ()) && g_ascii_strcasecmp (charset, "UTF-8") != 0) {
 		CamelMimeFilterCharset *filter;
 		CamelStreamFilter *fstream;
 		

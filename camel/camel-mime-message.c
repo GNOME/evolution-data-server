@@ -32,9 +32,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libedataserver/e-iconv.h>
 #include <libedataserver/e-time-utils.h>
 
+#include "camel-iconv.h"
 #include "camel-mime-filter-bestenc.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-message.h"
@@ -692,7 +692,7 @@ process_header (CamelMedium *medium, const char *name, const char *value)
 		g_free (message->subject);
 		if (((CamelDataWrapper *) message)->mime_type) {
 			charset = camel_content_type_param (((CamelDataWrapper *) message)->mime_type, "charset");
-			charset = e_iconv_charset_name (charset);
+			charset = camel_iconv_charset_name (charset);
 		} else
 			charset = NULL;
 		

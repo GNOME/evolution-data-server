@@ -1,3 +1,16 @@
+2008-05-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #424744
+
+	* libedataserver/e-iconv.[ch]:
+	Deprecate the e-iconv API.  Use camel-iconv instead.
+
+	* libedataserver/e-trie.[ch]:
+	Deprecate the ETrie API.  Use CamelTrie instead.
+
+	* libedataserver/e-msgport.[ch]:
+	Deprecate the EMsgPort API.  Use CamelMsgPort instead.
+
 2008-05-06  Jeffrey Stedfast  <fejj@novell.com>
 
 	* Reverted commit 8210

@@ -36,12 +36,12 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-iconv.h>
 #include <libedataserver/e-memory.h>
 
 #include "camel-file-utils.h"
 #include "camel-folder-summary.h"
 #include "camel-folder.h"
+#include "camel-iconv.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-html.h"
@@ -1758,7 +1758,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	     && (g_ascii_strcasecmp(charset, "us-ascii") == 0))
 		charset = NULL;
 	
-	charset = charset ? e_iconv_charset_name (charset) : NULL;
+	charset = charset ? camel_iconv_charset_name (charset) : NULL;
 	
 	subject = summary_format_string(h, "subject", charset);
 	from = summary_format_address(h, "from", charset);
@@ -2023,7 +2023,7 @@ content_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	
 	ci = camel_folder_summary_content_info_new (s);
 	
-	charset = e_iconv_locale_charset ();
+	charset = camel_iconv_locale_charset ();
 	ci->id = camel_header_msgid_decode (camel_header_raw_find (&h, "content-id", NULL));
 	ci->description = camel_header_decode_string (camel_header_raw_find (&h, "content-description", NULL), charset);
 	ci->encoding = camel_content_transfer_encoding_decode (camel_header_raw_find (&h, "content-transfer-encoding", NULL));

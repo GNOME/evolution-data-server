@@ -33,10 +33,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libedataserver/e-iconv.h>
-
 #include "camel-charset-map.h"
 #include "camel-exception.h"
+#include "camel-iconv.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-crlf.h"
@@ -228,7 +227,7 @@ process_header(CamelMedium *medium, const char *name, const char *value)
 		g_free (mime_part->description);
 		if (((CamelDataWrapper *) mime_part)->mime_type) {
 			charset = camel_content_type_param (((CamelDataWrapper *) mime_part)->mime_type, "charset");
-			charset = e_iconv_charset_name (charset);
+			charset = camel_iconv_charset_name (charset);
 		} else
 			charset = NULL;
 		mime_part->description = g_strstrip (camel_header_decode_string (value, charset));
@@ -832,8 +831,8 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 			part_charset = camel_content_type_param (dw->mime_type, "charset");
 			
 			if (content_charset && part_charset) {
-				content_charset = e_iconv_charset_name (content_charset);
-				part_charset = e_iconv_charset_name (part_charset);
+				content_charset = camel_iconv_charset_name (content_charset);
+				part_charset = camel_iconv_charset_name (part_charset);
 			}
 		}
 		

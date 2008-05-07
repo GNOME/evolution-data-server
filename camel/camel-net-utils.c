@@ -36,9 +36,8 @@
 #include <sys/poll.h>
 #endif
 
-#include <libedataserver/e-msgport.h>
-
 #include "camel-exception.h"
+#include "camel-msgport.h"
 #include "camel-net-utils.h"
 #include "camel-operation.h"
 
@@ -407,7 +406,7 @@ camel_gethostbyaddr_r (const char *addr, int addrlen, int type, struct hostent *
 
 /* ********************************************************************** */
 struct _addrinfo_msg {
-	EMsg msg;
+	CamelMsg msg;
 	unsigned int cancelled:1;
 
 	/* for host lookup */
@@ -449,7 +448,7 @@ cs_freeinfo(struct _addrinfo_msg *msg)
 static int
 cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error, CamelException *ex)
 {
-	EMsgPort *reply_port;
+	CamelMsgPort *reply_port;
 	pthread_t id;
 	int err, cancel_fd, cancel = 0, fd;
 
@@ -459,8 +458,8 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 		return 0;
 	}
 	
-	reply_port = msg->msg.reply_port = e_msgport_new();
-	fd = e_msgport_fd(msg->msg.reply_port);
+	reply_port = msg->msg.reply_port = camel_msgport_new();
+	fd = camel_msgport_fd(msg->msg.reply_port);
 	if ((err = pthread_create(&id, NULL, worker, msg)) == 0) {
 		int status;
 #ifndef G_OS_WIN32
@@ -514,7 +513,7 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 			pthread_cancel(id);
 			cancel = 1;
 		} else {
-			struct _addrinfo_msg *reply = (struct _addrinfo_msg *)e_msgport_get(reply_port);
+			struct _addrinfo_msg *reply = (struct _addrinfo_msg *)camel_msgport_try_pop(reply_port);
 
 			g_assert(reply == msg);
 			d(printf("waiting for child to exit\n"));
@@ -524,7 +523,7 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 	} else {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, "%s: %s: %s", error, _("cannot create thread"), g_strerror(err));
 	}
-	e_msgport_destroy(reply_port);
+	camel_msgport_destroy(reply_port);
 
 	return cancel;
 }
@@ -630,7 +629,7 @@ cs_getaddrinfo(void *data)
 		}
 	}
 reply:
-	e_msgport_reply((EMsg *)msg);
+	camel_msgport_reply((CamelMsg *)msg);
 	return NULL;
 cancel:
 	cs_freeinfo(msg);
@@ -647,7 +646,7 @@ cs_getaddrinfo(void *data)
 	if (info->cancelled) {
 		cs_freeinfo(info);
 	} else {
-		e_msgport_reply((EMsg *)info);
+		camel_msgport_reply((CamelMsg *)info);
 	}
 	
 	return NULL;
@@ -766,7 +765,7 @@ cs_getnameinfo(void *data)
 	if (msg->serv)
 		sprintf(msg->serv, "%d", sin->sin_port);
 
-	e_msgport_reply((EMsg *)msg);
+	camel_msgport_reply((CamelMsg *)msg);
 	return NULL;
 cancel:
 	cs_freeinfo(msg);
@@ -784,7 +783,7 @@ cs_getnameinfo(void *data)
 	if (msg->cancelled)
 		cs_freeinfo(msg);
 	else
-		e_msgport_reply((EMsg *)msg);
+		camel_msgport_reply((CamelMsg *)msg);
 
 	return NULL;
 }

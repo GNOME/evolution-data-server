@@ -27,11 +27,10 @@
 #ifndef CAMEL_SESSION_H
 #define CAMEL_SESSION_H 1
 
+#include <camel/camel-msgport.h>
 #include <camel/camel-object.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-junk-plugin.h>
-
-#include <libedataserver/e-msgport.h>
 
 #define CAMEL_SESSION_TYPE     (camel_session_get_type ())
 #define CAMEL_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SESSION_TYPE, CamelSession))
@@ -191,7 +190,7 @@ struct _CamelSessionThreadOps {
 };
 
 struct _CamelSessionThreadMsg {
-	EMsg msg;
+	CamelMsg msg;
 
 	int id;
 

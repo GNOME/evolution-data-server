@@ -635,6 +635,16 @@ camel_internet_address_get_type
 </SECTION>
 
 <SECTION>
+<FILE>camel-md5-utils</FILE>
+CamelMD5Context
+camel_md5_get_digest
+camel_md5_get_digest_from_file
+camel_md5_init
+camel_md5_update
+camel_md5_final
+</SECTION>
+
+<SECTION>
 <FILE>camel-medium</FILE>
 <TITLE>CamelMedium</TITLE>
 CamelMedium
@@ -1080,6 +1090,21 @@ CAMEL_MIME_PART_CLASS
 CamelMimePartClass
 <SUBSECTION Private>
 camel_mime_part_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-msgport</FILE>
+<TITLE>CamelMsgPort</TITLE>
+CamelMsg
+CamelMsgPort
+camel_msgport_new
+camel_msgport_destroy
+camel_msgport_fd
+camel_msgport_push
+camel_msgport_pop
+camel_msgport_try_pop
+camel_msgport_reply
+camel_msgport_prfd
 </SECTION>
 
 <SECTION>
@@ -1963,6 +1988,15 @@ CAMEL_TRANSPORT_CLASS
 CamelTransportClass
 <SUBSECTION Private>
 camel_transport_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-trie</FILE>
+CamelTrie
+camel_trie_new
+camel_trie_free
+camel_trie_add
+camel_trie_search
 </SECTION>
 
 <SECTION>

@@ -48,6 +48,7 @@ void em_cache_node_unref(EMCache *emc, EMCacheNode *n);
 void em_cache_add(EMCache *emc, EMCacheNode *n);
 void em_cache_clear(EMCache *emc);
 
+#ifndef EDS_DISABLE_DEPRECATED
 /* message ports - a simple inter-thread 'ipc' primitive */
 /* opaque handle */
 typedef struct _EMsgPort EMsgPort;
@@ -70,6 +71,7 @@ void e_msgport_reply(EMsg *msg);
 #ifdef HAVE_NSS
 struct PRFileDesc *e_msgport_prfd(EMsgPort *mp);
 #endif
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #ifndef EDS_DISABLE_DEPRECATED
 /* e threads, a server thread with a message based request-response, and flexible queuing */
@@ -93,7 +95,7 @@ void e_thread_set_reply_port(EThread *e, EMsgPort *reply_port);
 void e_thread_set_msg_received(EThread *e, EThreadFunc received, void *data);
 void e_thread_put(EThread *e, EMsg *msg);
 int e_thread_busy(EThread *e);
-#endif
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #ifndef EDS_DISABLE_DEPRECATED
 /* sigh, another mutex interface, this one allows different mutex types, portably */
@@ -111,6 +113,6 @@ int e_mutex_unlock(EMutex *m);
 void e_mutex_assert_locked(EMutex *m);
 /* this uses pthread cond's */
 int e_mutex_cond_wait(void *cond, EMutex *m);
-#endif
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif

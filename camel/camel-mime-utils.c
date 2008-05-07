@@ -46,10 +46,10 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-iconv.h>
 #include <libedataserver/e-time-utils.h>
 
 #include "camel-charset-map.h"
+#include "camel-iconv.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
 #include "camel-utf8.h"
@@ -915,7 +915,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 	if (default_charset && g_ascii_strcasecmp (default_charset, "UTF-8") != 0)
 		charsets[i++] = default_charset;
 	
-	locale_charset = e_iconv_locale_charset ();
+	locale_charset = camel_iconv_locale_charset ();
 	if (locale_charset && g_ascii_strcasecmp (locale_charset, "UTF-8") != 0)
 		charsets[i++] = locale_charset;
 	
@@ -926,7 +926,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 	out = g_malloc (outlen + 1);
 	
 	for (i = 0; charsets[i]; i++) {
-		if ((cd = e_iconv_open ("UTF-8", charsets[i])) == (iconv_t) -1)
+		if ((cd = camel_iconv_open ("UTF-8", charsets[i])) == (iconv_t) -1)
 			continue;
 		
 		outleft = outlen;
@@ -961,7 +961,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 		rc = iconv (cd, NULL, NULL, &outbuf, &outleft);
 		*outbuf = '\0';
 		
-		e_iconv_close (cd);
+		camel_iconv_close (cd);
 		
 		if (rc != (size_t) -1 && n == 0)
 			return out;
@@ -976,7 +976,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 	 * try to find the one that fit the best and use that to convert what we can,
 	 * replacing any byte we can't convert with a '?' */
 	
-	if ((cd = e_iconv_open ("UTF-8", best)) == (iconv_t) -1) {
+	if ((cd = camel_iconv_open ("UTF-8", best)) == (iconv_t) -1) {
 		/* this shouldn't happen... but if we are here, then
 		 * it did...  the only thing we can do at this point
 		 * is replace the 8bit garbage and pray */
@@ -1028,7 +1028,7 @@ decode_8bit (const char *text, size_t len, const char *default_charset)
 	iconv (cd, NULL, NULL, &outbuf, &outleft);
 	*outbuf = '\0';
 	
-	e_iconv_close (cd);
+	camel_iconv_close (cd);
 	
 	return out;
 }
@@ -1116,9 +1116,9 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 	}
 	
 	if (charset[0])
-		charset = e_iconv_charset_name (charset);
+		charset = camel_iconv_charset_name (charset);
 	
-	if (!charset[0] || (cd = e_iconv_open ("UTF-8", charset)) == (iconv_t) -1) {
+	if (!charset[0] || (cd = camel_iconv_open ("UTF-8", charset)) == (iconv_t) -1) {
 		w(g_warning ("Cannot convert from %s to UTF-8, header display may "
 			     "be corrupt: %s", charset[0] ? charset : "unspecified charset",
 			     g_strerror (errno)));
@@ -1127,7 +1127,7 @@ rfc2047_decode_word (const char *in, size_t inlen, const char *default_charset)
 	}
 	
 	buf = camel_iconv_strndup (cd, (char *) decoded, declen);
-	e_iconv_close (cd);
+	camel_iconv_close (cd);
 	
 	if (buf != NULL)
 		return buf;
@@ -1167,26 +1167,26 @@ append_8bit (GString *out, const char *inbuf, size_t inlen, const char *charset)
 	size_t outlen;
 	iconv_t ic;
 	
-	ic = e_iconv_open ("UTF-8", charset);
+	ic = camel_iconv_open ("UTF-8", charset);
 	if (ic == (iconv_t) -1)
 		return FALSE;
 
 	outlen = inlen * 6 + 16;
 	outbuf = outbase = g_malloc(outlen);
 	
-	if (e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen) == (size_t) -1) {
+	if (camel_iconv (ic, &inbuf, &inlen, &outbuf, &outlen) == (size_t) -1) {
 		w(g_warning("Conversion to '%s' failed: %s", charset, strerror (errno)));
 		g_free(outbase);
-		e_iconv_close (ic);
+		camel_iconv_close (ic);
 		return FALSE;
 	}
 	
-	e_iconv (ic, NULL, NULL, &outbuf, &outlen);
+	camel_iconv (ic, NULL, NULL, &outbuf, &outlen);
 	
 	*outbuf = 0;
 	g_string_append(out, outbase);
 	g_free(outbase);
-	e_iconv_close (ic);
+	camel_iconv_close (ic);
 
 	return TRUE;
 	
@@ -1391,7 +1391,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 	ascii = g_alloca (bufflen);
 
 	if (g_ascii_strcasecmp (type, "UTF-8") != 0)
-		ic = e_iconv_open (type, "UTF-8");
+		ic = camel_iconv_open (type, "UTF-8");
 
 	while (inlen) {
 		ssize_t convlen, proclen;
@@ -1444,13 +1444,13 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			   hopefully-small-enough chunks, and leave it at that */
 			convlen = MIN(inlen, CAMEL_FOLD_PREENCODED);
 			p = inptr;
-			if (e_iconv (ic, &inptr, &convlen, &out, &outlen) == (size_t) -1 && errno != EINVAL) {
+			if (camel_iconv (ic, &inptr, &convlen, &out, &outlen) == (size_t) -1 && errno != EINVAL) {
 				w(g_warning("Conversion problem: conversion truncated: %s", strerror (errno)));
 				/* blah, we include it anyway, better than infinite loop ... */
 				inptr += convlen;
 			} else {
 				/* make sure we flush out any shift state */
-				e_iconv (ic, NULL, 0, &out, &outlen);
+				camel_iconv (ic, NULL, 0, &out, &outlen);
 			}
 			inlen -= (inptr - p);
 		}
@@ -1475,7 +1475,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 	}
 	
 	if (ic != (iconv_t) -1)
-		e_iconv_close (ic);
+		camel_iconv_close (ic);
 }
 
 
@@ -2074,20 +2074,20 @@ header_convert(const char *to, const char *from, const char *in, size_t inlen)
 	size_t outlen, ret;
 	char *outbuf, *outbase, *result = NULL;
 
-	ic = e_iconv_open(to, from);
+	ic = camel_iconv_open(to, from);
 	if (ic == (iconv_t) -1)
 		return NULL;
 
 	outlen = inlen * 6 + 16;
 	outbuf = outbase = g_malloc(outlen);
 			
-	ret = e_iconv(ic, &in, &inlen, &outbuf, &outlen);
+	ret = camel_iconv(ic, &in, &inlen, &outbuf, &outlen);
 	if (ret != (size_t) -1) {
-		e_iconv(ic, NULL, 0, &outbuf, &outlen);
+		camel_iconv(ic, NULL, 0, &outbuf, &outlen);
 		*outbuf = '\0';
 		result = g_strdup(outbase);
 	}
-	e_iconv_close(ic);
+	camel_iconv_close(ic);
 	g_free(outbase);
 
 	return result;
@@ -2112,7 +2112,7 @@ rfc2184_decode (const char *in, size_t len)
 	encoding = g_alloca(inptr-in+1);
 	memcpy(encoding, in, inptr-in);
 	encoding[inptr-in] = 0;
-	charset = e_iconv_charset_name (encoding);
+	charset = camel_iconv_charset_name (encoding);
 	
 	inptr = memchr (inptr + 1, '\'', inend - inptr - 1);
 	if (!inptr)
@@ -2658,7 +2658,7 @@ header_decode_mailbox(const char **in, const char *charset)
 			const char *locale_charset;
 			GString *out;
 			
-			locale_charset = e_iconv_locale_charset ();
+			locale_charset = camel_iconv_locale_charset ();
 			
 			out = g_string_new ("");
 			
@@ -3163,7 +3163,7 @@ header_append_param(struct _camel_header_param *last, char *name, char *value)
 	    && (node->value = header_decode_text(value, FALSE, NULL))) {
 		g_free(value);
 	} else if (g_ascii_strcasecmp (name, "boundary") != 0 && !g_utf8_validate(value, -1, NULL)) {
-		const char *charset = e_iconv_locale_charset();
+		const char *charset = camel_iconv_locale_charset();
 		
 		if ((node->value = header_convert("UTF-8", charset?charset:"ISO-8859-1", value, strlen(value)))) {
 			g_free(value);

@@ -32,8 +32,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <libedataserver/e-iconv.h>
-
 #include "camel-charset-map.h"
 #include "camel-html-parser.h"
 #include "camel-mime-filter-basic.h"

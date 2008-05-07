@@ -29,14 +29,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libedataserver/e-trie.h>
-
+#include "camel-trie.h"
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
 struct _CamelUrlScanner {
 	GPtrArray *patterns;
-	ETrie *trie;
+	CamelTrie *trie;
 };
 
 
@@ -47,7 +46,7 @@ camel_url_scanner_new (void)
 	
 	scanner = g_new (CamelUrlScanner, 1);
 	scanner->patterns = g_ptr_array_new ();
-	scanner->trie = e_trie_new (TRUE);
+	scanner->trie = camel_trie_new (TRUE);
 	
 	return scanner;
 }
@@ -59,7 +58,7 @@ camel_url_scanner_free (CamelUrlScanner *scanner)
 	g_return_if_fail (scanner != NULL);
 	
 	g_ptr_array_free (scanner->patterns, TRUE);
-	e_trie_free (scanner->trie);
+	camel_trie_free (scanner->trie);
 	g_free (scanner);
 }
 
@@ -69,7 +68,7 @@ camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 {
 	g_return_if_fail (scanner != NULL);
 	
-	e_trie_add (scanner->trie, pattern->pattern, scanner->patterns->len);
+	camel_trie_add (scanner->trie, pattern->pattern, scanner->patterns->len);
 	g_ptr_array_add (scanner->patterns, pattern);
 }
 
@@ -89,7 +88,7 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, 
 	inend = inptr + inlen;
 	
 	do {
-		if (!(pos = e_trie_search (scanner->trie, (const char *)inptr, inlen, &pattern)))
+		if (!(pos = camel_trie_search (scanner->trie, (const char *)inptr, inlen, &pattern)))
 			return FALSE;
 		
 		pat = g_ptr_array_index (scanner->patterns, pattern);

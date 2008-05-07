@@ -1,8 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Authors: Jeffrey Stedfast <fejj@ximian.com>
- *
- *  Copyright 2003 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2007 Novell, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -16,35 +14,38 @@
  *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
  */
 
+#ifndef CAMEL_MSGPORT_H
+#define CAMEL_MSGPORT_H
 
-#ifndef __CAMEL_ICONV_H__
-#define __CAMEL_ICONV_H__
-
-#include <sys/types.h>
-#include <iconv.h>
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-const gchar *	camel_iconv_locale_charset	(void);
-const gchar *	camel_iconv_locale_language	(void);
+typedef struct _CamelMsg CamelMsg;
+typedef struct _CamelMsgPort CamelMsgPort;
 
-const gchar *	camel_iconv_charset_name	(const gchar *charset);
-const gchar *	camel_iconv_charset_language	(const gchar *charset);
+struct _CamelMsg {
+	CamelMsgPort *reply_port;
+	gint flags;
+};
 
-iconv_t		camel_iconv_open		(const gchar *to,
-						 const gchar *from);
-gsize		camel_iconv			(iconv_t cd,
-						 const gchar **inbuf,
-						 gsize *inleft,
-						 gchar **outbuf,
-						 gsize *outleft);
-void		camel_iconv_close		(iconv_t cd);
+CamelMsgPort *	camel_msgport_new		(void);
+void		camel_msgport_destroy		(CamelMsgPort *msgport);
+gint		camel_msgport_fd		(CamelMsgPort *msgport);
+void		camel_msgport_push		(CamelMsgPort *msgport,
+						 CamelMsg *msg);
+CamelMsg *	camel_msgport_pop		(CamelMsgPort *msgport);
+CamelMsg *	camel_msgport_try_pop		(CamelMsgPort *msgport);
+void		camel_msgport_reply		(CamelMsg *msg);
+
+#ifdef HAVE_NSS
+struct PRFileDesc * camel_msgport_prfd		(CamelMsgPort *msgport);
+#endif
 
 G_END_DECLS
 
-#endif /* __CAMEL_ICONV_H__ */
+#endif  /* CAMEL_MSGPORT_H */

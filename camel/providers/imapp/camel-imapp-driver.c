@@ -927,7 +927,7 @@ camel_imapp_driver_worker(CamelIMAPPDriver *id)
 	int go = TRUE;
 
 	do {
-		/*m = (CamelIMAPPMsg *)e_msgport_get(id->queue);*/
+		/*m = (CamelIMAPPMsg *)camel_msgport_try_pop(id->queue);*/
 		switch (m->type) {
 		case CAMEL_IMAPP_MSG_FETCH:
 			/*e_dlist_addtail(&id->fetch_queue, (EDListNode *)m);*/
