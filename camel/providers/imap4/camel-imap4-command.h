@@ -53,6 +53,8 @@ typedef int (* CamelIMAP4UntaggedCallback) (struct _CamelIMAP4Engine *engine,
 					    struct _camel_imap4_token_t *token,
 					    CamelException *ex);
 
+typedef void (* CamelIMAP4CommandReset) (CamelIMAP4Command *ic, void *user_data);
+
 enum {
 	CAMEL_IMAP4_LITERAL_STRING,
 	CAMEL_IMAP4_LITERAL_STREAM,
@@ -72,7 +74,7 @@ typedef struct _CamelIMAP4CommandPart {
 	struct _CamelIMAP4CommandPart *next;
 	unsigned char *buffer;
 	size_t buflen;
-
+	
 	CamelIMAP4Literal *literal;
 } CamelIMAP4CommandPart;
 
@@ -92,32 +94,33 @@ enum {
 
 struct _CamelIMAP4Command {
 	EDListNode node;
-
+	
 	struct _CamelIMAP4Engine *engine;
-
+	
 	unsigned int ref_count:26;
 	unsigned int status:3;
 	unsigned int result:3;
 	int id;
-
+	
 	char *tag;
-
+	
 	GPtrArray *resp_codes;
-
+	
 	struct _CamelIMAP4Folder *folder;
 	CamelException ex;
-
+	
 	/* command parts - logical breaks in the overall command based on literals */
 	CamelIMAP4CommandPart *parts;
-
+	
 	/* current part */
 	CamelIMAP4CommandPart *part;
-
+	
 	/* untagged handlers */
 	GHashTable *untagged;
-
+	
 	/* '+' callback/data */
 	CamelIMAP4PlusCallback plus;
+	CamelIMAP4CommandReset reset;
 	void *user_data;
 };
 
