@@ -1,3 +1,10 @@
+2008-05-09  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes part of #382736 (bnc) 
+
+	* libecal/e-cal-component.c: (scan_attachment): Exchange crashed 
+	everytime at start up. This patch helps fixing it.
+
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes #358644 (bnc) 

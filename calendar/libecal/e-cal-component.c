@@ -532,6 +532,7 @@ scan_attachment (GSList **attachment_list, icalproperty *prop)
 	attachment->prop = prop;
 
 	attachment->attach = icalproperty_get_attach (prop);
+	icalattach_ref (attachment->attach);
 
 	*attachment_list = g_slist_append (*attachment_list, attachment);
 }
