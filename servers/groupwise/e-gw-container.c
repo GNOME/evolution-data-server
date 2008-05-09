@@ -59,10 +59,9 @@ static void
 free_node(EShUsers *user)
 {
 	if(user){
-		g_free(user->email);
+		g_free (user->email);
 		g_free (user);
 	}
-	g_free (user);
 	return ;
 }
 
