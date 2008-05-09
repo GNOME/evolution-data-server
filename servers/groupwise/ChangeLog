@@ -1,3 +1,10 @@
+2008-05-09  Sankar P  <psankar@novell.com>
+
+	* e-gw-container.c: (free_node):
+	Fixes a double free. 
+
+	** Fix for bug #532284
+
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes #338330 (bnc)
