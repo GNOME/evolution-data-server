@@ -74,6 +74,7 @@ static void imap4_rename_folder (CamelStore *store, const char *old_name, const 
 static CamelFolderInfo *imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
 static void imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
 static void imap4_unsubscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
+static gboolean imap4_folder_subscribed (CamelStore *store, const char *folder_name);
 static void imap4_noop (CamelStore *store, CamelException *ex);
 
 
@@ -145,9 +146,8 @@ camel_imap4_store_class_init (CamelIMAP4StoreClass *klass)
 	store_class->get_folder_info = imap4_get_folder_info;
 	store_class->subscribe_folder = imap4_subscribe_folder;
 	store_class->unsubscribe_folder = imap4_unsubscribe_folder;
+	store_class->folder_subscribed = imap4_folder_subscribed;
 	store_class->noop = imap4_noop;
-
-	/* FIXME: implement folder_subscribed */
 }
 
 static void
@@ -1595,6 +1595,21 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 	
 	return fi;
+}
+
+static gboolean
+imap4_folder_subscribed (CamelStore *store, const char *folder_name)
+{
+	CamelIMAP4Store *imap4_store = (CamelIMAP4Store *) store;
+	CamelStoreInfo *si;
+	int truth = FALSE;
+	
+	if ((si = camel_store_summary_path ((CamelStoreSummary *) imap4_store->summary, folder_name))) {
+		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
+		camel_store_summary_info_free ((CamelStoreSummary *) imap4_store->summary, si);
+	}
+	
+	return truth;
 }
 
 static void
