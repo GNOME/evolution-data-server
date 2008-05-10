@@ -144,6 +144,8 @@ imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **t
 {
 	CamelIMAP4CommandPart *part;
 	CamelIMAP4Literal *literal;
+	register const char *inptr;
+	const char *start;
 	
 	switch (imap4_string_get_type (string)) {
 	case IMAP4_STRING_ATOM:
@@ -152,8 +154,25 @@ imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **t
 		break;
 	case IMAP4_STRING_QSTRING:
 		/* we need to quote the string */
-		/* FIXME: need to escape stuff */
-		g_string_append_printf (str, "\"%s\"", string);
+		g_string_append_c (str, '"');
+		
+		inptr = string;
+		while (*inptr) {
+			start = string;
+			while (*inptr && *inptr != '\\' && *inptr != '"')
+				inptr++;
+			
+			if (inptr > start)
+				g_string_append_len (str, start, inptr - start);
+			
+			if (*inptr != '\0') {
+				g_string_append_c (str, '\\');
+				g_string_append_c (str, *inptr);
+				inptr++;
+			}
+		}
+		
+		g_string_append_c (str, '"');
 		break;
 	case IMAP4_STRING_LITERAL:
 		if (engine->capa & CAMEL_IMAP4_CAPABILITY_LITERALPLUS) {

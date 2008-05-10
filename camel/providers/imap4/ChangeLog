@@ -1,5 +1,8 @@
 2008-05-10  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-imap4-command.c (imap4_command_append_string): Fixed a
+	FIXME by properly escaping QSTRING specials.
+
 	* camel-imap4-summary.c: Reverted Mattew Barnes' MD5 Checksum
 	change - I want to be able to build this provider w/o glib-2.16.
 
