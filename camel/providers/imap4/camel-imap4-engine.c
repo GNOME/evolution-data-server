@@ -30,8 +30,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-sasl.h"
-#include "camel-stream-buffer.h"
+#include <camel/camel-sasl.h>
+#include <camel/camel-stream-buffer.h>
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"

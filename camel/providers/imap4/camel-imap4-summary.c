@@ -38,9 +38,9 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-file-utils.h"
-#include "camel-string-utils.h"
-#include "camel-offline-journal.h"
+#include <camel/camel-file-utils.h>
+#include <camel/camel-string-utils.h>
+#include <camel/camel-offline-journal.h>
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"

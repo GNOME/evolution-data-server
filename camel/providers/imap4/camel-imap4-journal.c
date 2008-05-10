@@ -35,10 +35,10 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-cache.h"
-#include "camel-file-utils.h"
-#include "camel-folder-summary.h"
-#include "camel-folder.h"
+#include <camel/camel-folder-summary.h>
+#include <camel/camel-data-cache.h>
+#include <camel/camel-file-utils.h>
+#include <camel/camel-folder.h>
 
 #include "camel-imap4-folder.h"
 #include "camel-imap4-journal.h"

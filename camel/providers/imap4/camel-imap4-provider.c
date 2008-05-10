@@ -28,8 +28,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-provider.h"
-#include "camel-sasl.h"
+#include <camel/camel-provider.h>
+#include <camel/camel-sasl.h>
 
 #include "camel-imap4-store.h"
 

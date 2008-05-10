@@ -30,10 +30,10 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-debug.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-null.h"
+#include <camel/camel-debug.h>
+#include <camel/camel-mime-filter-crlf.h>
+#include <camel/camel-stream-filter.h>
+#include <camel/camel-stream-null.h>
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"

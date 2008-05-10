@@ -28,7 +28,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "camel-offline-store.h"
+#include <camel/camel-offline-store.h>
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"

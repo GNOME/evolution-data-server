@@ -31,14 +31,14 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-net-utils.h"
-#include "camel-private.h"
-#include "camel-sasl.h"
-#include "camel-tcp-stream-raw.h"
-#include "camel-utf8.h"
+#include <camel/camel-private.h>
+#include <camel/camel-net-utils.h>
+#include <camel/camel-tcp-stream-raw.h>
+#include <camel/camel-sasl.h>
+#include <camel/camel-utf8.h>
 
 #ifdef HAVE_SSL
-#include "camel-tcp-stream-ssl.h"
+#include <camel/camel-tcp-stream-ssl.h>
 #endif
 
 #include "camel-imap4-command.h"

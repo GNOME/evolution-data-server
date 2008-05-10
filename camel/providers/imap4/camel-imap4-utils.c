@@ -31,8 +31,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-net-utils.h"
-#include "camel-store.h"
+#include <camel/camel-net-utils.h>
+#include <camel/camel-store.h>
 
 #include "camel-imap4-command.h"
 #include "camel-imap4-engine.h"

@@ -40,13 +40,13 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#include "camel-file-utils.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-message.h"
-#include "camel-private.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
-#include "camel-utf8.h"
+#include <camel/camel-private.h>
+#include <camel/camel-file-utils.h>
+#include <camel/camel-stream-filter.h>
+#include <camel/camel-mime-filter-crlf.h>
+#include <camel/camel-mime-message.h>
+#include <camel/camel-stream-mem.h>
+#include <camel/camel-utf8.h>
 
 #include "camel-imap4-utils.h"
 #include "camel-imap4-store.h"
