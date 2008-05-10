@@ -1,3 +1,8 @@
+2008-05-10  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-summary.c: Reverted Mattew Barnes' MD5 Checksum
+	change - I want to be able to build this provider w/o glib-2.16.
+
 2008-05-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-engine.c (camel_imap4_engine_iterate): Implemented

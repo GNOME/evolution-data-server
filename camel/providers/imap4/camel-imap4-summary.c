@@ -38,6 +38,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <libedataserver/md5-utils.h>
+
 #include <camel/camel-file-utils.h>
 #include <camel/camel-string-utils.h>
 #include <camel/camel-offline-journal.h>
@@ -435,12 +437,9 @@ decode_references (const char *refstr, const char *irtstr)
 {
 	struct _camel_header_references *refs, *irt, *r;
 	CamelSummaryReferences *references;
-	guint8 *digest;
-	gsize length;
+	MD5Context checksum;
+	guint8 digest[16];
 	guint32 i, n;
-	
-	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
-	digest = g_alloca (length);
 	
 	refs = camel_header_references_decode (refstr);
 	irt = camel_header_references_inreplyto_decode (irtstr);
@@ -468,12 +467,9 @@ decode_references (const char *refstr, const char *irtstr)
 	references->size = n;
 	
 	for (i = 0, r = refs; r != NULL; i++, r = r->next) {
-		GChecksum *checksum;
-		
-		checksum = g_checksum_new (G_CHECKSUM_MD5);
-		g_checksum_update (checksum, (guchar *) r->id, -1);
-		g_checksum_get_digest (checksum, digest, &length);
-		g_checksum_free (checksum);
+		md5_init (&checksum);
+		md5_update (&checksum, (guchar *) r->id, strlen (r->id));
+		md5_final (&checksum, digest);
 		
 		memcpy (references->references[i].id.hash, digest, sizeof (CamelSummaryMessageID));
 	}
@@ -488,11 +484,8 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 {
 	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
 	char *nstring, *msgid;
-	guint8 *digest;
-	gsize length;
-	
-	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
-	digest = g_alloca (length);
+	MD5Context checksum;
+	guint8 digest[16];
 	
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 		return -1;
@@ -508,40 +501,47 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 	/* subject */
 	if (envelope_decode_nstring (engine, &nstring, TRUE, ex) == -1)
 		goto exception;
+	
 	iinfo->info.subject = camel_pstring_strdup (nstring);
-	g_free(nstring);
+	g_free (nstring);
 	
 	/* from */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	iinfo->info.from = camel_pstring_strdup (nstring);
-	g_free(nstring);
+	g_free (nstring);
 	
 	/* sender */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	g_free (nstring);
 	
 	/* reply-to */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	g_free (nstring);
 	
 	/* to */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	iinfo->info.to = camel_pstring_strdup (nstring);
-	g_free(nstring);
+	g_free (nstring);
 	
 	/* cc */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	iinfo->info.cc = camel_pstring_strdup (nstring);
-	g_free(nstring);
+	g_free (nstring);
 	
 	/* bcc */
 	if (envelope_decode_addresses (engine, &nstring, ex) == -1)
 		goto exception;
+	
 	g_free (nstring);
 	
 	/* in-reply-to */
@@ -561,12 +561,9 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 	
 	if (nstring != NULL) {
 		if ((msgid = camel_header_msgid_decode (nstring))) {
-			GChecksum *checksum;
-			
-			checksum = g_checksum_new (G_CHECKSUM_MD5);
-			g_checksum_update (checksum, (guchar *) msgid, -1);
-			g_checksum_get_digest (checksum, digest, &length);
-			g_checksum_free (checksum);
+			md5_init (&checksum);
+			md5_update (&checksum, (guchar *) msgid, strlen (msgid));
+			md5_final (&checksum, digest);
 			
 			memcpy (iinfo->info.message_id.id.hash, digest, sizeof (CamelSummaryMessageID));
 			g_free (msgid);
