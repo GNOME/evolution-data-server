@@ -817,6 +817,7 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch, gboolean complete)
 			
 			camel_folder_change_info_add_uid (changes, camel_message_info_uid (envelope->info));
 			camel_folder_summary_add (fetch->summary, envelope->info);
+			camel_message_info_ref (envelope->info);
 			envelope->changed |= IMAP4_FETCH_SAVED;
 		}
 	}

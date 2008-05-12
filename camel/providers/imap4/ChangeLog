@@ -1,3 +1,14 @@
+2008-05-11  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-summary.c (imap4_fetch_all_add): Need to ref the
+	CamelMessageInfo after adding to the summary because
+	camel_folder_summary_add() does not ref.
+
+	* camel-imap4-store.c: Define some symbols that might not exist in
+	the version of camel we are linking against.
+	(imap4_build_folder_info_tree): New function to build a tree
+	structure of CamelFolderInfo's from an array.
+
 2008-05-10  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-store.c (imap4_folder_subscribed): Implemented.
