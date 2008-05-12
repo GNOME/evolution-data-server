@@ -1,3 +1,12 @@
+2008-05-12  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #388579 (bnc)
+	Exchange crashes everytime on startup. A regression patch for the leak 
+	fixes.
+
+	* libecal/e-cal-component.c: (free_icalcomponent),
+	(scan_attachment): 
+
 2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes part of #350143 (bnc)

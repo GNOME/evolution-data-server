@@ -307,8 +307,15 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 
 	priv->status = NULL;
 
-	for (l = priv->attachment_list; l != NULL; l = l->next)
-		g_free (l->data);
+	for (l = priv->attachment_list; l != NULL; l = l->next) {
+		struct attachment *attachment;
+
+		attachment = l->data;
+
+		icalattach_unref (attachment->attach);
+		g_free (attachment);
+	}
+
 	g_slist_free (priv->attachment_list);
 	priv->attachment_list = NULL;
 
@@ -532,6 +539,7 @@ scan_attachment (GSList **attachment_list, icalproperty *prop)
 	attachment->prop = prop;
 
 	attachment->attach = icalproperty_get_attach (prop);
+	icalattach_ref (attachment->attach);
 
 	*attachment_list = g_slist_append (*attachment_list, attachment);
 }
