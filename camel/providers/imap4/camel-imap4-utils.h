@@ -40,6 +40,7 @@ guint32 camel_imap4_flags_merge (flags_diff_t *diff, guint32 flags);
 guint32 camel_imap4_merge_flags (guint32 original, guint32 local, guint32 server);
 
 
+struct _CamelFolderInfo;
 struct _CamelIMAP4Engine;
 struct _CamelIMAP4Command;
 struct _CamelFolderSummary;
@@ -47,6 +48,8 @@ struct _camel_imap4_token_t;
 struct _CamelIMAP4StoreSummary;
 struct _CamelIMAP4NamespaceList;
 struct _CamelIMAP4Namespace;
+
+struct _CamelFolderInfo *camel_imap4_build_folder_info_tree (GPtrArray *array, const char *top);
 
 void camel_imap4_namespace_clear (struct _CamelIMAP4Namespace **ns);
 struct _CamelIMAP4NamespaceList *camel_imap4_namespace_list_copy (const struct _CamelIMAP4NamespaceList *nsl);

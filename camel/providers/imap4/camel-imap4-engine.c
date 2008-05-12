@@ -227,14 +227,33 @@ camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, C
 	
  exception:
 	
-	engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
-	
-	camel_object_unref (engine->istream);
-	engine->istream = NULL;
-	camel_object_unref (engine->ostream);
-	engine->ostream = NULL;
+	camel_imap4_engine_disconnect (engine);
 	
 	return -1;
+}
+
+
+/**
+ * camel_imap4_engine_disconnect:
+ * @engine: IMAP4 engine
+ *
+ * Closes the engine's connection to the IMAP4 server and sets state
+ * to #CAMEL_IMAP4_ENGINE_DISCONNECTED.
+ **/
+void
+camel_imap4_engine_disconnect (CamelIMAP4Engine *engine)
+{
+	engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
+	
+	if (engine->istream) {
+		camel_object_unref (engine->istream);
+		engine->istream = NULL;
+	}
+	
+	if (engine->ostream) {
+		camel_object_unref (engine->ostream);
+		engine->ostream = NULL;
+	}
 }
 
 
@@ -245,7 +264,7 @@ camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, C
  *
  * Forces the IMAP4 engine to query the IMAP4 server for a list of capabilities.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail.
  **/
 int
 camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex)
@@ -1540,7 +1559,7 @@ camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
  * failure and updates the engine state to DISCONNECTED if the stream
  * gets disconencted.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns %0 on success or %-1 on fail.
  **/
 int
 camel_imap4_engine_next_token (CamelIMAP4Engine *engine, camel_imap4_token_t *token, CamelException *ex)

@@ -328,6 +328,7 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to connect to IMAP server %s in secure mode: %s"),
 				      service->url->host, _("TLS negotiations failed"));
+		camel_imap4_engine_disconnect (engine);
 		return FALSE;
 	}
 	
@@ -859,22 +860,22 @@ imap4_folder_create (CamelStore *store, const char *folder_name, const char *sub
 	CamelURL *url;
 	const char *c;
 	int id;
-
+	
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
-
+	
 	utf7_name = imap4_folder_utf7_name (store, folder_name, '\0');
 	ic = camel_imap4_engine_queue (engine, NULL, "CREATE %S%s\r\n", utf7_name, subfolder_hint);
 	g_free (utf7_name);
-
+	
 	while ((id = camel_imap4_engine_iterate (engine)) < ic->id && id != -1)
 		;
-
+	
 	if (id == -1 || ic->status != CAMEL_IMAP4_COMMAND_COMPLETE) {
 		camel_exception_xfer (ex, &ic->ex);
 		camel_imap4_command_unref (ic);
 		goto done;
 	}
-
+	
 	switch (ic->result) {
 	case CAMEL_IMAP4_RESULT_OK:
 		url = camel_url_copy (engine->url);
@@ -1336,73 +1337,6 @@ imap4_subscription_info (CamelStore *store, CamelFolderInfo *fi)
 }
 
 static CamelFolderInfo *
-imap4_build_folder_info_tree (GPtrArray *array, const char *top)
-{
-	CamelFolderInfo *cur, *fi, *root = NULL;
-	const char *p;
-	size_t n = 0;
-	char *pname;
-	int i;
-	
-	if (array->len == 0)
-		return NULL;
-	
-	if (array->len == 1)
-		return array->pdata[0];
-	
-	if (top)
-		n = strlen (top);
-	
-	cur = root = array->pdata[0];
-	
-	for (i = 1; i < array->len; i++) {
-		fi = (CamelFolderInfo *) array->pdata[i];
-		if (top && strncmp (fi->full_name, top, n) != 0) {
-			/* this folder info was not requested */
-			camel_folder_info_free (fi);
-			continue;
-		}
-		
-		if ((p = strrchr (fi->full_name, '/'))) {
-			pname = g_strndup (fi->full_name, p - fi->full_name);
-			if (!strcmp (cur->full_name, pname)) {
-				/* cur is our parent */
-				fi->parent = cur;
-				cur->child = fi;
-				cur = fi;
-			} else if (cur->parent && !strcmp (cur->parent->full_name, pname)) {
-				/* cur is our sibling */
-				fi->parent = cur->parent;
-				cur->next = fi;
-				cur = fi;
-			} else {
-				/* search back for our parent */
-				while (cur->parent) {
-					if (!strcmp (cur->parent->full_name, pname))
-						break;
-					cur = cur->parent;
-				}
-				
-				/* cur should now be our sibling */
-				fi->parent = cur->parent;
-				cur->next = fi;
-				cur = fi;
-			}
-			g_free (pname);
-		} else {
-			/* traverse back to most recent top-level fi */
-			while (cur->parent)
-				cur = cur->parent;
-			
-			cur->next = fi;
-			cur = fi;
-		}
-	}
-	
-	return root;
-}
-
-static CamelFolderInfo *
 imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtrArray *array)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
@@ -1478,7 +1412,7 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 		g_free (list);
 	}
 	
-	fi = imap4_build_folder_info_tree (array, top);
+	fi = camel_imap4_build_folder_info_tree (array, top);
 	
 	camel_url_free (url);
 	

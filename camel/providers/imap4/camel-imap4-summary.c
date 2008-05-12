@@ -1304,6 +1304,7 @@ imap4_summary_fetch_flags (CamelFolderSummary *summary)
 	engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	
 	scount = camel_folder_summary_count (summary);
+	g_assert (scount > 0);
 	
 	info[0] = camel_folder_summary_index (summary, 0);
 	if (scount > 1)
@@ -1581,7 +1582,8 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 		summary->flags ^= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
 	
 	engine = ((CamelIMAP4Store *) summary->folder->parent_store)->engine;
-	scount = camel_folder_summary_count (summary);
+	if ((scount = camel_folder_summary_count (summary)) == 0)
+		imap4_summary->update_flags = FALSE;
 	
 	if (imap4_summary->uidvalidity_changed) {
 		/* need to refetch everything */

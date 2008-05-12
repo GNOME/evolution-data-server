@@ -353,14 +353,14 @@ store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 {
 	CamelFolderInfo *fi;
 	const char *name;
-
+	
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (camel_store_info_path (s, si));
 	fi->uri = g_strdup (camel_store_info_uri (s, si));
 	fi->flags = si->flags;
 	fi->unread = si->unread;
 	fi->total = si->total;
-
+	
 	name = camel_store_info_name (s, si);
 	if (!g_ascii_strcasecmp (fi->full_name, "INBOX")) {
 		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
@@ -371,6 +371,7 @@ store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 	
 	return fi;
 }
+
 
 CamelFolderInfo *
 camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char *top, guint32 flags)
@@ -404,7 +405,7 @@ camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char
 			g_ptr_array_add (folders, store_info_to_folder_info (ss, si));
 	}
 	
-	fi = camel_folder_info_build (folders, top, '/', TRUE);
+	fi = camel_imap4_build_folder_info_tree (folders, top);
 	g_ptr_array_free (folders, TRUE);
 	
 	return fi;

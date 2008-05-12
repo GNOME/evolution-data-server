@@ -200,6 +200,8 @@ CamelIMAP4Engine *camel_imap4_engine_new (CamelService *service, CamelIMAP4Recon
 /* returns 0 on success or -1 on error */
 int camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, CamelException *ex);
 
+void camel_imap4_engine_disconnect (CamelIMAP4Engine *engine);
+
 int camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex);
 int camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex);
 

@@ -1,4 +1,22 @@
+2008-05-12  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-summary.c (camel_imap4_summary_flush_updates):
+	Properly handle empty folders.
+
+	* camel-imap4-store.c (connect_to_server): Disconnect the engine
+	if SSL negotiations fail (there's no other way for the engine to
+	know that failed).
+
+	* camel-imap4-engine.c (camel_imap4_engine_disconnect): New
+	convenience function.
+
 2008-05-11  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-utils.c (camel_imap4_build_folder_info_tree): New
+	utility function.
+
+	* camel-imap4-store-summary.c (camel_imap4_store_summary_get_folder_info):
+	Use a custom imap4 routine to create a folderinfo tree.
 
 	* camel-imap4-summary.c (imap4_fetch_all_add): Need to ref the
 	CamelMessageInfo after adding to the summary because

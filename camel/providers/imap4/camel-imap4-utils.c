@@ -44,6 +44,73 @@
 #define d(x)
 
 
+CamelFolderInfo *
+camel_imap4_build_folder_info_tree (GPtrArray *array, const char *top)
+{
+	CamelFolderInfo *cur, *fi, *root = NULL;
+	const char *p;
+	size_t n = 0;
+	char *pname;
+	int i;
+	
+	if (array->len == 0)
+		return NULL;
+	
+	if (array->len == 1)
+		return array->pdata[0];
+	
+	if (top)
+		n = strlen (top);
+	
+	cur = root = array->pdata[0];
+	
+	for (i = 1; i < array->len; i++) {
+		fi = (CamelFolderInfo *) array->pdata[i];
+		if (top && strncmp (fi->full_name, top, n) != 0) {
+			/* this folder info was not requested */
+			camel_folder_info_free (fi);
+			continue;
+		}
+		
+		if ((p = strrchr (fi->full_name, '/'))) {
+			pname = g_strndup (fi->full_name, p - fi->full_name);
+			if (!strcmp (cur->full_name, pname)) {
+				/* cur is our parent */
+				fi->parent = cur;
+				cur->child = fi;
+				cur = fi;
+			} else if (cur->parent && !strcmp (cur->parent->full_name, pname)) {
+				/* cur is our sibling */
+				fi->parent = cur->parent;
+				cur->next = fi;
+				cur = fi;
+			} else {
+				/* search back for our parent */
+				while (cur->parent) {
+					if (!strcmp (cur->parent->full_name, pname))
+						break;
+					cur = cur->parent;
+				}
+				
+				/* cur should now be our sibling */
+				fi->parent = cur->parent;
+				cur->next = fi;
+				cur = fi;
+			}
+			g_free (pname);
+		} else {
+			/* traverse back to most recent top-level fi */
+			while (cur->parent)
+				cur = cur->parent;
+			
+			cur->next = fi;
+			cur = fi;
+		}
+	}
+	
+	return root;
+}
+
 void
 camel_imap4_flags_diff (flags_diff_t *diff, guint32 old, guint32 new)
 {
