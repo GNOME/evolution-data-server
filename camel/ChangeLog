@@ -1,3 +1,9 @@
+2008-05-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel-net-utils.h [Win32]: Define WIN32_LEAN_AND_MEAN around
+	including <winsock2.h> to reduce the namespace pollution,
+	especially DATADIR clashes.
+
 2008-05-07  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-uid-cache.c (camel_uid_cache_save): Check cache->fd after
