@@ -29,7 +29,9 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #else
+#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
+#undef WIN32_LEAN_AND_MEAN
 #include <ws2tcpip.h>
 #endif
 
