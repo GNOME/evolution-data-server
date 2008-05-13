@@ -1,3 +1,7 @@
+2008-05-13  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libebackend/libebackend.pc.in: Fix a typo.
+
 2008-05-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.23.2 release and version

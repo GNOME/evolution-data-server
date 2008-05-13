@@ -11,5 +11,5 @@ Name: libebackend
 Description: Utility library for Evolution Data Server Backends
 Version: @VERSION@
 Requires: glib-2.0
-Libs: -L${libdir} -lbackend-@API_VERSION@
+Libs: -L${libdir} -lebackend-@API_VERSION@
 Cflags: -I${privincludedir}

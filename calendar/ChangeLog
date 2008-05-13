@@ -1,3 +1,7 @@
+2008-05-13  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libedata-cal/libedata-cal.pc.in: Require libebackend-1.2.
+
 2008-05-09  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes part of #382736 (bnc) 
