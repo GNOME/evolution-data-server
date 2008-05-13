@@ -1,3 +1,41 @@
+Evolution-Data-Server 2.23.2 2008-05-12
+----------------------------------------
+
+Bug Fixes:
+	#182380: (Novell Bugzilla) Message classification and security cannot be viewed (Sankar P)
+	#274316: Moving a message does not retain the follow-up flag or label (Milan Crha)
+	#301980: Warn user when Caps Lock is on (Milan Crha)
+	#316390: New API to support listening for changes in categories (Milan Crha)
+	#325882: If a parent window was given, make the password dialog transient for the parent and center it over the parent (Matthew Barnes)
+	#330990: Allow remove only one instance of the recurring event (Milan Crha)
+	#338330: (Novell Bugzilla) Internet based calendar events are declined by Evolution/GroupWise (Chenthill Palanisamy)
+	#347061: Don't limit references while loading the summary, etc to 500 entries - especially since we don't force the limit when outputting the summary (Jeffrey Stedfast)
+	#350143: (Novell Bugzilla) Plugged severe memory leak in evolution-data-server (Chenthill Palanisamy)
+	#358584: (Novell Bugzilla) Display of web calendars ignores timezones (Chenthill Palanisamy)
+	#358644: (Novell Bugzilla) Retracted groupwise appointments should disappear as soon as they are retracted. (Chenthill Palanisamy)
+	#358650: (Novell Bugzilla) International clock applet is crashing (Chenthill Palanisamy)
+	#381307: (Novell Bugzilla) Run a single delta-thread to fetch changes from the server (Ashish Shrivastava)
+	#382736: (Novell Bugzilla) Exchange crashed everytime at start up. (Chenthill Palanisamy)
+	#424744: Remove Camel's dependency on libedataserver (Matthew Barnes)
+	#502899: Guard private folder's hash tables with a lock to prevent access to them from different threads at same time (Milan Crha)
+	#517244: Configure doesn't set HAVE_CODESET (Matthew Barnes)
+	#520532: Support migration from password file to keyring (Matthew Barnes)
+	#530139: Do not ship .svn files (Matthew Barnes)
+	#530323: Don't free the same variable twice (Sebastien Bacher)
+	#530688: evolution-data-server trunk build failes on solaris because of using s_addr as a variable (Wang Xin)
+	#532284: Fixes a double free (Sankar P)
+
+Other Contributors:
+	A lot of IMAP4 fixes (Jeffrey Stedfast)
+	Use new paths for header files that have been moved to libebackend (Rob Bradford)
+	Use "dialog-password" icon instead of "dialog-question" in the password dialog (HIG compliance) (Matthew Barnes)
+
+Updated Translations:
+	Yair Hershkovitz (he)
+	Jorge Gonzalez (es)
+	Kjartan Maraas (nb)
+	Ignacio Casal Quinteiro (gl)
+
 Evolution-Data-Server 2.23.1 2008-04-21
 ----------------------------------------
 
