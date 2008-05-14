@@ -473,12 +473,13 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (e_cal_component_is_instance (comp)) {
-		const char *rid;
+		char *rid;
 
 		rid = e_cal_component_get_recurid_as_string (comp);
 		if (obj_data) {
 			if (g_hash_table_lookup (obj_data->recurrences, rid)) {
 				g_warning (G_STRLOC ": Tried to add an already existing recurrence");
+				g_free (rid);
 				return;
 			}
 		} else {
@@ -488,7 +489,7 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 			g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj_data);
 		}
 
-		g_hash_table_insert (obj_data->recurrences, g_strdup (rid), comp);
+		g_hash_table_insert (obj_data->recurrences, rid, comp);
 		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 	} else {
 		/* Ensure that the UID is unique; some broken implementations spit
@@ -1903,7 +1904,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
-	const char *comp_uid, *rid = NULL;
+	const char *comp_uid;
+	char *rid = NULL;
 	char *real_rid;
 	ECalComponent *comp, *recurrence;
 	ECalBackendFileObject *obj_data;
@@ -1973,6 +1975,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			save (cbfile);
 
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_free (rid);
 			return GNOME_Evolution_Calendar_Success;
 		}
 
@@ -1990,16 +1993,16 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 		/* add the detached instance */
 		g_hash_table_insert (obj_data->recurrences,
-				     g_strdup (rid),
+				     rid,
 				     comp);
 		icalcomponent_add_component (priv->icalcomp,
 					     e_cal_component_get_icalcomponent (comp));
 		priv->comp = g_list_append (priv->comp, comp);
 		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
+		rid = NULL;
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
-		rid = e_cal_component_get_recurid_as_string (comp);
 		if (!rid || !*rid) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -2008,6 +2011,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			/* Add the new object */
 			add_component (cbfile, comp, TRUE);
+			g_free (rid);
+			rid = NULL;
 			break;
 		}
 
@@ -2048,12 +2053,13 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 		/* add the new detached recurrence */
 		g_hash_table_insert (obj_data->recurrences,
-				     g_strdup (e_cal_component_get_recurid_as_string (comp)),
+				     rid,
 				     comp);
 		icalcomponent_add_component (priv->icalcomp,
 					     e_cal_component_get_icalcomponent (comp));
 		priv->comp = g_list_append (priv->comp, comp);
 		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
+		rid = NULL;
 		break;
 	case CALOBJ_MOD_ALL :
 		/* in this case, we blow away all recurrences, and start over
@@ -2125,6 +2131,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	}
 
 	save (cbfile);
+	g_free (rid);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
@@ -2284,7 +2291,7 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp)
 {
 	ECalBackendFileObject *obj_data;
 	ECalBackendFilePrivate *priv;
-	const char *rid;
+	char *rid;
 	ECalComponent *comp;
 
 	priv = cbfile->priv;
@@ -2306,6 +2313,8 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp)
 		remove_instance (cbfile, obj_data, rid);
 	else
 		remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
+
+	g_free (rid);
 
 	return TRUE;
 }
@@ -2493,8 +2502,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 
 	/* Now we manipulate the components we care about */
 	for (l = comps; l; l = l->next) {
-		const char *uid, *rid;
-		char *object, *old_object;
+		const char *uid;
+		char *object, *old_object, *rid;
 		ECalBackendFileObject *obj_data;
 
 		subcomp = l->data;
@@ -2543,18 +2552,22 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), object);
 				g_free (object);
 			}
+			g_free (rid);
 			break;
 		case ICAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
 			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_COUNTER:
 			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_DECLINECOUNTER:
 			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_CANCEL:
@@ -2579,9 +2592,11 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				g_free (old_object);
 				g_free (object);
 			}
+			g_free (rid);
 			break;
 		default:
 			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			g_free (rid);
 			goto error;
 		}
 	}
