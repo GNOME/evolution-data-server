@@ -37,6 +37,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-xml-utils.c			\
 	e-xml-hash-utils.c		\
 	libedataserver-private.h	\
+	eds-version.c			\
 	md5-utils.c
 
 libedataserver_1_2_la_LIBADD = 				\
@@ -74,6 +75,7 @@ libedataserverinclude_HEADERS =		\
 	e-data-server-util.h		\
 	e-xml-utils.h			\
 	e-xml-hash-utils.h		\
+	eds-version.h			\
 	md5-utils.h
 
 test_source_list_SOURCES = test-source-list.c
@@ -86,6 +88,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserver-$(API_VERSION).pc
 
 EXTRA_DIST = 						\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
+	eds-version.h.in
 
 DISTCLEANFILES = $(pkgconfig_DATA)

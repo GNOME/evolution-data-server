@@ -34,6 +34,7 @@
     <xi:include href="xml/e-util.xml"/>
     <xi:include href="xml/e-url.xml"/>
     <xi:include href="xml/e-xml-hash-utils.xml"/>
+    <xi:include href="xml/eds-version.xml"/>
     <xi:include href="xml/md5-utils.xml"/>
   </chapter>
 

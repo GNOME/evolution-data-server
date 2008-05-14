@@ -1,0 +1,130 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+ * Copyright (C) 2008 Novell, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#ifndef EDS_VERSION_H
+#define EDS_VERSION_H
+
+#include <glib.h>
+
+/**
+ * EDS_MAJOR_VERSION:
+ *
+ * The major version number of the Evolution-Data-Server library.  Like
+ * eds_major_version(), but from the headers used at application compile
+ * time, rather than from the library linked against at application run
+ * time.
+ *
+ * Since: 2.24
+ **/
+#define EDS_MAJOR_VERSION 2
+
+/**
+ * EDS_MINOR_VERSION:
+ *
+ * The minor version number of the Evolution-Data-Server library.  Like
+ * eds_minor_version(), but from the headers used at application compile
+ * time, rather than from the library linked against at application run
+ * time.
+ *
+ * Since: 2.24
+ **/
+#define EDS_MINOR_VERSION 23
+
+/**
+ * EDS_MICRO_VERSION:
+ *
+ * The micro version number of the Evolution-Data-Server library.  Like
+ * eds_micro_version(), but from the headers used at application compile
+ * time, rather than from the library linked against at application run
+ * time.
+ *
+ * Since: 2.24
+ **/
+#define EDS_MICRO_VERSION 3
+
+/**
+ * EDS_CHECK_VERSION:
+ * @major: the major version number
+ * @minor: the minor version number
+ * @micro: the micro version number
+ *
+ * Checks the version of the Evolution-Data-Server library.  Returns
+ * %TRUE if the version of the EDS header files is the same as or newer
+ * than the passed-in version.
+ *
+ * Since: 2.24
+ **/
+#define EDS_CHECK_VERSION(major,minor,micro) \
+	(EDS_MAJOR_VERSION > (major) || \
+	(EDS_MAJOR_VERSION == (major) && EDS_MINOR_VERSION > (minor)) || \
+	(EDS_MAJOR_VERSION == (major) && EDS_MINOR_VERSION == (minor)) && \
+	 EDS_MICRO_VERSION >= (micro))
+
+G_BEGIN_DECLS
+
+/**
+ * eds_major_version:
+ *
+ * The major version number of the Evolution-Data-Server libraries.
+ * (e.g. in Evolution-Data-Server 2.24.1 this is 2.)
+ *
+ * This variable is in the library, so it represents the EDS library you
+ * have linked against.  Contrast with the EDS_MAJOR_VERSION macro, which
+ * represents the major version of the EDS headers you have included.
+ *
+ * Since: 2.24
+ **/
+extern const guint eds_major_version;
+
+/**
+ * eds_minor_version:
+ *
+ * The minor version number of the Evolution-Data-Server libraries.
+ * (e.g. in Evolution-Data-Server 2.24.1 this is 24.)
+ *
+ * This variable is in the library, so it represents the EDS library you
+ * have linked against.  Contrast with the EDS_MINOR_VERSION macro, which
+ * represents the minor version of the EDS headers you have included.
+ *
+ * Since: 2.24
+ **/
+extern const guint eds_minor_version;
+
+/**
+ * eds_micro_version:
+ *
+ * The micro version number of the Evolution-Data-Server libraries.
+ * (e.g. in Evolution-Data-Server 2.24.1 this is 1.)
+ *
+ * This variable is in the library, so it represents the EDS library you
+ * have linked against.  Contrast with the EDS_MICRO_VERSION macro, which
+ * represents the micro version of the EDS headers you have included.
+ *
+ * Since: 2.24
+ **/
+extern const guint eds_micro_version;
+
+
+const gchar *	eds_check_version		(guint required_major,
+						 guint required_minor,
+						 guint required_micro);
+
+G_END_DECLS
+
+#endif /* EDS_VERSION_H */

@@ -1,7 +1,15 @@
  Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
 
-AC_INIT(evolution-data-server, 2.23.3)
+# Evolution-Data-Server version */
+m4_define([eds_major_version], [2])
+m4_define([eds_minor_version], [23])
+m4_define([eds_micro_version], [3])
+
+m4_define([eds_version],
+          [eds_major_version.eds_minor_version.eds_micro_version])
+
+AC_INIT(evolution-data-server, [eds_version])
 AC_CONFIG_SRCDIR(README)
 
 # Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
@@ -37,6 +45,10 @@ AC_SUBST(BASE_VERSION)
 AC_SUBST(API_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, "$API_VERSION", [Api version (Major.Minor)])
+
+EDS_MAJOR_VERSION=eds_major_version
+EDS_MINOR_VERSION=eds_minor_version
+EDS_MICRO_VERSION=eds_micro_version
 
 # Libtool versioning
 LIBEDATASERVER_CURRENT=11
@@ -87,6 +99,9 @@ LIBEBACKEND_CURRENT=0
 LIBEBACKEND_REVISION=0
 LIBEBACKEND_AGE=0
 
+AC_SUBST(EDS_MAJOR_VERSION)
+AC_SUBST(EDS_MINOR_VERSION)
+AC_SUBST(EDS_MICRO_VERSION)
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
 AC_SUBST(LIBEDATASERVER_AGE)
@@ -1685,6 +1700,7 @@ libdb/Makefile
 libebackend/Makefile
 libebackend/libebackend.pc
 libedataserver/Makefile
+libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc

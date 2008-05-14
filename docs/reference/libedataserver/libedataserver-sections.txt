@@ -610,3 +610,16 @@ e_xml_parse_file
 e_xml_save_file
 e_xml_get_child_by_name
 </SECTION>
+
+<SECTION>
+<FILE>eds-version</FILE>
+<TITLE>Version Information</TITLE>
+eds_major_version
+eds_minor_version
+eds_micro_version
+eds_check_version
+EDS_MAJOR_VERSION
+EDS_MINOR_VERSION
+EDS_MICRO_VERSION
+EDS_CHECK_VERSION
+</SECTION>

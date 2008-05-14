@@ -1,3 +1,22 @@
+2008-05-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #531713
+
+	* configure.in:
+	Split the evolution-data-server version into major/minor/micro
+	macros (wow, say that five times fast!) so we can pass them to
+	libedataserver/eds-version.c.
+
+	* libedataserver/Makefile.am:
+	* libedataserver/eds-version.c:
+	* libedataserver/eds-version.h:
+	New sources files provide macros and functions for checking the
+	version of evolution-data-server.  Would have been handy to have
+	in a couple recent API breaks.
+
+	* docs/references/libedataserver:
+	Add developer documentation for the new symbols.
+
 2008-05-13  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libebackend/libebackend.pc.in: Fix a typo.
