@@ -29,10 +29,8 @@
  * eds_major_version(), but from the headers used at application compile
  * time, rather than from the library linked against at application run
  * time.
- *
- * Since: 2.24
  **/
-#define EDS_MAJOR_VERSION 2
+#define EDS_MAJOR_VERSION @EDS_MAJOR_VERSION@
 
 /**
  * EDS_MINOR_VERSION:
@@ -41,10 +39,8 @@
  * eds_minor_version(), but from the headers used at application compile
  * time, rather than from the library linked against at application run
  * time.
- *
- * Since: 2.24
  **/
-#define EDS_MINOR_VERSION 23
+#define EDS_MINOR_VERSION @EDS_MINOR_VERSION@
 
 /**
  * EDS_MICRO_VERSION:
@@ -53,10 +49,8 @@
  * eds_micro_version(), but from the headers used at application compile
  * time, rather than from the library linked against at application run
  * time.
- *
- * Since: 2.24
  **/
-#define EDS_MICRO_VERSION 3
+#define EDS_MICRO_VERSION @EDS_MICRO_VERSION@
 
 /**
  * EDS_CHECK_VERSION:
@@ -67,8 +61,6 @@
  * Checks the version of the Evolution-Data-Server library.  Returns
  * %TRUE if the version of the EDS header files is the same as or newer
  * than the passed-in version.
- *
- * Since: 2.24
  **/
 #define EDS_CHECK_VERSION(major,minor,micro) \
 	(EDS_MAJOR_VERSION > (major) || \
@@ -87,8 +79,6 @@ G_BEGIN_DECLS
  * This variable is in the library, so it represents the EDS library you
  * have linked against.  Contrast with the EDS_MAJOR_VERSION macro, which
  * represents the major version of the EDS headers you have included.
- *
- * Since: 2.24
  **/
 extern const guint eds_major_version;
 
@@ -101,8 +91,6 @@ extern const guint eds_major_version;
  * This variable is in the library, so it represents the EDS library you
  * have linked against.  Contrast with the EDS_MINOR_VERSION macro, which
  * represents the minor version of the EDS headers you have included.
- *
- * Since: 2.24
  **/
 extern const guint eds_minor_version;
 
@@ -115,8 +103,6 @@ extern const guint eds_minor_version;
  * This variable is in the library, so it represents the EDS library you
  * have linked against.  Contrast with the EDS_MICRO_VERSION macro, which
  * represents the micro version of the EDS headers you have included.
- *
- * Since: 2.24
  **/
 extern const guint eds_micro_version;
 
