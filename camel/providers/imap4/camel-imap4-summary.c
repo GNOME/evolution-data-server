@@ -123,8 +123,6 @@ camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *kl
 	folder_summary->message_info_size = sizeof (CamelIMAP4MessageInfo);
 	folder_summary->content_info_size = sizeof (CamelIMAP4MessageContentInfo);
 	
-	((CamelFolderSummary *) summary)->flags |= CAMEL_IMAP4_SUMMARY_HAVE_MLIST;
-	
 	summary->update_flags = TRUE;
 	summary->uidvalidity_changed = FALSE;
 }
@@ -1181,9 +1179,9 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 }
 
 #define IMAP4_ALL "FLAGS INTERNALDATE RFC822.SIZE ENVELOPE"
-#define MAILING_LIST_HEADERS "List-Post List-Id Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe"
+#define MAILING_LIST_HEADERS "List-Post Mailing-List Originator X-Mailing-List X-Loop X-List Sender Delivered-To Return-Path X-BeenThere List-Unsubscribe"
 
-#define BASE_HEADER_FIELDS "Content-Type References In-Reply-To"
+#define BASE_HEADER_FIELDS "Content-Type References In-Reply-To List-Id"
 #define MORE_HEADER_FIELDS BASE_HEADER_FIELDS " " MAILING_LIST_HEADERS
 
 static void

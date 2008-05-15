@@ -33,6 +33,7 @@
 
 #include "camel-imap4-store.h"
 
+/* FIXME: Add options for cache expiration */
 static CamelProviderConfEntry imap4_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for new mail") },

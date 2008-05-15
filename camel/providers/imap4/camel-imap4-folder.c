@@ -86,7 +86,9 @@ static CamelOfflineFolderClass *parent_class = NULL;
 static GSList *imap4_folder_props = NULL;
 
 static CamelProperty imap4_prop_list[] = {
-	{ CAMEL_IMAP4_FOLDER_ENABLE_MLIST, "mlist_info", N_("Enable Mailing-List detection required for some filter and vFolder rules") },
+	{ CAMEL_IMAP4_FOLDER_ENABLE_MLIST, "mlist_info", N_("Enable extended Mailing-List detection required for some filter and vFolder rules") },
+	{ CAMEL_IMAP4_FOLDER_EXPIRE_ACCESS, "expire-access", N_("Expire cached messages that haven't been read in X seconds") },
+	{ CAMEL_IMAP4_FOLDER_EXPIRE_AGE, "expire-age", N_("Expire cached messages older than X seconds") },
 };
 
 
@@ -157,8 +159,7 @@ camel_imap4_folder_finalize (CamelObject *object)
 	
 	camel_object_unref (folder->search);
 	
-	if (folder->cache)
-		camel_object_unref (folder->cache);
+	camel_object_unref (folder->cache);
 	
 	if (folder->journal) {
 		camel_offline_journal_write (folder->journal, NULL);
@@ -172,6 +173,7 @@ camel_imap4_folder_finalize (CamelObject *object)
 static int
 imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
+	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
 	CamelArgGetV props;
 	int i, count = 0;
 	guint32 tag;
@@ -190,7 +192,13 @@ imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			*arg->ca_ptr = g_slist_concat (*arg->ca_ptr, g_slist_copy (imap4_folder_props));
 			break;
 		case CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST:
-			*arg->ca_int = ((CamelIMAP4Folder *) object)->enable_mlist;
+			*arg->ca_int = folder->enable_mlist;
+			break;
+		case CAMEL_IMAP4_FOLDER_ARG_EXPIRE_ACCESS:
+			*arg->ca_int = folder->cache->expire_access;
+			break;
+		case CAMEL_IMAP4_FOLDER_ARG_EXPIRE_AGE:
+			*arg->ca_int = folder->cache->expire_age;
 			break;
 		default:
 			count++;
@@ -210,6 +218,7 @@ static int
 imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
+	CamelDataCache *cache = folder->cache;
 	gboolean save = FALSE;
 	guint32 tag;
 	int i;
@@ -223,6 +232,18 @@ imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 		case CAMEL_IMAP4_FOLDER_ARG_ENABLE_MLIST:
 			if (folder->enable_mlist != arg->ca_int) {
 				folder->enable_mlist = arg->ca_int;
+				save = TRUE;
+			}
+			break;
+		case CAMEL_IMAP4_FOLDER_ARG_EXPIRE_ACCESS:
+			if (cache->expire_access != (time_t) arg->ca_int) {
+				camel_data_cache_set_expire_access (cache, (time_t) arg->ca_int);
+				save = TRUE;
+			}
+			break;
+		case CAMEL_IMAP4_FOLDER_ARG_EXPIRE_AGE:
+			if (cache->expire_age != (time_t) arg->ca_int) {
+				camel_data_cache_set_expire_age (cache, (time_t) arg->ca_int);
 				save = TRUE;
 			}
 			break;
@@ -367,7 +388,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	
 	if (camel_object_state_read (folder) == -1) {
 		/* set our defaults */
-		imap4_folder->enable_mlist = TRUE;
+		imap4_folder->enable_mlist = FALSE;
 	}
 	
 	if (!g_ascii_strcasecmp (full_name, "INBOX")) {

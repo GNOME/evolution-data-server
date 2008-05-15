@@ -1,3 +1,17 @@
+2008-05-14  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-imap4-folder.c (imap4_getv): Implement support for getting
+	the cache's expire settings.
+	(imap4_setv): Added support for setting the cache's expire
+	settings.
+	(camel_imap4_folder_new): Default enable_mlist to FALSE now that
+	we always fetch at least List-Id.
+
+	* camel-imap4-summary.c: Include "List-Id" in the base
+	headers. This means that enable_mlist now only means that the
+	extended list of Mailing-List headers should be fetched. We assume
+	that List-Id should be enough for most users.
+
 2008-05-12  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-summary.c (camel_imap4_summary_flush_updates):
