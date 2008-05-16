@@ -10,6 +10,6 @@ privincludedir=@privincludedir@
 Name: libedataserver
 Description: Utility library for Evolution Data Server
 Version: @VERSION@
-Requires: libxml-2.0 glib-2.0 gconf-2.0 libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ ORBit-2.0 >= @ORBIT_REQUIRED@
+Requires: libxml-2.0 glib-2.0 gconf-2.0 libsoup-2.4 libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ ORBit-2.0 >= @ORBIT_REQUIRED@
 Libs: -L${libdir} -ledataserver-@API_VERSION@
 Cflags: -I${privincludedir}

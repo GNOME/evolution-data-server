@@ -1,3 +1,12 @@
+2008-05-16  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #532836
+
+	* configure.in:
+	* libedataserver/libedataserver.pc.in:
+	EProxy adds a libsoup dependency to libedataserver.  Add
+	this new requirement to a couple places that were missed.
+
 2008-05-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #531713
