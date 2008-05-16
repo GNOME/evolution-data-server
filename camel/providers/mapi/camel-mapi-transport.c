@@ -83,7 +83,7 @@ mapi_item_debug_dump (MapiItem *item)
 	printf("item->header.cc : %s\n",item->header.cc);
 	printf("item->header.bcc : %s\n",item->header.bcc);
 	printf("item->header.subject : %s\n",item->header.subject);
-	//printf("item->msg.body_stream : %s\n",item->msg.body_stream);
+	printf("item->msg.body_stream : %s\n",item->msg.body_stream);
 	printf("-----------------\n\n");
 }
 
@@ -110,6 +110,7 @@ mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
 {
 	guint8 *buf = g_new0 (guint8 , STREAM_SIZE);
 	guint32	read_size;
+
 	item->msg.body_stream = NULL;
 
 	camel_seekable_stream_seek((CamelSeekableStream *)body, 0, CAMEL_STREAM_SET);
@@ -118,10 +119,10 @@ mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
 			item->msg.body_stream = NULL;
 			return;
 		}
-		
-		if (item->msg.body_stream)// && (*(item->msg.body_stream)))
+
+		if (item->msg.body_stream) {
 			item->msg.body_stream = g_strconcat (item->msg.body_stream, (char *) buf, NULL);
-		else
+		} else
 			item->msg.body_stream = g_strdup ((char *) buf);
 	}
 }
@@ -188,6 +189,7 @@ mapi_do_multipart(CamelMultipart *mp, MapiItem *item)
 		content_id = camel_mime_part_get_content_id(part);
 		
 		type = camel_mime_part_get_content_type(part);
+
 		if (i_part == 0 && camel_content_type_is (type, "text", "plain")) {
 			mapi_item_set_body_stream (item, content_stream);
 		} else {
@@ -255,6 +257,7 @@ mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 			printf("camel message multi part error\n");
 	} else {
 		content_stream = (CamelStream *)camel_stream_mem_new();
+		dw = camel_medium_get_content_object (CAMEL_MEDIUM (message));
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
 		content_type = camel_content_type_simple (type);
 		content_size = camel_data_wrapper_write_to_stream(dw, (CamelStream *)content_stream);
