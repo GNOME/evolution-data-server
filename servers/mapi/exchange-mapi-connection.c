@@ -41,12 +41,12 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
 #define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
 #define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
-//global_mapi_ctx->lp_ctx
-#define LOGALL() 	lp_set_cmdline(global_loadparm, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
-#define LOGNONE() 	lp_set_cmdline(global_loadparm, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
-/* #define LOGALL() */
-/* #define LOGNONE() */
+
+#define LOGALL() 	lp_set_cmdline(global_mapi_ctx->lp_ctx, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
+#define LOGNONE() 	lp_set_cmdline(global_mapi_ctx->lp_ctx, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
+
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
+#define ENABLE_VERBOSE_LOG()    global_mapi_ctx->dumpdata = FALSE;
 
 /* Specifies READ/WRITE sizes to be used while handling attachment streams */
 #define ATTACH_MAX_READ_SIZE  0x1000

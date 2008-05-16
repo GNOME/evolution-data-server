@@ -1,3 +1,7 @@
+2008-05-16  Johnny Jacob  <jjohnny@novell.com>
+
+	* exchange-mapi-connection.c (LOGNONE, LOGALL): Fix debug statements.
+
 2008-05-05  Johnny Jacob  <jjohnny@novell.com>
 
 	* exchange-mapi-utils.h: exchange_mapi_debug_property_dump 
