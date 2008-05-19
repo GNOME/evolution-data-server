@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-26 16:21+0000\n"
+"POT-Creation-Date: 2008-05-19 01:51+0100\n"
 "PO-Revision-Date: 2008-02-27 11:57+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -21,32 +21,33 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : 3\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : "
+"3\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:554
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2317
+#: ../addressbook/backends/file/e-book-backend-file.c:555
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2360
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "يجري التّحميل..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:557
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2276
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2296
+#: ../addressbook/backends/file/e-book-backend-file.c:558
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4169
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "يجري البحث..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2677
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4328
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "يجري تحميل المراسَلين (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2832
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3023
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3067
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2874
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3059
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3103
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "يجري تحديث ذاكرة المراسَلين المخبّأة (%d)... "
@@ -59,7 +60,7 @@ msgstr "بإستخدام الاسم المُميّز (DN)"
 msgid "Using Email Address"
 msgstr "باستخدام عنوان البريد الإلكتروني"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1002
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1005
 msgid "Reconnecting to LDAP server..."
 msgstr "يجري إعادة الاتصال بخادم LDAP..."
 
@@ -67,19 +68,19 @@ msgstr "يجري إعادة الاتصال بخادم LDAP..."
 msgid "Adding contact to LDAP server..."
 msgstr "يجري إضافة مراسَل لخادم LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1726
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1732
 msgid "Removing contact from LDAP server..."
 msgstr "يجري حذف مراسَل من خادم LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2031
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2043
 msgid "Modifying contact from LDAP server..."
 msgstr "يجري تعديل مراسَل في خادم LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4040
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4087
 msgid "Receiving LDAP search results..."
 msgstr "يجري استقبال نتائج بحث LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4189
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
 msgid "Error performing search"
 msgstr "خطأ في تنفيذ البحث"
 
@@ -87,140 +88,107 @@ msgstr "خطأ في تنفيذ البحث"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:254
-#: ../addressbook/libebook/e-book.c:258
-#: ../addressbook/libebook/e-book.c:470
-#: ../addressbook/libebook/e-book.c:474
-#: ../addressbook/libebook/e-book.c:615
-#: ../addressbook/libebook/e-book.c:619
-#: ../addressbook/libebook/e-book.c:708
-#: ../addressbook/libebook/e-book.c:712
-#: ../addressbook/libebook/e-book.c:1022
-#: ../addressbook/libebook/e-book.c:1027
-#: ../addressbook/libebook/e-book.c:1214
-#: ../addressbook/libebook/e-book.c:1218
-#: ../addressbook/libebook/e-book.c:1375
-#: ../addressbook/libebook/e-book.c:1379
-#: ../addressbook/libebook/e-book.c:1588
-#: ../addressbook/libebook/e-book.c:1592
-#: ../addressbook/libebook/e-book.c:1829
-#: ../addressbook/libebook/e-book.c:1833
-#: ../addressbook/libebook/e-book.c:2070
-#: ../addressbook/libebook/e-book.c:2074
-#: ../addressbook/libebook/e-book.c:2286
-#: ../addressbook/libebook/e-book.c:2290
-#: ../addressbook/libebook/e-book.c:3425
+#: ../addressbook/libebook/e-book.c:252 ../addressbook/libebook/e-book.c:256
+#: ../addressbook/libebook/e-book.c:461 ../addressbook/libebook/e-book.c:465
+#: ../addressbook/libebook/e-book.c:604 ../addressbook/libebook/e-book.c:608
+#: ../addressbook/libebook/e-book.c:695 ../addressbook/libebook/e-book.c:699
+#: ../addressbook/libebook/e-book.c:995 ../addressbook/libebook/e-book.c:1000
+#: ../addressbook/libebook/e-book.c:1179 ../addressbook/libebook/e-book.c:1183
+#: ../addressbook/libebook/e-book.c:1338 ../addressbook/libebook/e-book.c:1342
+#: ../addressbook/libebook/e-book.c:1544 ../addressbook/libebook/e-book.c:1548
+#: ../addressbook/libebook/e-book.c:1787 ../addressbook/libebook/e-book.c:1791
+#: ../addressbook/libebook/e-book.c:2025 ../addressbook/libebook/e-book.c:2029
+#: ../addressbook/libebook/e-book.c:2234 ../addressbook/libebook/e-book.c:2238
+#: ../addressbook/libebook/e-book.c:3339
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" في الدفتر قبل \"%s\""
 
-#: ../addressbook/libebook/e-book.c:267
-#: ../addressbook/libebook/e-book.c:483
-#: ../addressbook/libebook/e-book.c:628
-#: ../addressbook/libebook/e-book.c:721
-#: ../addressbook/libebook/e-book.c:1037
-#: ../addressbook/libebook/e-book.c:1228
-#: ../addressbook/libebook/e-book.c:1389
-#: ../addressbook/libebook/e-book.c:1601
-#: ../addressbook/libebook/e-book.c:1842
-#: ../addressbook/libebook/e-book.c:2084
-#: ../addressbook/libebook/e-book.c:2299
-#: ../addressbook/libebook/e-book.c:2665
-#: ../addressbook/libebook/e-book.c:2871
+#: ../addressbook/libebook/e-book.c:265 ../addressbook/libebook/e-book.c:474
+#: ../addressbook/libebook/e-book.c:617 ../addressbook/libebook/e-book.c:708
+#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1193
+#: ../addressbook/libebook/e-book.c:1352 ../addressbook/libebook/e-book.c:1557
+#: ../addressbook/libebook/e-book.c:1800 ../addressbook/libebook/e-book.c:2039
+#: ../addressbook/libebook/e-book.c:2247 ../addressbook/libebook/e-book.c:2593
+#: ../addressbook/libebook/e-book.c:2792
 #, c-format
 msgid "book busy"
 msgstr "الدفتر مشغول"
 
-#: ../addressbook/libebook/e-book.c:300
-#: ../addressbook/libebook/e-book.c:304
-#: ../addressbook/libebook/e-book.c:516
-#: ../addressbook/libebook/e-book.c:520
-#: ../addressbook/libebook/e-book.c:657
-#: ../addressbook/libebook/e-book.c:661
-#: ../addressbook/libebook/e-book.c:750
-#: ../addressbook/libebook/e-book.c:754
-#: ../addressbook/libebook/e-book.c:1066
-#: ../addressbook/libebook/e-book.c:1069
-#: ../addressbook/libebook/e-book.c:1260
-#: ../addressbook/libebook/e-book.c:1263
-#: ../addressbook/libebook/e-book.c:1418
-#: ../addressbook/libebook/e-book.c:1422
-#: ../addressbook/libebook/e-book.c:1637
-#: ../addressbook/libebook/e-book.c:1641
-#: ../addressbook/libebook/e-book.c:1889
-#: ../addressbook/libebook/e-book.c:1893
-#: ../addressbook/libebook/e-book.c:2116
-#: ../addressbook/libebook/e-book.c:2120
-#: ../addressbook/libebook/e-book.c:2327
-#: ../addressbook/libebook/e-book.c:2331
-#: ../addressbook/libebook/e-book.c:2606
-#: ../addressbook/libebook/e-book.c:2693
-#: ../addressbook/libebook/e-book.c:2697
-#: ../addressbook/libebook/e-book.c:2899
-#: ../addressbook/libebook/e-book.c:2903
-#: ../addressbook/libebook/e-book.c:3434
+#: ../addressbook/libebook/e-book.c:296 ../addressbook/libebook/e-book.c:300
+#: ../addressbook/libebook/e-book.c:505 ../addressbook/libebook/e-book.c:509
+#: ../addressbook/libebook/e-book.c:644 ../addressbook/libebook/e-book.c:648
+#: ../addressbook/libebook/e-book.c:735 ../addressbook/libebook/e-book.c:739
+#: ../addressbook/libebook/e-book.c:1037 ../addressbook/libebook/e-book.c:1040
+#: ../addressbook/libebook/e-book.c:1223 ../addressbook/libebook/e-book.c:1226
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1383
+#: ../addressbook/libebook/e-book.c:1593 ../addressbook/libebook/e-book.c:1597
+#: ../addressbook/libebook/e-book.c:1847 ../addressbook/libebook/e-book.c:1851
+#: ../addressbook/libebook/e-book.c:2069 ../addressbook/libebook/e-book.c:2073
+#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
+#: ../addressbook/libebook/e-book.c:2538 ../addressbook/libebook/e-book.c:2619
+#: ../addressbook/libebook/e-book.c:2623 ../addressbook/libebook/e-book.c:2818
+#: ../addressbook/libebook/e-book.c:2822 ../addressbook/libebook/e-book.c:3348
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "خطأ كوبرا (COBRA)عند فعل  \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2587
+#: ../addressbook/libebook/e-book.c:2523
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: لا توجد عملّية حالياً"
 
-#: ../addressbook/libebook/e-book.c:2622
+#: ../addressbook/libebook/e-book.c:2552
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: تعذّر الإلغاء"
 
-#: ../addressbook/libebook/e-book.c:2651
-#: ../addressbook/libebook/e-book.c:2655
+#: ../addressbook/libebook/e-book.c:2579 ../addressbook/libebook/e-book.c:2583
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" في الدفتر بعد \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2721
+#: ../addressbook/libebook/e-book.c:2647
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: أُلغِيَ"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3203
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: مصدر غير سليم."
 
-#: ../addressbook/libebook/e-book.c:3297
-#: ../addressbook/libebook/e-book.c:3363
+#: ../addressbook/libebook/e-book.c:3211 ../addressbook/libebook/e-book.c:3277
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: لا معامل متوفرة للعنوان `%s'"
 
-#: ../addressbook/libebook/e-book.c:3309
+#: ../addressbook/libebook/e-book.c:3223
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: تعذّر إنشاء EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3576
+#: ../addressbook/libebook/e-book.c:3490
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: لم يوجد أي رمز اتصال ذاتي مخزن في جكونف gconf"
 
-#: ../addressbook/libebook/e-book.c:3709
+#: ../addressbook/libebook/e-book.c:3623
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: لا يوجد مصدر محفوظ للـ uid `%s' في gconf."
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook/e-contact.c:114
+#: ../addressbook/libebook/e-contact.c:113
 msgid "Unique ID"
 msgstr "هويّة فريدة"
 
-#: ../addressbook/libebook/e-contact.c:115
+#: ../addressbook/libebook/e-contact.c:114
 msgid "File Under"
 msgstr "ملف تحت"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:117
+#: ../addressbook/libebook/e-contact.c:116
 msgid "Book URI"
 msgstr "عنوان الدفتر"
 
@@ -228,508 +196,514 @@ msgstr "عنوان الدفتر"
 #. FN isn't really a structured field - we use a getter/setter
 #. so we can set the N property (since evo 1.4 works fine with
 #. vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:123
+#: ../addressbook/libebook/e-contact.c:122
 msgid "Full Name"
 msgstr "الاسم الكامل"
 
-#: ../addressbook/libebook/e-contact.c:124
+#: ../addressbook/libebook/e-contact.c:123
 msgid "Given Name"
 msgstr "الاسم المعطى"
 
-#: ../addressbook/libebook/e-contact.c:125
+#: ../addressbook/libebook/e-contact.c:124
 msgid "Family Name"
 msgstr "اسم العائلة"
 
-#: ../addressbook/libebook/e-contact.c:126
+#: ../addressbook/libebook/e-contact.c:125
 msgid "Nickname"
 msgstr "الاسم المستعار"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:129
+#: ../addressbook/libebook/e-contact.c:128
 msgid "Email 1"
 msgstr "البريد الالكتروني الأول"
 
-#: ../addressbook/libebook/e-contact.c:130
+#: ../addressbook/libebook/e-contact.c:129
 msgid "Email 2"
 msgstr "البريد الإلكتروني الثّاني"
 
-#: ../addressbook/libebook/e-contact.c:131
+#: ../addressbook/libebook/e-contact.c:130
 msgid "Email 3"
 msgstr "البريد الإلكتروني الثّالث"
 
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:131
 msgid "Email 4"
 msgstr "البريد الالكتروني الرابع"
 
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:133
 msgid "Mailer"
 msgstr "المبرِد"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Home Address Label"
 msgstr "تسمية عنوان المنزل"
 
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Work Address Label"
 msgstr "تسمية عنوان العمل"
 
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:138
 msgid "Other Address Label"
 msgstr "تسمية العنوان الآخر"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Assistant Phone"
 msgstr "هاتف المساعد"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Business Phone"
 msgstr "هاتف العمل"
 
-#: ../addressbook/libebook/e-contact.c:144
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Business Phone 2"
 msgstr "هاتف العمل الثاني"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook/e-contact.c:144
 msgid "Business Fax"
 msgstr "فاكس العمل"
 
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Callback Phone"
 msgstr "هاتف المكالمات العائدة"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:146
 msgid "Car Phone"
 msgstr "هاتف السّيارة"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:147
 msgid "Company Phone"
 msgstr "هاتف الشّركة"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Home Phone"
 msgstr "هاتف المنزل"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone 2"
 msgstr "هاتف المنزل الثّاني"
 
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:150
 msgid "Home Fax"
 msgstr "فاكس المنزل"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:151
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:152
 msgid "Mobile Phone"
 msgstr "الهاتف الجوال"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Other Phone"
 msgstr "هاتف آخر"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Other Fax"
 msgstr "فاكس آخر"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Pager"
 msgstr "جهاز الإستدعاء"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Primary Phone"
 msgstr "الهاتف الأساسي"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Radio"
 msgstr "المذياع"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Telex"
 msgstr "تلكس"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:161
+#: ../addressbook/libebook/e-contact.c:160
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:163
 msgid "Organization"
 msgstr "المنظّمة"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Organizational Unit"
 msgstr "الوحدة المنظّماتيّة"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Office"
 msgstr "المكتب"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Title"
 msgstr "اللّقب"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Role"
 msgstr "الدّور"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Manager"
 msgstr "المدير"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:169
 msgid "Assistant"
 msgstr "المساعد"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:172
 msgid "Homepage URL"
 msgstr "عنوان الصفحة الرئيسية"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:173
 msgid "Weblog URL"
 msgstr "عنوان المدوّنة"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:176
 #: ../libedataserverui/e-categories-dialog.c:439
 msgid "Categories"
 msgstr "الفئات"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Calendar URI"
 msgstr "عنوان التقويم"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook/e-contact.c:180
 msgid "Free/Busy URL"
 msgstr "عنوان متوفّر/مشغول"
 
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:181
 msgid "ICS Calendar"
 msgstr "تقويم ICS"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:182
 msgid "Video Conferencing URL"
 msgstr "عنوان مؤتمرات الفيديو"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Spouse's Name"
 msgstr "اسم الزوج"
 
-#: ../addressbook/libebook/e-contact.c:187
+#: ../addressbook/libebook/e-contact.c:186
 msgid "Note"
 msgstr "ملاحظة"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:189
 msgid "AIM Home Screen Name 1"
 msgstr "اسم AIM المستعار الأول في المنزل "
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 2"
 msgstr "اسم AIM المستعار الثاني في المنزل "
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 3"
 msgstr "اسم AIM المستعار الثالث في المنزل "
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Work Screen Name 1"
 msgstr "اسم AIM المستعار الأول في العمل"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 2"
 msgstr "اسم AIM المستعار الثاني في العمل"
 
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 3"
 msgstr "اسم AIM المستعار الثالث في العمل"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:195
 msgid "GroupWise Home Screen Name 1"
 msgstr "اسم GroupWise المستعار الأول في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 2"
 msgstr "اسم GroupWise المستعار الثاني في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 3"
 msgstr "اسم GroupWise المستعار الثالث في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Work Screen Name 1"
 msgstr "اسم GroupWise المستعار الأول في العمل"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 2"
 msgstr "اسم GroupWise المستعار الثاني في العمل"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 3"
 msgstr "اسم GroupWise المستعار الثالث في العمل"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:201
 msgid "Jabber Home Id 1"
 msgstr "هوية Jabber الأولى في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 2"
 msgstr "هوية Jabber الثانية في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 3"
 msgstr "هوية Jabber الثالثة في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Work Id 1"
 msgstr "هوية Jabber الأولى في العمل"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 2"
 msgstr "هوية Jabber الثانية في العمل"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 3"
 msgstr "هوية Jabber الثالثة في العمل"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:207
 msgid "Yahoo! Home Screen Name 1"
 msgstr "اسم ياهو! المستعار الأول في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 2"
 msgstr "اسم ياهو! المستعار الثاني في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 3"
 msgstr "اسم ياهو! المستعار الثالث في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Work Screen Name 1"
 msgstr "اسم ياهو! المستعار الأول في العمل"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 2"
 msgstr "اسم ياهو! المستعار الثاني في العمل"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 3"
 msgstr "اسم ياهو! المستعار الثالث في العمل"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:213
 msgid "MSN Home Screen Name 1"
 msgstr "اسم MSN المستعار الأول في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 2"
 msgstr "اسم MSN المستعار الثاني في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 3"
 msgstr "اسم MSN المستعار الثالث في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Work Screen Name 1"
 msgstr "اسم MSN المستعار الأول في العمل"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 2"
 msgstr "اسم MSN المستعار الثاني في العمل"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 3"
 msgstr "اسم MSN المستعار الثالث في العمل"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:219
 msgid "ICQ Home Id 1"
 msgstr "هوية ICQ الأولى في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 2"
 msgstr "هوية ICQ الثانية في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 3"
 msgstr "هوية ICQ الثالثة في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Work Id 1"
 msgstr "هوية ICQ الأولى في العمل"
 
-#: ../addressbook/libebook/e-contact.c:224
+#: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 2"
 msgstr "هوية ICQ الثانية في العمل"
 
-#: ../addressbook/libebook/e-contact.c:225
+#: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 3"
 msgstr "هوية ICQ الثالثة في العمل"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:228
+#: ../addressbook/libebook/e-contact.c:227
 msgid "Last Revision"
 msgstr "المراجعة الأخيرة"
 
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:228
 msgid "Name or Org"
 msgstr "الاسم أو المنظمة"
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:231
 msgid "Address List"
 msgstr "قائمة العناوين"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:232
 msgid "Home Address"
 msgstr "عنوان المنزل"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:233
 msgid "Work Address"
 msgstr "عنوان العمل"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook/e-contact.c:234
 msgid "Other Address"
 msgstr "عنوان آخر"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:238
+#: ../addressbook/libebook/e-contact.c:237
 msgid "Category List"
 msgstr "قائمة الفئات"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:241
+#: ../addressbook/libebook/e-contact.c:240
 msgid "Photo"
 msgstr "صورة"
 
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:241
 msgid "Logo"
 msgstr "شعار"
 
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:243
 msgid "Name"
 msgstr "اسم"
 
-#: ../addressbook/libebook/e-contact.c:245
+#: ../addressbook/libebook/e-contact.c:244
 msgid "Email List"
 msgstr "قائمة البريد"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook/e-contact.c:247
 msgid "AIM Screen Name List"
 msgstr "قائمة أسماء AIM المستعارة"
 
-#: ../addressbook/libebook/e-contact.c:249
+#: ../addressbook/libebook/e-contact.c:248
 msgid "GroupWise Id List"
 msgstr "قائمة هويّات GroupWise"
 
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:249
 msgid "Jabber Id List"
 msgstr "قائمة هويّات Jabber"
 
-#: ../addressbook/libebook/e-contact.c:251
+#: ../addressbook/libebook/e-contact.c:250
 msgid "Yahoo! Screen Name List"
 msgstr "قائمة أسماء ياهو! المستعارة"
 
-#: ../addressbook/libebook/e-contact.c:252
+#: ../addressbook/libebook/e-contact.c:251
 msgid "MSN Screen Name List"
 msgstr "قائمة أسماء MSN المستعارة"
 
-#: ../addressbook/libebook/e-contact.c:253
+#: ../addressbook/libebook/e-contact.c:252
 msgid "ICQ Id List"
 msgstr "قائمة هويّات ICQ"
 
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook/e-contact.c:254
 msgid "Wants HTML Mail"
 msgstr "يريد بريد HTML"
 
-#: ../addressbook/libebook/e-contact.c:257
+#: ../addressbook/libebook/e-contact.c:256
 msgid "List"
 msgstr "قائمة"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:257
 msgid "List Show Addresses"
 msgstr "قائمة تعرض العناوين"
 
-#: ../addressbook/libebook/e-contact.c:260
+#: ../addressbook/libebook/e-contact.c:259
 msgid "Birth Date"
 msgstr "تاريخ الميلاد"
 
-#: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: ../addressbook/libebook/e-contact.c:260
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
 #: ../libedataserver/e-categories.c:43
 msgid "Anniversary"
 msgstr "الذكرى السنويّة"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook/e-contact.c:263
 msgid "X.509 Certificate"
 msgstr "شهادة X.509"
 
-#: ../addressbook/libebook/e-contact.c:266
+#: ../addressbook/libebook/e-contact.c:265
 msgid "Gadu-Gadu Home Id 1"
 msgstr "هوية Gadu-Gadu الأولى في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:267
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 2"
 msgstr "هوية Gadu-Gadu الثانية في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:268
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 3"
 msgstr "هوية Gadu-Gadu الثالثة في المنزل"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Work Id 1"
 msgstr "هوية Gadu-Gadu الأولى في العمل"
 
-#: ../addressbook/libebook/e-contact.c:270
+#: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 2"
 msgstr "هوية Gadu-Gadu الثانية في العمل"
 
-#: ../addressbook/libebook/e-contact.c:271
+#: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 3"
 msgstr "هوية Gadu-Gadu الثالثة في العمل"
 
-#: ../addressbook/libebook/e-contact.c:272
+#: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Id List"
 msgstr "قائمة هويّات Gadu-Gadu"
 
 #. Geo information
-#: ../addressbook/libebook/e-contact.c:275
+#: ../addressbook/libebook/e-contact.c:274
 msgid "Geographic Information"
 msgstr "المعلومات الجغرافية"
 
-#: ../addressbook/libebook/e-contact.c:277
+#: ../addressbook/libebook/e-contact.c:276
 msgid "Telephone"
 msgstr "هاتف"
 
-#: ../addressbook/libebook/e-contact.c:1494
+#: ../addressbook/libebook/e-contact.c:1493
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "قائمة غير مسمّاة"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
 msgstr "عيد الميلاد"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:490
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
 #, c-format
 msgid "Birthday: %s"
 msgstr "عيد الميلاد: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:514
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
 #, c-format
 msgid "Anniversary: %s"
 msgstr "الذكرى السنويّة: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:203
+#: ../calendar/backends/file/e-cal-backend-file.c:213
 msgid "Cannot save calendar data: Malformed URI."
+msgstr "تعذّر حفظ بيانات التقويم: نوان مشوّه."
+
+#: ../calendar/backends/file/e-cal-backend-file.c:220
+#: ../calendar/backends/file/e-cal-backend-file.c:226
+#, fuzzy
+msgid "Cannot save calendar data"
 msgstr "تعذّر حفظ بيانات التقويم: نوان مشوّه."
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:335
@@ -737,50 +711,50 @@ msgid "Could not create thread for getting deltas"
 msgstr "لم يمكن صنع خيط عمل لإيجاد الفروق"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1175
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1039
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1338
+#: ../calendar/backends/google/e-cal-backend-google.c:1190
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1049
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1348
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "لم أستطع إنشاء ملف ذاكرة مخبئيّة"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1051
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1061
 msgid "Could not create thread for populating cache"
 msgstr "لم يمكن صنع خيط عمل لتعمير المخزن"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1028
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1784
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1799
 msgid "Reply Requested: by "
 msgstr "طُلِب الرد: بواسطة"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1033
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1789
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1804
 msgid "Reply Requested: When convenient"
 msgstr "طُلِب الرد: عندما يكون مناسبا"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:277
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
 #, c-format
 msgid "Loading %s items"
 msgstr "تحميل عناصر %s"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "التقويم"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:933
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
 msgid "Invalid server URI"
 msgstr "عنوان خادم غير سليم"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:952
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:961
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1057
-#: ../calendar/libecal/e-cal.c:5031
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1069
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1101
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1139
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1067
+#: ../calendar/libecal/e-cal.c:5035
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1074
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1106
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -993,7 +967,7 @@ msgstr "%.1f-%.1fسم ثلوج\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fبوصة ثلوج\n"
 
-#: ../calendar/libecal/e-cal-component.c:1315
+#: ../calendar/libecal/e-cal-component.c:1316
 msgid "Untitled appointment"
 msgstr "موعد غير معنون"
 
@@ -1121,18 +1095,15 @@ msgstr "الثّلاثين"
 msgid "31st"
 msgstr "الحادي و الثّلاثون"
 
-#: ../calendar/libecal/e-cal-util.c:684
-#: ../calendar/libecal/e-cal-util.c:712
+#: ../calendar/libecal/e-cal-util.c:684 ../calendar/libecal/e-cal-util.c:712
 msgid "High"
 msgstr "مرتفع"
 
-#: ../calendar/libecal/e-cal-util.c:686
-#: ../calendar/libecal/e-cal-util.c:714
+#: ../calendar/libecal/e-cal-util.c:686 ../calendar/libecal/e-cal-util.c:714
 msgid "Normal"
 msgstr "عادي"
 
-#: ../calendar/libecal/e-cal-util.c:688
-#: ../calendar/libecal/e-cal-util.c:716
+#: ../calendar/libecal/e-cal-util.c:688 ../calendar/libecal/e-cal-util.c:716
 msgid "Low"
 msgstr "منخفض"
 
@@ -1141,8 +1112,7 @@ msgstr "منخفض"
 msgid "Undefined"
 msgstr "غير معرّف"
 
-#: ../calendar/libecal/e-cal.c:1665
-#: ../libedataserverui/e-book-auth-util.c:200
+#: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:200
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "أدخل كلمة السّر لـ %s·(المستخدم %s)"
@@ -1156,92 +1126,89 @@ msgstr "أدخل كلمة السّر لـ %s·(المستخدم %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "أدخل كلمة السّر لـ %s·لتفعيل البروكسي للمستخدم %s"
 
-#: ../calendar/libecal/e-cal.c:5003
+#: ../calendar/libecal/e-cal.c:5007
 msgid "Invalid argument"
 msgstr "معامِل غير صحيح"
 
-#: ../calendar/libecal/e-cal.c:5005
+#: ../calendar/libecal/e-cal.c:5009
 msgid "Backend is busy"
 msgstr "النهاية مشغولة"
 
-#: ../calendar/libecal/e-cal.c:5007
+#: ../calendar/libecal/e-cal.c:5011
 msgid "Repository is offline"
 msgstr "المستودع غير متّصل"
 
-#: ../calendar/libecal/e-cal.c:5009
+#: ../calendar/libecal/e-cal.c:5013
 msgid "No such calendar"
 msgstr "لا تقويم كهذا"
 
-#: ../calendar/libecal/e-cal.c:5011
-#: ../servers/groupwise/e-gw-connection.c:199
+#: ../calendar/libecal/e-cal.c:5015 ../servers/groupwise/e-gw-connection.c:232
 msgid "Object not found"
 msgstr "لم يوجد الكائن"
 
-#: ../calendar/libecal/e-cal.c:5013
-#: ../servers/groupwise/e-gw-connection.c:193
+#: ../calendar/libecal/e-cal.c:5017 ../servers/groupwise/e-gw-connection.c:226
 msgid "Invalid object"
 msgstr "كائن خاطيء"
 
-#: ../calendar/libecal/e-cal.c:5015
+#: ../calendar/libecal/e-cal.c:5019
 msgid "URI not loaded"
 msgstr "لم يحمّل العنوان"
 
-#: ../calendar/libecal/e-cal.c:5017
+#: ../calendar/libecal/e-cal.c:5021
 msgid "URI already loaded"
 msgstr "حُمِّل العنوان بالفعل"
 
-#: ../calendar/libecal/e-cal.c:5019
+#: ../calendar/libecal/e-cal.c:5023
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "رُفض التّصريح"
 
-#: ../calendar/libecal/e-cal.c:5021
-#: ../servers/groupwise/e-gw-connection.c:201
+#: ../calendar/libecal/e-cal.c:5025 ../servers/groupwise/e-gw-connection.c:234
 msgid "Unknown User"
 msgstr "مستخدم مجهول"
 
 # checked, typed but the nchanged: you add a new ID and the other exists
 # the meaning of this dialog is more" you can't add a newone cz another one exists"
-#: ../calendar/libecal/e-cal.c:5023
+#: ../calendar/libecal/e-cal.c:5027
 msgid "Object ID already exists"
 msgstr "هويّة الكائن موجودة مسبقاً"
 
-#: ../calendar/libecal/e-cal.c:5025
+#: ../calendar/libecal/e-cal.c:5029
 msgid "Protocol not supported"
 msgstr "البروتوكول غير مدعوم"
 
-#: ../calendar/libecal/e-cal.c:5027
+#: ../calendar/libecal/e-cal.c:5031
 msgid "Operation has been canceled"
 msgstr "أُلغِيت العمليّة"
 
-#: ../calendar/libecal/e-cal.c:5029
+#: ../calendar/libecal/e-cal.c:5033
 msgid "Could not cancel operation"
 msgstr "تعذّر إلغاء العمليّة"
 
-#: ../calendar/libecal/e-cal.c:5033
+#: ../calendar/libecal/e-cal.c:5037
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "مطلوبٌ التّوثيق"
 
-#: ../calendar/libecal/e-cal.c:5035
+#: ../calendar/libecal/e-cal.c:5039
 msgid "A CORBA exception has occurred"
 msgstr "حدث استثناء CORBA"
 
-#: ../calendar/libecal/e-cal.c:5037
+#: ../calendar/libecal/e-cal.c:5041
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
-#: ../camel/providers/imap/camel-imap-store.c:762
-#: ../camel/providers/imap4/camel-imap4-store.c:313
-#: ../camel/providers/pop3/camel-pop3-store.c:559
+#: ../camel/providers/imap/camel-imap-store.c:763
+#: ../camel/providers/imap4/camel-imap4-store.c:315
+#: ../camel/providers/pop3/camel-pop3-store.c:553
+#: ../camel/providers/pop3/camel-pop3-store.c:560
 #: ../camel/providers/pop3/camel-pop3-store.c:566
-#: ../camel/providers/pop3/camel-pop3-store.c:572
 #: ../servers/exchange/storage/e-storage.c:585
-#: ../servers/groupwise/e-gw-connection.c:207
+#: ../servers/groupwise/e-gw-connection.c:240
 msgid "Unknown error"
 msgstr "خطأ مجهول"
 
-#: ../calendar/libecal/e-cal.c:5039
+#: ../calendar/libecal/e-cal.c:5043
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "لا خطأ"
@@ -1318,8 +1285,14 @@ msgstr "\"%s\" يتوقّع أن يكون المعامل الثاني سلسلة
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
 #, c-format
-msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""
-msgstr "\"%s\" يتوقع أن يكون المعامل الأول إما \"any\" أو \"summary\" أو \"description\" أو \"location\" أو \"attendee\" أو \"organizer\" أو \"classification\""
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"\"classification\""
+msgstr ""
+"\"%s\" يتوقع أن يكون المعامل الأول إما \"any\" أو \"summary\" أو "
+"\"description\" أو \"location\" أو \"attendee\" أو \"organizer\" أو "
+"\"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
 #, c-format
@@ -1328,8 +1301,12 @@ msgstr "\"%s\" يتوقّع معامِل واحد على الأقل."
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:939
 #, c-format
-msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
-msgstr "\"%s\" يتوقع أن تكون كل المعاملات سلاسل حرفية أو واحد وواحد فقط عدد منطقي خاطيء (#f)"
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\" يتوقع أن تكون كل المعاملات سلاسل حرفية أو واحد وواحد فقط عدد منطقي "
+"خاطيء (#f)"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1406,13 +1383,11 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "يجري المزامنة مع الخادم"
 
-#: ../camel/camel-disco-folder.c:43
-#: ../camel/camel-offline-folder.c:52
+#: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
 msgstr "انسخ محتويات المجلّد محلّية للعمليات بدون اتصال"
 
-#: ../camel/camel-disco-folder.c:105
-#: ../camel/camel-offline-folder.c:111
+#: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
 msgstr "يجري تنزيل رسائل جديدة لنمط عدم الإتّصال"
 
@@ -1422,7 +1397,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "يجري تحضير المجلّد '%s' لنمط عدم الإتّصال"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:3018
+#: ../camel/providers/imap/camel-imap-store.c:3026
 msgid "You must be working online to complete this operation"
 msgstr "يجب أن تكون متّصلاً لإتمام هذه العمليّة"
 
@@ -1440,19 +1415,16 @@ msgstr "فشل إنشاء العمليّة الإبنة '%s': %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "تيّار رسائل غير صالح تلقّي من %s: %s"
 
-#: ../camel/camel-filter-driver.c:1017
-#: ../camel/camel-filter-driver.c:1026
+#: ../camel/camel-filter-driver.c:1017 ../camel/camel-filter-driver.c:1026
 msgid "Syncing folders"
 msgstr "يجري مزامنة المجلّدات"
 
-#: ../camel/camel-filter-driver.c:1115
-#: ../camel/camel-filter-driver.c:1495
+#: ../camel/camel-filter-driver.c:1115 ../camel/camel-filter-driver.c:1495
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "خطأ أثناء ترجمة المرشِّح: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1124
-#: ../camel/camel-filter-driver.c:1504
+#: ../camel/camel-filter-driver.c:1124 ../camel/camel-filter-driver.c:1504
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "خطأ أثناء تنفيذ المرشِّح: %s: %s"
@@ -1474,19 +1446,16 @@ msgstr "يجري جلب الرّسالة %d (%d%%)"
 msgid "Cannot open message"
 msgstr "لا يمكن فتح الرّسالة"
 
-#: ../camel/camel-filter-driver.c:1221
-#: ../camel/camel-filter-driver.c:1234
+#: ../camel/camel-filter-driver.c:1221 ../camel/camel-filter-driver.c:1234
 #, c-format
 msgid "Failed on message %d"
 msgstr "فشل عند الرّسالة %d"
 
-#: ../camel/camel-filter-driver.c:1248
-#: ../camel/camel-filter-driver.c:1339
+#: ../camel/camel-filter-driver.c:1248 ../camel/camel-filter-driver.c:1339
 msgid "Syncing folder"
 msgstr "يجري مزامنة المجلّد"
 
-#: ../camel/camel-filter-driver.c:1252
-#: ../camel/camel-filter-driver.c:1344
+#: ../camel/camel-filter-driver.c:1252 ../camel/camel-filter-driver.c:1344
 msgid "Complete"
 msgstr "تام"
 
@@ -1518,14 +1487,12 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "فشل إنشاء العمليّة الإبنة '%s': %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:737
-#: ../camel/camel-filter-search.c:745
+#: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "خطأ أثناء تنفيذ بحث المرشِّح: %s: %s"
 
-#: ../camel/camel-folder-search.c:358
-#: ../camel/camel-folder-search.c:480
+#: ../camel/camel-folder-search.c:358 ../camel/camel-folder-search.c:480
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1534,8 +1501,7 @@ msgstr ""
 "لا يمكن تحليل تعبير البحث: %s: \n"
 "%s"
 
-#: ../camel/camel-folder-search.c:368
-#: ../camel/camel-folder-search.c:490
+#: ../camel/camel-folder-search.c:368 ../camel/camel-folder-search.c:490
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1544,8 +1510,7 @@ msgstr ""
 "خطأ أثناء تنفيذ تعبير البحث: %s\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:677
-#: ../camel/camel-folder-search.c:712
+#: ../camel/camel-folder-search.c:677 ../camel/camel-folder-search.c:712
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) تحتاج ناتجاً منطقياً واحداً"
@@ -1555,8 +1520,7 @@ msgstr "(%s) تحتاج ناتجاً منطقياً واحداً"
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) غير مسموحة داخل %s"
 
-#: ../camel/camel-folder-search.c:771
-#: ../camel/camel-folder-search.c:778
+#: ../camel/camel-folder-search.c:771 ../camel/camel-folder-search.c:778
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) تتطلب نصاً مطابق النوع"
@@ -1576,42 +1540,42 @@ msgstr "(%s) تتطلب مجموعة المجلدات"
 msgid "Performing query on unknown header: %s"
 msgstr "يجري تنفيذ الإستعلام على ترويسة مجهولة: %s"
 
-#: ../camel/camel-folder.c:618
+#: ../camel/camel-folder.c:628
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "عمليّة غير مدعومة: إضافة الرّسالة: لـ %s"
 
-#: ../camel/camel-folder.c:1240
+#: ../camel/camel-folder.c:1250
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "عمليّة غير مدعومة: ابحث بواسطة التّعبير: عن %s"
 
-#: ../camel/camel-folder.c:1281
+#: ../camel/camel-folder.c:1291
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "عمليّة غير مدعومة: ابحث بواسطة UID: عن %s"
 
-#: ../camel/camel-folder.c:1397
+#: ../camel/camel-folder.c:1407
 msgid "Moving messages"
 msgstr "يجري نقل الرّسائل"
 
-#: ../camel/camel-folder.c:1397
+#: ../camel/camel-folder.c:1407
 msgid "Copying messages"
 msgstr "يجري نسخ الرّسائل"
 
-#: ../camel/camel-folder.c:1651
+#: ../camel/camel-folder.c:1750
 msgid "Learning junk"
 msgstr "يجري تعلّم النفاية"
 
-#: ../camel/camel-folder.c:1668
+#: ../camel/camel-folder.c:1767
 msgid "Learning non-junk"
 msgstr "يجري تعلّم ما ليس نفاية"
 
-#: ../camel/camel-folder.c:1687
+#: ../camel/camel-folder.c:1786
 msgid "Filtering new message(s)"
 msgstr "يجري ترشيح الرّسائل الجديدة"
 
-#: ../camel/camel-gpg-context.c:754
+#: ../camel/camel-gpg-context.c:755
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1622,16 +1586,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:769
+#: ../camel/camel-gpg-context.c:770
 msgid "Failed to parse gpg userid hint."
 msgstr "فشل تحليل تلميحة هويّة مستخدم gpg."
 
-#: ../camel/camel-gpg-context.c:793
-#: ../camel/camel-gpg-context.c:807
+#: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:808
 msgid "Failed to parse gpg passphrase request."
 msgstr "فشت تحليل طلب كلمة سرّ gpg."
 
-#: ../camel/camel-gpg-context.c:827
+#: ../camel/camel-gpg-context.c:828
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1640,7 +1603,7 @@ msgstr ""
 "تحتاج إلى PIN لتفك القفل عن مفتاح\n"
 "SmartCard خاصتك: \"%s\""
 
-#: ../camel/camel-gpg-context.c:831
+#: ../camel/camel-gpg-context.c:832
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1649,113 +1612,99 @@ msgstr ""
 "تحتاج إلى جملة سرّ لتفك القفل عن مفتاح\n"
 "المستخدم: \"%s\""
 
-#: ../camel/camel-gpg-context.c:836
+#: ../camel/camel-gpg-context.c:837
 #, c-format
 msgid "Unexpected request from GnuPG for `%s'"
 msgstr "طلب غير متوقّع من GnuPG لـ `%s'"
 
-#: ../camel/camel-gpg-context.c:861
-#: ../camel/camel-gpg-context.c:1066
+#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1068
 #: ../camel/providers/nntp/camel-nntp-store.c:1281
 msgid "Canceled."
 msgstr "أُلغِي."
 
-#: ../camel/camel-gpg-context.c:875
+#: ../camel/camel-gpg-context.c:876
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "فشلت إزالة قفل المفتاح السّري: أُعطيت 3 كلمات سر غير سليمة."
 
-#: ../camel/camel-gpg-context.c:883
+#: ../camel/camel-gpg-context.c:884
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "إستجابة غير متوقّعة من GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:936
+#: ../camel/camel-gpg-context.c:937
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "فشل التّشفير: لم يحدّد أيّة مستلمين سليمين."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1204
-#: ../camel/camel-gpg-context.c:1332
-#: ../camel/camel-gpg-context.c:1826
-#: ../camel/camel-gpg-context.c:1871
+#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1334
+#: ../camel/camel-gpg-context.c:1829 ../camel/camel-gpg-context.c:1874
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "فشل تنفيذ gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1300
-#: ../camel/camel-smime-context.c:392
+#: ../camel/camel-gpg-context.c:1302 ../camel/camel-smime-context.c:392
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "تعذّر توليد بيانات التّوقيع: %s"
 
-#: ../camel/camel-gpg-context.c:1347
-#: ../camel/camel-gpg-context.c:1531
-#: ../camel/camel-gpg-context.c:1616
-#: ../camel/camel-gpg-context.c:1631
-#: ../camel/camel-gpg-context.c:1748
-#: ../camel/camel-gpg-context.c:1763
-#: ../camel/camel-gpg-context.c:1842
-#: ../camel/camel-gpg-context.c:1887
+#: ../camel/camel-gpg-context.c:1349 ../camel/camel-gpg-context.c:1534
+#: ../camel/camel-gpg-context.c:1619 ../camel/camel-gpg-context.c:1634
+#: ../camel/camel-gpg-context.c:1750 ../camel/camel-gpg-context.c:1765
+#: ../camel/camel-gpg-context.c:1845 ../camel/camel-gpg-context.c:1890
 msgid "Failed to execute gpg."
 msgstr "فشل تنفيذ gpg."
 
-#: ../camel/camel-gpg-context.c:1366
+#: ../camel/camel-gpg-context.c:1368
 msgid "This is a digitally signed message part"
 msgstr "هذا جزء من رسالة موقّع رقميّاً"
 
-#: ../camel/camel-gpg-context.c:1451
-#: ../camel/camel-gpg-context.c:1457
-#: ../camel/camel-gpg-context.c:1463
-#: ../camel/camel-gpg-context.c:1479
-#: ../camel/camel-smime-context.c:695
-#: ../camel/camel-smime-context.c:706
+#: ../camel/camel-gpg-context.c:1453 ../camel/camel-gpg-context.c:1459
+#: ../camel/camel-gpg-context.c:1465 ../camel/camel-gpg-context.c:1480
+#: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
 #: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "لا يمكن التّحقق من توقيع الرّسالة: تهيئة الرّسالة غير سليمة"
 
-#: ../camel/camel-gpg-context.c:1516
+#: ../camel/camel-gpg-context.c:1519
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "لا يمكن التّحقّق من توقيع الرّسالة: تعذّر إنشاء الملفّ المؤقّت: %s"
 
-#: ../camel/camel-gpg-context.c:1599
+#: ../camel/camel-gpg-context.c:1602
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "تعذّر توليد بيانات التّشفير: %s"
 
-#: ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1652
 msgid "This is a digitally encrypted message part"
 msgstr "هذا جزء من رسالة مشفّر رقميّاً"
 
-#: ../camel/camel-gpg-context.c:1702
-#: ../camel/camel-gpg-context.c:1710
-#: ../camel/camel-gpg-context.c:1730
+#: ../camel/camel-gpg-context.c:1705 ../camel/camel-gpg-context.c:1713
+#: ../camel/camel-gpg-context.c:1732
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "لا يمكن فك تشفير الرسالة: تهيئة الرسالة غير سليمة"
 
-#: ../camel/camel-gpg-context.c:1719
+#: ../camel/camel-gpg-context.c:1722
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "فشل فك تشفير جزء MIME: خطأ برتوكول"
 
-#: ../camel/camel-gpg-context.c:1784
-#: ../camel/camel-smime-context.c:969
+#: ../camel/camel-gpg-context.c:1787 ../camel/camel-smime-context.c:969
 msgid "Encrypted content"
 msgstr "محتويات مشفّرة"
 
-#: ../camel/camel-gpg-context.c:1803
+#: ../camel/camel-gpg-context.c:1806
 msgid "Unable to parse message content"
 msgstr "تعذّر تحليل محتويات الرّسالة"
 
-#: ../camel/camel-gpg-context.c:1827
-#: ../camel/camel-gpg-context.c:1872
+#: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
 #: ../camel/camel-tcp-stream-openssl.c:635
-#: ../camel/providers/imap4/camel-imap4-engine.c:1548
-#: ../camel/providers/imap4/camel-imap4-engine.c:1587
-#: ../camel/providers/imap4/camel-imap4-engine.c:1632
-#: ../camel/providers/imap4/camel-imap4-engine.c:1688
-#: ../camel/providers/imap4/camel-imap4-store.c:820
-#: ../camel/providers/imap4/camel-imap4-store.c:1495
-#: ../camel/providers/imap4/camel-imap4-utils.c:557
+#: ../camel/providers/imap4/camel-imap4-engine.c:1570
+#: ../camel/providers/imap4/camel-imap4-engine.c:1609
+#: ../camel/providers/imap4/camel-imap4-engine.c:1654
+#: ../camel/providers/imap4/camel-imap4-engine.c:1710
+#: ../camel/providers/imap4/camel-imap4-store.c:823
+#: ../camel/providers/imap4/camel-imap4-store.c:1577
+#: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:164
 #: ../camel/providers/smtp/camel-smtp-transport.c:219
 msgid "Unknown"
@@ -1771,8 +1720,7 @@ msgstr "لا يمكن بناء أنبوب مساعد قافل: %s"
 msgid "Cannot fork locking helper: %s"
 msgstr "لا يمكن تشعيب مساعد قافل: %s"
 
-#: ../camel/camel-lock-client.c:204
-#: ../camel/camel-lock-client.c:227
+#: ../camel/camel-lock-client.c:204 ../camel/camel-lock-client.c:227
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "تعذّر قفل '%s': خطأ في البرتوكول مع lock-helper"
@@ -1790,7 +1738,8 @@ msgstr "تعذّر إنشاء ملف الإقفال لـ %s: %s"
 #: ../camel/camel-lock.c:144
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr "نفدت المهلة أثناء محاولة الحصول على ملف القفل على %s. حاول مرّةً أُخرى لاحقاً."
+msgstr ""
+"نفدت المهلة أثناء محاولة الحصول على ملف القفل على %s. حاول مرّةً أُخرى لاحقاً."
 
 #: ../camel/camel-lock.c:199
 #, c-format
@@ -1851,51 +1800,49 @@ msgstr "خطأ أثناء قراءة ملف البريد: %s"
 msgid "Error writing mail temp file: %s"
 msgstr "خطأ أثناء كتابة ملف البريد المؤقّت: %s"
 
-#: ../camel/camel-movemail.c:464
-#: ../camel/camel-movemail.c:531
+#: ../camel/camel-movemail.c:464 ../camel/camel-movemail.c:531
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "خطأ أثناء نسخ ملف البريد المؤقّت: %s"
 
-#: ../camel/camel-multipart-signed.c:595
+#: ../camel/camel-multipart-signed.c:593
 msgid "parse error"
 msgstr "خطأ تحليل"
 
-#: ../camel/camel-net-utils.c:506
-#: ../camel/camel-net-utils.c:668
-#: ../camel/camel-net-utils.c:800
-#: ../camel/providers/pop3/camel-pop3-store.c:449
-#: ../camel/providers/pop3/camel-pop3-store.c:553
+#: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:667
+#: ../camel/camel-net-utils.c:799
+#: ../camel/providers/pop3/camel-pop3-store.c:447
+#: ../camel/providers/pop3/camel-pop3-store.c:547
 msgid "Canceled"
 msgstr "أُلغِيَ"
 
-#: ../camel/camel-net-utils.c:525
+#: ../camel/camel-net-utils.c:524
 msgid "cannot create thread"
 msgstr "لا يمكن إنشاء خيط"
 
-#: ../camel/camel-net-utils.c:672
+#: ../camel/camel-net-utils.c:671
 #, c-format
 msgid "Resolving: %s"
 msgstr "يجري حل: %s"
 
-#: ../camel/camel-net-utils.c:694
+#: ../camel/camel-net-utils.c:693
 msgid "Host lookup failed"
 msgstr "فشل البحث عن المضيف"
 
-#: ../camel/camel-net-utils.c:696
+#: ../camel/camel-net-utils.c:695
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "فشل البحث عن المضيف: %s: %s"
 
-#: ../camel/camel-net-utils.c:804
+#: ../camel/camel-net-utils.c:803
 msgid "Resolving address"
 msgstr "يجري حل العنوان"
 
-#: ../camel/camel-net-utils.c:824
+#: ../camel/camel-net-utils.c:823
 msgid "Name lookup failed"
 msgstr "فشل البحث عن الاسم"
 
-#: ../camel/camel-net-utils.c:827
+#: ../camel/camel-net-utils.c:826
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "فشل البحث عن الاسم: %s "
@@ -1905,8 +1852,7 @@ msgstr "فشل البحث عن الاسم: %s "
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "مزامنة الرسائل في المجلّد '%s' إلى القرص"
 
-#: ../camel/camel-offline-journal.c:164
-#: ../camel/camel-offline-journal.c:187
+#: ../camel/camel-offline-journal.c:164 ../camel/camel-offline-journal.c:187
 #, c-format
 msgid "Cannot write offline journal for folder `%s': %s"
 msgstr "لا يمكن كتابة سّجل يومي غير متصل للمجلد `%s': %s "
@@ -1934,8 +1880,7 @@ msgstr "تعذّر تحميل %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "تعذّر تحميل %s: لا يوجد كود تهيئة في الوحدة."
 
-#: ../camel/camel-provider.c:376
-#: ../camel/camel-session.c:177
+#: ../camel/camel-provider.c:376 ../camel/camel-session.c:177
 #, c-format
 msgid "No provider available for protocol `%s'"
 msgstr "لا يتوفّر مُزوّد للبرتوكول `%s'"
@@ -1948,8 +1893,7 @@ msgstr "مجهول"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "هذا الخيار سيتصّل بالخادم مستخدما ولوج كشخص مجهول."
 
-#: ../camel/camel-sasl-anonymous.c:124
-#: ../camel/camel-sasl-plain.c:91
+#: ../camel/camel-sasl-anonymous.c:124 ../camel/camel-sasl-plain.c:91
 msgid "Authentication failed."
 msgstr "أخفق التّوثيق."
 
@@ -1980,43 +1924,51 @@ msgstr ""
 "معلومات تتبّع غير صحيحة:\n"
 "%s"
 
-#: ../camel/camel-sasl-cram-md5.c:40
+#: ../camel/camel-sasl-cram-md5.c:38
 msgid "CRAM-MD5"
 msgstr "CRAM-MD5"
 
-#: ../camel/camel-sasl-cram-md5.c:42
-msgid "This option will connect to the server using a secure CRAM-MD5 password, if the server supports it."
-msgstr "سيتصّل هذا الخيار بالخادم بإستخدام كلمة سر CRAM-MD5 آمنة، إن كان الخادم يدعمها."
+#: ../camel/camel-sasl-cram-md5.c:40
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"سيتصّل هذا الخيار بالخادم بإستخدام كلمة سر CRAM-MD5 آمنة، إن كان الخادم "
+"يدعمها."
 
-#: ../camel/camel-sasl-digest-md5.c:50
+#: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
-#: ../camel/camel-sasl-digest-md5.c:52
-msgid "This option will connect to the server using a secure DIGEST-MD5 password, if the server supports it."
-msgstr "سيتصل هذا الخيار بالخادم بإستخدام كلمة سر DIGEST-MD5 آمنة، إن كان الخادم يدعمها."
+#: ../camel/camel-sasl-digest-md5.c:50
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"سيتصل هذا الخيار بالخادم بإستخدام كلمة سر DIGEST-MD5 آمنة، إن كان الخادم "
+"يدعمها."
 
-#: ../camel/camel-sasl-digest-md5.c:820
+#: ../camel/camel-sasl-digest-md5.c:845
 msgid "Server challenge too long (>2048 octets)"
 msgstr "اعتراض الخادم طويل جدّاً (>2048 ثُمانيّة)"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:854
 msgid "Server challenge invalid\n"
 msgstr "اعتراض الخادم غير صحيح\n"
 
-#: ../camel/camel-sasl-digest-md5.c:835
+#: ../camel/camel-sasl-digest-md5.c:860
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr "اعتراض الخادم احتوى رمز \"جودة الحماية\" غير سليم"
 
-#: ../camel/camel-sasl-digest-md5.c:865
+#: ../camel/camel-sasl-digest-md5.c:890
 msgid "Server response did not contain authorization data"
 msgstr "إستجابة خادم IMAP لم تحتوي بيانات تصريح"
 
-#: ../camel/camel-sasl-digest-md5.c:883
+#: ../camel/camel-sasl-digest-md5.c:908
 msgid "Server response contained incomplete authorization data"
 msgstr "إستجابة الخادم إحتَوت على بيانات تصريح غير كاملة"
 
-#: ../camel/camel-sasl-digest-md5.c:893
+#: ../camel/camel-sasl-digest-md5.c:918
 msgid "Server response does not match"
 msgstr "استجابة الخادم غير متتطابقة"
 
@@ -2029,28 +1981,44 @@ msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "سيتصل هذا الخيار بالخادم بإستخدام توثيق Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:164
-msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
-msgstr "الآليّة المشار إليها غير مدعومة من قبل المؤهّل المعطى، أو غير معترف بها من قبل التّجسيد."
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+"الآليّة المشار إليها غير مدعومة من قبل المؤهّل المعطى، أو غير معترف بها من قبل "
+"التّجسيد."
 
 #: ../camel/camel-sasl-gssapi.c:169
 msgid "The provided target_name parameter was ill-formed."
 msgstr "معطى target_name الموفّر مشوّه."
 
 #: ../camel/camel-sasl-gssapi.c:172
-msgid "The provided target_name parameter contained an invalid or unsupported type of name."
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
 msgstr "معطى target_name المزوّد يحتوي فئة اسم غير سليمة أو غير مدعومة."
 
 #: ../camel/camel-sasl-gssapi.c:176
-msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
-msgstr "يحتوي input_token على تقييدات قنوات مختلفة عن تلك المحدّدة في معطى input_chan_bindings."
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
+msgstr ""
+"يحتوي input_token على تقييدات قنوات مختلفة عن تلك المحدّدة في معطى "
+"input_chan_bindings."
 
 #: ../camel/camel-sasl-gssapi.c:181
-msgid "The input_token contains an invalid signature, or a signature that could not be verified."
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
 msgstr "يحتوي input_token على توقيع غير سليم، أو توقيع تعذّر التّحقّق منه."
 
 #: ../camel/camel-sasl-gssapi.c:185
-msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
-msgstr "المؤهّلات المعطاة ليست سليمة لتجهيز السّياق، أو أن متناوِل المؤهّل لم يشِر لأيّة مؤهّلات."
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+"المؤهّلات المعطاة ليست سليمة لتجهيز السّياق، أو أن متناوِل المؤهّل لم يشِر لأيّة "
+"مؤهّلات."
 
 #: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
@@ -2068,12 +2036,10 @@ msgstr "فشلت تفقّدات التّجانس المُجراة على الم�
 msgid "The referenced credentials have expired."
 msgstr "المؤهّلات المشار إليها قد انتهت صلاحيّتها."
 
-#: ../camel/camel-sasl-gssapi.c:205
-#: ../camel/camel-sasl-gssapi.c:253
-#: ../camel/camel-sasl-gssapi.c:289
-#: ../camel/camel-sasl-gssapi.c:304
+#: ../camel/camel-sasl-gssapi.c:205 ../camel/camel-sasl-gssapi.c:253
+#: ../camel/camel-sasl-gssapi.c:289 ../camel/camel-sasl-gssapi.c:304
 #: ../camel/camel-sasl-kerberos4.c:231
-#: ../camel/providers/imap/camel-imap-store.c:1317
+#: ../camel/providers/imap/camel-imap-store.c:1318
 msgid "Bad authentication response from server."
 msgstr "إستجابة توثيق رديئة من الخادم."
 
@@ -2102,8 +2068,7 @@ msgstr ""
 msgid "Login"
 msgstr "لُجْ"
 
-#: ../camel/camel-sasl-login.c:38
-#: ../camel/camel-sasl-plain.c:38
+#: ../camel/camel-sasl-login.c:38 ../camel/camel-sasl-plain.c:38
 msgid "This option will connect to the server using a simple password."
 msgstr "سيتصل هذا الخيار بالخادم بإستخدام كلمة سر بسيطة."
 
@@ -2116,7 +2081,9 @@ msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:36
-msgid "This option will connect to a Windows-based server using NTLM / Secure Password Authentication."
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
 msgstr "سيتصل هذا الخيار بخادم ويندوز باستخدام NTLM / توثيق كلمات السّر الآمن."
 
 #: ../camel/camel-sasl-plain.c:36
@@ -2210,8 +2177,7 @@ msgstr "لا يكن العثور على سلسلة شهادات"
 msgid "Cannot add CMS Signing time"
 msgstr "لا يمكن إضافة زمن توقيع CMS"
 
-#: ../camel/camel-smime-context.c:298
-#: ../camel/camel-smime-context.c:310
+#: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "لا توجد شهادة تشفير لـ '%s'"
@@ -2232,8 +2198,7 @@ msgstr "لايمكن إضافة شهادة تشفير"
 msgid "Cannot add CMS Signer information"
 msgstr "لا يمكن إضافة معلومات مُوَقّع CMS"
 
-#: ../camel/camel-smime-context.c:403
-#: ../camel/camel-smime-context.c:851
+#: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
 msgid "Cannot create encoder context"
 msgstr "لا يمكن انشاء سياق مُشَفِّر"
 
@@ -2241,8 +2206,7 @@ msgstr "لا يمكن انشاء سياق مُشَفِّر"
 msgid "Failed to add data to CMS encoder"
 msgstr "فشل إضافة البيانات إلى مُشّفِّر CMS"
 
-#: ../camel/camel-smime-context.c:414
-#: ../camel/camel-smime-context.c:868
+#: ../camel/camel-smime-context.c:414 ../camel/camel-smime-context.c:868
 msgid "Failed to encode data"
 msgstr "فشل تشفير البيانات"
 
@@ -2294,8 +2258,7 @@ msgstr "لا توجد بيانات موقّعة في التوقيع"
 msgid "Digests missing from enveloped data"
 msgstr "الخلاصة مفقودة من البيانات المغلّفة"
 
-#: ../camel/camel-smime-context.c:562
-#: ../camel/camel-smime-context.c:572
+#: ../camel/camel-smime-context.c:562 ../camel/camel-smime-context.c:572
 msgid "Cannot calculate digests"
 msgstr "لا يمكن حِساب الخلاصة"
 
@@ -2303,8 +2266,7 @@ msgstr "لا يمكن حِساب الخلاصة"
 msgid "Cannot set message digests"
 msgstr "لا يمكن ضبط خُلاصات الرسالة"
 
-#: ../camel/camel-smime-context.c:587
-#: ../camel/camel-smime-context.c:592
+#: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
 msgid "Certificate import failed"
 msgstr "فشل استيراد الشهادة"
 
@@ -2409,30 +2371,26 @@ msgstr "لا يمكن إنشاء المجلّد: عمليّة غير صحيحة 
 msgid "Cannot create folder: %s: folder exists"
 msgstr "لا يمكن إنشاء المجلّد : %s: موجود بالفعل"
 
-#: ../camel/camel-store.c:408
-#: ../camel/camel-vee-store.c:369
+#: ../camel/camel-store.c:408 ../camel/camel-vee-store.c:369
 #: ../camel/providers/local/camel-maildir-store.c:218
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "لا يمكن حذف المجلّد: %s: عمليّة غير صالحة"
 
-#: ../camel/camel-store.c:458
-#: ../camel/camel-vee-store.c:406
+#: ../camel/camel-store.c:458 ../camel/camel-vee-store.c:406
 #: ../camel/providers/local/camel-maildir-store.c:290
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "لا يمكن إعادة تسمية المجلّد: %s: عمليّة غير صحيحة"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:799
-#: ../camel/camel-vtrash-folder.c:52
-#: ../camel/providers/imap/camel-imap-store.c:1077
+#: ../camel/camel-store.c:799 ../camel/camel-vtrash-folder.c:52
+#: ../camel/providers/imap/camel-imap-store.c:1078
 msgid "Trash"
 msgstr "المهملات"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:802
-#: ../camel/camel-vtrash-folder.c:54
+#: ../camel/camel-store.c:802 ../camel/camel-vtrash-folder.c:54
 msgid "Junk"
 msgstr "نفاية"
 
@@ -2552,8 +2510,7 @@ msgstr "إستعمال المفتاح لا يدعم توقيع الشّهادا�
 msgid "Error in application verification"
 msgstr "خطأ في تحقّق التّطبيق"
 
-#: ../camel/camel-tcp-stream-openssl.c:700
-#: ../camel/camel-tcp-stream-ssl.c:871
+#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:879
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2566,13 +2523,11 @@ msgstr ""
 "البصمة:            %s\n"
 "التّوقيع:           %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:706
-#: ../camel/camel-tcp-stream-ssl.c:877
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
 msgid "GOOD"
 msgstr "جيّد"
 
-#: ../camel/camel-tcp-stream-openssl.c:706
-#: ../camel/camel-tcp-stream-ssl.c:877
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
 msgid "BAD"
 msgstr "رديء"
 
@@ -2596,7 +2551,7 @@ msgstr ""
 "أتريد قبولها على أيّ حال؟"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:881
+#: ../camel/camel-tcp-stream-ssl.c:889
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2611,7 +2566,7 @@ msgstr ""
 "\n"
 "أتريد القبول؟"
 
-#: ../camel/camel-tcp-stream-ssl.c:925
+#: ../camel/camel-tcp-stream-ssl.c:933
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2620,7 +2575,7 @@ msgstr ""
 "مشكلة توثيق: %s\n"
 "المُصدر: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:977
+#: ../camel/camel-tcp-stream-ssl.c:985
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2629,7 +2584,7 @@ msgstr ""
 "نطاق شهادة رديء: %s\n"
 "المُصدر: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:995
+#: ../camel/camel-tcp-stream-ssl.c:1003
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2638,7 +2593,7 @@ msgstr ""
 "الشّهادة منتهية الصّلاحيّة: %s\n"
 "المُصدر: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1012
+#: ../camel/camel-tcp-stream-ssl.c:1020
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2652,23 +2607,21 @@ msgstr ""
 msgid "Could not parse URL `%s'"
 msgstr "تعذّر تحليل عنوان URL `%s'"
 
-#: ../camel/camel-vee-folder.c:482
+#: ../camel/camel-vee-folder.c:486
 #, c-format
 msgid "Error storing `%s': %s"
 msgstr "خطأ في تخزين `%s': %s"
 
-#: ../camel/camel-vee-folder.c:524
+#: ../camel/camel-vee-folder.c:528
 #, c-format
 msgid "No such message %s in %s"
 msgstr "ليس ثمّة رسالة %s في %s"
 
-#: ../camel/camel-vee-folder.c:649
-#: ../camel/camel-vee-folder.c:655
+#: ../camel/camel-vee-folder.c:653 ../camel/camel-vee-folder.c:659
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "لا يمكن نسخ أو نقل رسالة إلى مجلّد إعتباطي"
 
-#: ../camel/camel-vee-store.c:102
-#: ../camel/camel-vee-store.c:345
+#: ../camel/camel-vee-store.c:102 ../camel/camel-vee-store.c:345
 msgid "Unmatched"
 msgstr "غير مطابق"
 
@@ -2691,7 +2644,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "لا يمكن نسخ الرسائل لمجلد النفاية"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2167
+#: ../camel/providers/imap/camel-imap-folder.c:2486
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2701,7 +2654,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2167
+#: ../camel/providers/imap/camel-imap-folder.c:2486
 #: ../camel/providers/local/camel-maildir-folder.c:251
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2709,71 +2662,72 @@ msgid "No such message"
 msgstr "ليس ثمّة رسالة"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:130
-#: ../camel/providers/imap4/camel-imap4-folder.c:791
+#: ../camel/providers/imap4/camel-imap4-folder.c:812
 #: ../camel/providers/nntp/camel-nntp-folder.c:156
 #: ../camel/providers/nntp/camel-nntp-folder.c:232
 #: ../camel/providers/nntp/camel-nntp-folder.c:371
-#: ../camel/providers/pop3/camel-pop3-folder.c:262
-#: ../camel/providers/pop3/camel-pop3-folder.c:518
-#: ../camel/providers/pop3/camel-pop3-folder.c:579
-#: ../camel/providers/pop3/camel-pop3-folder.c:597
+#: ../camel/providers/pop3/camel-pop3-folder.c:266
+#: ../camel/providers/pop3/camel-pop3-folder.c:560
+#: ../camel/providers/pop3/camel-pop3-folder.c:621
+#: ../camel/providers/pop3/camel-pop3-folder.c:639
 msgid "User canceled"
 msgstr "أُلغِيَ المستخدم"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:137
-#: ../camel/providers/imap4/camel-imap4-folder.c:796
+#: ../camel/providers/imap4/camel-imap4-folder.c:817
 #: ../camel/providers/nntp/camel-nntp-folder.c:147
 #: ../camel/providers/nntp/camel-nntp-folder.c:149
 #: ../camel/providers/nntp/camel-nntp-folder.c:158
 #: ../camel/providers/nntp/camel-nntp-folder.c:234
-#: ../camel/providers/pop3/camel-pop3-folder.c:521
-#: ../camel/providers/pop3/camel-pop3-folder.c:582
-#: ../camel/providers/pop3/camel-pop3-folder.c:589
-#: ../camel/providers/pop3/camel-pop3-folder.c:600
+#: ../camel/providers/pop3/camel-pop3-folder.c:388
+#: ../camel/providers/pop3/camel-pop3-folder.c:563
+#: ../camel/providers/pop3/camel-pop3-folder.c:624
+#: ../camel/providers/pop3/camel-pop3-folder.c:631
+#: ../camel/providers/pop3/camel-pop3-folder.c:642
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "لا يمكن جلب الرّسالة %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2141
-#: ../camel/providers/imap4/camel-imap4-folder.c:814
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2167
+#: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
 msgstr "هذه الرسالة غير متوفّرة بالوضع دون اتّصال."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1690
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1737
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1751
 msgid "Could not get message"
 msgstr "تعذّر جلب الرّسالة"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
-#: ../camel/providers/imap/camel-imap-folder.c:265
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:817
+#: ../camel/providers/imap/camel-imap-folder.c:268
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "تعذّر تحميل الملخّص لـ %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
 msgid "Trash Folder Full. Please Empty."
 msgstr "مجلّد المهملات ممتليء، رجاء فرّغه."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1242
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1247
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2538
-#: ../camel/providers/imap/camel-imap-folder.c:2608
+#: ../camel/providers/imap/camel-imap-folder.c:2858
+#: ../camel/providers/imap/camel-imap-folder.c:2932
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "يجري إحضار معلومات التّلخيص للرّسائل الجديدة في %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2050
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2034
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2076
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "تعذّر إلحاق الرّسالة بمجلّد الرسائل `%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2038
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2064
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "لا يمكن إنشاء الرّسالة: %s"
@@ -2795,20 +2749,20 @@ msgid "Cannot append message in offline mode: %s"
 msgstr "لم أستطع إلحاق الرّسالة بالوضع دون اتّصال: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:55
-#: ../camel/providers/imap4/camel-imap4-provider.c:38
+#: ../camel/providers/imap4/camel-imap4-provider.c:39
 msgid "Checking for new mail"
 msgstr "يجري التّفقّد عن وصول بريد جديد"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
 #: ../camel/providers/hula/camel-hula-provider.c:51
 #: ../camel/providers/imap/camel-imap-provider.c:46
-#: ../camel/providers/imap4/camel-imap4-provider.c:40
+#: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "C_heck for new messages in all folders"
 msgstr "_تفقّد عن وصول رسائل جديدة في كل المجلّدات"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imap4/camel-imap4-provider.c:51
+#: ../camel/providers/imap4/camel-imap4-provider.c:52
 #: ../camel/providers/local/camel-local-provider.c:46
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -2851,7 +2805,7 @@ msgstr "للنفاذ إلى خوادم Novell GroupWise"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:106
 #: ../camel/providers/hula/camel-hula-provider.c:95
 #: ../camel/providers/imap/camel-imap-provider.c:98
-#: ../camel/providers/imap4/camel-imap4-provider.c:83
+#: ../camel/providers/imap4/camel-imap4-provider.c:84
 #: ../camel/providers/imapp/camel-imapp-provider.c:67
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 #: ../camel/providers/pop3/camel-pop3-provider.c:72
@@ -2859,7 +2813,8 @@ msgid "Password"
 msgstr "كلمة السّر"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:108
-msgid "This option will connect to the GroupWise server using a plaintext password."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
 msgstr "سيتّصل·هذا الخيار بخادم IMAP باستخدام كلمة سر من نص صِرْف."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
@@ -2867,7 +2822,7 @@ msgid "Host or user not available in url"
 msgstr "المستخدم أو المضيف غير متوفّر في العنوان"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:206
-#: ../camel/providers/imap/camel-imap-store.c:1401
+#: ../camel/providers/imap/camel-imap-store.c:1402
 msgid "You did not enter a password."
 msgstr "لم تُدخِل كلمة سر."
 
@@ -2876,8 +2831,8 @@ msgid "Some features may not work correctly with your current server version"
 msgstr "بعض الخصائص قد لا تعمل جيدا مع نسختك الحالية من الخادم"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:532
-#: ../camel/providers/imap/camel-imap-store.c:1912
-#: ../camel/providers/imap/camel-imap-store.c:2103
+#: ../camel/providers/imap/camel-imap-store.c:1913
+#: ../camel/providers/imap/camel-imap-store.c:2111
 #, c-format
 msgid "No such folder %s"
 msgstr "ليس ثمّة مجلّد %s"
@@ -2887,8 +2842,8 @@ msgid "Cannot create GroupWise folders in offline mode."
 msgstr "لا يمكن إنشاء مجلّد GroupWise في النمط دون اتصال."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1231
-#: ../camel/providers/imap/camel-imap-store.c:1987
-#: ../camel/providers/imap/camel-imap-store.c:2356
+#: ../camel/providers/imap/camel-imap-store.c:1988
+#: ../camel/providers/imap/camel-imap-store.c:2364
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "لا يسمح للمجلّد الأب أن يحتوي مجلّدات فرعيّة"
 
@@ -2919,8 +2874,13 @@ msgid "Sending Message"
 msgstr "يجري إرسال الرسالة"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
-msgid "You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"
-msgstr "لقد تجاوزت حدّ التخزين لهذا الحساب. تنظر رسائلك في صندوق الخارج. أعِد الإرسال بضغط زر أرسل/استقبل بعد حذف/أرشفة بعضاً من بريدك.\n"
+msgid ""
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
+msgstr ""
+"لقد تجاوزت حدّ التخزين لهذا الحساب. تنظر رسائلك في صندوق الخارج. أعِد الإرسال "
+"بضغط زر أرسل/استقبل بعد حذف/أرشفة بعضاً من بريدك.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
@@ -2950,20 +2910,20 @@ msgstr "الأمر:"
 
 #: ../camel/providers/hula/camel-hula-provider.c:61
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imap4/camel-imap4-provider.c:43
+#: ../camel/providers/imap4/camel-imap4-provider.c:44
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Folders"
 msgstr "المجلّدات"
 
 #: ../camel/providers/hula/camel-hula-provider.c:63
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imap4/camel-imap4-provider.c:45
+#: ../camel/providers/imap4/camel-imap4-provider.c:46
 msgid "_Show only subscribed folders"
 msgstr "ا_عرض المجلدات المسجّلة فقط"
 
 #: ../camel/providers/hula/camel-hula-provider.c:65
 #: ../camel/providers/imap/camel-imap-provider.c:62
-#: ../camel/providers/imap4/camel-imap4-provider.c:47
+#: ../camel/providers/imap4/camel-imap4-provider.c:48
 msgid "O_verride server-supplied folder namespace"
 msgstr "ت_خطّى مجال أسماء المجلّدات التي يُمِدُّ بها الخادم"
 
@@ -2986,12 +2946,12 @@ msgstr "سيتّصل·هذا الخيار بخادم Hula  باستخدام كل
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3058
+#: ../camel/providers/imap/camel-imap-store.c:3066
 msgid "Operation cancelled"
 msgstr "أُلغيت العملية"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3061
+#: ../camel/providers/imap/camel-imap-store.c:3069
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "قطع الخادم الإتّصال بشكلٍ غير متوقّع: %s"
@@ -3031,52 +2991,53 @@ msgstr "إستجابة خادم IMAP لم تحتوي معلومات %s"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "استجابة OK غير متوقّعة من خادم IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:87
+#: ../camel/providers/imap/camel-imap-folder.c:88
 msgid "Always check for new mail in this folder"
 msgstr "دائما قم بالتفقّد عن وصول رسائل جديدة في هذا المجلّد"
 
-#: ../camel/providers/imap/camel-imap-folder.c:246
+#: ../camel/providers/imap/camel-imap-folder.c:249
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "تعذّر إنشاء الدّليل %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:350
+#: ../camel/providers/imap/camel-imap-folder.c:353
 msgid "Folder was destroyed and recreated on server."
 msgstr "تم تدمير المجلّد و إعادة إنشاءه على الخادم."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:682
+#: ../camel/providers/imap/camel-imap-folder.c:839
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "يجري المسح بحثا عن الرسائل المتغيّرة في %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2127
+#: ../camel/providers/imap/camel-imap-folder.c:2446
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "تعذّر جلب الرّسالة: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2206
-#: ../camel/providers/imap/camel-imap-folder.c:2892
+#: ../camel/providers/imap/camel-imap-folder.c:2525
+#: ../camel/providers/imap/camel-imap-folder.c:3226
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "هذه الرّسالة غير متوفّرة حاليّاً"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2727
+#: ../camel/providers/imap/camel-imap-folder.c:3061
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "استجابة ناقِصة من الخادم: لم تزوّد معلومات حول الرسالة %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2735
+#: ../camel/providers/imap/camel-imap-folder.c:3069
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "استجابة ناقِصة من الخادم: لم يزوّد UID للرسالة %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2748
+#: ../camel/providers/imap/camel-imap-folder.c:3082
 #, c-format
-msgid "Unexpected server response: Identical UIDs provided for messages %d and %d"
+msgid ""
+"Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "استجابة غير متوقّعة من الخادم: زُوّدت UID متطابقة للرسائل %d و %d "
 
-#: ../camel/providers/imap/camel-imap-folder.c:2930
+#: ../camel/providers/imap/camel-imap-folder.c:3264
 msgid "Could not find message body in FETCH response."
 msgstr "تعذّر إيجاد متن الرّسالة في استجابة FETCH."
 
@@ -3099,12 +3060,12 @@ msgid "Failed to cache %s: %s"
 msgstr "فشل وضع %s في الذّاكرة المخبّأة: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imap4/camel-imap4-provider.c:49
+#: ../camel/providers/imap4/camel-imap4-provider.c:50
 msgid "Namespace:"
 msgstr "مجال الأسماء:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imap4/camel-imap4-provider.c:53
+#: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_طبّق المرشّّحات على الرّسائل الجديدة في صندوق الوارد على هذا الخادم"
 
@@ -3113,7 +3074,7 @@ msgid "Check new messages for Jun_k contents"
 msgstr "تفقّد المحتويات غير المرغوبة في الرسا_ئل الجديدة"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
-#: ../camel/providers/imap4/camel-imap4-provider.c:59
+#: ../camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "_زامن البريد البعيد محليا بشكل آلي"
 
@@ -3131,80 +3092,80 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "سيتّصل·هذا الخيار بخادم IMAP باستخدام كلمة سر من نصّ صِرْف."
 
 #: ../camel/providers/imap/camel-imap-store.c:457
-#: ../camel/providers/imap4/camel-imap4-store.c:212
+#: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "خادم IMAP %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:459
-#: ../camel/providers/imap4/camel-imap4-store.c:214
+#: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "خدمة IMAP لـ %s على %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:587
-#: ../camel/providers/imap/camel-imap-store.c:602
-#: ../camel/providers/imap4/camel-imap4-store.c:249
-#: ../camel/providers/imap4/camel-imap4-store.c:264
+#: ../camel/providers/imap/camel-imap-store.c:588
+#: ../camel/providers/imap/camel-imap-store.c:603
+#: ../camel/providers/imap4/camel-imap4-store.c:251
+#: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:183
 #: ../camel/providers/nntp/camel-nntp-store.c:198
-#: ../camel/providers/pop3/camel-pop3-store.c:173
-#: ../camel/providers/pop3/camel-pop3-store.c:187
+#: ../camel/providers/pop3/camel-pop3-store.c:171
+#: ../camel/providers/pop3/camel-pop3-store.c:185
 #: ../camel/providers/smtp/camel-smtp-transport.c:258
 #: ../camel/providers/smtp/camel-smtp-transport.c:273
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "لم أستطع الاتّصال بـ %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:588
-#: ../camel/providers/imap4/camel-imap4-store.c:250
+#: ../camel/providers/imap/camel-imap-store.c:589
+#: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:184
-#: ../camel/providers/pop3/camel-pop3-store.c:174
+#: ../camel/providers/pop3/camel-pop3-store.c:172
 #: ../camel/providers/smtp/camel-smtp-transport.c:259
 msgid "SSL unavailable"
 msgstr "SSL غير متوفّر"
 
-#: ../camel/providers/imap/camel-imap-store.c:599
-#: ../camel/providers/imap/camel-imap-store.c:881
+#: ../camel/providers/imap/camel-imap-store.c:600
+#: ../camel/providers/imap/camel-imap-store.c:882
 msgid "Connection cancelled"
 msgstr "أُلغِيَ الإتّصال"
 
-#: ../camel/providers/imap/camel-imap-store.c:710
-#: ../camel/providers/imap/camel-imap-store.c:729
-#: ../camel/providers/imap/camel-imap-store.c:735
-#: ../camel/providers/imap/camel-imap-store.c:761
-#: ../camel/providers/imap4/camel-imap4-store.c:312
-#: ../camel/providers/imap4/camel-imap4-store.c:327
-#: ../camel/providers/imap4/camel-imap4-store.c:335
+#: ../camel/providers/imap/camel-imap-store.c:711
+#: ../camel/providers/imap/camel-imap-store.c:730
+#: ../camel/providers/imap/camel-imap-store.c:736
+#: ../camel/providers/imap/camel-imap-store.c:762
+#: ../camel/providers/imap4/camel-imap4-store.c:314
+#: ../camel/providers/imap4/camel-imap4-store.c:329
+#: ../camel/providers/imap4/camel-imap4-store.c:338
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "فشل الاتّصال بخادم IMAP %s في الوضع الآمن: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:711
+#: ../camel/providers/imap/camel-imap-store.c:712
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
 msgid "STARTTLS not supported"
 msgstr "STARTTLS غير مدعوم"
 
-#: ../camel/providers/imap/camel-imap-store.c:730
+#: ../camel/providers/imap/camel-imap-store.c:731
 msgid "SSL negotiations failed"
 msgstr "فشلت مفاوضات SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:736
-#: ../camel/providers/imap4/camel-imap4-store.c:336
+#: ../camel/providers/imap/camel-imap-store.c:737
+#: ../camel/providers/imap4/camel-imap4-store.c:339
 #: ../camel/providers/smtp/camel-smtp-transport.c:370
 msgid "SSL is not available in this build"
 msgstr "لا يتوفّر SSL في هذا البناء"
 
-#: ../camel/providers/imap/camel-imap-store.c:884
+#: ../camel/providers/imap/camel-imap-store.c:885
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "تعذّر الاتّصال باستخدام الأمر \"%s\": %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1069
-#: ../camel/providers/imap/camel-imap-store.c:2452
+#: ../camel/providers/imap/camel-imap-store.c:1070
+#: ../camel/providers/imap/camel-imap-store.c:2460
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:367
-#: ../camel/providers/imap4/camel-imap4-store.c:1326
+#: ../camel/providers/imap4/camel-imap4-store.c:1408
 #: ../camel/providers/local/camel-maildir-folder.c:77
 #: ../camel/providers/local/camel-maildir-store.c:218
 #: ../camel/providers/local/camel-maildir-store.c:290
@@ -3215,31 +3176,31 @@ msgstr "تعذّر الاتّصال باستخدام الأمر \"%s\": %s"
 msgid "Inbox"
 msgstr "الوارد"
 
-#: ../camel/providers/imap/camel-imap-store.c:1071
+#: ../camel/providers/imap/camel-imap-store.c:1072
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "مسوّدات"
 
-#: ../camel/providers/imap/camel-imap-store.c:1073
+#: ../camel/providers/imap/camel-imap-store.c:1074
 msgid "Sent"
 msgstr "أَرسِل"
 
-#: ../camel/providers/imap/camel-imap-store.c:1075
+#: ../camel/providers/imap/camel-imap-store.c:1076
 msgid "Templates"
 msgstr "قوالب"
 
-#: ../camel/providers/imap/camel-imap-store.c:1348
+#: ../camel/providers/imap/camel-imap-store.c:1349
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "خادم IMAP %s لا يدعم نوع التّوثّق المطلوب %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1358
+#: ../camel/providers/imap/camel-imap-store.c:1359
 #: ../camel/providers/smtp/camel-smtp-transport.c:504
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "لا يوجد دعم لنوع التّوثّق %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1430
+#: ../camel/providers/imap/camel-imap-store.c:1431
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3250,14 +3211,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1924
-#: ../camel/providers/imap/camel-imap-store.c:2294
-#: ../camel/providers/imap4/camel-imap4-store.c:956
+#: ../camel/providers/imap/camel-imap-store.c:1925
+#: ../camel/providers/imap/camel-imap-store.c:2302
+#: ../camel/providers/imap4/camel-imap4-store.c:959
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "اسم المجلّد \"%s\" غير سليم لأنّه يحتوي المحرف \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:2041
+#: ../camel/providers/imap/camel-imap-store.c:2042
 #: ../camel/providers/local/camel-maildir-store.c:191
 #: ../camel/providers/local/camel-mbox-store.c:204
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3265,18 +3227,18 @@ msgstr "اسم المجلّد \"%s\" غير سليم لأنّه يحتوي ال�
 msgid "Cannot create folder `%s': folder exists."
 msgstr "لا يمكن إنشاء المجلّد `%s': موجود بالفعل."
 
-#: ../camel/providers/imap/camel-imap-store.c:2305
+#: ../camel/providers/imap/camel-imap-store.c:2313
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "مجلّد أب مجهول: %s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:550
-#: ../camel/providers/imap4/camel-imap4-command.c:557
+#: ../camel/providers/imap4/camel-imap4-command.c:576
+#: ../camel/providers/imap4/camel-imap4-command.c:583
 #, c-format
 msgid "Failed sending command to IMAP server %s: %s"
 msgstr "فشل إرسال الأمر لخادم IMAP %s: %s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:660
+#: ../camel/providers/imap4/camel-imap4-command.c:686
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "إستجابة غير متوقّعة من خادم IMAP4 %s: %s"
@@ -3286,271 +3248,296 @@ msgstr "إستجابة غير متوقّعة من خادم IMAP4 %s: %s"
 msgid "Unexpected greeting from IMAP server %s."
 msgstr "تحيّة غير متوقّعة من خادم IMAP %s."
 
-#: ../camel/providers/imap4/camel-imap4-engine.c:431
+#: ../camel/providers/imap4/camel-imap4-engine.c:450
 #, c-format
 msgid "Cannot select folder `%s': Invalid mailbox name"
 msgstr "لا يمكن انتقاء المجلّد `%s': اسم صندوق وارد غير صحيح"
 
-#: ../camel/providers/imap4/camel-imap4-engine.c:437
+#: ../camel/providers/imap4/camel-imap4-engine.c:456
 #, c-format
 msgid "Cannot select folder `%s': Bad command"
 msgstr "لا يمكن انتقاء المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-engine.c:1547
-#: ../camel/providers/imap4/camel-imap4-engine.c:1586
-#: ../camel/providers/imap4/camel-imap4-engine.c:1631
-#: ../camel/providers/imap4/camel-imap4-engine.c:1687
+#: ../camel/providers/imap4/camel-imap4-engine.c:1433
+#, fuzzy, c-format
+msgid "Failed to send command to IMAP server %s: %s"
+msgstr "فشل إرسال الأمر لخادم IMAP %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1435
+#, fuzzy
+msgid "service unavailable"
+msgstr "SSL غير متوفّر"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1569
+#: ../camel/providers/imap4/camel-imap4-engine.c:1608
+#: ../camel/providers/imap4/camel-imap4-engine.c:1653
+#: ../camel/providers/imap4/camel-imap4-engine.c:1709
 #, c-format
 msgid "IMAP4 server %s unexpectedly disconnected: %s"
 msgstr "قطع خادم IMAP4 %s الإتّصال بشكلٍ غير متوقّع: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
-msgid "Enable Mailing-List detection required for some filter and vFolder rules"
+#, fuzzy
+msgid ""
+"Enable extended Mailing-List detection required for some filter and vFolder "
+"rules"
 msgstr "تمكين إكتشاف القوائم البريدية مطلوب لبعض المرشّحّات وقواعد vFolder"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:402
+#: ../camel/providers/imap4/camel-imap4-folder.c:90
+msgid "Expire cached messages that haven't been read in X seconds"
+msgstr ""
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:91
+msgid "Expire cached messages older than X seconds"
+msgstr ""
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:423
 #, c-format
 msgid "Cannot access folder `%s': %s"
 msgstr "لا يمكن النفاذ للدّليل `%s': %s"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:461
+#: ../camel/providers/imap4/camel-imap4-folder.c:482
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
 msgstr "تعذّر مزامنة الشارات مع المجلّد `%s': مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:467
+#: ../camel/providers/imap4/camel-imap4-folder.c:488
 #, c-format
 msgid "Cannot sync flags to folder `%s': Bad command"
 msgstr "تعذّر مزامنة الشارات مع المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:607
+#: ../camel/providers/imap4/camel-imap4-folder.c:628
 #, c-format
 msgid "Cannot expunge folder `%s': Unknown"
 msgstr "لا يمكن شطب المجلّد `%s': مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:612
+#: ../camel/providers/imap4/camel-imap4-folder.c:633
 #, c-format
 msgid "Cannot expunge folder `%s': Bad command"
 msgstr "لا يمكن شطب المجلّد `%s': أمر سيئ"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:868
+#: ../camel/providers/imap4/camel-imap4-folder.c:889
 #, c-format
 msgid "Cannot get message %s from folder `%s': No such message"
 msgstr "لا يمكن جلب الرّسالة %s من المجلّد `%s': ليس ثمّة رسالة"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:873
+#: ../camel/providers/imap4/camel-imap4-folder.c:894
 #, c-format
 msgid "Cannot get message %s from folder `%s': Bad command"
 msgstr "لا يمكن جلب الرّسالة %s من المجلّد `%s': أمر سيء"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:917
+#: ../camel/providers/imap4/camel-imap4-folder.c:938
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
 msgstr "لا يمكن إلحاق الرّسالة بالمجلّد `%s': المجلّد للقرائة فقط"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1010
+#: ../camel/providers/imap4/camel-imap4-folder.c:1031
 #, c-format
 msgid "Cannot append message to folder `%s': Unknown error"
 msgstr "لا يمكن إلحاق الرّسالة بالمجلّد `%s': خطأ مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1040
+#: ../camel/providers/imap4/camel-imap4-folder.c:1061
 #, c-format
 msgid "Cannot append message to folder `%s': Bad command"
 msgstr "لا يمكن إلحاق الرّسالة بالمجلّد `%s': أمر سيء"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1160
+#: ../camel/providers/imap4/camel-imap4-folder.c:1181
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Unknown"
 msgstr "لا يمكن نقل الرسالة من المجلّد `%s' للمجلّد `%s': مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1164
+#: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Unknown"
 msgstr "لا يمكن نسخ الرسالة من المجلّد `%s' للمجلّد `%s': مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1172
+#: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, c-format
 msgid "Cannot move messages from folder `%s' to folder `%s': Bad command"
 msgstr "لا يمكن نقل الرسالة من المجلّد `%s' للمجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1176
+#: ../camel/providers/imap4/camel-imap4-folder.c:1197
 #, c-format
 msgid "Cannot copy messages from folder `%s' to folder `%s': Bad command"
 msgstr "لا يمكن نسخ الرسالة من المجلّد `%s' للمجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:55
+#: ../camel/providers/imap4/camel-imap4-provider.c:56
 msgid "Check new messages for _Junk contents"
 msgstr "تفقّد المحتويات غير المر_غوبة في الرسائل الجديدة"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:57
+#: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "Only check for Junk messa_ges in the INBOX folder"
 msgstr "ابحث عن الر_سائل غير المرغوبة في صندوق الوارد فقط"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:66
+#: ../camel/providers/imap4/camel-imap4-provider.c:67
 msgid "IMAP4rev1"
 msgstr "IMAP4rev1"
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:68
+#: ../camel/providers/imap4/camel-imap4-provider.c:69
 msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "لقراءة و تخزين البريد على خوادم IMAPv4rev1."
 
-#: ../camel/providers/imap4/camel-imap4-provider.c:85
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
+#: ../camel/providers/imap4/camel-imap4-provider.c:86
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "سيتّصل·هذا الخيار بخادم IMAPv4rev1 باستخدام كلمة سر من نصّ صِرْف."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:261
+#: ../camel/providers/imap4/camel-imap4-store.c:263
 #: ../camel/providers/imapp/camel-imapp-store.c:249
 #: ../camel/providers/nntp/camel-nntp-store.c:195
 #: ../camel/providers/nntp/camel-nntp-store.c:214
-#: ../camel/providers/pop3/camel-pop3-store.c:184
+#: ../camel/providers/pop3/camel-pop3-store.c:182
 #: ../camel/providers/smtp/camel-smtp-transport.c:270
 msgid "Connection canceled"
 msgstr "أُلغِ الاتصال"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:298
+#: ../camel/providers/imap4/camel-imap4-store.c:300
 #, c-format
-msgid "Failed to connect to IMAP server %s in secure mode: Server does not support STARTTLS"
+msgid ""
+"Failed to connect to IMAP server %s in secure mode: Server does not support "
+"STARTTLS"
 msgstr "فشل الاتّصال بخادم IMAP %s في الوضع الآمن: الخادم لا يدعم STARTTLS"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:328
-#: ../camel/providers/pop3/camel-pop3-store.c:252
+#: ../camel/providers/imap4/camel-imap4-store.c:330
+#: ../camel/providers/pop3/camel-pop3-store.c:250
 msgid "TLS negotiations failed"
 msgstr "فشلت مفاوضات SSL"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:412
+#: ../camel/providers/imap4/camel-imap4-store.c:415
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "لا يمكن الإتّصال بخادم IMAP %s باستخدام آليّة التّوثيق %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:535
+#: ../camel/providers/imap4/camel-imap4-store.c:538
 #, c-format
 msgid "Cannot authenticate to IMAP server %s using %s"
 msgstr "لا يمكن الإتّصال بخادم IMAP %s باستخدام %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:698
-#: ../camel/providers/imap4/camel-imap4-store.c:966
+#: ../camel/providers/imap4/camel-imap4-store.c:701
+#: ../camel/providers/imap4/camel-imap4-store.c:969
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "لا يمكن إنشاء مجلّدات IMAP في وضع دون اتصال."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:737
+#: ../camel/providers/imap4/camel-imap4-store.c:740
 #, c-format
 msgid "Cannot get folder `%s' on IMAP server %s: Unknown"
 msgstr "لا يمكن جلب المجلّد `%s' على خادم IMAP %s: مجهول"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:818
+#: ../camel/providers/imap4/camel-imap4-store.c:821
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
 msgstr "لا يمكن جلب معلومات LIST لـ `%s' على خادم IMAP %s: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:820
-#: ../camel/providers/imap4/camel-imap4-store.c:1495
+#: ../camel/providers/imap4/camel-imap4-store.c:823
+#: ../camel/providers/imap4/camel-imap4-store.c:1577
 msgid "Bad command"
 msgstr "أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:899
+#: ../camel/providers/imap4/camel-imap4-store.c:902
 #, c-format
 msgid "Cannot create folder `%s': Invalid mailbox name"
 msgstr "لا يمكن إنشاء المجلّد `%s': اسم صندوق بريد غير سليم"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:904
+#: ../camel/providers/imap4/camel-imap4-store.c:907
 #, c-format
 msgid "Cannot create folder `%s': Bad command"
 msgstr "لا يمكن إنشاء المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1010
+#: ../camel/providers/imap4/camel-imap4-store.c:1013
 #, c-format
 msgid "Cannot delete folder `%s': Special folder"
 msgstr "لا يمكن حذف المجلّد `%s': مجلّد خاص"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1017
+#: ../camel/providers/imap4/camel-imap4-store.c:1020
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "لا يمكن حذف مجلّدات IMAP في وضع دون اتصال."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1076
+#: ../camel/providers/imap4/camel-imap4-store.c:1079
 #, c-format
 msgid "Cannot delete folder `%s': Invalid mailbox name"
 msgstr "لا يمكن حذف المجلّد `%s': اسم صندوق بريد غير سليم"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1081
+#: ../camel/providers/imap4/camel-imap4-store.c:1084
 #, c-format
 msgid "Cannot delete folder `%s': Bad command"
 msgstr "لا يمكن حذف المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1101
+#: ../camel/providers/imap4/camel-imap4-store.c:1104
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Special folder"
 msgstr "تعذّر إعادة تسمية المجلّد `%s' إلى `%s': مجلّد خاص"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1108
+#: ../camel/providers/imap4/camel-imap4-store.c:1111
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "تعذّر إعادة تسمية مجلّد IMAP في وضع دون اتصال."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1139
+#: ../camel/providers/imap4/camel-imap4-store.c:1142
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr "تعذّر إعادة تسمية المجلّد `%s' إلى `%s': اسم صندوق بريد غير سليم"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1144
+#: ../camel/providers/imap4/camel-imap4-store.c:1147
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Bad command"
 msgstr "تعذّر إعادة تسمية المجلّد `%s' إلى `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1493
+#: ../camel/providers/imap4/camel-imap4-store.c:1575
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr "لا يمكن جلب معلومات %s للنمط `%s' على خادم IMAP %s: %s"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1533
+#: ../camel/providers/imap4/camel-imap4-store.c:1636
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "لا يمكن التسجيل في مجلّدات IMAP في وضع دون اتصال."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1578
+#: ../camel/providers/imap4/camel-imap4-store.c:1681
 #, c-format
 msgid "Cannot subscribe to folder `%s': Invalid mailbox name"
 msgstr "لا يمكن التسجيل في المجلّد `%s': اسم صندوق بريد خاطيء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1583
+#: ../camel/providers/imap4/camel-imap4-store.c:1686
 #, c-format
 msgid "Cannot subscribe to folder `%s': Bad command"
 msgstr "لا يمكن التسجيل في المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1605
+#: ../camel/providers/imap4/camel-imap4-store.c:1708
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "لا يمكن إلغاء التسجيل في مجلّدات IMAP في وضع دون اتصال."
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1650
+#: ../camel/providers/imap4/camel-imap4-store.c:1753
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Invalid mailbox name"
 msgstr "لا يمكن إلغاء التسجيل في المجلّد `%s': اسم صندوق بريد خاطيء"
 
-#: ../camel/providers/imap4/camel-imap4-store.c:1655
+#: ../camel/providers/imap4/camel-imap4-store.c:1758
 #, c-format
 msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgstr "لا يمكن إلغاء التسجيل في المجلّد `%s': أمر رديء"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1451
+#: ../camel/providers/imap4/camel-imap4-summary.c:1596
 msgid "Scanning for changed messages"
 msgstr "يجري المسح عن رسائل مغيّرة"
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1472
+#: ../camel/providers/imap4/camel-imap4-summary.c:1617
 #, c-format
 msgid "IMAP server %s is in an inconsistent state."
 msgstr "استجابة خادم IMAP %s ليست في حالة ثابتة."
 
-#: ../camel/providers/imap4/camel-imap4-summary.c:1499
+#: ../camel/providers/imap4/camel-imap4-summary.c:1644
 msgid "Fetching envelopes of new messages"
 msgstr "يجري جلب مظاريف الرّسائل الجديدة"
 
-#: ../camel/providers/imap4/camel-imap4-utils.c:370
+#: ../camel/providers/imap4/camel-imap4-utils.c:437
 #, c-format
 msgid "Unexpected token in response from IMAP server %s: "
 msgstr "أمارة غير متوقّعة في استجابة خادم IMAP %s: "
 
-#: ../camel/providers/imap4/camel-imap4-utils.c:393
+#: ../camel/providers/imap4/camel-imap4-utils.c:460
 msgid "No data"
 msgstr "بلا بيانات"
 
-#: ../camel/providers/imap4/camel-imap4-utils.c:556
+#: ../camel/providers/imap4/camel-imap4-utils.c:623
 #, c-format
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "قطع خادم IMAP %s الإتصال بشكل مفاجيء: %s"
@@ -3572,7 +3559,8 @@ msgid ""
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 msgstr ""
 "عميل IMAP 4(.1) تجريبي\n"
-"هذه الشيفرة غير مختبرة و غير مدعومة، يستحسن أن تستعمل IMAP الاعتيادي عوضاً عنها.\n"
+"هذه الشيفرة غير مختبرة و غير مدعومة، يستحسن أن تستعمل IMAP الاعتيادي عوضاً "
+"عنها.\n"
 "\n"
 "!!!لا تستعملها للإنتاج!!!\n"
 
@@ -3626,8 +3614,12 @@ msgid "Local delivery"
 msgstr "تسليم محلّي"
 
 #: ../camel/providers/local/camel-local-provider.c:74
-msgid "For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."
-msgstr "لجلب (نقل) البريد المحلّي من أحواض صناديق البريد mbox القياسيّة إلى مجلدات يديرها إيفُليوشِن."
+msgid ""
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
+"folders managed by Evolution."
+msgstr ""
+"لجلب (نقل) البريد المحلّي من أحواض صناديق البريد mbox القياسيّة إلى مجلدات "
+"يديرها إيفُليوشِن."
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
@@ -4131,7 +4123,8 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "لا يمكنك نسخ الرسائل من مجلّد NNTP!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid ""
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr "ا_عرض المجلدات باسم قصير (مثلا c.o.linux بدلا من comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
@@ -4147,7 +4140,9 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "هذا موفِّر للقراءة من و الكتابة إلى مجموعات أخبار USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:76
-msgid "This option will authenticate with the NNTP server using a plaintext password."
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
 msgstr "سيوثّق هذا الخيار مع خادم NNTP باستخدام كلمة سر من نصّ صِرْف."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:217
@@ -4256,36 +4251,36 @@ msgstr "استعمال الإلغاء"
 msgid "Operation failed: %s"
 msgstr "فشلت العمليّة: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:247
+#: ../camel/providers/pop3/camel-pop3-folder.c:251
 msgid "Retrieving POP summary"
 msgstr "يجري جلب ملخّص POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:265
+#: ../camel/providers/pop3/camel-pop3-folder.c:269
 #, c-format
 msgid "Cannot get POP summary: %s"
 msgstr "لا يمكن تلقي ملخّص POP: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:308
+#: ../camel/providers/pop3/camel-pop3-folder.c:312
 msgid "Expunging old messages"
 msgstr "يجري شطب الرّسائل القديمة"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:316
+#: ../camel/providers/pop3/camel-pop3-folder.c:320
 msgid "Expunging deleted messages"
 msgstr "يجري شطب الرّسائل المحذوفة"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
+#: ../camel/providers/pop3/camel-pop3-folder.c:534
 #, c-format
 msgid "No message with UID %s"
 msgstr "ليس ثمّة رسالة بـ UID %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:499
+#: ../camel/providers/pop3/camel-pop3-folder.c:541
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "يجري جلب رسالة POP %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:589
+#: ../camel/providers/pop3/camel-pop3-folder.c:631
 msgid "Unknown reason"
 msgstr "سبب مجهول"
 
@@ -4311,67 +4306,82 @@ msgid "For connecting to and downloading mail from POP servers."
 msgstr "للإتّصال بخوادم POP و تنزيل الرّسائل منها."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
-msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
-msgstr "سيتصل هذا الخيار بخادم POP بإستخدام كلمة سر من نصّ صِرْف. هذا هو الخيار الوحيد المدعوم من قبل الكثير من خوادم POP."
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
+msgstr ""
+"سيتصل هذا الخيار بخادم POP بإستخدام كلمة سر من نصّ صِرْف. هذا هو الخيار الوحيد "
+"المدعوم من قبل الكثير من خوادم POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
-msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
-msgstr "سيتصل هذا الخيار بخادم POP مستخدماً كلمة سر مشفّرة ببرتوكول APOP. قد لا يَصلح هذا لكل المستخدمين حتّى على الخوادم التي تزعم دعمه."
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
+msgstr ""
+"سيتصل هذا الخيار بخادم POP مستخدماً كلمة سر مشفّرة ببرتوكول APOP. قد لا يَصلح "
+"هذا لكل المستخدمين حتّى على الخوادم التي تزعم دعمه."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:210
+#: ../camel/providers/pop3/camel-pop3-store.c:208
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "فشلت في قرائة تحيّة سليمة من خادم POP %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:227
-#: ../camel/providers/pop3/camel-pop3-store.c:241
-#: ../camel/providers/pop3/camel-pop3-store.c:251
-#: ../camel/providers/pop3/camel-pop3-store.c:257
+#: ../camel/providers/pop3/camel-pop3-store.c:225
+#: ../camel/providers/pop3/camel-pop3-store.c:239
+#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:255
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "فشل الإتّصال بخادم POP %s بالوضع الآمن: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:228
+#: ../camel/providers/pop3/camel-pop3-store.c:226
 msgid "STLS not supported by server"
 msgstr "لا يدعم هذا الخادم STLS"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:258
+#: ../camel/providers/pop3/camel-pop3-store.c:256
 msgid "TLS is not available in this build"
 msgstr "لا يتوفّر TLS في هذا البناء"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:364
+#: ../camel/providers/pop3/camel-pop3-store.c:362
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "تعذّر الإتّصال بخادم POP %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:405
-#: ../camel/providers/pop3/camel-pop3-store.c:542
+#: ../camel/providers/pop3/camel-pop3-store.c:403
+#: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
-msgid "Unable to connect to POP server %s: No support for requested authentication mechanism."
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
 msgstr "لا يمكن الإتّصال بخادم POP %s: لا دعم لآليّة التّوثيق المطلوبة"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:421
+#: ../camel/providers/pop3/camel-pop3-store.c:419
 #, c-format
 msgid "SASL `%s' Login failed for POP server %s: %s"
 msgstr "فشل ولوج SASL `%s' لخادم POP %s: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:433
+#: ../camel/providers/pop3/camel-pop3-store.c:431
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "لا يمكن الولوج لخادم POP %s: خطأ برتوكول SASL"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:452
+#: ../camel/providers/pop3/camel-pop3-store.c:450
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "فشل التّوثيق مع خادم POP %s: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:512
+#: ../camel/providers/pop3/camel-pop3-store.c:509
 #, c-format
-msgid "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation attack suspected. Please contact your admin."
-msgstr "تعذر الاتصال بخادم POP %s:\t معرّف APOP المستـَلم غير صالح. يُشتبه في أن يكون هذا عملية انتحال لشخصية. رجاءً اتصل بمديرك."
+msgid ""
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
+"attack suspected. Please contact your admin."
+msgstr ""
+"تعذر الاتصال بخادم POP %s:\t معرّف APOP المستـَلم غير صالح. يُشتبه في أن يكون "
+"هذا عملية انتحال لشخصية. رجاءً اتصل بمديرك."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:556
-#: ../camel/providers/pop3/camel-pop3-store.c:569
+#: ../camel/providers/pop3/camel-pop3-store.c:550
+#: ../camel/providers/pop3/camel-pop3-store.c:563
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4380,7 +4390,7 @@ msgstr ""
 "تعذّر الإتّصال بخادم POP %s.\n"
 "خطأ أثناء إرسال كلمة السّر: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:563
+#: ../camel/providers/pop3/camel-pop3-store.c:557
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4389,7 +4399,7 @@ msgstr ""
 "تعذّر الإتّصال بخادم POP %s.\n"
 "خطأ أثناء إرسال اسم المستخدم: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:669
+#: ../camel/providers/pop3/camel-pop3-store.c:663
 #, c-format
 msgid "No such folder `%s'."
 msgstr "ليس ثمّة مجلّدم `%s'."
@@ -4399,7 +4409,9 @@ msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:40
-msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
 msgstr "لتسليم البريد بتمريره لبرنامج \"sendmail\" على النّظام المحلّي."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:115
@@ -4781,8 +4793,7 @@ msgstr "منتظر"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1644
-#: ../libedataserver/e-time-utils.c:1911
+#: ../libedataserver/e-time-utils.c:1644 ../libedataserver/e-time-utils.c:1911
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4790,8 +4801,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1649
-#: ../libedataserver/e-time-utils.c:1902
+#: ../libedataserver/e-time-utils.c:1649 ../libedataserver/e-time-utils.c:1902
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4799,8 +4809,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1654
-#: ../libedataserver/e-time-utils.c:1907
+#: ../libedataserver/e-time-utils.c:1654 ../libedataserver/e-time-utils.c:1907
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4808,8 +4817,7 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1659
-#: ../libedataserver/e-time-utils.c:1898
+#: ../libedataserver/e-time-utils.c:1659 ../libedataserver/e-time-utils.c:1898
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
@@ -4827,8 +4835,7 @@ msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1672
-#: ../libedataserver/e-time-utils.c:1773
+#: ../libedataserver/e-time-utils.c:1672 ../libedataserver/e-time-utils.c:1773
 #: ../libedataserver/e-time-utils.c:1893
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
@@ -4869,22 +4876,19 @@ msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1707
-#: ../libedataserver/e-time-utils.c:1776
+#: ../libedataserver/e-time-utils.c:1707 ../libedataserver/e-time-utils.c:1776
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1834
-#: ../libedataserver/e-time-utils.c:1956
+#: ../libedataserver/e-time-utils.c:1834 ../libedataserver/e-time-utils.c:1956
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1838
-#: ../libedataserver/e-time-utils.c:1948
+#: ../libedataserver/e-time-utils.c:1838 ../libedataserver/e-time-utils.c:1948
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4892,16 +4896,14 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1843
-#: ../libedataserver/e-time-utils.c:1953
+#: ../libedataserver/e-time-utils.c:1843 ../libedataserver/e-time-utils.c:1953
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1847
-#: ../libedataserver/e-time-utils.c:1945
+#: ../libedataserver/e-time-utils.c:1847 ../libedataserver/e-time-utils.c:1945
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -4925,7 +4927,9 @@ msgstr "فشل التّوثيق.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:274
 #, c-format
-msgid "There is already a category '%s' in the configuration. Please use another name"
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
 msgstr "الفئة '%s' مو جودة بالفعل في الإعدادات. من فضلك استعمل اسماَ آخر"
 
 #: ../libedataserverui/e-categories-dialog.c:475
@@ -5051,19 +5055,23 @@ msgstr "_حرّر %s"
 msgid "_Delete %s"
 msgstr "ا_حذف %s"
 
-#: ../libedataserverui/e-passwords.c:986
+#: ../libedataserverui/e-passwords.c:968
+msgid "You have the Caps Lock key on."
+msgstr ""
+
+#: ../libedataserverui/e-passwords.c:1088
 msgid "_Remember this passphrase"
 msgstr "_تذكّر كلمة السر هذه"
 
-#: ../libedataserverui/e-passwords.c:987
+#: ../libedataserverui/e-passwords.c:1089
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_تذكُّر كلمة السّر هذه لبقيّة الجلسة"
 
-#: ../libedataserverui/e-passwords.c:992
+#: ../libedataserverui/e-passwords.c:1094
 msgid "_Remember this password"
 msgstr "_تذكّر كلمة السر هذه"
 
-#: ../libedataserverui/e-passwords.c:993
+#: ../libedataserverui/e-passwords.c:1095
 msgid "_Remember this password for the remainder of this session"
 msgstr "_تذكُّر كلمة السّر هذه لبقيّة الجلسة"
 
@@ -5077,13 +5085,13 @@ msgid "_Destination"
 msgstr "الم_قصد:"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1660
-#: ../servers/exchange/storage/exchange-account.c:939
+#: ../servers/exchange/storage/exchange-account.c:971
 #, c-format
 msgid "Enter password for %s"
 msgstr "ادخل كلمة السر لـ %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1661
-#: ../servers/exchange/storage/exchange-account.c:944
+#: ../servers/exchange/storage/exchange-account.c:976
 msgid "Enter password"
 msgstr "أدخل كلمة السر"
 
@@ -5187,26 +5195,26 @@ msgstr "هذه العملية لا يمكن اجراؤها في نمط غير م
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:635
+#: ../servers/exchange/storage/exchange-account.c:662
 #, c-format
 msgid "%s's Folders"
 msgstr "مجلّدات %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1245
+#: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Personal Folders"
 msgstr "المجلدات الشخصية"
 
-#: ../servers/exchange/storage/exchange-account.c:1260
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Favorite Public Folders"
 msgstr "المجلّدات العامة المفضّلة"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1309
 msgid "All Public Folders"
 msgstr "كل المجلّدات العامة"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1323
 msgid "Global Address List"
 msgstr "قائمة العناوين العامة"
 
@@ -5234,19 +5242,19 @@ msgstr "العناصر المرسلة"
 msgid "Tasks"
 msgstr "المهام"
 
-#: ../servers/groupwise/e-gw-connection.c:191
+#: ../servers/groupwise/e-gw-connection.c:224
 msgid "Invalid connection"
 msgstr "اتصال غير سليم"
 
-#: ../servers/groupwise/e-gw-connection.c:195
+#: ../servers/groupwise/e-gw-connection.c:228
 msgid "Invalid response from server"
 msgstr "إستجابة غير سليمة من الخادم"
 
-#: ../servers/groupwise/e-gw-connection.c:197
+#: ../servers/groupwise/e-gw-connection.c:230
 msgid "No response from the server"
 msgstr "لا استجابة من الخادم"
 
-#: ../servers/groupwise/e-gw-connection.c:203
+#: ../servers/groupwise/e-gw-connection.c:236
 msgid "Bad parameter"
 msgstr "معامل رديء"
 
@@ -5267,7 +5275,7 @@ msgid "Evolution Data Server logging service"
 msgstr "خدمة الولوج لخادم بيانات إيفليوشن"
 
 #. dialog display isn't working out
-#: ../src/server.c:110
+#: ../src/server.c:109
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "حدثت أخطاء فادحة عديدة؛ لن يمكنني عرض حوار الإنهيار\n"
@@ -5283,24 +5291,33 @@ msgstr "اللون المرسوم"
 #, fuzzy
 #~ msgid "Please enter the GroupWise password for %s@%s"
 #~ msgstr "%s رجاء أدخل كلمة سر GroupWise لـ%s@%s"
+
 #~ msgid "%sPlease enter the IMAP password for %s@%s"
 #~ msgstr "%s رجاء أدخل كلمة سر IMAP لـ%s@%s"
+
 #~ msgid "%sPlease enter the IMAP password for %s on host %s"
 #~ msgstr "%sرجاء أدخل كلمة سر IMAP لـ%s على المضيف %s"
+
 #~ msgid "Please enter the NNTP password for %s@%s"
 #~ msgstr "رجاء أدخل كلمة سر NNTP لـ %s@%s"
+
 #~ msgid "%sPlease enter the SMTP password for %s on host %s"
 #~ msgstr "%s رجاء أدخل كلمة سر SMTP لـ%s على المضيف %s"
+
 #~ msgid "Summary and folder mismatch, even after a sync"
 #~ msgstr "عدم تطابق بين الملخّص و المجلّد، حتّى بعد المزامنة"
+
 #~ msgid "Unable to authenticate to GroupWise server. "
 #~ msgstr "تعذّر التوثيق مع خادم GroupWise."
+
 #~ msgid "Category _Color"
 #~ msgstr "_لون الفئة"
+
 #~ msgid "Select User"
 #~ msgstr "انتقي مستخدم"
+
 #~ msgid "Addressbook..."
 #~ msgstr "دفتر عناوين..."
+
 #~ msgid "Error writing to temp mailbox: %s"
 #~ msgstr "خطأ أثناء الكتابة لصندوق البريد المؤقّت: %s"
-
