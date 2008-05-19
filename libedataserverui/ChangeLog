@@ -1,3 +1,17 @@
+2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #354923
+
+	* e-passwords.c:
+	Store passwords in the keyring by server, username and protocol.
+	Storing the protocol allows us to handle situations where, for
+	example, you use the same server and username for IMAP and
+	authenticated SMTP but the passwords are different.
+
+	Also add sufficient backward-compatibility cruft that we can still
+	find existing passwords that are stored in the keyring by server
+	and username only.
+
 2008-05-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #532286
