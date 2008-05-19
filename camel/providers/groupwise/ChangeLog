@@ -1,3 +1,11 @@
+2008-05-19  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c: (groupwise_folder_get_message),
+	(gw_update_cache):
+	Large memory leak while syncing mails for offline usage.
+
+	** Fix for bug #530543
+
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes #338330 (bnc)

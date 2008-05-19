@@ -201,6 +201,7 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 
 	camel_message_info_free (&mi->info);
 	g_free (container_id);
+	g_object_unref (item);
 	return msg;
 }
 
@@ -1449,6 +1450,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		}
 		/******************** Caching stuff ends *************************/
 		i++;
+		g_object_unref (item);
 	}
 	camel_operation_end (NULL);
 	g_free (container_id);
