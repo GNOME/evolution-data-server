@@ -444,16 +444,18 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	priv->book_list = NULL;
 	priv->opts = NULL;
 
-	if (g_getenv ("GROUPWISE_DEBUG")) {
+	/* README: We do not use libsoup logger and use our own as we need formatted output etc. */
+	/*
+	   if (g_getenv ("GROUPWISE_DEBUG")) {
 		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1) {
 			SoupLogger *logger;
 
-			logger = soup_logger_new (SOUP_LOGGER_LOG_BODY,
-						  SOUP_LOGGER_LOG_BODY);
+			logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
 			soup_logger_attach (logger, priv->soup_session);
 			g_object_unref (logger);
 		}
 	}
+	*/
 }
 
 GType
@@ -675,6 +677,15 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 
 	/* process response */
 	response = soup_soap_message_parse_response (msg);
+	
+	if (g_getenv ("GROUPWISE_DEBUG")) {
+
+		/* README: The stdout can be replaced with Evolution's
+		Logging framework also */
+
+		soup_soap_response_dump_response (response, stdout);
+		g_print ("\n------\n");
+	}
 
 	return response;
 }
