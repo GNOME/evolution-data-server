@@ -197,7 +197,7 @@ krb4_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		 * protection mechanisms supported by the server"
 		 */
 		if (!(token->data[4] & KERBEROS_V4_PROTECTION_NONE)) {
-			g_warning ("Server does not support `no protection' :-(");
+			g_warning ("Server does not support 'no protection' :-(");
 			goto lose;
 		}
 

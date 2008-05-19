@@ -104,7 +104,7 @@ int main (int argc, char **argv)
 			continue;
 		}
 		
-		push ("testing message `%s`", filename);
+		push ("testing message '%s'", filename);
 		g_free (filename);
 		
 		stream = camel_stream_fs_new_with_fd (fd);

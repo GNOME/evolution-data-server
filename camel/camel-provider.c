@@ -373,7 +373,7 @@ camel_provider_get(const char *url_string, CamelException *ex)
 
 	if (provider == NULL)
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				     _("No provider available for protocol `%s'"),
+				     _("No provider available for protocol '%s'"),
 				     protocol);
 fail:
 	UNLOCK();

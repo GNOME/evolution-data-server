@@ -30,7 +30,7 @@ test_filter(CamelMimeFilter *f, const char *inname, const char *outname)
 	CamelStream *indisk, *outdisk, *filter;
 	int id;
 
-	camel_test_push("Data file `%s'", inname);
+	camel_test_push("Data file '%s'", inname);
 
 	camel_test_push("setup");
 

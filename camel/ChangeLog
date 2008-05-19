@@ -1,3 +1,25 @@
+2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #531591
+
+	* camel-disco-diary.c:
+	* camel-disco-folder.c:
+	* camel-disco-store.c:
+	* camel-folder-summary.c:
+	* camel-folder.c:
+	* camel-gpg-context.c:
+	* camel-object.c:
+	* camel-offline-journal.c:
+	* camel-provider.c:
+	* camel-sasl-kerberos4.c:
+	* camel-service.c:
+	* camel-session.c:
+	* camel-smime-context.c:
+	* camel-store.c:
+	* camel-url.c:
+	* camel-vee-folder.c:
+	Don't use TeX-style quotes in user-visible messages.
+
 2008-05-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel-net-utils.h [Win32]: Define WIN32_LEAN_AND_MEAN around

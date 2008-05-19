@@ -420,7 +420,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 		/* we *do* care if summary loading fails here though */
 		if (camel_folder_summary_load (folder->summary) == -1) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
-					      _("Cannot access folder `%s': %s"),
+					      _("Cannot access folder '%s': %s"),
 					      full_name, g_strerror (ENOENT));
 			
 			camel_object_unref (folder);
@@ -479,13 +479,13 @@ imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, char onoff, const char *
 		case CAMEL_IMAP4_RESULT_NO:
 			/* FIXME: would be good to save the NO reason into the err message */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot sync flags to folder `%s': Unknown"),
+					      _("Cannot sync flags to folder '%s': Unknown"),
 					      folder->full_name);
 			retval = -1;
 			break;
 		case CAMEL_IMAP4_RESULT_BAD:
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot sync flags to folder `%s': Bad command"),
+					      _("Cannot sync flags to folder '%s': Bad command"),
 					      folder->full_name);
 			retval = -1;
 			break;
@@ -625,12 +625,12 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		case CAMEL_IMAP4_RESULT_NO:
 			/* FIXME: would be good to save the NO reason into the err message */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot expunge folder `%s': Unknown"),
+					      _("Cannot expunge folder '%s': Unknown"),
 					      folder->full_name);
 			break;
 		case CAMEL_IMAP4_RESULT_BAD:
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot expunge folder `%s': Bad command"),
+					      _("Cannot expunge folder '%s': Bad command"),
 					      folder->full_name);
 			break;
 		}
@@ -886,12 +886,12 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get message %s from folder `%s': No such message"),
+				      _("Cannot get message %s from folder '%s': No such message"),
 				      uid, folder->full_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get message %s from folder `%s': Bad command"),
+				      _("Cannot get message %s from folder '%s': Bad command"),
 				      uid, folder->full_name);
 		break;
 	}
@@ -935,7 +935,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
 	if (((CamelIMAP4Folder *) folder)->read_only) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot append message to folder `%s': Folder is read-only"),
+				      _("Cannot append message to folder '%s': Folder is read-only"),
 				      folder->full_name);
 		return;
 	}
@@ -1028,7 +1028,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: can we give the user any more information? */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot append message to folder `%s': Unknown error"),
+				      _("Cannot append message to folder '%s': Unknown error"),
 				      folder->full_name);
 		
 		for (i = 0; i < ic->resp_codes->len; i++) {
@@ -1058,7 +1058,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot append message to folder `%s': Bad command"),
+				      _("Cannot append message to folder '%s': Bad command"),
 				      folder->full_name);
 		
 		break;
@@ -1178,11 +1178,11 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 			/* FIXME: would be good to save the NO reason into the err message */
 			if (move) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot move messages from folder `%s' to folder `%s': Unknown"),
+						      _("Cannot move messages from folder '%s' to folder '%s': Unknown"),
 						      src->full_name, dest->full_name);
 			} else {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot copy messages from folder `%s' to folder `%s': Unknown"),
+						      _("Cannot copy messages from folder '%s' to folder '%s': Unknown"),
 						      src->full_name, dest->full_name);
 			}
 			
@@ -1190,11 +1190,11 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 		case CAMEL_IMAP4_RESULT_BAD:
 			if (move) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot move messages from folder `%s' to folder `%s': Bad command"),
+						      _("Cannot move messages from folder '%s' to folder '%s': Bad command"),
 						      src->full_name, dest->full_name);
 			} else {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot copy messages from folder `%s' to folder `%s': Bad command"),
+						      _("Cannot copy messages from folder '%s' to folder '%s': Bad command"),
 						      src->full_name, dest->full_name);
 			}
 			

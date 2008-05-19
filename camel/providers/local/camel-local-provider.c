@@ -45,7 +45,7 @@ static CamelProviderConfEntry mh_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "dotfolders", NULL,
-	  N_("_Use the `.folders' folder summary file (exmh)"), "0" },
+	  N_("_Use the '.folders' folder summary file (exmh)"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

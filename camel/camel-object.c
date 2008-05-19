@@ -1158,13 +1158,13 @@ camel_object_class_add_event(CamelObjectClass *klass, const char *name, CamelObj
 
 	pair = co_find_pair(klass, name);
 	if (pair) {
-		g_warning("camel_object_class_add_event: `%s' is already declared for '%s'",
+		g_warning("camel_object_class_add_event: '%s' is already declared for '%s'",
 			  name, klass->name);
 		return;
 	}
 
 	if (klass->magic == CAMEL_INTERFACE_MAGIC && prep != NULL) {
-		g_warning("camel_object_class_add_event: `%s', CamelInterface '%s' may not have an event prep function - ignored",
+		g_warning("camel_object_class_add_event: '%s', CamelInterface '%s' may not have an event prep function - ignored",
 			  name, klass->name);
 		prep = NULL;
 	}
@@ -1306,7 +1306,7 @@ camel_object_hook_event(void *vo, const char * name, CamelObjectEventHookFunc fu
 			}
 		}
 
-		g_warning("camel_object_hook_event: trying to hook event `%s' in class `%s' with no defined events.",
+		g_warning("camel_object_hook_event: trying to hook event '%s' in class '%s' with no defined events.",
 			  name, obj->klass->name);
 
 		return 0;
@@ -1343,7 +1343,7 @@ camel_object_remove_event(void *vo, unsigned int id)
 	g_return_if_fail (id != 0);
 
 	if (obj->hooks == NULL) {
-		g_warning("camel_object_unhook_event: trying to unhook `%u` from an instance of `%s' with no hooks",
+		g_warning("camel_object_unhook_event: trying to unhook '%u' from an instance of '%s' with no hooks",
 			  id, obj->klass->name);
 		return;
 	}
@@ -1373,7 +1373,7 @@ camel_object_remove_event(void *vo, unsigned int id)
 	}
 	camel_object_unget_hooks(obj);
 
-	g_warning("camel_object_unhook_event: cannot find hook id %u in instance of `%s'",
+	g_warning("camel_object_unhook_event: cannot find hook id %u in instance of '%s'",
 		  id, obj->klass->name);
 }
 
@@ -1389,7 +1389,7 @@ camel_object_unhook_event(void *vo, const char * name, CamelObjectEventHookFunc 
 	g_return_if_fail (func != NULL);
 
 	if (obj->hooks == NULL) {
-		g_warning("camel_object_unhook_event: trying to unhook `%s` from an instance of `%s' with no hooks",
+		g_warning("camel_object_unhook_event: trying to unhook '%s' from an instance of '%s' with no hooks",
 			  name, obj->klass->name);
 		return;
 	}
@@ -1421,7 +1421,7 @@ camel_object_unhook_event(void *vo, const char * name, CamelObjectEventHookFunc 
 	}
 	camel_object_unget_hooks(obj);
 
-	g_warning("camel_object_unhook_event: cannot find hook/data pair %p/%p in an instance of `%s' attached to `%s'",
+	g_warning("camel_object_unhook_event: cannot find hook/data pair %p/%p in an instance of '%s' attached to '%s'",
 		  (void *) func, data, obj->klass->name, name);
 }
 
@@ -1456,7 +1456,7 @@ camel_object_trigger_event(void *vo, const char * name, void *event_data)
 		}
 	}
 
-	g_warning("camel_object_trigger_event: trying to trigger unknown event `%s' in class `%s'",
+	g_warning("camel_object_trigger_event: trying to trigger unknown event '%s' in class '%s'",
 		  name, obj->klass->name);
 
 	return;

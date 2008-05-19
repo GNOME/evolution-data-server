@@ -83,7 +83,7 @@ e_path_to_physical (const char *prefix, const char *vpath)
 	ppath_len++;	/* For the separating slash.  */
 
 	/* Take account of the fact that we need to translate every
-	 * separator into `subfolders/'.
+	 * separator into 'subfolders/'.
 	 */
 	p = vpath;
 	while (1) {
@@ -117,7 +117,7 @@ e_path_to_physical (const char *prefix, const char *vpath)
 			break;
 		}
 
-		memcpy (dp, p, newp - p + 1); /* `+ 1' to copy the slash too.  */
+		memcpy (dp, p, newp - p + 1); /* '+ 1' to copy the slash too.  */
 		dp += newp - p + 1;
 
 		memcpy (dp, SUBFOLDER_DIR_NAME, SUBFOLDER_DIR_NAME_LEN);

@@ -436,7 +436,7 @@ static void
 disco_cache_message (CamelDiscoFolder *disco_folder, const char *uid,
 		     CamelException *ex)
 {
-	g_warning ("CamelDiscoFolder::cache_message not implemented for `%s'",
+	g_warning ("CamelDiscoFolder::cache_message not implemented for '%s'",
 		   camel_type_to_name (CAMEL_OBJECT_GET_TYPE (disco_folder)));
 }
 

@@ -310,7 +310,7 @@ camel_url_new (const char *url_string, CamelException *ex)
 	if (!url->protocol) {
 		camel_url_free (url);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("Could not parse URL `%s'"),
+				      _("Could not parse URL '%s'"),
 				      url_string);
 		return NULL;
 	}

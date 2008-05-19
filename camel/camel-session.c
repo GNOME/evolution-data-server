@@ -174,7 +174,7 @@ get_service (CamelSession *session, const char *url_string,
 	provider = camel_provider_get(url->protocol, ex);
 	if (provider && !provider->object_types[type]) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("No provider available for protocol `%s'"),
+				      _("No provider available for protocol '%s'"),
 				      url->protocol);
 		provider = NULL;
 	}

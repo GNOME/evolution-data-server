@@ -1181,7 +1181,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		/* FIXME: Sankar: What about custom flags ? */
 		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
 
-		/* Note: to `unset' flags, use -FLAGS.SILENT (<flag list>) */
+		/* Note: to 'unset' flags, use -FLAGS.SILENT (<flag list>) */
 		response = camel_imap_command (store, folder, &local_ex,
 					       "UID STORE %s %sFLAGS.SILENT %s",
 					       set, unset ? "-" : "", flaglist);

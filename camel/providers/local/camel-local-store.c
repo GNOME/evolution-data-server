@@ -449,7 +449,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	str = g_strdup_printf("%s.ev-summary", name);
 	if (g_unlink(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder summary file `%s': %s"),
+				      _("Could not delete folder summary file '%s': %s"),
 				      str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
@@ -459,7 +459,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	str = g_strdup_printf("%s.ev-summary-meta", name);
 	if (g_unlink(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder summary file `%s': %s"),
+				      _("Could not delete folder summary file '%s': %s"),
 				      str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
@@ -469,7 +469,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	str = g_strdup_printf("%s.ibex", name);
 	if (camel_text_index_remove(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder index file `%s': %s"),
+				      _("Could not delete folder index file '%s': %s"),
 				      str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
@@ -492,7 +492,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	
 	if (g_unlink (str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder meta file `%s': %s"),
+				      _("Could not delete folder meta file '%s': %s"),
 				      str, g_strerror (errno));
 		g_free (name);
 		g_free (str);

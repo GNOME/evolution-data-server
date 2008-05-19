@@ -834,7 +834,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		} else {
 			next_token ((char *) status, &prompt);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Unexpected request from GnuPG for `%s'"), prompt);
+					      _("Unexpected request from GnuPG for '%s'"), prompt);
 			g_free (prompt);
 			return -1;
 		}

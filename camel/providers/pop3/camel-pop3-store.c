@@ -416,7 +416,7 @@ try_sasl(CamelPOP3Store *store, const char *mech, CamelException *ex)
 			break;
 		if (strncmp((char *) line, "-ERR", 4) == 0) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("SASL `%s' Login failed for POP server %s: %s"),
+					      _("SASL '%s' Login failed for POP server %s: %s"),
 					      mech, CAMEL_SERVICE (store)->url->host, line);
 			goto done;
 		}
@@ -660,7 +660,7 @@ get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelExce
 {
 	if (g_ascii_strcasecmp (folder_name, "inbox") != 0) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-				      _("No such folder `%s'."), folder_name);
+				      _("No such folder '%s'."), folder_name);
 		return NULL;
 	}
 	return camel_pop3_folder_new (store, ex);

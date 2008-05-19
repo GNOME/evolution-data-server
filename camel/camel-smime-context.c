@@ -775,7 +775,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	for (i=0;i<recipients->len;i++) {
 		recipient_certs[i] = CERT_FindCertByNicknameOrEmailAddr(p->certdb, recipients->pdata[i]);
 		if (recipient_certs[i] == NULL) {
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find certificate for `%s'"), recipients->pdata[i]);
+			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find certificate for '%s'"), recipients->pdata[i]);
 			goto fail;
 		}
 	}

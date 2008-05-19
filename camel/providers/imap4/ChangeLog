@@ -1,3 +1,13 @@
+2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #531591
+
+	* camel-imap4-engine.c:
+	* camel-imap4-folder.c:
+	* camel-imap4-store.c:
+	* camel-imap4-summary.c:
+	Don't use TeX-style quotes in user-visible messages.
+
 2008-05-14  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-folder.c (imap4_getv): Implement support for getting

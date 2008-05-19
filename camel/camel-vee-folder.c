@@ -483,7 +483,7 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 			char *desc;
 
 			camel_object_get(f, NULL, CAMEL_OBJECT_DESCRIPTION, &desc, NULL);
-			camel_exception_setv(ex, ex->id, _("Error storing `%s': %s"), desc, ex->desc);
+			camel_exception_setv(ex, ex->id, _("Error storing '%s': %s"), desc, ex->desc);
 			break;
 		}
 

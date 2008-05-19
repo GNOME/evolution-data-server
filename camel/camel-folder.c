@@ -254,7 +254,7 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 static void
 folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
-	w(g_warning ("CamelFolder::sync not implemented for `%s'",
+	w(g_warning ("CamelFolder::sync not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 }
 
@@ -525,7 +525,7 @@ camel_folder_get_parent_store (CamelFolder *folder)
 static void
 expunge (CamelFolder *folder, CamelException *ex)
 {
-	w(g_warning ("CamelFolder::expunge not implemented for `%s'",
+	w(g_warning ("CamelFolder::expunge not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 }
 
@@ -628,7 +628,7 @@ append_message (CamelFolder *folder, CamelMimeMessage *message,
 			      _("Unsupported operation: append message: for %s"),
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
 	
-	w(g_warning ("CamelFolder::append_message not implemented for `%s'",
+	w(g_warning ("CamelFolder::append_message not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 	
 	return;
@@ -1054,7 +1054,7 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 static CamelMimeMessage *
 get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
-	w(g_warning ("CamelFolder::get_message not implemented for `%s'",
+	w(g_warning ("CamelFolder::get_message not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 	
 	return NULL;
@@ -1251,7 +1251,7 @@ search_by_expression (CamelFolder *folder, const char *expression,
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
 	
 	w(g_warning ("CamelFolder::search_by_expression not implemented for "
-		     "`%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
+		     "'%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 	
 	return NULL;
 }
@@ -1292,7 +1292,7 @@ search_by_uids(CamelFolder *folder, const char *exp, GPtrArray *uids, CamelExcep
 			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
 	
 	w(g_warning ("CamelFolder::search_by_expression not implemented for "
-		     "`%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
+		     "'%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 	
 	return NULL;
 }

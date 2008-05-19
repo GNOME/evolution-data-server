@@ -492,7 +492,7 @@ camel_service_get_url (CamelService *service)
 static char *
 get_name (CamelService *service, gboolean brief)
 {
-	w(g_warning ("CamelService::get_name not implemented for `%s'",
+	w(g_warning ("CamelService::get_name not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service))));
 	return g_strdup ("???");
 }		

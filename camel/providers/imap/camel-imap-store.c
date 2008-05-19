@@ -2039,7 +2039,7 @@ get_folder_online (CamelStore *store, const char *folder_name, guint32 flags, Ca
 		}
 	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': folder exists."),
+				      _("Cannot create folder '%s': folder exists."),
 				      folder_name);
 		
 		camel_imap_response_free_without_processing (imap_store, response);

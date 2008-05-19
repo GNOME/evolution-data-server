@@ -2033,7 +2033,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		is_ok = TRUE;
 
 	if (!is_ok) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder `%s': %s"),
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder '%s': %s"),
 				folder->full_name, e_gw_connection_get_error_message (status));
 		return;
 	}
@@ -2075,7 +2075,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	status = e_gw_connection_add_item (cnc, container_id, id);
 	g_message ("Adding %s to %s", id, container_id);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder `%s': %s"),
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot append message to folder '%s': %s"),
 				folder->full_name, e_gw_connection_get_error_message (status));
 
 		if (appended_uid)

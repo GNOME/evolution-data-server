@@ -161,7 +161,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 	
 	if ((fd = g_open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot write offline journal for folder `%s': %s"),
+				      _("Cannot write offline journal for folder '%s': %s"),
 				      journal->folder->full_name, g_strerror (errno));
 		return -1;
 	}
@@ -184,7 +184,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
  exception:
 	
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot write offline journal for folder `%s': %s"),
+			      _("Cannot write offline journal for folder '%s': %s"),
 			      journal->folder->full_name, g_strerror (errno));
 	
 	fclose (fp);

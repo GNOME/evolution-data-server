@@ -212,7 +212,7 @@ construct (CamelService *service, CamelSession *session,
 static CamelFolder *
 get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
 {
-	w(g_warning ("CamelStore::get_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::get_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 	
 	camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_INVALID,
@@ -249,7 +249,7 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 		folder = camel_object_bag_reserve(store->folders, folder_name);
 		if (folder && (flags & CAMEL_STORE_FOLDER_EXCL)) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot create folder `%s': folder exists"),
+					      _("Cannot create folder '%s': folder exists"),
 					      folder_name);
                         camel_object_bag_abort (store->folders, folder_name);
 			camel_object_unref (folder);
@@ -309,7 +309,7 @@ static CamelFolderInfo *
 create_folder (CamelStore *store, const char *parent_name,
 	       const char *folder_name, CamelException *ex)
 {
-	w(g_warning ("CamelStore::create_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::create_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 	
 	camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_INVALID,
@@ -384,7 +384,7 @@ cs_delete_cached_folder(CamelStore *store, const char *folder_name)
 static void
 delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
 {
-	w(g_warning ("CamelStore::delete_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::delete_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
@@ -426,7 +426,7 @@ camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelExce
 static void
 rename_folder (CamelStore *store, const char *old_name, const char *new_name, CamelException *ex)
 {
-	w(g_warning ("CamelStore::rename_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::rename_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
@@ -674,7 +674,7 @@ camel_store_sync(CamelStore *store, int expunge, CamelException *ex)
 static CamelFolderInfo *
 get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
 {
-	w(g_warning ("CamelStore::get_folder_info not implemented for `%s'",
+	w(g_warning ("CamelStore::get_folder_info not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 	
 	return NULL;
@@ -816,7 +816,7 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 static void
 free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 {
-	w(g_warning ("CamelStore::free_folder_info not implemented for `%s'",
+	w(g_warning ("CamelStore::free_folder_info not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
@@ -1086,7 +1086,7 @@ camel_store_supports_subscriptions (CamelStore *store)
 static gboolean
 folder_subscribed(CamelStore *store, const char *folder_name)
 {
-	w(g_warning ("CamelStore::folder_subscribed not implemented for `%s'",
+	w(g_warning ("CamelStore::folder_subscribed not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 	
 	return FALSE;
@@ -1121,7 +1121,7 @@ camel_store_folder_subscribed(CamelStore *store, const char *folder_name)
 static void
 subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 {
-	w(g_warning ("CamelStore::subscribe_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::subscribe_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
@@ -1149,7 +1149,7 @@ camel_store_subscribe_folder(CamelStore *store, const char *folder_name, CamelEx
 static void
 unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 {
-	w(g_warning ("CamelStore::unsubscribe_folder not implemented for `%s'",
+	w(g_warning ("CamelStore::unsubscribe_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 

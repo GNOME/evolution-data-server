@@ -365,7 +365,7 @@ camel_disco_store_set_status (CamelDiscoStore *store,
 static gboolean
 can_work_offline (CamelDiscoStore *disco_store)
 {
-	g_warning ("CamelDiscoStore::can_work_offline not implemented for `%s'",
+	g_warning ("CamelDiscoStore::can_work_offline not implemented for '%s'",
 		   camel_type_to_name (CAMEL_OBJECT_GET_TYPE (disco_store)));
 	return FALSE;
 }

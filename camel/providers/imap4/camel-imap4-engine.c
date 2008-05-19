@@ -447,13 +447,13 @@ camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder,
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot select folder `%s': Invalid mailbox name"),
+				      _("Cannot select folder '%s': Invalid mailbox name"),
 				      folder->full_name);
 		retval = -1;
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot select folder `%s': Bad command"),
+				      _("Cannot select folder '%s': Bad command"),
 				      folder->full_name);
 		retval = -1;
 		break;

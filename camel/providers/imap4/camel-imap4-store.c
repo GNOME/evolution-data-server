@@ -737,7 +737,7 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 	
 	if (ic->result != CAMEL_IMAP4_RESULT_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get folder `%s' on IMAP server %s: Unknown"),
+				      _("Cannot get folder '%s' on IMAP server %s: Unknown"),
 				      folder_name, ((CamelService *) store)->url->host);
 		camel_imap4_command_unref (ic);
 		goto done;
@@ -818,7 +818,7 @@ imap4_folder_can_contain_folders (CamelStore *store, const char *folder_name, Ca
 		camel_imap4_command_unref (ic);
 		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get LIST information for `%s' on IMAP server %s: %s"),
+				      _("Cannot get LIST information for '%s' on IMAP server %s: %s"),
 				      folder_name, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
 				      _("Bad command") : _("Unknown"));
 		
@@ -899,12 +899,12 @@ imap4_folder_create (CamelStore *store, const char *folder_name, const char *sub
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': Invalid mailbox name"),
+				      _("Cannot create folder '%s': Invalid mailbox name"),
 				      folder_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': Bad command"),
+				      _("Cannot create folder '%s': Bad command"),
 				      folder_name);
 		break;
 	default:
@@ -1010,7 +1010,7 @@ imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException 
 
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot delete folder `%s': Special folder"),
+				      _("Cannot delete folder '%s': Special folder"),
 				      folder_name);
 
 		return;
@@ -1076,12 +1076,12 @@ imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException 
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot delete folder `%s': Invalid mailbox name"),
+				      _("Cannot delete folder '%s': Invalid mailbox name"),
 				      folder_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot delete folder `%s': Bad command"),
+				      _("Cannot delete folder '%s': Bad command"),
 				      folder_name);
 		break;
 	}
@@ -1101,7 +1101,7 @@ imap4_rename_folder (CamelStore *store, const char *old_name, const char *new_na
 	
 	if (!g_ascii_strcasecmp (old_name, "INBOX")) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot rename folder `%s' to `%s': Special folder"),
+				      _("Cannot rename folder '%s' to '%s': Special folder"),
 				      old_name, new_name);
 		
 		return;
@@ -1139,12 +1139,12 @@ imap4_rename_folder (CamelStore *store, const char *old_name, const char *new_na
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot rename folder `%s' to `%s': Invalid mailbox name"),
+				      _("Cannot rename folder '%s' to '%s': Invalid mailbox name"),
 				      old_name, new_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot rename folder `%s' to `%s': Bad command"),
+				      _("Cannot rename folder '%s' to '%s': Bad command"),
 				      old_name, new_name);
 		break;
 	}
@@ -1572,7 +1572,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		camel_imap4_command_unref (ic);
 		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get %s information for pattern `%s' on IMAP server %s: %s"),
+				      _("Cannot get %s information for pattern '%s' on IMAP server %s: %s"),
 				      cmd, pattern, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
 				      _("Bad command") : _("Unknown"));
 		
@@ -1678,12 +1678,12 @@ imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelExcepti
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot subscribe to folder `%s': Invalid mailbox name"),
+				      _("Cannot subscribe to folder '%s': Invalid mailbox name"),
 				      folder_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot subscribe to folder `%s': Bad command"),
+				      _("Cannot subscribe to folder '%s': Bad command"),
 				      folder_name);
 		break;
 	}
@@ -1750,12 +1750,12 @@ imap4_unsubscribe_folder (CamelStore *store, const char *folder_name, CamelExcep
 	case CAMEL_IMAP4_RESULT_NO:
 		/* FIXME: would be good to save the NO reason into the err message */
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot unsubscribe from folder `%s': Invalid mailbox name"),
+				      _("Cannot unsubscribe from folder '%s': Invalid mailbox name"),
 				      folder_name);
 		break;
 	case CAMEL_IMAP4_RESULT_BAD:
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot unsubscribe from folder `%s': Bad command"),
+				      _("Cannot unsubscribe from folder '%s': Bad command"),
 				      folder_name);
 		break;
 	}

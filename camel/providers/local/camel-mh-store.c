@@ -214,14 +214,14 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 	if (stat(name, &st) == -1) {
 		if (errno != ENOENT) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Cannot get folder `%s': %s"),
+					     _("Cannot get folder '%s': %s"),
 					     folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
 		}
 		if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-					     _("Cannot get folder `%s': folder does not exist."),
+					     _("Cannot get folder '%s': folder does not exist."),
 					     folder_name);
 			g_free (name);
 			return NULL;
@@ -229,7 +229,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 
 		if (mkdir(name, 0777) != 0) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Could not create folder `%s': %s"),
+					     _("Could not create folder '%s': %s"),
 					     folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
@@ -241,12 +241,12 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 			folders_update(((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL);
 	} else if (!S_ISDIR(st.st_mode)) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Cannot get folder `%s': not a directory."), folder_name);
+				     _("Cannot get folder '%s': not a directory."), folder_name);
 		g_free (name);
 		return NULL;
 	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder `%s': folder exists."), folder_name);
+				      _("Cannot create folder '%s': folder exists."), folder_name);
 		g_free (name);
 		return NULL;
 	}
@@ -270,7 +270,7 @@ static void delete_folder(CamelStore * store, const char *folder_name, CamelExce
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	if (rmdir(name) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder `%s': %s"),
+				      _("Could not delete folder '%s': %s"),
 				      folder_name, g_strerror (errno));
 		g_free(name);
 		return;

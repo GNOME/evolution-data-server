@@ -132,7 +132,7 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 
 	if (stat(service->url->path, &st) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				      _("Spool `%s' cannot be opened: %s"),
+				      _("Spool '%s' cannot be opened: %s"),
 				      service->url->path, g_strerror (errno));
 		return;
 	}
@@ -144,7 +144,7 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_ELM;
 	else {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Spool `%s' is not a regular file or directory"),
+				     _("Spool '%s' is not a regular file or directory"),
 				     service->url->path);
 		return;
 	}
@@ -163,7 +163,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX) {
 		if (strcmp(folder_name, "INBOX") != 0) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-					     _("Folder `%s/%s' does not exist."),
+					     _("Folder '%s/%s' does not exist."),
 					     ((CamelService *)store)->url->path, folder_name);
 		} else {
 			folder = camel_spool_folder_new(store, folder_name, flags, ex);
@@ -173,16 +173,16 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		if (stat(name, &st) == -1) {
 			if (errno != ENOENT) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Could not open folder `%s':\n%s"),
+						      _("Could not open folder '%s':\n%s"),
 						      folder_name, g_strerror (errno));
 			} else if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-						      _("Folder `%s' does not exist."),
+						      _("Folder '%s' does not exist."),
 						      folder_name);
 			} else {
 				if (creat (name, 0600) == -1) {
 					camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-							      _("Could not create folder `%s':\n%s"),
+							      _("Could not create folder '%s':\n%s"),
 							      folder_name, g_strerror (errno));
 				} else {
 					folder = camel_spool_folder_new(store, folder_name, flags, ex);
@@ -190,7 +190,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 			}
 		} else if (!S_ISREG(st.st_mode)) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-					     _("`%s' is not a mailbox file."), name);
+					     _("'%s' is not a mailbox file."), name);
 		} else {
 			folder = camel_spool_folder_new(store, folder_name, flags, ex);
 		}
@@ -328,7 +328,7 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 
 	if (stat(name, &st) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not scan folder `%s': %s"),
+				      _("Could not scan folder '%s': %s"),
 				      name, g_strerror (errno));
 	} else if (S_ISREG(st.st_mode)) {
 		/* incase we start scanning from a file.  messy duplication :-/ */
@@ -342,7 +342,7 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 	dir = opendir(name);
 	if (dir == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not scan folder `%s': %s"),
+				      _("Could not scan folder '%s': %s"),
 				      name, g_strerror (errno));
 		return -1;
 	}
