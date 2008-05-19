@@ -2163,8 +2163,8 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 							_("This message is not available in offline mode."));
 
 				} else {
-					camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
-					camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
+					camel_folder_summary_remove_uid (source->summary, uids->pdata[i]);
+					camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 				}
 			}
 		}
