@@ -1,5 +1,13 @@
 2008-05-19  Sankar P  <psankar@novell.com>
 
+	* camel-groupwise-folder.c: (gw_update_summary):
+	Added a necessary condition to handle a specific server response 
+	and to prevent a crash.
+
+	** Fix for bug #530514
+
+2008-05-19  Sankar P  <psankar@novell.com>
+
 	* camel-groupwise-folder.c: (groupwise_folder_get_message),
 	(gw_update_cache):
 	Large memory leak while syncing mails for offline usage.
