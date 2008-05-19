@@ -562,3 +562,19 @@ soup_xml_real_node (xmlNode *node)
 		node = node->next;
 	return node;
 }
+
+
+int
+soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer)
+{
+	xmlChar *xmlbuff;
+	int buffersize, ret;
+
+	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	xmlDocDumpFormatMemory(priv->xmldoc, &xmlbuff, &buffersize, 1);
+	
+	ret = fputs ((char *) xmlbuff, buffer);
+	xmlFree (xmlbuff);
+
+	return ret;
+}

@@ -1,3 +1,13 @@
+2008-05-14  Sankar P  <psankar@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_init),
+	(e_gw_connection_send_message):
+	* soup-soap-response.c: (soup_soap_response_dump_response):
+	* soup-soap-response.h:
+	Enable GROUPWISE_DEBUG logs.
+
+	** Fix for bug #533058
+
 2008-05-09  Sankar P  <psankar@novell.com>
 
 	* e-gw-container.c: (free_node):
