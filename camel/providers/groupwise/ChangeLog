@@ -1,5 +1,12 @@
 2008-05-19  Sankar P  <psankar@novell.com>
 
+	* camel-groupwise-folder.c: (groupwise_transfer_messages_to):
+	Use the right iterator to prevent a crash in offline mail movement.
+
+	** Fix for bug #531009
+
+2008-05-19  Sankar P  <psankar@novell.com>
+
 	* camel-groupwise-folder.c: (gw_update_summary):
 	Added a necessary condition to handle a specific server response 
 	and to prevent a crash.
