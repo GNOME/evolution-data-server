@@ -193,18 +193,28 @@ ep_keyring_error_domain (void)
 }
 
 static EUri *
-ep_keyring_uri_new (const gchar *string)
+ep_keyring_uri_new (const gchar *string,
+                    GError **error)
 {
 	EUri *uri;
 
 	uri = e_uri_new (string);
-	if (uri == NULL)
-		return NULL;
+	g_return_val_if_fail (uri != NULL, NULL);
 
 	/* LDAP URIs do not have usernames, so use the URI as the username. */
 	if (uri->user == NULL && uri->protocol != NULL &&
 			(strcmp (uri->protocol, "ldap") == 0|| strcmp (uri->protocol, "google") == 0))
 		uri->user = g_strdelimit (g_strdup (string), "/=", '_');
+
+	/* Make sure the URI has the required components. */
+	if (uri->user == NULL && uri->host == NULL) {
+		g_set_error (
+			error, EP_KEYRING_ERROR,
+			GNOME_KEYRING_RESULT_BAD_ARGUMENTS,
+			_("Keyring key is unusable: no user or host name"));
+		e_uri_free (uri);
+		uri = NULL;
+	}
 
 	return uri;
 }
@@ -644,8 +654,9 @@ ep_remember_password_keyring (EPassMsg *msg)
 		return;
 	}
 
-	uri = ep_keyring_uri_new (msg->key);
-	g_return_if_fail (uri != NULL);
+	uri = ep_keyring_uri_new (msg->key, &msg->error);
+	if (uri == NULL)
+		return;
 
 	/* Only remove the password from the session hash
 	 * if the keyring insertion was successful. */
@@ -707,8 +718,9 @@ ep_forget_password_keyring (EPassMsg *msg)
 	EUri *uri;
 	GError *error = NULL;
 
-	uri = ep_keyring_uri_new (msg->key);
-	g_return_if_fail (uri != NULL);
+	uri = ep_keyring_uri_new (msg->key, &msg->error);
+	if (uri == NULL)
+		return;
 
 	/* Find all Evolution passwords matching the URI and delete them.
 	 *
@@ -787,8 +799,9 @@ ep_get_password_keyring (EPassMsg *msg)
 	EUri *uri;
 	GError *error = NULL;
 
-	uri = ep_keyring_uri_new (msg->key);
-	g_return_if_fail (uri != NULL);
+	uri = ep_keyring_uri_new (msg->key, &msg->error);
+	if (uri == NULL)
+		return;
 
 	/* Find the first Evolution password that matches the URI. */
 	passwords = ep_keyring_lookup_passwords (uri->user, uri->host, uri->protocol, &error);
