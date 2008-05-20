@@ -935,7 +935,6 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 				if ((properties_array.lpProps[z].ulPropTag & 0xFFFF) == PT_BINARY && (options & MAPI_OPTIONS_FETCH_GENERIC_STREAMS)) 
 					exchange_mapi_util_read_generic_stream (&obj_message, properties_array.lpProps[z].ulPropTag, &stream_list);
 			}
-			
 
 			mapi_SPropValue_array_named(&obj_message, &properties_array);
 

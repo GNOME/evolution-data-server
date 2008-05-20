@@ -24,6 +24,16 @@
 #include <config.h>
 #endif
 
+#ifdef G_OS_WIN32
+/* Undef the similar macro from pthread.h, it doesn't check if
+ * gmtime() returns NULL.
+ */
+#undef gmtime_r
+
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
+
 #include "exchange-mapi-utils.h"
 
 
@@ -277,7 +287,7 @@ exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties)
 		for (i = 0; i < properties->cValues; i++) {
 			struct mapi_SPropValue *lpProp = &properties->lpProps[i];
 			const char *tmp =  get_proptag_name (lpProp->ulPropTag);
-			struct timeval t;
+			char t_str[26];
 			if (tmp && *tmp)
 				printf("\n%s \t",tmp);
 			else
@@ -290,17 +300,22 @@ exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties)
 				printf(" (uint16_t) - %d", lpProp->value.i);
 				break;
 			case PT_LONG:
-				printf(" (long) - %ld", lpProp->value.l);
+				printf(" (long) - %u", lpProp->value.l);
 				break;
 			case PT_DOUBLE:
 				printf (" (double) -  %lf", lpProp->value.dbl);
 				break;
 			case PT_I8:
-				printf (" (int) - %d", lpProp->value.d);
+				printf (" (int) - %lld", lpProp->value.d);
 				break;
-			case PT_SYSTIME:
-/* 				get_mapi_SPropValue_array_date_timeval (&t, properties, lpProp->ulPropTag); */
-/* 				printf (" (struct FILETIME *) - %p\t[%s]\t", &lpProp->value.ft, icaltime_as_ical_string (icaltime_from_timet_with_zone (t.tv_sec, 0, utc_zone))); */
+			case PT_SYSTIME: {
+					struct timeval t;
+					struct tm tm;
+					get_mapi_SPropValue_array_date_timeval (&t, properties, lpProp->ulPropTag);
+					gmtime_r (&(t.tv_sec), &tm);
+					strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
+				}
+				printf (" (struct FILETIME *) - %p\t (struct timeval) %s\t", &lpProp->value.ft, t_str);
 				break;
 			case PT_ERROR:
 				printf (" (error) - %p", lpProp->value.err);

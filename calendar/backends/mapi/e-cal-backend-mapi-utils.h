@@ -42,9 +42,6 @@ mapi_cal_build_name_id (struct mapi_nameid *nameid, gpointer data);
 int
 mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_array, gpointer data);
 
-void
-e_cal_backend_mapi_util_dump_properties (struct mapi_SPropValue_array *properties);
-
 G_END_DECLS
 
 #endif

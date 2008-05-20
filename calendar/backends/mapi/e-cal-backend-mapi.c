@@ -392,14 +392,16 @@ static const uint32_t IDList[] = {
 static const uint16_t n_IDList = G_N_ELEMENTS (IDList);
 
 static gboolean
-get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
-		GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
+mapi_cal_get_changes_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
+			 GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	ECalBackendMAPI *cbmapi	= data;
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
 	gchar *tmp = NULL;
 	ECalComponent *cache_comp = NULL;
 	const bool *recurring;
+
+//	exchange_mapi_debug_property_dump (array);
 
 	/* FIXME: Provide support for meetings/assigned tasks */
 	if (recipients != NULL) {
@@ -549,8 +551,20 @@ get_deltas (gpointer handle)
 	serv_time = e_cal_backend_cache_get_server_utc_time (priv->cache);
 	itt_cache = icaltime_from_string (serv_time); 
 	if (!icaltime_is_null_time (itt_cache)) {
-		/* FIXME: prepare the restriction here */
-	} 
+		struct SPropValue sprop;
+		struct timeval t;
+
+		use_restriction = TRUE;
+		res.rt = RES_PROPERTY;
+		res.res.resProperty.relop = RELOP_GE;
+		res.res.resProperty.ulPropTag = PR_LAST_MODIFICATION_TIME;
+
+		t.tv_sec = icaltime_as_timet_with_zone (itt_cache, icaltimezone_get_utc_timezone ());
+		t.tv_usec = 0;
+		set_SPropValue_proptag_date_timeval (&sprop, PR_LAST_MODIFICATION_TIME, &t);
+		cast_mapi_SPropValue (&(res.res.resProperty.lpProp), &sprop);
+	} else
+		g_warning ("Cache time-stamp not found."); 
 
 	itt_current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	current_time = icaltime_as_timet_with_zone (itt_current, icaltimezone_get_utc_timezone ());
@@ -558,7 +572,7 @@ get_deltas (gpointer handle)
 	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 
 //	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
-	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, use_restriction ? &res : NULL, get_changes_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, use_restriction ? &res : NULL, mapi_cal_get_changes_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		/* FIXME: better string please... */
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Error fetching changes from the server. Removing the cache might help."));
 //		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
@@ -843,8 +857,8 @@ start_fetch_deltas (gpointer data)
 }
 
 static gboolean
-cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, const mapi_id_t mid, 
-		 GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
+mapi_cal_cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, const mapi_id_t mid, 
+			  GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
 {
 	ECalBackendMAPI *cbmapi	= E_CAL_BACKEND_MAPI (data);
 	ECalBackendMAPIPrivate *priv = cbmapi->priv;
@@ -852,7 +866,7 @@ cache_create_cb (struct mapi_SPropValue_array *properties, const mapi_id_t fid, 
 	gchar *tmp = NULL;
 	const bool *recurring = NULL;
 
-//	e_cal_backend_mapi_util_dump_properties (properties);
+//	exchange_mapi_debug_property_dump (properties);
 
 	/* FIXME: Provide support for meetings/assigned tasks */
 	if (recipients != NULL) {
@@ -941,7 +955,7 @@ populate_cache (ECalBackendMAPI *cbmapi)
 	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 
 //	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
-	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, NULL, cache_create_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
+	if (!exchange_mapi_connection_fetch_items (priv->fid, GetPropsList, n_GetPropsList, mapi_cal_build_name_id, NULL, mapi_cal_cache_create_cb, cbmapi, MAPI_OPTIONS_FETCH_ALL)) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbmapi), _("Could not create cache file"));
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 		g_free (progress_string);

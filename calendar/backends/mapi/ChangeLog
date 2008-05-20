@@ -1,3 +1,13 @@
+2008-05-20  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-utils.c:
+	* e-cal-backend-mapi-utils.h: Remove the internal backend API 
+	'e_cal_backend_mapi_util_dump_properties' since it is now defined in
+	servers/mapi
+	* e-cal-backend-mapi.c: (mapi_cal_get_changes_cb), (get_deltas),
+	(mapi_cal_cache_create_cb), (populate_cache): Use restrictions while 
+	getting changes from the server. Greatly reduces network traffic. 
+
 2008-04-24  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi-constants.h: New file added to hold all constants. 
