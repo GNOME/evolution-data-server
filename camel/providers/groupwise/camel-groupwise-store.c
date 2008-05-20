@@ -75,7 +75,7 @@ struct _CamelGroupwiseStorePrivate {
 static CamelOfflineStoreClass *parent_class = NULL;
 
 extern CamelServiceAuthType camel_groupwise_password_authtype; /*for the query_auth_types function*/
-CamelFolderInfo *convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const char *url, CamelException *ex);
+static CamelFolderInfo *convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const char *url, CamelException *ex);
 static void groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex);
 static int match_path(const char *path, const char *name);
 
@@ -783,7 +783,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	return;
 }
 
-CamelFolderInfo *
+static CamelFolderInfo *
 convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const char *url, CamelException *ex)
 {
 	const char *name = NULL, *id = NULL, *parent = NULL;
