@@ -24,21 +24,19 @@
 #include <config.h>
 #endif
 
-/* POSIX requires <sys/types.h> be included before <regex.h> */
-#include <sys/types.h>
-
-#include <ctype.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/param.h>  /* for MAXHOSTNAMELEN */
 #include <sys/stat.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <regex.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <ctype.h>
+#include <time.h>
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 1024
