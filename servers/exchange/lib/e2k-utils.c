@@ -273,6 +273,9 @@ e2k_strdup_with_trailing_slash (const char *path)
 {
 	char *p;
 
+	if (!path || !*path)
+		return NULL;
+
 	p = strrchr (path, '/');
 	if (p && !p[1])
 		return g_strdup (path);
