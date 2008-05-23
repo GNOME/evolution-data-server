@@ -544,9 +544,9 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 			tzid = icaltimezone_get_tzid (zone);
 		}
 
-		icaltimezone_free (zone, 1);
-
  		LOCK_WRAPPER (set_default_timezone_sync, (backend, cal, tzid));
+
+		icaltimezone_free (zone, 1);
 
 		return status;
 	}
