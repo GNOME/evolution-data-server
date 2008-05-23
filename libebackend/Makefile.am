@@ -14,6 +14,7 @@ libebackend_1_2_la_SOURCES =		\
 	e-file-cache.c
 
 libebackend_1_2_la_LIBADD = 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(E_BACKEND_LIBS)				\
 	$(DB_LIBS)
 

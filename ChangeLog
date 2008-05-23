@@ -1,3 +1,11 @@
+2008-05-23  Ed Catmur  <ed@catmur.co.uk>
+
+	** Fix for bug #533780
+
+	* configure.in:
+	* libebackend/Makefile.am: 
+	Fix the link line for libebackend.
+
 2008-05-16  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #532836

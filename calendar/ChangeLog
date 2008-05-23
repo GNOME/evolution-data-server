@@ -1,3 +1,9 @@
+2008-05-23  Ed Catmur  <ed@catmur.co.uk>
+
+	** Fix for bug #533780
+
+	* libedata-cal/Makefile.am: Link against libebackend. 
+
 2008-05-13  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libedata-cal/libedata-cal.pc.in: Require libebackend-1.2.
@@ -31,8 +37,8 @@
 
 2008-04-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
-        ** Fixes #358584 (bnc)
-           Display of web calendars ignores timezones
+	** Fixes #358584 (bnc)
+	Display of web calendars ignores timezones
 
 	* backends/http/e-cal-backend-http.c: (retrieval_done):
 
