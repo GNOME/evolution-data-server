@@ -2255,6 +2255,8 @@ e2k_context_transfer_start (E2kContext *ctx, E2kOperation *op,
 	g_return_val_if_fail (source_hrefs != NULL, NULL);
 
 	dest_uri = e2k_strdup_with_trailing_slash (dest_folder);
+	if (!dest_uri)
+		return NULL;
 	hrefs = (const char **)source_hrefs->pdata;
 
 	msgs = g_new0 (GSList *, 1);
