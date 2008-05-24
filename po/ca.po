@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-24 12:43+0200\n"
-"PO-Revision-Date: 2008-05-24 12:43+0200\n"
+"PO-Revision-Date: 2008-05-24 13:08+0200\n"
 "Last-Translator: David Planella Molas <david.planella@googlemail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -5168,7 +5168,7 @@ msgstr "_Suprimeix %s"
 #: ../libedataserverui/e-passwords.c:229
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
-msgstr "No és utilitzable: no existeix l'usuari o el nom de la màquina"
+msgstr "La clau de l'anell de claus no és utilitzable: no existeix l'usuari o el nom de la màquina"
 
 #: ../libedataserverui/e-passwords.c:1146
 msgid "_Remember this passphrase"
