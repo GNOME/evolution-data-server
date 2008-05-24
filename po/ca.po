@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-05 09:02+0100\n"
-"PO-Revision-Date: 2008-03-04 23:38+0100\n"
+"POT-Creation-Date: 2008-05-24 12:43+0200\n"
+"PO-Revision-Date: 2008-05-24 12:43+0200\n"
 "Last-Translator: David Planella Molas <david.planella@googlemail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,29 +22,29 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:554
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2317
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2359
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "S'està carregant..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:557
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2276
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2296
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4169
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2292
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2314
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2357
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "S'està cercant..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2677
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4328
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2724
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "S'estan descarregant els contactes (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2832
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3023
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3067
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2873
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3058
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3102
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "S'està actualitzant la memòria cau dels contactes (%d)... "
@@ -57,7 +57,7 @@ msgstr "S'està utilitzant el nom distingit (DN)"
 msgid "Using Email Address"
 msgstr "S'està utilitzant l'adreça electrònica"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1002
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1005
 msgid "Reconnecting to LDAP server..."
 msgstr "S'està tornant a connectar amb el servidor LDAP..."
 
@@ -65,19 +65,19 @@ msgstr "S'està tornant a connectar amb el servidor LDAP..."
 msgid "Adding contact to LDAP server..."
 msgstr "S'està afegint un contacte al servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1726
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1732
 msgid "Removing contact from LDAP server..."
 msgstr "S'està suprimint un contacte del servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2031
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2043
 msgid "Modifying contact from LDAP server..."
 msgstr "S'està modificant un contacte del servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4040
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4087
 msgid "Receiving LDAP search results..."
 msgstr "S'estan rebent els resultats de la cerca LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4189
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
 msgid "Error performing search"
 msgstr "S'ha produït un error en realitzar la cerca"
 
@@ -631,7 +631,7 @@ msgid "Birth Date"
 msgstr "Data de naixement"
 
 #: ../addressbook/libebook/e-contact.c:261
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:462
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
 #: ../libedataserver/e-categories.c:43
 msgid "Anniversary"
 msgstr "Commemoració"
@@ -683,17 +683,17 @@ msgstr "Telèfon"
 msgid "Unnamed List"
 msgstr "Llista sense nom"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:464
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
 msgstr "Aniversari"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:490
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
 #, c-format
 msgid "Birthday: %s"
 msgstr "Aniversari: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:514
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Commemoració: %s"
@@ -702,31 +702,31 @@ msgstr "Commemoració: %s"
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "No s'han pogut desar les dades del calendari: l'URI està mal format."
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:337
 msgid "Could not create thread for getting deltas"
 msgstr "No s'ha pogut crear el fil per a obtenir les diferències"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1179
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1039
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1338
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:369
+#: ../calendar/backends/google/e-cal-backend-google.c:1178
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1051
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1350
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "No s'ha pogut crear el fitxer de memòria cau"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1051
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:382
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1063
 msgid "Could not create thread for populating cache"
 msgstr "No s'ha pogut crear el fil per a omplir la memòria cau"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1028
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1784
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1801
 msgid "Reply Requested: by "
 msgstr "Resposta sol·licitada: per"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1033
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1789
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1806
 msgid "Reply Requested: When convenient"
 msgstr "Resposta sol·licitada: quan convingui"
 
@@ -735,22 +735,22 @@ msgstr "Resposta sol·licitada: quan convingui"
 msgid "Loading %s items"
 msgstr "S'estan carregant %s elements"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:875
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:887
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Calendari"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:933
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:945
 msgid "Invalid server URI"
 msgstr "L'URI del servidor no és vàlid"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:952
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:961
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1057
-#: ../calendar/libecal/e-cal.c:5031
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1069
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1101
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1139
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:964
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:973
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1069
+#: ../calendar/libecal/e-cal.c:5035
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1075
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1107
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1145
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -964,7 +964,7 @@ msgstr "%1.f-%.1fcm de neu\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%1.f-%.1fin de neu\n"
 
-#: ../calendar/libecal/e-cal-component.c:1315
+#: ../calendar/libecal/e-cal-component.c:1323
 msgid "Untitled appointment"
 msgstr "Cita sense nom"
 
@@ -1125,73 +1125,73 @@ msgstr ""
 "Introduïu la contrasenya per a %s per a habilitar el servidor intermediari "
 "per a l'usuari %s"
 
-#: ../calendar/libecal/e-cal.c:5003
+#: ../calendar/libecal/e-cal.c:5007
 msgid "Invalid argument"
 msgstr "Argument invàlid"
 
-#: ../calendar/libecal/e-cal.c:5005
+#: ../calendar/libecal/e-cal.c:5009
 msgid "Backend is busy"
 msgstr "El rerefons està ocupat"
 
-#: ../calendar/libecal/e-cal.c:5007
+#: ../calendar/libecal/e-cal.c:5011
 msgid "Repository is offline"
 msgstr "El dipòsit està fora de línia"
 
-#: ../calendar/libecal/e-cal.c:5009
+#: ../calendar/libecal/e-cal.c:5013
 msgid "No such calendar"
 msgstr "No existeix aquest calendari"
 
-#: ../calendar/libecal/e-cal.c:5011 ../servers/groupwise/e-gw-connection.c:199
+#: ../calendar/libecal/e-cal.c:5015 ../servers/groupwise/e-gw-connection.c:199
 msgid "Object not found"
 msgstr "No s'ha trobat l'objecte"
 
-#: ../calendar/libecal/e-cal.c:5013 ../servers/groupwise/e-gw-connection.c:193
+#: ../calendar/libecal/e-cal.c:5017 ../servers/groupwise/e-gw-connection.c:193
 msgid "Invalid object"
 msgstr "Objecte invàlid"
 
-#: ../calendar/libecal/e-cal.c:5015
+#: ../calendar/libecal/e-cal.c:5019
 msgid "URI not loaded"
 msgstr "No s'ha carregat l'URI"
 
-#: ../calendar/libecal/e-cal.c:5017
+#: ../calendar/libecal/e-cal.c:5021
 msgid "URI already loaded"
 msgstr "Ja s'ha carregat l'URI"
 
-#: ../calendar/libecal/e-cal.c:5019
+#: ../calendar/libecal/e-cal.c:5023
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Permís denegat"
 
-#: ../calendar/libecal/e-cal.c:5021 ../servers/groupwise/e-gw-connection.c:201
+#: ../calendar/libecal/e-cal.c:5025 ../servers/groupwise/e-gw-connection.c:201
 msgid "Unknown User"
 msgstr "Usuari desconegut"
 
-#: ../calendar/libecal/e-cal.c:5023
+#: ../calendar/libecal/e-cal.c:5027
 msgid "Object ID already exists"
 msgstr "L'id. d'objecte ja existeix"
 
-#: ../calendar/libecal/e-cal.c:5025
+#: ../calendar/libecal/e-cal.c:5029
 msgid "Protocol not supported"
 msgstr "El protocol no està implementat"
 
-#: ../calendar/libecal/e-cal.c:5027
+#: ../calendar/libecal/e-cal.c:5031
 msgid "Operation has been canceled"
 msgstr "S'ha cancel·lat l'operació"
 
-#: ../calendar/libecal/e-cal.c:5029
+#: ../calendar/libecal/e-cal.c:5033
 msgid "Could not cancel operation"
 msgstr "No s'ha pogut cancel·lar l'operació"
 
-#: ../calendar/libecal/e-cal.c:5033
+#: ../calendar/libecal/e-cal.c:5037
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Authentication required"
 msgstr "Cal autenticació"
 
-#: ../calendar/libecal/e-cal.c:5035
+#: ../calendar/libecal/e-cal.c:5039
 msgid "A CORBA exception has occurred"
 msgstr "S'ha produït una excepció CORBA"
 
-#: ../calendar/libecal/e-cal.c:5037
+#: ../calendar/libecal/e-cal.c:5041
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:312
 #: ../camel/providers/imap/camel-imap-command.c:412
@@ -1205,7 +1205,7 @@ msgstr "S'ha produït una excepció CORBA"
 msgid "Unknown error"
 msgstr "Error desconegut"
 
-#: ../calendar/libecal/e-cal.c:5039
+#: ../calendar/libecal/e-cal.c:5043
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Cap error"
@@ -1242,8 +1242,8 @@ msgstr "«%s» espera que el primer argument sigui una cadena"
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argument sigui una cadena de data/hora en el "
-"format ISO 8601"
+"«%s» espera que el primer argument sigui una cadena de data/hora en el format "
+"ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
@@ -1289,10 +1289,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"«%s» espera que el primer argument sigui «any» (qualsevol), "
-"«summary» (resum), «description» (descripció), «location» (ubicació), "
-"«attendee» (assistent), «organizer» (organitzador), o "
-"«classification» (classificació)"
+"«%s» espera que el primer argument sigui «any» (qualsevol), «summary» (resum), "
+"«description» (descripció), «location» (ubicació), «attendee» (assistent), "
+"«organizer» (organitzador), o «classification» (classificació)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
 #, c-format
@@ -1397,7 +1396,7 @@ msgid "Preparing folder '%s' for offline"
 msgstr "S'està preparant la carpeta «%s» per treballar fora de línia"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:3018
+#: ../camel/providers/imap/camel-imap-store.c:3025
 msgid "You must be working online to complete this operation"
 msgstr "Heu d'estar en línia per a completar aquesta operació"
 
@@ -1734,8 +1733,8 @@ msgstr "No s'ha pogut crear un procés fill per a l'ajudant per bloquejar: %s"
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr ""
-"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant "
-"per bloquejar"
+"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant per "
+"bloquejar"
 
 #: ../camel/camel-lock-client.c:217
 #, c-format
@@ -2681,7 +2680,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "No es poden copiar els missatges a la Brossa"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2167
+#: ../camel/providers/imap/camel-imap-folder.c:2326
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2691,7 +2690,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2167
+#: ../camel/providers/imap/camel-imap-folder.c:2326
 #: ../camel/providers/local/camel-maildir-folder.c:251
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2726,44 +2725,44 @@ msgstr "No es pot obtenir el missatge %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2141
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2163
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 msgid "This message is not available in offline mode."
 msgstr "Aquest missatge no està disponible en mode fora de línia."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1690
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1737
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1702
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1753
 msgid "Could not get message"
 msgstr "No s'ha pogut obtenir el missatge."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:816
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "No s'ha pogut carregar el resum per a %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1065
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
 msgid "Trash Folder Full. Please Empty."
 msgstr "La carpeta de la Paperera està plena. Buideu-la."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1242
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2538
-#: ../camel/providers/imap/camel-imap-folder.c:2608
+#: ../camel/providers/imap/camel-imap-folder.c:2698
+#: ../camel/providers/imap/camel-imap-folder.c:2772
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "S'està recollint la informació del resum per als missatges nous a %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2008
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2050
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2072
 #, c-format
 msgid "Cannot append message to folder `%s': %s"
 msgstr "No es pot afegir el missatge a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2038
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2060
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No es pot crear el missatge: %s"
@@ -2876,7 +2875,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:532
 #: ../camel/providers/imap/camel-imap-store.c:1912
-#: ../camel/providers/imap/camel-imap-store.c:2103
+#: ../camel/providers/imap/camel-imap-store.c:2110
 #, c-format
 msgid "No such folder %s"
 msgstr "No existeix la carpeta %s"
@@ -2887,7 +2886,7 @@ msgstr "No es poden crear carpetes del GroupWise en mode fora de línia."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1231
 #: ../camel/providers/imap/camel-imap-store.c:1987
-#: ../camel/providers/imap/camel-imap-store.c:2356
+#: ../camel/providers/imap/camel-imap-store.c:2363
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "La carpeta pare no pot contenir subcarpetes"
 
@@ -2993,12 +2992,12 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
 #: ../camel/providers/imap/camel-imap-command.c:472
-#: ../camel/providers/imap/camel-imap-store.c:3058
+#: ../camel/providers/imap/camel-imap-store.c:3065
 msgid "Operation cancelled"
 msgstr "S'ha cancel·lat l'operació"
 
 #: ../camel/providers/imap/camel-imap-command.c:311
-#: ../camel/providers/imap/camel-imap-store.c:3061
+#: ../camel/providers/imap/camel-imap-store.c:3068
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "El servidor s'ha desconnectat inesperadament: %s"
@@ -3052,37 +3051,37 @@ msgid "Folder was destroyed and recreated on server."
 msgstr "La carpeta es va destruir i es va tornar a crear al servidor."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:682
+#: ../camel/providers/imap/camel-imap-folder.c:741
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "S'estan cercant els missatges canviats a %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2127
+#: ../camel/providers/imap/camel-imap-folder.c:2286
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "No es pot obtenir el missatge: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2206
-#: ../camel/providers/imap/camel-imap-folder.c:2892
+#: ../camel/providers/imap/camel-imap-folder.c:2365
+#: ../camel/providers/imap/camel-imap-folder.c:3066
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "Aquest missatge no està disponible actualment"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2727
+#: ../camel/providers/imap/camel-imap-folder.c:2901
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Resposta incompleta del servidor: no s'ha proporcionat informació per al "
 "missatge %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2735
+#: ../camel/providers/imap/camel-imap-folder.c:2909
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Resposta incompleta del servidor: no s'ha proporcionat l'UID per al missatge "
 "%d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2748
+#: ../camel/providers/imap/camel-imap-folder.c:2922
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
@@ -3090,7 +3089,7 @@ msgstr ""
 "Resposta inesperada del servidor: s'han proporcionat UIDs idèntics per als "
 "missatges %d i %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2930
+#: ../camel/providers/imap/camel-imap-folder.c:3104
 msgid "Could not find message body in FETCH response."
 msgstr "No s'ha pogut trobar el cos del missatge en la resposta a FETCH."
 
@@ -3220,7 +3219,7 @@ msgstr "No s'ha pogut connectar amb l'ordre «%s»: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1069
-#: ../camel/providers/imap/camel-imap-store.c:2452
+#: ../camel/providers/imap/camel-imap-store.c:2459
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:367
 #: ../camel/providers/imap4/camel-imap4-store.c:1326
 #: ../camel/providers/local/camel-maildir-folder.c:77
@@ -3270,7 +3269,7 @@ msgstr ""
 "\n"
 
 #: ../camel/providers/imap/camel-imap-store.c:1924
-#: ../camel/providers/imap/camel-imap-store.c:2294
+#: ../camel/providers/imap/camel-imap-store.c:2301
 #: ../camel/providers/imap4/camel-imap4-store.c:956
 #, c-format
 msgid ""
@@ -3285,7 +3284,7 @@ msgstr "El nom de carpeta «%s» no és vàlid perquè conté el caràcter «%c�
 msgid "Cannot create folder `%s': folder exists."
 msgstr "No s'ha pogut crear la carpeta «%s»: ja existeix."
 
-#: ../camel/providers/imap/camel-imap-store.c:2305
+#: ../camel/providers/imap/camel-imap-store.c:2312
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "La carpeta pare és desconeguda: %s"
@@ -3340,8 +3339,7 @@ msgstr "No es pot accedir la carpeta «%s»: %s"
 #: ../camel/providers/imap4/camel-imap4-folder.c:461
 #, c-format
 msgid "Cannot sync flags to folder `%s': Unknown"
-msgstr ""
-"No s'han pogut sincronitzar els marcadors a la carpeta «%s»: desconegut"
+msgstr "No s'han pogut sincronitzar els marcadors a la carpeta «%s»: desconegut"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:467
 #, c-format
@@ -3374,8 +3372,7 @@ msgstr "No es pot obtenir el missatge %s de la carpeta «%s»: ordre incorrecta"
 #, c-format
 msgid "Cannot append message to folder `%s': Folder is read-only"
 msgstr ""
-"No es pot afegir el missatge a la carpeta «%s»: la carpeta és de només "
-"lectura"
+"No es pot afegir el missatge a la carpeta «%s»: la carpeta és de només lectura"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1010
 #, c-format
@@ -3485,8 +3482,7 @@ msgstr "No s'ha pogut obtenir la carpeta «%s» al servidor IMAP %s: desconegut"
 #: ../camel/providers/imap4/camel-imap4-store.c:818
 #, c-format
 msgid "Cannot get LIST information for `%s' on IMAP server %s: %s"
-msgstr ""
-"No es pot obtenir la informació LIST de «%s» en el servidor IMAP %s: %s"
+msgstr "No es pot obtenir la informació LIST de «%s» en el servidor IMAP %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:820
 #: ../camel/providers/imap4/camel-imap4-store.c:1495
@@ -3540,8 +3536,8 @@ msgstr "No es pot canviar el nom d'una carpeta IMAP en mode fora de línia."
 #, c-format
 msgid "Cannot rename folder `%s' to `%s': Invalid mailbox name"
 msgstr ""
-"No s'ha pogut canviar el nom de la carpeta «%s» a «%s». El nom de la bústia "
-"no és vàlid"
+"No s'ha pogut canviar el nom de la carpeta «%s» a «%s». El nom de la bústia no "
+"és vàlid"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1144
 #, c-format
@@ -3553,8 +3549,8 @@ msgstr ""
 #, c-format
 msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgstr ""
-"No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP %s: "
-"%s"
+"No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP %s: %"
+"s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1533
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -5169,19 +5165,24 @@ msgstr "_Edita %s"
 msgid "_Delete %s"
 msgstr "_Suprimeix %s"
 
-#: ../libedataserverui/e-passwords.c:986
+#: ../libedataserverui/e-passwords.c:229
+#, c-format
+msgid "Keyring key is unusable: no user or host name"
+msgstr "No és utilitzable: no existeix l'usuari o el nom de la màquina"
+
+#: ../libedataserverui/e-passwords.c:1146
 msgid "_Remember this passphrase"
 msgstr "_Recorda aquesta contrasenya"
 
-#: ../libedataserverui/e-passwords.c:987
+#: ../libedataserverui/e-passwords.c:1147
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Recorda aquesta contrasenya fins que acabi aquesta sessió"
 
-#: ../libedataserverui/e-passwords.c:992
+#: ../libedataserverui/e-passwords.c:1152
 msgid "_Remember this password"
 msgstr "_Recorda aquesta contrasenya"
 
-#: ../libedataserverui/e-passwords.c:993
+#: ../libedataserverui/e-passwords.c:1153
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Recorda aquesta contrasenya fins que acabi aquesta sessió"
 
@@ -5195,13 +5196,13 @@ msgid "_Destination"
 msgstr "_Destí"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1660
-#: ../servers/exchange/storage/exchange-account.c:939
+#: ../servers/exchange/storage/exchange-account.c:971
 #, c-format
 msgid "Enter password for %s"
 msgstr "Introduïu la contrasenya de %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1661
-#: ../servers/exchange/storage/exchange-account.c:944
+#: ../servers/exchange/storage/exchange-account.c:976
 msgid "Enter password"
 msgstr "Introduïu la contrasenya"
 
@@ -5305,26 +5306,26 @@ msgstr "Aquest operació no està disponible en mode fora de línia"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:635
+#: ../servers/exchange/storage/exchange-account.c:662
 #, c-format
 msgid "%s's Folders"
 msgstr "Carpetes de %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1245
+#: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Personal Folders"
 msgstr "Carpetes personals"
 
-#: ../servers/exchange/storage/exchange-account.c:1260
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Favorite Public Folders"
 msgstr "Carpetes públiques preferides"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1309
 msgid "All Public Folders"
 msgstr "Totes les carpetes públiques"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1323
 msgid "Global Address List"
 msgstr "Llista d'adreces global"
 
