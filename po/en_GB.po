@@ -198,7 +198,7 @@ msgstr "Given Name"
 
 #: ../addressbook/libebook/e-contact.c:124
 msgid "Family Name"
-msgstr "Surname"
+msgstr "Family Name"
 
 #: ../addressbook/libebook/e-contact.c:125
 msgid "Nickname"
