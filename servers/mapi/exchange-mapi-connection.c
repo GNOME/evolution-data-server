@@ -373,6 +373,76 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 	return (retval == MAPI_E_SUCCESS);
 }
 
+/* Returns TRUE if all attachments were written succcesfully, else returns FALSE */
+#define	MAX_READ_SIZE	0x1000
+
+static gboolean
+exchange_mapi_util_set_generic_streams (mapi_object_t *obj_message, GSList *stream_list) 
+{
+
+	TALLOC_CTX 	*mem_ctx;
+	GSList 		*l;
+	enum MAPISTATUS	retval;
+	gboolean 	status = TRUE;
+
+	mem_ctx = talloc_init ("ExchangeMAPI_Set_GenericStreams");
+
+	for (l = stream_list; l; l = l->next) {
+		ExchangeMAPIStream *generic_stream = (ExchangeMAPIStream *) (l->data);
+
+		enum MAPISTATUS	retval;
+		DATA_BLOB	stream;
+		uint32_t	size;
+		uint32_t	offset;
+		uint16_t	read_size;
+		mapi_object_t		obj_stream;
+
+		uint32_t mapitag = generic_stream->proptag;
+		uint32_t access_flags = 2; //TODO : Figure out what this is ?
+
+		mapi_object_init(&obj_stream);
+		retval = OpenStream(obj_message, mapitag, access_flags, &obj_stream);
+		if (retval != MAPI_E_SUCCESS) 
+			return false;
+
+		size = MAX_READ_SIZE;
+		offset = 0;
+		while (offset <= generic_stream->value->len) {
+			stream.length = size;
+			stream.data = talloc_size(mem_ctx, size);
+			memcpy(stream.data, generic_stream->value->data + offset, size);
+			retval = WriteStream(&obj_stream, &stream, &read_size);
+			talloc_free(stream.data);
+			if (retval != MAPI_E_SUCCESS) {
+				status = FALSE;
+				goto cleanup;
+			}
+			printf(".");
+			fflush(0);
+
+			/* Exit when there is nothing left to write */
+			if (!read_size) 
+				break;
+		
+			offset += read_size;
+			
+			if ((offset + size) > generic_stream->value->len) {
+				size = generic_stream->value->len - offset;
+			}
+		}
+
+	cleanup:
+		if (retval != MAPI_E_SUCCESS) 
+			status = FALSE;
+
+		//mapi_object_release(&obj_stream);
+	}
+
+	talloc_free (mem_ctx);
+
+	return status;
+}
+
 static gboolean
 exchange_mapi_util_delete_attachments (mapi_object_t *obj_message)
 {
@@ -1333,7 +1403,7 @@ mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 
 			   BuildProps build_props, gpointer p_data, 
-			   GSList *recipients, GSList *attachments)
+			   GSList *recipients, GSList *attachments, GSList *generic_streams)
 {
 	enum MAPISTATUS retval;
 	TALLOC_CTX *mem_ctx;
@@ -1408,16 +1478,22 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 	if (build_props) {
 		propslen = build_props (&props, SPropTagArray, p_data);
 		if (propslen < 1) {
-			g_warning ("%s(%d): (%s): Could not build props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			g_warning ("%s(%d): (%s): build_props failed! propslen = %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, propslen);
 			goto cleanup;
 		}
 	}
+	LOGALL();
 
 	/* set properties for the item */
 	retval = SetProps(&obj_message, props, propslen);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("SetProps", GetLastError());
 		goto cleanup;
+	}
+	LOGNONE();
+
+	if (generic_streams) {
+		exchange_mapi_util_set_generic_streams (&obj_message, generic_streams);
 	}
 
 	/* Set attachments if any */

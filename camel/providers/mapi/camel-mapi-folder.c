@@ -593,7 +593,7 @@ fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mi
 	item->header.from = g_strdup (find_mapi_SPropValue_data (array, PR_SENT_REPRESENTING_NAME));
 	item->header.size = *(glong *)(find_mapi_SPropValue_data (array, PR_MESSAGE_SIZE));
 
-	item->msg.body = g_strdup (find_mapi_SPropValue_data (array, PR_BODY));
+	item->msg.body_plain_text = g_strdup (find_mapi_SPropValue_data (array, PR_BODY));
 
 	delivery_date = (struct FILETIME *)find_mapi_SPropValue_data(array, PR_MESSAGE_DELIVERY_TIME);
 	if (delivery_date) {
@@ -735,7 +735,7 @@ mapi_folder_item_to_msg( CamelFolder *folder,
 	multipart = camel_multipart_new ();
 
 	camel_mime_message_set_message_id (msg, uid);
-	body = item->msg.body;
+	body = item->msg.body_plain_text;
 
 	mapi_populate_msg_body_from_item (multipart, item, body);
 	/*Set recipient details*/

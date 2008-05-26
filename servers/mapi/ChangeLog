@@ -1,3 +1,8 @@
+2008-05-22  Johnny Jacob  <jjohnny@novell.com>	
+	* exchange-mapi-connection.c (exchange_mapi_create_item): Added support for 
+	generic items support.
+	(exchange_mapi_util_set_generic_streams): Added.
+	
 2008-05-20  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-utils.c: (exchange_mapi_debug_property_dump): Print a 

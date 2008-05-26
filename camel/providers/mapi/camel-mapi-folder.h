@@ -51,6 +51,10 @@ typedef enum  {
 	MAPI_ITEM_TYPE_TASK
 } MapiItemType;
 
+typedef enum  {
+	PART_TYPE_PLAIN_TEXT=1,
+	PART_TYPE_TEXT_HTML
+} MapiItemPartType;
 
 typedef struct {
 	gchar *subject;
@@ -66,9 +70,9 @@ typedef struct {
 } MapiItemHeader;
 
 typedef struct {
-	gchar *body;
-	//Temp. Find a proper place for this
-	CamelStream *body_stream;
+	//Temp : PLAIN
+	gchar *body_plain_text;
+	GSList *body_parts;
 } MapiItemMessage;
 
 typedef struct {
@@ -85,6 +89,7 @@ typedef struct  {
 	MapiItemMessage msg;
 
 	GSList *attachments;
+	GSList *generic_streams;
 }MapiItem;
 
 

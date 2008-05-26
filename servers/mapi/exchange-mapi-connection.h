@@ -113,7 +113,8 @@ mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 
 			   BuildProps build_props, gpointer p_data, 
-			   GSList *recipients, GSList *attachments);
+			   GSList *recipients, GSList *attachments,
+			   GSList *generic_streams);
 gboolean
 exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, 
 			   BuildNameID build_name_id, gpointer ni_data, 

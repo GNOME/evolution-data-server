@@ -23,6 +23,10 @@
 #endif
 
 #include <string.h>
+
+#include <libmapi/libmapi.h>
+#include <gen_ndr/exchange.h>
+
 #include <camel/camel-data-wrapper.h>
 #include <camel/camel-exception.h>
 #include <camel/camel-mime-filter-crlf.h>
@@ -79,11 +83,10 @@ mapi_item_debug_dump (MapiItem *item)
 	printf("-----------------\n\n");
         printf("%s(%d):%s: \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 	printf("item->header.from : %s\n",item->header.from);
-	printf("item->header.to : %s\n",item->header.to);
-	printf("item->header.cc : %s\n",item->header.cc);
-	printf("item->header.bcc : %s\n",item->header.bcc);
+	//Use Recipient List
 	printf("item->header.subject : %s\n",item->header.subject);
-	printf("item->msg.body_stream : %s\n",item->msg.body_stream);
+	//printf("item->msg.body_stream : %s\n",item->msg.body_stream);
+	printf("item->msg.body_plain_text : %s\n",item->msg.body_plain_text);
 	printf("-----------------\n\n");
 }
 
@@ -105,26 +108,40 @@ mapi_item_set_subject(MapiItem *item, const char *subject)
 	item->header.subject = strdup(subject);
 }
 
+#define MAX_READ_SIZE 0x1000
+
 static void
-mapi_item_set_body_stream (MapiItem *item, CamelStream *body)
+mapi_item_set_body_stream (MapiItem *item, CamelStream *body, MapiItemPartType part_type)
 {
 	guint8 *buf = g_new0 (guint8 , STREAM_SIZE);
-	guint32	read_size;
-
-	item->msg.body_stream = NULL;
+	guint32	read_size = 0;
+	ExchangeMAPIStream *stream = g_new0 (ExchangeMAPIStream, 1);
 
 	camel_seekable_stream_seek((CamelSeekableStream *)body, 0, CAMEL_STREAM_SET);
-	while((read_size = camel_stream_read(body, (char *)buf, STREAM_SIZE))){
-		if (read_size == -1) {
-			item->msg.body_stream = NULL;
-			return;
-		}
 
-		if (item->msg.body_stream) {
-			item->msg.body_stream = g_strconcat (item->msg.body_stream, (char *) buf, NULL);
-		} else
-			item->msg.body_stream = g_strdup ((char *) buf);
+	stream->value = g_byte_array_new ();
+
+	while((read_size = camel_stream_read(body, (char *)buf, STREAM_SIZE))){
+		if (read_size == -1) 
+			return;
+
+		stream->value = g_byte_array_append (stream->value, (char *) buf, read_size);
 	}
+
+	switch (part_type) {
+	case PART_TYPE_TEXT_HTML :
+		stream->proptag = PR_HTML;
+		break;
+	case PART_TYPE_PLAIN_TEXT:
+		stream->proptag = PR_BODY;
+		break;
+	}
+
+	if (stream->value->len < MAX_READ_SIZE)
+		item->msg.body_parts = g_slist_append (item->msg.body_parts, stream);
+	else
+		item->generic_streams = g_slist_append (item->generic_streams, stream);
+
 }
 
 static gboolean
@@ -191,7 +208,9 @@ mapi_do_multipart(CamelMultipart *mp, MapiItem *item)
 		type = camel_mime_part_get_content_type(part);
 
 		if (i_part == 0 && camel_content_type_is (type, "text", "plain")) {
-			mapi_item_set_body_stream (item, content_stream);
+			mapi_item_set_body_stream (item, content_stream, PART_TYPE_PLAIN_TEXT);
+		} else if (camel_content_type_is (type, "text", "html")) {
+			mapi_item_set_body_stream (item, content_stream, PART_TYPE_TEXT_HTML);
 		} else {
 			mapi_item_add_attach(item, filename, description, 
 					     content_stream, content_size);
@@ -247,7 +266,6 @@ mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	if (camel_mime_message_get_subject(message)) {
 		mapi_item_set_subject(item, camel_mime_message_get_subject(message));
 	}
-	mapi_item_debug_dump (item);
 
 	/* contents body */
 	multipart = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
@@ -261,10 +279,11 @@ mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
 		content_type = camel_content_type_simple (type);
 		content_size = camel_data_wrapper_write_to_stream(dw, (CamelStream *)content_stream);
-		mapi_item_set_body_stream (item, content_stream);
+		mapi_item_set_body_stream (item, content_stream, PART_TYPE_PLAIN_TEXT);
 	}
 	
-	
+	mapi_item_debug_dump (item);
+
 	/* send */
 	st = mapi_message_item_send(item, attach_list, recipient_list);
 
@@ -334,21 +353,35 @@ mail_build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray
 
 	MapiItem *item = (MapiItem *) data;
 	struct SPropValue *props;
-	uint32_t msgflag;
-	uint32_t editor = 1;
+	GSList *l;
+
+	uint32_t *msgflag = g_new0 (uint32_t, 1);
+	uint32_t *editor = g_new0 (uint32_t, 1);
 	int i=0;
 
-	props = g_new0 (struct SPropValue, 5);
+	props = g_new0 (struct SPropValue, 6);
 
 	set_SPropValue_proptag(&props[i++], PR_CONVERSATION_TOPIC, g_strdup (item->header.subject));
 	set_SPropValue_proptag(&props[i++], PR_NORMALIZED_SUBJECT, g_strdup (item->header.subject));
 
-	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, (const void *)&editor);
-	//Fixme : 
-	set_SPropValue_proptag(&props[i++], PR_BODY, g_strdup (item->msg.body_stream));
+	*msgflag = MSGFLAG_UNSENT;
+	set_SPropValue_proptag(&props[i++], PR_MESSAGE_FLAGS, (void *)msgflag);
 
-	msgflag = MSGFLAG_UNSENT;
-	set_SPropValue_proptag(&props[i++], PR_MESSAGE_FLAGS, (void *)&msgflag);
+	for (l = item->msg.body_parts; l; l = l->next) {
+		ExchangeMAPIStream *stream = (ExchangeMAPIStream *) (l->data);
+		struct SBinary_short *bin = g_new0 (struct SBinary_short, 1);
+
+		bin->cb = stream->value->len;
+		bin->lpb = (uint8_t *)stream->value->data;
+		if (stream->proptag == PR_HTML)
+			set_SPropValue_proptag(&props[i++], stream->proptag, (void *)bin);
+		else if (stream->proptag == PR_BODY)
+			set_SPropValue_proptag(&props[i++], stream->proptag, (void *)stream->value->data);
+	}
+
+	/*  FIXME : */
+	/* editor = EDITOR_FORMAT_PLAINTEXT; */
+	/* set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, (const void *)editor); */
 
 	*value = props;
 	return i;
@@ -373,7 +406,7 @@ mapi_message_item_send (MapiItem *item, GSList *attachments, GSList *recipients)
 {
 	guint64 fid = 0;
 
-	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, item->attachments);
+	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, item->attachments, item->generic_streams);
 
 	return 0;
 }
