@@ -45,6 +45,7 @@ typedef struct {
 } E2kPropInfo;
 
 static GHashTable *known_properties;
+static GStaticMutex known_properties_lock = G_STATIC_MUTEX_INIT;
 
 /**
  * e2k_properties_new:
@@ -73,7 +74,10 @@ copy_prop (gpointer key, gpointer value, gpointer data)
 	gpointer value_copy;
 	E2kPropInfo *pi;
 
+	g_static_mutex_lock (&known_properties_lock);
 	pi = g_hash_table_lookup (known_properties, name);
+	g_static_mutex_unlock (&known_properties_lock);
+
 	switch (pi->type) {
 	case E2K_PROP_TYPE_BINARY_ARRAY:
 	{
@@ -198,7 +202,9 @@ properties_free_cb (gpointer key, gpointer value, gpointer data)
 {
 	E2kPropInfo *pi;
 
+	g_static_mutex_lock (&known_properties_lock);
 	pi = g_hash_table_lookup (known_properties, key);
+	g_static_mutex_unlock (&known_properties_lock);
 	if (pi)
 		free_prop (pi, value);
 }
@@ -264,6 +270,7 @@ get_propinfo (const char *propname, E2kPropType type)
 {
 	E2kPropInfo *pi;
 
+	g_static_mutex_lock (&known_properties_lock);
 	if (!known_properties)
 		known_properties = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -271,6 +278,7 @@ get_propinfo (const char *propname, E2kPropType type)
 	if (pi) {
 		if (pi->type == E2K_PROP_TYPE_UNKNOWN)
 			pi->type = type;
+		g_static_mutex_unlock (&known_properties_lock);
 		return pi;
 	}
 
@@ -286,6 +294,8 @@ get_propinfo (const char *propname, E2kPropType type)
 		pi->proptag = 0;
 
 	g_hash_table_insert (known_properties, pi->name, pi);
+
+	g_static_mutex_unlock (&known_properties_lock);
 
 	return pi;
 }
@@ -487,7 +497,9 @@ foreach_callback (gpointer key, gpointer value, gpointer data)
 	struct foreach_data *fd = data;
 	E2kPropInfo *pi;
 
+	g_static_mutex_lock (&known_properties_lock);
 	pi = g_hash_table_lookup (known_properties, key);
+	g_static_mutex_unlock (&known_properties_lock);
 	if (pi)
 		fd->callback (pi->name, pi->type, value, fd->user_data);
 }
@@ -556,7 +568,9 @@ foreach_namespace_callback (gpointer key, gpointer value, gpointer data)
 	E2kPropInfo *pi;
 	const char *name;
 
+	g_static_mutex_lock (&known_properties_lock);
 	pi = g_hash_table_lookup (known_properties, key);
+	g_static_mutex_unlock (&known_properties_lock);
 	if (!pi)
 		return;
 
@@ -627,7 +641,7 @@ e2k_properties_foreach_namespace (E2kProperties *props,
 
 static GHashTable *namespaces;
 static int next_namespace = 'a';
-
+static GStaticMutex namespaces_lock = G_STATIC_MUTEX_INIT;
 
 static const char *
 get_div (const char *propname)
@@ -683,15 +697,19 @@ e2k_prop_namespace_name (const char *prop)
 	gpointer key, value;
 	char *name;
 
+	g_static_mutex_lock (&namespaces_lock);
 	if (!namespaces)
 		setup_namespaces ();
 
-	if (g_hash_table_lookup_extended (namespaces, prop, &key, &value))
+	if (g_hash_table_lookup_extended (namespaces, prop, &key, &value)) {
+		g_static_mutex_unlock (&namespaces_lock);
 		return key;
+	}
 
 	name = g_strndup (prop, div - prop + 1);
 	g_hash_table_insert (namespaces, name, GINT_TO_POINTER (next_namespace));
 	next_namespace++;
+	g_static_mutex_unlock (&namespaces_lock);
 	return name;
 }
 
@@ -709,17 +727,23 @@ e2k_prop_namespace_abbrev (const char *prop)
 {
 	const char *div = get_div (prop);
 	gpointer key, value;
-	char *name;
+	char *name, res;
 
+	g_static_mutex_lock (&namespaces_lock);
 	if (!namespaces)
 		setup_namespaces ();
 
-	if (g_hash_table_lookup_extended (namespaces, prop, &key, &value))
+	if (g_hash_table_lookup_extended (namespaces, prop, &key, &value)) {
+		g_static_mutex_unlock (&namespaces_lock);
 		return GPOINTER_TO_INT (value);
+	}
 
 	name = g_strndup (prop, div - prop + 1);
 	g_hash_table_insert (namespaces, name, GINT_TO_POINTER (next_namespace));
-	return next_namespace++;
+	res = next_namespace++;
+	g_static_mutex_unlock (&namespaces_lock);
+
+	return res;
 }
 
 /**

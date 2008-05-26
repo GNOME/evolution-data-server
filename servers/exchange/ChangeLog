@@ -1,3 +1,12 @@
+2008-05-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #473658
+
+	* lib/e2k-properties.c: (copy_prop), (properties_free_cb),
+	(get_propinfo), (foreach_callback), (foreach_namespace_callback),
+	(e2k_prop_namespace_name), (e2k_prop_namespace_abbrev): Added locks
+	to guard global variables 'known_properties' and 'namespaces'.
+
 2008-05-02  Bharath Acharya  <abharath@novell.com>
 
 	** Fix for bug #530763
