@@ -1,3 +1,10 @@
+2008-05-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-passwords.c:
+	Previous commit caused a string freeze break, so do not translate
+	the "key is unusable" error message.  It only appears as a terminal
+	message anyway.
+
 2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #531439

@@ -223,10 +223,13 @@ ep_keyring_uri_new (const gchar *string,
 
 	/* Make sure the URI has the required components. */
 	if (uri->user == NULL && uri->host == NULL) {
+		/* XXX Leave the string untranslated to avoid breaking
+		 *     GNOME 2.22 string freeze.  The message is only
+		 *     printed to the terminal at this time. */
 		g_set_error (
 			error, EP_KEYRING_ERROR,
 			GNOME_KEYRING_RESULT_BAD_ARGUMENTS,
-			_("Keyring key is unusable: no user or host name"));
+			"Keyring key is unusable: no user or host name");
 		e_uri_free (uri);
 		uri = NULL;
 	}
