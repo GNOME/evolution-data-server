@@ -140,6 +140,8 @@ enum {
 	CAMEL_MESSAGE_INFO_USER_FLAGS,
 	CAMEL_MESSAGE_INFO_USER_TAGS,
 
+	CAMEL_MESSAGE_INFO_HEADERS,
+
 	CAMEL_MESSAGE_INFO_LAST
 };
 
@@ -393,6 +395,8 @@ time_t camel_message_info_time(const CamelMessageInfo *mi, int id);
 #define camel_message_info_references(mi) ((const CamelSummaryReferences *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_REFERENCES))
 #define camel_message_info_user_flags(mi) ((const CamelFlag *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_USER_FLAGS))
 #define camel_message_info_user_tags(mi) ((const CamelTag *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_USER_TAGS))
+
+#define camel_message_info_headers(mi) ((const struct _camel_header_param *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_HEADERS))
 
 gboolean camel_message_info_user_flag(const CamelMessageInfo *mi, const char *id);
 const char *camel_message_info_user_tag(const CamelMessageInfo *mi, const char *id);

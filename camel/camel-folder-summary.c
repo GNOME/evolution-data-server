@@ -2927,6 +2927,8 @@ info_ptr(const CamelMessageInfo *mi, int id)
 		return ((const CamelMessageInfoBase *)mi)->user_flags;
 	case CAMEL_MESSAGE_INFO_USER_TAGS:
 		return ((const CamelMessageInfoBase *)mi)->user_tags;
+	case CAMEL_MESSAGE_INFO_HEADERS:
+		return ((const CamelMessageInfoBase *)mi)->headers;
 	default:
 		abort();
 	}
