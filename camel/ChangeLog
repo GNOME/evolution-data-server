@@ -1,3 +1,8 @@
+2008-05-22  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c (camel_header_param_list_format_append): Work
+	around the broken "Jive Forums" NNTP gateway. Fixes bug #518312.
+
 2008-05-27  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fixes bug #534294.

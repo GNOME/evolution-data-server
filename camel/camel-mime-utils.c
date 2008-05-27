@@ -3416,8 +3416,11 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 			}
 		} else {
 			g_string_append_printf (out, "%s%s=", p->name, encoded ? "*" : "");
-
-			if (encoded || !quote)
+			
+			/* Quote even if we don't need to in order to
+			 * work around broken mail software like the
+			 * Jive Forums' NNTP gateway */
+			if (encoded /*|| !quote*/)
 				g_string_append (out, value);
 			else
 				quote_word (out, TRUE, value, vlen);
