@@ -649,7 +649,7 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
 	d(printf("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
 	if (fms->session->junk_plugin != NULL && (camel_message_info_flags (info) & (CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK)) == 0) {
 		const GHashTable *ht = camel_session_get_junk_headers (fms->session);
-		struct _camel_header_param *node = ((CamelMessageInfoBase *)info)->headers;
+		const struct _camel_header_param *node = camel_message_info_headers (info);
 
 		while (node && !retval) {
 			if (node->name) {
