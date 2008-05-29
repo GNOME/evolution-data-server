@@ -534,7 +534,7 @@ e_book_backend_mapi_create_contact (EBookBackend *backend,
 	   
 	case  GNOME_Evolution_Addressbook_MODE_REMOTE :
 		contact = e_contact_new_from_vcard(vcard);
-		status = exchange_mapi_create_item (olFolderContacts, priv->fid, mapi_book_build_name_id, contact, mapi_book_build_props, contact, NULL, NULL);
+		status = exchange_mapi_create_item (olFolderContacts, priv->fid, mapi_book_build_name_id, contact, mapi_book_build_props, contact, NULL, NULL, NULL);
 		if (!status) {
 			e_data_book_respond_create(book, opid, GNOME_Evolution_Addressbook_OtherError, NULL);
 			return;

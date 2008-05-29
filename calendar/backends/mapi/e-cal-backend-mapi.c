@@ -1244,7 +1244,7 @@ e_cal_backend_mapi_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 		case CAL_MODE_ANY:
 		case CAL_MODE_REMOTE:
 			/* Create an appointment */
-			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, mapi_cal_build_name_id, cbmapi, mapi_cal_build_props, comp, NULL, attachments);
+			mid = exchange_mapi_create_item (priv->olFolder, priv->fid, mapi_cal_build_name_id, cbmapi, mapi_cal_build_props, comp, NULL, attachments, NULL);
 			if (!mid) {
 				g_object_unref (comp);
 				exchange_mapi_util_free_attachment_list (&attachments);
