@@ -339,7 +339,7 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const char *ful
 		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_IMAP_STORE_INFO_FULL_NAME, full_name);
 
-		if (g_ascii_strcasecmp(full_name, "inbox"))
+		if (!g_ascii_strcasecmp(full_name, "inbox"))
 			info->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
 	} else
 		d(printf("  failed\n"));
