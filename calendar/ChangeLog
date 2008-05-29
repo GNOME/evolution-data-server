@@ -1,3 +1,10 @@
+2008-05-29  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #388579 (bnc)
+
+	* libecal/e-cal-component.c: (free_icalcomponent): Fix for Exchange 
+	crasher. Part of the fix was already committed. This is the last hunk.
+
 2008-05-23  Paul Smith  <psmith@gnu.org>
 
 	** Fix for bug #534077
