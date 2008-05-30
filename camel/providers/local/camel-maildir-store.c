@@ -445,6 +445,7 @@ scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *ur
 			if (strcmp(d->d_name, "tmp") == 0
 			    || strcmp(d->d_name, "cur") == 0
 			    || strcmp(d->d_name, "new") == 0
+			    || strcmp(d->d_name, ".#evolution") == 0
 			    || strcmp(d->d_name, ".") == 0
 			    || strcmp(d->d_name, "..") == 0)
 				continue;
