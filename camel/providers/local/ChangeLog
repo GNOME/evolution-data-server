@@ -1,3 +1,10 @@
+2008-05-30  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #318803 (Patch by Ilkka Tuohela)
+
+	* camel-maildir-store.c: (scan_dirs):
+	Do not show ".#evolution" directory in the UI.
+
 2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #531591
