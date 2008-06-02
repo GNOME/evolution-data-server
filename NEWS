@@ -1,3 +1,29 @@
+Evolution-Data-Server 2.22.2 2008-05-26
+---------------------------------------
+
+Bug Fixes:
+	#325882: If a parent window was given, make the password dialog transient for the parent and center it over the parent. (Matthew Barnes)
+	#354923: Store passwords in the keyring by server, username and protocol (Matthew Barnes)
+	#388579: (Novell Bugzilla) Exchange crashes everytime on startup. A regression patch for the leak fixes. (Chenthill Palanisamy)
+	#517244: Add test for nl_langinfo(CODESET).  Defines HAVE_CODESET (Matthew Barnes)
+	#523541: Fix a memory leak (Milan Crha)
+	#530514: Added a necessary condition to handle a specific server response and to prevent a crash (Sankar P)
+	#530543: Large memory leak while syncing mails for offline usage (Sankar P)
+	#530763: Return NULL if the value of dest_folder is disturbed to prevent the crash (Bharath Acharya)
+	#531009: Use the right iterator to prevent a crash in offline mail movement (Sankar P)
+	#531439: Prevent GPG passphrases from destroying other passwords (Matthew Barnes)
+	#532284: Fixes a double free (Sankar P)
+	#533058: Enable GROUPWISE_DEBUG logs. (Sankar P)
+	#534077: Don't use freed memory (Paul Smith)
+
+Updated Translations:
+	Ivar Smolin (et)
+	Gil Forcada (ca)
+	Luca Ferretti (it)
+	Jorge Gonzalez (es)
+	Jonh Wendell (pt_BR)
+	Theppitak Karoonboonyanan (th)
+
 Evolution-Data-Server 2.22.1.1 2008-05-02
 -----------------------------------------
 
