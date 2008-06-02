@@ -678,7 +678,7 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 	/* process response */
 	response = soup_soap_message_parse_response (msg);
 	
-	if (g_getenv ("GROUPWISE_DEBUG")) {
+	if (response && g_getenv ("GROUPWISE_DEBUG")) {
 
 		/* README: The stdout can be replaced with Evolution's
 		Logging framework also */

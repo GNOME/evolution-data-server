@@ -1,3 +1,9 @@
+2008-06-02  Sankar P  <psankar@novell.com>
+
+	* e-gw-connection.c: (e_gw_connection_send_message):
+	Appropriately check the response before dumping it.
+	Fixes a crash.
+
 2008-05-14  Sankar P  <psankar@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_init),
