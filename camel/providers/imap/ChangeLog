@@ -1,3 +1,10 @@
+2008-05-30  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #374616
+
+	* camel-imap-command.c: (camel_imap_command_response):
+	Show server's error message on "BYE" if available.
+
 2008-05-29  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #326149

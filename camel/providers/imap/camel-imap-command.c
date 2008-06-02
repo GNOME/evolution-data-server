@@ -305,11 +305,19 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 	switch (*respbuf) {
 	case '*':
 		if (!g_ascii_strncasecmp (respbuf, "* BYE", 5)) {
+			const char *err = NULL;
+
+			if (respbuf [5] && g_ascii_strncasecmp (respbuf + 6, "[ALERT] ", 8) == 0)
+				err = respbuf + 14;
+
+			if (!err || !*err)
+				err = g_strerror (104);
+
 			/* Connection was lost, no more data to fetch */
 			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Server unexpectedly disconnected: %s"),
-					      _("Unknown error")); /* g_strerror (104));  FIXME after 1.0 is released */
+					      err);
 			store->connected = FALSE;
 			g_free (respbuf);
 			respbuf = NULL;
