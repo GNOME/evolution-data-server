@@ -76,6 +76,7 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_USER_NOT_DELETABLE = 1<<9,
 	CAMEL_MESSAGE_HIDDEN = 1<<10,
 	CAMEL_MESSAGE_NOTJUNK = 1<<11,
+	CAMEL_MESSAGE_FORWARDED = 1<<12,
 
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
