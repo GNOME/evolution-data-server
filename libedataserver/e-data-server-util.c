@@ -28,6 +28,10 @@
 
 #include <glib.h>
 
+#ifdef G_OS_WIN32
+#include <mbstring.h>
+#endif
+
 #include "e-data-server-util.h"
 
 /**

@@ -1,3 +1,8 @@
+2008-06-02  Tor Lillqvist  <tml@novell.com>
+
+	* libedataserver/e-data-server-util.c: Include <mbstring.h> on
+	Windows.
+
 2008-05-23  Ed Catmur  <ed@catmur.co.uk>
 
 	** Fix for bug #533780
