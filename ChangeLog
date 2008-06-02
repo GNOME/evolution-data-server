@@ -2,6 +2,9 @@
 
 	* libedataserver/e-data-server-util.c: Include <mbstring.h> on
 	Windows.
+	(get_prefixes): Drop the Win9x code. The GTK+ stack hasn't
+	supported Win9x for a while, so no point in attempting to do it
+	here either.
 
 2008-05-23  Ed Catmur  <ed@catmur.co.uk>
 
