@@ -1,3 +1,43 @@
+Evolution-Data-Server 2.23.3 2008-06-02
+----------------------------------------
+
+New in 2.23.3:
+	Implement support for getting and setting IMAP4 cache's expire settings (Jeffrey Stedfast)
+
+Bug Fixes:
+	#318803: Do not show ".#evolution" directory in the UI (Ilkka Tuohela)
+	#326149: Set inbox flag only on real inboxes (Milan Crha)
+	#354923: Store passwords in the keyring by server, username and protocol (Matthew Barnes)
+	#374616: Return proper IMAP error (Milan Crha)
+	#388579: (Novell Bugzilla) Fix for Exchange crasher (Chenthill Palanisamy)
+	#473658: Fix a crash when starting evolution (Milan Crha)
+	#518312: Work around the broken "Jive Forums" NNTP gateway (Jeffrey Stedfast)
+	#530514: Added a necessary condition to handle a specific server response and to prevent a crash (Sankar P)
+	#530543: Large memory leak while syncing mails for offline usage (Sankar P)
+	#530763: Return NULL if the value of dest_folder is disturbed to prevent the crash (Bharath Acharya)
+	#531009: Use the right iterator to prevent a crash in offline mail movement (Sankar P)
+	#531439: Prevent GPG passphrases from destroying other passwords (Matthew Barnes)
+	#531591: Don't use TeX-style quotes in user-visible messages (Matthew Barnes)
+	#531713: Split the evolution-data-server version into major/minor/micro macros (Matthew Barnes)
+	#532286: Fix some whitespace issues, and make the Caps Lock label smaller (Matthew Barnes)
+	#533058: Enable GROUPWISE_DEBUG logs (Sankar P)
+	#533780: Link against libebackend (Ed Catmur)
+	#534077: Don't use freed memory (Paul Smith)
+	#534294: Fix a crash when checking for junk in a virtual folder (Hiroyuki Ikezoe)
+	#534312: Support to save Forwarded flag (Milan Crha)
+
+Updated Translations:
+	Philip Withnall (en_GB)
+	Clytie Siddall (vi)
+	Ivar Smolin (et)
+	Tino Meinen (nl)
+	Gil Forcada (ca)
+	Jorge Gonzalez (es)
+	Kjartan Maraas (nb)
+	Djihed Afifi (ar)
+	Yair Hershkovitz (he)
+	Theppitak Karoonboonyanan (th)
+
 Evolution-Data-Server 2.23.2 2008-05-12
 ----------------------------------------
 
