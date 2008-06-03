@@ -1,3 +1,10 @@
+2008-06-03  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-source-option-menu.c:
+	Use g_object_get_data() instead of gtk_object_get_data().
+	Use g_object_set_data_full() instead of gtk_object_set_data_full().
+	Use gtk_menu_shell_append() instead of gtk_menu_append().
+
 2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #531439

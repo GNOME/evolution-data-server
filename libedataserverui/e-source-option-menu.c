@@ -61,7 +61,7 @@ static void
 select_source_foreach_menu_item (GtkWidget *menu_item,
 				 ForeachMenuItemData *data)
 {
-	ESource *source = gtk_object_get_data (GTK_OBJECT (menu_item), MENU_ITEM_SOURCE_DATA_ID);
+	ESource *source = g_object_get_data (G_OBJECT (menu_item), MENU_ITEM_SOURCE_DATA_ID);
 
 	if (data->found_source)
 		return;
@@ -102,7 +102,7 @@ static void
 menu_item_activate_callback (GtkMenuItem *menu_item,
 			     ESourceOptionMenu *option_menu)
 {
-	ESource *source = gtk_object_get_data (GTK_OBJECT (menu_item), MENU_ITEM_SOURCE_DATA_ID);
+	ESource *source = g_object_get_data (G_OBJECT (menu_item), MENU_ITEM_SOURCE_DATA_ID);
 
 	if (source != NULL)
 		select_source (option_menu, source);
@@ -158,14 +158,14 @@ populate (ESourceOptionMenu *option_menu)
 				gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item2), gtk_image_new_from_pixmap (pixmap, NULL));
 			}
 
-			gtk_object_set_data_full (GTK_OBJECT (item2), MENU_ITEM_SOURCE_DATA_ID, source,
-						  (GtkDestroyNotify) g_object_unref);
+			g_object_set_data_full (G_OBJECT (item2), MENU_ITEM_SOURCE_DATA_ID, source,
+						(GDestroyNotify) g_object_unref);
 			g_object_ref (source);
 
 			g_signal_connect (item2, "activate", G_CALLBACK (menu_item_activate_callback), option_menu);
 
 			gtk_widget_show (item2);
-			gtk_menu_append (GTK_MENU (menu), item2);
+			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item2);
 
 			if (first_source_item == -1) {
 				first_source_item = i;
