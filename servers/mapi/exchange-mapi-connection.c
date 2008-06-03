@@ -59,9 +59,6 @@ static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 #define STREAM_MAX_READ_SIZE  0x1000
 #define STREAM_MAX_WRITE_SIZE 0x1000
 
-static void
-exchange_mapi_set_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , GSList *recipients);
-
 static struct mapi_session *
 mapi_profile_load (const char *profname, const char *password)
 {
@@ -789,10 +786,20 @@ exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_li
 			const uint32_t *ui32;
 
 			recipient->email_id = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_SMTP_ADDRESS);
-//			recipient->email_type = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_RECIPIENT_);
-			/* FIXME: fallback on EX address type */
-			recipient->email_type = "SMTP";
-			/* FIXME: fallback on other usable props */
+			if (recipient->email_id)
+				recipient->email_type = "SMTP";
+			else {
+				recipient->email_id = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_EMAIL_ADDRESS);
+				recipient->email_type = (const char *) exchange_mapi_util_find_row_propval (&(rows_recip.aRow[i_row_recip]), PR_ADDRTYPE);
+				if (!g_utf8_collate (recipient->email_type, "EX")) {
+					const gchar *smtp_addr = exchange_mapi_util_ex_to_smtp (recipient->email_id);
+					if (smtp_addr) {
+						recipient->email_type = "SMTP";
+						recipient->email_id = smtp_addr;
+					}
+				}
+			} 
+
 			recipient->name = (const char *) exchange_mapi_util_find_row_propval(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_DISPLAY_NAME);
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENTS_FLAGS);
 			recipient->flags = *ui32;
@@ -811,6 +818,101 @@ cleanup:
 //	talloc_free (mem_ctx);
 
 	return status;
+}
+
+static gboolean
+set_external_recipient (TALLOC_CTX *mem_ctx, struct SRowSet *SRowSet, ExchangeMAPIRecipient *recipient)
+{
+	uint32_t		last;
+	struct SPropValue	SPropValue;
+
+	g_return_val_if_fail (recipient != NULL, FALSE);
+	g_return_val_if_fail (recipient->email_id != NULL, FALSE);
+
+	SRowSet->aRow = talloc_realloc(mem_ctx, SRowSet->aRow, struct SRow, SRowSet->cRows + 2);
+	last = SRowSet->cRows;
+	SRowSet->aRow[last].cValues = 0;
+	SRowSet->aRow[last].lpProps = talloc_zero(mem_ctx, struct SPropValue);
+
+	/* PR_OBJECT_TYPE */
+	SPropValue.ulPropTag = PR_OBJECT_TYPE;
+	SPropValue.value.l = MAPI_MAILUSER;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_DISPLAY_TYPE */
+	SPropValue.ulPropTag = PR_DISPLAY_TYPE;
+	SPropValue.value.l = 0;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_SEND_INTERNET_ENCODING */
+	SPropValue.ulPropTag = PR_SEND_INTERNET_ENCODING;
+	SPropValue.value.l = 0;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_GIVEN_NAME */
+	SPropValue.ulPropTag = PR_GIVEN_NAME;
+	SPropValue.value.lpszA = recipient->name ? recipient->name : recipient->email_id;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_DISPLAY_NAME */
+	SPropValue.ulPropTag = PR_DISPLAY_NAME;
+	SPropValue.value.lpszA = recipient->name ? recipient->name : recipient->email_id;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_7BIT_DISPLAY_NAME */
+	SPropValue.ulPropTag = PR_7BIT_DISPLAY_NAME;
+	SPropValue.value.lpszA = recipient->name ? recipient->name : recipient->email_id;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_ADDRTYPE */
+	SPropValue.ulPropTag = PR_ADDRTYPE;
+	SPropValue.value.lpszA = recipient->email_type ? recipient->email_type : "SMTP";
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	/* PR_EMAIL_ADDRESS */
+	SPropValue.ulPropTag = PR_EMAIL_ADDRESS;
+	SPropValue.value.lpszA = recipient->email_id;
+	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+
+	if (recipient->email_type && !g_ascii_strcasecmp (recipient->email_type, "SMTP")) {
+		/* PR_SMTP_ADDRESS */
+		SPropValue.ulPropTag = PR_SMTP_ADDRESS;
+		SPropValue.value.lpszA = recipient->email_id;
+		SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
+	}
+
+	SetRecipientType(&(SRowSet->aRow[last]), recipient->type);
+
+	SRowSet->cRows += 1;
+
+	return TRUE;
+}
+
+static void
+exchange_mapi_set_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , GSList *recipients)
+{
+	enum MAPISTATUS 	retval;
+	struct SRowSet 		*SRowSet = NULL;
+	GSList 			*l;
+
+	SRowSet = talloc_zero(mem_ctx, struct SRowSet);
+
+	for (l = recipients; l != NULL; l = l->next) {
+		ExchangeMAPIRecipient *recipient = (ExchangeMAPIRecipient *)(l->data);
+		/* FIXME: Not all recipients are external recipients. We need to use 
+		 * IABContainer::ResolveNames() to find internal recipients and use the 
+		 * data obtained. This also has some effect on how the mails are sent 
+		 * (whether or not TNEF is used).
+		 */
+		set_external_recipient (mem_ctx, SRowSet, recipient);
+	}
+
+	LOGALL();
+	retval = ModifyRecipients (obj_message, SRowSet);
+	LOGNONE();
+
+	if (retval != MAPI_E_SUCCESS) 
+		mapi_errstr("ModifyRecpients", GetLastError());
 }
 
 // FIXME: May be we need to support Restrictions/Filters here. May be after libmapi-0.7.
@@ -1482,8 +1584,8 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 			goto cleanup;
 		}
 	}
-	LOGALL();
 
+	LOGALL();
 	/* set properties for the item */
 	retval = SetProps(&obj_message, props, propslen);
 	if (retval != MAPI_E_SUCCESS) {
@@ -2146,281 +2248,5 @@ cleanup:
 	UNLOCK ();
 
 	return result;
-}
-
-static char**
-mapi_parse_recipients(TALLOC_CTX *mem_ctx, const char *recipients)
-{
-	char		**usernames;
-	char		*tmp = NULL;
-	uint32_t	j = 0;
-
-	/* no recipients */
-	if (!recipients) {
-		return NULL;
-	}
-
-	if ((tmp = strtok((char *)recipients, ",")) == NULL) {
-		DEBUG(2, ("Invalid recipient string format\n"));
-		return NULL;
-	}
-	
-	usernames = talloc_array(mem_ctx, char *, 2);
-	usernames[0] = talloc_strdup(mem_ctx, tmp);
-	
-	for (j = 1; (tmp = strtok(NULL, ",")) != NULL; j++) {
-		usernames = talloc_realloc(mem_ctx, usernames, char *, j+2);
-		usernames[j] = talloc_strdup(mem_ctx, tmp);
-	}
-	usernames[j] = 0;
-
-	return (usernames);
-}
-
-static char**
-mapi_collate_recipients(TALLOC_CTX *mem_ctx, char **usernames, const char *recipient)
-{
-	guint count = 0;
-	/* no recipients */
-	if (!recipient) 
-		return NULL;
-
-	for (count = 0; usernames  && usernames[count]; count++);
-	usernames = talloc_realloc(mem_ctx, usernames, char *, count+2);
-	usernames[count] = talloc_strdup(mem_ctx, recipient);
-
-	usernames[++count] = 0;
-
-	return (usernames);
-}
-
-/**
- * We set external recipients at the end of aRow
- */
-static bool set_external_recipients(TALLOC_CTX *mem_ctx, struct SRowSet *SRowSet, const char *username, enum ulRecipClass RecipClass)
-{
-	uint32_t		last;
-	struct SPropValue	SPropValue;
-
-	SRowSet->aRow = talloc_realloc(mem_ctx, SRowSet->aRow, struct SRow, SRowSet->cRows + 2);
-	last = SRowSet->cRows;
-	SRowSet->aRow[last].cValues = 0;
-	SRowSet->aRow[last].lpProps = talloc_zero(mem_ctx, struct SPropValue);
-	
-	/* PR_OBJECT_TYPE */
-	SPropValue.ulPropTag = PR_OBJECT_TYPE;
-	SPropValue.value.l = MAPI_MAILUSER;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_DISPLAY_TYPE */
-	SPropValue.ulPropTag = PR_DISPLAY_TYPE;
-	SPropValue.value.l = 0;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_GIVEN_NAME */
-	SPropValue.ulPropTag = PR_GIVEN_NAME;
-	SPropValue.value.lpszA = username;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_DISPLAY_NAME */
-	SPropValue.ulPropTag = PR_DISPLAY_NAME;
-	SPropValue.value.lpszA = username;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_7BIT_DISPLAY_NAME */
-	SPropValue.ulPropTag = PR_7BIT_DISPLAY_NAME;
-	SPropValue.value.lpszA = username;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_SMTP_ADDRESS */
-	SPropValue.ulPropTag = PR_SMTP_ADDRESS;
-	SPropValue.value.lpszA = username;
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	/* PR_ADDRTYPE */
-	SPropValue.ulPropTag = PR_ADDRTYPE;
-	SPropValue.value.lpszA = "SMTP";
-	SRow_addprop(&(SRowSet->aRow[last]), SPropValue);
-
-	SetRecipientType(&(SRowSet->aRow[last]), RecipClass);
-
-	SRowSet->cRows += 1;
-	return true;
-}
-
-static gboolean
-mapi_set_usernames_RecipientType(TALLOC_CTX *mem_ctx, uint32_t *index, struct SRowSet *rowset, 
-				 char **usernames, struct FlagList *flaglist, enum ulRecipClass RecipClass)
-{
-	uint32_t	i;
-	uint32_t	count = *index;
-	static uint32_t	counter = 0;
-
-	if (count == 0) counter = 0;
-	if (!usernames) return FALSE;
-
-#if 0 
-	for (i = 0; usernames[i]; i++) {
-		/*FixMe*/
-		if (flaglist->ulFlags[count] == MAPI_UNRESOLVED) {
-			set_external_recipients(mem_ctx, rowset, usernames[i], RecipClass);
-			g_print("%s(%d):%s: MAPI_UNRESOLVED : %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__,usernames[i] );
-		}
-
-		if (flaglist->ulFlags[count] == MAPI_RESOLVED) {
-			SetRecipientType(&(rowset->aRow[counter]), RecipClass);
-			g_print("%s(%d):%s: MAPI_RESOLVED : %s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__,usernames[i] );
-			counter++;
-		}
-		count++;
-	}
-#endif 
-
-#if 1 //Working Code
-	for (i = 0; usernames[i]; i++) {
-		/*FixMe*/
-		set_external_recipients(mem_ctx, rowset, usernames[i], RecipClass);
-
-		count++;
-	}
-#endif 	
-	*index = count;
-	
-	return TRUE;
-}
-
-static char**
-mapi_collapse_recipients(TALLOC_CTX *mem_ctx, char **mapi_to, char **mapi_cc, char **mapi_bcc)
-{
-	uint32_t	count;
-	uint32_t       	i;
-	char		**usernames;
-
-	if (!mapi_to && !mapi_cc && !mapi_bcc) return NULL;
-
-	count = 0;
-	for (i = 0; mapi_to  && mapi_to[i];  i++,  count++);
-	for (i = 0; mapi_cc  && mapi_cc[i];  i++,  count++);
-	for (i = 0; mapi_bcc && mapi_bcc[i]; i++, count++);
-
-	usernames = talloc_array(mem_ctx, char *, count + 1);
-	count = 0;
-
-	for (i = 0; mapi_to && mapi_to[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_to[i]);
-	}
-
-	for (i = 0; mapi_cc && mapi_cc[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_cc[i]);
-	}
-
-	for (i = 0; mapi_bcc && mapi_bcc[i]; i++, count++) {
-		usernames[count] = talloc_strdup(mem_ctx, mapi_bcc[i]);
-	}
-
-	usernames[count++] = 0;
-
-	return usernames;
-}
-
-#define DEBUG_SET_RECTP 1
-
-static void
-exchange_mapi_set_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , GSList *recipients)
-{
-	struct SPropTagArray *SPropTagArray;
-	struct SPropValue SPropValue;
-	struct SRowSet *SRowSet = NULL;
-	struct FlagList	*flaglist = NULL;
-	enum MAPISTATUS	retval;
-
-	char **usernames = NULL;
-	char **usernames_to;
-	char **usernames_cc;
-	char **usernames_bcc;
-	uint32_t index = 0;
-	GSList *recipient_list = recipients;
-
-	/* message->ModifyRecipients() */
-	SPropTagArray = set_SPropTagArray(mem_ctx, 0x6,
-					  PR_OBJECT_TYPE,
-					  PR_DISPLAY_TYPE,
-					  PR_7BIT_DISPLAY_NAME,
-					  PR_DISPLAY_NAME,
-					  PR_SMTP_ADDRESS,
-					  PR_GIVEN_NAME);
-
-	//Recipient table
-	usernames_to = talloc_array(mem_ctx, char *, 1);
-	usernames_to[0] = 0;
-
-	usernames_cc = talloc_array(mem_ctx, char *, 1);
-	usernames_cc[0] = 0;
-
-	usernames_bcc = talloc_array(mem_ctx, char *, 1);
-	usernames_bcc[0] = 0;
-
-	for (;recipient_list; recipient_list = g_slist_next (recipient_list)) {
-		
-		gchar *recipient_email = ((ExchangeMAPIRecipient *)recipient_list->data)->email_id;
-		ExchangeMAPIRecipientType recipient_type = ((ExchangeMAPIRecipient *)recipient_list->data)->type;
-
-		switch (recipient_type) {
-		case RECIPIENT_TO :
-			usernames_to = mapi_collate_recipients(mem_ctx, usernames_to, recipient_email);
-			break;
-		case RECIPIENT_CC :
-			usernames_cc = mapi_collate_recipients(mem_ctx, usernames_cc, recipient_email);
-			break;
-		case RECIPIENT_BCC :
-			usernames_bcc = mapi_collate_recipients(mem_ctx, usernames_bcc, recipient_email);
-			break;
-		default:
-			g_warning ("exchange_mapi_set_recipients : Unknown Recipient type");
-		}
-	}
-
-	usernames = mapi_collapse_recipients(mem_ctx, usernames_to, usernames_cc, usernames_bcc);
-
-	retval = ResolveNames((const char **)usernames, SPropTagArray, &SRowSet, &flaglist, 0);
-	mapi_errstr("ResolveNames", GetLastError());
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
-	}
-
-	/* Bug Bug  */
-/* 	if (!SRowSet) */
-		SRowSet = talloc_zero(mem_ctx, struct SRowSet);
-
-	mapi_set_usernames_RecipientType(mem_ctx, &index, SRowSet, usernames_to,  flaglist, MAPI_TO);
-	mapi_set_usernames_RecipientType(mem_ctx, &index, SRowSet, usernames_cc,  flaglist, MAPI_CC);
-	mapi_set_usernames_RecipientType(mem_ctx, &index, SRowSet, usernames_bcc, flaglist, MAPI_BCC);
-
-	/* FIXME no saving mail */
-	if (index == 0) {
-		g_print("no valid recipients set\n");
-		return -1;
-	}
-
-	SPropValue.ulPropTag = PR_SEND_INTERNET_ENCODING;
-	SPropValue.value.l = 0;
-	SRowSet_propcpy(mem_ctx, SRowSet, SPropValue);
-
-#ifdef DEBUG_SET_RECTP
-	mapidump_SRowSet (SRowSet, "\t**" );
-#endif
-	LOGALL();
-	retval = ModifyRecipients (obj_message, SRowSet);
-	LOGNONE();
-
-	mapi_errstr("ModifyRecpients", GetLastError());
-	if (retval != MAPI_E_SUCCESS) {
-		mapi_errstr(__PRETTY_FUNCTION__, GetLastError());				
-		UNLOCK ();
-		return FALSE;
-	}
-
 }
 

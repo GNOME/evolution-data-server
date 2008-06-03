@@ -1,3 +1,11 @@
+2008-06-03  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c: (exchange_mapi_util_get_recipients),
+	(set_external_recipient), (exchange_mapi_set_recipients),
+	(exchange_mapi_create_item): Remove unnecessary preprocessing while 
+	setting recipient table. 
+	* exchange-mapi-folder.h: Minor type change. 
+
 2008-05-22  Johnny Jacob  <jjohnny@novell.com>	
 	* exchange-mapi-connection.c (exchange_mapi_create_item): Added support for 
 	generic items support.

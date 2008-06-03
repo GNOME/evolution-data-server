@@ -40,10 +40,10 @@ typedef enum {
 
 typedef struct _ExchangeMAPIFolder {
 	/* We'll need this separation of 'owner' and 'user' when we do delegation */
-	const gchar *owner_name;
-	const gchar *owner_email;
-	const gchar *user_name;
-	const gchar *user_email;
+	gchar *owner_name;
+	gchar *owner_email;
+	gchar *user_name;
+	gchar *user_email;
 
 	/* Need this info - default calendars/address books/notes folders can't be deleted */
 	gboolean is_default;
