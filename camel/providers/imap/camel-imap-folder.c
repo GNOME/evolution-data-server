@@ -1728,7 +1728,7 @@ imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 
 	changes = camel_folder_change_info_new ();
 
-	for (i = 0; i < uids->len; i++) {
+	for (i = 0; i < uids->len && !camel_exception_is_set (ex); i++) {
 		uid = uids->pdata[i];
 
 		destuid = get_temp_uid ();
@@ -1753,7 +1753,7 @@ imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 		else
 			g_free (destuid);
 
-		if (delete_originals)
+		if (delete_originals && !camel_exception_is_set (ex))
 			camel_folder_delete_message (source, uid);
 	}
 
@@ -2026,7 +2026,7 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 	realuids = g_ptr_array_new ();
 
 	i = 0;
-	while (i < uids->len) {
+	while (i < uids->len && !camel_exception_is_set (ex)) {
 		/* Skip past real UIDs */
 		for (first = i; i < uids->len; i++) {
 			uid = uids->pdata[i];
@@ -2063,7 +2063,7 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 			imap_append_online (dest, message, info, NULL, ex);
 			camel_folder_free_message_info (source, info);
 			camel_object_unref (CAMEL_OBJECT (message));
-			if (delete_originals)
+			if (delete_originals && !camel_exception_is_set (ex))
 				camel_folder_delete_message (source, uid);
 			i++;
 		}
