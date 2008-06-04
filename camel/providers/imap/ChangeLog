@@ -1,3 +1,11 @@
+2008-06-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #509721
+
+	* camel-imap-folder.c: (imap_transfer_offline),
+	(imap_transfer_resyncing):
+	Do not delete original message if exception occurred.
+
 2008-05-30  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #374616
