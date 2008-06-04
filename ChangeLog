@@ -1,3 +1,10 @@
+2008-06-03  Tor Lillqvist  <tml@novell.com>
+
+	Bug 536154 - Camel sends bracketed hostname in SMTP HELO
+
+	* configure.in: Do use the Winsock getaddrinfo() and
+	getnameinfo(). It should be OK to ignore Windows 2000 by now.
+
 2008-06-02  Tor Lillqvist  <tml@novell.com>
 
 	* libedataserver/e-data-server-util.c: Include <mbstring.h> on
