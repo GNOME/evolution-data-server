@@ -1124,12 +1124,10 @@ static void
 imap_sync_online (CamelFolder *folder, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (folder->parent_store);
-	CamelImapResponse *response = NULL;
 	CamelImapMessageInfo *info;
 	CamelException local_ex;
 	GPtrArray *matches;
 	char *set, *flaglist;
-	gboolean unset;
 	int i, j, max;
 	
 	if (folder->permanent_flags == 0) {
@@ -1146,6 +1144,9 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 	 */
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
+		gboolean unset = FALSE;
+		CamelImapResponse *response = NULL;
+
 		if (!(info = (CamelImapMessageInfo *)camel_folder_summary_index (folder->summary, i)))
 			continue;
 		
@@ -1154,11 +1155,6 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 			continue;
 		}
 
-		/* Note: Cyrus is broken and will not accept an
-		   empty-set of flags so... if this is true then we
-		   want to unset the previously set flags.*/
-		unset = !(info->info.flags & folder->permanent_flags);
-		
 		/* Note: get_matching() uses UID_SET_LIMIT to limit
 		   the size of the uid-set string. We don't have to
 		   loop here to flush all the matching uids because
@@ -1176,15 +1172,32 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 			break;
 		}
 
-		/* FIXME: since we don't know the previously set flags,
-		   if unset is TRUE then just unset all the flags? */
-		/* FIXME: Sankar: What about custom flags ? */
-		flaglist = imap_create_flag_list (unset ? folder->permanent_flags : info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
+		flaglist = imap_create_flag_list (info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
+
+		if (strcmp (flaglist, "()") == 0) {
+			/* Note: Cyrus is broken and will not accept an
+			   empty-set of flags so... if this is true then we
+			   set and unset \Seen flag. It's necessary because
+			   we do not know the previously set user flags. */
+			unset = TRUE;
+			g_free (flaglist);
+			flaglist = strdup ("(\\Seen)");
+
+			response = camel_imap_command (store, folder, &local_ex,
+					       "UID STORE %s FLAGS.SILENT %s",
+					       set, flaglist);
+			if (response)
+				camel_imap_response_free (store, response);
+
+			response = NULL;
+		}
 
 		/* Note: to 'unset' flags, use -FLAGS.SILENT (<flag list>) */
-		response = camel_imap_command (store, folder, &local_ex,
+		if (!camel_exception_is_set (&local_ex))
+			response = camel_imap_command (store, folder, &local_ex,
 					       "UID STORE %s %sFLAGS.SILENT %s",
 					       set, unset ? "-" : "", flaglist);
+
 		g_free (set);
 		g_free (flaglist);
 
