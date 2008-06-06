@@ -34,6 +34,10 @@ static const char revid[] = "$Id$";
 #include "dbinc/txn.h"
 #include "dbinc/fop.h"
 
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
 static int __db_parse __P((DB_ENV *, char *));
 static int __db_tmp_open __P((DB_ENV *, u_int32_t, char *, DB_FH *));
 static int __dbenv_config __P((DB_ENV *, const char *, u_int32_t));

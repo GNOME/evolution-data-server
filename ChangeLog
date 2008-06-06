@@ -1,3 +1,8 @@
+2008-06-06  Tor Lillqvist  <tml@novell.com>
+
+	* libdb/env/env_open.c [Win32]: #define strcasecmp _stricmp, just
+	for cleanliness.
+
 2008-06-03  Tor Lillqvist  <tml@novell.com>
 
 	Bug 536154 - Camel sends bracketed hostname in SMTP HELO
