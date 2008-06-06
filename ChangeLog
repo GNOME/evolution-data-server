@@ -1,5 +1,9 @@
 2008-06-06  Tor Lillqvist  <tml@novell.com>
 
+	* configure.in: Add a couple of -Wl,--exclude-libs options on
+	Windows to avoid needlessly auto-exporting functions from static
+	libiconv and libdb-4.1 when linked into e-d-s's DLLs.
+
 	* libdb/env/env_open.c [Win32]: #define strcasecmp _stricmp, just
 	for cleanliness.
 
