@@ -1,3 +1,11 @@
+2008-06-06  Tor Lillqvist  <tml@novell.com>
+
+	* camel-private.h
+	* camel-win32.c: Drop the Win32 fsync() implementation. Instead
+	just use _commit() in the Microsoft C library which does the same.
+
+	* Makefile.am: Link libcamel with ICONV_LIBS.
+
 2008-05-29  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #534312

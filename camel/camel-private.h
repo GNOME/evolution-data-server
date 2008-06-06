@@ -190,7 +190,7 @@ struct _CamelCertDBPrivate {
 	(g_mutex_unlock (((CamelCertDB *) (db))->priv->l))
 
 #ifdef G_OS_WIN32
-int fsync (int fd);
+#define fsync(fd) _commit(fd)
 
 const char *_camel_get_localedir (void) G_GNUC_CONST;
 const char *_camel_get_libexecdir (void) G_GNUC_CONST;
