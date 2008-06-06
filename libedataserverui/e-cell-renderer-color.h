@@ -23,7 +23,7 @@
 
 
 #include <glib.h>
-#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtk.h>
 
 #define E_TYPE_CELL_RENDERER_COLOR \
 	(e_cell_renderer_color_get_type ())

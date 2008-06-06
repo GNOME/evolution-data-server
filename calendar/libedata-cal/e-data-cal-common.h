@@ -22,7 +22,7 @@
 #ifndef CAL_COMMON_H
 #define CAL_COMMON_H
 
-#include <glib/gmacros.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 

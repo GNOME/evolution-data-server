@@ -26,12 +26,6 @@
 #endif
 
 #include <string.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreestore.h>
-#include <gtk/gtkcellrenderertoggle.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrendererpixbuf.h>
 
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"

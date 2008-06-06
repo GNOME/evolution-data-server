@@ -24,8 +24,7 @@
 #ifndef E_NAME_SELECTOR_LIST_H
 #define E_NAME_SELECTOR_LIST_H
 
-#include <gtk/gtkentry.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 #include <libebook/e-contact.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>

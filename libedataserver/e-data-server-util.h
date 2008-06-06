@@ -24,9 +24,7 @@
 
 #include <pthread.h>
 #include <sys/types.h>
-#include <glib/gmacros.h>
-#include <glib/gtypes.h>
-#include <glib/gunicode.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 

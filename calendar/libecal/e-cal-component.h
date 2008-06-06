@@ -22,7 +22,6 @@
 #ifndef E_CAL_COMPONENT_H
 #define E_CAL_COMPONENT_H
 
-#include <glib/gmacros.h>
 #include <time.h>
 #include <glib-object.h>
 #include <libical/ical.h>

@@ -24,13 +24,7 @@
 #ifndef E_NAME_SELECTOR_DIALOG_H
 #define E_NAME_SELECTOR_DIALOG_H
 
-#include <gtk/gtkbox.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodelsort.h>
-#include <gtk/gtksizegroup.h>
+#include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <libebook/e-book.h>
 #include <libedataserverui/e-contact-store.h>

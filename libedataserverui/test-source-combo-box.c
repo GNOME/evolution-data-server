@@ -26,8 +26,7 @@
 
 #include "e-source-combo-box.h"
 
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkmain.h>
+#include <gtk/gtk.h>
 
 static void
 source_changed_cb (ESourceComboBox *combo_box)

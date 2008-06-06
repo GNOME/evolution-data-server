@@ -1,3 +1,8 @@
+2008-06-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Allow e-d-s to build with G_DISABLE_SINGLE_INCLUDES
+	   and GTK_DISABLE_SINGLE_INCLUDES defined. (#536636)
+
 2008-06-06  Tor Lillqvist  <tml@novell.com>
 
 	* configure.in: Add a couple of -Wl,--exclude-libs options on

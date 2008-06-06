@@ -25,9 +25,6 @@
 #endif
 
 #include <string.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtktreednd.h>
 #include <glib/gi18n-lib.h>
 #include "e-contact-store.h"
 

@@ -20,7 +20,7 @@
 #ifndef __E_CATEGORIES_DIALOG__
 #define __E_CATEGORIES_DIALOG__
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

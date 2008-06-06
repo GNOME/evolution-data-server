@@ -4,7 +4,7 @@
 #ifndef __E2K_VALIDATE_H_
 #define __E2K_VALIDATE_H_
 
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {

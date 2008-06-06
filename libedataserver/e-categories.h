@@ -21,8 +21,6 @@
 #define __E_CATEGORIES__
 
 #include <glib-object.h>
-#include <glib/glist.h>
-#include <glib/gmacros.h>
 
 G_BEGIN_DECLS
 

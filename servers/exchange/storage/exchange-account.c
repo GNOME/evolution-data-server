@@ -46,8 +46,7 @@
 #include <libgnome/gnome-util.h>
 
 #include <glade/glade-xml.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 #include <stdlib.h>
 #include <string.h>

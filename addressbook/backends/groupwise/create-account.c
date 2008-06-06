@@ -1,7 +1,7 @@
 
 #include <config.h>
 #include <gconf/gconf-client.h>
-#include <glib/gmain.h>
+#include <glib.h>
 #include "libedataserver/e-source-list.h"
 
 static GConfClient *conf_client;

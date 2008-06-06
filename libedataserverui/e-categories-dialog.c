@@ -23,20 +23,7 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrenderertoggle.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkfilechooserbutton.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 #include <glade/glade-xml.h>
 #include "libedataserver/e-categories.h"
 #include "libedataserver/libedataserver-private.h"

@@ -26,10 +26,7 @@
 
 #include <string.h>
 #include <glib.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>

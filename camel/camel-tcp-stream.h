@@ -24,7 +24,7 @@
 #ifndef CAMEL_TCP_STREAM_H
 #define CAMEL_TCP_STREAM_H
 
-#include <glibconfig.h>
+#include <glib.h>
 
 #ifndef G_OS_WIN32
 #include <sys/types.h>

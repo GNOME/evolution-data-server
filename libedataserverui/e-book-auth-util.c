@@ -25,7 +25,7 @@
 
 #include <config.h>
 #include <string.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <libebook/e-book.h>
 #include <libedataserverui/e-passwords.h>

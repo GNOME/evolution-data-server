@@ -162,11 +162,12 @@ static void
 e_proxy_dispose (GObject *object)
 {
 	EProxy *proxy = (EProxy *)object;
+	EProxyPrivate *priv;
 	
 	if (!E_IS_PROXY (proxy))
 		return;
 
-	EProxyPrivate *priv = proxy->priv;
+	priv = proxy->priv;
 
 	if (priv) {
 		GConfClient* client = NULL;

@@ -24,7 +24,7 @@
 #define _E_PASSWORD_H_
 
 #include <glib.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

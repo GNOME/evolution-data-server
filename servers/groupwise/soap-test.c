@@ -1,5 +1,5 @@
 #include <config.h>
-#include <glib/gmain.h>
+#include <glib.h>
 #include "e-gw-connection.h"
 
 static GMainLoop *main_loop;

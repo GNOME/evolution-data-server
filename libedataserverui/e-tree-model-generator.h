@@ -23,7 +23,7 @@
 #ifndef E_TREE_MODEL_GENERATOR_H
 #define E_TREE_MODEL_GENERATOR_H
 
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

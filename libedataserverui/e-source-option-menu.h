@@ -27,7 +27,7 @@
 
 #include "libedataserver/e-source-list.h"
 
-#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtk.h>
 
 #define E_TYPE_SOURCE_OPTION_MENU			(e_source_option_menu_get_type ())
 #define E_SOURCE_OPTION_MENU(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_OPTION_MENU, ESourceOptionMenu))

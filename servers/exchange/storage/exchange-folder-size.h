@@ -6,8 +6,7 @@
 
 #include "exchange-types.h"
 #include "e2k-security-descriptor.h"
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkliststore.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {

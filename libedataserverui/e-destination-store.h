@@ -23,7 +23,7 @@
 #ifndef E_DESTINATION_STORE_H
 #define E_DESTINATION_STORE_H
 
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 #include <libebook/e-destination.h>
 
 G_BEGIN_DECLS

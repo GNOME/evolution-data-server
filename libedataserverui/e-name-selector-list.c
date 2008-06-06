@@ -25,19 +25,6 @@
 #include <config.h>
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkentrycompletion.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkradiomenuitem.h>
-#include <gtk/gtkseparatormenuitem.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkvbox.h>
 #include <glib/gi18n-lib.h>
 
 #include <libebook/e-book.h>

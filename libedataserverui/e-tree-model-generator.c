@@ -26,8 +26,6 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtksignal.h>
 #include "e-tree-model-generator.h"
 
 #define ETMG_DEBUG(x)

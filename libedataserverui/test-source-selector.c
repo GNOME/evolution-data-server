@@ -27,11 +27,7 @@
 
 #include "e-source-selector.h"
 
-#include <gtk/gtkmain.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 static void
 dump_selection (ESourceSelector *selector)

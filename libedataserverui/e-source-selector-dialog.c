@@ -27,12 +27,6 @@
 
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkvbox.h>
 #include "e-source-selector.h"
 #include "e-source-selector-dialog.h"
 

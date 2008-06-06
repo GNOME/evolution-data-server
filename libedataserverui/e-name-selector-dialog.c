@@ -23,16 +23,7 @@
 
 #include <config.h>
 #include <string.h>
-#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <glib/gstrfuncs.h>
 #include <glib/gi18n-lib.h>
 #include <libedataserverui/e-source-combo-box.h>
 #include <libedataserverui/e-destination-store.h>

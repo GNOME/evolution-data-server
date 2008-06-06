@@ -23,15 +23,7 @@
 
 #include <config.h>
 #include <string.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkentrycompletion.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkradiomenuitem.h>
-#include <gtk/gtkseparatormenuitem.h>
 #include <glib/gi18n-lib.h>
-#include <gtk/gtkclipboard.h>
 
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>

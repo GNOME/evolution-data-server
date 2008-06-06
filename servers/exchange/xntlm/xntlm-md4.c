@@ -21,7 +21,7 @@
 #include <config.h>
 #endif
 
-#include <glib/gtypes.h>
+#include <glib.h>
 #include "xntlm-md4.h"
 
 #include <string.h>

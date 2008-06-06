@@ -24,10 +24,6 @@
 #include <config.h>
 #endif
 
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkimagemenuitem.h>
-
 #include "e-source-option-menu.h"
 
 /* We set data on each menu item specifying the corresponding ESource using this key.  */

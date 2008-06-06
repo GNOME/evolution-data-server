@@ -26,12 +26,7 @@
 #include <string.h>
 
 #include <glade/glade-xml.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 
 #include "exchange-hierarchy-webdav.h"
 #include "e-folder-exchange.h"

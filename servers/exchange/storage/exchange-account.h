@@ -12,7 +12,7 @@
 #include "e2k-security-descriptor.h"
 #include "e-folder.h"
 #include <libedataserver/e-account-list.h>
-#include <gtk/gtkliststore.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {

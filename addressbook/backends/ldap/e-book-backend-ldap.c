@@ -2104,13 +2104,12 @@ get_contact_handler (LDAPOp *op, LDAPMessage *res)
 	msg_type = ldap_msgtype (res);
 	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
 		LDAPMessage *e;
+		EContact *contact;
+		char *vcard;
 
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		e = ldap_first_entry (bl->priv->ldap, res);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-		EContact *contact;
-		char *vcard;
 
 		if (!e) {
 			g_warning ("uh, this shouldn't happen");

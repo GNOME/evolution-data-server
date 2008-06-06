@@ -23,7 +23,7 @@
 #ifndef E_CONTACT_STORE_H
 #define E_CONTACT_STORE_H
 
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book.h>
 #include <libebook/e-book-query.h>

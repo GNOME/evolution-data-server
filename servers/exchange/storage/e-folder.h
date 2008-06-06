@@ -24,7 +24,7 @@
 #define _E_FOLDER_H_
 
 #include <glib-object.h>
-#include <gtk/gtkdnd.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {

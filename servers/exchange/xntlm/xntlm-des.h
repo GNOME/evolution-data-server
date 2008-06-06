@@ -4,7 +4,7 @@
 #ifndef _XNTLM_DES_H
 #define _XNTLM_DES_H
 
-#include <glib/gtypes.h>
+#include <glib.h>
 
 typedef guint32 XNTLM_DES_KS[16][2];
 
