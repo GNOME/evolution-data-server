@@ -255,6 +255,11 @@ if test "x${dynamic_libdb}" = "xyes"; then
 else
         DB_CFLAGS="-I\$(top_builddir)/libdb/dist"
         DB_LIBS="\$(top_builddir)/libdb/dist/libdb-4.1.la"
+	if test $os_win32 = yes; then
+		# Don't pointlessly auto-export the global symbols
+		# from the static libdb
+		DB_LIBS="$DB_LIBS -Wl,--exclude-libs=libdb-4.1.a"
+	fi
         AC_MSG_NOTICE(Using local libdb)
         msg_libdb="statically linked to local copy"
 fi
@@ -294,6 +299,11 @@ int main (int argc, char **argv)
 ], ac_cv_libiconv=yes, ac_cv_libiconv=no, ac_cv_libiconv=no))
 if test $ac_cv_libiconv = yes; then
 	ICONV_LIBS="$ICONV_LIBS -liconv"
+	if test $os_win32 = yes; then
+		# Don't pointlessly auto-export the global symbols
+		# from a potentially static libiconv.a
+		ICONV_LIBS="$ICONV_LIBS -Wl,--exclude-libs=libiconv.a"
+	fi
 	have_iconv=yes
 else
 	CFLAGS="$save_CFLAGS"
