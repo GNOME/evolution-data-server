@@ -1,3 +1,25 @@
+2008-06-10  Suman Manjunath  <msuman@novell.com>
+
+	* Makefile.am: Added exchange-mapi-defs.h
+	* exchange-mapi-connection.c:
+	(exchange_mapi_util_read_body_stream),
+	(exchange_mapi_util_get_recipients),
+	(exchange_mapi_util_modify_recipients),
+	(exchange_mapi_create_item), (exchange_mapi_modify_item): Use new 
+	enumerations from exchange-mapi-defs.h 
+	* exchange-mapi-connection.h: Remove ExchangeMAPIRecipientType, use
+	OlMailRecipientType instead. 
+	* exchange-mapi-defs.h: [new file] Added missing definitions in libmapi.
+	* exchange-mapi-utils.c: (exchange_mapi_util_bin_append_uint16),
+	(exchange_mapi_util_bin_append_uint32),
+	(exchange_mapi_util_bin_append_string),
+	(exchange_mapi_util_bin_append_unicode),
+	(exchange_mapi_util_bin_append_val),
+	(exchange_mapi_util_entryid_generate_oneoff),
+	(exchange_mapi_util_entryid_generate_local): New util functions to generate 
+	one-off and local entryids. Stolen from the old Exchange connector. 
+	* exchange-mapi-utils.h: Declarations for the new util functions. 
+
 2008-06-03  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c: (exchange_mapi_util_get_recipients),

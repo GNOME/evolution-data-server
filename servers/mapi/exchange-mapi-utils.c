@@ -35,6 +35,7 @@
 #endif
 
 #include "exchange-mapi-utils.h"
+#include <stdint.h>
 
 
 /* Converts a string from Windows-UTF8 to classic-UTF8.
@@ -338,3 +339,151 @@ exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties)
 		}
 	}
 }
+
+
+/* Attention: Devs at work ;-) */
+
+static void 
+exchange_mapi_util_bin_append_uint16 (TALLOC_CTX *mem_ctx, struct SBinary *bin, const uint16_t val)
+{
+	uint8_t *ptr = NULL;
+
+	bin->lpb = talloc_realloc (mem_ctx, bin->lpb, uint8_t, bin->cb + 2);
+	bin->cb += 2;
+
+	ptr = bin->lpb + bin->cb - 2;
+
+	*ptr++ = ( val        & 0xFF);
+	*ptr++ = ((val >>  8) & 0xFF);
+}
+
+static void 
+exchange_mapi_util_bin_append_uint32 (TALLOC_CTX *mem_ctx, struct SBinary *bin, const uint32_t val)
+{
+	uint8_t *ptr = NULL;
+
+	bin->lpb = talloc_realloc (mem_ctx, bin->lpb, uint8_t, bin->cb + 4);
+	bin->cb += 4;
+
+	ptr = bin->lpb + bin->cb - 4;
+
+	*ptr++ = ( val        & 0xFF);
+	*ptr++ = ((val >>  8) & 0xFF);
+	*ptr++ = ((val >> 16) & 0xFF);
+	*ptr++ = ((val >> 24) & 0xFF);
+}
+
+static void 
+exchange_mapi_util_bin_append_string (TALLOC_CTX *mem_ctx, struct SBinary *bin, const char *val)
+{
+	size_t len = strlen (val);
+	char *ptr = NULL;
+
+	bin->lpb = talloc_realloc (mem_ctx, bin->lpb, uint8_t, bin->cb + (len + 1));
+	bin->cb += (len + 1);
+
+	ptr = (char *) bin->lpb + bin->cb - (len + 1);
+
+	strcpy (ptr, val);
+}
+
+static void 
+exchange_mapi_util_bin_append_unicode (TALLOC_CTX *mem_ctx, struct SBinary *bin, const char *val)
+{
+	/* WRITE ME */
+}
+
+static void 
+exchange_mapi_util_bin_append_val (TALLOC_CTX *mem_ctx, struct SBinary *bin, const uint8_t *val, size_t len)
+{
+	uint8_t *ptr = NULL;
+
+	bin->lpb = talloc_realloc (mem_ctx, bin->lpb, uint8_t, bin->cb + len);
+	bin->cb += len;
+
+	ptr = bin->lpb + bin->cb - len;
+
+	memcpy (ptr, val, len);
+}
+
+static const uint8_t MAPI_ONE_OFF_UID[] = {
+	0x81, 0x2b, 0x1f, 0xa4, 0xbe, 0xa3, 0x10, 0x19,
+	0x9d, 0x6e, 0x00, 0xdd, 0x01, 0x0f, 0x54, 0x02
+};
+
+#define MAPI_ONE_OFF_UNICODE	  0x8000
+#define MAPI_ONE_OFF_NO_RICH_INFO 0x0001
+#define MAPI_ONE_OFF_MYSTERY_FLAG 0x1000
+
+/**
+ * e2k_entryid_generate_oneoff:
+ * @display_name: the display name of the user
+ * @email: the email address
+ * @unicode: %TRUE to generate a Unicode ENTRYID (in which case
+ * @display_name should be UTF-8), %FALSE for an ASCII ENTRYID.
+ *
+ * Constructs a "one-off" ENTRYID value that can be used as a MAPI
+ * recipient (eg, for a message forwarding server-side rule),
+ * corresponding to @display_name and @email.
+ *
+ * Return value: the recipient ENTRYID
+ **/
+struct SBinary *
+exchange_mapi_util_entryid_generate_oneoff (TALLOC_CTX *mem_ctx, const char *display_name, const char *email, gboolean unicode)
+{
+	struct SBinary *entryid;
+
+	entryid = talloc_zero (mem_ctx, struct SBinary);
+
+	exchange_mapi_util_bin_append_uint32 (mem_ctx, entryid, 0);
+	exchange_mapi_util_bin_append_val (mem_ctx, entryid, MAPI_ONE_OFF_UID, sizeof(MAPI_ONE_OFF_UID));
+	exchange_mapi_util_bin_append_uint16 (mem_ctx, entryid, 0);
+	exchange_mapi_util_bin_append_uint16 (mem_ctx, entryid,
+		MAPI_ONE_OFF_NO_RICH_INFO |
+		MAPI_ONE_OFF_MYSTERY_FLAG |
+		(unicode ? MAPI_ONE_OFF_UNICODE : 0));
+
+	if (unicode) {
+		exchange_mapi_util_bin_append_unicode (mem_ctx, entryid, display_name);
+		exchange_mapi_util_bin_append_unicode (mem_ctx, entryid, "SMTP");
+		exchange_mapi_util_bin_append_unicode (mem_ctx, entryid, email);
+	} else {
+		exchange_mapi_util_bin_append_string (mem_ctx, entryid, display_name);
+		exchange_mapi_util_bin_append_string (mem_ctx, entryid, "SMTP");
+		exchange_mapi_util_bin_append_string (mem_ctx, entryid, email);
+	}
+
+	return entryid;
+}
+
+static const uint8_t MAPI_LOCAL_UID[] = {
+	0xdc, 0xa7, 0x40, 0xc8, 0xc0, 0x42, 0x10, 0x1a,
+	0xb4, 0xb9, 0x08, 0x00, 0x2b, 0x2f, 0xe1, 0x82
+};
+
+/**
+ * e2k_entryid_generate_local:
+ * @exchange_dn: the Exchange 5.5-style DN of the local user
+ *
+ * Constructs an ENTRYID value that can be used as a MAPI
+ * recipient (eg, for a message forwarding server-side rule),
+ * corresponding to the local user identified by @exchange_dn.
+ *
+ * Return value: the recipient ENTRYID
+ **/
+struct SBinary *
+exchange_mapi_util_entryid_generate_local (TALLOC_CTX *mem_ctx, const char *exchange_dn)
+{
+	struct SBinary *entryid;
+
+	entryid = talloc_zero (mem_ctx, struct SBinary);
+
+	exchange_mapi_util_bin_append_uint32 (mem_ctx, entryid, 0);
+	exchange_mapi_util_bin_append_val (mem_ctx, entryid, MAPI_LOCAL_UID, sizeof(MAPI_LOCAL_UID));
+	exchange_mapi_util_bin_append_uint16 (mem_ctx, entryid, 1);
+	exchange_mapi_util_bin_append_uint16 (mem_ctx, entryid, 0);
+	exchange_mapi_util_bin_append_string (mem_ctx, entryid, exchange_dn);
+
+	return entryid;
+}
+

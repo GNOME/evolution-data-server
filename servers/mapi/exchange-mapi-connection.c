@@ -39,17 +39,22 @@
 static struct mapi_session *global_mapi_session= NULL;
 static GStaticRecMutex connect_lock = G_STATIC_REC_MUTEX_INIT;
 
-#define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock)
-#define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock)
+#define LOCK() 		g_message("%s(%d): %s: lock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_lock(&connect_lock);
+#define UNLOCK() 	g_message("%s(%d): %s: unlock(connect_lock)", __FILE__, __LINE__, __PRETTY_FUNCTION__);g_static_rec_mutex_unlock(&connect_lock);
 
 #define LOGALL() 	lp_set_cmdline(global_mapi_ctx->lp_ctx, "log level", "10"); global_mapi_ctx->dumpdata = TRUE;
 #define LOGNONE() 	lp_set_cmdline(global_mapi_ctx->lp_ctx, "log level", "0"); global_mapi_ctx->dumpdata = FALSE;
 
 #define ENABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = TRUE;
-#define ENABLE_VERBOSE_LOG()    global_mapi_ctx->dumpdata = FALSE;
+#define DISABLE_VERBOSE_LOG() 	global_mapi_ctx->dumpdata = FALSE;
 
+#if 0
 #define LOGALL()
 #define LOGNONE()
+
+#define ENABLE_VERBOSE_LOG()
+#define DISABLE_VERBOSE_LOG()
+#endif
 
 /* Specifies READ/WRITE sizes to be used while handling attachment streams */
 #define ATTACH_MAX_READ_SIZE  0x1000
@@ -293,7 +298,7 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 	editor = (const uint32_t *) find_SPropValue_data(&aRow, PR_MSG_EDITOR_FORMAT);
 	/* if PR_MSG_EDITOR_FORMAT doesn't exist, set it to PLAINTEXT */
 	if (!editor) {
-		dflt = EDITOR_FORMAT_PLAINTEXT;
+		dflt = olEditorText;
 		editor = &dflt;
 	}
 
@@ -303,7 +308,7 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 
 	retval = -1;
 	switch (*editor) {
-		case EDITOR_FORMAT_PLAINTEXT:
+		case olEditorText:
 			if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY)) != NULL)
 				proptag = PR_BODY;
 			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_UNICODE)) != NULL)
@@ -315,7 +320,7 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 				retval = MAPI_E_SUCCESS;
 			} 
 			break;
-		case EDITOR_FORMAT_HTML: 
+		case olEditorHTML: 
 			if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_HTML)) != NULL)
 				proptag = PR_BODY_HTML;
 			else if ((data = (const char *) find_SPropValue_data (&aRow, PR_BODY_HTML_UNICODE)) != NULL)
@@ -329,7 +334,7 @@ exchange_mapi_util_read_body_stream (mapi_object_t *obj_message, GSList **stream
 				retval = MAPI_E_SUCCESS;
 			}
 			break;
-		case EDITOR_FORMAT_RTF: 
+		case olEditorRTF: 
 			rtf_in_sync = (const bool *)find_SPropValue_data (&aRow, PR_RTF_IN_SYNC);
 //			if (!(rtf_in_sync && *rtf_in_sync)) {
 				mapi_object_init(&obj_stream);
@@ -802,11 +807,14 @@ exchange_mapi_util_get_recipients (mapi_object_t *obj_message, GSList **recip_li
 
 			recipient->name = (const char *) exchange_mapi_util_find_row_propval(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_DISPLAY_NAME);
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENTS_FLAGS);
-			recipient->flags = *ui32;
+			if (ui32)
+				recipient->flags = *ui32;
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TYPE);
-			recipient->type = *ui32;
+			if (ui32)
+				recipient->type = *ui32;
 			ui32 = (const uint32_t *) find_SPropValue_data(&rows_recip.aRow[i_row_recip], PR_RECIPIENT_TRACKSTATUS);
-			recipient->trackstatus = *ui32;
+			if (ui32)
+				recipient->trackstatus = *ui32;
 
 			*recip_list = g_slist_append (*recip_list, recipient);
 		}
@@ -889,7 +897,7 @@ set_external_recipient (TALLOC_CTX *mem_ctx, struct SRowSet *SRowSet, ExchangeMA
 }
 
 static void
-exchange_mapi_set_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , GSList *recipients)
+exchange_mapi_util_modify_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , GSList *recipients)
 {
 	enum MAPISTATUS 	retval;
 	struct SRowSet 		*SRowSet = NULL;
@@ -907,10 +915,7 @@ exchange_mapi_set_recipients (TALLOC_CTX *mem_ctx, mapi_object_t *obj_message , 
 		set_external_recipient (mem_ctx, SRowSet, recipient);
 	}
 
-	LOGALL();
 	retval = ModifyRecipients (obj_message, SRowSet);
-	LOGNONE();
-
 	if (retval != MAPI_E_SUCCESS) 
 		mapi_errstr("ModifyRecpients", GetLastError());
 }
@@ -1585,14 +1590,12 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 		}
 	}
 
-	LOGALL();
 	/* set properties for the item */
 	retval = SetProps(&obj_message, props, propslen);
 	if (retval != MAPI_E_SUCCESS) {
 		mapi_errstr("SetProps", GetLastError());
 		goto cleanup;
 	}
-	LOGNONE();
 
 	if (generic_streams) {
 		exchange_mapi_util_set_generic_streams (&obj_message, generic_streams);
@@ -1605,7 +1608,7 @@ exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid,
 
 	/* Set recipients if any */
 	if (recipients) {
-		exchange_mapi_set_recipients (mem_ctx, &obj_message, recipients);
+		exchange_mapi_util_modify_recipients (mem_ctx, &obj_message, recipients);
 	}
 
 	/* Finally, save all changes */
@@ -1728,7 +1731,7 @@ exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid,
 
 	/* Set recipients if any */
 	if (recipients) {
-		//exchange_mapi_util_set_attachments (&obj_message, attachments, TRUE);
+		exchange_mapi_util_modify_recipients (mem_ctx, &obj_message, recipients);
 	}
  
 	/* Finally, save all changes */

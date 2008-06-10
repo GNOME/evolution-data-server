@@ -10,6 +10,7 @@ INCLUDES =						\
 lib_LTLIBRARIES = libexchangemapi-1.0.la
 
 libexchangemapi_1_0_la_SOURCES =			\
+	exchange-mapi-defs.h				\
 	exchange-mapi-folder.c				\
 	exchange-mapi-folder.h				\
 	exchange-mapi-connection.c			\
@@ -24,6 +25,7 @@ libexchangemapi_1_0_la_LIBADD =						\
 libexchangemapiincludedir = $(privincludedir)/mapi
 
 libexchangemapiinclude_HEADERS = 		\
+	exchange-mapi-defs.h			\
 	exchange-mapi-folder.h			\
 	exchange-mapi-connection.h		\
 	exchange-mapi-utils.h

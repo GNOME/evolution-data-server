@@ -21,7 +21,6 @@
 
 
 #include "e-cal-backend-mapi.h"
-#include "e-cal-backend-mapi-constants.h"
 #include "e-cal-backend-mapi-tz-utils.h"
 
 #define d(x) 

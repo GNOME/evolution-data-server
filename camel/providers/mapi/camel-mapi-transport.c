@@ -72,7 +72,7 @@ CamelStore *get_store(void);
 void	set_store(CamelStore *);
 
 static void
-mapi_item_add_recipient (const char *recipients, ExchangeMAPIRecipientType type, GSList **recipient_list);
+mapi_item_add_recipient (const char *recipients, OlMailRecipientType type, GSList **recipient_list);
 static int
 mapi_message_item_send (MapiItem *item, GSList *attachments, GSList *recipients);
 
@@ -250,17 +250,17 @@ mapi_send_to (CamelTransport *transport, CamelMimeMessage *message,
 
 	to = camel_mime_message_get_recipients(message, CAMEL_RECIPIENT_TYPE_TO);
 	for (i = 0; camel_internet_address_get(to, i, &namep, &addressp); i++){
-		mapi_item_add_recipient (addressp, RECIPIENT_TO, &recipient_list);
+		mapi_item_add_recipient (addressp, olTo, &recipient_list);
 	}
 
 	cc = camel_mime_message_get_recipients(message, CAMEL_RECIPIENT_TYPE_CC);
 	for (i = 0; camel_internet_address_get(cc, i, &namep, &addressp); i++) {
-		mapi_item_add_recipient (addressp, RECIPIENT_CC, &recipient_list);
+		mapi_item_add_recipient (addressp, olCC, &recipient_list);
 	}
 
 	bcc = camel_mime_message_get_recipients(message, CAMEL_RECIPIENT_TYPE_BCC);
 	for (i = 0; camel_internet_address_get(bcc, i, &namep, &addressp); i++) {
-		mapi_item_add_recipient (addressp, RECIPIENT_BCC, &recipient_list);
+		mapi_item_add_recipient (addressp, olBCC, &recipient_list);
 	}
 	
 	if (camel_mime_message_get_subject(message)) {
@@ -388,7 +388,7 @@ mail_build_props (struct SPropValue **value, struct SPropTagArray *SPropTagArray
 }
 
 static void
-mapi_item_add_recipient (const char *recipients, ExchangeMAPIRecipientType type, GSList **recipient_list)
+mapi_item_add_recipient (const char *recipients, OlMailRecipientType type, GSList **recipient_list)
 {
 	if (!recipients)
 		return ;

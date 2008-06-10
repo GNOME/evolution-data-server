@@ -33,19 +33,11 @@
 #include <fcntl.h>
 
 #include "e-cal-backend-mapi.h"
-#include "e-cal-backend-mapi-constants.h"
 #include "e-cal-backend-mapi-utils.h"
 #include "e-cal-backend-mapi-tz-utils.h"
 #if 0
 #include "e-cal-backend-mapi-recur-utils.h"
 #endif
-/*
- * Priority
- */
-
-#define	PRIORITY_LOW 	-1
-#define	PRIORITY_NORMAL 0
-#define	PRIORITY_HIGH 	1
 
 static void appt_build_name_id (struct mapi_nameid *nameid);
 static void task_build_name_id (struct mapi_nameid *nameid);
@@ -185,14 +177,14 @@ set_attachments_to_cal_component (ECalBackendMAPI *cbmapi, ECalComponent *comp, 
 #define MEET_ATTENDEE  	PARTICIPANT << 0x8
 
 static icalparameter_role
-get_role_from_type (ExchangeMAPIRecipientType type)
+get_role_from_type (OlMailRecipientType type)
 {
 	switch (type) {
-		case RECIPIENT_ORIG : 
-		case RECIPIENT_TO   : 
-		case RECIPIENT_BCC  : return ICAL_ROLE_REQPARTICIPANT;
-		case RECIPIENT_CC   : return ICAL_ROLE_OPTPARTICIPANT;
-		default 	    : return ICAL_ROLE_REQPARTICIPANT;
+		case olOriginator : 
+		case olTo   : 
+		case olBCC  : return ICAL_ROLE_REQPARTICIPANT;
+		case olCC   : return ICAL_ROLE_OPTPARTICIPANT;
+		default     : return ICAL_ROLE_REQPARTICIPANT;
 	}
 }
 
@@ -843,7 +835,7 @@ mapi_cal_build_props (struct SPropValue **value, struct SPropTagArray *proptag_a
 	text = NULL;
 
 	/* we don't support HTML event/task/memo editor */
-	flag32 = EDITOR_FORMAT_PLAINTEXT;
+	flag32 = olEditorText;
 	set_SPropValue_proptag(&props[i++], PR_MSG_EDITOR_FORMAT, &flag32); 			/* prop count: 5 */
 
 	/* it'd be better to convert, then set it in unicode */

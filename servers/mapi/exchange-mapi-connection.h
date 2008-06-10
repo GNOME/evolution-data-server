@@ -24,13 +24,7 @@
 #define EXCHANGE_MAPI_CONNECTION_H 
 
 #include <libmapi/libmapi.h>
-
-typedef enum {
-	RECIPIENT_ORIG = 0x0,
-	RECIPIENT_TO   = 0x1,
-	RECIPIENT_CC   = 0x2,
-	RECIPIENT_BCC  = 0x3
-} ExchangeMAPIRecipientType;
+#include "exchange-mapi-defs.h"
 
 typedef enum _ExchangeMapiOptions {
 	MAPI_OPTIONS_FETCH_ATTACHMENTS = 1<<0,
@@ -67,8 +61,8 @@ typedef struct {
 	const char *email_type;
 	const char *name;
 	uint32_t trackstatus;
-	guint32 flags;
-	ExchangeMAPIRecipientType type;
+	uint32_t flags;
+	OlMailRecipientType type;
 } ExchangeMAPIRecipient;
 
 struct id_list {

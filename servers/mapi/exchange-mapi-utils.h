@@ -61,4 +61,9 @@ exchange_mapi_util_ex_to_smtp (const gchar *ex_address);
 void
 exchange_mapi_debug_property_dump (struct mapi_SPropValue_array *properties);
 
+struct SBinary *
+exchange_mapi_util_entryid_generate_oneoff (TALLOC_CTX *mem_ctx, const char *display_name, const char *email, gboolean unicode);
+struct SBinary *
+exchange_mapi_util_entryid_generate_local (TALLOC_CTX *mem_ctx, const char *exchange_dn);
+
 #endif
