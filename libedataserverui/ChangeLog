@@ -1,3 +1,10 @@
+2008-06-11  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #534946
+
+	* e-passwords.c: (ep_get_password_keyring), (ep_ask_password),
+	(e_passwords_shutdown):
+
 2008-06-03  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-source-option-menu.c:
