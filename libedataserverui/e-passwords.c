@@ -106,6 +106,10 @@ static EDList request_list = E_DLIST_INITIALISER (request_list);
 static gint idle_id;
 static gint ep_online_state = TRUE;
 
+#ifdef WITH_GNOME_KEYRING
+static char *default_keyring = NULL;
+#endif
+
 #define KEY_FILE_GROUP_PREFIX "Passwords-"
 static GKeyFile *key_file = NULL;
 
@@ -837,6 +841,13 @@ ep_get_password_keyring (EPassMsg *msg)
 		while (iter != NULL) {
 			GnomeKeyringFound *found = iter->data;
 
+			if (default_keyring && strcmp(default_keyring, found->keyring) != 0) {
+				g_message ("Received a password from keyring '%s'. But looking for the password from '%s' keyring\n", found->keyring, default_keyring);
+				iter = g_list_next (iter);
+				continue;			
+			}
+				
+
 			if (ep_keyring_validate (uri->user, uri->host, uri->protocol, found->attributes)) {
 				msg->password = g_strdup (found->secret);
 				break;
@@ -1205,6 +1216,10 @@ e_passwords_init (void)
 		key_file = g_key_file_new ();
 		ep_key_file_load ();
 	}
+#ifdef WITH_GNOME_KEYRING
+	if (gnome_keyring_is_available ())
+		gnome_keyring_get_default_keyring_sync (&default_keyring); 
+#endif
 
 	UNLOCK ();
 }
@@ -1243,6 +1258,9 @@ e_passwords_shutdown (void)
 		g_hash_table_destroy (password_cache);
 		password_cache = NULL;
 	}
+#ifdef WITH_GNOME_KEYRING
+	g_free (default_keyring);
+#endif	
 }
 
 /**
