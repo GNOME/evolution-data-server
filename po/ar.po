@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-22 23:34+0100\n"
+"POT-Creation-Date: 2008-06-11 22:25+0100\n"
 "PO-Revision-Date: 2008-02-27 11:57+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -34,13 +34,13 @@ msgstr "يجري التّحميل..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4220
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4219
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "يجري البحث..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4384
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4383
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "يجري تحميل المراسَلين (%d)..."
@@ -76,11 +76,11 @@ msgstr "يجري حذف مراسَل من خادوم LDAP..."
 msgid "Modifying contact from LDAP server..."
 msgstr "يجري تعديل مراسَل في خادوم LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4087
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4086
 msgid "Receiving LDAP search results..."
 msgstr "يجري استقبال نتائج بحث LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4241
 msgid "Error performing search"
 msgstr "خطأ في تنفيذ البحث"
 
@@ -364,7 +364,7 @@ msgstr "عنوان المدوّنة"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:439
+#: ../libedataserverui/e-categories-dialog.c:426
 msgid "Categories"
 msgstr "الفئات"
 
@@ -967,7 +967,7 @@ msgstr "%.1f-%.1fسم ثلوج\n"
 msgid "%.1f-%.1fin snow\n"
 msgstr "%.1f-%.1fبوصة ثلوج\n"
 
-#: ../calendar/libecal/e-cal-component.c:1316
+#: ../calendar/libecal/e-cal-component.c:1323
 msgid "Untitled appointment"
 msgstr "موعد غير معنون"
 
@@ -1196,8 +1196,7 @@ msgstr "حدث استثناء CORBA"
 
 #: ../calendar/libecal/e-cal.c:5041
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
-#: ../camel/providers/imap/camel-imap-command.c:312
-#: ../camel/providers/imap/camel-imap-command.c:412
+#: ../camel/providers/imap/camel-imap-command.c:420
 #: ../camel/providers/imap/camel-imap-store.c:763
 #: ../camel/providers/imap4/camel-imap4-store.c:315
 #: ../camel/providers/pop3/camel-pop3-store.c:553
@@ -2639,7 +2638,7 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "لا يمكن نسخ الرسائل لمجلد النفاية"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2486
+#: ../camel/providers/imap/camel-imap-folder.c:2499
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2649,7 +2648,7 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2486
+#: ../camel/providers/imap/camel-imap-folder.c:2499
 #: ../camel/providers/local/camel-maildir-folder.c:251
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
@@ -2710,8 +2709,8 @@ msgstr "مجلّد المهملات ممتليء، رجاء فرّغه."
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2858
-#: ../camel/providers/imap/camel-imap-folder.c:2932
+#: ../camel/providers/imap/camel-imap-folder.c:2871
+#: ../camel/providers/imap/camel-imap-folder.c:2945
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "يجري إحضار معلومات التّلخيص للرّسائل الجديدة في %s"
@@ -2940,12 +2939,12 @@ msgstr "سيتّصل·هذا الخيار بخادوم Hula  باستخدام ك
 
 #: ../camel/providers/imap/camel-imap-command.c:224
 #: ../camel/providers/imap/camel-imap-command.c:266
-#: ../camel/providers/imap/camel-imap-command.c:472
+#: ../camel/providers/imap/camel-imap-command.c:480
 #: ../camel/providers/imap/camel-imap-store.c:3066
 msgid "Operation cancelled"
 msgstr "أُلغيت العملية"
 
-#: ../camel/providers/imap/camel-imap-command.c:311
+#: ../camel/providers/imap/camel-imap-command.c:319
 #: ../camel/providers/imap/camel-imap-store.c:3069
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
@@ -2953,7 +2952,7 @@ msgstr "قطع الخادوم الإتّصال بشكلٍ غير متوقّع: %
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:332
+#: ../camel/providers/imap/camel-imap-command.c:340
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -2962,26 +2961,26 @@ msgstr ""
 "تنبيه من خادوم IMAP %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:401
+#: ../camel/providers/imap/camel-imap-command.c:409
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "إستجابة غير متوقّعة من خادوم IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:411
+#: ../camel/providers/imap/camel-imap-command.c:419
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "فشل أمر IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:486
+#: ../camel/providers/imap/camel-imap-command.c:494
 msgid "Server response ended too soon."
 msgstr "إستجابة الخادوم انتهت مبكّراً."
 
-#: ../camel/providers/imap/camel-imap-command.c:693
+#: ../camel/providers/imap/camel-imap-command.c:701
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "إستجابة خادوم IMAP لم تحتوي معلومات %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:729
+#: ../camel/providers/imap/camel-imap-command.c:737
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "استجابة OK غير متوقّعة من خادوم IMAP: %s"
@@ -3005,34 +3004,34 @@ msgstr "تم تدمير المجلّد و إعادة إنشاءه على الخ�
 msgid "Scanning for changed messages in %s"
 msgstr "يجري المسح بحثا عن الرسائل المتغيّرة في %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2446
+#: ../camel/providers/imap/camel-imap-folder.c:2459
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "تعذّر جلب الرّسالة: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2525
-#: ../camel/providers/imap/camel-imap-folder.c:3226
+#: ../camel/providers/imap/camel-imap-folder.c:2538
+#: ../camel/providers/imap/camel-imap-folder.c:3239
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "هذه الرّسالة غير متوفّرة حاليّاً"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3061
+#: ../camel/providers/imap/camel-imap-folder.c:3074
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "استجابة ناقِصة من الخادوم: لم تزوّد معلومات حول الرسالة %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3069
+#: ../camel/providers/imap/camel-imap-folder.c:3082
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "استجابة ناقِصة من الخادوم: لم يزوّد UID للرسالة %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3082
+#: ../camel/providers/imap/camel-imap-folder.c:3095
 #, c-format
 msgid ""
 "Unexpected server response: Identical UIDs provided for messages %d and %d"
 msgstr "استجابة غير متوقّعة من الخادوم: زُوّدت UID متطابقة للرسائل %d و %d "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3264
+#: ../camel/providers/imap/camel-imap-folder.c:3277
 msgid "Could not find message body in FETCH response."
 msgstr "تعذّر إيجاد متن الرّسالة في استجابة FETCH."
 
@@ -3164,8 +3163,8 @@ msgstr "تعذّر الاتّصال باستخدام الأمر \"%s\": %s"
 #: ../camel/providers/local/camel-maildir-folder.c:77
 #: ../camel/providers/local/camel-maildir-store.c:218
 #: ../camel/providers/local/camel-maildir-store.c:290
-#: ../camel/providers/local/camel-maildir-store.c:514
-#: ../camel/providers/local/camel-maildir-store.c:527
+#: ../camel/providers/local/camel-maildir-store.c:515
+#: ../camel/providers/local/camel-maildir-store.c:528
 #: ../camel/providers/local/camel-spool-store.c:464
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
@@ -4921,18 +4920,18 @@ msgstr "النّفاذ إلى خادوم LDAP كشخص مجهول"
 msgid "Failed to authenticate.\n"
 msgstr "فشل التّوثيق.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:274
+#: ../libedataserverui/e-categories-dialog.c:261
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "الفئة '%s' مو جودة بالفعل في الإعدادات. من فضلك استعمل اسماَ آخر"
 
-#: ../libedataserverui/e-categories-dialog.c:475
+#: ../libedataserverui/e-categories-dialog.c:462
 msgid "Icon"
 msgstr "أيقونة"
 
-#: ../libedataserverui/e-categories-dialog.c:480
+#: ../libedataserverui/e-categories-dialog.c:467
 msgid "Category"
 msgstr "فئة"
 
@@ -4968,19 +4967,19 @@ msgstr "_حرّر"
 msgid "categories"
 msgstr "فئات"
 
-#: ../libedataserverui/e-name-selector-dialog.c:275
+#: ../libedataserverui/e-name-selector-dialog.c:266
 msgid "Select Contacts from Address Book"
 msgstr "انتقي مراسَلين من دفتر العناوين"
 
-#: ../libedataserverui/e-name-selector-dialog.c:555
+#: ../libedataserverui/e-name-selector-dialog.c:546
 msgid "_Add"
 msgstr "أ_ضف"
 
-#: ../libedataserverui/e-name-selector-dialog.c:580
+#: ../libedataserverui/e-name-selector-dialog.c:571
 msgid "_Remove"
 msgstr "أ_زل"
 
-#: ../libedataserverui/e-name-selector-dialog.c:753
+#: ../libedataserverui/e-name-selector-dialog.c:744
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "أى فئة"
@@ -5023,76 +5022,76 @@ msgid "_Search:"
 msgstr "ا_بحث:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2249
+#: ../libedataserverui/e-name-selector-entry.c:2241
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "مدّ_د %s في السياق"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2264
+#: ../libedataserverui/e-name-selector-entry.c:2256
 #, c-format
 msgid "Cop_y %s"
 msgstr "_نسخ %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2274
+#: ../libedataserverui/e-name-selector-entry.c:2266
 #, c-format
 msgid "C_ut %s"
 msgstr "ق_صّ %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2291
+#: ../libedataserverui/e-name-selector-entry.c:2283
 #, c-format
 msgid "_Edit %s"
 msgstr "_حرّر %s"
 
-#: ../libedataserverui/e-name-selector-list.c:479
+#: ../libedataserverui/e-name-selector-list.c:466
 #, c-format
 msgid "_Delete %s"
 msgstr "ا_حذف %s"
 
-#: ../libedataserverui/e-passwords.c:214
+#: ../libedataserverui/e-passwords.c:218
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
 msgstr ""
 
-#: ../libedataserverui/e-passwords.c:1044
+#: ../libedataserverui/e-passwords.c:1055
 msgid "You have the Caps Lock key on."
 msgstr ""
 
-#: ../libedataserverui/e-passwords.c:1164
+#: ../libedataserverui/e-passwords.c:1175
 msgid "_Remember this passphrase"
 msgstr "_تذكّر كلمة السر هذه"
 
-#: ../libedataserverui/e-passwords.c:1165
+#: ../libedataserverui/e-passwords.c:1176
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_تذكُّر كلمة السّر هذه لبقيّة الجلسة"
 
-#: ../libedataserverui/e-passwords.c:1170
+#: ../libedataserverui/e-passwords.c:1181
 msgid "_Remember this password"
 msgstr "_تذكّر كلمة السر هذه"
 
-#: ../libedataserverui/e-passwords.c:1171
+#: ../libedataserverui/e-passwords.c:1182
 msgid "_Remember this password for the remainder of this session"
 msgstr "_تذكُّر كلمة السّر هذه لبقيّة الجلسة"
 
 #. prepare the dialog
-#: ../libedataserverui/e-source-selector-dialog.c:101
+#: ../libedataserverui/e-source-selector-dialog.c:95
 msgid "Select destination"
 msgstr "اختر الهدف"
 
-#: ../libedataserverui/e-source-selector-dialog.c:154
+#: ../libedataserverui/e-source-selector-dialog.c:148
 msgid "_Destination"
 msgstr "الم_قصد:"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1660
-#: ../servers/exchange/storage/exchange-account.c:971
+#: ../servers/exchange/storage/exchange-account.c:970
 #, c-format
 msgid "Enter password for %s"
 msgstr "ادخل كلمة السر لـ %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1661
-#: ../servers/exchange/storage/exchange-account.c:976
+#: ../servers/exchange/storage/exchange-account.c:975
 msgid "Enter password"
 msgstr "أدخل كلمة السر"
 
@@ -5196,26 +5195,26 @@ msgstr "هذه العملية لا يمكن اجراؤها في نمط غير م
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:662
+#: ../servers/exchange/storage/exchange-account.c:661
 #, c-format
 msgid "%s's Folders"
 msgstr "مجلّدات %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1276
 msgid "Personal Folders"
 msgstr "المجلدات الشخصية"
 
-#: ../servers/exchange/storage/exchange-account.c:1292
+#: ../servers/exchange/storage/exchange-account.c:1291
 msgid "Favorite Public Folders"
 msgstr "المجلّدات العامة المفضّلة"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1309
+#: ../servers/exchange/storage/exchange-account.c:1308
 msgid "All Public Folders"
 msgstr "كل المجلّدات العامة"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1323
+#: ../servers/exchange/storage/exchange-account.c:1322
 msgid "Global Address List"
 msgstr "قائمة العناوين العامة"
 
