@@ -26,10 +26,16 @@
 #include <config.h>
 #endif
 
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <netinet/in.h>
+#include <sys/socket.h>
+#endif
+
 #include <glib.h>
 #include <glib-object.h>
 
