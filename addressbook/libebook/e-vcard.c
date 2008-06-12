@@ -906,13 +906,17 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			gchar *pos1 = attr_str->str;
 			gchar *pos2 = pos1;
 			pos2 = g_utf8_offset_to_pointer (pos2, 75);
+			len -= 75;
 
-			do {
+			while (1) {
 				g_string_append_len (fold_str, pos1, pos2 - pos1);
 				g_string_append (fold_str, CRLF " ");
 				pos1 = pos2;
+				if (len <= 74)
+					break;
 				pos2 = g_utf8_offset_to_pointer (pos2, 74);
-			} while (pos2 < attr_str->str + attr_str->len);
+				len -= 74;
+			}
 			g_string_append (fold_str, pos1);
 			g_string_free (attr_str, TRUE);
 			attr_str = fold_str;
