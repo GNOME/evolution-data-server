@@ -52,6 +52,7 @@ libegroupwise_1_2_la_SOURCES =			\
 	build-timestamp.h
 
 libegroupwise_1_2_la_LIBADD =						\
+	../../libedataserver/libedataserver-1.2.la			\
 	$(E_DATA_SERVER_LIBS)						\
 	$(SOUP_LIBS)
 
