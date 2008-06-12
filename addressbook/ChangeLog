@@ -1,3 +1,12 @@
+2008-06-12  Paul Smith  <psmith@gnu.org>
+
+	** Fix for bug #534111
+	Copying past the end of the buffer can cause core dumps.
+
+	* libebook/e-vcard.c (e_vcard_to_string_vcard_30): Loop on the # of
+	chars rather than the length of string, and break out before copying
+	past the end of the string.
+
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes part of #350143 (bnc)
