@@ -173,7 +173,7 @@ save_file_when_idle (gpointer user_data)
 	}
 
 	buf = icalcomponent_as_ical_string (priv->icalcomp);
-	g_output_stream_write (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (char), NULL, &e);
+	g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (char), NULL, NULL, &e);
 	g_free (buf);
 
 	if (e) {

@@ -1,3 +1,10 @@
+2008-06-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #534080
+
+	* camel-stream-vfs.c: (stream_write):
+	Use g_output_stream_write_all instead of g_output_stream_write.
+
 2008-06-13  Tor Lillqvist  <tml@novell.com>
 
 	* camel-msgport.c: Make it compile on Win32.

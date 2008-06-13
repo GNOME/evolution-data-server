@@ -1,3 +1,10 @@
+2008-06-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #534080
+
+	* backends/file/e-cal-backend-file.c: (save_file_when_idle):
+	Use g_output_stream_write_all instead of g_output_stream_write.
+
 2008-06-13  Tor Lillqvist  <tml@novell.com>
 
 	* backends/google/Makefile.am (libecalbackendgoogle_la_LIBADD)

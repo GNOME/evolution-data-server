@@ -217,7 +217,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream_vfs->stream), 0);
 
-	nwritten = g_output_stream_write (G_OUTPUT_STREAM (stream_vfs->stream), buffer, n, NULL, &error);
+	nwritten = g_output_stream_write_all (G_OUTPUT_STREAM (stream_vfs->stream), buffer, n, NULL, NULL, &error);
 
 	if (error) {
 		g_warning ("%s", error->message);
