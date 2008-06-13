@@ -1,3 +1,7 @@
+2008-06-13  Tor Lillqvist  <tml@novell.com>
+
+	* camel-msgport.c: Make it compile on Win32.
+
 2008-06-06  Tor Lillqvist  <tml@novell.com>
 
 	* camel-private.h
