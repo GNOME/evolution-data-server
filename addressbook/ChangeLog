@@ -1,3 +1,14 @@
+2008-06-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #304029
+
+	* libedata-book/e-book-backend-sexp.c:
+	(func_contains): added helper functions for contains tester,
+	(endswith_helper): improved, it will work with more occurrences
+	* backends/ldap/e-book-backend-ldap.c:
+	(func_contains): added helper function 'extend_query_value' for
+	changing first space between words on stars '*'
+
 2008-06-13  Tor Lillqvist  <tml@novell.com>
 
 	* backends/ldap/Makefile.am (libebookbackendldap_la_LIBADD): Link

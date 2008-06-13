@@ -377,12 +377,168 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 	return r;
 }
 
+static void
+contains_helper_free_word (gpointer data, gpointer user_data)
+{
+	if (data){
+		g_string_free ((GString *)data, TRUE);
+	}
+}
+
+static char *
+try_contains_word (const gchar *s1, GSList *word)
+{
+	const gchar *o, *p;
+	gunichar unival, first_w_char;
+	GString *w;
+
+	if (s1 == NULL) return NULL;
+	if (word == NULL) return (char*)s1; /* previous was last word */
+	if (word->data == NULL) return NULL; /* illegal structure */
+
+	w = word->data;
+	first_w_char = g_utf8_get_char (w->str);
+
+	o  = s1;
+	for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
+		if (unival == first_w_char) {
+			gunichar unival2;
+			const gchar *q = p;
+			const gchar *r = e_util_unicode_get_utf8 (w->str, &unival2);
+			while (q && r && unival && unival2) {
+				q = e_util_unicode_get_utf8 (q, &unival);
+				if (!q) break;
+				r = e_util_unicode_get_utf8 (r, &unival2);
+				if (!r) break;
+				if (unival != unival2) break;
+			}
+			if (!unival2 && r && q) {
+				/* we read whole word and no illegal character has been found */
+				if (word->next == NULL ||
+				    try_contains_word ( e_util_unicode_get_utf8 (o, &unival), word->next)){
+					return (char*)o;
+				}
+			}
+		}
+		o = p;
+	}
+
+	return NULL;
+}
+
+/* converts str into utf8 GString in lowercase;
+   returns NULL if str is invalid utf8 string otherwise
+   returns newly allocated GString
+*/
+static GString *
+chars_to_unistring_lowercase (const char *str)
+{
+	GString *res;
+	gunichar unich;
+	gchar *p;
+
+	if (str == NULL) return NULL;
+
+	res = g_string_new ("");
+
+	for (p = e_util_unicode_get_utf8 (str,&unich); p && unich; p = e_util_unicode_get_utf8 (p,&unich)){
+		g_string_append_unichar (res, g_unichar_tolower (unich));
+	}
+
+	/* it was invalid unichar string */
+	if (p == NULL){
+		g_string_free (res, TRUE);
+		return NULL;
+	}
+
+	return res;
+}
+
+/* first space between words is treated as wildcard character;
+   we are looking for s2 in s1, so s2 will be breaked into words
+*/
+static char *
+contains_helper (const char *s1, const char *s2)
+{
+	GString *s1uni;
+	GString *s2uni;
+	GSList *words;
+	char *next;
+	gboolean have_nonspace;
+	gboolean have_space;
+	GString *last_word, *w;
+	char *res = NULL;
+	gunichar unich;
+
+	s1uni = chars_to_unistring_lowercase (s1);
+	if (s1 == NULL) return NULL;
+
+	s2uni = chars_to_unistring_lowercase (s2);
+	if (s2 == NULL){
+		g_string_free (s1uni, TRUE);
+		return NULL;
+	}
+
+	if (g_utf8_strlen (s1uni->str, -1) == 0 ||
+	    g_utf8_strlen (s2uni->str, -1) == 0){
+		g_string_free (s1uni, TRUE);
+		g_string_free (s2uni, TRUE);
+		return NULL;
+	}
+
+	/* breaking s2 into words */
+        words = NULL;
+	have_nonspace = FALSE;
+	have_space = FALSE;
+	last_word = NULL;
+	w = g_string_new ("");
+	for (next = e_util_unicode_get_utf8 (s2uni->str, &unich); next && unich; next = e_util_unicode_get_utf8 (next, &unich) ){
+		if (unich == ' '){
+			if (have_nonspace && !have_space){
+				/* treat only first space after nonspace character as wildcard,
+				   so we will start new word here
+				*/
+				have_space = TRUE;
+				words = g_slist_append (words, w);
+				last_word = w;
+				w = g_string_new ("");
+			}else{
+				g_string_append_unichar (w, unich);
+			}
+		}else{
+			have_nonspace = TRUE;
+			have_space = FALSE;
+			g_string_append_unichar (w, unich);
+		}
+	}
+
+	if (have_space){
+		/* there was one or more spaces at the end of string,
+		   concat actual word with that last one
+		*/
+		g_string_append_len (last_word, w->str, w->len);
+		g_string_free (w, TRUE);
+	}else{
+		/* append actual word into words list */
+		words = g_slist_append (words, w);
+	}
+
+	res = try_contains_word (s1uni->str, words);
+
+	g_string_free (s1uni, TRUE);
+	g_string_free (s2uni, TRUE);
+	g_slist_foreach (words, contains_helper_free_word, NULL);
+	g_slist_free (words);
+
+	return res;
+}
+
 static ESExpResult *
 func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	SearchContext *ctx = data;
 
-	return entry_compare (ctx, f, argc, argv, (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
+	return entry_compare (ctx, f, argc, argv, contains_helper);
 }
 
 static char *
@@ -405,12 +561,13 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static char *
 endswith_helper (const char *s1, const char *s2)
 {
-	char *p;
-	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
-	    && (strlen(p) == strlen(s2)))
-		return p;
-	else
+	glong s1len = g_utf8_strlen (s1, -1);
+	glong s2len = g_utf8_strlen (s2, -1);
+
+	if (s1len < s2len)
 		return NULL;
+
+	return (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 }
 
 static ESExpResult *
