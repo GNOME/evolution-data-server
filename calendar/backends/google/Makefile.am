@@ -30,6 +30,7 @@ libecalbackendgoogle_la_LIBADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(top_builddir)/libebackend/libebackend-1.2.la				\
 	$(top_builddir)/servers/google/libgdata/libgdata-1.2.la			\
 	$(top_builddir)/servers/google/libgdata-google/libgdata-google-1.2.la	\
 	$(EVOLUTION_CALENDAR_LIBS)						\
