@@ -37,6 +37,7 @@ static gboolean     gdata_google_service_delete_entry (GDataService *service, GD
 static GDataFeed  * gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GError **error);
 static GDataEntry * gdata_google_service_update_entry (GDataService *service, GDataEntry *entry, GError **error);
 static void         gdata_google_service_set_credentials (GDataService *service, const gchar *username, const gchar *password);
+static void         gdata_google_service_set_proxy (GDataService *service, SoupURI *proxy);
 
 typedef struct _GDataGoogleServiceAuth GDataGoogleServiceAuth;
 struct _GDataGoogleServiceAuth {
@@ -75,7 +76,20 @@ gdata_google_error_quark (void)
 	return error ? error : (error = g_quark_from_static_string ("gdata_google_error_quark"));
 }
 
-void
+static void
+gdata_google_service_set_proxy (GDataService *service, SoupURI *proxy)
+{
+	GDataGoogleServicePrivate *priv;
+
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (GDATA_IS_GOOGLE_SERVICE(service));
+
+	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(GDATA_GOOGLE_SERVICE(service));
+	if (proxy && priv && priv->soup_session)
+		g_object_set (priv->soup_session, SOUP_SESSION_PROXY_URI, proxy, NULL);
+}
+
+static void
 gdata_google_service_set_credentials (GDataService *service, const gchar *username, const gchar *password)
 {
 	GDataGoogleServicePrivate *priv;
@@ -180,7 +194,7 @@ gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
  *
  **/
 
-GDataFeed *
+static GDataFeed *
 gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GError **error)
 {
 	GDataFeed *feed = NULL;
@@ -240,7 +254,7 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GEr
  * returns the newly inserted entry
  *
  **/
-GDataEntry *
+static GDataEntry *
 gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url, GDataEntry *entry, GError **error)
 {
 	GDataGoogleServicePrivate *priv;
@@ -309,7 +323,7 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
  * Removes the entry
  *
  **/
-gboolean
+static gboolean
 gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GError **error)
 {
 	GDataGoogleServiceAuth *auth;
@@ -448,6 +462,7 @@ static void gdata_google_service_iface_init(gpointer  g_iface, gpointer iface_da
 {
 	GDataServiceIface *iface = (GDataServiceIface *)g_iface;
 
+	iface->set_proxy = gdata_google_service_set_proxy;
 	iface->set_credentials = gdata_google_service_set_credentials;
 	iface->get_feed = gdata_google_service_get_feed;
 	iface->insert_entry = gdata_google_service_insert_entry;

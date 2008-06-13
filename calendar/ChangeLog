@@ -1,3 +1,9 @@
+2008-06-13  Wang Xin  <jedy.wang@sun.com>
+
+	** Fixes #527544.
+
+	* backends/google/e-cal-backend-google.c: Added proxy support.
+
 2008-05-29  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes #388579 (bnc)

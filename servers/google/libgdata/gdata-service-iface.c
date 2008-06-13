@@ -26,6 +26,12 @@
 #include <gdata-service-iface.h>
 
 void
+gdata_service_set_proxy (GDataService *self, SoupURI *proxy)
+{
+	GDATA_SERVICE_GET_IFACE(self)->set_proxy(self, proxy);
+}
+
+void
 gdata_service_set_credentials (GDataService *self, const char *username, const gchar *password)
 {
 	GDATA_SERVICE_GET_IFACE(self)->set_credentials(self, username, password);

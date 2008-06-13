@@ -1,3 +1,10 @@
+2008-06-13  Wang Xin  <jedy.wang@sun.com>
+
+	** Fix for bug #527544.
+
+	* gdata-service-iface.c:
+	* gdata-service-iface.h: Added new interface set_proxy.
+
 2008-04-16  Ebby Wiselyn    <ebbyw@gnome.org>
 	** Fix for bug #523630
 

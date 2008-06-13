@@ -39,6 +39,7 @@
 
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-proxy.h>
 
 
 #include <libedata-cal/e-cal-backend-util.h>
@@ -82,6 +83,7 @@ struct _ECalBackendGooglePrivate {
 	gboolean read_only;
 	gboolean mode_changed;
 
+	EProxy *proxy;
 };
 
 gint compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id);
@@ -1292,6 +1294,11 @@ e_cal_backend_google_finalize (GObject *object)
 		priv->timeout_id = 0;
 	}
 
+	if (priv->proxy) {
+		g_object_unref (priv->proxy);
+		priv->proxy = NULL;
+	}
+
 	g_free (priv);
 	cbgo->priv = NULL;
 
@@ -1300,6 +1307,22 @@ e_cal_backend_google_finalize (GObject *object)
 	}
 }
 
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+
+	ECalBackendGooglePrivate *priv = (ECalBackendGooglePrivate *)user_data;
+	if (!priv || !priv->uri)
+		return;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
+		proxy_uri = e_proxy_peek_uri (proxy);
+	}
+	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
+}
+ 
 /* Object initialisation function for google backend */
 static void
 e_cal_backend_google_init (ECalBackendGoogle *cbgo, ECalBackendGoogleClass *class)
@@ -1315,6 +1338,10 @@ e_cal_backend_google_init (ECalBackendGoogle *cbgo, ECalBackendGoogleClass *clas
 	priv->service = NULL;
 	priv->timeout_id = 0;
 	cbgo->priv = priv;
+
+	priv->proxy = e_proxy_new ();
+	e_proxy_setup_proxy (priv->proxy);
+	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
 
 	/* FIXME set a lock */
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbgo), TRUE);
@@ -1479,6 +1506,13 @@ e_cal_backend_google_set_uri (ECalBackendGoogle *cbgo, gchar *uri)
 
 	priv = cbgo->priv;
 	priv->uri = uri;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (priv->proxy, priv->uri)) {
+		SoupURI *proxy_uri = e_proxy_peek_uri (priv->proxy);
+
+		gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
+	}
 }
 
 /**

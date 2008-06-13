@@ -27,6 +27,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libsoup/soup.h>
 
 #include "gdata-feed.h"
 #include "gdata-entry.h"
@@ -48,6 +49,7 @@ struct _GDataServiceIface {
   GTypeInterface parent;
 
   /* Public Methods */
+  void         (*set_proxy) (GDataService *self, SoupURI *proxy);
   void         (*set_credentials)(GDataService *self, const gchar *username, const gchar *password);
   GDataFeed *  (*get_feed)    (GDataService *self, const gchar *feed_getURL, GError **error);
   GDataEntry*  (*insert_entry)(GDataService *self, const gchar *feed_postURL, GDataEntry *entry, GError **error);
@@ -60,6 +62,7 @@ struct _GDataServiceIface {
 GType gdata_service_get_type(void);
 
 /* Function Prototypes */
+void        gdata_service_set_proxy (GDataService *self, SoupURI *proxy);
 void        gdata_service_set_credentials(GDataService *self, const gchar *username, const gchar *password);
 
 GDataFeed*  gdata_service_get_feed(GDataService *self, const gchar *feed_getURL, GError **error);
