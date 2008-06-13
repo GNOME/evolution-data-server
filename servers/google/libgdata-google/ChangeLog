@@ -1,3 +1,16 @@
+2008-06-13  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #521921 (Patch by Sebastian Keller)
+
+	* gdata-google-service.c: (send_and_handle_google_redirection),
+	(gdata_google_service_insert_entry),
+	(gdata_google_service_delete_entry),
+	(gdata_google_service_update_entry_with_link):
+	Handle redirects in a way that works with Google API. Fixes some cases
+	of entries not being created or deleted.
+	* gdata-google-service.c: (gdata_google_service_authenticate),
+	(gdata_google_service_get_feed): Code cleanup.
+
 2008-06-13  Wang Xin  <jedy.wang@sun.com>
 
 	** Fix for bug #527544.
