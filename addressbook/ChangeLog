@@ -1,3 +1,8 @@
+2008-06-13  Tor Lillqvist  <tml@novell.com>
+
+	* backends/ldap/Makefile.am (libebookbackendldap_la_LIBADD): Link
+	with libebackend.
+
 2008-06-12  Paul Smith  <psmith@gnu.org>
 
 	** Fix for bug #534111
