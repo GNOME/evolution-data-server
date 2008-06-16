@@ -1,3 +1,11 @@
+2008-06-16  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #394654 (bnc)
+
+	* e-gw-item.c: (e_gw_item_init),
+	(set_contact_fields_from_soap_parameter),
+	(set_organization_fields_from_soap_parameter): Fixes a EDS crasher.
+
 2008-05-14  Sankar P  <psankar@novell.com>
 
 	* e-gw-connection.c: (e_gw_connection_init),
