@@ -1,3 +1,11 @@
+2008-06-16  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	** Fixes #394654 (bnc)
+
+	* e-gw-item.c: (e_gw_item_init),
+	(set_contact_fields_from_soap_parameter),
+	(set_organization_fields_from_soap_parameter): Fixes a EDS crasher.
+
 2008-06-12  Tor Lillqvist  <tml@novell.com>
 
 	* Makefile.am (libegroupwise_1_2_la_LIBADD): Link with
