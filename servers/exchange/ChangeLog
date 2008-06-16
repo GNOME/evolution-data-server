@@ -1,3 +1,11 @@
+2008-06-16  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #273627
+
+	* lib/e2k-autoconfig.c: (validate):
+	Use mailbox value from ExchangeParams structure if set, otherwise
+	extract mailbox from the home_uri as before.
+
 2008-05-26  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #473658
