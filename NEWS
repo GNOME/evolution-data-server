@@ -1,3 +1,25 @@
+Evolution-Data-Server 2.23.4 2008-06-16
+----------------------------------------
+
+Bug Fixes:
+	#394654: (Novell Bugzilla) Fix for Groupwise crasher (Chenthill Palanisamy)
+	#304029: Improve LDAP addressbook search filter (Milan Crha)
+	#509721: Do not delete original message if exception occurred (Milan Crha)
+	#521921: Handle redirects in a way that works with Google API. Fixes some cases of entries not being created or deleted (Sebastian Keller)
+	#527544: Added support for proxy (Wang Xin)
+	#530241: Recognize no-flag situation properly and in that case use two commands (Milan Crha)
+	#534080: Use g_output_stream_write_all instead of g_output_stream_write (Milan Crha)
+	#534111: Copying past the end of the buffer can cause core dumps (Paul Smith)
+	#536154: Camel sends bracketed hostname in SMTP HELO (Tor Lillqvist)
+	#536636: Allow e-d-s to build with G_DISABLE_SINGLE_INCLUDES and GTK_DISABLE_SINGLE_INCLUDES defined. (Matthew Barnes)
+
+Other Contributors:
+	Multiple fixes to build evolution on Windows (Tor Lillqvist)
+
+Updated Translations:
+	Djihed Afifi (ar)
+	Hedayat Vatankhah (fa)
+
 Evolution-Data-Server 2.23.3 2008-06-02
 ----------------------------------------
 
