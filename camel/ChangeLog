@@ -1,3 +1,10 @@
+2008-06-18  Priit Laes  <plaes@plaes.org>
+
+	** Fix a regression introduced with bug #534080
+
+	* camel-stream-vfs.c: (stream_write):
+	Return correct bytes_written on success and -1 on error.
+
 2008-06-18  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #340838

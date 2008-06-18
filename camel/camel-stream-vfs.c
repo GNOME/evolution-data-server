@@ -211,20 +211,20 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 static ssize_t
 stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
-	gssize nwritten;
+	gboolean success;
+	gsize bytes_written;
 	GError *error = NULL;
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
 
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream_vfs->stream), 0);
 
-	nwritten = g_output_stream_write_all (G_OUTPUT_STREAM (stream_vfs->stream), buffer, n, NULL, NULL, &error);
+	success = g_output_stream_write_all (G_OUTPUT_STREAM (stream_vfs->stream), buffer, n, &bytes_written, NULL, &error);
 
 	if (error) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
-
-	return nwritten;
+	return success ? bytes_written : -1;
 }
 
 static int
