@@ -1,5 +1,13 @@
 2008-06-18  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #340838
+
+	* camel-http-stream.c: (http_method_invoke):
+	Use the whole URL even when not the proxy set, because the URL can
+	contain parameters, which are not part of the path.
+
+2008-06-18  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #334160
 
 	* camel-data-cache.c: (struct _CamelDataCachePrivate),
