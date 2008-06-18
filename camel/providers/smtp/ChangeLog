@@ -1,3 +1,12 @@
+2008-06-18  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #532472
+
+	* camel-smtp-transport.c (smtp_connect), (smtp_auth):
+	Force a password reprompt if the SMTP server rejects our password
+	with a 535 response.  Previously we just kept sending the same bad
+	password until the server got fed up and disconnected.
+
 2008-01-21  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #510303

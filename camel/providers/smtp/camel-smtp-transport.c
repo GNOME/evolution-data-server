@@ -487,6 +487,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 		CamelSession *session = camel_service_get_session (service);
 		CamelServiceAuthType *authtype;
 		gboolean authenticated = FALSE;
+		guint32 password_flags;
 		char *errbuf = NULL;
 		
 		if (!g_hash_table_lookup (transport->authtypes, service->url->authmech)) {
@@ -516,6 +517,8 @@ smtp_connect (CamelService *service, CamelException *ex)
 				return FALSE;
 			}
 		}
+
+		password_flags = CAMEL_SESSION_PASSWORD_SECRET;
 		
 		/* keep trying to login until either we succeed or the user cancels */
 		while (!authenticated) {
@@ -540,7 +543,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 
 				service->url->passwd = camel_session_get_password (
 					session, service, NULL, full_prompt,
-					"password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+					"password", password_flags, ex);
 
 				g_free (base_prompt);
 				g_free (full_prompt);
@@ -560,7 +563,16 @@ smtp_connect (CamelService *service, CamelException *ex)
 					  "to SMTP server.\n%s\n\n"),
 					camel_exception_get_description (ex));
 				camel_exception_clear (ex);
+
+				g_free (service->url->passwd);
+				service->url->passwd = NULL;
 			}
+
+			/* Force a password prompt on the next pass, in
+			 * case we have an invalid password cached.  This
+			 * avoids repeated authentication attempts using
+			 * the same invalid password. */
+			password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 		}
 	}
 	
@@ -1066,13 +1078,16 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 static gboolean
 smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 {
+	CamelService *service;
 	char *cmdbuf, *respbuf = NULL, *challenge;
 	gboolean auth_challenge = FALSE;
 	CamelSasl *sasl = NULL;
+
+	service = CAMEL_SERVICE (transport);
 	
 	camel_operation_start_transient (NULL, _("SMTP Authentication"));
 	
-	sasl = camel_sasl_new ("smtp", mech, CAMEL_SERVICE (transport));
+	sasl = camel_sasl_new ("smtp", mech, service);
 	if (!sasl) {
 		camel_operation_end (NULL);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1111,7 +1126,6 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 		/* the server challenge/response should follow a 334 code */
 		if (strncmp (respbuf, "334", 3) != 0) {
 			smtp_set_exception (transport, FALSE, respbuf, _("AUTH command failed"), ex);
-			g_free (respbuf);
 			goto lose;
 		}
 		
@@ -1128,9 +1142,10 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 		for (challenge = respbuf + 4; isspace (*challenge); challenge++);
 		
 		challenge = camel_sasl_challenge_base64 (sasl, challenge, ex);
-		g_free (respbuf);
 		if (challenge == NULL)
 			goto break_and_lose;
+
+		g_free (respbuf);
 		
 		/* send our challenge */
 		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
@@ -1146,18 +1161,25 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 		respbuf = camel_stream_buffer_read_line (CAMEL_STREAM_BUFFER (transport->istream));
 		d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
 	}
-	
-	/* check that the server says we are authenticated */
-	if (!respbuf || strncmp (respbuf, "235", 3)) {
-		if (respbuf && auth_challenge && !strncmp (respbuf, "334", 3)) {
-			/* broken server, but lets try and work around it anyway... */
-			goto broken_smtp_server;
-		}
-		g_free (respbuf);
+
+	if (respbuf == NULL)
 		goto lose;
-	}
 	
-	g_free (respbuf);
+	/* Work around broken SASL implementations. */
+	if (auth_challenge && strncmp (respbuf, "334", 3) == 0)
+		goto broken_smtp_server;
+
+	/* If our authentication data was rejected, destroy the
+	 * password so that the user gets prompted to try again. */
+	if (strncmp (respbuf, "535", 3) == 0) {
+		g_free (service->url->passwd);
+		service->url->passwd = NULL;
+	}
+
+	/* Catch any other errors. */
+	if (strncmp (respbuf, "235", 3) != 0)
+		goto lose;
+	
 	camel_object_unref (sasl);
 	camel_operation_end (NULL);
 	
@@ -1169,7 +1191,6 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 	camel_stream_write (transport->ostream, "*\r\n", 3);
 	respbuf = camel_stream_buffer_read_line (CAMEL_STREAM_BUFFER (transport->istream));
 	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
-	g_free (respbuf);
 	
  lose:
 	if (!camel_exception_is_set (ex)) {
@@ -1179,6 +1200,8 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 	
 	camel_object_unref (sasl);
 	camel_operation_end (NULL);
+
+	g_free (respbuf);
 	
 	return FALSE;
 }
