@@ -187,7 +187,8 @@ static void camel_mapi_store_init(CamelMapiStore *store, CamelMapiStoreClass *kl
 	priv->storage_path = NULL;
 	priv->base_url = NULL;
 
-	((CamelStore *)mapi_store)->flags |= CAMEL_STORE_SUBSCRIPTIONS;
+	/* TODO */
+	//((CamelStore *)mapi_store)->flags |= CAMEL_STORE_SUBSCRIPTIONS;
 
 	mapi_store->priv = priv;
 

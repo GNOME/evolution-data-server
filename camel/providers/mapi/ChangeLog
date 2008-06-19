@@ -1,4 +1,8 @@
 2008-06-19  Johnny Jacob  <jjohnny@novell.com>
+	
+	* camel-mapi-store.c (camel_mapi_store_init): Subscriptions disabled (temp). 
+
+2008-06-19  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-provider.c (mapi_initialize): Removed.
 
