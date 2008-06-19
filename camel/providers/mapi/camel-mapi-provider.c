@@ -121,17 +121,6 @@ mapi_auto_detect_cb(CamelURL *url, GHashTable **auto_detected, CamelException *e
 	return 0;
 }
 
-gboolean
-mapi_initialize(void)
-{
-	//TODO : Remove this connection
-/* 	if (!exchange_mapi_connection_new (NULL, NULL)) */
-/* 		return FALSE; */
-
-	return TRUE;
-}
-
-
 void
 camel_provider_module_init(void)
 {
