@@ -1,3 +1,9 @@
+2008-06-20  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c: Get rid of the CLEAN_DATE #define
+	usage... we can never trust that dates are always properly
+	formatted.
+
 2008-06-18  Priit Laes  <plaes@plaes.org>
 
 	** Fix a regression introduced with bug #534080

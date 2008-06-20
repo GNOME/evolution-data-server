@@ -52,9 +52,7 @@
 #include "camel-net-utils.h"
 #include "camel-utf8.h"
 
-#ifndef CLEAN_DATE
 #include "broken-date-parser.h"
-#endif
 
 #ifdef G_OS_WIN32
 /* Undef the similar macro from pthread.h, it doesn't check if
@@ -3706,27 +3704,18 @@ camel_header_decode_date(const char *in, int *saveoffset)
 			if (*inptr == ',') {
 				inptr++;
 			} else {
-#ifndef CLEAN_DATE
 				return parse_broken_date (in, saveoffset);
-#else
-				if (saveoffset)
-					*saveoffset = 0;
-				return 0;
-#endif /* ! CLEAN_DATE */
 			}
 		}
 	}
-	tm.tm_mday = camel_header_decode_int(&inptr);
-#ifndef CLEAN_DATE
-	if (tm.tm_mday == 0) {
+	
+	if ((tm.tm_mday = camel_header_decode_int (&inptr)) == 0)
 		return parse_broken_date (in, saveoffset);
-	}
-#endif /* ! CLEAN_DATE */
-
+	
 	monthname = decode_token(&inptr);
 	foundmonth = FALSE;
 	if (monthname) {
-		for (i=0;i<sizeof(tz_months)/sizeof(tz_months[0]);i++) {
+		for (i = 0; i < G_N_ELEMENTS (tz_months); i++) {
 			if (!g_ascii_strcasecmp(tz_months[i], monthname)) {
 				tm.tm_mon = i;
 				foundmonth = TRUE;
@@ -3735,12 +3724,10 @@ camel_header_decode_date(const char *in, int *saveoffset)
 		}
 		g_free(monthname);
 	}
-#ifndef CLEAN_DATE
-	if (!foundmonth) {
+	
+	if (!foundmonth)
 		return parse_broken_date (in, saveoffset);
-	}
-#endif /* ! CLEAN_DATE */
-
+	
 	year = camel_header_decode_int(&inptr);
 	if (year < 69) {
 		tm.tm_year = 100 + year;
