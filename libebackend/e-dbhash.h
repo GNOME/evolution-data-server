@@ -5,7 +5,7 @@
  * Author:
  *   JP Rosevear (jpr@ximian.com)
  *
- * Copyright 2000, Ximian, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
 #ifndef __E_DBHASH_H__

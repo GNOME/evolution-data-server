@@ -1,5 +1,5 @@
 /*
- * Copyright 2000 Ximian (www.ximian.com).
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * A simple, extensible s-exp evaluation engine.
  *

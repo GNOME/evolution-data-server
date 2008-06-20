@@ -1,6 +1,6 @@
 /* Evolution calendar - iCalendar file backend
  *
- * Copyright (C) 2000-2003 Ximian, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>

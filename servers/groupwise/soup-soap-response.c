@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2003, Novell, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
 #include <stdlib.h>

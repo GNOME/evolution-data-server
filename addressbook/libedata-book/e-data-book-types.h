@@ -5,7 +5,7 @@
  *
  * Author: Chris Toshok <toshok@ximian.com>
  *
- * Copyright 2003, Ximian, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
 #ifndef __E_DATA_BOOK_TYPES_H__

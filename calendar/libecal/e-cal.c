@@ -1,8 +1,7 @@
 /*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar ecal
  *
- * Copyright (C) 2001 Ximian, Inc.
- * Copyright (C) 2004 Novell, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@novell.com>

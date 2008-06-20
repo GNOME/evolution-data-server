@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001, Ximian Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *	    Jacob Berkman <jacob@ximian.com>

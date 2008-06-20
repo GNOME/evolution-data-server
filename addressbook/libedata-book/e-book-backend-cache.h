@@ -2,7 +2,7 @@
 /*
  *  A class to cache address book conents on local file system
  *
- * Copyright (C) 2004 Novell, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Sivaiah Nallagatla <snallagatla@ximian.com>
  *

@@ -4,7 +4,7 @@
  * Author:
  *   Chris Toshok (toshok@ximian.com)
  *
- * Copyright 2004, Novell, Inc.
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
 #ifdef HAVE_CONFIG_H

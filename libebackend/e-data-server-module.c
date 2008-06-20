@@ -2,7 +2,7 @@
 /*
  *  e-data-server-module.c - Interface to e-d-s extensions
  *
- *  Copyright (C) 2004 Novell, Inc.
+ *  Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
