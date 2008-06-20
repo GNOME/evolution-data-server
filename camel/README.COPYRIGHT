@@ -15,7 +15,7 @@ Thus, when adding code in Camel, always add the following lines at the
 begining of the file:
 
 /* 
- * Copyright 2005 Novell, Inc. (http://www.novell.com)
+ * Copyright 2008 Novell, Inc. (http://www.novell.com)
  * 
  * Author: Your name <your.email@address>
  *

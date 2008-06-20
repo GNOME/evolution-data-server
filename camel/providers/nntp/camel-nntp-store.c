@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* 
  *
- * Copyright (C) 2001-2003 Ximian, Inc. <www.ximain.com>
+ * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Christopher Toshok <toshok@ximian.com>
  *    	    Michael Zucchi <notzed@ximian.com>
