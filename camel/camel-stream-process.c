@@ -2,7 +2,7 @@
 /* camel-stream-process.c : stream over piped process */
 
 /*
- *  Copyright (C) 2003 Ximian Inc.
+ *  Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  *  Authors: David Woodhouse <dwmw2@infradead.org>,
  *	     Jeffrey Stedfast <fejj@ximian.com>

@@ -8,7 +8,7 @@
  *  Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  *  Rights Reserved.
  *
- *  Copyright 2003 Ximian, Inc. (www.ximian.com)
+ *  Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
