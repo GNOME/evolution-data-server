@@ -1,5 +1,8 @@
 2008-06-20  Jeffrey Stedfast  <fejj@novell.com>
 
+	* camel-mime-filter-progress.[c,h]: New progress-reporting stream
+	filter.
+
 	* camel-mime-utils.c: Get rid of the CLEAN_DATE #define
 	usage... we can never trust that dates are always properly
 	formatted.
