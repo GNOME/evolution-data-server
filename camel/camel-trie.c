@@ -190,7 +190,7 @@ trie_insert (CamelTrie *trie, int depth, struct _trie_state *q, gunichar c)
 }
 
 
-#if 1
+#if d(!)0
 static void 
 dump_trie (struct _trie_state *s, int depth)
 {
