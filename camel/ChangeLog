@@ -1,3 +1,13 @@
+2008-06-21  Jeffrey Stedfast  <fejj@novell.com>
+
+	* broken-date-parser.[c,h]: Removed, more-or-less moved into
+	camel-mime-utils.c (this code was basically the same as the GMime
+	date parser code except that it might not have been as
+	up-to-date).
+
+	* camel-mime-utils.c (camel_header_decode_date): Copy/pasted
+	GMime's decode_date() code to replace really nasty code.
+
 2008-06-20  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-mime-filter-progress.[c,h]: New progress-reporting stream

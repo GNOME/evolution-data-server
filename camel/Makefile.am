@@ -149,7 +149,6 @@ libcamel_provider_1_2_la_LIBADD =			\
 	$(REGEX_LIBS)
 
 libcamel_1_2_la_SOURCES = 			\
-	broken-date-parser.c			\
 	camel-address.c				\
 	camel-arg.c				\
 	camel-block-file.c			\
@@ -220,7 +219,6 @@ libcamel_1_2_la_SOURCES = 			\
 	$(LIBCAMEL_PLATFORM_DEP_SOURCES)
 
 libcamelinclude_HEADERS =			\
-	broken-date-parser.h			\
 	camel-address.h				\
 	camel-arg.h				\
 	camel-block-file.h			\
@@ -356,7 +354,6 @@ install-exec-hook:
 	fi
 
 noinst_HEADERS =				\
-	broken-date-parser.h			\
 	camel-charset-map-private.h		\
 	camel-private.h				
 

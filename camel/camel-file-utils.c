@@ -56,7 +56,7 @@
  * 
  * Utility function to save an uint32 to a file.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_encode_uint32 (FILE *out, guint32 value)
@@ -81,7 +81,7 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
  * 
  * Retrieve an encoded uint32 from a file.
  * 
- * Return value: 0 on success, -1 on error.  @*dest will contain the
+ * Return value: %0 on success, %-1 on error.  @*dest will contain the
  * decoded value.
  **/
 int
@@ -113,7 +113,7 @@ camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
  * Encode a gint32, performing no compression, but converting
  * to network order.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
@@ -134,7 +134,7 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
  * 
  * Retrieve a gint32.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
@@ -188,7 +188,7 @@ camel_file_util_decode_##type(FILE *in, type *dest)	\
  * 
  * Encode a time_t value to the file.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 CFU_ENCODE_T(time_t)
 
@@ -199,7 +199,7 @@ CFU_ENCODE_T(time_t)
  * 
  * Decode a time_t value.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 CFU_DECODE_T(time_t)
 
@@ -210,7 +210,7 @@ CFU_DECODE_T(time_t)
  * 
  * Encode an off_t type.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 CFU_ENCODE_T(off_t)
 
@@ -222,7 +222,7 @@ CFU_ENCODE_T(off_t)
  * 
  * Decode an off_t type.
  * 
- * Return value: 0 on success, -1 on failure.
+ * Return value: %0 on success, %-1 on failure.
  **/
 CFU_DECODE_T(off_t)
 
@@ -233,7 +233,7 @@ CFU_DECODE_T(off_t)
  * 
  * Encode an size_t type.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 CFU_ENCODE_T(size_t)
 
@@ -245,7 +245,7 @@ CFU_ENCODE_T(size_t)
  * 
  * Decode an size_t type.
  * 
- * Return value: 0 on success, -1 on failure.
+ * Return value: %0 on success, %-1 on failure.
  **/
 CFU_DECODE_T(size_t)
 
@@ -257,7 +257,7 @@ CFU_DECODE_T(size_t)
  * 
  * Encode a normal string and save it in the output file.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_encode_string (FILE *out, const char *str)
@@ -285,7 +285,7 @@ camel_file_util_encode_string (FILE *out, const char *str)
  * 
  * Decode a normal string from the input file.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_decode_string (FILE *in, char **str)
@@ -326,7 +326,7 @@ camel_file_util_decode_string (FILE *in, char **str)
  * Unlike @camel_file_util_encode_string, it pads the
  * @str with "NULL" bytes, if @len is > strlen(str)
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
@@ -359,7 +359,7 @@ camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
  * 
  * Decode a normal string from the input file.
  * 
- * Return value: 0 on success, -1 on error.
+ * Return value: %0 on success, %-1 on error.
  **/
 int
 camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len)
