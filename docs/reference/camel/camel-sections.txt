@@ -488,6 +488,7 @@ camel_message_info_message_id
 camel_message_info_references
 camel_message_info_user_flags
 camel_message_info_user_tags
+camel_message_info_headers
 camel_message_info_user_flag
 camel_message_info_user_tag
 camel_message_info_set_flags
@@ -632,16 +633,6 @@ CAMEL_INTERNET_ADDRESS_CLASS
 CamelInternetAddressClass
 <SUBSECTION Private>
 camel_internet_address_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-md5-utils</FILE>
-CamelMD5Context
-camel_md5_get_digest
-camel_md5_get_digest_from_file
-camel_md5_init
-camel_md5_update
-camel_md5_final
 </SECTION>
 
 <SECTION>
@@ -969,6 +960,20 @@ CAMEL_MIME_FILTER_CLASS
 CamelMimeFilterClass
 <SUBSECTION Private>
 camel_mime_filter_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-mime-filter-progress</FILE>
+<TITLE>CamelMimeFilterProgress</TITLE>
+CamelMimeFilterProgress
+camel_mime_filter_progress_new
+<SUBSECTION Standard>
+CAMEL_MIME_FILTER_PROGRESS
+CAMEL_MIME_FILTER_PROGRESS_CLASS
+CAMEL_IS_MIME_FILTER_PROGRESS
+CamelMimeFilterProgressClass
+<SUBSECTION Private>
+camel_mime_filter_progress_get_type
 </SECTION>
 
 <SECTION>
@@ -2462,6 +2467,7 @@ CamelIMAP4NamespaceList
 CamelIMAP4ReconnectFunc
 camel_imap4_engine_new
 camel_imap4_engine_take_stream
+camel_imap4_engine_disconnect
 camel_imap4_engine_capability
 camel_imap4_engine_namespace
 camel_imap4_engine_select_folder
@@ -3773,6 +3779,8 @@ NI_DGRAM
 camel_getaddrinfo
 camel_freeaddrinfo
 camel_getnameinfo
+<SUBSECTION Private>
+WIN32_LEAN_AND_MEAN
 </SECTION>
 
 <SECTION>
@@ -3854,6 +3862,7 @@ CamelIMAP4Command
 CamelIMAP4Literal
 CamelIMAP4PlusCallback
 CamelIMAP4UntaggedCallback
+CamelIMAP4CommandReset
 CamelIMAP4CommandPart
 camel_imap4_command_new
 camel_imap4_command_newv
@@ -3881,6 +3890,7 @@ flags_diff_t
 camel_imap4_flags_diff
 camel_imap4_flags_merge
 camel_imap4_merge_flags
+camel_imap4_build_folder_info_tree
 camel_imap4_namespace_clear
 camel_imap4_namespace_list_copy
 camel_imap4_namespace_list_free

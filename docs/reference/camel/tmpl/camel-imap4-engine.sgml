@@ -141,6 +141,14 @@ CamelIMAP4Engine
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap4_engine_disconnect ##### -->
+<para>
+
+</para>
+
+@engine: 
+
+
 <!-- ##### FUNCTION camel_imap4_engine_capability ##### -->
 <para>
 

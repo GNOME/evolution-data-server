@@ -56,6 +56,16 @@ camel-imap4-utils
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap4_build_folder_info_tree ##### -->
+<para>
+
+</para>
+
+@array: 
+@top: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_imap4_namespace_clear ##### -->
 <para>
 

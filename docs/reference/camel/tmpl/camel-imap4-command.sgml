@@ -72,6 +72,15 @@ camel-imap4-command
 @Returns: 
 
 
+<!-- ##### USER_FUNCTION CamelIMAP4CommandReset ##### -->
+<para>
+
+</para>
+
+@ic: 
+@user_data: 
+
+
 <!-- ##### STRUCT CamelIMAP4CommandPart ##### -->
 <para>
 
