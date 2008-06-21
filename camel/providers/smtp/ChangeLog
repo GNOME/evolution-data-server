@@ -1,3 +1,8 @@
+2008-06-20  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-smtp-transport.c (smtp_data): Setup progress reporting for
+	message sending.
+
 2008-06-18  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #532472

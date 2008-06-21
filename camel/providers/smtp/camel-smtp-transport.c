@@ -41,6 +41,7 @@
 #undef MAX
 
 #include "camel-exception.h"
+#include "camel-mime-filter-progress.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-message.h"
 #include "camel-mime-part.h"
@@ -52,6 +53,7 @@
 #include "camel-smtp-transport.h"
 #include "camel-stream-buffer.h"
 #include "camel-stream-filter.h"
+#include "camel-stream-null.h"
 #include "camel-tcp-stream-raw.h"
 #include "camel-tcp-stream.h"
 
@@ -1297,11 +1299,12 @@ smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException 
 static gboolean
 smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelException *ex)
 {
-	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
-	char *cmdbuf, *respbuf = NULL;
+	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
 	CamelStreamFilter *filtered_stream;
-	CamelMimeFilter *crlffilter;
+	char *cmdbuf, *respbuf = NULL;
+	CamelMimeFilter *filter;
+	CamelStreamNull *null;
 	int ret;
 	
 	/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
@@ -1346,12 +1349,6 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 	g_free (respbuf);
 	respbuf = NULL;
 	
-	/* setup stream filtering */
-	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	filtered_stream = camel_stream_filter_new_with_stream (transport->ostream);
-	camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (crlffilter));
-	camel_object_unref (crlffilter);
-	
 	/* unlink the bcc headers */
 	savedbcc = NULL;
 	tail = (struct _camel_header_raw *) &savedbcc;
@@ -1370,6 +1367,23 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 		
 		n = header->next;
 	}
+	
+	/* find out how large the message is... */
+	null = camel_stream_null_new ();
+	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (null));
+	
+	filtered_stream = camel_stream_filter_new_with_stream (transport->ostream);
+	
+	/* setup progress reporting for message sending... */
+	filter = camel_mime_filter_progress_new (NULL, null->written);
+	camel_stream_filter_add (filtered_stream, filter);
+	camel_object_unref (filter);
+	camel_object_unref (null);
+	
+	/* setup LF->CRLF conversion */
+	filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+	camel_stream_filter_add (filtered_stream, filter);
+	camel_object_unref (filter);
 	
 	/* write the message */
 	ret = camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (filtered_stream));
