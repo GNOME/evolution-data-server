@@ -22,6 +22,8 @@
 #ifndef CAMEL_OPERATION_H
 #define CAMEL_OPERATION_H 1
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 /* cancellation helper stuff, not yet finalised */

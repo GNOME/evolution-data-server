@@ -28,8 +28,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <camel/camel-operation.h>
-
 #include "camel-mime-filter-progress.h"
 
 #define d(x)
