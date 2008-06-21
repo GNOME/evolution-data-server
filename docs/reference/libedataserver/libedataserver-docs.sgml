@@ -12,10 +12,6 @@
     <xi:include href="xml/e-account-list.xml"/>
     <xi:include href="xml/e-categories.xml"/>
     <xi:include href="xml/e-component-listener.xml"/>
-    <xi:include href="xml/e-data-server-module.xml"/>
-    <xi:include href="xml/e-db3-utils.xml"/>
-    <xi:include href="xml/e-dbhash.xml"/>
-    <xi:include href="xml/e-file-cache.xml"/>
     <xi:include href="xml/e-flag.xml"/>
     <xi:include href="xml/e-iconv.xml"/>
     <xi:include href="xml/e-iterator.xml"/>
