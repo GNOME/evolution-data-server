@@ -2564,9 +2564,9 @@ msgid ""
 msgstr ""
 
 #: ../camel/camel-url.c:313
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse URL '%s'"
-msgstr "Could not lock '%s'"
+msgstr "לא ניתן לפרק את הכתובת '%s'"
 
 #: ../camel/camel-vee-folder.c:486
 #, fuzzy, c-format
