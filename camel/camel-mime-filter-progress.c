@@ -79,19 +79,16 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	       char **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterProgress *progress = (CamelMimeFilterProgress *) filter;
-	CamelOperation *operation;
 	double percent;
 	
 	progress->count += len;
 	
-	if ((operation = camel_operation_registered ())) {
-		if (progress->count < progress->total)
-			percent = ((double) progress->count * 100.0) / ((double) progress->total);
-		else
-			percent = 100.0;
-		
-		camel_operation_progress (operation, (int) percent);
-	}
+	if (progress->count < progress->total)
+		percent = ((double) progress->count * 100.0) / ((double) progress->total);
+	else
+		percent = 100.0;
+	
+	camel_operation_progress (progress->operation, (int) percent);
 	
 	*outprespace = prespace;
 	*outlen = len;
@@ -128,6 +125,7 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
 
 /**
  * camel_mime_filter_progress_new:
+ * @operation: a #CamelOperation
  * @total: total number of bytes to report progress on
  *
  * Create a new #CamelMimeFilterProgress object that will report
@@ -136,11 +134,12 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
  * Returns a new #CamelMimeFilter object
  **/
 CamelMimeFilter *
-camel_mime_filter_progress_new (guint32 total)
+camel_mime_filter_progress_new (CamelOperation *operation, size_t total)
 {
 	CamelMimeFilter *filter;
 	
 	filter = (CamelMimeFilter *) camel_object_new (camel_mime_filter_progress_get_type ());
+	((CamelMimeFilterProgress *) filter)->operation = operation;
 	((CamelMimeFilterProgress *) filter)->total = total;
 	
 	return filter;

@@ -24,6 +24,7 @@
 #ifndef __CAMEL_MIME_FILTER_PROGRESS_H__
 #define __CAMEL_MIME_FILTER_PROGRESS_H__
 
+#include <camel/camel-operation.h>
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_PROGRESS(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_progress_get_type (), CamelMimeFilterProgress)
@@ -38,8 +39,9 @@ typedef struct _CamelMimeFilterProgress CamelMimeFilterProgress;
 struct _CamelMimeFilterProgress {
 	CamelMimeFilter parent;
 	
-	guint32 total;
-	guint32 count;
+	CamelOperation *operation;
+	size_t total;
+        size_t count;
 };
 
 struct _CamelMimeFilterProgressClass {
@@ -50,7 +52,7 @@ struct _CamelMimeFilterProgressClass {
 
 CamelType camel_mime_filter_progress_get_type (void);
 
-CamelMimeFilter *camel_mime_filter_progress_new (guint32 total);
+CamelMimeFilter *camel_mime_filter_progress_new (CamelOperation *operation, size_t total);
 
 G_END_DECLS
 

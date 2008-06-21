@@ -43,9 +43,9 @@ struct _CamelStreamNullClass {
 	CamelStreamClass parent_class;
 };
 
-CamelType			camel_stream_null_get_type	(void);
+CamelType camel_stream_null_get_type (void);
 
-CamelStream            *camel_stream_null_new		(void);
+CamelStream *camel_stream_null_new (void);
 
 G_END_DECLS
 
