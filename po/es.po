@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-22 17:45+0000\n"
-"PO-Revision-Date: 2008-05-24 00:13+0200\n"
+"POT-Creation-Date: 2008-05-23 22:19+0000\n"
+"PO-Revision-Date: 2008-06-21 17:45+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -3302,11 +3302,11 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:90
 msgid "Expire cached messages that haven't been read in X seconds"
-msgstr ""
+msgstr "Caducar los mensajes cacheados que no se han leído en X segundos"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:91
 msgid "Expire cached messages older than X seconds"
-msgstr ""
+msgstr "Caducar los mensajes cacheados más antiguos de X segundos"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:423
 #, c-format
@@ -3376,15 +3376,15 @@ msgstr ""
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
 msgstr ""
-"No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Comando erróneo"
+"No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: Comando "
+"erróneo"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1197
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
 msgstr ""
-"No se pueden copiar los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Comando erróneo"
+"No se pueden copiar los mensajes de la carpeta «%s» a la carpeta «%s»: Comando "
+"erróneo"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:56
 msgid "Check new messages for _Junk contents"
@@ -3514,7 +3514,9 @@ msgstr "No se puede renombrar la carpeta «%s» a «%s»: Comando erróneo"
 #: ../camel/providers/imap4/camel-imap4-store.c:1575
 #, c-format
 msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-msgstr "No se puede obtener la información %s para el patrón «%s» en el servidor IMAP %s:%s"
+msgstr ""
+"No se puede obtener la información %s para el patrón «%s» en el servidor IMAP "
+"%s:%s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1636
 msgid "Cannot subscribe to IMAP folders in offline mode."
