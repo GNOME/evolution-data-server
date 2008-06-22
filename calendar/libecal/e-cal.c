@@ -32,6 +32,7 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-main.h>
 
+#include "libecal/e-cal-check-timezones.h"
 #include "libedataserver/e-component-listener.h"
 #include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
@@ -4635,9 +4636,10 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
-	ECalendarStatus status;
+	ECalendarStatus status = E_CALENDAR_STATUS_OK;
 	ECalendarOp *our_op;
 	icalcomponent *icalcomp;
+	const char *systzid;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4688,34 +4690,74 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 
-	/* call the backend */
-	CORBA_exception_init (&ev);
+	/*
+	 * Try to replace the original time zone with a more complete
+	 * and/or potentially updated system time zone. Note that this
+	 * also applies to TZIDs which match system time zones exactly:
+	 * they are extracted via icaltimezone_get_builtin_timezone_from_tzid()
+	 * below without a roundtrip to the backend.
+	 */
+	systzid = e_cal_match_tzid (tzid);
+	if (!systzid) {
+		/* call the backend */
+		CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Calendar_Cal_getTimezone (priv->cal, tzid, &ev);
-	if (BONOBO_EX (&ev)) {
-		e_calendar_remove_op (ecal, our_op);
-		e_calendar_free_op (our_op);
+		GNOME_Evolution_Calendar_Cal_getTimezone (priv->cal, tzid, &ev);
+		if (BONOBO_EX (&ev)) {
+			e_calendar_remove_op (ecal, our_op);
+			e_calendar_free_op (our_op);
+
+			CORBA_exception_free (&ev);
+
+			g_warning (G_STRLOC ": Unable to contact backend");
+
+			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
+		}
 
 		CORBA_exception_free (&ev);
 
-		g_warning (G_STRLOC ": Unable to contact backend");
+		e_flag_wait (our_op->done);
 
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
-	}
+		status = our_op->status;
+		if (status != E_CALENDAR_STATUS_OK){
+			icalcomp = NULL;
+		} else {
+			icalcomp = icalparser_parse_string (our_op->string);
+			if (!icalcomp)
+				status = E_CALENDAR_STATUS_INVALID_OBJECT;
+		}
+		g_free (our_op->string);
+	} else {
+		/*
+		 * Use built-in time zone *and* rename it:
+		 * if the caller is asking for a TZID=FOO,
+		 * then likely because it has an event with
+		 * such a TZID. Returning a different TZID
+		 * would lead to broken VCALENDARs in the
+		 * caller.
+		 */
+		icaltimezone *syszone = icaltimezone_get_builtin_timezone_from_tzid (systzid);
+		g_assert (syszone);
+		if (syszone) {
+			gboolean found = FALSE;
+			icalproperty *prop;
 
-	CORBA_exception_free (&ev);
-
-	e_flag_wait (our_op->done);
-
-	status = our_op->status;
-        if (status != E_CALENDAR_STATUS_OK){
-                icalcomp = NULL;
-        } else {
-                icalcomp = icalparser_parse_string (our_op->string);
-		if (!icalcomp)
+			icalcomp = icalcomponent_new_clone (icaltimezone_get_component (syszone));
+			prop = icalcomponent_get_first_property(icalcomp,
+								ICAL_ANY_PROPERTY);
+			while (!found && prop) {
+				if (icalproperty_isa(prop) == ICAL_TZID_PROPERTY) {
+					icalproperty_set_value_from_string(prop, tzid, "NO");
+					found = TRUE;
+				}
+				prop = icalcomponent_get_next_property(icalcomp,
+								       ICAL_ANY_PROPERTY);
+			}
+			g_assert (found);
+		} else {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
+		}
 	}
-	g_free (our_op->string);
 
 	if (!icalcomp) {
 		e_calendar_remove_op (ecal, our_op);
