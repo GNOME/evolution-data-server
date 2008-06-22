@@ -48,6 +48,7 @@ libecal_1_2_la_SOURCES =	\
 	e-cal-listener.h	\
 	e-cal-recur.c		\
 	e-cal-time-util.c	\
+        e-cal-check-timezones.c \
 	e-cal-util.c		\
 	e-cal-view.c		\
 	e-cal-view-listener.c	\
@@ -71,6 +72,7 @@ libecalinclude_HEADERS =	\
 	e-cal-component.h	\
 	e-cal-recur.h		\
 	e-cal-time-util.h	\
+        e-cal-check-timezones.h \
 	e-cal-types.h		\
 	e-cal-util.h		\
 	e-cal-view.h
