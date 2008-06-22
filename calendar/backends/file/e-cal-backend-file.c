@@ -38,6 +38,7 @@
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-time-util.h>
 #include <libecal/e-cal-util.h>
+#include <libecal/e-cal-check-timezones.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include "e-cal-backend-file-events.h"
@@ -2625,6 +2626,27 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	}
 
 	g_list_free (del_comps);
+
+        /* check and patch timezones */
+        {
+            GError *error = NULL;
+            if (!e_cal_check_timezones(toplevel_comp,
+                                       NULL,
+                                       e_cal_tzlookup_icomp,
+                                       priv->icalcomp,
+                                       &error)) {
+                /*
+                 * This makes assumptions about what kind of
+                 * errors can occur inside e_cal_check_timezones().
+                 * We control it, so that should be safe, but
+                 * is the code really identical with the calendar
+                 * status?
+                 */
+                status = error->code;
+                g_clear_error(&error);
+                goto error;
+            }
+        }
 
 	/* Merge the iCalendar components with our existing VCALENDAR,
 	   resolving any conflicting TZIDs. */
