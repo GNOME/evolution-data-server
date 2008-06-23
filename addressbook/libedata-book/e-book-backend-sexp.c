@@ -380,7 +380,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 static void
 contains_helper_free_word (gpointer data, gpointer user_data)
 {
-	if (data){
+	if (data) {
 		g_string_free ((GString *)data, TRUE);
 	}
 }
@@ -392,9 +392,12 @@ try_contains_word (const gchar *s1, GSList *word)
 	gunichar unival, first_w_char;
 	GString *w;
 
-	if (s1 == NULL) return NULL;
-	if (word == NULL) return (char*)s1; /* previous was last word */
-	if (word->data == NULL) return NULL; /* illegal structure */
+	if (s1 == NULL)
+		return NULL;
+	if (word == NULL)
+		return (char*)s1; /* previous was last word */
+	if (word->data == NULL)
+		return NULL; /* illegal structure */
 
 	w = word->data;
 	first_w_char = g_utf8_get_char (w->str);
@@ -407,15 +410,18 @@ try_contains_word (const gchar *s1, GSList *word)
 			const gchar *r = e_util_unicode_get_utf8 (w->str, &unival2);
 			while (q && r && unival && unival2) {
 				q = e_util_unicode_get_utf8 (q, &unival);
-				if (!q) break;
+				if (!q)
+					break;
 				r = e_util_unicode_get_utf8 (r, &unival2);
-				if (!r) break;
-				if (unival != unival2) break;
+				if (!r)
+					break;
+				if (unival != unival2)
+					break;
 			}
 			if (!unival2 && r && q) {
 				/* we read whole word and no illegal character has been found */
 				if (word->next == NULL ||
-				    try_contains_word ( e_util_unicode_get_utf8 (o, &unival), word->next)){
+				    try_contains_word (e_util_unicode_get_utf8 (o, &unival), word->next)) {
 					return (char*)o;
 				}
 			}
@@ -437,16 +443,17 @@ chars_to_unistring_lowercase (const char *str)
 	gunichar unich;
 	gchar *p;
 
-	if (str == NULL) return NULL;
+	if (str == NULL)
+		return NULL;
 
 	res = g_string_new ("");
 
-	for (p = e_util_unicode_get_utf8 (str,&unich); p && unich; p = e_util_unicode_get_utf8 (p,&unich)){
+	for (p = e_util_unicode_get_utf8 (str, &unich); p && unich; p = e_util_unicode_get_utf8 (p, &unich)) {
 		g_string_append_unichar (res, g_unichar_tolower (unich));
 	}
 
 	/* it was invalid unichar string */
-	if (p == NULL){
+	if (p == NULL) {
 		g_string_free (res, TRUE);
 		return NULL;
 	}
@@ -469,20 +476,35 @@ contains_helper (const char *s1, const char *s2)
 	GString *last_word, *w;
 	char *res = NULL;
 	gunichar unich;
+	glong len1, len2;
+
+	if (!s2)
+		return NULL;
+
+	/* the initial word contains an empty string for sure */
+	if (!*s2)
+		return (char *)s1;
 
 	s1uni = chars_to_unistring_lowercase (s1);
-	if (s1 == NULL) return NULL;
+	if (s1uni == NULL)
+		return NULL;
 
 	s2uni = chars_to_unistring_lowercase (s2);
-	if (s2 == NULL){
+	if (s2uni == NULL) {
 		g_string_free (s1uni, TRUE);
 		return NULL;
 	}
 
-	if (g_utf8_strlen (s1uni->str, -1) == 0 ||
-	    g_utf8_strlen (s2uni->str, -1) == 0){
+	len1 = g_utf8_strlen (s1uni->str, -1);
+	len2 = g_utf8_strlen (s2uni->str, -1);
+	if (len1 == 0 || len2 == 0) {
 		g_string_free (s1uni, TRUE);
 		g_string_free (s2uni, TRUE);
+
+		/* both are empty strings */
+		if (len1 == len2)
+			return (char *)s1;
+
 		return NULL;
 	}
 
@@ -492,9 +514,9 @@ contains_helper (const char *s1, const char *s2)
 	have_space = FALSE;
 	last_word = NULL;
 	w = g_string_new ("");
-	for (next = e_util_unicode_get_utf8 (s2uni->str, &unich); next && unich; next = e_util_unicode_get_utf8 (next, &unich) ){
-		if (unich == ' '){
-			if (have_nonspace && !have_space){
+	for (next = e_util_unicode_get_utf8 (s2uni->str, &unich); next && unich; next = e_util_unicode_get_utf8 (next, &unich)) {
+		if (unich == ' ') {
+			if (have_nonspace && !have_space) {
 				/* treat only first space after nonspace character as wildcard,
 				   so we will start new word here
 				*/
@@ -502,23 +524,23 @@ contains_helper (const char *s1, const char *s2)
 				words = g_slist_append (words, w);
 				last_word = w;
 				w = g_string_new ("");
-			}else{
+			} else {
 				g_string_append_unichar (w, unich);
 			}
-		}else{
+		} else {
 			have_nonspace = TRUE;
 			have_space = FALSE;
 			g_string_append_unichar (w, unich);
 		}
 	}
 
-	if (have_space){
+	if (have_space) {
 		/* there was one or more spaces at the end of string,
 		   concat actual word with that last one
 		*/
 		g_string_append_len (last_word, w->str, w->len);
 		g_string_free (w, TRUE);
-	}else{
+	} else {
 		/* append actual word into words list */
 		words = g_slist_append (words, w);
 	}

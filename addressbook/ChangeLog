@@ -1,3 +1,11 @@
+2008-06-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #539758
+
+	* libedata-book/e-book-backend-sexp.c: (contains_helper):
+	Report success when looking for an empty string in a value.
+	Also some coding style cleanup.
+
 2008-06-13  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #304029
