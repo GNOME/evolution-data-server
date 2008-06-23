@@ -1,20 +1,3 @@
-2008-06-22  Patrick Ohly  <patrick.ohly@gmx.de>
-
-	* configure.in, calendar/libecal/Makefile.am,
-	calendar/libecal/e-cal-check-timezones.c,
-	calendar/libecal/e-cal-check-timezones.h: added
-	e_cal_check_timezones() which matches time zone definitions to
-	system time zones and resolves conflicting definitions; bumped
-	version and age to matched the extended libecal API (bug #52890)
-
-	* calendar/backends/file/e-cal-backend-file.c: use
-	e_cal_check_timezones() to improve time zone handling (bug #52890)
-
-	* calendar/libecal/e-cal.c: use current system time zone
-	definitions instead of possibly out-dated custom definitions when
-	exporting events or retrieving the time zone information for an
-	event (bug #52890)
- 
 2008-06-17  Johnny Jacob  <jjohnny@novell.com>
 
 	* configure.in (eds_micro_version): Bumped to 2.23.5.
