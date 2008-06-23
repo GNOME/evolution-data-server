@@ -216,8 +216,13 @@ exchange_mapi_util_free_recipient_list (GSList **recip_list)
 
 	for (; l != NULL; l = l->next) {
 		ExchangeMAPIRecipient *recipient = (ExchangeMAPIRecipient *) (l->data);
-		g_free (recipient);
-		recipient = NULL;
+		if (recipient->in.ext_cValues)
+			g_free (recipient->in.ext_lpProps);
+		if (recipient->in.req_cValues)
+			g_free (recipient->in.req_lpProps);
+/*		if (recipient->out.all_cValues)
+			g_free (recipient->out.all_lpProps);
+*/		g_free (recipient);
 	}
 	g_slist_free (l);
 	l = NULL;

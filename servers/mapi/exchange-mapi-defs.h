@@ -39,7 +39,7 @@ typedef enum
     olFriday = 32,
     olSaturday = 64
 } OlDaysOfWeek;
- 
+
 typedef enum 
 {
     olNormal = 0,
@@ -47,34 +47,71 @@ typedef enum
     olPrivate = 2,
     olConfidential = 3
 } OlSensitivity;
- 
+
 typedef enum 
 {
     olImportanceLow = 0,
     olImportanceNormal = 1,
     olImportanceHigh = 2
 } OlImportance;
- 
+
 typedef enum 
 {
-    olOriginator = 0, 
-    olTo = 1, 
-    olCC = 2, 
+    olOriginator = 0,
+    olTo = 1,
+    olCC = 2,
     olBCC = 3
 } OlMailRecipientType;
- 
+
+typedef enum 
+{
+    olEditorText = 1,
+    olEditorHTML = 2,
+    olEditorRTF = 3,
+    olEditorWord = 4
+} OlEditorType; /* PR_MESSAGE_EDITOR_FORMAT type */
+
+#if 0
+typedef enum 
+{
+    olFolderDeletedItems = 3,
+    olFolderOutbox = 4,
+    olFolderSentMail = 5,
+    olFolderInbox = 6,
+    olFolderCalendar = 9,
+    olFolderContacts = 10,
+    olFolderJournal = 11,
+    olFolderNotes = 12,
+    olFolderTasks = 13,
+    olFolderDrafts = 16,
+    olPublicFoldersAllPublicFolders = 18,
+    olFolderConflicts = 19,
+    olFolderSyncIssues = 20,
+    olFolderLocalFailures = 21,
+    olFolderServerFailures = 22,
+    olFolderJunk = 23,
+    olFolderRssFeeds = 25,
+    olFolderToDo = 28,
+    olFolderManagedEmail = 29
+} OlDefaultFolders;
+
+#define	olFolderTopInformationStore	1
+#define	olFolderCommonView		8
+#define	olFolderFinder			24
+#define	olFolderPublicRoot		25
+#define	olFolderPublicIPMSubtree	26
+#endif
+
+
 /* APPOINTMENTS */
- /*
-  * Appointment flags with PR_APPOINTMENT_BUSY_STATUS
-  */
 typedef enum 
 {
     olFree = 0,
     olTentative = 1,
     olBusy = 2,
     olOutOfOffice = 3
-} OlBusyStatus;
- 
+} OlBusyStatus; /* Appointment flags with PR_APPOINTMENT_BUSY_STATUS */
+
 typedef enum 
 {
     olOrganizer = 0,
@@ -82,24 +119,34 @@ typedef enum
     olOptional = 2,
     olResource = 3
 } OlMeetingRecipientType;
- 
+
 typedef enum 
 {
     olMeetingTentative = 2,
     olMeetingAccepted = 3,
     olMeetingDeclined = 4
 } OlMeetingResponse;
- 
-typedef enum  
+
+typedef enum 
 {
-    olResponseNone = 0, 
-    olResponseOrganized = 1, 
-    olResponseTentative = 2, 
-    olResponseAccepted = 3, 
-    olResponseDeclined = 4, 
+    olResponseNone = 0,
+    olResponseOrganized = 1,
+    olResponseTentative = 2,
+    olResponseAccepted = 3,
+    olResponseDeclined = 4,
     olResponseNotResponded = 5
 } OlResponseStatus;
- 
+
+typedef enum 
+{
+    mtgEmpty = 		0x00000000,
+    mtgRequest = 	0x00000001,
+    mtgFull = 		0x00010000,
+    mtgInfo = 		0x00020000,
+    mtgOutOfDate = 	0x00080000,
+    mtgDelegatorCopy = 	0x00100000
+} MeetingType;
+
 typedef enum 
 {
     olNonMeeting = 0,
@@ -107,14 +154,15 @@ typedef enum
     olMeetingReceived = 3,
     olMeetingCanceled = 5
 } OlMeetingStatus;
- 
+
 typedef enum 
 {
     olNetMeeting = 0,
     olNetShow = 1,
     olChat = 2
 } OlNetMeetingType;
- 
+
+
 /* TASKS */
 typedef enum 
 {
@@ -131,7 +179,7 @@ typedef enum
     olDelegatedTask = 1,
     olOwnTask = 2
 } OlTaskOwnership;
-#endif 
+#endif
 
 typedef enum 
 {
@@ -161,15 +209,16 @@ typedef enum
 
 /* NOTES */
 #if 0
-typedef enum  
+typedef enum 
 {
-    olBlue = 0, 
-    olGreen = 1, 
-    olPink = 2, 
-    olYellow = 3, 
+    olBlue = 0,
+    olGreen = 1,
+    olPink = 2,
+    olYellow = 3,
     olWhite = 4
 } OlNoteColor;
 #endif
+
 
 /* RECURRENCE (APPOINTMENTS/MEETINGS/TASKS) */
 typedef enum 
@@ -191,59 +240,6 @@ typedef enum
 } OlRecurrenceType;
 
 
-/*
- * PR_MESSAGE_EDITOR_FORMAT type
- */
-typedef enum 
-{
-    olEditorText = 1,
-    olEditorHTML = 2,
-    olEditorRTF = 3,
-    olEditorWord = 4
-} OlEditorType;
- 
-/*
- * Default folders
- */
-#if 0
-typedef enum  {
-    olFolderDeletedItems = 3,
-    olFolderOutbox = 4,
-    olFolderSentMail = 5,
-    olFolderInbox = 6,
-    olFolderCalendar = 9,
-    olFolderContacts = 10,
-    olFolderJournal = 11,
-    olFolderNotes = 12,
-    olFolderTasks = 13,
-    olFolderDrafts = 16,
-    olPublicFoldersAllPublicFolders = 18,
-    olFolderConflicts = 19,
-    olFolderSyncIssues = 20,
-    olFolderLocalFailures = 21,
-    olFolderServerFailures = 22,
-    olFolderJunk = 23,
-    olFolderRssFeeds = 25,
-    olFolderToDo = 28,
-    olFolderManagedEmail = 29
-} OlDefaultFolders;
-
-#define	olFolderTopInformationStore	1
-#define	olFolderCommonView		8
-#define	olFolderFinder			24
-#define	olFolderPublicRoot		25
-#define	olFolderPublicIPMSubtree	26
-#endif
-
-/*
- * Priority
- */
-
-#define	PRIORITY_LOW 	-1
-#define	PRIORITY_NORMAL 0
-#define	PRIORITY_HIGH 	1
-
 G_END_DECLS
 
 #endif
-

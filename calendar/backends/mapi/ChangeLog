@@ -1,3 +1,10 @@
+2008-06-23  Suman Manjunath  <msuman@novell.com>
+
+	* e-cal-backend-mapi-recur-utils.c (get_ical_weekday),
+	(e_cal_backend_mapi_util_bin_to_rrule):
+	* e-cal-backend-mapi-recur-utils.h: 
+	Added these files. Yet to use them. 
+
 2008-06-10  Suman Manjunath  <msuman@novell.com>
 
 	* e-cal-backend-mapi-constants.h: [deleted] Put the enumerations in 

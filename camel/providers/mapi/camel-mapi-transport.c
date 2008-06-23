@@ -396,7 +396,12 @@ mapi_item_add_recipient (const char *recipients, OlMailRecipientType type, GSLis
 	ExchangeMAPIRecipient *recipient = g_new0 (ExchangeMAPIRecipient, 1);
 
 	recipient->email_id = recipients;
-	recipient->type = type;
+
+	/* this memory should be freed somewhere, perhaps in the existing
+	 * exchange_mapi_util_free_recipient_list() */
+	recipient->in.req_lpProps = g_new0 (struct SPropValue, 1);
+	recipient->in.req_cValues = 1;
+	set_SPropValue_proptag (&(recipient->in.req_lpProps[0]), PR_RECIPIENT_TYPE, (const void *) &type);
 
 	*recipient_list = g_slist_append (*recipient_list, recipient);
 }
@@ -406,7 +411,7 @@ mapi_message_item_send (MapiItem *item, GSList *attachments, GSList *recipients)
 {
 	guint64 fid = 0;
 
-	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, item->attachments, item->generic_streams);
+	exchange_mapi_create_item (olFolderOutbox, fid, NULL, NULL, mail_build_props, item, recipients, item->attachments, item->generic_streams, 0);
 
 	return 0;
 }

@@ -1,3 +1,14 @@
+2008-06-23  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c (exchange_mapi_util_get_recipients),
+	(set_recipient_properties), (exchange_mapi_util_modify_recipients),
+	(exchange_mapi_create_item), (exchange_mapi_modify_item):
+	* exchange-mapi-connection.h:
+	API change, re-design of ExchangeMAPIRecipient, related changes. 
+	* exchange-mapi-defs.h: Whitespace cleanup
+	* exchange-mapi-utils.c (exchange_mapi_util_free_recipient_list): Free
+	the SPropValue array for each recipient. 
+
 2008-06-10  Suman Manjunath  <msuman@novell.com>
 
 	* Makefile.am: Added exchange-mapi-defs.h

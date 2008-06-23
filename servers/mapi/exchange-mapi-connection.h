@@ -30,7 +30,8 @@ typedef enum _ExchangeMapiOptions {
 	MAPI_OPTIONS_FETCH_ATTACHMENTS = 1<<0,
 	MAPI_OPTIONS_FETCH_RECIPIENTS = 1<<1,
 	MAPI_OPTIONS_FETCH_BODY_STREAM = 1<<2,
-	MAPI_OPTIONS_FETCH_GENERIC_STREAMS = 1<<3
+	MAPI_OPTIONS_FETCH_GENERIC_STREAMS = 1<<3, 
+	MAPI_OPTIONS_DONT_SUBMIT = 1<<4
 } ExchangeMapiOptions;
 
 #define MAPI_OPTIONS_FETCH_ALL MAPI_OPTIONS_FETCH_ATTACHMENTS | \
@@ -57,12 +58,29 @@ typedef struct {
 } ExchangeMAPIBodyStream;
 
 typedef struct {
+	/* MANDATORY */
 	const char *email_id;
-	const char *email_type;
-	const char *name;
-	uint32_t trackstatus;
-	uint32_t flags;
-	OlMailRecipientType type;
+
+	/* It is ideal to set all these properties on all recipients 
+	 * as we never know if a recipient would be resolved or not. */ 
+	struct {
+		/* These are properties which would be set on the 
+		 * recipients regardless if the recipient is resolved or not */
+		uint32_t req_cValues; 
+		struct SPropValue *req_lpProps;
+
+		/* These are properties which would be set on the 
+		 * recipients only if the recipient is MAPI_UNRESOLVED */
+		uint32_t ext_cValues; 
+		struct SPropValue *ext_lpProps;
+	} in; 
+
+	struct {
+		/* These are properties which would be set on the 
+		 * recipients after GetRecipientTable() */
+		uint32_t all_cValues; 
+		struct SPropValue *all_lpProps;
+	} out; 
 } ExchangeMAPIRecipient;
 
 struct id_list {
@@ -107,13 +125,14 @@ mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 
 			   BuildProps build_props, gpointer p_data, 
-			   GSList *recipients, GSList *attachments,
-			   GSList *generic_streams);
+			   GSList *recipients, GSList *attachments, GSList *generic_streams,
+			   uint32_t options);
 gboolean
 exchange_mapi_modify_item (uint32_t olFolder, mapi_id_t fid, mapi_id_t mid, 
 			   BuildNameID build_name_id, gpointer ni_data, 
 			   BuildProps build_props, gpointer p_data,
-			   GSList *recipients, GSList *attachments);
+			   GSList *recipients, GSList *attachments,
+			   uint32_t options);
 
 gboolean
 exchange_mapi_set_flags (uint32_t olFolder, mapi_id_t fid, GSList *mid_list, uint32_t flag);

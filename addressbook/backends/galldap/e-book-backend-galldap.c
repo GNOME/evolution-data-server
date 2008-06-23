@@ -2213,10 +2213,10 @@ authenticate_user (EBookBackend *backend,
 				time_t t1, t2;
 				int diff;
 
-				char *t = e_book_backend_db_cache_get_time (be->priv->file_db);
+				char *cache_time = e_book_backend_db_cache_get_time (be->priv->file_db);
 				printf("Cache is populated, check if refresh is required \n");
-				if (t && *t)
-					t1 = atoi (t);
+				if (cache_time && *cache_time)
+					t1 = atoi (cache_time);
 				else
 					t1=0;
 				t2 = time (NULL);
