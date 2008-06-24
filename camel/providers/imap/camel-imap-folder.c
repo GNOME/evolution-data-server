@@ -1184,7 +1184,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 			flaglist = strdup ("(\\Seen)");
 
 			response = camel_imap_command (store, folder, &local_ex,
-					       "UID STORE %s FLAGS.SILENT %s",
+					       "UID STORE %s +FLAGS.SILENT %s",
 					       set, flaglist);
 			if (response)
 				camel_imap_response_free (store, response);
