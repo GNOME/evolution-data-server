@@ -1,3 +1,11 @@
+2008-06-24  Suman Manjunath  <msuman@novell.com>
+
+	* exchange-mapi-connection.c
+	(exchange_mapi_util_resolve_named_props),
+	(exchange_mapi_util_create_named_prop):
+	Added these two utility functions. 
+	* exchange-mapi-connection.h: API declarations for the above.
+
 2008-06-23  Suman Manjunath  <msuman@novell.com>
 
 	* exchange-mapi-connection.c (exchange_mapi_util_get_recipients),

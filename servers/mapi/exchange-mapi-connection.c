@@ -1489,6 +1489,159 @@ cleanup:
 	return result;
 }
 
+struct SPropTagArray *
+exchange_mapi_util_resolve_named_props (uint32_t olFolder, mapi_id_t fid, 
+				   BuildNameID build_name_id, gpointer ni_data)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	struct mapi_nameid *nameid;
+	struct SPropTagArray *SPropTagArray, *ret_array = NULL;
+	uint32_t i;
+
+	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	LOCK ();
+	LOGALL ();
+	mem_ctx = talloc_init("ExchangeMAPI_ResolveNamedProps");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	nameid = mapi_nameid_new(mem_ctx);
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* If fid not present then we'll use olFolder. Document this in API doc. */
+	if (fid == 0) {
+		retval = GetDefaultFolder(&obj_store, &fid, olFolder);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetDefaultFolder", GetLastError());
+			goto cleanup;
+		}
+	}
+
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	/* Add named props using callback */
+	if (build_name_id) {
+		if (!build_name_id (nameid, ni_data)) {
+			g_warning ("%s(%d): (%s): Could not build named props \n", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+			goto cleanup;
+		}
+
+		retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, SPropTagArray);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
+			goto cleanup;
+		}
+	}
+
+	ret_array = g_new0 (struct SPropTagArray, 1);
+	ret_array->aulPropTag = g_new0 (enum MAPITAGS, SPropTagArray->cValues);
+	ret_array->cValues = SPropTagArray->cValues;
+	for (i = 0; i < SPropTagArray->cValues; ++i)
+		ret_array->aulPropTag[i] = SPropTagArray->aulPropTag[i];
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	LOGNONE ();
+	UNLOCK ();
+
+	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return ret_array;
+}
+
+uint32_t
+exchange_mapi_util_create_named_prop (uint32_t olFolder, mapi_id_t fid, 
+				      const char *named_prop_name, uint32_t ptype)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	struct GUID guid;
+	struct MAPINAMEID *nameid;
+	struct SPropTagArray *SPropTagArray;
+	uint32_t propID = 0x0000;
+
+	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	LOCK ();
+	LOGALL ();
+	mem_ctx = talloc_init("ExchangeMAPI_CreateNamedProp");
+
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	GUID_from_string(PS_INTERNET_HEADERS, &guid);
+	nameid = talloc_zero(mem_ctx, struct MAPINAMEID);
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+	nameid[0].lpguid = guid;
+	nameid[0].ulKind = MNID_STRING;
+	nameid[0].kind.lpwstr.lpwstrName = named_prop_name;
+	nameid[0].kind.lpwstr.length = strlen(named_prop_name) * 2 + 2;
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* If fid not present then we'll use olFolder. Document this in API doc. */
+	if (fid == 0) {
+		retval = GetDefaultFolder(&obj_store, &fid, olFolder);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetDefaultFolder", GetLastError());
+			goto cleanup;
+		}
+	}
+
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	/* Fetch an ID from the server */
+	retval = GetIDsFromNames(&obj_folder, 1, &nameid[0], MAPI_CREATE, &SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("GetIDsFromNames", GetLastError());
+		goto cleanup;
+	}
+
+	propID = SPropTagArray->aulPropTag[0] | ptype;
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	LOGNONE ();
+	UNLOCK ();
+
+	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return propID; 
+}
+
 mapi_id_t
 exchange_mapi_create_item (uint32_t olFolder, mapi_id_t fid, 
 			   BuildNameID build_name_id, gpointer ni_data, 

@@ -143,4 +143,11 @@ exchange_mapi_remove_items (uint32_t olFolder, mapi_id_t fid, GSList *mids);
 gboolean exchange_mapi_get_folders_list (GSList **mapi_folders); 
 gboolean exchange_mapi_get_pf_folders_list (GSList **mapi_folders); 
 
+struct SPropTagArray *
+exchange_mapi_util_resolve_named_props (uint32_t olFolder, mapi_id_t fid, 
+				   BuildNameID build_name_id, gpointer ni_data);
+uint32_t
+exchange_mapi_util_create_named_prop (uint32_t olFolder, mapi_id_t fid, 
+				      const char *named_prop_name, uint32_t ptype);
+
 #endif
