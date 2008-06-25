@@ -104,8 +104,6 @@ camel_mapi_summary_class_init (CamelMapiSummaryClass *klass)
 	cfs_class->message_info_save = mapi_message_info_save;
 	cfs_class->content_info_load = mapi_content_info_load;
 	cfs_class->content_info_save = mapi_content_info_save;
-	cfs_class->info_set_flags = mapi_info_set_flags;
-
 }
 
 
@@ -189,12 +187,5 @@ mapi_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInf
 {
 	//TODO
 	return 0;
-}
-
-static gboolean
-mapi_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
-{
-	//TODO
-	return TRUE;
 }
 

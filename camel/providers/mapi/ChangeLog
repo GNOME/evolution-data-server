@@ -1,5 +1,10 @@
-2008-06-23  Suman Manjunath  <msuman@novell.com>
+2008-06-25  Johnny Jacob  <jjohnny@novell.com>
 
+	* camel-mapi-summary.c (mapi_info_set_flags): Removed. No need to override this 
+	now.
+
+2008-06-23  Suman Manjunath  <msuman@novell.com>
+	
 	* camel-mapi-transport.c (mapi_item_add_recipient),
 	(mapi_message_item_send): API change fix, use re-designed 
 	ExchangeMAPIRecipient. 
