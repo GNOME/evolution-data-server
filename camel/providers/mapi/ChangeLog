@@ -1,5 +1,9 @@
 2008-06-25  Johnny Jacob  <jjohnny@novell.com>
 
+	* camel-mapi-store.c (mapi_construct): Disable VTrash folder.
+
+2008-06-25  Johnny Jacob  <jjohnny@novell.com>
+
 	* camel-mapi-summary.c (mapi_info_set_flags): Removed. No need to override this 
 	now.
 

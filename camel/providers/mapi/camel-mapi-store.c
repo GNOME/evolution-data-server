@@ -247,7 +247,8 @@ static void mapi_construct(CamelService *service, CamelSession *session,
 	priv->parent_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	store->flags &= ~CAMEL_STORE_VJUNK;
-	//store->flags &= ~CAMEL_STORE_VTRASH;
+	store->flags &= ~CAMEL_STORE_VTRASH;
+
 }
 
 static char
