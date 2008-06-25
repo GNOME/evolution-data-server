@@ -1,3 +1,12 @@
+2008-06-25  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-mime-utils.c (camel_header_decode_date): Don't crash if
+	the str argument is NULL.
+
+	* camel-folder-summary.c (message_info_new_from_header): Don't
+	allow ourselves to pass NULL as the str argument to
+	camel_header_decode_date().
+
 2008-06-21  Jeffrey Stedfast  <fejj@novell.com>
 
 	* broken-date-parser.[c,h]: Removed, more-or-less moved into

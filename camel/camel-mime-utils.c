@@ -4175,7 +4175,7 @@ camel_header_decode_date (const char *str, int *tz_offset)
 	struct _date_token *token, *tokens;
 	time_t date;
 	
-	if (!(tokens = datetok (str))) {
+	if (!str || !(tokens = datetok (str))) {
 		if (tz_offset)
 			*tz_offset = 0;
 		

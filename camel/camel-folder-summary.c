@@ -1736,16 +1736,15 @@ camel_folder_summary_content_info_new(CamelFolderSummary *s)
 static CamelMessageInfo *
 message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 {
-	CamelMessageInfoBase *mi;
-	const char *received;
-	guint8 *digest;
-	gsize length;
+	const char *received, *date, *content, *charset = NULL;
 	struct _camel_header_references *refs, *irt, *scan;
-	char *msgid;
-	int count;
 	char *subject, *from, *to, *cc, *mlist;
 	CamelContentType *ct = NULL;
-	const char *content, *charset = NULL;
+	CamelMessageInfoBase *mi;
+	guint8 *digest;
+	gsize length;
+	char *msgid;
+	int count;
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -1777,7 +1776,12 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	
 	mi->user_flags = NULL;
 	mi->user_tags = NULL;
-	mi->date_sent = camel_header_decode_date(camel_header_raw_find(&h, "date", NULL), NULL);
+	
+	if ((date = camel_header_raw_find (&h, "date", NULL)))
+		mi->date_sent = camel_header_decode_date (date, NULL);
+	else
+		mi->date_sent = 0;
+	
 	received = camel_header_raw_find(&h, "received", NULL);
 	if (received)
 		received = strrchr(received, ';');
