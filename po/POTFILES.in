@@ -21,7 +21,6 @@ calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
-camel/broken-date-parser.c
 camel/camel-address.c
 camel/camel-arg.c
 camel/camel-block-file.c
