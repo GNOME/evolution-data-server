@@ -1,3 +1,12 @@
+2008-06-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #476640
+
+	* backends/file/e-cal-backend-file.c: (cancel_received_object):
+	Pass back old and new object after the remove.
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_receive_objects): Cancel event properly.
+
 2008-06-22  Patrick Ohly  <patrick.ohly@gmx.de>
 
 	* libecal/e-cal-check-timezones.c,
