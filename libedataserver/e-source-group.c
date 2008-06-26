@@ -316,6 +316,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 			goto done;
 		}
 		e_source_group_add_source (new, new_source, -1);
+		g_object_unref (new_source);
 	}
 
 	e_source_group_set_readonly (new, readonly_str && !strcmp (GC readonly_str, "yes"));
@@ -713,6 +714,7 @@ e_source_group_remove_source (ESourceGroup *group,
 							      group);
 			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_emit (group, signals[CHANGED], 0);
+			g_object_unref (source);
 			return TRUE;
 		}
 	}
@@ -742,6 +744,7 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 							      group);
 			g_signal_emit (group, signals[SOURCE_REMOVED], 0, source);
 			g_signal_emit (group, signals[CHANGED], 0);
+			g_object_unref (source);
 			return TRUE;
 		}
 	}
