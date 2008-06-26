@@ -909,7 +909,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 					const uint32_t *GetPropsList, const uint16_t cn_props, 
 					BuildNameID build_name_id, 
 					struct mapi_SRestriction *res,
-					FetchItemsCallback cb, 
+					FetchCallback cb, 
 					gpointer data, guint32 options)
 {
 	enum MAPISTATUS retval;
@@ -1099,7 +1099,7 @@ exchange_mapi_connection_fetch_items   (mapi_id_t fid,
 			mapi_SPropValue_array_named(&obj_message, &properties_array);
 
 			/* NOTE: stream_list, recipient_list and attach_list should be freed by the callback */
-			if (!cb (&properties_array, *pfid, *pmid, stream_list, recip_list, attach_list, data)) {
+			if (!cb (&properties_array, *pfid, *pmid, stream_list, recip_list, attach_list, data, NULL)) {
 				g_warning ("%s(%d): %s: Callback failed for message-id %016llX \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, *pmid);
 			}
 		}
@@ -1128,7 +1128,7 @@ cleanup:
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
 				     const uint32_t *GetPropsList, const uint16_t cn_props, 
-				     BuildNameID build_name_id, FetchItemCallback cb, 
+				     BuildNameID build_name_id, FetchCallback cb, 
 				     gpointer data, guint32 options)
 {
 	enum MAPISTATUS retval;
@@ -1252,7 +1252,7 @@ exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid,
 		mapi_SPropValue_array_named(&obj_message, &properties_array);
 
 		/* NOTE: stream_list, recipient_list and attach_list should be freed by the callback */
-		retobj = cb (&properties_array, fid, mid, stream_list, recip_list, attach_list);
+		cb (&properties_array, fid, mid, stream_list, recip_list, attach_list, NULL, &retobj);
 	}
 
 //	if (GetPropsTagArray->cValues) 
@@ -1491,7 +1491,7 @@ cleanup:
 
 struct SPropTagArray *
 exchange_mapi_util_resolve_named_props (uint32_t olFolder, mapi_id_t fid, 
-				   BuildNameID build_name_id, gpointer ni_data)
+					BuildNameID build_name_id, gpointer ni_data)
 {
 	enum MAPISTATUS retval;
 	TALLOC_CTX *mem_ctx;
@@ -1567,6 +1567,77 @@ cleanup:
 	return ret_array;
 }
 
+struct SPropTagArray *
+exchange_mapi_util_resolve_named_prop (uint32_t olFolder, mapi_id_t fid, uint16_t lid, const char *OLEGUID)
+{
+	enum MAPISTATUS retval;
+	TALLOC_CTX *mem_ctx;
+	mapi_object_t obj_store;
+	mapi_object_t obj_folder;
+	struct mapi_nameid *nameid;
+	struct SPropTagArray *SPropTagArray, *ret_array = NULL;
+	uint32_t i;
+
+	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	LOCK ();
+	LOGALL ();
+	mem_ctx = talloc_init("ExchangeMAPI_ResolveNamedProp");
+	mapi_object_init(&obj_store);
+	mapi_object_init(&obj_folder);
+
+	nameid = mapi_nameid_new(mem_ctx);
+	SPropTagArray = talloc_zero(mem_ctx, struct SPropTagArray);
+
+	/* Open the message store */
+	retval = OpenMsgStore(&obj_store);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenMsgStore", GetLastError());
+		goto cleanup;
+	}
+
+	/* If fid not present then we'll use olFolder. Document this in API doc. */
+	if (fid == 0) {
+		retval = GetDefaultFolder(&obj_store, &fid, olFolder);
+		if (retval != MAPI_E_SUCCESS) {
+			mapi_errstr("GetDefaultFolder", GetLastError());
+			goto cleanup;
+		}
+	}
+
+	/* Attempt to open the folder */
+	retval = OpenFolder(&obj_store, fid, &obj_folder);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("OpenFolder", GetLastError());
+		goto cleanup;
+	}
+
+	mapi_nameid_lid_add (nameid, lid, OLEGUID);
+
+	retval = mapi_nameid_GetIDsFromNames(nameid, &obj_folder, SPropTagArray);
+	if (retval != MAPI_E_SUCCESS) {
+		mapi_errstr("mapi_nameid_GetIDsFromNames", GetLastError());
+		goto cleanup;
+	}
+
+	ret_array = g_new0 (struct SPropTagArray, 1);
+	ret_array->aulPropTag = g_new0 (enum MAPITAGS, SPropTagArray->cValues);
+	ret_array->cValues = SPropTagArray->cValues;
+	for (i = 0; i < SPropTagArray->cValues; ++i)
+		ret_array->aulPropTag[i] = SPropTagArray->aulPropTag[i];
+
+cleanup:
+	mapi_object_release(&obj_folder);
+	mapi_object_release(&obj_store);
+	talloc_free(mem_ctx);
+	LOGNONE ();
+	UNLOCK ();
+
+	d(g_print("%s(%d): Leaving %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
+
+	return ret_array;
+}
+
 uint32_t
 exchange_mapi_util_create_named_prop (uint32_t olFolder, mapi_id_t fid, 
 				      const char *named_prop_name, uint32_t ptype)
@@ -1578,7 +1649,7 @@ exchange_mapi_util_create_named_prop (uint32_t olFolder, mapi_id_t fid,
 	struct GUID guid;
 	struct MAPINAMEID *nameid;
 	struct SPropTagArray *SPropTagArray;
-	uint32_t propID = 0x0000;
+	uint32_t propID = 0x00000000;
 
 	d(g_print("%s(%d): Entering %s \n", __FILE__, __LINE__, __PRETTY_FUNCTION__));
 

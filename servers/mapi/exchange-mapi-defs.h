@@ -29,8 +29,7 @@
 G_BEGIN_DECLS
 
 /* GENERAL */
-typedef enum 
-{
+typedef enum {
     olSunday = 1,
     olMonday = 2,
     olTuesday = 4,
@@ -40,40 +39,48 @@ typedef enum
     olSaturday = 64
 } OlDaysOfWeek;
 
-typedef enum 
-{
+typedef enum {
     olNormal = 0,
     olPersonal = 1,
     olPrivate = 2,
     olConfidential = 3
 } OlSensitivity;
 
-typedef enum 
-{
+typedef enum {
     olImportanceLow = 0,
     olImportanceNormal = 1,
     olImportanceHigh = 2
 } OlImportance;
 
-typedef enum 
-{
+typedef enum {
     olOriginator = 0,
     olTo = 1,
     olCC = 2,
     olBCC = 3
 } OlMailRecipientType;
 
-typedef enum 
-{
+typedef enum {
     olEditorText = 1,
     olEditorHTML = 2,
     olEditorRTF = 3,
     olEditorWord = 4
 } OlEditorType; /* PR_MESSAGE_EDITOR_FORMAT type */
 
+typedef enum {
+    SingleAppt = 0x0400 ,
+    RecurAppt = 0x0401 ,
+    SingleMeet = 0x0402 , 
+    RecurMeet = 0x0403 ,
+    MeetReq = 0x0404 ,
+    RespAccept = 0x0405 ,
+    RespDecline = 0x0406 ,
+    RespTentAccept = 0x0407 ,
+    MeetCancel = 0x0408 ,
+    MeetInfoUpdate = 0x0409 
+} IconIndex;
+
 #if 0
-typedef enum 
-{
+typedef enum {
     olFolderDeletedItems = 3,
     olFolderOutbox = 4,
     olFolderSentMail = 5,
@@ -104,31 +111,27 @@ typedef enum
 
 
 /* APPOINTMENTS */
-typedef enum 
-{
+typedef enum {
     olFree = 0,
     olTentative = 1,
     olBusy = 2,
     olOutOfOffice = 3
 } OlBusyStatus; /* Appointment flags with PR_APPOINTMENT_BUSY_STATUS */
 
-typedef enum 
-{
+typedef enum {
     olOrganizer = 0,
     olRequired = 1,
     olOptional = 2,
     olResource = 3
 } OlMeetingRecipientType;
 
-typedef enum 
-{
+typedef enum {
     olMeetingTentative = 2,
     olMeetingAccepted = 3,
     olMeetingDeclined = 4
 } OlMeetingResponse;
 
-typedef enum 
-{
+typedef enum {
     olResponseNone = 0,
     olResponseOrganized = 1,
     olResponseTentative = 2,
@@ -137,8 +140,7 @@ typedef enum
     olResponseNotResponded = 5
 } OlResponseStatus;
 
-typedef enum 
-{
+typedef enum {
     mtgEmpty = 		0x00000000,
     mtgRequest = 	0x00000001,
     mtgFull = 		0x00010000,
@@ -147,16 +149,14 @@ typedef enum
     mtgDelegatorCopy = 	0x00100000
 } MeetingType;
 
-typedef enum 
-{
+typedef enum {
     olNonMeeting = 0,
     olMeeting = 1,
     olMeetingReceived = 3,
     olMeetingCanceled = 5
 } OlMeetingStatus;
 
-typedef enum 
-{
+typedef enum {
     olNetMeeting = 0,
     olNetShow = 1,
     olChat = 2
@@ -164,8 +164,7 @@ typedef enum
 
 
 /* TASKS */
-typedef enum 
-{
+typedef enum {
     olTaskNotDelegated = 0,
     olTaskDelegationUnknown = 1,
     olTaskDelegationAccepted = 2,
@@ -173,22 +172,19 @@ typedef enum
 } OlTaskDelegationState;
 
 #if 0
-typedef enum 
-{
+typedef enum {
     olNewTask = 0,
     olDelegatedTask = 1,
     olOwnTask = 2
 } OlTaskOwnership;
 #endif
 
-typedef enum 
-{
+typedef enum {
     olUpdate = 2,
     olFinalStatus = 3
 } OlTaskRecipientType;
 
-typedef enum 
-{
+typedef enum {
     olTaskSimple = 0,
     olTaskAssign = 1,
     olTaskAccept = 2,
@@ -196,8 +192,7 @@ typedef enum
 } OlTaskResponse;
 
 #if 0
-typedef enum 
-{
+typedef enum {
     olTaskNotStarted = 0,
     olTaskInProgress = 1,
     olTaskComplete = 2,
@@ -209,8 +204,7 @@ typedef enum
 
 /* NOTES */
 #if 0
-typedef enum 
-{
+typedef enum {
     olBlue = 0,
     olGreen = 1,
     olPink = 2,
@@ -221,16 +215,14 @@ typedef enum
 
 
 /* RECURRENCE (APPOINTMENTS/MEETINGS/TASKS) */
-typedef enum 
-{
+typedef enum {
     olApptNotRecurring = 0,
     olApptMaster = 1,
     olApptOccurrence = 2,
     olApptException = 3
 } OlRecurrenceState;
 
-typedef enum 
-{
+typedef enum {
     olRecursDaily = 0,
     olRecursWeekly = 1,
     olRecursMonthly = 2,

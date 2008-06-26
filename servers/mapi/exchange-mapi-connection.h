@@ -87,10 +87,8 @@ struct id_list {
 	mapi_id_t id;
 };
 
-typedef gboolean (*FetchItemsCallback) 	(struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, 
-					GSList *streams, GSList *recipients, GSList *attachments, gpointer data);
-typedef gpointer (*FetchItemCallback) 	(struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, 
-					GSList *streams, GSList *recipients, GSList *attachments);
+typedef gboolean (*FetchCallback) 	(struct mapi_SPropValue_array *, const mapi_id_t fid, const mapi_id_t mid, 
+					GSList *streams, GSList *recipients, GSList *attachments, gpointer in, gpointer out);
 typedef gboolean (*BuildNameID) 	(struct mapi_nameid *nameid, gpointer data);
 typedef int 	 (*BuildProps) 		(struct SPropValue **, struct SPropTagArray *, gpointer data);
 
@@ -106,13 +104,13 @@ exchange_mapi_connection_exists (void);
 gpointer
 exchange_mapi_connection_fetch_item (mapi_id_t fid, mapi_id_t mid, 
 				     const uint32_t *GetPropsList, const uint16_t cn_props, 
-				     BuildNameID build_name_id, FetchItemCallback cb, 
+				     BuildNameID build_name_id, FetchCallback cb, 
 				     gpointer data, guint32 options);
 gboolean
 exchange_mapi_connection_fetch_items (mapi_id_t fid, 
 				      const uint32_t *GetPropsList, const uint16_t cn_props, BuildNameID build_name_id,  
 				      struct mapi_SRestriction *res, 
-				      FetchItemsCallback cb, gpointer data, guint32 options);
+				      FetchCallback cb, gpointer data, guint32 options);
 
 mapi_id_t 
 exchange_mapi_create_folder (uint32_t olFolder, mapi_id_t pfid, const char *name);
@@ -146,6 +144,9 @@ gboolean exchange_mapi_get_pf_folders_list (GSList **mapi_folders);
 struct SPropTagArray *
 exchange_mapi_util_resolve_named_props (uint32_t olFolder, mapi_id_t fid, 
 				   BuildNameID build_name_id, gpointer ni_data);
+struct SPropTagArray *
+exchange_mapi_util_resolve_named_prop (uint32_t olFolder, mapi_id_t fid, 
+				       uint16_t lid, const char *OLEGUID);
 uint32_t
 exchange_mapi_util_create_named_prop (uint32_t olFolder, mapi_id_t fid, 
 				      const char *named_prop_name, uint32_t ptype);
