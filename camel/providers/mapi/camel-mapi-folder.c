@@ -156,11 +156,12 @@ mapi_refresh_info(CamelFolder *folder, CamelException *ex)
 
 }
 
+/* here, there is no point setting 'out' param */
 static gboolean
 fetch_items_cb (struct mapi_SPropValue_array *array, const mapi_id_t fid, const mapi_id_t mid, 
-		GSList *streams, GSList *recipients, GSList *attachments, gpointer data)
+		GSList *streams, GSList *recipients, GSList *attachments, gpointer in, gpointer out)
 {
-	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(data);
+	CamelMapiFolder *mapi_folder = CAMEL_MAPI_FOLDER(in);
 	GSList *slist = mapi_folder->priv->item_list;
 	long *flags;
 	struct FILETIME *delivery_date;
@@ -571,9 +572,11 @@ end1:
 
 }
 
-static gpointer
+/* In a fetch_item_callback, the data would be returned with the 'out' param, 
+ * while the 'in' param would always be NULL */
+static gboolean
 fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mid, 
-		GSList *streams, GSList *recipients, GSList *attachments)
+		GSList *streams, GSList *recipients, GSList *attachments, gpointer in, gpointer out)
 {
 	exchange_mapi_debug_property_dump (array);
 	long *flags;
@@ -613,7 +616,8 @@ fetch_item_cb 	(struct mapi_SPropValue_array *array, mapi_id_t fid, mapi_id_t mi
 	printf("%s(%d):%s:Number of Attachments : %d \n", __FILE__, __LINE__, __PRETTY_FUNCTION__, g_slist_length (attachments));
 	item->attachments = attachments;
 
-	return item;
+	out = item; 
+	return TRUE;
 }
 
 

@@ -1,3 +1,8 @@
+2008-06-26  Suman Manjunath  <msuman@novell.com>
+
+	* camel-mapi-folder.c (fetch_items_cb), (fetch_item_cb): Fix for 
+	callback signature change. 
+
 2008-06-25  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-mapi-store.c (mapi_construct): Disable VTrash folder.
