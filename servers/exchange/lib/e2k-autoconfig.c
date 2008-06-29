@@ -1506,15 +1506,21 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		euri = e2k_uri_new (ac->home_uri);
 		path = g_strdup (euri->path + 1);
 		e2k_uri_free (euri);
-		mailbox = strrchr (path, '/');
-		if (mailbox && !mailbox[1]) {
-			*mailbox = '\0';
-			mailbox = strrchr (path, '/');
-		}
-		if (mailbox)
-			*mailbox++ = '\0';
 
-		exchange_params->mailbox  = g_strdup (mailbox);
+		/* change a mailbox only if not set by the caller */
+		if (!exchange_params->mailbox || !*exchange_params->mailbox) {
+			mailbox = strrchr (path, '/');
+			if (mailbox && !mailbox[1]) {
+				*mailbox = '\0';
+				mailbox = strrchr (path, '/');
+			}
+			if (mailbox)
+				*mailbox++ = '\0';
+
+			g_free (exchange_params->mailbox);
+			exchange_params->mailbox  = g_strdup (mailbox);
+		}
+
 		exchange_params->owa_path = g_strdup_printf ("%s%s", "/", path);
 		g_free (path);
 		exchange_params->host = g_strdup (ac->pf_server);
