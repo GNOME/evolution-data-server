@@ -1287,6 +1287,7 @@ imap_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *
 	CamelImapResponse *response;
 	int uid = 0;
 	char *set;
+	gboolean full_expunge = (store->capabilities & IMAP_CAPABILITY_UIDPLUS) == 0;
 	
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
@@ -1313,10 +1314,24 @@ imap_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *
 			return;
 		}
 
-		if (store->capabilities & IMAP_CAPABILITY_UIDPLUS) {
+		if (!full_expunge) {
 			response = camel_imap_command (store, folder, ex,
 						       "UID EXPUNGE %s", set);
-		} else
+
+			if (camel_exception_is_set (ex)) {
+				g_debug (G_STRLOC ": 'UID EXPUNGE %s' failed: %s (0x%x)", set, camel_exception_get_description (ex), camel_exception_get_id (ex));
+				camel_exception_clear (ex);
+
+				/* UID EXPUNGE failed, something is broken on the server probably,
+				   thus fall back to the full expunge. It's not so good, especially
+				   when resyncing, it will remove already marked messages on the
+				   server too. I guess that's fine anyway, isn't it?
+				   For failed command see Gnome's bug #536486 */
+				full_expunge = TRUE;
+			}
+		}
+
+		if (full_expunge)
 			response = camel_imap_command (store, folder, ex, "EXPUNGE");
 
 		if (response)
