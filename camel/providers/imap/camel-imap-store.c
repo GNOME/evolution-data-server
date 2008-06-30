@@ -2598,9 +2598,25 @@ get_folders_sync(CamelImapStore *imap_store, const char *pattern, CamelException
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
 					camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
+
+					camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_created", fi);
+					camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_subscribed", fi);
 				}
 			} else {
-				camel_store_summary_remove((CamelStoreSummary *)imap_store->summary, si);
+				char *dup_folder_name = g_strdup (camel_store_info_path (imap_store->summary, si));
+
+				if (dup_folder_name) {
+					CamelException eex;
+
+					camel_exception_init (&eex);
+					imap_folder_effectively_unsubscribed (imap_store, dup_folder_name, &eex);
+					imap_forget_folder (imap_store, dup_folder_name, &eex);
+
+					g_free (dup_folder_name);
+					camel_exception_clear (&eex);
+				} else
+					camel_store_summary_remove ((CamelStoreSummary *)imap_store->summary, si);
+
 				count--;
 				i--;
 			}

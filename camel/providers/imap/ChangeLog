@@ -1,4 +1,11 @@
-2008-06-26  Milan Crha  <mcrha@redhat.com>
+2008-06-30  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #330838
+
+	* camel-imap-store.c: (get_folders_sync): Notify application about
+	server folder changes as soon as we know about them.
+
+2008-06-30  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #536486
 
