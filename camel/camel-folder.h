@@ -174,7 +174,9 @@ typedef struct {
 	GPtrArray * (*get_uids)       (CamelFolder *folder);
 	void (*free_uids)             (CamelFolder *folder,
 				       GPtrArray *array);
-
+	
+	void (* sort_uids) (CamelFolder *folder, GPtrArray *uids);
+	
 	GPtrArray * (*get_summary)    (CamelFolder *folder);
 	void (*free_summary)          (CamelFolder *folder,
 				       GPtrArray *summary);
@@ -203,7 +205,7 @@ typedef struct {
 	void     (*freeze)    (CamelFolder *folder);
 	void     (*thaw)      (CamelFolder *folder);
 	gboolean (*is_frozen) (CamelFolder *folder);
-
+	
 	CamelFolderQuotaInfo * (*get_quota_info) (CamelFolder *folder);
 } CamelFolderClass;
 
@@ -303,6 +305,8 @@ CamelMimeMessage * camel_folder_get_message           (CamelFolder *folder,
 GPtrArray *        camel_folder_get_uids              (CamelFolder *folder);
 void               camel_folder_free_uids             (CamelFolder *folder,
 						       GPtrArray *array);
+void               camel_folder_sort_uids             (CamelFolder *folder,
+						       GPtrArray *uids);
 
 /* search api */
 gboolean           camel_folder_has_search_capability (CamelFolder *folder);

@@ -88,6 +88,8 @@ static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 static GPtrArray        *get_uids            (CamelFolder *folder);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
+static void              sort_uids           (CamelFolder *folder,
+					      GPtrArray *uids);
 static GPtrArray        *get_summary         (CamelFolder *folder);
 static void              free_summary        (CamelFolder *folder,
 					      GPtrArray *array);
@@ -143,6 +145,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->get_message = get_message;
 	camel_folder_class->get_uids = get_uids;
 	camel_folder_class->free_uids = free_uids;
+	camel_folder_class->sort_uids = sort_uids;
 	camel_folder_class->get_summary = get_summary;
 	camel_folder_class->free_summary = free_summary;
 	camel_folder_class->search_by_expression = search_by_expression;
@@ -1169,6 +1172,46 @@ camel_folder_free_uids (CamelFolder *folder, GPtrArray *array)
 
 	CF_CLASS (folder)->free_uids (folder, array);
 }
+
+
+static int
+uidcmp (const void *v0, const void *v1)
+{
+	const char *str0 = *(const char **) v0;
+	const char *str1 = *(const char **) v1;
+	guint32 uid0 = strtoul (str0, NULL, 10);
+	guint32 uid1 = strtoul (str1, NULL, 10);
+	
+	if (uid0 < uid1)
+		return -1;
+	else if (uid0 == uid1)
+		return 0;
+	else
+		return 1;
+}
+
+static void
+sort_uids (CamelFolder *folder, GPtrArray *uids)
+{
+	qsort (uids->pdata, uids->len, sizeof (void *), uidcmp);
+}
+
+
+/**
+ * camel_folder_sort_uids:
+ * @folder: a #CamelFolder object
+ * @uids: array of uids
+ *
+ * Sorts the array of UIDs.
+ **/
+void
+camel_folder_sort_uids (CamelFolder *folder, GPtrArray *uids)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	
+	CF_CLASS (folder)->sort_uids (folder, uids);
+}
+
 
 static GPtrArray *
 get_summary(CamelFolder *folder)
