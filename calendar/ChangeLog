@@ -1,3 +1,11 @@
+2008-07-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #329571
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_modify_object):
+	Preserve detached instances when modifying master object.
+
 2008-06-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #476640
