@@ -2694,7 +2694,7 @@ static struct flag_names_t {
 } flag_names[] = {
 	{ "answered", CAMEL_MESSAGE_ANSWERED },
 	{ "deleted", CAMEL_MESSAGE_DELETED },
-	{ "draft", CAMEL_MESSAGE_DELETED },
+	{ "draft", CAMEL_MESSAGE_DRAFT },
 	{ "flagged", CAMEL_MESSAGE_FLAGGED },
 	{ "seen", CAMEL_MESSAGE_SEEN },
 	{ "attachments", CAMEL_MESSAGE_ATTACHMENTS },
