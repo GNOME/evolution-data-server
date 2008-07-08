@@ -72,9 +72,10 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 {
 	LoadSourceData *data = closure;
 
-	if (status != E_BOOK_ERROR_OK) {
+	switch (status) {
+
 		/* the user clicked cancel in the password dialog */
-		if (status == E_BOOK_ERROR_CANCELLED) {
+		case E_BOOK_ERROR_CANCELLED:
 			if (e_book_check_static_capability (book, "anon-access")) {
 				GtkWidget *dialog;
 
@@ -89,21 +90,16 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 								 _("Accessing LDAP Server anonymously"));
 				g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
 				gtk_widget_show (dialog);
-				if (data->open_func)
-					data->open_func (book, E_BOOK_ERROR_OK, data->open_func_data);
-				free_load_source_data (data);
-				return;
 			}
-		} else if (status == E_BOOK_ERROR_INVALID_SERVER_VERSION) {
-#if 0
-			e_error_run (NULL, "addressbook:server-version", NULL);
-#endif
+			break;
+
+		case E_BOOK_ERROR_INVALID_SERVER_VERSION:
 			status = E_BOOK_ERROR_OK;
-			if (data->open_func)
-				data->open_func (book, status, data->open_func_data);
-			free_load_source_data (data);
-			return;
-		} else {
+			break;
+
+		case E_BOOK_ERROR_AUTHENTICATION_FAILED:
+		case E_BOOK_ERROR_AUTHENTICATION_REQUIRED:
+		{
 			const gchar *uri = e_book_get_uri (book);
 			gchar *stripped_uri = remove_parameters_from_uri (uri);
 			const gchar *auth_domain = e_source_get_property (data->source, "auth-domain");
@@ -120,6 +116,9 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 
 			return;
 		}
+
+		default:
+			break;
 	}
 
 	if (data->open_func)

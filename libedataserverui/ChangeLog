@@ -1,3 +1,14 @@
+2008-07-08  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #537415
+
+	* e-book-auth-util.c (load_source_auth_cb):
+	Break a busy loop between Evolution and Gnome-Keyring by only
+	reauthenticating when the EBookStatus is AUTHENTICATION_FAILED
+	or AUTHENTICATION_REQUIRED.  Fixes a case where we kept trying
+	to authenticate to an unspecified Global Catalog server, where
+	the EBookStatus was REPOSITORY_OFFLINE.
+
 2008-06-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #534946
