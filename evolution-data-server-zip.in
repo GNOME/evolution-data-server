@@ -68,7 +68,7 @@ EOF
 
 zip -r $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
 
-zip -r $ZIP share/pixmaps/evolution-data-server-@BASE_VERSION@
+zip -r $ZIP share/pixmaps/evolution-data-server
 
 if [ -f share/locale/de/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo ]; then
   zip $ZIP share/locale/*/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo
