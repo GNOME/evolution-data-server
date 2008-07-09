@@ -1,3 +1,9 @@
+2008-07-09  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: No version number for
+	share/pixmaps/evolution-data-server. Use -D when using -r to not
+	add pointless entries for directories in the zip files.
+
 2008-06-26  Julien Puydt  <jpuydt@gnome.org>
 
 	* libedataserver/e-source-group.c: Added missing g_object_unref on

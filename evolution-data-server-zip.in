@@ -66,9 +66,9 @@ share/evolution-data-server-@BASE_VERSION@/glade/e-name-selector-dialog.glade
 share/evolution-data-server-@BASE_VERSION@/weather/Locations.xml
 EOF
 
-zip -r $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
+zip -r -D $ZIP share/evolution-data-server-@BASE_VERSION@/zoneinfo
 
-zip -r $ZIP share/pixmaps/evolution-data-server-@BASE_VERSION@
+zip -r -D $ZIP share/pixmaps/evolution-data-server
 
 if [ -f share/locale/de/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo ]; then
   zip $ZIP share/locale/*/LC_MESSAGES/evolution-data-server-@BASE_VERSION@.mo
@@ -77,7 +77,7 @@ else
 fi
 
 rm $DEVZIP
-zip -r $DEVZIP -@ <<EOF
+zip -r -D $DEVZIP -@ <<EOF
 lib/libcamel-1.2.dll.a
 lib/libcamel-provider-1.2.dll.a
 lib/libebook-1.2.dll.a
