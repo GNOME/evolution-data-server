@@ -57,6 +57,7 @@ static CategoryInfo default_categories[] = {
 	{ N_("Miscellaneous"), "category_miscellaneous_16.png" },
 	{ N_("Personal"), "category_personal_16.png" },
 	{ N_("Phone Calls"), "category_phonecalls_16.png" },
+	/* Translators: "Status" is a category name; it can mean anything user wants to */
 	{ N_("Status"), "category_status_16.png" },
 	{ N_("Strategies"), "category_strategies_16.png" },
 	{ N_("Suppliers"), "category_suppliers_16.png" },
