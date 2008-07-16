@@ -101,7 +101,7 @@ camel_mbox_store_get_type(void)
 }
 
 static char *extensions[] = {
-	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock"
+	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db"
 };
 
 static gboolean
@@ -638,7 +638,8 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		folderpath = camel_local_store_get_full_path(store, fi->full_name);
 		
 		mbs = (CamelMboxSummary *)camel_mbox_summary_new(NULL, path, folderpath, NULL);
-		if (camel_folder_summary_header_load((CamelFolderSummary *)mbs) != -1) {
+		#warning "track exception"
+		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *)mbs, store, fi->full_name, NULL) != -1) {
 			fi->unread = ((CamelFolderSummary *)mbs)->unread_count;
 			fi->total = ((CamelFolderSummary *)mbs)->saved_count;
 		}

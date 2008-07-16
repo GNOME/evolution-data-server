@@ -45,7 +45,7 @@
 #include "camel-offline-journal.h"
 #include "camel-private.h"
 
-#define d(x) x
+#define d(x) 
 
 static void camel_offline_journal_class_init (CamelOfflineJournalClass *klass);
 static void camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass);

@@ -251,6 +251,9 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 
+	char *oper = "AND";
+	f->operators = g_slist_prepend (f->operators, oper);
+
 	for (i=0;bool && i<argc;i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 		if (type == -1)
@@ -291,6 +294,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	}
 
 	g_hash_table_destroy(ht);
+	f->operators = g_slist_remove (f->operators, oper);
 
 	return r;
 }
@@ -306,6 +310,9 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int i;
 
 	r(printf("(or \n"));
+
+	char *oper = "OR";
+	f->operators = g_slist_prepend (f->operators, oper);
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 
@@ -345,6 +352,7 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	}
 	g_hash_table_destroy(ht);
 
+	f->operators = g_slist_remove (f->operators, oper);
 	return r;
 }
 
@@ -886,6 +894,12 @@ parse_values(ESExp *f, int *len)
 	p(printf("done parsing values\n"));
 	return terms;
 }
+
+ESExpTerm * e_sexp_parse_value (ESExp *f) 
+{
+	return parse_value (f);
+}
+
 
 static struct _ESExpTerm *
 parse_value(ESExp *f)

@@ -1,3 +1,19 @@
+2008-07-16  Sankar P  <psankar@novell.com>
+
+	Pushing disk summary changes from the madagascar branch
+
+	* camel-groupwise-folder.c (groupwise_sync_summary),
+	(groupwise_sync), (groupwise_refresh_info),
+	(groupwise_refresh_folder), (gw_update_all_items):
+	* camel-groupwise-store.c (groupwise_get_folder),
+	(gw_store_reload_folder):
+	* camel-groupwise-summary.c (camel_groupwise_summary_class_init),
+	(camel_groupwise_summary_new), (summary_header_from_db),
+	(gw_summary_header_load), (summary_header_to_db),
+	(gw_summary_header_save), (message_info_from_db),
+	(message_info_to_db), (content_info_from_db), (content_info_to_db),
+	(groupwise_summary_clear):
+
 2008-05-21  Johnny Jacob  <jjohnny@novell.com>
 
 	* camel-groupwise-store.c (convert_to_folder_info): Marking this

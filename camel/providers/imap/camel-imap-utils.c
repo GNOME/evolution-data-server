@@ -1179,10 +1179,12 @@ get_summary_uid_numeric (CamelFolderSummary *summary, int index)
 {
 	CamelMessageInfo *info;
 	unsigned long uid;
-	
-	info = camel_folder_summary_index (summary, index);
-	uid = strtoul (camel_message_info_uid (info), NULL, 10);
-	camel_message_info_free(info);
+	char *suid;
+
+	suid = camel_folder_summary_uid_from_index (summary, index);
+	uid = strtoul (suid, NULL, 10);
+	g_free (suid);
+
 	return uid;
 }
 

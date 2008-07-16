@@ -227,16 +227,10 @@ uid_num (CamelFolderSummary *summary, int index)
 {
 	char *tmp;
 	char *brk;
-	CamelMessageInfo *minfo;
 	int ret;
 	
-	minfo = camel_folder_summary_index(summary, index);
-	if(minfo == NULL)
-		return 0;
+	tmp = camel_folder_summary_uid_from_index(summary, index);
 
-	tmp = g_strdup(camel_message_info_uid(minfo));
-	camel_message_info_free(minfo);
-	
 	if((brk = strchr(tmp, ',')) == NULL)
 		ret = 0;
 	else {

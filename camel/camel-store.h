@@ -32,6 +32,7 @@
 
 #include <camel/camel-object.h>
 #include <camel/camel-service.h>
+#include <camel/camel-db.h>
 
 G_BEGIN_DECLS
 
@@ -121,6 +122,7 @@ struct _CamelStore {
 	struct _CamelStorePrivate *priv;
 	
 	CamelObjectBag *folders;
+	CamelDB *cdb;
 
 	guint32 flags;
 	guint32 mode;

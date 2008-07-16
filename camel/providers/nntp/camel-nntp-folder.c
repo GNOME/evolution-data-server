@@ -105,7 +105,7 @@ static void
 nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
 {
 	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
-	camel_folder_summary_save (folder->summary);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
 }
 
@@ -113,7 +113,7 @@ static void
 nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 {
 	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
-	camel_folder_summary_save (folder->summary);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
 }
 
@@ -419,8 +419,12 @@ static void
 nntp_folder_finalise (CamelNNTPFolder *nntp_folder)
 {
 	struct _CamelNNTPFolderPrivate *p;
+
+	CamelException ex;
+
+	camel_exception_init (&ex);
 	
-	camel_folder_summary_save (((CamelFolder*) nntp_folder)->summary);
+	camel_folder_summary_save_to_db (((CamelFolder*) nntp_folder)->summary, &ex);
 	
 	p = nntp_folder->priv;
 	g_mutex_free (p->search_lock);
@@ -512,7 +516,8 @@ camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelExcepti
 	root = g_strdup_printf("%s.ev-summary", nntp_folder->storage_path);
 	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder, root);
 	g_free(root);
-	camel_folder_summary_load (folder->summary);
+
+	camel_folder_summary_load_from_db (folder->summary, ex);
 	
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, folder_name);
 	if (si) {

@@ -634,7 +634,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 				//camel_folder_summary_clear (folder->summary);
-				camel_folder_summary_save (folder->summary);
+				camel_folder_summary_save_to_db (folder->summary, ex);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 				camel_operation_end (NULL);
 				camel_object_unref (folder);
@@ -666,7 +666,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
 	}
 
-	camel_folder_summary_save (folder->summary);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 
 	gw_store->current_folder = folder;
 	camel_object_ref (folder);
@@ -717,7 +717,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 	summary = (CamelGroupwiseSummary *) folder->summary;
 	camel_folder_summary_clear (folder->summary);
-	camel_folder_summary_save (folder->summary);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 
 	summary_count = camel_folder_summary_count (folder->summary);
 	if(!summary_count || !summary->time_string) {
@@ -742,7 +742,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
-				camel_folder_summary_save (folder->summary);
+				camel_folder_summary_save_to_db (folder->summary, ex);
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 				camel_operation_end (NULL);
 				g_free (container_id);
@@ -774,7 +774,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 		summary->time_string = g_strdup (e_gw_connection_get_server_time (priv->cnc));
 	}
 
-	camel_folder_summary_save (folder->summary);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 
 	gw_store->current_folder = folder;
 	

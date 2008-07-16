@@ -240,11 +240,15 @@ camel_pstring_free(const char *s)
 		if (count == 0) {
 			g_hash_table_remove(pstring_table, p);
 			g_free(p);
+			if (p != s) /* Only for debugging purposes */
+				g_assert(0);
 		} else {
 			g_hash_table_insert(pstring_table, p, GINT_TO_POINTER(count));
 		}
 	} else {
 		g_warning("Trying to free string not allocated from the pool '%s'", s);
+		/*Only for debugging purposes */
+		g_assert (0);
 	}
 	pthread_mutex_unlock(&pstring_lock);
 }

@@ -294,7 +294,10 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 
 	/* sort the summary based on message number (uid), since the directory order is not useful */
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_uid_cmp);
+/* 	qsort(s->uids->pdata, s->uids->len, sizeof(CamelMessageInfo *), sort_uid_cmp); */
+	#warning "verify if strcmp works the same as the other one. Too busy to check this."
+    #warning "lets build a sort support for uid fetching from the db"
+	qsort(s->uids->pdata, s->uids->len, sizeof(CamelMessageInfo *), strcmp);	
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	return 0;

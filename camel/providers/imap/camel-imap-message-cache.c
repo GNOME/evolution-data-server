@@ -179,12 +179,17 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 		else
 			uid = g_strdup (dname);
 
+		#warning "this could be wrong"
+		if (summary->loaded_infos && g_hash_table_lookup (summary->loaded_infos, uid))
+			cache_put (cache, uid, dname, NULL);
+
+		/*
 		info = camel_folder_summary_uid (summary, uid);
 		if (info) {
 			camel_message_info_free(info);
 			cache_put (cache, uid, dname, NULL);
 		} else
-			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, dname));
+			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, dname)); */
 		g_free (uid);
 	}
 	g_dir_close (dir);

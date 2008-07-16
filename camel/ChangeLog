@@ -1,3 +1,86 @@
+2008-07-16  Sankar P  <psankar@novell.com>
+
+	Pushing disk summary changes from the madagascar branch
+
+	* Makefile.am:
+	* camel-folder-search.c (camel_folder_search_class_init),
+	(camel_folder_search_finalize), (camel_folder_search_construct),
+	(camel_folder_search_set_folder),
+	(camel_folder_search_set_summary),
+	(camel_folder_search_execute_expression),
+	(camel_folder_search_search), (camel_folder_search_free_result),
+	(search_not), (search_match_all), (search_match_threads),
+	(check_header_deprecated), (check_header),
+	(search_header_contains), (db_search_header_contains),
+	(match_words_index), (match_words_messages),
+	(search_body_contains), (search_user_flag), (search_system_flag),
+	(search_user_tag), (search_uid), (read_uid_callback):
+	* camel-folder-search.h:
+	* camel-folder-summary.c (camel_folder_summary_init),
+	(camel_folder_summary_finalize), (camel_folder_summary_count),
+	(camel_folder_summary_index),
+	(camel_folder_summary_uid_from_index),
+	(camel_folder_summary_array), (message_info_from_uid),
+	(camel_folder_summary_uid), (perform_content_info_load_from_db),
+	(append_changed_uids), (camel_folder_summary_get_changed),
+	(remove_item), (remove_cache), (camel_folder_summary_cache_size),
+	(camel_folder_summary_reload_from_db),
+	(camel_folder_summary_load_from_db), (mir_from_cols),
+	(camel_read_mir_callback), (camel_folder_summary_load),
+	(perform_content_info_save_to_db), (save_to_db_cb),
+	(save_message_infos_to_db), (camel_folder_summary_save_to_db),
+	(camel_folder_summary_save),
+	(camel_folder_summary_header_load_from_db),
+	(camel_folder_summary_header_load), (summary_assign_uid),
+	(camel_folder_summary_add), (camel_folder_summary_insert),
+	(camel_folder_summary_add_from_header),
+	(camel_folder_summary_add_from_parser),
+	(camel_folder_summary_add_from_message),
+	(camel_folder_summary_clear), (camel_folder_summary_clear_db),
+	(summary_remove_uid), (camel_folder_summary_remove),
+	(camel_folder_summary_remove_uid),
+	(camel_folder_summary_remove_index_fast),
+	(camel_folder_summary_remove_index),
+	(camel_folder_summary_remove_range), (summary_meta_header_load),
+	(summary_header_from_db), (summary_header_to_db),
+	(camel_folder_summary_content_info_new), (message_info_from_db),
+	(message_info_to_db), (message_info_free), (content_info_from_db),
+	(content_info_to_db), (content_info_free), (camel_flag_set),
+	(camel_message_info_new), (info_set_flags), (info_set_user_flag),
+	(info_set_user_tag), (camel_folder_summary_class_init):
+	* camel-folder-summary.h:
+	* camel-folder-thread.c (camel_folder_thread_messages_new):
+	* camel-folder.c (camel_folder_finalize), (camel_folder_construct),
+	(camel_folder_refresh_info), (folder_getv), (folder_free),
+	(get_uids), (free_uids), (free_summary),
+	(camel_folder_free_summary), (search_free):
+	* camel-folder.h:
+	* camel-offline-journal.c:
+	* camel-store.c (camel_store_finalize), (construct):
+	* camel-store.h:
+	* camel-string-utils.c (camel_pstring_free):
+	* camel-vee-folder.c (camel_vee_folder_get_location),
+	(summary_header_to_db), (vee_sync), (vee_get_message),
+	(vee_search_by_expression), (vee_folder_add_uid),
+	(vee_folder_remove_folder), (folder_added_uid),
+	(vee_rebuild_folder), (folder_changed_remove_uid),
+	(subfolder_renamed_update), (vee_set_expression),
+	(camel_vee_folder_finalise):
+	* camel-vee-store.c (camel_vee_store_class_init),
+	(camel_vee_store_init), (construct), (vee_get_folder_info):
+	* camel-vee-summary.c (vee_message_info_free),
+	(vee_message_info_clone), (vee_info_ptr), (vee_info_uint32),
+	(vee_info_time), (vee_info_user_flag), (vee_info_user_tag),
+	(vee_info_set_user_flag), (vee_info_set_user_tag),
+	(vee_info_set_flags), (message_info_from_uid),
+	(camel_vee_summary_class_init), (camel_vee_summary_new),
+	(camel_vee_summary_get_ids), (camel_vee_summary_add):
+	* camel-vee-summary.h:
+	* camel-vtrash-folder.c (vtrash_transfer_messages_to),
+	(vtrash_search_by_expression), (vtrash_search_by_uids),
+	(vtrash_uid_added), (vtrash_folder_changed), (vtrash_add_folder),
+	(vtrash_remove_folder):
+
 2008-07-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #213072

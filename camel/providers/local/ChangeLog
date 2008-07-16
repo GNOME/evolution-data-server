@@ -1,3 +1,23 @@
+2008-07-16  Sankar P  <psankar@novell.com>
+
+	Pushing disk summary changes from the madagascar branch
+
+	* camel-local-folder.c (camel_local_folder_construct):
+	* camel-local-store.c (camel_local_store_finalize):
+	* camel-local-summary.c (camel_local_summary_class_init),
+	(local_summary_load), (camel_local_summary_load),
+	(local_summary_sync), (local_summary_add),
+	(local_summary_decode_x_evolution), (summary_header_from_db),
+	(summary_header_to_db), (message_info_new_from_header):
+	* camel-maildir-summary.c (maildir_summary_check):
+	* camel-mbox-store.c (fill_fi):
+	* camel-mbox-summary.c (camel_mbox_summary_class_init),
+	(summary_header_from_db), (summary_header_to_db),
+	(message_info_new_from_header), (message_info_from_db),
+	(message_info_to_db), (mbox_summary_sync_quick),
+	(mbox_summary_sync):
+	* camel-mh-summary.c (mh_summary_check):
+
 2008-05-30  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #318803 (Patch by Ilkka Tuohela)

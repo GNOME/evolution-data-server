@@ -42,7 +42,7 @@
 #include "camel-store.h"
 #include "camel-vtrash-folder.h"
 
-#define d(x)
+#define d(x) 
 #define w(x)
 
 static CamelServiceClass *parent_class = NULL;
@@ -153,11 +153,17 @@ camel_store_finalize (CamelObject *object)
 {
 	CamelStore *store = CAMEL_STORE (object);
 
+	d(printf ("\ncamel_store_finalize called \n"));
 	if (store->folders)
 		camel_object_bag_destroy(store->folders);
 	
 	g_static_rec_mutex_free (&store->priv->folder_lock);
-	
+
+	if (store->cdb) {
+		camel_db_close (store->cdb);
+		store->cdb = NULL;
+	}
+
 	g_free (store->priv);
 }
 
@@ -200,8 +206,32 @@ construct (CamelService *service, CamelSession *session,
 	   CamelException *ex)
 {
 	CamelStore *store = CAMEL_STORE(service);
+	char *store_db_path;
 
 	parent_class->construct(service, session, provider, url, ex);
+	if (camel_exception_is_set (ex))
+		return;
+
+	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
+
+	if (strlen (store_db_path) < 2) {
+		g_free (store_db_path);
+		store_db_path = g_build_filename ( camel_session_get_storage_path (session, service, ex), CAMEL_DB_FILE, NULL);		
+	}
+
+	store->cdb = camel_db_open (store_db_path, ex);
+	printf("store_db_path %s\n", store_db_path);
+	g_free (store_db_path);
+	if (camel_exception_is_set (ex)) {
+		g_print ("Exiting without success for stire_db_path : [%s]\n", store_db_path);
+		return;
+	}
+
+	if (camel_db_create_folders_table (store->cdb, ex))
+		printf ("something went wrong terribly\n");
+	else
+		printf ("folders table succesfully created \n");
+
 	if (camel_exception_is_set (ex))
 		return;
 

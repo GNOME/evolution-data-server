@@ -43,6 +43,7 @@
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-vtrash-folder.h"
+#include "camel-string-utils.h"
 
 #define d(x)
 #define w(x)
@@ -201,7 +202,12 @@ camel_folder_finalize (CamelObject *object)
 		camel_object_unref (camel_folder->summary);
 
 	camel_folder_change_info_free(p->changed_frozen);
-	
+
+	if (camel_folder->cdb) {
+		camel_db_close (camel_folder->cdb);
+		camel_folder->cdb = NULL;
+	}
+
 	g_static_rec_mutex_free(&p->lock);
 	g_static_mutex_free(&p->change_lock);
 	
@@ -240,6 +246,10 @@ void
 camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 			const char *full_name, const char *name)
 {
+	char *store_db_path;
+	CamelService *service = (CamelService *) parent_store;
+	CamelException ex;
+	
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (CAMEL_IS_STORE (parent_store));
 	g_return_if_fail (folder->parent_store == NULL);
@@ -251,6 +261,23 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 
 	folder->name = g_strdup (name);
 	folder->full_name = g_strdup (full_name);
+
+	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
+	camel_exception_init(&ex);
+	if (strlen (store_db_path) < 2) {
+		g_free (store_db_path);
+		store_db_path = g_build_filename ( camel_session_get_storage_path ((CamelSession *)camel_service_get_session (service), service, &ex), CAMEL_DB_FILE, NULL);		
+	}
+
+
+	folder->cdb = camel_db_open (store_db_path, &ex);
+	g_free (store_db_path);
+	
+	if (camel_exception_is_set (&ex)) {
+		g_print ("Exiting without success for stire_db_path : [%s]: %s\n", store_db_path, camel_exception_get_description(&ex));
+		camel_exception_clear(&ex);
+		return;
+	}	
 }
 
 
@@ -305,7 +332,9 @@ camel_folder_refresh_info (CamelFolder *folder, CamelException *ex)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	CAMEL_FOLDER_REC_LOCK(folder, lock);
+
 	CF_CLASS (folder)->refresh_info (folder, ex);
+	
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
@@ -352,31 +381,58 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
 		case CAMEL_FOLDER_ARG_VISIBLE:
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
+
+			#warning "Add a better base class function to get counts specific to normal/vee folder."
 			if (unread == -1) {
 				int j;
 				CamelMessageInfo *info;
 
-				/* TODO: Locking? */
-				unread = 0;
-				count = camel_folder_summary_count (folder->summary);
-				for (j = 0; j < count; j++) {
-					if ((info = camel_folder_summary_index (folder->summary, j))) {
-						guint32 flags = camel_message_info_flags(info);
+				if (!CAMEL_IS_VEE_FOLDER (folder)) {
+					/* TODO: Locking? */
+					unread = folder->summary->unread_count;
+					deleted = folder->summary->deleted_count;
+					junked = folder->summary->junk_count;
+					junked_not_deleted = folder->summary->junk_not_deleted_count;
+					visible = folder->summary->visible_count;
+                                        #warning "unread should be unread and not del/junk and take care of dirty infos also"
+					// camel_folder_summary_save_to_db (folder->summary, NULL);
+					//camel_db_count_visible_unread_message_info (folder->cdb, folder->full_name, &unread, ex);
+					//camel_db_count_junk_message_info (folder->cdb, folder->full_name, &junked, ex);
+					//camel_db_count_deleted_message_info (folder->cdb, folder->full_name, &deleted, ex);
+					//camel_db_count_junk_not_deleted_message_info (folder->cdb, folder->full_name, &junked_not_deleted, ex);
+					//camel_db_count_visible_message_info (folder->cdb, folder->full_name, &visible, ex);
+				} else {
+					count = camel_folder_summary_count (folder->summary);
+					for (j = 0; j < count; j++) {
+						if ((info = camel_folder_summary_index (folder->summary, j))) {
+							guint32 flags = camel_message_info_flags(info);
 
-						if ((flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
-							unread++;
-						if (flags & CAMEL_MESSAGE_DELETED)
-							deleted++;
-						if (flags & CAMEL_MESSAGE_JUNK) {
-							junked++;
-							if (! (flags & CAMEL_MESSAGE_DELETED))
-								junked_not_deleted++;
+							if ((flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
+								unread++;
+							if (flags & CAMEL_MESSAGE_DELETED)
+								deleted++;
+							if (flags & CAMEL_MESSAGE_JUNK) {
+								junked++;
+								if (! (flags & CAMEL_MESSAGE_DELETED))
+									junked_not_deleted++;
+							}
+							if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
+								visible++;
+							camel_message_info_free(info);
 						}
-						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
-							visible++;
-						camel_message_info_free(info);
+
+					}
+                                        #warning "I added it for vfolders summary storage, does it harm ?"
+					if (unread == -1) {
+						unread = folder->summary->unread_count;
+						/*
+						folder->summary->junk_count = junked;
+						folder->summary->deleted_count = deleted;
+						printf("*************************** %s %d %d %d\n", folder->full_name, folder->summary->unread_count, unread, count);
+						folder->summary->unread_count = unread; */
 					}
 				}
+
 			}
 
 			switch (tag & CAMEL_ARG_TAG) {
@@ -400,7 +456,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			*arg->ca_int = count;
 			break;
 		case CAMEL_FOLDER_ARG_UID_ARRAY: {
-			int j;
+/*			int j;
 			CamelMessageInfo *info;
 			GPtrArray *array;
 
@@ -413,7 +469,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 					camel_message_info_free(info);
 				}
 			}
-			*arg->ca_ptr = array;
+			*arg->ca_ptr = array;*/
+			// WTH this is reqd ?, let it crash to find out who uses this
+			g_assert (0);
 			break; }
 		case CAMEL_FOLDER_ARG_INFO_ARRAY:
 			*arg->ca_ptr = camel_folder_summary_array(folder->summary);
@@ -446,7 +504,7 @@ folder_free(CamelObject *o, guint32 tag, void *val)
 		g_ptr_array_free(array, TRUE);
 		break; }
 	case CAMEL_FOLDER_ARG_INFO_ARRAY:
-		camel_folder_summary_array_free(folder->summary, val);
+		camel_folder_free_summary (folder, val);
 		break;
 	case CAMEL_FOLDER_ARG_PROPERTIES:
 		g_slist_free(val);
@@ -1114,7 +1172,7 @@ get_uids(CamelFolder *folder)
 		CamelMessageInfo *info = camel_folder_summary_index(folder->summary, i);
 		
 		if (info) {
-			array->pdata[j++] = g_strdup (camel_message_info_uid (info));
+			array->pdata[j++] = (char *)camel_pstring_strdup (camel_message_info_uid (info));
 			camel_message_info_free(info);
 		}
 	}
@@ -1155,7 +1213,7 @@ free_uids (CamelFolder *folder, GPtrArray *array)
 	int i;
 
 	for (i=0; i<array->len; i++)
-		g_free(array->pdata[i]);
+		camel_pstring_free(array->pdata[i]);
 	g_ptr_array_free(array, TRUE);
 }
 
@@ -1249,9 +1307,8 @@ camel_folder_get_summary (CamelFolder *folder)
 static void
 free_summary(CamelFolder *folder, GPtrArray *summary)
 {
-	g_assert(folder->summary != NULL);
-
-	camel_folder_summary_array_free(folder->summary, summary);
+	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
+	g_ptr_array_free (summary, TRUE);
 }
 
 
@@ -1265,8 +1322,6 @@ free_summary(CamelFolder *folder, GPtrArray *summary)
 void
 camel_folder_free_summary(CamelFolder *folder, GPtrArray *array)
 {
-	g_return_if_fail(CAMEL_IS_FOLDER(folder));
-
 	CF_CLASS(folder)->free_summary(folder, array);
 }
 
@@ -1376,7 +1431,7 @@ search_free (CamelFolder *folder, GPtrArray *result)
 	int i;
 
 	for (i = 0; i < result->len; i++)
-		g_free (g_ptr_array_index (result, i));
+		camel_pstring_free (g_ptr_array_index (result, i));
 	g_ptr_array_free (result, TRUE);
 }
 
@@ -1415,7 +1470,7 @@ transfer_message_to (CamelFolder *source, const char *uid, CamelFolder *dest,
 
 	/* if its deleted we poke the flags, so we need to copy the messageinfo */
 	if ((source->folder_flags & CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY)
-	    && (minfo = camel_folder_get_message_info(source, uid))) {
+			&& (minfo = camel_folder_get_message_info(source, uid))) {
 		info = camel_message_info_clone(minfo);
 		camel_folder_free_message_info(source, minfo);
 	} else

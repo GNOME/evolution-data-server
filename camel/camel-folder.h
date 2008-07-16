@@ -109,6 +109,7 @@ struct _CamelFolder {
 
 	guint32 folder_flags;
 	guint32 permanent_flags;
+	CamelDB *cdb;
 };
 
 #define CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY (1<<0)

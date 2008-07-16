@@ -1,3 +1,12 @@
+2008-07-16  Sankar P  <psankar@novell.com>
+
+	Pushing disk summary changes from the madagascar branch
+
+	* configure.in:
+	* libedataserver/e-sexp.c (term_eval_and), (term_eval_or),
+	(e_sexp_parse_value):
+	* libedataserver/e-sexp.h:
+
 2008-07-14  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #253509

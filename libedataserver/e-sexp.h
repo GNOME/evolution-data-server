@@ -117,6 +117,7 @@ struct _ESExp {
 	/* private stuff */
 	jmp_buf failenv;
 	char *error;
+	GSList *operators;
 
 	/* TODO: may also need a pool allocator for term strings, so we dont lose them
 	   in error conditions? */
@@ -172,6 +173,8 @@ void		e_sexp_fatal_error	(struct _ESExp *f, char *why, ...);
 
 /* return the error string */
 const char     *e_sexp_error		(struct _ESExp *f);
+
+ESExpTerm * e_sexp_parse_value(ESExp *f);
 
 G_END_DECLS
 

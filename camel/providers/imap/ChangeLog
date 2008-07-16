@@ -1,3 +1,22 @@
+2008-07-16  Sankar P  <psankar@novell.com>
+
+	Pushing disk summary changes from the madagascar branch
+
+	* camel-imap-folder.c (camel_imap_folder_selected),
+	(imap_refresh_info), (fillup_custom_flags), (merge_custom_flags),
+	(imap_rescan), (get_matching), (imap_sync_offline),
+	(imap_sync_online), (imap_expunge_uids_offline),
+	(imap_update_summary), (camel_imap_folder_changed):
+	* camel-imap-message-cache.c (camel_imap_message_cache_new):
+	* camel-imap-store.c (fill_fi):
+	* camel-imap-summary.c (camel_imap_summary_class_init),
+	(camel_imap_summary_new), (summary_header_from_db),
+	(summary_header_to_db), (message_info_from_db),
+	(message_info_to_db), (content_info_from_db), (content_info_to_db),
+	(camel_imap_summary_add_offline),
+	(camel_imap_summary_add_offline_uncached), (uid_compare):
+	* camel-imap-utils.c (get_summary_uid_numeric):
+
 2008-06-30  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #330838

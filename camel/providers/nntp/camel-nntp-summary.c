@@ -51,6 +51,9 @@
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
+#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
+#define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
+
 struct _CamelNNTPSummaryPrivate {
 	char *uid;
 
@@ -63,6 +66,8 @@ struct _CamelNNTPSummaryPrivate {
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static int summary_header_load(CamelFolderSummary *, FILE *);
 static int summary_header_save(CamelFolderSummary *, FILE *);
+static int summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 
 static void camel_nntp_summary_class_init (CamelNNTPSummaryClass *klass);
 static void camel_nntp_summary_init       (CamelNNTPSummary *obj);
@@ -97,6 +102,8 @@ camel_nntp_summary_class_init(CamelNNTPSummaryClass *klass)
 	sklass->message_info_new_from_header  = message_info_new_from_header;
 	sklass->summary_header_load = summary_header_load;
 	sklass->summary_header_save = summary_header_save;
+	sklass->summary_header_from_db = summary_header_from_db;
+	sklass->summary_header_to_db = summary_header_to_db;
 }
 
 static void
@@ -160,6 +167,33 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 }
 
 static int
+summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
+{
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	char *part;
+
+	
+	if (camel_nntp_summary_parent->summary_header_from_db (s, mir) == -1)
+		return -1;
+
+	part = mir->bdata;
+
+	if (part) {
+		EXTRACT_FIRST_DIGIT (cns->version)
+	}
+	
+	if (part) {
+		EXTRACT_DIGIT (cns->high)
+	}
+
+	if (part) {
+		EXTRACT_DIGIT (cns->low)
+	}
+
+	return 0;
+}
+
+static int
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
@@ -187,6 +221,21 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 		return -1;
 
 	return 0;
+}
+
+
+static CamelFIRecord *
+summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
+{
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	struct _CamelFIRecord *fir;
+	
+	fir = camel_nntp_summary_parent->summary_header_to_db (s, ex);
+	if (!fir)
+		return NULL;
+	fir->bdata = g_strdup_printf ("%d %d %d", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low);
+
+	return fir;
 }
 
 static int
@@ -427,28 +476,24 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 	if (cns->low != f) {
 		count = camel_folder_summary_count(s);
 		for (i = 0; i < count; i++) {
-			CamelMessageInfo *mi = camel_folder_summary_index(s, i);
+			const char *uid;
+			const char *msgid;
 
-			if (mi) {
-				const char *uid = camel_message_info_uid(mi);
-				const char *msgid;
+			uid  = camel_folder_summary_uid_from_index(s, i);
+			n = strtoul(uid, NULL, 10);
 
-				n = strtoul(uid, NULL, 10);
-				if (n < f || n > l) {
-					dd(printf("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
-					/* Since we use a global cache this could prematurely remove
-					   a cached message that might be in another folder - not that important as
-					   it is a true cache */
-					msgid = strchr(uid, ',');
-					if (msgid)
-						camel_data_cache_remove(store->cache, "cache", msgid+1, NULL);
-					camel_folder_change_info_remove_uid(changes, uid);
-					camel_folder_summary_remove(s, mi);
-					count--;
-					i--;
-				}
-				
-				camel_message_info_free(mi);
+			if (n < f || n > l) {
+				dd(printf("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
+				/* Since we use a global cache this could prematurely remove
+				   a cached message that might be in another folder - not that important as
+				   it is a true cache */
+				msgid = strchr(uid, ',');
+				if (msgid)
+					camel_data_cache_remove(store->cache, "cache", msgid+1, NULL);
+				camel_folder_change_info_remove_uid(changes, uid);
+				camel_folder_summary_remove_uid (s, uid);
+				count--;
+				i--;
 			}
 		}
 		cns->low = f;
@@ -467,7 +512,7 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 
 	/* TODO: not from here */
 	camel_folder_summary_touch(s);
-	camel_folder_summary_save(s);
+	camel_folder_summary_save_to_db (s, ex);
 update:
 	/* update store summary if we have it */
 	if (folder

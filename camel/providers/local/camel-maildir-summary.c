@@ -726,7 +726,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 
 	/* sort the summary based on receive time, since the directory order is not useful */
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_receive_cmp);
+	#warning Add support for sorting via the DB.
+/* 	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_receive_cmp); */
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);

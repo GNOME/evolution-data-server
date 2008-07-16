@@ -31,6 +31,7 @@ m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
+m4_define([sqlite_minimum_version], [3.5])
 
 dnl *************************************************************************************************
 dnl Base Version
@@ -238,7 +239,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
          libglade-2.0 >= libglade_minimum_version
          libgnome-2.0 >= libgnome_minimum_version
          libxml-2.0 >= libxml_minimum_version
-         libsoup-2.4 >= libsoup_minimum_version])
+         libsoup-2.4 >= libsoup_minimum_version
+		 sqlite3 >= sqlite_minimum_version])
 
 dnl **************************************************
 dnl * regex checking
@@ -1443,7 +1445,7 @@ dnl ****************************************
 
 dnl --- libedataserver, libedataserverui, libebackend flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr sqlite3"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
@@ -1495,6 +1497,8 @@ AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
 dnl --- Camel flags
+SQLITE_REQUIRED=sqlite_minimum_version
+AC_SUBST(SQLITE_REQUIRED)
 
 zlib_found=false
 dnl deflateInit is a #define, use deflateEnd instead
