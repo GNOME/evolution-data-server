@@ -698,8 +698,9 @@ remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
 	if (info->refcount == 1 && !info->dirty && !(info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 		CAMEL_SUMMARY_UNLOCK(info->summary, ref_lock);
 		/* Hackit so that hashtable isn;t corrupted. */
-		camel_pstring_free (info->uid);
-		info->uid = NULL;
+		/* FIXME: These uid strings are not yet freed. We should get this done soon. */
+		//camel_pstring_free (info->uid);
+		//info->uid = NULL;
 		/* Noone seems to need it. Why not free it then. */
 		camel_message_info_free (info);
 		return TRUE;

@@ -1,3 +1,9 @@
+2008-07-17  Sankar P  <psankar@novell.com>
+
+	* camel-folder-summary.c (remove_item):
+	Make disk-summary don't crash for the time being. 
+	We need to find out where the uid is getting leaked and fix that.
+
 2008-07-16  Sankar P  <psankar@novell.com>
 
 	Pushing disk summary changes from the madagascar branch
