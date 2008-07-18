@@ -33,6 +33,8 @@ G_BEGIN_DECLS
 gboolean e_cal_backend_mail_account_get_default (char **address, char **name);
 gboolean e_cal_backend_mail_account_is_valid (char *user, char **name);
 
+const char *e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status);
+
 G_END_DECLS
 
 #endif

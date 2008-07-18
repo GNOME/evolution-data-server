@@ -1,3 +1,16 @@
+2008-07-18  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #515998
+
+	* libedata-cal/e-cal-backend-util.h: (e_cal_backend_status_to_string):
+	* libedata-cal/e-cal-backend-util.c: (e_cal_backend_status_to_string):
+	New helper function to convert call status to the string.
+	* backends/file/e-cal-backend-file.c: (e_cal_backend_file_remove):
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_remove):
+	* backends/weather/e-cal-backend-weather.c:
+	(e_cal_backend_weather_remove): On any error in remove calendar just
+	print the message on the console and return success.
+
 2008-07-04  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #329571

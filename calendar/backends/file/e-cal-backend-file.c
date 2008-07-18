@@ -1022,7 +1022,12 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
         g_free (full_path);
 
         g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-        return status;
+
+	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
+	if (status != GNOME_Evolution_Calendar_Success)
+		g_print (G_STRLOC ": %s", e_cal_backend_status_to_string (status));
+
+        return GNOME_Evolution_Calendar_Success;
 }
 
 /* is_loaded handler for the file backend */

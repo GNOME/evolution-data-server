@@ -495,8 +495,11 @@ e_cal_backend_weather_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	if (!priv->cache)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!priv->cache) {
+		/* lie here a bit, but otherwise the calendar will not be removed, even it should */
+		g_print (G_STRLOC ": Doesn't have a cache?!?");
+		return GNOME_Evolution_Calendar_Success;
+	}
 
 	e_file_cache_remove (E_FILE_CACHE (priv->cache));
 	return GNOME_Evolution_Calendar_Success;

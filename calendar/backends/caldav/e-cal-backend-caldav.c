@@ -1611,10 +1611,9 @@ caldav_remove (ECalBackendSync *backend,
 
 	status = check_state (cbdav, &online);
 
-	if (status != GNOME_Evolution_Calendar_Success) {
-		g_mutex_unlock (priv->lock);
-		return status;
-	}
+	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
+	if (status != GNOME_Evolution_Calendar_Success)
+		g_print (G_STRLOC ": %s", e_cal_backend_status_to_string (status));
 
 	e_file_cache_remove (E_FILE_CACHE (priv->cache));
 	priv->cache  = NULL;
