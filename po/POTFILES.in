@@ -21,6 +21,7 @@ calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
+calendar/libedata-cal/e-cal-backend-util.c
 camel/camel-address.c
 camel/camel-arg.c
 camel/camel-block-file.c
@@ -29,6 +30,7 @@ camel/camel-charset-map.c
 camel/camel-cipher-context.c
 camel/camel-data-cache.c
 camel/camel-data-wrapper.c
+camel/camel-db.c
 camel/camel-debug.c
 camel/camel-digest-folder.c
 camel/camel-digest-store.c
