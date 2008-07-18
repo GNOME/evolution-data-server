@@ -25,6 +25,7 @@ CamelStore
 @parent_object: 
 @priv: 
 @folders: 
+@cdb: 
 @flags: 
 @mode: 
 

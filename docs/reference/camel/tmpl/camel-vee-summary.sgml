@@ -30,7 +30,7 @@ CamelVeeSummary
 </para>
 
 @info: 
-@real: 
+@summary: 
 
 <!-- ##### FUNCTION camel_vee_summary_new ##### -->
 <para>
@@ -47,7 +47,8 @@ CamelVeeSummary
 </para>
 
 @s: 
-@info: 
+@summary: 
+@uid: 
 @hash: 
 @Returns: 
 

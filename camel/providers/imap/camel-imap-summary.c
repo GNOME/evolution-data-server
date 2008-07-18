@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 
 #include "camel-file-utils.h"
+#include "camel-string-utils.h"
 
 #include "camel-imap-summary.h"
 #include "camel-imap-utils.h"

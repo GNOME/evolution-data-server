@@ -1,3 +1,7 @@
+2008-07-18  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-summary.c: #include "camel-string-utils.h"
+
 2008-07-16  Sankar P  <psankar@novell.com>
 
 	Pushing disk summary changes from the madagascar branch

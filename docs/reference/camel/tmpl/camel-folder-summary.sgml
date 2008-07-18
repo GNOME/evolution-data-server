@@ -32,16 +32,20 @@ CamelFolderSummary
 @unread_count: 
 @deleted_count: 
 @junk_count: 
+@junk_not_deleted_count: 
+@visible_count: 
 @message_info_size: 
 @content_info_size: 
 @message_info_chunks: 
 @content_info_chunks: 
 @summary_path: 
 @build_content: 
-@messages: 
-@messages_uid: 
+@uids: 
+@loaded_infos: 
 @folder: 
 @meta_summary: 
+@cache_load_time: 
+@timeout_handle: 
 
 <!-- ##### STRUCT CamelMessageInfo ##### -->
 <para>
@@ -51,6 +55,7 @@ CamelFolderSummary
 @summary: 
 @refcount: 
 @uid: 
+@dirty: 
 
 <!-- ##### STRUCT CamelMessageInfoBase ##### -->
 <para>
@@ -60,6 +65,7 @@ CamelFolderSummary
 @summary: 
 @refcount: 
 @uid: 
+@dirty: 
 @subject: 
 @from: 
 @to: 
@@ -120,6 +126,7 @@ CamelFolderSummary
 @CAMEL_MESSAGE_NOTJUNK: 
 @CAMEL_MESSAGE_FORWARDED: 
 @CAMEL_MESSAGE_FOLDER_FLAGGED: 
+@CAMEL_MESSAGE_DB_DIRTY: 
 @CAMEL_MESSAGE_JUNK_LEARN: 
 @CAMEL_MESSAGE_USER: 
 
@@ -434,15 +441,6 @@ CamelFolderSummary
 
 @summary: 
 @Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
-<para>
-
-</para>
-
-@summary: 
-@array: 
 
 
 <!-- ##### FUNCTION camel_folder_summary_encode_token ##### -->

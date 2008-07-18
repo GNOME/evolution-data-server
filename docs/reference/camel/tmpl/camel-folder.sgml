@@ -31,6 +31,7 @@ CamelFolder
 @summary: 
 @folder_flags: 
 @permanent_flags: 
+@cdb: 
 
 <!-- ##### STRUCT CamelFolderChangeInfo ##### -->
 <para>

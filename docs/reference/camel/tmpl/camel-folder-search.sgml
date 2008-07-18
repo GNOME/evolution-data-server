@@ -29,7 +29,7 @@ CamelFolderSearch
 @folder: 
 @summary: 
 @summary_set: 
-@summary_hash: 
+@query: 
 @current: 
 @current_message: 
 @body_index: 

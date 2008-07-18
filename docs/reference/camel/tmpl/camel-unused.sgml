@@ -460,6 +460,14 @@ camel-types
 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
+<para>
+
+</para>
+
+@summary: 
+@array: 
+
 <!-- ##### FUNCTION camel_index_name_get_type ##### -->
 <para>
 

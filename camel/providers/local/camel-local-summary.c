@@ -37,6 +37,7 @@
 #include "camel-file-utils.h"
 #include "camel-mime-message.h"
 #include "camel-stream-null.h"
+#include "camel-string-utils.h"
 
 #include "camel-local-summary.h"
 
