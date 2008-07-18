@@ -1,3 +1,14 @@
+2008-07-18  Wang Xin  <jedy.wang@sun.com>
+
+	** Fix for bug #540127, commit the patch for shuai.liu@su.com.
+
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_connect), (e_book_backend_ldap_build_query),
+	(e_book_backend_ldap_authenticate_user): If this ldap_error equals
+	LDAP_INSUFFICIENT_ACCESS, return an success to request evolution's
+	authenticating window. And remove the filter objectClass=* because
+	some ldap servers do not allow this.
+
 2008-06-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #539758

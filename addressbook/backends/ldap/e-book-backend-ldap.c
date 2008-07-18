@@ -926,7 +926,10 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		}
 
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		ldap_error = query_ldap_root_dse (bl);
+		if(ldap_error == LDAP_INSUFFICIENT_ACCESS)
+			ldap_error = LDAP_SUCCESS;
+		else    
+			ldap_error = query_ldap_root_dse (bl);
 		/* query_ldap_root_dse will cause the actual
 		   connect(), so any tcpip problems will show up
 		   here */
@@ -3799,7 +3802,8 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter) {
+			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter 
+				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))){
 				strings = g_new0(char*, 5);
 				strings[0] = g_strdup ("(&");
 				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
@@ -4617,6 +4621,8 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		 * for some time. This error is handled by poll_ldap in case of search operations
 		 * We need to handle it explicitly for this bind call. We call reconnect so that
 		 * we get a fresh ldap handle Fixes #67541 */
+		bl->priv->auth_dn = dn;
+		bl->priv->auth_passwd = g_strdup (passwd);
 
 		if (ldap_error == LDAP_SERVER_DOWN) {
 			EDataBookView *view = find_book_view (bl);
@@ -4662,8 +4668,6 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 	}
 
 	if (ldap_error == LDAP_SUCCESS) {
-		bl->priv->auth_dn = dn;
-		bl->priv->auth_passwd = g_strdup (passwd);
 
 		e_book_backend_set_is_writable (backend, TRUE);
 
