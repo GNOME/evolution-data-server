@@ -501,9 +501,10 @@ camel_db_get_folder_junk_uids (CamelDB *db, char *folder_name, CamelException *e
 	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q where junk=1", folder_name);
 
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, ex);
+
 	 sqlite3_free (sel_query);
 
-	 if (!array->len) {
+	 if (!array->len || ret != 0) {
 		 g_ptr_array_free (array, TRUE);
 		 array = NULL;
 	 } 
@@ -522,7 +523,7 @@ camel_db_get_folder_deleted_uids (CamelDB *db, char *folder_name, CamelException
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, ex);
 	 sqlite3_free (sel_query);
 
-	 if (!array->len) {
+	 if (!array->len || ret != 0) {
 		 g_ptr_array_free (array, TRUE);
 		 array = NULL;
 	 }
