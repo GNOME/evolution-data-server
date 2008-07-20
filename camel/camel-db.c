@@ -37,9 +37,6 @@
 
 #define d(x) 
 
-#define CAMEL_DB_SLEEP_INTERVAL 1*10*10
-#define CAMEL_DB_RELEASE_SQLITE_MEMORY if(!g_getenv("CAMEL_SQLITE_PRESERVE_CACHE")) sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE);
-#define CAMEL_DB_USE_SHARED_CACHE if(!g_getenv("CAMEL_SQLITE_SHARED_CACHE_OFF")) sqlite3_enable_shared_cache(TRUE);
 
 static int 
 cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex) 
@@ -74,8 +71,6 @@ camel_db_open (const char *path, CamelException *ex)
 
 	CAMEL_DB_USE_SHARED_CACHE;
 	
-	sqlite3_enable_shared_cache(TRUE);
-
 	ret = sqlite3_open(path, &db);
 	if (ret) {
 

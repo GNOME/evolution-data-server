@@ -52,6 +52,7 @@
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-private.h"
+#include "camel-session.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 #include "camel-stream-null.h"
@@ -699,8 +700,8 @@ remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
 		CAMEL_SUMMARY_UNLOCK(info->summary, ref_lock);
 		/* Hackit so that hashtable isn;t corrupted. */
 		/* FIXME: These uid strings are not yet freed. We should get this done soon. */
-		//camel_pstring_free (info->uid);
-		//info->uid = NULL;
+		camel_pstring_free (info->uid);
+		info->uid = NULL;
 		/* Noone seems to need it. Why not free it then. */
 		camel_message_info_free (info);
 		return TRUE;
@@ -709,16 +710,24 @@ remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
 	return FALSE;
 }
 
-static gboolean      
-remove_cache (CamelFolderSummary *s)
+
+struct _folder_summary_free_msg {
+	CamelSessionThreadMsg msg;
+	CamelFolderSummary *summary;
+};
+
+static void      
+remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 {
-	/* Attempt to release 2MB*/
-        sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE); 
+	struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;		
+	CamelFolderSummary *s = m->summary;
+
+	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
-		return TRUE;
+		return;
 	
-	printf("removing cache for  %s %d\n", s->folder->full_name, g_hash_table_size (s->loaded_infos));
+	printf("removing cache for  %s %d %p\n", s->folder->full_name, g_hash_table_size (s->loaded_infos), s->loaded_infos);
 	#warning "hack. fix it"
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);
@@ -727,6 +736,36 @@ remove_cache (CamelFolderSummary *s)
 
 	s->cache_load_time = time(NULL);
 	
+	return;
+}
+
+
+
+static void remove_cache_end (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+		struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
+		camel_object_unref (m->summary);
+}
+
+static CamelSessionThreadOps remove_timeout_ops = {
+	remove_cache,
+	remove_cache_end,
+};
+
+static gboolean
+cfs_try_release_memory (CamelFolderSummary *s)
+{
+	struct _folder_summary_free_msg *m;
+	CamelSession *session = ((CamelService *)((CamelFolder *)s->folder)->parent_store)->session;
+
+	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
+		return TRUE;
+
+	m = camel_session_thread_msg_new(session, &remove_timeout_ops, sizeof(*m));
+	camel_object_ref (s);
+	m->summary = s;
+	camel_session_thread_queue(session, &m->msg, 0);
+
 	return TRUE;
 }
 
@@ -792,8 +831,9 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer) &data, camel_read_mir_callback, ex);
 #endif	
 	s->cache_load_time = time (NULL);
-	#warning "LRU please and not timeouts"
-	s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) remove_cache, s);
+
+        #warning "LRU please and not timeouts"
+	s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
 	return ret == 0 ? 0 : -1;
 }
