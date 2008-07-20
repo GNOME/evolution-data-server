@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-18 17:15+0000\n"
-"PO-Revision-Date: 2008-07-20 14:51+0200\n"
+"POT-Creation-Date: 2008-07-20 14:09+0000\n"
+"PO-Revision-Date: 2008-07-20 19:05+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1209,7 +1209,13 @@ msgstr "Ha ocurrido una excepción CORBA"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:420
 #: ../camel/providers/imap/camel-imap-store.c:763
+#: ../camel/providers/imap4/camel-imap4-engine.c:1570
+#: ../camel/providers/imap4/camel-imap4-engine.c:1609
+#: ../camel/providers/imap4/camel-imap4-engine.c:1654
+#: ../camel/providers/imap4/camel-imap4-engine.c:1710
 #: ../camel/providers/imap4/camel-imap4-store.c:315
+#: ../camel/providers/imap4/camel-imap4-store.c:823
+#: ../camel/providers/imap4/camel-imap4-store.c:1577
 #: ../camel/providers/pop3/camel-pop3-store.c:553
 #: ../camel/providers/pop3/camel-pop3-store.c:560
 #: ../camel/providers/pop3/camel-pop3-store.c:566
@@ -1411,7 +1417,7 @@ msgstr "No se pudo crear la ruta a la caché"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "No se pudo quitar la entrada de caché: %s: %s"
 
-#: ../camel/camel-db.c:83
+#: ../camel/camel-db.c:78
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
@@ -1758,12 +1764,6 @@ msgstr "No se pudo interpretar el contenido del mensaje"
 
 #: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
 #: ../camel/camel-tcp-stream-openssl.c:635
-#: ../camel/providers/imap4/camel-imap4-engine.c:1570
-#: ../camel/providers/imap4/camel-imap4-engine.c:1609
-#: ../camel/providers/imap4/camel-imap4-engine.c:1654
-#: ../camel/providers/imap4/camel-imap4-engine.c:1710
-#: ../camel/providers/imap4/camel-imap4-store.c:823
-#: ../camel/providers/imap4/camel-imap4-store.c:1577
 #: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 #: ../camel/providers/smtp/camel-smtp-transport.c:221
@@ -3238,7 +3238,7 @@ msgstr "No se pudo conectar con el comando «%s»: %s"
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:1070
 #: ../camel/providers/imap/camel-imap-store.c:2460
-#: ../camel/providers/imap4/camel-imap4-store-summary.c:367
+#: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1408
 #: ../camel/providers/local/camel-maildir-folder.c:77
 #: ../camel/providers/local/camel-maildir-store.c:218
@@ -3371,8 +3371,8 @@ msgstr "No se puede acceder a la carpeta: «%s»: %s"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:482
 #, c-format
-msgid "Cannot sync flags to folder '%s': Unknown"
-msgstr "No se pueden sincronizar los flags de la carpeta: «%s»: Desconocido"
+msgid "Cannot sync flags to folder '%s': Unknown error"
+msgstr "No se pueden sincronizar los flags de la carpeta: «%s»: Error desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:488
 #, c-format
@@ -3381,8 +3381,8 @@ msgstr "No se pueden sincronizar los flags de la carpeta «%s»: Comando erróne
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:628
 #, c-format
-msgid "Cannot expunge folder '%s': Unknown"
-msgstr "No se puede compactar la carpeta «%s»: Desconocido"
+msgid "Cannot expunge folder '%s': Unknown error"
+msgstr "No se puede compactar la carpeta «%s»: Error desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:633
 #, c-format
@@ -3416,17 +3416,17 @@ msgstr "No se puede anexar el mensaje a la carpeta «%s»: Comando erróneo"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1181
 #, c-format
-msgid "Cannot move messages from folder '%s' to folder '%s': Unknown"
+msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 msgstr ""
 "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Desconocido"
+"Error desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, c-format
-msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown"
+msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 msgstr ""
 "No se pueden copiar los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Desconocido"
+"Error desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, c-format
@@ -3506,8 +3506,8 @@ msgstr "No se pueden crear las carpetas IMAP en modo desconectado."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:740
 #, c-format
-msgid "Cannot get folder '%s' on IMAP server %s: Unknown"
-msgstr "No se puede obtener la carpeta «%s» en el servidor IMAP %s: Desconocido"
+msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
+msgstr "No se puede obtener la carpeta «%s» en el servidor IMAP %s: Error desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:821
 #, c-format
