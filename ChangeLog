@@ -1,3 +1,10 @@
+2008-07-20  Luca Ferretti  <elle.uca@libero.it>
+
+	reviewed by: Srinivasa Ragavan
+
+	* configure.in: add sqlite3 to to EVO_SET_COMPILE_FLAGS(CAMEL)
+	to fix the build. See bug #543656 for details.
+
 2008-07-16  Sankar P  <psankar@novell.com>
 
 	Pushing disk summary changes from the madagascar branch
