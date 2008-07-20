@@ -833,7 +833,8 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	s->cache_load_time = time (NULL);
 
         #warning "LRU please and not timeouts"
-	s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+	if (g_getenv("CAMEL_FREE_INFOS")) 
+		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
 	return ret == 0 ? 0 : -1;
 }
