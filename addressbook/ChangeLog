@@ -1,3 +1,15 @@
+2008-07-21  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #236010
+
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_load_source): We cannot check on LDAP server
+	whether we have general write access on it, thus report we have
+	immediately after loading the source successfully. There will be
+	a "Permission Deny" message in case we are wrong.
+	* backends/ldap/e-book-backend-ldap.c: (ldap_op_finished):
+	Clear the status message when the operation finished.
+
 2008-07-18  Wang Xin  <jedy.wang@sun.com>
 
 	** Fix for bug #540127, commit the patch for shuai.liu@su.com.

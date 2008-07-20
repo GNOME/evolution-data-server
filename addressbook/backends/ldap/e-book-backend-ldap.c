@@ -1087,6 +1087,9 @@ ldap_op_finished (LDAPOp *op)
 	g_static_rec_mutex_lock (&bl->priv->op_hash_mutex);
 	g_hash_table_remove (bl->priv->id_to_op, &op->id);
 
+	/* clear the status message too */
+	book_view_notify_status (find_book_view (bl), "");
+
 	/* should handle errors here */
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (bl->priv->ldap)
@@ -4864,9 +4867,11 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 #endif
 
 		return GNOME_Evolution_Addressbook_Success;
-	}
-	else
+	} else {
+		e_book_backend_set_is_writable (backend, TRUE);
+		e_book_backend_notify_writable (backend, TRUE);
 		e_book_backend_notify_connection_status (backend, TRUE);
+	}
 
 	/* Online */
 
