@@ -1,3 +1,9 @@
+2008-07-20  Bharath Acharya  <abharath@novell.com>
+
+	** Fix for bug #200147
+
+	* libedataserver/e-account.h: Stores the templates folder uri
+
 2008-07-20  Luca Ferretti  <elle.uca@libero.it>
 
 	reviewed by: Srinivasa Ragavan

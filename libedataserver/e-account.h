@@ -116,7 +116,7 @@ typedef struct _EAccount {
 	EAccountService *source;
 	EAccountService *transport;
 
-	char *drafts_folder_uri, *sent_folder_uri;
+	char *drafts_folder_uri, *sent_folder_uri, *templates_folder_uri;
 
 	gboolean always_cc;
 	char *cc_addrs;
