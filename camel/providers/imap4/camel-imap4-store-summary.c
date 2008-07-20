@@ -38,6 +38,7 @@
 #include "camel-imap4-store-summary.h"
 #include "camel-imap4-utils.h"
 
+
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION_0 (0)
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION (0)
 

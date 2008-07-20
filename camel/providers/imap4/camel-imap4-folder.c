@@ -479,7 +479,7 @@ imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, char onoff, const char *
 		case CAMEL_IMAP4_RESULT_NO:
 			/* FIXME: would be good to save the NO reason into the err message */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot sync flags to folder '%s': Unknown"),
+					      _("Cannot sync flags to folder '%s': Unknown error"),
 					      folder->full_name);
 			retval = -1;
 			break;
@@ -625,7 +625,7 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		case CAMEL_IMAP4_RESULT_NO:
 			/* FIXME: would be good to save the NO reason into the err message */
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Cannot expunge folder '%s': Unknown"),
+					      _("Cannot expunge folder '%s': Unknown error"),
 					      folder->full_name);
 			break;
 		case CAMEL_IMAP4_RESULT_BAD:
@@ -1178,11 +1178,11 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 			/* FIXME: would be good to save the NO reason into the err message */
 			if (move) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot move messages from folder '%s' to folder '%s': Unknown"),
+						      _("Cannot move messages from folder '%s' to folder '%s': Unknown error"),
 						      src->full_name, dest->full_name);
 			} else {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-						      _("Cannot copy messages from folder '%s' to folder '%s': Unknown"),
+						      _("Cannot copy messages from folder '%s' to folder '%s': Unknown error"),
 						      src->full_name, dest->full_name);
 			}
 			

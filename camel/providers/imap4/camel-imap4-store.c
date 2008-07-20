@@ -737,7 +737,7 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 	
 	if (ic->result != CAMEL_IMAP4_RESULT_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get folder '%s' on IMAP server %s: Unknown"),
+				      _("Cannot get folder '%s' on IMAP server %s: Unknown error"),
 				      folder_name, ((CamelService *) store)->url->host);
 		camel_imap4_command_unref (ic);
 		goto done;
@@ -820,7 +820,7 @@ imap4_folder_can_contain_folders (CamelStore *store, const char *folder_name, Ca
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get LIST information for '%s' on IMAP server %s: %s"),
 				      folder_name, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
-				      _("Bad command") : _("Unknown"));
+				      _("Bad command") : _("Unknown error"));
 		
 		for (i = 0; i < array->len; i++) {
 			list = array->pdata[i];
@@ -1574,7 +1574,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get %s information for pattern '%s' on IMAP server %s: %s"),
 				      cmd, pattern, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
-				      _("Bad command") : _("Unknown"));
+				      _("Bad command") : _("Unknown error"));
 		
 		for (i = 0; i < array->len; i++) {
 			list = array->pdata[i];

@@ -1567,7 +1567,7 @@ camel_imap4_engine_next_token (CamelIMAP4Engine *engine, camel_imap4_token_t *to
 	if (camel_imap4_stream_next_token (engine->istream, token) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("IMAP4 server %s unexpectedly disconnected: %s"),
-				      engine->url->host, errno ? g_strerror (errno) : _("Unknown"));
+				      engine->url->host, errno ? g_strerror (errno) : _("Unknown error"));
 		
 		engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
 		
@@ -1606,7 +1606,7 @@ camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
 			if (retval == -1) {
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 						      _("IMAP4 server %s unexpectedly disconnected: %s"),
-						      engine->url->host, errno ? g_strerror (errno) : _("Unknown"));
+						      engine->url->host, errno ? g_strerror (errno) : _("Unknown error"));
 				
 				engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
 				
@@ -1651,7 +1651,7 @@ camel_imap4_engine_line (CamelIMAP4Engine *engine, unsigned char **line, size_t 
 	if (retval == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("IMAP4 server %s unexpectedly disconnected: %s"),
-				      engine->url->host, errno ? g_strerror (errno) : _("Unknown"));
+				      engine->url->host, errno ? g_strerror (errno) : _("Unknown error"));
 		
 		if (linebuf != NULL)
 			g_byte_array_free (linebuf, TRUE);
@@ -1707,7 +1707,7 @@ camel_imap4_engine_literal (CamelIMAP4Engine *engine, unsigned char **literal, s
 	if (retval == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("IMAP4 server %s unexpectedly disconnected: %s"),
-				      engine->url->host, errno ? g_strerror (errno) : _("Unknown"));
+				      engine->url->host, errno ? g_strerror (errno) : _("Unknown error"));
 		
 		if (literalbuf != NULL)
 			g_byte_array_free (literalbuf, TRUE);

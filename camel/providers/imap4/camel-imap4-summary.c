@@ -446,7 +446,7 @@ decode_references (const char *refstr, const char *irtstr)
 		return NULL;
 	
 	if (irt) {
-		/* The References field is populated from the 'References' and/or 'In-Reply-To'
+		/* The References field is populated from the `References' and/or `In-Reply-To'
 		   headers. If both headers exist, take the first thing in the In-Reply-To header
 		   that looks like a Message-ID, and append it to the References header. */
 		
