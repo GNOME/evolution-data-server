@@ -156,12 +156,13 @@ read_line (const char *string)
  * e_cal_util_parse_ics_string:
  * @string: iCalendar string to be parsed.
  *
- * Parses an iCalendar stirng and returns an #icalcomponent representing that
- * string. Note that this function deals with multiple VCALENDAR's in the
+ * Parses an iCalendar string and returns a new #icalcomponent representing
+ * that string. Note that this function deals with multiple VCALENDAR's in the
  * string, something that Mozilla used to do and which libical does not
  * support.
  *
- * Return value: an #icalcomponent.
+ * Return value: a newly created #icalcomponent or NULL if the string isn't a
+ * valid iCalendar string.
  */
 icalcomponent *
 e_cal_util_parse_ics_string (const char *string)
@@ -221,9 +222,10 @@ get_line_fn (char *buf, size_t size, void *file)
  * @filename: Name of the file to be parsed.
  *
  * Parses the given file, and, if it contains a valid iCalendar object,
- * parse it and return a corresponding #icalcomponent.
+ * parse it and return a new #icalcomponent.
  *
- * Return value: an #icalcomponent.
+ * Return value: a newly created #icalcomponent or NULL if the file doesn't
+ * contain a valid iCalendar object.
  */
 icalcomponent *
 e_cal_util_parse_ics_file (const char *filename)
