@@ -1,3 +1,10 @@
+2008-07-20  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #541347
+
+	* camel-block-file.h:
+	#include <sys/types.h> (in the proper order)
+
 2008-07-17  Sankar P  <psankar@novell.com>
 
 	* camel-folder-summary.c (remove_item):

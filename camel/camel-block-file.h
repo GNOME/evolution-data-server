@@ -25,6 +25,7 @@
 #include <glib.h>
 #include <libedataserver/e-msgport.h>
 #include <stdio.h>
+#include <sys/types.h>
 
 G_BEGIN_DECLS
 
