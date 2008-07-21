@@ -37,7 +37,15 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) 	\
 	$(LIBDB_FILES)
 
-DISTCLEANFILES = intltool-extract intltool-merge intltool-update iconv-detect.h $(pkgconfig_DATA)
+DISTCLEANFILES = \
+	doltcompile					\
+	doltlibtool					\
+	intltool-extract				\
+	intltool-merge					\
+	intltool-update					\
+	iconv-detect.h					\
+	$(pkgconfig_DATA)
+
 distclean-local:
 	(cd libdb && $(MAKE) $(AM_MAKEFLAGS) distclean)
 

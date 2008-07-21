@@ -1,6 +1,8 @@
 2008-07-21  Matthew Barnes  <mbarnes@redhat.com>
 
-	* camel-groupwise-journal.c: #include "camel-string-utils.h"
+	* camel-groupwise-journal.c:
+	* camel-groupwise-summary.c:
+	#include "camel-string-utils.h"
 
 2008-07-21  Srinivasa Ragavan  <sragavan@novell.com>
 
