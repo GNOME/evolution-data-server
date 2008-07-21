@@ -37,6 +37,7 @@
 
 #define d(x) 
 
+static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 
 static int 
 cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex) 
@@ -46,19 +47,11 @@ cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex)
 
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
-	/* FIXME: TWo calls on the same database even with different sqlite handles is hanging. This needs to be looked and if needed upstreamed to sqlite. 
-	   Until then , a static lock will do. --Sankar */
-
-	static GStaticRecMutex connecting_to_db = G_STATIC_REC_MUTEX_INIT;	
-
-	g_static_rec_mutex_lock (&connecting_to_db);
 
 	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
 			ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 	}
-
-	g_static_rec_mutex_unlock (&connecting_to_db);
 
 	if (ret != SQLITE_OK) {
 			d(g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
@@ -151,6 +144,7 @@ camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 {
 	if (!cdb)
 		return -1;
+	g_static_rec_mutex_lock (&trans_lock);
 
 	d(g_print ("\n\aBEGIN TRANSACTION \n\a"));
 	g_mutex_lock (cdb->lock);
@@ -167,6 +161,8 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 	d(g_print ("\nCOMMIT TRANSACTION \n"));
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
 	g_mutex_unlock (cdb->lock);
+	g_static_rec_mutex_unlock (&trans_lock);
+
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	
 	return ret;

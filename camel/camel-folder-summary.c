@@ -1106,18 +1106,13 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 		return -1;
 	}
 	
-	camel_db_begin_transaction (cdb, &ex);
 	ret = camel_db_write_folder_info_record (cdb, record, &ex);
 	g_free (record);
 
 	if (ret != 0) {
-		camel_db_abort_transaction (cdb, &ex);
 		return -1;
 	}
 
-	camel_db_end_transaction (cdb, &ex);
-
-	
 	return ret;
 
 error:
