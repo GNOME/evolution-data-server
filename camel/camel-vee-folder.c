@@ -1042,7 +1042,7 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 		g_hash_table_insert(matchhash, match->pdata[i], GINT_TO_POINTER (1));
 
 	allhash = g_hash_table_new(g_str_hash, g_str_equal);
-	all = camel_folder_get_uids(f);
+	all = camel_folder_summary_array(f->summary);
 	for (i=0;i<all->len;i++)
 		if (g_hash_table_lookup(matchhash, all->pdata[i]) == NULL)
 			g_hash_table_insert(allhash, all->pdata[i], GINT_TO_POINTER (1));
@@ -1153,7 +1153,7 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 		g_ptr_array_free(match, TRUE);
 	} else
 		camel_folder_search_free(f, match);
-	camel_folder_free_uids(f, all);
+	camel_folder_free_summary (f, all);
 
 	if (unmatched_changes) {
 		camel_object_trigger_event((CamelObject *)folder_unmatched, "folder_changed", unmatched_changes);

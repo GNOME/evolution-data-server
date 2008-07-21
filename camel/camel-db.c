@@ -35,7 +35,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#define d(x) 
+#define d(x)
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 

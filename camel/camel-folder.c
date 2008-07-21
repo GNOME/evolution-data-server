@@ -402,7 +402,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 					//camel_db_count_junk_not_deleted_message_info (folder->cdb, folder->full_name, &junked_not_deleted, ex);
 					//camel_db_count_visible_message_info (folder->cdb, folder->full_name, &visible, ex);
 				} else {
-					count = camel_folder_summary_count (folder->summary);
+					/* count = camel_folder_summary_count (folder->summary);
 					for (j = 0; j < count; j++) {
 						if ((info = camel_folder_summary_index (folder->summary, j))) {
 							guint32 flags = camel_message_info_flags(info);
@@ -421,10 +421,10 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 							camel_message_info_free(info);
 						}
 
-					}
+					}*/
                                         #warning "I added it for vfolders summary storage, does it harm ?"
 					if (unread == -1) {
-						unread = folder->summary->unread_count;
+						//unread = folder->summary->unread_count;
 						/*
 						folder->summary->junk_count = junked;
 						folder->summary->deleted_count = deleted;
