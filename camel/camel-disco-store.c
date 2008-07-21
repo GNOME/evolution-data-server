@@ -323,7 +323,7 @@ set_status(CamelDiscoStore *disco_store, CamelDiscoStoreStatus status, CamelExce
 					folder = folders->pdata[i];
 					if (CAMEL_CHECK_TYPE(folder, CAMEL_DISCO_FOLDER_TYPE)
 					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
-						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
+						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", &x);
 						camel_exception_clear(&x);
 					}
 					camel_object_unref(folder);
