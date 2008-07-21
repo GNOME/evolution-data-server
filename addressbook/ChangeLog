@@ -1,3 +1,9 @@
+2008-07-21  Suman Manjunath  <msuman@novell.com>
+
+	Fixes a build break for Google contacts
+
+	* backends/google/e-book-backend-google-factory.c:
+
 2008-07-21  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	** Fix for bug #523632
