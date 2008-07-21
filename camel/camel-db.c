@@ -96,7 +96,7 @@ camel_db_open (const char *path, CamelException *ex)
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
-	if(!g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")) 
+	if(g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL)
 		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
 	else 
 		cache = g_strdup ("PRAGMA cache_size=100");

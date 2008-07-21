@@ -1,3 +1,9 @@
+2008-07-21  Tor Lillqvist  <tml@novell.com>
+
+	* camel-db.c (camel_db_open): Check for
+	CAMEL_SQLITE_DEFAULT_CACHE_SIZE environment variable was
+	backwards.
+
 2008-07-21  Sankar P  <psankar@novell.com>	
 
 	* camel-db.c (cdb_sql_exec)
