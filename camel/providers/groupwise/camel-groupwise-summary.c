@@ -431,7 +431,7 @@ camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid, Came
 	}
 
 	mi->info.size = camel_message_info_size(info);
-	mi->info.uid = g_strdup (uid);
+	mi->info.uid = camel_pstring_strdup (uid);
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 
@@ -443,7 +443,7 @@ camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const char *
 	CamelGroupwiseMessageInfo *mi;
 
 	mi = camel_message_info_clone(info);
-	mi->info.uid = g_strdup(uid);
+	mi->info.uid = camel_pstring_strdup(uid);
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }
 

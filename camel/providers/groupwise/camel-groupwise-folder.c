@@ -1411,7 +1411,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		}
 
 		if (!exists) {
-			mi->info.uid = g_strdup (e_gw_item_get_id(item));
+			mi->info.uid = camel_pstring_strdup (e_gw_item_get_id(item));
 			mi->info.size = e_gw_item_get_mail_size (item);	
 			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 		}
@@ -1628,7 +1628,7 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 			}
 		}
 
-		mi->info.uid = g_strdup(e_gw_item_get_id(item));
+		mi->info.uid = camel_pstring_strdup(e_gw_item_get_id(item));
 		if (!exists)
 			mi->info.size = e_gw_item_get_mail_size (item);	
 		mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
