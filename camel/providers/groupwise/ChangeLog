@@ -1,3 +1,7 @@
+2008-07-21  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-groupwise-journal.c: #include "camel-string-utils.h"
+
 2008-07-21  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Use pstrings for info uids.

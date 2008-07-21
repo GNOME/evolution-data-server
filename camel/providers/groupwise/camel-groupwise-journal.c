@@ -41,6 +41,7 @@
 #include "camel-file-utils.h"
 #include "camel-folder-summary.h"
 #include "camel-folder.h"
+#include "camel-string-utils.h"
 
 #include "camel-groupwise-folder.h"
 #include "camel-groupwise-journal.h"
