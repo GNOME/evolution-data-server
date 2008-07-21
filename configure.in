@@ -1667,6 +1667,7 @@ addressbook/backends/Makefile
 addressbook/backends/file/Makefile
 addressbook/backends/vcf/Makefile
 addressbook/backends/ldap/Makefile
+addressbook/backends/google/Makefile
 addressbook/backends/groupwise/Makefile
 addressbook/tests/Makefile
 addressbook/tests/ebook/Makefile

@@ -4,4 +4,4 @@ else
 LDAP_SUBDIR =
 endif
 
-SUBDIRS = file vcf $(LDAP_SUBDIR) groupwise 
+SUBDIRS = file vcf $(LDAP_SUBDIR) google groupwise 

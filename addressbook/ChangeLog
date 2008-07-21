@@ -1,3 +1,63 @@
+2008-07-21  Jörgen Scheibengruber  <mfcn@gmx.de>
+
+	** Fix for bug #523632
+	
+	Added Google contacts backend
+	* backends/Makefile.am:
+	* backends/google/Makefile.am:
+	* backends/google/e-book-backend-google-factory.c:
+	(e_book_backend_google_factory_instance_init), (_get_protocol),
+	(_new_backend), (e_book_backend_google_factory_class_init),
+	(e_book_backend_google_factory_get_type), (eds_module_initialize),
+	(eds_module_shutdown), (eds_module_list_types):
+	* backends/google/e-book-backend-google-factory.h:
+	* backends/google/e-book-backend-google.c:
+	(e_book_backend_google_ensure_auth),
+	(e_book_backend_google_create_contact),
+	(e_book_backend_google_remove_contacts),
+	(e_book_backend_google_modify_contact),
+	(e_book_backend_google_get_contact),
+	(e_book_backend_google_get_contact_list), (refresh_feed),
+	(do_initial_bookview_population),
+	(e_book_backend_google_start_book_view),
+	(e_book_backend_google_stop_book_view),
+	(e_book_backend_google_update_query),
+	(e_book_backend_google_initial_query),
+	(e_book_backend_google_authenticate_user),
+	(e_book_backend_google_get_supported_auth_methods),
+	(e_book_backend_google_get_required_fields),
+	(e_book_backend_google_get_supported_fields),
+	(e_book_backend_google_get_changes),
+	(e_book_backend_google_remove),
+	(e_book_backend_google_load_source),
+	(e_book_backend_google_get_static_capabilities),
+	(e_book_backend_google_cancel_operation),
+	(e_book_backend_google_set_mode), (e_book_backend_google_dispose),
+	(e_book_backend_google_finalize),
+	(e_book_backend_google_class_init), (e_book_backend_google_init),
+	(e_book_backend_google_new), (ebookbackend_status_from_soup_error):
+	* backends/google/e-book-backend-google.h:
+	* backends/google/util.c: (gdata_entry_create_from_vcard),
+	(gdata_entry_create_from_e_vcard), (gdata_entry_update_from_vcard),
+	(gdata_entry_update_from_e_vcard), (e_vcard_from_gdata_entry),
+	(e_contact_from_gdata_entry), (vcard_from_gdata_entry),
+	(name_values_from_fullname), (string_prepend_with_space),
+	(string_append_with_space), (fullname_from_name_values),
+	(build_uri), (build_base_uri), (test_repository_availability),
+	(type_from_google_rel_label), (google_rel_label_from_type),
+	(is_known_google_im_protocol),
+	(field_name_from_google_im_protocol),
+	(google_im_protocol_from_field_name),
+	(attribute_from_gdata_entry_email_address),
+	(attribute_from_gdata_entry_im_address),
+	(attribute_from_gdata_entry_phone_number),
+	(attribute_from_gdata_entry_postal_address),
+	(gdata_entry_email_address_from_attribute),
+	(gdata_entry_im_address_from_attribute),
+	(gdata_entry_phone_number_from_attribute),
+	(gdata_entry_postal_address_from_attribute):
+	* backends/google/util.h:
+
 2008-07-21  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #236010
