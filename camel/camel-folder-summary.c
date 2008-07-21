@@ -1035,6 +1035,7 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	FILE *in;
 	int i;
 	CamelMessageInfo *mi;
+	CamelMessageInfoBase *info;
 	int ret = 0;
 	CamelDB *cdb = s->folder->cdb;
 	CamelFIRecord *record;
@@ -1072,11 +1073,11 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 		}
 
 		CamelTag *tag;
-
-		tag = mi->user_tags;
+		info = (CamelMessageInfoBase *)mi;
+		tag = info->user_tags;
 		while (tag) {
 			if (strcmp (tag->name, "label")) {
-				res = camel_flag_set(&mi->user_flags, tag->value, TRUE);
+				camel_flag_set(&info->user_flags, tag->value, TRUE);
 			}
 			tag = tag->next;
 		}
