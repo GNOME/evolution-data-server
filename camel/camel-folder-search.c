@@ -933,6 +933,14 @@ check_header_deprecated (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 	return r;
 }
 
+/*
+static void 
+l_printf(char *node)
+{
+printf("%s\t", node);
+}
+*/
+
 static ESExpResult *
 check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *search, camel_search_match_t how)
 {
@@ -970,9 +978,14 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolde
 		if (g_str_has_suffix (search->query->str, " "))
 			g_string_append_printf (search->query, "WHERE %s LIKE %s", column, value);
 		else {
-			if (f->operators)
-				g_string_append_printf (search->query, " %s %s LIKE %s", (char *) (g_slist_nth_data (f->operators, 0)), column, value);
-			else
+			if (f->operators) {
+				/*g_slist_foreach (f->operators, l_printf, NULL);
+				printf(" \n");*/
+
+				g_string_append_printf (search->query, " %s %s LIKE %s", (char *) (g_slist_nth_data (f->operators, (g_slist_length (f->operators) - 2))), column, value);
+				f->operators = g_slist_remove_link (f->operators, (g_slist_nth (f->operators, (g_slist_length (f->operators) - 2))));
+				
+			} else
 				g_string_append_printf (search->query, " OR %s LIKE %s", column, value);
 		}
 
@@ -1381,11 +1394,21 @@ search_system_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 			if (g_str_has_suffix (search->query->str, " "))
 					g_string_append_printf (search->query, "WHERE (%s %s 0)", value, connector);
 			else {
-					search->query->len -= 1;
-					if (f->operators)
-							g_string_append_printf (search->query, " %s %s %s 0)", (char *) (g_slist_nth_data (f->operators, 0)), value, connector);
+					gboolean flag = FALSE;
+					if (search->query->str [search->query->len - 1] == ')') {
+							search->query->len -= 1;
+							flag = TRUE;
+					}
+
+					if (f->operators) {
+							g_string_append_printf (search->query, " %s %s %s 0", (char *) (g_slist_nth_data (f->operators, 0)), value, connector);
+					}
 					else
 							g_string_append_printf (search->query, " OR %s %s 0", value, connector);
+
+
+					if (flag)
+						g_string_append (search->query,")");
 			}
 
 			g_free (value);
