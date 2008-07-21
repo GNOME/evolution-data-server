@@ -499,7 +499,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 		ret = camel_db_read_message_info_record_with_uid (cdb, folder_name, uid, &data, camel_read_mir_callback, &ex);
 		if (ret != 0) {
 			// if (strcmp (folder_name, "UNMATCHED"))
-			g_warning ("Unable to read uid %s from folder %s: %s", uid, folder_name, camel_exception_get_description(&ex));
+			//g_warning ("Unable to read uid %s from folder %s: %s", uid, folder_name, camel_exception_get_description(&ex));
 			
 			return NULL;
 		}
@@ -1028,6 +1028,108 @@ error:
 
 }
 
+
+int
+camel_folder_summary_migrate_infos(CamelFolderSummary *s)
+{
+	FILE *in;
+	int i;
+	CamelMessageInfo *mi;
+	int ret = 0;
+	CamelDB *cdb = s->folder->cdb;
+	CamelFIRecord *record;
+	CamelException ex;
+
+	camel_exception_init (&ex);
+	d(g_print ("\ncamel_folder_summary_load from FLAT FILE called \n"));
+
+	if (s->summary_path == NULL) {
+		g_warning ("No summary path set. Unable to migrate\n");
+		return NULL;
+	}
+
+	in = g_fopen(s->summary_path, "rb");
+	if (in == NULL)
+		return -1;
+
+	if ( ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_load(s, in) == -1)
+		goto error;
+
+	/* now read in each message ... */
+	for (i=0;i<s->saved_count;i++) {
+		mi = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_load(s, in);
+
+		if (mi == NULL)
+			goto error;
+
+		/* FIXME: this should be done differently, how i don't know */
+		if (s->build_content) {
+			((CamelMessageInfoBase *)mi)->content = perform_content_info_load(s, in);
+			if (((CamelMessageInfoBase *)mi)->content == NULL) {
+				camel_message_info_free(mi);
+				goto error;
+			}
+		}
+
+		CamelTag *tag;
+
+		tag = mi->user_tags;
+		while (tag) {
+			if (strcmp (tag->name, "label")) {
+				res = camel_flag_set(&mi->user_flags, tag->value, TRUE);
+			}
+			tag = tag->next;
+		}
+
+		mi->dirty = TRUE;
+		g_hash_table_insert (s->loaded_infos, mi->uid, mi);
+	}
+
+	
+	if (fclose (in) != 0)
+		return -1;
+
+
+	camel_db_begin_transaction (cdb, &ex);
+
+	ret = save_message_infos_to_db (s, &ex);
+
+	if (ret != 0) {
+		camel_db_abort_transaction (cdb, &ex);
+		return -1;
+	}
+	camel_db_end_transaction (cdb, &ex);
+
+	record = (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_to_db (s, &ex));
+	if (!record) {
+		return -1;
+	}
+	
+	camel_db_begin_transaction (cdb, &ex);
+	ret = camel_db_write_folder_info_record (cdb, record, &ex);
+	g_free (record);
+
+	if (ret != 0) {
+		camel_db_abort_transaction (cdb, &ex);
+		return -1;
+	}
+
+	camel_db_end_transaction (cdb, &ex);
+
+	
+	return ret;
+
+error:
+	if (errno != EINVAL)
+		g_warning ("Cannot load summary file: '%s': %s", s->summary_path, g_strerror (errno));
+	
+	fclose (in);
+
+	return -1;
+
+}
+
+
 /* saves the content descriptions, recursively */
 static int
 perform_content_info_save_to_db (CamelFolderSummary *s, CamelMessageContentInfo *ci, CamelMIRecord *record)
@@ -1144,14 +1246,14 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 		camel_db_abort_transaction (cdb, ex);
 		return -1;
 	}
-
+	camel_db_end_transaction (cdb, ex);
 
 	record = (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_to_db (s, ex));
 	if (!record) {
-		camel_db_abort_transaction (cdb, ex);
 		return -1;
 	}
-
+	
+	camel_db_begin_transaction (cdb, ex);
 	ret = camel_db_write_folder_info_record (cdb, record, ex);
 	g_free (record);
 

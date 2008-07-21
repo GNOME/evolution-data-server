@@ -101,7 +101,7 @@ camel_mbox_store_get_type(void)
 }
 
 static char *extensions[] = {
-	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db"
+	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db", ".journal"
 };
 
 static gboolean

@@ -165,6 +165,7 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const char *filename)
 	
 	summary->folder = folder ;
 	camel_folder_summary_set_build_content (summary, TRUE);
+	camel_folder_summary_set_filename (summary, filename);
 
 	camel_exception_init (&ex);
 	if (camel_folder_summary_load_from_db (summary, &ex) == -1) {

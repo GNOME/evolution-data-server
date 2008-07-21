@@ -158,6 +158,7 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 	summary->folder = folder;
 
 	camel_folder_summary_set_build_content (summary, TRUE);
+	camel_folder_summary_set_filename (summary, filename);
 
 	if (camel_folder_summary_load_from_db (summary, &ex) == -1) {
 		/* FIXME: Isn't this dangerous ? We clear the summary
