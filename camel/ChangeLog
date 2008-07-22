@@ -1,3 +1,9 @@
+2008-07-22  Priit Laes  <plaes@plaes.org>
+
+	** Fixes bug #544202
+
+	* camel-store.c: (construct): Fix string usage after it is freed.
+
 2008-07-22  Sankar P  <psankar@novell.com>
 
 	* camel-folder-search.c (check_header), (search_system_flag):

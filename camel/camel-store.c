@@ -221,11 +221,12 @@ construct (CamelService *service, CamelSession *session,
 
 	store->cdb = camel_db_open (store_db_path, ex);
 	printf("store_db_path %s\n", store_db_path);
-	g_free (store_db_path);
 	if (camel_exception_is_set (ex)) {
-		g_print ("Exiting without success for stire_db_path : [%s]\n", store_db_path);
+		g_print ("Exiting without success for store_db_path : [%s]\n", store_db_path);
+		g_free (store_db_path);
 		return;
 	}
+	g_free (store_db_path);
 
 	if (camel_db_create_folders_table (store->cdb, ex))
 		printf ("something went wrong terribly\n");
