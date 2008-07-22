@@ -1571,12 +1571,6 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 				str = g_string_append (str, " ");
 			}
 
-                        if (org->display_name && org->display_name[0] == '\0') { 
-				
-                                str = g_string_append (str, org->email);
-				str = g_string_append (str, " ");
-			}
-
 			if (org->email && org->email[0]) { 
 				g_string_append (str, "<");
 				str = g_string_append (str, org->email);
