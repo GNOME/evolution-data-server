@@ -510,11 +510,14 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 		info = g_hash_table_lookup (s->loaded_infos, uid);
 		
 		if (!info) {
+			char *errmsg = g_strdup_printf ("no uid [%s] exists", uid);
+
 			/* Makes no sense now as the exception is local as of now. FIXME: Pass exception from caller */
-			camel_exception_set (&ex, CAMEL_EXCEPTION_SYSTEM, _(g_strdup_printf ("no uid [%s] exists", uid)));
+			camel_exception_set (&ex, CAMEL_EXCEPTION_SYSTEM, _(errmsg));
 			// if (strcmp (folder_name, "UNMATCHED"))			
 			g_warning ("No uid[%s] exists in %s\n", uid, folder_name);
 			camel_exception_clear (&ex);
+			g_free (errmsg);
 		}
 	} else
 		info->refcount++;
@@ -1107,6 +1110,8 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	}
 	
 	ret = camel_db_write_folder_info_record (cdb, record, &ex);
+
+	g_free (record->bdata);
 	g_free (record);
 
 	if (ret != 0) {
@@ -1251,6 +1256,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 	
 	camel_db_begin_transaction (cdb, ex);
 	ret = camel_db_write_folder_info_record (cdb, record, ex);
+	g_free (record->bdata);
 	g_free (record);
 
 	if (ret != 0) {
@@ -1428,8 +1434,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *sto
 	}
 
 	g_free (record->folder_name);
-	#warning "Crashes, take care"
-	//g_free (record->bdata); 
+	g_free (record->bdata);
 	g_free (record);
 
 	return ret;
@@ -2093,6 +2098,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, int start, int end)
 
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
+		camel_exception_clear (&ex);
 	} else {
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 	}
@@ -2382,10 +2388,11 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
 	CamelDB *db;
+	char *table_name;
 
 	db = s->folder->cdb;
-	//char *table_name = safe_table (camel_file_util_safe_filename (s->folder->full_name));
-	char *table_name = s->folder->full_name;
+	//table_name = safe_table (camel_file_util_safe_filename (s->folder->full_name));
+	table_name = s->folder->full_name;
 
 	io(printf("Savining header to db\n"));
 

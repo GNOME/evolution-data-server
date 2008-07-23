@@ -272,9 +272,11 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 	info = camel_imap_summary_parent->message_info_from_db (s, mir);
 	if (info) {
-		char *part = g_strdup (mir->bdata);
+		char *part = g_strdup (mir->bdata), *tmp;
+		tmp = part;
 		iinfo = (CamelImapMessageInfo *)info;
 		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
+		g_free (tmp);
 	}
 
 	return info;

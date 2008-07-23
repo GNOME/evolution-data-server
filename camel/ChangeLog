@@ -1,3 +1,19 @@
+2008-07-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #543943
+
+	* camel-store.c: (construct):
+	* camel-folder.c: (camel_folder_construct):
+	* camel-vee-folder.c: (summary_header_to_db):
+	* camel.c: (camel_init):
+	* camel-db.c: (cdb_sql_exec), (camel_db_count_message_info),
+	(camel_db_select):
+	* camel-folder-summary.c: (camel_folder_summary_migrate_infos),
+	(message_info_from_uid), (camel_folder_summary_save_to_db),
+	(camel_folder_summary_header_load_from_db),
+	(camel_folder_summary_remove_range), (summary_header_to_db):
+	Leak fix.
+
 2008-07-22  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fix a bunch of Gtk-Doc warnings.

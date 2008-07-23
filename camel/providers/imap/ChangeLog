@@ -1,3 +1,10 @@
+2008-07-23  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #543943
+
+	* camel-imap-store.c: (camel_imap_store_finalize):
+	* camel-imap-summary.c: (message_info_from_db): Leak fix.
+
 2008-07-18  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-summary.c: #include "camel-string-utils.h"

@@ -210,6 +210,9 @@ camel_imap_store_finalize (CamelObject *object)
 		disco->diary = NULL;
 	}
 
+	g_free (imap_store->namespace);
+	imap_store->namespace = NULL;
+
 	g_free (imap_store->custom_headers);
 }
 

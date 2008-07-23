@@ -488,6 +488,7 @@ scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *ur
 			g_free(tmp);
 		}
 		closedir(dir);
+		g_free (name);
 	}
 
 	res = 0;

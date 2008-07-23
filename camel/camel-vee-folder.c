@@ -471,10 +471,10 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
 	CamelDB *db;
+	char *table_name;
 
 	db = s->folder->parent_store->cdb;
-	char *table_name = s->folder->full_name;
-
+	table_name = s->folder->full_name;
 
 	record->folder_name = table_name;
 

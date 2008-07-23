@@ -597,7 +597,7 @@ static int
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)s;
-	char *part;
+	char *part, *tmp;
 
 	/* We dont actually add our own headers, but version that we don't anyway */
 
@@ -608,7 +608,11 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 	if (part) {
 		EXTRACT_FIRST_DIGIT (cls->version)
 	}
-	fir->bdata = part;
+
+	/* keep only the rest of the bdata there (strip our version digit) */
+	tmp = g_strdup (part);
+	g_free (fir->bdata);
+	fir->bdata = tmp;
 
 	return 0;
 }

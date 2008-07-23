@@ -105,6 +105,7 @@ camel_init (const char *configdir, gboolean nss_init)
 		if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
 			/* fall back on using volatile dbs? */
 			if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
+				g_free (nss_configdir);
 				g_warning ("Failed to initialize NSS");
 				return -1;
 			}
@@ -121,6 +122,8 @@ camel_init (const char *configdir, gboolean nss_init)
 		SSL_OptionSetDefault (SSL_ENABLE_SSL3, PR_TRUE);
 		SSL_OptionSetDefault (SSL_ENABLE_TLS, PR_TRUE);
 		SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
+
+		g_free (nss_configdir);
 	}
 #endif /* HAVE_NSS */
 	

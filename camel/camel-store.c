@@ -215,8 +215,11 @@ construct (CamelService *service, CamelSession *session,
 	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
 
 	if (strlen (store_db_path) < 2) {
+		char *store_path = camel_session_get_storage_path (session, service, ex);
+
 		g_free (store_db_path);
-		store_db_path = g_build_filename ( camel_session_get_storage_path (session, service, ex), CAMEL_DB_FILE, NULL);		
+		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
+		g_free (store_path);
 	}
 
 	store->cdb = camel_db_open (store_db_path, ex);
