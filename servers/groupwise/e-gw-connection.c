@@ -61,6 +61,7 @@ struct _EGwConnectionPrivate {
 	GList *book_list;
 	EGwSendOptions *opts;
 	GMutex *reauth_mutex;
+	GMutex *msg_lock;
 	EProxy *proxy;
 };
 
@@ -345,6 +346,11 @@ e_gw_connection_dispose (GObject *object)
 			priv->reauth_mutex = NULL;
 		}
 
+		if (priv->msg_lock) {
+			g_mutex_free (priv->msg_lock);
+			priv->msg_lock = NULL;
+		}
+
 		if (priv->categories_by_id) {
 			g_hash_table_destroy (priv->categories_by_id);
 			priv->categories_by_id = NULL;
@@ -439,6 +445,7 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 	/* create the SoupSession for this connection */
 	priv->soup_session = soup_session_sync_new_with_options (SOUP_SESSION_TIMEOUT, timeout, NULL);
 	priv->reauth_mutex = g_mutex_new ();
+	priv->msg_lock = g_mutex_new ();
 	priv->categories_by_id = NULL;
 	priv->categories_by_name = NULL;
 	priv->book_list = NULL;
@@ -673,7 +680,9 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), NULL);
 
+	g_mutex_lock (cnc->priv->msg_lock);
 	soup_session_send_message (cnc->priv->soup_session, SOUP_MESSAGE (msg));
+	g_mutex_unlock (cnc->priv->msg_lock);
 
 	/* process response */
 	response = soup_soap_message_parse_response (msg);

@@ -1,3 +1,9 @@
+2008-07-24  Sankar P  <psankar@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_dispose),
+	(e_gw_connection_init), (e_gw_connection_send_message):
+	Mutex-ify the connection bus.
+
 2008-06-16  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fixes #394654 (bnc)
