@@ -169,7 +169,7 @@ reset (CamelMimeFilter *f)
  *
  * Create a new #CamelMimeFiletrCRLF object.
  *
- * Returns a new #CamelMimeFilterCRLF object
+ * Returns: a new #CamelMimeFilterCRLF object
  **/
 CamelMimeFilter *
 camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction, CamelMimeFilterCRLFMode mode)

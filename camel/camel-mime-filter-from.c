@@ -175,7 +175,7 @@ camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
  *
  * Create a new #CamelMimeFilterFrom object.
  * 
- * Returns a new #CamelMimeFilterFrom object
+ * Returns: a new #CamelMimeFilterFrom object
  **/
 CamelMimeFilterFrom *
 camel_mime_filter_from_new (void)

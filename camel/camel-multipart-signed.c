@@ -168,7 +168,7 @@ camel_multipart_signed_get_type (void)
  * create a 'transport-safe' version (as safe as can be expected with
  * such a broken specification).
  *
- * Returns a new #CamelMultipartSigned object
+ * Returns: a new #CamelMultipartSigned object
  **/
 CamelMultipartSigned *
 camel_multipart_signed_new (void)
@@ -573,7 +573,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * Get the raw signed content stream of the multipart/signed MIME part
  * suitable for use with verification of the signature.
  *
- * Returns the signed content stream
+ * Returns: the signed content stream
  **/
 CamelStream *
 camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, CamelException *ex)

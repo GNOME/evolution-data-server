@@ -440,7 +440,7 @@ filter_reset (CamelMimeFilter *filter)
  *
  * Creates a new gzip (or gunzip) filter.
  *
- * Returns a new gzip (or gunzip) filter.
+ * Returns: a new gzip (or gunzip) filter.
  **/
 CamelMimeFilter *
 camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode, int level)

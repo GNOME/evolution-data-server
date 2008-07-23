@@ -47,9 +47,13 @@ enum {
 	CAMEL_LOCAL_FOLDER_INDEX_BODY = CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY | CAMEL_ARG_BOO
 };
 
-typedef struct {
+typedef struct _CamelLocalFolder CamelLocalFolder;
+typedef struct _CamelLocalFolderClass CamelLocalFolderClass;
+typedef struct _CamelLocalFolderPrivate CamelLocalFolderPrivate;
+
+struct _CamelLocalFolder {
 	CamelFolder parent_object;
-	struct _CamelLocalFolderPrivate *priv;
+	CamelLocalFolderPrivate *priv;
 
 	guint32 flags;		/* open mode flags */
 
@@ -64,9 +68,9 @@ typedef struct {
 	CamelIndex *index;	   /* index for this folder */
 	CamelFolderSearch *search; /* used to run searches, we just use the real thing (tm) */
 	CamelFolderChangeInfo *changes;	/* used to store changes to the folder during processing */
-} CamelLocalFolder;
+};
 
-typedef struct {
+struct _CamelLocalFolderClass {
 	CamelFolderClass parent_class;
 
 	/* Virtual methods */	
@@ -79,7 +83,7 @@ typedef struct {
 
 	/* Unlock the folder for my operations */
 	void (*unlock)(CamelLocalFolder *);
-} CamelLocalFolderClass;
+};
 
 
 /* public methods */

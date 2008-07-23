@@ -217,7 +217,7 @@ void             camel_store_delete_folder      (CamelStore *store,
 						 const char *folder_name,
 						 CamelException *ex);
 void             camel_store_rename_folder      (CamelStore *store,
-						 const char *old_name,
+						 const char *old_namein,
 						 const char *new_name,
 						 CamelException *ex);
 

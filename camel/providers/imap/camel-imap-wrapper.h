@@ -33,20 +33,22 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelImapWrapperClass CamelImapWrapperClass;
+typedef struct _CamelImapWrapperPrivate CamelImapWrapperPrivate;
+
+struct _CamelImapWrapper {
 	CamelDataWrapper parent_object;
 
-	struct _CamelImapWrapperPrivate *priv;
+	CamelImapWrapperPrivate *priv;
 
 	CamelImapFolder *folder;
 	char *uid, *part_spec;
 	CamelMimePart *part;
-} CamelImapWrapper;
+};
 
-typedef struct {
+struct _CamelImapWrapperClass {
 	CamelDataWrapperClass parent_class;
-
-} CamelImapWrapperClass;
+};
 
 /* Standard Camel function */
 CamelType camel_imap_wrapper_get_type (void);

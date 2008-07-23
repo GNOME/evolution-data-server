@@ -90,7 +90,7 @@ int  camel_filter_driver_remove_rule_by_name  (CamelFilterDriver *d, const char 
 void camel_filter_driver_flush                (CamelFilterDriver *driver, CamelException *ex);
 
 int  camel_filter_driver_filter_message       (CamelFilterDriver *driver, CamelMimeMessage *message,
-					       CamelMessageInfo *info, const char *uri,
+					       CamelMessageInfo *info, const char *uid,
 					       CamelFolder *source, const char *source_url,
 					       const char *original_source_url, CamelException *ex);
 

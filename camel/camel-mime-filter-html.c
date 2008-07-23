@@ -190,7 +190,7 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
  *
  * Create a new #CamelMimeFilterHTML object.
  * 
- * Returns a new #CamelMimeFilterHTML object
+ * Returns: a new #CamelMimeFilterHTML object
  **/
 CamelMimeFilterHTML *
 camel_mime_filter_html_new (void)

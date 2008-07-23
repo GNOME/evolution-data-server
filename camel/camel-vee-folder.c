@@ -120,7 +120,7 @@ camel_vee_folder_construct (CamelVeeFolder *vf, CamelStore *parent_store, const 
  * camel_vee_folder_new:
  * @parent_store: the parent CamelVeeStore
  * @full: the full path to the vfolder.
- * @ex: a CamelException
+ * @flags: flags of some kind
  *
  * Create a new CamelVeeFolder object.
  *

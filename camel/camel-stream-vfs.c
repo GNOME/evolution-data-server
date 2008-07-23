@@ -105,7 +105,7 @@ camel_stream_vfs_get_type (void)
  * backing store. When the stream is destroyed, the file descriptor
  * will be closed. This will not increase reference counter on the stream.
  *
- * Returns a new #CamelStreamVFS
+ * Returns: a new #CamelStreamVFS
  **/
 CamelStream *
 camel_stream_vfs_new_with_stream (GObject *stream)
@@ -133,7 +133,7 @@ camel_stream_vfs_new_with_stream (GObject *stream)
  *
  * Creates a new #CamelStreamVFS corresponding to the named file and mode.
  *
- * Returns the new stream, or %NULL on error.
+ * Returns: the new stream, or %NULL on error.
  **/
 CamelStream *
 camel_stream_vfs_new_with_uri (const char *uri, CamelStreamVFSOpenMethod mode)
@@ -175,7 +175,7 @@ camel_stream_vfs_new_with_uri (const char *uri, CamelStreamVFSOpenMethod mode)
  * camel_stream_vfs_is_writable:
  * @stream_vfs: a #CamelStreamVFS instance
  *
- * Returns whether is the underlying stream writable or not.
+ * Returns: whether is the underlying stream writable or not.
  **/
 gboolean
 camel_stream_vfs_is_writable (CamelStreamVFS *stream_vfs)

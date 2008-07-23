@@ -228,7 +228,7 @@ get_service (CamelSession *session, const char *url_string,
  * incremented by one each time). What constitutes "the same" URL
  * depends in part on the provider.
  *
- * Returns the requested #CamelService, or %NULL
+ * Returns: the requested #CamelService, or %NULL
  **/
 CamelService *
 camel_session_get_service (CamelSession *session, const char *url_string,
@@ -257,7 +257,7 @@ camel_session_get_service (CamelSession *session, const char *url_string,
  * the returned service will have been successfully connected (via
  * #camel_service_connect.)
  *
- * Returns the requested #CamelService, or %NULL
+ * Returns: the requested #CamelService, or %NULL
  **/
 CamelService *
 camel_session_get_service_connected (CamelSession *session,
@@ -321,7 +321,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
  * files in this directory. If the directory does not exist, it will
  * be created.
  *
- * Returns the path (which the caller must free), or %NULL if an error
+ * Returns: the path (which the caller must free), or %NULL if an error
  * occurs.
  **/
 char *
@@ -365,7 +365,7 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  * the user did not provide the information. The caller must #g_free
  * the information returned when it is done with it.
  *
- * Returns the authentication information or %NULL
+ * Returns: the authentication information or %NULL
  **/
 char *
 camel_session_get_password (CamelSession *session, CamelService *service,
@@ -420,7 +420,7 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
  * @type. If @cancel is %TRUE, the user will be able to accept or
  * cancel. Otherwise, the message is purely informational.
  *
- * Returns %TRUE if the user accepts, %FALSE if they cancel.
+ * Returns: %TRUE if the user accepts, %FALSE if they cancel.
  */
 gboolean
 camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
@@ -488,7 +488,7 @@ camel_session_build_password_prompt (const char *type,
  * camel_session_is_online:
  * @session: a #CamelSession object
  *
- * Returns whether or not @session is online
+ * Returns: whether or not @session is online
  **/
 gboolean
 camel_session_is_online (CamelSession *session)
@@ -518,7 +518,7 @@ camel_session_set_online (CamelSession *session, gboolean online)
  * @type: the type of filter (eg, "incoming")
  * @ex: a #CamelException
  *
- * Returns a filter driver, loaded with applicable rules
+ * Returns: a filter driver, loaded with applicable rules
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
@@ -657,7 +657,7 @@ session_thread_status (CamelSession *session,
  * @ops points to the operations used to recieve/process and finally
  * free the message.
  *
- * Returns a new #CamelSessionThreadMsg
+ * Returns: a new #CamelSessionThreadMsg
  **/
 void *
 camel_session_thread_msg_new (CamelSession *session,
@@ -699,7 +699,7 @@ camel_session_thread_msg_free (CamelSession *session,
  * The operation should be (but needn't) run in a queued manner
  * with other operations queued in this manner.
  * 
- * Returns the id of the operation queued
+ * Returns: the id of the operation queued
  **/
 int
 camel_session_thread_queue (CamelSession *session,
@@ -737,7 +737,7 @@ camel_session_thread_wait (CamelSession *session,
  * 
  * Do we have to check incoming messages to be junk?
  *
- * Returns whether or not we are checking incoming messages for junk
+ * Returns: whether or not we are checking incoming messages for junk
  **/
 gboolean
 camel_session_check_junk (CamelSession *session)

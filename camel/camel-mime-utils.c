@@ -99,7 +99,7 @@ static const unsigned char tohex[16] = {
  * when finished encoding data with #camel_base64_encode_step
  * to flush off the last little bit.
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines, unsigned char *out, int *state, int *save)
@@ -129,7 +129,7 @@ camel_base64_encode_close(unsigned char *in, size_t inlen, gboolean break_lines,
  * left-over state in state and save (initialise to 0 on first
  * invocation).
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save)
@@ -148,7 +148,7 @@ camel_base64_encode_step(unsigned char *in, size_t len, gboolean break_lines, un
  *
  * Decodes a chunk of base64 encoded data
  *
- * Returns the number of bytes decoded (which have been dumped in @out)
+ * Returns: the number of bytes decoded (which have been dumped in @out)
  **/
 size_t
 camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int *state, unsigned int *save)
@@ -164,7 +164,7 @@ camel_base64_decode_step(unsigned char *in, size_t len, unsigned char *out, int 
  *
  * Base64 encodes a block of memory.
  *
- * Returns a string containing the base64 encoded data
+ * Returns: a string containing the base64 encoded data
  **/
 char *
 camel_base64_encode_simple (const char *data, size_t len)
@@ -180,7 +180,7 @@ camel_base64_encode_simple (const char *data, size_t len)
  *
  * Base64 decodes @data inline (overwrites @data with the decoded version).
  *
- * Returns the new length of @data
+ * Returns: the new length of @data
  **/
 size_t
 camel_base64_decode_simple (char *data, size_t len)
@@ -212,7 +212,7 @@ camel_base64_decode_simple (char *data, size_t len)
  * Uuencodes a chunk of data. Call this when finished encoding data
  * with #camel_uuencode_step to flush off the last little bit.
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_uuencode_close (unsigned char *in, size_t len, unsigned char *out, unsigned char *uubuf, int *state, guint32 *save)
@@ -294,7 +294,7 @@ camel_uuencode_close (unsigned char *in, size_t len, unsigned char *out, unsigne
  * state in @uubuf, @state and @save (initialize to 0 on first
  * invocation).
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_uuencode_step (unsigned char *in, size_t len, unsigned char *out, unsigned char *uubuf, int *state, guint32 *save)
@@ -370,7 +370,7 @@ camel_uuencode_step (unsigned char *in, size_t len, unsigned char *out, unsigned
  * uuencoded data. Assumes the "begin mode filename" line has
  * been stripped off.
  *
- * Returns the number of bytes decoded
+ * Returns: the number of bytes decoded
  **/
 size_t
 camel_uudecode_step (unsigned char *in, size_t len, unsigned char *out, int *state, guint32 *save)
@@ -469,7 +469,7 @@ camel_uudecode_step (unsigned char *in, size_t len, unsigned char *out, int *sta
  * encoding data with #camel_quoted_encode_step to flush off
  * the last little bit.
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_quoted_encode_close(unsigned char *in, size_t len, unsigned char *out, int *state, int *save)
@@ -512,7 +512,7 @@ camel_quoted_encode_close(unsigned char *in, size_t len, unsigned char *out, int
  * step', saves left-over state in state and save (initialise to -1 on
  * first invocation).
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_quoted_encode_step (unsigned char *in, size_t len, unsigned char *out, int *statep, int *save)
@@ -606,12 +606,12 @@ camel_quoted_encode_step (unsigned char *in, size_t len, unsigned char *out, int
  * @len: max length of data to decode
  * @out: output stream
  * @savestate: holds the number of bits that are stored in @save
- * @saved: leftover bits that have not yet been decoded
+ * @saveme: leftover bits that have not yet been decoded
  *
  * Decodes a block of quoted-printable encoded data. Performs a
  * 'decode step' on a chunk of QP encoded data.
  *
- * Returns the number of bytes decoded
+ * Returns: the number of bytes decoded
  **/
 size_t
 camel_quoted_decode_step(unsigned char *in, size_t len, unsigned char *out, int *savestate, int *saveme)
@@ -1327,7 +1327,7 @@ header_decode_text (const char *in, int ctext, const char *default_charset)
  *
  * Decodes rfc2047 encoded-word tokens
  *
- * Returns a string containing the UTF-8 version of the decoded header
+ * Returns: a string containing the UTF-8 version of the decoded header
  * value
  **/
 char *
@@ -1348,7 +1348,7 @@ camel_header_decode_string (const char *in, const char *default_charset)
  * Decodes a header which contains rfc2047 encoded-word tokens that
  * may or may not be within a comment.
  *
- * Returns a string containing the UTF-8 version of the decoded header
+ * Returns: a string containing the UTF-8 version of the decoded header
  * value
  **/
 char *
@@ -1480,7 +1480,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
  *
  * Encodes a 'text' header according to the rules of rfc2047.
  *
- * Returns the rfc2047 encoded header
+ * Returns: the rfc2047 encoded header
  **/
 char *
 camel_header_encode_string (const unsigned char *in)
@@ -1790,7 +1790,7 @@ header_encode_phrase_merge_words (GList **wordsp)
  *
  * Encodes a 'phrase' header according to the rules in rfc2047.
  *
- * Returns the encoded 'phrase'
+ * Returns: the encoded 'phrase'
  **/
 char *
 camel_header_encode_phrase (const unsigned char *in)
@@ -1904,7 +1904,7 @@ decode_token (const char **in)
  * Gets the first token in the string according to the rules of
  * rfc0822.
  *
- * Returns a new string containing the first token in @in
+ * Returns: a new string containing the first token in @in
  **/
 char *
 camel_header_token_decode(const char *in)
@@ -2014,7 +2014,7 @@ header_decode_value(const char **in)
  * Extracts an integer token from @in and updates the pointer to point
  * to after the end of the integer token (sort of like strtol).
  *
- * Returns the int value
+ * Returns: the int value
  **/
 int
 camel_header_decode_int(const char **in)
@@ -2130,7 +2130,7 @@ rfc2184_decode (const char *in, size_t len)
  *
  * Searches @params for a param named @name and gets the value.
  *
- * Returns the value of the @name param
+ * Returns: the value of the @name param
  **/
 char *
 camel_header_param (struct _camel_header_param *p, const char *name)
@@ -2151,7 +2151,7 @@ camel_header_param (struct _camel_header_param *p, const char *name)
  *
  * Set a parameter in the list.
  *
- * Returns the set param
+ * Returns: the set param
  **/
 struct _camel_header_param *
 camel_header_set_param (struct _camel_header_param **l, const char *name, const char *value)
@@ -2199,7 +2199,7 @@ camel_header_set_param (struct _camel_header_param **l, const char *name, const 
  * Searches the params on s #CamelContentType for a param named @name
  * and gets the value.
  *
- * Returns the value of the @name param
+ * Returns: the value of the @name param
  **/
 const char *
 camel_content_type_param (CamelContentType *t, const char *name)
@@ -2234,7 +2234,7 @@ camel_content_type_set_param (CamelContentType *t, const char *name, const char 
  * The subtype of "*" will match any subtype.  If @ct is %NULL, then
  * it will match the type "text/plain".
  *
- * Returns %TRUE if the content type @ct is of type @type/@subtype or
+ * Returns: %TRUE if the content type @ct is of type @type/@subtype or
  * %FALSE otherwise
  **/
 int
@@ -2283,7 +2283,7 @@ camel_header_param_list_free(struct _camel_header_param *p)
  *
  * Create a new #CamelContentType.
  *
- * Returns the new #CamelContentType
+ * Returns: the new #CamelContentType
  **/
 CamelContentType *
 camel_content_type_new(const char *type, const char *subtype)
@@ -2767,7 +2767,7 @@ header_msgid_decode_internal(const char **in)
  *
  * Extract a message-id token from @in.
  *
- * Returns the msg-id
+ * Returns: the msg-id
  **/
 char *
 camel_header_msgid_decode(const char *in)
@@ -2785,7 +2785,7 @@ camel_header_msgid_decode(const char *in)
  *
  * Extract a content-id from @in.
  *
- * Returns the extracted content-id
+ * Returns: the extracted content-id
  **/
 char *
 camel_header_contentid_decode (const char *in)

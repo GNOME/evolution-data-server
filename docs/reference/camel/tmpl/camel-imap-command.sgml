@@ -121,7 +121,7 @@ camel-imap-command
 </para>
 
 @store: 
-@respbuf: 
+@response: 
 @ex: 
 @Returns: 
 

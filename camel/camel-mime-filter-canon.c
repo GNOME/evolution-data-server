@@ -186,7 +186,7 @@ reset (CamelMimeFilter *f)
  *
  * Create a new filter to canonicalise an input stream.
  *
- * Returns a new #CamelMimeFilterCanon
+ * Returns: a new #CamelMimeFilterCanon
  **/
 CamelMimeFilter *
 camel_mime_filter_canon_new(guint32 flags)

@@ -50,6 +50,7 @@ struct _CamelException;
 
 typedef struct _CamelNNTPStore CamelNNTPStore;
 typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
+typedef struct _CamelNNTPStorePrivate CamelNNTPStorePrivate;
 
 typedef enum _xover_t {
 	XOVER_STRING = 0,
@@ -68,7 +69,7 @@ struct _xover_header {
 struct _CamelNNTPStore {
 	CamelDiscoStore parent_object;	
 	
-	struct _CamelNNTPStorePrivate *priv;
+	CamelNNTPStorePrivate *priv;
 	
 	guint32 extensions;
 	

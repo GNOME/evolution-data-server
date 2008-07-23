@@ -43,7 +43,7 @@ CamelVeeFolder
 </para>
 
 @parent_store: 
-@name: 
+@full: 
 @flags: 
 @Returns: 
 

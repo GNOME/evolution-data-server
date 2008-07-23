@@ -151,7 +151,7 @@ camel_multipart_get_type (void)
  *
  * Create a new #CamelMultipart object.
  *
- * Returns a new #CamelMultipart object
+ * Returns: a new #CamelMultipart object
  **/
 CamelMultipart *
 camel_multipart_new (void)
@@ -280,7 +280,7 @@ remove_part_at (CamelMultipart *multipart, guint index)
  *
  * Remove the indicated part from the multipart object.
  *
- * Returns the removed part. Note that it is #camel_object_unref'ed
+ * Returns: the removed part. Note that it is #camel_object_unref'ed
  * before being returned, which may cause it to be destroyed.
  **/
 CamelMimePart *
@@ -312,7 +312,7 @@ get_part (CamelMultipart *multipart, guint index)
  * @multipart: a #CamelMultipart object
  * @index: a zero-based index indicating the part to get
  *
- * Returns the indicated subpart, or %NULL
+ * Returns: the indicated subpart, or %NULL
  **/
 CamelMimePart *
 camel_multipart_get_part (CamelMultipart *multipart, guint index)
@@ -333,7 +333,7 @@ get_number (CamelMultipart *multipart)
  * camel_multipart_get_number:
  * @multipart: a #CamelMultipart object
  *
- * Returns the number of subparts in @multipart
+ * Returns: the number of subparts in @multipart
  **/
 guint
 camel_multipart_get_number (CamelMultipart *multipart)
@@ -417,7 +417,7 @@ get_boundary (CamelMultipart *multipart)
  * camel_multipart_get_boundary:
  * @multipart: a #CamelMultipart object
  *
- * Returns the boundary
+ * Returns: the boundary
  **/
 const char *
 camel_multipart_get_boundary (CamelMultipart *multipart)
@@ -596,7 +596,7 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
  *
  * Construct a multipart from a parser.
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)

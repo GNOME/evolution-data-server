@@ -162,7 +162,7 @@ camel_store_summary_get_type (void)
  *
  * Create a new #CamelStoreSummary object.
  * 
- * Returns a new #CamelStoreSummary object
+ * Returns: a new #CamelStoreSummary object
  **/
 CamelStoreSummary *
 camel_store_summary_new (void)
@@ -216,7 +216,7 @@ camel_store_summary_set_uri_base(CamelStoreSummary *s, CamelURL *base)
  * 
  * Get the number of summary items stored in this summary.
  * 
- * Returns the number of items int he summary.
+ * Returns: the number of items int he summary.
  **/
 int
 camel_store_summary_count(CamelStoreSummary *s)
@@ -237,7 +237,7 @@ camel_store_summary_count(CamelStoreSummary *s)
  *
  * It must be freed using #camel_store_summary_info_free.
  * 
- * Returns the summary item, or %NULL if @index is out of range
+ * Returns: the summary item, or %NULL if @index is out of range
  **/
 CamelStoreInfo *
 camel_store_summary_index(CamelStoreSummary *s, int i)
@@ -270,7 +270,7 @@ camel_store_summary_index(CamelStoreSummary *s, int i)
  *
  * It must be freed using #camel_store_summary_array_free.
  *
- * Returns the summary array
+ * Returns: the summary array
  **/
 GPtrArray *
 camel_store_summary_array(CamelStoreSummary *s)
@@ -326,7 +326,7 @@ camel_store_summary_array_free(CamelStoreSummary *s, GPtrArray *array)
  *
  * It must be freed using #camel_store_summary_info_free.
  *
- * Returns the summary item, or %NULL if the @path name is not
+ * Returns: the summary item, or %NULL if the @path name is not
  * available
  **/
 CamelStoreInfo *
@@ -355,7 +355,7 @@ camel_store_summary_path(CamelStoreSummary *s, const char *path)
  *
  * Load the summary off disk.
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_store_summary_load(CamelStoreSummary *s)
@@ -412,7 +412,7 @@ error:
  * Writes the summary to disk.  The summary is only written if changes
  * have occured.
  * 
- * Returns %0 on succes or %-1 on fail
+ * Returns: %0 on succes or %-1 on fail
  **/
 int
 camel_store_summary_save(CamelStoreSummary *s)
@@ -494,7 +494,7 @@ camel_store_summary_save(CamelStoreSummary *s)
  * keep the rest on disk.  This should only be done on
  * a fresh summary object.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_store_summary_header_load(CamelStoreSummary *s)
@@ -559,7 +559,7 @@ camel_store_summary_add(CamelStoreSummary *s, CamelStoreInfo *info)
  * 
  * Build a new info record based on the name, and add it to the summary.
  *
- * Returns the newly added record
+ * Returns: the newly added record
  **/
 CamelStoreInfo *
 camel_store_summary_add_from_path(CamelStoreSummary *s, const char *path)
@@ -596,7 +596,7 @@ camel_store_summary_add_from_path(CamelStoreSummary *s, const char *path)
  * #camel_store_summary_info_free, #camel_store_info_free will not
  * work.
  *
- * Returns the #CamelStoreInfo associated with @path
+ * Returns: the #CamelStoreInfo associated with @path
  **/
 CamelStoreInfo *
 camel_store_summary_info_new_from_path(CamelStoreSummary *s, const char *path)
@@ -824,7 +824,7 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
  * Allocate a new #CamelStoreInfo, suitable for adding to this
  * summary.
  * 
- * Returns the newly allocated #CamelStoreInfo
+ * Returns: the newly allocated #CamelStoreInfo
  **/
 CamelStoreInfo *
 camel_store_summary_info_new(CamelStoreSummary *s)
@@ -845,7 +845,7 @@ camel_store_summary_info_new(CamelStoreSummary *s)
  *
  * Get a specific string from the @info.
  *
- * Returns the string value
+ * Returns: the string value
  **/
 const char *
 camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, int type)

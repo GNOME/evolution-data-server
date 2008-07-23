@@ -71,7 +71,7 @@ gboolean           camel_imap_command_start        (CamelImapStore *store,
 						    CamelException *ex,
 						    const char *fmt, ...);
 CamelImapResponseType camel_imap_command_response  (CamelImapStore *store,
-						    char **respbuf,
+						    char **response,
 						    CamelException *ex);
 
 G_END_DECLS

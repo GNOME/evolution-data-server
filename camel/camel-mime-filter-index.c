@@ -106,7 +106,7 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass)
  *
  * Create a new #CamelMimeFilterIndex object
  * 
- * Returns a new #CamelMimeFilterIndex object
+ * Returns: a new #CamelMimeFilterIndex object
  **/
 CamelMimeFilterIndex *
 camel_mime_filter_index_new (void)
@@ -122,7 +122,7 @@ camel_mime_filter_index_new (void)
  *
  * Create a new #CamelMimeFilterIndex based on @index.
  *
- * Returns a new #CamelMimeFilterIndex object
+ * Returns: a new #CamelMimeFilterIndex object
  **/
 CamelMimeFilterIndex *
 camel_mime_filter_index_new_index (CamelIndex *index)

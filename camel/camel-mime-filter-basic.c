@@ -259,7 +259,7 @@ donothing:
  *
  * Create a new #CamelMimeFilterBasic object.
  * 
- * Returns a new #CamelMimeFilterBasic object
+ * Returns: a new #CamelMimeFilterBasic object
  **/
 CamelMimeFilterBasic *
 camel_mime_filter_basic_new (void)
@@ -275,7 +275,7 @@ camel_mime_filter_basic_new (void)
  *
  * Create a new #CamelMimeFilterBasic object of type @type.
  * 
- * Returns a new #CamelMimeFilterBasic object
+ * Returns: a new #CamelMimeFilterBasic object
  **/
 CamelMimeFilterBasic *
 camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)

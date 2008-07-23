@@ -99,7 +99,7 @@ reset (CamelMimeFilter *f)
  *
  * Create a new #CamelMimeFilterSave filter object.
  *
- * Returns a new #CamelMimeFilterSave object
+ * Returns: a new #CamelMimeFilterSave object
  **/
 CamelMimeFilter *
 camel_mime_filter_save_new (void)
@@ -119,7 +119,7 @@ camel_mime_filter_save_new (void)
  * Create a new #CamelMimeFilterSave filter object that will save a
  * copy of all filtered data to @stream.
  *
- * Returns a new #CamelMimeFilterSave object
+ * Returns: a new #CamelMimeFilterSave object
  **/
 CamelMimeFilter *
 camel_mime_filter_save_new_with_stream (CamelStream *stream)

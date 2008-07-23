@@ -275,7 +275,7 @@ CamelObjectBag *camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopy
 void *camel_object_bag_get(CamelObjectBag *bag, const void *key);
 void *camel_object_bag_peek(CamelObjectBag *bag, const void *key);
 void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key);
-void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *o);
+void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo);
 void camel_object_bag_abort(CamelObjectBag *bag, const void *key);
 void camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey);
 GPtrArray *camel_object_bag_list(CamelObjectBag *bag);

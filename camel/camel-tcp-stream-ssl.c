@@ -177,7 +177,7 @@ camel_tcp_stream_ssl_get_type (void)
  * user, a #CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
- * Returns a new #CamelTcpStreamSSL stream preset in SSL mode
+ * Returns: a new #CamelTcpStreamSSL stream preset in SSL mode
  **/
 CamelStream *
 camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guint32 flags)
@@ -211,7 +211,7 @@ camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guin
  * user, a CamelSession is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
- * Returns a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
+ * Returns: a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
  **/
 CamelStream *
 camel_tcp_stream_ssl_new_raw (CamelSession *session, const char *expected_host, guint32 flags)
@@ -301,7 +301,7 @@ set_errno (int code)
  *
  * Toggles an ssl-capable stream into ssl mode (if it isn't already).
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)

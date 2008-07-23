@@ -40,7 +40,7 @@ CamelDiscoStore
 
 </para>
 
-@Param1: 
+@store: 
 @Returns: 
 
 
@@ -49,9 +49,9 @@ CamelDiscoStore
 
 </para>
 
-@Param1: 
-@Param2: 
-@Param3: 
+@store: 
+@status: 
+@ex: 
 
 
 <!-- ##### FUNCTION camel_disco_store_can_work_offline ##### -->
@@ -59,7 +59,7 @@ CamelDiscoStore
 
 </para>
 
-@Param1: 
+@store: 
 @Returns: 
 
 

@@ -247,7 +247,7 @@ ssl_errno (SSL *ssl, int ret)
  *
  * Toggles an ssl-capable stream into ssl mode (if it isn't already).
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *stream)

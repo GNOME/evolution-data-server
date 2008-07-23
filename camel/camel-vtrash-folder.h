@@ -39,7 +39,7 @@ typedef struct _CamelVTrashFolderClass CamelVTrashFolderClass;
 #define CAMEL_VTRASH_NAME ".#evolution/Trash"
 #define CAMEL_VJUNK_NAME ".#evolution/Junk"
 
-typedef enum _camel_vtrash_folder_t {
+typedef enum {
 	CAMEL_VTRASH_FOLDER_TRASH,
 	CAMEL_VTRASH_FOLDER_JUNK,
 	CAMEL_VTRASH_FOLDER_LAST
@@ -48,7 +48,7 @@ typedef enum _camel_vtrash_folder_t {
 struct _CamelVTrashFolder {
 	CamelVeeFolder parent;
 
-	enum _camel_vtrash_folder_t type;
+	camel_vtrash_folder_t type;
 	guint32 bit;
 };
 

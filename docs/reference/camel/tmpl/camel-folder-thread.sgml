@@ -94,7 +94,7 @@ camel-folder-thread
 
 </para>
 
-@threads: 
+@thread: 
 
 
 <!-- ##### FUNCTION camel_folder_thread_messages_unref ##### -->
@@ -102,7 +102,7 @@ camel-folder-thread
 
 </para>
 
-@threads: 
+@thread: 
 
 
 <!-- ##### FUNCTION camel_folder_threaded_messages_dump ##### -->

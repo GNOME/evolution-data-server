@@ -129,7 +129,7 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
  * Create a new #CamelMimeFilterProgress object that will report
  * streaming progress.
  *
- * Returns a new #CamelMimeFilter object
+ * Returns: a new #CamelMimeFilter object
  **/
 CamelMimeFilter *
 camel_mime_filter_progress_new (CamelOperation *operation, size_t total)

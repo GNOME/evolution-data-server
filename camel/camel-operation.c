@@ -164,7 +164,7 @@ camel_operation_mute(CamelOperation *cc)
 /**
  * camel_operation_registered:
  *
- * Returns the registered operation, or %NULL if none registered.
+ * Returns: the registered operation, or %NULL if none registered.
  **/
 CamelOperation *
 camel_operation_registered (void)
@@ -350,7 +350,7 @@ camel_operation_uncancel(CamelOperation *cc)
  * operation_register again with that, to automatically stack
  * registrations.
  *
- * Return Value: Returns the previously registered operatoin.
+ * Returns: the previously registered operatoin.
  *
  **/
 CamelOperation *
@@ -653,8 +653,6 @@ camel_operation_progress_count (CamelOperation *cc, int sofar)
 /**
  * camel_operation_end:
  * @cc: operation context
- * @what: Format string.
- * @Varargs: varargs 
  * 
  * Report the end of an operation.  If @cc is NULL, then the currently
  * registered operation is notified.

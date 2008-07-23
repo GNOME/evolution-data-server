@@ -116,7 +116,7 @@ camel_stream_mem_get_type (void)
  *
  * Create a new #CamelStreamMem object.
  *
- * Returns a new #CamelStreamMem
+ * Returns: a new #CamelStreamMem
  **/
 CamelStream *
 camel_stream_mem_new (void)
@@ -136,7 +136,7 @@ camel_stream_mem_new (void)
  * for use as the stream backing. This may have resource implications
  * you may wish to consider.
  *
- * Returns a new #CamelStreamMem
+ * Returns: a new #CamelStreamMem
  **/
 CamelStream *
 camel_stream_mem_new_with_buffer (const char *buffer, size_t len)
@@ -158,7 +158,7 @@ camel_stream_mem_new_with_buffer (const char *buffer, size_t len)
  * Note: The newly created #CamelStreamMem will destroy @buffer
  * when destroyed.
  *
- * Returns a new #CamelStreamMem
+ * Returns: a new #CamelStreamMem
  **/
 CamelStream *
 camel_stream_mem_new_with_byte_array (GByteArray *buffer)

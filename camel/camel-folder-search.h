@@ -51,8 +51,9 @@ struct _CamelFolderSearch {
 
 	GString *query; /* shall contain the SQL quer that should be executed */
 
-// DEPRECATED	
-//	GHashTable *summary_hash; /* hashtable of summary items */
+#if 0  /* DEPRECATED */
+	GHashTable *summary_hash; /* hashtable of summary items */
+#endif
 	CamelMessageInfo *current; /* current message info, when searching one by one */
 	CamelMimeMessage *current_message; /* cache of current message, if required */
 	CamelIndex *body_index;

@@ -1170,7 +1170,7 @@ camel_filter_driver_flush (CamelFilterDriver *driver, CamelException *ex)
  * object. Is more efficient as it doesn't need to open the folder
  * through Camel directly.
  *
- * Returns -1 if errors were encountered during filtering,
+ * Returns: -1 if errors were encountered during filtering,
  * otherwise returns 0.
  *
  **/
@@ -1275,7 +1275,7 @@ fail:
  * Filters a folder based on rules defined in the FilterDriver
  * object.
  *
- * Returns -1 if errors were encountered during filtering,
+ * Returns: -1 if errors were encountered during filtering,
  * otherwise returns 0.
  *
  **/
@@ -1403,7 +1403,7 @@ get_message_cb (void *data, CamelException *ex)
  * certain cases is more efficient than using the default
  * camel_folder_append_message() function).
  *
- * Returns -1 if errors were encountered during filtering,
+ * Returns: -1 if errors were encountered during filtering,
  * otherwise returns 0.
  *
  **/

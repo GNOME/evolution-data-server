@@ -121,7 +121,7 @@ camel_data_wrapper_get_type (void)
  *
  * Create a new #CamelDataWrapper object.
  *
- * Returns a new #CamelDataWrapper object
+ * Returns: a new #CamelDataWrapper object
  **/
 CamelDataWrapper *
 camel_data_wrapper_new (void)
@@ -162,7 +162,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * equivalent data wrapper object later by passing this stream to
  * #camel_data_wrapper_construct_from_stream.
  *
- * Returns the number of bytes written, or %-1 on fail
+ * Returns: the number of bytes written, or %-1 on fail
  **/
 ssize_t
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
@@ -226,7 +226,7 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  *
  * Writes the decoded data content to @stream.
  *
- * Returns the number of bytes written, or %-1 on fail
+ * Returns: the number of bytes written, or %-1 on fail
  **/
 ssize_t
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
@@ -258,7 +258,7 @@ construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  *
  * Constructs the content of @data_wrapper from the supplied @stream.
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
@@ -314,7 +314,7 @@ get_mime_type (CamelDataWrapper *data_wrapper)
  * camel_data_wrapper_get_mime_type:
  * @data_wrapper: a #CamelDataWrapper object
  *
- * Returns the MIME type which must be freed by the caller
+ * Returns: the MIME type which must be freed by the caller
  **/
 char *
 camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
@@ -336,7 +336,7 @@ get_mime_type_field (CamelDataWrapper *data_wrapper)
  * camel_data_wrapper_get_mime_type_field:
  * @data_wrapper: a #CamelDataWrapper object
  *
- * Returns the parsed form of the data wrapper's MIME type
+ * Returns: the parsed form of the data wrapper's MIME type
  **/
 CamelContentType *
 camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
@@ -388,7 +388,7 @@ is_offline (CamelDataWrapper *data_wrapper)
  * camel_data_wrapper_is_offline:
  * @data_wrapper: a #CamelDataWrapper object
  *
- * Returns whether @data_wrapper is "offline" (data stored
+ * Returns: whether @data_wrapper is "offline" (data stored
  * remotely) or not. Some optional code paths may choose to not
  * operate on offline data.
  **/

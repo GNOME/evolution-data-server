@@ -83,8 +83,8 @@ CamelMimeParser *camel_mime_parser_new (void);
 int		camel_mime_parser_errno (CamelMimeParser *parser);
 
 /* using an fd will be a little faster, but not much (over a simple stream) */
-int		camel_mime_parser_init_with_fd (CamelMimeParser *parser, int fd);
-int		camel_mime_parser_init_with_stream (CamelMimeParser *parser, CamelStream *stream);
+int		camel_mime_parser_init_with_fd (CamelMimeParser *m, int fd);
+int		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream);
 
 /* get the stream or fd back of the parser */
 CamelStream    *camel_mime_parser_stream (CamelMimeParser *parser);
@@ -99,7 +99,7 @@ void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre
 int camel_mime_parser_set_header_regex (CamelMimeParser *parser, char *matchstr);
 
 /* normal interface */
-camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, char **buf, size_t *buflen);
+camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, char **databuffer, size_t *datalength);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
 camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
@@ -112,21 +112,21 @@ int camel_mime_parser_read (CamelMimeParser *parser, const char **databuffer, in
 CamelContentType *camel_mime_parser_content_type (CamelMimeParser *parser);
 
 /* get/change raw header by name */
-const char *camel_mime_parser_header (CamelMimeParser *parser, const char *name, int *offset);
+const char *camel_mime_parser_header (CamelMimeParser *m, const char *name, int *offset);
 
 /* get all raw headers. READ ONLY! */
-struct _camel_header_raw *camel_mime_parser_headers_raw (CamelMimeParser *parser);
+struct _camel_header_raw *camel_mime_parser_headers_raw (CamelMimeParser *m);
 
 /* get multipart pre/postface */
-const char *camel_mime_parser_preface (CamelMimeParser *parser);
-const char *camel_mime_parser_postface (CamelMimeParser *parser);
+const char *camel_mime_parser_preface (CamelMimeParser *m);
+const char *camel_mime_parser_postface (CamelMimeParser *m);
 
 /* return the from line content */
-const char *camel_mime_parser_from_line (CamelMimeParser *parser);
+const char *camel_mime_parser_from_line (CamelMimeParser *m);
 
 /* add a processing filter for body contents */
-int camel_mime_parser_filter_add (CamelMimeParser *parser, CamelMimeFilter *filter);
-void camel_mime_parser_filter_remove (CamelMimeParser *parser, int id);
+int camel_mime_parser_filter_add (CamelMimeParser *m, CamelMimeFilter *mf);
+void camel_mime_parser_filter_remove (CamelMimeParser *m, int id);
 
 /* these should be used with caution, because the state will not
    track the seeked position */

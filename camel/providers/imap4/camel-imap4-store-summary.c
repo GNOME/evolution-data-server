@@ -281,7 +281,7 @@ store_info_free (CamelStoreSummary *s, CamelStoreInfo *info)
  *
  * Create a new CamelIMAP4StoreSummary object.
  * 
- * Returns a new CamelIMAP4StoreSummary object.
+ * Returns: a new CamelIMAP4StoreSummary object.
  **/
 CamelIMAP4StoreSummary *
 camel_imap4_store_summary_new (void)

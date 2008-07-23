@@ -104,7 +104,7 @@ sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
  * exchange.) Otherwise, @token is a challenge from the server, and
  * the return value is the response.
  *
- * Returns the SASL response or %NULL. If an error occurred, @ex will
+ * Returns: the SASL response or %NULL. If an error occurred, @ex will
  * also be set.
  **/
 GByteArray *
@@ -124,7 +124,7 @@ camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
  * As with #camel_sasl_challenge, but the challenge @token and the
  * response are both base64-encoded.
  *
- * Returns the base64 encoded challenge string
+ * Returns: the base64 encoded challenge string
  **/
 char *
 camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException *ex)
@@ -164,7 +164,7 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException 
  * camel_sasl_authenticated:
  * @sasl: a #CamelSasl object
  *
- * Returns whether or not @sasl has successfully authenticated the
+ * Returns: whether or not @sasl has successfully authenticated the
  * user. This will be %TRUE after it returns the last needed response.
  * The caller must still pass that information on to the server and
  * verify that it has accepted it.
@@ -182,7 +182,7 @@ camel_sasl_authenticated (CamelSasl *sasl)
  * @mechanism: the SASL mechanism
  * @service: the CamelService that will be using this SASL
  *
- * Returns a new #CamelSasl object for the given @service_name,
+ * Returns: a new #CamelSasl object for the given @service_name,
  * @mechanism, and @service, or %NULL if the mechanism is not
  * supported.
  **/
@@ -232,7 +232,7 @@ camel_sasl_new (const char *service_name, const char *mechanism, CamelService *s
  * camel_sasl_authtype_list:
  * @include_plain: whether or not to include the PLAIN mechanism
  *
- * Returns a #GList of SASL-supported authtypes. The caller must
+ * Returns: a #GList of SASL-supported authtypes. The caller must
  * free the list, but not the contents.
  **/
 GList *
@@ -259,7 +259,7 @@ camel_sasl_authtype_list (gboolean include_plain)
  * camel_sasl_authtype:
  * @mechanism: the SASL mechanism to get an authtype for
  *
- * Returns a #CamelServiceAuthType for the given mechanism, if
+ * Returns: a #CamelServiceAuthType for the given mechanism, if
  * it is supported.
  **/
 CamelServiceAuthType *

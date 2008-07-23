@@ -137,7 +137,7 @@ camel_vee_store_finalise (CamelObject *obj)
  *
  * Create a new #CamelVeeStore object.
  * 
- * Returns new #CamelVeeStore object
+ * Returns: new #CamelVeeStore object
  **/
 CamelVeeStore *
 camel_vee_store_new (void)

@@ -82,7 +82,7 @@ camel_stream_null_get_type (void)
  * Returns a null stream.  A null stream is always at eof, and
  * always returns success for all reads and writes.
  *
- * Returns a new #CamelStreamNull
+ * Returns: a new #CamelStreamNull
  **/
 CamelStream *
 camel_stream_null_new(void)

@@ -698,7 +698,8 @@ junk_test (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessage
  * @expression:
  * @ex:
  *
- * Returns one of CAMEL_SEARCH_MATCHED, CAMEL_SEARCH_NOMATCH, or CAMEL_SEARCH_ERROR.
+ * Returns: one of CAMEL_SEARCH_MATCHED, CAMEL_SEARCH_NOMATCH, or
+ * CAMEL_SEARCH_ERROR.
  **/
 int
 camel_filter_search_match (CamelSession *session,

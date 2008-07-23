@@ -393,7 +393,7 @@ camel_charset_best (const char *in, int len)
  * camel_charset_iso_to_windows:
  * @isocharset: a canonicalised ISO charset
  *
- * Returns the equivalent Windows charset.
+ * Returns: the equivalent Windows charset.
  **/
 const char *
 camel_charset_iso_to_windows (const char *isocharset)

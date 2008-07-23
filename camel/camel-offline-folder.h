@@ -60,7 +60,7 @@ struct _CamelOfflineFolderClass {
 
 CamelType camel_offline_folder_get_type (void);
 
-void camel_offline_folder_downsync (CamelOfflineFolder *folder, const char *expression, CamelException *ex);
+void camel_offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex);
 
 G_END_DECLS
 

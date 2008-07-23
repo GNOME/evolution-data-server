@@ -570,7 +570,7 @@ filter_reset (CamelMimeFilter *filter)
  * Create a new #CamelMimeFilterEnriched object to convert input text
  * streams from text/plain into text/enriched or text/richtext.
  *
- * Returns a new #CamelMimeFilterEnriched object
+ * Returns: a new #CamelMimeFilterEnriched object
  **/
 CamelMimeFilter *
 camel_mime_filter_enriched_new (guint32 flags)
@@ -592,7 +592,7 @@ camel_mime_filter_enriched_new (guint32 flags)
  * Convert @in from text/plain into text/enriched or text/richtext
  * based on @flags.
  *
- * Returns a newly allocated string containing the enriched or
+ * Returns: a newly allocated string containing the enriched or
  * richtext version of @in.
  **/
 char *

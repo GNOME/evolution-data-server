@@ -116,7 +116,7 @@ camel_stream_fs_get_type (void)
  * backing store. When the stream is destroyed, the file descriptor
  * will be closed.
  *
- * Returns a new #CamelStreamFs
+ * Returns: a new #CamelStreamFs
  **/
 CamelStream *
 camel_stream_fs_new_with_fd (int fd)
@@ -146,7 +146,7 @@ camel_stream_fs_new_with_fd (int fd)
  * Gets a stream associated with the given file descriptor and bounds.
  * When the stream is destroyed, the file descriptor will be closed.
  *
- * Returns the bound stream
+ * Returns: the bound stream
  **/
 CamelStream *
 camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
@@ -168,7 +168,7 @@ camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
  * Creates a new #CamelStreamFs corresponding to the named file, flags,
  * and mode.
  *
- * Returns the new stream, or %NULL on error.
+ * Returns: the new stream, or %NULL on error.
  **/
 CamelStream *
 camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
@@ -193,7 +193,7 @@ camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
  *
  * Creates a new CamelStream corresponding to the given arguments.
  *
- * Returns the stream, or %NULL on error.
+ * Returns: the stream, or %NULL on error.
  **/
 CamelStream *
 camel_stream_fs_new_with_name_and_bounds (const char *name, int flags,

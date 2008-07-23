@@ -166,7 +166,6 @@ camel_provider_init (void)
 
 /**
  * camel_provider_load:
- * @session: the current session
  * @path: the path to a shared library
  * @ex: a CamelException
  *
@@ -385,12 +384,12 @@ fail:
 /**
  * camel_provider_auto_detect:
  * @provider: camel provider
- * @settings: currently set settings
+ * @url: a #CamelURL
  * @auto_detected: output hash table of auto-detected values
  * @ex: exception
  *
  * After filling in the standard Username/Hostname/Port/Path settings
- * (which must be set in @settings), if the provider supports it, you
+ * (which must be set in @url), if the provider supports it, you
  * may wish to have the provider auto-detect further settings based on
  * the aformentioned settings.
  *
@@ -398,10 +397,10 @@ fail:
  * will be set to %NULL. Otherwise the provider will attempt to
  * auto-detect whatever it can and file them into @auto_detected. If
  * for some reason it cannot auto-detect anything (not enough
- * information provided in @settings?) then @auto_deetected will be
+ * information provided in @url?) then @auto_detected will be
  * set to %NULL and an exception may be set to explain why it failed.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,

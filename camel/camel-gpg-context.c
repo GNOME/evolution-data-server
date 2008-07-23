@@ -80,7 +80,7 @@ static CamelCipherContextClass *parent_class = NULL;
  *
  * Creates a new gpg cipher context object.
  *
- * Returns a new gpg cipher context object.
+ * Returns: a new gpg cipher context object.
  **/
 CamelCipherContext *
 camel_gpg_context_new (CamelSession *session)

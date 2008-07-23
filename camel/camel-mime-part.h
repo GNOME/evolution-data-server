@@ -101,7 +101,7 @@ int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMime
 
 /* utility functions */
 void      	camel_mime_part_set_content 	       (CamelMimePart *mime_part,
-							const char *content, int length, const char *type);
+							const char *data, int length, const char *type);
 
 size_t          camel_mime_part_get_content_size       (CamelMimePart *mime_part);
 

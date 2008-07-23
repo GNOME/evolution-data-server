@@ -95,8 +95,8 @@ camel_seekable_substream_get_type (void)
 /**
  * camel_seekable_substream_new:
  * @parent_stream: a #CamelSeekableStream object
- * @inf_bound: a lower bound
- * @sup_bound: an upper bound
+ * @start: a lower bound
+ * @end: an upper bound
  *
  * Creates a new CamelSeekableSubstream that references the portion
  * of @parent_stream from @inf_bound to @sup_bound. (If @sup_bound is

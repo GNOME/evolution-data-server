@@ -92,7 +92,7 @@ sm_decrypt_key(void *arg, SECAlgorithmID *algid)
  *
  * Creates a new sm cipher context object.
  *
- * Returns a new sm cipher context object.
+ * Returns: a new sm cipher context object.
  **/
 CamelCipherContext *
 camel_smime_context_new(CamelSession *session)

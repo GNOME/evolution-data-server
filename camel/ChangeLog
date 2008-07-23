@@ -1,3 +1,7 @@
+2008-07-22  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fix a bunch of Gtk-Doc warnings.
+
 2008-07-22  Priit Laes  <plaes@plaes.org>
 
 	** Fixes bug #544202

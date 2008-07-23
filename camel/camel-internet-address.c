@@ -274,7 +274,7 @@ internet_remove	(CamelAddress *a, int index)
  *
  * Create a new #CamelInternetAddress object.
  * 
- * Returns a new #CamelInternetAddress object
+ * Returns: a new #CamelInternetAddress object
  **/
 CamelInternetAddress *
 camel_internet_address_new (void)
@@ -292,7 +292,7 @@ camel_internet_address_new (void)
  * 
  * Add a new internet address to @addr.
  * 
- * Returns the index of added entry
+ * Returns: the index of added entry
  **/
 int
 camel_internet_address_add (CamelInternetAddress *addr, const char *name, const char *address)
@@ -321,7 +321,7 @@ camel_internet_address_add (CamelInternetAddress *addr, const char *name, const 
  * 
  * Get the address at @index.
  * 
- * Returns %TRUE if such an address exists, or %FALSE otherwise
+ * Returns: %TRUE if such an address exists, or %FALSE otherwise
  **/
 gboolean
 camel_internet_address_get (const CamelInternetAddress *addr, int index, const char **namep, const char **addressp)
@@ -350,7 +350,7 @@ camel_internet_address_get (const CamelInternetAddress *addr, int index, const c
  * 
  * Find address by real name.
  * 
- * Returns the index of the address matching the name, or %-1 if no
+ * Returns: the index of the address matching the name, or %-1 if no
  * match was found
  **/
 int
@@ -382,7 +382,7 @@ camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, c
  * 
  * Find an address by address.
  * 
- * Returns the index of the address, or %-1 if not found
+ * Returns: the index of the address, or %-1 if not found
  **/
 int
 camel_internet_address_find_address(CamelInternetAddress *addr, const char *address, const char **namep)
@@ -454,7 +454,7 @@ append:
  *
  * Note: The value at *@in will be updated based on any linewrapping done
  * 
- * Returns the encoded address
+ * Returns: the encoded address
  **/
 char *
 camel_internet_address_encode_address(int *inlen, const char *real, const char *addr)
@@ -525,7 +525,7 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
  * 
  * Function to format a single address, suitable for display.
  * 
- * Returns a nicely formatted string containing the rfc822 address
+ * Returns: a nicely formatted string containing the rfc822 address
  **/
 char *
 camel_internet_address_format_address(const char *name, const char *addr)

@@ -270,7 +270,7 @@ camel_folder_summary_get_type (void)
  *
  * Create a new #CamelFolderSummary object.
  * 
- * Returns a new #CamelFolderSummary object
+ * Returns: a new #CamelFolderSummary object
  **/
 CamelFolderSummary *
 camel_folder_summary_new (struct _CamelFolder *folder)
@@ -351,7 +351,7 @@ camel_folder_summary_set_build_content(CamelFolderSummary *s, gboolean state)
  * 
  * Get the number of summary items stored in this summary.
  * 
- * Returns the number of items in the summary
+ * Returns: the number of items in the summary
  **/
 int
 camel_folder_summary_count(CamelFolderSummary *s)
@@ -370,7 +370,7 @@ camel_folder_summary_count(CamelFolderSummary *s)
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
  * 
- * Returns the summary item, or %NULL if @index is out of range
+ * Returns: the summary item, or %NULL if @index is out of range
  **/
 CamelMessageInfo *
 camel_folder_summary_index (CamelFolderSummary *s, int i)
@@ -403,15 +403,15 @@ camel_folder_summary_index (CamelFolderSummary *s, int i)
 
 /**
  * camel_folder_summary_uid_from_index:
- * @summary: a #CamelFolderSummary object
- * @index: item index
+ * @s: a #CamelFolderSummary object
+ * @i: item index
  * 
  * Retrieve a summary item's uid  by index number.
  *
  * A newly allocated uid is returned, which must be
  * free'd as appropriate.
  * 
- * Returns the summary item's uid , or %NULL if @index is out of range   
+ * Returns: the summary item's uid , or %NULL if @index is out of range   
  **/
 char *
 camel_folder_summary_uid_from_index (CamelFolderSummary *s, int i)
@@ -438,7 +438,7 @@ camel_folder_summary_uid_from_index (CamelFolderSummary *s, int i)
  *
  * It must be freed using g_ptr_array_free
  *
- * Returns a #GPtrArray of uids
+ * Returns: a #GPtrArray of uids
  **/
 GPtrArray *
 camel_folder_summary_array(CamelFolderSummary *s)
@@ -537,7 +537,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
  * 
- * Returns the summary item, or %NULL if the uid @uid is not available
+ * Returns: the summary item, or %NULL if the uid @uid is not available
  **/
 CamelMessageInfo *
 camel_folder_summary_uid (CamelFolderSummary *s, const char *uid)
@@ -552,7 +552,7 @@ camel_folder_summary_uid (CamelFolderSummary *s, const char *uid)
  * Generate a new unique uid value as an integer.  This
  * may be used to create a unique sequence of numbers.
  * 
- * Returns the next unique uid value
+ * Returns: the next unique uid value
  **/
 guint32
 camel_folder_summary_next_uid(CamelFolderSummary *s)
@@ -599,7 +599,7 @@ camel_folder_summary_set_uid(CamelFolderSummary *s, guint32 uid)
  *
  * Retrieve the next uid, but as a formatted string.
  *
- * Returns the next uid as an unsigned integer string.
+ * Returns: the next uid as an unsigned integer string.
  * This string must be freed by the caller.
  **/
 char *
@@ -964,7 +964,7 @@ camel_read_mir_callback (void * ref, int ncol, char ** cols, char ** name)
  *
  * Load the summary from disk.
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_folder_summary_load(CamelFolderSummary *s)
@@ -1270,7 +1270,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
  * Writes the summary to disk.  The summary is only written if changes
  * have occured.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_folder_summary_save(CamelFolderSummary *s)
@@ -1443,7 +1443,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *sto
  * keep the rest on disk.  This should only be done on
  * a fresh summary object.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_folder_summary_header_load(CamelFolderSummary *s)
@@ -1603,7 +1603,7 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
  * Note that this function should not be used if build_content_info
  * has been specified for this summary.
  * 
- * Returns the newly added record
+ * Returns: the newly added record
  **/
 CamelMessageInfo *
 camel_folder_summary_add_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
@@ -1627,7 +1627,7 @@ camel_folder_summary_add_from_header(CamelFolderSummary *s, struct _camel_header
  * This function may be used if build_contnet_info or an index has been
  * specified for the summary.
  * 
- * Returns the newly added record
+ * Returns: the newly added record
  **/
 CamelMessageInfo *
 camel_folder_summary_add_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
@@ -1652,7 +1652,7 @@ camel_folder_summary_add_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
  * 
  * Add a summary item from an existing message.
  * 
- * Returns the newly added record
+ * Returns: the newly added record
  **/
 CamelMessageInfo *
 camel_folder_summary_add_from_message (CamelFolderSummary *s, CamelMimeMessage *msg)
@@ -1672,7 +1672,7 @@ camel_folder_summary_add_from_message (CamelFolderSummary *s, CamelMimeMessage *
  * 
  * Create a new info record from a header.
  *
- * Returns the newly allocated record which must be freed with
+ * Returns: the newly allocated record which must be freed with
  * #camel_message_info_free
  **/
 CamelMessageInfo *
@@ -1700,7 +1700,7 @@ camel_folder_summary_info_new_from_header(CamelFolderSummary *s, struct _camel_h
  * Once complete, the parser will be positioned at the end of
  * the message.
  *
- * Returns the newly allocated record which must be freed with
+ * Returns: the newly allocated record which must be freed with
  * #camel_message_info_free
  **/
 CamelMessageInfo *
@@ -1760,7 +1760,7 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
  * 
  * Create a summary item from a message.
  * 
- * Returns the newly allocated record which must be freed using
+ * Returns: the newly allocated record which must be freed using
  * #camel_message_info_free
  **/
 CamelMessageInfo *
@@ -2156,7 +2156,7 @@ token_search_cmp(char *key, char **index)
  * to reduce the size taken for common mailer words.  This
  * can still be used to encode normal strings as well.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_folder_summary_encode_token(FILE *out, const char *str)
@@ -2209,7 +2209,7 @@ camel_folder_summary_encode_token(FILE *out, const char *str)
  * 
  * Decode a token value.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_folder_summary_decode_token(FILE *in, char **str)
@@ -2588,7 +2588,7 @@ summary_format_string (struct _camel_header_raw *h, const char *name, const char
  * Allocate a new #CamelMessageContentInfo, suitable for adding
  * to this summary.
  * 
- * Returns a newly allocated #CamelMessageContentInfo
+ * Returns: a newly allocated #CamelMessageContentInfo
  **/
 CamelMessageContentInfo *
 camel_folder_summary_content_info_new(CamelFolderSummary *s)
@@ -3555,7 +3555,7 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
  * 
  * Find the state of the flag @name in @list.
  * 
- * Returns the state of the flag (%TRUE or %FALSE)
+ * Returns: the state of the flag (%TRUE or %FALSE)
  **/
 gboolean
 camel_flag_get(CamelFlag **list, const char *name)
@@ -3579,7 +3579,7 @@ camel_flag_get(CamelFlag **list, const char *name)
  * 
  * Set the state of a flag @name in the list @list to @value.
  *
- * Returns %TRUE if the value of the flag has been changed or %FALSE
+ * Returns: %TRUE if the value of the flag has been changed or %FALSE
  * otherwise
  **/
 gboolean
@@ -3620,7 +3620,7 @@ camel_flag_set(CamelFlag **list, const char *name, gboolean value)
  * 
  * Get the length of the flag list.
  * 
- * Returns the number of flags in the list
+ * Returns: the number of flags in the list
  **/
 int
 camel_flag_list_size(CamelFlag **list)
@@ -3664,7 +3664,7 @@ camel_flag_list_free(CamelFlag **list)
  * 
  * Copy a flag list.
  * 
- * Returns %TRUE if @to is changed or %FALSE otherwise
+ * Returns: %TRUE if @to is changed or %FALSE otherwise
  **/
 gboolean
 camel_flag_list_copy(CamelFlag **to, CamelFlag **from)
@@ -3706,7 +3706,7 @@ camel_flag_list_copy(CamelFlag **to, CamelFlag **from)
  *
  * Find the flag @name in @list and get the value.
  * 
- * Returns the value of the flag  or %NULL if unset
+ * Returns: the value of the flag  or %NULL if unset
  **/
 const char *
 camel_tag_get(CamelTag **list, const char *name)
@@ -3731,7 +3731,7 @@ camel_tag_get(CamelTag **list, const char *name)
  * 
  * Set the tag @name in the tag list @list to @value.
  *
- * Returns %TRUE if the value on the tag changed or %FALSE otherwise
+ * Returns: %TRUE if the value on the tag changed or %FALSE otherwise
  **/
 gboolean
 camel_tag_set(CamelTag **list, const char *name, const char *value)
@@ -3776,7 +3776,7 @@ camel_tag_set(CamelTag **list, const char *name, const char *value)
  * 
  * Get the number of tags present in the tag list @list.
  * 
- * Returns the number of tags
+ * Returns: the number of tags
  **/
 int
 camel_tag_list_size(CamelTag **list)
@@ -3806,7 +3806,7 @@ rem_tag(char *key, char *value, CamelTag **to)
  * 
  * Copy a tag list.
  * 
- * Returns %TRUE if @to is changed or %FALSE otherwise
+ * Returns: %TRUE if @to is changed or %FALSE otherwise
  **/
 gboolean
 camel_tag_list_copy(CamelTag **to, CamelTag **from)
@@ -3883,7 +3883,7 @@ static struct flag_names_t {
  * camel_system_flag:
  * @name: name of a system flag
  *
- * Returns the integer value of the system flag string
+ * Returns: the integer value of the system flag string
  **/
 guint32
 camel_system_flag (const char *name)
@@ -3907,7 +3907,7 @@ camel_system_flag (const char *name)
  * 
  * Find the state of the flag @name in @flags.
  * 
- * Returns %TRUE if the named flag is set or %FALSE otherwise
+ * Returns: %TRUE if the named flag is set or %FALSE otherwise
  **/
 gboolean
 camel_system_flag_get (guint32 flags, const char *name)
@@ -3924,7 +3924,7 @@ camel_system_flag_get (guint32 flags, const char *name)
  *
  * Create a new #CamelMessageInfo.
  *
- * Returns a new #CamelMessageInfo
+ * Returns: a new #CamelMessageInfo
  **/
 void *
 camel_message_info_new (CamelFolderSummary *s)
@@ -3998,7 +3998,7 @@ camel_message_info_ref(void *o)
  * Create a new #CamelMessageInfo pre-populated with info from
  * @header.
  *
- * Returns a new #CamelMessageInfo
+ * Returns: a new #CamelMessageInfo
  **/
 CamelMessageInfo *
 camel_message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *header)
@@ -4112,7 +4112,7 @@ message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
  *
  * Duplicate a #CamelMessageInfo.
  *
- * Returns the duplicated #CamelMessageInfo
+ * Returns: the duplicated #CamelMessageInfo
  **/
 void *
 camel_message_info_clone(const void *o)
@@ -4200,7 +4200,7 @@ info_user_tag(const CamelMessageInfo *mi, const char *id)
  *
  * Generic accessor method for getting pointer data.
  *
- * Returns the pointer data
+ * Returns: the pointer data
  **/
 const void *
 camel_message_info_ptr(const CamelMessageInfo *mi, int id)
@@ -4219,7 +4219,7 @@ camel_message_info_ptr(const CamelMessageInfo *mi, int id)
  *
  * Generic accessor method for getting 32bit int data.
  *
- * Returns the int data
+ * Returns: the int data
  **/
 guint32
 camel_message_info_uint32(const CamelMessageInfo *mi, int id)
@@ -4238,7 +4238,7 @@ camel_message_info_uint32(const CamelMessageInfo *mi, int id)
  *
  * Generic accessor method for getting time_t data.
  *
- * Returns the time_t data
+ * Returns: the time_t data
  **/
 time_t
 camel_message_info_time(const CamelMessageInfo *mi, int id)
@@ -4257,7 +4257,7 @@ camel_message_info_time(const CamelMessageInfo *mi, int id)
  *
  * Get the state of a user flag named @id.
  *
- * Returns the state of the user flag
+ * Returns: the state of the user flag
  **/
 gboolean
 camel_message_info_user_flag(const CamelMessageInfo *mi, const char *id)
@@ -4276,7 +4276,7 @@ camel_message_info_user_flag(const CamelMessageInfo *mi, const char *id)
  *
  * Get the value of a user tag named @id.
  *
- * Returns the value of the user tag
+ * Returns: the value of the user tag
  **/
 const char *
 camel_message_info_user_tag(const CamelMessageInfo *mi, const char *id)
@@ -4350,7 +4350,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
  *
  * Change the state of the system flags on the #CamelMessageInfo
  *
- * Returns %TRUE if any of the flags changed or %FALSE otherwise
+ * Returns: %TRUE if any of the flags changed or %FALSE otherwise
  **/
 gboolean
 camel_message_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
@@ -4393,7 +4393,7 @@ info_set_user_flag(CamelMessageInfo *info, const char *name, gboolean value)
  *
  * Set the state of a user flag on a #CamelMessageInfo.
  *
- * Returns %TRUE if the state changed or %FALSE otherwise
+ * Returns: %TRUE if the state changed or %FALSE otherwise
  **/
 gboolean
 camel_message_info_set_user_flag(CamelMessageInfo *mi, const char *id, gboolean state)
@@ -4435,7 +4435,7 @@ info_set_user_tag(CamelMessageInfo *info, const char *name, const char *value)
  *
  * Set the value of a user tag on a #CamelMessageInfo.
  *
- * Returns %TRUE if the value changed or %FALSE otherwise
+ * Returns: %TRUE if the value changed or %FALSE otherwise
  **/
 gboolean
 camel_message_info_set_user_tag(CamelMessageInfo *mi, const char *id, const char *val)

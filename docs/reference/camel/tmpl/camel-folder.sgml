@@ -348,6 +348,15 @@ CamelFolder
 @array: 
 
 
+<!-- ##### FUNCTION camel_folder_sort_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uids: 
+
+
 <!-- ##### FUNCTION camel_folder_has_search_capability ##### -->
 <para>
 

@@ -69,7 +69,7 @@ camel_address_get_type (void)
  *
  * Create a new #CamelAddress object.
  * 
- * Returns a new #CamelAddress object
+ * Returns: a new #CamelAddress object
  **/
 CamelAddress *
 camel_address_new (void)
@@ -85,7 +85,7 @@ camel_address_new (void)
  * 
  * Clone an existing address type.
  * 
- * Returns the cloned address
+ * Returns: the cloned address
  **/
 CamelAddress *
 camel_address_new_clone (const CamelAddress *addr)
@@ -103,7 +103,7 @@ camel_address_new_clone (const CamelAddress *addr)
  * 
  * Get the number of addresses stored in the address @addr.
  * 
- * Returns the number of addresses contained in @addr
+ * Returns: the number of addresses contained in @addr
  **/
 int
 camel_address_length (CamelAddress *addr)
@@ -119,7 +119,7 @@ camel_address_length (CamelAddress *addr)
  *
  * Construct a new address from a raw address field.
  *
- * Returns the number of addresses parsed or %-1 on fail
+ * Returns: the number of addresses parsed or %-1 on fail
  **/
 int
 camel_address_decode (CamelAddress *addr, const char *raw)
@@ -136,7 +136,7 @@ camel_address_decode (CamelAddress *addr, const char *raw)
  * 
  * Encode an address in a format suitable for a raw header.
  * 
- * Returns the encoded address
+ * Returns: the encoded address
  **/
 char *
 camel_address_encode (CamelAddress *addr)
@@ -155,7 +155,7 @@ camel_address_encode (CamelAddress *addr)
  * Attempt to convert a previously formatted and/or edited
  * address back into internal form.
  * 
- * Returns the number of addresses parsed or %-1 on fail
+ * Returns: the number of addresses parsed or %-1 on fail
  **/
 int
 camel_address_unformat(CamelAddress *addr, const char *raw)
@@ -172,7 +172,7 @@ camel_address_unformat(CamelAddress *addr, const char *raw)
  * 
  * Format an address in a format suitable for display.
  * 
- * Returns a newly allocated string containing the formatted addresses
+ * Returns: a newly allocated string containing the formatted addresses
  **/
 char *
 camel_address_format (CamelAddress *addr)
@@ -191,7 +191,7 @@ camel_address_format (CamelAddress *addr)
  * Concatenate one address onto another. The addresses must
  * be of the same type.
  * 
- * Returns the number of addresses concatenated
+ * Returns: the number of addresses concatenated
  **/
 int
 camel_address_cat (CamelAddress *dest, const CamelAddress *source)
@@ -210,7 +210,7 @@ camel_address_cat (CamelAddress *dest, const CamelAddress *source)
  * 
  * Copy the contents of one address into another.
  * 
- * Returns the number of addresses copied
+ * Returns: the number of addresses copied
  **/
 int
 camel_address_copy (CamelAddress *dest, const CamelAddress *source)

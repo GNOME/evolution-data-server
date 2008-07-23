@@ -199,7 +199,7 @@ camel_mime_filter_bestenc_init (CamelMimeFilter *f)
  *
  * Create a new #CamelMimeFilterBestenc object. 
  * 
- * Returns a new #CamelMimeFilterBestenc object
+ * Returns: a new #CamelMimeFilterBestenc object
  **/
 CamelMimeFilterBestenc *
 camel_mime_filter_bestenc_new (unsigned int flags)
@@ -218,7 +218,7 @@ camel_mime_filter_bestenc_new (unsigned int flags)
  * Get the best encoding, given specific constraints, that can be used to
  * encode a stream of bytes.
  * 
- * Returns the best encoding to use
+ * Returns: the best encoding to use
  **/
 CamelTransferEncoding
 camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required)
@@ -279,7 +279,7 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
  * 
  * Gets the best charset that can be used to contain this content.
  * 
- * Returns the name of the best charset to use to encode the input
+ * Returns: the name of the best charset to use to encode the input
  * text filtered by @filter
  **/
 const char *

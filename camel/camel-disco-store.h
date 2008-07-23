@@ -104,11 +104,11 @@ typedef struct {
 CamelType camel_disco_store_get_type (void);
 
 /* Public methods */
-CamelDiscoStoreStatus camel_disco_store_status           (CamelDiscoStore *);
-void                  camel_disco_store_set_status       (CamelDiscoStore *,
-							  CamelDiscoStoreStatus,
-							  CamelException *);
-gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *);
+CamelDiscoStoreStatus camel_disco_store_status           (CamelDiscoStore *store);
+void                  camel_disco_store_set_status       (CamelDiscoStore *store,
+							  CamelDiscoStoreStatus status,
+							  CamelException *ex);
+gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *store);
 
 
 /* Convenience functions */

@@ -61,7 +61,7 @@ typedef enum {
 } CamelStreamVFSOpenMethod;
 
 /* public methods */
-CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, CamelStreamVFSOpenMethod method);
+CamelStream * camel_stream_vfs_new_with_uri            (const char *uri, CamelStreamVFSOpenMethod mode);
 CamelStream * camel_stream_vfs_new_with_stream         (GObject *stream);
 
 gboolean      camel_stream_vfs_is_writable             (CamelStreamVFS *stream_vfs);

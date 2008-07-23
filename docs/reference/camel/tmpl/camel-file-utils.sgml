@@ -30,7 +30,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@value: 
 @Returns: 
 
 
@@ -40,7 +40,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@dest: 
 @Returns: 
 
 
@@ -50,7 +50,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@value: 
 @Returns: 
 
 
@@ -60,7 +60,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@dest: 
 @Returns: 
 
 
@@ -70,7 +70,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@value: 
 @Returns: 
 
 
@@ -80,7 +80,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@dest: 
 @Returns: 
 
 
@@ -90,7 +90,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@value: 
 @Returns: 
 
 
@@ -100,7 +100,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@dest: 
 @Returns: 
 
 
@@ -110,7 +110,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@value: 
 @Returns: 
 
 
@@ -120,7 +120,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@dest: 
 @Returns: 
 
 
@@ -130,7 +130,7 @@ camel-file-utils
 </para>
 
 @out: 
-@Param2: 
+@str: 
 @Returns: 
 
 
@@ -140,7 +140,7 @@ camel-file-utils
 </para>
 
 @in: 
-@Param2: 
+@str: 
 @Returns: 
 
 

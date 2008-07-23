@@ -390,7 +390,7 @@ camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len)
  * 'Flattens' @name into a safe filename string by hex encoding any
  * chars that may cause problems on the filesystem.
  *
- * Returns a safe filename string.
+ * Returns: a safe filename string.
  **/
 char *
 camel_file_util_safe_filename (const char *name)
@@ -421,7 +421,7 @@ camel_file_util_safe_filename (const char *name)
  * Code that intends to be portable to Win32 should call this function
  * only on file descriptors returned from open(), not on sockets.
  *
- * Returns number of bytes read or -1 on fail. On failure, errno will
+ * Returns: number of bytes read or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
 ssize_t
@@ -499,7 +499,7 @@ camel_read (int fd, char *buf, size_t n)
  * Code that intends to be portable to Win32 should call this function
  * only on file descriptors returned from open(), not on sockets.
  *
- * Returns number of bytes written or -1 on fail. On failure, errno will
+ * Returns: number of bytes written or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
 ssize_t
@@ -589,7 +589,7 @@ camel_write (int fd, const char *buf, size_t n)
  * portable to Win32 should call this function only on sockets
  * returned from socket(), or accept().
  *
- * Returns number of bytes read or -1 on fail. On failure, errno will
+ * Returns: number of bytes read or -1 on fail. On failure, errno will
  * be set appropriately. If the socket is nonblocking
  * camel_read_socket() will retry the read until it gets something.
  **/
@@ -660,7 +660,7 @@ camel_read_socket (int fd, char *buf, size_t n)
  * be portable to Win32 should call this function only on sockets
  * returned from socket() or accept().
  *
- * Returns number of bytes written or -1 on fail. On failure, errno will
+ * Returns: number of bytes written or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
 ssize_t

@@ -197,8 +197,8 @@ char *camel_header_encode_phrase (const unsigned char *in);
    rather than ch_type_(action) */
 
 /* decode an email date field into a GMT time, + optional offset */
-time_t camel_header_decode_date (const char *in, int *saveoffset);
-char *camel_header_format_date (time_t time, int offset);
+time_t camel_header_decode_date (const char *str, int *tz_offset);
+char *camel_header_format_date (time_t date, int tz_offset);
 
 /* decode a message id */
 char *camel_header_msgid_decode (const char *in);
@@ -232,11 +232,11 @@ void camel_header_mime_decode (const char *in, int *maj, int *min);
 /* do incremental base64/quoted-printable (de/en)coding */
 size_t camel_base64_decode_step (unsigned char *in, size_t len, unsigned char *out, int *state, unsigned int *save);
 
-size_t camel_base64_encode_step (unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save);
-size_t camel_base64_encode_close (unsigned char *in, size_t len, gboolean break_lines, unsigned char *out, int *state, int *save);
+size_t camel_base64_encode_step (unsigned char *in, size_t inlen, gboolean break_lines, unsigned char *out, int *state, int *save);
+size_t camel_base64_encode_close (unsigned char *in, size_t inlen, gboolean break_lines, unsigned char *out, int *state, int *save);
 #endif
 
-size_t camel_uudecode_step (unsigned char *in, size_t len, unsigned char *out, int *state, guint32 *save);
+size_t camel_uudecode_step (unsigned char *in, size_t inlen, unsigned char *out, int *state, guint32 *save);
 
 size_t camel_uuencode_step (unsigned char *in, size_t len, unsigned char *out, unsigned char *uubuf, int *state,
 		      guint32 *save);

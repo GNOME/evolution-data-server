@@ -155,7 +155,7 @@ camel_imap4_engine_finalize (CamelObject *object)
  * @service: service
  * @reconnect: reconnect callback function
  *
- * Returns a new imap4 engine
+ * Returns: a new imap4 engine
  **/
 CamelIMAP4Engine *
 camel_imap4_engine_new (CamelService *service, CamelIMAP4ReconnectFunc reconnect)
@@ -183,7 +183,7 @@ camel_imap4_engine_new (CamelService *service, CamelIMAP4ReconnectFunc reconnect
  * Gives ownership of @stream to @engine and reads the greeting from
  * the stream.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  *
  * Note: on error, @stream will be unref'd.
  **/
@@ -264,7 +264,7 @@ camel_imap4_engine_disconnect (CamelIMAP4Engine *engine)
  *
  * Forces the IMAP4 engine to query the IMAP4 server for a list of capabilities.
  *
- * Returns %0 on success or %-1 on fail.
+ * Returns: %0 on success or %-1 on fail.
  **/
 int
 camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex)
@@ -311,7 +311,7 @@ camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex)
  *
  * Forces the IMAP4 engine to query the IMAP4 server for a list of namespaces.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex)
@@ -382,7 +382,7 @@ camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex)
  *
  * Convenience function to select @folder.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder, CamelException *ex)
@@ -817,7 +817,7 @@ static struct {
  *
  * Parses a RESP-CODE
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex)
@@ -1084,7 +1084,7 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
  *
  * Handles a single untagged response
  *
- * Returns -1 on error or one of
+ * Returns: -1 on error or one of
  * CAMEL_IMAP4_UNTAGGED_[OK,NO,BAD,PREAUTH,HANDLED] on success
  **/
 int
@@ -1351,7 +1351,7 @@ engine_state_change (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
  *
  * Processes the first command in the queue.
  *
- * Returns the id of the processed command, %0 if there were no
+ * Returns: the id of the processed command, %0 if there were no
  * commands to process, or %-1 on error.
  *
  * Note: more details on the error will be held on the
@@ -1451,7 +1451,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
  * Basically the same as camel_imap4_command_new() except that this
  * function also places the command in the engine queue.
  *
- * Returns the CamelIMAP4Command.
+ * Returns: the CamelIMAP4Command.
  **/
 CamelIMAP4Command *
 camel_imap4_engine_queue (CamelIMAP4Engine *engine, CamelFolder *folder, const char *format, ...)
@@ -1483,7 +1483,7 @@ camel_imap4_engine_queue (CamelIMAP4Engine *engine, CamelFolder *folder, const c
  * Same as camel_imap4_engine_queue() except this places the new
  * command at the head of the queue.
  *
- * Returns the CamelIMAP4Command.
+ * Returns: the CamelIMAP4Command.
  **/
 CamelIMAP4Command *
 camel_imap4_engine_prequeue (CamelIMAP4Engine *engine, CamelFolder *folder, const char *format, ...)
@@ -1559,7 +1559,7 @@ camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
  * failure and updates the engine state to DISCONNECTED if the stream
  * gets disconencted.
  *
- * Returns %0 on success or %-1 on fail.
+ * Returns: %0 on success or %-1 on fail.
  **/
 int
 camel_imap4_engine_next_token (CamelIMAP4Engine *engine, camel_imap4_token_t *token, CamelException *ex)
@@ -1585,7 +1585,7 @@ camel_imap4_engine_next_token (CamelIMAP4Engine *engine, camel_imap4_token_t *to
  *
  * Gobbles up the remainder of the response line.
  *
- * Returns 0 on success or -1 on fail
+ * Returns: 0 on success or -1 on fail
  **/
 int
 camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
@@ -1630,7 +1630,7 @@ camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
  * @line to point to the line buffer. @len is set to the length of the
  * line buffer. @line must be free'd using g_free().
  *
- * Returns 0 on success or -1 on fail
+ * Returns: 0 on success or -1 on fail
  **/
 int
 camel_imap4_engine_line (CamelIMAP4Engine *engine, unsigned char **line, size_t *len, CamelException *ex)
@@ -1686,7 +1686,7 @@ camel_imap4_engine_line (CamelIMAP4Engine *engine, unsigned char **line, size_t 
  * conveniently be terminated with a nul-byte. @literal must be free'd
  * using g_free().
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_engine_literal (CamelIMAP4Engine *engine, unsigned char **literal, size_t *len, CamelException *ex)
@@ -1740,7 +1740,7 @@ camel_imap4_engine_literal (CamelIMAP4Engine *engine, unsigned char **literal, s
  * Reads in an nstring (NIL, atom, qstring or literal) and updates
  * @nstring to point to it. @nstring must be free'd using g_free().
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_engine_nstring (CamelIMAP4Engine *engine, unsigned char **nstring, CamelException *ex)

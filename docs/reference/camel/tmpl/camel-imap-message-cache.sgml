@@ -34,7 +34,7 @@ CamelImapMessageCache
 </para>
 
 @path: 
-@summ: 
+@summary: 
 @ex: 
 @Returns: 
 

@@ -273,7 +273,7 @@ stream_eos (CamelStream *stream)
  * camel_imap4_stream_new:
  * @stream: tcp stream
  *
- * Returns a new imap4 stream
+ * Returns: a new imap4 stream
  **/
 CamelStream *
 camel_imap4_stream_new (CamelStream *stream)
@@ -325,7 +325,7 @@ camel_imap4_stream_new (CamelStream *stream)
  *
  * Reads the next token from the imap4 stream and saves it in @token.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token)
@@ -598,7 +598,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
  * Note: you may *ONLY* unget a single token. Trying to unget another
  * token will fail.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token)
@@ -625,7 +625,7 @@ camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *t
  * internal buffer containing the line read and sets @len to the
  * length of the line buffer.
  *
- * Returns -1 on error, 0 if the line read is complete, or 1 if the
+ * Returns: -1 on error, 0 if the line read is complete, or 1 if the
  * read is incomplete.
  **/
 int
@@ -687,7 +687,7 @@ camel_imap4_stream_line (CamelIMAP4Stream *stream, unsigned char **line, size_t 
  * buffer from the IMAP stream and sets @len to the length of the
  * @literal buffer.
  *
- * Returns >0 if more literal data exists, 0 if the end of the literal
+ * Returns: >0 if more literal data exists, 0 if the end of the literal
  * has been reached or -1 on fail.
  **/
 int

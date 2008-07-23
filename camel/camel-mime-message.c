@@ -195,7 +195,7 @@ unref_recipient (gpointer key, gpointer value, gpointer user_data)
  *
  * Create a new #CamelMimeMessage object.
  *
- * Returns a new #CamelMimeMessage object
+ * Returns: a new #CamelMimeMessage object
  **/
 CamelMimeMessage *
 camel_mime_message_new (void) 
@@ -248,7 +248,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, int offset
  *
  * Get the date and GMT offset of a message.
  *
- * Returns the date of the message
+ * Returns: the date of the message
  **/
 time_t
 camel_mime_message_get_date (CamelMimeMessage *msg, int *offset)
@@ -267,7 +267,7 @@ camel_mime_message_get_date (CamelMimeMessage *msg, int *offset)
  *
  * Get the received date and GMT offset of a message.
  *
- * Returns the received date of the message
+ * Returns: the received date of the message
  **/
 time_t
 camel_mime_message_get_date_received (CamelMimeMessage *msg, int *offset)
@@ -325,7 +325,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const char *m
  *
  * Get the message-id of a message.
  *
- * Returns the message-id of a message
+ * Returns: the message-id of a message
  **/
 const char *
 camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
@@ -375,7 +375,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddre
  *
  * Get the Reply-To of a message.
  *
- * Returns the Reply-Toa ddress of the message
+ * Returns: the Reply-Toa ddress of the message
  **/
 const CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
@@ -424,7 +424,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message, const char *subject)
  *
  * Get the UTF-8 subject text of a message.
  *
- * Returns the message subject
+ * Returns: the message subject
  **/
 const char *
 camel_mime_message_get_subject (CamelMimeMessage *mime_message)
@@ -477,7 +477,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *
  *
  * Get the from address of a message.
  *
- * Returns the from address of the message
+ * Returns: the from address of the message
  **/
 const CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
@@ -536,7 +536,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const char *ty
  *
  * Get the message recipients of a specified type.
  *
- * Returns the requested recipients
+ * Returns: the requested recipients
  **/
 const CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const char *type)
@@ -822,7 +822,7 @@ check_8bit (CamelMimeMessage *msg, CamelMimePart *part, void *data)
  *
  * Find out if a message contains 8bit or binary encoded parts.
  *
- * Returns %TRUE if the message contains 8bit parts or %FALSE otherwise
+ * Returns: %TRUE if the message contains 8bit parts or %FALSE otherwise
  **/
 gboolean
 camel_mime_message_has_8bit_parts (CamelMimeMessage *msg)
@@ -1075,7 +1075,7 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, void *data)
  *
  * Get a MIME part by id from a message.
  *
- * Returns the MIME part with the requested id or %NULL if not found
+ * Returns: the MIME part with the requested id or %NULL if not found
  **/
 CamelMimePart *
 camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const char *id)
@@ -1111,7 +1111,7 @@ static const char tz_days[][4] = {
  *
  * Build an MBox from-line from @message.
  *
- * Returns an MBox from-line suitable for use in an mbox file
+ * Returns: an MBox from-line suitable for use in an mbox file
  **/
 char *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)

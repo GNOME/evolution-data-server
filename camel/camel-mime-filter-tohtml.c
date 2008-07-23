@@ -429,7 +429,7 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
  * Create a new #CamelMimeFilterToHTML object to convert plain text
  * into HTML.
  *
- * Returns a new #CamelMimeFilterToHTML object
+ * Returns: a new #CamelMimeFilterToHTML object
  **/
 CamelMimeFilter *
 camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
@@ -459,7 +459,7 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
  *
  * Convert @in from plain text into HTML.
  *
- * Returns a newly allocated string containing the HTMLified version
+ * Returns: a newly allocated string containing the HTMLified version
  * of @in
  **/
 char *

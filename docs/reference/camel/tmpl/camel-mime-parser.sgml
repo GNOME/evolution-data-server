@@ -69,7 +69,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @fd: 
 @Returns: 
 
@@ -79,7 +79,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @stream: 
 @Returns: 
 
@@ -136,8 +136,8 @@ CamelMimeParser
 </para>
 
 @parser: 
-@buf: 
-@buflen: 
+@databuffer: 
+@datalength: 
 @Returns: 
 
 
@@ -201,7 +201,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @name: 
 @offset: 
 @Returns: 
@@ -212,7 +212,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @Returns: 
 
 
@@ -221,7 +221,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @Returns: 
 
 
@@ -230,7 +230,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @Returns: 
 
 
@@ -239,7 +239,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @Returns: 
 
 
@@ -248,8 +248,8 @@ CamelMimeParser
 
 </para>
 
-@parser: 
-@filter: 
+@m: 
+@mf: 
 @Returns: 
 
 
@@ -258,7 +258,7 @@ CamelMimeParser
 
 </para>
 
-@parser: 
+@m: 
 @id: 
 
 

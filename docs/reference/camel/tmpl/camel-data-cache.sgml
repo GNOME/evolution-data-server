@@ -45,7 +45,7 @@ CamelDataCache
 
 </para>
 
-@cache: 
+@cdc: 
 @when: 
 
 
@@ -75,7 +75,7 @@ CamelDataCache
 
 </para>
 
-@cache: 
+@cdc: 
 @path: 
 @key: 
 @ex: 
@@ -87,7 +87,7 @@ CamelDataCache
 
 </para>
 
-@cache: 
+@cdc: 
 @path: 
 @key: 
 @ex: 
@@ -99,7 +99,7 @@ CamelDataCache
 
 </para>
 
-@cache: 
+@cdc: 
 @path: 
 @key: 
 @ex: 

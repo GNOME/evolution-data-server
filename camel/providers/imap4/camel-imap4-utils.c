@@ -134,7 +134,7 @@ camel_imap4_flags_merge (flags_diff_t *diff, guint32 flags)
  *
  * Merge the local flag changes into the new server flags.
  *
- * Returns the merged flags.
+ * Returns: the merged flags.
  **/
 guint32
 camel_imap4_merge_flags (guint32 original, guint32 local, guint32 server)

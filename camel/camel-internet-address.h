@@ -53,7 +53,7 @@ int			camel_internet_address_find_address(CamelInternetAddress *addr, const char
 
 /* utility functions, for network/display formatting */
 char *			camel_internet_address_encode_address(int *len, const char *name, const char *addr);
-char *			camel_internet_address_format_address(const char *real, const char *addr);
+char *			camel_internet_address_format_address(const char *name, const char *addr);
 
 G_END_DECLS
 

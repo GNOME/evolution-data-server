@@ -47,10 +47,13 @@ enum {
 	CAMEL_IMAP_FOLDER_CHECK_FOLDER = CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER | CAMEL_ARG_BOO,
 };
 
+typedef struct _CamelImapFolderClass CamelImapFolderClass;
+typedef struct _CamelImapFolderPrivate CamelImapFolderPrivate;
+
 struct _CamelImapFolder {
 	CamelDiscoFolder parent_object;
 
-	struct _CamelImapFolderPrivate *priv;
+	CamelImapFolderPrivate *priv;
 
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;
@@ -61,12 +64,12 @@ struct _CamelImapFolder {
 	unsigned int check_folder:1;
 };
 
-typedef struct {
+struct _CamelImapFolderClass {
 	CamelDiscoFolderClass parent_class;
 
 	/* Virtual methods */	
 	
-} CamelImapFolderClass;
+};
 
 
 /* public methods */

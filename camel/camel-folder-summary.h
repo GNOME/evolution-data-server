@@ -235,9 +235,10 @@ struct _CamelFolderSummary {
 	char *summary_path;
 	gboolean build_content;	/* do we try and parse/index the content, or not? */
 
-	/* Deprecated */
-//	GPtrArray *messages;	/* CamelMessageInfo's */
-//	GHashTable *messages_uid; /* CamelMessageInfo's by uid */
+#if 0  /* Deprecated */
+	GPtrArray *messages;	/* CamelMessageInfo's */
+	GHashTable *messages_uid; /* CamelMessageInfo's by uid */
+#endif
 
 	/* New members to replace the above depreacted members */
 	GPtrArray *uids;
@@ -398,7 +399,7 @@ int camel_folder_summary_decode_token(FILE *in, char **str);
 
 /* message flag operations */
 gboolean	camel_flag_get(CamelFlag **list, const char *name);
-gboolean	camel_flag_set(CamelFlag **list, const char *name, gboolean state);
+gboolean	camel_flag_set(CamelFlag **list, const char *name, gboolean value);
 gboolean	camel_flag_list_copy(CamelFlag **to, CamelFlag **from);
 int		camel_flag_list_size(CamelFlag **list);
 void		camel_flag_list_free(CamelFlag **list);
@@ -450,7 +451,7 @@ time_t camel_message_info_time(const CamelMessageInfo *mi, int id);
 gboolean camel_message_info_user_flag(const CamelMessageInfo *mi, const char *id);
 const char *camel_message_info_user_tag(const CamelMessageInfo *mi, const char *id);
 
-gboolean camel_message_info_set_flags(CamelMessageInfo *mi, guint32 mask, guint32 set);
+gboolean camel_message_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set);
 gboolean camel_message_info_set_user_flag(CamelMessageInfo *mi, const char *id, gboolean state);
 gboolean camel_message_info_set_user_tag(CamelMessageInfo *mi, const char *id, const char *val);
 

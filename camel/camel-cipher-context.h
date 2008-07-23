@@ -176,7 +176,7 @@ void                 camel_cipher_validity_set_description (CamelCipherValidity 
 void                 camel_cipher_validity_clear (CamelCipherValidity *validity);
 CamelCipherValidity *camel_cipher_validity_clone(CamelCipherValidity *vin);
 void		     camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const char *name, const char *email);
-void		     camel_cipher_validity_envelope(CamelCipherValidity *valid, CamelCipherValidity *outer);
+void		     camel_cipher_validity_envelope(CamelCipherValidity *parent, CamelCipherValidity *valid);
 void                 camel_cipher_validity_free (CamelCipherValidity *validity);
 
 /* utility functions */

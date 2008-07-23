@@ -618,7 +618,7 @@ CamelObject
 
 @bag: 
 @key: 
-@o: 
+@vo: 
 
 
 <!-- ##### FUNCTION camel_object_bag_abort ##### -->

@@ -232,7 +232,7 @@ flaky_tcp_read (int fd, char *buffer, size_t buflen)
  *
  * Create a new #CamelTcpStreamRaw object.
  *
- * Returns a new #CamelTcpStream object
+ * Returns: a new #CamelTcpStream object
  **/
 CamelStream *
 camel_tcp_stream_raw_new (void)

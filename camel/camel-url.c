@@ -53,7 +53,7 @@ static void append_url_encoded (GString *str, const char *in, const char *extra_
  *
  * Parses @url_string relative to @base.
  *
- * Returns a parsed #CamelURL
+ * Returns: a parsed #CamelURL
  **/
 CamelURL *
 camel_url_new_with_base (CamelURL *base, const char *url_string)
@@ -295,7 +295,7 @@ copy_param (GQuark key_id, gpointer data, gpointer user_data)
  *
  * Parses an absolute URL.
  *
- * Returns a #CamelURL if it can be parsed, or %NULL otherwise
+ * Returns: a #CamelURL if it can be parsed, or %NULL otherwise
  **/
 CamelURL *
 camel_url_new (const char *url_string, CamelException *ex)
@@ -324,7 +324,7 @@ camel_url_new (const char *url_string, CamelException *ex)
  *
  * Flatten a #CamelURL into a string.
  *
- * Returns a string representing @url, which the caller must free
+ * Returns: a string representing @url, which the caller must free
  **/
 char *
 camel_url_to_string (CamelURL *url, guint32 flags)
@@ -566,7 +566,7 @@ camel_url_set_param (CamelURL *url, const char *name, const char *value)
  *
  * Get the value of the specified param on the URL.
  *
- * Returns the value of a param if found or %NULL otherwise
+ * Returns: the value of a param if found or %NULL otherwise
  **/
 const char *
 camel_url_get_param (CamelURL *url, const char *name)
@@ -619,7 +619,7 @@ append_url_encoded (GString *str, const char *in, const char *extra_enc_chars)
  * This %-encodes the given URL part and returns the escaped version
  * in allocated memory, which the caller must free when it is done.
  *
- * Returns the encoded string
+ * Returns: the encoded string
  **/
 char *
 camel_url_encode (const char *part, const char *escape_extra)
@@ -721,7 +721,7 @@ camel_url_equal(const void *v, const void *v2)
  *
  * Copy a #CamelURL.
  *
- * Returns a duplicate copy of @in
+ * Returns: a duplicate copy of @in
  **/
 CamelURL *
 camel_url_copy(const CamelURL *in)

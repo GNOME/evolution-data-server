@@ -218,7 +218,7 @@ CamelMimePart
 </para>
 
 @mime_part: 
-@content: 
+@data: 
 @length: 
 @type: 
 

@@ -360,7 +360,7 @@ CamelStore
 </para>
 
 @store: 
-@old_name: 
+@old_namein: 
 @new_name: 
 @ex: 
 

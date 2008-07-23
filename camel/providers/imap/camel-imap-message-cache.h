@@ -56,7 +56,7 @@ typedef struct {
 
 /* public methods */
 CamelImapMessageCache *camel_imap_message_cache_new (const char *path,
-						     CamelFolderSummary *summ,
+						     CamelFolderSummary *summary,
 						     CamelException *ex);
 
 void camel_imap_message_cache_set_path (CamelImapMessageCache *cache,

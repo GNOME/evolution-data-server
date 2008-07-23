@@ -142,7 +142,7 @@ camel_stream_filter_get_type (void)
  *
  * Create a new #CamelStreamFilter object.
  * 
- * Returns a new #CamelStreamFilter object.
+ * Returns: a new #CamelStreamFilter object.
  **/
 CamelStreamFilter *
 camel_stream_filter_new_with_stream(CamelStream *stream)
@@ -166,7 +166,7 @@ camel_stream_filter_new_with_stream(CamelStream *stream)
  * Note that a filter should only be added to a single stream
  * at a time, otherwise unpredictable results may occur.
  * 
- * Returns a filter id for the added @filter.
+ * Returns: a filter id for the added @filter.
  **/
 int
 camel_stream_filter_add (CamelStreamFilter *stream, CamelMimeFilter *filter)

@@ -237,7 +237,7 @@ filter_reset (CamelMimeFilter *filter)
  *
  * Create a new #CamelMimeFilterYenc filter object.
  *
- * Returns a new #CamelMimeFilterYenc object
+ * Returns: a new #CamelMimeFilterYenc object
  **/
 CamelMimeFilter *
 camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
@@ -302,7 +302,7 @@ camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
  *
  * Gets the part id of the current decoded yEnc stream or %-1 on fail.
  *
- * Returns the part id of the current decoded yEnc stream or %-1 on
+ * Returns: the part id of the current decoded yEnc stream or %-1 on
  * fail.
  **/
 int
@@ -323,7 +323,7 @@ camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc)
  *
  * Get the computed part crc or (#guint32) %-1 on fail.
  *
- * Returns the computed part crc or (#guint32) %-1 on fail.
+ * Returns: the computed part crc or (#guint32) %-1 on fail.
  **/
 guint32
 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
@@ -340,7 +340,7 @@ camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
  *
  * Get the computed crc or (#guint32) -1 on fail.
  *
- * Returns the computed crc or (#guint32) -1 on fail.
+ * Returns: the computed crc or (#guint32) -1 on fail.
  **/
 guint32
 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc)
@@ -410,7 +410,7 @@ static const int yenc_crc_table[256] = {
  * combined crc32 value of all the parts using #CAMEL_MIME_YENCODE_CRC_FINAL
  * (@crc).
  *
- * Returns the number of bytes decoded
+ * Returns: the number of bytes decoded
  **/
 size_t
 camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
@@ -490,7 +490,7 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * Along the same lines, @pcrc and @crc should be initialized to
  * #CAMEL_MIME_YENCODE_CRC_INIT before using.
  *
- * Returns the number of bytes encoded
+ * Returns: the number of bytes encoded
  **/
 size_t
 camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
@@ -555,7 +555,7 @@ camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * #CAMEL_MIME_YENCODE_CRC_FINAL (@crc) to get the combined crc32 value of
  * all the parts.
  *
- * Returns the number of bytes encoded.
+ * Returns: the number of bytes encoded.
  **/
 size_t
 camel_yencode_close (const unsigned char *in, size_t inlen, unsigned char *out,

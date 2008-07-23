@@ -57,8 +57,8 @@ void camel_folder_thread_messages_add(CamelFolderThread *thread, GPtrArray *summ
 void camel_folder_thread_messages_remove(CamelFolderThread *thread, GPtrArray *uids);
 #endif
 
-void camel_folder_thread_messages_ref(CamelFolderThread *threads);
-void camel_folder_thread_messages_unref(CamelFolderThread *threads);
+void camel_folder_thread_messages_ref(CamelFolderThread *thread);
+void camel_folder_thread_messages_unref(CamelFolderThread *thread);
 
 /* debugging function only */
 int camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);

@@ -660,8 +660,8 @@ camel-mime-utils
 
 </para>
 
-@in: 
-@saveoffset: 
+@str: 
+@tz_offset: 
 @Returns: 
 
 
@@ -670,8 +670,8 @@ camel-mime-utils
 
 </para>
 
-@time: 
-@offset: 
+@date: 
+@tz_offset: 
 @Returns: 
 
 
@@ -827,7 +827,7 @@ camel-mime-utils
 </para>
 
 @in: 
-@len: 
+@inlen: 
 @break_lines: 
 @out: 
 @state: 
@@ -841,7 +841,7 @@ camel-mime-utils
 </para>
 
 @in: 
-@len: 
+@inlen: 
 @break_lines: 
 @out: 
 @state: 
@@ -855,7 +855,7 @@ camel-mime-utils
 </para>
 
 @in: 
-@len: 
+@inlen: 
 @out: 
 @state: 
 @save: 

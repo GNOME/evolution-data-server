@@ -39,18 +39,18 @@
 
 G_BEGIN_DECLS
 
-int camel_file_util_encode_fixed_int32 (FILE *out, gint32);
-int camel_file_util_decode_fixed_int32 (FILE *in, gint32 *);
-int camel_file_util_encode_uint32 (FILE *out, guint32);
-int camel_file_util_decode_uint32 (FILE *in, guint32 *);
-int camel_file_util_encode_time_t (FILE *out, time_t);
-int camel_file_util_decode_time_t (FILE *in, time_t *);
-int camel_file_util_encode_off_t (FILE *out, off_t);
-int camel_file_util_decode_off_t (FILE *in, off_t *);
-int camel_file_util_encode_size_t (FILE *out, size_t);
-int camel_file_util_decode_size_t (FILE *in, size_t *);
-int camel_file_util_encode_string (FILE *out, const char *);
-int camel_file_util_decode_string (FILE *in, char **);
+int camel_file_util_encode_fixed_int32 (FILE *out, gint32 value);
+int camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest);
+int camel_file_util_encode_uint32 (FILE *out, guint32 value);
+int camel_file_util_decode_uint32 (FILE *in, guint32 *dest);
+int camel_file_util_encode_time_t (FILE *out, time_t value);
+int camel_file_util_decode_time_t (FILE *in, time_t *dest);
+int camel_file_util_encode_off_t (FILE *out, off_t value);
+int camel_file_util_decode_off_t (FILE *in, off_t *dest);
+int camel_file_util_encode_size_t (FILE *out, size_t value);
+int camel_file_util_decode_size_t (FILE *in, size_t *dest);
+int camel_file_util_encode_string (FILE *out, const char *str);
+int camel_file_util_decode_string (FILE *in, char **str);
 int camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len);
 int camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len);
 

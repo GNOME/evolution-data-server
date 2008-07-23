@@ -261,7 +261,7 @@ get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelExce
  *
  * Get a specific folder object from the store by name.
  *
- * Returns the folder corresponding to the path @folder_name.
+ * Returns: the folder corresponding to the path @folder_name.
  **/
 CamelFolder *
 camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
@@ -359,7 +359,7 @@ create_folder (CamelStore *store, const char *parent_name,
  * Creates a new folder as a child of an existing folder.
  * @parent_name can be %NULL to create a new top-level folder.
  *
- * Returns info about the created folder, which the caller must
+ * Returns: info about the created folder, which the caller must
  * free with #camel_store_free_folder_info
  **/
 CamelFolderInfo *
@@ -580,7 +580,7 @@ get_inbox (CamelStore *store, CamelException *ex)
  * @store: a #CamelStore object
  * @ex: a #CamelException
  *
- * Returns the folder in the store into which new mail is delivered,
+ * Returns: the folder in the store into which new mail is delivered,
  * or %NULL if no such folder exists.
  **/
 CamelFolder *
@@ -596,7 +596,7 @@ camel_store_get_inbox (CamelStore *store, CamelException *ex)
 }
 
 static CamelFolder *
-get_special(CamelStore *store, enum _camel_vtrash_folder_t type)
+get_special(CamelStore *store, camel_vtrash_folder_t type)
 {
 	CamelFolder *folder;
 	GPtrArray *folders;
@@ -631,7 +631,7 @@ get_junk(CamelStore *store, CamelException *ex)
  * @store: a #CamelStore object
  * @ex: a #CamelException
  *
- * Returns the folder in the store into which trash is delivered, or
+ * Returns: the folder in the store into which trash is delivered, or
  * %NULL if no such folder exists.
  **/
 CamelFolder *
@@ -648,7 +648,7 @@ camel_store_get_trash (CamelStore *store, CamelException *ex)
  * @store: a #CamelStore object
  * @ex: a #CamelException
  *
- * Returns the folder in the store into which junk is delivered, or
+ * Returns: the folder in the store into which junk is delivered, or
  * %NULL if no such folder exists.
  **/
 CamelFolder *
@@ -812,7 +812,7 @@ dump_fi(CamelFolderInfo *fi, int depth)
  * supplied or not.  The only guaranteed way to get updated folder
  * counts is to both open the folder and invoke refresh_info() it.
  *
- * Returns a #CamelFolderInfo tree, which must be freed with
+ * Returns: a #CamelFolderInfo tree, which must be freed with
  * #camel_store_free_folder_info
  **/
 CamelFolderInfo *
@@ -951,7 +951,7 @@ folder_info_cmp (const void *ap, const void *bp)
  * NOTE: This is deprected, do not use this.
  * FIXME: remove this/move it to imap, which is the only user of it now.
  *
- * Returns the top level of the tree of linked folder info.
+ * Returns: the top level of the tree of linked folder info.
  **/
 CamelFolderInfo *
 camel_folder_info_build (GPtrArray *folders, const char *namespace,
@@ -1088,7 +1088,7 @@ folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderInfo *parent)
  *
  * Clones @fi recursively.
  *
- * Returns the cloned #CamelFolderInfo tree.
+ * Returns: the cloned #CamelFolderInfo tree.
  **/
 CamelFolderInfo *
 camel_folder_info_clone(CamelFolderInfo *fi)
@@ -1106,7 +1106,7 @@ camel_folder_info_clone(CamelFolderInfo *fi)
  *
  * Get whether or not @store supports subscriptions to folders.
  *
- * Returns %TRUE if folder subscriptions are supported or %FALSE otherwise
+ * Returns: %TRUE if folder subscriptions are supported or %FALSE otherwise
  **/
 gboolean
 camel_store_supports_subscriptions (CamelStore *store)
@@ -1130,7 +1130,7 @@ folder_subscribed(CamelStore *store, const char *folder_name)
  *
  * Find out if a folder has been subscribed to.
  *
- * Returns %TRUE if the folder has been subscribed to or %FALSE otherwise
+ * Returns: %TRUE if the folder has been subscribed to or %FALSE otherwise
  **/
 gboolean
 camel_store_folder_subscribed(CamelStore *store, const char *folder_name)
@@ -1244,7 +1244,7 @@ camel_store_noop (CamelStore *store, CamelException *ex)
  *
  * Compares 2 folder uris to check that they are equal.
  *
- * Returns %TRUE if they are equal or %FALSE otherwise
+ * Returns: %TRUE if they are equal or %FALSE otherwise
  **/
 int
 camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *uri1)
@@ -1300,15 +1300,16 @@ can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex
 
 /**
  * camel_store_can_refresh_folder
+ * @store: a #CamelStore
+ * @info: a #CamelFolderInfo
+ * @ex: a #CamelException
+ *
  * Returns if this folder (param info) should be checked for new mail or not.
  * It should not look into sub infos (info->child) or next infos, it should
  * return value only for the actual folder info.
  * Default behavior is that all Inbox folders are intended to be refreshed.
  *
- * @param store Store, to which belong folder.
- * @param info Info of folder of our interest.
- * @param ex [out] Will set this exception in case of any error.
- * @return Whether folder should be checked for new mails or not.
+ * Returns: whether folder should be checked for new mails
  **/
 gboolean
 camel_store_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)

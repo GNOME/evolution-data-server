@@ -61,6 +61,78 @@ camel-imapp-utils
 </para>
 
 @stream: 
+@flagsp: 
+
+
+<!-- ##### FUNCTION imap_write_flags ##### -->
+<para>
+
+</para>
+
+@stream: 
+@flags: 
+
+
+<!-- ##### FUNCTION imap_parse_param_list ##### -->
+<para>
+
+</para>
+
+@is: 
+@plist: 
+
+
+<!-- ##### FUNCTION imap_parse_ext_optional ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_body_fields ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_address_list ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_envelope ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_parse_section ##### -->
+<para>
+
+</para>
+
+@is: 
+@Returns: 
+
+
+<!-- ##### FUNCTION imap_free_body ##### -->
+<para>
+
+</para>
+
+@cinfo: 
 
 
 <!-- ##### STRUCT fetch_info ##### -->

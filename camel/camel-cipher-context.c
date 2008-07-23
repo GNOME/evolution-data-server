@@ -282,7 +282,7 @@ cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, C
  * Imports a stream of keys/certificates contained within @istream
  * into the key/certificate database controlled by @ctx.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, CamelException *ex)
@@ -313,7 +313,7 @@ cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
  * Exports the keys/certificates in @keys to the stream @ostream from
  * the key/certificate database controlled by @ctx.
  *
- * Returns 0 on success or -1 on fail.
+ * Returns: 0 on success or -1 on fail.
  **/
 int
 camel_cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,

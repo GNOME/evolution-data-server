@@ -141,7 +141,7 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
  * Create a new #CamelMimeFilterWindows object that will analyse
  * whether or not the text is really encoded in @claimed_charset.
  *
- * Returns a new #CamelMimeFilter object
+ * Returns: a new #CamelMimeFilter object
  **/
 CamelMimeFilter *
 camel_mime_filter_windows_new (const char *claimed_charset)
@@ -166,7 +166,7 @@ camel_mime_filter_windows_new (const char *claimed_charset)
  * really in a Microsoft Windows charset rather than the claimed ISO
  * charset.
  *
- * Returns %TRUE if the text was found to be in a Microsoft Windows
+ * Returns: %TRUE if the text was found to be in a Microsoft Windows
  * CP125x charset or %FALSE otherwise.
  **/
 gboolean
@@ -187,7 +187,7 @@ camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
  * claimed_charset passed in at creation time or the Windows-CP125x
  * equivalent).
  *
- * Returns the name of the actual charset
+ * Returns: the name of the actual charset
  **/
 const char *
 camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter)

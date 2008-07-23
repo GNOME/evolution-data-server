@@ -150,7 +150,7 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *fi
  *
  * Save the journal to disk.
  *
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
@@ -200,7 +200,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
  *
  * Replay all entries in the journal.
  *
- * Returns %0 on success (no entry failed to replay) or %-1 on fail
+ * Returns: %0 on success (no entry failed to replay) or %-1 on fail
  **/
 int
 camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)

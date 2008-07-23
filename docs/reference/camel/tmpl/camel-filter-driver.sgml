@@ -152,7 +152,7 @@ CamelFilterDriver
 @driver: 
 @message: 
 @info: 
-@uri: 
+@uid: 
 @source: 
 @source_url: 
 @original_source_url: 

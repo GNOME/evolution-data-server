@@ -168,7 +168,7 @@ init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode)
  * See #camel_stream_buffer_new_with_vbuf for details on the
  * @mode parameter.
  *
- * Returns a newly created buffered stream.
+ * Returns: a newly created buffered stream.
  **/
 CamelStream *
 camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
@@ -381,7 +381,7 @@ stream_eos (CamelStream *stream)
  * If the newline character is encountered, then it will be
  * included in the buffer @buf.  The buffer will be #NUL terminated.
  *
- * Returns the number of characters read, or %0 for end of file,
+ * Returns: the number of characters read, or %0 for end of file,
  * and %-1 on error.
  **/
 int
@@ -435,7 +435,7 @@ camel_stream_buffer_gets(CamelStreamBuffer *sbf, char *buf, unsigned int max)
  * and returns it in allocated memory. The trailing newline (and carriage
  * return if any) are not included in the returned string.
  *
- * Returns the line read, which the caller must free when done with,
+ * Returns: the line read, which the caller must free when done with,
  * or %NULL on eof. If an error occurs, @ex will be set.
  **/
 char *

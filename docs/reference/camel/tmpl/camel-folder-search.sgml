@@ -30,6 +30,7 @@ CamelFolderSearch
 @summary: 
 @summary_set: 
 @query: 
+@summary_hash: 
 @current: 
 @current_message: 
 @body_index: 

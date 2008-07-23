@@ -38,22 +38,23 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelNNTPFolder {
+typedef struct _CamelNNTPFolder CamelNNTPFolder;
+typedef struct _CamelNNTPFolderClass CamelNNTPFolderClass;
+typedef struct _CamelNNTPFolderPrivate CamelNNTPFolderPrivate;
+
+struct _CamelNNTPFolder {
 	CamelDiscoFolder parent;
 
-	struct _CamelNNTPFolderPrivate *priv;
+	CamelNNTPFolderPrivate *priv;
 
 	struct _CamelFolderChangeInfo *changes;
 	char *storage_path;
 	CamelFolderSearch *search;
-} CamelNNTPFolder;
+};
 
-typedef struct _CamelNNTPFolderClass {
+struct _CamelNNTPFolderClass {
 	CamelDiscoFolderClass parent;
-
-	/* Virtual methods */	
-	
-} CamelNNTPFolderClass;
+};
 
 /* public methods */
 

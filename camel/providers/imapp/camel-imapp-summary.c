@@ -96,7 +96,6 @@ camel_imapp_summary_init(CamelIMAPPSummary *obj)
 
 /**
  * camel_imapp_summary_new:
- * @filename: the file to store the summary in.
  *
  * This will create a new CamelIMAPPSummary object and read in the
  * summary data from disk, if it exists.

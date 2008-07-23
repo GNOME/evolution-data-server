@@ -336,7 +336,7 @@ service_connect (CamelService *service, CamelException *ex)
  * Connect to the service using the parameters it was initialized
  * with.
  *
- * Returns %TRUE if the connection is made or %FALSE otherwise
+ * Returns: %TRUE if the connection is made or %FALSE otherwise
  **/
 gboolean
 camel_service_connect (CamelService *service, CamelException *ex)
@@ -408,7 +408,7 @@ service_disconnect (CamelService *service, gboolean clean, CamelException *ex)
  * Disconnect from the service. If @clean is %FALSE, it should not
  * try to do any synchronizing or other cleanup of the connection.
  *
- * Returns %TRUE if the disconnect was successful or %FALSE otherwise
+ * Returns: %TRUE if the disconnect was successful or %FALSE otherwise
  **/
 gboolean
 camel_service_disconnect (CamelService *service, gboolean clean,
@@ -480,7 +480,7 @@ camel_service_cancel_connect (CamelService *service)
  * freed when it is no longer needed. For security reasons, this
  * routine does not return the password.
  *
- * Returns the URL representing @service
+ * Returns: the URL representing @service
  **/
 char *
 camel_service_get_url (CamelService *service)
@@ -508,7 +508,7 @@ get_name (CamelService *service, gboolean brief)
  * such as for use in the folder tree. If @brief is %FALSE, it should
  * be a more complete and mostly unambiguous description.
  *
- * Returns a description of the service which the caller must free
+ * Returns: a description of the service which the caller must free
  **/
 char *
 camel_service_get_name (CamelService *service, gboolean brief)
@@ -573,7 +573,7 @@ get_path (CamelService *service)
  * provider, followed by a "/", but after that, it is up to the
  * provider.
  *
- * Returns the path, which the caller must free
+ * Returns: the path, which the caller must free
  **/
 char *
 camel_service_get_path (CamelService *service)
@@ -591,7 +591,7 @@ camel_service_get_path (CamelService *service)
  *
  * Gets the #CamelSession associated with the service.
  *
- * Returns the session
+ * Returns: the session
  **/
 CamelSession *
 camel_service_get_session (CamelService *service)
@@ -606,7 +606,7 @@ camel_service_get_session (CamelService *service)
  *
  * Gets the #CamelProvider associated with the service.
  *
- * Returns the provider
+ * Returns: the provider
  **/
 CamelProvider *
 camel_service_get_provider (CamelService *service)
@@ -630,7 +630,7 @@ query_auth_types (CamelService *service, CamelException *ex)
  * authentication types supported by the protocol, and information
  * about them.
  *
- * Returns a list of #CamelServiceAuthType records. The caller
+ * Returns: a list of #CamelServiceAuthType records. The caller
  * must free the list with #g_list_free when it is done with it.
  **/
 GList *

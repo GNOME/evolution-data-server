@@ -32,6 +32,7 @@ typedef struct _CamelImapResponse     CamelImapResponse;
 typedef struct _CamelImapSearch       CamelImapSearch;
 typedef struct _CamelImapStore        CamelImapStore;
 typedef struct _CamelImapSummary      CamelImapSummary;
+typedef struct _CamelImapWrapper      CamelImapWrapper;
 
 G_END_DECLS
 

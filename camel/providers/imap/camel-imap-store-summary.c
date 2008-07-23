@@ -141,7 +141,7 @@ camel_imap_store_summary_new (void)
 /**
  * camel_imap_store_summary_full_name:
  * @s: 
- * @path: 
+ * @full_name: 
  * 
  * Retrieve a summary item by full name.
  *

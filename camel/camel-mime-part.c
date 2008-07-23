@@ -355,7 +355,7 @@ camel_mime_part_set_description (CamelMimePart *mime_part, const char *descripti
  *
  * Get the description of the MIME part.
  *
- * Returns the description
+ * Returns: the description
  **/
 const char *
 camel_mime_part_get_description (CamelMimePart *mime_part)
@@ -411,7 +411,7 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part, const char *dispositi
  *
  * Get the disposition of the MIME part.
  *
- * Returns the dispisition
+ * Returns: the dispisition
  **/
 const char *
 camel_mime_part_get_disposition (CamelMimePart *mime_part)
@@ -460,7 +460,7 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
  *
  * Get the filename of a MIME part.
  *
- * Returns the filename of the MIME part
+ * Returns: the filename of the MIME part
  **/
 const char *
 camel_mime_part_get_filename (CamelMimePart *mime_part)
@@ -507,7 +507,7 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part, const char *contentid)
  *
  * Get the content-id field of a MIME part.
  *
- * Returns the content-id field of the MIME part
+ * Returns: the content-id field of the MIME part
  **/
 const char *
 camel_mime_part_get_content_id (CamelMimePart *mime_part)
@@ -537,7 +537,7 @@ camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const char *md5)
  *
  * Get the content-md5 field of the MIME part.
  *
- * Returns the content-md5 field of the MIME part
+ * Returns: the content-md5 field of the MIME part
  **/
 const char *
 camel_mime_part_get_content_MD5 (CamelMimePart *mime_part)
@@ -569,7 +569,7 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part, const char *loca
  *
  * Get the content-location field of a MIME part.
  *
- * Returns the content-location field of a MIME part
+ * Returns: the content-location field of a MIME part
  **/
 const char *
 camel_mime_part_get_content_location (CamelMimePart *mime_part)
@@ -605,7 +605,7 @@ camel_mime_part_set_encoding (CamelMimePart *mime_part,
  *
  * Get the Content-Transfer-Encoding of a MIME part.
  *
- * Returns a #CamelTransferEncoding
+ * Returns: a #CamelTransferEncoding
  **/
 CamelTransferEncoding
 camel_mime_part_get_encoding (CamelMimePart *mime_part)
@@ -641,7 +641,7 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part, GList *content_
  *
  * Get the Content-Languages set on the MIME part.
  *
- * Returns a #GList of languages
+ * Returns: a #GList of languages
  **/
 const GList *
 camel_mime_part_get_content_languages (CamelMimePart *mime_part)
@@ -675,7 +675,7 @@ camel_mime_part_set_content_type (CamelMimePart *mime_part, const char *content_
  *
  * Get the Content-Type of a MIME part.
  *
- * Returns the parsed #CamelContentType of the MIME part
+ * Returns: the parsed #CamelContentType of the MIME part
  **/
 CamelContentType *
 camel_mime_part_get_content_type (CamelMimePart *mime_part)
@@ -981,7 +981,7 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
  *
  * Constructs a MIME part from a parser.
  * 
- * Returns %0 on success or %-1 on fail
+ * Returns: %0 on success or %-1 on fail
  **/
 int
 camel_mime_part_construct_from_parser(CamelMimePart *mime_part, CamelMimeParser *mp)
@@ -1016,7 +1016,7 @@ construct_from_stream(CamelDataWrapper *dw, CamelStream *s)
  *
  * Create a new MIME part.
  *
- * Returns a new #CamelMimePart object
+ * Returns: a new #CamelMimePart object
  **/
 CamelMimePart *
 camel_mime_part_new (void)
@@ -1067,7 +1067,7 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
  *
  * Get the decoded size of the MIME part's content.
  *
- * Returns the size of the MIME part's content in bytes.
+ * Returns: the size of the MIME part's content in bytes.
  **/
 size_t
 camel_mime_part_get_content_size (CamelMimePart *mime_part)

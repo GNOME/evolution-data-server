@@ -189,7 +189,7 @@ camel_nntp_address_add (CamelNNTPAddress *a, const char *name)
  * camel_nntp_address_get:
  * @a: nntp address object
  * @index: address's array index
- * @addressp: Holder for the returned address, or NULL, if not required.
+ * @namep: Holder for the returned address, or NULL, if not required.
  * 
  * Get the address at @index.
  * 

@@ -46,8 +46,8 @@ struct _CamelNNTPAddressClass {
 CamelType		camel_nntp_address_get_type	(void);
 CamelNNTPAddress   *camel_nntp_address_new	(void);
 
-int			camel_nntp_address_add	(CamelNNTPAddress *, const char *);
-gboolean		camel_nntp_address_get	(const CamelNNTPAddress *, int, const char **);
+int			camel_nntp_address_add	(CamelNNTPAddress *a, const char *name);
+gboolean		camel_nntp_address_get	(const CamelNNTPAddress *a, int index, const char **namep);
 
 G_END_DECLS
 

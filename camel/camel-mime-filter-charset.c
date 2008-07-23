@@ -246,7 +246,7 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
  *
  * Create a new #CamelMimeFilterCharset object.
  * 
- * Returns a new #CamelMimeFilterCharset object
+ * Returns: a new #CamelMimeFilterCharset object
  **/
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new (void)
@@ -263,7 +263,7 @@ camel_mime_filter_charset_new (void)
  * Create a new #CamelMimeFiletrCharset object to convert text from
  * @from_charset to @to_charset.
  *
- * Returns a new #CamelMimeFilterCharset object
+ * Returns: a new #CamelMimeFilterCharset object
  **/
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_charset)

@@ -109,7 +109,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
  *
  * Create a new #CamelMimeFilter object.
  * 
- * Returns a new #CamelMimeFilter
+ * Returns: a new #CamelMimeFilter
  **/
 CamelMimeFilter *
 camel_mime_filter_new (void)

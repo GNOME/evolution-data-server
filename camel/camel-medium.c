@@ -219,7 +219,7 @@ get_header(CamelMedium *medium, const char *name)
  * instance of the header.  For multi-occuring headers, use
  * :get_headers().
  *
- * Returns the value of the named header, or %NULL
+ * Returns: the value of the named header, or %NULL
  **/
 const void *
 camel_medium_get_header(CamelMedium *medium, const char *name)
@@ -247,7 +247,7 @@ get_headers(CamelMedium *medium)
  * to UTF-8 for any headers that are recognized by Camel. The
  * caller should not modify the returned data.
  *
- * Returns the array of headers, which must be freed with
+ * Returns: the array of headers, which must be freed with
  * #camel_medium_free_headers.
  **/
 GArray *
@@ -295,7 +295,7 @@ get_content_object(CamelMedium *medium)
  * Getss a data wrapper that represents the content of the medium,
  * without its headers.
  *
- * Returns a #CamelDataWrapper containing @medium's content
+ * Returns: a #CamelDataWrapper containing @medium's content
  **/
 CamelDataWrapper *
 camel_medium_get_content_object (CamelMedium *medium)

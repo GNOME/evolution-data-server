@@ -414,8 +414,7 @@ int camel_data_cache_rename(CamelDataCache *cache,
 /**
  * camel_data_cache_clear:
  * @cache: 
- * @path: Path to clear, or NULL to clear all items in
- * all paths.
+ * @path: Path to clear, or NULL to clear all items in all paths.
  * @ex: 
  * 
  * Clear all items in a given cache path or all items in the cache.

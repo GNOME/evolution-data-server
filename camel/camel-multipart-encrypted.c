@@ -127,7 +127,7 @@ set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type
  * A MultipartEncrypted should be used to store and create parts of
  * type "multipart/encrypted".
  *
- * Returns a new #CamelMultipartEncrypted object
+ * Returns: a new #CamelMultipartEncrypted object
  **/
 CamelMultipartEncrypted *
 camel_multipart_encrypted_new (void)

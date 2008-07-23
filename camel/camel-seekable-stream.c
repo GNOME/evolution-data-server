@@ -137,7 +137,7 @@ stream_tell (CamelSeekableStream *stream)
  *
  * Get the current position of a seekable stream.
  *
- * Returns the current position of the stream.
+ * Returns: the current position of the stream.
  **/
 off_t
 camel_seekable_stream_tell (CamelSeekableStream *stream)
@@ -170,7 +170,7 @@ set_bounds (CamelSeekableStream *stream, off_t start, off_t end)
  * there is to be no @end value, then @end should be set to
  * #CAMEL_STREAM_UNBOUND.
  *
- * Returns %-1 on error.
+ * Returns: %-1 on error.
  **/
 int
 camel_seekable_stream_set_bounds (CamelSeekableStream *stream,
