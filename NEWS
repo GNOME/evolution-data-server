@@ -1,3 +1,49 @@
+Evolution-Data-Server 2.23.5 2008-07-21
+----------------------------------------
+
+New in 2.23.5:
+	Camel DB Summary support. (Srinivasa Ragavan & Sankar P)
+	Google Contacts support (Jörgen Scheibengruber)
+
+Bug Fixes:
+	#236010: Anonymously modify LDAP entries (Milan Crha)
+	#543066: Updated documentation of two libecal functions (Paul Bolle)
+	#200147: Stores the templates folder uri (Bharath Acharya)
+	#213072: Lock while rebuilding summaries. (Srinivasa Ragavan)
+	#253509: Added translators comment (Milan Crha)
+	#329571: Preserve detached instances when modifying master object (Milan Crha)
+	#330838: Notify application about server folder changes as soon as we know about them (Milan Crha)
+	#334160: Changed the way when test the expiration of the cache (Milan Crha)
+	#340838: Use the whole URL even when not the proxy set, because the URL can contain parameters, which are not part of the path (Milan Crha)
+	#476640: Deleting a meeting after someone accepted invitation now works (Milan Crha)
+	#503922: Fix typo in mapping flag name "draft". (Matt McCutchen)
+	#515998: On any error in remove calendar just print the message on the console and return success (Milan Crha)
+	#528902: Use current system time zone definitions instead of possibly out-dated custom definitions (Patrick Ohly)
+	#531712: Do not reset flags on no-flag situation (Milan Crha)
+	#532472: Force a password reprompt if the SMTP server rejects our password with a 535 response (Matthew Barnes)
+	#534080: Return correct bytes_written on success and -1 on error (Priit Laes)
+	#537415: Break a busy loop between Evolution and Gnome-Keyring by only reauthenticating (Matthew Barnes)
+	#539758: Report success when looking for an empty string in a value (Milan Crha)
+	#540127: Evolution can now connect to LDAP server on port 636 using SSL (Wang Xin)
+	#540152: Fixed leaks (Julien Puydt)
+	#541347: Include header files in proper order (Matthew Barnes)
+	#543656: Add sqlite3 to to EVO_SET_COMPILE_FLAGS(CAMEL) to fix the build (Luca Ferretti)
+
+Other Contributors:
+	New method to sort an array of uids (Jeffrey Stedfast)
+	Don't crash if the str argument is NULL (Jeffrey Stedfast)
+	Copy/pasted GMime's decode_date() code to replace really nasty code (Jeffrey Stedfast)
+	Setup progress reporting for message sending (Jeffrey Stedfast)
+	[Win32] Use -D when using -r to not add pointless entries for directories in the zip files (Tor Lillqvist)
+
+Updated Translations:
+	Ignacio Casal Quinteiro (gl)
+	Andre Klapper (de)
+	Yair Hershkovitz (he)
+	Yannig Marchegay (oc)
+	Kjartan Maraas (nb)
+	Jorge Gonzalez (es)
+
 Evolution-Data-Server 2.23.4 2008-06-16
 ----------------------------------------
 
