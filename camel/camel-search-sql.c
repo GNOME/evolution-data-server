@@ -71,7 +71,7 @@ static GScannerConfig config =
                         "_-0123456789"
                         G_CSET_A_2_Z
                         )                       /* cset_identifier_nth */,
-                ( "\n" )               /* cpair_comment_single */,
+                ( "" )               /* cpair_comment_single */,
                 FALSE                    /* case_sensitive */,
                 TRUE                    /* skip_comment_multi */,
                 TRUE                    /* skip_comment_single */,
@@ -752,17 +752,17 @@ camel_sexp_to_sql (const char *txt)
 		return sql;
 	}
 		
-	while (all->next) {
+	while (all) {
 		 n1 = tmp->data;
 		 all = g_list_delete_link (all, all);
 		 tmp = all;
-
+		 d(printf("coming %s\n", n1->exact_token));
 		 if (n1->operator) {
 			  if (res->next) {
 				   GList *ts=res;
 				   Node *n = ts->data;
 				   GString *s = g_string_new (NULL);
-					
+
 				   g_string_append_printf (s, "(%s", n->exact_token);
 				   ts = ts->next;
 				   while (ts) { /* should have atleast 2 nodes */
@@ -786,6 +786,7 @@ camel_sexp_to_sql (const char *txt)
 			  tmp = all;
 		 } else {
 			  res = g_list_prepend (res, n1);
+			  d(printf("app %s\n", n1->exact_token));
 		 }
 	}
 		
@@ -899,6 +900,7 @@ int main ()
 	"(match-all (not (system-flag \"deleted\")))",
 	"(match-all (system-flag \"seen\"))",
 	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
+	"(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))"
 
 	};
 
