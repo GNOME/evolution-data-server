@@ -1,5 +1,12 @@
 2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #544528
+
+	* camel/camel-search-sql.c: Ignore match-threads. It wont be supported
+	with new disk summary. Handle cases where it crashes.
+
+2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Rewrite camel search by converting sexp to sql.
 
 	* camel/camel-folder-search.c:

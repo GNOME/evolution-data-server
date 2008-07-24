@@ -145,7 +145,8 @@ static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1
 			    { "header-starts-with", "LIKE", 3, ' ', '%', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 			    { "get-sent-date", "dsent", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
 			    { "get-received-date", "dreceived", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
-			    { "get-size", "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1}
+			    { "get-size", "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
+			    {"match-threads", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},			    
 };
 #if 0		 
 	{ "get-sent-date", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, get_sent_date), 1 },
@@ -259,8 +260,24 @@ camel_sexp_to_sql (const char *txt)
 				for (i=0; i < G_N_ELEMENTS(elements); i++) {
 					if (g_ascii_strcasecmp (elements[i].token, token) == 0) {
 						 
-						if (!*elements[i].exact_token) /* Skip match-all */
+						if (!*elements[i].exact_token) /* Skip match-all */ {
+							if (g_ascii_strcasecmp (elements[i].token, "match-threads") == 0) {
+								/* remove next node also. We dont support it*/
+								g_scanner_get_next_token (scanner);
+								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading  */
+								/* operator */
+								Node *node = g_new0 (Node, 1);
+								
+								node->token = g_strdup ("or");
+								node->exact_token =  g_strdup ("or");
+								node->level = level;
+								node->operator = 1;
+								node->ref = 2;
+								operators = g_list_prepend (operators, node);
+								all = g_list_prepend (all, node);								
+							}
 							break;
+						}
 						
 						node = g_new0 (Node, 1);
 						node->token = g_strdup (elements[i].token);
@@ -855,6 +872,7 @@ int main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (get-sent-date) 1216146600))) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (get-sent-date) 1216146600)) )))"	,
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
+	"(match-threads \"all\"  (or (match-all (header-contains \"From\"  \"@edesvcs.com\")) (match-all (or (header-contains \"To\"  \"@edesvcs.com\") (header-contains \"Cc\"  \"@edesvcs.com\"))) ))"
 
 	};
 
