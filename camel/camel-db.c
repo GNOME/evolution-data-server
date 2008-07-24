@@ -139,7 +139,7 @@ camel_db_command (CamelDB *cdb, const char *stmt, CamelException *ex)
 		int ret;
 
 		if (!cdb)
-				return TRUE;
+			return TRUE;
 		g_mutex_lock (cdb->lock);
 
 		d(g_print("Executing: %s\n", stmt));
@@ -257,6 +257,7 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 	int ret = -1;
 	char *errmsg = NULL;
 
+	g_mutex_lock (cdb->lock);
 	ret = sqlite3_exec(cdb->db, query, count_cb, count, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
@@ -266,7 +267,8 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 
 		ret = sqlite3_exec (cdb->db, query, count_cb, count, &errmsg);
 	}
-
+	g_mutex_unlock (cdb->lock);
+	
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 		
 	if (ret != SQLITE_OK) {
@@ -416,7 +418,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 		return TRUE;
 	
 	d(g_print ("\n%s:\n%s \n", __FUNCTION__, stmt));
-
+	g_mutex_lock (cdb->lock);
 	ret = sqlite3_exec(cdb->db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
@@ -426,7 +428,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 
 		ret = sqlite3_exec (cdb->db, stmt, callback, data, &errmsg);
 	}
-
+	g_mutex_unlock (cdb->lock);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 		
   	if (ret != SQLITE_OK) {

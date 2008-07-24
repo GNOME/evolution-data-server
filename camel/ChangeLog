@@ -1,5 +1,12 @@
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #544491
+
+	* camel/camel-db.c: Lock while 2 thread try to access same folder's
+	table using same handle.
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-search-sql.c: Further improve search.
 
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
