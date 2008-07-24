@@ -1,3 +1,11 @@
+2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Rewrite camel search by converting sexp to sql.
+
+	* camel/camel-folder-search.c:
+	* camel/camel-folder-summary.c:
+	* camel/camel-search-sql.c:
+
 2008-07-23  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* Makefile.am: Add core camel search in sql support.

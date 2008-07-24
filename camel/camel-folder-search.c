@@ -52,6 +52,7 @@
 #include "camel-store.h"
 #include "camel-vee-folder.h"
 #include "camel-string-utils.h"
+#include "camel-search-sql.h"
 
 #define d(x) 
 #define r(x) 
@@ -459,6 +460,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 	GPtrArray *matches = NULL, *summary_set;
 	int i;
 	CamelDB *cdb;
+	char *sql_query, *tmp, *tmp1;
 	struct _CamelFolderSearchPrivate *p = _PRIVATE(search);
 
 	g_assert(search->folder);
@@ -494,8 +496,8 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		g_free(search->last_search);
 		search->last_search = g_strdup(expr);
 	}
-	r = e_sexp_eval(search->sexp);
-	if (r == NULL) {
+	//r = e_sexp_eval(search->sexp);
+	if (0 && r == NULL) {
 		if (!camel_exception_is_set(ex))
 			camel_exception_setv(ex, 1, _("Error executing search expression: %s:\n%s"), e_sexp_error(search->sexp), expr);
 		goto fail;
@@ -503,11 +505,18 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 
 	printf ("\nsexp is : [%s]\n", expr);
 	printf ("Something is returned in the top-level caller : [%s]\n", search->query->str);
-
+	sql_query = camel_sexp_to_sql (expr);
+	tmp1 = camel_db_sqlize_string(search->folder->full_name);
+	tmp = g_strdup_printf ("SELECT uid FROM %s WHERE %s", tmp1,  sql_query);
+	camel_db_free_sqlized_string (tmp1);
+	g_free (sql_query);
+	printf("tmp %s\n", tmp);
+	
 	matches = g_ptr_array_new();
 	cdb = (CamelDB *) (search->folder->cdb);
-	camel_db_select (cdb, search->query->str, (CamelDBSelectCB) read_uid_callback, matches, ex);
-	e_sexp_result_free(search->sexp, r);
+	camel_db_select (cdb, tmp, (CamelDBSelectCB) read_uid_callback, matches, ex);
+	g_free(tmp);
+	//e_sexp_result_free(search->sexp, r);
 
 fail:
 	/* these might be allocated by match-threads */

@@ -2917,12 +2917,12 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	record->uid = (char *) camel_pstring_strdup(camel_message_info_uid(mi));
 	record->flags = mi->flags;
 	
-	record->read =  ((mi->flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)));
-	record->deleted = mi->flags & CAMEL_MESSAGE_DELETED;
-	record->replied = mi->flags & CAMEL_MESSAGE_ANSWERED;	
-	record->important = mi->flags & CAMEL_MESSAGE_FLAGGED;		
-	record->junk = mi->flags & CAMEL_MESSAGE_JUNK;
-	record->attachment = mi->flags & CAMEL_MESSAGE_ATTACHMENTS;
+	record->read =  ((mi->flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK))) ? 1 : 0;
+	record->deleted = mi->flags & CAMEL_MESSAGE_DELETED ? 1 : 0;
+	record->replied = mi->flags & CAMEL_MESSAGE_ANSWERED ? 1 : 0;	
+	record->important = mi->flags & CAMEL_MESSAGE_FLAGGED ? 1 : 0;		
+	record->junk = mi->flags & CAMEL_MESSAGE_JUNK ? 1 : 0;
+	record->attachment = mi->flags & CAMEL_MESSAGE_ATTACHMENTS ? 1 : 0;
 	
 	record->size = mi->size;
 	record->dsent = mi->date_sent;
