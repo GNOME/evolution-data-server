@@ -1,3 +1,8 @@
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-search-sql.c: Add more search crash handlers. Atm
+	body-search alone should fail.
+
 2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #544501

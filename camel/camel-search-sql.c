@@ -71,7 +71,7 @@ static GScannerConfig config =
                         "_-0123456789"
                         G_CSET_A_2_Z
                         )                       /* cset_identifier_nth */,
-                ( "#\n" )               /* cpair_comment_single */,
+                ( "\n" )               /* cpair_comment_single */,
                 FALSE                    /* case_sensitive */,
                 TRUE                    /* skip_comment_multi */,
                 TRUE                    /* skip_comment_single */,
@@ -264,8 +264,8 @@ camel_sexp_to_sql (const char *txt)
 							if (g_ascii_strcasecmp (elements[i].token, "match-threads") == 0) {
 								/* remove next node also. We dont support it*/
 								g_scanner_get_next_token (scanner);
-								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading  */
-								/* operator */
+								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading  
+								   operator */
 								Node *node = g_new0 (Node, 1);
 								
 								node->token = g_strdup ("or");
@@ -275,6 +275,15 @@ camel_sexp_to_sql (const char *txt)
 								node->ref = 2;
 								operators = g_list_prepend (operators, node);
 								all = g_list_prepend (all, node);								
+							} else if (g_ascii_strcasecmp (elements[i].token, "match-all") == 0) {
+								guint token = g_scanner_peek_next_token (scanner);
+
+								if (token != G_TOKEN_LEFT_PAREN) {
+									/* remove #t*/
+									token = g_scanner_get_next_token (scanner);
+									token = g_scanner_get_next_token (scanner);
+								}
+									
 							}
 							break;
 						}
@@ -632,10 +641,10 @@ camel_sexp_to_sql (const char *txt)
 				} else {
 					char prefix = 0;
 					char *str, *estr;
-					Node *opnode = operators->data;
+					Node *opnode = operators ? operators->data : NULL;
 					int dyn_lvl = n1->level;
 
-					if (n2->prefix && g_ascii_strcasecmp (opnode->token, "not") == 0) {
+					if (n2->prefix && opnode && g_ascii_strcasecmp (opnode->token, "not") == 0) {
 						prefix = '!';
 						dyn_lvl = opnode->level;
 						free_node(opnode); free_node(opnode);
@@ -650,20 +659,24 @@ camel_sexp_to_sql (const char *txt)
 						
 						//g_node_dump (operators);
 						if (n2->prefix) {
-							if (operators->next)
+							if (operators && operators->next)
 								popnode = operators->next->data;
 
-							if (g_ascii_strcasecmp (popnode->token, "not") == 0) {
+							if (popnode && g_ascii_strcasecmp (popnode->token, "not") == 0) {
 								prefix = '!';
 								dbl = TRUE;
 							}
 						}
 						str = g_strdup_printf("(%s %c%s %s)", n2->exact_token, prefix ? prefix : ' ', opnode->exact_token, n1->exact_token);
-						
-						free_node(opnode); free_node(opnode);
-						operators = g_list_delete_link (operators, operators);
+
+						if (opnode) {
+							free_node(opnode);
+							free_node(opnode);
+						}
+						if (operators)
+							operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
-						if (dbl) {
+						if (dbl && operators) {
 							free_node(opnode); free_node(opnode);
 							operators = g_list_delete_link (operators, operators);
 							all = g_list_delete_link (all, all);							
@@ -883,11 +896,13 @@ int main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (get-sent-date) 1216146600)) )))"	,
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
 	"(match-threads \"all\"  (or (match-all (header-contains \"From\"  \"@edesvcs.com\")) (match-all (or (header-contains \"To\"  \"@edesvcs.com\") (header-contains \"Cc\"  \"@edesvcs.com\"))) ))",
-	"(match-all (not (system-flag \"deleted\")))"
+	"(match-all (not (system-flag \"deleted\")))",
+	"(match-all (system-flag \"seen\"))",
+	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
 
 	};
 
-	for (i=18; i < G_N_ELEMENTS(txt); i++) {
+	for (i=0; i < G_N_ELEMENTS(txt); i++) {
 		char *sql;
 		printf("Q: %s\n\n", txt[i]);		
 		sql = camel_sexp_to_sql (txt[i]);
