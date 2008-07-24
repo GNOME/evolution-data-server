@@ -1942,7 +1942,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			item->priv->recurrence_key = soup_soap_parameter_get_int_value (child);
 		else if (!g_ascii_strcasecmp (name, "message")) {
 			SoupSoapParameter *part;
-			int len;
+			gsize len;
 			char *msg;
 			char *length;
 
