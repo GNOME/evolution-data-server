@@ -253,6 +253,7 @@ e_data_cal_get_type
 <FILE>e-cal-backend-util</FILE>
 e_cal_backend_mail_account_get_default
 e_cal_backend_mail_account_is_valid
+e_cal_backend_status_to_string
 </SECTION>
 
 <SECTION>

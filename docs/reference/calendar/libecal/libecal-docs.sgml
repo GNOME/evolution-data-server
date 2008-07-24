@@ -17,6 +17,7 @@
     <xi:include href="xml/e-cal-time-util.xml"/>
     <xi:include href="xml/e-cal-types.xml"/>
     <xi:include href="xml/e-cal-util.xml"/>
+    <xi:include href="xml/e-cal-check-timezones.xml"/>
   </chapter>
 
   <index>
