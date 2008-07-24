@@ -1,5 +1,10 @@
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-search.c: Sync the db before we do a search. So
+	that we are always on sync with view.
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #544491
 
 	* camel/camel-db.c: Lock while 2 thread try to access same folder's

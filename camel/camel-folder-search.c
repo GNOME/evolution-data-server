@@ -464,6 +464,9 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 	struct _CamelFolderSearchPrivate *p = _PRIVATE(search);
 
 	g_assert(search->folder);
+	
+	/* Sync the db, so that we search the db for changes */
+	camel_folder_summary_save_to_db (search->folder->summary, ex);
 
 	p->ex = ex;
 
