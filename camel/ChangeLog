@@ -1,5 +1,11 @@
 2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #544501
+
+	* camel/camel-search-sql.c: Handle single node search queries.
+
+2008-07-24  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #544528
 
 	* camel/camel-search-sql.c: Ignore match-threads. It wont be supported
