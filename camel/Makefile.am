@@ -71,6 +71,7 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-sasl-popb4smtp.c			\
 	camel-sasl.c				\
 	camel-search-private.c			\
+	camel-search-sql.c			\
 	camel-service.c				\
 	camel-session.c				\
 	camel-smime-context.c			\

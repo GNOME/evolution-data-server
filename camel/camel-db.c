@@ -960,6 +960,20 @@ camel_db_free_sqlized_string (char *string)
 	string = NULL;
 }
 
+/*
+"(  uid TEXT PRIMARY KEY ,
+flags INTEGER ,
+msg_type INTEGER ,
+replied INTEGER ,
+msg_security INTEGER ,
+size INTEGER ,
+dsent NUMERIC ,
+dreceived NUMERIC ,
+mlist TEXT ,
+followup_flag TEXT ,
+followup_completed_on TEXT ,
+followup_due_by TEXT ," */
+
 char * camel_db_get_column_name (const char *raw_name)
 {
 	d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
@@ -979,6 +993,10 @@ char * camel_db_get_column_name (const char *raw_name)
 		return g_strdup ("junk");
 	else if (!g_ascii_strcasecmp (raw_name, "Seen"))
 		return g_strdup ("read");
+	else if (!g_ascii_strcasecmp (raw_name, "user-tag"))
+		return g_strdup ("usertags");	
+	else if (!g_ascii_strcasecmp (raw_name, "user-flag"))
+		return g_strdup ("labels");	
 	else if (!g_ascii_strcasecmp (raw_name, "Attachments"))
 		return g_strdup ("attachment");
 	else {
@@ -987,7 +1005,7 @@ char * camel_db_get_column_name (const char *raw_name)
 		We should extend this for camel-folder-search system flags search as well 
 		otherwise, search-for-signed-messages will not work etc.*/
 
-		return g_strdup ("");
+		return g_strdup (raw_name);
 	}
 
 }
