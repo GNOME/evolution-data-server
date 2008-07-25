@@ -142,8 +142,8 @@ static GMutex *ref_lock;
 static GHashTable *type_table;
 
 /* fundamental types are accessed via global */
-CamelType camel_object_type;
-CamelType camel_interface_type;
+CamelType camel_object_type = CAMEL_INVALID_TYPE;
+CamelType camel_interface_type = CAMEL_INVALID_TYPE;
 
 #define P_LOCK(l) (pthread_mutex_lock(&l))
 #define P_UNLOCK(l) (pthread_mutex_unlock(&l))

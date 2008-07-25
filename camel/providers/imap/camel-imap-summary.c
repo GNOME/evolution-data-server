@@ -40,7 +40,7 @@
 #define CAMEL_IMAP_SUMMARY_VERSION (3)
 
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
+#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
 
 static int summary_header_load (CamelFolderSummary *, FILE *);
 static int summary_header_save (CamelFolderSummary *, FILE *);

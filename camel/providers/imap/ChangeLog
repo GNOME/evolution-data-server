@@ -1,3 +1,11 @@
+2008-07-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #544049
+
+	* camel-imap-summary.c: (EXTRACT_DIGIT): Do not read beyond the buffer.
+	* camel-imap-folder.c: (merge_custom_flags): Pass proper pointer to
+	the 'camel_flag_set' function, otherwise it messes things.
+
 2008-07-23  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #543943

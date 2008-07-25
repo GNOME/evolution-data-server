@@ -792,7 +792,7 @@ merge_custom_flags (CamelMessageInfo *mi, const char *custom_flags)
 			/* If this value came from the server, then add it to our local summary,
 			   otherwise it was in local summary, but isn't on the server, thus remove it. */
 			changed = TRUE;
-			camel_flag_set (mi, p->data, g_hash_table_lookup (server, p->data) != NULL);
+			camel_flag_set (&((CamelMessageInfoBase *)mi)->user_flags, p->data, g_hash_table_lookup (server, p->data) != NULL);
 			((CamelMessageInfoBase *) mi)->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		}
 	}

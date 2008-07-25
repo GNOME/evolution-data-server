@@ -1,5 +1,11 @@
 2008-07-25  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #544049
+
+	* camel-object.c: Initialize global variables, just to be sure.
+
+2008-07-25  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #544651
 
 	* camel-folder-summary.c: (EXTRACT_FIRST_STRING), (EXTRACT_STRING):
