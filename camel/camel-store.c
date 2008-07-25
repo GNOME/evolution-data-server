@@ -222,6 +222,11 @@ construct (CamelService *service, CamelSession *session,
 		g_free (store_path);
 	}
 
+	if (!g_file_test(service->url->path, G_FILE_TEST_EXISTS)) {
+		/* Cache might be blown. Recreate. */
+		g_mkdir_with_parents (service->url->path, S_IRWXU);
+	}
+
 	store->cdb = camel_db_open (store_db_path, ex);
 	printf("store_db_path %s\n", store_db_path);
 	if (camel_exception_is_set (ex)) {

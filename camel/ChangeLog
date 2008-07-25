@@ -1,4 +1,10 @@
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #543569
+
+	* camel/camel-store.c: Recreate cache, if it was blown.
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Reverse the meaning of debug/free safe handlers. Let it crash now, than
 	on a production build. We can fix it now. It would be turned off for a
