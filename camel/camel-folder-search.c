@@ -506,14 +506,13 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		goto fail;
 	}
 
-	printf ("\nsexp is : [%s]\n", expr);
-	printf ("Something is returned in the top-level caller : [%s]\n", search->query->str);
+	printf ("sexp is : [%s]\n", expr);
 	sql_query = camel_sexp_to_sql (expr);
 	tmp1 = camel_db_sqlize_string(search->folder->full_name);
 	tmp = g_strdup_printf ("SELECT uid FROM %s WHERE %s", tmp1,  sql_query);
 	camel_db_free_sqlized_string (tmp1);
 	g_free (sql_query);
-	printf("tmp %s\n", tmp);
+	printf("Equivalent sql %s\n", tmp);
 	
 	matches = g_ptr_array_new();
 	cdb = (CamelDB *) (search->folder->cdb);

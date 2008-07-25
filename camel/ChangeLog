@@ -16,6 +16,14 @@
 
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #544114
+
+	* camel/camel-folder-search.c:
+	* camel/providers/local/camel-mbox-folder.c: Do a sync before we
+	reload things.
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-search.c: Sync the db before we do a search. So
 	that we are always on sync with view.
 

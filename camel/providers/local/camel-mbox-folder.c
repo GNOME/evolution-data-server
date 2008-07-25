@@ -263,6 +263,7 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	camel_local_folder_unlock(lf);
 
 	if (camel_folder_change_info_changed(lf->changes)) {
+		camel_folder_summary_save_to_db (folder->summary, ex);
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
