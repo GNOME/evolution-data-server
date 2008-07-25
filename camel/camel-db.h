@@ -15,8 +15,8 @@ struct _CamelDB {
 
 #define CAMEL_DB_FREE_CACHE_SIZE 2 * 1024 * 1024
 #define CAMEL_DB_SLEEP_INTERVAL 1*10*10
-#define CAMEL_DB_RELEASE_SQLITE_MEMORY if(g_getenv("CAMEL_SQLITE_FREE_CACHE")) sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE);
-#define CAMEL_DB_USE_SHARED_CACHE if(g_getenv("CAMEL_SQLITE_SHARED_CACHE")) sqlite3_enable_shared_cache(TRUE);
+#define CAMEL_DB_RELEASE_SQLITE_MEMORY if(!g_getenv("CAMEL_SQLITE_FREE_CACHE")) sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE);
+#define CAMEL_DB_USE_SHARED_CACHE if(!g_getenv("CAMEL_SQLITE_SHARED_CACHE")) sqlite3_enable_shared_cache(TRUE);
 
 
 /* The extensive DB format, supporting basic searching and sorting

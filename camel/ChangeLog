@@ -1,4 +1,15 @@
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Reverse the meaning of debug/free safe handlers. Let it crash now, than
+	on a production build. We can fix it now. It would be turned off for a
+	release build. (CAMEL_SQLITE_FREE_CACHE, CAMEL_SQLITE_SHARED_CACHE,
+	CAMEL_FREE_INFOS, CDS_DEBUG)
+
+	* camel/camel-db.h: 
+	* camel/camel-folder-summary.c:
+	* camel/camel-string-utils.c:
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #544114
 
