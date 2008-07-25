@@ -3,17 +3,18 @@
 # Gustavo Maciel Dias Vieira <gustavo@sagui.org>, 2003,2004.
 # Afonso Celso Medina <afmedina@uol.com.br>, 2005.
 # Alexandre Folle de Menezes <afmenez@terra.com.br>, 2006.
-# Washington Lins <washington-lins@uol.com.br>, 2007.
 # Raul Pereira <contato@raulpereira.com>, 2007.
 # Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>, 2007.
+# Washington Lins <washington-lins@uol.com.br>, 2007, 2008.
+# Fabrício Godoy <skarllot@gmail.com>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-22 09:29-0300\n"
-"PO-Revision-Date: 2008-02-14 11:50-0400\n"
-"Last-Translator: Washington Lins <washington-lins@uol.com.br>\n"
+"PO-Revision-Date: 2008-07-22 01:25-0300\n"
+"Last-Translator: Fabrício Godoy <skarllot@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -373,7 +374,7 @@ msgstr "URI de Agenda"
 
 #: ../addressbook/libebook/e-contact.c:181
 msgid "Free/Busy URL"
-msgstr "URL Livre/Ocupado"
+msgstr "URL de disponibilidade"
 
 #: ../addressbook/libebook/e-contact.c:182
 msgid "ICS Calendar"
@@ -1380,7 +1381,7 @@ msgstr "Copiar o conteúdo da pasta localmente para funcionamento desconectado"
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
-msgstr "Baixando novas mensagens para modo desconectado"
+msgstr "Baixando novas mensagens para o modo desconectado"
 
 #: ../camel/camel-disco-folder.c:468
 #, c-format
@@ -1390,7 +1391,7 @@ msgstr "Preparando pasta \"%s\" para modo desconectado"
 #: ../camel/camel-disco-store.c:403
 #: ../camel/providers/imap/camel-imap-store.c:3018
 msgid "You must be working online to complete this operation"
-msgstr "Você deve estar trabalhando conectado para completar esta operação"
+msgstr "Você deve estar em modo conectado para completar esta operação"
 
 #: ../camel/camel-exception.c:264
 msgid "No description available"
@@ -4360,7 +4361,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:57
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "Para conectar e baixar correio de servidores POP."
+msgstr "Para conectar e baixar e-mails de servidores POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid ""
