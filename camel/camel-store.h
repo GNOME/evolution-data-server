@@ -136,7 +136,9 @@ struct _CamelStore {
 
 #define CAMEL_STORE_FOLDER_CREATE_EXCL (CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 #define CAMEL_STORE_FOLDER_INFO_FAST       (1 << 0)
+#endif /* CAMEL_DISABLE_DEPRECATED */
 #define CAMEL_STORE_FOLDER_INFO_RECURSIVE  (1 << 1)
 #define CAMEL_STORE_FOLDER_INFO_SUBSCRIBED (1 << 2)
 #define CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL (1 << 3)  /* don't include vTrash/vJunk folders */
@@ -237,10 +239,12 @@ void             camel_store_free_folder_info_nop  (CamelStore *store,
 
 CamelFolderInfo *camel_folder_info_new             (void);
 void             camel_folder_info_free            (CamelFolderInfo *fi);
+#ifndef CAMEL_DISABLE_DEPRECATED
 CamelFolderInfo *camel_folder_info_build           (GPtrArray *folders,
 						    const char *namespace,
 						    char separator,
 						    gboolean short_names);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 CamelFolderInfo *camel_folder_info_clone	   (CamelFolderInfo *fi);
 
 gboolean         camel_store_supports_subscriptions   (CamelStore *store);

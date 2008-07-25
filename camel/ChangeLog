@@ -1,6 +1,16 @@
 2008-07-25  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Camel Reference Manual improvements:
+	Tag more symbols as deprecated.  The documentation already
+	describes them as such.
+
+	* camel-debug.h (camel_verbose_debug):
+	* camel-store.h (CAMEL_STORE_FOLDER_INFO_FAST):
+	* camel-store.h (camel_folder_info_build):
+
+2008-07-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Camel Reference Manual improvements:
 	Add more sections to the Table of Contents.
 	Tag deprecated API with CAMEL_DISABLE_DEPRECATED.
 

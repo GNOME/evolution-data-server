@@ -268,7 +268,7 @@ void		   camel_folder_set_message_user_tag  (CamelFolder *folder,
 						       const char *uid,
 						       const char *name,
 						       const char *value);
-#endif
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 
 

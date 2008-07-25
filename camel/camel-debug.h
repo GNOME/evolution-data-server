@@ -36,8 +36,9 @@ gboolean camel_debug(const char *mode);
 gboolean camel_debug_start(const char *mode);
 void camel_debug_end(void);
 
-/* This interface is deprecated */
+#ifndef CAMEL_DISABLE_DEPRECATED
 extern int camel_verbose_debug;
+#endif
 
 G_END_DECLS
 
