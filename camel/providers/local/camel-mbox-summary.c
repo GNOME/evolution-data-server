@@ -303,7 +303,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	fir = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->summary_header_to_db (s, ex);
 	if (fir) {
 		tmp = fir->bdata;
-		fir->bdata = g_strdup_printf ("%s %d %d", tmp ? tmp : "", CAMEL_MBOX_SUMMARY_VERSION, mbs->folder_size);
+		fir->bdata = g_strdup_printf ("%s %d %d", tmp ? tmp : "", CAMEL_MBOX_SUMMARY_VERSION, (int) mbs->folder_size);
 		g_free (tmp);
 	}
 	

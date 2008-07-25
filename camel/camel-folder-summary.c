@@ -1049,7 +1049,7 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 
 	if (s->summary_path == NULL) {
 		g_warning ("No summary path set. Unable to migrate\n");
-		return NULL;
+		return -1;
 	}
 
 	in = g_fopen(s->summary_path, "rb");
@@ -3205,22 +3205,22 @@ content_info_to_db(CamelFolderSummary *s, CamelMessageContentInfo *ci, CamelMIRe
 	ct = ci->type;
 	if (ct) {
 		if (ct->type)
-			g_string_append_printf (str, " %d-%s", strlen (ct->type), ct->type);
+			g_string_append_printf (str, " %d-%s", (int) strlen (ct->type), ct->type);
 		else 
 			g_string_append_printf (str, " 0-");
 		if (ct->subtype)
-			g_string_append_printf (str, " %d-%s", strlen (ct->subtype), ct->subtype);
+			g_string_append_printf (str, " %d-%s", (int) strlen (ct->subtype), ct->subtype);
 		else 
 			g_string_append_printf (str, " 0-");
 		g_string_append_printf (str, " %d", my_list_size((struct _node **)&ct->params));
 		hp = ct->params;
 		while (hp) {
 			if (hp->name)
-				g_string_append_printf (str, " %d-%s", strlen(hp->name), hp->name);
+				g_string_append_printf (str, " %d-%s", (int)strlen(hp->name), hp->name);
 			else 
 				g_string_append_printf (str, " 0-");
 			if (hp->value)
-				g_string_append_printf (str, " %d-%s", strlen (hp->value), hp->value);
+				g_string_append_printf (str, " %d-%s", (int)strlen (hp->value), hp->value);
 			else
 				g_string_append_printf (str, " 0-");
 			hp = hp->next;
@@ -3232,15 +3232,15 @@ content_info_to_db(CamelFolderSummary *s, CamelMessageContentInfo *ci, CamelMIRe
 	}
 
 	if (ci->id)
-		g_string_append_printf (str, " %d-%s", strlen (ci->id), ci->id);
+		g_string_append_printf (str, " %d-%s", (int)strlen (ci->id), ci->id);
 	else 
 		g_string_append_printf (str, " 0-");
 	if (ci->description)
-		g_string_append_printf (str, " %d-%s", strlen (ci->description), ci->description);
+		g_string_append_printf (str, " %d-%s", (int)strlen (ci->description), ci->description);
 	else
 		g_string_append_printf (str, " 0-");
 	if (ci->encoding)
-		g_string_append_printf (str, " %d-%s", strlen (ci->encoding), ci->encoding);
+		g_string_append_printf (str, " %d-%s", (int)strlen (ci->encoding), ci->encoding);
 	else
 		g_string_append_printf (str, " 0-");
 	g_string_append_printf (str, " %u", ci->size);

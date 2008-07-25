@@ -1,3 +1,11 @@
+2008-07-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #544031
+
+	* camel-vee-folder.c: (vee_folder_remove_folder):
+	* camel-folder-summary.c: (camel_folder_summary_migrate_infos),
+	(content_info_to_db): Compiler warnings cleanup.
+
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #543569

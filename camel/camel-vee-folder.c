@@ -881,7 +881,7 @@ vee_folder_remove_folder(CamelVeeFolder *vf, CamelFolder *source)
 							if (n == 1) {
 								CamelMessageInfo *tinfo;
 								g_hash_table_remove(unmatched_uids, oldkey);
-								if (tinfo = (CamelMessageInfo *) vee_folder_add_uid(folder_unmatched, source, oldkey+8, hash)) {
+								if ((tinfo = (CamelMessageInfo *) vee_folder_add_uid(folder_unmatched, source, oldkey+8, hash)) != NULL) {
 									camel_message_info_free (tinfo);
 									camel_folder_change_info_add_uid(folder_unmatched->changes, oldkey);
 								}

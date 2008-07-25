@@ -1,3 +1,10 @@
+2008-07-25  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #544031
+
+	* camel-mbox-summary.c: (summary_header_to_db):
+	Compiler warning cleanup.
+
 2008-07-23  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #543943
