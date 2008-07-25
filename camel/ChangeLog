@@ -1,3 +1,9 @@
+2008-07-25  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Camel Reference Manual improvements:
+	Add more sections to the Table of Contents.
+	Tag deprecated API with CAMEL_DISABLE_DEPRECATED.
+
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-search.c: Sync the db before we do a search. So

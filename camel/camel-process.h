@@ -20,6 +20,7 @@
  *
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef __CAMEL_PROCESS_H__
 #define __CAMEL_PROCESS_H__
@@ -37,3 +38,5 @@ int camel_process_wait (pid_t pid);
 G_END_DECLS
 
 #endif /* __CAMEL_PROCESS_H__ */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

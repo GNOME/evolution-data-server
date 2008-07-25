@@ -21,6 +21,7 @@
  * USA
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef CAMEL_DISCO_STORE_H
 #define CAMEL_DISCO_STORE_H 1
@@ -118,3 +119,5 @@ void camel_disco_store_prepare_for_offline(CamelDiscoStore *store, CamelExceptio
 G_END_DECLS
 
 #endif /* CAMEL_DISCO_STORE_H */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

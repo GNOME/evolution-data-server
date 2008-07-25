@@ -21,6 +21,8 @@
  * USA
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
+
 #ifndef CAMEL_DISCO_FOLDER_H
 #define CAMEL_DISCO_FOLDER_H 1
 
@@ -124,3 +126,5 @@ CamelType camel_disco_folder_get_type (void);
 G_END_DECLS
 
 #endif /* CAMEL_DISCO_FOLDER_H */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

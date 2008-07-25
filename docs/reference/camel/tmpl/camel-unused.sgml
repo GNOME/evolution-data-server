@@ -102,6 +102,30 @@ camel-local-private
 camel-md5-utils
 
 
+<!-- ##### SECTION ./tmpl/camel-mime-part-utils.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-mime-part-utils.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-mime-part-utils.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-mime-part-utils.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-mime-part-utils.sgml:Title ##### -->
+camel-mime-part-utils
+
+
 <!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:Long_Description ##### -->
 <para>
 

@@ -19,6 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef _CAMEL_NEWS_ADDRESS_H
 #define _CAMEL_NEWS_ADDRESS_H
@@ -49,3 +50,5 @@ CamelNewsAddress      *camel_news_address_new	(void);
 G_END_DECLS
 
 #endif /* ! _CAMEL_NEWS_ADDRESS_H */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

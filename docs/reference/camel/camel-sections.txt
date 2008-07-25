@@ -1151,6 +1151,7 @@ camel_mime_part_get_content_type
 camel_mime_part_construct_from_parser
 camel_mime_part_set_content
 camel_mime_part_get_content_size
+camel_mime_part_construct_content_from_parser
 <SUBSECTION Standard>
 CAMEL_MIME_PART
 CAMEL_IS_MIME_PART
@@ -1559,6 +1560,11 @@ CAMEL_SASL_CLASS
 CamelSaslClass
 <SUBSECTION Private>
 camel_sasl_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-search-sql</FILE>
+camel_sexp_to_sql
 </SECTION>
 
 <SECTION>
@@ -3537,11 +3543,6 @@ camel_unlock_fcntl
 camel_unlock_flock
 camel_lock_folder
 camel_unlock_folder
-</SECTION>
-
-<SECTION>
-<FILE>camel-mime-part-utils</FILE>
-camel_mime_part_construct_content_from_parser
 </SECTION>
 
 <SECTION>

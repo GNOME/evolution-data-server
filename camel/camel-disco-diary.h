@@ -21,6 +21,8 @@
  * USA
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
+
 #ifndef CAMEL_DISCO_DIARY_H
 #define CAMEL_DISCO_DIARY_H 1
 
@@ -91,3 +93,5 @@ CamelType camel_disco_diary_get_type (void);
 G_END_DECLS
 
 #endif /* CAMEL_DISCO_DIARY_H */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

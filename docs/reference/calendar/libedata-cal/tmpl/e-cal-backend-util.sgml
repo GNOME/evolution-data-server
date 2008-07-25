@@ -37,3 +37,12 @@ Utility functions for backends.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_status_to_string ##### -->
+<para>
+
+</para>
+
+@status: 
+@Returns: 
+
+

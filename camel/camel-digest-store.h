@@ -20,6 +20,7 @@
  *
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef __CAMEL_DIGEST_STORE_H__
 #define __CAMEL_DIGEST_STORE_H__
@@ -52,3 +53,5 @@ CamelStore *camel_digest_store_new (const char *url);
 G_END_DECLS
 
 #endif /* __CAMEL_DIGEST_STORE_H__ */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */

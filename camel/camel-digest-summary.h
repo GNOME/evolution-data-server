@@ -20,6 +20,7 @@
  *
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef __CAMEL_DIGEST_SUMMARY_H__
 #define __CAMEL_DIGEST_SUMMARY_H__
@@ -55,3 +56,5 @@ CamelFolderSummary *camel_digest_summary_new (void);
 G_END_DECLS
 
 #endif /* __CAMEL_DIGEST_SUMMARY_H__ */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */
