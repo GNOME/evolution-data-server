@@ -88,10 +88,10 @@ extern int strdup_count, malloc_count, free_count;
 
 #define META_SUMMARY_SUFFIX_LEN 5 /* strlen("-meta") */
 
-#define EXTRACT_FIRST_STRING(val) len=strtoul (part, &part, 10); part++; val=g_strndup (part, len);
-#define EXTRACT_STRING(val) part++; len=strtoul (part, &part, 10); part++; val=g_strndup (part, len);
+#define EXTRACT_FIRST_STRING(val) len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
+#define EXTRACT_STRING(val) if (*part) part++; len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
+#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
 
 /* trivial lists, just because ... */
 struct _node {
@@ -937,6 +937,11 @@ camel_read_mir_callback (void * ref, int ncol, char ** cols, char ** name)
 				info = NULL;
 			} 
 			mir->cinfo = tmp;
+
+			if (!info) {
+				camel_db_camel_mir_free (mir);
+				return -1;
+			}
 		}
 
 		if (data->double_ref)
@@ -2265,10 +2270,16 @@ camel_folder_summary_decode_token(FILE *in, char **str)
 static struct _node *
 my_list_append(struct _node **list, struct _node *n)
 {
-	struct _node *ln = (struct _node *)list;
+	struct _node *ln = *list;
+	n->next = NULL;
+
+	if (!ln) {
+		*list = n;
+		return n;
+	}
+
 	while (ln->next)
 		ln = ln->next;
-	n->next = NULL;
 	ln->next = n;
 	return n;
 }

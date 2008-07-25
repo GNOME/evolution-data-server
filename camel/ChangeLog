@@ -1,5 +1,18 @@
 2008-07-25  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #544651
+
+	* camel-folder-summary.c: (EXTRACT_FIRST_STRING), (EXTRACT_STRING):
+	Properly update string position after read (thanks to srag).
+	* camel-folder-summary.c: (EXTRACT_DIGIT):
+	Prevent moving beyond string limit.
+	* camel-folder-summary.c: (camel_read_mir_callback):
+	Do not access NULL.
+	* camel-folder-summary.c: (my_list_append):
+	Interpret and update given list pointer properly.
+
+2008-07-25  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #544031
 
 	* camel-vee-folder.c: (vee_folder_remove_folder):
