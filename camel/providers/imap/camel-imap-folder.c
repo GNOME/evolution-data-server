@@ -1279,7 +1279,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	}
 
-	g_ptr_array_foreach (summary, camel_pstring_free, NULL);
+	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 	
 	/* Save the summary */
@@ -3220,7 +3220,7 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 	changes = camel_folder_change_info_new ();
 	if (expunged) {
 		int i, id;
-		GList *deleted = NULL;
+		GSList *deleted = NULL;
 		
 		for (i = 0; i < expunged->len; i++) {
 			id = g_array_index (expunged, int, i);
@@ -3231,18 +3231,18 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 				continue;
 			}
 
-			deleted = g_list_prepend(deleted, uid);
+			deleted = g_slist_prepend(deleted, uid);
 			camel_folder_change_info_remove_uid (changes, uid);
 			CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, uid);
 			CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
-			camel_folder_summary_remove_index_fast (CamelFolderSummary *s, id-1)
+			camel_folder_summary_remove_index_fast (folder->summary, id-1);
 		}
 		
 		/* Delete all in one transaction */
 		camel_db_delete_uids (folder->cdb, folder->full_name, deleted, ex);
-		g_list_foreach (deleted, g_free);
-		g_list_free (deleted);
+		g_slist_foreach (deleted, (GFunc) g_free, NULL);
+		g_slist_free (deleted);
 	}
 
 	len = camel_folder_summary_count (folder->summary);

@@ -1991,14 +1991,17 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 		camel_folder_summary_remove(s, oldinfo);
 		camel_message_info_free(oldinfo);
 	} else {
+		char *tmpid = g_strdup (uid);
 		/* Info isn't loaded into the memory. We must just remove the UID*/
 		summary_remove_uid (s, uid);
 		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
-		if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
+		if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, tmpid, NULL) != 0) {
+			g_free(tmpid);
 			return ;
-		
+		}
+		g_free (tmpid);
 	}
 }
 
