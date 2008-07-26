@@ -27,6 +27,10 @@
 
 2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.h: Disable share cache sql
+
+2008-07-25  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #543569
 
 	* camel/camel-store.c: Recreate cache, if it was blown.
