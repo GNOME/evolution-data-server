@@ -2028,6 +2028,7 @@ camel_folder_summary_remove_index_fast (CamelFolderSummary *s, int index)
 	} else {
 		/* Info isn't loaded into the memory. We must just remove the UID*/
 		g_ptr_array_remove_index(s->uids, index);
+		camel_pstring_free (uid);
 		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 

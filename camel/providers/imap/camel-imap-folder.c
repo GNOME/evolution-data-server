@@ -3220,6 +3220,7 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 	changes = camel_folder_change_info_new ();
 	if (expunged) {
 		int i, id;
+		GList *deleted = NULL;
 		
 		for (i = 0; i < expunged->len; i++) {
 			id = g_array_index (expunged, int, i);
@@ -3229,14 +3230,19 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 				/* I guess a message that we never retrieved got expunged? */
 				continue;
 			}
-			
+
+			deleted = g_list_prepend(deleted, uid);
 			camel_folder_change_info_remove_uid (changes, uid);
 			CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, uid);
 			CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
-			camel_folder_summary_remove_uid (folder->summary, uid);
-			g_free (uid);
+			camel_folder_summary_remove_index_fast (CamelFolderSummary *s, id-1)
 		}
+		
+		/* Delete all in one transaction */
+		camel_db_delete_uids (folder->cdb, folder->full_name, deleted, ex);
+		g_list_foreach (deleted, g_free);
+		g_list_free (deleted);
 	}
 
 	len = camel_folder_summary_count (folder->summary);
