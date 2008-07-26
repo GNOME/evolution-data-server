@@ -1906,9 +1906,7 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 		return;
 	}
-
-
-	camel_db_clear_folder_summary (cdb, folder_name, NULL);
+	
 	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (s->uids, TRUE);
 	s->uids = g_ptr_array_new ();
@@ -1918,24 +1916,16 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 
 	s->flags |= CAMEL_SUMMARY_DIRTY;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
+	camel_db_clear_folder_summary (cdb, folder_name, NULL);	
 }
 
 static void
 summary_remove_uid (CamelFolderSummary *s, const char *uid)
 {
 	int i;
-	CamelDB *cdb;
-	CamelException ex;// May be this should come from the caller 
-	char *folder_name;
 
 	d(printf ("\nsummary_remove_uid called \n"));
-	camel_exception_init (&ex);
-
-	folder_name = s->folder->full_name;
-	cdb = s->folder->cdb;
-
-	if (camel_db_delete_uid (cdb, folder_name, uid, &ex) != 0)
-		return ;
 
 	/* This could be slower, but no otherway really. FIXME: Callers have to effective and shouldn't call it recursively. */
 	for (i=0; i<s->uids->len; i++) {
@@ -1971,6 +1961,9 @@ camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 	
+	if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
+		return ;
+	
 	camel_message_info_free(info);
 }
 
@@ -2003,6 +1996,8 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
+		if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
+			return ;
 		
 	}
 }
