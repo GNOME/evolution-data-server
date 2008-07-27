@@ -1133,14 +1133,6 @@ imap_sync_offline (CamelFolder *folder, CamelException *ex)
 	if (folder->summary && (folder->summary->flags & CAMEL_SUMMARY_DIRTY) != 0) {
 		CamelStoreInfo *si;
 
-		/* Update also summary count info in folder's summary...  */
-		camel_object_get (folder, NULL,
-					CAMEL_FOLDER_UNREAD, &folder->summary->unread_count,
-					CAMEL_FOLDER_TOTAL, &folder->summary->saved_count,
-					CAMEL_FOLDER_DELETED, &folder->summary->deleted_count,
-					CAMEL_FOLDER_JUNKED, &folder->summary->junk_count,
-					NULL);
-
 		/* ... and store's summary when folder's summary is dirty */
 		si = camel_store_summary_path ((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary, folder->full_name);
 		if (si) {

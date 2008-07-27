@@ -4333,14 +4333,6 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 	if (((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) && !((set & CAMEL_MESSAGE_JUNK_LEARN) && !(set & CAMEL_MESSAGE_JUNK)))
 		return FALSE;
 
-	if (mi->summary && mi->summary->folder && mi->uid) {
-		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
-
-		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
-		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
-		camel_folder_change_info_free(changes);
-	}
-
 	if (mi->summary) {
 		if (read)
 			mi->summary->unread_count -= read;
@@ -4353,6 +4345,16 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		if (junk ||  deleted) 
 			mi->summary->visible_count -= junk ? junk : deleted;
 	}
+
+	if (mi->summary && mi->summary->folder && mi->uid) {
+		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+
+		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
+		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+		camel_folder_change_info_free(changes);
+	}
+
+
 
 	d(printf("%d %d %d %d %d\n", mi->summary->unread_count, mi->summary->deleted_count, mi->summary->junk_count, mi->summary->junk_not_deleted_count, mi->summary->visible_count));
 	return TRUE;

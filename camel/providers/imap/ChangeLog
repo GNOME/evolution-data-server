@@ -1,3 +1,8 @@
+2008-07-27  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-folder.c: Fix unread count issue
+	with imap providers.
+
 2008-07-26  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Fix compiler warnings.
