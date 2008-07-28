@@ -1661,6 +1661,9 @@ retry:
 	}
 
 	if (*response->status != '+') {
+		if (!camel_exception_is_set (ex))
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Unexpected response status '%s' after APPEND command"), response->status);
+
 		camel_imap_response_free (store, response);
 		g_byte_array_free (ba, TRUE);
 		return NULL;
@@ -1672,8 +1675,12 @@ retry:
 
 	/* free it only after message is sent. This may cause more FETCHes. */
 	camel_imap_response_free (store, response);
-	if (!response2)
+	if (!response2) {
+		if (!camel_exception_is_set (ex))
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("No response on continuation after APPEND command"));
+
 		return response2;
+	}
 	
 	if (store->capabilities & IMAP_CAPABILITY_UIDPLUS) {
 		*uid = camel_strstrcase (response2->status, "[APPENDUID ");
@@ -1705,8 +1712,11 @@ imap_append_online (CamelFolder *folder, CamelMimeMessage *message,
 
 	count = camel_folder_summary_count (folder->summary);
 	response = do_append (folder, message, info, &uid, ex);
-	if (!response)
+	if (!response) {
+		if (!camel_exception_is_set (ex))
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Unknown error occurred during APPEND command!"));
 		return;
+	}
 	
 	if (uid) {
 		/* Cache first, since freeing response may trigger a

@@ -1,5 +1,14 @@
 2008-07-28  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #349870
+
+	* camel-imap-folder.c: (do_append), (imap_append_online):
+	* camel-imap-command.c: (imap_command_start),
+	(camel_imap_command_continuation): Do not hide errors, rather
+	report them to the caller as expected.
+
+2008-07-28  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #336074
 
 	* camel-imap-provider.c: (imap_conf_entries):

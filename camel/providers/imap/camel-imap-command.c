@@ -178,10 +178,17 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 		    const char *cmd, CamelException *ex)
 {
 	ssize_t nwritten;
-	
-	g_return_val_if_fail(store->ostream!=NULL, FALSE);
-	g_return_val_if_fail(store->istream!=NULL, FALSE);
-	
+
+	if (!store->ostream) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No output stream"));
+		return FALSE;
+	}
+
+	if (!store->istream) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No input stream"));
+		return FALSE;
+	}
+
 	/* Check for current folder */
 	if (folder && folder != store->current_folder) {
 		CamelImapResponse *response;
@@ -256,9 +263,16 @@ camel_imap_command_continuation (CamelImapStore *store, const char *cmd,
 	if (!camel_imap_store_connected (store, ex))
 		return NULL;
 
-	g_return_val_if_fail(store->ostream!=NULL, NULL);
-	g_return_val_if_fail(store->istream!=NULL, NULL);
-	
+	if (!store->ostream) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No output stream"));
+		return FALSE;
+	}
+
+	if (!store->istream) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No input stream"));
+		return FALSE;
+	}
+
 	if (camel_stream_write (store->ostream, cmd, cmdlen) == -1 ||
 	    camel_stream_write (store->ostream, "\r\n", 2) == -1) {
 		if (errno == EINTR)
