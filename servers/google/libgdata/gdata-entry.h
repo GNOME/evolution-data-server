@@ -268,5 +268,8 @@ GDataEntryPhoneNumber * gdata_entry_get_primary_phone_number (GDataEntry *entry)
 
 GDataEntryPostalAddress * gdata_entry_get_primary_postal_address (GDataEntry *entry);
 
+const gchar *gdata_entry_get_custom (GDataEntry *entry, const gchar *name);
+void gdata_entry_set_custom (GDataEntry *entry, const gchar *name, const gchar *value);
+
 #endif
 

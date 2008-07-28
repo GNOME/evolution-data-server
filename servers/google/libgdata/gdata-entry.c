@@ -2145,4 +2145,39 @@ gdata_entry_set_postal_addresses (GDataEntry *entry, GSList *addresses)
 	priv->entry_needs_update = TRUE;
 }
 
+/**
+ * gdata_entry_get_custom:
+ * entry owns the returned pointer and is valid as long as the item is alive
+ * and the value isn't changed by gdata_entry_set_custom or other method.
+ * Do not use this method if there is direct method for your value!
+ **/
+const gchar *
+gdata_entry_get_custom (GDataEntry *entry, const gchar *name)
+{
+	GDataEntryPrivate *priv;
 
+	g_return_val_if_fail (entry != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_ENTRY (entry), NULL);
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	return g_hash_table_lookup (priv->field_table, name);
+}
+
+/**
+ * gdata_entry_set_custom:
+ * Sets the custom value.
+ * Do not use this function when there exists direct method for your value!
+ **/
+void
+gdata_entry_set_custom (GDataEntry *entry, const gchar *name, const gchar *value)
+{
+	GDataEntryPrivate *priv;
+
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (GDATA_IS_ENTRY (entry));
+
+	priv = GDATA_ENTRY_GET_PRIVATE (entry);
+	g_hash_table_insert (priv->field_table, g_strdup (name), g_strdup (value ? value : ""));
+}

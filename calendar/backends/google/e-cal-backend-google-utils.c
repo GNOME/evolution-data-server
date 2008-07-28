@@ -68,7 +68,7 @@
 
 /****************************************************** Google Connection Helper Functions ***********************************************/
 
-static gchar * gd_date_to_ical (gchar *string);
+static gboolean gd_date_to_ical (EGoItem *item, const gchar *google_time_string, struct icaltimetype *itt, ECalComponentDateTime *dt, icaltimezone *default_zone);
 static gchar * get_date (ECalComponentDateTime dt);
 static gint utils_compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id);
 static gchar * utils_form_query (const gchar *query);
@@ -404,7 +404,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	ECalComponentOrganizer *org = NULL;
 	icaltimezone *default_zone;
 	const char *description, *uid, *temp;
-	struct icaltimetype itt_utc, itt;
+	struct icaltimetype itt;
 	GSList *category_ids;
 	GSList *go_attendee_list = NULL, *l = NULL, *attendee_list = NULL;
 
@@ -427,34 +427,21 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 		e_cal_component_set_description_list (comp, &l);
 
 	}
-	
-	/*Creation*/
-	temp = gdata_entry_get_start_time (item->entry);
-	temp = gd_date_to_ical (g_strdup(temp));
 
-	if (temp) {
-		itt_utc = icaltime_from_string (temp);
-		itt_utc.zone = default_zone;
+	/* Creation/Last update */
+	if (gd_date_to_ical (item, gdata_entry_get_custom (item->entry, "published"), &itt, &dt, default_zone))
+		e_cal_component_set_created (comp, &itt);
 
-		if (!icaltime_get_timezone (itt_utc))
-			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone);
-			icaltime_set_timezone (&itt, default_zone);
-			e_cal_component_set_created (comp, &itt);
-			e_cal_component_set_dtstamp (comp, &itt);
+	if (gd_date_to_ical (item, gdata_entry_get_custom (item->entry, "updated"), &itt, &dt, default_zone))
+		e_cal_component_set_dtstamp (comp, &itt);
 
-		} else {
-			e_cal_component_set_created (comp, &itt_utc);
-			e_cal_component_set_dtstamp (comp, &itt_utc);
-		}
-	/* dt.value = &itt; */
-	}
-	dt.value = &itt;
-	dt.tzid = icaltimezone_get_tzid (default_zone);
-	e_cal_component_set_dtstart (comp, &dt);
-	e_cal_component_set_created (comp, &itt_utc);
-	e_cal_component_set_dtstamp (comp, &itt_utc);
+	/* Start time */
+	if (gd_date_to_ical (item, gdata_entry_get_start_time (item->entry), &itt, &dt, default_zone))
+		e_cal_component_set_dtstart (comp, &dt);
+
+	/* End time */
+	if (gd_date_to_ical (item, gdata_entry_get_end_time (item->entry), &itt, &dt, default_zone))
+		e_cal_component_set_dtend (comp, &dt);
 
 	/* Summary of the Entry */
 	text.value = gdata_entry_get_title (item->entry);
@@ -531,37 +518,6 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	/* Location */
 	e_cal_component_set_location (comp, gdata_entry_get_location (item->entry));
 
-	/* End date */
-	temp = gdata_entry_get_end_time (item->entry);
-	temp = gd_date_to_ical (g_strdup(temp));
-
-	if (temp) {
-		itt_utc = icaltime_from_string (temp);
-
-	/*
-	 * TODO : Write a small func to check if its all day and set it to true , and check for it here .
-	 * Evolution Automatically recognises all day event from google . so why bother ?
-	 * Considering not to be a all day event . FIXME needs further work .
-	 */
-		if (FALSE) {
-			if (!icaltime_get_timezone (itt_utc))
-				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-			if (default_zone) {
-				itt = icaltime_convert_to_zone (itt_utc, default_zone);
-				icaltime_set_timezone (&itt, default_zone);
-				dt.value = &itt;
-				dt.tzid = icaltimezone_get_tzid (default_zone);
-			} else {
-				dt.value = &itt_utc;
-				dt.tzid = g_strdup ("UTC");
-			}
-		} else {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone);
-			icaltime_set_timezone (&itt, default_zone);
-			dt.value = &itt;
-			dt.tzid = icaltimezone_get_tzid (default_zone);
-		}
-	}
 #if 0
 	/* temp hack to see how recurrence work */
 	ECalComponentRange *recur_id;
@@ -753,6 +709,7 @@ utils_update_insertion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, EGoIte
 
 	comp = e_cal_component_new ();
 	item_t = g_new0 (EGoItem, 1);
+	item_t->feed = item->feed;
 	entries_list = gdata_feed_get_entries (item->feed);
 
 	for (list = uid_list; list != NULL; list = list->next) {
@@ -874,20 +831,30 @@ get_deltas_timeout (gpointer cbgo)
  *
  * gd_date_to_ical:
  * Helper Function to convert a gdata format date to ical date
- * @string date in gdata format eg: '2006-04-17T17:00:00.000Z'
+ * @item item from which the time comes. It's used to get to the feed's timezone
+ * @google_time_string date in gdata format eg: '2006-04-17T17:00:00.000Z' or '2006-04-17T17:00:00.000+07:00'
+ * @iit Resulting icaltimetype.
+ * @dt Resulting ECalComponentDateTime.
+ * @default_zone Default time zone for the backend. If set, then the time will be converted to that timezone.
  *
+ * @note Do not free itt or dt values, those come from buildin structures held by libical
  **/
-/* FIXME use proper functions to manipulate the dates */
-static gchar *
-gd_date_to_ical (gchar *string)
+static gboolean
+gd_date_to_ical (EGoItem *item, const gchar *google_time_string, struct icaltimetype *itt, ECalComponentDateTime *dt, icaltimezone *default_zone)
 {
-	gchar *s, *str;
+	gchar *s, *string, *dup;
 	int count = 0;
+	gboolean is_utc = TRUE;
 
-	s = g_strdup (string);
-	str = string;
+	g_return_val_if_fail (itt != NULL, FALSE);
+	g_return_val_if_fail (dt != NULL, FALSE);
 
-	g_return_val_if_fail (string != NULL, "");
+	if (!google_time_string || !*google_time_string)
+		return FALSE;
+
+	dup = g_strdup (google_time_string);
+	s = dup;
+	string = dup;
 
 	/* Strip of the string to the gdata format */
 	while (s[0] != '\0') {
@@ -900,6 +867,10 @@ gd_date_to_ical (gchar *string)
 			s = s + 1;
 
 		if (count == 15) {
+			if (strlen (s) >= 5) {
+				is_utc = s [4] == 'Z';
+			}
+
 			string[0] = '\0';
 			break;
 		}
@@ -907,5 +878,29 @@ gd_date_to_ical (gchar *string)
 			string[0] = '\0';
 	}
 
-	return str;
+	*itt = icaltime_from_string (dup);
+
+	if (!is_utc) {
+		const char *zone_name = item->feed ? gdata_feed_get_timezone (item->feed) : NULL;
+
+		if (zone_name) {
+			icaltimezone *zone = icaltimezone_get_builtin_timezone (zone_name);
+
+			if (zone)
+				icaltime_set_timezone (itt, zone);
+		}
+	}
+
+	if (!icaltime_get_timezone (*itt))
+		icaltime_set_timezone (itt, icaltimezone_get_utc_timezone ());
+
+	if (default_zone)
+		*itt = icaltime_convert_to_zone (*itt, default_zone);
+
+	dt->value = itt;
+	dt->tzid = icaltimezone_get_tzid ((icaltimezone *) icaltime_get_timezone (*itt));
+
+	g_free (dup);
+
+	return TRUE;
 }

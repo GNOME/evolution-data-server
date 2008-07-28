@@ -82,6 +82,7 @@ struct _GDataFeedPrivate {
 	gchar *summary;
 	gchar *title;
 	gchar *updated;
+	gchar *timezone;
 
 	GHashTable *field_table;
 	gchar *feedXML;
@@ -177,6 +178,7 @@ gdata_feed_init(GTypeInstance *instance,
 	priv->summary = NULL;
 	priv->title = NULL;
 	priv->updated = NULL;
+	priv->timezone = NULL;
 
 	priv->authors = NULL;
 	priv->links = NULL;
@@ -241,6 +243,7 @@ gdata_feed_finalize(GObject *obj)
 	}
 
 	g_free (priv->updated);
+	g_free (priv->timezone);
 
 	if (priv->field_table != NULL)
 		g_hash_table_destroy(priv->field_table);
@@ -578,6 +581,11 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			priv->updated = g_strdup ((gchar*)value);
 			xmlFree(value);
+		} else if (!xmlStrcmp(cur->name, (xmlChar *)"timezone")) {
+			value = xmlGetProp (cur, (xmlChar *)"value");
+			g_free (priv->timezone);
+			priv->timezone = g_strdup ((gchar*)value);
+			xmlFree (value);
 		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"entry")) {
 			priv->entries = g_slist_prepend(priv->entries, gdata_entry_new_from_xmlptr(doc,cur));
@@ -691,4 +699,21 @@ gdata_feed_get_entries (GDataFeed *feed)
 	g_return_val_if_fail (GDATA_IS_FEED(feed), NULL);
 
 	return priv->entries;
+}
+
+/**
+ * gdata_feed_get_timezone:
+ * Returned pointer owns the feed, its value is like 'Indian/Christmas'
+ **/
+const gchar *
+gdata_feed_get_timezone (GDataFeed *feed)
+{
+	GDataFeedPrivate *priv;
+
+	g_return_val_if_fail (feed != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_FEED (feed), NULL);
+	
+	priv = GDATA_FEED_GET_PRIVATE (feed);
+
+	return priv->timezone;
 }

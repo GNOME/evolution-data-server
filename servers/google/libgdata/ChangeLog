@@ -1,3 +1,15 @@
+2008-07-28  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #468671
+
+	* gdata-entry.h: (gdata_entry_get_custom), (gdata_entry_set_custom):
+	* gdata-entry.c: (gdata_entry_get_custom), (gdata_entry_set_custom):
+	Read/write custom values withing entry.
+	* gdata-feed.h: (gdata_feed_get_timezone):
+	* gdata-feed.c: (gdata_feed_get_timezone), (struct _GDataFeedPrivate),
+	(gdata_feed_init), (gdata_feed_finalize), (gdata_feed_new_from_xml):
+	Read timezone name of the calendar and let it be available for others.
+
 2008-06-13  Wang Xin  <jedy.wang@sun.com>
 
 	** Fix for bug #527544.

@@ -71,3 +71,5 @@ gchar * gdata_feed_generate_xml(GDataFeed *feed);
 gchar * gdata_feed_get_updated (GDataFeed *feed);
 
 GSList * gdata_feed_get_entries (GDataFeed *feed);
+
+const gchar *gdata_feed_get_timezone (GDataFeed *feed);

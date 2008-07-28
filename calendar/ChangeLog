@@ -1,3 +1,11 @@
+2008-07-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #468671
+
+	* backends/google/e-cal-backend-google-utils.c: (gd_date_to_ical),
+	(e_go_item_to_cal_component), (utils_update_insertion):
+	Read time values in proper timezone as returned by Google Calendar.
+
 2008-07-21  Paul Bolle  <pebolle@tiscali.nl>
 
 	** Fix for bug #543066
