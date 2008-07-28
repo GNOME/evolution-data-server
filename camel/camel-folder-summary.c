@@ -4313,13 +4313,13 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 	/* TODO: locking? */
 
 	if (flags & CAMEL_MESSAGE_SEEN && ((set & CAMEL_MESSAGE_SEEN) != (mi->flags & CAMEL_MESSAGE_SEEN)))
-	{ read = set & CAMEL_MESSAGE_SEEN ? 1 : -1; printf("Setting read as %d\n", set & CAMEL_MESSAGE_SEEN ? 1 : 0);}
+	{ read = set & CAMEL_MESSAGE_SEEN ? 1 : -1; d(printf("Setting read as %d\n", set & CAMEL_MESSAGE_SEEN ? 1 : 0));}
 
 	if (flags & CAMEL_MESSAGE_DELETED && ((set & CAMEL_MESSAGE_DELETED) != (mi->flags & CAMEL_MESSAGE_DELETED)))
-	{ deleted = set & CAMEL_MESSAGE_DELETED ? 1 : -1; ;printf("Setting deleted as %d\n", set & CAMEL_MESSAGE_DELETED ? 1 : 0);}
+	{ deleted = set & CAMEL_MESSAGE_DELETED ? 1 : -1; d(printf("Setting deleted as %d\n", set & CAMEL_MESSAGE_DELETED ? 1 : 0));}
 
 	if (flags & CAMEL_MESSAGE_JUNK && ((set & CAMEL_MESSAGE_JUNK) != (mi->flags & CAMEL_MESSAGE_JUNK)))
-	{ junk = set & CAMEL_MESSAGE_JUNK ? 1 : -1; ;printf("Setting junk as %d\n", set & CAMEL_MESSAGE_JUNK ? 1 : 0);}
+	{ junk = set & CAMEL_MESSAGE_JUNK ? 1 : -1; d(printf("Setting junk as %d\n", set & CAMEL_MESSAGE_JUNK ? 1 : 0));}
 	
 	old = mi->flags;
 	mi->flags = (old & ~flags) | (set & flags);
