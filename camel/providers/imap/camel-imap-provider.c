@@ -44,6 +44,8 @@ CamelProviderConfEntry imap_conf_entries[] = {
 	  N_("Checking for New Mail") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
 	  N_("C_heck for new messages in all folders"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_lsub", NULL,
+	  N_("Ch_eck for new messages in subscribed folders"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #ifndef G_OS_WIN32
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,

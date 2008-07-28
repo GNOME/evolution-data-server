@@ -289,6 +289,8 @@ construct (CamelService *service, CamelSession *session,
 	}
 	if (camel_url_get_param (url, "check_all"))
 		imap_store->parameters |= IMAP_PARAM_CHECK_ALL;
+	if (camel_url_get_param (url, "check_lsub"))
+		imap_store->parameters |= IMAP_PARAM_CHECK_LSUB;
 	if (camel_url_get_param (url, "filter")) {
 		imap_store->parameters |= IMAP_PARAM_FILTER_INBOX;
 		store->flags |= CAMEL_STORE_FILTER_INBOX;
@@ -380,6 +382,10 @@ imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 			store->parameters = flags;
 			/* no need to reconnect for this option to take effect... */
 			break;
+		case CAMEL_IMAP_STORE_CHECK_LSUB:
+			flags = args->argv[i].ca_int ? IMAP_PARAM_CHECK_LSUB : 0;
+			store->parameters = flags | (store->parameters & ~IMAP_PARAM_CHECK_LSUB);
+			break;
 		case CAMEL_IMAP_STORE_FILTER_INBOX:
 			flags = args->argv[i].ca_int ? IMAP_PARAM_FILTER_INBOX : 0;
 			flags |= (store->parameters & ~IMAP_PARAM_FILTER_INBOX);
@@ -434,6 +440,9 @@ imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			break;
 		case CAMEL_IMAP_STORE_CHECK_ALL:
 			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_CHECK_ALL ? TRUE : FALSE;
+			break;
+		case CAMEL_IMAP_STORE_CHECK_LSUB:
+			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_CHECK_LSUB ? TRUE : FALSE;
 			break;
 		case CAMEL_IMAP_STORE_FILTER_INBOX:
 			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_FILTER_INBOX ? TRUE : FALSE;
@@ -3124,7 +3133,8 @@ imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelExceptio
 	gboolean res;
 
 	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL);
+	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
+	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
 	if (!res && !camel_exception_is_set (ex)) {
 		CamelFolder *folder;

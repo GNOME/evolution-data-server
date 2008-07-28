@@ -1,3 +1,13 @@
+2008-07-28  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #336074
+
+	* camel-imap-provider.c: (imap_conf_entries):
+	* camel-imap-store.h:
+	* camel-imap-store.c: (construct), (imap_setv), (imap_getv),
+	(imap_can_refresh_folder): New option "check_lsub", when set,
+	then checking for new messages in subscribed folders.
+
 2008-07-27  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Fix unread count issue
