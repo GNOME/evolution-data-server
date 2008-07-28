@@ -331,7 +331,7 @@ vtrash_search_by_expression(CamelFolder *folder, const char *expression, CamelEx
 				vuid = g_malloc(strlen(uid)+9);
 				memcpy(vuid, hash, 8);
 				strcpy(vuid+8, uid);
-				g_ptr_array_add(result, camel_pstring_strdup(vuid));
+				g_ptr_array_add(result, (gpointer) camel_pstring_strdup(vuid));
 				g_free (vuid);
 			}
 			camel_folder_search_free(f, matches);
@@ -343,7 +343,7 @@ vtrash_search_by_expression(CamelFolder *folder, const char *expression, CamelEx
 	camel_folder_free_summary (folder, infos);
 	CAMEL_VEE_FOLDER_UNLOCK(folder, subfolder_lock);
 
-	g_ptr_array_foreach (uids, camel_pstring_free, NULL);
+	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free(uids, TRUE);
 
 	return result;
@@ -394,7 +394,7 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 				vuid = g_malloc(strlen(uid)+9);
 				memcpy(vuid, hash, 8);
 				strcpy(vuid+8, uid);
-				g_ptr_array_add(result, camel_pstring_strdup(vuid));
+				g_ptr_array_add(result, (gpointer) camel_pstring_strdup(vuid));
 				g_free (vuid);
 			}
 			camel_folder_search_free(f, matches);
@@ -438,7 +438,7 @@ vtrash_uid_added(CamelVTrashFolder *vf, const char *uid, CamelFolderSummary *ssu
 	vinfo = (CamelVeeMessageInfo *)camel_folder_summary_uid(((CamelFolder *)vf)->summary, vuid);
 	if (vinfo == NULL) {
 		CamelMessageInfo *tinfo;
-		tinfo = camel_vee_summary_add((CamelVeeSummary *)((CamelFolder *)vf)->summary, ssummary, uid, hash);
+		tinfo = (CamelMessageInfo *) camel_vee_summary_add((CamelVeeSummary *)((CamelFolder *)vf)->summary, ssummary, uid, hash);
 		if (tinfo) {
 			camel_folder_change_info_add_uid(((CamelVeeFolder *)vf)->changes, vuid);
 			camel_message_info_free (tinfo);
@@ -532,12 +532,11 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	}
 	
 	for (i=0;i<infos->len;i++) {
-		CamelMessageInfo *info;
 		char *uid = infos->pdata[i];
 		vtrash_uid_added((CamelVTrashFolder *)vf, uid, sub->summary, hash);
 	}
 	
-	g_ptr_array_foreach (infos, camel_pstring_free, NULL);
+	g_ptr_array_foreach (infos, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (infos, TRUE);
 
 	if (camel_folder_change_info_changed(vf->changes)) {

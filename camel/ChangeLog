@@ -1,5 +1,10 @@
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder.c: Add function to update summary.
+	* camel/camel-vtrash-folder.c: Fix compiler warnings
+
+2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Kick off debug lines.
 
 2008-07-27  Srinivasa Ragavan  <sragavan@novell.com>

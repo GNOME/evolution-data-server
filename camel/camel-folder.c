@@ -387,8 +387,6 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 			#warning "Add a better base class function to get counts specific to normal/vee folder."
 			if (unread == -1) {
-				int j;
-				CamelMessageInfo *info;
 
 				if (!CAMEL_IS_VEE_FOLDER (folder)) {
 					/* TODO: Locking? */
@@ -701,6 +699,42 @@ append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 }
 
+static void
+update_summary (CamelMessageInfoBase *info)
+{
+	int unread=0, deleted=0, junk=0;
+	guint32 flags = info->flags;
+
+	d(printf("Updating summary of %s\n", info->summary->folder->full_name));
+	if (flags & CAMEL_MESSAGE_SEEN)
+		unread = 1;
+	
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+	
+	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+	info->dirty = TRUE;
+
+	if (info->summary) {
+		camel_folder_summary_touch(info->summary);
+
+		if (unread)
+			info->summary->unread_count += unread;
+		if (deleted)
+			info->summary->deleted_count += deleted;
+		if (junk)
+			info->summary->junk_count += junk;
+		if (junk && !deleted)
+			info->summary->junk_not_deleted_count += junk;
+		if (junk ||  deleted) 
+			info->summary->visible_count -= junk ? junk : deleted;
+		info->summary->saved_count++;
+
+	}
+}
 
 /**
  * camel_folder_append_message:
@@ -723,9 +757,7 @@ camel_folder_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	CAMEL_FOLDER_REC_LOCK(folder, lock);
-
 	CF_CLASS (folder)->append_message (folder, message, info, appended_uid, ex);
-
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
