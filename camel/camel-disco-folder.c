@@ -339,7 +339,8 @@ static void
 disco_expunge (CamelFolder *folder, CamelException *ex)
 {
 	GPtrArray *uids;
-	int i, count;
+	int i;
+	guint count;
 	CamelMessageInfo *info;
 
 	uids = g_ptr_array_new ();

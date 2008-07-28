@@ -386,7 +386,7 @@ int camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *
 int camel_folder_summary_cache_size (CamelFolderSummary *s);
 
 /* lookup functions */
-int camel_folder_summary_count(CamelFolderSummary *summary);
+guint camel_folder_summary_count(CamelFolderSummary *summary);
 CamelMessageInfo *camel_folder_summary_index(CamelFolderSummary *summary, int index);
 CamelMessageInfo *camel_folder_summary_uid(CamelFolderSummary *summary, const char *uid);
 char * camel_folder_summary_uid_from_index (CamelFolderSummary *s, int i);

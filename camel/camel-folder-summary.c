@@ -353,7 +353,7 @@ camel_folder_summary_set_build_content(CamelFolderSummary *s, gboolean state)
  * 
  * Returns: the number of items in the summary
  **/
-int
+guint
 camel_folder_summary_count(CamelFolderSummary *s)
 {
 	return s->uids->len;

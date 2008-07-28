@@ -1,4 +1,11 @@
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	* camel/camel-disco-folder.c: Fix guint/int issues.
+	* camel/camel-folder-summary.c:
+	* camel/camel-folder-summary.h:
+	* camel/providers/imap/camel-imap-folder.c:
+
+2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder.c: Add function to update summary.
 	* camel/camel-vtrash-folder.c: Fix compiler warnings

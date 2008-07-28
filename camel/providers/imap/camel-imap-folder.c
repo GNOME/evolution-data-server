@@ -818,7 +818,8 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	} *new;
 	char *resp, *uid;
 	CamelImapResponseType type;
-	int i, seq, summary_len, summary_got;
+	int i, seq, summary_got;
+	guint summary_len;
 	CamelMessageInfo *info;
 	CamelImapMessageInfo *iinfo;
 	GArray *removed;
