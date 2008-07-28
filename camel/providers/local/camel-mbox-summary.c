@@ -775,7 +775,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	CamelLocalSummary *cls = (CamelLocalSummary *)mbs;
 	CamelFolderSummary *s = (CamelFolderSummary *)mbs;
 	CamelMimeParser *mp = NULL;
-	int i, count;
+	int i;
 	CamelMboxMessageInfo *info = NULL;
 	int fd = -1, pfd;
 	char *xevnew, *xevtmp;
@@ -945,7 +945,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		goto error;
 	}
 
-	g_ptr_array_foreach (summary, camel_pstring_free, NULL);
+	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 	camel_object_unref((CamelObject *)mp);
 
@@ -953,7 +953,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	
 	return 0;
  error:
-	g_ptr_array_foreach (summary, camel_pstring_free, NULL);
+	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);	
 	if (fd != -1)
 		close(fd);
@@ -973,7 +973,7 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	struct stat st;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
-	int i, count;
+	int i;
 	int quick = TRUE, work=FALSE;
 	int ret;
 	GPtrArray *summary = NULL;
@@ -997,7 +997,7 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 		camel_message_info_free(info);		
 	}
 
-	g_ptr_array_foreach (summary, camel_pstring_free, NULL);
+	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
 	
 	if (quick && expunge) {

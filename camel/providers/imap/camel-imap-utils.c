@@ -1177,7 +1177,6 @@ imap_quote_string (const char *str)
 static inline unsigned long
 get_summary_uid_numeric (CamelFolderSummary *summary, int index)
 {
-	CamelMessageInfo *info;
 	unsigned long uid;
 	char *suid;
 

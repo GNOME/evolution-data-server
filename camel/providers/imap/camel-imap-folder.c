@@ -2885,7 +2885,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	int i, seq, first, size, got;
 	CamelImapResponseType type;
 	GString *header_spec = NULL;
-	CamelImapMessageInfo *mi, *info;
+	CamelImapMessageInfo *mi;
 	CamelStream *stream;
 	char *uid, *resp, *tempuid;
 	GData *data;
@@ -3216,7 +3216,6 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	extern int camel_application_is_exiting;
 	CamelFolderChangeInfo *changes;
-	CamelMessageInfo *info;
 	int len;
 	char *uid;
 

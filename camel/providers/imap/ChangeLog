@@ -1,3 +1,9 @@
+2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-folder.c: Fix compiler warnings.
+	* camel/providers/imap/camel-imap-message-cache.c:
+	* camel/providers/imap/camel-imap-utils.c:
+
 2008-07-28  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #349870
