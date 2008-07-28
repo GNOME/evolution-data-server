@@ -47,6 +47,6 @@ extern gboolean __e_book_backend_google_debug__;
 #define __debug__(...) (__e_book_backend_google_debug__ ? \
                        g_log (G_LOG_DOMAIN,         \
                               G_LOG_LEVEL_DEBUG,    \
-                              __VA_ARGS__) : 0 )
+                              __VA_ARGS__) : (void) 0 )
 
 #endif

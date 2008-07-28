@@ -1,3 +1,10 @@
+2008-07-28  Jeff Cai  <jeff.cai@sun.com>
+
+    ** Fix for bug #544284
+
+	* backends/google/util.h: 
+      Use (void) 0 insead of '0' in the conditional statement.
+
 2008-07-21  Johnny Jacob  <jjohnny@novell.com>
 
 	* backends/google/Makefile.am (INCLUDES): Include from
