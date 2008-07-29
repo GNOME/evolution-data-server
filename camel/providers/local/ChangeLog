@@ -1,3 +1,10 @@
+2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #545099
+
+	* camel/providers/local/camel-local-summary.c: Improve flag sync. Make
+	it work for append mails
+
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-mbox-summary.c: Fix compiler warnings.

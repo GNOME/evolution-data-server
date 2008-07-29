@@ -1,5 +1,12 @@
 2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #545099
+
+	* camel/camel-folder-summary.c: When new mails added, update the
+	summary.
+
+2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder.c: Remove Update folder function.
 
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>

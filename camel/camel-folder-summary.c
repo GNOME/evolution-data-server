@@ -1602,6 +1602,43 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 }
 
 
+static void
+update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
+{
+	int unread=0, deleted=0, junk=0;
+	guint32 flags = info->flags;
+
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = 1;
+	
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+	
+	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+	info->dirty = TRUE;
+
+	if (summary) {
+
+		if (unread)
+			summary->unread_count += unread;
+		if (deleted)
+			summary->deleted_count += deleted;
+		if (junk)
+			summary->junk_count += junk;
+		if (junk && !deleted)
+			summary->junk_not_deleted_count += junk;
+		summary->visible_count++;
+		if (junk ||  deleted) 
+			summary->visible_count -= junk ? junk : deleted;
+
+		summary->saved_count++;
+		camel_folder_summary_touch(summary);
+	}
+}
+
 /**
  * camel_folder_summary_add_from_header:
  * @summary: a #CamelFolderSummary object
@@ -1621,7 +1658,7 @@ camel_folder_summary_add_from_header(CamelFolderSummary *s, struct _camel_header
 	CamelMessageInfo *info = camel_folder_summary_info_new_from_header(s, h);
 
 	camel_folder_summary_add (s, info);
-
+	update_summary (s, (CamelMessageInfoBase *) info);
 	return info;
 }
 
@@ -1650,7 +1687,7 @@ camel_folder_summary_add_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
 	info = camel_folder_summary_info_new_from_parser(s, mp);
 
 	camel_folder_summary_add (s, info);
-
+	update_summary (s, (CamelMessageInfoBase *) info);
 	return info;
 }
 
@@ -1670,7 +1707,7 @@ camel_folder_summary_add_from_message (CamelFolderSummary *s, CamelMimeMessage *
 	CamelMessageInfo *info = camel_folder_summary_info_new_from_message(s, msg);
 
 	camel_folder_summary_add (s, info);
-
+	update_summary (s, (CamelMessageInfoBase *) info);
 	return info;
 }
 

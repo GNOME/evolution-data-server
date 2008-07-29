@@ -421,10 +421,45 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	return ret;
 }
 
+static void
+update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMessageInfoBase *old)
+{
+	int unread=0, deleted=0, junk=0;
+	guint32 flags = info->flags;
+	guint32 oldflags = old->flags;
+
+	if ((flags & CAMEL_MESSAGE_SEEN) != (oldflags & CAMEL_MESSAGE_SEEN))
+		unread = (oldflags & CAMEL_MESSAGE_SEEN) ? 1 : -1;
+	
+	if ((flags & CAMEL_MESSAGE_DELETED) != (oldflags & CAMEL_MESSAGE_DELETED))
+		deleted = (oldflags & CAMEL_MESSAGE_DELETED) ? 1 : -1;
+
+	if ((flags & CAMEL_MESSAGE_JUNK) != (oldflags & CAMEL_MESSAGE_JUNK))
+		junk = (oldflags & CAMEL_MESSAGE_JUNK) ? 1 : -1;
+	
+	/* Things would already be flagged */
+	
+	if (summary) {
+		
+		if (unread)
+			summary->unread_count -= unread;
+		if (deleted)
+			summary->deleted_count += deleted;
+		if (junk)
+			summary->junk_count += junk;
+		if (junk && !deleted)
+			summary->junk_not_deleted_count += junk;
+		if (junk ||  deleted) 
+			summary->visible_count -= junk ? junk : deleted;
+	}
+
+}
+
 static CamelMessageInfo *
 local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, CamelException *ex)
 {
 	CamelLocalMessageInfo *mi;
+	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 	char *xev;
 
 	d(printf("Adding message to summary\n"));
@@ -445,7 +480,8 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 				camel_message_info_set_user_tag((CamelMessageInfo *)mi, tag->name, tag->value);
 				tag = tag->next;
 			}
-
+			
+			update_summary (s, (CamelMessageInfoBase *) mi, (CamelMessageInfoBase *) info);
 			mi->info.flags |= (camel_message_info_flags(info) & 0xffff);
 			mi->info.size = camel_message_info_size(info);
 		}
