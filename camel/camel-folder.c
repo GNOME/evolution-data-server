@@ -699,43 +699,6 @@ append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 }
 
-static void
-update_summary (CamelMessageInfoBase *info)
-{
-	int unread=0, deleted=0, junk=0;
-	guint32 flags = info->flags;
-
-	d(printf("Updating summary of %s\n", info->summary->folder->full_name));
-	if (flags & CAMEL_MESSAGE_SEEN)
-		unread = 1;
-	
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-	
-	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
-	info->dirty = TRUE;
-
-	if (info->summary) {
-		camel_folder_summary_touch(info->summary);
-
-		if (unread)
-			info->summary->unread_count += unread;
-		if (deleted)
-			info->summary->deleted_count += deleted;
-		if (junk)
-			info->summary->junk_count += junk;
-		if (junk && !deleted)
-			info->summary->junk_not_deleted_count += junk;
-		if (junk ||  deleted) 
-			info->summary->visible_count -= junk ? junk : deleted;
-		info->summary->saved_count++;
-
-	}
-}
-
 /**
  * camel_folder_append_message:
  * @folder: a #CamelFolder object
