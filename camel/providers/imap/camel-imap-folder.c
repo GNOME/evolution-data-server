@@ -792,6 +792,7 @@ merge_custom_flags (CamelMessageInfo *mi, const char *custom_flags)
 			/* If this value came from the server, then add it to our local summary,
 			   otherwise it was in local summary, but isn't on the server, thus remove it. */
 			changed = TRUE;
+			mi->dirty = TRUE;
 			camel_flag_set (&((CamelMessageInfoBase *)mi)->user_flags, p->data, g_hash_table_lookup (server, p->data) != NULL);
 			((CamelMessageInfoBase *) mi)->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		}
@@ -944,18 +945,51 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 		g_free (uid);
 
 		/* Update summary flags */
+
 		if (new[i].flags != iinfo->server_flags) {
 			guint32 server_set, server_cleared;
-			
+			int read=0, deleted=0, junk=0;
+
+
 			server_set = new[i].flags & ~iinfo->server_flags;
 			server_cleared = iinfo->server_flags & ~new[i].flags;
 
+			if (server_set & CAMEL_MESSAGE_SEEN)
+				read = 1;
+			else if (server_cleared & CAMEL_MESSAGE_SEEN)
+				read = -1;
+
+			if (server_set & CAMEL_MESSAGE_DELETED)
+				deleted = 1;
+			else if (server_cleared & CAMEL_MESSAGE_DELETED)
+				deleted = -1;
+
+			if (server_set & CAMEL_MESSAGE_JUNK)
+				junk = 1;
+			else if (server_cleared & CAMEL_MESSAGE_JUNK)
+				junk = -1;
+
+			d(printf("%s %s %s %s\n", iinfo->info.uid, read == 1 ? "read" : ( read == -1 ? "unread" : ""),
+				 deleted == 1 ? "deleted" : ( deleted == -1 ? "undeleted" : ""),
+				 junk == 1 ? "junk" : ( junk == -1 ? "unjunked" : "")));
+
+			if (read)
+				folder->summary->unread_count -= read;
+			if (deleted)
+				folder->summary->deleted_count += deleted;
+			if (junk)
+				folder->summary->junk_count += junk;
+			if (junk && !deleted)
+				folder->summary->junk_not_deleted_count += junk;
+			if (junk ||  deleted) 
+				folder->summary->visible_count -= junk ? junk : deleted;			
+			
 			iinfo->info.flags = (iinfo->info.flags | server_set) & ~server_cleared;
 			iinfo->server_flags = new[i].flags;
-
+			iinfo->info.dirty = TRUE;
 			changed = TRUE;
 		}
-
+		
 		/* Do not merge custom flags when server doesn't support it.
 		   Because server always reports NULL, which means none, which
 		   will remove user's flags from local machine, which is bad.
@@ -2866,6 +2900,40 @@ construct_junk_headers (char *header, char *value, struct _junk_data *jdata)
 	}
 }
 
+static void
+update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
+{
+	int unread=0, deleted=0, junk=0;
+	guint32 flags = info->flags;
+
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = 1;
+	
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+	
+	if (summary) {
+
+		if (unread)
+			summary->unread_count += unread;
+		if (deleted)
+			summary->deleted_count += deleted;
+		if (junk)
+			summary->junk_count += junk;
+		if (junk && !deleted)
+			summary->junk_not_deleted_count += junk;
+		summary->visible_count++;
+		if (junk ||  deleted) 
+			summary->visible_count -= junk ? junk : deleted;
+
+		summary->saved_count++;
+		camel_folder_summary_touch(summary);
+	}
+}
+
 #define CAMEL_MESSAGE_INFO_HEADERS "DATE FROM TO CC SUBJECT REFERENCES IN-REPLY-TO MESSAGE-ID MIME-VERSION CONTENT-TYPE "
 
 /* FIXME: this needs to be kept in sync with camel-mime-utils.c's list
@@ -3179,6 +3247,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 
 		((CamelMessageInfoBase *)mi)->dirty = TRUE;
 		camel_folder_summary_add (folder->summary, (CamelMessageInfo *)mi);
+		update_summary (folder->summary, (CamelMessageInfoBase *)mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 
 		/* report all new messages as recent, even without that flag, thus new

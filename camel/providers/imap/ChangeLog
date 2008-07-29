@@ -1,3 +1,9 @@
+2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-folder.c: Fix imap sync/download
+	updates. Atm, when you delete/undelete on the server the total is
+	broken. But things should sync better otherwise.
+
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Fix uid/pstring issues.
