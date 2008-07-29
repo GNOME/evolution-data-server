@@ -706,7 +706,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 
 	if (check_rescan && !camel_application_is_exiting && !camel_exception_is_set (ex)) {
 		if (check_rescan == -1) {
-			guint32 total, unread, server_total, server_unread;
+			guint32 total, unread, server_total=0, server_unread=0;
 
 			check_rescan = 0;
 			

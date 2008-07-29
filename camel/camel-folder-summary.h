@@ -152,7 +152,7 @@ struct _CamelMessageInfo {
 	CamelFolderSummary *summary;
 
 	guint32 refcount;	/* ??? */
-	char *uid;
+	const char *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
 	int dirty:1;
 };
@@ -164,7 +164,7 @@ struct _CamelMessageInfoBase {
 	CamelFolderSummary *summary;
 
 	guint32 refcount;	/* ??? */
-	char *uid;
+	const char *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
 	int dirty:1;
 	

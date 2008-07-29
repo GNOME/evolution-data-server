@@ -43,6 +43,7 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-stream.h"
 #include "camel-nntp-summary.h"
+#include "camel-string-utils.h"
 
 #define w(x)
 #define io(x)
@@ -158,8 +159,9 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 	mi = (CamelMessageInfoBase *)((CamelFolderSummaryClass *)camel_nntp_summary_parent)->message_info_new_from_header(s, h);
 	if (mi) {
-		g_free(mi->uid);
-		mi->uid = cns->priv->uid;
+		camel_pstring_free(mi->uid);
+		mi->uid = camel_pstring_strdup(cns->priv->uid);
+		g_free(cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
 	

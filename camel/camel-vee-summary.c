@@ -44,7 +44,7 @@ vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 {
 	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)info;
 
-	g_free(info->uid);
+	camel_pstring_free(info->uid);
 	camel_object_unref (mi->summary);
 }
 
@@ -60,7 +60,8 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	/* FIXME: We may not need this during CamelDBSummary */
 	camel_object_ref (to->summary);
 	to->info.summary = s;
-	
+	to->info.uid = camel_pstring_strdup(from->info.uid);
+
 	return (CamelMessageInfo *)to;
 }
 

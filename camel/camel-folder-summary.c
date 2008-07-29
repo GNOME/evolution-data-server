@@ -1091,7 +1091,7 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 		}
 
 		mi->dirty = TRUE;
-		g_hash_table_insert (s->loaded_infos, mi->uid, mi);
+		g_hash_table_insert (s->loaded_infos, (gpointer) mi->uid, mi);
 	}
 
 	

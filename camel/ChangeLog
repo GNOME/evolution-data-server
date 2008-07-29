@@ -1,4 +1,11 @@
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-digest-folder.c: Fix uid/pstring issues.
+	* camel/camel-folder-summary.c:
+	* camel/camel-folder-summary.h: Make uid const char *
+	* camel/camel-vee-summary.c:
+
+2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	* camel/camel-disco-folder.c: Fix guint/int issues.
 	* camel/camel-folder-summary.c:

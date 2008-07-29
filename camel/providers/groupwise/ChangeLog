@@ -1,3 +1,8 @@
+2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/groupwise/camel-groupwise-journal.c: Fix uid/pstring
+	issues.
+
 2008-07-22  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c (gw_update_summary):

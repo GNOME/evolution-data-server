@@ -30,6 +30,7 @@
 #include "camel-folder-search.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
+#include "camel-string-utils.h"
 
 #define d(x)
 
@@ -181,6 +182,7 @@ digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const char
 	
 	parts = camel_multipart_get_number (multipart);
 	for (i = 0; i < parts; i++) {
+		char *tmp;
 		part = camel_multipart_get_part (multipart, i);
 		
 		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
@@ -195,8 +197,10 @@ digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const char
 		}
 		
 		info = camel_folder_summary_info_new_from_message (folder->summary, CAMEL_MIME_MESSAGE (wrapper));
-		g_free(info->uid);
-		info->uid = g_strdup_printf ("%s%d", preuid, i);
+		camel_pstring_free(info->uid);
+		tmp = g_strdup_printf ("%s%d", preuid, i);
+		info->uid = camel_pstring_strdup (tmp);
+		g_free(tmp);
 		camel_folder_summary_add (folder->summary, info);
 	}
 }
