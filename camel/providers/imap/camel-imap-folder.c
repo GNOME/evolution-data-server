@@ -819,7 +819,7 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	} *new;
 	char *resp, *uid;
 	CamelImapResponseType type;
-	int i, seq, summary_got;
+	int i, j, seq, summary_got, del=0;
 	guint summary_len;
 	CamelMessageInfo *info;
 	CamelImapMessageInfo *iinfo;
@@ -918,26 +918,57 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	
 	if (summary_len - camel_folder_summary_cache_size (folder->summary) > 50)
 		camel_folder_summary_reload_from_db (folder->summary, ex);
-	
-	for (i = 0; i < summary_len && new[i].uid; i++) {
+
+	for (i = 0, j = 0; i < summary_len && new[j].uid; i++) {
 		gboolean changed = FALSE;
 
 		uid = camel_folder_summary_uid_from_index (folder->summary, i);
 		
-		if (!uid) 
-			continue; 
+		if (!uid)
+			continue;
 
 		info = camel_folder_summary_uid (folder->summary, uid);
 
 		iinfo = (CamelImapMessageInfo *)info;
 
-		if (strcmp (uid, new[i].uid) != 0) {
+		if (strcmp (uid, new[j].uid) != 0) {
 			g_free (uid);
 
-			seq = i + 1;
+			/* these will be deleted from db in a moment. So adjust the counts please */
+			if (info) {
+				CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
+				int unread=0, deleted=0, junk=0;
+				guint32 flags;
+
+				flags = dinfo->flags;
+				if (!(flags & CAMEL_MESSAGE_SEEN))
+					unread = 1;
+
+				if (flags & CAMEL_MESSAGE_DELETED)
+					deleted = 1;
+
+				if (flags & CAMEL_MESSAGE_JUNK)
+					junk = 1;
+
+				if (unread)
+					folder->summary->unread_count--;
+
+				if (deleted)
+					folder->summary->deleted_count--;
+				if (junk)
+					folder->summary->junk_count--;
+
+				if (junk && !deleted)
+					folder->summary->junk_not_deleted_count--;
+
+				if (!junk &&  !deleted) 
+					folder->summary->visible_count--;
+
+				folder->summary->saved_count--;
+			}
+			seq = i + 1-del;
+			del++;
 			g_array_append_val (removed, seq);
-			i--;
-			summary_len--;
 			camel_message_info_free(info);
 			continue;
 		}
@@ -946,13 +977,12 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 
 		/* Update summary flags */
 
-		if (new[i].flags != iinfo->server_flags) {
+		if (new[j].flags != iinfo->server_flags) {
 			guint32 server_set, server_cleared;
 			int read=0, deleted=0, junk=0;
 
-
-			server_set = new[i].flags & ~iinfo->server_flags;
-			server_cleared = iinfo->server_flags & ~new[i].flags;
+			server_set = new[j].flags & ~iinfo->server_flags;
+			server_cleared = iinfo->server_flags & ~new[j].flags;
 
 			if (server_set & CAMEL_MESSAGE_SEEN)
 				read = 1;
@@ -985,27 +1015,29 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 				folder->summary->visible_count -= junk ? junk : deleted;			
 			
 			iinfo->info.flags = (iinfo->info.flags | server_set) & ~server_cleared;
-			iinfo->server_flags = new[i].flags;
+			iinfo->server_flags = new[j].flags;
 			iinfo->info.dirty = TRUE;
 			changed = TRUE;
 		}
+		
 		
 		/* Do not merge custom flags when server doesn't support it.
 		   Because server always reports NULL, which means none, which
 		   will remove user's flags from local machine, which is bad.
 		*/
-		if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && merge_custom_flags (info, new[i].custom_flags))
+		if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && merge_custom_flags (info, new[j].custom_flags))
 			changed = TRUE;
 
 		if (changed) {
 			if (changes == NULL)
 				changes = camel_folder_change_info_new();
-			camel_folder_change_info_change_uid(changes, new[i].uid);
+			camel_folder_change_info_change_uid(changes, new[j].uid);
 		}
 
 		camel_message_info_free(info);
-		g_free (new[i].uid);
-		g_free (new[i].custom_flags);
+		g_free (new[j].uid);
+		g_free (new[j].custom_flags);
+		j++;
 	}
 
 	if (changes) {
@@ -1015,12 +1047,16 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 
 	seq = i + 1;
 
+
+#if 0
+	/* FIXME: Srini: I don't think this will be called any longer. */
 	/* Free remaining memory. */
 	while (i < summary_len && new[i].uid) {
 		g_free (new[i].uid);
 		g_free (new[i].custom_flags);
 		i++;
 	}
+#endif 	
 	g_free (new);
 
 	/* Remove any leftover cached summary messages. (Yes, we
@@ -1028,9 +1064,45 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	 * See RFC2060 7.4.1)
 	 */
 
-	for (i = seq; i <= summary_len; i++)
-		g_array_append_val (removed, seq);
+	for (i = seq; i <= summary_len; i++) {
+		CamelMessageInfoBase *dinfo;
+		int j;
+		dinfo = (CamelMessageInfoBase *) camel_folder_summary_index (folder->summary, i-1);
+		if (dinfo) {
+			/* these will be deleted from db in a moment. So adjust the counts please */
+			int unread=0, deleted=0, junk=0;
+			guint32 flags;
 
+			flags = dinfo->flags;
+			if (!(flags & CAMEL_MESSAGE_SEEN))
+				unread = 1;
+
+			if (flags & CAMEL_MESSAGE_DELETED)
+				deleted = 1;
+
+			if (flags & CAMEL_MESSAGE_JUNK)
+				junk = 1;
+			
+			if (unread)
+				folder->summary->unread_count--;
+			
+			if (deleted)
+				folder->summary->deleted_count--;
+			if (junk)
+				folder->summary->junk_count--;
+			
+			if (junk && !deleted)
+				folder->summary->junk_not_deleted_count--;
+			
+			if (!junk &&  !deleted) 
+				folder->summary->visible_count--;
+
+			folder->summary->saved_count--;
+			camel_message_info_free(dinfo);
+		}
+		j = seq - del;
+		g_array_append_val (removed, j);
+	}
 	/* And finally update the summary. */
 	camel_imap_folder_changed (folder, exists, removed, ex);
 	g_array_free (removed, TRUE);

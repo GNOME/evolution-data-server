@@ -1,3 +1,10 @@
+2008-07-30  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-folder.c: Revamp imap_rescan. It
+	seemed to be broken to me, if a older message in the uid is broken, we
+	seem to delete the summaries of the later messages. This could be
+	experimental code. 
+
 2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Fix imap sync/download
