@@ -1,5 +1,10 @@
 2008-07-30  Milan Crha  <mcrha@redhat.com>
 
+	* lib/e2k-global-catalog.c: (connect_ldap):
+	Removed debug printf added in the last commit.
+
+2008-07-30  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #500389
 
 	* lib/actest.c: (test_main):

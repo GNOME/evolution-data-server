@@ -315,7 +315,6 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 
 	/* authenticate */
 #ifdef HAVE_LDAP_NTLM_BIND
-	printf ("can NTLM bind\n");
 	if ((gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_DEFAULT || gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_NTLM)) {
 		ldap_error = ntlm_bind (gc, op, ldap);
 		if (ldap_error == LDAP_SUCCESS) {
