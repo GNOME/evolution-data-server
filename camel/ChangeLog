@@ -1,3 +1,8 @@
+2008-07-30  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-folder.c: Remove the folder locks in refresh info. It
+	deadlocks while resyncing in IMAP.
+
 2008-07-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #545099
