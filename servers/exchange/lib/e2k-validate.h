@@ -11,9 +11,18 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
+typedef enum {
+	E2K_AUTOCONFIG_USE_GAL_DEFAULT, /* try ntlm if available and then basic if not or failed */
+
+	E2K_AUTOCONFIG_USE_GAL_BASIC,
+	/*E2K_AUTOCONFIG_USE_GAL_SASL,*/
+	E2K_AUTOCONFIG_USE_GAL_NTLM
+} E2kAutoconfigGalAuthPref;
+
 typedef struct {
         char *host;
         char *ad_server;
+	E2kAutoconfigGalAuthPref ad_auth;
         char *mailbox;
         char *owa_path;
 	gboolean is_ntlm;

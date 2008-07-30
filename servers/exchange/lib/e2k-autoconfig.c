@@ -106,7 +106,10 @@ e2k_autoconfig_new (const char *owa_uri, const char *username,
 		ac->auth_pref = auth_pref;
 
 	e2k_autoconfig_set_owa_uri (ac, owa_uri);
-	e2k_autoconfig_set_gc_server (ac, NULL, -1);
+	/* use same auth for gal as for the server */
+	e2k_autoconfig_set_gc_server (ac, NULL, -1, ac->auth_pref == E2K_AUTOCONFIG_USE_BASIC ? E2K_AUTOCONFIG_USE_GAL_BASIC :
+						    ac->auth_pref == E2K_AUTOCONFIG_USE_NTLM  ? E2K_AUTOCONFIG_USE_GAL_NTLM  :
+						    E2K_AUTOCONFIG_USE_GAL_DEFAULT);
 	e2k_autoconfig_set_username (ac, username);
 	e2k_autoconfig_set_password (ac, password);
 
@@ -209,7 +212,7 @@ e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const char *owa_uri)
 {
 	reset_owa_derived (ac);
 	if (ac->gc_server_autodetected)
-		e2k_autoconfig_set_gc_server (ac, NULL, -1);
+		e2k_autoconfig_set_gc_server (ac, NULL, -1, ac->gal_auth);
 	g_free (ac->owa_uri);
 
 	if (owa_uri) {
@@ -226,6 +229,7 @@ e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const char *owa_uri)
  * @ac: an autoconfig context
  * @gc_server: the new GC server, or %NULL
  * @gal_limit: GAL search size limit, or -1 for no limit
+ * @gal_auth: Preferred authentication method for gal
  *
  * Sets @ac's #gc_server field to @gc_server (or the default if
  * @gc_server is %NULL) and the #gal_limit field to @gal_limit, and
@@ -234,7 +238,7 @@ e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const char *owa_uri)
  **/
 void
 e2k_autoconfig_set_gc_server (E2kAutoconfig *ac, const char *gc_server,
-			      int gal_limit)
+			      int gal_limit, E2kAutoconfigGalAuthPref gal_auth)
 {
 	const char *default_gal_limit;
 
@@ -253,6 +257,7 @@ e2k_autoconfig_set_gc_server (E2kAutoconfig *ac, const char *gc_server,
 			gal_limit = atoi (default_gal_limit);
 	}
 	ac->gal_limit = gal_limit;
+	ac->gal_auth = gal_auth;
 }
 
 /**
@@ -899,7 +904,7 @@ e2k_autoconfig_get_global_catalog (E2kAutoconfig *ac, E2kOperation *op)
 
 	return e2k_global_catalog_new (ac->gc_server, ac->gal_limit,
 				       ac->username, ac->nt_domain,
-				       ac->password);
+				       ac->password, ac->gal_auth);
 }
 
 /*
@@ -1000,6 +1005,18 @@ set_account_uri_string (E2kAutoconfig *ac)
 	e2k_uri_append_encoded (uri, ac->gc_server, FALSE, ";?");
 	if (ac->gal_limit != -1)
 		g_string_append_printf (uri, ";ad_limit=%d", ac->gal_limit);
+	if (ac->gal_auth != E2K_AUTOCONFIG_USE_GAL_DEFAULT) {
+		const char *value = NULL;
+
+		switch (ac->gal_auth) {
+		case E2K_AUTOCONFIG_USE_GAL_BASIC: value = "basic"; break;
+		case E2K_AUTOCONFIG_USE_GAL_NTLM:  value = "ntlm";  break;
+		case E2K_AUTOCONFIG_USE_GAL_DEFAULT: /* should not get here */ break;
+		}
+
+		if (value)
+			g_string_append_printf (uri, ";ad_auth=%s", value);
+	}
 
 	path = g_strdup (home_uri->path + 1);
 	mailbox = strrchr (path, '/');

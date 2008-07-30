@@ -49,6 +49,7 @@ struct _E2kGlobalCatalogPrivate {
 	GHashTable *entry_cache, *server_cache;
 
 	char *server, *user, *nt_domain, *password;
+	E2kAutoconfigGalAuthPref auth;
 };
 
 #define PARENT_TYPE G_TYPE_OBJECT
@@ -314,11 +315,24 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 
 	/* authenticate */
 #ifdef HAVE_LDAP_NTLM_BIND
-	if (ntlm_bind (gc, op, ldap) == LDAP_SUCCESS) {
-		E2K_GC_DEBUG_MSG(("GC: connected via NTLM\n\n"));
-		return LDAP_SUCCESS;
+	printf ("can NTLM bind\n");
+	if ((gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_DEFAULT || gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_NTLM)) {
+		ldap_error = ntlm_bind (gc, op, ldap);
+		if (ldap_error == LDAP_SUCCESS) {
+			E2K_GC_DEBUG_MSG(("GC: connected via NTLM\n\n"));
+			return LDAP_SUCCESS;
+		} else if (gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_NTLM) {
+			E2K_GC_DEBUG_MSG(("GC: user setup NTLM, but it failed 0x%02x\n", ldap_error));
+			return ldap_error;
+		}
 	}
 #endif
+
+	if (gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_NTLM) {
+		E2K_GC_DEBUG_MSG(("GC: user setup NTLM, but we do not have it\n"));
+		/* a little hack */
+		return LDAP_AUTH_METHOD_NOT_SUPPORTED;
+	}
 
 	nt_name = gc->priv->nt_domain ?
 		g_strdup_printf ("%s\\%s", gc->priv->nt_domain, gc->priv->user) :
@@ -335,7 +349,7 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	auth.Password = g_utf8_to_utf16 (gc->priv->password, -1, NULL, NULL, NULL);
 	auth.PasswordLength = wcslen (auth.Password);
 	auth.Flags = SEC_WINNT_AUTH_IDENTITY_UNICODE;
-	ldap_error = ldap_bind_s (ldap, nt_name, &auth, LDAP_AUTH_NTLM);
+	ldap_error = ldap_bind_s (ldap, nt_name, &auth, gc->priv->auth == E2K_AUTOCONFIG_USE_GAL_BASIC ? LDAP_AUTH_SIMPLE : LDAP_AUTH_NTLM);
 	g_free (auth.Password);
 	g_free (auth.Domain);
 	g_free (auth.User);
@@ -439,12 +453,13 @@ e2k_global_catalog_get_ldap (E2kGlobalCatalog *gc, E2kOperation *op)
 E2kGlobalCatalog *
 e2k_global_catalog_new (const char *server, int response_limit,
 			const char *user, const char *domain,
-			const char *password)
+			const char *password, E2kAutoconfigGalAuthPref use_auth)
 {
 	E2kGlobalCatalog *gc;
 
 	gc = g_object_new (E2K_TYPE_GLOBAL_CATALOG, NULL);
 	gc->priv->server = g_strdup (server);
+	gc->priv->auth = use_auth;
 	gc->priv->user = g_strdup (user);
 	gc->priv->nt_domain = g_strdup (domain);
 	gc->priv->password = g_strdup (password);

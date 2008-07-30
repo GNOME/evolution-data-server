@@ -94,7 +94,7 @@ test_main (int argc, char **argv)
 	printf ("\n");
 
 	if (gc_server)
-		e2k_autoconfig_set_gc_server (ac, gc_server, -1);
+		e2k_autoconfig_set_gc_server (ac, gc_server, -1, E2K_AUTOCONFIG_USE_GAL_DEFAULT);
 
 	result = e2k_autoconfig_check_exchange (ac, &op);
 	if (result != E2K_AUTOCONFIG_OK) {

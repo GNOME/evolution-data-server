@@ -1,3 +1,26 @@
+2008-07-30  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #500389
+
+	* lib/actest.c: (test_main):
+	* lib/test-utils.c: (test_get_gc):
+	* lib/e2k-validate.h: (enum E2kAutoconfigGalAuthPref),
+	(struct ExchangeParams): New enum to setup GAL authentication method.
+	* storage/exchange-account.c: (struct _ExchangeAccountPrivate),
+	(exchange_account_connect), (exchange_account_new):
+	* lib/e2k-autoconfig.c: (e2k_autoconfig_new),
+	(e2k_autoconfig_set_owa_uri), (e2k_autoconfig_set_gc_server),
+	(e2k_autoconfig_get_global_catalog), (set_account_uri_string):
+	* lib/e2k-autoconfig.h: (struct E2kAutoconfig),
+	(e2k_autoconfig_set_gc_server):
+	* lib/e2k-global-catalog.h: (e2k_global_catalog_new):
+	* lib/e2k-global-catalog.c: (struct _E2kGlobalCatalogPrivate),
+	(connect_ldap), (e2k_global_catalog_new):
+	New ability to set different authentication type to GAL and OWA.
+
+	* lib/e2k-context.c: (e2k_soup_message_new_full):
+	Do not crash on invalid uri.
+
 2008-06-16  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #273627

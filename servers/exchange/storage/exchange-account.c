@@ -79,6 +79,7 @@ struct _ExchangeAccountPrivate {
 	char *owa_url;
 	E2kAutoconfigAuthPref auth_pref;
 	int ad_limit, passwd_exp_warn_period, quota_limit;
+	E2kAutoconfigGalAuthPref ad_auth;
 
 	EAccountList *account_list;
 	EAccount *account;
@@ -1446,7 +1447,7 @@ exchange_account_connect (ExchangeAccount *account, const char *pword,
 	g_free (user_name);
 
 	e2k_autoconfig_set_gc_server (ac, account->priv->ad_server,
-				      account->priv->ad_limit);
+				      account->priv->ad_limit, account->priv->ad_auth);
 
 	if (!pword) {
 		account->priv->connecting = FALSE;
@@ -2282,6 +2283,15 @@ exchange_account_new (EAccountList *account_list, EAccount *adata)
 		param = e2k_uri_get_param (uri, "ad_limit");
 		if (param)
 			account->priv->ad_limit = atoi (param);
+		param = e2k_uri_get_param (uri, "ad_auth");
+		if (!param || g_ascii_strcasecmp (param, "default") == 0)
+			account->priv->ad_auth = E2K_AUTOCONFIG_USE_GAL_DEFAULT;
+		else if (g_ascii_strcasecmp (param, "basic") == 0)
+			account->priv->ad_auth = E2K_AUTOCONFIG_USE_GAL_BASIC;
+		else if (g_ascii_strcasecmp (param, "ntlm") == 0)
+			account->priv->ad_auth = E2K_AUTOCONFIG_USE_GAL_NTLM;
+		else
+			account->priv->ad_auth = E2K_AUTOCONFIG_USE_GAL_DEFAULT;
 	}
 
 	passwd_exp_warn_period = e2k_uri_get_param (uri, "passwd_exp_warn_period");

@@ -7,6 +7,7 @@
 #include <glib-object.h>
 #include "e2k-types.h"
 #include "e2k-operation.h"
+#include "e2k-validate.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +39,8 @@ E2kGlobalCatalog *e2k_global_catalog_new             (const char *server,
 						      int response_limit,
 						      const char *user,
 						      const char *domain,
-						      const char *password);
+						      const char *password,
+						      E2kAutoconfigGalAuthPref use_auth);
 
 
 typedef enum {

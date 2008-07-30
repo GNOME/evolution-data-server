@@ -830,6 +830,7 @@ e2k_soup_message_new_full (E2kContext *ctx, const char *uri,
 	SoupMessage *msg;
 
 	msg = e2k_soup_message_new (ctx, uri, method);
+	g_return_val_if_fail (msg != NULL, NULL);
 	soup_message_set_request (msg, content_type, use, body, length);
 
 	return msg;

@@ -181,7 +181,7 @@ test_get_gc (const char *server)
 		user = g_strdup (g_get_user_name ());
 
 	password = test_get_password (user, server);
-	gc = e2k_global_catalog_new (server, -1, user, NULL, password);
+	gc = e2k_global_catalog_new (server, -1, user, NULL, password, E2K_AUTOCONFIG_USE_GAL_DEFAULT);
 	if (!gc) {
 		fprintf (stderr, "Could not create GC\n");
 		exit (1);

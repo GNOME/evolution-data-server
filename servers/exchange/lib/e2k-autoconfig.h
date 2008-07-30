@@ -32,6 +32,7 @@ typedef struct {
 	char *owa_uri, *gc_server;
 	char *username, *password;
 	int gal_limit;
+	E2kAutoconfigGalAuthPref gal_auth;
 
 	/* Output data */
 	E2kExchangeVersion version;
@@ -59,7 +60,8 @@ void                 e2k_autoconfig_set_owa_uri          (E2kAutoconfig *ac,
 							  const char *owa_uri);
 void                 e2k_autoconfig_set_gc_server        (E2kAutoconfig *ac,
 							  const char *gc_server,
-							  int gal_limit);
+							  int gal_limit,
+							  E2kAutoconfigGalAuthPref gal_auth);
 void                 e2k_autoconfig_set_username         (E2kAutoconfig *ac,
 							  const char *username);
 void                 e2k_autoconfig_set_password         (E2kAutoconfig *ac,
