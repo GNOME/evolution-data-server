@@ -1,3 +1,13 @@
+2008-07-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #545103
+
+	* camel-imap-folder.c: (imap_sync_online): Sort changed UIDs first.
+	* camel-imap-folder.c: (get_matching): Adapt function to new behaviour,
+	before we tested against all messages in the folder, now only against
+	changes, thus detect ranges properly to not touch other messages than
+	we are actually changed.
+
 2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Fix a case, where the info

@@ -1122,26 +1122,31 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 {
 	GPtrArray *matches;
 	CamelImapMessageInfo *info;
-	int i, max, range;
+	int i, max, range, last_range_uid;
 	GString *gset;
 	GSList *list1 = NULL;
 	int count1 = 0;
 	char *uid;
 
+	/* use the local rinfo in the close_range, because we want to keep our info untouched */
 	#define close_range()										\
 		if (range != -1) {									\
 			if (range != i - 1) {								\
-				info = matches->pdata[matches->len - 1];				\
-				g_string_append_printf (gset, ":%s", camel_message_info_uid (info));	\
+				CamelImapMessageInfo *rinfo = matches->pdata[matches->len - 1];		\
+													\
+				g_string_append_printf (gset, ":%s", camel_message_info_uid (rinfo));	\
 			}										\
 			range = -1;									\
+			last_range_uid = -1;								\
 		}
 
 	matches = g_ptr_array_new ();
 	gset = g_string_new ("");
 	max = summary->len;	
 	range = -1;
+	last_range_uid = -1;
 	for (i = 0; i < max && !UID_SET_FULL (gset->len, UID_SET_LIMIT); i++) {
+		int uid_num;
 		uid = summary->pdata[i];
 
 		if (uid) {
@@ -1151,10 +1156,19 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 		
 		if (!info)
 			continue;
+
 		if ((info->info.flags & mask) != flags) {
 			camel_message_info_free((CamelMessageInfo *)info);
 			close_range ();
 			continue;
+		}
+
+		uid_num = atoi (uid);
+
+		/* we got only changes, thus the uid's can be mixed up, not the consecutive list,
+		   thus close range if we are not in it */
+		if (last_range_uid != -1 && uid_num != last_range_uid + 1) {
+			close_range ();
 		}
 
 		/* only check user flags when we see other message than our 'master' */
@@ -1204,9 +1218,13 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 		camel_pstring_free(summary->pdata[i]);
 		summary->pdata[i] = NULL;
 		
-		if (range != -1)
+		if (range != -1) {
+			last_range_uid = uid_num;
 			continue;
+		}
+
 		range = i;
+		last_range_uid = uid_num;
 		if (gset->len)
 			g_string_append_c (gset, ',');
 		g_string_append_printf (gset, "%s", camel_message_info_uid (info));
@@ -1280,9 +1298,10 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 	 * messages like it, sync them as a group, mark them as
 	 * updated, and continue.
 	 */
-	summary = camel_folder_summary_get_changed (folder->summary); /* These should be in memory anyways*/
+	summary = camel_folder_summary_get_changed (folder->summary); /* These should be in memory anyways */
+	camel_folder_sort_uids (folder, summary);
 	max = summary->len;
-		
+
 	for (i = 0; i < max; i++) {
 		gboolean unset = FALSE;
 		CamelImapResponse *response = NULL;
