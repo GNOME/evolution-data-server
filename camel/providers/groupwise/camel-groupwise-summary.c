@@ -374,8 +374,27 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 	mi->flags = (old & ~flags) | (set & flags);
 	if (old != mi->flags) {
 		mi->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
-		if (mi->summary)
-			camel_folder_summary_touch(mi->summary);
+
+		if (mi->summary) {
+
+				if ((set & CAMEL_MESSAGE_SEEN) && !(old & CAMEL_MESSAGE_SEEN)) {
+						mi->summary->unread_count -- ;
+				} else if ( (!(set & CAMEL_MESSAGE_SEEN)) && (old & CAMEL_MESSAGE_SEEN) ) {
+						mi->summary->unread_count ++ ;
+				}
+
+				if ((flags & CAMEL_MESSAGE_DELETED) && !(old & CAMEL_MESSAGE_DELETED)) {
+						mi->summary->deleted_count ++ ;
+
+						#warning "What to do when the user has set to show-deleted-messages "
+						mi->summary->visible_count -- ;
+
+						if (!(flags & CAMEL_MESSAGE_SEEN))
+							mi->summary->unread_count -- ;
+				}
+
+				camel_folder_summary_touch(mi->summary);
+		}
 	}
 	/* This is a hack, we are using CAMEL_MESSAGE_JUNK justo to hide the item
 	 * we make sure this doesn't have any side effects*/
