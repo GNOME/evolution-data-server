@@ -192,7 +192,43 @@ camel_pstring_add (char *str, gboolean own)
 	return pstr;
 }
 
-
+/**
+ * camel_pstring_peek:
+ * @str: string to fetch to the string pool
+ *
+ * Add return the string from the pool.
+ *
+ * The NULL and empty strings are special cased to constant values.
+ *
+ * Return value: A pointer to an equivalent string of @s.  Use
+ * camel_pstring_free() when it is no longer needed.
+ **/
+const char *
+camel_pstring_peek (const char *str)
+{
+	void *pcount;
+	char *pstr;
+	
+	if (str == NULL)
+		return NULL;
+	
+	if (str[0] == '\0') {
+		return "";
+	}
+	
+	pthread_mutex_lock (&pstring_lock);
+	if (pstring_table == NULL)
+		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
+	
+	if (!g_hash_table_lookup_extended (pstring_table, str, (void **) &pstr, &pcount)) {
+		pstr = g_strdup (str);
+		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
+	}
+	
+	pthread_mutex_unlock (&pstring_lock);
+	
+	return pstr;
+}
 /**
  * camel_pstring_strdup:
  * @s: String to copy.

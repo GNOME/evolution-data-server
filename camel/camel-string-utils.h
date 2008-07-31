@@ -42,6 +42,7 @@ char camel_toupper(char c);
 const char *camel_pstring_add (char *str, gboolean own);
 const char *camel_pstring_strdup(const char *s);
 void camel_pstring_free(const char *s);
+const char * camel_pstring_peek (const char *str);
 
 G_END_DECLS
 
