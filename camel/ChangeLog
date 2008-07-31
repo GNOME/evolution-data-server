@@ -1,3 +1,10 @@
+2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-db.c: Add delete folder functionality.
+	* camel/camel-folder-summary.c: Added code to check if the uid exists
+	in summary.
+	* camel/camel-folder-summary.h:
+
 2008-07-30  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #500389

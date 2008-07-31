@@ -390,6 +390,7 @@ guint camel_folder_summary_count(CamelFolderSummary *summary);
 CamelMessageInfo *camel_folder_summary_index(CamelFolderSummary *summary, int index);
 CamelMessageInfo *camel_folder_summary_uid(CamelFolderSummary *summary, const char *uid);
 char * camel_folder_summary_uid_from_index (CamelFolderSummary *s, int i);
+gboolean camel_folder_summary_check_uid (CamelFolderSummary *s, const char *uid);
 
 GPtrArray *camel_folder_summary_array(CamelFolderSummary *summary);
 

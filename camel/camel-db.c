@@ -447,18 +447,6 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 }
 
 int
-camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex)
-{
-	char *tab = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name =%Q", folder);
-	int ret;
-
-	ret = camel_db_command (cdb, tab, ex);
-	sqlite3_free (tab);
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	return ret;
-}
-
-int
 camel_db_create_vfolder (CamelDB *db, const char *folder_name, CamelException *ex)
 {
 	int ret;
@@ -924,7 +912,23 @@ camel_db_clear_folder_summary (CamelDB *cdb, char *folder, CamelException *ex)
 	return ret;
 }
 
+int
+camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex)
+{
+	int ret;
+	char *del;
 
+	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
+	ret = camel_db_command (cdb, del, ex);
+	sqlite3_free (del);
+	
+	del = sqlite3_mprintf ("DROP TABLE %Q ", folder);
+	ret = camel_db_command (cdb, del, ex);
+	sqlite3_free (del);
+
+	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	return ret;	
+}
 
 void
 camel_db_camel_mir_free (CamelMIRecord *record)

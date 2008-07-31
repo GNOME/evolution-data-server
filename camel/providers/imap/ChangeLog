@@ -1,3 +1,8 @@
+2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-message-cache.c: Fix delete cache
+	code, when the summary is deleted.
+
 2008-07-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Revamp imap_rescan. It

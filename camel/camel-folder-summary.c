@@ -428,6 +428,35 @@ camel_folder_summary_uid_from_index (CamelFolderSummary *s, int i)
 
 }
 
+/**
+ * camel_folder_summary_check_uid
+ * @s: a #CamelFolderSummary object
+ * @uid: a uid
+ * 
+ * Check if the uid is valid. This isn't very efficient, so it shouldn't be called iteratively.
+ *
+ * 
+ * Returns: if the uid is present in the summary or not  (%TRUE or %FALSE)
+ **/
+gboolean 
+camel_folder_summary_check_uid (CamelFolderSummary *s, const char *uid)
+{
+	gboolean ret = FALSE;
+	int i;
+	
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+
+	for (i=0; i<s->uids->len; i++) {
+		if(strcmp(s->uids->pdata[i], uid) == 0) {
+			CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+			return TRUE;
+		}
+	}
+	
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
+	return ret;
+}
 
 /**
  * camel_folder_summary_array:
