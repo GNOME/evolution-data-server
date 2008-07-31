@@ -1,5 +1,18 @@
 2008-07-31  Sankar P  <psankar@novell.com>
 
+	* camel-folder-search.c (camel_folder_search_class_init),
+	(camel_folder_search_finalize), (camel_folder_search_construct),
+	(camel_folder_search_set_folder),
+	(camel_folder_search_execute_expression),
+	(camel_folder_search_search), (camel_folder_search_free_result),
+	(search_match_all), (check_header), (search_header_contains),
+	(match_words_index), (search_user_flag), (search_system_flag),
+	(search_user_tag):
+	* camel-folder-search.h:
+	Search goodness. Make use of the new sexp parser.
+
+2008-07-31  Sankar P  <psankar@novell.com>
+
 	* camel-vee-folder.c (vee_search_by_expression),
 	(vee_rebuild_folder):
 	Don't print debug statements
