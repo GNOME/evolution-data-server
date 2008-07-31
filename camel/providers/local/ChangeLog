@@ -1,3 +1,11 @@
+2008-07-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #540295
+
+	* camel-local-store.c (xrename):
+	Use g_rename() for all platforms.  Previous POSIX logic didn't
+	work for VFAT filesystems.  (Patch by Sergio)
+
 2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-local-store.c: Support delete folder wrt

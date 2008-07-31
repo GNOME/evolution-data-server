@@ -335,35 +335,12 @@ static int xrename(const char *oldp, const char *newp, const char *prefix, const
 			err = errno;
 			ret = -1;
 		}
-#ifndef G_OS_WIN32
-	} else if (S_ISDIR(st.st_mode)) { /* use rename for dirs */
-		if (rename(old, new) == 0
-		    || stat(new, &st) == 0) {
-			ret = 0;
-		} else {
-			err = errno;
-			ret = -1;
-		}
-	} else if (link(old, new) == 0 /* and link for files */
-		   || (stat(new, &st) == 0 && st.st_nlink == 2)) {
-		if (unlink(old) == 0) {
-			ret = 0;
-		} else {
-			err = errno;
-			unlink(new);
-			ret = -1;
-		}
-	} else {
-		err = errno;
-		ret = -1;
-#else
 	} else if ((!g_file_test (new, G_FILE_TEST_EXISTS) || g_remove (new) == 0) &&
 		   g_rename(old, new) == 0) {
 		ret = 0;
 	} else {
 		err = errno;
 		ret = -1;
-#endif
 	}
 
 	if (ret == -1) {
