@@ -1,3 +1,11 @@
+2008-07-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545558
+
+	* providers/Makefile.am:
+	Disable the Hula provider unless --enable-hula was given at
+	configure-time.
+
 2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-search.c: Revamp search and make body search as

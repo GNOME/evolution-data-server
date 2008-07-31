@@ -4,6 +4,10 @@ if ENABLE_NNTP
 NNTP_DIR=nntp
 endif
 
+if ENABLE_HULA
+HULA_DIR=hula
+endif
+
 if ENABLE_IMAPP
 IMAPP_DIR=imapp
 endif
@@ -17,6 +21,6 @@ else
 SENDMAIL_DIR=sendmail
 endif
 
-SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAP4_DIR) $(NNTP_DIR) local $(IMAPP_DIR) groupwise hula
+SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAP4_DIR) $(NNTP_DIR) local $(IMAPP_DIR) groupwise $(HULA_DIR)
 
 

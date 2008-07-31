@@ -1046,6 +1046,22 @@ else
          msg_imap4=no 	 
 fi 	 
 AM_CONDITIONAL(ENABLE_IMAP4, test x$enable_imap4 = xyes)
+
+dnl **************************************************
+dnl Hula support
+dnl **************************************************
+AC_ARG_ENABLE(hula,
+  AC_HELP_STRING( [--enable-hula=@<:@no/yes@:>@],
+                  [Enable support for the now-defunct Hula project]),
+  ,enable_hula=no)
+
+if test "x$enable_hula" = "xyes"; then
+        AC_DEFINE(ENABLE_HULA,1,[Build Hula backend])
+        msg_hula=yes
+else
+        msg_hula=no
+fi
+AM_CONDITIONAL(ENABLE_HULA, test x$enable_hula = xyes)
  
 dnl **************************************************
 dnl * File locking
@@ -1764,6 +1780,10 @@ echo "
 if test "$msg_nntp" = "yes"; then
 echo "\
 	NNTP support:     $msg_nntp"
+fi
+if test "$msg_hula" = "yes"; then
+echo "\
+	Hula support:     $msg_hula"
 fi
 echo "\
 	Kerberos 4/5:     $msg_krb4/$msg_krb5
