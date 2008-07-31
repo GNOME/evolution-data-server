@@ -1127,9 +1127,7 @@ imap_folder_effectively_unsubscribed(CamelImapStore *imap_store,
 static void
 imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelException *ex)
 {
-	CamelFolderSummary *summary;
-	CamelImapMessageCache *cache;
-	char *summary_file, *state_file;
+	char *state_file;
 	char *journal_file;
 	char *folder_dir, *storage_path;
 	CamelFolderInfo *fi;
@@ -1148,37 +1146,8 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 		g_free (folder_dir);
 		goto event;
 	}
-	
-	summary_file = g_strdup_printf ("%s/summary", folder_dir);
-	summary = camel_imap_summary_new (NULL, summary_file);
-	if (!summary) {
-		g_free (summary_file);
-		g_free (folder_dir);
-		goto event;
-	}
-	camel_object_unref (summary);
 
-	g_unlink (summary_file);
-	g_free (summary_file);
-
-	summary_file = g_strdup_printf ("%s/summary-meta", folder_dir);
-	summary = camel_imap_summary_new (NULL, summary_file);
-	if (!summary) {
-		g_free (summary_file);
-		g_free (folder_dir);
-		goto event;
-	}
-	
-	cache = camel_imap_message_cache_new (folder_dir, summary, ex);
-	if (cache)
-		camel_imap_message_cache_clear (cache);
-	
-	camel_object_unref (cache);
-	camel_object_unref (summary);
-	
-	g_unlink (summary_file);
-	g_free (summary_file);
-	
+	/* Delete summary and all the data */
 	journal_file = g_strdup_printf ("%s/journal", folder_dir);
 	g_unlink (journal_file);
 	g_free (journal_file);
@@ -1186,6 +1155,9 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	g_unlink (state_file);
 	g_free (state_file);
+	
+	camel_db_delete_folder (((CamelStore *)imap_store)->cdb, folder_name, ex);
+	camel_imap_message_cache_delete (folder_dir, ex);
 
 	state_file = g_strdup_printf("%s/subfolders", folder_dir);
 	g_rmdir(state_file);

@@ -96,6 +96,8 @@ void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
 					      CamelImapMessageCache *dest,
 					      const char *dest_uid,
 					      CamelException *ex);
+gboolean     camel_imap_message_cache_delete (const char *path, 
+					      CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_imap_message_cache_get_type (void);

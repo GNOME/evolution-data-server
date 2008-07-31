@@ -1,5 +1,15 @@
 2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #545081
+
+	* camel/providers/imap/camel-imap-message-cache.c: Add a new simple
+	delete cache function.
+	* camel/providers/imap/camel-imap-message-cache.h:
+	* camel/providers/imap/camel-imap-store.c: Now forget the folder from
+	DB.
+
+2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/imap/camel-imap-message-cache.c: Fix delete cache
 	code, when the summary is deleted.
 
