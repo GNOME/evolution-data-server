@@ -1308,9 +1308,10 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		   think?). -- Jeff */
 		matches = get_matching (folder, info->info.flags & (folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED),
 					folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED, (CamelMessageInfo *)info, &set, summary);
-		camel_message_info_free(info);
-		if (matches == NULL)
+		if (matches == NULL) {
+			camel_message_info_free(info);
 			continue;
+		}
 		
 		/* Make sure we're connected before issuing commands */
 		if (!camel_imap_store_connected(store, ex)) {
@@ -1319,6 +1320,9 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 		}
 
 		flaglist = imap_create_flag_list (info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
+
+		/* We don't use the info any more */
+		camel_message_info_free(info);
 
 		if (strcmp (flaglist, "()") == 0) {
 			/* Note: Cyrus is broken and will not accept an
@@ -1355,6 +1359,7 @@ imap_sync_online (CamelFolder *folder, CamelException *ex)
 				info = matches->pdata[j];
 				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				((CamelImapMessageInfo *) info)->server_flags =	info->info.flags & CAMEL_IMAP_SERVER_FLAGS;
+				info->info.dirty = TRUE; /* Sync it back to the DB */
 			}
 			camel_folder_summary_touch (folder->summary);
 		}
