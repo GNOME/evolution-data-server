@@ -1590,9 +1590,12 @@ camel_folder_delete (CamelFolder *folder)
 	folder->folder_flags |= CAMEL_FOLDER_HAS_BEEN_DELETED;
 	
 	CF_CLASS (folder)->delete (folder);
-
+	
 	CAMEL_FOLDER_REC_UNLOCK (folder, lock);
 
+	/* Delete the references of the folder from the DB.*/
+	camel_db_delete_folder (folder->cdb, folder->full_name, NULL);
+	
 	camel_object_trigger_event (folder, "deleted", NULL);
 }
 
@@ -1629,7 +1632,7 @@ camel_folder_rename(CamelFolder *folder, const char *new)
 	old = g_strdup(folder->full_name);
 
 	CF_CLASS (folder)->rename(folder, new);
-
+	camel_db_rename_folder (folder->cdb, old, new, NULL);
 	camel_object_trigger_event (folder, "renamed", old);
 	g_free(old);
 }

@@ -109,6 +109,7 @@ int camel_db_add_to_transaction (CamelDB *cdb, const char *query, CamelException
 int camel_db_end_transaction (CamelDB *cdb, CamelException *ex);
 int camel_db_abort_transaction (CamelDB *cdb, CamelException *ex);
 int camel_db_clear_folder_summary (CamelDB *cdb, char *folder, CamelException *ex);
+int camel_db_rename_folder (CamelDB *cdb, const char *old_folder, const char *new_folder, CamelException *ex);
 
 int camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex);
 int camel_db_delete_uid (CamelDB *cdb, const char *folder, const char *uid, CamelException *ex);

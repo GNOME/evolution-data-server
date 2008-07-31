@@ -19,6 +19,15 @@
 
 2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #545082
+
+	* camel/camel-db.c: Added support apis.
+	* camel/camel-db.h:
+	* camel/camel-folder.c: Added support to rename folder.
+	* camel/camel-store.c: Added code to delete folder cleanly
+
+2008-07-31  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Add delete folder functionality.
 	* camel/camel-folder-summary.c: Added code to check if the uid exists
 	in summary.

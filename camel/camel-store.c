@@ -456,8 +456,10 @@ camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelExce
 
 	if (!camel_exception_is_set(&local))
 		cs_delete_cached_folder(store, folder_name);
-	else
+	else {
 		camel_exception_xfer(ex, &local);
+		printf("excep: %s\n", camel_exception_get_description (ex));
+	}
 	
 	CAMEL_STORE_UNLOCK(store, folder_lock);
 }

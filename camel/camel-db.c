@@ -930,6 +930,24 @@ camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex)
 	return ret;	
 }
 
+int
+camel_db_rename_folder (CamelDB *cdb, const char *old_folder, const char *new_folder, CamelException *ex)
+{
+	int ret;
+	char *cmd;
+
+	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder, new_folder);
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder, old_folder);
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+	
+	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	return ret;	
+}
+
 void
 camel_db_camel_mir_free (CamelMIRecord *record)
 {

@@ -458,26 +458,6 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
-	str = g_strdup_printf("%s.ev-summary", name);
-	if (g_unlink(str) == -1 && errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder summary file '%s': %s"),
-				      str, g_strerror (errno));
-		g_free(str);
-		g_free (name);
-		return;
-	}
-	g_free(str);
-	str = g_strdup_printf("%s.ev-summary-meta", name);
-	if (g_unlink(str) == -1 && errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder summary file '%s': %s"),
-				      str, g_strerror (errno));
-		g_free(str);
-		g_free (name);
-		return;
-	}
-	g_free(str);
 	str = g_strdup_printf("%s.ibex", name);
 	if (camel_text_index_remove(str) == -1 && errno != ENOENT) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
