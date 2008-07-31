@@ -671,7 +671,7 @@ vee_search_by_expression(CamelFolder *folder, const char *expression, CamelExcep
 
 
 	g_hash_table_destroy(searched);
-	printf("returning %d\n", result->len);
+	d(printf("returning %d\n", result->len));
 	return result;
 }
 
@@ -1024,7 +1024,7 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 				return -1;
 			rebuilded = TRUE;
 		}
-		printf("len = %d %d\n", match->len, rebuilded);
+		d(printf("len = %d %d\n", match->len, rebuilded));
 	}
 
 	u.source = source;
