@@ -2693,8 +2693,10 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 
 	mi = (CamelImapMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
 	if (mi == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s\n  %s"), uid, _("No such message"));
+		camel_exception_setv (
+                	ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			_("Cannot get message with message ID %s: %s"),
+			uid, _("No such message available."));
 		return NULL;
 	}
 
