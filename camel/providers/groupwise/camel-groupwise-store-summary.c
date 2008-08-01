@@ -32,8 +32,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-file-utils.h"
 #include "camel-private.h"
 #include "camel-utf8.h"

@@ -1,3 +1,10 @@
+2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imapp-store-summary.c:
+	* camel-imapp-store.c:
+	* camel-imapp-utils.c:
+	Remove unnecessary <libedataserver/e-memory.h> include.
+
 2008-05-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #424744

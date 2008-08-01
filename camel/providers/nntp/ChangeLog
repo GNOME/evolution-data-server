@@ -1,3 +1,8 @@
+2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-nntp-store-summary.c:
+	Remove unnecessary <libedataserver/e-memory.h> include.
+
 2008-07-28  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/nntp/camel-nntp-summary.c: Fix uid/pstring issues.

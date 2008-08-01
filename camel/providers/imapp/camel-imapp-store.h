@@ -28,7 +28,6 @@
 #include <camel/camel-types.h>
 #include <camel/camel-store.h>
 #include "camel-imapp-driver.h"
-#include <libedataserver/e-memory.h>
 
 #define CAMEL_IMAPP_STORE_TYPE     (camel_imapp_store_get_type ())
 #define CAMEL_IMAPP_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPP_STORE_TYPE, CamelIMAPPStore))

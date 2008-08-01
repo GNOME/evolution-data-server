@@ -1,3 +1,8 @@
+2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-store-summary.c:
+	Remove unnecessary <libedataserver/e-memory.h> include.
+
 2008-07-31  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #545103

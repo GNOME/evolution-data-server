@@ -33,7 +33,6 @@
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-memory.h>
 #include <libedataserver/e-msgport.h>
 
 #include "camel-file-utils.h"

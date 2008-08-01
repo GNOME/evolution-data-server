@@ -40,7 +40,6 @@
 #endif
 
 #include <libedataserver/e-sexp.h>
-#include <libedataserver/e-memory.h>
 #include <libedataserver/e-msgport.h>
 
 #include "camel-debug.h"
