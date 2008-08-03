@@ -63,7 +63,10 @@
 /* To switch between e-memchunk and g-alloc */
 #define ALWAYS_ALLOC 1
 #define USE_GSLICE 1
-#define SUMMARY_CACHE_DROP 120
+
+/* Make 5 minutes as default cache drop */
+#define SUMMARY_CACHE_DROP 300
+
 static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* this lock is ONLY for the standalone messageinfo stuff */

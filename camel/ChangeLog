@@ -1,5 +1,9 @@
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Make 5 minutes as cache drop interval.
+
+2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Don't free mi's in migration.
 
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
