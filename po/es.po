@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-20 14:09+0000\n"
-"PO-Revision-Date: 2008-07-20 19:05+0200\n"
+"POT-Creation-Date: 2008-08-01 20:44+0000\n"
+"PO-Revision-Date: 2008-08-03 19:21+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,13 +34,13 @@ msgstr "Cargando…"
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4263
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4266
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Buscando…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4427
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4430
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
@@ -64,23 +64,23 @@ msgstr "Usando dirección de correo"
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1601
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1604
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1735
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1738
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2046
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2049
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4130
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4133
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4285
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
@@ -724,12 +724,12 @@ msgid "Could not create thread for populating cache"
 msgstr "No se pudo crear el hilo para la llenar la caché"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1802
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1796
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1807
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1801
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
@@ -1095,20 +1095,20 @@ msgstr "30"
 msgid "31st"
 msgstr "31"
 
-#: ../calendar/libecal/e-cal-util.c:683 ../calendar/libecal/e-cal-util.c:711
+#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
 msgid "High"
 msgstr "Alta"
 
-#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:687 ../calendar/libecal/e-cal-util.c:715
 msgid "Normal"
 msgstr "Normal"
 
-#: ../calendar/libecal/e-cal-util.c:687 ../calendar/libecal/e-cal-util.c:715
+#: ../calendar/libecal/e-cal-util.c:689 ../calendar/libecal/e-cal-util.c:717
 msgid "Low"
 msgstr "Baja"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:709
+#: ../calendar/libecal/e-cal-util.c:711
 msgid "Undefined"
 msgstr "Sin definir"
 
@@ -1146,13 +1146,13 @@ msgstr "No existe el calendario"
 
 #: ../calendar/libecal/e-cal.c:5056
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
-#: ../servers/groupwise/e-gw-connection.c:232
+#: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
 #: ../calendar/libecal/e-cal.c:5058
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
-#: ../servers/groupwise/e-gw-connection.c:226
+#: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
@@ -1172,7 +1172,7 @@ msgstr "Permiso denegado"
 
 #: ../calendar/libecal/e-cal.c:5066
 #: ../calendar/libedata-cal/e-cal-backend-util.c:123
-#: ../servers/groupwise/e-gw-connection.c:234
+#: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
@@ -1207,8 +1207,8 @@ msgstr "Ha ocurrido una excepción CORBA"
 #: ../calendar/libecal/e-cal.c:5082
 #: ../calendar/libedata-cal/e-cal-backend-util.c:138
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
-#: ../camel/providers/imap/camel-imap-command.c:420
-#: ../camel/providers/imap/camel-imap-store.c:763
+#: ../camel/providers/imap/camel-imap-command.c:434
+#: ../camel/providers/imap/camel-imap-store.c:775
 #: ../camel/providers/imap4/camel-imap4-engine.c:1570
 #: ../camel/providers/imap4/camel-imap4-engine.c:1609
 #: ../camel/providers/imap4/camel-imap4-engine.c:1654
@@ -1220,7 +1220,7 @@ msgstr "Ha ocurrido una excepción CORBA"
 #: ../camel/providers/pop3/camel-pop3-store.c:560
 #: ../camel/providers/pop3/camel-pop3-store.c:566
 #: ../servers/exchange/storage/e-storage.c:585
-#: ../servers/groupwise/e-gw-connection.c:240
+#: ../servers/groupwise/e-gw-connection.c:241
 msgid "Unknown error"
 msgstr "Error desconocido"
 
@@ -1417,7 +1417,7 @@ msgstr "No se pudo crear la ruta a la caché"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "No se pudo quitar la entrada de caché: %s: %s"
 
-#: ../camel/camel-db.c:78
+#: ../camel/camel-db.c:91
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
@@ -1455,80 +1455,80 @@ msgstr "Copiar el contenido de la carpeta localmente para operación desconectad
 msgid "Downloading new messages for offline mode"
 msgstr "Descargando mensajes nuevos para modo desconectado"
 
-#: ../camel/camel-disco-folder.c:468
+#: ../camel/camel-disco-folder.c:469
 #, c-format
 msgid "Preparing folder '%s' for offline"
 msgstr "Preparando carpeta «%s» para desconexión"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:3047
+#: ../camel/providers/imap/camel-imap-store.c:3031
 msgid "You must be working online to complete this operation"
 msgstr "Para completar esta operación debe estar trabajando conectado a la red"
 
-#: ../camel/camel-exception.c:264
+#: ../camel/camel-exception.c:262
 msgid "No description available"
 msgstr "Sin descripción disponible"
 
-#: ../camel/camel-filter-driver.c:786
+#: ../camel/camel-filter-driver.c:785
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
-#: ../camel/camel-filter-driver.c:828
+#: ../camel/camel-filter-driver.c:827
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Flujo de mensaje inválido recibido desde %s: %s"
 
-#: ../camel/camel-filter-driver.c:1017 ../camel/camel-filter-driver.c:1026
+#: ../camel/camel-filter-driver.c:1016 ../camel/camel-filter-driver.c:1025
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../camel/camel-filter-driver.c:1115 ../camel/camel-filter-driver.c:1495
+#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1494
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1124 ../camel/camel-filter-driver.c:1504
+#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1503
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1192
+#: ../camel/camel-filter-driver.c:1191
 msgid "Unable to open spool folder"
 msgstr "No se pudo abrir la carpeta «spool»"
 
-#: ../camel/camel-filter-driver.c:1201
+#: ../camel/camel-filter-driver.c:1200
 msgid "Unable to process spool folder"
 msgstr "No se pudo procesar la carpeta temporal"
 
-#: ../camel/camel-filter-driver.c:1216
+#: ../camel/camel-filter-driver.c:1215
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Obteniendo mensaje %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1220
+#: ../camel/camel-filter-driver.c:1219
 msgid "Cannot open message"
 msgstr "No se pudo abrir el mensaje"
 
-#: ../camel/camel-filter-driver.c:1221 ../camel/camel-filter-driver.c:1234
+#: ../camel/camel-filter-driver.c:1220 ../camel/camel-filter-driver.c:1233
 #, c-format
 msgid "Failed on message %d"
 msgstr "Error en el mensaje %d"
 
-#: ../camel/camel-filter-driver.c:1248 ../camel/camel-filter-driver.c:1339
+#: ../camel/camel-filter-driver.c:1247 ../camel/camel-filter-driver.c:1338
 msgid "Syncing folder"
 msgstr "Sincronizando carpeta"
 
-#: ../camel/camel-filter-driver.c:1252 ../camel/camel-filter-driver.c:1344
+#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1343
 msgid "Complete"
 msgstr "Completo"
 
-#: ../camel/camel-filter-driver.c:1309
+#: ../camel/camel-filter-driver.c:1308
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Obteniendo mensaje %d de %d"
 
-#: ../camel/camel-filter-driver.c:1324
+#: ../camel/camel-filter-driver.c:1323
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falló en el mensaje %d de %d"
@@ -1551,12 +1551,12 @@ msgid "Failed to create create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
-#: ../camel/camel-filter-search.c:736 ../camel/camel-filter-search.c:744
+#: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
 
-#: ../camel/camel-folder-search.c:372 ../camel/camel-folder-search.c:490
+#: ../camel/camel-folder-search.c:332 ../camel/camel-folder-search.c:446
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1565,7 +1565,7 @@ msgstr ""
 "No se pudo analizar la expresión de búsqueda: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:382 ../camel/camel-folder-search.c:500
+#: ../camel/camel-folder-search.c:342 ../camel/camel-folder-search.c:456
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1574,68 +1574,68 @@ msgstr ""
 "Error ejecutando la búsqueda según la expresión: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:658 ../camel/camel-folder-search.c:703
+#: ../camel/camel-folder-search.c:635 ../camel/camel-folder-search.c:677
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) requiere un único resultado booleano"
 
-#: ../camel/camel-folder-search.c:758
+#: ../camel/camel-folder-search.c:730
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no se permite dentro de (%s)"
 
-#: ../camel/camel-folder-search.c:764 ../camel/camel-folder-search.c:771
+#: ../camel/camel-folder-search.c:736 ../camel/camel-folder-search.c:743
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) requiere una cadena de coincidencia"
 
-#: ../camel/camel-folder-search.c:798
+#: ../camel/camel-folder-search.c:770
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultado «array»"
 
-#: ../camel/camel-folder-search.c:807
+#: ../camel/camel-folder-search.c:779
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) requiere que se establezca una carpeta"
 
-#: ../camel/camel-folder-search.c:903
+#: ../camel/camel-folder-search.c:875
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Realizando búsqueda en cabecera desconocida: %s"
 
-#: ../camel/camel-folder.c:691
+#: ../camel/camel-folder.c:688
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Operación no implementada: añadir mensaje: para %s"
 
-#: ../camel/camel-folder.c:1350
+#: ../camel/camel-folder.c:1344
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Operación no implementada: búsqueda según la expresión: para %s"
 
-#: ../camel/camel-folder.c:1391
+#: ../camel/camel-folder.c:1385
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "Operación no implementada: búsqueda por uids: para %s"
 
-#: ../camel/camel-folder.c:1507
+#: ../camel/camel-folder.c:1501
 msgid "Moving messages"
 msgstr "Moviendo mensajes"
 
-#: ../camel/camel-folder.c:1507
+#: ../camel/camel-folder.c:1501
 msgid "Copying messages"
 msgstr "Copiando mensajes"
 
-#: ../camel/camel-folder.c:1850
+#: ../camel/camel-folder.c:1847
 msgid "Learning junk"
 msgstr "Aprendiendo SPAM"
 
-#: ../camel/camel-folder.c:1867
+#: ../camel/camel-folder.c:1864
 msgid "Learning non-junk"
 msgstr "Aprendiendo no SPAM"
 
-#: ../camel/camel-folder.c:1886
+#: ../camel/camel-folder.c:1883
 msgid "Filtering new message(s)"
 msgstr "Filtrando mensajes(s) nuevo(s)"
 
@@ -1926,24 +1926,24 @@ msgstr "Proveedor de correo de la carpeta virtual"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Para leer correo como una búsqueda de otro conjunto de carpetas"
 
-#: ../camel/camel-provider.c:187
+#: ../camel/camel-provider.c:186
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "No es posible cargar %s: La carga de módulos no está implementada en este "
 "sistema."
 
-#: ../camel/camel-provider.c:196
+#: ../camel/camel-provider.c:195
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "No es posible cargar %s: %s"
 
-#: ../camel/camel-provider.c:204
+#: ../camel/camel-provider.c:203
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "No es posible cargar %s: No hay código de inicialización en el módulo."
 
-#: ../camel/camel-provider.c:376 ../camel/camel-session.c:177
+#: ../camel/camel-provider.c:375 ../camel/camel-session.c:177
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "No hay proveedor disponible para el protocolo «%s»"
@@ -2107,7 +2107,7 @@ msgstr "Las credenciales referenciadas han expirado."
 #: ../camel/camel-sasl-gssapi.c:205 ../camel/camel-sasl-gssapi.c:253
 #: ../camel/camel-sasl-gssapi.c:289 ../camel/camel-sasl-gssapi.c:304
 #: ../camel/camel-sasl-kerberos4.c:231
-#: ../camel/providers/imap/camel-imap-store.c:1318
+#: ../camel/providers/imap/camel-imap-store.c:1302
 msgid "Bad authentication response from server."
 msgstr "Respuesta de autenticación errónea desde el servidor."
 
@@ -2417,45 +2417,45 @@ msgstr "importación de claves: no implementado"
 msgid "export keys: unimplemented"
 msgstr "exportar claves: no implementado"
 
-#: ../camel/camel-store.c:249
+#: ../camel/camel-store.c:258
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "No se pudo obtener la carpeta: Operación no válida en este almacén"
 
-#: ../camel/camel-store.c:282
+#: ../camel/camel-store.c:291
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "No se pudo crear la carpeta: «%s»: la carpeta existe"
 
-#: ../camel/camel-store.c:346
+#: ../camel/camel-store.c:355
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "No se pudo crear la carpeta: Operación no válida en este almacén"
 
-#: ../camel/camel-store.c:374
+#: ../camel/camel-store.c:383
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
-#: ../camel/camel-store.c:438 ../camel/camel-vee-store.c:384
+#: ../camel/camel-store.c:447 ../camel/camel-vee-store.c:384
 #: ../camel/providers/local/camel-maildir-store.c:218
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No se pudo borrar la carpeta: %s: Operación no válida"
 
-#: ../camel/camel-store.c:488 ../camel/camel-vee-store.c:421
+#: ../camel/camel-store.c:499 ../camel/camel-vee-store.c:421
 #: ../camel/providers/local/camel-maildir-store.c:290
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "No se pudo renombrar la carpeta: %s: Operación no válida"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:829 ../camel/camel-vtrash-folder.c:53
-#: ../camel/providers/imap/camel-imap-store.c:1078
+#: ../camel/camel-store.c:840 ../camel/camel-vtrash-folder.c:53
+#: ../camel/providers/imap/camel-imap-store.c:1090
 msgid "Trash"
 msgstr "Papelera"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:832 ../camel/camel-vtrash-folder.c:55
+#: ../camel/camel-store.c:843 ../camel/camel-vtrash-folder.c:55
 msgid "Junk"
 msgstr "SPAM"
 
@@ -2710,7 +2710,6 @@ msgid "Cannot copy messages to the Junk folder"
 msgstr "No se pueden copiar mensajes a la carpeta Spam"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2564
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2720,9 +2719,8 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:118
-#: ../camel/providers/imap/camel-imap-folder.c:2564
 #: ../camel/providers/local/camel-maildir-folder.c:251
-#: ../camel/providers/local/camel-mbox-folder.c:348
+#: ../camel/providers/local/camel-mbox-folder.c:349
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
 msgstr "No existe ese mensaje"
@@ -2756,15 +2754,15 @@ msgstr "No se puede obtener el mensaje %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:154
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2171
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2165
 #: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
 msgstr "Este mensaje no está disponible en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:174
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:181
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1703
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1754
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1697
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1748
 msgid "Could not get message"
 msgstr "No se puede obtener el mensaje"
 
@@ -2781,34 +2779,34 @@ msgstr "La papelera está llena. Por favor vacíela."
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1249
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:2940
-#: ../camel/providers/imap/camel-imap-folder.c:3017
+#: ../camel/providers/imap/camel-imap-folder.c:3109
+#: ../camel/providers/imap/camel-imap-folder.c:3186
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2038
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2080
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2032
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2074
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "No se pudo añadir el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2068
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2062
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:284
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:285
 #, c-format
 msgid "Cannot get folder container %s"
 msgstr "No se puede obtener el contenedor de la carpeta %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:348
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:349
 #: ../camel/providers/imap4/camel-imap4-journal.c:319
 msgid "Cannot append message in offline mode: cache unavailable"
 msgstr "No se puede anexar el mensaje en modo desconectado: caché no disponible"
 
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:364
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:365
 #: ../camel/providers/imap4/camel-imap4-journal.c:335
 #, c-format
 msgid "Cannot append message in offline mode: %s"
@@ -2827,7 +2825,7 @@ msgid "C_heck for new messages in all folders"
 msgstr "_Comprobar si hay mensajes nuevos en todas las carpetas"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
-#: ../camel/providers/imap/camel-imap-provider.c:66
+#: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:52
 #: ../camel/providers/local/camel-local-provider.c:46
 #: ../camel/providers/local/camel-local-provider.c:86
@@ -2846,7 +2844,7 @@ msgid "Check new messages for J_unk contents"
 msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
-#: ../camel/providers/imap/camel-imap-provider.c:72
+#: ../camel/providers/imap/camel-imap-provider.c:74
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "Sólo comprobar si hay spam en la carpeta _Bandeja de entrada"
 
@@ -2872,7 +2870,7 @@ msgstr "Para acceder a servidores Novell Groupwise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:106
 #: ../camel/providers/hula/camel-hula-provider.c:95
-#: ../camel/providers/imap/camel-imap-provider.c:98
+#: ../camel/providers/imap/camel-imap-provider.c:100
 #: ../camel/providers/imap4/camel-imap4-provider.c:84
 #: ../camel/providers/imapp/camel-imapp-provider.c:67
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
@@ -2891,7 +2889,7 @@ msgid "Host or user not available in url"
 msgstr "Equipo remoto o usuario no disponible en la url"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:206
-#: ../camel/providers/imap/camel-imap-store.c:1402
+#: ../camel/providers/imap/camel-imap-store.c:1386
 msgid "You did not enter a password."
 msgstr "No introdujo una contraseña."
 
@@ -2902,8 +2900,8 @@ msgstr ""
 "actual del servidor"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:532
-#: ../camel/providers/imap/camel-imap-store.c:1913
-#: ../camel/providers/imap/camel-imap-store.c:2111
+#: ../camel/providers/imap/camel-imap-store.c:1897
+#: ../camel/providers/imap/camel-imap-store.c:2095
 #, c-format
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
@@ -2913,8 +2911,8 @@ msgid "Cannot create GroupWise folders in offline mode."
 msgstr "No se pueden crear las carpetas GroupWise en modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1231
-#: ../camel/providers/imap/camel-imap-store.c:1988
-#: ../camel/providers/imap/camel-imap-store.c:2364
+#: ../camel/providers/imap/camel-imap-store.c:1972
+#: ../camel/providers/imap/camel-imap-store.c:2348
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "No está permitido que la carpeta raíz contenga subcarpetas"
 
@@ -2966,35 +2964,35 @@ msgid "Checking for New Mail"
 msgstr "Comprobación de correo nuevo"
 
 #: ../camel/providers/hula/camel-hula-provider.c:54
-#: ../camel/providers/imap/camel-imap-provider.c:50
+#: ../camel/providers/imap/camel-imap-provider.c:52
 msgid "Connection to Server"
 msgstr "Conexión con el servidor"
 
 #: ../camel/providers/hula/camel-hula-provider.c:56
-#: ../camel/providers/imap/camel-imap-provider.c:52
+#: ../camel/providers/imap/camel-imap-provider.c:54
 msgid "_Use custom command to connect to server"
 msgstr "_Usar un comando personalizado para conectarse al servidor"
 
 #: ../camel/providers/hula/camel-hula-provider.c:58
-#: ../camel/providers/imap/camel-imap-provider.c:54
+#: ../camel/providers/imap/camel-imap-provider.c:56
 msgid "Command:"
 msgstr "Comando:"
 
 #: ../camel/providers/hula/camel-hula-provider.c:61
-#: ../camel/providers/imap/camel-imap-provider.c:58
+#: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:44
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Folders"
 msgstr "Carpetas"
 
 #: ../camel/providers/hula/camel-hula-provider.c:63
-#: ../camel/providers/imap/camel-imap-provider.c:60
+#: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:46
 msgid "_Show only subscribed folders"
 msgstr "_Mostrar sólo las carpetas suscritas"
 
 #: ../camel/providers/hula/camel-hula-provider.c:65
-#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imap4/camel-imap4-provider.c:48
 msgid "O_verride server-supplied folder namespace"
 msgstr "_Ignorar el espacio de nombres suministrado por el servidor"
@@ -3017,22 +3015,32 @@ msgstr ""
 "Esta opción conectará con el servidor Hula usando una contraseña de texto "
 "plano."
 
-#: ../camel/providers/imap/camel-imap-command.c:224
-#: ../camel/providers/imap/camel-imap-command.c:266
-#: ../camel/providers/imap/camel-imap-command.c:480
-#: ../camel/providers/imap/camel-imap-store.c:3087
+#: ../camel/providers/imap/camel-imap-command.c:183
+#: ../camel/providers/imap/camel-imap-command.c:267
+msgid "No output stream"
+msgstr "No hay flujo de salida"
+
+#: ../camel/providers/imap/camel-imap-command.c:188
+#: ../camel/providers/imap/camel-imap-command.c:272
+msgid "No input stream"
+msgstr "No hay flujo de entrada"
+
+#: ../camel/providers/imap/camel-imap-command.c:231
+#: ../camel/providers/imap/camel-imap-command.c:280
+#: ../camel/providers/imap/camel-imap-command.c:494
+#: ../camel/providers/imap/camel-imap-store.c:3071
 msgid "Operation cancelled"
 msgstr "Operación cancelada"
 
-#: ../camel/providers/imap/camel-imap-command.c:319
-#: ../camel/providers/imap/camel-imap-store.c:3090
+#: ../camel/providers/imap/camel-imap-command.c:333
+#: ../camel/providers/imap/camel-imap-store.c:3074
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "El servidor se desconectó inesperadamente: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:340
+#: ../camel/providers/imap/camel-imap-command.c:354
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -3041,26 +3049,26 @@ msgstr ""
 "Respuesta inesperada del servidor IMAP: %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:409
+#: ../camel/providers/imap/camel-imap-command.c:423
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Respuesta inesperada del servidor IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:419
+#: ../camel/providers/imap/camel-imap-command.c:433
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "El comando IMAP ha fallado: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:494
+#: ../camel/providers/imap/camel-imap-command.c:508
 msgid "Server response ended too soon."
 msgstr "La respuesta del servidor terminó demasiado pronto."
 
-#: ../camel/providers/imap/camel-imap-command.c:701
+#: ../camel/providers/imap/camel-imap-command.c:715
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "La respuesta del servidor IMAP no contenía información de %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:737
+#: ../camel/providers/imap/camel-imap-command.c:751
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "El servidor IMAP inesperadamente ha respondido OK: %s"
@@ -3079,106 +3087,133 @@ msgid "Folder was destroyed and recreated on server."
 msgstr "La carpeta fue destruida y recreada en el servidor."
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:841
+#: ../camel/providers/imap/camel-imap-folder.c:843
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2524
+#: ../camel/providers/imap/camel-imap-folder.c:1796
+#, c-format
+msgid "Unexpected response status '%s' after APPEND command"
+msgstr "Estado de respuesta inesperada «%s» después del comando APPEND"
+
+#: ../camel/providers/imap/camel-imap-folder.c:1811
+msgid "No response on continuation after APPEND command"
+msgstr "No hubo respuesta de continuación después del comando APPEND"
+
+#: ../camel/providers/imap/camel-imap-folder.c:1848
+msgid "Unknown error occurred during APPEND command!"
+msgstr "Ocurrió un error desconocido durante el comando APPEND"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2657
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "No se pudo descargar el mensaje: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2603
-#: ../camel/providers/imap/camel-imap-folder.c:3311
+#: ../camel/providers/imap/camel-imap-folder.c:2698
+#, c-format
+msgid "Cannot get message with message ID %s: %s"
+msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2699
+msgid "No such message available."
+msgstr "Dicho mensaje no está disponible."
+
+#: ../camel/providers/imap/camel-imap-folder.c:2738
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "Este mensaje no está disponible actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3146
+#: ../camel/providers/imap/camel-imap-folder.c:3315
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Respuesta del servidor incompleta: no hay información proporcionada para el "
 "mensaje %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3154
+#: ../camel/providers/imap/camel-imap-folder.c:3323
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje %"
 "d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3349
+#: ../camel/providers/imap/camel-imap-folder.c:3524
 msgid "Could not find message body in FETCH response."
 msgstr "No se pudo encontrar el cuerpo del mensaje en la respuesta de FETCH."
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:161
+#: ../camel/providers/imap/camel-imap-message-cache.c:160
+#: ../camel/providers/imap/camel-imap-message-cache.c:220
 #, c-format
 msgid "Could not open cache directory: %s"
 msgstr "No se pudo abrir directorio de cache: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:272
-#: ../camel/providers/imap/camel-imap-message-cache.c:329
-#: ../camel/providers/imap/camel-imap-message-cache.c:360
-#: ../camel/providers/imap/camel-imap-message-cache.c:392
+#: ../camel/providers/imap/camel-imap-message-cache.c:307
+#: ../camel/providers/imap/camel-imap-message-cache.c:364
+#: ../camel/providers/imap/camel-imap-message-cache.c:395
+#: ../camel/providers/imap/camel-imap-message-cache.c:427
 #, c-format
 msgid "Failed to cache message %s: %s"
 msgstr "Error al cachear el mensaje %s: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:443
+#: ../camel/providers/imap/camel-imap-message-cache.c:478
 #, c-format
 msgid "Failed to cache %s: %s"
 msgstr "Error al cachear %s: %s"
 
-#: ../camel/providers/imap/camel-imap-provider.c:64
+#: ../camel/providers/imap/camel-imap-provider.c:48
+msgid "Ch_eck for new messages in subscribed folders"
+msgstr "_Comprobar si hay mensajes nuevos en las carpetas suscritas"
+
+#: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
 msgid "Namespace:"
 msgstr "Espacio de nombres:"
 
-#: ../camel/providers/imap/camel-imap-provider.c:68
+#: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Aplicar filtros a los mensajes nuevos en INBOX en este servidor"
 
-#: ../camel/providers/imap/camel-imap-provider.c:70
+#: ../camel/providers/imap/camel-imap-provider.c:72
 msgid "Check new messages for Jun_k contents"
 msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
 
-#: ../camel/providers/imap/camel-imap-provider.c:74
+#: ../camel/providers/imap/camel-imap-provider.c:76
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "_Sincronizar automáticamente el correo remoto localmente"
 
-#: ../camel/providers/imap/camel-imap-provider.c:81
+#: ../camel/providers/imap/camel-imap-provider.c:83
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../camel/providers/imap/camel-imap-provider.c:83
+#: ../camel/providers/imap/camel-imap-provider.c:85
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Para leer y almacenar correo en los servidores IMAP."
 
-#: ../camel/providers/imap/camel-imap-provider.c:100
+#: ../camel/providers/imap/camel-imap-provider.c:102
 #: ../camel/providers/imapp/camel-imapp-provider.c:69
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Esta opción conectará con el servidor IMAP usando una contraseña de texto "
 "plano."
 
-#: ../camel/providers/imap/camel-imap-store.c:457
+#: ../camel/providers/imap/camel-imap-store.c:469
 #: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "Servidor IMAP %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:459
+#: ../camel/providers/imap/camel-imap-store.c:471
 #: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Servicio IMAP para %s en %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:588
-#: ../camel/providers/imap/camel-imap-store.c:603
+#: ../camel/providers/imap/camel-imap-store.c:600
+#: ../camel/providers/imap/camel-imap-store.c:615
 #: ../camel/providers/imap4/camel-imap4-store.c:251
 #: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:183
@@ -3191,7 +3226,7 @@ msgstr "Servicio IMAP para %s en %s"
 msgid "Could not connect to %s: %s"
 msgstr "No se pudo conectar con %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:589
+#: ../camel/providers/imap/camel-imap-store.c:601
 #: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:184
 #: ../camel/providers/pop3/camel-pop3-store.c:172
@@ -3199,15 +3234,15 @@ msgstr "No se pudo conectar con %s: %s"
 msgid "SSL unavailable"
 msgstr "SSL no disponible"
 
-#: ../camel/providers/imap/camel-imap-store.c:600
-#: ../camel/providers/imap/camel-imap-store.c:882
+#: ../camel/providers/imap/camel-imap-store.c:612
+#: ../camel/providers/imap/camel-imap-store.c:894
 msgid "Connection cancelled"
 msgstr "Conexión cancelada"
 
-#: ../camel/providers/imap/camel-imap-store.c:711
-#: ../camel/providers/imap/camel-imap-store.c:730
-#: ../camel/providers/imap/camel-imap-store.c:736
-#: ../camel/providers/imap/camel-imap-store.c:762
+#: ../camel/providers/imap/camel-imap-store.c:723
+#: ../camel/providers/imap/camel-imap-store.c:742
+#: ../camel/providers/imap/camel-imap-store.c:748
+#: ../camel/providers/imap/camel-imap-store.c:774
 #: ../camel/providers/imap4/camel-imap4-store.c:314
 #: ../camel/providers/imap4/camel-imap4-store.c:329
 #: ../camel/providers/imap4/camel-imap4-store.c:338
@@ -3215,66 +3250,66 @@ msgstr "Conexión cancelada"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:712
+#: ../camel/providers/imap/camel-imap-store.c:724
 #: ../camel/providers/smtp/camel-smtp-transport.c:333
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
-#: ../camel/providers/imap/camel-imap-store.c:731
+#: ../camel/providers/imap/camel-imap-store.c:743
 msgid "SSL negotiations failed"
 msgstr "Falló la negociación SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:737
+#: ../camel/providers/imap/camel-imap-store.c:749
 #: ../camel/providers/imap4/camel-imap4-store.c:339
 #: ../camel/providers/smtp/camel-smtp-transport.c:372
 msgid "SSL is not available in this build"
 msgstr "No se soporta SSL en esta compilación"
 
-#: ../camel/providers/imap/camel-imap-store.c:885
+#: ../camel/providers/imap/camel-imap-store.c:897
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "No se pudo conectar con el comando «%s»: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1070
-#: ../camel/providers/imap/camel-imap-store.c:2460
+#: ../camel/providers/imap/camel-imap-store.c:1082
+#: ../camel/providers/imap/camel-imap-store.c:2444
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1408
 #: ../camel/providers/local/camel-maildir-folder.c:77
 #: ../camel/providers/local/camel-maildir-store.c:218
 #: ../camel/providers/local/camel-maildir-store.c:290
-#: ../camel/providers/local/camel-maildir-store.c:515
-#: ../camel/providers/local/camel-maildir-store.c:528
+#: ../camel/providers/local/camel-maildir-store.c:516
+#: ../camel/providers/local/camel-maildir-store.c:529
 #: ../camel/providers/local/camel-spool-store.c:464
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
 msgstr "Bandeja de entrada"
 
-#: ../camel/providers/imap/camel-imap-store.c:1072
+#: ../camel/providers/imap/camel-imap-store.c:1084
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "Borradores"
 
-#: ../camel/providers/imap/camel-imap-store.c:1074
+#: ../camel/providers/imap/camel-imap-store.c:1086
 msgid "Sent"
 msgstr "Correo enviado"
 
-#: ../camel/providers/imap/camel-imap-store.c:1076
+#: ../camel/providers/imap/camel-imap-store.c:1088
 msgid "Templates"
 msgstr "Plantillas"
 
-#: ../camel/providers/imap/camel-imap-store.c:1349
+#: ../camel/providers/imap/camel-imap-store.c:1333
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "El servidor IMAP %s no soporta el método de autenticación requerido %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1359
+#: ../camel/providers/imap/camel-imap-store.c:1343
 #: ../camel/providers/smtp/camel-smtp-transport.c:507
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "No hay soporte para el tipo de autenticación %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1431
+#: ../camel/providers/imap/camel-imap-store.c:1415
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3285,14 +3320,14 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1925
-#: ../camel/providers/imap/camel-imap-store.c:2302
+#: ../camel/providers/imap/camel-imap-store.c:1909
+#: ../camel/providers/imap/camel-imap-store.c:2286
 #: ../camel/providers/imap4/camel-imap4-store.c:959
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "El nombre de la carpeta «%s» es inválido porque contiene el carácter «%c»"
 
-#: ../camel/providers/imap/camel-imap-store.c:2042
+#: ../camel/providers/imap/camel-imap-store.c:2026
 #: ../camel/providers/local/camel-maildir-store.c:191
 #: ../camel/providers/local/camel-mbox-store.c:204
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3300,7 +3335,7 @@ msgstr "El nombre de la carpeta «%s» es inválido porque contiene el carácter
 msgid "Cannot create folder '%s': folder exists."
 msgstr "No se pudo crear la carpeta «%s»: la carpeta existe."
 
-#: ../camel/providers/imap/camel-imap-store.c:2313
+#: ../camel/providers/imap/camel-imap-store.c:2297
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Carpeta raíz desconocida: %s"
@@ -3418,15 +3453,15 @@ msgstr "No se puede anexar el mensaje a la carpeta «%s»: Comando erróneo"
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 msgstr ""
-"No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Error desconocido"
+"No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: Error "
+"desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 msgstr ""
-"No se pueden copiar los mensajes de la carpeta «%s» a la carpeta «%s»: "
-"Error desconocido"
+"No se pueden copiar los mensajes de la carpeta «%s» a la carpeta «%s»: Error "
+"desconocido"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, c-format
@@ -3772,37 +3807,29 @@ msgstr "Los almacenes locales no tienen una bandeja de entrada"
 msgid "Local mail file %s"
 msgstr "Archivo de correo local %s"
 
-#: ../camel/providers/local/camel-local-store.c:371
+#: ../camel/providers/local/camel-local-store.c:348
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "No se pudo cambiar el nombre de la carpeta %s a %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:439
+#: ../camel/providers/local/camel-local-store.c:416
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "No se pudo renombrar: «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:464
-#: ../camel/providers/local/camel-local-store.c:474
-#: ../camel/providers/local/camel-mbox-store.c:276
-#: ../camel/providers/local/camel-mbox-store.c:288
-#, c-format
-msgid "Could not delete folder summary file '%s': %s"
-msgstr "No se puede borrar el resumen la carpeta «%s»: %s"
-
-#: ../camel/providers/local/camel-local-store.c:484
+#: ../camel/providers/local/camel-local-store.c:441
 #: ../camel/providers/local/camel-mbox-store.c:300
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "No se puede borrar el índice de la carpeta «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:507
+#: ../camel/providers/local/camel-local-store.c:464
 #: ../camel/providers/local/camel-mbox-store.c:324
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "No se pudeden borrar los metadatos de la carpeta «%s»: %s"
 
-#: ../camel/providers/local/camel-local-summary.c:470
+#: ../camel/providers/local/camel-local-summary.c:506
 msgid "Unable to add message to summary: unknown reason"
 msgstr "No se pudo añadir mensajes al resumen: razón desconocida"
 
@@ -3818,10 +3845,10 @@ msgstr "No se pudo añadir el mensaje a la carpeta tipo maildir: %s: %s"
 #: ../camel/providers/local/camel-maildir-folder.c:250
 #: ../camel/providers/local/camel-maildir-folder.c:264
 #: ../camel/providers/local/camel-maildir-folder.c:273
-#: ../camel/providers/local/camel-mbox-folder.c:347
-#: ../camel/providers/local/camel-mbox-folder.c:368
-#: ../camel/providers/local/camel-mbox-folder.c:399
-#: ../camel/providers/local/camel-mbox-folder.c:407
+#: ../camel/providers/local/camel-mbox-folder.c:348
+#: ../camel/providers/local/camel-mbox-folder.c:369
+#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:203
 #: ../camel/providers/local/camel-mh-folder.c:214
 #: ../camel/providers/local/camel-mh-folder.c:223
@@ -3916,20 +3943,20 @@ msgstr "No se pudo crear un bloqueo de carpetas en %s: %s"
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "No se pudo abrir el buzón: %s: %s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:278
+#: ../camel/providers/local/camel-mbox-folder.c:279
 msgid "Mail append canceled"
 msgstr "Adición del mensaje cancelada"
 
-#: ../camel/providers/local/camel-mbox-folder.c:281
+#: ../camel/providers/local/camel-mbox-folder.c:282
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "No se pudo añadir el mensaje al archivo mbox: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:401
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "La carpeta parece estar corrompida e irrecuperable."
 
-#: ../camel/providers/local/camel-mbox-folder.c:408
+#: ../camel/providers/local/camel-mbox-folder.c:409
 #: ../camel/providers/local/camel-mh-folder.c:224
 msgid "Message construction failed."
 msgstr "Falló la construcción del mensaje."
@@ -3964,6 +3991,12 @@ msgstr "«%s» no es un archivo normal."
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
 msgstr "La carpeta «%s» no esta vacía. No se borró."
+
+#: ../camel/providers/local/camel-mbox-store.c:276
+#: ../camel/providers/local/camel-mbox-store.c:288
+#, c-format
+msgid "Could not delete folder summary file '%s': %s"
+msgstr "No se puede borrar el resumen la carpeta «%s»: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:378
 #, c-format
@@ -4315,27 +4348,27 @@ msgstr "No conectado."
 msgid "No such folder: %s"
 msgstr "No existe la carpeta: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:271
-#: ../camel/providers/nntp/camel-nntp-summary.c:367
+#: ../camel/providers/nntp/camel-nntp-summary.c:273
+#: ../camel/providers/nntp/camel-nntp-summary.c:369
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Buscando mensajes nuevos"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:278
+#: ../camel/providers/nntp/camel-nntp-summary.c:280
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Respuesta inesperada del servidor desde xover: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:381
+#: ../camel/providers/nntp/camel-nntp-summary.c:383
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Respuesta inesperada del servidor desde head: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:421
+#: ../camel/providers/nntp/camel-nntp-summary.c:423
 msgid "Use cancel"
 msgstr "Usar cancelar"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:423
+#: ../camel/providers/nntp/camel-nntp-summary.c:425
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Operación falló: %s"
@@ -5184,14 +5217,14 @@ msgstr "Seleccione destino"
 msgid "_Destination"
 msgstr "_Destino"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1666
-#: ../servers/exchange/storage/exchange-account.c:970
+#: ../servers/exchange/lib/e2k-autoconfig.c:1683
+#: ../servers/exchange/storage/exchange-account.c:971
 #, c-format
 msgid "Enter password for %s"
 msgstr "Introduzca su contraseña para %s"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1667
-#: ../servers/exchange/storage/exchange-account.c:975
+#: ../servers/exchange/lib/e2k-autoconfig.c:1684
+#: ../servers/exchange/storage/exchange-account.c:976
 msgid "Enter password"
 msgstr "Introduzca la contraseña"
 
@@ -5295,26 +5328,26 @@ msgstr "Esta operación no se puede realizar en modo desconectado"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:661
+#: ../servers/exchange/storage/exchange-account.c:662
 #, c-format
 msgid "%s's Folders"
 msgstr "Carpetas de %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1276
+#: ../servers/exchange/storage/exchange-account.c:1277
 msgid "Personal Folders"
 msgstr "Carpetas personales"
 
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "Favorite Public Folders"
 msgstr "Carpetas públicas favoritas"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1308
+#: ../servers/exchange/storage/exchange-account.c:1309
 msgid "All Public Folders"
 msgstr "Todas las carpetas públicas"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1322
+#: ../servers/exchange/storage/exchange-account.c:1323
 msgid "Global Address List"
 msgstr "Lista de direcciones global"
 
@@ -5342,19 +5375,19 @@ msgstr "Elementos enviados"
 msgid "Tasks"
 msgstr "Tareas"
 
-#: ../servers/groupwise/e-gw-connection.c:224
+#: ../servers/groupwise/e-gw-connection.c:225
 msgid "Invalid connection"
 msgstr "Conexión inválida"
 
-#: ../servers/groupwise/e-gw-connection.c:228
+#: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid response from server"
 msgstr "Respuesta inválida del servidor"
 
-#: ../servers/groupwise/e-gw-connection.c:230
+#: ../servers/groupwise/e-gw-connection.c:231
 msgid "No response from the server"
 msgstr "Sin respuesta del servidor"
 
-#: ../servers/groupwise/e-gw-connection.c:236
+#: ../servers/groupwise/e-gw-connection.c:237
 msgid "Bad parameter"
 msgstr "Parámetro erróneo"
 
