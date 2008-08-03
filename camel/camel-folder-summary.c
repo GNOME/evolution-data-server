@@ -1078,6 +1078,11 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	CamelFIRecord *record;
 	CamelException ex;
 
+	/* Kick off the gc thread cycle. */
+	if (s->timeout_handle)
+		g_source_remove (s->timeout_handle);
+	s->timeout_handle = 0;
+
 	camel_exception_init (&ex);
 	d(g_print ("\ncamel_folder_summary_load from FLAT FILE called \n"));
 
