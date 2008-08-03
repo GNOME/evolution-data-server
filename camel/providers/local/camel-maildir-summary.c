@@ -41,7 +41,7 @@
 #include "camel-mime-message.h"
 #include "camel-operation.h"
 #include "camel-private.h"
-
+#include "camel-string-utils.h"
 #include "camel-maildir-summary.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
@@ -285,7 +285,7 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 
 		uid = camel_message_info_uid(mi);
 		if (uid==NULL || uid[0] == 0)
-			mdi->info.info.uid = camel_folder_summary_next_uid_string(s);
+			mdi->info.info.uid = camel_pstring_add (camel_folder_summary_next_uid_string(s), TRUE);
 
 		/* handle 'duplicates' */
 		info = camel_folder_summary_uid(s, uid);
