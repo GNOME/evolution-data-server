@@ -272,15 +272,26 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 		g_free (store_path);
 	}
 
-
 	folder->cdb = camel_db_open (store_db_path, &ex);
-	g_free (store_db_path);
-	
 	if (camel_exception_is_set (&ex)) {
-		g_print ("Exiting without success for stire_db_path : [%s]: %s\n", store_db_path, camel_exception_get_description(&ex));
+		char *store_path;
+		
+		g_print ("Failure for store_db_path : [%s]\n", store_db_path);
+		g_free (store_db_path);		
+
+		store_path =   camel_session_get_storage_path ((CamelSession *)camel_service_get_session (service), service, &ex);
+		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
+		g_free (store_path);
 		camel_exception_clear(&ex);
-		return;
-	}	
+		folder->cdb = camel_db_open (store_db_path, &ex);
+		if (camel_exception_is_set (&ex)) {
+			g_print("Retry with %s failed\n", store_db_path);
+			g_free(store_db_path);
+			camel_exception_clear(&ex);
+			return;
+		}
+	}
+	g_free (store_db_path);
 }
 
 

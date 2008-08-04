@@ -6,6 +6,13 @@
 
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #546194
+
+	* camel/camel-folder.c: Use the right path for spool a/c
+	* camel/camel-store.c: Use the right path for spool a/c
+
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Fix some basic vfolder code for disk
 	summary.
 
