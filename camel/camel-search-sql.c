@@ -229,6 +229,9 @@ camel_sexp_to_sql (const char *txt)
 	
 	d(printf("len = %d\n", strlen (txt)));
 	
+	if (!txt || !*txt)
+		return NULL;
+
 	g_scanner_input_text (scanner, txt, strlen(txt));
 	while (!g_scanner_eof (scanner)) {
 		Node *mnode;

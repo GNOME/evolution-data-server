@@ -1,5 +1,11 @@
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-folder-search.c: (camel_folder_search_search): Fix while
+	moving to offline.
+	* camel-search-sql.c: (camel_sexp_to_sql):
+
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-string-utils.c: Disable debug crashers.
 
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>

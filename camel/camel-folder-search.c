@@ -484,7 +484,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		d(printf ("sexp is : [%s]\n", expr));
 		sql_query = camel_sexp_to_sql (expr);
 		tmp1 = camel_db_sqlize_string(search->folder->full_name);
-		tmp = g_strdup_printf ("SELECT uid FROM %s WHERE %s", tmp1,  sql_query);
+		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
 		g_free (sql_query);
 		d(printf("Equivalent sql %s\n", tmp));
