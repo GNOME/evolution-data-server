@@ -590,8 +590,7 @@ vee_search_by_expression(CamelFolder *folder, const char *expression, CamelExcep
 		/* make sure we only search each folder once - for unmatched folder to work right */
 		if (g_hash_table_lookup(searched, f) == NULL) {
 			camel_vee_folder_hash_folder(f, hash);
-			/* FIXME: shouldn't ignore search exception */
-			matches = camel_folder_search_by_expression(f, expr, NULL);
+			matches = camel_folder_search_by_expression(f, expr, ex);
 			if (matches) {
 				for (i = 0; i < matches->len; i++) {
 					char *uid = matches->pdata[i], *vuid;
@@ -611,64 +610,6 @@ vee_search_by_expression(CamelFolder *folder, const char *expression, CamelExcep
 
 	
 	g_free(expr);
-
-	if (0)
-	{
-		GHashTable *hashes = g_hash_table_new (g_str_hash, g_str_equal);
-		GPtrArray *subids = g_ptr_array_new ();
-		GPtrArray *summary = camel_folder_summary_array (folder->summary);
-		char *last_id = NULL;
-		printf("Doing for folder %s\n", folder->full_name);
-		CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);		
-		node = p->folders;
-		while (node) {
-			CamelFolder *f = node->data;
-			char hash[9];
-
-			camel_vee_folder_hash_folder(f, hash);
-			hash[8] = 0;
-			g_hash_table_insert(hashes, hash, f);
-			node = g_list_next(node);
-		}
-		CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
-		if (summary->len) {
-			int i, j;
-			
-			last_id = summary->pdata[0];
-			g_ptr_array_add (subids, last_id+8);
-			for (i=1; i<=summary->len; i++) {
-				if (i==summary->len || strncmp(last_id, summary->pdata[i], 8)) {
-					/* We got a new id */
-					char shash[9];
-					strncpy (shash, last_id, 8);
-					shash[8] = 0;
-					CamelFolder *cf = g_hash_table_lookup (hashes, shash);
-					d(printf("Searching %s for %d uids (%d<%d )...\t", cf->full_name, subids->len, i, summary->len));
-					matches = camel_folder_search_by_uids (cf, expression, subids, NULL);
-					d(printf("Got %d\n", matches->len));
-					if (matches) {
-						for (j = 0; j < matches->len; j++) {
-							char *uid = matches->pdata[j], *vuid;
-
-							vuid = g_malloc(strlen(uid)+9);
-							memcpy(vuid, shash, 8);
-							strcpy(vuid+8, uid);
-							g_ptr_array_add(result, vuid);
-						}
-						camel_folder_search_free(cf, matches);
-					}					
-					g_ptr_array_set_size(subids, 0);
-				}
-				if (i <summary->len) {
-					last_id = summary->pdata[i];
-					g_ptr_array_add (subids, last_id+8);
-				}
-			}
-			
-		}
-		camel_folder_free_summary (folder, summary);		
-	}
-
 
 	g_hash_table_destroy(searched);
 	d(printf("returning %d\n", result->len));
@@ -708,7 +649,7 @@ vee_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids,
 					g_ptr_array_add(folder_uids, uid+8);
 			}
 			if (folder_uids->len > 0) {
-				matches = camel_folder_search_by_uids(f, expression, folder_uids, ex);
+				matches = camel_folder_search_by_uids(f, expr, folder_uids, ex);
 				if (matches) {
 					for (i = 0; i < matches->len; i++) {
 						char *uid = matches->pdata[i], *vuid;

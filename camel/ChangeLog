@@ -6,6 +6,11 @@
 
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Fix some basic vfolder code for disk
+	summary.
+
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-string-utils.c: Disable debug crashers.
 
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
