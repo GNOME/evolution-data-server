@@ -868,9 +868,10 @@ ea_setting_setup(void)
 		g_hash_table_insert(ea_system_table, (char *)system_perms[i].key, &system_perms[i]);
 		sprintf(key, LOCK_BASE "/%s", system_perms[i].key);
 		entry = gconf_client_get_entry(gconf, key, NULL, TRUE, &err);
-		if (entry)
+		if (entry) {
 			ea_setting_notify(gconf, 0, entry, NULL);
-		gconf_entry_free(entry);
+			gconf_entry_free(entry);
+		}
 	}
 
 	if (err) {

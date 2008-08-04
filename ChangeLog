@@ -1,3 +1,10 @@
+2008-08-04  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	** Fix for bug #545022
+
+	* libedataserver/e-account.c (ea_setting_setup): Free gconf-entry only
+	if it is non-NULL. 
+
 2008-07-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #545558
