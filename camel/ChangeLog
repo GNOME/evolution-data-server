@@ -1,3 +1,7 @@
+2008-08-04  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel.pc.in: List sqlite3 as a requirement.
+
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #546194
