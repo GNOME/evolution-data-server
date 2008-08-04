@@ -1,3 +1,8 @@
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/local/camel-spool-summary.c: Load spool's summary
+	before we need it to avoid any duplication.
+
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-maildir-summary.c: Fix pstring crashes.

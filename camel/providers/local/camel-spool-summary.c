@@ -113,6 +113,7 @@ camel_spool_summary_new(struct _CamelFolder *folder, const char *mbox_name)
 	((CamelFolderSummary *)new)->folder = folder;
 
 	camel_local_summary_construct((CamelLocalSummary *)new, NULL, mbox_name, NULL);
+	camel_folder_summary_load_from_db ((CamelFolderSummary *)new, NULL);
 	return new;
 }
 
