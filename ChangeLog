@@ -1,3 +1,7 @@
+2008-08-04  Matthias Braun <matze@braunis.de>
+
+	* configure.in: Added WebDAV backend for addressbook. 
+
 2008-08-04  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	** Fix for bug #545022

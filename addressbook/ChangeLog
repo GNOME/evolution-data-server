@@ -1,9 +1,42 @@
+2008-08-04  Matthias Braun <matze@braunis.de>
+
+	** Fix for bug #544051 - Added WebDAV backend for addressbook. 
+
+	* backends/Makefile.am:
+	* backends/webdav/Makefile.am:
+	* backends/webdav/e-book-backend-webdav-factory.c
+	(eds_module_initialize), (eds_module_shutdown),
+	(eds_module_list_types):
+	* backends/webdav/e-book-backend-webdav.c (closure_destroy),
+	(init_closure), (get_closure), (download_contact),
+	(upload_contact), (e_book_backend_handle_auth_request),
+	(e_book_backend_webdav_create_contact), (delete_contact),
+	(e_book_backend_webdav_remove_contacts),
+	(e_book_backend_webdav_modify_contact),
+	(e_book_backend_webdav_get_contact), (parse_response_tag),
+	(parse_propfind_response), (send_propfind), (download_contacts),
+	(book_view_thread), (e_book_backend_webdav_start_book_view),
+	(e_book_backend_webdav_stop_book_view),
+	(e_book_backend_webdav_get_contact_list),
+	(e_book_backend_webdav_authenticate_user),
+	(e_book_backend_webdav_get_supported_fields),
+	(e_book_backend_webdav_get_supported_auth_methods),
+	(e_book_backend_webdav_get_required_fields), (soup_authenticate),
+	(e_book_backend_webdav_load_source),
+	(e_book_backend_webdav_remove), (e_book_backend_webdav_set_mode),
+	(e_book_backend_webdav_get_static_capabilities),
+	(e_book_backend_webdav_cancel_operation),
+	(e_book_backend_webdav_new), (e_book_backend_webdav_dispose),
+	(e_book_backend_webdav_class_init), (e_book_backend_webdav_init),
+	(e_book_backend_webdav_get_type):
+	* backends/webdav/e-book-backend-webdav.h:
+
 2008-07-28  Jeff Cai  <jeff.cai@sun.com>
 
-    ** Fix for bug #544284
+	** Fix for bug #544284
 
 	* backends/google/util.h: 
-      Use (void) 0 insead of '0' in the conditional statement.
+	Use (void) 0 insead of '0' in the conditional statement.
 
 2008-07-21  Johnny Jacob  <jjohnny@novell.com>
 
