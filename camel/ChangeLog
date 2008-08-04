@@ -1,3 +1,7 @@
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-string-utils.c: Disable debug crashers.
+
 2008-08-03  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-summary.c: Make 5 minutes as cache drop interval.
