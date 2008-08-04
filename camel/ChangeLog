@@ -1,11 +1,5 @@
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
-	* camel-folder-search.c: (camel_folder_search_search): Fix while
-	moving to offline.
-	* camel-search-sql.c: (camel_sexp_to_sql):
-
-2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
-
 	** Fix for bug #546194
 
 	* camel/camel-folder.c: Use the right path for spool a/c
@@ -15,6 +9,12 @@
 
 	* camel/camel-vee-folder.c: Fix some basic vfolder code for disk
 	summary.
+
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-folder-search.c: (camel_folder_search_search): Fix while
+	moving to offline.
+	* camel-search-sql.c: (camel_sexp_to_sql):
 
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
