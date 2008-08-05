@@ -1,3 +1,10 @@
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug #546415
+
+	* camel/providers/imap/camel-imap-search.c: The summary is now uids.
+	So deal it that way.
+
 2008-08-05  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes part of #533823

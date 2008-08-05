@@ -428,7 +428,6 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 	CamelImapSearch *is = (CamelImapSearch *)s;
 	char *uid;
 	ESExpResult *r;
-	CamelMessageInfo *info;	
 	GHashTable *uid_hash = NULL;
 	GPtrArray *array;
 	int i, j;
@@ -452,8 +451,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 			r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 			for (i = 0; i < s->summary->len; i++) {
-				info = g_ptr_array_index(s->summary, i);
-				g_ptr_array_add(r->value.ptrarray, (char *)camel_message_info_uid(info));
+				g_ptr_array_add(r->value.ptrarray, (char *)g_ptr_array_index(s->summary, i));
 			}
 		}
 	} else if (argc == 0 || s->summary->len == 0) {
@@ -469,8 +467,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 		int truth = FALSE;
 
 		/* setup lastuid/validity for synchronising */
-		info = g_ptr_array_index(s->summary, s->summary->len-1);
-		is->lastuid = strtoul(camel_message_info_uid(info), NULL, 10);
+		is->lastuid = strtoul((char *)g_ptr_array_index(s->summary, s->summary->len-1), NULL, 10);
 		is->validity = ((CamelImapSummary *)(s->folder->summary))->validity;
 
 		mr = get_match(is, argc, argv);
@@ -491,8 +488,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 			/* We use the summary's strings so we dont need to alloc more */
 			uid_hash = g_hash_table_new(NULL, NULL);
 			for (i = 0; i < s->summary->len; i++) {
-				info = s->summary->pdata[i];
-				uid = (char *)camel_message_info_uid(info);
+				uid = (char *)s->summary->pdata[i];
 				uidn = strtoul(uid, NULL, 10);
 				g_hash_table_insert(uid_hash, GUINT_TO_POINTER(uidn), uid);
 			}
