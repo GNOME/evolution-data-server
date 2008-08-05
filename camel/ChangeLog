@@ -1,5 +1,10 @@
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-search.c: Load the summary from db, only if the
+	searching length is more than in memory cache.
+
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-digest-folder.c: Fix search by uids. Pro'lly a typo.
 
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
