@@ -57,7 +57,6 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	to = (CamelVeeMessageInfo *)camel_message_info_new(s);
 
 	to->summary = from->summary;
-	/* FIXME: We may not need this during CamelDBSummary */
 	camel_object_ref (to->summary);
 	to->info.summary = s;
 	to->info.uid = camel_pstring_strdup(from->info.uid);
@@ -65,16 +64,19 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	return (CamelMessageInfo *)to;
 }
 
+#define HANDLE_NULL_INFO(value) if (!rmi) { g_warning (G_STRLOC ": real info is NULL for %s, safeguarding\n", mi->uid); return value; }
+
 static const void *
 vee_info_ptr (const CamelMessageInfo *mi, int id)
 {
 	CamelVeeMessageInfo *vmi = (CamelVeeMessageInfo *) mi;
-	CamelMessageInfo *info;
+	CamelMessageInfo *rmi;
 	gpointer p;
 	
-	info = camel_folder_summary_uid (vmi->summary, mi->uid+8);
-	p = (gpointer) camel_message_info_ptr(info, id);
-	camel_message_info_free (info);
+	rmi = camel_folder_summary_uid (vmi->summary, mi->uid+8);
+	HANDLE_NULL_INFO(NULL);
+	p = (gpointer) camel_message_info_ptr(rmi, id);
+	camel_message_info_free (rmi);
 
 	return p;
 }
@@ -83,8 +85,10 @@ static guint32
 vee_info_uint32(const CamelMessageInfo *mi, int id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-	guint32 ret = camel_message_info_uint32 (rmi, id);
-
+	guint32 ret;
+	
+	HANDLE_NULL_INFO(0);
+	ret = camel_message_info_uint32 (rmi, id);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -95,7 +99,10 @@ static time_t
 vee_info_time(const CamelMessageInfo *mi, int id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-	time_t ret = camel_message_info_time (rmi, id);
+	time_t ret;
+	
+	HANDLE_NULL_INFO(0);
+	ret = camel_message_info_time (rmi, id);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -105,7 +112,10 @@ static gboolean
 vee_info_user_flag(const CamelMessageInfo *mi, const char *id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-	gboolean ret = 	camel_message_info_user_flag (rmi, id);
+	gboolean ret;
+	
+	HANDLE_NULL_INFO(FALSE);
+	ret = 	camel_message_info_user_flag (rmi, id);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -115,7 +125,10 @@ static const char *
 vee_info_user_tag(const CamelMessageInfo *mi, const char *id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-	const char *ret = camel_message_info_user_tag (rmi, id);
+	const char *ret;
+	
+	HANDLE_NULL_INFO("");
+	ret = camel_message_info_user_tag (rmi, id);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -128,6 +141,7 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		HANDLE_NULL_INFO(FALSE);
 		res = camel_message_info_set_user_flag(rmi, name, value);
 		camel_message_info_free (rmi);		
 	}
@@ -142,6 +156,7 @@ vee_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value)
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		HANDLE_NULL_INFO(FALSE);		
 		res = camel_message_info_set_user_tag(rmi, name, value);
 		camel_message_info_free (rmi);			
 	}
@@ -155,7 +170,8 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 	int res = FALSE;
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);		
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		HANDLE_NULL_INFO(FALSE);		
 		res = camel_message_info_set_flags(rmi, flags, set);
 		camel_message_info_free (rmi);
 	}
@@ -288,8 +304,8 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 	vuid = g_malloc(strlen(uid)+9);
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
-	
-	#warning do we need it really ?
+
+	/* We really dont need it. */
 /* 	mi = (CamelVeeMessageInfo *)camel_folder_summary_uid(&s->summary, vuid); */
 /* 	if (mi) { */
 /* 		d(printf("w:clash, we already have '%s' in summary\n", vuid)); */

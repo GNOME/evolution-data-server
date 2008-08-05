@@ -479,7 +479,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	record->folder_name = table_name;
 
 	/* we always write out the current version */
-	record->version = 13;  //FIXME CAMEL_FOLDER_SUMMARY_VERSION;
+	record->version = 13;  /* FIXME: CAMEL_FOLDER_SUMMARY_VERSION; */
 	record->flags  = s->flags;
 	record->nextuid = s->nextuid;
 	record->time = s->time;
@@ -514,7 +514,7 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 			camel_exception_setv(ex, ex->id, _("Error storing '%s': %s"), desc, ex->desc);
 			break;
 		}
-#warning "see if it is really required"
+
 		/* auto update vfolders shouldn't need a rebuild */
 /* 		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
 /* 		    && camel_vee_folder_rebuild_folder(vf, f, ex) == -1) */
@@ -524,7 +524,6 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	}
 	
 	record = summary_header_to_db (folder->summary, ex);
-	#warning handle exception and ret
 	camel_db_write_folder_info_record (folder->parent_store->cdb, record, ex);
 	g_free (record);
 	

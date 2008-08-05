@@ -1,5 +1,11 @@
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c: Safe guard against missing infos and
+	protect them and added debug logs for erring cases.
+
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-search.c: Load the summary from db, only if the
 	searching length is more than in memory cache.
 
