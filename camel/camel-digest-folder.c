@@ -351,7 +351,7 @@ digest_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *u
 		df->priv->search = camel_folder_search_new ();
 	
 	camel_folder_search_set_folder (df->priv->search, folder);
-	matches = camel_folder_search_search(df->priv->search, expression, NULL, ex);
+	matches = camel_folder_search_search(df->priv->search, expression, uids, ex);
 	
 	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
 	

@@ -1,5 +1,9 @@
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-digest-folder.c: Fix search by uids. Pro'lly a typo.
+
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #546184
 
 	* camel/camel-folder-search.c: Search if we are under match_all.
