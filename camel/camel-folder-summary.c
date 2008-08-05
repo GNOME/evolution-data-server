@@ -791,7 +791,12 @@ static gboolean
 cfs_try_release_memory (CamelFolderSummary *s)
 {
 	struct _folder_summary_free_msg *m;
-	CamelSession *session = ((CamelService *)((CamelFolder *)s->folder)->parent_store)->session;
+	CamelSession *session;
+	
+	if (!s->folder)
+		return FALSE;
+
+	session = ((CamelService *)((CamelFolder *)s->folder)->parent_store)->session;
 
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return TRUE;

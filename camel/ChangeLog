@@ -10,6 +10,15 @@
 
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #545505
+
+	* camel/camel-folder-summary.c: Don't bother starting cache kick off
+	threads for zombie summaries.
+	* camel/camel-folder.c: When we unref a folder, kick off the freeing
+	thread from summary.
+
+2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c:
 	* camel/camel-vee-summary.c: Safe guard against missing infos and
 	protect them and added debug logs for erring cases.
