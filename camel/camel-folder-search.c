@@ -420,7 +420,8 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 
 	p->ex = ex;
 
-	if (strstr((const char *) expr, "body-contains")) {
+	/* We route body-contains search and uid search through memory and not via db. */
+	if (uids || strstr((const char *) expr, "body-contains")) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary(search->folder);
 
@@ -782,7 +783,6 @@ search_match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, Camel
 	}
 
 	/* cache this, so we only have to re-calculate once per search at most */
-	#warning "make search threads work well. Not sure if that works"
 	if (p->threads == NULL) {
 		p->threads = camel_folder_thread_messages_new(search->folder, NULL, TRUE);
 		p->threads_hash = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1292,7 +1292,7 @@ search_user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFol
 	
 	r(printf("executing user-tag\n"));
 	
-	if (argc == 1)
+	if (search->current && argc == 1)
 		value = camel_message_info_user_tag(search->current, argv[0]->value.string);
 	
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
