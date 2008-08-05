@@ -738,7 +738,6 @@ vee_folder_remove_folder(CamelVeeFolder *vf, CamelFolder *source)
 	char *oldkey;
 	CamelFolder *folder = (CamelFolder *)vf;
 	char hash[8];
-	/*struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);*/
 	CamelFolderChangeInfo *vf_changes = NULL, *unmatched_changes = NULL;
 	void *oldval;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
