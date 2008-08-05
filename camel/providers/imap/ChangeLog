@@ -1,3 +1,35 @@
+2008-08-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of #533823
+	* Makefile.am: Added camel-imap-journal.[ch]
+	* camel-imap-command.c: (imap_read_response):
+	* camel-imap-folder.c: (camel_imap_folder_class_init),
+	(camel_imap_folder_init), (camel_imap_folder_get_type),
+	(camel_imap_folder_new), (camel_imap_folder_selected),
+	(imap_finalize), (imap_rename), (imap_refresh_info), (imap_sync),
+	(imap_expunge_uids_offline), (imap_expunge), (imap_append_offline),
+	(imap_append_online), (imap_transfer_offline),
+	(imap_transfer_online), (imap_transfer_resyncing), (imap_thaw),
+	(imap_get_quota_info):
+	* camel-imap-folder.h:
+	* camel-imap-journal.c: (camel_imap_journal_get_type),
+	(camel_imap_journal_class_init), (camel_imap_journal_init),
+	(free_uid), (camel_imap_journal_finalize), (unref_folder),
+	(imap_entry_free), (free_uids), (decode_uids), (imap_entry_load),
+	(encode_uids), (imap_entry_write), (journal_decode_folder),
+	(imap_entry_play), (camel_imap_journal_new),
+	(camel_imap_journal_log), (close_folder),
+	(camel_imap_journal_close_folders),
+	(camel_imap_journal_uidmap_add),
+	(camel_imap_journal_uidmap_lookup):
+	* camel-imap-journal.h:
+	* camel-imap-store.c: (camel_imap_store_class_init),
+	(camel_imap_store_finalize), (camel_imap_store_get_type),
+	(construct), (parse_capability), (query_auth_types),
+	(imap_connect), (imap_disconnect), (get_folder), (create_folder),
+	(get_folder_info), (camel_imap_store_connected):
+	* camel-imap-store.h: Disco to Offline migration.
+
 2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #538620

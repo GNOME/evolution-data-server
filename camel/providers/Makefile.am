@@ -4,10 +4,6 @@ if ENABLE_NNTP
 NNTP_DIR=nntp
 endif
 
-if ENABLE_HULA
-HULA_DIR=hula
-endif
-
 if ENABLE_IMAPP
 IMAPP_DIR=imapp
 endif

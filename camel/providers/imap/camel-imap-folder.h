@@ -28,8 +28,9 @@
 #define CAMEL_IMAP_FOLDER_H 1
 
 #include "camel-imap-types.h"
-#include <camel/camel-disco-folder.h>
+#include <camel/camel-offline-folder.h>
 #include <camel/camel-folder-search.h>
+#include <camel/camel-offline-journal.h>
 
 #define CAMEL_IMAP_FOLDER_TYPE     (camel_imap_folder_get_type ())
 #define CAMEL_IMAP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolder))
@@ -38,9 +39,11 @@
 
 G_BEGIN_DECLS
 
+struct _CamelIMAP4Journal;
+
 enum {
-	CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER = CAMEL_DISCO_FOLDER_ARG_LAST,
-	CAMEL_IMAP_FOLDER_ARG_LAST = CAMEL_DISCO_FOLDER_ARG_LAST + 0x100
+	CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER = CAMEL_OFFLINE_FOLDER_ARG_LAST,
+	CAMEL_IMAP_FOLDER_ARG_LAST = CAMEL_OFFLINE_FOLDER_ARG_LAST + 0x100
 };
 
 enum {
@@ -51,12 +54,13 @@ typedef struct _CamelImapFolderClass CamelImapFolderClass;
 typedef struct _CamelImapFolderPrivate CamelImapFolderPrivate;
 
 struct _CamelImapFolder {
-	CamelDiscoFolder parent_object;
+	CamelOfflineFolder parent_object;
 
 	CamelImapFolderPrivate *priv;
 
 	CamelFolderSearch *search;
 	CamelImapMessageCache *cache;
+	CamelOfflineJournal *journal;
 
 	unsigned int need_rescan:1;
 	unsigned int need_refresh:1;
@@ -65,7 +69,7 @@ struct _CamelImapFolder {
 };
 
 struct _CamelImapFolderClass {
-	CamelDiscoFolderClass parent_class;
+	CamelOfflineFolderClass parent_class;
 
 	/* Virtual methods */	
 	
@@ -90,6 +94,16 @@ CamelStream *camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 					   const char *section_text,
 					   gboolean cache_only,
 					   CamelException *ex);
+void
+imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
+		       const CamelMessageInfo *info, char **appended_uid,
+		       CamelException *ex);
+void
+imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
+			 CamelFolder *dest, GPtrArray **transferred_uids,
+			 gboolean delete_originals, CamelException *ex);
+void
+imap_expunge_uids_resyncing (CamelFolder *folder, GPtrArray *uids, CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_imap_folder_get_type (void);

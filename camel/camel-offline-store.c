@@ -102,6 +102,19 @@ offline_store_construct (CamelService *service, CamelSession *session,
 		CAMEL_OFFLINE_STORE_NETWORK_AVAIL : CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 }
 
+/**
+ * camel_offline_store_get_network_state:
+ * @store: a #CamelOfflineStore object
+ * @ex: a #CamelException
+ *
+ * Return the network state either #CAMEL_OFFLINE_STORE_NETWORK_AVAIL
+ * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
+ **/
+int 
+camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex)
+{
+	return store->state;	
+}
 
 /**
  * camel_offline_store_set_network_state:
@@ -156,9 +169,12 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_state, ex))
 			return;
 	} else {
+		store->state = state;
 		/* network unavailable -> network available */
-		if (!camel_service_connect (CAMEL_SERVICE (store), ex))
+		if (!camel_service_connect (CAMEL_SERVICE (store), ex)) {
+			store->state = CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 			return;
+		}
 	}
 	
 	store->state = state;

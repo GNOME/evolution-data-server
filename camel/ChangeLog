@@ -1,3 +1,13 @@
+2008-08-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes part of #533823
+	* camel-offline-store.c: (camel_offline_store_get_network_state),
+	(camel_offline_store_set_network_state): set the network state to
+	online before calling camel_service_connect as the providers depend
+	on that.						 
+	* camel-offline-store.h:
+	* providers/Makefile.am: Disco->Offline migration code.
+
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-vee-folder.c:

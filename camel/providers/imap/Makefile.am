@@ -23,6 +23,7 @@ libcamelimap_la_SOURCES = 			\
 	camel-imap-store.c			\
 	camel-imap-store-summary.c		\
 	camel-imap-summary.c			\
+	camel-imap-journal.c			\
 	camel-imap-utils.c			\
 	camel-imap-wrapper.c
 
@@ -34,6 +35,7 @@ noinst_HEADERS =			\
 	camel-imap-store.h			\
 	camel-imap-store-summary.h		\
 	camel-imap-summary.h			\
+	camel-imap-journal.h			\
 	camel-imap-types.h			\
 	camel-imap-utils.h			\
 	camel-imap-wrapper.h                    \

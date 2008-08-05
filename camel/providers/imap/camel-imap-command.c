@@ -389,10 +389,10 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	
 	response = g_new0 (CamelImapResponse, 1);
-	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
+/*FIXME	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
 		response->folder = store->current_folder;
 		camel_object_ref (CAMEL_OBJECT (response->folder));
-	}
+	} */
 	
 	response->untagged = g_ptr_array_new ();
 	while ((type = camel_imap_command_response (store, &respbuf, ex))

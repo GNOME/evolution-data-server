@@ -26,7 +26,7 @@
 #define CAMEL_IMAP_STORE_H 1
 
 #include "camel-imap-types.h"
-#include <camel/camel-disco-store.h>
+#include <camel/camel-offline-store.h>
 #include <sys/time.h>
 
 #ifdef ENABLE_THREADS
@@ -60,7 +60,7 @@ G_END_DECLS
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_IMAP_STORE_ARG_FIRST  = CAMEL_DISCO_STORE_ARG_FIRST + 100,
+	CAMEL_IMAP_STORE_ARG_FIRST  = CAMEL_OFFLINE_STORE_ARG_FIRST + 100,
 	CAMEL_IMAP_STORE_ARG_NAMESPACE,
 	CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE,
 	CAMEL_IMAP_STORE_ARG_CHECK_ALL,
@@ -115,7 +115,7 @@ typedef enum {
 #define IMAP_FETCH_MINIMAL_HEADERS 3
 
 struct _CamelImapStore {
-	CamelDiscoStore parent_object;	
+	CamelOfflineStore parent_object;	
 	
 	CamelStream *istream;
 	CamelStream *ostream;
@@ -150,7 +150,7 @@ struct _CamelImapStore {
 };
 
 typedef struct {
-	CamelDiscoStoreClass parent_class;
+	CamelOfflineStoreClass parent_class;
 
 } CamelImapStoreClass;
 
