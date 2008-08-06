@@ -51,6 +51,7 @@ struct _CamelVeeFolder {
 	/* only set-up if our parent is a vee-store, used also as a flag to
 	 * say that this folder is part of the unmatched folder */
 	struct _CamelVeeStore *parent_vee_store;
+	GHashTable *hashes;
 };
 
 struct _CamelVeeFolderClass {

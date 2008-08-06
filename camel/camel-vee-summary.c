@@ -32,6 +32,7 @@
 #include "camel-folder.h"
 #include "camel-store.h"
 #include "camel-vee-summary.h"
+#include "camel-vee-folder.h"
 #include "camel-private.h"
 #include "camel-string-utils.h"
 
@@ -182,7 +183,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 static CamelMessageInfo *
 message_info_from_uid (CamelFolderSummary *s, const char *uid)
 {
-	CamelMessageInfoBase *info;
+	CamelMessageInfo *info;
 
 	#warning "too bad design. Need to peek it from cfs instead of hacking ugly like this"
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
@@ -195,8 +196,24 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 	CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-
-	return (CamelMessageInfo *) info;	
+	
+	if (!info) {
+		CamelVeeMessageInfo *vinfo;
+		char tmphash[9];
+		
+		/* Create the info and load it, its so easy. */
+		info = camel_message_info_new (s);
+		camel_message_info_ref(info);
+		info->dirty = FALSE;
+		vinfo = (CamelVeeMessageInfo *) info;
+		info->uid = camel_pstring_strdup(uid);
+		strncpy(tmphash, uid, 8);
+		tmphash[8] = 0;
+		vinfo->summary = g_hash_table_lookup(((CamelVeeFolder *) s->folder)->hashes, tmphash);
+		camel_object_ref (vinfo->summary);
+		camel_folder_summary_insert (s, info, FALSE);
+	}
+	return info;	
 }
 
 static void
@@ -305,19 +322,19 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
 
-	/* We really dont need it. */
-/* 	mi = (CamelVeeMessageInfo *)camel_folder_summary_uid(&s->summary, vuid); */
-/* 	if (mi) { */
-/* 		d(printf("w:clash, we already have '%s' in summary\n", vuid)); */
-/* 		camel_message_info_free((CamelMessageInfo *)mi); */
-/* 		g_free(vuid); */
-/* 		return NULL; */
-/* 	} */
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	mi = (CamelVeeMessageInfo *) g_hash_table_lookup(((CamelFolderSummary *) s)->loaded_infos, vuid); 
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
-	mi = (CamelVeeMessageInfo *) message_info_from_uid(&s->summary, vuid); 
 	if (mi) {
-		g_warning ("%s - already there\n", vuid);
+		/* Possible that the entry is loaded, see if it has the summary */
+		g_message ("%s - already there\n", vuid);
 		g_free (vuid);
+		if (!mi->summary) {
+			mi->summary = summary;
+			camel_object_ref(summary);
+		}
+
 		return mi;
 	}
 

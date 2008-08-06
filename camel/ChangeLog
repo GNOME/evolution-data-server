@@ -1,5 +1,12 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Redo vfolders. It now works.
+	* camel/camel-vee-folder.h:
+	* camel/camel-vee-summary.c:
+	* camel/camel-vtrash-folder.c:
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #546544
 
 	* camel/camel-folder-summary.c: Don't try print folder name, when

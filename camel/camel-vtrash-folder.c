@@ -413,17 +413,12 @@ static void
 vtrash_uid_removed(CamelVTrashFolder *vf, const char *uid, char hash[8])
 {
 	char *vuid;
-	CamelVeeMessageInfo *vinfo;
 
 	vuid = g_alloca(strlen(uid)+9);
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
-	vinfo = (CamelVeeMessageInfo *)camel_folder_summary_uid(((CamelFolder *)vf)->summary, vuid);
-	if (vinfo) {
-		camel_folder_change_info_remove_uid(((CamelVeeFolder *)vf)->changes, vuid);
-		camel_folder_summary_remove(((CamelFolder *)vf)->summary, (CamelMessageInfo *)vinfo);
-		camel_message_info_free(vinfo);
-	}
+	camel_folder_change_info_remove_uid(((CamelVeeFolder *)vf)->changes, vuid);
+	camel_folder_summary_remove_uid(((CamelFolder *)vf)->summary, vuid);
 }
 
 static void
@@ -443,9 +438,6 @@ vtrash_uid_added(CamelVTrashFolder *vf, const char *uid, CamelFolderSummary *ssu
 			camel_folder_change_info_add_uid(((CamelVeeFolder *)vf)->changes, vuid);
 			camel_message_info_free (tinfo);
 		}
-	} else {
-		camel_folder_change_info_change_uid(((CamelVeeFolder *)vf)->changes, vuid);
-		camel_message_info_free(vinfo);
 	}
 }
 
@@ -513,14 +505,16 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
 	GPtrArray *infos=NULL;
 	int i;
-	char hash[8];
+	char hash[8], *shash;
 	CamelFolderChangeInfo *vf_changes = NULL;
 
 	camel_vee_folder_hash_folder(sub, hash);
-
+	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
+	if (!g_hash_table_lookup (vf->hashes, shash))
+		g_hash_table_insert (vf->hashes, g_strdup(shash), sub->summary);
+	
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
-	#warning "Search for deleted /junk uids in the db and add them directly"
 	if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_DELETED)
 		infos = camel_db_get_folder_deleted_uids (sub->cdb, sub->full_name, NULL);
 	else if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_JUNK)
@@ -528,6 +522,7 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 
 	if (!infos) {
 		CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
+		g_free (shash);
 		return;
 	}
 	
@@ -550,6 +545,8 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 		camel_object_trigger_event(vf, "folder_changed", vf_changes);
 		camel_folder_change_info_free(vf_changes);
 	}
+
+	g_free(shash);
 }
 
 static void
@@ -557,12 +554,12 @@ vtrash_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
 	GPtrArray *infos;
 	int i;
-	char hash[8];
+	char hash[8], *shash;
 	CamelFolderChangeInfo *vf_changes = NULL;
 	CamelFolderSummary *ssummary = sub->summary;
 	int start, last;
 
-	camel_vee_folder_hash_folder(sub, hash);
+
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
@@ -608,6 +605,11 @@ vtrash_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 
 	CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
 
+	camel_vee_folder_hash_folder(sub, hash);
+	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
+	if (g_hash_table_lookup (vf->hashes, shash))
+		g_hash_table_remove (vf->hashes, shash);
+	g_free(shash);	
 	if (vf_changes) {
 		camel_object_trigger_event(vf, "folder_changed", vf_changes);
 		camel_folder_change_info_free(vf_changes);
