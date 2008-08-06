@@ -1,3 +1,7 @@
+2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS: Evolution Data Server 2.23.6 release and version bump.
+
 2008-08-04  Matthias Braun <matze@braunis.de>
 
 	* configure.in: Added WebDAV backend for addressbook. 

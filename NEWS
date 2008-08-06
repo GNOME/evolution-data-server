@@ -1,3 +1,51 @@
+Evolution-Data-Server 2.23.6 2008-08-04
+---------------------------------------
+
+New in 2.23.6:
+	Rewrite camel search by converting sexp to sql (Srinivasa Ragavan)
+	WebDAV Contacts backend (Matthias Braun)
+	
+Bug Fixes:
+	#336074: New option "check_lsub", when set, then checking for new messages in subscribed folders (Milan Crha)
+	#349870: Do not hide errors, rather report them to the caller as expected (Milan Crha)
+	#388966: (Novell Bugzilla) Use right data type (Chenthill Palanisamy)
+	#468671: Read timezone name of the calendar and let it be available for others (Milan Crha)
+	#500389: New ability to set different authentication type to Global Address List (GAL) and OWA (Milan Crha)
+	#538620: Improve wording of "cannot get message" error message (Matthew Barnes)
+	#540295: Previous POSIX logic didn't work for VFAT filesystems (Sergio)
+	#543569: Recreate cache, if it was blown (Srinivasa Ragavan)
+	#543943: Fix memory leak (Milan Crha) 
+	#544031: Compiler warnings cleanup (Milan Crha)
+	#544049: Initialize global variables, just to be sure (Milan Crha)
+	#544114: Do a sync before we reload things (Srinivasa Ragavan)
+	#544284: Use (void) 0 insead of '0' in the conditional statement (Jeff Cai)
+	#544491: Lock while 2 thread try to access same folder's table using same handle (Srinivasa Ragavan)
+	#544501: Handle single node search queries (Srinivasa Ragavan)
+	#544528: Ignore match-threads. It wont be supported with new disk summary. Handle cases where it crashes (Srinivasa Ragavan)
+	#544651: Interpret and update given list pointer properly (Milan Crha)
+	#544825: Never hold the summary lock and do a disk operation. It leads to dead lock (Srinivasa Ragavan)
+	#544963: Include camel-search-sql.h in headers. (Frederic Peters)
+	#545022: ea_setting_setup calls g_conf_free with NULL argument (Tobias Mueller)
+	#545081: Add a new simple delete cache function (Srinivasa Ragavan)
+	#545082: Folder rename requires restart to show mails (Srinivasa Ragavan)
+	#545099: Improve flag sync. When new mails added, update the summary. (Srinivasa Ragavan)
+	#545103: We test only against changes, thus detect ranges properly to not touch other messages than we are actually changed (Milan Crha)
+	#545558: Disable the Hula provider unless --enable-hula was given at configure-time. (Matthew Barnes)
+
+Other Contributors:
+	Search goodness. Make use of the new sexp parser (Sankar P)
+	Camel Reference Manual improvements: Add more sections to the Table of Contents (Matthew Barnes)
+
+Updated Translations:
+	Jorge Gonzalez (es)
+	Kjartan Maraas (nb)
+	Ivar Smolin (et)
+	Djihed Afifi (ar)
+	Ignacio Casal Quinteiro (gl)
+	Jonh Wendell (pt_BR)
+	Fabrício Godoy (pt_BR)
+	Bruno Brouard (fr)
+
 Evolution-Data-Server 2.23.5 2008-07-21
 ----------------------------------------
 
