@@ -1,5 +1,11 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Add apis to delete vuids in transaction and clean
+	up add vuid api.
+	* camel/camel-db.h:
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder.c: Start fixing counts for vfolders.
 
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>

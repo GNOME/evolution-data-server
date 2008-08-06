@@ -501,6 +501,21 @@ camel_db_delete_uid_from_vfolder (CamelDB *db, char *folder_name, char *vuid, Ca
 	 return ret;
 }
 
+int
+camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex)
+{
+	char *del_query;
+	int ret;
+	 
+	del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE vuid = %Q", folder_name, vuid);
+
+	ret = camel_db_add_to_transaction (db, del_query, ex);
+	 
+	sqlite3_free (del_query);
+
+	return ret;
+}
+
 static int
 read_uids_callback (void *ref, int ncol, char ** cols, char ** name)
 {
@@ -624,17 +639,14 @@ camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, char *filter, C
 int
 camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex)
 {
-	 char *del_query, *ins_query;
+	 char *ins_query;
 	 int ret;
 	 
 	 ins_query = sqlite3_mprintf ("INSERT INTO %Q VALUES (%Q)", folder_name, vuid);
-	 del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE vuid = %Q", folder_name, vuid);
 
-	 ret = camel_db_command (db, del_query, ex);
 	 ret = camel_db_command (db, ins_query, ex);
 	 
 	 sqlite3_free (ins_query);
-	 sqlite3_free (del_query);
 	 CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	 return ret;
 }
@@ -642,17 +654,14 @@ camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelExcept
 int
 camel_db_add_to_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex)
 {
-	 char *del_query, *ins_query;
+	 char *ins_query;
 	 int ret;
 	 
 	 ins_query = sqlite3_mprintf ("INSERT INTO %Q VALUES (%Q)", folder_name, vuid);
-	 del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE vuid = %Q", folder_name, vuid);
 
-	 ret = camel_db_add_to_transaction (db, del_query, ex);
 	 ret = camel_db_add_to_transaction (db, ins_query, ex);
 	 
 	 sqlite3_free (ins_query);
-	 sqlite3_free (del_query);
 
 	 return ret;
 }
