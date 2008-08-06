@@ -1,3 +1,8 @@
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/groupwise/camel-groupwise-folder.c: Mark summary
+	dirty when it is.
+
 2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-groupwise-store-summary.c:
