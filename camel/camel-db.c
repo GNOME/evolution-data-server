@@ -471,6 +471,22 @@ camel_db_create_vfolder (CamelDB *db, const char *folder_name, CamelException *e
 }
 
 int
+camel_db_recreate_vfolder (CamelDB *db, const char *folder_name, CamelException *ex)
+{
+	int ret;
+	char *table_query;
+	
+	table_query = sqlite3_mprintf ("DROP TABLE %Q", folder_name);
+
+	ret = camel_db_command (db, table_query, ex);	
+
+	sqlite3_free (table_query);
+
+	
+	return camel_db_create_vfolder (db, folder_name, ex); 
+}
+
+int
 camel_db_delete_uid_from_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex)
 {
 	 char *del_query;

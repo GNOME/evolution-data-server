@@ -141,6 +141,7 @@ int camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const char *tabl
 void camel_db_camel_mir_free (CamelMIRecord *record);
 
 int camel_db_create_vfolder (CamelDB *db, const char *folder_name, CamelException *ex);
+int camel_db_recreate_vfolder (CamelDB *db, const char *folder_name, CamelException *ex);
 int camel_db_delete_uid_from_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
 GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, char *filter, CamelException *ex);
 int camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
