@@ -148,13 +148,14 @@ camel_vee_folder_new(CamelStore *parent_store, const char *full, guint32 flags)
 
 	d(printf("returning folder %s %p, count = %d\n", name, vf, camel_folder_get_message_count((CamelFolder *)vf)));
 
-	tmp = g_strdup_printf("%s/%s.cmeta", ((CamelService *)parent_store)->url->path, full);
-	camel_object_set(vf, NULL, CAMEL_OBJECT_STATE_FILE, tmp, NULL);
-	g_free(tmp);
-	if (camel_object_state_read(vf) == -1) {
-		/* setup defaults: we have none currently */
+	if (vf) {
+		tmp = g_strdup_printf("%s/%s.cmeta", ((CamelService *)parent_store)->url->path, full);
+		camel_object_set(vf, NULL, CAMEL_OBJECT_STATE_FILE, tmp, NULL);
+		g_free(tmp);
+		if (camel_object_state_read(vf) == -1) {
+			/* setup defaults: we have none currently */
+		}
 	}
-
 	return (CamelFolder *)vf;
 }
 

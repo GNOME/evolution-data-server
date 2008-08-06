@@ -1,5 +1,12 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #546613
+
+	* camel/camel-vee-folder.c: return NULL, if unmatched folder is
+	requested.
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Some formatting changes.
 	* camel/camel-vee-folder.c: Set query only when it changes.
 
