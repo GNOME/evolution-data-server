@@ -959,14 +959,14 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 	} else {
 		/* Load the folder results from the DB. */
 		match = camel_vee_summary_get_ids ((CamelVeeSummary *)folder->summary, u.hash);
-		
+		d(printf("len = %d %d for %s %s\n", match ? match->len:0, rebuilded, source->full_name, shash));
 		if (!match) {
 			match = camel_folder_search_by_expression(f, vf->expression, ex);
 			if (match == NULL)
 				return -1;
 			rebuilded = TRUE;
 		}
-		d(printf("len = %d %d\n", match->len, rebuilded));
+		
 	}
 
 	u.source = source;
@@ -1704,12 +1704,14 @@ vee_set_expression(CamelVeeFolder *vf, const char *query)
 		return;
 	}
 
+	/* Recreate the table when the query changes, only if we are not setting it first */
+	if (vf->expression)
+		camel_db_recreate_vfolder (((CamelFolder *) vf)->parent_store->cdb, ((CamelFolder *) vf)->full_name, NULL);
+
+
 	g_free(vf->expression);
 	if (query)
 		vf->expression = g_strdup(query);
-
-	/* Recreate the table when the query changes. */
-	camel_db_recreate_vfolder (((CamelFolder *) vf)->parent_store->cdb, ((CamelFolder *) vf)->full_name, NULL);
 
 	node = p->folders;
 	while (node) {

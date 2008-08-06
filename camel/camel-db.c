@@ -616,7 +616,7 @@ camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, char *filter, C
 	 GPtrArray *array;
 	 char *tmp = g_strdup_printf("%s%%", filter ? filter:"");
 	 if(filter) 
-		  cond = sqlite3_mprintf("WHERE vuid LIKE %Q", tmp);
+		  cond = sqlite3_mprintf(" WHERE vuid LIKE %Q", tmp);
 	 g_free(tmp);
 	 sel_query = sqlite3_mprintf("SELECT vuid FROM %Q%s", folder_name, filter ? cond : "");
 
