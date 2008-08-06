@@ -1,5 +1,9 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder.c: Start fixing counts for vfolders.
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Added a api to drop and recreate vfolder table.
 	* camel/camel-db.h:
 

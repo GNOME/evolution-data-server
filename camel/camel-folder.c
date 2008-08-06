@@ -397,20 +397,12 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			#warning "Add a better base class function to get counts specific to normal/vee folder."
 			if (unread == -1) {
 
-				if (!CAMEL_IS_VEE_FOLDER (folder)) {
-					/* TODO: Locking? */
+				if (1) {
 					unread = folder->summary->unread_count;
 					deleted = folder->summary->deleted_count;
 					junked = folder->summary->junk_count;
 					junked_not_deleted = folder->summary->junk_not_deleted_count;
 					visible = folder->summary->visible_count;
-                                        #warning "unread should be unread and not del/junk and take care of dirty infos also"
-					// camel_folder_summary_save_to_db (folder->summary, NULL);
-					//camel_db_count_visible_unread_message_info (folder->cdb, folder->full_name, &unread, ex);
-					//camel_db_count_junk_message_info (folder->cdb, folder->full_name, &junked, ex);
-					//camel_db_count_deleted_message_info (folder->cdb, folder->full_name, &deleted, ex);
-					//camel_db_count_junk_not_deleted_message_info (folder->cdb, folder->full_name, &junked_not_deleted, ex);
-					//camel_db_count_visible_message_info (folder->cdb, folder->full_name, &visible, ex);
 				} else {
 					/* count = camel_folder_summary_count (folder->summary);
 					for (j = 0; j < count; j++) {
