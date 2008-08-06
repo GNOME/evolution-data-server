@@ -1,3 +1,8 @@
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-folder.c: Mark summary as dirty when
+	it is.
+
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Fix for bug #546415

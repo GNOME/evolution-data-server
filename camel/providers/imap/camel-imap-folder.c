@@ -791,6 +791,8 @@ merge_custom_flags (CamelMessageInfo *mi, const char *custom_flags)
 			   otherwise it was in local summary, but isn't on the server, thus remove it. */
 			changed = TRUE;
 			mi->dirty = TRUE;
+			if (mi->summary)
+				camel_folder_summary_touch (mi->summary);
 			camel_flag_set (&((CamelMessageInfoBase *)mi)->user_flags, p->data, g_hash_table_lookup (server, p->data) != NULL);
 			((CamelMessageInfoBase *) mi)->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		}
@@ -1015,6 +1017,8 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 			iinfo->info.flags = (iinfo->info.flags | server_set) & ~server_cleared;
 			iinfo->server_flags = new[j].flags;
 			iinfo->info.dirty = TRUE;
+			if (info->summary)
+				camel_folder_summary_touch (info->summary);
 			changed = TRUE;
 		}
 		
@@ -1382,6 +1386,8 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				((CamelImapMessageInfo *) info)->server_flags =	info->info.flags & CAMEL_IMAP_SERVER_FLAGS;
 				info->info.dirty = TRUE; /* Sync it back to the DB */
+				if (((CamelMessageInfo *) info)->summary)
+					camel_folder_summary_touch (((CamelMessageInfo *) info)->summary);
 			}
 			camel_folder_summary_touch (folder->summary);
 		}
@@ -3390,6 +3396,8 @@ imap_update_summary (CamelFolder *folder, int exists,
 /* 		}  */
 
 		((CamelMessageInfoBase *)mi)->dirty = TRUE;
+		if (((CamelMessageInfoBase *)mi)->summary)
+			camel_folder_summary_touch (((CamelMessageInfoBase *)mi)->summary);
 		camel_folder_summary_add (folder->summary, (CamelMessageInfo *)mi);
 		update_summary (folder->summary, (CamelMessageInfoBase *)mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
