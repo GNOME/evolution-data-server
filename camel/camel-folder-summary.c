@@ -713,6 +713,7 @@ append_changed_uids (char *key, CamelMessageInfoBase *info, GPtrArray *array)
 		g_ptr_array_add (array, (gpointer)camel_pstring_strdup((camel_message_info_uid(info))));
 }
 
+#warning "sucks, this function returns from memory. We need to have collate or something to get the modified ones from DB and merge"
 GPtrArray *
 camel_folder_summary_get_changed (CamelFolderSummary *s)
 {
@@ -987,7 +988,6 @@ camel_read_mir_callback (void * ref, int ncol, char ** cols, char ** name)
 		
 		/* Just now we are reading from the DB, it can't be dirty. */
 		((CamelMessageInfoBase *)info)->dirty = FALSE;
-		//((CamelMessageInfoBase *)info)->flags &= ~CAMEL_MESSAGE_DB_DIRTY;		
 		if (data->add)
 			camel_folder_summary_add (s, info);
 		else

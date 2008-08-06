@@ -1,5 +1,9 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Remove some unwanted code.
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Redo vfolders. It now works.
 	* camel/camel-vee-folder.h:
 	* camel/camel-vee-summary.c:
