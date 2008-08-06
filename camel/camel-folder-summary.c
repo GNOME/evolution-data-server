@@ -2157,10 +2157,15 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, int start, int end)
 
 		for (i = start; i < end; i++) {
 			const char *uid = s->uids->pdata[i];
+			gpointer olduid, oldinfo;
 
+			/* the uid will be freed below and will not be used because of changing size of the s->uids array */
 			uids = g_slist_prepend (uids, (gpointer) uid);
 
-			g_hash_table_remove(s->loaded_infos, uid);
+			if (g_hash_table_lookup_extended (s->loaded_infos, uid, &olduid, &oldinfo)) {
+				camel_message_info_free (oldinfo);
+				g_hash_table_remove (s->loaded_infos, uid);
+			}
 		}
 		camel_exception_init (&ex);
 

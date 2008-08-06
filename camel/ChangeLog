@@ -1,3 +1,12 @@
+2008-08-06  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #546397
+
+	* camel-store.c: (construct): Do not use NULL in g_file_test.
+	* camel-folder-search.c: (read_uid_callback): Cast to right type.
+	* camel-folder-summary.c: (camel_folder_summary_remove_range):
+	Do not leak objects from loaded_infos array.
+
 2008-08-05  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes part of #533823

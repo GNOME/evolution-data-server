@@ -206,7 +206,7 @@ construct (CamelService *service, CamelSession *session,
 	   CamelException *ex)
 {
 	CamelStore *store = CAMEL_STORE(service);
-	char *store_db_path;
+	char *store_db_path, *store_path = NULL;
 
 	parent_class->construct(service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -214,18 +214,19 @@ construct (CamelService *service, CamelSession *session,
 
 	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
 
-	if (strlen (store_db_path) < 2) {
-		char *store_path = camel_session_get_storage_path (session, service, ex);
+	if (!service->url->path || strlen (store_db_path) < 2) {
+		store_path = camel_session_get_storage_path (session, service, ex);
 
 		g_free (store_db_path);
 		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
-		g_free (store_path);
 	}
 
-	if (!g_file_test(service->url->path, G_FILE_TEST_EXISTS)) {
+	if (!g_file_test (service->url->path ? service->url->path : store_path, G_FILE_TEST_EXISTS)) {
 		/* Cache might be blown. Recreate. */
-		g_mkdir_with_parents (service->url->path, S_IRWXU);
+		g_mkdir_with_parents (service->url->path ? service->url->path : store_path, S_IRWXU);
 	}
+
+	g_free (store_path);
 
 	store->cdb = camel_db_open (store_db_path, ex);
 	printf("store_db_path %s\n", store_db_path);

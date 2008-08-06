@@ -1,3 +1,10 @@
+2008-08-06  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #546397
+
+	* camel-nntp-folder.c: (nntp_folder_search_free):
+	Guard access to 'search' member with its lock.
+
 2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-nntp-store-summary.c:

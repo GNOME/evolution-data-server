@@ -300,8 +300,10 @@ static void
 nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	
+
+	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
 	camel_folder_search_free_result (nntp_folder->search, result);
+	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
 }
 
 static void           

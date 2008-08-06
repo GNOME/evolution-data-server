@@ -1414,6 +1414,6 @@ read_uid_callback (void * ref, int ncol, char ** cols, char **name)
 
 	matches = (GPtrArray *) ref;
 
-	g_ptr_array_add (matches, (GFunc) camel_pstring_strdup (cols [0]));
+	g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (cols [0]));
 	return 0;
 }
