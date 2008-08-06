@@ -33,6 +33,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-exception.h"
+#include "camel-list-utils.h"
 #include "camel-private.h"
 #include "camel-url.h"
 
@@ -402,7 +403,7 @@ static CamelFolderInfo *scan_fi(CamelStore *store, guint32 flags, CamelURL *url,
 static int
 scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *url, CamelException *ex)
 {
-	EDList queue = E_DLIST_INITIALISER(queue);
+	CamelDList queue = CAMEL_DLIST_INITIALISER(queue);
 	struct _scan_node *sn;
 	const char *root = ((CamelService *)store)->url->path;
 	char *tmp;
@@ -414,16 +415,16 @@ scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *ur
 
 	sn = g_malloc0(sizeof(*sn));
 	sn->fi = topfi;
-	e_dlist_addtail(&queue, (EDListNode *)sn);
+	camel_dlist_addtail(&queue, (CamelDListNode *)sn);
 	g_hash_table_insert(visited, sn, sn);
 
-	while (!e_dlist_empty(&queue)) {
+	while (!camel_dlist_empty(&queue)) {
 		char *name;
 		DIR *dir;
 		struct dirent *d;
 		CamelFolderInfo *last;
 
-		sn = (struct _scan_node *)e_dlist_remhead(&queue);
+		sn = (struct _scan_node *)camel_dlist_remhead(&queue);
 
 		last = (CamelFolderInfo *)&sn->fi->child;
 
@@ -482,7 +483,7 @@ scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *ur
 					g_hash_table_insert(visited, snew, snew);
 
 					if (((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) != 0))
-						e_dlist_addtail(&queue, (EDListNode *)snew);
+						camel_dlist_addtail(&queue, (CamelDListNode *)snew);
 				}
 			}
 			g_free(tmp);

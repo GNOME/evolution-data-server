@@ -116,14 +116,14 @@ camel_imap4_engine_init (CamelIMAP4Engine *engine, CamelIMAP4EngineClass *klass)
 	
 	engine->folder = NULL;
 	
-	e_dlist_init (&engine->queue);
+	camel_dlist_init (&engine->queue);
 }
 
 static void
 camel_imap4_engine_finalize (CamelObject *object)
 {
 	CamelIMAP4Engine *engine = (CamelIMAP4Engine *) object;
-	EDListNode *node;
+	CamelDListNode *node;
 	
 	if (engine->istream)
 		camel_object_unref (engine->istream);
@@ -141,7 +141,7 @@ camel_imap4_engine_finalize (CamelObject *object)
 	if (engine->folder)
 		camel_object_unref (engine->folder);
 	
-	while ((node = e_dlist_remhead (&engine->queue))) {
+	while ((node = camel_dlist_remhead (&engine->queue))) {
 		node->next = NULL;
 		node->prev = NULL;
 		
@@ -1365,7 +1365,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 	int retries = 0;
 	int retval;
 	
-	if (e_dlist_empty (&engine->queue))
+	if (camel_dlist_empty (&engine->queue))
 		return 0;
 	
  retry:
@@ -1382,7 +1382,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 		
 		if (!connected) {
 			/* pop the first command and act as tho it failed (which, technically, it did...) */
-			ic = (CamelIMAP4Command *) e_dlist_remhead (&engine->queue);
+			ic = (CamelIMAP4Command *) camel_dlist_remhead (&engine->queue);
 			ic->status = CAMEL_IMAP4_COMMAND_ERROR;
 			camel_exception_xfer (&ic->ex, &rex);
 			camel_imap4_command_unref (ic);
@@ -1393,7 +1393,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 	/* check to see if we need to pre-queue a SELECT, if so do it */
 	engine_prequeue_folder_select (engine);
 	
-	engine->current = ic = (CamelIMAP4Command *) e_dlist_remhead (&engine->queue);
+	engine->current = ic = (CamelIMAP4Command *) camel_dlist_remhead (&engine->queue);
 	ic->status = CAMEL_IMAP4_COMMAND_ACTIVE;
 	
 	if ((retval = imap4_process_command (engine, ic)) != -1) {
@@ -1407,7 +1407,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 			 * over to @nic and pretend we just processed @nic.
 			 **/
 			
-			nic = (CamelIMAP4Command *) e_dlist_remhead (&engine->queue);
+			nic = (CamelIMAP4Command *) camel_dlist_remhead (&engine->queue);
 			
 			nic->status = ic->status;
 			nic->result = ic->result;
@@ -1424,7 +1424,7 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 		retval = ic->id;
 	} else if (!engine->reconnecting && retries < 3) {
 		/* put @ic back in the queue and retry */
-		e_dlist_addhead (&engine->queue, (EDListNode *) ic);
+		camel_dlist_addhead (&engine->queue, (CamelDListNode *) ic);
 		camel_imap4_command_reset (ic);
 		retries++;
 		goto retry;
@@ -1466,7 +1466,7 @@ camel_imap4_engine_queue (CamelIMAP4Engine *engine, CamelFolder *folder, const c
 	va_end (args);
 	
 	ic->id = engine->nextid++;
-	e_dlist_addtail (&engine->queue, (EDListNode *) ic);
+	camel_dlist_addtail (&engine->queue, (CamelDListNode *) ic);
 	camel_imap4_command_ref (ic);
 	
 	return ic;
@@ -1497,15 +1497,15 @@ camel_imap4_engine_prequeue (CamelIMAP4Engine *engine, CamelFolder *folder, cons
 	ic = camel_imap4_command_newv (engine, (CamelIMAP4Folder *) folder, format, args);
 	va_end (args);
 	
-	if (e_dlist_empty (&engine->queue)) {
-		e_dlist_addtail (&engine->queue, (EDListNode *) ic);
+	if (camel_dlist_empty (&engine->queue)) {
+		camel_dlist_addtail (&engine->queue, (CamelDListNode *) ic);
 		ic->id = engine->nextid++;
 	} else {
 		CamelIMAP4Command *nic;
-		EDListNode *node;
+		CamelDListNode *node;
 		
-		node = (EDListNode *) ic;
-		e_dlist_addhead (&engine->queue, node);
+		node = (CamelDListNode *) ic;
+		camel_dlist_addhead (&engine->queue, node);
 		nic = (CamelIMAP4Command *) node->next;
 		ic->id = nic->id - 1;
 		
@@ -1536,12 +1536,12 @@ camel_imap4_engine_prequeue (CamelIMAP4Engine *engine, CamelFolder *folder, cons
 void
 camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 {
-	EDListNode *node = (EDListNode *) ic;
+	CamelDListNode *node = (CamelDListNode *) ic;
 	
 	if (node->next == NULL && node->prev == NULL)
 		return;
 	
-	e_dlist_remove (node);
+	camel_dlist_remove (node);
 	node->next = NULL;
 	node->prev = NULL;
 	

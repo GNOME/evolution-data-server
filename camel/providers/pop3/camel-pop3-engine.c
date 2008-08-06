@@ -60,9 +60,9 @@ camel_pop3_engine_class_init (CamelPOP3EngineClass *camel_pop3_engine_class)
 static void
 camel_pop3_engine_init(CamelPOP3Engine *pe, CamelPOP3EngineClass *peclass)
 {
-	e_dlist_init(&pe->active);
-	e_dlist_init(&pe->queue);
-	e_dlist_init(&pe->done);
+	camel_dlist_init(&pe->active);
+	camel_dlist_init(&pe->queue);
+	camel_dlist_init(&pe->done);
 	pe->state = CAMEL_POP3_ENGINE_DISCONNECT;
 }
 
@@ -255,13 +255,13 @@ engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen(pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
-		e_dlist_addtail(&pe->queue, (EDListNode *)pc);
+		camel_dlist_addtail(&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
 
 	/* ??? */
 	if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data)) == -1) {
-		e_dlist_addtail(&pe->queue, (EDListNode *)pc);
+		camel_dlist_addtail(&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
 
@@ -272,7 +272,7 @@ engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 	if (pe->current == NULL)
 		pe->current = pc;
 	else
-		e_dlist_addtail(&pe->active, (EDListNode *)pc);
+		camel_dlist_addtail(&pe->active, (CamelDListNode *)pc);
 
 	return TRUE;
 }
@@ -326,11 +326,11 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		break;
 	}
 
-	e_dlist_addtail(&pe->done, (EDListNode *)pc);
+	camel_dlist_addtail(&pe->done, (CamelDListNode *)pc);
 	pe->sentlen -= strlen(pc->data);
 
 	/* Set next command */
-	pe->current = (CamelPOP3Command *)e_dlist_remhead(&pe->active);
+	pe->current = (CamelPOP3Command *)camel_dlist_remhead(&pe->active);
 	
 	/* check the queue for sending any we can now send also */
 	pw = (CamelPOP3Command *)pe->queue.head;
@@ -344,7 +344,7 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		if (camel_stream_write((CamelStream *)pe->stream, pw->data, strlen(pw->data)) == -1)
 			goto ioerror;
 
-		e_dlist_remove((EDListNode *)pw);
+		camel_dlist_remove((CamelDListNode *)pw);
 
 		pe->sentlen += strlen(pw->data);
 		pw->state = CAMEL_POP3_COMMAND_DISPATCHED;
@@ -352,7 +352,7 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		if (pe->current == NULL)
 			pe->current = pw;
 		else
-			e_dlist_addtail(&pe->active, (EDListNode *)pw);
+			camel_dlist_addtail(&pe->active, (CamelDListNode *)pw);
 
 		pw = pn;
 		pn = pn->next;
@@ -366,19 +366,19 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 	return pe->current==NULL?0:1;
 ioerror:
 	/* we assume all outstanding commands are gunna fail now */
-	while ( (pw = (CamelPOP3Command*)e_dlist_remhead(&pe->active)) ) {
+	while ( (pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->active)) ) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		e_dlist_addtail(&pe->done, (EDListNode *)pw);
+		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
 	}
 
-	while ( (pw = (CamelPOP3Command*)e_dlist_remhead(&pe->queue)) ) {
+	while ( (pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->queue)) ) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		e_dlist_addtail(&pe->done, (EDListNode *)pw);
+		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
 	}
 
 	if (pe->current) {
 		pe->current->state = CAMEL_POP3_COMMAND_ERR;
-		e_dlist_addtail(&pe->done, (EDListNode *)pe->current);
+		camel_dlist_addtail(&pe->done, (CamelDListNode *)pe->current);
 		pe->current = NULL;
 	}
 
@@ -410,7 +410,7 @@ void
 camel_pop3_engine_command_free(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (pe->current != pc)
-		e_dlist_remove((EDListNode *)pc);
+		camel_dlist_remove((CamelDListNode *)pc);
 	g_free(pc->data);
 	g_free(pc);
 }

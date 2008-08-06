@@ -28,8 +28,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include "camel-exception.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"

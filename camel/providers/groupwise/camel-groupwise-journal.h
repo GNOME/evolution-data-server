@@ -52,7 +52,7 @@ enum {
 };
 
 struct _CamelGroupwiseJournalEntry {
-	EDListNode node;
+	CamelDListNode node;
 	
 	int type;
 

@@ -41,8 +41,8 @@ static void
 object_init(CamelIMAPPEngine *ie, CamelIMAPPEngineClass *ieclass)
 {
 	ie->handlers = g_hash_table_new(g_str_hash, g_str_equal);
-	e_dlist_init(&ie->active);
-	e_dlist_init(&ie->done);
+	camel_dlist_init(&ie->active);
+	camel_dlist_init(&ie->done);
 
 	ie->port = camel_msgport_new();
 
@@ -510,7 +510,7 @@ iterate_continuation(CamelIMAPPEngine *imap)
 	}
 	
 	if (imap->literal == NULL) {
-		ic = (CamelIMAPPCommand *)e_dlist_remhead(&imap->queue);
+		ic = (CamelIMAPPCommand *)camel_dlist_remhead(&imap->queue);
 		if (ic) {
 			printf("found outstanding op, queueing\n");
 			camel_imapp_engine_command_queue(imap, ic);
@@ -536,8 +536,8 @@ iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
 		printf("Got completion response for command %05u '%s'\n", ic->tag, ic->name);
 		printf("%p: removing command from qwueue, we were at '%s'\n", ic, ic->current->data);
 		printf("%p: removing command\n", ic);
-		e_dlist_remove((EDListNode *)ic);
-		e_dlist_addtail(&imap->done, (EDListNode *)ic);
+		camel_dlist_remove((CamelDListNode *)ic);
+		camel_dlist_addtail(&imap->done, (CamelDListNode *)ic);
 		if (imap->literal == ic)
 			imap->literal = NULL;
 		ic->status = imap_parse_status(imap->stream);
@@ -561,12 +561,12 @@ iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
 		printf("Warning: continuation command '%s' finished with outstanding continuation\n", imap->literal->name);
 		ic = imap->literal;
 				/* set the command complete with a failure code? */
-		e_dlist_remove((EDListNode *)ic);
-		e_dlist_addtail(&imap->done, (EDListNode *)ic);
+		camel_dlist_remove((CamelDListNode *)ic);
+		camel_dlist_addtail(&imap->done, (CamelDListNode *)ic);
 		imap->literal = NULL;
 	}
 	
-	ic = (CamelIMAPPCommand *)e_dlist_remhead(&imap->queue);
+	ic = (CamelIMAPPCommand *)camel_dlist_remhead(&imap->queue);
 	if (ic) {
 		printf("found outstanding op, queueing\n");
 		camel_imapp_engine_command_queue(imap, ic);
@@ -585,7 +585,7 @@ camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *icwait)
 	unsigned char *token;
 	int tok;
 
-	if ((icwait && icwait->status != NULL) || e_dlist_empty(&imap->active))
+	if ((icwait && icwait->status != NULL) || camel_dlist_empty(&imap->active))
 		return 0;
 
 	/* handle exceptions here? */
@@ -602,7 +602,7 @@ camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *icwait)
 	else
 		camel_exception_throw(1, "unexpected server response: %s", token);
 
-	if (e_dlist_empty(&imap->active))
+	if (camel_dlist_empty(&imap->active))
 		return 0;
 
 	return 1;
@@ -619,7 +619,7 @@ camel_imapp_engine_command_new(CamelIMAPPEngine *imap, const char *name, const c
 	ic->name = name;
 	ic->mem = (CamelStreamMem *)camel_stream_mem_new();
 	ic->select = g_strdup(select);
-	e_dlist_init(&ic->parts);
+	camel_dlist_init(&ic->parts);
 
 	if (fmt && fmt[0]) {
 		va_start(ap, fmt);
@@ -667,7 +667,7 @@ camel_imapp_engine_command_free (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 	imap_free_status(ic->status);
 	g_free(ic->select);
 
-	while ( (cp = ((CamelIMAPPCommandPart *)e_dlist_remhead(&ic->parts))) ) {
+	while ( (cp = ((CamelIMAPPCommandPart *)camel_dlist_remhead(&ic->parts))) ) {
 		g_free(cp->data);
 		if (cp->ob)
 			camel_object_unref(cp->ob);
@@ -688,7 +688,7 @@ camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 	if (ic->mem)
 		imap_engine_command_complete(imap, ic);
 
-	camel_msgport_push(imap->port, (EMsg *)ic);
+	camel_msgport_push(imap->port, (CamelMsg *)ic);
 }
 
 CamelIMAPPCommand *
@@ -827,14 +827,14 @@ imap_engine_command_add_part(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, came
 	/* FIXME: hackish? */
 	g_byte_array_set_size(ic->mem->buffer, 0);
 
-	e_dlist_addtail(&ic->parts, (EDListNode *)cp);
+	camel_dlist_addtail(&ic->parts, (CamelDListNode *)cp);
 }
 
 #if c(!)0
-static int len(EDList *list)
+static int len(CamelDList *list)
 {
 	int count = 0;
-	EDListNode *n = list->head;
+	CamelDListNode *n = list->head;
 
 	while (n->next) {
 		n = n->next;
@@ -1023,7 +1023,7 @@ cie_worker(void *data)
 	/* first, check if command can be sent yet ... queue if not */
 	if (imap->literal != NULL) {
 		printf("%p: queueing while literal active\n", ic);
-		e_dlist_addtail(&imap->queue, (EDListNode *)ic);
+		camel_dlist_addtail(&imap->queue, (CamelDListNode *)ic);
 		return;
 	}
 
@@ -1040,11 +1040,11 @@ cie_worker(void *data)
 		printf("%p: active literal\n", ic);
 		g_assert(cp->next);
 		imap->literal = ic;
-		e_dlist_addtail(&imap->active, (EDListNode *)ic);
+		camel_dlist_addtail(&imap->active, (CamelDListNode *)ic);
 	} else {
 		printf("%p: active non-literal\n", ic);
 		g_assert(cp->next && cp->next->next == NULL);
-		e_dlist_addtail(&imap->active, (EDListNode *)ic);
+		camel_dlist_addtail(&imap->active, (CamelDListNode *)ic);
 	}
 }
 

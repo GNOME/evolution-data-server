@@ -23,11 +23,9 @@
 #ifndef CAMEL_CIPHER_CONTEXT_H
 #define CAMEL_CIPHER_CONTEXT_H
 
+#include <camel/camel-list-utils.h>
 #include <camel/camel-session.h>
 #include <camel/camel-exception.h>
-
-/* FIXME: camelise */
-#include <libedataserver/e-msgport.h>
 
 #define CAMEL_CIPHER_CONTEXT_TYPE     (camel_cipher_context_get_type ())
 #define CAMEL_CIPHER_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContext))
@@ -83,17 +81,17 @@ struct _CamelCipherCertInfo {
 struct _CamelCipherValidity {
 	struct _CamelCipherValidity *next;
 	struct _CamelCipherValidity *prev;
-	EDList children;
+	CamelDList children;
 
 	struct {
 		enum _camel_cipher_validity_sign_t status;
 		char *description;
-		EDList signers;	/* CamelCipherCertInfo's */
+		CamelDList signers;	/* CamelCipherCertInfo's */
 	} sign;
 	struct {
 		enum _camel_cipher_validity_encrypt_t status;
 		char *description;
-		EDList encrypters;	/* CamelCipherCertInfo's */
+		CamelDList encrypters;	/* CamelCipherCertInfo's */
 	} encrypt;
 };
 

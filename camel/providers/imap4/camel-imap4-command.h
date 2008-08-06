@@ -27,10 +27,9 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include <camel/camel-stream.h>
 #include <camel/camel-exception.h>
+#include <camel/camel-list-utils.h>
 #include <camel/camel-data-wrapper.h>
 
 G_BEGIN_DECLS
@@ -93,7 +92,7 @@ enum {
 };
 
 struct _CamelIMAP4Command {
-	EDListNode node;
+	CamelDListNode node;
 	
 	struct _CamelIMAP4Engine *engine;
 	

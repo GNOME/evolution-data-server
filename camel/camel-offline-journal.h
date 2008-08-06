@@ -29,7 +29,7 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-msgport.h>
+#include <camel/camel-list-utils.h>
 #include <camel/camel-object.h>
 
 #define CAMEL_TYPE_OFFLINE_JOURNAL            (camel_offline_journal_get_type ())
@@ -52,18 +52,18 @@ struct _CamelOfflineJournal {
 	
 	struct _CamelFolder *folder;
 	char *filename;
-	EDList queue;
+	CamelDList queue;
 };
 
 struct _CamelOfflineJournalClass {
 	CamelObjectClass parent_class;
 	
 	/* entry methods */
-	void (* entry_free) (CamelOfflineJournal *journal, EDListNode *entry);
+	void (* entry_free) (CamelOfflineJournal *journal, CamelDListNode *entry);
 	
-	EDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
-	int (* entry_write) (CamelOfflineJournal *journal, EDListNode *entry, FILE *out);
-	int (* entry_play) (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex);
+	CamelDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
+	int (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+	int (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 };
 
 

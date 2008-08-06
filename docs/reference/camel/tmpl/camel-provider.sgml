@@ -356,6 +356,7 @@ camel-provider
 @CAMEL_PROVIDER_CONF_ENTRY: 
 @CAMEL_PROVIDER_CONF_LABEL: 
 @CAMEL_PROVIDER_CONF_HIDDEN: 
+@CAMEL_PROVIDER_CONF_OPTIONS: 
 
 <!-- ##### STRUCT CamelProviderConfEntry ##### -->
 <para>

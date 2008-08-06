@@ -1,3 +1,23 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545877
+
+	* camel-block-file.c:
+	* camel-block-file.h:
+	* camel-cipher-context.c:
+	* camel-cipher-context.h:
+	* camel-filter-driver.c:
+	* camel-iconv.c:
+	* camel-index-control.c:
+	* camel-object.c:
+	* camel-offline-journal.h:
+	* camel-offline-journal.c:
+	* camel-operation.c:
+	* camel-partition-table.c:
+	* camel-partition-table.h:
+	* camel-text-index.c:
+	Use CamelDList instead of EDList.
+
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #546613

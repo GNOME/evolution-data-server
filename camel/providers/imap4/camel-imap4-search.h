@@ -24,10 +24,9 @@
 #ifndef __CAMEL_IMAP4_SEARCH_H__
 #define __CAMEL_IMAP4_SEARCH_H__
 
-#include <libedataserver/e-msgport.h>
-
 #include <camel/camel-data-cache.h>
 #include <camel/camel-folder-search.h>
+#include <camel/camel-list-utils.h>
 
 #define CAMEL_IMAP4_SEARCH_TYPE         (camel_imap4_search_get_type ())
 #define CAMEL_IMAP4_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_imap4_search_get_type (), CamelIMAP4Search)
@@ -52,7 +51,7 @@ struct _CamelIMAP4Search {
 	CamelDataCache *cache;	/* disk-cache for searches */
 	
 	/* cache of body search matches */
-	EDList matches;
+	CamelDList matches;
 	GHashTable *matches_hash;
 	unsigned int matches_count;
 };

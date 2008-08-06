@@ -28,6 +28,7 @@
 
 #include <glib.h>
 
+#include <camel/camel-list-utils.h>
 #include <camel/camel-offline-journal.h>
 #include <camel/camel-mime-message.h>
 
@@ -53,7 +54,7 @@ typedef enum {
 } CamelOfflineAction;
 
 struct _CamelIMAPJournalEntry {
-	EDListNode node;
+	CamelDListNode node;
 	
 	CamelOfflineAction type;
 

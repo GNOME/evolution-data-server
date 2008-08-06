@@ -40,12 +40,12 @@
 #endif
 
 #include <libedataserver/e-sexp.h>
-#include <libedataserver/e-msgport.h>
 
 #include "camel-debug.h"
 #include "camel-file-utils.h"
 #include "camel-filter-driver.h"
 #include "camel-filter-search.h"
+#include "camel-list-utils.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
 #include "camel-service.h"
@@ -117,7 +117,7 @@ struct _CamelFilterDriverPrivate {
 	
 	FILE *logfile;             /* log file */
 	
-	EDList rules;		   /* list of _filter_rule structs */
+	CamelDList rules;		   /* list of _filter_rule structs */
 	
 	CamelException *ex;
 	
@@ -215,7 +215,7 @@ camel_filter_driver_init (CamelFilterDriver *obj)
 	
 	p = _PRIVATE (obj) = g_malloc0 (sizeof (*p));
 
-	e_dlist_init(&p->rules);
+	camel_dlist_init(&p->rules);
 
 	p->eval = e_sexp_new ();
 	/* Load in builtin symbols */
@@ -265,7 +265,7 @@ camel_filter_driver_finalise (CamelObject *obj)
 		camel_object_unref (p->defaultfolder);
 	}
 
-	while ((node = (struct _filter_rule *)e_dlist_remhead(&p->rules))) {
+	while ((node = (struct _filter_rule *)camel_dlist_remhead(&p->rules))) {
 		g_free(node->match);
 		g_free(node->action);
 		g_free(node->name);
@@ -374,7 +374,7 @@ camel_filter_driver_add_rule(CamelFilterDriver *d, const char *name, const char 
 	node->match = g_strdup(match);
 	node->action = g_strdup(action);
 	node->name = g_strdup(name);
-	e_dlist_addtail(&p->rules, (EDListNode *)node);
+	camel_dlist_addtail(&p->rules, (CamelDListNode *)node);
 }
 
 int
@@ -386,7 +386,7 @@ camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d, const char *name)
 	node = (struct _filter_rule *) p->rules.head;
 	while (node->next) {
 		if (!strcmp (node->name, name)) {
-			e_dlist_remove ((EDListNode *) node);
+			camel_dlist_remove ((CamelDListNode *) node);
 			g_free (node->match);
 			g_free (node->action);
 			g_free (node->name);

@@ -149,8 +149,9 @@ camel-imap-utils
 
 </para>
 
-@is: 
-@Returns: 
+@body_p: 
+@folder: 
+@ci: 
 
 
 <!-- ##### FUNCTION imap_is_atom ##### -->

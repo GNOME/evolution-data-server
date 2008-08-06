@@ -35,10 +35,9 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include "camel-block-file.h"
 #include "camel-file-utils.h"
+#include "camel-list-utils.h"
 #include "camel-private.h"
 
 #define d(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
@@ -70,9 +69,9 @@ struct _CamelBlockFilePrivate {
 static pthread_mutex_t block_file_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* lru cache of block files */
-static EDList block_file_list = E_DLIST_INITIALISER(block_file_list);
+static CamelDList block_file_list = CAMEL_DLIST_INITIALISER(block_file_list);
 /* list to store block files that are actually intialised */
-static EDList block_file_active_list = E_DLIST_INITIALISER(block_file_active_list);
+static CamelDList block_file_active_list = CAMEL_DLIST_INITIALISER(block_file_active_list);
 static int block_file_count = 0;
 static int block_file_threshhold = 10;
 
@@ -165,7 +164,7 @@ camel_block_file_init(CamelBlockFile *bs)
 
 	bs->fd = -1;
 	bs->block_size = CAMEL_BLOCK_SIZE;
-	e_dlist_init(&bs->block_cache);
+	camel_dlist_init(&bs->block_cache);
 	bs->blocks = g_hash_table_new((GHashFunc)block_hash_func, NULL);
 	/* this cache size and the text index size have been tuned for about the best
 	   with moderate memory usage.  Doubling the memory usage barely affects performance. */
@@ -180,7 +179,7 @@ camel_block_file_init(CamelBlockFile *bs)
 	
 	/* link into lru list */
 	LOCK(block_file_lock);
-	e_dlist_addhead(&block_file_list, (EDListNode *)p);
+	camel_dlist_addhead(&block_file_list, (CamelDListNode *)p);
 
 #if 0
 	{
@@ -212,7 +211,7 @@ camel_block_file_finalise(CamelBlockFile *bs)
 	LOCK(block_file_lock);
 	if (bs->fd != -1)
 		block_file_count--;
-	e_dlist_remove((EDListNode *)p);
+	camel_dlist_remove((CamelDListNode *)p);
 	UNLOCK(block_file_lock);
 
 	bl = (CamelBlock *)bs->block_cache.head;
@@ -294,8 +293,8 @@ block_file_use(CamelBlockFile *bs)
 	}
 
 	LOCK(block_file_lock);
-	e_dlist_remove((EDListNode *)p);
-	e_dlist_addtail(&block_file_active_list, (EDListNode *)p);
+	camel_dlist_remove((CamelDListNode *)p);
+	camel_dlist_addtail(&block_file_active_list, (CamelDListNode *)p);
 
 	block_file_count++;
 
@@ -335,8 +334,8 @@ static void
 block_file_unuse(CamelBlockFile *bs)
 {
 	LOCK(block_file_lock);
-	e_dlist_remove((EDListNode *)bs->priv);
-	e_dlist_addtail(&block_file_list, (EDListNode *)bs->priv);
+	camel_dlist_remove((CamelDListNode *)bs->priv);
+	camel_dlist_addtail(&block_file_list, (CamelDListNode *)bs->priv);
 	UNLOCK(block_file_lock);
 
 	CAMEL_BLOCK_FILE_UNLOCK(bs, io_lock);
@@ -581,7 +580,7 @@ CamelBlock *camel_block_file_get_block(CamelBlockFile *bs, camel_block_t id)
 			if (flush->refcount == 0) {
 				if (sync_block_nolock(bs, flush) != -1) {
 					g_hash_table_remove(bs->blocks, GUINT_TO_POINTER(flush->id));
-					e_dlist_remove((EDListNode *)flush);
+					camel_dlist_remove((CamelDListNode *)flush);
 					g_free(flush);
 					bs->block_cache_count--;
 				}
@@ -592,10 +591,10 @@ CamelBlock *camel_block_file_get_block(CamelBlockFile *bs, camel_block_t id)
 		/* UNLOCK io_lock */
 		block_file_unuse(bs);
 	} else {
-		e_dlist_remove((EDListNode *)bl);
+		camel_dlist_remove((CamelDListNode *)bl);
 	}
 
-	e_dlist_addhead(&bs->block_cache, (EDListNode *)bl);
+	camel_dlist_addhead(&bs->block_cache, (CamelDListNode *)bl);
 	bl->refcount++;
 
 	CAMEL_BLOCK_FILE_UNLOCK(bs, cache_lock);
@@ -620,7 +619,7 @@ void camel_block_file_detach_block(CamelBlockFile *bs, CamelBlock *bl)
 	CAMEL_BLOCK_FILE_LOCK(bs, cache_lock);
 
 	g_hash_table_remove(bs->blocks, GUINT_TO_POINTER(bl->id));
-	e_dlist_remove((EDListNode *)bl);
+	camel_dlist_remove((CamelDListNode *)bl);
 	bl->flags |= CAMEL_BLOCK_DETACHED;
 
 	CAMEL_BLOCK_FILE_UNLOCK(bs, cache_lock);
@@ -638,7 +637,7 @@ void camel_block_file_attach_block(CamelBlockFile *bs, CamelBlock *bl)
 	CAMEL_BLOCK_FILE_LOCK(bs, cache_lock);
 
 	g_hash_table_insert(bs->blocks, GUINT_TO_POINTER(bl->id), bl);
-	e_dlist_addtail(&bs->block_cache, (EDListNode *)bl);
+	camel_dlist_addtail(&bs->block_cache, (CamelDListNode *)bl);
 	bl->flags &= ~CAMEL_BLOCK_DETACHED;
 
 	CAMEL_BLOCK_FILE_UNLOCK(bs, cache_lock);
@@ -812,8 +811,8 @@ struct _CamelKeyFilePrivate {
 static pthread_mutex_t key_file_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* lru cache of block files */
-static EDList key_file_list = E_DLIST_INITIALISER(key_file_list);
-static EDList key_file_active_list = E_DLIST_INITIALISER(key_file_active_list);
+static CamelDList key_file_list = CAMEL_DLIST_INITIALISER(key_file_list);
+static CamelDList key_file_active_list = CAMEL_DLIST_INITIALISER(key_file_active_list);
 static int key_file_count = 0;
 static const int key_file_threshhold = 10;
 
@@ -833,7 +832,7 @@ camel_key_file_init(CamelKeyFile *bs)
 	pthread_mutex_init(&p->lock, NULL);
 	
 	LOCK(key_file_lock);
-	e_dlist_addhead(&key_file_list, (EDListNode *)p);
+	camel_dlist_addhead(&key_file_list, (CamelDListNode *)p);
 	UNLOCK(key_file_lock);
 }
 
@@ -843,7 +842,7 @@ camel_key_file_finalise(CamelKeyFile *bs)
 	struct _CamelKeyFilePrivate *p = bs->priv;
 
 	LOCK(key_file_lock);
-	e_dlist_remove((EDListNode *)p);
+	camel_dlist_remove((CamelDListNode *)p);
 
 	if (bs-> fp) {
 		key_file_count--;
@@ -924,8 +923,8 @@ key_file_use(CamelKeyFile *bs)
 	}
 
 	LOCK(key_file_lock);
-	e_dlist_remove((EDListNode *)p);
-	e_dlist_addtail(&key_file_active_list, (EDListNode *)p);
+	camel_dlist_remove((CamelDListNode *)p);
+	camel_dlist_addtail(&key_file_active_list, (CamelDListNode *)p);
 
 	key_file_count++;
 
@@ -958,8 +957,8 @@ static void
 key_file_unuse(CamelKeyFile *bs)
 {
 	LOCK(key_file_lock);
-	e_dlist_remove((EDListNode *)bs->priv);
-	e_dlist_addtail(&key_file_list, (EDListNode *)bs->priv);
+	camel_dlist_remove((CamelDListNode *)bs->priv);
+	camel_dlist_addtail(&key_file_list, (CamelDListNode *)bs->priv);
 	UNLOCK(key_file_lock);
 
 	CAMEL_KEY_FILE_UNLOCK(bs, lock);

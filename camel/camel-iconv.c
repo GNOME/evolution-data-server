@@ -53,18 +53,18 @@ static GStaticMutex lock = G_STATIC_MUTEX_INIT;
 #define UNLOCK()
 #endif
 
-typedef struct _EDListNode {
-	struct _EDListNode *next;
-	struct _EDListNode *prev;
-} EDListNode;
+typedef struct _CamelDListNode {
+	struct _CamelDListNode *next;
+	struct _CamelDListNode *prev;
+} CamelDListNode;
 
-typedef struct _EDList {
-	struct _EDListNode *head;
-	struct _EDListNode *tail;
-	struct _EDListNode *tailpred;
-} EDList;
+typedef struct _CamelDList {
+	struct _CamelDListNode *head;
+	struct _CamelDListNode *tail;
+	struct _CamelDListNode *tailpred;
+} CamelDList;
 
-#define E_DLIST_INITIALISER(l) { (EDListNode *)&l.tail, 0, (EDListNode *)&l.head }
+#define CAMEL_DLIST_INITIALISER(l) { (CamelDListNode *)&l.tail, 0, (CamelDListNode *)&l.head }
 
 struct _iconv_cache_node {
 	struct _iconv_cache_node *next;
@@ -82,12 +82,12 @@ struct _iconv_cache {
 
 	char *conv;
 
-	EDList open;		/* stores iconv_cache_nodes, busy ones up front */
+	CamelDList open;		/* stores iconv_cache_nodes, busy ones up front */
 };
 
 #define E_ICONV_CACHE_SIZE (16)
 
-static EDList iconv_cache_list;
+static CamelDList iconv_cache_list;
 static GHashTable *iconv_cache;
 static GHashTable *iconv_cache_open;
 static unsigned int iconv_cache_size = 0;
@@ -160,32 +160,32 @@ struct {
 /* Another copy of this trivial list implementation
    Why?  This stuff gets called a lot (potentially), should run fast,
    and g_list's are f@@#$ed up to make this a hassle */
-static void e_dlist_init(EDList *v)
+static void camel_dlist_init(CamelDList *v)
 {
-        v->head = (EDListNode *)&v->tail;
+        v->head = (CamelDListNode *)&v->tail;
         v->tail = NULL;
-        v->tailpred = (EDListNode *)&v->head;
+        v->tailpred = (CamelDListNode *)&v->head;
 }
 
-static EDListNode *e_dlist_addhead(EDList *l, EDListNode *n)
+static CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n)
 {
         n->next = l->head;
-        n->prev = (EDListNode *)&l->head;
+        n->prev = (CamelDListNode *)&l->head;
         l->head->prev = n;
         l->head = n;
         return n;
 }
 
-static EDListNode *e_dlist_addtail(EDList *l, EDListNode *n)
+static CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n)
 {
-        n->next = (EDListNode *)&l->tail;
+        n->next = (CamelDListNode *)&l->tail;
         n->prev = l->tailpred;
         l->tailpred->next = n;
         l->tailpred = n;
         return n;
 }
 
-static EDListNode *e_dlist_remove(EDListNode *n)
+static CamelDListNode *camel_dlist_remove(CamelDListNode *n)
 {
         n->next->prev = n->prev;
         n->prev->next = n->next;
@@ -285,7 +285,7 @@ camel_iconv_init(int keep)
 		g_hash_table_insert(iconv_charsets, from, to);
 	}
 
-	e_dlist_init(&iconv_cache_list);
+	camel_dlist_init(&iconv_cache_list);
 	iconv_cache = g_hash_table_new(g_str_hash, g_str_equal);
 	iconv_cache_open = g_hash_table_new(NULL, NULL);
 	
@@ -470,7 +470,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 
 	ic = g_hash_table_lookup(iconv_cache, tofrom);
 	if (ic) {
-		e_dlist_remove((EDListNode *)ic);
+		camel_dlist_remove((CamelDListNode *)ic);
 	} else {
 		struct _iconv_cache *last = (struct _iconv_cache *)iconv_cache_list.tailpred;
 		struct _iconv_cache *prev;
@@ -480,7 +480,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			in = (struct _iconv_cache_node *)last->open.head;
 			if (in->next && !in->busy) {
 				cd(printf("Flushing iconv converter '%s'\n", last->conv));
-				e_dlist_remove((EDListNode *)last);
+				camel_dlist_remove((CamelDListNode *)last);
 				g_hash_table_remove(iconv_cache, last->conv);
 				flush_entry(last);
 				iconv_cache_size--;
@@ -492,13 +492,13 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		iconv_cache_size++;
 		
 		ic = g_malloc(sizeof(*ic));
-		e_dlist_init(&ic->open);
+		camel_dlist_init(&ic->open);
 		ic->conv = g_strdup(tofrom);
 		g_hash_table_insert(iconv_cache, ic->conv, ic);
 
 		cd(printf("Creating iconv converter '%s'\n", ic->conv));
 	}
-	e_dlist_addhead(&iconv_cache_list, (EDListNode *)ic);
+	camel_dlist_addhead(&iconv_cache_list, (CamelDListNode *)ic);
 
 	/* If we have a free iconv, use it */
 	in = (struct _iconv_cache_node *)ic->open.tailpred;
@@ -515,8 +515,8 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			/* resets the converter */
 			iconv(ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
 			in->busy = TRUE;
-			e_dlist_remove((EDListNode *)in);
-			e_dlist_addhead(&ic->open, (EDListNode *)in);
+			camel_dlist_remove((CamelDListNode *)in);
+			camel_dlist_addhead(&ic->open, (CamelDListNode *)in);
 		}
 	} else {
 		cd(printf("creating new iconv converter '%s'\n", ic->conv));
@@ -524,7 +524,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		in = g_malloc(sizeof(*in));
 		in->ip = ip;
 		in->parent = ic;
-		e_dlist_addhead(&ic->open, (EDListNode *)in);
+		camel_dlist_addhead(&ic->open, (CamelDListNode *)in);
 		if (ip != (iconv_t)-1) {
 			g_hash_table_insert(iconv_cache_open, ip, in);
 			in->busy = TRUE;
@@ -560,9 +560,9 @@ camel_iconv_close (iconv_t ip)
 	in = g_hash_table_lookup(iconv_cache_open, ip);
 	if (in) {
 		cd(printf("closing iconv converter '%s'\n", in->parent->conv));
-		e_dlist_remove((EDListNode *)in);
+		camel_dlist_remove((CamelDListNode *)in);
 		in->busy = FALSE;
-		e_dlist_addtail(&in->parent->open, (EDListNode *)in);
+		camel_dlist_addtail(&in->parent->open, (CamelDListNode *)in);
 	} else {
 		g_warning("trying to close iconv i dont know about: %p", ip);
 		iconv_close(ip);

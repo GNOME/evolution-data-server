@@ -22,7 +22,7 @@
 #define _CAMEL_POP3_ENGINE_H
 
 #include <camel/camel-object.h>
-#include <libedataserver/e-msgport.h>
+#include <camel/camel-list-utils.h>
 #include "camel-pop3-stream.h"
 
 #define CAMEL_POP3_ENGINE(obj)         CAMEL_CHECK_CAST (obj, camel_pop3_engine_get_type (), CamelPOP3Engine)
@@ -110,9 +110,9 @@ struct _CamelPOP3Engine {
 
 	unsigned int sentlen;	/* data sent (so we dont overflow network buffer) */
 
-	EDList active;		/* active commands */
-	EDList queue;		/* queue of waiting commands */
-	EDList done;		/* list of done commands, awaiting free */
+	CamelDList active;	/* active commands */
+	CamelDList queue;	/* queue of waiting commands */
+	CamelDList done;	/* list of done commands, awaiting free */
 
 	CamelPOP3Command *current; /* currently busy (downloading) response */
 };

@@ -23,9 +23,9 @@
 
 #include <camel/camel-object.h>
 #include <glib.h>
-#include <libedataserver/e-msgport.h>
 
 #include "camel-block-file.h"
+#include "camel-list-utils.h"
 
 G_BEGIN_DECLS
 
@@ -76,7 +76,7 @@ struct _CamelPartitionTable {
 	void *is_key_data;
 
 	/* we keep a list of partition blocks active at all times */
-	EDList partition;
+	CamelDList partition;
 };
 
 struct _CamelPartitionTableClass {

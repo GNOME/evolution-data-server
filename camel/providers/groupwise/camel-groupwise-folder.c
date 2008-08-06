@@ -40,8 +40,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 

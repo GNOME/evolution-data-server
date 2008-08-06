@@ -1,3 +1,10 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545877
+
+	* camel-maildir-store.c:
+	Use CamelDList instead of EDList.
+
 2008-08-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-spool-summary.c: Load spool's summary

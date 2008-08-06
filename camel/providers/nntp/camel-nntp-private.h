@@ -30,8 +30,6 @@
 #include <config.h>
 #endif
 
-#include <libedataserver/e-msgport.h>
-
 G_BEGIN_DECLS
 
 struct _CamelNNTPStorePrivate {

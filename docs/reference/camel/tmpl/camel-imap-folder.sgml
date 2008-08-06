@@ -26,6 +26,7 @@ CamelImapFolder
 @priv: 
 @search: 
 @cache: 
+@journal: 
 @need_rescan: 
 @need_refresh: 
 @read_only: 

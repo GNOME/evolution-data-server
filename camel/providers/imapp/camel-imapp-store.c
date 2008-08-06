@@ -861,7 +861,7 @@ static int store_resp_fetch(CamelIMAPPEngine *ie, guint32 id, void *data)
 					camel_folder_summary_add(((CamelFolder *)istore->selected)->summary, info);
 					camel_folder_change_info_add_uid(istore->selected->changes, finfo->uid);
 					if (pending) {
-						e_dlist_remove((EDListNode *)pending);
+						camel_dlist_remove((CamelDListNode *)pending);
 						g_hash_table_remove(istore->pending_fetch_table, finfo->uid);
 						/*e_memchunk_free(istore->pending_fetch_chunks, pending);*/
 					}
@@ -881,7 +881,7 @@ static int store_resp_fetch(CamelIMAPPEngine *ie, guint32 id, void *data)
 					camel_folder_change_info_add_uid(istore->selected->changes, finfo->uid);
 					if (pending) {
 						/* FIXME: use a dlist */
-						e_dlist_remove((EDListNode *)pending);
+						camel_dlist_remove((CamelDListNode *)pending);
 						g_hash_table_remove(istore->pending_fetch_table, camel_message_info_uid(pending->info));
 						camel_message_info_free(pending->info);
 						/*e_memchunk_free(istore->pending_fetch_chunks, pending);*/
@@ -891,7 +891,7 @@ static int store_resp_fetch(CamelIMAPPEngine *ie, guint32 id, void *data)
 						pending = e_memchunk_alloc(istore->pending_fetch_chunks);
 						pending->info = info;
 						g_hash_table_insert(istore->pending_fetch_table, (char *)camel_message_info_uid(info), pending);
-						e_dlist_addtail(&istore->pending_fetch_list, (EDListNode *)pending);
+						camel_dlist_addtail(&istore->pending_fetch_list, (CamelDListNode *)pending);
 					}
 				} else {
 					if (pending == NULL)
@@ -979,7 +979,7 @@ camel_imapp_store_folder_selected(CamelIMAPPStore *store, CamelIMAPPFolder *fold
 			fn = fn->next;
 		}
 
-		printf("The pending list should now be empty: %s\n", e_dlist_empty(&istore->pending_fetch_list)?"TRUE":"FALSE");
+		printf("The pending list should now be empty: %s\n", camel_dlist_empty(&istore->pending_fetch_list)?"TRUE":"FALSE");
 		for (i=0;i<10;i++) {
 			info = camel_folder_summary_index(((CamelFolder *)istore->selected)->summary, i);
 			if (info) {

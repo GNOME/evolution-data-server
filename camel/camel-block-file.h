@@ -22,8 +22,8 @@
 #define _CAMEL_BLOCK_FILE_H
 
 #include <camel/camel-object.h>
+#include <camel/camel-list-utils.h>
 #include <glib.h>
-#include <libedataserver/e-msgport.h>
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -87,7 +87,7 @@ struct _CamelBlockFile {
 	/* make private? */
 	int block_cache_limit;
 	int block_cache_count;
-	EDList block_cache;
+	CamelDList block_cache;
 	GHashTable *blocks;
 };
 

@@ -26,18 +26,18 @@
 #define CAMEL_IMAP_STORE_H 1
 
 #include "camel-imap-types.h"
+#include <camel/camel-msgport.h>
 #include <camel/camel-offline-store.h>
 #include <sys/time.h>
 
 #ifdef ENABLE_THREADS
-#include <libedataserver/e-msgport.h>
 
 G_BEGIN_DECLS
 
 typedef struct _CamelImapMsg CamelImapMsg;
 
 struct _CamelImapMsg {
-	EMsg msg;
+	CamelMsg msg;
 
 	void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m);
 	void (*free)(CamelImapStore *store, struct _CamelImapMsg *m);

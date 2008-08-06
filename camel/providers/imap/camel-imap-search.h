@@ -27,7 +27,7 @@
 #define _CAMEL_IMAP_SEARCH_H
 
 #include <camel/camel-folder-search.h>
-#include <libedataserver/e-msgport.h>
+#include <camel/camel-list-utils.h>
 #include <camel/camel-data-cache.h>
 
 #define CAMEL_IMAP_SEARCH_TYPE         (camel_imap_search_get_type ())
@@ -49,7 +49,7 @@ struct _CamelImapSearch {
 
 	/* cache of body search matches */
 	unsigned int matches_count;
-	EDList matches;
+	CamelDList matches;
 	GHashTable *matches_hash;
 };
 

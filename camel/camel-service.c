@@ -37,8 +37,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include "camel-exception.h"
 #include "camel-operation.h"
 #include "camel-private.h"

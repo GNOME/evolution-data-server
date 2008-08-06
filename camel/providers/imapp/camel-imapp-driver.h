@@ -2,9 +2,10 @@
 #ifndef _CAMEL_IMAPP_DRIVER_H
 #define _CAMEL_IMAPP_DRIVER_H
 
+#include <camel/camel-list-utils.h>
 #include <camel/camel-object.h>
+
 #include "camel-imapp-stream.h"
-#include <libedataserver/e-msgport.h>
 
 #define CAMEL_IMAPP_DRIVER_TYPE     (camel_imapp_driver_get_type ())
 #define CAMEL_IMAPP_DRIVER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPP_DRIVER_TYPE, CamelIMAPPDriver))
@@ -63,8 +64,8 @@ struct _CamelIMAPPDriver {
 	/* sem_t list_sem; for controlled access to list variables */
 
 	/* this is so the node is always in a list - easier exception management */
-	EDList body_fetch;
-	EDList body_fetch_done;
+	CamelDList body_fetch;
+	CamelDList body_fetch_done;
 
 	/* factory to get an appropriate sasl mech */
 	CamelIMAPPSASLFunc get_sasl;

@@ -50,7 +50,7 @@ enum {
 };
 
 struct _CamelIMAP4JournalEntry {
-	EDListNode node;
+	CamelDListNode node;
 	
 	int type;
 	

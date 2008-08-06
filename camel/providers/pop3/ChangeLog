@@ -1,3 +1,11 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545877
+
+	* camel-pop3-engine.c:
+	* camel-pop3-engine.h:
+	Use CamelDList instead of EDList.
+
 2008-05-19  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #531591

@@ -29,6 +29,7 @@ CamelVeeFolder
 @changes: 
 @search: 
 @parent_vee_store: 
+@hashes: 
 
 <!-- ##### MACRO CAMEL_UNMATCHED_NAME ##### -->
 <para>

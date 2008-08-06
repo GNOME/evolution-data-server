@@ -27,11 +27,10 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include <camel/camel-stream.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-session.h>
+#include <camel/camel-list-utils.h>
 
 #define CAMEL_TYPE_IMAP4_ENGINE            (camel_imap4_engine_get_type ())
 #define CAMEL_IMAP4_ENGINE(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP4_ENGINE, CamelIMAP4Engine))
@@ -182,7 +181,7 @@ struct _CamelIMAP4Engine {
 	
 	struct _CamelIMAP4Folder *folder;    /* currently selected folder */
 	
-	EDList queue;                          /* queue of waiting commands */
+	CamelDList queue;                    /* queue of waiting commands */
 	struct _CamelIMAP4Command *current;
 };
 

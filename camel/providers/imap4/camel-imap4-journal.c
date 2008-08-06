@@ -50,10 +50,10 @@ static void camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_init (CamelIMAP4Journal *journal, CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_finalize (CamelObject *object);
 
-static void imap4_entry_free (CamelOfflineJournal *journal, EDListNode *entry);
-static EDListNode *imap4_entry_load (CamelOfflineJournal *journal, FILE *in);
-static int imap4_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out);
-static int imap4_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex);
+static void imap4_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
+static CamelDListNode *imap4_entry_load (CamelOfflineJournal *journal, FILE *in);
+static int imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+static int imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
 
 static CamelOfflineJournalClass *parent_class = NULL;
@@ -111,7 +111,7 @@ camel_imap4_journal_finalize (CamelObject *object)
 }
 
 static void
-imap4_entry_free (CamelOfflineJournal *journal, EDListNode *entry)
+imap4_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry)
 {
 	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
 	
@@ -119,7 +119,7 @@ imap4_entry_free (CamelOfflineJournal *journal, EDListNode *entry)
 	g_free (imap4_entry);
 }
 
-static EDListNode *
+static CamelDListNode *
 imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 {
 	CamelIMAP4JournalEntry *entry;
@@ -139,7 +139,7 @@ imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 		goto exception;
 	}
 	
-	return (EDListNode *) entry;
+	return (CamelDListNode *) entry;
 	
  exception:
 	
@@ -157,7 +157,7 @@ imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 }
 
 static int
-imap4_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out)
+imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
 {
 	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
 	
@@ -259,7 +259,7 @@ imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *e
 }
 
 static int
-imap4_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex)
+imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
 	
@@ -347,7 +347,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	entry->type = CAMEL_IMAP4_JOURNAL_ENTRY_APPEND;
 	entry->v.append_uid = uid;
 	
-	e_dlist_addtail (&journal->queue, (EDListNode *) entry);
+	camel_dlist_addtail (&journal->queue, (CamelDListNode *) entry);
 	
 	info = camel_folder_summary_info_new_from_message (folder->summary, message);
 	g_free(info->uid);

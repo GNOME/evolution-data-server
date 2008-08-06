@@ -37,9 +37,9 @@
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-memory.h>
-#include <libedataserver/e-msgport.h>
 
 #include "camel-block-file.h"
+#include "camel-list-utils.h"
 #include "camel-object.h"
 #include "camel-partition-table.h"
 #include "camel-private.h"
@@ -125,7 +125,7 @@ struct _CamelTextIndexPrivate {
 	/* Cache of words to write */
 	int word_cache_limit;
 	int word_cache_count;
-	EDList word_cache;
+	CamelDList word_cache;
 	GHashTable *words;
 	GStaticRecMutex lock;
 };
@@ -213,7 +213,7 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 
 		w->names[0] = nameid;
 		g_hash_table_insert(p->words, w->word, w);
-		e_dlist_addhead(&p->word_cache, (EDListNode *)w);
+		camel_dlist_addhead(&p->word_cache, (CamelDListNode *)w);
 		p->word_cache_count++;
 		ww = (struct _CamelTextIndexWord *)p->word_cache.tailpred;
 		wp = ww->prev;
@@ -225,7 +225,7 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 				camel_block_file_touch_block(p->blocks, p->blocks->root_block);
 				/* if this call fails - we still point to the old data - not fatal */
 				camel_key_table_set_data(p->word_index, ww->wordid, ww->data);
-				e_dlist_remove((EDListNode *)ww);
+				camel_dlist_remove((CamelDListNode *)ww);
 				g_hash_table_remove(p->words, ww->word);
 				g_free(ww->word);
 				g_free(ww);
@@ -235,8 +235,8 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 			wp = wp->prev;
 		}
 	} else {
-		e_dlist_remove((EDListNode *)w);
-		e_dlist_addhead(&p->word_cache, (EDListNode *)w);
+		camel_dlist_remove((CamelDListNode *)w);
+		camel_dlist_addhead(&p->word_cache, (CamelDListNode *)w);
 		w->names[w->used] = nameid;
 		w->used++;
 		if (w->used == sizeof(w->names)/sizeof(w->names[0])) {
@@ -279,9 +279,9 @@ text_index_sync(CamelIndex *idx)
 	/* this doesn't really need to be dropped, its only used in updates anyway */
 	p->word_cache_limit = 1024;
 
-	work = !e_dlist_empty(&p->word_cache);
+	work = !camel_dlist_empty(&p->word_cache);
 
-	while ( (ww = (struct _CamelTextIndexWord *)e_dlist_remhead(&p->word_cache)) ) {
+	while ( (ww = (struct _CamelTextIndexWord *)camel_dlist_remhead(&p->word_cache)) ) {
 		if (ww->used > 0) {
 			io(printf("writing key file entry '%s' [%x]\n", ww->word, ww->data));
 			if (camel_key_file_write(p->links, &ww->data, ww->used, ww->names) != -1) {
@@ -757,7 +757,7 @@ camel_text_index_init(CamelTextIndex *idx)
 
 	p = CTI_PRIVATE(idx) = g_malloc0(sizeof(*p));
 
-	e_dlist_init(&p->word_cache);
+	camel_dlist_init(&p->word_cache);
 	p->words = g_hash_table_new(g_str_hash, g_str_equal);
 	p->word_cache_count = 0;
 	/* this cache size and the block cache size have been tuned for about the best
@@ -774,7 +774,7 @@ camel_text_index_finalise(CamelTextIndex *idx)
 
 	camel_index_sync((CamelIndex *)idx);
 
-	g_assert(e_dlist_empty(&p->word_cache));
+	g_assert(camel_dlist_empty(&p->word_cache));
 	g_assert(g_hash_table_size(p->words) == 0);
 
 	g_hash_table_destroy(p->words);

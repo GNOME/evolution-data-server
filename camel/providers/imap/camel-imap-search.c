@@ -115,7 +115,7 @@ camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
 static void
 camel_imap_search_init(CamelImapSearch *is)
 {
-	e_dlist_init(&is->matches);
+	camel_dlist_init(&is->matches);
 	is->matches_hash = g_hash_table_new(g_str_hash, g_str_equal);
 	is->matches_count = 0;
 	is->lastuid = 0;
@@ -126,7 +126,7 @@ camel_imap_search_finalise(CamelImapSearch *is)
 {
 	struct _match_record *mr;
 
-	while ( (mr = (struct _match_record *)e_dlist_remtail(&is->matches)) )
+	while ( (mr = (struct _match_record *)camel_dlist_remtail(&is->matches)) )
 		free_match(is, mr);
 	g_hash_table_destroy(is->matches_hash);
 	if (is->cache)
@@ -395,7 +395,7 @@ get_match(CamelImapSearch *is, int argc, struct _ESExpResult **argv)
 	mr = g_hash_table_lookup(is->matches_hash, hash);
 	if (mr == NULL) {
 		while (is->matches_count >= MATCH_CACHE_SIZE) {
-			mr = (struct _match_record *)e_dlist_remtail(&is->matches);
+			mr = (struct _match_record *)camel_dlist_remtail(&is->matches);
 			if (mr) {
 				printf("expiring match '%s' (%s)\n", mr->hash, mr->terms[0]);
 				g_hash_table_remove(is->matches_hash, mr->hash);
@@ -409,10 +409,10 @@ get_match(CamelImapSearch *is, int argc, struct _ESExpResult **argv)
 		g_hash_table_insert(is->matches_hash, mr->hash, mr);
 		is->matches_count++;
 	} else {
-		e_dlist_remove((EDListNode *)mr);
+		camel_dlist_remove((CamelDListNode *)mr);
 	}
 
-	e_dlist_addhead(&is->matches, (EDListNode *)mr);
+	camel_dlist_addhead(&is->matches, (CamelDListNode *)mr);
 
 	/* what about offline mode? */
 	/* We could cache those results too, or should we cache them elsewhere? */

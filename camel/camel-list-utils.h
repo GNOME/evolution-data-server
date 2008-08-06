@@ -22,6 +22,8 @@
 #ifndef _CAMEL_LIST_UTILS_H
 #define _CAMEL_LIST_UTILS_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 /* This is a copy of Amiga's Exec lists, the head and tail nodes are

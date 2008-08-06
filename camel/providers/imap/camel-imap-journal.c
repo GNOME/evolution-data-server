@@ -52,10 +52,10 @@ static void camel_imap_journal_class_init (CamelIMAPJournalClass *klass);
 static void camel_imap_journal_init (CamelIMAPJournal *journal, CamelIMAPJournalClass *klass);
 static void camel_imap_journal_finalize (CamelObject *object);
 
-static void imap_entry_free (CamelOfflineJournal *journal, EDListNode *entry);
-static EDListNode *imap_entry_load (CamelOfflineJournal *journal, FILE *in);
-static int imap_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out);
-static int imap_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex);
+static void imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
+static CamelDListNode *imap_entry_load (CamelOfflineJournal *journal, FILE *in);
+static int imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+static int imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 static void unref_folder (gpointer key, gpointer value, gpointer data);
 static void free_uids (GPtrArray *array);
 static void close_folder (gpointer name, gpointer folder, gpointer data);
@@ -132,7 +132,7 @@ unref_folder (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-imap_entry_free (CamelOfflineJournal *journal, EDListNode *entry)
+imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	
@@ -180,7 +180,7 @@ decode_uids (FILE *file)
 	return uids;
 }
 
-static EDListNode *
+static CamelDListNode *
 imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 {
 	CamelIMAPJournalEntry *entry;
@@ -217,7 +217,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	}
 
 	d(g_print ("CHEN DEBUG: Atlast got one entry \n"));
-	return (EDListNode *) entry;
+	return (CamelDListNode *) entry;
 	
  exception:
 	switch (entry->type) {
@@ -245,7 +245,7 @@ encode_uids (FILE *file, GPtrArray *uids)
 }
 
 static int
-imap_entry_write (CamelOfflineJournal *journal, EDListNode *entry, FILE *out)
+imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	GPtrArray *uids = NULL;
@@ -311,7 +311,7 @@ journal_decode_folder (CamelIMAPJournal *journal, const char *name)
 }
 
 int
-imap_entry_play (CamelOfflineJournal *journal, EDListNode *entry, CamelException *ex)
+imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	
@@ -436,7 +436,7 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 	
 	va_end (ap);
 
-	e_dlist_addtail (&journal->queue, (EDListNode *) entry);
+	camel_dlist_addtail (&journal->queue, (CamelDListNode *) entry);
 	camel_offline_journal_write (journal, NULL);
 }
 

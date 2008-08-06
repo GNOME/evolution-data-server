@@ -1,3 +1,12 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-journal.c:
+	* camel-imap-journal.h:
+	* camel-imap-store.h:
+	* camel-imap-search.c:
+	* camel-imap-search.h:
+	Use CamelDList instead of EDList.
+
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Mark summary as dirty when

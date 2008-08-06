@@ -31,7 +31,6 @@
 #endif
 
 #include <pthread.h>
-#include <libedataserver/e-msgport.h>
 
 G_BEGIN_DECLS
 

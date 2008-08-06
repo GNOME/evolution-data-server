@@ -2,10 +2,11 @@
 #ifndef _CAMEL_IMAPP_ENGINE_H
 #define _CAMEL_IMAPP_ENGINE_H
 
+#include <camel/camel-list-utils.h>
+#include <camel/camel-msgport.h>
 #include <camel/camel-object.h>
 
 #include "camel-imapp-stream.h"
-#include <libedataserver/e-msgport.h>
 #include "camel-imapp-folder.h"
 
 #define CAMEL_IMAPP_ENGINE_TYPE     (camel_imapp_engine_get_type ())
@@ -49,7 +50,7 @@ typedef int (*CamelIMAPPEngineFunc)(struct _CamelIMAPPEngine *engine, guint32 id
 typedef void (*CamelIMAPPCommandFunc)(struct _CamelIMAPPEngine *engine, struct _CamelIMAPPCommand *, void *data);
 
 struct _CamelIMAPPCommand {
-	EMsg msg;
+	CamelMsg msg;
 
 	const char *name;	/* command name/type (e.g. FETCH) */
 
@@ -60,7 +61,7 @@ struct _CamelIMAPPCommand {
 	unsigned int tag;
 
 	struct _CamelStreamMem *mem;	/* for building the part */
-	EDList parts;
+	CamelDList parts;
 	CamelIMAPPCommandPart *current;
 
 	CamelIMAPPCommandFunc complete;
@@ -100,7 +101,7 @@ struct _CamelIMAPPEngine {
 	CamelObject parent_object;
 
 	/* incoming requests */
-	EMsgPort *port;
+	CamelMsgPort *port;
 
 	CamelIMAPPStream *stream;
 
@@ -116,9 +117,9 @@ struct _CamelIMAPPEngine {
 	char *select;		/* *currently* selected folder */
 	char *last_select;	/* last selected or to-be selected folder (e.g. outstanding queued select) */
 	CamelIMAPPCommand *literal;/* current literal op */
-	EDList active;		/* active queue */
-	EDList queue;		/* outstanding queue */
-	EDList done;		/* done queue, awaiting reclamation */
+	CamelDList active;	/* active queue */
+	CamelDList queue;	/* outstanding queue */
+	CamelDList done;	/* done queue, awaiting reclamation */
 
 	/* keep track of running a select */
 	struct _CamelIMAPPSelectResponse *select_response;

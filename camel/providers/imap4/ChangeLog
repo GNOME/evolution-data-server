@@ -1,3 +1,16 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545877
+
+	* camel-imap4-command.c:
+	* camel-imap4-command.h:
+	* camel-imap4-engine.c:
+	* camel-imap4-engine.h:
+	* camel-imap4-search.h:
+	* camel-imap4-journal.c:
+	* camel-imap4-journal.h:
+	Use CamelDList instead of EDList.
+
 2008-07-19  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-imap4-store.c: s/Unknown/Unknown error/g

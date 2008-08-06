@@ -1,3 +1,14 @@
+2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #545877
+
+	* camel-imapp-driver.c:
+	* camel-imapp-driver.h:
+	* camel-imapp-engine.c:
+	* camel-imapp-engine.h:
+	* camel-imapp-store.c:
+	Use CamelDList instead of EDList.
+
 2008-08-01  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imapp-store-summary.c:

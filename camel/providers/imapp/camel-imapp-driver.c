@@ -11,6 +11,7 @@
 
 #include "camel-folder-summary.h"
 #include "camel-mime-utils.h"
+#include "camel-msgport.h"
 #include "camel-sasl.h"
 #include "camel-store.h"
 #include "camel-stream-mem.h"
@@ -41,8 +42,8 @@ static void
 object_init(CamelIMAPPDriver *ie, CamelIMAPPDriverClass *ieclass)
 {
 	ie->summary = g_ptr_array_new();
-	e_dlist_init(&ie->body_fetch);
-	e_dlist_init(&ie->body_fetch_done);
+	camel_dlist_init(&ie->body_fetch);
+	camel_dlist_init(&ie->body_fetch_done);
 }
 
 static void
@@ -462,7 +463,7 @@ camel_imapp_driver_fetch(CamelIMAPPDriver *id, CamelIMAPPFolder *folder, const c
 	fd->done = done;
 	fd->data = data;
 
-	e_dlist_addtail(&id->body_fetch, (EDListNode *)&fd);
+	camel_dlist_addtail(&id->body_fetch, (CamelDListNode *)&fd);
 
 	CAMEL_TRY {
 		camel_imapp_driver_select(id, folder);
@@ -477,7 +478,7 @@ camel_imapp_driver_fetch(CamelIMAPPDriver *id, CamelIMAPPFolder *folder, const c
 		/* FIXME: do exception properly */
 	} CAMEL_DONE;
 
-	e_dlist_remove((EDListNode *)&fd);
+	camel_dlist_remove((CamelDListNode *)&fd);
 
 	return fd.data;
 }
@@ -760,8 +761,8 @@ driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 			while (fn) {
 				if (!strcmp(finfo->uid, fd->uid) && !strcmp(finfo->section, fd->section)) {
 					fd->done(sdata, fd);
-					e_dlist_remove((EDListNode *)fd);
-					e_dlist_addtail(&sdata->body_fetch_done, (EDListNode *)fd);
+					camel_dlist_remove((CamelDListNode *)fd);
+					camel_dlist_addtail(&sdata->body_fetch_done, (CamelDListNode *)fd);
 					break;
 				}
 				fd = fn;
@@ -794,7 +795,7 @@ typedef enum {
 typedef struct _CamelIMAPPMsg CamelIMAPPMsg;
 
 struct _CamelIMAPPMsg {
-	EMsg msg;
+	CamelMsg msg;
 	CamelOperation *cancel;
 	CamelException *ex;
 	camel_imapp_msg_t type;
@@ -930,7 +931,7 @@ camel_imapp_driver_worker(CamelIMAPPDriver *id)
 		/*m = (CamelIMAPPMsg *)camel_msgport_try_pop(id->queue);*/
 		switch (m->type) {
 		case CAMEL_IMAPP_MSG_FETCH:
-			/*e_dlist_addtail(&id->fetch_queue, (EDListNode *)m);*/
+			/*camel_dlist_addtail(&id->fetch_queue, (CamelDListNode *)m);*/
 			camel_imapp_driver_select(id, m->data.fetch.folder);
 			break;
 		case CAMEL_IMAPP_MSG_LIST:

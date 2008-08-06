@@ -334,8 +334,8 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 	g_string_free (str, FALSE);
 	
 	ic = g_new0 (CamelIMAP4Command, 1);
-	((EDListNode *) ic)->next = NULL;
-	((EDListNode *) ic)->prev = NULL;
+	((CamelDListNode *) ic)->next = NULL;
+	((CamelDListNode *) ic)->prev = NULL;
 	ic->untagged = g_hash_table_new (g_str_hash, g_str_equal);
 	ic->status = CAMEL_IMAP4_COMMAND_QUEUED;
 	ic->result = CAMEL_IMAP4_RESULT_NONE;

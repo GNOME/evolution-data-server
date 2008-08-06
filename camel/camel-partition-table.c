@@ -32,9 +32,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <libedataserver/e-msgport.h>
-
 #include "camel-block-file.h"
+#include "camel-list-utils.h"
 #include "camel-partition-table.h"
 
 /* Do we synchronously write table updates - makes the
@@ -64,7 +63,7 @@ camel_partition_table_init(CamelPartitionTable *cpi)
 {
 	struct _CamelPartitionTablePrivate *p;
 
-	e_dlist_init(&cpi->partition);
+	camel_dlist_init(&cpi->partition);
 
 	p = cpi->priv = g_malloc0(sizeof(*cpi->priv));
 	pthread_mutex_init(&p->lock, NULL);
@@ -79,7 +78,7 @@ camel_partition_table_finalise(CamelPartitionTable *cpi)
 	p = cpi->priv;
 
 	if (cpi->blocks) {
-		while ((bl = (CamelBlock *)e_dlist_remhead(&cpi->partition))) {
+		while ((bl = (CamelBlock *)camel_dlist_remhead(&cpi->partition))) {
 			camel_block_file_sync_block(cpi->blocks, bl);
 			camel_block_file_unref_block(cpi->blocks, bl);
 		}
@@ -213,7 +212,7 @@ CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel
 		d(printf("Adding partition block, used = %d, hashid = %08x\n", ptb->used, ptb->partition[0].hashid));
 
 		/* if we have no data, prime initial block */
-		if (ptb->used == 0 && e_dlist_empty(&cpi->partition) && ptb->next == 0) {
+		if (ptb->used == 0 && camel_dlist_empty(&cpi->partition) && ptb->next == 0) {
 			pblock = camel_block_file_new_block(bs);
 			if (pblock == NULL) {
 				camel_block_file_unref_block(bs, block);
@@ -234,7 +233,7 @@ CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel
 
 		root = ptb->next;
 		camel_block_file_detach_block(bs, block);
-		e_dlist_addtail(&cpi->partition, (EDListNode *)block);
+		camel_dlist_addtail(&cpi->partition, (CamelDListNode *)block);
 	} while (root);
 
 	return cpi;

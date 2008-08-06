@@ -85,18 +85,18 @@ camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalCla
 {
 	journal->folder = NULL;
 	journal->filename = NULL;
-	e_dlist_init (&journal->queue);
+	camel_dlist_init (&journal->queue);
 }
 
 static void
 camel_offline_journal_finalize (CamelObject *object)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) object;
-	EDListNode *entry;
+	CamelDListNode *entry;
 	
 	g_free (journal->filename);
 	
-	while ((entry = e_dlist_remhead (&journal->queue)))
+	while ((entry = camel_dlist_remhead (&journal->queue)))
 		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 }
 
@@ -111,7 +111,7 @@ camel_offline_journal_finalize (CamelObject *object)
 void
 camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *folder, const char *filename)
 {
-	EDListNode *entry;
+	CamelDListNode *entry;
 	FILE *fp;
 	
 	journal->filename = g_strdup (filename);
@@ -119,7 +119,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 	
 	if ((fp = g_fopen (filename, "rb"))) {
 		while ((entry = CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_load (journal, fp)))
-			e_dlist_addtail (&journal->queue, entry);
+			camel_dlist_addtail (&journal->queue, entry);
 		
 		fclose (fp);
 	}
@@ -155,7 +155,7 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *fi
 int
 camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 {
-	EDListNode *entry;
+	CamelDListNode *entry;
 	FILE *fp;
 	int fd;
 	
@@ -205,7 +205,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 int
 camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 {
-	EDListNode *entry, *next;
+	CamelDListNode *entry, *next;
 	CamelException lex;
 	int failed = 0;
 	
@@ -220,7 +220,7 @@ camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 			camel_exception_clear (&lex);
 			failed++;
 		} else {
-			e_dlist_remove (entry);
+			camel_dlist_remove (entry);
 		}
 		entry = next;
 	}
