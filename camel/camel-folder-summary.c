@@ -762,7 +762,7 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 	
-	printf("removing cache for  %s %d %p\n", s->folder->full_name, g_hash_table_size (s->loaded_infos), s->loaded_infos);
+	printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), s->loaded_infos);
 	#warning "hack. fix it"
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);

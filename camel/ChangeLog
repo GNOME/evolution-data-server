@@ -1,5 +1,12 @@
 2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #546544
+
+	* camel/camel-folder-summary.c: Don't try print folder name, when
+	folder is NULL. Print the summary path for such debugging purposes.
+
+2008-08-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Add apis to delete vuids in transaction and clean
 	up add vuid api.
 	* camel/camel-db.h:
