@@ -2098,7 +2098,6 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 	g_free (pemail);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
-
 }
 
 static void
@@ -2293,6 +2292,95 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 }
 
 static void
+copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry, gboolean is_cut)
+{
+	gint i, start = 0, end = 0;
+	const gchar *text;
+	GHashTable *hash;
+	GHashTableIter iter;
+	gpointer key, value;
+	GString *addresses;
+
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+
+	if (!gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), &start, &end)) {
+		start = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
+		end = start;
+	}
+
+	/* do nothing when there is nothing selected */
+	if (start == end)
+		return;
+
+	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+	for (i = start; i <= end; i++) {
+		int index = get_index_at_position (text, i);
+
+		g_hash_table_insert (hash, GINT_TO_POINTER (index), NULL);
+	}
+
+	addresses = g_string_new ("");
+
+	g_hash_table_iter_init (&iter, hash);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		int index = GPOINTER_TO_INT (key);
+		EDestination *dest;
+		gint rstart, rend;
+
+		if (!get_range_by_index (text, index, &rstart, &rend))
+			continue;
+
+		if (rstart < start) {
+			if (addresses->str && *addresses->str)
+				g_string_append (addresses, ", ");
+
+			g_string_append_len (addresses, text + start, rend - start);
+		} else if (rend > end) {
+			if (addresses->str && *addresses->str)
+				g_string_append (addresses, ", ");
+
+			g_string_append_len (addresses, text + rstart, end - rstart);
+		} else {
+			/* the contact is whole selected */
+			dest = find_destination_by_index (name_selector_entry, index);
+			if (dest && e_destination_get_address (dest)) {
+				if (addresses->str && *addresses->str)
+					g_string_append (addresses, ", ");
+
+				g_string_append (addresses, e_destination_get_address (dest));
+
+				/* store the 'dest' as a value for the index */
+				g_hash_table_insert (hash, GINT_TO_POINTER (index), dest);
+			} else
+				g_string_append_len (addresses, text + rstart, rend - rstart);
+		}
+	}
+
+	if (is_cut)
+		gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), start, end);
+
+	g_hash_table_unref (hash);
+
+	gtk_clipboard_set_text (gtk_widget_get_clipboard (GTK_WIDGET (name_selector_entry), GDK_SELECTION_CLIPBOARD), addresses->str, -1);
+
+	g_string_free (addresses, TRUE);
+}
+
+static void
+copy_clipboard (GtkEntry *entry, ENameSelectorEntry *name_selector_entry)
+{
+	copy_or_cut_clipboard (name_selector_entry, FALSE);
+	g_signal_stop_emission_by_name (entry, "copy-clipboard");
+}
+
+static void
+cut_clipboard (GtkEntry *entry, ENameSelectorEntry *name_selector_entry)
+{
+	copy_or_cut_clipboard (name_selector_entry, TRUE);
+	g_signal_stop_emission_by_name (entry, "cut-clipboard");
+}
+
+static void
 e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
   GtkCellRenderer *renderer;
@@ -2336,6 +2424,10 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
   g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
+  
+	/* Clipboard signals */
+	g_signal_connect (name_selector_entry, "copy-clipboard", G_CALLBACK (copy_clipboard), name_selector_entry);
+	g_signal_connect (name_selector_entry, "cut-clipboard", G_CALLBACK (cut_clipboard), name_selector_entry);
 
   /* Completion */
 

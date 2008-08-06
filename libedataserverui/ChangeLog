@@ -1,3 +1,12 @@
+2008-08-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #207728
+
+	* e-name-selector-entry.c: (copy_or_cut_clipboard), (copy_clipboard),
+	(cut_clipboard), (e_name_selector_entry_init): Always cut/copy whole
+	address from the selector entry, when selected whole, thus paste will
+	be with correct address, not the text only.
+
 2008-07-08  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #537415
