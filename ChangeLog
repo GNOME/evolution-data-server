@@ -1,3 +1,10 @@
+2008-08-07  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	* libedataserver/e-account.c: Harden e_account_[gs]et_*
+	functions by checking ea being NULL and code cleanups
+	suggested by mbarnes.
+	Fixes bug #545021
+
 2008-08-04  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.23.6 release and version bump.

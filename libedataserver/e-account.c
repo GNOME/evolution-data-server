@@ -822,7 +822,7 @@ static struct _option_info {
 #define LOCK_BASE "/apps/evolution/lock/mail/accounts"
 
 static void
-ea_setting_notify(GConfClient *gconf, guint cnxn_id, GConfEntry *entry, void *crap)
+ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, void *crap)
 {
 	GConfValue *value;
 	char *tkey;
@@ -846,7 +846,7 @@ ea_setting_notify(GConfClient *gconf, guint cnxn_id, GConfEntry *entry, void *cr
 }
 
 static void
-ea_setting_setup(void)
+ea_setting_setup (void)
 {
 	GConfClient *gconf = gconf_client_get_default();
 	GConfEntry *entry;
@@ -889,24 +889,30 @@ ea_setting_setup(void)
 	(((char **)(((char *)ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
 	(((char *)ea)+account_info[type].offset))
 
-const char *e_account_get_string(EAccount *ea, e_account_item_t type)
+const char*
+e_account_get_string (EAccount *ea, e_account_item_t type)
 {
+	g_return_val_if_fail (ea != NULL, NULL);
 	return *((const char **)addr(ea, type));
 }
 
-int e_account_get_int(EAccount *ea, e_account_item_t type)
+int
+e_account_get_int (EAccount *ea, e_account_item_t type)
 {
+	g_return_val_if_fail (ea != NULL, 0);
 	return *((int *)addr(ea, type));
 }
 
-gboolean e_account_get_bool(EAccount *ea, e_account_item_t type)
+gboolean
+e_account_get_bool (EAccount *ea, e_account_item_t type)
 {
+	g_return_val_if_fail (ea != NULL, FALSE);
 	return *((gboolean *)addr(ea, type));
 }
 
 #if d(!)0
 static void
-dump_account(EAccount *ea)
+dump_account (EAccount *ea)
 {
 	char *xml;
 
@@ -918,9 +924,12 @@ dump_account(EAccount *ea)
 #endif
 
 /* TODO: should it return true if it changed? */
-void e_account_set_string(EAccount *ea, e_account_item_t type, const char *val)
+void
+e_account_set_string (EAccount *ea, e_account_item_t type, const char *val)
 {
 	char **p;
+	
+	g_return_if_fail (ea != NULL);
 
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
@@ -937,8 +946,11 @@ void e_account_set_string(EAccount *ea, e_account_item_t type, const char *val)
 	}
 }
 
-void e_account_set_int(EAccount *ea, e_account_item_t type, int val)
+void
+e_account_set_int (EAccount *ea, e_account_item_t type, int val)
 {
+	g_return_if_fail (ea != NULL);
+	
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
@@ -952,8 +964,11 @@ void e_account_set_int(EAccount *ea, e_account_item_t type, int val)
 	}
 }
 
-void e_account_set_bool(EAccount *ea, e_account_item_t type, gboolean val)
+void
+e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 {
+	g_return_if_fail (ea != NULL);
+	
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
@@ -968,7 +983,7 @@ void e_account_set_bool(EAccount *ea, e_account_item_t type, gboolean val)
 }
 
 gboolean
-e_account_writable_option(EAccount *ea, const char *protocol, const char *option)
+e_account_writable_option (EAccount *ea, const char *protocol, const char *option)
 {
 	char *key;
 	struct _option_info *info;
@@ -991,7 +1006,7 @@ e_account_writable_option(EAccount *ea, const char *protocol, const char *option
 }
 
 gboolean
-e_account_writable(EAccount *ea, e_account_item_t type)
+e_account_writable (EAccount *ea, e_account_item_t type)
 {
 	ea_setting_setup();
 
