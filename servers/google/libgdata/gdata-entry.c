@@ -974,6 +974,9 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 
 		else {
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+			if (!value)
+				value = xmlGetProp (cur, (xmlChar *)"value");
+
 			g_hash_table_insert(priv->field_table, g_strdup((gchar *)cur->name),
 					g_strdup((gchar *)value));
 			xmlFree(value);

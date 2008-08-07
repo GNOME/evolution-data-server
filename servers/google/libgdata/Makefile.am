@@ -22,7 +22,7 @@ libgdata_1_2_la_LIBADD =			\
 libgdata_1_2_la_LDFLAGS =                       \
         -version-info $(LIBGDATA_CURRENT):$(LIBGDATA_REVISION):$(LIBGDATA_AGE) $(NO_UNDEFINED)
 
-libgdataincludedir = $(privincludedir)/google/gdata
+libgdataincludedir = $(privincludedir)/google/libgdata
 
 libgdatainclude_HEADERS =                  	\
         gdata-feed.h                       	\

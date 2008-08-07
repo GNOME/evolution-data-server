@@ -20,7 +20,7 @@ libgdata_google_1_2_la_LIBADD =					\
 libgdata_google_1_2_la_LDFLAGS =	                       \
         -version-info $(LIBGDATA_GOOGLE_CURRENT):$(LIBGDATA_GOOGLE_REVISION):$(LIBGDATA_GOOGLE_AGE) $(NO_UNDEFINED)
 
-libgdata_google_includedir = $(privincludedir)/google/gdata-google
+libgdata_google_includedir = $(privincludedir)/google/libgdata-google
 
 libgdata_google_include_HEADERS =       		        \
 	gdata-google-service.h             	

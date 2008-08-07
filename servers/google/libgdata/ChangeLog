@@ -1,3 +1,13 @@
+2008-08-07  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #535745
+
+	* Makefile.am:
+	* libgdata.pc.in: Put public include files to google/libgdata.
+	* gdata-entry.c: (gdata_entry_new_from_xmlptr): When reading custom
+	values from the node, and the node doesn't contain text value, then
+	try to read its value from 'value' attribute.
+
 2008-07-28  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #468671
