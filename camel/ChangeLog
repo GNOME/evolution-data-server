@@ -1,5 +1,9 @@
 2008-08-07  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Store to db intelligently.
+
+2008-08-07  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Fix load/save counts of vee folder.
 	* camel/camel-vee-summary.c:
 

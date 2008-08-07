@@ -1286,18 +1286,27 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
 
+	if (!(s->flags & CAMEL_SUMMARY_DIRTY))
+		return 0;
+
+	s->flags &= ~CAMEL_SUMMARY_DIRTY;
+
+
 	camel_db_begin_transaction (cdb, ex);
 
 	ret = save_message_infos_to_db (s, ex);
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, ex);
+		/* Failed, so lets reset the flag */
+		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 	camel_db_end_transaction (cdb, ex);
 
 	record = (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_to_db (s, ex));
 	if (!record) {
+		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 	
@@ -1308,6 +1317,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, ex);
+		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 
@@ -1992,7 +2002,6 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 	g_hash_table_destroy(s->loaded_infos);
 	s->loaded_infos = g_hash_table_new(g_str_hash, g_str_equal);
 
-	s->flags |= CAMEL_SUMMARY_DIRTY;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	camel_db_clear_folder_summary (cdb, folder_name, NULL);	
