@@ -439,7 +439,7 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 	/* TODO: Cache offline searches too? */
 
 	/* If offline, search using the parent class, which can handle this manually */
-	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), NULL))
+	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return imap_search_parent_class->body_contains(f, argc, argv, s);
 
 	/* optimise the match "" case - match everything */

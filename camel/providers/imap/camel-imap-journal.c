@@ -46,7 +46,7 @@
 #include "camel-imap-journal.h"
 #include "camel-imap-folder.h"
 
-#define d(x) x
+#define d(x) 
 
 static void camel_imap_journal_class_init (CamelIMAPJournalClass *klass);
 static void camel_imap_journal_init (CamelIMAPJournal *journal, CamelIMAPJournalClass *klass);
@@ -186,7 +186,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	CamelIMAPJournalEntry *entry;
 	
 	
-	d(g_print ("CHEN DEBUG: Loading to  the journal \n"));
+	d(g_print ("DEBUG: Loading to  the journal \n"));
 	
 	entry = g_malloc0 (sizeof (CamelIMAPJournalEntry));
 	
@@ -216,7 +216,6 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 		goto exception;
 	}
 
-	d(g_print ("CHEN DEBUG: Atlast got one entry \n"));
 	return (CamelDListNode *) entry;
 	
  exception:
@@ -253,7 +252,7 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 	if (camel_file_util_encode_uint32 (out, imap_entry->type) == -1)
 		return -1;
 	
-	d(g_print ("CHEN DEBUG: Writing to  the journal \n"));
+	d(g_print ("DEBUG: Writing to  the journal \n"));
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		uids = imap_entry->uids;
@@ -295,7 +294,7 @@ journal_decode_folder (CamelIMAPJournal *journal, const char *name)
 		folder = camel_store_get_folder (CAMEL_STORE (CAMEL_OFFLINE_JOURNAL (journal)->folder->parent_store),
 						 name, 0, &ex);
 		if (folder)
-			g_hash_table_insert (journal->folders, name, folder);
+			g_hash_table_insert (journal->folders, (char *) name, folder);
 		else {
 			msg = g_strdup_printf (_("Could not open '%s':\n%s\nChanges made to this folder will not be resynchronized."),
 					       name, camel_exception_get_description (&ex));
@@ -315,7 +314,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	
-	d(g_print ("CHEN DEBUG: PLaying to  the journal \n"));
+	d(g_print ("DEBUG: PLaying the journal \n"));
 
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:

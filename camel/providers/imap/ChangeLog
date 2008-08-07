@@ -1,3 +1,10 @@
+2008-08-08  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel-imap-journal.c: (imap_entry_load), (imap_entry_write),
+	(journal_decode_folder), (imap_entry_play):
+	* camel-imap-search.c: (imap_body_contains): Fixed a couple of 
+	warnings and removed the disabled debug printf's.						     
+
 2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-journal.c:
