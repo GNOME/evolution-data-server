@@ -1,5 +1,10 @@
 2008-08-07  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Fix return values.
+	* camel/camel-folder-search.c: Suppress No such table exception.
+
+2008-08-07  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Store to db intelligently.
 
 2008-08-07  Srinivasa Ragavan  <sragavan@novell.com>

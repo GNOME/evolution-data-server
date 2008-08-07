@@ -493,6 +493,13 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		matches = g_ptr_array_new();
 		cdb = (CamelDB *) (search->folder->cdb);
 		camel_db_select (cdb, tmp, (CamelDBSelectCB) read_uid_callback, matches, ex);
+		if (camel_exception_is_set(ex)) {
+			const char *exception = camel_exception_get_description (ex);
+			if (strncmp(exception, "no such table", 13) == 0) {
+				g_warning ("Error during searching %s: %s\n", tmp, exception);
+				camel_exception_clear (ex); /* Suppress no such table */
+			}
+		}
 		g_free (tmp);
 
 	}
