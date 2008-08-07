@@ -587,7 +587,6 @@ gdata_entry_new_from_xmlptr (xmlDocPtr doc, xmlNodePtr cur)
 		cur = cur->next;
 	}
 
-	xmlFree(value);
 	return entry;
 }
 
