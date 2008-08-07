@@ -467,6 +467,33 @@ static void vee_refresh_info(CamelFolder *folder, CamelException *ex)
 	g_list_free(list);
 }
 
+static int 
+count_result (CamelFolderSummary *summary, char *query, CamelException *ex)
+{
+	CamelFolder *folder = summary->folder;
+	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
+	int count=0; 
+	char *expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", query);
+	GList *node;
+	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
+	
+	node = p->folders;
+	while (node) {
+		CamelFolder *f = node->data;
+		GPtrArray *match;
+
+		/* FIXME: Why don't we write a count_search_by_expression. It can be just fast. */
+		match = camel_folder_search_by_expression(f, expr, ex);
+		count += match->len;
+		camel_folder_search_free (f, match);
+
+		node = node->next;
+	}
+
+	g_free(expr);
+	return count;
+}
+
 static	CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -486,9 +513,22 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-	record->junk_count = s->junk_count;
-	record->deleted_count = s->deleted_count;
-	record->unread_count = s->unread_count;
+	if ((s->unread_count || s->visible_count) && !g_getenv("FORCE_VFOLDER_COUNT")) {
+		/* We should be in sync always. so use the count. Don't search.*/
+		record->junk_count = s->junk_count;
+		record->deleted_count = s->deleted_count;
+		record->unread_count = s->unread_count;
+		record->visible_count = s->visible_count;
+		record->jnd_count = s->junk_not_deleted_count;
+	} else {
+		/* Either first time, or by force we search the count */
+		record->junk_count = count_result (s, "(match-all (system-flag  \"junk\"))", ex);
+		record->deleted_count = count_result (s, "(match-all (system-flag  \"deleted\"))", ex);
+		record->unread_count = count_result (s, "(match-all (not (system-flag  \"Seen\")))", ex);
+		record->visible_count = count_result (s, "(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))", ex);
+		record->jnd_count = count_result (s, "(match-all (and (not (system-flag \"deleted\")) (system-flag \"junk\")))", ex);
+	}
+
 
 	return record;	
 }

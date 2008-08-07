@@ -171,9 +171,32 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 	int res = FALSE;
 
 	if (mi->uid) {
+		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;
+		guint32 visible, unread, deleted, junked, junked_not_deleted;
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-		HANDLE_NULL_INFO(FALSE);		
+
+		HANDLE_NULL_INFO(FALSE);
+		camel_object_get(rmi->summary->folder, NULL,
+				 CAMEL_FOLDER_DELETED, &old_deleted,
+				 CAMEL_FOLDER_VISIBLE, &old_visible,
+				 CAMEL_FOLDER_JUNKED, &old_junked,
+				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &old_junked_not_deleted,
+				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);		
 		res = camel_message_info_set_flags(rmi, flags, set);
+		camel_object_get(rmi->summary->folder, NULL,
+				 CAMEL_FOLDER_DELETED, &deleted,
+				 CAMEL_FOLDER_VISIBLE, &visible,
+				 CAMEL_FOLDER_JUNKED, &junked,
+				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &junked_not_deleted,
+				 CAMEL_FOLDER_UNREAD, &unread, NULL);
+		/* Keep the summary in sync */
+		mi->summary->unread_count += unread - old_unread;
+		mi->summary->deleted_count += deleted - old_deleted;
+		mi->summary->junk_count += junked - old_junked;
+		mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
+		mi->summary->visible_count += visible - old_visible;
+
+		d(printf("VF %d %d %d %d %d\n", mi->summary->unread_count, mi->summary->deleted_count, mi->summary->junk_count, mi->summary->junk_not_deleted_count, mi->summary->visible_count));
 		camel_message_info_free (rmi);
 	}
  
