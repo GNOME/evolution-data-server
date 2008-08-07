@@ -454,6 +454,15 @@ view_destroy(gpointer data, GObject *where_object_was)
 }
 #endif
 
+static gboolean
+can_browse (EBookBackend *backend)
+{
+	return backend &&
+		e_book_backend_get_source (backend) &&
+		e_source_get_property (e_book_backend_get_source (backend), "can-browse") &&
+		strcmp (e_source_get_property (e_book_backend_get_source (backend), "can-browse"), "1") == 0;
+}
+
 static void
 book_view_notify_status (EDataBookView *view, const char *status)
 {
@@ -4165,7 +4174,10 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 		}
 		ldap_memfree (ldap_error_msg);
 
-		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
+		if ((ldap_error == LDAP_TIMELIMIT_EXCEEDED || ldap_error == LDAP_SIZELIMIT_EXCEEDED) && can_browse ((EBookBackend *)bl))
+			/* do not complain when search limit exceeded for browseable LDAPs */
+			e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_Success);
+		else if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
 			e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_SearchTimeLimitExceeded);
 		else if (ldap_error == LDAP_SIZELIMIT_EXCEEDED)
 			e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_SearchSizeLimitExceeded);
@@ -4246,6 +4258,10 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
 		ldap_query = e_book_backend_ldap_build_query (bl, e_data_book_view_get_card_query (view));
+
+		/* search for nonempty full names */
+		if (!ldap_query && can_browse ((EBookBackend *)bl))
+			ldap_query = g_strdup ("(cn=*)");
 
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (ldap_query != NULL && bl->priv->ldap) {
@@ -4900,7 +4916,10 @@ e_book_backend_ldap_remove (EBookBackend *backend, EDataBook *book, guint32 opid
 static char*
 e_book_backend_ldap_get_static_capabilities (EBookBackend *backend)
 {
-	return g_strdup("net,anon-access,do-initial-query,contact-lists");
+	if (can_browse (backend))
+		return g_strdup ("net,anon-access,contact-lists,do-initial-query");
+	else
+		return g_strdup("net,anon-access,contact-lists");
 }
 
 #if 0
