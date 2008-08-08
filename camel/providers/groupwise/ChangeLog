@@ -1,3 +1,8 @@
+2008-08-08  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-store.c (groupwise_folders_sync):
+	Fix a leak. Part of bgo #523103
+
 2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #545877

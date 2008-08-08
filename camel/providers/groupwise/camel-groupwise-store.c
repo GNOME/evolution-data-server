@@ -936,6 +936,8 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 		parent = e_gw_container_get_parent_id (E_GW_CONTAINER(temp_list->data));
 
 		if (e_gw_container_is_root (E_GW_CONTAINER(temp_list->data))) {
+			if (store->root_container)
+				g_free (store->root_container);
 			store->root_container = g_strdup (id);
 			continue;
 		}
