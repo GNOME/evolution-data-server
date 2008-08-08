@@ -713,6 +713,8 @@ co_type_register(CamelType parent, const char * name,
 
 	TYPE_LOCK();
 
+	camel_type_init(); /* has a static boolean itself */
+
 	/* Have to check creation, it might've happened in another thread before we got here */
 	klass = g_hash_table_lookup(type_table, name);
 	if (klass != NULL) {

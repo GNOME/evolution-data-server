@@ -298,7 +298,12 @@ camel_provider_list(gboolean load)
 {
 	GList *list = NULL;
 
-	g_assert(provider_table);
+
+	/* provider_table can be NULL, so initialize it */
+	if (G_UNLIKELY (provider_table == NULL))
+		camel_provider_init ();
+	
+	g_return_val_if_fail (provider_table != NULL, NULL);
 
 	LOCK();
 
@@ -344,8 +349,8 @@ camel_provider_get(const char *url_string, CamelException *ex)
 	char *protocol;
 	size_t len;
 
-	g_return_val_if_fail(url_string != NULL, NULL);
-	g_assert(provider_table);
+	g_return_val_if_fail (url_string != NULL, NULL);
+	g_return_val_if_fail (provider_table != NULL, NULL);
 
 	len = strcspn(url_string, ":");
 	protocol = g_alloca(len+1);
