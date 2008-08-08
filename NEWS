@@ -1,3 +1,27 @@
+Evolution-Data-Server 2.22.3 2008-06-30
+---------------------------------------
+
+Bug Fixes:
+	#213072: Fix for folder/summary or message-list/preview mismatch (Srinivasa Ragavan)
+	#340838: Use the whole URL even when not the proxy set, because the URL can contain parameters, which are not part of the path (Milan Crha)
+	#374616: Show server's error message on "BYE" if available (Milan Crha)
+	#394654: (Novell Bugzilla) Fixes a EDS crasher (Chenthill Palanisamy)
+	#509721: Do not delete original message if exception occurred (Milan Crha)
+	#528902: Insufficient timezone handling (Patrick Ohly)
+	#530241: Recognize no-flag situation properly and in that case use two commands, one set and one unset (Milan Crha)
+	#531712: Do not reset flags on no-flag situation, rather add and remove there the \Seen flag (Milan Crha)
+	#534111: Copying past the end of the buffer can cause core dumps (Paul Smith)
+	#534946: Clean password when writing changes to another gnome-keyring (Srinivasa Ragavan)
+	#536154: Do use the Winsock getaddrinfo() andgetnameinfo(). It should be OK to ignore Windows 2000 by now (Tor Lillqvist)
+	#540516: Sanitize user input while accepting path/filename of the backup (Tobias Mueller)
+
+Other Contributors:
+	Drop the Win32 fsync() implementation. Instead just use _commit() in the Microsoft C library which does the same (Tor Lillqvist)
+
+Updated Translations:
+	Hedayat Vatankhah (fa)
+	Clytie Siddall (vi)
+
 Evolution-Data-Server 2.22.2 2008-05-26
 ---------------------------------------
 
