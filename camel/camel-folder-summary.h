@@ -81,7 +81,6 @@ typedef enum _CamelMessageFlags {
 
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
-	CAMEL_MESSAGE_DB_DIRTY = 1<<17, /* To say whether the changes are syned to db.*/
 	/* flags after 1<<16 are used by camel providers,
            if adding non permanent flags, add them to the end  */
 
