@@ -90,6 +90,8 @@ vee_info_uint32(const CamelMessageInfo *mi, int id)
 	
 	HANDLE_NULL_INFO(0);
 	ret = camel_message_info_uint32 (rmi, id);
+	if (id == CAMEL_MESSAGE_INFO_FLAGS)
+		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -183,6 +185,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &old_junked_not_deleted,
 				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);		
 		res = camel_message_info_set_flags(rmi, flags, set);
+		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 		camel_object_get(rmi->summary->folder, NULL,
 				 CAMEL_FOLDER_DELETED, &deleted,
 				 CAMEL_FOLDER_VISIBLE, &visible,
@@ -223,6 +226,16 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 	if (!info) {
 		CamelVeeMessageInfo *vinfo;
 		char tmphash[9];
+
+		/* This function isn't really nice. But no great way
+		 * But in vfolder case, this may not be so bad, as vuid has the hash in first 8 bytes.
+		 * So this just compares the entire string only if it belongs to the same folder.
+		 * Otherwise, the first byte itself would return in strcmp, saving the CPU.
+		 */
+		if (!camel_folder_summary_check_uid (s, uid)) {
+			d(g_message ("Unable to find %s in the summary of %s", uid, s->folder->full_name));
+			return NULL;
+		}
 		
 		/* Create the info and load it, its so easy. */
 		info = camel_message_info_new (s);
@@ -294,6 +307,7 @@ camel_vee_summary_get_type (void)
 	return type;
 }
 
+
 /**
  * camel_vee_summary_new:
  * @parent: Folder its attached to.
@@ -316,7 +330,7 @@ camel_vee_summary_new(CamelFolder *parent)
 	camel_db_create_vfolder (parent->cdb, parent->full_name, NULL);
 
 	#warning "handle excep and ret"
-	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent->parent_store, parent->full_name, NULL);	
+	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent->parent_store, parent->full_name, NULL);
 	return &s->summary;
 }
 
@@ -363,10 +377,18 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 
 	mi = (CamelVeeMessageInfo *)camel_message_info_new(&s->summary);
 	mi->summary = summary;
+	/* We would do lazy loading of flags, when the folders are loaded to memory through folder_reloaded signal */
+	mi->old_flags = 0;
 	camel_object_ref (summary);
 	mi->info.uid = (char *) camel_pstring_strdup (vuid);
 	g_free (vuid);
 	camel_message_info_ref (mi);
+	/* Get the flags and store it. We can use it a lot * /
+	rmi = camel_folder_summary_uid (summary, uid);
+	if (rmi) {
+		mi->old_flags = camel_message_info_flags (rmi);
+		camel_message_info_free (rmi);
+	}*/
 	camel_folder_summary_insert(&s->summary, (CamelMessageInfo *)mi, FALSE);
 	
 	return mi;

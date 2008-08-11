@@ -1,5 +1,10 @@
 2008-08-09  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-summary.c: Implement replicated flags for vfolders.
+	* camel/camel-vee-summary.h:
+
+2008-08-09  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Added summary reloaded event to camel
 	object
 
