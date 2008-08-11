@@ -1,3 +1,8 @@
+2008-08-11  Sankar P  <psankar@novell.com>
+
+	* camel-db.c:
+	Words of warning
+
 2008-08-11  Tor Lillqvist  <tml@novell.com>
 
 	* providers/Makefile.am: Set HULA_DIR=hula if ENABLE_HULA. That

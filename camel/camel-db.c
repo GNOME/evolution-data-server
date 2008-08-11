@@ -39,6 +39,9 @@
 
 const int MONITOR_DB_PERFORMANCE = 0;
 
+/* Having this as a global variable, without mutex protection is wrong. 
+This will cause unnecessary crashes and multiple people using the resource etc. 
+You are advised to use this timer at your own risk. */
 static GTimer *timer = NULL;
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
