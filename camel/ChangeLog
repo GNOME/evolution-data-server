@@ -1,5 +1,9 @@
 2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vtrash-folder.c: Disable custom getv function.
+
+2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.h: Remove DIRTY message flag. It is
 	redundant and in the wrong place.
 
