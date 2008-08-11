@@ -52,6 +52,7 @@ struct _CamelVeeFolder {
 	 * say that this folder is part of the unmatched folder */
 	struct _CamelVeeStore *parent_vee_store;
 	GHashTable *hashes;
+	GHashTable *loaded;
 };
 
 struct _CamelVeeFolderClass {

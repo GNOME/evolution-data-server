@@ -1,5 +1,10 @@
 2008-08-11  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Revamp vfolders and counts for it.
+	* camel/camel-vee-folder.h:
+
+2008-08-11  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Make the cache thread a bit
 	intelligent and not to continue if the cache is nil and also start the
 	thread only if the contents are loaded.
