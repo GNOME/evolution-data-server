@@ -843,6 +843,7 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer)&data, camel_read_mir_callback, NULL);
 
 	s->cache_load_time = time (NULL);
+	camel_object_trigger_event(s, "summary_reloaded", s);
 	return ret == 0 ? 0 : -1;
 }
 
@@ -4610,6 +4611,7 @@ camel_message_info_dump (CamelMessageInfo *mi)
 static void
 camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 {
+	CamelObjectClass *camel_object_class = CAMEL_OBJECT_CLASS (klass);
 	camel_folder_summary_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
 
 	klass->summary_header_load = summary_header_load;
@@ -4657,4 +4659,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 	klass->info_set_user_tag = info_set_user_tag;
 
 	klass->info_set_flags = info_set_flags;
+	
+	camel_object_class_add_event(camel_object_class, "summary_reloaded", NULL);
+	
 }
