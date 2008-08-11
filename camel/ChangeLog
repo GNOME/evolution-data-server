@@ -1,5 +1,10 @@
 2008-08-11  Sankar P  <psankar@novell.com>
 
+	* camel-vee-folder.c (folder_changed_change):
+	Remove dummy db transactions.
+
+2008-08-11  Sankar P  <psankar@novell.com>
+
 	* camel-db.c (cdb_sql_exec), (camel_db_count_message_info),
 	(camel_db_select):
 	Do not attempt to print the full query when debug is on.
