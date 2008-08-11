@@ -2014,7 +2014,10 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 	camel_db_clear_folder_summary (cdb, folder_name, NULL);	
 }
 
-static void
+
+/* This function returns 0 on success. So the caller should not bother,
+deleting the uid from db when the return value is non-zero */
+static int 
 summary_remove_uid (CamelFolderSummary *s, const char *uid)
 {
 	int i;
@@ -2027,12 +2030,12 @@ summary_remove_uid (CamelFolderSummary *s, const char *uid)
 			/* FIXME: Does using fast remove affect anything ? */
 			g_ptr_array_remove_index(s->uids, i);
 			camel_pstring_free (uid);
-			break;
+			return 0;
 		}
 
 	}
 
-	return ;
+	return -1;
 }
 
 /**
@@ -2045,17 +2048,20 @@ summary_remove_uid (CamelFolderSummary *s, const char *uid)
 void
 camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 {
+
+	int ret;
+
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 
 	g_hash_table_remove (s->loaded_infos, camel_message_info_uid(info));	
-	summary_remove_uid (s, camel_message_info_uid(info));
+	ret = summary_remove_uid (s, camel_message_info_uid(info));
 
 	
 	s->flags |= CAMEL_SUMMARY_DIRTY;
 	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 	
-	if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
+	if (!ret && camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
 		return ;
 	
 	camel_message_info_free(info);
@@ -2072,31 +2078,32 @@ camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 void
 camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 {
-        CamelMessageInfo *oldinfo;
-        char *olduid;
+		CamelMessageInfo *oldinfo;
+		char *olduid;
 
-	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	CAMEL_SUMMARY_LOCK(s, ref_lock);
-        if (g_hash_table_lookup_extended(s->loaded_infos, uid, (void *)&olduid, (void *)&oldinfo)) {
-		/* make sure it doesn't vanish while we're removing it */
-		oldinfo->refcount++;
-		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
-		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-		camel_folder_summary_remove(s, oldinfo);
-		camel_message_info_free(oldinfo);
-	} else {
-		char *tmpid = g_strdup (uid);
-		/* Info isn't loaded into the memory. We must just remove the UID*/
-		summary_remove_uid (s, uid);
-		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
-		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+		CAMEL_SUMMARY_LOCK(s, summary_lock);
+		CAMEL_SUMMARY_LOCK(s, ref_lock);
+		if (g_hash_table_lookup_extended(s->loaded_infos, uid, (void *)&olduid, (void *)&oldinfo)) {
+				/* make sure it doesn't vanish while we're removing it */
+				oldinfo->refcount++;
+				CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+				camel_folder_summary_remove(s, oldinfo);
+				camel_message_info_free(oldinfo);
+		} else {
+				char *tmpid = g_strdup (uid);
+				int ret;
+				/* Info isn't loaded into the memory. We must just remove the UID*/
+				ret = summary_remove_uid (s, uid);
+				CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
-		if (camel_db_delete_uid (s->folder->cdb, s->folder->full_name, tmpid, NULL) != 0) {
-			g_free(tmpid);
-			return ;
+				if (!ret && camel_db_delete_uid (s->folder->cdb, s->folder->full_name, tmpid, NULL) != 0) {
+						g_free(tmpid);
+						return ;
+				}
+				g_free (tmpid);
 		}
-		g_free (tmpid);
-	}
 }
 
 void
