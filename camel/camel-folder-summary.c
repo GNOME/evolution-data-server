@@ -795,9 +795,13 @@ cfs_try_release_memory (CamelFolderSummary *s)
 {
 	struct _folder_summary_free_msg *m;
 	CamelSession *session;
-	
-	if (!s->folder)
+
+	/* If folder is freed or if the cache is nil then clean up */
+	if (!s->folder || !g_hash_table_size(s->loaded_infos)) {
+		s->cache_load_time = 0;
+		s->timeout_handle = 0;
 		return FALSE;
+	}
 
 	session = ((CamelService *)((CamelFolder *)s->folder)->parent_store)->session;
 
@@ -843,6 +847,11 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer)&data, camel_read_mir_callback, NULL);
 
 	s->cache_load_time = time (NULL);
+        #warning "LRU please and not timeouts"
+	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle) 
+		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+
+	printf("Triggering summary_reloaded on %s %p\n", s->folder->full_name, s);
 	camel_object_trigger_event(s, "summary_reloaded", s);
 	return ret == 0 ? 0 : -1;
 }
@@ -853,7 +862,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	CamelDB *cdb;
 	char *folder_name;
 	int ret = 0;
-//	struct _db_pass_data data;
+	/* struct _db_pass_data data; */
 	
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
@@ -874,12 +883,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	data.double_ref = FALSE;
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer) &data, camel_read_mir_callback, ex);
 #endif	
-	s->cache_load_time = time (NULL);
-
-        #warning "LRU please and not timeouts"
-	if (!g_getenv("CAMEL_FREE_INFOS")) 
-		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
-
+	
 	return ret == 0 ? 0 : -1;
 }
 
