@@ -1,5 +1,10 @@
 2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Add API for vfolder tables migration.
+	* camel/camel-db.h:
+
+2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vtrash-folder.c: Disable custom getv function.
 
 2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>

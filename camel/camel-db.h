@@ -158,5 +158,7 @@ void camel_db_free_sqlized_string (char *string);
 
 char * camel_db_get_column_name (const char *raw_name);
 
+/* Migration APIS */
+int camel_db_migrate_vfolders_to_14(CamelDB *cdb, const char *folder, CamelException *ex);
 #endif
 

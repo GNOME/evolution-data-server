@@ -1063,7 +1063,8 @@ followup_flag TEXT ,
 followup_completed_on TEXT ,
 followup_due_by TEXT ," */
 
-char * camel_db_get_column_name (const char *raw_name)
+char *
+camel_db_get_column_name (const char *raw_name)
 {
 	d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
@@ -1097,4 +1098,17 @@ char * camel_db_get_column_name (const char *raw_name)
 		return g_strdup (raw_name);
 	}
 
+}
+
+int
+camel_db_migrate_vfolders_to_14 (CamelDB *cdb, const char *folder, CamelException *ex)
+{
+	char *cmd = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN flags INTEGER", folder);
+	int ret;
+	
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+	
+	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	return ret;		
 }
