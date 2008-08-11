@@ -1,5 +1,10 @@
 2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Check the summary before using it. It
+	crashes at some remote vtrash sort of folders.
+
+2008-08-08  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-search.c: Check exception before getting. You
 	save lots of warnings.
 	

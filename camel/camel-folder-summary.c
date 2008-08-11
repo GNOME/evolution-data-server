@@ -577,6 +577,8 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 CamelMessageInfo *
 camel_folder_summary_uid (CamelFolderSummary *s, const char *uid)
 {
+	if (!s)
+		return NULL;
 	return ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_from_uid(s, uid);
 }
 
