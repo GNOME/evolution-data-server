@@ -1,5 +1,9 @@
 2008-08-11  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Save the count on exit.
+
+2008-08-11  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Revamp vfolders and counts for it.
 	* camel/camel-vee-folder.h:
 

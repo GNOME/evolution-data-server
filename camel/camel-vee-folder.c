@@ -2046,11 +2046,15 @@ camel_vee_folder_finalise (CamelObject *obj)
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	GList *node;
+	CamelFIRecord * record;
 	
 	p->destroyed = TRUE;
 
-	/* TODO: there may be other leaks? */
-
+	/* Save the counts to DB */
+	record = summary_header_to_db (((CamelFolder *)vf)->summary, NULL);
+	camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb, record, NULL);
+	g_free (record);
+	
 	/* This may invoke sub-classes with partially destroyed state, they must deal with this */
 	if (vf == folder_unmatched) {
 		for (node = p->folders;node;node = g_list_next(node))
