@@ -1,3 +1,8 @@
+2008-08-11  Jeff Cai <jeff.cai@sun.com>
+
+        * configure.in: Add gthread-2.0 in CAMEL checking.
+          Fixes bug #538074.
+
 2008-08-07  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* libedataserver/e-account.c: Harden e_account_[gs]et_*
