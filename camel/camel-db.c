@@ -52,7 +52,7 @@ cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex)
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
 	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.10s] started\n", stmt);
+		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", stmt);
 		timer = g_timer_new ();
 	}
 
@@ -274,7 +274,7 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 	g_mutex_lock (cdb->lock);
 
 	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.10s] started\n", query);
+		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", query);
 		timer = g_timer_new ();
 	}
 
@@ -448,7 +448,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 	g_mutex_lock (cdb->lock);
 
 	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.10s] started\n", stmt);
+		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", stmt);
 		timer = g_timer_new ();
 	}
 
