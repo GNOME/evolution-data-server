@@ -12,6 +12,10 @@ if ENABLE_IMAP4
 IMAP4_DIR=imap4
 endif
 
+if ENABLE_HULA
+HULA_DIR=hula
+endif
+
 if OS_WIN32
 else
 SENDMAIL_DIR=sendmail
