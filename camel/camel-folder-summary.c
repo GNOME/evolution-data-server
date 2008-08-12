@@ -4448,6 +4448,9 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 			mi->summary->junk_count += junk;
 		if (junk && !deleted)
 			mi->summary->junk_not_deleted_count += junk;
+		else if ((mi->flags & CAMEL_MESSAGE_JUNK) && deleted)
+			mi->summary->junk_not_deleted_count -= deleted;
+			
 		if (junk ||  deleted) 
 			mi->summary->visible_count -= junk ? junk : deleted;
 	}

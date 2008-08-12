@@ -1,5 +1,9 @@
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Make junk counts work well.
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vtrash-folder.c: Make vtrash folders almost same as vee
 	folder.
 
