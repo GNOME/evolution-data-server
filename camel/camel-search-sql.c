@@ -681,7 +681,6 @@ camel_sexp_to_sql (const char *txt)
 							operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
 						if (dbl && operators) {
-							free_node(opnode); free_node(opnode);
 							operators = g_list_delete_link (operators, operators);
 							all = g_list_delete_link (all, all);							
 						}
