@@ -1,5 +1,11 @@
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #547256
+
+	* camel/camel-search-sql.c:  Handle plain match-all
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-search-sql.c: Fix another search issue.
 
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>

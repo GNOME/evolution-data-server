@@ -762,6 +762,8 @@ camel_sexp_to_sql (const char *txt)
 		 tmp = all;
 		 d(printf("coming %s %d\n", n1->exact_token, n1->level));
 		 if (n1->operator) {
+			  if (!res)
+				  break;
 			  if (res->next) {
 				   GList *ts=res;
 				   Node *n = ts->data;
@@ -830,22 +832,24 @@ camel_sexp_to_sql (const char *txt)
 			  d(printf("app %s %d\n", n1->exact_token, n1->level));
 		 }
 	}
-		
-	n1 = res->data;
-	if (preserve && lastoper) {
-		GString *str = g_string_new (NULL);
-		GList *tmp = preserve;
-		g_string_append_printf (str, "%s", ((Node *)tmp->data)->exact_token);
-		tmp = tmp->next;
-		while (tmp) {
-			g_string_append_printf (str, " %s %s", lastoper->exact_token, ((Node *)tmp->data)->exact_token);
+	
+	if (res) {
+		n1 = res->data;
+		if (preserve && lastoper) {
+			GString *str = g_string_new (NULL);
+			GList *tmp = preserve;
+			g_string_append_printf (str, "%s", ((Node *)tmp->data)->exact_token);
 			tmp = tmp->next;
-		}
-		sql = g_strdup_printf ("%s %s (%s)", n1->exact_token, lastoper->exact_token, str->str);
-	} else 
-		sql = g_strdup (n1->exact_token);
-	free_node (n1);
-	g_list_free (res);
+			while (tmp) {
+				g_string_append_printf (str, " %s %s", lastoper->exact_token, ((Node *)tmp->data)->exact_token);
+				tmp = tmp->next;
+			}
+			sql = g_strdup_printf ("%s %s (%s)", n1->exact_token, lastoper->exact_token, str->str);
+		} else 
+			sql = g_strdup (n1->exact_token);
+		free_node (n1);
+		g_list_free (res);
+	}
 	
 	tlist = all;
 	while (tlist) {
@@ -927,7 +931,7 @@ int main ()
 {
 
 	int i=0;
-	char *txt[] = {
+	char *txt[] = { 
 	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))", 
 	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))", 
 	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))", 
@@ -958,8 +962,8 @@ int main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
 	"(and  (or (match-all (header-contains \"Subject\"  \"[LDTP-NOSIP]\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"vamsi\")) (match-all (header-contains \"From\"  \"vamsi\"))))))",
 	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))"
-
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))",
+	"(and  (and (match-all #t))(and(match-all #t)))"
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
