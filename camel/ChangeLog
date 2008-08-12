@@ -1,5 +1,9 @@
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vtrash-folder.c: Comment out unused code with a reason.
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-search-sql.c: Revamp search with support for more cases.
 
 2008-08-11  Sankar P  <psankar@novell.com>

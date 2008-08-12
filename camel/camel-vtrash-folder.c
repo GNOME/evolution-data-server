@@ -114,6 +114,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 	return (CamelFolder *)vtrash;
 }
 
+/* This entire code will be useless, since we sync the counts always. */
 static int
 vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
