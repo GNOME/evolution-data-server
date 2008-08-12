@@ -574,6 +574,7 @@ camel_sexp_to_sql (const char *txt)
 							n3->exact_token = g_strdup("");
 							temp_op = "LIKE";
 							n3->ignore_lhs = 0;
+							dyn_lvl = opnode->level;
 						}
 						
 							
@@ -716,7 +717,6 @@ camel_sexp_to_sql (const char *txt)
 
 	}
 	
-
 	tmp = operands;
 	d(g_node_dump (operands));
 	while (tmp) {
@@ -955,8 +955,11 @@ int main ()
 	
 	"(and ( (or (match-all (header-contains \"Subject\"  \"lin\")) )) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\")))))))", 
 	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\")))))))", 
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))"
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
+	"(and  (or (match-all (header-contains \"Subject\"  \"[LDTP-NOSIP]\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"vamsi\")) (match-all (header-contains \"From\"  \"vamsi\"))))))",
 	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))"
+
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {

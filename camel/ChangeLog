@@ -1,5 +1,14 @@
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-search-sql.c: Fix another search issue.
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-vtrash-folder.c: Make it use vee folder search than its
+	own.
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vtrash-folder.c: Comment out unused code with a reason.
 
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
