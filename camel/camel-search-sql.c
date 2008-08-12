@@ -187,7 +187,7 @@ g_node_dump (GList *l)
 
 	while (l) {
 		node = l->data;
-		printf("%p (%d '%s')\t", node, node->ref, node->exact_token);
+		printf("%p (%d %d '%s')\t", node, node->ref, node->level, node->exact_token);
 		l = l->next;
 	}
 	printf("\n");
@@ -221,9 +221,9 @@ camel_sexp_to_sql (const char *txt)
 	char *sql;
 	int level = 0;
 	GList *tlist;
-	GList *operators=NULL, *operands=NULL, *all=NULL;
+	GList *operators=NULL, *operands=NULL, *all=NULL, *preserve=NULL;
 	GList *tmp;
-	Node *n1=NULL, *n2=NULL, *n3=NULL, *op=NULL;
+	Node *n1=NULL, *n2=NULL, *n3=NULL, *op=NULL, *last, *lastoper=NULL;
 	GList *res=NULL;
 	gboolean last_sysnode = FALSE;
 	
@@ -754,12 +754,13 @@ camel_sexp_to_sql (const char *txt)
 		g_scanner_destroy(scanner);
 		return sql;
 	}
-		
+
+	last = NULL;	
 	while (all) {
 		 n1 = tmp->data;
 		 all = g_list_delete_link (all, all);
 		 tmp = all;
-		 d(printf("coming %s\n", n1->exact_token));
+		 d(printf("coming %s %d\n", n1->exact_token, n1->level));
 		 if (n1->operator) {
 			  if (res->next) {
 				   GList *ts=res;
@@ -780,21 +781,69 @@ camel_sexp_to_sql (const char *txt)
 				   n->exact_token = s->str;
 				   g_string_free (s, FALSE);
 				   all = g_list_prepend (all, n); 
-			  } else /* remove single operand nodes */
+				   if (preserve) {
+					   GList *foo;
+					   foo = preserve;
+					   while (foo->next)
+						   foo = foo->next;
+					   foo->next = all;
+					   all = preserve;
+					   d(printf("restoring\n"));
+					   preserve = NULL;
+				   }
+				   n->level = n1->level;
+				   last = NULL;
+			  } else /* remove single operand nodes */ {
 				   all = g_list_prepend (all, res->data);
-
-			  free_node (n1);
+				   last = NULL;
+				   if (lastoper)
+					free_node (lastoper);
+				   lastoper = n1;
+				   d(printf("killing single operand '%s'\n", n1->exact_token));
+			  }
+			
+			  if (!lastoper)
+			  	free_node (n1);
 			  g_list_free (res);
 			  res = NULL;
 			  tmp = all;
 		 } else {
-			  res = g_list_prepend (res, n1);
-			  d(printf("app %s\n", n1->exact_token));
+			  if (!last || last->level >= n1->level)
+				  res = g_list_prepend (res, n1); /* same or less level */
+			  else {
+				if (!preserve)  
+					preserve = g_list_reverse(res); 
+				else {
+					GList *foo;
+					foo = preserve;
+					while (foo->next)
+						foo = foo->next;
+					foo->next = g_list_reverse(res);
+					
+				}
+					
+				res = NULL;
+				res = g_list_prepend (res, n1);
+				d(printf("preserving %d\n", g_list_length(preserve)));
+			  }
+			  last = n1;
+			  d(printf("app %s %d\n", n1->exact_token, n1->level));
 		 }
 	}
 		
 	n1 = res->data;
-	sql = g_strdup (n1->exact_token);
+	if (preserve && lastoper) {
+		GString *str = g_string_new (NULL);
+		GList *tmp = preserve;
+		g_string_append_printf (str, "%s", ((Node *)tmp->data)->exact_token);
+		tmp = tmp->next;
+		while (tmp) {
+			g_string_append_printf (str, " %s %s", lastoper->exact_token, ((Node *)tmp->data)->exact_token);
+			tmp = tmp->next;
+		}
+		sql = g_strdup_printf ("%s %s (%s)", n1->exact_token, lastoper->exact_token, str->str);
+	} else 
+		sql = g_strdup (n1->exact_token);
 	free_node (n1);
 	g_list_free (res);
 	
@@ -898,13 +947,16 @@ int main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (< (get-sent-date) (+ (get-current-date) 100))) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (get-sent-date) 1216146600))) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (get-sent-date) 1216146600)) )))"	,
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
 	"(match-threads \"all\"  (or (match-all (header-contains \"From\"  \"@edesvcs.com\")) (match-all (or (header-contains \"To\"  \"@edesvcs.com\") (header-contains \"Cc\"  \"@edesvcs.com\"))) ))",
 	"(match-all (not (system-flag \"deleted\")))",
 	"(match-all (system-flag \"seen\"))",
 	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
-	"(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))"
-
+	"(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))",
+	
+	"(and ( (or (match-all (header-contains \"Subject\"  \"lin\")) )) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\")))))))", 
+	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\")))))))", 
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))"
+	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
