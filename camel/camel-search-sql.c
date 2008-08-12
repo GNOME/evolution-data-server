@@ -218,7 +218,7 @@ char *
 camel_sexp_to_sql (const char *txt) 
 {
 	GScanner *scanner = g_scanner_new (&config);
-	char *sql;
+	char *sql=NULL;
 	int level = 0;
 	GList *tlist;
 	GList *operators=NULL, *operands=NULL, *all=NULL, *preserve=NULL;
