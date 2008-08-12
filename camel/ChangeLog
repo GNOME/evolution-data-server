@@ -1,5 +1,10 @@
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vtrash-folder.c: Make vtrash folders almost same as vee
+	folder.
+
+2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-search-sql.c: Fix invalid reads, by not double freeing.
 
 2008-08-12  Srinivasa Ragavan  <sragavan@novell.com>

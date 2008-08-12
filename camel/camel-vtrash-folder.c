@@ -516,8 +516,13 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
-	if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_DELETED)
+	if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_DELETED) {
 		infos = camel_db_get_folder_deleted_uids (sub->cdb, sub->full_name, NULL);
+		if (infos) {
+			((CamelFolder *)vf)->summary->saved_count += infos->len;
+			((CamelFolder *)vf)->summary->deleted_count += infos->len;
+		}
+	}
 	else if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_JUNK)
 		infos = camel_db_get_folder_junk_uids (sub->cdb, sub->full_name, NULL);
 
@@ -640,9 +645,9 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 	/* folder_class->search_by_expression = vtrash_search_by_expression; */
 	/* folder_class->search_by_uids = vtrash_search_by_uids; */
 
-	((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
-	((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
-	((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
+//	((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
+//	((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
+//	((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
 
-	((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
+//	((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
 }
