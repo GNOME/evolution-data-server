@@ -51,6 +51,8 @@ e_book_listener_convert_status (const GNOME_Evolution_Addressbook_CallStatus sta
 		return E_BOOK_ERROR_AUTHENTICATION_FAILED;
 	case GNOME_Evolution_Addressbook_AuthenticationRequired:
 		return E_BOOK_ERROR_AUTHENTICATION_REQUIRED;
+	case GNOME_Evolution_Addressbook_UnsupportedAuthenticationMethod:
+		return E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD;
 	case GNOME_Evolution_Addressbook_TLSNotAvailable:
 		return E_BOOK_ERROR_TLS_NOT_AVAILABLE;
 	case GNOME_Evolution_Addressbook_NoSuchBook:

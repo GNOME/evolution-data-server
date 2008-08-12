@@ -356,7 +356,7 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	g_free (nt_name);
 
 	if (ldap_error != LDAP_SUCCESS)
-		g_warning ("LDAP authentication failed (0x%02x)", ldap_error);
+		g_warning ("LDAP authentication failed (0x%02x (%s))", ldap_error, ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
 	else
 		E2K_GC_DEBUG_MSG(("GC: connected\n\n"));
 
@@ -418,6 +418,7 @@ get_gc_connection (E2kGlobalCatalog *gc, E2kOperation *op)
  * e2k_global_catalog_get_ldap:
  * @gc: the global catalog
  * @op: pointer to an initialized #E2kOperation to use for cancellation
+ * @ldap_error: set the value returned from get_ldap_connection if not NULL
  *
  * Returns a new LDAP handle. The caller must ldap_unbind() it when it
  * is done.
@@ -425,13 +426,18 @@ get_gc_connection (E2kGlobalCatalog *gc, E2kOperation *op)
  * Return value: an LDAP handle, or %NULL if it can't connect
  **/
 LDAP *
-e2k_global_catalog_get_ldap (E2kGlobalCatalog *gc, E2kOperation *op)
+e2k_global_catalog_get_ldap (E2kGlobalCatalog *gc, E2kOperation *op, int *ldap_error)
 {
 	LDAP *ldap;
+	int err;
 
 	g_return_val_if_fail (E2K_IS_GLOBAL_CATALOG (gc), NULL);
 
-	get_ldap_connection (gc, op, gc->priv->server, 3268, &ldap);
+	err = get_ldap_connection (gc, op, gc->priv->server, 3268, &ldap);
+
+	if (ldap_error)
+		*ldap_error = err;
+
 	return ldap;
 }
 

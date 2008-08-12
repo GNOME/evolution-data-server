@@ -1,3 +1,12 @@
+2008-08-12  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #547308
+
+	* lib/e2k-global-catalog.c: (connect_ldap): Better warning on console.
+	* lib/e2k-global-catalog-ldap.h: (e2k_global_catalog_get_ldap):
+	* lib/e2k-global-catalog.c: (e2k_global_catalog_get_ldap):
+	Return also ldap error if requested.
+
 2008-07-30  Milan Crha  <mcrha@redhat.com>
 
 	* lib/e2k-global-catalog.c: (connect_ldap):

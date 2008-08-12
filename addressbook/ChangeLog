@@ -1,3 +1,11 @@
+2008-08-12  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #547308
+
+	* libebook/e-book-types.h: New error of EBookStatus.
+	* libebook/e-book-listener.c: (e_book_listener_convert_status):
+	Do recognize new error E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD.
+
 2008-08-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #324203
