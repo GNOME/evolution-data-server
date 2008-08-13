@@ -487,8 +487,10 @@ count_folder (CamelFolder *f, char *expr, CamelException *ex)
 
 	/* FIXME: Why don't we write a count_search_by_expression. It can be just fast. */
 	match = camel_folder_search_by_expression(f, expr, ex);
-	count = match->len;
-	camel_folder_search_free (f, match);
+	if (match) {
+		count = match->len;
+		camel_folder_search_free (f, match);
+	}
 
 	return count;
 }
