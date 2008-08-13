@@ -37,15 +37,17 @@
 #include <glib/gi18n-lib.h>
 
 #if CAMEL_DB_DEBUG
-#define d(x) x
-const int MONITOR_DB_PERFORMANCE = 1;
+/* Enable d(x) if you want */
+#define d(x) 
+/* Yeah it leaks, so fix it while debugging */
+#define START(stmt) 	g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new ();
+#define END 	g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL));
 #else
 #define d(x) 
-const int MONITOR_DB_PERFORMANCE = 0;
+#define START(x)
+#define END
 #endif
 
-#define START(stmt) 	if (MONITOR_DB_PERFORMANCE) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new (); }
-#define END 	if (MONITOR_DB_PERFORMANCE) {g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL)); }
 
 /* Having this as a global variable, without mutex protection is wrong. 
 This will cause unnecessary crashes and multiple people using the resource etc. 
