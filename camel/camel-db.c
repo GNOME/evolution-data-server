@@ -205,6 +205,7 @@ camel_db_abort_transaction (CamelDB *cdb, CamelException *ex)
 	d(g_print ("\nABORT TRANSACTION \n"));
 	ret = cdb_sql_exec (cdb->db, "ROLLBACK", ex);
 	g_mutex_unlock (cdb->lock);
+	g_static_rec_mutex_unlock (&trans_lock);	
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	
 	return ret;

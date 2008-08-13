@@ -1,5 +1,9 @@
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Properly unlock while aborting transaction.
+
+2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Add code to log better. It needs cleanup even now.
 	* camel/camel-db.h:
 
