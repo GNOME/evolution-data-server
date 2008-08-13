@@ -1,5 +1,10 @@
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Add code to log better. It needs cleanup even now.
+	* camel/camel-db.h:
+
+2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-search-sql.c: Fix label search failure.
 
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>

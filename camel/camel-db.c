@@ -23,6 +23,7 @@
  * USA
  */
 
+#define CAMEL_DB_DEBUG 0
 
 #include "camel-db.h"
 #include "camel-string-utils.h"
@@ -35,14 +36,20 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#define d(x)
-
+#if CAMEL_DB_DEBUG
+#define d(x) x
+const int MONITOR_DB_PERFORMANCE = 1;
+#else
+#define d(x) 
 const int MONITOR_DB_PERFORMANCE = 0;
+#endif
+
+#define START(stmt) 	if (MONITOR_DB_PERFORMANCE) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new (); }
+#define END 	if (MONITOR_DB_PERFORMANCE) {g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL)); }
 
 /* Having this as a global variable, without mutex protection is wrong. 
 This will cause unnecessary crashes and multiple people using the resource etc. 
 You are advised to use this timer at your own risk. */
-static GTimer *timer = NULL;
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 
@@ -54,11 +61,6 @@ cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex)
 
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", stmt);
-		timer = g_timer_new ();
-	}
-
 	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
 		if (errmsg) {
@@ -68,11 +70,6 @@ cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex)
 		ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 	}
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_timer_stop (timer);
-		g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (timer, NULL));
-		g_timer_destroy (timer);
-	}
 
 	if (ret != SQLITE_OK) {
 		d(g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
@@ -160,7 +157,9 @@ camel_db_command (CamelDB *cdb, const char *stmt, CamelException *ex)
 		g_mutex_lock (cdb->lock);
 
 		d(g_print("Executing: %s\n", stmt));
+		START(stmt);
 		ret = cdb_sql_exec (cdb->db, stmt, ex);
+		END;
 		g_mutex_unlock (cdb->lock);
 
 		return ret;
@@ -187,7 +186,9 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 		return -1;
 
 	d(g_print ("\nCOMMIT TRANSACTION \n"));
+	START("COMMIT");
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
+	END;
 	g_mutex_unlock (cdb->lock);
 	g_static_rec_mutex_unlock (&trans_lock);
 
@@ -230,7 +231,7 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 		return -1;
 
 	g_mutex_lock (cdb->lock);
-
+	START("BEGIN");
 	ret = cdb_sql_exec (cdb->db, "BEGIN", ex);
 	if (ret)
 		goto end;
@@ -247,7 +248,7 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 	}
 
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
-
+	END;
 end:
 	g_mutex_unlock (cdb->lock);
 	d(g_print ("\nTransaction Result: [%d] \n", ret));
@@ -276,11 +277,7 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 
 	g_mutex_lock (cdb->lock);
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", query);
-		timer = g_timer_new ();
-	}
-
+	START(query);
 	ret = sqlite3_exec(cdb->db, query, count_cb, count, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
@@ -291,11 +288,7 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 		ret = sqlite3_exec (cdb->db, query, count_cb, count, &errmsg);
 	}
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_timer_stop (timer);
-		g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (timer, NULL));
-		g_timer_destroy (timer);
-	}
+	END;
 
 	g_mutex_unlock (cdb->lock);
 	
@@ -450,11 +443,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 	d(g_print ("\n%s:\n%s \n", __FUNCTION__, stmt));
 	g_mutex_lock (cdb->lock);
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_print ("\n===========\nDB SQL operation [%1.30s] started\n", stmt);
-		timer = g_timer_new ();
-	}
-
+	START(stmt);
 	ret = sqlite3_exec(cdb->db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
@@ -465,11 +454,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 		ret = sqlite3_exec (cdb->db, stmt, callback, data, &errmsg);
 	}
 
-	if (MONITOR_DB_PERFORMANCE) {
-		g_timer_stop (timer);
-		g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (timer, NULL));
-		g_timer_destroy (timer);
-	}
+	END;
 
 	g_mutex_unlock (cdb->lock);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
