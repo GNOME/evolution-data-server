@@ -185,6 +185,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
         }
     }
     gdata_entry_set_title (entry, fullname);
+    g_free (fullname);
     gdata_entry_set_email_addresses (entry, email_addresses);
     gdata_entry_set_im_addresses (entry, im_addresses);
     gdata_entry_set_phone_numbers (entry, phone_numbers);

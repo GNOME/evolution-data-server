@@ -81,6 +81,8 @@ struct _GoogleBookPrivate
     GDataService *service;
     guint refresh_interval;
     char *base_uri;
+    /* FIXME - this one should not be needed */
+    char *add_base_uri;
 
     gboolean live_mode;
 
@@ -448,15 +450,17 @@ google_book_construct_base_uri (GoogleBook *book, gboolean use_ssl)
     GoogleBookPrivate *priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
-    if (priv->base_uri) {
-        g_free (priv->base_uri);
-    }
+    g_free (priv->base_uri);
+    g_free (priv->add_base_uri);
 
     esc_username = g_uri_escape_string (priv->username, NULL, FALSE);
     priv->base_uri = g_strdup_printf (format, use_ssl ? "https://" : "http://", esc_username);
+    /* FIXME - always use non ssl mode when adding entries. Somehow this does not
+     * work on SSL; i.e. get duplicate entries and SOUP returns error 7 - connection
+     * terminated unexpectedly
+     */
+    priv->add_base_uri = g_strdup_printf (format, "http://", esc_username);
     g_free (esc_username);
-
-    g_debug ("base_uri is now %s", priv->base_uri);
 }
 
 static void
@@ -540,6 +544,7 @@ google_book_finalize (GObject *object)
     GoogleBookPrivate *priv = GET_PRIVATE (object);
 
     g_free (priv->base_uri);
+    g_free (priv->add_base_uri);
     g_free (priv->username);
 
     if (G_OBJECT_CLASS (google_book_parent_class)->finalize)
@@ -796,7 +801,7 @@ google_book_add_contact (GoogleBook *book, EContact *contact, EContact **out_con
     entry = _gdata_entry_new_from_e_contact (contact);
     __debug__ ("new entry with xml: %s", gdata_entry_generate_xml (entry));
     new_entry = gdata_service_insert_entry (GDATA_SERVICE (priv->service),
-                                            priv->base_uri, entry, &soup_error);
+                                            priv->add_base_uri, entry, &soup_error);
     g_object_unref (entry);
     if (soup_error) {
         google_book_error_from_soup_error (soup_error, error,

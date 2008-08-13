@@ -1,4 +1,17 @@
-2008-08-13  JÃ¶rgen Scheibengruber  <mfcn@gmx.de>
+2008-08-14  Jörgen Scheibengruber  <mfcn@gmx.de>
+
+	* backends/google/google-book.c (google_book_construct_base_uri),
+	(google_book_finalize), (google_book_add_contact):
+
+	Always use non-ssl uri when adding entries to the feed; ssl does not seem
+	to work for adding (not sure whether this is libsoup's or google's servers
+	fault).
+
+	* backends/google/util.c (_gdata_entry_update_from_e_contact):
+
+	Fix a small leak
+
+2008-08-13  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	* backends/google/Makefile.am:
 	* backends/google/e-book-backend-google.c
