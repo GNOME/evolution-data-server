@@ -235,6 +235,7 @@ camel_sexp_to_sql (const char *txt)
 	g_scanner_input_text (scanner, txt, strlen(txt));
 	while (!g_scanner_eof (scanner)) {
 		Node *mnode;
+		int new_level = -1;
 		guint token = g_scanner_get_next_token (scanner);
 		
 		/* Extract and identify tokens */
@@ -368,6 +369,7 @@ camel_sexp_to_sql (const char *txt)
 					    g_free (bstr); bstr = astr;
 					    token = g_scanner_get_next_token (scanner);
 				    }
+				    new_level = level -1;
 			} else {
 				/* should be the date fns*/
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
@@ -407,12 +409,12 @@ camel_sexp_to_sql (const char *txt)
 			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
 			node->prefix = 0;
 			node->rval = ' ';
-			node->level = level;
+			node->level = new_level == -1 ? level : new_level;
 			node->sys_node = 0;
 			node->ref = 2;
 			operands = g_list_prepend (operands, node);	
 			all = g_list_prepend (all, node);
-
+			new_level = -1;
 			level--;
 		} else if (token == '-') {
 			char *bstr=NULL;
@@ -958,11 +960,12 @@ int main ()
 	
 	"(and ( (or (match-all (header-contains \"Subject\"  \"lin\")) )) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\")))))))", 
 	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\")))))))", 
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
 	"(and  (or (match-all (header-contains \"Subject\"  \"[LDTP-NOSIP]\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"vamsi\")) (match-all (header-contains \"From\"  \"vamsi\"))))))",
 	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))",
-	"(and  (and (match-all #t))(and(match-all #t)))"
+	"(and  (and (match-all #t))(and(match-all #t)))",
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
+	"(and (or  (match-all (or (= (user-tag \"label\") \"important\") (user-flag (+ \"$Label\" \"important\")) (user-flag \"important\")))    (match-all (or (= (user-tag \"label\") \"work\") (user-flag (+ \"$Label\" \"work\")) (user-flag \"work\")))    (match-all (or (= (user-tag \"label\") \"personal\") (user-flag (+ \"$Label\" \"personal\")) (user-flag \"personal\")))    (match-all (or (= (user-tag \"label\") \"todo\") (user-flag (+ \"$Label\" \"todo\")) (user-flag \"todo\")))    (match-all (or (= (user-tag \"label\") \"later\") (user-flag (+ \"$Label\" \"later\")) (user-flag \"later\")))  )  (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))))"
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
