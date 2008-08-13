@@ -21,16 +21,15 @@
 
 #include <config.h>
 #include <string.h>
+#include <errno.h>
 
 #include <libebook/e-contact.h>
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-book-backend-sexp.h>
 
-#include <gdata-service-iface.h>
-#include <gdata-google-service.h>
-
 #include "e-book-backend-google.h"
+#include "google-book.h"
 #include "util.h"
 
 G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_BACKEND_SYNC);
@@ -38,19 +37,8 @@ G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_BACKEND_SY
 struct _EBookBackendGooglePrivate
 {
     gint mode;
-    char *base_uri;
-
-    GDataGoogleService *service;
-    GHashTable *gdata_entries;
-
-    guint refresh_interval;
-    guint refresh_feed_id;
-    char *feed_last_updated;
-
-    gboolean authorized;
-
+    GoogleBook *book;
     GList *bookviews;
-    GList *pending_auth_bookviews;
 };
 
 #define GET_PRIVATE(obj)      \
@@ -60,84 +48,41 @@ struct _EBookBackendGooglePrivate
 
 gboolean __e_book_backend_google_debug__;
 
-static EBookBackendSyncStatus
-e_book_backend_google_initial_query (EBookBackendGoogle *backend);
-
-static EBookBackendSyncStatus
-e_book_backend_google_update_query  (EBookBackendGoogle *backend,
-                                     GList             **added,
-                                     GList             **modified,
-                                     GList             **deleted);
-
-static EBookBackendSyncStatus
-ebookbackend_status_from_soup_error (int http_error);
-
-static gboolean
-e_book_backend_google_ensure_auth (EBookBackendGoogle *backend)
-{
-    EBookBackendGooglePrivate *priv;
-    gboolean is_authorized;
-
-    priv = GET_PRIVATE (backend);
-
-    is_authorized = (priv->authorized && priv->base_uri && priv->service);
-
-    if (FALSE == is_authorized) {
-        e_book_backend_notify_auth_required (E_BOOK_BACKEND (backend));
-        __debug__ ("auth required");
-    }
-
-    return is_authorized;
-}
+static EBookBackendSyncStatus e_book_backend_status_from_google_book_error (GoogleBookError error_code);
 
 static EBookBackendSyncStatus
 e_book_backend_google_create_contact (EBookBackendSync *backend,
                                       EDataBook        *book,
                                       guint32           opid,
                                       const char       *vcard_str,
-                                      EContact        **contact)
+                                      EContact        **out_contact)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
-    GDataEntry *entry, *new_entry;
+    EContact *contact;
     GError *error = NULL;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (backend);
 
     __debug__ ("Creating: %s", vcard_str);
-    *contact = NULL;
+    *out_contact = NULL;
 
     if (priv->mode != GNOME_Evolution_Addressbook_MODE_REMOTE) {
         return GNOME_Evolution_Addressbook_OfflineUnavailable;
     }
 
-    if (FALSE == e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend))) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
-    }
-
-    entry = gdata_entry_create_from_vcard (vcard_str);
-    __debug__ ("new entry with xml: %s", gdata_entry_generate_xml (entry));
-    new_entry = gdata_service_insert_entry (GDATA_SERVICE (priv->service),
-                                            priv->base_uri, entry, &error);
-    g_object_unref (entry);
-
-    if (new_entry) {
-        const char *uid;
-
-        uid = gdata_entry_get_id (new_entry);
-        *contact = e_contact_from_gdata_entry (new_entry);
-        g_hash_table_insert (priv->gdata_entries, g_strdup (uid), new_entry);
-    }
+    contact = e_contact_new_from_vcard (vcard_str);
+    google_book_add_contact (priv->book, contact, out_contact, &error);
+    g_object_unref (contact);
     if (error) {
-        status = ebookbackend_status_from_soup_error (error->code);
-        __debug__ ("Creating contact failed (HTTP %d): %s", error->code, error->message);
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Creating contact failed: %s", error->message);
         g_clear_error (&error);
-    }
-
-    if (NULL == *contact) {
+        *out_contact = NULL;
         return status;
     }
+
     return GNOME_Evolution_Addressbook_Success;
 }
 
@@ -161,30 +106,19 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend,
         return GNOME_Evolution_Addressbook_OfflineUnavailable;
     }
 
-    if (FALSE == e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend))) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
-    }
-
     for (id_iter = id_list; id_iter; id_iter = id_iter->next) {
-        GDataEntry *entry;
         GError *error = NULL;
-        char *uid;
+        const char *uid;
 
         uid = id_iter->data;
-        entry = g_hash_table_lookup (priv->gdata_entries, uid);
-        if (NULL == entry) {
-            continue;
-        }
-
-        if (gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, &error)) {
-            g_hash_table_remove (priv->gdata_entries, uid);
-            *ids = g_list_append (*ids, g_strdup (uid));
-        }
+        google_book_remove_contact (priv->book, uid, &error);
         if (error) {
             /* Only last error will be reported */
-            status = ebookbackend_status_from_soup_error (error->code);
-            __debug__ ("Deleting contact %s failed (HTTP %d): %s", uid, error->code, error->message);
+            status = e_book_backend_status_from_google_book_error (error->code);
+            __debug__ ("Deleting contact %s failed: %s", uid, error->message);
             g_clear_error (&error);
+        } else {
+            *ids = g_list_append (*ids, g_strdup (uid));
         }
     }
 
@@ -199,73 +133,34 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend,
                                       EDataBook        *book,
                                       guint32           opid,
                                       const char       *vcard_str,
-                                      EContact        **contact)
+                                      EContact        **out_contact)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
-    EVCardAttribute *uid_attr;
-    EVCard *vcard;
-    GDataEntry *entry, *copy, *new_entry;
+    EContact *contact;
     GError *error = NULL;
-    char *uid, *xml;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (backend);
 
     __debug__ ("Updating: %s", vcard_str);
-    *contact = NULL;
+    *out_contact = NULL;
 
     if (priv->mode != GNOME_Evolution_Addressbook_MODE_REMOTE) {
         return GNOME_Evolution_Addressbook_OfflineUnavailable;
     }
 
-    if (FALSE == e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend))) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
-    }
-
-    vcard = e_vcard_new_from_string (vcard_str);
-    if (NULL == vcard)
-        return GNOME_Evolution_Addressbook_OtherError;
-
-    uid_attr = e_vcard_get_attribute (vcard, EVC_UID);
-    if (NULL == uid_attr)
-        return GNOME_Evolution_Addressbook_ContactNotFound;
-
-    uid = e_vcard_attribute_get_value (uid_attr);
-
-    entry = g_hash_table_lookup (priv->gdata_entries, uid ? uid : "");
-
-    if (NULL == entry)
-        return GNOME_Evolution_Addressbook_ContactNotFound;
-
-    xml = gdata_entry_generate_xml (entry);
-    /* We operate on a copy; if we cannot commit our changes we should also
-     * leave the local entry as it was.
-     * There is a warning from libxml2 as result form this, because libgdata
-     * caches the xml from which it was created. However, if it is created
-     * from a feed, this xml will miss all namespace information, thus the warning */
-    copy = gdata_entry_new_from_xml (xml);
-
-    gdata_entry_update_from_e_vcard (copy, vcard);
-    new_entry = gdata_service_update_entry (GDATA_SERVICE (priv->service), copy, &error);
-
-    g_object_unref (copy);
-    g_object_unref (vcard);
-
-    if (new_entry) {
-        *contact = e_contact_from_gdata_entry (new_entry);
-        /* Will unref/free the old entry */
-        g_hash_table_replace (priv->gdata_entries, uid, new_entry);
-    }
+    contact = e_contact_new_from_vcard (vcard_str);
+    google_book_update_contact (priv->book, contact, out_contact, &error);
+    g_object_unref (contact);
     if (error) {
-        status = ebookbackend_status_from_soup_error (error->code);
-        __debug__ ("Updating contact failed (HTTP %d): %s", error->code, error->message);
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Modifying contact failed: %s", error->message);
         g_clear_error (&error);
-    }
-
-    if (NULL == *contact) {
+        *out_contact = NULL;
         return status;
     }
+
     return GNOME_Evolution_Addressbook_Success;
 }
 
@@ -277,23 +172,22 @@ e_book_backend_google_get_contact (EBookBackendSync *backend,
                                    char            **vcard_str)
 {
     EBookBackendGooglePrivate *priv;
-    GDataEntry *entry;
+    EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
+    EContact *contact;
+    GError *error = NULL;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (backend);
 
-    if (FALSE == e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend))) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
+    contact = google_book_get_contact (priv->book, uid, &error);
+    if (error) {
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Getting contact with uid %s failed: %s", uid, error->message);
+        g_clear_error (&error);
+        return status;
     }
-
-    entry = g_hash_table_lookup (priv->gdata_entries, uid);
-
-    if (NULL == entry) {
-        *vcard_str = NULL;
-        return GNOME_Evolution_Addressbook_ContactNotFound;
-    }
-
-    *vcard_str = vcard_from_gdata_entry (GDATA_ENTRY (entry));
+    *vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+    g_object_unref (contact);
 
     return GNOME_Evolution_Addressbook_Success;
 }
@@ -306,129 +200,96 @@ e_book_backend_google_get_contact_list (EBookBackendSync *backend,
                                         GList           **contacts)
 {
     EBookBackendGooglePrivate *priv;
+    EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
     EBookBackendSExp *sexp;
-    GHashTableIter iter;
-    GDataEntry *entry;
-    char *uid;
+    GError *error = NULL;
+    GList *all_contacts;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (backend);
 
     *contacts = NULL;
-    if (FALSE == e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend))) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
+
+    all_contacts = google_book_get_all_contacts (priv->book, &error);
+    if (error) {
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Getting all contacts failed: %s", error->message);
+        g_clear_error (&error);
+        return status;
     }
 
     sexp = e_book_backend_sexp_new (query);
+    while (all_contacts) {
+        EContact *contact;
 
-    g_hash_table_iter_init (&iter, priv->gdata_entries);
-    while (g_hash_table_iter_next (&iter, (gpointer)&uid, (gpointer)&entry)) {
-        char *vcard_str;
-
-        vcard_str = vcard_from_gdata_entry (GDATA_ENTRY (entry));
-        if (vcard_str && e_book_backend_sexp_match_vcard (sexp, vcard_str)) {
+        contact = all_contacts->data;
+        if (e_book_backend_sexp_match_contact (sexp, contact)) {
+            char *vcard_str;
+            vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
             *contacts = g_list_append (*contacts, vcard_str);
-        } else {
-            g_free (vcard_str);
         }
+        g_object_unref (contact);
+        all_contacts = g_list_delete_link (all_contacts, all_contacts);
     }
     g_object_unref (sexp);
-
 
     return GNOME_Evolution_Addressbook_Success;
 }
 
-static gboolean
-refresh_feed (gpointer data)
+static void
+on_google_book_contact_added (GoogleBook *book, EContact *contact, gpointer user_data)
 {
     EBookBackendGooglePrivate *priv;
-    GList *added, *modified, *deleted;
     GList *iter;
 
-    g_return_val_if_fail (E_IS_BOOK_BACKEND_GOOGLE (data), FALSE);
-
-    priv = GET_PRIVATE (data);
-
-    if (NULL == priv->bookviews) {
-        priv->refresh_feed_id = 0;
-
-        return FALSE;
-    }
-    e_book_backend_google_update_query (E_BOOK_BACKEND_GOOGLE (data),
-                                        &added, &modified, &deleted);
-
-    if (FALSE == (added || modified || deleted))
-        return TRUE;
-
-    modified = g_list_concat (added, modified);
-    while (modified) {
-        char *vcard_str;
-
-        vcard_str = vcard_from_gdata_entry (GDATA_ENTRY (modified->data));
-        __debug__ ("Update or new entry: %s", vcard_str);
-        if (vcard_str) {
-            for (iter = priv->bookviews; iter; iter = iter->next) {
-                e_data_book_view_notify_update_vcard (iter->data, g_strdup (vcard_str));
-            }
-            g_free (vcard_str);
-        }
-
-        g_object_unref (modified->data);
-        modified = g_list_delete_link (modified, modified);
-    }
-
-    while (deleted) {
-        const char *uid;
-
-        uid = gdata_entry_get_id (GDATA_ENTRY (deleted->data));
-        __debug__ ("Deleted entry: %s", uid);
-        if (uid) {
-            for (iter = priv->bookviews; iter; iter = iter->next) {
-                e_data_book_view_notify_remove (iter->data, uid);
-            }
-        }
-
-        g_object_unref (deleted->data);
-        deleted = g_list_delete_link (deleted, deleted);
-    }
-
+    priv = GET_PRIVATE (user_data);
     for (iter = priv->bookviews; iter; iter = iter->next) {
-        e_data_book_view_notify_complete (iter->data, GNOME_Evolution_Addressbook_Success);
+        g_object_ref (contact);
+        e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), contact);
     }
-
-    return TRUE;
 }
 
 static void
-do_initial_bookview_population (EBookBackendGoogle *backend,
-                                EDataBookView      *bookview)
+on_google_book_contact_removed (GoogleBook *book, const char *uid, gpointer user_data)
 {
     EBookBackendGooglePrivate *priv;
-    GHashTableIter iter;
-    GDataEntry *entry;
-    char *uid;
+    GList *iter;
 
-    priv = GET_PRIVATE (backend);
-
-    if (NULL == priv->gdata_entries)
-        return;
-
-    g_hash_table_iter_init (&iter, priv->gdata_entries);
-    while (g_hash_table_iter_next (&iter, (gpointer)&uid, (gpointer)&entry)) {
-        char *vcard_str;
-
-        vcard_str = vcard_from_gdata_entry (GDATA_ENTRY (entry));
-        //__debug__ ("%s", vcard_str);
-        e_data_book_view_notify_update_vcard (bookview, vcard_str);
-
+    priv = GET_PRIVATE (user_data);
+    for (iter = priv->bookviews; iter; iter = iter->next) {
+        e_data_book_view_notify_remove (E_DATA_BOOK_VIEW (iter->data), g_strdup (uid));
     }
+}
 
-    e_data_book_view_notify_complete (bookview, GNOME_Evolution_Addressbook_Success);
+static void
+on_google_book_contact_changed (GoogleBook *book, EContact *contact, gpointer user_data)
+{
+    EBookBackendGooglePrivate *priv;
+    GList *iter;
 
-    if ((0 == priv->refresh_feed_id) && priv->refresh_interval) {
-        priv->refresh_feed_id = g_timeout_add_seconds (priv->refresh_interval,
-                                                       refresh_feed,
-                                                       backend);
+    priv = GET_PRIVATE (user_data);
+    for (iter = priv->bookviews; iter; iter = iter->next) {
+        g_object_ref (contact);
+        e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), contact);
+    }
+}
+
+static void
+on_google_book_sequence_complete (GoogleBook *book, GError *error, gpointer user_data)
+{
+    EBookBackendGooglePrivate *priv;
+    EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_Success;
+    GList *iter;
+
+    priv = GET_PRIVATE (user_data);
+    if (error) {
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Book-view query failed: %s", error->message);
+        status = e_book_backend_status_from_google_book_error (error->code);
+        g_clear_error (&error);
+    }
+    for (iter = priv->bookviews; iter; iter = iter->next) {
+        e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), GNOME_Evolution_Addressbook_Success);
     }
 }
 
@@ -437,7 +298,7 @@ e_book_backend_google_start_book_view (EBookBackend  *backend,
                                        EDataBookView *bookview)
 {
     EBookBackendGooglePrivate *priv;
-    gboolean have_auth;
+    GList *cached_contacts;
 
     g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
     g_return_if_fail (E_IS_DATA_BOOK_VIEW (bookview));
@@ -450,14 +311,16 @@ e_book_backend_google_start_book_view (EBookBackend  *backend,
     bonobo_object_ref (bookview);
     e_data_book_view_notify_status_message (bookview, "Loading...");
 
-    have_auth = e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend));
-    if (have_auth) {
-        do_initial_bookview_population (E_BOOK_BACKEND_GOOGLE (backend),
-                                        bookview);
-    } else {
-        priv->pending_auth_bookviews = g_list_append (priv->pending_auth_bookviews,
-                                                      bookview);
+    google_book_set_live_mode (priv->book, TRUE);
+    cached_contacts = google_book_get_all_contacts_in_live_mode (priv->book);
+    while (cached_contacts) {
+        EContact *contact = cached_contacts->data;
+
+        e_data_book_view_notify_update (bookview, contact);
+        g_object_unref (contact);
+        cached_contacts = g_list_delete_link (cached_contacts, cached_contacts);
     }
+    e_data_book_view_notify_complete (bookview, GNOME_Evolution_Addressbook_Success);
 }
 
 static void
@@ -470,167 +333,12 @@ e_book_backend_google_stop_book_view (EBookBackend  *backend,
     priv = GET_PRIVATE (backend);
 
     priv->bookviews = g_list_remove (priv->bookviews, bookview);
-    priv->pending_auth_bookviews = g_list_remove (priv->pending_auth_bookviews, bookview);
     bonobo_object_unref (bookview);
 
-    if ((NULL == priv->bookviews) && priv->refresh_feed_id) {
-        g_source_remove (priv->refresh_feed_id);
-        priv->refresh_feed_id = 0;
+    if (NULL == priv->bookviews) {
+        google_book_set_live_mode (priv->book, FALSE);
     }
 }
-
-static EBookBackendSyncStatus
-e_book_backend_google_update_query  (EBookBackendGoogle *backend,
-                                     GList             **added,
-                                     GList             **modified,
-                                     GList             **deleted)
-{
-    EBookBackendGooglePrivate *priv;
-    GDataFeed *feed;
-    GSList *iter, *entries;
-    GError *error = NULL;
-    char *uri, *updated_min = NULL;
-
-    __debug__ (G_STRFUNC);
-    priv = GET_PRIVATE (backend);
-
-    *added = *modified = *deleted = NULL;
-
-    if (NULL == priv->service ||
-        NULL == priv->base_uri) {
-        return GNOME_Evolution_Addressbook_AuthenticationFailed;
-    }
-
-    if (priv->feed_last_updated) {
-        updated_min = g_strdup_printf ("updated-min=%s", priv->feed_last_updated);
-    }
-
-    uri = build_uri (priv->base_uri, "max-results=100", "showdeleted=true", updated_min,  NULL);
-    __debug__ ("URI is '%s'", uri);
-    feed = gdata_service_get_feed (GDATA_SERVICE (priv->service), uri, &error);
-    g_free (uri);
-
-    if (error) {
-        EBookBackendSyncStatus status;
-
-        __debug__ ("Update query failed (HTTP %d): %s", error->code, error->message);
-        status = ebookbackend_status_from_soup_error (error->code);
-        g_clear_error (&error);
-
-        return status;
-    }
-    if (NULL == feed) {
-        return GNOME_Evolution_Addressbook_OtherError;
-    }
-
-    g_free (priv->feed_last_updated);
-    priv->feed_last_updated = g_strdup (gdata_feed_get_updated (GDATA_FEED (feed)));
-
-    entries = gdata_feed_get_entries (feed);
-    __debug__ ("Update-feed has %d entries", entries ? g_slist_length (entries) : -1);
-
-    for (iter = entries; iter; iter = iter->next) {
-        GDataEntry *entry, *old_entry;
-        const char *edit_link, *old_edit_link;
-        gboolean is_deleted;
-        const char *uid;
-
-        entry = GDATA_ENTRY (iter->data);
-        uid = gdata_entry_get_id (entry);
-        is_deleted = gdata_entry_is_deleted (entry);
-
-        old_entry = g_hash_table_lookup (priv->gdata_entries, uid);
-        if (is_deleted) {
-            /* Do we have this item in our list? */
-            if (NULL == old_entry) {
-                continue;
-            } else {
-                *deleted = g_list_append (*deleted, g_object_ref (entry));
-                g_hash_table_remove (priv->gdata_entries, uid);
-            }
-        } else {
-            /* Is this a new entry */
-            if (NULL == old_entry) {
-                *added = g_list_append (*added, g_object_ref (entry));
-                g_hash_table_insert (priv->gdata_entries,
-                                     g_strdup (uid),
-                                     g_object_ref (entry));
-            }
-        }
-
-        edit_link = gdata_entry_get_edit_link (entry);
-        old_edit_link = gdata_entry_get_edit_link (old_entry);
-        if (0 == strcmp (edit_link ? edit_link : "", old_edit_link ? old_edit_link : ""))
-            continue;
-
-        g_hash_table_replace (priv->gdata_entries, g_strdup (uid), g_object_ref (entry));
-        *modified = g_list_append (*modified, g_object_ref (entry));
-    }
-    g_object_unref (feed);
-
-    return GNOME_Evolution_Addressbook_Success;
-}
-
-static EBookBackendSyncStatus
-e_book_backend_google_initial_query (EBookBackendGoogle *backend)
-{
-    EBookBackendGooglePrivate *priv;
-    GDataFeed *feed;
-    GSList *iter, *entries;
-    GError *error = NULL;
-    char *uri;
-
-    __debug__ (G_STRFUNC);
-    priv = GET_PRIVATE (backend);
-
-    if (NULL == priv->service ||
-        NULL == priv->base_uri) {
-        return GNOME_Evolution_Addressbook_AuthenticationFailed;
-    }
-
-    uri = build_uri (priv->base_uri, "max-results=100", NULL);
-    __debug__ ("URI is '%s'", uri);
-    feed = gdata_service_get_feed (GDATA_SERVICE (priv->service), uri, &error);
-    g_free (uri);
-
-    if (error) {
-        EBookBackendSyncStatus status;
-
-        __debug__ ("Initial query failed (HTTP %d): %s", error->code, error->message);
-        status = ebookbackend_status_from_soup_error (error->code);
-        g_clear_error (&error);
-
-        return status;
-    }
-    if (NULL == feed) {
-        return GNOME_Evolution_Addressbook_OtherError;
-    }
-
-    g_free (priv->feed_last_updated);
-    priv->feed_last_updated = g_strdup (gdata_feed_get_updated (GDATA_FEED (feed)));
-    if (priv->gdata_entries) {
-        g_hash_table_destroy (priv->gdata_entries);
-    }
-    priv->gdata_entries = g_hash_table_new_full (g_str_hash,
-                                                 g_str_equal,
-                                                 g_free,
-                                                 g_object_unref);
-
-    entries = gdata_feed_get_entries (feed);
-    __debug__ ("Feed has %d entries", entries ? g_slist_length (entries) : -1);
-    for (iter = entries; iter; iter = iter->next) {
-        GDataEntry *entry;
-        const char* uid;
-
-        entry = GDATA_ENTRY (iter->data);
-        uid = gdata_entry_get_id (entry);
-        g_hash_table_insert (priv->gdata_entries, g_strdup (uid), g_object_ref (entry));
-    }
-    g_object_unref (feed);
-
-    return GNOME_Evolution_Addressbook_Success;
-}
-
 
 static EBookBackendSyncStatus
 e_book_backend_google_authenticate_user (EBookBackendSync *backend,
@@ -641,46 +349,41 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend,
                                          const char       *auth_method)
 {
     EBookBackendGooglePrivate *priv;
-    EBookBackendSyncStatus status;
+    EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_Success;
+    GError *error = NULL;
+    char *book_username;
+    gboolean match;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (backend);
 
     if (priv->mode != GNOME_Evolution_Addressbook_MODE_REMOTE) {
-        g_warning ("Offline mode not mplemented...");
-        return GNOME_Evolution_Addressbook_OfflineUnavailable;
-    }
-    if (NULL == priv->service) {
-        g_warning ("Book not open; could not authenticate");
-        return GNOME_Evolution_Addressbook_RepositoryOffline;
+        return GNOME_Evolution_Addressbook_Success;
     }
 
-    g_free (priv->base_uri);
-    priv->base_uri = NULL;
-
-    if (NULL == username || username[0] == 0 ||
-        NULL == password || password[0] == 0) {
+    if (NULL == username || username[0] == 0) {
         return GNOME_Evolution_Addressbook_AuthenticationFailed;
     }
 
-    priv->base_uri = build_base_uri (username);
-    gdata_service_set_credentials (GDATA_SERVICE (priv->service), username, password);
+    g_object_get (G_OBJECT (priv->book),
+                  "username", &book_username,
+                  NULL);
 
-    status = e_book_backend_google_initial_query (E_BOOK_BACKEND_GOOGLE (backend));
-    if (status == GNOME_Evolution_Addressbook_Success) {
-        GList *iter;
+    match = (0 == strcmp (username, book_username));
+    g_free (book_username);
+    if (FALSE == match) {
+        g_warning ("Username given when loading source and on authentication did not match!");
+        return GNOME_Evolution_Addressbook_OtherError;
+    }
 
-        priv->authorized = TRUE;
-        e_book_backend_notify_writable (E_BOOK_BACKEND (backend), TRUE);
-
-        for (iter = priv->pending_auth_bookviews; iter; iter = iter->next) {
-            do_initial_bookview_population (E_BOOK_BACKEND_GOOGLE (backend),
-                                            iter->data);
-        }
+    google_book_connect_to_google (priv->book, password, &error);
+    if (error) {
+        status = e_book_backend_status_from_google_book_error (error->code);
+        __debug__ ("Authentication failed: %s", error->message);
+        status = e_book_backend_status_from_google_book_error (error->code);
+        g_clear_error (&error);
     } else {
-        g_free (priv->base_uri);
-        priv->base_uri = NULL;
-        priv->authorized = FALSE;
+        e_book_backend_notify_writable (E_BOOK_BACKEND (backend), TRUE);
     }
 
     return status;
@@ -778,7 +481,14 @@ e_book_backend_google_remove (EBookBackendSync *backend,
                               guint32           opid)
 {
     __debug__ (G_STRFUNC);
-    return GNOME_Evolution_Addressbook_PermissionDenied;
+    return GNOME_Evolution_Addressbook_Success;
+}
+
+static void
+on_google_book_auth_required (GoogleBook *book, gpointer user_data)
+{
+    __debug__ (G_STRFUNC);
+    e_book_backend_notify_auth_required (E_BOOK_BACKEND (user_data));
 }
 
 static GNOME_Evolution_Addressbook_CallStatus
@@ -787,43 +497,68 @@ e_book_backend_google_load_source (EBookBackend *backend,
                                    gboolean      only_if_exists)
 {
     EBookBackendGooglePrivate *priv = GET_PRIVATE (backend);
-    const char *refresh_interval;
+    const char *refresh_interval_str, *use_ssl_str, *use_cache_str;
+    guint refresh_interval;
+    gboolean use_ssl, use_cache;
+    const char *username;
 
-    if (priv->service) {
+    if (priv->book) {
         g_warning ("Source already loaded!");
         return GNOME_Evolution_Addressbook_OtherError;
     }
 
-    refresh_interval = e_source_get_property (source, "refresh-interval");
-    if (refresh_interval) {
-        guint val;
+    username = e_source_get_property (source, "username");
 
-        if (1 == sscanf (refresh_interval, "%u", &val)) {
-            priv->refresh_interval = val;
+    if (NULL == username || username[0] == '\0') {
+        g_warning ("No or empty username!");
+        return GNOME_Evolution_Addressbook_OtherError;
+    }
+
+    refresh_interval_str = e_source_get_property (source, "refresh-interval");
+    use_ssl_str = e_source_get_property (source, "ssl");
+    use_cache_str = e_source_get_property (source, "offline_sync");
+
+    if (refresh_interval_str) {
+        if (1 != sscanf (refresh_interval_str, "%u", &refresh_interval)) {
+            g_warning ("Could not parse refresh-interval!");
+            refresh_interval = 3600;
         }
     }
+
+    use_ssl = TRUE;
+    if (use_ssl_str) {
+        if (0 == g_ascii_strcasecmp (use_ssl_str, "false") || 0 == strcmp (use_ssl_str, "0"))
+            use_ssl = FALSE;
+    }
+
+    use_cache = TRUE;
+    if (use_cache_str) {
+        if (0 == g_ascii_strcasecmp (use_cache_str, "false") || 0 == strcmp (use_cache_str, "0"))
+            use_cache = FALSE;
+    }
+
+    priv->book = google_book_new (username, use_cache);
+
+    g_object_set (G_OBJECT (priv->book),
+                  "refresh-interval", refresh_interval,
+                  "use-ssl", use_ssl,
+                  NULL);
+    g_object_connect (G_OBJECT (priv->book),
+                      "signal::contact-added", G_CALLBACK (on_google_book_contact_added), backend,
+                      "signal::contact-changed", G_CALLBACK (on_google_book_contact_changed), backend,
+                      "signal::contact-removed", G_CALLBACK (on_google_book_contact_removed), backend,
+                      "signal::sequence-complete", G_CALLBACK (on_google_book_sequence_complete), backend,
+                      "signal::auth-required", G_CALLBACK (on_google_book_auth_required), backend,
+                      NULL);
 
     __debug__ (G_STRFUNC);
-    if (priv->mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
-        gboolean status;
 
-        status = test_repository_availability ();
-        if (FALSE == status) {
-            e_book_backend_notify_connection_status (backend, FALSE);
+    e_book_backend_set_is_loaded (backend, TRUE);
+    e_book_backend_notify_connection_status (backend, TRUE);
+    e_book_backend_set_is_writable (backend, FALSE);
+    google_book_set_offline_mode (priv->book, (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL));
 
-            return GNOME_Evolution_Addressbook_RepositoryOffline;
-        }
-
-        priv->service = gdata_google_service_new ("cp", "evolution-client-0.0.1");
-
-        e_book_backend_set_is_loaded (backend, TRUE);
-        e_book_backend_notify_connection_status (backend, TRUE);
-
-        return GNOME_Evolution_Addressbook_Success;
-    } else {
-        g_warning ("Offline mode not yet implemented...");
-        return GNOME_Evolution_Addressbook_OfflineUnavailable;
-    }
+    return GNOME_Evolution_Addressbook_Success;
 }
 
 static char *
@@ -850,29 +585,17 @@ e_book_backend_google_set_mode (EBookBackend *backend, GNOME_Evolution_Addressbo
     if (mode == priv->mode) {
         return;
     }
+
     priv->mode = mode;
 
+    if (NULL == priv->book) {
+        return;
+    }
+
     if (mode == GNOME_Evolution_Addressbook_MODE_REMOTE) {
-        if (e_book_backend_is_loaded (backend)) {
-            gboolean status;
-
-            status = test_repository_availability ();
-
-            if (FALSE == status) {
-                e_book_backend_notify_writable (backend, FALSE);
-                e_book_backend_notify_connection_status (backend, FALSE);
-            } else {
-                status = e_book_backend_google_ensure_auth (E_BOOK_BACKEND_GOOGLE (backend));
-                e_book_backend_notify_writable (backend, status);
-                e_book_backend_notify_connection_status (backend, TRUE);
-            }
-        } else {
-            e_book_backend_set_is_writable (backend, FALSE);
-        }
+        google_book_set_offline_mode (priv->book, FALSE);
     } else {
-        e_book_backend_notify_writable (backend, FALSE);
-        e_book_backend_notify_connection_status (backend, FALSE);
-        g_warning ("Offline mode not implemented yet...");
+        google_book_set_offline_mode (priv->book, TRUE);
     }
 }
 
@@ -883,24 +606,14 @@ e_book_backend_google_dispose (GObject *object)
 
     __debug__ (G_STRFUNC);
 
-    if (priv->refresh_feed_id) {
-        g_source_remove (priv->refresh_feed_id);
-        priv->refresh_feed_id = 0;
-    }
-
-    while (priv->pending_auth_bookviews) {
-        priv->pending_auth_bookviews =
-                g_list_delete_link (priv->pending_auth_bookviews,
-                                    priv->pending_auth_bookviews);
-    }
     while (priv->bookviews) {
         bonobo_object_unref (priv->bookviews->data);
         priv->bookviews = g_list_delete_link (priv->bookviews,
                                               priv->bookviews);
     }
-    if (priv->service) {
-        g_object_unref (priv->service);
-        priv->service = NULL;
+    if (priv->book) {
+        g_object_unref (priv->book);
+        priv->book = NULL;
     }
 
     G_OBJECT_CLASS (e_book_backend_google_parent_class)->dispose (object);
@@ -909,15 +622,10 @@ e_book_backend_google_dispose (GObject *object)
 static void
 e_book_backend_google_finalize (GObject *object)
 {
-    EBookBackendGooglePrivate *priv = GET_PRIVATE (object);
+    //EBookBackendGooglePrivate *priv = GET_PRIVATE (object);
 
     __debug__ (G_STRFUNC);
 
-    g_free (priv->base_uri);
-    g_free (priv->feed_last_updated);
-    if (priv->gdata_entries) {
-        g_hash_table_destroy (priv->gdata_entries);
-    }
     G_OBJECT_CLASS (e_book_backend_google_parent_class)->finalize (object);
 }
 
@@ -975,18 +683,8 @@ e_book_backend_google_new (void)
 }
 
 static EBookBackendSyncStatus
-ebookbackend_status_from_soup_error (int http_error)
+e_book_backend_status_from_google_book_error (GoogleBookError error_code)
 {
-    if (http_error < 200) {
-        return GNOME_Evolution_Addressbook_RepositoryOffline;
-    } else
-    if (http_error == 401) {
-        return GNOME_Evolution_Addressbook_AuthenticationRequired;
-    } else
-    if (http_error == 403) {
-        return GNOME_Evolution_Addressbook_AuthenticationFailed;
-    } else {
-        return GNOME_Evolution_Addressbook_OtherError;
-    }
+    return GNOME_Evolution_Addressbook_OtherError;
 }
 

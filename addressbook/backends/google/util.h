@@ -25,28 +25,21 @@
 #include <libebook/e-contact.h>
 #include <servers/google/libgdata/gdata-entry.h>
 
-char*       vcard_from_gdata_entry          (GDataEntry *entry);
-EVCard*     e_vcard_from_gdata_entry        (GDataEntry *entry);
-EContact*   e_contact_from_gdata_entry      (GDataEntry *entry);
-
-GDataEntry* gdata_entry_create_from_vcard   (const char *vcard_str);
-GDataEntry* gdata_entry_create_from_e_vcard (EVCard *vcard);
-gboolean    gdata_entry_update_from_vcard   (GDataEntry *entry,
-                                             const char *vcard_str);
-gboolean    gdata_entry_update_from_e_vcard (GDataEntry *entry,
-                                             EVCard     *vcard);
-
-
-char*       build_uri                       (const char *base_uri, ...);
-char*       build_base_uri                  (const char *username);
-
-gboolean    test_repository_availability    (void);
-
 extern gboolean __e_book_backend_google_debug__;
 
 #define __debug__(...) (__e_book_backend_google_debug__ ? \
                        g_log (G_LOG_DOMAIN,         \
                               G_LOG_LEVEL_DEBUG,    \
-                              __VA_ARGS__) : (void) 0 )
+                              __VA_ARGS__) : 0 )
+
+GDataEntry* _gdata_entry_new_from_e_contact    (EContact   *contact);
+gboolean    _gdata_entry_update_from_e_contact (GDataEntry *entry,
+                                                EContact   *contact);
+
+EContact*   _e_contact_new_from_gdata_entry    (GDataEntry *entry);
+void        _e_contact_add_gdata_entry_xml     (EContact   *contact,
+                                                GDataEntry *entry);
+void        _e_contact_remove_gdata_entry_xml  (EContact   *contact);
+const char* _e_contact_get_gdata_entry_xml     (EContact *contact);
 
 #endif

@@ -16,6 +16,8 @@ extension_LTLIBRARIES = libebookbackendgoogle.la
 libebookbackendgoogle_la_SOURCES = \
 	util.h \
 	util.c \
+	google-book.h \
+	google-book.c \
 	e-book-backend-google-factory.h \
 	e-book-backend-google-factory.c \
 	e-book-backend-google.h \

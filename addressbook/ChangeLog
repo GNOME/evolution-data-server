@@ -1,3 +1,76 @@
+2008-08-13  Jörgen Scheibengruber  <mfcn@gmx.de>
+
+	* backends/google/Makefile.am:
+	* backends/google/e-book-backend-google.c
+	(e_book_backend_google_create_contact),
+	(e_book_backend_google_remove_contacts),
+	(e_book_backend_google_modify_contact),
+	(e_book_backend_google_get_contact),
+	(e_book_backend_google_get_contact_list),
+	(on_google_book_contact_added), (on_google_book_contact_removed),
+	(on_google_book_contact_changed),
+	(on_google_book_sequence_complete),
+	(e_book_backend_google_start_book_view),
+	(e_book_backend_google_stop_book_view),
+	(e_book_backend_google_authenticate_user),
+	(e_book_backend_google_remove), (on_google_book_auth_required),
+	(e_book_backend_google_load_source),
+	(e_book_backend_google_set_mode), (e_book_backend_google_dispose),
+	(e_book_backend_google_finalize),
+	(e_book_backend_status_from_google_book_error):
+	* backends/google/google-book.c (google_book_cache_init),
+	(google_book_cache_add_contact),
+	(google_book_cache_remove_contact),
+	(google_book_cache_get_contact), (_g_hash_table_to_list),
+	(google_book_cache_get_contacts), (google_book_cache_freeze),
+	(google_book_cache_thaw), (google_book_cache_get_last_update),
+	(google_book_cache_get_last_update_tv),
+	(google_book_cache_set_last_update),
+	(google_book_cache_needs_update),
+	(google_book_cache_refresh_if_needed), (on_refresh_timeout),
+	(google_book_cache_destroy), (google_book_construct_base_uri),
+	(google_book_get_property), (google_book_set_property),
+	(google_book_dispose), (google_book_finalize),
+	(google_book_emit_contact_added),
+	(google_book_emit_contact_changed),
+	(google_book_emit_contact_removed),
+	(google_book_emit_sequence_complete),
+	(google_book_emit_auth_required), (google_book_class_init),
+	(google_book_init), (google_book_new),
+	(google_book_connect_to_google), (google_book_set_offline_mode),
+	(google_book_add_contact), (google_book_update_contact),
+	(google_book_remove_contact), (process_subsequent_entry),
+	(process_initial_entry), (google_book_get_new_contacts_in_chunks),
+	(google_book_get_contact), (google_book_get_all_contacts),
+	(on_refresh_idle), (google_book_get_all_contacts_in_live_mode),
+	(google_book_set_live_mode), (google_book_error_from_soup_error):
+	* backends/google/google-book.h:
+
+	Created new GoogleBook object that internally implements a local (either
+	in-memory or on-disk) cache of the Google contacts list and updates it in
+	a specified interval.
+
+	* backends/google/util.c (_gdata_entry_new_from_e_contact),
+	(_gdata_entry_update_from_e_contact),
+	(_e_contact_new_from_gdata_entry),
+	(_e_contact_add_gdata_entry_xml),
+	(_e_contact_remove_gdata_entry_xml),
+	(_e_contact_get_gdata_entry_xml), (google_rel_label_from_type),
+	(attribute_from_gdata_entry_email_address),
+	(attribute_from_gdata_entry_im_address),
+	(attribute_from_gdata_entry_phone_number),
+	(attribute_from_gdata_entry_postal_address),
+	(get_google_primary_and_type),
+	(gdata_entry_email_address_from_attribute),
+	(gdata_entry_im_address_from_attribute),
+	(gdata_entry_phone_number_from_attribute),
+	(gdata_entry_postal_address_from_attribute):
+	* backends/google/util.h:
+
+	Removed some no longer needed utility functions. Use
+	e_contact_[get|_set]_name instead of custom fullname parsing. Try to
+	ensure that primary properities again land in the same slot after editing.
+
 2008-08-12  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #547308

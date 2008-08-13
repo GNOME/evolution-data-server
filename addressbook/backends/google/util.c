@@ -23,6 +23,8 @@
 #include <libsoup/soup.h>
 #include "util.h"
 
+#define GOOGLE_PRIMARY_PARAM "X-GOOGLE-PRIMARY"
+
 static EVCardAttribute*
 attribute_from_gdata_entry_email_address  (GDataEntryEmailAddress  *email);
 
@@ -37,45 +39,33 @@ attribute_from_gdata_entry_postal_address (GDataEntryPostalAddress *address);
 
 static GDataEntryEmailAddress*
 gdata_entry_email_address_from_attribute  (EVCardAttribute         *attr,
-                                           gboolean                 primary);
+                                           gboolean                *primary);
 
 static GDataEntryIMAddress*
 gdata_entry_im_address_from_attribute     (EVCardAttribute         *attr,
-                                           gboolean                 primary);
+                                           gboolean                *primary);
 
 static GDataEntryPhoneNumber*
 gdata_entry_phone_number_from_attribute   (EVCardAttribute         *attr,
-                                           gboolean                 primary);
+                                           gboolean                *primary);
 
 static GDataEntryPostalAddress*
 gdata_entry_postal_address_from_attribute (EVCardAttribute         *attr,
-                                           gboolean                 primary);
+                                           gboolean                *primary);
 
+#if 0
 static GList*
 name_values_from_fullname   (const char *fullname);
 
 static char*
 fullname_from_name_values   (GList      *values);
+#endif
 
 static gboolean
 is_known_google_im_protocol (const char *protocol);
 
-GDataEntry* gdata_entry_create_from_vcard (const char *vcard_str)
-{
-    GDataEntry *entry;
-    EVCard *vcard;
-
-    vcard = e_vcard_new_from_string (vcard_str);
-    if (NULL == vcard)
-        return NULL;
-    entry = gdata_entry_create_from_e_vcard (vcard);
-
-    g_object_unref (vcard);
-
-    return entry;
-}
-
-GDataEntry* gdata_entry_create_from_e_vcard (EVCard *vcard)
+GDataEntry*
+_gdata_entry_new_from_e_contact (EContact *contact)
 {
     GDataEntry *entry;
     GDataEntryCategory *category;
@@ -87,7 +77,7 @@ GDataEntry* gdata_entry_create_from_e_vcard (EVCard *vcard)
     category->term = g_strdup ("http://schemas.google.com/contact/2008#contact"); 
     gdata_entry_set_categories (entry, g_slist_append (NULL, category));
 
-    if (gdata_entry_update_from_e_vcard (entry, vcard))
+    if (_gdata_entry_update_from_e_contact (entry, contact))
         return entry;
 
     g_object_unref (entry);
@@ -95,23 +85,9 @@ GDataEntry* gdata_entry_create_from_e_vcard (EVCard *vcard)
     return NULL;
 }
 
-gboolean gdata_entry_update_from_vcard (GDataEntry *entry,
-                                        const char *vcard_str)
-{
-    EVCard *vcard;
-
-    vcard = e_vcard_new_from_string (vcard_str);
-    if (NULL == vcard)
-        return FALSE;
-    gdata_entry_update_from_e_vcard (entry, vcard);
-
-    g_object_unref (vcard);
-
-    return TRUE;
-}
-
-gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
-                                          EVCard     *vcard)
+gboolean
+_gdata_entry_update_from_e_contact (GDataEntry *entry,
+                                    EContact   *contact)
 {
     GList *attributes, *iter;
     char *fullname = NULL;
@@ -119,45 +95,45 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
     GSList *im_addresses = NULL;
     GSList *phone_numbers = NULL;
     GSList *postal_addresses = NULL;
-    
-    attributes = e_vcard_get_attributes (vcard);
+    gboolean have_email_primary = FALSE;
+    gboolean have_im_primary = FALSE;
+    gboolean have_phone_primary = FALSE;
+    gboolean have_postal_primary = FALSE;
 
-    for (iter = attributes; iter; iter = iter->next) {
+    attributes = e_vcard_get_attributes (E_VCARD (contact));
+
+    fullname = g_strdup (e_contact_get (contact, E_CONTACT_FULL_NAME));
+    if (NULL == fullname) {
+        EContactName *name = e_contact_get (contact, E_CONTACT_NAME);
+
+        fullname = e_contact_name_to_string (name);
+        e_contact_name_free (name);
+    }
+
+    /* We walk them in reverse order, so we can find
+     * the correct primaries */
+    iter = g_list_last (attributes);
+    for (; iter; iter = iter->prev) {
         EVCardAttribute *attr;
         const char *name;
 
         attr = iter->data;
         name = e_vcard_attribute_get_name (attr);
 
-        /* N */
-        if (0 == strcmp (name, EVC_N)) {
-            GList *values;
-
-            if (fullname) {
-                continue;
-            }
-
-            values = e_vcard_attribute_get_values (attr);
-            fullname = fullname_from_name_values (values);
-        } else
-
-        /* FN */
-        if (0 == strcmp (name, EVC_FN)) {
-            GList *values;
-
-            values = e_vcard_attribute_get_values (attr);
-            if (values) {
-                g_free (fullname);
-                fullname = g_strdup (values->data);
-            }
-        } else
-
         /* EMAIL */
-        if (0 == strcmp (name, EVC_EMAIL)) {
+
+        /* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN */
+        if (0 == g_ascii_strcasecmp (name, EVC_UID) ||
+            0 == g_ascii_strcasecmp (name, EVC_N) ||
+            0 == g_ascii_strcasecmp (name, EVC_FN) ||
+            0 == g_ascii_strcasecmp (name, EVC_VERSION) ||
+            0 == g_ascii_strcasecmp (name, EVC_X_FILE_AS)) {
+        } else
+        if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
             GDataEntryEmailAddress *email;
 
             email = gdata_entry_email_address_from_attribute
-                        (attr, email_addresses == NULL);
+                        (attr, &have_email_primary);
             if (email) {
                 email_addresses = g_slist_append (email_addresses,
                                                   email);
@@ -165,11 +141,11 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
         } else
 
         /* TEL */
-        if (0 == strcmp (name, EVC_TEL)) {
+        if (0 == g_ascii_strcasecmp (name, EVC_TEL)) {
             GDataEntryPhoneNumber *number;
 
             number = gdata_entry_phone_number_from_attribute
-                        (attr, phone_numbers == NULL);
+                        (attr, &have_phone_primary);
             if (number) {
                 phone_numbers = g_slist_append (phone_numbers,
                                                 number);
@@ -177,11 +153,11 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
         } else
         
         /* LABEL */
-        if (0 == strcmp (name, EVC_LABEL)) {
+        if (0 == g_ascii_strcasecmp (name, EVC_LABEL)) {
             GDataEntryPostalAddress *address;
 
             address = gdata_entry_postal_address_from_attribute
-                        (attr, postal_addresses == NULL);
+                        (attr, &have_postal_primary);
             if (address) {
                 postal_addresses = g_slist_append (postal_addresses,
                                                    address);
@@ -189,12 +165,12 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
         } else
     
         /* X-IM */
-        if (strncmp (name, "X-", MAX (2, strlen (name))) &&
+        if (g_ascii_strncasecmp (name, "X-", 2) &&
             is_known_google_im_protocol (name + 2)) {
             GDataEntryIMAddress *im;
 
             im = gdata_entry_im_address_from_attribute
-                        (attr, im_addresses == NULL);
+                        (attr, &have_im_primary);
             if (im) {
                 im_addresses = g_slist_append (im_addresses,
                                                im);
@@ -204,7 +180,7 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
 
             values = e_vcard_attribute_get_values (attr);
             if (values && values->data && ((char*)values->data)[0]) {
-                g_warning ("unsupported vcard field: %s: %s", name, (char*)values->data);
+                __debug__ ("unsupported vcard field: %s: %s", name, (char*)values->data);
             }
         }
     }
@@ -217,8 +193,8 @@ gboolean gdata_entry_update_from_e_vcard (GDataEntry *entry,
     return TRUE;
 }
 
-EVCard*
-e_vcard_from_gdata_entry (GDataEntry *entry)
+EContact*
+_e_contact_new_from_gdata_entry (GDataEntry *entry)
 {
     EVCard *vcard;
     EVCardAttribute *attr;
@@ -236,7 +212,7 @@ e_vcard_from_gdata_entry (GDataEntry *entry)
         return NULL;
     }
 
-    vcard = e_vcard_new ();
+    vcard = E_VCARD (e_contact_new ());
 
     /* UID */
     attr = e_vcard_attribute_new (NULL, EVC_UID);
@@ -245,20 +221,7 @@ e_vcard_from_gdata_entry (GDataEntry *entry)
     /* FN - TODO: get title */
     name = gdata_entry_get_title (entry);
     if (name) {
-        GList *name_values;
-
-        attr = e_vcard_attribute_new (NULL, EVC_FN);
-        e_vcard_add_attribute_with_value (vcard, attr, name);
-
-    /* N */
-        attr = e_vcard_attribute_new (NULL, EVC_N);
-        name_values = name_values_from_fullname (name);
-        while (name_values) {
-            e_vcard_attribute_add_value (attr, name_values->data);
-            g_free (name_values->data);
-            name_values = g_list_delete_link (name_values, name_values);
-        }
-        e_vcard_add_attribute (vcard, attr);
+        e_contact_set (E_CONTACT (vcard), E_CONTACT_FULL_NAME, (const gpointer)name);
     }
 
     /* EMAIL - primary first */
@@ -330,35 +293,10 @@ e_vcard_from_gdata_entry (GDataEntry *entry)
         }
     }
 
-    return vcard;
+    return E_CONTACT (vcard);
 }
 
-EContact*
-e_contact_from_gdata_entry (GDataEntry *entry)
-{
-    EContact *contact;
-    char *vcard_str;
-
-    vcard_str = vcard_from_gdata_entry (entry);
-    contact = e_contact_new_from_vcard (vcard_str);
-    g_free (vcard_str);
-
-    return contact;    
-}
-
-char*
-vcard_from_gdata_entry (GDataEntry *entry)
-{
-    EVCard *vcard;
-    char *vcard_str;
-
-    vcard =  e_vcard_from_gdata_entry (entry);
-    vcard_str = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
-    g_object_unref (vcard);
-
-    return vcard_str;
-}
-
+#if 0
 static GList*
 name_values_from_fullname (const char *fullname)
 {
@@ -406,7 +344,9 @@ out:
 
     return name_values;
 }
+#endif
 
+#if 0
 static GString*
 string_prepend_with_space (GString *string, const char *val)
 {
@@ -419,7 +359,6 @@ string_prepend_with_space (GString *string, const char *val)
     return string;
 }
 
-#if 0
 static GString*
 string_append_with_space (GString *string, const char *val)
 {
@@ -433,6 +372,7 @@ string_append_with_space (GString *string, const char *val)
 }
 #endif
 
+#if 0
 static char*
 fullname_from_name_values (GList *values)
 {
@@ -483,44 +423,42 @@ fullname_from_name_values (GList *values)
 out:
     return g_string_free (name, FALSE);
 }
+#endif
 
-char* build_uri (const char *base_uri, ...)
+#define GDATA_ENTRY_XML_ATTR "X-GDATA-ENTRY-XML"
+
+void
+_e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry)
 {
-    va_list params;
-    const char *param;
-    GString *query;
-    const char *separator = "?";
+    EVCardAttribute *attr;
+    const char* entry_xml;
 
-    query = g_string_new (base_uri);
-    va_start (params, base_uri);
-    while (TRUE) {
-        param = va_arg (params, const char*);
-        if (NULL == param) {
-            break;
-        }
-        g_string_append (query, separator);
-        g_string_append (query, param);
-        separator = "&";
-    }
-    va_end (params);
+    entry_xml = gdata_entry_generate_xml (entry);
 
-    return g_string_free (query, FALSE);
-
+    attr = e_vcard_attribute_new ("", GDATA_ENTRY_XML_ATTR);
+    e_vcard_attribute_add_value (attr, entry_xml);
+    e_vcard_add_attribute (E_VCARD (contact), attr);
 }
 
-char* build_base_uri (const char* username)
+void
+_e_contact_remove_gdata_entry_xml (EContact *contact)
 {
-    const char *format = "http://www.google.com/m8/feeds/contacts/%s/base";
-    char *esc_username;
-    char *uri;
-
-    esc_username = g_uri_escape_string (username, NULL, FALSE);
-    uri = g_strdup_printf (format, esc_username);
-    g_free (esc_username);
-
-    return uri;
+    e_vcard_remove_attributes (E_VCARD (contact), NULL, GDATA_ENTRY_XML_ATTR);
 }
 
+const char*
+_e_contact_get_gdata_entry_xml (EContact *contact)
+{
+    EVCardAttribute *attr;
+    GList *values;
+
+    attr = e_vcard_get_attribute (E_VCARD (contact), GDATA_ENTRY_XML_ATTR);
+    values = e_vcard_attribute_get_values (attr);
+
+    return values ? values->data : NULL;
+}
+
+#if 0
 gboolean test_repository_availability (void)
 {
     SoupSession *session;
@@ -542,6 +480,7 @@ gboolean test_repository_availability (void)
     /* Everything below 100 means we can't reach www.google.com */
     return (http_status >= 100);
 }
+#endif
 
 static char*
 type_from_google_rel_label (const char* rel, const char *label)
@@ -580,7 +519,7 @@ google_rel_label_from_type (const char* type, char **rel, char **label)
         return;
     }
 
-    if (0 == strncmp (type, "X-", MIN (2, strlen (type)))) {
+    if (0 == strncmp (type, "X-", 2)) {
         *label = g_strdup (type + 2);
         return;
     }
@@ -646,6 +585,14 @@ attribute_from_gdata_entry_email_address (GDataEntryEmailAddress *email)
 
     attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
     type = type_from_google_rel_label (email->rel, email->label);
+    if (email->primary) {
+        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
+        e_vcard_attribute_add_param (attr, param);
+        if (NULL == type) {
+            param = e_vcard_attribute_param_new ("TYPE");
+            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
+        }
+    }
     if (type) {
         param = e_vcard_attribute_param_new ("TYPE");
         e_vcard_attribute_add_param_with_value (attr, param, type);
@@ -672,6 +619,14 @@ attribute_from_gdata_entry_im_address (GDataEntryIMAddress *im)
 
     attr = e_vcard_attribute_new (NULL, field_name);
     type = type_from_google_rel_label (im->rel, im->label);
+    if (im->primary) {
+        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
+        e_vcard_attribute_add_param (attr, param);
+        if (NULL == type) {
+            param = e_vcard_attribute_param_new ("TYPE");
+            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
+        }
+    }
     if (type) {
         param = e_vcard_attribute_param_new ("TYPE");
         e_vcard_attribute_add_param_with_value (attr, param, type);
@@ -694,6 +649,14 @@ attribute_from_gdata_entry_phone_number (GDataEntryPhoneNumber *number)
     attr = e_vcard_attribute_new (NULL, EVC_TEL);
     /* TODO: This needs more work */
     type = type_from_google_rel_label (number->rel, number->label);
+    if (number->primary) {
+        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
+        e_vcard_attribute_add_param (attr, param);
+        if (NULL == type) {
+            param = e_vcard_attribute_param_new ("TYPE");
+            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
+        }
+    }
     if (type) {
         param = e_vcard_attribute_param_new ("TYPE");
         e_vcard_attribute_add_param_with_value (attr, param, type);
@@ -716,6 +679,14 @@ attribute_from_gdata_entry_postal_address (GDataEntryPostalAddress *address)
     attr = e_vcard_attribute_new (NULL, EVC_LABEL);
     /* TODO: This needs more work */
     type = type_from_google_rel_label (address->rel, address->label);
+    if (address->primary) {
+        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
+        e_vcard_attribute_add_param (attr, param);
+        if (NULL == type) {
+            param = e_vcard_attribute_param_new ("TYPE");
+            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
+        }
+    }
     if (type) {
         param = e_vcard_attribute_param_new ("TYPE");
         e_vcard_attribute_add_param_with_value (attr, param, type);
@@ -725,19 +696,49 @@ attribute_from_gdata_entry_postal_address (GDataEntryPostalAddress *address)
     return attr;
 }
 
+static void
+get_google_primary_and_type (EVCardAttribute *attr, gboolean *primary, const char **type)
+{
+    GList *params;
+
+    *primary = FALSE;
+    *type = NULL;
+    params = e_vcard_attribute_get_params (attr);
+    while (params) {
+        const char *name;
+
+        name = e_vcard_attribute_get_name (params->data);
+        if (0 == g_ascii_strcasecmp (name, GOOGLE_PRIMARY_PARAM)) {
+            *primary = TRUE;
+        }
+        if (0 == g_ascii_strcasecmp (name, "TYPE")) {
+            GList *values;
+
+            values = e_vcard_attribute_param_get_values (params->data);
+            *type = values ? values->data : NULL;
+        }
+        params = params->next;
+    }
+}
+
 static GDataEntryEmailAddress*
-gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean primary)
+gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
 {
     GDataEntryEmailAddress *email = NULL;
     GList *values;
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        GList *param_values;
         const char *type;
+        gboolean primary;
 
-        param_values = e_vcard_attribute_get_param (attr, "TYPE");
-        type = param_values ? param_values->data : NULL;
+        get_google_primary_and_type (attr, &primary, &type);
+        if (FALSE == *have_primary) {
+            *have_primary = primary;
+        } else {
+            primary = FALSE;
+        }
+
         email = g_new0 (GDataEntryEmailAddress, 1);
         email->address = g_strdup (values->data);
         google_rel_label_from_type (type, &email->rel, &email->label);
@@ -748,7 +749,7 @@ gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean primar
 }
 
 static GDataEntryIMAddress*
-gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean primary)
+gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
 {
     GDataEntryIMAddress *im = NULL;
     GList *values;
@@ -758,11 +759,16 @@ gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean primary)
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        GList *param_values;
         const char *type;
+        gboolean primary;
 
-        param_values = e_vcard_attribute_get_param (attr, "TYPE");
-        type = param_values ? param_values->data : NULL;
+        get_google_primary_and_type (attr, &primary, &type);
+        if (FALSE == *have_primary) {
+            *have_primary = primary;
+        } else {
+            primary = FALSE;
+        }
+
         im = g_new0 (GDataEntryIMAddress, 1);
         im->address = g_strdup (values->data);
         google_rel_label_from_type (type, &im->rel, &im->label);
@@ -774,18 +780,23 @@ gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean primary)
 }
 
 static GDataEntryPhoneNumber*
-gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean primary)
+gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
 {
     GDataEntryPhoneNumber *number = NULL;
     GList *values;
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        GList *param_values;
         const char *type;
+        gboolean primary;
 
-        param_values = e_vcard_attribute_get_param (attr, "TYPE");
-        type = param_values ? param_values->data : NULL;
+        get_google_primary_and_type (attr, &primary, &type);
+        if (FALSE == *have_primary) {
+            *have_primary = primary;
+        } else {
+            primary = FALSE;
+        }
+
         number = g_new0 (GDataEntryPhoneNumber, 1);
         number->number = g_strdup (values->data);
         /* TODO: this needs more work */
@@ -797,18 +808,23 @@ gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean primary
 }
 
 static GDataEntryPostalAddress*
-gdata_entry_postal_address_from_attribute (EVCardAttribute *attr, gboolean primary)
+gdata_entry_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
 {
     GDataEntryPostalAddress *address = NULL;
     GList *values;
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        GList *param_values;
         const char *type;
+        gboolean primary;
 
-        param_values = e_vcard_attribute_get_param (attr, "TYPE");
-        type = param_values ? param_values->data : NULL;
+        get_google_primary_and_type (attr, &primary, &type);
+        if (FALSE == *have_primary) {
+            *have_primary = primary;
+        } else {
+            primary = FALSE;
+        }
+
         address = g_new0 (GDataEntryPostalAddress, 1);
         address->address = g_strdup (values->data);
         google_rel_label_from_type (type, &address->rel, &address->label);
