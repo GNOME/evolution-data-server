@@ -645,9 +645,9 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 	/* folder_class->search_by_expression = vtrash_search_by_expression; */
 	/* folder_class->search_by_uids = vtrash_search_by_uids; */
 
-//	((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
-//	((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
-//	((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
+	((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
+	((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
+	((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
 
-//	((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
+	((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
 }

@@ -1,5 +1,10 @@
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vtrash-folder.c: Revert junk/trash. It slows down. Needs
+	reimpl.
+
+2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Properly unlock while aborting transaction.
 
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
