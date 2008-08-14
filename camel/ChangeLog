@@ -1,5 +1,12 @@
 2008-08-14  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #547389
+
+	* camel/camel-vee-folder.c: Fix crash on account search. Unhook the
+	signals on finalize.
+
+2008-08-14  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Clean up subfolders while finalizing.
 
 2008-08-14  Srinivasa Ragavan  <sragavan@novell.com>
