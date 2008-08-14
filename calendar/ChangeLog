@@ -1,3 +1,10 @@
+2008-08-14  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #327851
+
+	* libecal/e-cal.c: (generate_instances):
+	Skip detached instances which doesn't belong to requested time range.
+
 2008-07-28  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #468671

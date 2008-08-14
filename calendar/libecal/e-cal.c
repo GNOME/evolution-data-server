@@ -3597,7 +3597,13 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 			e_cal_component_free_datetime (&dtstart);
 			e_cal_component_free_datetime (&dtend);
 
-			detached_instances = g_list_prepend (detached_instances, ci);
+			if (ci->start <= end && ci->end >= start) {
+				detached_instances = g_list_prepend (detached_instances, ci);
+			} else {
+				/* it doesn't fit to our time range, thus skip it */
+				g_object_unref (G_OBJECT (ci->comp));
+				g_free (ci);
+			}
 		} else {
 			ECalComponentDateTime datetime;
 			icaltimezone *start_zone;
