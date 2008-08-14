@@ -2042,6 +2042,80 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 }
 
 static void
+vee_folder_stop_folder(CamelVeeFolder *vf, CamelFolder *sub)
+{
+	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
+	int i;
+	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
+	
+	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
+
+	CAMEL_VEE_FOLDER_LOCK(vf, changed_lock);
+	p->folders_changed = g_list_remove(p->folders_changed, sub);
+	CAMEL_VEE_FOLDER_UNLOCK(vf, changed_lock);
+
+	if (g_list_find(p->folders, sub) == NULL) {
+		CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
+		return;
+	}
+
+	
+	camel_object_unhook_event((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
+	camel_object_unhook_event((CamelObject *)sub, "deleted", (CamelObjectEventHookFunc) subfolder_deleted, vf);
+	camel_object_unhook_event((CamelObject *)sub, "renamed", (CamelObjectEventHookFunc) folder_renamed, vf);
+	if (GPOINTER_TO_INT(g_hash_table_lookup (vf->loaded, sub))) {
+		g_hash_table_remove (vf->loaded, sub);		
+		camel_object_unhook_event((CamelObject *)sub->summary, "summary_reloaded", (CamelObjectEventHookFunc) summary_reloaded, vf);
+	}
+	
+	p->folders = g_list_remove(p->folders, sub);
+	
+	/* undo the freeze state that we have imposed on this source folder */
+	CAMEL_FOLDER_LOCK(vf, change_lock);
+	for (i = 0; i < ((CamelFolder *)vf)->priv->frozen; i++)
+		camel_folder_thaw(sub);
+	CAMEL_FOLDER_UNLOCK(vf, change_lock);
+	
+	CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
+
+	if (folder_unmatched != NULL) {
+		struct _CamelVeeFolderPrivate *up = _PRIVATE(folder_unmatched);
+
+		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, subfolder_lock);
+		/* if folder deleted, then blow it away from unmatched always, and remove all refs to it */
+		if (sub->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED) {
+			while (g_list_find(up->folders, sub)) {
+				up->folders = g_list_remove(up->folders, sub);
+				camel_object_unref((CamelObject *)sub);
+				
+				/* undo the freeze state that Unmatched has imposed on this source folder */
+				CAMEL_FOLDER_LOCK(folder_unmatched, change_lock);
+				for (i = 0; i < ((CamelFolder *)folder_unmatched)->priv->frozen; i++)
+					camel_folder_thaw(sub);
+				CAMEL_FOLDER_UNLOCK(folder_unmatched, change_lock);
+			}
+		} else if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
+			if (g_list_find(up->folders, sub) != NULL) {
+				up->folders = g_list_remove(up->folders, sub);
+				camel_object_unref((CamelObject *)sub);
+				
+				/* undo the freeze state that Unmatched has imposed on this source folder */
+				CAMEL_FOLDER_LOCK(folder_unmatched, change_lock);
+				for (i = 0; i < ((CamelFolder *)folder_unmatched)->priv->frozen; i++)
+					camel_folder_thaw(sub);
+				CAMEL_FOLDER_UNLOCK(folder_unmatched, change_lock);
+			}
+		}
+		CAMEL_VEE_FOLDER_UNLOCK(folder_unmatched, subfolder_lock);
+	}
+
+	if (CAMEL_IS_VEE_FOLDER(sub))
+		return;
+			
+	camel_object_unref((CamelObject *)sub);
+}
+
+static void
 camel_vee_folder_finalise (CamelObject *obj)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)obj;
@@ -2063,12 +2137,12 @@ camel_vee_folder_finalise (CamelObject *obj)
 			camel_object_unref(node->data);
 	} else {
 		#warning "See if it is really reqd"
-//		camel_folder_freeze ((CamelFolder *)vf);
-//		while (p->folders) {
-//			CamelFolder *f = p->folders->data;
-//			camel_vee_folder_remove_folder(vf, f);
-//		}
-//		camel_folder_thaw ((CamelFolder *)vf);
+		camel_folder_freeze ((CamelFolder *)vf);
+		while (p->folders) {
+			CamelFolder *f = p->folders->data;
+			vee_folder_stop_folder(vf, f);
+		}
+		camel_folder_thaw ((CamelFolder *)vf);
 	}
 
 	g_free(vf->expression);

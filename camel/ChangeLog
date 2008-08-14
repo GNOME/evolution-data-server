@@ -1,5 +1,9 @@
 2008-08-14  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Clean up subfolders while finalizing.
+
+2008-08-14  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Build break and fix it better.
 
 2008-08-13  Srinivasa Ragavan  <sragavan@novell.com>
