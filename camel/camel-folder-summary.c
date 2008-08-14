@@ -728,6 +728,25 @@ camel_folder_summary_get_changed (CamelFolderSummary *s)
 	return res;
 }
 
+static void
+count_changed_uids (char *key, CamelMessageInfoBase *info, int *count)
+{
+	if (info->dirty)
+		(*count)++;
+}
+
+static int 
+cfs_count_dirty (CamelFolderSummary *s)
+{
+	int count = 0;
+
+	CAMEL_SUMMARY_LOCK (s, summary_lock);
+	g_hash_table_foreach (s->loaded_infos, (GHFunc) count_changed_uids, &count);
+	CAMEL_SUMMARY_UNLOCK (s, summary_lock);
+
+	return count;
+}
+
 #warning "FIXME: I should have a better LRU algorithm "
 static gboolean
 remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
@@ -1289,7 +1308,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelDB *cdb = s->folder->cdb;
 	CamelFIRecord *record;
-	int ret;
+	int ret, count;
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
 
@@ -1298,6 +1317,10 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
+	count= cfs_count_dirty(s);
+	printf("Saving %d/%d dirty records of %s\n", count, g_hash_table_size (s->loaded_infos), s->folder->full_name);
+	if (!count)
+		return 0;
 
 	camel_db_begin_transaction (cdb, ex);
 
