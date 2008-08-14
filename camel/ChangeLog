@@ -1,5 +1,11 @@
 2008-08-15  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vtrash-folder.c: Make trash/junk close to a normal vee
+	folder. Now their summaries are created, so it should be faster after
+	first touch.
+
+2008-08-15  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Debug the counts temporarily and don't
 	try commit when therez nothing. We save lot of db calls.
 
