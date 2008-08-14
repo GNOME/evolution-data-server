@@ -1,5 +1,15 @@
 2008-08-14  Milan Crha  <mcrha@redhat.com>
 
+	** Partial fix for bug #510949
+
+	* backends/groupwise/e-cal-backend-groupwise.c: (get_deltas),
+	(e_cal_backend_groupwise_refresh_calendar):
+	Memory leak fix and compiler warnings fix.
+	* libecal/e-cal-component.c: (e_cal_component_get_recurid_as_string):
+	Possible memory leak fix.
+
+2008-08-14  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #327851
 
 	* libecal/e-cal.c: (generate_instances):

@@ -537,7 +537,7 @@ get_deltas (gpointer handle)
 		const char *recur_key;
 
 		if (calid->recur_key && calid->ical_id) {
-			const char *rid = NULL;
+			char *rid = NULL;
 			char *temp = NULL;
 			icaltimetype tt = icaltime_from_string (calid->ical_id);
 			if (!tt.is_date) {
@@ -628,6 +628,7 @@ get_deltas (gpointer handle)
 
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
+	g_ptr_array_foreach (uid_array, (GFunc) g_free, NULL);
 	g_ptr_array_free (uid_array, TRUE);
 
 	if (item_list) {
@@ -747,7 +748,7 @@ start_fetch_deltas (gpointer data)
 	return FALSE;
 }
 
-
+#if 0
 /* TODO call it when a user presses SEND/RECEIVE or refresh*/
 static void
 e_cal_backend_groupwise_refresh_calendar (ECalBackendGroupwise *cbgw)
@@ -766,6 +767,7 @@ e_cal_backend_groupwise_refresh_calendar (ECalBackendGroupwise *cbgw)
 	if (!delta_started)
 		g_cond_signal (priv->dlock->cond);
 }
+#endif
 
 static char*
 form_uri (ESource *source)

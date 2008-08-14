@@ -375,6 +375,7 @@ e_gw_item_dispose (GObject *object)
 		if (priv->organizer) {
 			g_free (priv->organizer->display_name);
 			g_free (priv->organizer->email);
+			g_free (priv->organizer);
 			priv->organizer = NULL;
 		}
 
@@ -2492,7 +2493,11 @@ void
 e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer)
 {
 	/* free organizer */
-	g_free (item->priv->organizer);
+	if (item->priv->organizer) {
+		g_free (item->priv->organizer->display_name);
+		g_free (item->priv->organizer->email);
+		g_free (item->priv->organizer);
+	}
 	item->priv->organizer = organizer;
 }
 

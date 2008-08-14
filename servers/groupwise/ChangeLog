@@ -1,3 +1,10 @@
+2008-08-14  Milan Crha  <mcrha@redhat.com>
+
+	** Partial fix for bug #510949
+
+	* e-gw-item.c: (e_gw_item_dispose), (e_gw_item_set_organizer):
+	Memory leak fix.
+
 2008-07-24  Chenthill Palanisamy  <pchenthill@novell.com>
 	
 	Fixes #388966 (bnc)
