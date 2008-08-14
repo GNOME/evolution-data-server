@@ -1,3 +1,16 @@
+2008-08-14  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #337503
+
+	* storage/exchange-hierarchy-webdav.c: (xfer_folder):
+	Do not unref new folder, it's owned by the hierarchy.
+	* storage/exchange-account.c: (struct _ExchangeAccountPrivate), (init),
+	(dispose), (exchange_account_rescan_tree), (hierarchy_new_folder),
+	(exchange_account_get_folders), (exchange_account_get_folder_tree):
+	Removed unused variable and related code.
+	* storage/exchange-account.c: (hierarchy_removed_folder):
+	Do not unref more times than we actually reffed it before.
+
 2008-08-12  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #547308

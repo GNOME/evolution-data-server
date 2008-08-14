@@ -420,7 +420,6 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 		exchange_hierarchy_new_folder (hier, dest);
 		scan_subtree (hier, dest, mode);
 		physical_uri = g_strdup (e_folder_get_physical_uri (source));
-		g_object_unref (dest);
 		ret_code = EXCHANGE_ACCOUNT_FOLDER_OK;
 
 		/* Find if folder movement or rename.

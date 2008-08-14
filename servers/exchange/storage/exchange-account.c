@@ -69,7 +69,7 @@ struct _ExchangeAccountPrivate {
 	GPtrArray *hierarchies;
 	GHashTable *hierarchies_by_folder, *foreign_hierarchies;
 	ExchangeHierarchy *favorites_hierarchy;
-	GHashTable *folders, *fresh_folders;
+	GHashTable *folders;
 	GStaticRecMutex folders_lock;
 	char *uri_authority, *http_uri_schema;
 	gboolean uris_use_email, offline_sync;
@@ -154,7 +154,6 @@ init (GObject *object)
 	account->priv->hierarchies_by_folder = g_hash_table_new (NULL, NULL);
 	account->priv->foreign_hierarchies = g_hash_table_new (g_str_hash, g_str_equal);
 	account->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
-	account->priv->fresh_folders = NULL;
 	g_static_rec_mutex_init (&account->priv->folders_lock);
 	account->priv->discover_data_lock = g_mutex_new ();
 	account->priv->account_online = UNSUPPORTED_MODE;
@@ -224,12 +223,6 @@ dispose (GObject *object)
 		g_hash_table_foreach (account->priv->folders, free_folder, NULL);
 		g_hash_table_destroy (account->priv->folders);
 		account->priv->folders = NULL;
-	}
-
-	if (account->priv->fresh_folders) {
-		g_hash_table_foreach (account->priv->fresh_folders, free_folder, NULL);
-		g_hash_table_destroy (account->priv->fresh_folders);
-		account->priv->fresh_folders = NULL;
 	}
 
 	g_static_rec_mutex_unlock (&account->priv->folders_lock);
@@ -329,20 +322,10 @@ exchange_account_rescan_tree (ExchangeAccount *account)
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));
 
 	g_static_rec_mutex_lock (&account->priv->folders_lock);
-	if (account->priv->fresh_folders) {
-		g_hash_table_foreach (account->priv->fresh_folders, free_folder, NULL);
-		g_hash_table_destroy (account->priv->fresh_folders);
-		account->priv->fresh_folders = NULL;
-	}
-	account->priv->fresh_folders = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (i = 0; i < account->priv->hierarchies->len; i++) {
 		/* First include the toplevel folder of the hierarchy as well */
 		toplevel = EXCHANGE_HIERARCHY (account->priv->hierarchies->pdata[i])->toplevel;
-		g_object_ref (toplevel);
-		g_hash_table_insert (account->priv->fresh_folders,
-				     (char *)e_folder_exchange_get_path (toplevel),
-				     toplevel);
 
 		exchange_hierarchy_scan_subtree (account->priv->hierarchies->pdata[i],
 						toplevel, account->priv->account_online);
@@ -378,13 +361,6 @@ hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 				     key,
 				     folder);
 		table_updated = 1;
-	}
-
-	if (account->priv->fresh_folders) {
-		g_object_ref (folder);
-		g_hash_table_insert (account->priv->fresh_folders,
-				     key,
-				     folder);
 	}
 
 	key = (char *) e_folder_get_physical_uri (folder);
@@ -435,6 +411,8 @@ static void
 hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 			  ExchangeAccount *account)
 {
+	int unref_count = 0;
+
 	g_static_rec_mutex_lock (&account->priv->folders_lock);
 	if (!g_hash_table_lookup (account->priv->folders,
 					e_folder_exchange_get_path (folder))) {
@@ -442,27 +420,31 @@ hierarchy_removed_folder (ExchangeHierarchy *hier, EFolder *folder,
 		return;
 	}
 
-	g_hash_table_remove (account->priv->folders,
-					e_folder_exchange_get_path (folder));
-	g_hash_table_remove (account->priv->folders,
-					e_folder_get_physical_uri (folder));
+	if (g_hash_table_remove (account->priv->folders, e_folder_exchange_get_path (folder)))
+		unref_count++;
+
+	if (g_hash_table_remove (account->priv->folders, e_folder_get_physical_uri (folder)))
+		unref_count++;
+
 	/* Dont remove this for favorites, as the internal_uri is shared
 		by the public folder as well */
 	if (hier->type != EXCHANGE_HIERARCHY_FAVORITES) {
-		g_hash_table_remove (account->priv->folders,
-					e_folder_exchange_get_internal_uri (folder));
+		if (g_hash_table_remove (account->priv->folders, e_folder_exchange_get_internal_uri (folder)))
+			unref_count++;
 	}
+
 	g_hash_table_remove (account->priv->hierarchies_by_folder, folder);
+
 	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 	g_signal_emit (account, signals[REMOVED_FOLDER], 0, folder);
 
 	if (folder == hier->toplevel)
 		remove_hierarchy (account, hier);
 
-	g_object_unref (folder);
-	g_object_unref (folder);
-	if (hier->type != EXCHANGE_HIERARCHY_FAVORITES) {
+	/* unref only those we really removed */
+	while (unref_count > 0) {
 		g_object_unref (folder);
+		unref_count--;
 	}
 }
 
@@ -1969,11 +1951,7 @@ exchange_account_get_folders (ExchangeAccount *account)
 
 	folders = g_ptr_array_new ();
 	g_static_rec_mutex_lock (&account->priv->folders_lock);
-	/*	if (account->priv->fresh_folders)
-		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
-	else
-	*/
-		g_hash_table_foreach (account->priv->folders, add_folder, folders);
+	g_hash_table_foreach (account->priv->folders, add_folder, folders);
 	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
 	qsort (folders->pdata, folders->len,
@@ -2016,10 +1994,6 @@ exchange_account_get_folder_tree (ExchangeAccount *account, char* path)
 	fld_tree->folders = folders;
 
 	g_static_rec_mutex_lock (&account->priv->folders_lock);
-	/*	if (account->priv->fresh_folders)
-		g_hash_table_foreach (account->priv->fresh_folders, add_folder, folders);
-	else
-	*/
 	g_hash_table_foreach (account->priv->folders, add_folder_tree, fld_tree);
 	g_static_rec_mutex_unlock (&account->priv->folders_lock);
 
