@@ -246,6 +246,8 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			forward = FALSE;
 		}
 
+		e_cal_backend_view_progress_start (E_CAL_BACKEND (cbgw));
+
 		while (!done) {
 
 			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, forward, CURSOR_ITEM_LIMIT, position, &list);
@@ -273,7 +275,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 					percent = 99;
 
 				progress_string = g_strdup_printf (_("Loading %s items"), type);
-				e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
+				e_cal_backend_notify_view_progress_start (E_CAL_BACKEND (cbgw));
 
 				if (E_IS_CAL_COMPONENT (comp)) {
 					char *comp_str;

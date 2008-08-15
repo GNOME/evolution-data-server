@@ -50,6 +50,11 @@ struct _ECalBackendPrivate {
 
 	/* ECalBackend to pass notifications on to */
 	ECalBackend *notification_proxy;
+
+	/* used when notifying clients about progress of some operation,
+	 * we do not send multiple notifications with the same percent
+	 * value */
+	int last_percent_notified;
 };
 
 /* Property IDs */
@@ -276,6 +281,7 @@ e_cal_backend_init (ECalBackend *backend)
 
 	priv->clients = NULL;
 	priv->clients_mutex = g_mutex_new ();
+	priv->last_percent_notified = 0;
 
 	/* FIXME bonobo_object_ref/unref? */
 	priv->queries = e_list_new ((EListCopyFunc) bonobo_object_ref, (EListFreeFunc) bonobo_object_unref, NULL);
@@ -1200,6 +1206,23 @@ match_query_and_notify (EDataCalView *query, const char *old_object, const char 
 }
 
 /**
+ * e_cal_backend_view_progress_start
+ * @backend: A calendar backend.
+ *
+ * This methods has to be used before e_cal_backend_notify_view_progress.
+ * Sets last notified percent value to 0.
+ **/
+void
+e_cal_backend_notify_view_progress_start (ECalBackend *backend)
+{
+	ECalBackendPrivate *priv;
+
+	priv = backend->priv;
+
+	priv->last_percent_notified = 0;
+}
+
+/**
  * e_cal_backend_notify_view_progress:
  * @backend: A calendar backend.
  * @message: the UID of the removed object
@@ -1216,6 +1239,11 @@ e_cal_backend_notify_view_progress (ECalBackend *backend, const char *message, i
 	EDataCalView *query;
 
 	priv = backend->priv;
+
+	if (percent <= priv->last_percent_notified)
+		return;
+
+	priv->last_percent_notified = percent;
 
 	if (priv->notification_proxy) {
 		e_cal_backend_notify_view_progress (priv->notification_proxy, message, percent);

@@ -1,3 +1,11 @@
+2008-08-15  Stanislav Slusny <slusnys@gmail.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c:
+	* libedata-cal/e-cal-backend.c:
+	* libedata-cal/e-cal-backend.h:
+	Make it send notifications only when it makes sense.
+	Fixes bug #531930.
+
 2008-08-14  Milan Crha  <mcrha@redhat.com>
 
 	** Partial fix for bug #510949

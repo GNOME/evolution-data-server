@@ -180,6 +180,7 @@ void e_cal_backend_notify_auth_required (ECalBackend *backend);
 void e_cal_backend_notify_error     (ECalBackend *backend, const char *message);
 
 void e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_CallStatus status);
+void e_cal_backend_notify_view_progress_start (ECalBackend *backend);
 void e_cal_backend_notify_view_progress (ECalBackend *backend, const char *message, int percent);
 void e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only);
 void e_cal_backend_notify_cal_address (ECalBackend *backend, char *address);
