@@ -253,7 +253,7 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 
 	soup_message_set_request (msg,
 				"application/atom+xml",
-				SOUP_MEMORY_TAKE,
+				SOUP_MEMORY_COPY,
 				entry_xml,
 				strlen(entry_xml));
 
