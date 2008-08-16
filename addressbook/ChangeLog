@@ -1,3 +1,32 @@
+2008-08-16  Jörgen Scheibengruber  <mfcn@gmx.de>
+
+	* backends/google/util.c (_gdata_entry_update_from_e_contact),
+	(_add_type_param_from_google_rel),
+	(add_type_param_from_google_rel_phone),
+	(add_type_param_from_google_rel), (add_label_param),
+	(_google_rel_from_types), (google_rel_from_types),
+	(google_rel_from_types_phone), (is_known_google_im_protocol),
+	(add_primary_param), (get_google_primary_type_label),
+	(attribute_from_gdata_entry_email_address),
+	(attribute_from_gdata_entry_im_address),
+	(attribute_from_gdata_entry_phone_number),
+	(attribute_from_gdata_entry_postal_address),
+	(gdata_entry_email_address_from_attribute),
+	(gdata_entry_im_address_from_attribute),
+	(gdata_entry_phone_number_from_attribute),
+	(gdata_entry_postal_address_from_attribute):
+	
+	Improve the conversion between google rel field and vcard TYPE; use
+	X-EVOLUTION-UI-SLOT=1 as an indicator for primary; remove some unused code
+
+	* backends/google/google-book.c (google_book_cache_get_contacts),
+	(google_book_add_contact), (google_book_update_contact),
+	(google_book_get_contact), (google_book_error_from_soup_error):
+	* backends/google/google-book.h:
+
+	A bit of reformating and a new error code
+	
+
 2008-08-14  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	* backends/google/google-book.c (google_book_construct_base_uri),

@@ -23,7 +23,9 @@
 #include <libsoup/soup.h>
 #include "util.h"
 
-#define GOOGLE_PRIMARY_PARAM "X-GOOGLE-PRIMARY"
+/*#define GOOGLE_PRIMARY_PARAM "X-GOOGLE-PRIMARY"*/
+#define GOOGLE_PRIMARY_PARAM "X-EVOLUTION-UI-SLOT"
+#define GOOGLE_LABEL_PARAM "X-GOOGLE-LABEL"
 
 static EVCardAttribute*
 attribute_from_gdata_entry_email_address  (GDataEntryEmailAddress  *email);
@@ -53,14 +55,6 @@ static GDataEntryPostalAddress*
 gdata_entry_postal_address_from_attribute (EVCardAttribute         *attr,
                                            gboolean                *primary);
 
-#if 0
-static GList*
-name_values_from_fullname   (const char *fullname);
-
-static char*
-fullname_from_name_values   (GList      *values);
-#endif
-
 static gboolean
 is_known_google_im_protocol (const char *protocol);
 
@@ -74,7 +68,7 @@ _gdata_entry_new_from_e_contact (EContact *contact)
 
     category = g_new0 (GDataEntryCategory, 1);
     category->scheme = g_strdup ("http://schemas.google.com/g/2005#kind");
-    category->term = g_strdup ("http://schemas.google.com/contact/2008#contact"); 
+    category->term = g_strdup ("http://schemas.google.com/contact/2008#contact");
     gdata_entry_set_categories (entry, g_slist_append (NULL, category));
 
     if (_gdata_entry_update_from_e_contact (entry, contact))
@@ -165,7 +159,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
         } else
     
         /* X-IM */
-        if (g_ascii_strncasecmp (name, "X-", 2) &&
+        if (0 == g_ascii_strncasecmp (name, "X-", 2) &&
             is_known_google_im_protocol (name + 2)) {
             GDataEntryIMAddress *im;
 
@@ -297,135 +291,6 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
     return E_CONTACT (vcard);
 }
 
-#if 0
-static GList*
-name_values_from_fullname (const char *fullname)
-{
-    const char *comma = NULL;
-    char **names;
-    GList *name_values = NULL;
-
-    if (NULL == fullname)
-        return NULL;
-
-    comma = strstr (fullname, ",");
-    names = g_strsplit_set (fullname, ", ", 3);
-    if (NULL == names[0]) {
-        goto out;
-    }
-    /* Homer */
-    if (NULL == names[1]) {
-        name_values = g_list_append (NULL, names[0]);
-        goto out;
-    }
-    if (comma) {
-    /* Simpson, Homer */
-        name_values = g_list_append (NULL, names[0]);
-        name_values = g_list_append (name_values, names[1]);
-    /* Simpson, Homer J.*/
-        if (names[2]) {
-            name_values = g_list_append (name_values, names[2]);
-        }
-    } else {
-    /* Homer J. Simpson */    
-        if (names[2]) {
-            name_values = g_list_append (NULL, names[2]);
-            name_values = g_list_append (name_values, names[0]);
-            name_values = g_list_append (name_values, names[1]);
-        }
-    /* Homer Simpson */    
-        else {
-            name_values = g_list_append (NULL, names[1]);
-            name_values = g_list_append (name_values, names[0]);
-        }
-    }
-
-out:
-    g_free (names);
-
-    return name_values;
-}
-#endif
-
-#if 0
-static GString*
-string_prepend_with_space (GString *string, const char *val)
-{
-    if (NULL == val ||
-        0 == val[0])
-        return string;
-    g_string_prepend (string, " ");
-    g_string_prepend (string, val);
-
-    return string;
-}
-
-static GString*
-string_append_with_space (GString *string, const char *val)
-{
-    if (NULL == val ||
-        0 == val[0])
-        return string;
-    string = g_string_append (string, " ");
-    string = g_string_append (string, val);
-
-    return string;
-}
-#endif
-
-#if 0
-static char*
-fullname_from_name_values (GList *values)
-{
-    GString *name;
-    const char *givenname;
-
-    if (NULL == values ||
-        NULL == values->data)
-        return NULL;
-
-    /* Family Name */
-    name = g_string_new (values->data);
-
-    values = values->next;
-    if (NULL == values)
-        goto out;
-
-    /* Given Name */
-    givenname = values->data;
-
-    values = values->next;
-    if (NULL == values) {
-        string_prepend_with_space (name, givenname);
-        goto out;
-    }
-
-    /* Additional Names */
-    string_prepend_with_space (name, values->data);
-    string_prepend_with_space (name, givenname);
-
-    values = values->next;
-    if (NULL == values)
-        goto out;
-
-    /* TODO: Honoric stuff should go into ORG? */
-#if 0
-    /* Honorific Prefixes */
-    string_prepend_with_space (name, values->data);
-
-    values = values->next;
-    if (NULL == values)
-        goto out;
-
-    /* Honorific Suffixes */
-    string_append_with_space (name, values->data);
-#endif
-
-out:
-    return g_string_free (name, FALSE);
-}
-#endif
-
 #define GDATA_ENTRY_XML_ATTR "X-GDATA-ENTRY-XML"
 
 void
@@ -459,73 +324,128 @@ _e_contact_get_gdata_entry_xml (EContact *contact)
     return values ? values->data : NULL;
 }
 
-#if 0
-gboolean test_repository_availability (void)
+struct RelTypeMap {
+    const char* rel;
+    const char* types[3];
+};
+
+const struct RelTypeMap rel_type_map_phone[] = {
+    {"fax", { "FAX", NULL, NULL}},
+    {"home", { "HOME", "VOICE", NULL}},
+    {"home_fax", { "HOME", "FAX", NULL}},
+    {"mobile", { "CELL", NULL, NULL}},
+    {"other", { "VOICE", NULL, NULL}},
+    {"pager", { "PAGER", NULL, NULL}},
+    {"work", { "WORK", NULL, NULL}},
+    {"work_fax", { "WORK", "FAX", NULL}}
+};
+
+const struct RelTypeMap rel_type_map_others[] = {
+    {"home", { "HOME", NULL, NULL}},
+    {"other", { "OTHER", NULL, NULL}},
+    {"work", { "WORK", NULL, NULL}},
+};
+
+static gboolean
+_add_type_param_from_google_rel (EVCardAttribute *attr,
+                                 const struct RelTypeMap rel_type_map[],
+                                 int map_len,
+                                 const char *rel)
 {
-    SoupSession *session;
-    SoupMessage *message;
-    int http_status;
-    const char *uri = "http://www.google.com/m8/feeds/contacts";
+    const char* field;
+    int i;
 
-    session = soup_session_sync_new ();
-    message = soup_message_new (SOUP_METHOD_GET, uri);
+    field = strstr (rel ? rel : "", "#") + 1;
+    if (NULL == field)
+        return FALSE;
 
-    http_status = soup_session_send_message (session, message);
-    __debug__ ("%s: HTTP %d (%s)",
-               G_STRFUNC,
-               http_status,
-               soup_status_get_phrase (http_status));
-    g_object_unref (message);
-    g_object_unref (session);
+    for (i = 0; i < map_len; i++) {
+        if (0 == g_ascii_strcasecmp (rel_type_map[i].rel, field)) {
+            EVCardAttributeParam *param;
+            const char * const * type;
+            param = e_vcard_attribute_param_new ("TYPE");
+            for (type = rel_type_map[i].types; *type; type++) {
+                e_vcard_attribute_param_add_value (param, *type);
+            }
+            e_vcard_attribute_add_param (attr, param);
+            return TRUE;
+        }
+    }
+    g_warning ("Unknown relationship '%s'", rel);
 
-    /* Everything below 100 means we can't reach www.google.com */
-    return (http_status >= 100);
+    return TRUE;
 }
-#endif
 
-static char*
-type_from_google_rel_label (const char* rel, const char *label)
+static gboolean
+add_type_param_from_google_rel_phone (EVCardAttribute *attr, const char *rel)
 {
-    if (rel) {
-        char *type;
-        type = g_strrstr (rel, "#");
-        if (NULL == type)
-            return NULL;
-        return g_ascii_strup (type + 1, -1);
-    }
-    if (label) {
-        return g_strdup_printf ("X-%s", label);
-    }
-    return NULL;
+    return _add_type_param_from_google_rel (attr,
+                                            rel_type_map_phone,
+                                            G_N_ELEMENTS (rel_type_map_phone),
+                                            rel);
+}
+
+static gboolean
+add_type_param_from_google_rel (EVCardAttribute *attr, const char *rel)
+{
+    return _add_type_param_from_google_rel (attr,
+                                            rel_type_map_others,
+                                            G_N_ELEMENTS (rel_type_map_others),
+                                            rel);
 }
 
 static void
-google_rel_label_from_type (const char* type, char **rel, char **label)
+add_label_param (EVCardAttribute *attr, const char *label)
+{
+    if (label && label[0] != '\0') {
+        EVCardAttributeParam *param;
+        param = e_vcard_attribute_param_new (GOOGLE_LABEL_PARAM);
+        e_vcard_attribute_add_param_with_value (attr, param, label);
+    }
+}
+
+static char*
+_google_rel_from_types (GList *types,
+                        const struct RelTypeMap rel_type_map[],
+                        int map_len)
 {
     const char *format = "http://schemas.google.com/g/2005#%s";
 
-    *label = NULL;
-    *rel = NULL;
-    if (NULL == type) {
-        *rel = g_strdup_printf (format, "other");
-        return;
+    while (types) {
+        int i;
+        GList *cur = types;
+        types = types->next;
+
+        for (i = 0; i < map_len; i++) {
+            if (0 == g_ascii_strcasecmp (rel_type_map[i].types[0], cur->data)) {
+                while (types && rel_type_map[i].types[1]) {
+                    if (0 == g_ascii_strcasecmp (rel_type_map[i].types[1], types->data)) {
+                        return g_strdup_printf (format, rel_type_map[i].rel);
+                    }
+                    types = types->next;
+                }
+                return g_strdup_printf (format, rel_type_map[i].rel);
+            }
+        }
     }
 
-    if (0 == strcmp (type, "WORK")) {
-        *rel = g_strdup_printf (format, "work");
-        return;
-    }
-    if (0 == strcmp (type, "HOME")) {
-        *rel = g_strdup_printf (format, "home");
-        return;
-    }
+    return g_strdup_printf (format, "other");
+}
 
-    if (0 == strncmp (type, "X-", 2)) {
-        *label = g_strdup (type + 2);
-        return;
-    }
+static char*
+google_rel_from_types (GList *types)
+{
+    return _google_rel_from_types (types,
+                                   rel_type_map_others,
+                                   G_N_ELEMENTS (rel_type_map_others));
+}
 
-    *rel = g_strdup_printf (format, "other");
+static char*
+google_rel_from_types_phone (GList *types)
+{
+    return _google_rel_from_types (types,
+                                   rel_type_map_phone,
+                                   G_N_ELEMENTS (rel_type_map_phone));
 }
 
 static gboolean
@@ -533,16 +453,16 @@ is_known_google_im_protocol (const char *protocol)
 {
     const char *known_protocols[] =
     {
-        "AIM", "MSN", "YAHOO",     "SKYPE", "QQ",
+        "AIM", "MSN", "YAHOO", "SKYPE", "QQ",
         "GOOGLE_TALK", "ICQ", "JABBER"
     };
     int i;
 
     if (NULL == protocol)
         return FALSE;
-    
+
     for (i = 0; i < G_N_ELEMENTS (known_protocols); i++) {
-        if (0 == strcmp (known_protocols[i], protocol))
+        if (0 == g_ascii_strcasecmp (known_protocols[i], protocol))
             return TRUE;
     }
     return FALSE;
@@ -574,31 +494,73 @@ google_im_protocol_from_field_name (const char* field_name)
     return g_strdup_printf (format, field_name + 2);
 }
 
+static void
+add_primary_param (EVCardAttribute *attr, gboolean has_type)
+{
+    EVCardAttributeParam *param;
+    param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
+    e_vcard_attribute_add_param_with_value (attr, param, "1");
+    if (FALSE == has_type) {
+        param = e_vcard_attribute_param_new ("TYPE");
+        e_vcard_attribute_add_param_with_value (attr, param, "PREF");
+    }
+}
+
+static GList*
+get_google_primary_type_label (EVCardAttribute *attr,
+                               gboolean *primary,
+                               const char **label)
+{
+    GList *params;
+    GList *types = NULL;
+
+    *primary = FALSE;
+    *label = NULL;
+    params = e_vcard_attribute_get_params (attr);
+    while (params) {
+        const char *name;
+
+        name = e_vcard_attribute_param_get_name (params->data);
+        if (0 == g_ascii_strcasecmp (name, GOOGLE_PRIMARY_PARAM)) {
+            GList *values;
+
+            values = e_vcard_attribute_param_get_values (params->data);
+            if (values && values->data &&
+                (((const char*)values->data)[0] == '1' ||
+                 0 == g_ascii_strcasecmp (values->data, "yes"))) {
+                *primary = TRUE;
+            }
+        }
+        if (0 == g_ascii_strcasecmp (name, GOOGLE_LABEL_PARAM)) {
+            GList *values;
+
+            values = e_vcard_attribute_param_get_values (params->data);
+            *label = values ? values->data : NULL;
+        }
+        if (0 == g_ascii_strcasecmp (name, "TYPE")) {
+            types = e_vcard_attribute_param_get_values (params->data);
+        }
+        params = params->next;
+    }
+    return types;
+}
+
+
 static EVCardAttribute*
 attribute_from_gdata_entry_email_address (GDataEntryEmailAddress *email)
 {
     EVCardAttribute *attr;
-    EVCardAttributeParam *param;
-    char *type;
+    gboolean has_type;
 
     if (NULL == email || NULL == email->address)
         return NULL;;
 
     attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
-    type = type_from_google_rel_label (email->rel, email->label);
+    has_type = add_type_param_from_google_rel (attr, email->rel);
     if (email->primary) {
-        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
-        e_vcard_attribute_add_param (attr, param);
-        if (NULL == type) {
-            param = e_vcard_attribute_param_new ("TYPE");
-            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
-        }
+        add_primary_param (attr, has_type);
     }
-    if (type) {
-        param = e_vcard_attribute_param_new ("TYPE");
-        e_vcard_attribute_add_param_with_value (attr, param, type);
-        g_free (type);
-    }
+    add_label_param (attr, email->label);
     e_vcard_attribute_add_value (attr, email->address);
     return attr;
 }
@@ -607,8 +569,7 @@ static EVCardAttribute*
 attribute_from_gdata_entry_im_address (GDataEntryIMAddress *im)
 {
     EVCardAttribute *attr;
-    EVCardAttributeParam *param;
-    char *type;
+    gboolean has_type;
     char *field_name;
 
     if (NULL == im || NULL == im->address)
@@ -619,20 +580,11 @@ attribute_from_gdata_entry_im_address (GDataEntryIMAddress *im)
         return NULL;
 
     attr = e_vcard_attribute_new (NULL, field_name);
-    type = type_from_google_rel_label (im->rel, im->label);
+    has_type = add_type_param_from_google_rel (attr, im->rel);
     if (im->primary) {
-        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
-        e_vcard_attribute_add_param (attr, param);
-        if (NULL == type) {
-            param = e_vcard_attribute_param_new ("TYPE");
-            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
-        }
+        add_primary_param (attr, has_type);
     }
-    if (type) {
-        param = e_vcard_attribute_param_new ("TYPE");
-        e_vcard_attribute_add_param_with_value (attr, param, type);
-        g_free (type);
-    }
+    add_label_param (attr, im->label);
     e_vcard_attribute_add_value (attr, im->address);
     return attr;
 }
@@ -641,28 +593,17 @@ static EVCardAttribute*
 attribute_from_gdata_entry_phone_number (GDataEntryPhoneNumber *number)
 {
     EVCardAttribute *attr;
-    EVCardAttributeParam *param;
-    char *type;
+    gboolean has_type;
 
     if (NULL == number || NULL == number->number)
         return NULL;;
 
     attr = e_vcard_attribute_new (NULL, EVC_TEL);
-    /* TODO: This needs more work */
-    type = type_from_google_rel_label (number->rel, number->label);
+    has_type = add_type_param_from_google_rel_phone (attr, number->rel);
     if (number->primary) {
-        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
-        e_vcard_attribute_add_param (attr, param);
-        if (NULL == type) {
-            param = e_vcard_attribute_param_new ("TYPE");
-            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
-        }
+        add_primary_param (attr, has_type);
     }
-    if (type) {
-        param = e_vcard_attribute_param_new ("TYPE");
-        e_vcard_attribute_add_param_with_value (attr, param, type);
-        g_free (type);
-    }
+    add_label_param (attr, number->label);
     e_vcard_attribute_add_value (attr, number->number);
     return attr;
 }
@@ -671,55 +612,19 @@ static EVCardAttribute*
 attribute_from_gdata_entry_postal_address (GDataEntryPostalAddress *address)
 {
     EVCardAttribute *attr;
-    EVCardAttributeParam *param;
-    char *type;
+    gboolean has_type;
 
     if (NULL == address || NULL == address->address)
         return NULL;;
 
     attr = e_vcard_attribute_new (NULL, EVC_LABEL);
-    /* TODO: This needs more work */
-    type = type_from_google_rel_label (address->rel, address->label);
+    has_type = add_type_param_from_google_rel (attr, address->rel);
     if (address->primary) {
-        param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
-        e_vcard_attribute_add_param (attr, param);
-        if (NULL == type) {
-            param = e_vcard_attribute_param_new ("TYPE");
-            e_vcard_attribute_add_param_with_value (attr, param, "PREF");
-        }
+        add_primary_param (attr, has_type);
     }
-    if (type) {
-        param = e_vcard_attribute_param_new ("TYPE");
-        e_vcard_attribute_add_param_with_value (attr, param, type);
-        g_free (type);
-    }
+    add_label_param (attr, address->label);
     e_vcard_attribute_add_value (attr, address->address);
     return attr;
-}
-
-static void
-get_google_primary_and_type (EVCardAttribute *attr, gboolean *primary, const char **type)
-{
-    GList *params;
-
-    *primary = FALSE;
-    *type = NULL;
-    params = e_vcard_attribute_get_params (attr);
-    while (params) {
-        const char *name;
-
-        name = e_vcard_attribute_get_name (params->data);
-        if (0 == g_ascii_strcasecmp (name, GOOGLE_PRIMARY_PARAM)) {
-            *primary = TRUE;
-        }
-        if (0 == g_ascii_strcasecmp (name, "TYPE")) {
-            GList *values;
-
-            values = e_vcard_attribute_param_get_values (params->data);
-            *type = values ? values->data : NULL;
-        }
-        params = params->next;
-    }
 }
 
 static GDataEntryEmailAddress*
@@ -730,10 +635,11 @@ gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        const char *type;
+        GList *types;
+        const char *label;
         gboolean primary;
 
-        get_google_primary_and_type (attr, &primary, &type);
+        types = get_google_primary_type_label (attr, &primary, &label);
         if (FALSE == *have_primary) {
             *have_primary = primary;
         } else {
@@ -742,8 +648,14 @@ gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_
 
         email = g_new0 (GDataEntryEmailAddress, 1);
         email->address = g_strdup (values->data);
-        google_rel_label_from_type (type, &email->rel, &email->label);
+        email->rel = google_rel_from_types (types);
+        email->label = g_strdup (label);
         email->primary = primary;
+        __debug__ ("New %semail entry %s (%s/%s)",
+                    email->primary ? "primary " : "",
+                    email->address,
+                    email->rel,
+                    email->label);
     }
 
     return email;
@@ -760,10 +672,11 @@ gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_pri
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        const char *type;
+        GList *types;
+        const char *label;
         gboolean primary;
 
-        get_google_primary_and_type (attr, &primary, &type);
+        types = get_google_primary_type_label (attr, &primary, &label);
         if (FALSE == *have_primary) {
             *have_primary = primary;
         } else {
@@ -772,9 +685,16 @@ gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_pri
 
         im = g_new0 (GDataEntryIMAddress, 1);
         im->address = g_strdup (values->data);
-        google_rel_label_from_type (type, &im->rel, &im->label);
+        im->rel = google_rel_from_types (types);
+        im->label = g_strdup (label);
         im->primary = primary;
         im->protocol = google_im_protocol_from_field_name (name);
+        __debug__ ("New %s%s entry %s (%s/%s)",
+                    im->primary ? "primary " : "",
+                    im->protocol,
+                    im->address,
+                    im->rel,
+                    im->label);
     }
 
     return im;
@@ -788,10 +708,11 @@ gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_p
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        const char *type;
+        GList *types;
         gboolean primary;
+        const char *label;
 
-        get_google_primary_and_type (attr, &primary, &type);
+        types = get_google_primary_type_label (attr, &primary, &label);
         if (FALSE == *have_primary) {
             *have_primary = primary;
         } else {
@@ -800,9 +721,14 @@ gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_p
 
         number = g_new0 (GDataEntryPhoneNumber, 1);
         number->number = g_strdup (values->data);
-        /* TODO: this needs more work */
-        google_rel_label_from_type (type, &number->rel, &number->label);
+        number->rel = google_rel_from_types_phone (types);
+        number->label = g_strdup (label);
         number->primary = primary;
+        __debug__ ("New %sphone-number entry %s (%s/%s)",
+                    number->primary ? "primary " : "",
+                    number->number,
+                    number->rel,
+                    number->label);
     }
 
     return number;
@@ -816,10 +742,11 @@ gdata_entry_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
-        const char *type;
+        GList *types;
+        const char *label;
         gboolean primary;
 
-        get_google_primary_and_type (attr, &primary, &type);
+        types = get_google_primary_type_label (attr, &primary, &label);
         if (FALSE == *have_primary) {
             *have_primary = primary;
         } else {
@@ -828,8 +755,14 @@ gdata_entry_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have
 
         address = g_new0 (GDataEntryPostalAddress, 1);
         address->address = g_strdup (values->data);
-        google_rel_label_from_type (type, &address->rel, &address->label);
+        address->rel = google_rel_from_types (types);
+        address->label = g_strdup (label);
         address->primary = primary;
+        __debug__ ("New %spostal address entry %s (%s/%s)",
+                    address->primary ? "primary " : "",
+                    address->address,
+                    address->rel,
+                    address->label);
     }
 
     return address;

@@ -227,7 +227,8 @@ google_book_cache_get_contacts (GoogleBook *book)
 
     switch (priv->cache_type) {
     case ON_DISK_CACHE:
-        contacts = e_book_backend_cache_get_contacts (priv->cache.on_disk, "(contains \"x-evolution-any-field\" \"\")");
+        contacts = e_book_backend_cache_get_contacts (priv->cache.on_disk,
+                                                      "(contains \"x-evolution-any-field\" \"\")");
         for (iter = contacts; iter; iter = iter->next) {
             _e_contact_remove_gdata_entry_xml (iter->data);
         }
@@ -783,7 +784,10 @@ google_book_set_offline_mode (GoogleBook *book, gboolean offline)
 }
 
 gboolean
-google_book_add_contact (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error)
+google_book_add_contact (GoogleBook *book,
+                         EContact   *contact,
+                         EContact  **out_contact,
+                         GError    **error)
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry, *new_entry;
@@ -817,7 +821,10 @@ google_book_add_contact (GoogleBook *book, EContact *contact, EContact **out_con
 }
 
 gboolean
-google_book_update_contact (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error)
+google_book_update_contact (GoogleBook *book,
+                            EContact   *contact,
+                            EContact  **out_contact,
+                            GError    **error)
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry, *new_entry;
@@ -848,6 +855,7 @@ google_book_update_contact (GoogleBook *book, EContact *contact, EContact **out_
     g_object_unref (cached_contact);
     _gdata_entry_update_from_e_contact (entry, contact);
 
+    __debug__ ("Before:\n%s", gdata_entry_generate_xml (entry));
     new_entry = gdata_service_update_entry (GDATA_SERVICE (priv->service), entry, &soup_error);
     g_object_unref (entry);
 
@@ -856,6 +864,7 @@ google_book_update_contact (GoogleBook *book, EContact *contact, EContact **out_
                                            "Updating entry failed");
         return FALSE;
     }
+    __debug__ ("After:\n%s", new_entry ? gdata_entry_generate_xml (new_entry) : NULL);
 
     *out_contact = google_book_cache_add_contact (book, new_entry);
 
@@ -1042,7 +1051,9 @@ out:
 
 
 EContact*
-google_book_get_contact (GoogleBook *book, const char* uid, GError **error)
+google_book_get_contact (GoogleBook *book,
+                         const char *uid,
+                         GError    **error)
 {
     GoogleBookPrivate *priv;
     EContact *contact;
@@ -1164,7 +1175,9 @@ google_book_set_live_mode (GoogleBook *book, gboolean live_mode)
 }
 
 static void
-google_book_error_from_soup_error (GError *soup_error, GError **error, const char *message)
+google_book_error_from_soup_error (GError     *soup_error,
+                                   GError    **error,
+                                   const char *message)
 {
     GoogleBookError code;
 
@@ -1187,16 +1200,19 @@ google_book_error_from_soup_error (GError *soup_error, GError **error, const cha
     } else
     if (soup_error->code == 404) {
         code = GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND;
+    } else
+    if (soup_error->code == 409) {
+        code = GOOGLE_BOOK_ERROR_CONFLICT;
     } else {
         code = GOOGLE_BOOK_ERROR_HTTP_ERROR;
     }
     g_set_error (error,
                 GOOGLE_BOOK_ERROR,
                 GOOGLE_BOOK_ERROR_HTTP_ERROR,
-                "%s (HTTP %d): %s",
+                "%s due to '%s' (HTTP code %d)",
                 message ? message : "Action failed",
-                soup_error->code,
-                soup_error->message);
+                soup_error->message,
+                soup_error->code);
     g_clear_error (&soup_error);
 }
 
