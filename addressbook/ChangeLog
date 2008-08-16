@@ -1,3 +1,10 @@
+2008-08-16  JÃ¶rgen Scheibengruber  <mfcn@gmx.de>
+
+	(google_book_construct_base_uri):
+	* backends/google/util.c (_add_type_param_from_google_rel):
+	
+	Fix a small bug
+
 2008-08-16  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	* backends/google/util.c (_gdata_entry_update_from_e_contact),

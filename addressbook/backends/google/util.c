@@ -355,10 +355,11 @@ _add_type_param_from_google_rel (EVCardAttribute *attr,
     const char* field;
     int i;
 
-    field = strstr (rel ? rel : "", "#") + 1;
+    field = strstr (rel ? rel : "", "#");
     if (NULL == field)
         return FALSE;
 
+    field++;
     for (i = 0; i < map_len; i++) {
         if (0 == g_ascii_strcasecmp (rel_type_map[i].rel, field)) {
             EVCardAttributeParam *param;
