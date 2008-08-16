@@ -136,3 +136,13 @@ CamelImapMessageCache
 @ex: 
 
 
+<!-- ##### FUNCTION camel_imap_message_cache_delete ##### -->
+<para>
+
+</para>
+
+@path: 
+@ex: 
+@Returns: 
+
+

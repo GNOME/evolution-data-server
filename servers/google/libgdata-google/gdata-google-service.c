@@ -150,68 +150,6 @@ service_is_authenticated (GDataGoogleService *service)
 		return TRUE;
 }
 
-static gboolean
-gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
-{
-	GDataGoogleServicePrivate *priv;
-	GDataGoogleServiceAuth *auth;
-	SoupMessage *msg;
-	GHashTable *request_form;
-	gchar *request_body;
-	gchar *token = NULL;
-
-	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(service);
-	auth = (GDataGoogleServiceAuth *)priv->auth;
-
-	request_form = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (request_form, "Email", auth->username);
-	g_hash_table_insert (request_form, "Passwd", auth->password);
-	g_hash_table_insert (request_form, "service", priv->name);
-	g_hash_table_insert (request_form, "source", priv->agent);
-	g_hash_table_insert (request_form, "accountType", "HOSTED_OR_GOOGLE");
-	request_body = soup_form_encode_urlencoded (request_form);
-	g_hash_table_destroy (request_form);
-
-	msg = soup_message_new(SOUP_METHOD_POST, GOOGLE_CLIENT_LOGIN);
-	soup_message_set_http_version(msg, SOUP_HTTP_1_0);
-	soup_message_set_request (msg, "application/x-www-form-urlencoded",
-				  SOUP_MEMORY_TAKE,
-				  request_body, strlen(request_body));
-
-	soup_session_send_message (priv->soup_session, msg);
-
-    	if (msg->status_code != 200) {
-		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
-		g_object_unref(msg);
-		return (NULL != token);
-	}
-	if (msg->response_body->data && strlen (msg->response_body->data) > 0) {
-		gchar *auth_begin = NULL;
-		gchar *auth_end = NULL;
-
-		auth_begin = strstr(msg->response_body->data, "Auth=");
-
-		if (!auth_begin) {
-			return (NULL != token);
-		}
-
-		auth_end  = strstr(auth_begin, "\n") - 5;
-
-		if (auth_begin && strlen(auth_begin) > 5) {
-			token = g_strndup(auth_begin + strlen("Auth="), auth_end - auth_begin);
-		}
-	}
-
-	auth->token = token;
-	if (NULL == token) {
-		g_set_error (error, GDATA_GOOGLE_ERROR,
-					 -1, "GData protocol error");
-	}
-
-	return (NULL != token);
-}
-
 
 /**
  *
@@ -732,3 +670,64 @@ gdata_google_service_new(const gchar *service_name, const gchar *agent)
 			NULL);
 }
 
+gboolean
+gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
+{
+	GDataGoogleServicePrivate *priv;
+	GDataGoogleServiceAuth *auth;
+	SoupMessage *msg;
+	GHashTable *request_form;
+	gchar *request_body;
+	gchar *token = NULL;
+
+	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(service);
+	auth = (GDataGoogleServiceAuth *)priv->auth;
+
+	request_form = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (request_form, "Email", auth->username);
+	g_hash_table_insert (request_form, "Passwd", auth->password);
+	g_hash_table_insert (request_form, "service", priv->name);
+	g_hash_table_insert (request_form, "source", priv->agent);
+	g_hash_table_insert (request_form, "accountType", "HOSTED_OR_GOOGLE");
+	request_body = soup_form_encode_urlencoded (request_form);
+	g_hash_table_destroy (request_form);
+
+	msg = soup_message_new(SOUP_METHOD_POST, GOOGLE_CLIENT_LOGIN);
+	soup_message_set_http_version(msg, SOUP_HTTP_1_0);
+	soup_message_set_request (msg, "application/x-www-form-urlencoded",
+				  SOUP_MEMORY_TAKE,
+				  request_body, strlen(request_body));
+
+	soup_session_send_message (priv->soup_session, msg);
+
+    	if (msg->status_code != 200) {
+		g_set_error (error, SOUP_HTTP_ERROR,
+					 msg->status_code, msg->reason_phrase);
+		g_object_unref(msg);
+		return (NULL != token);
+	}
+	if (msg->response_body->data && strlen (msg->response_body->data) > 0) {
+		gchar *auth_begin = NULL;
+		gchar *auth_end = NULL;
+
+		auth_begin = strstr(msg->response_body->data, "Auth=");
+
+		if (!auth_begin) {
+			return (NULL != token);
+		}
+
+		auth_end  = strstr(auth_begin, "\n") - 5;
+
+		if (auth_begin && strlen(auth_begin) > 5) {
+			token = g_strndup(auth_begin + strlen("Auth="), auth_end - auth_begin);
+		}
+	}
+
+	auth->token = token;
+	if (NULL == token) {
+		g_set_error (error, GDATA_GOOGLE_ERROR,
+					 -1, "GData protocol error");
+	}
+
+	return (NULL != token);
+}

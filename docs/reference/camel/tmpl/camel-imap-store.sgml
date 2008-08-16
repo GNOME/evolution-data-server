@@ -117,6 +117,13 @@ CamelImapStore
 
 
 
+<!-- ##### MACRO CAMEL_IMAP_STORE_CHECK_LSUB ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_IMAP_FOLDER_MARKED ##### -->
 <para>
 
@@ -267,6 +274,13 @@ CamelImapStore
 
 
 <!-- ##### MACRO IMAP_PARAM_SUBSCRIPTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO IMAP_PARAM_CHECK_LSUB ##### -->
 <para>
 
 </para>

@@ -31,6 +31,7 @@ CamelVeeSummary
 
 @info: 
 @summary: 
+@old_flags: 
 
 <!-- ##### FUNCTION camel_vee_summary_new ##### -->
 <para>

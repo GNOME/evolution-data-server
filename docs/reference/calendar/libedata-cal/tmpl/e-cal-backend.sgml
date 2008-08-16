@@ -460,6 +460,14 @@ Base class for calendar/tasks backend implementations.
 @status: 
 
 
+<!-- ##### FUNCTION e_cal_backend_notify_view_progress_start ##### -->
+<para>
+
+</para>
+
+@backend: 
+
+
 <!-- ##### FUNCTION e_cal_backend_notify_view_progress ##### -->
 <para>
 

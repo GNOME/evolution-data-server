@@ -35,6 +35,16 @@ CamelOfflineStore
 @ex: 
 
 
+<!-- ##### FUNCTION camel_offline_store_get_network_state ##### -->
+<para>
+
+</para>
+
+@store: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_offline_store_prepare_for_offline ##### -->
 <para>
 

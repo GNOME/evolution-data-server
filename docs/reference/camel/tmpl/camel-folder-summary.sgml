@@ -128,7 +128,6 @@ CamelFolderSummary
 @CAMEL_MESSAGE_NOTJUNK: 
 @CAMEL_MESSAGE_FORWARDED: 
 @CAMEL_MESSAGE_FOLDER_FLAGGED: 
-@CAMEL_MESSAGE_DB_DIRTY: 
 @CAMEL_MESSAGE_JUNK_LEARN: 
 @CAMEL_MESSAGE_USER: 
 
@@ -530,6 +529,16 @@ CamelFolderSummary
 
 @s: 
 @i: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_check_uid ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
 @Returns: 
 
 

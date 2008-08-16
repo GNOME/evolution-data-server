@@ -65,6 +65,7 @@ GQuark gdata_google_error_quark(void);
 /**API******/
 
 GDataGoogleService * gdata_google_service_new(const gchar *serviceName, const gchar *agent);
+gboolean gdata_google_service_authenticate (GDataGoogleService *service, GError **error);
 
 G_END_DECLS
 

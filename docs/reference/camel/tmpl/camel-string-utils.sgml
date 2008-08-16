@@ -108,3 +108,12 @@ camel-string-utils
 @s: 
 
 
+<!-- ##### FUNCTION camel_pstring_peek ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+

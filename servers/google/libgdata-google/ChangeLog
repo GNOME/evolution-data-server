@@ -1,3 +1,9 @@
+2008-08-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* gdata-google-service.c (gdata_google_service_authenticate):
+	Apparently this is public API now, since it's called from
+	google_book_connect_to_google().  Declare it as such.
+
 2008-08-07  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #535745

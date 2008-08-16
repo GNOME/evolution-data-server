@@ -211,6 +211,7 @@ camel_db_add_to_transaction
 camel_db_end_transaction
 camel_db_abort_transaction
 camel_db_clear_folder_summary
+camel_db_rename_folder
 camel_db_delete_folder
 camel_db_delete_uid
 camel_db_delete_uids
@@ -231,7 +232,9 @@ camel_db_count_visible_unread_message_info
 camel_db_count_junk_not_deleted_message_info
 camel_db_camel_mir_free
 camel_db_create_vfolder
+camel_db_recreate_vfolder
 camel_db_delete_uid_from_vfolder
+camel_db_delete_uid_from_vfolder_transaction
 camel_db_get_vuids_from_vfolder
 camel_db_add_to_vfolder
 camel_db_add_to_vfolder_transaction
@@ -241,6 +244,7 @@ camel_db_get_folder_deleted_uids
 camel_db_sqlize_string
 camel_db_free_sqlized_string
 camel_db_get_column_name
+camel_db_migrate_vfolders_to_14
 </SECTION>
 
 <SECTION>
@@ -514,6 +518,7 @@ camel_folder_summary_count
 camel_folder_summary_index
 camel_folder_summary_uid
 camel_folder_summary_uid_from_index
+camel_folder_summary_check_uid
 camel_folder_summary_array
 camel_folder_summary_encode_token
 camel_folder_summary_decode_token
@@ -2207,6 +2212,7 @@ camel_offline_folder_get_type
 <TITLE>CamelOfflineStore</TITLE>
 CamelOfflineStore
 camel_offline_store_set_network_state
+camel_offline_store_get_network_state
 camel_offline_store_prepare_for_offline
 <SUBSECTION Standard>
 CAMEL_OFFLINE_STORE
@@ -2244,6 +2250,9 @@ camel_imap_folder_new
 camel_imap_folder_selected
 camel_imap_folder_changed
 camel_imap_folder_fetch_data
+imap_append_resyncing
+imap_transfer_resyncing
+imap_expunge_uids_resyncing
 <SUBSECTION Standard>
 CAMEL_IMAP_FOLDER
 CAMEL_IS_IMAP_FOLDER
@@ -2253,6 +2262,29 @@ CamelImapFolderClass
 <SUBSECTION Private>
 CamelImapFolderPrivate
 camel_imap_folder_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-imap-journal</FILE>
+<TITLE>CamelImapJournal</TITLE>
+CamelOfflineAction
+CamelIMAPJournalEntry
+CamelIMAPJournal
+camel_imap_journal_new
+camel_imap_journal_log
+camel_imap_journal_uidmap_add
+camel_imap_journal_uidmap_lookup
+camel_imap_journal_close_folders
+<SUBSECTION Standard>
+CAMEL_TYPE_IMAP_JOURNAL
+CAMEL_IMAP_JOURNAL
+CAMEL_IMAP_JOURNAL_CLASS
+CAMEL_IS_IMAP_JOURNAL
+CAMEL_IS_IMAP_JOURNAL_CLASS
+CAMEL_IMAP_JOURNAL_GET_CLASS
+CamelIMAPJournalClass
+<SUBSECTION Private>
+camel_imap_journal_get_type
 </SECTION>
 
 <SECTION>
@@ -2269,6 +2301,7 @@ camel_imap_message_cache_get
 camel_imap_message_cache_remove
 camel_imap_message_cache_clear
 camel_imap_message_cache_copy
+camel_imap_message_cache_delete
 <SUBSECTION Standard>
 CAMEL_IMAP_MESSAGE_CACHE
 CAMEL_IS_IMAP_MESSAGE_CACHE
@@ -2333,6 +2366,7 @@ CAMEL_IMAP_STORE_CHECK_ALL
 CAMEL_IMAP_STORE_FILTER_INBOX
 CAMEL_IMAP_STORE_FILTER_JUNK
 CAMEL_IMAP_STORE_FILTER_JUNK_INBOX
+CAMEL_IMAP_STORE_CHECK_LSUB
 CAMEL_IMAP_FOLDER_MARKED
 CAMEL_IMAP_FOLDER_UNMARKED
 CamelImapServerLevel
@@ -2355,6 +2389,7 @@ IMAP_PARAM_FILTER_INBOX
 IMAP_PARAM_FILTER_JUNK
 IMAP_PARAM_FILTER_JUNK_INBOX
 IMAP_PARAM_SUBSCRIPTIONS
+IMAP_PARAM_CHECK_LSUB
 IMAP_FETCH_ALL_HEADERS
 IMAP_FETCH_MAILING_LIST_HEADERS
 IMAP_FETCH_MINIMAL_HEADERS
@@ -3743,6 +3778,7 @@ camel_toupper
 camel_pstring_add
 camel_pstring_strdup
 camel_pstring_free
+camel_pstring_peek
 </SECTION>
 
 <SECTION>

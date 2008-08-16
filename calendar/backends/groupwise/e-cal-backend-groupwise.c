@@ -246,7 +246,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			forward = FALSE;
 		}
 
-		e_cal_backend_view_progress_start (E_CAL_BACKEND (cbgw));
+		e_cal_backend_notify_view_progress_start (E_CAL_BACKEND (cbgw));
 
 		while (!done) {
 

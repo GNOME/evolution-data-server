@@ -1206,7 +1206,7 @@ match_query_and_notify (EDataCalView *query, const char *old_object, const char 
 }
 
 /**
- * e_cal_backend_view_progress_start
+ * e_cal_backend_notify_view_progress_start
  * @backend: A calendar backend.
  *
  * This methods has to be used before e_cal_backend_notify_view_progress.

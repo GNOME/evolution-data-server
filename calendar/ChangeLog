@@ -1,3 +1,8 @@
+2008-08-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/groupwise/e-cal-backend-groupwise.c (populate_cache):
+	Fix a call to a non-existent ECalBackend function name.
+
 2008-08-15  Stanislav Slusny <slusnys@gmail.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c:
