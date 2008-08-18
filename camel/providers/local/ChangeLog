@@ -1,5 +1,10 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/providers/local/camel-mbox-summary.c: Revert old patch for
+	folder summary mismatch. It corrupts even more.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/local/camel-mbox-summary.c: Fix counts on expunge
 	and on an expunge, save the contents to db.
 
