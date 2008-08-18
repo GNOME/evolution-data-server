@@ -583,7 +583,7 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 			camel_object_get(f, NULL, CAMEL_OBJECT_DESCRIPTION, &desc, NULL);
 			camel_exception_setv(ex, ex->id, _("Error storing '%s': %s"), desc, ex->desc);
-			break;
+			g_warning ("%s", camel_exception_get_description(ex));
 		}
 
 		/* auto update vfolders shouldn't need a rebuild */
