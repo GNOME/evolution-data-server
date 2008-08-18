@@ -860,6 +860,9 @@ e_contact_set_property (GObject *object,
 								else if (!found_needed2 && !g_ascii_strcasecmp ((char*)values->data, info->attr_type2)) {
 									found_needed2 = TRUE;
 									matches = TRUE;
+								} else {
+									matches = FALSE;
+									break;
 								}
 
 								values = values->next;
@@ -1129,6 +1132,9 @@ e_contact_find_attribute_with_types (EContact *contact, const char *attr_name, c
 						else if (!found_needed2 && !g_ascii_strcasecmp ((char*)values->data, type_needed2)) {
 							found_needed2 = TRUE;
 							matches = TRUE;
+						} else {
+							matches = FALSE;
+							break;
 						}
 						values = values->next;
 					}

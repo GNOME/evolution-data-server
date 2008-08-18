@@ -1,3 +1,11 @@
+2008-08-18  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #547223 (Patch by Matt Davey)
+
+	* libebook/e-contact.c: (e_contact_set_property),
+	(e_contact_find_attribute_with_types): Check complete list of
+	values in a parameter when looking for some particular value.
+
 2008-08-16  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	(google_book_construct_base_uri):
