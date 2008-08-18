@@ -1,5 +1,10 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/providers/local/camel-mbox-summary.c: Fix counts on expunge
+	and on an expunge, save the contents to db.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/local/camel-mbox-folder.c: Don't save to db on
 	every append. Its quite expensive.
 

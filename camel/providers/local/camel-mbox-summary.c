@@ -1246,6 +1246,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				s->junk_count--;
 			if (!read)
 				s->unread_count--;
+			s->deleted_count--;
 			camel_folder_change_info_remove_uid(changeinfo, uid);
 			camel_folder_summary_remove(s, (CamelMessageInfo *)info);
 			camel_message_info_free((CamelMessageInfo *)info);
@@ -1347,7 +1348,8 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			camel_message_info_free((CamelMessageInfo *)info);
 		}
 	}
-		
+	
+	camel_folder_summary_save_to_db (s, ex);
 	return 0;
  error:
 	g_free(xevnew);
