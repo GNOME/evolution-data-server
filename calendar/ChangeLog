@@ -1,3 +1,8 @@
+2008-08-18  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(start_freebusy_session): Fix a compiler warning.
+
 2008-08-18  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #547786

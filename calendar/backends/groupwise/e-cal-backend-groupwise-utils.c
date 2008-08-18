@@ -1592,7 +1592,7 @@ e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, E
 
 static EGwConnectionStatus
 start_freebusy_session (EGwConnection *cnc, GList *users,
-               time_t start, time_t end, const char **session)
+               time_t start, time_t end, char **session)
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
