@@ -1,5 +1,9 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder.c: Save summary at the end of the filtering.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Don't break while syncing inbetween while
 	syncing.
 

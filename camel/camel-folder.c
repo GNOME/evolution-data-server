@@ -1942,6 +1942,7 @@ filter_free(CamelSession *session, CamelSessionThreadMsg *msg)
 	if (m->notjunk)
 		camel_folder_free_deep(m->folder, m->notjunk);
 
+	camel_folder_summary_save_to_db (m->folder->summary, &m->ex);
 	camel_folder_thaw(m->folder);
 	camel_object_unref(m->folder);
 }
