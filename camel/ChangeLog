@@ -1,3 +1,11 @@
+2008-08-18  Sergio Villar Senín  <svillar@igalia.com>
+
+	** Fix for bug #546444
+
+	* camel-tcp-stream-ssl.c (stream_read): Don't loop infinitely when the 
+	network connection is lost while fetching a message, instead exit with 
+	a connection error. 
+
 2008-08-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-vtrash-folder.c: Make trash/junk close to a normal vee

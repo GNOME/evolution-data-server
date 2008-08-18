@@ -391,6 +391,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 #else
 				errno = EIO;
 #endif
+				goto failed;
 			} else if (pollfds[1].out_flags == PR_POLL_READ) {
 				errno = EINTR;
 				goto failed;
