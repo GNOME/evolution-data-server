@@ -106,9 +106,13 @@ add_folder_esource (ExchangeAccount *account,
 			return;
 		}
 		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
+			char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+
 			source = e_source_new_with_absolute_uri (folder_name,
 								 physical_uri);
 			e_source_set_property (source, "completion", "true");
+			e_source_set_property (source, "can-browse", browse ? "1" : NULL);
+			g_free (browse);
 		}
 		else {
 			source = e_source_new (folder_name, relative_uri);
@@ -145,9 +149,13 @@ add_folder_esource (ExchangeAccount *account,
 							folder_name)) == NULL) {
 			printf("old group, new source\n");
 			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
+				char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+
 				source = e_source_new_with_absolute_uri (
 						folder_name, physical_uri);
 				e_source_set_property (source, "completion", "true");
+				e_source_set_property (source, "can-browse", browse ? "1" : NULL);
+				g_free (browse);
 			}
 			else {
         			source = e_source_new (folder_name, relative_uri);
@@ -184,6 +192,17 @@ add_folder_esource (ExchangeAccount *account,
 					e_source_set_property (source, "offline_sync", "1");
 					e_source_list_sync (source_list, NULL);
 				}
+			}
+
+			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
+				char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+				const char *old_browse = e_source_get_property (source, "can-browse");
+
+				if ((old_browse || browse) && (!old_browse || !browse)) {
+					e_source_set_property (source, "can-browse", browse ? "1" : NULL);
+				}
+
+				g_free (browse);
 			}
 		}
 	}

@@ -1683,6 +1683,37 @@ exchange_account_fetch (ExchangeAccount *acct)
 }
 
 /**
+ * exchange_account_get_account_uri_param:
+ * @acct: and #ExchangeAccount
+ * @param: uri param name to get
+ *
+ * Reads the parameter #param from the source url of the underlying EAccount.
+ * Returns the value or NULL. Returned value should be freed with g_free.
+ **/
+char *
+exchange_account_get_account_uri_param (ExchangeAccount *acct, const char *param)
+{
+	EAccount *account;
+	E2kUri *uri;
+	char *res;
+
+	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (acct), NULL);
+	g_return_val_if_fail (param != NULL, NULL);
+
+	account = exchange_account_fetch (acct);
+	g_return_val_if_fail (account != NULL, NULL);
+
+	uri = e2k_uri_new (e_account_get_string (account, E_ACCOUNT_SOURCE_URL));
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	res = g_strdup (e2k_uri_get_param (uri, param));
+
+	e2k_uri_free (uri);
+
+	return res;
+}
+
+/**
  * exchange_account_get_standard_uri:
  * @account: an #ExchangeAccount
  * @item: the short name of the standard URI

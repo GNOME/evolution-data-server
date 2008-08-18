@@ -81,6 +81,7 @@ E2kContext            *exchange_account_get_context          (ExchangeAccount  *
 E2kGlobalCatalog      *exchange_account_get_global_catalog   (ExchangeAccount  *acct);
 
 EAccount 	      *exchange_account_fetch 		     (ExchangeAccount *acct);
+char                  *exchange_account_get_account_uri_param (ExchangeAccount *acct, const char *param);
 
 const char            *exchange_account_get_standard_uri     (ExchangeAccount  *acct,
 							      const char       *item);
