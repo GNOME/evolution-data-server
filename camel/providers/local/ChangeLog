@@ -1,5 +1,10 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/providers/local/camel-mbox-summary.c: Continue, if the summary
+	isn't loaded.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/local/camel-mbox-summary.c: Fixes folder summary
 	mismatch on expunge.
 

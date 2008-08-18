@@ -1041,7 +1041,8 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 		info = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);
 
-		g_assert(info);
+		if (!info)
+			continue;
 
 		d(printf("Looking at message %s\n", camel_message_info_uid(info)));
 
