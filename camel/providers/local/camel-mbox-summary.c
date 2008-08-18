@@ -1231,13 +1231,21 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		lastdel = FALSE;
 		if ((flags&1) && info->info.info.flags & CAMEL_MESSAGE_DELETED) {
 			const char *uid = camel_message_info_uid(info);
-
+			guint32 flags = camel_message_info_flags(info);
+			int read, junk;
 			d(printf("Deleting %s\n", uid));
 
 			if (((CamelLocalSummary *)cls)->index)
 				camel_index_delete_name(((CamelLocalSummary *)cls)->index, uid);
 
 			/* remove it from the change list */
+			junk = flags & CAMEL_MESSAGE_JUNK;
+			read = flags & CAMEL_MESSAGE_SEEN;
+			s->saved_count--;
+			if (junk) 
+				s->junk_count--;
+			if (!read)
+				s->unread_count--;
 			camel_folder_change_info_remove_uid(changeinfo, uid);
 			camel_folder_summary_remove(s, (CamelMessageInfo *)info);
 			camel_message_info_free((CamelMessageInfo *)info);
