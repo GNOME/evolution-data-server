@@ -1,5 +1,10 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Even the summary header could be
+	dirty. Make a provision for saving just the header info.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-search.c: Save the db, only if it is a db based
 	search.
 

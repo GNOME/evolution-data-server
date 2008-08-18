@@ -1317,22 +1317,22 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
-	count= cfs_count_dirty(s);
+	count = cfs_count_dirty(s);
 	printf("Saving %d/%d dirty records of %s\n", count, g_hash_table_size (s->loaded_infos), s->folder->full_name);
-	if (!count)
-		return 0;
 
-	camel_db_begin_transaction (cdb, ex);
+	if (count) {
+		camel_db_begin_transaction (cdb, ex);
 
-	ret = save_message_infos_to_db (s, ex);
+		ret = save_message_infos_to_db (s, ex);
+		if (ret != 0) {
+			camel_db_abort_transaction (cdb, ex);
+			/* Failed, so lets reset the flag */
+			s->flags |= CAMEL_SUMMARY_DIRTY;
+			return -1;
+		}
 
-	if (ret != 0) {
-		camel_db_abort_transaction (cdb, ex);
-		/* Failed, so lets reset the flag */
-		s->flags |= CAMEL_SUMMARY_DIRTY;
-		return -1;
+		camel_db_end_transaction (cdb, ex);
 	}
-	camel_db_end_transaction (cdb, ex);
 
 	record = (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_to_db (s, ex));
 	if (!record) {
@@ -2474,7 +2474,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *record)
 	s->junk_count = record->junk_count;
 	s->visible_count = record->visible_count;
 	s->junk_not_deleted_count = record->jnd_count;
-	
+
 	return 0;	
 }
 
