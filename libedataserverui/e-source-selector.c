@@ -312,6 +312,10 @@ rebuild_model (ESourceSelector *selector)
 		GtkTreeRowReference *row_ref;
 		gint position;
 
+		sources = get_sorted_sources (e_source_group_peek_sources (group));
+		if (sources == NULL)
+			continue;
+
 		row_ref = g_hash_table_lookup (rebuild_data->remaining_uids, e_source_group_peek_uid (group));
 		if (!row_ref) {
 			gtk_tree_store_append (GTK_TREE_STORE (tree_store), &iter, NULL);
@@ -327,7 +331,6 @@ rebuild_model (ESourceSelector *selector)
 			gtk_tree_path_free (path);
 		}
 
-		sources = get_sorted_sources (e_source_group_peek_sources (group));
 		for (q = sources, position = 0; q != NULL; q = q->next, position++) {
 			ESource *source = E_SOURCE (q->data);
 			GtkTreeIter child_iter;
@@ -353,8 +356,7 @@ rebuild_model (ESourceSelector *selector)
 			}
 		}
 
-		if (sources)
-			g_slist_free (sources);
+		g_slist_free (sources);
 	}
 
 	if (rebuild_data->selection_changed)

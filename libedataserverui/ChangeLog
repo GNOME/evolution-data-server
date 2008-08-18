@@ -1,3 +1,10 @@
+2008-08-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #547952
+
+	* e-source-selector.c (rebuild_model):
+	Don't display empty source groups.
+
 2008-08-06  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #207728
