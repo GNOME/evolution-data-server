@@ -415,9 +415,6 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 
 	g_assert(search->folder);
 	
-	/* Sync the db, so that we search the db for changes */
-	camel_folder_summary_save_to_db (search->folder->summary, ex);
-
 	p->ex = ex;
 
 	/* We route body-contains search and uid search through memory and not via db. */
@@ -482,6 +479,9 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		e_sexp_result_free(search->sexp, r);
 
 	} else {
+		/* Sync the db, so that we search the db for changes */
+		camel_folder_summary_save_to_db (search->folder->summary, ex);
+	
 		d(printf ("sexp is : [%s]\n", expr));
 		sql_query = camel_sexp_to_sql (expr);
 		tmp1 = camel_db_sqlize_string(search->folder->full_name);
