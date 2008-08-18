@@ -275,7 +275,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 					percent = 99;
 
 				progress_string = g_strdup_printf (_("Loading %s items"), type);
-				e_cal_backend_notify_view_progress_start (E_CAL_BACKEND (cbgw));
+				e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
 
 				if (E_IS_CAL_COMPONENT (comp)) {
 					char *comp_str;
