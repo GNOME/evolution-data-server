@@ -1,3 +1,11 @@
+2008-08-18  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #547786
+
+	* backends/google/e-cal-backend-google.c:
+	(e_cal_backend_google_get_object_list):
+	Test events against search expression when required.
+
 2008-08-18  Suman Manjunath  <msuman@novell.com>
 
 	* backends/groupwise/e-cal-backend-groupwise.c (populate_cache):

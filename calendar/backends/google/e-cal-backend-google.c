@@ -305,7 +305,9 @@ e_cal_backend_google_get_object_list (ECalBackendSync *backend, EDataCal *cal, c
 	priv = cbgo->priv;
 
 	g_mutex_lock (priv->mutex);
-	search_needed = FALSE;
+
+	if (sexp && g_str_equal (sexp, "#t"))
+		search_needed = FALSE;
 
 	cbsexp = e_cal_backend_sexp_new (sexp);
 
