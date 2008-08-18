@@ -1021,6 +1021,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	size_t len;
 	const char *fromline;
 	int lastdel = FALSE;
+	gboolean touched = FALSE;
 #ifdef STATUS_PINE
 	char statnew[8], xstatnew[8];
 #endif
@@ -1100,6 +1101,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			i--;
 			info = NULL;
 			lastdel = TRUE;
+			touched = TRUE;
 		} else {
 			/* otherwise, the message is staying, copy its From_ line across */
 #if 0
@@ -1195,7 +1197,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		}
 	}
 	
-	camel_folder_summary_save_to_db (s, ex);
+	if (touched)
+		camel_folder_summary_header_save_to_db (s, ex);
+
 	return 0;
  error:
 	g_free(xevnew);
