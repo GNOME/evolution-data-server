@@ -452,7 +452,7 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 		const CamelSummaryMessageID *mid = camel_message_info_message_id(mi);
 		const CamelSummaryReferences *references = camel_message_info_references(mi);
 
-		if (mid->id.id) {
+		if (mid != NULL && mid->id.id) {
 			c = g_hash_table_lookup(id_table, mid);
 			/* check for duplicate messages */
 			if (c && c->order) {

@@ -1,3 +1,10 @@
+2008-08-18  Priit Laes  <plaes@plaes.org>
+
+	** Fix for bug #548059
+
+	* camel-folder-thread.c (thread_summary): NULL check message-id before 
+	accessing its elements. 
+
 2008-08-18  Sergio Villar Senín  <svillar@igalia.com>
 
 	** Fix for bug #546444
