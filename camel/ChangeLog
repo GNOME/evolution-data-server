@@ -1,5 +1,10 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/providers/local/camel-mbox-summary.c: Delete uids in a bunch
+	than individual. It is a lot faster.
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder.c: Save summary at the end of the filtering.
 
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>

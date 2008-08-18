@@ -509,6 +509,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	int ok = 0;
 	struct stat st;
 	off_t size = 0;
+	GSList *del = NULL;
 
 	d(printf("Calling summary update, from pos %d\n", (int)offset));
 
@@ -587,12 +588,19 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 			d(printf("uid '%s' vanished, removing", camel_message_info_uid(mi)));
 			if (changeinfo)
 				camel_folder_change_info_remove_uid(changeinfo, camel_message_info_uid(mi));
-			camel_folder_summary_remove(s, (CamelMessageInfo *)mi);
+			del = g_slist_prepend(del, (gpointer) camel_pstring_strdup(camel_message_info_uid(mi)));
+			camel_folder_summary_remove_index_fast (s, i);
 			count--;
 			i--;
 		}
 		camel_message_info_free(mi);
 	}
+	
+	/* Delete all in one transaction */
+	camel_db_delete_uids (s->folder->cdb, s->folder->full_name, del, ex);
+	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
+	g_slist_free (del);	
+
 	mbs->changes = NULL;
 	
 	/* update the file size/mtime in the summary */
