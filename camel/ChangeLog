@@ -1,5 +1,11 @@
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Add a way to save just the header. We
+	can optimize it a lot.
+	* camel/camel-folder-summary.h:
+
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/local/camel-mbox-summary.c: Delete uids in a bunch
 	than individual. It is a lot faster.
 

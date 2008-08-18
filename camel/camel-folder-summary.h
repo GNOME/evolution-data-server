@@ -340,6 +340,7 @@ int camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex
 /* only load the header */
 int camel_folder_summary_header_load(CamelFolderSummary *summary);
 int camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *store, const char *folder_name, CamelException *ex);
+int camel_folder_summary_header_save_to_db (CamelFolderSummary *s, CamelException *ex);
 
 /* set the dirty bit on the summary */
 void camel_folder_summary_touch(CamelFolderSummary *summary);
