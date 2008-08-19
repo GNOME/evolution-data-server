@@ -318,7 +318,6 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
-		printf("len = %d\n",imap_entry->uids->len);
 		imap_expunge_uids_resyncing (journal->folder, imap_entry->uids, ex);
 		return 0;
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:

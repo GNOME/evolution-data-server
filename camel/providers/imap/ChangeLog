@@ -1,3 +1,7 @@
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-journal.c: Revert unwanted change.
+
 2008-08-08  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-imap-journal.c: (imap_entry_load), (imap_entry_write),
