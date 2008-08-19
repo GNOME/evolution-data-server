@@ -1,3 +1,9 @@
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Partial fix for bnc #418080
+
+	* camel/camel-search-sql.c: Support 'not' operator.
+
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-summary.c: Add a way to save just the header. We
