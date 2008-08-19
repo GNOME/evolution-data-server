@@ -1447,6 +1447,7 @@ static void
 imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, CamelException *ex)
 {
 	CamelFolderChangeInfo *changes;
+	GSList *list = NULL;
 	int i;
 	
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
@@ -1454,12 +1455,15 @@ imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, CamelException 
 	changes = camel_folder_change_info_new ();
 	
 	for (i = 0; i < uids->len; i++) {
-		camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
+		camel_folder_summary_remove_uid_fast (folder->summary, uids->pdata[i]);
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
+		list = g_slist_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
 		 * the cached data may be useful in replaying a COPY later.
 		 */
 	}
+	camel_db_delete_uids (folder->cdb, folder->full_name, list, ex);
+	g_slist_free(list);
 	camel_folder_summary_save_to_db (folder->summary, ex);
 
 	camel_imap_journal_log (CAMEL_IMAP_FOLDER (folder)->journal,
