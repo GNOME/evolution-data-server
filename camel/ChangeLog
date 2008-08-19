@@ -1,4 +1,9 @@
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-vee-folder.c: Fix counts in vfolders while expunge/empty
+	trash.
+
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Partial fix for bnc #418080
 
