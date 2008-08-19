@@ -1,3 +1,8 @@
+2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.23.90 release and
+	version bump.
+
 2008-08-11  Jeff Cai <jeff.cai@sun.com>
 
         * configure.in: Add gthread-2.0 in CAMEL checking.

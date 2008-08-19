@@ -1,3 +1,42 @@
+Evolution-Data-Server 2.23.90 2008-08-18
+----------------------------------------
+
+Bug Fixes:
+	#207728: Always cut/copy whole address from the selector entry, when selected whole, thus paste will be with correct address, not the text only (Milan Crha)
+	#324203: Check for source option "can-browse" in LDAP address books and if present, then search until reaches limits for empty searches. (Milan Crha)
+	#327851: Skip detached instances which doesn't belong to requested time range (Milan Crha)
+	#337503: Fixed a crash when renaming a folder twice (Milan Crha)
+	#510949: Memory leak fix (Milan Crha)
+	#510949: Memory leak fix and compiler warnings fix (Milan Crha)
+	#523103: Fix a leak (Sankar P)
+	#531930: Improve loading of appointment items (Stanislav Slusny)
+	#535745: Put public include files to google/libgdata-google. Include also path to libgdata in CFLAGS (Milan Crha)
+	#538074: Add gthread-2.0 in CAMEL checking (Jeff Cai)
+	#545021: Check for NULL and other code cleanups (Tobias Mueller)
+	#545877: Use CamelDList instead of EDList (Matthew Barnes)
+	#546397: Do not leak objects from loaded_infos array. (Milan Crha)
+	#546444: Don't loop infinitely when the network connection is lost while fetching a message. (Sergio Villar Senín)
+	#546544: Don't try print folder name, when folder is NULL. Print the summary path for such debugging purposes (Srinivasa Ragavan)
+	#546613: Return NULL, if unmatched folder is requested. (Srinivasa Ragavan)
+	#547256: Handle plain match-all (Srinivasa Ragavan)
+	#547308: Do not reauthenticate to the GAL server more than twice (Milan Crha)
+	#547389: Fix crash on account search. Unhook the signals on finalize (Srinivasa Ragavan)
+	#547469: Count only when you have results (Srinivasa Ragavan)
+	#547786 : Test events against search expression when required. (Milan Crha)
+	#547952 : Don't display empty source groups. (Mathew Barnes)
+	#548059 : NULL check message-id before accessing its elements. (Priit Laes)
+
+Updated Translations:
+	Kjartan Maraas (nb)
+	Shankar Prasad (kn)
+	Chao-Hsiung Liao (zh_HK)
+	Chao-Hsiung Liao (zh_TW)
+	Duarte Loreto (pt)
+	Ilkka Tuohela (fi)
+	Ivar Smolin (et)
+	Takeshi AIHANA (ja)
+	Djihed Afifi (ar)
+
 Evolution-Data-Server 2.23.6 2008-08-04
 ---------------------------------------
 
