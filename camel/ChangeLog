@@ -1,5 +1,9 @@
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-filter-driver.c: Read XEV headers if there are any.
+
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Make things more debuggable.
 
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>

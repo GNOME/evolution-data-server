@@ -1158,6 +1158,26 @@ camel_filter_driver_flush (CamelFilterDriver *driver, CamelException *ex)
 	g_hash_table_foreach_remove (p->only_once, (GHRFunc) run_only_once, &data);
 }
 
+
+static int
+decode_flags_from_xev(const char *xev, CamelMessageInfoBase *mi)
+{
+	guint32 uid, flags = 0;
+	char *header;
+
+	/* check for uid/flags */
+	header = camel_header_token_decode(xev);
+	if (!(header && strlen(header) == strlen("00000000-0000")
+	    && sscanf(header, "%08x-%04x", &uid, &flags) == 2)) {
+		g_free(header);
+		return 0;
+	}
+	g_free(header);
+
+	mi->flags = flags;
+	return 0;
+}
+
 /**
  * camel_filter_driver_filter_mbox:
  * @driver: CamelFilterDriver
@@ -1208,7 +1228,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 		CamelMessageInfo *info;
 		CamelMimeMessage *msg;
 		int pc = 0;
-		
+		const char *xev;
+	
 		if (st.st_size > 0)
 			pc = (int)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
 		
@@ -1223,6 +1244,11 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 		}
 
 		info = camel_message_info_new_from_header(NULL, ((CamelMimePart *)msg)->headers);
+		/* Try and see if it has X-Evolution headers */
+		xev = camel_header_raw_find(&((CamelMimePart *)msg)->headers, "X-Evolution", NULL);
+		if (xev)
+			decode_flags_from_xev (xev, (CamelMessageInfoBase *)info);
+
 		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell(mp) - last;
 
 		last = camel_mime_parser_tell(mp);
