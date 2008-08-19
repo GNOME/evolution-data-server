@@ -358,6 +358,7 @@ int camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *
 void camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load);
 
 void camel_folder_summary_remove_index_fast (CamelFolderSummary *s, int index);
+void camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const char *uid);
 
 /* build/add raw summary items */
 CamelMessageInfo *camel_folder_summary_add_from_header(CamelFolderSummary *summary, struct _camel_header_raw *headers);

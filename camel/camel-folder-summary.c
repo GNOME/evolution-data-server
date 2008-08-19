@@ -2160,6 +2160,36 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 		}
 }
 
+/* _fast doesn't deal with db and leaves it to the caller. */
+void
+camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const char *uid)
+{
+		CamelMessageInfo *oldinfo;
+		char *olduid;
+
+		CAMEL_SUMMARY_LOCK(s, summary_lock);
+		CAMEL_SUMMARY_LOCK(s, ref_lock);
+		if (g_hash_table_lookup_extended(s->loaded_infos, uid, (void *)&olduid, (void *)&oldinfo)) {
+				/* make sure it doesn't vanish while we're removing it */
+				oldinfo->refcount++;
+				CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+				g_hash_table_remove (s->loaded_infos, olduid);	
+				summary_remove_uid (s, olduid);
+				s->flags |= CAMEL_SUMMARY_DIRTY;
+				s->meta_summary->msg_expunged = TRUE;
+				camel_message_info_free(oldinfo);
+				camel_message_info_free(oldinfo);
+				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+		} else {
+				char *tmpid = g_strdup (uid);
+				/* Info isn't loaded into the memory. We must just remove the UID*/
+				summary_remove_uid (s, uid);
+				CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+				g_free (tmpid);
+		}
+}
+
 void
 camel_folder_summary_remove_index_fast (CamelFolderSummary *s, int index)
 {
