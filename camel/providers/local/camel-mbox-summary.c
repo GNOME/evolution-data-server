@@ -847,15 +847,13 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 			goto error;			
 		}
 
-		/* Somehow this isn't required */
-		/*
 		if (camel_mime_parser_tell_start_from(mp) != info->frompos) {
 			g_warning("Didn't get the next message where I expected (%d) got %d instead",
 				  (int)info->frompos, (int)camel_mime_parser_tell_start_from(mp));
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Summary and folder mismatch, even after a sync"));
 			goto error;
-		} */
+		} 
 
 		if (camel_mime_parser_step(mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END) {
 			g_warning("camel_mime_parser_step failed (2)");
@@ -1066,14 +1064,13 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			goto error;
 		}
 
-		/* Somehow this isn't required */
-		/*if (camel_mime_parser_tell_start_from(mp) != info->frompos) {
+		if (camel_mime_parser_tell_start_from(mp) != info->frompos) {
 			g_warning("Didn't get the next message where I expected (%d) got %d instead",
 				  (int)info->frompos, (int)camel_mime_parser_tell_start_from(mp));
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Summary and folder mismatch, even after a sync"));
 			goto error;
-		}*/
+		}
 
 		lastdel = FALSE;
 		if ((flags&1) && info->info.info.flags & CAMEL_MESSAGE_DELETED) {

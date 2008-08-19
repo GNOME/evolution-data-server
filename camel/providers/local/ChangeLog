@@ -1,3 +1,8 @@
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/local/camel-mbox-summary.c: Put back the summary
+	mismatch. It is more serious now.
+
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-mbox-summary.c: When required just save
