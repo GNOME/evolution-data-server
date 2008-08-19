@@ -77,6 +77,7 @@ static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 /* this should probably be conditional on it existing */
 #define USE_BSEARCH
 
+#define dd(x)
 #define d(x)
 #define io(x)			/* io debug */
 #define w(x)
@@ -1728,7 +1729,8 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 
 	if (flags & CAMEL_MESSAGE_JUNK)
 		junk = 1;
-	
+
+	dd(printf("%p: %d %d %d | %d %d %d \n", summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
 	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	info->dirty = TRUE;
 
@@ -1749,6 +1751,9 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 		summary->saved_count++;
 		camel_folder_summary_touch(summary);
 	}
+
+	dd(printf("%p: %d %d %d | %d %d %d\n", summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+
 }
 
 /**

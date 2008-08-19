@@ -1,5 +1,9 @@
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Make things more debuggable.
+
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-summary.c: Add functions to delete from summary
 	fast, without dealing with db, so that bulk db can be invoked.
 	* camel/camel-folder-summary.h:
