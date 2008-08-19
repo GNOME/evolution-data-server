@@ -137,7 +137,7 @@ static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1
 			    {"system-flag", "=", 2, ' ', ' ', '1', 0, 1, 1, 0, 0, 0, 0, 0}, 
 			    {"match-all", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 			    {"cast-int", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0}, 			    
-			    { "header-matches", "LIKE", 3, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 0}, 
+			    { "header-matches", "LIKE", 3, '%', '%', 0, 0, 1, 1, 0, 0, 0, 0, 0}, 
 			    { "header-ends-with", "LIKE", 3, '%', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0}, 
 			    { "header-exists", "NOTNULL", 2, ' ', ' ', ' ', 0, 0, 1, 0, 0, 0, 0, 0},
 			    { "user-tag", "usertags", 3, '%', '%', 0, 0, 1, 1, 1, 0, 0, 0, 0},
@@ -797,12 +797,33 @@ camel_sexp_to_sql (const char *txt)
 				   n->level = n1->level;
 				   last = NULL;
 			  } else /* remove single operand nodes */ {
-				   all = g_list_prepend (all, res->data);
-				   last = NULL;
-				   if (lastoper)
-					free_node (lastoper);
-				   lastoper = n1;
-				   d(printf("killing single operand '%s'\n", n1->exact_token));
+				  if (strcmp(n1->exact_token, "not")) {
+					   all = g_list_prepend (all, res->data);
+					   last = NULL;
+					   if (lastoper)
+						free_node (lastoper);
+					   lastoper = n1;
+					   d(printf("killing single operand '%s'\n", n1->exact_token));
+				  } else {
+					  /* 'not' is a valid single operand */
+					   Node *n = res->data;
+					   char *str = g_strdup_printf("NOT ( %s )", n->exact_token);
+					   g_free (n->exact_token);
+					   n->exact_token = str;
+				   	   all = g_list_prepend (all, n); 
+					   if (preserve) {
+						   GList *foo;
+						   foo = preserve;
+						   while (foo->next)
+							   foo = foo->next;
+						   foo->next = all;
+							   all = preserve;
+						   d(printf("restoring\n"));
+						   preserve = NULL;
+					   }
+					   n->level = n1->level;
+					   last = NULL;			  
+				  }
 			  }
 			
 			  if (!lastoper)
@@ -932,7 +953,7 @@ int main ()
 {
 
 	int i=0;
-	char *txt[] = { 
+	char *txt[] = {
 	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))", 
 	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))", 
 	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))", 
@@ -965,7 +986,10 @@ int main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))",
 	"(and  (and (match-all #t))(and(match-all #t)))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (and (match-all (header-contains \"Subject\"  \"mysubject\")) (match-all (not (header-matches \"From\"  \"mysender\"))) (match-all (= (get-sent-date) (+ (get-current-date) 1))) (match-all (= (get-received-date) (- (get-current-date) 604800))) (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (match-all (< (get-size) 7000)) (match-all (not (= (get-sent-date) 1216146600)))  (match-all (> (cast-int (user-tag \"score\")) 3))  (user-flag  \"important\"))) (match-all (system-flag  \"Deleted\")) (match-all (not (= (user-tag \"follow-up\") \"\"))) (match-all (= (user-tag \"completed-on\") \"\")) (match-all (system-flag \"Attachments\")) (match-all (header-contains \"x-camel-mlist\"  \"evo-hackers\")) )))",
-	"(and (or  (match-all (or (= (user-tag \"label\") \"important\") (user-flag (+ \"$Label\" \"important\")) (user-flag \"important\")))    (match-all (or (= (user-tag \"label\") \"work\") (user-flag (+ \"$Label\" \"work\")) (user-flag \"work\")))    (match-all (or (= (user-tag \"label\") \"personal\") (user-flag (+ \"$Label\" \"personal\")) (user-flag \"personal\")))    (match-all (or (= (user-tag \"label\") \"todo\") (user-flag (+ \"$Label\" \"todo\")) (user-flag \"todo\")))    (match-all (or (= (user-tag \"label\") \"later\") (user-flag (+ \"$Label\" \"later\")) (user-flag \"later\")))  )  (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))))"
+	"(and (or  (match-all (or (= (user-tag \"label\") \"important\") (user-flag (+ \"$Label\" \"important\")) (user-flag \"important\")))    (match-all (or (= (user-tag \"label\") \"work\") (user-flag (+ \"$Label\" \"work\")) (user-flag \"work\")))    (match-all (or (= (user-tag \"label\") \"personal\") (user-flag (+ \"$Label\" \"personal\")) (user-flag \"personal\")))    (match-all (or (= (user-tag \"label\") \"todo\") (user-flag (+ \"$Label\" \"todo\")) (user-flag \"todo\")))    (match-all (or (= (user-tag \"label\") \"later\") (user-flag (+ \"$Label\" \"later\")) (user-flag \"later\")))  )  (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))))",
+	"(or (header-matches \"to\" \"maw@ximian.com\") (header-matches \"to\" \"mw@ximian.com\")   (header-matches \"to\" \"maw@novell.com\")   (header-matches \"to\" \"maw.AMERICAS3.AMERICAS@novell.com\") (header-matches \"cc\" \"maw@ximian.com\") (header-matches \"cc\" \"mw@ximian.com\")     (header-matches \"cc\" \"maw@novell.com\")   (header-matches \"cc\" \"maw.AMERICAS3.AMERICAS@novell.com\"))",
+	"(not (or (header-matches \"from\" \"bugzilla-daemon@bugzilla.ximian.com\") (header-matches \"from\" \"bugzilla-daemon@bugzilla.gnome.org\") (header-matches \"from\" \"bugzilla_noreply@novell.com\") (header-matches \"from\" \"bugzilla-daemon@mozilla.org\") (header-matches \"from\" \"root@dist.suse.de\") (header-matches \"from\" \"root@hilbert3.suse.de\") (header-matches \"from\" \"root@hilbert4.suse.de\") (header-matches \"from\" \"root@hilbert5.suse.de\") (header-matches \"from\" \"root@hilbert6.suse.de\") (header-matches \"from\" \"root@suse.de\") (header-matches \"from\" \"swamp_noreply@suse.de\") (and (header-matches \"from\" \"hermes@opensuse.org\") (header-starts-with \"subject\" \"submit-Request\"))))"
+	
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
