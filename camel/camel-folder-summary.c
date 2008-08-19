@@ -1319,8 +1319,8 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 	count = cfs_count_dirty(s);
-	if (!count)
-		return 0;
+	if (!count) 
+		return camel_folder_summary_header_save_to_db (s, ex);
 
 	printf("Saving %d/%d dirty records of %s\n", count, g_hash_table_size (s->loaded_infos), s->folder->full_name);
 
