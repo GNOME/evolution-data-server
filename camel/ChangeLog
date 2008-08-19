@@ -1,5 +1,9 @@
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Fix issue of unread mails in trash.
+
+2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Fix counts in vfolders while expunge/empty
 	trash.
 

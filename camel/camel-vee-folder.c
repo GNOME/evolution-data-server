@@ -1298,7 +1298,7 @@ folder_changed_add_uid(CamelFolder *sub, const char *uid, const char hash[8], Ca
 	camel_db_add_to_vfolder_transaction (folder->parent_store->cdb, folder->full_name, (char *)vuid, NULL);
 	camel_folder_change_info_add_uid(vf->changes,  vuid);
 	/* old flags and new flags should  be same, since we sync all times  */
-	update_summary (vinfo, vinfo->old_flags, 0, TRUE);
+	update_summary (vinfo, camel_message_info_flags(vinfo), 0, TRUE);
 	if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0 && !CAMEL_IS_VEE_FOLDER(sub) && folder_unmatched != NULL) {
 		if (g_hash_table_lookup_extended(unmatched_uids, vuid, (void **)&oldkey, &oldval)) {
 			n = GPOINTER_TO_INT (oldval);
