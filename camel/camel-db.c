@@ -38,12 +38,12 @@
 
 #if CAMEL_DB_DEBUG
 /* Enable d(x) if you want */
-#define d(x) 
+#define d(x)
 /* Yeah it leaks, so fix it while debugging */
 #define START(stmt) 	g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new ();
 #define END 	g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL));
 #else
-#define d(x) 
+#define d(x) x
 #define START(x)
 #define END
 #endif
@@ -120,6 +120,9 @@ camel_db_open (const char *path, CamelException *ex)
 	cdb = g_new (CamelDB, 1);
 	cdb->db = db;
 	cdb->lock = g_mutex_new ();
+	/* These will be written once the Summary takes control of the CDB. */
+	cdb->sort_by = NULL;
+	cdb->collate = NULL;
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
@@ -146,6 +149,25 @@ camel_db_close (CamelDB *cdb)
 		g_free (cdb);
 		d(g_print ("\nDatabase succesfully closed \n"));
 	}
+}
+
+int
+camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelDBCollate func)
+{
+		int ret;
+
+		if (!cdb)
+			return TRUE;
+
+		g_mutex_lock (cdb->lock);
+		cdb->sort_by = col;
+		cdb->collate = collate;
+		cdb->collate_cb = func;
+		d(g_print("Creating Collation %s on %s with %p\n", collate, col, func));
+		ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
+		g_mutex_unlock (cdb->lock);
+
+		return ret;
 }
 
 /* Should this be really exposed ? */
@@ -570,8 +592,8 @@ camel_db_get_folder_uids (CamelDB *db, char *folder_name, GPtrArray *array, Came
 {
 	 char *sel_query;
 	 int ret;
-	 
-	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q", folder_name);
+
+	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q%s%s%s%s", folder_name, db->sort_by ? " order by " : "", db->sort_by ? db->sort_by: "", (db->sort_by && db->collate) ? " collate " : "", (db->sort_by && db->collate) ? db->collate : "");
 
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, ex);
 	 sqlite3_free (sel_query);

@@ -8,9 +8,14 @@
 
 #include "camel-exception.h"
 
+typedef int(*CamelDBCollate)(void*,int,const void*,int,const void*);
+
 struct _CamelDB {
 	sqlite3 *db;
 	GMutex *lock;
+	const char *sort_by;
+	const char *collate;
+	CamelDBCollate collate_cb;
 #if CAMEL_DB_DEBUG 	
 	GTimer *timer;
 #endif	
@@ -160,7 +165,7 @@ char * camel_db_sqlize_string (const char *string);
 void camel_db_free_sqlized_string (char *string);
 
 char * camel_db_get_column_name (const char *raw_name);
-
+int camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelDBCollate func);
 /* Migration APIS */
 int camel_db_migrate_vfolders_to_14(CamelDB *cdb, const char *folder, CamelException *ex);
 #endif

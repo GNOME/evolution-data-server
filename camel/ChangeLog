@@ -1,3 +1,9 @@
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-db.c: Add provision to do summary specific sorts.
+	Summaries can now be loaded in a sorted mode.
+	* camel/camel-db.h:
+
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-summary.c: Save the summary header atleast.
