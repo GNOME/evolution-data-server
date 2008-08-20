@@ -844,7 +844,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 		info = (CamelMboxMessageInfo *)camel_folder_summary_uid(s, summary->pdata[i]);
 
-		d(printf("Checking message %s %08x\n", camel_message_info_uid(info), info->info.flags));
+		d(printf("Checking message %s %08x\n", camel_message_info_uid(info), ((CamelMessageInfoBase *)info)->flags));
 
 		if ((info->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) == 0) {
 			camel_message_info_free((CamelMessageInfo *)info);
@@ -852,7 +852,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 			continue;
 		}
 
-		d(printf("Updating message %s\n", camel_message_info_uid(info)));
+		d(printf("Updating message %s: %d\n", camel_message_info_uid(info), (int)info->frompos));
 
 		camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
@@ -1036,6 +1036,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	const char *fromline;
 	int lastdel = FALSE;
 	gboolean touched = FALSE;
+	GSList *del=NULL;
 #ifdef STATUS_PINE
 	char statnew[8], xstatnew[8];
 #endif
@@ -1069,12 +1070,12 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 		d(printf("Looking at message %s\n", camel_message_info_uid(info)));
 
-		/* We won't be in the same order. So lets reseek every time. Should we optimize? */
-		d(printf("seeking to %d\n", (int)info->frompos));
-		camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
+		d(printf("seeking (%s) to %d\n", ((CamelMessageInfo *) info)->uid, (int)info->frompos));
+		if (lastdel)
+			camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
 		if (camel_mime_parser_step(mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM) {
-			g_warning("Expected a From line here, didn't get it");
+			g_warning("Expected a From line here, didn't get it %d", (int)camel_mime_parser_tell(mp));
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Summary and folder mismatch, even after a sync"));
 			goto error;
@@ -1108,7 +1109,8 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				s->unread_count--;
 			s->deleted_count--;
 			camel_folder_change_info_remove_uid(changeinfo, uid);
-			camel_folder_summary_remove(s, (CamelMessageInfo *)info);
+			camel_folder_summary_remove_index_fast (s, i);
+			del = g_slist_prepend (del, (gpointer) camel_pstring_strdup(uid));
 			camel_message_info_free((CamelMessageInfo *)info);
 			count--;
 			i--;
@@ -1122,7 +1124,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				write(fdout, "\n", 1);
 #endif
 			info->frompos = lseek(fdout, 0, SEEK_CUR);
+			((CamelMessageInfo *)info)->dirty = TRUE;
 			fromline = camel_mime_parser_from_line(mp);
+			d(printf("Saving %s:%d\n", camel_message_info_uid(info), info->frompos));
 			write(fdout, fromline, strlen(fromline));
 		}
 
@@ -1187,6 +1191,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			info = NULL;
 		}
 	}
+	camel_db_delete_uids (s->folder->cdb, s->folder->full_name, del, ex);
+	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
+	g_slist_free (del);
 
 #if 0
 	/* if last was deleted, append the \n we removed */
