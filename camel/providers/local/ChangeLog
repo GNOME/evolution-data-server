@@ -1,5 +1,10 @@
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/providers/local/camel-mh-summary.c: Implement in-db sort of
+	m-h account types.
+
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/providers/local/camel-mbox-summary.c: Fix some missing
 	portions of folder summary mismatch
 

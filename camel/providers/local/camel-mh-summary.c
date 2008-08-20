@@ -113,6 +113,19 @@ camel_mh_summary_finalise(CamelObject *obj)
 	g_free(o->priv);
 }
 
+static int 
+sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
+{
+	char *sa1 = (char*)g_utf8_normalize (data1, len1, G_NORMALIZE_DEFAULT);
+	char *sa2 = (char*)g_utf8_normalize (data2, len2, G_NORMALIZE_DEFAULT);
+	int a1 = strtoul (sa1, NULL, 10);
+	int a2 = strtoul (sa2, NULL, 10);
+
+	g_free(sa1); g_free(sa2);
+
+	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
+}
+
 /**
  * camel_mh_summary_new:
  *
@@ -125,7 +138,9 @@ CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *folder, const char *fi
 	CamelMhSummary *o = (CamelMhSummary *)camel_object_new(camel_mh_summary_get_type ());
 
 	((CamelFolderSummary *)o)->folder = folder;
-
+	if (folder) {
+		camel_db_set_collate (folder->cdb, "uid", "uid_sort", (CamelDBCollate)sort_uid_cmp);
+	}
 	camel_local_summary_construct((CamelLocalSummary *)o, filename, mhdir, index);
 	return o;
 }
@@ -208,19 +223,6 @@ remove_summary(char *key, CamelMessageInfo *info, CamelLocalSummary *cls)
 	camel_message_info_free(info);
 }
 
-static int
-sort_uid_cmp(const void *ap, const void *bp)
-{
-	const CamelMessageInfo
-		*a = *((CamelMessageInfo **)ap),
-		*b = *((CamelMessageInfo **)bp);
-	const char
-		*auid = camel_message_info_uid(a),
-		*buid = camel_message_info_uid(b);
-	int aval = atoi(auid), bval = atoi(buid);
-
-	return (aval < bval) ? -1 : (aval > bval) ? 1 : 0;
-}
 
 static int
 mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
@@ -294,10 +296,6 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 
 	/* sort the summary based on message number (uid), since the directory order is not useful */
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-/* 	qsort(s->uids->pdata, s->uids->len, sizeof(CamelMessageInfo *), sort_uid_cmp); */
-	#warning "verify if strcmp works the same as the other one. Too busy to check this."
-    #warning "lets build a sort support for uid fetching from the db"
-	qsort(s->uids->pdata, s->uids->len, sizeof(CamelMessageInfo *), strcmp);	
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	return 0;
