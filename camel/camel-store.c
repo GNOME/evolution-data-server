@@ -702,6 +702,8 @@ store_sync (CamelStore *store, int expunge, CamelException *ex)
 			if (!CAMEL_IS_VEE_FOLDER(folder)
 			    && !camel_exception_is_set(&x))
 				camel_folder_sync(folder, expunge, &x);
+			else if (CAMEL_IS_VEE_FOLDER(folder))
+				camel_vee_folder_sync_headers(folder, NULL); /* Literally don't care of vfolder exceptions */
 			camel_object_unref(folder);
 		}
 		camel_exception_xfer(ex, &x);

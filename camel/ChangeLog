@@ -1,5 +1,9 @@
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-store.c: Save vfolders headers on sync.
+
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Add function to save headers to db.
 	* camel/camel-vee-folder.h:
 
