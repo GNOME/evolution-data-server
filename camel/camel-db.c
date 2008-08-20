@@ -154,17 +154,18 @@ camel_db_close (CamelDB *cdb)
 int
 camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelDBCollate func)
 {
-		int ret;
+		int ret = 0;
 
 		if (!cdb)
-			return TRUE;
+			return 0;
 
 		g_mutex_lock (cdb->lock);
 		cdb->sort_by = col;
 		cdb->collate = collate;
 		cdb->collate_cb = func;
 		d(g_print("Creating Collation %s on %s with %p\n", collate, col, func));
-		ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
+		if (collate && func)
+			ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
 		g_mutex_unlock (cdb->lock);
 
 		return ret;

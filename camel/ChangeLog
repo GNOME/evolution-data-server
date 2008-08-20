@@ -1,5 +1,9 @@
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Make use of collate function for just sorts also.
+
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-store.c: Save vfolders headers on sync.
 
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
