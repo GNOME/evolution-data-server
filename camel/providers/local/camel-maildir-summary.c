@@ -168,7 +168,8 @@ CamelMaildirSummary
 	CamelMaildirSummary *o = (CamelMaildirSummary *)camel_object_new(camel_maildir_summary_get_type ());
 
 	((CamelFolderSummary *)o)->folder = folder;
-
+	if (folder)
+		camel_db_set_collate (folder->cdb, "dreceived", NULL, NULL);
 	camel_local_summary_construct((CamelLocalSummary *)o, filename, maildirdir, index);
 	return o;
 }
@@ -520,21 +521,6 @@ remove_summary(char *key, CamelMessageInfo *info, struct _remove_data *rd)
 }
 
 static int
-sort_receive_cmp(const void *ap, const void *bp)
-{
-	const CamelMaildirMessageInfo
-		*a = *((CamelMaildirMessageInfo **)ap),
-		*b = *((CamelMaildirMessageInfo **)bp);
-
-	if (a->info.info.date_received < b->info.info.date_received)
-		return -1;
-	else if (a->info.info.date_received > b->info.info.date_received)
-		return 1;
-
-	return 0;
-}
-
-static int
 maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	DIR *dir;
@@ -723,12 +709,6 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 
 	g_free(new);
 	g_free(cur);
-
-	/* sort the summary based on receive time, since the directory order is not useful */
-	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	#warning Add support for sorting via the DB.
-/* 	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_receive_cmp); */
-	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 
