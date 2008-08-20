@@ -43,7 +43,7 @@
 #define START(stmt) 	g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new ();
 #define END 	g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL));
 #else
-#define d(x) x
+#define d(x) 
 #define START(x)
 #define END
 #endif
