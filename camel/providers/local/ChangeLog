@@ -1,4 +1,13 @@
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #213072
+
+	* camel/providers/local/camel-mbox-summary.c: Sort mbox/spool summary
+	uids by from_pos. 
+
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug #548331 
 
 	* camel/providers/local/camel-mbox-summary.c: Put back the summary
 	mismatch. It is more serious now.
