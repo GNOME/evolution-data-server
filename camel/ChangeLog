@@ -1,5 +1,10 @@
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Add function to save headers to db.
+	* camel/camel-vee-folder.h:
+
+2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Remove debug logs.
 
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
