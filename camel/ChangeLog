@@ -1,5 +1,9 @@
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Fix junk/trash counts.
+
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-store.h: Add a new flag for vtrash handling.
 	* camel/camel-vtrash-folder.c: 
 

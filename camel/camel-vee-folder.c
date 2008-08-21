@@ -44,6 +44,7 @@
 #include "camel-vee-store.h"	/* for open flags */
 #include "camel-vee-summary.h"
 #include "camel-string-utils.h"
+#include "camel-vee-folder.h"
 
 #define d(x) 
 #define dd(x) (camel_debug("vfolder")?(x):0)
@@ -613,7 +614,9 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 static void
 vee_expunge (CamelFolder *folder, CamelException *ex)
 {
+	/* Force it to rebuild the counts, when some folders were expunged. */
 	folder->summary->unread_count = 0;
+	folder->summary->visible_count = 0;
 	((CamelFolderClass *)((CamelObject *)folder)->klass)->sync(folder, TRUE, ex);
 }
 
@@ -1332,7 +1335,8 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 
 	vinfo = (CamelVeeMessageInfo *) camel_folder_summary_uid (((CamelFolder *) vf)->summary, vuid);
 	if (vinfo) {
-		update_summary (vinfo, vinfo->old_flags, 0, FALSE);
+		if (!(vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL_DELETE))
+			update_summary (vinfo, vinfo->old_flags, 0, FALSE);
 		camel_message_info_free((CamelMessageInfo *)vinfo);
 	}
 	camel_folder_change_info_remove_uid(vf->changes, vuid);
