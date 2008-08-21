@@ -104,7 +104,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 
 	vtrash = (CamelVTrashFolder *)camel_object_new(camel_vtrash_folder_get_type());
 	camel_vee_folder_construct(CAMEL_VEE_FOLDER (vtrash), parent_store, vdata[type].full_name, _(vdata[type].name),
-				   CAMEL_STORE_FOLDER_PRIVATE|CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_VEE_FOLDER_AUTO|CAMEL_STORE_VEE_FOLDER_SPECIAL_DELETE);
+				   CAMEL_STORE_FOLDER_PRIVATE|CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_VEE_FOLDER_AUTO|CAMEL_STORE_VEE_FOLDER_SPECIAL);
 
 	((CamelFolder *)vtrash)->folder_flags |= vdata[type].flags;
 	camel_vee_folder_set_expression((CamelVeeFolder *)vtrash, vdata[type].expr);
