@@ -1,3 +1,8 @@
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-folder-summary.c: Add code to dump sorted uids for
+	debuging.
+
 2008-08-20  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #546926

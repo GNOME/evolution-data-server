@@ -876,6 +876,17 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	return ret == 0 ? 0 : -1;
 }
 
+static void 
+camel_folder_summary_dump (CamelFolderSummary *s)
+{
+	int i;
+
+	printf("Dumping %s\n", s->folder ? s->folder->full_name:"nil");
+	for (i=0; i<s->uids->len; i++)
+		printf("%s\t", s->uids->pdata[i]);
+	printf("\n");
+}
+
 int
 camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -896,8 +907,9 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	cdb = s->folder->cdb;
 
 	ret = camel_db_get_folder_uids (cdb, folder_name, s->uids, ex);
+	/* camel_folder_summary_dump (s); */
+
 #if 0
-	/* FIXME FOR SANKAR: No need to pass the address of summary here. */
 	data.summary = s;
 	data.add = TRUE;
 	data.double_ref = FALSE;
