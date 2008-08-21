@@ -48,30 +48,6 @@ static int initialised = FALSE;
 
 int camel_application_is_exiting = FALSE;
 
-static void
-camel_shutdown (void)
-{
-	CamelCertDB *certdb;
-
-	if (!initialised)
-		return;
-
-	certdb = camel_certdb_get_default ();
-	if (certdb) {
-		camel_certdb_save (certdb);
-		camel_object_unref (certdb);
-	}
-
-	/* These next calls must come last. */
-
-#if defined (HAVE_NSS)
-	NSS_Shutdown ();
-	PR_Cleanup ();
-#endif /* HAVE_NSS */
-
-	initialised = FALSE;
-}
-
 int
 camel_init (const char *configdir, gboolean nss_init)
 {
@@ -140,9 +116,30 @@ camel_init (const char *configdir, gboolean nss_init)
 	
 	camel_object_unref (certdb);
 	
-	g_atexit (camel_shutdown);
-	
 	initialised = TRUE;
 	
 	return 0;
+}
+
+void
+camel_shutdown (void)
+{
+	CamelCertDB *certdb;
+
+	if (!initialised)
+		return;
+
+	certdb = camel_certdb_get_default ();
+	if (certdb) {
+		camel_certdb_save (certdb);
+		camel_object_unref (certdb);
+	}
+
+	/* These next calls must come last. */
+
+#if defined (HAVE_NSS)
+	NSS_Shutdown ();
+#endif /* HAVE_NSS */
+
+	initialised = FALSE;
 }

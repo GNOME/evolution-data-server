@@ -3855,6 +3855,7 @@ camel_ucs2_utf8
 <SECTION>
 <FILE>camel</FILE>
 camel_init
+camel_shutdown
 </SECTION>
 
 <SECTION>
