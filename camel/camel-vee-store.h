@@ -37,7 +37,7 @@ typedef struct _CamelVeeStoreClass CamelVeeStoreClass;
 
 /* open mode for folder, vee folder auto-update */
 #define CAMEL_STORE_VEE_FOLDER_AUTO (1<<16)
-#define CAMEL_STORE_VEE_FOLDER_SPECIAL_DELETE (1<<17)
+#define CAMEL_STORE_VEE_FOLDER_SPECIAL (1<<17)
 
 struct _CamelVeeStore {
 	CamelStore parent;
