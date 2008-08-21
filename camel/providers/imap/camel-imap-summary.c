@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include "camel-folder.h"
 #include "camel-file-utils.h"
 #include "camel-string-utils.h"
 
@@ -63,8 +64,6 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 
 static void camel_imap_summary_class_init (CamelImapSummaryClass *klass);
 static void camel_imap_summary_init       (CamelImapSummary *obj);
-
-static int uid_compare (const void *va, const void *vb);
 
 static CamelFolderSummaryClass *camel_imap_summary_parent;
 
@@ -138,6 +137,19 @@ camel_imap_summary_init (CamelImapSummary *obj)
 	s->content_info_size = sizeof(CamelImapMessageContentInfo);
 }
 
+static int 
+sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
+{
+	char *sa1 = (char*)g_utf8_normalize (data1, len1, G_NORMALIZE_DEFAULT);
+	char *sa2 = (char*)g_utf8_normalize (data2, len2, G_NORMALIZE_DEFAULT);
+	int a1 = strtoul (sa1, NULL, 10);
+	int a2 = strtoul (sa2, NULL, 10);
+
+	g_free(sa1); g_free(sa2);
+
+	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
+}
+
 /**
  * camel_imap_summary_new:
  * @folder: Parent folder.
@@ -156,6 +168,8 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 	camel_exception_init (&ex);
 
 	summary->folder = folder;
+	if (folder)
+		camel_db_set_collate (folder->cdb, "uid", "uid_sort", (CamelDBCollate)sort_uid_cmp);
 
 	camel_folder_summary_set_build_content (summary, TRUE);
 	camel_folder_summary_set_filename (summary, filename);
@@ -169,7 +183,6 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 		camel_exception_clear (&ex);
 	}
 
-	g_ptr_array_sort (summary->uids, (GCompareFunc) uid_compare); 
 	return summary;
 }
 
@@ -431,21 +444,3 @@ camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const char
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }
-
-
-static int
-uid_compare (const void *va, const void *vb)
-{
-	const char **sa = (const char **)va, **sb = (const char **)vb;
-	unsigned long a, b;
-
-	a = strtoul (*sa, NULL, 10);
-	b = strtoul (*sb, NULL, 10);
-	if (a < b)
-		return -1;
-	else if (a == b)
-		return 0;
-	else
-		return 1;
-}
-

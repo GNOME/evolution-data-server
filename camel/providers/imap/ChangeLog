@@ -1,3 +1,8 @@
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/imap/camel-imap-summary.c: Implement in-db uid sort
+	while loading.
+
 2008-08-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-folder.c: Delete from DB for expunge
