@@ -1,3 +1,10 @@
+2008-08-21  Shuai Liu  <shuai.liu@sun.com>
+
+	** Fix for bug #548565
+
+	* backends/google/util.h:
+	Add 'void' to make it built on Solaris.
+
 2008-08-18  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #547223 (Patch by Matt Davey)
