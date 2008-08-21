@@ -1,5 +1,10 @@
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-store.c: Let vee store also sync its headers at the
+	end.
+
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Make counts work even better.
 
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>

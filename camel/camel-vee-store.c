@@ -85,7 +85,7 @@ camel_vee_store_class_init (CamelVeeStoreClass *klass)
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	((CamelServiceClass *)store_class)->construct = construct;
 	
-	store_class->sync = vee_sync;
+	/* store_class->sync = vee_sync; */
 	store_class->get_trash = vee_get_trash;
 	store_class->get_junk = vee_get_junk;
 }
