@@ -1,5 +1,9 @@
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Update visible count, intelligently.
+
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Fix junk/trash counts.
 
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>

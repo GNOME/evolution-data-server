@@ -4552,7 +4552,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		else if ((mi->flags & CAMEL_MESSAGE_JUNK) && deleted)
 			mi->summary->junk_not_deleted_count -= deleted;
 			
-		if (junk ||  deleted) 
+		if (((junk && !(mi->flags & CAMEL_MESSAGE_DELETED)))||  (deleted && !(mi->flags & CAMEL_MESSAGE_JUNK)) )
 			mi->summary->visible_count -= junk ? junk : deleted;
 	}
 
