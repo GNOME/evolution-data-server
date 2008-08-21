@@ -1,5 +1,9 @@
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Make counts work even better.
+
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-store.h: Name the flag appropriately.
 	* camel/camel-vtrash-folder.c:
 

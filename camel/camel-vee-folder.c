@@ -594,11 +594,14 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 		node = node->next;
 	}
-	
+#if 0
+	/* Seems like we are doing something wrong with this, as folder_changed happens after this, the counts are misleading.
+	 * Anyways we do a force sync on exit, it should be all fine.
+	  */
 	record = summary_header_to_db (folder->summary, ex);
 	camel_db_write_folder_info_record (folder->parent_store->cdb, record, ex);
 	g_free (record);
-	
+#endif	
 	if (node == NULL) {
 		CAMEL_VEE_FOLDER_LOCK(vf, changed_lock);
 		g_list_free(p->folders_changed);
@@ -1335,8 +1338,7 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 
 	vinfo = (CamelVeeMessageInfo *) camel_folder_summary_uid (((CamelFolder *) vf)->summary, vuid);
 	if (vinfo) {
-		if (!(vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL_DELETE))
-			update_summary (vinfo, vinfo->old_flags, 0, FALSE);
+		update_summary (vinfo, vinfo->old_flags, 0, FALSE);
 		camel_message_info_free((CamelMessageInfo *)vinfo);
 	}
 	camel_folder_change_info_remove_uid(vf->changes, vuid);
