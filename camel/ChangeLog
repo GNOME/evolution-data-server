@@ -1,5 +1,10 @@
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-search.c: During quit, its possible that the
+	parent folder's infos are unavailable.
+
+2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-store.c: Let vee store also sync its headers at the
 	end.
 
