@@ -1,3 +1,9 @@
+2008-08-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #548865
+
+	* camel/camel-vee-store.c: Dont crash, if the folder isn't there.
+
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-folder-search.c: During quit, its possible that the

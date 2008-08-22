@@ -193,7 +193,7 @@ vee_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Camel
 	char *name, *p;
 
 	vf = (CamelVeeFolder *)camel_vee_folder_new(store, folder_name, flags);
-	if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
+	if (vf && ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0)) {
 		/* Check that parents exist, if not, create dummy ones */
 		name = alloca(strlen(((CamelFolder *)vf)->full_name)+1);
 		strcpy(name, ((CamelFolder *)vf)->full_name);
