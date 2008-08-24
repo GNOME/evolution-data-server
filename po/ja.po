@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome-2-22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-06 22:06+0900\n"
-"PO-Revision-Date: 2008-08-06 22:04+0900\n"
+"POT-Creation-Date: 2008-08-24 09:06+0900\n"
+"PO-Revision-Date: 2008-08-24 08:19+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -28,13 +28,13 @@ msgstr "読み込み中..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4266
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4282
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "検索中..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4430
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4446
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "連絡先 (%d個) のダウンロード中..."
@@ -46,35 +46,35 @@ msgstr "連絡先 (%d個) のダウンロード中..."
 msgid "Updating contacts cache (%d)... "
 msgstr "連絡先のキャッシュ情報 (%d個) の更新中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:742
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:751
 msgid "Using Distinguished Name (DN)"
 msgstr "識別名 (DN) を使用する"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:745
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:754
 msgid "Using Email Address"
 msgstr "E-メール・アドレスを使用する"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1008
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1017
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP サーバへ再接続中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1604
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1613
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP サーバへ連絡先の追加中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1738
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1747
 msgid "Removing contact from LDAP server..."
 msgstr "LDP サーバから連絡先の削除中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2049
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2058
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP サーバにある連絡先の修正中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4133
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4142
 msgid "Receiving LDAP search results..."
 msgstr "LDAP サーバ検索結果の取得中..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4304
 msgid "Error performing search"
 msgstr "検索中にエラーが発生しました"
 
@@ -670,7 +670,7 @@ msgstr "地理情報"
 msgid "Telephone"
 msgstr "電話"
 
-#: ../addressbook/libebook/e-contact.c:1493
+#: ../addressbook/libebook/e-contact.c:1499
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
@@ -704,51 +704,51 @@ msgid "Could not create thread for getting deltas"
 msgstr "差分を取得するためのスレッドを生成できませんでした"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1192
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1049
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1348
+#: ../calendar/backends/google/e-cal-backend-google.c:1194
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1061
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1065
 msgid "Could not create thread for populating cache"
 msgstr "キャッシュを生成するためのスレッドを生成できませんでした"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1796
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1795
 msgid "Reply Requested: by "
 msgstr "返信要求: by "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1801
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1800
 msgid "Reply Requested: When convenient"
 msgstr "返信要求: When convenient"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #, c-format
 msgid "Loading %s items"
 msgstr "\"%s\" アイテムの読み込み"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:889
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "カレンダ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:947
 msgid "Invalid server URI"
 msgstr "無効なサーバ URI です"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1067
-#: ../calendar/libecal/e-cal.c:5076
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:975
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
+#: ../calendar/libecal/e-cal.c:5082
 #: ../calendar/libedata-cal/e-cal-backend-util.c:109
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1076
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1108
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1146
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1075
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1107
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1145
 #: ../camel/providers/groupwise/camel-groupwise-store.c:594
 #: ../camel/providers/groupwise/camel-groupwise-store.c:746
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -1120,85 +1120,85 @@ msgstr "%s (ユーザ %s) のパスワードを入力して下さい"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s のパスワードを入力して、ユーザ %s のプロキシを有効にして下さい"
 
-#: ../calendar/libecal/e-cal.c:5048
+#: ../calendar/libecal/e-cal.c:5054
 msgid "Invalid argument"
 msgstr "無効な引数"
 
-#: ../calendar/libecal/e-cal.c:5050
+#: ../calendar/libecal/e-cal.c:5056
 msgid "Backend is busy"
 msgstr "バックエンドが処理中です"
 
-#: ../calendar/libecal/e-cal.c:5052
+#: ../calendar/libecal/e-cal.c:5058
 #: ../calendar/libedata-cal/e-cal-backend-util.c:97
 msgid "Repository is offline"
 msgstr "リポジトリはオフラインです"
 
-#: ../calendar/libecal/e-cal.c:5054
+#: ../calendar/libecal/e-cal.c:5060
 #: ../calendar/libedata-cal/e-cal-backend-util.c:121
 msgid "No such calendar"
 msgstr "そのようなカレンダはありません"
 
-#: ../calendar/libecal/e-cal.c:5056
+#: ../calendar/libecal/e-cal.c:5062
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "オブジェクトが見つかりません"
 
-#: ../calendar/libecal/e-cal.c:5058
+#: ../calendar/libecal/e-cal.c:5064
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "無効なオブジェクトです"
 
-#: ../calendar/libecal/e-cal.c:5060
+#: ../calendar/libecal/e-cal.c:5066
 msgid "URI not loaded"
 msgstr "URI を読み込んでいません"
 
-#: ../calendar/libecal/e-cal.c:5062
+#: ../calendar/libecal/e-cal.c:5068
 msgid "URI already loaded"
 msgstr "URL は既に読み込み済みです"
 
-#: ../calendar/libecal/e-cal.c:5064
+#: ../calendar/libecal/e-cal.c:5070
 #: ../calendar/libedata-cal/e-cal-backend-util.c:99
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "権限がありません"
 
-#: ../calendar/libecal/e-cal.c:5066
+#: ../calendar/libecal/e-cal.c:5072
 #: ../calendar/libedata-cal/e-cal-backend-util.c:123
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "ユーザを特定できません"
 
-#: ../calendar/libecal/e-cal.c:5068
+#: ../calendar/libecal/e-cal.c:5074
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
 msgid "Object ID already exists"
 msgstr "既にオブジェクト ID が存在しています"
 
-#: ../calendar/libecal/e-cal.c:5070
+#: ../calendar/libecal/e-cal.c:5076
 msgid "Protocol not supported"
 msgstr "プロトコルはサポートされていません"
 
-#: ../calendar/libecal/e-cal.c:5072
+#: ../calendar/libecal/e-cal.c:5078
 msgid "Operation has been canceled"
 msgstr "操作をキャンセルしました"
 
-#: ../calendar/libecal/e-cal.c:5074
+#: ../calendar/libecal/e-cal.c:5080
 #: ../calendar/libedata-cal/e-cal-backend-util.c:135
 msgid "Could not cancel operation"
 msgstr "操作をキャンセルできませんでした"
 
-#: ../calendar/libecal/e-cal.c:5078
+#: ../calendar/libecal/e-cal.c:5084
 #: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../camel/providers/smtp/camel-smtp-transport.c:218
 msgid "Authentication required"
 msgstr "認証を必要としています"
 
-#: ../calendar/libecal/e-cal.c:5080
+#: ../calendar/libecal/e-cal.c:5086
 msgid "A CORBA exception has occurred"
 msgstr "CORBA 例外が発生しました"
 
-#: ../calendar/libecal/e-cal.c:5082
+#: ../calendar/libecal/e-cal.c:5088
 #: ../calendar/libedata-cal/e-cal-backend-util.c:138
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:434
@@ -1218,7 +1218,7 @@ msgstr "CORBA 例外が発生しました"
 msgid "Unknown error"
 msgstr "エラーを特定できません"
 
-#: ../calendar/libecal/e-cal.c:5084
+#: ../calendar/libecal/e-cal.c:5090
 #: ../calendar/libedata-cal/e-cal-backend-util.c:95
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
@@ -1412,7 +1412,7 @@ msgstr "キャッシュファイルを生成できません"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "キャッシュ・エントリを開けませんでした: %s: %s"
 
-#: ../camel/camel-db.c:91
+#: ../camel/camel-db.c:107
 msgid "Insufficient memory"
 msgstr "メモリが足りません"
 
@@ -1428,6 +1428,7 @@ msgstr ""
 "これ以降の操作は再現されません。"
 
 #: ../camel/camel-disco-diary.c:261
+#: ../camel/providers/imap/camel-imap-journal.c:299
 #, c-format
 msgid ""
 "Could not open '%s':\n"
@@ -1481,52 +1482,52 @@ msgstr "%s から受信したメッセージ・ストリームが正しくあり
 msgid "Syncing folders"
 msgstr "フォルダの同期中"
 
-#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1494
+#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1520
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "フィルタの構文解析中にエラー: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1503
+#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1529
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "フィルタ実行中にエラー: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1191
+#: ../camel/camel-filter-driver.c:1211
 msgid "Unable to open spool folder"
 msgstr "スプール・フォルダを開けません"
 
-#: ../camel/camel-filter-driver.c:1200
+#: ../camel/camel-filter-driver.c:1220
 msgid "Unable to process spool folder"
 msgstr "スプール・フォルダを処理できません"
 
-#: ../camel/camel-filter-driver.c:1215
+#: ../camel/camel-filter-driver.c:1236
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "メッセージ %d の取得中 (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1219
+#: ../camel/camel-filter-driver.c:1240
 msgid "Cannot open message"
 msgstr "メッセージを開けません"
 
-#: ../camel/camel-filter-driver.c:1220 ../camel/camel-filter-driver.c:1233
+#: ../camel/camel-filter-driver.c:1241 ../camel/camel-filter-driver.c:1259
 #, c-format
 msgid "Failed on message %d"
 msgstr "メッセージ %d で失敗しました"
 
-#: ../camel/camel-filter-driver.c:1247 ../camel/camel-filter-driver.c:1338
+#: ../camel/camel-filter-driver.c:1273 ../camel/camel-filter-driver.c:1364
 msgid "Syncing folder"
 msgstr "フォルダの同期中"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1343
+#: ../camel/camel-filter-driver.c:1277 ../camel/camel-filter-driver.c:1369
 msgid "Complete"
 msgstr "完了しました"
 
-#: ../camel/camel-filter-driver.c:1308
+#: ../camel/camel-filter-driver.c:1334
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "メッセージ %d / %d の取得中"
 
-#: ../camel/camel-filter-driver.c:1323
+#: ../camel/camel-filter-driver.c:1349
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "メッセージ %d / %d で失敗しました"
@@ -1554,7 +1555,7 @@ msgstr "子プロセス '%s' の生成に失敗しました: %s"
 msgid "Error executing filter search: %s: %s"
 msgstr "フィルタ検索実行中にエラー: %s: %s"
 
-#: ../camel/camel-folder-search.c:332 ../camel/camel-folder-search.c:447
+#: ../camel/camel-folder-search.c:332 ../camel/camel-folder-search.c:444
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1563,7 +1564,7 @@ msgstr ""
 "正規表現の構文を解析できません: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:342 ../camel/camel-folder-search.c:457
+#: ../camel/camel-folder-search.c:342 ../camel/camel-folder-search.c:454
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1572,32 +1573,32 @@ msgstr ""
 "正規表現での検索を実行中にエラー: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:636 ../camel/camel-folder-search.c:678
+#: ../camel/camel-folder-search.c:643 ../camel/camel-folder-search.c:687
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) には論理結果が必要です"
 
-#: ../camel/camel-folder-search.c:731
+#: ../camel/camel-folder-search.c:740
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) は %s の中に含めることはできません"
 
-#: ../camel/camel-folder-search.c:737 ../camel/camel-folder-search.c:744
+#: ../camel/camel-folder-search.c:746 ../camel/camel-folder-search.c:753
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) には検索の種類を表す文字列が必要です"
 
-#: ../camel/camel-folder-search.c:771
+#: ../camel/camel-folder-search.c:780
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) は配列の結果を期待します"
 
-#: ../camel/camel-folder-search.c:780
+#: ../camel/camel-folder-search.c:789
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) にはフォルダの組が必要です"
 
-#: ../camel/camel-folder-search.c:875
+#: ../camel/camel-folder-search.c:884
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "不明なヘッダに対してクエリを実行しています: %s"
@@ -1917,32 +1918,32 @@ msgstr "フォルダ '%s' にあるメッセージを同期して保存中"
 msgid "Cannot write offline journal for folder '%s': %s"
 msgstr "フォルダ '%s' のオフライン・ジャーナルに書き込めません: %s"
 
-#: ../camel/camel-provider.c:62
+#: ../camel/camel-provider.c:60
 msgid "Virtual folder email provider"
 msgstr "仮想フォルダ・メール・プロバイダ"
 
-#: ../camel/camel-provider.c:64
+#: ../camel/camel-provider.c:62
 msgid "For reading mail as a query of another set of folders"
 msgstr "その他のフォルダ・セットのクエリとしてメールを読む"
 
-#: ../camel/camel-provider.c:186
+#: ../camel/camel-provider.c:184
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "%s を読み込めませんでした: このシステムではモジュールの読み込みをサポートして"
 "いません。"
 
-#: ../camel/camel-provider.c:195
+#: ../camel/camel-provider.c:193
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s を読み込めませんでした: %s"
 
-#: ../camel/camel-provider.c:203
+#: ../camel/camel-provider.c:201
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s を読み込めませんでした: モジュールのコードが初期化されていません。"
 
-#: ../camel/camel-provider.c:375 ../camel/camel-session.c:177
+#: ../camel/camel-provider.c:373 ../camel/camel-session.c:177
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "'%s' というプロトコルを利用できるプロバイダはありません"
@@ -2184,17 +2185,17 @@ msgstr "POP でないソースを利用して SMTP 認証の前に POP"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "正規表現の編集に失敗: %s: %s"
 
-#: ../camel/camel-service.c:272
+#: ../camel/camel-service.c:270
 #, c-format
 msgid "URL '%s' needs a username component"
 msgstr "URL '%s' はユーザ名コンポーネントが必要です"
 
-#: ../camel/camel-service.c:276
+#: ../camel/camel-service.c:274
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL '%s' はホスト・コンポーネントが必要です"
 
-#: ../camel/camel-service.c:280
+#: ../camel/camel-service.c:278
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' はパス・コンポーネントが必要です"
@@ -2436,25 +2437,25 @@ msgid "Cannot create folder: %s: folder exists"
 msgstr "フォルダを作成できません: %s: フォルダが存在します"
 
 #: ../camel/camel-store.c:461 ../camel/camel-vee-store.c:384
-#: ../camel/providers/local/camel-maildir-store.c:218
+#: ../camel/providers/local/camel-maildir-store.c:219
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "フォルダを削除できません: %s: 無効な操作です"
 
 #: ../camel/camel-store.c:513 ../camel/camel-vee-store.c:421
-#: ../camel/providers/local/camel-maildir-store.c:290
+#: ../camel/providers/local/camel-maildir-store.c:291
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "フォルダ名を変更できません: %s: 無効な操作です"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:854 ../camel/camel-vtrash-folder.c:53
+#: ../camel/camel-store.c:856 ../camel/camel-vtrash-folder.c:53
 #: ../camel/providers/imap/camel-imap-store.c:1060
 msgid "Trash"
 msgstr "ゴミ箱"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:857 ../camel/camel-vtrash-folder.c:55
+#: ../camel/camel-store.c:859 ../camel/camel-vtrash-folder.c:55
 msgid "Junk"
 msgstr "ジャンク"
 
@@ -2574,7 +2575,7 @@ msgstr "キーの利用方法が認証署名をサポートしていません"
 msgid "Error in application verification"
 msgstr "アプリケーションの検証でエラーが発生しました"
 
-#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:879
+#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2587,11 +2588,11 @@ msgstr ""
 "指紋:              %s\n"
 "署名:              %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "GOOD"
 
-#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "BAD"
 
@@ -2615,7 +2616,7 @@ msgstr ""
 "受諾してみますか？"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:889
+#: ../camel/camel-tcp-stream-ssl.c:890
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2630,7 +2631,7 @@ msgstr ""
 "\n"
 "受諾してみますか？"
 
-#: ../camel/camel-tcp-stream-ssl.c:933
+#: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2639,7 +2640,7 @@ msgstr ""
 "認証問題: %s\n"
 "発行者: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:985
+#: ../camel/camel-tcp-stream-ssl.c:986
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2648,7 +2649,7 @@ msgstr ""
 "おかしな認証ドメイン: %s\n"
 "発行者: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1003
+#: ../camel/camel-tcp-stream-ssl.c:1004
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2657,7 +2658,7 @@ msgstr ""
 "証明書の有効期限切れ: %s\n"
 "発行者: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1020
+#: ../camel/camel-tcp-stream-ssl.c:1021
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2671,19 +2672,19 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "'%s' という URL を解析できませんでした"
 
-#: ../camel/camel-vee-folder.c:514
+#: ../camel/camel-vee-folder.c:586
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "'%s' の格納中にエラー: %s"
 
-#: ../camel/camel-vee-folder.c:560
+#: ../camel/camel-vee-folder.c:638
 #, c-format
 msgid "No such message %s in %s"
-msgstr "%s に %s のようなメッセージはありません"
+msgstr "%2$s には %1$s というメッセージはありません。"
 
-#: ../camel/camel-vee-folder.c:683 ../camel/camel-vee-folder.c:689
+#: ../camel/camel-vee-folder.c:761 ../camel/camel-vee-folder.c:767
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "メッセージの仮想フォルダへのコピーまたは移動ができません"
+msgstr "メッセージの仮想フォルダへのコピーまたは移動ができません。"
 
 #: ../camel/camel-vee-store.c:114 ../camel/camel-vee-store.c:115
 #: ../camel/camel-vee-store.c:360
@@ -2708,7 +2709,7 @@ msgstr "ゴミ箱フォルダへメッセージをコピーできません"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "ジャンク・フォルダへメッセージをコピーできません"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:118
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2717,14 +2718,14 @@ msgstr ""
 "メッセージを取得できません: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:118
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #: ../camel/providers/local/camel-maildir-folder.c:251
-#: ../camel/providers/local/camel-mbox-folder.c:349
+#: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
 msgstr "そのようなメッセージはありません"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:130
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
 #: ../camel/providers/imap4/camel-imap4-folder.c:812
 #: ../camel/providers/nntp/camel-nntp-folder.c:156
 #: ../camel/providers/nntp/camel-nntp-folder.c:232
@@ -2736,7 +2737,7 @@ msgstr "そのようなメッセージはありません"
 msgid "User canceled"
 msgstr "ユーザがキャンセルしました"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
 #: ../camel/providers/imap4/camel-imap4-folder.c:817
 #: ../camel/providers/nntp/camel-nntp-folder.c:147
 #: ../camel/providers/nntp/camel-nntp-folder.c:149
@@ -2751,46 +2752,46 @@ msgstr "ユーザがキャンセルしました"
 msgid "Cannot get message %s: %s"
 msgstr "メッセージ %s を取得できません: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:154
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:162
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2165
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2164
 #: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
 msgstr "このメッセージはオフライン・モードでは利用できません。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:174
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1697
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1748
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1696
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
 msgid "Could not get message"
 msgstr "メッセージを取得できませんでした"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:819
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:248
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s のサマリをロードできませんでした"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1072
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
 msgid "Trash Folder Full. Please Empty."
 msgstr "ゴミ箱フォルダが満杯です。空にして下さい。"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1249
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:3155
-#: ../camel/providers/imap/camel-imap-folder.c:3232
+#: ../camel/providers/imap/camel-imap-folder.c:3183
+#: ../camel/providers/imap/camel-imap-folder.c:3260
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s にある新着メッセージのサマリ情報の同期中"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2032
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2074
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2031
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2073
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "'%s' というフォルダにメッセージを追加できません: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2062
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2061
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "メッセージを作成できません: %s"
@@ -2905,29 +2906,29 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "そのようなフォルダ %s はありません"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1217
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1219
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "オフライン・モードでは GroupWise フォルダを生成できません。"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1231
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1233
 #: ../camel/providers/imap/camel-imap-store.c:1921
 #: ../camel/providers/imap/camel-imap-store.c:2301
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "親フォルダには複数のサブフォルダを含めることはできません"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1307
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1328
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1309
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1330
 #, c-format
 msgid "Cannot rename Groupwise folder '%s' to '%s'"
 msgstr "GroupWise フォルダの '%s' を '%s' という名前に変更できません"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1360
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1362
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise サーバ %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1362
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s の %s にある GroupWise サービス"
@@ -3082,55 +3083,55 @@ msgid "Could not create directory %s: %s"
 msgstr "フォルダ %s を作成できませんでした: %s"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:841
+#: ../camel/providers/imap/camel-imap-folder.c:843
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s にあるメッセージの解析中"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1832
+#: ../camel/providers/imap/camel-imap-folder.c:1860
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
 msgstr "APPEND コマンドの後に想定外の応答ステータスがあります: '%s'"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1847
+#: ../camel/providers/imap/camel-imap-folder.c:1875
 msgid "No response on continuation after APPEND command"
 msgstr "APPEND コマンドに続く応答がありません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1889
+#: ../camel/providers/imap/camel-imap-folder.c:1917
 msgid "Unknown error occurred during APPEND command!"
 msgstr "APPEND コマンドの発行中に原因不明のエラーが発生しました！"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2701
+#: ../camel/providers/imap/camel-imap-folder.c:2729
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "メッセージを取得できません: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2742
+#: ../camel/providers/imap/camel-imap-folder.c:2770
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s という ID のメッセージを取得できません: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2743
+#: ../camel/providers/imap/camel-imap-folder.c:2771
 msgid "No such message available."
 msgstr "そのようなメッセージは利用できません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2782
-#: ../camel/providers/imap/camel-imap-folder.c:3532
+#: ../camel/providers/imap/camel-imap-folder.c:2810
+#: ../camel/providers/imap/camel-imap-folder.c:3562
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "このメッセージは現在利用できません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3361
+#: ../camel/providers/imap/camel-imap-folder.c:3389
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の情報が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3369
+#: ../camel/providers/imap/camel-imap-folder.c:3397
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の UID が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3570
+#: ../camel/providers/imap/camel-imap-folder.c:3600
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH 応答にメッセージ本体がありませんでした。"
 
@@ -3268,10 +3269,10 @@ msgstr "コマンド \"%s\" で接続できませんでした: %s"
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1408
 #: ../camel/providers/local/camel-maildir-folder.c:77
-#: ../camel/providers/local/camel-maildir-store.c:218
-#: ../camel/providers/local/camel-maildir-store.c:290
-#: ../camel/providers/local/camel-maildir-store.c:516
-#: ../camel/providers/local/camel-maildir-store.c:529
+#: ../camel/providers/local/camel-maildir-store.c:219
+#: ../camel/providers/local/camel-maildir-store.c:291
+#: ../camel/providers/local/camel-maildir-store.c:517
+#: ../camel/providers/local/camel-maildir-store.c:530
 #: ../camel/providers/local/camel-spool-store.c:464
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
@@ -3321,7 +3322,7 @@ msgid ""
 msgstr "\"%s\" というフォルダ名に \"%c\" という文字を含めることはできません"
 
 #: ../camel/providers/imap/camel-imap-store.c:1975
-#: ../camel/providers/local/camel-maildir-store.c:191
+#: ../camel/providers/local/camel-maildir-store.c:192
 #: ../camel/providers/local/camel-mbox-store.c:204
 #: ../camel/providers/local/camel-mh-store.c:249
 #, c-format
@@ -3685,7 +3686,7 @@ msgstr "%s の POP サーバへ接続できませんでした"
 
 #: ../camel/providers/local/camel-local-folder.c:174
 msgid "Index message body data"
-msgstr "メッセージ本体のデータの目録を作成する"
+msgstr "メール本文のインデックスを作成する"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:390
@@ -3832,10 +3833,10 @@ msgstr "Maildir 形式のフォルダへメッセージを追加できません:
 #: ../camel/providers/local/camel-maildir-folder.c:250
 #: ../camel/providers/local/camel-maildir-folder.c:264
 #: ../camel/providers/local/camel-maildir-folder.c:273
-#: ../camel/providers/local/camel-mbox-folder.c:348
-#: ../camel/providers/local/camel-mbox-folder.c:369
-#: ../camel/providers/local/camel-mbox-folder.c:400
-#: ../camel/providers/local/camel-mbox-folder.c:408
+#: ../camel/providers/local/camel-mbox-folder.c:347
+#: ../camel/providers/local/camel-mbox-folder.c:368
+#: ../camel/providers/local/camel-mbox-folder.c:399
+#: ../camel/providers/local/camel-mbox-folder.c:407
 #: ../camel/providers/local/camel-mh-folder.c:203
 #: ../camel/providers/local/camel-mh-folder.c:214
 #: ../camel/providers/local/camel-mh-folder.c:223
@@ -3851,69 +3852,69 @@ msgstr ""
 msgid "Invalid message contents"
 msgstr "メッセージの内容は無効です"
 
-#: ../camel/providers/local/camel-maildir-store.c:147
-#: ../camel/providers/local/camel-maildir-store.c:172
+#: ../camel/providers/local/camel-maildir-store.c:148
+#: ../camel/providers/local/camel-maildir-store.c:173
 #: ../camel/providers/local/camel-mbox-store.c:176
 #: ../camel/providers/local/camel-mbox-store.c:188
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "'%s' というフォルダを作成できません: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:160
+#: ../camel/providers/local/camel-maildir-store.c:161
 #: ../camel/providers/local/camel-mbox-store.c:147
 #: ../camel/providers/local/camel-mh-store.c:217
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "'%s' というフォルダを取得できません: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:164
+#: ../camel/providers/local/camel-maildir-store.c:165
 #: ../camel/providers/local/camel-mbox-store.c:155
 #: ../camel/providers/local/camel-mh-store.c:224
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "'%s' というフォルダを取得できません: フォルダが存在しません"
 
-#: ../camel/providers/local/camel-maildir-store.c:188
+#: ../camel/providers/local/camel-maildir-store.c:189
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "'%s' というフォルダを取得できません: maildir フォルダが存在しません"
 
-#: ../camel/providers/local/camel-maildir-store.c:233
-#: ../camel/providers/local/camel-maildir-store.c:271
+#: ../camel/providers/local/camel-maildir-store.c:234
+#: ../camel/providers/local/camel-maildir-store.c:272
 #: ../camel/providers/local/camel-mh-store.c:273
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "'%s' というフォルダを削除できませんでした: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:235
+#: ../camel/providers/local/camel-maildir-store.c:236
 msgid "not a maildir directory"
 msgstr "maildir 形式のフォルダではありません"
 
-#: ../camel/providers/local/camel-maildir-store.c:439
+#: ../camel/providers/local/camel-maildir-store.c:440
 #: ../camel/providers/local/camel-spool-store.c:331
 #: ../camel/providers/local/camel-spool-store.c:345
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "'%s' というフォルダをスキャンできませんでした: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:433
-#: ../camel/providers/local/camel-maildir-summary.c:567
+#: ../camel/providers/local/camel-maildir-summary.c:434
+#: ../camel/providers/local/camel-maildir-summary.c:553
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "maildir フォルダのパスを開けませんでした: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:560
+#: ../camel/providers/local/camel-maildir-summary.c:546
 msgid "Checking folder consistency"
 msgstr "フォルダの整合性の確認中"
 
-#: ../camel/providers/local/camel-maildir-summary.c:664
+#: ../camel/providers/local/camel-maildir-summary.c:650
 msgid "Checking for new messages"
 msgstr "新しいメッセージのチェック"
 
-#: ../camel/providers/local/camel-maildir-summary.c:756
-#: ../camel/providers/local/camel-mbox-summary.c:520
-#: ../camel/providers/local/camel-mbox-summary.c:693
-#: ../camel/providers/local/camel-mbox-summary.c:790
+#: ../camel/providers/local/camel-maildir-summary.c:736
+#: ../camel/providers/local/camel-mbox-summary.c:534
+#: ../camel/providers/local/camel-mbox-summary.c:714
+#: ../camel/providers/local/camel-mbox-summary.c:810
 #: ../camel/providers/local/camel-spool-summary.c:141
 msgid "Storing folder"
 msgstr "フォルダに格納する"
@@ -3929,20 +3930,20 @@ msgstr "%s のフォルダ・ロックを生成できません: %s"
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "mailbox を開けません: %s: %s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:279
+#: ../camel/providers/local/camel-mbox-folder.c:278
 msgid "Mail append canceled"
 msgstr "メールの追加がキャンセルされました"
 
-#: ../camel/providers/local/camel-mbox-folder.c:282
+#: ../camel/providers/local/camel-mbox-folder.c:281
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "mbox ファイルにメッセージを追加できません: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:401
+#: ../camel/providers/local/camel-mbox-folder.c:400
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "フォルダで回復不能なエラーが発生したようです"
 
-#: ../camel/providers/local/camel-mbox-folder.c:409
+#: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:224
 msgid "Message construction failed."
 msgstr "メッセージの構築に失敗しました。"
@@ -4012,81 +4013,76 @@ msgstr "'%s' の名前を変更できませんでした: '%s': %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "'%s' から %s へ名前を変更できませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:526
+#: ../camel/providers/local/camel-mbox-summary.c:540
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "フォルダを開けませんでした: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:574
+#: ../camel/providers/local/camel-mbox-summary.c:588
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "%ld 付近のフォルダ %s で致命的なメール構文解析エラーです"
 
-#: ../camel/providers/local/camel-mbox-summary.c:630
+#: ../camel/providers/local/camel-mbox-summary.c:651
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "フォルダをチェックできません: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:698
-#: ../camel/providers/local/camel-mbox-summary.c:795
+#: ../camel/providers/local/camel-mbox-summary.c:719
+#: ../camel/providers/local/camel-mbox-summary.c:815
 #: ../camel/providers/local/camel-spool-summary.c:146
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "ファイルを開けませんでした: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:710
+#: ../camel/providers/local/camel-mbox-summary.c:731
 #: ../camel/providers/local/camel-spool-summary.c:159
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "作業用の mailbox を開けませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:942
+#: ../camel/providers/local/camel-mbox-summary.c:744
+#: ../camel/providers/local/camel-mbox-summary.c:920
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "元のフォルダ %s を閉じることができませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:732
+#: ../camel/providers/local/camel-mbox-summary.c:753
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "作業用フォルダを閉じることができませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:747
+#: ../camel/providers/local/camel-mbox-summary.c:768
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "フォルダ名を変更できませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:806
-#: ../camel/providers/local/camel-mbox-summary.c:1146
+#: ../camel/providers/local/camel-mbox-summary.c:826
+#: ../camel/providers/local/camel-mbox-summary.c:1050
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "フォルダを保存できませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:853
-#: ../camel/providers/local/camel-mbox-summary.c:882
-#: ../camel/providers/local/camel-mbox-summary.c:1188
-#: ../camel/providers/local/camel-mbox-summary.c:1217
-msgid "Detected a corrupt mbox file or an invalid 'From' header"
-msgstr "無効な mbox ファイルかあるいは間違った '差出人' ヘッダを検出しました"
+#: ../camel/providers/local/camel-mbox-summary.c:862
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:1080
+#: ../camel/providers/local/camel-mbox-summary.c:1088
+msgid "Summary and folder mismatch, even after a sync"
+msgstr "サマリとフォルダが一致しませんでした (同期しても)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1035
+#: ../camel/providers/local/camel-mbox-summary.c:1013
 #: ../camel/providers/local/camel-spool-summary.c:327
 #, c-format
 msgid "Unknown error: %s"
 msgstr "原因不明のエラー: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1071
-#, c-format
-msgid "Folder %s cannot be opened: %s"
-msgstr "%s というフォルダを開けません: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:1282
-#: ../camel/providers/local/camel-mbox-summary.c:1308
+#: ../camel/providers/local/camel-mbox-summary.c:1156
+#: ../camel/providers/local/camel-mbox-summary.c:1182
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "作業用の mailbox に書き込めませんでした: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1299
+#: ../camel/providers/local/camel-mbox-summary.c:1173
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "作業用の mailbox に書き込めませんでした: %s: %s"
@@ -4110,7 +4106,7 @@ msgstr "'%s' というフォルダを作成できませんでした: %s"
 msgid "Cannot get folder '%s': not a directory."
 msgstr "'%s' というフォルダを取得できません: フォルダではありません"
 
-#: ../camel/providers/local/camel-mh-summary.c:246
+#: ../camel/providers/local/camel-mh-summary.c:248
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH フォルダのパスを開けません: %s: %s"
@@ -5204,13 +5200,13 @@ msgid "_Destination"
 msgstr "転送先(_D)"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1683
-#: ../servers/exchange/storage/exchange-account.c:971
+#: ../servers/exchange/storage/exchange-account.c:953
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s のパスワードを入力して下さい"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1684
-#: ../servers/exchange/storage/exchange-account.c:976
+#: ../servers/exchange/storage/exchange-account.c:958
 msgid "Enter password"
 msgstr "パスワードの入力"
 
@@ -5314,26 +5310,26 @@ msgstr "この操作はオフライン・モードでは利用できません。
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:662
+#: ../servers/exchange/storage/exchange-account.c:644
 #, c-format
 msgid "%s's Folders"
 msgstr "%s のフォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1259
 msgid "Personal Folders"
 msgstr "個人フォルダ"
 
-#: ../servers/exchange/storage/exchange-account.c:1292
+#: ../servers/exchange/storage/exchange-account.c:1274
 msgid "Favorite Public Folders"
 msgstr "お気に入りのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1309
+#: ../servers/exchange/storage/exchange-account.c:1291
 msgid "All Public Folders"
 msgstr "全てのパブリックなフォルダ"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1323
+#: ../servers/exchange/storage/exchange-account.c:1305
 msgid "Global Address List"
 msgstr "グローバルな住所の一覧"
 
@@ -5408,6 +5404,3 @@ msgstr "色の情報"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "描画する色の情報です"
-
-#~ msgid "Folder was destroyed and recreated on server."
-#~ msgstr "フォルダは破壊され再作成されました"
