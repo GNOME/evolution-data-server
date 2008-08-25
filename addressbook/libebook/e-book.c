@@ -3115,6 +3115,25 @@ e_book_unload_uri (EBook   *book,
 
 
 
+
+/* Set a flag for operation from the operation hash table */
+static void
+find_key_value (gpointer key, gpointer value, gpointer data)
+{
+	EBookOp *op;
+
+	op = value;
+
+	if (op == NULL) {
+		g_warning ("find_key_value: Cannot find operation ");
+		return;
+	}
+
+	op->status = E_BOOK_ERROR_SOURCE_NOT_LOADED;
+	if (op->synchronous)
+		e_flag_set (op->flag);
+}
+
 /**
  * e_book_load_uri:
  */
@@ -3122,7 +3141,13 @@ e_book_unload_uri (EBook   *book,
 static void
 backend_died_cb (EComponentListener *cl, gpointer user_data)
 {
-	EBook *book = user_data;
+	EBook *book = (EBook *)user_data;
+	
+	d(printf ("backend_died_cb\n"));	
+
+	g_mutex_lock (book->priv->mutex);
+	g_hash_table_foreach (book->priv->id_to_op, find_key_value, NULL);
+	g_mutex_unlock (book->priv->mutex);
 
 	book->priv->load_state = E_BOOK_SOURCE_NOT_LOADED;
         g_signal_emit (book, e_book_signals [BACKEND_DIED], 0);

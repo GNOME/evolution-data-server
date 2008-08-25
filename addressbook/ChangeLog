@@ -1,3 +1,10 @@
+2008-08-25  Ashish Shrivastava  <shashish@novell.com>
+
+	** Fix for bug #391936 (bugzilla.novell.com)
+
+	* libebook/e-book.c (find_key_value), (backend_died_cb): 
+	  To solve hang issue after e-d-s crash.
+
 2008-08-21  Shuai Liu  <shuai.liu@sun.com>
 
 	** Fix for bug #548565
@@ -13,7 +20,7 @@
 	(e_contact_find_attribute_with_types): Check complete list of
 	values in a parameter when looking for some particular value.
 
-2008-08-16  JÃ¶rgen Scheibengruber  <mfcn@gmx.de>
+2008-08-16  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	(google_book_construct_base_uri):
 	* backends/google/util.c (_add_type_param_from_google_rel):
