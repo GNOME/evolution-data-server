@@ -1,4 +1,4 @@
-# Finnish messages for evolution
+# Finnish messages for evolution-data-server
 # Copyright (C) 2000-2008 Free Software Foundation, Inc.
 # Jarkko Ranta <jjranta@cc.joensuu.fi> 2000-2001,
 # Sami Pesonen <sampeson@iki.fi> 2001-2003.
@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution\n"
+"Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-11 14:47+0300\n"
-"PO-Revision-Date: 2008-08-11 13:00+0300\n"
+"POT-Creation-Date: 2008-08-27 12:24+0300\n"
+"PO-Revision-Date: 2008-08-27 12:00+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -91,7 +91,7 @@ msgstr "Virhe suoritettaessa hakua"
 #: ../addressbook/libebook/e-book.c:1787 ../addressbook/libebook/e-book.c:1791
 #: ../addressbook/libebook/e-book.c:2025 ../addressbook/libebook/e-book.c:2029
 #: ../addressbook/libebook/e-book.c:2234 ../addressbook/libebook/e-book.c:2238
-#: ../addressbook/libebook/e-book.c:3339
+#: ../addressbook/libebook/e-book.c:3364
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" on kirjassa ennen kuin \"%s\""
@@ -120,7 +120,7 @@ msgstr "kirja käytössä"
 #: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
 #: ../addressbook/libebook/e-book.c:2538 ../addressbook/libebook/e-book.c:2619
 #: ../addressbook/libebook/e-book.c:2623 ../addressbook/libebook/e-book.c:2818
-#: ../addressbook/libebook/e-book.c:2822 ../addressbook/libebook/e-book.c:3348
+#: ../addressbook/libebook/e-book.c:2822 ../addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA-poikkeus kutsun \"%s\" aikana"
@@ -145,27 +145,27 @@ msgstr "\"%s\" on kirjassa \"%s\" jälkeen"
 msgid "%s: canceled"
 msgstr "%s: peruttu"
 
-#: ../addressbook/libebook/e-book.c:3203
+#: ../addressbook/libebook/e-book.c:3228
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: virheellinen lähde."
 
-#: ../addressbook/libebook/e-book.c:3211 ../addressbook/libebook/e-book.c:3277
+#: ../addressbook/libebook/e-book.c:3236 ../addressbook/libebook/e-book.c:3302
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: URIlle \"%s\" ei löydy tehdasta"
 
-#: ../addressbook/libebook/e-book.c:3223
+#: ../addressbook/libebook/e-book.c:3248
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListeneriä ei voitu luoda"
 
-#: ../addressbook/libebook/e-book.c:3490
+#: ../addressbook/libebook/e-book.c:3515
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: gconf ei sisältänyt oman kontaktin uidia"
 
-#: ../addressbook/libebook/e-book.c:3623
+#: ../addressbook/libebook/e-book.c:3648
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: gconf ei sisältänyt lähdettä uid:ille \"%s\""
@@ -668,7 +668,7 @@ msgstr "Maantieteelliset tiedot"
 msgid "Telephone"
 msgstr "Puhelin"
 
-#: ../addressbook/libebook/e-contact.c:1493
+#: ../addressbook/libebook/e-contact.c:1499
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "Nimeämätön lista"
@@ -702,16 +702,16 @@ msgid "Could not create thread for getting deltas"
 msgstr "Deltojen hakuun ei voitu luoda säiettä"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1192
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1049
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1348
+#: ../calendar/backends/google/e-cal-backend-google.c:1194
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
 #: ../calendar/backends/http/e-cal-backend-http.c:569
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "Välimuistitiedostoa ei voitu luoda"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:380
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1061
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1065
 msgid "Could not create thread for populating cache"
 msgstr "Välimuistitiedoston luontia varten ei voitu luoda säiettä"
 
@@ -725,24 +725,24 @@ msgstr "Vastausta pyydetään: mennessä "
 msgid "Reply Requested: When convenient"
 msgstr "Vastausta pyydetään: kun sopii"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:275
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:277
 #, c-format
 msgid "Loading %s items"
 msgstr "Ladataan %s kohdetta"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:885
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:889
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "Kalenteri"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:943
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:947
 msgid "Invalid server URI"
 msgstr "Virheellinen palvelimen URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:971
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1067
-#: ../calendar/libecal/e-cal.c:5076
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:975
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
+#: ../calendar/libecal/e-cal.c:5082
 #: ../calendar/libedata-cal/e-cal-backend-util.c:109
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1075
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1107
@@ -1119,85 +1119,85 @@ msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Syötä salasana kohteelle %s ottaaksesi käyttöön välimuisti  käyttäjälle %s"
 
-#: ../calendar/libecal/e-cal.c:5048
+#: ../calendar/libecal/e-cal.c:5054
 msgid "Invalid argument"
 msgstr "Virheellinen argumentti"
 
-#: ../calendar/libecal/e-cal.c:5050
+#: ../calendar/libecal/e-cal.c:5056
 msgid "Backend is busy"
 msgstr "Taustajärjestelmä on käytössä"
 
-#: ../calendar/libecal/e-cal.c:5052
+#: ../calendar/libecal/e-cal.c:5058
 #: ../calendar/libedata-cal/e-cal-backend-util.c:97
 msgid "Repository is offline"
 msgstr "Varasto on yhteydettömässä tilassa"
 
-#: ../calendar/libecal/e-cal.c:5054
+#: ../calendar/libecal/e-cal.c:5060
 #: ../calendar/libedata-cal/e-cal-backend-util.c:121
 msgid "No such calendar"
 msgstr "Kalenteria ei ole olemassa"
 
-#: ../calendar/libecal/e-cal.c:5056
+#: ../calendar/libecal/e-cal.c:5062
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "Kohdetta ei löydy"
 
-#: ../calendar/libecal/e-cal.c:5058
+#: ../calendar/libecal/e-cal.c:5064
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "Virheellinen kohde"
 
-#: ../calendar/libecal/e-cal.c:5060
+#: ../calendar/libecal/e-cal.c:5066
 msgid "URI not loaded"
 msgstr "URIa ei ole ladattu"
 
-#: ../calendar/libecal/e-cal.c:5062
+#: ../calendar/libecal/e-cal.c:5068
 msgid "URI already loaded"
 msgstr "URI on jo ladattu"
 
-#: ../calendar/libecal/e-cal.c:5064
+#: ../calendar/libecal/e-cal.c:5070
 #: ../calendar/libedata-cal/e-cal-backend-util.c:99
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "Lupa evätty"
 
-#: ../calendar/libecal/e-cal.c:5066
+#: ../calendar/libecal/e-cal.c:5072
 #: ../calendar/libedata-cal/e-cal-backend-util.c:123
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "Tuntematon käyttäjä"
 
-#: ../calendar/libecal/e-cal.c:5068
+#: ../calendar/libecal/e-cal.c:5074
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
 msgid "Object ID already exists"
 msgstr "OID on jo olemassa"
 
-#: ../calendar/libecal/e-cal.c:5070
+#: ../calendar/libecal/e-cal.c:5076
 msgid "Protocol not supported"
 msgstr "Protokolla ei ole tuettu"
 
-#: ../calendar/libecal/e-cal.c:5072
+#: ../calendar/libecal/e-cal.c:5078
 msgid "Operation has been canceled"
 msgstr "Toimenpide on peruttu"
 
-#: ../calendar/libecal/e-cal.c:5074
+#: ../calendar/libecal/e-cal.c:5080
 #: ../calendar/libedata-cal/e-cal-backend-util.c:135
 msgid "Could not cancel operation"
 msgstr "Toimenpidettä ei voitu perua"
 
-#: ../calendar/libecal/e-cal.c:5078
+#: ../calendar/libecal/e-cal.c:5084
 #: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../camel/providers/smtp/camel-smtp-transport.c:218
 msgid "Authentication required"
 msgstr "Todennus vaaditaan"
 
-#: ../calendar/libecal/e-cal.c:5080
+#: ../calendar/libecal/e-cal.c:5086
 msgid "A CORBA exception has occurred"
 msgstr "Tapahtui CORBA-poikkeus"
 
-#: ../calendar/libecal/e-cal.c:5082
+#: ../calendar/libecal/e-cal.c:5088
 #: ../calendar/libedata-cal/e-cal-backend-util.c:138
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:434
@@ -1217,7 +1217,7 @@ msgstr "Tapahtui CORBA-poikkeus"
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: ../calendar/libecal/e-cal.c:5084
+#: ../calendar/libecal/e-cal.c:5090
 #: ../calendar/libedata-cal/e-cal-backend-util.c:95
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
@@ -1412,7 +1412,7 @@ msgstr "Välimuistipolun luonti epäonnistui"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Tietoa ei voitu avata välimuistista: %s: %s"
 
-#: ../camel/camel-db.c:108
+#: ../camel/camel-db.c:107
 msgid "Insufficient memory"
 msgstr "Muisti ei riitä"
 
@@ -1428,6 +1428,7 @@ msgstr ""
 "uudelleen yhteyttää verkkoon."
 
 #: ../camel/camel-disco-diary.c:261
+#: ../camel/providers/imap/camel-imap-journal.c:299
 #, c-format
 msgid ""
 "Could not open '%s':\n"
@@ -1483,52 +1484,52 @@ msgstr "Virheellinen viestivirta lähteestä %s: %s"
 msgid "Syncing folders"
 msgstr "Synkronoidaan kansiota"
 
-#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1494
+#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1520
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Virhe jäsennettäessä suodatinta: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1503
+#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1529
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Virhe suoritettaessa suodatinta: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1191
+#: ../camel/camel-filter-driver.c:1211
 msgid "Unable to open spool folder"
 msgstr "Saapuvien viestien kansiota ei voitu avata"
 
-#: ../camel/camel-filter-driver.c:1200
+#: ../camel/camel-filter-driver.c:1220
 msgid "Unable to process spool folder"
 msgstr "Saapuvien viestien kansiota ei voitu käsitellä"
 
-#: ../camel/camel-filter-driver.c:1215
+#: ../camel/camel-filter-driver.c:1236
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Haetaan viestiä %d (%d %%)"
 
-#: ../camel/camel-filter-driver.c:1219
+#: ../camel/camel-filter-driver.c:1240
 msgid "Cannot open message"
 msgstr "Viestiä ei voi avata"
 
-#: ../camel/camel-filter-driver.c:1220 ../camel/camel-filter-driver.c:1233
+#: ../camel/camel-filter-driver.c:1241 ../camel/camel-filter-driver.c:1259
 #, c-format
 msgid "Failed on message %d"
 msgstr "Virhe viestin %d kohdalla"
 
-#: ../camel/camel-filter-driver.c:1247 ../camel/camel-filter-driver.c:1338
+#: ../camel/camel-filter-driver.c:1273 ../camel/camel-filter-driver.c:1364
 msgid "Syncing folder"
 msgstr "Synkronoidaan kansiota"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1343
+#: ../camel/camel-filter-driver.c:1277 ../camel/camel-filter-driver.c:1369
 msgid "Complete"
 msgstr "Valmis"
 
-#: ../camel/camel-filter-driver.c:1308
+#: ../camel/camel-filter-driver.c:1334
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Haetaan viestiä %d / %d"
 
-#: ../camel/camel-filter-driver.c:1323
+#: ../camel/camel-filter-driver.c:1349
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Virhe viestin %d/%d kohdalla"
@@ -1556,7 +1557,7 @@ msgstr "Lapsiprosessin \"%s\" luominen epäonnistui: %s"
 msgid "Error executing filter search: %s: %s"
 msgstr "Virhe suoritettaessa suodatinhakua: %s: %s"
 
-#: ../camel/camel-folder-search.c:332 ../camel/camel-folder-search.c:447
+#: ../camel/camel-folder-search.c:332 ../camel/camel-folder-search.c:444
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1565,7 +1566,7 @@ msgstr ""
 "Hakulauseketta ei voi tulkita: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:342 ../camel/camel-folder-search.c:457
+#: ../camel/camel-folder-search.c:342 ../camel/camel-folder-search.c:454
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1574,32 +1575,32 @@ msgstr ""
 "Virhe suoritettaessa hakulauseketta: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:643 ../camel/camel-folder-search.c:685
+#: ../camel/camel-folder-search.c:643 ../camel/camel-folder-search.c:687
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) vaatii yhden totuusarvoisen tuloksen"
 
-#: ../camel/camel-folder-search.c:738
+#: ../camel/camel-folder-search.c:740
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) ei ole sallittu kohdan %s sisällä"
 
-#: ../camel/camel-folder-search.c:744 ../camel/camel-folder-search.c:751
+#: ../camel/camel-folder-search.c:746 ../camel/camel-folder-search.c:753
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) vaatii vertaustyypin merkkijonon"
 
-#: ../camel/camel-folder-search.c:778
+#: ../camel/camel-folder-search.c:780
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) olettaa tuloksena olevan taulukon"
 
-#: ../camel/camel-folder-search.c:787
+#: ../camel/camel-folder-search.c:789
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) vaatii kansion asettamisen"
 
-#: ../camel/camel-folder-search.c:882
+#: ../camel/camel-folder-search.c:884
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "Kysely tuntemattomaan otsakkeeseen: %s"
@@ -2454,13 +2455,13 @@ msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kansion nimeäminen ei onnistu: %s: virheellinen toiminto"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:854 ../camel/camel-vtrash-folder.c:53
+#: ../camel/camel-store.c:856 ../camel/camel-vtrash-folder.c:53
 #: ../camel/providers/imap/camel-imap-store.c:1060
 msgid "Trash"
 msgstr "Roskakori"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:857 ../camel/camel-vtrash-folder.c:55
+#: ../camel/camel-store.c:859 ../camel/camel-vtrash-folder.c:55
 msgid "Junk"
 msgstr "Roskaposti"
 
@@ -2580,7 +2581,7 @@ msgstr "Avaimen käyttötarkoitus ei salli varmenteiden allekirjoitusta"
 msgid "Error in application verification"
 msgstr "Virhe käyttötarkoituksen varmentamisessa"
 
-#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:879
+#: ../camel/camel-tcp-stream-openssl.c:700 ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2593,11 +2594,11 @@ msgstr ""
 "Sormenjälki:       %s\n"
 "Allekirjoitus:     %s "
 
-#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:886
 msgid "GOOD"
 msgstr "HYVÄKSYTTY"
 
-#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:885
+#: ../camel/camel-tcp-stream-openssl.c:706 ../camel/camel-tcp-stream-ssl.c:886
 msgid "BAD"
 msgstr "VIRHEELLINEN"
 
@@ -2621,7 +2622,7 @@ msgstr ""
 "Haluatko hyväksyä kaikesta huolimatta?"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:889
+#: ../camel/camel-tcp-stream-ssl.c:890
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2636,7 +2637,7 @@ msgstr ""
 "\n"
 "Haluatko hyväksyä?"
 
-#: ../camel/camel-tcp-stream-ssl.c:933
+#: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2645,7 +2646,7 @@ msgstr ""
 "Ongelma varmenteessa: %s\n"
 "Myöntäjä: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:985
+#: ../camel/camel-tcp-stream-ssl.c:986
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2654,7 +2655,7 @@ msgstr ""
 "Virheellinen varmenteen alue: %s\n"
 "Myöntäjä %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1003
+#: ../camel/camel-tcp-stream-ssl.c:1004
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2663,7 +2664,7 @@ msgstr ""
 "Varmenne vanhentunut: %s\n"
 "Myöntäjä: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1020
+#: ../camel/camel-tcp-stream-ssl.c:1021
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2677,17 +2678,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "URLia \"%s\" ei voi tulkita"
 
-#: ../camel/camel-vee-folder.c:580
+#: ../camel/camel-vee-folder.c:586
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "Virhe tallennettaessa \"%s\": %s"
 
-#: ../camel/camel-vee-folder.c:626
+#: ../camel/camel-vee-folder.c:638
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Viestiä %s ei voitu löytää %s:stä"
 
-#: ../camel/camel-vee-folder.c:749 ../camel/camel-vee-folder.c:755
+#: ../camel/camel-vee-folder.c:761 ../camel/camel-vee-folder.c:767
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
 "Viestien kopioiminen tai siirtäminen ei onnistu virtuaalisiin kansioihin"
@@ -2726,7 +2727,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #: ../camel/providers/local/camel-maildir-folder.c:251
-#: ../camel/providers/local/camel-mbox-folder.c:349
+#: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
 msgstr "Ei tällaista viestiä"
@@ -2785,8 +2786,8 @@ msgstr "Roskakori on täynnä, poista sieltä viestejä."
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:3161
-#: ../camel/providers/imap/camel-imap-folder.c:3238
+#: ../camel/providers/imap/camel-imap-folder.c:3183
+#: ../camel/providers/imap/camel-imap-folder.c:3260
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
@@ -3090,51 +3091,51 @@ msgstr "Hakemistoa %s ei voitu luoda: %s"
 msgid "Scanning for changed messages in %s"
 msgstr "Etsitään muuttuneita viestejä kansiosta %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1838
+#: ../camel/providers/imap/camel-imap-folder.c:1860
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
 msgstr "Odottamaton vastauskoodin tila \"%s\" APPEND-komennon jälkeen"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1853
+#: ../camel/providers/imap/camel-imap-folder.c:1875
 msgid "No response on continuation after APPEND command"
 msgstr "Ei vastausta jatkolle APPEND-komennon jälkeen"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1895
+#: ../camel/providers/imap/camel-imap-folder.c:1917
 msgid "Unknown error occurred during APPEND command!"
 msgstr "Tapahtui tuntematon virhe APPEND-komennon aikana!"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2707
+#: ../camel/providers/imap/camel-imap-folder.c:2729
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Viestin haku epäonnistui: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2748
+#: ../camel/providers/imap/camel-imap-folder.c:2770
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Viestiä tunnisteella %s ei voi noutaa: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2749
+#: ../camel/providers/imap/camel-imap-folder.c:2771
 msgid "No such message available."
 msgstr "Tämä viesti ei ole saatavilla."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2788
-#: ../camel/providers/imap/camel-imap-folder.c:3540
+#: ../camel/providers/imap/camel-imap-folder.c:2810
+#: ../camel/providers/imap/camel-imap-folder.c:3562
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "Tämä viesti ei ole juuri nyt saatavilla"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3367
+#: ../camel/providers/imap/camel-imap-folder.c:3389
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Epätäydellinen vastaus palvelimelta: viestille %d ei löytynyt mitään tietoja"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3375
+#: ../camel/providers/imap/camel-imap-folder.c:3397
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Epätäydellinen vastaus palvelimelta: Viestille %d ei löytynyt UID:ia"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3578
+#: ../camel/providers/imap/camel-imap-folder.c:3600
 msgid "Could not find message body in FETCH response."
 msgstr "Viestin runkoa ei löytynyt FETCH-vastauksesta"
 
@@ -3834,10 +3835,10 @@ msgstr "Viestiä ei voi lisätä maildir-kansioon: %s: %s"
 #: ../camel/providers/local/camel-maildir-folder.c:250
 #: ../camel/providers/local/camel-maildir-folder.c:264
 #: ../camel/providers/local/camel-maildir-folder.c:273
-#: ../camel/providers/local/camel-mbox-folder.c:348
-#: ../camel/providers/local/camel-mbox-folder.c:369
-#: ../camel/providers/local/camel-mbox-folder.c:400
-#: ../camel/providers/local/camel-mbox-folder.c:408
+#: ../camel/providers/local/camel-mbox-folder.c:347
+#: ../camel/providers/local/camel-mbox-folder.c:368
+#: ../camel/providers/local/camel-mbox-folder.c:399
+#: ../camel/providers/local/camel-mbox-folder.c:407
 #: ../camel/providers/local/camel-mh-folder.c:203
 #: ../camel/providers/local/camel-mh-folder.c:214
 #: ../camel/providers/local/camel-mh-folder.c:223
@@ -3898,24 +3899,24 @@ msgstr "ei maildir-hakemisto"
 msgid "Could not scan folder '%s': %s"
 msgstr "Kansiota \"%s\" ei voitu käydä läpi: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:433
-#: ../camel/providers/local/camel-maildir-summary.c:567
+#: ../camel/providers/local/camel-maildir-summary.c:434
+#: ../camel/providers/local/camel-maildir-summary.c:553
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Maildir-kansiota ei voi avata: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:560
+#: ../camel/providers/local/camel-maildir-summary.c:546
 msgid "Checking folder consistency"
 msgstr "Tarkastetaan kansion yhdenmukaisuutta"
 
-#: ../camel/providers/local/camel-maildir-summary.c:664
+#: ../camel/providers/local/camel-maildir-summary.c:650
 msgid "Checking for new messages"
 msgstr "Etsitään uusia viestejä"
 
-#: ../camel/providers/local/camel-maildir-summary.c:756
-#: ../camel/providers/local/camel-mbox-summary.c:520
-#: ../camel/providers/local/camel-mbox-summary.c:693
-#: ../camel/providers/local/camel-mbox-summary.c:790
+#: ../camel/providers/local/camel-maildir-summary.c:736
+#: ../camel/providers/local/camel-mbox-summary.c:534
+#: ../camel/providers/local/camel-mbox-summary.c:714
+#: ../camel/providers/local/camel-mbox-summary.c:810
 #: ../camel/providers/local/camel-spool-summary.c:141
 msgid "Storing folder"
 msgstr "Tallennetaan kansiota"
@@ -3931,20 +3932,20 @@ msgstr "Kansion \"%s\" lukkoa ei voi varata: %s"
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "Sähköpostilaatikkoa ei voi avata: %s: %s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:279
+#: ../camel/providers/local/camel-mbox-folder.c:278
 msgid "Mail append canceled"
 msgstr "Sähköpostin lisäys keskeytetty"
 
-#: ../camel/providers/local/camel-mbox-folder.c:282
+#: ../camel/providers/local/camel-mbox-folder.c:281
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "Viestiä ei voi lisätä mbox-tiedostoon: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:401
+#: ../camel/providers/local/camel-mbox-folder.c:400
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Kansio näyttäisi olevan peruuttamattomasti vaurioitunut."
 
-#: ../camel/providers/local/camel-mbox-folder.c:409
+#: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:224
 msgid "Message construction failed."
 msgstr "Viestin luominen epäonnistui."
@@ -4014,81 +4015,76 @@ msgstr "Kohdetta \"%s\" ei voitu nimetä uudestaan: \"%s\": %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Uudelleennimeäminen %s:stä %s:ksi epäonnistui: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:526
+#: ../camel/providers/local/camel-mbox-summary.c:540
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kansiota ei voitu avata: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:574
+#: ../camel/providers/local/camel-mbox-summary.c:588
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "Vakava sähköpostin käsittelyvirhe kohdassa %ld kansiossa %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:630
+#: ../camel/providers/local/camel-mbox-summary.c:651
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kansion tarkistus ei onnistu: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:698
-#: ../camel/providers/local/camel-mbox-summary.c:795
+#: ../camel/providers/local/camel-mbox-summary.c:719
+#: ../camel/providers/local/camel-mbox-summary.c:815
 #: ../camel/providers/local/camel-spool-summary.c:146
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Tiedostoa ei voitu avata: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:710
+#: ../camel/providers/local/camel-mbox-summary.c:731
 #: ../camel/providers/local/camel-spool-summary.c:159
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Väliaikaista sähköpostilaatikkoa ei voi avata: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:723
-#: ../camel/providers/local/camel-mbox-summary.c:942
+#: ../camel/providers/local/camel-mbox-summary.c:744
+#: ../camel/providers/local/camel-mbox-summary.c:920
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Lähdekansiota %s ei voitu sulkea: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:732
+#: ../camel/providers/local/camel-mbox-summary.c:753
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Väliaikaiskansiota ei voitu sulkea: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:747
+#: ../camel/providers/local/camel-mbox-summary.c:768
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kansiota ei voitu uudelleen nimetä: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:806
-#: ../camel/providers/local/camel-mbox-summary.c:1146
+#: ../camel/providers/local/camel-mbox-summary.c:826
+#: ../camel/providers/local/camel-mbox-summary.c:1050
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kansiota ei voitu tallentaa: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:853
-#: ../camel/providers/local/camel-mbox-summary.c:882
-#: ../camel/providers/local/camel-mbox-summary.c:1188
-#: ../camel/providers/local/camel-mbox-summary.c:1217
-msgid "Detected a corrupt mbox file or an invalid 'From' header"
-msgstr "Havaittiin viallinen mbox-tiedosto tai virheellinen From-otsake"
+#: ../camel/providers/local/camel-mbox-summary.c:862
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:1080
+#: ../camel/providers/local/camel-mbox-summary.c:1088
+msgid "Summary and folder mismatch, even after a sync"
+msgstr "Yhteenveto ja kansio ovat ristiriidassa synkronoinnin jälkeenkin"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1035
+#: ../camel/providers/local/camel-mbox-summary.c:1013
 #: ../camel/providers/local/camel-spool-summary.c:327
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Tuntematon virhe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1071
-#, c-format
-msgid "Folder %s cannot be opened: %s"
-msgstr "Kansiota \"%s\" ei voi avata: %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:1282
-#: ../camel/providers/local/camel-mbox-summary.c:1308
+#: ../camel/providers/local/camel-mbox-summary.c:1156
+#: ../camel/providers/local/camel-mbox-summary.c:1182
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Väliaikaiseen postikansioon kirjoitus epäonnistui: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1299
+#: ../camel/providers/local/camel-mbox-summary.c:1173
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Väliaikaiseen postikansioon kirjoitus epäonnistui: %s: %s"
@@ -4112,7 +4108,7 @@ msgstr "Kansiota \"%s\" ei voi luoda: %s"
 msgid "Cannot get folder '%s': not a directory."
 msgstr "Kansiota \"%s\" ei voi avata: se ei ole hakemisto."
 
-#: ../camel/providers/local/camel-mh-summary.c:246
+#: ../camel/providers/local/camel-mh-summary.c:248
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH-kansion polku ei voi avata: %s: %s"
@@ -5210,13 +5206,13 @@ msgid "_Destination"
 msgstr "_Kohde"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1683
-#: ../servers/exchange/storage/exchange-account.c:971
+#: ../servers/exchange/storage/exchange-account.c:953
 #, c-format
 msgid "Enter password for %s"
 msgstr "Syötä salasana tilille %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1684
-#: ../servers/exchange/storage/exchange-account.c:976
+#: ../servers/exchange/storage/exchange-account.c:958
 msgid "Enter password"
 msgstr "Syötä salasana"
 
@@ -5320,26 +5316,26 @@ msgstr "Tätä toimintoa ei voi tehdä yhteydettömässä tilassa"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:662
+#: ../servers/exchange/storage/exchange-account.c:644
 #, c-format
 msgid "%s's Folders"
 msgstr "%s:n kansiot"
 
-#: ../servers/exchange/storage/exchange-account.c:1277
+#: ../servers/exchange/storage/exchange-account.c:1259
 msgid "Personal Folders"
 msgstr "Omat kansiot"
 
-#: ../servers/exchange/storage/exchange-account.c:1292
+#: ../servers/exchange/storage/exchange-account.c:1274
 msgid "Favorite Public Folders"
 msgstr "Julkisten kansioiden suosikit"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1309
+#: ../servers/exchange/storage/exchange-account.c:1291
 msgid "All Public Folders"
 msgstr "Kaikki julkiset kansiot"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1323
+#: ../servers/exchange/storage/exchange-account.c:1305
 msgid "Global Address List"
 msgstr "Osoitelista"
 
@@ -5412,6 +5408,12 @@ msgstr "Väritietot"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "Esitettävä väri"
+
+#~ msgid "Detected a corrupt mbox file or an invalid 'From' header"
+#~ msgstr "Havaittiin viallinen mbox-tiedosto tai virheellinen From-otsake"
+
+#~ msgid "Folder %s cannot be opened: %s"
+#~ msgstr "Kansiota \"%s\" ei voi avata: %s"
 
 #~ msgid "Cannot find certificate for `%s'"
 #~ msgstr "Varmennetta `%s':lle ei löydy"
