@@ -1,3 +1,13 @@
+2008-08-28  Patrick Ohly  <patrick.ohly@gmx.de>
+
+	* Bug fix #518728: subtle link error: system libs before Evolution
+	libs
+
+	When compiling on Debian Etch (Evolution 2.12), evolution-dataserver
+	was linked against /usr/lib/libebook-1.2.so.5 because of the incorrect
+	link order. "incorrect" in this context means "system libs" before
+	"Evolution libs".
+
 2008-08-18  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.23.90 release and
