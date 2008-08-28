@@ -49,9 +49,9 @@ libebook_1_2_la_SOURCES =				\
 	e-vcard.c
 
 libebook_1_2_la_LIBADD =					\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(top_builddir)/camel/libcamel-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la
+	$(top_builddir)/libedataserver/libedataserver-1.2.la    \
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libebook_1_2_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED)
