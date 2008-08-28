@@ -58,6 +58,7 @@ struct _ESourceSelectorClass {
 GType  e_source_selector_get_type  (void);
 
 GtkWidget *e_source_selector_new  (ESourceList *list);
+ESourceList *	e_source_selector_get_source_list (ESourceSelector *selector);
 
 void      e_source_selector_select_source       (ESourceSelector *selector,
 						 ESource         *source);

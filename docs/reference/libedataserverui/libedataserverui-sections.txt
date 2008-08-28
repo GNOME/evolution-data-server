@@ -245,6 +245,7 @@ e_name_selector_model_get_type
 <TITLE>ESourceSelector</TITLE>
 ESourceSelector
 e_source_selector_new
+e_source_selector_get_source_list
 e_source_selector_select_source
 e_source_selector_unselect_source
 e_source_selector_source_is_selected

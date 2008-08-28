@@ -1,3 +1,8 @@
+2008-08-28  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-source-selector.c (e_source_selector_get_source_list):
+	New function provides access to the internal source list.
+
 2008-08-17  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #547952

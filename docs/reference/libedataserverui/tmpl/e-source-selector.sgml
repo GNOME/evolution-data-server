@@ -56,6 +56,15 @@ ESourceSelector
 @Returns: 
 
 
+<!-- ##### FUNCTION e_source_selector_get_source_list ##### -->
+<para>
+
+</para>
+
+@selector: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_source_selector_select_source ##### -->
 <para>
 

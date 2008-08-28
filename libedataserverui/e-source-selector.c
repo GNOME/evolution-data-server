@@ -917,6 +917,21 @@ e_source_selector_new (ESourceList *list)
 	return GTK_WIDGET (selector);
 }
 
+/**
+ * e_source_selector_get_source_list:
+ * @selector: an #ESourceSelector
+ *
+ * Returns the #ESourceList that @selector is rendering.
+ *
+ * Returns: an #ESourceList
+ **/
+ESourceList *
+e_source_selector_get_source_list (ESourceSelector *selector)
+{
+	g_return_val_if_fail (E_IS_SOURCE_LIST (selector), NULL);
+
+	return selector->priv->list;
+}
 
 /**
  * e_source_selector_get_selection:
