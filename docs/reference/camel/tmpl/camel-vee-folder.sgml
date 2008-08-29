@@ -129,3 +129,12 @@ CamelVeeFolder
 @buffer: 
 
 
+<!-- ##### FUNCTION camel_vee_folder_sync_headers ##### -->
+<para>
+
+</para>
+
+@vf: 
+@ex: 
+
+

@@ -33,6 +33,13 @@ CamelVeeStore
 
 
 
+<!-- ##### MACRO CAMEL_STORE_VEE_FOLDER_SPECIAL ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION camel_vee_store_new ##### -->
 <para>
 

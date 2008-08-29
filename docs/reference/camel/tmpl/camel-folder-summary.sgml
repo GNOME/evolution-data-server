@@ -298,6 +298,16 @@ CamelFolderSummary
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_header_save_to_db ##### -->
+<para>
+
+</para>
+
+@s: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_summary_touch ##### -->
 <para>
 
@@ -360,6 +370,15 @@ CamelFolderSummary
 
 @s: 
 @index: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_remove_uid_fast ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
 
 
 <!-- ##### FUNCTION camel_folder_summary_add_from_header ##### -->
