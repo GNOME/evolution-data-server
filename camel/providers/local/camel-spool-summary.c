@@ -105,13 +105,30 @@ camel_spool_summary_finalise(CamelObject *obj)
 	/*CamelSpoolSummary *mbs = CAMEL_SPOOL_SUMMARY(obj);*/
 }
 
+static int 
+frompos_sort (void *enc, int len1, void * data1, int len2, void *data2)
+{
+	char *sa1 = (char*)g_utf8_normalize (data1, len1, G_NORMALIZE_DEFAULT);
+	char *sa2 = (char*)g_utf8_normalize (data2, len2, G_NORMALIZE_DEFAULT);
+	int a1 = strtoul (sa1, NULL, 10);
+	int a2 = strtoul (sa2, NULL, 10);
+
+	g_free(sa1); g_free(sa2);
+
+	return a1 > a2;
+}
+
 CamelSpoolSummary *
 camel_spool_summary_new(struct _CamelFolder *folder, const char *mbox_name)
 {
 	CamelSpoolSummary *new = (CamelSpoolSummary *)camel_object_new(camel_spool_summary_get_type());
 
 	((CamelFolderSummary *)new)->folder = folder;
-
+	if (folder) {
+		/* Set the functions for db sorting */
+		/* FIXME: Add column names though a #define */
+		camel_db_set_collate (folder->cdb, "bdata", "frompos_sort", (CamelDBCollate)frompos_sort);
+	}
 	camel_local_summary_construct((CamelLocalSummary *)new, NULL, mbox_name, NULL);
 	camel_folder_summary_load_from_db ((CamelFolderSummary *)new, NULL);
 	return new;

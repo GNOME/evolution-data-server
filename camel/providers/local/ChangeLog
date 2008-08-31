@@ -1,3 +1,8 @@
+2008-08-30  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/local/camel-spool-summary.c: Fixed folder summary
+	mismatch for spool
+
 2008-08-20  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-maildir-summary.c: Make it use sort by
