@@ -508,7 +508,8 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
 		truth = camel_search_message_body_contains ((CamelDataWrapper *)containee, pattern);
-	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")) {
+	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*") 
+		|| camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
 		CamelStreamMem *mem = (CamelStreamMem *)camel_stream_mem_new ();
 		

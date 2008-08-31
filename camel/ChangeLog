@@ -1,3 +1,10 @@
+2008-08-31  Lucian Langa  <lucilanga@gnome.org>
+
+	** Fix for bug #550072
+
+	* camel/camel-search-private.c: Allow evolution-rss content type
+	on body-search
+
 2008-08-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #548865
