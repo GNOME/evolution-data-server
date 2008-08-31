@@ -1,3 +1,11 @@
+2008-08-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #466754 (patch by Vingnesh Prabhu)
+
+	* e-categories-dialog.c (e_categories_dialog_init):
+	Sort the model itself by category name, so that new categories
+	appear in the appropriate place in the list.
+
 2008-08-28  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-source-selector.c (e_source_selector_get_source_list):

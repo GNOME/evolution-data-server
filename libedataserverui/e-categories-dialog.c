@@ -426,7 +426,11 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Categories"));
 
 	/* set up the categories list */
-	model = gtk_list_store_new (N_COLUMNS, G_TYPE_BOOLEAN, GDK_TYPE_PIXBUF, G_TYPE_STRING);
+	model = gtk_list_store_new (
+		N_COLUMNS, G_TYPE_BOOLEAN, GDK_TYPE_PIXBUF, G_TYPE_STRING);
+	gtk_tree_sortable_set_sort_column_id (
+		GTK_TREE_SORTABLE (model),
+		COLUMN_CATEGORY, GTK_SORT_ASCENDING);
 	cat_list = e_categories_get_list ();
 	while (cat_list != NULL) {
 		GtkTreeIter iter;
