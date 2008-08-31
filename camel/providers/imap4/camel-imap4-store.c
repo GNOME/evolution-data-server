@@ -1572,6 +1572,8 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 		camel_imap4_command_unref (ic);
 		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+		/* Translators: the first %s is an IMAP4 command, either LSUB or LIST.
+		 * The fourth one is an error message. */
 				      _("Cannot get %s information for pattern '%s' on IMAP server %s: %s"),
 				      cmd, pattern, engine->url->host, ic->result == CAMEL_IMAP4_RESULT_BAD ?
 				      _("Bad command") : _("Unknown error"));

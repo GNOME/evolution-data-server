@@ -1,3 +1,8 @@
+2008-08-31  Leonardo Ferreira Fontenelle  <leonardof@gnome.org>
+
+	* camel-imap4-store.c: (imap4_get_folder_info): Added translator
+	comments. Fixes bug #549241.
+
 2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #545877
