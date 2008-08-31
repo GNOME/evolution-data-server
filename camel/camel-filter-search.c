@@ -341,7 +341,6 @@ body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMes
 	ESExpResult *r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	CamelMimeMessage *message;
 	regex_t pattern;
-	g_print("body contains\n");
 	
 	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE, argc, argv, fms->ex) == 0) {
 		message = camel_filter_search_get_message (fms, f);
