@@ -1,3 +1,15 @@
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #548827
+
+	* backends/ldap/e-book-backend-ldap.c: (ldap_error_to_response):
+	Handle also AuthenticationRequired error.
+	* backends/ldap/e-book-backend-ldap.c: (remove_contact_handler):
+	Do not report we removed any contact when received an error.
+	* backends/ldap/e-book-backend-ldap.c:
+	(e_book_backend_ldap_remove_contacts), (remove_contact_handler):
+	Report end of the operation properly.
+
 2008-08-25  Ashish Shrivastava  <shashish@novell.com>
 
 	** Fix for bug #391936 (bugzilla.novell.com)
@@ -348,8 +360,8 @@
 
 2008-04-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
-        ** Fixes part of #350143 (bnc)
-           Severe memory leak in evolution-data-server
+	** Fixes part of #350143 (bnc)
+	   Severe memory leak in evolution-data-server
 
 	* backends/groupwise/e-book-backend-groupwise.c: (build_cache),
 	(update_cache), (update_address_book_deltas),

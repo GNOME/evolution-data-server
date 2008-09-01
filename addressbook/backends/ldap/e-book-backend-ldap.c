@@ -1145,6 +1145,8 @@ ldap_error_to_response (int ldap_error)
 		return GNOME_Evolution_Addressbook_ContactNotFound;
 	else if (ldap_error == LDAP_INSUFFICIENT_ACCESS)
 		return GNOME_Evolution_Addressbook_PermissionDenied;
+	else if (ldap_error == LDAP_STRONG_AUTH_REQUIRED)
+		return GNOME_Evolution_Addressbook_AuthenticationRequired;
 	else if (ldap_error == LDAP_SERVER_DOWN)
 		return GNOME_Evolution_Addressbook_RepositoryOffline;
 	else if (ldap_error == LDAP_ALREADY_EXISTS)
@@ -1693,8 +1695,9 @@ remove_contact_handler (LDAPOp *op, LDAPMessage *res)
 	e_data_book_respond_remove_contacts (remove_op->op.book,
 					     op->opid,
 					     ldap_error_to_response (ldap_error),
-					     ids);
+					     ldap_error == LDAP_SUCCESS ? ids : NULL);
 	g_list_free (ids);
+	ldap_op_finished (op);
 }
 
 static void
@@ -1758,6 +1761,7 @@ e_book_backend_ldap_remove_contacts (EBookBackend *backend,
 							     opid,
 							     ldap_error_to_response (ldap_error),
 							     NULL);
+			ldap_op_finished ((LDAPOp*)remove_op);
 			remove_contact_dtor ((LDAPOp*)remove_op);
 			return;
 		}
