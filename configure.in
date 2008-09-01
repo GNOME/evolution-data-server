@@ -349,8 +349,8 @@ if test $have_iconv = yes; then
 
 int main (int argc, char **argv)
 {
-	const char *from = "Some Text \xA4";
-	const char *utf8 = "Some Text \xC2\xA4";
+	char *from = "Some Text \xA4";
+	char *utf8 = "Some Text \xC2\xA4";
 	char *transbuf = malloc (20), *trans = transbuf;
 	iconv_t cd;
 	size_t from_len = strlen (from), utf8_len = 20;
@@ -417,6 +417,7 @@ dnl Check to see if strftime supports the use of %l and %k
 
 AC_MSG_CHECKING(for %l and %k support in strftime)
 AC_TRY_RUN([
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 

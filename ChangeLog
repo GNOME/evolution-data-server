@@ -1,3 +1,8 @@
+2008-09-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* configure.in:
+	Fix compiler warnings in a couple of the test programs.
+
 2008-08-28  Patrick Ohly  <patrick.ohly@gmx.de>
 
 	* Bug fix #518728: subtle link error: system libs before Evolution
