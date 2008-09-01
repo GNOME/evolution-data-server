@@ -33,6 +33,7 @@
 #include "libedataserver/e-categories.h"
 #include "libedataserver/libedataserver-private.h"
 #include "e-name-selector-dialog.h"
+#include "e-name-selector-entry.h"
 
 typedef struct {
 	gchar        *name;
@@ -55,6 +56,7 @@ typedef struct _ENameSelectorDialogPrivate	ENameSelectorDialogPrivate;
 struct _ENameSelectorDialogPrivate
 {
 	guint destination_index;
+	GSList *user_query_fields;
 };
 
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
@@ -139,6 +141,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	priv->destination_index = 0;
+	priv->user_query_fields = NULL;
 
 	/* Get Glade GUI */
 	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
@@ -211,6 +214,13 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	name_selector_dialog->name_selector_model = e_name_selector_model_new ();
 	name_selector_dialog->sections            = g_array_new (FALSE, FALSE, sizeof (Section));
 
+	gconf_client = gconf_client_get_default();
+	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
+			NULL);
+	/* read user_query_fields here, because we are using it in call of setup_name_selector_model */
+	priv->user_query_fields = gconf_client_get_list (gconf_client, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
+	g_object_unref (gconf_client);
+
 	setup_name_selector_model (name_selector_dialog);
 
 	/* Create source menu */
@@ -221,10 +231,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		G_CALLBACK (source_changed), name_selector_dialog);
 	g_object_unref (source_list);
 
-	gconf_client = gconf_client_get_default();
-	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
-			NULL);
-	g_object_unref (gconf_client);
 	if (uid) {
 		e_source_combo_box_set_active_uid (
 			E_SOURCE_COMBO_BOX (widget), uid);
@@ -285,6 +291,13 @@ static void
 e_name_selector_dialog_finalize (GObject *object)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
+	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+
+	if (priv && priv->user_query_fields) {
+		g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
+		g_slist_free (priv->user_query_fields);
+		priv->user_query_fields = NULL;
+	}
 
 	g_array_free (name_selector_dialog->sections, TRUE);
 	g_object_unref (name_selector_dialog->button_size_group);
@@ -721,6 +734,7 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 static void
 search_changed (ENameSelectorDialog *name_selector_dialog)
 {
+	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	EContactStore *contact_store;
 	EBookQuery    *book_query;
 	GtkWidget     *combo_box;
@@ -729,6 +743,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	gchar         *query_string;
 	gchar         *category;
 	gchar         *category_escaped;
+	gchar         *user_fields_str;
 
 	combo_box = glade_xml_get_widget (
 		name_selector_dialog->gui, "combobox-category");
@@ -741,23 +756,27 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	text = gtk_entry_get_text (name_selector_dialog->search_entry);
 	text_escaped = escape_sexp_string (text);
 
+	user_fields_str = ens_util_populate_user_query_fields (priv->user_query_fields, text, text_escaped);
+
 	if (!strcmp (category, _("Any Category")))
 		query_string = g_strdup_printf (
 			"(or (beginswith \"file_as\" %s) "
 			"    (beginswith \"full_name\" %s) "
 			"    (beginswith \"email\" %s) "
-			"    (beginswith \"nickname\" %s)))",
+			"    (beginswith \"nickname\" %s)%s))",
 			text_escaped, text_escaped,
-			text_escaped, text_escaped);
+			text_escaped, text_escaped,
+			user_fields_str ? user_fields_str : "");
 	else
 		query_string = g_strdup_printf (
 			"(and (is \"category_list\" %s) "
 			"(or (beginswith \"file_as\" %s) "
 			"    (beginswith \"full_name\" %s) "
 			"    (beginswith \"email\" %s) "
-			"    (beginswith \"nickname\" %s)))",
+			"    (beginswith \"nickname\" %s)%s))",
 			category_escaped, text_escaped, text_escaped,
-			text_escaped, text_escaped);
+			text_escaped, text_escaped,
+			user_fields_str ? user_fields_str : "");
 
 	book_query = e_book_query_from_string (query_string);
 
@@ -771,6 +790,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	g_free (text_escaped);
 	g_free (category_escaped);
 	g_free (category);
+	g_free (user_fields_str);
 }
 
 static void

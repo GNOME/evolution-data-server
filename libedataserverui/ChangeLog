@@ -1,5 +1,20 @@
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #332354
+
+	* e-name-selector-entry.h: (USER_QUERY_FIELDS),
+	(ens_util_populate_user_query_fields):
+	* e-name-selector-entry.c: (struct _ENameSelectorEntryPrivate),
+	(e_name_selector_entry_dispose), (ens_util_populate_user_query_fields),
+	(set_completion_query), (e_name_selector_entry_init):
+	* e-name-selector-dialog.c: (struct _ENameSelectorDialogPrivate),
+	(e_name_selector_dialog_init), (e_name_selector_dialog_finalize),
+	(search_changed): User can define his own query fields
+	in "/apps/evolution/addressbook/completion/user_query_fields" which
+	should be a string list of EContact field names to search in.
+
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #326692
 
 	* e-name-selector-entry.c: (sanitize_entry), (user_focus_out):
