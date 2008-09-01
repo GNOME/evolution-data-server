@@ -1,3 +1,10 @@
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #549675
+
+	* backends/http/e-cal-backend-http.c: (e_cal_backend_http_open):
+	Create cache with correct source_type value.
+
 2008-08-18  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/groupwise/e-cal-backend-groupwise-utils.c

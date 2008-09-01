@@ -563,7 +563,22 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), e_cal_backend_get_kind (E_CAL_BACKEND (backend)));
+		ECalSourceType source_type;
+
+		switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+			default:
+			case ICAL_VEVENT_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_EVENT;
+				break;
+			case ICAL_VTODO_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_TODO;
+				break;
+			case ICAL_VJOURNAL_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+				break;
+		}
+
+		priv->cache = e_cal_backend_cache_new (e_cal_backend_get_uri (E_CAL_BACKEND (backend)), source_type);
 
 		if (!priv->cache) {
 			e_cal_backend_notify_error (E_CAL_BACKEND(cbhttp), _("Could not create cache file"));
