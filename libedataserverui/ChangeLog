@@ -1,3 +1,14 @@
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #549444
+
+	* e-name-selector-entry.c: (re_set_timeout), (user_insert_text),
+	(type_ahead_complete_on_timeout_cb), (user_delete_text),
+	(update_completions_on_timeout_cb), (setup_contact_store),
+	(ensure_type_ahead_complete_on_timeout):
+	Do not do autocomplete lookup on idle, do that on some timeout instead,
+	because the idle signal is emitted after every key press.
+
 2008-08-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #466754 (patch by Vingnesh Prabhu)

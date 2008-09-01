@@ -51,6 +51,15 @@ struct _ENameSelectorEntryPrivate
 
 #define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate))
 
+/* 1/3 of the second to wait until invoking autocomplete lookup */
+#define AUTOCOMPLETE_TIMEOUT 333
+
+#define re_set_timeout(id,func,ptr) 			\
+	if (id)						\
+		g_source_remove (id);			\
+	id = g_timeout_add (AUTOCOMPLETE_TIMEOUT,	\
+			    (GSourceFunc) func, ptr);
+
 static void e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_class);
 static void e_name_selector_entry_init       (ENameSelectorEntry *name_selector_entry);
 static void e_name_selector_entry_dispose    (GObject *object);
@@ -869,7 +878,7 @@ update_completion_model (ENameSelectorEntry *name_selector_entry)
 }
 
 static gboolean
-type_ahead_complete_on_idle_cb (ENameSelectorEntry *name_selector_entry)
+type_ahead_complete_on_timeout_cb (ENameSelectorEntry *name_selector_entry)
 {
 	type_ahead_complete (name_selector_entry);
 	name_selector_entry->type_ahead_complete_cb_id = 0;
@@ -877,7 +886,7 @@ type_ahead_complete_on_idle_cb (ENameSelectorEntry *name_selector_entry)
 }
 
 static gboolean
-update_completions_on_idle_cb (ENameSelectorEntry *name_selector_entry)
+update_completions_on_timeout_cb (ENameSelectorEntry *name_selector_entry)
 {
 	update_completion_model (name_selector_entry);
 	name_selector_entry->update_completions_cb_id = 0;
@@ -1114,17 +1123,8 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 
 	if (chars_inserted >= 1) {
 		/* If the user inserted one character, kick off completion */
-		if (!name_selector_entry->update_completions_cb_id) {
-			name_selector_entry->update_completions_cb_id =
-				g_idle_add ((GSourceFunc) update_completions_on_idle_cb,
-					    name_selector_entry);
-		}
-
-		if (!name_selector_entry->type_ahead_complete_cb_id) {
-			name_selector_entry->type_ahead_complete_cb_id =
-				g_idle_add ((GSourceFunc) type_ahead_complete_on_idle_cb,
-					    name_selector_entry);
-		}
+		re_set_timeout (name_selector_entry->update_completions_cb_id,  update_completions_on_timeout_cb,  name_selector_entry);
+		re_set_timeout (name_selector_entry->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
 	}
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -1165,11 +1165,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 	if (end_pos - start_pos == 1) {
 		/* Might be backspace; update completion model so dropdown is accurate */
-		if (!name_selector_entry->update_completions_cb_id) {
-			name_selector_entry->update_completions_cb_id =
-				g_idle_add ((GSourceFunc) update_completions_on_idle_cb,
-					    name_selector_entry);
-		}
+		re_set_timeout (name_selector_entry->update_completions_cb_id, update_completions_on_timeout_cb, name_selector_entry);
 	}
 
 	index_start = get_index_at_position (text, start_pos);
@@ -1561,13 +1557,9 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 }
 
 static void
-ensure_type_ahead_complete_on_idle (ENameSelectorEntry *name_selector_entry)
+ensure_type_ahead_complete_on_timeout (ENameSelectorEntry *name_selector_entry)
 {
-	if (!name_selector_entry->type_ahead_complete_cb_id) {
-		name_selector_entry->type_ahead_complete_cb_id =
-			g_idle_add ((GSourceFunc) type_ahead_complete_on_idle_cb,
-				    name_selector_entry);
-	}
+	re_set_timeout (name_selector_entry->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
 }
 
 static void
@@ -1593,7 +1585,7 @@ setup_contact_store (ENameSelectorEntry *name_selector_entry)
 
 		/* Set up callback for incoming matches */
 		g_signal_connect_swapped (name_selector_entry->contact_store, "row-inserted",
-					  G_CALLBACK (ensure_type_ahead_complete_on_idle), name_selector_entry);
+					  G_CALLBACK (ensure_type_ahead_complete_on_timeout), name_selector_entry);
 	} else {
 		/* Remove the store from the entry completion */
 
