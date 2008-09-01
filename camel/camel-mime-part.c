@@ -436,6 +436,7 @@ void
 camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
 {
 	char *str;
+	CamelDataWrapper *dw;
 	
 	if (mime_part->disposition == NULL)
 		mime_part->disposition = camel_content_disposition_decode("attachment");
@@ -446,9 +447,12 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Disposition", str);
 	g_free(str);
-	
-	camel_content_type_set_param (((CamelDataWrapper *) mime_part)->mime_type, "name", filename);
-	str = camel_content_type_format (((CamelDataWrapper *) mime_part)->mime_type);
+
+	dw = (CamelDataWrapper *) mime_part;
+	if (!dw->mime_type)
+		dw->mime_type = camel_content_type_new ("application", "octet-stream");
+	camel_content_type_set_param (dw->mime_type, "name", filename);
+	str = camel_content_type_format (dw->mime_type);
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Type", str);
 	g_free (str);
 }
