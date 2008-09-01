@@ -1,5 +1,18 @@
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #272391
+
+	* e-name-selector-entry.h: (FORCE_SHOW_ADDRESS):
+	* e-name-selector-entry.c: (COMPLETION_FORCE_SHOW_ADDRESS),
+	(get_destination_textrep), (sync_destination_at_position),
+	(destination_row_changed), (destination_row_inserted),
+	(e_name_selector_entry_init):
+	Show address of the contact if it contains more than one mail
+	address and is not a list. Be able to force showing of the mail
+	for every autocompleted entry by the option in the gconf.
+
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #549444
 
 	* e-name-selector-entry.c: (re_set_timeout), (user_insert_text),

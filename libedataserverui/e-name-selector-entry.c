@@ -39,6 +39,7 @@ enum {
 };
 static guint signals[LAST_SIGNAL] = { 0 };
 static guint COMPLETION_CUE_MIN_LEN = 0;
+static gboolean COMPLETION_FORCE_SHOW_ADDRESS = FALSE;
 #define ENS_DEBUG(x)
 
 G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY);
@@ -73,6 +74,7 @@ static void user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *ne
 static void user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint end_pos, gpointer user_data);
 
 static void setup_default_contact_store (ENameSelectorEntry *name_selector_entry);
+static void deep_free_list (GList *list);
 
 static void
 e_name_selector_entry_get_property (GObject *object, guint prop_id,
@@ -946,6 +948,33 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 		generate_attribute_list (name_selector_entry);
 }
 
+static gchar *
+get_destination_textrep (EDestination *destination)
+{
+	gboolean show_email = COMPLETION_FORCE_SHOW_ADDRESS;
+	EContact *contact;
+
+	g_return_val_if_fail (destination != NULL, NULL);
+
+	contact = e_destination_get_contact (destination);
+
+	if (!show_email) {
+		if (contact && !e_contact_get (contact, E_CONTACT_IS_LIST)) {
+			GList *email_list;
+
+			email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+			show_email = g_list_length (email_list) > 1;
+			deep_free_list (email_list);
+		}
+	}
+
+	/* do not show emails for contact lists even user forces it in gconf */
+	if (show_email && contact && e_contact_get (contact, E_CONTACT_IS_LIST))
+		show_email = FALSE;
+
+	return sanitize_string (e_destination_get_textrep (destination, show_email));
+}
+
 static void
 sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint range_pos, gint *cursor_pos)
 {
@@ -967,7 +996,7 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 		return;
 	}
 
-	address = sanitize_string (e_destination_get_textrep (destination, FALSE));
+	address = get_destination_textrep (destination);
 	address_len = g_utf8_strlen (address, -1);
 
 	if (cursor_pos) {
@@ -1661,7 +1690,7 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
 
-	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
+	text = get_destination_textrep (destination);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &range_start);
 	g_free (text);
 
@@ -1713,7 +1742,7 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 	if (comma_before)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
 
-	text = sanitize_string (e_destination_get_textrep (destination, FALSE));
+	text = get_destination_textrep (destination);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &insert_pos);
 	g_free (text);
 
@@ -2395,6 +2424,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 		;
 	  else COMPLETION_CUE_MIN_LEN = 3;
   }
+  COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
   g_object_unref (G_OBJECT (gconf));
 
   /* Edit signals */

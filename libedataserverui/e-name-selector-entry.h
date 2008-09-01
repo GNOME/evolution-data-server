@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 #define E_NAME_SELECTOR_ENTRY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_ENTRY_TYPE, ENameSelectorEntryClass))
 
 #define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
+#define FORCE_SHOW_ADDRESS   "/apps/evolution/addressbook/completion/show_address"
 
 typedef struct _ENameSelectorEntry      ENameSelectorEntry;
 typedef struct _ENameSelectorEntryClass ENameSelectorEntryClass;
