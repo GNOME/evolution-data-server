@@ -1,5 +1,13 @@
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #326692
+
+	* e-name-selector-entry.c: (sanitize_entry), (user_focus_out):
+	Sync model data with entry text and remove all empty
+	destinations from the model on user's exit from the entry.
+
+2008-09-01  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #272391
 
 	* e-name-selector-entry.h: (FORCE_SHOW_ADDRESS):
