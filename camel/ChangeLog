@@ -1,3 +1,9 @@
+2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/Makefile.am: 
+	* camel/camel-search-sql-sexp.c: New Sexp based sexp to sql parser.
+	* camel/camel-search-sql-sexp.h:
+
 2008-09-01  Keith Packard  <keithp@keithp.com>
 
 	** Fix for bug #541045
