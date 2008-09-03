@@ -990,7 +990,7 @@ e_source_selector_new (ESourceList *list)
 ESourceList *
 e_source_selector_get_source_list (ESourceSelector *selector)
 {
-	g_return_val_if_fail (E_IS_SOURCE_LIST (selector), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), NULL);
 
 	return selector->priv->list;
 }
