@@ -30,6 +30,10 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
 
+#define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate))
+
 struct _ESourceSelectorPrivate {
 	ESourceList *list;
 
@@ -54,6 +58,11 @@ typedef struct {
 
 	gboolean selection_changed;
 } ESourceSelectorRebuildData;
+
+enum {
+	PROP_0,
+	PROP_SOURCE_LIST
+};
 
 enum {
 	SELECTION_CHANGED,
@@ -388,15 +397,6 @@ list_changed_callback (ESourceList *list,
 							  selector);
 }
 
-static void
-setup_model (ESourceSelector *selector)
-{
-	rebuild_model (selector);
-
-	g_signal_connect_object (selector->priv->list, "changed", G_CALLBACK (list_changed_callback), G_OBJECT (selector), 0);
-}
-
-
 /* Data functions for rendering the model.  */
 
 static void
@@ -711,14 +711,64 @@ selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSe
 /* GObject methods.  */
 
 static void
-e_source_selector_dispose (GObject *object)
+source_selector_set_source_list (ESourceSelector *selector,
+                                 ESourceList *source_list)
+{
+	g_return_if_fail (E_IS_SOURCE_LIST (source_list));
+	g_return_if_fail (selector->priv->list == NULL);
+
+	selector->priv->list = g_object_ref (source_list);
+
+	rebuild_model (selector);
+
+	g_signal_connect_object (
+		source_list, "changed",
+		G_CALLBACK (list_changed_callback),
+		G_OBJECT (selector), 0);
+
+	gtk_tree_view_expand_all (GTK_TREE_VIEW (selector));
+}
+
+static void
+source_selector_set_property (GObject *object,
+                              guint property_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE_LIST:
+			source_selector_set_source_list (
+				E_SOURCE_SELECTOR (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_selector_get_property (GObject *object,
+                              guint property_id,
+                              GValue *value,
+                              GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE_LIST:
+			g_value_set_object (
+				value, e_source_selector_get_source_list (
+				E_SOURCE_SELECTOR (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_selector_dispose (GObject *object)
 {
 	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
 
-	if (priv->selected_sources != NULL) {
-		g_hash_table_destroy (priv->selected_sources);
-		priv->selected_sources = NULL;
-	}
+	g_hash_table_remove_all (priv->selected_sources);
 
 	if (priv->rebuild_model_idle_id != 0) {
 		g_source_remove (priv->rebuild_model_idle_id);
@@ -737,17 +787,19 @@ e_source_selector_dispose (GObject *object)
 
 	clear_saved_primary_selection (E_SOURCE_SELECTOR (object));
 
-	(* G_OBJECT_CLASS (e_source_selector_parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_selector_parent_class)->dispose (object);
 }
 
 static void
-e_source_selector_finalize (GObject *object)
+source_selector_finalize (GObject *object)
 {
 	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
 
-	g_free (priv);
+	g_hash_table_destroy (priv->selected_sources);
 
-	(* G_OBJECT_CLASS (e_source_selector_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_selector_parent_class)->finalize (object);
 }
 
 
@@ -765,13 +817,30 @@ ess_bool_accumulator(GSignalInvocationHint *ihint, GValue *out, const GValue *in
 static void
 e_source_selector_class_init (ESourceSelectorClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
+	GObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 
-	object_class->dispose  = e_source_selector_dispose;
-	object_class->finalize = e_source_selector_finalize;
+	g_type_class_add_private (class, sizeof (ESourceSelectorPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = source_selector_set_property;
+	object_class->get_property = source_selector_get_property;
+	object_class->dispose  = source_selector_dispose;
+	object_class->finalize = source_selector_finalize;
+
+	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->popup_menu = selector_popup_menu;
 
+	g_object_class_install_property (
+		object_class,
+		PROP_SOURCE_LIST,
+		g_param_spec_object (
+			"source-list",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE_LIST,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 
 	signals[SELECTION_CHANGED] =
 		g_signal_new ("selection_changed",
@@ -838,13 +907,16 @@ e_source_selector_init (ESourceSelector *selector)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell_renderer;
 	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
 
-	priv = g_new0 (ESourceSelectorPrivate, 1);
-	selector->priv = priv;
+	selector->priv = E_SOURCE_SELECTOR_GET_PRIVATE (selector);
+	priv = selector->priv;
 
-	gtk_tree_view_set_search_column (GTK_TREE_VIEW (selector), 0);
-	gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (selector), group_search_function, NULL, NULL);
-	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (selector), TRUE);
+	tree_view = GTK_TREE_VIEW (selector);
+
+	gtk_tree_view_set_search_column (tree_view, 0);
+	gtk_tree_view_set_search_equal_func (tree_view, group_search_function, NULL, NULL);
+	gtk_tree_view_set_enable_search (tree_view, TRUE);
 
 	g_signal_connect (G_OBJECT (selector), "button_press_event",
 			  G_CALLBACK (selector_button_press_event), selector);
@@ -856,10 +928,10 @@ e_source_selector_init (ESourceSelector *selector)
 	priv->selected_sources = create_selected_sources_hash ();
 
 	priv->tree_store = gtk_tree_store_new (1, G_TYPE_OBJECT);
-	gtk_tree_view_set_model (GTK_TREE_VIEW (selector), GTK_TREE_MODEL (priv->tree_store));
+	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (priv->tree_store));
 
 	column = gtk_tree_view_column_new ();
-	gtk_tree_view_append_column (GTK_TREE_VIEW (selector), column);
+	gtk_tree_view_append_column (tree_view, column);
 
 	cell_renderer = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (G_OBJECT (cell_renderer), "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
@@ -876,11 +948,11 @@ e_source_selector_init (ESourceSelector *selector)
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) text_cell_data_func, selector, NULL);
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (selector));
+	selection = gtk_tree_view_get_selection (tree_view);
 	gtk_tree_selection_set_select_function (selection, (GtkTreeSelectionFunc) selection_func, selector, NULL);
 	g_signal_connect_object (selection, "changed", G_CALLBACK (selection_changed_callback), G_OBJECT (selector), 0);
 
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (selector), FALSE);
+	gtk_tree_view_set_headers_visible (tree_view, FALSE);
 
 	g_signal_connect (G_OBJECT (selector), "test-collapse-row", G_CALLBACK (test_collapse_row_callback), selector);
 	g_signal_connect (G_OBJECT (selector), "row-expanded", G_CALLBACK (row_expanded_callback), selector);
@@ -901,20 +973,10 @@ e_source_selector_init (ESourceSelector *selector)
 GtkWidget *
 e_source_selector_new (ESourceList *list)
 {
-	ESourceSelector *selector;
-
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
 
-	selector = g_object_new (e_source_selector_get_type (), NULL);
-
-	selector->priv->list = list;
-	g_object_ref (list);
-
-	setup_model (selector);
-
-	gtk_tree_view_expand_all (GTK_TREE_VIEW (selector));
-
-	return GTK_WIDGET (selector);
+	return g_object_new (
+		E_TYPE_SOURCE_SELECTOR, "source-list", list, NULL);
 }
 
 /**

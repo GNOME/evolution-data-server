@@ -1,3 +1,9 @@
+2008-09-03  Matthew Barnes  <mbarnes@redhat.com>
+
+	* e-source-selector.c:
+	Make ESourceSelector subclassable by adding a "source-list"
+	constructor property.
+
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #332354
