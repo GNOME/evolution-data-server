@@ -538,7 +538,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-	if ((s->unread_count || s->visible_count) && !g_getenv("FORCE_VFOLDER_COUNT")) {
+	if ((s->visible_count) && !g_getenv("FORCE_VFOLDER_COUNT")) {
 		/* We should be in sync always. so use the count. Don't search.*/
 		record->junk_count = s->junk_count;
 		record->deleted_count = s->deleted_count;

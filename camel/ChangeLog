@@ -1,5 +1,9 @@
 2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Make vfolders rebuild only when empty.
+
+2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for BNC bug #418080
 
 	* camel/camel-folder-search.c: Make thing better, with new sexp/sql
