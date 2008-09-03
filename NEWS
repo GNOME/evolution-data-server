@@ -1,3 +1,31 @@
+Evolution-Data-Server 2.23.91 2008-09-01
+----------------------------------------
+
+Bug Fixes:
+	#213072: Sort mbox/spool summary uids by from_pos (Srinivasa Ragavan)
+	#391936: (Novell Bugzilla) To solve hang issue after e-d-s crash (Ashish Shrivastava)
+	#418080: (Novell Bugzilla) Support 'not' operator in search (Srinivasa Ragavan)
+	#466754: Sort the model itself by category name, so that new categories appear in the appropriate place in the list (Vingnesh Prabhu)
+	#518728: Fix subtle link error: system libs before Evolution libs (Patrick Ohly)
+	#546926: Explicitly call camel_shutdown() instead of g_atexit() or atexit() (Matthew Barnes)
+	#548331: Put back the summary mismatch. It is more serious now (Srinivasa Ragavan)
+	#548565: Add 'void' to make it built on Solaris. (Shuai Liu)
+	#548865: Dont crash, if the folder isn't there (Srinivasa Ragavan)
+	#550072: Allow evolution-rss content type on body-search (Lucian Langa)
+
+Updated Translations:
+	Shankar Prasad (kn)
+	Daniel Nylander (sv)
+	Kjartan Maraas (nb)
+	Ilkka Tuohela (fi)
+	Runa Bhattacharjee (bn_IN)
+	Leonardo Ferreira Fontenelle (pt_BR)
+	Takeshi AIHANA (ja)
+	Inaki Larranaga Murgoitio (eu)
+	Robert-AndrÃ© Mauchin (fr)
+	Ignacio Casal Quinteiro (gl)
+	Theppitak Karoonboonyanan (th)
+
 Evolution-Data-Server 2.23.90 2008-08-18
 ----------------------------------------
 
