@@ -1,5 +1,12 @@
 2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for BNC bug #418080
+
+	* camel/camel-folder-search.c: Make thing better, with new sexp/sql
+	parser.
+
+2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/Makefile.am: 
 	* camel/camel-search-sql-sexp.c: New Sexp based sexp to sql parser.
 	* camel/camel-search-sql-sexp.h:

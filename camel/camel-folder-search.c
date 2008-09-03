@@ -51,6 +51,7 @@
 #include "camel-vee-folder.h"
 #include "camel-string-utils.h"
 #include "camel-search-sql.h"
+#include "camel-search-sql-sexp.h"
 
 #define d(x) 
 #define r(x) 
@@ -483,7 +484,10 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		camel_folder_summary_save_to_db (search->folder->summary, ex);
 	
 		d(printf ("sexp is : [%s]\n", expr));
-		sql_query = camel_sexp_to_sql (expr);
+		if (g_getenv("SQL_SEARCH_OLD"))
+			sql_query = camel_sexp_to_sql (expr);
+		else
+			sql_query = camel_sexp_to_sql_sexp (expr);
 		tmp1 = camel_db_sqlize_string(search->folder->full_name);
 		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
