@@ -1031,6 +1031,8 @@ parse_list(ESExp *f, int gotbrace)
 		case G_TOKEN_IDENTIFIER:
 			e_sexp_fatal_error(f, "Unknown identifier: %s", g_scanner_cur_value(gs).v_identifier);
 			break;
+		case G_TOKEN_LEFT_PAREN:
+			return parse_list(f, TRUE);
 		default:
 			e_sexp_fatal_error(f, "Unexpected token encountered: %d", token);
 		}

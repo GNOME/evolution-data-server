@@ -1,3 +1,7 @@
+2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* libedataserver/e-sexp.c (parse_list): Fix a crash in sexp.
+
 2008-09-01  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.23.91 release and version bump.
