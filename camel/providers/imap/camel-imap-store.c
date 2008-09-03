@@ -2598,12 +2598,17 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 	folder = camel_object_bag_peek(store->folders, fi->full_name);
 	if (folder) {
 		CamelImapSummary *ims;
-		ims = (CamelImapSummary *) camel_imap_summary_new (folder, NULL);
+
+		if (folder->summary)
+			ims = (CamelImapSummary *) folder->summary;
+		else
+			ims = (CamelImapSummary *) camel_imap_summary_new (folder, NULL);
 
 		fi->unread = ((CamelFolderSummary *)ims)->unread_count;
 		fi->total = ((CamelFolderSummary *)ims)->saved_count;
 
-		camel_object_unref(ims);
+		if (!folder->summary)
+			camel_object_unref (ims);
 		camel_object_unref(folder);
 	} 
 }

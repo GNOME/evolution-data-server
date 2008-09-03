@@ -1,3 +1,10 @@
+2008-09-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #548343
+
+	* camel-imap-store.c: (fill_fi): Do not read summary information for
+	the folder from DB when we have it fresh in memory already.
+
 2008-08-21  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/imap/camel-imap-summary.c: Implement in-db uid sort
