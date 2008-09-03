@@ -1,5 +1,9 @@
 2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/Makefile.am: Commit missing .h changes to Makefile.am
+
+2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c: Make vfolders rebuild only when empty.
 
 2008-09-03  Srinivasa Ragavan  <sragavan@novell.com>

@@ -127,6 +127,7 @@ libcamel_providerinclude_HEADERS =		\
 	camel-sasl-popb4smtp.h			\
 	camel-sasl.h				\
 	camel-search-sql.h			\
+	camel-search-sql-sexp.h			\
 	camel-service.h				\
 	camel-session.h				\
 	camel-smime-context.h			\
