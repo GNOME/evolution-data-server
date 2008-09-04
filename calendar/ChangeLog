@@ -1,3 +1,17 @@
+2008-09-04  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* libedata-cal/Makefile.am:
+	* libedata-cal/e-cal-backend.c
+	(e_cal_backend_notify_objects_added),
+	(e_cal_backend_notify_objects_removed),
+	(e_cal_backend_notify_objects_modified): New functions added.
+	* libedata-cal/e-cal-backend.h:
+	* libedata-cal/e-data-cal-factory.c (get_backend_factory),
+	(impl_CalFactory_getCal), (e_data_cal_factory_register_backend),
+	(e_data_cal_factory_register_backends):
+	* libedata-cal/e-data-cal-factory.h: Added LoaderFactory which is a
+	  subclass of BackendFactory.
+
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #549675

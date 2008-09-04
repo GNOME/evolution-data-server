@@ -1403,6 +1403,25 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 	g_object_unref (iter);
 }
 
+
+void 
+e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects)
+{
+	e_data_cal_view_notify_objects_added (query, objects);	
+}
+
+void 
+e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *query, const GList *ids)
+{
+	e_data_cal_view_notify_objects_removed (query, ids);	
+}
+
+void 
+e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query, const GList *objects)
+{
+	e_data_cal_view_notify_objects_modified (query, objects);	
+}
+
 /**
  * e_cal_backend_notify_mode:
  * @backend: A calendar backend.

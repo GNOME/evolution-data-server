@@ -86,8 +86,10 @@ get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind
 	ECalBackendFactory *factory;
 
 	kinds = g_hash_table_lookup (methods, method);
-	if (!kinds)
+	if (!kinds) {
 		return NULL;
+	}
+
 
 	factory = g_hash_table_lookup (kinds, GINT_TO_POINTER (kind));
 
@@ -201,7 +203,11 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	backend = g_hash_table_lookup (factory->priv->backends, uri_type_string);
 	if (!backend) {
 		/* There was no existing backend, create a new one */
-		backend = e_cal_backend_factory_new_backend (backend_factory, source);
+		if (E_IS_CAL_BACKEND_LOADER_FACTORY (backend_factory)) {
+			backend = E_CAL_BACKEND_LOADER_FACTORY_GET_CLASS (backend_factory)->new_backend_with_protocol ((ECalBackendLoaderFactory *)backend_factory,
+					source, uri->protocol);
+		} else
+			backend = e_cal_backend_factory_new_backend (backend_factory, source);
 
 		if (!backend) {
 			g_warning (G_STRLOC ": could not instantiate backend");
@@ -242,7 +248,6 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	return ret_cal;
 }
 
-
 
 /**
  * e_data_cal_factory_new:
@@ -445,38 +450,55 @@ e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactor
 {
 	EDataCalFactoryPrivate *priv;
 	const char *method;
-	char *method_str;
 	GHashTable *kinds;
 	GType type;
 	icalcomponent_kind kind;
+	GSList *methods = NULL, *l;
 
 	g_return_if_fail (factory && E_IS_DATA_CAL_FACTORY (factory));
 	g_return_if_fail (backend_factory && E_IS_CAL_BACKEND_FACTORY (backend_factory));
 
 	priv = factory->priv;
 
-	method = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol (backend_factory);
-	kind = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_kind (backend_factory);
-
-	method_str = g_ascii_strdown (method, -1);
-
-	kinds = g_hash_table_lookup (priv->methods, method_str);
-	if (kinds) {
-		type = GPOINTER_TO_INT (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
-		if (type) {
-			g_warning (G_STRLOC ": method `%s' already registered", method_str);
-			g_free (method_str);
-
-			return;
-		}
-
-		g_free (method_str);
+	if (E_IS_CAL_BACKEND_LOADER_FACTORY (backend_factory)) {
+		GSList *list = E_CAL_BACKEND_LOADER_FACTORY_GET_CLASS (backend_factory)->get_protocol_list ((ECalBackendLoaderFactory *) backend_factory);
+		methods = g_slist_copy (list);
+	} else if (E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol) {
+		method = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol (backend_factory);
+		methods = g_slist_append (methods, (gpointer) method);
 	} else {
-		kinds = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
-		g_hash_table_insert (priv->methods, method_str, kinds);
+		g_assert_not_reached ();
+		return;
 	}
 
-	g_hash_table_insert (kinds, GINT_TO_POINTER (kind), backend_factory);
+	kind = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_kind (backend_factory);
+
+	for (l= methods; l != NULL; l = g_slist_next (l)) {
+		char *method_str;
+		
+		method = l->data;
+
+		method_str = g_ascii_strdown (method, -1);
+
+		kinds = g_hash_table_lookup (priv->methods, method_str);
+		if (kinds) {
+			type = GPOINTER_TO_INT (g_hash_table_lookup (kinds, GINT_TO_POINTER (kind)));
+			if (type) {
+				g_warning (G_STRLOC ": method `%s' already registered", method_str);
+				g_free (method_str);
+				g_slist_free (methods);
+				return;
+			}
+
+			g_free (method_str);
+		} else {
+			kinds = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
+			g_hash_table_insert (priv->methods, method_str, kinds);
+		}
+
+		g_hash_table_insert (kinds, GINT_TO_POINTER (kind), backend_factory);
+	}
+	g_slist_free (methods);
 }
 
 /**
@@ -491,6 +513,7 @@ e_data_cal_factory_register_backends (EDataCalFactory *cal_factory)
 	GList *factories, *f;
 
 	factories = e_data_server_get_extensions_for_type (E_TYPE_CAL_BACKEND_FACTORY);
+
 	for (f = factories; f; f = f->next) {
 		ECalBackendFactory *backend_factory = f->data;
 

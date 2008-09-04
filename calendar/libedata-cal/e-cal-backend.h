@@ -166,8 +166,6 @@ void e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *us
 icaltimezone* e_cal_backend_internal_get_default_timezone (ECalBackend *backend);
 icaltimezone* e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid);
 
-void e_cal_backend_last_client_gone (ECalBackend *backend);
-
 void e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy);
 void e_cal_backend_notify_object_created  (ECalBackend *backend, const char *calobj);
 void e_cal_backend_notify_object_modified (ECalBackend *backend, const char *old_object, const char *object);
@@ -185,7 +183,9 @@ void e_cal_backend_notify_view_progress (ECalBackend *backend, const char *messa
 void e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only);
 void e_cal_backend_notify_cal_address (ECalBackend *backend, char *address);
 
-
+void e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects);
+void e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *query, const GList *ids);
+void e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query, const GList *objects);
 
 G_END_DECLS
 

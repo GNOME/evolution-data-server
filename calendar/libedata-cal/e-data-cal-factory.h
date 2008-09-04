@@ -24,7 +24,7 @@
 #include <bonobo/bonobo-object.h>
 #include <libical/ical.h>
 #include <libedata-cal/Evolution-DataServer-Calendar.h>
-#include <libedata-cal/e-cal-backend-factory.h>
+#include <libedata-cal/e-cal-backend-loader-factory.h>
 
 G_BEGIN_DECLS
 
