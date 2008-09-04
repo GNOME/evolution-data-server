@@ -3784,6 +3784,7 @@ imap_get_quota_info (CamelFolder *folder)
 				const char *resp = response->untagged->pdata[i];
 
 				if (resp && g_str_has_prefix (resp, "* QUOTA ")) {
+					gboolean skipped = TRUE;
 					size_t sz;
 					char *astr;
 
@@ -3796,13 +3797,15 @@ imap_get_quota_info (CamelFolder *folder)
 
 					if (resp && *resp == '(') {
 						char *name;
-						const char *used, *total;
+						const char *used = NULL, *total = NULL;
 
 						resp++;
 						name = imap_parse_astring (&resp, &sz);
 
-						used = imap_next_word (resp);
-						total = imap_next_word (used);
+						if (resp)
+							used = imap_next_word (resp);
+						if (used)
+							total = imap_next_word (used);
 
 						while (resp && *resp && *resp != ')')
 							resp++;
@@ -3822,11 +3825,15 @@ imap_get_quota_info (CamelFolder *folder)
 									res = info;
 
 								last = info;
+								skipped = FALSE;
 							}
 						}
 
 						g_free (name);
 					}
+
+					if (skipped)
+						g_debug ("Unexpected quota response '%s'; skipping it...", (const char *)response->untagged->pdata[i]);
 				}
 			}
 			camel_imap_response_free (imap_store, response);

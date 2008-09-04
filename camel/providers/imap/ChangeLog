@@ -1,3 +1,10 @@
+2008-09-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #547884
+
+	* camel-imap-folder.c: (imap_get_quota_info):
+	Do not crash on unexpected response, rather skip it.
+
 2008-09-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #548343
