@@ -1,3 +1,12 @@
+2008-09-05  Paul Bolle  <pebolle@tiscali.nl>
+
+	** Fix for bug #550412
+
+	* camel-store.c: (camel_store_get_folder) (camel_store_create_folder)
+	(camel_store_get_folder_info): Mention NULL return in documentation.
+	* camel-store.c: (camel_store_free_folder_info): Make sure that a NULL
+	CamelFolderInfo is always gracefully handled. Document that.
+
 2008-09-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-vee-folder.c: (vee_rebuild_folder): Make vfolder counts much

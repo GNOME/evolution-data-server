@@ -283,7 +283,7 @@ get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelExce
  *
  * Get a specific folder object from the store by name.
  *
- * Returns: the folder corresponding to the path @folder_name.
+ * Returns: the folder corresponding to the path @folder_name or %NULL.
  **/
 CamelFolder *
 camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
@@ -382,7 +382,7 @@ create_folder (CamelStore *store, const char *parent_name,
  * @parent_name can be %NULL to create a new top-level folder.
  *
  * Returns: info about the created folder, which the caller must
- * free with #camel_store_free_folder_info
+ * free with #camel_store_free_folder_info, or %NULL.
  **/
 CamelFolderInfo *
 camel_store_create_folder (CamelStore *store, const char *parent_name,
@@ -839,7 +839,7 @@ dump_fi(CamelFolderInfo *fi, int depth)
  * counts is to both open the folder and invoke refresh_info() it.
  *
  * Returns: a #CamelFolderInfo tree, which must be freed with
- * #camel_store_free_folder_info
+ * #camel_store_free_folder_info, or %NULL.
  **/
 CamelFolderInfo *
 camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex)
@@ -882,12 +882,16 @@ free_folder_info (CamelStore *store, CamelFolderInfo *fi)
  * @store: a #CamelStore object
  * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
- * Frees the data returned by #camel_store_get_folder_info
+ * Frees the data returned by #camel_store_get_folder_info. If @fi is %NULL,
+ * nothing is done, the routine simply returns.
  **/
 void
 camel_store_free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	if (!fi)
+		return;
 
 	CS_CLASS (store)->free_folder_info (store, fi);
 }
