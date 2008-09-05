@@ -1058,11 +1058,11 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 				return 0;
 			rebuilded = TRUE;
 			/* Update the counts */
-			COUNT_ADD_EXPR(f->summary->junk_count, "(match-all (system-flag  \"junk\"))");
-			COUNT_ADD_EXPR(f->summary->deleted_count, "(match-all (system-flag  \"deleted\"))");
-			COUNT_ADD_EXPR(f->summary->unread_count, "(match-all (not (system-flag  \"Seen\")))");
-			COUNT_ADD_EXPR(f->summary->visible_count, "(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))");
-			COUNT_ADD_EXPR(f->summary->junk_not_deleted_count, "(match-all (and (not (system-flag \"deleted\")) (system-flag \"junk\")))");
+			COUNT_ADD_EXPR(folder->summary->junk_count, "(match-all (system-flag  \"junk\"))");
+			COUNT_ADD_EXPR(folder->summary->deleted_count, "(match-all (system-flag  \"deleted\"))");
+			COUNT_ADD_EXPR(folder->summary->unread_count, "(match-all (not (system-flag  \"Seen\")))");
+			COUNT_ADD_EXPR(folder->summary->visible_count, "(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))");
+			COUNT_ADD_EXPR(folder->summary->junk_not_deleted_count, "(match-all (and (not (system-flag \"deleted\")) (system-flag \"junk\")))");
 		}
 		
 	}
