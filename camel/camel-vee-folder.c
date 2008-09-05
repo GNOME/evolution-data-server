@@ -792,8 +792,9 @@ static void vee_delete(CamelFolder *folder)
 		CAMEL_VEE_FOLDER_LOCK(folder, subfolder_lock);
 	}
 	CAMEL_VEE_FOLDER_UNLOCK(folder, subfolder_lock);
-
+	
 	((CamelFolderClass *)camel_vee_folder_parent)->delete(folder);
+	((CamelVeeFolder *)folder)->deleted = TRUE;
 }
 
 /* ********************************************************************** *
@@ -2048,6 +2049,7 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 	obj->search = camel_folder_search_new();
 	obj->hashes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	obj->loaded = g_hash_table_new (g_direct_hash, g_direct_equal);
+	obj->deleted = FALSE;
 	p->summary_lock = g_mutex_new();
 	p->subfolder_lock = g_mutex_new();
 	p->changed_lock = g_mutex_new();
@@ -2150,9 +2152,11 @@ camel_vee_folder_finalise (CamelObject *obj)
 	p->destroyed = TRUE;
 
 	/* Save the counts to DB */
-	record = summary_header_to_db (((CamelFolder *)vf)->summary, NULL);
-	camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb, record, NULL);
-	g_free (record);
+	if (!vf->deleted) {
+		record = summary_header_to_db (((CamelFolder *)vf)->summary, NULL);
+		camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb, record, NULL);
+		g_free (record);
+	}
 	
 	/* This may invoke sub-classes with partially destroyed state, they must deal with this */
 	if (vf == folder_unmatched) {

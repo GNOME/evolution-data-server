@@ -53,6 +53,7 @@ struct _CamelVeeFolder {
 	struct _CamelVeeStore *parent_vee_store;
 	GHashTable *hashes;
 	GHashTable *loaded;
+	gboolean deleted;
 };
 
 struct _CamelVeeFolderClass {
