@@ -36,6 +36,8 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-debug.h"
+
 #if CAMEL_DB_DEBUG
 /* Enable d(x) if you want */
 #define d(x)
@@ -43,15 +45,10 @@
 #define START(stmt) 	g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new ();
 #define END 	g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL));
 #else
-#define d(x) 
+#define d(x) if (camel_debug("sqlite")) x
 #define START(x)
 #define END
 #endif
-
-
-/* Having this as a global variable, without mutex protection is wrong. 
-This will cause unnecessary crashes and multiple people using the resource etc. 
-You are advised to use this timer at your own risk. */
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 
@@ -181,7 +178,6 @@ camel_db_command (CamelDB *cdb, const char *stmt, CamelException *ex)
 			return TRUE;
 		g_mutex_lock (cdb->lock);
 
-		d(g_print("Executing: %s\n", stmt));
 		START(stmt);
 		ret = cdb_sql_exec (cdb->db, stmt, ex);
 		END;
@@ -1080,7 +1076,6 @@ followup_due_by TEXT ," */
 char *
 camel_db_get_column_name (const char *raw_name)
 {
-	d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
 		return g_strdup ("subject");
 	else if (!g_ascii_strcasecmp (raw_name, "from"))
