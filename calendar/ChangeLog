@@ -1,3 +1,8 @@
+2008-09-05  Andre Klapper  <a9016009@gmx.de>
+
+	* libedata-cal/e-cal-backend-util.c: 
+	Add translator comment for "Offline unavailable"
+
 2008-09-04  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* libedata-cal/Makefile.am:

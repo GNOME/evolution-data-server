@@ -122,6 +122,7 @@ e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
 	case GNOME_Evolution_Calendar_UnknownUser:
 		return _("Unknown User");
 	case GNOME_Evolution_Calendar_OfflineUnavailable:
+	/* Translators: This means "Offline mode unavailable" */
 		return _("Offline unavailable");
 	case GNOME_Evolution_Calendar_SearchSizeLimitExceeded:
 		return _("Search size limit exceeded");
