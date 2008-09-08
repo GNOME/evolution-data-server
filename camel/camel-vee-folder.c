@@ -579,14 +579,17 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 		CamelFolder *f = node->data;
 
 		camel_folder_sync(f, expunge, ex);
-		if (camel_exception_is_set(ex)) {
+		if (camel_exception_is_set(ex) && strncmp(camel_exception_get_description(ex), "no such table", 13)) {
 			char *desc;
 
 			camel_object_get(f, NULL, CAMEL_OBJECT_DESCRIPTION, &desc, NULL);
 			camel_exception_setv(ex, ex->id, _("Error storing '%s': %s"), desc, ex->desc);
 			g_warning ("%s", camel_exception_get_description(ex));
-		}
+			g_free(desc);
+		} else
+			camel_exception_clear (ex);
 
+		
 		/* auto update vfolders shouldn't need a rebuild */
 /* 		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
 /* 		    && camel_vee_folder_rebuild_folder(vf, f, ex) == -1) */

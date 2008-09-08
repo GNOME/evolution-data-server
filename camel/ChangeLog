@@ -1,3 +1,8 @@
+2008-09-08  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-vee-folder.c: (vee_sync): Ignore no such table errors, as we
+	don't create tables for empty folders.
+
 2008-09-08  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #328216
