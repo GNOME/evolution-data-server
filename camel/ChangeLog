@@ -1,3 +1,11 @@
+2008-09-08  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #328216
+
+	* camel.c: (camel_shutdown): Do not free default certdb itself,
+	rather set it to NULL to not have freed pointer flying around.
+	* camel-certdb.c: (camel_certdb_save): Save only when changed.
+
 2008-09-05  Paul Bolle  <pebolle@tiscali.nl>
 
 	** Fix for bug #550412

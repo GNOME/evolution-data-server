@@ -132,7 +132,7 @@ camel_shutdown (void)
 	certdb = camel_certdb_get_default ();
 	if (certdb) {
 		camel_certdb_save (certdb);
-		camel_object_unref (certdb);
+		camel_certdb_set_default (NULL);
 	}
 
 	/* These next calls must come last. */

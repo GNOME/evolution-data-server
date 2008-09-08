@@ -336,7 +336,11 @@ camel_certdb_save (CamelCertDB *certdb)
 	
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), -1);
 	g_return_val_if_fail (certdb->filename, -1);
-	
+
+	/* no change, nothing new to save, simply return success */
+	if ((certdb->flags & CAMEL_CERTDB_DIRTY) == 0)
+		return 0;
+
 	filename = alloca (strlen (certdb->filename) + 4);
 	sprintf (filename, "%s~", certdb->filename);
 	
