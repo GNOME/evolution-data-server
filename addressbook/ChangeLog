@@ -1,3 +1,15 @@
+2008-09-08  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #361413
+
+	* backends/ldap/e-book-backend-ldap.c: (query_ldap_root_dse):
+	Better debug message.
+	* backends/ldap/e-book-backend-ldap.c: (e_book_backend_ldap_connect),
+	(e_book_backend_ldap_authenticate_user),
+	(e_book_backend_ldap_load_source): Report to user the server requires
+	authentication if server returns 'unwilling to response'. Also do not
+	try to connect anonymously if authentication is required.
+
 2008-09-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #548827
