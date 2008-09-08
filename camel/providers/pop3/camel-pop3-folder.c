@@ -381,8 +381,6 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const char *uid, time_t *
 	    && buffer[0] == '#') {
 		CamelMimeMessage *message;
 
-		camel_object_ref ((CamelObject *)stream);
-
 		message = camel_mime_message_new ();
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream) == -1) {
 			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
@@ -396,10 +394,11 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const char *uid, time_t *
 
 			camel_object_unref ((CamelObject *)message);
 		}
-
-		camel_object_unref ((CamelObject *)stream);
 	}
 
+	if (stream) {
+		camel_object_unref (stream);
+	}
 	return res;
 }
 

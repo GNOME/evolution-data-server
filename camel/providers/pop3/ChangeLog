@@ -1,3 +1,11 @@
+2008-09-08  Patrick Ohly  <patrick.ohly@gmx.de>
+
+	** Fixes memory leak created by patch for #514827
+
+	* camel-pop3-folder.c: incrementing/decrementing the ref count of
+	the stream created with camel_data_cache_get() is a no-op; instead
+	it must be decremented once after using it
+
 2008-08-06  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #545877
