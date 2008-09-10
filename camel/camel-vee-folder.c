@@ -1560,8 +1560,22 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	/* Change any newly changed */
 	if (always_changed) {
-		for (i=0;i<always_changed->len;i++)
-			folder_changed_change_uid(sub, always_changed->pdata[i], hash, vf);
+		GPtrArray *present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
+		GHashTable *ht_present = g_hash_table_new (g_str_hash, g_str_equal);
+
+		for (i=0;present && i<present->len;i++) {
+			folder_changed_change_uid(sub, present->pdata[i], hash, vf);
+			g_hash_table_insert (ht_present, present->pdata[i], present->pdata[i]);
+		}
+		
+		for (i=0; i<always_changed->len; i++) {
+			if (!present || !g_hash_table_lookup(ht_present, always_changed->pdata[i])) {
+				folder_changed_remove_uid(sub, always_changed->pdata[i], hash, FALSE, vf);
+			}
+		}
+
+		camel_folder_search_free (sub, present);
+		g_hash_table_destroy (ht_present);
 		g_ptr_array_free(always_changed, TRUE);
 	}
 

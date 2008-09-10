@@ -1,5 +1,10 @@
 2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Fix vfolders while unloading unmatched
+	search indexes.
+
+2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for BNC bug #418080
 
 	* camel/camel-search-sql-sexp.c: Match contains using %like%.
