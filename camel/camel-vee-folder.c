@@ -1453,6 +1453,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 	GHashTable *matches_hash;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	GHashTable *unmatched_uids = vf->parent_vee_store ? vf->parent_vee_store->unmatched_uids : NULL;
+	GPtrArray *present = NULL;
 
 	/* Check the folder hasn't beem removed while we weren't watching */
 	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
@@ -1560,7 +1561,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	/* Change any newly changed */
 	if (always_changed) {
-		GPtrArray *present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
+		present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
 		GHashTable *ht_present = g_hash_table_new (g_str_hash, g_str_equal);
 
 		for (i=0;present && i<present->len;i++) {
@@ -1574,7 +1575,6 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 			}
 		}
 
-		camel_folder_search_free (sub, present);
 		g_hash_table_destroy (ht_present);
 		g_ptr_array_free(always_changed, TRUE);
 	}
@@ -1650,6 +1650,8 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 	/* Cleanup stuff on our folder */
 	if (matches_added)
 		camel_folder_search_free(sub, matches_added);
+	if (present)
+		camel_folder_search_free (sub, present);
 
 	if (matches_changed)
 		camel_folder_search_free(sub, matches_changed);
