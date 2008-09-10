@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.11.6.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-19 14:48+0700\n"
-"PO-Revision-Date: 2008-08-19 17:03+0700\n"
+"POT-Creation-Date: 2008-09-10 10:41+0700\n"
+"PO-Revision-Date: 2008-09-10 10:45+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,13 +26,13 @@ msgstr "กำลังโหลด..."
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
-#: addressbook/backends/ldap/e-book-backend-ldap.c:4282
+#: addressbook/backends/ldap/e-book-backend-ldap.c:4288
 #: addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "กำลังค้นหา..."
 
 #: addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
-#: addressbook/backends/ldap/e-book-backend-ldap.c:4446
+#: addressbook/backends/ldap/e-book-backend-ldap.c:4452
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "กำลังดาวน์โหลดที่อยู่ติดต่อ (%d)... "
@@ -52,27 +52,27 @@ msgstr "กำลังใช้ Distinguished Name (DN)"
 msgid "Using Email Address"
 msgstr "กำลังใช้ที่อยู่อีเมล"
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1017
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1019
 msgid "Reconnecting to LDAP server..."
 msgstr "กำลังเชื่อมต่อใหม่ไปยังเซิร์ฟเวอร์ LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1613
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1617
 msgid "Adding contact to LDAP server..."
 msgstr "กำลังเพิ่มที่อยู่ติดต่อไปยังเซิร์ฟเวอร์ LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:1747
+#: addressbook/backends/ldap/e-book-backend-ldap.c:1752
 msgid "Removing contact from LDAP server..."
 msgstr "กำลังลบที่อยู่ติดต่อออกจากเซิร์ฟเวอร์ LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:2058
+#: addressbook/backends/ldap/e-book-backend-ldap.c:2064
 msgid "Modifying contact from LDAP server..."
 msgstr "กำลังเปลี่ยนแปลงที่อยู่ติดต่อจากเซิร์ฟเวอร์ LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:4142
+#: addressbook/backends/ldap/e-book-backend-ldap.c:4148
 msgid "Receiving LDAP search results..."
 msgstr "กำลังรับผลการค้นหา LDAP..."
 
-#: addressbook/backends/ldap/e-book-backend-ldap.c:4304
+#: addressbook/backends/ldap/e-book-backend-ldap.c:4310
 msgid "Error performing search"
 msgstr "เกิดข้อผิดพลาดขณะค้นหา"
 
@@ -91,7 +91,7 @@ msgstr "เกิดข้อผิดพลาดขณะค้นหา"
 #: addressbook/libebook/e-book.c:1787 addressbook/libebook/e-book.c:1791
 #: addressbook/libebook/e-book.c:2025 addressbook/libebook/e-book.c:2029
 #: addressbook/libebook/e-book.c:2234 addressbook/libebook/e-book.c:2238
-#: addressbook/libebook/e-book.c:3339
+#: addressbook/libebook/e-book.c:3364
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" กับสมุดก่อน \"%s\""
@@ -120,7 +120,7 @@ msgstr "สมุดใช้งานอยู่"
 #: addressbook/libebook/e-book.c:2273 addressbook/libebook/e-book.c:2277
 #: addressbook/libebook/e-book.c:2538 addressbook/libebook/e-book.c:2619
 #: addressbook/libebook/e-book.c:2623 addressbook/libebook/e-book.c:2818
-#: addressbook/libebook/e-book.c:2822 addressbook/libebook/e-book.c:3348
+#: addressbook/libebook/e-book.c:2822 addressbook/libebook/e-book.c:3373
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "เกิดสิ่งผิดปรกติของ CORBA ขณะเรียก \"%s\""
@@ -145,27 +145,27 @@ msgstr "\"%s\" กับสมุดหลังจาก \"%s\""
 msgid "%s: canceled"
 msgstr "%s: ยกเลิก"
 
-#: addressbook/libebook/e-book.c:3203
+#: addressbook/libebook/e-book.c:3228
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: แหล่งข้อมูลไม่ถูกต้อง"
 
-#: addressbook/libebook/e-book.c:3211 addressbook/libebook/e-book.c:3277
+#: addressbook/libebook/e-book.c:3236 addressbook/libebook/e-book.c:3302
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: ไม่มีแฟกทอรีที่สามารถใช้กับ URI `%s'"
 
-#: addressbook/libebook/e-book.c:3223
+#: addressbook/libebook/e-book.c:3248
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: ไม่สามารถสร้าง EBookListener"
 
-#: addressbook/libebook/e-book.c:3490
+#: addressbook/libebook/e-book.c:3515
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: ไม่มีที่อยู่ติดต่อของตัวผู้ใช้เองใน gconf"
 
-#: addressbook/libebook/e-book.c:3623
+#: addressbook/libebook/e-book.c:3648
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: ไม่มีแหล่งสำหรับ uid `%s' ใน gconf"
@@ -705,7 +705,7 @@ msgstr "ไม่สามารถสร้างเธรดเพื่ออ
 #: calendar/backends/google/e-cal-backend-google.c:1194
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
-#: calendar/backends/http/e-cal-backend-http.c:569
+#: calendar/backends/http/e-cal-backend-http.c:584
 #: calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "ไม่สามารถสร้างแฟ้มแคช"
@@ -1182,7 +1182,7 @@ msgid "Operation has been canceled"
 msgstr "การปฏิบัติการได้ยกเลิกไปแล้ว"
 
 #: calendar/libecal/e-cal.c:5080
-#: calendar/libedata-cal/e-cal-backend-util.c:135
+#: calendar/libedata-cal/e-cal-backend-util.c:136
 msgid "Could not cancel operation"
 msgstr "ไม่สามารถยกเลิกการปฏิบัติการ"
 
@@ -1197,7 +1197,7 @@ msgid "A CORBA exception has occurred"
 msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 
 #: calendar/libecal/e-cal.c:5088
-#: calendar/libedata-cal/e-cal-backend-util.c:138
+#: calendar/libedata-cal/e-cal-backend-util.c:139
 #: camel/providers/groupwise/camel-groupwise-transport.c:223
 #: camel/providers/imap/camel-imap-command.c:434
 #: camel/providers/imap/camel-imap-store.c:742
@@ -1207,7 +1207,7 @@ msgstr "เกิดสิ่งผิดปรกติของ CORBA"
 #: camel/providers/imap4/camel-imap4-engine.c:1710
 #: camel/providers/imap4/camel-imap4-store.c:315
 #: camel/providers/imap4/camel-imap4-store.c:823
-#: camel/providers/imap4/camel-imap4-store.c:1577
+#: camel/providers/imap4/camel-imap4-store.c:1579
 #: camel/providers/pop3/camel-pop3-store.c:553
 #: camel/providers/pop3/camel-pop3-store.c:560
 #: camel/providers/pop3/camel-pop3-store.c:566
@@ -1336,27 +1336,28 @@ msgstr "ไม่รองรับการยืนยันตัวบุค
 msgid "TLS not available"
 msgstr "TLS ไม่สามารถใช้งานได้"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:125
+#. Translators: This means "Offline mode unavailable"
+#: calendar/libedata-cal/e-cal-backend-util.c:126
 msgid "Offline unavailable"
 msgstr "ไม่สามารถใช้โหมดออฟไลน์ได้"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:127
+#: calendar/libedata-cal/e-cal-backend-util.c:128
 msgid "Search size limit exceeded"
 msgstr "ขนาดของการค้นหาเกินกำหนด"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:129
+#: calendar/libedata-cal/e-cal-backend-util.c:130
 msgid "Search time limit exceeded"
 msgstr "เวลาของการค้นหาเกินกำหนด"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:131
+#: calendar/libedata-cal/e-cal-backend-util.c:132
 msgid "Invalid query"
 msgstr "ข้อคำถามไม่ถูกต้อง"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:133
+#: calendar/libedata-cal/e-cal-backend-util.c:134
 msgid "Query refused"
 msgstr "ข้อคำถามถูกปฏิเสธ"
 
-#: calendar/libedata-cal/e-cal-backend-util.c:140
+#: calendar/libedata-cal/e-cal-backend-util.c:141
 msgid "Invalid server version"
 msgstr "รุ่นของเซิร์ฟเวอร์ไม่ถูกต้อง"
 
@@ -1409,7 +1410,7 @@ msgstr "ไม่สามารถสร้างพาธแคช"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "ไม่สามารถลบรายการแคช: %s: %s"
 
-#: camel/camel-db.c:107
+#: camel/camel-db.c:104
 msgid "Insufficient memory"
 msgstr "หน่วยความจำไม่เพียงพอ"
 
@@ -1457,7 +1458,7 @@ msgstr "กำลังเตรียมโฟลเดอร์ '%s' สำห
 #: camel/providers/imap/camel-imap-store.c:1002
 #: camel/providers/imap/camel-imap-store.c:1810
 #: camel/providers/imap/camel-imap-store.c:2226
-#: camel/providers/imap/camel-imap-store.c:2989
+#: camel/providers/imap/camel-imap-store.c:2994
 msgid "You must be working online to complete this operation"
 msgstr "คุณจะต้องทำงานแบบออนไลน์เพื่อให้ปฏิบัติการนี้สมบูรณ์"
 
@@ -1479,52 +1480,52 @@ msgstr "ได้รับข้อความผิดรูปแบบจา
 msgid "Syncing folders"
 msgstr "กำลังปรับข้อมูลโฟลเดอร์ต่างๆ ให้ตรงกัน"
 
-#: camel/camel-filter-driver.c:1114 camel/camel-filter-driver.c:1494
+#: camel/camel-filter-driver.c:1114 camel/camel-filter-driver.c:1520
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "เกิดข้อผิดพลาดขณะแจงตัวกรอง: %s: %s"
 
-#: camel/camel-filter-driver.c:1123 camel/camel-filter-driver.c:1503
+#: camel/camel-filter-driver.c:1123 camel/camel-filter-driver.c:1529
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "เกิดข้อผิดพลาดขณะเรียกใช้ตัวกรอง: %s: %s"
 
-#: camel/camel-filter-driver.c:1191
+#: camel/camel-filter-driver.c:1211
 msgid "Unable to open spool folder"
 msgstr "ไม่สามารถเปิดโฟลเดอร์ที่เก็บพัก"
 
-#: camel/camel-filter-driver.c:1200
+#: camel/camel-filter-driver.c:1220
 msgid "Unable to process spool folder"
 msgstr "ไม่สามารถดำเนินการกับโฟลเดอร์ที่เก็บพัก"
 
-#: camel/camel-filter-driver.c:1215
+#: camel/camel-filter-driver.c:1236
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "กำลังรับข้อความ %d (%d%%)"
 
-#: camel/camel-filter-driver.c:1219
+#: camel/camel-filter-driver.c:1240
 msgid "Cannot open message"
 msgstr "ไม่สามารถเปิดข้อความ"
 
-#: camel/camel-filter-driver.c:1220 camel/camel-filter-driver.c:1233
+#: camel/camel-filter-driver.c:1241 camel/camel-filter-driver.c:1259
 #, c-format
 msgid "Failed on message %d"
 msgstr "ล้มเหลวที่ข้อความ %d"
 
-#: camel/camel-filter-driver.c:1247 camel/camel-filter-driver.c:1338
+#: camel/camel-filter-driver.c:1273 camel/camel-filter-driver.c:1364
 msgid "Syncing folder"
 msgstr "กำลังปรับข้อมูลโฟลเดอร์ให้ตรงกัน"
 
-#: camel/camel-filter-driver.c:1251 camel/camel-filter-driver.c:1343
+#: camel/camel-filter-driver.c:1277 camel/camel-filter-driver.c:1369
 msgid "Complete"
 msgstr "เสร็จสมบูรณ์"
 
-#: camel/camel-filter-driver.c:1308
+#: camel/camel-filter-driver.c:1334
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "กำลังรับข้อความ %d จาก %d"
 
-#: camel/camel-filter-driver.c:1323
+#: camel/camel-filter-driver.c:1349
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "ล้มเหลวที่ข้อความ %d จาก %d"
@@ -1552,7 +1553,7 @@ msgstr "ไม่สามารถสร้างโพรเซสลูก '%
 msgid "Error executing filter search: %s: %s"
 msgstr "เกิดข้อผิดพลาดระหว่างเรียกใช้การค้นหาด้วยตัวกรอง: %s: %s"
 
-#: camel/camel-folder-search.c:332 camel/camel-folder-search.c:444
+#: camel/camel-folder-search.c:333 camel/camel-folder-search.c:445
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1561,7 +1562,7 @@ msgstr ""
 "ไม่สามารถแจงนิพจน์ค้นหา: %s\n"
 "%s"
 
-#: camel/camel-folder-search.c:342 camel/camel-folder-search.c:454
+#: camel/camel-folder-search.c:343 camel/camel-folder-search.c:455
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1570,32 +1571,32 @@ msgstr ""
 "เกิดข้อผิดพลาดระหว่างค้นด้วยนิพจน์ค้นหา: %s\n"
 "%s"
 
-#: camel/camel-folder-search.c:643 camel/camel-folder-search.c:685
+#: camel/camel-folder-search.c:647 camel/camel-folder-search.c:691
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) ต้องการผลลัพธ์ชนิดบูลีนค่าเดียว"
 
-#: camel/camel-folder-search.c:738
+#: camel/camel-folder-search.c:744
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) อยู่ใน %s ไม่ได้"
 
-#: camel/camel-folder-search.c:744 camel/camel-folder-search.c:751
+#: camel/camel-folder-search.c:750 camel/camel-folder-search.c:757
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) ต้องการรายการค้นพบชนิดสตริง"
 
-#: camel/camel-folder-search.c:778
+#: camel/camel-folder-search.c:784
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) ต้องการผลลัพธ์เป็นแอร์เรย์"
 
-#: camel/camel-folder-search.c:787
+#: camel/camel-folder-search.c:793
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) ต้องการชุดโฟลเดอร์"
 
-#: camel/camel-folder-search.c:882
+#: camel/camel-folder-search.c:888
 #, c-format
 msgid "Performing query on unknown header: %s"
 msgstr "จะดำเนินการสืบค้นกับข้อมูลส่วนหัวที่ไม่รู้จัก: %s"
@@ -1956,7 +1957,7 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"ข้อมูลสำหรับติดตามที่อยู่อีเมลใช้การไม่ได้:\n"
+"ข้อมูลสำหรับแกะรอยในรูปที่อยู่อีเมลผิดรูปแบบ:\n"
 "%s"
 
 #: camel/camel-sasl-anonymous.c:145
@@ -1965,6 +1966,8 @@ msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
+"ข้อมูลสำหรับแกะรอยในรูปข้อความล้วนผิดรูปแบบ:\n"
+"%s"
 
 #: camel/camel-sasl-anonymous.c:157
 #, c-format
@@ -1972,7 +1975,7 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
-"ข้อมูลสำหรับติดตามใช้การไม่ได้:\n"
+"ข้อมูลสำหรับแกะรอยใช้การไม่ได้:\n"
 "%s"
 
 #: camel/camel-sasl-cram-md5.c:38
@@ -2105,6 +2108,8 @@ msgid ""
 "Could not get Kerberos ticket:\n"
 "%s"
 msgstr ""
+"ไม่สามารถขอตั๋วสำหรับ Kerberos:\n"
+"%s"
 
 #: camel/camel-sasl-login.c:36
 msgid "Login"
@@ -2423,13 +2428,13 @@ msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์:%s: ปฏิบัตการใช้ไม่ได้"
 
 #. the name of the Trash folder, used for deleted messages
-#: camel/camel-store.c:854 camel/camel-vtrash-folder.c:53
+#: camel/camel-store.c:856 camel/camel-vtrash-folder.c:53
 #: camel/providers/imap/camel-imap-store.c:1060
 msgid "Trash"
 msgstr "ถังขยะ"
 
 #. the name of the Junk folder, used for spam messages
-#: camel/camel-store.c:857 camel/camel-vtrash-folder.c:55
+#: camel/camel-store.c:859 camel/camel-vtrash-folder.c:55
 msgid "Junk"
 msgstr "เมลขยะ"
 
@@ -2646,17 +2651,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "ไม่สามารถแจง URL '%s'"
 
-#: camel/camel-vee-folder.c:585
+#: camel/camel-vee-folder.c:586
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "เกิดข้อผิดพลาดระหว่างบันทึก '%s': %s"
 
-#: camel/camel-vee-folder.c:632
+#: camel/camel-vee-folder.c:641
 #, c-format
 msgid "No such message %s in %s"
 msgstr "ไม่มีข้อความ %s ดังกล่าว ใน %s"
 
-#: camel/camel-vee-folder.c:755 camel/camel-vee-folder.c:761
+#: camel/camel-vee-folder.c:764 camel/camel-vee-folder.c:770
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "ไม่สามารถคัดลอกหรือย้ายข้อความเข้าไปในโฟลเดอร์เสมือน"
 
@@ -2705,9 +2710,9 @@ msgstr "ไม่มีข้อความดังกล่าว"
 #: camel/providers/nntp/camel-nntp-folder.c:232
 #: camel/providers/nntp/camel-nntp-folder.c:373
 #: camel/providers/pop3/camel-pop3-folder.c:266
-#: camel/providers/pop3/camel-pop3-folder.c:560
-#: camel/providers/pop3/camel-pop3-folder.c:621
-#: camel/providers/pop3/camel-pop3-folder.c:639
+#: camel/providers/pop3/camel-pop3-folder.c:559
+#: camel/providers/pop3/camel-pop3-folder.c:620
+#: camel/providers/pop3/camel-pop3-folder.c:638
 msgid "User canceled"
 msgstr "ผูใช้ยกเลิก"
 
@@ -2717,11 +2722,11 @@ msgstr "ผูใช้ยกเลิก"
 #: camel/providers/nntp/camel-nntp-folder.c:149
 #: camel/providers/nntp/camel-nntp-folder.c:158
 #: camel/providers/nntp/camel-nntp-folder.c:234
-#: camel/providers/pop3/camel-pop3-folder.c:388
-#: camel/providers/pop3/camel-pop3-folder.c:563
-#: camel/providers/pop3/camel-pop3-folder.c:624
-#: camel/providers/pop3/camel-pop3-folder.c:631
-#: camel/providers/pop3/camel-pop3-folder.c:642
+#: camel/providers/pop3/camel-pop3-folder.c:386
+#: camel/providers/pop3/camel-pop3-folder.c:562
+#: camel/providers/pop3/camel-pop3-folder.c:623
+#: camel/providers/pop3/camel-pop3-folder.c:630
+#: camel/providers/pop3/camel-pop3-folder.c:641
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "ไม่สามารถดูข้อความ %s: %s"
@@ -2994,12 +2999,12 @@ msgstr "ไม่มีสตรีมข้อมูลเข้า"
 #: camel/providers/imap/camel-imap-command.c:231
 #: camel/providers/imap/camel-imap-command.c:280
 #: camel/providers/imap/camel-imap-command.c:494
-#: camel/providers/imap/camel-imap-store.c:3029
+#: camel/providers/imap/camel-imap-store.c:3034
 msgid "Operation cancelled"
 msgstr "ยกเลิกปฏิบัติการ"
 
 #: camel/providers/imap/camel-imap-command.c:333
-#: camel/providers/imap/camel-imap-store.c:3032
+#: camel/providers/imap/camel-imap-store.c:3037
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "เซิร์ฟเวอร์ยกเลิกการเชื่อมต่อโดยมิได้คาดหมาย: %s"
@@ -3496,7 +3501,7 @@ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 msgstr "ไม่สามารถดึงข้อมูล LIST สำหรับ '%s' บนเซิร์ฟเวอร์ IMAP %s: %s"
 
 #: camel/providers/imap4/camel-imap4-store.c:823
-#: camel/providers/imap4/camel-imap4-store.c:1577
+#: camel/providers/imap4/camel-imap4-store.c:1579
 msgid "Bad command"
 msgstr "คำสั่งที่ใช้ไม่ได้"
 
@@ -3548,35 +3553,37 @@ msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเ
 msgid "Cannot rename folder '%s' to '%s': Bad command"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์ '%s' ไปเป็น '%s': คำสั่งไม่ถูกต้อง"
 
-#: camel/providers/imap4/camel-imap4-store.c:1575
+#. Translators: the first %s is an IMAP4 command, either LSUB or LIST.
+#. * The fourth one is an error message.
+#: camel/providers/imap4/camel-imap4-store.c:1577
 #, c-format
 msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-msgstr "ไม่สามารถดึงข้อมูล %s สำหรับแพทเทิร์น '%s' บนเซิร์ฟเวอร์ IMAP %s: %s"
+msgstr "ไม่สามารถดึงข้อมูล %s สำหรับแพตเทิร์น '%s' บนเซิร์ฟเวอร์ IMAP %s: %s"
 
-#: camel/providers/imap4/camel-imap4-store.c:1636
+#: camel/providers/imap4/camel-imap4-store.c:1638
 msgid "Cannot subscribe to IMAP folders in offline mode."
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ IMAP ในโหมดออฟไลน์"
 
-#: camel/providers/imap4/camel-imap4-store.c:1681
+#: camel/providers/imap4/camel-imap4-store.c:1683
 #, c-format
 msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ '%s': ชื่อกล่องจดหมายผิดรูปแบบ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1686
+#: camel/providers/imap4/camel-imap4-store.c:1688
 #, c-format
 msgid "Cannot subscribe to folder '%s': Bad command"
 msgstr "ไม่สามารถบอกรับข้อมูลโฟลเดอร์ '%s': คำสั่งไม่ถูกต้อง"
 
-#: camel/providers/imap4/camel-imap4-store.c:1708
+#: camel/providers/imap4/camel-imap4-store.c:1710
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ IMAP ในโหมดออฟไลน์"
 
-#: camel/providers/imap4/camel-imap4-store.c:1753
+#: camel/providers/imap4/camel-imap4-store.c:1755
 #, c-format
 msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ '%s': ชื่อกล่องจดหมายผิดรูปแบบ"
 
-#: camel/providers/imap4/camel-imap4-store.c:1758
+#: camel/providers/imap4/camel-imap4-store.c:1760
 #, c-format
 msgid "Cannot unsubscribe from folder '%s': Bad command"
 msgstr "ไม่สามารถเลิกบอกรับข้อมูลโฟลเดอร์ '%s': คำสั่งไม่ถูกต้อง"
@@ -3851,25 +3858,25 @@ msgstr "ไม่ใช่ไดเรกทอรี maildir"
 msgid "Could not scan folder '%s': %s"
 msgstr "ไม่สามารถตรวจข้อมูลโฟลเดอร์ '%s': %s"
 
-#: camel/providers/local/camel-maildir-summary.c:433
-#: camel/providers/local/camel-maildir-summary.c:567
+#: camel/providers/local/camel-maildir-summary.c:434
+#: camel/providers/local/camel-maildir-summary.c:553
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "ไม่สามารถเปิดพาธของไดเรกทอรี maildir: %s: %s"
 
-#: camel/providers/local/camel-maildir-summary.c:560
+#: camel/providers/local/camel-maildir-summary.c:546
 msgid "Checking folder consistency"
 msgstr "กำลังตรวจสอบความเรียบร้อยของโฟลเดอร์"
 
-#: camel/providers/local/camel-maildir-summary.c:664
+#: camel/providers/local/camel-maildir-summary.c:650
 msgid "Checking for new messages"
 msgstr "กำลังตรวจสอบข้อความใหม่"
 
-#: camel/providers/local/camel-maildir-summary.c:756
-#: camel/providers/local/camel-mbox-summary.c:518
-#: camel/providers/local/camel-mbox-summary.c:698
-#: camel/providers/local/camel-mbox-summary.c:794
-#: camel/providers/local/camel-spool-summary.c:141
+#: camel/providers/local/camel-maildir-summary.c:736
+#: camel/providers/local/camel-mbox-summary.c:534
+#: camel/providers/local/camel-mbox-summary.c:714
+#: camel/providers/local/camel-mbox-summary.c:810
+#: camel/providers/local/camel-spool-summary.c:158
 msgid "Storing folder"
 msgstr "กำลังเก็บข้อมูลลงโฟลเดอร์"
 
@@ -3967,74 +3974,76 @@ msgstr "ไม่สามารถเปลี่ยนชื่อ '%s': '%s':
 msgid "Could not rename '%s' to %s: %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อ '%s' ไปเป็น %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:524
+#: camel/providers/local/camel-mbox-summary.c:540
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "ไม่สามารถเปิดโฟลเดอร์: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:572
+#: camel/providers/local/camel-mbox-summary.c:588
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "เกิดข้อผิดพลาดร้ายแรงขณะแจงเมล ณ บริเวณตำแหน่ง %ld ในโฟลเดอร์ %s"
 
-#: camel/providers/local/camel-mbox-summary.c:635
+#: camel/providers/local/camel-mbox-summary.c:651
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "ไม่สามารถตรวจสอบโฟลเดอร์: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:703
-#: camel/providers/local/camel-mbox-summary.c:799
-#: camel/providers/local/camel-spool-summary.c:146
+#: camel/providers/local/camel-mbox-summary.c:719
+#: camel/providers/local/camel-mbox-summary.c:815
+#: camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "ไม่สามารถเปิดแฟ้ม: %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:715
-#: camel/providers/local/camel-spool-summary.c:159
+#: camel/providers/local/camel-mbox-summary.c:731
+#: camel/providers/local/camel-spool-summary.c:176
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "ไม่สามารถเปิดกล่องจดหมายชั่วคราว: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:728
-#: camel/providers/local/camel-mbox-summary.c:906
+#: camel/providers/local/camel-mbox-summary.c:744
+#: camel/providers/local/camel-mbox-summary.c:920
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "ไม่สามารถปิดโฟลเดอร์แหล่งเมล %s: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:737
+#: camel/providers/local/camel-mbox-summary.c:753
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "ไม่สามารถปิดโฟลเดอร์ชั่วคราว: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:752
+#: camel/providers/local/camel-mbox-summary.c:768
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ไม่สามารถเปลี่ยนชื่อโฟลเดอร์: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:810
-#: camel/providers/local/camel-mbox-summary.c:1035
+#: camel/providers/local/camel-mbox-summary.c:826
+#: camel/providers/local/camel-mbox-summary.c:1050
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ไม่สามารถเก็บโฟลเดอร์: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:846
-#: camel/providers/local/camel-mbox-summary.c:1065
+#: camel/providers/local/camel-mbox-summary.c:862
+#: camel/providers/local/camel-mbox-summary.c:870
+#: camel/providers/local/camel-mbox-summary.c:1080
+#: camel/providers/local/camel-mbox-summary.c:1088
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "ข้อมูลสรุปกับโฟลเดอร์ไม่ตรงกัน แม้จะปรับข้อมูลให้ตรงกันแล้ว"
 
-#: camel/providers/local/camel-mbox-summary.c:999
-#: camel/providers/local/camel-spool-summary.c:327
+#: camel/providers/local/camel-mbox-summary.c:1013
+#: camel/providers/local/camel-spool-summary.c:344
 #, c-format
 msgid "Unknown error: %s"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1139
-#: camel/providers/local/camel-mbox-summary.c:1165
+#: camel/providers/local/camel-mbox-summary.c:1156
+#: camel/providers/local/camel-mbox-summary.c:1182
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "เขียนลงกล่องจดหมายชั่วคราวไม่สำเร็จ: %s"
 
-#: camel/providers/local/camel-mbox-summary.c:1156
+#: camel/providers/local/camel-mbox-summary.c:1173
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "เขียนลงกล่องจดหมายชั่วคราวไม่สำเร็จ: %s: %s"
@@ -4058,7 +4067,7 @@ msgstr "ไม่สามารถสร้างโฟลเดอร์ '%s':
 msgid "Cannot get folder '%s': not a directory."
 msgstr "ไม่สามารถอ่านโฟลเดอร์ '%s': ไม่ใช่ไดเรกทอรี"
 
-#: camel/providers/local/camel-mh-summary.c:246
+#: camel/providers/local/camel-mh-summary.c:248
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "ไม่สามารถเปิดพาธไดเรกทอรี MH: %s: %s"
@@ -4128,21 +4137,21 @@ msgstr "โฟลเดอร์ที่เก็บพักไม่สาม
 msgid "Spool folders cannot be deleted"
 msgstr "โฟลเดอร์ที่เก็บพักไม่สามารถลบได้"
 
-#: camel/providers/local/camel-spool-summary.c:172
-#: camel/providers/local/camel-spool-summary.c:182
-#: camel/providers/local/camel-spool-summary.c:192
+#: camel/providers/local/camel-spool-summary.c:189
+#: camel/providers/local/camel-spool-summary.c:199
+#: camel/providers/local/camel-spool-summary.c:209
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
 msgstr "ไม่สามารถปรับโฟลเดอร์ชั่วคราว %s ให้ตรงกัน: %s"
 
-#: camel/providers/local/camel-spool-summary.c:208
+#: camel/providers/local/camel-spool-summary.c:225
 #, c-format
 msgid "Could not sync spool folder %s: %s"
 msgstr "ไม่สามารถปรับโฟลเดอร์ที่เก็บพัก %s ให้ตรงกัน: %s"
 
-#: camel/providers/local/camel-spool-summary.c:239
 #: camel/providers/local/camel-spool-summary.c:256
-#: camel/providers/local/camel-spool-summary.c:267
+#: camel/providers/local/camel-spool-summary.c:273
+#: camel/providers/local/camel-spool-summary.c:284
 #, c-format
 msgid ""
 "Could not sync spool folder %s: %s\n"
@@ -4319,19 +4328,19 @@ msgstr "กำลังเก็บกวาดข้อความเก่า
 msgid "Expunging deleted messages"
 msgstr "กำลังเก็บกวาดข้อความที่สั่งลบ"
 
-#: camel/providers/pop3/camel-pop3-folder.c:534
+#: camel/providers/pop3/camel-pop3-folder.c:533
 #, c-format
 msgid "No message with UID %s"
 msgstr "ไม่มีข้อความที่มี UID %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: camel/providers/pop3/camel-pop3-folder.c:541
+#: camel/providers/pop3/camel-pop3-folder.c:540
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "กำลังดึงข้อความ POP %d"
 
-#: camel/providers/pop3/camel-pop3-folder.c:631
+#: camel/providers/pop3/camel-pop3-folder.c:630
 msgid "Unknown reason"
 msgstr "ไม่ทราบสาเหตุ"
 
@@ -4528,7 +4537,7 @@ msgstr "พารามิเตอร์คำสั่งยังไม่ร
 
 #: camel/providers/smtp/camel-smtp-transport.c:176
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "สถานะระบบ หรือการตอบข้อความช่วยเหลือของระบบ"
 
 #: camel/providers/smtp/camel-smtp-transport.c:178
 msgid "Help message"
@@ -4592,7 +4601,7 @@ msgstr "ทำรายการเปลี่ยนแปลงไม่สำ
 
 #: camel/providers/smtp/camel-smtp-transport.c:210
 msgid "A password transition is needed"
-msgstr ""
+msgstr "ต้องเปลี่ยนรหัสผ่าน"
 
 #: camel/providers/smtp/camel-smtp-transport.c:212
 msgid "Authentication mechanism is too weak"
@@ -4984,11 +4993,11 @@ msgid ""
 "name"
 msgstr "มีหมวดหมู่ '%s' อยู่แล้วในการกำหนดค่า กรุณาใช้ชื่ออื่น"
 
-#: libedataserverui/e-categories-dialog.c:462
+#: libedataserverui/e-categories-dialog.c:466
 msgid "Icon"
 msgstr "ไอคอน"
 
-#: libedataserverui/e-categories-dialog.c:467
+#: libedataserverui/e-categories-dialog.c:471
 msgid "Category"
 msgstr "หมวดหมู่"
 
@@ -5024,19 +5033,19 @@ msgstr "แ_ก้ไข"
 msgid "categories"
 msgstr "หมวด"
 
-#: libedataserverui/e-name-selector-dialog.c:266
+#: libedataserverui/e-name-selector-dialog.c:272
 msgid "Select Contacts from Address Book"
 msgstr "เลือกที่อยู่ติดต่อจากสมุดที่อยู่"
 
-#: libedataserverui/e-name-selector-dialog.c:546
+#: libedataserverui/e-name-selector-dialog.c:559
 msgid "_Add"
 msgstr "เ_พิ่ม"
 
-#: libedataserverui/e-name-selector-dialog.c:571
+#: libedataserverui/e-name-selector-dialog.c:584
 msgid "_Remove"
 msgstr "_ลบ"
 
-#: libedataserverui/e-name-selector-dialog.c:744
+#: libedataserverui/e-name-selector-dialog.c:761
 #: libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "หมวดใดก็ได้"
@@ -5079,25 +5088,25 @@ msgid "_Search:"
 msgstr "_ค้นหา:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: libedataserverui/e-name-selector-entry.c:2240
+#: libedataserverui/e-name-selector-entry.c:2369
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "กระ_จาย %s ในบรรทัด"
 
 #. Copy Contact Item
-#: libedataserverui/e-name-selector-entry.c:2255
+#: libedataserverui/e-name-selector-entry.c:2384
 #, c-format
 msgid "Cop_y %s"
 msgstr "คัด_ลอก %s"
 
 #. Cut Contact Item
-#: libedataserverui/e-name-selector-entry.c:2265
+#: libedataserverui/e-name-selector-entry.c:2394
 #, c-format
 msgid "C_ut %s"
 msgstr "_ตัด %s"
 
 #. Edit Contact item
-#: libedataserverui/e-name-selector-entry.c:2282
+#: libedataserverui/e-name-selector-entry.c:2411
 #, c-format
 msgid "_Edit %s"
 msgstr "แ_ก้ไข %s"
