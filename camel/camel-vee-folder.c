@@ -1506,10 +1506,13 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 		if (changed->len)
 			matches_changed = camel_folder_search_by_uids(sub, vf->expression, changed, NULL);
+		if (always_changed->len)
+			present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
+
 	}
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
-	if (matches_changed || matches_added || changes->uid_removed->len)
+	if (matches_changed || matches_added || changes->uid_removed->len||(always_changed && always_changed->len))
 		camel_db_begin_transaction (folder->parent_store->cdb, NULL);
 
 	if (folder_unmatched != NULL)
@@ -1561,7 +1564,6 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	/* Change any newly changed */
 	if (always_changed) {
-		present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
 		GHashTable *ht_present = g_hash_table_new (g_str_hash, g_str_equal);
 
 		for (i=0;present && i<present->len;i++) {

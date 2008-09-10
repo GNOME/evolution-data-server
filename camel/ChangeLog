@@ -1,5 +1,10 @@
 2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-vee-folder.c: (folder_changed_change): Missed another deadlock
+	case.
+
+2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-vee-folder.c: (folder_changed_change): Don't hold one db lock
 	and acquire folder lock. It dead locks
 
