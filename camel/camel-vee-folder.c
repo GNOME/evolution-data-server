@@ -1506,7 +1506,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 		if (changed->len)
 			matches_changed = camel_folder_search_by_uids(sub, vf->expression, changed, NULL);
-		if (always_changed->len)
+		if (always_changed && always_changed->len)
 			present = camel_folder_search_by_uids(sub, vf->expression, always_changed, NULL);
 
 	}
