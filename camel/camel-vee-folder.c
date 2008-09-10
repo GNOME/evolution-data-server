@@ -1512,7 +1512,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
-	if (matches_changed || matches_added || changes->uid_removed->len||(always_changed && always_changed->len))
+	if (matches_changed || matches_added || changes->uid_removed->len||present)
 		camel_db_begin_transaction (folder->parent_store->cdb, NULL);
 
 	if (folder_unmatched != NULL)
@@ -1645,7 +1645,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 		vf->changes = camel_folder_change_info_new();
 	}
 
-	if (matches_changed || matches_added || changes->uid_removed->len || (always_changed && always_changed->len))
+	if (matches_changed || matches_added || changes->uid_removed->len || present)
 		camel_db_end_transaction (folder->parent_store->cdb, NULL);
 	CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
 
