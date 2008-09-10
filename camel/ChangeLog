@@ -1,5 +1,9 @@
 2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-search.c: Make it debuggable.
+
+2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-db.c: Add bdata to index.
 
 2008-09-08  Srinivasa Ragavan  <sragavan@novell.com>

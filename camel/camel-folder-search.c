@@ -47,6 +47,7 @@
 #include "camel-search-private.h"
 #include "camel-stream-mem.h"
 #include "camel-db.h"
+#include "camel-debug.h"
 #include "camel-store.h"
 #include "camel-vee-folder.h"
 #include "camel-string-utils.h"
@@ -55,6 +56,7 @@
 
 #define d(x) 
 #define r(x) 
+#define dd(x) if (camel_debug("search")) x
 
 struct _CamelFolderSearchPrivate {
 	CamelException *ex;
@@ -483,7 +485,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		/* Sync the db, so that we search the db for changes */
 		camel_folder_summary_save_to_db (search->folder->summary, ex);
 	
-		d(printf ("sexp is : [%s]\n", expr));
+		dd(printf ("sexp is : [%s]\n", expr));
 		if (g_getenv("SQL_SEARCH_OLD"))
 			sql_query = camel_sexp_to_sql (expr);
 		else
@@ -492,7 +494,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
 		g_free (sql_query);
-		d(printf("Equivalent sql %s\n", tmp));
+		dd(printf("Equivalent sql %s\n", tmp));
 	
 		matches = g_ptr_array_new();
 		cdb = (CamelDB *) (search->folder->cdb);
