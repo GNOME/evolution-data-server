@@ -378,7 +378,6 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 	mi = (CamelVeeMessageInfo *)camel_message_info_new(&s->summary);
 	mi->summary = summary;
 	/* We would do lazy loading of flags, when the folders are loaded to memory through folder_reloaded signal */
-	mi->old_flags = 0;
 	camel_object_ref (summary);
 	mi->info.uid = (char *) camel_pstring_strdup (vuid);
 	g_free (vuid);

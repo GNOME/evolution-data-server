@@ -217,14 +217,13 @@ camel_vee_folder_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 
 	CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
 
-	d(printf("camel_vee_folder_add_folde(%p, %p)\n", vf, sub));
+	d(printf("camel_vee_folder_add_folder(%s, %s)\n", ((CamelFolder *)vf)->full_name, sub->full_name));
 
 	cache = camel_folder_summary_cache_size(sub->summary);
 	if (!cache) {
 		camel_object_hook_event(sub->summary, "summary_reloaded", summary_reloaded, vf);
 		g_hash_table_insert(vf->loaded, sub, GINT_TO_POINTER(1));
 	}
-	
 	camel_object_hook_event((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc)folder_changed, vf);
 	camel_object_hook_event((CamelObject *)sub, "deleted", (CamelObjectEventHookFunc)subfolder_deleted, vf);
 	camel_object_hook_event((CamelObject *)sub, "renamed", (CamelObjectEventHookFunc)folder_renamed, vf);
@@ -1219,7 +1218,7 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
  */
 
 static void
-update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboolean add)
+update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboolean add, gboolean use_old)
 {
 	int unread=0, deleted=0, junk=0;
 	CamelFolderSummary *summary = ((CamelMessageInfo *) mi)->summary;
@@ -1232,10 +1231,11 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 
 	if (flags & CAMEL_MESSAGE_JUNK)
 		junk = 1;
+
+	d(printf("folder: %s %d %d: %p:%s\n", summary->folder->full_name, oldflags, add, mi, ((CamelMessageInfo *)mi)->uid));
+	d(printf("%d %d %d\n%d %d %d\n", !(flags & CAMEL_MESSAGE_SEEN), flags & CAMEL_MESSAGE_DELETED, flags & CAMEL_MESSAGE_JUNK, !(oldflags & CAMEL_MESSAGE_SEEN), oldflags & CAMEL_MESSAGE_DELETED, oldflags & CAMEL_MESSAGE_JUNK));
 	
-	d(printf("%d %d %d\n%d %d %d\n", !(flags & CAMEL_MESSAGE_SEEN), flags & CAMEL_MESSAGE_DELETED, flags & CAMEL_MESSAGE_JUNK, !(oldflags & CAMEL_MESSAGE_SEEN), flags & CAMEL_MESSAGE_DELETED, flags & CAMEL_MESSAGE_JUNK));
-	
-	if (!oldflags) {
+	if (!use_old) {
 		if (add) {
 			if (unread)
 				summary->unread_count += unread;
@@ -1250,15 +1250,26 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 				summary->visible_count -= junk ? junk : deleted;
 
 			summary->saved_count++;		
-		} else {
+		} else  {
+			oldflags = use_old ? oldflags : flags;
+			unread = deleted = junk = 0;
+			if (!(oldflags & CAMEL_MESSAGE_SEEN))
+				unread -= 1;
+
+			if (oldflags & CAMEL_MESSAGE_DELETED)
+				deleted -= 1;
+
+			if (oldflags & CAMEL_MESSAGE_JUNK)
+				junk -= 1;			
+
 			if (unread)
-				summary->unread_count -= unread;
+				summary->unread_count += unread;
 			if (deleted)
-				summary->deleted_count -= deleted;
+				summary->deleted_count += deleted;
 			if (junk)
-				summary->junk_count -= junk;
+				summary->junk_count += junk;
 			if (junk && !deleted)
-				summary->junk_not_deleted_count -= junk;
+				summary->junk_not_deleted_count += junk;
 			if (!junk && !deleted)
 				summary->visible_count--;
 
@@ -1268,12 +1279,11 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 		if (!(oldflags & CAMEL_MESSAGE_SEEN))
 			unread -= 1;
 
-		if (flags & CAMEL_MESSAGE_DELETED)
+		if (oldflags & CAMEL_MESSAGE_DELETED)
 			deleted -= 1;
 
-		if (flags & CAMEL_MESSAGE_JUNK)
+		if (oldflags & CAMEL_MESSAGE_JUNK)
 			junk -= 1;
-		
 		if (unread)
 			summary->unread_count += unread;
 		if (deleted)
@@ -1308,7 +1318,7 @@ folder_changed_add_uid(CamelFolder *sub, const char *uid, const char hash[8], Ca
 	camel_db_add_to_vfolder_transaction (folder->parent_store->cdb, folder->full_name, (char *)vuid, NULL);
 	camel_folder_change_info_add_uid(vf->changes,  vuid);
 	/* old flags and new flags should  be same, since we sync all times  */
-	update_summary (vinfo, camel_message_info_flags(vinfo), 0, TRUE);
+	update_summary (vinfo, camel_message_info_flags(vinfo), 0, TRUE, FALSE);
 	if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0 && !CAMEL_IS_VEE_FOLDER(sub) && folder_unmatched != NULL) {
 		if (g_hash_table_lookup_extended(unmatched_uids, vuid, (void **)&oldkey, &oldval)) {
 			n = GPOINTER_TO_INT (oldval);
@@ -1342,7 +1352,7 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 
 	vinfo = (CamelVeeMessageInfo *) camel_folder_summary_uid (((CamelFolder *) vf)->summary, vuid);
 	if (vinfo) {
-		update_summary (vinfo, vinfo->old_flags, 0, FALSE);
+		update_summary (vinfo, vinfo->old_flags, 0, FALSE, FALSE);
 		camel_message_info_free((CamelMessageInfo *)vinfo);
 	}
 	camel_folder_change_info_remove_uid(vf->changes, vuid);
@@ -1403,13 +1413,13 @@ folder_changed_change_uid(CamelFolder *sub, const char *uid, const char hash[8],
 		if (info) {
 			if (vinfo) {
 				camel_folder_change_info_change_uid(vf->changes, vuid);
-				update_summary (vinfo, camel_message_info_flags(info), vinfo->old_flags, FALSE /* Doesn't matter */);
+				update_summary (vinfo, camel_message_info_flags(info), vinfo->old_flags, FALSE /* Doesn't matter */, TRUE);
 				camel_message_info_free((CamelMessageInfo *)vinfo);
 			}
 
 			if (uinfo) {
 				camel_folder_change_info_change_uid(folder_unmatched->changes, vuid);
-				update_summary (uinfo, camel_message_info_flags(info), uinfo->old_flags, FALSE /* Doesn't matter */);				
+				update_summary (uinfo, camel_message_info_flags(info), uinfo->old_flags, FALSE /* Doesn't matter */, TRUE);				
 				camel_message_info_free((CamelMessageInfo *)uinfo);
 			}
 
@@ -1882,7 +1892,7 @@ folder_load_flags(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	camel_vee_folder_hash_folder(sub, hash);	
 	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
-
+	dd(printf("Loading summary of %s to vfolder %s\n", sub->full_name, folder->full_name));
 
 	/* Get the summary of vfolder */
 	array = camel_folder_summary_array (folder->summary);

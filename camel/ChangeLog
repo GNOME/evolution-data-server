@@ -1,5 +1,10 @@
 2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c: Refix vfolder counts.
+
+2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-vee-folder.c: (folder_changed_change): Fix a deadlock
 
 2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
