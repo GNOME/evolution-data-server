@@ -363,7 +363,9 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 					value = get_db_safe_string (tstr);
 					g_free (tstr);
 				} else if (how == CAMEL_SEARCH_MATCH_EXACT) {
-					value = get_db_safe_string(argv[i]->value.string);
+					tstr = g_strdup_printf ("%c%s%c", '%', argv[i]->value.string, '%');
+					value = get_db_safe_string (tstr);
+					g_free (tstr);
 				}
 				str = g_strdup_printf("(%s LIKE %s)", headername, value);
 				g_free(value);
@@ -708,7 +710,7 @@ int main ()
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
 		char *sql = NULL;
 		printf("Q: %s\n\"%c\"\n", txt[i], 40);		
-		sql = camel_e_sexp_to_sql (txt[i]);
+		sql = camel_sexp_to_sql_sexp (txt[i]);
 		printf("A: %s\n\n\n", sql);
 		g_free (sql);
 	}
