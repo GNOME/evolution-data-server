@@ -1,3 +1,18 @@
+Evolution-Data-Server 2.23.92 2008-09-08
+----------------------------------------
+
+Bug Fixes:
+	#418080: (Novell Bugzilla) Make thing better, with new sexp/sql parser. (Srinivasa Ragavan)
+	#547884: Do not crash on unexpected response, rather skip it (Milan Crha)
+	#548343: Do not read summary information for the folder from DB when we have it fresh in memory already (Milan Crha)
+	#550412: Make sure that a NULL CamelFolderInfo is always gracefully handled. Document that. (Paul Bolle)
+
+Updated Translations:
+	Philip Withnall (en_GB)
+	Funda Wang (zh_CN)
+	Andre Klapper (de)
+	Changwoo Ryu (ko)
+
 Evolution-Data-Server 2.23.91 2008-09-01
 ----------------------------------------
 
