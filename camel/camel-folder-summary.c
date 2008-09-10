@@ -883,7 +883,7 @@ camel_folder_summary_dump (CamelFolderSummary *s)
 
 	printf("Dumping %s\n", s->folder ? s->folder->full_name:"nil");
 	for (i=0; i<s->uids->len; i++)
-		printf("%s\t", s->uids->pdata[i]);
+		printf("%s\t", (char *)s->uids->pdata[i]);
 	printf("\n");
 }
 

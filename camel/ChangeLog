@@ -1,5 +1,11 @@
 2008-09-08  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-summary.c: Fix some compiler warnings
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-folder.h:
+
+2008-09-08  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-vee-folder.c: (vee_sync): Ignore no such table errors, as we
 	don't create tables for empty folders.
 

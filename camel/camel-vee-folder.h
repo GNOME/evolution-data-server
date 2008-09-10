@@ -88,7 +88,7 @@ int          camel_vee_folder_rebuild_folder(CamelVeeFolder *vf, CamelFolder *su
 void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const char *expr);
 
 void	     camel_vee_folder_hash_folder	(CamelFolder *folder, char buffer[8]);
-void	     camel_vee_folder_sync_headers (CamelVeeFolder *vf, CamelException *ex);
+void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
 
 G_END_DECLS
 

@@ -2133,13 +2133,13 @@ vee_folder_stop_folder(CamelVeeFolder *vf, CamelFolder *sub)
 }
 
 void
-camel_vee_folder_sync_headers (CamelVeeFolder *vf, CamelException *ex)
+camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex)
 {
 	CamelFIRecord * record;
 
 	/* Save the counts to DB */
-	record = summary_header_to_db (((CamelFolder *)vf)->summary, ex);
-	camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb, record, ex);
+	record = summary_header_to_db (vf->summary, ex);
+	camel_db_write_folder_info_record (vf->parent_store->cdb, record, ex);
 	g_free (record);
 }
 
