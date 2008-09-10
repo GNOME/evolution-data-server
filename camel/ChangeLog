@@ -1,5 +1,10 @@
 2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-folder-search.c: Fix a bug when sexp is executed
+	unnecessarily.
+
+2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-folder-search.c: Make it debuggable.
 
 2008-09-10  Srinivasa Ragavan  <sragavan@novell.com>

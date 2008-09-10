@@ -673,7 +673,6 @@ search_match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, CamelFold
 		camel_folder_summary_reload_from_db (search->folder->summary, search->priv->ex);
 	} 
 
-	e_sexp_term_eval (f, argv [0]);
 
 	for (i=0;i<v->len;i++) {
 		const char *uid;
