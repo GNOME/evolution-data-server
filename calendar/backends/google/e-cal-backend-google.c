@@ -73,7 +73,7 @@ struct _ECalBackendGooglePrivate {
 	CalMode	mode;
 	EGoItem *item;
 
-	gint timeout_id;
+	guint timeout_id;
 	gchar *username;
 	gchar *password;
 	gchar *uri;
@@ -1544,7 +1544,7 @@ e_cal_backend_google_set_entry (ECalBackendGoogle *cbgo, GDataEntry *entry)
  *
  **/
 void
-e_cal_backend_google_set_timeout_id (ECalBackendGoogle *cbgo,gint timeout_id )
+e_cal_backend_google_set_timeout_id (ECalBackendGoogle *cbgo, guint timeout_id)
 {
 	ECalBackendGooglePrivate *priv;
 	priv = cbgo->priv;
@@ -1689,7 +1689,7 @@ e_cal_backend_google_get_entry (ECalBackendGoogle *cbgo)
  * Gets the timeout id.
  *
  **/
-gint
+guint
 e_cal_backend_google_get_timeout_id (ECalBackendGoogle *cbgo)
 {
 	ECalBackendGooglePrivate *priv;

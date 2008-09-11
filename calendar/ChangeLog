@@ -1,3 +1,21 @@
+2008-09-11  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #551805
+
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_create_cache):
+	Create new timeout source only when none set yet.
+	* backends/google/e-cal-backend-google-utils.h:
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_update): Honour function prototype.
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_connect): Honour return data type.
+	* backends/google/e-cal-backend-google.h:
+	* backends/google/e-cal-backend-google.c:
+	(struct _ECalBackendGooglePrivate),
+	(e_cal_backend_google_set_timeout_id),
+	(e_cal_backend_google_get_timeout_id): Honour return data type.
+
 2008-09-05  Andre Klapper  <a9016009@gmx.de>
 
 	* libedata-cal/e-cal-backend-util.c: 

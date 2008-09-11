@@ -42,7 +42,7 @@ e_go_item_get_entry (EGoItem *item);
 EGoItem *
 e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp);
 
-gboolean
+gpointer
 e_cal_backend_google_utils_update (gpointer handle);
 
 GDataEntry *
