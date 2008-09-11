@@ -537,7 +537,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-	if ((s->visible_count) && !g_getenv("FORCE_VFOLDER_COUNT")) {
+	if (!(((CamelVeeSummary *) s)->force_counts) && !g_getenv("FORCE_VFOLDER_COUNT")) {
 		/* We should be in sync always. so use the count. Don't search.*/
 		record->junk_count = s->junk_count;
 		record->deleted_count = s->deleted_count;
@@ -620,8 +620,7 @@ static void
 vee_expunge (CamelFolder *folder, CamelException *ex)
 {
 	/* Force it to rebuild the counts, when some folders were expunged. */
-	folder->summary->unread_count = 0;
-	folder->summary->visible_count = 0;
+	((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
 	((CamelFolderClass *)((CamelObject *)folder)->klass)->sync(folder, TRUE, ex);
 }
 

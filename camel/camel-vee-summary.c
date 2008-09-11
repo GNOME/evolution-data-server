@@ -184,8 +184,11 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 				 CAMEL_FOLDER_JUNKED, &old_junked,
 				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &old_junked_not_deleted,
 				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);		
+		camel_folder_freeze(rmi->summary->folder);
 		res = camel_message_info_set_flags(rmi, flags, set);
 		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
+		camel_folder_thaw(rmi->summary->folder);
+	
 		camel_object_get(rmi->summary->folder, NULL,
 				 CAMEL_FOLDER_DELETED, &deleted,
 				 CAMEL_FOLDER_VISIBLE, &visible,
@@ -324,6 +327,7 @@ camel_vee_summary_new(CamelFolder *parent)
 
 	s = (CamelVeeSummary *)camel_object_new(camel_vee_summary_get_type());
 	s->summary.folder = parent;
+	s->force_counts = FALSE;
 
         #warning "fix exceptions and note return values"
 	#warning "if Evo's junk/trash vfolders make it VJunk VTrash instead of .#evolution/Junk-or-whatever"		

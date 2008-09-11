@@ -1,5 +1,11 @@
 2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-vee-folder.c: Make counts work even better.
+	* camel/camel-vee-summary.c:
+	* camel/camel-vee-summary.h: Do force counts better.
+
+2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel/camel-vee-folder.c:
 	* camel/camel-vee-summary.c: Refix vfolder counts.
 
