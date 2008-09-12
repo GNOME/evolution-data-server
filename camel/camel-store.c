@@ -253,7 +253,7 @@ construct (CamelService *service, CamelSession *session,
 	if (camel_db_create_folders_table (store->cdb, ex))
 		printf ("something went wrong terribly\n");
 	else
-		printf ("folders table succesfully created \n");
+		printf ("folders table successfully created \n");
 
 	if (camel_exception_is_set (ex))
 		return;

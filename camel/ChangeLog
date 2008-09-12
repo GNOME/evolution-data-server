@@ -1,3 +1,7 @@
+2008-09-12  Andre Klapper  <a9016009@gmx.de>
+
+	* camel-store.c: Fixing typo.
+
 2008-09-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-db.c: 
