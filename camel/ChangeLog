@@ -1,3 +1,8 @@
+2008-09-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-db.c: 
+	* camel/camel-db.h: Make CAMEL_DB_DEBUG as ifdef
+
 2008-09-11  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-vee-folder.c: Make counts work even better.

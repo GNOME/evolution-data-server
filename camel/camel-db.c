@@ -23,8 +23,6 @@
  * USA
  */
 
-#define CAMEL_DB_DEBUG 0
-
 #include "camel-db.h"
 #include "camel-string-utils.h"
 
@@ -38,7 +36,7 @@
 
 #include "camel-debug.h"
 
-#if CAMEL_DB_DEBUG
+#ifdef CAMEL_DB_DEBUG
 /* Enable d(x) if you want */
 #define d(x)
 /* Yeah it leaks, so fix it while debugging */

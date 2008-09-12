@@ -16,7 +16,7 @@ struct _CamelDB {
 	const char *sort_by;
 	const char *collate;
 	CamelDBCollate collate_cb;
-#if CAMEL_DB_DEBUG 	
+#ifdef CAMEL_DB_DEBUG 	
 	GTimer *timer;
 #endif	
 };
