@@ -44,6 +44,7 @@ m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([gweather_minimum_version], [2.25.4])
 m4_define([libical_minimum_version], [0.43])
+m4_define([dbus_glib_minimum_version], [0.6])
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
@@ -1436,6 +1437,9 @@ AC_SUBST(LIBBONOBO_REQUIRED)
 ORBIT_REQUIRED=ORBit_minimum_version
 AC_SUBST(ORBIT_REQUIRED)
 
+DBUS_GLIB_REQUIRED=dbus_glib_minimum_version
+AC_SUBST(DBUS_GLIB_REQUIRED)
+
 dnl ******************************
 dnl GObject marshalling
 dnl ******************************
@@ -1482,6 +1486,10 @@ IDL_INCLUDES="-I"`${PKG_CONFIG} --variable=idldir libbonobo-2.0`" -I"`${PKG_CONF
 AC_MSG_RESULT($IDL_INCLUDES)
 AC_SUBST(IDL_INCLUDES)
 
+PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= dbus_glib_minimum_version)
+AC_SUBST(DBUS_GLIB_CFLAGS)
+AC_SUBST(DBUS_GLIB_LIBS)
+
 dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
@@ -1522,7 +1530,7 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
-EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 libbonobo-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
+EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 dbus-glib-1 gobject-2.0 gthread-2.0 gconf-2.0"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
@@ -1705,6 +1713,12 @@ EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bind
 EVO_NAME_SERVER_RULE='%_$(API_VERSION).server: %.server ; mv $< $@'
 AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)
+
+dnl *******************
+dnl D-BUS service stuff 
+dnl *******************
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************
 dnl GConf stuff
