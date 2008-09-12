@@ -1,3 +1,8 @@
+2008-09-12  Tor Lillqvist  <tml@novell.com>
+
+	* backends/google/Makefile.am (libebookbackendgoogle_la_LIBADD):
+	Link with libebackend.
+
 2008-09-08  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #361413
