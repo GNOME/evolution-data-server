@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-28 22:46+0200\n"
-"PO-Revision-Date: 2008-08-28 23:11+0100\n"
+"PO-Revision-Date: 2008-09-13 19:14+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -2540,7 +2540,7 @@ msgstr "Papperskorg"
 #: ../camel/camel-store.c:859
 #: ../camel/camel-vtrash-folder.c:55
 msgid "Junk"
-msgstr "Skräp"
+msgstr "Skräppost"
 
 #: ../camel/camel-tcp-stream-openssl.c:572
 msgid "Unable to get issuer's certificate"
@@ -2797,7 +2797,7 @@ msgstr "Kan inte kopiera meddelanden till papperskorgsmappen"
 
 #: ../camel/camel-vtrash-folder.c:56
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Kan inte kopiera meddelanden till skräpmappen"
+msgstr "Kan inte kopiera meddelanden till skräppostmappen"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #, c-format
@@ -2934,7 +2934,7 @@ msgstr "Kontrollera om nya meddelanden innehåller s_kräp"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 #: ../camel/providers/imap/camel-imap-provider.c:74
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "Kontrollera endast om det finns skräpmeddelanden i IN_BOX-mappen"
+msgstr "Kontrollera endast om det finns skräppostmeddelanden i IN_BOX-mappen"
 
 # Låter konstigt
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
