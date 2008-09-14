@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-10 18:43+0200\n"
-"PO-Revision-Date: 2008-09-10 18:59+0200\n"
+"POT-Creation-Date: 2008-09-14 13:06+0200\n"
+"PO-Revision-Date: 2008-09-14 13:54+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -183,13 +183,15 @@ msgstr "%s: impossibile creare EBookListener"
 #: ../addressbook/libebook/e-book.c:3515
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
-msgstr "%s: non era presente alcun UID del proprio contatto archiviato in gconf"
+msgstr ""
+"%s: non era presente alcun UID del proprio contatto archiviato in gconf"
 
 # GNOME-2-24
 #: ../addressbook/libebook/e-book.c:3648
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "%s: non era presente alcuna sorgente per l'UID «%s» archiviata in gconf."
+msgstr ""
+"%s: non era presente alcuna sorgente per l'UID «%s» archiviata in gconf."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:113
@@ -760,11 +762,11 @@ msgstr "Impossibile salvare i dati del calendario: URI mal formulata."
 msgid "Cannot save calendar data"
 msgstr "Impossibile salvare i dati del calendario"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:338
 msgid "Could not create thread for getting deltas"
 msgstr "Impossibile creare il thread per ottenere le differenze"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:370
 #: ../calendar/backends/google/e-cal-backend-google.c:1194
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
@@ -773,7 +775,7 @@ msgstr "Impossibile creare il thread per ottenere le differenze"
 msgid "Could not create cache file"
 msgstr "Impossibile creare il file cache"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:383
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1065
 msgid "Could not create thread for populating cache"
 msgstr "Impossibile creare il thread per popolare la cache"
@@ -1492,7 +1494,7 @@ msgid "Could not remove cache entry: %s: %s"
 msgstr "Impossibile rimuovere la voce cache: %s: %s"
 
 # GNOME-2-24
-#: ../camel/camel-db.c:104
+#: ../camel/camel-db.c:102
 msgid "Insufficient memory"
 msgstr "Memoria non sufficiente"
 
@@ -1955,7 +1957,7 @@ msgstr "Impossibile fare un fork: %s"
 
 # GNOME-2-24
 #: ../camel/camel-movemail.c:236
-#, fuzzy, c-format
+#, c-format
 msgid "Movemail program failed: %s"
 msgstr "Programma movemail non riuscito: %s"
 
@@ -2213,19 +2215,16 @@ msgstr "L'handle del contenuto fornito non si riferisce a un contesto valido."
 
 # GNOME-2-24
 #: ../camel/camel-sasl-gssapi.c:193
-#, fuzzy
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Verifiche di coerenze eseguite su input_token non riuscite."
 
 # GNOME-2-24
 #: ../camel/camel-sasl-gssapi.c:196
-#, fuzzy
 msgid "The consistency checks performed on the credential failed."
 msgstr "Verifiche di coerenze eseguite su credential non riuscite."
 
 # GNOME-2-24
 #: ../camel/camel-sasl-gssapi.c:199
-#, fuzzy
 msgid "The referenced credentials have expired."
 msgstr "Le credenziali di riferimento sono scadute."
 
@@ -2566,8 +2565,8 @@ msgstr ""
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Impossibile creare la cartella «%s»: la cartella esiste"
 
+# GNOME-2-24
 #: ../camel/camel-store.c:369
-#, fuzzy
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr ""
 "Impossibile creare una cartella: operazione non valida su questo archivio"
@@ -2815,17 +2814,17 @@ msgid "Could not parse URL '%s'"
 msgstr "Impossibile analizzare l'URL «%s»"
 
 # GNOME-2-24
-#: ../camel/camel-vee-folder.c:586
+#: ../camel/camel-vee-folder.c:585
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "Errore nell'archiaviare «%s»: %s"
 
-#: ../camel/camel-vee-folder.c:641
+#: ../camel/camel-vee-folder.c:639
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Non è presente il messaggio %s in %s"
 
-#: ../camel/camel-vee-folder.c:764 ../camel/camel-vee-folder.c:770
+#: ../camel/camel-vee-folder.c:762 ../camel/camel-vee-folder.c:768
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Impossibile copiare o spostare messaggi in una cartella virtuale"
 
@@ -2922,8 +2921,8 @@ msgstr "Cestino pieno. Si prega di svuotarlo."
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:3183
-#: ../camel/providers/imap/camel-imap-folder.c:3260
+#: ../camel/providers/imap/camel-imap-folder.c:3192
+#: ../camel/providers/imap/camel-imap-folder.c:3269
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recupero informazioni di sommario per nuovi messaggi in %s"
@@ -3165,15 +3164,17 @@ msgid "This option will connect to the Hula server using a plaintext password."
 msgstr ""
 "Opzione per connessioni al server Hula usando una password di testo semplice."
 
+# GNOME-2-24
 #: ../camel/providers/imap/camel-imap-command.c:183
 #: ../camel/providers/imap/camel-imap-command.c:267
 msgid "No output stream"
-msgstr ""
+msgstr "Nessuno stream di output"
 
+# GNOME-2-24
 #: ../camel/providers/imap/camel-imap-command.c:188
 #: ../camel/providers/imap/camel-imap-command.c:272
 msgid "No input stream"
-msgstr ""
+msgstr "Nessuno stream di input"
 
 #: ../camel/providers/imap/camel-imap-command.c:231
 #: ../camel/providers/imap/camel-imap-command.c:280
@@ -3236,61 +3237,64 @@ msgid "Could not create directory %s: %s"
 msgstr "Impossibile creare la directory %s: %s"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:843
+#: ../camel/providers/imap/camel-imap-folder.c:844
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Scansione per messaggi cambiati in %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1860
+# GNOME-2-24
+#: ../camel/providers/imap/camel-imap-folder.c:1869
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
-msgstr ""
+msgstr "Stato di risposta «%s» inatteso dopo il comando APPEND"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1875
+# GNOME-2-24
+#: ../camel/providers/imap/camel-imap-folder.c:1884
 msgid "No response on continuation after APPEND command"
-msgstr ""
+msgstr "Nessuna risposta sulla continuazione dopo il comando APPEND"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1917
+# GNOME-2-24
+#: ../camel/providers/imap/camel-imap-folder.c:1926
 msgid "Unknown error occurred during APPEND command!"
-msgstr ""
+msgstr "Errore sconosciuto verificatosi durante il comando APPEND!"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2729
+#: ../camel/providers/imap/camel-imap-folder.c:2738
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Impossibile recuperare il messaggio: %s"
 
 # GNOME-2-24
-#: ../camel/providers/imap/camel-imap-folder.c:2770
+#: ../camel/providers/imap/camel-imap-folder.c:2779
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Impossibile ricevere il messaggio avente ID %s: %s"
 
 # GNOME-2-24
-#: ../camel/providers/imap/camel-imap-folder.c:2771
+#: ../camel/providers/imap/camel-imap-folder.c:2780
 msgid "No such message available."
 msgstr "Nessun messaggio disponibile."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2810
-#: ../camel/providers/imap/camel-imap-folder.c:3562
+#: ../camel/providers/imap/camel-imap-folder.c:2819
+#: ../camel/providers/imap/camel-imap-folder.c:3571
 #: ../camel/providers/nntp/camel-nntp-folder.c:220
 msgid "This message is not currently available"
 msgstr "Questo messaggio non è al momento disponibile"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3389
+#: ../camel/providers/imap/camel-imap-folder.c:3398
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Risposta del server incompleta: non è stata fornita nessuna informazione per "
 "il messaggio %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3397
+#: ../camel/providers/imap/camel-imap-folder.c:3406
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Risposta del server incompleta: non è stato fornito nessun UID per il "
 "messaggio %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3600
+#: ../camel/providers/imap/camel-imap-folder.c:3609
 msgid "Could not find message body in FETCH response."
 msgstr "Impossibile trovare il corpo del messaggio nella risposta di FETCH."
 
@@ -3317,10 +3321,10 @@ msgstr "Inserimento del messaggio %s nella cache non riuscito: %s"
 msgid "Failed to cache %s: %s"
 msgstr "Inserimento di %s nella cache non riuscito: %s"
 
+# GNOME-2-24
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#, fuzzy
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr "Controllare la presen_za di nuovi messaggi in tutte le cartelle"
+msgstr "Controllare la pr_esenza di nuovi messaggi nelle cartella sottoscritte"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
@@ -3562,15 +3566,19 @@ msgstr "Disconnessione inattesa del server IMAP4 %s: %s"
 msgid ""
 "Enable extended Mailing-List detection required for some filter and vFolder "
 "rules"
-msgstr "È richiesta l'abilitazione del rilevamento mailing-list per alcune regole di filtri e di cartelle virtuali"
+msgstr ""
+"È richiesta l'abilitazione del rilevamento mailing-list per alcune regole di "
+"filtri e di cartelle virtuali"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:90
 msgid "Expire cached messages that haven't been read in X seconds"
-msgstr ""
+msgstr "Rende scaduti i messaggi in cache non letti entro X secondi"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:91
 msgid "Expire cached messages older than X seconds"
-msgstr ""
+msgstr "Rende scaduti i messaggi in cache più vecchi di X secondi"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:423
 #, c-format
@@ -3590,39 +3598,44 @@ msgstr ""
 msgid "Cannot sync flags to folder '%s': Bad command"
 msgstr "Impossibile sincronizzare le flags sulla cartella «%s»: comando errato"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:628
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot expunge folder '%s': Unknown error"
-msgstr "Impossibile ripulire la cartella \"%s\": sconosciuto"
+msgstr "Impossibile ripulire la cartella «%s»: errore sconosciuto"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:633
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot expunge folder '%s': Bad command"
-msgstr "Impossibile ripulire la cartella \"%s\": comando errato"
+msgstr "Impossibile ripulire la cartella «%s»: comando errato"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get message %s from folder '%s': No such message"
-msgstr ""
-"Impossibile ricevere il messaggio %s dalla cartella \"%s\": nessun messaggio"
+msgstr "Impossibile ottenere il messaggio %s dalla cartella «%s»: nessun messaggio"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:894
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get message %s from folder '%s': Bad command"
-msgstr ""
-"Impossibile ricevere il messaggio %s dalla cartella \"%s\": comando errato"
+msgstr "Impossibile ricevere il messaggio %s dalla cartella «%s»: comando errato"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:938
 #, c-format
 msgid "Cannot append message to folder '%s': Folder is read-only"
-msgstr "Impossibile accodare il messaggio sulla cartella «%s»: la cartella è in sola lettura"
+msgstr ""
+"Impossibile accodare il messaggio sulla cartella «%s»: la cartella è in sola "
+"lettura"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1031
 #, c-format
 msgid "Cannot append message to folder '%s': Unknown error"
-msgstr "Impossibile accodare il messaggio sulla cartella «%s»: errore sconosciuto"
+msgstr ""
+"Impossibile accodare il messaggio sulla cartella «%s»: errore sconosciuto"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1061
@@ -3634,25 +3647,33 @@ msgstr "Impossibile accodare il messaggio sylla cartella «%s»: comando errato"
 #: ../camel/providers/imap4/camel-imap4-folder.c:1181
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
-msgstr "Impossibile spostare messaggi dalla cartella «%s» alla cartella «%s»: motivo sconosciuto"
+msgstr ""
+"Impossibile spostare messaggi dalla cartella «%s» alla cartella «%s»: motivo "
+"sconosciuto"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
-msgstr "Impossibile copiare messaggi dalla cartella «%s» alla cartella «%s»: motivo sconosciuto"
+msgstr ""
+"Impossibile copiare messaggi dalla cartella «%s» alla cartella «%s»: motivo "
+"sconosciuto"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-msgstr "Impossibile spostare messaggi dalla cartella «%s» alla cartella «%s»: comando errato"
+msgstr ""
+"Impossibile spostare messaggi dalla cartella «%s» alla cartella «%s»: "
+"comando errato"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1197
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-msgstr "Impossibile copiare messaggi dalla cartella «%s» alla cartella «%s»: comando errato"
+msgstr ""
+"Impossibile copiare messaggi dalla cartella «%s» alla cartella «%s»: comando "
+"errato"
 
 # GNOME-2-22
 # SYNC
@@ -3724,84 +3745,86 @@ msgstr "Impossibile autenticarsi al server IMAP %s usando %s"
 msgid "Cannot create IMAP folders in offline mode."
 msgstr "Impossibile creare cartelle IMAP in modalità fuori rete."
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:740
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
-msgstr ""
-"Impossibile ricevere la cartella \"%s\" sul server IMAP %s: motivo "
-"sconosciuto"
+msgstr "Impossibile ottenere la cartella «%s» sul server IMAP %s: errore sconosciuto"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:821
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
-msgstr ""
-"Impossibile ricevere informazioni LIST per \"%s\" sul server IMAP %s: %s"
+msgstr "Impossibile ottenere le informazioni LIST per «%s» sul server IMAP %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:823
 #: ../camel/providers/imap4/camel-imap4-store.c:1579
 msgid "Bad command"
 msgstr "Comando errato"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:902
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create folder '%s': Invalid mailbox name"
-msgstr "Impossibile creare la cartella \"%s\": nome mailbox non valido"
+msgstr "Impossibile creare la cartella «%s»: nome mailbox non valido"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:907
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create folder '%s': Bad command"
-msgstr "Impossibile creare la cartella \"%s\": comando errato"
+msgstr "Impossibile creare la cartella «%s»: comando errato"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1013
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot delete folder '%s': Special folder"
-msgstr "Impossibile eliminare la cartella \"%s\": cartella speciale"
+msgstr "Impossibile eliminare la cartella «%s»: cartella speciale"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1020
 msgid "Cannot delete IMAP folders in offline mode."
 msgstr "Impossibile eliminare cartelle IMAP in modalità fuori rete."
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1079
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot delete folder '%s': Invalid mailbox name"
-msgstr "Impossibile eliminare la cartella \"%s\": nome mailbox non valido"
+msgstr "Impossibile eliminare la cartella «%s»: nome mailbox non valido"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1084
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot delete folder '%s': Bad command"
-msgstr "Impossibile eliminare la cartella \"%s\": comando errato"
+msgstr "Impossibile eliminare la cartella «%s»: comando errato"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1104
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename folder '%s' to '%s': Special folder"
-msgstr "Impossibile rinominare la cartella \"%s\" in \"%s\": cartella speciale"
+msgstr "Impossibile rinominare la cartella «%s» in «%s»: cartella speciale"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1111
 msgid "Cannot rename IMAP folders in offline mode."
 msgstr "Impossibile rinominare cartelle IMAP in modalità fuori rete."
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1142
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-msgstr ""
-"Impossibile rinominare la cartella \"%s\" in \"%s\": nome mailbox non valido"
+msgstr "Impossibile rinominare la cartella «%s» in «%s»: nome mailbox non valido"
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1147
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot rename folder '%s' to '%s': Bad command"
-msgstr "Impossibile rinominare la cartella \"%s\" in \"%s\": comando errato"
+msgstr "Impossibile rinominare la cartella «%s» in «%s»: comando errato"
 
-# ##############
-#
-# andrebbe controllato cosa sono i singoli %s
+# GNOME-2-24
 #. Translators: the first %s is an IMAP4 command, either LSUB or LIST.
 #. * The fourth one is an error message.
 #: ../camel/providers/imap4/camel-imap4-store.c:1577
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-msgstr ""
-"Impossibile ricevere %s informazioni per il pattern \"%s\" sul server IMAP %"
-"s: %s"
+msgstr "Impossibile ottenere informazioni %s per il pattern «%s» sul server IMAP %s: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1638
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -3809,12 +3832,11 @@ msgstr ""
 "Impossibile effettuare la sottoscrizione alla cartelle IMAP in modalità "
 "fuori rete."
 
+# GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-store.c:1683
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
-msgstr ""
-"Impossibile effettuare la sottoscrizione alla cartella \"%s\": nome mailbox "
-"non valido"
+msgstr "Impossibile effettuare la sottoscrizione alla cartella «%s»: nome mailbox non valido"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1688
 #, fuzzy, c-format
@@ -4303,12 +4325,13 @@ msgstr "Impossibile rinominare la cartella: %s"
 msgid "Could not store folder: %s"
 msgstr "Impossibile archiviare la cartella: %s"
 
+# GNOME-2-24
 #: ../camel/providers/local/camel-mbox-summary.c:862
 #: ../camel/providers/local/camel-mbox-summary.c:870
 #: ../camel/providers/local/camel-mbox-summary.c:1080
 #: ../camel/providers/local/camel-mbox-summary.c:1088
 msgid "Summary and folder mismatch, even after a sync"
-msgstr ""
+msgstr "Indice e cartella non corrispondono, anche dopo una sincronizzazione"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1013
 #: ../camel/providers/local/camel-spool-summary.c:344
@@ -4557,7 +4580,9 @@ msgstr ""
 # GNOME-2-24
 #: ../camel/providers/nntp/camel-nntp-store.c:949
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "Impossibile creare una cartella in un archivio di news: piuttosto effettuare una sottoscrizione."
+msgstr ""
+"Impossibile creare una cartella in un archivio di news: piuttosto effettuare "
+"una sottoscrizione."
 
 # GNOME-2-24
 #: ../camel/providers/nntp/camel-nntp-store.c:957
@@ -4567,7 +4592,9 @@ msgstr "Impossibile rinominare una cartella in un archivio di news."
 # GNOME-2-24
 #: ../camel/providers/nntp/camel-nntp-store.c:965
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr "Impossibile rimuovere una cartella in un archivio di news: piuttosto annullare la sottoscrizione."
+msgstr ""
+"Impossibile rimuovere una cartella in un archivio di news: piuttosto "
+"annullare la sottoscrizione."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1154
 msgid "Authentication requested but no username provided"
@@ -5479,7 +5506,8 @@ msgstr "Eli_mina %s"
 #: ../libedataserverui/e-passwords.c:218
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
-msgstr "La chiave nel portachiavi è inutilizzabile: nessun nome utente o hostname"
+msgstr ""
+"La chiave nel portachiavi è inutilizzabile: nessun nome utente o hostname"
 
 # GNOME-2-24
 #: ../libedataserverui/e-passwords.c:1055
