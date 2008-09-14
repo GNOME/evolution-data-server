@@ -278,6 +278,7 @@ camel_imap_folder_new (CamelStore *parent, const char *folder_name,
 	}
 
 	imap_folder->search = camel_imap_search_new(folder_dir);
+	
 	camel_offline_journal_replay (imap_folder->journal, ex);
 	camel_imap_journal_close_folders ((CamelIMAPJournal *)imap_folder->journal);
 	camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
@@ -1282,6 +1283,7 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (folder->parent_store);
 	CamelImapMessageInfo *info;
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelException local_ex;
 
 	GPtrArray *matches, *summary;
@@ -1414,9 +1416,16 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (expunge)
 		imap_expunge (folder, ex);
 
-	camel_offline_journal_replay (CAMEL_IMAP_FOLDER (folder)->journal, ex);
-	camel_imap_journal_close_folders ((CamelIMAPJournal *) CAMEL_IMAP_FOLDER (folder)->journal);
-	camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
+	/* Check if the replay is already in progress as imap_sync would be called while expunge resync */
+	if (!CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress) {
+		CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress = TRUE;
+	
+		camel_offline_journal_replay (imap_folder->journal, ex);
+		camel_imap_journal_close_folders ((CamelIMAPJournal *)imap_folder->journal);
+		camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
+
+		CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress = FALSE;
+	}
 
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
