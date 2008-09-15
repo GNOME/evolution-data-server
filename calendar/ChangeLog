@@ -1,3 +1,13 @@
+2008-09-12  Rob Bradford  <rob@linux.intel.com>
+
+	* backends/caldav/e-cal-backend-caldav.c:
+	* backends/file/e-cal-backend-file.c:
+	* backends/google/e-cal-backend-google-utils.c:
+	* backends/google/e-cal-backend-google.c:
+	* backends/http/e-cal-backend-http.c:
+	Remove the inclusion of Bonobo headers (no symbols are used from these
+	headers.)
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libecal/e-cal-check-timezones.c (e_cal_check_timezones):

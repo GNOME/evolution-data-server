@@ -28,8 +28,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-moniker-util.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
