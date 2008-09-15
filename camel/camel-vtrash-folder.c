@@ -138,13 +138,17 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
 				int j;
-				CamelMessageInfo *info;
+				CamelMessageInfoBase *info;
+				CamelVeeMessageInfo *vinfo;
 
 				unread = 0;
 				count = camel_folder_summary_count(folder->summary);
 				for (j=0; j<count; j++) {
-					if ((info = camel_folder_summary_index(folder->summary, j))) {
-						guint32 flags = camel_message_info_flags(info);
+					if ((info = (CamelMessageInfoBase *) camel_folder_summary_index(folder->summary, j))) {
+						guint32 flags;
+
+						vinfo = (CamelVeeMessageInfo *) info;
+						flags = vinfo->old_flags ? vinfo->old_flags : camel_message_info_flags(info);
 
 						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
 							unread++;
@@ -637,7 +641,7 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 	camel_vtrash_folder_parent = CAMEL_VEE_FOLDER_CLASS(camel_vee_folder_get_type());
 
 	/* Not required from here on. We don't count */
-	/* ((CamelObjectClass *)klass)->getv = vtrash_getv; */ 
+	((CamelObjectClass *)klass)->getv = vtrash_getv; 
 	
 	folder_class->append_message = vtrash_append_message;
 	folder_class->transfer_messages_to = vtrash_transfer_messages_to;

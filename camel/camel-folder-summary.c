@@ -4542,8 +4542,13 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		return FALSE;
 
 	if (mi->summary) {
-		if (read)
+		if (read && junk == 0 && !(mi->flags & CAMEL_MESSAGE_JUNK))
 			mi->summary->unread_count -= read;
+		else if (junk > 0) 
+			mi->summary->unread_count -= (old & CAMEL_MESSAGE_SEEN) ? 0 : 1;
+		else if (junk < 0)
+			mi->summary->unread_count -= (old & CAMEL_MESSAGE_SEEN) ? 0 : -1;
+
 		if (deleted)
 			mi->summary->deleted_count += deleted;
 		if (junk)

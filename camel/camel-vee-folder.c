@@ -1221,7 +1221,7 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 	int unread=0, deleted=0, junk=0;
 	CamelFolderSummary *summary = ((CamelMessageInfo *) mi)->summary;
 	
-	if (!(flags & CAMEL_MESSAGE_SEEN))
+	if (!(flags & CAMEL_MESSAGE_SEEN) && !(flags & CAMEL_MESSAGE_JUNK))
 		unread = 1;
 	
 	if (flags & CAMEL_MESSAGE_DELETED)
@@ -1251,7 +1251,7 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 		} else  {
 			oldflags = use_old ? oldflags : flags;
 			unread = deleted = junk = 0;
-			if (!(oldflags & CAMEL_MESSAGE_SEEN))
+			if (!(oldflags & CAMEL_MESSAGE_SEEN) && !(oldflags & CAMEL_MESSAGE_JUNK))
 				unread -= 1;
 
 			if (oldflags & CAMEL_MESSAGE_DELETED)
@@ -1274,7 +1274,7 @@ update_summary (CamelVeeMessageInfo *mi, guint32 flags, guint32 oldflags, gboole
 			summary->saved_count--;		
 		}
 	} else {
-		if (!(oldflags & CAMEL_MESSAGE_SEEN))
+		if (!(oldflags & CAMEL_MESSAGE_SEEN) && !(oldflags & CAMEL_MESSAGE_JUNK))
 			unread -= 1;
 
 		if (oldflags & CAMEL_MESSAGE_DELETED)
@@ -1410,8 +1410,9 @@ folder_changed_change_uid(CamelFolder *sub, const char *uid, const char hash[8],
 		info = camel_folder_get_message_info(sub, uid);
 		if (info) {
 			if (vinfo) {
+				guint32 of = vinfo->old_flags;
 				camel_folder_change_info_change_uid(vf->changes, vuid);
-				update_summary (vinfo, camel_message_info_flags(info), vinfo->old_flags, FALSE /* Doesn't matter */, TRUE);
+				update_summary (vinfo, camel_message_info_flags(info), of, FALSE /* Doesn't matter */, TRUE);
 				camel_message_info_free((CamelMessageInfo *)vinfo);
 			}
 

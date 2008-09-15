@@ -12,6 +12,13 @@
 
 2008-09-12  Andre Klapper  <a9016009@gmx.de>
 
+	* camel-folder-summary.c (info_set_flags): Fix for counts on junk
+	* camel-vee-folder.c (update_summary), (folder_changed_change_uid):
+	* camel-vtrash-folder.c (vtrash_getv),
+	(camel_vtrash_folder_class_init):
+
+2008-09-15  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-store.c: Fixing typo.
 
 2008-09-12  Srinivasa Ragavan  <sragavan@novell.com>
