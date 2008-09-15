@@ -1,3 +1,8 @@
+2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libecal/e-cal-check-timezones.c (e_cal_check_timezones):
+	Don't mix declarations and code.
+
 2008-09-11  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #551805

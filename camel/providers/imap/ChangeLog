@@ -1,3 +1,8 @@
+2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-folder.c (imap_update_summary):
+	Don't mix declarations and code.
+
 2008-09-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel-imap-journal.h: added rp_in_progress.

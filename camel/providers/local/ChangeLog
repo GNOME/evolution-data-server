@@ -1,3 +1,8 @@
+2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-local-store.c (camel_local_store_finalize):
+	Don't mix declarations and code.
+
 2008-08-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-spool-summary.c: Fixed folder summary

@@ -1,3 +1,15 @@
+2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-db.c (camel_db_count_junk_message_info),
+	(camel_db_count_unread_message_info),
+	(camel_db_count_visible_unread_message_info),
+	(camel_db_count_visible_message_info),
+	(camel_db_count_junk_not_deleted_message_info),
+	(camel_db_count_deleted_message_info), (read_fir_callback):
+	* camel-folder-summary.c (camel_folder_summary_migrate_infos):
+	* camel-search-sql.c (camel_sexp_to_sql):
+	Don't mix declarations and code.
+
 2008-09-12  Andre Klapper  <a9016009@gmx.de>
 
 	* camel-store.c: Fixing typo.

@@ -377,14 +377,6 @@ Base class for calendar/tasks backend implementations.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_cal_backend_last_client_gone ##### -->
-<para>
-
-</para>
-
-@backend: 
-
-
 <!-- ##### FUNCTION e_cal_backend_set_notification_proxy ##### -->
 <para>
 

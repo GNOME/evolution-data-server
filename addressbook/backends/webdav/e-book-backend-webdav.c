@@ -376,6 +376,7 @@ e_book_backend_webdav_modify_contact(EBookBackend *backend,
 	EContact                  *contact = e_contact_new_from_vcard(vcard);
 	const char                *uid;
 	const char                *etag;
+	guint status;
 
 	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
 		e_data_book_respond_create(book, opid,
@@ -385,7 +386,7 @@ e_book_backend_webdav_modify_contact(EBookBackend *backend,
 	}
 
 	/* modify contact */
-	guint status = upload_contact(webdav, contact);
+	status = upload_contact(webdav, contact);
 	if (status != 201 && status != 204) {
 		g_object_unref(contact);
 		if (status == 401 || status == 407) {
@@ -684,6 +685,7 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 		const char  *uri;
 		const gchar *etag;
 		EContact    *contact;
+		gchar *complete_uri;
 
 		/* stop downloading if search was aborted */
 		if (running != NULL && !e_flag_is_set(running))
@@ -702,7 +704,6 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 			continue;
 
 		/* uri might be relative, construct complete one */
-		gchar *complete_uri;
 		if (uri[0] == '/') {
 			SoupURI *soup_uri = soup_uri_new(priv->uri);
 			soup_uri->path    = g_strdup(uri);

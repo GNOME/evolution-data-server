@@ -23,6 +23,7 @@ CamelVeeSummary
 </para>
 
 @summary: 
+@force_counts: 
 
 <!-- ##### STRUCT CamelVeeMessageInfo ##### -->
 <para>

@@ -266,11 +266,13 @@ camel_sexp_to_sql (const char *txt)
 						 
 						if (!*elements[i].exact_token) /* Skip match-all */ {
 							if (g_ascii_strcasecmp (elements[i].token, "match-threads") == 0) {
+								Node *node;
+
 								/* remove next node also. We dont support it*/
 								g_scanner_get_next_token (scanner);
 								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading  
 								   operator */
-								Node *node = g_new0 (Node, 1);
+								node = g_new0 (Node, 1);
 								
 								node->token = g_strdup ("or");
 								node->exact_token =  g_strdup ("or");

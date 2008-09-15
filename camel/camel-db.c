@@ -333,11 +333,11 @@ int
 camel_db_count_junk_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE junk = 1", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -350,11 +350,11 @@ int
 camel_db_count_unread_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE read = 0", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -367,11 +367,11 @@ int
 camel_db_count_visible_unread_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE read = 0 AND junk = 0 AND deleted = 0", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -384,11 +384,11 @@ int
 camel_db_count_visible_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE junk = 0 AND deleted = 0", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -401,11 +401,11 @@ int
 camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query ;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE junk = 1 AND deleted = 0", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -418,11 +418,11 @@ int
 camel_db_count_deleted_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex)
 {
 	int ret;
+	char *query;
 
 	if (!cdb)
 		return -1;
 
-	char *query ;
 	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q WHERE deleted = 1", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
@@ -826,6 +826,7 @@ static int
 read_fir_callback (void * ref, int ncol, char ** cols, char ** name)
 {
 	CamelFIRecord *record = *(CamelFIRecord **) ref;
+	int i;
 
 	d(g_print ("\nread_fir_callback called \n"));
 #if 0
@@ -834,7 +835,6 @@ read_fir_callback (void * ref, int ncol, char ** cols, char ** name)
 	/* Just a sequential mapping of struct members to columns is enough I guess. 
 	Needs some checking */
 #else
-	int i;
 	
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "folder_name"))

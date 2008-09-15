@@ -296,10 +296,11 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                     key =
                         value = NULL;
                 } else {
+                    int counter;
+
                     zonestr = ical_strdup(icalcomponent_as_ical_string(subcomp));
 
                     /* check for collisions with existing timezones */
-                    int counter;
                     for (counter = 0;
                          counter < 100 /* sanity limit */;
                          counter++) {

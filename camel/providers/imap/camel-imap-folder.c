@@ -3139,6 +3139,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 	char *uid, *resp, *tempuid;
 	GData *data;
 	extern int camel_application_is_exiting;
+	int k = 0, ct;
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 		if (store->headers == IMAP_FETCH_ALL_HEADERS)
@@ -3197,7 +3198,6 @@ imap_update_summary (CamelFolder *folder, int exists,
 	 */
 	fetch_data = g_ptr_array_new ();
 	messages = g_ptr_array_new ();
-	int k = 0, ct;
 	ct = exists - seq;
 	while ((type = camel_imap_command_response (store, &resp, ex)) ==
 	       CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {

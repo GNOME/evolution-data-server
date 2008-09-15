@@ -569,7 +569,6 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
 	GList *node;
-	CamelFIRecord * record;
 	
 	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
 

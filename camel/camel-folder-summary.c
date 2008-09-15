@@ -1147,6 +1147,8 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 
 	/* now read in each message ... */
 	for (i=0;i<s->saved_count;i++) {
+		CamelTag *tag;
+
 		mi = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_load(s, in);
 
 		if (mi == NULL)
@@ -1161,7 +1163,6 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 			}
 		}
 
-		CamelTag *tag;
 		info = (CamelMessageInfoBase *)mi;
 		tag = info->user_tags;
 		while (tag) {

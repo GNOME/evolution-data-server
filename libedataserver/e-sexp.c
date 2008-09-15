@@ -246,12 +246,13 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type=-1;
 	int bool = TRUE;
 	int i;
+	char *oper;
 
 	r(printf("( and\n"));
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 
-	char *oper = "AND";
+	oper = "AND";
 	f->operators = g_slist_prepend (f->operators, oper);
 
 	for (i=0;bool && i<argc;i++) {
@@ -308,10 +309,11 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type = -1;
 	int bool = FALSE;
 	int i;
+	char *oper;
 
 	r(printf("(or \n"));
 
-	char *oper = "OR";
+	oper = "OR";
 	f->operators = g_slist_prepend (f->operators, oper);
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
