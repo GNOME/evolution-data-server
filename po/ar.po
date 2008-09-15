@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-14 11:08+0100\n"
+"POT-Creation-Date: 2008-09-15 10:34+0100\n"
 "PO-Revision-Date: 2008-02-27 11:57+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -696,30 +696,30 @@ msgstr "عيد الميلاد: %s"
 msgid "Anniversary: %s"
 msgstr "الذكرى السنويّة: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:214
+#: ../calendar/backends/file/e-cal-backend-file.c:212
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "تعذّر حفظ بيانات التقويم: نوان مشوّه."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:221
-#: ../calendar/backends/file/e-cal-backend-file.c:227
+#: ../calendar/backends/file/e-cal-backend-file.c:219
+#: ../calendar/backends/file/e-cal-backend-file.c:225
 #, fuzzy
 msgid "Cannot save calendar data"
 msgstr "تعذّر حفظ بيانات التقويم: نوان مشوّه."
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:338
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
 msgid "Could not create thread for getting deltas"
 msgstr "لم يمكن صنع خيط عمل لإيجاد الفروق"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:370
-#: ../calendar/backends/google/e-cal-backend-google.c:1194
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
+#: ../calendar/backends/google/e-cal-backend-google.c:1191
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
-#: ../calendar/backends/http/e-cal-backend-http.c:584
+#: ../calendar/backends/http/e-cal-backend-http.c:582
 #: ../calendar/backends/weather/e-cal-backend-weather.c:466
 msgid "Could not create cache file"
 msgstr "لم أستطع إنشاء ملف ذاكرة مخبئيّة"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:383
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1065
 msgid "Could not create thread for populating cache"
 msgstr "لم يمكن صنع خيط عمل لتعمير المخزن"
@@ -763,15 +763,15 @@ msgstr "عنوان خادوم غير سليم"
 msgid "Authentication failed"
 msgstr "فشل التحقق"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:269
+#: ../calendar/backends/http/e-cal-backend-http.c:267
 msgid "Redirected to Invalid URI"
 msgstr "حوّل لعنوان خاطئ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:290
+#: ../calendar/backends/http/e-cal-backend-http.c:288
 msgid "Bad file format."
 msgstr "تنسيق ملف سيء"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:296
+#: ../calendar/backends/http/e-cal-backend-http.c:294
 msgid "Not a calendar."
 msgstr "ليس تقويما."
 
@@ -2679,17 +2679,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "تعذّر تحليل عنوان URL `%s'"
 
-#: ../camel/camel-vee-folder.c:585
+#: ../camel/camel-vee-folder.c:584
 #, fuzzy, c-format
 msgid "Error storing '%s': %s"
 msgstr "خطأ في تخزين `%s': %s"
 
-#: ../camel/camel-vee-folder.c:639
+#: ../camel/camel-vee-folder.c:638
 #, c-format
 msgid "No such message %s in %s"
 msgstr "ليس ثمّة رسالة %s في %s"
 
-#: ../camel/camel-vee-folder.c:762 ../camel/camel-vee-folder.c:768
+#: ../camel/camel-vee-folder.c:761 ../camel/camel-vee-folder.c:767
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "لا يمكن نسخ أو نقل رسالة إلى مجلّد إعتباطي"
 
@@ -2786,7 +2786,7 @@ msgstr "مجلّد المهملات ممتليء، رجاء فرّغه."
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
 #: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:3192
+#: ../camel/providers/imap/camel-imap-folder.c:3193
 #: ../camel/providers/imap/camel-imap-folder.c:3269
 #, c-format
 msgid "Fetching summary information for new messages in %s"
