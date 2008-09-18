@@ -1,3 +1,9 @@
+2008-09-18  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	** Fix for bug #552724. 
+
+	* Makefile.am: Remove a while space following trailing backslash.
+
 2008-09-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-folder-summary.c (info_set_flags): Fix for counts on junk

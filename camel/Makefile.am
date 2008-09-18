@@ -72,7 +72,7 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-sasl.c				\
 	camel-search-private.c			\
 	camel-search-sql.c			\
-	camel-search-sql-sexp.c			\	
+	camel-search-sql-sexp.c			\
 	camel-service.c				\
 	camel-session.c				\
 	camel-smime-context.c			\
