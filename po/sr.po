@@ -1293,7 +1293,7 @@ msgstr ""
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
-msgstr "Потписивање овај логаритам не подржава"
+msgstr "Употребљени алгоритам не подржава потписивање"
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
@@ -1301,7 +1301,7 @@ msgstr "Потписивање поруке"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "Проверу овај логаритам не подржава"
+msgstr "Употребљени алгоритам не подржава проверу"
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
@@ -1309,7 +1309,7 @@ msgstr "Проверавање поруке"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "Шифровање овај логаритам не подржава"
+msgstr "Употребљени алгоритам не подржава шифровање"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1317,7 +1317,7 @@ msgstr "Шифровање поруке"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "Дешифровање овај логаритам не подржава"
+msgstr "Употребљени алгоритам не подржава дешифровање"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
@@ -1325,11 +1325,11 @@ msgstr "Дешифровање поруке"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
-msgstr "Можда нећете моћи да увезете кључеве са овим логаритмом"
+msgstr "Можда нећете моћи да увезете кључеве са овим алгоритмом"
 
 #: ../camel/camel-cipher-context.c:301
 msgid "You may not export keys with this cipher"
-msgstr "Можда нећете моћи да извезете кључеве са овим логаритмом"
+msgstr "Можда нећете моћи да извезете кључеве са овим алгоритмом"
 
 #: ../camel/camel-data-cache.c:137
 msgid "Unable to create cache path"
