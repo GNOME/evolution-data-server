@@ -1088,6 +1088,8 @@ camel_db_get_column_name (const char *raw_name)
 		return g_strdup ("deleted");
 	else if (!g_ascii_strcasecmp (raw_name, "junk"))
 		return g_strdup ("junk");
+	else if (!g_ascii_strcasecmp (raw_name, "Answered"))
+		return g_strdup ("replied");	
 	else if (!g_ascii_strcasecmp (raw_name, "Seen"))
 		return g_strdup ("read");
 	else if (!g_ascii_strcasecmp (raw_name, "user-tag"))
@@ -1096,14 +1098,10 @@ camel_db_get_column_name (const char *raw_name)
 		return g_strdup ("labels");	
 	else if (!g_ascii_strcasecmp (raw_name, "Attachments"))
 		return g_strdup ("attachment");
-	else {
-		/* Let it crash for all unknown columns for now. 
-		We need to load the messages into memory and search etc. 
-		We should extend this for camel-folder-search system flags search as well 
-		otherwise, search-for-signed-messages will not work etc.*/
-
+	else if (!g_ascii_strcasecmp (raw_name, "x-camel-mlist"))
+		return g_strdup ("mlist");	
+	else
 		return g_strdup (raw_name);
-	}
 
 }
 

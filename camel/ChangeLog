@@ -1,3 +1,10 @@
+2008-09-18  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #552729
+
+	* camel/camel-db.c: Adds support for x-camel-mlist & Answered flag to
+	search/vfolders.
+
 2008-09-18  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	** Fix for bug #552724. 
