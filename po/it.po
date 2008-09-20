@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.23.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-16 10:29+0200\n"
-"PO-Revision-Date: 2008-09-16 10:27+0200\n"
+"PO-Revision-Date: 2008-09-17 23:31+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -187,6 +187,7 @@ msgstr ""
 "%s: non era presente alcun UID del proprio contatto archiviato in gconf"
 
 # GNOME-2-24
+# Milo fa notare che stored potrebbe anche essere riferito a UID (archiviato)
 #: ../addressbook/libebook/e-book.c:3648
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
@@ -592,9 +593,10 @@ msgstr "ID ICQ lavoro 3"
 msgid "Last Revision"
 msgstr "Ultima revisione"
 
+# GNOME-2-24
 #: ../addressbook/libebook/e-contact.c:228
 msgid "Name or Org"
-msgstr "Nome o Org"
+msgstr "Nome od org."
 
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:231
@@ -733,28 +735,27 @@ msgstr "Telefono"
 msgid "Unnamed List"
 msgstr "Elenco senza nome"
 
-# Fuzzate entrambe solo per indurre alla riflessione. 
-# Evolution salva il gg/mm/aaa in cui si è nati (giorno di nascita)
-# o il giorno in cui ricorre (compleanno) ? -Luca
-#
+# GNOME-2-24
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
-msgstr "Compleanno"
+msgstr "Data di nascita"
 
+# GNOME-2-24
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
 #, c-format
 msgid "Birthday: %s"
-msgstr "Compleanno: %s"
+msgstr "Data di nascita: %s"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Anniversario: %s"
 
+# GNOME-2-24
 #: ../calendar/backends/file/e-cal-backend-file.c:212
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "Impossibile salvare i dati del calendario: URI mal formulata."
+msgstr "Impossibile salvare i dati del calendario: URI mal formulato."
 
 # GNOME-2-24
 #: ../calendar/backends/file/e-cal-backend-file.c:219
@@ -820,13 +821,15 @@ msgstr "URI del server non valido"
 msgid "Authentication failed"
 msgstr "Autenticazione non riuscita"
 
+# GNOME-2-24
 #: ../calendar/backends/http/e-cal-backend-http.c:267
 msgid "Redirected to Invalid URI"
-msgstr "Rediretto ad un URI non valido"
+msgstr "Rediretto a un URI non valido"
 
+# GNOME-2-24
 #: ../calendar/backends/http/e-cal-backend-http.c:288
 msgid "Bad file format."
-msgstr "Formato di file errato"
+msgstr "Formato di file errato."
 
 #: ../calendar/backends/http/e-cal-backend-http.c:294
 msgid "Not a calendar."
@@ -861,9 +864,10 @@ msgstr "Fumo"
 msgid "Thunderstorms"
 msgstr "Temporali"
 
+# GNOME-2-24
 #: ../calendar/backends/weather/e-cal-backend-weather.c:222
 msgid "Cloudy"
-msgstr "Nuvolo"
+msgstr "Nuvoloso"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:223
 msgid "Drizzle"
@@ -925,9 +929,10 @@ msgstr "Foschia"
 msgid "Blowing snow"
 msgstr "Vento e neve"
 
+# GNOME-2-24
 #: ../calendar/backends/weather/e-cal-backend-weather.c:238
 msgid "Freezing drizzle"
-msgstr "Pioggia leggera giacciata"
+msgstr "Pioggia leggera ghiacciata"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:239
 msgid "Very cold/wind chill"
@@ -1001,10 +1006,11 @@ msgstr "%.1f/%.1f°C - %s"
 msgid "%.1f/%.1f°F - %s"
 msgstr "%.1f/%.1f°F - %s"
 
+# GNOME-2-24
 #: ../calendar/backends/weather/e-cal-backend-weather.c:362
 #, c-format
 msgid "%d%% chance of precipitation\n"
-msgstr "%d%% probabilità di pioggia\n"
+msgstr "%d%% probabilità di precipitazioni\n"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:369
 #, c-format
@@ -1171,11 +1177,13 @@ msgstr "Bassa"
 msgid "Undefined"
 msgstr "Non definita"
 
+# GNOME-2-24
 #: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:199
 #, c-format
 msgid "Enter password for %s (user %s)"
-msgstr "Inserire password per %s (utente %s)"
+msgstr "Inserire la password per %s (utente %s)"
 
+# GNOME-2-24
 #.
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
@@ -1183,7 +1191,7 @@ msgstr "Inserire password per %s (utente %s)"
 #: ../calendar/libecal/e-cal.c:1679
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
-msgstr "Inserire password per %s per abilitare il proxy per l'utente %s"
+msgstr "Inserire la password per %s per abilitare il proxy per l'utente %s"
 
 #: ../calendar/libecal/e-cal.c:5054
 msgid "Invalid argument"
@@ -1235,10 +1243,11 @@ msgstr "Permesso negato"
 msgid "Unknown User"
 msgstr "Utente sconosciuto"
 
+# GNOME-2-24
 #: ../calendar/libecal/e-cal.c:5074
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
 msgid "Object ID already exists"
-msgstr "ID dell'oggetto esiste già"
+msgstr "ID dell'oggetto esistente"
 
 #: ../calendar/libecal/e-cal.c:5076
 msgid "Protocol not supported"
@@ -1411,10 +1420,11 @@ msgid "TLS not available"
 msgstr "TLS non disponibile"
 
 # GNOME-2-24
+# aggiunto modalità per chiarezza
 #. Translators: This means "Offline mode unavailable"
 #: ../calendar/libedata-cal/e-cal-backend-util.c:126
 msgid "Offline unavailable"
-msgstr "Fuori rete non disponibile"
+msgstr "Modalità fuori rete non disponibile"
 
 # GNOME-2-24
 #: ../calendar/libedata-cal/e-cal-backend-util.c:128
@@ -1466,8 +1476,6 @@ msgstr "Questo cifrario non consente la crittazione"
 msgid "Encrypting message"
 msgstr "Crittazione messaggio"
 
-# Come sopra "Questo cifrario non consente la decrittazione"
-#
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
 msgstr "Questo cifrario non consente la decrittazione"
@@ -1526,9 +1534,10 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "Sincronizzazione con il server"
 
+# GNOME-2-24
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
-msgstr "Copia il contenuto della cartella localmente per operazioni fuori rete"
+msgstr "Copia localmente il contenuto della cartella per operazioni fuori rete"
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
@@ -1917,13 +1926,13 @@ msgstr ""
 #: ../camel/camel-lock.c:199
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "Recupero del lock usando fcntl(2) non riuscita: %s"
+msgstr "Recupero del lock usando fcntl(2) non riuscito: %s"
 
 # GNOME-2-24
 #: ../camel/camel-lock.c:262
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "Recupero del lock usando flock(2) non riuscita: %s"
+msgstr "Recupero del lock usando flock(2) non riuscito: %s"
 
 #: ../camel/camel-movemail.c:106
 #, c-format
@@ -2073,21 +2082,23 @@ msgstr "Nessun fornitore disponibile per il protocollo «%s»"
 msgid "Anonymous"
 msgstr "Anonimo"
 
+# GNOME-2-24
 #: ../camel/camel-sasl-anonymous.c:39
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Opzione per connessioni al server usando un login anonimo."
+msgstr "Opzione per connessioni al server usando un accesso anonimo."
 
 #: ../camel/camel-sasl-anonymous.c:124 ../camel/camel-sasl-plain.c:91
 msgid "Authentication failed."
 msgstr "Autenticazione non riuscita."
 
+# GNOME-2-24
 #: ../camel/camel-sasl-anonymous.c:133
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"Informazioni di percorso di indirizzo email non valide:\n"
+"Informazioni di percorso dell'indirizzo email non valide:\n"
 "%s"
 
 #: ../camel/camel-sasl-anonymous.c:145
@@ -2170,9 +2181,7 @@ msgstr ""
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr ""
-"Il meccanismo specificato non è supportato dalle credenziali fornite o non è "
-"stato riconosciuto dalla implementazione."
+msgstr "Il meccanismo specificato non è supportato dalle credenziali fornite o non è stato riconosciuto dall'implementazione."
 
 #: ../camel/camel-sasl-gssapi.c:169
 msgid "The provided target_name parameter was ill-formed."
@@ -2202,13 +2211,12 @@ msgstr ""
 "L'input_token contiene una firma non valida o una firma che non può essere "
 "verificata."
 
+# GNOME-2-24
 #: ../camel/camel-sasl-gssapi.c:185
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr ""
-"Le credenziali fornite non erano valide per l'inizializzazione del contenuto "
-"o l'handle delle credenziali non si riferisce a nessuna credenziale."
+msgstr "Le credenziali fornite non erano valide per l'inizializzazione del contenuto o l'handle delle credenziali non si riferisce ad alcuna credenziale."
 
 #: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
@@ -2542,10 +2550,10 @@ msgstr "Aggiunta dei dati al codificatore non riuscita"
 msgid "Decoder failed, error %d"
 msgstr "Decodificatore non riuscito, errore %d"
 
-# GNOME-2-22
+# GNOME-2-24
 #: ../camel/camel-smime-context.c:956
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr "Decrittazione S/MIME: non è stato trovato nessun contenuto cifrato"
+msgstr "Decrittazione S/MIME: non è stato trovato alcun contenuto cifrato"
 
 #: ../camel/camel-smime-context.c:983
 msgid "import keys: unimplemented"
@@ -2658,11 +2666,11 @@ msgstr "Memoria esaurita"
 
 #: ../camel/camel-tcp-stream-openssl.c:601
 msgid "Zero-depth self-signed certificate"
-msgstr "Certificato autofirmato di profondità zero"
+msgstr "Certificato auto-firmato di profondità zero"
 
 #: ../camel/camel-tcp-stream-openssl.c:603
 msgid "Self-signed certificate in chain"
-msgstr "Certificato autofirmato in catena"
+msgstr "Certificato auto-firmato in catena"
 
 # GNOME-2-24
 #: ../camel/camel-tcp-stream-openssl.c:605
@@ -2743,6 +2751,10 @@ msgstr "BENE"
 msgid "BAD"
 msgstr "MALE"
 
+# Milo said: Hmm... in questo caso non credo sia "non corretto", nel 
+# senso che il certificato potrebbe essere "corretto" nella forma...
+#  ma non essere "sicuro" o qualche altra cosa perché auto-firmato...
+#  boh...
 #: ../camel/camel-tcp-stream-openssl.c:708
 #, c-format
 msgid ""
@@ -2762,6 +2774,7 @@ msgstr ""
 "\n"
 "Accettare comunque?"
 
+# GNOME-2-24
 #. construct our user prompt
 #: ../camel/camel-tcp-stream-ssl.c:890
 #, c-format
@@ -2775,7 +2788,7 @@ msgstr ""
 "Controllo certificato SSL per %s:\n"
 "\n"
 "%s\n"
-"Si desidera accettare?"
+"Accettarlo?"
 
 #: ../camel/camel-tcp-stream-ssl.c:934
 #, c-format
@@ -2823,7 +2836,7 @@ msgstr "Impossibile analizzare l'URL «%s»"
 #: ../camel/camel-vee-folder.c:584
 #, c-format
 msgid "Error storing '%s': %s"
-msgstr "Errore nell'archiaviare «%s»: %s"
+msgstr "Errore nell'archiviare «%s»: %s"
 
 #: ../camel/camel-vee-folder.c:638
 #, c-format
@@ -2923,9 +2936,10 @@ msgstr "Impossibile ottenere il messaggio."
 msgid "Could not load summary for %s"
 msgstr "Impossibile caricare il sommario di %s"
 
+# GNOME-2-24
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
 msgid "Trash Folder Full. Please Empty."
-msgstr "Cestino pieno. Si prega di svuotarlo."
+msgstr "Cestino pieno. È consigliato svuotarlo."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
 #: ../camel/providers/groupwise/camel-groupwise-store.c:623
@@ -2998,11 +3012,11 @@ msgstr "A_pplica filtri ai nuovi messaggi in «In arrivo» su questo server"
 msgid "Check new messages for J_unk contents"
 msgstr "Controllare contenuti in_desiderati nei nuovi messaggi"
 
-# GNOME-2-22
+# GNOME-2-24
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 #: ../camel/providers/imap/camel-imap-provider.c:74
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "Controllare i messa_ggi indesiderati sono nella cartella «In arrivo»"
+msgstr "Controllare i messa_ggi indesiderati solo nella cartella «In arrivo»"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
 msgid "Automatically synchroni_ze account locally"
@@ -3012,9 +3026,10 @@ msgstr "Sincroni_zzare localmente l'account in modo automatico"
 msgid "SOAP Settings"
 msgstr "Impostazioni SOAP"
 
+# GNOME-2-24
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:76
 msgid "Post Office Agent SOAP Port:"
-msgstr "Porta agente ufficio postale SOAP:"
+msgstr "Porta del Post Office Agent SOAP:"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:89
 msgid "Novell GroupWise"
@@ -3102,15 +3117,13 @@ msgstr "Consegna posta GroupWise attraverso %s"
 msgid "Sending Message"
 msgstr "Invio messaggio"
 
+# GNOME-2-24
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
-msgstr ""
-"È stato superato il limite di memorizzazione per questo account. I messaggi "
-"sono stati accodati nella cartella della posta in uscita. Per inviarli "
-"premere \"Invia/Ricevi\" dopo l'eliminazione o l'archiviazione della posta.\n"
+msgstr "È stato superato il limite di memorizzazione per questo account. I messaggi sono stati accodati nella cartella della posta in uscita. Per inviarli premere «Invia/Ricevi» dopo l'eliminazione o l'archiviazione della posta.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
@@ -3207,7 +3220,7 @@ msgid ""
 "Alert from IMAP server %s@%s:\n"
 "%s"
 msgstr ""
-"Avvertenza dal server IMAP %s@%s:\n"
+"Avviso dal server IMAP %s@%s:\n"
 "%s"
 
 # GNOME-2-24
@@ -3334,7 +3347,7 @@ msgstr "Inserimento di %s nella cache non riuscito: %s"
 # GNOME-2-24
 #: ../camel/providers/imap/camel-imap-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr "Controllare la pr_esenza di nuovi messaggi nelle cartella sottoscritte"
+msgstr "Controllare la pr_esenza di nuovi messaggi nelle cartelle sottoscritte"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:50
@@ -3598,14 +3611,13 @@ msgstr "Impossibile accedere alla cartella «%s»: %s"
 #: ../camel/providers/imap4/camel-imap4-folder.c:482
 #, c-format
 msgid "Cannot sync flags to folder '%s': Unknown error"
-msgstr ""
-"Impossibile sincronizzare le flag sulla cartella «%s»: errore sconosciuto"
+msgstr "Impossibile sincronizzare le flag sulla cartella «%s»: errore sconosciuto"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:488
 #, c-format
 msgid "Cannot sync flags to folder '%s': Bad command"
-msgstr "Impossibile sincronizzare le flags sulla cartella «%s»: comando errato"
+msgstr "Impossibile sincronizzare le flag sulla cartella «%s»: comando errato"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:628
@@ -3652,7 +3664,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-folder.c:1061
 #, c-format
 msgid "Cannot append message to folder '%s': Bad command"
-msgstr "Impossibile accodare il messaggio sylla cartella «%s»: comando errato"
+msgstr "Impossibile accodare il messaggio sulla cartella «%s»: comando errato"
 
 # GNOME-2-24
 #: ../camel/providers/imap4/camel-imap4-folder.c:1181
@@ -4694,9 +4706,10 @@ msgstr "Impossibile ottenere l'indice POP: %s"
 msgid "Expunging old messages"
 msgstr "Pulizia messaggi vecchi"
 
+# GNOME-2-24
 #: ../camel/providers/pop3/camel-pop3-folder.c:320
 msgid "Expunging deleted messages"
-msgstr "Pulizia messaggi cancellati"
+msgstr "Pulizia messaggi eliminati"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:533
 #, c-format
@@ -4924,9 +4937,10 @@ msgstr "Comando non implementato"
 msgid "Command parameter not implemented"
 msgstr "Parametro del comando non implementato"
 
+# GNOME-2-24
 #: ../camel/providers/smtp/camel-smtp-transport.c:176
 msgid "System status, or system help reply"
-msgstr "Stato del sistema, o risposta di aiuto del sistema"
+msgstr "Stato del sistema o risposta di aiuto del sistema"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:178
 msgid "Help message"
@@ -5002,9 +5016,10 @@ msgid "Encryption required for requested authentication mechanism"
 msgstr ""
 "È richiesta la crittografia per il meccanismo di autenticazione richiesto"
 
+# GNOME-2-24
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "Temporary authentication failure"
-msgstr "Fallimento nell'autenticazione temporanea"
+msgstr "Temporaneo fallimento nell'autenticazione"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:297
 msgid "Welcome response error"
@@ -5396,13 +5411,13 @@ msgstr "Accesso anonimo al server LDAP"
 msgid "Failed to authenticate.\n"
 msgstr "Autenticazione non riuscita.\n"
 
+# GNOME-2-24
 #: ../libedataserverui/e-categories-dialog.c:261
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr ""
-"Esiste già una categoria «%s» nella configurazione. Usare un'altro nome"
+msgstr "Esiste già una categoria «%s» nella configurazione. Usare un altro nome"
 
 #: ../libedataserverui/e-categories-dialog.c:466
 msgid "Icon"
@@ -5774,14 +5789,16 @@ msgstr "Posta in uscita"
 msgid "Sent Items"
 msgstr "Posta inviata"
 
+# GNOME-2-24
+#
 # MS outlook lo tradurrebbe come "attività"... 
-# Cambiamo solo qui per coerenza con outlook/echange (ovviamente
-# apparirà solo negli storage tipo exchange) o lasciamo compiti
-# per coerenza con il resto di evolution?
+# Cambiato solo qui per coerenza con outlook/echange (ovviamente
+# apparirà solo negli storage tipo exchange) invece di usare
+# compiti coerentemente al il resto di evolution?
 #
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
 msgid "Tasks"
-msgstr "Compiti"
+msgstr "Attività"
 
 #: ../servers/groupwise/e-gw-connection.c:225
 msgid "Invalid connection"
