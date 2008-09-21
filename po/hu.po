@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.hu\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-08-18 05:26+0000\n"
-"PO-Revision-Date: 2008-09-13 15:00+0200\n"
+"PO-Revision-Date: 2008-09-21 13:39+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
@@ -1127,7 +1127,7 @@ msgstr "Érvénytelen paraméter"
 
 #: ../calendar/libecal/e-cal.c:5056
 msgid "Backend is busy"
-msgstr "A háttér foglalt"
+msgstr "A háttérprogram foglalt"
 
 #: ../calendar/libecal/e-cal.c:5058
 #: ../calendar/libedata-cal/e-cal-backend-util.c:97
@@ -1938,7 +1938,7 @@ msgstr "%s betöltése sikertelen: %s"
 #: ../camel/camel-provider.c:201
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr "%s betöltése sikertelen: Nincs inicializáló kód a modulban."
+msgstr "%s betöltése sikertelen: Nincs előkészítő kód a modulban."
 
 #: ../camel/camel-provider.c:373 ../camel/camel-session.c:177
 #, c-format
@@ -5379,11 +5379,11 @@ msgstr "Hibás paraméter"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr "Evolution címjegyzékfájl-háttér"
+msgstr "Evolution Címjegyzék fájlháttérprogram"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolution naptárfájl és webnaptár háttér"
+msgstr "Evolution Naptár fájl- és webnaptár-háttérprogram"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
