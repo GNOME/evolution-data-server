@@ -1,5 +1,9 @@
 2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* Edited svn:externals to point to libical stable
+
+2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* libedata-cal/Makefile.am: Committing a build fix.
 
 2008-09-12  Rob Bradford  <rob@linux.intel.com>
