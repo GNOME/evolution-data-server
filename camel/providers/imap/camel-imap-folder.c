@@ -3409,7 +3409,7 @@ imap_update_summary (CamelFolder *folder, int exists,
 		}
 
 		/* FIXME: If it enters if(info) it will always match the exception. So stupid */
-		#warning "Use a db query to see if the DB exists"
+		/* FIXME[disk-summary] Use a db query to see if the DB exists */
 /* 		info = (CamelImapMessageInfo *)camel_folder_summary_uid(folder->summary, uid); */
 /* 		if (info) { */
 /* 			for (seq = 0; seq < camel_folder_summary_count (folder->summary); seq++) { */

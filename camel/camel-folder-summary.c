@@ -403,7 +403,8 @@ camel_folder_summary_index (CamelFolderSummary *s, int i)
 	return info;
 }
 
-#warning "Implement - camel_folder_summary_uid_exist - directly through db than manual strcmp"
+/* FIXME[disk-summary] Implement - camel_folder_summary_uid_exist -
+ * directly through db than manual strcmp */
 
 /**
  * camel_folder_summary_uid_from_index:
@@ -716,7 +717,8 @@ append_changed_uids (char *key, CamelMessageInfoBase *info, GPtrArray *array)
 		g_ptr_array_add (array, (gpointer)camel_pstring_strdup((camel_message_info_uid(info))));
 }
 
-#warning "sucks, this function returns from memory. We need to have collate or something to get the modified ones from DB and merge"
+/* FIXME[disk-summary] sucks, this function returns from memory. We need to
+ * have collate or something to get the modified ones from DB and merge */
 GPtrArray *
 camel_folder_summary_get_changed (CamelFolderSummary *s)
 {
@@ -748,7 +750,7 @@ cfs_count_dirty (CamelFolderSummary *s)
 	return count;
 }
 
-#warning "FIXME: I should have a better LRU algorithm "
+/* FIXME[disk-summary] I should have a better LRU algorithm  */
 static gboolean
 remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
 {
@@ -786,7 +788,7 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 		return;
 	
 	printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), s->loaded_infos);
-	#warning "hack. fix it"
+	/* FIXME[disk-summary] hack. fix it */
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);
 	CAMEL_SUMMARY_UNLOCK (s, summary_lock);
@@ -839,7 +841,7 @@ cfs_try_release_memory (CamelFolderSummary *s)
 int
 camel_folder_summary_cache_size (CamelFolderSummary *s)
 {
-	#warning "this is a timely hack. fix it well"
+	/* FIXME[disk-summary] this is a timely hack. fix it well */
 	if (!CAMEL_IS_VEE_FOLDER(s->folder))
 		return g_hash_table_size (s->loaded_infos);
 	else
@@ -854,7 +856,8 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	int ret = 0;
 	struct _db_pass_data data;
 	
-	#warning "baseclass this, and vfolders we may have to load better."
+	/* FIXME[disk-summary] baseclass this, and vfolders we may have to
+	 * load better. */
 	d(printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
 	folder_name = s->folder->full_name;
@@ -867,7 +870,7 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer)&data, camel_read_mir_callback, NULL);
 
 	s->cache_load_time = time (NULL);
-        #warning "LRU please and not timeouts"
+        /* FIXME[disk-summary] LRU please and not timeouts */
 	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle) 
 		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
@@ -1312,7 +1315,8 @@ save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex)
 	/* Push MessageInfo-es */
 	g_hash_table_foreach (s->loaded_infos, save_to_db_cb, ex);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-#warning "make sure we free the message infos that are loaded are freed if not used anymore or should we leave that to the timer? "
+/* FIXME[disk-summary] make sure we free the message infos that are loaded
+ * are freed if not used anymore or should we leave that to the timer? */
 	
 	return 0;
 }
@@ -1687,7 +1691,7 @@ camel_folder_summary_add (CamelFolderSummary *s, CamelMessageInfo *info)
 
 	/* Summary always holds a ref for the loaded infos */
 	//camel_message_info_ref(info); //FIXME: Check how things are loaded.
-	#warning "FIXME: SHould we ref it or redesign it later on"
+	/* FIXME[disk-summary] SHould we ref it or redesign it later on */
 	/* The uid array should have its own memory. We will unload the infos when not reqd.*/
 	g_ptr_array_add (s->uids, (gpointer) camel_pstring_strdup((camel_message_info_uid(info))));
 	
@@ -1715,7 +1719,7 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 
 	/* Summary always holds a ref for the loaded infos */
 	//camel_message_info_ref(info); //FIXME: Check how things are loaded.
-	#warning "FIXME: SHould we ref it or redesign it later on"
+	/* FIXME[disk-summary] SHould we ref it or redesign it later on */
 	/* The uid array should have its own memory. We will unload the infos when not reqd.*/
 	if (!load)
 		g_ptr_array_add (s->uids, (char *) camel_pstring_strdup(camel_message_info_uid(info)));
@@ -2297,7 +2301,10 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, int start, int end)
 		folder_name = s->folder->full_name;
 		cdb = s->folder->cdb;
 
-		#warning "lifecycle of infos should be checked. Add should add to db and del should del to db. Sync only the changes at interval and remove those full sync on folder switch"
+		/* FIXME[disk-summary] lifecycle of infos should be checked.
+		 * Add should add to db and del should del to db. Sync only
+		 * the changes at interval and remove those full sync on
+		 * folder switch */
 		camel_db_delete_uids (cdb, folder_name, uids, &ex);
 
 		g_slist_foreach (uids, (GFunc) camel_pstring_free, NULL);
@@ -3346,7 +3353,7 @@ content_info_from_db(CamelFolderSummary *s, CamelMIRecord *record)
 	}
 	ci->type = ct;
 
-	#warning "move all these to camel pstring"
+	/* FIXME[disk-summary] move all these to camel pstring */
 	EXTRACT_STRING (ci->id);
 	EXTRACT_STRING (ci->description)
 	EXTRACT_STRING (ci->encoding)

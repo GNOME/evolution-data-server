@@ -386,7 +386,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 				if ((flags & CAMEL_MESSAGE_DELETED) && !(old & CAMEL_MESSAGE_DELETED)) {
 						mi->summary->deleted_count ++ ;
 
-						#warning "What to do when the user has set to show-deleted-messages "
+						/* FIXME[disk-summary] What to do when the user has set to show-deleted-messages */
 						mi->summary->visible_count -- ;
 
 						if (!(flags & CAMEL_MESSAGE_SEEN))

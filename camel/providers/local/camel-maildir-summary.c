@@ -620,7 +620,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 			/* TODO: only store the extension in the mdi->filename struct, not the whole lot */
 			if (filename == NULL || strcmp(filename, d->d_name) != 0) {
 #ifdef DOESTRV
-#warning "cannot modify the estrv after its been setup, for mt-safe code"
+/* FIXME[disk-summary] cannot modify the estrv after its been setup,
+ * for mt-safe code */
 				CAMEL_SUMMARY_LOCK(s, summary_lock);
 				/* need to update the summary hash ref */
 				g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));
@@ -774,7 +775,7 @@ maildir_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChange
 					   the estrv is being modified.
 					   Sigh, this may mean the maildir name has to be cached another way */
 #ifdef DOESTRV
-#warning "cannot modify the estrv after its been setup, for mt-safe code"
+/* FIXME[disk-summary] cannot modify the estrv after its been setup, for mt-safe code */
 					CAMEL_SUMMARY_LOCK(s, summary_lock);
 					/* need to update the summary hash ref */
 					g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));

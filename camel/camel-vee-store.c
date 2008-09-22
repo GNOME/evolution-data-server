@@ -347,7 +347,7 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 	g_hash_table_destroy(infos_hash);
 
 	/* and always add UNMATCHED, if scanning from top/etc */
-	#warning "comment it out well"
+	/* FIXME[disk-summary] comment it out well */
 	if (0 && (top == NULL || top[0] == 0 || strncmp(top, CAMEL_UNMATCHED_NAME, strlen(CAMEL_UNMATCHED_NAME)) == 0)) {
 		info = camel_folder_info_new ();
 		url = camel_url_new("vfolder:", NULL);

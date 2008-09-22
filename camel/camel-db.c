@@ -670,8 +670,9 @@ camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, char *filter, C
 
 	 if (cond)
 		  sqlite3_free (cond);
-	 #warning "handle return values"
-	 #warning "No The caller should parse the ex in case of NULL returns" 
+	 /* FIXME[disk-summary] handle return values */
+	 /* FIXME[disk-summary] No The caller should parse the ex in case
+	 *                      of NULL returns */
 	 array = g_ptr_array_new ();
 	 camel_db_select (db, sel_query, read_vuids_callback, array, ex);
 	 sqlite3_free (sel_query);

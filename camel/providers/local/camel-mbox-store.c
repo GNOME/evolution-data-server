@@ -638,7 +638,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		folderpath = camel_local_store_get_full_path(store, fi->full_name);
 		
 		mbs = (CamelMboxSummary *)camel_mbox_summary_new(NULL, path, folderpath, NULL);
-		#warning "track exception"
+		/* FIXME[disk-summary] track exception */
 		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *)mbs, store, fi->full_name, NULL) != -1) {
 			fi->unread = ((CamelFolderSummary *)mbs)->unread_count;
 			fi->total = ((CamelFolderSummary *)mbs)->saved_count;

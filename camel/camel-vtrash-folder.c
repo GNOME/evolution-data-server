@@ -298,7 +298,7 @@ vtrash_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	}
 }
 
-#warning rewrite the same way as camel-vee-summary.c
+/* FIXME[disk-summary] rewrite the same way as camel-vee-summary.c */
 static GPtrArray *
 vtrash_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
 {
@@ -327,7 +327,8 @@ vtrash_search_by_expression(CamelFolder *folder, const char *expression, CamelEx
 			camel_message_info_free (vmi);
 		}
 
-                #warning search in the DB of the folder, for the expression, with the vtrash bit (junk/trash)
+                /* FIXME[disk-summary] search in the DB of the folder, for
+		 * the expression, with the vtrash bit (junk/trash) */
 		if (uids->len > 0
 		    && (matches = camel_folder_search_by_uids(f, expression, uids, NULL))) {
 			for (i = 0; i < matches->len; i++) {
@@ -372,7 +373,7 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 		camel_vee_folder_hash_folder(f, hash);
 
 		/* map the vfolder uid's to the source folder uid's first */
-		#warning "check this. is it uids od folder_uids"
+		/* FIXME[disk-summary] check this. is it uids od folder_uids */
 		//g_ptr_array_set_size(uids, 0);
 		g_ptr_array_set_size (folder_uids, 0);
 		for (i=0;i<uids->len;i++) {
@@ -381,7 +382,8 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 			//if (strlen(uid) >= 8 && strncmp(uid, hash, 8) == 0) {
 			if (strncmp(uid, hash, 8) == 0) {				
 				//CamelMessageInfo *mi;
-				#warning "is it really reqd, if so uncomment it"
+				/* FIXME[disk-summary] is it really reqd, if
+				 * so uncomment it */
 				//mi = camel_folder_get_message_info(f, uid+8);
 				//if (mi) {
 				//	if(camel_message_info_flags(mi) & ((CamelVTrashFolder *)folder)->bit)

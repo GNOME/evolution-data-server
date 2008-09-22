@@ -1003,8 +1003,9 @@ folder_added_uid(char *uidin, void *value, struct _update_data *u)
 
 	if ( (mi = vee_folder_add_uid(u->vf, u->source, uidin, u->hash)) ) {
 		camel_folder_change_info_add_uid(u->vf->changes, camel_message_info_uid(mi));
-		#warning "Handle exceptions"
-		#warning "Make all these as transactions, just testing atm"
+		/* FIXME[disk-summary] Handle exceptions */
+		/* FIXME[disk-summary] Make all these as transactions, just
+		 * testing atm */
 		if (u->rebuilt)
 			camel_db_add_to_vfolder_transaction (((CamelFolder *) u->vf)->parent_store->cdb, ((CamelFolder *) u->vf)->full_name, (char *) camel_message_info_uid(mi), NULL);
 		if (!CAMEL_IS_VEE_FOLDER(u->source) && u->unmatched_uids != NULL) {
@@ -1354,7 +1355,7 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 		camel_message_info_free((CamelMessageInfo *)vinfo);
 	}
 	camel_folder_change_info_remove_uid(vf->changes, vuid);
-        #warning "Handle exception"
+        /* FIXME[disk-summary] Handle exception */
 	camel_db_delete_uid_from_vfolder_transaction (folder->parent_store->cdb, folder->full_name, vuid, NULL);
 	camel_folder_summary_remove_uid(folder->summary, vuid);
 
@@ -2193,7 +2194,7 @@ camel_vee_folder_finalise (CamelObject *obj)
 		for (node = p->folders;node;node = g_list_next(node))
 			camel_object_unref(node->data);
 	} else {
-		#warning "See if it is really reqd"
+		/* FIXME[disk-summary] See if it is really reqd */
 		camel_folder_freeze ((CamelFolder *)vf);
 		while (p->folders) {
 			CamelFolder *f = p->folders->data;

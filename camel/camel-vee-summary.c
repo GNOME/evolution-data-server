@@ -214,7 +214,8 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 {
 	CamelMessageInfo *info;
 
-	#warning "too bad design. Need to peek it from cfs instead of hacking ugly like this"
+	/* FIXME[disk-summary] too bad design. Need to peek it from cfs
+	 * instead of hacking ugly like this */
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 	CAMEL_SUMMARY_LOCK(s, ref_lock);
 
@@ -329,11 +330,12 @@ camel_vee_summary_new(CamelFolder *parent)
 	s->summary.folder = parent;
 	s->force_counts = FALSE;
 
-        #warning "fix exceptions and note return values"
-	#warning "if Evo's junk/trash vfolders make it VJunk VTrash instead of .#evolution/Junk-or-whatever"		
+        /* FIXME[disk-summary] fix exceptions and note return values */
+	/* FIXME[disk-summary] if Evo's junk/trash vfolders make it VJunk
+	 * VTrash instead of .#evolution/Junk-or-whatever */
 	camel_db_create_vfolder (parent->cdb, parent->full_name, NULL);
 
-	#warning "handle excep and ret"
+	/* FIXME[disk-summary] handle excep and ret */
 	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent->parent_store, parent->full_name, NULL);
 	return &s->summary;
 }
@@ -345,7 +347,7 @@ camel_vee_summary_get_ids (CamelVeeSummary *summary, char hash[8])
 	CamelFolderSummary *cfs = (CamelFolderSummary *)summary;
 	GPtrArray *array;
 
-	#warning "fix exception passing"
+	/* FIXME[disk-summary] fix exception passing */
 	array = camel_db_get_vuids_from_vfolder(cfs->folder->cdb, cfs->folder->full_name, shash, NULL);
 	
 	g_free(shash);

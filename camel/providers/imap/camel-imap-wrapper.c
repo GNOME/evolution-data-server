@@ -147,7 +147,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 #ifdef ENETUNREACH
 			errno = ENETUNREACH;
 #else
-#warning FIXME: what errno to use if no ENETUNREACH
+/* FIXME[disk-summary] what errno to use if no ENETUNREACH */
 			errno = EINVAL;
 #endif
 			return -1;

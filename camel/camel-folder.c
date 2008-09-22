@@ -394,7 +394,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_VISIBLE:
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 
-			#warning "Add a better base class function to get counts specific to normal/vee folder."
+			/* FIXME[disk-summary] Add a better base class
+			 * function to get counts specific to normal/vee
+			 * folder. */
 			if (unread == -1) {
 
 				if (1) {
@@ -424,7 +426,9 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 						}
 
 					}*/
-                                        #warning "I added it for vfolders summary storage, does it harm ?"
+                                        /* FIXME[disk-summary] I added it for
+					 * vfolders summary storage, does it
+					 * harm ? */
 					if (unread == -1) {
 						//unread = folder->summary->unread_count;
 						/*
