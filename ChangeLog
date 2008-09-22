@@ -1,3 +1,7 @@
+2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.24.0 release.
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libedataserver/e-sexp.c (term_eval_and), (term_eval_or):

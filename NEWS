@@ -1,3 +1,35 @@
+Evolution-Data-Server 2.24.0 2008-09-22
+---------------------------------------
+
+New in 2.24.0
+	* Google Contacts Backend
+	* WebDAV Contacts Backend
+	* Sqlite based on-disk summary for Camel
+	* Quota support for IMAP
+
+Bug Fixes:
+	#418080: (Novell Bugzilla) Match contains using %like% (Srinivasa Ragavan)
+	#551805: Honour return data type (Milan Crha)
+	#552724: Remove a while space following trailing backslash. (Hiroyuki Ikezoe)
+	#552729: Adds support for x-camel-mlist & Answered flag to search/vfolders. (Srinivasa Ragavan)
+
+Updated Translations:
+	Wadim Dziedzic (pl)
+	Kenneth Nielsen (da)
+	Takeshi AIHANA (ja)
+	Igor Nestorović (sr, sr@latin)
+	Žygimantas Beručka (lt)
+	Djihed Afifi (ar)
+	Tirumurthi Vasudevan (ta)
+	Tino Meinen (nl)
+	David Planella (ca)
+	Jiri Eischmann (cs)
+	Duarte Loreto (pt)
+	Sandeep Shedmake (mr)
+	Luca Ferretti (it)
+	Daniel Nylander (sv)
+	Gabor Kelemen (hu)
+
 Evolution-Data-Server 2.23.92 2008-09-08
 ----------------------------------------
 
