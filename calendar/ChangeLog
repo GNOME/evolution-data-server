@@ -1,3 +1,11 @@
+2008-09-22  Philip Withnall  <philip@tecnocode.co.uk>
+
+	** Fix for bug #550980
+
+	* libedata-cal/e-cal-backend-util.c
+	(e_cal_backend_status_to_string): Fix the offline mode string to be
+	more helpful.
+
 2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* libedata-cal/Makefile.am: Committing a build fix.
