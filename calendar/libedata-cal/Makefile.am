@@ -61,7 +61,8 @@ libedata_calinclude_HEADERS = 		\
 	$(CORBA_GENERATED_H)		\
 	e-cal-backend.h			\
 	e-cal-backend-cache.h		\
-	e-cal-backend-loader-factory.h		\
+	e-cal-backend-factory.h		\
+	e-cal-backend-loader-factory.h	\
 	e-cal-backend-sync.h		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\
