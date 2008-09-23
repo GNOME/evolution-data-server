@@ -1,5 +1,12 @@
 2008-09-23  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #553298
+
+	* camel-imap-folder.c: (get_matching), (imap_sync): Unset all known
+	server flags on the message when the resulting flag list is empty.
+
+2008-09-23  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #552631
 
 	* camel-imap-store.c: (imap_auth_loop): Do not forget password

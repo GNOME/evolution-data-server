@@ -1160,7 +1160,10 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 		if (!info)
 			continue;
 
-		if ((info->info.flags & mask) != flags) {
+		/* if the resulting flag list is empty, then "concat" other message
+		   only when server_flags are same, because there will be a flag removal
+		   command for this type of situation */
+		if ((info->info.flags & mask) != flags || (flags == 0 && info->server_flags != ((CamelImapMessageInfo *)master_info)->server_flags)) {
 			camel_message_info_free((CamelMessageInfo *)info);
 			close_range ();
 			continue;
@@ -1349,9 +1352,6 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 		flaglist = imap_create_flag_list (info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
 
-		/* We don't use the info any more */
-		camel_message_info_free(info);
-
 		if (strcmp (flaglist, "()") == 0) {
 			/* Note: Cyrus is broken and will not accept an
 			   empty-set of flags so... if this is true then we
@@ -1359,22 +1359,34 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			   we do not know the previously set user flags. */
 			unset = TRUE;
 			g_free (flaglist);
-			flaglist = strdup ("(\\Seen)");
+			
+			/* unset all known server flags, because there left none in the actual flags */
+			flaglist =  imap_create_flag_list (info->server_flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
 
-			response = camel_imap_command (store, folder, &local_ex,
-					       "UID STORE %s +FLAGS.SILENT %s",
-					       set, flaglist);
-			if (response)
-				camel_imap_response_free (store, response);
+			if (strcmp (flaglist, "()") == 0) {
+				/* this should not happen, really */
+				g_free (flaglist);
+				flaglist = strdup ("(\\Seen)");
 
-			response = NULL;
+				response = camel_imap_command (store, folder, &local_ex,
+						"UID STORE %s +FLAGS.SILENT %s",
+						set, flaglist);
+				if (response)
+					camel_imap_response_free (store, response);
+
+				response = NULL;
+			}
 		}
 
+		/* We don't use the info any more */
+		camel_message_info_free (info);
+
 		/* Note: to 'unset' flags, use -FLAGS.SILENT (<flag list>) */
-		if (!camel_exception_is_set (&local_ex))
+		if (!camel_exception_is_set (&local_ex)) {
 			response = camel_imap_command (store, folder, &local_ex,
 					       "UID STORE %s %sFLAGS.SILENT %s",
 					       set, unset ? "-" : "", flaglist);
+		}
 
 		g_free (set);
 		g_free (flaglist);
