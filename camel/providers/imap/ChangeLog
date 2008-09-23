@@ -1,3 +1,10 @@
+2008-09-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #552631
+
+	* camel-imap-store.c: (imap_auth_loop): Do not forget password
+	on 'resource temporarily unavailable' exception.
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-folder.c (imap_update_summary):

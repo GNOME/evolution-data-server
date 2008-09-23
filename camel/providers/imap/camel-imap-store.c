@@ -1378,7 +1378,8 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 		if (!authenticated) {
-			if (camel_exception_get_id(ex) == CAMEL_EXCEPTION_USER_CANCEL)
+			if (camel_exception_get_id (ex) == CAMEL_EXCEPTION_USER_CANCEL ||
+			    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
 				return FALSE;
 
 			errbuf = g_markup_printf_escaped (
