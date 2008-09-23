@@ -1,3 +1,11 @@
+2008-09-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #315919
+
+	* e-name-selector-entry.c: (entry_height), (contact_layout_pixbuffer),
+	(e_name_selector_entry_init):
+	Show contact's photo in the completion list if available locally.
+
 2008-09-03  Matthew Barnes  <mbarnes@redhat.com>
 
 	* e-source-selector.c:

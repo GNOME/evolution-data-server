@@ -1625,6 +1625,93 @@ deep_free_list (GList *list)
 	g_list_free (list);
 }
 
+/* Given a widget, determines the height that text will normally be drawn. */
+static guint
+entry_height (GtkWidget *widget)
+{
+	PangoLayout *layout;
+	int bound;
+
+	g_return_val_if_fail (widget != NULL, 0);
+	
+	layout = gtk_widget_create_pango_layout (widget, NULL);
+
+	pango_layout_get_pixel_size (layout, NULL, &bound);
+	
+	return bound;
+}
+
+static void
+contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, GtkTreeModel *model,
+			  GtkTreeIter *iter, ENameSelectorEntry *name_selector_entry)
+{
+	EContact      *contact;
+	GtkTreeIter    generator_iter;
+	GtkTreeIter    contact_store_iter;
+	gint           email_n;
+	EContactPhoto *photo;
+	GdkPixbuf *pixbuf = NULL;
+
+	if (!name_selector_entry->contact_store)
+		return;
+
+	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
+							  &generator_iter, iter);
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+							   &contact_store_iter, &email_n,
+							   &generator_iter);
+
+	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_store_iter);
+	if (!contact) {
+		g_object_set (cell, "pixbuf", pixbuf, NULL);
+		return;
+	}
+
+	photo =  e_contact_get (contact, E_CONTACT_PHOTO);
+	if (photo && photo->type == E_CONTACT_PHOTO_TYPE_INLINED) {
+		guint max_height = entry_height (GTK_WIDGET (name_selector_entry));
+		GdkPixbufLoader *loader;
+
+		loader = gdk_pixbuf_loader_new ();
+		if (gdk_pixbuf_loader_write (loader, (guchar *)photo->data.inlined.data, photo->data.inlined.length, NULL) &&
+		    gdk_pixbuf_loader_close (loader, NULL)) {
+			pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+			if (pixbuf)
+				g_object_ref (pixbuf);
+		}
+		g_object_unref (loader);
+
+		if (pixbuf) {
+			gint w, h;
+			double scale = 1.0;
+
+			w = gdk_pixbuf_get_width (pixbuf);
+			h = gdk_pixbuf_get_height (pixbuf);
+
+			if (h > w)
+				scale = max_height / (double) h;
+			else
+				scale = max_height / (double) w;
+
+			if (scale < 1.0) {
+				GdkPixbuf *tmp;
+
+				tmp = gdk_pixbuf_scale_simple (pixbuf, w * scale, h * scale, GDK_INTERP_BILINEAR);
+				g_object_unref (pixbuf);
+				pixbuf = tmp;
+			}
+
+		}
+	}
+
+	e_contact_photo_free (photo);
+
+	g_object_set (cell, "pixbuf", pixbuf, NULL);
+
+	if (pixbuf)
+		g_object_unref (pixbuf);
+}
+
 static void
 contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, GtkTreeModel *model,
 			  GtkTreeIter *iter, ENameSelectorEntry *name_selector_entry)
@@ -2572,8 +2659,14 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   gtk_entry_set_completion (GTK_ENTRY (name_selector_entry), name_selector_entry->entry_completion);
 
-  /* Completion list name renderer */
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->entry_completion), renderer, FALSE);
+	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
+		GTK_CELL_RENDERER (renderer),
+		(GtkCellLayoutDataFunc) contact_layout_pixbuffer,
+		name_selector_entry, NULL);
 
+  /* Completion list name renderer */
   renderer = gtk_cell_renderer_text_new ();
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
 			      renderer, TRUE);
