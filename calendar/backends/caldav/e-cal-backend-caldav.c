@@ -44,6 +44,8 @@
 
 #include "e-cal-backend-caldav.h"
 
+#define d(x) x
+
 /* in seconds */
 #define DEFAULT_REFRESH_TIME 60
 
@@ -109,6 +111,8 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* object cleanup */
 	gboolean disposed;
+
+	icaltimezone *default_zone;
 };
 
 /* ************************************************************************* */
@@ -120,7 +124,6 @@ struct _ECalBackendCalDAVPrivate {
 
 static gboolean caldav_debug_all = FALSE;
 static GHashTable *caldav_debug_table = NULL;
-
 
 static void
 add_debug_key (const char *start, const char *end)
@@ -237,6 +240,9 @@ caldav_debug_setup (SoupSession *session)
 }
 
 static ECalBackendSyncClass *parent_class = NULL;
+
+static icaltimezone *caldav_internal_get_default_timezone (ECalBackend *backend);
+static icaltimezone *caldav_internal_get_timezone (ECalBackend *backend, const char *tzid);
 
 /* ************************************************************************* */
 /* Misc. utility functions */
@@ -441,6 +447,7 @@ status_code_to_result (guint status_code)
 		break;
 
 	default:
+		d(g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
 		result = GNOME_Evolution_Calendar_OtherError;
 	}
 
@@ -566,7 +573,7 @@ xp_object_get_href (xmlXPathObjectPtr result)
 	}
 
 	ret = g_strdup (ret);
-	g_debug ("found href: %s", ret);
+	d(g_debug ("found href: %s", ret));
 
 	xmlXPathFreeObject (result);
 	return ret;
@@ -763,10 +770,6 @@ soup_authenticate (SoupSession  *session,
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	soup_auth_authenticate (auth, priv->username, priv->password);
-
-	priv->username = NULL;
-	priv->password = NULL;
-
 }
 
 static gint
@@ -841,6 +844,57 @@ caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
 /* ************************************************************************* */
 /* direct CalDAV server access functions */
 
+static void
+redirect_handler (SoupMessage *msg, gpointer user_data)
+{
+	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
+		SoupSession *soup_session = user_data;
+		SoupURI *new_uri;
+		const char *new_loc;
+
+		new_loc = soup_message_headers_get (msg->response_headers, "Location");
+		if (!new_loc)
+			return;
+
+		new_uri = soup_uri_new_with_base (soup_message_get_uri (msg), new_loc);
+		if (!new_uri) {
+			soup_message_set_status_full (msg,
+						      SOUP_STATUS_MALFORMED,
+						      "Invalid Redirect URL");
+			return;
+		}
+
+		soup_message_set_uri (msg, new_uri);
+		soup_session_requeue_message (soup_session, msg);
+
+		soup_uri_free (new_uri);
+	}
+}
+
+static void
+send_and_handle_redirection (SoupSession *soup_session, SoupMessage *msg, char **new_location)
+{
+	gchar *old_uri = NULL;
+
+	if (new_location)
+		old_uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
+
+	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);
+	soup_message_add_header_handler (msg, "got_body", "Location", G_CALLBACK (redirect_handler), soup_session);
+	soup_session_send_message (soup_session, msg);
+
+	if (new_location) {
+		gchar *new_loc = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
+
+		if (new_loc && old_uri && !g_str_equal (new_loc, old_uri))
+			*new_location = new_loc;
+		else
+			g_free (new_loc);
+	}
+
+	g_free (old_uri);
+}
+
 static char *
 caldav_generate_uri (ECalBackendCalDAV *cbdav, const char *target)
 {
@@ -873,12 +927,14 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
-	soup_session_send_message (priv->session, message);
+	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		guint status_code = message->status_code;
+
 		g_object_unref (message);
 
-		return status_code_to_result (message->status_code);
+		return status_code_to_result (status_code);
 	}
 
 	/* parse the dav header, we are intreseted in the
@@ -966,7 +1022,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 				  buf->buffer->use);
 
 	/* Send the request now */
-	soup_session_send_message (priv->session, message);
+	send_and_handle_redirection (priv->session, message, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -974,7 +1030,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 
 	/* Check the result */
 	if (message->status_code != 207) {
-		g_warning ("Sever did not response with 207\n");
+		g_warning ("Sever did not response with 207, but with code %d\n", message->status_code);
 		return FALSE;
 	}
 
@@ -1007,7 +1063,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
-	soup_session_send_message (priv->session, message);
+	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		result = status_code_to_result (message->status_code);
@@ -1027,13 +1083,14 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	hdr = soup_message_headers_get (message->response_headers, "ETag");
 
-	if (hdr == NULL) {
-		g_warning ("UUHH no ETag, now that's bad!");
-		object->etag = NULL;
-	} else {
+	if (hdr != NULL) {
+		g_free (object->etag);
 		object->etag = quote_etag (hdr);
+	} else if (!object->etag) {
+		g_warning ("UUHH no ETag, now that's bad!");
 	}
 
+	g_free (object->cdata);
 	object->cdata = g_strdup (message->response_body->data);
 	g_object_unref (message);
 
@@ -1067,21 +1124,32 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	 * use the If-Match header to avoid the Lost-update
 	 * problem */
 	if (object->etag == NULL) {
-		soup_message_headers_append (message->request_headers,
-					     "If-None-Match", "*");
+		soup_message_headers_append (message->request_headers, "If-None-Match", "*");
 	} else {
 		soup_message_headers_append (message->request_headers,
 					     "If-Match", object->etag);
 	}
 
 	soup_message_set_request (message,
-			          "text/calendar",
+			          "text/calendar; charset=utf-8",
 				  SOUP_MEMORY_COPY,
 				  object->cdata,
 				  strlen (object->cdata));
 
+	uri = NULL;
+	send_and_handle_redirection (priv->session, message, &uri);
 
-	soup_session_send_message (priv->session, message);
+	if (uri) {
+		char *file = strrchr (uri, '/');
+
+		/* there was a redirect, update href properly */
+		if (file) {
+			g_free (object->href);
+			object->href = soup_uri_encode (file + 1, NULL);
+		}
+
+		g_free (uri);
+	}
 
 	/* FIXME: sepcial case precondition errors ?*/
 	result = status_code_to_result (message->status_code);
@@ -1097,7 +1165,6 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	} else {
 		g_warning ("Ups no Etag in put response");
 	}
-
 
 	g_object_unref (message);
 	return result;
@@ -1128,7 +1195,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 					     "If-Match", object->etag);
 	}
 
-	soup_session_send_message (priv->session, message);
+	send_and_handle_redirection (priv->session, message, NULL);
 
 	result = status_code_to_result (message->status_code);
 
@@ -1143,16 +1210,16 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 static gboolean
 synchronize_object (ECalBackendCalDAV *cbdav,
 		    CalDAVObject      *object,
-		    ECalComponent     *old_comp)
+		    ECalComponent     *old_comp,
+		    GList            **created,
+		    GList            **modified)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendCache         *bcache;
 	ECalBackendSyncStatus     result;
 	ECalBackend              *bkend;
 	ECalComponent            *comp;
 	icalcomponent 		 *icomp, *subcomp;
 	icalcomponent_kind        kind;
-	gboolean		  do_report;
 	gboolean                  res;
 
 	comp = NULL;
@@ -1179,13 +1246,24 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 		res = e_cal_component_set_icalcomponent (comp,
 						   icalcomponent_new_clone (subcomp));
 		if (res == TRUE) {
+			icaltimezone *zone = icaltimezone_new ();
+
 			e_cal_component_set_href (comp, object->href);
 			e_cal_component_set_etag (comp, object->etag);
+
+			for (subcomp = icalcomponent_get_first_component (icomp, ICAL_VTIMEZONE_COMPONENT);
+			    subcomp;
+			    subcomp = icalcomponent_get_next_component (icomp, ICAL_VTIMEZONE_COMPONENT)) {
+				/* copy timezones of the component to our cache to have it available later */
+				if (icaltimezone_set_component (zone, subcomp))
+					e_cal_backend_cache_put_timezone (priv->cache, zone);
+			}
+
+			icaltimezone_free (zone, TRUE);
 		} else {
 			g_object_unref (comp);
 			comp = NULL;
 		}
-
 	} else {
 		res = FALSE;
 	}
@@ -1196,25 +1274,14 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 		return res;
 	}
 
-	bcache = priv->cache;
-	do_report = priv->report_changes;
-
-	if ((res = e_cal_backend_cache_put_component (bcache, comp))
-	    && do_report) {
-		char *new_cs = NULL;
-		char *old_cs = NULL;
-
-		new_cs = e_cal_component_get_as_string (comp);
-
+	if (priv->report_changes) {
 		if (old_comp == NULL) {
-			e_cal_backend_notify_object_created (bkend, new_cs);
+			*created = g_list_prepend (*created, g_object_ref (comp));
 		} else {
-			old_cs = e_cal_component_get_as_string (old_comp);
-			e_cal_backend_notify_object_modified (bkend, old_cs, new_cs);
+			/* they will be in the opposite order in the list */
+			*modified = g_list_prepend (*modified, g_object_ref (old_comp));
+			*modified = g_list_prepend (*modified, g_object_ref (comp));
 		}
-
-		g_free (new_cs);
-		g_free (old_cs);
 	}
 
 	g_object_unref (comp);
@@ -1230,17 +1297,19 @@ static void
 synchronize_cache (ECalBackendCalDAV *cbdav)
 {
 	ECalBackendCalDAVPrivate *priv;
+	ECalBackend              *bkend;
 	ECalBackendCache         *bcache;
 	CalDAVObject             *sobjs;
 	CalDAVObject             *object;
 	GHashTable               *hindex;
-	GList                    *cobjs;
+	GList                    *cobjs, *created = NULL, *modified = NULL;
 	GList                    *citer;
 	gboolean                  res;
 	int			  len;
 	int                       i;
 
 	priv   = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	bkend  = E_CAL_BACKEND (cbdav);
 	bcache = priv->cache;
 	len    = 0;
 	sobjs  = NULL;
@@ -1291,7 +1360,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		}
 
 		if (!etag || !etags_match (etag, object->etag)) {
-			res = synchronize_object (cbdav, object, ccomp);
+			res = synchronize_object (cbdav, object, ccomp, &created, &modified);
 		}
 
 		if (res == TRUE) {
@@ -1302,10 +1371,10 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		g_free (etag);
 	}
 
-	/* remove old (not on server anymore) items from cache */
+	/* remove old (not on server anymore) items from cache... */
 	for (citer = cobjs; citer; citer = g_list_next (citer)) {
 		ECalComponent *comp;
-		const char *uid;
+		const char *uid = NULL;
 
 		comp = E_CAL_COMPONENT (citer->data);
 		e_cal_component_get_uid (comp, &uid);
@@ -1324,9 +1393,43 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		g_object_unref (comp);
 	}
 
+	/* ...then notify created and modified components */
+	for (citer = created; citer; citer = citer->next) {
+		ECalComponent *comp = citer->data;
+		char *comp_str = e_cal_component_get_as_string (comp);
+
+		if (e_cal_backend_cache_put_component (priv->cache, comp))
+			e_cal_backend_notify_object_created (bkend, comp_str);
+
+		g_free (comp_str);
+		g_object_unref (comp);
+	}
+
+	for (citer = modified; citer; citer = citer->next) {
+		ECalComponent *comp, *old_comp;
+		char *new_str, *old_str;
+
+		/* always even number of items in the 'modified' list */
+		comp = citer->data;
+		citer = citer->next;
+		old_comp = citer->data;
+
+		new_str = e_cal_component_get_as_string (comp);
+		old_str = e_cal_component_get_as_string (old_comp);
+
+		if (e_cal_backend_cache_put_component (priv->cache, comp))
+			e_cal_backend_notify_object_modified (bkend, old_str, new_str);
+
+		g_free (new_str);
+		g_free (old_str);
+		g_object_unref (comp);
+		g_object_unref (old_comp);
+	}
+
 	g_hash_table_destroy (hindex);
 	g_list_free (cobjs);
-
+	g_list_free (created);
+	g_list_free (modified);
 }
 
 /* ************************************************************************* */
@@ -1354,7 +1457,6 @@ synch_slave_loop (gpointer data)
 		/* Ok here we go, do some real work
 		 * Synch it baby one more time ...
 		 */
-		//d(g_print ("Synch-Slave: Goint to work ...\n")); XXX re-enable output please
 		synchronize_cache (cbdav);
 
 		/* puhh that was hard, get some rest :) */
@@ -1450,6 +1552,7 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	const char		 *os_val;
 	const char               *uri;
 	gsize                     len;
+	const char               *refresh;
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
@@ -1470,8 +1573,6 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 
 	os_val = e_source_get_property(source, "ssl");
 	uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbdav));
-
-
 
 	if (g_str_has_prefix (uri, "caldav://")) {
 		const char *proto;
@@ -1509,6 +1610,9 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 
 	}
 
+	refresh = e_source_get_property (source, "refresh");
+	priv->refresh_time.tv_sec  = (refresh && atoi (refresh) > 0) ? (60 * atoi (refresh)) : (DEFAULT_REFRESH_TIME);
+
 	priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	slave = g_thread_create (synch_slave_loop, cbdav, FALSE, NULL);
 
@@ -1523,7 +1627,6 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 out:
 	return result;
 }
-
 
 static ECalBackendSyncStatus
 caldav_do_open (ECalBackendSync *backend,
@@ -1656,6 +1759,52 @@ pack_cobj (ECalBackendCalDAV *cbdav, ECalComponent *ecomp)
 
 }
 
+static void
+sanitize_component (ECalBackend *cb, ECalComponent *comp)
+{
+	ECalComponentDateTime dt;
+	icaltimezone *zone, *default_zone;
+
+	/* Check dtstart, dtend and due's timezone, and convert it to local
+	 * default timezone if the timezone is not in our builtin timezone
+	 * list */
+	e_cal_component_get_dtstart (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		if (!zone) {
+			default_zone = caldav_internal_get_default_timezone (cb);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_dtstart (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+
+	e_cal_component_get_dtend (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		if (!zone) {
+			default_zone = caldav_internal_get_default_timezone (cb);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_dtend (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+
+	e_cal_component_get_due (comp, &dt);
+	if (dt.value && dt.tzid) {
+		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		if (!zone) {
+			default_zone = caldav_internal_get_default_timezone (cb);
+			g_free ((char *)dt.tzid);
+			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			e_cal_component_set_due (comp, &dt);
+		}
+	}
+	e_cal_component_free_datetime (&dt);
+	e_cal_component_abort_sequence (comp);
+}
 
 static ECalBackendSyncStatus
 caldav_create_object (ECalBackendSync  *backend,
@@ -1669,6 +1818,7 @@ caldav_create_object (ECalBackendSync  *backend,
 	ECalComponent            *comp;
 	gboolean                  online;
 	char                     *href;
+	struct icaltimetype current;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
@@ -1689,17 +1839,28 @@ caldav_create_object (ECalBackendSync  *backend,
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
+	/* Set the created and last modified times on the component */
+	current = icaltime_from_timet (time (NULL), 0);
+	e_cal_component_set_created (comp, &current);
+	e_cal_component_set_last_modified (comp, &current);
+
+	/* sanitize the component*/
+	sanitize_component ((ECalBackend *)cbdav, comp);
+
 	if (online) {
 		CalDAVObject object;
+		const char *id = NULL;
 
 		href = e_cal_component_gen_href (comp);
-
+		
 		object.href  = href;
 		object.etag  = NULL;
 		object.cdata = pack_cobj (cbdav, comp);
 
 		status = caldav_server_put_object (cbdav, &object);
 
+		e_cal_component_get_uid (comp, &id);
+		e_cal_component_set_href (comp, object.href);
 		e_cal_component_set_etag (comp, object.etag);
 		caldav_object_free (&object, FALSE);
 
@@ -1740,6 +1901,7 @@ caldav_modify_object (ECalBackendSync  *backend,
 	ECalComponent            *cache_comp;
 	gboolean                  online;
 	const char		 *uid = NULL;
+	struct icaltimetype current;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
@@ -1760,6 +1922,13 @@ caldav_modify_object (ECalBackendSync  *backend,
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
+	/* Set the last modified time on the component */
+	current = icaltime_from_timet (time (NULL), 0);
+	e_cal_component_set_last_modified (comp, &current);
+
+	/* sanitize the component*/
+	sanitize_component ((ECalBackend *)cbdav, comp);
+
 	e_cal_component_get_uid (comp, &uid);
 
 	cache_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
@@ -1777,6 +1946,7 @@ caldav_modify_object (ECalBackendSync  *backend,
 
 		status = caldav_server_put_object (cbdav, &object);
 
+		e_cal_component_set_href (comp, object.href);
 		e_cal_component_set_etag (comp, object.etag);
 		caldav_object_free (&object, FALSE);
 
@@ -1844,7 +2014,7 @@ caldav_remove_object (ECalBackendSync  *backend,
 
 	*old_object = e_cal_component_get_as_string (cache_comp);
 
-	if (mod == CALOBJ_MOD_THIS)
+	if (mod == CALOBJ_MOD_THIS && rid && *rid)
 		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (cache_comp), icaltime_from_string (rid), mod);
 
 	if (online) {
@@ -1854,17 +2024,19 @@ caldav_remove_object (ECalBackendSync  *backend,
 		caldav_object.etag  = e_cal_component_get_etag (cache_comp);
 		caldav_object.cdata = NULL;
 
-		if (mod == CALOBJ_MOD_THIS) {
+		if (mod == CALOBJ_MOD_THIS && rid && *rid) {
 			caldav_object.cdata = pack_cobj (cbdav, cache_comp);
 
 			status = caldav_server_put_object (cbdav, &caldav_object);
+			e_cal_component_set_href (cache_comp, caldav_object.href);
+			e_cal_component_set_etag (cache_comp, caldav_object.etag);
 		} else
 			status = caldav_server_delete_object (cbdav, &caldav_object);
 
 		caldav_object_free (&caldav_object, FALSE);
 	} else {
 		/* mark component as out of synch */
-		if (mod == CALOBJ_MOD_THIS)
+		if (mod == CALOBJ_MOD_THIS && rid && *rid)
 			e_cal_component_set_synch_state (cache_comp, E_CAL_COMPONENT_LOCALLY_MODIFIED);
 		else
 			e_cal_component_set_synch_state (cache_comp, E_CAL_COMPONENT_LOCALLY_DELETED);
@@ -1877,7 +2049,7 @@ caldav_remove_object (ECalBackendSync  *backend,
 
 	/* We should prolly check for cache errors
 	 * but when that happens we are kinda hosed anyway */
-	if (mod == CALOBJ_MOD_THIS) {
+	if (mod == CALOBJ_MOD_THIS && rid && *rid) {
 		e_cal_backend_cache_put_component (priv->cache, cache_comp);
 		*object = e_cal_component_get_as_string (cache_comp);
 	} else
@@ -2003,6 +2175,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 
 			object.cdata = pack_cobj (cbdav, ecomp);
 			status = caldav_server_put_object (cbdav, &object);
+			e_cal_component_set_href (ecomp, object.href);
 			e_cal_component_set_etag (ecomp, object.etag);
 			caldav_object_free (&object, FALSE);
 		} else {
@@ -2118,7 +2291,7 @@ caldav_receive_objects (ECalBackendSync *backend,
 	icalcomponent_kind        kind;
 	icalproperty_method       tmethod;
 	gboolean                  online;
-	GList                    *timezones;
+	GList                    *timezones = NULL;
 	GList                    *objects;
 	GList                    *iter;
 
@@ -2145,8 +2318,12 @@ caldav_receive_objects (ECalBackendSync *backend,
 	status = extract_objects (icomp, kind, &timezones);
 
 	if (status == GNOME_Evolution_Calendar_Success) {
-		/* FIXME: */
-		/* Do something usefull with the timezone */
+		for (iter = timezones; iter; iter = iter->next) {
+			icaltimezone *zone = iter->data;
+
+			e_cal_backend_cache_put_timezone (priv->cache, zone);
+			icaltimezone_free (zone, TRUE);
+		}
 	}
 
 	/*   */
@@ -2294,8 +2471,36 @@ caldav_add_timezone (ECalBackendSync *backend,
 		     EDataCal        *cal,
 		     const char      *tzobj)
 {
-	/* FIXME: implement me! */
-	g_warning ("function not implemented %s", G_STRFUNC);
+	icalcomponent *tz_comp;
+	ECalBackendCalDAV *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	if (icalcomponent_isa (tz_comp) == ICAL_VTIMEZONE_COMPONENT) {
+		icaltimezone *zone;
+
+		zone = icaltimezone_new ();
+		icaltimezone_set_component (zone, tz_comp);
+
+		g_mutex_lock (priv->lock);
+		e_cal_backend_cache_put_timezone (priv->cache, zone);
+		g_mutex_unlock (priv->lock);
+
+		icaltimezone_free (zone, TRUE);
+	} else {
+		icalcomponent_free (tz_comp);
+	}
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2304,8 +2509,30 @@ caldav_set_default_zone (ECalBackendSync *backend,
 			     EDataCal        *cal,
 			     const char      *tzobj)
 {
-	/* FIXME: implement me! */
-	g_warning ("function not implemented %s", G_STRFUNC);
+	icalcomponent *tz_comp;
+	ECalBackendCalDAV *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+	icaltimezone *zone;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	tz_comp = icalparser_parse_string (tzobj);
+	if (!tz_comp)
+		return GNOME_Evolution_Calendar_InvalidObject;
+
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, tz_comp);
+
+	if (priv->default_zone != icaltimezone_get_utc_timezone ())
+		icaltimezone_free (priv->default_zone, 1);
+
+	/* Set the default timezone to it. */
+	priv->default_zone = zone;
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2517,7 +2744,17 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 static icaltimezone *
 caldav_internal_get_default_timezone (ECalBackend *backend)
 {
-	return icaltimezone_get_utc_timezone ();
+	ECalBackendCalDAV *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), NULL);
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	g_return_val_if_fail (priv->default_zone != NULL, NULL);
+
+	return priv->default_zone;
 }
 
 static icaltimezone *
@@ -2596,6 +2833,11 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
 
+	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
+		icaltimezone_free (priv->default_zone, 1);
+	}
+	priv->default_zone = NULL;
+
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
@@ -2611,6 +2853,8 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (priv->session);
+
+	priv->default_zone = icaltimezone_get_utc_timezone ();
 
 	priv->disposed = FALSE;
 	priv->do_synch = FALSE;
