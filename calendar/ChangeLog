@@ -1,3 +1,25 @@
+2008-09-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #537718
+
+	* backends/caldav/e-cal-backend-caldav.c: (status_code_to_result),
+	(xp_object_get_href), (soup_authenticate), (redirect_handler),
+	(send_and_handle_redirection), (caldav_server_open_calendar),
+	(caldav_server_list_objects), (caldav_server_get_object),
+	(caldav_server_put_object), (caldav_server_delete_object),
+	(synchronize_object), (synchronize_cache), (initialize_backend),
+	(sanitize_component), (caldav_create_object), (caldav_modify_object),
+	(caldav_remove_object), (process_object), (caldav_receive_objects),
+	(caldav_add_timezone), (caldav_set_default_zone),
+	(caldav_internal_get_default_timezone),
+	(e_cal_backend_caldav_finalize), (e_cal_backend_caldav_init):
+	Be able to cooperate with servers which use redirections.
+	Support for (default) timezone information on the backend.
+	Store component's timezone(s) in cache to have them available.
+	Remove instance of the object only when 'rid' has been provided.
+	Do not panic when ETag not returned in the headers, but is known.
+	Set created/last modified times on the component. Leak a bit less.
+
 2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* Edited svn:externals to point to libical stable
