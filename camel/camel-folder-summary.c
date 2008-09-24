@@ -3557,7 +3557,6 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 	CamelMimeFilterCharset *mfc;
 	CamelMessageContentInfo *part;
 	const char *calendar_header;
-	int calendar_header_offset = -1;
 
 	d(printf("building content info\n"));
 
@@ -3580,17 +3579,12 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 			)
 			camel_message_info_set_flags(msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);
 
-		calendar_header = camel_mime_parser_header (mp, "Content-class", &calendar_header_offset);
-		if (calendar_header) {
-			while (calendar_header [calendar_header_offset] && isspace (calendar_header [calendar_header_offset]))
-				calendar_header_offset++;
-
-			if (g_ascii_strcasecmp (calendar_header + calendar_header_offset, "urn:content-classes:calendarmessage") != 0)
-				calendar_header = NULL;
-		}
+		calendar_header = camel_mime_parser_header (mp, "Content-class", NULL);
+		if (calendar_header && g_ascii_strcasecmp (calendar_header, "urn:content-classes:calendarmessage") != 0)
+			calendar_header = NULL;
 
 		if (!calendar_header)
-			calendar_header = camel_mime_parser_header (mp, "X-Calendar-Attachment", &calendar_header_offset);
+			calendar_header = camel_mime_parser_header (mp, "X-Calendar-Attachment", NULL);
 
 		if (calendar_header)
 			camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);

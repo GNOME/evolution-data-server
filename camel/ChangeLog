@@ -2,6 +2,13 @@
 
 	** Part of fix for bug #313225
 
+	* camel-folder-summary.c: (summary_build_content_info): Fix
+	misunderstanding of the parameter in code causing crash in this part.
+
+2008-09-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #313225
+
 	* camel-folder-summary.c: (summary_build_content_info),
 	(summary_build_content_info_message): Check whether message contains
 	headers indicating a calendar attachment and if so, then set the user
