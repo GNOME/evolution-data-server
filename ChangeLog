@@ -1,3 +1,12 @@
+2008-09-24  Ross Burton  <ross@linux.intel.com>
+
+	* configure.in:
+	Remove libgnome from libedataserverui depends, and change
+	libgnome-2.0 to libbonobo-2.0 for the addressbook and calendar.
+
+	* evolution-data-server.pc.in:
+	Remove libgnome-2.0 as it isn't used.
+
 2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* configure.in: Version bump for Evolution Data Server 2.25.1
