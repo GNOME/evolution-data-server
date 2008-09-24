@@ -1,3 +1,11 @@
+2008-09-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #313225
+
+	* camel-groupwise-folder.c: (gw_update_cache), (gw_update_summary):
+	Set the user flag '$has_cal' in the message info when the message
+	is type of the appointment, task or note.
+
 2008-08-08  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-store.c (groupwise_folders_sync):

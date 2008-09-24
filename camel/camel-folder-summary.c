@@ -3556,6 +3556,8 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	CamelMimeFilterCharset *mfc;
 	CamelMessageContentInfo *part;
+	const char *calendar_header;
+	int calendar_header_offset = -1;
 
 	d(printf("building content info\n"));
 
@@ -3577,6 +3579,21 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 #endif
 			)
 			camel_message_info_set_flags(msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);
+
+		calendar_header = camel_mime_parser_header (mp, "Content-class", &calendar_header_offset);
+		if (calendar_header) {
+			while (calendar_header [calendar_header_offset] && isspace (calendar_header [calendar_header_offset]))
+				calendar_header_offset++;
+
+			if (g_ascii_strcasecmp (calendar_header + calendar_header_offset, "urn:content-classes:calendarmessage") != 0)
+				calendar_header = NULL;
+		}
+
+		if (!calendar_header)
+			calendar_header = camel_mime_parser_header (mp, "X-Calendar-Attachment", &calendar_header_offset);
+
+		if (calendar_header)
+			camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
 
 		if (p->index && camel_content_type_is(ct, "text", "*")) {
 			char *encoding;
@@ -3707,6 +3724,7 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	CamelMessageContentInfo *info = NULL, *child;
 	CamelContentType *ct;
+	const struct _camel_header_raw *header;
 
 	if (s->build_content)
 		info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->content_info_new_from_message(s, object);
@@ -3735,6 +3753,22 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 		) {
 		camel_message_info_set_flags(msginfo, CAMEL_MESSAGE_SECURE, CAMEL_MESSAGE_SECURE);
 	}
+
+	for (header = object->headers; header; header = header->next) {
+		const char *value = header->value;
+
+		/* skip preceding spaces in the value */
+		while (value && *value && isspace (*value))
+			value++;
+
+		if (header->name && value && (
+		    (g_ascii_strcasecmp (header->name, "Content-class") == 0 && g_ascii_strcasecmp (value, "urn:content-classes:calendarmessage") == 0) ||
+		    (g_ascii_strcasecmp (header->name, "X-Calendar-Attachment") == 0)))
+			break;
+	}
+
+	if (header)
+		camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART(containee)) {

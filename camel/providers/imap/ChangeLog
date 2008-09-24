@@ -1,3 +1,10 @@
+2008-09-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #313225
+
+	* camel-imap-folder.c: (CAMEL_MESSAGE_INFO_HEADERS):
+	Transfer always 'CONTENT-CLASS' and 'X-CALENDAR-ATTACHMENT' headers.
+
 2008-09-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #553298

@@ -1299,6 +1299,9 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");	
 			}
+
+			if (type == E_GW_ITEM_TYPE_APPOINTMENT || type == E_GW_ITEM_TYPE_TASK || type == E_GW_ITEM_TYPE_NOTE)
+				camel_message_info_set_user_flag ((CamelMessageInfo*)mi, "$has_cal", TRUE);
 		}
 		
 		rk = e_gw_item_get_recurrence_key (item);
@@ -1518,6 +1521,9 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 				mi->info.content = camel_folder_summary_content_info_new (folder->summary);
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");
 			}
+
+			if (type == E_GW_ITEM_TYPE_APPOINTMENT || type == E_GW_ITEM_TYPE_TASK || type == E_GW_ITEM_TYPE_NOTE)
+				camel_message_info_set_user_flag ((CamelMessageInfo*)mi, "$has_cal", TRUE);
 		}
 		
 		rk = e_gw_item_get_recurrence_key (item);
