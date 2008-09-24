@@ -1,3 +1,9 @@
+2008-09-24  Ross Burton  <ross@linux.intel.com>
+
+	* libebook/libebook.pc.in:
+	* libedata-book/libedata-book.pc.in:
+	Remove libgnome-2.0 as it isn't used.
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/webdav/e-book-backend-webdav.c
