@@ -1,3 +1,9 @@
+2008-09-24  Ross Burton  <ross@linux.intel.com>
+
+	* libecal/libecal.pc.in:
+	* libedata-cal/libedata-cal.pc.in:
+	Remove libgnome-2.0 as it isn't used.
+
 2008-09-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #537718
