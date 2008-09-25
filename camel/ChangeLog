@@ -1,3 +1,10 @@
+2008-09-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #553266
+
+	* camel-vee-folder.c: (vee_sync):
+	Do not free memory owned by someone else.
+
 2008-09-24  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #313225
