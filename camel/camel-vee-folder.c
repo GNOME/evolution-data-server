@@ -578,12 +578,11 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 		camel_folder_sync(f, expunge, ex);
 		if (camel_exception_is_set(ex) && strncmp(camel_exception_get_description(ex), "no such table", 13)) {
-			char *desc;
+			const char *desc;
 
 			camel_object_get(f, NULL, CAMEL_OBJECT_DESCRIPTION, &desc, NULL);
 			camel_exception_setv(ex, ex->id, _("Error storing '%s': %s"), desc, ex->desc);
 			g_warning ("%s", camel_exception_get_description(ex));
-			g_free(desc);
 		} else
 			camel_exception_clear (ex);
 
