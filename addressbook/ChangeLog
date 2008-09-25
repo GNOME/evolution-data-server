@@ -1,3 +1,11 @@
+2008-09-25  Rob Bradford  <rob@linux.intel.com>
+
+	* libedata-book/e-data-book-view.c (e_data_book_view_ref),
+	(e_data_book_view_unref):
+	* libedata-book/e-data-book-view.h:
+	Add transition functions e_data_book_view_ref and
+	e_data_book_view_unref to ease the transition from Bonobo to DBUS.
+
 2008-09-24  Ross Burton  <ross@linux.intel.com>
 
 	* libebook/libebook.pc.in:

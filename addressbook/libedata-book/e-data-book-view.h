@@ -74,6 +74,8 @@ void         e_data_book_view_notify_complete        (EDataBookView             
 						      GNOME_Evolution_Addressbook_CallStatus);
 void         e_data_book_view_notify_status_message  (EDataBookView                *book_view,
 						      const char                   *message);
+void         e_data_book_view_ref                    (EDataBookView                *book_view);
+void         e_data_book_view_unref                  (EDataBookView                *book_view);
 
 GType        e_data_book_view_get_type               (void);
 

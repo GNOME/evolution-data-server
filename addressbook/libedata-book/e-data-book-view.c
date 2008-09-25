@@ -667,6 +667,32 @@ e_data_book_view_new (EBookBackend *backend,
 	return book_view;
 }
 
+/**
+ * e_data_book_view_ref
+ * @book_view: an #EBookView
+ *
+ * Increase the reference count of the book view. This is a function to aid
+ * the transition from Bonobo to DBUS.
+ */
+void
+e_data_book_view_ref (EDataBookView *book_view)
+{
+	bonobo_object_ref (book_view);
+}
+
+/**
+ * e_data_book_view_unref
+ * @book_view: an #EBookView
+ *
+ * Decrease the reference count of the book view. This is a function to aid
+ * the transition from Bonobo to DBUS.
+ */
+void
+e_data_book_view_unref (EDataBookView *book_view)
+{
+	bonobo_object_unref (book_view);
+}
+
 static void
 e_data_book_view_dispose (GObject *object)
 {
