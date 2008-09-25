@@ -43,8 +43,6 @@
 #include "exchange-esource.h"
 #include <libedataserverui/e-passwords.h>
 
-#include <libgnome/gnome-util.h>
-
 #include <glade/glade-xml.h>
 #include <gtk/gtk.h>
 
