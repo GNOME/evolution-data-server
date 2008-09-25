@@ -546,7 +546,7 @@ book_view_thread (gpointer data)
 
 	/* ref the book view because it'll be removed and unrefed
 	   when/if it's stopped */
-	bonobo_object_ref (book_view);
+	e_data_book_view_ref (book_view);
 
 	db = bf->priv->file_db;
 	query = e_data_book_view_get_card_query (book_view);
@@ -638,7 +638,7 @@ book_view_thread (gpointer data)
 
 	/* unref the */
 	printf("book_view file uref \n");
-	bonobo_object_unref (book_view);
+	e_data_book_view_unref (book_view);
 
 	d(printf ("finished population of book view\n"));
 

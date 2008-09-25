@@ -2176,7 +2176,7 @@ book_view_thread (gpointer data)
 
 	if (enable_debug)
 		printf ("start book view for %s \n", gwb->priv->book_name);
-       	bonobo_object_ref (book_view);
+	e_data_book_view_ref (book_view);
 	e_flag_set (closure->running);
 
 	query = e_data_book_view_get_card_query (book_view);
@@ -2199,7 +2199,7 @@ book_view_thread (gpointer data)
 				get_contacts_from_cache (gwb, query, ids, book_view, closure);
 				g_ptr_array_free (ids, TRUE);
 			}
-			bonobo_object_unref (book_view);
+			e_data_book_view_unref (book_view);
 			return NULL;
 		}
 
@@ -2221,7 +2221,7 @@ book_view_thread (gpointer data)
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		if (temp_list)
 			g_list_free (temp_list);
-		bonobo_object_unref (book_view);
+		e_data_book_view_unref (book_view);
 		return NULL;
 
 	case GNOME_Evolution_Addressbook_MODE_REMOTE :
@@ -2229,7 +2229,7 @@ book_view_thread (gpointer data)
 		if (gwb->priv->cnc == NULL) {
 			e_data_book_view_notify_complete (book_view,
 						          GNOME_Evolution_Addressbook_AuthenticationRequired);
-			bonobo_object_unref (book_view);
+			e_data_book_view_unref (book_view);
 			return NULL;
 		}
 
@@ -2258,7 +2258,7 @@ book_view_thread (gpointer data)
 		if (!gwb->priv->is_writable && !filter && (g_getenv ("GW_HIDE_SYSBOOK") || (!gwb->priv->is_cache_ready))) {
 
 				e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
-				bonobo_object_unref (book_view);
+				e_data_book_view_unref (book_view);
 				if (filter)
 					g_object_unref (filter);
 				return NULL; 
@@ -2293,7 +2293,7 @@ book_view_thread (gpointer data)
 										_("Searching..."));
 				get_contacts_from_cache (gwb, query, ids, book_view, closure);
 				g_ptr_array_free (ids, TRUE);
-				bonobo_object_unref (book_view);
+				e_data_book_view_unref (book_view);
 				if (enable_debug) {
 					g_get_current_time(&end);
 					diff = end.tv_sec * 1000 + end.tv_usec/1000;
@@ -2342,7 +2342,7 @@ book_view_thread (gpointer data)
 					e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 				if (temp_list)
 					g_list_free (temp_list);
-				bonobo_object_unref (book_view);
+				e_data_book_view_unref (book_view);
 				
 				if (filter)	
 					g_object_unref (filter);
@@ -2370,7 +2370,7 @@ book_view_thread (gpointer data)
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);
-			bonobo_object_unref (book_view);
+			e_data_book_view_unref (book_view);
 			if (filter)
 				g_object_unref (filter);
 			return NULL;
@@ -2404,7 +2404,7 @@ book_view_thread (gpointer data)
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 		if (filter)
 			g_object_unref (filter);
-		bonobo_object_unref (book_view);
+		e_data_book_view_unref (book_view);
 
 		if (enable_debug) {
 			g_get_current_time(&end);
@@ -2684,7 +2684,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	book_view = find_book_view (ebgw);
 	if (book_view) {
 		closure = get_closure (book_view);
-		bonobo_object_ref (book_view);
+		e_data_book_view_ref (book_view);
 		if (closure)
 			e_flag_set (closure->running);
 	}
@@ -2749,7 +2749,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
-		bonobo_object_unref (book_view);
+		e_data_book_view_unref (book_view);
 	}
 
 	e_gw_connection_destroy_cursor (priv->cnc, priv->container_id, cursor);
@@ -2833,7 +2833,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	book_view = find_book_view (ebgw);
 	if (book_view) {
 		closure = get_closure (book_view);
-		bonobo_object_ref (book_view);
+		e_data_book_view_ref (book_view);
 		if (closure)
 			e_flag_set (closure->running);
 	}
@@ -2852,7 +2852,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 					    "name email default members", filter, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (book_view)
-			bonobo_object_unref (book_view);
+			e_data_book_view_unref (book_view);
 		if (enable_debug)
 			printf("No connection with the server \n");
 		g_mutex_unlock (ebgw->priv->update_cache_mutex);
@@ -2897,7 +2897,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
-		bonobo_object_unref (book_view);
+		e_data_book_view_unref (book_view);
 	}
 	g_object_unref (filter);
 	g_list_free (gw_items);
@@ -2994,7 +2994,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	book_view = find_book_view (ebgw);
 	if (book_view) {
 		closure = get_closure (book_view);
-		bonobo_object_ref (book_view);
+		e_data_book_view_ref (book_view);
 		if (closure)
 			e_flag_set (closure->running);
 	}
@@ -3144,7 +3144,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
-		bonobo_object_unref (book_view);
+		e_data_book_view_unref (book_view);
 	}
 
 	if (enable_debug) {

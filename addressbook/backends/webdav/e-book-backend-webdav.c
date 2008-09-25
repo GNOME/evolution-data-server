@@ -650,19 +650,19 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 		GNOME_Evolution_Addressbook_CallStatus res
 			= e_book_backend_handle_auth_request(webdav);
 		g_object_unref(message);
-		bonobo_object_unref(book_view);
+		e_data_book_view_unref(book_view);
 		return res;
 	}
 	if (status != 207) {
 		g_warning("PROPFIND on webdav failed with http status %d", status);
 		g_object_unref(message);
-		bonobo_object_unref(book_view);
+		e_data_book_view_unref(book_view);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 	if (message->response_body == NULL) {
 		g_warning("No response body in webdav PROPEFIND result");
 		g_object_unref(message);
-		bonobo_object_unref(book_view);
+		e_data_book_view_unref(book_view);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -761,11 +761,11 @@ book_view_thread(gpointer data)
 
 	/* ref the book view because it'll be removed and unrefed when/if
 	 * it's stopped */
-	bonobo_object_ref(book_view);
+	e_data_book_view_ref(book_view);
 
 	status = download_contacts(webdav, closure->running, book_view);
 
-	bonobo_object_unref(book_view);
+	e_data_book_view_unref(book_view);
 
 	/* report back status if query wasn't aborted */
 	e_data_book_view_notify_complete(book_view, status);

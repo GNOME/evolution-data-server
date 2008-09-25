@@ -308,7 +308,7 @@ e_book_backend_google_start_book_view (EBookBackend  *backend,
 
     priv->bookviews = g_list_append (priv->bookviews, bookview);
 
-    bonobo_object_ref (bookview);
+    e_data_book_view_ref (bookview);
     e_data_book_view_notify_status_message (bookview, "Loading...");
 
     google_book_set_live_mode (priv->book, TRUE);
@@ -333,7 +333,7 @@ e_book_backend_google_stop_book_view (EBookBackend  *backend,
     priv = GET_PRIVATE (backend);
 
     priv->bookviews = g_list_remove (priv->bookviews, bookview);
-    bonobo_object_unref (bookview);
+    e_data_book_view_unref (bookview);
 
     if (NULL == priv->bookviews) {
         google_book_set_live_mode (priv->book, FALSE);
@@ -607,7 +607,7 @@ e_book_backend_google_dispose (GObject *object)
     __debug__ (G_STRFUNC);
 
     while (priv->bookviews) {
-        bonobo_object_unref (priv->bookviews->data);
+        e_data_book_view_unref (priv->bookviews->data);
         priv->bookviews = g_list_delete_link (priv->bookviews,
                                               priv->bookviews);
     }

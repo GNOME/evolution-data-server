@@ -467,7 +467,7 @@ book_view_thread (gpointer data)
 
 	/* ref the book view because it'll be removed and unrefed
 	   when/if it's stopped */
-	bonobo_object_ref (book_view);
+	e_data_book_view_ref (book_view);
 
 	query = e_data_book_view_get_card_query (book_view);
 
@@ -493,7 +493,7 @@ book_view_thread (gpointer data)
 		e_data_book_view_notify_complete (closure->view, GNOME_Evolution_Addressbook_Success);
 
 	/* unref the book view */
-	bonobo_object_unref (book_view);
+	e_data_book_view_unref (book_view);
 
 	d(printf ("finished initial population of book view\n"));
 
