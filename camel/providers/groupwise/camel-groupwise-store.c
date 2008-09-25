@@ -1306,7 +1306,7 @@ groupwise_rename_folder(CamelStore *store,
 	char *temp_new = NULL;
 	
 	if (groupwise_is_system_folder (old_name)) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder '%s' to '%s'"),
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folder '%s' to '%s'"),
 				      old_name, new_name);
 		return;
 	}
@@ -1327,7 +1327,7 @@ groupwise_rename_folder(CamelStore *store,
 
 	if (!container_id || e_gw_connection_rename_folder (priv->cnc, container_id , temp_new) != E_GW_CONNECTION_STATUS_OK)
 	{
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename Groupwise folder '%s' to '%s'"),
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot rename GroupWise folder '%s' to '%s'"),
 				      old_name, new_name);
 		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 		return;
