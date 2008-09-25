@@ -180,7 +180,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	gboolean authenticated = FALSE;
 	char *uri;
-	EGwConnectionErrors errors;
+	EGwConnectionErrors errors = {E_GW_CONNECTION_STATUS_INVALID_OBJECT, NULL};
 
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never")) 
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
@@ -222,7 +222,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 				service->url->passwd = NULL;
 				camel_exception_clear (ex);
 			} else {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, g_strdup (errors.description));
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, errors.description ? errors.description : _("You must be working online to complete this operation"));
 				return FALSE;
 			}
 		} else

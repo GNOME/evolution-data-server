@@ -1,3 +1,10 @@
+2008-09-25  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #337479
+
+	* camel-groupwise-store.c: (groupwise_auth_loop):
+	Do not use uninitialized variables.
+
 2008-08-08  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-store.c (groupwise_folders_sync):
