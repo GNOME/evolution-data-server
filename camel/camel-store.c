@@ -468,6 +468,11 @@ camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelExce
 
 	CS_CLASS(store)->delete_folder(store, folder_name, &local);
 
+	/* ignore 'no such table' errors */
+	if (camel_exception_is_set (&local) && camel_exception_get_description (&local) &&
+	    g_ascii_strncasecmp (camel_exception_get_description (&local), "no such table", 13) == 0)
+		camel_exception_clear (&local);
+
 	if (!camel_exception_is_set(&local))
 		cs_delete_cached_folder(store, folder_name);
 	else {
