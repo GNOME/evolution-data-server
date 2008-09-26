@@ -560,6 +560,10 @@ smtp_connect (CamelService *service, CamelException *ex)
 
 			authenticated = smtp_auth (transport, authtype->authproto, ex);
 			if (!authenticated) {
+				if (camel_exception_get_id (ex) == CAMEL_EXCEPTION_USER_CANCEL ||
+				    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
+					return FALSE;
+
 				errbuf = g_markup_printf_escaped (
 					_("Unable to authenticate "
 					  "to SMTP server.\n%s\n\n"),
@@ -1369,7 +1373,7 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 	}
 	
 	/* find out how large the message is... */
-	null = camel_stream_null_new ();
+	null = CAMEL_STREAM_NULL (camel_stream_null_new ());
 	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (null));
 	
 	filtered_stream = camel_stream_filter_new_with_stream (transport->ostream);

@@ -1,3 +1,12 @@
+2008-09-26  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #553301
+
+	* camel-pop3-store.c: (pop3_try_authenticate):
+	Return 'int', not gboolean.
+	* camel-pop3-store.c: (pop3_connect):
+	Also forget password in a session before reprompting it.
+
 2008-09-08  Patrick Ohly  <patrick.ohly@gmx.de>
 
 	** Fixes memory leak created by patch for #514827

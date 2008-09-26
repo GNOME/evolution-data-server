@@ -47,7 +47,7 @@ camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex)
 			"NNTP", service->url->user, service->url->host);
 
 		service->url->passwd = camel_session_get_password (
-			session, prompt, TRUE, service, "password", ex);
+			session, service, NULL, prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
 
 		g_free (prompt);
 
