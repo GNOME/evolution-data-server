@@ -1189,8 +1189,14 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 
 	if (ret != NNTP_AUTH_ACCEPTED) {
 		if (ret != -1) {
+			if (camel_exception_get_id (ex) == CAMEL_EXCEPTION_USER_CANCEL ||
+			    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
+				return ret;
+
 			/* Need to forget the password here since we have no context on it */
 			camel_session_forget_password(session, service, NULL, "password", ex);
+			g_free (service->url->passwd);
+			service->url->passwd = NULL;
 			goto retry;
 		}
 		return -1;

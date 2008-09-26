@@ -489,7 +489,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 		g_free (base_prompt);
 		g_free (full_prompt);
 		if (!service->url->passwd)
-			return FALSE;
+			return 0;
 	}
 
 	if (!service->url->authmech) {
@@ -509,7 +509,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 						_("Unable to connect to POP server %s:	Invalid APOP ID received. Impersonation attack suspected. Please contact your admin."),
 						CAMEL_SERVICE (store)->url->host);
 
-				return FALSE;
+				return 0;
 			}
 			d++;
 		}
@@ -528,7 +528,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 		while (l) {
 			auth = l->data;
 			if (strcmp(auth->authproto, service->url->authmech) == 0)
-				return try_sasl(store, service->url->authmech, ex) == -1;
+				return try_sasl (store, service->url->authmech, ex);
 			l = l->next;
 		}
 		
@@ -536,7 +536,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 				      _("Unable to connect to POP server %s: "
 					"No support for requested authentication mechanism."),
 				      CAMEL_SERVICE (store)->url->host);
-		return FALSE;
+		return 0;
 	}
 	
 	while ((status = camel_pop3_engine_iterate(store->engine, pcp)) > 0)
@@ -610,10 +610,14 @@ pop3_connect (CamelService *service, CamelException *ex)
 		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
 			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
+			camel_exception_clear (ex);
+
+			camel_session_forget_password (session, service, NULL, "password", ex);
+			camel_exception_clear (ex);
+
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 			reprompt = TRUE;
-			camel_exception_clear (ex);
 		} else
 			break;
 	}

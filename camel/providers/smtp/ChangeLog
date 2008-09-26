@@ -1,3 +1,11 @@
+2008-09-26  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #553301
+
+	* camel-smtp-transport.c: (smtp_connect): Do not forget password
+	when server not available at the moment or user cancelled.
+	* camel-smtp-transport.c: (smtp_data): Compiler warning cleanup.
+
 2008-06-20  Jeffrey Stedfast  <fejj@novell.com>
 
 	* camel-smtp-transport.c (smtp_data): Setup progress reporting for
