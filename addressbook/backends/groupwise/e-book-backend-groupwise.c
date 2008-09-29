@@ -1961,6 +1961,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 		    e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
 			int i;
 			ids = e_book_backend_summary_search (egwb->priv->summary, query);
+			if (!ids)
+				return;
+
 			for (i = 0; i < ids->len; i ++) {
 				char *uid = g_ptr_array_index (ids, i);
 
@@ -2024,7 +2027,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				ids = e_book_backend_db_cache_search (egwb->priv->file_db, query);
 			}
 
-			if (ids->len > 0) {
+			if (ids && ids->len > 0) {
 				status = e_gw_connection_get_items_from_ids (egwb->priv->cnc,
 									egwb->priv->container_id,
 									"name email default members",
@@ -2034,8 +2037,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 									egwb->priv->container_id,
 									"name email default members",
 									ids, &gw_items);
-			g_ptr_array_free (ids, TRUE);
 			}
+			if (ids)
+				g_ptr_array_free (ids, TRUE);
 			match_needed = FALSE;
 		} else {
 			if (strcmp (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
@@ -2197,8 +2201,9 @@ book_view_thread (gpointer data)
 			ids = e_book_backend_summary_search (gwb->priv->summary, query);
 			if (ids && ids->len > 0) {
 				get_contacts_from_cache (gwb, query, ids, book_view, closure);
-				g_ptr_array_free (ids, TRUE);
 			}
+			if (ids)
+				g_ptr_array_free (ids, TRUE);
 			bonobo_object_unref (book_view);
 			return NULL;
 		}
@@ -2323,7 +2328,6 @@ book_view_thread (gpointer data)
 				if (enable_debug && status == E_GW_CONNECTION_STATUS_OK)
 					printf ("read contacts from server \n");
 			}
-			g_ptr_array_free (ids, TRUE);
 		}
 		else {
 			if (gwb->priv->is_cache_ready) {
@@ -2347,6 +2351,9 @@ book_view_thread (gpointer data)
 				if (filter)	
 					g_object_unref (filter);
 
+				if (ids)
+					g_ptr_array_free (ids, TRUE);
+
 				return NULL;
 			} 
 		
@@ -2367,6 +2374,9 @@ book_view_thread (gpointer data)
 								    gwb->priv->container_id,
 								    view, filter, &gw_items);
 		}
+
+		if (ids)
+			g_ptr_array_free (ids, TRUE);
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_OtherError);

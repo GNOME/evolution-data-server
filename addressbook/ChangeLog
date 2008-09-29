@@ -1,3 +1,23 @@
+2008-09-29  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #497928
+
+	* backends/file/e-book-backend-file.c: (build_summary),
+	(e_book_backend_file_get_contact_list),	(book_view_thread),
+	(e_book_backend_file_load_source): Check for NULL pointers
+	and errors on opening an address book to prevent crash.
+	* backends/groupwise/e-book-backend-groupwise.c:
+	(e_book_backend_groupwise_get_contact_list), (book_view_thread):
+	Check for NULL pointers and free allocated memory properly.
+	* libedata-book/e-book-backend-summary.c:
+	(e_book_backend_summary_add_contact), (e_book_backend_summary_search),
+	(e_book_backend_summary_remove_contact), (e_book_backend_summary_save),
+	(e_book_backend_summary_check_contact), (e_book_backend_summary_touch),
+	(e_book_backend_summary_is_up_to_date), (e_book_backend_summary_load),
+	(e_book_backend_summary_is_summary_query),
+	(e_book_backend_summary_get_summary_vcard):
+	Check for NULL pointers before accessing members of the structure.
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/webdav/e-book-backend-webdav.c

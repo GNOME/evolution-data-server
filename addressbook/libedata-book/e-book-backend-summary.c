@@ -531,6 +531,8 @@ e_book_backend_summary_load (EBookBackendSummary *summary)
 	EBookBackendSummaryItem *new_item;
 	int i;
 
+	g_return_val_if_fail (summary != NULL, FALSE);
+
 	clear_items (summary);
 
 	if (!e_book_backend_summary_open (summary))
@@ -684,6 +686,8 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 	char *new_filename = NULL;
 	int i;
 
+	g_return_val_if_fail (summary != NULL, FALSE);
+
 	if (!summary->priv->dirty)
 		return TRUE;
 
@@ -761,6 +765,8 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 	EBookBackendSummaryItem *new_item;
 	char *id = NULL;
 
+	g_return_if_fail (summary != NULL);
+
 	/* ID normally should not be NULL for a contact. */
 	/* Added this check as groupwise server sometimes returns
 	 * contacts with NULL id
@@ -820,7 +826,11 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
 void
 e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char *id)
 {
-	EBookBackendSummaryItem *item = g_hash_table_lookup (summary->priv->id_to_item, id);
+	EBookBackendSummaryItem *item;
+
+	g_return_if_fail (summary != NULL);
+
+	item = g_hash_table_lookup (summary->priv->id_to_item, id);
 
 	if (item) {
 		g_ptr_array_remove (summary->priv->items, item);
@@ -846,6 +856,8 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char 
 gboolean
 e_book_backend_summary_check_contact (EBookBackendSummary *summary, const char *id)
 {
+	g_return_val_if_fail (summary != NULL, FALSE);
+
 	return g_hash_table_lookup (summary->priv->id_to_item, id) != NULL;
 }
 
@@ -884,6 +896,8 @@ summary_flush_func (gpointer data)
 void
 e_book_backend_summary_touch (EBookBackendSummary *summary)
 {
+	g_return_if_fail (summary != NULL);
+
 	summary->priv->dirty = TRUE;
 	if (!summary->priv->flush_timeout
 	    && summary->priv->flush_timeout_millis)
@@ -903,6 +917,8 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
 gboolean
 e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary, time_t t)
 {
+	g_return_val_if_fail (summary != NULL, FALSE);
+
 	if (!e_book_backend_summary_open (summary))
 		return FALSE;
 	else
@@ -969,6 +985,8 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const cha
 	gboolean retval;
 	int i;
 	int esexp_error;
+
+	g_return_val_if_fail (summary != NULL, FALSE);
 
 	sexp = e_sexp_new();
 
@@ -1148,9 +1166,11 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
-	GPtrArray *retval = g_ptr_array_new();
+	GPtrArray *retval;
 	int i;
 	int esexp_error;
+
+	g_return_val_if_fail (summary != NULL, NULL);
 
 	sexp = e_sexp_new();
 
@@ -1171,6 +1191,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 		return NULL;
 	}
 
+	retval = g_ptr_array_new ();
 	r = e_sexp_eval(sexp);
 
 	if (r && r->type == ESEXP_RES_ARRAY_PTR && r->value.ptrarray) {
@@ -1201,7 +1222,11 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 char*
 e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const char *id)
 {
-	EBookBackendSummaryItem *item = g_hash_table_lookup (summary->priv->id_to_item, id);
+	EBookBackendSummaryItem *item;
+
+	g_return_val_if_fail (summary != NULL, NULL);
+
+	item = g_hash_table_lookup (summary->priv->id_to_item, id);
 
 	if (item) {
 		EContact *contact = e_contact_new ();

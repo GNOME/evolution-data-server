@@ -121,7 +121,7 @@ create_contact (char *uid, const char *vcard)
 	return contact;
 }
 
-static void
+static gboolean
 build_summary (EBookBackendFilePrivate *bfpriv)
 {
 	DB             *db = bfpriv->file_db;
@@ -133,7 +133,7 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 
 	if (db_error != 0) {
 		g_warning (G_STRLOC ": db->cursor failed with %s", db_strerror (db_error));
-		return;
+		return FALSE;
 	}
 
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
@@ -155,6 +155,8 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 	}
 
 	dbc->c_close (dbc);
+
+	return TRUE;
 }
 
 static char *
@@ -412,6 +414,9 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
 		int i;
 
+		if (!ids)
+			return GNOME_Evolution_Addressbook_ContactNotFound;
+
 		for (i = 0; i < ids->len; i ++) {
 			char *id = g_ptr_array_index (ids, i);
 			string_to_dbt (id, &id_dbt);
@@ -567,6 +572,9 @@ book_view_thread (gpointer data)
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, e_data_book_view_get_card_query (book_view));
 		int i;
 
+		if (!ids)
+			goto done;
+
 		for (i = 0; i < ids->len; i ++) {
 			char *id = g_ptr_array_index (ids, i);
 
@@ -632,7 +640,7 @@ book_view_thread (gpointer data)
 
 
 	}
-
+done:
 	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
 
@@ -1249,7 +1257,10 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 	if (e_book_backend_summary_is_up_to_date (bf->priv->summary, db_mtime) == FALSE
 	    || e_book_backend_summary_load (bf->priv->summary) == FALSE ) {
-		build_summary (bf->priv);
+		if (!bf->priv->summary || !build_summary (bf->priv)) {
+			g_warning ("Failed to build summary for an address book %s", bf->priv->filename);
+			return GNOME_Evolution_Addressbook_OtherError;
+		}
 	}
 
 	e_book_backend_set_is_loaded (backend, TRUE);
