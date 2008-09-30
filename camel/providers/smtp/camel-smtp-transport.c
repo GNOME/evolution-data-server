@@ -487,6 +487,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 		CamelSession *session = camel_service_get_session (service);
 		CamelServiceAuthType *authtype;
 		gboolean authenticated = FALSE;
+		guint32 password_flags;
 		char *errbuf = NULL;
 
 		if (!g_hash_table_lookup (transport->authtypes, service->url->authmech)) {
@@ -516,12 +517,15 @@ smtp_connect (CamelService *service, CamelException *ex)
 				return FALSE;
 			}
 		}
-
+		
+		password_flags = CAMEL_SESSION_PASSWORD_SECRET;
+		
 		/* keep trying to login until either we succeed or the user cancels */
 		while (!authenticated) {
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
 				camel_session_forget_password (session, service, NULL, "password", NULL);
+				password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 			}
@@ -540,7 +544,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 
 				service->url->passwd = camel_session_get_password (
 					session, service, NULL, full_prompt,
-					"password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+					"password", password_flags, ex);
 
 				g_free (base_prompt);
 				g_free (full_prompt);
