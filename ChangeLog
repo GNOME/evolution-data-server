@@ -1,3 +1,10 @@
+2008-09-30  Philip Withnall  <philip@tecnocode.co.uk>
+
+	** Fix for bug #552491
+
+	* libedataserver/e-source-list.c (e_source_list_is_gconf_updated):
+	Check for NULL output from xmlParseDoc before continuing.
+
 2008-09-24  Ross Burton  <ross@linux.intel.com>
 
 	* configure.in:

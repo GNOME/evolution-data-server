@@ -628,6 +628,9 @@ e_source_list_is_gconf_updated (ESourceList *list)
 		gconf_xml = (char *)temp->data;
 		xmldoc = xmlParseDoc ((const xmlChar *)gconf_xml);
 
+		if (xmldoc == NULL)
+			continue;
+
 		group_uid = e_source_group_uid_from_xmldoc (xmldoc);
 		group = e_source_list_peek_group_by_uid (list, group_uid);
 		g_free (group_uid);
