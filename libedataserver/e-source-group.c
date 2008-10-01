@@ -794,6 +794,103 @@ e_source_group_to_xml (ESourceGroup *group)
 	return returned_buffer;
 }
 
+static gint 
+find_esource_from_uid (gconstpointer a, gconstpointer b)
+{
+	return g_ascii_strcasecmp (e_source_peek_uid ((ESource *)(a)), (gchar *)(b));
+}
+
+static gboolean 
+compare_source_lists (GSList *a, GSList *b)
+{
+	gboolean retval = TRUE; 
+	GSList *l; 
+
+	if (g_slist_length(a) != g_slist_length(b))
+		return FALSE; 
+
+	for (l = a; l != NULL && retval; l = l->next) {
+		GSList *elem = g_slist_find_custom (b, e_source_peek_uid ((ESource *)(l->data)), (GCompareFunc) find_esource_from_uid);
+
+		if (!elem || !e_source_equal ((ESource *)(l->data), (ESource *)(elem->data))) 
+			retval = FALSE; 
+	}
+
+	return retval; 
+}
+
+/**
+ * e_source_group_equal:
+ * @a: An ESourceGroup
+ * @b: Another ESourceGroup
+ *
+ * Compares if @a is equivalent to @b.
+ *
+ * Return value: %TRUE if @a is equivalent to @b, 
+ * %FALSE otherwise.
+ **/
+gboolean 
+e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GROUP (a), FALSE); 
+	g_return_val_if_fail (E_IS_SOURCE_GROUP (b), FALSE); 
+
+	/* Compare group stuff */
+	if (a->priv->uid 
+	 && b->priv->uid 
+	 && g_ascii_strcasecmp (a->priv->uid, b->priv->uid))
+		return FALSE; 
+
+	if (a->priv->name 
+	 && b->priv->name 
+	 && g_ascii_strcasecmp (a->priv->name, b->priv->name))
+		return FALSE; 
+
+	if (a->priv->base_uri 
+	 && b->priv->base_uri 
+	 && g_ascii_strcasecmp (a->priv->base_uri, b->priv->base_uri))
+		return FALSE; 
+
+	if (a->priv->readonly != b->priv->readonly)
+		return FALSE; 
+
+	if (!compare_str_hashes (a->priv->properties, b->priv->properties))
+		return FALSE; 
+
+	/* Compare ESources in the groups */
+	if (!compare_source_lists (a->priv->sources, b->priv->sources))
+		return FALSE; 
+
+	return TRUE; 
+}
+
+/**
+ * e_source_group_xmlstr_equal:
+ * @a: XML representation of an ESourceGroup
+ * @b: XML representation of another ESourceGroup
+ *
+ * Compares if @a is equivalent to @b.
+ *
+ * Return value: %TRUE if @a is equivalent to @b, 
+ * %FALSE otherwise.
+ **/
+gboolean 
+e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
+{
+	ESourceGroup *grpa, *grpb; 
+	gboolean retval; 
+
+	grpa = e_source_group_new_from_xml (a); 
+	grpb = e_source_group_new_from_xml (b); 
+
+	retval = e_source_group_equal (grpa, grpb); 
+
+	g_object_unref (grpa); 
+	g_object_unref (grpb); 
+
+	return retval; 
+}
+
 gchar *
 e_source_group_get_property (ESourceGroup *source_group,
 		             const gchar *property)
