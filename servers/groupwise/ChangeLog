@@ -1,3 +1,10 @@
+2008-10-01  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #511947
+
+	* e-gw-connection.c: (e_gw_connection_send_message):
+	Do not parse response when status indicates failure.
+
 2008-08-14  Milan Crha  <mcrha@redhat.com>
 
 	** Partial fix for bug #510949

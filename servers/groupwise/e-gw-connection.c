@@ -676,13 +676,26 @@ SoupSoapResponse *
 e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 {
 	SoupSoapResponse *response;
+	guint status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
 	g_return_val_if_fail (SOUP_IS_SOAP_MESSAGE (msg), NULL);
 
 	g_mutex_lock (cnc->priv->msg_lock);
-	soup_session_send_message (cnc->priv->soup_session, SOUP_MESSAGE (msg));
+	status = soup_session_send_message (cnc->priv->soup_session, SOUP_MESSAGE (msg));
 	g_mutex_unlock (cnc->priv->msg_lock);
+
+	if (!SOUP_STATUS_IS_SUCCESSFUL (status)) {
+		if (g_getenv ("GROUPWISE_DEBUG")) {
+			const char *error = soup_status_get_phrase (status);
+
+			if (!error)
+				error = "Unknown error";
+
+			g_debug ("%s: Failed to send message with error %d (%s)", G_STRFUNC, status, error);
+		}
+		return NULL;
+	}
 
 	/* process response */
 	response = soup_soap_message_parse_response (msg);
