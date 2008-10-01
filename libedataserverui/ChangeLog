@@ -1,3 +1,13 @@
+2008-10-01  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #514670
+
+	* e-passwords.c: (check_key_file), (ep_key_file_load),
+	(ep_key_file_save), (ep_clear_passwords_keyfile),
+	(ep_forget_passwords_keyfile), (ep_remember_password_keyfile),
+	(ep_forget_password_keyfile), (ep_get_password_keyfile):
+	Check for errors properly. Also do not use uninitialized variables.
+
 2008-09-24  Ross Burton  <ross@linux.intel.com>
 
 	* libedataserverui.pc.in:
