@@ -218,33 +218,6 @@ e_source_new_from_xml_node (xmlNodePtr node)
 	return NULL;
 }
 
-gboolean
-e_source_equal (ESource *source_1, ESource *source_2)
-{
-	gboolean equal = FALSE;
-
-	g_return_val_if_fail (E_IS_SOURCE (source_1), FALSE);
-	g_return_val_if_fail (E_IS_SOURCE (source_2), FALSE);
-
-	if (source_1->priv->uid && source_2->priv->uid &&
-	    !strcmp (source_1->priv->uid, source_2->priv->uid)) {
-		equal = TRUE;
-	} else {
-		gchar *uri_1, *uri_2;
-
-		uri_1 = e_source_get_uri (source_1);
-		uri_2 = e_source_get_uri (source_2);
-
-		if (uri_1 && uri_2 && !strcmp (uri_1, uri_2))
-			equal = TRUE;
-
-		g_free (uri_1);
-		g_free (uri_2);
-	}
-
-	return equal;
-}
-
 static void
 import_properties (ESource *source,
 		   xmlNodePtr prop_root)
@@ -817,6 +790,83 @@ e_source_to_standalone_xml (ESource *source)
 	return returned_buffer;
 }
 
+/**
+ * e_source_compare:
+ * @a: An ESource
+ * @b: Another ESource
+ *
+ * Compares if @a is equivalent to @b.
+ *
+ * Return value: %TRUE if @a is equivalent to @b, 
+ * %FALSE otherwise.
+ **/
+gboolean 
+e_source_equal (ESource *a, ESource *b)
+{
+	g_return_val_if_fail (E_IS_SOURCE (a), FALSE); 
+	g_return_val_if_fail (E_IS_SOURCE (b), FALSE); 
+
+	/* Compare source stuff */
+	if (a->priv->uid 
+	 && b->priv->uid 
+	 && g_ascii_strcasecmp (a->priv->uid, b->priv->uid))
+		return FALSE; 
+
+	if (a->priv->name 
+	 && b->priv->name 
+	 && g_ascii_strcasecmp (a->priv->name, b->priv->name))
+		return FALSE; 
+
+	if (a->priv->relative_uri 
+	 && b->priv->relative_uri 
+	 && g_ascii_strcasecmp (a->priv->relative_uri, b->priv->relative_uri))
+		return FALSE; 
+
+	if (a->priv->absolute_uri 
+	 && b->priv->absolute_uri 
+	 && g_ascii_strcasecmp (a->priv->absolute_uri, b->priv->absolute_uri))
+		return FALSE; 
+
+	if (a->priv->color_spec 
+	 && b->priv->color_spec 
+	 && g_ascii_strcasecmp (a->priv->color_spec, b->priv->color_spec))
+		return FALSE; 
+
+	if (a->priv->readonly != b->priv->readonly)
+		return FALSE; 
+
+	if (!compare_str_hashes (a->priv->properties, b->priv->properties))
+		return FALSE; 
+
+	return TRUE; 
+}
+
+/**
+ * e_source_xmlstr_equal:
+ * @a: XML representation of an ESource
+ * @b: XML representation of another ESource
+ *
+ * Compares if @a is equivalent to @b.
+ *
+ * Return value: %TRUE if @a is equivalent to @b, 
+ * %FALSE otherwise.
+ **/
+gboolean 
+e_source_xmlstr_equal (const gchar *a, const gchar *b)
+{
+	ESource *srca, *srcb; 
+	gboolean retval; 
+
+	srca = e_source_new_from_standalone_xml (a); 
+	srcb = e_source_new_from_standalone_xml (b); 
+
+	retval = e_source_equal (srca, srcb); 
+
+	g_object_unref (srca); 
+	g_object_unref (srcb); 
+
+	return retval; 
+}
 
 ESource *
 e_source_new_from_standalone_xml (const char *xml)

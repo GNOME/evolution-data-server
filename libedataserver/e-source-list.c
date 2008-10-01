@@ -635,7 +635,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 		if (group) {
 			source_group_xml = e_source_group_to_xml (group);
-			if (!strcmp (gconf_xml, source_group_xml)) {
+			if (e_source_group_xmlstr_equal (gconf_xml, source_group_xml)) {
 				g_free (source_group_xml);
 				continue;
 			}
@@ -671,7 +671,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 		for (temp = conf_list; temp != NULL; temp = temp->next) {
 			gconf_xml = (char *)temp->data;
-			if (strcmp (gconf_xml, source_group_xml))
+			if (!e_source_group_xmlstr_equal (gconf_xml, source_group_xml))
 				continue;
 			else
 				break;

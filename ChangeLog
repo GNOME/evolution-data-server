@@ -1,3 +1,18 @@
+2008-10-01  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #554540
+
+	* libedataserver/e-source-group.c (find_esource_from_uid),
+	(compare_source_lists), (e_source_group_equal),
+	(e_source_group_xmlstr_equal):
+	* libedataserver/e-source-group.h:
+	* libedataserver/e-source-list.c (e_source_list_is_gconf_updated):
+	* libedataserver/e-source.c (e_source_equal),
+	(e_source_xmlstr_equal):
+	* libedataserver/e-source.h:
+	Don't compare XML data of ESource* literally. Instead, compare them
+	semantically. 
+
 2008-09-22  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS, configure.in: Evolution Data Server 2.24.0 release.
