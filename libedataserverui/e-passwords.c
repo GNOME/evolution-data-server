@@ -98,6 +98,15 @@ static char *default_keyring = NULL;
 #define KEY_FILE_GROUP_PREFIX "Passwords-"
 static GKeyFile *key_file = NULL;
 
+static gboolean
+check_key_file (const char *funcname)
+{
+	if (!key_file)
+		g_message ("%s: Failed to create key file!", funcname);
+
+	return key_file != NULL;
+}
+
 static gchar *
 ep_key_file_get_filename (void)
 {
@@ -140,6 +149,9 @@ ep_key_file_load (void)
 	gchar *filename;
 	GError *error = NULL;
 
+	if (!check_key_file (G_STRFUNC))
+		return;
+
 	filename = ep_key_file_get_filename ();
 
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
@@ -163,13 +175,17 @@ ep_key_file_save (void)
 {
 	gchar *contents;
 	gchar *filename;
-	gsize length;
+	gsize length = 0;
 	GError *error = NULL;
 
-	filename = ep_key_file_get_filename ();
-	contents = g_key_file_to_data (key_file, &length, NULL);
+	if (!check_key_file (G_STRFUNC))
+		return;
 
-	g_file_set_contents (filename, contents, length, &error);
+	filename = ep_key_file_get_filename ();
+	contents = g_key_file_to_data (key_file, &length, &error);
+
+	if (!error)
+		g_file_set_contents (filename, contents, length, &error);
 
 	if (error != NULL) {
 		g_warning ("%s", error->message);
@@ -542,6 +558,9 @@ ep_clear_passwords_keyfile (EPassMsg *msg)
 	gchar *group;
 	GError *error = NULL;
 
+	if (!check_key_file (G_STRFUNC))
+		return;
+
 	group = ep_key_file_get_group (msg->component);
 
 	if (g_key_file_remove_group (key_file, group, &error))
@@ -599,9 +618,16 @@ static void
 ep_forget_passwords_keyfile (EPassMsg *msg)
 {
 	gchar **groups;
-	gsize length, ii;
+	gsize length = 0, ii;
+
+	if (!check_key_file (G_STRFUNC))
+		return;
 
 	groups = g_key_file_get_groups (key_file, &length);
+
+	if (!groups)
+		return;
+
 	for (ii = 0; ii < length; ii++) {
 		GError *error = NULL;
 
@@ -690,8 +716,10 @@ ep_remember_password_keyfile (EPassMsg *msg)
 	password = ep_password_encode (password);
 
 	g_hash_table_remove (password_cache, msg->key);
-	g_key_file_set_string (key_file, group, key, password);
-	ep_key_file_save ();
+	if (check_key_file (G_STRFUNC)) {
+		g_key_file_set_string (key_file, group, key, password);
+		ep_key_file_save ();
+	}
 
 	g_free (group);
 	g_free (key);
@@ -752,6 +780,9 @@ ep_forget_password_keyfile (EPassMsg *msg)
 {
 	gchar *group, *key;
 	GError *error = NULL;
+
+	if (!check_key_file (G_STRFUNC))
+		return;
 
 	group = ep_key_file_get_group (msg->component);
 	key = ep_key_file_normalize_key (msg->key);
@@ -881,6 +912,9 @@ ep_get_password_keyfile (EPassMsg *msg)
 {
 	gchar *group, *key, *password;
 	GError *error = NULL;
+
+	if (!check_key_file (G_STRFUNC))
+		return;
 
 	group = ep_key_file_get_group (msg->component);
 	key = ep_key_file_normalize_key (msg->key);
