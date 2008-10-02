@@ -148,7 +148,7 @@ stream_write(CamelStream *stream, const char *buffer, size_t n)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 
-	if (TRUE || strncmp (buffer, "PASS ", 5) != 0)
+	if (strncmp (buffer, "PASS ", 5) != 0)
 		dd(printf("POP3_STREAM_WRITE(%d):\n%.*s\n", (int)n, (int)n, buffer));
 	else
 		dd(printf("POP3_STREAM_WRITE(%d):\nPASS xxxxxxxx\n", (int)n));
