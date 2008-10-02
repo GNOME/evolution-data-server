@@ -1,3 +1,8 @@
+2008-10-02  Jeffrey Stedfast  <fejj@novell.com>
+
+	* camel-pop3-store.c (pop3_try_authenticate): Return -1 if we fail
+	to get a password, not 0.
+
 2008-09-26  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #553301

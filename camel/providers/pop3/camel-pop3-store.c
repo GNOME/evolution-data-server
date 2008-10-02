@@ -489,7 +489,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 		g_free (base_prompt);
 		g_free (full_prompt);
 		if (!service->url->passwd)
-			return 0;
+			return -1;
 	}
 
 	if (!service->url->authmech) {
@@ -558,13 +558,14 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 					"Error sending username: %s"),
 				      CAMEL_SERVICE (store)->url->host,
 				      store->engine->line ? (char *)store->engine->line : _("Unknown error"));
-	} else if (pcp->state != CAMEL_POP3_COMMAND_OK)
+	} else if (pcp->state != CAMEL_POP3_COMMAND_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				      _("Unable to connect to POP server %s.\n"
 					"Error sending password: %s"),
 				      CAMEL_SERVICE (store)->url->host,
 				      store->engine->line ? (char *)store->engine->line : _("Unknown error"));
-
+	}
+	
 	camel_pop3_engine_command_free (store->engine, pcp);
 
 	if (pcu)
