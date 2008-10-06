@@ -882,6 +882,11 @@ ep_get_password_keyring (EPassMsg *msg)
 		while (iter != NULL) {
 			GnomeKeyringFound *found = iter->data;
 
+			if (default_keyring && strcmp(default_keyring, found->keyring) != 0) {
+				g_message ("Received a password from keyring '%s'. But looking for the password from '%s' keyring\n", found->keyring, default_keyring);
+				iter = g_list_next (iter);
+				continue;			
+			}
 			if (ep_keyring_validate (uri->user, uri->host, NULL, found->attributes)) {
 				msg->password = g_strdup (found->secret);
 				break;
@@ -1228,10 +1233,7 @@ ep_ask_password (EPassMsg *msg)
 			GTK_TABLE (container), widget,
 			1, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	}
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		gnome_keyring_get_default_keyring_sync (&default_keyring); 
-#endif
+
 
 	msg->noreply = noreply;
 
@@ -1268,6 +1270,10 @@ e_passwords_init (void)
 		ep_key_file_load ();
 	}
 
+#ifdef WITH_GNOME_KEYRING
+	if (gnome_keyring_is_available ())
+		gnome_keyring_get_default_keyring_sync (&default_keyring); 
+#endif
 	G_UNLOCK (passwords);
 }
 

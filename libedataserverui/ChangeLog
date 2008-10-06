@@ -1,3 +1,10 @@
+2008-10-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #546406
+
+	* libedataserverui/e-passwords.c: Don't lookup password from old
+	keyring.
+
 2008-10-01  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #514670
