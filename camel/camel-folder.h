@@ -109,7 +109,9 @@ struct _CamelFolder {
 
 	guint32 folder_flags;
 	guint32 permanent_flags;
-	CamelDB *cdb;
+
+	/* Future ABI expansion */
+	gpointer later[4];
 };
 
 #define CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY (1<<0)
@@ -208,6 +210,7 @@ typedef struct {
 	gboolean (*is_frozen) (CamelFolder *folder);
 	
 	CamelFolderQuotaInfo * (*get_quota_info) (CamelFolder *folder);
+	guint32	(*count_by_expression) (CamelFolder *, const char *, CamelException *);
 } CamelFolderClass;
 
 /* Standard Camel function */
@@ -314,6 +317,7 @@ gboolean           camel_folder_has_search_capability (CamelFolder *folder);
 GPtrArray *	   camel_folder_search_by_expression  (CamelFolder *folder, const char *expr, CamelException *ex);
 GPtrArray *	   camel_folder_search_by_uids	      (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex);
 void		   camel_folder_search_free	      (CamelFolder *folder, GPtrArray *result);
+guint32		   camel_folder_count_by_expression   (CamelFolder *folder, const char *expression, CamelException *ex);
 
 /* summary info */
 CamelMessageInfo *camel_folder_get_message_info		(CamelFolder *folder, const char *uid);

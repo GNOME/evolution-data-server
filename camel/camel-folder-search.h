@@ -126,6 +126,7 @@ void camel_folder_search_set_body_index(CamelFolderSearch *search, CamelIndex *i
 GPtrArray *camel_folder_search_execute_expression(CamelFolderSearch *search, const char *expr, CamelException *ex);
 
 GPtrArray *camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArray *uids, CamelException *ex);
+guint32 camel_folder_search_count(CamelFolderSearch *search, const char *expr, CamelException *ex);
 void camel_folder_search_free_result(CamelFolderSearch *search, GPtrArray *);
 
 G_END_DECLS

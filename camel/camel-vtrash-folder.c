@@ -523,14 +523,14 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
 	if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_DELETED) {
-		infos = camel_db_get_folder_deleted_uids (sub->cdb, sub->full_name, NULL);
+		infos = camel_db_get_folder_deleted_uids (sub->parent_store->cdb_w, sub->full_name, NULL);
 		if (infos) {
 			((CamelFolder *)vf)->summary->saved_count += infos->len;
 			((CamelFolder *)vf)->summary->deleted_count += infos->len;
 		}
 	}
 	else if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_JUNK)
-		infos = camel_db_get_folder_junk_uids (sub->cdb, sub->full_name, NULL);
+		infos = camel_db_get_folder_junk_uids (sub->parent_store->cdb_w, sub->full_name, NULL);
 
 	if (!infos) {
 		CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);

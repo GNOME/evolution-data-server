@@ -41,6 +41,7 @@
 #include "camel-mime-message.h"
 #include "camel-operation.h"
 #include "camel-private.h"
+#include "camel-store.h"
 #include "camel-string-utils.h"
 #include "camel-maildir-summary.h"
 
@@ -168,8 +169,11 @@ CamelMaildirSummary
 	CamelMaildirSummary *o = (CamelMaildirSummary *)camel_object_new(camel_maildir_summary_get_type ());
 
 	((CamelFolderSummary *)o)->folder = folder;
-	if (folder)
-		camel_db_set_collate (folder->cdb, "dreceived", NULL, NULL);
+	if (folder) {
+		camel_db_set_collate (folder->parent_store->cdb_r, "dreceived", NULL, NULL);
+		((CamelFolderSummary *)o)->sort_by = "dreceived";
+		((CamelFolderSummary *)o)->collate = NULL;
+	}
 	camel_local_summary_construct((CamelLocalSummary *)o, filename, maildirdir, index);
 	return o;
 }

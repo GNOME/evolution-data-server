@@ -492,6 +492,16 @@ camel_folder_summary_array(CamelFolderSummary *s)
 	return res;
 }
 
+CamelMessageInfo *
+camel_folder_summary_peek_info (CamelFolderSummary *s, const char *uid)
+{
+	CamelMessageInfo *info = g_hash_table_lookup(s->loaded_infos, uid);
+
+	if (info)
+		camel_message_info_ref(info);
+	return info;
+}
+
 struct _db_pass_data {
 	CamelFolderSummary *summary;
 	gboolean double_ref;
@@ -511,7 +521,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 	if (!info) {
 		CamelDB *cdb;
-		CamelException ex;// May be this should come from the caller 
+		CamelException ex;
 		char *folder_name;
 		struct _db_pass_data data;
 		
@@ -520,7 +530,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 		s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 		folder_name = s->folder->full_name;
-		cdb = s->folder->cdb;
+		cdb = s->folder->parent_store->cdb_r;
 		
 		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
@@ -531,12 +541,9 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 	
 		ret = camel_db_read_message_info_record_with_uid (cdb, folder_name, uid, &data, camel_read_mir_callback, &ex);
-		if (ret != 0) {
-			// if (strcmp (folder_name, "UNMATCHED"))
-			//g_warning ("Unable to read uid %s from folder %s: %s", uid, folder_name, camel_exception_get_description(&ex));
-			
+		if (ret != 0)
 			return NULL;
-		}
+		
 		CAMEL_SUMMARY_LOCK(s, summary_lock);
 		CAMEL_SUMMARY_LOCK(s, ref_lock);
 
@@ -548,8 +555,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 			/* Makes no sense now as the exception is local as of now. FIXME: Pass exception from caller */
 			camel_exception_set (&ex, CAMEL_EXCEPTION_SYSTEM, _(errmsg));
-			// if (strcmp (folder_name, "UNMATCHED"))			
-			g_warning ("No uid[%s] exists in %s\n", uid, folder_name);
+			d(g_warning ("No uid[%s] exists in %s\n", uid, folder_name));
 			camel_exception_clear (&ex);
 			g_free (errmsg);
 		}
@@ -861,7 +867,7 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	d(printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
 	folder_name = s->folder->full_name;
-	cdb = s->folder->cdb;
+	cdb = s->folder->parent_store->cdb_r;
 
 	/* FIXME FOR SANKAR: No need to pass the address of summary here. */
 	data.summary = s;
@@ -874,7 +880,7 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle) 
 		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
-	printf("Triggering summary_reloaded on %s %p\n", s->folder->full_name, s);
+	d(printf("Triggering summary_reloaded on %s %p\n", s->folder->full_name, s));
 	camel_object_trigger_event(s, "summary_reloaded", s);
 	return ret == 0 ? 0 : -1;
 }
@@ -907,9 +913,9 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 		return ret;
 
 	folder_name = s->folder->full_name;
-	cdb = s->folder->cdb;
+	cdb = s->folder->parent_store->cdb_r;
 
-	ret = camel_db_get_folder_uids (cdb, folder_name, s->uids, ex);
+	ret = camel_db_get_folder_uids (cdb, folder_name, (char *)s->sort_by, (char *)s->collate, s->uids, ex);
 	/* camel_folder_summary_dump (s); */
 
 #if 0
@@ -1124,7 +1130,7 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	CamelMessageInfo *mi;
 	CamelMessageInfoBase *info;
 	int ret = 0;
-	CamelDB *cdb = s->folder->cdb;
+	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	CamelFIRecord *record;
 	CamelException ex;
 
@@ -1273,7 +1279,7 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)value;	
 	CamelFolderSummary *s = (CamelFolderSummary *)mi->summary;
 	char *folder_name = s->folder->full_name;
-	CamelDB *cdb = s->folder->cdb;
+	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	CamelMIRecord *mir;
 
 	if (!mi->dirty)
@@ -1304,7 +1310,7 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 static int
 save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex)
 {
-	CamelDB *cdb = s->folder->cdb;
+	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	char *folder_name;
 
 	folder_name = s->folder->full_name;
@@ -1324,7 +1330,7 @@ save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex)
 int
 camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
-	CamelDB *cdb = s->folder->cdb;
+	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	CamelFIRecord *record;
 	int ret, count;
 
@@ -1378,7 +1384,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 int
 camel_folder_summary_header_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
-	CamelDB *cdb = s->folder->cdb;
+	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	CamelFIRecord *record;
 	int ret;
 
@@ -1557,7 +1563,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *sto
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
-	cdb = store->cdb;
+	cdb = store->cdb_r;
 
 	record = g_new0 (CamelFIRecord, 1);
 	camel_db_read_folder_info_record (cdb, folder_name, &record, ex);
@@ -2070,7 +2076,7 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 	folder_name = s->folder->full_name;
-	cdb = s->folder->cdb;
+	cdb = s->folder->parent_store->cdb_w;
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 	if (camel_folder_summary_count(s) == 0) {
@@ -2137,7 +2143,7 @@ camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 	
-	if (!ret && camel_db_delete_uid (s->folder->cdb, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
+	if (!ret && camel_db_delete_uid (s->folder->parent_store->cdb_w, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
 		return ;
 	
 	camel_message_info_free(info);
@@ -2174,7 +2180,7 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const char *uid)
 				CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
-				if (!ret && camel_db_delete_uid (s->folder->cdb, s->folder->full_name, tmpid, NULL) != 0) {
+				if (!ret && camel_db_delete_uid (s->folder->parent_store->cdb_w, s->folder->full_name, tmpid, NULL) != 0) {
 						g_free(tmpid);
 						return ;
 				}
@@ -2299,7 +2305,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, int start, int end)
 		camel_exception_init (&ex);
 
 		folder_name = s->folder->full_name;
-		cdb = s->folder->cdb;
+		cdb = s->folder->parent_store->cdb_w;
 
 		/* FIXME[disk-summary] lifecycle of infos should be checked.
 		 * Add should add to db and del should del to db. Sync only
@@ -2615,8 +2621,8 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	CamelDB *db;
 	char *table_name;
 
-	db = s->folder->cdb;
-	//table_name = safe_table (camel_file_util_safe_filename (s->folder->full_name));
+	/* Though we are going to read, we do this during write, so lets use it that way */
+	db = s->folder->parent_store->cdb_w;
 	table_name = s->folder->full_name;
 
 	io(printf("Savining header to db\n"));
@@ -3147,6 +3153,7 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	record->replied = mi->flags & CAMEL_MESSAGE_ANSWERED ? 1 : 0;	
 	record->important = mi->flags & CAMEL_MESSAGE_FLAGGED ? 1 : 0;		
 	record->junk = mi->flags & CAMEL_MESSAGE_JUNK ? 1 : 0;
+	record->dirty = mi->flags & CAMEL_MESSAGE_FOLDER_FLAGGED ? 1 : 0;
 	record->attachment = mi->flags & CAMEL_MESSAGE_ATTACHMENTS ? 1 : 0;
 	
 	record->size = mi->size;

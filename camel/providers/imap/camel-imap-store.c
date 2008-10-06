@@ -1126,7 +1126,7 @@ imap_forget_folder (CamelImapStore *imap_store, const char *folder_name, CamelEx
 	g_unlink (state_file);
 	g_free (state_file);
 	
-	camel_db_delete_folder (((CamelStore *)imap_store)->cdb, folder_name, ex);
+	camel_db_delete_folder (((CamelStore *)imap_store)->cdb_w, folder_name, ex);
 	camel_imap_message_cache_delete (folder_dir, ex);
 
 	state_file = g_strdup_printf("%s/subfolders", folder_dir);
@@ -1378,6 +1378,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 		if (!authenticated) {
+			printf("EXCEP %d %d %d\n", camel_exception_get_id(ex), CAMEL_EXCEPTION_USER_CANCEL, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE);
 			if (camel_exception_get_id (ex) == CAMEL_EXCEPTION_USER_CANCEL ||
 			    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
 				return FALSE;

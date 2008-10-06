@@ -102,6 +102,8 @@ static void		 free_message_info   (CamelFolder *folder, CamelMessageInfo *info);
 static void		 ref_message_info    (CamelFolder *folder, CamelMessageInfo *info);
 
 static GPtrArray      *search_by_expression  (CamelFolder *folder, const char *exp, CamelException *ex);
+static guint32	       count_by_expression  (CamelFolder *folder, const char *exp, CamelException *ex);
+
 static GPtrArray      *search_by_uids	     (CamelFolder *folder, const char *exp, GPtrArray *uids, CamelException *ex);
 static void            search_free           (CamelFolder * folder, GPtrArray *result);
 
@@ -150,6 +152,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->get_summary = get_summary;
 	camel_folder_class->free_summary = free_summary;
 	camel_folder_class->search_by_expression = search_by_expression;
+	camel_folder_class->count_by_expression = count_by_expression;
 	camel_folder_class->search_by_uids = search_by_uids;
 	camel_folder_class->search_free = search_free;
 	camel_folder_class->get_message_info = get_message_info;
@@ -204,11 +207,6 @@ camel_folder_finalize (CamelObject *object)
 	}
 
 	camel_folder_change_info_free(p->changed_frozen);
-
-	if (camel_folder->cdb) {
-		camel_db_close (camel_folder->cdb);
-		camel_folder->cdb = NULL;
-	}
 
 	g_static_rec_mutex_free(&p->lock);
 	g_static_mutex_free(&p->change_lock);
@@ -273,27 +271,6 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
 		g_free (store_path);
 	}
-
-	folder->cdb = camel_db_open (store_db_path, &ex);
-	if (camel_exception_is_set (&ex)) {
-		char *store_path;
-		
-		g_print ("Failure for store_db_path : [%s]\n", store_db_path);
-		g_free (store_db_path);		
-
-		store_path =   camel_session_get_storage_path ((CamelSession *)camel_service_get_session (service), service, &ex);
-		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
-		g_free (store_path);
-		camel_exception_clear(&ex);
-		folder->cdb = camel_db_open (store_db_path, &ex);
-		if (camel_exception_is_set (&ex)) {
-			g_print("Retry with %s failed\n", store_db_path);
-			g_free(store_db_path);
-			camel_exception_clear(&ex);
-			return;
-		}
-	}
-	g_free (store_db_path);
 }
 
 
@@ -1387,6 +1364,47 @@ camel_folder_search_by_expression (CamelFolder *folder, const char *expression,
 	return ret;
 }
 
+static guint32
+count_by_expression (CamelFolder *folder, const char *expression,
+		      CamelException *ex)
+{
+	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+			      _("Unsupported operation: count by expression: for %s"),
+			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
+	
+	w(g_warning ("CamelFolder::count_by_expression not implemented for "
+		     "'%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
+	
+	return 0;
+}
+
+
+/**
+ * camel_folder_count_by_expression:
+ * @folder: a #CamelFolder object
+ * @expr: a search expression
+ * @ex: a #CamelException
+ *
+ * Searches the folder for count of messages matching the given search expression.
+ *
+ * Returns: an interger
+ **/
+guint32
+camel_folder_count_by_expression (CamelFolder *folder, const char *expression,
+				   CamelException *ex)
+{
+	guint32 ret;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
+	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, 0);
+
+	/* NOTE: that it is upto the callee to lock */
+
+	ret = CF_CLASS (folder)->count_by_expression (folder, expression, ex);
+
+	return ret;
+}
+
 static GPtrArray *
 search_by_uids(CamelFolder *folder, const char *exp, GPtrArray *uids, CamelException *ex)
 {
@@ -1603,7 +1621,7 @@ camel_folder_delete (CamelFolder *folder)
 	CAMEL_FOLDER_REC_UNLOCK (folder, lock);
 
 	/* Delete the references of the folder from the DB.*/
-	camel_db_delete_folder (folder->cdb, folder->full_name, NULL);
+	camel_db_delete_folder (folder->parent_store->cdb_w, folder->full_name, NULL);
 	
 	camel_object_trigger_event (folder, "deleted", NULL);
 }
@@ -1641,7 +1659,7 @@ camel_folder_rename(CamelFolder *folder, const char *new)
 	old = g_strdup(folder->full_name);
 
 	CF_CLASS (folder)->rename(folder, new);
-	camel_db_rename_folder (folder->cdb, old, new, NULL);
+	camel_db_rename_folder (folder->parent_store->cdb_w, old, new, NULL);
 	camel_object_trigger_event (folder, "renamed", old);
 	g_free(old);
 }

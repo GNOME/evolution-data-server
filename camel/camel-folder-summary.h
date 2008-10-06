@@ -247,6 +247,12 @@ struct _CamelFolderSummary {
 	struct _CamelFolderMetaSummary *meta_summary; /* Meta summary */
 	time_t cache_load_time;
 	guint timeout_handle;
+	
+	const char *collate;
+	const char *sort_by;
+
+	/* Future ABI expansion */
+	gpointer later[4];
 };
 
 struct _CamelFolderSummaryClass {
@@ -347,6 +353,9 @@ void camel_folder_summary_touch(CamelFolderSummary *summary);
 
 /* add a new raw summary item */
 void camel_folder_summary_add (CamelFolderSummary *summary, CamelMessageInfo *info);
+
+/* Peek from mem only */
+CamelMessageInfo * camel_folder_summary_peek_info (CamelFolderSummary *s, const char *uid);
 
 /* Get only the uids of dirty/changed things to sync to server/db */
 GPtrArray * camel_folder_summary_get_changed (CamelFolderSummary *s);

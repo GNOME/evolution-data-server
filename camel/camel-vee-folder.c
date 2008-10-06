@@ -64,6 +64,7 @@ static CamelMimeMessage *vee_get_message (CamelFolder *folder, const gchar *uid,
 static void vee_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, char **appended_uid, CamelException *ex);
 static void vee_transfer_messages_to(CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
 
+static guint32 vee_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
 static GPtrArray *vee_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
 static GPtrArray *vee_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 
@@ -482,27 +483,17 @@ static void vee_refresh_info(CamelFolder *folder, CamelException *ex)
 	g_list_free(list);
 }
 
-static int
+static guint32
 count_folder (CamelFolder *f, char *expr, CamelException *ex)
 {
-	GPtrArray *match;
-	int count = 0;
-
-	/* FIXME: Why don't we write a count_search_by_expression. It can be just fast. */
-	match = camel_folder_search_by_expression(f, expr, ex);
-	if (match) {
-		count = match->len;
-		camel_folder_search_free (f, match);
-	}
-
-	return count;
+	return camel_folder_count_by_expression(f, expr, ex);
 }
 static int 
 count_result (CamelFolderSummary *summary, char *query, CamelException *ex)
 {
 	CamelFolder *folder = summary->folder;
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	int count=0; 
+	guint32 count=0; 
 	char *expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", query);
 	GList *node;
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
@@ -525,7 +516,8 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	CamelDB *db;
 	char *table_name;
 
-	db = s->folder->parent_store->cdb;
+	/* We do this during write, so lets use write handle, though we gonna read */
+	db = s->folder->parent_store->cdb_w;
 	table_name = s->folder->full_name;
 
 	record->folder_name = table_name;
@@ -641,6 +633,40 @@ vee_get_message(CamelFolder *folder, const char *uid, CamelException *ex)
 	return msg;
 }
 
+static guint32
+vee_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	GList *node;
+	char *expr;
+	guint32 count = 0;
+	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
+	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
+	GHashTable *searched = g_hash_table_new(NULL, NULL);
+	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
+	
+	if (vf != folder_unmatched)
+		expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
+	else
+		expr = g_strdup (expression);
+	
+	node = p->folders;
+	while (node) {
+		CamelFolder *f = node->data;
+		
+		/* make sure we only search each folder once - for unmatched folder to work right */
+		if (g_hash_table_lookup(searched, f) == NULL) {
+			count += camel_folder_count_by_expression(f, expr, ex);
+			g_hash_table_insert(searched, f, f);
+		}
+		node = g_list_next(node);
+	}
+
+	
+	g_free(expr);
+
+	g_hash_table_destroy(searched);
+	return count;
+}
 static GPtrArray *
 vee_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
 {
@@ -1006,7 +1032,7 @@ folder_added_uid(char *uidin, void *value, struct _update_data *u)
 		/* FIXME[disk-summary] Make all these as transactions, just
 		 * testing atm */
 		if (u->rebuilt)
-			camel_db_add_to_vfolder_transaction (((CamelFolder *) u->vf)->parent_store->cdb, ((CamelFolder *) u->vf)->full_name, (char *) camel_message_info_uid(mi), NULL);
+			camel_db_add_to_vfolder_transaction (((CamelFolder *) u->vf)->parent_store->cdb_w, ((CamelFolder *) u->vf)->full_name, (char *) camel_message_info_uid(mi), NULL);
 		if (!CAMEL_IS_VEE_FOLDER(u->source) && u->unmatched_uids != NULL) {
 			if (g_hash_table_lookup_extended(u->unmatched_uids, camel_message_info_uid(mi), (void **)&oldkey, &oldval)) {
 				n = GPOINTER_TO_INT (oldval);
@@ -1136,13 +1162,13 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 
 	/* now matchhash contains any new uid's, add them, etc */
 	if (rebuilded) {
-		camel_db_begin_transaction (folder->parent_store->cdb, NULL);
+		camel_db_begin_transaction (folder->parent_store->cdb_w, NULL);
 
 	}
 	g_hash_table_foreach(matchhash, (GHFunc)folder_added_uid, &u);
 
 	if (rebuilded)
-		camel_db_end_transaction (folder->parent_store->cdb, NULL);
+		camel_db_end_transaction (folder->parent_store->cdb_w, NULL);
 	
 	if (folder_unmatched != NULL) {
 		/* scan unmatched, remove any that have vanished, etc */
@@ -1313,7 +1339,7 @@ folder_changed_add_uid(CamelFolder *sub, const char *uid, const char hash[8], Ca
 		return;
 	
 	vuid = camel_message_info_uid(vinfo);
-	camel_db_add_to_vfolder_transaction (folder->parent_store->cdb, folder->full_name, (char *)vuid, NULL);
+	camel_db_add_to_vfolder_transaction (folder->parent_store->cdb_w, folder->full_name, (char *)vuid, NULL);
 	camel_folder_change_info_add_uid(vf->changes,  vuid);
 	/* old flags and new flags should  be same, since we sync all times  */
 	update_summary (vinfo, camel_message_info_flags(vinfo), 0, TRUE, FALSE);
@@ -1355,8 +1381,8 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 	}
 	camel_folder_change_info_remove_uid(vf->changes, vuid);
         /* FIXME[disk-summary] Handle exception */
-	camel_db_delete_uid_from_vfolder_transaction (folder->parent_store->cdb, folder->full_name, vuid, NULL);
-	camel_folder_summary_remove_uid(folder->summary, vuid);
+	camel_db_delete_uid_from_vfolder_transaction (folder->parent_store->cdb_w, folder->full_name, vuid, NULL);
+	camel_folder_summary_remove_uid_fast(folder->summary, vuid);
 
 	if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0 && !CAMEL_IS_VEE_FOLDER(sub) && folder_unmatched != NULL) {
 		if (keep) {
@@ -1522,7 +1548,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 	if (matches_changed || matches_added || changes->uid_removed->len||present)
-		camel_db_begin_transaction (folder->parent_store->cdb, NULL);
+		camel_db_begin_transaction (folder->parent_store->cdb_w, NULL);
 
 	if (folder_unmatched != NULL)
 		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, summary_lock);
@@ -1655,7 +1681,7 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 
 	if (matches_changed || matches_added || changes->uid_removed->len || present)
-		camel_db_end_transaction (folder->parent_store->cdb, NULL);
+		camel_db_end_transaction (folder->parent_store->cdb_w, NULL);
 	CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
 
 	/* Cleanup stuff on our folder */
@@ -2000,7 +2026,7 @@ vee_set_expression(CamelVeeFolder *vf, const char *query)
 
 	/* Recreate the table when the query changes, only if we are not setting it first */
 	if (vf->expression)
-		camel_db_recreate_vfolder (((CamelFolder *) vf)->parent_store->cdb, ((CamelFolder *) vf)->full_name, NULL);
+		camel_db_recreate_vfolder (((CamelFolder *) vf)->parent_store->cdb_w, ((CamelFolder *) vf)->full_name, NULL);
 
 
 	g_free(vf->expression);
@@ -2042,6 +2068,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *klass)
 
 	folder_class->search_by_expression = vee_search_by_expression;
 	folder_class->search_by_uids = vee_search_by_uids;
+	folder_class->count_by_expression = vee_count_by_expression;
 
 	folder_class->rename = vee_rename;
 	folder_class->delete = vee_delete;
@@ -2166,7 +2193,7 @@ camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex)
 
 	/* Save the counts to DB */
 	record = summary_header_to_db (vf->summary, ex);
-	camel_db_write_folder_info_record (vf->parent_store->cdb, record, ex);
+	camel_db_write_folder_info_record (vf->parent_store->cdb_w, record, ex);
 	g_free (record);
 }
 
@@ -2184,7 +2211,7 @@ camel_vee_folder_finalise (CamelObject *obj)
 	/* Save the counts to DB */
 	if (!vf->deleted) {
 		record = summary_header_to_db (((CamelFolder *)vf)->summary, NULL);
-		camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb, record, NULL);
+		camel_db_write_folder_info_record (((CamelFolder *) vf)->parent_store->cdb_w, record, NULL);
 		g_free (record);
 	}
 	

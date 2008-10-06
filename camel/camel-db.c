@@ -36,17 +36,14 @@
 
 #include "camel-debug.h"
 
-#ifdef CAMEL_DB_DEBUG
-/* Enable d(x) if you want */
-#define d(x)
-/* Yeah it leaks, so fix it while debugging */
-#define START(stmt) 	g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); cdb->timer = g_timer_new ();
-#define END 	g_timer_stop (cdb->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->timer, NULL));
-#else
 #define d(x) if (camel_debug("sqlite")) x
-#define START(x)
-#define END
-#endif
+#define START(stmt) 	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
+#define END 	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+
+struct _CamelDBPrivate {
+	GTimer *timer;
+	char *file_name;
+};
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 
@@ -115,9 +112,9 @@ camel_db_open (const char *path, CamelException *ex)
 	cdb = g_new (CamelDB, 1);
 	cdb->db = db;
 	cdb->lock = g_mutex_new ();
-	/* These will be written once the Summary takes control of the CDB. */
-	cdb->sort_by = NULL;
-	cdb->collate = NULL;
+	cdb->priv = g_new(CamelDBPrivate, 1);
+	cdb->priv->file_name = g_strdup(path);
+	cdb->priv->timer = NULL;
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
@@ -133,6 +130,12 @@ camel_db_open (const char *path, CamelException *ex)
 	sqlite3_busy_timeout (cdb->db, CAMEL_DB_SLEEP_INTERVAL);
 
 	return cdb;
+}
+
+CamelDB *
+camel_db_clone (CamelDB *cdb, CamelException *ex)
+{
+	return camel_db_open(cdb->priv->file_name, ex);
 }
 
 void
@@ -155,9 +158,6 @@ camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelD
 			return 0;
 
 		g_mutex_lock (cdb->lock);
-		cdb->sort_by = col;
-		cdb->collate = collate;
-		cdb->collate_cb = func;
 		d(g_print("Creating Collation %s on %s with %p\n", collate, col, func));
 		if (collate && func)
 			ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
@@ -192,7 +192,6 @@ camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 		return -1;
 	g_static_rec_mutex_lock (&trans_lock);
 
-	d(g_print ("\n\aBEGIN TRANSACTION \n\a"));
 	g_mutex_lock (cdb->lock);
 	return (cdb_sql_exec (cdb->db, "BEGIN", ex));
 }
@@ -204,7 +203,6 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 	if (!cdb)
 		return -1;
 
-	d(g_print ("\nCOMMIT TRANSACTION \n"));
 	START("COMMIT");
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
 	END;
@@ -221,7 +219,6 @@ camel_db_abort_transaction (CamelDB *cdb, CamelException *ex)
 {
 	int ret;
 	
-	d(g_print ("\nABORT TRANSACTION \n"));
 	ret = cdb_sql_exec (cdb->db, "ROLLBACK", ex);
 	g_mutex_unlock (cdb->lock);
 	g_static_rec_mutex_unlock (&trans_lock);	
@@ -235,8 +232,6 @@ camel_db_add_to_transaction (CamelDB *cdb, const char *stmt, CamelException *ex)
 {
 	if (!cdb)
 		return -1;
-
-	d(g_print("Adding the following query to transaction: %s\n", stmt));
 
 	return (cdb_sql_exec (cdb->db, stmt, ex));
 }
@@ -256,11 +251,9 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 	if (ret)
 		goto end;
 
-	d(g_print ("\nBEGIN Transaction\n"));
 
 	while (qry_list) {
 		query = qry_list->data;
-		d(g_print ("\nInside Transaction: [%s] \n", query));
 		ret = cdb_sql_exec (cdb->db, query, ex);
 		if (ret)
 			goto end;
@@ -271,7 +264,6 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 	END;
 end:
 	g_mutex_unlock (cdb->lock);
-	d(g_print ("\nTransaction Result: [%d] \n", ret));
 	return ret;
 }
 
@@ -289,7 +281,7 @@ count_cb (void *data, int argc, char **argv, char **azColName)
   	return 0;
 }
 
-static int
+int
 camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, CamelException *ex)
 {
 	int ret = -1;
@@ -583,12 +575,12 @@ read_uids_callback (void *ref, int ncol, char ** cols, char ** name)
 }
 
 int
-camel_db_get_folder_uids (CamelDB *db, char *folder_name, GPtrArray *array, CamelException *ex)
+camel_db_get_folder_uids (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *array, CamelException *ex)
 {
 	 char *sel_query;
 	 int ret;
 
-	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q%s%s%s%s", folder_name, db->sort_by ? " order by " : "", db->sort_by ? db->sort_by: "", (db->sort_by && db->collate) ? " collate " : "", (db->sort_by && db->collate) ? db->collate : "");
+	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
 
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, ex);
 	 sqlite3_free (sel_query);
@@ -755,10 +747,12 @@ camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, Camel
 	char *del_query;
 	char *ins_query;
 
+	/* NB: UGLIEST Hack. We can't modify the schema now. We are using msg_security (an unsed one to notify of FLAGGED/Dirty infos */
+
 	ins_query = sqlite3_mprintf ("INSERT INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q )", 
 			folder_name, record->uid, record->flags,
 			record->msg_type, record->read, record->deleted, record->replied,
-			record->important, record->junk, record->attachment, record->msg_security,
+			record->important, record->junk, record->attachment, record->dirty,
 			record->size, record->dsent, record->dreceived,
 			record->subject, record->from, record->to,
 			record->cc, record->mlist, record->followup_flag,

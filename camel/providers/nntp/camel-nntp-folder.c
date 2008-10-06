@@ -274,6 +274,25 @@ nntp_folder_search_by_expression (CamelFolder *folder, const char *expression, C
 	return matches;
 }
 
+static guint32
+nntp_folder_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	guint32 count;
+	
+	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
+	
+	if (nntp_folder->search == NULL)
+		nntp_folder->search = camel_folder_search_new ();
+	
+	camel_folder_search_set_folder (nntp_folder->search, folder);
+	count = camel_folder_search_count(nntp_folder->search, expression, ex);
+	
+	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
+	
+	return count;
+}
+
 static GPtrArray *
 nntp_folder_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
 {
@@ -461,6 +480,7 @@ nntp_folder_class_init (CamelNNTPFolderClass *camel_nntp_folder_class)
 	camel_folder_class->set_message_flags = nntp_folder_set_message_flags;
 	camel_folder_class->get_message = nntp_folder_get_message;
 	camel_folder_class->search_by_expression = nntp_folder_search_by_expression;
+	camel_folder_class->count_by_expression = nntp_folder_count_by_expression;
 	camel_folder_class->search_by_uids = nntp_folder_search_by_uids;
 	camel_folder_class->search_free = nntp_folder_search_free;
 }

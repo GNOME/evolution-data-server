@@ -122,10 +122,14 @@ struct _CamelStore {
 	struct _CamelStorePrivate *priv;
 	
 	CamelObjectBag *folders;
-	CamelDB *cdb;
+	CamelDB *cdb_r;
+	CamelDB *cdb_w;
 
 	guint32 flags;
 	guint32 mode;
+
+	/* Future ABI expansion */
+	gpointer later[4];
 };
 
 /* open mode for folder */

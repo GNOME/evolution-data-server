@@ -1,3 +1,33 @@
+2008-10-06  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fixes lots of bugs and breaks ABI
+
+	* camel/camel-db.c: Added new APIs and support for cloning handles.
+	* camel/camel-db.h:
+	* camel/camel-folder-search.c:
+	* camel/camel-folder-search.h:
+	* camel/camel-folder-summary.c:
+	* camel/camel-folder-summary.h:
+	* camel/camel-folder.c:
+	* camel/camel-folder.h:
+	* camel/camel-search-sql-sexp.c:
+	* camel/camel-store.c: Adds two handles to sqlite
+	* camel/camel-store.h:
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c:
+	* camel/camel-vtrash-folder.c:
+	* camel/providers/groupwise/camel-groupwise-folder.c:
+	* camel/providers/imap/camel-imap-folder.c:
+	* camel/providers/imap/camel-imap-store.c:
+	* camel/providers/imap/camel-imap-summary.c:
+	* camel/providers/local/camel-local-folder.c:
+	* camel/providers/local/camel-local-store.c:
+	* camel/providers/local/camel-maildir-summary.c:
+	* camel/providers/local/camel-mbox-summary.c:
+	* camel/providers/local/camel-mh-summary.c:
+	* camel/providers/local/camel-spool-summary.c:
+	* camel/providers/nntp/camel-nntp-folder.c:
+
 2008-09-26  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #550466

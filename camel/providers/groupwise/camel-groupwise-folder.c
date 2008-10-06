@@ -451,6 +451,20 @@ groupwise_folder_search_by_expression (CamelFolder *folder, const char *expressi
 	return matches;
 }
 
+static guint32
+groupwise_folder_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
+	guint32 matches;
+
+	CAMEL_GROUPWISE_FOLDER_LOCK(gw_folder, search_lock);
+	camel_folder_search_set_folder (gw_folder->search, folder);
+	matches = camel_folder_search_count (gw_folder->search, expression, ex);
+	CAMEL_GROUPWISE_FOLDER_UNLOCK(gw_folder, search_lock);
+
+	return matches;
+}
+
 static GPtrArray *
 groupwise_folder_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
 {
@@ -2402,6 +2416,7 @@ camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *camel_groupwise_fo
 	camel_folder_class->get_message = groupwise_folder_get_message;
 	camel_folder_class->rename = groupwise_folder_rename;
 	camel_folder_class->search_by_expression = groupwise_folder_search_by_expression;
+	camel_folder_class->count_by_expression = groupwise_folder_count_by_expression;
 	camel_folder_class->search_by_uids = groupwise_folder_search_by_uids; 
 	camel_folder_class->search_free = groupwise_folder_search_free;
 	camel_folder_class->append_message = groupwise_append_message;

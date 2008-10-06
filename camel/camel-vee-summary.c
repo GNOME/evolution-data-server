@@ -65,7 +65,7 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	return (CamelMessageInfo *)to;
 }
 
-#define HANDLE_NULL_INFO(value) if (!rmi) { g_warning (G_STRLOC ": real info is NULL for %s, safeguarding\n", mi->uid); return value; }
+#define HANDLE_NULL_INFO(value) if (!rmi) { d(g_warning (G_STRLOC ": real info is NULL for %s, safeguarding\n", mi->uid)); return value; }
 
 static const void *
 vee_info_ptr (const CamelMessageInfo *mi, int id)
@@ -333,7 +333,7 @@ camel_vee_summary_new(CamelFolder *parent)
         /* FIXME[disk-summary] fix exceptions and note return values */
 	/* FIXME[disk-summary] if Evo's junk/trash vfolders make it VJunk
 	 * VTrash instead of .#evolution/Junk-or-whatever */
-	camel_db_create_vfolder (parent->cdb, parent->full_name, NULL);
+	camel_db_create_vfolder (parent->parent_store->cdb_w, parent->full_name, NULL);
 
 	/* FIXME[disk-summary] handle excep and ret */
 	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent->parent_store, parent->full_name, NULL);
@@ -348,7 +348,7 @@ camel_vee_summary_get_ids (CamelVeeSummary *summary, char hash[8])
 	GPtrArray *array;
 
 	/* FIXME[disk-summary] fix exception passing */
-	array = camel_db_get_vuids_from_vfolder(cfs->folder->cdb, cfs->folder->full_name, shash, NULL);
+	array = camel_db_get_vuids_from_vfolder(cfs->folder->parent_store->cdb_r, cfs->folder->full_name, shash, NULL);
 	
 	g_free(shash);
 

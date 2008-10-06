@@ -393,6 +393,133 @@ camel_folder_search_execute_expression(CamelFolderSearch *search, const char *ex
 }
 
 /**
+ * camel_folder_search_count:
+ * @search: 
+ * @expr: 
+ * @uids: to search against, NULL for all uid's.
+ * @ex: 
+ * 
+ * Run a search.  Search must have had Folder already set on it, and
+ * it must implement summaries.
+ * 
+ * Return value: Number of messages that match the query.
+ **/
+
+guint32
+camel_folder_search_count(CamelFolderSearch *search, const char *expr, CamelException *ex)
+{
+	ESExpResult *r;
+	GPtrArray *summary_set;
+	int i;
+	CamelDB *cdb;
+	char *sql_query, *tmp, *tmp1;
+	GHashTable *results;
+	guint32 count = 0;
+
+	struct _CamelFolderSearchPrivate *p = _PRIVATE(search);
+
+	g_assert(search->folder);
+	
+	p->ex = ex;
+
+	/* We route body-contains search and uid search through memory and not via db. */
+	if (strstr((const char *) expr, "body-contains")) {
+		/* setup our search list only contains those we're interested in */
+		search->summary = camel_folder_get_summary(search->folder);
+
+		summary_set = search->summary;
+
+		/* only re-parse if the search has changed */
+		if (search->last_search == NULL
+		    || strcmp(search->last_search, expr)) {
+			e_sexp_input_text(search->sexp, expr, strlen(expr));
+			if (e_sexp_parse(search->sexp) == -1) {
+				camel_exception_setv(ex, 1, _("Cannot parse search expression: %s:\n%s"), e_sexp_error(search->sexp), expr);
+				goto fail;
+			}
+
+			g_free(search->last_search);
+			search->last_search = g_strdup(expr);
+		}
+		r = e_sexp_eval(search->sexp);
+		if (r == NULL) {
+			if (!camel_exception_is_set(ex))
+				camel_exception_setv(ex, 1, _("Error executing search expression: %s:\n%s"), e_sexp_error(search->sexp), expr);
+			goto fail;
+		}
+
+		/* now create a folder summary to return?? */
+		if (r->type == ESEXP_RES_ARRAY_PTR) {
+			d(printf("got result\n"));
+	
+			/* reorder result in summary order */
+			results = g_hash_table_new(g_str_hash, g_str_equal);
+			for (i=0;i<r->value.ptrarray->len;i++) {
+				d(printf("adding match: %s\n", (char *)g_ptr_array_index(r->value.ptrarray, i)));
+				g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER (1));
+			}
+	
+			for (i=0;i<summary_set->len;i++) {
+				char *uid = g_ptr_array_index(summary_set, i);
+				if (g_hash_table_lookup(results, uid))
+					count++;
+			}
+			g_hash_table_destroy(results);
+		}
+
+		e_sexp_result_free(search->sexp, r);
+
+	} else {
+		/* Sync the db, so that we search the db for changes */
+		camel_folder_summary_save_to_db (search->folder->summary, ex);
+	
+		dd(printf ("sexp is : [%s]\n", expr));
+		if (g_getenv("SQL_SEARCH_OLD"))
+			sql_query = camel_sexp_to_sql (expr);
+		else
+			sql_query = camel_sexp_to_sql_sexp (expr);
+		tmp1 = camel_db_sqlize_string(search->folder->full_name);
+		tmp = g_strdup_printf ("SELECT COUNT (*) FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
+		camel_db_free_sqlized_string (tmp1);
+		g_free (sql_query);
+		dd(printf("Equivalent sql %s\n", tmp));
+	
+		cdb = (CamelDB *) (search->folder->parent_store->cdb_r);
+		camel_db_count_message_info  (cdb, tmp, &count, ex);
+		if (ex && camel_exception_is_set(ex)) {
+			const char *exception = camel_exception_get_description (ex);
+			if (strncmp(exception, "no such table", 13) == 0) {
+				g_warning ("Error during searching %s: %s\n", tmp, exception);
+				camel_exception_clear (ex); /* Suppress no such table */
+			}
+		}
+		g_free (tmp);
+
+	}
+
+fail:
+	/* these might be allocated by match-threads */
+	if (p->threads)
+		camel_folder_thread_messages_unref(p->threads);
+	if (p->threads_hash)
+		g_hash_table_destroy(p->threads_hash);
+	if (search->summary_set)
+		g_ptr_array_free(search->summary_set, TRUE);
+	if (search->summary)
+		camel_folder_free_summary(search->folder, search->summary);
+
+	p->threads = NULL;
+	p->threads_hash = NULL;
+	search->folder = NULL;
+	search->summary = NULL;
+	search->summary_set = NULL;
+	search->current = NULL;
+	search->body_index = NULL;
+
+	return count;
+}
+
+/**
  * camel_folder_search_search:
  * @search: 
  * @expr: 
@@ -497,7 +624,7 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 		dd(printf("Equivalent sql %s\n", tmp));
 	
 		matches = g_ptr_array_new();
-		cdb = (CamelDB *) (search->folder->cdb);
+		cdb = (CamelDB *) (search->folder->parent_store->cdb_r);
 		camel_db_select (cdb, tmp, (CamelDBSelectCB) read_uid_callback, matches, ex);
 		if (ex && camel_exception_is_set(ex)) {
 			const char *exception = camel_exception_get_description (ex);
