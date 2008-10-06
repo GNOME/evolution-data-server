@@ -8,17 +8,14 @@
 
 #include "camel-exception.h"
 
+typedef struct _CamelDBPrivate CamelDBPrivate;
+
 typedef int(*CamelDBCollate)(void*,int,const void*,int,const void*);
 
 struct _CamelDB {
 	sqlite3 *db;
 	GMutex *lock;
-	const char *sort_by;
-	const char *collate;
-	CamelDBCollate collate_cb;
-#ifdef CAMEL_DB_DEBUG 	
-	GTimer *timer;
-#endif	
+	CamelDBPrivate *priv;
 };
 
 #define CAMEL_DB_FREE_CACHE_SIZE 2 * 1024 * 1024
@@ -59,7 +56,7 @@ typedef struct _CamelMIRecord {
 	char *uid;
 	guint32 flags;
 	guint32 msg_type;
-	guint32 msg_security;
+	guint32 dirty;
 	gboolean read;
 	gboolean deleted;
 	gboolean replied;
@@ -107,6 +104,7 @@ typedef int (*CamelDBSelectCB) (gpointer data, int ncol, char **colvalues, char 
 
 
 CamelDB * camel_db_open (const char *path, CamelException *ex);
+CamelDB * camel_db_clone (CamelDB *cdb, CamelException *ex);
 void camel_db_close (CamelDB *cdb);
 int camel_db_command (CamelDB *cdb, const char *stmt, CamelException *ex);
 
@@ -145,7 +143,7 @@ int camel_db_count_visible_message_info (CamelDB *cdb, const char *table_name, g
 int camel_db_count_visible_unread_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
 
 int camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-
+int camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, CamelException *ex);
 void camel_db_camel_mir_free (CamelMIRecord *record);
 
 int camel_db_create_vfolder (CamelDB *db, const char *folder_name, CamelException *ex);
@@ -156,7 +154,7 @@ GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, cha
 int camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
 int camel_db_add_to_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
 
-int camel_db_get_folder_uids (CamelDB *db, char *folder_name, GPtrArray *array, CamelException *ex);
+int camel_db_get_folder_uids (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *array, CamelException *ex);
 
 GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, char *folder_name, CamelException *ex);
 GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, char *folder_name, CamelException *ex);

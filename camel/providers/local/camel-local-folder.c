@@ -81,6 +81,7 @@ static void local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex
 static void local_expunge(CamelFolder *folder, CamelException *ex);
 
 static GPtrArray *local_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
+static guint32 local_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
 static GPtrArray *local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
 
@@ -106,6 +107,7 @@ camel_local_folder_class_init(CamelLocalFolderClass * camel_local_folder_class)
 	camel_folder_class->expunge = local_expunge;
 
 	camel_folder_class->search_by_expression = local_search_by_expression;
+	camel_folder_class->count_by_expression = local_count_by_expression;
 	camel_folder_class->search_by_uids = local_search_by_uids;
 	camel_folder_class->search_free = local_search_free;
 
@@ -584,6 +586,26 @@ local_search_by_expression(CamelFolder *folder, const char *expression, CamelExc
 	camel_folder_search_set_folder(local_folder->search, folder);
 	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
 	matches = camel_folder_search_search(local_folder->search, expression, NULL, ex);
+
+	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
+
+	return matches;
+}
+
+static guint32
+local_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
+	gint matches;
+
+	CAMEL_LOCAL_FOLDER_LOCK(folder, search_lock);
+
+	if (local_folder->search == NULL)
+		local_folder->search = camel_folder_search_new();
+
+	camel_folder_search_set_folder(local_folder->search, folder);
+	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
+	matches = camel_folder_search_count (local_folder->search, expression, ex);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
 

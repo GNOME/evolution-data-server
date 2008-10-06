@@ -106,12 +106,6 @@ camel_local_store_finalize (CamelLocalStore *local_store)
 	store = ((CamelStore *)local_store); 
 	d(printf ("\n\aLocal Store Finalize \n\a"));
 
-	if (store && store->cdb) {
-	d(printf ("\n\aClosing Store DB for hte local provider \n\a"));
-		camel_db_close (store->cdb);
-		store->cdb = NULL;
-	}
-
 }
 
 CamelType

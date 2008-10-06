@@ -123,6 +123,7 @@ static void imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 
 /* searching */
 static GPtrArray *imap_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex);
+static guint32 imap_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex);
 static GPtrArray *imap_search_by_uids	    (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void       imap_search_free          (CamelFolder *folder, GPtrArray *uids);
 
@@ -155,6 +156,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 	camel_folder_class->get_message = imap_get_message;
 	camel_folder_class->rename = imap_rename;
 	camel_folder_class->search_by_expression = imap_search_by_expression;
+	camel_folder_class->count_by_expression = imap_count_by_expression;
 	camel_folder_class->search_by_uids = imap_search_by_uids;
 	camel_folder_class->search_free = imap_search_free;
 	camel_folder_class->thaw = imap_thaw;
@@ -1483,7 +1485,7 @@ imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, CamelException 
 		 * the cached data may be useful in replaying a COPY later.
 		 */
 	}
-	camel_db_delete_uids (folder->cdb, folder->full_name, list, ex);
+	camel_db_delete_uids (folder->parent_store->cdb_w, folder->full_name, list, ex);
 	g_slist_free(list);
 	camel_folder_summary_save_to_db (folder->summary, ex);
 
@@ -1568,7 +1570,7 @@ imap_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *
 		 * the cached data may be useful in replaying a COPY later.
 		 */
 	}
-	camel_db_delete_uids (folder->cdb, folder->full_name, list, ex);
+	camel_db_delete_uids (folder->parent_store->cdb_w, folder->full_name, list, ex);
 	g_slist_free (list);
 	camel_folder_summary_save_to_db (folder->summary, ex);
 	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
@@ -2399,6 +2401,24 @@ imap_search_by_expression (CamelFolder *folder, const char *expression, CamelExc
 	return matches;
 }
 
+static guint32
+imap_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+	guint32 matches;
+
+	/* we could get around this by creating a new search object each time,
+	   but i doubt its worth it since any long operation would lock the
+	   command channel too */
+	CAMEL_IMAP_FOLDER_LOCK(folder, search_lock);
+
+	camel_folder_search_set_folder (imap_folder->search, folder);
+	matches = camel_folder_search_count(imap_folder->search, expression, ex);
+
+	CAMEL_IMAP_FOLDER_UNLOCK(folder, search_lock);
+
+	return matches;
+}
 static GPtrArray *
 imap_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
 {
@@ -3506,7 +3526,7 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 		}
 		
 		/* Delete all in one transaction */
-		camel_db_delete_uids (folder->cdb, folder->full_name, deleted, ex);
+		camel_db_delete_uids (folder->parent_store->cdb_w, folder->full_name, deleted, ex);
 		g_slist_foreach (deleted, (GFunc) g_free, NULL);
 		g_slist_free (deleted);
 	}

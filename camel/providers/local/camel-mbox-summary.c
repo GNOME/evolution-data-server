@@ -213,14 +213,25 @@ camel_mbox_summary_finalise(CamelObject *obj)
 static int 
 frompos_sort (void *enc, int len1, void * data1, int len2, void *data2)
 {
-	char *sa1 = (char*)g_utf8_normalize (data1, len1, G_NORMALIZE_DEFAULT);
-	char *sa2 = (char*)g_utf8_normalize (data2, len2, G_NORMALIZE_DEFAULT);
-	int a1 = strtoul (sa1, NULL, 10);
-	int a2 = strtoul (sa2, NULL, 10);
+	static char *sa1=NULL, *sa2=NULL;
+	static int l1=0, l2=0;
+	int a1, a2;
 
-	g_free(sa1); g_free(sa2);
+	if (l1 < len1+1) {
+		sa1 = g_realloc (sa1, len1+1);
+		l1 = len1+1;
+	}
+	if (l2 < len2+1) {
+		sa2 = g_realloc (sa2, len2+1);
+		l2 = len2+1;
+	}
+	strncpy (sa1, data1, len1);sa1[len1] = 0;
+	strncpy (sa2, data2, len2);sa2[len2] = 0;
 
-	return a1 > a2;
+	a1 = strtoul (sa1, NULL, 10);
+	a2 = strtoul (sa2, NULL, 10);
+
+	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
 }
 
 /**
@@ -237,9 +248,13 @@ camel_mbox_summary_new(struct _CamelFolder *folder, const char *filename, const 
 
 	((CamelFolderSummary *)new)->folder = folder;
 	if (folder) {
+		CamelFolderSummary *summary = (CamelFolderSummary *)new;
+
 		/* Set the functions for db sorting */
-		/* FIXME: Add column names though a #define */
-		camel_db_set_collate (folder->cdb, "bdata", "frompos_sort", (CamelDBCollate)frompos_sort);
+		camel_db_set_collate (folder->parent_store->cdb_r, "bdata", "mbox_frompos_sort", (CamelDBCollate)frompos_sort);
+		summary->sort_by = "bdata";
+		summary->collate = "mbox_frompos_sort";
+
 	}
 	camel_local_summary_construct((CamelLocalSummary *)new, filename, mbox_name, index);
 	return new;
@@ -367,7 +382,8 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 		    && camel_local_summary_decode_x_evolution((CamelLocalSummary *)s, xev, &mi->info) == 0) {
 			uid = camel_message_info_uid(mi);
 			d(printf("found valid x-evolution: %s\n", uid));
-			info = (CamelMboxMessageInfo *)camel_folder_summary_uid(s, uid);
+			/* If one is there, it should be there already */
+			info = (CamelMboxMessageInfo *) camel_folder_summary_peek_info (s, uid);
 			if (info) {
 				if ((info->info.info.flags & CAMEL_MESSAGE_FOLDER_NOTSEEN)) {
 					info->info.info.flags &= ~CAMEL_MESSAGE_FOLDER_NOTSEEN;
@@ -567,6 +583,8 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	   If we're not starting from the start, we must be starting
 	   from the old end, so everything must be treated as new */
 	count = camel_folder_summary_count(s);
+	if (count != camel_folder_summary_cache_size(s)) /* It makes sense to load summary, if it isn't there. */
+		camel_folder_summary_reload_from_db (s, ex);	
 	for (i=0;i<count;i++) {
 		mi = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);
 		if (offset == 0)
@@ -613,7 +631,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	}
 	
 	/* Delete all in one transaction */
-	camel_db_delete_uids (s->folder->cdb, s->folder->full_name, del, ex);
+	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
 	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
 	g_slist_free (del);	
 
@@ -789,6 +807,30 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	return -1;
 }
 
+static gint
+cms_sort_frompos (gpointer a, gpointer b, gpointer data)
+{
+	CamelFolderSummary *summary = (CamelFolderSummary *)data;
+	CamelMboxMessageInfo *info1, *info2;
+	int ret = 0;
+
+	/* Things are in memory already. Sorting speeds up syncing, if things are sorted by from pos. */
+	info1 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(char **)a);
+	info2 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(char **)b);
+
+	if (info1->frompos > info2->frompos)
+		ret = 1;
+	else if  (info1->frompos < info2->frompos)
+		ret = -1;
+	else 
+		ret = 0;
+	camel_message_info_free (info1);
+	camel_message_info_free (info2);
+
+	return ret;
+
+}
+
 /* perform a quick sync - only system flags have changed */
 static int
 mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
@@ -836,6 +878,9 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 	/* Sync only the changes */
 	summary = camel_folder_summary_get_changed ((CamelFolderSummary *)mbs);
+	if (summary->len)
+		g_ptr_array_sort_with_data (summary, (GCompareDataFunc)cms_sort_frompos, (gpointer) mbs);
+	
 	for (i = 0; i < summary->len; i++) {
 		int xevoffset;
 		int pc = (i+1)*100/summary->len;
@@ -909,6 +954,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		camel_mime_parser_drop_step(mp);
 
 		info->info.info.flags &= 0xffff;
+		info->info.info.dirty = TRUE;
 		camel_message_info_free((CamelMessageInfo *)info);
 	}
 
@@ -979,10 +1025,10 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	g_ptr_array_free (summary, TRUE);
 	
 	if (quick && expunge) {
-		int dcount =0;
+		guint32 dcount =0;
 
 	
-		if (camel_db_count_deleted_message_info (s->folder->cdb, s->folder->full_name, &dcount, ex) == -1)
+		if (camel_db_count_deleted_message_info (s->folder->parent_store->cdb_w, s->folder->full_name, &dcount, ex) == -1)
 			return -1;
 		if (dcount)
 			quick = FALSE;
@@ -1191,7 +1237,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			info = NULL;
 		}
 	}
-	camel_db_delete_uids (s->folder->cdb, s->folder->full_name, del, ex);
+	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
 	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
 	g_slist_free (del);
 
@@ -1211,6 +1257,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 				info->info.info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV
 							   |CAMEL_MESSAGE_FOLDER_FLAGGED
 							   |CAMEL_MESSAGE_FOLDER_XEVCHANGE);
+				((CamelMessageInfo *)info)->dirty = TRUE;
 				camel_folder_summary_touch(s);
 			}
 			camel_message_info_free((CamelMessageInfo *)info);
