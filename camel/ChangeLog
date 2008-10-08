@@ -1,3 +1,12 @@
+2008-10-08  Sankar P  <psankar@novell.com>
+
+	* camel-folder.c (count_by_expression):
+	Debug strings should not be translated.
+	Warning should be enough to identify the issue.
+	Exception setting is enough.
+        
+        Thanks to Claude for asking in Evolution channel
+
 2008-10-06  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fixes lots of bugs and breaks ABI

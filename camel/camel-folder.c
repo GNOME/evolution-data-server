@@ -1365,11 +1365,10 @@ count_by_expression (CamelFolder *folder, const char *expression,
 		      CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-			      _("Unsupported operation: count by expression: for %s"),
-			      camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
+			      "");
 	
-	w(g_warning ("CamelFolder::count_by_expression not implemented for "
-		     "'%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
+g_warning ("CamelFolder::count_by_expression not implemented for "
+		     "'%s'", camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder)));
 	
 	return 0;
 }
