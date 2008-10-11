@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-06 21:01-0400\n"
+"POT-Creation-Date: 2008-10-08 11:03+0000\n"
 "PO-Revision-Date: 2008-09-25 14:02-0300\n"
 "Last-Translator: Vladimir Melo <vladimirmelo.psi@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -724,12 +724,12 @@ msgid "Could not create thread for populating cache"
 msgstr "Não foi possível criar thread para ocupar o cache"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1815
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1809
 msgid "Reply Requested: by "
 msgstr "Resposta solicitada: por "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1820
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1814
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Solicitada: Quando conveniente"
 
@@ -1183,14 +1183,14 @@ msgstr "O ID do objeto já existe"
 
 #: ../calendar/libecal/e-cal.c:5076
 msgid "Protocol not supported"
-msgstr "Protocolo sem suporte"
+msgstr "Não há suporte ao protocolo"
 
 #: ../calendar/libecal/e-cal.c:5078
 msgid "Operation has been canceled"
 msgstr "A operação foi cancelada"
 
 #: ../calendar/libecal/e-cal.c:5080
-#: ../calendar/libedata-cal/e-cal-backend-util.c:135
+#: ../calendar/libedata-cal/e-cal-backend-util.c:136
 msgid "Could not cancel operation"
 msgstr "Não foi possível cancelar a operação"
 
@@ -1205,7 +1205,7 @@ msgid "A CORBA exception has occurred"
 msgstr "Ocorreu uma exceção CORBA"
 
 #: ../calendar/libecal/e-cal.c:5088
-#: ../calendar/libedata-cal/e-cal-backend-util.c:138
+#: ../calendar/libedata-cal/e-cal-backend-util.c:139
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:434
 #: ../camel/providers/imap/camel-imap-store.c:742
@@ -1332,47 +1332,48 @@ msgstr "Faixa inválida"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:113
 msgid "Unsupported field"
-msgstr "Sem suporte para o campo"
+msgstr "Não há suporte ao campo"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Unsupported method"
-msgstr "Sem suporte para o método"
+msgstr "Não há suporte ao método"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
 msgid "Unsupported authentication method"
-msgstr "Sem suporte para o método de autenticação"
+msgstr "Não há suporte ao método de autenticação"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:119
 msgid "TLS not available"
 msgstr "TLS não disponível"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:125
-msgid "Offline mode unavailable"
-msgstr "O modo desconectado não está disponível"
+#. Translators: This means "Offline mode unavailable"
+#: ../calendar/libedata-cal/e-cal-backend-util.c:126
+msgid "Offline unavailable"
+msgstr "Modo desconectado não disponível"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:127
+#: ../calendar/libedata-cal/e-cal-backend-util.c:128
 msgid "Search size limit exceeded"
 msgstr "Limite do tamanho da pesquisa excedido"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:129
+#: ../calendar/libedata-cal/e-cal-backend-util.c:130
 msgid "Search time limit exceeded"
 msgstr "Limite do tempo da pesquisa excedido"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:131
+#: ../calendar/libedata-cal/e-cal-backend-util.c:132
 msgid "Invalid query"
 msgstr "Consulta inválida"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:133
+#: ../calendar/libedata-cal/e-cal-backend-util.c:134
 msgid "Query refused"
 msgstr "Consulta recusada"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:140
+#: ../calendar/libedata-cal/e-cal-backend-util.c:141
 msgid "Invalid server version"
 msgstr "Versão do servidor inválida"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
-msgstr "As assinaturas não têm suporte desta cifra"
+msgstr "Não há suporte às assinaturas por esta cifra"
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
@@ -1380,7 +1381,7 @@ msgstr "Assinando mensagem"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "A verificação não tem suporte desta cifra"
+msgstr "Não há suporte à verificação por esta cifra"
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
@@ -1388,7 +1389,7 @@ msgstr "Verificando mensagem"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "A criptografia não tem suporte desta cifra"
+msgstr "Não há suporte à criptografia por esta cifra"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1396,7 +1397,7 @@ msgstr "Criptografando a mensagem"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "A descriptografia não tem suporte desta cifra"
+msgstr "Não há suporte à descriptografia por esta cifra"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
@@ -1613,43 +1614,38 @@ msgstr "(%s) requer um conjunto de pastas"
 msgid "Performing query on unknown header: %s"
 msgstr "Executando consulta em cabeçalho desconhecido: %s"
 
-#: ../camel/camel-folder.c:674
+#: ../camel/camel-folder.c:670
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr "Operação sem suporte: anexar mensagem: para %s"
+msgstr "Não há suporte à operação: anexar mensagem: para %s"
 
-#: ../camel/camel-folder.c:1330
+#: ../camel/camel-folder.c:1326
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
-msgstr "Operação sem suporte: pesquisa por expressão: para %s"
+msgstr "Não há suporte à operação: pesquisa por expressão: para %s"
 
-#: ../camel/camel-folder.c:1372
-#, c-format
-msgid "Unsupported operation: count by expression: for %s"
-msgstr "Operação sem suporte: contagem por expressão: para %s"
-
-#: ../camel/camel-folder.c:1412
+#: ../camel/camel-folder.c:1407
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
-msgstr "Operação sem suporte: pesquisa por UIDs: para %s"
+msgstr "Não há suporte à operação: pesquisa por UIDs: para %s"
 
-#: ../camel/camel-folder.c:1528
+#: ../camel/camel-folder.c:1523
 msgid "Moving messages"
 msgstr "Movendo mensagens"
 
-#: ../camel/camel-folder.c:1528
+#: ../camel/camel-folder.c:1523
 msgid "Copying messages"
 msgstr "Copiando mensagens"
 
-#: ../camel/camel-folder.c:1874
+#: ../camel/camel-folder.c:1869
 msgid "Learning junk"
 msgstr "Conhecendo spam"
 
-#: ../camel/camel-folder.c:1891
+#: ../camel/camel-folder.c:1886
 msgid "Learning non-junk"
 msgstr "Conhecendo não-spam"
 
-#: ../camel/camel-folder.c:1910
+#: ../camel/camel-folder.c:1905
 msgid "Filtering new message(s)"
 msgstr "Filtrando nova(s) mensagem(ns)"
 
@@ -1950,7 +1946,7 @@ msgstr "Para ler correio como uma consulta noutro conjunto de pastas"
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
-"Não foi possível carregar %s: A carga de módulos não tem suporte neste "
+"Não foi possível carregar %s: Não há suporte à carga de módulos neste "
 "sistema."
 
 #: ../camel/camel-provider.c:193
@@ -2137,7 +2133,7 @@ msgstr "Resposta de autenticação do servidor inválida."
 
 #: ../camel/camel-sasl-gssapi.c:314
 msgid "Unsupported security layer."
-msgstr "Camada de segurança sem suporte."
+msgstr "Não há suporte à camada de segurança."
 
 #: ../camel/camel-sasl-kerberos4.c:47
 msgid "Kerberos 4"
@@ -2337,7 +2333,7 @@ msgstr "Algoritmo da assinatura desconhecido"
 
 #: ../camel/camel-smime-context.c:501
 msgid "Signature algorithm unsupported"
-msgstr "Algoritmo da assinatura sem suporte"
+msgstr "Não há suporte ao algoritmo da assinatura"
 
 #: ../camel/camel-smime-context.c:503
 msgid "Malformed signature"
@@ -2787,15 +2783,15 @@ msgstr "Não foi possível obter mensagem: %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:152
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:160
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2184
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2178
 #: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
 msgstr "Esta mensagem não está disponível no modo desconectado."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:172
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:179
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1716
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1767
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1710
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1761
 msgid "Could not get message"
 msgstr "Não foi possível obter mensagem"
 
@@ -2818,13 +2814,13 @@ msgstr "A lixeira está cheia. Por favor, esvazie-a."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obtendo informação de resumo para novas mensagens em %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2051
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2093
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2045
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2087
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Não foi possível acrescentar mensagem à pasta \"%s\": %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2081
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2075
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Não foi possível criar mensagem: %s"
@@ -2952,7 +2948,7 @@ msgstr "A pasta pai não pode conter subpastas"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1309
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1330
 #, c-format
-msgid "Cannot rename GroupWise folder '%s' to '%s'"
+msgid "Cannot rename Groupwise folder '%s' to '%s'"
 msgstr "Não foi possível renomear a pasta GroupWise \"%s\" para \"%s\""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1362
@@ -3279,7 +3275,7 @@ msgstr "Falha ao conectar ao servidor IMAP %s em modo seguro: %s"
 #: ../camel/providers/imap/camel-imap-store.c:691
 #: ../camel/providers/smtp/camel-smtp-transport.c:333
 msgid "STARTTLS not supported"
-msgstr "STARTTLS sem suporte"
+msgstr "Não há suporte a STARTTLS"
 
 #: ../camel/providers/imap/camel-imap-store.c:710
 msgid "SSL negotiations failed"
@@ -3333,7 +3329,7 @@ msgstr "O servidor IMAP %s não suporta o tipo de autenticação pedido %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:507
 #, c-format
 msgid "No support for authentication type %s"
-msgstr "Sem suporte para o tipo de autenticação %s"
+msgstr "Não há suporte ao tipo de autenticação %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1387
 #, c-format
@@ -3974,11 +3970,11 @@ msgstr "Não é possível abrir o diretório maildir: %s: %s"
 msgid "Checking folder consistency"
 msgstr "Verificando a consistência da pasta"
 
-#: ../camel/providers/local/camel-maildir-summary.c:655
+#: ../camel/providers/local/camel-maildir-summary.c:654
 msgid "Checking for new messages"
 msgstr "Verificando novas mensagens"
 
-#: ../camel/providers/local/camel-maildir-summary.c:741
+#: ../camel/providers/local/camel-maildir-summary.c:740
 #: ../camel/providers/local/camel-mbox-summary.c:550
 #: ../camel/providers/local/camel-mbox-summary.c:732
 #: ../camel/providers/local/camel-mbox-summary.c:852
@@ -4530,8 +4526,8 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"Não foi possível conectar-se ao servidor POP %s: Não existe suporte para o "
-"mecanismo de autenticação pedido."
+"Não foi possível conectar-se ao servidor POP %s: Não há suporte ao mecanismo "
+"de autenticação pedido."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:419
 #, c-format
@@ -4576,7 +4572,7 @@ msgstr ""
 "Não foi possível se conectar ao servidor POP %s.\n"
 "Erro ao enviar nome do usuário: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:668
+#: ../camel/providers/pop3/camel-pop3-store.c:667
 #, c-format
 msgid "No such folder '%s'."
 msgstr "A pasta \"%s\" não existe."
@@ -5210,25 +5206,25 @@ msgid "_Search:"
 msgstr "_Pesquisar:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2456
+#: ../libedataserverui/e-name-selector-entry.c:2369
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s Em Linha"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2471
+#: ../libedataserverui/e-name-selector-entry.c:2384
 #, c-format
 msgid "Cop_y %s"
 msgstr "C_opiar %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2481
+#: ../libedataserverui/e-name-selector-entry.c:2394
 #, c-format
 msgid "C_ut %s"
 msgstr "Recor_tar %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2498
+#: ../libedataserverui/e-name-selector-entry.c:2411
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
@@ -5273,13 +5269,13 @@ msgid "_Destination"
 msgstr "_Destino"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1683
-#: ../servers/exchange/storage/exchange-account.c:951
+#: ../servers/exchange/storage/exchange-account.c:953
 #, c-format
 msgid "Enter password for %s"
 msgstr "Digite a senha para %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1684
-#: ../servers/exchange/storage/exchange-account.c:956
+#: ../servers/exchange/storage/exchange-account.c:958
 msgid "Enter password"
 msgstr "Digite a senha"
 
@@ -5359,7 +5355,7 @@ msgstr "Função não implementada neste armazenamento"
 
 #: ../servers/exchange/storage/e-storage.c:573
 msgid "Operation not supported"
-msgstr "Operação sem suporte"
+msgstr "Não há suporte à operação"
 
 #: ../servers/exchange/storage/e-storage.c:575
 msgid "The specified type is not supported in this storage"
@@ -5383,26 +5379,26 @@ msgstr "Esta operação não pode ser realizada no modo desconectado"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:642
+#: ../servers/exchange/storage/exchange-account.c:644
 #, c-format
 msgid "%s's Folders"
 msgstr "Pastas de %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1257
+#: ../servers/exchange/storage/exchange-account.c:1259
 msgid "Personal Folders"
 msgstr "Pastas pessoais"
 
-#: ../servers/exchange/storage/exchange-account.c:1272
+#: ../servers/exchange/storage/exchange-account.c:1274
 msgid "Favorite Public Folders"
 msgstr "Pastas públicas favoritas"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1289
+#: ../servers/exchange/storage/exchange-account.c:1291
 msgid "All Public Folders"
 msgstr "Todas as pastas públicas"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1303
+#: ../servers/exchange/storage/exchange-account.c:1305
 msgid "Global Address List"
 msgstr "Lista global de endereços"
 
@@ -5477,6 +5473,9 @@ msgstr "Informação de cor"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "Cor para renderizar"
+
+#~ msgid "Unsupported operation: count by expression: for %s"
+#~ msgstr "Operação sem suporte: contagem por expressão: para %s"
 
 #~ msgid "Folder was destroyed and recreated on server."
 #~ msgstr "A pasta foi destruída e recriada no servidor."
