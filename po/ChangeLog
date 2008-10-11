@@ -1,10 +1,15 @@
+2008-10-11  Leonardo Ferreira Fontenelle  <leonardof@gnome.org>
+
+	* pt_BR.po: Fixed terminology in Brazilian Portuguese translation by
+	Vladimir Melo.
+
 2008-10-08  Gil Forcada  <gforcada@gnome.org>
 
 	* ca.po: Updated Catalan translation.
 
 2008-10-07  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
 
-	 gl.po: Updated Galician translation
+	* gl.po: Updated Galician translation
 
 2008-10-07  Kjartan Maraas  <kmaraas@gnome.org>
 

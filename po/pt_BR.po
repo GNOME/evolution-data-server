@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-06 10:46+0000\n"
+"POT-Creation-Date: 2008-10-08 11:03+0000\n"
 "PO-Revision-Date: 2008-09-25 14:02-0300\n"
 "Last-Translator: Vladimir Melo <vladimirmelo.psi@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -1183,7 +1183,7 @@ msgstr "O ID do objeto já existe"
 
 #: ../calendar/libecal/e-cal.c:5076
 msgid "Protocol not supported"
-msgstr "Protocolo sem suporte"
+msgstr "Não há suporte ao protocolo"
 
 #: ../calendar/libecal/e-cal.c:5078
 msgid "Operation has been canceled"
@@ -1332,15 +1332,15 @@ msgstr "Faixa inválida"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:113
 msgid "Unsupported field"
-msgstr "Sem suporte para o campo"
+msgstr "Não há suporte ao campo"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Unsupported method"
-msgstr "Sem suporte para o método"
+msgstr "Não há suporte ao método"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
 msgid "Unsupported authentication method"
-msgstr "Sem suporte para o método de autenticação"
+msgstr "Não há suporte ao método de autenticação"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:119
 msgid "TLS not available"
@@ -1373,7 +1373,7 @@ msgstr "Versão do servidor inválida"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
-msgstr "As assinaturas não têm suporte desta cifra"
+msgstr "Não há suporte às assinaturas por esta cifra"
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
@@ -1381,7 +1381,7 @@ msgstr "Assinando mensagem"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "A verificação não tem suporte desta cifra"
+msgstr "Não há suporte à verificação por esta cifra"
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
@@ -1389,7 +1389,7 @@ msgstr "Verificando mensagem"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "A criptografia não tem suporte desta cifra"
+msgstr "Não há suporte à criptografia por esta cifra"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1397,7 +1397,7 @@ msgstr "Criptografando a mensagem"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "A descriptografia não tem suporte desta cifra"
+msgstr "Não há suporte à descriptografia por esta cifra"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
@@ -1617,40 +1617,35 @@ msgstr "Executando consulta em cabeçalho desconhecido: %s"
 #: ../camel/camel-folder.c:670
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr "Operação sem suporte: anexar mensagem: para %s"
+msgstr "Não há suporte à operação: anexar mensagem: para %s"
 
 #: ../camel/camel-folder.c:1326
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
-msgstr "Operação sem suporte: pesquisa por expressão: para %s"
+msgstr "Não há suporte à operação: pesquisa por expressão: para %s"
 
-#: ../camel/camel-folder.c:1368
-#, c-format
-msgid "Unsupported operation: count by expression: for %s"
-msgstr "Operação sem suporte: contagem por expressão: para %s"
-
-#: ../camel/camel-folder.c:1408
+#: ../camel/camel-folder.c:1407
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
-msgstr "Operação sem suporte: pesquisa por UIDs: para %s"
+msgstr "Não há suporte à operação: pesquisa por UIDs: para %s"
 
-#: ../camel/camel-folder.c:1524
+#: ../camel/camel-folder.c:1523
 msgid "Moving messages"
 msgstr "Movendo mensagens"
 
-#: ../camel/camel-folder.c:1524
+#: ../camel/camel-folder.c:1523
 msgid "Copying messages"
 msgstr "Copiando mensagens"
 
-#: ../camel/camel-folder.c:1870
+#: ../camel/camel-folder.c:1869
 msgid "Learning junk"
 msgstr "Conhecendo spam"
 
-#: ../camel/camel-folder.c:1887
+#: ../camel/camel-folder.c:1886
 msgid "Learning non-junk"
 msgstr "Conhecendo não-spam"
 
-#: ../camel/camel-folder.c:1906
+#: ../camel/camel-folder.c:1905
 msgid "Filtering new message(s)"
 msgstr "Filtrando nova(s) mensagem(ns)"
 
@@ -1951,7 +1946,7 @@ msgstr "Para ler correio como uma consulta noutro conjunto de pastas"
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
-"Não foi possível carregar %s: A carga de módulos não tem suporte neste "
+"Não foi possível carregar %s: Não há suporte à carga de módulos neste "
 "sistema."
 
 #: ../camel/camel-provider.c:193
@@ -2138,7 +2133,7 @@ msgstr "Resposta de autenticação do servidor inválida."
 
 #: ../camel/camel-sasl-gssapi.c:314
 msgid "Unsupported security layer."
-msgstr "Camada de segurança sem suporte."
+msgstr "Não há suporte à camada de segurança."
 
 #: ../camel/camel-sasl-kerberos4.c:47
 msgid "Kerberos 4"
@@ -2338,7 +2333,7 @@ msgstr "Algoritmo da assinatura desconhecido"
 
 #: ../camel/camel-smime-context.c:501
 msgid "Signature algorithm unsupported"
-msgstr "Algoritmo da assinatura sem suporte"
+msgstr "Não há suporte ao algoritmo da assinatura"
 
 #: ../camel/camel-smime-context.c:503
 msgid "Malformed signature"
@@ -3280,7 +3275,7 @@ msgstr "Falha ao conectar ao servidor IMAP %s em modo seguro: %s"
 #: ../camel/providers/imap/camel-imap-store.c:691
 #: ../camel/providers/smtp/camel-smtp-transport.c:333
 msgid "STARTTLS not supported"
-msgstr "STARTTLS sem suporte"
+msgstr "Não há suporte a STARTTLS"
 
 #: ../camel/providers/imap/camel-imap-store.c:710
 msgid "SSL negotiations failed"
@@ -3334,7 +3329,7 @@ msgstr "O servidor IMAP %s não suporta o tipo de autenticação pedido %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:507
 #, c-format
 msgid "No support for authentication type %s"
-msgstr "Sem suporte para o tipo de autenticação %s"
+msgstr "Não há suporte ao tipo de autenticação %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1387
 #, c-format
@@ -4531,8 +4526,8 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"Não foi possível conectar-se ao servidor POP %s: Não existe suporte para o "
-"mecanismo de autenticação pedido."
+"Não foi possível conectar-se ao servidor POP %s: Não há suporte ao mecanismo "
+"de autenticação pedido."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:419
 #, c-format
@@ -5360,7 +5355,7 @@ msgstr "Função não implementada neste armazenamento"
 
 #: ../servers/exchange/storage/e-storage.c:573
 msgid "Operation not supported"
-msgstr "Operação sem suporte"
+msgstr "Não há suporte à operação"
 
 #: ../servers/exchange/storage/e-storage.c:575
 msgid "The specified type is not supported in this storage"
@@ -5478,6 +5473,9 @@ msgstr "Informação de cor"
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr "Cor para renderizar"
+
+#~ msgid "Unsupported operation: count by expression: for %s"
+#~ msgstr "Operação sem suporte: contagem por expressão: para %s"
 
 #~ msgid "Folder was destroyed and recreated on server."
 #~ msgstr "A pasta foi destruída e recriada no servidor."
