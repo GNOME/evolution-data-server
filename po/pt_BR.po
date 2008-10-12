@@ -2030,16 +2030,16 @@ msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:845
 msgid "Server challenge too long (>2048 octets)"
-msgstr "O challenge do servidor é longo demais (>2048 octetos)"
+msgstr "O desafio do servidor é longo demais (>2048 octetos)"
 
 #: ../camel/camel-sasl-digest-md5.c:854
 msgid "Server challenge invalid\n"
-msgstr "O challenge do servidor é inválido\n"
+msgstr "O desafio do servidor é inválido\n"
 
 #: ../camel/camel-sasl-digest-md5.c:860
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"O challenge do servidor continha token de \"Quality of Protection\" inválido"
+"O desafio do servidor continha token de \"Quality of Protection\" inválido"
 
 #: ../camel/camel-sasl-digest-md5.c:890
 msgid "Server response did not contain authorization data"
@@ -5245,11 +5245,11 @@ msgstr "Você está com a tecla Caps Lock ligada."
 
 #: ../libedataserverui/e-passwords.c:1214
 msgid "_Remember this passphrase"
-msgstr "Lembra_r esta senha"
+msgstr "Lembra_r esta frase secreta"
 
 #: ../libedataserverui/e-passwords.c:1215
 msgid "_Remember this passphrase for the remainder of this session"
-msgstr "Lembra_r esta senha pelo restante dessa sessão"
+msgstr "Lembra_r esta frase secreta pelo restante dessa sessão"
 
 #: ../libedataserverui/e-passwords.c:1220
 msgid "_Remember this password"
