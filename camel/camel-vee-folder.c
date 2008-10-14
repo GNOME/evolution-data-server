@@ -535,7 +535,13 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 		record->junk_count = s->junk_count;
 		record->deleted_count = s->deleted_count;
 		record->unread_count = s->unread_count;
-		record->visible_count = s->visible_count;
+
+		if (((CamelVeeSummary *)s)->fake_visible_count)
+			record->visible_count = ((CamelVeeSummary *)s)->fake_visible_count;
+		else
+			record->visible_count = s->visible_count;
+		((CamelVeeSummary *)s)->fake_visible_count = 0;
+
 		record->jnd_count = s->junk_not_deleted_count;
 	} else {
 		/* Either first time, or by force we search the count */
@@ -562,7 +568,11 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
 	GList *node;
-	
+
+	if (((CamelVeeSummary *)folder->summary)->fake_visible_count) 
+		folder->summary->visible_count = ((CamelVeeSummary *)folder->summary)->fake_visible_count;
+	((CamelVeeSummary *)folder->summary)->fake_visible_count = 0;
+
 	CAMEL_VEE_FOLDER_LOCK(vf, subfolder_lock);
 
 	node = p->folders;
@@ -2113,6 +2123,20 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 	p->changed_lock = g_mutex_new();
 }
 
+void
+camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
+{
+	camel_object_unhook_event((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
+
+}
+
+void
+camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
+{
+	camel_object_hook_event((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
+}
+
+
 static void
 vee_folder_stop_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
@@ -2191,10 +2215,15 @@ void
 camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex)
 {
 	CamelFIRecord * record;
+	time_t start, end;
 
 	/* Save the counts to DB */
+	start = time(NULL);
 	record = summary_header_to_db (vf->summary, ex);
 	camel_db_write_folder_info_record (vf->parent_store->cdb_w, record, ex);
+	end = time(NULL);
+	dd(printf("Sync for vfolder '%s': %ld secs\n", vf->full_name, end-start));
+
 	g_free (record);
 }
 

@@ -49,6 +49,7 @@ struct _CamelVeeMessageInfo {
 struct _CamelVeeSummary {
 	CamelFolderSummary summary;
 	gboolean force_counts;
+	guint32 fake_visible_count;
 };
 
 struct _CamelVeeSummaryClass {

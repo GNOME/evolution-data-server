@@ -34,12 +34,14 @@
 #include "camel-store.h"
 #include "camel-vee-summary.h"
 #include "camel-vee-folder.h"
+#include "camel-vee-store.h"
 #include "camel-private.h"
 #include "camel-string-utils.h"
 
 #define d(x)
 
 static CamelFolderSummaryClass *camel_vee_summary_parent;
+const char *unread_str = " (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n";
 
 static void
 vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
@@ -172,11 +174,26 @@ static gboolean
 vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 {
 	int res = FALSE;
+	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
+	const char *exp = g_getenv("CAMEL_VFOLDER_UNREAD_EXP");
+	gboolean hacked_unread_folder = FALSE;
+
+	/* HACK: Ugliest of all hacks. Its virtually not possible now
+	 * to maintain counts and the non matching uids of unread vfolder here.
+	 * So, I hardcode unread vfolder expression and hack it. */
+	if (!exp || !*exp)
+		exp = unread_str;
+	if (camel_debug("vfolderexp"))
+		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
+
+	if (strstr(exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
+		hacked_unread_folder = TRUE;
 
 	if (mi->uid) {
 		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;
 		guint32 visible, unread, deleted, junked, junked_not_deleted;
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		CamelVeeSummary *vsummary = (CamelVeeSummary *)mi->summary;
 
 		HANDLE_NULL_INFO(FALSE);
 		camel_object_get(rmi->summary->folder, NULL,
@@ -184,18 +201,28 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 				 CAMEL_FOLDER_VISIBLE, &old_visible,
 				 CAMEL_FOLDER_JUNKED, &old_junked,
 				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &old_junked_not_deleted,
-				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);		
+				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);
+
+		if (hacked_unread_folder)
+			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+
 		camel_folder_freeze(rmi->summary->folder);
 		res = camel_message_info_set_flags(rmi, flags, set);
 		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 		camel_folder_thaw(rmi->summary->folder);
-	
+
+		if (hacked_unread_folder)
+			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+
 		camel_object_get(rmi->summary->folder, NULL,
 				 CAMEL_FOLDER_DELETED, &deleted,
 				 CAMEL_FOLDER_VISIBLE, &visible,
 				 CAMEL_FOLDER_JUNKED, &junked,
 				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &junked_not_deleted,
 				 CAMEL_FOLDER_UNREAD, &unread, NULL);
+		if (hacked_unread_folder && !vsummary->fake_visible_count)
+			vsummary->fake_visible_count = mi->summary->visible_count;
+
 		/* Keep the summary in sync */
 		mi->summary->unread_count += unread - old_unread;
 		mi->summary->deleted_count += deleted - old_deleted;
@@ -203,7 +230,35 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
 		mi->summary->visible_count += visible - old_visible;
 
+		if (vsummary->fake_visible_count || hacked_unread_folder)
+			vsummary->fake_visible_count += visible - old_visible;
+
 		d(printf("VF %d %d %d %d %d\n", mi->summary->unread_count, mi->summary->deleted_count, mi->summary->junk_count, mi->summary->junk_not_deleted_count, mi->summary->visible_count));
+
+		/* This is where the ugly-created-hack is used */
+		if (hacked_unread_folder && unread - old_unread != 0) {
+			CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+			GPtrArray *match, *array;
+
+			camel_folder_change_info_change_uid(changes, mi->uid);
+
+			array = g_ptr_array_new (); 
+			g_ptr_array_add (array, (gpointer)rmi->uid);
+
+			match = camel_folder_search_by_uids (rmi->summary->folder, vf->expression, array, NULL);
+			if ((match && !match->len) || !match) {
+				vsummary->fake_visible_count--;
+			} else {
+				vsummary->fake_visible_count++;
+			}
+
+			g_ptr_array_free (array, TRUE);
+			if (match)
+				camel_folder_search_free(rmi->summary->folder, match);
+
+			camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+			camel_folder_change_info_free(changes);
+		}		
 		camel_message_info_free (rmi);
 	}
  
@@ -330,6 +385,7 @@ camel_vee_summary_new(CamelFolder *parent)
 	s = (CamelVeeSummary *)camel_object_new(camel_vee_summary_get_type());
 	s->summary.folder = parent;
 	s->force_counts = FALSE;
+	s->fake_visible_count = 0;
 
         /* FIXME[disk-summary] fix exceptions and note return values */
 	/* FIXME[disk-summary] if Evo's junk/trash vfolders make it VJunk
