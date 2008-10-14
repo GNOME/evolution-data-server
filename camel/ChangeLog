@@ -1,5 +1,12 @@
 2008-10-06  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #554455
+
+	* camel/camel-folder-search.c: Allow thread based searches by falling
+	back on the old in-memory search model.
+
+2008-10-06  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fixes lots of bugs and breaks ABI
 
 	* camel/camel-db.c: Added new APIs and support for cloning handles.

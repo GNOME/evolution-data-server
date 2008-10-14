@@ -422,8 +422,8 @@ camel_folder_search_count(CamelFolderSearch *search, const char *expr, CamelExce
 	
 	p->ex = ex;
 
-	/* We route body-contains search and uid search through memory and not via db. */
-	if (strstr((const char *) expr, "body-contains")) {
+	/* We route body-contains search and thread based search through memory and not via db. */
+	if (strstr((const char *) expr, "body-contains") || strstr((const char *) expr, "match-threads")) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary(search->folder);
 
@@ -547,8 +547,8 @@ camel_folder_search_search(CamelFolderSearch *search, const char *expr, GPtrArra
 	
 	p->ex = ex;
 
-	/* We route body-contains search and uid search through memory and not via db. */
-	if (uids || strstr((const char *) expr, "body-contains")) {
+	/* We route body-contains / thread based search and uid search through memory and not via db. */
+	if (uids || strstr((const char *) expr, "body-contains") || strstr((const char *) expr, "match-threads")) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary(search->folder);
 
