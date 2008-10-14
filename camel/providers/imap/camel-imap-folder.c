@@ -889,7 +889,8 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 		g_datalist_clear (&data);
 	}
 
-	if (summary_got == 0) {
+	if (summary_got == 0 && summary_len == 0) {
+		camel_operation_end (NULL);
 		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 		g_free(new);
 		return;
