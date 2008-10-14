@@ -239,8 +239,7 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
          libglade-2.0 >= libglade_minimum_version
          libgnome-2.0 >= libgnome_minimum_version
          libxml-2.0 >= libxml_minimum_version
-         libsoup-2.4 >= libsoup_minimum_version
-		 sqlite3 >= sqlite_minimum_version])
+         libsoup-2.4 >= libsoup_minimum_version])
 
 dnl **************************************************
 dnl * regex checking
@@ -1462,7 +1461,7 @@ dnl ****************************************
 
 dnl --- libedataserver, libedataserverui, libebackend flags
 
-E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr sqlite3"
+E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
@@ -1585,7 +1584,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
 
-EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 gthread-2.0, 
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, 
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
 	              -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
