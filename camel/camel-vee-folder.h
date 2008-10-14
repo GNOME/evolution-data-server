@@ -87,6 +87,9 @@ void	     camel_vee_folder_set_folders	(CamelVeeFolder *vf, GList *folders);
 int          camel_vee_folder_rebuild_folder(CamelVeeFolder *vf, CamelFolder *sub, CamelException *ex);
 void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const char *expr);
 
+void	     camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
+void	     camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
+
 void	     camel_vee_folder_hash_folder	(CamelFolder *folder, char buffer[8]);
 void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
 

@@ -1,5 +1,14 @@
 2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #546637
+
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-folder.h:
+	* camel/camel-vee-summary.c: Redo for unread vfolder.
+	* camel/camel-vee-summary.h:
+
+2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #552261
 
 	* camel-folder-summary.c: Don't expose sqlite3 header outside.
