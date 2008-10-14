@@ -33,6 +33,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel/camel-data-cache.h"
+#include "camel/camel-db.h"
 #include "camel/camel-debug.h"
 #include "camel/camel-file-utils.h"
 #include "camel/camel-mime-message.h"

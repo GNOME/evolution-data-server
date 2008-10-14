@@ -34,6 +34,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include "camel-db.h"
 #include "camel-file-utils.h"
 #include "camel-mime-message.h"
 #include "camel-stream-null.h"

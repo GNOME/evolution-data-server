@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include "camel-db.h"
 #include "camel-data-cache.h"
 #include "camel-file-utils.h"
 #include "camel-folder.h"

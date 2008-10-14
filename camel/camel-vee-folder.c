@@ -33,6 +33,7 @@
 #include <libedataserver/e-memory.h>
 #endif
 
+#include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-folder-search.h"

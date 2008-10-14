@@ -38,6 +38,7 @@
 
 #include <libedataserver/e-memory.h>
 
+#include "camel-db.h"
 #include "camel-mime-message.h"
 #include "camel-operation.h"
 #include "camel-private.h"

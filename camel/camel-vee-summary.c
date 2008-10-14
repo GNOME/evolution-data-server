@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include "camel-db.h"
 #include "camel-folder.h"
 #include "camel-store.h"
 #include "camel-vee-summary.h"

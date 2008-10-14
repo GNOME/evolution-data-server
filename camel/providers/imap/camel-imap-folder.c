@@ -39,6 +39,7 @@
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-time-utils.h>
 
+#include "camel-db.h"
 #include "camel-data-wrapper.h"
 #include "camel-debug.h"
 #include "camel-imap-journal.h"

@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-db.h"
 #include "camel-exception.h"
 #include "camel-mime-message.h"
 #include "camel-private.h"
