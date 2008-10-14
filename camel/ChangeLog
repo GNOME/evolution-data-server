@@ -1,3 +1,10 @@
+2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #554455
+
+	* camel/camel-folder-search.c: Allow thread based searches by falling
+	back on the old in-memory search model.
+
 2008-10-08  Sankar P  <psankar@novell.com>
 
 	* camel-folder.c (count_by_expression):
