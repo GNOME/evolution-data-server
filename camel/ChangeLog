@@ -1,5 +1,18 @@
 2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #552261
+
+	* camel-folder-summary.c: Don't expose sqlite3 header outside.
+	* camel-folder-summary.h:
+	* camel-folder.c:
+	* camel-store.c:
+	* camel-store.h:
+	* camel-vee-folder.c:
+	* camel-vee-summary.c:
+	* camel-vtrash-folder.c:
+
+2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #554455
 
 	* camel/camel-folder-search.c: Allow thread based searches by falling

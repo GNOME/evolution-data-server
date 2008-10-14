@@ -1,3 +1,13 @@
+2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #552261
+
+	* camel-local-summary.c: Include camel-db.h
+	* camel-maildir-summary.c:
+	* camel-mbox-summary.c:
+	* camel-mh-summary.c:
+	* camel-spool-summary.c:
+
 2008-09-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-local-store.c (camel_local_store_finalize):

@@ -32,7 +32,6 @@
 
 #include <camel/camel-object.h>
 #include <camel/camel-service.h>
-#include <camel/camel-db.h>
 
 G_BEGIN_DECLS
 
@@ -117,13 +116,15 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_VJUNK		(1 << 3)
 #define CAMEL_STORE_PROXY		(1 << 4)
 
+struct _CamelDB;
+
 struct _CamelStore {
 	CamelService parent_object;
 	struct _CamelStorePrivate *priv;
 	
 	CamelObjectBag *folders;
-	CamelDB *cdb_r;
-	CamelDB *cdb_w;
+	struct _CamelDB *cdb_r;
+	struct _CamelDB *cdb_w;
 
 	guint32 flags;
 	guint32 mode;

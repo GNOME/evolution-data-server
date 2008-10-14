@@ -36,6 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include "camel/camel-db.h"
 #include "camel/camel-debug.h"
 #include "camel/camel-exception.h"
 #include "camel/camel-file-utils.h"

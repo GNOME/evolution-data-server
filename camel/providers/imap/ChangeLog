@@ -1,3 +1,11 @@
+2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #552261
+
+	* camel-imap-folder.c: Include camel-db.h
+	* camel-imap-store.c:
+	* camel-imap-summary.c:
+
 2008-09-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #553298

@@ -27,7 +27,6 @@
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
 #include <camel/camel-index.h>
-#include <camel/camel-db.h>
 
 #define CAMEL_FOLDER_SUMMARY_TYPE         camel_folder_summary_get_type ()
 #define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
@@ -255,6 +254,9 @@ struct _CamelFolderSummary {
 	gpointer later[4];
 };
 
+struct _CamelMIRecord;
+struct _CamelFIRecord;
+
 struct _CamelFolderSummaryClass {
 	CamelObjectClass parent_class;
 
@@ -263,12 +265,12 @@ struct _CamelFolderSummaryClass {
 	int (*summary_header_save)(CamelFolderSummary *, FILE *);
 
 	/* Load/Save folder summary from DB*/
-	int (*summary_header_from_db)(CamelFolderSummary *, CamelFIRecord *);
-	CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, CamelException *ex);
+	int (*summary_header_from_db)(CamelFolderSummary *, struct _CamelFIRecord *);
+	struct _CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, CamelException *ex);
 	CamelMessageInfo * (*message_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord*);
-	CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
-	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, CamelMIRecord *);
-	int (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, CamelMIRecord *);
+	struct _CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
+	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
+	int (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, struct _CamelMIRecord *);
 	
 	/* create/save/load an individual message info */
 	CamelMessageInfo * (*message_info_new_from_header)(CamelFolderSummary *, struct _camel_header_raw *);
