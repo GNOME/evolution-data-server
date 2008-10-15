@@ -1,5 +1,11 @@
 2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for bug #556372
+
+	* camel/camel-folder-summary.c: Update counts to summary on sync.
+
+2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-folder-summary.c: (perform_content_info_load_from_db),
 	(perform_content_info_save_to_db): Save/load Content info well in DB.
 	Imap cached messages aren't coming up due to this.

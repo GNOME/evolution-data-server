@@ -2644,7 +2644,13 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 		record->visible_count = 0;
 	if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
 		record->jnd_count = 0;
-	
+
+	s->unread_count = record->unread_count;
+	s->deleted_count = record->deleted_count;
+	s->junk_count = record->junk_count;
+	s->visible_count = record->visible_count;
+	s->junk_not_deleted_count = record->jnd_count;
+
 	return record;	
 }
 
