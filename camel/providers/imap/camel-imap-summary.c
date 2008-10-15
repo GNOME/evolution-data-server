@@ -376,7 +376,11 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	guint32 type=0;
 	
 	if (part) {
-		EXTRACT_FIRST_DIGIT (type);
+		if (*part == ' ')
+			part++;
+		if (part){
+			EXTRACT_FIRST_DIGIT (type);
+		}
 	}
 	mir->cinfo = part;
 	if (type)
@@ -397,11 +401,16 @@ content_info_load (CamelFolderSummary *s, FILE *in)
 static int
 content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir)
 {
+	char *oldr;
 	if (info->type) {
-		mir->cinfo = g_strdup ("1");
+		oldr = mir->cinfo;
+		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
+		g_free(oldr);
 		return camel_imap_summary_parent->content_info_to_db (s, info, mir);
 	} else {
-		mir->cinfo = g_strdup ("0");
+		oldr = mir->cinfo;
+		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
+		g_free(oldr);
 		return 0;
 	}
 }
