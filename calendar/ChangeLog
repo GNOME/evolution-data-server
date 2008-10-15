@@ -1,3 +1,9 @@
+2008-10-15  Suman Manjunath  <msuman@novell.com>
+
+	* backends/google/e-cal-backend-google.c
+	(e_cal_backend_google_open): Fixed a typo in checking offline calendar
+	availability - 'offline-sync' -> 'offline_sync'.
+
 2008-09-24  Ross Burton  <ross@linux.intel.com>
 
 	* libecal/libecal.pc.in:
