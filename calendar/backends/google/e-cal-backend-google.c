@@ -1176,7 +1176,7 @@ e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean onl
 
 		cbgo->priv->read_only = TRUE;
 		esource = e_cal_backend_get_source (E_CAL_BACKEND(cbgo));
-		display_contents = e_source_get_property (esource, "offline-sync");
+		display_contents = e_source_get_property (esource, "offline_sync");
 
 		if(!display_contents || !g_str_equal (display_contents, "1")) {
 			g_mutex_unlock(priv->mutex);
