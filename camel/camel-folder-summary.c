@@ -96,7 +96,7 @@ extern int strdup_count, malloc_count, free_count;
 #define EXTRACT_FIRST_STRING(val) len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
 #define EXTRACT_STRING(val) if (*part) part++; len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
+#define EXTRACT_DIGIT(val) if (*part && *part == ' ') part++; val=strtoul (part, &part, 10);
 
 /* trivial lists, just because ... */
 struct _node {
@@ -660,6 +660,7 @@ perform_content_info_load_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	guint32 count;
 	CamelMessageContentInfo *ci, *pci;
 	char *part;
+
 	ci = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->content_info_from_db (s, mir);
 	if (ci == NULL)
 		return NULL;
@@ -1231,9 +1232,10 @@ perform_content_info_save_to_db (CamelFolderSummary *s, CamelMessageContentInfo 
 {
 	CamelMessageContentInfo *part;
 	char *oldr;
+
 	if (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->content_info_to_db (s, ci, record) == -1)
 		return -1;
-	
+
 	oldr = record->cinfo;
 	record->cinfo = g_strdup_printf ("%s %d", oldr, my_list_size ((struct _node **)&ci->childs));
 	g_free (oldr);

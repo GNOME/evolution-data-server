@@ -2874,6 +2874,7 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 					if (body) {
 						/* NB: small race here, setting the info.content */
 						imap_parse_body ((const char **) &body, folder, mi->info.content);
+						mi->info.dirty = TRUE;
 						camel_folder_summary_touch (folder->summary);
 					}
 

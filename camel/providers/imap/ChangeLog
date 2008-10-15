@@ -1,3 +1,9 @@
+2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-imap-folder.c: (imap_get_message): Mark info as dirty when so.
+	* camel-imap-summary.c: (content_info_from_db),
+	(content_info_to_db): Save/load cinfo to db well.
+
 2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #552261
