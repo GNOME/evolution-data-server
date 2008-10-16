@@ -1,5 +1,13 @@
 2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel/camel-db.c: Remove console spew.
+	* camel/camel-folder-search.c:
+	* camel/camel-store.c:
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c:
+
+2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #556495
 
 	* camel/camel-db.c:

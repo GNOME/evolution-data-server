@@ -704,6 +704,9 @@ vee_search_by_expression(CamelFolder *folder, const char *expression, CamelExcep
 		if (g_hash_table_lookup(searched, f) == NULL) {
 			camel_vee_folder_hash_folder(f, hash);
 			matches = camel_folder_search_by_expression(f, expr, ex);
+			if (camel_exception_is_set(ex) && strncmp(camel_exception_get_description(ex), "no such table", 13)) {
+				camel_exception_clear(ex);
+			}
 			if (matches) {
 				for (i = 0; i < matches->len; i++) {
 					char *uid = matches->pdata[i], *vuid;
