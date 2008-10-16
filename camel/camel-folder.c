@@ -421,19 +421,19 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 			switch (tag & CAMEL_ARG_TAG) {
 			case CAMEL_FOLDER_ARG_UNREAD:
-				count = unread;
+				count = unread == -1 ? 0 : unread;
 				break;
 			case CAMEL_FOLDER_ARG_DELETED:
-				count = deleted;
+				count = deleted == -1 ? 0 : deleted;
 				break;
 			case CAMEL_FOLDER_ARG_JUNKED:
-				count = junked;
+				count = junked == -1 ? 0 : junked;
 				break;
 			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
-				count = junked_not_deleted;
+				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
 				break;
 			case CAMEL_FOLDER_ARG_VISIBLE:
-				count = visible;
+				count = visible == -1 ? 0 : visible;
 				break;
 			}
 

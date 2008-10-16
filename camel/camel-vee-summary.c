@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 
 #include "camel-db.h"
+#include "camel-debug.h"
 #include "camel-folder.h"
 #include "camel-store.h"
 #include "camel-vee-summary.h"

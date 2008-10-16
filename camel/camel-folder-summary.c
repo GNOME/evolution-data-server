@@ -493,6 +493,40 @@ camel_folder_summary_array(CamelFolderSummary *s)
 	return res;
 }
 
+/**
+ * camel_folder_summary_get_hashtable:
+ * @summary: a #CamelFolderSummary object
+ * 
+ * Obtain a copy of the summary array in the hashtable.  This is done atomically,
+ * so cannot contain empty entries.
+ *
+ * It must be freed using camel_folder_summary_free_hashtable
+ *
+ * Returns: a #GHashTable of uids
+ **/
+GHashTable *
+camel_folder_summary_get_hashtable(CamelFolderSummary *s)
+{
+	GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
+	int i;
+	
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+
+	for (i=0;i<s->uids->len;i++)
+		g_hash_table_insert (hash, (gpointer)camel_pstring_strdup ((char *)g_ptr_array_index(s->uids, i)), GINT_TO_POINTER(1));
+
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
+	return hash;
+}
+
+void
+camel_folder_summary_free_hashtable (GHashTable *ht)
+{
+	g_hash_table_foreach (ht, (GHFunc)camel_pstring_free, NULL);
+	g_hash_table_destroy (ht);
+}
+
 CamelMessageInfo *
 camel_folder_summary_peek_info (CamelFolderSummary *s, const char *uid)
 {

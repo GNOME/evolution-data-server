@@ -7,6 +7,16 @@
 	* camel/camel-vee-folder.c: When things don't match, remove them from
 	db and force a count.
 
+2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-folder-summary.c (camel_folder_summary_get_hashtable),
+	(camel_folder_summary_free_hashtable): Add new functions to get hash
+	table of summary.
+	* camel-folder-summary.h:
+	* camel-folder.c (folder_getv): Fix negative/overflow of unread/counts
+	* camel-vee-summary.c: Fix warning
+	* camel-vtrash-folder.c (vtrash_getv): Fix junk/trash counts.
+
 2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #556372
