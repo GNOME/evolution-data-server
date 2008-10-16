@@ -307,8 +307,9 @@ camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, Ca
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 		
 	if (ret != SQLITE_OK) {
-		g_print ("Error in SQL SELECT statement: %s [%s]\n", query, errmsg);
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _(errmsg));
+		d(g_print ("Error in SQL SELECT statement: %s [%s]\n", query, errmsg));
+		if (ex)
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _(errmsg));
 		sqlite3_free (errmsg);
 		errmsg = NULL;
 	}
@@ -473,7 +474,8 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 		
   	if (ret != SQLITE_OK) {
     		d(g_warning ("Error in select statement '%s' [%s].\n", stmt, errmsg));
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, errmsg);
+		if (ex)
+			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, errmsg);
 		sqlite3_free (errmsg);
 		errmsg = NULL;
   	}

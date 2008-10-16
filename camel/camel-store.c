@@ -236,11 +236,13 @@ construct (CamelService *service, CamelSession *session,
 
 	/* This is for reading from the store */
 	store->cdb_r = camel_db_open (store_db_path, ex);
-	printf("store_db_path %s\n", store_db_path);
+	if (camel_debug("sqlite"))
+		printf("store_db_path %s\n", store_db_path);
 	if (camel_exception_is_set (ex)) {
 		char *store_path;
 		
-		g_print ("Failure for store_db_path : [%s]\n", store_db_path);
+		if (camel_debug("sqlite"))
+			g_print ("Failure for store_db_path : [%s]\n", store_db_path);
 		g_free (store_db_path);		
 
 		store_path =  camel_session_get_storage_path (session, service, ex);

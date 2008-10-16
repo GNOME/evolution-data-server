@@ -428,7 +428,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 
 	if (mi) {
 		/* Possible that the entry is loaded, see if it has the summary */
-		g_message ("%s - already there\n", vuid);
+		d(g_message ("%s - already there\n", vuid));
 		g_free (vuid);
 		if (!mi->summary) {
 			mi->summary = summary;
