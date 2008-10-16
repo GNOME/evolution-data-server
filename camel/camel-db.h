@@ -121,6 +121,7 @@ int camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex
 int camel_db_delete_uid (CamelDB *cdb, const char *folder, const char *uid, CamelException *ex);
 /*int camel_db_delete_uids (CamelDB *cdb, CamelException *ex, int nargs, ... );*/
 int camel_db_delete_uids (CamelDB *cdb, const char* folder_name, GSList *uids, CamelException *ex);
+int camel_db_delete_vuids (CamelDB *cdb, const char* folder_name, char *shash, GSList *uids, CamelException *ex);
 
 int camel_db_create_folders_table (CamelDB *cdb, CamelException *ex);
 int camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex);

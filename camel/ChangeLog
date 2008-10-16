@@ -1,3 +1,12 @@
+2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #556495
+
+	* camel/camel-db.c:
+	* camel/camel-db.h:
+	* camel/camel-vee-folder.c: When things don't match, remove them from
+	db and force a count.
+
 2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #556372

@@ -920,8 +920,8 @@ camel_db_delete_uid (CamelDB *cdb, const char *folder, const char *uid, CamelExc
 	return ret;
 }
 
-int
-camel_db_delete_uids (CamelDB *cdb, const char * folder_name, GSList *uids, CamelException *ex)
+static int
+cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_prefix, const char *field, CamelException *ex)
 {
 	char *tmp;
 	int ret;
@@ -929,14 +929,16 @@ camel_db_delete_uids (CamelDB *cdb, const char * folder_name, GSList *uids, Came
 	GString *str = g_string_new ("DELETE FROM ");
 	GSList *iterator;
 
-	tmp = sqlite3_mprintf ("%Q WHERE uid IN (", folder_name); 
+	tmp = sqlite3_mprintf ("%Q WHERE %s IN (", folder_name, field); 
 	g_string_append_printf (str, "%s ", tmp);
 	sqlite3_free (tmp);
 
 	iterator = uids;
 
 	while (iterator) {
-		tmp = sqlite3_mprintf ("%Q", (char *) iterator->data);
+		char *foo = g_strdup_printf("%s%s", uid_prefix, (char *) iterator->data);
+		tmp = sqlite3_mprintf ("%Q", foo);
+		g_free(foo);
 		iterator = iterator->next;
 
 		if (first == TRUE) {
@@ -955,6 +957,18 @@ camel_db_delete_uids (CamelDB *cdb, const char * folder_name, GSList *uids, Came
 	g_string_free (str, TRUE);
 
 	return ret;
+}
+
+int
+camel_db_delete_uids (CamelDB *cdb, const char * folder_name, GSList *uids, CamelException *ex)
+{
+	return cdb_delete_ids (cdb, folder_name, uids, "", "uid", ex);
+}
+
+int
+camel_db_delete_vuids (CamelDB *cdb, const char * folder_name, char *hash, GSList *uids, CamelException *ex)
+{
+	return cdb_delete_ids (cdb, folder_name, uids, hash, "vuid", ex);
 }
 
 int
