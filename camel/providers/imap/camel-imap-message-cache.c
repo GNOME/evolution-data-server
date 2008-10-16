@@ -153,6 +153,7 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 	char *uid, *p;
 	GPtrArray *deletes;
 	GError *error = NULL;
+	GHashTable *shash;
 
 	dir = g_dir_open (path, 0, &error);
 	if (!dir) {
@@ -169,6 +170,8 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 	cache->parts = g_hash_table_new (g_str_hash, g_str_equal);
 	cache->cached = g_hash_table_new (NULL, NULL);
 	deletes = g_ptr_array_new ();
+	shash = camel_folder_summary_get_hashtable (summary);
+
 	while ((dname = g_dir_read_name (dir))) {
 		if (!isdigit (dname[0]))
 			continue;
@@ -178,7 +181,7 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 		else
 			uid = g_strdup (dname);
 
-		if (camel_folder_summary_check_uid(summary, uid))
+		if (g_hash_table_lookup(shash, uid))
 			cache_put (cache, uid, dname, NULL);
 		else
 			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, dname)); 
@@ -193,6 +196,8 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 		g_ptr_array_remove_index_fast (deletes, 0);
 	}
 	g_ptr_array_free (deletes, TRUE);
+
+	camel_folder_summary_free_hashtable (shash);
 
 	return cache;
 }

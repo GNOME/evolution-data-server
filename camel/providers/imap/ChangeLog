@@ -1,3 +1,8 @@
+2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-imap-message-cache.c (camel_imap_message_cache_new):
+	Optimize/speed up loading.
+
 2008-10-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-imap-folder.c: (imap_get_message): Mark info as dirty when so.
