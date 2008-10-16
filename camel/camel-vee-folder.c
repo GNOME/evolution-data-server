@@ -1061,7 +1061,8 @@ static int
 vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 {
 	GPtrArray *match, *all;
-	GHashTable *allhash, *matchhash;
+	GHashTable *allhash, *matchhash, *fullhash;
+	GSList *del_list = NULL;
 	CamelFolder *f = source;
 	CamelFolder *folder = (CamelFolder *)vf;
 	int i, n, count, start, last;
@@ -1119,10 +1120,25 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 		g_hash_table_insert(matchhash, match->pdata[i], GINT_TO_POINTER (1));
 
 	allhash = g_hash_table_new(g_str_hash, g_str_equal);
+	fullhash = g_hash_table_new(g_str_hash, g_str_equal);
 	all = camel_folder_summary_array(f->summary);
-	for (i=0;i<all->len;i++)
+	for (i=0;i<all->len;i++) {
 		if (g_hash_table_lookup(matchhash, all->pdata[i]) == NULL)
 			g_hash_table_insert(allhash, all->pdata[i], GINT_TO_POINTER (1));
+		g_hash_table_insert(fullhash, all->pdata[i], GINT_TO_POINTER (1));
+	
+	}
+	count = match->len;
+	for (i=0; i<count; i++) {
+		if (!g_hash_table_lookup(fullhash, match->pdata[i])) {
+			g_hash_table_remove (matchhash, match->pdata[i]);
+			del_list = g_slist_prepend (del_list, match->pdata[i]); /* Free the original */
+			g_ptr_array_remove_index_fast (match, i);
+			i--;
+			count--;
+			continue;
+		}	
+	}
 
 	if (folder_unmatched != NULL)
 		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, summary_lock);
@@ -1221,9 +1237,19 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 	}
 
 	CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
+	
+	/* Del the unwanted things from the summary, we don't hold any locks now. */
+	if (del_list) {
+		camel_db_delete_vuids(folder->parent_store->cdb_w, folder->full_name, shash, del_list, NULL);
+		((CamelVeeSummary *)folder->summary)->force_counts = TRUE;
+		g_slist_foreach (del_list, (GFunc) camel_pstring_free, NULL);
+		g_slist_free (del_list);	
+	};
 
 	g_hash_table_destroy(matchhash);
 	g_hash_table_destroy(allhash);
+	g_hash_table_destroy(fullhash);
+
 	g_free(shash);
 	/* if expression not set, we only had a null list */
 	if (vf->expression == NULL || !rebuilded) {
