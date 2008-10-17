@@ -1,3 +1,12 @@
+2008-10-03  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #547243
+
+	* e-gw-item.c: (e_gw_item_new_from_soap_parameter):
+	* e-gw-connection.c: (e_gw_connection_get_attachment),
+	(e_gw_connection_get_attachment_base64):
+	Check for correct values to prevent invalid reads.
+
 2008-10-01  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #511947

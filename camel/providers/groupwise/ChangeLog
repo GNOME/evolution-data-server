@@ -1,3 +1,10 @@
+2008-10-17  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #547243
+
+	* camel-groupwise-folder.c: (groupwise_folder_item_to_msg):
+	Check for correct values to prevent invalid reads.
+
 2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #552261

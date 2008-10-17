@@ -1774,7 +1774,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 
 	msg = camel_mime_message_new ();
-	if (has_mime_822) {
+	if (has_mime_822 && body) {
 		temp_stream = camel_stream_mem_new_with_buffer (body, body_len);
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, temp_stream) == -1) {
 			camel_object_unref (msg);
