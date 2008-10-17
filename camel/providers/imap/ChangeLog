@@ -1,3 +1,10 @@
+2008-10-17  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #556688
+
+	* camel/providers/imap/camel-imap-folder.c: Sync before emit the
+	signal.
+
 2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-imap-message-cache.c (camel_imap_message_cache_new):
