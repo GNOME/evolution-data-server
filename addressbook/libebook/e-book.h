@@ -241,6 +241,9 @@ gboolean    e_book_is_online               (EBook       *book);
 gboolean    e_book_cancel                  (EBook   *book,
 					    GError **error);
 
+gboolean    e_book_cancel_async_op	   (EBook   *book,
+					    GError **error);
+
 /* Identity */
 gboolean    e_book_get_self                (EContact **contact, EBook **book, GError **error);
 gboolean    e_book_set_self                (EBook *book, EContact *contact, GError **error);
