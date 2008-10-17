@@ -176,7 +176,10 @@ e_book_new_op (EBook *book, gboolean sync)
 	op->flag = e_flag_new ();
 
 	op->synchronous = sync;
-	op->opid = book->priv->current_op_id++;
+	if (sync)
+		op->opid = 0;
+	else
+		op->opid = book->priv->current_op_id++;
 
 	g_hash_table_insert (book->priv->id_to_op,
 			     &op->opid, op);
@@ -194,9 +197,7 @@ e_book_get_op (EBook *book, int opid)
 static EBookOp*
 e_book_get_current_sync_op (EBook *book)
 {
-	guint32 opid = 0;
-	return (EBookOp*)g_hash_table_lookup (book->priv->id_to_op,
-					      &opid);
+	return e_book_get_op (book, 0);
 }
 
 static void
@@ -2487,46 +2488,18 @@ e_book_response_generic (EBook       *book,
 	g_mutex_unlock (book->priv->mutex);
 }
 
-/**
- * e_book_cancel:
- * @book: an #EBook
- * @error: a #GError to set on failure
- *
- * Used to cancel an already running operation on @book.  This
- * function makes a synchronous CORBA to the backend telling it to
- * cancel the operation.  If the operation wasn't cancellable (either
- * transiently or permanently) or had already comopleted on the server
- * side, this function will return E_BOOK_STATUS_COULD_NOT_CANCEL, and
- * the operation will continue uncancelled.  If the operation could be
- * cancelled, this function will return E_BOOK_ERROR_OK, and the
- * blocked e_book function corresponding to current operation will
- * return with a status of E_BOOK_STATUS_CANCELLED.
- *
- * Return value: %TRUE on success, %FALSE otherwise
- **/
-gboolean
-e_book_cancel (EBook   *book,
-	       GError **error)
+static gboolean
+do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
 {
-	EBookOp *op;
 	EBookStatus status;
 	gboolean rv;
 	CORBA_Environment ev;
-
-	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
-
-	g_mutex_lock (book->priv->mutex);
-
-	if (e_book_get_current_sync_op (book) == NULL) {
-		g_mutex_unlock (book->priv->mutex);
+	
+	if (op == NULL) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
-			     _("%s: there is no current operation"), "e_book_cacnel");
+			     _("%s: there is no current operation"), func_name);
 		return FALSE;
 	}
-
-	op = e_book_get_current_sync_op (book);
-
-	g_mutex_unlock (book->priv->mutex);
 
 	status = GNOME_Evolution_Addressbook_Book_cancelOperation(book->priv->corba_book, &ev);
 
@@ -2549,11 +2522,72 @@ e_book_cancel (EBook   *book,
 	}
 	else {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
-			     _("%s: could not cancel"), "e_book_cancel");
+			     _("%s: could not cancel"), func_name);
 		rv = FALSE;
 	}
 
 	return rv;
+}
+
+/**
+ * e_book_cancel:
+ * @book: an #EBook
+ * @error: a #GError to set on failure
+ *
+ * Used to cancel an already running operation on @book.  This
+ * function makes a synchronous CORBA to the backend telling it to
+ * cancel the operation.  If the operation wasn't cancellable (either
+ * transiently or permanently) or had already comopleted on the server
+ * side, this function will return E_BOOK_STATUS_COULD_NOT_CANCEL, and
+ * the operation will continue uncancelled.  If the operation could be
+ * cancelled, this function will return E_BOOK_ERROR_OK, and the
+ * blocked e_book function corresponding to current operation will
+ * return with a status of E_BOOK_STATUS_CANCELLED.
+ *
+ * Return value: %TRUE on success, %FALSE otherwise
+ **/
+gboolean
+e_book_cancel (EBook   *book,
+	       GError **error)
+{
+	EBookOp *op;
+
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
+
+	g_mutex_lock (book->priv->mutex);
+	op = e_book_get_current_sync_op (book);
+	g_mutex_unlock (book->priv->mutex);
+
+	return do_cancel (book, error, op, "e_book_cancel");
+}
+
+/**
+ * e_book_cancel_async_op:
+ * Similar to above e_book_cancel function, only cancels last, still running,
+ * asynchronous operation.
+ **/
+gboolean
+e_book_cancel_async_op (EBook *book, GError **error)
+{
+	EBookOp *op;
+	guint32 opid;
+
+	e_return_error_if_fail (book && E_IS_BOOK (book),       E_BOOK_ERROR_INVALID_ARG, FALSE);
+
+	g_mutex_lock (book->priv->mutex);
+
+	/* find nearest unfinished async op to cancel */
+	op = NULL;
+	for (opid = book->priv->current_op_id; opid > 0 && !op; opid--) {
+		op = e_book_get_op (book, opid);
+
+		if (op && op->synchronous)
+			op = NULL;
+	}
+
+	g_mutex_unlock (book->priv->mutex);
+
+	return do_cancel (book, error, op, "e_book_cancel_async_op");
 }
 
 

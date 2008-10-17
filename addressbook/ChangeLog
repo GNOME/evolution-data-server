@@ -1,3 +1,13 @@
+2008-10-17  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #364542
+
+	* libebook/e-book.c: (e_book_new_op), (e_book_get_current_sync_op):
+	Do set opid to 0 for sync operations, thus we will find it later.
+	* libebook/e-book.h: (e_book_cancel_async_op):
+	* libebook/e-book.c: (e_book_cancel_async_op), (do_cancel),
+	(e_book_cancel): Be able to cancel async op too (at least any).
+
 2008-09-29  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #497928
