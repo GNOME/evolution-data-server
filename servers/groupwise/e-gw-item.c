@@ -1951,7 +1951,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			msg = soup_soap_parameter_get_string_value (part);
 			length = soup_soap_parameter_get_property (part, "length");
 
-			if (msg && length) {
+			if (msg && length && atoi (length) > 0) {
 				len = atoi (length);
 				item->priv->message = g_base64_decode  (msg, &len);
 				if (!(item->priv->message)) {

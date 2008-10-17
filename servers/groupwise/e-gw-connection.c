@@ -2726,10 +2726,13 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
 		buffer = soup_soap_parameter_get_string_value (param) ;
 	}
 
-	if (buffer && buf_length) {
+	if (buffer && buf_length && atoi (buf_length) > 0) {
 		gsize len = atoi (buf_length) ;
 		*attachment = g_base64_decode (buffer,&len) ;
 		*attach_length = len ;
+	} else {
+		*attachment = NULL;
+		*attach_length = 0;
 	}
 
 	/* free memory */
@@ -2794,7 +2797,7 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const char *id, int o
 		buffer = soup_soap_parameter_get_string_value (param) ;
 	}
 
-	if (buffer && buf_length) {
+	if (buffer && buf_length && atoi (buf_length) > 0) {
 		int len = atoi (buf_length) ;
 		*attachment = g_strdup (buffer);
 		*attach_length = len;
@@ -2802,6 +2805,10 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const char *id, int o
 			*offset_r = atoi (o_return);
 		else 
 			*offset_r = 0;
+	} else {
+		*attachment = NULL;
+		*attach_length = 0;
+		*offset_r = 0;
 	}
 
 	/* free memory */
