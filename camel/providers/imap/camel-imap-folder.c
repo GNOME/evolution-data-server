@@ -3538,11 +3538,11 @@ camel_imap_folder_changed (CamelFolder *folder, int exists,
 	if (exists > len && !camel_application_is_exiting)
 		imap_update_summary (folder, exists, changes, ex);
 
+	camel_folder_summary_save_to_db (folder->summary, ex);
 	if (camel_folder_change_info_changed (changes))
 		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
 
 	camel_folder_change_info_free (changes);
-	camel_folder_summary_save_to_db (folder->summary, ex);
 }
 
 static void
