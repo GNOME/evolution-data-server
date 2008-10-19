@@ -872,17 +872,25 @@ context_redirect (E2kContext *ctx, E2kHTTPStatus status,
 
 static void
 set_sf_prop (const char *propname, E2kPropType type,
-	     gpointer href, gpointer user_data)
+	     gpointer phref, gpointer user_data)
 {
 	ExchangeAccount *account = user_data;
+	const char *href = (const char *)phref;
+	char *tmp;
 
 	propname = strrchr (propname, ':');
-	if (!propname++)
+	if (!propname++ || !href || !*href)
 		return;
+
+	tmp = e2k_strdup_with_trailing_slash (href);
+	if (!tmp) {
+		g_warning ("Failed to add propname '%s' for href '%s'\n", propname, href);
+		return;
+	}
 
 	g_hash_table_insert (account->priv->standard_uris,
 			     g_strdup (propname),
-			     e2k_strdup_with_trailing_slash (href));
+			     tmp);
 }
 
 static const char *mailbox_info_props[] = {
