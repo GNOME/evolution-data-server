@@ -1,5 +1,14 @@
 2008-10-19  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #553944
+
+	* lib/e2k-context.c: (unsubscribe_internal), (destroy_sub_list),
+	(e2k_context_unsubscribe): Do not unsubscribe from the server when
+	destroying context and make copy of the uri, because it comes from
+	the structure we are going to free.
+
+2008-10-19  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #544141
 
 	* storage/exchange-account.c: (set_sf_prop): Do not store invalid
