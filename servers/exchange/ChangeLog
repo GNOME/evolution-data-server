@@ -1,3 +1,10 @@
+2008-10-19  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #544141
+
+	* storage/exchange-account.c: (set_sf_prop): Do not store invalid
+	values in 'standard_uris', it leads to crash later.
+
 2008-09-25  Milan Crha  <mcrha@redhat.com>
 
 	* storage/exchange-account.c: Removed unused header.
