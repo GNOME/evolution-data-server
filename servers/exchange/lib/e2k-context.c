@@ -125,7 +125,7 @@ static SoupLoggerLogLevel e2k_debug_response_filter (SoupLogger  *logger,
 #endif
 
 static gboolean renew_subscription (gpointer user_data);
-static void unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list);
+static void unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list, gboolean destrying);
 static gboolean do_notification (GIOChannel *source, GIOCondition condition, gpointer data);
 
 static void setup_message (SoupSession *session, SoupMessage *msg, SoupSocket *socket, gpointer user_data);
@@ -173,7 +173,7 @@ init (GObject *object)
 static void
 destroy_sub_list (gpointer uri, gpointer sub_list, gpointer ctx)
 {
-	unsubscribe_internal (ctx, uri, sub_list);
+	unsubscribe_internal (ctx, uri, sub_list, TRUE);
 	g_list_free (sub_list);
 }
 
@@ -2673,21 +2673,27 @@ unsubscribed (SoupSession *session, SoupMessage *msg, gpointer user_data)
 }
 
 static void
-unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list)
+unsubscribe_internal (E2kContext *ctx, const char *puri, GList *sub_list, gboolean destrying)
 {
 	GList *l;
 	E2kSubscription *sub;
 	SoupMessage *msg;
 	GString *subscription_ids = NULL;
+	char *uri = g_strdup (puri);
+	/* puri comes from sub->uri, but we are using it after sub is freed, thus making copy here */
 
 	for (l = sub_list; l; l = l->next) {
 		sub = l->data;
 		if (sub->id) {
-			if (!subscription_ids)
-				subscription_ids = g_string_new (sub->id);
-			else {
-				g_string_append_printf (subscription_ids,
+			/* do not send messages when destroying, because they are server on idle,
+			   when the context itself already gone */
+			if (!destrying) {
+				if (!subscription_ids)
+					subscription_ids = g_string_new (sub->id);
+				else {
+					g_string_append_printf (subscription_ids,
 							",%s", sub->id);
+				}
 			}
 			g_hash_table_remove (ctx->priv->subscriptions_by_id, sub->id);
 		}
@@ -2696,12 +2702,16 @@ unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list)
 
 	if (subscription_ids) {
 		msg = e2k_soup_message_new (ctx, uri, "UNSUBSCRIBE");
-		soup_message_headers_append (msg->request_headers,
-					     "Subscription-id",
-					     subscription_ids->str);
-		e2k_context_queue_message (ctx, msg, unsubscribed, NULL);
+		if (msg) {
+			soup_message_headers_append (msg->request_headers,
+						     "Subscription-id",
+						     subscription_ids->str);
+			e2k_context_queue_message (ctx, msg, unsubscribed, NULL);
+		}
 		g_string_free (subscription_ids, TRUE);
 	}
+
+	g_free (uri);
 }
 
 /**
@@ -2720,6 +2730,6 @@ e2k_context_unsubscribe (E2kContext *ctx, const char *uri)
 
 	sub_list = g_hash_table_lookup (ctx->priv->subscriptions_by_uri, uri);
 	g_hash_table_remove (ctx->priv->subscriptions_by_uri, uri);
-	unsubscribe_internal (ctx, uri, sub_list);
+	unsubscribe_internal (ctx, uri, sub_list, FALSE);
 	g_list_free (sub_list);
 }
