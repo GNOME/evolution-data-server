@@ -1,3 +1,41 @@
+Evolution-Data-Server 2.24.1 2008-10-20
+---------------------------------------
+
+Bug Fixes:
+	#337479: Obsolete password prompts when server is down (Milan Crha)
+	#364542: Evolution message preview window freezes (Milan Crha)
+	#497928: Crash deleting Address book assigned to Pidgin Automatic Contacts (Milan Crha)
+	#511947: Crash when right-click on bogus Groupwise account (Milan Crha)
+	#514670: Groupwise - Crash on forgetting password (Milan Crha)
+	#537718: Evolution CalDAV backend does not work with http://sogo-demo.inverse.ca/ (Milan Crha)
+	#544141: Exchange storage crashed trying to delete a user created calendar (Milan Crha)
+	#546406: Evolution does not like changed password on IMAP (Srinivasa Ragavan)
+	#546637: Mail opened from the "Unread mails" displays empty (Srinivasa Ragavan)
+	#547243: Invalid reads in Evolution (Groupwise) (Milan Crha)
+	#550466: Cannot delete folder with subfolders (IMAP) (Milan Crha)
+	#550998: Evolution doesn't refresh the INBOX folder (Srinivasa Ragavan)
+	#552261: EDS UI does not compile because of sqlite3.h (Srinivasa Ragavan)
+	#552631: IMAP forgets password on resource temporarily unavailable (Milan Crha)
+	#553266: Crash in camel-vee-folder (Milan Crha)
+	#553298: Flags aren't synced well with IMAP Server (Milan Crha)
+	#553301: Evolution asks for password on connection reset (Milan Crha)
+	#553944: Evolution Exchange storage crashes on going offline (Milan Crha)
+	#554455: "Advanced search -> Include threads" does not work (Srinivasa Ragavan)
+	#554540: Dubious comparison of ESource*s causes infinite loop on startup of Evolution (Suman Manjunath)
+	#556372: Total count is not updated correctly. (Srinivasa Ragavan)
+	#556495: Undeletable mails in junk folder (Srinivasa Ragavan)
+	#556688: Message list is not updated immediately when the counts are. (Srinivasa Ragavan)
+
+Updated Translations:
+	Gil Forcada (ca)
+	Ignacio Casal Quinteiro (gl)
+	Kjartan Maraas (nb)
+	Luca Ferretti (it)
+	Yair Hershkovitz (he)
+	Vladimir Melo (pt_BR)
+	Ivar Smolin (et)
+	Anas Afif Emad (ar)
+
 Evolution-Data-Server 2.24.0 2008-09-22
 ---------------------------------------
 

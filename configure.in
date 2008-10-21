@@ -4,7 +4,7 @@ AC_PREREQ(2.52)
 # Evolution-Data-Server version */
 m4_define([eds_major_version], [2])
 m4_define([eds_minor_version], [24])
-m4_define([eds_micro_version], [0])
+m4_define([eds_micro_version], [2])
 
 m4_define([eds_version],
           [eds_major_version.eds_minor_version.eds_micro_version])
@@ -72,15 +72,15 @@ LIBEDATABOOK_CURRENT=6
 LIBEDATABOOK_REVISION=1
 LIBEDATABOOK_AGE=4
 
-LIBEBOOK_CURRENT=11
+LIBEBOOK_CURRENT=12
 LIBEBOOK_REVISION=0
-LIBEBOOK_AGE=2
+LIBEBOOK_AGE=3
 
 LIBEGROUPWISE_CURRENT=13
 LIBEGROUPWISE_REVISION=1
 LIBEGROUPWISE_AGE=0
 
-LIBCAMEL_CURRENT=13
+LIBCAMEL_CURRENT=14
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 

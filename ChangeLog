@@ -1,3 +1,8 @@
+2008-10-20  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* NEWS, configure.in: Evolution Data Server 2.24.1 release and version
+	bump.
+
 2008-10-01  Suman Manjunath  <msuman@novell.com>
 
 	** Fix for bug #554540
