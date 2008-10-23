@@ -1,3 +1,7 @@
+2008-10-23  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-folder-summary.c: Remove more console spew.
+
 2008-10-16  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-db.c: Remove console spew.

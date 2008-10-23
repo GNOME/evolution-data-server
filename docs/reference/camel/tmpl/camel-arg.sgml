@@ -29,12 +29,16 @@ camel-arg
 
 </para>
 
+@ap: 
+@argc: 
+@argv: 
 
 <!-- ##### STRUCT CamelArgGet ##### -->
 <para>
 
 </para>
 
+@tag: 
 
 <!-- ##### STRUCT CamelArgGetV ##### -->
 <para>
