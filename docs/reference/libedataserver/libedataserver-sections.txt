@@ -210,6 +210,8 @@ e_source_group_get_property
 e_source_group_set_property
 e_source_group_foreach_property
 e_source_group_to_xml
+e_source_group_equal
+e_source_group_xmlstr_equal
 <SUBSECTION Standard>
 E_SOURCE_GROUP
 E_IS_SOURCE_GROUP
@@ -262,7 +264,6 @@ e_source_new_with_absolute_uri
 e_source_new_from_xml_node
 e_source_new_from_standalone_xml
 e_source_copy
-e_source_equal
 e_source_update_from_xml_node
 e_source_uid_from_xml_node
 e_source_set_group
@@ -289,6 +290,8 @@ e_source_set_property
 e_source_foreach_property
 e_source_get_duped_property
 e_source_build_absolute_uri
+e_source_equal
+e_source_xmlstr_equal
 <SUBSECTION Standard>
 E_SOURCE
 E_IS_SOURCE

@@ -159,7 +159,6 @@ e_cal_backend_get_changes
 e_cal_backend_get_free_busy
 e_cal_backend_internal_get_default_timezone
 e_cal_backend_internal_get_timezone
-e_cal_backend_last_client_gone
 e_cal_backend_set_notification_proxy
 e_cal_backend_notify_object_created
 e_cal_backend_notify_object_modified
@@ -172,6 +171,9 @@ e_cal_backend_notify_view_progress_start
 e_cal_backend_notify_view_progress
 e_cal_backend_notify_readonly
 e_cal_backend_notify_cal_address
+e_cal_backend_notify_objects_added
+e_cal_backend_notify_objects_modified
+e_cal_backend_notify_objects_removed
 <SUBSECTION Standard>
 E_CAL_BACKEND
 E_IS_CAL_BACKEND
@@ -181,6 +183,23 @@ E_IS_CAL_BACKEND_CLASS
 <SUBSECTION Private>
 ECalBackendPrivate
 e_cal_backend_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-cal-backend-loader-factory</FILE>
+<TITLE>ECalBackendLoaderFactory</TITLE>
+ECalBackendLoaderFactory
+<SUBSECTION Standard>
+E_CAL_BACKEND_LOADER_FACTORY
+E_IS_CAL_BACKEND_LOADER_FACTORY
+E_TYPE_CAL_BACKEND_LOADER_FACTORY
+E_CAL_BACKEND_LOADER_FACTORY_CLASS
+E_IS_CAL_BACKEND_LOADER_FACTORY_CLASS
+E_CAL_BACKEND_LOADER_FACTORY_GET_CLASS
+ECalBackendLoaderFactoryClass
+<SUBSECTION Private>
+ECalBackendLoaderFactoryPrivate
+e_cal_backend_loader_factory_get_type
 </SECTION>
 
 <SECTION>

@@ -96,6 +96,7 @@ e_book_get_static_capabilities
 e_book_check_static_capability
 e_book_is_writable
 e_book_cancel
+e_book_cancel_async_op
 e_book_get_self
 e_book_set_self
 e_book_is_self
