@@ -24,6 +24,20 @@ ENameSelectorEntry
 
 
 
+<!-- ##### MACRO FORCE_SHOW_ADDRESS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO USER_QUERY_FIELDS ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### STRUCT ENameSelectorEntry ##### -->
 <para>
 
@@ -98,5 +112,16 @@ ENameSelectorEntry
 
 @name_selector_entry: 
 @func: 
+
+
+<!-- ##### FUNCTION ens_util_populate_user_query_fields ##### -->
+<para>
+
+</para>
+
+@user_query_fields: 
+@cue_str: 
+@encoded_cue_str: 
+@Returns: 
 
 

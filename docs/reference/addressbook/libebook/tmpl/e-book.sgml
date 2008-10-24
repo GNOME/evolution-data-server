@@ -357,6 +357,16 @@ The writable status for this book is being reported.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_cancel_async_op ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_get_self ##### -->
 <para>
 

@@ -89,6 +89,8 @@ e_source_option_menu_get_type
 <FILE>e-name-selector-entry</FILE>
 <TITLE>ENameSelectorEntry</TITLE>
 MINIMUM_QUERY_LENGTH
+FORCE_SHOW_ADDRESS
+USER_QUERY_FIELDS
 ENameSelectorEntry
 e_name_selector_entry_new
 e_name_selector_entry_peek_contact_store
@@ -97,6 +99,7 @@ e_name_selector_entry_peek_destination_store
 e_name_selector_entry_set_destination_store
 e_name_selector_entry_set_contact_editor_func
 e_name_selector_entry_set_contact_list_editor_func
+ens_util_populate_user_query_fields
 <SUBSECTION Standard>
 E_NAME_SELECTOR_ENTRY
 E_IS_NAME_SELECTOR_ENTRY

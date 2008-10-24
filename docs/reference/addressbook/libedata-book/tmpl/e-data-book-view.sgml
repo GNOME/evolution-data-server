@@ -155,3 +155,19 @@ EDataBookView
 @message: 
 
 
+<!-- ##### FUNCTION e_data_book_view_ref ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+
+<!-- ##### FUNCTION e_data_book_view_unref ##### -->
+<para>
+
+</para>
+
+@book_view: 
+
+

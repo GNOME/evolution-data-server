@@ -3,11 +3,11 @@
                "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
-    <title>Evolution API Reference: libecal, the Calendar Library</title>
+    <title>Evolution-Data-Server Manual: Calendar Client (libecal)</title>
   </bookinfo>
 
   <chapter>
-    <title>Evolution API Reference: libecal, the Calendar Library</title>
+    <title>Evolution-Data-Server Manual: Calendar Client (libecal)</title>
     <xi:include href="xml/e-cal.xml"/>
     <xi:include href="xml/e-cal-component.xml"/>
     <xi:include href="xml/e-cal-listener.xml"/>
