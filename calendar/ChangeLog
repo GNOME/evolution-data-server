@@ -1,3 +1,8 @@
+2008-10-30  Matthew Barnes  <mbarnes@redhat.com>
+
+	* backends/caldav/create-account.c:
+	Only include toplevel GLib headers.
+
 2008-10-15  Suman Manjunath  <msuman@novell.com>
 
 	* backends/google/e-cal-backend-google.c
