@@ -18,7 +18,7 @@ add_account (const char *conf_key, const char *hostname, const char *username)
 
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
 
-	group_name = g_strdup_printf (hostname);
+	group_name = g_strdup (hostname);
 	group = e_source_group_new (group_name, "groupwise://");
 	e_source_list_add_group (source_list, group, -1);
 

@@ -1,3 +1,10 @@
+2008-10-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #558727 (patch by Frederic van Starbmann)
+
+	* backends/ldap/e-book-backend-ldap.c (get_ldap_library_info):
+	Fix a potential string format crash.
+
 2008-10-17  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #364542
