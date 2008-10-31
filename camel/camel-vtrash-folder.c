@@ -208,7 +208,7 @@ vtrash_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		       const CamelMessageInfo *info, char **appended_uid,
 		       CamelException *ex)
 {
-	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, 
+	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, "%s",
 			     _(vdata[((CamelVTrashFolder *)folder)->type].error_copy));
 }
 
@@ -257,7 +257,7 @@ vtrash_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	if (CAMEL_IS_VTRASH_FOLDER (dest)) {
 		/* Copy to trash is meaningless. */
 		if (!delete_originals) {
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, 
+			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, "%s",
 					     _(vdata[((CamelVTrashFolder *)dest)->type].error_copy));
 			return;
 		}

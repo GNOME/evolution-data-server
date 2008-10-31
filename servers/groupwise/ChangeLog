@@ -1,3 +1,10 @@
+2008-10-31  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #558727 (crash by Frederic van Starbmann)
+
+	* create-account.c (add_account):
+	Fix a potential string format crash.
+
 2008-10-31  Sankar P  <psankar@novell.com>
 
 	** Fix for bnc bugs #440502, #209514, #434958, #434946, 

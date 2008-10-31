@@ -664,7 +664,7 @@ get_ldap_library_info (void)
 		/* yuck.  we have to free these? */
 		for (i = 0; info.ldapai_extensions[i]; i++) {
 			char *extension = info.ldapai_extensions[i];
-			g_message (extension);
+			g_message ("%s", extension);
 			ldap_memfree (extension);
 		}
 		ldap_memfree (info.ldapai_extensions);

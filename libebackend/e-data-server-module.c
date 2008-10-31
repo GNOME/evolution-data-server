@@ -77,7 +77,7 @@ e_data_server_module_load (GTypeModule *gmodule)
 	module->library = g_module_open (module->path, G_MODULE_BIND_LAZY);
 
 	if (!module->library) {
-		g_warning (g_module_error ());
+		g_warning ("%s", g_module_error ());
 		return FALSE;
 	}
 
@@ -91,7 +91,7 @@ e_data_server_module_load (GTypeModule *gmodule)
 			      "eds_module_list_types",
 			      (gpointer *)&module->list_types)) {
 
-		g_warning (g_module_error ());
+		g_warning ("%s", g_module_error ());
 		g_module_close (module->library);
 
 		return FALSE;
