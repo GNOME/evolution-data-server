@@ -1,3 +1,15 @@
+2008-10-31  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bugs #440502, #209514, #434958, #434946, 
+	#435725, #434950, #372382, #435727
+
+	* e-gw-connection.c (e_gw_connection_get_container_list),
+	(e_gw_connection_get_container_id),
+	(e_gw_connection_get_container):
+	* e-gw-connection.h:
+	* e-gw-item.c (e_gw_item_new_from_soap_parameter):
+	GroupWise improvements
+
 2008-10-03  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #547243

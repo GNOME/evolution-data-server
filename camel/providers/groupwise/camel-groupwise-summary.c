@@ -171,7 +171,7 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const char *filename)
 
 	camel_exception_init (&ex);
 	if (camel_folder_summary_load_from_db (summary, &ex) == -1) {
-		camel_folder_summary_clear (summary);
+		camel_folder_summary_clear_db (summary);
 	}
 
 	return summary;
@@ -394,6 +394,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 							mi->summary->unread_count -- ;
 				}
 
+				mi->dirty = TRUE;
 				camel_folder_summary_touch(mi->summary);
 		}
 	}
@@ -489,7 +490,7 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 		camel_message_info_free(info);
 	}
 
-	camel_folder_summary_clear (summary);
+	camel_folder_summary_clear_db (summary);
 	//camel_folder_summary_save (summary);
 
 	if (uncache)

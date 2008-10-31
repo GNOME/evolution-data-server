@@ -93,6 +93,9 @@ static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGw
 
 #define d(x)  
 
+const char * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
+const char * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
+
 static CamelMimeMessage *
 groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelException *ex )
 {
@@ -166,7 +169,7 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 
 	cnc = cnc_lookup (priv);
 	
-	status = e_gw_connection_get_item (cnc, container_id, uid, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size recurrenceKey", &item);
+	status = e_gw_connection_get_item (cnc, container_id, uid, GET_ITEM_VIEW_WITH_CACHE, &item);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_free (container_id);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
@@ -183,8 +186,11 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 		return NULL;
 	}
 
-	if (msg)
+	if (msg) {
 		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
+		mi->info.dirty = TRUE;
+		camel_folder_summary_touch (folder->summary);
+	}
 
 	/* add to cache */
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
@@ -642,6 +648,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		return;
 	}
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+
+	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)
+		return ;
 
 	count = camel_folder_summary_count (folder->summary);
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
@@ -1186,6 +1195,18 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		if (list) {
 			gw_update_cache (folder, list, ex, FALSE);
 		}
+		
+		if (check_all && !is_proxy) {
+				EGwContainer *container;
+				container = e_gw_connection_get_container (cnc, container_id);
+
+				d(printf ("Evolution's folder summary length is : %u\tserver has %u items",
+										camel_folder_summary_count (folder->summary), e_gw_container_get_total_count (container)));
+
+				if (camel_folder_summary_count (folder->summary) == e_gw_container_get_total_count (container))
+						check_all = FALSE;
+				g_object_unref (container);
+		}
 	}
 
 
@@ -1247,6 +1268,10 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_WRITE;
 
+	int folder_needs_caching;
+
+	camel_object_get (folder, NULL, CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE, &folder_needs_caching, NULL);
+
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 	if (!container_id) {
@@ -1285,7 +1310,11 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		camel_operation_progress (NULL, (100*i)/total_items);
 
-		status = e_gw_connection_get_item (cnc, container_id, id, "peek default distribution recipient message attachments subject notification created recipientStatus status hasAttachment size recurrenceKey", &item);
+		if (folder_needs_caching)
+			status = e_gw_connection_get_item (cnc, container_id, id, GET_ITEM_VIEW_WITH_CACHE, &item);
+		else
+			status = e_gw_connection_get_item (cnc, container_id, id, GET_ITEM_VIEW_WITHOUT_CACHE, &item);
+
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			i++;
 			continue;
@@ -1354,33 +1383,33 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		mi->server_flags = mi->info.flags;
 
 		org = e_gw_item_get_organizer (item); 
+
 		if (org) {
-			GString *str;
-			int i;
-			str = g_string_new ("");
-			if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
-				for (i = 0; org->display_name[i] != '<' && 
-						org->display_name[i] != '\0';
-						i++);
+				GString *str;
+				int i;
+				str = g_string_new ("");
 
-				org->display_name[i] = '\0';
-				str = g_string_append (str, org->display_name);
-				str = g_string_append (str, " ");
-			}
+				if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
+						for (i = 0; org->display_name[i] != '<' && 
+										org->display_name[i] != '\0'; 
+										i++);
 
-                        if (org->display_name[0] == '\0') { 
+						org->display_name[i] = '\0';
+						str = g_string_append (str, org->display_name);
+						str = g_string_append (str, " ");
+				}
 
-				str = g_string_append (str, org->email);
-				str = g_string_append (str, " ");
-			}
-			if (org->email && org->email[0]) { 
-				g_string_append (str, "<");
-				str = g_string_append (str, org->email);
-				g_string_append (str, ">");
-			}
-			mi->info.from = camel_pstring_strdup (str->str);
-			g_string_free (str, TRUE);
+				if (org->email && org->email[0]) { 
+						g_string_append (str, "<");
+						str = g_string_append (str, org->email);
+						g_string_append (str, ">");
+				}
+
+
+				mi->info.from = camel_pstring_strdup (str->str);
+				g_string_free (str, TRUE);
 		}
+
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
@@ -1426,16 +1455,19 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			}
 		}
 
-		if (!exists) {
-			mi->info.uid = camel_pstring_strdup (e_gw_item_get_id(item));
-			mi->info.size = e_gw_item_get_mail_size (item);	
-			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
-		}
-
 		if (exists) {
 			camel_folder_change_info_change_uid (changes, mi->info.uid);
 			camel_message_info_free (pmi);
 		} else {
+			mi->info.uid = camel_pstring_strdup (e_gw_item_get_id(item));
+			mi->info.size = e_gw_item_get_mail_size (item);	
+			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
+			mi->info.dirty = TRUE;
+			
+			folder->summary->visible_count ++;
+			if (!(mi->info.flags & CAMEL_MESSAGE_SEEN))
+					folder->summary->unread_count ++;
+
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
@@ -1445,27 +1477,30 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (!strcmp (folder->full_name, "Junk Mail"))
 			continue;
 
-		/******************** Begine Caching ************************/
-		/* add to cache if its a new message*/
-		t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
-		if (t_cache_stream) {
-			camel_object_unref (t_cache_stream);
+		if (folder_needs_caching) {
+				/******************** Begine Caching ************************/
+				/* add to cache if its a new message*/
+				t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
+				if (t_cache_stream) {
+						camel_object_unref (t_cache_stream);
 
-			mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
-			if (mail_msg)
-				camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
+						mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
+						if (mail_msg)
+								camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (priv));
 
-			CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
-			if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
-				if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
-					camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
-				camel_object_unref (cache_stream);
-			}
+						CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
+						if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
+								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
+										camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
+								camel_object_unref (cache_stream);
+						}
 
-			camel_object_unref (mail_msg);
-			CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
+						camel_object_unref (mail_msg);
+						CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
+				}
+				/******************** Caching stuff ends *************************/
 		}
-		/******************** Caching stuff ends *************************/
+
 		i++;
 		g_object_unref (item);
 	}
@@ -2136,6 +2171,12 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	EGwConnectionStatus status = E_GW_CONNECTION_STATUS_OK;
 	EGwConnection *cnc;
 	CamelFolderChangeInfo *changes = NULL;
+	gboolean destination_is_trash;
+
+	if (destination == camel_store_get_trash (source->parent_store, NULL))
+		destination_is_trash = TRUE;
+	else
+		destination_is_trash = FALSE;
 
 	count = camel_folder_summary_count (destination->summary);
 	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
@@ -2162,6 +2203,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		CamelMimeMessage *message;
 		GList *l;
 		int i;
+
+		if (destination_is_trash)
+			delete_originals = TRUE;
 
 		for (l = item_ids, i = 0; l; l = l->next, i++) {
 			CamelMessageInfo *info;
@@ -2253,33 +2297,40 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			}
 		}
 
-		if (delete_originals) {
-			if (strcmp(source->full_name, "Sent Items")) {
-				status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
-						dest_container_id, source_container_id);
-			} else {
-				char *container_id = NULL;
-				container_id = e_gw_connection_get_container_id (cnc, "Mailbox");
-				status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
-						dest_container_id, container_id);
-				g_free (container_id);
-			}
-
-		} else
-			status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
-					dest_container_id, NULL);
-
-		if (status == E_GW_CONNECTION_STATUS_OK) {
-			if (delete_originals) { 
-				/*if ( !strcmp(source->full_name, SENT) ) {
-					camel_folder_delete_message(source, uids->pdata[index]);
-				} else {*/
-					camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
-					camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
-				//}
-			}
+		if (destination_is_trash) {
+				e_gw_connection_remove_item (cnc, source_container_id, (const char*) uids->pdata[index]);
+				camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
+				camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
 		} else {
-			g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
+				if (delete_originals) {
+						if (strcmp(source->full_name, "Sent Items")) {
+								status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+												dest_container_id, source_container_id);
+						} else {
+								char *container_id = NULL;
+								container_id = e_gw_connection_get_container_id (cnc, "Mailbox");
+								status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+												dest_container_id, container_id);
+								g_free (container_id);
+						}
+
+				} else
+						status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+										dest_container_id, NULL);
+
+				if (status == E_GW_CONNECTION_STATUS_OK) {
+						if (delete_originals) { 
+								/*if ( !strcmp(source->full_name, SENT) ) {
+								  camel_folder_delete_message(source, uids->pdata[index]);
+								  } else {*/
+								camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
+								camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
+								//}
+						}
+				} else {
+						g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
+				}
+
 		}
 		index ++;
 	}

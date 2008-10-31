@@ -2058,7 +2058,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 		} else if (!g_ascii_strcasecmp (name, "alarm")) {
 			char *enabled;
 			enabled = soup_soap_parameter_get_property (child, "enabled");
-			if (!g_ascii_strcasecmp (enabled, "1") ) {
+			if (enabled && !g_ascii_strcasecmp (enabled, "1") ) {
 				value = soup_soap_parameter_get_string_value (child);
 				/* convert it into integer */
 				item->priv->trigger = atoi (value);

@@ -734,7 +734,6 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList *
 	if (!cnc)
 		return E_GW_CONNECTION_STATUS_UNKNOWN;
 
-	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getFolderListRequest");
@@ -822,6 +821,49 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 	e_gw_connection_free_container_list (container_list);
 
 	return container_id;
+}
+
+EGwContainer *
+e_gw_connection_get_container (EGwConnection *cnc, const char * uid)
+{
+		SoupSoapMessage *msg;
+		SoupSoapResponse *response;
+		EGwConnectionStatus status;
+
+		g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), NULL);
+		g_return_val_if_fail (uid!= NULL, NULL);
+
+		msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getFolderRequest");
+		if (!msg) {
+				g_warning (G_STRLOC ": Could not build SOAP message");
+				return NULL;
+		}
+
+		e_gw_message_write_string_parameter (msg, "uid", NULL, uid);
+		e_gw_message_write_string_parameter (msg, "view", NULL, "count");
+		e_gw_message_write_footer (msg);
+
+		/* send message to server */
+		response = e_gw_connection_send_message (cnc, msg);
+		if (!response) {
+				g_object_unref (msg);
+				return NULL;
+		}
+
+		status = e_gw_connection_parse_response_status (response);
+		g_object_unref (msg);
+
+		if (status == E_GW_CONNECTION_STATUS_OK) {
+				EGwContainer *container;
+				SoupSoapParameter *subparam;
+
+				subparam = soup_soap_response_get_first_parameter_by_name (response, "folder");
+				container = e_gw_container_new_from_soap_parameter (subparam);
+
+				return container;
+		}
+
+		return NULL;
 }
 
 EGwConnectionStatus

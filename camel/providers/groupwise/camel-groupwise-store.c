@@ -56,6 +56,7 @@
 #define JUNK_ENABLE 1
 #define JUNK_PERSISTENCE 14
 
+const char * CREATE_CURSOR_VIEW = "peek id default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
 
 struct _CamelGroupwiseStorePrivate {
 	char *server_name;
@@ -469,13 +470,11 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const char *parent_na
 static void
 groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name, CamelException *ex)
 {
-	CamelFolderSummary *summary;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
-	char *summary_file, *state_file;
+	char *state_file;
 	char *folder_dir, *storage_path;
 	CamelFolderInfo *fi;
 	const char *name;
-
 	
 	name = folder_name;
 
@@ -486,19 +485,6 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const char *folder_name,
 		g_free(folder_dir);
 		return;
 	}
-
-	summary_file = g_strdup_printf ("%s/summary", folder_dir);
-	summary = camel_groupwise_summary_new(NULL,summary_file);
-	if(!summary) {
-		g_free(summary_file);
-		g_free(folder_dir);
-		return;
-	}
-
-	camel_object_unref (summary);
-	g_unlink (summary_file);
-	g_free (summary_file);
-
 
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	g_unlink (state_file);
@@ -611,7 +597,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		d(g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);)
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek id recipient attachments distribution subject status options priority startDate created delivered size hasAttachment",
+				CREATE_CURSOR_VIEW,
 				NULL,
 				&cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -624,37 +610,50 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		camel_folder_summary_clear (folder->summary);
 
 		while (!done) {
-			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
-							      cursor, FALSE, 
-							      CURSOR_ITEM_LIMIT, position, &list);
-			if (status != E_GW_CONNECTION_STATUS_OK) {
-				all_ok = FALSE;
-				break;
-				/*
-				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
-				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
-				//camel_folder_summary_clear (folder->summary);
-				camel_folder_summary_save_to_db (folder->summary, ex);
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-				camel_operation_end (NULL);
-				camel_object_unref (folder);
-				g_free (container_id);
-				return NULL;*/
-			}
-			
-			count += g_list_length (list);
-		
-			if (total > 0)
-				camel_operation_progress (NULL, (100*count)/total);
-			gw_update_summary (folder, list,  ex);
-			
-			if (!list)
-				done = TRUE;
-			g_list_foreach (list, (GFunc)g_object_unref, NULL);
-			g_list_free (list);
-			list = NULL;
-			position = E_GW_CURSOR_POSITION_CURRENT;
-      		}
+				status = e_gw_connection_read_cursor (priv->cnc, container_id, 
+								cursor, FALSE, 
+								CURSOR_ITEM_LIMIT, position, &list);
+				if (status != E_GW_CONNECTION_STATUS_OK) {
+						all_ok = FALSE;
+						break;
+						/*
+						   CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+						   e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+						//camel_folder_summary_clear (folder->summary);
+						camel_folder_summary_save_to_db (folder->summary, ex);
+						camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+						camel_operation_end (NULL);
+						camel_object_unref (folder);
+						g_free (container_id);
+						return NULL;*/
+				}
+
+				/* This full block is repeated in the reload_folder code as well. We need
+				better modularity */
+				count += CURSOR_ITEM_LIMIT;
+
+				if (total > 0) {
+						d(printf ("Doing readcursor : [total: %d] [count: %d]\n", total, count));
+
+						if (count > total)
+								count = total;
+
+						camel_operation_progress (NULL, (100*count)/total);
+				}
+
+				gw_update_summary (folder, list,  ex);
+
+				/* For shared-folders created by the user, we don't get the total number of messages, 
+				in the getFolderList call. So, we need to wait until an empty list is returned in the 
+				read cursor call. Hence, we need the !list checking in the code below */
+				if (count == total || !list)
+						done = TRUE;
+
+				g_list_foreach (list, (GFunc)g_object_unref, NULL);
+				g_list_free (list);
+				list = NULL;
+				position = E_GW_CURSOR_POSITION_CURRENT;
+		}
 
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
@@ -721,51 +720,63 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 	summary_count = camel_folder_summary_count (folder->summary);
 	if(!summary_count || !summary->time_string) {
-		d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
+			d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
 
-		status = e_gw_connection_create_cursor (priv->cnc, container_id, 
-				"peek id recipient attachments distribution subject status options priority startDate created delivered size hasAttachment",
-				NULL,
-				&cursor);
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
-			g_free (container_id);
-			return;
-		}
-
-		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
-
-		while (!done) {
-			status = e_gw_connection_read_cursor (priv->cnc, container_id, 
-							      cursor, FALSE, 
-							      CURSOR_ITEM_LIMIT, position, &list);
+					status = e_gw_connection_create_cursor (priv->cnc, container_id, 
+									CREATE_CURSOR_VIEW,
+									NULL,
+									&cursor);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
-				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
-				e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
-				camel_folder_summary_save_to_db (folder->summary, ex);
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-				camel_operation_end (NULL);
-				g_free (container_id);
-				return;
+					CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+					g_free (container_id);
+					return;
 			}
-			
-			count += g_list_length (list);
-		
-			if (total > 0)
-				camel_operation_progress (NULL, (100*count)/total);
-			gw_update_summary (folder, list,  ex);
-			
-			if (!list)
-				done = TRUE;
-			g_list_foreach (list, (GFunc)g_object_unref, NULL);
-			g_list_free (list);
-			list = NULL;
-			position = E_GW_CURSOR_POSITION_CURRENT;
-      		}
 
-		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+			camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
-		camel_operation_end (NULL);
+			while (!done) {
+					status = e_gw_connection_read_cursor (priv->cnc, container_id, 
+									cursor, FALSE, 
+									CURSOR_ITEM_LIMIT, position, &list);
+					if (status != E_GW_CONNECTION_STATUS_OK) {
+							CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+							e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+							camel_folder_summary_save_to_db (folder->summary, ex);
+							camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+							camel_operation_end (NULL);
+							g_free (container_id);
+							return;
+					}
+					/* This full block is repeated in the get_folder code as well. We need
+					   better modularity */
+					count += CURSOR_ITEM_LIMIT;
+
+					if (total > 0) {
+							d(printf ("Doing readcursor : [total: %d] [count: %d]\n", total, count));
+
+							if (count > total)
+									count = total;
+
+							camel_operation_progress (NULL, (100*count)/total);
+					}
+
+					gw_update_summary (folder, list,  ex);
+
+					/* For shared-folders created by the user, we don't get the total number of messages, 
+					   in the getFolderList call. So, we need to wait until an empty list is returned in the 
+					   read cursor call. Hence, we need the !list checking in the code below */
+					if (count == total || !list)
+							done = TRUE;
+
+					g_list_foreach (list, (GFunc)g_object_unref, NULL);
+					g_list_free (list);
+					list = NULL;
+					position = E_GW_CURSOR_POSITION_CURRENT;
+			}
+
+			e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
+
+			camel_operation_end (NULL);
 	} 
 
 	if (done) {
@@ -866,6 +877,9 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 
 	if (e_gw_container_get_is_shared_by_me (container))
 		fi->flags |= CAMEL_FOLDER_SHARED_BY_ME;
+
+	if (e_gw_container_get_is_system_folder (container))
+		fi->flags |= CAMEL_FOLDER_SYSTEM;
 
 	fi->total = e_gw_container_get_total_count (container);
 	fi->unread = e_gw_container_get_unread_count (container);

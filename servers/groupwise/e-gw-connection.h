@@ -99,9 +99,12 @@ EGwConnectionStatus e_gw_connection_parse_response_status (SoupSoapResponse *res
 const char         *e_gw_connection_get_error_message (EGwConnectionStatus status);
 
 EGwConnectionStatus e_gw_connection_logout (EGwConnection *cnc);
+
 EGwConnectionStatus e_gw_connection_get_container_list (EGwConnection *cnc, const char *top, GList **container_list);
 void                e_gw_connection_free_container_list (GList *container_list);
 char               *e_gw_connection_get_container_id (EGwConnection *cnc, const char *name);
+EGwContainer * e_gw_connection_get_container (EGwConnection *cnc, const char * uid);
+
 EGwConnectionStatus e_gw_connection_get_items (EGwConnection *cnc, const char *container,
 					       const char *view, EGwFilter *filter, GList **list);
 EGwConnectionStatus e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes, GSList **updates);
