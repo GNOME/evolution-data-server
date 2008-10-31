@@ -2120,6 +2120,7 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (s->uids, TRUE);
 	s->uids = g_ptr_array_new ();
+	s->visible_count = s->deleted_count = s->unread_count = 0;
 
 	g_hash_table_destroy(s->loaded_infos);
 	s->loaded_infos = g_hash_table_new(g_str_hash, g_str_equal);

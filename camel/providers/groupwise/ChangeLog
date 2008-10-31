@@ -1,3 +1,18 @@
+2008-10-31  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bugs #440502, #209514, #434958, #434946, 
+	#435725, #434950, #372382, #435727
+
+	* camel-groupwise-folder.c (groupwise_folder_get_message),
+	(groupwise_sync), (groupwise_refresh_folder), (gw_update_cache),
+	(groupwise_transfer_messages_to):
+	* camel-groupwise-store.c (groupwise_forget_folder),
+	(groupwise_get_folder), (gw_store_reload_folder),
+	(convert_to_folder_info):
+	* camel-groupwise-summary.c (camel_groupwise_summary_new),
+	(gw_info_set_flags), (groupwise_summary_clear):
+	GroupWise Improvements
+
 2008-10-17  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #547243

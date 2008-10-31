@@ -1,3 +1,11 @@
+2008-10-31  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bugs #440502, #209514, #434958, #434946, 
+	#435725, #434950, #372382, #435727
+
+	* camel-folder-summary.c (camel_folder_summary_clear_db):
+	GroupWise improvements
+
 2008-10-23  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-folder-summary.c: Remove more console spew.
