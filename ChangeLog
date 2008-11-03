@@ -1,3 +1,10 @@
+2008-11-03  Sankar P  <psankar@novell.com>
+
+License Changes
+
+	* libedataserver/e-proxy.c:
+	* libedataserver/e-proxy.h:
+
 2008-10-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #558727 (patch by Frederic van Starbmann)

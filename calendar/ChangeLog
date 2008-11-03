@@ -1,3 +1,11 @@
+2008-11-03  Sankar P  <psankar@novell.com>
+
+License Changes
+
+	* backends/caldav/e-cal-backend-caldav-factory.c:
+	* backends/caldav/e-cal-backend-caldav-factory.h:
+	* backends/caldav/e-cal-backend-caldav.c:
+
 2008-10-30  Matthew Barnes  <mbarnes@redhat.com>
 
 	* backends/caldav/create-account.c:
