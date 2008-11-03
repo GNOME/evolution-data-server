@@ -1,3 +1,12 @@
+2008-11-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #532136
+
+	* libebook/e-book.c: (e_book_op_remove): Remove operation from idle
+	queue when still there in time of its removal.
+	* libebook/e-book.c: (kill_remaining_ops), (e_book_dispose):
+	Free pending operations in time of dispose properly.
+
 2008-10-31  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #558727 (patch by Frederic van Starbmann)

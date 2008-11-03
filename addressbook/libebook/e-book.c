@@ -213,6 +213,13 @@ e_book_op_remove (EBook *book,
 {
 	g_hash_table_remove (book->priv->id_to_op,
 			     &op->opid);
+
+	if (op->idle_id && g_list_find (book->priv->pending_idles, GINT_TO_POINTER (op->idle_id))) {
+		book->priv->pending_idles = g_list_remove (book->priv->pending_idles,
+							   GINT_TO_POINTER (op->idle_id));
+		g_source_remove (op->idle_id);
+		op->idle_id = 0;
+	}
 }
 
 static void
@@ -3953,6 +3960,18 @@ e_book_new_default_addressbook   (GError **error)
 }
 
 static void
+kill_remaining_ops (gpointer key, gpointer value, gpointer user_data)
+{
+	EBookOp *op = value;
+
+	if (!op)
+		return;
+
+	find_key_value (key, value, NULL);
+	e_book_clear_op (op->book, op);
+}
+
+static void
 e_book_init (EBook *book)
 {
 	book->priv                = g_new0 (EBookPrivate, 1);
@@ -4006,8 +4025,10 @@ e_book_dispose (GObject *object)
 		if (book->priv->source)
 			g_object_unref (book->priv->source);
 
-		/* XXX free up the remaining ops? */
+		g_mutex_lock (book->priv->mutex);
+		g_hash_table_foreach (book->priv->id_to_op, kill_remaining_ops, NULL);
 		g_hash_table_destroy (book->priv->id_to_op);
+		g_mutex_unlock (book->priv->mutex);
 
 		g_mutex_free (book->priv->mutex);
 
