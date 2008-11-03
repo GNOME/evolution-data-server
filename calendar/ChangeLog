@@ -1,3 +1,11 @@
+2008-11-03  Sankar P  <psankar@novell.com>
+
+License Changes
+
+	* backends/caldav/e-cal-backend-caldav-factory.c:
+	* backends/caldav/e-cal-backend-caldav-factory.h:
+	* backends/caldav/e-cal-backend-caldav.c:
+
 2008-10-15  Suman Manjunath  <msuman@novell.com>
 
 	* backends/google/e-cal-backend-google.c
