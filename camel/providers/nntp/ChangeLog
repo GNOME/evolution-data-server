@@ -1,3 +1,10 @@
+2008-10-21  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #556119
+
+	* camel/providers/nntp/camel-nntp-summary.c: Do things in bulk
+	* camel/providers/nntp/camel-nntp-utils.c:
+
 2008-10-14  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #552261
