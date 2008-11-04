@@ -1,3 +1,46 @@
+Evolution-Data-Server 2.25.1 2008-11-03
+---------------------------------------
+
+Bug Fixes:
+	#209514, #372382, #434958, #434946, #435725, #434950, #435727, #440502: (Novell Bugzilla) GroupWise improvements (Sankar P)
+	#313225: Fix misunderstanding of the parameter in code causing crash in this part (Milan Crha)
+	#315919: Show contact's photo in the completion list if available locally. (Milan Crha)
+	#337479: Do not use uninitialized variables (Milan Crha)
+	#364542: Be able to cancel async op too (at least any) (Milan Crha)
+	#497928: Check for NULL pointers before accessing members of the structure (Milan Crha)
+	#511947: Do not parse response when status indicates failure. (Milan Crha)
+	#514670: Check for errors properly. Also do not use uninitialized variables (Milan Crha)
+	#537718: Be able to cooperate with servers which use redirections. Support for (default) timezone information on the backend. Store component's timezone(s) in cache to have them available. (Milan Crha)
+	#544141: Do not store invalid values in 'standard_uris', it leads to crash later (Milan Crha)
+	#546406: Don't lookup password from old keyring. (Srinivasa Ragavan)
+	#546637: Redo for unread vfolder (Srinivasa Ragavan)
+	#547243: Check for correct values to prevent invalid reads. (Milan Crha)
+	#550466: Ignore 'no such table' errors (Milan Crha)
+	#550980: Fix the offline mode string to be more helpful. (Philip Withnall)
+	#550998: Refresh, when everything local is deleted on the server (Srinivasa Ragavan)
+	#552261: Don't expose sqlite3 header outside. (Srinivasa Ragavan)
+	#552491: Check for NULL output from xmlParseDoc before continuing (Philip Withnall)
+	#552631: Do not forget password on 'resource temporarily unavailable' exception (Milan Crha)
+	#553148: Standardise "GroupWise" usage in translatable strings (Philip Withnall)
+	#553266: Do not free memory owned by someone else (Milan Crha)
+	#553298: Unset all known server flags on the message when the resulting flag list is empty (Milan Crha)
+	#553301: Do not forget password when server not available at the moment or user cancelled (Milan Crha)
+	#553944: Do not unsubscribe from the server when destroying context and make copy of the uri, because it comes from the structure we are going to free (Milan Crha)
+	#554455: Allow thread based searches by falling back on the old in-memory search model (Srinivasa Ragavan)
+	#554540: Don't compare XML data of ESource* literally. Instead, compare them semantically. (Suman Manjunath)
+	#556372: Update counts to summary on sync (Srinivasa Ragavan)
+	#556495: When things don't match, remove them from db and force a count (Srinivasa Ragavan)
+	#556688: Sync before emitting the signal (Srinivasa Ragavan)
+	#558727: Fix some potential string format crashes (Frederic van Starbmann)
+
+Updated Translations:
+	Jorge Gonzalez (es)
+	Vladimir Melo (pt_BR)
+	Ignacio Casal Quinteiro (gl)
+	Ivar Smolin (et)
+	Kjartan Maraas (nb)
+	Yair Hershkovitz (he)
+
 Evolution-Data-Server 2.24.0 2008-09-22
 ---------------------------------------
 
