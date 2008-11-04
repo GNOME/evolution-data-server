@@ -155,9 +155,6 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	if (cns->priv->uid == NULL)
 		return NULL;
 
-	/* we shouldn't be here if we already have this uid */
-	g_assert(camel_folder_summary_uid(s, cns->priv->uid) == NULL);
-
 	mi = (CamelMessageInfoBase *)((CamelFolderSummaryClass *)camel_nntp_summary_parent)->message_info_new_from_header(s, h);
 	if (mi) {
 		camel_pstring_free(mi->uid);
@@ -326,16 +323,13 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high,
 
 		/* truncated line? ignore? */
 		if (xover == NULL) {
-			mi = (CamelMessageInfoBase *)camel_folder_summary_uid(s, cns->priv->uid);
-			if (mi == NULL) {
+			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
 				mi = (CamelMessageInfoBase *)camel_folder_summary_add_from_header(s, headers);
 				if (mi) {
 					mi->size = size;
 					cns->high = n;
 					camel_folder_change_info_add_uid(changes, camel_message_info_uid(mi));
 				}
-			} else {
-				camel_message_info_free(mi);
 			}
 		}
 
@@ -393,8 +387,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, 
 		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))){
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf("%u,%s\n", n, msgid);
-			mi = camel_folder_summary_uid(s, cns->priv->uid);
-			if (mi == NULL) {
+			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
 				if (camel_mime_parser_init_with_stream(mp, (CamelStream *)store->stream) == -1)
 					goto error;
 				mi = camel_folder_summary_add_from_parser(s, mp);
@@ -405,9 +398,6 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, 
 				}
 				cns->high = i;
 				camel_folder_change_info_add_uid(changes, camel_message_info_uid(mi));
-			} else {
-				/* already have, ignore */
-				camel_message_info_free(mi);
 			}
 			if (cns->priv->uid) {
 				g_free(cns->priv->uid);
@@ -449,6 +439,7 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 	int count;
 	char *folder = NULL;
 	CamelNNTPStoreInfo *si;
+	GSList *del = NULL;
 
 	s = (CamelFolderSummary *)cns;
 
@@ -479,7 +470,7 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 	if (cns->low != f) {
 		count = camel_folder_summary_count(s);
 		for (i = 0; i < count; i++) {
-			const char *uid;
+			char *uid;
 			const char *msgid;
 
 			uid  = camel_folder_summary_uid_from_index(s, i);
@@ -494,10 +485,13 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 				if (msgid)
 					camel_data_cache_remove(store->cache, "cache", msgid+1, NULL);
 				camel_folder_change_info_remove_uid(changes, uid);
-				camel_folder_summary_remove_uid (s, uid);
+				del = g_slist_prepend (del, uid);
+				camel_folder_summary_remove_uid_fast (s, uid);
+				uid = NULL; /*Lets not free it */
 				count--;
 				i--;
 			}
+			g_free (uid);
 		}
 		cns->low = f;
 	}
@@ -513,25 +507,22 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 		}
 	}
 
+	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
+	g_slist_foreach (del, (GFunc) g_free, NULL);
+	g_slist_free (del);
+
 	/* TODO: not from here */
 	camel_folder_summary_touch(s);
 	camel_folder_summary_save_to_db (s, ex);
+
 update:
 	/* update store summary if we have it */
 	if (folder
 	    && (si = (CamelNNTPStoreInfo *)camel_store_summary_path((CamelStoreSummary *)store->summary, folder))) {
-		int unread = 0;
+		guint32 unread = 0;
 
-		count = camel_folder_summary_count(s);
-		for (i = 0; i < count; i++) {
-			CamelMessageInfoBase *mi = (CamelMessageInfoBase *)camel_folder_summary_index(s, i);
-
-			if (mi) {
-				if ((mi->flags & CAMEL_MESSAGE_SEEN) == 0)
-					unread++;
-				camel_message_info_free(mi);
-			}
-		}
+		count = camel_folder_summary_count (s);
+		camel_db_count_unread_message_info (s->folder->parent_store->cdb_r, s->folder->full_name, &unread, ex);
 		
 		if (si->info.unread != unread
 		    || si->info.total != count
