@@ -700,6 +700,17 @@ camel_store_get_junk (CamelStore *store, CamelException *ex)
 		return camel_store_get_folder(store, CAMEL_VJUNK_NAME, 0, ex);
 }
 
+/**
+ * ignore_no_such_table_exception:
+ * Clears the exception 'ex' when it's the 'no such table' exception.
+ **/
+static void
+ignore_no_such_table_exception (CamelException *ex)
+{
+	if (ex && camel_exception_is_set (ex) && g_ascii_strncasecmp (camel_exception_get_description (ex), "no such table", 13) == 0)
+		camel_exception_clear (ex);
+}
+
 static void
 store_sync (CamelStore *store, int expunge, CamelException *ex)
 {
@@ -716,9 +727,10 @@ store_sync (CamelStore *store, int expunge, CamelException *ex)
 		for (i=0;i<folders->len;i++) {
 			folder = folders->pdata[i];
 			if (!CAMEL_IS_VEE_FOLDER(folder)
-			    && !camel_exception_is_set(&x))
+			    && !camel_exception_is_set(&x)) {
 				camel_folder_sync(folder, expunge, &x);
-			else if (CAMEL_IS_VEE_FOLDER(folder))
+				ignore_no_such_table_exception (&x);
+			} else if (CAMEL_IS_VEE_FOLDER(folder))
 				camel_vee_folder_sync_headers(folder, NULL); /* Literally don't care of vfolder exceptions */
 			camel_object_unref(folder);
 		}
