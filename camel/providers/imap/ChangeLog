@@ -1,3 +1,13 @@
+2008-11-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #558737
+
+	* camel-imap-folder.c: (handle_copyuid_copy_user_tags),
+	(imap_transfer_online): Do not use 'camel_folder_refresh_folder', use
+	'imap_refresh_folder' instead, because the former locks the folder
+	lock too, which could make a deadlock when we are refreshing that
+	folder in other thread, which is waiting for the connect lock we hold.
+
 2008-10-17  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #556688

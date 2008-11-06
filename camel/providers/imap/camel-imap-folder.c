@@ -2158,7 +2158,7 @@ handle_copyuid_copy_user_tags (CamelImapResponse *response, CamelFolder *source,
 	camel_exception_init (&ex);
 	/* refresh folder's summary first, we copied messages there on the server,
 	   but do not know about it in a local summary */
-	camel_folder_refresh_info (destination, &ex);
+	imap_refresh_info (destination, &ex);
 	if (camel_exception_is_set (&ex)) {
 		g_warning ("destination folder refresh failed, error: %s", ex.desc);
 		camel_exception_clear (&ex);
@@ -2304,7 +2304,7 @@ imap_transfer_online (CamelFolder *source, GPtrArray *uids,
 	/* Make the destination notice its new messages */
 	if (store->current_folder != dest ||
 	    camel_folder_summary_count (dest->summary) == count)
-		camel_folder_refresh_info (dest, ex);
+		imap_refresh_info (dest, ex);
 	
 	/* FIXME */
 	if (transferred_uids)
